@@ -1,0 +1,28 @@
+# The reverse: all three views drawn and the solid hidden, and the child names the sculpture.
+item art.sculpt-solid v=1 skills=[art.sculpture, art.looking, reasoning.visualise] {
+  title "What was carved?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let right={pick(k, "a ball on a column on a plinth", "a pyramid on a plinth", "a block with a step", "an arch of three stones")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x39 {
+    sculpture s mode=0 shape=k ask=0 solid=0 kind=-1 names=1 at=canvas(1, 1)
+    text ask "These are the three views of a snow sculpture the team made by the hut: from the front, from the left and from above. Which sculpture is it?" narrate width=34 below=s gap=1
+    choice pick options=["a ball on a column on a plinth", "a pyramid on a plinth", "a block with a step", "an arch of three stones"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=s {
+      say "Check your answer against all three views. Would that sculpture look like this from above as well as from the front?"
+    }
+  }
+  hint "Start with the view from the front. Which sculptures could make that outline?"
+  hint "Now use the view from above to choose between them."
+}

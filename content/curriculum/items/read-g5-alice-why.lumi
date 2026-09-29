@@ -1,0 +1,21 @@
+# Interpretive questions a grown-up talks through: an idea the book raises and never settles, backed
+# by something in the chapter.
+item reading.alice-why v=1 skills=[reading.inference, reading.characters, reading.whole-book] {
+  title "What do you think?"
+  let k=0..1
+
+  scene 34x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        bookcast a who=alice pose=think dir=1
+        bookcast b who=pick(k, "alice", "cat") pose=pick(k, "hold", "stand") dir=-1
+      }
+      text ask "{pick(k, \"In chapter 2 Alice has grown and shrunk so often that she wonders whether she is still herself. Why would changing size make her ask that? Use something she says.\", \"In chapter 9 the Duchess finds a moral in everything. Choose one of her morals and say whether it really fits what was said just before it.\")}" width=33
+      writinglines lines lines=4 width=33 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="{pick(k, \"A reason from chapter 2 (she cannot do her lessons or say her poem as she used to, so she tests whether she has been changed for Ada or Mabel) with something she says or does as the evidence.\", \"One of the Duchess's morals copied or named, what was said just before it, and a judgement with a reason on whether they match (most do not, which is Carroll's joke).\")}" notice=["Gives a reason, not only what happened", "Points to something in the chapter", "Says what they think and why"] ask="Has anything ever made you feel not quite yourself?"
+  hint "What does Alice try, to find out whether she is still the same?"
+  hint "Find the moment in the chapter. What happens just before it?"
+}

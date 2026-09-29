@@ -1,0 +1,35 @@
+# The two-star reason: the same words with and without commas. Without them the clause picks out
+# some of the boats; with them it adds news about all of them. The letter of the right sentence
+# changes with k.
+item writing.which-boats v=1 stars=2 skills=[writing.relative-clauses, writing.commas, reasoning.explain] {
+  title "What do the commas change?"
+  difficulty k
+  let k=0..1 r=0..2
+  let sa={pick(k, "A: The boats, which were red, went through the lock.", "A: The walkers, who had dogs, took the towpath.")}
+  let sb={pick(k, "B: The boats which were red went through the lock.", "B: The walkers who had dogs took the towpath.")}
+  let q={pick(k, "In which sentence did some boats stay behind, and why?", "In which sentence did every walker have a dog, and why?")}
+  let right={pick(k, "B: the relative clause picks out only some boats", "A: the relative clause adds news about them all")}
+  let w1={pick(k, "A: the commas cut some boats out", "B: no commas means it is about all")}
+  let w2={pick(k, "Both: the words are the same", "Both: the words are the same")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 33x26 {
+    canallock lock level=0 boat=1 at=canvas(1, 0)
+    text ask "{sa} {sb} {q}" narrate width=32 below=lock gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "Without commas the relative clause tells you which ones: only those. With commas it is extra news, and the sentence is about all of them."
+    }
+  }
+  hint "Read each sentence and ask: is the relative clause telling me which ones, or telling me something more about all of them?"
+  hint "Commas round a clause make it something you could lift out without changing who the sentence is about."
+}

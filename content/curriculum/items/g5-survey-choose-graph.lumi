@@ -1,0 +1,37 @@
+# Choosing the graph for a purpose (Japan grade 5 D(1)): change over time is a line, counts to compare
+# are bars, shares of one whole are a pie, and shares of groups of different sizes are bands.
+item survey.choose-graph v=1 skills=[data.choose-graph, reasoning.explain] {
+  title "Which graph"
+  difficulty pick(p, 1, 0, 2, 3, 2)
+  let p=0..4
+  level easy {
+    let p={0, 1}
+  }
+  level hard {
+    let p={2, 3, 4}
+  }
+
+  scene 36x24 {
+    table data cols=3 head=["{if p == 0 then \"Time\" else \"Planet\"}", "{if p == 0 then \"Mon °C\" else \"5A\"}", "{if p == 0 then \"Tue °C\" else \"5B\"}"] cells=["{if p == 0 then \"9pm\" else \"Saturn\"}", "{if p == 0 then 8 else 9}", "{if p == 0 then 7 else 15}", "{if p == 0 then \"10pm\" else \"Jupiter\"}", "6", "{if p == 0 then 6 else 20}", "{if p == 0 then \"11pm\" else \"Mars\"}", "5", "{if p == 0 then 4 else 15}"] below=ask gap=1
+    text ask "{pick(p, \"The table gives the temperature on the star cliffs each hour on two nights. Which graph shows best how it fell through the night?\", \"The table gives the club's votes by class. Which graph shows best how many in the whole club chose each planet, side by side?\", \"The table gives the club's votes by class. Which graph shows best what share of the whole club chose each planet?\", \"The table gives the club's votes by class, and 5B is much bigger than 5A. Which graph shows best which class had the bigger share choosing Saturn?\", \"The table gives the club's votes by class. Which graph shows best, planet by planet, whether 5A or 5B gave it more votes?\")}" narrate width=34 at=canvas(1, 1)
+    choice pick options=["bar chart", "line graph", "pie chart", "band graph"] stack=column right-of=data gap=3
+  }
+
+  answer pick=pick(p, "line graph", "bar chart", "pie chart", "band graph", "bar chart")
+  feedback {
+    when (p != 0 and pick == "line graph") point=data {
+      say "A line joins readings taken one after another in time. Planets do not come one after another."
+    }
+    when (p == 3 and pick == "pie chart") point=data {
+      say "A pie shows one whole. Here there are two classes of different sizes to set side by side."
+    }
+    when (p == 2 and pick == "bar chart") point=data {
+      say "Bars compare how many. The question asks for a share of the whole club."
+    }
+    when ((p == 1 or p == 4) and pick == "pie chart") point=data {
+      say "A pie shows shares. The question asks how many, side by side."
+    }
+  }
+  hint "Is the question about change over time, how many, or a share?"
+  hint "Is there one whole, or two groups of different sizes?"
+}

@@ -1,0 +1,26 @@
+# What the mill, the wind turbine and a power station share: each spins a turbine that turns a
+# generator; a power station spins it with steam from burning fuel.
+item physics.gen-power-station v=1 skills=[physics.energy, reasoning.compare] {
+  title "Three ways, one idea"
+
+  scene 30x37 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      waterwheel w paddles=8 lit=1
+      waterfall f drops=2 rainbow=0
+    }
+    text ask "A water wheel's generator, a wind turbine and a power station that burns gas to boil water into steam all make electricity. What do all three do?" narrate width=28 below=kit gap=1
+    choice pick options=["Turn a generator with something moving", "Burn a fuel", "Use a river", "Store electricity in cells"] stack=column below=ask gap=1
+  }
+
+  answer pick="Turn a generator with something moving"
+  feedback {
+    when (pick == "Burn a fuel") point=ask {
+      say "Only the power station burns fuel. What does its steam do?"
+    }
+    when (pick == "Use a river") point=ask {
+      say "The wind turbine has no river. What does each one turn?"
+    }
+  }
+  hint "What turns the generator at the mill, and what turns it at a power station?"
+  hint "Water, wind and steam all do the same job. What is it?"
+}

@@ -1,0 +1,31 @@
+# The way in: two angles of a triangle marked, the third found from the 180 degrees they make together.
+item angles.triangle-corner v=1 skills=[angles.sums] {
+  title "The third corner"
+  difficulty ((if a % 10 == 0 and b % 10 == 0 then 0 else 1) + (if a + b > 120 then 1 else 0))
+  let a={35, 40, 55, 70, 85} b={45, 60, 65, 72}
+  where (a + b < 160)
+  level easy {
+    let a={40, 70} b={45, 60}
+  }
+  level hard {
+    let a={35, 55, 85} b={65, 72}
+  }
+
+  scene 32x14 {
+    anglesum tri kind=triangle a=a b=b ask=2 at=canvas(1, 1)
+    text ask "Three stars make a triangle on the sky map. What is the angle marked with a question mark?" narrate width=12 right-of=tri gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (180 - a - b)
+  feedback {
+    when (answer == 360 - a - b) point=tri {
+      say "The angles of a triangle make 180 degrees. 360 is for four corners."
+    }
+    when (answer == a + b) point=tri {
+      say "That is the two angles added. What is left of the 180?"
+    }
+  }
+  hint "What do the three angles of any triangle add up to?"
+  hint "Take the two you know away from that."
+}

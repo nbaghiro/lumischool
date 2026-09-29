@@ -1,0 +1,31 @@
+# Three-star: two dice-like numbers and a decision inside each branch. Counting every way the program
+# can say go means counting each branch's ways and adding them, which the checker does by trying all.
+item coding.inner-ways v=1 stars=3 skills=[coding.decisions, coding.random, reasoning.all-the-ways] {
+  title "How many ways to go?"
+  difficulty k
+  let k=0..2
+  let a={pick(k, 4, 3, 4)} b={pick(k, 5, 4, 3)} c={pick(k, 2, 3, 2)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x26 {
+    program p code=["set wind to random 1 to 6", "set snow to random 1 to 6", "if wind is less than {a}", "  if snow is less than {b}", "    say go", "  otherwise", "    say wait", "otherwise", "  if snow is less than {c}", "    say go", "  otherwise", "    say wait"] text=true at=canvas(0, 0)
+    sledge sl slats=6 right-of=p gap=1
+    text ask "Two dice are rolled for the wind and the snow. There are 36 ways they can land. In how many of them does the program say go?" width=14 below=sl gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="ways(said=go)"
+  feedback {
+    when (answer == (a - 1) * (b - 1)) point=p {
+      say "That counts the go on line 5. Line 10 says go too, for the windy days."
+    }
+  }
+  hint "Which winds reach the first inner if, and which reach the second?"
+  hint "For the winds that reach the first inner if, how many snows say go? Multiply."
+  hint "Do the same for the second inner if, then add the two."
+}

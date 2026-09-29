@@ -1,0 +1,30 @@
+# Two dice make 36 equally likely pairs; a total is made by several of them. Counting the pairs is
+# the method, and the interpreter checks the count by running every pair.
+item coding.rand-ways v=1 skills=[coding.random, chance.likelihood, reasoning.all-the-ways] {
+  title "How many ways to make it?"
+  difficulty (6 - abs(t - 7))
+  let t=2..12
+  level easy {
+    let t={2, 3, 11, 12}
+  }
+  level hard {
+    let t={6, 7, 8}
+  }
+
+  scene 36x16 {
+    program p code=["set a to random 1 to 6", "set b to random 1 to 6", "set total to a + b"] at=canvas(1, 0)
+    die d1 face=2 right-of=p gap=2
+    die d2 face=5 right-of=d1 gap=1
+    text ask "The two random numbers can land in 36 ways, each as likely as the others. In how many of them is total {t}?" width=34 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="ways(value(total)={t})"
+  feedback {
+    when (answer == 1 and t > 2 and t < 12) point=p {
+      say "There is more than one pair. 1 and {t - 1} is one way; what else makes {t}?"
+    }
+  }
+  hint "Write the pairs that make {t}, a first and b second."
+  hint "A pair and the same pair swapped round count as two different ways."
+}

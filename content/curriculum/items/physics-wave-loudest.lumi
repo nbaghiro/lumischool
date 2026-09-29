@@ -1,0 +1,34 @@
+# The loudest of three: the tallest waves, because the thing vibrates furthest either way. The number
+# of waves changes too, to be ignored.
+item physics.wave-loudest v=1 skills=[physics.sound, reasoning.compare] {
+  title "The loudest sound"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+  let h1={pick(v, 3, 1, 2, 1)}
+  let h2={pick(v, 1, 2, 1, 3)}
+  let h3={pick(v, 2, 3, 3, 2)}
+  let w1={pick(v, 3, 8, 9, 9)}
+  let w2={pick(v, 6, 5, 7, 2)}
+  let w3={pick(v, 4, 3, 2, 5)}
+
+  scene 26x21 {
+    wave s waves=[w1, w2, w3] heights=[h1, h2, h3] across=10 letters=1 blank=-1 at=canvas(1, 0)
+    text ask "Which sound is loudest?" narrate width=12 below=s gap=1
+    choice pick options=["A", "B", "C"] stack=row right-of=ask gap=1
+  }
+
+  check physics.sound of=s pick=loudest
+  feedback {
+    when (pick == "A" and w1 > w2 and w1 > w3 and h1 < 3) point=s {
+      say "A has the most waves, which makes it the highest. Loudness is how tall the waves are."
+    }
+  }
+  hint "Which screen's waves reach furthest from the middle line?"
+  hint "Taller waves come from harder vibrations, which sound louder."
+}

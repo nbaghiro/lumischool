@@ -1,0 +1,37 @@
+# The way in: which step of the mill's card is written as a command. The others tell what happened
+# (I turned), describe (the gate is lifted), or suggest (you might want to).
+item writing.instr-command v=1 skills=[writing.instructions, writing.sentences] {
+  title "Which is a command?"
+  difficulty k
+  let k=0..2 r=0..2
+  let right={pick(k, "Turn the handle to lift the sluice gate.", "Check that nobody is near the wheel.", "Before you open the gate, oil the axle.")}
+  let w1={pick(k, "I turned the handle to lift the gate.", "Nobody was standing near the wheel.", "You might want to oil the axle first.")}
+  let w2={pick(k, "The gate is lifted by the handle.", "Somebody should maybe check the wheel.", "The axle needs oil before the gate opens.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 32x29 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      waterwheel wheel paddles=8 lit=0
+      kingfisher kf flying=0 facing=-1
+    }
+    text ask "The miller is writing a card of steps for the water wheel. Which one is written as a command?" narrate width=31 below=pics gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=ask {
+      say "That tells what somebody did or saw. A step on a card tells the reader what to do now."
+    }
+    when (pick == w2) point=ask {
+      say "That describes or suggests, so the reader has to work out what to do. A command, the imperative, starts from the verb or leads straight to it."
+    }
+  }
+  hint "Which sentence tells the reader to do something, right now?"
+  hint "Find the verb in each. Is anyone named before it as its subject, or does it speak straight to the reader?"
+}

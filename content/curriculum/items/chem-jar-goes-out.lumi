@@ -1,0 +1,40 @@
+# A candle under a jar goes out while the air still holds about 16 per cent oxygen, so it burns only
+# the 5 per cent between 21 and 16 (see .docs/chemistry.md, the sixth year). A tea light burns about
+# 3 g of wax an hour and each gram takes about 3.45 g of oxygen, some 2 ml of oxygen a second. The
+# unknown is the oxygen burned, the seconds, or the oxygen still in the jar when the flame dies.
+item chem.jar-goes-out v=1 skills=[chemistry.burning, percentages.of-amount] {
+  title "When the flame goes out"
+  difficulty (w * 2 + (if v == 1000 or v == 2000 then 0 else 1))
+  let w=0..2 v={1000, 2000, 1200, 3000}
+  let used={5 * v / 100}
+  let left={16 * v / 100}
+  let secs={used / 2}
+  let asks={pick(w, "How many millilitres of oxygen does the candle burn before it goes out?", "The flame burns about 2 ml of oxygen a second. For how many seconds does it burn?", "Ben says it went out because the oxygen was all used up. How many millilitres of oxygen are still in the jar when it goes out?")}
+  level easy {
+    let w=0..0 v={1000, 2000}
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 36x19 {
+    candle c start=10 burnt=2 lit=1 jar=1 at=canvas(1, 0)
+    text ask "In the research hut a grown-up puts a {v} ml jar over a tea light. Air is 21 per cent oxygen, and the flame goes out when the jar's air is down to 16 per cent. {asks}" narrate width=25 right-of=c gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(w, used, secs, left)
+  feedback {
+    when (answer == 21 * v / 100) point=c {
+      say "That is all the oxygen the jar started with. The flame stops before it reaches the last of it, at 16 per cent."
+    }
+    when (w == 1 and answer == used) point=c {
+      say "That is the oxygen burned, in millilitres. At 2 ml a second, how long does that take?"
+    }
+    when (w == 2 and answer == 0) point=c {
+      say "The flame dies while there is still oxygen in the air. Ben is wrong, and the 16 per cent tells you how much is left."
+    }
+  }
+  hint "{if w == 2 then \"What share of the air is still oxygen when the flame goes out?\" else \"The oxygen falls from 21 to 16 per cent of the air. What share of the jar is burned?\"}"
+  hint "{if w == 2 then \"Find that share of the jar.\" else \"Find 5 per cent of the jar, then use it.\"}"
+}

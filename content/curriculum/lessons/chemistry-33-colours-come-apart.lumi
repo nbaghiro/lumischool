@@ -1,7 +1,7 @@
 # Colours come apart: a dot of ink on paper, water climbing past it, and the colours the ink was mixed
 # from left standing at different heights, so two pens that look the same on the page do not look the
 # same on the strip.
-lesson chemistry-colours-come-apart v=1 format=teach grade=3 unit=4 subject=chemistry levels=[easy, medium, hard] {
+lesson chemistry-colours-come-apart v=1 format=teach grade=3 unit=7 subject=chemistry levels=[easy, medium, hard] {
   title "Colours come apart"
   goal "Read a paper strip where an ink has come apart, and say which pen drew a dot from the colours it left."
 

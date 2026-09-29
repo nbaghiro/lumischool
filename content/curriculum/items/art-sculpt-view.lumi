@@ -1,0 +1,39 @@
+# The missing view: one of a solid's three views waits under a question mark, with the solid drawn
+# beside them, and the child names what that view shows. Views as the drawing makes them: the ball
+# hides the column from above; the pyramid from above is a square in a square with its diagonals; the
+# stepped block from the left is a plain rectangle; the arch from above is a plain rectangle.
+item art.sculpt-view v=1 skills=[art.sculpture, art.looking, reasoning.visualise] {
+  title "The missing view"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3 r=0..1
+  let shape={pick(k, 0, 1, 2, 3)}
+  let ask={pick(k, 3, 3, 2, 1)}
+  let side={pick(k, "from above", "from above", "from the left", "from the front")}
+  let right={pick(k, "a round shape inside a square", "a square in a square, with its diagonals", "a plain rectangle", "two uprights under a flat top stone")}
+  let w1={pick(k, "a circle on a thin upright on a wide block", "a triangle on a wide rectangle", "an L shape, with a step", "a plain rectangle")}
+  let w2={pick(k, "a square with a small square inside", "a plain square", "a rectangle with a line across it", "a square with a circle inside")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x37 {
+    sculpture s mode=0 shape=shape ask=ask solid=1 kind=-1 names=1 at=canvas(1, 1)
+    text ask "Before carving a snow sculpture by the hut, the team draw it from three sides. The solid is drawn on the right. What does the view {side}, under the question mark, show?" narrate width=34 below=s gap=1
+    choice pick options=[pick(r, right, w1), pick(r, w1, right), w2] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=s {
+      say "{if k <= 1 then \"That is how it looks from the front. Imagine looking straight down on it from above.\" else if k == 2 then \"That is the front. From the left you look at the end of the block.\" else \"That is how the arch looks from the side. From the front you see through it.\"}"
+    }
+    when (pick == w2) point=s {
+      say "Picture yourself standing where that view is drawn from, and trace the outline you would see."
+    }
+  }
+  hint "Where would you stand to see the view {side}?"
+  hint "From there, which parts of the sculpture would you see, and which would hide behind others?"
+}

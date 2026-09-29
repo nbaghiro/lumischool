@@ -1,0 +1,38 @@
+# How many inputs catch the bug: the versions differ only between the two edges, and the child counts
+# that band rather than trying all twenty-one numbers. At hard, at least and more than differ at one
+# number only.
+item coding.test-count v=1 skills=[coding.testing, coding.debugging, reasoning.all-the-ways] {
+  title "How many tests would catch it?"
+  difficulty k
+  let k=0..2
+  let right={pick(k, "if rocks is more than 8", "if rocks is less than 6", "if rocks is at least 12")}
+  let typed={pick(k, "more than 11", "less than 10", "more than 12")}
+  let bugline={pick(k, "1: if rocks is more than 11", "1: if rocks is less than 10", "1: if rocks is more than 12")}
+  let n={pick(k, 3, 4, 1)}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x20 {
+    program p code=[right, "  say bag is full", "otherwise", "  say room for more"] text=true at=canvas(0, 0)
+    crater cr count=2 right-of=p gap=1
+    text ask "The moon rock bag's program is right, but a copy has rocks is {typed} in line 1. If every number of rocks from 0 to 20 is tried, how many of them would show the copy is wrong?" width=34 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.tests of=p input=rocks bug="{bugline}" try=0..20 answer=catching
+  answer n
+  feedback {
+    when (answer == n + 1) point=p {
+      say "Check the numbers on the edges. Do both versions give the same answer for one of them?"
+    }
+    when (answer == 21 - n) point=p {
+      say "That counts the numbers where the two versions agree. Which ones do they disagree on?"
+    }
+  }
+  hint "Try a number well below both edges and one well above. Do the versions agree there?"
+  hint "List the numbers where one version says yes and the other says no."
+}

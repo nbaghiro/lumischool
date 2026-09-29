@@ -1,0 +1,37 @@
+# More to share than people: the quotient is a mixed number, the whole ones first and the leftover
+# shared as a fraction. The unknown is now bigger than one.
+item quotient.pizzas v=1 skills=[fractions.division, fractions.mixed-numbers] {
+  title "More than one each"
+  difficulty b
+  let a=5..11 b=2..6
+  where (a > b and a % b != 0 and gcd(a, b) == 1)
+  level easy {
+    let b=2..3 a=5..7
+  }
+  level hard {
+    let b=5..6 a=7..11
+  }
+
+  scene 36x15 {
+    pizza pie slices=b taken=0 at=canvas(1, 1)
+    text ask "At the market {a} flat loaves are shared equally by {b} children. How much does each child get? Write it as a mixed number." narrate width=20 right-of=pie gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input whole width=2
+      number-input top width=2
+      text slash "/"
+      number-input bottom width=2
+    }
+  }
+
+  answer whole=(a // b) top=(a % b) bottom=b
+  feedback {
+    when (whole == 0 and top == b and bottom == a) point=ask {
+      say "That shares {b} loaves among {a} children. Here there are more loaves than children."
+    }
+    when (whole == a // b and top == 0) point=pie {
+      say "That gives out the whole loaves. {a % b} are left over to share too."
+    }
+  }
+  hint "How many whole loaves can each child have?"
+  hint "How many loaves are left over? What share of them does one child get?"
+}

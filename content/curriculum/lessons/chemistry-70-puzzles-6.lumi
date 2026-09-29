@@ -1,0 +1,75 @@
+lesson chemistry-puzzles-6 v=1 format=puzzles grade=6 unit=9 subject=chemistry levels=[easy, medium, hard] {
+  title "Chemistry puzzles: the sixth year"
+  goal "Work out densities, freezing points, gases, acids, hard water and burning from what is measured, and give the reason behind each."
+
+  puzzle stars=1 {
+    practice chem.stone-density count=1 seed=1
+  }
+  puzzle stars=1 {
+    practice chem.soda-for-vinegar count=1 seed=1 easy-seed=24 hard-seed=10 easy-level=medium
+  }
+  level easy medium {
+    puzzle stars=1 {
+      practice chem.salt-freeze-table count=1 seed=1 easy-seed=4
+    }
+  }
+  level easy medium {
+    puzzle stars=1 {
+      practice chem.hard-water-left count=1 seed=1 easy-seed=2 hard-seed=2
+    }
+  }
+  puzzle stars=2 {
+    practice chem.why-ice-floats count=1 seed=1
+  }
+  puzzle stars=2 {
+    practice chem.why-squash count=1 seed=1
+  }
+  puzzle stars=2 {
+    practice chem.why-drops count=1 seed=1
+  }
+  puzzle stars=2 {
+    practice chem.crew-breath count=1 seed=1
+  }
+  puzzle stars=3 {
+    practice chem.pour-brine count=1 seed=1 easy-seed=7
+  }
+  puzzle stars=3 {
+    practice chem.match-crowding count=1 seed=1 easy-seed=7 hard-seed=7
+  }
+  level hard {
+    puzzle stars=3 {
+      practice chem.leftover count=1 seed=1 easy-seed=7
+    }
+  }
+  level hard {
+    puzzle stars=3 {
+      practice chem.oxygen-tanks count=1 seed=1 hard-seed=7
+    }
+  }
+  level hard {
+    puzzle stars=3 {
+      show chem.ph-ten-times k=2
+    }
+  }
+
+  grown-ups """
+    Let the child try each one alone first, at the table or in the ice shelf's hut, the gorge or
+    the moon base; the hints and answers are on this sheet, not on theirs. Every puzzle starts by
+    reading the picture closely: the cylinder's two readings, the jug's level, the table's rows.
+    The one-star puzzles come from density, neutralising, salt and freezing, and hard water. The
+    two-star puzzles each need a reason: why ice floats or a bottle splits, what the particles of a
+    squashed or cooled gas are doing, why an alkali goes in a little at a time, and where the
+    astronauts' extra grams of carbon dioxide come from. The three-star puzzles are the ones to
+    leave for a quiet moment: two salty jugs poured together, a syringe pushed until it is as
+    crowded as another, and at the hardest level the soda or the vinegar that runs out first and
+    the fewest tanks of oxygen for a stay on the moon, and how many times more acid rain at pH 3.6
+    is than normal rain. Ask for the reason as well as the answer, and let a puzzle left unsolved
+    today wait for another day rather than be told.
+    """
+  level easy {
+    grown-ups "At this level the puzzles are the plainer versions each lesson asks at its easier level, and the vinegar that runs out and the oxygen tanks are left for another day."
+  }
+  level hard {
+    grown-ups "At this level there are two one-star puzzles and four three-star puzzles, with the vinegar that runs out and the fewest tanks of oxygen, and every puzzle is drawn from the harder versions its lesson asks."
+  }
+}

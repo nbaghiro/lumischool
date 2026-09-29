@@ -1,0 +1,62 @@
+lesson physics-the-compass-and-the-pole-star v=1 format=teach grade=5 unit=4 subject=physics levels=[easy, medium, hard] {
+  title "The compass, the Earth's magnetism and the pole star"
+  goal "Find north with a compass and with the pole star, and work out how the sky turns round the pole star through a night."
+
+  look {
+    scene 30x19 {
+      row all at=canvas(1, 0) space=2 align=centre {
+        starmap s sky=13 clock=21 looks=1 pointers=1 names=1
+        compass c needle=0
+      }
+    }
+    say """
+      A compass needle is a small magnet. It turns to point north because the whole Earth acts as a
+      huge magnet. At night the pole star shows north too: follow the two pointer stars at the end
+      of the Plough. As the Earth spins, the sky seems to turn round the pole star, 15 degrees every
+      hour and anticlockwise as you face north, while the pole star itself stays put.
+      """
+  }
+  do {
+    practice physics.pole-star-door count=1 seed=1
+    practice physics.compass-deflect count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.electro-poles count=1 seed=1 easy-seed=2 hard-seed=3 hard-count=2
+    level easy {
+      worked physics.sky-turned n=2 e=4 level=medium
+    }
+    practice physics.sky-turned count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.plough-later count=1 seed=1
+    practice physics.star-trail-hours count=1 seed=1 easy-seed=2 hard-seed=3
+  }
+  story {
+    show physics.pole-star-latitude L=60 h=45 easy-h=50 hard-L=65 hard-h=40
+  }
+  try stars=2 {
+    show physics.earth-magnet-pole
+  }
+  try stars=3 {
+    show physics.plough-hours-to i=2 j=0 easy-i=0 easy-j=1 hard-i=1 hard-j=0
+  }
+  remember {
+    say "A compass needle is a magnet that points north, and the sky turns round the pole star 15 degrees an hour."
+  }
+
+  grown-ups """
+    Two ways of finding north meet here: the compass, which works because the Earth acts as a
+    magnet, and the pole star, which stays still while the sky turns round it. The common wrong idea
+    is that the compass points at the pole star, or that the pole in the far north must be a north
+    pole; the two-star question works it out from like and unlike poles, and a real compass's north
+    end is pulled towards what is, magnetically, a south pole. Watch the turning questions for a
+    child who turns the Plough clockwise; stand facing north together and trace the arrow in the air.
+    If the degrees get in the way, count quarter turns of six hours first. Off the page, on a clear
+    night find the Plough and its pointers, and look again two hours later. The lesson meets China's
+    standard for grades 5 and 6, 科学课程标准 2022 9.5 ⑥, "学会利用北极星辨认方向" (use the pole
+    star to find direction), and 3-4 3.2 ⑥, "知道地球有磁场" (know that the Earth has a magnetic
+    field).
+    """
+  level easy {
+    grown-ups "At this level the needle's north end is asked about, the electromagnet has one cell, a worked example finds a turn, the star trails are short, the navigator is 10 degrees south, and the three-star turn is a quarter turn."
+  }
+  level hard {
+    grown-ups "At this level the needle's south end is asked about, the electromagnet has two cells and is asked twice, the sky is drawn four times, the trails are long, the navigator is 25 degrees south, and the three-star turn is three quarters of the way round."
+  }
+}

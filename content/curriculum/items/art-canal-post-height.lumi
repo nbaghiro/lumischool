@@ -1,0 +1,37 @@
+# Size falls as distance grows: twice as far is drawn half as tall. The unknown moves at hard, where
+# the far post is given and the near one is asked.
+item art.canal-post-height v=1 skills=[art.perspective, reasoning.multiplicative] {
+  title "Posts further along"
+  difficulty (m + 2 * q)
+  let h={6, 12} m={2, 3} a={10, 20} q={0}
+  let d1={if q == 0 then a else a * m}
+  let s1={if q == 0 then h else h / m}
+  let d2={if q == 0 then a * m else a}
+  level easy {
+    let m={2} q={0}
+  }
+  level hard {
+    let m={3} q={1}
+  }
+
+  scene 36x12 {
+    perspective canal horizon=4 vp=8 posts=4 at=canvas(1, 1)
+    text ask "In Ada's drawing, a mooring post {d1} metres away is {s1} squares tall. How tall should she draw the same size of post {d2} metres away?" width=18 right-of=canal gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if q == 0 then h / m else h)
+  feedback {
+    when (q == 0 and answer == h) point=canal {
+      say "The same size of post, further along, is drawn smaller. Look at the posts in the picture."
+    }
+    when (q == 0 and answer == h * m) point=canal {
+      say "Further away looks smaller, not bigger. The post is {m} times as far away."
+    }
+    when (q == 1 and answer == h / m / m) point=canal {
+      say "The second post is nearer than the first, so it is drawn taller, not shorter."
+    }
+  }
+  hint "How many times as far away is the second post as the first?"
+  hint "Each time the distance is multiplied, the height it is drawn is divided by the same number. Which way is this post going: nearer or further?"
+}

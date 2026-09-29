@@ -1,0 +1,66 @@
+lesson g5-tests-of-divisibility v=1 format=teach grade=5 unit=4 subject=maths levels=[easy, medium, hard] {
+  title "Tests of divisibility, and odd and even"
+  goal "Tell without dividing whether a whole number is in the 2, 5, 10, 3 or 9 times table."
+
+  look {
+    scene 36x14 {
+      hundred square from=1 to=50 start=0 add=0 at=canvas(1, 1)
+      observatory dome open=1 right-of=square gap=3
+    }
+    say """
+      Every whole number is even or odd, and the ones digit decides which: the tens, hundreds and
+      thousands are always even. On the hundred square the ten times table is one column, ending in
+      0, and the five times table two columns, ending in 0 or 5. For 3 and for 9 the last digit is no
+      help, so add the digits: 4,518 has a digit sum of 4 + 5 + 1 + 8 = 18, which is in both tables,
+      so 4,518 is too. It works because 10 is 9 + 1 and 100 is 99 + 1.
+      """
+  }
+  do {
+    show divisible.odd-even a=7 b=2 c=0 d=6 easy-a=4 easy-b=1 easy-c=4 easy-d=9 hard-a=3 hard-b=8 hard-c=5 hard-d=0
+    show divisible.count-table k=5 easy-k=10 hard-k=2
+    level easy {
+      worked divisible.digit-sum k=3 a=2 b=4 c=7 d=5 level=medium
+    }
+    practice divisible.digit-sum count=1 seed=4 hard-seed=12
+    show divisible.tree-tests n=90 easy-n=60 hard-n=126
+    practice divisible.missing-digit count=1 seed=5 hard-count=2 hard-seed=13
+    practice divisible.why-nine count=1 seed=6
+    practice divisible.largest-five count=1 seed=7
+    level medium hard {
+      practice divisible.digit-sum count=1 seed=9
+    }
+    level easy {
+      practice divisible.odd-even count=1 seed=8
+    }
+  }
+  try stars=2 {
+    practice divisible.to-six count=1 seed=5
+  }
+  try stars=3 {
+    show divisible.card-numbers t=0 easy-t=1 hard-t=2
+  }
+  remember {
+    say "The ones digit tests for 2, 5 and 10. The digit sum tests for 3 and 9."
+  }
+
+  grown-ups """
+    Two kinds of test are the idea: the last digit for 2, 5 and 10, because ten is in all three
+    tables, and the digit sum for 3 and 9. The common slip is using the wrong kind, deciding that
+    4,516 is in the three times table because 6 is, or that a number is odd because its first digit
+    is. Ask each time which test fits the number being tested. The why-nine question on the board is
+    the reason the digit sum works: 234 is 2 × 99 and 3 × 9, which are nines already, and 2 + 3 + 4
+    left over. The factor tree shows which tests pass from the primes: 10 needs a 2 and a 5, 9 needs
+    two 3s. In the two-star question six needs both tests at once, even and a digit sum in the three
+    times table. In the three-star question only which three cards are used matters, and each set of
+    three makes six numbers. If the tests still get mixed up, stay here another day with the hundred
+    square. Off the page, test the numbers on car number plates on a walk. This lesson meets Russia's
+    grade 5 programme, «Признаки делимости на 2, 5, 10, 3, 9», and China's 2022 standard for grades 5
+    and 6, 数与代数 1(1), 「知道2，3，5的倍数的特征……了解奇数、偶数」.
+    """
+  level easy {
+    grown-ups "At this level the list is tested for 10, the digit sum of 2,475 is worked once in the teacher's pen, the digit sums test for 3, the factor tree is of 60, the missing digit makes a number in the three times table, the remainders come from digit sums under 14, the cards to arrange stop at 6, even and odd is asked twice, the two-star needs 2 or 3 more nights, and the three-star cards are 3, 6, 9 and 1."
+  }
+  level hard {
+    grown-ups "At this level the list is tested for 2, the digit sums test for 9, the factor tree is of 126, the missing digit is asked twice and makes a number in the nine times table, the remainders come from digit sums over 17, the cards reach 8 and 9, the two-star needs 4 or 5 more nights, and the three-star tests the cards 1, 2, 6 and 7 for 9."
+  }
+}

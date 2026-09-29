@@ -1,0 +1,33 @@
+# The story: flasks of hot tea wrapped for a sledge trip, cooling at the rate each wrap allows; the
+# warmest is the one whose wrap traps air best, and the reading is the start less what it lost.
+item physics.hut-flask v=1 skills=[physics.heat, physics.materials, physics.measuring] {
+  title "Tea for the trip"
+  difficulty (if m == 20 then 0 else 1)
+  let m={20, 30, 40} o=0..2
+  level easy {
+    let m={20}
+  }
+  level hard {
+    let m={40}
+  }
+
+  scene 34x21 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      wrapped w wraps=[pick(o, "wool", "none", "foil"), pick(o, "none", "wool", "none"), pick(o, "foil", "foil", "wool")] start=80 minutes=m show=1 room=20
+      puffins p count=2 facing=-1
+    }
+    text ask "The scientists wrap three cups of tea at 80 °C for {m} minutes. Which cup kept warmest, and how many degrees has it cooled?" narrate width=32 below=kit gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+    number-input cooled right-of=pick gap=2
+  }
+
+  answer cooled=(m / 2)
+  check physics.forces of=w pick=warmest
+  feedback {
+    when (cooled == 80 - m / 2) point=w {
+      say "That is the reading. How far has it dropped from 80 °C?"
+    }
+  }
+  hint "Which wrap traps the most still air round its cup, the way a puffin's feathers do?"
+  hint "Take the cup's reading away from 80 °C."
+}

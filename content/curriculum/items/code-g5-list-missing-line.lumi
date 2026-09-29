@@ -1,0 +1,25 @@
+# Two-star: which line makes the list come out as drawn. Each option does something different, and
+# line 3 runs after it, so the child reasons about order and about add against replace.
+item coding.list-missing-line v=1 stars=2 skills=[coding.lists, reasoning.compare] {
+  title "The missing line"
+  difficulty (k + (if a > 3 then 0.4 else 0))
+  let k=0..2 a={3, 5} c={2, 9}
+  let line={pick(k, "add 6 to cargo", "replace item 2 of cargo with 6", "replace item 1 of cargo with 6")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x26 {
+    program p code=["set cargo to list {a}, 8", "", "add {c} to cargo"] blank=2 at=canvas(1, 0)
+    text ask "Line 2 is missing. When the program ends, cargo is the list drawn. Which line goes in the gap?" width=15 right-of=p gap=1
+    listbox l name=cargo code=["set cargo to list {a}, 8", "{line}", "add {c} to cargo"] below=p gap=1
+    choice pick options=["add 6 to cargo", "replace item 2 of cargo with 6", "replace item 1 of cargo with 6"] stack=column below=l gap=1
+  }
+
+  answer pick=line
+  hint "Try each line in the gap, then run line 3 after it."
+  hint "Does the list get longer? Where does 6 end up in it?"
+}

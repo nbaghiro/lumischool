@@ -1,0 +1,37 @@
+# Salt speeds rusting: steel left out loses about 20 thousandths of a millimetre a year inland, 40 in
+# a town and 160 in salt spray by the sea, figures inside the ISO 9223 bands for carbon steel's first
+# year (C2 up to 25, C3 25 to 50, C5 80 to 200). The unknown is how many times as fast, or the years
+# to lose a thickness.
+item chem.rust-rate v=1 skills=[chemistry.rusting, data.tables] {
+  title "Rust by the sea"
+  difficulty (w * 2 + (if p == 0 then 0 else 1))
+  let w=0..1 p=0..1
+  let slow={pick(p, 40, 20)}
+  let place={pick(p, "the canal town", "the hill farm")}
+  let years={800 / slow}
+  let asks={if w == 0 then "How many times as fast does the steel rust at the harbour as at " else "A thin steel sign, 800 thousandths of a millimetre thick, has lost its paint on one side. How many years until it rusts through at "}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 35x25 {
+    table data cols=2 head=["Where the steel is", "Lost in a year"] cells=["the hill farm", "20", "the canal town", "40", "the harbour", "160"] at=canvas(1, 0)
+    text ask "The table gives how much of a steel strap rusts away from its surface in a year, in thousandths of a millimetre. The harbour's air carries salt spray. {asks}{place}?" narrate width=34 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then 160 / slow else years)
+  feedback {
+    when (w == 0 and answer == 160 - slow) point=data {
+      say "That is how many more thousandths it loses. The question asks how many times as much."
+    }
+    when (w == 1 and answer == 800 / 160) point=data {
+      say "That is at the harbour. The strap is at {place}, where the air holds less salt."
+    }
+  }
+  hint "{if w == 0 then \"Read the two rows. How many lots of the smaller fit into the bigger?\" else \"Read the row for that place. How much goes in one year?\"}"
+  hint "{if w == 0 then \"Salt makes rust come faster. By how many times, here?\" else \"How many of those years make up 800?\"}"
+}

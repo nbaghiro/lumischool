@@ -1,0 +1,35 @@
+# The hut's notice, with a root word on nearly every line. The answers are the line breaks of the
+# notice at width 34 (65 letters to a line), so the text and the width stay as they are.
+item reading.root-line v=1 skills=[reading.morphology, reading.evidence] {
+  title "Which line has the word?"
+  difficulty pick(q, 0, 1, 0, 1, 2)
+  let q=0..4
+  level easy {
+    let q={0, 2}
+  }
+  level hard {
+    let q={3, 4}
+  }
+
+  scene 35x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p title="Notice in the hut" text="Read the thermometer by the door before you go out. If the ice cracks, radio the base; the microphone is under the desk. Do not move the telescope, which is set on the whale bay. Photographs of the puffins go in the blue folder, and portable stoves stay outside the hut." width=34
+      row bottom space=1 align=centre {
+        text ask "{pick(q, \"Which line names a tool for measuring heat?\", \"Which line names a tool that picks up small sounds?\", \"Which line names a tool for looking at far things?\", \"Which line has a word for pictures made with light?\", \"Which line has a word that means able to be carried?\")}" width=29
+        number-input answer
+      }
+    }
+  }
+
+  answer pick(q, 1, 2, 3, 3, 4)
+  feedback {
+    when (q == 1 and answer == 3) point=p {
+      say "Tele means far. Which word has micro, small, in it?"
+    }
+    when (q == 3 and answer == 4) point=p {
+      say "That line is about puffins and stoves. Which word has photo, light, in it?"
+    }
+  }
+  hint "Which root would the word have in it? Look for those letters."
+  hint "Check that the word's other part fits the question too."
+}

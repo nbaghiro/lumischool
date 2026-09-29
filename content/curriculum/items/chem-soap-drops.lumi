@@ -1,0 +1,35 @@
+# Mei's soap test: drops of soap solution shaken into 10 ml of each water until a lather lasts. Hard
+# water uses soap up as scum, so it needs more drops; boiling takes out some of the hardness, the
+# part that comes out as limescale. The drop counts are her readings, which the question calls hers,
+# since no published table counts drops of soap.
+item chem.soap-drops v=1 skills=[chemistry.hard-water, data.tables, reasoning.evidence] {
+  title "Drops of soap"
+  difficulty w
+  let w=0..2 r=0..1
+  let a={pick(r, 3, 2)}
+  let b={pick(r, 9, 8)}
+  let c={pick(r, 22, 20)}
+  let d={pick(r, 12, 14)}
+  let first={pick(w, "Find the rain barrel and the stream in the table.", "Find the rain barrel and the mill's well in the table.", "Find the two rows for the mill's well.")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 35x24 {
+    table data cols=2 head=["Water, 10 ml", "Drops for a lather"] cells=["rain barrel", a, "stream", b, "mill's well", c, "mill's well, boiled", d] at=canvas(1, 0)
+    text ask "Mei shakes drops of soap solution into 10 ml of each water until a lather lasts, and the table shows her readings. Hard water turns soap to scum, so it takes more drops. {if w == 0 then \"How many more drops did the stream water take than the rain water?\" else if w == 1 then \"How many more drops did the well water take than the rain water?\" else \"How many fewer drops did the well water take after it was boiled?\"}" narrate width=34 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then b - a else if w == 1 then c - a else c - d)
+  feedback {
+    when (answer == pick(w, b, c, d)) point=data {
+      say "That is one water's drops. The question asks how far apart the two are."
+    }
+  }
+  hint "{first}"
+  hint "Read both numbers. How far apart are they?"
+}

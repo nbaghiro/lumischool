@@ -1,0 +1,45 @@
+# Registration: every block must land in the same place on the sheet, or the colours slip apart; with
+# a third block the order runs from the lightest ink to the darkest.
+item art.print-register v=1 skills=[art.printing, reasoning.explain] {
+  title "Lining up the blocks"
+  difficulty k
+  let k=0..2
+  let r={(k + 1) % 3}
+  let asks={pick(k, "Ada cuts her yellow block and her blue block the same size, and sets each one in the same corner of the press every time. Why?", "On one poster Ada sets the blue block two squares too far to the right. What does she see on that poster?", "Ada adds a third block, so her posters are printed in yellow, red and dark blue. In which order should the blocks go?")}
+  let right={pick(k, "So each colour lands in the same place on the sheet", "Blue lines slid off the yellow shapes", "Yellow, then red, then dark blue")}
+  let w1={pick(k, "So the lighter colour is printed first", "A green fish, because the two inks mix", "Dark blue, then red, then yellow")}
+  let w2={pick(k, "So the ink dries faster", "The whole picture turned over", "Red, then yellow, then dark blue")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x21 {
+    stamps block motif="fish" show="both" colour=blue flip=false made="print" at=canvas(1, 1)
+    text ask "{asks}" width=17 right-of=block gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=block gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == w1) point=block {
+      say "The order is chosen by the ink, not by where the block sits. What goes wrong if the second block sits a little to one side?"
+    }
+    when (k == 1 and pick == w1) point=block {
+      say "The inks still overlap and mix, but the blue has moved. Where do its lines land now, and what is left behind?"
+    }
+    when (k == 2 and pick != right) point=block {
+      say "Each ink is thin and lies over the one before. Which ink could cover the others, and which would hardly show on top?"
+    }
+    when (k == 0 and pick == w2) point=block {
+      say "Where a block sits does not change how its ink dries. What does it change on the sheet?"
+    }
+    when (k == 1 and pick == w2) point=block {
+      say "That is a block carved the wrong way. Here both blocks are carved right, and only where one sits has changed."
+    }
+  }
+  hint "Each colour is printed from its own block, one after another, on the same sheet."
+  hint "What would happen to the picture if one block landed somewhere slightly different from the other?"
+}

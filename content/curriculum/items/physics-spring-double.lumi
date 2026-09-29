@@ -1,0 +1,28 @@
+# Two stars: twice the load gives twice the stretch, not twice the length, because the spring's own
+# length does not grow. q picks the spring, w the load drawn.
+item physics.spring-double v=1 stars=2 skills=[physics.forces, reasoning.explain] {
+  title "Twice the load"
+  difficulty (if q == 0 then 0 else 1)
+  let q=0..2 w={2, 3}
+  level hard {
+    let q={1, 2}
+  }
+  let per={pick(q, 2, 1, 1.5)}
+  let nat={pick(q, 4, 6, 5)}
+  let l2={nat + 2 * per * w}
+
+  scene 36x18 {
+    spring s load=w per=per limit=10 natural=nat from=1 at=canvas(1, 0)
+    text ask "Leo says that with twice this load the spring will be twice as long. This ruler's 0 is at the hook. How long will the spring really be with {2 * w} N on it?" narrate width=22 right-of=s gap=1
+    number-input cm below=ask gap=1
+  }
+
+  check physics.forces of=s cm="length({2 * w})"
+  feedback {
+    when (cm == 2 * (nat + per * w)) point=s {
+      say "That doubles the spring's own length too. Only the stretch doubles. How long is it with nothing on?"
+    }
+  }
+  hint "How long is the spring with nothing on it, and how much is stretch?"
+  hint "Which part doubles when the load doubles?"
+}

@@ -1,0 +1,68 @@
+# How a character changes across a story, read from what she does and says at the start, the middle
+# and the end, with the lines that prove it. The clock-keeper's apprentice was written for the
+# lesson.
+lesson reading-how-a-character-changes v=1 format=teach grade=5 unit=8 subject=reading levels=[easy, medium, hard] {
+  title "How a character changes"
+  goal "Say how a character changes across a story and what changes them, and point to the lines that prove it."
+
+  look {
+    scene 33x17 {
+      row all at=canvas(1, 1) space=2 align=end {
+        clocktower tower hour=12 minute=0
+        person iris pose=stand age=child hair=bun top=berry tone=3 dir=-1
+        citywalls walls towers=2 open=1
+      }
+    }
+    say """
+      The clock-keeper's apprentice is a story in three parts, set in the clock tower of the old
+      city. Iris is sent to help the clock-keeper for the summer, and by the end she is not the same
+      girl. A writer seldom says a character has changed. They show it: in what the character does,
+      says and thinks at the start, then the same kind of thing done differently at the end. Between
+      the two there is always something that made the change happen.
+      """
+  }
+  do {
+    level easy {
+      worked reading.feels-when k=1
+    }
+    show reading.feels-when k=0
+    practice reading.change-line count=2 seed=1 easy-seed=1 hard-seed=1
+    show reading.feels-when k=1 easy-k=2
+    practice reading.feelings-order count=1 seed=1 easy-seed=1 hard-seed=1
+    show reading.what-changed-her k=0 hard-k=1
+    practice reading.start-and-end count=2 seed=1 easy-seed=1 hard-count=1 hard-seed=1
+    level hard {
+      show reading.change-line q=3
+      show reading.feels-when k=2
+    }
+  }
+  try stars=2 {
+    show reading.not-changed k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show reading.how-changed k=0 hard-k=1
+  }
+  remember {
+    say "A change is shown, not told. Find what the character does at the start and what they do at the end, and what happened between."
+  }
+
+  grown-ups """
+    The idea is that a character's change is read from what they do, say and think, compared at the
+    start and the end, and that something in the middle causes it. The way in reads Iris's feeling
+    in each part and checks it against a face. The core finds the line that proves each feeling,
+    puts the feelings in story order, names what changed her (the stopped clock that only she could
+    reach), and matches something at the start with its opposite at the end. The wrong idea to watch
+    for is naming the feeling without the proof; after every answer ask "which words show it?" The
+    three parts run to about 125 words each, so the lines to find sit among others that are close.
+    At hard, Mr Tamas changes too, which the child has to notice without being told. The two-star
+    question is a friend who says Iris has not changed, and the three-star question writes the
+    change with a quotation from each end, marked by eye. Off the page, talk about a character in a
+    film who changes, and find the scene where it happens.
+    """
+  level easy {
+    grown-ups "At this level the middle part's feeling is worked once in the teacher's pen before the first part's and the last part's, the lines to find state the feeling outright, the feelings to order start with the kicked step, the start and end to match are the slow climb and Mr Tamas's key, the two-star friend says she was at the tower both times, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the lines to find include the first sign that Mr Tamas sees Iris in a new way and that Iris was brave though scared, the feelings to order are in a new muddle, the cause to name is what changed Mr Tamas, the start and end to match is the brass Iris now polishes, the two-star friend says Iris went from brave to scared, and the three-star is about Mr Tamas."
+  }
+}

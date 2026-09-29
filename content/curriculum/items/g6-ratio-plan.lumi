@@ -1,0 +1,32 @@
+# A scale written as a ratio, 1 : n: every length on the paper is n times as long in real life, and
+# the centimetres are turned into metres at the end. The plan's squares are 1 cm, so its scale bar
+# says n / 100 m a square and agrees with 1 : n.
+item scale.ratio-plan v=1 skills=[scale.drawings, ratio.scaling, measure.convert] {
+  title "A scale of 1 to n"
+  difficulty ((if n == 500 then 2 else if n == 200 then 1 else 0) + c / 10)
+  let n={100, 200, 500} c={3, 4, 6, 7}
+  level easy {
+    let n={100} c={3, 4}
+  }
+  level hard {
+    let n={200, 500} c={6, 7}
+  }
+
+  scene 28x23 {
+    scaleplan p plan=1 l=8 w=5 scale=(n / 100) unit="m" dims=0 ask=0 at=canvas(1, 1)
+    text ask "A printed copy of the base plan says its scale is 1 : {n}, and each square on the copy is 1 cm across. On the copy, the corridor is {c} cm long. How long is the real corridor, in metres?" narrate width=11 right-of=p gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (c * n / 100)
+  feedback {
+    when (answer == c * n) point=ask {
+      say "That is the length in centimetres. How many centimetres make a metre?"
+    }
+    when (n != 100 and answer == c * 100 / n) point=ask {
+      say "The real corridor is longer than the drawing, {n} times as long."
+    }
+  }
+  hint "What does 1 : {n} say about a length on the paper and the real length?"
+  hint "How many centimetres long is the real corridor? How many metres is that?"
+}

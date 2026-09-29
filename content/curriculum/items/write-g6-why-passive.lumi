@@ -1,0 +1,36 @@
+# Why a writer chose the passive: nobody knows who did it, who did it does not matter in a report,
+# or the sentence is about the thing, so the thing is its subject. The three reasons stay in one
+# order and none names the thing in the sentence, so the choice rests on reading where the doer is.
+item writing.why-passive v=1 skills=[writing.passive, reasoning.explain] {
+  title "Why the passive?"
+  difficulty k
+  let k=0..2
+  let s={pick(k, "Our flag was taken from the hut in the night.", "The samples were taken at noon and kept cold.", "The hut, the oldest on the ice, was built in 1952 by a team from Norway.")}
+  let right={pick(k, "Nobody knows who did it.", "Who did it does not matter here.", "The thing it is about is the subject.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 33x32 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      hut h pictures=6
+      icecliff ice height=1 floes=1
+    }
+    passage p title="From the hut" text="{s}" width=32 numbers=false below=pics gap=1
+    text ask "Why is the passive a good choice for this sentence?" narrate width=32 below=p gap=1
+    choice pick options=["Nobody knows who did it.", "Who did it does not matter here.", "The thing it is about is the subject."] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "Look at the doer. Is it missing because nobody knows, missing because nobody needs to know, or there at the end because the sentence is about something else?"
+    }
+  }
+  hint "Is the doer named? If not, could anyone have known who it was?"
+  hint "What is the sentence mostly about: the one who did it, or the thing it was done to?"
+  hint "If the doer is named after by, the writer knew who did it. Why put the thing first, then?"
+}

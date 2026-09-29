@@ -1,0 +1,34 @@
+# Counting what overlapping thin inks give: two make three colours of ink on the page, three that
+# all overlap make seven, as the parts of three overlapping circles do.
+item art.print-ink-colours v=1 skills=[art.printing, art.colour-mixing, reasoning.all-the-ways] {
+  title "How many colours from two inks?"
+  difficulty n
+  let n={2, 3}
+  let inks={pick(n - 2, "yellow and blue", "yellow, red and blue")}
+  let more={pick(n - 2, "", ", and all of them overlap in one place")}
+  let pairs={pick(n - 2, "Draw two overlapping circles. How many separate parts do they make?", "Count each pair of inks that overlap. Is there also a place where every ink lies together?")}
+  level easy {
+    let n={2}
+  }
+  level hard {
+    let n={3}
+  }
+
+  scene 36x15 {
+    text ask "Ada prints in thin {inks}. Every ink overlaps every other one somewhere{more}. Counting each mix as a colour, how many different colours of ink show on the print?" width=34 at=canvas(1, 1)
+    paintpots pots pots=["yellow", "red", "blue"] result="empty" labels=true below=ask gap=1
+    number-input answer right-of=pots gap=2
+  }
+
+  answer (if n == 2 then 3 else 7)
+  feedback {
+    when (answer == n) point=pots {
+      say "Those are the inks on their own. Where two overlap they make a new colour too."
+    }
+    when (n == 3 and answer == 6) point=pots {
+      say "There is also the place where all three lie on top of one another."
+    }
+  }
+  hint "Start with each ink on its own. Then where does each pair overlap?"
+  hint "{pairs}"
+}

@@ -1,0 +1,38 @@
+# A Chinese paper cut is folded before it is cut, so one cut makes every copy: each fold in half
+# doubles the layers, and each layer gives one copy. 4 copies is 2 folds, 8 is 3, one more fold on 8
+# makes 16, and 32 copies need 5 folds.
+item art.folk-folds v=1 skills=[art.pattern, art.symmetry, reasoning.multiplicative] {
+  title "Folded before it is cut"
+  difficulty (if f <= 1 then 0 else 1)
+  let f=0..3
+  let n={pick(f, 4, 8, 8, 4)}
+  let ask={pick(f, "How many times was the paper folded in half before she cut it?", "How many times was the paper folded in half before she cut it?", "If she folds the paper in half once more before cutting, how many copies will the flower have?", "For a big lantern she wants a flower with 32 copies. How many times must she fold the paper in half?")}
+  let right={pick(f, 2, 3, 16, 5)}
+  level easy {
+    let f=0..1
+  }
+  level hard {
+    let f=2..3
+  }
+
+  scene 36x27 {
+    radial cut repeats=n motif="leaf" missing=-1 colour=red at=canvas(1, 1)
+    text ask "In China paper cuts decorate windows at festivals, and cutters fold the paper before cutting so that one cut makes every copy. Each fold in half doubles the layers, and every layer gives one copy. This window flower has {n} copies. {ask}" narrate width=34 below=cut gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (f == 1 and answer == 4) point=cut {
+      say "Four folds would make 16 layers. Count the layers fold by fold: 2, then 4, then how many?"
+    }
+    when (f == 2 and answer == n + 1) point=cut {
+      say "A fold doubles the layers. It does not add one."
+    }
+    when (f == 3 and answer == 4) point=ask {
+      say "Four folds make 16 copies. Is that enough?"
+    }
+  }
+  hint "How many layers does the paper have after one fold? After two?"
+  hint "Keep doubling from 1 and count how many doublings you make."
+}

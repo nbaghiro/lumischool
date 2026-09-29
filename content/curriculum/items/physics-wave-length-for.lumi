@@ -1,0 +1,32 @@
+# Three stars: for one band, the vibrations a second go down as the length goes up, so length times
+# hertz stays the same, and the length for a new note is that product over its hertz.
+item physics.wave-length-for v=1 stars=3 skills=[physics.sound, reasoning.proportion, reasoning.work-backwards] {
+  title "Where does the bridge go?"
+  difficulty v
+  let v=0..3
+  level easy {
+    let v={0}
+  }
+  level hard {
+    let v={2, 3}
+  }
+  let l={pick(v, 12, 12, 12, 10)}
+  let f={pick(v, 200, 200, 300, 300)}
+  let g={pick(v, 400, 300, 400, 500)}
+
+  scene 30x16 {
+    bands b lengths=[l] thick=[2] pluck=0 loud=1 letters=0 at=canvas(1, 0)
+    text ask "The shaking part of this band is {l} cm long and it makes {f} Hz. For the same band, twice the length gives half the hertz. How long must the shaking part be to make {g} Hz?" narrate width=28 below=b gap=1
+    number-input answer below=ask gap=1
+    text unit "cm" right-of=answer gap=1
+  }
+
+  answer (l * f / g)
+  feedback {
+    when (answer == l * g / f) point=b {
+      say "A higher note needs a shorter band, not a longer one."
+    }
+  }
+  hint "Is {g} Hz higher or lower than {f} Hz? Will the band get shorter or longer?"
+  hint "What is {l} times {f}? That stays the same whatever the length."
+}

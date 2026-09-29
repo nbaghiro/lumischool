@@ -1,0 +1,33 @@
+# The story: in 1971 David Scott dropped a hammer and a falcon feather on the moon. From a height h
+# they fall 0.8 m times the seconds times the seconds, and both land at the same moment.
+item physics.moondrop-scott v=1 skills=[physics.forces, physics.motion, reasoning.work-backwards] {
+  title "The hammer and the feather"
+  difficulty (if h == 3.2 then 0 else 1)
+  let h={3.2, 7.2}
+  level easy {
+    let h={3.2}
+  }
+  level hard {
+    let h={7.2}
+  }
+
+  scene 34x29 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      falling f things=["hammer", "feather"] time=1 show=1 names=1 air=0
+      earth e up=2
+    }
+    text ask "In 1971 the astronaut David Scott dropped a hammer and a falcon feather side by side on the moon, and they landed together. Things there fall 0.8 m times the seconds times the seconds. Had he let go from {h} m up, after how many seconds would the hammer land?" narrate width=32 below=kit gap=1
+    number-input hammer below=ask gap=1
+    text then "And the feather?" narrate width=10 right-of=hammer gap=2
+    number-input feather right-of=then gap=1
+  }
+
+  answer hammer=plain(if h == 3.2 then 2 else 3) feather=plain(if h == 3.2 then 2 else 3)
+  feedback {
+    when (feather > hammer) point=f {
+      say "Look at the drawing: are the hammer and the feather at the same height as they fall?"
+    }
+  }
+  hint "Which number of seconds, times itself and then times 0.8 m, makes {h} m?"
+  hint "Does anything on the moon slow the feather down?"
+}

@@ -1,0 +1,67 @@
+# The passive as a choice: the active's object becomes the subject, was or were with a verb, the doer
+# after by or left out, and used where the doer is unknown, does not matter, or is not the point.
+lesson writing-the-passive v=1 format=teach grade=6 unit=3 subject=writing levels=[easy, medium, hard] {
+  title "The passive, and when to use it"
+  goal "Turn a sentence into the passive and choose it when the doer is unknown, does not matter or is not the point."
+
+  look {
+    scene 34x21 {
+      row pics at=canvas(1, 0) space=2 align=end {
+        hut h pictures=6
+        icecliff ice height=1 floes=2
+      }
+      passage log title="The team's report" text="The ice was measured at noon. A hole was drilled through the shelf, and a thermometer was lowered into the sea below. The samples were sealed in jars and kept cold. That night the hut door was blown open by the wind." width=33 numbers=false below=pics gap=1
+    }
+    say """
+      Isla's diary says I drilled a hole. That sentence is active: its subject, I, is the doer, and
+      its object, a hole, is what the verb was done to. The team's report turns this round: the
+      object becomes the subject, the ice, a hole, the samples. That is the passive. It is made with
+      was or were and a verb such as drilled, and the doer comes after by or is left out. A report
+      uses it because what was done matters more than who did it. It also fits when nobody knows who
+      did it, or when the sentence is about the thing, like the door.
+      """
+  }
+  do {
+    level easy {
+      worked writing.passive-which k=0 r=1 level=medium
+    }
+    practice writing.passive-which count=1 seed=6
+    practice writing.passive-doer count=2 seed=3
+    practice writing.make-passive count=1 seed=5 hard-count=2
+    practice writing.was-or-were count=2 seed=1
+    practice writing.why-passive count=1 seed=7
+    practice writing.passive-report count=1 seed=2
+  }
+  try stars=2 {
+    show writing.passive-choose k=0 r=0 hard-k=1
+  }
+  try stars=3 {
+    show writing.passive-rewrite k=0 hard-k=1
+  }
+  remember {
+    say "In the passive the thing done to is the subject: the ice was measured. Use it when who did it does not matter."
+  }
+
+  grown-ups """
+    An active sentence has the doer as its subject and what was done to as its object (Dr Berg
+    drilled a hole); a passive one makes that object its subject (a hole was drilled) and adds the
+    doer after by, or leaves it out. The lesson names subject, object, verb, active and passive, the
+    terms England's year 6 makes statutory, beside the plainer doer and done to. The passive is not
+    better or worse: it is chosen when the doer is unknown, does not matter, as in a report's
+    method, or is not what the sentence is about. The look is the team's report beside Isla's diary.
+    The way in finds the passive sentence among an active one and one that only looks passive, and
+    the core finds who did it, turns an active sentence round keeping its time, chooses was or were,
+    says why a writer chose the passive, and picks the report's sentence. The wrong idea to watch
+    for is "was" plus an adjective taken for the passive (the hole was deep); ask what was done, and
+    by whom. If the child is stuck, act a sentence out: one person drops a pencil, and say it both
+    ways. Off the page, read the method in a science book or a recipe card and count the passive
+    sentences. The two-star question asks when the active is better, and the three-star question is
+    a report method of the child's own, which you mark.
+    """
+  level easy {
+    grown-ups "At this level spotting the passive is worked once in the teacher's pen, the passive to find is beside a plainer active one, the doers are named or plainly missing, the sentences to turn round are in the plain past, the was or were questions have one thing or many, the two-star is Isla's diary, and the method has three notes."
+  }
+  level hard {
+    grown-ups "At this level the passive is beside was with an adjective, the doer may be a long phrase, sentences are turned round twice and one keeps has been, was or were follows each of and two things joined by and, the two-star is the report, and the method has five notes, one to leave out and one to keep active with a reason."
+  }
+}

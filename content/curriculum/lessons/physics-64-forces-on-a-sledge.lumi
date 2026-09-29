@@ -1,0 +1,59 @@
+lesson physics-forces-on-a-sledge v=1 format=teach grade=6 unit=3 subject=physics levels=[easy, medium, hard] {
+  title "Forces on a sledge"
+  goal "Work out the net force on a sledge and say whether it speeds up, slows down or keeps its speed."
+
+  look {
+    scene 36x21 {
+      sledgeforce s forward=[60, 40] back=[70, 30] weight=0 moving=1 show=1 names=1 at=canvas(0, 0)
+      icecliff c height=2 floes=2 at=canvas(20, 11)
+    }
+    say """
+      Every force on the sledge along the snow is an arrow in newtons. The difference between the
+      forward forces and the backward ones is the net force. If it is zero the forces are balanced,
+      and nothing changes: a still sledge stays still and a moving one keeps a steady speed, as this
+      one does with 100 N each way. If the forces are unbalanced, the sledge speeds up or slows down,
+      towards the bigger side.
+      """
+  }
+  do {
+    practice physics.sledge-net count=2 seed=1 easy-seed=2 hard-seed=3
+    level easy {
+      worked physics.sledge-motion v=0 level=medium
+    }
+    practice physics.sledge-motion count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.sledge-steady-pull count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.sledge-start count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.sledge-weight count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.sledge-surface count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.sledge-dogs count=1 seed=1 easy-seed=2 hard-seed=3
+  }
+  story {
+    show physics.sledge-sea-ice v=1 easy-v=0 hard-v=2
+  }
+  try stars=2 {
+    show physics.sledge-steady-reason v=0 hard-v=1
+  }
+  try stars=3 {
+    show physics.sledge-rest-dogs v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "Balanced forces keep a sledge's speed the same; only a net force speeds it up or slows it down."
+  }
+
+  grown-ups """
+    The idea to listen for is that a moving sledge needs a bigger forward force to keep going. It
+    does not: with the forces balanced it keeps a steady speed, and a bigger pull would make it speed
+    up. The two-star question asks exactly this. The second idea is that friction is always the same
+    size; on a still sledge it only pushes back as hard as it is pulled, up to its most. If the
+    arrows confuse the child, add the forward ones, add the backward ones, and take one from the
+    other before saying anything about the motion. Off the page, push a book across a table at a
+    steady speed and feel how hard you have to keep pushing, then try it on a tray of dried peas.
+    The three-star question is solved in two parts, the start and then the steady run.
+    """
+  level easy {
+    grown-ups "At this level there is one force holding the sledge back, a worked example says what a sledge does, the loads are light, the dog team never lands exactly on the friction, and the sea ice question has the smallest numbers."
+  }
+  level hard {
+    grown-ups "At this level friction and the air both hold the sledge back, the motion question includes a sledge standing still, the dog teams land exactly on the friction so one more is needed, and in the three-star question seven dogs start the sledge."
+  }
+}

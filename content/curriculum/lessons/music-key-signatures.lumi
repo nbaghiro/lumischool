@@ -1,0 +1,75 @@
+# Key signatures with up to four sharps or flats: which letters they change, in every octave; naming
+# the major key from the last sharp or the flat before the last; telling the major key from the minor
+# key that shares its signature; and playing notes and bars as the signature says, with Grieg's
+# Morning (1875) at the research hut on the midnight sun's ice shelf.
+lesson music-key-signatures v=1 format=teach grade=6 unit=1 subject=music levels=[easy, medium, hard] {
+  title "Key signatures"
+  goal "Read a key signature: the letters it changes in every octave, and the key it names."
+
+  look {
+    scene 30x22 {
+      row top space=2 align=end at=canvas(1, 1) {
+        hut hut pictures=6
+        puffins birds count=3 facing=-1
+      }
+      notes morning clef=treble notes=[B4, Gs4, Fs4, E4, Fs4, Gs4] values=[] letters=true key=E below=top gap=1
+    }
+    say """
+      The radio in the research hut plays Grieg's Morning, written in 1875 for the play Peer Gynt,
+      where it opens a scene at sunrise. It is in E major, which has four sharps: F, C, G and D.
+      Instead of a sign beside every one of those notes, the sharps are written once, straight after
+      the clef. That group is the key signature, and it changes those letters in every octave for
+      the whole tune. Flats work the same way: one flat, on B, is the signature of F major. Each
+      signature also belongs to a minor key, three semitones below the major one: one sharp is G
+      major or E minor, and the note a tune ends on, its home, says which.
+      """
+  }
+  do {
+    practice music.keysig-which-letters count=1 seed=3 easy-seed=1 hard-seed=1
+    level easy {
+      worked music.keysig-name-sharps k=0 level=medium
+    }
+    practice music.keysig-name-sharps count=1 seed=2 easy-seed=7 hard-seed=1
+    practice music.keysig-name-flats count=1 seed=7 easy-seed=1 hard-seed=1
+    practice music.keysig-count-changed count=1 seed=1 easy-seed=1 hard-seed=1
+    practice music.keysig-play-note count=1 seed=3 easy-seed=1 hard-seed=1
+    practice music.keysig-relative-minor count=1 seed=2 easy-seed=1 hard-seed=1
+    practice music.keysig-play-bar count=1 seed=2 easy-seed=1 hard-seed=1
+    level hard {
+      show music.keysig-claim q=1 r=1
+    }
+    practice music.hut-logbook-key count=1 seed=1 easy-seed=1 hard-seed=1
+  }
+  try stars=2 {
+    show music.keysig-claim q=0 r=0 easy-r=1 hard-r=0
+  }
+  try stars=3 {
+    show music.keysig-which-keys v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A key signature's sharps or flats change those letters in every octave, all through the tune."
+  }
+
+  grown-ups """
+    The idea is that a key signature is a list of letters to change, written once, and that it names
+    a major key: the last sharp is one semitone below the key's note, and with flats the flat before
+    the last is the key, except one flat, which is F major. The wrong ideas to watch for are
+    changing only the note on the same line as the sign, so a low F in G major is played as F
+    natural, and naming a key after its last sharp or its last flat. One core question asks whether
+    a tune is in the major key or the minor key that shares its signature, three semitones below,
+    which the tune's last note decides. In the working, look for the child saying the letters of the
+    signature before reading any notes. The two-star question is the trap that one flat, sitting on
+    B, makes B flat major; the three-star question checks a tune's notes against several keys and
+    counts the ones that hold them all, which is quickest by writing each key's sharps or flats
+    first. A child who is stuck can play a scale from the key's note with its sharps or flats and
+    hear that it sounds right, and go back to the way in; stay on this lesson another day if the
+    signature is still forgotten halfway along a bar. Off the page, find a printed song at home or
+    in a library book, read its key signature and name its key together.
+    """
+  level easy {
+    grown-ups "At this level the signatures have one sign, naming a sharp key is worked once in the teacher's pen, the keys to name are G or D and F or B flat, the notes to count and play are in G or F major, the tune to place is G major against E minor, the bars are London Bridge in F and Ode to Joy in D, the two-star is as written with its answers in another order, and the three-star checks four keys."
+  }
+  level hard {
+    grown-ups "At this level the signatures have two or three signs, the keys to name go up to four sharps and four flats, the notes to count and play are in D, B flat, A or E flat major, the tune to place is G minor against B flat major, the bars are in B flat and A major, a claim that a sign changes only its own line is judged before the two-star, and the three-star checks seven keys."
+  }
+}

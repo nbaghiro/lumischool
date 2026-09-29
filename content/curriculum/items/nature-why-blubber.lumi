@@ -1,0 +1,45 @@
+# The two-star reason: why a feature suits the cold, told apart from reasons that sound right. The
+# seal's blubber against fur, the Arctic fox's ears against the desert fox's, and Ben's claim that
+# water is warmer than winter air, which is true and still misses the point.
+item nature.why-blubber v=1 stars=2 skills=[nature.adaptation, reasoning.explain] {
+  title "Why that and not this?"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "The seal spends most of its life in icy water. Why does blubber suit it better than a thick coat of fur would?", "The Arctic fox has small ears. The fennec fox of the desert has huge ones. Why the difference?", "Ben says: \"In winter the sea under the ice is warmer than the air above it, so a seal in the water does not need its blubber.\" What is wrong with that?")}
+  let ans={pick(k, "Blubber works as well wet as dry", "Small ears let out less heat than big ones", "Water takes heat away far faster than air")}
+  let o1={pick(k, "Fur would be too heavy to swim with", "The Arctic fox does not need to hear well", "The sea is colder than the air in winter")}
+  let o2={pick(k, "Blubber keeps the seal cool in summer", "Snow would fill up big ears", "Seals stay out of the water all winter")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x27 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      seal ps rock=1 facing=-1
+      icecliff ic height=1 floes=0
+    }
+    text ask "{asks}" narrate width=32 below=pics gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=ps {
+      say "Fur keeps an animal warm by trapping a layer of air. Soaked through, most fur holds far less of it."
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "Both foxes hear well. Ears are thin and full of warm blood: what do big ears do with heat?"
+    }
+    when (k == 2 and pick == o1) point=ask {
+      say "Ben is right that the water is warmer than the winter air. The trouble is how fast water takes heat away."
+    }
+    when (k == 2 and pick == o2) point=ps {
+      say "Seals feed under the ice all winter. Think about what water does to a warm body."
+    }
+  }
+  hint "What is the cold doing to the animal, and how does the feature stop it?"
+  hint "Heat escapes through skin, and faster into water than into air."
+}

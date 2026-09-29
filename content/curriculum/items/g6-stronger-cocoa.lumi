@@ -1,0 +1,35 @@
+# The second reasoning question in the core: two mixes compared by their ratio values, where adding
+# the same to both parts misleads.
+item ratio.stronger-cocoa v=1 skills=[ratio.value, reasoning.compare] {
+  title "The stronger cocoa"
+  difficulty pick(v, 0, 1.5, 1, 0.5, 1, 1.5)
+  let v=0..5
+  let a1={pick(v, 2, 3, 2, 6, 4, 5)}
+  let b1={pick(v, 3, 4, 5, 9, 5, 8)}
+  let a2={pick(v, 4, 5, 3, 8, 6, 3)}
+  let b2={pick(v, 6, 7, 7, 12, 8, 5)}
+  level easy {
+    let v={0, 4}
+  }
+  level hard {
+    let v={1, 2, 5}
+  }
+
+  scene 36x12 {
+    table data cols=3 head=["Hut", "Cocoa", "Milk"] cells=["North", "{a1} spoons", "{b1} cups", "South", "{a2} spoons", "{b2} cups"] at=canvas(1, 1)
+    text ask "Two research huts make cocoa. Which hut's cocoa is stronger, with more cocoa for each cup of milk?" narrate width=14 right-of=data gap=2
+    choice pick options=["North", "South", "the same"] below=data gap=1
+  }
+
+  answer pick=(if a1 * b2 > a2 * b1 then "North" else if a1 * b2 < a2 * b1 then "South" else "the same")
+  feedback {
+    when (pick == "South" and a2 - a1 == b2 - b1) point=data {
+      say "South adds the same number of spoons and cups. That does not keep the taste. Compare the ratio values."
+    }
+    when (pick != "the same" and a1 * b2 == a2 * b1) point=data {
+      say "Divide the spoons by the cups for each hut. What do you find?"
+    }
+  }
+  hint "How much cocoa is there for one cup of milk in each hut?"
+  hint "Write each hut's ratio value, spoons divided by cups, and compare them."
+}

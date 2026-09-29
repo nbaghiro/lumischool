@@ -1,0 +1,37 @@
+# The way in: a school microscope's total magnification is the eyepiece's times the objective's. At
+# the harder level the unknown moves to the objective, worked back from the total.
+item nature.cell-mag v=1 skills=[nature.cells, multiplication.scaling] {
+  title "How many times bigger?"
+  difficulty pick(k, 0, 0, 1, 1)
+  let k=0..3
+  let obj={pick(k, 10, 40, 40, 100)} total={10 * obj}
+  let lead={pick(k, "The eyepiece Ada looks through makes things 10 times bigger, and the lens nearest the slide makes them", "The eyepiece Ada looks through makes things 10 times bigger, and the lens nearest the slide makes them", "The eyepiece makes things 10 times bigger. Ada wants the onion skin", "The eyepiece makes things 10 times bigger. Ada wants the pondweed")}
+  let tail={pick(k, "times bigger. How many times bigger does the onion skin look?", "times bigger. How many times bigger does the onion skin look?", "times bigger in all. How many times bigger must the lens nearest the slide make it?", "times bigger in all. How many times bigger must the lens nearest the slide make it?")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x21 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      microscope sc slide=1 lamp=0
+      telescope tel tilt=40
+    }
+    text ask "{lead} {if k <= 1 then obj else total} {tail}" narrate width=32 below=pics gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k <= 1 then total else obj)
+  feedback {
+    when (k <= 1 and answer == obj + 10) point=sc {
+      say "The second lens makes the eyepiece's picture bigger again. Is that adding, or so many times over?"
+    }
+    when (k >= 2 and answer == total - 10) point=sc {
+      say "The eyepiece multiplies what the lower lens shows. Which number times 10 makes {total}?"
+    }
+  }
+  hint "Each lens makes the picture so many times bigger, one after the other."
+  hint "Ten times bigger, then that picture made more times bigger again: which operation is that?"
+}

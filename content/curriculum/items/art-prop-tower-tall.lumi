@@ -1,0 +1,28 @@
+# The way in: measuring with a pencil held at arm's length gives the height in widths, and the
+# drawing keeps that many widths.
+item art.prop-tower-tall v=1 skills=[art.proportion, art.looking] {
+  title "How many widths tall?"
+  difficulty (r * w)
+  let r={2, 3} w={3, 4, 5}
+  level easy {
+    let r={2} w={3, 4}
+  }
+  level hard {
+    let r={3} w={4, 5}
+  }
+
+  scene 36x17 {
+    clocktower tower hour=3 minute=15 at=canvas(1, 1)
+    text ask "Ada holds her pencil out at arm's length, lines it up with the clock tower, and finds that the tower's width fits into its height {r} times. She draws the tower {w} squares wide. How many squares tall should she draw it?" width=26 right-of=tower gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (r * w)
+  feedback {
+    when (answer == r + w) point=tower {
+      say "The width fits into the height {r} times, so the height is {r} lots of the width, not the width and {r} more."
+    }
+  }
+  hint "How many times does the width fit into the height?"
+  hint "Draw one width, then that many widths stacked up. How many squares is that?"
+}

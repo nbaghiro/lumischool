@@ -1,0 +1,34 @@
+# Two-star: what the if and the halving each do, found by changing one of them. With the same n every
+# time the block never gets smaller and never finishes; stopping at 2 leaves the twigs off.
+item coding.self-stop v=1 stars=2 skills=[coding.recursion, reasoning.explain] {
+  title "What makes it stop?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x26 {
+    program p code=["define tree n", "  forward n", "  if n is more than 1", "    turn left", "    tree n / 2", "    turn around", "    tree n / 2", "    turn left", "  back n", "tree 4"] text=true mark=(if k == 0 then 5 else 3) at=canvas(0, 0)
+    text ask "{if k == 0 then \"Lines 5 and 7 are changed to tree n. What happens when the program runs?\" else \"Line 3 is changed to if n is more than 2. What does the program draw?\"}" width=15 right-of=p gap=1
+    choice pick options=["same tree", "never ends", "fewer lines"] at=canvas(0, 23)
+  }
+
+  answer pick=(if k == 0 then "never ends" else "fewer lines")
+  feedback {
+    when (pick == "same tree") point=p {
+      say "Follow n down: what is n each time tree uses itself now, and when does the if say no?"
+    }
+    when (k == 0 and pick == "fewer lines") point=p {
+      say "With tree n, n never gets smaller, so the if on line 3 never says no."
+    }
+    when (k == 1 and pick == "never ends") point=p {
+      say "n still halves each time, so it soon reaches 2, and 2 is not more than 2."
+    }
+  }
+  hint "Write n for each use of tree: the first, then the ones it uses, and so on."
+  hint "When does the if on line 3 say no now?"
+}

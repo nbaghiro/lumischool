@@ -1,0 +1,28 @@
+# A build task on and: the rover moves one square for each star inside a range of brightness, so the
+# if inside the repeat has to ask both tests together. The or card says yes to every star and walks
+# the whole list; a straight program of moves is too long for the four slots.
+item coding.and-build v=1 skills=[coding.decisions, coding.lists, reasoning.logic] {
+  title "Only the stars in range"
+  difficulty k
+  let k=0..2
+  let lo={pick(k, 4, 2, 5)} hi={pick(k, 7, 6, 9)}
+  let sl={pick(k, "set stars to list 5, 2, 6, 9, 4, 7, 1, 6", "set stars to list 3, 8, 2, 6, 9, 4, 1, 5", "set stars to list 7, 3, 10, 5, 9, 2, 6, 8, 4, 5")}
+  let both={pick(k, "if n is more than 3 and n is less than 8", "if n is more than 1 and n is less than 7", "if n is more than 4 and n is less than 10")}
+  let either={pick(k, "if n is more than 3 or n is less than 8", "if n is more than 1 or n is less than 7", "if n is more than 4 or n is less than 10")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x37 {
+    maze m cols=(pick(k, 8, 8, 10) + 1) rows=1 col=1 row=1 flag=[pick(k, 6, 6, 7), 1] at=canvas(0, 0)
+    text ask "The telescope photographs only the stars with brightness from {lo} to {hi}. Build a program that moves the rover one square for each of those stars, so it stops on the flag." width=34 below=m gap=1
+    codepad answer tray=[sl, "for each n in stars", pick(k, either, both, either), pick(k, both, either, both), "right"] lines=4 key=[sl, "for each n in stars", "  {both}", "    right"] below=ask gap=1
+  }
+
+  check coding.builds of=m goal=flag
+  hint "Try a star of brightness {lo} and one of {hi + 1} with each if. Which says yes only inside the range?"
+  hint "Which joining word needs both tests to pass?"
+}

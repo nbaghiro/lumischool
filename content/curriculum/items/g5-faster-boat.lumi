@@ -1,0 +1,41 @@
+# The core's reasoning question on speed: two journeys with different distances and different times,
+# compared by the distance in one hour (or in the same time), not by the bigger distance.
+item rates.faster-boat v=1 skills=[rates.speed, reasoning.compare] {
+  title "Which was faster"
+  difficulty s
+  let s=0..3
+  let d1={pick(s, 12, 9, 7, 14)}
+  let t1={pick(s, 2, 2, 2, 3)}
+  let d2={pick(s, 15, 13, 11, 19)}
+  let t2={pick(s, 3, 3, 3, 4)}
+  level easy {
+    let s={0, 1}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 31x15 {
+    row boats at=canvas(1, 1) space=2 align=end {
+      canoe canoe stroke=0.6 top=berry
+      narrowboat boat windows=3 pots=2
+    }
+    text ask "The canoe went {d1} km in {t1} hours. The narrowboat went {d2} km in {t2} hours. Both kept a steady speed. Which was faster?" narrate width=30 below=boats gap=1
+    choice pick options=["canoe", "narrowboat", "the same"] below=ask gap=1
+  }
+
+  answer pick=(if d1 * t2 > d2 * t1 then "canoe" else "narrowboat")
+  feedback {
+    when (pick == "narrowboat" and d1 * t2 > d2 * t1) point=ask {
+      say "The narrowboat went further, but it also took longer. How far did each go in one hour?"
+    }
+    when (pick == "canoe" and d1 * t2 < d2 * t1) point=ask {
+      say "The canoe took less time, but it also went less far. How far did each go in one hour?"
+    }
+    when (pick == "the same") point=ask {
+      say "Work out how far each went in one hour. Are the two the same?"
+    }
+  }
+  hint "How far did each boat go in one hour?"
+  hint "Or compare them over the same time: how far would each go in {t1 * t2} hours?"
+}

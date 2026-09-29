@@ -1,0 +1,32 @@
+# The two-star reason: a writer chooses one comparison over a plainer one for what it makes the
+# reader see. Every choice is about what the reader pictures, so only thinking about what the second
+# thing is really like (a torn scarf, a sleepy hand, a lamp left on) finds the one it can show.
+item reading.why-this-image v=1 stars=2 skills=[reading.figurative, reasoning.explain] {
+  title "Why this comparison?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let w1={pick(k, "It makes you see how fast the comet was moving.", "It shows how loudly the dome creaked as it opened.", "It shows the moon was shining on a house.")}
+  let w2={pick(k, "It makes you see how bright and hot the comet was.", "It shows how big and heavy the dome is.", "It shows someone had forgotten to put the moon out.")}
+  let right={pick(k, "It makes you see its long, thin, trailing shape.", "It shows how slowly and gently it opened.", "It makes the night seem empty and the moon alone.")}
+
+  scene 35x27 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        comet c tail=7
+        observatory dome open=1
+        moon m phase=1
+      }
+      text ask "{pick(k, \"A poet wrote that the comet was a torn silk scarf, not that it was a bright light. Why?\", \"A poet wrote that the dome opened like a slow, sleepy hand, not that it opened. Why?\", \"A poet wrote that the moon was a lamp left on in an empty house, not that it was bright. Why?\")}" width=34
+      choice pick options=[pick(k, w1, right, w2), pick(k, right, w2, w1), pick(k, w2, w1, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=top {
+      say "{pick(k, \"A scarf does not show speed or heat. What does a torn silk scarf look like as it trails?\", \"A sleepy hand makes no noise and is not heavy. How does a sleepy hand open?\", \"The poet is not saying where the moon shone, or that anyone forgot it. What does a lamp in an empty house make you feel?\")}"
+    }
+  }
+  hint "Picture the plain version, then the poet's version. What can you see in the second that you could not in the first?"
+  hint "{pick(k, \"Think of a real torn silk scarf. Could it show speed, heat or shape?\", \"Think of a real sleepy hand. Could it show sound, weight or slowness?\", \"Think of a real lamp left on in an empty house. What is it like to see one from outside?\")}"
+}

@@ -1,0 +1,29 @@
+# A build task on the exterior angle: three blocks draw any regular polygon, the repeat's count is the
+# number of sides and the turn shares 360 degrees among them, so the child counts the corners and
+# picks the turn that goes into 360 that many times. Going round twice draws a side twice, which the
+# builder refuses.
+item coding.poly-build v=1 skills=[coding.drawing, coding.repetition, angles.turns] {
+  title "Write the polygon"
+  difficulty pick(q, 0, 0, 1, 1, 2)
+  let q=0..4
+  let n={pick(q, 3, 4, 5, 6, 8)} s={pick(q, 3, 3, 2, 2, 2)}
+  let cols={pick(q, 5, 5, 5, 6, 7)} rows={pick(q, 5, 5, 5, 5, 6)} sc={pick(q, 1, 1, 2, 3, 3)}
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=3..4
+  }
+
+  scene 36x27 {
+    column left at=canvas(0, 0) space=1 align=start {
+      turtle t cols=cols rows=rows col=sc row=rows face=right moves=[] target=["repeat {n}", "  forward {s}", "  turn left {360 / n}"] mark=false
+      text ask "The observatory's star map needs the pale shape, every side the same. Build a program of three blocks that draws it, starting on the ring and facing right." width=17
+    }
+    codepad answer tray=["repeat 2", "forward 1", "turn left 45", "turn left 60", "turn left 72", "turn left 90", "turn left 120"] lines=3 key=["repeat {n}", "  forward {s}", "  turn left {360 / n}"] right-of=left gap=1
+  }
+
+  check coding.builds of=t goal=target
+  hint "How many sides does the pale shape have? That is how many times round."
+  hint "After all its turns the turtle faces right again. Which turn, done that many times, makes 360?"
+}

@@ -1,0 +1,31 @@
+# The two-star reason: a sign painted at the canal market, judged right or wrong by the rule that
+# decides it. Every wrong option is a real rule of the lesson applied where it does not fit, or the
+# painter's own mistake stated as a rule, so none can be ruled out without thinking.
+item writing.sign-rule v=1 stars=2 skills=[writing.spelling, reasoning.explain] {
+  title "Is the sign spelt right?"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let right={pick(k, "Wrong: notice keeps its e to keep the c soft.", "Wrong: confidential has an e sound, so -ent.", "Wrong: after a vowel letter it is usually -cial.", "Wrong: here practice is a noun, so it ends -ice.")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 34x25 {
+    sign board lines=[pick(k, "Bright flags", "Be confidant", "Offitial", "Rowing practise"), pick(k, "are noticable", "at the tiller", "mooring", "Friday at six")] kind=board color=sky at=canvas(1, 1)
+    canallock lock level=0.25 boat=1 right-of=board gap=1
+    text ask "Check the word with a tricky ending on this sign. Is it spelt right? Choose the reason." width=32 below=board gap=1
+    choice pick options=[pick(k, right, "Right: -ant comes after a soft c or g.", "Right: -tial comes after a consonant letter.", "Right: in British English it is always practise."), pick(k, "Right: drop the e before -able, as in adorable.", right, "Right: office ends in -ce, so it takes t.", "Right: it is a verb here, so it ends -ise."), pick(k, "Wrong: it ends -ible, as no whole root is heard.", "Right: confide has no e sound, so it is -ant.", right, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=board {
+      say "That rule is real, but does it fit this word? Find the letters just before the ending and say the word aloud."
+    }
+  }
+  hint "Say the word on the sign aloud. Which ending is it, and which rule from today decides that ending?"
+  hint "Check each reason against this word. Does the word really have what the reason needs?"
+}

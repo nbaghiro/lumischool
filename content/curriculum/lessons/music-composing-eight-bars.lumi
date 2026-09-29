@@ -1,0 +1,74 @@
+# Composing eight bars: a phrase that asks and a phrase that answers, bars that add up, a tune that
+# moves mostly by step, and a motif (the old city clock's chime) repeated and moved. The last
+# question is the child's own tune, heard by a grown-up.
+lesson music-composing-eight-bars v=1 format=teach grade=5 unit=8 subject=music levels=[easy, medium, hard] {
+  title "Composing eight bars"
+  goal "Write eight bars that ask a question and answer it, ending on the home note."
+
+  look {
+    scene 36x28 {
+      row top space=1 align=end at=canvas(1, 1) {
+        clocktower clock hour=6 minute=0
+        column staves space=0 align=start {
+          text q "Bars 1 and 2, a question"
+          notes asks clef=treble notes=[C4, C4, G4, G4, A4, A4, G4] values=[1, 1, 1, 1, 1, 1, 2] meter=0
+          text a "Bars 3 and 4, an answer"
+          notes answers clef=treble notes=[F4, F4, E4, E4, D4, D4, C4] values=[1, 1, 1, 1, 1, 1, 2] meter=0
+        }
+      }
+    }
+    say """
+      At six o'clock the clock tower in the old city chimes, and Ana wants to write a tune of her
+      own. Most tunes are built like Twinkle Twinkle: one phrase asks a question and ends away from
+      home, on G, and the next answers it and lands on C, the home note, with a long note. An
+      eight-bar tune is four bars that ask and four that answer. Every bar adds up to four beats,
+      the tune moves mostly by step, and a small idea, like the clock's chime, can come back in a new
+      place.
+      """
+  }
+  do {
+    practice music.compose-home-ending count=1 seed=2 easy-seed=1 hard-seed=1
+    level easy {
+      worked music.compose-fill-bar b=0 level=medium
+    }
+    practice music.compose-fill-bar count=1 seed=1 easy-seed=1 hard-seed=1
+    show music.compose-play-chime
+    show music.compose-fill-bar b=1 hard-b=3
+    practice music.compose-sequence count=1 seed=3 easy-seed=1 hard-seed=1
+    practice music.compose-leaps count=1 seed=2 easy-seed=1 hard-seed=1
+    show music.compose-tap-end
+    level hard {
+      show music.compose-check-bars m=3
+    }
+    practice music.oldcity-market-seconds count=1 seed=1 easy-seed=1 hard-seed=1
+  }
+  try stars=2 {
+    show music.compose-check-bars m=1 easy-m=0 hard-m=2
+  }
+  try stars=3 {
+    show music.compose-eight-bars v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "Ask a question that ends away from home, then answer it and land on the home note."
+  }
+
+  grown-ups """
+    The idea is that a short tune is built from phrases that pair up, a question that ends away from
+    the home note and an answer that lands on it, and that the craft is in the small things: every
+    bar adding up, mostly steps with a few leaps, and one idea coming back, sometimes moved to a new
+    place. The wrong ideas to watch for are bars that do not add up because a dot or a quaver was
+    miscounted, and an answer that stops on the wrong note, which sounds unfinished. In the working,
+    look for the child adding each bar before moving on and singing the phrase to hear where it
+    ends. The two-star question checks two bars against the rules; the three-star question is the
+    child's own tune, which you mark by listening against what the page asks, and it is not marked
+    by the page. A child who is stuck can start from the chime and change one note at a time, and
+    go back to the way in; stay on this lesson another day if the bars still do not add up. Off the
+    page, make up a question on a keyboard or by singing and let the child answer it.
+    """
+  level easy {
+    grown-ups "At this level the phrases to judge come from Twinkle Twinkle, the bar to finish is worked once in the teacher's pen before two in four-four, the chime is moved one step up, the tune to read has one leap, the band plays the tune once at 120 or 80 beats a minute, the two-star's bar 7 has a beat too many, and the three-star is four bars of the child's own."
+  }
+  level hard {
+    grown-ups "At this level the phrase comes from the Ode to Joy, with its dotted note, or Mary Had a Little Lamb, one bar to finish is in three-four, the chime moves up a 3rd, the tune to read has four leaps, a bar 8 of three beats is found before the two-star, whose bars have nothing wrong, the band plays the tune twice, and the three-star asks for bar 5 to be the chime moved up and no more than three leaps."
+  }
+}

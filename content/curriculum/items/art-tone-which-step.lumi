@@ -1,0 +1,30 @@
+# The way in: a five-step scale numbered from the bare paper to the darkest.
+item art.tone-which-step v=1 skills=[art.tone, art.looking] {
+  title "Which step?"
+  difficulty (if k == 0 or k == 4 then 0 else 1)
+  let k=0..4
+  level easy {
+    let k={0, 3, 4}
+  }
+  level hard {
+    let k={1, 2, 3}
+  }
+
+  scene 35x12 {
+    tonescale scale steps=5 blank=-1 ring=k at=canvas(1, 1)
+    text ask "Ada numbers her five tones from 1, the bare white paper, to 5, the darkest her pencil goes. Which step is ringed?" width=17 right-of=scale gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (k + 1)
+  feedback {
+    when (answer == k) point=scale {
+      say "The bare paper is step 1, not step 0. Count again from the white square."
+    }
+    when (answer == 5 - k and k != 2) point=scale {
+      say "That counts from the dark end. Step 1 is the white paper."
+    }
+  }
+  hint "Find the white square. That is step 1."
+  hint "Count along from the white square to the ringed one."
+}

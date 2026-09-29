@@ -1,0 +1,28 @@
+# The second reasoning question in the core: one sum against two others, compared by counting the
+# cells for each. Two sums are not always more likely than one.
+item chance.who-more-likely v=1 skills=[probability.outcomes, reasoning.compare] {
+  title "Who is more likely to score"
+  difficulty (if 6 - abs(a - 7) == 6 - abs(b - 7) + (6 - abs(c - 7)) then 2 else if abs(6 - abs(a - 7) - (6 - abs(b - 7)) - (6 - abs(c - 7))) == 1 then 1 else 0)
+  let a={5, 6, 7, 8} b={2, 3, 4} c={10, 11, 12}
+  level easy {
+    where (abs(6 - abs(a - 7) - (6 - abs(b - 7)) - (6 - abs(c - 7))) >= 2)
+  }
+  level hard {
+    where (abs(6 - abs(a - 7) - (6 - abs(b - 7)) - (6 - abs(c - 7))) <= 1)
+  }
+
+  scene 36x27 {
+    outcomes o rows=["1", "2", "3", "4", "5", "6"] cols=["1", "2", "3", "4", "5", "6"] first=Red second=Blue fill=0 at=canvas(1, 1)
+    text ask "Two dice are rolled and added in a game at the base. Ana scores if the sum is {a}. Ben scores if the sum is {b} or {c}. Who is more likely to score?" narrate width=34 below=o gap=1
+    choice pick options=["Ana", "Ben", "equally likely"] below=ask gap=1
+  }
+
+  answer pick=(if 6 - abs(a - 7) > 6 - abs(b - 7) + (6 - abs(c - 7)) then "Ana" else if 6 - abs(a - 7) < 6 - abs(b - 7) + (6 - abs(c - 7)) then "Ben" else "equally likely")
+  feedback {
+    when (pick == "Ben" and 6 - abs(a - 7) >= 6 - abs(b - 7) + (6 - abs(c - 7))) point=o {
+      say "Two sums are not always more likely than one. Count the cells for each sum in the grid."
+    }
+  }
+  hint "Fill in a few cells of the grid with sums. Where do the cells with the same sum lie?"
+  hint "How many cells make {a}? How many make {b}, and how many make {c}?"
+}

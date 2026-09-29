@@ -1,0 +1,34 @@
+# The core's reasoning question: multiplying both numbers by ten leaves a division unchanged, and the
+# child picks the division that matches without working either out.
+item decimal.same-quotient v=1 skills=[decimals.divide, reasoning.equivalence] {
+  title "The same answer"
+  difficulty ((if b < 1 then 1 else 0) + (if r == 2 then 1 else 0))
+  let a={4.8, 7.2, 5.6, 2.4} b={0.6, 0.8, 1.2} r=0..2
+  where whole(a / b)
+  level easy {
+    let r={0}
+  }
+  level hard {
+    let r={1, 2}
+  }
+
+  scene 29x16 {
+    text ask "Which of these has the same answer as {a} ÷ {b}? Decide without working any of them out." narrate width=28 at=canvas(1, 1)
+    text la "A:   {if r == 0 then plain(a * 10) else if r == 1 then plain(a * 10) else a} ÷ {if r == 0 then plain(b * 10) else if r == 1 then b else plain(b * 10)}" below=ask gap=1
+    text lb "B:   {if r == 0 then plain(a * 10) else if r == 1 then a else plain(a * 10)} ÷ {if r == 0 then b else if r == 1 then plain(b * 10) else plain(b * 10)}" below=la gap=0
+    text lc "C:   {if r == 0 then a else if r == 1 then plain(a * 10) else plain(a * 10)} ÷ {if r == 0 then plain(b * 10) else if r == 1 then plain(b * 10) else b}" below=lb gap=0
+    choice pick options=["A", "B", "C"] below=lc gap=1
+  }
+
+  answer pick=(if r == 0 then "A" else if r == 1 then "C" else "B")
+  feedback {
+    when (pick == (if r == 0 then "B" else if r == 1 then "A" else "C")) point=ask {
+      say "Only {a} was made ten times bigger, so the answer is ten times bigger too."
+    }
+    when (pick == (if r == 0 then "C" else if r == 1 then "B" else "A")) point=ask {
+      say "Only {b} was made ten times bigger, so the answer is ten times smaller."
+    }
+  }
+  hint "What happens to a sharing if both numbers are ten times bigger?"
+  hint "Think of 6 ÷ 2 and 60 ÷ 20. Do they give one answer or two different ones?"
+}

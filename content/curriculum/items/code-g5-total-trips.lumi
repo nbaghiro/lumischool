@@ -1,0 +1,31 @@
+# Three-star: the lock takes at most 10 crates a trip, and the program starts a new trip when the
+# next boat would go over. The order of the list is the child's to choose, and the question is the
+# fewest trips any order gives: 3, 3 and 2 for the three cargoes, the middle one because no two
+# sixes fit.
+item coding.total-trips v=1 stars=3 skills=[coding.variables, coding.lists, reasoning.fewest] {
+  title "The fewest trips through the lock"
+  difficulty pick(k, 1, 2, 0)
+  let k=0..2
+  let list={pick(k, "3, 8, 4, 6, 5", "6, 6, 2, 6", "7, 3, 7, 3")}
+  level easy {
+    let k={2}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x20 {
+    program p code=["set cargo to list {list}", "set total to 0", "set trips to 1", "for each x in cargo", "  if total + x is more than 10", "    add 1 to trips", "    set total to 0", "  add x to total"] at=canvas(1, 0)
+    text ask "The lock takes at most 10 crates a trip. The keeper may put the boats in the list in any order. What is the fewest trips any order gives?" width=10 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 3, 3, 2)
+  feedback {
+    when (k == 1 and answer == 2) point=p {
+      say "20 crates would fit in two trips of 10, but two boats of 6 never fit in one trip together."
+    }
+  }
+  hint "Add up all the crates. What is the least number of trips that could hold them?"
+  hint "Try an order that puts boats together that make 10 or just under."
+}

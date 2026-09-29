@@ -1,0 +1,26 @@
+# The three-star: a paragraph of the child's own about one thing in the canal town, a topic sentence
+# first and every sentence under it; at hard, two paragraphs with a clear turn between them.
+item writing.own-paragraph v=1 stars=3 skills=[writing.paragraphs, writing.composing] {
+  title "Your paragraph"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x34 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      canallock lock level=0.5 boat=1
+      windmill mill sails=4 turn=10
+    }
+    text ask "{if k == 0 then \"Pick the lock, the mill or the boat. Write a paragraph about it for a visitor: a topic sentence first, then three sentences that fit under it.\" else \"Pick two of the lock, the mill and the boat. Write a paragraph about each for a visitor, each with its own topic sentence and three sentences that fit under it.\"}" narrate width=34 below=pics gap=1
+    writinglines lines lines=5 width=34 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A first sentence that names the one thing and says what is true of it as a whole (not one detail), at least three further sentences that each belong under it with none that wanders to another subject, and at hard a second paragraph started on a new line whose own topic sentence turns to the second thing."
+  hint "Before writing, say in one sentence what is true of the whole thing. That is the topic sentence."
+  hint "For each sentence after it, ask: does this fit under the first one?"
+}

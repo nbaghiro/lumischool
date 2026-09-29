@@ -1,0 +1,28 @@
+# The way in: a steady pace in a table, continued to a time the table does not show.
+item proportion.steady-sledge v=1 skills=[proportion.direct] {
+  title "A steady pace"
+  difficulty (k / 4 + (if x > 5 then 1 else 0))
+  let k={6, 8, 9, 12} x={4, 6, 7, 10}
+  level easy {
+    let x={4} k={6, 8}
+  }
+  level hard {
+    let x={7, 10} k={9, 12}
+  }
+
+  scene 33x15 {
+    ratiotable t first=[1, 2, 3, 5] second=[k, 2 * k, 3 * k, 5 * k] labels=["Hours", "km"] hide=[] at=canvas(1, 1)
+    sledge sl slats=6 right-of=t gap=3
+    text ask "The dog sledge crosses the ice shelf at a steady pace. The table shows how far it goes. How many kilometres does it go in {x} hours?" narrate width=32 below=t gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (k * x)
+  feedback {
+    when (answer == 5 * k + (x - 5) or answer == 3 * k + (x - 3)) point=t {
+      say "Each extra hour adds {k} km, not 1 km. How far does it go in one hour?"
+    }
+  }
+  hint "How far does the sledge go in 1 hour?"
+  hint "How many times as long is {x} hours as 1 hour?"
+}

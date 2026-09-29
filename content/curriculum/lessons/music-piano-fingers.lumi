@@ -1,6 +1,6 @@
 # The first thing every method teaches at the keyboard, before a note is read: the fingers have
 # numbers, the thumb is 1 on both hands, and a hand in C position has a finger over each key.
-lesson music-piano-fingers v=1 format=teach grade=1 unit=2 subject=music levels=[easy, medium, hard] {
+lesson music-piano-fingers v=1 format=teach grade=1 unit=4 subject=music levels=[easy, medium, hard] {
   title "Finger numbers and C position"
   goal "Number the fingers from the thumb on both hands, and put the right hand in C position."
 

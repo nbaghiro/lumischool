@@ -1,0 +1,35 @@
+# The three-star search: pairs of chime bars from C up to the next C that make a given interval. A
+# 3rd fits six ways, a 4th five, a 5th four, a 6th three, a 7th two and an octave one, so the pairs
+# fall by one as the interval grows.
+item music.interval-all-pairs v=1 stars=3 skills=[music.intervals, reasoning.all-the-ways] {
+  title "Every pair of bars"
+  difficulty v
+  let v=0..3
+  let what={pick(v, "a 5th apart", "a 3rd apart", "a 4th or a 5th apart", "more than a 5th apart")}
+  let right={pick(v, 4, 6, 9, 6)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 34x13 {
+    row top space=2 align=start at=canvas(1, 1) {
+      chimebars bars bars=8 letters=1
+      column side space=1 align=start {
+        text ask "Ana's eight chime bars go from C up to the next C. She picks two bars at a time. How many different pairs are {what}?" narrate width=16
+        number-input answer
+      }
+    }
+  }
+
+  answer right
+  feedback {
+    when (answer == 2 * right) point=bars {
+      say "C with G is the same pair as G with C. Count each pair once, from its lower bar."
+    }
+  }
+  hint "Start with the lowest bar. Which bar is {if v == 1 then \"a 3rd\" else \"a 5th\"} above it?"
+  hint "Move the lower bar up one at a time. When does the top bar run out?"
+}

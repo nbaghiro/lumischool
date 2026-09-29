@@ -1,0 +1,68 @@
+lesson nature-pollination v=1 format=teach grade=5 unit=2 subject=nature levels=[easy, medium, hard] {
+  title "Pollination"
+  goal "Say how pollen gets from one flower's anthers to the stigma of another of the same kind, and why the flower needs it before it can make seeds."
+
+  look {
+    scene 34x13 {
+      row all at=canvas(1, 1) space=1 align=end {
+        parts fig of=flower
+        bumblebee bee facing=-1
+        flowers f count=3 petals=5
+      }
+    }
+    say """
+      On the towpath beside the canal, Ada watches a bumblebee go from flower to flower. Each flower
+      makes a fine yellow dust called pollen in its anthers. As the bee pushes in for the sweet
+      nectar, pollen sticks to its furry body, and at the next flower of the same kind some of it
+      rubs off onto the sticky stigma. That is pollination. Only then can seeds start to grow in the
+      ovary, which swells into the fruit. Some plants send their pollen on the wind instead.
+      """
+  }
+  do {
+    level easy {
+      worked nature.flower-part k=2 level=medium
+    }
+    practice nature.flower-part count=2 seed=1 easy-seed=2 hard-seed=1
+    practice nature.pollen-steps count=1 seed=1 easy-seed=2 hard-seed=3
+    practice nature.wind-or-insect count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.same-kind count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show nature.bag-test k=1 level=medium
+    }
+  }
+  story {
+    show nature.bee-visits k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.bag-test k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.orchard-row k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Pollination is pollen reaching the stigma of a flower of the same kind. Without it, no seeds and no fruit."
+  }
+
+  grown-ups """
+    Pollination is one journey: pollen made in the anthers has to reach a stigma, usually of another
+    flower of the same kind, and only then does a seed begin in the ovary. The wrong ideas to watch
+    for are that the bee visits flowers to help them (it comes for nectar, and the pollen is carried
+    by accident), that pollen can land anywhere on a flower, and that any pollen will do. In the
+    lettered questions the child should tell the anther from the stigma by what it does: one makes
+    pollen, one catches it. The wind-or-insect question is decided by asking whether the flower has
+    anything to call an insect. The story multiplies a rate. The two-star question is the squash
+    test from Japan's fifth grade: a squash plant has male and female flowers, both female flowers
+    are bagged and only one is given pollen from a male flower, so the test shows pollen is needed
+    and nothing about bees. The three-star question is a planting plan in which each green tree helps
+    the trees on both sides of it; apples need pollen from another variety of apple, which is still
+    the same kind of plant. If the anther and stigma are still
+    confused after the core, stay here another day and look inside a real flower with a magnifier:
+    touch the anthers with a cotton bud and see the yellow on it.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the stigma) opens the core, the parts to find are the petal and the anther, the flowers to judge are the bright scented one and the dusty green one, the pollen questions are a buttercup to a rose and one bramble to another, the bee visits 6 flowers a minute for 10 minutes, the two-star question asks what the bag test shows, and the row has 4 trees."
+  }
+  level hard {
+    grown-ups "At this level the parts to find are the stigma and the ovary, the flowers to judge have hanging anthers or a smell only at night, the pollen question has pollen landing on a petal, a second reasoning question in the core asks why both flowers were bagged, the bee visits 45 flowers in 5 minutes and the count is for 20, the two-star question is Ben's claim about bees, and the row has 11 trees."
+  }
+}

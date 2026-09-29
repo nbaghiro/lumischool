@@ -1,0 +1,33 @@
+# A broad bean split open, lettered: the seed coat, the food store, the shoot and the root, each
+# asked by what it does rather than by its name.
+item nature.bean-store v=1 skills=[nature.seeds] {
+  title "Inside a bean"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let what={pick(k, "the food store that the young plant lives on until it has green leaves", "the tough skin that kept the seed safe in the pod", "the tiny root, which grows out first and down into the soil", "the tiny shoot, which grows up towards the light")}
+  let ans={pick(k, "B", "A", "D", "C")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x23 {
+    seedtest s mode=1 names=0 at=canvas(1, 1)
+    text ask "Ben soaks a broad bean from the market overnight and splits it open along its length. Which letter shows {what}?" narrate width=32 below=s gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k >= 2 and (pick == "C" or pick == "D") and pick != ans) point=s {
+      say "The root and the shoot lie next to each other at the scar. Which one points down, out of the seed, and which is tucked inside?"
+    }
+    when (k == 0 and pick == "A") point=s {
+      say "A is only a thin skin. Where is most of the bean?"
+    }
+  }
+  hint "Which part of the bean takes up the most room? Which is thinnest?"
+  hint "The root and shoot are tiny, tucked in where the bean was joined to its pod."
+}

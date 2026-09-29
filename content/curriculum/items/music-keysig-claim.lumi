@@ -1,0 +1,38 @@
+# The two-star reason, two wrong ideas about key signatures: that one flat, sitting on B, makes B flat
+# major (it is F major, where B flat is note 4), and that a sign changes only the line it is on.
+item music.keysig-claim v=1 stars=2 skills=[music.key-signatures, reasoning.claims] {
+  title "What the signature means"
+  let q=0..1 r=0..1
+  let n1={pick(q, "F4", "G4")}
+  let n2={pick(q, "A4", "Fs4")}
+  let n3={pick(q, "Bf4", "E4")}
+  let n4={pick(q, "C5", "D4")}
+  let claim={pick(q, "Ben says this is B flat major, because its one flat is on B.", "Ana says the sharp on the top line changes only the F on the top line, so the low F in the tune is F natural.")}
+  let right={pick(q, "No: one flat is F major, and B flat is its note 4", "No: it changes every F, in every octave")}
+  let w1={pick(q, "Yes: a key with flats is named after its flat", "Yes: a sign changes only the note it sits beside")}
+  let w2={pick(q, "No: one flat is B major", "No: it changes every note on the staff")}
+
+  scene 36x30 {
+    row top space=2 align=start at=canvas(1, 1) {
+      notes tune clef=treble notes=[n1, n2, n3, n4] values=[] key=pick(q, "F", "G")
+      seal seal rock=1 facing=-1
+    }
+    text ask "{claim} Is that right, and why?" narrate width=34 below=top gap=1
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1 and q == 0) point=tune {
+      say "With two or more flats the flat before the last names the key, and one flat needs its own rule. Which key is that?"
+    }
+    when (pick == w1 and q == 1) point=tune {
+      say "The signs at the start are not beside a note. They say which letters change for the whole tune."
+    }
+    when (pick == w2) point=tune {
+      say "Read the signature's sign again: which one letter does it name?"
+    }
+  }
+  hint "{if q == 0 then \"Play the scale that starts on the tune's first note, with B flat. Which note sounds like home?\" else \"The signature is written once, at the start. Does it say which octave?\"}"
+  hint "{if q == 0 then \"Count up from F: F is 1. Which number is B flat?\" else \"Find the F in the bottom space of the staff. Does the signature say anything about F?\"}"
+}

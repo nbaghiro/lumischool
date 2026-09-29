@@ -1,0 +1,35 @@
+# The story: the Sun seen from the observatory is mostly hydrogen and helium, about 74 g and 25 g of
+# every 100 g (Asplund and others, Annu. Rev. Astron. Astrophys. 2009: 73.8 and 24.9 per cent by mass).
+item chem.sun-hundred v=1 skills=[chemistry.elements, percentages.of-amounts] {
+  title "What the Sun is made of"
+  difficulty w
+  let w=0..2
+  let asks={pick(w, "How many grams of every 100 g are not hydrogen?", "Helium is about 25 g of every 100 g. How many grams of every 100 g are neither hydrogen nor helium?", "How many grams of hydrogen are in 1000 g of the Sun?")}
+  level easy {
+    let w=0..1
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 36x15 {
+    decimalsquare sq hundredths=74 write=false at=canvas(1, 0)
+    text ask "The telescope shows the Sun's light, which says what it is made of. Each small square is 1 g of every 100 g of the Sun, and the shaded squares are hydrogen. {asks}" narrate width=22 right-of=sq gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(w, 26, 1, 740)
+  feedback {
+    when (answer == 74 and w != 2) point=sq {
+      say "74 squares are shaded, and they are the hydrogen. The question asks about the squares left over."
+    }
+    when (w == 1 and answer == 26) point=sq {
+      say "26 g is everything but hydrogen, and 25 g of that is helium. Take the helium away too."
+    }
+    when (w == 2 and answer == 74) point=sq {
+      say "74 g is in each 100 g. How many lots of 100 g make 1000 g?"
+    }
+  }
+  hint "How many squares are shaded, and how many are there in all?"
+  hint "{pick(w, \"The squares not shaded are everything else.\", \"Take away the hydrogen first, then the helium.\", \"How many lots of 100 g are in 1000 g?\")}"
+}

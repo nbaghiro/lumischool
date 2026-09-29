@@ -1,0 +1,31 @@
+# The way in: speed is the distance gone in one hour, found by splitting a double number line into
+# its hours.
+item speed.cyclist-gorge-road v=1 skills=[rates.speed] {
+  title "Kilometres in an hour"
+  difficulty (t + v / 10)
+  let v={12, 15, 18, 20, 24} t={2, 3, 4}
+  level easy {
+    let t={2} v={12, 15, 20}
+  }
+  level hard {
+    let t={4} v={18, 24}
+  }
+
+  scene 26x20 {
+    doubleline road steps=1 topTo=(v * t) bottomTo=t topUnit="km" bottomUnit=hours mark=-1 at=canvas(1, 1)
+    text ask "A cyclist rides {v * t} km along the gorge road in {t} hours at a steady speed. What is her speed, in kilometres per hour?" narrate width=25 below=road gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text unit "km/h"
+    }
+  }
+
+  answer v
+  feedback {
+    when (answer == v * t) point=road {
+      say "That is how far she went in all {t} hours. Speed is how far she goes in one hour."
+    }
+  }
+  hint "Split the line into {t} equal hours. How far is each part?"
+  hint "Share {v * t} km equally between the {t} hours."
+}

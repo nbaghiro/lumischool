@@ -1,0 +1,26 @@
+# Finding a fault: the other branches are lit, so the cells work, and the fault is in the dark branch
+# itself. d is the dark bulb.
+item physics.parallel-fault v=1 skills=[physics.circuits, reasoning.evidence] {
+  title "Where is the fault?"
+  let d=0..2
+  let bad={pick(d, "A", "B", "C")}
+  let right={pick(d, "In branch A itself", "In branch B itself", "In branch C itself")}
+
+  scene 36x21 {
+    parallel p cells=2 branches=3 closed=[1, 1, 1] show=0 symbols=1 at=canvas(1, 0)
+    text ask "All three switches are closed. Bulbs light in two branches, but bulb {bad} stays dark. Where is the fault?" narrate width=17 right-of=p gap=1
+    choice pick options=["In the cells", right, "In another branch"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "In the cells") point=p {
+      say "If the cells were flat, would the other two bulbs be lit?"
+    }
+    when (pick == "In another branch") point=p {
+      say "A fault in one branch only stops that branch. The other branches are lit."
+    }
+  }
+  hint "Two bulbs are lit. What does that tell you about the cells?"
+  hint "A break in one branch stops which bulbs?"
+}

@@ -1,0 +1,33 @@
+# The way in to counting steps: every line that runs and moves the rover is one step, however far it
+# goes, so a repeat of short moves takes more steps than one long move to the same place.
+item coding.least-count v=1 skills=[coding.efficiency, coding.repetition, coding.text] {
+  title "Counting the rover's steps"
+  difficulty ((n * 2 + a) / 5)
+  let n=2..4 a=2..3
+  where (1 + a + n <= 7 and a >= 2)
+  level easy {
+    let n={2}
+  }
+  level hard {
+    let n={4}
+  }
+
+  scene 36x21 {
+    program p code=["right {a}", "repeat {n}", "  up 1", "  right 1"] text=true at=canvas(0, 0)
+    maze g cols=8 rows=5 col=1 row=5 face=right flag=[1 + a + n, 5 - n] code=["right {a}", "repeat {n}", "  up 1", "  right 1"] upto=0 trail=none right-of=p gap=1
+    text ask "On the moon each line that runs and moves the rover counts as one step, however far it goes. How many steps does this program take to reach the flag?" width=30 at=canvas(0, 14)
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=g answer=steps
+  feedback {
+    when (answer == 3) point=p {
+      say "Lines 3 and 4 run every time round the repeat: {n} times each."
+    }
+    when (answer == a + 2 * n) point=g {
+      say "That counts the squares. right {a} is one step, however many squares it moves."
+    }
+  }
+  hint "Line 1 runs once. How many times do lines 3 and 4 each run?"
+  hint "Add up every time a moving line runs."
+}

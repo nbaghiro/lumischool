@@ -1,0 +1,38 @@
+# Noor's diary, found by its line number. The answers are the line breaks of the three entries at
+# width 34 (65 letters to a line), so the texts and the width stay as they are.
+item reading.diary-line v=1 skills=[reading.text-types, reading.evidence] {
+  title "Which line of the diary?"
+  difficulty pick(q, 1, 0, 2, 0, 1, 0)
+  let q=0..5
+  level easy {
+    let q={1, 3, 5}
+  }
+  level hard {
+    let q={0, 2, 4}
+  }
+
+  scene 35x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p title="{pick(q, \"Tuesday 4 July\", \"Tuesday 4 July\", \"Thursday 6 July\", \"Thursday 6 July\", \"Monday 3 July\", \"Monday 3 July\")}" text="{pick(q, \"Wind in our faces all day, and only six kilometres. Pim's sledge runner cracked on a ridge of ice, and we mended it with wire while our fingers went white. I have never been so cold, but I did not say so. Aunt Lind made hot chocolate on the stove inside the tent, and Pim told stories about his first trip north until the wind dropped a little. Tomorrow cannot be worse. I hope.\", \"Wind in our faces all day, and only six kilometres. Pim's sledge runner cracked on a ridge of ice, and we mended it with wire while our fingers went white. I have never been so cold, but I did not say so. Aunt Lind made hot chocolate on the stove inside the tent, and Pim told stories about his first trip north until the wind dropped a little. Tomorrow cannot be worse. I hope.\", \"Calm at last. Eighteen kilometres, our best day. At the ice edge a whale blew twice, a long grey back and then nothing. A seal watched us from a floe as if we were the strange ones. Pim's mended runner held. Tonight the sea is as flat as glass, and the sun is resting on the edge of it without going down. Aunt Lind says we will see the puffin cliffs tomorrow.\", \"Calm at last. Eighteen kilometres, our best day. At the ice edge a whale blew twice, a long grey back and then nothing. A seal watched us from a floe as if we were the strange ones. Pim's mended runner held. Tonight the sea is as flat as glass, and the sun is resting on the edge of it without going down. Aunt Lind says we will see the puffin cliffs tomorrow.\", \"We left the hut at nine with two sledges: Pim, Aunt Lind and me. Fourteen kilometres across flat white ice. The sun did not set; it just went round the sky. It is eleven at night and bright as noon, and I am too excited to sleep. Aunt Lind says the puffin cliffs are four days away if the ice stays kind. I have packed this notebook at the top of my bag so that I can write every night.\", \"We left the hut at nine with two sledges: Pim, Aunt Lind and me. Fourteen kilometres across flat white ice. The sun did not set; it just went round the sky. It is eleven at night and bright as noon, and I am too excited to sleep. Aunt Lind says the puffin cliffs are four days away if the ice stays kind. I have packed this notebook at the top of my bag so that I can write every night.\")}" width=34
+      row bottom space=1 align=centre {
+        text ask "{pick(q, \"Which line shows Noor kept quiet about the cold?\", \"Which line says what broke?\", \"Which line shows the mending on 4 July worked?\", \"Which line tells you the whale's colour?\", \"Which line tells you how many people went?\", \"Which line says how Noor felt that night?\")}" width=29
+        number-input answer
+      }
+    }
+  }
+
+  answer pick(q, 4, 2, 4, 2, 1, 4)
+  feedback {
+    when (q == 0 and answer == 3) point=p {
+      say "That line says how cold she was. The question asks what she did about it."
+    }
+    when (q == 1 and answer == 1) point=p {
+      say "That line names whose sledge. Find the line with the part that broke."
+    }
+    when (q == 2 and answer == 3) point=p {
+      say "That line starts the sentence. Which line says what the runner did?"
+    }
+  }
+  hint "Find the words that answer the question first, then read the number beside them."
+  hint "Check the words that answer it are on your line, not only the start of the sentence."
+}

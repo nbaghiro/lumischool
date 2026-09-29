@@ -1,0 +1,33 @@
+# Contrast fades with distance: near things set the lightest and darkest tones side by side, far
+# things only tones close together.
+item art.fade-contrast v=1 skills=[art.space, art.tone, reasoning.compare] {
+  title "Light against dark"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2
+  let part={pick(k, "the rocks at the front", "the middle hills", "the ridge furthest away")}
+  let right={pick(k, "Tones 1 and 5", "Tones 2 and 4", "Tones 2 and 3")}
+  let o1={pick(k, "Tones 2 and 3", "Tones 1 and 5", "Tones 1 and 5")}
+  let o2={pick(k, "Tones 2 and 4", "Tones 2 and 3", "Tones 2 and 4")}
+  let r={k % 3}
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x16 {
+    tonescale scale steps=5 blank=-1 ring=-1 at=canvas(1, 1)
+    text ask "The tones are numbered 1, the white of the paper, to 5, the darkest. Ada is painting the gorge from its mouth. Which pair of tones should she put side by side in {part}?" width=34 below=scale gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then o1 else o2, if r == 0 then o1 else if r == 1 then o2 else right, if r == 0 then o2 else if r == 1 then right else o1] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=scale {
+      say "Near, far or between? The nearer the thing, the further apart its two tones are on the scale."
+    }
+  }
+  hint "How far apart on the scale are the two tones in each pair?"
+  hint "Is {part} near, far or in between? Which pair has the right amount of difference?"
+}

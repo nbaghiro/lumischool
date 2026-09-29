@@ -1,0 +1,38 @@
+# A ratio in its simplest form, by dividing both parts by their highest common factor.
+item ratio.simplest-puffins v=1 skills=[ratio.parts, ratio.simplest-form] {
+  title "Puffins to seals"
+  difficulty (g / 4 + (if x > y then 1 else 0))
+  let g={3, 4, 6, 8} x={2, 3, 4, 5, 7} y={2, 3, 4, 5, 7}
+  where (x != y and gcd(x, y) == 1)
+  level easy {
+    let g={3, 4}
+    where (x < y)
+  }
+  level hard {
+    let g={6, 8}
+    where (x > y)
+  }
+
+  scene 36x12 {
+    puffins pf count=3 facing=1 at=canvas(1, 1)
+    seal sl rock=1 facing=-1 right-of=pf gap=1
+    text ask "On the ice there are {g * x} puffins and {g * y} seals. Write the ratio of puffins to seals in its simplest form." narrate width=13 right-of=sl gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input first width=3
+      text colon ":"
+      number-input second width=3
+    }
+  }
+
+  answer first=x second=y
+  feedback {
+    when (first == y and second == x) point=ask {
+      say "The ratio is puffins to seals, so the puffins come first."
+    }
+    when (first * y == second * x and first != x) point=ask {
+      say "That is equal, but not the simplest. Can both numbers still be divided by the same number?"
+    }
+  }
+  hint "Which numbers divide both {g * x} and {g * y}?"
+  hint "Use the biggest number that divides both."
+}

@@ -1,0 +1,64 @@
+# Puzzles over the sixth year's writing, each in a shape the lessons did not use: tenses placed by
+# time words, a note's two marks, verbs that say how, a passive log, a speech's plain line, a list's
+# intruder, clues matched to turns, two counts, and fifty words for the board.
+lesson writing-writing-puzzles-six v=1 format=puzzles grade=6 unit=9 subject=writing levels=[easy, medium, hard] {
+  title "Writing puzzles"
+  goal "Use tense, colons, semicolons, the passive and the precise word to make writing exact for its reader."
+
+  puzzle stars=1 {
+    show writing.tense-gaps k=1 r=0 easy-k=0 hard-k=2
+  }
+  puzzle stars=1 {
+    show writing.marks-note k=1 r=2 easy-k=0 easy-r=0 hard-k=2 hard-r=1
+  }
+  puzzle stars=1 {
+    show writing.moved-count k=1 easy-k=0 hard-k=2
+  }
+  puzzle stars=2 {
+    show writing.passive-who k=1 r=2 easy-k=0 hard-k=2
+  }
+  puzzle stars=2 {
+    show writing.speech-plain-line k=1 easy-k=0 hard-k=2
+  }
+  puzzle stars=2 {
+    show writing.list-intruder k=1 r=0 easy-k=0 hard-k=2
+  }
+  puzzle stars=2 {
+    show writing.turn-match k=0 r=1 hard-k=1
+  }
+  puzzle stars=3 {
+    show writing.count-passives e1=1 e2=0 e3=1 easy-e2=1 hard-e1=0 hard-e2=0 hard-e3=1
+  }
+  puzzle stars=3 {
+    show writing.mark-count e1=0 e2=1 e3=1 easy-e1=1 hard-e2=0
+  }
+  puzzle stars=3 {
+    show writing.fifty-word-news k=0 hard-k=1
+  }
+  level hard {
+    puzzle stars=3 {
+      show writing.mark-count e1=0 e2=0 e3=0
+    }
+  }
+
+  grown-ups """
+    These puzzles bring back the year's writing in shapes the lessons did not use, so none of
+    them is a question the child has met before: one verb in three tenses placed by the time words,
+    a note that needs one colon and one semicolon, the verbs that say how someone moved, who did it
+    in a log written in the passive, the plain line in a persuasive speech, the thing that spoils a
+    list before one word can stand for it, and the opening whose clue prepares for each turn. They
+    are worth doing slowly. In the two counts none is a possible answer, so the child has to test
+    every sentence rather than stop at the first slip; the trap in the passive count is was with an
+    adjective, which looks passive and is not. If a puzzle stalls, go back to the lesson it comes
+    from and do one question there together. The last puzzle is a news item for the moon base's
+    board in fifty words, using the year's tools, which you count and mark against the look-for;
+    off the page, find a short news story and count its colons, semicolons and passive sentences
+    together.
+    """
+  level easy {
+    grown-ups "At this level the tenses are counted, counting and will count, the note is about what to pack, three verbs of five say how, the log names who sealed the samples in two steps, the plain line is the bridge's age, the odd one in the list is the otters, the turns are the paper map's, the hatch's and the radio code's, the passive count has three sentences all passive, the mark count has three mistakes, and the news item is fifty words or fewer."
+  }
+  level hard {
+    grown-ups "At this level the tenses are the perfect ones (have sealed, will have sealed), the note gives Dr Berg's order, two verbs of five say how, the log is followed through two sentences to Dr Berg, the plain line has the word three in it and is not the rule of three, the odd one in the list is the miller, the turns are the crack's, the robot's and the counted steps', the passive count has one passive and the trap, the mark count has one mistake and a second count has none, and the news item is exactly fifty words with a headline."
+  }
+}

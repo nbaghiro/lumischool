@@ -1,0 +1,34 @@
+# A reason is stronger with evidence someone could check. One choice has a number or an event; the
+# others are feelings, and at hard a vague "lots of people" that sounds like evidence and is not.
+item writing.speech-evidence v=1 skills=[writing.persuasion, writing.argument] {
+  title "Which reason has evidence?"
+  difficulty k
+  let k=0..2 r=0..2
+  let right={pick(k, "Twenty children cross it every morning.", "Last winter the gorge path was shut for six weeks.", "The bridge saves a walk of three kilometres.")}
+  let w1={pick(k, "Everybody loves the bridge.", "It would be a terrible shame to lose it.", "The bridge saves loads of time for lots of people.")}
+  let w2={pick(k, "It is the best bridge in the valley.", "Surely you all agree with me.", "Most people probably use it quite often.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x23 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      ropebridge br planks=12 gaps=2
+      person tam pose=point age=child hair=curly colour=black top=tang
+    }
+    text ask "Tam wants the village to mend the rope bridge. Which reason gives evidence that could be checked?" narrate width=32 below=pics gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "Could anyone at the meeting check that line? A feeling, or words like lots and probably, cannot be checked. A number or an event can."
+    }
+  }
+  hint "Which line could someone check by counting, measuring or looking it up?"
+  hint "Words like loads, surely and probably are signs of a guess. Which line has none?"
+}

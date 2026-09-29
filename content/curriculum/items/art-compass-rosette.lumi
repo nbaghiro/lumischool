@@ -1,0 +1,12 @@
+# Making, with the compass in the hand: the six-petal rosette the old city's tiles start from, drawn
+# on paper and handed in for a grown-up to look at with the child.
+item art.compass-rosette v=1 skills=[art.pattern, art.drawing] {
+  title "A rosette from one circle"
+
+  scene 37x17 {
+    text ask "Draw a circle with a compass. Keep it open just as wide, put its point on the circle, and step round to make six marks. From each mark draw an arc through the middle. Colour the six petals." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="squared" guide="none" outline="none" pots=["blue", "yellow", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A six-petal rosette drawn with a compass: one circle, six marks stepped round it at the same opening, and an arc from each mark through the middle, so the petals meet at the centre and at the marks." notice=["One circle, with the compass kept at the same opening", "Six marks that meet up with the first", "Petals that meet at the middle", "Colour chosen so the petals read as one flower"] ask="What happened when the sixth step came back round to the first mark?"
+}

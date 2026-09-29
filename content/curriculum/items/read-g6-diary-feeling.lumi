@@ -1,0 +1,33 @@
+# A diary holds both what happened and how it felt. Two of the sentences are records anyone on the
+# trip could check; one is only Noor's feeling, which a log would leave out.
+item reading.diary-feeling v=1 skills=[reading.text-types, reading.fact-opinion] {
+  title "What happened, or how it felt?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+  let right={pick(k, "I have never been so cold.", "I do not want to turn back.", "We were the strange ones.")}
+  let fact1={pick(k, "Pim's sledge runner cracked.", "I counted forty on one ledge.", "A whale blew twice.")}
+  let fact2={pick(k, "We went six kilometres.", "We went ten kilometres.", "A seal watched us from a floe.")}
+
+  scene 35x17 {
+    text ask "{pick(k, \"These sentences are from Noor's diary for 4 July.\", \"These sentences are from Noor's diary for 7 July.\", \"These sentences are from Noor's diary for 6 July.\")} Which one tells how Noor felt, not what happened?" at=canvas(1, 1) width=34
+    row bottom below=ask gap=1 space=1 align=start {
+      choice pick options=[pick(k, fact1, right, fact2), pick(k, right, fact2, right), pick(k, fact2, fact1, fact1)] stack=column
+      tent t lit=1
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=pick {
+      say "Everyone on the trip could check that one happened. Find the sentence only Noor could say is true."
+    }
+  }
+  hint "Could Aunt Lind or Pim check the sentence was true by looking or counting?"
+  hint "Which sentence is about what went on inside Noor?"
+}

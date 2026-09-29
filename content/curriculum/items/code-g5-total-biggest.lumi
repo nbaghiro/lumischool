@@ -1,0 +1,35 @@
+# The biggest so far: best is replaced only when an item beats it, so the child tracks both the end
+# value and how many times the replacing line ran.
+item coding.total-biggest v=1 skills=[coding.variables, coding.decisions, coding.tracing] {
+  title "The biggest load so far"
+  difficulty s
+  let s=0..3
+  let a={pick(s, 4, 3, 2, 6)} b={pick(s, 7, 8, 5, 4)} c={pick(s, 5, 6, 9, 8)} d={pick(s, 9, 2, 7, 9)}
+  level easy {
+    let s={0, 1}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 36x15 {
+    program p code=["set loads to list {a}, {b}, {c}, {d}", "set best to 0", "for each x in loads", "  if x is more than best", "    set best to x"] at=canvas(1, 0)
+    text ask "What is best at the end? How many times does line 5 run?" width=11 right-of=p gap=1
+    text tb "best" below=p gap=1
+    number-input best right-of=tb gap=1
+    text tr "line 5 runs" right-of=best gap=2
+    number-input runs right-of=tr gap=1
+  }
+
+  check coding.runs of=p best="value(best)" runs="ran(5)"
+  feedback {
+    when (runs == 4) point=p {
+      say "Line 5 runs only when x is more than the best so far. Check each load against best as it is then."
+    }
+    when (runs == 1) point=p {
+      say "The first load is more than 0, so best changes at least once before the biggest comes along."
+    }
+  }
+  hint "Keep best written down. For each load, ask: is it more than best right now?"
+  hint "Count the loads where the answer is yes."
+}

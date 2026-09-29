@@ -1,0 +1,29 @@
+# The way in, on the midnight sun: the suns are drawn every two hours with the lowest at midnight, so
+# the first one drawn is two hours earlier for every sun before it.
+item physics.midnight-first v=1 skills=[physics.sky, time.twenty-four-hour] {
+  title "Every two hours"
+  difficulty n
+  let n={3, 5, 7}
+  level easy {
+    let n={3, 5}
+  }
+  level hard {
+    let n={5, 7}
+  }
+
+  scene 36x21 {
+    midnightsun sky suns=n midnight=1 at=canvas(1, 0)
+    text ask "At the hut the sun was drawn every two hours through one summer night. The lowest sun, just touching the sea, is midnight. At what hour on the 24-hour clock was the first sun on the left drawn?" narrate width=34 below=sky gap=1
+    number-input answer below=ask gap=1
+    text unit ":00" right-of=answer gap=0
+  }
+
+  answer (24 - (n - 1))
+  feedback {
+    when (answer == 24 - (n - 1) / 2) point=sky {
+      say "Each sun is two hours after the one before it, not one."
+    }
+  }
+  hint "How many suns come before the midnight one?"
+  hint "Each of them is two hours earlier. Count back from 24:00."
+}

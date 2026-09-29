@@ -1,0 +1,60 @@
+lesson g6-fractions-and-decimals-together v=1 format=worked grade=6 unit=1 subject=maths levels=[easy, medium, hard] {
+  title "Fractions, decimals and mixed numbers in one calculation"
+  goal "Work out a calculation that mixes fractions, decimals and mixed numbers, changing them into one form where that helps."
+
+  example {
+    worked fraction.tank-share x=0.75 c=2 d=3 level=medium
+    say """
+      The hut's tank is 0.75 full and the stove burns 2/3 of that fuel. A third has no decimal that
+      ends, so change 0.75 into a fraction instead: 75 hundredths is 3/4. Then 3/4 × 2/3 = 6/12,
+      which is 1/2 of a full tank. When every number ends as a decimal, decimals are often quicker;
+      when one is a third or a sixth, fractions keep the answer exact. A mixed number such as 2 1/2
+      is 2.5, or 5/2, and all of it is multiplied. Multiplying and dividing still come before adding
+      and taking away.
+      """
+  }
+  exercises {
+    show fraction.decimal-as-fraction h=60 easy-h=25 hard-h=64
+    practice fraction.tank-share count=1 seed=5
+    level easy {
+      worked fraction.mixed-by-decimal w=2 a=1 b=2 x=0.8 level=medium
+    }
+    show fraction.mixed-by-decimal w=2 a=3 b=4 x=0.8 easy-w=1 easy-a=1 easy-b=2 easy-x=0.4 hard-w=3 hard-a=2 hard-b=5 hard-x=1.2
+    practice fraction.order-of-steps count=1 seed=3 hard-count=2
+    show fraction.whole-from-decimal x=0.6 t=60 easy-x=0.75 easy-t=20 hard-x=0.35 hard-t=80
+    show fraction.oats-left w=3 a=1 b=4 x=0.2 easy-w=2 easy-a=1 easy-b=2 easy-x=0.4 hard-w=4 hard-a=3 hard-b=4 hard-x=0.6
+    show fraction.cups-from-mixed t=2 easy-t=0 hard-t=3
+    practice fraction.split-check count=1 seed=5
+  }
+  try stars=2 {
+    show fraction.third-plus-decimal d=3 x=0.75 easy-x=0.25 hard-d=6 hard-x=0.2
+  }
+  try stars=3 {
+    show fraction.card-smallest t=1 easy-t=0 hard-t=2
+  }
+  remember {
+    say "Change the numbers into one form before you calculate: decimals when they all end, fractions when one is a third or a sixth."
+  }
+
+  grown-ups """
+    The choice of form is the idea: a calculation is easier and exact when every number is written
+    the same way. Ask the child before each question which form they will use, and why. The common
+    slips are multiplying only the whole part of a mixed number (2 1/2 × 0.8 as 1.6 + 1/2), doing
+    the adding before the multiplying, and multiplying when the question asks how many mugs fit,
+    which is dividing. The seal colony runs backwards from a part to the whole. In the question on
+    Kit and Ana, both ways give the same answer, because the whole and the part are each multiplied.
+    In the two-star question Tom's rounded third makes his answer close but not exact; working in
+    twelfths gives the exact one. In the three-star question the smallest card does least harm on
+    top of the fraction, which surprises most children, and six arrangements settle it. If mixed
+    numbers still come out wrong, stay here another day with halves and quarters only. Off the
+    page, find a recipe with fractions and decimals in it and work out one and a half times it. This
+    lesson meets China's 2022 standard for grades 5 and 6, 第三学段 1(4),
+    「能进行简单的小数、分数四则运算和混合运算」.
+    """
+  level easy {
+    grown-ups "At this level 2 1/2 buckets at 0.8 litres are worked in the teacher's pen as well, the decimal to change is 0.25, the tank is 0.6 or 0.75 full and the stove burns thirds, the buckets are halves, the sum on the board adds, the colony's share is 0.4, 0.75 or 0.8, the flask is 2 1/2 litres in half-litre mugs, Kit and Ana work 1 1/4 or 1 3/4, the two-star adds a third and 0.25, and the three-star uses the cards 1, 2 and 4."
+  }
+  level hard {
+    grown-ups "At this level the decimal to change is 0.64, the tank share is in sixths or ninths, the buckets are quarters or fifths at 0.6 or 1.2 litres, the sum on the board divides and is asked twice, 4 3/4 kg of oats lose 0.6 of their weight, the colony's share is 0.35 or 0.45, the flask is 4 1/2 litres in 0.75-litre mugs, Kit and Ana work 3 1/4 or 3 3/4 by 1.2, the two-star adds a sixth and 0.2, and the three-star uses the cards 3, 4 and 8."
+  }
+}

@@ -1,4 +1,4 @@
-lesson physics-fast-and-slow v=1 format=teach grade=1 unit=2 subject=physics levels=[easy, medium, hard] {
+lesson physics-fast-and-slow v=1 format=teach grade=1 unit=3 subject=physics levels=[easy, medium, hard] {
   title "Fast and slow"
   goal "Say which runner was fastest from their times, find how much sooner one finished, and compare runners who went different distances."
 

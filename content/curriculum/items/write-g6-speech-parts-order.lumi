@@ -1,0 +1,46 @@
+# The five parts of a speech that persuades, muddled: the greeting, the aim, a reason with evidence,
+# the other side answered, and what to do now. At k=1 the speech is for the water wheel.
+item writing.speech-parts-order v=1 skills=[writing.persuasion, writing.speeches, writing.sequencing] {
+  title "The speech in order"
+  difficulty (if k == 0 then p else 2 + p)
+  let k=0..1 p=0..2
+  let a={pick(p, 2, 4, 1)}
+  let b={pick(p, 0, 2, 3)}
+  let c={pick(p, 4, 0, 0)}
+  let d={pick(p, 1, 3, 4)}
+  let e={pick(p, 3, 1, 2)}
+  let t0={pick(k, "Good evening, and thank you for coming.", "Friends, thank you for giving me a minute.")}
+  let t1={pick(k, "I am here to ask you to mend our bridge.", "Tonight I ask you to save our water wheel.")}
+  let t2={pick(k, "Twenty children cross it every morning.", "It grinds the flour for every loaf we eat.")}
+  let t3={pick(k, "Some say it costs too much, but a fall costs more.", "Some say it is old, but so are the hills.")}
+  let t4={pick(k, "So vote tonight, and mend it this month.", "So vote yes, and keep the wheel turning.")}
+  let wa={pick(a, t0, t1, t2, t3, t4)}
+  let wb={pick(b, t0, t1, t2, t3, t4)}
+  let wc={pick(c, t0, t1, t2, t3, t4)}
+  let wd={pick(d, t0, t1, t2, t3, t4)}
+  let we={pick(e, t0, t1, t2, t3, t4)}
+  level easy {
+    let k=0..0 p=0..1
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x31 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      waterwheel wheel paddles=8 lit=0
+      person tam pose=point age=child hair=curly colour=black top=tang
+    }
+    text ask "Tam's cards got muddled. Number them 1 to 5 in the order of the speech." narrate width=33 below=pics gap=1
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}", "{we}"] blanks=[q, x, y, u, v] below=ask gap=1
+  }
+
+  answer q=(a + 1) x=(b + 1) y=(c + 1) u=(d + 1) v=(e + 1)
+  feedback {
+    when ((if a == 4 then q else if b == 4 then x else if c == 4 then y else if d == 4 then u else v) < 5) point=s {
+      say "The line that tells the listeners what to do now is the last thing they hear, so it is the one they remember."
+    }
+  }
+  hint "Which card would Tam say first, as the listeners settle? Which would be the last thing they hear?"
+  hint "The listeners need to know what Tam wants before they hear the reasons."
+}

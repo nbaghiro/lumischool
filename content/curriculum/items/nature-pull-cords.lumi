@@ -1,0 +1,40 @@
+# The three-star: a puppet worked by cords that only pull, each tied across one joint and pulling it
+# one way. Lying on a table, every hinge needs two cords; hanging, its own weight straightens a bent
+# hinge and brings the shoulder back to hanging, so only the pulls away from hanging need cords.
+item nature.pull-cords v=1 stars=3 skills=[nature.body, reasoning.model] {
+  title "Cords that only pull"
+  difficulty k
+  let k=0..2
+  let hang={pick(k, "The puppet lies flat on a table, so nothing else moves its joints.", "The puppet hangs from the ceiling, so when a cord lets go, its own weight swings a bent hinge straight again.", "The puppet hangs from the ceiling, so when a cord lets go, its own weight swings a bent hinge straight and brings the shoulder back to hanging straight down.")}
+  let model={pick(k, "an arm with 2 hinge joints that must each bend and straighten", "a leg with 3 hinge joints that must each bend and straighten", "an arm with 2 hinge joints that must each bend and straighten, and a shoulder that must swing forward, back, left and right")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x30 {
+    parts fig of=arm at=canvas(1, 1)
+    text ask "Ben builds a puppet for the theatre in the old city square. Each cord is tied across one joint only and pulls it one way, just like a muscle. {hang} What is the fewest cords he needs for {model}?" narrate width=32 below=fig gap=1
+    row r below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text u "cords"
+    }
+  }
+
+  answer pick(k, 4, 3, 6)
+  feedback {
+    when (k == 0 and answer == 2) point=fig {
+      say "One cord can pull a joint bent, but then nothing can pull it straight. Look at the arm: two muscles for one elbow."
+    }
+    when (k >= 1 and answer == pick(k, 0, 6, 8)) point=ask {
+      say "That is a cord for every way. Hanging, the puppet's weight already does one of the pulls for free: which one?"
+    }
+    when (k == 2 and (answer == 4 or answer == 3)) point=ask {
+      say "The weight only brings the shoulder back to hanging. Each of its four ways out needs its own pull."
+    }
+  }
+  hint "Which pulls does the puppet need, and which does something else already do?"
+  hint "Count the pulls for one joint, then for every joint."
+}

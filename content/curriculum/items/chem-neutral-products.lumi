@@ -1,0 +1,35 @@
+# What neutralising makes: an acid and an alkali make a salt and water; an acid and a carbonate
+# (baking soda, limescale) make a salt, water and carbon dioxide, the fizz (KS3 acids and alkalis).
+item chem.neutral-products v=1 skills=[chemistry.neutralising, chemistry.changes] {
+  title "What does it make?"
+  difficulty k
+  let k=0..1 r=0..2
+  let q={pick(k, "An acid and an alkali are mixed until the pH is exactly 7. What new substances are in the beaker?", "Vinegar is poured on baking soda and it fizzes. What new substances does it make?")}
+  let right={pick(k, "a salt and water", "a salt, water and carbon dioxide")}
+  let w1={pick(k, "nothing new, just the two mixed", "only oxygen")}
+  let w2={pick(k, "oxygen and hydrogen", "a salt and water only")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x32 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      flask f shape="conical" fill=0.4 paint="green" bubbles=(if k == 1 then 8 else 0) balloon=0
+      fizz fz stage=2 spoons=2
+    }
+    text ask "{q}" narrate width=34 below=kit gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=kit {
+      say "{if k == 1 then \"The bubbles are a gas that was not there before. What else does neutralising always make?\" else \"The pH changed, so something new formed. Neutralising always makes a salt and water.\"}"
+    }
+  }
+  hint "{if k == 1 then \"Is there a gas? Which gas makes the fizz in the kitchen?\" else \"The acid and the alkali are both used up. Where did they go?\"}"
+  hint "Neutralising always makes a salt and water. Is anything else given off here?"
+}

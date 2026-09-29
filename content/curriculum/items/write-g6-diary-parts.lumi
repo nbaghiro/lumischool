@@ -1,0 +1,32 @@
+# Three sentences from one entry, matched to the job each does: what happened, how it felt, what
+# comes next. The right-hand list turns with r, so the answer is never 1, 2, 3.
+item writing.diary-parts v=1 skills=[writing.diaries, reasoning.sorting] {
+  title "What does each sentence do?"
+  difficulty k
+  let k=0..1 r=0..2
+  let s1={pick(k, "We pulled the sledge four kilometres.", "The fog came down just after lunch.")}
+  let s2={pick(k, "My legs ached, but I was proud.", "I have never felt so small and alone.")}
+  let s3={pick(k, "Tomorrow we reach the iceberg.", "If it clears, we try again at dawn.")}
+  let c1={"what happened"}
+  let c2={"a feeling"}
+  let c3={"what is next"}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x21 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      sledge sl slats=5
+      iceberg berg under=0
+    }
+    text ask "A good diary entry says what happened, a feeling, and what is next. Write the number of the job each sentence does." narrate width=32 below=pics gap=1
+    match m left=["{s1}", "{s2}", "{s3}"] right=["{if r == 1 then c3 else c2}", "{if r == 0 then c3 else c1}", "{if r == 0 then c1 else if r == 1 then c2 else c3}"] blanks=[x, y, z] below=ask gap=1
+  }
+
+  answer x=(if r == 0 then 3 else 2) y=(if r == 1 then 3 else 1) z=(if r == 0 then 2 else if r == 1 then 1 else 3)
+  hint "Which sentence is about a time that has not come yet?"
+  hint "Of the other two, which one could only be known from inside the writer's head?"
+}

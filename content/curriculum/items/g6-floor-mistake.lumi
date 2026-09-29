@@ -1,0 +1,29 @@
+# The two-star: Nell worked out 2 × radius × 3.14, which is the distance round, not the area. The
+# reason is in what the rule multiplies: the radius by itself, then by 3.14.
+item circle.floor-mistake v=1 stars=2 skills=[circles.area, reasoning.find-the-mistake] {
+  title "Nell's crater"
+  difficulty (if r >= 11 then 1 else 0)
+  let r={3, 5, 6, 9, 11, 12}
+  level easy {
+    let r={3, 9}
+  }
+  level hard {
+    let r={11, 12}
+  }
+
+  scene 35x24 {
+    circleparts c size=5 lines=1 radius=r unit="m" at=canvas(1, 1)
+    text ask "Nell says the crater floor is 2 × {r} × 3.14 = {decimals(2 * r * 3.14, 0)} square metres. What has she really found? What is the area of the floor?" narrate width=18 right-of=c gap=2
+    choice found options=["the distance round", "the diameter", "half the area"] stack=column below=ask gap=1
+    number-input answer width=7 below=found gap=1
+  }
+
+  answer found="the distance round" answer=decimals(r * r * 3.14, 0)
+  feedback {
+    when (found == "half the area") point=c {
+      say "The area is radius × radius × 3.14. Nell's 2 × radius is the diameter, and diameter × 3.14 is the way round."
+    }
+  }
+  hint "What is 2 × {r}? What is that times 3.14?"
+  hint "Which two lengths does the area rule multiply before the 3.14?"
+}

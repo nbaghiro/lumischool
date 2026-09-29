@@ -1,0 +1,44 @@
+# The way in: the repeat of a printed border, the shortest run of prints that comes round again,
+# counting shape and colour together. Hard has shapes that repeat every two prints while the colours
+# repeat every four, so the repeat is four.
+item art.folk-unit v=1 skills=[art.pattern, art.design] {
+  title "One repeat"
+  difficulty (if f <= 1 then 0 else 1)
+  let f=0..3
+  let u1={pick(f, "leaf", "flower", "leaf", "fish")}
+  let u2={pick(f, "star", "leaf", "star", "fish")}
+  let u3={pick(f, "leaf", "leaf", "leaf", "shell")}
+  let u4={pick(f, "star", "star", "star", "shell")}
+  let c1={pick(f, "red", "red", "red", "black")}
+  let c2={pick(f, "black", "black", "red", "red")}
+  let c3={pick(f, "red", "black", "black", "black")}
+  let c4={pick(f, "black", "yellow", "black", "red")}
+  let right={pick(f, 2, 4, 4, 4)}
+  level easy {
+    let f=0..1
+  }
+  level hard {
+    let f=2..3
+  }
+
+  scene 36x15 {
+    printrow row unit=[u1, u2, u3, u4] colours=[c1, c2, c3, c4] count=11 missing=-1 wrong=0 at=canvas(1, 1)
+    text ask "A printer in the old city's market prints a border for the temple's cloth, block after block. How many prints long is one repeat, the shortest run of prints, shape and colour, that comes round again and again?" narrate width=34 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 2 and right == 4) point=row {
+      say "The shapes come round after two prints, but do the colours? A repeat has to match in both."
+    }
+    when (answer == 1) point=row {
+      say "Is the second print the same as the first? A repeat goes on until the first print comes back with the same run after it."
+    }
+    when (answer == 2 * right) point=row {
+      say "That is two repeats. Is there a shorter run that already comes round again?"
+    }
+  }
+  hint "Start at the first print. Where does the same shape in the same colour come again?"
+  hint "Check that the run after it matches the first run, print for print, in shape and in colour."
+}

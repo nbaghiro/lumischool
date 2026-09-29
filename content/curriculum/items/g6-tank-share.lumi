@@ -1,0 +1,36 @@
+# A decimal times a fraction, with the decimal turned into a fraction inside the calculation, so the
+# answer can be a fraction that no decimal writes exactly.
+item fraction.tank-share v=1 skills=[fractions.multiply.decimals] {
+  title "Part of what is left"
+  difficulty (d / 3 + (if 100 * x % 10 == 0 then 0 else 1))
+  let x={0.3, 0.4, 0.6, 0.75, 0.8, 0.9} c=1..5 d={3, 6, 9}
+  where (c < d and gcd(c, d) == 1)
+  level easy {
+    let x={0.6, 0.75} d={3}
+  }
+  level hard {
+    let x={0.3, 0.75, 0.9} d={6, 9}
+  }
+
+  scene 36x15 {
+    decimalsquare sq hundredths=(100 * x) write=false at=canvas(1, 1)
+    text ask "The hut's fuel tank is {x} full, as the square shows. The stove burns {c}/{d} of that fuel by the end of the week. What fraction of a full tank is that?" narrate width=20 right-of=sq gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input top width=3
+      text slash "/"
+      number-input bottom width=3
+    }
+  }
+
+  answer top=num(x * c / d) bottom=den(x * c / d)
+  feedback {
+    when (top * d == bottom * c) point=sq {
+      say "That is {c}/{d} of a full tank. The stove burns {c}/{d} of the fuel that is in it."
+    }
+    when (top * den(x) * c == bottom * num(x) * d and top * d != bottom * c) point=sq {
+      say "Multiplying by {c}/{d} makes it smaller, not bigger. Multiply the tops and the bottoms."
+    }
+  }
+  hint "Write {x} as a fraction first. How many hundredths is it?"
+  hint "Now multiply the two fractions, tops together and bottoms together, and simplify."
+}

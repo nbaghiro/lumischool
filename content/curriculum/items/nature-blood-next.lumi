@@ -1,0 +1,45 @@
+# The blood's double loop: body, heart, lungs, heart, body. The easy two are the steps a child can
+# guess; the hard two are the trap that blood goes from the lungs straight to the body, and the
+# count of two passes through the heart.
+item nature.blood-next v=1 skills=[nature.circulation, reasoning.order] {
+  title "Where next?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "Blood comes back from Ada's legs to her heart, low on oxygen. Where does the heart send it next?", "The heart pumps blood full of oxygen out along the big blood vessel. Where is that blood going?", "Blood has just picked up oxygen in Ada's lungs. Where does it go next?", "On one whole trip, from a leg muscle round and back to the same muscle, how many times does blood pass through the heart?")}
+  let ans={pick(k, "to the lungs", "round the body", "back to the heart", "twice")}
+  let o1={pick(k, "straight back to the legs", "to the lungs", "straight to the legs", "once")}
+  let o2={pick(k, "to the stomach", "up the windpipe", "out through the windpipe", "three times")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x26 {
+    parts fig of=chest at=canvas(1, 1)
+    text ask "{asks}" narrate width=19 right-of=fig gap=2
+    choice pick options=[o1, ans, o2] stack=column below=fig gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=fig {
+      say "Blood from the legs has given away its oxygen. Where in the chest can it get more?"
+    }
+    when (k == 1 and pick != ans) point=fig {
+      say "This blood has its oxygen already. Where are the muscles that need it?"
+    }
+    when (k == 2 and pick == o1) point=fig {
+      say "The lungs cannot push blood anywhere. It has to go back to the pump first."
+    }
+    when (k == 2 and pick == o2) point=fig {
+      say "Only air goes up the windpipe. Blood stays in its tubes and goes back to the heart."
+    }
+    when (k == 3 and pick != ans) point=fig {
+      say "Follow it: leg, heart, lungs, then where? Count each time it reaches the heart."
+    }
+  }
+  hint "Put a finger on the drawing where the blood is now. Which part is joined to it?"
+  hint "The heart sends blood out on two loops, one through the lungs and one through the rest of the body. Each loop ends where it began."
+}

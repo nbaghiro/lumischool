@@ -1,0 +1,48 @@
+# The two-star reason: Ana's last two bars checked against the rules, four beats in each bar and the
+# tune ending on C. Each version breaks one rule, or none: five crotchets in bar 7, an ending on G, a
+# pair that is right, and a bar 8 of three beats.
+item music.compose-check-bars v=1 stars=2 skills=[music.composing, reasoning.find-the-error] {
+  title "Check the last two bars"
+  difficulty (if m <= 1 then 0 else 1)
+  let m=0..3
+  let a2={pick(m, "D4", "F4", "D4", "D4")}
+  let a4={pick(m, "F4", "D4", "F4", "F4")}
+  let a5={pick(m, "D4", "F4", "E4", "E4")}
+  let x2={pick(m, 1, 1, 0.5, 0.5)}
+  let x3={pick(m, 1, 0.5, 0.5, 0.5)}
+  let x4={pick(m, 1, 0.5, 1, 1)}
+  let b1={pick(m, "D4", "E4", "D4", "D4")}
+  let b2={pick(m, "C4", "G4", "C4", "C4")}
+  let y2={pick(m, 3, 3, 3, 2)}
+  let right={pick(m, "Bar 7 does not have four beats", "The tune does not end on C", "Nothing is wrong", "Bar 8 does not have four beats")}
+  level easy {
+    let m=0..1
+  }
+  level hard {
+    let m=2..3
+  }
+
+  scene 35x36 {
+    row bars space=2 align=start at=canvas(1, 1) {
+      column c7 space=0 align=start {
+        text l7 "Bar 7"
+        notes seven clef=treble notes=[E4, a2, E4, a4, a5] values=[1, x2, x3, x4, 1] meter=0
+      }
+      column c8 space=0 align=start {
+        text l8 "Bar 8"
+        notes eight clef=treble notes=[b1, b2] values=[1, y2] meter=0
+      }
+    }
+    text ask "Ana checks the last two bars of her tune: four beats in each bar, and the tune ends on C. What is wrong?" narrate width=32 below=bars gap=1
+    choice pick options=["Bar 7 does not have four beats", "Bar 8 does not have four beats", "The tune does not end on C", "Nothing is wrong"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=bars {
+      say "Check each rule in turn: add up bar 7, add up bar 8, then look at the very last note."
+    }
+  }
+  hint "Add up the beats in bar 7, then in bar 8."
+  hint "Now name the last note of bar 8."
+}

@@ -1,0 +1,37 @@
+# Where salty water freezes, from a sodium chloride brine table (the freezing point against per cent
+# salt by weight, read at 4.76, 9.09, 13.0, 16.7, 20.0 and 23.1 per cent for 5 to 30 g in 100 g of
+# water) rounded to whole degrees: 0, −3, −6, −9, −13, −16, −21.
+item chem.salt-freeze-table v=1 skills=[chemistry.freezing, data.tables, number.negatives] negatives {
+  title "Salt and the freezing point"
+  difficulty w
+  let w=0..2 r=1..5
+  let g={r * 5}
+  let t={pick(r, 0, -3, -6, -9, -13, -16)}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 35x27 {
+    table data cols=2 head=["Salt in 100 g of water", "Freezes at °C"] cells=["0 g", "0", "5 g", "-3", "10 g", "-6", "15 g", "-9", "20 g", "-13", "25 g", "-16", "30 g", "-21"] at=canvas(1, 0)
+    text ask "Ana stirs salt into 100 g of water in the research hut and finds where each mix freezes. {if w == 0 then \"At what temperature does water with \" else if w == 1 then \"How many grams of salt were in the water that froze at \" else \"How many degrees lower than fresh water does water with \"}{if w == 1 then t else g}{if w == 1 then \" °C?\" else \" g of salt freeze?\"}" narrate width=34 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then t else if w == 1 then g else 0 - t)
+  feedback {
+    when (w == 0 and answer == 0 - t) point=data {
+      say "Below zero the temperature has a minus sign. Read the number as it is written in the table."
+    }
+    when (w == 1 and answer == t) point=data {
+      say "That is the temperature. Read across to the salt in the same row."
+    }
+    when (w == 2 and answer == t) point=data {
+      say "That is the freezing point. How far is it from 0 °C, where fresh water freezes?"
+    }
+  }
+  hint "{if w == 1 then \"Find the temperature in the second column.\" else \"Find the row for the salt.\"}"
+  hint "{if w == 2 then \"Fresh water freezes at 0 °C. How many degrees is it from there down to the reading?\" else \"Read across that row to the other column.\"}"
+}

@@ -1,0 +1,41 @@
+# A blend in equal steps: each band swaps one part of the bottom colour for one of the top. The
+# bands are one more than the parts, and at hard the band is found from its recipe.
+item art.sky-bands v=1 skills=[art.blending, reasoning.pattern] {
+  title "A sky in bands"
+  difficulty (q + (if n == 6 then 1 else 0))
+  let n={4, 6} q=0..1 k=2..4
+  where (q != 0 or k == 2)
+  let qa={pick(q, "How many bands does she paint, counting the two ends", "Counting up from the bottom, how many parts of pink go in band ", "Counting up from the bottom, which band is ")}
+  let qb={pick(q, "", "", " yellow and ")}
+  let qc={pick(q, "?", "?", " pink?")}
+  level easy {
+    let n={5, 6} q={0}
+  }
+  level hard {
+    let n={6} q=1..2
+  }
+
+  scene 35x20 {
+    row sky at=canvas(1, 1) space=1 align=end {
+      icecliff cliff height=2 floes=1
+      paintpots pots pots=["yellow", "pink"] result="empty" labels=true
+    }
+    text ask "Ada blends the glow of the midnight sun from {n} parts yellow at the bottom to {n} parts pink at the top. Each band up swaps one part of yellow for one of pink. {qa}{if q == 1 then k else if q == 2 then n - k else \"\"}{qb}{if q == 2 then k else \"\"}{qc}" width=34 below=sky gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if q == 0 then n + 1 else if q == 1 then k - 1 else k + 1)
+  feedback {
+    when (q == 0 and answer == n) point=sky {
+      say "Count the bottom band too: it has no pink in it at all, and the top band has no yellow."
+    }
+    when (q == 1 and answer == k) point=sky {
+      say "The bottom band is band 1, and it has no pink. Band 2 has one part."
+    }
+    when (q == 2 and answer == k) point=sky {
+      say "Band 1 has no pink, so a band's number is one more than its parts of pink."
+    }
+  }
+  hint "What is in the bottom band? What is in the band just above it?"
+  hint "Write the bands out from the bottom, one line each, with the parts of yellow and of pink in each."
+}

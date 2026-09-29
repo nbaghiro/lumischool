@@ -1,0 +1,20 @@
+# The three-star question: an answer no single part gives, backed by clues from different parts.
+# There is no key, so a grown-up marks it against the look-for.
+item reading.ice-whole-text v=1 stars=3 skills=[reading.inference, reading.evidence] {
+  title "Clues from the whole story"
+  let k=0..1
+
+  scene 35x25 {
+    row top at=canvas(1, 1) space=1 align=end {
+      hut h pictures=4
+      sledge s slats=5
+      iceberg b under=0
+    }
+    text ask "{pick(k, \"No part says what matters most to the team. What is it? Give a clue from each of the three parts.\", \"Why did Aunt Lind take everyone up the rocky hill? Give clues from two different parts.\")}" below=top gap=1 width=34
+    writinglines lines lines=3 width=34 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="The first version: the ice in the steel tube, with a clue from each part: the team was out on the ice all night (part 1), the tube was wrapped in a blanket and carried as gently as a baby, everyone cheered at two hundred metres, and it was kept packed in snow where nobody could open it (part 2), and it was the one thing Aunt Lind had packed when the ice cracked (part 3). The second version: the hut stood on the ice shelf near its edge (part 1 says they landed on the shelf; part 3 shows water opening between the hut and the sea), and the rocky hill is land that cannot break away. A child who names the answer without clues has inferred but not yet shown it; ask which words made them think so."
+  hint "Think of each part in turn. What does each one say about the thing you are asked?"
+  hint "Write the answer first, then the words from each part that point to it."
+}

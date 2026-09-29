@@ -1,0 +1,26 @@
+# Comparing shares, not amounts: the band with the biggest share of pink belongs nearest the top.
+item art.sky-nearer v=1 skills=[art.blending, art.proportion, reasoning.compare] {
+  title "Which band goes higher?"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..2
+  let p={k % 3}
+  let o1={pick(k, "1 yellow and 2 pink", "1 yellow and 3 pink", "3 yellow and 5 pink", "2 yellow and 3 pink")}
+  let o2={pick(k, "2 yellow and 3 pink", "2 yellow and 5 pink", "1 yellow and 1 pink", "4 yellow and 5 pink")}
+  let o3={pick(k, "3 yellow and 4 pink", "3 yellow and 7 pink", "2 yellow and 3 pink", "5 yellow and 7 pink")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 36x20 {
+    paintpots pots pots=["yellow", "pink"] result="empty" labels=true at=canvas(1, 1)
+    text ask "The glow of the midnight sun turns from yellow at the bottom to pink higher up. Which of Ada's three mixes belongs highest, nearest the pink?" width=18 right-of=pots gap=1
+    choice pick options=[if p == 0 then o1 else if p == 1 then o2 else o3, if p == 0 then o2 else if p == 1 then o3 else o1, if p == 0 then o3 else if p == 1 then o1 else o2] stack=column below=pots gap=1
+  }
+
+  check paint.mixes pick=most paint=pink
+  hint "Which mix has the most pink altogether? Does that make it the pinkest?"
+  hint "Compare the pink with the yellow in each mix. Which has the most pink for each part of yellow?"
+}

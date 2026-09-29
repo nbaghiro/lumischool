@@ -1,0 +1,23 @@
+# Answering with blocks: the spiral's cards, each used once, put in order and set in so the block uses
+# itself. Any order that draws the pale spiral is right, and the key is one of them.
+item coding.self-build v=1 skills=[coding.recursion, coding.procedures, coding.drawing] {
+  title "Build the spiral"
+  difficulty (s / 2)
+  let s=3..5
+  level easy {
+    let s={3}
+  }
+  level hard {
+    let s={5}
+  }
+
+  scene 36x28 {
+    turtle t cols=(s + 1) rows=(s + 1) col=1 row=(s + 1) face=right moves=[] target=["define spiral n", "  forward n", "  turn left", "  if n is more than 1", "    spiral n - 1", "spiral {s}"] mark=false at=canvas(0, 0)
+    text ask "Put the cards in order, and set them in, so the turtle draws the pale spiral. The block has to use itself." width=16 below=t gap=1
+    codepad answer tray=["spiral n - 1", "turn left", "define spiral n", "spiral {s}", "if n is more than 1", "forward n"] lines=6 once=true key=["define spiral n", "  forward n", "  turn left", "  if n is more than 1", "    spiral n - 1", "spiral {s}"] at=canvas(18, 0)
+  }
+
+  check coding.builds of=t goal=target
+  hint "Which card says what spiral means? The lines it holds go under it, set in."
+  hint "Where must the card that uses spiral again go, so that it stops at the smallest side?"
+}

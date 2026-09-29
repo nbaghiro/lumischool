@@ -1,0 +1,35 @@
+# Past the last digit: a division by a decimal that does not stop at the tenths, so a zero is written
+# after the last digit and the division carries on (Japan's grade 5 example is 0.5 ÷ 0.4 = 1.25).
+item decimal.keep-dividing v=1 skills=[decimals.divide, division.short] {
+  title "Keep dividing"
+  difficulty (a / b + (if b == 0.8 then 1 else 0))
+  let a={0.5, 0.7, 1.3, 1.8, 2.6, 3.4} b={0.4, 0.8}
+  where (whole(100 * a / b) and not whole(10 * a / b))
+  level easy {
+    let b={0.4}
+  }
+  level hard {
+    let b={0.8}
+  }
+
+  scene 30x12 {
+    narrowboat boat windows=3 pots=2 at=canvas(1, 1)
+    text ask "The narrowboat's engine uses {b} litres of diesel for each kilometre. How many kilometres does it go on {a} litres?" narrate width=16 right-of=boat gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=5
+      text km "km"
+    }
+  }
+
+  answer decimals(a / b, 0)
+  feedback {
+    when (answer == floor(a / b)) point=ask {
+      say "Something is left over after the whole kilometres. Write a zero after the last digit and keep dividing."
+    }
+    when (answer == floor(10 * a / b) / 10) point=ask {
+      say "There is still a remainder after the tenths. One more zero, and one more digit."
+    }
+  }
+  hint "Make the number you divide by whole: what is {plain(10 * a)} ÷ {plain(10 * b)}?"
+  hint "When the digits run out and something is left, write a zero after the point and carry on."
+}

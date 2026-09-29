@@ -1,0 +1,29 @@
+# The two-star reason: why the doctor takes over the telling for chapters 16 to 18. Each wrong
+# reason is something a skimming reader might believe: Jim is taken prisoner, but only in chapter
+# 28, and he is hurt, but only in chapter 26.
+item reading.treasure-teller v=1 stars=2 skills=[reading.inference, reading.whole-book] {
+  title "Why the doctor tells it"
+  let right={"B"}
+
+  scene 36x36 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=centre {
+        bookcast c who=jim pose=walk dir=1
+        text ask "Chapters 16 to 18 are told by Dr Livesey, not by Jim. Why does the book need the doctor to tell them?" width=28
+      }
+      passage a title="A" text="Jim has been taken prisoner by the pirates, so he cannot write it down." width=34 numbers=false
+      passage b title="B" text="Jim is ashore on the island, so he cannot see what happens on the ship and at the stockade." width=34 numbers=false
+      passage d title="C" text="Jim has been hurt in the fighting, so he cannot remember it." width=34 numbers=false
+      choice pick options=["A", "B", "C"] stack=row
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=c {
+      say "Check when that happens. Where is Jim at the end of chapter 15, and who is he with?"
+    }
+  }
+  hint "Where is Jim at the end of chapter 15?"
+  hint "Could Jim tell what happened in a place where he was not?"
+}

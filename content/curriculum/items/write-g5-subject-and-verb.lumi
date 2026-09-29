@@ -1,0 +1,38 @@
+# The subject and the verb of a sentence: the verb first, then who or what does it. Some sentences
+# start with a place or a time, one puts the subject after the verb, and one hides a second noun
+# (Saturn) next to the subject (rings).
+item writing.subject-and-verb v=1 skills=[writing.grammar, writing.sentences] {
+  title "Find the verb and its subject"
+  difficulty pick(k, 0, 1, 0, 1, 2, 2)
+  let k=0..5
+  let verb={pick(k, "turns", "appeared", "cleared", "opened", "shone", "rose")}
+  let subj={pick(k, "telescope", "comet", "clouds", "dome", "rings", "moon")}
+  level easy {
+    let k=0..3
+  }
+  level hard {
+    let k=2..5
+  }
+
+  scene 34x21 {
+    telescope scope tilt=pick(k, 30, 45, 20, 60, 50, 25) at=canvas(1, 1)
+    caption line text="{pick(k, \"Every night the old telescope turns slowly.\", \"Above the dome, a bright comet appeared.\", \"At midnight, the clouds cleared at last.\", \"Slowly and silently, the huge dome opened.\", \"Through the lens the rings of Saturn shone.\", \"Behind the hill rose the full moon.\")}" width=21 right-of=scope gap=1
+    text ask "Write the verb, then its subject: the one word naming who or what does it." width=32 below=scope gap=1
+    text v "Verb" below=ask gap=1
+    word-input verb options=[verb] letters=9 right-of=v gap=1
+    text s "Subject" below=v gap=1
+    word-input subj options=[subj] letters=9 right-of=s gap=1
+  }
+
+  answer verb=verb subj=subj
+  feedback {
+    when (k == 4 and subj == "Saturn") point=line {
+      say "Saturn sits inside of Saturn. What shone: Saturn, or its rings?"
+    }
+    when (k == 5 and subj == "hill") point=line {
+      say "The hill is where it happened. What did the rising?"
+    }
+  }
+  hint "Find the word that says what happens. Then ask who or what did it."
+  hint "Skip the words that say where or when. Which naming word is left to do the action?"
+}

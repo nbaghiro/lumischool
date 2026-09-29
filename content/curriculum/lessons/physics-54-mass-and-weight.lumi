@@ -1,0 +1,70 @@
+lesson physics-mass-and-weight v=1 format=teach grade=5 unit=4 subject=physics levels=[easy, medium, hard] {
+  title "Mass and weight on other worlds"
+  goal "Work out a thing's weight on another world from its mass, which stays the same wherever it goes."
+
+  look {
+    scene 36x15 {
+      row all at=canvas(1, 0) space=1 align=start {
+        springscale s max=50 step=10 value=20 unit=N
+        planets pl count=5 names=1
+        observatory o open=1
+      }
+    }
+    say """
+      Mass is how much stuff a thing is made of, measured in kilograms, and it is the same on every
+      world. Weight is how hard a world pulls on that mass, measured in newtons. The Earth pulls each
+      kilogram with about 10 N, so a 2 kg bag reads 20 N on this force meter. The Moon pulls each
+      kilogram with only 1.6 N, Mars with 3.7 N and Jupiter with 25 N. So weight is mass times the
+      pull on each kilogram.
+      """
+  }
+  do {
+    level easy {
+      worked physics.weight-earth w=30 level=medium
+    }
+    practice physics.weight-earth count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.weight-planet count=1 seed=1 easy-seed=2 hard-seed=3 easy-count=2
+    level hard {
+      show physics.weight-planet p=1 m=20
+    }
+    practice physics.mass-same count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.weight-moon-mass count=1 seed=2
+    practice physics.moon-kitchen-scale count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.weight-which-planet count=1 seed=3 easy-seed=2 hard-seed=2
+    show physics.crane-on-moon v=1 easy-v=0 hard-v=3
+  }
+  story {
+    show physics.observatory-astronaut m=120 easy-m=100 hard-m=150
+  }
+  try stars=2 {
+    show physics.balance-on-moon d=5 easy-d=2
+  }
+  try stars=3 {
+    show physics.mystery-world v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "Mass stays the same everywhere; weight is the mass times the pull on each kilogram."
+  }
+
+  grown-ups """
+    At home, mass and weight are the same word, and the kitchen scale says kilograms, so children
+    expect an astronaut to lose kilograms on the Moon. The lesson keeps them apart: kilograms for
+    how much there is, newtons for how hard it is pulled. Listen for "it weighs less so it is
+    lighter" and ask "has anything been taken off it?". The two-star question tells the two
+    instruments apart: a pan balance compares one mass with another and still balances on the Moon,
+    while a force meter reads the pull, which is less. The kitchen scale question is the same idea
+    from the other side: a scale that shows grams is really measuring a push, so on the Moon it
+    reads low. If the decimals of 1.6 and 3.7 stall the child, work the Jupiter questions first,
+    then stay here another day. Off the page, weigh a bag of flour on a kitchen scale and on a
+    luggage scale in newtons if you have one; the Moon figure is about one sixth. The crane question
+    rounds down, because the winch must not be pulled past its limit. The three-star question puts
+    both instruments together on a world nobody names: the balance gives the mass anywhere, and the
+    meter's newtons shared between those kilograms name the world.
+    """
+  level easy {
+    grown-ups "At this level a worked example reads a force meter first, the masses are small, the other worlds are the Moon and Jupiter, the kitchen scale shows whole kilograms, the crane question is on Jupiter, where the answer divides exactly, and the unknown world is Jupiter."
+  }
+  level hard {
+    grown-ups "At this level the readings fall between the numbered marks, the other worlds are the Moon and Mars with their decimals, the kitchen scale shows half kilograms, the astronaut is 150 kg, the crane question is on Mars, where the heaviest load has to be rounded down, and the unknown world is Mars, read between the meter's marks."
+  }
+}

@@ -1,0 +1,33 @@
+# A rectangle of any size from one block: width is used twice and height twice, so the line the
+# turtle draws is twice the two added. The drawing is hidden so the child works from the block.
+item coding.inputs-box v=1 skills=[coding.procedures, coding.drawing] {
+  title "A rectangle of any size"
+  difficulty (a + b)
+  let a=2..6 b=1..4
+  where (a != b)
+  level easy {
+    where (a + b <= 5)
+  }
+  level hard {
+    where (a + b >= 7)
+  }
+
+  scene 36x19 {
+    program p code=["define box width height", "  repeat 2", "    forward width", "    turn left", "    forward height", "    turn left", "box {a} {b}"] at=canvas(1, 0)
+    temple t rows=3 right-of=p gap=1
+    text ask "The turtle marks out a garden for the temple. How many squares long is the whole line it draws?" width=15 below=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer=moves
+  feedback {
+    when (answer == a + b) point=p {
+      say "That is one width and one height. The repeat goes round twice."
+    }
+    when (answer == a * b and a * b != 2 * (a + b)) point=p {
+      say "That is how many squares the garden covers inside. The line goes round its edge."
+    }
+  }
+  hint "In box {a} {b}, what is width? What is height?"
+  hint "How many times does the turtle go forward width, and how many times forward height?"
+}

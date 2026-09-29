@@ -1,0 +1,39 @@
+# A paragraph of the canal's history and a timeline of lettered dots. The child finds the year in
+# the paragraph, working it out where the paragraph counts on from another date, and then finds that
+# year on the scale, where the dots are not evenly spaced.
+item reading.which-dot v=1 skills=[reading.text-features, reading.timeline, reading.comprehension] {
+  title "Find it on the timeline"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2, 1)
+  let k=0..6
+  let p1={"Digging began at Millhaven in 1792, with picks, shovels and hundreds of workers. In 1796 the canal opened as far as Kingsford, and the mill's flour went to market by boat. Nine years later the canal was carried on past Kingsford, up five locks at Hill Top, to the stone quarry."}
+  let p2={"In 1852 the railway reached Kingsford. Trains were faster than boats, and the canal lost most of its trade. It had one famous winter, in 1895, when it froze and the flour went by sledge. The last working boat tied up in 1961, and the canal was closed and left to fill with weeds."}
+  let p3={"In 1994 a group of volunteers cleared the weeds and mended the lock gates, and boats could once again go from the mill to Kingsford. The five Hill Top locks took fourteen years longer to mend. The last stretch, from Hill Top to the quarry, is still dry today."}
+  let event={pick(k, "the canal opened as far as Kingsford", "the railway reached Kingsford", "the last working boat tied up", "the volunteers cleared the weeds", "the canal reached the quarry", "boats could go up the Hill Top locks again", "the canal froze")}
+  level easy {
+    let k={0, 1, 2, 3}
+  }
+  level hard {
+    let k={2, 3, 4, 5, 6}
+  }
+
+  scene 35x32 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p text="{pick(k, p1, p2, p2, p3, p1, p3, p2)}" width=34 numbers=false
+      timeline line from=1780 to=2020 step=40 years=[1796, 1805, 1852, 1895, 1961, 1994, 2008] labels=["A", "B", "C", "D", "E", "F", "G"]
+      text ask "Which dot on the timeline is the year {event}?" width=34
+      choice pick options=["A", "B", "C", "D", "E", "F", "G"]
+    }
+  }
+
+  answer pick=pick(k, "A", "C", "E", "F", "B", "G", "D")
+  feedback {
+    when (k == 4 and pick == "A") point=p {
+      say "That is the year the canal reached Kingsford. It went on to the quarry some years later: how many?"
+    }
+    when (k == 5 and pick == "F") point=p {
+      say "That is when the volunteers started. The Hill Top locks took longer: how much longer?"
+    }
+  }
+  hint "Look for the words in the paragraph first. Which year goes with them?"
+  hint "Now find that year on the scale. Which dot sits at it, between which two numbers?"
+}

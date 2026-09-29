@@ -1,0 +1,33 @@
+# Reading a real painting's colour plan: in each Van Gogh named, two opposites carry the picture, and
+# the child finds the pair from a description of the colours.
+item art.glow-scheme v=1 skills=[art.complementary, art.looking, art.artists] {
+  title "Van Gogh's opposites"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2
+  let r={(k + 1) % 3}
+  let work={pick(k, "In Café Terrace at Night (1888), Van Gogh painted the awning and the wall under the gas lamp orange-yellow, the cobbles in blues and violets, and the sky a deep blue", "In The Night Café (1888), Van Gogh painted the walls blood red, the ceiling and the billiard table green, and the lamps a yellow glow", "In Irises (1890), Van Gogh painted a vase of purple irises with green leaves against a bright yellow wall")}
+  let right={pick(k, "Orange and blue", "Red and green", "Purple and yellow")}
+  let w1={pick(k, "Blue and purple", "Red and yellow", "Purple and green")}
+  let w2={pick(k, "Orange and yellow", "Green and yellow", "Green and yellow")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x27 {
+    colourwheel wheel segments=6 blank=[] ring=-1 labels=true split="none" at=canvas(1, 1)
+    text ask "{work}. Which pair of opposites is he setting side by side?" width=19 right-of=wheel gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=wheel gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=wheel {
+      say "Those two are both in the painting, but they sit near each other on the wheel. Which of the painting's colours are straight across from each other?"
+    }
+  }
+  hint "List the colours the painting uses. Find each one on the wheel."
+  hint "Which two of them are straight across the middle from each other?"
+}

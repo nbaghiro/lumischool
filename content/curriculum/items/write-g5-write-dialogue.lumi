@@ -1,0 +1,25 @@
+# The three-star: a conversation of the child's own at the telescope, set out and punctuated,
+# marked by a grown-up. At hard one line is reported rather than quoted.
+item writing.write-dialogue v=1 stars=3 skills=[writing.speech-punctuation, writing.composing] {
+  title "Your conversation"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x30 {
+    row top at=canvas(1, 0) space=2 align=end {
+      text ask "{if k == 0 then \"Ada and Leo are at the telescope on a clear night. Write six lines of what they say: a new line for each speaker, one question, and one line split by said.\" else \"Ada and Leo are at the telescope on a clear night. Write six lines of what they say: a new line for each speaker, one question, one line split by said, and one thing Leo said told as reported speech.\"}" narrate width=22
+      telescope scope tilt=45
+    }
+    writinglines lines lines=6 width=34 prompt="" below=top gap=1
+  }
+
+  check writing.by-eye look-for="Six lines of talk between Ada and Leo, each new speaker on a new line; the spoken words inside speech marks with their comma, question mark or full stop inside the closing mark; one question with its question mark inside; one line split by said with a comma after said and a small letter after the second opening mark (or a full stop and a capital if a new sentence starts); said used no more than twice; and at hard one line of reported speech with no marks, she or he for I, and the verb moved back in time."
+  hint "Plan what they talk about first: what they see, and one thing that goes wrong."
+  hint "When the lines are written, check each one: marks round the spoken words, and the mark inside."
+}

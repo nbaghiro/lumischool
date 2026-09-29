@@ -1,0 +1,27 @@
+# Who said a line, from the speech in its chapter. The wrong names are people Mary talks to in the
+# same part of the book.
+item reading.garden-who v=1 skills=[reading.characters, reading.evidence, reading.whole-book] {
+  title "Who said it?"
+  let k=0..1
+  let right={pick(k, "Ben Weatherstaff", "Colin")}
+
+  scene 35x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        robin r post=1 facing=1
+        bookcast m who=mary pose=stand dir=-1
+        text ask "{pick(k, \"Who says this to Mary in chapter 4: “Tha’ an’ me are a good bit alike”?\", \"Who says this to Mary in chapter 15: “You can’t bite a ghost or a dream”?\")}" width=18
+      }
+      choice pick options=[pick(k, "Martha", "Mary"), right, pick(k, "Dickon", "Dickon")] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=m {
+      say "Find the words in the chapter, then look just before or after them for who is speaking."
+    }
+  }
+  hint "Who is with Mary when this is said?"
+  hint "{pick(k, \"Who speaks in the Yorkshire way, and works in the kitchen gardens?\", \"Who once thought Mary was a ghost?\")}"
+}

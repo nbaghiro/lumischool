@@ -1,0 +1,36 @@
+# Moorings on the moon: three landers that differ only in the rungs on their ladders, and a note
+# whose clues, one of them negative, fit exactly one. Every version has one answer.
+item reading.lander-note v=1 skills=[reading.inference, reasoning.logic] {
+  title "Which lander is ours?"
+  difficulty pick(k, 0, 2, 1, 0)
+  let k=0..3
+  let right={pick(k, "B", "A", "A", "C")}
+
+  scene 35x25 {
+    row top at=canvas(1, 1) space=2 align=end {
+      column ca space=0 align=centre {
+        text ta "A" width=2
+        lander a rungs=pick(k, 3, 6, 5, 4)
+      }
+      column cb space=0 align=centre {
+        text tb "B" width=2
+        lander b rungs=pick(k, 5, 4, 8, 6)
+      }
+      column cc space=0 align=centre {
+        text tc "C" width=2
+        lander c rungs=pick(k, 8, 7, 3, 5)
+      }
+    }
+    passage note title="Kai's note" text="{pick(k, \"Ours is not the one with the most rungs, and it has more than four.\", \"Ours has fewer rungs than one of the others, but it is not the one with the fewest.\", \"Ours has an odd number of rungs, and it is not the one with the fewest.\", \"Count the rungs: ours has neither the most nor the fewest.\")}" width=34 numbers=false below=top gap=1
+    choice pick options=["A", "B", "C"] below=note gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=note {
+      say "That lander fits one part of the note. Which part does it break?"
+    }
+  }
+  hint "How many rungs does each ladder have?"
+  hint "Take the note one part at a time, and cross out every lander a part rules out."
+}

@@ -1,0 +1,35 @@
+# The way in: where one note of a bar starts, read from the note values before it and said as a
+# count, 1 and 2 and 3 and 4 and. The notes asked about start on an and and last over the next beat.
+item music.sync-where-starts v=1 skills=[music.syncopation, music.note-values] {
+  title "Where does it start?"
+  difficulty (if k <= 1 then 0 else if k == 2 then 1 else 2)
+  let k=0..4
+  let v1={pick(k, 0.5, 1, 1, 0.5, 0.5)}
+  let v2={pick(k, 1, 0.5, 1, 1, 1)}
+  let v3={pick(k, 0.5, 1, 0.5, 1, 1)}
+  let v4={pick(k, 1, 0.5, 1, 1, 1)}
+  let v5={pick(k, 1, 1, 0.5, 0.5, 0.5)}
+  let n={pick(k, 2, 3, 4, 3, 4)}
+  let right={pick(k, "1 and", "2 and", "3 and", "2 and", "3 and")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=3..4
+  }
+
+  scene 36x22 {
+    notes bar clef=treble notes=[C5, A4, G4, E4, G4] values=[v1, v2, v3, v4, v5] meter=4 at=canvas(1, 1)
+    text ask "Count the bar 1 and 2 and 3 and 4 and, a quaver to each word. On which count does note {n} start?" narrate width=32 below=bar gap=1
+    choice pick options=["1 and", "2", "2 and", "3", "3 and"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "2" or pick == "3") point=bar {
+      say "Add up the notes before it: a quaver is half a beat. Does the total land on a number or between two?"
+    }
+  }
+  hint "How many beats do the notes before note {n} last together?"
+  hint "A crotchet is one beat and a quaver, with its flag, is half a beat."
+}

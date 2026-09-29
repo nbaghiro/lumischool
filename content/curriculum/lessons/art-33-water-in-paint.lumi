@@ -1,0 +1,67 @@
+# Water in paint, after Hokusai's prints of waterfalls: whites kept as bare paper, strokes that follow
+# how water moves, reflections as a mirror lying flat, and water taking the sky's colour.
+lesson art-water-in-paint v=1 format=teach grade=6 unit=4 subject=art levels=[easy, medium, hard] {
+  title "Water in paint"
+  goal "Paint falling and still water by choosing the stroke for how it moves, keeping the whites, and placing its reflections."
+
+  look {
+    scene 19x15 {
+      row all at=canvas(1, 1) space=1 align=end {
+        waterfall falls drops=2 rainbow=1
+        kingfisher bird flying=0 facing=-1
+      }
+    }
+    say """
+      Around 1833 Katsushika Hokusai made eight prints of famous waterfalls in Japan. In each one
+      the water has its own shape: long lines like threads falling down a cliff, a round pool at the
+      top, spray broken into drops. Water has almost no colour of its own. It shows the sky above
+      it, holds reflections upside down, and its brightest white is the bare paper, so a painter
+      decides where the whites go before the first stroke.
+      """
+  }
+  do {
+    practice art.water-leave-white count=1 seed=1
+    level easy {
+      worked art.water-reflect q=0 d=5 level=medium
+    }
+    practice art.water-reflect count=2 seed=3
+    practice art.water-strokes count=2 seed=1
+    practice art.water-reflection-colour count=1 hard-count=2 seed=3
+    practice art.water-sky-colour count=2 seed=2
+  }
+  try stars=2 {
+    show art.water-lines-why r=1 easy-r=0 hard-r=2
+  }
+  try stars=3 {
+    show art.water-falls-painting
+  }
+  remember {
+    say "Paint water the way it moves, keep its whites as bare paper, and let it show what is above it."
+  }
+
+  grown-ups """
+    Katsushika Hokusai lived from 1760 to 1849, and his set of prints A Tour of the Waterfalls of
+    the Provinces, from about 1833, is long out of copyright; the lesson uses drawings of our own.
+    Most of the questions are marked by the machine. The first plans the whites of a watercolour,
+    which is the habit that decides whether water looks wet. The core places a reflection as far
+    below the water line as its thing is above, which is a mirror lying flat, chooses the stroke for
+    each kind of water, mixes a reflection a little darker, and works out the colour of a pool from
+    the sky above it.
+
+    Watch for a child who paints every piece of water blue. The sky questions are there to unsettle
+    that; a look at a real puddle under a grey sky settles it better. If the reflection questions
+    are stuck, stand a toy on a mirror laid flat and measure. The two-star question asks why Hokusai
+    drew the falls in lines, which asks the child to read a picture as an artist does. The painting
+    is the three-star question and is responded to rather than marked. Off the page, watch a tap
+    running thinly and then fast, and describe the shapes of the water.
+
+    Respond by pointing to where the paper shows: "The white here is the paper, and it looks like
+    foam." Ask where they planned the whites before they started.
+    """
+  level easy {
+    grown-ups "At this level the whites are the foam or the spray, a heron's reflection is worked once in the teacher's pen before more, the strokes are for falling and still water, the reflections are of the sky or the gorge wall, the ponds are under a blue or grey sky, the two-star print is the Kirifuri falls, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the whites are a sparkle or the threads of falling water, the gap between the kingfisher's twig and its reflection is asked, the strokes include spray and the water running down the mill wheel, a second reflection is mixed and the sunset appears, the ponds are under a sunset or half in the cliff's shadow, the two-star print is the Amida falls, and the three-star is as written."
+  }
+}

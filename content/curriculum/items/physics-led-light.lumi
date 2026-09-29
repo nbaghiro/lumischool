@@ -1,0 +1,30 @@
+# The bands of a filament bulb and of an LED: this bulb gives about 5 of every 100 J as light and this
+# LED about 40, the rest heating. t is the lamp, i the joules in, b the band left as a question mark.
+item physics.led-light v=1 skills=[physics.energy, physics.circuits, reasoning.backwards] {
+  title "Light and heat"
+  difficulty ((if b == 1 then 0 else 1) + (if i == 100 then 0 else 1))
+  let t=0..1 i={100, 200, 500} b=1..2
+  level easy {
+    let i={100} b=1..1
+  }
+  level hard {
+    let i={200, 500} b=2..2
+  }
+  let lamp={pick(t, "filament bulb", "LED")}
+  let share={pick(t, 5, 40)}
+
+  scene 24x23 {
+    energyflow e thing="{lamp}" from="electricity" to="light" input=i useful=(i * share / 100) wasted=[i - i * share / 100] wastes=["heating"] blank=b unit=J at=canvas(1, 0)
+    text ask "This {lamp} turns {share} of every 100 J it is given into light. It is given {i} J. How many joules go into the band with the question mark?" narrate width=22 below=e gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.energy of=e answer=missing
+  feedback {
+    when (answer == share and i != 100) point=e {
+      say "That is out of 100 J. This lamp is given {i} J."
+    }
+  }
+  hint "How many hundreds are there in {i} J?"
+  hint "Find the light first. The light and the heating add up to what goes in."
+}

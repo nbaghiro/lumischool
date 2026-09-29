@@ -1,0 +1,32 @@
+# The way in to a running total: total starts at 0 and each time round the item is added to it, so
+# it ends as the list added up. The box beside the program is left for the child to fill.
+item coding.total-sum v=1 skills=[coding.variables, coding.lists] {
+  title "Sacks at the mill"
+  difficulty ((a + b + c + d * n) / 4)
+  let n=0..1 a=2..6 b=3..7 c=1..5 d={4}
+  where (a != b and b != c)
+  level easy {
+    let n={0}
+    where (a + b + c <= 12)
+  }
+  level hard {
+    let n={1}
+    where (a + b + c >= 12)
+  }
+
+  scene 36x15 {
+    program p code=["set sacks to list {a}, {b}, {c}{if n == 1 then \", 4\" else \"\"}", "set total to 0", "for each s in sacks", "  add s to total"] at=canvas(1, 0)
+    variable v name=total code=["set sacks to list {a}, {b}, {c}{if n == 1 then \", 4\" else \"\"}", "set total to 0", "for each s in sacks", "  add s to total"] blank=true history=false right-of=p gap=1
+    text ask "Each boat brings sacks of flour to the mill. What is total when the program ends?" width=22 below=p gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=v answer="value(total)"
+  feedback {
+    when (answer == pick(2 + n, a, b, c, d)) point=p {
+      say "That is the last item. Each time round the item is added on to what total already holds."
+    }
+  }
+  hint "What does total hold after the first time round? After the second?"
+  hint "Add each item on to the total, one at a time."
+}

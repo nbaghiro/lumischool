@@ -1,0 +1,34 @@
+# Puzzle: the orbit's repeat is one step short or long for its turn, so the lander does not get back
+# round. The turn in all is run; the number the repeat needs follows from 360.
+item coding.puzzle-orbit v=1 skills=[coding.debugging, coding.simulation, angles.turns] {
+  title "Not quite round"
+  difficulty k
+  let k=0..2
+  let t={pick(k, 40, 30, 24)} r={pick(k, 8, 11, 14)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x17 {
+    program p code=["repeat {r}", "  forward 1", "  turn left {t}"] text=true at=canvas(0, 0)
+    earth e up=0 right-of=p gap=1
+    text ask "The lander should go exactly once round the moon. How many degrees does it turn in all as written? What number should the repeat have?" width=34 at=canvas(0, 9)
+    text tt "turned" below=ask gap=1
+    number-input turned right-of=tt gap=1
+    text tn "repeat" right-of=turned gap=2
+    number-input fix right-of=tn gap=1
+  }
+
+  check coding.runs of=p turned=turned
+  answer fix=(360 / t)
+  feedback {
+    when (fix == r) point=p {
+      say "That is the number now, and it turns {r * t} degrees, not 360."
+    }
+  }
+  hint "How many degrees does it turn each time round? How many times round?"
+  hint "How many turns of {t} make 360?"
+}

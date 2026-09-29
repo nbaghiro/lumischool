@@ -1,0 +1,27 @@
+# The evidence of Iris's feelings put back in story order. The order has to come from the story,
+# not from the feelings, since proud could come before or after scared in another story.
+item reading.feelings-order v=1 skills=[reading.character, reading.sequencing, reading.evidence] {
+  title "Her feelings in order"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 34x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "These show how Iris felt at four moments. Number them in the order they happen in the story." width=33
+      row bottom space=2 align=end {
+        sequence s items=[pick(k, "Her hands shook in the dark.", "She grinned at the top of the tower.", "She waited on the step with a cloth."), pick(k, "She grinned at the top of the tower.", "She kicked the bottom step.", "Her hands shook in the dark."), pick(k, "She kicked the bottom step.", "She waited on the step with a cloth.", "She muttered that clocks are boring."), pick(k, "She waited on the step with a cloth.", "Her hands shook in the dark.", "She grinned at the top of the tower.")] blanks=[p1, p2, p3, p4]
+        clocktower tower hour=12 minute=0
+      }
+    }
+  }
+
+  answer p1=pick(k, 2, 3, 4) p2=pick(k, 3, 1, 2) p3=pick(k, 1, 4, 1) p4=pick(k, 4, 2, 3)
+  hint "Which of these happens before the clock stops? Which happens after the bell?"
+  hint "Put the two ends first, then the two in the middle."
+}

@@ -1,0 +1,36 @@
+# Two-star: two programs differ only in where "set total to 0" sits. Inside the repeat it empties
+# the total every time round, so the program ends with the last item; the child says which one adds
+# up.
+item coding.total-which v=1 stars=2 skills=[coding.variables, coding.debugging, reasoning.compare] {
+  title "Which one adds them all?"
+  difficulty (k + (if a > 5 then 0.5 else 0))
+  let k=0..1 a={4, 7} b={3, 6} c={5}
+  level easy {
+    let k={0} a={4}
+  }
+  level hard {
+    let k={1} a={7}
+  }
+
+  scene 36x20 {
+    listbox l name=cargo code=["set cargo to list {a}, {b}, {c}"] at=canvas(0, 0)
+    row both below=l gap=1 space=1 align=start {
+      program pa code=["{if k == 0 then \"set total to 0\" else \"for each x in cargo\"}", "{if k == 0 then \"for each x in cargo\" else \"  set total to 0\"}", "  add x to total"] title="A"
+      program pb code=["{if k == 1 then \"set total to 0\" else \"for each x in cargo\"}", "{if k == 1 then \"for each x in cargo\" else \"  set total to 0\"}", "  add x to total"] title="B"
+    }
+    text ask "The keeper wants total to be all the crates in cargo. Which program does that?" width=15 right-of=l gap=1
+    choice pick options=["A", "B", "Both of them"] below=both gap=1
+  }
+
+  answer pick=pick(k, "A", "B")
+  feedback {
+    when (pick == "Both of them") point=both {
+      say "One program sets total to 0 inside the repeat, so it is emptied every time round."
+    }
+    when (pick == pick(k, "B", "A")) point=both {
+      say "That program sets total to 0 inside the repeat, so at the end it holds only the last number."
+    }
+  }
+  hint "Run each program with the list. What does total hold after the first time round, and after the second?"
+  hint "In one program total is set to 0 every time round. What is left in it at the end?"
+}

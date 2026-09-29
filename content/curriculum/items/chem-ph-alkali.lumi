@@ -1,0 +1,23 @@
+# The strongest alkali is the one furthest above 7: sea water 8.1, baking soda 8.3 (PubChem), milk of
+# magnesia 10.5, washing soda 11.4 and limewater 12.4 (PubChem).
+item chem.ph-alkali v=1 skills=[chemistry.acids] {
+  title "The strongest alkali"
+  difficulty (if s == 3 or s == 4 or s == 5 then 1 else 0)
+  let s=0..5
+  level easy {
+    let s={0, 1, 2}
+  }
+  level hard {
+    let s={3, 4, 5}
+  }
+
+  scene 35x20 {
+    phscale p liquids=[pick(s, "magnesia", "seawater", "washingsoda", "bakingsoda", "seawater", "limewater"), pick(s, "lemon", "washingsoda", "limewater", "seawater", "bakingsoda", "magnesia"), pick(s, "bakingsoda", "vinegar", "magnesia", "magnesia", "milk", "washingsoda"), pick(s, "water", "magnesia", "orange", "washingsoda", "rain", "bakingsoda")] letters=1 names=1 at=canvas(1, 0)
+    text ask "At the mill a grown-up marks four liquids on the pH scale. Which one is the strongest alkali?" narrate width=34 below=p gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  check chem.indicator of=p pick=strongest(alkali)
+  hint "Which of the pointers are above 7, on the alkali side?"
+  hint "The further from 7, the stronger. Which alkali is furthest to the right?"
+}

@@ -1,0 +1,26 @@
+# Two stars: renewable means nature replaces it, not that it is there every moment; in the polar
+# winter the sun does not rise for weeks, yet sunlight returns and is not used up.
+item physics.sun-renewable v=1 stars=2 skills=[physics.energy, reasoning.explain] {
+  title "Is sunlight renewable?"
+
+  scene 31x36 {
+    midnightsun s suns=5 midnight=1 at=canvas(1, 0)
+    text ask "At the hut the sun never sets in summer, but in winter it does not rise for weeks. Leo says that means sunlight is not a renewable resource there. What is the best answer to Leo?" narrate width=22 below=s gap=1
+    choice pick options=["Renewable: it comes back and is not used up", "Leo is right: it must always be there", "Leo is right: the sun is running out", "Renewable: the panel stores it for winter"] stack=column below=ask gap=1
+  }
+
+  answer pick="Renewable: it comes back and is not used up"
+  feedback {
+    when (pick == "Leo is right: it must always be there") point=s {
+      say "The wind drops and rivers freeze too. Renewable means nature replaces it. Does winter use the sunlight up?"
+    }
+    when (pick == "Leo is right: the sun is running out") point=s {
+      say "The sun is the same sun each summer. The dark winter comes from the Earth's lean, not from the sun."
+    }
+    when (pick == "Renewable: the panel stores it for winter") point=s {
+      say "A panel makes electricity only while light falls on it. It stores nothing."
+    }
+  }
+  hint "What does renewable mean: always there, or replaced by nature?"
+  hint "When the summer comes back, is there any less sunlight than last year?"
+}

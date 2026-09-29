@@ -1,0 +1,30 @@
+# The story: the hut's panel faces the midnight sun square on; the meter is the rated watts times the
+# share of light, and each 20 W lamp takes 20 J every second. l is the light the cloud lets through.
+item physics.hut-panel-lamps v=1 skills=[physics.energy, division.grouping] {
+  title "Lamps at the hut"
+  difficulty (if l == 100 then 0 else if l == 80 then 0.5 else 1)
+  let l={100, 80, 60} s={20, 25}
+  level easy {
+    let l={100}
+  }
+  level hard {
+    let l={60}
+  }
+
+  scene 23x27 {
+    solarpanel p sun=s slope=(90 - s) rated=200 light=l marks=1 show=0 at=canvas(1, 0)
+    text ask "The stand turns to follow the midnight sun round the sky, so the panel always faces it square on. What does the meter read, and how many lamps of 20 W can it keep lit in the hut?" narrate width=21 below=p gap=1
+    number-input watts below=ask gap=1
+    number-input lamps right-of=watts gap=3
+  }
+
+  answer lamps=(2 * l / 20)
+  check physics.energy of=p watts=watts
+  feedback {
+    when (lamps == 10 and l != 100) point=p {
+      say "That is the panel in full sun. How much light gets through the cloud?"
+    }
+  }
+  hint "In full sun it gives what the plate says. How much of that gets through the cloud?"
+  hint "Each lamp takes 20 J every second. How many lots of 20 are in the meter's watts?"
+}

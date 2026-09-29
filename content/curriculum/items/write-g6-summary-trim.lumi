@@ -1,0 +1,40 @@
+# The story: Mia's first draft of the gorge summary is over fifty words, and the child chooses the cut
+# that brings it to fifty or fewer and keeps every main point. One wrong cut drops a main point; the
+# other is only a detail and leaves the draft over the limit. Counts: 59-9=50, 54-8=46, 54-4=50.
+item writing.summary-trim v=1 skills=[writing.summarising, writing.revising, writing.concision] {
+  title "Down to fifty"
+  difficulty k
+  let k=0..2 r=0..2
+  let draft={pick(k, "The river has cut the gorge for about ten thousand years, and its spring floods carry stones that scrape the rock like sandpaper. It drops over a shelf of hard limestone that sits on soft sandstone. Kingfishers fish in the deep pool below. As the sandstone wears away, the shelf breaks, and the falls move back up the valley.", "For ten thousand years the river has been cutting this amazing gorge, helped by the stones that its spring floods carry along. The river falls over hard limestone resting on soft sandstone, which you can see from the bridge. The sandstone wears away until the limestone breaks, so the falls creep up the valley.", "The river has cut the gorge over ten thousand years, helped by the stones that its brown spring floods carry. It falls over a shelf of hard rock, which rests on soft rock. As the soft rock wears away, the shelf breaks off in slabs, and the falls move slowly back up the valley.")}
+  let t={pick(k, 59, 54, 54)}
+  let right={pick(k, "Cut the kingfisher sentence and like sandpaper.", "Cut amazing and the words about the bridge.", "Cut brown spring and in slabs.")}
+  let w1={pick(k, "Cut the last sentence.", "Cut the last sentence.", "Cut and the falls move slowly back up the valley.")}
+  let w2={pick(k, "Cut the kingfisher sentence.", "Cut the word amazing.", "Cut in slabs.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x37 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage p title="Mia's first draft" text="{draft}" width=25 numbers=false
+      person mia pose=think age=child hair=braids colour=brown top=berry
+    }
+    text ask "Mia's draft is {t} words, and the limit is fifty. Which cut brings it to fifty or fewer and keeps every main point?" narrate width=33 below=top gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=p {
+      say "That brings the draft under fifty, but the end is a main point: how the falls move back up the valley. A summary that loses it is short and wrong."
+    }
+    when (pick == w2) point=p {
+      say "That word or sentence can go, but count what is left. Take the words you cut away from {t}: is it fifty or fewer yet?"
+    }
+  }
+  hint "Which parts of the draft are details the gorge page could lose, and which are main points?"
+  hint "For each cut, count its words and take them away from {t}."
+}

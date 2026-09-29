@@ -1,0 +1,25 @@
+# Three-star: the text has lost its spaces, so which lines a repeat holds has to be worked out from
+# the pale drawing. The cards are used once each, and the pad sets them in and out.
+item coding.text-flat v=1 stars=3 skills=[coding.text, coding.repetition, reasoning.work-backwards] {
+  title "The text that lost its spaces"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x34 {
+    text ask "A snowstorm got into the station's printer, and every space at the start of a line is gone. Put the cards in order and set them in so the turtle draws the pale shape." width=35 at=canvas(0, 0)
+    program p code=["repeat {pick(k, 3, 2)}", "{pick(k, \"forward 1\", \"repeat 4\")}", "{pick(k, \"turn left\", \"forward 2\")}", "{pick(k, \"forward 1\", \"turn left\")}", "{pick(k, \"turn right\", \"forward 2\")}"] text=true below=ask gap=1
+    codepad answer tray=["repeat {pick(k, 3, 2)}", "{pick(k, \"forward 1\", \"repeat 4\")}", "{pick(k, \"turn left\", \"forward 2\")}", "{pick(k, \"forward 1\", \"turn left\")}", "{pick(k, \"turn right\", \"forward 2\")}"] lines=5 once=true key=["repeat {pick(k, 3, 2)}", "{pick(k, \"  forward 1\", \"  repeat 4\")}", "{pick(k, \"  turn left\", \"    forward 2\")}", "{pick(k, \"  forward 1\", \"    turn left\")}", "{pick(k, \"  turn right\", \"  forward 2\")}"] right-of=p gap=1
+    turtle t cols=pick(k, 4, 5) rows=pick(k, 4, 3) col=1 row=pick(k, 4, 3) face=right moves=[] target=["repeat {pick(k, 3, 2)}", "{pick(k, \"  forward 1\", \"  repeat 4\")}", "{pick(k, \"  turn left\", \"    forward 2\")}", "{pick(k, \"  forward 1\", \"    turn left\")}", "{pick(k, \"  turn right\", \"  forward 2\")}"] mark=false below=p gap=1
+  }
+
+  check coding.builds of=t goal=target
+  hint "Count the parts of the pale shape that look the same. Which repeat draws them?"
+  hint "Which lines must run every time round, and which only once?"
+  hint "{pick(k, \"Each step up is a forward, a turn, a forward and a turn.\", \"Each small square is a forward and a turn, four times. What happens between the two squares?\")}"
+}

@@ -1,0 +1,30 @@
+# England's year 5 and 6 rule: -cial is common after a vowel letter and -tial after a consonant
+# letter. The hard versions put initial and financial, the Appendix's exceptions, in their right
+# columns, so a child sorting by the rule alone picks one of them.
+item writing.cial-or-tial v=1 skills=[writing.spelling] {
+  title "Which letter fits the gap?"
+  difficulty (if k <= 3 then 0 else if k <= 5 then 1 else 2)
+  let k=0..7
+  let odd={pick(k, "official", "crucial", "partial", "essential", "special", "confidential", "crucial", "partial")}
+  level easy {
+    let k=0..3
+  }
+  level hard {
+    let k=4..7
+  }
+
+  scene 30x25 {
+    text ask "Each gap is a c or a t. One word is in the wrong column. Write that word, spelt right." width=28 at=canvas(1, 1)
+    wordsort sort heads=["c", "t"] words=[if k <= 5 then "offi_ial" else "ini_ial", "spe_ial", "cru_ial", "par_ial", if k <= 5 then "essen_ial" else "finan_ial", "confiden_ial"] into=[pick(k, 1, 0, 0, 0, 0, 0, 1, 1), pick(k, 0, 0, 0, 0, 1, 0, 0, 0), pick(k, 0, 1, 0, 0, 0, 0, 1, 0), pick(k, 1, 1, 0, 1, 1, 1, 1, 0), pick(k, 1, 1, 1, 0, 1, 1, 0, 0), pick(k, 1, 1, 1, 1, 1, 0, 1, 1)] below=ask gap=1
+    word-input pick options=[odd] letters=12 below=sort gap=1
+  }
+
+  answer pick=odd
+  feedback {
+    when (k >= 6 and (pick == "initial" or pick == "financial")) point=sort {
+      say "That word breaks the rule and is spelt right where it is. Look again at the others."
+    }
+  }
+  hint "For each word, look at the letter just before the gap. Is it a vowel letter or a consonant letter?"
+  hint "After a vowel letter the gap is usually c; after a consonant letter, t. Which word breaks that without a reason?"
+}

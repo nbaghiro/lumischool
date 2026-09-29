@@ -1,0 +1,61 @@
+lesson g6-speed-distance-and-time v=1 format=teach grade=6 unit=4 subject=maths levels=[easy, medium, hard] {
+  title "Speed, distance and time, and the distance-time graph"
+  goal "Find a speed, a distance or a time from the other two, and read a speed off a distance-time graph."
+
+  look {
+    scene 35x20 {
+      linegraph graph labels=["start", "1 h", "2 h", "3 h"] values=[0, 12, 24, 36] min=0 max=45 per=3 step=9 color=sky at=canvas(1, 1)
+      ropebridge bridge planks=10 gaps=0 right-of=graph gap=2
+    }
+    say """
+      A cyclist rides from the mill along the gorge road. The graph shows how far she has gone after
+      each hour: 12 km, then 24, then 36, so her speed is 12 km in each hour, 12 km/h. Speed is the
+      distance gone in one unit of time. Distance is speed times time, and time is distance shared
+      by the speed. On a distance-time graph a steeper line is a faster speed, and a flat line is a
+      rest.
+      """
+  }
+  do {
+    practice speed.cyclist-gorge-road count=1 seed=3
+    level easy {
+      worked speed.boat-down-river v=8 m=90 level=medium
+    }
+    practice speed.boat-down-river count=1 seed=4
+    show speed.kingfisher-bridge s=8 t=12 easy-s=10 easy-t=6 hard-s=12 hard-t=20
+    practice speed.cyclist-graph-hour count=1 seed=6
+    show speed.which-canoe-faster a=9 t1=1.5 b=14 t2=2 easy-a=15 easy-t1=3 easy-b=10 easy-t2=2.5 hard-a=15 hard-t1=3 hard-b=14 hard-t2=2
+    show speed.river-metres-per-second v=12 d=0 easy-v=5 hard-v=8 hard-d=1
+    practice speed.boat-down-river count=1 seed=8 hard-seed=21
+    level hard {
+      show speed.cyclist-graph-hour p=12 q=0 r=8 k=2
+    }
+    show speed.kingfisher-bridge s=12 t=8 easy-s=10 easy-t=9 hard-s=15 hard-t=12
+  }
+  try stars=2 {
+    show speed.round-trip-mistake s=1 easy-s=0 hard-s=2
+  }
+  try stars=3 {
+    show speed.catch-the-cyclist a=12 g=4 h=30 easy-g=6 hard-a=15 hard-g=3 hard-h=20
+  }
+  remember {
+    say "Speed is the distance gone in one hour or one second. Distance is speed times time, and time is distance shared by the speed."
+  }
+
+  grown-ups """
+    The three facts are one fact seen three ways, and a double number line with kilometres on top
+    and hours underneath shows all of them. The common slips are mixing minutes with hours (8 km/h
+    for 30 minutes is 4 km, not 240) and multiplying when the time is the unknown, so ask each time
+    what one hour, or one second, is worth. On the graph, the speed in one hour is how far the line
+    climbs in that hour, not how high it is. In the two-star question the boat spends longer on the
+    slow way, so the average is below halfway; total distance over total time settles it. In the
+    three-star question Kit closes the gap only by the difference in speeds. If minutes and hours
+    still tangle, stay here another day with whole hours. Off the page, time a walk to the shop and
+    back and work out the speed in metres per second.
+    """
+  level easy {
+    grown-ups "At this level the rides take 2 hours, a boat trip of 90 minutes is worked in the teacher's pen, the boat goes for whole hours or half an hour, the kingfisher flies 10 m/s, the graph's first hour is asked, the canoe that went further is also the faster, 5 m/s is changed to km/h, the two-star boat goes 3 and 6 km/h, and Kit is 6 km/h faster with a 30-minute gap."
+  }
+  level hard {
+    grown-ups "At this level the rides take 4 hours, the boat goes for 20, 40 or 45 minutes, the kingfisher flies 12 or 15 m/s, the graph is asked twice with a rest in it, the canoe that went further is the slower, the speed is changed from km/h to m/s, the two-star boat goes 6 and 12 km/h over 24 km, and Kit is only 3 km/h faster at 15 and 18 km/h with a 20-minute gap."
+  }
+}

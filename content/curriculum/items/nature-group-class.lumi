@@ -1,0 +1,37 @@
+# The way in to the animals with a backbone: five groups told apart by skin, breathing, eggs and milk.
+# Each version gives the clues of one animal from the old city and asks for its group; the table of
+# features is on the page, so this is reading clues against it.
+item nature.group-class v=1 skills=[nature.sorting, nature.animals] {
+  title "Which group has it?"
+  difficulty pick(k, 0, 0, 1, 1)
+  let k=0..3
+  let clues={pick(k, "has fur and feeds its young on milk. It hangs upside down in the clock tower by day", "has dry, scaly skin and lays eggs with leathery shells, on land. It suns itself on the city wall", "has moist skin with no scales. It lays its eggs in the temple pond, and its young breathe with gills", "has fins and scales, breathes with gills all its life, and lays soft eggs in the fountain's water")}
+  let ans={pick(k, "mammal", "reptile", "amphibian", "fish")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x42 {
+    table t cols=2 head=["Group", "What they have"] cells=["fish", "fins, scales, gills", "amphibian", "moist skin, eggs in water", "reptile", "dry scales, leathery eggs", "bird", "feathers, hard-shelled eggs", "mammal", "fur or hair, milk for young"] at=canvas(1, 1)
+    text ask "Ben finds an animal with a backbone in the old city. It {clues}. Which group is it in?" narrate width=32 below=t gap=1
+    choice pick options=["fish", "amphibian", "reptile", "bird", "mammal"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 1 and pick == "amphibian") point=t {
+      say "Amphibians have moist skin and lay their eggs in water. These eggs are on land, in leathery shells."
+    }
+    when (k == 2 and pick == "reptile") point=t {
+      say "Reptiles have dry scales. What does the table say about moist skin and eggs in water?"
+    }
+    when (k == 2 and pick == "fish") point=t {
+      say "Only the young breathe with gills here. A fish breathes with gills all its life."
+    }
+  }
+  hint "Pick out the one clue that only one group in the table has."
+  hint "Check the other clues against that row too."
+}

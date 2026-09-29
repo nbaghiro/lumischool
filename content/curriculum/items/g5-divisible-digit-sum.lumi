@@ -1,0 +1,36 @@
+# The test for 3 and for 9: add the digits, and the number is in the times table exactly when the
+# digit sum is. The where line makes the last-digit habit tempting in some versions.
+item divisible.digit-sum v=1 skills=[number.multiples.divisibility] {
+  title "Add the digits"
+  difficulty (if k == 3 then 0 else 1)
+  let k={3, 9} a=1..9 b=0..9 c=0..9 d=0..9
+  where (((a + b + c + d) % 3 == 0 or d % 3 == 0) and a + b + c + d > 9)
+  level easy {
+    let k={3}
+  }
+  level hard {
+    let k={9}
+  }
+
+  scene 36x17 {
+    digitcards cards digits=[a, b, c, d] at=canvas(1, 1)
+    text ask "The telescope counted {a}{b}{c}{d} stars in one patch of sky. What do its digits add up to? Is {a}{b}{c}{d} in the {k} times table?" narrate width=34 below=cards gap=1
+    row eq below=ask gap=1 space=1 {
+      text s "digit sum"
+      number-input sum width=3
+      choice pick options=["yes", "no"]
+    }
+  }
+
+  answer sum=(a + b + c + d) pick=(if (a + b + c + d) % k == 0 then "yes" else "no")
+  feedback {
+    when (pick == "yes" and d % k == 0 and (a + b + c + d) % k != 0) point=cards {
+      say "The last digit is the test for 2, 5 and 10. For {k}, look at the digit sum."
+    }
+    when (sum != a + b + c + d) point=cards {
+      say "Add the four cards again, one at a time."
+    }
+  }
+  hint "What do the four cards add up to?"
+  hint "Is that sum in the {k} times table?"
+}

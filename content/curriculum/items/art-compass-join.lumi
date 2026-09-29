@@ -1,0 +1,31 @@
+# Joining every s-th of n even marks round a circle closes into a shape with n / s sides, when s
+# divides n: the hexagon and the triangle inside the six-petal rosette, and their cousins.
+item art.compass-join v=1 skills=[art.pattern, shape.polygons, reasoning.pattern] {
+  title "Joining the marks"
+  difficulty pick(c, 0, 1, 1, 2, 2, 2, 0)
+  let c=0..6
+  let n={pick(c, 6, 6, 8, 12, 12, 12, 8)}
+  let how={pick(c, "each mark to the next one", "every second mark", "every second mark", "every third mark", "every fourth mark", "every second mark", "each mark to the next one")}
+  let shape={pick(c, "hexagon", "triangle", "square", "square", "triangle", "hexagon", "octagon")}
+  level easy {
+    let c={0, 1, 6}
+  }
+  level hard {
+    let c={3, 4, 5}
+  }
+
+  scene 36x17 {
+    radial marks repeats=n motif="drop" missing=-1 colour=sky at=canvas(1, 1)
+    text ask "Ada marks {n} points evenly round a circle. With a ruler she joins {how}, going round until she is back at the start. What shape does she draw?" width=21 right-of=marks gap=2
+    choice pick options=["triangle", "square", "hexagon", "octagon"] below=marks gap=1
+  }
+
+  answer pick=shape
+  feedback {
+    when (pick != shape) point=marks {
+      say "Count the marks the ruler lands on before it comes back to the start. That is the number of corners."
+    }
+  }
+  hint "Start at one mark and count along. Which marks does the ruler land on?"
+  hint "How many marks does it land on before it is back at the start? That many corners."
+}

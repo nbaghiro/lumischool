@@ -1,0 +1,27 @@
+# Two stars: the misconception that more water pushes harder. A narrow and a wide tank, holes lettered
+# A in each, and only the depth of the hole below the surface decides the jet. v=0 the holes are
+# equally deep; v=1 and v=2 the deeper hole is in the narrow tank, whatever the wide one holds.
+item physics.spouts-same-depth v=1 stars=2 skills=[physics.pressure, reasoning.compare] {
+  title "More water, more push?"
+  let v=0..2
+  let hn={pick(v, 20, 30, 25)}
+  let hw={pick(v, 20, 20, 15)}
+
+  scene 34x33 {
+    row two at=canvas(1, 0) space=1 align=start {
+      spouts n depth=40 holes=[hn] wide=0 show=0 tag="1"
+      spouts w depth=40 holes=[hw] wide=1 show=0 tag="2"
+    }
+    text ask "Tank 2 holds more than twice as much water as tank 1. Whose jet will land further from its tank when the tape comes off?" narrate width=28 below=two gap=1
+    choice pick options=["Tank 1", "Tank 2", "The same"] below=ask gap=1
+  }
+
+  answer pick=(if hn == hw then "The same" else if hn > hw then "Tank 1" else "Tank 2")
+  feedback {
+    when (pick == "Tank 2" and hn >= hw) point=w {
+      say "The amount of water in a tank does not decide the push. Only the depth of the hole below the surface does."
+    }
+  }
+  hint "What decides how hard water pushes at a hole: how much water there is, or how deep the hole is?"
+  hint "Read how far below the surface each hole is."
+}

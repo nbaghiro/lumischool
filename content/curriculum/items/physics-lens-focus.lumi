@@ -1,0 +1,23 @@
+# The way in: parallel light from far away meets at one point behind a lens, read on the ruler; the
+# checker takes it from the lens the drawing bends light by.
+item physics.lens-focus v=1 skills=[physics.light, physics.measuring] {
+  title "Where the light meets"
+  difficulty (if f % 10 == 0 then 0 else 1)
+  let f={10, 20, 30, 8, 14, 26, 36}
+  level easy {
+    let f={10, 20, 30}
+  }
+  level hard {
+    let f={14, 26, 36}
+  }
+
+  scene 26x19 {
+    lens l mode=lens focus=f show=1 at=canvas(1, 0)
+    text ask "Light from a far-away star goes through a lens and meets at one point, its focus. How many centimetres behind the lens is the focus?" narrate width=25 below=l gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.light of=l answer=focus
+  hint "Find the dot where the beams cross."
+  hint "Read the ruler straight below the dot. Each small mark is 2 cm."
+}

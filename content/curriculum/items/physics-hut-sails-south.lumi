@@ -1,0 +1,37 @@
+# The story: the team leaves the hut and sails south on 21 June, to a harbour inside or outside the
+# Arctic circle; the midnight sun is there only north of 66.5 degrees, and the noon sun is higher.
+item physics.hut-sails-south v=1 skills=[physics.sky, angles.degrees, decimals.add] {
+  title "Sailing south"
+  difficulty ((if lat > 66 then 0 else 1) + (if lat < 60 then 1 else 0))
+  let lat={70, 60, 50}
+  level easy {
+    let lat={70}
+  }
+  level hard {
+    let lat={50}
+  }
+  let yes={if lat > 66.5 then "Yes" else "No"}
+
+  scene 32x25 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      hut h pictures=0
+      whale w spout=1 facing=-1
+    }
+    text ask "On 21 June the team sails south from the hut at 80° N to a harbour at {lat}° N. Will they see the sun at midnight there?" narrate width=30 below=kit gap=1
+    choice pick options=["Yes", "No"] below=ask gap=1
+    text then "How many degrees higher is the noon sun at the harbour than at the hut, where it is 33.5°?" narrate width=30 below=pick gap=1
+    number-input higher below=then gap=1
+  }
+
+  answer pick=yes higher=(80 - lat)
+  feedback {
+    when (pick == "Yes" and lat < 66.5) point=ask {
+      say "The midnight sun reaches only as far south as 66.5° N, the Arctic circle."
+    }
+    when (higher == 90 - lat + 23.5) point=then {
+      say "That is the noon sun's whole height at the harbour. How much higher than 33.5° is it?"
+    }
+  }
+  hint "How far south does the midnight sun reach on 21 June?"
+  hint "Every degree further south puts the noon sun one degree higher."
+}

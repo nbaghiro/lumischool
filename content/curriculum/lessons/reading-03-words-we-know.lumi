@@ -1,4 +1,4 @@
-lesson reading-words-we-know v=1 format=teach grade=1 unit=2 subject=reading levels=[easy, medium, hard] {
+lesson reading-words-we-know v=1 format=teach grade=1 unit=3 subject=reading levels=[easy, medium, hard] {
   title "Words we know by sight"
   goal "Read common words without sounding them out, and use one to finish a sentence."
 

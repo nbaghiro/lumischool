@@ -1,0 +1,29 @@
+# The way in: salty water boiled by a grown-up, the steam cooled back to water in a cold tube and
+# collected in a beaker. Only the water turns to steam at 100 °C (salt boils at 1465 °C), so the salt
+# stays in the flask.
+item chem.where-the-salt-went v=1 skills=[chemistry.separating, chemistry.evaporating] {
+  title "Where is the salt now?"
+  let q=0..1 r=0..2
+  let asks={pick(q, "The steam cools in a cold tube and drips into the beaker. Where is the salt now?", "The grown-up keeps boiling until the flask is dry. What is left inside the flask?")}
+  let right={pick(q, "In the flask", "White salt")}
+  let w1={pick(q, "In the beaker", "Nothing at all")}
+  let w2={pick(q, "Gone into the air", "Clean water")}
+
+  scene 35x36 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      flame burner height=3 on=1 stand=true holds=0.5
+      beaker got max=200 step=50 level=60 unit=ml solid=0 rod=false label="clean"
+    }
+    text ask "A grown-up boils salty water from the salt boat in a flask on the burner. {asks}" narrate width=34 below=kit gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=kit {
+      say "Only the water turns to steam at 100 °C. The salt cannot boil away, so it stays where it was."
+    }
+  }
+  hint "What turns to steam when the grown-up boils salty water: the water, the salt, or both?"
+  hint "Salt boils only at 1465 °C. Can it leave the flask at 100 °C?"
+}

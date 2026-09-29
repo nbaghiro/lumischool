@@ -1,0 +1,31 @@
+# The review's three-star: spending as much of a budget as possible on two things, at least one of
+# each, without going over. An extreme, found by trying each number of the dearer thing in turn.
+item review.market-budget v=1 stars=3 skills=[decimals.multiply, money.decimals, reasoning.extremes] {
+  title "Spend it all, nearly"
+  difficulty v
+  let v=0..3
+  let b={pick(v, 10, 10, 12, 15)}
+  let p={pick(v, 1.20, 1.40, 1.60, 1.75)}
+  let q={pick(v, 2.50, 2.30, 2.90, 3.20)}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 32x14 {
+    pricetag tag now=(100 * q) was=0 at=canvas(1, 1)
+    text ask "At the city market a notebook costs {q} dollars and a pencil costs {p} dollars. Mo has {b} dollars and must buy at least one of each. What is the most he can spend without going over {b} dollars?" narrate width=20 right-of=tag gap=2
+    number-input answer width=6 below=ask gap=1
+  }
+
+  answer pick(v, 9.90, 9.70, 11.90, 14.85)
+  feedback {
+    when (answer == pick(v, 9.70, 9.30, 10.90, 13.70)) point=ask {
+      say "That is one notebook and as many pencils as fit. Try two notebooks, then three."
+    }
+  }
+  hint "Try one notebook. How many pencils fit in what is left? How much is spent?"
+  hint "Now try two notebooks, then three. Which spends the most without going over?"
+}

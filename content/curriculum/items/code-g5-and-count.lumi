@@ -1,0 +1,29 @@
+# A condition joined with and or or, asked of every item of a list, and a count kept: the child
+# tests each star against both parts before adding 1.
+item coding.and-count v=1 skills=[coding.decisions, coding.lists, reasoning.logic] {
+  title "Stars worth a look"
+  difficulty (j + s * 0.3)
+  let j=0..1 s=0..2
+  let a={pick(s, 2, 7, 4)} b={pick(s, 6, 3, 9)} c={pick(s, 9, 5, 1)} d={pick(s, 4, 10, 6)} e={pick(s, 7, 1, 8)} f={pick(s, 5, 8, 3)}
+  level easy {
+    let j={0}
+  }
+  level hard {
+    let j={1}
+  }
+
+  scene 36x18 {
+    program p code=["set stars to list {a}, {b}, {c}, {d}, {e}, {f}", "set seen to 0", "for each n in stars", "  {if j == 0 then \"if n is more than 3 and n is less than 8\" else \"if n is less than 3 or n is more than 7\"}", "    add 1 to seen"] at=canvas(1, 0)
+    text ask "The list is how bright each star is tonight. What is seen at the end?" width=34 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="value(seen)"
+  feedback {
+    when (answer == 6) point=p {
+      say "Not every star is counted. {if j == 0 then \"With and, a star is counted only when both tests pass.\" else \"With or, one test is enough, but some stars pass neither.\"}"
+    }
+  }
+  hint "Take the stars one at a time and ask both tests of each."
+  hint "{if j == 0 then \"And adds 1 only when both tests pass.\" else \"Or adds 1 when at least one test passes.\"}"
+}

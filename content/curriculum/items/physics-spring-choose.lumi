@@ -1,0 +1,22 @@
+# Three stars: choose the spring for a force meter. It must stay in step for every load it measures
+# and its stretch at the largest load must fit the ruler; of those, the one that stretches most per
+# newton reads most finely. v picks the most load and the ruler.
+item physics.spring-choose v=1 stars=3 skills=[physics.forces, reasoning.constraints] {
+  title "A spring for the force meter"
+  difficulty (if v == 0 then 0 else 1)
+  let v=0..2
+  let most={pick(v, 8, 8, 6)}
+  let ruler={pick(v, 12, 10, 12)}
+  let ans={pick(v, "C", "B", "D")}
+
+  scene 36x18 {
+    spring s load=2 per=1 limit=8 natural=5 from=0 tell=1 at=canvas(1, 0)
+    text ask "A force meter must measure every load up to {most} N on a ruler {ruler} cm long, and the pointer should move as far as possible for each newton. Spring A stretches 0.5 cm for each newton and is in step up to 10 N; B 1 cm, up to 8 N; C 1.5 cm, up to 10 N; D 2 cm, up to 6 N. Which spring should it use?" narrate width=22 right-of=s gap=1
+    choice pick options=["A", "B", "C", "D"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  hint "Which springs stay in step for every load up to {most} N?"
+  hint "How far does each of those stretch with {most} N? Does that fit the ruler?"
+  hint "Of the springs left, which moves the pointer furthest for each newton?"
+}

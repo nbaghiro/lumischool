@@ -1,0 +1,29 @@
+# Two-star: one branch sits inside a test that rules it out, so it can never run, whatever the
+# random temperature. The checker tries every temperature the program can draw.
+item coding.inner-never v=1 stars=2 skills=[coding.decisions, coding.random, reasoning.logic] {
+  title "The line that can never run"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x23 {
+    program p code=["set temp to random -20 to 10", "if temp is {pick(k, \"less\", \"more\")} than 0", "  if temp is {pick(k, \"more than 5\", \"less than -5\")}", "    say {pick(k, \"swim\", \"skate\")}", "  otherwise", "    say {pick(k, \"skate\", \"swim\")}", "otherwise", "  say walk"] text=true at=canvas(0, 0)
+    whale wh spout=1 right-of=p gap=1
+    text ask "The noon temperature is a random number from -20 to 10. Which of these can the program never say?" width=13 below=wh gap=1
+    choice pick options=["swim", "skate", "walk"] below=p gap=1
+  }
+
+  check coding.runs of=p pick="never(said)"
+  feedback {
+    when (pick == "walk") point=p {
+      say "Any temperature {pick(k, \"of 0 or more\", \"of 0 or less\")} sends the program to walk."
+    }
+  }
+  hint "Line 3 is only asked when line 2 says yes. What do you already know about temp by then?"
+  hint "Can a temperature be {pick(k, \"less than 0 and more than 5\", \"more than 0 and less than -5\")} at once?"
+}

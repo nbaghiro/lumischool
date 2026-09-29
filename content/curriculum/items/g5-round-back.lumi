@@ -1,0 +1,31 @@
+# The three-star: working back from a rounded reading to the smallest or largest number it could have
+# been, with three decimal places. An extreme, so one answer is proved.
+item decimal.round-back v=1 stars=3 skills=[decimals.rounding, reasoning.extremes] {
+  title "What could it have been"
+  difficulty ((if most == 1 then 1 else 0) + (if r > 3 then 1 else 0))
+  let r={2.4, 3.7, 1.5, 4.2} most=0..1
+  level easy {
+    let most={0}
+  }
+  level hard {
+    let most={1} r={3.7, 4.2}
+  }
+
+  scene 33x13 {
+    canallock lock level=0.8 boat=1 at=canvas(1, 1)
+    text ask "The lock keeper wrote a depth with three decimal places. Rounded to the nearest tenth it is {r} m. What is the {if most == 1 then \"largest\" else \"smallest\"} depth it could have been?" narrate width=14 right-of=lock gap=2
+    number-input answer width=6 below=lock gap=1
+  }
+
+  answer (if most == 1 then decimals(r + 0.049, 3) else decimals(r - 0.05, 3))
+  feedback {
+    when (most == 1 and answer == r + 0.05) point=ask {
+      say "{r + 0.05} rounds up to {r + 0.1}. Go one thousandth lower."
+    }
+    when (most == 0 and answer == r - 0.049) point=ask {
+      say "One thousandth less than that still rounds to {r}. Try going lower."
+    }
+  }
+  hint "Which numbers are exactly halfway between {r} and the tenths either side of it?"
+  hint "A number halfway rounds up. With three decimal places, how close can you get?"
+}

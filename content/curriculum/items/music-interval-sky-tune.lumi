@@ -1,0 +1,36 @@
+# The story: a tune written for the stars over the observatory as a start note and three moves, up
+# or down by named intervals. A move of a 3rd goes two letters, so the start note counts as 1.
+item music.interval-sky-tune v=1 skills=[music.intervals, reasoning.order] {
+  title "A tune for the stars"
+  difficulty (if s <= 1 then 0 else if s == 2 then 1 else 2)
+  let s=0..4
+  let first={pick(s, "C", "D", "E", "G", "C")}
+  let m1={pick(s, "up a 3rd", "up a 5th", "up a 4th", "down a 3rd", "up a 5th")}
+  let m2={pick(s, "up a 2nd", "down a 3rd", "up a 3rd", "up a 6th", "up a 4th")}
+  let m3={pick(s, "down a 4th", "up a 2nd", "down a 5th", "down a 2nd", "down a 6th")}
+  let right={pick(s, "C", "G", "F", "B", "E")}
+  level easy {
+    let s=0..1
+  }
+  level hard {
+    let s=2..4
+  }
+
+  scene 34x21 {
+    row top space=2 align=start at=canvas(1, 1) {
+      observatory dome open=1
+      text ask "Ana writes a tune for the stars above the observatory. It starts on the note in the table and makes three moves. Which note does it end on?" narrate width=21
+    }
+    table moves cols=4 head=["Start", "Move 1", "Move 2", "Move 3"] cells=[first, m1, m2, m3] below=top gap=1
+    choice pick options=["C", "D", "E", "F", "G", "A", "B"] stack=row below=moves gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=moves {
+      say "Take one move at a time, from the note the last move landed on, and count that note as 1."
+    }
+  }
+  hint "A move of a 3rd goes two letters on, since the note it starts from counts as 1. Where does move 1 land?"
+  hint "Write the note after each move before you do the next one. After the seventh letter the letters start again."
+}

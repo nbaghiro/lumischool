@@ -1,0 +1,34 @@
+# Locks counted along the canal map between two places. In the harder versions the notice by the
+# canal decides where the trip has to stop, so the sign has to be read before the locks are counted.
+item reading.locks-between v=1 skills=[reading.map, reading.text-features] {
+  title "How many locks?"
+  difficulty pick(k, 0, 0, 1, 2, 2)
+  let k=0..4
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={2, 3, 4}
+  }
+
+  scene 36x20 {
+    canalmap map stops=["Mill", "Ash Bridge", "Kingsford", "Hill Top", "Quarry"] locks=[1, 2, 5, 2] at=canvas(0, 1)
+    row bottom below=map gap=1 space=1 align=centre {
+      sign notice lines=["CANAL DRY", "PAST", "HILL TOP"] kind=board color=tang
+      text ask "{pick(k, \"A boat goes from Ash Bridge to Kingsford. How many locks does it go through?\", \"A boat goes from the mill to Kingsford. How many locks does it go through?\", \"A boat goes from Kingsford up to Hill Top. How many locks does it go through?\", \"Today a boat sets off from the mill and goes as far up the canal as it can. How many locks does it go through?\", \"Today a boat sets off from Ash Bridge and goes as far up the canal as it can. How many locks does it go through?\")}" width=20
+      number-input answer
+    }
+  }
+
+  answer pick(k, 2, 3, 5, 8, 7)
+  feedback {
+    when (k >= 3 and answer == 13 - k) point=notice {
+      say "The notice says the canal is dry past Hill Top. That is as far as a boat can go today."
+    }
+    when (k >= 3 and answer == 6 - k) point=map {
+      say "Hill Top is further up than Kingsford. Count on past Kingsford to the last place a boat can reach."
+    }
+  }
+  hint "Put a finger on the first place and slide it along the canal to the second, counting the pairs of gates."
+  hint "Where does the trip have to stop? Read everything in the picture before you count."
+}

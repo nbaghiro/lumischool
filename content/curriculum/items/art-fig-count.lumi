@@ -1,0 +1,29 @@
+# The way in: the artist's figure ruled into head heights, counted, and matched to who it could be.
+item art.fig-count v=1 skills=[art.proportion, art.figure] {
+  title "How many heads tall?"
+  difficulty (if h == 6.5 then 1 else 0)
+  let k=0..2
+  let h={pick(k, 4, 7.5, 6.5)}
+  let who={pick(k, "a baby of one", "a grown-up", "a child of eleven")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 28x25 {
+    layfigure fig heads=h lines=true action=false at=canvas(1, 1)
+    text ask "Ada is sketching people crossing the rope bridge. Her wooden figure is ruled into lines one head apart. Count the heads from the top of the head to the feet. Who is a figure this shape most like?" width=18 right-of=fig gap=1
+    choice pick options=["a baby of one", "a child of eleven", "a grown-up"] stack=column below=ask gap=1
+  }
+
+  answer pick=who
+  feedback {
+    when (pick != who) point=fig {
+      say "Count the head heights again, a half at the bottom too. A grown-up is about seven and a half heads tall, a child of eleven about six and a half, and a baby of one about four."
+    }
+  }
+  hint "How many head heights fit between the top of the head and the soles of the feet?"
+  hint "The smaller the child, the bigger the head is for the body. Is this head big or small for its body?"
+}

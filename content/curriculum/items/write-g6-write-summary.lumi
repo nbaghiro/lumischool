@@ -1,0 +1,23 @@
+# The three-star: a guidebook page of about 140 words on the water wheel summarised in fifty words or
+# fewer, own words, main points in order, marked by a grown-up; at hard, again in twenty-five.
+item writing.write-summary v=1 stars=3 skills=[writing.summarising, writing.composing] {
+  title "Your summary"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x44 {
+    text ask "{if k == 0 then \"Summarise the page in fifty words or fewer, in your own words. Keep the main points in the writer's order, and leave out details such as the size of the stones. Count your words.\" else \"Summarise the page in fifty words or fewer, in your own words, with the main points in the writer's order. Then summarise it again in twenty-five words or fewer. Count both.\"}" narrate width=34 at=canvas(1, 0)
+    passage p title="The wheel" text="The water wheel by the falls was built in 1790 to grind flour for the village. Water pours onto its paddles from a wooden channel, and the weight of the water, not its speed, turns the wheel. Inside the mill, the wheel drives a pair of millstones, each as heavy as a small car, which grind wheat into flour. In 1880 a great flood tore the wheel away and carried it far down the gorge, but the village rebuilt it the next summer with oak from the woods. Ten years later the railway brought cheap flour from the city, and the wheel stopped for good, or so everyone thought. Last year the village mended it again, and now it grinds flour every Saturday. Visitors can watch the stones turn and buy a bag of flour at the door." width=35 numbers=false below=ask gap=1
+    writinglines lines lines=3 width=35 prompt="" below=p gap=1
+  }
+
+  check writing.by-eye look-for="Fifty words or fewer, counted, that keep the main points in the page's order (the wheel was built to grind the village's flour, falling water turns it and it turns the millstones, a flood destroyed it and it was rebuilt, the railway's cheap flour stopped it, and it has been mended and works again), written in the child's own words rather than copied sentences, with no opinion added and no minor details such as the wooden channel, the size of the millstones, the oak or the bag of flour; at hard, a second version of twenty-five words or fewer that keeps what the wheel does and that it stopped and came back."
+  hint "Before writing, cover the page and say what it is about in one breath."
+  hint "For each sentence of yours, ask whether the reader would miss it if it went."
+}

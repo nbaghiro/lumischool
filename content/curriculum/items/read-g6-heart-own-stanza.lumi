@@ -1,0 +1,21 @@
+# The three-star question: a stanza of the child's own in the brook's pattern (Tennyson's "The
+# Brook", 1855): four lines of da-DUM beats, four then three then four then three, rhyming ABAB, then
+# learned and said by heart. A grown-up marks it by eye.
+item reading.heart-own-stanza v=1 stars=3 skills=[reading.metre, writing.poems] {
+  title "A stanza in the brook's pattern"
+  let k=0..1
+
+  scene 36x29 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        text ask "{pick(k, \"Write a stanza about the waterfall in the brook's pattern: four lines that go da-DUM, with four beats, then three, then four, then three, rhyming ABAB. Then learn it and say it by heart.\", \"Write a stanza about the water wheel in the brook's pattern: four lines that go da-DUM, with four beats, then three, then four, then three, rhyming ABAB. End with the brook's own line: But I go on for ever.\")}" width=21
+        waterfall fall drops=3 rainbow=1
+      }
+      writinglines lines lines=4 width=34 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="A stanza of four lines about the waterfall or the wheel, with the strong beats falling da-DUM, four in lines 1 and 3 and three in lines 2 and 4, lines 1 and 3 rhyming and lines 2 and 4 rhyming, said afterwards from memory." notice=["Four lines, one stanza", "Lines 1 and 3 rhyme, and 2 and 4", "Four beats, then three, da-DUM", "Said from memory"] ask="Which line was hardest to make go da-DUM?"
+  hint "Write line 1 first and tap it. Does it go da-DUM four times?"
+  hint "Choose the last word of line 2 so that there is a word to rhyme with it in line 4."
+}

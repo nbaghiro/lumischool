@@ -1,0 +1,35 @@
+# The three-star search: a chord built on each white key from C to B with white keys only. C, F and G
+# are major, D, E and A minor, and B to D to F is three semitones and three, neither major nor minor.
+item music.minor-white-triads v=1 stars=3 skills=[music.major-minor, reasoning.all-the-ways] {
+  title "A chord on every white key"
+  difficulty v
+  let v=0..3
+  let what={pick(v, "major", "minor", "major or minor", "neither major nor minor")}
+  let right={pick(v, 3, 3, 6, 1)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 35x29 {
+    text ask "Ana builds a chord on each white key from C to B, using white keys only: the key, then skip one and take the next, then skip one and take the next. How many of the seven chords are {what}?" narrate width=33 at=canvas(1, 1)
+    notes keys clef=treble notes=[C4, D4, E4, F4, G4, A4, B4, C5, D5] values=[] letters=true meter=0 below=ask gap=1
+    table steps cols=7 head=["C-D", "D-E", "E-F", "F-G", "G-A", "A-B", "B-C"] cells=["2", "2", "1", "2", "2", "2", "1"] below=keys gap=1
+    number-input answer below=steps gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 7) point=steps {
+      say "Not every chord works out the same. Try the chord on B: B, D and F. Add up both gaps in semitones."
+    }
+    when (answer == right + 1 and v <= 1) point=steps {
+      say "Check the chord on B: B to D is three semitones, and D to F is three as well. Is that major or minor?"
+    }
+  }
+  hint "Write down the seven chords first: C, E and G, then D, F and A, and so on up to B."
+  hint "For each chord add the semitones from the bottom to the middle, and from the middle to the top."
+  hint "Major goes four then three. Minor goes three then four."
+}

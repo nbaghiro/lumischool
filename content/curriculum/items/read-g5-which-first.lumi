@@ -1,0 +1,31 @@
+# A visitors' leaflet that tells the canal's story backwards, from today to the first dig. The
+# order the leaflet mentions things is not the order they happened, and the dates decide.
+item reading.which-first v=1 skills=[reading.timeline, reading.sequencing, reading.comprehension] {
+  title "Which came first?"
+  difficulty pick(q, 1, 0, 2, 1)
+  let q=0..3
+  level easy {
+    let q={0, 1}
+  }
+  level hard {
+    let q={2, 3}
+  }
+
+  scene 35x30 {
+    passage p title="Visit the Millhaven Canal" text="Today holiday boats cruise from the mill up to Hill Top. It was not always like this. From 1961, when the last working boat tied up, weeds filled the canal for thirty-three years. Before that, in 1852, the railway had taken most of its trade. And long before the railway, in 1792, the first workers began to dig." width=34 numbers=false at=canvas(1, 1)
+    text ask "{pick(q, \"Which of these happened first?\", \"Which of these happened last?\", \"Which of these happened first?\", \"Which of these happened last?\")}" width=34 below=p gap=1
+    row bottom below=ask gap=1 space=2 align=centre {
+      choice pick options=[pick(q, "Weeds filled the canal.", "The railway took the trade.", "Holiday boats cruise.", "The first workers dug."), pick(q, "The railway took the trade.", "The last working boat tied up.", "Weeds filled the canal.", "Weeds filled the canal."), pick(q, "The first workers dug.", "The first workers dug.", "The railway took the trade.", "The railway took the trade.")] stack=column
+      narrowboat boat windows=3 pots=2
+    }
+  }
+
+  answer pick=pick(q, "The first workers dug.", "The last working boat tied up.", "The railway took the trade.", "Weeds filled the canal.")
+  feedback {
+    when (pick == "Holiday boats cruise.") point=p {
+      say "The leaflet tells you that first, but it is what happens today. Look for the dates."
+    }
+  }
+  hint "The leaflet starts with today and goes back. Find a date or a clue for each one."
+  hint "Put the three on a line in your head, earliest at the left."
+}

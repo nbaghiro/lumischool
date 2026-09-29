@@ -1,0 +1,23 @@
+# An old word chosen for a gap. The glossary gives all three meanings, so the choice comes from the
+# words after the gap, which is where a careful reader looks.
+item reading.missing-old-word v=1 skills=[reading.old-words, reading.comprehension] {
+  title "The missing old word"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let right={pick(k, "ere", "oft", "yonder", "hence")}
+
+  scene 36x19 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=1 align=start {
+        table gloss cols=2 head=["Old", "Today"] cells=["ere", "before", "oft", "often", "yonder", "over there", "hence", "away"]
+        passage s text="{pick(k, \"Be home ... the gate shuts at sunset.\", \"I have walked these walls ..., at dawn and at dusk.\", \"Look at the tower ..., the one with the golden clock.\", \"Take the book ... and bring it back tomorrow.\")}" width=20 numbers=false
+      }
+      text ask "Which old word fills the gap?" width=20
+      choice pick options=["ere", "oft", "yonder", "hence"]
+    }
+  }
+
+  answer pick=right
+  hint "Read past the gap to the end of the sentence. What do those words tell you the gap is about?"
+  hint "Try each word's meaning in the gap. Which one makes sense?"
+}

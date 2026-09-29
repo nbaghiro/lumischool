@@ -1,0 +1,28 @@
+# The same idea in hours: seconds from the joules stored over the joules used each second, then 3600
+# seconds to the hour. u is the LED's joules each second.
+item physics.cell-hours v=1 skills=[physics.energy, time.convert, decimals.divide] {
+  title "Hours of light"
+  difficulty (if u == 4 then 2 else if u >= 5 then 1 else 0)
+  let u={1, 2, 4, 5, 10}
+  level easy {
+    let u={1, 2}
+  }
+  level hard {
+    let u={4, 10}
+  }
+
+  scene 18x27 {
+    series torch cells=4 bulbs=1 closed=1 show=1 at=canvas(1, 0)
+    text ask "The four cells in a head torch store 36 000 J altogether. Its LED uses {u} J each second. How many hours will it shine? An hour is 3600 seconds." narrate width=16 below=torch gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if u == 4 then decimals(36000 / u / 3600, 1) else plain(36000 / u / 3600))
+  feedback {
+    when (answer == 36000 / u / 60) point=ask {
+      say "That is in minutes. There are 60 minutes in an hour."
+    }
+  }
+  hint "How many seconds will it shine?"
+  hint "How many lots of 3600 seconds is that?"
+}

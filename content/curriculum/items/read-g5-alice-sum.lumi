@@ -1,0 +1,34 @@
+# A sitting summed up in one sentence. The wrong sentences are a true detail too small to sum up the
+# sitting, and a true summary of another part of the book.
+item reading.alice-sum v=1 skills=[reading.summary, reading.whole-book] {
+  title "The sitting in one sentence"
+  let k=0..1
+  let right={pick(k, "Alice follows the White Rabbit down a hole, shrinks and grows, and floats in a pool of her own tears.", "Alice sits at a tea-party where it is always six o'clock, then plays croquet with the Queen, who orders heads off.")}
+  let narrow={pick(k, "Alice finds a little golden key on a glass table.", "Three gardeners paint white roses red.")}
+  let other={pick(k, "Alice grows so large in the Rabbit's house that her arm fills the window.", "Alice meets the Gryphon and the Mock Turtle by the sea.")}
+
+  scene 34x24 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        bookcast who who=alice pose=pick(k, "hold", "walk") dir=1
+        text ask "{pick(k, \"Which sentence sums up chapters 1 and 2 best?\", \"Which sentence sums up chapters 7 and 8 best?\")}" width=24
+      }
+      text a "A. {pick(k, narrow, right)}" width=33
+      text b "B. {pick(k, right, other)}" width=33
+      text c "C. {pick(k, other, narrow)}" width=33
+      choice pick options=["A", "B", "C"] stack=row
+    }
+  }
+
+  answer pick=pick(k, "B", "A")
+  feedback {
+    when (pick == pick(k, "A", "C")) point=pick {
+      say "That happens, but it is one moment. A summary has to hold the whole sitting, start to end."
+    }
+    when (pick == pick(k, "C", "B")) point=pick {
+      say "That happens in the book, but not in these chapters. Check where the sitting starts and ends."
+    }
+  }
+  hint "What happens at the start of the sitting, and what at the end?"
+  hint "Which sentence reaches from the start to the end without stopping at one moment?"
+}

@@ -1,4 +1,4 @@
-lesson coding-debugging-puzzles v=3 format=puzzles grade=4 unit=4 subject=coding levels=[easy, medium, hard] {
+lesson coding-debugging-puzzles v=3 format=puzzles grade=4 unit=3 subject=coding levels=[easy, medium, hard] {
   title "Debugging puzzles"
   goal "Find the wrong number, the wrong count, the wrong turn and the wrong line by comparing what a program does with what it should do, and mend it."
 

@@ -1,0 +1,30 @@
+# Brackets undone from the outside in: share first, then take away.
+item algebra.wheel-brackets v=1 skills=[algebra.equations, algebra.order-of-operations] {
+  title "Undo the brackets"
+  difficulty (a / 2 + x / 6)
+  let a={2, 3, 4, 5} b={2, 3, 4, 6} x=2..10
+  level easy {
+    let a={2, 3} x=2..6
+  }
+  level hard {
+    let a={4, 5} x=6..10
+  }
+
+  scene 33x14 {
+    unknown eq terms=["{a}", "×", "(x + {b})", "=", "{a * (x + b)}"] at=canvas(1, 1)
+    text ask "The water wheel turns {a} times a minute. In x + {b} minutes it turns {a * (x + b)} times. What number is x?" narrate width=32 below=eq gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer x
+  feedback {
+    when (answer == a * (x + b) / a + b) point=eq {
+      say "The {b} is added inside the brackets, so take it away once the share is done."
+    }
+    when (answer == (a * (x + b) - b) / a) point=eq {
+      say "The whole bracket is multiplied by {a}. Share by {a} first, then undo the adding."
+    }
+  }
+  hint "Share both sides by the number in front of the brackets. What is the whole bracket worth?"
+  hint "What number, with the adding done, makes that?"
+}

@@ -1,0 +1,65 @@
+# An argument taken apart into its claim, its reasons and the evidence for each, in letters to the
+# gorge council about the water wheel and the rope bridge. The letters were written for the lesson.
+lesson reading-claim-reason-and-evidence v=1 format=teach grade=6 unit=4 subject=reading levels=[easy, medium, hard] {
+  title "Claim, reason and evidence"
+  goal "Find the claim in an argument, the reasons given for it and the evidence for each reason, and judge whether the evidence holds it up."
+
+  look {
+    scene 34x14 {
+      row all at=canvas(1, 1) space=2 align=end {
+        waterwheel wheel paddles=8 lit=0
+        ropebridge bridge planks=10 gaps=1
+      }
+    }
+    say """
+      The gorge council is deciding two things: whether the old water wheel should turn again, and
+      whether the rope bridge should close. People have written letters. Each letter makes a claim,
+      what the writer wants. It gives reasons, which say why. And a good letter backs each reason
+      with evidence: something seen, counted or measured that anyone could check. A reason with no
+      evidence is only an opinion, however strongly it is said. A strong letter also answers the
+      people who disagree, and then says what it asks the council to do.
+      """
+  }
+  do {
+    level easy {
+      worked reading.cre-which k=3 level=medium
+    }
+    show reading.cre-which k=0 hard-k=4
+    practice reading.cre-line count=2 seed=1 easy-seed=1 hard-seed=1
+    show reading.cre-which k=2 hard-k=5
+    practice reading.cre-best-evidence count=2 seed=1 easy-seed=1 hard-seed=1
+    practice reading.cre-weaken count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show reading.cre-line q=5
+    }
+  }
+  try stars=2 {
+    show reading.cre-stronger k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show reading.cre-counter k=0 hard-k=1
+  }
+  remember {
+    say "A claim says what should happen, a reason says why, and evidence shows the reason is true."
+  }
+
+  grown-ups """
+    The idea is that an argument has a shape: one claim, reasons for it, and evidence behind each
+    reason, which is what Common Core asks of sixth graders when they trace an argument and judge
+    its support. The way in sorts sentences from Ada's letter about the water wheel, the core finds
+    the line in a letter of about 140 words that holds each part, including where the writer answers
+    the other side, picks the best evidence for a reason from an opinion and a true fact about
+    something else, and finds the new fact that would weaken an argument most. The wrong idea to
+    watch for is treating a strongly worded sentence as evidence; ask "how could the council check
+    that?" The two-star question compares two letters making the same claim, and the three-star
+    question argues the other side, marked by eye. If the child is stuck, colour the claim, the
+    reasons and the evidence in a letter in three colours. Off the page, argue for a later bedtime
+    at home, with evidence.
+    """
+  level easy {
+    grown-ups "At this level the visitors reason is worked once in the teacher's pen, the sentences to sort are the claim and the open day, the lines to find are the plainer ones, the evidence to choose is about the planks and the crossings, the facts that weaken are about the wheel and the bridge, the two-star letters are about the bridge, and the three-star argues against the wheel."
+  }
+  level hard {
+    grown-ups "At this level the sentences to sort are the engineer and the 140 years, the lines to find include where a reason starts, a second reason and where Ada answers the people who disagree, the evidence to choose is about the kingfishers and the handrail, the facts that weaken include the free cake, there is one more line, the two-star letters are about the kingfishers, and the three-star argues against closing the bridge."
+  }
+}

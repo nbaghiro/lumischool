@@ -1,0 +1,36 @@
+# Three kinds of repeat in folk and decorative design: a border slides along one line, a rosette on
+# a plate turns round its middle, and a wallpaper slides both across and down.
+item art.folk-kind v=1 skills=[art.pattern, art.symmetry] {
+  title "Slide or turn"
+  difficulty (if q == 0 then 0 else 1)
+  let q=0..2
+  let ask={pick(q, "Which one looks exactly the same after you turn it round its middle by one repeat?", "Which one could go on for ever in one direction, and only that one?", "Which one repeats by sliding both across and down?")}
+  let right={pick(q, "the round plate", "the strip of prints", "the wall of tiles")}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x37 {
+    column all space=1 align=start at=canvas(1, 1) {
+      printrow strip unit=["leaf", "star"] colours=["blue", "blue"] count=8 missing=-1 wrong=0
+      row two space=2 align=start {
+        radial plate repeats=8 motif="drop" missing=-1 colour=blue
+        tilerepeat wall drop=0 cols=3 rows=2 missing=-1 ring=-1 colour=blue
+      }
+    }
+    text ask "Three pieces painted blue on white for a stall in the old city: a strip of prints, a round plate and a wall of tiles. {ask}" narrate width=34 below=all gap=1
+    choice pick options=["the strip of prints", "the round plate", "the wall of tiles"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=all {
+      say "{if q == 0 then \"A strip or a wall moves along to repeat. What repeats by turning round a middle?\" else if q == 1 then \"The wall of tiles can go on across and down. Which piece only goes one way?\" else \"The strip only goes one way. Which piece goes across and down?\"}"
+    }
+  }
+  hint "Picture each piece moving. Does it repeat by sliding, or by turning?"
+  hint "{if q == 0 then \"Which piece has a middle to turn round?\" else \"Which way, or ways, could each piece be made longer?\"}"
+}

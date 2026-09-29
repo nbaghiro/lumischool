@@ -1,0 +1,128 @@
+# Treasure Island read whole over nine sittings of the grade six waterfall gorge term.
+lesson reading-treasure-island v=1 format=book grade=6 unit=4 subject=reading book=treasure-island levels=[easy, medium, hard] {
+  title "Treasure Island"
+  goal "Read Treasure Island from start to end, and say what happens, who says what and why, with the lines that prove it."
+
+  sitting chapters=[1, 2, 3] {
+    show reading.treasure-line k=0
+    level easy medium {
+      show reading.treasure-order k=0
+    }
+    level medium hard {
+      show reading.treasure-word k=0
+    }
+    level hard {
+      show reading.treasure-who k=0
+    }
+  }
+  sitting chapters=[4, 5, 6, 7] {
+    level easy medium {
+      show reading.treasure-line k=1
+    }
+    show reading.treasure-gist k=0
+    level medium hard {
+      show reading.treasure-line k=2
+    }
+    level hard {
+      show reading.treasure-word k=1
+    }
+  }
+  sitting chapters=[8, 9, 10, 11] {
+    level easy medium {
+      show reading.treasure-line k=3
+    }
+    level hard {
+      show reading.treasure-line k=4
+    }
+    show reading.treasure-who k=1
+    level medium hard {
+      show reading.treasure-order k=1
+    }
+  }
+  sitting chapters=[12, 13, 14, 15] {
+    show reading.treasure-line k=5
+    level easy medium {
+      show reading.treasure-word k=2
+    }
+    level hard {
+      show reading.treasure-line k=11
+    }
+    level medium hard {
+      show reading.treasure-think k=0
+    }
+  }
+  sitting chapters=[16, 17, 18, 19] {
+    level medium hard {
+      show reading.treasure-line k=6
+    }
+    show reading.treasure-teller
+    show reading.treasure-who k=3
+    level hard {
+      show reading.treasure-gist k=1
+    }
+  }
+  sitting chapters=[20, 21, 22, 23] {
+    level medium hard {
+      show reading.treasure-line k=7
+    }
+    show reading.treasure-gist k=2
+    show reading.treasure-word k=3
+  }
+  sitting chapters=[24, 25, 26] {
+    level medium hard {
+      show reading.treasure-line k=8
+    }
+    show reading.treasure-order k=2
+    show reading.treasure-gist k=3
+    level hard {
+      show reading.treasure-think k=1
+    }
+  }
+  sitting chapters=[27, 28, 29, 30] {
+    show reading.treasure-line k=9
+    show reading.treasure-who k=5
+    show reading.treasure-silver
+    level hard {
+      show reading.treasure-think k=2
+    }
+  }
+  sitting chapters=[31, 32, 33, 34] {
+    show reading.treasure-line k=10
+    level medium hard {
+      show reading.treasure-who k=6
+    }
+    level hard {
+      show reading.treasure-gist k=4
+    }
+    show reading.treasure-review
+  }
+
+  grown-ups """
+    Nine sittings read the whole book, one a day spread over the term, each about 30 to 45 minutes
+    of reading at a steady silent pace of about 200 words a minute: chapters 1 to 3 (6,600 words,
+    about 33 minutes), 4 to 7 (7,700, 39), 8 to 11 (7,500, 37), 12 to 15 (7,800, 39), 16 to 19
+    (6,600, 33), 20 to 23 (7,500, 38), 24 to 26 (6,600, 33), 27 to 30 (9,300, 46) and 31 to 34
+    (8,100, 40). A child may read alone or take turns reading aloud with a grown-up; the questions
+    come after the chapters, not beside them. The book has fighting and deaths, told plainly: a
+    cutlass fight in chapter 2, the captain's death in chapter 3, Pew trampled by horses in chapter
+    5, Silver killing Tom in chapter 14, shooting at the stockade in chapter 18 (Redruth dies) and
+    chapter 21 (the attack), Israel Hands wounding Jim and being shot in chapter 26, and two pirates
+    shot at the empty pit in chapter 33. Read those chapters together if the child would like
+    company. The wrong idea to watch for is answering from memory of a film or a retelling: every
+    answer has to be in our chapters, and after each one ask "where does it say that?" Some
+    questions ask for a line number; on paper, with any printed edition, the answer sheet gives the
+    line's words beside its number, so mark by the words. Chapters 16 to 18 are told by the doctor,
+    and the older Jim often judges his younger self; both are asked about. If a child is stuck,
+    reread the last page of each chapter together and say in a sentence what changed. Off the page,
+    draw the island from the map in chapter 6 and mark where each sitting happens. This meets
+    China's 2022 standards for grades five and six, 阅读与鉴赏 6, 阅读整本书，把握文本的主要内容 (read whole
+    books and grasp their main content), and Japan's 2017 course of study for grades five and six,
+    (3)オ, 日常的に読書に親しみ (make reading part of every day).
+    """
+  level easy {
+    grown-ups "At this level each sitting asks two questions, the lines to find say the thing outright, the questions where a line only hints, the word meanings of chapters 3 and 6, the harder orders and the first question of opinion are left out; the two-star, the three-star and the review are as written."
+  }
+  level hard {
+    grown-ups "At this level the plainer lines and the first order give way to lines that only hint (the barrel that will matter, Ben Gunn's secret), and the sittings add who said a line, the meaning of bulk on the map, sums of the doctor's chapters and the ending, and two more questions of opinion, on Jim taking the ship alone and on why Silver saves him."
+  }
+}

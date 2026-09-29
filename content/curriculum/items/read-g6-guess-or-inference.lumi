@@ -1,0 +1,35 @@
+# The two-star reason: Sami says something about the lines, and the child decides whether a clue
+# points to it, nothing does, or the text says it in so many words.
+item reading.guess-or-inference v=1 stars=2 skills=[reading.inference, reasoning.explain] {
+  title "An inference or a guess?"
+  difficulty pick(k, 1, 1, 2, 0)
+  let k=0..3
+  let right={pick(k, "An inference", "A guess", "An inference", "It says so")}
+
+  scene 35x18 {
+    row top at=canvas(1, 1) space=1 align=end {
+      passage p text="{pick(k, \"One carried a steel tube wrapped in a blanket. \\\"Two hundred metres down,\\\" he said, and everyone cheered.\", \"Aunt Lind put the kettle on and asked not one question about the cold.\", \"... the team stood on the rocky hill behind it, watching a line of blue water open between the hut and the sea.\", \"Next morning a sledge came hissing over the ice, pulled by four tired people.\")}" width=27 numbers=false
+      person sami pose=think age=child hair=short top=tang tone=5
+    }
+    text ask "Sami says, \"{pick(k, \"The team drilled deep into the ice.\", \"Aunt Lind is a doctor.\", \"The hut stood near the edge of the shelf.\", \"Four people pulled the sledge.\")}\" From these lines, is that an inference, a guess, or does the text say so?" below=top gap=1 width=34
+    choice pick options=["An inference", "A guess", "It says so"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (right == "An inference" and pick == "A guess") point=p {
+      say "There is a clue for it. Which words point to what Sami says, though they never say it?"
+    }
+    when (right == "A guess" and pick == "An inference") point=p {
+      say "Look for a clue about that in the lines. If nothing points to it, it is only a guess."
+    }
+    when (right != "It says so" and pick == "It says so") point=p {
+      say "The lines never say it in those words. Find the words they do use."
+    }
+    when (right == "It says so" and pick != "It says so") point=p {
+      say "Read the lines again. Are Sami's words already there?"
+    }
+  }
+  hint "Can you put your finger on words that say it, or words that only point to it?"
+  hint "If no words say it and none point to it, what is it?"
+}

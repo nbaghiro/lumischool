@@ -1,0 +1,35 @@
+# The way in: a short traditional tale, and which kind it is. A myth has gods and explains the world;
+# a legend has a hero who may once have lived; a fable has animals and a moral. The tales retell the
+# Norse Sol chased by the wolf Skoll and Odin's eye at Mimir's well (Prose Edda), Robin Hood, King
+# Arthur and the sword in the stone, and the Chinese farmer by the stump; all were written for the lesson.
+item reading.myth-kind v=1 skills=[reading.myths, reading.fables, reading.comparison] {
+  title "Myth, legend or fable?"
+  difficulty pick(k, 0, 0, 0, 1, 1)
+  let k=0..4
+
+  scene 36x22 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=1 align=end {
+        passage p text="{pick(k, \"In the old Norse tales, the sun is a chariot driven across the sky by a girl called Sol. A wolf runs behind it, trying to catch it, so the sun can never stop. That, the Norse said, is why the sun is always moving.\", \"Robin Hood lived in Sherwood Forest with a band of outlaws. He robbed rich travellers and gave to the poor. Nobody knows for sure whether he was a real man, but songs about him were sung six hundred years ago.\", \"A farmer saw a hare run into a stump and fall dead. He stopped ploughing and waited by the stump for another, but none came, and his field was ruined. Do not give up honest work to wait for luck.\", \"Odin, king of the Norse gods, wanted to know everything. He asked the wise giant Mimir for a drink from his well. The price was one of Odin’s eyes. Odin paid it, and that is why he has one eye.\", \"When the old king died, a sword stood fixed in a stone. Whoever pulled it out would be king of Britain. Knights tried and failed, but a boy called Arthur drew it out. Some think a real leader called Arthur fought for Britain long ago.\")}" width=24 numbers=false
+        hut h pictures=3
+      }
+      text ask "Is this a myth, a legend or a fable?" width=36
+      choice pick options=["A myth", "A legend", "A fable"] stack=row
+    }
+  }
+
+  answer pick=pick(k, "A myth", "A legend", "A fable", "A myth", "A legend")
+  feedback {
+    when (pick == "A fable" and k != 2) point=p {
+      say "A fable teaches a moral with animals. Are there gods in this tale, or a hero who may have lived?"
+    }
+    when (pick == "A legend" and (k == 0 or k == 3)) point=p {
+      say "Who are the characters here: people who may have lived, or gods? What does the tale explain?"
+    }
+    when (pick == "A myth" and (k == 1 or k == 4)) point=p {
+      say "Are there gods in this tale? Look at what it says about whether the hero was real."
+    }
+  }
+  hint "Who are the characters: gods, a hero, or animals and ordinary people?"
+  hint "Does the tale explain something about the world, tell of a great deed, or end with advice?"
+}

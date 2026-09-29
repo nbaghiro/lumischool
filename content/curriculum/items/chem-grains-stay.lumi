@@ -1,0 +1,33 @@
+# Too much salt for the water: the grams that stay as grains are what went in less what the water
+# can hold, 36 g for each 100 ml at 20 °C.
+item chem.grains-stay v=1 skills=[chemistry.dissolving, reasoning.limits] {
+  title "How much stays on the floor?"
+  difficulty ((if v == 100 then 0 else 1) + (if v == 150 then 1 else 0))
+  let v={50, 100, 150, 200} x={4, 9, 14}
+  let holds={36 * v / 100}
+  let put={holds + x}
+  level easy {
+    let v={100}
+  }
+  level hard {
+    let v={50, 150}
+  }
+
+  scene 35x13 {
+    beaker b max=250 step=50 level=v unit=ml solid=(if x == 4 then 6 else if x == 9 then 10 else 14) rod=true at=canvas(1, 0)
+    text ask "At the market, Sam stirs {put} g of salt into the beaker of water at 20 °C and keeps stirring. 100 ml of water at 20 °C dissolves 36 g of salt. How many grams stay as grains on the floor?" narrate width=22 right-of=b gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (put - holds)
+  feedback {
+    when (answer == put - 36 and v != 100) point=b {
+      say "36 g is what 100 ml holds. Read the level: this beaker has {v} ml, so it holds a different amount."
+    }
+    when (answer == holds) point=b {
+      say "That is what dissolved. The grains on the floor are what is left over from the {put} g."
+    }
+  }
+  hint "Read the level. How much salt can that much water hold?"
+  hint "Of the {put} g that went in, how much could not dissolve?"
+}

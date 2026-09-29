@@ -1,0 +1,24 @@
+# A build task on a block with two inputs: the child writes the block's two lines and the two calls,
+# setting how far across each climb goes; the walls let only one pair of climbs through, and each
+# call's height is fixed on its card, so the order of the calls and the order of the inputs both matter.
+item coding.inputs-build v=1 skills=[coding.procedures, coding.sequences, reasoning.planning] {
+  title "Two climbs up the wall"
+  difficulty k
+  let k=0..2
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x28 {
+    maze m map=[pick(k, ". . . F . .", ". . . . F .", ". . . . . F"), ". . . . . .", pick(k, ". . # . . .", ". . . . . .", ". . . . . ."), pick(k, ". . . . . .", ". . # . . .", ". . . . # ."), pick(k, "# # . . . .", "# . # # # .", "# # # . # ."), "S . . . . ."] face=right at=canvas(0, 0)
+    text ask "Build the block climb, which goes right by across and then up by high, and use it twice to take the robot up the old city wall to the flag. The dark squares are towers." width=15 below=m gap=1
+    codepad answer tray=["define climb across high", "right across", "up high", "climb 1 2", "climb 1 3"] lines=5 key=["define climb across high", "  right across", "  up high", pick(k, "climb 2 2", "climb 1 3", "climb 3 3"), pick(k, "climb 1 3", "climb 3 2", "climb 2 2")] right-of=m gap=1
+  }
+
+  check coding.builds of=m goal=flag
+  hint "Trace the way from the robot to the flag: how far right, then how far up, and then again?"
+  hint "In climb 1 2, the first number goes to across and the second to high. Which call comes first?"
+}

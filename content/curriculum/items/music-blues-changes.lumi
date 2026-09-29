@@ -1,0 +1,37 @@
+# How many times the chord changes in the blues in C: bars 5, 7, 9, 10 and 11, so five in one time
+# through. Twice through, bar 12 into bar 1 is C to C, so ten. With bar 12 played as G7 to turn back
+# to the start, one time through has six.
+item music.blues-changes v=1 skills=[music.blues, music.chord-changes] {
+  title "Counting the changes"
+  difficulty q
+  let q=0..2
+  let ask={pick(q, "How many times does the chord change in one time through?", "The band plays it twice without stopping. How many times does the chord change?", "To lead back to the start, the band plays bar 12 as G7 instead of C. How many times does the chord change in one time through now?")}
+  let right={pick(q, 5, 10, 6)}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x21 {
+    table chart cols=5 head=["Bars", "1st", "2nd", "3rd", "4th"] cells=["1 to 4", "C", "C", "C", "C", "5 to 8", "F", "F", "C", "C", "9 to 12", "G7", "F", "C", "C"] at=canvas(1, 1)
+    text ask "The blues in C on the ukulele. Ana changes chord only where the chart says a new one. {ask}" narrate width=34 below=chart gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (q == 0 and answer == 6) point=chart {
+      say "Bars 11 and 12 are both C, so nothing changes there."
+    }
+    when (q == 1 and answer == 11) point=chart {
+      say "Bar 12 is C and bar 1 is C too. Does the chord change when the band goes round?"
+    }
+    when (q == 2 and answer == 5) point=chart {
+      say "Bar 12 is now G7 after a bar of C. That is one change more."
+    }
+  }
+  hint "Go along the chart bar by bar and say change whenever the chord is not the one before."
+  hint "{if q == 1 then \"Count one time through, then look at where the end joins the start.\" else \"Look closely at the last line, where the chord changes most.\"}"
+}

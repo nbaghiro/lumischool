@@ -1,0 +1,39 @@
+# The way in: the verb that says exactly how, on the moon. One choice is a general verb that
+# says little (went, moved); one says the wrong thing (dropped is fast, slowly is not).
+item writing.precise-verb v=1 skills=[writing.vocabulary, writing.word-choice] {
+  title "Which verb says exactly how?"
+  difficulty k
+  let k=0..2 r=0..2
+  let s={pick(k, "In the low gravity, Kit _____ across the crater, each step a slow leap.", "The rocket's engines _____ and the whole launch pad shook.", "Grey dust _____ down slowly behind her boots.")}
+  let right={pick(k, "bounded", "roared", "drifted")}
+  let w1={pick(k, "went", "made a noise", "came")}
+  let w2={pick(k, "crept", "whispered", "dropped")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 33x29 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      launchpad pad rocket=1 lights=2
+      footprints fp count=4
+    }
+    passage p title="Kit's story" text="{s}" width=31 numbers=false below=pics gap=1
+    text ask "Which verb says most exactly what happened?" narrate width=31 below=p gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=p {
+      say "That fits, but it could describe almost anything. Which verb lets the reader see how it happened?"
+    }
+    when (pick == w2) point=p {
+      say "That verb is exact, but it paints the wrong picture. Read the rest of the sentence for how it happened."
+    }
+  }
+  hint "Read the rest of the sentence. What does it tell you about how it happened?"
+  hint "Which verb would a reader picture most clearly?"
+}

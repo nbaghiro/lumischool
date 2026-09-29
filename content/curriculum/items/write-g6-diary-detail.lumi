@@ -1,0 +1,37 @@
+# A diary worth reading later has details the reader can see or hear. One choice paints the moment;
+# the other two only say it was good, one of them at greater length.
+item writing.diary-detail v=1 skills=[writing.diaries, writing.describing] {
+  title "Which line can you see?"
+  difficulty k
+  let k=0..2 r=0..2
+  let right={pick(k, "The ice creaked and groaned under the runners.", "Puffins waddled up with fish in their beaks.", "At midnight the low sun turned the tent orange.")}
+  let w1={pick(k, "The ice was nice.", "The puffins were funny.", "It was light all night.")}
+  let w2={pick(k, "The ice was really very good today.", "The puffins were really interesting to see.", "The sun is up a lot of the time here.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x28 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      puffins pf count=3 facing=1
+      midnightsun sun suns=5 midnight=1
+    }
+    text ask "Which sentence would let someone reading Isla's diary years later see or hear the moment?" narrate width=33 below=pics gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w2) point=pics {
+      say "That line is longer, but it still only says it was good. Which line shows what she saw or heard?"
+    }
+    when (pick == w1) point=pics {
+      say "A word like nice or funny tells the reader what to think without showing why."
+    }
+  }
+  hint "Close your eyes after each sentence. Which one gives you a picture or a sound?"
+  hint "Look for the sentence with a verb you could act out."
+}

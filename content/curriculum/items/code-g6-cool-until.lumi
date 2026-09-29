@@ -1,0 +1,34 @@
+# A repeat until as a stopwatch: minutes counts up by ten each time round, and the loop stops at the
+# first reading below the line, not at the reading equal to it.
+item coding.cool-until v=1 skills=[coding.simulation, coding.variables, coding.repetition] {
+  title "When is it cool enough?"
+  difficulty ((s - w) / (2 * d) + (if (s - w) % d == 0 then 0.5 else 0))
+  let s={80, 90} w={50, 60} d={5, 6, 8}
+  level easy {
+    let d={5, 8}
+    where ((s - w) % d != 0)
+  }
+  level hard {
+    let d={5, 6}
+    where ((s - w) % d == 0)
+  }
+
+  scene 36x21 {
+    program p code=["set cocoa to {s}", "set minutes to 0", "repeat until cocoa is less than {w}", "  take {d} from cocoa", "  add 10 to minutes"] text=true at=canvas(1, 0)
+    thermometer th from=0 to=100 step=20 value=s right-of=p gap=1
+    text ask "The cocoa in the hut is too hot to drink until it is below {w} °C. What does minutes hold when the repeat stops?" width=24 at=canvas(1, 15)
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=p answer="value(minutes)"
+  feedback {
+    when (answer == 10 * ((s - w) / d) and (s - w) % d == 0) point=p {
+      say "At that time cocoa is exactly {w}, and {w} is not less than {w}. The repeat goes round once more."
+    }
+    when (answer < 10) point=p {
+      say "That counts the times round. Line 5 adds 10 to minutes each time round."
+    }
+  }
+  hint "Write cocoa and minutes side by side, and change both each time round."
+  hint "Before each time round, ask the question at the top of the repeat."
+}

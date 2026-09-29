@@ -1,0 +1,34 @@
+# Reading an argument from the other side: one new fact knocks a reason down, one is beside the
+# point, and one would make the argument stronger.
+item reading.cre-weaken v=1 skills=[reading.argument, reasoning.logic] {
+  title "What would weaken it?"
+  difficulty pick(k, 1, 1, 2)
+  let k=0..2
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+  let right={pick(k, "Mending the axle costs more than new lamps.", "New planks went in and passed a safety check.", "Most people at the open day came for free cake.")}
+  let beside={pick(k, "The village hall was painted blue last year.", "The bridge was painted green in May.", "The mill is two hundred years old.")}
+  let helps={pick(k, "Many villages light halls with water wheels.", "Two more planks cracked in June.", "Working mills in other towns get more visitors.")}
+
+  scene 35x23 {
+    sign note lines=[pick(k, "Ada: the wheel should turn,", "Mr Hale: close the bridge,", "Ada: the wheel should turn,"), pick(k, "because it can light the hall.", "because it is not safe.", "because visitors would come.")] kind=board color=mint at=canvas(1, 1)
+    text ask "Which new fact would most weaken this argument?" below=note gap=1 width=34
+    choice pick options=[pick(k, beside, right, helps), pick(k, right, helps, beside), pick(k, helps, beside, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == helps) point=note {
+      say "That fact backs the argument up. Look for one that shows the reason is not true or not worth it."
+    }
+    when (pick == beside) point=note {
+      say "That fact has nothing to do with the reason on the board. Which one hits the reason itself?"
+    }
+  }
+  hint "What is the reason on the board? Which fact is about that reason?"
+  hint "Would the fact make the council more likely, or less likely, to agree?"
+}

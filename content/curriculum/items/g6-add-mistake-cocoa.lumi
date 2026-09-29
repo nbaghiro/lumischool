@@ -1,0 +1,29 @@
+# The two-star: Ana keeps a ratio by adding the same number to both parts. The reason is that equal
+# ratios multiply both parts by the same number.
+item ratio.add-mistake-cocoa v=1 stars=2 skills=[ratio.scaling, reasoning.find-the-mistake] {
+  title "Ana's bigger batch"
+  difficulty (k + a / 2)
+  let a={2, 3, 4} b={3, 5, 7} k={3, 4, 5}
+  where (gcd(a, b) == 1)
+  level easy {
+    let k={3} a={2}
+  }
+  level hard {
+    let k={5} a={3, 4}
+  }
+
+  scene 35x12 {
+    ratiotable t first=[a, k * a] second=[b, b + (k - 1) * a] labels=["Cocoa", "Milk"] hide=[] at=canvas(1, 1)
+    text ask "Ana's recipe is {a} spoons of cocoa to {b} cups of milk. For {k * a} spoons she added {(k - 1) * a} to both, and wrote {b + (k - 1) * a} cups. The taste was wrong. How many cups should she use?" narrate width=19 right-of=t gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (k * b)
+  feedback {
+    when (answer == b + (k - 1) * a) point=t {
+      say "That is Ana's number. How many times more cocoa did she use?"
+    }
+  }
+  hint "How many times bigger is {k * a} than {a}?"
+  hint "The milk must grow the same number of times."
+}

@@ -1,4 +1,4 @@
-lesson physics-reading-a-rate v=1 format=teach grade=4 unit=5 subject=physics levels=[easy, medium, hard] {
+lesson physics-reading-a-rate v=1 format=teach grade=4 unit=2 subject=physics levels=[easy, medium, hard] {
   title "Reading a rate"
   goal "Read a value off a gauge, and use a steady rate to work forwards or backwards in time."
 

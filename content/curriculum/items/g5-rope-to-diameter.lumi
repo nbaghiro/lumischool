@@ -1,0 +1,28 @@
+# The core's reasoning question: the distance round is known, so the diameter is found by dividing by
+# 3.14, the inverse of the rule.
+item circle.rope-to-diameter v=1 skills=[circles.circumference, reasoning.inverse] {
+  title "From the way round"
+  difficulty (if d % 10 == 0 then 0 else 1)
+  let d={2, 4, 5, 10, 20}
+  level easy {
+    let d={10, 20}
+  }
+  level hard {
+    let d={2, 4, 5}
+  }
+
+  scene 33x15 {
+    circleparts c size=5 lines=2 around=(d * 3.14) ask=2 unit="m" at=canvas(1, 1)
+    text ask "A rope laid round the edge of a round star-watching platform measures {decimals(d * 3.14, 0)} m. Using 3.14, how wide is the platform across its centre?" narrate width=16 right-of=c gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer d
+  feedback {
+    when (answer == d * 3.14 * 3.14 or answer == d / 2) point=ask {
+      say "Going round is 3.14 times going across. So going across is the way round divided by 3.14."
+    }
+  }
+  hint "Is the way across longer or shorter than the way round?"
+  hint "What number times 3.14 makes {decimals(d * 3.14, 0)}?"
+}

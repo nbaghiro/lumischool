@@ -1,0 +1,37 @@
+# A general phrase in Kit's draft replaced by the noun that names the thing exactly. The wrong
+# choices are near things on the moon that are not it.
+item writing.precise-noun v=1 skills=[writing.vocabulary, writing.word-choice] {
+  title "Name it exactly"
+  difficulty k
+  let k=0..2 r=0..2
+  let s={pick(k, "We walked to the edge of the big hole and looked in.", "We climbed back into the machine with four legs.", "We stood on the top edge of the hole and looked down.")}
+  let vague={pick(k, "the big hole", "the machine with four legs", "the top edge of the hole")}
+  let right={pick(k, "the crater", "the lander", "the rim")}
+  let w1={pick(k, "the dip", "the rocket", "the wall")}
+  let w2={pick(k, "the gap", "the ship", "the floor")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 32x23 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      lander lnd rungs=5
+      crater cr count=1
+    }
+    passage p title="Kit's draft" text="{s}" width=31 numbers=false below=pics gap=1
+    text ask "Which noun names {vague} exactly?" narrate width=31 below=p gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=pics {
+      say "Look at the pictures. That names something nearby, or something too general. Which word is the thing's own name?"
+    }
+  }
+  hint "Find the thing in the pictures."
+  hint "What is its own name, the one a scientist on the moon would use?"
+}

@@ -1,0 +1,23 @@
+# Why is it dark? One fault in each diagram, named in the words the checker uses: no cell, an open
+# switch or a wire come loose.
+item physics.symbol-fault v=1 skills=[physics.circuits, physics.symbols] {
+  title "Why is it dark?"
+  difficulty f
+  let f=0..2 c=1..2 b=1..2
+  level easy {
+    let f=0..1
+  }
+  level hard {
+    let f=1..2
+  }
+
+  scene 30x25 {
+    series s cells=(if f == 0 then 0 else c) bulbs=b closed=(if f == 1 then 0 else 1) loose=(if f == 2 then 1 else 0) show=0 symbols=1 at=canvas(1, 0)
+    text ask "This loop stays dark. Why?" narrate width=12 right-of=s gap=1
+    choice pick options=["There is no cell", "The switch is open", "A wire is loose"] stack=column below=s gap=1
+  }
+
+  check physics.circuit of=s pick=fault
+  hint "Look along the bottom for the cells, at the right for the switch, and round the loop for a gap."
+  hint "Which one thing would you mend to make it light?"
+}

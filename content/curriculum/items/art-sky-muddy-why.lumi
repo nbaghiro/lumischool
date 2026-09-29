@@ -1,0 +1,34 @@
+# The two-star reason: a blend between near-opposites turns dull in the middle, and the reason is the
+# mixing, not the water or the lightness.
+item art.sky-muddy-why v=1 stars=2 skills=[art.blending, art.complementary, reasoning.explain] {
+  title "Why the middle went grey"
+  difficulty k
+  let k=0..1 r=0..2
+  let a={pick(k, "orange", "yellow")}
+  let b={pick(k, "blue", "red+blue")}
+  let bn={pick(k, "blue", "purple")}
+  let right={"Nearly opposite colours mixed turn dull"}
+  let w1={"She used too much water"}
+  let w2={"The top colour is lighter"}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x24 {
+    paintpots pots pots=["{a}", "{b}"] result="mix" labels=true at=canvas(1, 1)
+    text ask "Ada blends her midnight sky from {a} low down straight into a {bn} top, and the band in the middle comes out dull. Why?" width=18 right-of=pots gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column at=canvas(1, 13)
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=pots {
+      say "Look at what the two pots make when they are mixed. Where are {a} and {bn} on the colour wheel?"
+    }
+  }
+  hint "The pots show the middle band. Which two colours went into it?"
+  hint "What happens when two colours from opposite sides of the wheel are mixed?"
+}

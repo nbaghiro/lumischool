@@ -1,0 +1,41 @@
+# The story: a pulse counted for 15 seconds, turned into beats a minute. Hard gives the beats a
+# minute and asks what a 20 second count would be, so the unknown moves.
+item nature.pulse-count v=1 skills=[nature.circulation, multiplication.groups] {
+  title "Counting a pulse"
+  difficulty k
+  let k=0..2
+  let told={pick(k, "At the bottom of the gorge Ada counts 20 beats in 15 seconds. How many beats a minute is that?", "At the top of the steps she counts 30 beats in 15 seconds. How many beats a minute is that?", "After a rest her heart beats 90 times a minute. How many beats will she count in 20 seconds?")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x27 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      waterfall wf drops=2 rainbow=0
+      kingfisher kf flying=0 facing=-1
+    }
+    text ask "Ada presses two fingers to the inside of her wrist and feels her pulse: one beat for every beat of her heart. {told}" narrate width=32 below=pics gap=1
+    row r below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text u "beats"
+    }
+  }
+
+  answer pick(k, 80, 120, 30)
+  feedback {
+    when (k <= 1 and answer == pick(k, 40, 60, 0)) point=ask {
+      say "That is 30 seconds' worth. A minute is 60 seconds: how many lots of 15 is that?"
+    }
+    when (k == 2 and answer == 270) point=ask {
+      say "20 seconds is less than a minute, so the count must be smaller than 90."
+    }
+  }
+  hint "How many lots of 15 seconds make one minute?"
+  hint "Multiply the count by that number."
+  level hard {
+    hint "How many lots of 20 seconds make a minute? Share the 90 beats between them."
+  }
+}

@@ -1,0 +1,30 @@
+# The ring between two circles with one centre: the big circle's area take away the small one's.
+item circle.crater-ring v=1 skills=[circles.area, reasoning.two-steps] {
+  title "The dust ring"
+  difficulty (w + a / 5)
+  let a={2, 3, 4, 5} w={1, 2, 3}
+  level easy {
+    let w={1} a={2, 3}
+  }
+  level hard {
+    let w={2, 3} a={4, 5}
+  }
+
+  scene 35x18 {
+    circleparts c size=6 lines=1 radius=(a + w) unit="m" at=canvas(1, 1)
+    text ask "The circle drawn is the outer edge of a ring of pale dust. The dark crater inside it has the same centre and a radius of {a} m, so the ring is {w} m wide. Using 3.14, what is the area of the ring of dust, in square metres?" narrate width=16 right-of=c gap=2
+    number-input answer width=7 below=ask gap=1
+  }
+
+  answer decimals(((a + w) * (a + w) - a * a) * 3.14, 0)
+  feedback {
+    when (answer == (a + w) * (a + w) * 3.14) point=c {
+      say "That is the whole circle, crater and all. Take away the crater inside it."
+    }
+    when (answer == w * w * 3.14) point=c {
+      say "That is a circle of radius {w} m. The ring is the whole circle take away the crater inside it."
+    }
+  }
+  hint "What is the area of the whole circle drawn?"
+  hint "What is the area of the crater inside it? What is left?"
+}

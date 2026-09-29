@@ -1,0 +1,40 @@
+# The story: the band's chart for the first line of Twinkle Twinkle, one chord to each half bar: C C
+# F C F C G C. IV is played twice and the chord changes six times; played three times through, the
+# last C runs into the first C, so 18 changes and not 20.
+item music.observatory-twinkle-chords v=1 skills=[music.chords, music.chord-changes] {
+  title "Twinkle's chords"
+  difficulty q
+  let q=0..2
+  let ask={pick(q, "How many times is chord IV, F, played?", "How many times does the chord change?", "The band plays the line three times without stopping. How many times does the chord change?")}
+  let right={pick(q, 2, 6, 18)}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=2..2
+  }
+
+  scene 35x21 {
+    row top space=2 align=start at=canvas(1, 1) {
+      observatory dome open=1
+      text ask "Under the observatory dome the band plays Twinkle Twinkle Little Star. Their chart gives a chord for each half bar of the first line. {ask}" narrate width=22
+    }
+    table chart cols=8 head=["1", "2", "3", "4", "5", "6", "7", "8"] cells=["C", "C", "F", "C", "F", "C", "G", "C"] below=top gap=1
+    number-input answer below=chart gap=1
+  }
+
+  answer right
+  feedback {
+    when (q == 1 and answer == 7) point=chart {
+      say "Half bars 1 and 2 are both C, so nothing changes there."
+    }
+    when (q == 2 and answer == 20) point=chart {
+      say "The line ends on C and starts again on C. Does the chord change there?"
+    }
+    when (q == 2 and answer == 21) point=chart {
+      say "Count the changes in one line, then think about where one line runs into the next."
+    }
+  }
+  hint "Point along the chart one half bar at a time."
+  hint "{if q == 0 then \"Count the Fs.\" else \"Say change each time the chord is not the same as the one before.\"}"
+}

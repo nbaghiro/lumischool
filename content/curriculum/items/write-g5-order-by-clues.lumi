@@ -1,0 +1,40 @@
+# Four sentences of one short piece muddled, with nothing to order them by but their pronouns and
+# joining words: a name before its it or she, after that after what came first. Order tied to k.
+item writing.order-by-clues v=1 skills=[writing.cohesion, writing.sequencing, reasoning.order] {
+  title "Follow the clues"
+  difficulty k
+  let k=0..2
+  let a={pick(k, 2, 3, 1)}
+  let b={pick(k, 0, 1, 3)}
+  let c={pick(k, 3, 0, 2)}
+  let d={pick(k, 1, 2, 0)}
+  let t0={pick(k, "Nadia found an old iron key in the library.", "A stranger came to the city gate at dusk.", "The fountain in the square had been dry for a year.")}
+  let t1={pick(k, "It was too big for any door in the building.", "He carried a heavy sack over one shoulder.", "Then, one spring morning, it began to bubble.")}
+  let t2={pick(k, "After that, she tried it in the city gate.", "He would not tell the guard what was in it.", "As a result, the children came running to see.")}
+  let t3={pick(k, "To her surprise, the gate swung open.", "As a result, the guard kept the gate shut.", "By noon, they were all soaked and laughing.")}
+  let wa={pick(a, t0, t1, t2, t3)}
+  let wb={pick(b, t0, t1, t2, t3)}
+  let wc={pick(c, t0, t1, t2, t3)}
+  let wd={pick(d, t0, t1, t2, t3)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 33x26 {
+    citywalls walls towers=2 open=1 at=canvas(1, 0)
+    text ask "These four sentences are muddled. Number them 1 to 4, using the pronouns and linking adverbials as clues." narrate width=32 below=walls gap=1
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}"] blanks=[q, x, y, z] below=ask gap=1
+  }
+
+  answer q=(a + 1) x=(b + 1) y=(c + 1) z=(d + 1)
+  feedback {
+    when ((if a == 0 then q else if b == 0 then x else if c == 0 then y else z) != 1) point=s {
+      say "A sentence that starts with it, he, she or they needs a sentence before it that names who or what. Which sentence names someone first?"
+    }
+  }
+  hint "Which sentence could start the piece without the reader asking who or what?"
+  hint "Look at the pronouns and the linking adverbials: which ones need something to have happened already?"
+}

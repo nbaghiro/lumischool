@@ -1,0 +1,65 @@
+lesson chemistry-the-rock-cycle-and-the-gorge v=1 format=teach grade=6 unit=4 subject=chemistry levels=[easy, medium, hard] {
+  title "The rock cycle and the gorge's layers"
+  goal "Follow a rock round the rock cycle, and read the order its layers were laid down in from a gorge's walls."
+
+  look {
+    scene 29x14 {
+      row all at=canvas(1, 0) space=2 align=end {
+        waterfall fall drops=2 rainbow=1
+        strata s layers=5 names=1
+      }
+    }
+    say """
+      The river at the waterfall gorge has cut down through five layers of rock. Each layer was
+      laid down as mud or sand on top of the one before, so the bottom layer is the oldest. Rock
+      does not stay the same for ever. Rain and rivers wear it into sediment, sediment is pressed
+      and cemented into sedimentary rock, heat and pressure change it into metamorphic rock, and
+      rock that melts into magma cools into igneous rock. This is the rock cycle.
+      """
+  }
+  do {
+    practice chem.rock-kind count=1 seed=1
+    level easy {
+      worked chem.cycle-process b=2 r=0 level=medium
+    }
+    practice chem.cycle-process count=2 seed=1
+    practice chem.cycle-hidden count=1 seed=1
+    practice chem.gorge-layers count=2 seed=1 hard-seed=5
+    level hard {
+      show chem.cycle-hidden h=0
+    }
+  }
+  story {
+    show chem.rock-density-id k=1 v=10 b=50 easy-k=0 hard-v=20 hard-b=30
+    show chem.rock-density-id k=0 v=20 b=30 easy-v=10 hard-v=30 hard-b=50
+  }
+  try stars=2 {
+    show chem.why-crystals k=0 r=1 hard-k=1
+  }
+  try stars=3 {
+    show chem.cycle-steps k=1 all=0 easy-k=0 easy-all=1 hard-k=2
+  }
+  remember {
+    say "Rock goes round a cycle: worn to sediment, pressed into sedimentary rock, changed by heat and pressure, melted to magma and cooled to igneous rock. Lower layers are older."
+  }
+
+  grown-ups """
+    The idea is the rock cycle: the three kinds of rock and what turns one into another, and that a
+    layer laid down on another is younger than it, so a gorge's walls are read from the bottom up.
+    Granite and basalt are igneous, cooled from melted rock; sandstone, limestone, shale and chalk
+    are sedimentary, laid down in layers; marble and slate are metamorphic, changed by heat and
+    pressure without melting. The wrong ideas to watch for are that rock never changes, and that
+    metamorphic rock was melted (then it would be igneous). The story finds a stone's rock by its
+    density, as in the density lesson. The two-star question asks why granite has big crystals and
+    basalt tiny ones, or how limestone became marble. The three-star question counts the fewest
+    arrows from one box of the cycle to another, trying every route. If the child reads the layers
+    top down as oldest first, stay here another day with a pile of books laid one on another. Off
+    the page: look at a wall or a cliff and find layers; press damp sand in a cup and see it hold.
+    """
+  level easy {
+    grown-ups "At this level one missing arrow is worked in the teacher's pen, the layers ask which came first, the stones are 10 or 20 cm³, the two-star asks about granite's crystals, and the three-star has the shortcuts drawn."
+  }
+  level hard {
+    grown-ups "At this level the layers ask which of two is older and which came just before another, the stones are 20 or 30 cm³, the two-star asks how limestone became marble, and the three-star has only the loop, so the way round is longer."
+  }
+}

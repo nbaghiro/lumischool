@@ -1,0 +1,35 @@
+# The three-star: the range cannot be read off a histogram, only bounded. The greatest runs from the
+# bottom of the lowest bar to the top of the highest; the least from the top of the lowest to the
+# bottom of the highest, in whole grams.
+item data.rock-range-bounds v=1 stars=3 skills=[data.histograms, reasoning.extremes] {
+  title "Range from bars"
+  difficulty (q * 2 + v / 2)
+  let v=0..2 q=0..1
+  level easy {
+    let q={0} v={0, 1}
+  }
+  level hard {
+    let q={1} v={2}
+  }
+
+  scene 36x14 {
+    bargraph g labels=["10-19", "20-29", "30-39", "40-49", "50-59"] values=[pick(v, 0, 2, 0), pick(v, 3, 4, 2), pick(v, 5, 0, 6), pick(v, 2, 3, 0), pick(v, 0, 1, 0)] max=8 color=berry touch=1 at=canvas(1, 1)
+    text ask "The histogram shows the masses of the pebbles in grams, each weighed to the whole gram. What is the {if q == 0 then \"greatest\" else \"least\"} the range of the masses could be?" narrate width=18 right-of=g gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text unit "g"
+    }
+  }
+
+  answer (if q == 0 then pick(v, 29, 49, 19) else pick(v, 11, 31, 1))
+  feedback {
+    when (answer == pick(v, 20, 40, 10)) point=g {
+      say "That is from the start of the lowest bar to the start of the highest. A pebble in the highest bar could weigh more than its start."
+    }
+    when (q == 0 and answer == pick(v, 49, 49, 49) and v != 1) point=g {
+      say "The empty classes hold no pebbles. Start at the lowest bar that has pebbles in it."
+    }
+  }
+  hint "The range is the heaviest take away the lightest. Which bars could the heaviest and the lightest be in?"
+  hint "How heavy could the heaviest be, at most or at least? And the lightest?"
+}

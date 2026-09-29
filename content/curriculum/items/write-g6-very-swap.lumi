@@ -1,0 +1,32 @@
+# The adverb very and a plain adjective, swapped for the one exact word that means both. The right-hand list turns
+# with r, so the answer is never 1, 2, 3.
+item writing.very-swap v=1 skills=[writing.vocabulary, writing.word-choice, writing.concision] {
+  title "One word for very"
+  difficulty k
+  let k=0..1 r=0..2
+  let s1={pick(k, "very big", "very old")}
+  let s2={pick(k, "very tired", "very bright")}
+  let s3={pick(k, "very quiet", "very cold")}
+  let c1={pick(k, "vast", "ancient")}
+  let c2={pick(k, "exhausted", "dazzling")}
+  let c3={pick(k, "silent", "freezing")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 32x23 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      crater cr count=3
+      earth globe up=2
+    }
+    text ask "Kit's draft leans on the adverb very. Write the number of the one adjective that could replace each pair." narrate width=31 below=pics gap=1
+    match m left=["{s1}", "{s2}", "{s3}"] right=["{if r == 1 then c3 else c2}", "{if r == 0 then c3 else c1}", "{if r == 0 then c1 else if r == 1 then c2 else c3}"] blanks=[x, y, z] below=ask gap=1
+  }
+
+  answer x=(if r == 0 then 3 else 2) y=(if r == 1 then 3 else 1) z=(if r == 0 then 2 else if r == 1 then 1 else 3)
+  hint "Take the adjective after very. Which adjective on the right means the same, only stronger?"
+  hint "Try each word on the right in a sentence in place of the pair."
+}

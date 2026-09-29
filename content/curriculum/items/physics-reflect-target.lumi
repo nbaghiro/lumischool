@@ -1,0 +1,27 @@
+# Predict, then check: which lettered target the beam will land on, from the rule that the angle out
+# is the angle in; the targets are placed by the angle that reaches each, and only one is right.
+item physics.reflect-target v=1 skills=[physics.light, angles.degrees, reasoning.predict] {
+  title "Which target will it hit?"
+  difficulty (if o < 2 then 0 else 1)
+  let o=0..3
+  let a={pick(o, 40, 30, 50, 35)}
+  let t1={pick(o, 20, 30, 40, 25)}
+  let t2={pick(o, 40, 45, 45, 35)}
+  let t3={pick(o, 60, 60, 50, 45)}
+  level easy {
+    let o=0..1
+  }
+  level hard {
+    let o=2..3
+  }
+
+  scene 25x16 {
+    mirrorangle m angle=a targets=[t1, t2, t3] marks=1 show=0 at=canvas(1, 0)
+    text ask "Which target will the beam land on?" narrate width=12 below=m gap=1
+    choice pick options=["A", "B", "C"] right-of=ask gap=1
+  }
+
+  check physics.light of=m pick=reaches
+  hint "What angle does the beam come in at? It leaves at that angle on the other side of the upright line."
+  hint "Follow a line from where the beam meets the mirror, leaning as far from the upright as the beam coming in."
+}

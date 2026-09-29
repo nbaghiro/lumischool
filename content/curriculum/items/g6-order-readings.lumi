@@ -1,0 +1,39 @@
+# The way in: four readings, some with decimals, put in order on the line. Below zero the number
+# further from zero is the colder one, whatever its digits look like.
+item negative.order-readings v=1 skills=[number.negatives.order, number.compare] {
+  title "Second coldest"
+  difficulty t
+  let t=0..3
+  let a={pick(t, -2, -3, -0.5, -7.25)}
+  let b={pick(t, -5, -3.5, -1.5, -2)}
+  let c={pick(t, 3, 0.5, -1.25, -8)}
+  let d={pick(t, -1, -4, 0.25, -7.5)}
+  level easy {
+    let t={0, 1}
+  }
+  level medium {
+    let t={1, 2}
+  }
+  level hard {
+    let t={2, 3}
+  }
+
+  scene 36x22 {
+    table log cols=2 head=["Station", "Reading, °C"] cells=["A", "{a}", "B", "{b}", "C", "{c}", "D", "{d}"] at=canvas(1, 1)
+    text ask "Four weather stations on the ice shelf took a reading at midnight. Which station had the second coldest reading?" narrate width=16 right-of=log gap=2
+    choice pick options=["A", "B", "C", "D"] below=line gap=1
+    numberline line from=-8 to=4 below=log gap=1
+  }
+
+  answer pick=pick(t, "A", "B", "C", "D")
+  feedback {
+    when (pick == pick(t, "B", "D", "B", "C")) point=log {
+      say "That is the coldest reading. Which reading comes next above it on the line?"
+    }
+    when (t == 3 and pick == "A") point=line {
+      say "-7.25 is a quarter below -7, but -7.5 is half way to -8. Which is further below zero?"
+    }
+  }
+  hint "Which readings are below zero? Find them on the line."
+  hint "The further left on the line, the colder. Which is furthest left, and which is next?"
+}

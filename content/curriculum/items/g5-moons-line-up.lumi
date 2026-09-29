@@ -1,0 +1,32 @@
+# The second reasoning question in the core: not the next time two cycles meet but a later one,
+# which is a multiple of the lowest common multiple.
+item number.moons-line-up v=1 skills=[number.lcm, reasoning.generalise] {
+  title "The third time"
+  difficulty (lcm(a, b) * k / 20)
+  let a={4, 6} b={6, 9, 10} k={2, 3}
+  where (a < b and lcm(a, b) < a * b)
+  level easy {
+    let k={2} a={4} b={6}
+  }
+  level hard {
+    let k={3} a={6}
+  }
+
+  scene 35x17 {
+    orbit sky moon=2 at=canvas(1, 1)
+    text ask "Two moons of a far planet line up tonight. One goes round every {a} days, the other every {b} days. In how many days will they line up for the {if k == 2 then \"second\" else \"third\"} time after tonight?" narrate width=14 right-of=sky gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (lcm(a, b) * k)
+  feedback {
+    when (answer == lcm(a, b)) point=ask {
+      say "That is the first time. When is the next time after that?"
+    }
+    when (answer == a * b * k) point=ask {
+      say "They line up sooner than {a * b} days. Find the first day both reach."
+    }
+  }
+  hint "When do they first line up again?"
+  hint "How often do they line up after that?"
+}

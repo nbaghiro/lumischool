@@ -1,0 +1,33 @@
+# The second reason in the core: the same product worked two ways, split into whole and part or as a
+# top-heavy fraction. The laws of whole numbers hold for fractions and decimals too.
+item fraction.split-check v=1 skills=[fractions.multiply.mixed, reasoning.equivalence] {
+  title "Two ways round"
+  difficulty (w + x)
+  let w=1..3 a={1, 3} b={4} x={0.4, 0.8, 1.2}
+  level easy {
+    let w={1} x={0.4, 0.8}
+  }
+  level hard {
+    let w={3} x={1.2}
+  }
+
+  scene 36x28 {
+    sign kit lines=["Kit:", "{w} × {x} + {a}/{b} × {x}"] kind=board color=sky at=canvas(1, 1)
+    sign ana lines=["Ana:", "{w * b + a}/{b} × {x}"] kind=board color=mint right-of=kit gap=2
+    text ask "Kit and Ana both work out {w} {a}/{b} × {x} for the sledge's load. Do their ways give the same answer? Then work it out as a decimal." narrate width=34 below=kit gap=1
+    choice pick options=["the same", "Kit's is bigger", "Ana's is bigger"] stack=column below=ask gap=1
+    number-input answer width=5 below=pick gap=1
+  }
+
+  answer pick="the same" answer=decimals((w + a / b) * x, 0)
+  feedback {
+    when (pick != "the same") point=kit {
+      say "Kit multiplies the whole part and the fraction part, then adds. Is anything left out or counted twice?"
+    }
+    when (answer == w * x + a / b) point=kit {
+      say "The fraction part is times {x} as well."
+    }
+  }
+  hint "What does Kit do to the whole number and to the fraction? What does Ana do?"
+  hint "Try Kit's way first: it has no top-heavy fraction in it."
+}

@@ -1,0 +1,26 @@
+# The three-star: the note Isla leaves in the hut before the sledge trip, written to use each mark for
+# its job, and marked by a grown-up; at hard it adds a list whose items need semicolons.
+item writing.write-kit-note v=1 stars=3 skills=[writing.colons-semicolons, writing.composing] {
+  title "Your note for the hut"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x34 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      hut h pictures=6
+      sledge sl slats=5
+    }
+    text ask "{if k == 0 then \"Write the note Isla leaves in the hut before the sledge trip. Use a colon before a list of what they took, a colon before an explanation of where they went, and a semicolon joining two linked sentences.\" else \"Write the note Isla leaves in the hut before the sledge trip. Use a colon before a list of what they took, a colon before an explanation, a semicolon joining two linked sentences, and a list of three stops, each with a comma inside, separated by semicolons.\"}" narrate width=33 below=pics gap=1
+    writinglines lines lines=5 width=33 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A note of three or more sentences in which each colon comes after a whole sentence and is followed by a list (we took three things: ...) or an explanation (we have gone to the cliff: the ice there is thinnest), and each semicolon sits between two whole sentences that belong together (the wind has dropped; we are leaving now); at hard, also a list of three places, each with a comma inside, with semicolons between the places."
+  hint "Write the sentences first without the marks, then ask of each join whether a list, an explanation or a second sentence follows."
+  hint "Cover the words after each colon: is what is left a whole sentence?"
+}

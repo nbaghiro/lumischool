@@ -1,0 +1,25 @@
+# A logic puzzle told in clues: three of the crew and three jobs, each clue ruling a pair in or out.
+# The grid is for the child's crosses; every version has exactly one answer.
+item reading.moon-logic v=1 skills=[reading.inference, reasoning.logic] {
+  title "Who does which job?"
+  difficulty pick(k, 1, 2, 2)
+  let k=0..2
+  let right={pick(k, "Obi", "Ren", "Kai")}
+
+  scene 36x15 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=start {
+        passage clues title="Clues" text="{pick(k, \"Kai does not drive. Ren works with plants.\", \"Obi's job has no wheels and no plants. Ren has never driven.\", \"Nobody's job starts with the same letter as their name. Obi is not on the radio.\")}" width=17 numbers=false
+        logicgrid grid rows=["Kai", "Obi", "Ren"] cols=["rover", "radio", "garden"] marks=[0, 0, 0, 0, 0, 0, 0, 0, 0]
+      }
+      row bottom space=1 align=centre {
+        text ask "{pick(k, \"Who drives the rover?\", \"Who looks after the garden?\", \"Who is on the radio?\")}" width=14
+        choice pick options=["Kai", "Obi", "Ren"]
+      }
+    }
+  }
+
+  answer pick=right
+  hint "Put a cross in the grid for every pair a clue rules out, and a tick for every pair it tells you."
+  hint "When a row has two crosses, the last box must be a tick. What does that tick rule out below it?"
+}

@@ -1,0 +1,33 @@
+# Two names in one condition: the dome opens when it is late and the sky is clear enough. The
+# unknown moves from what the program says to which night makes it say it.
+item coding.and-dome v=1 skills=[coding.decisions, reasoning.logic] {
+  title "When the dome opens"
+  difficulty (k + (if j == 1 then 1 else 0))
+  let k=0..2 j=0..1
+  let x={pick(j, "hour 22, clouds 1", "hour 19, clouds 0")} y={pick(j, "hour 19, clouds 1", "hour 18, clouds 2")} z={pick(j, "hour 23, clouds 4", "hour 20, clouds 1")}
+  level easy {
+    let j={0}
+  }
+  level hard {
+    let j={1}
+  }
+
+  scene 36x25 {
+    program p code=["{if j == 0 then \"if hour is more than 20 and clouds is less than 3\" else \"if hour is more than 20 or clouds is 0\"}", "  say open", "otherwise", "  say shut"] at=canvas(1, 0)
+    observatory obs open=1 below=p gap=1
+    text ask "Which night does the program say open for?" width=24 right-of=obs gap=1
+    choice pick options=[pick(k, x, y, z), pick(k, y, z, x), pick(k, z, x, y)] stack=column below=ask gap=1
+  }
+
+  answer pick=x
+  feedback {
+    when (pick == z and j == 0) point=p {
+      say "The hour passes, but the clouds do not. With and, both tests have to pass."
+    }
+    when (pick == z and j == 1) point=p {
+      say "Hour 20 is not more than 20, and the clouds are not 0, so neither test passes."
+    }
+  }
+  hint "Ask each night the first test, then the second."
+  hint "{if j == 0 then \"With and, a night has to pass both tests.\" else \"With or, one test is enough.\"}"
+}

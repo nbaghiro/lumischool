@@ -1,0 +1,35 @@
+# The review's three-star: five ages with a median, a mode and a mean given, and the oldest as big as
+# it can be. The two youngest share the mode, the fourth is one more than the median so no second
+# mode appears, and the rest of the total goes to the oldest.
+item review.oldest-astronaut v=1 stars=3 skills=[data.median, data.mode, data.mean, reasoning.extremes] {
+  title "The oldest astronaut"
+  difficulty v
+  let v=0..3
+  let m={pick(v, 30, 34, 40, 36)}
+  let k={pick(v, 32, 37, 44, 41)}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 33x12 {
+    lander craft at=canvas(1, 1)
+    text ask "Five astronauts land at the moon base. Their ages are whole numbers. The median age is {m}, the only mode is {m - 2}, and the mean is {k}. How old could the oldest astronaut be, at the most?" narrate width=22 right-of=craft gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (5 * k - 2 * (m - 2) - m - (m + 1))
+  feedback {
+    when (answer == 5 * k - 2 * (m - 2) - 2 * m) point=ask {
+      say "If the fourth age is also {m}, then {m} is a mode as well. The fourth age has to be more than {m}."
+    }
+    when (answer == 5 * k - 4 * m) point=ask {
+      say "What is the smallest the two youngest can be, when {m - 2} is the mode?"
+    }
+  }
+  hint "What do the five ages add up to, when the mean is {k}?"
+  hint "Which ages must be {m - 2}, and which is {m}? How small can the fourth one be?"
+  hint "Whatever is left of the total is the oldest's age."
+}

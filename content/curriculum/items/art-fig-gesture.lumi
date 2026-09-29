@@ -1,0 +1,34 @@
+# A gesture drawing starts with the line of action: one line through the body from the head to the
+# foot that takes the weight, straight for a still pose and bent or slanted for a moving one.
+item art.fig-gesture v=1 skills=[art.gesture, art.figure, art.looking] {
+  title "The line of action"
+  difficulty (if k >= 3 then 1 else 0)
+  let k=0..4
+  let pose={pick(k, "run", "bend", "walk", "balance", "reach")}
+  let what={pick(k, "running along the path", "bending to pick up a stone", "walking onto the bridge", "balancing on one foot on a stepping stone", "reaching up high for the bridge rope")}
+  let right={pick(k, "Slants to the back foot", "A deep C curve", "Nearly upright", "Down to the standing foot", "One long curve from hands to feet")}
+  let o1={pick(k, "Nearly upright", "Slants to the back foot", "A deep C curve", "Down to the lifted foot", "Stops short at the waist")}
+  let o2={pick(k, "A deep C curve", "Nearly upright", "Slants to the back foot", "Zigzags through both feet", "Zigzags through both feet")}
+  let r={k % 3}
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={3, 4}
+  }
+
+  scene 36x23 {
+    text ask "Ada makes quick gesture drawings of visitors to the gorge, starting each with its line of action through the whole body. This one is {what}. Which line of action fits?" width=34 at=canvas(1, 1)
+    layfigure fig heads=7.5 pose=pose lines=false action=false below=ask gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then o1 else o2, if r == 0 then o1 else if r == 1 then o2 else right, if r == 0 then o2 else if r == 1 then right else o1] stack=column right-of=fig gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=fig {
+      say "Follow the figure from the top of its head down through its back to the foot that takes its weight. Is that line straight, slanted or bent?"
+    }
+  }
+  hint "Which foot is the weight on? The line ends there."
+  hint "Trace the back from the head to the hips with a finger, then carry on down the leg. What shape did your finger make?"
+}

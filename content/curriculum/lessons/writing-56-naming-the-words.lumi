@@ -1,0 +1,78 @@
+# The word classes named with their proper terms and each defined by its job in a sentence: noun,
+# verb, adjective, adverb, pronoun, preposition and conjunction, with the subject of a verb, and the
+# same word changing class when its job changes. Every sentence is set at the observatory.
+lesson writing-naming-the-words v=1 format=teach grade=5 unit=5 subject=writing levels=[easy, medium, hard] {
+  title "Naming the words"
+  goal "Name the word class of any word in a sentence by the job it does there."
+
+  look {
+    scene 34x16 {
+      column all at=canvas(1, 1) space=1 align=start {
+        wordcards cards words=["The", "comet", "moved", "slowly"] picked=-1
+        row pics space=2 align=end {
+          observatory dome open=1
+          comet c tail=6
+        }
+      }
+    }
+    say """
+      Every word in a sentence does a job, and each job has a name. A noun names a person, place or
+      thing: comet. A verb says what happens: moved. An adjective tells you about a noun, and an
+      adverb tells you how, when or where something happens: slowly. A pronoun stands in for a noun,
+      a preposition places one thing by another, and a conjunction joins two parts. A word can
+      change its job, so read the whole sentence first.
+      """
+  }
+  do {
+    level easy {
+      worked writing.name-the-class k=0 level=medium
+    }
+    show writing.name-the-class k=6 easy-k=1 hard-k=3
+    show writing.name-the-class k=2 easy-k=6 hard-k=5
+    show writing.gap-class k=1 easy-k=0 hard-k=4
+    show writing.adjective-or-adverb k=1 easy-k=0 hard-k=4
+  }
+  story {
+    show writing.same-word-new-job k=0 easy-k=2 hard-k=5
+    show writing.subject-and-verb k=1 easy-k=0 hard-k=5
+    show writing.same-word-new-job k=4 easy-k=1 hard-k=7
+    show writing.subject-and-verb k=4 easy-k=2
+    level hard {
+      show writing.gap-class k=3
+    }
+  }
+  try stars=2 {
+    show writing.which-class-reason k=0 easy-k=2 hard-k=1
+  }
+  try stars=3 {
+    show writing.pattern-sentence k=0 hard-k=1
+  }
+  remember {
+    say "A word's class is the job it does in its sentence: read the whole sentence, then name the job."
+  }
+
+  grown-ups """
+    The lesson names the word classes with the terms schools use, where earlier grades said naming
+    word, doing word and describing word: noun, verb, adjective, adverb, pronoun, preposition and
+    conjunction, with the subject as the noun that does the verb. Each is defined by its job in a
+    sentence, not by a list to learn, because the same word changes class with its job: fast is an
+    adjective in a fast comet and an adverb in moved fast, and after is a preposition before a noun
+    (after the eclipse) and a conjunction before a clause with its own verb (after the moon had
+    set). The way in names a picked word, and the core names a gap's class from its place, sorts
+    adjectives from adverbs, decides a word's class from its sentence and finds the verb and its
+    subject. The wrong idea to watch for is naming a word by a habit: every -ly word an adverb,
+    every describing word an adjective, every word for a thing a noun. Ask "what does it go with
+    here?" If the child is stuck, cover the word with a finger and ask what the sentence has lost.
+    Off the page, take a sentence from a book at bedtime and name the class of every word in it. The
+    two-star question corrects a friend who names a class by habit, and the three-star is sentences
+    built to a pattern, which you mark. Russia's federal work programme for grade five teaches the
+    parts of speech by name in its «Морфология» section, and the Common Core (L.5.1a) asks fifth
+    graders to explain the function of "conjunctions, prepositions, and interjections".
+    """
+  level easy {
+    grown-ups "At this level naming a verb is worked once first, the words to name are a noun, an adjective and a pronoun, the gaps and the sort have plain adjectives and -ly adverbs, the same word changes between noun and verb or adjective and adverb, the subject comes before its verb, and the two-star is about light."
+  }
+  level hard {
+    grown-ups "At this level the words to name are an adverb and a conjunction, the sort puts friendly and lovely among the adjectives, after and before change between preposition and conjunction, one subject comes after its verb and one hides behind another noun, a gap needs a preposition, and the two-star is about after."
+  }
+}

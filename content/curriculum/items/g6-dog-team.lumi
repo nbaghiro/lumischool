@@ -1,0 +1,32 @@
+# The way in: a ratio scaled up, read as so many dogs for every so many children.
+item ratio.dog-team v=1 skills=[ratio.scaling] {
+  title "Dogs for the sledges"
+  difficulty (b + k / 5)
+  let a={3, 4, 5, 6} b={1, 2, 3} k={2, 3, 4, 5}
+  where (gcd(a, b) == 1)
+  level easy {
+    let b={1} k={2, 3}
+  }
+  level hard {
+    let b={3} k={4, 5}
+  }
+
+  scene 33x18 {
+    ratio bars parts=[a, b] labels=["Dogs", "Children"] unit=0 total=false at=canvas(1, 1)
+    sledge sl slats=5 right-of=bars gap=2
+    text ask "On the ice shelf the sledges are pulled in the ratio {a} : {b}, dogs to children. How many dogs are needed for {b * k} children?" narrate width=32 below=bars gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (a * k)
+  feedback {
+    when (b > 1 and answer == b * k + a - b) point=bars {
+      say "A ratio grows by multiplying, not by adding the same number to both."
+    }
+    when (b > 1 and answer == a * b * k) point=bars {
+      say "How many groups of {b} children are there? Each group needs {a} dogs."
+    }
+  }
+  hint "How many groups of {b} children are there?"
+  hint "Each group needs the same number of dogs. How many is that?"
+}

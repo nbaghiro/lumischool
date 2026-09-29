@@ -1,0 +1,37 @@
+# The words before a colon must make a whole sentence. One choice has that; one breaks a sentence
+# in two with the colon, and one puts the colon inside the list.
+item writing.colon-before v=1 skills=[writing.punctuation, writing.colons-semicolons] {
+  title "Which colon is right?"
+  difficulty k
+  let k=0..2 r=0..2
+  let right={pick(k, "We need three things: a map, a rope and a torch.", "At midnight the sky was one colour: pale gold.", "The hut has all we need: a stove, bunks and a radio.")}
+  let w1={pick(k, "We need: a map, a rope and a torch.", "At midnight the sky was: pale gold.", "The hut has: a stove, bunks and a radio.")}
+  let w2={pick(k, "We need three things, a map: a rope and a torch.", "At midnight: the sky was one colour, pale gold.", "The hut has all we need, a stove: bunks and a radio.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x26 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      hut h pictures=6
+      midnightsun sun suns=4 midnight=1
+    }
+    text ask "Which sentence uses the colon correctly?" narrate width=33 below=pics gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=ask {
+      say "Cover everything after the colon. The words left before it do not make a sentence on their own."
+    }
+    when (pick == w2) point=ask {
+      say "The colon has landed in the middle, splitting things that belong together. It goes where the whole sentence ends and the list or explanation begins."
+    }
+  }
+  hint "Cover the words after each colon. Is what is left a whole sentence?"
+  hint "Then check what comes after the colon: does all of it belong to the list or the explanation?"
+}

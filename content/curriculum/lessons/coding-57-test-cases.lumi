@@ -1,0 +1,71 @@
+# Which inputs would catch the bug: test cases chosen on purpose. On the moon the lander, the rocket,
+# the rock bag and the oxygen alarm are tested with numbers on the edges of their ifs, and with sets of
+# numbers that take every if both ways.
+lesson coding-test-cases v=1 format=teach grade=6 unit=8 subject=coding levels=[easy, medium, hard] {
+  title "Which inputs would catch the bug: test cases"
+  goal "Choose the inputs that test a program well: the ones on the edges of its ifs, and a set that takes every if both ways."
+
+  look {
+    scene 36x19 {
+      program p code=["if fuel is less than 20", "  say return", "otherwise", "  say land"] text=true at=canvas(0, 0)
+      lander ld rungs=5 right-of=p gap=2
+      earth e up=1 below=ld gap=1
+    }
+    say """
+      The lander must head back to the rocket when its fuel is less than 20. To test the program, the
+      crew choose numbers for fuel, run it, and check what it says. Testing 5 and 50 is not enough:
+      a program that said less than 21 would pass those too. The numbers on the edge, 19 and 20, are
+      the ones that catch a mistake there. A good set of tests also makes every if say yes at least
+      once and no at least once.
+      """
+  }
+  do {
+    show coding.test-run t=20 f=12 easy-f=14 hard-f=20
+    level easy {
+      worked coding.test-run t=25 f=30 level=medium
+    }
+    show coding.test-catch k=1 easy-k=0 hard-k=2
+    show coding.test-miss k=1 easy-k=0 hard-k=2
+    show coding.test-count k=1 easy-k=0 hard-k=2
+    show coding.test-covers k=1 easy-k=0 hard-k=2
+    show coding.test-run t=25 f=24 easy-t=20 easy-f=28 hard-f=24
+    show coding.test-catch k=0 easy-k=1 hard-k=1
+    show coding.test-count k=0 easy-k=1 hard-k=1
+    level hard {
+      show coding.test-covers k=0 level=medium
+    }
+  }
+  try stars=2 {
+    show coding.test-smallest k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show coding.test-fewest k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Test on the edges of each if, and choose tests that make every if say yes once and no once."
+  }
+
+  grown-ups """
+    A test is an input chosen on purpose, run through the program and checked against what it should
+    do. Tests far from an if's number pass even when the number is wrong by one, so the tests that
+    catch mistakes sit on the edges, and a good set makes every if say yes and no at least once. The
+    slips to watch for are choosing tests at random, treating less than 20 as if it included 20, and
+    forgetting that an if inside another is only asked when the outer one says yes. In the child's
+    working, look for the edge numbers written beside each if. If the child is stuck, write the line
+    both ways, the right one and the copy, and try the numbers from one below the edge to one above;
+    stay another day if the edge is still missed. Off the page, test a rule at home, such as "you may
+    stay up if it is Friday or Saturday", by asking which days would show a mistake in it. The two-star
+    question finds the smallest crew whose load falls between the right limit and the typed one, and
+    the three-star question plans the fewest tests that take every if both ways. This meets CSTA
+    2-AP-17, "Systematically test and refine programs using a range of test cases", the Russian grade
+    six programming course's «Тестирование игры» (testing a game), and China's 2022 standard for
+    grades five and six, 身边的算法 学业要求, where reading, changing and running a program
+    (「阅读理解、修改运行」) are counted as work on an algorithm.
+    """
+  level easy {
+    grown-ups "At this level the fuel tested is well away from the if's number and one test is worked in the teacher's pen, the pair that catches the bug has the edge number in it with the others far off, the crew sizes that miss are well outside the band, the rock numbers that catch it are three or four in a row, and the set that takes every way has one number in each band. The smallest crew brings 3 kg each, and the fewest tests are for two separate ifs."
+  }
+  level hard {
+    grown-ups "At this level the fuel tested is on the edge or one below, the rocket's test uses more than, the pair that misses sits either side of a band one number wide, at least and more than differ at one number only, the sets of tests sit on the edges, and a second set of tests to judge is added. The smallest crew brings 7 kg each, and the fewest tests are for a decision three deep."
+  }
+}

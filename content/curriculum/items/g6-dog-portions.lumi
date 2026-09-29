@@ -1,0 +1,28 @@
+# A whole number divided by a fraction: how many portions of a/b kg fit into n kg.
+item fraction.dog-portions v=1 skills=[fractions.divide] {
+  title "How many portions"
+  difficulty (a + m / 2)
+  let a={2, 3, 4} b={3, 5, 7} m={2, 3, 4, 5}
+  where (a < b)
+  level easy {
+    let a={2} m={2, 3}
+  }
+  level hard {
+    let a={3, 4} m={4, 5}
+  }
+
+  scene 34x10 {
+    fraction bar n=b k=a shape=bar at=canvas(1, 1)
+    text ask "The hut has {a * m} kg of fish for the dogs. It is cut into portions of {a}/{b} kg. The bar is 1 kg. How many portions are there?" narrate width=19 right-of=bar gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (b * m)
+  feedback {
+    when (answer == a * m * a / b or answer == m) point=bar {
+      say "Each portion is less than 1 kg, so there are more portions than kilograms."
+    }
+  }
+  hint "How many portions of 1/{b} kg are there in 1 kg? In {a * m} kg?"
+  hint "Each portion is {a} of those small parts. How many portions is that?"
+}

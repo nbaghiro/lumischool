@@ -1,0 +1,36 @@
+# The two-star reason: precise is not the same as short or long. At k=0 one exact verb beats a verb
+# and two adverbs; at k=1 the longer sentence wins because it names exactly what Kit saw.
+item writing.precise-reason v=1 stars=2 skills=[writing.word-choice, reasoning.explain] {
+  title "Which is more precise, and why?"
+  difficulty k
+  let k=0..1 r=0..2
+  let two={pick(k, "A: The astronaut walked slowly and heavily across the dusty ground. B: The astronaut trudged across the dust.", "A: The Earth was up there. B: The Earth hung over the crater's grey rim, blue and streaked with white.")}
+  let right={pick(k, "B: one exact verb does the work of three words", "B: it names exactly what Kit saw")}
+  let w1={pick(k, "A: more adverbs tell the reader more", "A: it says the same in fewer words")}
+  let w2={pick(k, "B: shorter is always more precise", "B: longer sentences are always better")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x32 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      earth globe up=1
+      footprints fp count=5
+    }
+    passage p title="Two versions" text="{two}" width=33 numbers=false below=pics gap=1
+    text ask "Which version is more precise, and why?" narrate width=33 below=p gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "Precise does not mean short or long. It means the reader sees exactly what the writer saw. Which version does that?"
+    }
+  }
+  hint "Close your eyes after each version. Which one gives you the clearer picture?"
+  hint "Count the words that are doing real work in each."
+}

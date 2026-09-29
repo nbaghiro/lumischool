@@ -1,0 +1,39 @@
+# The two-star reason: two claims about naming intervals. Counting steps instead of letters comes out
+# one short; and the number names the letters, not the size, so E to F and E to F sharp are both 2nds
+# but not the same size.
+item music.interval-claim v=1 stars=2 skills=[music.intervals, reasoning.claims] {
+  title "Is Ben counting right?"
+  let q=0..1 r=0..1
+  let claim={pick(q, "Ben counts the steps from C up to G: four steps, so he says it is a 4th. D up to A is four steps too.", "Ben says E up to F and E up to F sharp are both 2nds, so they are the same size.")}
+  let right={pick(q, "No: count the letters, so both are 5ths", "No: both are 2nds, but one is a semitone bigger")}
+  let w1={pick(q, "Yes: an interval is the number of steps", "Yes: two 2nds are always the same size")}
+  let w2={pick(q, "No: both are 3rds, the letters in between", "No: E up to F sharp is a 3rd")}
+  let a1={pick(q, "C4", "E4")}
+  let a2={pick(q, "G4", "F4")}
+  let b1={pick(q, "D4", "E4")}
+  let b2={pick(q, "A4", "Fs4")}
+
+  scene 34x30 {
+    text ask "{claim} Is he right, and why?" narrate width=32 at=canvas(1, 1)
+    row both space=2 align=start below=ask gap=1 {
+      notes s1 clef=treble notes=[a1, a2] values=[2, 2] meter=0 letters=true
+      notes s2 clef=treble notes=[b1, b2] values=[2, 2] meter=0 letters=true
+    }
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=both gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1 and q == 0) point=s1 {
+      say "Say the letters from C to G: C, D, E, F, G. How many letters is that?"
+    }
+    when (pick == w1 and q == 1) point=s2 {
+      say "Picture a keyboard. E to F is the very next key, and E to F sharp skips one."
+    }
+    when (pick == w2) point=s1 {
+      say "An interval counts every letter from the first note to the last, both included."
+    }
+  }
+  hint "Say the letter names from the lower note to the higher one. How many are there?"
+  hint "{if q == 0 then \"Steps are the gaps between letters. Is that the same as the number of letters?\" else \"How many semitones is each pair? A sharp raises a note by one.\"}"
+}

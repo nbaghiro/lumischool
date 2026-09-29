@@ -1,0 +1,67 @@
+# Regular polygons from a turtle: the turn at every corner is 360 shared among the corners, because
+# the turtle turns all the way round once. Set at the observatory, where the turtle draws star
+# charts.
+lesson coding-polygons-from-a-turtle v=1 format=teach grade=5 unit=4 subject=coding levels=[easy, medium, hard] {
+  title "Polygons from a turtle"
+  goal "Draw any regular polygon with a turtle by turning 360 divided by the number of sides."
+
+  look {
+    scene 36x18 {
+      turtle t cols=6 rows=5 col=3 row=5 face=right moves=["repeat 6", "  forward 2", "  turn left 60"] at=canvas(1, 0)
+      program p code=["repeat 6", "  forward 2", "  turn left 60"] right-of=t gap=1
+      observatory obs open=1 below=p gap=1
+    }
+    say """
+      At the observatory on the star cliffs, the turtle draws the shapes on the star charts. A turn
+      can be any number of degrees, not only a quarter turn. To draw a hexagon the turtle turns at
+      each of its six corners, and by the end it faces the way it started, so it has turned 360
+      degrees in all. Each turn is 360 divided by 6, which is 60.
+      """
+  }
+  do {
+    show coding.poly-turn q=1 easy-q=1 hard-q=4
+    show coding.poly-turn q=2 easy-q=0 hard-q=6
+    level easy {
+      worked coding.poly-turn q=3 level=medium
+    }
+    show coding.poly-count q=3 easy-q=1 hard-q=5
+    show coding.poly-which q=1 f=0 easy-q=0 hard-q=2
+    show coding.poly-total k=1 easy-k=0 hard-k=3
+    show coding.poly-fix q=1 w=-6 easy-q=0 hard-q=2 hard-w=5
+    show coding.poly-inside k=0 hard-k=1
+    show coding.poly-build q=2 easy-q=0 hard-q=4
+    level hard {
+      show coding.poly-total k=4
+    }
+  }
+  try stars=2 {
+    show coding.poly-size k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show coding.poly-star k=0 hard-k=1
+  }
+  remember {
+    say "To draw a shape with n equal sides, the turtle turns 360 divided by n at every corner."
+  }
+
+  grown-ups """
+    The fact to leave with is that the turtle turns all the way round once, whatever the shape, so
+    each turn is 360 shared among the corners. The wrong idea to watch for is using the angle inside
+    a corner, 120 for a hexagon, which is what a protractor on the drawing measures; the turtle
+    turns by the angle outside, how much its direction changes. In the child's working, look for the
+    corners counted first and the division second. If the child is stuck, walk the shape on the
+    floor, turning on the spot at each corner, and notice facing the start direction again at the
+    end; stay another day if the inside angle keeps coming back. Off the page, find a stop sign, a
+    honeycomb and a triangle of pool balls, and work out the turtle's turn for each. The two-star
+    question shows that the size of a shape does not change its turns, and the three-star question
+    goes round twice to make a star. The build question asks for the program itself: the repeat goes
+    round once for each side and the turn is 360 shared among them, and changing those two numbers
+    draws any other regular polygon.
+    """
+  level easy {
+    grown-ups "At this level the shapes are the triangle, the square and the hexagon, with the hexagon worked in the teacher's pen, the count to find is for a turn of 90, the program to pick draws a pentagon, the total turn is a square's, the shape to mend is a pentagon, the inside angle is the hexagon's, the two shapes to compare are hexagons of two sizes, and the star has five points. The polygon to build is a triangle."
+  }
+  level hard {
+    grown-ups "At this level the shapes have eight, ten and more sides, the count to find is for a turn of 40, the program to pick draws an octagon, the total turns include ones that do not come back to the start, the shape to mend is an octagon, the inside angle is a triangle's, which leaves an open line, the small triangle turns more than the big hexagon, and the star has nine points. The polygon to build is an octagon."
+  }
+}

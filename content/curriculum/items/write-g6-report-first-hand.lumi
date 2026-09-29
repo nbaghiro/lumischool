@@ -1,0 +1,41 @@
+# The way in: a source is first-hand when its maker was there. The source card's last row is left
+# blank, so the child judges it from who made it and where. The transcript is NASA's record of the
+# crew's radio; Aldrin photographed his own bootprint on the Moon. The Daily Lantern is a newspaper
+# written for this lesson, not a real paper, and so is the encyclopaedia entry.
+item writing.report-first-hand v=1 skills=[writing.research, writing.report] {
+  title "Was the writer there?"
+  difficulty pick(k, 0, 1, 0, 1)
+  let k=0..3
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1, 3}
+  }
+  let right={pick(k, "First-hand", "Second-hand", "Second-hand", "First-hand")}
+
+  scene 36x19 {
+    row top at=canvas(1, 1) space=2 align=start {
+      sourcecard card title="{pick(k, \"Apollo 11 air-to-ground voice transcript\", \"Men walk on the Moon\", \"Apollo 11\", \"Photograph of a bootprint\")}" kind=pick(k, 0, 1, 2, 0) who="{pick(k, \"NASA, from the crew's radio\", \"A reporter at Mission Control\", \"The encyclopaedia's writers\", \"Buzz Aldrin, with his camera\")}" when="{pick(k, \"20 July 1969\", \"21 July 1969\", \"2026\", \"20 July 1969\")}" where="{pick(k, \"the Moon and Mission Control, Houston\", \"Houston, Texas\", \"not stated\", \"the Sea of Tranquillity, the Moon\")}" there=pick(k, 1, 0, 0, 1) ask=4
+      column q space=1 align=start {
+        text ask "A first-hand source was made by someone who was there. A second-hand one was made from what others saw. Which is this one?" width=15
+        choice pick options=["First-hand", "Second-hand"] stack=column
+      }
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 1 and pick == "First-hand") point=card {
+      say "Read the where row. Mission Control is in Houston. Was the reporter on the Moon?"
+    }
+    when (k != 1 and right == "Second-hand" and pick == "First-hand") point=card {
+      say "Read the when row. Were the writers alive and there in 1969?"
+    }
+    when (right == "First-hand" and pick == "Second-hand") point=card {
+      say "Read who made it and where. Was that person, or their radio, at the landing?"
+    }
+  }
+  hint "Read the who and the where rows. Was that person at the event itself?"
+  hint "Being close in time is not the same as being there. Where were they?"
+}

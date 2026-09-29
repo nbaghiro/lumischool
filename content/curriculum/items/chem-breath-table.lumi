@@ -1,0 +1,38 @@
+# Air breathed in and out: in, about 78 per cent nitrogen, 21 oxygen and 0.04 carbon dioxide; out,
+# about 16 per cent oxygen and 4 per cent carbon dioxide (BBC Bitesize and the RSC's breathing notes),
+# with the nitrogen unchanged. Water vapour and argon are left out of the table.
+item chem.breath-table v=1 skills=[chemistry.gases, data.tables, percentages.of-amount] {
+  title "Breathed in, breathed out"
+  difficulty w
+  let w=0..2 v={500, 1000, 2000}
+  where (not (w == 0 and v != 1000))
+  let asks={pick(w, "Out of every 100 ml of air Sam breathes in and out again, how many millilitres of oxygen did his body keep?", "Sam breathes out {v} ml of air. How many millilitres of it are carbon dioxide?", "Sam breathes out {v} ml of air. How many millilitres of oxygen are still in it?")}
+  let second={pick(w, "Read the oxygen row both ways. How far apart are the two numbers?", "Out of each 100 ml breathed out, how much is carbon dioxide? How many lots of 100 ml did Sam breathe out?", "Out of each 100 ml breathed out, how much is still oxygen? How many lots of 100 ml did Sam breathe out?")}
+  level easy {
+    let w=0..1
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 35x21 {
+    table data cols=3 head=["Gas", "In (%)", "Out (%)"] cells=["Nitrogen", "78", "78", "Oxygen", "21", "16", "Carbon dioxide", "0.04", "4"] at=canvas(1, 0)
+    text ask "On a frosty night on the star cliffs, Sam's breath makes a little cloud. The table shows each gas as a percentage of the air he breathes in and the air he breathes out. {asks}" narrate width=34 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then 5 else if w == 1 then v * 4 / 100 else v * 16 / 100)
+  feedback {
+    when (w == 0 and (answer == 21 or answer == 16)) point=data {
+      say "That is one column on its own. The body kept the difference between the two."
+    }
+    when (w == 2 and answer == v * 21 / 100) point=data {
+      say "That is the oxygen in the air breathed in. Breathed-out air has less: read the Out column."
+    }
+    when (w == 1 and answer == 4) point=data {
+      say "4 is the per cent, for each 100 ml. Sam breathed out {v} ml."
+    }
+  }
+  hint "Find the right row, then the right column: in or out."
+  hint "{second}"
+}

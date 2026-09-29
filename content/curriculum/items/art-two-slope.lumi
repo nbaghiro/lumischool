@@ -1,0 +1,31 @@
+# Above the eye an edge running back slopes down to its point; below the eye it slopes up; on the
+# horizon it stays level.
+item art.two-slope v=1 skills=[art.perspective, reasoning.predict] {
+  title "Up or down to the points?"
+  difficulty (if k >= 3 then 1 else 0)
+  let k=0..4
+  let h={pick(k, 2, 6, 6, 9, 3)}
+  let edge={pick(k, "the top", "the top", "the bottom", "the bottom", "the bottom")}
+  let way={pick(k, "up", "down", "up", "level", "up")}
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={2, 3, 4}
+  }
+
+  scene 35x21 {
+    twopoint crate horizon=h left=1 right=15 corner=8 stage=1 door=false at=canvas(1, 1)
+    text ask "Ada rules lines from {edge} of the near edge to both points. Do those lines slope up to the points, slope down, or run level?" width=17 right-of=crate gap=1
+    choice pick options=["up", "down", "level"] stack=column below=ask gap=1
+  }
+
+  answer pick=way
+  feedback {
+    when (pick != way) point=crate {
+      say "The points are on the horizon. A line that starts below the horizon has to go up to reach them, and one that starts above has to come down."
+    }
+  }
+  hint "Is {edge} of the near edge above the horizon, below it, or on it?"
+  hint "The line must end at a point on the horizon. Which way does it have to go to get there?"
+}

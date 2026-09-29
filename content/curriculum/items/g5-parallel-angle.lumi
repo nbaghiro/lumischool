@@ -1,0 +1,28 @@
+# Two parallel lines cut by a third: angles in the same position are equal, and angles on a straight
+# line make 180. One angle given, another asked.
+item angles.parallel-angle v=1 skills=[angles.sums, angles.parallel] {
+  title "Across the parallel lines"
+  difficulty (if k == g + 4 then 0 else if (g + k) % 2 == 0 then 1 else 2)
+  let a={50, 65, 70, 115, 125} g=0..3 k=4..7
+  level easy {
+    where (k == g + 4)
+  }
+  level hard {
+    where ((g + k) % 2 == 1)
+  }
+
+  scene 30x17 {
+    anglesum lines kind=parallel a=a give=g ask=k at=canvas(1, 1)
+    text ask "Two telescope rails are parallel, and a beam crosses them. One angle is marked. What is the angle with the question mark?" narrate width=10 right-of=lines gap=1
+    number-input answer width=4 below=lines gap=1
+  }
+
+  answer (if k % 2 == 0 then a else 180 - a)
+  feedback {
+    when (answer == (if k % 2 == 0 then 180 - a else a)) point=lines {
+      say "Is the angle with the question mark the same size as the marked one, or does it make 180 with it? Look at whether it is sharp or wide."
+    }
+  }
+  hint "Find the angle in the same position at the other crossing."
+  hint "Angles next to each other on a straight line add up to 180."
+}

@@ -1,0 +1,68 @@
+lesson chemistry-rust-on-the-lock-gates v=1 format=teach grade=5 unit=3 subject=chemistry levels=[easy, medium, hard] {
+  title "Rust on the lock gates"
+  goal "Say what rust needs, choose the way to stop it for each part of the lock, and work out what the rust weighs."
+
+  look {
+    scene 32x9 {
+      row all at=canvas(1, 0) space=2 align=end {
+        canallock lock level=0.5 boat=1
+        nails jars jars=["water", "salt", "painted"] days=10 letters=1 names=1
+      }
+    }
+    say """
+      The lock gates are held together with iron. Iron rusts only when water and air reach it
+      together, and faster when the water is salty. Rust is a new substance: oxygen from the air has
+      joined the iron, so the rust weighs more than the iron did. The canal stops it in three ways.
+      Paint keeps water and air off the straps, grease keeps them off the cogs that rub, and a coat
+      of zinc wears away first, even where it is scratched.
+      """
+  }
+  do {
+    practice chem.rust-pair count=2 seed=2 easy-seed=1 hard-seed=3
+    level easy {
+      worked chem.rust-weighs d=0 i=140 level=medium
+    }
+    show chem.rust-weighs d=0 i=350 easy-i=70 hard-d=1 hard-i=280
+    practice chem.rust-rate count=2 seed=1 easy-seed=1 hard-seed=1
+    practice chem.stop-rust-which count=2 seed=1 easy-seed=2 hard-seed=2
+    level hard {
+      show chem.rust-pair o=2 t=1
+    }
+  }
+  story {
+    show chem.rust-weighs d=1 i=140 easy-d=0 easy-i=280 hard-d=2 hard-i=280
+  }
+  try stars=2 {
+    show chem.scratched-coat k=1 r=0 easy-k=0 easy-r=2 hard-r=2
+  }
+  try stars=3 {
+    show chem.paint-or-zinc p=20 y=6 z=150 easy-y=10 easy-z=90 hard-y=5 hard-p=30 hard-z=120
+  }
+  remember {
+    say "Iron rusts when water and air reach it together. Paint, grease and zinc keep it from rusting, and zinc works even when scratched."
+  }
+
+  grown-ups """
+    The idea is that rust needs three things at once (iron, water and oxygen from the air), so every
+    way of stopping it takes one away: paint and grease cover the iron, and zinc, the coat on
+    galvanised gates and railings, corrodes before the iron does, which is why a scratched zinc coat
+    still protects. The jars use the grade four test (dry air, water under oil, salty water); what is
+    new here is choosing the one pair that tests a given claim, and measuring how much faster salt
+    makes it: the table of steel lost a year uses figures inside the international bands for
+    carbon steel (ISO 9223), about 20 thousandths of a millimetre inland, 40 in a town and 160 in
+    salt spray. The weights use the real ratio for
+    dry iron oxide, 7 g of iron to 10 g of oxide; real rust also holds water, so it weighs a little
+    more again. The wrong ideas to watch for are that rust was under the paint all along, and that
+    rusting makes iron lighter. The three-star question compares two plans over 30 years with prices
+    from the lock keeper's notes. If the child picks any pair with plain water in it, stay here
+    another day and ask what is different between the two jars before asking what it shows. Off the
+    page, look for rust on a gate or a bike and for a galvanised bin or railing, which is dull grey
+    with a pattern like frost.
+    """
+  level easy {
+    grown-ups "At this level the rust's weight is worked once in the teacher's pen, the pair to find tests water or salt, the pin weighs 70 g and the rust is asked, the salt table asks how many times as fast, the ways to stop rust are the cogs and the paint, the two-star asks why the nail under oil stays bright, and paint lasts 10 years."
+  }
+  level hard {
+    grown-ups "At this level the pair to find tests air or salt, the oxygen that joined and the iron before rusting are worked back, the salt table gives the years a thin sign lasts, the ways to stop rust are the two about zinc, the two-star asks why only the painted strap rusted in its scratch, where zinc corroding first is the answer, and paint lasts only 5 years."
+  }
+}

@@ -1,0 +1,30 @@
+# Adjectives against adverbs, sorted by the job each can do: an adjective fits "a ___ star", an
+# adverb fits "it moved ___". The adverbs include soon and often, which have no -ly, and the hard
+# list puts friendly and lovely, adjectives that end in -ly, in their right column.
+item writing.adjective-or-adverb v=1 skills=[writing.word-classes, writing.grammar] {
+  title "Adjective or adverb?"
+  difficulty pick(k, 0, 1, 0, 1, 2, 2, 2)
+  let k=0..6
+  let odd={pick(k, "huge", "soon", "cold", "carefully", "soon", "often", "silent")}
+  level easy {
+    let k=0..3
+  }
+  level hard {
+    let k=4..6
+  }
+
+  scene 30x26 {
+    text ask "One word is in the wrong column. Write it." width=28 at=canvas(1, 1)
+    wordsort sort heads=["adjective", "adverb"] words=[if k <= 3 then "bright" else "friendly", "silent", if k <= 3 then "huge" else "lovely", "cold", "slowly", "soon", "often", "carefully"] into=[0, pick(k, 0, 0, 0, 0, 0, 0, 1), pick(k, 1, 0, 0, 0, 0, 0, 0), pick(k, 0, 0, 1, 0, 0, 0, 0), 1, pick(k, 1, 0, 1, 1, 0, 1, 1), pick(k, 1, 1, 1, 1, 1, 0, 1), pick(k, 1, 1, 1, 0, 1, 1, 1)] below=ask gap=1
+    word-input pick options=[odd] letters=9 below=sort gap=1
+  }
+
+  answer pick=odd
+  feedback {
+    when (k >= 4 and (pick == "friendly" or pick == "lovely")) point=sort {
+      say "Try that word in a ___ star. It fits, so it is where it belongs, -ly or not."
+    }
+  }
+  hint "Try each word in a ___ star, and then in it moved ___. Which test does it pass?"
+  hint "Read down each column with its test. Which word fails the test for its own column?"
+}

@@ -1,0 +1,30 @@
+# Working back to a depth hidden under a question mark: the inner core's radius is 6,371 − 5,150 =
+# 1,221 km and the outer core is 5,150 − 2,890 = 2,260 km thick (EARTH_LAYERS). k is the hidden layer.
+item chem.core-depth v=1 skills=[chemistry.rocks, reasoning.work-backwards] {
+  title "The missing depth"
+  difficulty (3 - k)
+  let k={2, 3}
+  level easy {
+    let k={3}
+  }
+  level hard {
+    let k={2}
+  }
+  let clue={if k == 3 then "The inner core is 1,221 km from its edge to the centre of the Earth." else "The outer core is 2,260 km thick."}
+  let which={if k == 3 then "the outer core" else "the mantle"}
+
+  scene 29x27 {
+    earthinside e names=1 depths=1 ask=k scale=0 at=canvas(1, 0)
+    text ask "{clue} How deep does {which} go, where the question mark is?" narrate width=28 below=e gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check chem.rocks of=e answer=depth
+  feedback {
+    when (answer == 1221 or answer == 2260) point=e {
+      say "That is a thickness from the clue. The question asks how deep, measured from the ground."
+    }
+  }
+  hint "The layer under the question mark ends where the next one starts. How deep does that next one go?"
+  hint "How thick is that next layer? Work back up from its bottom."
+}

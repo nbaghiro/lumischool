@@ -1,0 +1,43 @@
+# Which drawing: the three lists hold the same numbers in different orders, so the child has to
+# follow the order of the items, side by side, and not only what is in the list.
+item coding.each-drawing v=1 skills=[coding.lists, coding.drawing] {
+  title "Which spiral?"
+  difficulty (k + (if f == 1 then 0.5 else 0))
+  let k=0..2 f=0..1
+  let x={pick(k, 1, 2, 2)} y={pick(k, 2, 1, 2)} z={pick(k, 2, 2, 1)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k=1..2 f={1}
+  }
+
+  scene 36x28 {
+    program p code=["set sides to list {x}, {y}, {z}", "for each s in sides", "  forward s", "  turn left"] at=canvas(1, 0)
+    text ask "Which drawing does the program make, starting on the ring and facing right?" width=14 right-of=p gap=1
+    row pics below=p gap=1 space=1 align=start {
+      column ca space=0 align=start {
+        text la "A"
+        turtle ta cols=4 rows=4 col=2 row=3 face=right moves=["forward {pick(f, 1, 2)}", "turn left", "forward {pick(f, 2, 2)}", "turn left", "forward {pick(f, 2, 1)}"] mark=false
+      }
+      column cb space=0 align=start {
+        text lb "B"
+        turtle tb cols=4 rows=4 col=2 row=3 face=right moves=["forward 2", "turn left", "forward 1", "turn left", "forward 2"] mark=false
+      }
+      column cc space=0 align=start {
+        text lc "C"
+        turtle tc cols=4 rows=4 col=2 row=3 face=right moves=["forward {pick(f, 2, 1)}", "turn left", "forward 2", "turn left", "forward {pick(f, 1, 2)}"] mark=false
+      }
+    }
+    choice pick options=["A", "B", "C"] below=pics gap=1
+  }
+
+  answer pick=(if f == 0 then pick(k, "A", "B", "C") else pick(k, "C", "B", "A"))
+  feedback {
+    when (pick != (if f == 0 then pick(k, "A", "B", "C") else pick(k, "C", "B", "A"))) point=p {
+      say "Compare side by side, in order: the first item is the first side, drawn to the right, and every turn is to the left."
+    }
+  }
+  hint "The first item is the first side. How long is the first line in each drawing?"
+  hint "Then the turtle turns left. Does the second side match too?"
+}

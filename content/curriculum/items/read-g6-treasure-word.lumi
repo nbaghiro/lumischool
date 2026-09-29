@@ -1,0 +1,31 @@
+# A word's meaning from its sentence in Treasure Island. Each wrong meaning is one the sentence
+# nearly allows (thundering suggests noise, Jim himself guesses shipwrecked), so the child has to
+# read the lines around the word as well as the word.
+item reading.treasure-word v=1 skills=[reading.vocabulary, reading.whole-book] {
+  title "What does the word mean?"
+  difficulty pick(k, 1, 1, 0, 0)
+  let k=0..3
+  let right={pick(k, "a stroke: a sudden illness of the brain", "the largest part of it", "left alone on an island on purpose", "the thick rope that holds the ship to its anchor")}
+
+  scene 34x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=centre {
+        chest box
+        text ask "{pick(k, \"In chapter 3 the captain is struck dead by thundering apoplexy. What is apoplexy? The doctor's warning in chapter 2 will help.\", \"The map in chapter 6 says: Bulk of treasure here. What does bulk mean?\", \"In chapter 15 Jim asks Ben Gunn if he was shipwrecked, and Ben says he was marooned. What does marooned mean?\", \"In chapter 23 Jim says a hawser, suddenly cut, is as dangerous as a kicking horse. What is the hawser?\")}" width=24
+      }
+      choice pick options=[pick(k, "a loud clap of thunder", right, "wrecked when a ship hits rocks", "the ship's biggest sail"), pick(k, right, "a heavy wooden chest", right, "the rope ladder up the mast"), pick(k, "a deep cut from a cutlass", "a cave where it is hidden", "lost in the woods for a while", right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick == "wrecked when a ship hits rocks") point=box {
+      say "That is what Jim guesses, and Ben says no. Read on: who left him there, and why?"
+    }
+    when (k == 0 and pick == "a loud clap of thunder") point=box {
+      say "Thundering describes how sudden and strong it was. What did the doctor say another one would do?"
+    }
+  }
+  hint "Read the sentences around the word, not just the word itself."
+  hint "Put each meaning into the sentence in place of the word. Which one makes sense there?"
+}

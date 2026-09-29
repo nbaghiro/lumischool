@@ -1,0 +1,65 @@
+# Formality as a choice made for a reader: the same news in full, polite words for a stranger in
+# charge, and in easy, friendly words for family, with greetings and sign-offs that match.
+lesson writing-formal-and-informal-letters v=1 format=teach grade=5 unit=4 subject=writing levels=[easy, medium, hard] {
+  title "Formal and informal letters"
+  goal "Choose formal or informal words, a greeting and a sign-off to suit the reader of a letter."
+
+  look {
+    scene 34x15 {
+      row all at=canvas(1, 0) space=2 align=end {
+        letterpage page greeting="Dear Dr Shah," body="Our class would like to visit the observatory to see the comet. Could you tell us which evenings are free? Thank you for your help." lines=0 closing="Yours sincerely, Leo" width=22
+        observatory obs open=1
+      }
+    }
+    say """
+      Leo wants to see the comet from the observatory on the star cliffs, so he writes to Dr Shah,
+      the director. He has never met her and she is in charge, so his letter is formal: full words,
+      no short forms, a polite request and Yours sincerely at the end. The same evening he writes to
+      his cousin Priya about the comet. That letter is informal: Hi Priya, guess what, see you soon.
+      Neither way is wrong. The reader decides which one is right.
+      """
+  }
+  do {
+    level easy {
+      worked writing.formal-line k=2 r=0 level=medium
+    }
+    practice writing.formal-line count=2 seed=1
+    practice writing.formal-swap count=1 seed=1
+    practice writing.sign-off count=1 seed=1
+    practice writing.full-word count=1 seed=1
+    practice writing.too-chatty count=1 seed=1 hard-count=2
+    practice writing.which-reader count=1 seed=1
+    practice writing.formal-rewrite count=1 seed=1
+  }
+  try stars=2 {
+    show writing.which-register k=0 r=2 hard-k=1
+  }
+  try stars=3 {
+    show writing.two-letters k=0 hard-k=1
+  }
+  remember {
+    say "The reader decides: full, polite words for someone in charge, easy words for someone close."
+  }
+
+  grown-ups """
+    Formality is a choice made for a reader, not a way of writing that is better than another. The
+    look is Leo's letter to the director of the observatory. The way in picks the line that belongs
+    in a letter to a stranger in charge, and the core swaps chatty words for formal ones, matches
+    the sign-off to the greeting (Yours sincerely after a name, Yours faithfully after Dear Sir or
+    Madam), writes a clipped word such as info in full, finds the sentence in a formal letter that
+    slips into chat, works out from its words and its sign-off who a letter with its greeting torn
+    off was written to, and rewrites a chatty line for the director. The wrong idea to watch for is
+    that formal means long words or long sentences; a formal letter is often short. If the child is
+    stuck, say a request aloud twice, once to a friend and once to a head teacher, and ask what
+    changed. Off the page, read a real letter from a bank or a school next to a birthday card and
+    point at the greeting and the ending of each. The two-star question makes the reader decide, and
+    the three-star question is the same news written twice; you mark the rewritten line and the two
+    letters.
+    """
+  level easy {
+    grown-ups "At this level the thank-you line is worked once in the teacher's pen, the formal lines are the plainer ones, the swaps are greetings and endings, the ending follows a name or a cousin, the word to write in full is info or photo, the slip is plain slang, the torn letter is to the director or to Priya, the line to rewrite is short forms only, the two-star's reader is the director, and the formal letter names Dr Shah."
+  }
+  level hard {
+    grown-ups "At this level the formal lines are closer to the chatty ones, the swaps are single words such as get and kids, the ending follows Dear Sir or Madam, the word to write in full is telly or bike, the slips are subtler and asked twice, the torn letter ends Yours faithfully, so only the sign-off tells the shop from the director, the line to rewrite has slang and needs a reason added, the two-star's reader is a cousin, so the chatty letter is right, and the formal letter goes to Dear Sir or Madam with a reason."
+  }
+}

@@ -1,0 +1,38 @@
+# The opening that suits the listeners. At k=0 and k=1 it is the village meeting, against a chatty
+# opening and one for a letter; at k=2 it is the younger children, where a formal opening is too stiff.
+item writing.speech-register v=1 skills=[writing.speeches, writing.formality, writing.audience] {
+  title "Which opening suits them?"
+  difficulty k
+  let k=0..2 r=0..2
+  let who={pick(k, "the whole village at its meeting", "the council, in the mill", "the youngest children, at school")}
+  let right={pick(k, "Good evening, everyone, and thank you for coming.", "Members of the council, thank you for hearing me.", "Hands up if you have crossed the rope bridge.")}
+  let w1={pick(k, "Hiya, so, um, the bridge, yeah?", "Hey everyone, right, the wheel.", "Members of the council, I thank you most sincerely.")}
+  let w2={pick(k, "Dear Sir or Madam, I am writing about the bridge.", "Dear Sir or Madam, I am writing to ask you.", "Dear children, I am writing about the bridge.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 35x29 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      waterwheel wheel paddles=8 lit=1
+      person tam pose=wave age=child hair=curly colour=black top=tang
+    }
+    text ask "Tam is speaking to {who}. Which opening suits them best?" narrate width=33 below=pics gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w2) point=ask {
+      say "That is how a letter opens. A speech is heard, not read, so it speaks to the people in the room."
+    }
+    when (pick == w1) point=ask {
+      say "{if k == 2 then \"That would be right for the council, but these listeners are young. Speak to them the way they listen.\" else \"That is too chatty for these listeners. They will take Tam more seriously if Tam speaks to them politely.\"}"
+    }
+  }
+  hint "Picture who is in the room. How would they expect to be spoken to?"
+  hint "Is it a speech or a letter? Which openings are for listening, and which for reading?"
+}

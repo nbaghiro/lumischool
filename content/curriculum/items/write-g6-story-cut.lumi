@@ -1,0 +1,33 @@
+# Revising: a draft paragraph with one sentence that says again what another has just said. The
+# repeat moves between the second, third and fourth sentence, and grows closer to its twin with k.
+item writing.story-cut v=1 skills=[writing.revising, writing.concision] {
+  title "What says it twice?"
+  difficulty k
+  let k=0..2
+  let t={pick(k, "Kit climbed the ladder to the high window. Below her the crater was grey and still. The crater floor was still and grey. A lamp blinked on the far rim.", "Omar knelt beside the broken wheel. The wheel had broken. He had no spare, and the sun would not rise for hours. So he cut a new spoke from the frame of his seat.", "Lena lay in the dark with her eyes open. For the first time she could hear her own heart. Nothing else in the base made a sound. It was completely silent.")}
+  let right={pick(k, "the third", "the second", "the fourth")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 35x21 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage p title="The second draft" text="{t}" width=24 numbers=false
+      lander lnd rungs=4
+    }
+    text ask "In the third sitting the writer revises. Which sentence should be cut, because it says again what the paragraph has already said?" narrate width=33 below=top gap=1
+    choice pick options=["the second", "the third", "the fourth"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "Without that sentence the reader would lose something. Look for the one the reader already knows by the time they reach it."
+    }
+  }
+  hint "Read the paragraph without each sentence in turn. Which one do you not miss?"
+  hint "Which sentence repeats something another sentence has already said, or shown?"
+}

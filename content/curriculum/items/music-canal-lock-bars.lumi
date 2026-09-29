@@ -1,0 +1,37 @@
+# The story: the towpath band plays while the lock fills, four beats to a bar, at a steady speed in
+# beats a minute. Bars are beats divided by four, and pushed notes are two to every bar: the crotchets
+# on the and of 1 and the and of 2, each held over the next beat.
+item music.canal-lock-bars v=1 skills=[music.syncopation, music.counting-beats] {
+  title "While the lock fills"
+  difficulty (q + (if m == 3 then 1 else 0))
+  let q=0..1 m=2..3 b=0..1
+  let bpm={pick(b, 80, 120)}
+  let ask={pick(q, "How many bars do they play?", "Every bar has two pushed notes. How many pushed notes do they play?")}
+  level easy {
+    let q=0..0 m=2..2
+  }
+  level hard {
+    let q=1..1
+  }
+
+  scene 36x29 {
+    notes eg clef=treble notes=[G4, A4, G4, A4, G4] values=[0.5, 1, 1, 0.5, 1] meter=4 at=canvas(1, 1)
+    row mid space=2 align=start below=eg gap=1 {
+      text ask "The lock takes {m} minutes to fill. The towpath band plays this bar over and over at {bpm} beats a minute, 4 beats to a bar. {ask}" narrate width=16
+      canallock lock level=0.25 boat=1
+    }
+    number-input answer below=mid gap=1
+  }
+
+  answer (bpm * m / 4 * (q + 1))
+  feedback {
+    when (answer == bpm * m) point=ask {
+      say "That counts beats. Every bar is 4 beats long."
+    }
+    when (q == 1 and answer == bpm * m / 4) point=eg {
+      say "That counts bars. Each bar has two notes pushed onto an and."
+    }
+  }
+  hint "How many beats do they play in {m} minutes?"
+  hint "Share the beats into bars of 4.{if q == 1 then \" Then count two pushed notes in every bar.\" else \"\"}"
+}

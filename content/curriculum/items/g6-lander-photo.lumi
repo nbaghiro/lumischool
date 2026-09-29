@@ -1,0 +1,29 @@
+# An enlargement multiplies every length by the same scale factor; adding the same amount to each is
+# the mistake to name.
+item scale.lander-photo v=1 skills=[scale.enlargement, ratio.scaling] {
+  title "The lander, enlarged"
+  difficulty ((if whole(k) then 0 else 2) + a / 4)
+  let a={2, 4, 6} b={3, 5, 7} k={2, 3, 1.5, 2.5}
+  where (a != b)
+  level easy {
+    let k={2, 3} a={2, 4}
+  }
+  level hard {
+    let k={1.5, 2.5} a={4, 6}
+  }
+
+  scene 35x12 {
+    lander l rungs=5 at=canvas(1, 1)
+    text ask "A photo of the lander is {a} cm wide and {b} cm tall. It is enlarged, without stretching, so that it is {decimals(a * k, 0)} cm wide. How tall is the enlarged photo, in centimetres?" narrate width=24 right-of=l gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer decimals(b * k, 0)
+  feedback {
+    when (answer == b + a * k - a) point=ask {
+      say "The width grew by {decimals(a * k - a, 0)} cm, but an enlargement multiplies every length. How many times as wide is it?"
+    }
+  }
+  hint "How many times as wide is the enlarged photo?"
+  hint "The height is enlarged by the same number of times."
+}

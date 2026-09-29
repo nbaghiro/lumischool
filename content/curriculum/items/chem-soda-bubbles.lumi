@@ -1,0 +1,26 @@
+# The way in: the bubbles in soda water are the carbon dioxide that was dissolved in it under pressure
+# (carbonated water, Wikipedia). The wrong options are the usual ideas: air, oxygen, and steam.
+item chem.soda-bubbles v=1 skills=[chemistry.gases, chemistry.dissolving, chemistry.mixtures] {
+  title "What is in the bubbles?"
+
+  scene 29x36 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      flask fl shape=conical fill=0.6 paint="" bubbles=8 balloon=0 bung=0
+      narrowboat nb windows=3
+    }
+    text ask "On the narrowboat, cold soda water is poured into a flask, and bubbles rise from it. What gas is in the bubbles?" narrate width=28 below=kit gap=1
+    choice pick options=["carbon dioxide", "air", "steam", "oxygen"] stack=column below=ask gap=1
+  }
+
+  answer pick="carbon dioxide"
+  feedback {
+    when (pick == "steam") point=fl {
+      say "Steam comes off water that is boiling, and this soda water is cold."
+    }
+    when (pick == "air" or pick == "oxygen") point=fl {
+      say "Soda water is made by pressing one gas into water. The same gas comes out as bubbles when the pressure is let off."
+    }
+  }
+  hint "What gas is pressed into water to make soda water?"
+  hint "When the bottle is opened, where does that gas go?"
+}

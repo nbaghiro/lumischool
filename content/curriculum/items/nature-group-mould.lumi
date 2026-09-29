@@ -1,0 +1,36 @@
+# Mould as a living thing that needs what others need: slices of bread kept in the library in
+# different ways, and the day each first showed mould. The days are invented to show the pattern,
+# as tracks.md records. Each version picks the pair or the slice that answers a question.
+item nature.group-mould v=1 skills=[nature.microorganisms, data.tables, reasoning.fair-test] {
+  title "Mould on the library's bread"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "Which slice grew mould first?", "Which two slices show that mould needs damp?", "Which two slices show that cold slows mould down?")}
+  let ans={pick(k, "slice A", "slices A and B", "slices A and C")}
+  let o1={pick(k, "slice C", "slices A and C", "slices B and C")}
+  let o2={pick(k, "slice D", "slices B and D", "slices A and D")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x34 {
+    table t cols=4 head=["Slice", "Kept", "Where", "Mould on"] cells=["A", "damp", "warm shelf", "day 4", "B", "dry", "warm shelf", "none", "C", "damp", "fridge", "day 11", "D", "dry", "fridge", "none"] at=canvas(1, 1)
+    text ask "The librarian keeps four slices of bread from the same loaf in bags, in different ways, and writes down the day mould first shows on each; none means no mould by day 14. {asks}" narrate width=32 below=t gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=t {
+      say "Read down the last column. Which is the smallest day?"
+    }
+    when (k >= 1 and pick != ans) point=t {
+      say "Compare the two slices on each row. Do they differ in the one thing the question is about, and nothing else?"
+    }
+  }
+  hint "What does the question want to find out about?"
+  hint "Find two slices kept the same way in every column but one."
+}

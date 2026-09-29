@@ -1,0 +1,36 @@
+# Two fizzes, two gases: an acid on a metal gives hydrogen, and an acid on chalk, limestone or marble
+# (calcium carbonate) gives carbon dioxide (RSC; BGS). k is the pair.
+item chem.which-gas-fizz v=1 skills=[chemistry.acids, chemistry.gases] {
+  title "Which gas is it?"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..3
+  level easy {
+    let k={0, 1, 3}
+  }
+  level hard {
+    let k={2, 3}
+  }
+  let what={pick(k, "the zinc strip in dilute acid", "a lump of chalk in vinegar", "a lump of marble in dilute acid", "an iron nail in dilute acid")}
+  let right={pick(k, "hydrogen", "carbon dioxide", "carbon dioxide", "hydrogen")}
+
+  scene 33x30 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      testtubes t fills=[0.5, 0.5] paints=["", ""] fizz=[0, 0] bungs=0 letters=1 metals=[2, 3] acid=1
+      rocks r rocks=["chalk", "marble", "granite"] test=2 letters=1 names=1
+    }
+    text ask "Gas bubbles off {what}. Which gas is it?" narrate width=32 below=kit gap=1
+    choice pick options=["hydrogen", "carbon dioxide", "oxygen", "steam"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "oxygen" or pick == "steam") point=kit {
+      say "Nothing here is burning or boiling. The gas comes from the acid reacting with what is in it."
+    }
+    when (pick != right and (pick == "hydrogen" or pick == "carbon dioxide")) point=kit {
+      say "Is {what} a metal, or a rock made of a carbonate? The two give different gases."
+    }
+  }
+  hint "Is the acid reacting with a metal, or with a rock like chalk?"
+  hint "Which gas comes from a metal in acid, and which from a carbonate?"
+}

@@ -1,0 +1,33 @@
+# The way in: a study after one of the five works, its layers and colour areas lettered A to E, and
+# the child finds the letter on a named part. The drawing letters near, middle and far as A, B and C,
+# and the two colour areas D and E.
+item art.works-layer v=1 skills=[art.artists, art.looking, art.space] {
+  title "Near, middle, far"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let work={pick(k, 2, 4, 1, 0, 3, 3)}
+  let known={pick(k, "Turner's The Fighting Temeraire", "Levitan's March", "Hokusai's Kirifuri Waterfall", "Guo Xi's Early Spring", "Shishkin and Savitsky's Morning in a Pine Forest", "Shishkin and Savitsky's Morning in a Pine Forest")}
+  let thing={pick(k, "the old warship", "the dark pines", "the three travellers", "the great peak", "the bears on the fallen pine", "the morning light")}
+  let right={pick(k, "B", "C", "A", "C", "A", "D")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x35 {
+    studies s work=work names=2 card=0 at=canvas(1, 1)
+    text ask "A study after {known}, drawn on squared paper, with five places lettered. Which letter is on {thing}?" narrate width=12 right-of=s gap=1
+    choice pick options=["A", "B", "C", "D", "E"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=s {
+      say "Find {thing} in the study first, then read the letter in the circle on it."
+    }
+  }
+  hint "Where in the picture would you expect to find {thing}: near the bottom, the middle or the top?"
+  hint "Look for the lettered circle that sits on it."
+}

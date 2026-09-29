@@ -1,0 +1,28 @@
+# The three-star: a price raised by a percent and then lowered by the same percent does not come back,
+# because the second percent is of a bigger amount. One answer, found by doing both steps.
+item percent.up-then-down v=1 stars=3 skills=[percentages.of-amount, reasoning.predict] {
+  title "Up and down again"
+  difficulty (p / 10 + c / 100)
+  let c={200, 300, 400} p={10, 20, 50}
+  level easy {
+    let p={10} c={200}
+  }
+  level hard {
+    let p={20, 50} c={300, 400}
+  }
+
+  scene 36x10 {
+    pricetag tag now=(100 * c) was=0 at=canvas(1, 1)
+    text ask "A telescope costs {c} dollars. In March its price goes up by {p}%. In April the new price goes down by {p}%. What does it cost in April?" narrate width=22 right-of=tag gap=2
+    number-input answer width=5 below=ask gap=1
+  }
+
+  answer (c * (100 + p) * (100 - p) / 10000)
+  feedback {
+    when (answer == c) point=ask {
+      say "In April {p}% of the March price comes off, and that is more than {p}% of {c} dollars. Work it through."
+    }
+  }
+  hint "What is the price in March?"
+  hint "Now take {p}% of the March price away from it."
+}

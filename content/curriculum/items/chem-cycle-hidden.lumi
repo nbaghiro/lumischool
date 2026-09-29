@@ -1,0 +1,17 @@
+# One box of the rock cycle is a question mark; the arrows in and out of it, and the key, say which
+# one it is. The checker reads the hidden box from ROCK_STAGES.
+item chem.cycle-hidden v=1 skills=[chemistry.rocks, reasoning.deduction] {
+  title "The missing box"
+  difficulty (if h == 1 or h == 4 then 0 else 1)
+  let h=0..4
+
+  scene 35x41 {
+    rockcycle c arrows=[1, 2, 3, 4, 5] blank=0 hide=h key=1 at=canvas(1, 0)
+    text ask "One box's name has rubbed off the guide's drawing. What should it say?" narrate width=34 below=c gap=1
+    choice pick options=["igneous rock", "sediment", "sedimentary rock", "metamorphic rock", "magma"] stack=column below=ask gap=1
+  }
+
+  check chem.rocks of=c pick=hidden
+  hint "Read the arrow that points into the box. What does it do?"
+  hint "What is made when that happens? Check it against the arrow that leaves the box."
+}

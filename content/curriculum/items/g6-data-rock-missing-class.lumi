@@ -1,0 +1,30 @@
+# The unknown moves into the frequency table: the total is known and one class is smudged.
+item data.rock-missing-class v=1 skills=[data.frequency, data.tables] {
+  title "The smudged class"
+  difficulty (n / 10 + h / 4)
+  let a=2..6 b=5..9 c=4..11 d=1..5 h=0..3
+  let n={a + b + c + d}
+  where (2 * pick(h, a, b, c, d) != n)
+  level easy {
+    let a=2..3 c=4..6
+  }
+  level hard {
+    let b=8..9 c=9..11 h=1..3
+  }
+
+  scene 36x20 {
+    table freq cols=2 head=["Mass (g)", "Pebbles"] cells=["10-19", if h == 0 then "?" else "{a}", "20-29", if h == 1 then "?" else "{b}", "30-39", if h == 2 then "?" else "{c}", "40-49", if h == 3 then "?" else "{d}", "Total", "{n}"] at=canvas(1, 1)
+    crater pit count=1 right-of=freq gap=2
+    text ask "The crew weighed {n} pebbles from a crater and made this frequency table. One number is smudged. How many pebbles are in the class {pick(h, \"10-19\", \"20-29\", \"30-39\", \"40-49\")} g?" narrate width=18 below=pit gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer pick(h, a, b, c, d)
+  feedback {
+    when (answer == n - pick(h, a, b, c, d)) point=freq {
+      say "That is the other classes added. The smudged class is what is left of the total."
+    }
+  }
+  hint "What do the classes you can read add up to?"
+  hint "How many of the {n} pebbles are left for the smudged class?"
+}

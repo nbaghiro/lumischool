@@ -1,0 +1,39 @@
+# The two-star: the radius multiplied by 3.14 gives only half the way round. The child picks the reason
+# (3.14 counts diameters, and a diameter is two radii) and finds the distance round.
+item circle.radius-mistake v=1 stars=2 skills=[circles.circumference, reasoning.find-the-mistake] {
+  title "Half way round"
+  difficulty r
+  let r={3, 5, 7, 15}
+  level easy {
+    let r={3, 5}
+  }
+  level hard {
+    let r={7, 15}
+  }
+
+  scene 33x27 {
+    circleparts c size=5 lines=1 radius=r ask=3 unit="m" at=canvas(1, 1)
+    text ask "Mo says the distance round the dome is {r} × 3.14 = {decimals(r * 3.14, 0)} m. What did he do wrong?" narrate width=16 right-of=c gap=2
+    choice why options=["he used the radius, not the diameter", "he should have used 3 and not 3.14", "he should have added 3.14"] stack=column below=c gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      text ask2 "It is"
+      number-input answer width=6
+      text unit "m"
+    }
+  }
+
+  answer why="he used the radius, not the diameter" answer=decimals(2 * r * 3.14, 0)
+  feedback {
+    when (why == "he should have used 3 and not 3.14") point=c {
+      say "3 is only a rougher value, and it would make the answer smaller still. Is the line drawn a radius or a diameter?"
+    }
+    when (why == "he should have added 3.14") point=c {
+      say "The distance round is about 3.14 diameters, so it multiplies. Which line did Mo multiply?"
+    }
+    when (answer == r * 3.14) point=c {
+      say "That is Mo's answer. 3.14 counts how many diameters go round, and the line drawn is a radius."
+    }
+  }
+  hint "Is the line in the circle a radius or a diameter?"
+  hint "How long is the diameter? Multiply that by 3.14."
+}

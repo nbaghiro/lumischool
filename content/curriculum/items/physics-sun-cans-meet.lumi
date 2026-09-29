@@ -1,0 +1,20 @@
+# Three stars: two cans put out at different times read the same when read together. In these
+# readings black warms 6, white 2 and shiny 1 in each ten minutes, so the slower can needs three
+# (or two) times as long. v picks the pair and what is asked.
+item physics.sun-cans-meet v=1 stars=3 skills=[physics.heat, reasoning.constraints, reasoning.work-backwards] {
+  title "Out at different times"
+  difficulty (if v == 0 then 0 else if v == 1 then 0.5 else 1)
+  let v=0..2
+  let ans={pick(v, 30, 20, 10)}
+
+  scene 22x29 {
+    heatflow t mode=2 cans=["black", "white", "silver"] insun=10 show=1 at=canvas(1, 0)
+    text ask "{pick(v, \"The white can went out first and the black can later. When they were read together, both read the same. Each was out for 10, 20 or 30 minutes. How many minutes was the white can out?\", \"The shiny can went out first and the white can later. When they were read together, both read the same. Each was out for 10, 20 or 30 minutes. How many minutes was the shiny can out?\", \"The shiny can went out 10 minutes before the white can. When they were read together, both read the same. How many minutes was the white can out?\")} Use these cans' readings after ten minutes, from 20 °C." narrate width=20 below=t gap=1
+    number-input mins below=ask gap=1
+  }
+
+  answer mins=ans
+  hint "How many degrees does each of the two cans warm in ten minutes?"
+  hint "Choose a time for the later can. How long must the other can be out to warm as much?"
+  hint "Check that both times fit what the question says about who went out first."
+}

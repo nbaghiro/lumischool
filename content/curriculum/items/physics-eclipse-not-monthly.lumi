@@ -1,0 +1,27 @@
+# Two stars: there is a new moon and a full moon every month but not an eclipse, because the moon's
+# path is tilted about 5 degrees, so most months it passes above or below the line.
+item physics.eclipse-not-monthly v=1 stars=2 skills=[physics.sky, reasoning.explain, reasoning.evidence] {
+  title "Why not every month?"
+  let o={-1, 1}
+
+  scene 29x36 {
+    eclipse e moon=1 offset=o show=1 names=1 at=canvas(1, 0)
+    text ask "There is a full moon every month, but an eclipse of the moon only a few times a year. The picture shows a full moon with no eclipse. Why is there no eclipse most months?" narrate width=22 below=e gap=1
+    choice pick options=["The moon passes above or below the line", "The Earth's shadow is too short", "The moon is not full every month", "The sun is behind the moon"] stack=column below=ask gap=1
+  }
+
+  answer pick="The moon passes above or below the line"
+  feedback {
+    when (pick == "The Earth's shadow is too short") point=e {
+      say "The shadow reaches past the moon's path. Follow it: does the moon go into it here?"
+    }
+    when (pick == "The moon is not full every month") point=e {
+      say "It is full every month, about every 29.5 days. The question is whether it goes into the shadow."
+    }
+    when (pick == "The sun is behind the moon") point=e {
+      say "Behind the Earth the moon faces the sun full on. Where is the moon compared with the dashed line?"
+    }
+  }
+  hint "Where is the moon compared with the dashed line through the sun and the Earth?"
+  hint "The moon's path round the Earth is tilted a little. What does that do to it most months?"
+}

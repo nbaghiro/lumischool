@@ -1,0 +1,32 @@
+# A story written over three sittings: plan, draft, revise. Three jobs matched to the sitting they
+# belong to. The right-hand list turns with r, so the answer is never 1, 2, 3.
+item writing.story-sitting-job v=1 skills=[writing.planning, writing.revising, reasoning.sorting] {
+  title "Which sitting?"
+  difficulty k
+  let k=0..1 r=0..2
+  let s1={pick(k, "A note on each card, the turn on the fourth.", "Choose what the character wants.")}
+  let s2={pick(k, "Write fast, one paragraph a card.", "Get it all down; fix nothing yet.")}
+  let s3={pick(k, "Read it aloud; mend the weak sentences.", "Swap told feelings for shown ones.")}
+  let c1={"the first"}
+  let c2={"the second"}
+  let c3={"the third"}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x24 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      lander lnd rungs=5
+      crater cr count=3
+    }
+    text ask "A story written over three sittings is planned, drafted, then revised. Write the number of the sitting each job belongs to." narrate width=33 below=pics gap=1
+    match m left=["{s1}", "{s2}", "{s3}"] right=["{if r == 1 then c3 else c2}", "{if r == 0 then c3 else c1}", "{if r == 0 then c1 else if r == 1 then c2 else c3}"] blanks=[x, y, z] below=ask gap=1
+  }
+
+  answer x=(if r == 0 then 3 else 2) y=(if r == 1 then 3 else 1) z=(if r == 0 then 2 else if r == 1 then 1 else 3)
+  hint "Which job can only be done once there is a whole draft to read?"
+  hint "Which job has to happen before a word of the story is written?"
+}

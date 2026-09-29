@@ -1,0 +1,35 @@
+# The three-star count: one of I, IV and V under each bar, holding the bar's note. E, C, G: 1 x 2 x 2
+# = 4. C, G, C, G ending on I: 2 x 2 x 2 x 1 = 8. G, C, G, C ending on I with no chord twice in a
+# row: bar 3 must be G, bar 2 C or F, and bar 1 then G, or C or G, so 3.
+item music.chords-count-ways v=1 stars=3 skills=[music.chords, reasoning.all-the-ways] {
+  title "Every way to accompany it"
+  difficulty v
+  let v=0..2
+  let tune={pick(v, "E, then C, then G", "C, G, C and G", "G, C, G and C")}
+  let rule={pick(v, "", " The last chord must be I.", " The last chord must be I, and no chord comes twice in a row.")}
+  let right={pick(v, 4, 8, 3)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x25 {
+    notes three clef=treble notes=[C4, E4, G4, F4, A4, C5, G4, B4, D5] values=[1, 1, 1, 1, 1, 1, 1, 1, 1] meter=3 letters=true at=canvas(1, 1)
+    text ask "Ben's tune in C major has one long note in each bar: {tune}. Under each bar he plays I, IV or V, and the chord must hold that bar's note.{rule} How many different ways can he choose the chords?" narrate width=34 below=three gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (v == 2 and answer == 8) point=ask {
+      say "Check the rule about no chord twice in a row. Work backwards from the last bar."
+    }
+    when (v == 1 and answer == 16) point=ask {
+      say "The last chord has to be the home chord, so the last bar has only one choice."
+    }
+  }
+  hint "For each note, which chords hold it? Some notes have one choice and some have two."
+  hint "{if v == 2 then \"Start from the last bar, which has to be the home chord, and work back one bar at a time.\" else \"Multiply the number of choices for each bar.\"}"
+}

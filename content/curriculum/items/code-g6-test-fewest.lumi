@@ -1,0 +1,35 @@
+# Three-star: the fewest tests that take every if both ways. Separate ifs can share a test, a decision
+# inside a decision needs one more, and three deep needs four; the child plans the set rather than
+# checking a given one.
+item coding.test-fewest v=1 stars=3 skills=[coding.testing, coding.decisions, reasoning.fewest] {
+  title "The fewest tests"
+  difficulty k
+  let k=0..2
+  let n={pick(k, 2, 3, 4)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x30 {
+    program p code=[pick(k, "if oxygen is less than 20", "if oxygen is less than 50", "if oxygen is less than 60"), pick(k, "  say low", "  if oxygen is less than 20", "  if oxygen is less than 30"), pick(k, "otherwise", "    say danger", "    if oxygen is less than 10"), pick(k, "  say fine", "  otherwise", "      say alarm"), pick(k, "if oxygen is more than 90", "    say low", "    otherwise"), pick(k, "  say vent", "otherwise", "      say danger"), pick(k, "otherwise", "  say fine", "  otherwise"), pick(k, "  say shut", "say checked", "    say low")] text=true at=canvas(0, 0)
+    moon mn phase=0.5 right-of=p gap=3
+    text ask "Each test sets oxygen to a number from 0 to 100 and runs the program. What is the fewest tests that make every if say yes at least once and no at least once?" width=34 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.tests of=p input=oxygen try=0..100 answer=fewest
+  answer n
+  feedback {
+    when (answer > n) point=p {
+      say "That works, but one test can do more than one job. Which test takes two ifs the way you need at once?"
+    }
+    when (answer < n) point=p {
+      say "Check an if that sits inside another. It is only asked when the outer if says yes."
+    }
+  }
+  hint "List each if and the two ways it can go. Which numbers send it each way?"
+  hint "An if inside another is only reached when the outer one says yes. How many different numbers does that need?"
+}

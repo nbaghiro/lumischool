@@ -1,0 +1,45 @@
+# Rain in the hills and the river's height at the mill over five days, read for a flood. The river
+# peaks the day after the heaviest rain, because the water takes time to run off the hills, and the
+# low field floods above 50 cm. Easy reads the table; the rest need the lag or the flood mark.
+item nature.flood-data v=1 skills=[nature.rivers, data.tables, reasoning.explain] {
+  title "The river after the rain"
+  difficulty (if k == 0 then 0 else if k <= 2 then 1 else 2)
+  let k=0..3
+  let asks={pick(k, "On which day was the river at the mill highest?", "The most rain fell on Tuesday. Why was the river highest on Wednesday?", "The low field by the mill floods when the river is more than 50 cm above normal. On which days was the field under water?", "Next week the forecast says 40 mm of rain on the hills on Monday and none after. When should the miller move his sheep off the low field?")}
+  let ans={pick(k, "Wednesday", "The rain took time to run off the hills", "Wednesday and Thursday", "On Monday, before the river rises on Tuesday")}
+  let o1={pick(k, "Tuesday", "The rain on Wednesday made it higher still", "Tuesday and Wednesday", "On Tuesday, the day after the rain")}
+  let o2={pick(k, "Thursday", "The mill held the water back on Tuesday", "Only on Wednesday", "On Wednesday, once the rain has stopped")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x35 {
+    table t cols=3 head=["Day", "Rain on hills", "River height"] cells=["Monday", "5 mm", "10 cm", "Tuesday", "40 mm", "30 cm", "Wednesday", "10 mm", "90 cm", "Thursday", "0 mm", "60 cm", "Friday", "0 mm", "20 cm"] at=canvas(1, 1)
+    text ask "The miller writes down the rain on the hills and how far the river at the mill is above normal each evening. {asks}" narrate width=32 below=t gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick == o1) point=t {
+      say "Tuesday had the most rain. Read down the river's column instead."
+    }
+    when (k == 1 and pick == o1) point=t {
+      say "Only 10 mm fell on Wednesday, a quarter of Tuesday's rain. Where was Tuesday's rain on Wednesday?"
+    }
+    when (k == 1 and pick == o2) point=t {
+      say "A mill wheel does not hold a river back. Think about where the rain lands, and how far it has to go."
+    }
+    when (k == 2 and pick != ans) point=t {
+      say "Check each day's river against 50 cm. Which days are more than 50?"
+    }
+    when (k == 3 and pick != ans) point=t {
+      say "In the table the river rose most the day after the heaviest rain. Would the sheep be safe waiting until then?"
+    }
+  }
+  hint "Which column does the question need: the rain, the river, or both?"
+  hint "Read along each row. What does the river do on the days after the rain?"
+}

@@ -1,0 +1,30 @@
+# The story: light crosses 300,000 km every second, so its time from the Sun is the distance divided
+# by that; only Venus, the Earth and Mars come to a whole number of seconds from the table's values.
+item physics.observatory-sunlight v=1 skills=[physics.sky, physics.light, time.convert] {
+  title "How old is the sunlight?"
+  difficulty k
+  let k=2..4
+  let name={pick(k - 2, "Venus", "the Earth", "Mars")}
+  let d={pick(k - 2, 108, 150, 228)}
+  let secs={pick(k - 2, 360, 500, 760)}
+
+  scene 32x18 {
+    observatory o open=1 at=canvas(1, 0)
+    text ask "At the observatory the guide says light travels 300,000 km every second. It is {d} million km from the Sun to {name}. How many seconds does sunlight take to get there?" narrate width=21 right-of=o gap=1
+    number-input seconds below=o gap=1
+    text then "How many whole minutes and seconds is that?" narrate width=30 below=seconds gap=1
+    number-input mins below=then gap=1
+    text lm "minutes" right-of=mins gap=1
+    number-input rest right-of=lm gap=2
+    text ls "seconds" right-of=rest gap=1
+  }
+
+  answer seconds=secs mins=((secs - secs % 60) / 60) rest=(secs % 60)
+  feedback {
+    when (seconds == d * 1000000 / 300) point=ask {
+      say "Check the zeros: {d} million km is {d},000,000 km, and each second covers 300,000 km."
+    }
+  }
+  hint "How many lots of 300,000 km are there in {d} million km? Try how many in 3 million first."
+  hint "There are 60 seconds in a minute."
+}

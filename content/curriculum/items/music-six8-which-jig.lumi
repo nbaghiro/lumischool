@@ -1,0 +1,47 @@
+# Six-eight or three-four, from the note values alone: both bars hold six quavers, but in six-eight a
+# note starts half way, on count 4, and in three-four a note is sounding across it.
+item music.six8-which-jig v=1 skills=[music.six-eight, music.note-values] {
+  title "The jig among the waltzes"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let a1={pick(k, 1, 1, 0.5, 0.5)}
+  let a2={pick(k, 1, 0.5, 1.5, 0.5)}
+  let a3={pick(k, 0.5, 1, 0.5, 1.5)}
+  let a4={pick(k, 0.5, 0.5, 0.5, 0.5)}
+  let b1={pick(k, 1.5, 0.5, 1, 1)}
+  let b2={pick(k, 0.5, 0.5, 1, 0.5)}
+  let b3={pick(k, 0.5, 1, 0.5, 0.5)}
+  let b4={pick(k, 0.5, 1, 0.5, 1)}
+  let c1={pick(k, 0.5, 1, 0.5, 0.5)}
+  let c2={pick(k, 0.5, 1, 0.5, 1.5)}
+  let c3={pick(k, 1, 0.5, 0.5, 0.5)}
+  let c4={pick(k, 1, 0.5, 1.5, 0.5)}
+  let right={pick(k, "middle", "top", "bottom", "middle")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 35x37 {
+    column bars space=1 align=start at=canvas(1, 1) {
+      notes ta clef=treble notes=[E5, D5, C5, D5] values=[a1, a2, a3, a4]
+      notes tb clef=treble notes=[E5, D5, C5, D5] values=[b1, b2, b3, b4]
+      notes tc clef=treble notes=[E5, D5, C5, D5] values=[c1, c2, c3, c4]
+    }
+    column side space=1 align=start right-of=bars gap=2 {
+      text ask "Each bar holds six quavers. Two are from waltzes in three-four and one from a jig in six-eight. Which is the jig?" narrate width=14
+      choice pick options=["top", "middle", "bottom"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=bars {
+      say "In that bar a note is still sounding on count 4, half way through. A jig has a note starting there, on its second big beat."
+    }
+  }
+  hint "Count each bar in quavers, 1 to 6. Does a note start on 4?"
+  hint "Six-eight is two big beats of three quavers, so the second big beat starts on 4."
+}

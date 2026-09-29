@@ -1,0 +1,35 @@
+# How high the noon sun stands: it is overhead at 23.5 degrees north in June and 23.5 south in
+# December, and 90 degrees less the distance from there at every other place.
+item physics.tilt-noon v=1 skills=[physics.sky, angles.degrees, decimals.add] {
+  title "The sun at noon"
+  difficulty (if s == 0 and lat >= 60 then 0 else if s == 0 then 1 else 2)
+  let lat={80, 70, 60, 50, 30} s=0..1
+  where (not (s == 1 and lat > 60))
+  level easy {
+    let s=0..0 lat={80, 70, 60}
+  }
+  level hard {
+    let s=1..1
+  }
+  let month={pick(s, "June", "December")}
+  let over={pick(s, "23.5° N", "23.5° S")}
+
+  scene 26x27 {
+    tilt e places=[lat] season=s circles=0 names=1 at=canvas(1, 0)
+    text ask "On 21 {month} the sun is straight overhead at noon at {over}. The noon sun is 90° high there, and 1° lower for every degree of latitude away from it. How many degrees above the horizon is the noon sun at A?" narrate width=24 below=e gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals(if s == 0 then 113.5 - lat else 66.5 - lat, 1)
+  check physics.sky of=e answer=noon(a)
+  feedback {
+    when (answer == 90 - lat) point=e {
+      say "That is the noon sun when it is overhead at the equator. On 21 {month} it is overhead at {over}."
+    }
+    when (s == 1 and answer == 90 - lat + 23.5) point=e {
+      say "In December the sun is overhead south of the equator, so A is further from it, not nearer."
+    }
+  }
+  hint "How many degrees of latitude is A from {over}?"
+  hint "Take that away from 90°."
+}

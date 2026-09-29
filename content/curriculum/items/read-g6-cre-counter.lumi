@@ -1,0 +1,16 @@
+# The three-star question: an argument for the other side, with a reason and evidence someone could
+# check. There is no key, so a grown-up marks it against the look-for.
+item reading.cre-counter v=1 stars=3 skills=[reading.argument, writing.composition] {
+  title "Argue the other side"
+  let k=0..1
+
+  scene 35x24 {
+    sign note lines=[pick(k, "Ada: the wheel should turn,", "Mr Hale: close the bridge,"), pick(k, "because it can light the hall.", "because it is not safe.")] kind=board color=mint at=canvas(1, 1)
+    text ask "Write a short argument against this: a claim, one reason, and one piece of evidence that someone could check." below=note gap=1 width=34
+    writinglines lines lines=3 width=34 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A claim that answers the one on the board (the wheel should stay still; the bridge should stay open), one reason that says why (it would cost too much to mend; people need the bridge to reach the kingfisher bank), and evidence that could be checked, such as a cost, a count or something seen (the axle is cracked; the ranger counted 120 crossings on a Saturday). The evidence may be made up for the exercise, but it must be the kind of thing someone could check. A child who writes only opinions has argued but not supported; ask how the council could find out it is true."
+  hint "Start with the opposite claim. Why might someone want that?"
+  hint "What could be counted, measured or seen that backs your reason?"
+}

@@ -1,0 +1,36 @@
+# From the drawing to the program: count the sides, then the turn must share 360 among them. Two of
+# the options have the right count or the right turn, but not both; the one with the right turn goes
+# round once too few, since once too many would draw a side over the first and look the same.
+item coding.poly-which v=1 skills=[coding.drawing, angles.turns] {
+  title "Which program drew it?"
+  difficulty (q + (if f == 1 then 0.5 else 0))
+  let q=0..2 f=0..1
+  let n={pick(q, 5, 6, 8)} d={pick(q, 72, 60, 45)} cols={pick(q, 5, 6, 7)} rows={pick(q, 5, 5, 6)} sc={pick(q, 2, 3, 3)}
+  let o1={pick(q, "repeat 5: forward 2, turn left 72", "repeat 6: forward 2, turn left 60", "repeat 8: forward 2, turn left 45")}
+  let o2={pick(q, "repeat 5: forward 2, turn left 60", "repeat 6: forward 2, turn left 72", "repeat 8: forward 2, turn left 40")}
+  let o3={pick(q, "repeat 4: forward 2, turn left 72", "repeat 5: forward 2, turn left 60", "repeat 7: forward 2, turn left 45")}
+  level easy {
+    let q={0}
+  }
+  level hard {
+    let q={2}
+  }
+
+  scene 36x27 {
+    turtle t cols=cols rows=rows col=sc row=rows face=right moves=["repeat {n}", "  forward 2", "  turn left {d}"] mark=false at=canvas(1, 0)
+    text ask "Which program draws this shape?" width=14 right-of=t gap=1
+    choice pick options=[if f == 0 then o1 else o3, o2, if f == 0 then o3 else o1] stack=column below=t gap=1
+  }
+
+  answer pick=o1
+  feedback {
+    when (pick == o2) point=t {
+      say "Count the corners: {n} turns of that size do not make the whole turn of 360 degrees."
+    }
+    when (pick == o3) point=t {
+      say "That turn is right, but that repeat stops a side short of closing the shape."
+    }
+  }
+  hint "Count the sides of the shape."
+  hint "Now check the turn: does it share 360 among that many corners?"
+}

@@ -1,0 +1,35 @@
+# Dissolved oxygen in fresh water at saturation, sea level (USGS DOTABLES): 0 °C 14.6,
+# 10 °C 11.3, 20 °C 9.1, 30 °C 7.6 mg per litre. Warm water holds less gas, the opposite of most solids.
+item chem.oxygen-table v=1 skills=[chemistry.dissolving, data.tables, decimals.subtracting] {
+  title "Oxygen in the canal"
+  difficulty w
+  let w=0..2 r=0..3 n={2, 3, 5}
+  let temp={pick(r, 0, 10, 20, 30)}
+  let mg={pick(r, 14.6, 11.3, 9.1, 7.6)}
+  let second={pick(w, "Where do that row and the oxygen column meet?", "Read the warmest row too. How far apart are the two numbers?", "How much oxygen is in one litre? Then in each of the others?")}
+  where (not (w == 1 and r == 3) and (w == 2 or n == 2))
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 35x21 {
+    table data cols=2 head=["Water °C", "Oxygen, mg a litre"] cells=["0", "14.6", "10", "11.3", "20", "9.1", "30", "7.6"] at=canvas(1, 0)
+    text ask "Fish in the canal breathe oxygen dissolved in the water. The table gives the most oxygen a litre of fresh water can hold. {if w == 0 then \"How many milligrams can a litre hold at \" else if w == 1 then \"How many more milligrams can a litre hold at \" else \"How many milligrams can \"}{if w == 2 then n else temp}{if w == 0 then \" °C?\" else if w == 1 then \" °C than at 30 °C?\" else \" litres hold at \"}{if w == 2 then temp else \"\"}{if w == 2 then \" °C?\" else \"\"}" narrate width=34 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then mg else if w == 1 then mg - 7.6 else n * mg)
+  feedback {
+    when (w == 1 and answer == mg) point=data {
+      say "That is the whole amount at {temp} °C. Take away the 30 °C row to find how many more."
+    }
+    when (w == 2 and answer == mg) point=data {
+      say "That is one litre. The question asks about {n} litres."
+    }
+  }
+  hint "Find the row for {temp} °C."
+  hint "{second}"
+}

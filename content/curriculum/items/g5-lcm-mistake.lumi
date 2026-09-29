@@ -1,0 +1,39 @@
+# The two-star: multiplying two numbers always gives a common multiple, but not always the lowest. The
+# child picks what is wrong with Mo's rule, then finds the lowest.
+item number.lcm-mistake v=1 stars=2 skills=[number.lcm, reasoning.find-the-mistake] {
+  title "Not the lowest"
+  difficulty (lcm(a, b) / 10)
+  let a={4, 6, 8} b={6, 10, 12}
+  where (a < b and lcm(a, b) < a * b and lcm(a, b) != b)
+  level easy {
+    let a={4} b={6}
+  }
+  level hard {
+    let a={8} b={10, 12}
+  }
+
+  scene 32x25 {
+    sign note lines=["Lowest common", "multiple of {a} and {b}", "= {a} × {b} = {a * b}"] kind=board color=tang at=canvas(1, 1)
+    text ask "Mo says the lowest common multiple is always the two numbers multiplied. What is wrong with that?" narrate width=16 right-of=note gap=2
+    choice why options=["a smaller common multiple can come first", "it is not in the smaller times table", "it is always the bigger number"] stack=column below=note gap=1
+    row eq below=why gap=1 space=1 align=centre {
+      text ask2 "The lowest common multiple of {a} and {b} is"
+      number-input answer width=4
+    }
+  }
+
+  answer why="a smaller common multiple can come first" answer=lcm(a, b)
+  feedback {
+    when (why == "it is not in the smaller times table") point=note {
+      say "{a * b} is {b} lots of {a}, so it is in the {a} times table. Is there a smaller number in both?"
+    }
+    when (why == "it is always the bigger number") point=note {
+      say "{a} does not go into {b}, so {b} is not a multiple of {a}. Count up in {b}s and test each one."
+    }
+    when (answer == a * b) point=note {
+      say "{a * b} is a common multiple, but a smaller one comes first. Count up in {b}s."
+    }
+  }
+  hint "Is there a number smaller than {a * b} in both times tables?"
+  hint "List the multiples of {b} and test each one."
+}

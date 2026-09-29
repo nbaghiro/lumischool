@@ -1,0 +1,36 @@
+# The way in to testing: one test is one input put through the program, and the answer it gives is
+# checked against what the program is meant to do. The input on the edge of the test is the slip.
+item coding.test-run v=1 skills=[coding.testing, coding.decisions, coding.text] {
+  title "One test"
+  difficulty (if f == t then 1 else if f == t - 1 then 0.5 else 0)
+  let t={20, 25} f=5..40
+  where (f >= t - 8 and f <= t + 8)
+  level easy {
+    where (f < t - 2 or f > t + 2)
+  }
+  level hard {
+    where (f == t or f == t - 1)
+  }
+
+  scene 36x20 {
+    program p code=["set fuel to {f}", "if fuel is less than {t}", "  say return", "otherwise", "  say land"] text=true at=canvas(0, 0)
+    lander ld rungs=5 right-of=p gap=2
+    text ask "The lander tests its program with fuel {f}. What does the program say?" width=34 below=p gap=1
+    choice pick options=["land", "return"] below=ask gap=1
+  }
+
+  check coding.runs of=p pick=said
+  feedback {
+    when (f == t and pick == "return") point=p {
+      say "{t} is not less than {t}. So line 2 says no."
+    }
+    when (f != t and pick == "return" and f > t) point=p {
+      say "{f} is more than {t}. Is it less than {t}?"
+    }
+    when (pick == "land" and f < t) point=p {
+      say "{f} is less than {t}, so line 2 says yes. Which line runs then?"
+    }
+  }
+  hint "Put {f} in place of fuel in line 2. Is the answer yes or no?"
+  hint "Yes runs line 3, and no runs the line under otherwise."
+}

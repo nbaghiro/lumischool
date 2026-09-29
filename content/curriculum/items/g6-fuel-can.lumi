@@ -1,0 +1,37 @@
+# A fraction of a fraction where the numbers cancel, so the product is simpler than it looks.
+item fraction.fuel-can v=1 skills=[fractions.multiply, fractions.equivalent] {
+  title "Fuel for the stove"
+  difficulty (b * d / 12 + (if gcd(a * c, b * d) > 2 then 0.5 else 0))
+  let a=1..5 b={3, 4, 5, 6} c=1..5 d={2, 3, 4, 5, 6}
+  where (a < b and c < d and gcd(a, b) == 1 and gcd(c, d) == 1)
+  where (gcd(c, b) > 1 or gcd(a, d) > 1)
+  level easy {
+    where (b * d <= 12)
+  }
+  level hard {
+    where (b * d >= 20)
+  }
+
+  scene 34x14 {
+    fraction can n=b k=a shape=bar at=canvas(1, 1)
+    hut h pictures=1 below=can gap=1
+    text ask "The fuel can in the research hut is {a}/{b} full. Overnight the stove burns {c}/{d} of the fuel in the can. What fraction of a full can does it burn? Write it in its simplest form." narrate width=19 right-of=can gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input top width=3
+      text slash "/"
+      number-input bottom width=3
+    }
+  }
+
+  answer top=num(a / b * c / d) bottom=den(a / b * c / d)
+  feedback {
+    when (top == a * c and bottom == b * d) point=eq {
+      say "That is the right size, but it can be simplified. Which factor do the top and bottom share?"
+    }
+    when (top == c and bottom == d) point=can {
+      say "That is the fraction of the fuel in the can. The can is only {a}/{b} full."
+    }
+  }
+  hint "Is the answer more or less than the fraction of the can that is full?"
+  hint "Multiply the two fractions. Can a factor be cancelled before you multiply?"
+}

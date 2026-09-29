@@ -1,0 +1,36 @@
+# The histogram drawn: three bars are set from the raw lengths, and the child sets the fourth on the
+# chart by tallying its class.
+item data.rock-bar-set v=1 skills=[data.histograms, data.frequency] {
+  title "The last bar"
+  difficulty (v / 2 + (if h == 1 or h == 2 then 1 else 0))
+  let v=0..2 h=0..3
+  level easy {
+    let h={0, 3}
+  }
+  level hard {
+    let h={1, 2}
+  }
+
+  scene 36x20 {
+    table raw cols=6 cells=[pick(v, 27, 35, 23), pick(v, 31, 30, 29), pick(v, 22, 26, 30), pick(v, 34, 38, 21), pick(v, 29, 29, 25), pick(v, 30, 34, 34), pick(v, 25, 25, 20), pick(v, 36, 31, 24), pick(v, 33, 39, 29), pick(v, 28, 30, 35), pick(v, 31, 24, 27), pick(v, 24, 35, 30)] at=canvas(1, 1)
+    bargraph g labels=["20-24", "25-29", "30-34", "35-39"] values=[if h == 0 then 0 else pick(v, 2, 1, 4), if h == 1 then 0 else pick(v, 4, 3, 4), if h == 2 then 0 else pick(v, 5, 4, 3), if h == 3 then 0 else pick(v, 1, 4, 1)] max=6 color=sky set=1 touch=1 below=raw gap=1
+    text ask "These are the lengths in centimetres of twelve boot prints by the lander. Three bars of the histogram are set. Make the bar for {pick(h, \"20-24\", \"25-29\", \"30-34\", \"35-39\")} cm the right height." narrate width=18 right-of=g gap=2
+  }
+
+  answer g=(pick(h, bar1, bar2, bar3, bar4) == pick(v * 4 + h, 2, 4, 5, 1, 1, 3, 4, 4, 4, 4, 3, 1)) {
+    say "The bar for {pick(h, \"20-24\", \"25-29\", \"30-34\", \"35-39\")} cm is {pick(v * 4 + h, 2, 4, 5, 1, 1, 3, 4, 4, 4, 4, 3, 1)} squares tall."
+  }
+  feedback {
+    when (pick(h, bar1, bar2, bar3, bar4) == pick(v * 4 + h, 1, 2, 3, 1, 0, 1, 1, 1, 2, 1, 0, 0) and pick(h, bar1, bar2, bar3, bar4) != pick(v * 4 + h, 2, 4, 5, 1, 1, 3, 4, 4, 4, 4, 3, 1)) point=raw {
+      say "A length on the edge of the class, {pick(h, \"20 or 24\", \"25 or 29\", \"30 or 34\", \"35 or 39\")}, belongs to it too."
+    }
+    when (pick(h, bar1, bar2, bar3, bar4) < pick(v * 4 + h, 2, 4, 5, 1, 1, 3, 4, 4, 4, 4, 3, 1)) point=raw {
+      say "The bar is shorter than the prints in its class. Tick them in the list and count again."
+    }
+    when (pick(h, bar1, bar2, bar3, bar4) > pick(v * 4 + h, 2, 4, 5, 1, 1, 3, 4, 4, 4, 4, 3, 1)) point=raw {
+      say "The bar is taller than the prints in its class. The bar counts only the prints in its own class."
+    }
+  }
+  hint "Go through the twelve lengths and tick each one from {pick(h, \"20 to 24\", \"25 to 29\", \"30 to 34\", \"35 to 39\")}."
+  hint "Do the four bars together add up to twelve prints?"
+}

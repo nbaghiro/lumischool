@@ -1,0 +1,35 @@
+# Showing a feeling through what a character does, rather than naming it. Both wrong choices name
+# the feeling, one of them with very.
+item writing.story-show v=1 skills=[writing.story-structure, writing.describing] {
+  title "Show, do not tell"
+  difficulty k
+  let k=0..2 r=0..2
+  let feel={pick(k, "afraid", "delighted", "lonely")}
+  let right={pick(k, "Kit's hands shook on the ladder's rail.", "Omar laughed and thumped the dashboard.", "Lena set out two cups, then put one back.")}
+  let w1={pick(k, "Kit was very scared.", "Omar was really happy.", "Lena was lonely.")}
+  let w2={pick(k, "Kit felt fear inside her.", "Omar felt a lot of joy.", "Lena felt very alone.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 32x26 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      lander lnd rungs=5
+      earth globe up=2
+    }
+    text ask "The character is {feel}. Which sentence shows it without naming the feeling?" narrate width=31 below=pics gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "That sentence names the feeling. Look for the one where the character does something that lets the reader work it out."
+    }
+  }
+  hint "Which sentence could you act out without saying a word?"
+  hint "Which sentence does not use the feeling's name, or a word like it?"
+}

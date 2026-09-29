@@ -1,0 +1,35 @@
+# The three-star: two beakers of salty water at 20 °C poured into one jug. The water together holds
+# 36 g for each 100 ml, so grains left in one beaker may dissolve in the other's spare room.
+item chem.pour-together v=1 stars=3 skills=[chemistry.dissolving, reasoning.constraints] {
+  title "Poured into one jug"
+  difficulty (k + (if v == 50 then 0 else 1))
+  let k=0..2 v={50, 100}
+  let ga={pick(k, 40, 30, 44)}
+  let gb={pick(k, 16, 20, 20) * v / 50}
+  let spare={36 + 36 * v / 100 - ga - gb}
+  level easy {
+    let v={50} k=0..1
+  }
+  level hard {
+    let v={100}
+  }
+
+  scene 35x23 {
+    row two at=canvas(1, 0) space=2 align=end {
+      beaker a max=200 step=50 level=100 unit=ml solid=(if ga > 36 then 8 else 0) rod=false label="A"
+      beaker b max=200 step=50 level=v unit=ml solid=(if gb > 36 * v / 100 then 8 else 0) rod=false label="B"
+    }
+    text ask "Both beakers are at 20 °C, and 100 ml dissolves 36 g of salt. A has {ga} g of salt in it and B has {gb} g. Leo pours both into one jug and stirs. How many grams of salt stay as grains now? Write 0 if none." narrate width=34 below=two gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if spare >= 0 then 0 else 0 - spare)
+  feedback {
+    when (answer != (if spare >= 0 then 0 else 0 - spare) and answer == (if ga > 36 then ga - 36 else 0) + (if gb > 36 * v / 100 then gb - 36 * v / 100 else 0)) point=two {
+      say "Those are the grains in the beakers apart. Poured together, all the water can work on all the salt."
+    }
+  }
+  hint "How much water is in the jug altogether, and how much salt can that water hold?"
+  hint "How much salt went into the jug altogether?"
+  hint "Is there more salt than the water can hold, or less?"
+}

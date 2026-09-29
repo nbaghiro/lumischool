@@ -1,6 +1,6 @@
 # The hard part of chords is changing between them, and a change is only as hard as the fingers
 # that move. A minor to F keeps finger 2 where it is, which is why the pair is taught together.
-lesson music-uke-chord-change v=1 format=teach grade=2 unit=5 subject=music levels=[easy, medium, hard] {
+lesson music-uke-chord-change v=1 format=teach grade=2 unit=9 subject=music levels=[easy, medium, hard] {
   title "Changing chords: the finger that stays"
   goal "Find the finger that stays down between two chords, and change from A minor to F."
 

@@ -1,0 +1,36 @@
+# The dissolved oxygen graph read backwards (USGS DOTABLES: 14.6, 11.3, 9.1 and 7.6 mg a litre at 0,
+# 10, 20 and 30 °C). The fishes' need is the question's own number, not a fact about any fish.
+item chem.fish-need v=1 skills=[chemistry.gases, data.line-graph, reasoning.backwards] {
+  title "Enough oxygen for the fish"
+  difficulty (if k == 1 or k == 2 then 1 else 0)
+  let k=0..3
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k={1, 2}
+  }
+  let need={pick(k, 7, 9, 11, 14)}
+  let right={pick(k, "30 °C", "20 °C", "10 °C", "0 °C")}
+
+  scene 33x25 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      linegraph g labels=["0 °C", "10 °C", "20 °C", "30 °C"] values=[14.6, 11.3, 9.1, 7.6] min=0 max=16 per=2 step=2 color=sky
+      fishshoal f rows=2 cols=4 facing=1
+    }
+    text ask "The graph shows the most oxygen a litre of canal water can hold at each temperature, in milligrams. Say the fish in the lock need water that can hold at least {need} mg in each litre. What is the warmest of these temperatures the canal can reach and still hold enough?" narrate width=32 below=kit gap=1
+    choice pick options=["0 °C", "10 °C", "20 °C", "30 °C"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "0 °C" and k != 3) point=g {
+      say "Cold water holds the most, but the question asks for the warmest temperature that is still enough."
+    }
+    when (pick != right and pick != "0 °C") point=g {
+      say "Check that point against {need} mg. Is it above the line you need, or below it?"
+    }
+  }
+  hint "Find {need} mg up the side of the graph. Which points are at least that high?"
+  hint "Of those points, which one is furthest to the right?"
+}

@@ -1,0 +1,24 @@
+# The way in: drops on the outside of a cold glass came out of the air, where water vapour cooled on
+# the glass (Science Learning Hub; the condense drawing). Children often think they came through it.
+item chem.cold-glass-drops v=1 skills=[chemistry.water-cycle, chemistry.states] {
+  title "Where did the drops come from?"
+  let r=0..2
+  let right={"water vapour in the air, cooled on the glass"}
+  let w1={"the iced water, through the glass"}
+  let w2={"the ice melting over the top"}
+
+  scene 36x23 {
+    condense c kind="cold-glass" drops=8 at=canvas(1, 0)
+    text ask "In the warm research hut, Ana pours iced water into a dry glass. Soon drops cover the outside, though the glass is full to below the top. Where did the drops come from?" narrate width=24 right-of=c gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=c gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=c {
+      say "Glass lets no water through, and nothing spilled. The drops appeared where warm air touched the cold glass."
+    }
+  }
+  hint "Is there water on the outside of the glass that was not poured there?"
+  hint "What is in the warm air of the hut that you cannot see?"
+}

@@ -1,0 +1,34 @@
+# Same pitch, different loudness, or the other way: the child says which one thing changed from A to
+# B, from the number and the height of the waves.
+item physics.wave-what-changed v=1 skills=[physics.sound, reasoning.compare] {
+  title "What changed?"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+  let b={pick(v, 4, 4, 8, 2)}
+  let hb={pick(v, 3, 1, 2, 2)}
+  let ans={pick(v, "Louder, same pitch", "Quieter, same pitch", "Higher, same loudness", "Lower, same loudness")}
+
+  scene 23x33 {
+    wave s waves=[4, b] heights=[2, hb] across=10 letters=1 blank=-1 at=canvas(1, 0)
+    text ask "Sound B was played after sound A. How is B different?" narrate width=20 below=s gap=1
+    choice pick options=["Louder, same pitch", "Quieter, same pitch", "Higher, same loudness", "Lower, same loudness"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (v < 2 and (pick == "Higher, same loudness" or pick == "Lower, same loudness")) point=s {
+      say "Count the waves: A and B have the same number, so the pitch is the same. What else is different?"
+    }
+    when (v >= 2 and (pick == "Louder, same pitch" or pick == "Quieter, same pitch")) point=s {
+      say "The waves are just as tall, so the loudness is the same. Count the waves across each screen."
+    }
+  }
+  hint "Do A and B have the same number of waves?"
+  hint "Are B's waves taller, shorter, or just as tall as A's?"
+}

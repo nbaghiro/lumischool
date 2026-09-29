@@ -1,0 +1,69 @@
+# A diary as a day kept for a later reader: dated, in the first person, the day in the past and in
+# order, a detail to see or hear, a feeling, and a line that looks ahead.
+lesson writing-an-expedition-diary v=1 format=teach grade=6 unit=1 subject=writing levels=[easy, medium, hard] {
+  title "An expedition diary"
+  goal "Write a dated diary entry in the first person that tells a day in order, with a detail, a feeling and a look ahead."
+
+  look {
+    scene 34x25 {
+      row pics at=canvas(1, 0) space=2 align=end {
+        hut h pictures=6
+        icecliff ice height=1 floes=2
+      }
+      passage entry title="Tuesday 18 July" text="At six this morning the sun was still high over the ice, as it has been for three weeks. After breakfast we took the sledge to the edge of the shelf. The cliff creaked like an old door. By noon a seal had hauled itself onto a floe below us, and I stayed to watch it while the others measured the ice. Tomorrow we go further north, and I can hardly wait." width=33 numbers=false below=pics gap=1
+    }
+    say """
+      Isla is spending the summer at a research hut on the ice shelf, where the sun does not set,
+      and she keeps a diary. Each entry starts with the date. She writes I and we, because it
+      happened to her, and she tells the day with verbs in the past tense, in order, with time words
+      such as at six, after breakfast and by noon. One detail lets a reader hear the moment, the
+      cliff creaking like an old door. She says how she felt, and her last line looks ahead to
+      tomorrow.
+      """
+  }
+  do {
+    level easy {
+      worked writing.diary-which k=2 r=0 level=medium
+    }
+    practice writing.diary-which count=1 seed=2
+    practice writing.diary-order count=1 seed=3 hard-count=2
+    practice writing.diary-tense count=1 seed=4
+    practice writing.diary-detail count=1 seed=5
+    practice writing.diary-parts count=1 seed=6
+    practice writing.diary-whats-missing count=2 seed=2
+    practice writing.diary-from-log count=1 seed=2
+  }
+  try stars=2 {
+    show writing.diary-best-ending k=0 r=1 hard-k=1
+  }
+  try stars=3 {
+    show writing.write-diary k=0 hard-k=1
+  }
+  remember {
+    say "A diary entry has a date, says I, tells the day in order, and ends by looking ahead."
+  }
+
+  grown-ups """
+    A diary is written for a later reader, often the writer years on, so it keeps the date, the
+    order of the day, the details that would otherwise be forgotten and how it felt. The look is one
+    of Isla's entries from the research hut on the ice shelf. The way in picks the diary line from a
+    report, instructions or a story told about Isla, and the core puts a day back in order by its
+    time words, chooses the verb's tense for past, now and the future, picks the detail a reader
+    could see or hear, and names the job of each sentence in an entry. Two questions give a whole
+    entry that lacks one of the four things an entry needs, so every feature has to be checked
+    against the whole text, and one asks the child to turn the hut's log of clock times and notes
+    into Isla's diary for that day, which you mark by eye: the log has no I, no feeling and no look
+    ahead, so those are what the child adds. The wrong idea to watch for is a diary that is a list
+    of then, then, then; ask what Isla thought about it. If the child is stuck, have them tell you
+    their own yesterday aloud in four parts before writing a word. Off the page, keep a diary
+    together for three days, a few lines each evening, and read it back at the end of the week. The
+    two-star question compares two endings, and the three-star question is an entry of the child's
+    own, which you mark.
+    """
+  level easy {
+    grown-ups "At this level the diary line among a report and instructions is worked once in the teacher's pen, the line to choose from is the seal's or the whale's, the day to order has clock times, the verbs are in the past or the present, the details are the plainer ones, the entries lack a look ahead or a feeling, the log to rewrite is short and in order, the two-star is the list against the thinking ending, and the child writes one entry."
+  }
+  level hard {
+    grown-ups "At this level the diary line has to be told from a story about Isla, the day to order is linked only by what came before, it is ordered twice, the verbs are in the present or the future, the details are the subtler ones, the jobs to match are the fog day's, the entries slip into the present or tell the day out of order, the log to rewrite is out of order and has a line that does not belong, the two-star has the thinking ending first, and the child writes two entries on two days."
+  }
+}

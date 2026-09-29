@@ -1,0 +1,35 @@
+# Scaling the amount that dissolves with the water: 100 ml at 20 °C holds 36 g of salt or 10 g of
+# baking soda, so twice the water holds twice as much. The unknown is the grams, or the least water
+# for a given amount, poured from a full jug so the picture does not give it away.
+item chem.salt-in-jug v=1 skills=[chemistry.dissolving, ratio.scaling] {
+  title "More water, more salt"
+  difficulty (d * 2 + (if v == 50 or v == 200 then 0 else 1))
+  let d=0..1 s=0..1 v={50, 150, 200, 250, 300}
+  let name={pick(s, "salt", "baking soda")}
+  let per={pick(s, 36, 10)}
+  let grams={per * v / 100}
+  level easy {
+    let d=0..0 v={50, 200}
+  }
+  level hard {
+    let d=1..1
+  }
+
+  scene 35x13 {
+    jug j max=500 step=100 level=(if d == 0 then v else 500) unit=ml at=canvas(1, 0)
+    text ask "At 20 °C, 100 ml of water dissolves {per} g of {name} and no more. {if d == 0 then \"How many grams of \" else \"The lock keeper wants to dissolve \"}{if d == 0 then name else grams}{if d == 0 then \" can the water in the lock keeper's jug dissolve?\" else \" g of \"}{if d == 0 then \"\" else name}{if d == 0 then \"\" else \" with no grains left. What is the least water, in millilitres, she can pour from her jug?\"}" narrate width=22 right-of=j gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if d == 0 then grams else v)
+  feedback {
+    when (d == 0 and answer == per) point=j {
+      say "{per} g is what 100 ml holds. The jug has {v} ml, so how many lots of 100 ml is that?"
+    }
+    when (d == 1 and answer == grams) point=j {
+      say "That is the grams. The question asks how much water, in millilitres, holds them."
+    }
+  }
+  hint "{if d == 0 then \"How many lots of 100 ml are in the jug? Read its level.\" else \"How many lots of {per} g did she stir in?\"}"
+  hint "{if d == 0 then \"Each 100 ml takes the same amount, and half of 100 ml takes half of it.\" else \"Each lot of {per} g needs its own 100 ml of water.\"}"
+}

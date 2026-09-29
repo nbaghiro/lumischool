@@ -1,0 +1,34 @@
+# A decimal and a fraction in one calculation: the fraction of a decimal amount is found by sharing
+# into the bottom number's parts and taking the top number of them.
+item fraction.stove-decimal v=1 skills=[fractions.multiply, fractions.divide, decimals.multiply] {
+  title "A fraction of a decimal"
+  difficulty ((if op == "÷" then 1 else 0) + d / 5 + (if whole(10 * x) then 0 else 0.5))
+  let op={"×", "÷"} x={0.6, 0.75, 0.8, 0.9, 1.2, 1.5, 2.4} c=1..4 d={2, 3, 4, 5, 6}
+  where (c < d and gcd(c, d) == 1)
+  where whole(100 * (if op == "×" then x * c / d else x * d / c))
+  where ((if op == "×" then x * c / d else x * d / c) != x)
+  level easy {
+    let op={"×"} d={2, 3, 4}
+  }
+  level hard {
+    let op={"÷"}
+  }
+
+  scene 34x17 {
+    unknown eq terms=["{decimals(x, 0)}", op, "{c}/{d}", "=", "?"] at=canvas(1, 1)
+    text ask "{if op == \"×\" then \"The hut's stove burns\" else \"A pot holds\"} {decimals(x, 0)} litres{if op == \"×\" then \" of fuel an hour. How many litres does it burn in\" else \" of snow water. Each pan holds\"} {c}/{d} {if op == \"×\" then \"of an hour?\" else \"of a litre. How many pans fill the pot?\"} Write the answer as a decimal." narrate width=32 below=eq gap=1
+    number-input answer width=5 below=ask gap=1
+  }
+
+  answer decimals(if op == "×" then x * c / d else x * d / c, 0)
+  feedback {
+    when (op == "×" and answer == x * d / c) point=eq {
+      say "Part of an hour burns less than a whole hour. Take {c}/{d} of {decimals(x, 0)}."
+    }
+    when (op == "÷" and answer == x * c / d) point=eq {
+      say "Each pan is less than a litre, so more pans than litres are needed."
+    }
+  }
+  hint "What is 1/{d} of {decimals(x, 0)}? Share it into {d} equal parts."
+  hint "How many of those parts are wanted?"
+}

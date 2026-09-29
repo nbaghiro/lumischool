@@ -1,0 +1,32 @@
+# A ratio of three parts where the difference between two shares is known instead of the total: the
+# difference is so many equal parts, which gives one part and then the whole.
+item ratio.three-teams v=1 skills=[ratio.sharing, reasoning.work-backwards] {
+  title "Three dog teams"
+  difficulty ((c - a) / 3 + u / 10)
+  let a={1, 2, 3} b={2, 3, 4} c={4, 5, 6, 7} u={3, 4, 5, 6}
+  where (a < b and b < c and c - a >= 2)
+  level easy {
+    let a={1} c={4, 5}
+  }
+  level hard {
+    let a={2, 3} c={6, 7}
+  }
+
+  scene 33x26 {
+    ratio bars parts=[a, b, c] labels=["Blue", "Green", "Red"] unit=0 total=false at=canvas(1, 1)
+    text ask "The day's catch is shared between three sledge teams in the ratio {a} : {b} : {c}. The Red team gets {(c - a) * u} kg more than the Blue team. How many kilograms of fish are shared altogether?" narrate width=32 below=bars gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer ((a + b + c) * u)
+  feedback {
+    when (answer == (c - a) * u * (a + b + c)) point=bars {
+      say "The {(c - a) * u} kg is not one part. How many parts more does Red have than Blue?"
+    }
+    when (answer == c * u) point=bars {
+      say "That is the Red team's share. The question asks for all three together."
+    }
+  }
+  hint "In the bars, how many parts more does Red have than Blue? What is one part worth?"
+  hint "How many parts are there altogether?"
+}

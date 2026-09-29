@@ -1,0 +1,13 @@
+# Singing the tune alone before singing it in parts: a grown-up listens and ticks what they heard.
+item music.round-sing v=1 skills=[music.singing, music.pitch] {
+  title "Sing it alone first"
+
+  scene 36x19 {
+    table song cols=2 head=["Bars", "Words"] cells=["1 and 2", "Are you sleeping", "3 and 4", "Brother John", "5 and 6", "Morning bells are ringing", "7 and 8", "Ding dang dong"] at=canvas(1, 1)
+    text ask "Before a round, every singer needs the whole tune. Sing Frère Jacques to a grown-up twice through, tapping the beat on your knee, with ding dang dong low like a big bell." narrate width=34 below=song gap=1
+  }
+
+  check music.sung look-for="The whole tune sung twice through to a steady beat, each pair of bars sung twice, the quick notes of morning bells are ringing fitted into their bar, and ding dang dong dropping low and landing back on the home note." notice=["A steady beat all the way through", "Every phrase sung twice", "The quick notes fitted into bar 5", "Ding dang dong drops low and lands home"]
+  hint "Say the words in time first, tapping the beat, before you sing them."
+  hint "Which bar has the quick notes? Play it on the keyboard, then sing it slowly."
+}

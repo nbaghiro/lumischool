@@ -1,0 +1,26 @@
+# A reason in the core: on a still night the wind turbine stops, while the river keeps running, so a
+# water wheel's generator keeps the mill's lamps lit.
+item physics.gen-steady v=1 skills=[physics.energy, reasoning.explain] {
+  title "A still night"
+
+  scene 31x36 {
+    turbine t wind=0 lamps=3 at=canvas(1, 0)
+    text ask "On a still night the lamps in the house by this wind turbine are dark, but the lamps in the mill by the river stay lit. Why?" narrate width=22 below=t gap=1
+    choice pick options=["The river keeps flowing when the wind drops", "Water has more energy than any wind", "The mill's lamps need no energy", "The turbine only works by day"] stack=column below=ask gap=1
+  }
+
+  answer pick="The river keeps flowing when the wind drops"
+  feedback {
+    when (pick == "Water has more energy than any wind") point=t {
+      say "A strong wind turns this turbine well. Tonight the question is whether anything is moving."
+    }
+    when (pick == "The mill's lamps need no energy") point=t {
+      say "Every lamp needs energy. Where does the mill's come from?"
+    }
+    when (pick == "The turbine only works by day") point=t {
+      say "The turbine works whenever the wind blows, day or night. What is missing tonight?"
+    }
+  }
+  hint "What turns each generator: the wind, or the river?"
+  hint "Which of the two is still moving tonight?"
+}

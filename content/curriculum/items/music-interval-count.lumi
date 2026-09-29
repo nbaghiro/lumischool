@@ -1,0 +1,33 @@
+# The way in: an interval named by counting letter names from the lower note to the higher, both
+# notes counted. The mistake it catches is counting the gaps, which comes out one short.
+item music.interval-count v=1 skills=[music.intervals, music.staff] {
+  title "Count the letters"
+  difficulty (if size <= 4 then 0 else if size <= 6 then 1 else 2)
+  let k=0..8
+  let low={pick(k, "A4", "C4", "D4", "E4", "C4", "E4", "C4", "F4", "G4")}
+  let high={pick(k, "B4", "E4", "G4", "A4", "G4", "B4", "A4", "E5", "G5")}
+  let size={pick(k, 2, 3, 4, 4, 5, 5, 6, 7, 8)}
+  level easy {
+    let k=0..3
+  }
+  level hard {
+    let k=4..8
+  }
+
+  scene 35x16 {
+    row top space=2 align=start at=canvas(1, 1) {
+      notes pair clef=treble notes=[low, high] values=[2, 2] meter=0
+      text ask "Two notes from Ana's star tune. Count the letter names from the lower note up to the higher one, counting both notes. What number is the interval?" narrate width=20
+    }
+    number-input answer below=top gap=1
+  }
+
+  answer size
+  feedback {
+    when (answer == size - 1) point=pair {
+      say "That counts the gaps between the notes. An interval counts the letters, the first note and the last one too."
+    }
+  }
+  hint "Name the lower note. Say the letters up from it, one for each line and space."
+  hint "Stop on the higher note. How many letters did you say, the first one included?"
+}

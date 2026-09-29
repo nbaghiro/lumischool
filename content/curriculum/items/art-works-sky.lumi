@@ -1,0 +1,33 @@
+# How the picture is shared between land or sea and sky: Turner's horizon is ruled 10 squares down a
+# frame 15 high, so two thirds of the picture is above it; Levitan's far field edge is 8 down a frame
+# 16 high, so half is above it.
+item art.works-sky v=1 skills=[art.artists, art.composition, fractions.of-amounts] {
+  title "How much is sky?"
+  difficulty k
+  let k=0..1
+  let work={pick(k, 4, 2)}
+  let line={pick(k, "the far edge of the field", "the horizon")}
+  let known={pick(k, "Levitan's March", "Turner's The Fighting Temeraire")}
+  let right={pick(k, "one half", "two thirds")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x33 {
+    studies s work=work names=1 card=0 at=canvas(1, 1)
+    text ask "In this study after {known}, {line} is ruled with a dashed line. Count the squares: what part of the picture's height is above that line?" narrate width=12 right-of=s gap=1
+    choice pick options=["one third", "one half", "two thirds", "three quarters"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=s {
+      say "Count the squares from the top of the frame down to the dashed line, then the squares in the whole height. Compare the two."
+    }
+  }
+  hint "How many squares high is the whole frame?"
+  hint "How many of those squares are above the dashed line? Write it as a fraction of the whole."
+}

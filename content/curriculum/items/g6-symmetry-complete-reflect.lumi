@@ -1,0 +1,28 @@
+# Completing a figure with a line of symmetry: each corner is as far past the line as it was before
+# it, so the gap across the line doubles.
+item symmetry.complete-reflect v=1 skills=[shapes.symmetry.line] {
+  title "Half a fin"
+  difficulty c
+  let c={8, 10, 12}
+  level easy {
+    let c={8}
+  }
+  level hard {
+    let c={12}
+  }
+
+  scene 36x28 {
+    reflect fin cols=c rows=6 line=vertical show=false at=canvas(1, 1)
+    text ask "Half of a rocket's fin is drawn. The dashed line is a line of symmetry of the whole fin. When the other half is drawn, how many cells of the grid will there be between the two halves at their closest?" narrate width=34 below=fin gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (c - 6)
+  feedback {
+    when (answer == (c - 6) / 2) point=fin {
+      say "That is the gap from the shape to the line. The other half is as far past the line again."
+    }
+  }
+  hint "How many cells are there from the right edge of the shape to the dashed line?"
+  hint "Where does that edge land when it is reflected?"
+}

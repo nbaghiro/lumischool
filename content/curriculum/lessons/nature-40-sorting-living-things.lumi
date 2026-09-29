@@ -1,0 +1,76 @@
+lesson nature-sorting-living-things v=1 format=teach grade=5 unit=8 subject=nature levels=[easy, medium, hard] {
+  title "Sorting living things, down to the smallest"
+  goal "Put a living thing in its broad group by the features that decide it, even when it is a single cell."
+
+  look {
+    scene 34x21 {
+      row all at=canvas(1, 1) space=1 align=end {
+        microview m kind=4 mag=100 scale=0 field=0
+        toadstools ts count=1 spots=5
+        clocktower ct hour=4 minute=0
+      }
+    }
+    say """
+      In the old city Ada and Ben sort what lives there. Animals feed on other living things; those
+      with a backbone are fish, amphibians, reptiles, birds or mammals. Plants make their own food in
+      green parts. Fungi, such as toadstools, moulds and yeast, feed on dead or living things around
+      them. Some living things are a single cell, too small to see without a microscope: the pond
+      slippers in the temple pond, yeast, and bacteria. They feed, grow and split to make more, so they
+      are alive.
+      """
+  }
+  do {
+    show nature.group-class k=0 easy-k=0 hard-k=2
+    level easy {
+      worked nature.group-class k=1 level=medium
+    }
+    show nature.group-venn k=1 easy-k=0 hard-k=2
+    show nature.group-why k=1 easy-k=0 hard-k=2
+    show nature.group-mould k=1 easy-k=0 hard-k=2
+    level medium hard {
+      show nature.group-class k=2 hard-k=3
+    }
+    show nature.group-venn k=2 easy-k=1 hard-k=3
+    show nature.group-why k=0 easy-k=1 hard-k=1
+    level easy {
+      show nature.group-mould k=1
+    }
+    level hard {
+      show nature.group-mould k=1 level=medium
+    }
+  }
+  story {
+    show nature.group-germs k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.group-yeast k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.group-key k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Sort a living thing by the feature that decides its group, and remember that some living things are one cell."
+  }
+
+  grown-ups """
+    Living things fall into broad groups by features that anyone can check: animals feed on others,
+    plants make food in green parts, fungi feed on what is around them, and many living things are a
+    single cell, seen only under a microscope. The animals with a backbone split five ways, by skin,
+    breathing, eggs and milk. The wrong ideas to watch for are sorting by where something lives or how
+    it moves (a whale is not a fish, a penguin is still a bird), thinking that anything too small to
+    see cannot be alive, and thinking mould and yeast are plants. In the child's working, look for the
+    one feature that decides a group named out loud. If the child is stuck, take two living things
+    from the page and ask what one has that the other has not, then stay another day with the five
+    groups before the Venn. Off the page, leave a slice of bread in a bag somewhere warm for a week
+    and look at the mould with a magnifying glass, without opening the bag, then throw it away still
+    sealed. This meets England's year six science: "describe how living things are classified into
+    broad groups according to common observable characteristics and based on similarities and
+    differences, including micro-organisms, plants and animals".
+    """
+  level easy {
+    grown-ups "At this level the animals to place are the lizard and the bat, a worked example places the lizard, the Venn places the moss and the yeast, the look-alike is the whale, the mould table is read for the first slice, the germs are counted for an hour, the yeast question asks what the balloons show, and the key asks three questions on every path."
+  }
+  level hard {
+    grown-ups "At this level the animals to place are the newt and the carp, the Venn places the mould and the green cells of the fountain, the look-alike is the newt, the mould table is read for the pairs that test damp and cold, the germs are timed until they pass 1,000, the yeast question answers a claim about the sugar, and the key works back from 20 living things to the questions on its longest path."
+  }
+}

@@ -1,0 +1,31 @@
+# The second reasoning question in the core: a table is read for its structure. If the quotient stays
+# the same it is direct proportion, if the product stays the same it is inverse, else neither.
+item inverse.direct-or-inverse v=1 skills=[proportion.inverse, proportion.direct, reasoning.classify] {
+  title "Direct, inverse or neither"
+  difficulty (if kind == 2 then 1 else 0)
+  let kind=0..2 a={2, 3, 4} k={12, 24}
+  level easy {
+    let kind={0, 1} k={12}
+  }
+  level hard {
+    let kind={1, 2} k={24}
+  }
+
+  scene 33x19 {
+    table data cols=2 head=["Paddles", "{pick(kind, \"Litres a turn\", \"Litres a paddle\", \"Seconds a turn\")}"] cells=["{a}", "{pick(kind, a * k / 4, k * 2, k)}", "{2 * a}", "{pick(kind, a * k / 2, k, k - 4)}", "{3 * a}", "{pick(kind, 3 * a * k / 4, 2 * k / 3, k - 8)}"] at=canvas(1, 1)
+    text ask "The table is from the water wheel. Are the two columns in direct proportion, in inverse proportion, or neither?" narrate width=32 below=data gap=1
+    choice pick options=["direct", "inverse", "neither"] below=ask gap=1
+  }
+
+  answer pick=pick(kind, "direct", "inverse", "neither")
+  feedback {
+    when (kind == 2 and pick == "inverse") point=data {
+      say "One row goes up as the other goes down, but multiply each pair: is the product always the same?"
+    }
+    when (kind == 1 and pick == "neither") point=data {
+      say "Multiply the two numbers in each column. What do you notice?"
+    }
+  }
+  hint "When the paddles double, what happens to the number beside them?"
+  hint "Divide each pair, then multiply each pair. Which one stays the same?"
+}

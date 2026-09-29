@@ -1,0 +1,69 @@
+lesson nature-a-food-web-over-the-years v=1 format=teach grade=6 unit=3 subject=nature levels=[easy, medium, hard] {
+  title "A food web over the years"
+  goal "Read how the numbers of animals in a food web rise and fall over the years, and say why a change to one changes the others."
+
+  look {
+    scene 34x11 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row pics space=2 align=end {
+          whale pw spout=1 facing=1
+          seal ps rock=0 facing=-1
+          puffins pp count=2 facing=-1
+        }
+        text chain "tiny plants  →  krill  →  small fish  →  seal  →  polar bear"
+      }
+    }
+    say """
+      The scientists at the research hut, on the shore beside the ice shelf, have counted the same animals every summer for years, and
+      the numbers are never still. When the krill have a good year, the small fish that eat them do
+      well, and the puffins and seals that eat the fish raise more young. Then there are more mouths,
+      the food runs short, and the numbers fall again. An animal's numbers are held up by its food and
+      held down by what eats it, so a change anywhere in the web travels along its arrows.
+      """
+  }
+  do {
+    level easy {
+      worked nature.ice-web-count k=2 level=medium
+    }
+    practice nature.ice-web-count count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.lemming-graph count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.fox-follow count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.web-change count=1 seed=2 easy-seed=1 hard-seed=1
+    level hard {
+      show nature.why-later k=1 level=medium
+    }
+  }
+  story {
+    show nature.puffin-chicks k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.why-later k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.krill-gone k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "An animal's numbers are held up by its food and held down by what eats it, so a change travels along the arrows."
+  }
+
+  grown-ups """
+    At grade four a web was a picture of who eats whom; here it changes over time. Numbers rise when
+    food is plentiful and fall when food runs short or hunters are many, and the hunters follow their
+    prey a season or a year behind, because it takes a year of plenty to raise more young. The wrong
+    ideas to watch for are reading the end value as the change (a fall from 40 to 10 is 30, not 10)
+    and following an arrow the wrong way, so that fewer krill seems to mean more fish, and the idea
+    that a number freed from its hunter goes on rising for ever, when its own food stops it. In the table
+    the child should find the highest lemming count first and then look one row down for the foxes.
+    The story is the puffins' one egg a year, in quarters. The three-star question crosses animals
+    out of the web until no more lose all their food, and the whale is the trap, since it keeps its
+    krill when the fish go. If arrows are still followed backwards after the core, stay here another
+    day and draw the web large with the arrows in colour, from food to eater, and act out a bad krill
+    year with counters.
+    """
+  level easy {
+    grown-ups "At this level a worked example (every arrow in the web) opens the core, the web questions are who eats small fish and the whale's arrows, the graph questions read one summer and one fall, the foxes are read at their highest and in the summer after the lemmings', the krill have a good year and the child says who rises first and who later, the story finds three quarters of 400 chicks, the two-star question asks why the foxes peak a year late, and the small fish are the ones that vanish."
+  }
+  level hard {
+    grown-ups "At this level the web questions are every arrow and the two chains to the whale, the graph questions find the next peak and count the rises, the foxes' fall over two summers is asked for, a second reasoning question in the core asks why the lemmings crash, the story gives 150 chicks and asks for the pairs, Ben wants to be rid of every fox, and the child finds which one animal's loss starves the most others."
+  }
+}

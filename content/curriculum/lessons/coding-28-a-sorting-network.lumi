@@ -1,4 +1,4 @@
-lesson coding-a-sorting-network v=2 format=teach grade=4 unit=8 subject=coding levels=[easy, medium, hard] {
+lesson coding-a-sorting-network v=2 format=teach grade=4 unit=6 subject=coding levels=[easy, medium, hard] {
   title "A sorting network"
   goal "Walk numbers through a sorting network on paper, say where each one is at any bridge, and tell when a network does not sort."
 

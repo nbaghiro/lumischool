@@ -1,0 +1,83 @@
+lesson reading-the-call-of-the-wild v=1 format=book grade=6 unit=1 subject=reading book=call-of-the-wild levels=[easy, medium, hard] {
+  title "The Call of the Wild"
+  goal "Read The Call of the Wild and show, with lines from the book, how Buck changes from a house dog into a wild one."
+
+  sitting chapters=[1, 2] {
+    show reading.wild-line k=1 easy-k=0
+    show reading.wild-word k=0
+    show reading.wild-line k=2 hard-k=3
+    level hard {
+      show reading.wild-who k=1
+    }
+    show reading.wild-summary k=0
+  }
+  sitting chapters=[3] {
+    show reading.wild-order k=0
+    show reading.wild-line k=5 easy-k=4
+    show reading.wild-pike
+  }
+  sitting chapters=[4] {
+    show reading.wild-line k=6 easy-k=7
+    show reading.wild-who k=0
+    show reading.wild-dave
+  }
+  sitting chapters=[5] {
+    show reading.wild-line k=8 easy-k=9
+    show reading.wild-narrator k=0
+    show reading.wild-refuses
+    show reading.wild-summary k=1
+  }
+  sitting chapters=[6] {
+    show reading.wild-line k=10 hard-k=11
+    show reading.wild-order k=1
+    level hard {
+      show reading.wild-word k=1
+    }
+    show reading.wild-love
+  }
+  sitting chapters=[7] {
+    show reading.wild-line k=12 easy-k=14
+    show reading.wild-narrator k=1
+    level hard {
+      show reading.wild-line k=13
+    }
+    show reading.wild-call
+    show reading.wild-review
+  }
+
+  grown-ups """
+    The idea is that a whole book is read over the term, and that what a reader says about it is
+    backed by the book's own lines. Buck goes from a judge's pet in California to the leader of a
+    wolf pack, and every sitting asks for the line that proves one step of that change, a sentence
+    that sums up the part, the order things happened in, and at least one question with no single
+    answer, which is marked from the list on the grown-ups' sheet. The wrong idea to watch for is
+    answering from memory of the story rather than from the page: ask "which line shows it?" after
+    every answer, and send the child back to the chapter rather than giving the line. If a sitting
+    is too much, read half aloud together and let the child read the rest alone, and stay on a
+    sitting for a second day rather than skip its questions. On paper, read any edition from a shop
+    or a library; the grown-ups' sheet prints the words of each line beside its number, so mark an
+    evidence question by the words the child found. There are six sittings, one a fortnight across
+    the term, at a silent pace of about 200 words a minute: chapters 1 and 2 (about 7,000 words, 35
+    minutes), chapter 3 (5,100 words, 25 minutes), chapter 4 (3,200 words, 16 minutes), chapter 5
+    (5,300 words, 27 minutes), chapter 6 (4,700 words, 24 minutes) and chapter 7 (6,200 words, 31
+    minutes, with the review). The book is hard on the dogs, and it is worth reading those parts
+    first yourself: in chapter 1 Buck is choked with a rope and beaten with a club until he gives
+    in, and a dog is killed; in chapter 2 Curly is torn to death by huskies; in chapter 3 starving
+    huskies raid the camp, Dolly goes mad and is killed with an axe, and Buck fights Spitz, who is
+    killed by the pack; in chapter 4 the sick Dave is shot when he can no longer pull; in chapter 5
+    Hal, Charles and Mercedes starve and whip their dogs, several are shot, and the rest drown with
+    them through the ice; in chapter 7 Buck kills a moose and, after the Yeehats kill John Thornton
+    and his partners, kills several of the Yeehats. The book was written in 1903 and calls the
+    Yeehats and the dog-drivers by the words of its time, which is worth talking about. Off the
+    page, find the Klondike and the Chilkoot Pass on a map and trace Buck's journey from the Santa
+    Clara Valley to Dawson. The book meets Japan's course of study for grades five and six, (3)オ,
+    日常的に読書に親しみ, reading as part of everyday life, and China's 2022 standard for grades five
+    and six, 阅读与鉴赏 6, 阅读整本书, reading a whole book.
+    """
+  level easy {
+    grown-ups "At this level the evidence lines say what the question asks almost in the same words (Manuel as a bad man to know, Dolly stopped by the axe, Dave and Sol-leks content with the new leader, Buck's traces cut, the Yeehats' fear), and the extra speaker and word questions are left out."
+  }
+  level hard {
+    grown-ups "At this level the evidence lines need interpreting (the fear of the trap that came from Buck's forebears, the command to jump that Buck would obey, the summer howl in the valley), and a second speaker and the word uncanny are asked as well."
+  }
+}

@@ -1,0 +1,64 @@
+# Greek and Latin roots, read in the names of the research hut's instruments and in sentences from
+# the expedition. The notice, the kit list and the sentences were written for the lesson.
+lesson reading-greek-and-latin-roots v=1 format=teach grade=6 unit=3 subject=reading levels=[easy, medium, hard] {
+  title "Greek and Latin roots"
+  goal "Work out what a long word means from the Greek and Latin roots it is built from and the sentence it is in."
+
+  look {
+    scene 30x15 {
+      row all at=canvas(1, 1) space=2 align=end {
+        thermometer t from=-20 to=10 step=5 value=-5
+        telescope scope tilt=20
+        microscope m slide=1 lamp=0
+      }
+    }
+    say """
+      The research hut is full of instruments with long names, and most of those names are built
+      from short Greek or Latin roots. Tele means far and scope means look, so a telescope looks at
+      far-off things. Therm means heat and meter means measure. A root keeps its meaning in every
+      word it is in, so one root opens a whole family of words. When a long word stops you, split it
+      into its roots, then check your meaning against the sentence.
+      """
+  }
+  do {
+    level easy {
+      worked reading.root-key k=1 level=medium
+    }
+    show reading.root-key k=0 hard-k=3
+    practice reading.root-family count=2 seed=1 easy-seed=1 hard-seed=1
+    practice reading.root-build count=2 seed=1 easy-seed=1 hard-seed=1
+    practice reading.root-line count=1 seed=1 easy-seed=1 hard-seed=1
+    practice reading.root-context count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show reading.root-line q=4
+    }
+  }
+  try stars=2 {
+    show reading.root-reason k=0 easy-k=3 hard-k=2
+  }
+  try stars=3 {
+    show reading.root-invent k=0 easy-k=1 hard-k=2
+  }
+  remember {
+    say "Split a long word into its roots, put their meanings together, and check the meaning in the sentence."
+  }
+
+  grown-ups """
+    The idea is that many long English words are built from Greek roots (tele, scope, phone, graph,
+    therm, meter, hydro, micro, photo) and Latin ones (aud, vis, port, rupt, spect, dict, trans),
+    and that a root means the same in every word. The way in reads an instrument's name with a key,
+    the core finds the root a family of words shares, finishes a word from its meaning, finds root
+    words in the hut's notice, and works out a Latin word from its root and its sentence together.
+    The wrong idea to watch for is reading a root as the modern word it looks like: phone as
+    telephone, photo as picture. The two-star question picks the reason a reading is wrong, and the
+    three-star question invents the name of a new machine from the key's roots, which you mark: more
+    than one name can fit. If the child is stuck, cover each root in turn and say its meaning aloud.
+    Off the page, hunt for tele, graph and port on packets and signs at home.
+    """
+  level easy {
+    grown-ups "At this level the telescope is worked once in the teacher's pen, the name to read is the thermometer, the families are heat and hearing, the words to finish use Greek roots, the notice line is the heat tool, the Latin words are the plainer ones, the two-star is the aqueduct, and the three-star names the light meter."
+  }
+  level hard {
+    grown-ups "At this level the name to read is the microscope, the families are writing and looking, the words to finish are biography and audible, the notice lines include the pictures and the carried stoves, the Latin words include ruptures and dictated, the two-star is the microphone, and the three-star names the machine for tiny things in sea water."
+  }
+}

@@ -1,0 +1,33 @@
+# Choosing without order: every pair (or group of three) turns up in several orders, so the ordered
+# count is divided by the number of orders of one group.
+item chance.rover-crew-pick v=1 skills=[counting.cases, reasoning.systematic] {
+  title "Who takes the rover"
+  difficulty pick(v, 0, 1, 2, 2, 3)
+  let v=0..4
+  let n={pick(v, 4, 5, 6, 5, 6)}
+  let k={pick(v, 2, 2, 2, 3, 3)}
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={3, 4}
+  }
+
+  scene 35x14 {
+    launchpad pad rocket=1 lights=2 at=canvas(1, 1)
+    text ask "The rover seats {k}. From the {n} astronauts at the base, {k} are chosen to drive to the crater. How many different {if k == 2 then \"pairs\" else \"groups of three\"} could be chosen?" narrate width=20 right-of=pad gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer pick(v, 6, 10, 15, 10, 20)
+  feedback {
+    when (answer == pick(v, 12, 20, 30, 60, 120)) point=ask {
+      say "That counts A with B and B with A as two different {if k == 2 then \"pairs\" else \"groups\"}. They are the same people in the rover."
+    }
+    when (answer == n * k and n * k != pick(v, 6, 10, 15, 10, 20)) point=ask {
+      say "List them in order: A with each of the others, then B with each one after B, and so on."
+    }
+  }
+  hint "Call the astronauts A, B, C and so on. Who can go with A?"
+  hint "Now who can go with B that has not been counted with A already?"
+}

@@ -1,0 +1,34 @@
+# The two-star reason: a friend names a word's class by a habit (a describing word, an -ly ending,
+# a word that joins, a word for a thing), and the child says why the job in this sentence decides it
+# instead. Every wrong option is the habit itself or another class that the word can have elsewhere.
+item writing.which-class-reason v=1 stars=2 skills=[writing.word-classes, reasoning.explain] {
+  title "Why is the class wrong?"
+  difficulty pick(k, 1, 2, 0, 1)
+  let k=0..3
+  let right={pick(k, "Fast tells how it moved, so it is an adverb.", "The eclipse, a noun, follows it: a preposition.", "Light is what we do to the lamp: a verb.", "Friendly describes a noun: an adjective.")}
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1, 3}
+  }
+
+  scene 34x25 {
+    row top at=canvas(1, 1) space=1 align=end {
+      person friend pose=think age=child hair=curly top=tang tone=2
+      bubble says "{pick(k, \"The comet moved fast. Here fast is an adjective, because it describes.\", \"We went home after the eclipse. Here after is a conjunction, because it joins.\", \"We light the lamp. Here light is a noun, because light is a thing.\", \"A friendly astronomer waved. Here friendly is an adverb, as it ends in -ly.\")}" width=16 from=friend
+      observatory dome open=0
+    }
+    text ask "Why is the friend wrong?" width=32 below=top gap=1
+    choice pick options=[pick(k, right, "It is right: after always joins two parts.", "It describes the lamp, so it is an adjective.", "It is a verb: it is what the astronomer does."), pick(k, "Fast has no -ly, so it cannot be an adverb.", right, right, "Words ending in -ly are adverbs, so it is right."), pick(k, "It is right: describing words are adjectives.", "After tells when, so it is an adverb.", "It is right: light is a thing, so it is a noun.", right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=says {
+      say "That goes by a habit of the word. What job does it do in this sentence, and what word does it go with?"
+    }
+  }
+  hint "Cover the word. What does the sentence lose: a detail about a thing, about an action, or a link?"
+  hint "Which word in the sentence does it belong with, and what class is that word?"
+}

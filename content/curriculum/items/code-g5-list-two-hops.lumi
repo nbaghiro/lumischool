@@ -1,0 +1,34 @@
+# Three-star: two moves, each one item of the list, and exactly one pair of places lands on the
+# flag. Every list here has six different pair sums, so the pair is unique; the smaller place is
+# asked first.
+item coding.list-two-hops v=1 stars=3 skills=[coding.lists, reasoning.all-the-ways] {
+  title "Two hops to the mooring"
+  difficulty (q * 0.5 + s)
+  let s=0..2 q=0..5
+  let a={pick(s, 3, 2, 5)} b={pick(s, 1, 3, 1)} c={pick(s, 6, 7, 3)} e={pick(s, 2, 4, 2)}
+  let i={pick(q, 1, 1, 1, 2, 2, 3)} j={pick(q, 2, 3, 4, 3, 4, 4)}
+  let d={pick(i - 1, a, b, c) + pick(j - 2, b, c, e)}
+  level easy {
+    let s={0} q={0, 2}
+  }
+  level hard {
+    let s=1..2 q=3..5
+  }
+
+  scene 36x19 {
+    maze m cols=12 rows=2 col=1 row=1 flag=[d + 1, 1] at=canvas(1, 0)
+    program p code=["set hops to list {a}, {b}, {c}, {e}", "right item ? of hops", "right item ? of hops"] below=m gap=1
+    text ask "The boat must stop on the flag. Which two different places of hops? Smaller place first." width=13 right-of=p gap=1
+    number-input first below=ask gap=1
+    number-input second right-of=first gap=1
+  }
+
+  answer first=i second=j
+  feedback {
+    when (first == j and second == i) point=ask {
+      say "Those are the right places, but the smaller one goes first."
+    }
+  }
+  hint "How many squares is the flag from the robot?"
+  hint "Try every pair of numbers in the list. Which pair adds up to that many?"
+}

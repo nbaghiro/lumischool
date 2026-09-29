@@ -1,0 +1,30 @@
+# A pie chart's slice as an angle at the centre: a whole turn is 360 degrees, so each percent is 3.6.
+item percent.slice-angle v=1 skills=[data.pie-charts, angles.degrees] {
+  title "The angle of a slice"
+  difficulty ((if p % 25 == 0 then 0 else 1) + p / 50)
+  let p={25, 50, 75, 10, 20, 40, 15, 35}
+  level easy {
+    let p={25, 50, 75}
+  }
+  level hard {
+    let p={15, 35, 40}
+  }
+
+  scene 33x15 {
+    circleparts slice size=5 lines=0 centre=1 sector=(36 * p / 10) ask=4 at=canvas(1, 1)
+    text ask "On a pie chart of the stars seen tonight, {p}% were white stars. What angle at the centre does their slice have?" narrate width=16 right-of=slice gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text deg "degrees"
+    }
+  }
+
+  answer (36 * p / 10)
+  feedback {
+    when (answer == p) point=slice {
+      say "The whole pie is 360 degrees, not 100. How many degrees is 1%?"
+    }
+  }
+  hint "How many degrees are in a whole turn?"
+  hint "What is {p}% of that?"
+}

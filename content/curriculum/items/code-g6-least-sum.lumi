@@ -1,0 +1,37 @@
+# The same total two ways: adding 1 to n one number at a time takes two steps for every number, and the
+# pairing trick (n times n + 1, halved) takes three steps whatever n is.
+item coding.least-sum v=1 skills=[coding.efficiency, coding.variables, reasoning.compare] {
+  title "Adding up the crater numbers"
+  difficulty (n / 10)
+  let n={4, 6, 10, 20, 50}
+  level easy {
+    let n={4, 6}
+  }
+  level hard {
+    let n={20, 50}
+  }
+
+  scene 36x27 {
+    row both at=canvas(0, 0) space=1 align=start {
+      program pa code=["set total to 0", "set k to 1", "repeat {n}", "  add k to total", "  add 1 to k"] text=true title="A"
+      program pb code=["set m to {n} + 1", "set total to {n} * m", "set total to total / 2"] text=true title="B"
+    }
+    text ask "The rover numbers the craters 1 to {n} and adds the numbers up. Both programs give the same total. What is it? Each run of a line that sets or changes a name is a step. How many steps does A take? B takes 3." width=34 below=both gap=1
+    text t1 "total" below=ask gap=1
+    number-input total right-of=t1 gap=1
+    text t2 "A's steps" right-of=total gap=2
+    number-input steps right-of=t2 gap=1
+  }
+
+  check coding.runs of=pa total="value(total)" steps=steps
+  feedback {
+    when (steps == 5) point=pa {
+      say "Lines 4 and 5 run every time round: {n} times each."
+    }
+    when (total == n * (n + 1)) point=pb {
+      say "Line 3 of B halves it. Each pair, 1 and {n}, 2 and {n - 1}, adds to {n + 1}, and there are {n} numbers, so {n / 2} pairs."
+    }
+  }
+  hint "In A, lines 1 and 2 run once. How many times do lines 4 and 5 run?"
+  hint "B's lines work out the total: {n} + 1, then times {n}, then half of that."
+}

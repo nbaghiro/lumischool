@@ -1,0 +1,30 @@
+# Feedback that repeats: the heater comes on, warms the hut past the top, goes off, and comes on again
+# once the hut has cooled below the bottom. The child counts how often it comes on in 20 minutes.
+item coding.sense-count v=1 skills=[coding.sensors, coding.simulation, coding.decisions] {
+  title "How often does it come on?"
+  difficulty k
+  let k=0..2
+  let lo={pick(k, 16, 17, 16)} hi={pick(k, 20, 19, 19)} s={pick(k, 14, 14, 13)} h={pick(k, 2, 2, 3)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x26 {
+    program p code=["repeat 20", "  if temp is less than {lo}", "    switch heater on", "  if temp is more than {hi}", "    switch heater off", "  wait 1"] text=true sense=["temp starts {s} changes -1 heater {h}"] at=canvas(0, 0)
+    weatherstation ws cups=3 right-of=p gap=3
+    text ask "The weather station's hut starts at {s} °C. It cools by 1 degree a minute, and warms by {h - 1} a minute while the heater is on. In the 20 minutes, how many times does the heater come on?" width=34 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="switched(heater, on)"
+  feedback {
+    when (answer == 1) point=p {
+      say "After the heater goes off, the hut cools again. Does it get below {lo} before the 20 minutes are up?"
+    }
+  }
+  hint "Keep a column of readings. When does the hut first get above {hi}?"
+  hint "After that, count down a degree a minute. When is it below {lo} again?"
+}

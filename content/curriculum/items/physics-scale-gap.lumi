@@ -1,0 +1,36 @@
+# The gaps between neighbours in the corridor model, from the table: the outer gaps are far larger
+# than the inner ones, which is what a drawing of the planets side by side hides.
+item physics.scale-gap v=1 skills=[physics.sky, measure.scale, decimals.subtract] {
+  title "From one bead to the next"
+  difficulty k
+  let k=1..7
+  let a={pick(k - 1, "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus")}
+  let b={pick(k - 1, "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune")}
+  let da={pick(k - 1, 58, 108, 150, 228, 778, 1430, 2870)}
+  let db={pick(k - 1, 108, 150, 228, 778, 1430, 2870, 4500)}
+  level easy {
+    let k=1..4
+  }
+  level hard {
+    let k=4..7
+  }
+
+  scene 34x26 {
+    planets p count=8 names=1 at=canvas(1, 0)
+    table t cols=2 head=["Planet", "Million km"] cells=["Mercury", "58", "Venus", "108", "Earth", "150", "Mars", "228", "Jupiter", "778", "Saturn", "1430", "Uranus", "2870", "Neptune", "4500"] below=p gap=1
+    text ask "In the corridor model, 1 cm stands for 10 million km. How many centimetres does Mia walk from the bead for {a} to the bead for {b}?" narrate width=17 right-of=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals((db - da) / 10, if (db - da) % 10 == 0 then 0 else 1)
+  feedback {
+    when (answer == db - da) point=t {
+      say "That is the gap in millions of kilometres. How many centimetres is that in the model?"
+    }
+    when (answer == db / 10) point=t {
+      say "That is how far {b} is from the Sun. Mia starts at {a}, not at the Sun."
+    }
+  }
+  hint "How far from the Sun is each of the two beads?"
+  hint "Take the nearer from the further."
+}

@@ -1,0 +1,33 @@
+# A puzzle over the diary's tenses: three gaps take one verb in three tenses, and only the time words
+# decide which form goes where. At hard the forms are the perfect ones (have sealed, will have sealed).
+item writing.tense-gaps v=1 skills=[writing.diaries, writing.tense, reasoning.logic] {
+  title "One verb, three gaps"
+  difficulty k
+  let k=0..2 r=0..2
+  let s1={pick(k, "Before breakfast this morning we _____ the seals.", "Last night the ship _____ past the iceberg.", "Since Monday we _____ forty jars of ice.")}
+  let s2={pick(k, "As I write this, the others _____ the puffins.", "At this moment the ship _____ along the ice.", "An hour ago Dr Berg _____ the last jar.")}
+  let s3={pick(k, "Once the fog lifts, we _____ the whales.", "Next week we _____ home.", "By the time the ship comes, we _____ every jar.")}
+  let c1={pick(k, "counted", "sailed", "have sealed")}
+  let c2={pick(k, "are counting", "is sailing", "sealed")}
+  let c3={pick(k, "will count", "will sail", "will have sealed")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x34 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      hut h pictures=5
+      icecliff ice height=1 floes=1
+    }
+    passage p title="The diary" text="1. {s1} 2. {s2} 3. {s3}" width=33 numbers=false below=pics gap=1
+    text ask "Each gap takes the same verb in a different tense. Write the number of the form that fits each gap." narrate width=33 below=p gap=1
+    match m left=["gap 1", "gap 2", "gap 3"] right=["{if r == 1 then c3 else c2}", "{if r == 0 then c3 else c1}", "{if r == 0 then c1 else if r == 1 then c2 else c3}"] blanks=[x, y, z] below=ask gap=1
+  }
+
+  answer x=(if r == 0 then 3 else 2) y=(if r == 1 then 3 else 1) z=(if r == 0 then 2 else if r == 1 then 1 else 3)
+  hint "Find the words in each sentence that say when."
+  hint "Has it happened, is it happening as the diary is written, or is it still to come?"
+}

@@ -1,0 +1,23 @@
+# The coin that appears: with the eye still, pouring in water bends the light from the coin as it
+# leaves the surface, over the rim and into the eye.
+item physics.coin-appears v=1 skills=[physics.light, reasoning.predict] {
+  title "The coin in the cup"
+
+  scene 30x33 {
+    refraction r mode=2 water=0 at=canvas(1, 0)
+    text ask "Kit looks over the rim of an empty cup. The coin at the bottom is just hidden. She keeps her eye still while a friend slowly pours water in. What does she see?" narrate width=28 below=r gap=1
+    choice pick options=["The coin comes into view", "The coin stays hidden", "The coin looks further away"] stack=column below=ask gap=1
+  }
+
+  answer pick="The coin comes into view"
+  feedback {
+    when (pick == "The coin stays hidden") point=r {
+      say "The coin does not move, but its light does something new at the water's surface. What?"
+    }
+    when (pick == "The coin looks further away") point=r {
+      say "Things under water look raised, not lowered. Which way does that move the coin as Kit sees it?"
+    }
+  }
+  hint "The coin stays where it is. What happens to its light where it leaves the water?"
+  hint "If the light bends over the rim, can it reach Kit's eye?"
+}

@@ -1,0 +1,35 @@
+# The story: from beside the lander the Earth hangs in one place in the sky all month, and its shape
+# is the one the checker reads from the moon's place on its ring, the opposite of the moon's.
+item physics.phase-earthrise v=1 skills=[physics.sky, reasoning.evidence] {
+  title "The Earth over the lander"
+  difficulty (if k == 4 or k == 0 then 0 else 1)
+  let k={0, 2, 4, 6}
+  level easy {
+    let k={0, 4}
+  }
+  level hard {
+    let k={2, 6}
+  }
+  let moonshape={pick(k / 2, "New moon", "Half moon", "Full moon", "Half moon")}
+
+  scene 31x36 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      orbit sky moon=k places=0 arrow=1 person=0
+      lander l rungs=5
+    }
+    text ask "The astronaut by the lander looks up at the Earth, which hangs in the same place in the sky all month. The moon is where it is drawn. What shape does the moon look from the Earth tonight?" narrate width=28 below=kit gap=1
+    choice moon options=["New moon", "Half moon", "Full moon"] stack=row below=ask gap=1
+    text then "And what shape does the Earth look to the astronaut?" narrate width=28 below=moon gap=1
+    choice pick options=["New Earth", "Half Earth", "Full Earth"] stack=row below=then gap=1
+  }
+
+  answer moon=moonshape
+  check physics.sky of=sky pick=earth
+  feedback {
+    when (moon == "Full moon" and pick == "Full Earth") point=sky {
+      say "Both cannot face the sun from the same side. Look at which half of each ball is lit."
+    }
+  }
+  hint "Which half of the moon faces the Earth, the lit half or the dark half?"
+  hint "Now stand on the moon: which half of the Earth faces you?"
+}

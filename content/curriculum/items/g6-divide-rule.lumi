@@ -1,0 +1,36 @@
+# Dividing by a fraction is multiplying by it turned upside down; the answer may be more than one.
+item fraction.divide-rule v=1 skills=[fractions.divide] {
+  title "Divide by a fraction"
+  difficulty (b * d / 12 + (if a * d > b * c then 1 else 0))
+  let a=1..5 b={2, 3, 4, 5, 6} c=1..5 d={3, 4, 5, 7, 8}
+  where (a < b and c < d and gcd(a, b) == 1 and gcd(c, d) == 1 and a * d != b * c)
+  where (not whole(a * d / (b * c)))
+  level easy {
+    where (b * d <= 15 and a * d > b * c)
+  }
+  level hard {
+    where (b * d >= 20 and gcd(a * d, b * c) > 1)
+  }
+
+  scene 36x12 {
+    unknown eq terms=["{a}/{b}", "÷", "{c}/{d}", "=", "?"] at=canvas(1, 1)
+    text ask "Work it out, and write the answer in its simplest form. It may be more than 1, as a top-heavy fraction." narrate width=16 right-of=eq gap=2
+    row ans below=ask gap=1 space=1 align=centre {
+      number-input top width=3
+      text slash "/"
+      number-input bottom width=3
+    }
+  }
+
+  answer top=num(a / b / (c / d)) bottom=den(a / b / (c / d))
+  feedback {
+    when (top == num(a / b * c / d) and bottom == den(a / b * c / d)) point=eq {
+      say "That multiplied the two fractions. Turn the second one upside down, then multiply."
+    }
+    when (top == num(b / a * c / d) and bottom == den(b / a * c / d)) point=eq {
+      say "The first fraction was turned over. Turn over the one you divide by."
+    }
+  }
+  hint "How many lots of the second fraction fit into the first? More or fewer than one?"
+  hint "Dividing by a fraction is the same as multiplying by which fraction?"
+}

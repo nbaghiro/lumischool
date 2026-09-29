@@ -1,0 +1,57 @@
+lesson g5-multiples-and-factors v=1 format=teach grade=5 unit=4 subject=maths levels=[easy, medium, hard] {
+  title "Common multiples and common factors"
+  goal "Find the lowest common multiple and the highest common factor of two numbers, and choose which one a problem needs."
+
+  look {
+    scene 26x14 {
+      factortree tree n=60 at=canvas(1, 1)
+      observatory dome open=0 right-of=tree gap=2
+      text note "4, 8, 12, 16, 20, 24     6, 12, 18, 24" below=tree gap=1
+    }
+    say """
+      Two lights flash every 4 and every 6 seconds. Count on in fours and in sixes: they first meet
+      at 12, the lowest common multiple. A factor tree splits a number until only primes are left,
+      60 = 2 × 2 × 3 × 5, and the highest common factor is the biggest number that divides two
+      numbers exactly, like 12 for 24 and 36. Waiting for things to meet is a multiple; sharing into
+      equal groups is a factor.
+      """
+  }
+  do {
+    practice number.common-multiple count=1 seed=3
+    practice number.tree-top count=1 seed=4
+    level easy {
+      worked number.beacons a=6 b=10 level=medium
+    }
+    practice number.beacons count=2 hard-count=1 seed=5
+    practice number.star-packs count=1 seed=6 hard-count=2
+    practice number.lcm-or-hcf count=1 hard-count=2 seed=2
+    practice number.floor-tiles count=1 seed=7
+    practice number.moons-line-up count=1 seed=2
+  }
+  try stars=2 {
+    show number.lcm-mistake a=6 b=10 easy-a=4 easy-b=6 hard-a=8 hard-b=12
+  }
+  try stars=3 {
+    show number.rows-left-over s=1 easy-s=0 hard-s=2
+  }
+  remember {
+    say "The lowest common multiple is the first number both go into. The highest common factor is the biggest number that goes into both."
+  }
+
+  grown-ups """
+    Lists are the method at this age: the multiples of the bigger number in order, tested against
+    the smaller, and the factors of each number in pairs. The factor tree is a check, not a
+    requirement. The mix-up to watch for is between the two ideas, so ask before any working
+    whether the answer should be bigger or smaller than both numbers. In the two-star question the
+    product is always a common multiple, but not always the lowest. In the three-star question the
+    visitors left over are the clue: take them away and what remains is a common multiple. If the
+    lists are still slow, stay here another day. Off the page, find when two things that repeat, a
+    bus and a bell, next happen together.
+    """
+  level easy {
+    grown-ups "At this level the multiples are of 4 and 6, the factor trees are for 36 or 60, lights flashing every 6 and 10 seconds are worked once in the teacher's pen before pairs that meet by 24 seconds, the maps come in packs of 4 or 6, the moons meet a second time, the tiles fit a floor two by three, Mo's mistake is with 4 and 6, and the three-star uses rows of 2, 3 and 4."
+  }
+  level hard {
+    grown-ups "At this level the multiples are of 6 and 9 or 10, the factor trees are for 72, 84 or 126, the lights meet after 36 seconds or more, the packs number 8 or 12 and are asked twice, which idea a problem needs is asked twice, the moons meet a third time, the tiles fit a floor of 15 or more, Mo's mistake is with 8 and 12, and the three-star uses rows of 4, 5 and 6."
+  }
+}

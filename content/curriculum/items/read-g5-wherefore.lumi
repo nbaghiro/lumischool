@@ -1,0 +1,29 @@
+# The two-star reason: wherefore means why, not where. The first version is Juliet's line from
+# Shakespeare's Romeo and Juliet (Act 2, Scene 2, about 1597, public domain) with the line after it,
+# which settles the meaning; the other two were written for the lesson in the same old English.
+item reading.wherefore v=1 stars=2 skills=[reading.old-words, reading.evidence, reasoning.explain] {
+  title "Wherefore?"
+  difficulty pick(k, 2, 0, 1)
+  let k=0..2
+  let right={pick(k, "Why he is Romeo: she asks him to drop his name.", "Why no letter came: they have waited a month.", "Why the walls are so high: no book says.")}
+
+  scene 36x28 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=1 align=end {
+        passage p title="{pick(k, \"Romeo and Juliet, Shakespeare\", \"A letter in the library\", \"From an old city chronicle\")}" text="{pick(k, \"O Romeo, Romeo, wherefore art thou Romeo? Deny thy father and refuse thy name.\", \"Wherefore dost thou not write? I have waited a month for thy letter.\", \"Wherefore the city built its walls so high, no book in the library can tell.\")}" width=19 numbers=false
+        citywalls walls towers=2 open=0
+      }
+      text ask "{pick(k, \"What is Juliet asking Romeo?\", \"What is the writer of the letter asking?\", \"What does the chronicle say no book can tell?\")}" width=35
+      choice pick options=[pick(k, "Where Romeo is: she cannot see him.", right, "Where the walls are: in the city."), pick(k, right, "Where the letter went: it is lost.", "Why the walls fell down: they were old."), pick(k, "Why he is late: it is dark.", "Why they are angry: the letter was rude.", right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "Read the next sentence. Does it fit a question about a place, or a question asking why? Then check the reason is really in the text."
+    }
+  }
+  hint "Try reading wherefore as why. Does the next sentence make sense after it?"
+  hint "Now try where. Does the next sentence still fit?"
+}

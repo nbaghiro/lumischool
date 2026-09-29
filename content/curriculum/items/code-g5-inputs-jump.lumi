@@ -1,0 +1,33 @@
+# The way in to a block with two inputs: the first number goes to the first name and the second to
+# the second, so climb 3 1 and climb 1 3 go to different squares.
+item coding.inputs-jump v=1 skills=[coding.procedures, coding.tracing] {
+  title "Climbing the city walls"
+  difficulty ((a + b + c + d) / 4)
+  let a=1..3 b=1..2 c=1..3 d=1..2
+  where (a != b or c != d)
+  level easy {
+    where (a + b + c + d <= 6)
+  }
+  level hard {
+    where (a + b + c + d >= 8)
+  }
+
+  scene 36x28 {
+    maze m cols=7 rows=6 col=1 row=6 face=right code=["define climb across high", "  right across", "  up high", "climb {a} {b}", "climb {c} {d}"] upto=0 trail=none at=canvas(0, 0)
+    text ask "The robot climbs the old city's walls. Which column and row does it stop on?" width=18 right-of=m gap=1
+    text tc "column" below=ask gap=1
+    number-input col right-of=tc gap=1
+    text tr "row" below=tc gap=1
+    number-input row right-of=tr gap=1
+    program p code=["define climb across high", "  right across", "  up high", "climb {a} {b}", "climb {c} {d}"] below=m gap=1
+  }
+
+  check coding.runs of=m col=col row=row
+  feedback {
+    when (col == 1 + b + d and row == 6 - a - c and a + c != b + d) point=p {
+      say "The first number after climb goes to across, and the second to high. Those are the other way round."
+    }
+  }
+  hint "In the first call, which number goes to across and which to high?"
+  hint "Follow the two climbs one at a time: right, then up."
+}

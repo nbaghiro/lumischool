@@ -1,0 +1,41 @@
+# The clues of The crack in the shelf, found by their line number in parts of about 100 words. The
+# answers are the line breaks of the three parts at width 34 (65 letters to a line), so the texts
+# and the width stay as they are.
+item reading.ice-clue-line v=1 skills=[reading.inference, reading.evidence] {
+  title "Which line holds the clue?"
+  difficulty pick(q, 0, 1, 0, 2, 1, 1)
+  let q=0..5
+  level easy {
+    let q={0, 2, 4}
+  }
+  level hard {
+    let q={1, 3, 5}
+  }
+  let part={pick(q, "Part 1: The ice shelf", "Part 1: The ice shelf", "Part 2: The sledge", "Part 2: The sledge", "Part 3: The crack", "Part 3: The crack")}
+  let text={pick(q, "The plane left Noor and Aunt Lind on the ice shelf at ten at night, and the sun still hung high over the sea. Aunt Lind handed her dark glasses before she handed her a bag. In the research hut, thick curtains covered every window. \"The team is out on the ice,\" said Aunt Lind. \"Back for breakfast.\" Noor lay in her bunk with her eyes wide open, listening to the wind and the far-off creak of the ice. She wondered what the team could be doing out there all night, and what could be worth so much cold.", "The plane left Noor and Aunt Lind on the ice shelf at ten at night, and the sun still hung high over the sea. Aunt Lind handed her dark glasses before she handed her a bag. In the research hut, thick curtains covered every window. \"The team is out on the ice,\" said Aunt Lind. \"Back for breakfast.\" Noor lay in her bunk with her eyes wide open, listening to the wind and the far-off creak of the ice. She wondered what the team could be doing out there all night, and what could be worth so much cold.", "Next morning a sledge came hissing over the ice, pulled by four tired people with frost in their beards. One carried a steel tube wrapped in a blanket, as gently as a baby. \"Two hundred metres down,\" he said, and everyone cheered. Aunt Lind put the kettle on and asked not one question about the cold. The tube went into a box packed with snow outside the door, and nobody was allowed to open it. Pim, the youngest of the team, told Noor it held a story older than any book, and then fell asleep at the table with his boots still on.", "Next morning a sledge came hissing over the ice, pulled by four tired people with frost in their beards. One carried a steel tube wrapped in a blanket, as gently as a baby. \"Two hundred metres down,\" he said, and everyone cheered. Aunt Lind put the kettle on and asked not one question about the cold. The tube went into a box packed with snow outside the door, and nobody was allowed to open it. Pim, the youngest of the team, told Noor it held a story older than any book, and then fell asleep at the table with his boots still on.", "That afternoon Noor heard a crack like a door slamming far away. Aunt Lind ran to the window, then to the radio. \"Pack the tube on the sledge,\" she said quietly. By evening the hut was empty, and the team stood on the rocky hill behind it, watching a line of blue water open between the hut and the sea. Nobody spoke for a long time. The line of water grew wider, and a cold wind came off it. Then Aunt Lind put her arm round Noor, and for the first time that day, she smiled.", "That afternoon Noor heard a crack like a door slamming far away. Aunt Lind ran to the window, then to the radio. \"Pack the tube on the sledge,\" she said quietly. By evening the hut was empty, and the team stood on the rocky hill behind it, watching a line of blue water open between the hut and the sea. Nobody spoke for a long time. The line of water grew wider, and a cold wind came off it. Then Aunt Lind put her arm round Noor, and for the first time that day, she smiled.")}
+
+  scene 35x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p title="{part}" text="{text}" width=34
+      row bottom space=1 align=centre {
+        text ask "{pick(q, \"Which line says where the sun was at ten at night?\", \"Which line is a clue that people here must sleep in daylight?\", \"Which line shows the tube held something precious?\", \"Which line is the clue that Aunt Lind is used to the cold?\", \"Which line shows Aunt Lind did not want to frighten Noor?\", \"Which line shows what Aunt Lind wanted to save first?\")}" width=29
+        number-input answer
+      }
+    }
+  }
+
+  answer pick(q, 2, 4, 3, 5, 3, 2)
+  feedback {
+    when (q == 1 and answer == 3) point=p {
+      say "That line is about Noor's eyes in the bright light. Which line shows how the hut keeps the light out?"
+    }
+    when (q == 3 and answer == 4) point=p {
+      say "That line has the kettle and the cheering. The clue about Aunt Lind is what she did not ask about."
+    }
+    when (q == 5 and answer == 3) point=p {
+      say "That line says how she spoke. Find the line where she names the thing to pack."
+    }
+  }
+  hint "Find the words that answer the question first, then read the number beside them."
+  hint "Check the clue is on your line, not only the start of its sentence."
+}

@@ -1,0 +1,34 @@
+# Scale in the sky: from the moon the Earth looks about four times as wide as the full moon looks from
+# home. At hard the unknown moves to the moon.
+item art.earth-scale v=1 skills=[art.composition, art.proportion, reasoning.multiplicative] {
+  title "How big is the Earth in the sky?"
+  difficulty (q * 2 + (if s == 3 then 1 else 0))
+  let s={2, 3} q=0..1
+  level easy {
+    let q={0}
+  }
+  level hard {
+    let q={1}
+  }
+
+  scene 34x16 {
+    row sky at=canvas(1, 1) space=1 align=end {
+      moon home phase=1
+      earth far up=2
+    }
+    text ask "{if q == 0 then \"The Earth seen from the moon looks about four times as wide as the full moon looks from home. Ada paints the full moon \" else \"The Earth seen from the moon looks about four times as wide as the full moon looks from home. Ada paints the Earth \"}{if q == 0 then s else 4 * s}{if q == 0 then \" squares wide over her house. How wide should she paint the Earth over the lander?\" else \" squares wide over the lander. How wide should she paint the full moon over her house?\"}" width=18 right-of=sky gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if q == 0 then 4 * s else s)
+  feedback {
+    when (q == 0 and answer == s + 4) point=sky {
+      say "Four times as wide means multiplying the width by four, not adding four."
+    }
+    when (q == 1 and answer == 16 * s) point=sky {
+      say "The moon from home is the smaller of the two, so divide by four."
+    }
+  }
+  hint "Which looks bigger: the Earth from the moon, or the moon from home?"
+  hint "{if q == 0 then \"Four times as wide: multiply.\" else \"The moon is a quarter as wide as the Earth: divide.\"}"
+}

@@ -1,0 +1,42 @@
+# The way in: what a living thing needs that the moon lacks. Air and water are the plain two; the
+# swing of heat and the leaf that never rots need the need worked out. The distractors are things
+# the moon does have, such as sunlight and rock.
+item nature.moon-lacks v=1 skills=[nature.ecosystems] {
+  title "What the moon lacks"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "Ada breathes from the tank on her suit. What does every animal need that the moon has none of?", "The crew grow beans inside the lander. What do the beans need that the moon has none of?", "In the moon's long day the ground heats to 120 °C, and in its night it cools to 170 degrees below zero. What do living things need that the moon lacks?", "On Earth a fallen leaf rots into soil that feeds new plants. Why would a leaf dropped in moon dust never rot?")}
+  let ans={pick(k, "air with oxygen in it", "liquid water", "a steady, mild warmth", "Nothing lives there to break it down")}
+  let o1={pick(k, "light from the sun", "light from the sun", "more light from the sun", "It is too dark on the moon")}
+  let o2={pick(k, "rock to stand on", "rock to grow on", "harder ground", "Moon dust is too heavy")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x29 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      lander ld rungs=5
+      crater cr count=2
+    }
+    text ask "{asks}" narrate width=32 below=pics gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k <= 2 and pick == o1) point=ask {
+      say "The sun shines on the moon for two weeks at a time. What is missing is something else."
+    }
+    when (k <= 2 and pick == o2) point=cr {
+      say "The moon is all rock and dust. What else does a living thing need?"
+    }
+    when (k == 3 and pick != ans) point=ask {
+      say "On Earth, tiny living things, worms and fungi rot a leaf down. Are there any on the moon?"
+    }
+  }
+  hint "Think of what you need every minute, every day and every year to stay alive."
+  hint "Which of the answers is the moon already full of? Cross that one out."
+}

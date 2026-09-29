@@ -1,0 +1,33 @@
+# The three-star: four digit cards make two fractions, and the first divided by the second is as big
+# as it can be. The biggest has the two largest digits in the first top and the second bottom;
+# proved as an extreme.
+item fraction.card-quotient v=1 stars=3 skills=[fractions.divide, reasoning.extremes] {
+  title "The biggest division"
+  difficulty s
+  let s=0..3
+  level easy {
+    let s={0}
+  }
+  level hard {
+    let s={3}
+  }
+
+  scene 33x17 {
+    digitcards cards digits=[pick(s, 2, 2, 2, 3), pick(s, 3, 3, 4, 5), pick(s, 4, 5, 5, 7), pick(s, 5, 7, 9, 8)] at=canvas(1, 1)
+    text ask "Use each card once to make two fractions, then divide the first by the second. What is the biggest answer you can make? Write it in its simplest form." narrate width=32 below=cards gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      number-input top width=3
+      text slash "/"
+      number-input bottom width=3
+    }
+  }
+
+  answer top=num(pick(s, 20 / 6, 35 / 6, 45 / 8, 56 / 15)) bottom=den(pick(s, 20 / 6, 35 / 6, 45 / 8, 56 / 15))
+  feedback {
+    when (top * den(pick(s, 20 / 6, 35 / 6, 45 / 8, 56 / 15)) < bottom * num(pick(s, 20 / 6, 35 / 6, 45 / 8, 56 / 15))) point=cards {
+      say "Is that the biggest? Try swapping which fraction the biggest digits go in."
+    }
+  }
+  hint "Dividing by a fraction is multiplying by it turned over. Which places make the answer big?"
+  hint "Which two cards should end up on top after the second fraction is turned over?"
+}

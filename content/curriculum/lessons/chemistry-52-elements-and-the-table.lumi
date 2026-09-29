@@ -1,0 +1,62 @@
+lesson chemistry-elements-and-the-table v=1 format=teach grade=5 unit=4 subject=chemistry levels=[easy, medium, hard] {
+  title "Elements and the table they sit in"
+  goal "Read an element's number and symbol from the first rows of the periodic table, and tell an element by its one kind of atom."
+
+  look {
+    scene 33x9 {
+      row all at=canvas(1, 0) space=2 align=end {
+        observatory dome open=1
+        periodic t rows=3 blank=0 mark=0 shade=none
+      }
+    }
+    say """
+      Everything is made of atoms, and a substance with only one kind of atom is an element. We know
+      118 elements, and about 90 of them are found in nature. Each has a symbol of one or two letters
+      and an atomic number, and the periodic table sets them out in order of number, in rows: two in
+      the first row, then eight, then eight. The Sun, seen from the observatory, is mostly the first
+      two, hydrogen and helium.
+      """
+  }
+  do {
+    practice chem.ringed-number count=1 seed=2
+    level easy {
+      worked chem.missing-number b=5 level=medium
+    }
+    practice chem.missing-number count=2 seed=3 easy-count=1 easy-seed=2 hard-seed=1
+    practice chem.how-many-elements count=2 seed=5 easy-seed=1 hard-seed=2
+    practice chem.cell-below count=1 seed=4 hard-count=2 hard-seed=1
+    practice chem.gases-in-row count=1 seed=1 easy-count=2 easy-seed=2 hard-seed=1
+  }
+  story {
+    show chem.sun-hundred w=1 easy-w=0 hard-w=2
+  }
+  try stars=2 {
+    show chem.element-reason k=1 r=2 easy-k=0 hard-k=2 hard-r=1
+  }
+  try stars=3 {
+    show chem.element-clues k=0 easy-k=1 hard-k=2
+  }
+  remember {
+    say "An element has one kind of atom. The table puts the elements in order of their number, two, then eight, then eight to a row."
+  }
+
+  grown-ups """
+    The idea is that an element is a substance made of one kind of atom, and that the periodic table
+    lists the elements in order of atomic number, so a missing cell or a row that is not drawn can be
+    worked out from the pattern. The facts are from the Royal Society of Chemistry's periodic table:
+    118 elements are named, and about 90 occur in nature. The wrong idea to watch for is that one
+    substance must be one element: water is one substance made of two elements, oxygen gas is an
+    element even though its atoms go about in pairs, and air is a mixture. Look for whether the child
+    counts letters on the atoms or kinds of molecule. The two-star question asks for the reason, and
+    the three-star question finds an element from clues, crossing out cells one clue at a time. If the
+    blank cell at the start of a row causes trouble, stay here another day and count the cells aloud
+    from 1. Off the page: find the symbols on food and drink labels, such as Na for sodium, and look
+    at the night sky together, where most of what shines is hydrogen and helium.
+    """
+  level easy {
+    grown-ups "At this level a blank cell in the middle of a row is worked once in the teacher's pen, the boxes hold one or two substances with at most two elements, the row below is one row on, the gases are counted twice in one row, the Sun question is read from the shaded squares, the two-star claim is about water, and the three-star clues point to chlorine."
+  }
+  level hard {
+    grown-ups "At this level the blank cells start a row, the boxes hold three elements or two substances that share one, the rows two below are worked twice, the solids are counted over the whole table, the Sun question scales to 1000 g, the two-star claim is about air, and the three-star clues point to phosphorus."
+  }
+}

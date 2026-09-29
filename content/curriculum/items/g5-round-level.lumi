@@ -1,0 +1,30 @@
+# Rounding a thousandths reading to the nearest hundredth or tenth: the digit after the place decides.
+item decimal.round-level v=1 skills=[decimals.rounding, decimals.thousandths] {
+  title "Rounding the water level"
+  difficulty ((if to == "tenth" then 1 else 0) + (if c >= 5 then 1 else 0))
+  let a=1..3 b=1..8 c={2, 4, 6, 8} d={3, 7} to={"tenth", "hundredth"}
+  level easy {
+    let to={"hundredth"} c={2, 4}
+  }
+  level hard {
+    let to={"tenth"} c={6, 8}
+  }
+
+  scene 27x16 {
+    pvchart chart value="{a}.{b}{c}{d}" show=digits at=canvas(1, 1)
+    text ask "The water in the lock is {a}.{b}{c}{d} metres deep. Round it to the nearest {to} of a metre." narrate width=26 below=chart gap=1
+    number-input answer width=6 below=ask gap=1
+  }
+
+  answer (if to == "tenth" then decimals(a + (b + (if c >= 5 then 1 else 0)) / 10, 1) else decimals(a + b / 10 + (c + (if d >= 5 then 1 else 0)) / 100, 2))
+  feedback {
+    when (to == "tenth" and answer == a + b / 10 + c / 100 + (if d >= 5 then 1 else 0) / 100) point=chart {
+      say "That is to the nearest hundredth. A tenth has only one digit after the point."
+    }
+    when (to == "hundredth" and answer == a + b / 10 + (c + (if d >= 5 then 0 else 1)) / 100) point=chart {
+      say "Look at the thousandths digit. Is it five or more?"
+    }
+  }
+  hint "Which digit is in the {to}s column?"
+  hint "Look at the digit just to its right. Five or more rounds up."
+}

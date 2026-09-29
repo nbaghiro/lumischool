@@ -1,0 +1,44 @@
+# Frère Jacques, bars 1 and 3, as a major tune and as a minor one: the third note of the scale, a
+# semitone higher or lower, is the whole difference. Mahler put the minor version in his first
+# symphony (1888). Hard moves the tune to E, where F sharp is in both versions.
+item music.minor-frere-jacques v=1 skills=[music.major-minor, music.staff] {
+  title "Frère Jacques, two ways"
+  difficulty (if v <= 1 then 0 else 1)
+  let v=0..3 r=0..1
+  let home={pick(v, "A", "A", "E", "E")}
+  let n1={pick(v, "A4", "A4", "E4", "E4")}
+  let n2={pick(v, "B4", "B4", "Fs4", "Fs4")}
+  let n3={pick(v, "Cs5", "C5", "Gs4", "G4")}
+  let n5={pick(v, "D5", "D5", "A4", "A4")}
+  let n6={pick(v, "E5", "E5", "B4", "B4")}
+  let up={pick(v, "C sharp", "C", "G sharp", "G")}
+  let other={pick(v, "C", "C sharp", "G", "G sharp")}
+  let right={pick(v, "Major: A up to C sharp is 4 semitones", "Minor: A up to C is 3 semitones", "Major: E up to G sharp is 4 semitones", "Minor: E up to G is 3 semitones")}
+  let w1={pick(v, "Minor: A up to C sharp is 3 semitones", "Major: A up to C is 4 semitones", "Minor: E up to G sharp is 3 semitones", "Major: E up to G is 4 semitones")}
+  let w2={pick(v, "Minor: it has a black key in it", "Major: it has no sharp in it", "Minor: it has black keys in it", "Major: it has a sharp in it")}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 34x36 {
+    notes tune clef=treble notes=[n1, n2, n3, n1, n3, n5, n6] values=[1, 1, 1, 1, 1, 1, 2] meter=4 at=canvas(1, 1)
+    text ask "Bars 1 and 3 of Frère Jacques, home note {home}. Mahler put this tune in a minor key in his first symphony. Which version is this?" narrate width=32 below=tune gap=1
+    table steps cols=7 head=["C-D", "D-E", "E-F", "F-G", "G-A", "A-B", "B-C"] cells=["2", "2", "1", "2", "2", "2", "1"] below=ask gap=1
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=steps gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=steps {
+      say "Add the steps from {home} with the table, and one more for each sharp. {home} to {up} is not the same size as {home} to {other}."
+    }
+    when (pick == w2) point=tune {
+      say "A sharp can be in a major tune or a minor one. What decides it is the step from the home note up to the third note."
+    }
+  }
+  hint "The third note of each bar is the one that changes between the two versions. Is it sharp?"
+  hint "Add the semitones from {home} up to that note with the table. A sharp on either note changes the count by one."
+}

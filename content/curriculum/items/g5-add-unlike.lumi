@@ -1,0 +1,40 @@
+# The method: change both fractions to the same size parts, the lowest common multiple of the
+# denominators, then add the tops. The sum is written in its lowest terms.
+item fraction.add-unlike v=1 skills=[fractions.add-unlike, fractions.equivalent] {
+  title "Adding different parts"
+  difficulty (lcm(b, d) / 4)
+  let b={2, 3, 4, 5} d={3, 4, 5, 6} a=1..4 c=1..5
+  where (b < d and d % b != 0 and a < b and c < d)
+  where (a / b + c / d < 1)
+  where (a > 1 or c > 1)  # unit fractions added are the two-star's question
+  level easy {
+    where (lcm(b, d) <= 12)
+  }
+  level hard {
+    where (lcm(b, d) >= 15)
+  }
+
+  scene 31x15 {
+    fraction one n=b k=a shape=bar at=canvas(1, 0)
+    fraction two n=d k=c shape=bar below=one gap=1
+    row eq below=two gap=1 space=1 align=centre {
+      equation sum "{a}/{b} + {c}/{d} ="
+      number-input top width=3
+      text slash "/"
+      number-input bottom width=3
+    }
+    text ask "A scribe inked {a}/{b} of a page in the morning and {c}/{d} in the afternoon. Write the total in its simplest form." narrate width=30 below=eq gap=1
+  }
+
+  answer top=num(a / b + c / d) bottom=den(a / b + c / d)
+  feedback {
+    when (top == a + c and bottom == b + d) point=eq {
+      say "Adding the bottoms changes the size of the parts. Change both fractions into parts of the same size first."
+    }
+    when (bottom == b * d and top == a * d + c * b and b * d != lcm(b, d)) point=eq {
+      say "That is right, but not in its simplest form. Can the top and bottom both be divided?"
+    }
+  }
+  hint "What size of part can both fractions be written in?"
+  hint "Write both fractions with that bottom number, then add the tops."
+}

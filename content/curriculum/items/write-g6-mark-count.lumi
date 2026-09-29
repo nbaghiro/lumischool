@@ -1,0 +1,23 @@
+# The three-star count: three lines from the sledge trip, each with a colon, a semicolon or a list,
+# right or wrong. None is a possible answer, so every mark has to be tested.
+item writing.mark-count v=1 stars=3 skills=[writing.colons-semicolons, writing.editing, reasoning.all-the-ways] {
+  title "How many mistakes?"
+  difficulty (3 - e1 - e2 - e3)
+  let e1=0..1 e2=0..1 e3=0..1
+  let s1={if e1 == 1 then "We need: a rope, a stove and a map." else "We need three things: a rope, a stove and a map."}
+  let s2={if e2 == 1 then "The fog lifted; because the wind changed." else "The fog lifted; the wind had changed."}
+  let s3={if e3 == 1 then "We stopped at the hut, which has no roof, the cliff, where puffins nest, and the crack." else "We stopped at the hut, which has no roof; the cliff, where puffins nest; and the crack."}
+
+  scene 32x21 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage note title="Isla's notes" text="{s1} {s2} {s3}" width=22 numbers=false
+      sledge sl slats=5
+    }
+    text ask "Check every colon, every semicolon and the list. How many mistakes are there? There may be none." narrate width=22 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (e1 + e2 + e3)
+  hint "Cover the words after the colon. Is what is left a whole sentence? Read both sides of the semicolon the same way."
+  hint "In the list, can you tell where each place ends?"
+}

@@ -1,0 +1,32 @@
+# The flat part lasts as long as the heat takes to melt all the ice, so with the same flame twice the
+# ice takes about twice as long. The ice starts at 0 °C, and the curve keeps to the lesson's rule: the
+# water then warms 80 degrees in the time the melt took. The unknown is the minutes, or the grams.
+item chem.more-ice-longer v=1 skills=[chemistry.heating, ratio.scaling, reasoning.predict] {
+  title "More ice, same flame"
+  difficulty (d * 2 + (if m == 2 then 0 else 1))
+  let d=0..1 f={4, 6} m={2, 3}
+  level easy {
+    let d=0..0 m={2}
+  }
+  level hard {
+    let d=1..1
+  }
+
+  scene 35x22 {
+    heatcurve curve temps=[0, 0, 0, 40, 80] every=(f / 2) min=0 max=80 step=20 at=canvas(1, 0)
+    text ask "The curve is 200 g of ice at 0 °C warmed on the camping stove. {if d == 0 then \"With \" else \"The grown-up melts another pan of ice on the same flame, and it stays at 0 for \"}{if d == 0 then m * 200 else f * m}{if d == 0 then \" g of ice from the same freezer and the same flame, about how many minutes would it stay at 0 °C?\" else \" minutes. About how many grams of ice were in the pan?\"}" narrate width=34 below=curve gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if d == 0 then f * m else 200 * m)
+  feedback {
+    when (d == 0 and answer == f) point=curve {
+      say "That is how long 200 g took. With more ice, the flame has more melting to do."
+    }
+    when (d == 0 and answer == f + m) point=curve {
+      say "The ice is {m} times as much, so the melting takes {m} times as long, not a few minutes more."
+    }
+  }
+  hint "How long did the 200 g stay flat at 0? Read the minutes along the bottom."
+  hint "{if d == 0 then \"How many times as much ice is there? Does the same flame melt it faster or slower?\" else \"How many times as long did the new pan take? So how many times as much ice was there?\"}"
+}

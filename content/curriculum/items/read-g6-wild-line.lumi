@@ -1,0 +1,23 @@
+# Evidence from The Call of the Wild: each version asks for the one line of a chapter that bears out
+# what the question says in other words, and book.line proves the key against the volume. Difficulty
+# 0 is a line that says it outright, 1 a paraphrase, 2 a line the child has to interpret.
+item reading.wild-line v=1 skills=[reading.evidence, reading.whole-book] {
+  title "Which line shows it?"
+  difficulty pick(k, 0, 1, 0, 2, 0, 1, 1, 0, 1, 0, 0, 2, 1, 2, 0)
+  let k=0..14
+  let ch={pick(k, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 7)}
+  let q={pick(k, "the first line that warns you Manuel was a bad man to know", "the line where Buck sees he can never win against a man with a club", "the line that tells you where Billee was sleeping", "the line that names who Buck's sudden fear of the trap really came from", "the line that tells you how Dolly was stopped", "the line that says how many starving dogs came into the camp", "the line that shows what the sick dog did so that he could go on pulling", "the line that says Dave and Sol-leks were happy with the new leader", "the line that says what Buck had been feeling under his feet all day", "the line that says what Thornton cut to set Buck free", "the line with Thornton's boast about the load Buck can move", "the line that shows Thornton’s order was not meant in earnest", "the line that says nothing now held Buck back from the wild", "the line that shows Buck grieves in the valley every summer", "the line that says the Yeehats fear the Ghost Dog")}
+
+  scene 35x7 {
+    row all at=canvas(1, 1) space=1 align=end {
+      bookcast b who=buck pose=stand dir=1
+      text ask "In chapter {ch}, find {q}. Write its number." width=20
+      number-input answer
+    }
+  }
+
+  check book.line book=call-of-the-wild chapter="{ch}" holds="{pick(k, \"one of the gardener’s helpers, was an undesirable acquaintance\", \"all, that he stood no chance against a man with a club\", \"the snow in a snug ball, lay Billee\", \"life to the lives of his forebears\", \"the axe crashed down upon\", \"starving huskies, four or five score of them\", \"Dave had bitten through both\", \"did not mind the change in leadership\", \"What of the thin and rotten ice\", \"cut Buck’s traces\", \"Buck can start a thousand pounds\", \"A thoughtless whim seized Thornton\", \"The last tie was broken\", \"for a time, howling once, long and mournfully\", \"afraid of this Ghost Dog, for it has cunning\")}"
+  hint "Where in the chapter does this happen: near the start, the middle or the end?"
+  hint "Read the lines around that place. Which one says it, even in other words?"
+  hint "Check that the whole idea is on your line, not just a word of it."
+}

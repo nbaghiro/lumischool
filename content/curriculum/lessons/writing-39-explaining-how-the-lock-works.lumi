@@ -1,0 +1,64 @@
+# An explanation: how something always works, in order, in the present, with the right names for
+# its parts and the words that say why each step makes the next one happen.
+lesson writing-explaining-how-the-lock-works v=1 format=teach grade=5 unit=3 subject=writing levels=[easy, medium, hard] {
+  title "Explaining how the lock works"
+  goal "Explain how a canal lock lifts a boat, in order, with the words that say why each step happens."
+
+  look {
+    scene 35x20 {
+      row pics at=canvas(1, 0) space=2 align=end {
+        canallock low level=0 boat=1
+        canallock high level=1 boat=1
+      }
+      passage para title="How a lock works" text="A lock lifts a boat up a hill of water. The boat moves into the chamber and the gates are shut behind it, so no water can escape. Water pours in from the top until the chamber is full, and the boat comes up with it." width=33 numbers=false below=pics gap=1
+    }
+    say """
+      Nell is writing for visitors who have never seen a lock. An explanation is not the story of
+      one trip: it says how the lock works every time, so it is written in the present. It goes in
+      order, it names the parts (the chamber, the gates, the paddles), and it says why each step
+      happens. Words such as so, as, because and as a result carry the why. Without them it is only
+      a list of things that happen.
+      """
+  }
+  do {
+    level easy {
+      worked writing.cause-word k=2 level=medium
+    }
+    practice writing.lock-picture-step count=1 seed=1
+    practice writing.lock-steps-order count=1 seed=1
+    practice writing.cause-word count=2 seed=1 easy-count=3 hard-count=3
+    practice writing.explanation-sentence count=1 seed=1
+    show writing.lock-words k=1 r=0 easy-k=0 easy-r=1 hard-r=1
+    practice writing.explain-why count=2 seed=1 easy-count=1
+  }
+  try stars=2 {
+    show writing.better-explanation k=0 r=1 hard-k=1
+  }
+  try stars=3 {
+    show writing.explain-going-down k=0 hard-k=1
+  }
+  remember {
+    say "An explanation says how it always works, in order, and why each step happens."
+  }
+
+  grown-ups """
+    An explanation is one of the kinds of writing children meet most in information books and
+    least often write well: it says how something works every time, in order, in the present, and
+    it says why. The look is the lock empty and full and Nell's first three sentences. The way in
+    matches the drawing to a sentence, and the core orders the steps, chooses the word that links
+    a cause to what follows, picks the sentence that belongs in an explanation rather than a
+    recount or an opinion, matches the lock's words to their meanings and chooses the reason
+    behind a step. The wrong idea to watch for is a list of thens that says what happens but never
+    why; ask "what makes that happen?" after each step. If the child is stuck on the lock itself,
+    fill a sink with a plastic tub floating in it and watch it rise. Off the page, find a real
+    explanation (a cereal box, a museum sign) and underline its so, because and as a result. The
+    two-star compares two explanations, and the three-star explains the way down, which the
+    lesson never spells out; you mark it.
+    """
+  level easy {
+    grown-ups "At this level the gates-are-heavy join is worked once in the teacher's pen, the picture is the lock empty or full, the steps go up with the lighter muddles, three linking words are the plainer ones (as a result, until, because), the explanation sentence is the plainest, the lock words are chamber, paddle and gate, the reason is why the boat rises, the two-star compares a list of thens with a real explanation, and the child explains the way down."
+  }
+  level hard {
+    grown-ups "At this level the picture is the lock half full, the steps go down, three linking words are the harder ones (this means, because, so), the explanation sentences are close to a recount, the lock words are flight, pound and beam, the reasons are why the gates are shut and why they cannot open early, the two-star has the thens in the second explanation, and the child also explains why the bottom gates stay shut while the chamber is full."
+  }
+}

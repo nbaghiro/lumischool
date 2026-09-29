@@ -1,0 +1,42 @@
+# The story: a humpback feeds all summer in the cold north and lives off its blubber through the
+# winter. Easy and medium find the total eaten; hard gives the total and asks for a day's eating.
+item nature.whale-krill v=1 skills=[nature.adaptation, multiplication.long] {
+  title "A summer of krill"
+  difficulty k
+  let k=0..2
+  let told={pick(k, "It eats about 1,000 kg of krill and small fish a day. How many tonnes does it eat in 30 days?", "It eats about 1,200 kg of krill and small fish a day. How many tonnes does it eat in 90 days?", "Over 125 days of summer it eats about 150 tonnes of krill and small fish. About how many kilograms is that a day?")}
+  let unit={pick(k, "tonnes", "tonnes", "kg")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x21 {
+    whale pw spout=1 facing=-1 at=canvas(1, 1)
+    text ask "A humpback whale spends the summer feeding off the ice shelf, and swims south for the winter, where it eats almost nothing and lives off its blubber. A tonne is 1,000 kg. {told}" narrate width=18 right-of=pw gap=1
+    row r below=ask gap=1 space=1 align=centre {
+      number-input answer width=5
+      text u "{unit}"
+    }
+  }
+
+  answer pick(k, 30, 108, 1200)
+  feedback {
+    when (k == 0 and answer == 30000) point=ask {
+      say "30,000 is the kilograms. The question asks for tonnes: how many lots of 1,000 kg is that?"
+    }
+    when (k == 1 and answer == 108000) point=ask {
+      say "108,000 is the kilograms. The question asks for tonnes: how many lots of 1,000 kg is that?"
+    }
+    when (k == 2 and answer == 1.2) point=ask {
+      say "1.2 is tonnes a day. The question asks for kilograms."
+    }
+  }
+  hint "Is the question giving you the amount for one day, or for the whole summer?"
+  hint "A day's eating times the number of days is the whole summer's."
+  level hard {
+    hint "Turn the tonnes into kilograms first, then share them between the days."
+  }
+}

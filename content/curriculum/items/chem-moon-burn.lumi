@@ -1,0 +1,36 @@
+# Nothing burns in the open on the moon, where there is no air and so no oxygen (NASA); a rocket
+# carries its own oxidiser, liquid oxygen, because there is no air in space.
+item chem.moon-burn v=1 skills=[chemistry.burning, chemistry.gases] {
+  title "A flame on the moon"
+  difficulty k
+  let k=0..1 r=0..2
+  let q={pick(k, "An astronaut steps out of the lander with a match. Why can it never light a candle out there?", "The rocket's engine burns fuel on its way to the moon, far above any air. What must it carry besides its fuel?")}
+  let right={pick(k, "There is no oxygen to burn with", "its own oxygen, as a liquid")}
+  let w1={pick(k, "It is too cold on the moon", "extra fuel to make it hotter")}
+  let w2={pick(k, "Moon dust puts flames out", "nothing: fuel burns by itself")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x26 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      rocket rk flame=(if k == 1 then 2 else 0)
+      lander l rungs=5
+      moon m phase=1
+    }
+    text ask "{q}" narrate width=34 below=kit gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=kit {
+      say "A fire needs fuel, heat and oxygen. Which one is missing where there is no air?"
+    }
+  }
+  hint "What are the three things a fire needs?"
+  hint "Where does a flame on Earth get its oxygen from?"
+}

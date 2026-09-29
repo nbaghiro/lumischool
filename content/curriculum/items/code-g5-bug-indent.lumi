@@ -1,0 +1,29 @@
+# A block with nothing inside it: a line that belongs under a repeat or an if is written level with it,
+# so the program is refused, and the mend is to move that one line further in. At the harder level the
+# if sits inside the repeat, and moving the if itself leaves it still empty.
+item coding.bug-indent v=2 skills=[coding.debugging, coding.repetition] {
+  title "Nothing inside"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x24 {
+    program p code=["set crates to list 3, 5, 2", "set total to 0", "for each c in crates", "{if k == 0 then \"add c to total\" else \"  if c is more than 2\"}", "{if k == 0 then \"say total\" else \"  add c to total\"}"] at=canvas(1, 0)
+    text ask "The program is refused: a repeat or an if needs the lines it holds written under it, one step further in. What is the mend?" width=13 right-of=p gap=1
+    choice pick options=["Move line 4 one step further in", "Move line 5 one step further in", "Take line 3 out"] stack=column below=p gap=1
+  }
+
+  answer pick=(if k == 0 then "Move line 4 one step further in" else "Move line 5 one step further in")
+  feedback {
+    when (pick == "Take line 3 out") point=p {
+      say "Without line 3 nothing goes through the crates one by one, so c never holds a crate."
+    }
+  }
+  hint "Which line should run once for every crate{if k == 1 then \" that passes the test\" else \"\"}?"
+  hint "Lines that a repeat or an if holds are written one step further in than it."
+}

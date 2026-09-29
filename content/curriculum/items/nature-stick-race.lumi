@@ -1,0 +1,48 @@
+# The story: Ada and Ben time sticks down a measured stretch below the mill, on the outside and the
+# inside of the bend. Metres in seconds gives metres a second; at hard two speeds give the gap in
+# seconds over the same stretch.
+item nature.stick-race v=1 skills=[nature.rivers, division.sharing, decimals.tenths] {
+  title "Racing sticks"
+  difficulty k
+  let k=0..2
+  let told={pick(k, "The stick on the outside of the bend floats the 12 metres in 6 seconds.", "The stick on the outside of the bend floats the 12 metres in 8 seconds.", "The stick on the outside of the bend goes 1.5 metres every second, and the stick on the inside goes 0.5 metres every second.")}
+  let asks={pick(k, "How many metres does it float in one second?", "How many metres does it float in one second?", "How many seconds longer does the inside stick take to float the 12 metres?")}
+  let unit={pick(k, "m", "m", "s")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x21 {
+    row posts at=canvas(1, 1) space=1 align=end {
+      riverpost p0 n="0" tall=5
+      current flow length=16 facing=1
+      riverpost p12 n="12" tall=5
+    }
+    text ask "Below the mill Ada and Ben put two posts 12 metres apart and time sticks floating between them. {told} {asks}" narrate width=32 below=posts gap=1
+    row r below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text u "{unit}"
+    }
+  }
+
+  answer pick(k, 2, 1.5, 16)
+  feedback {
+    when (k <= 1 and answer == pick(k, 6, 8, 0)) point=ask {
+      say "That is the number of seconds. Share the 12 metres out between the seconds it took."
+    }
+    when (k == 1 and answer == 2) point=ask {
+      say "Two metres a second would take 6 seconds. This stick took 8, so it went less than 2 metres each second."
+    }
+    when (k == 2 and answer == 24) point=ask {
+      say "24 seconds is the inside stick's whole time. The question asks how much longer it is than the outside stick's time."
+    }
+  }
+  hint "How far did the stick go, and how many seconds did it take?"
+  hint "Metres in one second is the metres shared out equally between the seconds."
+  level hard {
+    hint "Work out each stick's time for 12 metres first: how many seconds does 1.5 metres a second take?"
+  }
+}

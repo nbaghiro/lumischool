@@ -1,0 +1,17 @@
+# The way in: on the pH scale below 7 is an acid, 7 neutral and above 7 an alkali. Each liquid's pH
+# is in LIQUIDS (lemon juice 2, milk 6.5, water 7, sea water 8.1 from NOAA, limewater 12.4 from
+# PubChem), which the phscale drawing and the checker share.
+item chem.ph-kind v=1 skills=[chemistry.acids] {
+  title "Acid, neutral or alkali?"
+  let s=0..2
+
+  scene 35x22 {
+    phscale p liquids=[pick(s, "lemon", "seawater", "milk"), pick(s, "limewater", "water", "vinegar"), pick(s, "water", "lemon", "seawater")] letters=1 names=1 at=canvas(1, 0)
+    text ask "At the mill by the waterfall, Ana tests three liquids with universal indicator and marks each one on the pH scale. Is liquid B an acid, neutral or an alkali?" narrate width=34 below=p gap=1
+    choice pick options=["acid", "neutral", "alkali"] below=ask gap=1
+  }
+
+  check chem.indicator of=p pick=kind(B)
+  hint "Find B's pointer on the scale. Is it below 7, at 7 or above 7?"
+  hint "Read the words under the scale on that side of 7."
+}

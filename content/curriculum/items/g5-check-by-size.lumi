@@ -1,0 +1,30 @@
+# The two-star: an answer checked by estimating, so the point goes where the size says, and the
+# child picks the right answer from three with the same digits.
+item decimal.check-by-size v=1 stars=2 skills=[decimals.multiply, reasoning.estimate] {
+  title "Where does the point go"
+  difficulty ((if b < 1 then 1 else 0) + a * b / 10)
+  let a={4.8, 6.2, 7.5, 3.9} b={3.2, 2.4, 0.6, 5.1} r=0..2
+  let right={decimals(a * b, 0)}
+  let small={decimals(a * b / 10, 0)}
+  let big={decimals(a * b * 10, 0)}
+  level easy {
+    let b={3.2, 2.4}
+  }
+  level hard {
+    let b={0.6, 5.1} a={6.2, 7.5}
+  }
+
+  scene 31x9 {
+    text ask "Sam got the digits of {a} × {b} right but lost the point. Round each number to estimate, then choose the answer." narrate width=30 at=canvas(1, 1)
+    choice pick options=[if r == 0 then small else if r == 1 then right else big, if r == 0 then right else if r == 1 then big else small, if r == 0 then big else if r == 1 then small else right] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "Round {a} and {b} to whole numbers or tenths and multiply those. Which answer is near that?"
+    }
+  }
+  hint "What whole number is {a} close to? And {b}?"
+  hint "Multiply those two. The real answer is near it."
+}

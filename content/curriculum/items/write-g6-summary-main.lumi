@@ -1,0 +1,38 @@
+# The way in: a short paragraph from the gorge's guidebook and the one sentence that sums it up.
+# One choice is a single detail; one adds an opinion or a claim the paragraph never makes.
+item writing.summary-main v=1 skills=[writing.summarising, reading.gist] {
+  title "Which sentence sums it up?"
+  difficulty k
+  let k=0..2 r=0..2
+  let para={pick(k, "The kingfisher waits on a branch over the pool below the falls. When it sees a fish, it dives straight in and comes up with the fish in its beak. It beats the fish against the branch before it swallows it head first.", "Water from the falls runs along a wooden channel to the top of the wheel. Its weight fills the paddles and pushes the wheel round. The turning wheel drives the millstones, which grind wheat into flour.", "The rope bridge was built a hundred years ago by the people on both sides of the gorge. Before it, the only way across was a day's walk round the head of the gorge. Now the far side's children cross it to school each morning.")}
+  let right={pick(k, "The kingfisher catches fish by diving from a branch.", "Falling water turns the wheel and the millstones.", "The bridge turned a day's walk into a short crossing.")}
+  let w1={pick(k, "The kingfisher beats its fish on the branch.", "The channel to the wheel is made of wood.", "Children cross the bridge every morning.")}
+  let w2={pick(k, "Kingfishers are the loveliest birds in the gorge.", "The mill is the oldest building in the village.", "The bridge is unsafe and should be replaced.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x33 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage p title="From the guidebook" text="{para}" width=20 numbers=false
+      waterfall falls drops=2 rainbow=0
+    }
+    text ask "Which sentence sums up the whole paragraph?" narrate width=33 below=top gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=p {
+      say "That is true, but it is one detail. A summary says what the whole paragraph is about."
+    }
+    when (pick == w2) point=p {
+      say "The paragraph never says that. A summary keeps to what the writer said, without adding your own view."
+    }
+  }
+  hint "Say in a few words what every sentence in the paragraph is about."
+  hint "Which choice would still be true if you cut out every detail?"
+}

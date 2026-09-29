@@ -1,0 +1,25 @@
+# The three-star: the same news written twice, a short formal letter to the director and a note to
+# a cousin, marked by a grown-up. At hard the formal letter goes to a reader Leo cannot name.
+item writing.two-letters v=1 stars=3 skills=[writing.letters, writing.formality, writing.composing] {
+  title "One piece of news, two letters"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x30 {
+    row top at=canvas(1, 0) space=2 align=end {
+      text ask "{if k == 0 then \"A comet will be seen from the star cliffs on Friday night. Write two short letters: one to Dr Shah asking if your class may come, and one to a cousin telling them the news.\" else \"A comet will be seen from the star cliffs on Friday night. Write two short letters: one to the observatory, Dear Sir or Madam, asking if your class may come and giving a reason, and one to a cousin telling them the news.\"}" narrate width=23
+      observatory obs open=1
+    }
+    writinglines lines lines=6 width=34 prompt="" below=top gap=1
+  }
+
+  check writing.by-eye look-for="Two letters that carry the same news in two voices: the formal one with a greeting that suits the reader (Dear Dr Shah, or Dear Sir or Madam at hard), full words with no short forms or slang, a clear polite request, and the matching sign-off (Yours sincerely after a name, Yours faithfully after Sir or Madam); the informal one with a friendly greeting, easy everyday words and a friendly ending."
+  hint "Plan the news first in a few words. Then ask for each letter: who reads it, and how well does the writer know them?"
+  hint "Read the formal letter aloud as the director would. Is every word full and polite?"
+}

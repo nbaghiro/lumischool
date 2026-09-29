@@ -1,0 +1,37 @@
+# The three-star: the fewest times a drop of blood passes through the heart between two places. It
+# has to go by the lungs to get from the body to anywhere else in the body, so every trip from the
+# body is two passes, and a round trip toe to brain to toe is four.
+item nature.blood-trip v=1 stars=3 skills=[nature.circulation, reasoning.fewest] {
+  title "A drop's journey"
+  difficulty k
+  let k=0..2
+  let trip={pick(k, "has just picked up oxygen in Ada's lungs. What is the fewest number of times it must pass through her heart before it reaches her big toe?", "leaves a muscle in Ada's big toe. What is the fewest number of times it must pass through her heart before it reaches her brain?", "goes from a muscle in Ada's big toe to her brain, and then back to the same toe. What is the fewest number of times it passes through her heart?")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x16 {
+    parts fig of=chest at=canvas(1, 1)
+    text ask "Blood only ever flows one way round its loops. A drop of blood {trip}" narrate width=19 right-of=fig gap=2
+    row r below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text u "times"
+    }
+  }
+
+  answer pick(k, 1, 2, 4)
+  feedback {
+    when (k >= 1 and answer == pick(k, 0, 1, 2)) point=fig {
+      say "Blood from the body is low in oxygen. It has to go by the lungs before the heart can send it anywhere else."
+    }
+    when (k == 0 and answer == 2) point=fig {
+      say "This drop already has its oxygen. From the lungs, how many stops at the heart before the body?"
+    }
+  }
+  hint "Write the stops in order: where the drop starts, then each place it must go through."
+  hint "From the body, blood goes to the heart, then the lungs, then the heart again."
+  hint "Count every time the heart appears in your list."
+}

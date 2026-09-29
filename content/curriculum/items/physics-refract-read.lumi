@@ -1,0 +1,29 @@
+# The way in: the angles in and inside are written on the beam, and the bend is their difference.
+# a is the angle in from the upright, g water (0) or glass (1).
+item physics.refract-read v=1 skills=[physics.light, angles.degrees] {
+  title "How far does the beam bend?"
+  difficulty g
+  let a={30, 40, 50, 60} g=0..1
+  level easy {
+    let g={0}
+  }
+  level hard {
+    let g={1}
+  }
+  let what={pick(g, "water", "glass")}
+
+  scene 30x24 {
+    refraction r mode=0 into=g angle=a marks=1 show=1 at=canvas(1, 0)
+    text ask "A torch shines into the {what} at {a} degrees from the dashed upright line. By how many degrees does the beam bend towards the upright where it goes in?" narrate width=28 below=r gap=1
+    number-input deg below=ask gap=1
+  }
+
+  check physics.light of=r deg=turns
+  feedback {
+    when (deg == a) point=r {
+      say "That is the angle the beam comes in at. How far is the angle inside from it?"
+    }
+  }
+  hint "Read the two angles written on the beam, in the air and in the {what}."
+  hint "How many degrees apart are they?"
+}

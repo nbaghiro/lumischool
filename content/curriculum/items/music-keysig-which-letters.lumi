@@ -1,0 +1,34 @@
+# The way in: which letters a key signature changes, read from where its signs sit and whether they
+# are sharps or flats. One sign at easy, two at medium, three at hard.
+item music.keysig-which-letters v=1 skills=[music.key-signatures, music.staff] {
+  title "What the signature changes"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let right={pick(k, "F sharp", "B flat", "F sharp and C sharp", "B flat and E flat", "F, C and G sharp", "B, E and A flat")}
+  let o1={pick(k, "F sharp", "F sharp", "F sharp and C sharp", "F sharp and C sharp", "F, C and G sharp", "F, C and G sharp")}
+  let o2={pick(k, "B flat", "B flat", "B flat and E flat", "B flat and E flat", "B, E and A flat", "B, E and A flat")}
+  let o3={pick(k, "C sharp", "C sharp", "F sharp and G sharp", "F sharp and G sharp", "F, C and D sharp", "F, C and D sharp")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..5
+  }
+
+  scene 36x25 {
+    row top space=2 align=start at=canvas(1, 1) {
+      notes sig clef=treble notes=[] values=[] key=pick(k, "G", "F", "D", "Bf", "A", "Ef")
+      text ask "The key signature at the start of a tune the research team sing in the hut. Which notes does it change?" narrate width=20
+    }
+    choice pick options=[o1, o2, o3] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=sig {
+      say "Look at the shape of each sign first: a sharp has two uprights and two bars, a flat has one upright and a round foot. Then read the line or space each one sits on."
+    }
+  }
+  hint "Are the signs sharps or flats?"
+  hint "Read each sign's line or space as if it were a note. Which letter is it?"
+}

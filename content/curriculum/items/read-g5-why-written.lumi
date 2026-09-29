@@ -1,0 +1,41 @@
+# Four texts from the star cliffs, each written for one purpose: an advert persuades, a set of
+# steps instructs, a report informs and a story entertains. The purpose is read from what the text
+# does, not from what it is about, since all four are about the observatory.
+item reading.why-written v=1 skills=[reading.purpose, reading.text-types] {
+  title "Why was it written?"
+  difficulty pick(k, 0, 0, 1, 1)
+  let k=0..3
+  let right={pick(k, "to persuade", "to instruct", "to inform", "to entertain")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 36x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        passage p text="{pick(k, \"Come to Open Night at the Star Cliffs Observatory and see the rings of Saturn with your own eyes. Tickets cost only $3, and children under five go free. Do not miss the most amazing night of the year.\", \"How to find the moon with the small telescope. First, point the tube at the moon. Next, look through the little finder and move the tube until the moon is in the middle. Then look through the eyepiece and turn the focus wheel slowly until the edges are sharp.\", \"The Star Cliffs Observatory was built in 1887. Its telescope is four metres long and weighs two tonnes. The dome turns on twenty-four iron wheels, so the slit in its roof can face any part of the sky.\", \"Mira climbed the last step into the dome, and there it was: the great telescope, pointing at the sky like a long brass finger. Dr Osei winked at her. Tonight, of all nights, the clouds had stayed away.\")}" width=25 numbers=false
+        observatory dome open=1
+      }
+      text ask "Every text here is about the observatory. What was this one written for?" width=34
+      choice pick options=[pick(k, "to inform", "to persuade", "to instruct", "to inform"), pick(k, "to persuade", "to inform", "to inform", "to entertain"), pick(k, "to entertain", "to instruct", "to persuade", "to instruct")]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == "to inform") point=p {
+      say "It does give facts, the price and the ages, but read the last sentence. What does it want you to do?"
+    }
+    when (k == 3 and pick == "to inform") point=p {
+      say "There is a fact or two, but the text has a person, a feeling and a picture in words. What kind of writing does that?"
+    }
+    when (k == 2 and pick == "to persuade") point=p {
+      say "Look for a word that tries to make you feel something. Is there one, or only facts and numbers?"
+    }
+  }
+  hint "What does the writer want the reader to do or to know, once they have read it?"
+  hint "Look at the last sentence. Is it a fact, a step, a push, or part of a story?"
+}

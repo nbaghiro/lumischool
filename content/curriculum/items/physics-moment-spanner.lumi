@@ -1,0 +1,29 @@
+# The wheel's bolt needs a set moment to turn it, so a longer spanner needs a smaller push: the push
+# is the moment divided by the length.
+item physics.moment-spanner v=1 skills=[physics.moments, division.grouping] {
+  title "A longer spanner"
+  difficulty (if l == 20 or l == 30 then 0 else 1)
+  let l={15, 20, 25, 30}
+  level easy {
+    let l={20, 30}
+  }
+  level hard {
+    let l={15, 25}
+  }
+
+  scene 17x28 {
+    waterwheel w paddles=12 lit=0 at=canvas(1, 0)
+    text ask "The bolt at the middle of the water wheel turns only with a moment of 3000 N cm. The miller pushes at the end of a spanner {l} cm long. How big a push does she need?" narrate width=15 below=w gap=1
+    number-input answer below=ask gap=1
+    text unit "N" right-of=answer gap=1
+  }
+
+  answer (3000 / l)
+  feedback {
+    when (answer == 3000 * l) point=ask {
+      say "A longer spanner makes turning easier, so the push is the moment shared by the length."
+    }
+  }
+  hint "The push times the spanner's length has to make 3000 N cm."
+  hint "What times {l} makes 3000?"
+}

@@ -1,0 +1,33 @@
+# The two-star reason: a painted strap rusts where it is scratched, because water and air reach the
+# bare iron; a zinc-coated one does not, because the zinc corrodes first. At easy, the oil jar: oil
+# keeps the air off, and rust needs air as well as water.
+item chem.scratched-coat v=1 stars=2 skills=[chemistry.rusting, reasoning.explain] {
+  title "Why did that one rust?"
+  difficulty k
+  let k=0..1 r=0..2
+  let asks={pick(k, "The nail in water under a layer of oil has not rusted. Why not?", "Two iron straps on the gate, one painted and one zinc-coated, are both scratched through to the iron. After a winter only the painted one has rust in its scratch. Why?")}
+  let right={pick(k, "Oil keeps the air off, and rust needs air too", "The zinc corrodes in place of the iron")}
+  let w1={pick(k, "Oil is a kind of paint", "Water and air reach the bare iron in the scratch")}
+  let w2={pick(k, "Water under oil is too cold to rust", "The zinc coat is thicker than the paint")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x28 {
+    nails jars jars=["water", "oil", "painted"] days=14 letters=1 names=1 at=canvas(1, 0)
+    text ask "{asks}" narrate width=34 below=jars gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=jars {
+      say "{if k == 0 then \"Rust needs iron, water and air together. Look for which of the three can reach the iron.\" else \"Water and air reach the bare iron in both scratches, so that cannot be the difference. What does zinc do that paint does not?\"}"
+    }
+  }
+  hint "What three things does iron need to rust?"
+  hint "{if k == 0 then \"Which of those three cannot get through the oil?\" else \"Paint only covers the iron. What does zinc do when water and air reach it?\"}"
+}

@@ -1,0 +1,50 @@
+# The way in: the word that starts a relative clause. Who for a person, which for a thing, where for
+# a place where something happens, when for a time; the hard versions put a place before a which,
+# and one names a time.
+item writing.who-which-where v=1 skills=[writing.relative-clauses] {
+  title "Who, which or where?"
+  difficulty (if k == 0 or k == 1 then 0 else if k == 2 or k == 4 or k == 6 then 1 else 2)
+  let k=0..6
+  let t={pick(k, "Mr Hale, ___ keeps the lock, knows every boat.", "The Otter, ___ is painted green, is Nell's home.", "The lock is the place ___ the boats rise.", "The lock, ___ is two hundred years old, still works.", "This is the mill ___ Nell buys her flour.", "The towpath, ___ runs beside the canal, is busy.", "Nell still talks about the winter ___ the canal froze.")}
+  let right={pick(k, "who", "which", "where", "which", "where", "which", "when")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..6
+  }
+
+  scene 32x19 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      canallock lock level=0.5 boat=1
+      person keeper pose=wave age=grownup hair=short colour=grey top=mint
+    }
+    caption strip text="{t}" width=31 below=pics gap=1
+    text ask "Which word starts the relative clause?" narrate width=31 below=strip gap=1
+    choice pick options=["who", "which", "where", "when"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "where" and right == "which") point=strip {
+      say "The lock and the towpath are places, but the clause does not say what happens there. It tells you more about the thing itself, so it takes which."
+    }
+    when (pick == "which" and right == "where") point=strip {
+      say "Read the clause after the gap: it says what happens in that place. A place where something happens takes where."
+    }
+    when (pick != "who" and right == "who") point=strip {
+      say "The word before the gap is a person, and a clause about a person starts with who."
+    }
+    when (pick == "when" and right != "when") point=strip {
+      say "When starts a clause about a time. Is the word before the gap a time, such as a day or a winter?"
+    }
+    when (pick != "when" and right == "when") point=strip {
+      say "The word before the gap is a time, the winter, and a clause about a time starts with when."
+    }
+    when (pick == "who" and right != "who") point=strip {
+      say "Who is for a person. Is the word before the gap a person?"
+    }
+  }
+  hint "Look at the noun just before the gap. Is it a person, a thing, a place or a time?"
+  hint "Read the clause after the gap. Does it describe the thing itself, or tell you what happens in it?"
+}

@@ -1,0 +1,28 @@
+# The way in: the wind turns the blades, the blades turn the generator, and each stronger step of wind
+# lights one more of the house's lamps, as many as there are.
+item physics.gen-wind-lamps v=1 skills=[physics.energy, physics.circuits] {
+  title "Lamps from the wind"
+  difficulty (if w > l then 1 else 0)
+  let w=1..3 l=2..4
+  level easy {
+    where (w <= l)
+  }
+  level hard {
+    where (w > l or w == 3)
+  }
+
+  scene 24x23 {
+    turbine t wind=w lamps=l at=canvas(1, 0)
+    text ask "Each arrow is one step of wind, and each step lights one more of the {l} lamps in the house. How many lamps are lit?" narrate width=22 below=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.forces of=t answer=lit
+  feedback {
+    when (answer == w and w > l) point=t {
+      say "The wind could light {w}, but the house has only {l} lamps."
+    }
+  }
+  hint "Count the arrows of wind."
+  hint "Can more lamps be lit than the house has?"
+}

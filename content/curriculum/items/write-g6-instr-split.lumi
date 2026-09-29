@@ -1,0 +1,36 @@
+# One action to a step: the card for oiling the wheel has one step that asks for two things at once,
+# and it moves between the first, second and third step with k.
+item writing.instr-split v=1 skills=[writing.instructions, writing.editing] {
+  title "Which step does too much?"
+  difficulty k
+  let k=0..2
+  let s1={pick(k, "Close the sluice gate.", "Close the sluice gate.", "Close the gate and push in the brake pin.")}
+  let s2={pick(k, "Wait for the wheel to stop and push in the brake pin.", "Wait for the wheel to stop.", "Put on the gloves.")}
+  let s3={pick(k, "Oil each end of the axle.", "Push in the brake pin and oil the axle.", "Oil each end of the axle.")}
+  let s4={"Take the brake pin out."}
+  let right={pick(k, "step 2", "step 3", "step 1")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x26 {
+    row top at=canvas(1, 0) space=2 align=start {
+      howto card title="Oiling the wheel" need=["oil can", "gloves"] steps=["{s1}", "{s2}", "{s3}", "{s4}"] blank=-1 width=18
+      waterwheel wheel paddles=8 lit=0
+    }
+    text ask "One step asks for two things at once. Which step should be split into two?" narrate width=33 below=top gap=1
+    choice pick options=["step 1", "step 2", "step 3", "step 4"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=card {
+      say "That step asks for one thing. Look for a step with two command verbs joined by and."
+    }
+  }
+  hint "Count the command verbs in each step."
+  hint "Which step could someone half-finish, and think they were done?"
+}

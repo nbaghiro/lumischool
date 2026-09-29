@@ -1,0 +1,69 @@
+lesson chemistry-puzzles-5 v=1 format=puzzles grade=5 unit=9 subject=chemistry levels=[easy, medium, hard] {
+  title "Chemistry puzzles: the fifth year"
+  goal "Work out amounts that dissolve, distil, rust, burn in a kiln and change state, and give the reason behind each."
+
+  puzzle stars=1 {
+    practice chem.solution-weighs count=1 seed=1
+  }
+  puzzle stars=1 {
+    practice chem.drip-rate count=1 seed=1 hard-seed=4
+  }
+  level easy medium {
+    puzzle stars=1 {
+      practice chem.cell-below count=1 seed=1
+    }
+  }
+  level easy {
+    puzzle stars=1 {
+      practice chem.kiln-mass count=1 seed=1
+    }
+  }
+  puzzle stars=2 {
+    practice chem.why-cold-tube count=1 seed=1 easy-seed=2
+  }
+  puzzle stars=2 {
+    practice chem.pencil-lead count=1 seed=1
+  }
+  puzzle stars=2 {
+    practice chem.heat-goes-where count=1 seed=1 easy-seed=2
+  }
+  puzzle stars=2 {
+    practice chem.mortar-heavier count=1 seed=1 easy-seed=2
+  }
+  puzzle stars=3 {
+    show chem.sugar-crystals-out q=0 t=2 v=200 easy-t=1 easy-v=100 hard-q=1 hard-t=3
+  }
+  puzzle stars=3 {
+    practice chem.oxygen-litres count=1 seed=1 easy-seed=7 hard-seed=7
+  }
+  level medium hard {
+    puzzle stars=3 {
+      practice chem.concrete-batches count=1 seed=1 easy-seed=7
+    }
+  }
+  level hard {
+    puzzle stars=3 {
+      practice chem.grams-went count=1 seed=1 hard-seed=2
+    }
+  }
+
+  grown-ups """
+    Let the child try each one alone first, at the table or by the canal, the observatory or the
+    old city's walls; the hints and answers are on this sheet, not on theirs. Every puzzle starts by
+    reading the picture closely: the dial of the scales, the drops in the cylinder, the cells of the
+    table. The one-star puzzles come from how much dissolves, distilling, the table of elements and
+    the lime kiln. The two-star puzzles each need a reason: why the tube is kept
+    cold, why a pencil's lead conducts, where the heat goes while the line is flat, and why mortar
+    gets heavier as it sets. The three-star puzzles are the ones to leave for a quiet moment: sugar
+    crystals out of cooling water, the fewest litres of warm water that hold enough oxygen, the
+    batches of concrete a set of bags allows, and the grams of gas that left a fizzing jug.
+    Ask for the reason as well as the answer on each of them, and let a puzzle left unsolved today
+    wait for another day rather than be told.
+    """
+  level easy {
+    grown-ups "At this level there are four one-star puzzles, the kiln among them, the sugar cools from 40 °C in 100 ml, and the concrete batches and the gas that left the cup are left for another day."
+  }
+  level hard {
+    grown-ups "At this level there are two one-star puzzles and a fourth three-star puzzle, the grams that left a fizzing jug of vinegar, and the sugar puzzle asks for the coolest start that gives enough crystals."
+  }
+}

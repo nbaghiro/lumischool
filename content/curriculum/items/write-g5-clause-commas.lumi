@@ -1,0 +1,36 @@
+# A relative clause of extra news in the middle of a sentence has a comma at each end. One choice is
+# right, one has lost its first comma and one its second; the right one moves with r.
+item writing.clause-commas v=1 skills=[writing.relative-clauses, writing.commas] {
+  title "Commas round the clause"
+  difficulty k
+  let k=0..2 r=0..2
+  let right={pick(k, "The mill, which has four sails, is old.", "Mr Hale, who has a dog, opens the gate.", "The bridge, where we met, is made of stone.")}
+  let w1={pick(k, "The mill which has four sails, is old.", "Mr Hale who has a dog, opens the gate.", "The bridge where we met, is made of stone.")}
+  let w2={pick(k, "The mill, which has four sails is old.", "Mr Hale, who has a dog opens the gate.", "The bridge, where we met is made of stone.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 32x22 {
+    row top at=canvas(1, 0) space=2 align=start {
+      text ask "A relative clause of extra news needs a comma at each end, like a pair of hands holding it. Which sentence has both?" narrate width=21
+      windmill mill sails=4 turn=15
+    }
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=pick {
+      say "That sentence has a comma after the clause but none before it. The clause needs a comma where it starts too."
+    }
+    when (pick == w2) point=pick {
+      say "That sentence opens the clause with a comma but never closes it. Put a comma where the clause ends and the main sentence carries on."
+    }
+  }
+  hint "Find where the clause starts and where it ends in each sentence."
+  hint "Is there a comma at both of those places?"
+}

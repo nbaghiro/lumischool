@@ -1,0 +1,36 @@
+# Adding unlike fractions and writing the total as a decimal: fractions with halves, quarters, fifths,
+# tenths and twentieths are hundredths in disguise (Japan's grade 5 A(4), fractions and decimals as one
+# number).
+item fraction.decimal-total v=1 skills=[fractions.add-unlike, fractions.decimals] {
+  title "Kilograms at the market"
+  difficulty (d / 5 + (if a / b + c / d > 1 then 2 else 0))
+  let b={2, 4, 5} d={4, 5, 10, 20} a=1..4 c=1..19
+  where (b < d and a < b and c < d and gcd(c, d) == 1 and a / b + c / d != 1)
+  where (a / b + c / d < 2)
+  level easy {
+    let b={2} d={4, 5, 10}
+    where (a / b + c / d < 1)
+  }
+  level hard {
+    let d={20}
+    where (a / b + c / d > 1)
+  }
+
+  scene 30x12 {
+    basket fruit item=apple count=6 at=canvas(1, 1)
+    text ask "At the old city market, Leo buys {a}/{b} kg of apples and {c}/{d} kg of plums. How many kilograms is that altogether? Write it as a decimal." narrate width=18 right-of=fruit gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=5
+      text kg "kg"
+    }
+  }
+
+  answer decimals(a / b + c / d, 0)
+  feedback {
+    when (answer == a / b or answer == c / d) point=ask {
+      say "That is only one of the two bags. Add the other one to it."
+    }
+  }
+  hint "Write each fraction with a bottom number of 100, or as a decimal: what is {a}/{b}?"
+  hint "Add the two decimals, lining up the points."
+}

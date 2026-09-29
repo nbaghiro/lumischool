@@ -1,0 +1,34 @@
+# The three-star: two classes put together. The shares cannot be averaged, because the classes are
+# different sizes; the counts are found, added, and made a share of the new total.
+item survey.combine v=1 stars=3 skills=[data.band-graphs, reasoning.two-steps] {
+  title "One club"
+  difficulty t
+  let t=0..2
+  level easy {
+    let t={0}
+  }
+  level hard {
+    let t={2}
+  }
+
+  scene 36x21 {
+    percentbar bands counts=[pick(t, 6, 5, 16), pick(t, 8, 10, 12), pick(t, 6, 5, 12), pick(t, 6, 30, 15), pick(t, 18, 20, 33), pick(t, 6, 30, 12)] bands=["5A", "5B"] kinds=["Moon", "Saturn", "Jupiter"] at=canvas(1, 1)
+    text ask "The two classes meet as one club for a night at the observatory. What percent of the whole club chose Saturn?" narrate width=34 below=bands gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text unit "%"
+    }
+  }
+
+  answer pick(t, 52, 30, 45)
+  feedback {
+    when (answer == pick(t, 50, 37.5, 42.5)) point=bands {
+      say "That is halfway between the two shares. The bigger class has more children, so it pulls the share its way."
+    }
+    when (answer == pick(t, 100, 75, 85)) point=bands {
+      say "Two shares added make more than one whole. Find how many children chose Saturn in each class."
+    }
+  }
+  hint "How many children in 5A chose Saturn? How many in 5B?"
+  hint "How many children are in the club altogether? What share of them is that?"
+}

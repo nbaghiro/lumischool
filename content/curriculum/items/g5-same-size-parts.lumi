@@ -1,0 +1,29 @@
+# The way in: the smallest denominator two fractions can share, the lowest common multiple of their
+# denominators.
+item fraction.same-size-parts v=1 skills=[fractions.add-unlike, number.lcm] {
+  title "Parts of the same size"
+  difficulty (lcm(b, d) / 6)
+  let b={2, 3, 4, 6} d={3, 4, 5, 8, 10}
+  where (b < d and d % b != 0)
+  level easy {
+    where (lcm(b, d) <= 12)
+  }
+  level hard {
+    where (lcm(b, d) >= 20)
+  }
+
+  scene 31x19 {
+    fractionwall lib rows=[1, b, d] shade=[0, 0] at=canvas(1, 1)
+    text ask "In the old library, a strip of the wall is marked in {pick(b - 2, \"halves\", \"thirds\", \"quarters\", \"fifths\", \"sixths\")} and another in {pick(d - 3, \"thirds\", \"quarters\", \"fifths\", \"sixths\", \"sevenths\", \"eighths\", \"ninths\", \"tenths\")}. What is the smallest number of equal parts both can be cut into?" narrate width=30 below=lib gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer lcm(b, d)
+  feedback {
+    when (answer == b * d and b * d != lcm(b, d)) point=ask {
+      say "{b * d} parts works, but fewer does too. What is the first number both {b} and {d} go into?"
+    }
+  }
+  hint "Count in {d}s. Which is the first number {b} also goes into?"
+  hint "That number of parts can be shared into {b} and into {d} equally."
+}

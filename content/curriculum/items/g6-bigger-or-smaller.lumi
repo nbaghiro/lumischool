@@ -1,0 +1,37 @@
+# The second reasoning question in the core: whether multiplying or dividing by a fraction makes a
+# number bigger or smaller, decided from the fraction's size without working it out.
+item fraction.bigger-or-smaller v=1 skills=[fractions.multiply, fractions.divide, reasoning.predict] {
+  title "Bigger or smaller"
+  difficulty ((if op == "÷" then 1 else 0) + (if p > q then 1 else 0))
+  let x={12, 18, 24, 30} p={2, 3, 5, 7} q={3, 4, 5} op={"×", "÷"}
+  where (p != q and gcd(p, q) == 1)
+  level easy {
+    let op={"×"}
+    where (p < q)
+  }
+  level hard {
+    let op={"÷"}
+    where (p > q)
+  }
+
+  scene 34x12 {
+    sledge sl slats=6 at=canvas(1, 2)
+    text ask "The load on a sledge is {x} kg. The cook works out {x} {op} {p}/{q}. Without working it out, will the answer be bigger or smaller than {x}?" narrate width=24 right-of=sl gap=2
+    choice pick options=["bigger", "smaller"] below=ask gap=1
+  }
+
+  answer pick=(if (op == "×") == (p < q) then "smaller" else "bigger")
+  feedback {
+    when (op == "÷" and p < q and pick == "smaller") point=ask {
+      say "How many lots of {p}/{q} fit into 1? More than one, so dividing by it gives more."
+    }
+    when (op == "×" and p < q and pick == "bigger") point=ask {
+      say "{p}/{q} of something is less than all of it."
+    }
+    when (p > q and pick == (if op == "×" then "smaller" else "bigger")) point=ask {
+      say "{p}/{q} is more than 1. Does that change which way the answer goes?"
+    }
+  }
+  hint "Is {p}/{q} more or less than 1?"
+  hint "What happens to {x} if you {if op == \"×\" then \"multiply\" else \"divide\"} it by 1? By a number less than 1?"
+}

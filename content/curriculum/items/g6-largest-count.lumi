@@ -1,0 +1,33 @@
+# The three-star: five whole-number counts of at least 1 with a given median and mean; the largest
+# count is as big as it can be when the other four are as small as the median allows. Proved as an
+# extreme.
+item data.largest-count v=1 stars=3 skills=[data.mean, data.median, reasoning.extremes] {
+  title "As big as it can be"
+  difficulty (2 * e - d)
+  let d={3, 4, 5, 6} e={5, 6, 7, 8, 9}
+  where (e - d >= 2 and e - d <= 3)
+  level easy {
+    let d={3} e={5}
+  }
+  level hard {
+    let d={5, 6} e={8, 9}
+  }
+
+  scene 35x12 {
+    puffins pf count=3 facing=1 at=canvas(1, 1)
+    text ask "On five days Ivo counted puffins, at least one each day. The median of his five counts is {d} and the mean is {e}. What is the biggest that the largest count could be?" narrate width=22 right-of=pf gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (5 * e - 2 - 2 * d)
+  feedback {
+    when (answer == 5 * e - 4 * d) point=ask {
+      say "The two smallest counts can be smaller than {d}. How small can they be?"
+    }
+    when (answer == 5 * e - 4) point=ask {
+      say "The median is the middle count, so the third and fourth counts are at least {d}."
+    }
+  }
+  hint "What must the five counts add up to?"
+  hint "To make the largest count big, make the other four as small as you can. Which of them must be at least {d}?"
+}

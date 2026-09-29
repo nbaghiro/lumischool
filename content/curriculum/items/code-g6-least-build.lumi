@@ -1,0 +1,23 @@
+# Answering with blocks in the fewest steps: the pad has only three slots, so the rover has to move
+# along each straight part in one block, round the crater rim.
+item coding.least-build v=1 skills=[coding.efficiency, coding.sequences, reasoning.planning] {
+  title "Three blocks to the lander"
+  difficulty k
+  let k=0..2
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x23 {
+    maze g map=["{pick(k, \"S . . . .\", \"S # . . .\", \"S . . . .\")}", "{pick(k, \"# # # . .\", \". # . . .\", \". # # # .\")}", "{pick(k, \". . . . .\", \". # . F .\", \". # F . .\")}", "{pick(k, \"F . . . .\", \". . . . .\", \". . . . .\")}"] at=canvas(0, 0)
+    codepad answer tray=["right 1", "down 1", "left 1", "up 1"] lines=3 right-of=g gap=1
+    text ask "The dark squares are crater rims. Build a program of 3 blocks that takes the rover to the flag. A block's number can be changed." width=14 below=g gap=1
+  }
+
+  check coding.builds of=g goal=flag
+  hint "Find a way round the rims first. How many straight parts does it have?"
+  hint "Each straight part is one block, with the number of squares it goes."
+}

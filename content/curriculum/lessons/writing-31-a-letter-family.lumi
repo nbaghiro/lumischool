@@ -1,6 +1,6 @@
 # The curly family as one movement: c, o, a, d and g all begin with c's curl, and each is finished
 # without lifting the pencil.
-lesson writing-a-letter-family v=1 format=teach grade=1 unit=2 subject=writing levels=[easy, medium, hard] {
+lesson writing-a-letter-family v=1 format=teach grade=1 unit=4 subject=writing levels=[easy, medium, hard] {
   title "A letter family"
   goal "Write the letters that start the same way, c, o, a, d and g, each from one movement."
 

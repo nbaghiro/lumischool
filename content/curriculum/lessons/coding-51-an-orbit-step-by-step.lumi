@@ -1,0 +1,67 @@
+# An orbit simulated step by step: the lander goes straight for a moment and the moon's pull turns it,
+# over and over, which draws a path round the moon; then the same orbit worked out with numbers for
+# where the lander is and how fast it moves, and a spanner falling in the moon's gentle pull.
+lesson coding-an-orbit-step-by-step v=1 format=teach grade=6 unit=7 subject=coding levels=[easy, medium, hard] {
+  title "An orbit, step by step"
+  goal "Simulate an orbit a small step at a time, and work out where the lander is after any number of steps."
+
+  look {
+    scene 36x17 {
+      turtle t cols=7 rows=6 col=3 row=6 face=right moves=["repeat 12", "  forward 1", "  turn left 30"] at=canvas(0, 0)
+      program p code=["repeat 12", "  forward 1", "  turn left 30"] text=true right-of=t gap=1
+      earth e up=2 below=p gap=1
+    }
+    say """
+      Nothing pushes a lander round the moon. Each moment it would carry straight on, but the moon's
+      pull bends its path a little towards the middle. The program copies that one step at a time:
+      forward a little, then a small turn. Twelve steps with a turn of 30 degrees each bring it all
+      the way round, since 12 times 30 is 360. Smaller steps would make the path rounder.
+      """
+  }
+  do {
+    show coding.orbit-steps k=2 easy-k=0 hard-k=3
+    level easy {
+      worked coding.orbit-steps k=2 level=medium
+    }
+    show coding.orbit-xy k=2 v=4 easy-k=1 easy-v=2 hard-k=4 hard-v=2
+    show coding.orbit-trace s=3 j=1 easy-s=2 easy-j=0 hard-s=4 hard-j=2
+    show coding.orbit-fall h=40 g=1 easy-h=20 hard-h=60
+    show coding.orbit-steps k=4 easy-k=1
+    show coding.orbit-xy k=3 v=2 easy-k=2 hard-k=5 hard-v=4
+    show coding.orbit-trace s=4 j=0 easy-s=3 hard-s=2 hard-j=1
+    show coding.orbit-fall h=30 g=6 easy-g=1 hard-h=40
+    level hard {
+      show coding.orbit-xy k=3 v=4
+    }
+  }
+  try stars=2 {
+    show coding.orbit-bigger k=1 easy-k=0
+  }
+  try stars=3 {
+    show coding.orbit-hundred k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A simulation of an orbit goes a small step at a time: move a little, then let the pull change the way it moves."
+  }
+
+  grown-ups """
+    An orbit is a path that keeps bending towards the moon, and the program builds it from many
+    short straight steps, each followed by a small turn or a small change in speed. The common
+    mistakes are changing x before the speed has changed, when the lines say the speed first, and
+    thinking the turn is how far the lander goes. In the child's working, look for a table with a
+    column for each name, one row a step. If the child is stuck, walk the orbit on the floor with a
+    chalk mark at each step: a few paces forward, a small turn, and again until back at the start.
+    Off the page, swing a ball on a string in a circle and let go, and see that it flies off
+    straight. The two-star question compares two orbits without drawing them; the three-star
+    question uses the fact that the lander is back where it began every six steps to answer far
+    ahead. The pull in these programs grows the further the lander is from the centre, which keeps
+    the numbers small and whole; real gravity does the opposite and weakens with distance, so the
+    programs show the step-by-step method rather than the law of gravity.
+    """
+  level easy {
+    grown-ups "At this level the orbits have six or eight steps, one is worked in the teacher's pen, the lander is asked about after one or two steps, the side view is read after the first step, the spanner falls from 20 or 30, and the far-ahead question is 51 steps."
+  }
+  level hard {
+    grown-ups "At this level the orbits have ten or twelve steps, the lander is asked about after four or five steps, the side view is read later where a row for the speed leaves x as it was, the spanner falls from 60 with the moon's pull and from 40 with the Earth's stronger pull, a third position question is added, and the far-ahead question is 200 steps."
+  }
+}

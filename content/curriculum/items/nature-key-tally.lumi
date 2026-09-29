@@ -1,0 +1,42 @@
+# The story: Ada keys out the creatures from a morning's pond dipping and tallies the names; the
+# question asks how many gave a particular answer at a particular question, which means reading the
+# key backwards from the names.
+item nature.key-tally v=1 skills=[nature.keys, data.tables, addition.to-hundred] {
+  title "A morning at the pond"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "How many of them had no legs?", "For how many of them did Ada answer yes to question 1?", "How many of them did Ada have to take on to question 4?")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x33 {
+    column key at=canvas(1, 1) space=0 align=start {
+      text key1 "1  Has it got legs?  Yes: go to 3.  No: go to 2." width=32
+      text key2 "2  Has it got a shell?  Yes: pond snail.  No: leech." width=32
+      text key3 "3  Has it got eight legs?  Yes: water spider.  No: go to 4." width=32
+      text key4 "4  Does it walk on top of the water?  Yes: pond skater.  No: water boatman." width=32
+    }
+    table t cols=2 head=["Named by the key", "How many"] cells=["pond snail", "7", "leech", "2", "water spider", "1", "pond skater", "9", "water boatman", "5"] below=key gap=1
+    text ask "Ada used the key on every creature she caught in the canal this morning. {asks}" narrate width=32 below=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 9, 15, 14)
+  feedback {
+    when (k == 0 and answer == 7) point=t {
+      say "The pond snails have no legs, and so do the leeches. Which other name did question 1 send on to question 2?"
+    }
+    when (k == 1 and answer == 9) point=t {
+      say "That is the pond skaters alone. Every creature with legs said yes to question 1: which names come after question 3?"
+    }
+    when (k == 2 and answer == 15) point=key {
+      say "The water spider was named at question 3 and never reached question 4. Take it away."
+    }
+  }
+  hint "Find where each name sits in the key. Which question named it, and what was the answer there?"
+  hint "Add up the counts for every name that comes after that answer."
+}

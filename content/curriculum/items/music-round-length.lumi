@@ -1,0 +1,35 @@
+# How long a round lasts: the last voice comes in two bars after the one before for every voice
+# after the first, and then sings the whole tune as many times as everyone else. 8 bars a time.
+item music.round-length v=1 skills=[music.singing, music.form, reasoning.two-steps] {
+  title "When does the round end?"
+  difficulty (if v <= 1 then 0 else 1)
+  let v=0..3
+  let n={pick(v, 2, 3, 4, 3)}
+  let t={pick(v, 1, 1, 2, 3)}
+  let times={pick(t - 1, "once", "twice", "three times")}
+  let right={8 * t + 2 * (n - 1)}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 36x22 {
+    table song cols=2 head=["Bars", "Words"] cells=["1 and 2", "Are you sleeping", "3 and 4", "Brother John", "5 and 6", "Morning bells are ringing", "7 and 8", "Ding dang dong"] at=canvas(1, 1)
+    text ask "{n} voices sing Frère Jacques as a round, each coming in two bars after the one before, and each sings the 8 bars {times}. How many bars is it from the first voice starting to the last voice finishing?" narrate width=34 below=song gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 8 * t) point=song {
+      say "That is how long one voice sings. The last voice starts later. How many bars later?"
+    }
+    when (answer == 8 * t * n) point=song {
+      say "The voices sing at the same time, not one after another. Add only the wait before the last voice comes in."
+    }
+  }
+  hint "How many bars after the first voice does the last voice come in?"
+  hint "The last voice then sings as long as everyone else. Add that to its wait."
+}

@@ -15,13 +15,13 @@ item physics.clouds-moon-watch v=1 skills=[physics.sky, subtraction.to-twenty] {
     let v=3..3
   }
 
-  scene 25x30 {
+  scene 25x32 {
     orbit sky moon=k places=1 arrow=1 person=0 at=canvas(1, 0)
-    text ask "From the cloud islands Mia sees {first} one night, and {later} some nights later. The moon takes twenty eight days to go round, and the eight places are the same distance apart. How many nights were there between them?" narrate width=24 below=sky gap=1
+    text ask "From the cloud islands Mia sees {first} one night, and {later} some nights later. The moon takes about twenty nine and a half days to go round, so each quarter of the way takes about a week. About how many nights were there between them?" narrate width=24 below=sky gap=1
     number-input answer below=ask gap=1
   }
 
   answer answer=gap
   hint "Find both shapes on the ring, and count the places between them the way the arrow points."
-  hint "Each place is three and a half nights, so two places are seven."
+  hint "Two places are a quarter of the way round, about a week of nights."
 }

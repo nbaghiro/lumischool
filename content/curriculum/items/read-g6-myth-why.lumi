@@ -1,0 +1,38 @@
+# A myth or legend read whole, and why a character acts as they do. The three were written for the
+# lesson: the Greek myth of Daedalus and Icarus (as Ovid tells it, Metamorphoses VIII), the Norse myth
+# of Thor fishing with the giant Hymir (as Snorri tells it, Prose Edda, Gylfaginning 48), and the
+# Russian bylina of Ilya Muromets and Nightingale the Robber. One wrong reason is a guess the text
+# rules out, the other misreads it.
+item reading.myth-why v=1 skills=[reading.myths, reading.inference, reading.evidence] {
+  title "Why did they do it?"
+  difficulty pick(k, 0, 1, 1)
+  let k=0..2
+  let story={pick(k, "Long ago the inventor Daedalus and his son Icarus were kept prisoner on the island of Crete by King Minos, who watched every ship that left. ‘He rules the land and the sea,’ said Daedalus, ‘but not the sky.’ He tied feathers together with thread and wax and made two pairs of wings. ‘Fly the middle way,’ he told his son. ‘Too low, and the spray will soak your feathers. Too high, and the sun will melt the wax.’ They rose together over the waves. But Icarus loved the rush of the air, and he forgot the warning and climbed towards the sun. The wax grew soft, the feathers slipped away, and he fell into the sea. His father searched the water and found only feathers. That sea is still called the Icarian Sea.", "Thor, the god of thunder, once went fishing with the giant Hymir on the cold northern sea. For bait Thor took the head of Hymir’s biggest ox, which made the giant grumble. Thor rowed far past Hymir’s fishing grounds. ‘Stop,’ begged Hymir. ‘Out here lives the Midgard Serpent, which lies coiled round the whole world.’ Thor rowed further. Then he threw out his line. Something huge took the bait, and Thor pulled so hard that his feet went through the bottom of the boat onto the sea bed. Out of the waves rose the serpent’s head, spitting poison. Thor lifted his hammer. But Hymir, white with fear, cut the line, and the serpent sank back into the deep. It lies there still, round the edge of the world.", "Near the town of Murom lived a peasant’s son called Ilya, who could not walk. For thirty-three years he sat by the stove while his parents worked in the fields. One day two wandering pilgrims asked him for a drink. ‘I cannot stand,’ said Ilya. ‘Get up and fetch it,’ they said. He tried, and he stood. He brought them a cup, and when they had him drink from it too, he felt strong enough to lift the earth. He rode off to serve Prince Vladimir in Kyiv. On a forest road waited Nightingale the Robber, whose whistle flattened trees and knocked travellers down. Ilya drew his bow and shot the robber in the eye, tied him to his saddle and rode on to Kyiv, where the people called him a hero.")}
+  let title={pick(k, "Daedalus and Icarus: a Greek myth", "Thor’s fishing trip: a Norse myth", "Ilya of Murom: a Russian legend")}
+  let right={pick(k, "He loved flying and forgot the warning.", "He was terrified of the serpent.", "The pilgrims’ drink, after he stood up.")}
+  let guess={pick(k, "He wanted to reach land faster.", "He was angry that his ox was the bait.", "Resting by the stove for thirty-three years.")}
+  let misread={pick(k, "His father told him to fly near the sun.", "The line had tangled round the boat.", "A gift of a horse from Prince Vladimir.")}
+
+  scene 36x48 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=1 align=end {
+        text ask "{pick(k, \"Read the myth. Why did Icarus climb too high?\", \"Read the myth. Why did Hymir cut the line?\", \"Read the legend. What gave Ilya his strength?\")}" width=22
+        hut h pictures=4
+      }
+      passage p title="{title}" text="{story}" width=36
+      choice pick options=[pick(k, right, guess, misread), pick(k, guess, misread, right), pick(k, misread, right, guess)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == guess) point=p {
+      say "That could be true in another story. Find the sentence that says what happened just then."
+    }
+    when (pick == misread) point=p {
+      say "Check that against the story. Does it really say so?"
+    }
+  }
+  hint "Find the moment in the story the question asks about."
+  hint "What does the sentence just before it tell you?"
+}

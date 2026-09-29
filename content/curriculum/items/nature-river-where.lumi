@@ -1,0 +1,39 @@
+# The way in: the lettered river, and the place to find. The source in the hills and the mouth at the
+# sea are the plain two; the outside and the inside of the bend have to be told apart.
+item nature.river-where v=1 skills=[nature.rivers] {
+  title "Where on the river?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let place={pick(k, "the source, where the river starts", "the mouth, where the river runs into the sea", "the outside of the bend", "the inside of the bend")}
+  let letter={pick(k, "A", "D", "B", "C")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x24 {
+    parts fig of=river at=canvas(1, 1)
+    text ask "Ben traces the canal town's river on the map, from the spring in the hills to the sea. Which letter is nearest {place}?" narrate width=32 below=fig gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=letter
+  feedback {
+    when (k == 0 and pick == "D") point=fig {
+      say "D is where the river runs into the sea, at its end. The source is where it starts, high in the hills by the spring."
+    }
+    when (k == 1 and pick == "A") point=fig {
+      say "A is up in the hills, near the spring where the river starts. The mouth is at the other end, by the sea."
+    }
+    when (k == 2 and pick == "C") point=fig {
+      say "C is on the inside of the bend, where the curve is tight. The outside is the long way round, on the far bank."
+    }
+    when (k == 3 and pick == "B") point=fig {
+      say "B is on the outside of the bend, the long way round. The inside is where the curve is tightest."
+    }
+  }
+  hint "Find the spring in the hills, then the sea. Which way does the water run?"
+  hint "On every bend, the outside bank is the longer curve and the inside bank the shorter one."
+}

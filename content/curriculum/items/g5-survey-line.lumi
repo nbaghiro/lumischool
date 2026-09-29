@@ -1,0 +1,28 @@
+# A line graph read for change: meteors counted each hour of a shower night, and the rise between two
+# readings found from the scale of five a square.
+item survey.line v=1 skills=[data.line-graphs] {
+  title "The meteor shower"
+  difficulty (t + q)
+  let t=0..2 q=0..1
+  level easy {
+    let q={0} t={0, 1}
+  }
+  level hard {
+    let q={1} t={1, 2}
+  }
+
+  scene 36x18 {
+    linegraph shower labels=["9pm", "10pm", "11pm", "12am", "1am"] values=[pick(t, 5, 10, 15), pick(t, 10, 15, 20), pick(t, 20, 35, 30), pick(t, 35, 30, 55), pick(t, 25, 20, 40)] min=0 max=60 per=5 step=10 color=berry at=canvas(1, 1)
+    text ask "The club counted meteors in each hour of a shower night. {pick(q, \"How many more were counted in the busiest hour than in the first?\", \"What is the biggest rise from one hour's count to the next?\")}" narrate width=14 right-of=shower gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer pick(q, pick(t, 30, 25, 40), pick(t, 15, 20, 25))
+  feedback {
+    when (answer == pick(q, pick(t, 35, 35, 55), pick(t, 35, 35, 55))) point=shower {
+      say "That is the height of the highest point. The question asks how much it changed."
+    }
+  }
+  hint "Each square up the side is five meteors. Read the points you need."
+  hint "Take the lower reading from the higher one."
+}

@@ -1,0 +1,57 @@
+lesson g5-angles-and-bearings v=1 format=teach grade=5 unit=5 subject=maths levels=[easy, medium, hard] {
+  title "Angles in shapes, and bearings"
+  goal "Find a missing angle in a triangle, a quadrilateral or across parallel lines, and give a direction as a bearing."
+
+  look {
+    scene 36x14 {
+      anglesum tri kind=triangle a=60 b=70 ask=-1 at=canvas(1, 1)
+      compass rose needle=135 right-of=tri gap=2
+    }
+    say """
+      The angles of any triangle make 180 degrees, and a quadrilateral splits into two triangles,
+      so its angles make 360. From the observatory, a direction is given as a bearing: the angle
+      turned clockwise from north, in degrees. East is 090, south is 180, and the needle here
+      points on a bearing of 135, south-east.
+      """
+  }
+  do {
+    practice angles.triangle-corner count=1 seed=3
+    practice angles.quad-corner count=1 seed=4
+    level easy {
+      worked angles.isosceles-base t=50 level=medium
+    }
+    practice angles.isosceles-base count=1 seed=5
+    practice angles.parallel-angle count=1 seed=6 hard-count=2
+    practice angles.needle-bearing count=1 seed=2
+    practice angles.back-bearing count=1 seed=7
+    practice angles.turn-telescope count=1 seed=8
+    practice angles.polygon-sum count=1 seed=9
+  }
+  try stars=2 {
+    show angles.outside-angle a=48 b=57 easy-b=40 hard-a=75 hard-b=66
+  }
+  try stars=3 {
+    show angles.isosceles-biggest t=40 easy-t=70 hard-t=30
+  }
+  remember {
+    say "A triangle's angles make 180 degrees and a quadrilateral's make 360. A bearing is turned clockwise from north."
+  }
+
+  grown-ups """
+    Tear the corners off a paper triangle and put them together: they make a straight line, which
+    is the reason for 180. Two triangles make a quadrilateral, so 360 follows. Across parallel lines
+    the angles come in two sizes only, and each pair makes 180, so the question to ask is whether
+    the angle looks sharp or wide. Bearings go clockwise from north; the way back is half a turn
+    round, 180 more or 180 less. In the two-star question the outside angle equals the two far
+    angles together, which is quicker than finding the third. In the three-star question the known
+    angle can be one of the equal pair or the odd one, and both triangles have to be tried. If the
+    sums are still guesswork, stay here another day. Off the page, use a phone compass to find the
+    bearing of the front door from the kitchen.
+    """
+  level easy {
+    grown-ups "At this level the triangle's angles are tens, a quadrilateral has a right angle, an isosceles triangle with a top angle of 50 is worked once in the teacher's pen before top angles of 20, 40 or 80, the parallel lines ask for the angle in the same position, the needle is on east, south or west, the way back is from a bearing under 180, the telescope turns without passing north, the shape has five sides, the two-star adds 48 and 40, and the three-star is built from an angle of 70."
+  }
+  level hard {
+    grown-ups "At this level the angles are not tens and add to more than 120, the quadrilateral has no right angle, the top angles are 50, 70 or 110, the parallel lines ask for an angle that makes 180 with the marked one and are asked twice, the needle is between the main points, the way back is from a bearing over 180, the telescope turns past north, the shape has seven or eight sides, the two-star adds 75 and 66, and the three-star is built from an angle of 30."
+  }
+}

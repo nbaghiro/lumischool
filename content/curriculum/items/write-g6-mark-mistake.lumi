@@ -1,0 +1,36 @@
+# The robot's note has a colon and a semicolon, and at most one of them is wrong. The child says
+# which, or that both are right, so each mark has to be tested on its own.
+item writing.mark-mistake v=1 skills=[writing.editing, writing.colons-semicolons, reasoning.find-the-error] {
+  title "Which mark is wrong?"
+  difficulty k
+  let k=0..2
+  let says={pick(k, "We took: a tent and a stove; the sledge was full.", "We had one job: count seals; it took all day.", "Fog came; because the wind turned. We saw it: a whale.")}
+  let right={pick(k, "the colon", "both are right", "the semicolon")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x24 {
+    fixbot bot says="{says}" width=25 fixed=0 ring=-1 at=canvas(1, 0)
+    text ask "The robot typed up Isla's note. Which mark is wrong?" narrate width=29 below=bot gap=1
+    choice pick options=["the colon", "the semicolon", "both are right"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "the colon" and right != "the colon") point=bot {
+      say "Cover everything after the colon. The words before it make a whole sentence, so the colon can stay."
+    }
+    when (pick == "the semicolon" and right != "the semicolon") point=bot {
+      say "Read each side of the semicolon on its own. Both are main clauses about the same thing, so the semicolon can stay."
+    }
+    when (pick == "both are right" and right != "both are right") point=bot {
+      say "Test each mark on its own. Before a colon there must be a whole sentence; on both sides of a semicolon there must be one."
+    }
+  }
+  hint "Cover the words after the colon. Is what is left a whole sentence?"
+  hint "Now read both sides of the semicolon. Is each one a whole sentence?"
+}

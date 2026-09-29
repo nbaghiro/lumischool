@@ -1,0 +1,34 @@
+# A name said twice in a row; the child types the pronoun that takes its place in the second
+# sentence. At hard the repeated words are more than one thing, or not the subject at all.
+item writing.replace-the-name v=1 skills=[writing.cohesion, writing.pronouns] {
+  title "Say it once"
+  difficulty (if k < 2 then 0 else if k == 2 then 1 else 2)
+  let k=0..3
+  let t={pick(k, "Mrs Adeyemi opens the library at nine. Mrs Adeyemi unlocks the tall doors first.", "The library has a green dome. The library was built by the river two hundred years ago.", "The oldest books are kept upstairs. The oldest books are too fragile to lend.", "The children found an old map on a shelf. The children took the old map to Mrs Adeyemi.")}
+  let rep={pick(k, "Mrs Adeyemi", "The library", "The oldest books", "the old map")}
+  let fix={pick(k, "She", "It", "They", "it")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 35x18 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage para title="" text="{t}" width=20 numbers=false
+      library lib columns=6 open=1
+    }
+    text ask "The second sentence repeats the noun {rep}. Write the pronoun that could take its place." narrate width=22 below=top gap=1
+    word-input word options=["{fix}"] letters=4 right-of=ask gap=1
+  }
+
+  answer word=fix
+  feedback {
+    when (word == "It" and fix == "They") point=para {
+      say "It is for one thing. Is there one book there, or more?"
+    }
+  }
+  hint "Is the repeated name one person, one thing, or more than one?"
+  hint "Is the repeated noun the subject, at the start, or the object, after the verb? That changes the pronoun's capital letter."
+}

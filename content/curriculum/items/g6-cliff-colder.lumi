@@ -1,0 +1,34 @@
+# The change unknown: the difference between two temperatures is the higher take away the lower, and
+# when both are below zero that is taking away a negative number.
+item negative.cliff-colder v=1 skills=[number.negatives, number.subtract-negatives] {
+  title "Colder on the cliff"
+  difficulty ((if h < 0 then 1 else 0) + (h - c) / 10)
+  let h={-5, -4, -2, 3, 5} c={-19, -17, -14, -11}
+  level easy {
+    let h={3, 5} c={-14, -11}
+  }
+  level hard {
+    let h={-5, -4, -2} c={-19, -17}
+  }
+
+  scene 35x15 {
+    row both at=canvas(1, 1) space=2 align=end {
+      thermometer hut from=-20 to=10 step=5 value=h unit="°C"
+      thermometer cliff from=-20 to=10 step=5 value=c unit="°C"
+    }
+    text ask "By the research hut it is {h} °C. On top of the ice cliff it is {c} °C. How many degrees colder is it on the cliff?" narrate width=13 right-of=both gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (h - c)
+  feedback {
+    when (h > 0 and answer == -c - h) point=cliff {
+      say "The two readings are on opposite sides of zero. Count from {c} up to zero, then on to {h}."
+    }
+    when (h < 0 and answer == -c - h) point=cliff {
+      say "Both readings are below zero, so they are not added. How far is it from {c} up to {h}?"
+    }
+  }
+  hint "Which reading is lower on the scale? Start there."
+  hint "How far is it from {c} up to zero, and from zero up to {h}? When both are below zero, how far apart are they?"
+}

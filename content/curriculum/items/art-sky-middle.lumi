@@ -1,0 +1,38 @@
+# Blending two mixed colours straight across: the middle band holds the primary they share and the
+# two they do not, and those two make that primary's opposite, so the middle turns dull. It is the
+# reason a planned sky puts the shared primary in as a band of its own.
+item art.sky-middle v=1 skills=[art.colour-mixing, art.blending, reasoning.predict] {
+  title "The colour in the middle"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2
+  let r={(k + 1) % 3}
+  let a={pick(k, "orange", "orange", "green")}
+  let b={pick(k, "purple", "green", "purple")}
+  let right={pick(k, "A dull red-brown", "A dull yellow-brown", "A dull blue-grey")}
+  let w1={pick(k, "A clean red", "A clean yellow", "A clean blue")}
+  let w2={pick(k, "A bright yellow", "A bright blue", "A bright red")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x20 {
+    paintpots pots pots=[if k == 2 then "yellow+blue" else "red+yellow", if k == 1 then "yellow+blue" else "red+blue"] result="?" labels=true at=canvas(1, 1)
+    text ask "Ada blends her midnight sky from {a} low down to {b} higher up, mixing the two straight together in the middle. What does the middle band look like?" width=18 right-of=pots gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=pots gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=pots {
+      say "Both ends share one primary, but each brings another as well. What do those other two make together, and what does that do to the shared one?"
+    }
+    when (pick == w2) point=pots {
+      say "That primary is in neither end. Which primaries are in {a}, and which in {b}?"
+    }
+  }
+  hint "Write down the primaries in {a} and the primaries in {b}. Which one is in both?"
+  hint "The two primaries left over mix together too. Where does their mix sit on the wheel from the shared one?"
+}

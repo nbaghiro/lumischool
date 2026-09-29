@@ -1,0 +1,27 @@
+# The chord of each line's first bar played low on the keyboard, the bass note a blues pianist's left
+# hand starts each line with: notes 1, 4 and 5 of C, G, F or A major, in order.
+item music.blues-play-roots v=1 skills=[music.blues, music.keys] {
+  title "Where each line starts"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let key={pick(k, "C", "G", "F", "A")}
+  let a={pick(k, "C3", "G3", "F3", "A3")}
+  let b={pick(k, "F3", "C4", "Bf3", "D4")}
+  let c={pick(k, "G3", "D4", "C4", "E4")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 32x24 {
+    table chart cols=5 head=["Bars", "1st", "2nd", "3rd", "4th"] cells=["1 to 4", "I", "I", "I", "I", "5 to 8", "IV", "IV", "I", "I", "9 to 12", "V", "IV", "I", "I"] at=canvas(1, 1)
+    text ask "The blues in {key} major. Play the letter of the chord in bar 1, then bar 5, then bar 9, low down, one after another." narrate width=30 below=chart gap=1
+    piano keys from=C3 whites=15 wide=2 labels=letters below=ask gap=1
+  }
+
+  check music.plays notes=[{a}, {b}, {c}]
+  hint "Which numerals start the three lines?"
+  hint "Count up the {key} major scale from {key} as 1. Which letters are notes 4 and 5?"
+}

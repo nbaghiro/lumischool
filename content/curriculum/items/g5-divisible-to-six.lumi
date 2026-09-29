@@ -1,0 +1,32 @@
+# The two-star: six needs both tests at once, even and a digit sum in the three times table. The
+# smallest number added makes both true, and adding for one test alone is the mistake.
+item divisible.to-six v=1 stars=2 skills=[number.multiples.divisibility, reasoning.two-conditions] {
+  title "Into the six times table"
+  difficulty ((6 - n % 6) % 6)
+  let n=100..400
+  where (n % 6 >= 1 and n % 6 <= 4)
+  level easy {
+    where (n % 6 >= 3)
+  }
+  level hard {
+    where (n % 6 <= 2)
+  }
+
+  scene 36x15 {
+    observatory dome open=1 at=canvas(1, 1)
+    text ask "The observatory's log has {n} clear nights in it. What is the smallest number of clear nights that could be added to make a number in the six times table?" narrate width=22 right-of=dome gap=2
+    number-input answer width=2 below=ask gap=1
+  }
+
+  answer ((6 - n % 6) % 6)
+  feedback {
+    when ((n + answer) % 2 == 0 and (n + answer) % 3 != 0) point=ask {
+      say "{n + answer} is even, but do its digits add to a number in the three times table?"
+    }
+    when ((n + answer) % 3 == 0 and (n + answer) % 2 != 0) point=ask {
+      say "{n + answer} passes the test for 3, but is it even?"
+    }
+  }
+  hint "Which two tests does a number in the six times table pass?"
+  hint "Count on from {n} one night at a time. Which total is the first to pass both tests?"
+}

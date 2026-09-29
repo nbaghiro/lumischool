@@ -1,0 +1,34 @@
+# Time words in a diary: yesterday, two days ago, the day after. Each entry's date is given, and the
+# child counts back or forward from it, with the log for the one that names the gale.
+item reading.diary-when v=1 skills=[reading.text-types, reading.sequencing] {
+  title "When did it happen?"
+  difficulty pick(k, 0, 1, 2, 2)
+  let k=0..3
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 36x21 {
+    text ask "{pick(k, \"On which date did they see the whale?\", \"On which date did the runner crack?\", \"On which date was their best day?\", \"On which date did they leave the hut?\")}" at=canvas(1, 1) width=34
+    row bottom below=ask gap=1 space=1 align=start {
+      passage p title="{pick(k, \"Friday 7 July\", \"Thursday 6 July\", \"Friday 7 July\", \"Wednesday 5 July\")}" text="{pick(k, \"Yesterday we saw a whale blow twice at the ice edge.\", \"Two days ago Pim's runner cracked, and today it held all the way.\", \"The day after the gale was our best day so far.\", \"Since we left the hut the day before yesterday, we have gone twenty kilometres.\")}" width=18 numbers=false
+      table log cols=3 head=["Date", "km", "Weather"] cells=["3 July", "14", "sunny", "4 July", "6", "windy", "5 July", "0", "gale", "6 July", "18", "calm", "7 July", "10", "sunny"]
+    }
+    choice pick options=["3 July", "4 July", "5 July", "6 July", "7 July"] below=bottom gap=1
+  }
+
+  answer pick=pick(k, "6 July", "4 July", "6 July", "3 July")
+  feedback {
+    when (pick == pick(k, "7 July", "6 July", "7 July", "5 July")) point=p {
+      say "That is the day the entry was written. The words in it point to another day: count from the date at the top."
+    }
+    when (k == 2 and pick == "5 July") point=log {
+      say "That is the day of the gale. The entry says the day after it."
+    }
+  }
+  hint "Find the date at the top of the entry. Which words count back or forward from it?"
+  hint "Count the days one at a time on the log."
+}

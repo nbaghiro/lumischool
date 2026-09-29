@@ -1,0 +1,23 @@
+# The way in: a fire needs fuel, oxygen and heat, and putting one out takes one of them away (the fire
+# triangle; London Fire Brigade and the Science Learning Hub). A grown-up lights and puts out candles.
+item chem.fire-triangle v=1 skills=[chemistry.burning] {
+  title "What did it take away?"
+  let s=0..2
+  let what={pick(s, "puts a glass jar over it", "lets the last of the wax burn away", "drips cold water onto the wick")}
+  let right={pick(s, "oxygen", "fuel", "heat")}
+
+  scene 36x15 {
+    candle c start=10 burnt=(if s == 1 then 9 else 5) lit=0 jar=(if s == 0 then 1 else 0) at=canvas(1, 0)
+    text ask "A fire needs fuel, oxygen from the air, and heat. In the research hut a grown-up puts out a candle: she {what}. Which of the three did that take away?" narrate width=25 right-of=c gap=1
+    choice pick options=["fuel", "oxygen", "heat"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=c {
+      say "The candle still had the other two. Which one was it left without?"
+    }
+  }
+  hint "The wax is the fuel. The air brings the oxygen. What else does a flame need?"
+  hint "What did her way of putting it out change?"
+}

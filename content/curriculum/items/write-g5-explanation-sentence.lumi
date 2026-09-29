@@ -1,0 +1,36 @@
+# An explanation tells how something always works, in the present, for anyone. Of three sentences
+# one belongs; one is a recount of a trip and one an opinion, and at hard the recount is close.
+item writing.explanation-sentence v=1 skills=[writing.explanations, writing.text-types] {
+  title "Which sentence belongs?"
+  difficulty k
+  let k=0..2 r=0..2
+  let right={pick(k, "A lock lifts a boat up a hill of water.", "The keeper opens the paddles with a key.", "When the chamber is full, the gates open.")}
+  let w1={pick(k, "Yesterday we went through a lock.", "Mr Hale opened the paddles for us.", "When the chamber was full, we got out.")}
+  let w2={pick(k, "Locks are the best thing on the canal.", "The paddles are the hardest part.", "Going through a lock is great fun.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 29x20 {
+    row top at=canvas(1, 0) space=2 align=start {
+      text ask "Nell is writing an explanation of how a lock works, for someone who has never seen one. Which sentence belongs in it?" narrate width=21
+      person nell pose=think age=grownup hair=long colour=auburn top=berry
+    }
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=pick {
+      say "That tells what happened to someone once, in the past. An explanation says how it works every time, for anyone."
+    }
+    when (pick == w2) point=pick {
+      say "That is what someone thinks of it. An explanation sticks to how it works."
+    }
+  }
+  hint "Does the sentence say how a lock always works, or what happened one day, or what someone thinks?"
+  hint "Look at the verbs: do they say it happened then, or that it happens every time?"
+}

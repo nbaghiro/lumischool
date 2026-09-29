@@ -1,0 +1,32 @@
+# A sitting summed up in one sentence. One wrong choice is a true detail, too small to be a summary,
+# and one is true of another part of the book.
+item reading.garden-summary v=1 skills=[reading.summary, reading.whole-book] {
+  title "Sum up what you read"
+  let k=0..2
+  let gist={pick(k, "Orphaned in India, Mary is sent to Yorkshire.", "Mary gets her bit of earth and finds Colin.", "Colin goes into the garden and stands up.")}
+  let detail={pick(k, "The children call her Mistress Mary.", "Mrs Medlock takes Mary to her uncle.", "Dickon brings his fox and crow to Colin.")}
+  let other={pick(k, "Mary finds the key to the garden.", "Colin sees the garden for the first time.", "Mary shouts at Colin to stop screaming.")}
+
+  scene 35x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        bookcast m who=mary pose=walk dir=1
+        gardengate g
+        text ask "Which sentence sums up {pick(k, \"chapters 1 to 3\", \"chapters 12 and 13\", \"chapters 19 to 21\")} best?" width=13
+      }
+      choice pick options=[pick(k, detail, gist, other), pick(k, gist, other, gist), pick(k, other, detail, detail)] stack=column
+    }
+  }
+
+  answer pick=gist
+  feedback {
+    when (pick == detail) point=m {
+      say "That happens, but it is one moment. A summary covers the whole part you read."
+    }
+    when (pick == other) point=m {
+      say "That is from another part of the book. What happens in these chapters, from start to end?"
+    }
+  }
+  hint "What would you tell a friend happened, in one breath?"
+  hint "Which sentence is still true if you leave out every small detail?"
+}

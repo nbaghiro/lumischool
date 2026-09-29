@@ -1,0 +1,47 @@
+# A reason in the core: every signature belongs to a major key and to the minor key three semitones
+# below it, and a tune's last note, its home note, says which. The wrong option names the key after
+# the last sharp or the last flat. G major or E minor; F major or D minor; D major or B minor; B flat
+# major or G minor.
+item music.keysig-relative-minor v=1 skills=[music.key-signatures, music.major-minor, reasoning.explain] {
+  title "Major or minor key?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..4
+  let sig={pick(k, "G", "G", "F", "D", "Bf")}
+  let n1={pick(k, "D5", "B4", "A4", "D5", "D5")}
+  let n2={pick(k, "B4", "G4", "F4", "Cs5", "Bf4")}
+  let n3={pick(k, "A4", "Fs4", "E4", "A4", "A4")}
+  let n4={pick(k, "G4", "E4", "D4", "B4", "G4")}
+  let right={pick(k, "G major", "E minor", "D minor", "B minor", "G minor")}
+  let pair={pick(k, "E minor", "G major", "F major", "D major", "B flat major")}
+  let trap={pick(k, "F sharp major", "F sharp minor", "B flat major", "C sharp major", "E flat major")}
+  let o1={pick(k, "E minor", "G major", "D minor", "C sharp major", "B flat major")}
+  let o2={pick(k, "G major", "F sharp minor", "F major", "B minor", "E flat major")}
+  let o3={pick(k, "F sharp major", "E minor", "B flat major", "D major", "G minor")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..4
+  }
+
+  scene 36x23 {
+    row top space=2 align=end at=canvas(1, 1) {
+      notes tune clef=treble notes=[n1, n2, n3, n4] values=[1, 1, 1, 1] meter=4 key=sig
+      hut hut pictures=2
+    }
+    text ask "The end of a tune on the hut's radio. A key signature belongs to a major key and also to the minor key three semitones below it, and a tune usually ends on its home note. Which key is this tune in?" narrate width=34 below=top gap=1
+    choice pick options=[o1, o2, o3] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == trap) point=tune {
+      say "The key is not named after the last sign. Work out the major key first, then the minor key three semitones below it."
+    }
+    when (pick == pair) point=tune {
+      say "Both keys share this signature. Name the tune's last note. Which of the two keys has it as home?"
+    }
+  }
+  hint "Which major key has this signature? Count three semitones down from its note for the minor key."
+  hint "Which of those two keys starts on the tune's last note?"
+}

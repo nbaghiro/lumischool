@@ -1,0 +1,46 @@
+# Natural selection in the gorge pool and on the ice: the fish that match the pool floor escape the
+# kingfisher and have young like themselves. Hard turns the floor pale and brings back the Arctic
+# fox.
+item nature.who-survives v=1 skills=[nature.inheritance, reasoning.predict] {
+  title "Who lives to have young?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "Which fish are more likely to live long enough to have young?", "The young of dark fish are mostly dark, and the young of pale fish mostly pale. After many years, what will most of the fish in the pool be like?", "Then a great flood covers the pool floor with pale sand. Which fish will do better from now on?", "On the ice, Arctic foxes with thicker fur lived through hard winters more often than thin-furred ones, and passed their fur on. After many generations, what will most Arctic foxes have?")}
+  let ans={pick(k, "the dark fish", "mostly dark", "the pale fish", "thicker fur")}
+  let o1={pick(k, "the pale fish", "mostly pale", "the dark fish", "thinner fur")}
+  let o2={pick(k, "both just the same", "half and half, for ever", "both just the same", "no fur at all")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x31 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      kingfisher kf flying=1 facing=1
+      fishshoal fs rows=2 cols=4 facing=-1
+    }
+    text told "Ada remembers the pool below the waterfall. Some of its small fish are pale and some are dark, and the pool floor is dark rock. The kingfisher dives for the fish it can see." narrate width=32 below=pics gap=1
+    text ask "{asks}" narrate width=32 below=told gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=told {
+      say "The kingfisher catches what it can see. Which fish are hard to see against dark rock?"
+    }
+    when (k == 1 and pick != ans) point=told {
+      say "More dark fish live to have young, and their young are dark. What happens year after year?"
+    }
+    when (k == 2 and pick != ans) point=told {
+      say "Now the floor is pale. Which fish stand out against it, and which match it?"
+    }
+    when (k == 3 and pick != ans) point=ask {
+      say "The foxes that lived longer passed their fur on. Which fur was that?"
+    }
+  }
+  hint "Which ones are hardest for a hunter to catch, or best at getting through the hard times?"
+  hint "Those live to have the most young, and the young take after their parents."
+}

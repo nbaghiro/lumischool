@@ -1,0 +1,35 @@
+# Probability as a fraction of equally likely outcomes: the grid of two dice holds 36 products, and
+# the event is the cells that fit out of 36, in its simplest form.
+item chance.dice-products v=1 skills=[probability.fractions, probability.outcomes] {
+  title "Products of two dice"
+  difficulty e
+  let e=0..3
+  level easy {
+    let e={0, 1}
+  }
+  level hard {
+    let e={2, 3}
+  }
+
+  scene 35x28 {
+    outcomes o rows=["1", "2", "3", "4", "5", "6"] cols=["1", "2", "3", "4", "5", "6"] first=Red second=Blue fill=3 at=canvas(1, 1)
+    text ask "The lander's computer rolls a red and a blue dice and multiplies the numbers. What is the probability that the product is {pick(e, \"even\", \"odd\", \"exactly 12\", \"20 or more\")}? Write it in its simplest form." narrate width=34 below=o gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input top width=3
+      text slash "/"
+      number-input bottom width=3
+    }
+  }
+
+  answer top=num(pick(e, 3 / 4, 1 / 4, 1 / 9, 2 / 9)) bottom=den(pick(e, 3 / 4, 1 / 4, 1 / 9, 2 / 9))
+  feedback {
+    when (bottom == 36 and top == pick(e, 27, 9, 4, 8)) point=o {
+      say "That is right, but not in its simplest form. Can the top and the bottom both be divided?"
+    }
+    when (bottom == 6 or bottom == 12) point=o {
+      say "There are 36 equally likely pairs of dice, one for each cell of the grid."
+    }
+  }
+  hint "How many cells does the grid have? How many of them fit?"
+  hint "Write the cells that fit out of all the cells, then simplify."
+}

@@ -1,0 +1,35 @@
+# The way in to a block that uses itself: spiral draws one side and then uses itself with a number one
+# smaller, until the number reaches 1. The drawing is hidden so the lines are counted from the text.
+item coding.self-spiral v=1 skills=[coding.recursion, coding.procedures, coding.text] {
+  title "A spiral that uses itself"
+  difficulty (s / 2)
+  let s=3..6
+  level easy {
+    let s={3, 4, 5}
+  }
+  level hard {
+    let s={5, 6}
+  }
+
+  scene 36x30 {
+    program p code=["define spiral n", "  forward n", "  turn left", "  if n is more than 1", "    spiral n - 1", "spiral {s}"] text=true at=canvas(0, 0)
+    turtle t cols=(s + 1) rows=(s + 1) col=1 row=(s + 1) face=right moves=["define spiral n", "  forward n", "  turn left", "  if n is more than 1", "    spiral n - 1", "spiral {s}"] show=false mark=false right-of=p gap=1
+    text ask "The turtle draws a spiral on the ice. How many times does line 2 run? How many squares long is the line it draws, all together?" width=18 at=canvas(0, 15)
+    text t1 "line 2" below=ask gap=1
+    number-input runs right-of=t1 gap=1
+    text t2 "squares" below=t1 gap=1
+    number-input moves right-of=t2 gap=1
+  }
+
+  check coding.runs of=t runs="ran(2)" moves=moves
+  feedback {
+    when (runs == 1) point=p {
+      say "Line 5 uses spiral again, with n one smaller, so line 2 runs again each time."
+    }
+    when (moves == s * s) point=p {
+      say "Each side is one shorter than the side before: {s}, then {s - 1}, and so on down to 1."
+    }
+  }
+  hint "What is n the first time? What is it the next time spiral is used?"
+  hint "When does the if say no? Write the sides down until then, and add them."
+}

@@ -1,0 +1,26 @@
+# The three-star: the card for stopping the water wheel, written for someone new, marked by a grown-up
+# who follows it; at hard, a second card for oiling the axle that starts where the first ends.
+item writing.write-instructions v=1 stars=3 skills=[writing.instructions, writing.composing] {
+  title "Your card for the wheel"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x38 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      waterwheel wheel paddles=8 lit=0
+      kingfisher kf flying=1 facing=-1
+    }
+    text ask "{if k == 0 then \"Write a card that tells someone new how to stop the water wheel: a title that says the goal, what you need, five numbered steps that each start with a command, one exact amount or sign to stop at, and a warning just before the step it is about.\" else \"Write a card that tells someone new how to stop the water wheel and oil its axle: a title that says the goal, what you need, six to eight numbered commands with exact amounts, one warning before the step it is about, and a last step that leaves the wheel safe.\"}" narrate width=33 below=pics gap=1
+    writinglines lines lines=5 width=33 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A title that says what the card is for, a list of what is needed, numbered steps in an order that works (the gate is closed before the wheel is waited for, and the wheel has stopped before the brake pin goes in), each step one command starting with or leading straight to its verb, at least one exact amount, direction or sign to stop at, and a warning placed just before its step; at hard, the oiling steps follow the stopping ones and the last step leaves the wheel safe. A grown-up follows the card aloud and stops wherever it cannot be followed."
+  hint "Say the job aloud first, one action at a time, and count the actions."
+  hint "Read your card to someone who pretends never to have seen the wheel. Where do they have to ask?"
+}

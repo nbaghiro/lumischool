@@ -1,0 +1,63 @@
+# A longer story read a chapter at a time: each chapter summed up in a sentence, and the sentences
+# joined into a summary of the whole book. The book, The Frozen Winter, was written for the lesson.
+lesson reading-summing-up-by-chapters v=1 format=teach grade=5 unit=1 subject=reading levels=[easy, medium, hard] {
+  title "Summing up a book, chapter by chapter"
+  goal "Sum up each chapter of a longer story in one sentence, then join them into a summary of the whole book."
+
+  look {
+    scene 35x15 {
+      row all at=canvas(1, 1) space=1 align=end {
+        contents page title=Contents book="The Frozen Winter" entries=["The canal freezes", "Breaking the ice", "Nia's idea", "Bread for Kingsford"] pages=[1, 5, 9, 13]
+        narrowboat boat windows=4 pots=2
+      }
+    }
+    say """
+      The Frozen Winter is a short book about the Millhaven Canal, in four chapters. A long book is
+      easier to hold in your head a chapter at a time. After each chapter, say in one sentence what
+      happened in it, leaving out the small details. Then put the four sentences together, and
+      squeeze them into one: that is a summary of the whole book.
+      """
+  }
+  do {
+    level easy {
+      worked reading.chapter-gist k=0
+    }
+    show reading.chapter-gist k=0 easy-k=3
+    show reading.chapter-gist k=2 easy-k=1
+    level hard {
+      show reading.chapter-gist k=1
+    }
+    practice reading.summary-cut count=2 seed=1 easy-seed=1 hard-seed=1
+    practice reading.which-line-tells count=2 seed=4 easy-seed=1 hard-seed=1
+    practice reading.chapter-order count=2 seed=1 easy-seed=1 hard-seed=1
+  }
+  try stars=2 {
+    show reading.better-summary k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show reading.twenty-words k=0 hard-k=1
+  }
+  remember {
+    say "Sum up each chapter in one sentence, then join the sentences into one for the whole book."
+  }
+
+  grown-ups """
+    The idea is that a summary says what happened without the small details, and that a long book is
+    summed up a chapter at a time. The four chapters run to about 135 words each, over 500 words in
+    all, and are printed one to a question, so the child reads the book across the lesson, with
+    Leo's summaries and the story map filling in the rest. The common mistake is to choose the most
+    vivid detail (six horses, a lamp) rather than what the chapter is about; ask the child to cover
+    the chapter and tell it in one breath. The two-star question compares two summaries of the whole
+    book, and in one version the longer summary is the better one, so length is never the reason.
+    The three-star summary has a word limit; count the words together and accept any summary that
+    covers the frozen canal, the failed tries, Nia's sledge and the bread reaching Kingsford. Off
+    the page, ask the child to sum up each chapter of the book they are reading at bedtime in one
+    sentence, and to keep the sentences on a bookmark.
+    """
+  level easy {
+    grown-ups "At this level the first chapter is summed up once in the teacher's pen before the fourth and the second, the detail to cut is in the first or second sentence, the lines to find are stated outright, the muddled chapters are the mill fire and the runaway boat, the two-star's better summary is the shorter one, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the chapters to sum up are the first, third and second, the detail to cut is harder to tell from a main event, the lines to find need a reason, the muddled chapters are the cat and the market boat, the two-star's better summary is the longer one, and the three-star allows fifteen words."
+  }
+}

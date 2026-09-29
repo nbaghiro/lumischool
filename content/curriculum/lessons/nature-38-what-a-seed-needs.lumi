@@ -1,0 +1,67 @@
+lesson nature-what-a-seed-needs v=1 format=teach grade=5 unit=2 subject=nature levels=[easy, medium, hard] {
+  title "What a seed needs to grow, as a fair test"
+  goal "Use a fair test of dishes that differ in one thing to find out what a seed needs to sprout."
+
+  look {
+    scene 34x14 {
+      row all at=canvas(1, 1) space=2 align=end {
+        seedtest s mode=0 water=[1, 0, 1, 1] air=[1, 1, 0, 1] warmth=[1, 1, 1, 1] light=[1, 1, 1, 0] seeds=10 rate=100 after=1
+        heron h facing=-1 reeds=3
+      }
+    }
+    say """
+      Ada and Ben want cress for the pots on their narrowboat's roof, so first they test what a seed
+      needs. Each dish differs from dish A in one thing only: B is dry, C's seeds are under boiled
+      water with oil on top, so no air reaches them, and D is in a dark cupboard. A week later, A and
+      D have sprouted and B and C have not. So a seed needs water, air and warmth. It does not need
+      light yet, because it lives on the food stored inside it.
+      """
+  }
+  do {
+    show nature.sprout-pair k=2 easy-k=0 hard-k=3
+    level easy {
+      worked nature.sprout-pair k=1 level=medium
+    }
+    show nature.bean-store k=0 easy-k=1 hard-k=2
+    show nature.sprout-predict k=1 easy-k=0 hard-k=2
+    show nature.sprout-shows k=0 easy-k=1 hard-k=2
+    show nature.bean-starch k=1 easy-k=0 hard-k=2
+    show nature.sprout-predict k=2 easy-k=1 hard-k=3
+    show nature.sprout-shows k=3 easy-k=0 hard-k=3
+    level hard {
+      show nature.bean-starch k=1
+    }
+  }
+  story {
+    show nature.sprout-sow k=0 r=80 n=40 easy-r=90 easy-n=30 hard-k=1 hard-r=70 hard-n=30
+  }
+  try stars=2 {
+    show nature.sprout-settle k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.sprout-fewest k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A seed needs water, air and warmth to sprout, and it lives on the food stored inside it until its leaves are green."
+  }
+
+  grown-ups """
+    A seed sprouts when it has water, air and warmth; it does not need light yet, because it lives on
+    the starch in its food store until its first green leaves can make food. The wrong idea to watch
+    for is that seeds need light, or soil, to sprout: the dark cupboard dish is the one that answers
+    it. The other slip is a test that changes two things at once. In the child's working, look for a
+    finger run along one row of the table to find the one difference between two dishes. If the child
+    is stuck, go back to dishes A and B only and ask what is different, then stay another day before
+    the two-star question. Off the page, do the test: cress on wet kitchen paper in four saucers on a
+    windowsill, one dry, one under boiled and cooled water with a film of oil, one in the fridge and
+    one in a cupboard, and look after four or five days. A few seeds, such as some lettuces, do need
+    light to sprout; cress and beans do not. This meets Japan's grade five science, B(1)(イ),
+    「植物の発芽には，水，空気及び温度が関係していること」: water, air and temperature govern germination.
+    """
+  level easy {
+    grown-ups "At this level the pair to read tests water or air, a worked example reads the pair that tests air, the bean's part is the seed coat, the dishes to predict and read have few in the dark, the food question is how a seed sprouts in the dark, the story sows 30 seeds of which 9 in 10 sprout, the two-star dish settles light against the cold, and the plan tests three things."
+  }
+  level hard {
+    grown-ups "At this level the pair tests warmth or light, the bean's parts are the root and the shoot, more dishes are in the dark or the fridge, the food questions are why seedlings in the dark die and what the iodine shows, the story works back from the seedlings wanted to the seeds to sow, the two-star dish settles warmth against water, and the plan wants two dishes of every kind."
+  }
+}

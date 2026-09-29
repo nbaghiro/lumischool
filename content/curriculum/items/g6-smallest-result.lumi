@@ -1,0 +1,31 @@
+# The second reason in the core: four calculations compared by sign first and size second, so most
+# of them are ruled out before any is worked in full.
+item negative.smallest-result v=1 skills=[number.negatives.multiply, number.negatives.order, reasoning.compare] {
+  title "The smallest answer"
+  difficulty t
+  let t=0..3
+  level easy {
+    let t={0, 1}
+  }
+  level medium {
+    let t={1, 2}
+  }
+  level hard {
+    let t={2, 3}
+  }
+
+  scene 36x12 {
+    table calcs cols=2 head=["", "Calculation"] cells=["A", pick(t, "(-3) × 4", "(-18) ÷ 3", "(-6) × (-2)", "(-4) × 5"), "B", pick(t, "(-2) × (-5)", "4 × (-2)", "(-45) ÷ (-9)", "(-2) × (-9)"), "C", pick(t, "12 ÷ (-4)", "(-3) × (-3)", "7 × (-2)", "(-57) ÷ 3"), "D", pick(t, "(-20) ÷ (-5)", "20 ÷ (-4)", "(-36) ÷ 3", "7 × (-3)")] at=canvas(1, 1)
+    text ask "Four calculations from the research log. Which one has the smallest answer?" narrate width=16 right-of=calcs gap=2
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=pick(t, "A", "B", "C", "D")
+  feedback {
+    when (pick == pick(t, "B", "C", "A", "B")) point=calcs {
+      say "That answer is above zero, since both numbers have the same sign. The smallest is below zero."
+    }
+  }
+  hint "Which answers are below zero? Decide by the signs before working anything out."
+  hint "Of those below zero, which is furthest from zero?"
+}

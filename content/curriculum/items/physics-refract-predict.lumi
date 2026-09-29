@@ -1,0 +1,36 @@
+# Predict the beam inside: it bends towards the upright, except when it comes in along the upright,
+# where it goes straight on. a is the angle in, g water or glass.
+item physics.refract-predict v=1 skills=[physics.light, reasoning.predict] {
+  title "Which way will the beam go?"
+  difficulty (if a == 0 then 1 else 0)
+  let a={0, 30, 50} g=0..1
+  level easy {
+    let a={30, 50}
+  }
+  level hard {
+    let a={0}
+  }
+  let what={pick(g, "water", "glass")}
+  let ans={if a == 0 then "It goes straight on" else "It bends towards the upright"}
+
+  scene 30x31 {
+    refraction r mode=0 into=g angle=a marks=0 show=0 at=canvas(1, 0)
+    text ask "The torch shines at {a} degrees from the dashed upright line onto the {what}. What does the beam do where it goes in?" narrate width=28 below=r gap=1
+    choice pick options=["It bends towards the upright", "It goes straight on", "It bends away from the upright"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "It bends away from the upright") point=r {
+      say "Going from air into {what}, light bends towards the upright line, not away from it."
+    }
+    when (pick == "It bends towards the upright" and a == 0) point=r {
+      say "This beam already runs along the upright line. Is there anywhere nearer to it to bend to?"
+    }
+    when (pick == "It goes straight on" and a > 0) point=r {
+      say "Only a beam along the upright goes straight on. This one comes in at a slant."
+    }
+  }
+  hint "Is the beam coming in along the upright line, or at a slant?"
+  hint "Going into {what}, which way does a slanting beam bend?"
+}

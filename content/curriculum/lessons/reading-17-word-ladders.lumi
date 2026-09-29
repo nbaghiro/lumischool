@@ -1,4 +1,4 @@
-lesson reading-word-ladders v=1 format=teach grade=1 unit=1 subject=reading levels=[easy, medium, hard] {
+lesson reading-word-ladders v=1 format=teach grade=1 unit=3 subject=reading levels=[easy, medium, hard] {
   title "Word ladders"
   goal "Change one sound in a word to make a new word, and read each word as it changes."
 

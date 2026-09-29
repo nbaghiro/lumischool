@@ -1,0 +1,35 @@
+# Sorting the three ways heat moves: along a solid (conduction), carried by moving air (convection),
+# or across a gap with nothing to carry it (radiation). k picks the picture.
+item physics.heat-three-ways v=1 skills=[physics.heat, reasoning.explain] {
+  title "Which way does the heat go?"
+  difficulty (if k == 2 then 0 else 1)
+  let k=0..2
+  level easy {
+    let k={1, 2}
+  }
+  level hard {
+    let k={0, 1}
+  }
+  let way={pick(k, "Conduction", "Convection", "Radiation")}
+
+  scene 31x21 {
+    heatflow t mode=k rods=["copper", "steel", "glass"] thick=[1, 1, 1] minutes=10 heater=0 cans=["black", "white", "silver"] insun=20 show=1 at=canvas(1, 0)
+    text ask "{pick(k, \"How does the heat reach the beads on the rods?\", \"How does the heater's heat reach the thermometers across the room?\", \"How does the sun's heat reach the cans?\")}" narrate width=24 below=t gap=1
+    choice pick options=["Conduction", "Convection", "Radiation"] stack=row below=ask gap=1
+  }
+
+  answer pick=way
+  feedback {
+    when (pick == "Radiation" and k != 2) point=t {
+      say "Radiation crosses a gap with nothing in it. Here something is touching or moving. Which?"
+    }
+    when (pick == "Conduction" and k == 1) point=t {
+      say "Air passes heat along very badly. Look at the arrows: what is the warm air doing?"
+    }
+    when (pick != "Radiation" and k == 2) point=t {
+      say "Between the sun and the cans there is nothing to pass heat along or carry it. Which way needs nothing?"
+    }
+  }
+  hint "Is something solid passing the heat along, is something moving that carries it, or is there nothing in between?"
+  hint "Which of the three ways needs no particles at all?"
+}

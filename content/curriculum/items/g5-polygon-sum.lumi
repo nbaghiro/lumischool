@@ -1,0 +1,31 @@
+# The second reasoning question in the core: the angle sum of a shape with more sides, found by
+# splitting it into triangles from one corner, the reason the quadrilateral makes 360.
+item angles.polygon-sum v=1 skills=[angles.sums, reasoning.generalise] {
+  title "More corners"
+  difficulty n
+  let n=5..8
+  level easy {
+    let n={5}
+  }
+  level hard {
+    let n={7, 8}
+  }
+
+  scene 34x17 {
+    anglesum quad kind=quad a=80 b=100 c=75 ask=-1 at=canvas(1, 1)
+    text ask "The drawing is a quadrilateral: a diagonal splits it into two triangles, so its angles make 2 × 180 = 360 degrees. The star map has a shape with {n} straight sides, not drawn here. What do its {n} angles add up to?" narrate width=14 right-of=quad gap=1
+    number-input answer width=5 below=quad gap=1
+  }
+
+  answer ((n - 2) * 180)
+  feedback {
+    when (answer == n * 180) point=ask {
+      say "From one corner you cannot draw a line to itself or its two neighbours. How many triangles does that leave?"
+    }
+    when (answer == (n - 1) * 180) point=ask {
+      say "Count the triangles again by drawing them: a quadrilateral has two, not three."
+    }
+  }
+  hint "Draw lines from one corner to every corner it is not already joined to. How many triangles?"
+  hint "Each triangle's angles make 180."
+}

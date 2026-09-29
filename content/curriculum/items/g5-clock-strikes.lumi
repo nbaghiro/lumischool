@@ -1,0 +1,28 @@
+# The clock tower strikes: the time is in the gaps between strikes, not the strikes themselves, the
+# fence-post problem of the Russian puzzle books.
+item puzzle.clock-strikes v=1 stars=2 skills=[reasoning.model, time.intervals] {
+  title "The clock tower strikes"
+  difficulty (n2 + g)
+  let n1={3, 4, 6} g={2, 3} n2={7, 9, 12}
+  level easy {
+    let n1={3} g={2} n2={7}
+  }
+  level hard {
+    let n1={4, 6} g={3} n2={9, 12}
+  }
+
+  scene 32x17 {
+    clocktower tower hour=n1 minute=0 at=canvas(1, 1)
+    text ask "The clock tower strikes {n1} times at {n1} o'clock, and it takes {(n1 - 1) * g} seconds from the first strike to the last. The strikes are evenly spaced. How many seconds does it take to strike {n2} at {n2} o'clock?" narrate width=22 right-of=tower gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer ((n2 - 1) * g)
+  feedback {
+    when (answer == n2 * (n1 - 1) * g / n1) point=ask {
+      say "The seconds are in the gaps between strikes. How many gaps are there between {n1} strikes?"
+    }
+  }
+  hint "Between {n1} strikes, how many gaps are there?"
+  hint "How long is one gap? How many gaps are there between {n2} strikes?"
+}

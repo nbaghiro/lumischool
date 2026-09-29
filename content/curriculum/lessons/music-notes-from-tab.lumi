@@ -1,7 +1,7 @@
 # First position on the guitar's three thinnest strings: eight notes, G up to G, read from tab, named,
 # played, and found again from their letters. The staff beside the tab waits for a decision on how the
 # product writes guitar notes (a guitar book writes them an octave above where they sound).
-lesson music-notes-from-tab v=1 format=teach grade=4 unit=3 subject=music levels=[easy, medium, hard] {
+lesson music-notes-from-tab v=1 format=teach grade=4 unit=5 subject=music levels=[easy, medium, hard] {
   title "Notes from tab on three strings"
   goal "Read tab on strings 1 to 3, name each note, and play a short line."
 

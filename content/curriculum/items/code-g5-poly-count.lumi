@@ -1,0 +1,30 @@
+# The unknown moves to the repeat's count: with the turn given, the number of corners is how many of
+# those turns make a whole turn.
+item coding.poly-count v=1 skills=[coding.drawing, angles.turns, reasoning.work-backwards] {
+  title "How many corners?"
+  difficulty pick(q, 0, 0, 1, 1, 2, 2, 2, 3)
+  let q=0..7
+  let n={pick(q, 3, 4, 5, 6, 8, 9, 10, 12)} s={pick(q, 3, 3, 2, 2, 2, 2, 2, 2)}
+  level easy {
+    let q=0..3
+  }
+  level hard {
+    let q=4..7
+  }
+
+  scene 36x16 {
+    observatory obs open=1 at=canvas(1, 0)
+    program p code=["repeat ?", "  forward {s}", "  turn left {360 / n}"] right-of=obs gap=1
+    text ask "How many times should the repeat go round to draw each side once, so the turtle comes back to where it started, facing the same way?" width=28 below=obs gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer * (360 / n) == 180) point=p {
+      say "That turns the turtle only half way round. It has to turn all the way, 360 degrees."
+    }
+  }
+  hint "How many degrees does the turtle turn in all, to face the same way again?"
+  hint "How many turns of {360 / n} make that?"
+}

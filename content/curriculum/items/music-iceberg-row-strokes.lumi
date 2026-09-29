@@ -1,0 +1,40 @@
+# The story: the crew row out to the iceberg singing Row, Row, Row Your Boat, eight bars of six-eight,
+# with one stroke on each big beat, 1 and 4: 16 strokes a time through, 48 in three, and at 2 metres
+# a stroke 96 metres takes 48 strokes, the song three times.
+item music.iceberg-row-strokes v=1 skills=[music.six-eight, music.rhythm] {
+  title "Rowing to the iceberg"
+  difficulty q
+  let q=0..2
+  let ask={pick(q, "How many strokes do they pull in one time through the song?", "They sing it three times on the way. How many strokes is that?", "Each stroke moves the boat 2 metres, and the iceberg is 96 metres away. How many times through the song do they sing?")}
+  let right={pick(q, 16, 48, 3)}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=2..2
+  }
+
+  scene 36x27 {
+    row top space=2 align=end at=canvas(1, 1) {
+      notes bar clef=treble notes=[C5, C5, C5, D5, E5] values=[1.5, 1.5, 1, 0.5, 1.5] meter=6 quavers=true
+      iceberg berg under=1
+    }
+    text ask "The crew row out to the iceberg singing Row, Row, Row Your Boat, which is eight bars of six-eight. They pull the oars once on each big beat, on 1 and on 4. {ask}" narrate width=34 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == right * 3 and q <= 1) point=bar {
+      say "That counts a stroke on every quaver or every note. The oars go in only on the big beats, 1 and 4."
+    }
+    when (q == 0 and answer == 8) point=bar {
+      say "Each bar has two big beats, so two strokes."
+    }
+    when (q == 2 and answer == 48) point=ask {
+      say "48 is the number of strokes. How many strokes does one time through the song take?"
+    }
+  }
+  hint "How many big beats are in one bar of six-eight?"
+  hint "{if q == 2 then \"First find how many strokes reach the iceberg, then how many strokes one song takes.\" else \"Multiply the strokes in a bar by the bars.\"}"
+}

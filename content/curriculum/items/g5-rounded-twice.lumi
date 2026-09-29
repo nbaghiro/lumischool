@@ -1,0 +1,31 @@
+# The three-star: a distance known only from two roundings, and the smallest or largest it could be.
+# Both clues matter in some versions, so the child has to test the edge of each range.
+item place.rounded-twice v=1 stars=3 skills=[place-value.rounding, reasoning.two-conditions] {
+  title "Two roundings"
+  difficulty ((if h == 45 then 1 else 0) + most)
+  let h={45, 46, 54} most=0..1
+  level easy {
+    let h={46}
+  }
+  level hard {
+    let h={45} most={0}
+  }
+
+  scene 34x12 {
+    comet tail tail=5 at=canvas(1, 1)
+    text ask "A comet's distance, in whole kilometres, rounds to 5,000,000 to the nearest million and to {thousands(h * 100000)} to the nearest hundred thousand. What is the {if most == 1 then \"largest\" else \"smallest\"} it could be?" narrate width=22 right-of=tail gap=2
+    number-input answer width=9 below=ask gap=1
+  }
+
+  answer (if most == 1 then min(h * 100000 + 49999, 5499999) else max(h * 100000 - 50000, 4500000))
+  feedback {
+    when (most == 0 and h == 45 and answer == 4450000) point=ask {
+      say "4,450,000 rounds to 4,000,000 to the nearest million. Which is the smallest that rounds to 5,000,000?"
+    }
+    when (most == 1 and answer == h * 100000 + 50000) point=ask {
+      say "{thousands(h * 100000 + 50000)} rounds up to the next hundred thousand. Go one kilometre less."
+    }
+  }
+  hint "Which numbers round to {thousands(h * 100000)} to the nearest hundred thousand?"
+  hint "Which of those also round to 5,000,000 to the nearest million?"
+}

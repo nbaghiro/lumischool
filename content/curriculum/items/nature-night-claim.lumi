@@ -1,0 +1,46 @@
+# The two-star reason: something Ben says about a night hunter, and what is wrong with it. Bats can
+# see, but hunt tiny insects by echo; no eye works in total darkness, where an owl hunts by ear; and a
+# badger's eyes are poor, so it hunts worms by smell.
+item nature.night-claim v=1 stars=2 skills=[nature.night-animals, reasoning.find-the-mistake] {
+  title "What Ben got wrong"
+  difficulty k
+  let k=0..2
+  let says={pick(k, "Bats are blind, so they have to use echoes.", "In a pitch-dark barn, an owl finds a mouse with its big eyes.", "A badger finds worms at night with its sharp eyes.")}
+  let ans={pick(k, "Bats can see: echoes find insects in the dark", "No eye sees in pitch dark: the owl listens", "Badgers see poorly: they find worms by smell")}
+  let o1={pick(k, "Nothing: bats cannot see at all", "Nothing: owls see in total darkness", "Nothing: badgers have sharp eyes")}
+  let o2={pick(k, "Bats find insects by their smell", "Owls do not eat mice", "Badgers do not eat worms")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x24 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      bats b count=2 flying=1
+      owlflying o facing=-1
+      badger bd facing=-1
+    }
+    text ask "Ben says: \"{says}\" What is wrong with what he says?" narrate width=32 below=pics gap=1
+    choice pick options=[o1, o2, ans] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick == o1) point=pics {
+      say "Every bat has eyes that work, and some see well. The echoes are for finding something as small as a moth in the dark."
+    }
+    when (k == 1 and pick == o1) point=ask {
+      say "Eyes need some light, and pitch dark has none. The owl's dish of a face catches the mouse's rustle instead."
+    }
+    when (k == 2 and pick == o1) point=pics {
+      say "Look at the badger's small eyes and its long nose held to the ground. Which one does the work?"
+    }
+    when (pick == o2) point=ask {
+      say "That animal does eat what Ben says. The mistake is in how he says it finds its food."
+    }
+  }
+  hint "Which part of what Ben says is about a sense? Is that sense the one this animal hunts by?"
+  hint "Eyes need at least a little light to see anything at all."
+}

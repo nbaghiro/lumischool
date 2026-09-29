@@ -1,0 +1,46 @@
+# A change to one creature in the ice shelf's web, and what happens over the next years. The easy two
+# ask about order and limits in time (the eaters follow their food, and a rise stops when food runs
+# short); the hard two go through two or three links, and one of them works upward from the plants.
+item nature.web-change v=1 skills=[nature.food-webs, nature.populations, reasoning.predict] {
+  title "What happens next?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "The krill have their best year ever. Whose numbers go up first, and whose a year or two later?", "Hunters kill most of the polar bears. What happens to the number of seals over the next few years?", "A warm spring melts the ice early, and far fewer tiny plants grow under it. What happens to the number of puffins a year or two later?", "The seals have their best year ever and there are more of them than ever. What happens to the number of small fish?")}
+  let ans={pick(k, "The small fish first, then the seals and puffins", "They rise, then level off as fish run short", "fewer puffins", "fewer small fish")}
+  let o1={pick(k, "The seals and puffins first, then the small fish", "They rise, and go on rising every year", "more puffins", "more small fish")}
+  let o2={pick(k, "All of them in the same week", "They fall, with no bears to keep them safe", "no change to the puffins", "no change to the small fish")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x30 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      seal ps rock=1 facing=1
+      fishshoal fs rows=2 cols=4 facing=-1
+    }
+    text web "Tiny plants grow under the ice. Krill eat the tiny plants. Small fish eat krill. Whales eat krill and small fish. Puffins and seals eat small fish. Polar bears eat seals." narrate width=32 below=pics gap=1
+    text ask "{asks}" narrate width=32 below=web gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=web {
+      say "Small fish eat krill, and seals and puffins eat small fish. Which of them gets the extra food straight away?"
+    }
+    when (k == 1 and pick != ans) point=web {
+      say "With fewer bears, fewer seals are eaten, so they rise at first. Can the small fish feed more and more seals every year?"
+    }
+    when (k == 2 and pick != ans) point=web {
+      say "Follow the chain up from the tiny plants: what eats them, what eats that, and what eats that?"
+    }
+    when (k == 3 and pick != ans) point=web {
+      say "Seals eat small fish. More seals means more small fish eaten."
+    }
+  }
+  hint "Find the animal that changes. What does it eat, and what eats it?"
+  hint "Follow the arrows one step at a time from the change to the animal in the question."
+}

@@ -1,0 +1,10 @@
+item art.water-falls-painting v=1 stars=3 skills=[art.water, art.painting, reasoning.plan] {
+  title "The waterfall and its pool"
+
+  scene 37x21 {
+    text ask "Paint the waterfall in the gorge falling into its pool. Before any paint, choose where the paper stays white. Paint the falling water with long strokes down, the pool with level strokes, and a reflection in the still water." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="plain" guide="none" outline="none" pots=["blue", "green", "brown", "black", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A waterfall painted the way water moves: the whites planned and left as bare paper for foam and spray, the falling water in long downward strokes with gaps of paper between them, the still pool in level strokes, a reflection that is upside down, as far below the water line as its thing is above, and a little darker, and spray in dabs where the water lands." notice=["White paper kept for foam or spray", "Long downward strokes for falling water", "Level strokes and a reflection in the pool", "Dabs of spray where the water lands"] ask="Which part of your water moves the most, and which strokes made it move?"
+}

@@ -1,0 +1,29 @@
+# The core's reasoning question: the part and its percent given, and the whole found by working back
+# through ten percent or one percent.
+item percent.find-the-whole v=1 skills=[percentages.of-amount, reasoning.working-backwards] {
+  title "How many altogether"
+  difficulty ((if p % 10 == 0 then 0 else 1) + p / 50)
+  let p={10, 20, 25, 30, 40, 15} n={40, 60, 80, 120}
+  where (p * n % 100 == 0 and p != n)
+  level easy {
+    let p={10, 20, 25}
+  }
+  level hard {
+    let p={30, 40, 15}
+  }
+
+  scene 35x12 {
+    telescope scope tilt=40 at=canvas(1, 1)
+    text ask "Through the telescope Ana counted the stars in one patch of sky. {p}% of them were red, and there were {p * n / 100} red stars. How many stars did she count altogether?" narrate width=22 right-of=scope gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == p * n * p / 10000) point=ask {
+      say "{p * n / 100} is already the {p}%. Work back to 100%, which is bigger."
+    }
+  }
+  hint "If {p}% is {p * n / 100} stars, how many stars is {if p % 10 == 0 then 10 else 5}%?"
+  hint "How many of those make 100%?"
+}

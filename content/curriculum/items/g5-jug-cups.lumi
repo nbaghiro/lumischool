@@ -1,0 +1,29 @@
+# Decimal divided by decimal with a whole answer: how many cups a jug fills. Times ten on both
+# numbers keeps the answer and makes the divisor whole.
+item decimal.jug-cups v=1 skills=[decimals.divide, capacity.litres] {
+  title "Cups from the jug"
+  difficulty ((if c == 0.5 then 0 else if c == 0.2 then 1 else 2) + l)
+  let l={1.2, 1.8, 2.4, 3.6} c={0.2, 0.3, 0.4, 0.5}
+  where whole(l / c)
+  level easy {
+    let c={0.2, 0.5} l={1.2, 1.8}
+  }
+  level hard {
+    let c={0.3, 0.4} l={2.4, 3.6}
+  }
+
+  scene 30x13 {
+    jug jug max=2000 step=200 level=(if l > 2 then 2000 else l * 1000) unit=ml at=canvas(1, 1)
+    text ask "The lemonade stall by the lock has {l} litres of lemonade. Each cup holds {c} litres. How many cups can be filled?" narrate width=16 right-of=jug gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer plain(l / c)
+  feedback {
+    when (answer == plain(l / c / 10) or answer == plain(l / c * 10)) point=ask {
+      say "Check: {plain(l / c)} cups of {c} litres would hold how much? Make it match {l} litres."
+    }
+  }
+  hint "How many tenths of a litre are in {l} litres? How many in one cup?"
+  hint "Divide those two whole numbers."
+}

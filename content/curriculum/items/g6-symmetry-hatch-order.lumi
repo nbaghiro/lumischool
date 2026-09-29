@@ -1,0 +1,31 @@
+# The way in: a pattern turned round its centre matches itself once for every repeat, and the
+# smallest turn that does it is a full turn shared by the repeats.
+item symmetry.hatch-order v=1 skills=[shapes.symmetry.rotation] {
+  title "The hatch pattern"
+  difficulty (q * 2 + n / 8)
+  let n={3, 4, 5, 6, 8} q=0..1
+  level easy {
+    let n={3, 4, 6} q={0}
+  }
+  level hard {
+    let n={5, 8} q={1}
+  }
+
+  scene 36x14 {
+    radial hatch repeats=n motif=star at=canvas(1, 1)
+    text ask "The rocket's round hatch has this pattern on it. {if q == 0 then \"Turning it round its centre, how many times in one full turn does it look exactly as it does now?\" else \"What is the smallest turn, in degrees, that makes it look exactly as it does now?\"}" narrate width=20 right-of=hatch gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (if q == 0 then n else 360 / n)
+  feedback {
+    when (q == 1 and answer == n) point=hatch {
+      say "That is how many times it matches in a full turn. The full turn, 360°, is shared between them."
+    }
+    when (q == 0 and answer == 360 / n) point=hatch {
+      say "That is the size of the smallest turn. The question asks how many times it matches."
+    }
+  }
+  hint "Put your finger on one star. Where can it go and the pattern still look the same?"
+  hint "How many stars are there round the centre?"
+}

@@ -1,0 +1,29 @@
+# Three-star: each look by halving leaves at most half of what was left, so 7 books need at most 3
+# looks, 15 at most 4, and every doubling adds one more. The answers are 5, 6, 7 and 10 looks.
+item coding.search-most v=1 stars=3 skills=[coding.algorithms, reasoning.search, reasoning.patterns] {
+  title "The most looks for the whole library"
+  difficulty k
+  let k=0..3
+  let n={pick(k, 31, 63, 100, 1000)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x11 {
+    library lib columns=8 open=1 at=canvas(1, 0)
+    text ask "Halving finds any one of 7 books in order in at most 3 looks, and any one of 15 in at most 4. The library has {n} books in order. What is the most looks halving could need?" width=22 right-of=lib gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 5, 6, 7, 10)
+  feedback {
+    when (answer >= n / 2) point=ask {
+      say "That is nearer one by one. Each look by halving throws away half of the books that are left."
+    }
+  }
+  hint "After one look, how many books are left at most? After two looks?"
+  hint "Going from seven books to fifteen adds one look. What does doubling again do?"
+}

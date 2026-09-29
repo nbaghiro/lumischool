@@ -1,0 +1,28 @@
+# A number wall with decimals, worked back from the top: the middle brick of the bottom row counts
+# twice in the top brick.
+item puzzle.wall-decimals v=1 stars=1 skills=[reasoning.number-walls, decimals.add] {
+  title "A wall of decimals"
+  difficulty (4 * b + (if a == 0.75 then 2 else 0))
+  let a={1.5, 2.5, 0.75} b={0.5, 1.25, 2.25} c={1.75, 3.5, 0.25}
+  where (a != b + c and c != a + b)
+  level easy {
+    let a={1.5, 2.5} b={0.5} c={3.5}
+  }
+  level hard {
+    let a={0.75} b={1.25, 2.25} c={1.75, 0.25}
+  }
+
+  scene 21x15 {
+    pyramid wall cells=[a, ?, c, ?, ?, a + 2 * b + c] blanks=[middle, left, right] at=canvas(1, 1)
+    text ask "On the temple steps every stone is the sum of the two under it. Fill in the missing stones." narrate width=20 below=wall gap=1
+  }
+
+  answer middle=decimals(b, 0) left=decimals(a + b, 0) right=decimals(b + c, 0)
+  feedback {
+    when (middle == a + 2 * b + c - a - c) point=wall.brick(1) {
+      say "The top stone counts the middle one twice, so it is not the top take away the two ends."
+    }
+  }
+  hint "The top stone is {a} plus the missing number twice plus {c}."
+  hint "Take {a} and {c} away from the top, then halve what is left."
+}

@@ -1,0 +1,39 @@
+# The way in: an instrument in the research hut named from two Greek roots, read with a key. The
+# wrong choices each misread one root as another from the same key.
+item reading.root-key v=1 skills=[reading.morphology, reading.vocabulary] {
+  title "What does the name say?"
+  difficulty pick(k, 0, 1, 0, 1)
+  let k=0..3
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1, 3}
+  }
+  let right={pick(k, "measures heat", "looks far off", "hears in water", "sees tiny things")}
+  let wrong1={pick(k, "looks at heat", "hears far off", "looks in water", "hears tiny things")}
+  let wrong2={pick(k, "writes heat down", "measures far off", "heats water", "measures tiny things")}
+
+  scene 35x20 {
+    text ask "Use the key to work out what the hut's {pick(k, \"thermometer\", \"telescope\", \"hydrophone\", \"microscope\")} does." at=canvas(1, 1) width=34
+    row bottom below=ask gap=1 space=1 align=start {
+      table key cols=2 head=["Root", "Means"] cells=[pick(k, "thermo", "tele", "hydro", "micro"), pick(k, "heat", "far", "water", "small"), pick(k, "meter", "scope", "phone", "scope"), pick(k, "measure", "look", "sound", "look"), pick(k, "scope", "phone", "scope", "phone"), pick(k, "look", "sound", "look", "sound"), pick(k, "graph", "meter", "thermo", "meter"), pick(k, "write", "measure", "heat", "measure")]
+      column right space=1 align=start {
+        wordbricks word bricks=[pick(k, "thermo", "tele", "hydro", "micro"), pick(k, "meter", "scope", "phone", "scope")] root=0 roots=2 labels=false
+        choice pick options=[pick(k, wrong1, right, wrong2, wrong1), pick(k, right, wrong2, wrong1, right), pick(k, wrong2, wrong1, right, wrong2)] stack=column
+      }
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == wrong1) point=key {
+      say "That reads the second root as a different one. Find the second brick in the key again."
+    }
+    when (pick == wrong2) point=key {
+      say "That mixes in a root the word does not have. Use only the two bricks."
+    }
+  }
+  hint "Find each brick in the key. What does each one mean?"
+  hint "Put the two meanings together into one job."
+}

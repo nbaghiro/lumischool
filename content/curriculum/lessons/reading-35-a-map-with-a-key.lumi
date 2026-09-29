@@ -1,6 +1,6 @@
 # Reading a map by its key: the key decides what a mark means, the grid says where a thing is,
 # and directions are followed square by square.
-lesson reading-a-map-with-a-key v=1 format=teach grade=3 unit=4 subject=reading levels=[easy, medium, hard] {
+lesson reading-a-map-with-a-key v=1 format=teach grade=3 unit=9 subject=reading levels=[easy, medium, hard] {
   title "A map with a key"
   goal "Read a map's key to find what a mark means, and follow written directions to a place."
 

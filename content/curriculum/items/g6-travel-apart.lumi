@@ -1,0 +1,35 @@
+# Moving apart from one point: the gap grows by the sum of the speeds each hour. The unknown is one
+# of the speeds, so the sum is found first and the known speed taken off it.
+item travel.apart v=1 skills=[rates.speed.meeting, reasoning.work-backwards] {
+  title "Walking apart"
+  difficulty (t + b / 3)
+  let a={3, 4, 5} b={4, 5, 6} t={2, 3, 4}
+  where (a != b)
+  level easy {
+    let t={2} a={3} b={4, 5}
+  }
+  level hard {
+    let t={3, 4} a={4, 5} b={6}
+  }
+
+  scene 36x14 {
+    ropebridge bridge planks=10 gaps=0 at=canvas(1, 1)
+    text ask "Two walkers cross the rope bridge together, then set off in opposite directions along the gorge path. Ana walks at {a} km/h. After {t} hours they are {(a + b) * t} km apart. How fast does Ben walk?" narrate width=18 right-of=bridge gap=1
+    row eq below=bridge gap=2 space=1 align=centre {
+      number-input answer width=3
+      text unit "km/h"
+    }
+  }
+
+  answer b
+  feedback {
+    when (answer == a + b) point=ask {
+      say "That is how fast the gap grows, both speeds together. Ana's part of it comes off."
+    }
+    when (answer == (a + b) * t - a) point=ask {
+      say "That takes Ana's speed off the whole distance. First find how much the gap grows in one hour."
+    }
+  }
+  hint "How much does the gap between them grow in one hour?"
+  hint "How much of that hour's growth is Ana's?"
+}

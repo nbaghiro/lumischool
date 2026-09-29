@@ -1,0 +1,35 @@
+# Mira's diary and Dr Osei's log of the same comet, and one statement to place: told only by one of
+# them, or by both. The hard statements are told by both in different words, or only seem to be.
+item reading.told-where v=1 skills=[reading.comparison, reading.evidence] {
+  title "Which account tells you?"
+  difficulty pick(s, 0, 0, 1, 2, 1, 2)
+  let s=0..5
+  let right={pick(s, "Both", "Only Mira", "Only the log", "Both", "Only the log", "Only Mira")}
+  level easy {
+    let s={0, 1, 2}
+  }
+  level hard {
+    let s={3, 4, 5}
+  }
+
+  scene 36x29 {
+    column all at=canvas(0, 1) space=1 align=start {
+      passage diary title="Mira's diary, 3 March" text="Gran woke me at nine, and we ran up to the cliff in our coats. The comet hung over the sea like a white feather, its tail as long as my arm. Everyone went quiet. I did not feel the cold." width=35 numbers=false
+      passage log title="Dr Osei's log, 3 March" text="Comet Arlen first seen at 8.40 pm, low in the west over the sea. Tail 20 degrees long. About sixty people on the cliff path. Frost by 10 pm. Seen again on 4 March, fainter." width=35 numbers=false
+      text ask "Which tells you this: {pick(s, \"the comet was over the sea\", \"the comet looked like a feather\", \"it was seen again the next night\", \"it was cold on the cliff\", \"it was first seen at 8.40 pm\", \"the people on the cliff went quiet\")}?" width=35
+      choice pick options=["Only Mira", "Only the log", "Both"]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (s == 3 and pick == "Only the log") point=diary {
+      say "The log says frost. Look at what Mira wore and what she did not feel: does that tell you it was cold too?"
+    }
+    when (s == 5 and pick == "Both") point=log {
+      say "The log says how many people were there, but not what they did. Only one account says they went quiet."
+    }
+  }
+  hint "Look for it in the diary first, then in the log. It may be in different words."
+  hint "If only one account says it, which one?"
+}

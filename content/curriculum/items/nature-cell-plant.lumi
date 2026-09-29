@@ -1,0 +1,43 @@
+# Plant or animal: a cell's parts decide it, not its size or its nucleus, which both kinds have. The
+# versions compare the cheek with the onion, find the green dots that make food, and say why onion
+# skin has none.
+item nature.cell-plant v=1 skills=[nature.cells, reasoning.explain] {
+  title "Plant cell or animal cell?"
+  difficulty k
+  let k=0..2
+  let kind={pick(k, 1, 2, 0)} mag={pick(k, 400, 400, 400)}
+  let asks={pick(k, "These cells come from the inside of Ben's cheek. What shows they are animal cells, not plant cells?", "Pondweed leaf cells have green dots along their walls. What are the green dots for?", "Onion skin cells are plant cells, but they have no green dots. Why not?")}
+  let ans={pick(k, "They have no stiff wall and lie loose", "They make food for the plant in the light", "An onion bulb grows under the soil, in the dark")}
+  let o1={pick(k, "Each one has a dark nucleus", "They hold the cell's water", "Onion is not a real plant cell")}
+  let o2={pick(k, "They are smaller than onion cells", "They join the cells together", "The stain on the slide washed the green out")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x39 {
+    microview m kind=kind mag=mag scale=0 field=0 at=canvas(1, 1)
+    text ask "{asks}" narrate width=32 below=m gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick == o1) point=m {
+      say "Onion cells have a dark nucleus too. What do onion cells have round each one that cheek cells lack?"
+    }
+    when (k == 0 and pick == o2) point=m {
+      say "Size does not decide it: some plant cells are small and some animal cells are huge. Look at the edge of each cell."
+    }
+    when (k == 1 and pick != ans) point=m {
+      say "The dots are green, like every part of a plant that makes food. When does a leaf make its food?"
+    }
+    when (k == 2 and pick != ans) point=m {
+      say "Onion cells have a wall and a nucleus like any plant cell. Where does the onion grow, and could the dots do their job there?"
+    }
+  }
+  hint "What does every cell have? What do only plant cells have?"
+  hint "Think about where these cells were in the living thing, and what they did there."
+}

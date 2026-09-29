@@ -1,0 +1,28 @@
+# The three-star: of every crate built from exactly n cubes, the one needing the least card. A search
+# that the pairs rule makes quick, and the answer is the crate closest to a cube.
+item solids.fewest-card v=1 stars=3 skills=[solids.surface-area, reasoning.extremes] {
+  title "The least card"
+  difficulty n
+  let n={12, 18, 24, 36}
+  level easy {
+    let n={12}
+  }
+  level hard {
+    let n={36}
+  }
+
+  scene 36x14 {
+    cubestack stack l=3 w=2 h=2 count=2 at=canvas(1, 1)
+    text ask "A market trader packs {n} centimetre cubes of soap into one crate with no gaps. The crate is a cuboid with whole-centimetre edges. What is the least card, in cm², that the crate can take?" narrate width=20 right-of=stack gap=2
+    number-input answer width=4 below=stack gap=1
+  }
+
+  answer (if n == 12 then 32 else if n == 18 then 42 else if n == 24 then 52 else 66)
+  feedback {
+    when (answer == 2 * (n + n + 1)) point=stack {
+      say "A long thin crate, one cube wide, needs the most card. Try crates that are nearer a cube."
+    }
+  }
+  hint "List the crates in order: 1 by 1 by {n}, then 1 by 2, and so on. Which uses least card?"
+  hint "Does the card go down as the crate gets less long and thin?"
+}

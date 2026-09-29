@@ -1,0 +1,24 @@
+# The astronomer wanted the stars from one brightness to another, but joined the tests with or, so
+# the if says yes to every star. The bug is one word.
+item coding.bug-or v=1 skills=[coding.debugging, coding.decisions, reasoning.logic] {
+  title "Every star says look"
+  difficulty k
+  let k=0..1
+  let lo={pick(k, 3, 5)} hi={pick(k, 8, 10)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x19 {
+    program p code=["if n is more than {lo} or n is less than {hi}", "  say look", "otherwise", "  say skip"] at=canvas(1, 0)
+    text ask "The astronomer wanted look only for n from {lo + 1} to {hi - 1}, but the program says look for every star. Which word should change?" width=34 below=p gap=1
+    choice pick options=["more", "or", "less"] below=ask gap=1
+  }
+
+  answer pick="or"
+  hint "Try a very small n and a very big n. Which test passes then?"
+  hint "Which joining term needs both tests to pass?"
+}

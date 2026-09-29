@@ -1,0 +1,24 @@
+# Three-star: a long straight program folded into a repeat. The pale shape is the long program's
+# drawing, and the pad's three slots leave room only for the repeat and the two blocks it holds.
+item coding.puzzle-fewest v=1 stars=3 skills=[coding.efficiency, coding.repetition, reasoning.structure] {
+  title "Eight lines in three"
+  difficulty (a / 2)
+  let a=1..3
+  level easy {
+    let a={1}
+  }
+  level hard {
+    let a={3}
+  }
+
+  scene 36x29 {
+    program p code=["forward {a}", "turn left", "forward {a}", "turn left", "forward {a}", "turn left", "forward {a}", "turn left"] text=true at=canvas(0, 0)
+    turtle t cols=(a + 2) rows=(a + 2) col=2 row=(a + 2) face=right moves=[] target=["forward {a}", "turn left", "forward {a}", "turn left", "forward {a}", "turn left", "forward {a}", "turn left"] mark=false right-of=p gap=1
+    codepad answer tray=["forward 1", "turn left", "repeat 2"] lines=3 below=t gap=1
+    text ask "The program on the left takes 8 lines. Build one that draws the same pale shape in 3 blocks." width=14 at=canvas(0, 18)
+  }
+
+  check coding.builds of=t goal=target
+  hint "Which two lines come again and again?"
+  hint "How many times do they come?"
+}

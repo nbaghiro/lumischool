@@ -1,0 +1,37 @@
+# The three-star: a metal named from its mass and the water it pushes aside, against a table of
+# densities rounded to one place (RSC periodic table: aluminium 2.70, iron 7.87, copper 8.96, lead
+# 11.3). 10 cm³ of each weighs 27, 79, 90 or 113 g, and 20 cm³ twice that.
+item chem.which-metal v=1 stars=3 skills=[chemistry.density, reasoning.evidence] {
+  title "Which metal is it?"
+  difficulty (v / 10 - 1 + (if k == 0 then 0 else 1))
+  let k=0..3 v={10, 20} b={30, 40} r=0..1
+  let dens={pick(k, 2.7, 7.9, 9, 11.3)}
+  let mass={plain(dens * v)}
+  let name={pick(k, "aluminium", "iron", "copper", "lead")}
+  level easy {
+    let v={10}
+  }
+  level hard {
+    let v={20}
+  }
+
+  scene 36x26 {
+    row kit at=canvas(1, 0) space=2 align=start {
+      cylinder one max=100 step=10 minor=5 level=b unit=ml
+      cylinder two max=100 step=10 minor=5 level=(b + v) unit=ml
+      table data cols=2 head=["Metal", "g/cm³"] cells=["aluminium", "2.7", "iron", "7.9", "copper", "9.0", "lead", "11.3"]
+    }
+    text ask "A grey lump of metal was left in the research hut. It weighs {mass} g. Mei lowers it into the water. Which metal is it?" narrate width=34 below=kit gap=1
+    choice pick options=[pick(r, "aluminium", "lead"), "iron", "copper", pick(r, "lead", "aluminium")] below=ask gap=1
+  }
+
+  answer pick=name
+  feedback {
+    when (pick != name) point=kit {
+      say "Find the lump's volume from the two readings first, then how many grams each cm³ weighs."
+    }
+  }
+  hint "How many cubic centimetres of water did the lump push aside?"
+  hint "How many grams is each of those cubic centimetres?"
+  hint "Which metal in the table has that many grams in each cm³?"
+}

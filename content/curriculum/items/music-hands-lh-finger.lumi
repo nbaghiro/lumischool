@@ -1,0 +1,37 @@
+# Left-hand finger numbers: the thumb is 1 on both hands, so in C position the little finger (5) is on
+# C and the thumb on G, and E is played by 3. In G position (G2 to D3), B is 3 and C is 2.
+item music.hands-lh-finger v=1 skills=[music.hands-together, music.keys] {
+  title "Which finger in the left hand?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let n={pick(k, "D3", "E3", "F3", "A2", "B2", "C3")}
+  let pos={pick(k, "C position: little finger on C, thumb on G", "C position: little finger on C, thumb on G", "C position: little finger on C, thumb on G", "G position: little finger on G, thumb on D", "G position: little finger on G, thumb on D", "G position: little finger on G, thumb on D")}
+  let right={pick(k, 4, 3, 2, 4, 3, 2)}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x21 {
+    row top space=2 align=start at=canvas(1, 1) {
+      grandstaff gs notes=[n] letters=false lit=[n] landmarks=true
+      hand hand side=left numbers=piano ring=0 colours=false
+      text ask "The left hand is in {pos}. Which finger plays the ringed note?" narrate width=12
+    }
+    number-input answer below=top gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 6 - right and answer != right) point=hand {
+      say "That counts from the wrong end. On the left hand the little finger is 5 and the thumb is 1, so the fingers count down as the notes go up."
+    }
+    when (answer != right and answer != 6 - right) point=gs {
+      say "Name the ringed note first, from the landmark F on the bass staff. Then count up from the little finger."
+    }
+  }
+  hint "Which note is ringed? Start from the landmark F."
+  hint "The little finger, 5, is on the lowest note of the position. Count up one key for each finger."
+}

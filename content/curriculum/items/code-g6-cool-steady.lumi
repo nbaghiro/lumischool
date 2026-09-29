@@ -1,0 +1,35 @@
+# The way in to a simulation: a number that changes by the same amount each time round is the first
+# model a child writes, and the box shows only where it ends.
+item coding.cool-steady v=1 skills=[coding.simulation, coding.variables, coding.text] {
+  title "Cocoa left on the table"
+  difficulty (n * d / 20)
+  let s={80, 90} n=3..6 d={4, 5, 6, 8}
+  where (s - n * d >= 30 and s != 2 * n * d)
+  level easy {
+    let d={4, 5}
+    where (n <= 4)
+  }
+  level hard {
+    let d={6, 8}
+    where (n >= 5)
+  }
+
+  scene 36x17 {
+    program p code=["set cocoa to {s}", "repeat {n}", "  take {d} from cocoa"] text=true at=canvas(1, 0)
+    variable v name=cocoa code=["set cocoa to {s}", "repeat {n}", "  take {d} from cocoa"] blank=true history=false right-of=p gap=1
+    text ask "In the research hut a mug of cocoa starts at {s} °C. Each time round the repeat is ten minutes. What is cocoa at the end?" width=22 below=p gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=v answer="value(cocoa)"
+  feedback {
+    when (answer == s - d) point=p {
+      say "Line 3 is set in, so it runs every time round: {n} times, not once."
+    }
+    when (answer == n * d) point=p {
+      say "That is how much the cocoa lost. The question asks what cocoa holds at the end."
+    }
+  }
+  hint "How many times does the repeat go round? How much comes off each time?"
+  hint "Take the whole amount lost away from where cocoa started."
+}

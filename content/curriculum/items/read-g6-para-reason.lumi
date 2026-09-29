@@ -1,0 +1,29 @@
+# The two-star reason: a paraphrase that looks fine but changes the meaning, and the reason it is
+# not fair to the original. Armstrong's words are given as NASA's transcript prints them, with the
+# a in brackets because it is not clearly heard on the recording.
+item reading.para-reason v=1 stars=2 skills=[reading.paraphrase, reasoning.explain] {
+  title "Why is it not a fair paraphrase?"
+  difficulty pick(k, 1, 2, 1)
+  let k=0..2
+  let right={pick(k, "It says will, but the text says could, unless.", "It reads the words as a real step and a jump.", "It turns one sixth of into six times.")}
+  let length={pick(k, "It is shorter than the original.", "It does not use the word mankind.", "It is too long.")}
+  let words={pick(k, "It uses different words.", "It is about Armstrong, not the moon.", "It changes Earth to the moon.")}
+
+  scene 35x26 {
+    passage p title="{pick(k, \"The text\", \"Neil Armstrong, 1969\", \"The text\")}" text="{pick(k, \"Unless a rock from space lands on them, the footprints could last for millions of years.\", \"That's one small step for (a) man, one giant leap for mankind.\", \"On the moon you weigh about one sixth of what you weigh on Earth.\")}" width=34 numbers=false at=canvas(1, 1)
+    text ask "Leo's paraphrase: \"{pick(k, \"The footprints will last for millions of years.\", \"Armstrong took a short step and then a very long jump.\", \"On the moon you weigh six times as much as on Earth.\")}\" Why is it not fair to the text?" below=p gap=1 width=34
+    choice pick options=[pick(k, length, right, words), pick(k, right, words, length), pick(k, words, length, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == length) point=p {
+      say "A paraphrase can be a little longer or shorter. What matters is whether it means the same."
+    }
+    when (pick == words) point=p {
+      say "A paraphrase should use new words. Compare what Leo's version means with what the text means."
+    }
+  }
+  hint "Put the text and Leo's version side by side. Do they mean exactly the same?"
+  hint "Find the word or idea Leo changed."
+}

@@ -1,0 +1,32 @@
+# The start unknown after two changes, found by undoing them in the reverse order.
+item negative.start-before v=1 skills=[number.negatives, reasoning.work-backwards] negatives {
+  title "What was it at midnight"
+  difficulty ((f + r) / 6 + (if e + f - r > 0 then 1 else 0))
+  let e={-8, -6, -4, -2, 3} f={5, 7, 9} r={2, 4, 10}
+  where (e + f - r != 0 and e + f - r >= -14)
+  level easy {
+    let r={2} f={5, 7}
+    where (e + f - r > 0)
+  }
+  level hard {
+    let r={10} f={7, 9}
+  }
+
+  scene 34x15 {
+    thermometer th from=-15 to=15 step=5 value=e unit="°C" at=canvas(1, 1)
+    text ask "From midnight to 6 am the temperature on the ice shelf fell by {f} degrees. From 6 am to noon it rose by {r} degrees. At noon the thermometer reads {e} °C. What did it read at midnight?" narrate width=22 right-of=th gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (e + f - r)
+  feedback {
+    when (answer == e - f + r) point=th {
+      say "That runs the day forwards from noon. Undo it instead: take off the rise, then put back the fall."
+    }
+    when (answer == e + f + r) point=th {
+      say "Before the rise it was colder than at noon, so take the rise away."
+    }
+  }
+  hint "What did it read in the morning, before the rise?"
+  hint "Before the fall it was warmer. By how much?"
+}

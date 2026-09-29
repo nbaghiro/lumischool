@@ -1,0 +1,32 @@
+# The horizon is at the eye: a box whose top is below the eye shows its top, and one the eye is level
+# with shows only its sides.
+item art.two-top-shows v=1 skills=[art.perspective, reasoning.predict] {
+  title "Can Ada see the top?"
+  difficulty (if h == 3 or h == 5 then 1 else 0)
+  let h={2, 3, 5, 7}
+  let right={if h < 4 then "Yes, its top shows" else "No, only its two sides"}
+  let w1={if h < 4 then "No, only its two sides" else "Yes, its top shows"}
+  let w2={"Its underneath shows"}
+  let r={h % 3}
+  level easy {
+    let h={2, 7}
+  }
+  level hard {
+    let h={3, 5}
+  }
+
+  scene 36x19 {
+    twopoint crate horizon=h left=1 right=15 corner=8 stage=1 door=false at=canvas(1, 1)
+    text ask "Ada has ruled her horizon at her eye level and drawn the crate's near edge. Will the finished crate show its top?" width=18 right-of=crate gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=crate {
+      say "The horizon is where Ada's eyes are. Is the top of the crate below her eyes, so she looks down on it, or is it above them?"
+    }
+  }
+  hint "Is the top of the near edge above the horizon or below it?"
+  hint "You can see the top of a table only when your eyes are higher than it. Are Ada's?"
+}

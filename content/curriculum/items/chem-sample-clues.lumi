@@ -1,0 +1,38 @@
+# The three-star: four unnamed samples tested three ways, and which one could be the named material.
+# Iron conducts, bends and is pulled by a magnet; aluminium conducts and bends but is not pulled;
+# graphite conducts but crumbles; sulfur does not conduct and shatters (RSC element pages).
+item chem.sample-clues v=1 stars=3 skills=[chemistry.metals, reasoning.deduction] {
+  title "Which sample is it?"
+  difficulty pick(t, 0, 2, 1)
+  let t=0..2 p=0..3
+  let target={pick(t, "iron", "aluminium", "graphite, a non-metal")}
+  let l1={pick(p, "Yes", "Yes", "No", "Yes")}
+  let l2={pick(p, "Yes", "No", "Yes", "Yes")}
+  let l3={pick(p, "Yes", "Yes", "Yes", "No")}
+  let l4={pick(p, "No", "Yes", "Yes", "Yes")}
+  let m1={pick(p, "Yes", "No", "No", "No")}
+  let m2={pick(p, "No", "No", "Yes", "No")}
+  let m3={pick(p, "No", "No", "No", "No")}
+  let m4={pick(p, "No", "Yes", "No", "Yes")}
+  let h1={pick(p, "bends", "crumbles", "shatters", "bends")}
+  let h2={pick(p, "bends", "shatters", "bends", "crumbles")}
+  let h3={pick(p, "crumbles", "bends", "crumbles", "shatters")}
+  let h4={pick(p, "shatters", "bends", "bends", "bends")}
+  level easy {
+    let t={0, 2}
+  }
+  level hard {
+    let t={1, 2}
+  }
+
+  scene 35x24 {
+    table data cols=4 head=["Sample", "Bulb", "Magnet", "Hammer"] cells=["A", "{l1}", "{m1}", "{h1}", "B", "{l2}", "{m2}", "{h2}", "C", "{l3}", "{m3}", "{h3}", "D", "{l4}", "{m4}", "{h4}"] at=canvas(1, 0)
+    text ask "Four samples from the observatory's store were tested: does the tester's bulb light, does a magnet pull it, and does it bend or break when a grown-up taps it with a hammer. Which sample could be {target}?" narrate width=34 below=data gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=pick(t, pick(p, "A", "D", "B", "D"), pick(p, "B", "C", "D", "A"), pick(p, "C", "A", "C", "B"))
+  hint "What does {target} do in each of the three tests?"
+  hint "Which samples does the first test rule out? Which does the next test rule out?"
+  hint "Is exactly one sample left?"
+}

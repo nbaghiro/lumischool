@@ -1,0 +1,23 @@
+# Evidence from The Secret Garden: each version asks for the one line of a chapter that bears out
+# what the question says in other words, and book.line proves the key against the volume. Difficulty
+# 0 is a line that says it outright, 1 a paraphrase, 2 a line the child has to interpret.
+item reading.garden-line v=1 skills=[reading.evidence, reading.whole-book] {
+  title "Which line shows it?"
+  difficulty pick(k, 0, 1, 0, 1, 2, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 2, 2, 0, 2, 2)
+  let k=0..24
+  let ch={pick(k, 1, 2, 4, 4, 4, 7, 8, 9, 10, 12, 13, 14, 15, 17, 17, 20, 21, 23, 26, 27, 27, 21, 24, 17, 23)}
+  let q={pick(k, "the first line that says everyone forgot about Mary", "the line that says the teasing got worse the angrier Mary got", "the line that says whose garden it had been", "the line that says why Mr Craven shut the garden", "the line that shows nobody had ever been honest with Mary before", "the line that says the ring was really something else", "the line where Mary first finds something hidden under the ivy", "the line where Mary decides the garden is not all dead", "the line where Dickon says he is used to keeping secrets", "the line where Mary asks her uncle for something", "the line that says what the people around Colin believe about his future", "the line that shows Mary and Colin are happy together", "the line that tells you the name of Dickon's fox", "the line that says why Colin stopped screaming", "the line that says Colin's tantrum was over", "the line where Colin says he will never die", "the line that says how Colin looked when he stood up", "the line that names Colin's plan to make himself well", "the line where someone new comes in at the garden door", "the line that says how Colin came out of the garden door", "the line where Mr Craven first feels something change in himself", "the line that shows Ben had believed Colin was crippled", "the line that lists the food on Colin's breakfast table", "the line where Mary says the lump comes from Colin's fear, not his back", "the line where Colin says the Magic is not only his")}
+
+  scene 35x7 {
+    row all at=canvas(1, 1) space=1 align=end {
+      bookcast m who=mary pose=hold dir=1
+      text ask "In chapter {ch}, find {q}. Write its number." width=24
+      number-input answer
+    }
+  }
+
+  check book.line book=secret-garden chapter="{ch}" holds="{pick(k, \"was forgotten by everyone\", \"crosser Mary got, the more they sang\", \"It was her garden\", \"had it shut when his wife died so sudden\", \"Mary Lennox had never heard the truth\", \"it was an old key which looked as if\", \"knob which had been covered by the leaves\", \"there are other things alive\", \"I’m keepin’ secrets all th’ time\", \"might I have a bit of earth\", \"No one believes I shall live to grow up\", \"both began to laugh over nothings\", \"It’s named Captain\", \"stopped screaming because she had startled him\", \"Colin’s tantrum had passed\", \"I shall live forever and ever\", \"as straight as an arrow\", \"try a scientific experiment\", \"The door in the ivied wall had been pushed gently open\", \"a boy burst through it at full speed\", \"for the first time in ten years a strange thing had\", \"hasn’t got a crooked back\", \"home-made bread and fresh butter\", \"Hysterics makes lumps\", \"It’s in everyone of us\")}"
+  hint "Where in the chapter does this happen: near the start, the middle or the end?"
+  hint "Read the lines around that place. Which one says it, even in other words?"
+  hint "Check that the whole idea is on your line, not just a word of it."
+}

@@ -1,0 +1,28 @@
+# Acid rain slowly dissolves limestone and marble, the rocks that fizz with vinegar, and hardly
+# touches granite or slate (USGS, "Acid rain and our ecosystem"; the rocks table in substances.ts).
+item chem.statue-rain v=1 skills=[chemistry.acids, chemistry.rocks, chemistry.weathering] {
+  title "Statues in the rain"
+  difficulty (if v >= 2 then 1 else 0)
+  let v=0..3
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+
+  scene 33x20 {
+    rocks r rocks=["{pick(v, \"marble\", \"granite\", \"chalk\", \"slate\")}", "{pick(v, \"granite\", \"limestone\", \"sandstone\", \"marble\")}", "{pick(v, \"slate\", \"basalt\", \"limestone\", \"granite\")}", "{pick(v, \"basalt\", \"slate\", \"marble\", \"limestone\")}"] test=2 letters=1 names=1 at=canvas(1, 0)
+    text ask "Statues by the waterfall are carved from the four rocks above, which have a drop of vinegar on each. Rain that is a little acid falls on them for a hundred years. How many of the four will it slowly eat away?" narrate width=32 below=r gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check chem.rocks of=r answer="count(fizzes)"
+  feedback {
+    when (answer == 4) point=r {
+      say "Some of these rocks do nothing with an acid. Which ones fizzed with the vinegar?"
+    }
+  }
+  hint "Which of the rocks fizzed with the vinegar?"
+  hint "Rain that is a little acid does slowly what the vinegar does fast. To which rocks?"
+}

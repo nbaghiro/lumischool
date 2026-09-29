@@ -1,0 +1,35 @@
+# Population density, the crowding Japan's grade 5 compares: people on each square kilometre of two
+# villages, where the village with more people is not always the more crowded.
+item rates.village-density v=1 skills=[rates.per-unit, reasoning.compare] {
+  title "The more crowded village"
+  difficulty s
+  let s=0..3
+  let p1={pick(s, 2400, 1800, 4200, 3000)}
+  let a1={pick(s, 3, 2, 6, 5)}
+  let p2={pick(s, 3500, 4000, 2600, 1950)}
+  let a2={pick(s, 5, 4, 4, 3)}
+  level easy {
+    let s={0, 1}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 31x23 {
+    houses town count=5 windows=2 at=canvas(1, 1)
+    text ask "Two villages stand on the canal. Ashby has {pick(s, \"2,400\", \"1,800\", \"4,200\", \"3,000\")} people on {a1} square kilometres. Millbrook has {pick(s, \"3,500\", \"4,000\", \"2,600\", \"1,950\")} people on {a2} square kilometres. In the more crowded village, how many people are there on each square kilometre?" narrate width=30 below=town gap=1
+    number-input answer width=5 below=ask gap=1
+  }
+
+  answer max(p1 / a1, p2 / a2)
+  feedback {
+    when (answer == min(p1 / a1, p2 / a2)) point=ask {
+      say "That village has fewer people on each square kilometre. Work out both and take the bigger."
+    }
+    when (answer == p1 or answer == p2) point=ask {
+      say "That is everyone in the village. Share them out over its square kilometres."
+    }
+  }
+  hint "How many people does Ashby have on one square kilometre?"
+  hint "And Millbrook? The more crowded one has more people on each square kilometre."
+}

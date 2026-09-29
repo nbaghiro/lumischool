@@ -1,0 +1,72 @@
+# Two accounts of one night on the star cliffs, a child's diary and an astronomer's log, compared
+# for what both tell, what only one tells, and where they only seem to disagree. Comet Arlen and
+# both accounts were written for the lesson.
+lesson reading-two-accounts-of-a-comet v=1 format=teach grade=5 unit=5 subject=reading levels=[easy, medium, hard] {
+  title "Two accounts of one comet"
+  goal "Compare two accounts of the same event: what both tell, what only one tells, and why they tell it differently."
+
+  look {
+    scene 36x21 {
+      column all at=canvas(0, 1) space=1 align=start {
+        row sky space=2 align=end {
+          observatory dome open=1
+          comet c tail=7
+          person mira pose=point age=child hair=braids top=sky tone=4
+        }
+        passage diary title="Mira's diary, 3 March" text="Gran woke me at nine, and we ran up to the cliff in our coats. The comet hung over the sea like a white feather, its tail as long as my arm. Everyone went quiet. I did not feel the cold." width=35 numbers=false
+      }
+    }
+    say """
+      Mira watched Comet Arlen from the cliff with her gran, and Dr Osei watched it from the
+      observatory. Each wrote an account that night: Mira in her diary, for herself, and Dr Osei in
+      the observatory's log, for the record. To compare two accounts, take one thing at a time and
+      look for it in both. Often they tell the same thing in different words, so read for the
+      meaning, not the exact words.
+      """
+  }
+  do {
+    level easy {
+      worked reading.told-where s=0
+    }
+    practice reading.whose-words count=1 seed=1 easy-count=2 easy-seed=1 hard-seed=1
+    show reading.told-where s=1 hard-s=3
+    show reading.told-where s=4 easy-s=2 hard-s=5
+    level medium hard {
+      show reading.told-where s=5 hard-s=4
+    }
+    practice reading.account-lines count=2 seed=1 easy-seed=1 hard-seed=1
+    practice reading.which-account count=2 seed=1 easy-seed=1 hard-count=3 hard-seed=1
+  }
+  try stars=2 {
+    show reading.do-they-disagree k=3 easy-k=0 hard-k=1
+    say "When two accounts seem to disagree, ask whether both could be true at once."
+  }
+  try stars=3 {
+    show reading.one-report k=0 hard-k=1
+  }
+  remember {
+    say "Take one thing at a time and look for it in both accounts. Different words can tell the same thing."
+  }
+
+  grown-ups """
+    The idea is that two people who saw the same event write different accounts, because they were
+    in different places, cared about different things and wrote for different reasons: Mira for
+    herself, about what it was like, and Dr Osei for the record, in times and numbers. The worked
+    example finds one thing in both accounts in different words. The exercises place a statement as
+    told by one account or both, match a line of one account to the line of the other, and choose
+    which account answers a question, including questions neither answers. The wrong idea to watch
+    for is deciding that two accounts disagree because their words differ, and its opposite,
+    deciding they always agree. The two-star question tests both: at easy and hard both accounts are
+    true once the reader asks when and how, and at medium Mira's clear sky and Dr Osei's thick cloud
+    over the same cliff in the same hour cannot both be true, so one of them is wrong. The
+    three-star question joins the accounts into two sentences for the paper; check nothing in them
+    contradicts either account. Off the page, ask two people at home to write two lines each about
+    the same meal, then compare them together.
+    """
+  level easy {
+    grown-ups "At this level the statements to place are the sea, the feather and the second night, the lines to match are the plainer ones, the questions to route are the first sighting and the second night, the two-star is the tail told two ways, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the statements to place include the cold, told by both in different words, and the silence, told only by Mira, the lines to match include who Mira went with, the questions to route include two that neither account answers, the two-star is the time: the comet was first seen at 8.40 pm and Mira was woken at nine, and the three-star is for readers who missed the comet."
+  }
+}

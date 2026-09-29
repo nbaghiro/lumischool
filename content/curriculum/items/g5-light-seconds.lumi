@@ -1,0 +1,28 @@
+# Multiplying a large number by ten, a hundred or a thousand: light's distance in a second, taken
+# for longer times. Light in a vacuum goes 299,792 km a second (SI definition), so "about 300,000".
+item place.light-seconds v=1 skills=[place-value.powers-of-ten, place-value.large-numbers] {
+  title "How far light goes"
+  difficulty (if s == 10 then 0 else if s == 100 then 1 else 2)
+  let s={10, 100, 1000}
+  level easy {
+    let s={10}
+  }
+  level hard {
+    let s={1000}
+  }
+
+  scene 33x10 {
+    shootingstar star sparkles=3 facing=1 at=canvas(1, 1)
+    text ask "Light travels about 300,000 km every second. About how many kilometres does it travel in {s} seconds?" narrate width=22 right-of=star gap=2
+    number-input answer width=11 below=ask gap=1
+  }
+
+  answer (300000 * s)
+  feedback {
+    when (answer == 300000 * s / 10 or answer == 300000 * s * 10) point=ask {
+      say "Count the zeros: 300,000 has five, and {s} adds {if s == 10 then 1 else if s == 100 then 2 else 3} more."
+    }
+  }
+  hint "How many zeros does 300,000 have? How many does {s} have?"
+  hint "Multiply 3 by 1, then write all of those zeros after it."
+}

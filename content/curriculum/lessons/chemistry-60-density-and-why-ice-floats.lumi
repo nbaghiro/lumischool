@@ -1,0 +1,65 @@
+lesson chemistry-density-and-why-ice-floats v=1 format=teach grade=6 unit=1 subject=chemistry levels=[easy, medium, hard] {
+  title "Density, and why ice floats"
+  goal "Work out a material's density from its mass and volume, and use it to say whether it floats."
+
+  look {
+    scene 31x17 {
+      row all at=canvas(1, 0) space=2 align=end {
+        iceberg berg under=1
+        cylinder one max=100 step=10 minor=5 level=50 unit=ml
+        cylinder two max=100 step=10 minor=5 level=60 unit=ml
+      }
+    }
+    say """
+      At the research hut on the ice shelf, Mei lowers a stone into a measuring cylinder. The water
+      rises from 50 ml to 60 ml, so the stone is 10 cm³. It weighs 27 g, so each cubic centimetre
+      weighs 2.7 g: that is its density. Water is 1 g/cm³. Anything with a smaller density floats
+      on water, and anything bigger sinks. Ice is 0.92 g/cm³, because water takes more room when it
+      freezes, so the iceberg floats with about nine tenths of it under the sea.
+      """
+  }
+  do {
+    practice chem.density-floats count=1 seed=1
+    level easy {
+      worked chem.density-block w=0 k=3 level=medium
+    }
+    practice chem.density-block count=2 seed=4 easy-seed=1
+    practice chem.stone-density count=2 seed=24 easy-seed=11
+    practice chem.ice-grows count=2 seed=1
+  }
+  story {
+    show chem.iceberg-under w=0 a=30 hard-w=2 hard-a=40
+    level hard {
+      show chem.iceberg-under w=1 a=60
+    }
+  }
+  try stars=2 {
+    show chem.why-ice-floats k=0 r=1 hard-k=1
+  }
+  try stars=3 {
+    show chem.which-metal k=2 v=10 b=40 r=0 hard-v=20 hard-k=1
+  }
+  remember {
+    say "Density is grams in each cm³. Less than water's 1 g/cm³ floats, more sinks, and ice at 0.92 floats."
+  }
+
+  grown-ups """
+    The idea is density, the grams in each cubic centimetre, worked out as the mass divided by the
+    volume, and used to decide what floats: water is 1 g/cm³, so a block of cork (0.24) or ice
+    (0.92) floats and a stone of granite (2.7) sinks. A stone's volume is found by the water it
+    pushes aside, since one millilitre is one cubic centimetre. The wrong ideas to watch for are
+    that heavy things sink and light things float (a big log floats and a small pebble sinks), and
+    that ice floats because it has air in it or because it is cold. Ice floats because water takes
+    about a tenth more room when it freezes, so the same grams are spread over more cubic
+    centimetres. The two-star question asks for that reason; the three-star question names a metal
+    from its mass and the water it pushes aside. If the child divides the wrong way round, stay
+    here another day with a kitchen scale and a measuring jug. Off the page: weigh a potato, find
+    its volume by lowering it into a jug of water, and work out whether it should float.
+    """
+  level easy {
+    grown-ups "At this level a density is worked once in the teacher's pen, the blocks and stones ask for the density, the ice asks only for its volume, the iceberg is worked from the part above, the two-star asks why ice floats, and the three-star lump is 10 cm³."
+  }
+  level hard {
+    grown-ups "At this level the blocks and stones are worked back to the mass or the volume, the water level is predicted before the stone goes in, the ice asks how much room it gained, the iceberg is worked from the part under the water, the two-star asks why a full bottle splits in the frost, and the three-star lump is 20 cm³."
+  }
+}

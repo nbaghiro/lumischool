@@ -1,0 +1,33 @@
+# Taking away with different denominators: the same step first, then the tops are taken away.
+item fraction.take-unlike v=1 skills=[fractions.add-unlike, fractions.subtract] {
+  title "What is left of the cloth"
+  difficulty (lcm(b, d) / 4)
+  let b={2, 3, 4, 5} d={3, 4, 6, 8, 10} a=1..4 c=1..9
+  where (b != d and a < b and c < d and a / b > c / d and d % b != 0 and b % d != 0)
+  level easy {
+    where (lcm(b, d) <= 12)
+  }
+  level hard {
+    where (lcm(b, d) >= 15)
+  }
+
+  scene 31x13 {
+    fraction roll n=b k=a shape=bar at=canvas(1, 0)
+    text ask "A stall in the old market has {a}/{b} of a roll of silk, shaded on the bar. It sells {c}/{d} of the roll. What fraction of the roll is left? Write it in its simplest form." narrate width=30 below=roll gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      equation sum "{a}/{b} − {c}/{d} ="
+      number-input top width=3
+      text slash "/"
+      number-input bottom width=3
+    }
+  }
+
+  answer top=num(a / b - c / d) bottom=den(a / b - c / d)
+  feedback {
+    when (top == a - c and bottom == b - d) point=eq {
+      say "Taking the bottoms away changes the size of the parts. Write both fractions in the same size parts first."
+    }
+  }
+  hint "What size of part can both fractions be written in?"
+  hint "Change both, then take the tops away."
+}

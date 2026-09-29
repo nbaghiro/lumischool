@@ -1,0 +1,31 @@
+# Choosing the classes before the tally: classes of equal width from 0, and only as many as reach from
+# the smallest value to the largest.
+item data.crater-how-many-classes v=1 skills=[data.frequency, data.tables] {
+  title "How many classes"
+  difficulty ((hi - lo) / w / 2)
+  let lo={3, 6, 8} hi={27, 34, 41} w={5, 10}
+  level easy {
+    let w={10}
+  }
+  level hard {
+    let w={5} hi={34, 41}
+  }
+
+  scene 36x21 {
+    crater field count=3 at=canvas(1, 1)
+    text ask "The narrowest crater the crew measured is {lo} m wide and the widest is {hi} m. They group the widths in classes {w} m wide: 0-{w - 1}, {w}-{2 * w - 1}, and so on. How many classes do they need, from the one holding the narrowest crater to the one holding the widest?" narrate width=34 below=field gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (hi // w - lo // w + 1)
+  feedback {
+    when (answer == hi // w - lo // w) point=ask {
+      say "Count the class the narrowest crater is in as well as the one the widest is in."
+    }
+    when (answer == hi // w + 1 and lo >= w) point=ask {
+      say "That starts from the class 0-{w - 1}, but no crater is that narrow. Start at the class holding {lo} m."
+    }
+  }
+  hint "Which class holds the narrowest crater? Which holds the widest?"
+  hint "List the classes from the first of those to the last and count them."
+}

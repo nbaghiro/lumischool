@@ -1,0 +1,32 @@
+# One part of The clock-keeper's apprentice and three faces. The feeling is never named in the part;
+# it is read off what Iris does, and the face only checks the reading.
+item reading.feels-when v=1 skills=[reading.character, reading.inference] {
+  title "How does Iris feel here?"
+  difficulty pick(k, 0, 1, 1)
+  let k=0..2
+
+  scene 35x42 {
+    column all at=canvas(0, 1) space=1 align=start {
+      passage p title="{pick(k, \"Part 1: The apprentice\", \"Part 2: The stopped clock\", \"Part 3: Midnight\")}" text="{pick(k, \"Iris kicked the bottom step of the clock tower. Her mother had sent her to help old Mr Tamas for the summer, and she had wanted to spend it at the fountain with her friends. \\\"Clocks are boring,\\\" she muttered, and she climbed the steps as slowly as she could, counting all ninety-two of them out loud. At the top, the workroom smelled of oil and dust. Mr Tamas did not look up from his bench. He pointed at a pile of brass wheels and a rag, and said only, \\\"Clean those. Gently.\\\" Iris rubbed at the wheels and stared out of the little window, where she could just see her friends splashing round the fountain. When the bell struck five, she was down the steps before its last note had faded.\", \"Two days before the festival, the great clock stopped. Its hands stood at twenty past four, and the square below filled with people looking up and shaking their heads. Mr Tamas opened the back of the clock and peered in. A gear deep inside had jammed, and Mr Tamas was too big to reach it. He tried with a long hook and then with a stick, and at last he sat down on the floor with his head in his hands. Iris looked into the dark gap between the wheels. It was narrow and smelled of old grease. Her hands shook, but she squeezed in with an oil can and a torch, and she pushed until the gear turned. When she wriggled out, black to the elbows, Mr Tamas was staring at her as if he had never seen her before.\", \"At midnight on the festival night, the great bell rang out over the old city, and the whole square cheered. Up in the tower the floor shook with every stroke, and dust fell from the beams like snow. Iris stood at the top of the tower and grinned. She could see the fountain lit with lanterns and her friends waving up at her, and she did not wish she were down there. The next morning she was on the bottom step before Mr Tamas arrived, with a cloth to polish the brass. He climbed the ninety-two steps beside her, and at the top he gave her a key of her own. \\\"The clock needs two keepers now,\\\" he said.\")}" width=34 numbers=false
+      text ask "Which face shows how Iris feels in this part?" width=34
+      row bottom space=1 align=centre {
+        face a mood=pick(k, "happy", "excited", "happy") hair=3 name="A"
+        face b mood=pick(k, "cross", "sad", "worried") hair=3 name="B"
+        face c mood=pick(k, "tired", "scared", "surprised") hair=3 name="C"
+        choice pick options=["A", "B", "C"]
+      }
+    }
+  }
+
+  answer pick=pick(k, "B", "C", "A")
+  feedback {
+    when (k == 0 and pick == "C") point=p {
+      say "She climbs slowly, but not because she is tired. Look at what she does to the step and what she mutters."
+    }
+    when (k == 1 and pick == "A") point=p {
+      say "She is brave, but look at her hands. How does she feel as she squeezes in?"
+    }
+  }
+  hint "The part never names the feeling. What does Iris do, and what does she say?"
+  hint "Which face would you pull if you did that?"
+}

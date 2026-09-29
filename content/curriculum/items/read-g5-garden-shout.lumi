@@ -1,0 +1,19 @@
+# Interpretive, marked by a grown-up: Mary screaming back at Colin in his tantrum, argued either way
+# from chapters 16 to 18.
+item reading.garden-shout v=1 skills=[reading.characters, reading.inference, writing.composing] {
+  title "Was Mary right?"
+
+  scene 35x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        bookcast m who=mary pose=point dir=1
+        text ask "In chapter 17 everyone gives in to Colin's tantrums, but Mary shouts at him to stop. Was she right? Give a reason from chapters 16 to 18." width=24
+      }
+      writinglines lines lines=4 width=34 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="A view with a reason from the chapters: she was right because the shock stopped the screaming when nothing else had, because she looked at his back and showed him there was no lump, and because he was calmer and kinder the next day; or she was wrong because shouting at someone ill is unkind, with the answer still saying what happened after. Either view uses what happened, not only a feeling." notice=["Says right, wrong or both", "Gives a reason from what happened", "Mentions the lump on his back", "Says how Colin was after"] ask="Is it ever kind to be sharp with someone?"
+  hint "What happened when others gave in to Colin's tantrums?"
+  hint "What did Mary do after he stopped screaming, and how was Colin afterwards?"
+}

@@ -1,0 +1,33 @@
+# The way in to a decision inside a decision: the second question is asked only when the first says
+# yes, so the wind does not matter on a mild day. The unknown moves between the three answers.
+item coding.inner-said v=1 skills=[coding.decisions, coding.text, coding.tracing] {
+  title "Out on the sledge or not?"
+  difficulty (pick(k, 0, 1, 2) + (if t == -10 or w == 30 then 1 else 0))
+  let k=0..2
+  let t={pick(k, -4, -15, -18), -10} w={pick(k, 40, 35, 15), 30}
+  level easy {
+    let k={0, 2}
+    where (t != -10 and w != 30)
+  }
+  level hard {
+    where (t == -10 or w == 30)
+  }
+
+  scene 36x24 {
+    program p code=["set temp to {t}", "set wind to {w}", "if temp is less than -10", "  if wind is more than 30", "    say stay in", "  otherwise", "    say wrap up", "otherwise", "  say sledge"] text=true at=canvas(0, 0)
+    text ask "The team at the research station decides whether to take the sledge out. What does the program say?" width=15 right-of=p gap=1
+    choice pick options=["stay in", "wrap up", "sledge"] below=p gap=1
+  }
+
+  check coding.runs of=p pick=said
+  feedback {
+    when (pick == "stay in" and t >= -10) point=p {
+      say "Line 4 is asked only when line 3 says yes. Is {t} less than -10?"
+    }
+    when (pick == "wrap up" and t < -10 and w > 30) point=p {
+      say "Line 3 says yes, so line 4 is asked. Is {w} more than 30?"
+    }
+  }
+  hint "Ask line 3's question first. Which lines does the answer send the program to?"
+  hint "Only if line 3 says yes, ask line 4's question."
+}

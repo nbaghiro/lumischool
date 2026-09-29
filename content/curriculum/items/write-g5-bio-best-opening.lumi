@@ -1,0 +1,36 @@
+# The two-star reason: two openings for a biography, one that says who, when and why the person
+# matters, and one that says too little, and why the first is better. The right reason is offered
+# for both, and the third choice is a half-truth about biographies, so the openings decide.
+item writing.bio-best-opening v=1 stars=2 skills=[writing.biography, reasoning.explain] {
+  title "Which opening, and why?"
+  difficulty k
+  let k=0..1 r=0..2
+  let da={pick(k, "A: Caroline Herschel was born in 1750.", "A: Maria Mitchell, born in 1818, was the first American woman to work as an astronomer.")}
+  let db={pick(k, "B: Caroline Herschel, born in 1750, was one of the first women paid to study the stars.", "B: Maria Mitchell liked the stars.")}
+  let right={pick(k, "B: it says who, when and why she matters", "A: it says who, when and why she matters")}
+  let w1={pick(k, "A: it says who, when and why she matters", "B: it says who, when and why she matters")}
+  let w2={pick(k, "A: a biography starts with the birth date", "B: it says what she loved, where it all began")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x21 {
+    row top at=canvas(1, 0) space=2 align=end {
+      text ask "Two ways to open a biography. {da} {db} Which is the better first sentence, and why?" narrate width=24
+      observatory obs open=1
+    }
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "The first sentence of a biography tells the reader who this is and why their life is worth reading about. A date alone, or a liking, does not say why."
+    }
+  }
+  hint "After reading each opening, does the reader know why this person is worth a biography?"
+  hint "Two choices give the same reason. Check each opening for who, when and why: which one has all three?"
+}

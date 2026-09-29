@@ -1,0 +1,63 @@
+lesson chemistry-a-gas-squashed-and-cooled v=1 format=teach grade=6 unit=2 subject=chemistry levels=[easy, medium, hard] {
+  title "A gas squashed and cooled"
+  goal "Measure how a trapped gas takes less room when it is squashed or cooled, and explain it with its particles."
+
+  look {
+    scene 29x11 {
+      syringe a max=60 step=10 level=60 capped=1 water=0 particles=18 at=canvas(1, 0)
+      syringe b max=60 step=10 level=30 capped=1 water=0 particles=18 below=a gap=1
+    }
+    say """
+      In the research hut Mei caps a syringe of 60 ml of air and pushes the plunger to 30 ml. No air
+      gets out: the same particles now share half the room, so they hit the plunger twice as often
+      and push back twice as hard. A syringe of water hardly moves, because water's particles
+      already touch. Cooling works too. Colder particles move more slowly and push less, so air
+      carried from the warm hut into the cold takes less room, about 7 ml less for every 100 ml.
+      """
+  }
+  do {
+    practice chem.squash-which count=1 seed=1
+    level easy {
+      worked chem.syringe-squash w=0 l=40 n=12 level=medium
+    }
+    practice chem.syringe-squash count=2 seed=2 easy-seed=5 hard-seed=1
+    practice chem.squash-pressure count=2 seed=1 hard-seed=4
+    practice chem.cooling-table count=2 seed=3 easy-seed=1 hard-seed=7
+  }
+  story {
+    show chem.bottle-crumples w=0 v=1000 easy-v=500 hard-w=1 hard-v=1500
+    level hard {
+      show chem.bottle-crumples w=1 v=2000
+    }
+  }
+  try stars=2 {
+    show chem.why-squash k=0 r=1 hard-k=1
+  }
+  try stars=3 {
+    show chem.match-crowding k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Squash a trapped gas or cool it and it takes less room: the same particles, closer together or slower."
+  }
+
+  grown-ups """
+    The idea is that a gas trapped in a syringe can be squashed into less room and pushes back
+    harder, half the room giving twice the push, and that cooling it makes it take less room, while
+    a liquid hardly squashes at all. The particle picture explains both: a gas's particles are far
+    apart with room between them, squashing crowds the same particles closer so they hit the walls
+    more often, and cooling slows them so they push less. The cooling table is worked out from how
+    a gas behaves (Charles's law) for a syringe that slides freely; a real one sticks a little. The
+    wrong ideas to watch for are that squashing or cooling loses particles, and that particles shrink
+    in the cold. The two-star question asks for the particle reason; the three-star question
+    pushes one syringe until its air is as crowded as another's. If the child says the cold sucked
+    the bottle in, stay here another day with a plastic bottle capped in a warm room and put in the
+    fridge. Off the page: hold a finger over the end of a bicycle pump or a syringe with no needle
+    and push; then try it with water, over a sink.
+    """
+  level easy {
+    grown-ups "At this level the squash is worked once in the teacher's pen, the syringe asks how far the air was squashed, the gauge and the cooling table are read for one row, the bottle holds 500 ml, the two-star compares air and water, and the three-star syringes are the plainer pair."
+  }
+  level hard {
+    grown-ups "At this level the syringe asks for particles in each 10 ml, the gauge is worked for a room not in the table and back to the room from a push, the cooling table asks for differences, the bottle's air is worked to what it fills, the two-star asks why the bottle crumpled, and the three-star needs a push to 50 ml or 40 ml."
+  }
+}

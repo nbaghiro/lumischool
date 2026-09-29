@@ -1,0 +1,77 @@
+# Looking at landscapes across nine centuries: five public-domain works, from Guo Xi's Early Spring
+# (1072) to Levitan's March (1895), seen as studies on squared paper, read for their layers, their
+# horizon and their dates, and borrowed from for a painting of the waterfall gorge.
+lesson art-looking-at-landscapes-across-nine-centuries v=1 format=teach grade=6 unit=4 subject=art levels=[easy, medium, hard] {
+  title "Looking at landscapes across nine centuries"
+  goal "Read a landscape painting for its near, middle and far layers and the clues that show distance, and place it in time."
+
+  look {
+    scene 36x22 {
+      row all space=2 align=end at=canvas(1, 1) {
+        studies s work=0 names=1 card=1
+        waterfall falls drops=2 rainbow=1
+      }
+    }
+    say """
+      In the gorge a waterfall drops between cliffs, and painters have looked at scenes like it for
+      a thousand years. In China in 1072 Guo Xi painted Early Spring, a tall mountain rising out of
+      mist. Around 1832 Katsushika Hokusai made a print of the Kirifuri waterfall in Japan; J. M. W.
+      Turner showed The Fighting Temeraire in London in 1839; in Russia Ivan Shishkin painted
+      Morning in a Pine Forest in 1889, with bears by Konstantin Savitsky, and Isaac Levitan painted
+      March in 1895. Here each is a study on squared paper, not the painting itself, with its near,
+      middle and far layers named, so you can look for the plan the painter chose.
+      """
+  }
+  do {
+    show art.works-layer k=1 easy-k=0 hard-k=3
+    level easy {
+      worked art.works-dates q=0 level=medium
+    }
+    show art.works-dates q=1 hard-q=2
+    show art.works-which k=1 easy-k=0 hard-k=2
+    show art.works-sky k=0 hard-k=1
+    show art.works-layer k=3 easy-k=2 hard-k=4
+    show art.works-which k=2 easy-k=1 hard-k=3
+    show art.works-dates q=3 easy-q=4 hard-q=3
+    show art.works-layer k=5 easy-k=1 hard-k=5
+    level hard {
+      show art.works-which k=4
+    }
+  }
+  try stars=2 {
+    show art.works-cues q=0 r=0 easy-r=1 hard-q=1
+  }
+  try stars=3 {
+    show art.works-paint v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A landscape shows distance with more than size: far things sit higher, behind other things, and paler."
+  }
+
+  grown-ups """
+    The idea is that a landscape painting has a plan, a near, a middle and a far layer, and that a
+    painter shows distance by several clues at once: what overlaps what, how high up the picture a
+    thing sits, how pale or misty it is, and size. The wrong idea to watch for is that bigger always
+    means nearer; the two-star question sets Guo Xi's great peak, drawn larger than the pines below
+    it, against that. In the working, look for the child pointing from the bottom of a study to the
+    top as they name the layers. The core finds the layers, knows the works by their plans, reads
+    how much of a picture is above its horizon, and places the five in time; the three-star is a
+    painting of the gorge on the plan of one of the works, which you respond to rather than mark.
+
+    The studies are our drawings after the works, not copies; every work is long in the public
+    domain, and the card under each study says where it hangs: Early Spring in the National Palace
+    Museum, Taipei; a print of Hokusai's waterfall in the Metropolitan Museum of Art, New York; the
+    Temeraire in the National Gallery, London; the Shishkin and the Levitan in the Tretyakov
+    Gallery, Moscow. Look the paintings up together in a library book or a museum's own pages. If
+    the layers are stuck, cover the study with a sheet of paper and slide it down slowly, naming
+    each thing as it appears. This lesson meets Japan's Course of Study for arts and crafts, grades
+    5 and 6, B 鑑賞(1)ア: "我が国や諸外国の親しみのある美術作品…の造形的なよさや美しさ…について，感じ取ったり考えたりし" (looking at familiar works
+    of Japan and other countries and thinking about their qualities).
+    """
+  level easy {
+    grown-ups "At this level the layers are found in the Temeraire, Hokusai's waterfall and March, the first work in time is found in the teacher's pen before the second and the third are asked, the works to name are the Temeraire and Hokusai's waterfall, the part above the line is asked of March, the two-star is as written with its answers in another order, and the three-star painting needs only three layers."
+  }
+  level hard {
+    grown-ups "At this level the layers are found in Early Spring and Morning in a Pine Forest, the works to order are the fourth and the one 50 years after the Temeraire, the works to name include Early Spring and the Shishkin, the part above the horizon is asked of the Temeraire, one more work is named, the two-star asks about Hokusai's waterfall and its travellers, and the three-star is two small paintings on the plans of a tall and a wide work."
+  }
+}

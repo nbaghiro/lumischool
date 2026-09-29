@@ -1,0 +1,38 @@
+# Two sentences about the library joined across the full stop by the linking adverbial that says
+# how the second follows the first: a result, a turn, or the same time somewhere else.
+item writing.pick-the-adverbial v=1 skills=[writing.cohesion, writing.joining-sentences] {
+  title "Which adverbial holds them together?"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2
+  let t={pick(k, "The library's roof leaked in the storm. ____, the oldest books were carried downstairs.", "The roof was mended last spring. ____, rain still drips onto the top shelf.", "Nadia searched the top shelves with a lamp. ____, down at the desk, Farid asked Mrs Adeyemi for help.")}
+  let right={pick(k, "As a result", "However", "Meanwhile")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x15 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage para title="" text="{t}" width=19 numbers=false
+      library lib columns=6 open=1
+    }
+    choice pick options=["As a result", "However", "Meanwhile"] below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "Meanwhile" and right != "Meanwhile") point=para {
+      say "Meanwhile says two things happen at the same time in different places. Does the second thing happen alongside the first, or because of it, or against it?"
+    }
+    when (pick == "As a result" and right != "As a result") point=para {
+      say "As a result says the first thing caused the second. Did it here?"
+    }
+    when (pick == "However" and right != "However") point=para {
+      say "However turns against what came before. Is the second sentence a surprise, or does it follow?"
+    }
+  }
+  hint "The gap needs a linking adverbial. How does the second sentence follow the first: because of it, against it, or at the same time?"
+  hint "Read the pair aloud with each word in the gap and listen for the one that tells the truth."
+}

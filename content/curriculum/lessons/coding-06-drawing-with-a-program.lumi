@@ -1,4 +1,4 @@
-lesson coding-drawing-with-a-program v=3 format=teach grade=2 unit=3 subject=coding levels=[easy, medium, hard] {
+lesson coding-drawing-with-a-program v=3 format=teach grade=2 unit=5 subject=coding levels=[easy, medium, hard] {
   title "Drawing with a program"
   goal "Read a program that draws a shape, say how long its line is and where it ends, read a program from a drawing, and write one that draws a square."
 

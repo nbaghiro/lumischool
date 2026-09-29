@@ -1,0 +1,35 @@
+# The method: multiply as whole numbers in the grid, then count the decimal places in the two
+# numbers and put that many in the answer.
+item decimal.grid-point v=1 skills=[decimals.multiply, multiplication.grid] {
+  title "The grid, then the point"
+  difficulty (a * b / 100)
+  let a=12..48 b=12..39
+  where (a % 10 != 0 and b % 10 != 0)
+  level easy {
+    let a=12..25 b=12..19
+  }
+  level hard {
+    let a=36..48 b=26..39
+  }
+
+  scene 29x17 {
+    text ask "Rope for the lock costs {decimals(a / 10, 1)} dollars a metre, and the keeper buys {decimals(b / 10, 1)} metres. Work out {a} × {b} in the grid first." narrate width=28 at=canvas(1, 1)
+    areagrid grid a=a b=b blanks=[tt, ot, to, oo, total] below=ask gap=1
+    row eq below=grid gap=1 space=1 align=centre {
+      equation sum "{decimals(a / 10, 1)} × {decimals(b / 10, 1)} ="
+      number-input cost width=6
+    }
+  }
+
+  answer tt=(a // 10 * 10 * (b // 10 * 10)) ot=(a % 10 * (b // 10 * 10)) to=(a // 10 * 10 * (b % 10)) oo=(a % 10 * (b % 10)) total=(a * b) cost=decimals(a * b / 100, 2)
+  feedback {
+    when (cost == a * b / 10) point=eq {
+      say "Count the places: one in {decimals(a / 10, 1)} and one in {decimals(b / 10, 1)}, so two in the answer."
+    }
+    when (cost == a * b) point=eq {
+      say "The grid multiplied whole numbers. Put the point back in: how many decimal places are there altogether?"
+    }
+  }
+  hint "Split each whole number into tens and ones."
+  hint "Add the four parts. Then count the digits after the point in the two numbers you started with."
+}

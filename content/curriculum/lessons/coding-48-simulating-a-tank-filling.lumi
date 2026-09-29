@@ -1,0 +1,64 @@
+# Simulating a tank filling at a rate: each time round a repeat is a minute, a pipe adds its litres,
+# a leak takes some away, and a repeat until stops when the tank is full. The mill's tank at the foot
+# of the waterfall in the gorge.
+lesson coding-simulating-a-tank-filling v=1 format=teach grade=6 unit=4 subject=coding levels=[easy, medium, hard] {
+  title "Simulating a tank filling"
+  goal "Simulate a tank filling at a rate, minute by minute, and work out how long it takes to fill."
+
+  look {
+    scene 36x29 {
+      program p code=["set water to 0", "set minutes to 0", "repeat until water is at least 60", "  add 12 to water", "  take 2 from water", "  add 1 to minutes"] text=true at=canvas(0, 15)
+      waterfall wf drops=2 rainbow=1 at=canvas(0, 0)
+      waterwheel ww paddles=8 right-of=wf gap=2
+    }
+    say """
+      A pipe from the waterfall fills the mill's tank, which holds 60 litres. In the program each
+      time round the repeat is one minute: the pipe adds 12 litres and a crack lets 2 out, so the
+      tank gains 10 a minute. minutes counts the times round, and the repeat stops as soon as the
+      water is at least 60. The program says it takes 6 minutes.
+      """
+  }
+  do {
+    show coding.tank-fill n=5 r=8 easy-n=4 easy-r=5 hard-n=6 hard-r=15
+    level easy {
+      worked coding.tank-fill n=3 r=8
+    }
+    show coding.tank-until c=100 r=12 easy-c=80 easy-r=10 hard-c=80 hard-r=15
+    show coding.tank-leak c=72 r=15 l=6 easy-c=60 easy-l=3 hard-c=90
+    show coding.tank-trace r=12 l=3 j=1 easy-r=10 easy-l=4 easy-j=0 hard-r=15 hard-l=4 hard-j=2
+    show coding.tank-graph g=8 l=2 easy-g=6 easy-l=1 hard-g=12 hard-l=4
+    show coding.tank-switch n=7 a=3 f=15 s=5 easy-n=6 easy-a=2 easy-f=20 hard-n=8 hard-a=4 hard-f=20 hard-s=4
+    show coding.tank-until c=80 r=12 easy-c=120 hard-c=100 hard-r=15
+    show coding.tank-leak c=96 r=18 l=2 easy-c=72 easy-r=12 easy-l=3 hard-c=72 hard-r=12 hard-l=6
+    level hard {
+      show coding.tank-graph g=10 l=4
+    }
+  }
+  try stars=2 {
+    show coding.tank-double k=2 easy-k=0 hard-k=3
+  }
+  try stars=3 {
+    show coding.tank-slowest k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "In a simulation each time round stands for a step of time, and what the tank gains in a step is what comes in less what goes out."
+  }
+
+  grown-ups """
+    The program is a model of a real tank: one time round is one minute, the pipe adds its litres,
+    the crack takes some away, and a repeat until stops when the tank is full. The common mistakes
+    are adding the leak instead of taking it away, stopping one minute early when the rate does not
+    share the tank's size exactly, and counting the first minute of a counter that starts at 0 as
+    minute 1. In the child's working, look for a column of litres, one for each minute. If the child
+    is stuck, fill a jug from a tap with a cup at a time and take a spoonful out after each cup, and
+    count the cups. Off the page, time how long a basin takes to fill with the plug half in. The
+    two-star question tests the claim that twice the pipe takes half the time; the three-star
+    question works backwards to the slowest pipe that fills the tank in time.
+    """
+  level easy {
+    grown-ups "At this level the pipe brings 5, 8, 10 or 12 litres, one tank is worked in the teacher's pen, every rate shares the tank exactly, the leaks are 2 or 3 litres, the table is read at the end of the first minute, the graph's leak is 1 or 2 litres, and the sluice is open for two minutes."
+  }
+  level hard {
+    grown-ups "At this level the rates do not share the tank exactly, so the last minute runs over, the leaks are up to 6 litres, the table is read in the middle of a minute, the graph has a leak to put back, the sluice closes after four minutes to a trickle of 4, and a second graph is added."
+  }
+}

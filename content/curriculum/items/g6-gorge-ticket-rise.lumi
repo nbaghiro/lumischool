@@ -1,0 +1,31 @@
+# The way in: a price raised by a percent is the old price and that percent of it on top.
+item percent.gorge-ticket-rise v=1 skills=[percentages.change] {
+  title "The ticket goes up"
+  difficulty ((if r == 10 or r == 50 then 0 else 1) + p / 25)
+  let p={8, 10, 12, 20, 25} r={10, 20, 25, 50}
+  where whole(p * r)
+  level easy {
+    let r={10, 50} p={10, 20}
+  }
+  level hard {
+    let r={20, 25} p={8, 12, 25}
+  }
+
+  scene 35x10 {
+    pricetag tag now=(100 * p) was=0 at=canvas(1, 1)
+    text ask "A ticket for the gorge walk costs {p} dollars. Next year the price goes up by {r}%. What will a ticket cost then, in dollars?" narrate width=22 right-of=tag gap=2
+    number-input answer width=5 below=ask gap=1
+  }
+
+  answer decimals(p * (100 + r) / 100, 2)
+  feedback {
+    when (answer == p * r / 100) point=ask {
+      say "That is only the rise. Add it on to the old price."
+    }
+    when (answer == p + r) point=ask {
+      say "The rise is {r}% of the price, not {r} dollars. What is {r}% of {p} dollars?"
+    }
+  }
+  hint "What is {r}% of the old price?"
+  hint "Add that on to the old price."
+}

@@ -1,0 +1,54 @@
+# Organs working together after the tube has done its part: the blood carries the digested food to
+# the muscles, the liver makes bile for fat and is the first stop for blood from the gut, and the
+# kidneys clean the waste the body makes out of the blood. The trap in each is an organ of the tube.
+item nature.gut-organs v=1 skills=[nature.digestion, nature.body, reasoning.explain] {
+  title "The organs that help"
+  difficulty pick(k, 0, 0.7, 1, 0.3)
+  let k=0..3
+  let asks={pick(k, "The sugar from Ada's bread has passed into her blood in the small intestine. How does it reach her leg muscles as she climbs the clock tower?", "The liver, E, sits under the ribs beside the stomach, and no food passes through it. How does it still help with digestion?", "Blood leaving the small intestine goes to the liver before anywhere else. Why is that useful?", "Using all that food makes waste in Ada's blood. Which organs clean it out, into her urine?")}
+  let ans={pick(k, "The blood carries it, pumped by the heart", "It makes bile, a juice that helps break down fat", "It stores spare sugar and clears harmful things", "The kidneys")}
+  let o1={pick(k, "It moves on down the large intestine", "It squeezes food down to the stomach", "It breaks the food into smaller pieces", "The large intestine")}
+  let o2={pick(k, "The bones carry it inside them", "It takes water back from what is left", "It sends the food back to the stomach", "The stomach")}
+  let s1={pick(k, o1, ans, o1, ans)}
+  let s2={pick(k, o2, o1, ans, o1)}
+  let s3={pick(k, ans, o2, o2, o2)}
+  level easy {
+    let k={0, 3}
+  }
+  level medium {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x31 {
+    parts fig of=gut at=canvas(1, 1)
+    text ask "{asks}" narrate width=20 right-of=fig gap=2
+    choice pick options=[s1, s2, s3] stack=column below=fig gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=fig {
+      say "Once food is in the blood it has left the tube. What goes round the whole body, all the way to the legs?"
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "Squeezing and taking water back are jobs of the tube itself. The liver is outside it: what could it send in?"
+    }
+    when (k == 2 and pick == o1) point=fig {
+      say "The breaking down is finished by then: the food is already small enough to be in the blood."
+    }
+    when (k == 2 and pick == o2) point=fig {
+      say "Food in the blood does not go back into the tube. It is carried on to the rest of the body."
+    }
+    when (k == 3 and pick == o1) point=fig {
+      say "The large intestine gets rid of food that never went into the body. Waste made inside the body is in the blood."
+    }
+    when (k == 3 and pick == o2) point=fig {
+      say "The stomach works on food in the tube, not on the blood. Which organs does the blood pass through to be cleaned?"
+    }
+  }
+  hint "Is the thing in the question still inside the tube, or has it gone into the blood?"
+  hint "Each organ has its own job. Which one is outside the tube but joined to it, or to the blood?"
+}

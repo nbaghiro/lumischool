@@ -1,0 +1,35 @@
+# Concrete by volume: 1 part cement, 2 of sand and 3 of gravel, a common general-purpose mix (1 : 2 : 4
+# is the other). The unknown is a part from another part, or a part from the total.
+item chem.concrete-mix v=1 skills=[chemistry.materials, ratio.parts] {
+  title "Buckets of concrete"
+  difficulty (d * 2 + (if c > 3 then 1 else 0))
+  let d=0..2 c={2, 3, 4, 5}
+  let p1={pick(d, "The builder uses ", "The builder has used ", "The builder wants ")}
+  let a={pick(d, c, 2 * c, 6 * c)}
+  let p2={pick(d, " buckets of cement. How many buckets of gravel go with it?", " buckets of sand. How many buckets of cement go with it?", " buckets of dry mix in all. How many of them are cement?")}
+  let second={pick(d, "For each bucket of cement, how many of gravel?", "Sand is how many times the cement?", "How many buckets are in one lot of the recipe? How many lots make the whole mix?")}
+  level easy {
+    let d=0..0 c={2, 3}
+  }
+  level hard {
+    let d=1..2
+  }
+
+  scene 36x12 {
+    tower t courses=8 flag=1 at=canvas(1, 0)
+    text ask "The clock tower's new floor is concrete: cement, sand and gravel, mixed with water. The recipe is 1 bucket of cement to 2 of sand and 3 of gravel. {p1}{a}{p2}" narrate width=28 right-of=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(d, 3 * c, c, c)
+  feedback {
+    when (d == 0 and answer == c + 3) point=t {
+      say "Gravel is three times the cement, not three more."
+    }
+    when (d == 2 and answer == 2 * c) point=t {
+      say "That is the sand. One lot of the recipe is 6 buckets, and only 1 of them is cement."
+    }
+  }
+  hint "Say the recipe out loud: how many buckets of each in one lot?"
+  hint "{second}"
+}

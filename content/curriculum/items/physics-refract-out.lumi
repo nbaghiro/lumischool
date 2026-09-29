@@ -1,0 +1,33 @@
+# Three stars: a path of light can be run backwards, so a beam sent up along the drawn beam inside
+# leaves into the air at the angle the drawn beam came in at. a is that angle, g water or glass.
+item physics.refract-out v=1 stars=3 skills=[physics.light, reasoning.explain] {
+  title "The beam run backwards"
+  difficulty g
+  let a={30, 40, 50, 60} g=0..1
+  level easy {
+    let g={0}
+  }
+  level hard {
+    let g={1}
+  }
+  let what={pick(g, "water", "glass")}
+  let who={pick(g, "A diver under the water points a torch up at the surface", "A lamp inside a glass block shines up at its top face")}
+
+  scene 30x28 {
+    refraction r mode=0 into=g angle=a marks=1 show=1 at=canvas(1, 0)
+    text ask "{who}, so that its beam travels at the angle written inside the {what}, along the drawn beam but the other way. At how many degrees from the upright does the beam come out into the air?" narrate width=28 below=r gap=1
+    number-input deg below=ask gap=1
+  }
+
+  answer deg=a
+  feedback {
+    when (deg < a) point=r {
+      say "Coming out into the air, a beam bends away from the upright. Does it end nearer the upright or further from it?"
+    }
+    when (deg > a) point=r {
+      say "Follow the drawn beam backwards. Light can travel along the same path either way."
+    }
+  }
+  hint "Going in, the beam bent towards the upright. Coming out into the air, which way does it bend?"
+  hint "Which beam in the drawing travels along the same path, the other way?"
+}

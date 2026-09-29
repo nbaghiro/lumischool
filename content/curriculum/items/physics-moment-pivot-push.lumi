@@ -1,0 +1,40 @@
+# A reason in the core: a balanced plank has balanced moments and balanced forces too, so the pivot
+# pushes up as hard as both weights pull down (the plank's own weight left out). v picks the pair.
+item physics.moment-pivot-push v=1 skills=[physics.moments, physics.forces, reasoning.explain] {
+  title "What holds the plank up?"
+  difficulty v
+  let v=0..3
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+  let a={pick(v, 3, 8, 5, 9)}
+  let p={pick(v, 4, 1, 2, 2)}
+  let b={pick(v, 4, 2, 2, 6)}
+  let q={pick(v, 3, 4, 5, 3)}
+
+  scene 32x37 {
+    seesaw plank left=a atleft=p right=b atright=q unit=N marks=true held=0 at=canvas(1, 0)
+    text ask "The plank balances on its pivot. Leaving the plank's own weight out, how hard does the pivot push up on it?" narrate width=26 below=plank gap=1
+    choice pick options=["As hard as both weights together", "Not at all: the moments balance", "As hard as the difference between the weights", "As hard as the moment on one side"] stack=column below=ask gap=1
+    text then "How many newtons is that?" narrate width=16 below=pick gap=1
+    number-input push right-of=then gap=1
+  }
+
+  answer pick="As hard as both weights together" push=(a + b)
+  feedback {
+    when (pick == "Not at all: the moments balance") point=plank {
+      say "Balanced moments stop it turning. What stops the whole plank falling?"
+    }
+    when (pick == "As hard as the difference between the weights") point=plank {
+      say "Both weights pull down, on either side. Which way does each one pull?"
+    }
+    when (pick == "As hard as the moment on one side") point=plank {
+      say "A moment is a turning effect in N cm, not a push in newtons."
+    }
+  }
+  hint "Which way do both weights pull the plank?"
+  hint "The plank does not fall, so the push up must match everything pulling down."
+}

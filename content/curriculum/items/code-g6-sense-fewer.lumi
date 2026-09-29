@@ -1,0 +1,37 @@
+# Two-star: which change to the two numbers makes the heater switch on less often. A wider gap
+# between the number that switches it on and the one that switches it off means longer to warm and
+# longer to cool, so fewer times round; moving either number towards the other does the opposite.
+item coding.sense-fewer v=1 stars=2 skills=[coding.sensors, coding.simulation, reasoning.compare] {
+  title "Fewer times on"
+  difficulty k
+  let k=0..2
+  let lo={pick(k, 18, 16, 17)} hi={pick(k, 21, 20, 22)} s={pick(k, 15, 14, 14)} h={pick(k, 2, 2, 3)}
+  let wider={pick(k, "Change 21 to 23 in line 4", "Change 20 to 22 in line 4", "Change 22 to 24 in line 4")}
+  let raise={pick(k, "Change 18 to 20 in line 2", "Change 16 to 18 in line 2", "Change 17 to 19 in line 2")}
+  let lower={pick(k, "Change 21 to 20 in line 4", "Change 20 to 19 in line 4", "Change 22 to 21 in line 4")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x32 {
+    program p code=["repeat 30", "  if temp is less than {lo}", "    switch heater on", "  if temp is more than {hi}", "    switch heater off", "  wait 1"] text=true sense=["temp starts {s} changes -1 heater {h}"] at=canvas(0, 0)
+    hut hu pictures=2 right-of=p gap=2
+    text ask "Switching the heater on and off often wears it out. Which change makes it switch on fewer times in the 30 minutes?" width=34 below=p gap=1
+    choice pick options=[pick(k, wider, raise, lower), pick(k, raise, lower, wider), pick(k, lower, wider, raise)] stack=column below=ask gap=1
+  }
+
+  answer pick=wider
+  feedback {
+    when (pick == raise) point=p {
+      say "The heater would come on at a warmer reading, so the hut has less far to cool before it comes on again."
+    }
+    when (pick == lower) point=p {
+      say "The heater would go off sooner, so the hut has less far to cool before it is back below {lo}."
+    }
+  }
+  hint "Each time round, the hut warms from below the first number to above the second, then cools back. What makes that take longer?"
+  hint "Try each change on the gap between the two numbers. Does the gap get bigger or smaller?"
+}

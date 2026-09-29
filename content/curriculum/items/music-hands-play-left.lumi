@@ -1,0 +1,27 @@
+# Hands separately first: the left hand's part of two bars read from the bass staff and played in
+# order, three left hands that fit under Ode to Joy's C and G.
+item music.hands-play-left v=1 skills=[music.hands-together, music.keys] {
+  title "The left hand alone"
+  difficulty v
+  let v=0..2
+  let a={pick(v, "C3", "C3", "E3")}
+  let b={pick(v, "E3", "G3", "C3")}
+  let c={pick(v, "G2", "B2", "D3")}
+  let d={pick(v, "B2", "G2", "G2")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=1..2
+  }
+
+  scene 32x26 {
+    notes left clef=bass notes=[a, b, c, d] values=[2, 2, 2, 2] meter=4 at=canvas(1, 1)
+    text ask "In the lander, Ben practises the left hand of Ode to Joy on its own. Play its four notes in order." narrate width=30 below=left gap=1
+    piano keys from=G2 whites=15 wide=2 labels=letters below=ask gap=1
+  }
+
+  check music.plays notes=[{a}, {b}, {c}, {d}]
+  hint "Find F on the bass staff, the line between the clef's two dots, and count from it."
+  hint "The top line of the bass staff is A, and the bottom line is G. Which notes are on or near them?"
+}

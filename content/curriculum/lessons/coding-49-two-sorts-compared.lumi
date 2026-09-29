@@ -1,0 +1,64 @@
+# Two sorts compared by counting their steps: the bubble sort asks about every pair on every pass, the
+# selection sort finds the shortest left and swaps it into place. Both are read as text and their
+# questions and swaps are counted. The planks for the rope bridge over the waterfall gorge.
+lesson coding-two-sorts-compared v=1 format=teach grade=6 unit=5 subject=coding levels=[easy, medium, hard] {
+  title "Two sorts compared by counting their steps"
+  goal "Count the questions and swaps two sorting programs make on the same list, and say which does less work."
+
+  look {
+    scene 36x14 {
+      sortcards sc cards=[4, 2, 3, 1] compare=1 swap=true at=canvas(1, 0)
+      ropebridge rb planks=8 gaps=4 right-of=sc gap=2
+    }
+    say """
+      The bridge builders in the gorge have four planks to put in order, shortest first. The bubble
+      sort looks at two planks side by side and swaps them if the longer is first, all along the
+      row, again and again. The selection sort finds the shortest plank left and swaps it into
+      place. Both get the planks in order. To compare them, count the steps: how many questions each
+      asks, and how many swaps each makes.
+      """
+  }
+  do {
+    show coding.sorts-pass s=1 easy-s=0 hard-s=2
+    level easy {
+      worked coding.sorts-pass s=1
+    }
+    show coding.sorts-bubble s=1 easy-s=0 hard-s=3
+    show coding.sorts-select s=1 q=1 easy-s=0 easy-q=0 hard-s=2
+    show coding.sorts-first s=1 q=1 easy-q=0 hard-s=0
+    show coding.sorts-five q=0 hard-q=1
+    show coding.sorts-bubble s=2 easy-s=1
+    show coding.sorts-select s=3 q=0 easy-s=1 hard-q=1
+    show coding.sorts-first s=2 q=0 easy-s=3 hard-s=3 hard-q=1
+    level hard {
+      show coding.sorts-pass s=3
+    }
+  }
+  try stars=2 {
+    show coding.sorts-swaps s=3 easy-s=0 hard-s=4
+  }
+  try stars=3 {
+    show coding.sorts-orders k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "To compare two ways of doing the same job, count the steps each takes on the same list."
+  }
+
+  grown-ups """
+    Both programs sort the planks; the lesson is about how much work each does. The bubble sort
+    asks its question 3 times in each of 3 passes, 9 in all, and swaps once for every pair out of
+    order. The selection sort asks 3, 2 and 1 times, 6 in all, and swaps 3 times whatever the list.
+    The common mistake is to count the lines of a program instead of the times they run, and to
+    think the shorter program is the faster one. In the child's working, look for the planks written
+    out again after each pass or round. If the child is stuck, sort four cards by hand each way and
+    make a tally mark for every look and every swap. Off the page, sort a hand of playing cards both
+    ways and count. The two-star question shows that which sort swaps less depends on the list; the
+    three-star question counts all 24 orders of four planks by the swaps they need.
+    """
+  level easy {
+    grown-ups "At this level the lists are nearly in order, one pass is worked in the teacher's pen, the selection sort is asked about its swaps, which are always 3, the first round asks where the shortest plank goes, and the orders to count take exactly one swap."
+  }
+  level hard {
+    grown-ups "At this level the lists are far from in order, the selection sort is asked how often it finds a new shortest, the first round asks where the front plank has gone, five planks are compared by how many fewer questions one sort asks, a second pass is added, and the orders to count take exactly three swaps."
+  }
+}

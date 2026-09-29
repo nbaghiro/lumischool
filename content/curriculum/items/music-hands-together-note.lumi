@@ -1,0 +1,34 @@
+# The way in: on a piano score the staves are spaced by length, so a left-hand note and the right-hand
+# note written straight above it sound together. Ode to Joy (Beethoven, 1824), bars 1 and 2, with a
+# left hand of C, E, then G, B in minims.
+item music.hands-together-note v=1 skills=[music.hands-together, music.staff] {
+  title "Played at the same moment"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let x={pick(k, "C", "G", "E", "B")}
+  let right={pick(k, "E", "G", "F", "E")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x33 {
+    column score space=0 align=start at=canvas(1, 1) {
+      notes right clef=treble notes=[E4, E4, F4, G4, G4, F4, E4, D4] values=[] meter=4 spaced=true
+      notes left clef=bass notes=[C3, E3, G2, B2] values=[2, 2, 2, 2] meter=4 spaced=true
+    }
+    text ask "Ode to Joy for two hands. Find the left hand's {x} on the bottom staff. Which right-hand note is played at the same moment?" narrate width=32 below=score gap=1
+    choice pick options=["C", "D", "E", "F", "G"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=score {
+      say "Put a finger on the left hand's {x}, then move straight up to the top staff. Which note is right above it?"
+    }
+  }
+  hint "On the bass staff, the line between the two dots of the clef is F. Count from there to find {x}."
+  hint "Notes that line up one above the other are played together."
+}

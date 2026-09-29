@@ -1,0 +1,33 @@
+# A step up from weight: the lander's weight is shared between its four legs, and each leg carries a
+# quarter of it, far less on the moon than it would on Earth. m is the lander's mass.
+item physics.moondrop-legs v=1 skills=[physics.forces, physics.weight, division.sharing] {
+  title "Four legs to stand on"
+  difficulty (m / 5000)
+  let m={10000, 15000, 20000}
+  level easy {
+    let m={10000}
+  }
+  level hard {
+    let m={15000, 20000}
+  }
+
+  scene 35x21 {
+    lander l rungs=5 at=canvas(1, 0)
+    text ask "The lander has a mass of {m} kg and stands on four legs, each carrying the same share of its weight. The moon pulls each kilogram with 1.6 N. How many newtons does each leg carry?" narrate width=19 right-of=l gap=1
+    number-input moon below=ask gap=1
+    text then "How many newtons would each leg carry on Earth, at 10 N a kilogram?" narrate width=24 below=moon gap=1
+    number-input earth below=then gap=1
+  }
+
+  answer moon=plain(m * 1.6 / 4) earth=plain(m * 10 / 4)
+  feedback {
+    when (moon == m * 1.6) point=l {
+      say "That is the weight of the whole lander. Four legs share it."
+    }
+    when (moon == m / 4) point=l {
+      say "That is a quarter of its mass, in kilograms. Its weight is the pull on every kilogram."
+    }
+  }
+  hint "What does the whole lander weigh on the moon?"
+  hint "Share that between the four legs."
+}

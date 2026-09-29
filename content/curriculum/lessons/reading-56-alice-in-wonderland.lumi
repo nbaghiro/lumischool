@@ -1,0 +1,87 @@
+# Alice's Adventures in Wonderland read whole over six sittings in the observatory's term. The text is
+# the volume alice-in-wonderland; every evidence question is proved against its lines.
+lesson reading-alice-in-wonderland v=1 format=book grade=5 unit=4 subject=reading book=alice-in-wonderland levels=[easy, medium, hard] {
+  title "Alice's Adventures in Wonderland"
+  goal "Read Alice's Adventures in Wonderland from start to end, and prove what you say about it with lines from the book."
+
+  sitting chapters=[1, 2] {
+    show reading.alice-line k=1 easy-k=0
+    show reading.alice-line k=2 hard-k=3
+    show reading.alice-sum k=0
+    level medium hard {
+      show reading.alice-word k=0
+    }
+  }
+  sitting chapters=[3, 4] {
+    show reading.alice-line k=5 easy-k=4
+    show reading.alice-line k=6 hard-k=7
+    show reading.alice-order k=0
+    show reading.alice-why k=0
+  }
+  sitting chapters=[5, 6] {
+    show reading.alice-line k=9 easy-k=8
+    show reading.alice-line k=10 hard-k=11
+    level medium hard {
+      show reading.alice-who k=0
+    }
+    show reading.alice-word k=1
+  }
+  sitting chapters=[7, 8] {
+    show reading.alice-line k=13 easy-k=12
+    show reading.alice-line k=14 hard-k=15
+    show reading.alice-sum k=1
+    level medium hard {
+      show reading.alice-who k=1
+    }
+  }
+  sitting chapters=[9, 10] {
+    show reading.alice-line k=17 easy-k=16
+    show reading.alice-line k=18 hard-k=19
+    level medium hard {
+      show reading.alice-word k=2
+    }
+    show reading.alice-why k=1
+  }
+  sitting chapters=[11, 12] {
+    show reading.alice-line k=21 easy-k=20
+    show reading.alice-line k=22 hard-k=23
+    level medium hard {
+      show reading.alice-who k=2
+    }
+    level hard {
+      show reading.alice-order k=1
+    }
+    show reading.alice-verdict
+    show reading.alice-changed
+    show reading.alice-review
+  }
+
+  grown-ups """
+    The book is read over six sittings across the observatory's term, one a day, two chapters a
+    sitting, the chapters first and the questions after. Each sitting is about 4,000 to 4,800 words,
+    20 to 25 minutes for a child of ten to twelve at about 200 words a minute, which leaves time to
+    read the poems aloud: Carroll's verses (How doth the little crocodile, You are old, Father William,
+    the Lobster Quadrille) are parodies of poems Victorian children learnt, and they sound best said.
+    Every sitting has two questions answered with a line number, and the questions never use the
+    line's own words, so a child who skims will not find them; the idea to watch for is an answer
+    that remembers the story but cannot point to the words that prove it, so after each answer ask
+    "which words show it?" On paper the family reads any edition, and the grown-ups' sheet gives the
+    words of each line beside its number, so mark by the words. In chapter 10 our text keeps two
+    short bracketed passages that later editions of the poems added; they are marked as such and no
+    question depends on them. If the jokes on words puzzle the child (Tortoise because he taught us,
+    Reeling and Writhing), say them aloud together, since most of them are heard rather than seen. The
+    questions marked by a grown-up (who Alice is when she keeps changing size, the Duchess's morals,
+    how Alice changes, and the review) have a list of what to notice; talk about them before ticking.
+    Off the page, look at the night sky from a window and find the brightest star, then read the
+    last page again, where Alice's sister imagines her grown up and telling the story to children of
+    her own. The lesson meets China's 2022 standard for grades five and six (第三学段, 阅读与鉴赏 6),
+    「阅读整本书，把握文本的主要内容」, reading a whole book and grasping its main content; the Common Core
+    names this book among its exemplar texts for these grades.
+    """
+  level easy {
+    grown-ups "At this level one evidence question in each sitting asks for a line whose words are close to the question's, and the who-said questions and two of the word questions are left out."
+  }
+  level hard {
+    grown-ups "At this level one evidence question in each sitting asks for what a line shows without saying it, such as the first sign the baby is a pig, and the last sitting adds putting the trial's events in order."
+  }
+}

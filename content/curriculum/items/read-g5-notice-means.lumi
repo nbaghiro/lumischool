@@ -1,0 +1,43 @@
+# The library's old notice read with its glossary beside it. Each question needs one old word from
+# the glossary, and the wrong options are what a reader guesses who skips it.
+item reading.notice-means v=1 skills=[reading.vocabulary, reading.old-words, reading.text-features] {
+  title "Read the old notice"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let right={pick(k, "Before the next market day.", "Write on them or fold them.", "Many other people read there.", "Anyone, if they bring it back.")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 36x31 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=1 align=start {
+        passage notice title="Notice, 1702" text="Whosoever taketh a book hence shall bring it back ere the next market day. Thou shalt not write upon the pages, nor fold them. Speak not above a whisper, for many read here." width=22
+        table gloss cols=2 head=["Old", "Today"] cells=["whosoever", "anyone", "hence", "away", "ere", "before", "shalt", "must", "upon", "on", "nor", "and not"]
+      }
+      text ask "{pick(k, \"When must a book come back?\", \"What must you not do to the pages?\", \"Why must readers whisper?\", \"Who may take a book away?\")}" width=35
+      row bottom space=2 align=end {
+        choice pick options=[pick(k, "On the next market day.", "Turn them or read them.", "The Keeper is asleep.", "Only the Keeper of Books."), pick(k, "Before the next market day.", "Write on them or fold them.", "Talking is not allowed at all.", "Anyone, if they bring it back."), pick(k, "After the next market day.", "Leave them open.", "Many other people read there.", "Nobody at all.")] stack=column
+        library lib columns=5 open=1
+      }
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick != right) point=gloss {
+      say "Find ere in the glossary. What does it mean today?"
+    }
+    when (k == 2 and pick == "Talking is not allowed at all.") point=notice {
+      say "Speak not above a whisper means do not speak louder than a whisper. A whisper is allowed. Read on for why."
+    }
+    when (k == 3 and pick != right) point=gloss {
+      say "Find whosoever in the glossary. Who does it mean?"
+    }
+  }
+  hint "Find the part of the notice the question is about. Which old word in it do you need?"
+  hint "Look that word up in the glossary and read the line again with today's word in."
+}

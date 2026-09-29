@@ -1,0 +1,34 @@
+# A paragraph of four sentences whose first is its topic sentence; one of the other three does not
+# belong. The stray moves between the second, third and fourth, and grows subtler with k.
+item writing.off-topic v=1 skills=[writing.paragraphs, writing.editing] {
+  title "Which sentence wandered off?"
+  difficulty k
+  let k=0..2
+  let t={pick(k, "Mr Hale has kept the lock for thirty years. He opens the gates for every boat that comes. The market sells cheese on Saturdays. He knows the name of every boat on the canal.", "Mr Hale keeps the lock at the top of the town. He opens and shuts the gates for every boat. He knows the name of every boat on the canal. The canal runs all the way to the sea.", "The Otter is a home as well as a boat. Narrowboats were once pulled by horses along the towpath. Its cabin has a stove and two bunks. Pots of herbs grow along its roof.")}
+  let right={pick(k, "the third", "the fourth", "the second")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 33x28 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      narrowboat boat windows=5 pots=3
+      person keeper pose=point age=grownup hair=short colour=grey top=mint
+    }
+    passage para title="Nell's paragraph" text="{t}" width=32 numbers=false below=pics gap=1
+    text ask "The first sentence is the topic sentence. Which sentence does not belong under it?" narrate width=32 below=para gap=1
+    choice pick options=["the second", "the third", "the fourth"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=para {
+      say "That sentence is about the same thing as the first. Look for the one that has moved to a different subject, even a nearby one."
+    }
+  }
+  hint "Say the first sentence's subject in two or three words."
+  hint "Hold each sentence up against those words. Which one is about something else?"
+}

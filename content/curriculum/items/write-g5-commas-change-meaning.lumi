@@ -1,0 +1,32 @@
+# The same words with and without commas round the clause, in the old city: without commas only
+# some children had tickets; with them every child did. Which is asked for turns with k.
+item writing.commas-change-meaning v=1 skills=[writing.relative-clauses, writing.commas] {
+  title "Did every child have a ticket?"
+  difficulty k
+  let k=0..1
+  let q={pick(k, "Which sentence means that only some of the children had tickets?", "Which sentence means that every child had a ticket?")}
+  let o1={"The children who had tickets went up."}
+  let o2={"The children, who had tickets, went up."}
+  let o3={"The children went up, who had tickets."}
+  let right={pick(k, o1, o2)}
+
+  scene 34x23 {
+    row top at=canvas(1, 0) space=2 align=start {
+      children kids count=3 holding="" names=[] each=0
+      text ask "Children are waiting at the clock tower door. {q}" narrate width=18
+    }
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == o3) point=kids {
+      say "A clause about the children belongs straight after the children, not at the end of the sentence."
+    }
+    when (pick != right and pick != o3) point=kids {
+      say "Without commas the clause picks out which children: only those. With commas it is extra news about all of them. Which does the question want?"
+    }
+  }
+  hint "Read each sentence leaving out the words between the commas. Is it still about all the children?"
+  hint "A clause with no commas tells you which ones. A clause inside commas adds news about every one."
+}

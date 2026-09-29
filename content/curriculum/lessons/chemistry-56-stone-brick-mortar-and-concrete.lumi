@@ -1,0 +1,64 @@
+lesson chemistry-stone-brick-mortar-and-concrete v=1 format=teach grade=5 unit=7 subject=chemistry levels=[easy, medium, hard] {
+  title "Stone, brick, mortar and concrete"
+  goal "Say which building materials are made by a reaction, and use the grams and parts of each recipe to work out what goes in and what comes out."
+
+  look {
+    scene 28x8 {
+      row all at=canvas(1, 0) space=2 align=end {
+        citywalls walls towers=3 open=1
+        rocks r rocks=["limestone", "granite"] test=2 letters=0 names=1
+      }
+    }
+    say """
+      The old city's walls are stone, cut from the ground and not made. Bricks are clay fired in a
+      kiln at about 1000 °C, and they never turn back into clay. Lime mortar starts as limestone,
+      the rock that fizzes with vinegar: heated to about 900 °C, every 100 g of it becomes 56 g of
+      quicklime and 44 g of carbon dioxide. Cement is made the same way, hotter, and mixed with
+      sand and gravel it makes concrete. Each is a new material made by a reaction.
+      """
+  }
+  do {
+    practice chem.rock-for-lime count=1 seed=1
+    practice chem.kiln-temps count=1 seed=2 easy-seed=1 hard-seed=1
+    level easy {
+      worked chem.kiln-mass d=0 n=3 level=medium
+    }
+    practice chem.kiln-mass count=2 seed=3 hard-count=3 easy-seed=5 hard-seed=2
+    practice chem.slaked-lime count=1 seed=2 easy-seed=3 hard-seed=1
+    practice chem.concrete-mix count=2 seed=4 easy-seed=1 hard-seed=3
+  }
+  story {
+    show chem.limestone-bags q=168 b=150 easy-q=112 hard-q=280 hard-b=120
+  }
+  try stars=2 {
+    show chem.mortar-heavier k=0 r=2 hard-k=1 hard-r=1
+  }
+  try stars=3 {
+    show chem.concrete-batches k=1 easy-k=0 hard-k=3
+  }
+  remember {
+    say "Brick, lime and cement are new materials made by reactions, and the grams are kept: 100 g of limestone gives 56 g of quicklime and 44 g of gas."
+  }
+
+  grown-ups """
+    The idea is that most of a city's building materials are made by a change that makes new
+    substances, and that the grams add up across the change. Limestone (calcium carbonate) heated
+    in a kiln gives quicklime and carbon dioxide, and the 56 and 44 come from the substances'
+    formula masses, so they are exact. Quicklime and water make slaked lime and get hot enough to
+    burn, which is why builders do it in goggles and gloves and a child never does. Lime mortar
+    then sets by taking carbon dioxide back from the air, turning into calcium carbonate again,
+    which is why the dried lump in the two-star question gets heavier. The wrong ideas to watch
+    for are that the gas from the kiln is extra rather than part of the limestone, and that a mix
+    of 1 : 2 : 3 means three more rather than three times. The three-star question asks for whole
+    batches from three heaps, where the one that runs out first is not always the smallest heap.
+    If the child adds where the kiln question needs taking away, stay here another day with the
+    look picture. Off the page: walk along an old wall and look for crumbling lime mortar between
+    the stones, or drip vinegar on a piece of chalk in a saucer and watch the gas.
+    """
+  level easy {
+    grown-ups "At this level the kiln's gas is worked once in the teacher's pen, the kilns compared are the brick and the lime, the kiln questions ask for the gas, the slaked lime is worked forwards, the concrete asks for gravel from two or three buckets of cement, the bags are 150 g, the two-star lump is weighed, and the batches run out of gravel."
+  }
+  level hard {
+    grown-ups "At this level the cement kiln is compared, the kiln questions ask for the quicklime or work back to the limestone, three are asked, the slaked lime is worked back to the water, the concrete works back from the sand or the whole mix, the bags are 120 g, the two-star asks where the mortar's gas comes from, and the batches run out of sand."
+  }
+}

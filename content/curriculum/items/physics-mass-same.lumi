@@ -1,0 +1,28 @@
+# The idea that mass changes on another world: the rover's mass is the same on Mars, and only its
+# weight is less.
+item physics.mass-same v=1 skills=[physics.weight, physics.sky, reasoning.explain] {
+  title "The same rover on Mars"
+  difficulty (if m > 150 then 1 else 0)
+  let m={100, 150, 200, 300}
+
+  scene 33x24 {
+    planets pl count=5 names=1 at=canvas(1, 0)
+    table g cols=2 head=["Place", "Pull on 1 kg"] cells=["Earth", "10 N", "Moon", "1.6 N", "Mars", "3.7 N", "Venus", "9 N", "Jupiter", "25 N"] below=pl gap=1
+    text ask "A rover has a mass of {m} kg on Earth. What is its mass on Mars, in kilograms?" narrate width=14 right-of=g gap=1
+    number-input mass below=ask gap=1
+    text then "How many newtons does it weigh on Mars?" narrate width=14 below=mass gap=1
+    number-input weight below=then gap=1
+  }
+
+  answer mass=m weight=plain(m * 3.7)
+  feedback {
+    when (mass == plain(m * 3.7)) point=g {
+      say "That is its weight, a pull in newtons. Its mass is how much stuff it is made of, and the rover is the same rover on Mars."
+    }
+    when (mass < m and mass != plain(m * 3.7)) point=g {
+      say "Nothing has been taken off the rover. Its mass is the same wherever it is."
+    }
+  }
+  hint "Does the rover lose any of itself on the way to Mars?"
+  hint "Weight is the pull on the mass. Mars pulls each kilogram with 3.7 N."
+}

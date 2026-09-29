@@ -1,0 +1,17 @@
+# Which one change makes the bulbs brighter, checked against every option by the loop rule; u picks
+# the set of changes offered, and exactly one in each set brightens the loop.
+item physics.symbol-brighten v=1 skills=[physics.circuits, physics.symbols, reasoning.cause-and-effect] {
+  title "Make it brighter"
+  difficulty u
+  let u=0..1 c=2..3
+
+  scene 30x25 {
+    series s cells=c bulbs=2 closed=1 show=0 symbols=1 at=canvas(1, 0)
+    text ask "Which one change makes the bulbs in this loop brighter?" narrate width=12 right-of=s gap=1
+    choice pick options=["{if u == 0 then \"Add a cell\" else \"Take a bulb away\"}", "{if u == 0 then \"Add a bulb\" else \"Take a cell away\"}", "Open the switch"] stack=column below=s gap=1
+  }
+
+  check physics.circuit of=s pick=brighten
+  hint "Which parts push the electricity round, and which parts share it?"
+  hint "Each bulb gets the cells' volts shared among the bulbs. Which change gives each bulb more?"
+}

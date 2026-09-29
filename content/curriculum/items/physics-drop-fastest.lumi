@@ -1,0 +1,27 @@
+# Predict, then check: three lumps of clay of one weight pressed into different shapes wait at the
+# top of their tubes, and the checker names the first to the bottom by the speeds the drawing sinks
+# them at.
+item physics.drop-fastest v=1 skills=[physics.forces, physics.water-resistance, reasoning.predict] {
+  title "Which reaches the bottom first?"
+  difficulty (if o < 2 then 0 else 1)
+  let o=0..3
+  let a={pick(o, "flat", "cube", "ball", "cube")}
+  let b={pick(o, "pointed", "flat", "cube", "pointed")}
+  let c={pick(o, "cube", "ball", "pointed", "ball")}
+  level easy {
+    let o=0..1
+  }
+  level hard {
+    let o=2..3
+  }
+
+  scene 28x17 {
+    droptube t shapes=[a, b, c] time=0 grams=[20, 20, 20] show=0 at=canvas(1, 0)
+    text ask "Ava presses three 20 g lumps of clay into different shapes and lets them go together in tubes of canal water. Which reaches the bottom first?" narrate width=12 right-of=t gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  check physics.forces of=t pick=fastest
+  hint "Which shape has to push the least water out of its way?"
+  hint "Picture each shape pushing down through the water. Which front meets the water with the least face?"
+}

@@ -1,0 +1,39 @@
+# Turning a simile into a metaphor keeps the comparison and drops like or as. The wrong options keep
+# the simile in another form, or drop the comparison and change what the sentence says.
+item reading.make-metaphor v=1 skills=[reading.figurative, writing.sentences] {
+  title "From simile to metaphor"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let right={pick(k, "The moon was a lamp over the sea.", "The owl was a grey ghost in the trees.", "The dome was a pearl on the cliff.", "Her breath was smoke in the cold air.")}
+  let still={pick(k, "The moon was as bright as a lamp.", "The owl looked like a grey ghost.", "The dome was as pale as a pearl.", "Her breath was as grey as smoke.")}
+  let plain={pick(k, "The moon was lit up by a lamp.", "The owl was grey and in the trees.", "The dome was white on the cliff.", "Her breath went into the cold air.")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 35x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=centre {
+        passage s title="The simile" text="{pick(k, \"The moon was like a lamp over the sea.\", \"The owl was like a grey ghost in the trees.\", \"The dome was like a pearl on the cliff.\", \"Her breath was like smoke in the cold air.\")}" width=24 numbers=false
+        owlflying owl facing=-1
+      }
+      text ask "Which turns the simile into a metaphor, and keeps its meaning?" width=34
+      choice pick options=[pick(k, still, right, plain, still), pick(k, right, plain, right, plain), pick(k, plain, still, still, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == still) point=s {
+      say "That is still a simile: it compares with as or like. A metaphor says one thing is the other."
+    }
+    when (pick == plain) point=s {
+      say "That has lost the comparison, so it no longer means the same. Keep the second thing and drop like."
+    }
+  }
+  hint "Find the word like. What happens to the sentence if it goes?"
+  hint "Does the sentence still compare the same two things?"
+}

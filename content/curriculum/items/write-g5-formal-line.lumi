@@ -1,0 +1,33 @@
+# The way in: three lines for a letter to the observatory's director, one formal and two chatty;
+# the chatty ones grow closer to the formal one with k.
+item writing.formal-line v=1 skills=[writing.letters, writing.formality] {
+  title "Which line is for the director?"
+  difficulty k
+  let k=0..2 r=0..2
+  let right={pick(k, "I would be grateful for a reply.", "Our class would like to visit the observatory.", "Thank you for your time.")}
+  let w1={pick(k, "Write back soon, OK?", "We're dying to see your massive telescope.", "Thanks a lot for your time.")}
+  let w2={pick(k, "Can't wait to hear from you.", "Me and my class wanna come up.", "Cheers for giving up your time.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 35x21 {
+    row top at=canvas(1, 0) space=2 align=end {
+      text ask "Leo is writing to Dr Shah, the director of the observatory, whom he has never met. Which line belongs in his letter?" narrate width=23
+      observatory obs open=0
+    }
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "That line is how Leo would talk to a friend. A letter to someone in charge whom he has never met uses full, polite words, with no short forms and no slang."
+    }
+  }
+  hint "Who is the reader? Would Leo speak to her the way he speaks to his friends?"
+  hint "Look for short forms such as can't, and words used only with friends."
+}

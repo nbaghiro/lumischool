@@ -1,0 +1,31 @@
+# Two summaries of the whole of The Frozen Winter. The better one is the one that covers every
+# chapter without the small details, which is the shorter one twice and the longer one once, so
+# length is never the reason.
+item reading.better-summary v=1 stars=2 skills=[reading.summary, reading.evaluation] {
+  title "Which summary is better?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let long={"The canal froze in 1895 and the flour boats were stuck. The boatmen tried axes and poles. Six horses pulled an icebreaker, but it stuck at the first lock."}
+  let short={"Ice trapped the flour boats and every try to break it failed. Nia thought of a sledge, and sledges fed Kingsford until the thaw."}
+  let stub={"The canal froze in 1895 and the flour boats were stuck at the wharf."}
+  let full={"Ice trapped the flour boats, and axes and an icebreaker failed. Nia saw children skating and thought of a sledge. Sledges took flour every day until the thaw."}
+  let right={pick(k, "Ben's: it reaches the end of the book.", "Ana's: it reaches the end of the book.", "Ben's: it reaches the end of the book.")}
+
+  scene 36x32 {
+    row both at=canvas(1, 1) space=1 align=start {
+      passage a title="Ana's summary" text="{pick(k, long, short, stub)}" width=17 numbers=false
+      passage b title="Ben's summary" text="{pick(k, short, long, full)}" width=17 numbers=false
+    }
+    text ask "Whose summary of the whole book is better, and why?" width=34 below=both gap=1
+    choice pick options=["Ana's: it reaches the end of the book.", "Ben's: it reaches the end of the book.", "The shorter one: shorter is better."] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "The shorter one: shorter is better.") point=both {
+      say "Length is not the test. Check each summary against the four chapters: does it reach the end of the book?"
+    }
+  }
+  hint "The book has four chapters. Which of them does each summary mention?"
+  hint "Does either summary stop before the book does?"
+}

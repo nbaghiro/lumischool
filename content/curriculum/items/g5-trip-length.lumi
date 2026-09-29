@@ -1,0 +1,28 @@
+# A timetable read across midday: the minutes from one stop to another, counted through the hour.
+item time.trip-length v=1 skills=[time.timetables, time.twenty-four-hour, time.elapsed] {
+  title "From the mill to the quarry"
+  difficulty (g1 + g2 + g3)
+  let s={10, 11, 12} a={20, 35, 45} g1={25, 35, 40} g2={20, 30} g3={35, 45}
+  where (a + g1 + g2 + g3 < 180)
+  level easy {
+    let g1={25} g2={20} g3={35}
+  }
+  level hard {
+    let g1={40} g2={30} g3={45}
+  }
+
+  scene 34x14 {
+    departureboard times platforms=0 mark=-1 head=["stop", "leaves"] trains=["Mill, {s}:{a}", "Ash Bridge, {s + (a + g1) // 60}:{if (a + g1) % 60 < 10 then \"0\" else \"\"}{(a + g1) % 60}", "Hill Top, {s + (a + g1 + g2) // 60}:{if (a + g1 + g2) % 60 < 10 then \"0\" else \"\"}{(a + g1 + g2) % 60}", "Quarry, {s + (a + g1 + g2 + g3) // 60}:{if (a + g1 + g2 + g3) % 60 < 10 then \"0\" else \"\"}{(a + g1 + g2 + g3) % 60}"] at=canvas(1, 1)
+    text ask "The board shows when the canal boat leaves each stop. How many minutes does the boat take from the Mill to the Quarry?" narrate width=16 right-of=times gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (g1 + g2 + g3)
+  feedback {
+    when (answer == g1 + g2 + g3 - 40) point=times {
+      say "An hour has 60 minutes, not 100. Count on to the next hour first."
+    }
+  }
+  hint "How many minutes from {s}:{a} to the next o'clock?"
+  hint "Then count on from there to the time at the Quarry."
+}

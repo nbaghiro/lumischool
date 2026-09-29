@@ -1,0 +1,35 @@
+# A limerick's form as evidence: lines 1, 2 and 5 rhyme and have three beats, lines 3 and 4 are
+# short and rhyme with each other. The child names the lines, not the rule.
+item reading.limerick-lines v=1 skills=[reading.poetry, reading.evidence] {
+  title "The shape of a limerick"
+  difficulty pick(k, 0, 1, 1, 0)
+  let k=0..3
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k={1, 2}
+  }
+  let right={pick(k, "2 and 5", "3 and 4", "4 only", "2 and 5")}
+
+  scene 35x22 {
+    poem p title="{pick(k, \"Ned\", \"Ned\", \"The heron\", \"The heron\")}" lines=[pick(k, "There once was a miller named Ned", "There once was a miller named Ned", "A heron who lived by the weir", "A heron who lived by the weir"), pick(k, "who slept on the mill wheel instead.", "who slept on the mill wheel instead.", "would stand on one leg for a year.", "would stand on one leg for a year."), pick(k, "It turned in the night,", "It turned in the night,", "When they asked her why,", "When they asked her why,"), pick(k, "which gave him a fright,", "which gave him a fright,", "she said with a sigh,", "she said with a sigh,"), pick(k, "and he woke in the river, not bed.", "and he woke in the river, not bed.", "\"I am waiting for fish to appear.\"", "\"I am waiting for fish to appear.\"")] rhymes=[-1, -1, -1, -1, -1] width=26 at=canvas(1, 1)
+    text ask "{pick(k, \"Which lines rhyme with line 1?\", \"Which lines are the short ones, with two beats?\", \"Which lines rhyme with line 3?\", \"Which lines rhyme with line 1?\")}" below=p gap=1 width=34
+    choice pick options=["2 and 5", "3 and 4", "4 only"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick == "3 and 4") point=p {
+      say "Line 3 cannot rhyme with itself. Which other line ends with the same sound as why?"
+    }
+    when (right == "2 and 5" and pick != "2 and 5") point=p {
+      say "Say the last word of line 1, then the last word of every other line. Which ones match?"
+    }
+    when (k == 1 and pick != "3 and 4") point=p {
+      say "Clap each line. Two of them are much shorter than the rest."
+    }
+  }
+  hint "Say the last word of each line aloud, counting the lines from the top."
+  hint "A limerick has three long lines and two short ones. Where are the short ones?"
+}

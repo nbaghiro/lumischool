@@ -1,0 +1,33 @@
+# Reading a list by place: item k is the k-th number from the left, counting from 1. No number in
+# these lists equals its own place, so answering with the place is caught.
+item coding.list-item v=1 skills=[coding.lists, coding.data] {
+  title "Item by place"
+  difficulty (k + s * 0.2)
+  let s=0..3 k=1..4
+  let a={pick(s, 4, 6, 2, 8)} b={pick(s, 7, 3, 9, 4)} c={pick(s, 2, 8, 5, 6)} d={pick(s, 5, 1, 7, 3)}
+  level easy {
+    let k=1..2
+  }
+  level hard {
+    let k=3..4
+  }
+
+  scene 36x15 {
+    listbox l name=cargo code=["set cargo to list {a}, {b}, {c}, {d}"] at=canvas(1, 0)
+    program p code=["set cargo to list {a}, {b}, {c}, {d}", "set n to item {k} of cargo"] below=l gap=1
+    text ask "Each number is one boat's crates. What does line 2 put in n?" width=12 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="value(n)"
+  feedback {
+    when (answer == k) point=l {
+      say "{k} is the place in the list. n gets the number kept in that place."
+    }
+    when (answer == (if k > 1 then pick(k - 2, a, b, c, d) else 0)) point=l {
+      say "That is the number one place before. The first item is item 1."
+    }
+  }
+  hint "Is {k} a number kept in the list, or a place in it?"
+  hint "Count along the list from the left, starting at 1."
+}

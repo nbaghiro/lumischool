@@ -1,0 +1,69 @@
+# Instructions as writing someone else must follow: a title that names the goal, what you need, one
+# numbered command a step, exact amounts, and a warning just before the step it is about.
+lesson writing-instructions-for-the-water-wheel v=1 format=teach grade=6 unit=5 subject=writing levels=[easy, medium, hard] {
+  title "Instructions for the water wheel"
+  goal "Write instructions someone new can follow: numbered commands, one action a step, exact amounts and a warning in its place."
+
+  look {
+    scene 36x25 {
+      row top at=canvas(1, 0) space=2 align=start {
+        howto card title="Starting the wheel" need=["the sluice key", "gloves"] steps=["Climb the steps to the sluice gate.", "Fit the key onto the gate's handle.", "Keep clear of the paddles. Turn the key three times to lift the gate.", "Start the millstones once the wheel turns steadily."] blank=-1 width=18
+        waterwheel wheel paddles=8 lit=0
+      }
+    }
+    say """
+      The mill in the gorge has a new helper, Ana, and the miller has written her a card. The title
+      says what the card is for, and a list says what to bring. Each step is numbered, since the
+      order matters, and starts with a command, a verb such as climb or fit, so Ana knows what to
+      do. Each asks for one thing, and the amounts are exact: three turns, not a bit. The warning
+      about the paddles comes just before the step that sets the wheel turning, which is where Ana
+      needs it.
+      """
+  }
+  do {
+    level easy {
+      worked writing.instr-command k=2 r=1 level=medium
+    }
+    practice writing.instr-command count=1 seed=2
+    practice writing.instr-order count=1 seed=3 hard-count=2
+    practice writing.instr-precise count=1 seed=4
+    practice writing.instr-split count=1 seed=5
+    practice writing.instr-missing count=1 seed=6
+    practice writing.instr-warning count=1 seed=7
+    practice writing.instr-numbers-or-bullets count=1 seed=1
+    practice writing.instr-rewrite-step count=1 seed=2
+  }
+  try stars=2 {
+    show writing.instr-better-reason k=0 r=2 hard-k=1
+  }
+  try stars=3 {
+    show writing.write-instructions k=0 hard-k=1
+  }
+  remember {
+    say "Good instructions give one command a step, numbered when order matters, with exact amounts, and a warning just before it is needed."
+  }
+
+  grown-ups """
+    Instructions are judged by one test: can someone who has never done the job follow them without
+    asking? That needs a title that names the goal, a list of what is needed, steps in an order that
+    works, one command a step, exact amounts, and warnings placed where they are read in time. The
+    look is the miller's card for starting the water wheel in the gorge. The way in picks the step
+    written as a command, the imperative, and the core puts the steps for starting and stopping the
+    wheel in order, picks the step a newcomer could follow exactly, finds the step that does two
+    things, fills a missing step, places a warning, decides which of three lists needs numbers
+    because its order matters and which only bullet points, and rewrites a vague step so it can be
+    followed exactly, which you mark by eye. The wrong idea to watch for is writing what the writer
+    did (first I turned) rather than what the reader should do; ask the child to read their step as
+    an order. If the child is stuck, have them give you the instructions aloud for something at
+    home, such as making toast, while you do exactly what they say and nothing more. Off the page,
+    follow a real set of instructions together, a flat pack or a board game's rules, and note where
+    they are vague. The two-star question compares two cards, and the three-star question is a card
+    of the child's own, which you follow and mark.
+    """
+  level easy {
+    grown-ups "At this level the command among a suggestion and a description is worked once in the teacher's pen, the commands are the plainer ones, the steps to order are for starting the wheel, the vague step uses a little, the step that does two things is second or third, the missing step is the one that lifts the gate, the warning is about the wet steps, the lists to lay out are what you need, starting the wheel and the rules, the step to rewrite is oiling the axle properly, the two-star is a recount against a card, and the card has five steps."
+  }
+  level hard {
+    grown-ups "At this level a command can lead with a when or before clause, the steps to order are for stopping the wheel and are ordered twice, the vague step uses until it is going well, the step that does two things may be first, the missing step is the one that closes the gate, a warning is about the pin coming out, the lists to lay out include checks that look like steps but can be done in any order, the step to rewrite is vague and does two things so it has to be split, the two-star is an exact card against a vague one, and the card covers stopping and oiling."
+  }
+}

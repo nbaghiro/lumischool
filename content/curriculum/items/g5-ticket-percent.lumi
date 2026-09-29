@@ -1,0 +1,29 @@
+# A percentage of an amount by way of ten percent and five percent, the steps a child can do in their
+# head.
+item percent.ticket-percent v=1 skills=[percentages.of-amount] {
+  title "Children's tickets"
+  difficulty ((if p % 10 == 0 then 0 else 1) + n / 200)
+  let p={20, 30, 35, 45, 15} n={120, 240, 360, 80}
+  where (p * n % 100 == 0)
+  level easy {
+    let p={20, 30} n={120, 80}
+  }
+  level hard {
+    let p={35, 45, 15} n={240, 360}
+  }
+
+  scene 33x12 {
+    percentbar bar percent=p show=true whole=0 at=canvas(1, 1)
+    text ask "The observatory sold {n} tickets on Saturday, and {p}% of them were children's tickets. How many children's tickets were sold?" narrate width=14 right-of=bar gap=2
+    number-input answer width=4 below=bar gap=1
+  }
+
+  answer (p * n / 100)
+  feedback {
+    when (answer == n - p * n / 100) point=bar {
+      say "That is the tickets that were not for children. How many is {p}%?"
+    }
+  }
+  hint "What is 10% of {n}?"
+  hint "{if p % 10 == 0 then \"How many lots of 10% make \" else \"How many lots of 10%, and one 5% (half of 10%), make \"}{p}%?"
+}

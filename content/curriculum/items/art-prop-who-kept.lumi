@@ -1,0 +1,36 @@
+# The two-star comparison: which drawings keep the tower's shape. One wrong drawing adds the same to
+# both sides, which looks right and is not; both can be right at once.
+item art.prop-who-kept v=1 stars=2 skills=[art.proportion, reasoning.compare] {
+  title "Who kept the shape?"
+  difficulty pick(k, 0, 2, 1)
+  let k=0..2
+  let benw={4}
+  let benh={pick(k, 10, 10, 8)}
+  let adaw={6}
+  let adah={pick(k, 15, 12, 15)}
+  let right={pick(k, "both", "Ben", "Ada")}
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 35x17 {
+    tower keep courses=8 flag=1 at=canvas(1, 1)
+    text ask "The tower on the city wall is two and a half times as tall as it is wide. Ben draws it {benw} squares wide and {benh} tall. Ada draws it {adaw} wide and {adah} tall. Who kept the tower's shape?" width=26 right-of=keep gap=2
+    choice pick options=["Ada", "Ben", "both", "neither"] below=keep gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 1 and pick == "both") point=keep {
+      say "Ada added 2 to Ben's width and 2 to his height. Adding the same amount does not keep a shape: is 12 two and a half times 6?"
+    }
+    when (pick != right) point=keep {
+      say "Check each drawing: is its height two and a half times its width?"
+    }
+  }
+  hint "For each drawing, how many times its width should its height be?"
+  hint "Compare each drawing's height with the one it should have."
+}

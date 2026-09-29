@@ -1,0 +1,41 @@
+# The way in at grade six: the marks read as the Italian words they stand for. Piano is soft, forte
+# loud and mezzo half; a crescendo and a diminuendo change gradually, while sforzando accents one note
+# and forte-piano drops at once. Each wrong option is the neighbouring word or the sudden against the
+# gradual.
+item music.dyn-words v=1 skills=[music.dynamics] {
+  title "The Italian words"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let m1={pick(k, "pp", "p", "p", "f", "mp", "fp")}
+  let m2={pick(k, "cresc", "cresc", "cresc", "dim", "sfz", "cresc")}
+  let m3={pick(k, "p", "mf", "f", "p", "mp", "f")}
+  let ring={pick(k, 0, 2, 1, 1, 1, 0)}
+  let right={pick(k, "pianissimo: very soft", "mezzo forte: moderately loud", "crescendo: getting gradually louder", "diminuendo: getting gradually softer", "sforzando: one note given a sudden strong push", "forte-piano: loud, then soft at once")}
+  let w1={pick(k, "piano: soft", "mezzo forte: very loud", "crescendo: suddenly loud", "diminuendo: suddenly soft", "subito forte: loud from here on", "forte-piano: loud, getting softer")}
+  let w2={pick(k, "mezzo piano: moderately soft", "mezzo piano: moderately soft", "diminuendo: getting gradually softer", "crescendo: getting gradually louder", "forte: the whole bar loud", "forte-piano: loud and soft parts together")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x33 {
+    notes tune clef=treble notes=[G4, E4, G4, C5, B4, A4, G4] values=[1, 1, 1, 1, 1, 1, 2] meter=4 at=canvas(1, 1)
+    dynamics marks marks=[m1, m2, m3] words=false ring=ring below=tune gap=0
+    text ask "Every mark under the gorge band's fiddle part is short for Italian words. What do the words for the ringed mark tell the fiddle to do?" narrate width=34 below=marks gap=1
+    choice pick options=[pick(k, w1, right, w2, right, w2, right), pick(k, right, w2, right, w1, w1, w2), pick(k, w2, w1, w1, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=marks {
+      say "{if k <= 1 then \"Read the ringed mark letter by letter: pp is more than p, and m is mezzo, half.\" else \"Is the change spread over several notes, or does it happen all at once?\"}"
+    }
+    when (pick == w2) point=marks {
+      say "{if k <= 1 then \"Is the last letter of the ringed mark p, piano, or f, forte?\" else \"Look at the ringed mark's shape and letters again. Which way does it go, and how long does it last?\"}"
+    }
+  }
+  hint "Piano means soft, forte means loud and mezzo means half. Which of those does the ringed mark use?"
+  hint "A hairpin spreads its change over the notes above it. Letters like sfz and fp act at one moment."
+}

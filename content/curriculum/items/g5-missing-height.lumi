@@ -1,0 +1,28 @@
+# The inverse: the volume and two edges given, the height found by dividing by the base.
+item volume.missing-height v=1 skills=[volume.cuboids, reasoning.inverse] {
+  title "How tall is the box"
+  difficulty (l * w / 5 + h)
+  let l=3..8 w=2..5 h=2..6
+  where (l > w)
+  level easy {
+    let l=3..5 w={2, 3} h=2..3
+  }
+  level hard {
+    let l=6..8 w={4, 5} h=4..6
+  }
+
+  scene 29x27 {
+    cubestack box l=l w=w h=h outline=1 edges=1 ask=3 unit="cm" at=canvas(1, 1)
+    text ask "This box holds {l * w * h} cubic centimetres. How tall is it?" narrate width=28 below=box gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer h
+  feedback {
+    when (answer == l * w * h - l - w) point=box {
+      say "Volume multiplies the edges. Find the bottom layer first, then how many layers make {l * w * h}."
+    }
+  }
+  hint "How many cubes fit in the bottom layer?"
+  hint "How many of those layers make {l * w * h}?"
+}

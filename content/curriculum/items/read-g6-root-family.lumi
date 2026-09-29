@@ -1,0 +1,34 @@
+# A word family on the hut's kit list: three words that share one Greek or Latin root, and what the
+# root means. The tempting wrong choice is what one of the words means as a whole.
+item reading.root-family v=1 skills=[reading.morphology, reading.vocabulary] {
+  title "One root, three words"
+  difficulty pick(k, 0, 1, 1, 1, 0, 2)
+  let k=0..5
+  level easy {
+    let k={0, 1, 4}
+  }
+  level hard {
+    let k={2, 3, 5}
+  }
+  let right={pick(k, "heat", "light", "write", "carry", "hear", "look")}
+  let near={pick(k, "cold", "picture", "count", "buy", "speak", "stand")}
+  let far={pick(k, "water", "far", "paper", "open", "see", "speak")}
+
+  scene 35x17 {
+    text ask "The words on the hut's kit list share a root. What does the root mean?" at=canvas(1, 1) width=34
+    sign list lines=[pick(k, "thermometer", "photograph", "autograph book", "transport box", "audio guide", "spectacles"), pick(k, "thermal vest", "telephoto lens", "graph paper", "portable stove", "audible alarm", "inspector's badge"), pick(k, "thermos flask", "photo frame", "paragraph pad", "porter's sledge", "audience seats", "spectator stand")] kind=board color=sky below=ask gap=1
+    choice pick options=[pick(k, near, right, far, near, right, far), pick(k, right, far, near, right, far, right), pick(k, far, near, right, far, near, near)] below=list gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == near) point=list {
+      say "That fits one of the words, not all three. Try it inside every word on the list."
+    }
+    when (pick == far) point=list {
+      say "Find the letters all three words share. Which meaning fits every one?"
+    }
+  }
+  hint "Which letters do all three words have in common?"
+  hint "What job do all three things share?"
+}

@@ -1,0 +1,35 @@
+# Workers and days: the number of worker-days stays the same, so the days for another number of
+# workers come from the product. The unknown is the days.
+item inverse.bridge-menders v=1 skills=[proportion.inverse] {
+  title "Mending the rope bridge"
+  difficulty (w * d / 24 + (if w2 > w then 0 else 1))
+  let w={2, 3, 4, 6} d={4, 6, 8, 12} w2={3, 4, 6, 8, 12}
+  where (w2 != w and whole(w * d / w2) and w * d / w2 != d)
+  level easy {
+    where (w2 > w and w * d <= 24)
+  }
+  level hard {
+    where (w2 < w or w * d >= 36)
+  }
+
+  scene 35x14 {
+    ropebridge bridge planks=10 gaps=1 at=canvas(1, 1)
+    text ask "{w} workers take {d} days to mend the rope bridge over the gorge. All the workers work at the same rate. How many days would {w2} workers take?" narrate width=16 right-of=bridge gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text unit "days"
+    }
+  }
+
+  answer (w * d / w2)
+  feedback {
+    when (answer == d * w2 / w) point=bridge {
+      say "That grows the days with the workers. More workers finish sooner."
+    }
+    when (d + w - w2 != w * d / w2 and answer == d + w - w2) point=bridge {
+      say "Days do not go down by one for each extra worker. How many days would one worker take?"
+    }
+  }
+  hint "How many days would one worker alone take?"
+  hint "Share those days between the workers in the new team."
+}

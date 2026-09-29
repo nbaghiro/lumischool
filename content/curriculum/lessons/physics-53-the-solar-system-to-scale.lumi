@@ -1,0 +1,67 @@
+lesson physics-the-solar-system-to-scale v=1 format=teach grade=5 unit=4 subject=physics levels=[easy, medium, hard] {
+  title "The solar system to scale"
+  goal "Use a scale to turn the real distances and sizes of the planets into a model, and back again."
+
+  look {
+    scene 32x10 {
+      row all at=canvas(1, 0) space=1 align=start {
+        planets p count=8 names=1
+        observatory o open=1
+      }
+    }
+    say """
+      The planets go round the Sun at enormous distances: the Earth is 150 million km out and
+      Neptune 4500 million km. To picture that, the observatory builds a model down its corridor,
+      where 1 cm stands for 10 million km, so the Earth's bead is 15 cm from the Sun and Neptune's
+      450 cm. A drawing like this one shows the planets in order, but neither their sizes nor their
+      distances to scale: at a scale that made the planets big enough to see, the gaps would stretch
+      for kilometres. The further out a planet is, the longer its path round the Sun and the more
+      slowly it moves, so the longer its year.
+      """
+  }
+  do {
+    level easy {
+      worked physics.scale-model-distance k=3 level=medium
+    }
+    practice physics.scale-model-distance count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.scale-real-distance count=1 seed=2
+    level hard {
+      show physics.scale-real-distance k=6 s=50
+    }
+    practice physics.scale-size count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.scale-gap count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.scale-year-why count=1 seed=1
+  }
+  story {
+    show physics.observatory-sunlight k=3 easy-k=2 hard-k=4
+  }
+  try stars=2 {
+    show physics.scale-one-page k=3 hard-k=4
+  }
+  try stars=3 {
+    show physics.scale-fit-corridor v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "A scale says what one centimetre of the model stands for: divide by it to build the model, multiply to get back."
+  }
+
+  grown-ups """
+    Pictures in books put the planets side by side, which leaves most children thinking they are
+    close together and about as big as each other. The lesson measures both: in the corridor model
+    the gap from Uranus to Neptune is longer than everything inside Jupiter, and at the scale that
+    makes the Earth a 13 mm bead the Sun is a ball more than a metre across. Watch for a child who
+    multiplies when building the model or divides when coming back; ask "is the model bigger or
+    smaller than space?" and let the answer choose. The year question asks for a reason, not a sum:
+    a child who says a slower spin makes a longer year has mixed up the day and the year. If the
+    millions and thousands trip the child up, do the maths lesson on large numbers first and come
+    back. Off the page, pace out the corridor model in a park with a tape: Neptune is 4.5 m from the
+    Sun at 10 million km to the centimetre. The three-star question asks for a scale that fits,
+    rounded up rather than down.
+    """
+  level easy {
+    grown-ups "At this level a worked example places the Earth first, the distances to place give whole centimetres, the gaps are between the inner planets, the year question compares the Earth and Mars, the sunlight goes to Venus, and the corridor is 30 m long."
+  }
+  level hard {
+    grown-ups "At this level the distances give tenths of a centimetre, the gaps are between the outer planets, the year question compares Mars and Jupiter, the sunlight goes to Mars and takes more than twelve minutes, the page question is about Mars, and the corridor is 8 m long, so the scale rounds up to 6."
+  }
+}

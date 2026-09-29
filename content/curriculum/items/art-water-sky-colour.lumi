@@ -1,0 +1,32 @@
+# Open water takes its colour from what it reflects, so the pool changes with the sky above it.
+item art.water-sky-colour v=1 skills=[art.water, art.looking, reasoning.predict] {
+  title "What colour is the pool?"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3
+  let sky={pick(k, "a clear blue sky", "a heavy grey sky before rain", "an orange sky at sunset", "a clear blue sky, with the dark green cliff hanging over the far side")}
+  let right={pick(k, "Blue", "Grey", "Orange", "Blue, and dark green under the cliff")}
+  let o1={pick(k, "Grey", "Blue", "Blue", "Blue all over")}
+  let o2={pick(k, "Orange", "Orange", "Grey", "Dark green all over")}
+  let r={k % 3}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 36x25 {
+    waterwheel mill paddles=8 lit=0 at=canvas(1, 1)
+    text ask "Open water has almost no colour of its own: it shows what is above it. Under {sky}, what colour should Ada paint the millpond?" width=19 right-of=mill gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then o1 else o2, if r == 0 then o1 else if r == 1 then o2 else right, if r == 0 then o2 else if r == 1 then right else o1] stack=column below=mill gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=mill {
+      say "Water is not always blue. Look up from the pond: whatever is above a part of it is what that part shows."
+    }
+  }
+  hint "What does a mirror show: its own colour, or what is in front of it?"
+  hint "What is above the pond today? Is it the same above every part of it?"
+}

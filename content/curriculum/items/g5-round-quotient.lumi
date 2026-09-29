@@ -1,0 +1,35 @@
+# A quotient that does not end, rounded to the nearest tenth: the hundredths digit is worked out to
+# decide which way the tenths go.
+item decimal.round-quotient v=1 skills=[decimals.divide, decimals.rounding] {
+  title "To the nearest tenth"
+  difficulty ((if b == 0.3 then 0 else 1) + (if floor(100 * a / b) % 10 >= 5 then 1 else 0))
+  let a={4.7, 5.2, 6.1} b={0.3, 0.6, 0.7, 0.9}
+  where (not whole(100 * a / b))
+  level easy {
+    let b={0.3}
+  }
+  level hard {
+    let b={0.7, 0.9}
+  }
+
+  scene 29x12 {
+    windmill mill sails=4 turn=1 at=canvas(1, 1)
+    text ask "The canal mill ground {a} kg of flour in {b} hours, at a steady rate. How many kilograms is that in one hour, to the nearest tenth?" narrate width=18 right-of=mill gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=5
+      text kg "kg"
+    }
+  }
+
+  answer decimals(round(10 * a / b) / 10, 1)
+  feedback {
+    when (answer == floor(10 * a / b) / 10 and round(10 * a / b) != floor(10 * a / b)) point=ask {
+      say "The hundredths digit is 5 or more, so the tenths digit goes up by one."
+    }
+    when (answer == floor(a / b)) point=ask {
+      say "The answer is wanted to one decimal place. Keep dividing past the point."
+    }
+  }
+  hint "Make the number you divide by whole: what is {plain(10 * a)} ÷ {plain(10 * b)}?"
+  hint "Work out two digits after the point. Is the second one 5 or more?"
+}

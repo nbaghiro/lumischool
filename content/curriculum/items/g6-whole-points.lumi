@@ -1,0 +1,33 @@
+# The three-star: a line through zero and one point, and every point on it with whole-number
+# coordinates up to x = 20. The steps along the line are the point divided by the highest common
+# factor; proved as a count.
+item proportion.whole-points v=1 stars=3 skills=[proportion.graphs, reasoning.systematic] {
+  title "Points on the line"
+  difficulty (a / gcd(a, b))
+  let a={4, 5, 6} b={2, 3, 4, 5, 6}
+  where (a != b and a / gcd(a, b) != 1)
+  level easy {
+    where (a / gcd(a, b) == 2)
+  }
+  level hard {
+    where (a / gcd(a, b) >= 5)
+  }
+
+  scene 34x16 {
+    plotpoint grid max=6 quadrants=1 px=a py=b mark="P" at=canvas(1, 0)
+    text ask "A straight line starts at 0 and passes through the point P. It goes on in a straight line. How many points on it have whole-number coordinates with x from 1 to 20?" narrate width=15 right-of=grid gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer floor(20 / (a / gcd(a, b)))
+  feedback {
+    when (gcd(a, b) > 1 and answer == floor(20 / a)) point=grid {
+      say "P is not the first whole-number point after 0. Is there one before it?"
+    }
+    when (answer == 20) point=grid {
+      say "At x = 1, is y a whole number? Work out where the line is at x = 1."
+    }
+  }
+  hint "For each step of 1 to the right, how far up does the line go?"
+  hint "Which is the first point after 0 where both coordinates are whole numbers?"
+}

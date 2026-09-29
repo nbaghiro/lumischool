@@ -1,0 +1,32 @@
+# Three-star: the lines a tree draws double and add one with each doubling of its size, 1, 3, 7, 15,
+# so finding the first size past a number means following the pattern rather than running anything.
+item coding.self-grow v=1 stars=3 skills=[coding.recursion, reasoning.patterns] {
+  title "The first tree with more than"
+  difficulty k
+  let k=0..2
+  let big={pick(k, 20, 50, 100)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x24 {
+    program p code=["define tree n", "  forward n", "  if n is more than 1", "    turn left", "    tree n / 2", "    turn around", "    tree n / 2", "    turn left", "  back n", "tree 8"] text=true at=canvas(0, 0)
+    text ask "tree 1 draws 1 line, tree 2 draws 3 and tree 4 draws 7. What is the smallest tree whose drawing has more than {big} lines?" width=15 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 16, 32, 64)
+  feedback {
+    when (answer == pick(k, 8, 16, 32)) point=p {
+      say "Count that tree's lines again: it has fewer than {big}. Each doubling of the size doubles the lines and adds one."
+    }
+    when (answer == big + 1) point=p {
+      say "The question asks for the number after tree, which is its size, not how many lines it draws."
+    }
+  }
+  hint "How many lines does tree 8 draw? It is tree 4's lines twice, and one more for its trunk."
+  hint "Keep doubling the size and working out the lines until you pass {big}."
+}

@@ -1,0 +1,33 @@
+# One chapter of The Frozen Winter, and three true-sounding sentences: the gist, one detail from the
+# chapter, and something from another chapter. A summary is the first, and the feedback names the
+# other two for what they are.
+item reading.chapter-gist v=1 skills=[reading.summary, reading.main-idea] {
+  title "Sum up the chapter"
+  difficulty pick(k, 0, 1, 2, 1)
+  let k=0..3
+  let head={pick(k, "Chapter 1: The canal freezes", "Chapter 2: Breaking the ice", "Chapter 3: Nia's idea", "Chapter 4: Bread for Kingsford")}
+  let text={pick(k, "In the winter of 1895 the Millhaven Canal froze from bank to bank. It began in the first week of January, when the wind swung round to the north and stayed there. Each morning the ice was thicker: first as thin as glass, then as thick as a loaf, then so thick that a grown man could jump on it and not hear a creak. The narrowboats were stuck fast at the wharf, still loaded with sacks of flour from the mill. Every week those boats carried the flour sixteen kilometres to the market at Kingsford, where the town's six bakers turned it into bread. Now nothing could move. The boatmen stamped their feet on the towpath and watched the sky, but the wind did not change, and by the end of the month the bakers of Kingsford were running out.", "The boatmen tried everything. They struck the ice with poles and axes, but it froze again every night. They lit fires on the ice, and the fires only sank into little pits of black water that were white again by morning. They hitched six horses to an old iron icebreaker and dragged it along the canal, rocking it from side to side while the men on board shouted. At last it cracked a channel as far as the first lock and stuck fast. Mrs Pell, the lock-keeper, came out, looked at the ice and shook her head. The lock gates were frozen shut as well, and the paddles would not turn. That night the boatmen sat in the Lock Inn and nobody said a word. They had tried poles, axes, fire and horses, and the ice had beaten every one.", "Nia, the lock-keeper's granddaughter, watched the children skating on the ice. There were twelve of them that afternoon, racing from the lock to the mill bridge and back, and the ice held every one of them without a crack. If the ice could hold children, she thought, it could hold a sledge. She ran to the mill and asked the miller for his longest sledge, the one he used for hauling logs in the snow. The miller laughed at first, then stopped laughing and fetched it. Down at the wharf the boatmen tied twenty sacks of flour to it with ropes, while their wives filled flasks with hot tea. With two men pulling and Nia in front with a lamp, they set off along the frozen canal towards Kingsford, sixteen kilometres away.", "It took them all day to reach the town. The runners squealed on the ice, the men took turns to pull, and twice they had to lift the sledge over a fallen branch. When it grew dark, Nia's lamp was the only light on the canal. The people of Kingsford came out to meet them in the dark, and the bakers lit their ovens that night. By morning every house in the town had bread. After that the sledges went every day until the thaw in March, and more families lent their sledges, until eight of them ran in a line. When the ice melted at last, the first narrowboat through the locks had a new name painted on its side, in tall white letters: Nia.")}
+  let gist={pick(k, "The canal froze, so no flour reached Kingsford.", "Every try to break the ice failed.", "Nia thought of taking the flour by sledge.", "Sledges fed the town until the ice melted.")}
+  let detail={pick(k, "The boats were loaded with sacks of flour.", "Six horses pulled an old iron icebreaker.", "Children were skating on the ice.", "It took them all day to reach the town.")}
+  let other={pick(k, "Nia pulled the flour to town on a sledge.", "The canal froze from bank to bank.", "The bakers lit their ovens that night.", "The boatmen struck the ice with axes.")}
+
+  scene 35x44 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p title="{head}" text="{text}" width=34
+      text ask "Which sentence sums up this chapter best?" width=34
+      choice pick options=[pick(k, gist, detail, other, detail), pick(k, detail, gist, gist, other), pick(k, other, other, detail, gist)] stack=column
+    }
+  }
+
+  answer pick=gist
+  feedback {
+    when (pick == detail) point=p {
+      say "That is in the chapter, but it is one small part of it. A summary says what the whole chapter is about."
+    }
+    when (pick == other) point=p {
+      say "That is from another chapter. Read this one again and ask what happens in it from start to end."
+    }
+  }
+  hint "Cover the chapter. What would you tell a friend happened in it, in one breath?"
+  hint "Which sentence would still be true if you left out the small details?"
+}

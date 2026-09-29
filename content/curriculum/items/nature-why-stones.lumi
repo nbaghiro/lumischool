@@ -1,0 +1,39 @@
+# The two-star reason: a fact about the river the child can see, and the reason for it, from three
+# that sound possible. The cliff at the bend, the bends that creep outwards over the years and the
+# sand at the mouth each come back to fast water wearing away and slow water dropping.
+item nature.why-stones v=1 stars=2 skills=[nature.rivers, reasoning.explain] {
+  title "Why is it like that?"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "Why is the bank at B a steep little cliff?", "Old maps show the bends of the river getting wider and loopier every year. Why?", "Why does the river leave sand and mud at its mouth?")}
+  let right={pick(k, "The fast water on the outside wears it away", "Outsides wear away while insides fill with sand", "It slows in the sea, and slow water drops things")}
+  let o1={pick(k, "Stones are dropped there and pile up high", "The river has more water in it every year", "The sea washes sand up from the beach")}
+  let o2={pick(k, "It was built that way to hold the water in", "Stones dropped on the insides push the banks out", "Sand and mud are heavier near the sea")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x26 {
+    parts fig of=river at=canvas(1, 1)
+    text ask "{asks}" narrate width=14 right-of=fig gap=1
+    choice pick options=[o1, o2, right] stack=column below=fig gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == o1) point=fig {
+      say "Stones pile up on the inside of a bend, at C. B is on the outside, where the water is fastest."
+    }
+    when (k == 1 and pick != right) point=fig {
+      say "Look at the two banks of the bend at B and C. Which one loses ground each year, and which one gains it?"
+    }
+    when (k == 2 and pick != right) point=fig {
+      say "The sand and mud come down the river from the hills. Something changes at the mouth that makes the water let go of them."
+    }
+  }
+  hint "Is the water fast or slow at that place? Fast water wears away, slow water drops things."
+  hint "Follow a stone, or a grain of sand, from the hills to the sea. What happens to it on the way?"
+}

@@ -1,0 +1,36 @@
+# The order of operations: multiplying and dividing before adding and taking away, so the answer is
+# not the one you get by reading left to right.
+item algebra.order-first v=1 skills=[algebra.order-of-operations] {
+  title "Which comes first"
+  difficulty (f + (a + b * c) / 50)
+  let a={3, 5, 8, 12} b={2, 4, 6} c={3, 5, 7} f=0..2
+  level easy {
+    let f={0}
+  }
+  level hard {
+    let f={2}
+  }
+
+  scene 31x8 {
+    text ask "Work it out in the right order. The temple's stone tablets use the same rule." narrate width=30 at=canvas(1, 1)
+    row eq below=ask gap=1 space=1 align=centre {
+      equation sum "{if f == 1 then a * c + b * c else a} {if f == 0 then \"+\" else if f == 1 then \"−\" else \"×\"} {b} {if f == 2 then \"+\" else \"×\"} {c}{if f == 2 then \" × \" else \"\"}{if f == 2 then b else \"\"} ="
+      number-input answer width=4
+    }
+  }
+
+  answer (if f == 0 then a + b * c else if f == 1 then a * c else a * b + c * b)
+  feedback {
+    when (f == 0 and answer == (a + b) * c) point=eq {
+      say "Multiply before you add: work out {b} × {c} first."
+    }
+    when (f == 1 and answer == a * c * c) point=eq {
+      say "Multiply before you take away: {b} × {c} comes first."
+    }
+    when (f == 2 and answer == (a * b + c) * b) point=eq {
+      say "There are two multiplications. Do both before you add."
+    }
+  }
+  hint "Which operations in the line are multiplying or dividing?"
+  hint "Do those first, then add or take away from left to right."
+}

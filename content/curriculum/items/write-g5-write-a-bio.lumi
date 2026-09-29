@@ -1,0 +1,23 @@
+# The three-star: a short biography of Maria Mitchell from a fact card, in paragraphs by part of her
+# life, marked by a grown-up. At hard it opens with why she matters and uses every fact.
+item writing.write-a-bio v=1 stars=3 skills=[writing.biography, writing.paragraphs, writing.composing] {
+  title "Your biography"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x33 {
+    passage card title="Maria Mitchell" text="Born on Nantucket, 1818. Helped her father check ships' clocks by the stars. Found a comet, 1847. First woman chosen for the American Academy of Arts and Sciences, 1848. Taught at Vassar College from 1865. Died 1889." width=32 numbers=false at=canvas(1, 0)
+    text ask "{if k == 0 then \"Write a short biography of Maria Mitchell from the card, in two paragraphs: her early life, then her work.\" else \"Write a short biography of Maria Mitchell from the card, in three paragraphs: her early life, her work and her later life. Start with why she matters.\"}" narrate width=32 below=card gap=1
+    writinglines lines lines=4 width=34 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A biography in the third person (she, her) and the past tense, the facts taken truly from the card, time words that join them (as a girl, in 1847, the next year, later), a new paragraph for each part of her life, no opinions of the writer's own presented as facts, and at hard a first sentence that says who she was and why she matters, with three paragraphs."
+  hint "Sort the card first: which facts are her early life, and which are her work?"
+  hint "Read it back: is every sentence she and was, and does each paragraph keep to one part of her life?"
+}

@@ -1,0 +1,45 @@
+# The core's reason: choosing a construction and saying why it works, for a star, for twelve marks,
+# and for a tile whose lines must run on into the next tile.
+item art.compass-which-way v=1 skills=[art.pattern, art.geometry, reasoning.explain] {
+  title "Which way works?"
+  difficulty k
+  let k=0..2
+  let r={(k + 1) % 3}
+  let asks={pick(k, "Ada has six marks round a circle and joins every second mark, which gives one triangle. How does she turn it into a six-point star?", "Ada's rosette has six marks and she wants twelve, evenly spaced, for a bigger temple tile. Which way gives twelve exactly?", "Ada's square tile has lines running out to its edges, and the next tile along is a copy of it. Where must a line meet the right-hand edge so it runs on into the next tile?")}
+  let right={pick(k, "Join the other three marks too", "Bisect every gap between the six", "Level with a line on the left edge")}
+  let w1={pick(k, "Join every third mark instead", "Step round again, half as wide", "In the middle of the edge")}
+  let w2={pick(k, "Draw a bigger triangle round it", "Mark twelve gaps with a ruler", "Anywhere, if the colours match")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x25 {
+    radial marks repeats=6 motif="drop" missing=-1 colour=sky at=canvas(1, 1)
+    text ask "{asks}" width=21 right-of=marks gap=2
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=marks gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == w1) point=marks {
+      say "Every third mark of six is straight across, so the ruler draws three lines through the middle, not a star."
+    }
+    when (k == 1 and pick == w1) point=marks {
+      say "Half the opening does not step round a whole number of times: the last step misses the first mark. Halving each gap does."
+    }
+    when (k == 1 and pick == w2) point=marks {
+      say "A ruler measures straight lines, and the gaps lie on a curve. The compass can find each gap's middle exactly."
+    }
+    when (k == 2 and pick != right) point=marks {
+      say "The next tile starts with a copy of this tile's left edge. A line leaving on the right has to meet a line arriving there."
+    }
+    when (k == 0 and pick == w2) point=marks {
+      say "A bigger triangle has three points, the same as the first. A star's six points need all six marks."
+    }
+  }
+  hint "Try each way in your head, or on scrap paper. What does it draw?"
+  hint "Which way uses only the marks and the compass, so nothing is left to guesswork?"
+}

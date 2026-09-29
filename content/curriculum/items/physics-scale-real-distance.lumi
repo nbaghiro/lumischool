@@ -1,0 +1,24 @@
+# Backwards from the model: a scale of s million kilometres to a centimetre, a bead's place in the
+# model, and the planet's real distance, which is the table's value.
+item physics.scale-real-distance v=1 skills=[physics.sky, measure.scale, reasoning.backwards] {
+  title "From the model back to space"
+  difficulty (s / 10 + (if k > 4 then 1 else 0))
+  let k={2, 4, 5, 6} s={20, 50}
+  let name={pick(k - 1, "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune")}
+  let d={pick(k - 1, 58, 108, 150, 228, 778, 1430, 2870, 4500)}
+
+  scene 31x16 {
+    planets p count=8 names=1 at=canvas(1, 0)
+    text ask "In Leo's model 1 cm stands for {s} million km. His bead for {name} is {if d % s == 0 then plain(d / s) else if d * 10 % s == 0 then decimals(d / s, 1) else decimals(d / s, 2)} cm from the Sun. How many million km is {name} really from the Sun?" narrate width=30 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer d
+  feedback {
+    when (answer == d / s / s) point=p {
+      say "The real distance is bigger than the model, so multiply by the scale rather than dividing."
+    }
+  }
+  hint "Each centimetre of the model stands for how many million km?"
+  hint "Multiply the bead's distance by that."
+}

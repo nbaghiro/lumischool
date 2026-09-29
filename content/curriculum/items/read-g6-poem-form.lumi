@@ -1,0 +1,41 @@
+# The way in: a four-line poem from the gorge, named by its form. Rhyming couplets rhyme in pairs,
+# alternate rhyme skips a line, and free verse has no set rhyme or line length.
+item reading.poem-form v=1 skills=[reading.poetry] {
+  title "What form is the poem?"
+  difficulty pick(k, 0, 1, 0, 1)
+  let k=0..3
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1, 3}
+  }
+  let right={pick(k, "Couplets", "Alternate", "Free verse", "Couplets")}
+
+  scene 35x22 {
+    row top at=canvas(1, 1) space=1 align=end {
+      poem p title="{pick(k, \"The rope bridge\", \"The water wheel\", \"Spray\", \"The rainbow\")}" lines=[pick(k, "The rope bridge sways from side to side,", "The old wheel turns in morning light,", "Spray on my face,", "After the rain the spray is lit;"), pick(k, "the gorge below is deep and wide.", "its paddles dripping as they go;", "cold as a secret,", "a rainbow grows right out of it."), pick(k, "I count the planks, I hold the rope,", "it turned for years by day and night", "and the whole gorge", "It arches over rock and stream"), pick(k, "I cross on nothing else but hope.", "and grinds the grain the farmers grow.", "shouting its one long word.", "and fades away like half a dream.")] rhymes=[-1, -1, -1, -1] width=26
+      kingfisher bird flying=0 facing=-1
+    }
+    text ask "The poem is one stanza of four lines. Is it in rhyming couplets, in alternate rhyme, or in free verse?" below=top gap=1 width=34
+    choice pick options=["Couplets", "Alternate", "Free verse"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (right == "Couplets" and pick == "Alternate") point=p {
+      say "Say the last word of each line. Does line 1 rhyme with line 2, or with line 3?"
+    }
+    when (right == "Alternate" and pick == "Couplets") point=p {
+      say "Say the last words again. Line 1 rhymes with a line further down."
+    }
+    when (right != "Free verse" and pick == "Free verse") point=p {
+      say "Free verse has no set rhyme. Say the last words of the lines: some of them rhyme."
+    }
+    when (right == "Free verse" and pick != "Free verse") point=p {
+      say "Say the last word of every line. Do any of them rhyme?"
+    }
+  }
+  hint "Say the last word of every line aloud. Which ones rhyme?"
+  hint "Do the rhymes come in pairs, skip a line, or not come at all?"
+}

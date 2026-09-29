@@ -1,0 +1,39 @@
+# Telling granite from basalt by density, from the water a stone pushes aside and its mass: granite
+# about 2.7 g/cm³ and basalt about 3.0 (BGS; standard tables). Pumice floats, being less than 1.
+item chem.rock-density-id v=1 skills=[chemistry.rocks, chemistry.density] {
+  title "Granite or basalt?"
+  difficulty (if v == 10 then 0 else if v == 20 then 1 else 2)
+  let k=0..1 v={10, 20, 30} b={30, 50}
+  where (not (k == 1 and v == 30))
+  let dens={pick(k, 2.7, 3)}
+  let mass={plain(dens * v)}
+  let name={pick(k, "granite", "basalt")}
+  level easy {
+    let v={10, 20}
+  }
+  level hard {
+    let v={20, 30}
+  }
+
+  scene 35x26 {
+    row kit at=canvas(1, 0) space=2 align=start {
+      cylinder one max=100 step=10 minor=5 level=b unit=ml
+      cylinder two max=100 step=10 minor=5 level=(b + v) unit=ml
+      table data cols=2 head=["Rock", "g/cm³"] cells=["pumice", "under 1", "granite", "2.7", "basalt", "3.0"]
+    }
+    text ask "Leo finds a stone in the pool below the waterfall. It weighs {mass} g, and he lowers it into the cylinder. Which rock in the table is it?" narrate width=34 below=kit gap=1
+    choice pick options=["pumice", "granite", "basalt"] below=ask gap=1
+  }
+
+  answer pick=name
+  feedback {
+    when (pick == "pumice") point=kit {
+      say "Pumice floats, and this stone sank to the bottom of the cylinder."
+    }
+    when (pick != name and pick != "pumice") point=kit {
+      say "Work out the grams in each cubic centimetre first, then match it to the table."
+    }
+  }
+  hint "How far did the water rise? That is the stone's volume in cubic centimetres."
+  hint "How many grams is each cubic centimetre? Compare it with the table."
+}

@@ -1,0 +1,31 @@
+# A running total of money: each crate costs a toll, so each time round the total goes up by the
+# crates times the toll, not by the crates alone.
+item coding.total-toll v=1 skills=[coding.variables, coding.lists, money.dollars-and-cents] {
+  title "The toll at the lock"
+  difficulty (a + b + c + (m - 2) * 3)
+  let a=1..4 b=2..5 c=1..3 m=2..3
+  where (a != b)
+  level easy {
+    let m={2}
+    where (a + b + c <= 7)
+  }
+  level hard {
+    let m={3}
+  }
+
+  scene 36x15 {
+    program p code=["set crates to list {a}, {b}, {c}", "set toll to 0", "for each c in crates", "  add c * {m} to toll"] at=canvas(1, 0)
+    narrowboat boat windows=3 pots=1 right-of=p gap=1
+    text ask "Each crate that goes through the lock costs ${m}. How many dollars is toll at the end?" width=22 below=p gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=p answer="value(toll)"
+  feedback {
+    when (answer == a + b + c) point=p {
+      say "That is the number of crates. Line 4 adds each boat's crates times {m}."
+    }
+  }
+  hint "How many dollars does the first boat pay?"
+  hint "Add up what each boat pays, or add up the crates and times by {m}."
+}

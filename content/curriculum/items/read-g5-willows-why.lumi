@@ -1,0 +1,21 @@
+# Interpretive questions a grown-up talks through: a reason the book implies and never states, backed
+# by something that happens in the chapter.
+item reading.willows-why v=1 skills=[reading.inference, reading.characters, reading.whole-book] {
+  title "Why, do you think?"
+  let k=0..1
+
+  scene 34x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        bookcast a who=pick(k, "rat", "mole") pose=pick(k, "walk", "stand") dir=1
+        bookcast b who=pick(k, "mole", "rat") pose=stand dir=-1
+      }
+      text ask "{pick(k, \"In chapter 5 the Rat hurries on through the snow, then turns back to find the Mole's old home. Why does he change his mind, and what does it show about him?\", \"In chapter 9 the Mole does not argue with the Rat about going South. He brings a pencil and paper. Why does that work better than arguing?\")}" width=33
+      writinglines lines lines=4 width=33 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="{pick(k, \"A reason from the chapter (the Rat had not heard or understood the Mole at first, and only when the Mole sobs does he see how much the home means to him) and what it shows (he is kind, and puts his friend before his own supper and the snow).\", \"A reason from the chapter (the Rat's longing passes like a fit, arguing would only make him defend it, and poetry turns his mind back to his own life on the river) with something the Mole does or says as evidence.\")}" notice=["Gives a reason, not only what happened", "Points to something in the chapter", "Says what it shows about the character"] ask="What would you have done in his place?"
+  hint "What does the character know at the start of the scene, and what do they know at the end?"
+  hint "Find the moment it turns. What happens just before it?"
+}

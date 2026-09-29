@@ -1,0 +1,38 @@
+# The three-star: the most water that can come out of the hut's air overnight, from its volume, the
+# grams it holds and the most the cooled air can keep; in one version the air never reaches its dew
+# point and nothing comes out. The rounded HyperPhysics table.
+item chem.overnight-hut v=1 stars=3 skills=[chemistry.water-cycle, reasoning.constraints] {
+  title "Drops on the windows by morning"
+  difficulty k
+  let k=0..3
+  let v={pick(k, 50, 40, 30, 60)}
+  let h={pick(k, 9, 13, 17, 9)}
+  let t={pick(k, 0, 5, 10, 15)}
+  let keep={pick(k, 5, 7, 9, 13)}
+  let out={if h > keep then v * (h - keep) else 0}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 35x31 {
+    table data cols=2 head=["Air °C", "Most water, g per m³"] cells=["-10", "2", "0", "5", "5", "7", "10", "9", "15", "13", "20", "17", "25", "23", "30", "30"] at=canvas(1, 0)
+    text ask "In the evening the hut's {v} cubic metres of air are at 20 °C, and each cubic metre holds {h} g of water vapour. By morning the air has cooled to {t} °C. What is the most water, in grams, that can have come out onto the windows? Write 0 if none." narrate width=34 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer out
+  feedback {
+    when (answer == v * h) point=data {
+      say "That is all the water in the air. The cooled air still keeps some of it."
+    }
+    when (answer != out and answer == v * (keep - h)) point=data {
+      say "The air at {t} °C could hold more than it has, so it keeps all of it."
+    }
+  }
+  hint "How much can each cubic metre keep at {t} °C?"
+  hint "Is that more or less than the {h} g it holds?"
+  hint "Any water it cannot keep comes out. How much for each cubic metre, and for the whole hut?"
+}

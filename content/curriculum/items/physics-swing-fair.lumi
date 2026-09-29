@@ -1,0 +1,36 @@
+# Is Leo's test fair? t is the thing he means to test (0 the string, 1 the bob, 2 the angle), e the
+# thing that also changes; when e is t nothing else changes and the test is fair.
+item physics.swing-fair v=1 skills=[physics.method, physics.motion, reasoning.fair-test] {
+  title "Is it a fair test?"
+  difficulty (if t == e then 1 else if e == 0 then 0 else 2)
+  let t=0..2 e=0..2
+  level easy {
+    where (t == e or e == 0)
+  }
+  level hard {
+    where (t != e and e != 0)
+  }
+  let what={pick(t, "the length of the string", "the weight of the bob", "the angle it is let go from")}
+  let ans={if t == e then "Yes, only that one thing changes" else pick(e, "No, the string changes too", "No, the bob changes too", "No, the angle changes too")}
+
+  scene 26x35 {
+    row two at=canvas(1, 0) space=1 align=start {
+      pendulum a length=5 mass=50 angle=10 tag="A"
+      pendulum b length=(if t == 0 or e == 0 then 7 else 5) mass=(if t == 1 or e == 1 then 200 else 50) angle=(if t == 2 or e == 2 then 25 else 10) tag="B"
+    }
+    text ask "Leo wants to find out whether {what} changes how long a swing takes. He times ten swings of A and of B. Is it a fair test?" narrate width=25 below=two gap=1
+    choice pick options=["Yes, only that one thing changes", "No, the string changes too", "No, the bob changes too", "No, the angle changes too"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "Yes, only that one thing changes" and t != e) point=b {
+      say "Compare A and B one thing at a time: the string, the bob, the angle. Two of them are different."
+    }
+    when (pick != "Yes, only that one thing changes" and t == e) point=b {
+      say "The thing Leo is testing has to change. Is anything else different between A and B?"
+    }
+  }
+  hint "Look at the length, the bob and the angle of A, then of B. Which are different?"
+  hint "In a fair test only the thing being tested changes. Is that true here?"
+}

@@ -1,0 +1,37 @@
+# The two-star reason about evidence: red cabbage turns blue for pH 7 and 8, so it cannot tell water
+# from sea water, while universal indicator has a colour for each number; and a green reading says
+# only neutral, not which liquid. The middle version is dilution: lemon juice spread through a lot of
+# water is a weaker acid, nearer 7 (each tenfold dilution of a strong acid moves it one pH step).
+item chem.why-universal v=1 stars=2 skills=[chemistry.acids, reasoning.evidence] {
+  title "What the colour can tell"
+  difficulty k
+  let k=0..2 r=0..2
+  let q={pick(k, "Red cabbage juice turns blue in both water and sea water. Universal indicator tells them apart. Why?", "Lemon juice turns universal indicator red. Ana stirs a spoonful into a jug of water, and the jug turns it orange. Why?", "A clear liquid turns universal indicator green, pH 7. Leo says it must be water. Why can he not be sure?")}
+  let right={pick(k, "It has one colour for each number", "The acid is spread out, so it is weaker", "Other liquids are neutral too")}
+  let w1={pick(k, "Sea water is too salty for red cabbage", "Water turned the lemon into an alkali", "Water is the only liquid that is ever green")}
+  let w2={pick(k, "Universal indicator is always right", "There is less lemon, so less colour shows", "Green means an alkali, so it is not water")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 35x29 {
+    cabbage c liquids=[pick(k, "water", "lemon", "water"), pick(k, "seawater", "water", "seawater")] chart=1 show=1 names=1 colours=1 letters=1 at=canvas(1, 0)
+    text ask "{q}" narrate width=34 below=c gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 1 and pick != right) point=c {
+      say "Orange is still an acid, only nearer 7. The same lemon juice is there, spread through far more water."
+    }
+    when (pick != right) point=c {
+      say "A colour tells only the part of the scale it covers. How much of the scale does each colour cover?"
+    }
+  }
+  hint "{if k == 1 then \"Where on the scale is red, and where is orange?\" else \"How much of the scale does each colour cover?\"}"
+  hint "{pick(k, \"Can one colour for two numbers tell those two numbers apart?\", \"Is orange nearer to 7 than red, or further from it? What made the acid move?\", \"Is water the only liquid that is neither acid nor alkali?\")}"
+}

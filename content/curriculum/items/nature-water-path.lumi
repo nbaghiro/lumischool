@@ -1,0 +1,26 @@
+# The way water goes through a plant, as five muddled cards to number. Each shuffle puts a different
+# card first, and none is in order already.
+item nature.water-path v=1 skills=[nature.plants, reasoning.order] {
+  title "The way water goes"
+  let p=0..3
+  let a={pick(p, 2, 4, 1, 3)}
+  let b={pick(p, 4, 0, 3, 1)}
+  let c={pick(p, 0, 3, 4, 2)}
+  let d={pick(p, 3, 1, 0, 4)}
+  let e={pick(p, 1, 2, 2, 0)}
+  let wa={pick(a, "the wet soil", "the root hairs", "the tubes in the stem", "the leaves", "the air, as water vapour")}
+  let wb={pick(b, "the wet soil", "the root hairs", "the tubes in the stem", "the leaves", "the air, as water vapour")}
+  let wc={pick(c, "the wet soil", "the root hairs", "the tubes in the stem", "the leaves", "the air, as water vapour")}
+  let wd={pick(d, "the wet soil", "the root hairs", "the tubes in the stem", "the leaves", "the air, as water vapour")}
+  let we={pick(e, "the wet soil", "the root hairs", "the tubes in the stem", "the leaves", "the air, as water vapour")}
+
+  scene 34x29 {
+    parts fig of=plant at=canvas(1, 1)
+    text ask "Ben writes the places a drop of water passes through a plant on the gorge wall on five cards, and they get muddled. Number them 1 to 5 in the order the water goes." narrate width=20 right-of=fig gap=2
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}", "{we}"] blanks=[q, r, t, u, v] below=fig gap=1
+  }
+
+  answer q=(a + 1) r=(b + 1) t=(c + 1) u=(d + 1) v=(e + 1)
+  hint "Where is the water before the plant has it? That card is number 1."
+  hint "The water goes in at the bottom of the plant and out at the top."
+}

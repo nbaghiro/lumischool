@@ -1,0 +1,59 @@
+# Paraphrase and summary, worked on texts about the moon: a paraphrase of one sentence keeps every
+# idea in new words, a summary of a paragraph of about 150 words keeps only the main points in fewer.
+# The texts were written for the lesson; Armstrong's words of 1969 are quoted as NASA's transcript
+# prints them. The worked format has no remember section, so the example's last sentence carries it.
+lesson reading-paraphrase-and-summary v=1 format=worked grade=6 unit=8 subject=reading levels=[easy, medium, hard] {
+  title "Paraphrase and summary"
+  goal "Say what a text means in your own words, keeping every idea for a paraphrase and only the main point for a summary."
+
+  example {
+    worked reading.para-best k=2 level=medium
+    say """
+      The sentence says the same side of the moon always faces us. The first rewrite keeps nearly
+      every word, so it is a copy. The second says the moon shows a different side each night, which
+      is the opposite. We always see the same half of the moon keeps the whole meaning in new words:
+      that is a paraphrase. A paraphrase keeps every idea in your own words; a summary keeps only
+      the main point, in fewer.
+      """
+  }
+  exercises {
+    practice reading.para-best count=2 seed=6 easy-seed=1 hard-seed=1
+    practice reading.para-or-summary count=2 seed=1 easy-seed=5 hard-seed=1
+    practice reading.summary-best count=2 seed=1 easy-seed=1 hard-seed=1
+    practice reading.summary-missing count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show reading.para-or-summary k=3
+    }
+  }
+  try stars=2 {
+    show reading.para-reason k=0 easy-k=2 hard-k=1
+  }
+  try stars=3 {
+    show reading.summary-write k=0 hard-k=1
+  }
+
+  remember {
+    say "A paraphrase keeps every idea in your own words; a summary keeps only the main point, in fewer words."
+  }
+
+  grown-ups """
+    The idea is that paraphrase and summary are two different jobs: a paraphrase keeps every idea of
+    the original in new words and at about the same length, and a summary keeps only the main point
+    in fewer words. The example works through one sentence and three rewrites. The exercises choose
+    the fairest paraphrase from a copy and a changed meaning, sort Leo's rewrites into paraphrase,
+    summary or copy, choose the best one-line summary of a paragraph of about 150 words from a
+    detail and a mistake, and find the line where the point a summary left out begins. The longer
+    paragraphs are there so that a summary is a real cut: most of what they say has to go. The wrong
+    idea to watch for is changing a small word that changes the meaning (could into will, a sixth
+    into six times); ask "does it still mean exactly the same?" The two-star question names that
+    kind of change in a paraphrase, and the three-star question writes a summary in twenty words or
+    fewer, marked by eye. If the child is stuck, cover the text and say it back from memory, then
+    check. Off the page, ask the child to tell a grown-up what a news story said in one sentence.
+    """
+  level easy {
+    grown-ups "At this level the sentences to paraphrase are about moon dust and the moon's size, the rewrites to sort are about the footprints, the summaries to choose are for moon days and jumping, the missing points are the plainer ones, the two-star is weighing a sixth, and the three-star is the face we see."
+  }
+  level hard {
+    grown-ups "At this level the sentences to paraphrase are the footprints and Armstrong's words, the rewrites to sort include a copy with one word changed and a paraphrase that reorders the ideas, with one more, the summaries include the footprints, the missing points need the whole text read, the two-star is Armstrong's step read as a real jump, and the three-star is moon days."
+  }
+}

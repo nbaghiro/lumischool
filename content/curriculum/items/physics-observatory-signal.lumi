@@ -1,0 +1,20 @@
+# The story: the night watch at the observatory signals with a torch and a mirror laid flat on the
+# wall; the checker names the lettered window the beam reaches.
+item physics.observatory-signal v=1 skills=[physics.light, angles.degrees, reasoning.predict] {
+  title "A signal from the observatory"
+  difficulty (if o == 0 then 0 else 1)
+  let o=0..2
+  let a={pick(o, 30, 50, 45)}
+
+  scene 23x32 {
+    mirrorangle m angle=a targets=[30, 45, 50] marks=1 show=0 at=canvas(1, 0)
+    text ask "The observatory's night watch shines a torch at a mirror lying flat on the wall, to signal to one of three lettered windows above. Which window will the beam reach?" narrate width=22 below=m gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+    text then "At what angle to the upright line does the beam leave the mirror?" narrate width=22 below=pick gap=1
+    number-input out below=then gap=1
+  }
+
+  check physics.light of=m pick=reaches out=out
+  hint "The beam leaves at the same angle as it came in."
+  hint "Which window is that far round from the upright line?"
+}

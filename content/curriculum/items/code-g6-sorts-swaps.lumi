@@ -1,0 +1,36 @@
+# Two-star: which sort swaps fewer times depends on the list. The bubble sort swaps once for every pair
+# out of order; the selection sort swaps three times always, even a plank with itself.
+item coding.sorts-swaps v=1 stars=2 skills=[coding.algorithms, reasoning.compare, reasoning.explain] {
+  title "Which sort swaps less?"
+  difficulty (pick(s, 0, 1, 1, 0, 1) + 1)
+  let s=0..4
+  let a={pick(s, 1, 2, 4, 3, 1)} b={pick(s, 3, 1, 3, 4, 4)} c={pick(s, 2, 4, 2, 2, 3)} d={pick(s, 4, 3, 1, 1, 2)}
+  let inv={pick(s, 1, 2, 6, 5, 3)}
+  level easy {
+    let s={0, 3}
+  }
+  level hard {
+    let s={1, 2, 4}
+  }
+
+  scene 36x37 {
+    program p code=["set logs to list {a}, {b}, {c}, {d}", "repeat 3", "  set i to 1", "  repeat 3", "    set j to i + 1", "    if item i of logs is more than item j of logs", "      set t to item i of logs", "      replace item i of logs with item j of logs", "      replace item j of logs with t", "    add 1 to i"] text=true at=canvas(0, 0)
+    text ask "The selection sort always swaps 3 times on four planks, even a plank already in place. How many times does this bubble sort swap on the same list, and which sort swaps less?" width=34 at=canvas(0, 23)
+    text t1 "bubble swaps" below=ask gap=1
+    number-input swaps right-of=t1 gap=1
+    choice pick options=["bubble", "selection", "the same"] below=t1 gap=1
+  }
+
+  check coding.runs of=p swaps="ran(7)"
+  answer pick=(if inv < 3 then "bubble" else if inv > 3 then "selection" else "the same")
+  feedback {
+    when (inv < 3 and pick == "selection") point=p {
+      say "This list is nearly in order, so the bubble sort finds only {inv} pairs to swap."
+    }
+    when (inv > 3 and pick == "bubble") point=p {
+      say "Count the bubble sort's swaps: every pair out of order is swapped, and this list has {inv}."
+    }
+  }
+  hint "Run the program by hand on the list and count each swap."
+  hint "Compare your count with the other sort's 3."
+}

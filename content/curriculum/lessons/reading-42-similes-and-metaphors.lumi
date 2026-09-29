@@ -1,0 +1,65 @@
+# Similes and metaphors in the night sky over the star cliffs: what each compares, what it tells
+# the reader, and why a writer chooses it. Both poems were written for the lesson.
+lesson reading-similes-and-metaphors v=1 format=teach grade=5 unit=6 subject=reading levels=[easy, medium, hard] {
+  title "Similes and metaphors"
+  goal "Tell a simile from a metaphor, say what two things it compares, and explain what it makes a reader see."
+
+  look {
+    scene 34x13 {
+      row all at=canvas(1, 1) space=1 align=end {
+        poem p title="The star cliffs at night" lines=["The dome is a shell on the edge of the land,", "it opens its lid like a slow, sleepy hand.", "The moon is a coin that the sea cannot spend,", "and the comet's a scarf with a frayed silver end."] rhymes=[0, 0, 1, 1] width=26
+        moon m phase=1
+      }
+    }
+    say """
+      A simile compares two different things using like or as: the dome opens like a slow, sleepy
+      hand. A metaphor says one thing is another: the moon is a coin. Neither is true exactly as
+      written, and both are pictures in words. To read one, find the two things being compared, then
+      ask which part of the second is true of the first. The moon is not money, but it is round and
+      it shines.
+      """
+  }
+  do {
+    level easy {
+      worked reading.simile-or-metaphor k=1
+    }
+    show reading.simile-or-metaphor k=0 hard-k=3
+    practice reading.what-compared count=2 seed=4 easy-seed=1 hard-seed=1
+    practice reading.figure-means count=2 seed=4 easy-seed=1 hard-seed=1
+    practice reading.make-metaphor count=1 seed=1 easy-seed=1 hard-seed=1
+    practice reading.poem-line count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show reading.simile-or-metaphor k=5
+    }
+  }
+  try stars=2 {
+    show reading.why-this-image k=0 hard-k=2
+  }
+  try stars=3 {
+    show reading.write-figures k=0 hard-k=1
+  }
+  remember {
+    say "A simile says like or as. A metaphor says one thing is another. Ask what the second thing shows you about the first."
+  }
+
+  grown-ups """
+    The idea is that a simile and a metaphor both compare two different things to make the reader
+    see one of them, and that reading one means taking from the second thing only what fits the
+    first. The look is a short poem with both kinds in it. The way in sorts a line as simile,
+    metaphor or neither; the core names the two things compared, says what a comparison tells you,
+    turns a simile into a metaphor, and finds the line of a poem that holds each kind. The wrong
+    idea to watch for is taking a comparison literally (the moon is made of metal), and at hard,
+    calling any sentence with like in it a simile, when the moon really does look like a half
+    circle. The two-star question asks why a poet chose a comparison over a plain word; every
+    choice says what the reader pictures, so the child has to ask what the second thing can really
+    show (a torn scarf shows a trailing shape, not speed or heat). The three-star question asks for
+    a simile and a metaphor of the child's own, marked by eye. Off the page, collect three
+    comparisons from the book the child is reading and sort them into similes and metaphors.
+    """
+  level easy {
+    grown-ups "At this level the comet's scarf is sorted once in the teacher's pen before the moon's coin, the comparisons to name are the scarf and the shell, the meanings are the coin and the sleepy hand, the simile to turn is the moon's lamp or the owl's ghost, the lines to find are the similes, the two-star is the comet's scarf, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the lines to sort include a metaphor with no like and a plain comparison that is neither, the comparisons to name are the curtains and the brass finger, the meanings are the curtains and the frayed scarf, the simile to turn is the pearl or the smoke, the lines to find include the one with no comparison, the two-star is the moon as a lamp left on in an empty house, and the three-star is about the moon."
+  }
+}

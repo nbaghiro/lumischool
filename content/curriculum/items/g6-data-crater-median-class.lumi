@@ -1,0 +1,31 @@
+# Which class holds the median: the middle crater in order is counted to through the bars, and it need
+# not be in the tallest bar or the middle class.
+item data.crater-median-class v=1 skills=[data.histograms, data.median] {
+  title "The middle crater"
+  difficulty (if v == 2 then 2 else if v == 1 then 1 else 0)
+  let v=0..3
+  level easy {
+    let v={0, 3}
+  }
+  level hard {
+    let v={1, 2}
+  }
+
+  scene 36x18 {
+    bargraph g labels=["0-4", "5-9", "10-14", "15-19", "20-24"] values=[pick(v, 3, 2, 5, 1), pick(v, 6, 3, 2, 4), pick(v, 5, 4, 3, 7), pick(v, 2, 6, 4, 2), pick(v, 1, 4, 7, 5)] max=8 color=tang touch=1 at=canvas(1, 1)
+    text ask "The histogram shows the widths in metres of the craters the crew measured. Put in order from narrowest to widest, which class holds the middle crater?" narrate width=18 right-of=g gap=2
+    choice pick options=["0-4", "5-9", "10-14", "15-19", "20-24"] below=g gap=1
+  }
+
+  answer pick=pick(v, "5-9", "15-19", "15-19", "10-14")
+  feedback {
+    when (pick == pick(v, "5-9", "15-19", "20-24", "10-14") and pick != pick(v, "5-9", "15-19", "15-19", "10-14")) point=g {
+      say "That is the tallest bar, where the mode is. The median is the crater in the middle when all are in order."
+    }
+    when (pick == "10-14" and v != 3) point=g {
+      say "That is the middle class, not the class of the middle crater. How many craters are there, and which one is in the middle?"
+    }
+  }
+  hint "How many craters are there in all? Which one is in the middle?"
+  hint "Count along the bars from the left until you reach that crater."
+}

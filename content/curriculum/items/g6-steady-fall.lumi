@@ -1,0 +1,35 @@
+# Division with a negative: a steady fall over six hours shared into single hours, the answer a
+# negative number and at hard a negative decimal.
+item negative.steady-fall v=1 skills=[number.negatives.divide, data.line-graph] negatives {
+  title "Each hour"
+  difficulty (d / 3)
+  let s={2, 4, 6} d={6, 9, 12, 15}
+  where (s - d >= -10)
+  level easy {
+    let d={6, 12}
+  }
+  level hard {
+    let d={9, 15}
+  }
+
+  scene 36x16 {
+    linegraph g labels=["18:00", "20:00", "22:00", "midnight"] values=[s, s - d / 3, s - 2 * d / 3, s - d] min=-10 max=8 per=2 step=4 color=sky at=canvas(1, 1)
+    text ask "The graph shows the temperature by the research hut one evening, in °C. It fell steadily. By how much did it change each hour? Write a fall as a negative number." narrate width=16 right-of=g gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer decimals(-d / 6, 0)
+  feedback {
+    when (answer == d / 6) point=g {
+      say "The temperature went down, so the change each hour is below zero."
+    }
+    when (answer == -d / 3) point=g {
+      say "That is the change between two marks. Each mark is two hours apart."
+    }
+    when (answer == -d) point=g {
+      say "That is the change over the whole evening. How many hours is that?"
+    }
+  }
+  hint "What was the reading at 18:00, and at midnight? What was the whole change?"
+  hint "How many hours are there from 18:00 to midnight?"
+}

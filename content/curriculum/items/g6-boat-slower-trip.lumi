@@ -1,0 +1,32 @@
+# Speed and time for one trip are in inverse proportion: at a fraction of the speed the trip takes
+# that many times as long.
+item inverse.boat-slower-trip v=1 skills=[proportion.inverse, rates.speed] {
+  title "The same trip, another speed"
+  difficulty (h + (if v2 < v then 0 else 1))
+  let v={6, 8, 9, 12} h={2, 3, 4} v2={4, 6, 8, 12, 16, 18}
+  where (v2 != v and whole(v * h / v2))
+  level easy {
+    where (v2 < v and h <= 3)
+  }
+  level hard {
+    where (v2 > v and h >= 3)
+  }
+
+  scene 35x10 {
+    rowboat boat facing=1 at=canvas(1, 1)
+    text ask "At {v} km/h the boat trip from the mill to the waterfall takes {h} hours. How long does the same trip take at {v2} km/h?" narrate width=24 right-of=boat gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "hours"
+    }
+  }
+
+  answer (v * h / v2)
+  feedback {
+    when (answer == v2 * h / v) point=ask {
+      say "A faster boat takes less time, and a slower one more. Check which way the time should go."
+    }
+  }
+  hint "How far is the trip?"
+  hint "How long does that distance take at the new speed?"
+}

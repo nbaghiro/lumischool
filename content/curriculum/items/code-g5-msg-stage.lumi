@@ -1,0 +1,32 @@
+# The way in to messages: the flag script moves the rabbit and sends a message, and a second script
+# that receives it moves the rabbit on. Forgetting the second script is the slip.
+item coding.msg-stage v=1 skills=[coding.events, coding.messages, coding.tracing] {
+  title "A message on the stage"
+  difficulty ((a + b - 3) / 3)
+  let a=1..3 b=1..3
+  level easy {
+    let a={1, 2} b={1}
+  }
+  level hard {
+    where (a + b >= 4)
+  }
+
+  scene 36x26 {
+    program p code=["when the flag is tapped", "right {a}", "broadcast bell", "when I receive bell", "jump", "right {b}"] at=canvas(0, 0)
+    stage st cols=8 col=1 who=rabbit code=["when the flag is tapped", "right {a}", "broadcast bell", "when I receive bell", "jump", "right {b}"] upto=0 below=p gap=1
+    text ask "The play in the temple square starts when the flag is tapped. On which square does the rabbit stop?" width=16 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=st answer=col
+  feedback {
+    when (answer == 1 + a) point=p {
+      say "broadcast bell starts the script that begins when I receive bell. What does that script do?"
+    }
+    when (answer == a + b) point=st {
+      say "The rabbit starts on square 1, not before it."
+    }
+  }
+  hint "Which script starts when the flag is tapped? Follow it line by line."
+  hint "When the program reaches broadcast bell, which script hears the message?"
+}

@@ -1,0 +1,40 @@
+# The way in: the lettered body with the tube food passes through, and the part to find by what it
+# does. The oesophagus and the stomach are the plain two; the two intestines have to be told apart
+# by their jobs. The liver, kidneys and rectum are lettered E, F and G but never asked, so the rectum is named as the large intestine's end.
+item nature.gut-letter v=1 skills=[nature.digestion] {
+  title "Which part of the gut?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let part={pick(k, "the stomach, where food is churned with acid and juices", "the oesophagus (the food pipe), which squeezes food down from the mouth", "the small intestine, where broken-down food passes into the blood", "the large intestine, which takes water back and ends in the rectum")}
+  let letter={pick(k, "B", "A", "C", "D")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x16 {
+    parts fig of=gut at=canvas(1, 1)
+    text ask "At the old city market, Ada buys bread for lunch. The drawing shows the way it will go. Which letter points at {part}?" narrate width=20 right-of=fig gap=2
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=letter
+  feedback {
+    when (k == 0 and pick != letter) point=fig {
+      say "The stomach is a stretchy bag just below the food pipe, where food waits and is churned."
+    }
+    when (k == 1 and pick != letter) point=fig {
+      say "The oesophagus, or food pipe, is the narrow tube that runs from the mouth down to the stomach."
+    }
+    when (k == 2 and pick == "D") point=fig {
+      say "That is the wide tube round the outside. The small intestine is the long, narrow one coiled up inside it."
+    }
+    when (k == 3 and pick == "C") point=fig {
+      say "That is the long coiled tube in the middle. The large intestine is the wider tube that goes round it."
+    }
+  }
+  hint "Start at the mouth and follow the tube down. Which part comes first, and which comes last?"
+  hint "Look at the shape of each tube. Which job needs a very long tube with a lot of wall, and which a wide one?"
+}

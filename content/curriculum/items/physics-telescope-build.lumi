@@ -1,0 +1,26 @@
+# Three stars: every pair from the box that magnifies by m, then the one with the shortest tube. Each
+# box has three pairs that work, and the shortest tube comes from the shortest focuses.
+item physics.telescope-build v=1 stars=3 skills=[physics.light, reasoning.all-the-ways, reasoning.extremes] {
+  title "Build the shortest telescope"
+  difficulty v
+  let v=0..3
+  let m={pick(v, 20, 20, 25, 30)}
+  let box={pick(v, "2, 3, 4, 40, 60 and 80", "3, 4, 5, 60, 80 and 100", "2, 4, 5, 50, 100 and 125", "3, 4, 5, 90, 120 and 150")}
+  let best={pick(v, 42, 63, 52, 93)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 32x12 {
+    observatory o open=1 at=canvas(1, 0)
+    text ask "A box holds lenses with focuses of {box} cm. Mia wants a telescope that makes things look {m} times bigger, in the shortest tube she can. How long is that tube, in centimetres?" narrate width=21 right-of=o gap=1
+    number-input answer below=o gap=1
+  }
+
+  answer best
+  hint "Which pairs of lenses divide to give {m}? Find every one."
+  hint "The tube is the two focuses added. Which pair gives the shortest?"
+}

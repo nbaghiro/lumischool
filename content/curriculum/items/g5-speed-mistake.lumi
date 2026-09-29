@@ -1,0 +1,39 @@
+# The two-star: a double number line read wrongly by adding the same amount to both rows. The child
+# picks why that fails (a speed multiplies) and finds the time from the distance in one hour.
+item rates.speed-mistake v=1 stars=2 skills=[rates.speed, reasoning.find-the-mistake] {
+  title "Nell's timetable"
+  difficulty (v + k)
+  let v={4, 5, 6} k={5, 7}
+  level easy {
+    let v={4, 5} k={5}
+  }
+  level hard {
+    let v={6} k={7}
+  }
+
+  scene 31x32 {
+    doubleline line steps=4 topTo=(4 * v) bottomTo=4 topUnit="km" bottomUnit=hours mark=-1 at=canvas(1, 1)
+    text ask "The boat goes at a steady speed, as the line shows. Nell says {k * v} km takes {k * v - 3 * v + 3} hours: {3 * v} km takes 3 hours, and she added {k * v - 3 * v} to both. What is wrong?" narrate width=30 below=line gap=1
+    choice why options=["each hour covers more than 1 km", "she should have taken away", "she should have started from 1 hour"] stack=column below=ask gap=1
+    row eq below=why gap=1 space=1 align=centre {
+      text ask2 "{k * v} km takes"
+      number-input answer width=3
+      text unit "hours"
+    }
+  }
+
+  answer why="each hour covers more than 1 km" answer=k
+  feedback {
+    when (why == "she should have taken away") point=line {
+      say "{k * v} km is further than {3 * v} km, so it takes longer. How far does the boat go in each hour?"
+    }
+    when (why == "she should have started from 1 hour") point=line {
+      say "Adding the same number to both rows goes wrong from any start. How far does the boat go in each hour?"
+    }
+    when (answer == k * v - 3 * v + 3) point=line {
+      say "That is Nell's answer. Each hour is only {v} km."
+    }
+  }
+  hint "How far does the boat go in one hour?"
+  hint "How many of those make {k * v} km?"
+}

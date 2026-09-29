@@ -1,0 +1,26 @@
+# A build task on a program that must work for every number it could draw: the rover moves by the
+# roll and then by what is left of the distance, so it stops on the flag whatever the die shows. The
+# cards are used once each, so the only question is the order, and a name has to be set before a
+# line uses it.
+item coding.rand-build v=1 skills=[coding.random, coding.variables, reasoning.all-the-ways] {
+  title "The flag, whatever the roll"
+  difficulty k
+  let k=0..2
+  let top={pick(k, 3, 6, 6)} far={pick(k, 4, 7, 9)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x25 {
+    maze m cols=(far + 1) rows=1 col=1 row=1 flag=[far + 1, 1] at=canvas(0, 0)
+    codepad answer tray=["right gap", "set roll to random 1 to {top}", "set gap to {far} - roll", "right roll"] lines=4 once=true key=["set roll to random 1 to {top}", "right roll", "set gap to {far} - roll", "right gap"] below=m gap=1
+    text ask "The rover on the star cliffs rolls a number from 1 to {top} and moves that far. Put the four cards in order so it stops on the flag {far} squares away, whatever the roll. Use every card once." width=14 right-of=answer gap=1
+  }
+
+  check coding.builds of=m goal=flag
+  hint "If the roll is 1, how far is left to go? If it is {top}?"
+  hint "rest is worked out from roll. Which card has to come before it?"
+}

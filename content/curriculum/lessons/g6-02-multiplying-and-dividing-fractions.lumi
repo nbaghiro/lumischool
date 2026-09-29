@@ -1,0 +1,63 @@
+lesson g6-multiplying-and-dividing-fractions v=1 format=worked grade=6 unit=1 subject=maths levels=[easy, medium, hard] {
+  title "Multiplying and dividing fractions"
+  goal "Multiply and divide fractions and mixed numbers, taking a fraction of a decimal as well, and find the whole amount from a fraction of it."
+
+  example {
+    worked fraction.ice-field a=2 b=3 c=3 d=4 level=medium
+    say """
+      Three quarters of a strip that is two thirds of the square: cut the square into 3 rows and 4
+      columns, and the camp is 2 rows by 3 columns, 6 of the 12 small squares. So 2/3 × 3/4 = 6/12,
+      which is 1/2. To multiply fractions, multiply the tops and multiply the bottoms. To divide by
+      a fraction, turn it upside down and multiply: 3/4 ÷ 1/8 = 3/4 × 8/1 = 6, because six eighths
+      fit in three quarters.
+      """
+  }
+  exercises {
+    practice fraction.sledge-ration count=1 hard-count=0 seed=6
+    practice fraction.ice-field count=1 seed=4
+    practice fraction.fuel-can count=0 hard-count=1 seed=5
+    practice fraction.dog-portions count=0 easy-count=1 seed=6
+    practice fraction.cocoa-share count=1 seed=7
+    show fraction.bigger-or-smaller x=18 p=2 q=3 op="÷" easy-p=3 easy-q=5 easy-op="×" hard-x=24 hard-p=7 hard-q=3
+    practice fraction.mixed-sledge count=1 easy-count=0 seed=3
+    practice fraction.soup-mugs count=0 easy-count=1 seed=8
+    practice fraction.stove-decimal count=1 easy-count=0 seed=4
+    practice fraction.fuel-left count=1 seed=5 easy-seed=2
+    practice fraction.divide-rule count=1 seed=9
+    level hard {
+      practice fraction.mixed-sledge count=1 seed=10
+    }
+  }
+  try stars=2 {
+    show fraction.flip-mistake a=2 b=3 c=3 d=5 hard-a=3 hard-b=5 hard-c=4 hard-d=7 easy-a=2 easy-b=3 easy-c=1 easy-d=5
+  }
+  try stars=3 {
+    show fraction.card-quotient s=1 easy-s=0 hard-s=3
+  }
+
+  remember {
+    say "Multiply fractions top by top and bottom by bottom; to divide by a fraction, turn it upside down and multiply."
+  }
+
+  grown-ups """
+    Multiplying by a fraction less than one makes a number smaller, and dividing by one makes it
+    bigger, which surprises children who have only met whole numbers. Ask before each question
+    whether the answer will be more or less than the number it starts from. The grid shows why the
+    bottoms multiply: the square is cut into rows times columns. For division, "how many of these
+    fit into that" is the meaning, and turning over the divisor is the quick way to it. The common
+    slips are adding instead of multiplying, and turning over the wrong fraction, which is Mo's
+    mistake in the two-star question. Mixed numbers are turned into top-heavy fractions first: 2 1/4
+    × 1 1/3 is not 2 × 1 and 1/4 × 1/3 added. A fraction of a decimal is the decimal shared into
+    the bottom number's parts. When a fraction of the fuel is known, one small part of the bar is
+    found first and then the whole. In the three-star question the biggest answer puts the two
+    largest digits on top once the second fraction is turned over. If the rules are still being
+    mixed up, stay here another day with the grid and the bars. Off the page, cut a sheet of paper
+    into thirds one way and quarters the other, and shade two thirds of three quarters.
+    """
+  level easy {
+    grown-ups "At this level the fractions have smaller bottoms, the grid has 12 squares or fewer, the fish is cut into portions and the mugs hold one part each, the reasoning question multiplies by a fraction less than one, the fuel question gives the part burned, divisions come out more than one, Mo's mistake is with 2/3 ÷ 1/5, and the cards are 2, 3, 4 and 5. Mixed numbers and decimals wait for the next level."
+  }
+  level hard {
+    grown-ups "At this level the grids have 20 squares or more, the fuel products cancel, the reasoning question divides by a fraction more than one, two mixed-number questions divide, the decimal is divided by a fraction, the fuel question gives what is left rather than what was burned, the division rule has answers that simplify, Mo's mistake is with 3/5 ÷ 4/7, and the cards are 3, 5, 7 and 8."
+  }
+}

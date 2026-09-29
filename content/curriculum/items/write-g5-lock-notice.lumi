@@ -1,0 +1,17 @@
+# The three-star: a notice for boaters written to constraints, with words the child chooses from
+# the lesson's endings, marked by a grown-up against the list.
+item writing.lock-notice v=1 stars=3 skills=[writing.spelling, writing.composing] {
+  title "A notice for the lock"
+  let k=0..1
+
+  scene 34x29 {
+    canallock lock level=0.75 boat=1 at=canvas(1, 1)
+    sign board lines=[pick(k, "Notice", "Market day"), pick(k, "to all boats", "by the mill")] kind=board color=mint right-of=lock gap=1
+    text ask "{pick(k, \"Write the notice for boats waiting at the lock. Use five words with endings from today: -cious or -tious, -cial or -tial, -ant or -ent, -able or -ible, and practice or practise.\", \"Write the notice for the market by the mill. Use five words with endings from today: -cious or -tious, -cial or -tial, -ant or -ent, -able or -ible, and advice or advise.\")}" width=32 below=lock gap=1
+    writinglines lines lines=4 width=32 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A short notice a boater or a shopper could follow, with at least five words that use the lesson's endings, each spelt right, and the -ice or -ise word chosen for its job: -ice for a noun, -ise for a verb." notice=["Five words with the lesson's endings", "Each of those words spelt right", "The -ice or -ise word fits its job", "Reads as a notice someone could follow"] ask="Which word was the hardest to spell, and what helped?"
+  hint "Plan first. Which five words from today fit a notice about this place?"
+  hint "For each word, which rule decides its ending? Check it before you write."
+}

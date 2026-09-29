@@ -1,4 +1,4 @@
-lesson coding-keep-going-until v=2 format=teach grade=4 unit=5 subject=coding levels=[easy, medium, hard] {
+lesson coding-keep-going-until v=2 format=teach grade=4 unit=4 subject=coding levels=[easy, medium, hard] {
   title "Keep going until"
   goal "Read and write a program that repeats until something is true, deciding at every square, and predict where it works and where it does not."
 

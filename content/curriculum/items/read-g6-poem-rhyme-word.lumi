@@ -1,0 +1,34 @@
+# The last word of a poem, chosen to keep both its rhyme pattern and its sense. One choice makes
+# sense but breaks the rhyme; one rhymes but makes nonsense.
+item reading.poem-rhyme-word v=1 skills=[reading.poetry, reading.rhyme] {
+  title "The word that fits"
+  difficulty pick(k, 0, 1, 1, 0)
+  let k=0..3
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k={1, 2}
+  }
+  let right={pick(k, "hope", "grow", "bed", "dream")}
+  let sense={pick(k, "trust", "plant", "sleep", "sleep")}
+  let sound={pick(k, "soap", "snow", "bread", "cream")}
+
+  scene 35x22 {
+    poem p title="{pick(k, \"The rope bridge\", \"The water wheel\", \"The gorge at dusk\", \"The rainbow\")}" lines=[pick(k, "The rope bridge sways from side to side,", "The old wheel turns in morning light,", "The swallows sweep along the cliff,", "After the rain the spray is lit;"), pick(k, "the gorge below is deep and wide.", "its paddles dripping as they go;", "the rocks turn gold and red,", "a rainbow grows right out of it."), pick(k, "I count the planks, I hold the rope,", "it turned for years by day and night", "the kingfisher sits on her branch,", "It arches over rock and stream"), pick(k, "I cross on nothing else but hope.", "and grinds the grain the farmers grow.", "the heron goes to bed.", "and fades away like half a dream.")] rhymes=[-1, -1, -1, -1] blank=3 width=26 at=canvas(1, 1)
+    text ask "Which word fits the gap, so the poem keeps its rhyme pattern and makes sense?" below=p gap=1 width=34
+    choice pick options=[pick(k, sense, right, sound, sound), pick(k, right, sound, sense, right), pick(k, sound, sense, right, sense)] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == sense) point=p {
+      say "That makes sense, but the poem's pattern needs a rhyme here. Which earlier line should it rhyme with?"
+    }
+    when (pick == sound) point=p {
+      say "That rhymes, but read the whole line with it. Does it make sense?"
+    }
+  }
+  hint "Which line does the last line rhyme with, in this poem's pattern?"
+  hint "Try each word in the gap and read the whole line aloud."
+}

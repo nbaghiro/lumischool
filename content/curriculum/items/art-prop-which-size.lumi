@@ -1,0 +1,38 @@
+# Keeping a shape is multiplying both sides by one number. The trap takes the same amount off both
+# sides, which squashes the building; the other swaps its width and height.
+item art.prop-which-size v=1 skills=[art.proportion, reasoning.multiplicative] {
+  title "Which drawing keeps its shape?"
+  difficulty (if k == 1 or k == 2 then 1 else 0)
+  let k=0..3
+  let r={k % 3}
+  let bw={pick(k, 12, 15, 16, 10)}
+  let bh={pick(k, 9, 10, 12, 8)}
+  let dw={pick(k, 8, 9, 12, 5)}
+  let right={pick(k, "8 wide and 6 tall", "9 wide and 6 tall", "12 wide and 9 tall", "5 wide and 4 tall")}
+  let less={pick(k, "8 wide and 5 tall", "9 wide and 4 tall", "12 wide and 8 tall", "5 wide and 3 tall")}
+  let swap={pick(k, "6 wide and 8 tall", "6 wide and 9 tall", "9 wide and 12 tall", "4 wide and 5 tall")}
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x19 {
+    library front columns=6 open=0 at=canvas(1, 1)
+    text ask "The front of the old library is {bw} metres wide and {bh} metres tall. Ada draws it {dw} squares wide. Which drawing keeps its shape?" width=21 right-of=front gap=2
+    choice pick options=[if r == 0 then right else if r == 1 then less else swap, if r == 0 then less else if r == 1 then swap else right, if r == 0 then swap else if r == 1 then right else less] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == less) point=front {
+      say "That takes the same amount off the height as off the width, which squashes the building. Keeping its shape means shrinking both by the same number of times."
+    }
+    when (pick == swap) point=front {
+      say "That drawing is taller than it is wide. Is the library?"
+    }
+  }
+  hint "How many times smaller is the drawing's width than the real width?"
+  hint "Make the height that many times smaller too."
+}

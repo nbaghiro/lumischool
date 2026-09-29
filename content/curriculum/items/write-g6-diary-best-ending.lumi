@@ -1,0 +1,41 @@
+# The two-star reason: two endings for the same entry, one a list of then-then-then and one that
+# thinks back and looks ahead. The right reason is offered for both endings, and the third choice
+# gives the thinking ending a reason it does not have, so the endings themselves must be read.
+item writing.diary-best-ending v=1 stars=2 skills=[writing.diaries, reasoning.explain] {
+  title "Which ending, and why?"
+  difficulty k
+  let k=0..1 r=0..2
+  let ea={pick(k, "A: Then we went back to the hut. Then we had soup. Then we went to bed.", "A: Back in the hut, I kept thinking about the seal pup alone on its floe. I hope its mother came back.")}
+  let eb={pick(k, "B: Back in the hut, I kept hearing the whale's breath in the cold air. I hope we see it again tomorrow.", "B: After that we walked back to the hut and had soup, which was nice, and then we all went to bed.")}
+  let right={pick(k, "B: it says what she kept thinking and looks ahead", "A: it says what she kept thinking and looks ahead")}
+  let w1={pick(k, "A: it says what she kept thinking and looks ahead", "B: it says what she kept thinking and looks ahead")}
+  let w2={pick(k, "B: it finishes the day in order, right up to bed", "A: it finishes the day in order, right up to bed")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x36 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      hut h pictures=6
+      whale w spout=1 facing=-1
+    }
+    passage p title="Two endings" text="{ea} {eb}" width=33 numbers=false below=pics gap=1
+    text ask "Which ending is better for Isla's diary, and why?" narrate width=33 below=p gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=p {
+      say "Read that ending again. Does it say what she kept thinking, or only what came next? A list of then, then, then could be written by anyone."
+    }
+    when (pick == w2) point=p {
+      say "That ending does not take the day up to bed. What it does is say what she kept thinking and what she hopes for, which is the diary's job."
+    }
+  }
+  hint "Which ending could only have been written by Isla?"
+  hint "Does either ending say something about tomorrow?"
+}

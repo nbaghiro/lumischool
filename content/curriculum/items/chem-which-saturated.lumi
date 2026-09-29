@@ -1,0 +1,25 @@
+# The way in: three beakers of water at 20 °C, salt stirred into each until nothing more changes.
+# The one with grains on its floor could take no more, so it is the saturated one.
+item chem.which-saturated v=1 skills=[chemistry.dissolving] {
+  title "Which one is full?"
+  let s=0..2
+
+  scene 36x24 {
+    row three at=canvas(1, 0) space=1 align=end {
+      beaker a max=200 step=50 level=100 unit=ml solid=(if s == 0 then 12 else 0) rod=false label="A"
+      beaker b max=200 step=50 level=100 unit=ml solid=(if s == 1 then 12 else 0) rod=false label="B"
+      beaker c max=200 step=50 level=100 unit=ml solid=(if s == 2 then 12 else 0) rod=false label="C"
+    }
+    text ask "On the salt boat, Leo stirs salt into three beakers of water at 20 °C until nothing more changes. Water that holds all the salt it can is saturated. Which beaker is saturated?" narrate width=34 below=three gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=pick(s, "A", "B", "C")
+  feedback {
+    when (pick != pick(s, "A", "B", "C")) point=three {
+      say "A clear beaker may still have room for more salt. Grains left on the floor show the water could take no more."
+    }
+  }
+  hint "Look at the floor of each beaker. Where did some salt not dissolve?"
+  hint "If the water could hold more, would the grains still be there after stirring?"
+}

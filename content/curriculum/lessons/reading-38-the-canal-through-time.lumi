@@ -1,0 +1,63 @@
+# The canal's history read three ways: as paragraphs, as a timeline and as a map. The history and
+# the places are the Millhaven Canal's, written for the lesson, and match The Frozen Winter.
+lesson reading-the-canal-through-time v=1 format=teach grade=5 unit=2 subject=reading levels=[easy, medium, hard] {
+  title "The canal through time: a timeline and a map"
+  goal "Read a history of the canal against a timeline and a map, and use all three together to answer a question."
+
+  look {
+    scene 36x20 {
+      column all at=canvas(0, 1) space=1 align=start {
+        canalmap map stops=["Mill", "Ash Bridge", "Kingsford", "Hill Top", "Quarry"] locks=[1, 2, 5, 2]
+        timeline line from=1780 to=2020 step=40 years=[1796, 1805, 1852, 1895, 1961, 1994, 2008] labels=["Opens", "To Hill Top", "Railway", "Big freeze", "Closes", "Reopens", "Hill Top again"]
+      }
+    }
+    say """
+      A history of the Millhaven Canal tells you what happened and when. A timeline puts the same
+      events in order along a line of years, so you can see at a glance what came before what and
+      how long apart they were. A map shows where the places are and the locks between them. Each
+      one answers a different question, and some questions need two of them at once: when a stretch
+      of canal was open, and where that stretch goes.
+      """
+  }
+  do {
+    level easy {
+      worked reading.which-dot k=1
+    }
+    show reading.which-dot k=0 hard-k=2
+    practice reading.missing-place count=2 seed=1 easy-seed=2 hard-seed=3
+    show reading.which-dot k=6 easy-k=3 hard-k=5
+    practice reading.locks-between count=2 seed=1 easy-seed=1 hard-seed=1
+    practice reading.which-first count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show reading.locks-between k=3
+    }
+  }
+  try stars=2 {
+    show reading.could-a-boat-go k=2 easy-k=1 hard-k=3
+  }
+  try stars=3 {
+    show reading.letter-date k=0 easy-k=2 hard-k=1
+  }
+  remember {
+    say "A history says what happened, a timeline says when, and a map says where. Some questions need two of them."
+  }
+
+  grown-ups """
+    The idea is that one history can be read as prose, as a timeline and as a map, and that each
+    answers its own kind of question. The way in finds a year in a paragraph and then the dot at
+    that year on the timeline, where the dots are not evenly spaced. The core fills a place on the
+    map from a towpath walk, counts the locks between two places, and reads a leaflet that tells the
+    story backwards, so the order it mentions things is not the order they happened. The wrong idea
+    to watch for is taking the first date or place mentioned as the earliest or the nearest. The
+    two-star question needs the timeline and the map at once: in some years the canal was open but
+    did not yet, or no longer, reach Hill Top. The three-star letter has no date; one clue says what
+    had already happened and one what had not, and the letter sits between those two flags. Off the
+    page, make a timeline of the child's own life with five flags, and read it back together.
+    """
+  level easy {
+    grown-ups "At this level the railway's year is found once in the teacher's pen, the dots to find are stated years, the places to fill and the locks to count are the plainer ones, the leaflet's questions ask what came first or last among three, the two-star year is 1850, when the canal was open all the way, and the letter is the holiday boat's."
+  }
+  level hard {
+    grown-ups "At this level the dots include years the paragraph counts on to rather than states, the locks to count stop where the notice says the canal is dry, the leaflet's events include one that happens today, the two-star year is 2000, when the canal was open but not to Hill Top, and the letter is the one about the great freeze and the last working boat."
+  }
+}

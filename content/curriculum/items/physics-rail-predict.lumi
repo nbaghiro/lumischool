@@ -1,0 +1,35 @@
+# Predict a gap from one reading: the rails' gap narrows by 0.3 mm for each degree warmer. a is the
+# day the joint was measured, b the day to predict.
+item physics.rail-predict v=1 skills=[physics.heat, reasoning.predict] {
+  title "Rails on another day"
+  difficulty (if b < a then 1 else 0)
+  let a={5, 15, 25} b={-15, -5, 35, 45}
+  level easy {
+    let a={5, 15} b={35, 45}
+  }
+  level hard {
+    let b={-15, -5}
+  }
+  let per={3 / 10}
+
+  scene 34x27 {
+    row pair at=canvas(1, 0) space=1 align=start {
+      expansion r1 mode=2 span=25 temp=a show=1
+      expansion r2 mode=2 span=25 temp=b show=0
+    }
+    text ask "The rails by the canal were laid with a gap at each joint. For these rails the gap narrows by 0.3 mm for every degree warmer and widens by 0.3 mm for every degree colder. The left joint was measured on a day at {a} °C. How wide is the gap on a day at {b} °C?" narrate width=32 below=pair gap=1
+    number-input mm below=ask gap=1
+  }
+
+  check physics.forces of=r2 mm=gap
+  feedback {
+    when (b < a and mm < per * (55 - a)) point=r2 {
+      say "It is colder that day. Does cold rail get longer or shorter, and so does the gap close or open?"
+    }
+    when (b > a and mm > per * (55 - a)) point=r2 {
+      say "It is warmer that day, so the rails have grown into the gap."
+    }
+  }
+  hint "Read the gap on the left. Is the other day warmer or colder?"
+  hint "How many degrees apart are the two days? Each one moves the gap by 0.3 mm."
+}

@@ -1,0 +1,32 @@
+# The test used to build a number: the largest from four cards that is in the five times table must
+# end in the 5, and the other three go biggest first.
+item divisible.largest-five v=1 skills=[number.multiples.divisibility, place-value.compare] {
+  title "Largest in the fives"
+  difficulty (max(a, b, c) / 3)
+  let a={1, 2, 3, 4, 6, 7, 8, 9} b={1, 2, 3, 4, 6, 7, 8, 9} c={1, 2, 3, 4, 6, 7, 8, 9}
+  where (a < b and b < c)
+  level easy {
+    where (c < 7)
+  }
+  level hard {
+    where (c > 7 and a > 2)
+  }
+
+  scene 36x17 {
+    digitcards cards digits=[b, 5, c, a] at=canvas(1, 1)
+    text ask "The observatory's door code uses all four cards once. It is the largest number they can make that is in the five times table. What is the code?" narrate width=34 below=cards gap=1
+    number-input answer width=5 below=ask gap=1
+  }
+
+  answer (1000 * c + 100 * b + 10 * a + 5)
+  feedback {
+    when (answer == 1000 * c + 100 * 5 + 10 * b + a or answer == 1000 * c + 100 * b + 10 * 5 + a) point=cards {
+      say "That is large, but does it end in 0 or 5?"
+    }
+    when (answer == 1000 * a + 100 * b + 10 * c + 5) point=cards {
+      say "It ends in 5, which is right. Now put the biggest of the other cards first."
+    }
+  }
+  hint "Which card has to go last for the number to be in the five times table?"
+  hint "How do you make the other three cards as large as possible?"
+}

@@ -1,0 +1,30 @@
+# A generator is magnets turned inside a coil of wire: the faster it turns, the more electricity it
+# gives each second, and it gives none when it stops. k is what happens to the wheel.
+item physics.gen-faster v=1 skills=[physics.energy, physics.circuits, reasoning.predict] {
+  title "Turning the generator"
+  difficulty k
+  let k=0..2
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+  let change={pick(k, "the river rises and the wheel turns faster", "the river runs low and the wheel turns more slowly", "the miller lowers the gate and the wheel stops")}
+  let ans={pick(k, "More electricity each second", "Less electricity each second", "No electricity")}
+
+  scene 32x35 {
+    waterwheel w paddles=10 lit=1 at=canvas(1, 0)
+    text ask "The wheel turns a generator: magnets spinning inside a coil of wire. What happens to the electricity for the mill's lamps if {change}?" narrate width=30 below=w gap=1
+    choice pick options=["More electricity each second", "Less electricity each second", "The same electricity", "No electricity"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "The same electricity") point=w {
+      say "The electricity comes from the magnets moving past the wire. What happens to how fast they move?"
+    }
+  }
+  hint "What makes electricity in a generator: magnets that are still, or magnets moving past the wire?"
+  hint "Do the magnets move faster, more slowly, or not at all?"
+}

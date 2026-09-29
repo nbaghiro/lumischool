@@ -1,0 +1,35 @@
+# The two-star: Leo lists the eleven sums from 2 to 12 and says each has a chance of 1/11. The reason
+# he is wrong is that the sums are not equally likely: the 36 pairs are.
+item chance.eleven-sums v=1 stars=2 skills=[probability.fractions, reasoning.find-the-mistake] {
+  title "Leo's eleven sums"
+  difficulty (if s == 7 then 0 else if s == 4 or s == 10 then 1 else 2)
+  let s=4..10
+  level easy {
+    let s={7}
+  }
+  level hard {
+    let s={5, 6, 8, 9}
+  }
+
+  scene 35x28 {
+    outcomes o rows=["1", "2", "3", "4", "5", "6"] cols=["1", "2", "3", "4", "5", "6"] first=Red second=Blue fill=0 at=canvas(1, 1)
+    text ask "Leo says two dice can add up to 11 different sums, from 2 to 12, so the probability of a sum of {s} is 1/11. What is the probability really? Write it in its simplest form." narrate width=34 below=o gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input top width=3
+      text slash "/"
+      number-input bottom width=3
+    }
+  }
+
+  answer top=num((6 - abs(s - 7)) / 36) bottom=den((6 - abs(s - 7)) / 36)
+  feedback {
+    when (top == 1 and bottom == 11) point=o {
+      say "That is Leo's answer. Is a sum of 2 as likely as a sum of 7? Count the cells for each."
+    }
+    when (bottom == 36 and top == 6 - abs(s - 7) and gcd(6 - abs(s - 7), 36) != 1) point=o {
+      say "That is right, but not in its simplest form."
+    }
+  }
+  hint "What are the equally likely outcomes here: the sums, or the pairs of dice?"
+  hint "How many cells of the grid make that sum? Out of how many cells?"
+}

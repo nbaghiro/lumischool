@@ -1,0 +1,40 @@
+# An active sentence turned passive: its object becomes the subject, was or were agrees with it, the
+# tense stays, and the doer moves after by. One wrong choice swaps who did what; one changes the tense
+# or the agreement.
+item writing.make-passive v=1 skills=[writing.passive, writing.tense] {
+  title "Turn it round"
+  difficulty k
+  let k=0..2 r=0..2
+  let s={pick(k, "Isla packed the sledge.", "The scientists measured the ice every day.", "The storm has broken two tent poles.")}
+  let right={pick(k, "The sledge was packed by Isla.", "The ice was measured every day.", "Two tent poles have been broken by the storm.")}
+  let w1={pick(k, "Isla was packed by the sledge.", "The scientists were measured every day.", "The storm has been broken by two tent poles.")}
+  let w2={pick(k, "The sledge is packed by Isla.", "The ice were measured every day.", "Two tent poles has been broken by the storm.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x31 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      sledge sl slats=5
+      icecliff ice height=1 floes=0
+    }
+    passage p title="Active" text="{s}" width=33 numbers=false below=pics gap=1
+    text ask "Which is the same sentence made passive, keeping its meaning and its time?" narrate width=33 below=p gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=p {
+      say "That changes who did what. The object of the first sentence becomes the subject of the passive, and the doer moves after by. Ask who did what in the first sentence."
+    }
+    when (pick == w2) point=p {
+      say "Check the small word before the verb. It has to agree with the new subject, and keep the tense of the first sentence."
+    }
+  }
+  hint "What is the object of the first sentence, the thing something was done to? It becomes the subject of the passive."
+  hint "Is it one thing or many, and did it happen in the past? Choose was, were, has been or have been to match."
+}

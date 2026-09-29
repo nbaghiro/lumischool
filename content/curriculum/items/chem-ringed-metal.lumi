@@ -1,0 +1,16 @@
+# The way in: the metals are shaded, with a key, so the ringed cell is read against the key. Boron and
+# silicon, the metalloids, are never ringed; the checker refuses them.
+item chem.ringed-metal v=1 skills=[chemistry.metals, chemistry.elements] {
+  title "Metal or not?"
+  let m={3, 6, 8, 12, 16, 19}
+
+  scene 36x16 {
+    periodic t rows=4 blank=0 mark=m shade=metal at=canvas(1, 0)
+    text ask "The observatory's table shades the metals. Is the ringed element a metal or a non-metal?" narrate width=13 right-of=t gap=1
+    choice pick options=["a metal", "a non-metal"] stack=column below=ask gap=1
+  }
+
+  check chem.elements of=t pick="kind(mark)"
+  hint "Find the ringed cell. Is it shaded?"
+  hint "Read the key under the table. What does shading mean?"
+}

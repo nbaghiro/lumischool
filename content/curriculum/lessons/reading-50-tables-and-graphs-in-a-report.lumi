@@ -1,0 +1,64 @@
+# A ranger's report on the gorge read as words, a table and two graphs together: what each shows,
+# what only the words say, and what none of them can. The report and its numbers were written for
+# the lesson.
+lesson reading-tables-and-graphs-in-a-report v=1 format=teach grade=6 unit=5 subject=reading levels=[easy, medium, hard] {
+  title "Tables and graphs in a report"
+  goal "Use a report's words together with its tables and graphs to answer a question neither answers alone."
+
+  look {
+    scene 36x17 {
+      row all at=canvas(0, 1) space=1 align=end {
+        waterfall fall drops=2 rainbow=1
+        bargraph birds labels=["Mar", "Apr", "May", "Jun", "Jul", "Aug"] values=[4, 6, 6, 12, 9, 5] max=12 color=sky
+      }
+    }
+    say """
+      The gorge ranger writes a report each year. The words explain how things work: when the
+      kingfishers nest, when the path behind the waterfall closes. The tables and graphs hold the
+      numbers: birds counted on the first morning of each month, and how much water went over the
+      falls. Many questions need both. The words give a rule and the graph gives the months it fits.
+      And some questions neither can answer, because nobody measured that.
+      """
+  }
+  do {
+    level easy {
+      worked reading.report-closed k=1 level=medium
+    }
+    show reading.report-read k=0 hard-k=1
+    practice reading.report-both count=2 seed=1 easy-seed=1 hard-seed=1
+    practice reading.report-closed count=2 seed=1 easy-seed=1 hard-seed=1
+    show reading.report-read k=2 hard-k=3
+    practice reading.report-agree count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show reading.report-agree k=4
+    }
+  }
+  try stars=2 {
+    show reading.report-cannot-tell k=0 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show reading.report-which-graph k=0 easy-k=1 hard-k=2
+  }
+  remember {
+    say "The words say how it works and the graph says how many. Read both, and ask what neither one shows."
+  }
+
+  grown-ups """
+    The idea is that a report puts some information in words and some in tables and graphs, and a
+    careful reader joins them, which is the sixth-grade standard of integrating information from
+    different formats. The way in reads the ranger's bar graph, the core uses a rule in the words to
+    find a month in the table, counts the months a graph fits a rule, and decides whether the graph
+    agrees with a sentence, disagrees, or cannot say. The wrong idea to watch for is answering from
+    the tallest bar when the words point a month before or after it; ask "what does the report say
+    about that month?" The two-star question is about what one reading a month cannot show. The
+    three-star question checks a note against two graphs clue by clue. If the child is stuck, cover
+    the graph and read the words aloud first, then uncover it. Off the page, read a weather forecast
+    with its chart and find one thing only the words say.
+    """
+  level easy {
+    grown-ups "At this level the path at a flow of 9 is worked once in the teacher's pen, the bars to read are single months, the months to find are when the chicks left and hatched, the rules are the path at 12 and the bridge at 15, the sentences to check are the plainer ones, the two-star is the flow on one day, and the three-star graph is B."
+  }
+  level hard {
+    grown-ups "At this level the bars to read are differences, the months to find are when the adults came and the young left, the rules include the fishing flow below 10, the sentences to check include one that nearly fits and one the graph cannot show, with one more, the two-star asks why, and neither three-star graph fits."
+  }
+}

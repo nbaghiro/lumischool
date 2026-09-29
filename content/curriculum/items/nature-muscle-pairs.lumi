@@ -1,0 +1,51 @@
+# The two-star reason: a muscle can only pull, so something else must pull a joint back. The arm,
+# Ben's pushing front muscle, the knee, and a builder with a hurt back muscle whose arm straightens
+# only by its own weight each ask for that one fact in a new place.
+item nature.muscle-pairs v=1 stars=2 skills=[nature.body, reasoning.explain] {
+  title "Why two muscles?"
+  difficulty pick(k, 0, 0.33, 0.67, 1)
+  let k=0..3
+  let asks={pick(k, "Why does the arm need two muscles to bend and straighten, and not just one?", "Ben says: \"When I straighten my arm, the front muscle pushes it straight.\" What is wrong with that?", "The muscle at the front of Ada's thigh pulls to straighten her knee when she kicks. What bends the knee again?", "A builder on the city wall has hurt the muscle on the back of his upper arm. He can bend his elbow, but it only straightens when he lets his hand hang down. Why?")}
+  let ans={pick(k, "A muscle can pull, but it can never push", "Muscles cannot push: the back one pulls", "A muscle at the back of the thigh pulls", "Only his arm's own weight can pull it straight now")}
+  let o1={pick(k, "One gets tired, so they take turns", "Nothing: that muscle pushes and pulls", "The front muscle pushes it back again", "His front muscle pushes it straight, but weakly")}
+  let o2={pick(k, "One is for bending fast, one for slow", "The elbow straightens the arm by itself", "The knee bone bends by itself", "His elbow has lost its hinge")}
+  let s1={pick(k, o1, ans, o1, ans)}
+  let s2={pick(k, ans, o1, o2, o1)}
+  let s3={pick(k, o2, o2, ans, o2)}
+  level easy {
+    let k=0..0
+  }
+  level medium {
+    let k=1..2
+  }
+  level hard {
+    let k=3..3
+  }
+
+  scene 34x30 {
+    parts fig of=arm at=canvas(1, 1)
+    text ask "{asks}" narrate width=32 below=fig gap=1
+    choice pick options=[s1, s2, s3] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k <= 1 and pick == o1) point=fig {
+      say "A muscle does its work by getting shorter and pulling. It cannot get longer and push, so a second one is needed."
+    }
+    when (k <= 1 and pick == o2) point=fig {
+      say "Bones and joints do not move on their own. Something has to pull on the bones each way."
+    }
+    when (k == 2 and pick != ans) point=ask {
+      say "Muscles only pull. If the front one straightens the knee, the pull back has to come from the other side."
+    }
+    when (k == 3 and pick == o1) point=fig {
+      say "The front muscle can only pull, and its pull bends the arm. What else could pull the forearm down?"
+    }
+    when (k == 3 and pick == o2) point=fig {
+      say "The elbow still bends, so the hinge works. What is missing is a pull the other way."
+    }
+  }
+  hint "What can a muscle do: push, pull, or both?"
+  hint "If a muscle can only pull one way, what pulls the bone back the other way?"
+}

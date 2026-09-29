@@ -1,0 +1,28 @@
+# The two-star: one reading in a direct proportion was written down wrong, and it is the point off the
+# straight line through zero. Found by comparing each reading with the others, not by guessing.
+item proportion.wrong-reading v=1 stars=2 skills=[proportion.graphs, reasoning.find-the-error] {
+  title "The wrong reading"
+  difficulty (k / 2 + (if e < 0 then 1 else 0) + (if e == 1 or e == -1 then 1 else 0))
+  let k={3, 4, 5} j={2, 3, 4} e={-2, -1, 1, 2, 3}
+  level easy {
+    let e={3} k={3, 4}
+  }
+  level hard {
+    let e={-1, 1} k={4, 5}
+  }
+
+  scene 36x22 {
+    linegraph g labels=["1 h", "2 h", "3 h", "4 h", "5 h"] values=[k, 2 * k + (if j == 2 then e else 0), 3 * k + (if j == 3 then e else 0), 4 * k + (if j == 4 then e else 0), 5 * k] max=28 per=2 step=4 color=sky at=canvas(1, 0)
+    text ask "Every hour Ivo wrote down how many litres of snow water the stove had made. The stove melts at a steady rate, but one reading was written down wrong. After how many hours was it?" narrate width=14 right-of=g gap=2
+    choice pick options=["1", "2", "3", "4", "5"] below=g gap=1
+  }
+
+  answer pick=pick(j - 2, "2", "3", "4")
+  feedback {
+    when (pick == "1" or pick == "5") point=g {
+      say "Check that reading against the others: is it the same number of litres for every hour?"
+    }
+  }
+  hint "How many litres are made in 1 hour? Does every reading fit that?"
+  hint "Divide each reading by its hours. Which one is different?"
+}

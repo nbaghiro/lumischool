@@ -1,0 +1,29 @@
+# How far the turtle walks: each size of tree walks its line out and back, and all the trees of one size
+# together are as long as the trunk, so the walk is twice the trunk for every size there is.
+item coding.self-moves v=1 skills=[coding.recursion, coding.procedures, reasoning.patterns] {
+  title "How far does the turtle walk?"
+  difficulty k
+  let k=0..2
+  let s={pick(k, 2, 4, 8)}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x24 {
+    program p code=["define tree n", "  forward n", "  if n is more than 1", "    turn left", "    tree n / 2", "    turn around", "    tree n / 2", "    turn left", "  back n", "tree {s}"] text=true at=canvas(0, 0)
+    text ask "The turtle walks every line out and back. How many squares does it walk in all, drawing tree {s}?" width=15 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer=moves
+  feedback {
+    when (answer == pick(k, 4, 12, 32)) point=p {
+      say "That is each line walked once. Line 9 walks the turtle back along it too."
+    }
+  }
+  hint "How long is the trunk? How long are the two branches of size {s / 2} together?"
+  hint "Add up every line once, then double it for the walk back."
+}

@@ -1,0 +1,34 @@
+# The story: a biographer checks a three-sentence draft against the fact card and finds the sentence
+# the card does not bear out: a wrong year, a before that should be after, or a wrong gap in years.
+item writing.bio-check-years v=1 skills=[writing.biography, writing.editing, reasoning.find-the-error] {
+  title "Check the draft against the card"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..3
+  let draft={pick(k, "(1) Caroline Herschel was born in Hanover in 1750. (2) In 1772 she moved to England. (3) She found her first comet in 1768.", "(1) A year before her first comet, the king began to pay her. (2) She won a gold medal in 1828. (3) She died in Hanover in 1848.", "(1) Caroline Herschel moved to England in 1772. (2) Four years later, she found her first comet. (3) The next year, the king began to pay her.", "(1) She found her first comet in 1786. (2) From the next year, the king paid her for her work. (3) Six years before she died, she won a gold medal.")}
+  let right={pick(k, "the third", "the first", "the second", "the third")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=3..3
+  }
+
+  scene 33x30 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage card title="Caroline Herschel" text="Born in Hanover: 1750. Moved to England: 1772. First comet: 1786. Paid by the king: from 1787. Gold medal: 1828. Died: 1848." width=23 numbers=false
+      person her pose=think age=older hair=bun colour=grey top=mint glasses=true
+    }
+    passage draft title="The draft" text="{draft}" width=32 numbers=false below=top gap=1
+    text ask "A biographer checks every sentence of a draft against the notes. Which sentence does the card not bear out?" narrate width=32 below=draft gap=1
+    choice pick options=["the first", "the second", "the third"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=card {
+      say "That sentence matches the card. Check each year, and each before, after or later, against the dates on the card."
+    }
+  }
+  hint "Find each sentence's event on the card. What year does the card give it?"
+  hint "Words such as before, later and the next year are claims too. Do the card's years agree with them?"
+}

@@ -1,0 +1,38 @@
+# A sentence a reader might write about the report, checked against the graph: the graph agrees,
+# disagrees, or cannot say, because it only counts birds on one morning a month.
+item reading.report-agree v=1 skills=[reading.text-features, reading.evidence] {
+  title "Does the graph agree?"
+  difficulty pick(k, 0, 1, 1, 1, 2, 1)
+  let k=0..5
+  level easy {
+    let k={0, 2, 3}
+  }
+  level hard {
+    let k={1, 4, 5}
+  }
+  let right={pick(k, "Yes", "No", "Cannot tell", "Yes", "Cannot tell", "No")}
+
+  scene 36x24 {
+    text ask "Does the ranger's graph agree with this sentence?" at=canvas(1, 1) width=34
+    row top below=ask gap=1 space=1 align=start {
+      bargraph birds labels=["Mar", "Apr", "May", "Jun", "Jul", "Aug"] values=[4, 6, 6, 12, 9, 5] max=12 color=sky
+      passage p text="{pick(k, \"More kingfishers were seen in July than in April.\", \"The count rose every month until June.\", \"The birds leave the gorge in September.\", \"The June count was double the April count.\", \"Kingfishers catch the most fish in June.\", \"Fewer birds were seen in August than in March.\")}" width=12 numbers=false
+    }
+    choice pick options=["Yes", "No", "Cannot tell"] below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (right == "Cannot tell" and pick != "Cannot tell") point=birds {
+      say "The graph only counts birds on one morning a month. Does it show anything about that at all?"
+    }
+    when (right == "No" and pick == "Yes") point=birds {
+      say "Check every bar the sentence talks about. One of them does not fit."
+    }
+    when (right == "Yes" and pick == "No") point=birds {
+      say "Read the two bars again. The sentence does fit them."
+    }
+  }
+  hint "What does the sentence say? Which bars would show it?"
+  hint "If no bar could show it, the graph cannot say either way."
+}

@@ -1,0 +1,32 @@
+# The way in: a place on the tilted Earth goes round its circle of latitude once a day, so it has the
+# sun all day when the whole circle is on the lit side. lat is place A; s is June (0) or December (1).
+item physics.tilt-sun v=1 skills=[physics.sky, reasoning.evidence] {
+  title "Sun all day?"
+  difficulty ((if s == 0 then 0 else 1) + (if lat == 60 then 1 else 0))
+  let lat={80, 70, 60} s=0..1
+  level easy {
+    let s=0..0
+  }
+  level hard {
+    let s=1..1
+  }
+  let month={pick(s, "June", "December")}
+
+  scene 28x27 {
+    tilt e places=[lat, 45, 0] season=s circles=0 names=1 at=canvas(1, 0)
+    text ask "It is 21 {month}. Follow place A's dashed circle round as the Earth turns. What does A have that day?" narrate width=14 below=e gap=1
+    choice pick options=["All day", "All night", "Day and night"] stack=column right-of=ask gap=1
+  }
+
+  check physics.sky of=e pick=sun(a)
+  feedback {
+    when (pick == "Day and night" and lat > 66) point=e {
+      say "Look where A's whole circle lies. Does any part of it cross the line into the other half?"
+    }
+    when (pick != "Day and night" and lat < 66) point=e {
+      say "Part of A's circle is on each side of the line between day and night, so A spends part of the turn in each."
+    }
+  }
+  hint "Which half of the Earth is lit, the left or the right?"
+  hint "Is A's whole circle on one side of the line between day and night, or does it cross it?"
+}

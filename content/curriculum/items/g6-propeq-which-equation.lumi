@@ -1,0 +1,42 @@
+# Setting up the proportion before solving it: grain matches grain and flour matches flour. The two
+# wrong ones turn one ratio round, which is the slip that gives an answer bigger than the grain.
+item proportion.which-equation v=1 skills=[algebra.equations.proportion, reasoning.model] {
+  title "Which proportion"
+  difficulty (s + o / 3)
+  let s=0..3 o=0..2
+  let g={pick(s, 5, 4, 10, 6)}
+  let f={pick(s, 4, 3, 8, 5)}
+  let big={pick(s, 15, 10, 15, 9)}
+  level easy {
+    let s={0, 1}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 36x20 {
+    sign board lines=["A   {pick(o, g, g, f)} : {pick(o, f, f, g)} = {pick(o, big, \"x\", big)} : {pick(o, \"x\", big, \"x\")}", "B   {pick(o, g, f, g)} : {pick(o, f, g, f)} = {pick(o, \"x\", big, big)} : {pick(o, big, \"x\", \"x\")}", "C   {pick(o, f, g, g)} : {pick(o, g, f, f)} = {pick(o, big, big, \"x\")} : {pick(o, \"x\", \"x\", big)}"] kind=board color=glow at=canvas(1, 1)
+    text ask "{g} kg of grain makes {f} kg of flour at the mill. Which proportion finds x, the flour from {big} kg of grain? Then find x." narrate width=16 right-of=board gap=2
+    choice pick options=["A", "B", "C"] below=board gap=1
+    row eq below=pick gap=1 space=1 align=centre {
+      text xl "x ="
+      number-input x width=4
+      text unit "kg"
+    }
+  }
+
+  answer pick=pick(o, "A", "C", "B") x=(f * big / g)
+  feedback {
+    when (pick == pick(o, "B", "A", "C")) point=board {
+      say "That one puts grain against flour on the left and flour against grain on the right. Each ratio has to be read the same way round."
+    }
+    when (pick == pick(o, "C", "B", "A")) point=board {
+      say "That one is flour to grain on the left but grain to flour on the right. Match the order on both sides."
+    }
+    when (x == g * big / f) point=board {
+      say "The flour comes out more than the grain. Check the ratio is the right way round."
+    }
+  }
+  hint "On the left, which comes first, grain or flour? Is it the same on the right?"
+  hint "Once the proportion is right, multiply the outer terms and the inner terms."
+}

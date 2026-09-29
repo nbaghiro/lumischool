@@ -1,0 +1,28 @@
+# Sorting raw data: a list of what crossed the sky, written down in the order it was seen, counted by
+# kind. Tallying as you go is the method the grown-ups note names.
+item survey.sort v=1 skills=[data.collect, data.tables] {
+  title "Lights in the sky"
+  difficulty (pick(t, 1, 2, 3) + pick(k, 0, 1, 1))
+  let t=0..2 k=0..2
+  level easy {
+    let t={0} k={0, 1}
+  }
+  level hard {
+    let t={2}
+  }
+
+  scene 36x18 {
+    table seen cols=5 head=[] cells=["{pick(t, \"meteor\", \"plane\", \"satellite\")}", "{pick(t, \"plane\", \"satellite\", \"meteor\")}", "{pick(t, \"meteor\", \"satellite\", \"plane\")}", "{pick(t, \"satellite\", \"meteor\", \"meteor\")}", "{pick(t, \"meteor\", \"plane\", \"meteor\")}", "{pick(t, \"plane\", \"satellite\", \"satellite\")}", "{pick(t, \"meteor\", \"meteor\", \"plane\")}", "{pick(t, \"meteor\", \"plane\", \"meteor\")}", "{pick(t, \"satellite\", \"satellite\", \"meteor\")}", "{pick(t, \"plane\", \"meteor\", \"plane\")}", "{pick(t, \"meteor\", \"plane\", \"satellite\")}", "{pick(t, \"satellite\", \"satellite\", \"meteor\")}", "{pick(t, \"plane\", \"satellite\", \"plane\")}", "{pick(t, \"meteor\", \"plane\", \"meteor\")}", "{pick(t, \"plane\", \"meteor\", \"meteor\")}"] at=canvas(1, 1)
+    text ask "From the observatory Sam wrote down every light that crossed the sky in one hour, in the order it came. How many were {pick(k, \"meteors\", \"planes\", \"satellites\")}?" narrate width=28 below=seen gap=1
+    number-input answer width=3 right-of=ask gap=1
+  }
+
+  answer pick(k, pick(t, 7, 4, 8), pick(t, 5, 5, 4), pick(t, 3, 6, 3))
+  feedback {
+    when (answer == 15) point=seen {
+      say "That counts every light. Count only the {pick(k, \"meteors\", \"planes\", \"satellites\")}."
+    }
+  }
+  hint "Go along each row in turn. Make a tally mark each time you meet one."
+  hint "Tick each word as you count it, so none is counted twice."
+}

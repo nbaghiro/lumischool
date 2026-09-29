@@ -1,0 +1,38 @@
+# The moon's month is about 29.5 days, so from a new moon to a full moon is half of it, and a lunar
+# eclipse can come about two weeks after a solar one. v picks the stretch; none ends on a half day.
+item physics.phase-half-month v=1 skills=[physics.sky, time.days, decimals.divide] {
+  title "Days round the month"
+  difficulty v
+  let v=0..2
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=1..2
+  }
+  let from={pick(v, "a new moon", "a full moon", "a new moon")}
+  let to={pick(v, "the next full moon", "the full moon two months later", "the growing half moon, the first quarter")}
+
+  scene 30x17 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      moon a phase=0
+      moon b phase=0.5
+      moon c phase=1
+      moon d phase=0.5
+    }
+    text ask "The moon goes from one full moon to the next in about 29.5 days, through the shapes drawn. About how many days is it from {from} to {to}, to the nearest whole day?" narrate width=28 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(v, 15, 59, 7)
+  feedback {
+    when (answer == 29 or answer == 29.5) point=kit {
+      say "That is the whole month, 29.5 days. What share of the month is this stretch?"
+    }
+    when (v == 1 and answer == 30) point=kit {
+      say "That is one month from full moon to full moon. This stretch is two of them."
+    }
+  }
+  hint "How many months, or what share of a month, is it from {from} to {to}?"
+  hint "Take that share of 29.5 days, and round to a whole day."
+}

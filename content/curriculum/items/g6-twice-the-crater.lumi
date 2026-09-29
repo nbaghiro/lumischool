@@ -1,0 +1,28 @@
+# The second reasoning question in the core: a crater k times as wide has k × k times the floor,
+# since the radius is used twice. 3.14 is not needed.
+item circle.twice-the-crater v=1 skills=[circles.area, reasoning.proportion] {
+  title "Twice as wide"
+  difficulty (k + (if f > 100 then 1 else 0))
+  let f={28.26, 50.24, 78.5, 113.04} k={2, 3, 4}
+  level easy {
+    let k={2}
+  }
+  level hard {
+    let k={3, 4} f={78.5, 113.04}
+  }
+
+  scene 35x14 {
+    crater cr count=2 at=canvas(1, 1)
+    text ask "The small crater's floor is {f} square metres. The big crater is {pick(k - 2, \"twice\", \"three times\", \"four times\")} as wide across. What is the area of the big crater's floor, in square metres? You do not need 3.14." narrate width=20 right-of=cr gap=2
+    number-input answer width=7 below=ask gap=1
+  }
+
+  answer decimals(f * k * k, 0)
+  feedback {
+    when (answer == f * k) point=cr {
+      say "The radius is used twice in the area, so {pick(k - 2, \"twice\", \"three times\", \"four times\")} as wide is more than {pick(k - 2, \"twice\", \"three times\", \"four times\")} the area."
+    }
+  }
+  hint "If the radius is {pick(k - 2, \"twice\", \"three times\", \"four times\")} as long, what happens to radius × radius?"
+  hint "Think of a square: {pick(k - 2, \"twice\", \"three times\", \"four times\")} as long each way holds how many of the small square?"
+}

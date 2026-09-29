@@ -1,0 +1,31 @@
+# The horizon is at the artist's eye height, so what is higher than her eyes is drawn above it and
+# what is lower is drawn below it; something exactly at eye height sits on it.
+item art.canal-eye-level v=1 skills=[art.perspective, reasoning.compare] {
+  title "Above or below the horizon?"
+  difficulty (if e == 2 and t == 2 then 2 else if t == 1 and e == 0 then 2 else if e == 2 then 1 else 0)
+  let e={1, 2} t=0..3
+  let where={pick(e, "sitting on the towpath, her eyes 1 metre up", "standing on the towpath, her eyes 1.5 metres up", "standing on the bridge, her eyes 5 metres up")}
+  let thing={pick(t, "the top of a mooring post half a metre high", "the top of a fence 1 metre high", "the top of a lamp post 3 metres high", "the roof of the mill 12 metres high")}
+  let side={if t == 3 then "above it" else if e == 2 then "below it" else if t == 2 then "above it" else if t == 1 and e == 0 then "on it" else "below it"}
+  level easy {
+    let e={1}
+  }
+  level hard {
+    let e={0, 2} t={1, 2}
+  }
+
+  scene 36x15 {
+    perspective canal horizon=4 vp=8 posts=3 guide=true at=canvas(1, 1)
+    text ask "Ada draws the canal {where}. Does {thing} go above the horizon in her drawing, on it, or below it?" width=18 right-of=canal gap=1
+    choice pick options=["above it", "on it", "below it"] below=canal gap=1
+  }
+
+  answer pick=side
+  feedback {
+    when (pick != side) point=canal {
+      say "The horizon is drawn at the height of Ada's eyes. Compare the thing's height with her eyes, not with the drawing."
+    }
+  }
+  hint "How high are Ada's eyes? The horizon line is drawn at that height."
+  hint "Is the thing higher than her eyes, lower, or level with them?"
+}

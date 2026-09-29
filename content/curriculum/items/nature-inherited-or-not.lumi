@@ -1,0 +1,43 @@
+# The way in: a feature, and where it came from: passed on from the parents, caused by where the
+# living thing grew, or picked up in its own life. The hard two are both where it grew, one of them
+# a plant from a tall family kept short by a small pot.
+item nature.inherited-or-not v=1 skills=[nature.inheritance] {
+  title "Where did it come from?"
+  difficulty (if k == 0 or k == 2 then 0 else 1)
+  let k=0..3
+  let told={pick(k, "A pea plant grown from the seed of a purple-flowered pea plant has purple flowers too.", "Beans from one packet grow green and strong in the light, but the one in a dim corner grows pale and thin.", "Ben has a scar on his knee from falling off his bike.", "A sunflower grown from the seed of a very tall sunflower stays short, because its pot is too small for its roots.")}
+  let ans={pick(k, "passed on from the parents", "caused by where it grew", "picked up in its own life", "caused by where it grew")}
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1, 3}
+  }
+
+  scene 34x32 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      flowers fl count=2 petals=6
+      lander ld rungs=5
+    }
+    text ask "In the greenhouse on the moon base the crew keep notes on how living things come to be the way they are. {told} Where did that feature come from?" narrate width=32 below=pics gap=1
+    choice pick options=["passed on from the parents", "caused by where it grew", "picked up in its own life"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=ask {
+      say "The new plant has the same flowers as the plant its seed came from. How did it get them?"
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "All the beans came from one packet. What was different for the pale one?"
+    }
+    when (k == 2 and pick != ans) point=ask {
+      say "Ben was not born with the scar. When did he get it?"
+    }
+    when (k == 3 and pick != ans) point=ask {
+      say "Its parent passed on tallness, but something about where it grew stopped it. What?"
+    }
+  }
+  hint "Was the living thing born with this, or did it come later?"
+  hint "If it came later, did it come from the place it lived, or from something that happened to it?"
+}

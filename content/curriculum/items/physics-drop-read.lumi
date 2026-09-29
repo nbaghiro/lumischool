@@ -1,0 +1,35 @@
+# Reading a speed off the tubes: how far a shape has sunk after a few seconds, read on the scale, and
+# its speed in centimetres a second. The shape asked about never reaches the bottom in the time drawn, and the time is always
+# more than a second, so the distance and the speed are different numbers.
+item physics.drop-read v=1 skills=[physics.forces, physics.speed, physics.measuring] {
+  title "How fast does it sink?"
+  difficulty (w + t)
+  let w=0..2 t=2..3
+  let shape={pick(w, "flat", "cube", "ball")}
+  let speed={pick(w, 6, 15, 20)}
+  where (speed * t < 60)
+  level easy {
+    let t=2..2
+  }
+  level hard {
+    let t=3..3
+  }
+
+  scene 27x17 {
+    droptube tb shapes=["pointed", shape] time=t grams=[20, 20] at=canvas(1, 0)
+    text ask "How many centimetres has shape B sunk?" narrate width=15 right-of=tb gap=1
+    number-input sunk below=ask gap=1
+    text then "How many centimetres does it sink each second?" narrate width=15 below=sunk gap=1
+    number-input each below=then gap=1
+  }
+
+  answer sunk=(speed * t) each=speed
+  check physics.forces of=tb sunk=sunk(b)
+  feedback {
+    when (each == speed * t and t > 1) point=tb {
+      say "That is how far it sank in {t} seconds. Share it between the seconds."
+    }
+  }
+  hint "Read the scale level with the bottom of shape B. How many seconds does the drawing show?"
+  hint "Divide the distance by the seconds for the distance in one second."
+}

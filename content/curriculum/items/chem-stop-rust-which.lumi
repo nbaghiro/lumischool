@@ -1,0 +1,30 @@
+# Three ways the lock is kept from rusting. Paint and grease keep water and air off; grease suits
+# parts that rub, where paint would wear away. A zinc coat (galvanising) corrodes before the iron, so
+# it still protects where it is scratched through (Galvanizers Association; RSC).
+item chem.stop-rust-which v=1 skills=[chemistry.rusting, chemistry.materials] {
+  title "Paint, grease or zinc?"
+  difficulty (if k == 0 or k == 3 then 1 else 0)
+  let k=0..3
+  let asks={pick(k, "Which way still keeps the iron from rusting where the coat is scratched through?", "The cogs of the paddle gear rub together every time the lock is filled. Which way suits them?", "Which way can be brushed on the gate's iron straps in black or in white?", "Which way works by wearing away itself, slowly, instead of the iron?")}
+  level easy {
+    let k={1, 2}
+  }
+  level hard {
+    let k={0, 3}
+  }
+
+  scene 35x18 {
+    canallock lock level=0.5 boat=1 at=canvas(1, 0)
+    text ask "The canal keeps the iron on its lock from rusting in three ways: paint, grease, or a coat of zinc. {asks}" narrate width=34 below=lock gap=1
+    choice pick options=["Paint", "Grease", "A zinc coat"] below=ask gap=1
+  }
+
+  answer pick=pick(k, "A zinc coat", "Grease", "Paint", "A zinc coat")
+  feedback {
+    when (pick != pick(k, "A zinc coat", "Grease", "Paint", "A zinc coat")) point=lock {
+      say "Paint and grease both work only as a cover over the iron. Zinc also works where the cover is broken, because the zinc is worn away first."
+    }
+  }
+  hint "Which of the three are only a cover that keeps water and air off?"
+  hint "What happens to a cover where it rubs, or where it is scratched?"
+}

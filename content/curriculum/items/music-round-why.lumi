@@ -1,0 +1,28 @@
+# The two-star reason: why this round sounds good in parts. Every two-bar phrase of Frère Jacques is
+# built from the notes of the chord of C (C, E, G), with passing notes between, so whichever phrases
+# sound together they fit. A tune without that property does not make a round two bars apart.
+item music.round-why v=1 stars=2 skills=[music.singing, music.chords, reasoning.explain] {
+  title "Why does it fit?"
+  let r=0..2
+  let right={"Every phrase fits the chord of C"}
+  let w1={"The voices sing the same notes together"}
+  let w2={"Any tune fits if voices are two bars apart"}
+
+  scene 36x31 {
+    table voices cols=3 head=["Voice", "Is starting bar", "On the note"] cells=["1", "7", "C", "2", "5", "G", "3", "3", "E", "4", "1", "C"] at=canvas(1, 1)
+    text ask "Here all four voices of the round start a bar at the same moment, on the notes in the table. Why does Frère Jacques sound good when the four voices sing together?" narrate width=34 below=voices gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=voices {
+      say "Look down the last column. Are the four voices on the same note?"
+    }
+    when (pick == w2) point=voices {
+      say "Try it with a tune you know that is not a round. Which notes of the chord of C are in the last column?"
+    }
+  }
+  hint "Which notes make the chord of C?"
+  hint "Look at the notes in the last column. Do they all belong to one chord?"
+}

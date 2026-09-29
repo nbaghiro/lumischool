@@ -1,0 +1,32 @@
+# Puzzle: a spiral that stops at a bigger number, so it draws fewer sides than its number. The lines
+# drawn are run; the child has to follow the if down to where it says no.
+item coding.puzzle-self v=1 skills=[coding.recursion, coding.tracing] {
+  title "A spiral that stops early"
+  difficulty (c / 2)
+  let s=5..7 c=2..3
+  level easy {
+    let c={2}
+  }
+  level hard {
+    let c={3}
+  }
+
+  scene 36x16 {
+    program p code=["define spiral n", "  forward n", "  turn left", "  if n is more than {c}", "    spiral n - 1", "spiral {s}"] text=true at=canvas(0, 0)
+    text ask "How many sides does the turtle draw? What is the shortest side?" width=15 right-of=p gap=1
+    text t1 "sides" below=ask gap=1
+    number-input sides right-of=t1 gap=1
+    text t2 "shortest" below=t1 gap=1
+    number-input shortest right-of=t2 gap=1
+  }
+
+  check coding.runs of=p sides="ran(2)"
+  answer shortest=c
+  feedback {
+    when (sides == s) point=p {
+      say "The spiral stops when n is no longer more than {c}, not at 1."
+    }
+  }
+  hint "Write n for each use of spiral: {s}, then {s - 1}, and so on."
+  hint "At which n does the if first say no? That spiral still draws its side."
+}

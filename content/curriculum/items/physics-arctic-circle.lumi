@@ -1,0 +1,28 @@
+# Where the midnight sun begins: a place whose circle of latitude just stays on the lit side is 90
+# degrees less the lean from the equator. t is the lean in a what-if, and 23.5 is the Earth's.
+item physics.arctic-circle v=1 skills=[physics.sky, angles.degrees] {
+  title "Where the midnight sun begins"
+  difficulty (if t == 23.5 then 0 else 1)
+  let t={23.5, 30, 15, 10}
+  level easy {
+    let t={23.5}
+  }
+  level hard {
+    let t={30, 15, 10}
+  }
+
+  scene 26x27 {
+    tilt e places=[90 - t] season=0 tilt=t circles=0 names=0 at=canvas(1, 0)
+    text ask "Suppose the Earth's axis leans {t}°. Place A is as far south as the midnight sun reaches: its circle just touches the line between day and night on 21 June. What is A's latitude, in degrees north?" narrate width=24 below=e gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals(90 - t, if t == 23.5 then 1 else 0)
+  feedback {
+    when (answer == t) point=e {
+      say "That is where the sun is overhead at noon. The midnight sun starts as far from the pole as the axis leans."
+    }
+  }
+  hint "The north pole leans {t}° into the light. How far from the pole does the light reach round the far side?"
+  hint "The pole is at 90° north."
+}

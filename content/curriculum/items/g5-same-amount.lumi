@@ -1,0 +1,31 @@
+# The review's two-star: a fraction of an amount matched with the same amount written as a percent,
+# a decimal or a division, decided by what each one means rather than by working all three out.
+item review.same-amount v=1 stars=2 skills=[percentages.of-amount, fractions.equivalent, reasoning.equivalence] {
+  title "The same amount"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3 r=0..2
+  let whole={pick(v, "3/4 of 80", "2/5 of 60", "1/8 of 96", "3/5 of 45")}
+  let right={pick(v, "75% of 80", "0.4 × 60", "12.5% of 96", "45 ÷ 5 × 3")}
+  let w1={pick(v, "80 ÷ 3 × 4", "25% of 60", "0.8 × 96", "35% of 45")}
+  let w2={pick(v, "0.34 × 80", "60 ÷ 2 × 5", "96 ÷ 1.8", "0.35 × 45")}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 31x17 {
+    text ask "Which of these is the same amount as {whole}? Decide by what each one means." narrate width=30 at=canvas(1, 1)
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "Write the fraction as a percent or a decimal first, or think of it as sharing and then taking some of the shares."
+    }
+  }
+  hint "What is the fraction as a percent? As a decimal?"
+  hint "A fraction of an amount is the amount shared by the bottom number, times the top number."
+}

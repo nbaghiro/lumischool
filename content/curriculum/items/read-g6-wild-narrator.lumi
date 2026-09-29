@@ -1,0 +1,31 @@
+# What the narrator tells the reader that the people in the story do not know. Each wrong choice is
+# something the characters did know, or something the narrator says elsewhere, so the child has to
+# find the exact place.
+item reading.wild-narrator v=1 skills=[reading.inference, reading.evidence, reading.whole-book] {
+  title "What the narrator knows"
+  difficulty pick(k, 0, 1)
+  let k=0..1
+  let right={pick(k, "One sled cannot carry food for fourteen dogs.", "A great wolf comes to the valley each summer.")}
+  let a={pick(k, "They had forgotten to count Buck.", "A Ghost Dog leads the wolf pack.")}
+  let b={pick(k, "The dogs had never pulled a sled.", "Some wolves have brown on their heads.")}
+
+  scene 35x23 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        text ask "{pick(k, \"In chapter 5 Hal and Charles work out the dog food with a pencil. What does the narrator tell you about their sums that they did not know?\", \"The last page of the book tells you something the Yeehats do not know. What is it?\")}" width=18
+        firs f count=1 snow=1
+        bookcast b who=buck pose=stand dir=-1
+      }
+      choice pick options=[pick(k, a, right), pick(k, right, b), pick(k, b, a)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=b {
+      say "{pick(k, \"Find the place where the narrator says what Charles and Hal did not know. Which choice is that?\", \"The Yeehats know that one: they tell stories about it. Which one does the book say they do not know?\")}"
+    }
+  }
+  hint "Look for the words did not know, or do not know, near the place."
+  hint "{pick(k, \"How many dogs did they have, and how much can one sled hold?\", \"Who visits the valley, and who never goes there?\")}"
+}

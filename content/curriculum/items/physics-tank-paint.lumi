@@ -1,0 +1,33 @@
+# The story: the team tests paints for the hut's water tank in the midnight sun. From these readings
+# the matt black can warms most, 6 degrees in every ten minutes. r orders the cans, m the minutes.
+item physics.tank-paint v=1 skills=[physics.heat, reasoning.predict] {
+  title "A paint for the water tank"
+  difficulty (if m == 10 then 0 else if m == 20 then 0.5 else 1)
+  let r=0..2 m={10, 20, 30}
+  level easy {
+    let m={10}
+  }
+  level hard {
+    let m={30}
+  }
+
+  scene 34x28 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      heatflow t mode=2 cans=[pick(r, "white", "silver", "black"), pick(r, "black", "white", "silver"), pick(r, "silver", "black", "white")] insun=m show=0
+      hut h pictures=0
+    }
+    text ask "The team at the research hut will paint its water tank matt black, white or shiny silver, and first stand three painted cans in the midnight sun, all at 20 °C. In their earlier tests a black can warmed 6 degrees in every ten minutes, a white one 2 and a shiny one 1. Which can will be warmest after {m} minutes, and what will it read?" narrate width=32 below=kit gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+    number-input now right-of=pick gap=2
+  }
+
+  answer now=(20 + 6 * m / 10)
+  check physics.forces of=t pick=warmest
+  feedback {
+    when (now == 6 * m / 10) point=t {
+      say "That is how far it warms. It started at 20 °C."
+    }
+  }
+  hint "Which paint takes in the most of the sunlight that falls on it?"
+  hint "How many lots of ten minutes, and how many degrees in each?"
+}

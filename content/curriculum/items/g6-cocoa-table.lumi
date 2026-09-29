@@ -1,0 +1,31 @@
+# A ratio table with one cell to find, which moves: across a column by the same multiplier, or back to
+# the first column by dividing.
+item ratio.cocoa-table v=1 skills=[ratio.scaling] {
+  title "The cocoa table"
+  difficulty pick(h, 2, 0, 1, 1.5, 2, 0, 1, 1.5)
+  let a={2, 3, 4} b={5, 7, 9} h={0, 1, 2, 3, 4, 5, 6, 7}
+  level easy {
+    let h={1, 5}
+  }
+  level hard {
+    let h={0, 3, 4, 7}
+  }
+
+  scene 33x17 {
+    ratiotable t first=[a, 2 * a, 5 * a, 8 * a] second=[b, 2 * b, 5 * b, 8 * b] labels=["Cocoa", "Milk"] hide=[h] at=canvas(1, 1)
+    text ask "The research hut's cocoa is made with {if h == 0 or h == 4 then \"the same ratio in every column\" else \"spoons of cocoa and cups of milk in the same ratio\"}. The top row is spoons of cocoa and the bottom row is cups of milk. What number is hidden?" narrate width=32 below=t gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer pick(h, a, 2 * a, 5 * a, 8 * a, b, 2 * b, 5 * b, 8 * b)
+  feedback {
+    when (h > 0 and h < 4 and answer == pick(h, 0, 2 * b, 5 * b, 8 * b)) point=t {
+      say "That is the milk in that column. The hidden number is in the cocoa row."
+    }
+    when (h > 4 and answer == pick(h - 4, 0, b + a, b + 4 * a, b + 7 * a)) point=t {
+      say "That added the same to both rows. How many times bigger is this column than the first?"
+    }
+  }
+  hint "How many times bigger than the first column is the column with the hidden cell?"
+  hint "Look at the row that is full in that column. Multiply or divide the other row the same way."
+}

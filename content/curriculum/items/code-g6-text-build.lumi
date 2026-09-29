@@ -1,0 +1,24 @@
+# Text in, blocks out: the program is printed as text and the child builds the same program with
+# blocks, so every line becomes a block and every two spaces becomes a place inside the repeat.
+item coding.text-build v=1 skills=[coding.text, coding.repetition, coding.drawing] {
+  title "From text to blocks"
+  difficulty (n + a / 2 + b / 2)
+  let n=2..3 a=1..2 b=1..2
+  where (n * a <= 4 and n * b <= 4)
+  level easy {
+    let n={2} a={1}
+  }
+  level hard {
+    let n={3}
+  }
+
+  scene 36x29 {
+    program p code=["repeat {n}", "  forward {a}", "  turn left", "  forward {b}", "  turn right"] text=true at=canvas(0, 0)
+    codepad answer tray=["forward 1", "turn left", "turn right", "repeat 2"] lines=5 key=["repeat {n}", "  forward {a}", "  turn left", "  forward {b}", "  turn right"] right-of=p gap=1
+    turtle t cols=(n * a + 2) rows=(n * b + 2) col=1 row=(n * b + 1) face=right moves=[] target=["repeat {n}", "  forward {a}", "  turn left", "  forward {b}", "  turn right"] mark=false below=p gap=1
+  }
+
+  check coding.builds of=t goal=target
+  hint "Each line of the text is one block. Which lines start with two spaces?"
+  hint "Put the repeat block first, then place the four blocks inside it, in the order the text says."
+}

@@ -1,0 +1,34 @@
+# In one loop the bulbs share the cells' push; in parallel each closed branch gets all of it, as
+# bright as one bulb alone on the cells. v picks the cells and bulbs of the two.
+item physics.parallel-vs-series v=1 skills=[physics.circuits, reasoning.compare] {
+  title "In a loop or side by side?"
+  difficulty (if v >= 2 then 1 else 0)
+  let v=0..4
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3, 4}
+  }
+  let cs={pick(v, 2, 1, 2, 2, 1)}
+  let bs={pick(v, 2, 2, 1, 1, 1)}
+  let cp={pick(v, 2, 1, 2, 1, 2)}
+
+  scene 36x24 {
+    row two at=canvas(1, 0) space=2 align=start {
+      series a cells=cs bulbs=bs show=0 tag="A"
+      parallel b cells=cp branches=2 closed=[1, 1] show=0 symbols=0
+    }
+    text ask "Circuit A is one loop. Circuit B, on the right, has its two bulbs side by side in branches. In which circuit is each bulb brighter?" narrate width=32 below=two gap=1
+    choice pick options=["A", "B", "The same"] stack=row below=ask gap=1
+  }
+
+  check physics.circuit of=a vs=b pick=brighter
+  feedback {
+    when (pick == "A" and v == 0) point=b {
+      say "In B each bulb has its own branch straight across the cells. Does it share the cells with the other bulb?"
+    }
+  }
+  hint "In the loop, how many bulbs share the cells?"
+  hint "In the branches, each closed branch is as bright as one bulb alone on its cells. Compare the two."
+}

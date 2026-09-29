@@ -1,0 +1,27 @@
+# Enlarging by k multiplies the lengths by k and the area by k × k: each small square becomes k by k.
+item scale.panel-enlarged v=1 skills=[scale.enlargement, area.rectangles, reasoning.structure] {
+  title "A bigger solar panel"
+  difficulty (k * 2 + a)
+  let a={2, 3} b={3, 4, 5} k={2, 3}
+  level easy {
+    let k={2} a={2}
+  }
+  level hard {
+    let k={3} a={3}
+  }
+
+  scene 35x16 {
+    grid panel rows=a cols=b shade=(a * b) color=sky cell=2 at=canvas(1, 1)
+    text ask "A solar panel for the base is drawn on squares, {a} squares by {b}. The real panel is the drawing enlarged by a scale factor of {k}: every length is {k} times as long. How many of the same squares would the enlarged drawing cover?" narrate width=20 right-of=panel gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (a * b * k * k)
+  feedback {
+    when (answer == a * b * k) point=panel {
+      say "The panel is {k} times as long and also {k} times as wide. How many squares is that each way?"
+    }
+  }
+  hint "How many squares long and how many wide is the enlarged panel?"
+  hint "What does one small square become when every length is {k} times as long?"
+}

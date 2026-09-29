@@ -1,0 +1,41 @@
+# The story: a puffin pair lays one egg a year, and how many chicks live to fly depends on the small
+# fish. Hard gives the chicks and asks for the pairs, so the unknown moves.
+item nature.puffin-chicks v=1 skills=[nature.populations, fractions.of-amount] {
+  title "Chicks on the cliff"
+  difficulty k
+  let k=0..2
+  let told={pick(k, "This year there are 400 pairs, and the sea is full of small fish: 3 out of every 4 chicks live to fly out to sea. How many chicks fly?", "There are 600 pairs. In a year full of small fish 3 out of every 4 chicks fly; in a year with few small fish only 1 in 4 do. How many more chicks fly in the good year than in the poor one?", "In a poor year with few small fish, only 1 in 4 of the chicks lives to fly, and 150 chicks fly. How many pairs are on the cliff?")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x23 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      puffins pp count=3 facing=1
+      icecliff ic height=1 floes=0
+    }
+    text ask "The puffins nest in burrows on the cliffs of the shore beside the ice shelf. Each pair lays one egg a year. {told}" narrate width=32 below=pics gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 300, 300, 600)
+  feedback {
+    when (k == 0 and answer == 100) point=ask {
+      say "100 is one out of every 4. Three out of every 4 is three times that."
+    }
+    when (k == 1 and answer == 450) point=ask {
+      say "450 is the chicks in the good year. Take away the chicks in the poor year."
+    }
+    when (k == 2 and answer == 150) point=ask {
+      say "150 is only the chicks that flew, 1 in 4 of them. How many eggs were there in all?"
+    }
+  }
+  hint "One egg for each pair means as many chicks hatch as there are pairs."
+  hint "Find one quarter first. Three quarters is three of those."
+  level hard {
+    hint "If 150 is one quarter of the chicks, how many chicks are four quarters?"
+  }
+}

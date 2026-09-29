@@ -1,0 +1,38 @@
+# Reading a result: four dishes a week later, and the one dish that shows a seed needs one thing, or
+# does not need light. The dish that differs from A in that thing alone is the answer, and A is the
+# dish every other one is compared with.
+item nature.sprout-shows v=1 skills=[nature.seeds, reasoning.fair-test] {
+  title "Which dish shows it?"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let w1={pick(k, 1, 1, 1, 1)} w2={pick(k, 1, 1, 1, 1)} w3={pick(k, 0, 1, 0, 1)} w4={pick(k, 1, 0, 1, 1)}
+  let a1={pick(k, 1, 1, 1, 1)} a2={pick(k, 1, 0, 1, 1)} a3={pick(k, 1, 1, 1, 0)} a4={pick(k, 1, 1, 1, 1)}
+  let t1={pick(k, 1, 1, 1, 1)} t2={pick(k, 1, 1, 0, 0)} t3={pick(k, 1, 1, 1, 1)} t4={pick(k, 0, 1, 1, 1)}
+  let l1={pick(k, 1, 1, 1, 1)} l2={pick(k, 0, 1, 1, 1)} l3={pick(k, 1, 0, 1, 1)} l4={pick(k, 1, 1, 0, 0)}
+  let claim={pick(k, "a seed needs water to sprout", "a seed needs air to sprout", "a seed needs warmth to sprout", "a seed does not need light to sprout")}
+  let ans={pick(k, "C", "B", "B", "D")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x23 {
+    seedtest s mode=0 water=[w1, w2, w3, w4] air=[a1, a2, a3, a4] warmth=[t1, t2, t3, t4] light=[l1, l2, l3, l4] seeds=8 rate=100 after=1 at=canvas(1, 1)
+    text ask "Ada looks at her dishes a week later. Which dish shows that {claim}?" narrate width=32 below=s gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "A") point=s {
+      say "Dish A has everything. It shows seeds can sprout, and it is the dish the others are compared with."
+    }
+    when (pick != "A" and pick != ans) point=s {
+      say "Read that dish's column. Does it differ from A in the one thing the question is about, and in nothing else?"
+    }
+  }
+  hint "Which row of the table is the question about?"
+  hint "Find the dish that differs from A in that row only. Did it sprout?"
+}

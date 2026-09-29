@@ -1,0 +1,28 @@
+# Predict, then check: the rule is given, one clip for every ten turns on each cell, and the clips
+# wait under a question mark; the checker holds the item to the drawing's rule.
+item physics.coil-predict v=1 skills=[physics.magnets, physics.circuits, reasoning.predict] {
+  title "Predict the clips"
+  difficulty (t / 10 * c)
+  let t={10, 20, 30, 40, 50} c=1..3
+  level easy {
+    where (c == 1)
+  }
+  level hard {
+    where (c > 1 and t >= 30)
+  }
+
+  scene 31x14 {
+    electromagnet e turns=t cells=c core=0 closed=1 show=0 at=canvas(1, 0)
+    text ask "Round an iron nail, the coil holds one clip for every ten turns on each cell. How many clips will this one hold?" narrate width=14 right-of=e gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.circuit of=e answer=holds
+  feedback {
+    when (answer == t / 10 + c and t / 10 + c != t / 10 * c) point=e {
+      say "Each cell gives the whole coil its clips again, so multiply the tens of turns by the cells rather than adding."
+    }
+  }
+  hint "How many lots of ten turns are there? That is the clips for one cell."
+  hint "Each cell adds that many clips again."
+}

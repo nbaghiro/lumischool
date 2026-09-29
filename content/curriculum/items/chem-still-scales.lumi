@@ -1,0 +1,31 @@
+# Nothing is lost in distilling: the flask's water leaves as steam and comes back as water in the
+# beaker, so what the flask lost is what the beaker gained. The unknown moves between the three.
+item chem.still-scales v=1 skills=[chemistry.conservation, chemistry.separating] {
+  title "Where did the grams go?"
+  difficulty d
+  let d=0..2 s={420, 460, 480, 520} c={120, 150, 180}
+  level easy {
+    let d=0..0
+  }
+  level hard {
+    let d=1..2
+  }
+
+  scene 36x17 {
+    dialscale scales max=1000 step=100 value=(if d == 2 then s - c else s) unit=g at=canvas(1, 0)
+    text ask "{if d == 2 then \"The scales show the flask after distilling.\" else \"The scales show the flask of salty water at the start: {s} g.\"} A grown-up distils some of it, and no steam escapes. {if d == 0 then \"\" else \"The flask weighs \"}{if d == 0 then c else s - c}{if d == 0 then \" g of clean water collected in the beaker. What does the flask weigh now?\" else if d == 1 then \" g now. How many grams of clean water are in the beaker?\" else \" g now, and the clean water in the beaker weighs \"}{if d == 2 then c else \"\"}{if d == 2 then \" g. What did the flask weigh at the start?\" else \"\"}" narrate width=22 right-of=scales gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if d == 0 then s - c else if d == 1 then c else s)
+  feedback {
+    when (d == 0 and answer == s) point=scales {
+      say "Some water left the flask as steam. Its grams are in the beaker now, not in the flask."
+    }
+    when (d == 1 and answer == s - c) point=scales {
+      say "That is what stayed in the flask. The beaker has what the flask lost."
+    }
+  }
+  hint "The water that left the flask as steam: where did it end up?"
+  hint "The flask and the beaker together weigh what the flask weighed at the start. Which part is missing?"
+}

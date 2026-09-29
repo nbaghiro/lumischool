@@ -1,0 +1,28 @@
+# Two-star: a repeat by the list's length always moves 2 each time, a repeat through the list moves
+# by each item, so comparing the items with 2 answers it without walking either program.
+item coding.each-or-repeat v=1 stars=2 skills=[coding.lists, coding.repetition, reasoning.compare] {
+  title "By the length or by the items"
+  difficulty (pick(k, 0, 1, 2) + (if s == 1 then 0.5 else 0))
+  let k=0..2 s=0..1
+  let a={pick(k, pick(s, 3, 4), pick(s, 1, 2), pick(s, 1, 3))} b={pick(k, pick(s, 1, 2), pick(s, 2, 1), pick(s, 3, 2))} c={pick(k, pick(s, 4, 3), pick(s, 1, 1), pick(s, 2, 1))}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x18 {
+    listbox l name=hops code=["set hops to list {a}, {b}, {c}"] at=canvas(0, 0)
+    row both below=l gap=1 space=1 align=start {
+      program pa code=["repeat length of hops", "  right 2"] title="A"
+      program pb code=["for each h in hops", "  right h"] title="B"
+    }
+    text ask "Two robots start on the same square with this list, one running A and one running B. Which stops further along?" width=21 right-of=l gap=1
+    choice pick options=["A", "B", "Both the same"] below=both gap=1
+  }
+
+  answer pick=pick(k, "B", "A", "Both the same")
+  hint "How many times does each repeat go round?"
+  hint "The first program moves 2 every time. Is each item of hops more than 2, less, or the same?"
+}

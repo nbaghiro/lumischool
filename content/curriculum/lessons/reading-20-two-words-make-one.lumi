@@ -1,4 +1,4 @@
-lesson reading-two-words-make-one v=1 format=teach grade=2 unit=2 subject=reading levels=[easy, medium, hard] {
+lesson reading-two-words-make-one v=1 format=teach grade=2 unit=5 subject=reading levels=[easy, medium, hard] {
   title "Two words make one"
   goal "Read a long word by finding the two short words it is made of."
 

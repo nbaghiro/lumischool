@@ -1,0 +1,27 @@
+# The three-star, made away from the sheet: an Arctic animal in the round that works from every
+# side, with its three views drawn, looked at by a grown-up and marked with the notice list.
+item art.sculpt-make v=1 stars=3 skills=[art.sculpture, art.making, reasoning.plan] {
+  title "An animal in the round"
+  difficulty v
+  let v=0..2
+  let what={pick(v, "a seal", "a puffin", "a walrus or a whale's tail")}
+  let extra={pick(v, "", " Then draw it from the front, from the left and from above.", " Then draw it from the front, from the left and from above, and carve a small relief of the same animal on a flat piece.")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x17 {
+    row top space=2 align=end at=canvas(1, 1) {
+      seal ps rock=1 facing=1
+      puffins pp count=2 facing=-1
+    }
+    text ask "Make {what} in the round, from clay, dough, soap or snow, no bigger than your hand. Turn it as you work so that it looks right from every side, and make it stand on its own.{extra}" narrate width=34 below=top gap=1
+  }
+
+  check art.made look-for="An animal made in the round that stands by itself and reads as that animal from the front, the side and above, with its main shapes (body, head, flippers or wings) in proportion and a surface that shows how it was worked; at medium and hard three views drawn that agree with each other, and at hard a relief of the same animal that stands out from or is cut into a flat ground." notice=["Stands up by itself", "Looks right from every side", "Main shapes in proportion", "Three views that agree with each other"] ask="Which side was hardest to get right, and what did you change when you turned it?"
+  hint "Start with the biggest shape, the body, then add the head and the smaller parts."
+  hint "Stop every few minutes, turn it a quarter round, and look again."
+}

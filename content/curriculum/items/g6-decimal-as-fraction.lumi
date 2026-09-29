@@ -1,0 +1,35 @@
+# The way in: a decimal in hundredths written as a fraction and cut down, which every calculation
+# below that mixes the two starts from.
+item fraction.decimal-as-fraction v=1 skills=[fractions.multiply.decimals, fractions.equivalent] {
+  title "A decimal as a fraction"
+  difficulty (den(h / 100) / 5)
+  let h={20, 25, 35, 40, 45, 60, 64, 75, 80, 85}
+  level easy {
+    let h={25, 75}
+  }
+  level hard {
+    let h={35, 45, 64, 85}
+  }
+
+  scene 36x15 {
+    decimalsquare sq hundredths=h write=false at=canvas(1, 1)
+    text ask "The shading shows how much of the hut's water tank is full: {decimals(h / 100, 2)}. Write {decimals(h / 100, 2)} as a fraction in its simplest form." narrate width=20 right-of=sq gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input top width=3
+      text slash "/"
+      number-input bottom width=3
+    }
+  }
+
+  answer top=num(h / 100) bottom=den(h / 100)
+  feedback {
+    when (top == h and bottom == 100) point=sq {
+      say "That is the right size, in hundredths. What number divides both {h} and 100?"
+    }
+    when (top == h / 10 and bottom == 10) point=sq {
+      say "The second digit is hundredths, so the fraction starts as {h} over 100."
+    }
+  }
+  hint "How many hundredths are shaded?"
+  hint "Which number divides both the top and the bottom?"
+}

@@ -1,0 +1,23 @@
+# Two stars: why a door handle is far from the hinges. The door turns about the hinges, and the same
+# moment needs a smaller push the further from them it is pushed.
+item physics.moment-door v=1 stars=2 skills=[physics.moments, reasoning.explain] {
+  title "Why the handle is there"
+
+  scene 30x34 {
+    seesaw plank left=2 atleft=5 right=5 atright=2 unit=N marks=true held=0 at=canvas(1, 0)
+    text ask "The mill's heavy door has its handle on the side furthest from the hinges. Why there? The plank above may help." narrate width=28 below=plank gap=1
+    choice pick options=["A small push far from the hinges turns it", "The door is lighter at that side", "Handles look tidier there", "The hinges push back less there"] stack=column below=ask gap=1
+  }
+
+  answer pick="A small push far from the hinges turns it"
+  feedback {
+    when (pick == "The door is lighter at that side") point=plank {
+      say "A door weighs about the same all along it. On the plank, what lets 2 N balance 5 N?"
+    }
+    when (pick == "The hinges push back less there") point=ask {
+      say "The hinges are the pivot. What changes as the push moves away from the pivot?"
+    }
+  }
+  hint "Where is the pivot when a door turns?"
+  hint "On the plank, why does the 2 N weight balance the 5 N one?"
+}

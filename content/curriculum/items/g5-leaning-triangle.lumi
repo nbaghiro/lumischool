@@ -1,0 +1,29 @@
+# The second reasoning question in the core: the height of a leaning triangle falls outside it, and
+# the area is still half of base times height.
+item area.leaning-triangle v=1 skills=[area.triangles, reasoning.structure] {
+  title "A triangle that leans"
+  difficulty (b * h / 10)
+  let b=3..6 h=4..8 s=7..10
+  where (b * h % 2 == 0 and s > b)
+  level easy {
+    let b={4, 6} h=4..5
+  }
+  level hard {
+    let b={3, 5} h=6..8
+  }
+
+  scene 31x31 {
+    areashape flag kind=triangle base=b height=h shift=s unit=m at=canvas(1, 1)
+    text ask "A pennant on the city wall leans out past its base. Ben says the height cannot be used because it is outside the pennant. What is its area in square metres?" narrate width=30 below=flag gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (b * h / 2)
+  feedback {
+    when (answer == b * h) point=flag {
+      say "Two of these make a parallelogram with the same base and height. The pennant is half."
+    }
+  }
+  hint "What is the base, and how far is the top corner straight above the line of the base?"
+  hint "Does a triangle's area depend on where the top is, or only on how high it is?"
+}

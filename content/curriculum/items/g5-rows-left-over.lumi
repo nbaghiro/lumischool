@@ -1,0 +1,35 @@
+# The three-star: the smallest number that leaves the same remainder for three divisors, which is one
+# more than a common multiple. Nothing on the page says so, and trying numbers works too.
+item number.rows-left-over v=1 stars=3 skills=[number.lcm, reasoning.constraints] {
+  title "Always some left over"
+  difficulty lcm(lcm(a, b), c)
+  let s=0..3
+  let a={pick(s, 2, 3, 4, 3)}
+  let b={pick(s, 3, 4, 5, 4)}
+  let c={pick(s, 4, 6, 6, 8)}
+  let r={pick(s, 1, 1, 1, 2)}
+  level easy {
+    let s={0}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 33x12 {
+    telescope scope tilt=50 at=canvas(1, 1)
+    text ask "The observatory's visitors stand in rows. In rows of {a}, {b} or {c}, there {if r == 1 then \"is\" else \"are\"} always {r} left over. What is the smallest number of visitors there could be, more than {c}?" narrate width=20 right-of=scope gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (lcm(lcm(a, b), c) + r)
+  feedback {
+    when (answer == a * b * c + r) point=ask {
+      say "That works, but a smaller number does too. Which number do {a}, {b} and {c} all go into first?"
+    }
+    when (answer == lcm(lcm(a, b), c)) point=ask {
+      say "In rows of {a}, that leaves nothing over. Add the {r} left over each time."
+    }
+  }
+  hint "Take away the {r} left over. What must the rest divide by?"
+  hint "Find the smallest number that {a}, {b} and {c} all go into."
+}

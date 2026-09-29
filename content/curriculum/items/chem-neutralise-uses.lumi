@@ -1,0 +1,32 @@
+# Neutralising at work: lime on acid soil, milk of magnesia (magnesium hydroxide, an alkali) for too
+# much stomach acid, and vinegar or citric acid to dissolve limescale, which is calcium carbonate.
+item chem.neutralise-uses v=1 skills=[chemistry.neutralising, chemistry.acids] {
+  title "Which one would you use?"
+  difficulty k
+  let k=0..2 r=0..1
+  let q={pick(k, "The miller's garden soil tests at pH 5, too acid for his cabbages. What should he dig in?", "The miller has too much acid in his stomach after dinner. What might a grown-up give him?", "The mill's kettle is crusted white with limescale, which is calcium carbonate. What would get it off?")}
+  let right={pick(k, "garden lime, an alkali", "milk of magnesia, an alkali", "vinegar, an acid")}
+  let w1={pick(k, "vinegar, an acid", "lemon juice, an acid", "washing soda, an alkali")}
+  let w2={pick(k, "more rain water", "more of the same dinner", "salt water")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 35x28 {
+    phscale p liquids=["vinegar", "rain", "magnesia", "limewater"] letters=1 names=1 at=canvas(1, 0)
+    text ask "{q}" narrate width=34 below=p gap=1
+    choice pick options=[pick(r, right, w1), pick(r, w1, right), w2] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "To bring something back towards 7, add something from the other side of 7."
+    }
+  }
+  hint "{if k == 2 then \"Limescale is like chalk. What makes chalk fizz away?\" else \"Is the problem an acid or an alkali?\"}"
+  hint "Which choice is on the other side of 7 from the problem?"
+}

@@ -1,0 +1,32 @@
+# The whole from a fraction of it: the part that is known, used or left, is shared into its parts
+# and multiplied back up to the whole, which is dividing by the fraction.
+item fraction.fuel-left v=1 skills=[fractions.of-amount, fractions.divide, reasoning.work-backwards] {
+  title "How much at the start"
+  difficulty (v + b / 5)
+  let v=0..1 a=1..5 b={3, 4, 5, 6, 8} k={2, 3, 4, 5}
+  where (a < b and gcd(a, b) == 1 and a != b - a)
+  level easy {
+    let v={0} b={3, 4}
+  }
+  level hard {
+    let v={1} b={5, 6, 8}
+  }
+
+  scene 34x12 {
+    fraction bar n=b k=a shape=bar at=canvas(1, 1)
+    text ask "The team has burned {a}/{b} of the fuel they set out with. {if v == 0 then \"The fuel burned so far is\" else \"The fuel left is\"} {pick(v, a * k, (b - a) * k)} litres. How many litres did they set out with?" narrate width=32 below=bar gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (b * k)
+  feedback {
+    when (v == 0 and answer == a * k * a / b) point=bar {
+      say "That is {a}/{b} of what was burned. The litres burned are the part; the start is the whole."
+    }
+    when (v == 1 and answer == (b - a) * k * b / a) point=bar {
+      say "The litres left are the unshaded part of the bar, not the {a}/{b} that was burned."
+    }
+  }
+  hint "Which part of the bar do the litres in the question fill?"
+  hint "How many litres is one small part of the bar? How many small parts make the whole?"
+}

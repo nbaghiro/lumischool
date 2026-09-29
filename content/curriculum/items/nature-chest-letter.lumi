@@ -1,0 +1,39 @@
+# The way in: the lettered chest, and the part that does a named job. The heart and the lungs are
+# the plain two; the windpipe and the blood vessel have to be found by what they are.
+item nature.chest-letter v=1 skills=[nature.circulation] {
+  title "Which part?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let job={pick(k, "the heart, the pump that pushes blood round the body", "a lung, where the air breathed in gives oxygen to the blood", "the windpipe, the tube air goes down on its way to the lungs", "a blood vessel, one of the tubes that carries blood between the heart and the body")}
+  let letter={pick(k, "C", "B", "A", "D")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x17 {
+    parts fig of=chest at=canvas(1, 1)
+    text ask "Ada has climbed the steps beside the waterfall, and she can feel her chest going up and down. Which letter points at {job}?" narrate width=19 right-of=fig gap=2
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=letter
+  feedback {
+    when (k == 0 and pick != letter) point=fig {
+      say "The heart sits between the two lungs, low in the chest. Look for the part tucked between them."
+    }
+    when (k == 1 and pick != letter) point=fig {
+      say "There are two lungs, one on each side of the chest, and they fill most of it."
+    }
+    when (k == 2 and pick != letter) point=fig {
+      say "Air comes in at the top, through the neck. Find the tube with rings that runs down from there."
+    }
+    when (k == 3 and pick != letter) point=fig {
+      say "A blood vessel leads out of the heart. Find the tube that joins the heart."
+    }
+  }
+  hint "Where in the chest does the part the question names sit: at the top, at the sides, or between?"
+  hint "Tubes carry air down to the lungs, and other tubes carry blood to and from the heart. Which part or which tube is it?"
+}

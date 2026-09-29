@@ -1,0 +1,32 @@
+# The two-star reason: a line of the diary that looks odd until it is read with the log and with the
+# earlier entry shown beside it. Each wrong reason misreads the log or the entry, so all of them need
+# the page.
+item reading.diary-why v=1 stars=2 skills=[reading.text-types, reading.inference, reasoning.explain] {
+  title "Why did she write that?"
+  difficulty pick(k, 1, 1, 2)
+  let k=0..2
+  let right={pick(k, "The sun does not set", "It broke two days ago", "A gale kept them in")}
+  let wrong1={pick(k, "The log says sunny", "It was the calm day", "They went furthest")}
+  let wrong2={pick(k, "She wrote it at noon", "It broke on 5 July", "The runner broke")}
+
+  scene 35x28 {
+    text ask "{pick(k, \"On 3 July Noor writes, \\\"It is eleven at night and bright as noon.\\\" Why is that not a mistake?\", \"On 6 July Noor writes, \\\"Pim's mended runner held.\\\" Why was it worth writing down?\", \"Noor's longest diary entry is for 5 July, the day the log says 0 km. What is the best reason?\")}" at=canvas(1, 1) width=34
+    passage entry title="{pick(k, \"From 1 July\", \"From 4 July\", \"From 4 July\")}" text="{pick(k, \"Aunt Lind says that up here in summer the sun goes round and round the sky and never dips below the sea.\", \"Pim's sledge runner cracked on a ridge of ice, and we mended it with wire.\", \"Pim's sledge runner cracked on a ridge of ice, and we mended it with wire.\")}" width=34 numbers=false below=ask gap=1
+    row bottom below=entry gap=1 space=1 align=start {
+      table log cols=3 head=["Date", "km", "Weather"] cells=["3 July", "14", "sunny", "4 July", "6", "windy", "5 July", "0", "gale", "6 July", "18", "calm", "7 July", "10", "sunny"]
+      choice pick options=[pick(k, wrong1, right, wrong2), pick(k, right, wrong2, wrong1), pick(k, wrong2, wrong1, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == wrong1) point=log {
+      say "That is in the log, but it does not explain the line. Read the entry above the log as well."
+    }
+    when (pick == wrong2) point=entry {
+      say "Check that against the dates in the entry and the log. Do they agree with it?"
+    }
+  }
+  hint "The line on its own looks odd. What do the entry and the log add to it?"
+  hint "Which reason could you point to in the log or the diary?"
+}

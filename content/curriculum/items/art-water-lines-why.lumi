@@ -1,0 +1,32 @@
+# The two-star reason: Hokusai's falls are many separate lines with paper between them, and the gaps
+# read as light and movement.
+item art.water-lines-why v=1 stars=2 skills=[art.water, art.artists, reasoning.explain] {
+  title "Why the falls are drawn in lines"
+  difficulty k
+  let k=0..1 r=0..2
+  let print={pick(k, "the Kirifuri waterfall", "the Amida waterfall")}
+  let right={"The bare gaps read as light moving down"}
+  let w1={"Lines were quicker to carve"}
+  let w2={"Real waterfalls are striped"}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x27 {
+    waterfall falls drops=1 rainbow=0 at=canvas(1, 1)
+    text ask "In his print of {print}, Hokusai drew the falling water as many long separate lines with thin gaps of bare paper between them, not as one flat blue. Why does that look more like falling water?" width=21 right-of=falls gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column at=canvas(1, 16)
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=falls {
+      say "Look at a real waterfall or a running tap: it is not striped, but it flickers with light. What do the gaps of bare paper do?"
+    }
+  }
+  hint "What does the eye see in the thin gaps between the lines?"
+  hint "Does a flat patch of blue seem to move? Do lines running down seem to?"
+}

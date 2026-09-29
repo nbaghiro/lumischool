@@ -1,0 +1,28 @@
+# A distance-time line through zero read between its labelled points, by finding the distance for one
+# hour first.
+item proportion.graph-between v=1 skills=[proportion.graphs, proportion.direct] {
+  title "Between the labels"
+  difficulty (s / 3 + (if t > 5 then 1 else 0))
+  let s={3, 4, 5, 6} t={3, 5, 7}
+  level easy {
+    let t={3} s={3, 4}
+  }
+  level hard {
+    let t={5, 7} s={5, 6}
+  }
+
+  scene 35x16 {
+    linegraph g labels=["0 h", "2 h", "4 h", "6 h", "8 h"] values=[0, 2 * s, 4 * s, 6 * s, 8 * s] max=48 per=4 step=8 color=berry at=canvas(1, 0)
+    text ask "The graph shows how far a sledge goes across the ice at a steady pace, in kilometres. How far does it go in {t} hours?" narrate width=13 right-of=g gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (s * t)
+  feedback {
+    when (answer == 2 * s * t) point=g {
+      say "Each step along the bottom is 2 hours, not 1. How far is it in 1 hour?"
+    }
+  }
+  hint "How far does the sledge go in 2 hours? In 1 hour?"
+  hint "How many times as long as 1 hour is {t} hours?"
+}

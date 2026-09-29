@@ -1,0 +1,64 @@
+lesson chemistry-salt-and-the-freezing-point v=1 format=teach grade=6 unit=1 subject=chemistry levels=[easy, medium, hard] {
+  title "Salt and the freezing point of water"
+  goal "Read how far salt lowers the temperature where water freezes, and use it to keep water from freezing."
+
+  look {
+    scene 28x14 {
+      row all at=canvas(1, 0) space=2 align=end {
+        thermometer th from=-6 to=6 step=2 value=-1 unit="°C"
+        icecliff ice height=2 floes=2
+      }
+    }
+    say """
+      At -1 °C the pond behind the research hut has frozen, but the sea in front of the ice shelf
+      is still water. Fresh water freezes at 0 °C. Salt dissolved in water pulls the freezing point
+      down: the sea, with 35 g of salt in each litre, freezes at about -2 °C, and water with 10 g of
+      salt in every 100 g freezes at about -6 °C. The more salt, the lower it goes, until about
+      -21 °C, where even the saltiest water freezes.
+      """
+  }
+  do {
+    practice chem.fresh-or-sea count=1 seed=1
+    level easy {
+      worked chem.salt-freeze-table w=0 r=2 level=medium
+    }
+    practice chem.salt-freeze-table count=2 seed=3 easy-seed=1 hard-seed=2
+    practice chem.salt-freeze-graph count=2 seed=4 easy-seed=1 hard-seed=2
+    practice chem.sea-salt-freeze count=2 seed=1
+  }
+  story {
+    show chem.path-salt w=0 q=-5 m=2 easy-q=-2 hard-w=1 hard-q=-8
+    level hard {
+      show chem.path-salt w=1 q=-12 m=3
+    }
+  }
+  try stars=2 {
+    show chem.why-salt-melts k=0 r=2 hard-k=1
+  }
+  try stars=3 {
+    show chem.pour-brine k=1 a=0 easy-k=0 hard-a=10
+  }
+  remember {
+    say "Salt in water lowers the temperature where it freezes: the sea freezes at about -2 °C, and no salty water stays liquid below -21 °C."
+  }
+
+  grown-ups """
+    The idea is that dissolved salt lowers the freezing point of water, measurably and by more as
+    more salt goes in, and that this is why the sea stays liquid when a pond freezes and why salt
+    clears an icy path. The numbers come from a published table for sodium chloride brine, rounded
+    to whole degrees; sea water freezes at about -1.9 °C. The wrong idea to watch for is that salt
+    melts ice by warming it. Salt is no warmer than the ice: it dissolves in the thin wet layer on
+    top, and that salty water cannot freeze until it is colder. The two-star question asks for that
+    reason, or why salt stops working below about -21 °C. The three-star question pours two salty
+    jugs together, where the salt in each 100 g is the average of the two. If the child reads
+    -6 as 6, stay here another day with a thermometer and a number line. Off the page: put two
+    ice cubes on two saucers, sprinkle salt on one, and watch which melts first; nothing here is
+    heated, and nothing is tasted.
+    """
+  level easy {
+    grown-ups "At this level the table is read once in the teacher's pen, the table and the graph ask for a freezing point, the jug asks for the grams of salt, the path is at -2 °C, the two-star asks why salt melts ice, and the three-star pours fresh water into salty water."
+  }
+  level hard {
+    grown-ups "At this level the table and the graph are worked back to the salt and asked how many degrees lower, the jug asks for the salt in each 100 ml, the path is worked for all its melt water, the two-star asks why salt fails at -25 °C, and the three-star pours two salty jugs together."
+  }
+}

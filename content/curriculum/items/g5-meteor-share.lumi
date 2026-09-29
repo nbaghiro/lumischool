@@ -1,0 +1,31 @@
+# The way in: a part of a group written as a percent, by making the whole a hundred.
+item percent.meteor-share v=1 skills=[percentages.find-percent] {
+  title "What percent saw one"
+  difficulty ((if n == 50 then 0 else if n == 20 then 1 else 2) + k / n)
+  let n={20, 25, 40, 50} k={3, 7, 9, 12, 18}
+  where (k < n and 100 * k % n == 0)
+  level easy {
+    let n={50, 20}
+  }
+  level hard {
+    let n={40, 25}
+  }
+
+  scene 33x10 {
+    shootingstar star sparkles=3 facing=1 at=canvas(1, 1)
+    text ask "{n} people watched the sky from the observatory, and {k} of them saw a shooting star. What percent of them saw one?" narrate width=22 right-of=star gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text pc "%"
+    }
+  }
+
+  answer (100 * k / n)
+  feedback {
+    when (answer == k) point=ask {
+      say "That is how many saw one. Percent means out of a hundred, and there were {n} people, not 100."
+    }
+  }
+  hint "How many lots of {n} make 100?"
+  hint "Multiply {k} by the same number."
+}

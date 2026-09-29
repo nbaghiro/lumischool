@@ -1,0 +1,72 @@
+lesson physics-an-electromagnet v=1 format=teach grade=5 unit=7 subject=physics levels=[easy, medium, hard] {
+  title "An electromagnet"
+  goal "Make an electromagnet stronger, and show with a fair test that more turns of wire and more cells each make it hold more clips."
+
+  look {
+    scene 33x16 {
+      row all at=canvas(1, 0) space=1 align=start {
+        electromagnet a turns=20 cells=1 core=0 closed=1 show=1 tag="A"
+        electromagnet b turns=40 cells=1 core=0 closed=1 show=1 tag="B"
+      }
+    }
+    say """
+      Wind a wire round an iron nail, join it to a cell, close the switch, and the nail becomes a
+      magnet: an electromagnet, with a north pole at one end and a south pole at the other. Turn the
+      cell round and the poles swap. Open the switch and it lets go. A and B are a fair test,
+      because only the number of turns changes, and here twice the turns hold twice the clips. More
+      cells make it stronger too. This coil holds about one clip for every ten turns on each cell,
+      its own rule found by testing, but round wood or aluminium it holds none, because only iron
+      and steel become a magnet.
+      """
+  }
+  do {
+    practice physics.coil-count count=1 seed=1 easy-seed=2 hard-seed=5
+    level easy {
+      worked physics.coil-predict t=20 c=2 level=medium
+    }
+    practice physics.coil-predict count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.coil-fair count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.coil-core count=1 seed=2 easy-seed=1 hard-seed=3
+    level hard {
+      show physics.coil-predict t=50 c=2
+    }
+    practice physics.coil-switch count=1 seed=1
+    show physics.coil-double v=0 easy-v=1 hard-v=2
+  }
+  story {
+    show physics.oldcity-gate c=2 add=20 easy-c=1 easy-add=10 hard-c=3
+  }
+  try stars=2 {
+    show physics.coil-poles v=0 easy-v=1 hard-v=2
+  }
+  try stars=3 {
+    show physics.coil-work-back v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "An electromagnet is a magnet only while the switch is closed, and more turns or more cells make it stronger."
+  }
+
+  grown-ups """
+    Two ideas get in the way here. One is that every metal can be made a magnet, so the aluminium
+    rod is a surprise; the other is that a fair test can change two things if both are "making it
+    stronger". The fair-test questions ask for exactly one change, and the question on doubling asks
+    the child to work out each change by the rule rather than guess. Listen for the rule in words:
+    tens of turns, times the cells. The rule is this coil's, a tidy version of what a test gives: a
+    real nail holds roughly more clips for more turns and more cells, but not exactly in step, since
+    the iron fills up with magnetism and the cells cannot push ever more current. The two-star
+    question is about poles: the current's direction sets which end is north, so turning the cell
+    round swaps them. If multiplying the cells in is not yet secure, count the clips on the drawings
+    for one cell and for two before going on, and stay here another day if needed. Off the page, a
+    grown-up can help wind thin insulated wire round a steel nail and join it to a 1.5 V battery for
+    a few seconds at a time, since the wire warms up, then count the paper clips for 20 and 40
+    turns, and hold a compass beside the nail's point before and after turning the battery round.
+    The three-star question is worked backwards: the clips one more cell adds are the clips each
+    cell gives, which says the turns.
+    """
+  level easy {
+    grown-ups "At this level the coils are short or on one cell, a worked example predicts first, the fair tests change the turns or keep to one change, the guard winds on ten turns with one cell, the cell is turned round once, and the three-star lock goes from 3 clips to 6."
+  }
+  level hard {
+    grown-ups "At this level the coils have many turns on several cells, the fair tests hide a change of rod, the guard's lock has three cells, the coil to double has three cells already, the cell is turned round twice, and the three-star lock goes from 10 clips to 15."
+  }
+}

@@ -1,0 +1,41 @@
+# The two-star reason: the passive is not always better. In Isla's diary the active (B) is right,
+# since she is the doer (k=0); in the report the passive (A) is right, since the method matters
+# (k=1). The right reason is offered for both versions, so the versions themselves must be read.
+item writing.passive-choose v=1 stars=2 skills=[writing.passive, writing.audience, reasoning.explain] {
+  title "Active or passive, and why?"
+  difficulty k
+  let k=0..1 r=0..2
+  let where={pick(k, "Isla's diary", "the team's report")}
+  let two={pick(k, "A: A walrus was seen by me on the ice today. B: I saw a walrus on the ice today.", "A: A hole was drilled, and a rope was lowered into it. B: We drilled a hole, and I dropped the rope in.")}
+  let right={pick(k, "B: in a diary, who did it is the point", "A: in a report, what was done is the point")}
+  let w1={pick(k, "A: in a diary, who did it is the point", "B: in a report, what was done is the point")}
+  let w2={pick(k, "A: the passive sounds more careful and grown-up", "B: naming who did it gives the reader more facts")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x32 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      icecliff ice height=1 floes=2
+      hut h pictures=6
+    }
+    passage p title="Two ways to write it" text="{two}" width=33 numbers=false below=pics gap=1
+    text ask "Which is better for {where}, and why?" narrate width=33 below=p gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=p {
+      say "The reason is a good one, but check which version does it. Where is the subject, the doer, in each: first, after by, or left out?"
+    }
+    when (pick == w2) point=p {
+      say "Think about who reads it and what they want to know. The passive fits when the doer does not matter; the active fits when the doer is the point."
+    }
+  }
+  hint "Who is going to read this, and what do they need to know?"
+  hint "Does it matter to that reader who did it?"
+}

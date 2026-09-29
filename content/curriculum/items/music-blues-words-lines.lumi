@@ -1,0 +1,40 @@
+# The blues verse: three lines of four bars, the first line sung twice and the third answering it
+# (AAB). Line 2 starts in bar 5 on chord IV, and line 3 in bar 9 on V.
+item music.blues-words-lines v=1 skills=[music.blues, music.form] {
+  title "Three lines of words"
+  difficulty q
+  let q=0..2
+  let ask={pick(q, "In which bar does the second line of words start?", "In which bar is the new line, the answer, first sung?", "In how many bars of the answer line is chord I played?")}
+  let right={pick(q, 5, 9, 2)}
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x28 {
+    row top space=2 align=start at=canvas(1, 1) {
+      table chart cols=5 head=["Bars", "1st", "2nd", "3rd", "4th"] cells=["1 to 4", "I", "I", "I", "I", "5 to 8", "IV", "IV", "I", "I", "9 to 12", "V", "IV", "I", "I"]
+      kingfisher bird flying=0 facing=-1
+    }
+    text words "The water keeps on falling, falling down the stone. The water keeps on falling, falling down the stone. The kingfisher sits and waits there, all day on his own." width=34 below=top gap=1
+    text ask "A blues verse has three lines of words, one line to each line of four bars. The first line is sung twice, then a new line answers it. {ask}" narrate width=34 below=words gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (q == 0 and answer == 2) point=chart {
+      say "Each line of words lasts a whole line of four bars. Where does the second line of the chart start?"
+    }
+    when (q == 1 and answer == 5) point=chart {
+      say "Bar 5 starts the second line, which repeats the first. The answer is the third line."
+    }
+    when (q == 2 and answer != 2) point=chart {
+      say "The answer line is bars 9 to 12. Read the numerals in that line."
+    }
+  }
+  hint "Which line of the chart goes with which line of words?"
+  hint "Read the first column of the chart. Which bars does each line hold?"
+}

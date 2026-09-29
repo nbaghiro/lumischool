@@ -1,4 +1,4 @@
-lesson coding-colour-by-code v=1 format=teach grade=1 unit=3 subject=coding levels=[easy, medium, hard] {
+lesson coding-colour-by-code v=1 format=teach grade=1 unit=6 subject=coding levels=[easy, medium, hard] {
   title "Colour by code"
   goal "Colour a picture on squared paper from a program that says each row's colours."
 

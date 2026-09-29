@@ -1,0 +1,34 @@
+# What a comparison tells you: the reader takes from the second thing only what fits the first.
+# The wrong options take the comparison literally, or take the wrong part of it.
+item reading.figure-means v=1 skills=[reading.figurative, reading.inference] {
+  title "What does it tell you?"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let right={pick(k, "The moon was round and shining.", "It opened slowly and gently.", "The lights hung in long, soft folds.", "The comet's tail was long and thin.")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 35x32 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        poem p title="The star cliffs at night" lines=["The dome is a shell on the edge of the land,", "it opens its lid like a slow, sleepy hand.", "The moon is a coin that the sea cannot spend,", "and the comet's a scarf with a frayed silver end.", "The northern lights fall like curtains of green", "that ripple and fold where the dark has been."] rhymes=[-1, -1, -1, -1, -1, -1] width=26
+        moon m phase=1
+      }
+      text ask "{pick(k, \"The moon is a coin. What does that tell you about the moon?\", \"The dome opens like a slow, sleepy hand. What does that tell you?\", \"The northern lights fall like curtains of green. What does that tell you?\", \"The comet is a scarf with a frayed end. What does that tell you?\")}" width=34
+      choice pick options=[pick(k, "The moon was made of metal.", "It opened slowly and gently.", "The lights were made of cloth.", "The comet was made of wool."), pick(k, "The moon was round and shining.", "It had fingers.", "The lights hung in long, soft folds.", "The comet's tail was long and thin."), pick(k, "The moon was worth a lot.", "The astronomer was sleepy.", "The lights were closing the show.", "The comet was cold.")] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "The moon was made of metal." or pick == "It had fingers." or pick == "The lights were made of cloth." or pick == "The comet was made of wool.") point=p {
+      say "That takes the comparison as if it were true. Which part of the second thing is like the first?"
+    }
+  }
+  hint "Picture the second thing. What is it like: its shape, its movement, its colour?"
+  hint "Which of those is true of the dome, the moon, the lights or the comet?"
+}

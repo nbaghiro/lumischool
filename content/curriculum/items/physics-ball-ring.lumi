@@ -1,0 +1,36 @@
+# The ball and ring: at 20 °C the brass ball just slips through the brass ring, a heated ball grows
+# and sticks, and a heated ring grows all over, hole and all. v picks the two temperatures.
+item physics.ball-ring v=1 skills=[physics.heat, reasoning.predict] {
+  title "Will the ball go through?"
+  difficulty (if v == 1 or v == 2 then 1 else 0)
+  let v=0..3
+  level easy {
+    let v={0, 3}
+  }
+  level hard {
+    let v={1, 2}
+  }
+  let b={pick(v, 300, 300, 20, 200)}
+  let r={pick(v, 20, 300, 300, 20)}
+
+  scene 30x27 {
+    expansion t mode=1 ball=b ring=r show=0 at=canvas(1, 0)
+    text ask "At 20 °C this brass ball just slips through the hole in the brass ring. Now the ball is at {b} °C and the ring at {r} °C. Will the ball drop through the ring?" narrate width=28 below=t gap=1
+    choice pick options=["Yes", "No"] stack=row below=ask gap=1
+  }
+
+  check physics.forces of=t pick=passes
+  feedback {
+    when (pick == "Yes" and v == 0 or pick == "Yes" and v == 3) point=t {
+      say "The hot ball has grown a little. The ring is still cold. Is the hole any bigger than it was?"
+    }
+    when (pick == "No" and v == 2) point=t {
+      say "A heated ring grows all over, and its hole grows with it."
+    }
+    when (pick == "No" and v == 1) point=t {
+      say "Both are the same brass at the same temperature, so both have grown by the same share."
+    }
+  }
+  hint "Which of the two has been heated: the ball, the ring, or both?"
+  hint "Heating makes brass a little bigger. Does the ball still fit the hole?"
+}

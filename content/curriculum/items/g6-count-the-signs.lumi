@@ -1,0 +1,35 @@
+# The two-star: the sign of a long product comes from how many of its numbers are negative, odd or
+# even, not from whether negatives outnumber positives as Ana thinks.
+item negative.count-the-signs v=1 stars=2 skills=[number.negatives.multiply, reasoning.find-the-mistake] {
+  title "Ana's rule"
+  difficulty t
+  let t=0..3
+  level easy {
+    let t={0}
+  }
+  level medium {
+    let t={1, 2}
+  }
+  level hard {
+    let t={3}
+  }
+
+  scene 36x24 {
+    sign board lines=[pick(t, "-1  -2  3", "-2  1  3  5", "-1  -2  -3  -1  4", "-1  2  -3  1  -2  5  1")] kind=board color=sky at=canvas(1, 1)
+    text ask "These numbers are multiplied together. Ana says: when more of the numbers are negative than positive, the product is below zero, and otherwise it is above. Is the product above or below zero, and how far from zero is it?" narrate width=34 below=board gap=1
+    choice pick options=["above zero", "below zero"] below=ask gap=1
+    row eq below=pick gap=1 space=1 align=centre {
+      text far "Distance from zero:"
+      number-input size width=4
+    }
+  }
+
+  answer pick=pick(t, "above zero", "below zero", "above zero", "below zero") size=pick(t, 6, 30, 24, 60)
+  feedback {
+    when (pick == pick(t, "below zero", "above zero", "below zero", "above zero")) point=board {
+      say "That is Ana's rule. Multiply two of the negative numbers first: is their product above or below zero?"
+    }
+  }
+  hint "What sign does the product of two negative numbers have?"
+  hint "Pair the negative numbers up. Is one left over?"
+}

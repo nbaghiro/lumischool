@@ -1,0 +1,34 @@
+# A decimal back to a fraction: hundredths over a hundred, then the simplest form.
+item quotient.from-decimal v=1 skills=[fractions.decimals, fractions.equivalent] {
+  title "Hundredths to a fraction"
+  difficulty (den(h / 100) / 10)
+  let h={20, 25, 40, 50, 60, 75, 35, 45, 12, 85, 64}
+  level easy {
+    let h={20, 25, 50, 75}
+  }
+  level hard {
+    let h={12, 35, 64, 85}
+  }
+
+  scene 36x16 {
+    decimalsquare wall hundredths=h write=false at=canvas(1, 1)
+    text ask "{decimals(h / 100, 2)} of the old city wall has been mended, shaded on the square. Write {decimals(h / 100, 2)} as a fraction in its simplest form." narrate width=20 right-of=wall gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input top width=2
+      text slash "/"
+      number-input bottom width=3
+    }
+  }
+
+  answer top=num(h / 100) bottom=den(h / 100)
+  feedback {
+    when (top == h and bottom == 100 and den(h / 100) != 100) point=wall {
+      say "That is right in hundredths. Can the top and the bottom be divided by the same number?"
+    }
+    when (top == h and bottom == 10) point=wall {
+      say "The second place after the point is hundredths. Count the small squares out of a hundred."
+    }
+  }
+  hint "How many hundredths is it? Write that over 100."
+  hint "What number divides both {h} and 100?"
+}

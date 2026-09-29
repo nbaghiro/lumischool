@@ -1,0 +1,29 @@
+# Two stars: closing a second branch does not dim the first bulb, since each branch gets the cells'
+# whole push; the checker compares the two circuits. c is the cells.
+item physics.parallel-second-branch v=1 stars=2 skills=[physics.circuits, reasoning.explain] {
+  title "Does the second bulb dim the first?"
+  let c=1..2
+
+  scene 36x40 {
+    row two at=canvas(1, 0) space=2 align=start {
+      parallel a cells=c branches=2 closed=[1, 0] show=0 symbols=0
+      parallel b cells=c branches=2 closed=[1, 1] show=0 symbols=0
+    }
+    text ask "Kit closes the second switch, going from the circuit on the left to the one on the right. Mo says bulb A will get dimmer, as when a second bulb is added to a loop. Is bulb A on the right brighter, dimmer or the same, and why?" narrate width=32 below=two gap=1
+    choice pick options=["Brighter", "Dimmer", "The same"] stack=row below=ask gap=1
+    choice why options=["Each branch gets the cells' whole push", "The two bulbs share the cells' push", "Bulb B uses the current up first"] stack=column below=pick gap=1
+  }
+
+  answer why="Each branch gets the cells' whole push"
+  check physics.circuit of=a vs=b pick=brighter
+  feedback {
+    when (pick == "Dimmer") point=b {
+      say "Sharing happens when bulbs are one after another in one loop. Is bulb A in a loop with bulb B here?"
+    }
+    when (why == "Bulb B uses the current up first") point=b {
+      say "Current is not used up along a wire. Follow bulb A's branch: does its current pass through B?"
+    }
+  }
+  hint "Follow the path from the cells through bulb A and back. Does it go through bulb B?"
+  hint "If A's path is the same in both circuits, what happens to A's brightness?"
+}

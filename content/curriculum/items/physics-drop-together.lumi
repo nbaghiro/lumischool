@@ -1,0 +1,32 @@
+# Three stars: a plan from speeds. The tubes show how far each shape sinks in one second, the tubes
+# are 60 cm deep, and the slower shape has to be let go first by the difference in their times.
+item physics.drop-together v=1 stars=3 skills=[physics.speed, physics.water-resistance, reasoning.planning] {
+  title "Arriving together"
+  difficulty (slow - fast)
+  let v=0..3
+  let a={pick(v, "ball", "cube", "flat", "flat")}
+  let b={pick(v, "pointed", "pointed", "cube", "pointed")}
+  let slow={pick(v, 3, 4, 10, 10)}
+  let fast={pick(v, 2, 2, 4, 2)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 27x17 {
+    droptube tb shapes=[a, b] time=1 grams=[20, 20] at=canvas(1, 0)
+    text ask "The tubes are 60 cm deep. Ava wants A and B to reach the bottom at the same moment. How many seconds after letting A go should she let B go?" narrate width=15 right-of=tb gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (slow - fast)
+  feedback {
+    when (answer == slow) point=tb {
+      say "That is how long A takes. B needs some of that time to sink too."
+    }
+  }
+  hint "How long does each shape take to sink 60 cm?"
+  hint "B is faster, so it waits. For how long?"
+}

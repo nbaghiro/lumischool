@@ -1,0 +1,30 @@
+# A fall with low gravity: each second the moon's pull adds a little to the speed, and the speed comes
+# off the height. On the Earth the same program adds six times as much each second, so the moon's
+# pull is always 1 and the Earth's 6.
+item coding.orbit-fall v=1 skills=[coding.simulation, coding.variables, coding.repetition] {
+  title "A dropped spanner"
+  difficulty (h / 20 + (if g == 6 then 1 else 0))
+  let h={20, 30, 40, 60} g={1, 6}
+  level easy {
+    let g={1} h={20, 30}
+  }
+  level hard {
+    let g={1, 6} h={40, 60}
+  }
+
+  scene 36x27 {
+    program p code=["set height to {h}", "set speed to 0", "set seconds to 0", "repeat until height is less than 1", "  add {g} to speed", "  take speed from height", "  add 1 to seconds"] text=true at=canvas(0, 0)
+    lander l rungs=5 right-of=p gap=1
+    text ask "An astronaut drops a spanner from the top of the lander, {h} steps above the ground. {if g == 6 then \"On the Earth the pull adds 6 to the speed each second.\" else \"On the moon the pull is gentle.\"} What does seconds hold when it lands?" width=34 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="value(seconds)"
+  feedback {
+    when (answer == h / g) point=p {
+      say "The speed grows every second, so the spanner falls further each second than the one before."
+    }
+  }
+  hint "Keep speed and height side by side, and change them each second."
+  hint "Each second, first make the speed bigger, then take the new speed from the height."
+}

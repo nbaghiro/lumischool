@@ -1,0 +1,28 @@
+# A cooling curve: water on the balcony on a frosty night stays at 0 while it freezes, however cold
+# the air, until the last of it is ice. How long it stays flat is read off the minutes.
+item chem.freeze-minutes v=1 skills=[chemistry.heating, data.line-graph] {
+  title "How long did it take to freeze?"
+  difficulty (k + (if e == 10 then 1 else 0))
+  let k=0..2 e={5, 10}
+  level easy {
+    let k=0..1 e={5}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 35x22 {
+    heatcurve curve temps=[pick(k, 20, 20, 10), pick(k, 10, 10, 0), pick(k, 0, 0, 0), pick(k, 0, 0, 0), pick(k, 0, 0, 0), pick(k, -10, 0, 0), pick(k, -15, 0, 0), pick(k, -20, -10, -10)] every=e min=-20 max=20 step=10 at=canvas(1, 0)
+    text ask "A bowl of water was left out on the observatory balcony on a frosty night, and its temperature read every {e} minutes. For how many minutes did it stay at 0 °C while it froze?" narrate width=34 below=curve gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check chem.state of=curve answer=flat-for
+  feedback {
+    when (answer == 0) point=curve {
+      say "0 is the temperature of the flat part. The question asks how many minutes it lasted."
+    }
+  }
+  hint "Find the first reading on the flat part and the last one. Which minutes are they at?"
+  hint "How many gaps of {e} minutes are between the first and the last?"
+}

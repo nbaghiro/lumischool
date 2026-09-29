@@ -1,0 +1,32 @@
+# Time from distance and speed: the unknown moves to the time, found by sharing the distance into
+# the metres flown each second.
+item speed.kingfisher-bridge v=1 skills=[rates.speed, rates.distance-time] {
+  title "Under the bridge"
+  difficulty (s / 5 + t / 10)
+  let s={8, 10, 12, 15} t={6, 8, 9, 12, 14, 20}
+  level easy {
+    let s={10} t={6, 8, 9}
+  }
+  level hard {
+    let s={12, 15} t={12, 14, 20}
+  }
+
+  scene 35x14 {
+    ropebridge bridge planks=10 gaps=0 at=canvas(1, 1)
+    kingfisher bird flying=1 facing=1 below=bridge gap=1
+    text ask "A kingfisher flies down the gorge at {s} metres per second. How many seconds does it take to fly {s * t} m, from the rope bridge to the waterfall?" narrate width=16 right-of=bridge gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text unit "seconds"
+    }
+  }
+
+  answer t
+  feedback {
+    when (answer == s * t * s) point=ask {
+      say "Multiplying gives more metres, not seconds. How many lots of {s} m make {s * t} m?"
+    }
+  }
+  hint "How far does the kingfisher fly in one second?"
+  hint "How many of those make {s * t} m?"
+}

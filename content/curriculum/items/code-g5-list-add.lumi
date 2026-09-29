@@ -1,0 +1,38 @@
+# Add puts a number on the end and makes the list one longer; replace changes a number where it is
+# and leaves the length alone. The two answers are the length and the last item.
+item coding.list-add v=1 skills=[coding.lists, coding.tracing] {
+  title "Longer or not"
+  difficulty (t * 2 + (if j == 3 then 1 else 0))
+  let t=0..1 j=1..3 a={3, 6} b={5, 9} c={2, 4} d={7, 8} e={1}
+  let m={5 - t}
+  let w1={if t == 0 then "add" else "replace item"} n1={if t == 0 then e else j}
+  let w2={if t == 0 then "to cargo" else "of cargo with"} n2={pick(t, "", "1")}
+  level easy {
+    let t={0} j={1}
+  }
+  level hard {
+    let t={1}
+  }
+
+  scene 36x16 {
+    program p code=["set cargo to list {a}, {b}, {c}", "add {d} to cargo", "{w1} {n1} {w2} {n2}"] at=canvas(1, 0)
+    narrowboat boat windows=3 pots=2 right-of=p gap=1
+    text ask "{if t == 0 then \"Two more boats come to the lock.\" else \"One more boat comes to the lock, and one boat changes its load.\"} How many items are in cargo at the end, and what is the last one?" width=34 below=p gap=1
+    text tn "items" below=ask gap=1
+    number-input count right-of=tn gap=1
+    text tl "last" right-of=count gap=2
+    number-input last right-of=tl gap=1
+  }
+
+  check coding.runs of=p count="length(cargo)" last="item({m}).cargo"
+  feedback {
+    when (count == 5 and t == 1) point=p {
+      say "Replace changes a number that is already there. The list does not get longer."
+    }
+    when (count == 3) point=p {
+      say "Each add puts one more number on the end of the list."
+    }
+  }
+  hint "Write the list out as the first line makes it, then change it one line at a time."
+  hint "Which lines make the list longer, and which only change a number in it?"
+}

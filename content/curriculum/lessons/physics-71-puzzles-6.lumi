@@ -1,0 +1,66 @@
+lesson physics-puzzles-6 v=1 format=puzzles grade=6 unit=9 subject=physics levels=[easy, medium, hard] {
+  title "Physics puzzles: sun, sound, energy and the moon"
+  goal "Use the sixth year's rules, for the tilted Earth, heat, sound, forces, energy, levers and the moon, to solve puzzles with no method given."
+
+  puzzle stars=1 {
+    show physics.tilt-noon lat=70 s=0 easy-lat=80 hard-lat=50 hard-s=1
+  }
+  puzzle stars=1 {
+    show physics.wave-hertz w=5 easy-w=3 hard-w=7
+  }
+  puzzle stars=1 {
+    show physics.sledge-net v=1 easy-v=0 hard-v=3
+  }
+  level easy {
+    puzzle stars=1 {
+      show physics.store-falling-water m=5 h=3
+    }
+  }
+  puzzle stars=2 {
+    show physics.heat-rod-fair k=2 easy-k=3 hard-k=0
+  }
+  puzzle stars=2 {
+    show physics.store-more-out o=1100 easy-o=1200 hard-o=1500
+  }
+  puzzle stars=2 {
+    show physics.eclipse-not-monthly o=1 easy-o=-1
+  }
+  puzzle stars=2 {
+    show physics.moment-tips a=6 p=2 b=5 q=3 easy-a=8 easy-p=4 easy-b=3 easy-q=1 hard-a=4 hard-p=3 hard-b=3 hard-q=4
+  }
+  puzzle stars=3 {
+    show physics.wave-length-for v=1 easy-v=0 hard-v=3
+  }
+  puzzle stars=3 {
+    show physics.gen-water-for-lamps v=1 easy-v=0 hard-v=2
+  }
+  level medium hard {
+    puzzle stars=3 {
+      show physics.moondrop-shelf te=0.6 hard-te=0.8
+    }
+  }
+  level hard {
+    puzzle stars=3 {
+      show physics.hut-latitude lat=85
+    }
+  }
+
+  grown-ups """
+    Let the child try each puzzle alone first, on the moon or at the table; the hints and answers
+    are on this sheet, not on theirs. Every puzzle comes from a lesson this year and can be started
+    by looking closely at its drawing: where the sun is overhead, how many waves cross the screen,
+    which arrows are longer, how far each weight is from the pivot. The one-star puzzles use a rule
+    once. The two-star puzzles each need a reason: what else changed in a test, why a machine cannot
+    give out more energy than it takes in, why there is not an eclipse every month, and which way a
+    lever turns without working out every number. The three-star puzzles are for a quiet moment: a
+    length found from a note, water worked back from lamps, a fall timed on the moon from one on
+    Earth. Ask for the reason as well as the answer. A puzzle left unsolved today is often solved
+    another day.
+    """
+  level easy {
+    grown-ups "At this level the sun is in June at 80 degrees north, the screens and sledges carry the smallest numbers, a fourth one-star puzzle works out the joules from falling water, and the three-star moon puzzle is left for another day."
+  }
+  level hard {
+    grown-ups "At this level the noon sun is worked out in December, the lever's two moments are close, the machine's claim is furthest out, and a fourth three-star puzzle finds the hut's latitude from the sun's height at noon and at midnight."
+  }
+}

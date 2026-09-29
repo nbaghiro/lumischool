@@ -1,0 +1,33 @@
+# Two stars: a work problem with a pump and a leak. Each hour the pump fills 1/a of the tank and the
+# leak loses 1/b, so the tank gains the difference.
+item puzzle.oxygen-leak v=1 stars=2 skills=[fractions.add-unlike, reasoning.model] {
+  title "The pump and the leak"
+  difficulty (v / 2)
+  let v=0..5
+  let a={pick(v, 2, 3, 4, 3, 4, 6)}
+  let b={pick(v, 3, 6, 12, 4, 6, 10)}
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={4, 5}
+  }
+
+  scene 35x12 {
+    tap t running=true at=canvas(1, 1)
+    text ask "A pump fills the base's empty water tank in {a} hours. A crack in the tank would let a full tank leak empty in {b} hours. With the pump on and the crack leaking, how many hours does the tank take to fill?" narrate width=26 right-of=t gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (a * b / (b - a))
+  feedback {
+    when (answer == b - a) point=ask {
+      say "Hours do not take away like that. What fraction of the tank does the pump add in one hour, and the crack lose?"
+    }
+    when (answer == a * b / (a + b)) point=ask {
+      say "The crack takes water out, so the tank fills more slowly than with the pump alone, not faster."
+    }
+  }
+  hint "What fraction of the tank does the pump fill in one hour? What fraction leaks out in one hour?"
+  hint "How much of the tank is gained each hour? How many hours make a whole tank?"
+}

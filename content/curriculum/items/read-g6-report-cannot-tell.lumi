@@ -1,0 +1,30 @@
+# The two-star reason: what a graph of one reading a month can and cannot show. The right choice
+# gives the reason as well as the answer.
+item reading.report-cannot-tell v=1 stars=2 skills=[reading.text-features, reasoning.explain] {
+  title "What the graph cannot show"
+  difficulty pick(k, 1, 1, 2)
+  let k=0..2
+  let right={pick(k, "No: one a month", "No: April is top", "No: just amounts")}
+  let wrong1={pick(k, "Yes: read April", "Yes: July is up", "Yes: April rain")}
+  let wrong2={pick(k, "Yes: it is 20", "Yes: it is hot", "Yes: it is top")}
+
+  scene 36x20 {
+    text ask "{pick(k, \"Can the graph tell you the flow on 15 April?\", \"The report says the waterfall is strongest in summer. Does the graph agree?\", \"Can the graph tell you why the flow was highest in April?\")}" at=canvas(1, 1) width=34
+    row bottom below=ask gap=1 space=1 align=end {
+      linegraph flow labels=["Mar", "Apr", "May", "Jun", "Jul", "Aug"] values=[16, 20, 14, 8, 5, 4] max=20 per=2 step=2 color=sky
+      choice pick options=[pick(k, wrong1, right, wrong2), pick(k, right, wrong2, wrong1), pick(k, wrong2, wrong1, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == wrong1) point=flow {
+      say "Look at what the graph gives: one point for each month and nothing else. Is that enough?"
+    }
+    when (pick == wrong2) point=flow {
+      say "That is true of the graph, or of summer, but it does not answer the question. Read it again."
+    }
+  }
+  hint "What does each point on the graph stand for?"
+  hint "Is the answer a number the graph shows, or something it leaves out?"
+}

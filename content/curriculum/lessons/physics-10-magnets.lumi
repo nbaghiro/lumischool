@@ -1,4 +1,4 @@
-lesson physics-magnets v=1 format=teach grade=3 unit=4 subject=physics levels=[easy, medium, hard] {
+lesson physics-magnets v=1 format=teach grade=3 unit=2 subject=physics levels=[easy, medium, hard] {
   title "Magnets"
   goal "Say which things a magnet pulls, predict what happens when two magnets meet, and follow the poles along a row of magnets."
 

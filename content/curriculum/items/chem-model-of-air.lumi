@@ -1,0 +1,32 @@
+# The three-star: the box of molecules nearest to air's 78 per cent nitrogen, with a limit on how many
+# molecules fit. With six or eight, 4 of 5 (80 per cent) is nearest; with ten, 7 of 9 (77.8 per cent).
+item chem.model-of-air v=1 stars=3 skills=[chemistry.gases, percentages.of-amount, reasoning.constraints] {
+  title "The best model of air"
+  difficulty L
+  let L={6, 8, 10}
+  level easy {
+    let L={6}
+  }
+  level hard {
+    let L={10}
+  }
+
+  scene 35x15 {
+    atombox box a="nitrogen" na=3 b="oxygen" nb=3 at=canvas(1, 0)
+    text ask "Leo's model of air has 3 nitrogen and 3 oxygen molecules, half and half. Real air is 78 per cent nitrogen. Leo can use no more than {L} molecules of nitrogen and oxygen in all. To get as near to 78 per cent nitrogen as he can, how many molecules should his box hold?" narrate width=22 right-of=box gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if L == 10 then 9 else 5)
+  feedback {
+    when (answer == L) point=box {
+      say "Using every place does not always get nearest. Work out the nitrogen's share for each total and compare."
+    }
+    when (answer == 4) point=box {
+      say "With 4 molecules the best is 3 nitrogen of 4. Is that as near to 78 as another total gets?"
+    }
+  }
+  hint "For each total up to {L}, how many of the molecules should be nitrogen to get near 78 per cent?"
+  hint "What per cent is 3 out of 4? And 2 out of 3? Is either near enough?"
+  hint "{if L == 10 then \"Try the totals near the top too, working out each share as a per cent.\" else \"Which total gets closest, above or below 78?\"}"
+}

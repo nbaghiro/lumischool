@@ -1,0 +1,38 @@
+# A decision inside a decision inside a repeat through a list: the inner if sorts only the days the
+# outer if let through, so a mild day is counted in neither name.
+item coding.inner-count v=1 skills=[coding.decisions, coding.lists, coding.variables] {
+  title "A week of cold days"
+  difficulty (s + q)
+  let s=0..3 q=0..1
+  let a={pick(s, -12, 3, -4, -16)} b={pick(s, -3, -14, 2, -11)} c={pick(s, 4, -6, -13, 5)} d={pick(s, -15, -2, -1, -7)} e={pick(s, 1, 6, -20, -12)}
+  level easy {
+    let q={0}
+    let s={0, 1}
+  }
+  level hard {
+    let q={1}
+    let s={2, 3}
+  }
+
+  scene 36x29 {
+    listbox l name=temps code=["set temps to list {a}, {b}, {c}, {d}, {e}"] at=canvas(0, 0)
+    program p code=["set temps to list {a}, {b}, {c}, {d}, {e}", "set cold to 0", "set bitter to 0", "for each t in temps", "  if t is less than 0", "    if t is less than -10", "      add 1 to bitter", "    otherwise", "      add 1 to cold"] text=true at=canvas(0, 9)
+    text ask "The station writes down each day's temperature at noon. {if q == 0 then \"What do cold and bitter hold at the end?\" else \"How many times does line 6 run? And line 7?\"}" width=14 right-of=l gap=1
+    text t1 "{if q == 0 then \"cold\" else \"line 6\"}" at=canvas(29, 11)
+    number-input first below=t1 gap=0
+    text t2 "{if q == 0 then \"bitter\" else \"line 7\"}" below=first gap=1
+    number-input second below=t2 gap=0
+  }
+
+  check coding.runs of=p first="{if q == 0 then \"value(cold)\" else \"ran(6)\"}" second="{if q == 0 then \"value(bitter)\" else \"ran(7)\"}"
+  feedback {
+    when (q == 0 and first + second == 5) point=p {
+      say "A day at 0 °C or warmer fails line 5, so it is counted in neither name."
+    }
+    when (q == 1 and first == 5) point=p {
+      say "Line 6 is inside the if on line 5, so it is asked only on the days below 0 °C."
+    }
+  }
+  hint "Take the days one at a time. Is the day below 0 °C? If not, move on."
+  hint "Only for a day below 0 °C, ask whether it is below -10 °C."
+}

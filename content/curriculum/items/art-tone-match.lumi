@@ -1,0 +1,28 @@
+# Two scales from the same white to the same dark: a scale with twice (or three times) the gaps puts
+# the same tone twice (or three times) as many steps along.
+item art.tone-match v=1 skills=[art.tone, reasoning.multiplicative] {
+  title "The same tone on Ben's scale"
+  difficulty (b + s)
+  let b={9} s={3, 4}
+  level easy {
+    let s={2, 3}
+  }
+  level hard {
+    let b={13} s=2..4
+  }
+
+  scene 35x15 {
+    tonescale scale steps=5 blank=-1 ring=(s - 1) at=canvas(1, 1)
+    text ask "Ada's scale has 5 steps. Ben's runs from the same white paper to the same darkest tone in {b} equal steps. Ada's ringed step is step {s}. Which of Ben's steps is the same tone?" width=34 below=scale gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((s - 1) * (b - 1) / 4 + 1)
+  feedback {
+    when (answer == s * (b - 1) / 4) point=scale {
+      say "Count the gaps from the white, not the squares: step {s} is {s - 1} gaps along."
+    }
+  }
+  hint "How many gaps does Ada's scale have? How many does Ben's have?"
+  hint "Each of Ada's gaps is how many of Ben's? Then count along from Ben's step 1."
+}

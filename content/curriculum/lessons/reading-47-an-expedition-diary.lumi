@@ -1,0 +1,64 @@
+# An expedition diary read beside the expedition's log: dates and time words, what happened and how
+# it felt, and lines that only make sense with the log. Noor's diary was written for the lesson.
+lesson reading-an-expedition-diary v=1 format=teach grade=6 unit=2 subject=reading levels=[easy, medium, hard] {
+  title "An expedition diary"
+  goal "Read an expedition diary with its log, placing each entry in time and telling what happened from how it felt."
+
+  look {
+    scene 36x13 {
+      row all at=canvas(0, 1) space=1 align=end {
+        book diary left="Thursday 6 July" right="Calm at last." lines=4 page="6"
+        whale w spout=1 facing=-1
+      }
+    }
+    say """
+      Noor kept a diary on the sledge journey from the hut to the puffin cliffs, and Aunt Lind kept
+      the expedition's log. A diary is written each day, under a date, by someone who was there, so
+      it says I and we, and it holds both what happened and how it felt. A log keeps only what
+      happened: the date, the distance and the weather. Reading the two together tells you more than
+      either one.
+      """
+  }
+  do {
+    level easy {
+      worked reading.diary-which-day k=2 level=medium
+    }
+    show reading.diary-which-day k=0 hard-k=3
+    practice reading.diary-line count=2 seed=1 easy-seed=1 hard-seed=1
+    practice reading.diary-when count=2 seed=1 easy-seed=1 hard-seed=1
+    show reading.diary-which-day k=1 hard-k=2
+    practice reading.diary-feeling count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show reading.diary-line q=2
+    }
+  }
+  try stars=2 {
+    show reading.diary-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show reading.diary-to-log k=0 hard-k=1
+  }
+  remember {
+    say "A diary tells what happened and how it felt, under a date. Read it with the log to see the whole day."
+  }
+
+  grown-ups """
+    The idea is that a diary is a first-hand record kept day by day, and that it is read in time:
+    each entry has a date, and words like yesterday and two days ago count from it. The way in finds
+    the date torn off a page by matching its clues to the log, the core finds lines in three
+    entries, works out dates from time words, and tells a feeling from a record. The wrong idea to
+    watch for is taking the date at the top as the day everything in the entry happened; ask "when
+    did this part happen?" The two-star question explains a line that looks odd until it is read
+    with the log and an earlier entry shown beside it; each wrong reason misreads one of them. The
+    whole entries the child reads are about 75 words each. The three-star question turns an entry
+    into a log entry, marked by eye. If the child is stuck, draw a line of five days and put each
+    event on it. Off the page, keep a three-day diary together, and on the third day write a line
+    that uses yesterday and the day before.
+    """
+  level easy {
+    grown-ups "At this level the best day is worked once in the teacher's pen, the torn pages are the gale and the windy day, the lines to find are the plainer ones, the time words are yesterday and two days ago, the feelings come from 4 and 7 July, the two-star is the midnight sun, and the three-star is 6 July."
+  }
+  level hard {
+    grown-ups "At this level the torn pages are the first day and the best day, the lines to find include what the child must infer, the time words are the day after the gale and the day before yesterday, the feelings include the seal's stare, there is one more line to find, the two-star is the longest entry on the day with no travel, and the three-star is 4 July."
+  }
+}

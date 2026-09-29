@@ -1,0 +1,43 @@
+# A bag test on the gorge path: three branches of one bush in clear bags, two with leaves (in sun
+# and in shade) and one with its leaves picked off. The child picks the bags that answer a question,
+# which is choosing the pair that differ in one thing only.
+item nature.bag-leaves v=1 skills=[nature.plants, data.tables, reasoning.fair-test] {
+  title "Branches in bags"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "Which bag collected the most water?", "Which two bags show that sunshine makes the leaves lose water faster?", "Which two bags show that the water comes out through the leaves?", "Why can bags B and C not be compared to test anything?")}
+  let ans={pick(k, "bag A", "bags A and B", "bags A and C", "Two things differ between them")}
+  let o1={pick(k, "bag B", "bags A and C", "bags A and B", "They collected too little water")}
+  let o2={pick(k, "bag C", "bags B and C", "bags B and C", "They were tied on at different times")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x32 {
+    text told "On the path up the gorge, Ada ties clear plastic bags over three branches of the same bush at the same time. After two hours she measures the water inside each bag." narrate width=32 at=canvas(1, 1)
+    table t cols=4 head=["Bag", "Leaves", "Where", "Water"] cells=["A", "on", "sun", "8 ml", "B", "on", "shade", "3 ml", "C", "picked off", "sun", "1 ml"] below=told gap=1
+    text ask "{asks}" narrate width=32 below=t gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=t {
+      say "Read down the last column. Which is the biggest amount?"
+    }
+    when (k == 1 and pick != ans) point=t {
+      say "To test sunshine, find two bags that are the same except for sun or shade."
+    }
+    when (k == 2 and pick != ans) point=t {
+      say "To test the leaves, find two bags that are the same except for having leaves."
+    }
+    when (k == 3 and pick != ans) point=t {
+      say "Bag B is in shade with leaves, and bag C is in sun with none. How many things changed?"
+    }
+  }
+  hint "What does the question want to find out about?"
+  hint "A fair comparison changes one thing and keeps everything else the same."
+}

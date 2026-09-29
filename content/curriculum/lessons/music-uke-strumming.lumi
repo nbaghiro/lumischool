@@ -1,6 +1,6 @@
 # Strumming as arrows on the half beats. The first rule every teacher gives is that the hand never
 # stops: down on the numbers, up on the "and", touching the strings or not.
-lesson music-uke-strumming v=1 format=teach grade=2 unit=4 subject=music levels=[easy, medium, hard] {
+lesson music-uke-strumming v=1 format=teach grade=2 unit=8 subject=music levels=[easy, medium, hard] {
   title "Strumming on the beat"
   goal "Read a strum pattern of down and up arrows, count its strums, and strum A minor."
 

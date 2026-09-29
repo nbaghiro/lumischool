@@ -1,0 +1,32 @@
+# The two-star reason: the near corner is the nearest part of the box, so it is drawn tallest, and
+# everything else shrinks towards the points.
+item art.two-near-tallest v=1 stars=2 skills=[art.perspective, reasoning.explain] {
+  title "The tallest edge"
+  difficulty k
+  let k=0..1 r=0..2
+  let thing={pick(k, "crate", "store hut")}
+  let right={"No: it is nearest, so it is the tallest"}
+  let w1={"Yes: it is in the middle, furthest back"}
+  let w2={"Yes: every edge should be the same"}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x25 {
+    twopoint crate horizon=2 left=1 right=15 corner=8 stage=3 door=true at=canvas(1, 1)
+    text ask "Ada's friend says the upright edge in the middle of the {thing} should be drawn the shortest, because it is in the middle. Is the friend right?" width=18 right-of=crate gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column at=canvas(1, 14)
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=crate {
+      say "Seen corner-on, the middle edge is the corner that points at Ada. Is it near her or far away?"
+    }
+  }
+  hint "Which part of a box turned corner-on is closest to you?"
+  hint "Things further away are drawn smaller. Which edge is the least far away?"
+}

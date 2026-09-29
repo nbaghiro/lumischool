@@ -1,0 +1,33 @@
+# A formal letter's body of four sentences, one of which slips into chatty words. The slip moves
+# between the second, third and fourth sentences, and grows subtler with k.
+item writing.too-chatty v=1 skills=[writing.letters, writing.formality, writing.editing] {
+  title "Which sentence slips?"
+  difficulty k
+  let k=0..2
+  let t={pick(k, "Our class is studying the planets this term. We would like to visit the observatory on a Friday evening. It would be super cool to look through the big telescope. Please let us know which dates are free.", "Thank you for showing our class the night sky last week. The children enjoyed seeing the rings of Saturn. We learned a great deal about the moon. Hope you're all good up there.", "I am writing to ask about your talk on comets. Is there any chance you could squeeze us in on Tuesday? We are a group of twelve. We would be happy to bring our own torches.")}
+  let right={pick(k, "the third", "the fourth", "the second")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 35x23 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage para title="Dear Dr Shah," text="{t}" width=23 numbers=false
+      observatory obs open=0
+    }
+    text ask "This letter goes to the director. Which sentence is too chatty for it?" narrate width=32 below=top gap=1
+    choice pick options=["the second", "the third", "the fourth"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=para {
+      say "That sentence uses full, polite words. Read each one as the director would and listen for words kept for friends or a short form."
+    }
+  }
+  hint "Read each sentence aloud. Which one sounds like talking to a friend?"
+  hint "Look for slang, a short form, or a sentence that has dropped its first word."
+}

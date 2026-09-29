@@ -1,0 +1,71 @@
+lesson nature-food-and-digestion v=1 format=teach grade=5 unit=8 subject=nature levels=[easy, medium, hard] {
+  title "Food and digestion"
+  goal "Explain how the gut breaks food down into pieces small enough for the blood to carry, and how other organs help."
+
+  look {
+    scene 34x16 {
+      row all at=canvas(1, 1) space=1 align=end {
+        parts fig of=gut
+        bakingtray b rows=2 cols=3 iced=0
+        testtubes tt fills=[0.5, 0.5] paints=["blue+black", "brown"] fizz=[0, 0] bungs=0 letters=1
+      }
+    }
+    say """
+      Ada buys bread rolls in the old city market, and her body starts on them at the first bite. Her
+      teeth cut and grind, and her saliva starts turning the starch into sugar. The oesophagus, or
+      food pipe, squeezes each mouthful down to the stomach, which churns it with acid and juices. In
+      the long, coiled small intestine, juices (among them bile from the liver) finish the job, and the
+      pieces are now so small that they pass through the wall into her blood. That is what digestion is
+      for: the blood carries the food to every muscle, and it goes to the liver first. The large
+      intestine takes back water, and what is left waits in the rectum until it leaves her body.
+      Using food makes waste in the blood, and the kidneys clean it out.
+      """
+  }
+  do {
+    level easy {
+      worked nature.gut-letter k=2 level=medium
+    }
+    practice nature.gut-letter count=1 seed=1 easy-seed=2 hard-seed=1
+    practice nature.gut-order count=1 seed=1 easy-seed=2 hard-seed=3
+    practice nature.gut-claim count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.teeth-job count=1 seed=1 easy-seed=1 hard-seed=1
+    practice nature.gut-organs count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show nature.which-organ k=1 level=medium
+    }
+  }
+  story {
+    show nature.bread-label k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.saliva-test k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.which-organ k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Digestion breaks food into pieces small enough to pass through the small intestine's wall into the blood."
+  }
+
+  grown-ups """
+    The lesson follows one mouthful along one tube, oesophagus, stomach, small intestine, large
+    intestine and rectum, and asks what digestion is for: food is broken down until its pieces are
+    small enough to pass into the blood, which carries them to every part. Two organs outside the
+    tube join in: the liver, which makes bile for breaking down fat and is the first stop for blood
+    from the gut, and the kidneys, which clean the waste the body makes out of the blood. The liver is
+    not on the drawing, so point to the right side of the child's body under the ribs. The wrong idea
+    to watch for is that food goes into the blood in the stomach; it mostly goes in along the small
+    intestine, which is why it is so long. The story takes a fraction of a food label. The two-star
+    question is the saliva test (iodine turns blue-black where there is starch and stays brown where
+    there is none), and the three-star question works back from what goes wrong to the organ that is
+    not doing its job. Off the page, chew a piece of plain bread for a full minute: it starts to taste
+    sweet as saliva turns its starch into sugar. If the order is still muddled after the core, stay
+    here another day and trace the path on the child's own body with a finger, saying each part's job.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the small intestine) opens the core, the part to find is the stomach, the reasons are why the small intestine is long and where food enters the blood, the teeth are the front ones biting, the organs are the blood carrying sugar and the kidneys, the roll is 50 g, the starch test asks why tube B stayed brown, and the organ to find from watery waste is the large intestine."
+  }
+  level hard {
+    grown-ups "At this level the part to find is the small intestine, the reasons are why swallowed food is still broken down and why fibre matters, the teeth are the back ones grinding, the organs are the liver's bile and the liver as the first stop for blood from the gut, the core adds the kidneys found from a blood-cleaning machine, the bread is two 40 g rolls and the protein is asked for, the starch test adds boiled saliva, and the last question runs forwards from a shorter small intestine to what will change."
+  }
+}

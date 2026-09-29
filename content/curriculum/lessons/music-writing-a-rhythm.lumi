@@ -1,6 +1,6 @@
 # Writing a rhythm on paper: word sounds to notes, a bar of four beats built from crotchets, minims
 # and quavers, and every bar that fits a rule. The on-screen bar builder (sound.md) comes later.
-lesson music-writing-a-rhythm v=1 format=teach grade=2 unit=1 subject=music levels=[easy, medium, hard] {
+lesson music-writing-a-rhythm v=1 format=teach grade=2 unit=4 subject=music levels=[easy, medium, hard] {
   title "Writing a rhythm"
   goal "Write a bar of four beats from crotchets, minims and quavers, and clap it."
 

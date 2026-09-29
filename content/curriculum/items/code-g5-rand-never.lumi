@@ -1,0 +1,27 @@
+# A random number changed afterwards: doubling a die's roll gives only even numbers, and adding
+# makes numbers the die alone cannot, so "which could never happen" needs the change applied to
+# every roll.
+item coding.rand-never v=1 skills=[coding.random, reasoning.logic] {
+  title "Which can never happen?"
+  difficulty k
+  let k=0..2
+  let op={pick(k, "add 3 to roll", "double roll", "take 1 from roll")}
+  let o1={pick(k, 4, 2, 0)} o2={pick(k, 9, 12, 5)} o3={pick(k, 3, 7, 6)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x12 {
+    program p code=["set roll to random 1 to 6", "{op}", "say roll"] at=canvas(1, 0)
+    die d face=6 right-of=p gap=2
+    text ask "Which of these could the program never say?" width=20 below=p gap=1
+    choice pick options=[o1, o2, o3] right-of=ask gap=1
+  }
+
+  check coding.runs of=p pick="never(value(roll))"
+  hint "List every number the die could roll."
+  hint "Change each of them the way line 2 does. Which choice is not on your new list?"
+}

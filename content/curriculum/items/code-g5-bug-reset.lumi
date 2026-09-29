@@ -1,0 +1,29 @@
+# A running total set inside the repeat is emptied every time round, so it ends as the last item.
+# The child predicts what the broken program gives, which is how the bug shows itself.
+item coding.bug-reset v=1 skills=[coding.debugging, coding.variables] {
+  title "The total that forgets"
+  difficulty ((a + b + c) / 5)
+  let a=3..6 b=2..5 c=1..4
+  where (a != b and b != c and a != c)
+  level easy {
+    where (a + b + c <= 10)
+  }
+  level hard {
+    where (a + b + c >= 12)
+  }
+
+  scene 36x10 {
+    program p code=["set sacks to list {a}, {b}, {c}", "for each s in sacks", "  set total to 0", "  add s to total"] at=canvas(1, 0)
+    text ask "The miller expected all the sacks added up. What is total really at the end?" width=13 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="value(total)"
+  feedback {
+    when (answer == a + b + c) point=p {
+      say "That is what the miller wanted. Line 3 is inside the repeat, so it runs every time round."
+    }
+  }
+  hint "Which lines are inside the repeat?"
+  hint "What does total hold just before the last add?"
+}

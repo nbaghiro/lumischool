@@ -1,0 +1,32 @@
+# An ages problem: times as old now and times as old later, with the gap between the two ages never
+# changing. One named age is asked.
+item puzzle.mother-and-daughter v=1 stars=2 skills=[reasoning.two-unknowns, algebra.unknowns] {
+  title "Times as old"
+  difficulty s
+  let s=0..3
+  let k={pick(s, 3, 5, 4, 7)}
+  let j={pick(s, 2, 3, 3, 4)}
+  let n={pick(s, 8, 6, 5, 4)}
+  let dd={pick(s, 8, 6, 10, 4)}
+  level easy {
+    let s={0}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 28x12 {
+    children pair count=2 holding="" names=["Mum", "Lia"] at=canvas(1, 1)
+    text ask "In the old city, Lia's mother is {k} times as old as Lia. In {n} years she will be {j} times as old as Lia. How old is Lia now?" narrate width=16 right-of=pair gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer dd
+  feedback {
+    when (answer == k * dd) point=ask {
+      say "That is her mother's age. The question asks about Lia."
+    }
+  }
+  hint "Try an age for Lia. How old would her mother be now, and how old would both be later?"
+  hint "The gap between their ages never changes. Try the next age if it does not fit."
+}

@@ -1,0 +1,30 @@
+# Two walkers set off from two gates towards each other: together they close the gap by the sum of
+# their speeds each hour. The Russian motion problem.
+item puzzle.gates-meet v=1 stars=1 skills=[rates.speed, reasoning.model] {
+  title "Meeting on the road"
+  difficulty (d / (a + b) + a / 2)
+  let a={3, 4, 5} b={4, 5, 6} t={2, 3, 4}
+  where (a < b)
+  let d={(a + b) * t}
+  level easy {
+    let t={2} a={3} b={5}
+  }
+  level hard {
+    let t={4} a={4, 5} b={6}
+  }
+
+  scene 33x19 {
+    citywalls road towers=3 open=1 at=canvas(1, 1)
+    text ask "Two messengers leave the North Gate and the South Gate at noon, {d} km apart, and walk towards each other along the road. One walks {a} km an hour and the other {b} km an hour. After how many hours do they meet?" narrate width=32 below=road gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer t
+  feedback {
+    when (answer == d / a or answer == d / b) point=ask {
+      say "They are both walking, so the gap closes from both ends. How much closer do they get each hour?"
+    }
+  }
+  hint "How much shorter does the gap between them get in one hour?"
+  hint "How many hours until the whole {d} km is closed?"
+}

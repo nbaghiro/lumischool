@@ -1,6 +1,6 @@
 # A repeat with no count goes on for ever: the lamp's lights come round in the same order, so any
 # light far along can be worked out from the part that repeats.
-lesson coding-a-pattern-that-never-ends v=1 format=teach grade=1 unit=2 subject=coding levels=[easy, medium, hard] {
+lesson coding-a-pattern-that-never-ends v=1 format=teach grade=1 unit=4 subject=coding levels=[easy, medium, hard] {
   title "A pattern that never ends"
   goal "Say what a lamp that repeats for ever shows at any step, from the part of its program that repeats."
 

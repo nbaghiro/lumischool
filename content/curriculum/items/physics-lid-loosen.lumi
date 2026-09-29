@@ -1,0 +1,33 @@
+# A stuck lid: warming the steel lid makes it grow away from the glass rim, and warming the jar makes
+# the rim grow into the lid. v picks which is warmed and how much.
+item physics.lid-loosen v=1 skills=[physics.heat, physics.materials] {
+  title "The stuck jam jar"
+  difficulty (if v >= 2 then 1 else 0)
+  let v=0..3
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+  let l={pick(v, 60, 80, 20, 20)}
+  let j={pick(v, 20, 20, 60, 80)}
+
+  scene 30x25 {
+    expansion t mode=3 lid=l jar=j show=0 at=canvas(1, 0)
+    text ask "The steel lid was screwed on at 20 °C and now it is stuck. The lid is at {l} °C and the glass jar at {j} °C. Is the lid looser than when it was screwed on?" narrate width=28 below=t gap=1
+    choice pick options=["Yes", "No"] stack=row below=ask gap=1
+  }
+
+  check physics.forces of=t pick=loosens
+  feedback {
+    when (pick == "Yes" and v >= 2) point=t {
+      say "Here the glass is the warm one. Its rim grows outwards into the cold lid, so the lid grips tighter."
+    }
+    when (pick == "No" and v < 2) point=t {
+      say "The warm steel lid has grown. Does it grip the cold glass rim more or less?"
+    }
+  }
+  hint "Which one is warm, the lid or the jar?"
+  hint "The warm one grows. Does that make the lid's grip on the rim looser or tighter?"
+}

@@ -1,0 +1,26 @@
+# The inputs are given in the wrong order, so the garden comes out tall instead of wide. The fix is
+# the call with its two numbers swapped, not a change to the block.
+item coding.bug-swapped v=1 skills=[coding.debugging, coding.procedures] {
+  title "A garden on its side"
+  difficulty v
+  let v=0..2
+  let w={pick(v, 4, 4, 5)} h={pick(v, 2, 3, 3)}
+  let good={pick(v, "box 4 2", "box 4 3", "box 5 3")} low={pick(v, "box 2 2", "box 3 3", "box 3 3")} high={pick(v, "box 4 4", "box 4 4", "box 5 5")}
+  level easy {
+    let v={0}
+  }
+  level hard {
+    let v={2}
+  }
+
+  scene 36x24 {
+    turtle t cols=(w + 1) rows=(w + 1) col=1 row=(w + 1) face=right moves=["repeat 2", "  forward {h}", "  turn left", "  forward {w}", "  turn left"] target=["repeat 2", "  forward {w}", "  turn left", "  forward {h}", "  turn left"] at=canvas(1, 0)
+    program p code=["define box width height", "  repeat 2", "    forward width", "    turn left", "    forward height", "    turn left", "box {h} {w}"] right-of=t gap=1
+    text ask "The garden should be the pale shape. Which line should the last line be?" width=34 at=canvas(1, 17)
+    choice pick options=[low, good, high] below=ask gap=1
+  }
+
+  answer pick=good
+  hint "Which number does box give to width, the side along the bottom?"
+  hint "How wide is the pale shape, and how tall?"
+}

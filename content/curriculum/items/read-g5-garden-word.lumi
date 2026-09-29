@@ -1,0 +1,29 @@
+# A word's meaning worked out from how it is used. Contrary is the book's name for Mary, and wick is
+# Yorkshire for alive, explained in the next line, which is why it is the easier of the two.
+item reading.garden-word v=1 skills=[reading.vocabulary, reading.whole-book] {
+  title "What does the word mean here?"
+  difficulty pick(k, 1, 0)
+  let k=0..1
+  let right={pick(k, "always wanting the opposite", "alive")}
+  let near={pick(k, "shy and afraid of others", "very old")}
+  let far={pick(k, "lonely without a mother", "covered in thorns")}
+
+  scene 35x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        bookcast m who=mary pose=think dir=1
+        text ask "{pick(k, \"In chapter 2 the children tease Mary with a rhyme and call her “Mistress Mary Quite Contrary”, because she is cross and will not do as others do. What does contrary mean?\", \"In chapter 11 Dickon looks at a rose branch and says, “It’s as wick as you or me.” What does wick mean?\")}" width=24
+      }
+      choice pick options=[pick(k, near, right), pick(k, right, far), pick(k, far, near)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=m {
+      say "Put that meaning in place of the word. Does the sentence still make sense?"
+    }
+  }
+  hint "{pick(k, \"What does Mary do when the others want her to join in?\", \"Read the line after Dickon speaks. What did Martha tell Mary about the word?\")}"
+  hint "Try each meaning in the sentence and keep the one that fits."
+}

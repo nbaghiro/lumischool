@@ -1,0 +1,37 @@
+# The review's two-star: a fraction of an amount, a percent of it and a part of a ratio share,
+# compared by writing each the same way; the closest version differs by 50 cents.
+item review.biggest-share v=1 stars=2 skills=[fractions.of-amount, percentages.of-amount, ratio.sharing, reasoning.compare] {
+  title "Which share is biggest"
+  difficulty v
+  let v=0..3
+  let t={pick(v, 60, 80, 120, 90)}
+  let a={pick(v, 3, 5, 7, 4)}
+  let b={pick(v, 5, 8, 10, 9)}
+  let p={pick(v, 55, 65, 68, 45)}
+  let r={pick(v, 2, 3, 2, 4)}
+  let s={pick(v, 1, 2, 1, 5)}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 34x19 {
+    text ask "The moon base wins a prize of {t} dollars. Which is the most money: {a}/{b} of the prize, {p}% of it, or the crew's part if it is split {r} : {s} between the crew and the base? Write each one the same way before you choose." narrate width=33 at=canvas(1, 1)
+    ratio bars parts=[r, s] labels=["Crew", "Base"] unit=0 total=false below=ask gap=1
+    choice pick options=["{a}/{b} of it", "{p}% of it", "the crew's part"] stack=column right-of=bars gap=1
+  }
+
+  answer pick=pick(v, "the crew's part", "65% of it", "7/10 of it", "45% of it")
+  feedback {
+    when (pick == "the crew's part" and v != 0) point=bars {
+      say "The crew has {r} of the {r + s} equal parts. What fraction of the prize is that?"
+    }
+    when (v != 2 and pick == pick(v, "3/5 of it", "5/8 of it", "7/10 of it", "4/9 of it")) point=ask {
+      say "Turn {a}/{b} into hundredths, or find it in dollars, and set it beside {p}%."
+    }
+  }
+  hint "How many dollars is each one? Or write each one as a percent."
+  hint "For the split, how many equal parts are there, and how many are the crew's?"
+}

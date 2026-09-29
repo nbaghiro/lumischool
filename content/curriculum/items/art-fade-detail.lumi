@@ -1,0 +1,32 @@
+# Edges and detail fade with distance as colour and contrast do.
+item art.fade-detail v=1 skills=[art.space, art.mark-making] {
+  title "Sharp near, soft far"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3
+  let thing={pick(k, "the pine trees on the ridge furthest away", "the rock in front of her, close enough to touch", "the waterfall far up the gorge", "the kingfisher on the branch beside her")}
+  let right={pick(k, "Soft edges and little detail", "Sharp edges and dark detail", "Soft edges and little detail", "Sharp edges and dark detail")}
+  let w1={pick(k, "Sharp edges and dark detail", "Soft edges and little detail", "Sharp edges and dark detail", "Soft edges and little detail")}
+  let w2={"A thick black outline"}
+  let r={k % 3}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 36x24 {
+    peaks range count=3 snow=0 at=canvas(1, 1)
+    text ask "Ada is painting a view up the gorge. How should she paint {thing}?" width=15 right-of=range gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=range gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=range {
+      say "Is the thing near or far? The air between blurs far edges and hides small details, and near things are seen sharp."
+    }
+  }
+  hint "Is {thing} near Ada or far away?"
+  hint "When you look at a hill far off, can you see each leaf and the edge of each rock?"
+}

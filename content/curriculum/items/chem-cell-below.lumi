@@ -1,0 +1,33 @@
+# The table's pattern carried past what is drawn: rows two and three are eight long and line up, so
+# the element below is eight on; only the first two columns reach row four (potassium 19, calcium 20).
+item chem.cell-below v=1 skills=[chemistry.elements, reasoning.generalise] {
+  title "The row not drawn"
+  difficulty w
+  let w=0..1 m=3..10
+  where (w == 0 or m <= 4)
+  let depth={pick(w, "directly below", "two rows below")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 36x15 {
+    periodic t rows=2 blank=0 mark=m shade=none at=canvas(1, 0)
+    text ask "Only two rows are drawn. The rows below line up with them, eight to a full row. What is the atomic number of the element {depth} the ringed one?" narrate width=13 right-of=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (m + 8 * (w + 1))
+  feedback {
+    when (answer == m + 1) point=t {
+      say "That is the cell beside it. Below means the same column, a whole row further on."
+    }
+    when (w == 1 and answer == m + 8) point=t {
+      say "That is one row below. Go on one more row in the same column."
+    }
+  }
+  hint "How many cells are there in a full row?"
+  hint "Count on from the ringed cell to the same place in the next row. How many steps is that?"
+}

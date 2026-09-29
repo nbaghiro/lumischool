@@ -1,0 +1,26 @@
+# Two stars: the needle's north pole is pulled towards the Arctic, and only unlike poles pull, so the
+# Earth's magnetic pole there behaves like the south pole of a magnet.
+item physics.earth-magnet-pole v=1 stars=2 skills=[physics.magnets, reasoning.explain] {
+  title "What pole is in the north?"
+
+  scene 30x30 {
+    row pair at=canvas(1, 0) space=1 align=centre {
+      compass c needle=0
+      magnet m mode="poles" same=0 show=1
+    }
+    text ask "A compass needle is a small magnet, and its north pole is pulled round to point north. The two magnets show which poles pull each other. So what kind of magnetic pole lies in the far north of the Earth, and why?" narrate width=28 below=pair gap=1
+    choice pick options=["A south pole, since unlike poles pull", "A north pole, since it is in the north", "None: the needle points at the pole star"] stack=column below=ask gap=1
+  }
+
+  answer pick="A south pole, since unlike poles pull"
+  feedback {
+    when (pick == "A north pole, since it is in the north") point=m {
+      say "Look at the two magnets. Does a north pole pull another north pole, or push it away?"
+    }
+    when (pick == "None: the needle points at the pole star") point=c {
+      say "A compass works in daytime and under cloud, when no star can be seen. What pulls the needle?"
+    }
+  }
+  hint "Which end of the needle points north?"
+  hint "In the drawing, which poles are pulling together: alike, or unlike?"
+}

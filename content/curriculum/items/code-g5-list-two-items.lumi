@@ -1,0 +1,30 @@
+# Two items read and added: the child has to find two places and not add the places themselves.
+item coding.list-two-items v=1 skills=[coding.lists, coding.variables] {
+  title "Two boats together"
+  difficulty (i + j)
+  let s=0..2 i=1..3 j=2..4
+  let a={pick(s, 6, 3, 9)} b={pick(s, 2, 8, 4)} c={pick(s, 7, 5, 2)} d={pick(s, 3, 6, 8)}
+  where (i < j)
+  level easy {
+    where (i + j <= 4)
+  }
+  level hard {
+    where (i + j >= 5)
+  }
+
+  scene 36x16 {
+    program p code=["set cargo to list {a}, {b}, {c}, {d}", "set n to item {i} of cargo + item {j} of cargo"] at=canvas(1, 0)
+    canallock lock level=0.5 boat=1 below=p gap=1
+    text ask "Two boats go into the lock together. What does line 2 put in n?" width=14 right-of=lock gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="value(n)"
+  feedback {
+    when (answer == i + j) point=p {
+      say "{i} and {j} are places. Add the numbers kept in those places."
+    }
+  }
+  hint "Which number is item {i}? Which is item {j}?"
+  hint "Now add the two numbers you found."
+}

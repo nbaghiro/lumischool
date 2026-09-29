@@ -1,0 +1,39 @@
+# The way in: two moon-base texts in different forms told in a sentence each, and the theme they
+# share. One wrong choice is the topic of one text, the other is a theme from a different text.
+item reading.moon-theme-shared v=1 skills=[reading.theme, reading.comparison] {
+  title "What do both stories teach?"
+  difficulty pick(k, 0, 0, 1, 1)
+  let k=0..3
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+  let right={pick(k, "Asking takes courage", "Small steps add up", "Asking takes courage", "Small steps add up")}
+  let topic={pick(k, "Suits need checking", "Plants need light", "Craters are confusing", "Panels get dusty")}
+  let other={pick(k, "Rushing costs time", "Asking takes courage", "Small steps add up", "Rushing costs time")}
+
+  scene 35x23 {
+    text ask "These two are told in different forms, but both teach the same idea about life. Which is it?" at=canvas(1, 1) width=34
+    row top below=ask gap=1 space=1 align=start {
+      column stories space=1 align=start {
+        passage a text="{pick(k, \"A story: Kai is too shy to call for help. At last she does.\", \"A log: Ada gives each plant ten drops a day. Day 60: a tomato.\", \"A talk: Obi tells how she was too proud to say she was lost.\", \"A story: Ren cleans one panel a day. In a hundred days all shine.\")}" width=17 numbers=false
+        passage b text="{pick(k, \"A talk: Obi tells how she was too proud to say she was lost.\", \"A story: Ren cleans one panel a day. In a hundred days all shine.\", \"A story: Kai is too shy to call for help. At last she does.\", \"A log: Ada gives each plant ten drops a day. Day 60: a tomato.\")}" width=17 numbers=false
+      }
+      choice pick options=[pick(k, topic, right, other, topic), pick(k, right, other, topic, other), pick(k, other, topic, right, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == topic) point=a {
+      say "That is what one story is about, its topic. A theme is an idea about life that both teach."
+    }
+    when (pick == other) point=b {
+      say "That is a theme, but not of these two. Check it against both stories."
+    }
+  }
+  hint "What does the main character learn or show in each story?"
+  hint "Which idea would still be true in both, and away from the moon?"
+}

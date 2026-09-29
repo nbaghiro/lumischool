@@ -1,0 +1,31 @@
+# A search written with a repeat through the list does not stop when it finds the book: it goes on
+# to the end, so looks is the length of the list whatever the book. The child notices the
+# difference.
+item coding.search-looks v=1 skills=[coding.algorithms, coding.lists, coding.tracing] {
+  title "Why does it keep looking?"
+  difficulty (n + k * 0.3)
+  let n=0..1 k=1..3
+  let t={pick(k - 1, 12, 25, 31)}
+  level easy {
+    let n={0}
+  }
+  level hard {
+    let n={1}
+  }
+
+  scene 36x19 {
+    program p code=["set shelf to list 12, 25, 31, 40{if n == 1 then \", 47\" else \"\"}", "set looks to 0", "for each b in shelf", "  add 1 to looks", "  if b is {t}", "    say found it"] at=canvas(0, 0)
+    bookhouse lib floors=2 full=1 right-of=p gap=0
+    text ask "Book {t} is on the shelf. What is looks when the program ends?" width=22 below=p gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=p answer="value(looks)"
+  feedback {
+    when (answer == k) point=p {
+      say "It says found it there, but a repeat through the list goes on to the last book. Nothing stops it."
+    }
+  }
+  hint "Does anything make the repeat stop when the book is found?"
+  hint "How many times does the repeat go round?"
+}

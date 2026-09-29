@@ -1,0 +1,22 @@
+# Predict before the thermometers are drawn: in these readings the shiny can stays coldest, since it
+# reflects nearly all the sunlight; white reflects much of it but not as much. r orders the cans.
+item physics.sun-can-coldest v=1 skills=[physics.heat, reasoning.predict] {
+  title "Which stays coolest?"
+  let r=0..5
+  let white={pick(r, "B", "C", "A", "B", "C", "A")}
+
+  scene 22x24 {
+    heatflow t mode=2 cans=[pick(r, "black", "black", "white", "silver", "silver", "white"), pick(r, "white", "silver", "black", "black", "white", "silver"), pick(r, "silver", "white", "silver", "white", "black", "black")] insun=30 show=0 at=canvas(1, 0)
+    text ask "Three cans of water stand in strong sun for 30 minutes, all at 20 °C to start. Which one will be coldest at the end?" narrate width=20 below=t gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+  }
+
+  check physics.forces of=t pick=coldest
+  feedback {
+    when (pick == white) point=t {
+      say "White turns back much of the sunlight. Which outside turns back even more, like a mirror?"
+    }
+  }
+  hint "Which outside takes in the most sunlight, and which turns the most away?"
+  hint "Shiny surfaces reflect light the way a mirror does. How much do they take in?"
+}

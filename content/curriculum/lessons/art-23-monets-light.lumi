@@ -1,6 +1,6 @@
 # Monet's light: the same place painted at different hours, where what changes is not the hills but
 # the light on them, and a painting can be read back to the hour it was made at.
-lesson art-monets-light v=1 format=teach grade=3 unit=1 subject=art levels=[easy, medium, hard] {
+lesson art-monets-light v=1 format=teach grade=3 unit=3 subject=art levels=[easy, medium, hard] {
   title "Monet's light"
   goal "Read the time of day out of a painting from its sun, its shadows and its colours, and paint one that says its own hour."
 

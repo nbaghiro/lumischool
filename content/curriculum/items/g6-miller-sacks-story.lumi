@@ -1,0 +1,31 @@
+# Forming the equation from a story: the bar is the bill, one part is the delivery and the rest is n
+# sacks, so n × x + d = T, solved by taking the delivery off first.
+item algebra.miller-sacks-story v=1 skills=[algebra.equations, algebra.expressions] {
+  title "The miller's bill"
+  difficulty (n / 2 + x / 5)
+  let n={3, 4, 5, 6} x={6, 8, 12, 15} d={3, 4, 5, 7}
+  level easy {
+    let n={3, 4} x={6, 8}
+  }
+  level hard {
+    let n={5, 6} x={12, 15}
+  }
+
+  scene 33x17 {
+    barmodel bill whole=(n * x + d) parts=[?, d] at=canvas(1, 1)
+    text ask "The miller sells {n} sacks of flour at x dollars a sack, and adds {d} dollars for bringing them up the gorge. The bill is {n * x + d} dollars. Write an equation for the bill with x in it, and solve it. What is x?" narrate width=32 below=bill gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer x
+  feedback {
+    when (answer == n * x) point=bill {
+      say "That is the flour for all {n} sacks. How much is one sack?"
+    }
+    when (answer == (n * x + d) / n) point=bill {
+      say "The {d} dollars is for bringing them, not for the flour. Take it off before sharing."
+    }
+  }
+  hint "In the bar, the part marked ? is all the sacks. How is that written with x?"
+  hint "What does the whole bar add up to? Take the delivery off first."
+}

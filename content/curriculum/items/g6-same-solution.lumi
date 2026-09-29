@@ -1,0 +1,36 @@
+# Which equation has the same solution: doing the same to both sides keeps the balance, doing
+# something to one side only does not. Decided without solving by looking at the change.
+item algebra.same-solution v=1 skills=[algebra.equations, reasoning.equivalence] {
+  title "The same answer"
+  difficulty (a / 3 + (if o == 0 then 0 else 1))
+  let a={2, 3, 4, 5} b={3, 5, 7} x=2..9 o=0..2
+  level easy {
+    let a={2, 3} o={0}
+  }
+  level hard {
+    let a={4, 5} o={1, 2}
+  }
+
+  scene 35x23 {
+    balanceeq scales left="{a}x + {b}" right="{a * x + b}" at=canvas(1, 1)
+    column eqs below=scales gap=1 space=1 {
+      equation ea "A: {pick(o, 2 * a, a, a + 1)}x + {pick(o, 2 * b, 2 * b, b)} = {pick(o, 2 * (a * x + b), a * x + b, a * x + b + 1)}"
+      equation eb "B: {pick(((1 + o) % 3), 2 * a, a, a + 1)}x + {pick(((1 + o) % 3), 2 * b, 2 * b, b)} = {pick(((1 + o) % 3), 2 * (a * x + b), a * x + b, a * x + b + 1)}"
+      equation ec "C: {pick(((2 + o) % 3), 2 * a, a, a + 1)}x + {pick(((2 + o) % 3), 2 * b, 2 * b, b)} = {pick(((2 + o) % 3), 2 * (a * x + b), a * x + b, a * x + b + 1)}"
+    }
+    text ask "Without solving, which of A, B and C has the same solution as the balance?" narrate width=14 right-of=scales gap=2
+    choice pick options=["A", "B", "C"] stack=column right-of=eqs gap=3
+  }
+
+  answer pick=pick(o, "A", "C", "B")
+  feedback {
+    when (pick == pick(o, "B", "A", "C")) point=eqs {
+      say "{b} more was added to the left side only. Whatever is done to one side has to be done to the other."
+    }
+    when (pick == pick(o, "C", "B", "A")) point=eqs {
+      say "One more x and one more on the right do not keep the balance. What was done to both sides?"
+    }
+  }
+  hint "For each one, what was done to the left side, and what to the right?"
+  hint "Which one did the same thing to the whole of both sides?"
+}

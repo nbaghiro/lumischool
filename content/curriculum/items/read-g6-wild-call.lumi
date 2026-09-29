@@ -1,0 +1,22 @@
+# The three-star question: the book's title traced through the whole story, with a moment from the
+# start, the middle and the end, and the call growing stronger. No method is on the page; a grown-up
+# marks it.
+item reading.wild-call v=1 stars=3 skills=[reading.theme, reading.evidence, reading.whole-book, writing.composing] {
+  title "The call grows louder"
+
+  scene 35x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        wolf w pose=stand dir=1
+        bookcast b who=buck pose=walk dir=-1
+        firs f count=2 snow=1
+      }
+      text ask "The book is called The Call of the Wild. Choose three moments, one near the start, one in the middle and one at the end, when Buck feels the pull of the wild. Say how each is stronger than the one before." width=34
+      writinglines lines lines=5 width=34 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="Three moments in story order, each with its chapter, such as the fear of the trap when he wakes buried in snow (chapter 2), leading the chase after the rabbit and the fight with Spitz (chapter 3), sitting by the fire half-dreaming of the hairy man (chapter 4), running with the wild brother (chapter 7), and joining the pack after Thornton's death (chapter 7); and a sentence on each that says how the pull is stronger: first a feeling, then something he does, then the life he chooses." notice=["Three moments, in story order", "Each moment from a different part of the book", "Says how each is stronger than the last", "Says what finally lets Buck answer the call"] ask="Was there a moment when Buck could have turned back?"
+  hint "What was the first time Buck acted like a wild animal without being taught?"
+  hint "What held Buck back from the wild in chapter 7, and what happened to it?"
+}

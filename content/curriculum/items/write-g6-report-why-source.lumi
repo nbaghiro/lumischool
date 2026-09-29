@@ -1,0 +1,41 @@
+# The two-star reason: judging a source by how it was made, not by its name or its date. Each wrong
+# reason is one a child really holds (a big name is always right, only first-hand sources count,
+# a true fact may be copied without a name). The Daily Lantern and the encyclopaedia were written
+# for this lesson.
+item writing.report-why-source v=1 stars=2 skills=[writing.research, reasoning.explain] {
+  title "Which source, and why?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let right={pick(k, "The transcript was recorded as he spoke.", "Its writers worked later from the records.", "The words are someone else's: say whose.")}
+  let name={pick(k, "The transcript is from NASA, so it is right.", "She is right: use only first-hand sources.", "Nothing, as long as the fact is true.")}
+  let date={pick(k, "The paper came out a day late, so it is wrong.", "Its writers were there, so it is first-hand.", "Nothing: encyclopaedias belong to everyone.")}
+
+  scene 36x36 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        person leo pose=think age=child hair=curly top=tang tone=2
+        bubble says "{pick(k, \"I will copy Armstrong's words from The Daily Lantern. It is as good as the transcript.\", \"Mia says the encyclopaedia's writers were not there, so we cannot use it for how long the moonwalk was.\", \"I copied a sentence from the encyclopaedia into my report, and I did not say where it came from.\")}" width=16 from=leo
+      }
+      row mid space=2 align=start {
+        sourcecard card title="{pick(k, \"Men walk on the Moon\", \"Apollo 11\", \"Apollo 11\")}" kind=pick(k, 1, 2, 2) who="{pick(k, \"A reporter at Mission Control\", \"The encyclopaedia's writers\", \"The encyclopaedia's writers\")}" when="{pick(k, \"21 July 1969\", \"2026\", \"2026\")}" where="{pick(k, \"Houston, Texas\", \"not stated\", \"not stated\")}" there=0 ask=0
+        text ask "{pick(k, \"Why is the transcript better for Armstrong's exact words?\", \"Why can the encyclopaedia still be used for this fact?\", \"What is wrong with what Leo did?\")}" width=15
+      }
+      choice pick options=[pick(k, right, name, date), pick(k, name, date, right), pick(k, date, right, name)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k < 2 and pick == name) point=card {
+      say "A name is not a reason. Read the card: how, and by whom, was the source made?"
+    }
+    when (k < 2 and pick == date) point=card {
+      say "Read the card's rows again. Does that choice agree with what the card says?"
+    }
+    when (k == 2 and pick != right) point=says {
+      say "Someone wrote those words. What does a report owe the person whose words it uses?"
+    }
+  }
+  hint "Read the card. Who made this source, and were they there?"
+  hint "What makes a source good for this one fact, and what does a writer owe the source?"
+}

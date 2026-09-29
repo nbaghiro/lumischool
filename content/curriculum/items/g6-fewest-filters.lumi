@@ -1,0 +1,28 @@
+# Three stars: the fewest to take to be sure, a Kangaroo staple. The unluckiest run of draws is the
+# one to picture, and one more than it makes sure. An extreme.
+item puzzle.fewest-filters v=1 stars=3 skills=[reasoning.extremes, counting.cases] {
+  title "Sure in the dark"
+  difficulty pick(e, 0, 2, 1, 3, 2)
+  let e=0..4
+  level easy {
+    let e={0, 2}
+  }
+  level hard {
+    let e={1, 3}
+  }
+
+  scene 36x14 {
+    bag b at=canvas(1, 1)
+    text ask "In the dark store room there is a bag of air filters: 3 red and 5 blue. The crew take filters out without looking. What is the fewest they must take to be sure of getting {pick(e, \"two of the same colour\", \"at least one of each colour\", \"two blue ones\", \"three red ones\", \"two red ones\")}?" narrate width=22 right-of=b gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer pick(e, 3, 6, 5, 8, 7)
+  feedback {
+    when (answer == pick(e, 2, 2, 2, 3, 2)) point=b {
+      say "That many is enough if they are lucky. To be sure, think of the unluckiest way the filters could come out."
+    }
+  }
+  hint "What is the worst that could happen with the first few filters taken?"
+  hint "How many could come out before the one that makes it certain?"
+}

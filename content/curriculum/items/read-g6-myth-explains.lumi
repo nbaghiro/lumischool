@@ -1,0 +1,32 @@
+# A myth often explains something about the world. What each of three myths explains; one wrong
+# answer is a detail in the myth that it does not explain, the other a question it never asks.
+item reading.myth-explains v=1 skills=[reading.myths, reading.theme] {
+  title "What does the myth explain?"
+  difficulty pick(k, 1, 2, 0)
+  let k=0..2
+  let right={pick(k, "How a sea came by its name", "What lies round the edge of the world", "Why the sun never stops moving")}
+  let detail={pick(k, "How to make wings from feathers", "Why fishermen use bait", "Why a wolf chases the sun")}
+  let never={pick(k, "Why the sun is hot", "How thunder is made", "Why the moon changes shape")}
+
+  scene 36x21 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=1 align=end {
+        text ask "{pick(k, \"Myths often explain something about the world. Think back to Daedalus and Icarus, and its last sentence. What does it explain?\", \"Myths often explain something about the world. Think back to Thor’s fishing trip, and its last sentence. What does it explain?\", \"Myths often explain something about the world. In the Norse tale, a girl called Sol drives the sun across the sky with a wolf behind her. What does it explain?\")}" width=22
+        seaserpent s loops=3 facing=-1
+      }
+      choice pick options=[pick(k, detail, right, never), pick(k, right, never, detail), pick(k, never, detail, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == detail) point=ask {
+      say "That happens in the myth, but it is not what the myth sets out to explain. What is still true in the world at the end?"
+    }
+    when (pick == never) point=ask {
+      say "The myth never asks that. Read its last sentence again: what does it say is still so today?"
+    }
+  }
+  hint "Look at the end of the myth. What does it say is still true today?"
+  hint "What question about the world would that answer?"
+}

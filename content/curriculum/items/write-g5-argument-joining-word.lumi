@@ -1,0 +1,41 @@
+# The joining word that says how the next point stands to the last: However turns to the other
+# side, Also adds to the same side, On balance weighs both and decides. The add case with no
+# obvious argument words and the conclusion are the harder ones.
+item writing.argument-joining-word v=1 skills=[writing.argument, writing.cohesion] {
+  title "Turn, add or decide?"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..3
+  let t={pick(k, "Carts bring fresh food to the market. ____, they block the gate for people on foot.", "Carts bring fresh food to the market. ____, they carry stone to mend the city walls.", "The bell keeps the whole city on time. ____, visitors come from far away to hear it.", "Carts help the market, but they crowd the gate. ____, they should come through before nine only.")}
+  let right={pick(k, "However", "Also", "Also", "On balance")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 33x30 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      citywalls walls towers=3 open=1
+      clocktower tower hour=9 minute=0
+    }
+    passage para title="" text="{t}" width=32 numbers=false below=pics gap=1
+    text ask "Which linking adverbial, the joining word, fills the gap?" narrate width=32 below=para gap=1
+    choice pick options=["However", "Also", "On balance"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "However" and right != "However") point=para {
+      say "However turns to the other side. Is the second sentence against the first, or on the same side?"
+    }
+    when (pick == "Also" and right != "Also") point=para {
+      say "Also adds one more point to the same side. Read the second sentence again: does it add, turn or decide?"
+    }
+    when (pick == "On balance" and right != "On balance") point=para {
+      say "On balance starts a conclusion, after both sides have been heard. This sentence is still giving a point."
+    }
+  }
+  hint "Is the second sentence for the same side as the first, against it, or deciding between them?"
+  hint "Read the pair with each word in the gap. Which one says what the second sentence is doing?"
+}

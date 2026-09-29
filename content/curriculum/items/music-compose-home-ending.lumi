@@ -1,0 +1,41 @@
+# The way in: a two-bar phrase heard as a question, ending away from home, or an answer, ending on
+# the home note C. Twinkle Twinkle's two phrases end on G and C; the Ode to Joy's (Beethoven, 1824)
+# end on D and C; Mary Had a Little Lamb's first ends on E.
+item music.compose-home-ending v=1 skills=[music.composing, music.staff] {
+  title "Question or answer?"
+  difficulty (if p <= 1 then 0 else 1)
+  let p=0..4
+  let tune={pick(p, "Twinkle Twinkle", "Twinkle Twinkle", "the Ode to Joy", "the Ode to Joy", "Mary Had a Little Lamb")}
+  let n1={pick(p, "C4", "F4", "C4", "C4", "E4")}
+  let n2={pick(p, "C4", "F4", "C4", "C4", "D4")}
+  let n3={pick(p, "G4", "E4", "D4", "D4", "C4")}
+  let n4={pick(p, "G4", "E4", "E4", "E4", "D4")}
+  let n5={pick(p, "A4", "D4", "E4", "D4", "E4")}
+  let n6={pick(p, "A4", "D4", "D4", "C4", "E4")}
+  let n7={pick(p, "G4", "C4", "D4", "C4", "E4")}
+  let v5={pick(p, 1, 1, 1.5, 1.5, 1)}
+  let v6={pick(p, 1, 1, 0.5, 0.5, 1)}
+  let right={pick(p, "a question: it ends away from C", "an answer: it ends on C", "a question: it ends away from C", "an answer: it ends on C", "a question: it ends away from C")}
+  let wrong={if p == 1 or p == 3 then "a question: it ends away from C" else "an answer: it ends on C"}
+  level easy {
+    let p=0..1
+  }
+  level hard {
+    let p=3..4
+  }
+
+  scene 34x28 {
+    notes phrase clef=treble notes=[n1, n2, n3, n4, n5, n6, n7] values=[1, 1, 1, 1, v5, v6, 2] meter=4 at=canvas(1, 1)
+    text ask "A two-bar phrase from {tune}, in C major. Is it a question, which leaves the tune open, or an answer, which brings it home?" narrate width=32 below=phrase gap=1
+    choice pick options=["a question: it ends away from C", "an answer: it ends on C"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == wrong) point=phrase {
+      say "Look only at the last note, the long one. Is it C, the home note?"
+    }
+  }
+  hint "Which note does the phrase end on?"
+  hint "In C major the tune feels finished when it lands on C."
+}

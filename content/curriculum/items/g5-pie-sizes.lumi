@@ -1,0 +1,32 @@
+# The two-star: two pie charts with the same slice, drawn for groups of different sizes. A pie shows
+# shares, so the same slice can be different numbers of people.
+item percent.pie-sizes v=1 stars=2 skills=[data.pie-charts, reasoning.find-the-mistake] {
+  title "The same slice"
+  difficulty (b / a)
+  let a={200, 240, 160} b={80, 40, 120}
+  where (a > b)
+  level easy {
+    let a={200} b={40}
+  }
+  level hard {
+    let a={160} b={120}
+  }
+
+  scene 35x18 {
+    pie chart show=percent at=canvas(1, 1)
+    text ask "Two observatories drew the same pie chart of how their visitors came. One had {a} visitors, the other {b}. Leo says the same number came by bus to each. How many more came by bus to the busier one?" narrate width=16 right-of=chart gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer ((a - b) / 2)
+  feedback {
+    when (answer == 0) point=chart {
+      say "The slices are the same share, 50%, but 50% of {a} and 50% of {b} are different numbers."
+    }
+    when (answer == a - b) point=ask {
+      say "That is the difference in all the visitors. Only half of each group came by bus."
+    }
+  }
+  hint "How many came by bus to each observatory?"
+  hint "Take one from the other."
+}

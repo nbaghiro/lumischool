@@ -1,0 +1,38 @@
+# The two-star: a power read as a product, ten times the little number, when it is ten multiplied by
+# itself. The child picks what the little number counts, then writes the power out.
+item place.power-mistake v=1 stars=2 skills=[place-value.powers-of-ten, reasoning.find-the-mistake] {
+  title "Not ten times"
+  difficulty k
+  let k=4..8
+  level easy {
+    let k={4}
+  }
+  level hard {
+    let k={7, 8}
+  }
+
+  scene 31x23 {
+    sign note lines=["10 to the power {k}", "= 10 × {k} = {10 * k}"] kind=board color=tang at=canvas(1, 1)
+    text ask "Ivy worked out 10 to the power {k} on the observatory board. What did she do wrong?" narrate width=16 right-of=note gap=2
+    choice why options=["the power counts tens multiplied", "she should have added the tens", "she forgot to add a zero"] stack=column below=note gap=1
+    row eq below=why gap=1 space=1 align=centre {
+      text ask2 "10 to the power {k} ="
+      number-input answer width=10
+    }
+  }
+
+  answer why="the power counts tens multiplied" answer=(10 ^ k)
+  feedback {
+    when (why == "she should have added the tens") point=note {
+      say "Adding {k} tens gives {10 * k} again, which is Ivy's answer. The power multiplies tens together."
+    }
+    when (why == "she forgot to add a zero") point=note {
+      say "One more zero gives {100 * k}, which is not it either. The {k} says how many tens are multiplied together."
+    }
+    when (answer == 10 * k) point=note {
+      say "That is Ivy's answer. The power counts how many tens are multiplied together, not what ten is multiplied by."
+    }
+  }
+  hint "Is 10 to the power 2 the same as 10 × 2?"
+  hint "Write 10 × 10 × 10 and so on, with {k} tens. How many zeros?"
+}

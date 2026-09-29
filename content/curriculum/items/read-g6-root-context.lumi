@@ -1,0 +1,38 @@
+# A Latin root word in a sentence from the expedition, worked out from its root in the key and the
+# sentence around it. One wrong choice fits the sentence but not the root.
+item reading.root-context v=1 skills=[reading.morphology, reading.vocabulary, reading.context] {
+  title "Root and sentence together"
+  difficulty pick(k, 0, 1, 0, 1, 1, 2)
+  let k=0..5
+  level easy {
+    let k={0, 2, 3}
+  }
+  level hard {
+    let k={1, 4, 5}
+  }
+  let word={pick(k, "audible", "ruptures", "visible", "transported", "spectators", "dictated")}
+  let right={pick(k, "can be heard", "breaks apart", "can be seen", "carried", "watchers", "said aloud")}
+  let fits={pick(k, "is sudden", "melts", "is lovely", "kept cold", "sleepers", "wrote")}
+  let other={pick(k, "is far off", "freezes", "is close", "cut up", "singers", "read quietly")}
+
+  scene 35x17 {
+    text ask "What does {word} mean here? Use the key and the sentence." at=canvas(1, 1) width=34
+    row bottom below=ask gap=1 space=1 align=start {
+      passage p text="{pick(k, \"At midnight there was an audible crack, and everyone looked up from their cards.\", \"If the ice shelf ruptures, the hut could drift out to sea.\", \"On clear days the whale bay is visible from the roof of the hut.\", \"The ice cores are transported by plane to a freezer far to the south.\", \"Three seals lay on a floe like spectators at a match.\", \"Aunt Lind dictated the log, and Noor wrote it down.\")}" width=21 numbers=false
+      table key cols=2 head=["Root", "Means"] cells=[pick(k, "aud", "rupt", "vis", "port", "spect", "dict"), pick(k, "hear", "break", "see", "carry", "look", "say"), pick(k, "vis", "port", "aud", "dict", "aud", "spect"), pick(k, "see", "carry", "hear", "say", "hear", "look"), pick(k, "dict", "vis", "rupt", "rupt", "dict", "aud"), pick(k, "say", "see", "break", "break", "say", "hear")]
+    }
+    choice pick options=[pick(k, fits, right, other, fits, other, right), pick(k, right, other, fits, right, right, fits), pick(k, other, fits, right, other, fits, other)] below=bottom gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == fits) point=key {
+      say "That fits the sentence, but not the root. Find the root inside {word} in the key."
+    }
+    when (pick == other) point=p {
+      say "Read the sentence with that in place of {word}. Does it still make sense?"
+    }
+  }
+  hint "Which root from the key is hiding inside {word}?"
+  hint "Try each choice in the sentence. Which one fits the root as well?"
+}

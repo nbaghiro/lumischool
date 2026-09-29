@@ -1,0 +1,15 @@
+# The start of the A section of Beethoven's Für Elise (1810), the rondo's returning tune: E, D sharp,
+# E, D sharp, E, B, D, C, A. No note is played twice in a row, so music.plays can hear it in order.
+item music.form-fur-elise v=1 skills=[music.form, music.staff, music.keys] {
+  title "The tune that comes back"
+
+  scene 34x29 {
+    notes tune clef=treble notes=[E5, Ds5, E5, Ds5, E5, B4, D5, C5, A4] values=[0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1] meter=0 at=canvas(1, 1)
+    text ask "Für Elise, by Beethoven, is a rondo: A B A C A. This is the start of A, the tune that keeps coming back. Play its nine notes." narrate width=32 below=tune gap=1
+    piano keys from=A4 whites=5 wide=3 labels=letters below=ask gap=1
+  }
+
+  check music.plays notes=[E5, Ds5, E5, Ds5, E5, B4, D5, C5, A4]
+  hint "The sharp sign before the second note makes it the black key just below E."
+  hint "Rock between E and D sharp twice, then step down to B."
+}

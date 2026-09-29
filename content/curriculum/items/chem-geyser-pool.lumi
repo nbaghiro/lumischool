@@ -1,10 +1,10 @@
-# The story: hot pool water carried home in cups, and the salt that crystallises out of each cup
-# as it cools, or the salt that stays dissolved.
+# The story: cups of hot pool water filled with all the alum they hold, carried home, and the alum
+# that crystallises out of each cup as it cools, or the alum that stays dissolved.
 item chem.geyser-pool v=1 stars=1 skills=[chemistry.crystals, multiplication.groups] {
   title "Water from the hot pool"
   difficulty (c + (if w == 1 then 1 else 0))
   let c=1..3 w=0..1
-  let asks={pick(w, "How many spoons of salt grow as crystals in her cups?", "How many spoons of salt are still dissolved in her cups?")}
+  let asks={pick(w, "How many spoons of alum grow as crystals in her cups?", "How many spoons of alum are still dissolved in her cups?")}
   level easy {
     let c=1..1 w=0..0
   }
@@ -13,26 +13,26 @@ item chem.geyser-pool v=1 stars=1 skills=[chemistry.crystals, multiplication.gro
   }
 
   scene 34x17 {
-    crystalstring jar days=5 crystals=6 kind=salt at=canvas(0, 0)
-    text ask "The pool in geyser valley is at 60 °C, and every cup of its water holds 8 spoons of salt. Ana carries {c} {if c == 1 then \"cup\" else \"cups\"} of it home, where it cools to 10 °C. At 10 °C a cup holds only 3 spoons. {asks}" narrate width=20 right-of=jar gap=1
+    crystalstring jar days=5 crystals=6 kind=alum at=canvas(0, 0)
+    text ask "The pool in geyser valley is at 60 °C, and Ana stirs 14 spoons of alum into each cup of its water, all a cup will hold. She carries {c} {if c == 1 then \"cup\" else \"cups\"} home, where it cools to 10 °C. At 10 °C a cup holds only 2 spoons. {asks}" narrate width=20 right-of=jar gap=1
     number-input answer below=jar gap=1
   }
 
-  answer (if w == 0 then 5 * c else 3 * c)
+  answer (if w == 0 then 12 * c else 2 * c)
   feedback {
-    when (answer == 8 * c) point=jar {
-      say "That is all the salt in the {if c == 1 then \"cup\" else \"cups\"}. Each cup keeps 3 spoons dissolved and lets 5 go."
+    when (answer == 14 * c) point=jar {
+      say "That is all the alum in the {if c == 1 then \"cup\" else \"cups\"}. Each cup keeps 2 spoons dissolved and lets 12 go."
     }
-    when (w == 0 and answer == 3 * c) point=jar {
-      say "That is the salt that stays dissolved. The crystals are the rest: 8 take away 3 for each cup."
+    when (w == 0 and answer == 2 * c) point=jar {
+      say "That is the alum that stays dissolved. The crystals are the rest: 14 take away 2 for each cup."
     }
-    when (w == 1 and answer == 5 * c) point=jar {
-      say "That is the salt that came out as crystals. The question asks what is still dissolved: 3 for each cup."
+    when (w == 1 and answer == 12 * c) point=jar {
+      say "That is the alum that came out as crystals. The question asks what is still dissolved: 2 for each cup."
     }
-    when (c > 1 and (answer == 5 or answer == 3)) point=jar {
+    when (c > 1 and (answer == 12 or answer == 2)) point=jar {
       say "That is one cup. Ana has {c} of them."
     }
   }
-  hint "Each cup lets go of 8 take away 3 spoons as it cools, and keeps the other 3."
+  hint "Each cup keeps the spoons that 10 °C water holds. What happens to the rest?"
   hint "Work out one cup, then multiply by the {c} cups."
 }

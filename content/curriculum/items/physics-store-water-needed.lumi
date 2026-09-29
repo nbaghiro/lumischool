@@ -1,0 +1,34 @@
+# Three stars, a chain worked backwards: the millstone's joules each second, the wheel's useful share
+# of a hundred, then the water's joules, then its weight falling the height, then the kilograms.
+item physics.store-water-needed v=1 stars=3 skills=[physics.energy, reasoning.work-backwards, reasoning.chain] {
+  title "How much water?"
+  difficulty v
+  let v=0..3
+  let need={pick(v, 900, 1200, 1600, 1800)}
+  let u={pick(v, 60, 60, 80, 50)}
+  let h={pick(v, 5, 5, 4, 6)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 30x28 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      waterfall f drops=1 rainbow=1
+      waterwheel w paddles=12 lit=0
+    }
+    text ask "The millstone needs {need} J each second to grind. The wheel turns {u} of every 100 J the water gives it into turning. The water falls {h} m onto the wheel, and each kilogram weighs 10 N. How many kilograms of water must fall onto the wheel each second?" narrate width=27 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (need * 100 / u / (10 * h))
+  feedback {
+    when (answer == need / (10 * h)) point=ask {
+      say "That would be enough only if none of the water's energy were wasted. The wheel keeps just {u} of every 100 J."
+    }
+  }
+  hint "How many joules must the water give the wheel each second, if only {u} of every 100 come out turning?"
+  hint "How many joules does 1 kg give falling {h} m? How many kilograms make your total?"
+}

@@ -1,0 +1,35 @@
+# Three endings for an argument about the clock tower; one weighs both sides and decides, one takes
+# one side only, and one names both sides or one fact without deciding.
+item writing.weighs-both v=1 skills=[writing.argument, reasoning.compare] {
+  title "Which ending weighs both sides?"
+  difficulty k
+  let k=0..1
+  let q={pick(k, "Should the bell ring at night?", "Should visitors climb the clock tower?")}
+  let ea={pick(k, "A: The bell must ring at night, because it is old and loved.", "A: On balance, visitors could climb in small groups, which keeps them safe and still lets them see the clock.")}
+  let eb={pick(k, "B: On balance, although the bell is loved, it wakes people, so it could rest from ten until six.", "B: Visitors should never go up, because stairs are dangerous.")}
+  let ec={pick(k, "C: The bell is loud.", "C: Some people like towers and some do not.")}
+  let right={pick(k, "B", "A")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x20 {
+    row top at=canvas(1, 0) space=2 align=start {
+      text ask "{q} Three endings for the same argument. {ea} {eb} {ec} Which one weighs both sides and then decides?" narrate width=25
+      clocktower tower hour=10 minute=0
+    }
+    choice pick options=["A", "B", "C"] below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "A conclusion names what is good on one side and what is bad on the other, then says what to do. Check each ending for all three."
+    }
+  }
+  hint "Which ending mentions something from each side?"
+  hint "Of those, which one also says what should happen?"
+}

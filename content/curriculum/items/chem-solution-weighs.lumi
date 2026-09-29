@@ -1,0 +1,31 @@
+# Mass is kept when a solid dissolves: the scales read the water and the sugar together, though the
+# sugar can no longer be seen. The unknown is the reading after, or the sugar added.
+item chem.solution-weighs v=1 skills=[chemistry.dissolving, chemistry.conservation] {
+  title "What do the scales say?"
+  difficulty d
+  let d=0..1 w={300, 350, 400, 450} s={20, 35, 45, 60}
+  level easy {
+    let d=0..0
+  }
+  level hard {
+    let d=1..1
+  }
+
+  scene 36x13 {
+    dialscale scales max=1000 step=100 value=(if d == 0 then w else w + s) unit=g at=canvas(1, 0)
+    text ask "{if d == 0 then \"A jug of canal-side tap water weighs \" else \"A jug of water weighed \"}{w}{if d == 0 then \" g on the scales. Ana stirs in \" else \" g. Ana stirred in some sugar until it all dissolved, and now the scales read \"}{if d == 0 then s else w + s}{if d == 0 then \" g of sugar and it all dissolves, so none can be seen. What do the scales read now, in grams?\" else \" g. How many grams of sugar did she add?\"}" narrate width=22 right-of=scales gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if d == 0 then w + s else s)
+  feedback {
+    when (d == 0 and answer == w) point=scales {
+      say "The sugar cannot be seen, but it is still in the water. Its grams are still on the scales."
+    }
+    when (d == 1 and answer == w + s) point=scales {
+      say "That is the jug and the sugar together. Take away what the water weighed on its own."
+    }
+  }
+  hint "When sugar dissolves, where does it go: out of the jug, or into the water?"
+  hint "{if d == 0 then \"The scales weigh everything in the jug. What is in it now?\" else \"What was on the scales before, and what is on them now? What made the difference?\"}"
+}

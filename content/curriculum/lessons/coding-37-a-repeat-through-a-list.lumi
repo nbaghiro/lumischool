@@ -1,0 +1,65 @@
+# A repeat that goes through a list: the loop runs once for each item and gives a name the item each
+# time round. The towpath robot hops by the items, and the turtle draws a spiral from them.
+lesson coding-a-repeat-through-a-list v=1 format=teach grade=5 unit=2 subject=coding levels=[easy, medium, hard] {
+  title "A repeat that goes through a list"
+  goal "Follow a repeat that runs once for each item of a list, using the item each time round."
+
+  look {
+    scene 36x14 {
+      maze m cols=8 rows=1 col=1 row=1 code=["set hops to list 2, 3, 1", "for each h in hops", "  right h"] trail=steps at=canvas(1, 0)
+      program p code=["set hops to list 2, 3, 1", "for each h in hops", "  right h"] below=m gap=1
+      listbox l name=hops code=["set hops to list 2, 3, 1"] right-of=p gap=1
+    }
+    say """
+      On the towpath beside the canal a robot hops from post to post. The program keeps the hops in
+      a list, and for each h in hops is a repeat that goes round once for every item. The first time
+      round h is 2, then 3, then 1, so the robot stops three times and ends 6 squares along. Change
+      the list and the same three lines make a different walk.
+      """
+  }
+  do {
+    show coding.each-where n=0 a=2 b=3 c=1 easy-a=1 hard-n=1 hard-a=3
+    show coding.each-rounds a=2 b=3 c=1 x=2 easy-a=1 easy-b=2 easy-x=1 hard-a=3 hard-b=4 hard-x=3
+    level easy {
+      worked coding.each-where n=0 a=2 b=1 c=1 level=medium
+    }
+    show coding.each-turtle a=2 b=3 c=1 d=2 easy-b=1 hard-a=3 hard-b=2 hard-d=3
+    show coding.each-drawing k=1 f=0 easy-k=0 hard-k=2 hard-f=1
+    show coding.each-missing n=0 a=2 c=1 m=3 easy-m=2 hard-n=1 hard-b=2 hard-m=4
+    show coding.each-where n=1 a=1 b=3 c=2 easy-n=0 easy-b=2 easy-c=3 hard-a=3
+    show coding.each-turtle a=1 b=2 c=3 d=1 easy-c=2 hard-a=2 hard-b=3 hard-d=2
+    show coding.each-build k=1 easy-k=0 hard-k=2
+    level hard {
+      show coding.each-missing n=1 a=3 b=3 c=2 m=3
+    }
+  }
+  try stars=2 {
+    show coding.each-or-repeat k=1 s=0 easy-k=0 hard-k=2 hard-s=1
+  }
+  try stars=3 {
+    show coding.each-orders k=0 easy-k=1 hard-k=2
+  }
+  remember {
+    say "For each goes round once for every item in the list, and the name holds the next item each time."
+  }
+
+  grown-ups """
+    The idea is that one short repeat can walk a whole list, whatever is in it and however long it
+    is. The wrong ideas to watch for are using only the first item every time round, and counting
+    the repeat's rounds from something other than the list's length, especially after an add. In the
+    child's working, look for a small table with a row for each time round and the value h has in
+    it. If the child is stuck, put the list's numbers on cards in a row and turn one over each time
+    round; stay another day if the rounds still do not match the cards. Off the page, write a list
+    of chores and read it out one at a time, doing each as it is read. In the two-star question
+    comparing each item with 2 answers it without walking either robot, and in the three-star
+    question writing out the six orders is the method. In the build question the child picks the
+    list and sets the move and the turn inside the repeat; the three lists hold the same numbers, so
+    the order of the sides decides.
+    """
+  level easy {
+    grown-ups "At this level every list has three items and small hops, one walk along the towpath is worked in the teacher's pen, the spirals have short sides, the list to pick is the one whose first side is 1, the missing hop is one of three, the robot moving by the items goes further, and the three-star map has three green orders. The spiral to build has three sides."
+  }
+  level hard {
+    grown-ups "At this level lists have four items and hops up to 3, an add before the repeat makes it go round one more time, the spirals have sides up to 3 and the drawings are laid out in a different order, the missing hop is one of four and asked twice, the two robots stop on the same square, which is the hardest case to be sure of, and the three-star map has four green orders. The spiral to build has four sides in a mixed order, so the list is read off the drawing side by side."
+  }
+}

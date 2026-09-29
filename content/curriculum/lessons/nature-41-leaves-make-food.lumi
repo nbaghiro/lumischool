@@ -1,0 +1,77 @@
+lesson nature-leaves-make-food v=1 format=teach grade=6 unit=8 subject=nature levels=[easy, medium, hard] {
+  title "Leaves make food in sunlight"
+  goal "Use the starch test to show that a leaf makes its food only where it is green and in the light."
+
+  look {
+    scene 34x22 {
+      row all at=canvas(1, 1) space=2 align=end {
+        leaftest l stage=1 cover=1 kind=0 sun=1
+        earth e up=1
+      }
+      lander ld rungs=5 below=all gap=1
+    }
+    say """
+      On the moon the crew grow lettuces under lamps, because a leaf makes the plant's food. It takes
+      in water from the roots and carbon dioxide from the air, and with the energy of light it makes
+      sugar and gives out oxygen; the sugar is stored as starch. Ada keeps a plant in the dark for two
+      days, puts a strip of foil across one leaf and leaves it a day under the lamps. After iodine,
+      which turns starch blue-black, the ends are blue-black and the strip is brown.
+      """
+  }
+  do {
+    show nature.starch-where k=0 easy-k=0 hard-k=1
+    level easy {
+      worked nature.starch-where k=1 level=medium
+    }
+    show nature.starch-dark k=0 hard-k=1
+    show nature.starch-predict k=1 easy-k=0 hard-k=1
+    show nature.starch-green k=0 hard-k=1
+    show nature.starch-predict k=2 easy-k=1 hard-k=2
+    level medium {
+      show nature.starch-where k=1
+      show nature.starch-green k=1
+    }
+    level easy {
+      show nature.starch-green k=1 level=medium
+      show nature.starch-bubbles k=1 level=medium
+    }
+    level hard {
+      show nature.starch-where k=0 level=medium
+      show nature.starch-dark k=0 level=medium
+      show nature.starch-bubbles k=0 level=medium
+    }
+  }
+  story {
+    show nature.starch-bubbles k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.starch-willow k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.starch-moon k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A leaf makes food only where it is green and in the light, from water and carbon dioxide, and gives out oxygen."
+  }
+
+  grown-ups """
+    A green leaf in light makes the plant's food: from water and carbon dioxide it makes sugar, much
+    of which it stores as starch, and it gives out oxygen. Iodine turns starch blue-black, so a leaf
+    tested after a day with part of it covered shows where food was made. The plant is kept in the
+    dark first so that the starch it already had is used up. The wrong ideas to watch for are that a
+    plant takes its food from the soil, that light is the food itself, and that the covered strip would
+    be blue-black anyway. In the child's working, look for the three conditions (green, uncovered,
+    lit) checked part by part. If the child is stuck, go back to the leaf in the look and name each
+    part's pattern from the key. Off the page, the test can be done with a grown-up: a geranium kept
+    in a cupboard for two days, a paper clip holding a strip of foil across a leaf, a sunny day, then
+    the leaf softened in boiling water, whitened in warm alcohol over hot water with no flame, and
+    tested with iodine; the whitening needs care. This meets Japan's grade six science, B(2)(ア),
+    「植物の葉に日光が当たるとでんぷんができること」: starch forms in a leaf where sunlight falls on it.
+    """
+  level easy {
+    grown-ups "At this level the tested leaves have the foil across the middle, a worked example reads a leaf with its tip covered, the dark days are explained, the leaves to predict are plain or have a foil strip, the white edge is found on the leaf, the bubbles are compared at 10 and 30 cm, the willow asks where the mass came from, and the lamps shine 12 hours a day."
+  }
+  level hard {
+    grown-ups "At this level the tested leaves have their tips covered or a white edge, the dark days are asked about a plant that missed them, the leaves to predict include a plant left in the dark and a white-edged leaf with its tip covered, the white edge is explained, the bubbles are worked back to the lamp's distance, the willow asks what van Helmont left out, and the lamps' hours are compared with the sun's."
+  }
+}

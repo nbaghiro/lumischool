@@ -1,0 +1,42 @@
+# The way in: on a lead sheet a chord symbol lasts until the next one, so the chord under a note is the
+# last symbol at or before it. Au clair de la lune (French, 1700s) in C, its first line and its middle
+# line. The trap is note 4, a D under C, which is not a chord note but still has C under it.
+item music.lead-which-chord v=1 skills=[music.lead-sheets, music.chords] {
+  title "Which chord is playing?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..4
+  let n1={pick(k, "C5", "D5", "C5", "C5", "D5")}
+  let n2={pick(k, "C5", "D5", "C5", "C5", "D5")}
+  let n3={pick(k, "C5", "D5", "C5", "C5", "D5")}
+  let n4={pick(k, "D5", "D5", "D5", "D5", "D5")}
+  let n5={pick(k, "E5", "A4", "E5", "E5", "A4")}
+  let n6={pick(k, "D5", "A4", "D5", "D5", "A4")}
+  let s1={pick(k, "C", "Dm", "C", "C", "Dm")}
+  let s5={pick(k, "G7", "Am", "G7", "G7", "Am")}
+  let n={pick(k, 3, 3, 6, 4, 6)}
+  let right={pick(k, "C", "Dm", "G7", "C", "Am")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..4
+  }
+
+  scene 36x22 {
+    row top space=1 align=end at=canvas(1, 1) {
+      notes line clef=treble notes=[n1, n2, n3, n4, n5, n6] values=[1, 1, 1, 1, 2, 2] meter=4 chords=[s1, _, _, _, s5, _]
+      lander ship rungs=4
+    }
+    text ask "A line of Au clair de la lune from the crew's lead sheet. Which chord is played under note {n}?" narrate width=34 below=top gap=1
+    choice pick options=["C", "Dm", "G7", "Am"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=line {
+      say "A chord symbol lasts until the next one is written. Go left from note {n} to the nearest symbol."
+    }
+  }
+  hint "Where are the chord symbols written, and over which notes?"
+  hint "Which symbol is the last one at or before note {n}?"
+}

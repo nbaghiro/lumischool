@@ -1,0 +1,60 @@
+lesson physics-circuits-in-symbols v=1 format=teach grade=5 unit=8 subject=physics levels=[easy, medium, hard] {
+  title "Circuits drawn in symbols"
+  goal "Read and check a circuit drawn in symbols, and use the volts of its cells to say how bright its bulbs will be."
+
+  look {
+    scene 36x14 {
+      row all at=canvas(1, 0) space=1 align=start {
+        series p cells=2 bulbs=1 buzzer=1 closed=1 show=1
+        series s cells=2 bulbs=1 buzzer=1 closed=1 symbols=1
+      }
+    }
+    say """
+      Engineers draw circuits with symbols, so anyone can read them quickly. The loop on the left is
+      drawn as a picture and the one on the right as a diagram: a cell is a long line beside a short
+      one, a bulb is a circle with a cross, a buzzer is a dome and a switch is a gap with a lever.
+      Each cell gives 1.5 volts, and cells in a row add together. In one loop the bulbs share the
+      volts equally, so more cells make them brighter and more bulbs make them dimmer.
+      """
+  }
+  do {
+    practice physics.symbol-count count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.symbol-lights count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.symbol-fault count=1 seed=1 easy-seed=2 hard-seed=3
+    level easy {
+      worked physics.symbol-volts c=2 b=1 level=medium
+    }
+    practice physics.symbol-volts count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.symbol-brighter count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.symbol-brighten count=1 seed=1 easy-seed=2 hard-seed=3 hard-count=2
+  }
+  story {
+    show physics.clocktower-circuit k=1 c=3 easy-c=2 hard-k=0
+  }
+  try stars=2 {
+    show physics.symbol-match d=2 c=2 easy-d=1 hard-d=3
+  }
+  try stars=3 {
+    show physics.symbol-most-bulbs v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "Each cell gives 1.5 volts, the cells add, and the bulbs in one loop share the volts equally."
+  }
+
+  grown-ups """
+    A diagram leaves out everything that does not matter, which is why it is easier to check than a
+    picture, but the symbols have to be learnt. The common wrong idea is that the first bulb in a
+    loop uses the electricity up and the last one gets less; in a loop of identical bulbs every bulb
+    gets the same share of the volts, which is how the brightness questions are worked out. Watch
+    for a child who counts the long and the short line of one cell as two cells. If the symbols are
+    not yet secure, lay the picture and the diagram side by side and name each part aloud, then stay
+    here another day. Off the page, draw the diagram of a torch: its cells, its switch and its bulb.
+    The three-star question divides B's volts so that no bulb gets less than A's bulbs do.
+    """
+  level easy {
+    grown-ups "At this level the loops have few parts, the faults are an open switch or a missing cell, a worked example adds the volts first, the two loops to compare differ plainly, and the three-star loop A has two cells and one bulb."
+  }
+  level hard {
+    grown-ups "At this level the loops have many parts, the faults include a loose wire, the volts are shared among several bulbs, the two loops are close in brightness, the clock tower's switch is open, and the three-star loop A has four cells and three bulbs."
+  }
+}

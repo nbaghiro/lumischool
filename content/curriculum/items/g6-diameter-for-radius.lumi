@@ -1,0 +1,30 @@
+# The two-star: the diameter used as if it were the radius makes the volume four times too big.
+item volume.diameter-for-radius v=1 stars=2 skills=[volume.cylinders, reasoning.find-the-mistake] {
+  title "Leo's cylinder"
+  difficulty (d / 4 + h / 10)
+  let d={2, 4, 6, 8, 10} h={3, 5, 10}
+  level easy {
+    let d={2, 4, 6} h={5, 10}
+  }
+  level hard {
+    let d={6, 8, 10} h={3, 5}
+  }
+
+  scene 33x15 {
+    circleparts base size=5 lines=2 diameter=d unit="m" at=canvas(1, 1)
+    text ask "The water tank is {h} m tall. Leo says its volume is {d} × {d} × 3.14 × {h} = {d * d * 3.14 * h} m³. What is its volume really, in m³?" narrate width=16 right-of=base gap=2
+    number-input answer width=6 below=ask gap=1
+  }
+
+  answer (d * d / 4 * 3.14 * h)
+  feedback {
+    when (answer == d * d * 3.14 * h) point=base {
+      say "That is Leo's answer. The line drawn goes right across. Is it the radius?"
+    }
+    when (answer == d * d * 3.14 * h / 2) point=base {
+      say "Halving the answer is not enough. The radius is used twice, so each has to be halved."
+    }
+  }
+  hint "Is the line drawn a radius or a diameter?"
+  hint "What is the radius? Use it in place of both numbers Leo squared."
+}

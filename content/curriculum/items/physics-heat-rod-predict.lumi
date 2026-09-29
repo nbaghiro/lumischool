@@ -1,0 +1,31 @@
+# Predict, then check: the beads wait under a question mark, and the child names the rod that will
+# drop the most from what the materials are, before the lesson's other rods show it.
+item physics.heat-rod-predict v=1 skills=[physics.heat, physics.materials, reasoning.predict] {
+  title "Predict the first to drop"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+  let a={pick(v, "wood", "plastic", "steel", "steel")}
+  let b={pick(v, "glass", "aluminium", "brass", "glass")}
+  let c={pick(v, "copper", "wood", "glass", "aluminium")}
+
+  scene 30x20 {
+    heatflow t mode=0 rods=[a, b, c] thick=[1, 1, 1] minutes=10 show=0 at=canvas(1, 0)
+    text ask "The rods have just gone into the hot water. After ten minutes, which rod will have dropped the most beads?" narrate width=28 below=t gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+  }
+
+  check physics.forces of=t pick=best
+  feedback {
+    when (pick == "A" and (a == "wood" or a == "plastic")) point=t {
+      say "Wood and plastic hold heat back. Which of the three is a metal, or the better metal?"
+    }
+  }
+  hint "Which of the three materials are metals?"
+  hint "If two are metals, which metal's rod dropped the most beads in the lesson's other tests?"
+}

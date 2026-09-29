@@ -1,0 +1,26 @@
+# The chord a symbol names, played on the keyboard in any order: Am, Dm, F and Em on white keys, and
+# at hard D and B flat, each with one black key.
+item music.lead-play-chord v=1 skills=[music.lead-sheets, music.chords, music.keys] {
+  title "Play the symbol"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let sym={pick(k, "Am", "F", "Dm", "Em", "D", "Bb")}
+  let a={pick(k, "A4", "F4", "D4", "E4", "D4", "Bf4")}
+  let b={pick(k, "C5", "A4", "F4", "G4", "Fs4", "D5")}
+  let c={pick(k, "E5", "C5", "A4", "B4", "A4", "F5")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..5
+  }
+
+  scene 32x14 {
+    text ask "The next bar of the crew's lead sheet has the symbol {sym} over it. Play its chord, all three notes, from {sym}'s letter upwards." narrate width=30 at=canvas(1, 1)
+    piano keys from=C4 whites=12 wide=2 labels=letters below=ask gap=1
+  }
+
+  check music.plays notes=[{a}, {b}, {c}] ordered=false
+  hint "Put a finger on the symbol's letter. Which letters are a skip and two skips above it?"
+  hint "With an m the middle note is three semitones above the bottom one; without it, four."
+}

@@ -1,0 +1,38 @@
+# The two-star reason: two short arguments on one question, one that gives both sides before it
+# decides and one that only argues louder, and why the first is balanced. The right reason is
+# offered for both, and the third choice mistakes many reasons for balance, so the texts decide.
+item writing.balanced-or-not v=1 stars=2 skills=[writing.argument, reasoning.explain] {
+  title "Which argument is balanced, and why?"
+  difficulty k
+  let k=0..1 r=0..2
+  let q={pick(k, "should carts come through the gate?", "should the gate be shut at sunset?")}
+  let ta={pick(k, "Carts must come through the gate. They bring food. They bring stone. Anyone who says no is wrong.", "A shut gate keeps the city safe. However, travellers are left out in the dark. On balance, a guard could let them in.")}
+  let tb={pick(k, "Carts bring food to the market. However, they crowd the gate. On balance, they could come before nine.", "The gate should be shut. It keeps us safe, it is quiet and it is the rule. Everyone agrees.")}
+  let right={pick(k, "B: it gives both sides before it decides", "A: it gives both sides before it decides")}
+  let w1={pick(k, "A: it gives both sides before it decides", "B: it gives both sides before it decides")}
+  let w2={pick(k, "A: it gives two good reasons for its side", "B: it gives three good reasons for its side")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x31 {
+    row two at=canvas(1, 0) space=1 align=start {
+      passage a title="A" text="{ta}" width=16 numbers=false
+      passage b title="B" text="{tb}" width=16 numbers=false
+    }
+    text ask "Two children answer the question: {q} Which argument is balanced, and why?" narrate width=32 below=two gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=two {
+      say "More reasons on one side, or sounding sure, does not make an argument balanced. Look for the one that gives a point against its own side before it decides."
+    }
+  }
+  hint "Two choices give the same reason. Does each argument say anything for the other side?"
+  hint "Balanced means both sides are heard before the writer decides."
+}

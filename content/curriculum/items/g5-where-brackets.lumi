@@ -1,0 +1,29 @@
+# The second reasoning question in the core: brackets placed so a line comes out to a given number,
+# which means working each placing out and seeing which order the target needs.
+item algebra.where-brackets v=1 skills=[algebra.order-of-operations, reasoning.guess-and-check] {
+  title "Where the brackets go"
+  difficulty (w + (a + b) / 10)
+  let a={2, 3, 4, 6} b={3, 5, 7} c={2, 4, 5} w=0..1
+  where (a * b + c != a * (b + c) and (a + b) * c != a + b * c)
+  level easy {
+    let w={0}
+  }
+  level hard {
+    let w={1}
+  }
+
+  scene 31x20 {
+    text ask "A line on the temple wall has lost its brackets. Where must they go to make it true?" narrate width=30 at=canvas(1, 1)
+    equation eq "{a} {if w == 0 then \"+\" else \"×\"} {b} {if w == 0 then \"×\" else \"+\"} {c} = {if w == 0 then (a + b) * c else a * (b + c)}" below=ask gap=1
+    choice pick options=["round the first two numbers", "round the last two numbers", "no brackets are needed"] stack=column below=eq gap=1
+  }
+
+  answer pick=(if w == 0 then "round the first two numbers" else "round the last two numbers")
+  feedback {
+    when (pick == "no brackets are needed") point=eq {
+      say "Without brackets you multiply first. Work it out that way: does it make {if w == 0 then (a + b) * c else a * (b + c)}?"
+    }
+  }
+  hint "Work the line out with no brackets. What do you get?"
+  hint "Try each place for the brackets in turn."
+}

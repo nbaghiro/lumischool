@@ -1,0 +1,32 @@
+# Three detail sentences, each matched to the paragraph (the lock, the mill, the market) it belongs in. The
+# right-hand list turns with r, so the answer is not 1, 2, 3.
+item writing.sort-to-paragraphs v=1 skills=[writing.paragraphs, reasoning.sorting] {
+  title "Which paragraph?"
+  difficulty k
+  let k=0..1 r=0..2
+  let s1={pick(k, "The chamber fills up.", "The gates hold the water.")}
+  let s2={pick(k, "The millstone turns.", "No wind means no flour.")}
+  let s3={pick(k, "Farmers sell cheese.", "Stalls go up at six.")}
+  let c1={"the lock"}
+  let c2={"the mill"}
+  let c3={"the market"}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x25 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      canallock lock level=0.75 boat=1
+      windmill mill sails=4 turn=45
+    }
+    text ask "Nell's guide has a paragraph on the lock, one on the mill and one on the market. Write the number of the paragraph each sentence belongs in." narrate width=34 below=pics gap=1
+    match m left=["{s1}", "{s2}", "{s3}"] right=["{if r == 0 then c2 else if r == 1 then c3 else c1}", "{if r == 0 then c3 else if r == 1 then c1 else c2}", "{if r == 0 then c1 else if r == 1 then c2 else c3}"] blanks=[x, y, z] below=ask gap=1
+  }
+
+  answer x=(if r == 0 then 3 else if r == 1 then 2 else 1) y=(if r == 0 then 1 else if r == 1 then 3 else 2) z=(if r == 0 then 2 else if r == 1 then 1 else 3)
+  hint "Read a sentence, then ask which of the three things in the pictures it is about."
+  hint "Find the word in each sentence that could only belong to one of the three places."
+}

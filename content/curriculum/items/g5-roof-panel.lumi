@@ -1,0 +1,31 @@
+# Area with decimal sides: a roof panel on the narrowboat, drawn in tenths of a metre, so each small
+# square is a hundredth of a square metre and the answer is less than either side.
+item decimal.roof-panel v=1 skills=[decimals.multiply, area.rectangles] {
+  title "A panel on the roof"
+  difficulty ((if l < 1 then 1 else 0) + (if w < 0.5 then 1 else 0) + l * w)
+  let l={0.6, 0.8, 1.1, 1.2} w={0.3, 0.6, 0.7, 0.9}
+  level easy {
+    let l={1.1, 1.2} w={0.6, 0.7}
+  }
+  level hard {
+    let l={0.6, 0.8} w={0.3, 0.9}
+  }
+
+  scene 35x12 {
+    grid panel rows=(w * 10) cols=(l * 10) shade=(l * w * 100) color=sky cell=1 at=canvas(1, 1)
+    text ask "A solar panel on the narrowboat's roof is {l} m long and {w} m wide. Each small square is 0.1 m by 0.1 m. What is the panel's area in square metres?" narrate width=18 right-of=panel gap=2
+    number-input answer width=6 below=ask gap=1
+  }
+
+  answer decimals(l * w, 0)
+  feedback {
+    when (answer == l * w * 10 or answer == l * w * 100) point=panel {
+      say "A hundred small squares make one square metre. How many squares are there, and what part of a square metre is that?"
+    }
+    when (answer == 2 * (l + w)) point=panel {
+      say "That is the way round the edge. Area is length times width."
+    }
+  }
+  hint "Multiply as if there were no points: what is {plain(l * 10)} × {plain(w * 10)}?"
+  hint "There are two decimal places altogether. Put them back."
+}

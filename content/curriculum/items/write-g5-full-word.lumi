@@ -1,0 +1,30 @@
+# A clipped word from a chatty note written out in full for a formal letter, typed into boxes.
+item writing.full-word v=1 skills=[writing.formality, writing.spelling] {
+  title "Write it in full"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3
+  let line={pick(k, "Could you send me some info about the telescope?", "Could I take a photo of the dome?", "Is the comet going to be on the telly?", "Is there somewhere safe to leave a bike?")}
+  let clip={pick(k, "info", "photo", "telly", "bike")}
+  let full={pick(k, "information", "photograph", "television", "bicycle")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 35x12 {
+    row top at=canvas(1, 0) space=2 align=end {
+      column words space=1 align=start {
+        caption strip text="{line}" width=22
+        text ask "In a letter to the director, the word {clip} is written in full. Write the full word." narrate width=22
+      }
+      telescope scope tilt=40
+    }
+    word-input word options=["{full}"] letters=11 below=top gap=1
+  }
+
+  answer word=full
+  hint "{clip} is a short form. What longer word was it cut from?"
+  hint "Say the sentence aloud with a longer word in its place. Which word does the short form start?"
+}

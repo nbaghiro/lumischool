@@ -1,0 +1,40 @@
+# Two-star: the same four lines twice, differing only in the spaces before line 4. In text the spaces
+# are the whole difference, so the child has to read them rather than the words.
+item coding.text-inside v=1 stars=2 skills=[coding.text, coding.repetition, reasoning.compare] {
+  title "Two spaces make the difference"
+  difficulty (n * c / 6 + b / 4)
+  let n=3..5 b=1..3 c=2..4
+  where (b != c)
+  level easy {
+    let n={3}
+    where (b + c <= 5)
+  }
+  level hard {
+    let n={4, 5}
+  }
+
+  scene 36x20 {
+    row both at=canvas(0, 0) space=1 align=start {
+      program pa code=["set puffins to 0", "repeat {n}", "  add {b} to puffins", "  add {c} to puffins"] text=true title="A"
+      program pb code=["set puffins to 0", "repeat {n}", "  add {b} to puffins", "add {c} to puffins"] text=true title="B"
+    }
+    text ask "Two counts of the puffins on the ledge, printed as text. They differ only in the spaces before line 4. What does puffins hold at the end of each?" width=34 below=both gap=1
+    text ta "A" below=ask gap=1
+    number-input first right-of=ta gap=1
+    text tb "B" right-of=first gap=2
+    number-input second right-of=tb gap=1
+  }
+
+  check coding.runs of=pa first="value(puffins)"
+  answer second=(n * b + c)
+  feedback {
+    when (second == n * (b + c)) point=pb {
+      say "In B the last line is written flush, so it is not inside the repeat. It runs once, at the end."
+    }
+    when (first == n * b + c) point=pa {
+      say "In A the last line has two spaces in front of it, so it runs every time round."
+    }
+  }
+  hint "Look at the start of the last line in each program. Which one is set in?"
+  hint "A line set in runs as many times as the repeat says. A line written flush after the repeat runs once."
+}

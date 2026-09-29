@@ -1,0 +1,64 @@
+# A block that uses itself, drawing a fractal: a spiral that uses itself with a smaller number, then a
+# branching tree that uses itself twice with half its number, which draws the same shape at every
+# size. The turtle draws on the flat rock beside the waterfall in the gorge.
+lesson coding-a-block-that-uses-itself v=1 format=teach grade=6 unit=6 subject=coding levels=[easy, medium, hard] {
+  title "A block that uses itself"
+  goal "Follow a block of your own that uses itself with a smaller number, and count what it draws."
+
+  look {
+    scene 36x23 {
+      turtle t cols=5 rows=6 col=3 row=6 face=up moves=["define tree n", "  forward n", "  if n is more than 1", "    turn left", "    tree n / 2", "    turn around", "    tree n / 2", "    turn left", "  back n", "tree 4"] at=canvas(0, 0)
+      program p code=["define tree n", "  forward n", "  if n is more than 1", "    turn left", "    tree n / 2", "    turn around", "    tree n / 2", "    turn left", "  back n", "tree 4"] text=true right-of=t gap=1
+      kingfisher kf flying=0 below=t gap=1
+    }
+    say """
+      The block tree draws a trunk, and then, on lines 5 and 7, uses itself twice with half the
+      number, once to the left and once to the right. Each smaller tree does the same, until n is 1
+      and the if on line 3 says no. So tree 4 draws a trunk of 4, two branches of 2 and four twigs of
+      1: the same shape at every size, which is called a fractal.
+      """
+  }
+  do {
+    show coding.self-spiral s=4 easy-s=3 hard-s=5
+    level easy {
+      worked coding.self-spiral s=4
+    }
+    show coding.self-calls k=1 q=0 easy-k=0 hard-k=2
+    show coding.self-picture k=1 easy-k=0
+    show coding.self-moves k=1 easy-k=0 hard-k=2
+    show coding.self-build s=4 easy-s=3 hard-s=5
+    show coding.self-calls k=2 q=1 easy-k=1 easy-q=0
+    show coding.self-moves k=2 easy-k=1 hard-k=1
+    show coding.self-spiral s=5 hard-s=6
+    level hard {
+      show coding.self-calls k=1 q=1
+    }
+  }
+  try stars=2 {
+    show coding.self-stop k=0 hard-k=1
+  }
+  try stars=3 {
+    show coding.self-grow k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A block can use itself with a smaller number, and an if inside it says when to stop."
+  }
+
+  grown-ups """
+    A block that uses itself is called recursion. The two things to see are that each use has its
+    own smaller number, and that an if stops it when the number is small enough; without the if it
+    would never finish. The common mistake is to think the block runs once, or that the number goes
+    back to where it started after the first use. In the child's working, look for the sizes written
+    in a column, 4, then 2 and 2, then 1, 1, 1 and 1, rather than the lines of the program. If the
+    child is stuck, act it out: the child is tree 4 and draws a trunk, then asks two helpers to be
+    tree 2, who each ask two more. Off the page, look for fractals in a fern leaf, a cauliflower or a
+    river's branches on a map. The two-star question asks what stops the block; the three-star
+    question follows the pattern 1, 3, 7, 15 past a big number.
+    """
+  level easy {
+    grown-ups "At this level the spirals have three to five sides, one is worked in the teacher's pen, the trees are tree 2 and tree 4, the picture to read is tree 2, and the pattern goes past 20 lines."
+  }
+  level hard {
+    grown-ups "At this level the spirals have five or six sides, the trees go up to tree 8, the questions ask how often the line inside the if runs, a third tree question is added, the what-stops-it question changes the if rather than taking it out, and the pattern goes past 100 lines."
+  }
+}

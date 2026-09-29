@@ -1,4 +1,4 @@
-lesson coding-a-number-that-changes v=3 format=teach grade=4 unit=7 subject=coding levels=[easy, medium, hard] {
+lesson coding-a-number-that-changes v=3 format=teach grade=4 unit=5 subject=coding levels=[easy, medium, hard] {
   title "A number that changes"
   goal "Follow a program that keeps numbers under names and changes them, and work out a missing line or start."
 

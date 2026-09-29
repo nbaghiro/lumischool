@@ -1,0 +1,76 @@
+# Sculpture in the round and in relief: low, high and sunk relief read from a cut-through, a solid
+# drawn from three sides, what fits in a block to be carved, and real works sorted by kind, with the
+# research team carving snow and ice under the midnight sun.
+lesson art-sculpture-in-the-round-and-in-relief v=1 format=teach grade=6 unit=3 subject=art levels=[easy, medium, hard] {
+  title "Sculpture in the round and in relief"
+  goal "Tell sculpture in the round from low, high and sunk relief, and read a sculpture from its three views."
+
+  look {
+    scene 36x13 {
+      row all space=2 align=end at=canvas(1, 1) {
+        sculpture r mode=1 shape=0 ask=0 solid=0 kind=-1 names=1
+        seal ps rock=1 facing=1
+      }
+    }
+    say """
+      At the research hut on the ice shelf the sun never sets in summer, and on light evenings the
+      team carve snow and ice. A sculpture in the round stands free, and you can walk all the way
+      round it, like Michelangelo's marble David. A relief stays part of a flat surface. In low
+      relief the figure stands out less than half as far as it would in the round; in high relief it
+      stands out more than half, with its edges cut under. In sunk relief, common in ancient Egypt,
+      the figure is cut down into the surface. Before carving, a sculptor often draws the piece from
+      the front, from the side and from above.
+      """
+  }
+  do {
+    show art.sculpt-relief q=1 easy-q=0 hard-q=2
+    show art.sculpt-kind f=1 easy-f=0 hard-f=2
+    level easy {
+      worked art.sculpt-block f=0 level=medium
+    }
+    show art.sculpt-view k=1 r=1 easy-k=0 hard-k=2
+    show art.sculpt-block f=1 hard-f=2
+    show art.sculpt-works q=1 easy-q=0 hard-q=2
+    show art.sculpt-solid k=2 easy-k=0 hard-k=3
+    show art.sculpt-kind f=2 easy-f=1 hard-f=3
+    show art.sculpt-view k=3 r=0 easy-k=1 hard-k=3 hard-r=1
+    level hard {
+      show art.sculpt-block f=3
+    }
+  }
+  try stars=2 {
+    show art.sculpt-sun q=0 r=0 easy-r=1 hard-q=1
+  }
+  try stars=3 {
+    show art.sculpt-make v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "In the round you can walk all round it; relief stays on its surface, standing out low or high, or sunk into it."
+  }
+
+  grown-ups """
+    The idea is that sculpture is either in the round, free on every side, or relief, part of a flat
+    surface, and that relief is low, high or sunk by how far the figure stands out or goes in; and
+    that three drawn views, from the front, the side and above, describe a solid. The wrong ideas to
+    watch for are calling any raised carving high relief without comparing it with half the figure's
+    depth, and drawing a view from above as if it were the front. In the working, look for the child
+    imagining where they stand for each view. The core reads reliefs from a cut-through, names a
+    missing view and the solid behind three views, checks what fits in a block to be carved, and
+    sorts real works; the two-star question asks why sunk relief suits strong sun, and the
+    three-star is an animal made in the round, which you look at and tick.
+
+    Michelangelo's David (1501 to 1504) is in the Galleria dell'Accademia in Florence, and
+    Ghiberti's Gates of Paradise were made for the Baptistery in Florence; both are long out of
+    copyright and easy to find in a library book. If the views are stuck, put a mug on the table and
+    look at it from the front, the side and straight down, drawing each outline. Off the page, press
+    a coin into clay to make a sunk relief, and model a small animal in the round. This lesson meets
+    Russia's federal work programme for fine art, grade 6, module 2: «Виды скульптуры… Круглая
+    скульптура… Виды рельефа» (kinds of sculpture, sculpture in the round, kinds of relief).
+    """
+  level easy {
+    grown-ups "At this level the relief to find is the sunk one, the seals are 10 cm thick in the round, one block is checked in the teacher's pen before another, the blocks have one measure clearly too big, the missing views are the ball on a column and the pyramid from above, the work to sort is David, the solid behind three views is the ball on a column, the two-star is as written with its answers in another order, and the three-star is a seal without drawn views."
+  }
+  level hard {
+    grown-ups "At this level the reliefs to find are the low and the high, the seals are 12 cm thick with one standing out 5 cm, just under half, the missing views are the stepped block's side and the arch's front, the blocks have a figure too deep even when turned, one more block is checked, the works to sort are the relief doors and the sunk temple walls, the two-star asks about an ice wall under the low midnight sun, and the three-star adds three views and a small relief."
+  }
+}

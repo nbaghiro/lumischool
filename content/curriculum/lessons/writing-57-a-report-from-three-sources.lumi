@@ -1,0 +1,82 @@
+# A report on the first landing on the Moon from three sources: the mission's own air-to-ground
+# transcript (a work of the United States government), and a newspaper, The Daily Lantern, and an
+# encyclopaedia entry, both written for this lesson. Notes, a simple and a full plan, a list of
+# sources, and the report itself.
+lesson writing-a-report-from-three-sources v=1 format=teach grade=6 unit=8 subject=writing levels=[easy, medium, hard] {
+  title "A report from three sources"
+  goal "Write a report from three sources: take notes, check where they agree, plan it, and name the sources."
+
+  look {
+    scene 36x25 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=3 align=end {
+          sourcecard card ask=0
+          loosepages pages count=4
+        }
+        timeline line from=16 to=24 step=2 unit="July" years=[16, 20, 24] labels=["Launch", "Landing", "Home"]
+      }
+    }
+    say """
+      A report tells what is known about something, and a good one is built from more than one
+      source. Check who made each source and whether they were there: a record made at the time
+      is first-hand. Take notes of key words only, see where two sources agree, and put the notes
+      under the headings of a plan. Write in your own words, and list your sources at the end.
+      """
+  }
+  do {
+    level easy {
+      worked writing.report-note k=0
+    }
+    show writing.report-first-hand k=0 hard-k=1
+    show writing.report-note k=1 easy-k=1 hard-k=2
+    show writing.report-which-source k=1 easy-k=0 hard-k=3
+    level medium hard {
+      show writing.report-note k=2 hard-k=3
+    }
+    level easy {
+      show writing.report-first-hand k=2
+    }
+    show writing.report-which-source k=2 easy-k=1 hard-k=4
+    level hard {
+      show writing.report-which-source k=5
+    }
+  }
+  story {
+    show writing.report-plan-order k=1 easy-k=0 hard-k=2
+    show writing.report-plan-under k=2 easy-k=0 hard-k=4
+    show writing.report-plan-under k=3 easy-k=1 hard-k=5
+  }
+  try stars=2 {
+    show writing.report-why-source k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show writing.report-write k=0 hard-k=1
+  }
+  remember {
+    say "Notes in key words, facts checked in two sources, a plan of headings, your own words, and the sources named."
+  }
+
+  grown-ups """
+    The idea is that a report is made, not copied: facts are gathered from several sources, noted in
+    key words, checked where two sources agree, sorted under the headings of a plan, and written in
+    the child's own words with the sources named. The way in judges from a source card whether its
+    maker was there. The core picks the best note of a sentence, finds which source gives a fact or
+    whether both do, puts the report's headings in order (a simple plan) and places notes under
+    them (a full plan). The wrong idea to watch for is copying: a note that is the whole sentence,
+    or a report sentence lifted from a source. If the child is stuck, cover the source and ask them
+    to say the fact to you, then write down only the words they needed. Off the page, choose a
+    topic of their own and find three sources for it in the library, noting who made each one. The
+    Daily Lantern and the encyclopaedia entry were written for this lesson and are not real
+    publications; their facts are Apollo 11's (launched 16 July 1969, the Eagle down in the Sea of
+    Tranquillity on 20 July, Neil Armstrong and Buzz Aldrin outside for about two and a half hours
+    while Michael Collins stayed in orbit, home to the Pacific on 24 July), and Armstrong's words
+    are as NASA's transcript prints them. China's standard for grades five and six (第三学段, 梳理与探究
+    3) asks children to 尝试写简单的研究报告, to try writing a simple research report.
+    """
+  level easy {
+    grown-ups "At this level a note is made once in the teacher's pen first, the sources to judge are the transcript and then the encyclopaedia, the notes drop a plain fact, the facts to find sit in one source or plainly in both, the plan's notes are the crew and the splashdown, and the two-star is the newspaper against the transcript."
+  }
+  level hard {
+    grown-ups "At this level the source to judge is the newspaper written on the day, the notes must turn yesterday into a date, the facts to find are said in different words in each source, there is one more, the plan's notes tempt the wrong heading, the two-star is copying without naming the source, and the three-star is the whole report."
+  }
+}

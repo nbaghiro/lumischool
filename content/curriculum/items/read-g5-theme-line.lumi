@@ -1,0 +1,31 @@
+# The events that carry a theme, found by their line number. The answers are the line breaks of
+# these two stories at width 34 (65 letters to a line), so the texts and the width stay as they are.
+item reading.theme-line v=1 skills=[reading.theme, reading.evidence] {
+  title "Which line carries the theme?"
+  difficulty pick(q, 0, 1, 0, 1)
+  let q=0..3
+  level easy {
+    let q={0, 2}
+  }
+  level hard {
+    let q={1, 3}
+  }
+
+  scene 35x23 {
+    passage p title="{pick(q, \"The race to the lock\", \"The race to the lock\", \"The miller's flour\", \"The miller's flour\")}" text="{pick(q, \"Kit saw old Mr Amos steering his slow boat towards the lock, and he pushed ahead to get there first. In his hurry he swung the tiller too hard, and his boat jammed sideways across the lock mouth. It took an hour to free it. Mr Amos helped with a long pole, then took his own boat through. \\\"Slow and steady gets you there,\\\" he said, \\\"and in one piece.\\\"\", \"Kit saw old Mr Amos steering his slow boat towards the lock, and he pushed ahead to get there first. In his hurry he swung the tiller too hard, and his boat jammed sideways across the lock mouth. It took an hour to free it. Mr Amos helped with a long pole, then took his own boat through. \\\"Slow and steady gets you there,\\\" he said, \\\"and in one piece.\\\"\", \"One dry summer the mill stream ran low, and the miller had no water to turn his wheel. The baker, who had flour to spare, sent him three sacks and would take no money. That winter the baker's oven cracked. Before she could ask, the miller was at her door with bricks and a trowel. \\\"You helped me when I had nothing,\\\" he said. \\\"Now it is my turn.\\\"\", \"One dry summer the mill stream ran low, and the miller had no water to turn his wheel. The baker, who had flour to spare, sent him three sacks and would take no money. That winter the baker's oven cracked. Before she could ask, the miller was at her door with bricks and a trowel. \\\"You helped me when I had nothing,\\\" he said. \\\"Now it is my turn.\\\"\")}" width=34 at=canvas(1, 1)
+    text ask "{pick(q, \"The theme is that rushing can cost more time than it saves. Which line first shows Kit rushing?\", \"The theme is that rushing can cost more time than it saves. Which line shows the time Kit lost?\", \"The theme is that kindness can come back to you. Which line shows the baker asked for nothing back?\", \"The theme is that kindness can come back to you. Which line shows the miller came before the baker asked?\")}" width=28 below=p gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer pick(q, 2, 4, 3, 4)
+  feedback {
+    when (q == 1 and answer == 3) point=p {
+      say "That line shows the boat jamming. Which line says how long it took to free?"
+    }
+    when (q == 3 and answer == 3) point=p {
+      say "That line is the baker's kindness. The question asks when the miller came to her."
+    }
+  }
+  hint "Find the event the question describes in the story, then read the number beside it."
+  hint "Check the line holds the words themselves, not just the sentence before them."
+}

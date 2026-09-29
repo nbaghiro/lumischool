@@ -1,0 +1,28 @@
+# The way in: on Earth every kilogram is pulled down with about 10 N, so a force meter's reading in
+# newtons is ten times the mass in kilograms.
+item physics.weight-earth v=1 skills=[physics.weight, physics.measuring] {
+  title "Mass from a force meter"
+  difficulty (if w % 10 == 0 then 0 else 1)
+  let w={10, 20, 30, 40, 15, 25, 35, 45}
+  level easy {
+    let w={10, 20, 30, 40}
+  }
+  level hard {
+    let w={15, 25, 35, 45}
+  }
+
+  scene 28x14 {
+    springscale s max=50 step=10 value=w unit=N at=canvas(1, 0)
+    text ask "At the observatory, a bag of star charts hangs on a force meter. On Earth every kilogram is pulled down with 10 N. What is the bag's mass, in kilograms?" narrate width=19 right-of=s gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals(w / 10, if w % 10 == 0 then 0 else 1)
+  feedback {
+    when (answer == w) point=s {
+      say "That is the bag's weight in newtons. Each kilogram weighs 10 of them."
+    }
+  }
+  hint "What does the meter read, in newtons?"
+  hint "How many lots of 10 N are there in that?"
+}

@@ -1,0 +1,36 @@
+# The story: some bacteria in warm food split in two every 20 minutes, as tracks.md records, so one
+# becomes many in an afternoon. The clock tower keeps the time; the unknown moves from the number to
+# the time at the harder level.
+item nature.group-germs v=1 skills=[nature.microorganisms, number.sequences] {
+  title "One becomes many"
+  difficulty k
+  let k=0..2
+  let lead={pick(k, "By 1 o'clock, how many bacteria are there?", "By 2 o'clock, how many bacteria are there?", "How many minutes after noon are there more than 1,000 for the first time?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x18 {
+    clocktower ct hour=12 minute=0 at=canvas(1, 1)
+    text ask "At noon, when the clock tower strikes 12, one germ lands on a sandwich left in the warm market. It is a bacterium, and in warm food it splits into two every 20 minutes. {lead}" narrate width=24 right-of=ct gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 8, 64, 200)
+  feedback {
+    when (k <= 1 and answer == pick(k, 6, 12, 0)) point=ask {
+      say "Each split doubles the number. It does not add 2 each time."
+    }
+    when (k <= 1 and answer == pick(k, 3, 6, 0)) point=ask {
+      say "That is how many times it splits. How many bacteria are there after that many doublings?"
+    }
+    when (k == 2 and answer == 180) point=ask {
+      say "After 180 minutes there are 512. Is that more than 1,000?"
+    }
+  }
+  hint "How many 20-minute steps are there in the time?"
+  hint "Start at 1 and double once for each step."
+}

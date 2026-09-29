@@ -1,0 +1,25 @@
+# What the reader knows that the characters do not: the narrator tells the reader whose car it is and
+# who is in the bonnet, and the gentlemen know neither.
+item reading.willows-knows v=1 skills=[reading.inference, reading.whole-book] {
+  title "What the reader knows"
+  let right={"It is Toad, and it is the very car he stole."}
+
+  scene 34x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        bookcast c who=toad pose=stand dir=1
+        text ask "In chapter 10 the gentlemen lift a fainted washerwoman into their car. What does the reader know that they do not?" width=26
+      }
+      choice pick options=[right, "She is really the gaoler's daughter's aunt.", "The car has been sold to a gipsy."] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=pick {
+      say "Check what the narrator says when the car first comes into sight. Whose car is it?"
+    }
+  }
+  hint "Who is really in the washerwoman's gown by chapter 10?"
+  hint "Why does Toad go pale when he sees this car coming?"
+}

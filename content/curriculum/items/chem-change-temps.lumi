@@ -1,0 +1,31 @@
+# Reading a table of temperatures before and after. An iron hand warmer gets hot because the iron
+# powder rusts fast (air-activated warmers reach about 50 to 60 °C); vinegar and baking soda get a
+# few degrees colder; salt dissolving in water changes it by less than a degree, and makes nothing new.
+item chem.change-temps v=1 skills=[chemistry.changes, data.tables] {
+  title "Hotter or colder?"
+  difficulty w
+  let w=0..2 s={18, 20}
+  let asks={pick(w, "How many degrees colder did the vinegar and soda get?", "How many degrees warmer did the hand warmer get?", "How many degrees apart are the two after readings of the vinegar and soda and the hand warmer?")}
+  let second={pick(w, "Is the after number bigger or smaller than the start?", "How far is it from the start up to the after reading?", "Find both after readings. How far is the colder one below the warmer one?")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 35x21 {
+    table data cols=3 head=["Mixed", "Start °C", "After °C"] cells=["Vinegar and soda", "{s}", "{s - 4}", "Hand warmer", "{s}", "{s + 32}", "Salt in water", "{s}", "{s}"] at=canvas(1, 0)
+    text ask "In the clock tower, Sam tries three things and writes down the temperatures. The hand warmer is iron powder that rusts fast when its packet is opened. {asks}" narrate width=34 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(w, 4, 32, 36)
+  feedback {
+    when (answer == pick(w, s - 4, s + 32, s + 32)) point=data {
+      say "That is a reading. The question asks for the change between two readings."
+    }
+  }
+  hint "Find the row the question is about, and read across."
+  hint "{second}"
+}

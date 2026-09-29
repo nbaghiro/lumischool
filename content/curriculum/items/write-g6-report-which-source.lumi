@@ -1,0 +1,43 @@
+# Sorting facts by source, and seeing where two agree. The Daily Lantern (a newspaper) and the
+# encyclopaedia entry were both written for this lesson, and every fact in them is Apollo 11's own:
+# launched 16 July 1969, Eagle landed on 20 July in the Sea of Tranquillity, Armstrong then Aldrin
+# outside for about two and a half hours, Collins in orbit in Columbia, splashdown in the Pacific
+# on 24 July.
+item writing.report-which-source v=1 skills=[writing.research, writing.notes] {
+  title "Which source says so?"
+  difficulty pick(k, 0, 0, 1, 2, 1, 1)
+  let k=0..5
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={3, 4, 5}
+  }
+  let right={pick(k, "The encyclopaedia", "The Daily Lantern", "Both", "Both", "The Daily Lantern", "The encyclopaedia")}
+
+  scene 36x38 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=start {
+        passage news title="The Daily Lantern" text="Two astronauts landed yesterday in the Eagle. They came down in the Sea of Tranquillity. Neil Armstrong stepped out first, then Buzz Aldrin. Michael Collins stayed in orbit in Columbia." width=16
+        passage book title="The encyclopaedia" text="Apollo 11 was launched on 16 July 1969. Its lunar module, Eagle, landed on 20 July, and Neil Armstrong and Buzz Aldrin walked on the Moon. They spent about two and a half hours outside. The crew came home to the Pacific on 24 July." width=16
+      }
+      text ask "{pick(k, \"Which source gives this fact: the launch was on 16 July?\", \"Which source gives this fact: Collins stayed in orbit?\", \"Which source gives this fact: the Eagle landed on the Moon?\", \"Which source gives this fact: Armstrong and Aldrin went out onto the Moon?\", \"Which source gives this fact: they landed in the Sea of Tranquillity?\", \"Which source gives this fact: the crew landed in the Pacific?\")}" width=34
+      choice pick options=["The Daily Lantern", "The encyclopaedia", "Both"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (right == "Both" and pick != "Both") point=news {
+      say "Read the other source as well. Does it say the same thing in different words?"
+    }
+    when (right != "Both" and pick == "Both") point=book {
+      say "Find the fact in each source in turn. Is it really in both, or only in one?"
+    }
+    when (right != "Both" and pick != "Both" and pick != right) point=news {
+      say "Look for the fact in that source again. Which source has the words for it?"
+    }
+  }
+  hint "Read the fact, then look for it in the first source. Is it there?"
+  hint "Now look for it in the second. The words may be different but say the same thing."
+}

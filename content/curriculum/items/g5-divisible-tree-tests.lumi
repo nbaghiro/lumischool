@@ -1,0 +1,28 @@
+# The tests read off a factor tree: 10 needs a 2 and a 5 among the primes, and 9 needs two 3s. The
+# child counts how many of 2, 3, 5, 9 and 10 divide the number.
+item divisible.tree-tests v=1 skills=[number.multiples.divisibility, number.factors] {
+  title "Tests from the tree"
+  difficulty (n / 50)
+  let n={45, 60, 90, 126, 150}
+  level easy {
+    let n={45, 60}
+  }
+  level hard {
+    let n={126, 150}
+  }
+
+  scene 36x13 {
+    factortree tree n=n at=canvas(1, 1)
+    text ask "The observatory's clock ticks {n} times a minute. The primes are ringed in its factor tree. How many of 2, 3, 5, 9 and 10 divide {n} exactly?" narrate width=18 right-of=tree gap=2
+    number-input answer width=2 below=ask gap=1
+  }
+
+  answer ((if n % 2 == 0 then 1 else 0) + (if n % 3 == 0 then 1 else 0) + (if n % 5 == 0 then 1 else 0) + (if n % 9 == 0 then 1 else 0) + (if n % 10 == 0 then 1 else 0))
+  feedback {
+    when (answer == (if n % 2 == 0 then 1 else 0) + (if n % 3 == 0 then 1 else 0) + (if n % 5 == 0 then 1 else 0)) point=tree {
+      say "Those are the primes. 9 and 10 are not prime: 9 needs two 3s in the tree, and 10 needs a 2 and a 5."
+    }
+  }
+  hint "Which primes are ringed, and how many of each?"
+  hint "Which of 9 and 10 can be built from those primes?"
+}

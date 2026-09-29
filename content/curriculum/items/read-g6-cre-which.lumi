@@ -1,0 +1,41 @@
+# The way in: one sentence of Ada's letter about the water wheel, sorted into the claim, a reason or
+# the evidence for a reason. Evidence is something that happened or was measured.
+item reading.cre-which v=1 skills=[reading.argument] {
+  title "Claim, reason or evidence?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1)
+  let k=0..5
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={3, 4, 5}
+  }
+  let right={pick(k, "The claim", "A reason", "Evidence", "A reason", "Evidence", "Evidence")}
+
+  scene 36x22 {
+    text ask "This sentence is from Ada's letter about the water wheel. Is it the claim, a reason or evidence?" at=canvas(1, 1) width=34
+    row top below=ask gap=1 space=1 align=centre {
+      waterwheel wheel paddles=8 lit=0
+      passage p text="{pick(k, \"The old water wheel in the gorge should turn again.\", \"It could light the village hall.\", \"When the mill opened for one day last May, four hundred people came.\", \"Visitors would come to see it.\", \"An engineer says a wheel this size makes enough electricity for thirty homes.\", \"The wheel turned every day for 140 years.\")}" width=19 numbers=false
+    }
+    choice pick options=["The claim", "A reason", "Evidence"] below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (right == "Evidence" and pick == "A reason") point=p {
+      say "A reason says why. This sentence reports something that happened or was measured, which backs a reason up."
+    }
+    when (right == "A reason" and pick == "Evidence") point=p {
+      say "Nothing was counted or measured here. It says why the wheel should turn."
+    }
+    when (right != "The claim" and pick == "The claim") point=p {
+      say "The claim is what Ada wants to happen. Does this sentence ask for that, or support it?"
+    }
+    when (right == "The claim" and pick != "The claim") point=p {
+      say "This is what Ada wants the council to do. Everything else in her letter supports it."
+    }
+  }
+  hint "Does the sentence say what should happen, why, or what was seen or counted?"
+  hint "Could someone else check this sentence by counting or looking?"
+}

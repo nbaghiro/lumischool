@@ -1,0 +1,67 @@
+lesson nature-ecosystems-and-people v=1 format=teach grade=6 unit=7 subject=nature levels=[easy, medium, hard] {
+  title "Ecosystems and what people change"
+  goal "Say what an ecosystem gives the living things in it, and follow how a change people make travels through it."
+
+  look {
+    scene 34x10 {
+      row all at=canvas(1, 1) space=2 align=end {
+        lander ld rungs=5
+        crater cr count=2
+        earth e up=1
+      }
+    }
+    say """
+      From the moon, Ada sees the Earth hang over the grey edge. Nothing lives here. There is no
+      air to breathe, no liquid water and no soil, and the ground swings from hotter than boiling by
+      day to far colder than any freezer at night. On Earth every place is an ecosystem: the plants,
+      animals and tiny rotters that live there, and the air, water, soil and light they share. Each
+      one depends on the others, so when people change one part, the change travels to the rest.
+      """
+  }
+  do {
+    level easy {
+      worked nature.moon-lacks k=2 level=medium
+    }
+    practice nature.moon-lacks count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.sealed-greenhouse count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.people-change count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.help-or-harm count=1 seed=2 easy-seed=1 hard-seed=7
+    level hard {
+      show nature.chain-reason k=1 level=medium
+    }
+  }
+  story {
+    show nature.oxygen-tanks k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.chain-reason k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.sealed-jar k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "An ecosystem is living things and the air, water, soil and light they share, so a change to one part reaches the rest."
+  }
+
+  grown-ups """
+    The moon is here because it has none of an ecosystem, so the child can list what one gives by
+    what the crew must carry: air, water, a steady warmth, soil and the rotters that make it. The
+    lander's greenhouse shows the loop: plants give out oxygen and take in carbon dioxide, animals do
+    the opposite, rotters return waste to the soil, and only light comes from outside. The second
+    half is people's changes, all of them real: rats on seabird islands and their clearing, insect
+    poison and swallows, overfishing, and the wolves brought back to Yellowstone. How much the wolves
+    caused the willows and beavers to return is still argued over by scientists, which is why that
+    question reasons inside an explanation rather than stating it as fact. The wrong idea to
+    watch for is that a change only touches the animal it is aimed at. The story multiplies a decimal
+    and at the harder level divides by one. The three-star question is four sealed jars, and the way
+    in is to ask of each whether there is a plant and whether it has light. If changes still stop at
+    one link after the core, stay here another day and seal a jar of pond water and pondweed on a
+    sunny windowsill, and watch it for a month.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the moon's heat and cold) opens the core, the moon lacks air and liquid water, the greenhouse questions are the two gases, the changes are the rats arriving and being cleared, the hedge helps, the crew of 2 need oxygen for 5 days, the two-star question is the puffins' recovery, and the jar that keeps a snail alive longest is asked for."
+  }
+  level hard {
+    grown-ups "At this level the moon's heat and cold and the leaf that never rots are asked about, the greenhouse questions are the rotters and the light, the changes are the insect poison and the cod, the change to judge is the road through the wood, a second reasoning question in the core is the wolves and the beavers, a 32 kg tank for 4 crew is asked in days, the two-star question is the otters and the kelp, and the pondweed that dies first is asked for."
+  }
+}

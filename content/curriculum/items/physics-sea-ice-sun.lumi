@@ -1,0 +1,31 @@
+# Snow on sea ice reflects up to 90 of every 100 J of sunlight and open sea about 6 (NSIDC), so the
+# dark sea takes in far more. j is the sunlight falling on each patch.
+item physics.sea-ice-sun v=1 skills=[physics.heat, percentages.of-amounts] {
+  title "Snow and open sea"
+  difficulty (if j == 1000 then 0 else 1)
+  let j={500, 1000, 1500, 2000}
+  level easy {
+    let j={1000}
+  }
+  level hard {
+    let j={1500, 2000}
+  }
+
+  scene 33x23 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      midnightsun s suns=5 midnight=1
+      iceberg i under=0
+    }
+    text ask "Snow on sea ice reflects up to 90 of every 100 J of sunlight that falls on it, and open sea only about 6. The rest is taken in and warms it. {j} J of sunlight falls on a patch of each. How many joules more does the open sea take in than the snow?" narrate width=30 below=kit gap=1
+    number-input more below=ask gap=1
+  }
+
+  answer more=(j * 84 / 100)
+  feedback {
+    when (more == j * 94 / 100) point=ask {
+      say "That is everything the sea takes in. The snow takes in a little too: take that away."
+    }
+  }
+  hint "Of every 100 J, how many does the snow take in, and how many does the sea take in?"
+  hint "How many hundreds are there in {j} J?"
+}

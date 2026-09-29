@@ -1,0 +1,38 @@
+# Why the heart and the breathing speed up on the climb and slow down after: the muscles' need for
+# oxygen and food. The hard version asks why the pulse falls again at rest.
+item nature.heart-faster v=1 skills=[nature.circulation, reasoning.explain] {
+  title "Faster and slower"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "Ada climbs the 200 steps beside the waterfall. Why does her heart beat faster as she climbs?", "Why does she breathe faster and deeper too?", "At the top she sits by the rope bridge for five minutes, and her pulse slows down again. Why?")}
+  let ans={pick(k, "Her muscles need more oxygen and food", "To get more oxygen in and carbon dioxide out", "Her resting muscles need less oxygen")}
+  let o1={pick(k, "Her heart is getting tired", "Her lungs are getting smaller", "Her heart has run out of blood")}
+  let o2={pick(k, "The spray is making her cold", "The air at the top has no oxygen", "The waterfall is quieter up there")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x27 {
+    waterfall wf drops=3 rainbow=0 at=canvas(1, 1)
+    text ask "{asks}" narrate width=19 right-of=wf gap=2
+    choice pick options=[o1, ans, o2] stack=column below=wf gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=ask {
+      say "Climbing is hard work for the leg muscles. What does the blood bring them?"
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "Breathing in brings a gas in and breathing out takes one away. The muscles are using more of one and making more of the other."
+    }
+    when (k == 2 and pick != ans) point=ask {
+      say "Her heart and blood are fine. What has changed for her leg muscles now that she is sitting down?"
+    }
+  }
+  hint "What are Ada's leg muscles doing now, compared with before?"
+  hint "Working muscles use oxygen and food, and make carbon dioxide."
+}

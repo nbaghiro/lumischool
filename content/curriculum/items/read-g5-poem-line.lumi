@@ -1,0 +1,37 @@
+# The poem's lines are the evidence: which line holds a simile, which a metaphor, and which none.
+# One line of each poem is a plain description, so a child who marks every line figurative is
+# caught.
+item reading.poem-line v=1 skills=[reading.figurative, reading.evidence, reading.poetry] {
+  title "Find the line"
+  difficulty pick(q, 0, 1, 0, 2)
+  let q=0..3
+  level easy {
+    let q={0, 2}
+  }
+  level hard {
+    let q={1, 3}
+  }
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        poem p title="{pick(q, \"The star cliffs at night\", \"The star cliffs at night\", \"Northern lights\", \"Northern lights\")}" lines=[pick(q, "The dome is a shell on the edge of the land,", "The dome is a shell on the edge of the land,", "The lights came down like curtains,", "The lights came down like curtains,"), pick(q, "it opens its lid like a slow, sleepy hand.", "it opens its lid like a slow, sleepy hand.", "green and silver, soft and wide;", "green and silver, soft and wide;"), pick(q, "The moon is a coin that the sea cannot spend,", "The moon is a coin that the sea cannot spend,", "they were ribbons on the north wind,", "they were ribbons on the north wind,"), pick(q, "and the comet's a scarf with a frayed silver end.", "and the comet's a scarf with a frayed silver end.", "they were fires with the cold inside.", "they were fires with the cold inside.")] rhymes=[-1, -1, -1, -1] width=26
+        moon m phase=0.75
+      }
+      text ask "{pick(q, \"Which line has a simile? Count from the top.\", \"Which line calls the moon something it is not?\", \"Which line has a simile? Count from the top.\", \"Which line has no comparison in it at all?\")}" width=33
+      choice pick options=["1", "2", "3", "4"]
+    }
+  }
+
+  answer pick=pick(q, "2", "3", "1", "2")
+  feedback {
+    when (q == 3 and pick != "2") point=p {
+      say "That line compares the lights with something else. Find the line that only says what they looked like."
+    }
+    when (q == 1 and pick == "1") point=p {
+      say "That line calls the dome a shell. The question asks about the moon."
+    }
+  }
+  hint "Read each line and ask: does it compare, and if so, with like, with as, or by saying one thing is another?"
+  hint "Check your line against the question once more before you choose."
+}

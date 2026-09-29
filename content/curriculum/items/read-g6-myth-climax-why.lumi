@@ -1,0 +1,35 @@
+# The two-star reason: a friend names the wrong climax because it is the most exciting or the most
+# changing moment, and the child says why. One wrong reason names the wrong part, the other a rule
+# that is not true.
+item reading.myth-climax-why v=1 stars=2 skills=[reading.story-structure, reasoning.explain] {
+  title "Is that the climax?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let right={pick(k, "The wings start it; the turn is the wax melting.", "The bait builds up; the turn is the cut line.", "Standing starts it; the turn is the fight.")}
+  let part={pick(k, "Making the wings is the resolution.", "Taking the bait is the exposition.", "Standing up is the resolution.")}
+  let rule={pick(k, "The climax is always the last sentence.", "There is no climax, as the serpent escapes.", "A legend has its climax at the start.")}
+
+  scene 36x26 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=1 align=end {
+        person leo pose=think age=child hair=curly top=tang tone=2
+        bubble says "{pick(k, \"The climax of Daedalus and Icarus is when Daedalus makes the wings. It is the cleverest part.\", \"The climax of Thor’s fishing trip is when Thor takes the ox’s head for bait. That is the boldest part.\", \"The climax of Ilya of Murom is when Ilya stands up. That is when he changes most.\")}" width=16 from=leo
+        hut h pictures=2
+      }
+      text ask "Why is Leo wrong?" width=36
+      choice pick options=[pick(k, part, right, rule), pick(k, right, rule, part), pick(k, rule, part, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == part) point=says {
+      say "Where does that moment sit on the story mountain: at the start, on the way up, or at the end?"
+    }
+    when (pick == rule) point=says {
+      say "Is that true of every story? Think of the tales you have read today."
+    }
+  }
+  hint "The climax is the turning point. After it, can things ever go back to how they were?"
+  hint "Does Leo's moment start the trouble, or is it where the trouble comes to a head?"
+}

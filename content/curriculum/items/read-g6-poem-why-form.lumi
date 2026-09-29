@@ -1,0 +1,28 @@
+# The two-star reason: why a poet might choose this form for this subject. One wrong choice misreads
+# the poem's shape (its rhymes or lines) and one misreads what the poem says, so both need the poem.
+item reading.poem-why-form v=1 stars=2 skills=[reading.poetry, reasoning.explain] {
+  title "Why this form?"
+  difficulty pick(k, 1, 1, 2)
+  let k=0..2
+  let right={pick(k, "Lines can stop where the feeling does.", "The steady rhymes feel like steady steps.", "It rhymes and fades away like the rainbow.")}
+  let shape={pick(k, "It can rhyme wherever it likes.", "The rhymes jump about like the bridge.", "Dream rhymes with lit, so lines pair up.")}
+  let sense={pick(k, "Short lines make the gorge sound quiet.", "Couplets make the crossing sound safe.", "Dream is where the rainbow starts to grow.")}
+
+  scene 35x28 {
+    poem p lines=[pick(k, "Spray on my face,", "The rope bridge sways from side to side,", "After the rain the spray is lit;"), pick(k, "cold as a secret,", "the gorge below is deep and wide.", "a rainbow grows right out of it."), pick(k, "and the whole gorge", "I count the planks, I hold the rope,", "It arches over rock and stream"), pick(k, "shouting its one long word.", "I cross on nothing else but hope.", "and fades away like half a dream.")] rhymes=[-1, -1, -1, -1] width=26 at=canvas(1, 1)
+    text ask "{pick(k, \"Why might the poet have written Spray in free verse?\", \"Why do rhyming couplets suit this poem about the rope bridge?\", \"Why might the poet end on the word dream?\")}" below=p gap=1 width=34
+    choice pick options=[pick(k, shape, right, sense), pick(k, right, sense, shape), pick(k, sense, shape, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == shape) point=p {
+      say "Say the last word of each line aloud. Do the rhymes and lines really do what that choice says?"
+    }
+    when (pick == sense) point=p {
+      say "Read the poem aloud. Does that fit what this poem says about the gorge?"
+    }
+  }
+  hint "Read the poem aloud. How does its shape make it sound?"
+  hint "How does that sound fit what the poem is about?"
+}

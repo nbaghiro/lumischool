@@ -1,0 +1,26 @@
+# The three-star: an explanation of the other journey, a boat going down, which the lesson never
+# spells out; at hard it must also say why a gate cannot be opened too early.
+item writing.explain-going-down v=1 stars=3 skills=[writing.explanations, writing.composing] {
+  title "Explain the way down"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x31 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      canallock full level=1 boat=1
+      canallock empty level=0 boat=1
+    }
+    text ask "{if k == 0 then \"Explain to a visitor how a boat goes down through the lock. Put the steps in order, in the present, and use at least two words that give a reason, such as so, because or as a result.\" else \"Explain to a visitor how a boat goes down through the lock, in order and in the present, with at least two words that give a reason. Say too why the bottom gates cannot be opened while the chamber is full.\"}" narrate width=33 below=pics gap=1
+    writinglines lines lines=5 width=33 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="The steps for going down in the right order (in with the chamber full, the top gates shut behind, water let out at the bottom, the boat sinking, the bottom gates opened), written in the present for anyone rather than as one trip, at least two words that link a cause to what follows (so, because, as a result, until), a part of the lock named, and at hard a true reason why the bottom gates stay shut while the chamber is full (the water inside presses them shut until the levels match)."
+  hint "Start from the picture on the left. What has to happen first for the boat to get to the picture on the right?"
+  hint "After each step, ask why it happens, and write the reason in."
+}

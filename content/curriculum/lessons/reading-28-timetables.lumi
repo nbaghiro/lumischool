@@ -1,4 +1,4 @@
-lesson reading-timetables v=1 format=teach grade=3 unit=4 subject=reading levels=[easy, medium, hard] {
+lesson reading-timetables v=1 format=teach grade=3 unit=7 subject=reading levels=[easy, medium, hard] {
   title "Reading a timetable"
   goal "Read a timetable across and down to find when a bus gets to a stop, how long a journey takes, and which bus gets there in time."
 

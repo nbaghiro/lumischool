@@ -1,0 +1,31 @@
+# Three stars: the sky turns anticlockwise, a quarter turn every six hours, so the wait from one place
+# to another depends on the way round. i is where the Plough is now, j where it is wanted.
+item physics.plough-hours-to v=1 stars=3 skills=[physics.sky, reasoning.constraints] {
+  title "When will the Plough be there?"
+  difficulty (if (j - i + 4) % 4 == 1 then 0 else if (j - i + 4) % 4 == 2 then 1 else 2)
+  let i=0..3 j=0..3
+  where (i != j)
+  level easy {
+    where ((j - i + 4) % 4 == 1)
+  }
+  level hard {
+    where ((j - i + 4) % 4 == 3)
+  }
+  let s={pick(i, 13, 19, 1, 7)}
+  let want={pick(j, "straight above", "to the left of", "straight below", "to the right of")}
+
+  scene 30x31 {
+    starmap m sky=s clock=21 looks=1 pointers=0 names=0 turn=1 at=canvas(1, 0)
+    text ask "This is the Plough at 9 pm. The sky turns round the pole star the way the arrow shows, 15 degrees every hour. How many hours from now will the Plough stand {want} the pole star?" narrate width=28 below=m gap=1
+    number-input hours below=ask gap=1
+  }
+
+  answer hours=(6 * ((j - i + 4) % 4))
+  feedback {
+    when (hours == 6 * ((i - j + 4) % 4) and (j - i + 4) % 4 != 2) point=m {
+      say "That is the time going the other way round. Follow the arrow."
+    }
+  }
+  hint "How many hours does a quarter turn take, at 15 degrees an hour?"
+  hint "Follow the arrow from where the Plough is now. How many quarter turns until it is {want} the pole star?"
+}

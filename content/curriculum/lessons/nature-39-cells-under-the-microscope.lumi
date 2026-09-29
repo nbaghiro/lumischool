@@ -1,0 +1,74 @@
+lesson nature-cells-under-the-microscope v=1 format=teach grade=5 unit=6 subject=nature levels=[easy, medium, hard] {
+  title "Cells under the microscope"
+  goal "Work out how long a cell is from how many fit across a microscope's field of view."
+
+  look {
+    scene 36x21 {
+      row all at=canvas(1, 1) space=1 align=end {
+        microview m kind=0 mag=100 scale=0 field=1
+        microscope sc slide=1 lamp=0
+        telescope tel tilt=50
+      }
+    }
+    say """
+      The observatory has a microscope as well as a telescope: one shows huge things far away, the
+      other tiny things close up. Every living thing is built of cells, too small to see with the eye
+      alone. Ada peels the thin skin from inside an onion and looks at it at × 100. The round field is
+      1,800 micrometres (µm) across, and a millimetre is 1,000 µm. Eight cells lie end to end across
+      it, so one cell is 1,800 ÷ 8 = 225 µm long. Each has a dark dot, its nucleus.
+      """
+  }
+  do {
+    show nature.cell-mag k=1 easy-k=0 hard-k=2
+    level easy {
+      worked nature.cell-size k=0 level=medium
+    }
+    show nature.cell-across k=1 easy-k=0 hard-k=1
+    level easy {
+      show nature.cell-across k=1
+    }
+    show nature.cell-size k=1 easy-k=1 hard-k=1
+    show nature.cell-plant k=1 easy-k=0 hard-k=2
+    show nature.cell-bar k=1 easy-k=0 hard-k=2
+    level medium hard {
+      show nature.cell-size k=2
+    }
+    show nature.cell-mag k=3 easy-k=1 hard-k=3
+    level hard {
+      show nature.cell-plant k=1 level=medium
+    }
+  }
+  story {
+    show nature.cell-fit k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.cell-zoom k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.cell-choose k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Count the cells across the field and share the field's width between them: that is how long one cell is."
+  }
+
+  grown-ups """
+    Everything alive is made of cells, and a microscope makes them big enough to measure. The field
+    of view is a circle of known width at each magnification, so the cells lying end to end across it
+    share that width, and one cell's length is the width divided by the count. The wrong ideas to
+    watch for are that a stronger lens makes the cells themselves bigger, when it only shows less of
+    the slide, and that the magnifications of two lenses add rather than multiply. In the child's
+    working, look for the field's width and the count written down before any dividing. If the child
+    is stuck, lay coins end to end across a plate and ask how wide one coin is, then come back to the
+    circle. Off the page, look at onion skin, a drop of pond water or a speck of dried yeast with a
+    magnifying glass or a borrowed microscope; the dark dot of the nucleus shows best with a drop of
+    iodine. The widths are those of a school microscope with a × 10 eyepiece. This meets China's
+    grades five and six science, 5.3③: 「初步学会使用显微镜观察细胞，知道细胞是生物体的基本结构单位」,
+    using a microscope to see that cells are the basic unit of living things.
+    """
+  level easy {
+    grown-ups "At this level the magnifications are × 100 and × 400 worked forwards, a worked example measures an onion cell at × 400, the cells to count and measure lie two or five across, the plant or animal question compares the cheek with the onion, the scale bar measures a cheek cell, the story fits cheek cells into a millimetre, the stronger lens question uses onion skin, and the plan wants 20 onion cells."
+  }
+  level hard {
+    grown-ups "At this level the magnifications are worked back to the lens that gives them, the count is two onion cells at × 400, the cells to measure include pondweed at × 1000, the plant questions are why onion skin has no green and what the green dots do, the scale bar measures yeast, the story fits yeast cells into a millimetre with a remainder, the stronger lens turns pondweed from × 400 to × 1000, and the plan wants 30 yeast cells."
+  }
+}

@@ -1,0 +1,29 @@
+# A print far along the border, beyond the part drawn: the repeat is four prints, so print n is the
+# same as print (n - 1) % 4 + 1. The core reason is the remainder, not counting along.
+item art.folk-far v=1 skills=[art.pattern, reasoning.pattern] {
+  title "Far along the border"
+  difficulty (if n <= 16 then 0 else if n <= 32 then 1 else 2)
+  let n={14, 16, 23, 32, 37, 50}
+  let right={pick((n - 1) % 4, "a red flower", "a black leaf", "a black leaf", "a yellow star")}
+  level easy {
+    let n={14, 16}
+  }
+  level hard {
+    let n={37, 50}
+  }
+
+  scene 36x22 {
+    printrow row unit=["flower", "leaf", "leaf", "star"] colours=["red", "black", "black", "yellow"] count=8 missing=-1 wrong=0 at=canvas(1, 1)
+    text ask "The border goes all the way round the temple's cloth, far past the eight prints drawn here. Counting from the first print, what is print number {n}?" narrate width=34 below=row gap=1
+    choice pick options=["a red flower", "a black leaf", "a yellow star"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=row {
+      say "Every repeat of four starts with a red flower. Which print number starts the repeat that print {n} is in?"
+    }
+  }
+  hint "How long is one repeat? Which print numbers start a new repeat?"
+  hint "Find the biggest number below {n} that ends a whole repeat, then count on from there."
+}

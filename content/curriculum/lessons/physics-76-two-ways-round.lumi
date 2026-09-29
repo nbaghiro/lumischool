@@ -1,0 +1,60 @@
+lesson physics-two-ways-round v=1 format=teach grade=5 unit=8 subject=physics levels=[easy, medium, hard] {
+  title "Two ways round: parallel circuits"
+  goal "Predict which bulbs light in a parallel circuit, and explain why each branch works on its own."
+
+  look {
+    scene 36x16 {
+      row all at=canvas(1, 0) space=2 align=start {
+        series s cells=2 bulbs=2 show=1
+        parallel p cells=2 branches=2 closed=[1, 1] show=1 symbols=0
+      }
+    }
+    say """
+      On the left two bulbs are in one loop, one after another, so they share the cells' push and
+      one open switch puts both out. On the right they are in parallel: each bulb has its own branch
+      joined straight across the cells, with its own switch. A closed branch is as bright as one bulb
+      alone on the cells, and opening one switch puts out only its own bulb. Each lit branch draws
+      its own current, so the cells run down faster.
+      """
+  }
+  do {
+    practice physics.parallel-lit count=2 seed=1 easy-seed=2 hard-seed=3 easy-count=3
+    practice physics.parallel-open-b count=1 seed=1 easy-seed=2 hard-seed=3 hard-count=2
+    level easy {
+      worked physics.parallel-vs-series v=1 level=medium
+    }
+    practice physics.parallel-vs-series count=2 seed=1 easy-seed=2 hard-seed=3 easy-count=1
+    practice physics.fairy-lights count=1 seed=1
+    practice physics.parallel-fault count=1 seed=1
+  }
+  story {
+    show physics.clocktower-lanterns v=0 h=12 easy-h=24 hard-v=2
+  }
+  try stars=2 {
+    show physics.parallel-second-branch c=2
+  }
+  try stars=3 {
+    show physics.parallel-ways w=1 easy-w=0 hard-w=2
+  }
+  remember {
+    say "In parallel each bulb has its own branch across the cells, so it lights on its own switch and at full brightness."
+  }
+
+  grown-ups """
+    A parallel circuit gives each bulb its own path from one end of the cells to the other, which is
+    how the lights in a house are wired. The strongest wrong idea is that current is used up as it
+    goes round, so a bulb further along gets less; the second is that a new branch must dim the
+    others, as a second bulb in a loop does. The two-star question answers both from the drawings.
+    Watch for a child who follows one wire and forgets the others; trace each branch with a finger,
+    from the cells and back. If the diagrams are hard, stay with the pictures for another day. Off
+    the page, switch on two lamps in one room and ask whether the first got dimmer. The lesson meets
+    Japan's grade 4 standard, 小学校学習指導要領 理科 小4 A(3), with its note "直列つなぎと並列つなぎを
+    扱うものとする" (teach connecting in series and in parallel), two years before our grade.
+    """
+  level easy {
+    grown-ups "At this level the circuits are pictures, the switch opened is B's own, a worked example compares a loop with branches, the cells last 24 hours with one lantern, and the three-star count is of exactly two lanterns lit."
+  }
+  level hard {
+    grown-ups "At this level the circuits are diagrams in symbols, the switch opened is another branch's and is asked twice, the loop and the branches may tie, all three lanterns are lit, and the three-star count is of at least one lantern lit."
+  }
+}

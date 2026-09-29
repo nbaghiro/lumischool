@@ -1,0 +1,25 @@
+# The way in to measuring: counting the cells that lie end to end across the middle of the round field.
+# The checker reads the microscope view, so the count in the key is the count in the picture.
+item nature.cell-across v=1 skills=[nature.cells] {
+  title "Cells across the field"
+  difficulty pick(k, 0, 0, 1)
+  let k=0..2
+  let kind={pick(k, 2, 0, 2)} mag={pick(k, 400, 400, 1000)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x30 {
+    microview m kind=kind mag=mag scale=0 field=1 at=canvas(1, 1)
+    owlflying o right-of=m gap=2
+    text ask "At the observatory Ada looks at a slide under the microscope. How many cells lie end to end across the middle of the round field?" narrate width=32 below=m gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check nature.cells of=m answer=across
+  hint "Run a finger straight across the middle of the circle, from edge to edge."
+  hint "Count each cell your finger crosses, the whole way along."
+}

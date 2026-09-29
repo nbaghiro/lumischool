@@ -1,0 +1,32 @@
+# The distance to balance: the moments either side must be equal, so the new weight hangs at the
+# left moment divided by its own force.
+item physics.moment-distance v=1 skills=[physics.moments, reasoning.backwards] {
+  title "Where must it hang?"
+  difficulty (a * p / b)
+  let a={4, 6, 8, 9, 10} p=1..5 b={2, 3, 4, 5, 6}
+  where (a * p % b == 0 and a * p / b <= 5 and a != b and a * p / b != p)
+  level easy {
+    where (a * p / b <= 2)
+  }
+  level hard {
+    where (a * p / b >= 4)
+  }
+
+  scene 28x23 {
+    seesaw plank left=a atleft=p right=0 atright=1 unit=N marks=true held=1 at=canvas(1, 0)
+    text ask "The steps are 10 cm apart. How many centimetres from the pivot on the right must a {b} N weight hang to balance the plank?" narrate width=26 below=plank gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a * p * 10 / b)
+  feedback {
+    when (answer == a * p / b) point=plank {
+      say "That is in steps. Each step is 10 cm."
+    }
+    when (answer == p * 10) point=plank {
+      say "The same distance would balance only the same weight. The {b} N weight needs its own distance."
+    }
+  }
+  hint "What is the moment of the {a} N weight?"
+  hint "At what distance does {b} N make the same moment?"
+}

@@ -1,0 +1,28 @@
+# Measuring what a stone pushes aside: the water rises in the cylinder by the stone's own volume, and
+# one millilitre is one cubic centimetre.
+item physics.displace-read v=1 skills=[physics.floating, physics.measuring, volume.capacity] {
+  title "The water a stone pushes aside"
+  difficulty add
+  let before={30, 40, 50} add={15, 20, 25, 35}
+  let after={before + add}
+
+  scene 26x27 {
+    row kit at=canvas(1, 0) space=2 align=start {
+      cylinder one max=100 step=10 minor=5 level=before unit=ml
+      cylinder two max=100 step=10 minor=5 level=after unit=ml
+    }
+    text la "before" below=kit gap=0
+    text lb "with the stone in" right-of=la gap=4
+    text ask "What is the volume of the stone, in cubic centimetres? One millilitre is one cubic centimetre." narrate width=25 below=la gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer add
+  feedback {
+    when (answer == after) point=two {
+      say "That is the level with the stone in. The stone takes up only the part the water rose by."
+    }
+  }
+  hint "Read each cylinder at the bottom of the curve."
+  hint "How far did the water rise when the stone went in?"
+}

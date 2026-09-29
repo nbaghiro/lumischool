@@ -1,0 +1,40 @@
+# Lines for an argument about the clock tower's bell. At k 0 to 2 one is a fact someone could check
+# and two are opinions, and at k 2 an opinion is dressed as a fact. At k 3 and 4 the child picks the
+# evidence for one side: a checkable fact that helps it, beside a true fact that does not and an
+# opinion dressed as a fact.
+item writing.fact-or-opinion v=1 skills=[writing.argument, reasoning.claims] {
+  title "Fact, opinion and evidence"
+  difficulty (if k < 3 then k else 2)
+  let k=0..4
+  let o1={pick(k, "The bell rings every hour, day and night.", "The bell is far too loud at night.", "The bell has always been loved by all.", "The bell was cast in 1602.", "The bell is the heart of the city.")}
+  let o2={pick(k, "The bell is the loveliest sound in the city.", "Forty families live beside the tower.", "Silence at night is better for everyone.", "Everyone agrees the bell is a nuisance.", "The night guards change watch when the bell rings.")}
+  let o3={pick(k, "Nobody should mind a bell.", "People will get used to it in time.", "The bell was silent for a year in 1920.", "Forty families sleep in houses beside the tower.", "Forty families sleep in houses beside the tower.")}
+  let right={pick(k, o1, o2, o3, o3, o2)}
+  let q={pick(k, "A good argument is built on facts. Which of these is a fact that someone could check?", "A good argument is built on facts. Which of these is a fact that someone could check?", "A good argument is built on facts. Which of these is a fact that someone could check?", "Ana argues that the bell should be silent at night. Which line is evidence for her side?", "Leo argues that the bell should keep ringing at night. Which line is evidence for his side?")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..4
+  }
+
+  scene 34x28 {
+    row top at=canvas(1, 0) space=2 align=start {
+      clocktower tower hour=3 minute=0
+      text ask "The city asks: should the bell ring at night? {q}" narrate width=24
+    }
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right and k < 3) point=ask {
+      say "That line says what someone thinks or feels. A fact can be counted, measured or looked up, and it stays true whoever reads it."
+    }
+    when (pick != right and k >= 3) point=ask {
+      say "Evidence has to be a fact that can be checked, and it has to help this side. Ask of that line: could it be checked, and whose side does it help?"
+    }
+  }
+  hint "For each line, ask: how could someone check this? Could it be counted, measured or looked up?"
+  hint "Words that judge, such as best, too or should, tell you what a writer thinks rather than what is so. Everyone agrees is a claim too: has anyone asked everyone?"
+}

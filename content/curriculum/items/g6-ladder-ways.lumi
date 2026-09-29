@@ -1,0 +1,28 @@
+# The three-star: climbing a ladder of n rungs one or two at a time. No method on the page; listing
+# short ladders shows each count is the two before it added. Proved as a count.
+item chance.ladder-ways v=1 stars=3 skills=[counting.cases, reasoning.patterns] {
+  title "One rung or two"
+  difficulty n
+  let n=3..8
+  level easy {
+    let n={3, 4}
+  }
+  level hard {
+    let n={7, 8}
+  }
+
+  scene 35x12 {
+    lander l rungs=n at=canvas(1, 1)
+    text ask "An astronaut climbs from the ground to the top rung of the lander's ladder, which has {n} rungs. Each step goes up one rung or two. How many different ways can the climb go?" narrate width=24 right-of=l gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer pick(n - 3, 3, 5, 8, 13, 21, 34)
+  feedback {
+    when (answer == n and n != 3 or answer == n - 1) point=l {
+      say "The steps can mix: one, then two, then one is a different climb from two, then one, then one."
+    }
+  }
+  hint "How many ways are there to reach the first rung? The second? The third?"
+  hint "The last step onto a rung came from one rung below or from two below."
+}

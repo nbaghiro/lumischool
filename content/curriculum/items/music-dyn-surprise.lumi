@@ -1,0 +1,39 @@
+# Haydn's Surprise Symphony (1791): the tune is played p, then again pp, and a sudden ff chord ends the
+# phrase. Steps on the ladder: p to pp is 1, pp to ff is 5; played one step softer, f is 4 above pp.
+item music.dyn-surprise v=1 skills=[music.dynamics, music.staff] {
+  title "Haydn's surprise"
+  difficulty q
+  let q=0..2
+  let ask={pick(q, "How many steps softer is the second time than the first?", "How many steps louder is the surprise chord than the second time?", "The band plays the chord one step softer than Haydn wrote. How many steps louder than the second time is it then?")}
+  let right={pick(q, 1, 5, 4)}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=2..2
+  }
+
+  scene 36x29 {
+    row top space=1 align=end at=canvas(1, 1) {
+      column score space=0 align=start {
+        notes tune clef=treble notes=[C4, C4, E4, E4, G4, G4, E4] values=[0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1] meter=2
+        dynamics marks marks=["p", "pp", "ff"] words=false ring=-1
+      }
+      kingfisher bird flying=0 facing=-1
+    }
+    text ask "Haydn's Surprise Symphony, 1791, at the waterfall. The tune is played p, then played again pp, then a sudden ff chord. On the ladder pp, p, mp, mf, f, ff: {ask}" narrate width=33 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (q >= 1 and answer == right + 1) point=marks {
+      say "Count the steps between the marks, not the marks themselves."
+    }
+    when (q == 2 and answer == 5) point=marks {
+      say "One step softer than ff is f. Count from pp up to f."
+    }
+  }
+  hint "Say the ladder from pp to ff and point at each of the two marks."
+  hint "Count the steps from one to the other."
+}

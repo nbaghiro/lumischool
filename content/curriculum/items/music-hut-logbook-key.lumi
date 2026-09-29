@@ -1,0 +1,45 @@
+# The story: a tune copied into the research hut's logbook with a sign beside every sharp or flat.
+# The signature it needs counts letters, not signs, so two F sharps still make one sharp.
+item music.hut-logbook-key v=1 skills=[music.key-signatures, music.staff] {
+  title "The logbook tune"
+  difficulty (if v <= 1 then 0 else 1)
+  let v=0..3
+  let n1={pick(v, "G4", "F4", "D4", "Bf4")}
+  let n2={pick(v, "Fs4", "A4", "Fs4", "C5")}
+  let n3={pick(v, "G4", "Bf4", "A4", "D5")}
+  let n4={pick(v, "D5", "C5", "Cs5", "Ef5")}
+  let n5={pick(v, "Fs5", "Bf4", "D5", "F5")}
+  let n6={pick(v, "G5", "A4", "Fs4", "Ef4")}
+  let right={pick(v, "one sharp", "one flat", "two sharps", "two flats")}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 36x43 {
+    row top space=2 align=end at=canvas(1, 1) {
+      hut hut pictures=4
+      puffins birds count=2 facing=-1
+    }
+    notes tune clef=treble notes=[n1, n2, n3, n4, n5, n6] values=[] below=top gap=1
+    text ask "Ana copied a tune into the research hut's logbook with a sign beside every sharp or flat. Written out neatly, what key signature should it have?" narrate width=34 below=tune gap=1
+    choice pick options=["one sharp", "two sharps", "one flat", "two flats"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "two sharps" and v == 0) point=tune {
+      say "Both sharps are on F. A key signature names each letter once, and it changes that letter in every octave."
+    }
+    when (pick == "two flats" and v == 1) point=tune {
+      say "Both flats are on B. A key signature names each letter once, and it changes that letter in every octave."
+    }
+    when (pick != right and v >= 2) point=tune {
+      say "List the letters that have a sign, each letter once. How many different letters is that?"
+    }
+  }
+  hint "Are the signs sharps or flats?"
+  hint "Which letters have a sign? Count each letter once, however many times it comes."
+}

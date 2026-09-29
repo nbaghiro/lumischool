@@ -1,7 +1,7 @@
 # The ukulele first, as school programmes and the children's courses start: four nylon strings,
 # small enough for a young hand, and tuned so the open strings already make a chord. The picture is
 # upright, facing the child, the same way round as every chord card they will read.
-lesson music-uke-meet v=1 format=teach grade=1 unit=3 subject=music levels=[easy, medium, hard] {
+lesson music-uke-meet v=1 format=teach grade=1 unit=6 subject=music levels=[easy, medium, hard] {
   title "Meet the ukulele"
   goal "Name the parts of a ukulele and its four strings, G, C, E and A, and number them from the thinnest."
 

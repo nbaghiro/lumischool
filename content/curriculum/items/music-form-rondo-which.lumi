@@ -1,0 +1,34 @@
+# Which form is a rondo: A comes back between every new section, and the new sections are all
+# different. The forms beside it repeat without a return, or return without anything new between.
+item music.form-rondo-which v=1 skills=[music.form] {
+  title "Which is a rondo?"
+  difficulty v
+  let v=0..2
+  let right={pick(v, "A B A C A", "A B A C A D A", "A B A C A")}
+  let o2={pick(v, "A A B B", "A B C D A", "A B C A B C")}
+  let o3={pick(v, "A B C D", "A B C A D A", "A B A B")}
+  let o4={pick(v, "A B B A", "A A B A", "A B A C")}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=1..2
+  }
+
+  scene 36x26 {
+    row top space=2 align=start at=canvas(1, 1) {
+      citywalls walls towers=3 open=1
+      text ask "A rondo keeps coming back to A, with a different new section between each return, and ends on A. Which of these is a rondo?" narrate width=16
+    }
+    choice pick options=[pick(v, o2, right, o2), pick(v, right, o2, o3), pick(v, o3, o3, right), o4] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "Check that A comes between every two new sections, and that the piece ends on A."
+    }
+  }
+  hint "In each form, look at what comes straight after each new letter."
+  hint "Does A come back after every new section, and is it last?"
+}

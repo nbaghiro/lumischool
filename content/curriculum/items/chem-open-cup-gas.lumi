@@ -1,0 +1,31 @@
+# An open cup loses the gas it makes: 84 g of baking soda gives 44 g of carbon dioxide (formula
+# masses), so 21 g gives 11 g, as long as the vinegar is enough. Kitchen vinegar is 5 g of acid in
+# 100 ml, so 21 g of soda needs 300 ml (chem.soda-for-vinegar); the jug holds 400 ml. The unknown is
+# the gas lost, or the reading after.
+item chem.open-cup-gas v=1 skills=[chemistry.changes, chemistry.conservation] {
+  title "The lighter cup"
+  difficulty d
+  let d=0..1 b={600, 650, 700}
+  let gas={11}
+  level hard {
+    let d=1..1
+  }
+
+  scene 36x15 {
+    dialscale scales max=1000 step=100 value=(if d == 0 then b - gas else b) unit=g at=canvas(1, 0)
+    text ask "At the market fountain, an open jug holding 400 ml of vinegar has 21 g of baking soda tipped in, and it fizzes on the scales. {if d == 0 then \"Before the fizz, the jug and everything in it weighed \" else \"The scales show the jug and everything in it before the fizz. The fizz lets \"}{if d == 0 then b else gas}{if d == 0 then \" g, and the scales show it now. How many grams of gas left the jug?\" else \" g of gas out into the air. What will the scales read when it stops?\"}" narrate width=22 right-of=scales gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if d == 0 then gas else b - gas)
+  feedback {
+    when (d == 1 and answer == b) point=scales {
+      say "The gas has weight, and it has left the open jug. The jug is lighter by that much."
+    }
+    when (d == 0 and answer == 21) point=scales {
+      say "Not all the soda left: most of it is still in the jug. Compare the two readings."
+    }
+  }
+  hint "Where did the bubbles go from an open jug?"
+  hint "{if d == 0 then \"What is the difference between the reading before and the reading now?\" else \"Does the jug get lighter or heavier when a gas leaves it? By how much?\"}"
+}

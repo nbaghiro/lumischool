@@ -1,0 +1,34 @@
+# A tune note that is not in the chord under it, a passing note, found by spelling the chord from its
+# symbol and reading the bar's notes off the staff with no letters written.
+item music.lead-odd-note v=1 skills=[music.lead-sheets, music.chords, music.staff] {
+  title "The note outside the chord"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..5
+  let sym={pick(k, "C", "F", "Am", "G7", "Dm", "Em")}
+  let n1={pick(k, "E4", "F4", "A4", "G4", "F4", "G4")}
+  let n2={pick(k, "F4", "G4", "C5", "B4", "E4", "B4")}
+  let n3={pick(k, "G4", "A4", "B4", "C5", "D4", "E5")}
+  let n4={pick(k, "C5", "C5", "E5", "D5", "A4", "D5")}
+  let right={pick(k, "2", "2", "3", "3", "2", "4")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..5
+  }
+
+  scene 30x22 {
+    notes bar clef=treble notes=[n1, n2, n3, n4] values=[] meter=4 chords=[sym, _, _, _] at=canvas(1, 1)
+    text ask "A bar from the lead sheet, with {sym} under all of it. Three notes are in the chord and one is not. Which note is not?" narrate width=28 below=bar gap=1
+    choice pick options=["1", "2", "3", "4"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=bar {
+      say "Spell the chord first, taking every other letter from {sym}'s own. Then name each note from its line or space."
+    }
+  }
+  hint "Which letters are in the chord {sym}?"
+  hint "Name the four notes one at a time. Which letter is missing from the chord?"
+}

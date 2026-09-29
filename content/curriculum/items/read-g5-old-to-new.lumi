@@ -1,0 +1,39 @@
+# An old sentence put into today's English. The best version keeps the meaning and drops every old
+# word; one wrong option changes the meaning, and the other keeps an old word or an old word order.
+item reading.old-to-new v=1 skills=[reading.old-words, reading.vocabulary] {
+  title "Say it today"
+  difficulty pick(k, 0, 1, 2, 1)
+  let k=0..3
+  let right={pick(k, "You must not go through till the bell has rung.", "Whoever finds the key will get a gold coin.", "I do not know where the old road goes.", "Do not wait, because the gates close at dusk.")}
+  let wrong={pick(k, "You can go through when the bell rings.", "Whoever loses the key must pay a gold coin.", "I know that the old road goes nowhere.", "Do not hurry, as the gates close at dusk.")}
+  let old={pick(k, "Thou must not go through till the bell has rung.", "Whosoever finds the key will get a gold coin.", "I know not where the old road goes.", "Tarry not, because the gates close at dusk.")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 36x26 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p title="In an old book" text="{pick(k, \"Thou shalt not pass ere the bell hath rung.\", \"Whosoever findeth the key shall have a gold coin.\", \"I know not whither the old road goeth.\", \"Tarry not, for the gates close at dusk.\")}" width=22 numbers=false
+        printingpress press printed=1
+      }
+      text ask "Which says the same thing in today's English?" width=34
+      choice pick options=[pick(k, wrong, right, old, wrong), pick(k, right, old, wrong, old), pick(k, old, wrong, right, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == wrong) point=p {
+      say "That changes what the sentence says. Put each old word back into today's words, one at a time."
+    }
+    when (pick == old) point=p {
+      say "That still has an old word or an old order in it. Which part would sound odd today?"
+    }
+  }
+  hint "Find each old word first. What does each one mean today?"
+  hint "Does your choice mean exactly what the old sentence means, with nothing old left?"
+}

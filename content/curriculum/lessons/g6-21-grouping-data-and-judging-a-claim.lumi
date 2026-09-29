@@ -1,0 +1,67 @@
+lesson g6-grouping-data-and-judging-a-claim v=1 format=teach grade=6 unit=8 subject=maths levels=[easy, medium, hard] {
+  title "Grouping data into classes, and judging a claim"
+  goal "Group raw data into classes of equal width, draw its histogram, and use it to judge a claim about the data."
+
+  look {
+    scene 34x14 {
+      bargraph hist labels=["0-4", "5-9", "10-14", "15-19"] values=[3, 6, 5, 2] max=7 color=sky touch=1 at=canvas(1, 1)
+      crater field count=3 right-of=hist gap=3
+    }
+    say """
+      The crew ask a question: how wide are the craters round the lander? They measure sixteen
+      craters and group the widths in classes of equal width, 0-4 m, 5-9 m and so on, so a crater
+      exactly 5 m wide goes in 5-9. The frequency table counts each class, and the histogram draws
+      each count as a bar, touching its neighbours because the classes run on without a gap. The
+      bars answer some questions and hide others: a bar says how many craters are in a class, but
+      not where inside it they are.
+      """
+  }
+  do {
+    show data.crater-dot-class v=0 q=1 easy-q=0 hard-v=1
+    practice data.crater-how-many-classes count=1 seed=3
+    level easy {
+      worked data.rock-bar-set v=0 h=2 level=medium
+    }
+    practice data.rock-missing-class count=1 seed=4
+    show data.rock-bar-set v=1 h=0 easy-v=2 easy-h=3 hard-v=2 hard-h=1
+    practice data.rock-class-percent count=1 seed=5
+    show data.crater-median-class v=3 easy-v=0 hard-v=2
+    show data.crater-most-claim v=0 easy-v=1 hard-v=2
+    show data.two-sites-share v=0 easy-v=1 hard-v=2
+    level hard {
+      show data.crater-median-class v=1
+    }
+  }
+  try stars=2 {
+    show data.crater-class-hides v=1 t=12 easy-v=0 hard-t=17
+  }
+  try stars=3 {
+    show data.rock-range-bounds v=0 q=1 easy-q=0 hard-v=2
+  }
+  remember {
+    say "A class holds every value from its lower edge to its upper edge, and a histogram's bars say how many, not where."
+  }
+
+  grown-ups """
+    The lesson runs the whole cycle: a question, classes chosen, a frequency table, a histogram, and
+    a claim judged against it. The common slips are leaving out a value on the edge of a class, and
+    reading "most" off the tallest bar rather than adding the bars and comparing with half the
+    total. Ask each time which classes a question takes in. Two sites of different sizes are
+    compared by the share of each, not by the count, which is why the percentage question comes
+    first. The last bar of the boot-print histogram is drawn dashed, and the child types its height
+    beside it. In the two-star question the bar that 12 m falls inside could hold all or none of the
+    wide craters, so there is a fewest and a most. In the three-star question the range can only be
+    bounded, from the edges of the lowest and highest bars that hold pebbles. If the edges of the
+    classes still trip the child, stay here another day with a short list and a tally. Off the page,
+    measure the hand spans of everyone at home, group them in classes of 2 cm and draw the
+    histogram. This lesson meets Japan's grade 6 Course of Study, D(1),
+    「目的に応じてデータを収集したり適切な手法を選択したりするなど，統計的な問題解決の方法を知ること」,
+    and its call to judge a conclusion critically, 批判的に考察.
+    """
+  level easy {
+    grown-ups "At this level the dot plot is read into the class 0-4, one bar of the boot prints is worked once in the teacher's pen, the classes are 10 m wide, the bars to set are the end classes, the percentages are out of 20, the median crater sits in the tallest bar, Ana's claim is right, site B has the greater share, the two-star cuts the class 10-14, and the three-star asks for the greatest range."
+  }
+  level hard {
+    grown-ups "At this level the dot plot is a second set of craters, the classes are 5 m wide, the pebbles fill the middle classes, the bars to set are the middle classes where the edges fall, the percentages are out of 50, the median class is asked twice and once is not the tallest bar, both sites have the same share, the two-star cuts the class 15-19, and the three-star asks for the least range when the pebbles fill only two classes."
+  }
+}

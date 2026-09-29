@@ -1,0 +1,38 @@
+# Two sentences made one by turning the second into a clause. One choice uses the wrong word, and
+# one puts the clause next to the wrong noun, so the canal grows sails or the lock grows a beard.
+item writing.join-with-clause v=1 skills=[writing.relative-clauses, writing.joining-sentences] {
+  title "Two sentences, one clause"
+  difficulty (if k == 0 then 0 else if k == 3 then 2 else 1)
+  let k=0..3 r=0..2
+  let pair={pick(k, "Mr Hale keeps the lock. He has a grey beard.", "The mill is by the canal. It has four sails.", "The boat rose in the lock. It had a red roof.", "They moored at the bridge. The water was calm there.")}
+  let right={pick(k, "Mr Hale, who has a grey beard, keeps the lock.", "The mill, which has four sails, is by the canal.", "The boat, which had a red roof, rose in the lock.", "They moored at the bridge, where it was calm.")}
+  let w1={pick(k, "Mr Hale, which has a grey beard, keeps the lock.", "The mill, who has four sails, is by the canal.", "The boat, who had a red roof, rose in the lock.", "They moored at the bridge, which it was calm.")}
+  let w2={pick(k, "Mr Hale keeps the lock, who has a grey beard.", "The mill is by the canal, which has four sails.", "The boat rose in the lock, which had a red roof.", "They moored, where it was calm, at the bridge.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 35x27 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      canallock lock level=0.75 boat=1
+      windmill mill sails=4 turn=0
+    }
+    text ask "Make these two sentences one: {pair} Which one is right?" narrate width=34 below=pics gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=ask {
+      say "The clause starts with the wrong word. Who is for a person, which for a thing, where for a place where something happens."
+    }
+    when (pick == w2) point=ask {
+      say "The clause has to sit right after the thing it tells you about. Read it: what does it seem to describe now?"
+    }
+  }
+  hint "Which word does the second sentence tell you more about? The clause goes straight after that word."
+  hint "Then pick the word to start the clause: a person, a thing, or a place?"
+}

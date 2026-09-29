@@ -1,0 +1,37 @@
+# The way in: three lines about one animal on the ice, and only one is from a diary (the first
+# person, the past, a feeling). The others are a report, instructions, or a story told about Isla.
+item writing.diary-which v=1 skills=[writing.diaries, writing.text-types] {
+  title "Which line is from the diary?"
+  difficulty k
+  let k=0..2 r=0..2
+  let right={pick(k, "Today I saw a seal asleep on a floe, and I laughed.", "I heard the whale blow before I saw it. I jumped.", "We counted forty puffins, and I still smell fish.")}
+  let w1={pick(k, "Seals rest on floating ice to sleep in the sun.", "Whales breathe out through a blowhole.", "Puffins nest in burrows at the top of sea cliffs.")}
+  let w2={pick(k, "Walk slowly near a seal, and never startle it.", "Isla heard the whale blow before she saw it.", "Isla counted forty puffins on the cliff.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 35x24 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      icecliff ice height=1 floes=2
+      seal ps rock=1 facing=-1
+    }
+    text ask "Isla is keeping a diary at the research hut. Which of these lines is from her diary?" narrate width=33 below=pics gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=ask {
+      say "That line gives a fact anyone could look up. A diary tells what happened to the writer, and how it felt."
+    }
+    when (pick == w2) point=ask {
+      say "Look at who is speaking. A diary is written by the person it happened to, so it says I and we."
+    }
+  }
+  hint "Who is writing each line: Isla, or someone else?"
+  hint "Which line tells what happened on one day, and how it felt?"
+}

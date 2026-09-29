@@ -1,0 +1,28 @@
+# The three-star count: three sentences from the hut's log, each passive or active, and one of the
+# active ones is was with an adjective, which looks passive. None is a possible answer.
+item writing.count-passives v=1 stars=3 skills=[writing.passive, reasoning.all-the-ways] {
+  title "How many are passive?"
+  difficulty (3 - e1 - e2 - e3)
+  let e1=0..1 e2=0..1 e3=0..1
+  let s1={if e1 == 1 then "The samples were sealed at noon." else "Dr Berg sealed the samples at noon."}
+  let s2={if e2 == 1 then "The hut door had been left open all night." else "The hut door was open all night."}
+  let s3={if e3 == 1 then "Forty puffins were counted on the cliff." else "Isla counted forty puffins on the cliff."}
+
+  scene 35x17 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage log title="The hut's log" text="{s1} {s2} {s3}" width=21 numbers=false
+      hut h pictures=6
+    }
+    text ask "How many of the three sentences are passive? There may be none." narrate width=22 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (e1 + e2 + e3)
+  feedback {
+    when (e2 == 0 and answer == e1 + e3 + 1) point=log {
+      say "Open is an adjective here, not a verb. Nothing was done to the door in that sentence, so it is not passive."
+    }
+  }
+  hint "In each sentence, is the subject the one who acted, or the thing the action was done to?"
+  hint "Was or been with a verb such as sealed or counted makes a passive. Was with an adjective does not."
+}

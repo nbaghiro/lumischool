@@ -1,0 +1,29 @@
+# The three-star: two lines of the temple wall puzzle, each letter a number. Comparing the two lines
+# (or trying numbers) finds them; one named letter is asked.
+item algebra.temple-letters v=1 stars=3 skills=[algebra.unknowns, reasoning.two-unknowns] {
+  title "The temple wall puzzle"
+  difficulty (x + y / 2)
+  let x=3..9 y=2..8
+  where (x != y)
+  level easy {
+    let x=3..5 y=2..4
+  }
+  level hard {
+    let x=7..9 y=5..8
+  }
+
+  scene 28x10 {
+    sign wall lines=["A + A + B = {2 * x + y}", "A + B + B = {x + 2 * y}"] kind=board color=glow at=canvas(1, 1)
+    text ask "Each letter stands for a number, the same number every time. What number is A?" narrate width=14 right-of=wall gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer x
+  feedback {
+    when (answer == y) point=wall {
+      say "That is B. Put it back into the first line and check."
+    }
+  }
+  hint "What is different between the two lines? What does that tell you about A and B?"
+  hint "Add the two lines together. How many As and Bs is that?"
+}

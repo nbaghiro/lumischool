@@ -1,0 +1,35 @@
+# The brine table drawn as a line graph, rounded to whole degrees (0, −3, −6, −9, −13, −16): the more
+# salt, the lower the water freezes. The unknown is a reading, the least salt that stays liquid at a
+# temperature, or the fall between two amounts.
+item chem.salt-freeze-graph v=1 skills=[chemistry.freezing, data.line-graph, number.negatives] negatives {
+  title "The line of freezing points"
+  difficulty w
+  let w=0..2 r=1..5 q={-5, -8, -12, -15}
+  let t={pick(r, 0, -3, -6, -9, -13, -16)}
+  let least={if q > -6 then 10 else if q > -9 then 15 else if q > -13 then 20 else 25}
+  where (w == 1 or r <= 4)
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 35x24 {
+    linegraph g labels=["0 g", "5 g", "10 g", "15 g", "20 g", "25 g"] values=[0, -3, -6, -9, -13, -16] min=-18 max=2 per=2 step=2 color=sky at=canvas(1, 0)
+    text ask "Mei draws where salty water freezes against the salt in 100 g of water. {if w == 0 then \"Where does water with \" else if w == 1 then \"The path to the hut is at \" else \"How many degrees does the freezing point fall from \"}{if w == 0 then r * 5 else if w == 1 then q else r * 5}{if w == 0 then \" g of salt freeze?\" else if w == 1 then \" °C. Of the amounts on the graph, what is the least salt that keeps water on it from freezing?\" else \" g of salt to \"}{if w == 2 then r * 5 + 5 else \"\"}{if w == 2 then \" g?\" else \"\"}" narrate width=34 below=g gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then t else if w == 1 then least else t - pick(r + 1, 0, -3, -6, -9, -13, -16))
+  feedback {
+    when (w == 1 and answer == least - 5) point=g {
+      say "That water freezes above {q} °C, so on the path it would still turn to ice."
+    }
+    when (w == 0 and answer == 0 - t) point=g {
+      say "The line is below zero there. Keep the minus sign."
+    }
+  }
+  hint "{if w == 1 then \"Find {q} °C on the side. Which points are lower than that?\" else \"Find the salt along the bottom and go up or down to the line.\"}"
+  hint "{if w == 1 then \"Water only stays liquid if it freezes lower than the path. Which is the first point below?\" else if w == 2 then \"Read both points. How far apart are they?\" else \"Read across to the numbers on the side. Each line is 2 degrees.\"}"
+}

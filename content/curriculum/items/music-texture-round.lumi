@@ -1,0 +1,35 @@
+# Two tunes at once, from Frere Jacques sung as a round: the first voice is in bar 3 when the second
+# comes in with bar 1. The staves are spaced by length, so notes one above the other sound together.
+item music.texture-round v=1 skills=[music.texture, music.staff] {
+  title "Two voices in a round"
+  difficulty (if b <= 2 then 0 else 1)
+  let b=1..4
+  let right={pick(b - 1, "E and C", "F and D", "G and E", "G and C")}
+  level easy {
+    let b=1..2
+  }
+  level hard {
+    let b=3..4
+  }
+
+  scene 34x47 {
+    column score space=0 align=start at=canvas(1, 1) {
+      notes one clef=treble notes=[E4, F4, G4, E4, F4, G4] values=[1, 1, 2, 1, 1, 2] meter=4 letters=true spaced=true
+      notes two clef=treble notes=[C4, D4, E4, C4, C4, D4, E4, C4] values=[] meter=4 letters=true spaced=true
+    }
+    text ask "Frère Jacques as a round in the gorge: when the first voice reaches bar 3, the second starts at bar 1. Which two notes sound together on beat {b} of the first bar here?" narrate width=32 below=score gap=1
+    choice pick options=["E and C", "F and D", "G and E", "G and C"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (b == 4 and pick == "G and E") point=one {
+      say "The top voice's G is a minim. It is still sounding on beat 4, when the bottom voice moves on."
+    }
+    when (pick != right and b <= 3) point=score {
+      say "Notes written one above the other sound at the same moment. Count the beats along the top staff and the bottom staff together."
+    }
+  }
+  hint "Which note does each voice start on beat {b}, or is one still holding a long note?"
+  hint "A crotchet is one beat and a minim two. Count along both staves."
+}

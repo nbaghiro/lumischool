@@ -1,0 +1,22 @@
+# Old words sorted by what they mean, with a glossary to check them. Three belong together and one
+# does not, and the odd one is only odd once the meanings are read.
+item reading.odd-old-word v=1 skills=[reading.old-words, reading.vocabulary] {
+  title "The odd old word out"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let right={pick(k, "yonder", "hark", "nigh")}
+
+  scene 35x17 {
+    row all at=canvas(0, 1) space=1 align=start {
+      table gloss cols=2 head=["Old", "Today"] cells=[pick(k, "ere", "thou", "hath"), pick(k, "before", "you", "has"), pick(k, "anon", "thee", "doth"), pick(k, "soon", "you", "does"), pick(k, "oft", "thy", "goeth"), pick(k, "often", "your", "goes"), pick(k, "yonder", "hark", "nigh"), pick(k, "over there", "listen", "near")]
+      column right space=1 align=start {
+        text ask "{pick(k, \"Three of these old words are about time. Which is the odd one out?\", \"Three of these old words are about you. Which is the odd one out?\", \"Three of these old words are verbs. Which is the odd one out?\")}" width=19
+        choice pick options=[pick(k, "ere", "thou", "hath"), pick(k, "oft", "hark", "nigh"), pick(k, "yonder", "thy", "doth")] stack=column
+      }
+    }
+  }
+
+  answer pick=right
+  hint "Read each old word's meaning today in the glossary."
+  hint "Which meaning does not fit with the other three?"
+}

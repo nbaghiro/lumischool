@@ -1,0 +1,28 @@
+# Comparing a field given in metres with one given in hectares: one has to be changed into the other
+# unit before they can be compared, and sometimes they are the same.
+item land.which-bigger v=1 skills=[measure.metric.hectares, reasoning.compare] {
+  title "Which field is bigger"
+  let t=0..3
+  let l={pick(t, 6, 8, 6, 9)}
+  let w={pick(t, 5, 4, 4, 4)}
+  let b={pick(t, 8, 7.5, 6, 8.5)}
+
+  scene 36x23 {
+    scaleplan a plan=2 l=l w=w scale=50 unit="m" dims=1 at=canvas(1, 1)
+    sign board lines=["FIELD B", "{b} ha"] kind=post color=tang right-of=a gap=2
+    text ask "Two farmers by the lock argue about whose field is bigger. Field A is on the plan. Which is bigger?" narrate width=34 below=a gap=1
+    choice pick options=["A", "B", "the same"] below=ask gap=1
+  }
+
+  answer pick=(if l * w * 2500 > b * 10000 then "A" else if l * w * 2500 < b * 10000 then "B" else "the same")
+  feedback {
+    when (pick == "A" and l * w * 2500 < b * 10000) point=a {
+      say "Field A's area is in square metres. How many hectares is it?"
+    }
+    when (pick == "B" and l * w * 2500 >= b * 10000) point=a {
+      say "Work out field A in hectares before comparing: 10,000 m² make a hectare."
+    }
+  }
+  hint "How long and how wide is the field on the plan, in metres?"
+  hint "What is its area in square metres, and in hectares?"
+}

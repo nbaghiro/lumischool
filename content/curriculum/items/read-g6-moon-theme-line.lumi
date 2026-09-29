@@ -1,0 +1,39 @@
+# Four moon-base texts in three forms (two stories, a talk and a log), two themes, and the line that
+# shows each theme at work. The answers are the line breaks of the texts at width 34 (65 letters to
+# a line), so the texts and the width stay as they are.
+item reading.moon-theme-line v=1 skills=[reading.theme, reading.evidence] {
+  title "Which line shows the theme?"
+  difficulty pick(q, 0, 1, 0, 2, 0, 1, 0, 1)
+  let q=0..7
+  level easy {
+    let q={0, 2, 4, 6}
+  }
+  level hard {
+    let q={1, 3, 5, 7}
+  }
+
+  scene 35x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p title="{pick(q, \"Kai's first moonwalk\", \"Kai's first moonwalk\", \"The commander's talk\", \"The commander's talk\", \"Ada's greenhouse log\", \"Ada's greenhouse log\", \"One panel a day\", \"One panel a day\")}" text="{pick(q, \"On her first moonwalk, Kai's boot clip snapped far from the lander. Everyone on the radio would hear if she called, so she tried to fix it alone while her air ran down. At last she pressed the button. \\\"Kai here. I need help.\\\" Commander Obi came bounding over the craters, and the clip was fixed in a minute.\", \"On her first moonwalk, Kai's boot clip snapped far from the lander. Everyone on the radio would hear if she called, so she tried to fix it alone while her air ran down. At last she pressed the button. \\\"Kai here. I need help.\\\" Commander Obi came bounding over the craters, and the clip was fixed in a minute.\", \"\\\"On my first mission, years ago, I got lost in a crater and told nobody. I walked in circles for an hour, sure I would find the way. When the rover found me, my air was nearly gone. I was too proud to ask, and it nearly cost me everything. So I tell every new crew this: out here, the bravest words are I need help.\\\"\", \"\\\"On my first mission, years ago, I got lost in a crater and told nobody. I walked in circles for an hour, sure I would find the way. When the rover found me, my air was nearly gone. I was too proud to ask, and it nearly cost me everything. So I tell every new crew this: out here, the bravest words are I need help.\\\"\", \"Day 1: lamps checked; ten drops of water for each tomato plant. Day 12: lamps checked; ten drops each. No change. Day 30: ten drops each. Still nothing to see. Day 45: ten drops each. Two yellow flowers. Day 60: one red tomato, the first ever grown on the moon. The whole crew came to see it.\", \"Day 1: lamps checked; ten drops of water for each tomato plant. Day 12: lamps checked; ten drops each. No change. Day 30: ten drops each. Still nothing to see. Day 45: ten drops each. Two yellow flowers. Day 60: one red tomato, the first ever grown on the moon. The whole crew came to see it.\", \"The base had a hundred dusty solar panels, and Ren could clean only one each day before his shift. The others laughed at him. \\\"You will never finish,\\\" they said. A hundred days later every panel shone, and the base had more power than it had ever had.\", \"The base had a hundred dusty solar panels, and Ren could clean only one each day before his shift. The others laughed at him. \\\"You will never finish,\\\" they said. A hundred days later every panel shone, and the base had more power than it had ever had.\")}" width=34
+      row bottom space=1 align=centre {
+        text ask "{pick(q, \"Which line shows why Kai did not want to call for help?\", \"Which line holds the moment Kai asks for help?\", \"Which line shows how long Obi tried to find the way alone?\", \"Which line gives the theme as advice to others?\", \"Which line shows the small thing Ada did every day?\", \"Which line shows the small things adding up to something big?\", \"Which line shows how little Ren could do each day?\", \"Which line shows what all Ren's days added up to?\")}" width=29
+        number-input answer
+      }
+    }
+  }
+
+  answer pick(q, 2, 4, 2, 5, 1, 4, 2, 4)
+  feedback {
+    when (q == 1 and answer == 3) point=p {
+      say "That line has her pressing the button. Which line holds what she says?"
+    }
+    when (q == 3 and answer == 4) point=p {
+      say "That line says she was too proud. The advice she gives comes after it."
+    }
+    when (q == 5 and answer == 3) point=p {
+      say "That line has the first flowers. Which line says what the sixty days added up to?"
+    }
+  }
+  hint "Find the words that answer the question first, then read the number beside them."
+  hint "Check the words that answer it are on your line, not only the start of the sentence."
+}

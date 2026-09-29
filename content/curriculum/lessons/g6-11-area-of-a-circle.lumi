@@ -1,0 +1,66 @@
+lesson g6-area-of-a-circle v=1 format=teach grade=6 unit=7 subject=maths levels=[easy, medium, hard] {
+  title "Area of a circle"
+  goal "Find the area of a circle as radius × radius × 3.14, from its radius, its diameter or the distance round it."
+
+  look {
+    scene 29x15 {
+      circleparts c size=5 lines=1 radius=10 unit="m" at=canvas(1, 1)
+      crater cr count=1 right-of=c gap=2
+    }
+    say """
+      Cut the floor of a crater into many thin slices and lay them head to tail, one up and one
+      down. They make nearly a rectangle. Its height is the radius, and its length is half the way
+      round, which is the radius times 3.14. So the area of a circle is radius × radius × 3.14. A
+      crater with a radius of 10 m has a floor of 10 × 10 × 3.14 = 314 square metres.
+      """
+  }
+  do {
+    show circle.moon-slices r=5 easy-r=3 hard-r=7
+    level easy {
+      worked circle.crater-floor r=8 level=medium
+    }
+    show circle.crater-floor r=6 easy-r=4 hard-r=9
+    show circle.crater-across d=16 easy-d=14 hard-d=12
+    show circle.half-pad r=4 part=90 easy-r=8 easy-part=180 hard-r=5
+    show circle.twice-the-crater f=50.24 k=3 easy-f=28.26 easy-k=2 hard-f=113.04 hard-k=3
+    show circle.crater-floor r=7 easy-r=5 hard-r=20
+    level medium hard {
+      show circle.crater-ring a=4 w=2 hard-a=5
+    }
+    level hard {
+      show circle.crater-ring a=4 w=3
+    }
+    level easy {
+      show circle.half-pad r=3 part=180
+    }
+    show circle.rim-to-floor r=3 easy-r=6 hard-r=4
+  }
+  try stars=2 {
+    show circle.floor-mistake r=11 easy-r=9 hard-r=12
+  }
+  try stars=3 {
+    show circle.path-as-big r=3 k=8 easy-r=4 easy-k=3 hard-r=6 hard-k=15
+  }
+  remember {
+    say "The area of a circle is radius × radius × 3.14. From a diameter, halve it first."
+  }
+
+  grown-ups """
+    Draw a circle, cut it into eight slices and lay them head to tail: the shape is nearly a
+    rectangle whose height is the radius and whose length is half the way round. That is where the
+    rule comes from, and it is worth doing once with scissors. The common slips are using the
+    diameter as if it were the radius, and confusing the area with the distance round, which is 2 ×
+    radius × 3.14. Ask each time whether the line drawn is a radius or a diameter, and whether the
+    answer is a length or a number of squares. In the two-star question Nell's working is the
+    distance round, and the reason is that the area multiplies the radius by itself. In the
+    three-star question the floor and the path together are 4, 9 or 16 times the floor, so the big
+    circle's radius is 2, 3 or 4 times as long. If the rule is still slippery, stay here another day
+    with radii of 10 and 5. Off the page, measure a round plate and work out its area.
+    """
+  level easy {
+    grown-ups "At this level the radii are 3 to 5 m, a crater of radius 8 is worked once in the teacher's pen, the diameter is 14 m, the shaded pads are halves, the dust ring is left out, the bigger crater is twice as wide, the rim gives a radius of 6, Nell's crater has a radius of 9, and the three-star path round a floor of radius 4 m covers three times the floor."
+  }
+  level hard {
+    grown-ups "At this level the radii run up to 20 m, the shaded pad is a quarter, the dust ring is asked twice and is 2 or 3 m wide, the bigger crater is three times as wide as one of 113.04 square metres, the rim gives a radius of 4, Nell's crater has a radius of 12, the diameter is 12 m, and the three-star path round a floor of radius 6 m covers fifteen times the floor."
+  }
+}

@@ -1,0 +1,42 @@
+# The second reasoning question in the core: whether a table is a direct proportion, by testing that
+# y divided by x is the same in every column. Going up by the same each time is not enough.
+item proportion.in-proportion v=1 skills=[proportion.direct, reasoning.claims] {
+  title "In proportion or not"
+  difficulty pick(v, 0, 1, 0.5, 1.5, 1.5, 0.5)
+  let v=0..5
+  let x1={pick(v, 1, 1, 2, 1, 1, 3)}
+  let x2={pick(v, 2, 2, 4, 2, 2, 6)}
+  let x3={pick(v, 3, 3, 6, 4, 3, 9)}
+  let x4={pick(v, 4, 4, 8, 5, 4, 12)}
+  let y1={pick(v, 3, 4, 5, 2, 3, 2)}
+  let y2={pick(v, 6, 5, 10, 4, 5, 4)}
+  let y3={pick(v, 9, 6, 15, 8, 7, 6)}
+  let y4={pick(v, 12, 7, 20, 11, 9, 8)}
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={3, 4, 5}
+  }
+
+  scene 33x15 {
+    table data cols=5 head=["Dogs", x1, x2, x3, x4] cells=["Food (kg)", y1, y2, y3, y4] at=canvas(1, 1)
+    text ask "A researcher wrote down how much food each group of dogs ate. Is the food in direct proportion to the number of dogs?" narrate width=32 below=data gap=1
+    choice pick options=["yes", "no"] below=ask gap=1
+  }
+
+  answer pick=(if y1 * x2 == y2 * x1 and y1 * x3 == y3 * x1 and y1 * x4 == y4 * x1 then "yes" else "no")
+  feedback {
+    when ((v == 1 or v == 4) and pick == "yes") point=data {
+      say "The food goes up by the same each time, but is it the same number of kilograms for every dog? Divide in each column."
+    }
+    when (v == 3 and pick == "yes") point=data {
+      say "Check every column, not only the first two."
+    }
+    when (pick == "no" and (v == 0 or v == 2 or v == 5)) point=data {
+      say "Divide the food by the dogs in each column. Is the answer the same every time?"
+    }
+  }
+  hint "In direct proportion, twice as many dogs eat twice as much. Is that true here?"
+  hint "Divide the food by the number of dogs in each column and compare."
+}

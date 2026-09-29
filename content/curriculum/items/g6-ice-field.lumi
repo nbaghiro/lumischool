@@ -1,0 +1,36 @@
+# A fraction times a fraction as an area: a strip that is a/b of the square, and c/d of that strip.
+# The worked example of the lesson.
+item fraction.ice-field v=1 skills=[fractions.multiply] {
+  title "A patch of the ice field"
+  difficulty (b * d / 10)
+  let a=1..4 b={2, 3, 4, 5} c=1..5 d={3, 4, 5, 6}
+  where (a < b and c < d and gcd(a, b) == 1 and gcd(c, d) == 1 and b != d)
+  level easy {
+    where (b * d <= 12)
+  }
+  level hard {
+    where (b * d >= 20)
+  }
+
+  scene 34x18 {
+    grid g rows=b cols=d shade=(a * d) color=sky cell=2 at=canvas(1, 1)
+    text ask "The grid is one square kilometre of the ice field. The shaded strip is {a}/{b} of it. The dog team marks out {c}/{d} of the strip for a camp. What fraction of a square kilometre is the camp? Write it in its simplest form." narrate width=17 right-of=g gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input top width=3
+      text slash "/"
+      number-input bottom width=3
+    }
+  }
+
+  answer top=num(a / b * c / d) bottom=den(a / b * c / d)
+  feedback {
+    when (top == a * c and bottom == b * d and gcd(a * c, b * d) > 1) point=eq {
+      say "That is the right size, but not in its simplest form. Do the top and bottom share a factor?"
+    }
+    when (top == a * d + b * c and bottom == b * d) point=g {
+      say "Taking a fraction of a fraction is multiplying, not adding. Count the small squares in the camp."
+    }
+  }
+  hint "How many small squares does the whole grid have? How many of them are in the camp?"
+  hint "Multiply the tops, and multiply the bottoms."
+}

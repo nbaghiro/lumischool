@@ -1,0 +1,30 @@
+# The way in to rates: a speed in metres a minute, from a distance and a time given together.
+item rates.canoe-minute v=1 skills=[rates.speed, rates.per-unit] {
+  title "Metres in a minute"
+  difficulty (t + m / 100)
+  let t={4, 5, 6, 8} m={45, 60, 75, 80}
+  level easy {
+    let t={4, 5} m={60, 80}
+  }
+  level hard {
+    let t={6, 8} m={45, 75}
+  }
+
+  scene 26x10 {
+    canoe boat stroke=0.6 top=berry at=canvas(1, 1)
+    text ask "A canoe paddles {t * m} m along the canal in {t} minutes, at a steady speed. How many metres does it go in one minute?" narrate width=18 right-of=boat gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "m a minute"
+    }
+  }
+
+  answer m
+  feedback {
+    when (answer == t * m * t) point=ask {
+      say "One minute is less time than {t} minutes, so the canoe goes less far. Share the metres between the minutes."
+    }
+  }
+  hint "The {t * m} m are shared equally between {t} minutes."
+  hint "What is {t * m} ÷ {t}?"
+}

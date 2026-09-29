@@ -1,0 +1,31 @@
+# The Earth seen from the moon: the Earth's lit half faces the sun too, and an astronaut sees as much
+# of it as a person on the Earth does not see of the moon, so the shapes are opposite. k is the place.
+item physics.phase-earth v=1 skills=[physics.sky, reasoning.evidence] {
+  title "The Earth from the moon"
+  difficulty (if k == 0 or k == 4 then 0 else if k == 2 or k == 6 then 1 else 2)
+  let k=0..7
+  level easy {
+    let k={0, 4}
+  }
+  level hard {
+    let k={1, 3, 5, 7}
+  }
+
+  scene 35x32 {
+    orbit sky moon=k places=0 arrow=1 person=0 at=canvas(1, 0)
+    text ask "An astronaut stands on the moon, where it is drawn, and looks back at the Earth. The left half of the Earth is lit. What shape does the Earth look?" narrate width=14 right-of=sky gap=1
+    choice pick options=["New Earth", "Crescent Earth", "Half Earth", "Gibbous Earth", "Full Earth"] stack=column below=ask gap=1
+  }
+
+  check physics.sky of=sky pick=earth
+  feedback {
+    when (k == 0 and pick == "New Earth") point=sky {
+      say "From here the astronaut looks straight at the Earth's lit side. How much of it can be seen?"
+    }
+    when (k == 4 and pick == "Full Earth") point=sky {
+      say "From the far side the astronaut looks at the Earth's night side. How much lit part can be seen?"
+    }
+  }
+  hint "Which half of the Earth is lit? Draw a line from the moon to the Earth."
+  hint "How much of the lit half faces the astronaut: all, most, half, a little or none?"
+}

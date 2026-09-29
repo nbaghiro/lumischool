@@ -1,0 +1,37 @@
+# The way in: two sentences about the walls, and the thing or person a pronoun in the second points
+# back to. At hard the pronoun sits after two possible nouns, and the nearest is not the one.
+item writing.pronoun-points-to v=1 skills=[writing.cohesion, writing.pronouns] {
+  title "Who or what does it mean?"
+  difficulty (if k < 2 then 0 else 1)
+  let k=0..3
+  let t={pick(k, "The west tower guards the gate. It was built of red stone six hundred years ago.", "Nadia climbed the tower to mend the flag. She found that the rope had worn thin.", "Farid gave the key to his sister because she had lost hers at the market.", "The guard showed Nadia the old map before it went back in its case.")}
+  let pr={pick(k, "It", "She", "she", "it")}
+  let o1={pick(k, "the west tower", "the flag", "Farid", "Nadia")}
+  let o2={pick(k, "the gate", "Nadia", "his sister", "the guard")}
+  let o3={pick(k, "six hundred years", "the rope", "the key", "the map")}
+  let right={pick(k, o1, o2, o2, o3)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 33x27 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage para title="" text="{t}" width=24 numbers=false
+      tower tw courses=8 flag=1
+    }
+    text ask "Who or what does {pr} mean in this passage?" narrate width=32 below=top gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=para {
+      say "Put that choice in place of {pr} and read the sentence again. Does it still make sense and say what happened?"
+    }
+  }
+  hint "Read the sentence again with each choice in place of the word. Which one makes sense?"
+  hint "A pronoun usually points back to a noun that came before it. Which one fits here?"
+}

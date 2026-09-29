@@ -1,0 +1,28 @@
+# A blank cell in the table: the numbers go up by one along each row, and a row starts where the one
+# above it ends, so the blank is found from its neighbours. Blanks at the start of a row are harder.
+item chem.missing-number v=1 skills=[chemistry.elements, reasoning.order] {
+  title "The blank cell"
+  difficulty (if b == 3 or b == 11 then 1 else 0)
+  let b={3, 5, 9, 11, 12, 16}
+  level easy {
+    let b={5, 9, 12, 16}
+  }
+  level hard {
+    let b={3, 11}
+  }
+
+  scene 36x13 {
+    periodic t rows=3 blank=b mark=0 shade=none at=canvas(1, 0)
+    text ask "The ink on one cell of the observatory's table has worn away. What is the atomic number of the element that belongs there?" narrate width=13 right-of=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check chem.elements of=t answer=number(blank)
+  feedback {
+    when (answer == b + 1 and b != 3 and b != 11) point=t {
+      say "That is the cell after it. The numbers go up by one along a row, so the blank comes one before."
+    }
+  }
+  hint "Read the numbers in the cells beside the blank one."
+  hint "Along a row the numbers go up by one. Where does the row above end?"
+}

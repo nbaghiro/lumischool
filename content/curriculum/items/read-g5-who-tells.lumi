@@ -1,0 +1,41 @@
+# Point of view: who is telling the story. A narrator inside the story says I; one outside it says
+# she or he. The hard versions put an I inside speech marks, which belongs to a character and not to
+# the narrator, and give the I to a grown-up rather than to Mira.
+item reading.who-tells v=1 skills=[reading.point-of-view, reading.evidence] {
+  title "Who is telling the story?"
+  difficulty pick(k, 0, 0, 1, 2)
+  let k=0..3
+  let right={pick(k, "Mira, who says I.", "A narrator outside the story.", "Dr Osei, who says I.", "A narrator outside the story.")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 35x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        passage p text="{pick(k, \"I pressed my eye to the telescope and held my breath. There was Saturn, with a ring around it like the brim of a hat. I did not want to give the next person a turn.\", \"Mira pressed her eye to the telescope and held her breath. There was Saturn, with a ring around it like the brim of a hat. She did not want to give the next person a turn.\", \"The girl pressed her eye to my telescope and held her breath. I remembered the first time I saw Saturn, sixty years ago, and I let her keep looking.\", \"Mira pressed her eye to the telescope. \\\"I can see the rings,\\\" she whispered. Dr Osei smiled and let her look a little longer before the next person's turn.\")}" width=27 numbers=false
+        person mira pose=hold age=child hair=braids top=sky tone=4
+      }
+      text ask "Who is telling this?" width=34
+      choice pick options=["Mira, who says I.", "Dr Osei, who says I.", "A narrator outside the story."] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 3 and pick == "Mira, who says I.") point=p {
+      say "Mira does say I, but inside speech marks. Outside them, who calls her she?"
+    }
+    when (k == 2 and pick == "Mira, who says I.") point=p {
+      say "The girl is called the girl, and the I remembers sixty years ago. Who is old enough for that?"
+    }
+    when (k == 0 and pick == "A narrator outside the story.") point=p {
+      say "Look at who does the looking: I pressed my eye. The teller is inside the story."
+    }
+  }
+  hint "Look for I, my, she and her. Which ones are outside speech marks?"
+  hint "If the teller says I, which person in the story could it be?"
+}

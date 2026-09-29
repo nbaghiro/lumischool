@@ -1,0 +1,30 @@
+# The way in: a sound on the screen. The screen spans a hundredth of a second, so the vibrations a
+# second are the whole waves across it times a hundred.
+item physics.wave-hertz v=1 skills=[physics.sound, decimals.multiply] {
+  title "Vibrations a second"
+  difficulty (if w <= 4 then 0 else 1)
+  let w=2..8
+  level easy {
+    let w=2..4
+  }
+  level hard {
+    let w=6..8
+  }
+
+  scene 23x15 {
+    wave s waves=[w] heights=[2] across=10 letters=0 blank=-1 at=canvas(1, 0)
+    text ask "How many vibrations a second, in hertz, does this sound make?" narrate width=20 below=s gap=1
+    number-input answer below=ask gap=1
+    text unit "Hz" right-of=answer gap=1
+  }
+
+  answer (w * 100)
+  check physics.sound of=s answer=hertz(a)
+  feedback {
+    when (answer == w) point=s {
+      say "That is the waves in one screen, which is only 0.01 s. How many screens make a whole second?"
+    }
+  }
+  hint "Count the whole waves across the screen."
+  hint "The screen shows 0.01 s. How many of those are in one second?"
+}

@@ -1,0 +1,32 @@
+# The inverse: the number and the result are given, and the power of ten is the unknown. Counting
+# how far each digit moved is the reason, so this is the core's second reasoning question.
+item decimal.which-power v=1 skills=[decimals.by-ten, reasoning.inverse] {
+  title "Which power of ten"
+  difficulty ((if k == 10 then 0 else if k == 100 then 1 else 2) + (if up == 0 then 1 else 0))
+  let n={27, 36, 405, 81, 163} k={10, 100, 1000} up=0..1
+  let u={n % 10}
+  level easy {
+    let k={10, 100} up={1}
+  }
+  level hard {
+    let k={100, 1000} up={0}
+  }
+
+  scene 30x6 {
+    text ask "Fill in the missing number. It is 10, 100 or 1000." narrate width=28 at=canvas(1, 1)
+    row eq below=ask gap=1 space=1 align=centre {
+      equation sum "{if up == 1 then decimals(n / 1000, 3) else plain(n)} {if up == 1 then \"×\" else \"÷\"}"
+      number-input power width=5
+      equation res "= {if up == 1 then decimals(n * k / 1000, 0) else decimals(n / k, 0)}"
+    }
+  }
+
+  answer power=k
+  feedback {
+    when (power == k * 10 or power * 10 == k) point=eq {
+      say "Put your number in and check: how many places has each digit moved?"
+    }
+  }
+  hint "Find the digit {u} on both sides. How many places did it move?"
+  hint "Each place a digit moves is one more zero in the number you multiply or divide by."
+}

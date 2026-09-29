@@ -1,0 +1,61 @@
+lesson g6-direct-proportion v=1 format=teach grade=6 unit=3 subject=maths levels=[easy, medium, hard] {
+  title "Direct proportion and its graph"
+  goal "Recognise when two amounts are in direct proportion, write the rule y = k × x, and read and continue its straight-line graph through zero."
+
+  look {
+    scene 33x17 {
+      linegraph g labels=["0", "1", "2", "3", "4"] values=[0, 3, 6, 9, 12] max=12 per=2 step=4 color=sky at=canvas(1, 0)
+      hut h pictures=2 right-of=g gap=2
+      ratiotable t first=[1, 2, 3, 4] second=[3, 6, 9, 12] labels=["Buckets", "Litres"] hide=[] below=g gap=1
+    }
+    say """
+      Every bucket of snow melted on the hut's stove gives 3 litres of water. Twice the snow gives
+      twice the water, and three times the snow gives three times the water: the water is in direct
+      proportion to the snow. The rule is y = 3 × x, where x is the buckets and y the litres, and 3
+      is the litres for one bucket. On a graph the points lie on a straight line that starts at 0.
+      """
+  }
+  do {
+    practice proportion.steady-sledge count=1 seed=3
+    level easy {
+      worked proportion.graph-between s=6 t=3 level=medium
+    }
+    practice proportion.snow-water count=1 seed=4
+    practice proportion.fuel-rule count=1 seed=5
+    show proportion.use-rule k=3 x=12 ask="y" easy-k=4 easy-x=14 hard-k=2.5 hard-x=14 hard-ask="x"
+    show proportion.in-proportion v=2 easy-v=1 hard-v=5
+    practice proportion.graph-between count=1 seed=7
+    show proportion.use-rule k=4 x=6 ask="x" easy-k=3 easy-x=8 easy-ask="y" hard-k=1.5 hard-x=12
+    practice proportion.snow-water count=1 seed=8
+    level hard {
+      show proportion.graph-between s=5 t=7
+    }
+  }
+  try stars=2 {
+    show proportion.wrong-reading k=4 j=3 e=2 easy-k=3 easy-j=2 easy-e=3 hard-k=5 hard-j=4 hard-e=-1
+  }
+  try stars=3 {
+    show proportion.whole-points a=4 b=3 easy-b=2 hard-a=6 hard-b=5
+  }
+  remember {
+    say "In direct proportion y = k × x: y divided by x is always k, and the graph is a straight line through 0."
+  }
+
+  grown-ups """
+    The test for direct proportion is division: y divided by x is the same number every time. A table
+    that goes up by the same amount each step is not enough, since 4, 5, 6, 7 against 1, 2, 3, 4
+    does, and 5 divided by 2 is not 4 divided by 1. That is the trap in the question about the dogs'
+    food. On a graph the check is a straight line that starts at zero. The common slip on the graph
+    questions is reading each step along the bottom as one, when it is two hours. In the two-star
+    question the wrong reading is the one that gives a different number of litres for each hour. In
+    the three-star question the first whole-number point after zero sets the step. If the rule is
+    still a mystery, stay here another day and fill in more tables. Off the page, find the price of
+    one, two and five of the same thing in a shop and check that it is in proportion.
+    """
+  level easy {
+    grown-ups "At this level the sledge's pace is 6 or 8 km an hour and the question asks for 4 hours, the graph between labels is worked once in the teacher's pen, the snow questions ask for litres, the fuel rule is 0.2 or 0.3, the rule is used forwards only, the proportion table goes up by one each time but is not in proportion, the wrong reading is 3 litres out, and the line goes through (4, 2)."
+  }
+  level hard {
+    grown-ups "At this level the sledge goes for 7 or 10 hours at 9 or 12 km an hour, the snow questions ask for buckets from litres, the fuel rule is 0.25 or 0.15, the rule is used backwards, the proportion table has a constant of 2/3, the graph is read between labels twice, apart, the wrong reading is 1 litre out, and the line goes through (6, 5)."
+  }
+}

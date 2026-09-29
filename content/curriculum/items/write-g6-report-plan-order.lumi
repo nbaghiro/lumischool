@@ -1,0 +1,28 @@
+# The simple plan: the headings of the report in order. The events go in the order they happened,
+# but the report opens with who flew the mission and closes with why it matters, which is the
+# shape of a report and not of a diary.
+item writing.report-plan-order v=1 skills=[writing.planning, writing.report] {
+  title "The plan in order"
+  difficulty pick(k, 0, 1, 1)
+  let k=0..2
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x23 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        text ask "These are the five headings of a report on Apollo 11. Number them in the order the report should take them." width=20
+        loosepages pages count=4
+      }
+      sequence s items=[pick(k, "The landing", "Why it still matters", "Coming home"), pick(k, "Who flew Apollo 11", "The moonwalk", "The landing"), pick(k, "Coming home", "The landing", "Why it still matters"), pick(k, "The moonwalk", "Who flew Apollo 11", "Who flew Apollo 11"), pick(k, "Why it still matters", "Coming home", "The moonwalk")] blanks=[p1, p2, p3, p4, p5]
+    }
+  }
+
+  answer p1=pick(k, 2, 5, 4) p2=pick(k, 1, 3, 2) p3=pick(k, 4, 2, 5) p4=pick(k, 3, 1, 1) p5=pick(k, 5, 4, 3)
+  hint "Which heading tells the reader what the report is about? That one opens it."
+  hint "Put the three events in the order they happened. What is left for the end?"
+}

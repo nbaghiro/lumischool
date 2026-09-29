@@ -1,4 +1,4 @@
-lesson chemistry-does-it-dissolve v=2 format=worked grade=2 unit=3 subject=chemistry levels=[easy, medium, hard] {
+lesson chemistry-does-it-dissolve v=2 format=worked grade=2 unit=6 subject=chemistry levels=[easy, medium, hard] {
   title "Does it dissolve?"
   goal "Decide from what is left in the glass whether a solid has dissolved, count the ones that did, and say how to get each kind back."
 
@@ -22,6 +22,10 @@ lesson chemistry-does-it-dissolve v=2 format=worked grade=2 unit=3 subject=chemi
   }
   try stars=3 {
     show chem.first-grains m=6 a=2 easy-m=4 easy-a=1 hard-m=8 hard-a=3
+  }
+
+  remember {
+    say "A solid that has dissolved leaves nothing at the bottom that you can see."
   }
 
   grown-ups """

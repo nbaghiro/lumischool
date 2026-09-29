@@ -1,0 +1,34 @@
+# A rate that changes: a decision inside the repeat opens the sluice for the first minutes and then
+# closes it to a trickle, so the total is two blocks of minutes at two rates.
+item coding.tank-switch v=1 skills=[coding.simulation, coding.decisions, coding.variables] {
+  title "The sluice gate closes"
+  difficulty ((a * f + (n - a) * s) / 40)
+  let n=6..8 a=2..4 f={15, 20} s={5, 4}
+  level easy {
+    let f={20} s={5}
+    where (a == 2)
+  }
+  level hard {
+    let s={4}
+    where (a >= 3)
+  }
+
+  scene 36x21 {
+    program p code=["set water to 0", "set minutes to 0", "repeat {n}", "  if minutes is less than {a}", "    add {f} to water", "  otherwise", "    add {s} to water", "  add 1 to minutes"] text=true at=canvas(0, 0)
+    kingfisher kf flying=0 right-of=p gap=1
+    text ask "The miller opens the sluice fully at first, then closes it to a trickle. How many litres does water hold at the end?" width=12 below=kf gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="value(water)"
+  feedback {
+    when (answer == (a + 1) * f + (n - a - 1) * s) point=p {
+      say "minutes counts from 0, so the first minute has minutes at 0. How many minutes have minutes less than {a}?"
+    }
+    when (answer == n * f) point=p {
+      say "Once minutes reaches {a}, the if says no and the otherwise adds only {s}."
+    }
+  }
+  hint "For which values of minutes does line 4 say yes? Count them."
+  hint "Add {f} for each of those minutes, and {s} for each of the rest."
+}

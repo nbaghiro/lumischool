@@ -1,0 +1,29 @@
+# The bigger the angle in, the more the beam bends: 40 degrees into water bends by 11, 20 degrees by 5
+# and 60 by 19. a is the angle drawn, b the new angle.
+item physics.refract-turn-bigger v=1 skills=[physics.light, reasoning.predict] {
+  title "Tilt the torch"
+  difficulty (if b < a then 1 else 0)
+  let a={30, 50} b={10, 20, 60, 70}
+  level easy {
+    let b={60, 70}
+  }
+  level hard {
+    let b={10, 20}
+  }
+  let ans={if b > a then "More" else "Less"}
+
+  scene 30x25 {
+    refraction r mode=0 into=0 angle=a marks=1 show=1 at=canvas(1, 0)
+    text ask "Kit tilts the torch from {a} degrees to {b} degrees from the upright. Will the beam bend by more or by less than it does here?" narrate width=28 below=r gap=1
+    choice pick options=["More", "The same", "Less"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "The same") point=r {
+      say "The bend changes with the angle in. Is {b} degrees nearer the upright than {a}, or further from it?"
+    }
+  }
+  hint "Is the new beam nearer the upright line or further from it?"
+  hint "A beam along the upright does not bend at all. Which way does a beam further from it go?"
+}

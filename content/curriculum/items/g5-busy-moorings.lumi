@@ -1,0 +1,29 @@
+# The second reasoning question in the core: which stretch of bank is more crowded, compared per
+# hundred metres rather than by the number of boats.
+item rates.busy-moorings v=1 skills=[rates.per-unit, reasoning.compare] {
+  title "Which bank is busier"
+  difficulty (if (b1 > b2) == (b1 * m2 > b2 * m1) then 0 else 1)
+  let b1={12, 15, 18} m1={300, 400, 600} b2={10, 14, 16} m2={200, 400, 500}
+  where (b1 * m2 != b2 * m1 and m1 != m2)
+  level easy {
+    where ((b1 > b2) == (b1 * m2 > b2 * m1))
+  }
+  level hard {
+    where ((b1 > b2) != (b1 * m2 > b2 * m1))
+  }
+
+  scene 33x21 {
+    moorings quay at=canvas(1, 1)
+    text ask "The north bank has {b1} boats moored along {m1} m. The south bank has {b2} boats along {m2} m. Which bank is more crowded?" narrate width=32 below=quay gap=1
+    choice pick options=["north", "south"] below=ask gap=1
+  }
+
+  answer pick=(if b1 * m2 > b2 * m1 then "north" else "south")
+  feedback {
+    when ((b1 > b2) != (b1 * m2 > b2 * m1) and pick == (if b1 > b2 then "north" else "south")) point=ask {
+      say "More boats is not more crowded if the bank is longer. How many boats are there on each 100 m?"
+    }
+  }
+  hint "How many boats does each bank have for every 100 m?"
+  hint "The bank with more boats on each 100 m is more crowded."
+}

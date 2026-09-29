@@ -1,0 +1,17 @@
+# A jig rhythm tapped: crotchet, quaver, crotchet, quaver, then a dotted crotchet, long-short twice
+# and a long note, in crotchet beats 0, 1, 1.5, 2.5, 3. Judged at the grade six window.
+item music.six8-tap-sledge v=1 skills=[music.six-eight, music.rhythm] {
+  title "Tap the sledge jig"
+
+  scene 36x18 {
+    row top space=2 align=end at=canvas(1, 1) {
+      notes bar clef=treble notes=[G4, A4, B4, G4, D5] values=[1, 0.5, 1, 0.5, 1.5] meter=6 quavers=true
+      sledge sledge slats=5
+    }
+    text ask "The dogs pull the sledge to this jig. Count 1 2 3 4 5 6 and tap once for each note." narrate width=34 below=top gap=1
+  }
+
+  check music.rhythm beats=[0, 1, 1.5, 2.5, 3] grade=6
+  hint "Long, short, long, short, then long. Which counts are the short notes on?"
+  hint "The last note starts on 1 of the second bar."
+}

@@ -1,0 +1,30 @@
+# A second reason in the core: tint the fewest more squares so the panel matches itself after a half
+# turn. Each tinted square needs its partner opposite the centre, and some partners are tinted already
+# once more than half the panel is.
+item symmetry.panel-half-turn v=1 skills=[shapes.symmetry.point, reasoning.fewest] {
+  title "Tint the panel"
+  difficulty ((if 2 * s > r * c then 2 else 0) + c / 5)
+  let r={2, 3} c={4, 5} s=2..10
+  where (s < r * c and s != r * c - s)
+  level easy {
+    where (2 * s < r * c)
+  }
+  level hard {
+    where (2 * s > r * c)
+  }
+
+  scene 36x15 {
+    grid panel rows=r cols=c shade=s color=sky cell=2 at=canvas(1, 1)
+    text ask "The lander's window panel has the shaded squares tinted. What is the fewest more squares to tint so that the panel looks the same after a half turn about its centre?" narrate width=20 right-of=panel gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (if 2 * s <= r * c then s else r * c - s)
+  feedback {
+    when (2 * s > r * c and answer == s) point=panel {
+      say "Some of the squares the half turn lands on are tinted already. Count only the ones still clear."
+    }
+  }
+  hint "Pick one tinted square. Where does it go after a half turn about the centre?"
+  hint "Do that for each tinted square. Which of those places are not tinted yet?"
+}

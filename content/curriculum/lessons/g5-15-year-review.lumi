@@ -1,0 +1,41 @@
+lesson g5-year-review v=1 format=review grade=5 unit=9 subject=maths levels=[easy, medium, hard] {
+  title "Year review"
+  goal "Look back over the year: decimals, volume, rates, large numbers, factors, angles, circles, percentages, fractions, area and letters for numbers."
+
+  warm-up {
+    practice decimal.power-times count=1 seed=7
+    practice percent.meteor-share count=1 seed=5
+    practice angles.triangle-corner count=1 seed=6
+  }
+  exercises {
+    practice decimal.rope-price count=1 seed=9
+    practice volume.lock-volume count=1 seed=5
+    practice number.beacons count=1 seed=3
+    practice fraction.mixed-unlike count=1 seed=4 hard-seed=3
+    practice area.trapezium-area count=1 seed=9
+    practice algebra.balance-letter count=1 seed=6
+  }
+  puzzle stars=2 {
+    show review.same-amount v=1 r=1 easy-v=0 hard-v=2
+  }
+  puzzle stars=3 {
+    show review.market-budget v=1 easy-v=0 hard-v=3
+  }
+
+  grown-ups """
+    Multiplying decimals and adding fractions with different denominators are the two to check,
+    since most of the year is revisited inside them: the rope price is a decimal times a decimal,
+    and the rope for the well adds halves, thirds and quarters. The lock's water is a volume, the
+    lights meeting is a lowest common multiple, and the balance is the order of operations run
+    backwards. In the two-star puzzle each choice is a way of writing a fraction of an amount, and
+    turning the fraction into a percent or a decimal settles it. In the three-star puzzle trying one
+    notebook, then two, then three is the system, and a child who writes the tries in a table has
+    done the real work.
+    """
+  level easy {
+    grown-ups "At this level each question comes from the easy band of its lesson (the ropes times ten or a hundred, the groups of 20 or 50, the angles in tens, the rope price for one and a half or two and a half metres, the lock in cubic metres, lights that meet by 24 seconds, fractions that make less than a whole, the trapezia up to 8 m, the balance with 2n or 3n), the two-star is 3/4 of 80, and the three-star has 10 dollars for 2.50 and 1.20."
+  }
+  level hard {
+    grown-ups "At this level each question comes from the hard band of its lesson (the ropes times a thousand, the groups of 25 or 40, angles that are not tens, the lock in litres, lights that meet after 36 seconds or more, fractions that make more than a whole, the trapezia 10 to 12 m long, the balance with 4n or 5n), the two-star is 1/8 of 96, and the three-star has 15 dollars for 3.20 and 1.75."
+  }
+}

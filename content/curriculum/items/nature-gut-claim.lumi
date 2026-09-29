@@ -1,0 +1,51 @@
+# The reason in the core: what digestion is for. Food is broken down until its pieces are small
+# enough to pass through the wall of the small intestine into the blood; the long tube gives it room,
+# Ben puts it in the stomach, the swallowed roll is still broken down, and fibre stays in the tube.
+item nature.gut-claim v=1 skills=[nature.digestion, reasoning.explain] {
+  title "What is it all for?"
+  difficulty (if k <= 1 then k * 0.4 else 0.6 + (k - 2) * 0.4)
+  let k=0..3
+  let asks={pick(k, "Why is the small intestine so long?", "Ben says: \"Food goes into your blood in your stomach.\" What is wrong with that?", "Ada's bread is already swallowed. Why does her gut go on breaking it into smaller pieces?", "Fibre hardly passes into the blood at all. Why is it still good to eat?")}
+  let ans={pick(k, "It gives food time and room to pass into the blood", "Most food reaches the blood in the small intestine", "Only tiny pieces can pass into the blood", "It helps food keep moving through the gut")}
+  let o1={pick(k, "So that food falls through it faster", "Nothing: the stomach passes it all to the blood", "So that it is small enough to swallow", "It turns into energy in the stomach")}
+  let o2={pick(k, "So that food can stay there for a week", "Food never goes into the blood at all", "So that it can stay in the stomach for days", "It makes the bones grow")}
+  let s1={pick(k, o1, ans, o1, o1)}
+  let s2={pick(k, ans, o1, o2, ans)}
+  let s3={pick(k, o2, o2, ans, o2)}
+  level easy {
+    let k=0..1
+  }
+  level medium {
+    let k=1..2
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x32 {
+    parts fig of=gut at=canvas(1, 1)
+    text ask "{asks}" narrate width=20 right-of=fig gap=2
+    choice pick options=[s1, s2, s3] stack=column below=fig gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=fig {
+      say "The small intestine is where broken-down food passes through its walls into the blood. A long tube gives it more wall and more time."
+    }
+    when (k == 1 and pick != ans) point=fig {
+      say "The stomach churns food into a soup. Follow the tube on: where does the food get into the blood?"
+    }
+    when (k == 2 and pick == o1) point=fig {
+      say "Swallowing is already done. The pieces have to get much smaller still, small enough to go through a wall."
+    }
+    when (k == 2 and pick == o2) point=fig {
+      say "Food waits in the stomach for a few hours, not days. Where does it go in the end?"
+    }
+    when (k == 3 and pick != ans) point=fig {
+      say "Fibre is not taken into the body. It stays in the tube and helps push everything along to the end."
+    }
+  }
+  hint "Find the part the question is about on the drawing. What happens to food there?"
+  hint "In the end the food has to leave the tube and get into the blood. What does it have to be like to do that?"
+}

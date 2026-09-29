@@ -1,0 +1,38 @@
+# The two-star reason: two summaries of one paragraph, and the same reason offered for each, so only
+# checking both against the paragraph decides. At k=0 A keeps the vivid details and loses the nest;
+# at k=1 B adds an opinion and loses the hundred years. The third reason is the tempting wrong one.
+item writing.summary-reason v=1 stars=2 skills=[writing.summarising, reasoning.explain] {
+  title "Which summary, and why?"
+  difficulty k
+  let k=0..1 r=0..2
+  let para={pick(k, "The kingfisher waits on a low branch over the pool below the falls, so still that walkers pass it without noticing. When it sees a fish, it dives straight in with its wings folded and comes up with the fish in its beak. It beats the fish against the branch, then swallows it head first. In spring it digs a tunnel in the soft bank and raises its chicks there.", "Water from the falls runs along a wooden channel to the top of the wheel. Its weight fills the paddles one by one and pushes the wheel round. The turning wheel drives a pair of millstones, which grind wheat into flour. The wheel was built in 1790, and it turned every week for a hundred years.")}
+  let two={pick(k, "A: The kingfisher sits so still on its branch that walkers miss it, then dives in with its wings folded and comes up with a fish. B: The kingfisher dives from a branch to catch fish, which it swallows whole, and in spring it raises its chicks in a tunnel in the bank.", "A: Falling water fills the wheel's paddles and turns it, the wheel drives the millstones that grind flour, and it turned every week for a century. B: The wonderful old wheel, which every visitor should see, turns when water fills its paddles, and it grinds the village's flour.")}
+  let right={pick(k, "B: it keeps every main point and adds nothing", "A: it keeps every main point and adds nothing")}
+  let w1={pick(k, "A: it keeps every main point and adds nothing", "B: it keeps every main point and adds nothing")}
+  let w2={pick(k, "A: it keeps the liveliest details", "B: it says why the wheel is worth seeing")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x44 {
+    passage p title="The paragraph" text="{para}" width=35 numbers=false at=canvas(0, 0)
+    passage s title="Two summaries" text="{two}" width=35 numbers=false below=p gap=1
+    text ask "Which is the better summary, and why?" narrate width=35 below=s gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=s {
+      say "Check that summary point by point against the paragraph. Which point of the paragraph is missing from it, or what does it add that the paragraph never says?"
+    }
+    when (pick == w2) point=s {
+      say "A summary is not judged by how lively or how persuasive it is. List the paragraph's main points and tick off the ones each summary keeps."
+    }
+  }
+  hint "List the paragraph's main points. Which summary keeps every one of them?"
+  hint "Does either summary say something the paragraph does not?"
+}

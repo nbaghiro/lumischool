@@ -1,0 +1,15 @@
+# Bar 5 of Frère Jacques in C, "morning bells are ringing": G, A, G, F as quavers, then E and C.
+# No note is played twice in a row, so music.plays hears the six in order.
+item music.round-play v=1 skills=[music.singing, music.staff, music.keys] {
+  title "Morning bells"
+
+  scene 34x31 {
+    notes bar clef=treble notes=[G4, A4, G4, F4, E4, C4] values=[0.5, 0.5, 0.5, 0.5, 1, 1] meter=4 at=canvas(1, 1)
+    text ask "Bar 5 of Frère Jacques, on the words morning bells are ringing, is the busiest bar of the round. Play its six notes, to find the tune before you sing it." narrate width=32 below=bar gap=1
+    piano keys from=C4 whites=6 wide=3 labels=letters below=ask gap=1
+  }
+
+  check music.plays notes=[G4, A4, G4, F4, E4, C4]
+  hint "The first note sits on the second line from the bottom. Which letter is that?"
+  hint "The tune steps up one, back down, then down step by step, and leaps down to the last note."
+}

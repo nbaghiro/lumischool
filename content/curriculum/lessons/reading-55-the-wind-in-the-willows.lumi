@@ -1,0 +1,98 @@
+# The Wind in the Willows read whole over nine sittings in the canal town's term. The text is the
+# volume wind-in-the-willows; every evidence question is proved against its lines.
+lesson reading-wind-in-the-willows v=1 format=book grade=5 unit=1 subject=reading book=wind-in-the-willows levels=[easy, medium, hard] {
+  title "The Wind in the Willows"
+  goal "Read The Wind in the Willows from start to end, and prove what you say about it with lines from the book."
+
+  sitting chapters=[1, 2] {
+    show reading.willows-line k=1 easy-k=0 hard-k=2
+    show reading.willows-sum k=0
+    level medium hard {
+      show reading.willows-word k=0
+    }
+  }
+  sitting chapters=[3, 4] {
+    show reading.willows-line k=4 easy-k=3 hard-k=5
+    level medium hard {
+      show reading.willows-who k=0
+    }
+    show reading.willows-word k=1
+  }
+  sitting chapters=[5] {
+    show reading.willows-line k=7 easy-k=6 hard-k=8
+    show reading.willows-sum k=1
+    show reading.willows-why k=0
+  }
+  sitting chapters=[6, 7] {
+    show reading.willows-line k=10 easy-k=9 hard-k=11
+    level medium hard {
+      show reading.willows-who k=1
+    }
+    show reading.willows-order k=0
+  }
+  sitting chapters=[8] {
+    show reading.willows-line k=13 easy-k=12 hard-k=14
+    level medium hard {
+      show reading.willows-sum k=2
+    }
+    show reading.willows-driver
+  }
+  sitting chapters=[9] {
+    show reading.willows-line k=16 easy-k=15 hard-k=17
+    level medium hard {
+      show reading.willows-who k=2
+    }
+    show reading.willows-why k=1
+  }
+  sitting chapters=[10] {
+    show reading.willows-line k=19 easy-k=18 hard-k=20
+    level medium hard {
+      show reading.willows-sum k=3
+    }
+    show reading.willows-order k=1
+    level hard {
+      show reading.willows-knows
+    }
+  }
+  sitting chapters=[11] {
+    show reading.willows-line k=22 easy-k=21 hard-k=23
+    level medium hard {
+      show reading.willows-who k=3
+    }
+    show reading.willows-word k=2
+  }
+  sitting chapters=[12] {
+    show reading.willows-line k=25 easy-k=24 hard-k=26
+    show reading.willows-changed
+    show reading.willows-review
+  }
+
+  grown-ups """
+    The book is read over nine sittings across the canal town's term, one a day, a sitting's chapters
+    first and its questions after. Each sitting is a day's reading for a child of ten to twelve at
+    about 200 words a minute: chapters 1 and 2 (about 8,500 words, 45 minutes), 3 and 4 (9,100, 45
+    minutes), 5 (5,200, 25 minutes), 6 and 7 (8,200, 40 minutes), then one chapter a sitting, 8 to 12
+    (4,700 to 6,000 words, 25 to 30 minutes). Reading the first sitting aloud together, or taking
+    turns a page each, helps with Grahame's long sentences. Every sitting has a question answered
+    with a line number, and the question never uses the line's own words, so a child who skims the
+    first page will not find it; the idea to watch for is an answer from memory of the story without
+    the line that proves it, so after each answer ask "which words show it?" On paper the family
+    reads any edition, and the grown-ups' sheet gives the words of each line beside its number, so
+    mark by the words. If a sitting runs long, split it over two days rather than skipping; if a
+    chapter is hard going, read its first page aloud and let the child go on alone. Chapter 7, The
+    Piper at the Gates of Dawn, is dreamy and slow, and it is fine to read it aloud. The questions
+    marked by a grown-up (why the Rat turns back, why the pencil works, whether Toad has changed, and
+    the review) have a list of what to notice; talk about them before ticking. Off the page, walk by
+    a river or a canal and look for a water vole's hole in the bank, or watch a narrowboat through a
+    lock, as Toad's barge travels a canal in chapter 10. The lesson meets China's 2022 standard for
+    grades five and six (第三学段, 阅读与鉴赏 6), 「阅读整本书，把握文本的主要内容」, reading a whole book and
+    grasping its main content, and Japan's course of study for grades five and six, (3)オ
+    「日常的に読書に親しみ」.
+    """
+  level easy {
+    grown-ups "At this level each evidence question asks for a line whose words are close to the question's, most sittings have two questions rather than three, and the who-said and summary questions are left out where a sitting already has a question marked by a grown-up."
+  }
+  level hard {
+    grown-ups "At this level each evidence question asks for what a character feels or does not say, which the line shows without stating, and the chapter 10 sitting adds what the reader knows that the people in the car do not."
+  }
+}

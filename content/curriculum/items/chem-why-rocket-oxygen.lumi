@@ -1,0 +1,36 @@
+# The two-star reason: a jet engine takes oxygen from the air it flies through; a rocket carries
+# liquid oxygen because there is no air in space; the lander's cabin air is kept with oxygen from a
+# tank, and fire there is a danger because the oxygen is there to burn with.
+item chem.why-rocket-oxygen v=1 stars=2 skills=[chemistry.burning, reasoning.explain] {
+  title "Why carry the oxygen?"
+  difficulty k
+  let k=0..1 r=0..2
+  let q={pick(k, "A jet aeroplane carries only fuel, but a rocket carries fuel and liquid oxygen. Why?", "No candles are allowed inside the lander's cabin, though its air has oxygen. Why?")}
+  let right={pick(k, "Space has no air to take oxygen from", "Fuel and oxygen are there, so a fire could spread")}
+  let w1={pick(k, "Liquid oxygen makes the rocket lighter", "Candles do not burn in low gravity")}
+  let w2={pick(k, "Rockets burn oxygen instead of fuel", "The oxygen would put the flame out")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x30 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      rocket rk flame=2
+      launchpad pad
+    }
+    text ask "{q}" narrate width=34 below=kit gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=kit {
+      say "Burning needs fuel, heat and oxygen together. Where does each of them come from here?"
+    }
+  }
+  hint "Where does a flame usually get its oxygen?"
+  hint "{if k == 0 then \"Is there any air where the rocket flies?\" else \"Which two of the three things a fire needs are already in the cabin?\"}"
+}

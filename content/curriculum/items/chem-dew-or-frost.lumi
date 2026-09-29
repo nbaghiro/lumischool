@@ -1,0 +1,34 @@
+# Dew forms when the air cools to its dew point; when that is below 0 °C the vapour turns straight to
+# ice, which is frost (Met Office). The versions keep clear of a night that dips below zero after dew.
+item chem.dew-or-frost v=1 skills=[chemistry.water-cycle, chemistry.states] {
+  title "Dew, frost or neither?"
+  difficulty k
+  let k=0..4
+  let h={pick(k, 7, 9, 7, 13, 2)}
+  let low={pick(k, 3, 12, 8, 12, -12)}
+  let right={pick(k, "dew", "neither", "neither", "dew", "frost")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..4
+  }
+
+  scene 35x25 {
+    row kit at=canvas(1, 0) space=2 align=start {
+      thermometer th from=-15 to=15 step=5 value=low unit="°C"
+      table data cols=2 head=["Air °C", "Most, g per m³"] cells=["-10", "2", "0", "5", "5", "7", "10", "9", "15", "13"]
+    }
+    text ask "In the evening each cubic metre of air by the sledges holds {h} g of water vapour. The thermometer shows the coldest the night gets. In the morning, is there dew on the sledges, frost, or neither?" narrate width=34 below=kit gap=1
+    choice pick options=["dew", "frost", "neither"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=data {
+      say "Find the temperature where {h} g fills the air. Did the night get that cold, and was that above or below 0 °C?"
+    }
+  }
+  hint "At what temperature can the air hold only {h} g?"
+  hint "Did the night get colder than that? If it did, was it above or below freezing?"
+}

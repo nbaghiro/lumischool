@@ -1,0 +1,32 @@
+# Two clear solutions poured together make a solid that clouds the water (Epsom salts and washing
+# soda make white magnesium carbonate), and the mass is the two together (RSC, conservation of mass).
+item chem.cloudy-mix v=1 skills=[chemistry.conservation, chemistry.changes] {
+  title "Clear and clear make cloudy"
+  difficulty (w * 2 + (if a <= 60 then 0 else 1))
+  let w=0..1 a={50, 60, 80} b={45, 75}
+  level easy {
+    let w=0..0 a={50, 60}
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 36x27 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      beaker x max=200 step=50 level=100 unit=ml solid=0 rod=false label="A"
+      beaker y max=200 step=50 level=100 unit=ml solid=0 rod=false label="B"
+      flask z shape="conical" fill=0.5 paint="white" bubbles=0 balloon=0 tag="AB"
+    }
+    text ask "Mei weighs two clear solutions: A, Epsom salts in water, and B, washing soda in water. {if w == 0 then \"A weighs \" else \"A weighs \"}{a}{if w == 0 then \" g and B weighs \" else \" g. She pours in B, and a white solid clouds the water. The beaker's contents now weigh \"}{if w == 0 then b else a + b}{if w == 0 then \" g. She pours them together, and a white solid clouds the water. What do the contents weigh now, in grams?\" else \" g. How many grams did B weigh?\"}" narrate width=34 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then a + b else b)
+  feedback {
+    when (w == 0 and answer != a + b and answer > a + b) point=z {
+      say "The solid came from what was in the two liquids. Nothing was added from outside."
+    }
+  }
+  hint "{if w == 0 then \"The new solid is made from what was dissolved in A and B. Is anything lost or added?\" else \"All of A and all of B end up in the beaker.\"}"
+  hint "{if w == 0 then \"Add the two masses.\" else \"Take A's mass away from the total.\"}"
+}

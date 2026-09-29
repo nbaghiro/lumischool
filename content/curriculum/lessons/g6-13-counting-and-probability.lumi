@@ -1,0 +1,65 @@
+lesson g6-counting-and-probability v=1 format=teach grade=6 unit=8 subject=maths levels=[easy, medium, hard] {
+  title "Counting the ways, and probability"
+  goal "Count every way something can happen, in order or not, and give a probability as the fraction of equally likely ways that fit."
+
+  look {
+    scene 23x18 {
+      outcomes o rows=["1", "2", "3", "4", "5", "6"] cols=["H", "T"] first=Dice second=Coin fill=1 at=canvas(1, 1)
+      lander l rungs=5 right-of=o gap=2
+    }
+    say """
+      Before the lander takes off, the crew roll a dice and toss a coin. The grid lists every pair
+      once: 6 numbers down the side and 2 faces along the top make 6 × 2 = 12 pairs, all equally
+      likely. Only one of them is a six and a head, so its probability is 1/12. Three of them are an
+      even number and a tail, so that has a probability of 3/12, which is 1/4. List the ways in an
+      order so none is missed and none is counted twice.
+      """
+  }
+  do {
+    practice chance.dice-coin-check count=1 seed=3 hard-count=0
+    level easy {
+      worked chance.crew-ladder-order v=2 level=medium
+    }
+    show chance.crew-ladder-order v=3 easy-v=0 hard-v=4
+    practice chance.rover-crew-pick count=1 seed=5
+    practice chance.dice-products count=1 seed=20
+    practice chance.who-more-likely count=1 seed=2
+    practice chance.rover-crew-pick count=1 seed=7
+    practice chance.lamp-check-tree count=1 seed=8 easy-count=0
+    show chance.crew-ladder-order v=5 easy-v=1 hard-v=6
+    level easy {
+      practice chance.dice-products count=1 seed=12
+    }
+    level hard {
+      practice chance.dice-products count=1 seed=21
+      practice chance.lamp-check-tree count=1 seed=22
+    }
+  }
+  try stars=2 {
+    show chance.eleven-sums s=8 easy-s=7 hard-s=5
+  }
+  try stars=3 {
+    show chance.ladder-ways n=5 easy-n=4 hard-n=7
+  }
+  remember {
+    say "List the ways in an order so none is missed. A probability is the ways that fit out of all the equally likely ways."
+  }
+
+  grown-ups """
+    Counting the ways is the whole of this lesson, and probability follows from it. When order
+    matters, as with climbers down a ladder, the first place can be filled in n ways, the next in
+    one fewer, and the counts multiply. When it does not, as with a pair chosen for the rover, every
+    pair has been counted twice in that list, so halve it. Watch for sums of two dice treated as
+    equally likely: the 36 pairs are, the eleven sums are not. That is the two-star question, and
+    the grid is the reason. In the three-star question a child who lists ladders of one, two and
+    three rungs will see each count is the two before it added, because the last step came from one
+    rung or two below. If counting pairs in order is still slow, stay here another day. Off the
+    page, roll two dice fifty times and tally the sums.
+    """
+  level easy {
+    grown-ups "At this level the dice and coin ask for a head and a number above a value, four climbers are worked once in the teacher's pen before three climbers and two of four, the rover takes two of four or five, the products are even or odd and asked twice, the sums compared differ by two or more, the two green lamps are left out, Leo's sum is 7, and the ladder has four rungs."
+  }
+  level hard {
+    grown-ups "At this level the dice and coin are left out, three of five and then three of six climb down, the rover takes three of five or six, the products are exactly 12 or 20 or more and asked twice, the sums compared differ by one or tie, the two lamps are asked twice, apart, with chances in thirds, quarters and fifths, Leo's sum is 5, and the ladder has seven rungs."
+  }
+}

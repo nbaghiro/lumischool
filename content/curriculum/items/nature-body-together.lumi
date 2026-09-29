@@ -1,0 +1,48 @@
+# The skeleton and muscles do not work alone: the blood brings muscles food and oxygen, bone is alive
+# and mends itself, a cast keeps the ends lined up while it does, and nerves carry the message that
+# tells a muscle to pull.
+item nature.body-together v=1 skills=[nature.body, reasoning.explain] {
+  title "Not working alone"
+  difficulty pick(k, 0, 0.33, 0.67, 1)
+  let k=0..3
+  let asks={pick(k, "Ada climbs the clock tower's 200 steps. Her leg muscles need more food and oxygen to keep pulling. What brings it to them?", "A broken bone bleeds, and a few weeks later new bone has grown across the break. What does that tell you about bone?", "Ben breaks his arm falling from the city wall. Why does the doctor keep it still in a plaster cast for six weeks?", "Ada's hand touches a hot pan in the bakery, and her arm pulls away before she has time to think. What told her arm muscles to pull?")}
+  let ans={pick(k, "The blood, pumped faster by the heart", "It is alive, with blood flowing through it", "So the ends stay lined up while new bone grows", "A message along her nerves")}
+  let o1={pick(k, "The bones, which store it for them", "It is hard, like a stone", "So the bone keeps warm while it mends", "The hot blood in her hand")}
+  let o2={pick(k, "The tendons, which pull it in", "It is made of muscle", "So a muscle can push the bone back", "The bones of her hand")}
+  let s1={pick(k, ans, o1, o1, o1)}
+  let s2={pick(k, o1, o2, ans, o2)}
+  let s3={pick(k, o2, ans, o2, ans)}
+  level easy {
+    let k=0..1
+  }
+  level medium {
+    let k=1..2
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x32 {
+    parts fig of=skeleton at=canvas(1, 1)
+    text ask "{asks}" narrate width=20 right-of=fig gap=2
+    choice pick options=[s1, s2, s3] stack=column below=fig gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=ask {
+      say "Food and oxygen have to travel from the gut and the lungs to the legs. What goes round the whole body?"
+    }
+    when (k == 1 and pick != ans) point=fig {
+      say "A stone does not bleed or grow. What does bleeding and mending tell you is inside bone?"
+    }
+    when (k == 2 and pick != ans) point=fig {
+      say "New bone grows across the gap. What would happen to it if the two ends kept moving apart?"
+    }
+    when (k == 3 and pick != ans) point=ask {
+      say "A muscle pulls only when it is told to. What carries messages from the body to the muscles, fast?"
+    }
+  }
+  hint "Which part of the body could reach this place and do this job?"
+  hint "Bones and muscles need other parts of the body. Which one fits here?"
+}

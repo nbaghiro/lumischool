@@ -1,0 +1,65 @@
+# Inference across a whole text: clues spread over the three parts of The crack in the shelf, put
+# together into what the story never says. The story was written for the lesson.
+lesson reading-inference-across-a-whole-text v=1 format=teach grade=6 unit=1 subject=reading levels=[easy, medium, hard] {
+  title "Reading between the lines of a whole story"
+  goal "Work out what a story never says by putting together clues from different parts of it, and point to the clues."
+
+  look {
+    scene 36x12 {
+      row all at=canvas(0, 1) space=1 align=end {
+        icecliff shelf height=2 floes=2
+        hut h pictures=4
+        sledge s slats=5
+      }
+    }
+    say """
+      The crack in the shelf is a story in three parts of about a hundred words each. Noor flies to
+      a research hut on the Arctic ice shelf with her Aunt Lind. The story never says what time of
+      year it is, what is in the steel tube, or why the team runs for the hill. You work those out.
+      An inference is an answer built from clues, and the best ones use clues from more than one
+      part. A guess is an answer no clue points to.
+      """
+  }
+  do {
+    level easy {
+      worked reading.ice-infer k=1 level=medium
+    }
+    show reading.ice-infer k=0 hard-k=3
+    practice reading.ice-clue-line count=2 seed=1 easy-seed=1 hard-seed=1
+    show reading.ice-infer k=2 hard-k=1
+    practice reading.ice-two-parts count=2 seed=5 easy-seed=1 hard-seed=1
+    practice reading.ice-not-said count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show reading.ice-clue-line q=3
+    }
+  }
+  try stars=2 {
+    show reading.guess-or-inference k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show reading.ice-whole-text k=0 hard-k=1
+  }
+  remember {
+    say "An inference is built from clues you can point to. The strongest ones use clues from more than one part."
+  }
+
+  grown-ups """
+    The idea is that a whole text, here three parts of about a hundred words each, holds clues that
+    only make sense together: the sun high at ten at night and the thick curtains mean summer in the
+    Arctic, and the tube carried like a baby and packed first when the ice cracks means it matters
+    most. The way in works out one thing from a few lines, the core finds the line that holds a
+    clue, joins two clues from different parts, and spots the choice that nothing in the lines
+    points to. The wrong idea to watch for is an answer from the child's own ideas rather than the
+    page; ask "which words made you think that?" The two-star question sorts what Sami says into an
+    inference, a guess or something the text says outright. The three-star question is marked by
+    eye. If the child is stuck, read one part aloud together and stop at each clue. Off the page,
+    read the first page of a book the child has not read and work out where and when it happens
+    before anyone says.
+    """
+  level easy {
+    grown-ups "At this level the curtains are worked once in the teacher's pen, the inferences are the season and the tube, the lines to find are the plainer ones, the clue pairs are the tube and the crack, the choices with no clue come from the sledge and the crack, the two-star is the steel tube, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the inferences are the curtains and Aunt Lind and the cold, the lines to find include the curtains and what she saves first, the clue pairs are the night's work and Aunt Lind knowing the ice, there is one more line to find, the choices with no clue come from the glasses and the crack, the two-star is the hut near the edge, and the three-star asks why they ran for the hill."
+  }
+}

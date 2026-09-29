@@ -1,0 +1,32 @@
+# The way in: ridges further back take a paler step of the ladder, the palest for the furthest.
+item art.fade-which-step v=1 skills=[art.space, art.tints] {
+  title "A step for each ridge"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2
+  let ridge={pick(k, "the nearest ridge", "the ridge furthest away", "the middle one of the five ridges")}
+  let right={pick(k, "The first", "The last", "The third")}
+  let o1={pick(k, "The last", "The first", "The first")}
+  let o2={pick(k, "The third", "The third", "The last")}
+  let r={k % 3}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 35x18 {
+    tintladder ladder colour="green" toward="white" steps=5 blank=-1 ring=-1 labels=true at=canvas(1, 1)
+    text ask "Ada paints five ridges of the gorge, one behind another, with the green steps on this ladder. Which step should she use for {ridge}?" width=34 below=ladder gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then o1 else o2, if r == 0 then o1 else if r == 1 then o2 else right, if r == 0 then o2 else if r == 1 then right else o1] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ladder {
+      say "Far things look paler through the air between. The nearest ridge is the darkest step, and each ridge further back is a paler one."
+    }
+  }
+  hint "Which looks paler: a hill close to you, or one far away?"
+  hint "The ladder goes from the plain green to the palest. Which end is near?"
+}

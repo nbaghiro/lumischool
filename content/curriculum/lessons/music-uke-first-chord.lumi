@@ -1,6 +1,6 @@
 # C is the first chord because it needs one finger. Reading its card is the whole of reading chord
 # cards: a dot is a finger, the number says which finger, and where it sits says the string and fret.
-lesson music-uke-first-chord v=1 format=teach grade=1 unit=4 subject=music levels=[easy, medium, hard] {
+lesson music-uke-first-chord v=1 format=teach grade=1 unit=8 subject=music levels=[easy, medium, hard] {
   title "One finger: the C chord"
   goal "Read a chord card for its finger, string and fret, and hold and strum C."
 

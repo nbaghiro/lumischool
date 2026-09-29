@@ -1,0 +1,35 @@
+# The same count on squares that are not a hectare: 70 squares of the reservoir (52 whole and 36
+# cut), each 50 m, 200 m or 500 m on a side, turned into hectares.
+item land.outline-scale v=1 skills=[measure.metric.land-area, area.estimate, measure.convert] {
+  title "Bigger squares"
+  difficulty pick(t, 1, 0, 2)
+  let t=0..2
+  let d={pick(t, 50, 200, 500)}
+  level easy {
+    let t={1}
+  }
+  level hard {
+    let t={2}
+  }
+
+  scene 36x15 {
+    outlinearea map shape=0 side=d unit="m" mark=1 show=1 at=canvas(1, 1)
+    text ask "This reservoir feeds a canal in the hills. Each square is {d} m by {d} m. Estimate the reservoir's area in hectares." narrate width=17 right-of=map gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=5
+      text unit "ha"
+    }
+  }
+
+  answer pick(t, 17.5, 280, 1750)
+  feedback {
+    when (answer == 70) point=map {
+      say "70 is the number of squares. Each square is not a hectare here: how many square metres is one?"
+    }
+    when (answer == 70 * d * d) point=map {
+      say "That is the area in square metres. A hectare is 10,000 of them."
+    }
+  }
+  hint "About how many squares is the reservoir?"
+  hint "What is the area of one square in square metres, and in hectares?"
+}

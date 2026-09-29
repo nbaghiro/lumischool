@@ -1,0 +1,28 @@
+# From a share back to a count: the band gives the percent and its total, and the number is that
+# percent of the total. The unknown moves from the share to the children.
+item survey.band-count v=1 skills=[data.band-graphs, percentages.of-amount] {
+  title "How many children"
+  difficulty (t + pick(b, 0, 1))
+  let t=0..2 b=0..1
+  level easy {
+    let t={0} b={0}
+  }
+  level hard {
+    let t={2}
+  }
+
+  scene 36x22 {
+    percentbar bands counts=[pick(t, 4, 6, 12), pick(t, 10, 8, 20), pick(t, 6, 6, 8), pick(t, 15, 9, 12), pick(t, 6, 9, 21), pick(t, 9, 12, 27)] bands=["Night 1", "Night 2"] kinds=["Clear", "Hazy", "Cloudy"] at=canvas(1, 1)
+    text ask "Each half hour the sky was noted as clear, hazy or cloudy. The number of notes is at the right of each band. How many notes on {pick(b, \"Night 1\", \"Night 2\")} said hazy?" narrate width=28 below=bands gap=1
+    number-input answer width=3 right-of=ask gap=1
+  }
+
+  answer pick(b, pick(t, 10, 8, 20), pick(t, 6, 9, 21))
+  feedback {
+    when (answer == pick(b, pick(t, 50, 40, 50), pick(t, 20, 30, 35))) point=bands {
+      say "That is the percent. How many readings is that percent of the total?"
+    }
+  }
+  hint "What percent of that night was hazy? How many readings were there in all?"
+  hint "What is ten percent of the total? Build the share from that."
+}

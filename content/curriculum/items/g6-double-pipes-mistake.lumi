@@ -1,0 +1,29 @@
+# The two-star: doubling the pipes is read as doubling the time, as if it were direct proportion.
+# The reason is that more pipes pour faster, so the time is shared instead.
+item inverse.double-pipes-mistake v=1 stars=2 skills=[proportion.inverse, reasoning.find-the-mistake] {
+  title "Ana's pipes"
+  difficulty (k + h / 12)
+  let p={2, 3} h={6, 8, 12} k={2, 3}
+  where whole(h / k)
+  level easy {
+    let k={2} h={6, 8}
+  }
+  level hard {
+    let k={3} h={12}
+  }
+
+  scene 35x12 {
+    tap pipe running=true at=canvas(1, 1)
+    text ask "{p} pipes fill the water tank at the mill in {h} hours. Ana says {k * p} pipes the same size take {k * h} hours, because there are {pick(k - 2, \"twice\", \"three times\")} as many. How many hours do they really take?" narrate width=26 right-of=pipe gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (h / k)
+  feedback {
+    when (answer == k * h) point=ask {
+      say "That is Ana's answer. With more pipes the tank fills sooner, so the time must get smaller."
+    }
+  }
+  hint "Should more pipes take more time, or less?"
+  hint "How long would one pipe take on its own? And how long would the bigger team of pipes take?"
+}

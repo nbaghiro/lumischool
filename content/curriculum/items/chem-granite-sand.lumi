@@ -1,0 +1,30 @@
+# Rocks are made of minerals: granite mostly of quartz, feldspar and mica (Wikipedia, Granite). As it
+# weathers the feldspar breaks down faster than the quartz, which is hard and hardly reacts, so the
+# sand left is mostly quartz (Wikipedia, Sand). The wrong options are common ideas about sand.
+item chem.granite-sand v=1 skills=[chemistry.rocks, chemistry.weathering, reasoning.explain] {
+  title "Why the sand is quartz"
+
+  scene 31x39 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      rocks r rocks=["granite", "sandstone"] test=0 letters=0 names=1
+      waterfall fall drops=2 rainbow=0
+    }
+    text ask "The granite at the top of the gorge is made of grains of three minerals: quartz, feldspar and mica. The sand the river leaves below it is mostly quartz. Quartz is very hard and hardly reacts with water. Why is the sand mostly quartz?" narrate width=30 below=kit gap=1
+    choice pick options=["Quartz lasts, and the feldspar breaks down", "The river makes new quartz", "The other grains float away", "The granite was all quartz"] stack=column below=ask gap=1
+  }
+
+  answer pick="Quartz lasts, and the feldspar breaks down"
+  feedback {
+    when (pick == "The granite was all quartz") point=r {
+      say "Look at the granite: it is speckled with grains of different minerals. Where did the others go?"
+    }
+    when (pick == "The river makes new quartz") point=kit {
+      say "The sand comes from the rock the river has worn away. What happens to each mineral in it?"
+    }
+    when (pick == "The other grains float away") point=kit {
+      say "None of these minerals floats. Which one lasts longest as the rock is worn down?"
+    }
+  }
+  hint "Which minerals were in the granite, and which one is left in the sand?"
+  hint "What happens to the others as rain and the river wear the rock?"
+}

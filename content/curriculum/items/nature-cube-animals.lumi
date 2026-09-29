@@ -1,0 +1,38 @@
+# The three-star: model animals of sugar cubes, where every outside face is skin that heat escapes
+# through. The child finds the fewest outside faces for a number of cubes, which is the most compact
+# shape; the trap is the long line in the picture. The answers are 16, 24 and 32.
+item nature.cube-animals v=1 stars=3 skills=[nature.adaptation, reasoning.fewest, area.surface] {
+  title "The fewest faces"
+  difficulty k
+  let k=0..2
+  let n={pick(k, 4, 8, 12)}
+  let line={pick(k, 18, 34, 50)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x21 {
+    cubestack cs l=n w=1 h=1 at=canvas(1, 1)
+    text ask "Ben makes model animals out of {n} sugar cubes, joined face to face. Every face of a cube on the outside of the model, the bottom ones too, is skin that heat can escape through. His long line of {n} has {line} outside faces. Arrange the {n} cubes to have the fewest outside faces. How many is that?" narrate width=32 below=cs gap=1
+    row r below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text u "faces"
+    }
+  }
+
+  answer pick(k, 16, 24, 32)
+  feedback {
+    when (answer == line) point=cs {
+      say "That is the long line. Folding it up so cubes touch more of each other hides faces."
+    }
+    when (k == 2 and answer == 34) point=cs {
+      say "That shape still has faces it could hide. Make it as close to a cube as 12 cubes allow."
+    }
+  }
+  hint "Each time two cubes touch face to face, two faces are hidden. How can every cube touch as many others as possible?"
+  hint "The closer the shape is to a cube or a ball, the fewer faces show."
+  hint "Count the faces on the top, the bottom and each of the four sides."
+}

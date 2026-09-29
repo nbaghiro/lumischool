@@ -1,0 +1,29 @@
+# Three stars: every square of every size in a grid of solar panels. Count the 1 by 1s, then the
+# 2 by 2s, then the 3 by 3s, one size at a time. A count.
+item puzzle.panel-squares v=1 stars=3 skills=[counting.cases, reasoning.systematic] {
+  title "Squares in the panel field"
+  difficulty (m * n / 4)
+  let m={2, 3, 4} n={3, 4, 5}
+  where (m <= n and m * n <= 20)
+  level easy {
+    let m={2} n={3, 4}
+  }
+  level hard {
+    let m={3, 4} n={4, 5}
+  }
+
+  scene 35x12 {
+    grid field rows=m cols=n shade=0 cell=2 at=canvas(1, 1)
+    text ask "The solar panels by the base are laid out in this grid, {m} by {n}. How many squares of any size can be found in it, counting the big ones made of smaller squares?" narrate width=20 right-of=field gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (m * n + (m - 1) * (n - 1) + (if m >= 3 then (m - 2) * (n - 2) else 0) + (if m >= 4 then (m - 3) * (n - 3) else 0))
+  feedback {
+    when (answer == m * n) point=field {
+      say "Those are only the smallest squares. How many squares two panels long fit in the grid?"
+    }
+  }
+  hint "How many 1 by 1 squares are there? How many 2 by 2?"
+  hint "A 2 by 2 square can start at how many places along a row, and in how many rows?"
+}

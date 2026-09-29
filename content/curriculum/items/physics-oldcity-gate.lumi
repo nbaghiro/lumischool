@@ -1,0 +1,25 @@
+# The story: the gatehouse lock in the old city wall is an electromagnet, and the guard makes it
+# stronger by winding on more turns.
+item physics.oldcity-gate v=1 skills=[physics.magnets, physics.circuits, reasoning.two-steps] {
+  title "The gatehouse lock"
+  difficulty (add / 10 * c)
+  let c=1..3 add={10, 20}
+
+  scene 32x30 {
+    citywalls w towers=2 open=0 at=canvas(1, 0)
+    electromagnet e turns=30 cells=c core=0 closed=1 show=1 below=w gap=1
+    text ask "The gate in the old city wall is locked by an electromagnet like this one. The guard winds on {add} more turns. How many clips will it hold now?" narrate width=15 right-of=e gap=1
+    number-input now below=ask gap=1
+    text then "How many more is that than before?" narrate width=15 below=now gap=1
+    number-input more below=then gap=1
+  }
+
+  answer now=((30 + add) / 10 * c) more=(add / 10 * c)
+  feedback {
+    when (more == add / 10 and c > 1) point=e {
+      say "That is the extra for one cell. Every cell in the loop adds the extra clips again."
+    }
+  }
+  hint "How many turns will the coil have now, and how many cells?"
+  hint "Tens of turns times cells, then take away what it held before."
+}

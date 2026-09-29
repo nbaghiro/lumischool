@@ -1,0 +1,33 @@
+# The two-star: two discounts one after the other are not added, because the second is a percent of
+# the sale price. The reason is found by trying a price of 100.
+item percent.two-discounts-mistake v=1 stars=2 skills=[percentages.of-percent, reasoning.find-the-mistake] {
+  title "A second discount"
+  difficulty s
+  let s=0..3
+  let a={pick(s, 20, 30, 50, 25)}
+  let b={pick(s, 10, 20, 20, 20)}
+  level easy {
+    let s={0}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 36x12 {
+    pricetag tag now=10000 was=0 at=canvas(1, 1)
+    text ask "The gorge shop takes {a}% off its tents. Then it takes a further {b}% off the sale price. Mo says that is {a + b}% off in all. What percent off is it really?" narrate width=22 right-of=tag gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text unit "%"
+    }
+  }
+
+  answer (100 - (100 - a) * (100 - b) / 100)
+  feedback {
+    when (answer == a + b) point=ask {
+      say "That is Mo's answer. The {b}% comes off the sale price, which is smaller than the first price."
+    }
+  }
+  hint "Say the tent cost 100 dollars. What is its sale price?"
+  hint "What is {b}% off that? How much has come off the 100 dollars altogether?"
+}

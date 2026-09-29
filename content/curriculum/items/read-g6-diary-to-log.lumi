@@ -1,0 +1,18 @@
+# The three-star question turns a diary entry into a log entry: keep what happened, leave out what
+# it felt like. There is no key, so a grown-up marks it against the look-for.
+item reading.diary-to-log v=1 stars=3 skills=[reading.text-types, reading.fact-opinion, writing.composition] {
+  title "From diary to log"
+  let k=0..1
+
+  scene 35x30 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p title="{pick(k, \"Thursday 6 July\", \"Tuesday 4 July\")}" text="{pick(k, \"Calm at last. Eighteen kilometres, our best day. At the ice edge a whale blew twice, a long grey back and then nothing. A seal watched us from a floe as if we were the strange ones. Pim's mended runner held. Tonight the sea is as flat as glass, and the sun is resting on the edge of it without going down. Aunt Lind says we will see the puffin cliffs tomorrow.\", \"Wind in our faces all day, and only six kilometres. Pim's sledge runner cracked on a ridge of ice, and we mended it with wire while our fingers went white. I have never been so cold, but I did not say so. Aunt Lind made hot chocolate on the stove inside the tent, and Pim told stories about his first trip north until the wind dropped a little. Tomorrow cannot be worse. I hope.\")}" width=34 numbers=false
+      text ask "Write Aunt Lind's log for this day from Noor's entry: what happened only, in short notes, with nothing about feelings." width=34
+      writinglines lines lines=2 width=34 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="For 6 July: calm; 18 km; whale seen twice at the ice edge; seal on a floe; mended runner held. For 4 July: wind all day; 6 km; runner cracked on an ice ridge and was mended with wire. Short notes rather than sentences are right for a log. Leave out Noor's feelings, comparisons and plans (our best day, as if we were the strange ones, never been so cold, flat as glass, tomorrow cannot be worse); the hot chocolate and the stories are not log matters either. A child who keeps a feeling has not yet told what happened from how it felt; ask whether Pim could check it."
+  hint "Go through the entry one sentence at a time. Could someone check it happened?"
+  hint "Keep the numbers and the things seen. Leave out what Noor thought about them."
+}

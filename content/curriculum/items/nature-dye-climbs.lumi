@@ -1,0 +1,45 @@
+# The story: blue ink climbing a white flower's stem at a steady rate. Easy and medium find the time
+# to reach the flower; hard gives the time and the height and asks for the rate.
+item nature.dye-climbs v=1 skills=[nature.plants, division.grouping] {
+  title "The blue flower"
+  difficulty k
+  let k=0..2
+  let told={pick(k, "The blue climbs 2 cm every hour, and the stem is 16 cm long. How many hours until the blue reaches the flower?", "The blue climbs 3 cm every hour, and the stem is 27 cm long. How many hours until the blue reaches the flower?", "After 5 hours the blue has climbed 20 cm up the stem, the same amount every hour. How many centimetres does it climb in one hour?")}
+  let unit={pick(k, "hours", "hours", "cm")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x28 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      flowers fl count=1 petals=8
+      beaker bk max=400 step=100 level=200 unit=ml solid=0 rod=false label="ink"
+    }
+    text ask "At the mill by the gorge, Ben stands a white flower in a jar of water coloured with blue ink. The blue climbs up the tubes in the stem, and at last the petals turn blue. {told}" narrate width=32 below=pics gap=1
+    row r below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text u "{unit}"
+    }
+  }
+
+  answer pick(k, 8, 9, 4)
+  feedback {
+    when (k == 0 and answer == 32) point=ask {
+      say "That multiplies. How many lots of 2 cm are there in 16 cm?"
+    }
+    when (k == 1 and answer == 81) point=ask {
+      say "That multiplies. How many lots of 3 cm are there in 27 cm?"
+    }
+    when (k == 2 and answer == 100) point=ask {
+      say "That multiplies. The 20 cm was climbed over 5 hours, so share it between them."
+    }
+  }
+  hint "What does the blue do each hour?"
+  hint "How many hours of climbing fit into the length of the stem?"
+  level hard {
+    hint "Share the whole climb equally between the hours."
+  }
+}

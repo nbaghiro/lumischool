@@ -1,0 +1,30 @@
+# Working back through the kiln: each 100 g of limestone gives 56 g of quicklime, and limestone comes
+# in whole bags, so the answer is the fewest bags that hold enough.
+item chem.limestone-bags v=1 skills=[chemistry.changes, reasoning.limits] {
+  title "How many bags?"
+  difficulty ((if b == 150 then 0 else 1) + (if q == 112 then 0 else 1))
+  let q={112, 168, 224, 280} b={120, 150}
+  let need={100 * q / 56}
+  let bags={(need + b - 1) // b}
+  level easy {
+    let b={150} q={112, 168}
+  }
+  level hard {
+    let b={120} q={224, 280}
+  }
+
+  scene 36x13 {
+    citywalls w towers=3 open=1 at=canvas(1, 0)
+    text ask "Each 100 g of limestone gives 56 g of quicklime. To mend the walls, the builder needs {q} g of quicklime. Limestone is sold in bags of {b} g. What is the fewest bags she can buy?" narrate width=18 right-of=w gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer bags
+  feedback {
+    when (answer == need // b and need % b != 0) point=w {
+      say "That many bags hold less limestone than she needs. Part of one more bag is still needed, and bags are bought whole."
+    }
+  }
+  hint "How many grams of limestone make {q} g of quicklime?"
+  hint "How many bags of {b} g hold at least that much?"
+}

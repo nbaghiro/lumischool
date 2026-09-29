@@ -1,0 +1,42 @@
+# Why an animal is out at night: each has its own reason, safety from hunters that work by day, food
+# that comes out after dark, or prey that does. All three are the observatory's own.
+item nature.why-night v=1 skills=[nature.night-animals, reasoning.explain] {
+  title "Why come out at night?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let asks={pick(k, "Many moths fly round the observatory lamp at night and hide all day. Why is night safer for them?", "A hedgehog snuffles along the observatory path at night. Why is night better for it?", "A tawny owl sits silent in the pine by the telescope. Why is night better for it?")}
+  let ans={pick(k, "Far fewer birds are hunting them", "The slugs and worms it eats come out", "The mice it hunts are out and about")}
+  let o1={pick(k, "Their wings only work in the cold", "Its spines only work in the dark", "Other birds keep it awake by day")}
+  let o2={pick(k, "The moon keeps them warm", "It is too cold to go out by day", "The moon helps it to fly")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x30 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      moon mo phase=0.5
+      art h asset="hedgehog"
+      art o asset="owl"
+    }
+    text ask "{asks}" narrate width=32 below=pics gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=ask {
+      say "Which hunters catch insects by day, and are they out after dark?"
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "What does a hedgehog eat? Slugs and worms come up when the ground is cool and damp."
+    }
+    when (k == 2 and pick != ans) point=ask {
+      say "An owl hunts. When are the mice it hunts out looking for seeds?"
+    }
+  }
+  hint "What does this animal need: to find food, or to keep safe from something?"
+  hint "An animal comes out when its food does, or when the danger has gone."
+}

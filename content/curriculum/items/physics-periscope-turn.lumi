@@ -1,0 +1,22 @@
+# The periscope's mirrors stand at 45 degrees, so light meets each at 45 degrees to its upright line,
+# leaves at 45 on the other side and is turned through a right angle; two turns send it on the way
+# it came. p asks the turn at one mirror or the angle to the upright.
+item physics.periscope-turn v=1 skills=[physics.light, angles.degrees, reasoning.explain] {
+  title "Inside the periscope"
+  let p=0..1
+
+  scene 31x15 {
+    periscope s tall=6 flip=0 show=1 at=canvas(1, 0)
+    text ask "Each mirror in the periscope stands at 45°, so light meets it at 45° to the upright line. {if p == 0 then \"How many degrees are there between the light going into a mirror and the light coming out?\" else \"At what angle to the upright line does the light leave the mirror?\"}" narrate width=14 right-of=s gap=1
+    number-input answer below=s gap=1
+  }
+
+  answer (if p == 0 then 90 else 45)
+  feedback {
+    when (p == 0 and answer == 45) point=s {
+      say "45° is the angle on one side of the upright line. The light leaves another 45° on the other side."
+    }
+  }
+  hint "The light leaves the mirror at the same angle to the upright line as it came in."
+  hint "Add the angles on the two sides of the upright line."
+}

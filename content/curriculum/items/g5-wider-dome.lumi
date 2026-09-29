@@ -1,0 +1,31 @@
+# The second reasoning question in the core: the way round grows in step with the way across, so a
+# dome k times as wide is k times as far round, and 3.14 is not needed.
+item circle.wider-dome v=1 skills=[circles.circumference, reasoning.proportion] {
+  title "Twice as wide"
+  difficulty (k + (if c > 30 then 1 else 0))
+  let c={18.84, 25.12, 31.4, 37.68} k={2, 3, 4}
+  level easy {
+    let k={2}
+  }
+  level hard {
+    let k={3, 4} c={31.4, 37.68}
+  }
+
+  scene 34x10 {
+    observatory small open=0 at=canvas(1, 1)
+    text ask "The small dome is {c} m round. The big dome is {pick(k - 2, \"twice\", \"three times\", \"four times\")} as wide across. How far round is the big dome? You do not need 3.14." narrate width=22 right-of=small gap=2
+    number-input answer width=6 below=ask gap=1
+  }
+
+  answer decimals(c * k, 0)
+  feedback {
+    when (answer == c * k * k) point=ask {
+      say "The distance round grows the same way as the distance across: {pick(k - 2, \"twice\", \"three times\", \"four times\")} as wide is {pick(k - 2, \"twice\", \"three times\", \"four times\")} as far round."
+    }
+    when (answer == c * k * 3.14 or answer == c * 3.14) point=ask {
+      say "{c} m is already the way round. What happens to it when the dome is wider?"
+    }
+  }
+  hint "If a circle is twice as wide, how does its way round compare?"
+  hint "The way round is always 3.14 times the way across, so it grows in step with it."
+}

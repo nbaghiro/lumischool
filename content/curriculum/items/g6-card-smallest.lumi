@@ -1,0 +1,36 @@
+# The three-star: three cards in a fraction and a decimal, placed for the smallest total. The pull is
+# to put the smallest card after the point, but it does least harm on top of the fraction. Six ways,
+# so a list proves it.
+item fraction.card-smallest v=1 stars=3 skills=[fractions.multiply.decimals, reasoning.extremes] {
+  title "The smallest total"
+  difficulty t
+  let t=0..3
+  let p={pick(t, 1, 2, 3, 2)}
+  let q={pick(t, 2, 4, 4, 5)}
+  let r={pick(t, 4, 5, 8, 8)}
+  level easy {
+    let t={0}
+  }
+  level medium {
+    let t={1}
+  }
+  level hard {
+    let t={2, 3}
+  }
+
+  scene 36x16 {
+    digitcards cards digits=[p, q, r] at=canvas(1, 1)
+    sign board lines=["? / ? + 0.?"] kind=board color=glow right-of=cards gap=3
+    text ask "Put the three cards in the three spaces, one card each, to make the total as small as it can be. What is that smallest total? Write it as a decimal." narrate width=34 below=cards gap=1
+    number-input answer width=5 below=ask gap=1
+  }
+
+  answer pick(t, 0.45, 0.8, 0.775, 0.75)
+  feedback {
+    when (answer == pick(t, 0.6, 1, 0.8, 0.825)) point=board {
+      say "The smallest card after the point is not the only choice to try. What if the smallest card is on top of the fraction?"
+    }
+  }
+  hint "Which card should go on the bottom of the fraction?"
+  hint "Try both ways of placing the other two cards and compare."
+}

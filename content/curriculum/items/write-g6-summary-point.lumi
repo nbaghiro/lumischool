@@ -1,0 +1,36 @@
+# The writer's main point, in a guidebook page of about 160 words: the sentence a summary must keep.
+# It is never the first sentence, which opens with a picture, and one wrong choice is a vivid detail.
+item writing.summary-point v=1 skills=[writing.summarising, reading.gist] {
+  title "The writer's main point"
+  difficulty k
+  let k=0..2 r=0..2
+  let t={pick(k, "On a windy day the rope bridge sways like a hammock, and first-time walkers grip both ropes. It was built a hundred years ago from hemp rope and oak planks, by people from the villages on both sides of the gorge. Before it, the only way across was a day's walk round the head of the gorge, so the two villages hardly met. Each had its own school, its own market and its own band, and each thought the other rather odd. The bridge changed that within a few years. Children from the far side began crossing to the bigger school, and families crossed back on market day. Today the two villages share one school, one market and one band, and many families have a grandparent on each side. The planks are replaced every spring, and a keeper checks the ropes each morning. People still argue about which side the bridge belongs to, but most agree that it made two villages into one.", "Ferns grow from the walls of the mill by the falls, and a rowan tree leans over its door. For more than a hundred years, though, it was the busiest building in the gorge. Water from the falls turned its wheel, the wheel turned two millstones, and the stones ground wheat into flour for three villages. Farmers brought their wheat by cart, and the miller took one sack in every ten as his pay. Then, in 1890, the railway reached the valley, and trains brought cheap flour from great mills in the city. Within ten years the farmers stopped bringing wheat, and the mill fell silent. So the mill did not wear out: it was the railway, not the river or the years, that closed it. Its roof fell in during a storm in 1931. Last year the village mended the wheel, and on Saturdays the stones turn again.", "Kingfishers dig their nests in tunnels in the soft riverbank, as long as your arm and just wide enough for the bird. A few years ago there were only two nests left by the falls. Walkers liked to stand on the bank to watch the water, and their boots pressed the soil down until the tunnels behind it fell in. The village talked about it at three meetings, and some people wanted a sign asking walkers to keep off. In the end the village chose a low wooden fence along the bank, with a gap where people can still look at the pool. The fence is painted green, and the children painted a kingfisher on each post. Since the fence went up, the bank has stayed firm, and this spring there were seven nests. The fence worked because it kept feet off the bank without keeping people away from the river.")}
+  let title={pick(k, "The rope bridge", "The mill", "The kingfishers' bank")}
+  let right={pick(k, "People still argue about which side...", "So the mill did not wear out...", "The fence worked because...")}
+  let w1={pick(k, "On a windy day the rope bridge sways...", "Ferns grow from the walls of the mill...", "Kingfishers dig their nests in tunnels...")}
+  let w2={pick(k, "The planks are replaced every spring...", "Farmers brought their wheat by cart...", "The fence is painted green...")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 35x47 {
+    passage p title="{title}" text="{t}" width=35 numbers=false at=canvas(0, 0)
+    text ask "A summary must keep the writer's main point. Which sentence gives it?" narrate width=35 below=p gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=p {
+      say "The first sentence draws the reader in with a picture. Read on: which sentence says what the whole page adds up to?"
+    }
+    when (pick == w2) point=p {
+      say "That is a true detail, and a summary could lose it without losing the page's point. Which sentence would the writer most want a reader to remember?"
+    }
+  }
+  hint "Say in one sentence what the whole page is about. Which sentence of the writer's is closest to yours?"
+  hint "Try each choice as the only sentence a visitor keeps. Does the page's point survive, or only a picture or a detail?"
+}

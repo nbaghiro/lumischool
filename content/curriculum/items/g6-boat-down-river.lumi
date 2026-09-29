@@ -1,0 +1,35 @@
+# Distance from speed and time, where the time is in minutes and the speed per hour, so the minutes
+# become a part of an hour first.
+item speed.boat-down-river v=1 skills=[rates.speed, rates.distance-time] {
+  title "How far down the river"
+  difficulty ((if m % 60 == 0 then 0 else if m % 30 == 0 then 1 else 2) + v / 12)
+  let v={6, 8, 9, 12} m={30, 60, 90, 120, 20, 40, 45}
+  where whole(v * m / 30)
+  level easy {
+    let m={60, 120, 30}
+  }
+  level hard {
+    let m={20, 40, 45}
+  }
+
+  scene 35x8 {
+    rowboat boat facing=1 at=canvas(1, 1)
+    text ask "A rowing boat goes down the gorge river at {v} km/h. How many kilometres does it go in {m} minutes?" narrate width=24 right-of=boat gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "km"
+    }
+  }
+
+  answer (if whole(v * m / 60) then v * m / 60 else decimals(v * m / 60, 1))
+  feedback {
+    when (answer == v * m) point=ask {
+      say "{v} km/h is {v} km in 60 minutes, not in one minute. What part of an hour is {m} minutes?"
+    }
+    when (m != 60 and answer == v * 60 / m) point=ask {
+      say "That shares the speed. Distance is speed times time, with the time in hours."
+    }
+  }
+  hint "What part of an hour is {m} minutes?"
+  hint "How far does the boat go in that part of an hour?"
+}

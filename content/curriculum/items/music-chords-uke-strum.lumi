@@ -1,0 +1,20 @@
+# A primary chord of C major strummed on the ukulele: I is C, IV is F and V7 is G7, the three chords
+# every early method teaches for accompanying in C.
+item music.chords-uke-strum v=1 skills=[music.chords, music.chord-boxes] {
+  title "Strum the chord"
+  let k=0..2
+  let roman={pick(k, "I", "IV", "V7")}
+  let want={pick(k, "C", "F", "G7")}
+  let deg={pick(k, "1", "4", "5")}
+
+  scene 31x22 {
+    row top space=2 align=start at=canvas(1, 1) {
+      fretboard neck tuning=uke frets=3 view=chart labels=numbers strum=true
+      text ask "Ana plays under the stars in C major, on the ukulele. Chord V is played as V7, with one note more. Hold chord {roman} and strum it." narrate width=16
+    }
+  }
+
+  check music.chord chord={want} tuning=uke
+  hint "Count up the C major scale from C as 1. Which letter is note {deg}?"
+  hint "C is one finger on string 1, F is two fingers, and G7 is three."
+}

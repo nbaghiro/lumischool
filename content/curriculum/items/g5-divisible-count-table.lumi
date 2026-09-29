@@ -1,0 +1,35 @@
+# Tests for 2, 5 and 10 by the last digit, over a list of numbers. The list is fixed so the counts
+# differ: five are even, four end in 0 or 5, two end in 0.
+item divisible.count-table v=1 skills=[number.multiples.divisibility] {
+  title "Which ones divide"
+  difficulty (if k == 10 then 0 else if k == 5 then 1 else 2)
+  let k={2, 5, 10}
+  level easy {
+    let k={10}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x21 {
+    planets sky count=5 names=0 at=canvas(1, 1)
+    table list cols=7 cells=["124", "345", "408", "550", "716", "990", "875"] below=sky gap=1
+    text ask "These are the numbers of seven small rocks the observatory has found going round the sun. How many of them are in the {k} times table?" narrate width=34 below=list gap=1
+    number-input answer width=2 below=ask gap=1
+  }
+
+  answer (if k == 2 then 5 else if k == 5 then 4 else 2)
+  feedback {
+    when (k == 10 and answer == 4) point=list {
+      say "Ending in 5 is enough for five, not for ten. A number in the ten times table ends in 0."
+    }
+    when (k == 5 and answer == 2) point=list {
+      say "Numbers ending in 5 are in the five times table too, not only those ending in 0."
+    }
+    when (k == 2 and answer == 2) point=list {
+      say "Any even ones digit will do for two: 0, 2, 4, 6 or 8."
+    }
+  }
+  hint "Which digit of each number decides it?"
+  hint "Which ones digits do numbers in the {k} times table end in?"
+}

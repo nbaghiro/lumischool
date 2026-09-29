@@ -1,0 +1,27 @@
+# Two stars: a claim that breaks the rule that energy is never made. A wheel that gives out more than
+# the water gives it would be making energy, so the claim is wrong. o is the joules claimed out.
+item physics.store-more-out v=1 stars=2 skills=[physics.energy, reasoning.claims] {
+  title "A wonderful new wheel"
+  let o={1200, 1100, 1500}
+
+  scene 26x34 {
+    energyflow e thing="new wheel" from="moving water" to="turning" input=1000 useful=0 wasted=[] wastes=[] blank=1 unit=J at=canvas(1, 0)
+    text ask "A maker says her new wheel gives out {o} J of turning for every 1000 J the moving water gives it. Can that be true?" narrate width=24 below=e gap=1
+    choice pick options=["No, energy is never made", "Yes, a bigger wheel makes energy", "Yes, if it turns fast enough", "No, a wheel gives out no energy"] stack=column below=ask gap=1
+  }
+
+  answer pick="No, energy is never made"
+  feedback {
+    when (pick == "Yes, a bigger wheel makes energy") point=e {
+      say "A wheel only passes energy on. Where would the extra {o - 1000} J come from?"
+    }
+    when (pick == "Yes, if it turns fast enough") point=e {
+      say "Turning faster needs more energy, and it still has to come from the water."
+    }
+    when (pick == "No, a wheel gives out no energy") point=e {
+      say "The wheel does give out energy: it turns the millstone. The question is how much."
+    }
+  }
+  hint "What do the bands out of any machine have to add up to?"
+  hint "Some energy is always wasted too. Could the useful band be bigger than the band in?"
+}

@@ -1,0 +1,32 @@
+# Three stars, no method given: a drop's time on Earth is known, and the rules for both worlds are,
+# but not the height. Working the height out on Earth and back on the moon gives 2.5 times the time.
+item physics.moondrop-shelf v=1 stars=3 skills=[physics.forces, reasoning.work-backwards, decimals.multiply] {
+  title "The same shelf on the moon"
+  difficulty (te * 10)
+  let te={0.4, 0.6, 0.8}
+  level easy {
+    let te={0.4}
+  }
+  level hard {
+    let te={0.6, 0.8}
+  }
+
+  scene 30x23 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      lander l rungs=5
+      crater c count=1
+    }
+    text ask "A stone takes {te} s to fall from a shelf to the floor on Earth. In t seconds things fall 5 × t × t metres on Earth and 0.8 × t × t metres on the moon. How many seconds would the stone take to fall from the same shelf in the base on the moon?" narrate width=28 below=kit gap=1
+    number-input answer below=ask gap=1
+    text unit "s" right-of=answer gap=0
+  }
+
+  answer decimals(te * 2.5, if te == 0.6 then 1 else 0)
+  feedback {
+    when (answer == te * 6.25) point=ask {
+      say "The drop is 6.25 times as far for the same time, but time does not grow as fast as distance. Find the shelf's height first."
+    }
+  }
+  hint "How high is the shelf? Use the Earth's rule."
+  hint "Which time t makes 0.8 × t × t come to that height? Try a few."
+}

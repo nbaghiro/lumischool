@@ -1,0 +1,39 @@
+# Answering the other side: an objection from the meeting, and the reply that takes it seriously and
+# answers it with a reason. The others attack the people or wave the worry away.
+item writing.speech-counter v=1 skills=[writing.persuasion, writing.argument] {
+  title "Answer the other side"
+  difficulty k
+  let k=0..2 r=0..2
+  let obj={pick(k, "Mending the bridge costs too much.", "The old bridge has been fine for years.", "Children could just walk round by the path.")}
+  let right={pick(k, "A new path round the gorge would cost twice as much.", "Three planks fell last week; it is not fine now.", "The path adds an hour, and it floods each spring.")}
+  let w1={pick(k, "Anyone who says that should be ashamed.", "Only people who never cross it say that.", "That is a silly thing to say.")}
+  let w2={pick(k, "Money does not matter at all.", "Well, I just do not agree with that.", "Walking is not the point.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x36 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      ropebridge br planks=9 gaps=4
+      waterfall falls drops=1 rainbow=0
+    }
+    passage p title="Someone at the meeting says" text="{obj}" width=32 numbers=false below=pics gap=1
+    text ask "Which reply from Tam answers it best?" narrate width=32 below=p gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=p {
+      say "That reply attacks the person, not the point. The listeners who agreed with them will stop listening."
+    }
+    when (pick == w2) point=p {
+      say "That reply waves the worry away without a reason. Answer it with a fact the listeners can weigh."
+    }
+  }
+  hint "Which reply takes the worry seriously?"
+  hint "Which reply gives a fact or a reason, rather than a feeling about the person?"
+}

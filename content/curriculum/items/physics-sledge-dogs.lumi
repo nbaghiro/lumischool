@@ -1,0 +1,30 @@
+# A dog team: each dog pulls with the same force, and the team starts the sledge only when their pull
+# together is more than the most friction can hold it with.
+item physics.sledge-dogs v=1 skills=[physics.forces, physics.friction, division.remainders] {
+  title "How many dogs?"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+  let d={pick(v, 50, 60, 45, 70)}
+  let most={pick(v, 220, 250, 270, 420)}
+
+  scene 30x20 {
+    sledgeforce s forward=[] back=[most] weight=0 moving=0 show=0 names=1 at=canvas(1, 0)
+    text ask "A dog team is harnessed to the sledge. Each dog pulls with {d} N, and friction can hold the sledge still with up to {most} N. What is the fewest dogs that will start it moving?" narrate width=27 below=s gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((most - most % d) / d + 1)
+  feedback {
+    when (answer == (most - most % d) / d) point=s {
+      say "Check that team: its pull is not more than {most} N, so the sledge stays still."
+    }
+  }
+  hint "How many newtons do 3 dogs pull with? And 4?"
+  hint "The team's pull must be more than {most} N, not equal to it."
+}

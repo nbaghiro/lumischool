@@ -1,0 +1,37 @@
+# The second reason in the core: the water's push is the weight of the water pushed aside, which is
+# one newton for every hundred millilitres, so a rise in the cylinder gives the push and then the
+# reading under water.
+item physics.displace-push v=1 skills=[physics.floating, physics.forces, reasoning.two-steps] {
+  title "Push from the water pushed aside"
+  difficulty (r / 100 + a / 10)
+  let r={100, 200, 300, 400} a={6, 8, 10}
+  level easy {
+    let r={100, 200}
+  }
+  level hard {
+    let r={300, 400}
+  }
+
+  scene 34x26 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      cylinder c max=1000 step=100 minor=50 level=(300 + r) unit=ml
+      springscale s max=10 step=2 value=a unit=N
+      text ask "A lump of metal weighs {a} N in the air. Lowered into a cylinder that held 300 ml, it makes the water rise to the level shown. Every 100 ml of water weighs 1 N. How hard does the water push up on the lump, in newtons?" narrate width=16
+    }
+    number-input push below=kit gap=1
+    text then "What will the force meter read with the lump under the water?" narrate width=30 below=push gap=1
+    number-input left below=then gap=1
+  }
+
+  answer push=(r / 100) left=(a - r / 100)
+  feedback {
+    when (push == r) point=c {
+      say "That is how many millilitres it pushed aside. Every 100 ml is one newton of push."
+    }
+    when (left == a + r / 100) point=s {
+      say "The water pushes up, so the meter reads less under the water than in the air."
+    }
+  }
+  hint "How many millilitres did the water rise by?"
+  hint "How many hundreds of millilitres is that? Each hundred is one newton of push."
+}

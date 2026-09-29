@@ -1,0 +1,31 @@
+# A pie chart cut into equal slices: the shaded share as a percent, one slice first.
+item percent.pie-slices v=1 skills=[data.pie-charts, percentages.of-a-whole] {
+  title "Clear nights on the pie"
+  difficulty ((if n == 4 or n == 10 then 0 else 1) + k / n)
+  let n={4, 5, 10, 8} k=1..7
+  where (k < n and 100 * k % n == 0)
+  level easy {
+    let n={4, 10}
+  }
+  level hard {
+    let n={5, 8}
+  }
+
+  scene 28x10 {
+    fraction pie n=n k=k shape=circle at=canvas(1, 1)
+    text ask "The pie chart shows the nights last month. The shaded part is the clear nights. What percent of the nights were clear?" narrate width=20 right-of=pie gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text pc "%"
+    }
+  }
+
+  answer (100 * k / n)
+  feedback {
+    when (answer == k or n != 10 and answer == 10 * k) point=pie {
+      say "The pie has {n} equal slices, and the whole pie is 100%. What percent is one slice?"
+    }
+  }
+  hint "How many equal slices is the pie cut into?"
+  hint "All the slices together make 100%. What percent is one slice worth?"
+}

@@ -1,0 +1,33 @@
+# What a summary leaves out: a paragraph of four sentences with one detail the main points do not
+# need. The detail moves between the second, third and fourth sentence with k.
+item writing.summary-cut v=1 skills=[writing.summarising, writing.concision] {
+  title "What can go?"
+  difficulty k
+  let k=0..2
+  let t={pick(k, "The river has cut the gorge over ten thousand years. Its water carries stones that scrape the rock. One boulder at the bottom is as big as a bus. The waterfall moves back up the valley a little each year.", "The mill by the falls was built in 1790. The miller's cat was called Pepper. For a hundred years the mill ground flour for three villages. It stopped when cheap flour came by train.", "Kingfishers nest in tunnels in the soft riverbank. When people trample the bank, the tunnels fall in. So the village has fenced off the bank by the falls. The fence is painted green.")}
+  let right={pick(k, "the third", "the second", "the fourth")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x27 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage p title="From the guidebook" text="{t}" width=18 numbers=false
+      waterwheel wheel paddles=8 lit=0
+    }
+    text ask "Which sentence could be left out of a summary without losing a main point?" narrate width=33 below=top gap=1
+    choice pick options=["the second", "the third", "the fourth"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "Without that sentence the paragraph loses part of what it is saying. Look for the sentence that is only an extra detail."
+    }
+  }
+  hint "Read the paragraph without each sentence in turn. Which one do you not miss?"
+  hint "Is any sentence an example or a detail that the others do not need?"
+}

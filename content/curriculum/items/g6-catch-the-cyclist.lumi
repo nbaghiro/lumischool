@@ -1,0 +1,30 @@
+# The three-star: a second cyclist starts later and faster on the same road. The gap at the start is
+# closed by the difference in speeds, which is the Russian catch-up problem with no method given.
+item speed.catch-the-cyclist v=1 stars=3 skills=[rates.speed, reasoning.model] {
+  title "Catching up"
+  difficulty ((if h == 30 then 0 else 1) + (6 - g) / 3)
+  let a={10, 12, 15} g={3, 4, 5, 6} h={20, 30, 40}
+  where whole(a * h / g)
+  where (a * h / g <= 120)
+  level easy {
+    let h={30} g={5, 6}
+  }
+  level hard {
+    let h={20, 40} g={3, 4}
+  }
+
+  scene 34x20 {
+    doubleline gap steps=2 topTo=a bottomTo=60 topUnit="km" bottomUnit=minutes mark=-1 at=canvas(1, 1)
+    text ask "Ben leaves the mill on the gorge road at {a} km/h. {h} minutes later Kit leaves the mill after him at {a + g} km/h. How many minutes after Kit sets off does Kit catch up with Ben?" narrate width=33 below=gap gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (a * h / g)
+  feedback {
+    when (answer == h) point=ask {
+      say "In {h} minutes Ben gets a head start. How fast does Kit close that gap?"
+    }
+  }
+  hint "How far ahead is Ben when Kit sets off? The line shows Ben's speed."
+  hint "Each hour, how much closer does Kit get?"
+}

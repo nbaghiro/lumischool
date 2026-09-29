@@ -1,0 +1,30 @@
+# Many equal tiles: the area of one triangle, then times the number of tiles, in square centimetres.
+item area.temple-tiles v=1 skills=[area.triangles, multiplication.scaling] {
+  title "The temple floor"
+  difficulty (b * h * n / 2000)
+  let b={10, 20, 30} h={20, 30, 40} n={12, 24, 36}
+  level easy {
+    let b={10, 20} n={12}
+  }
+  level hard {
+    let b={30} h={30, 40} n={36}
+  }
+
+  scene 35x11 {
+    tessellation floor tile=triangle cols=6 rows=2 at=canvas(1, 1)
+    text ask "The temple floor is covered in {n} triangular tiles, each with a base of {b} cm and a height of {h} cm. What area do the tiles cover, in square centimetres?" narrate width=18 right-of=floor gap=2
+    number-input answer width=6 below=floor gap=1
+  }
+
+  answer (b * h / 2 * n)
+  feedback {
+    when (answer == b * h * n) point=ask {
+      say "Each tile is a triangle, half of {b} × {h}."
+    }
+    when (answer == b * h / 2) point=ask {
+      say "That is one tile. There are {n} of them."
+    }
+  }
+  hint "What is the area of one tile?"
+  hint "How much do {n} tiles cover?"
+}

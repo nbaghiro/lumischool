@@ -1,0 +1,36 @@
+# Levers in tools: the crowbar drawn has its pivot between the load and the push, like scissors; a
+# bottle opener has the load between, and tweezers the push between, so their tips grip less hard.
+item physics.moment-tools v=1 skills=[physics.moments, physics.machines, reasoning.explain] {
+  title "Levers in tools"
+  difficulty v
+  let v=0..1
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=1..1
+  }
+  let tool={pick(v, "A bottle opener pivots on the top of the cap, lifts the cap's edge just beside that, and is pulled up by the hand at the far end.", "Tweezers pivot where they are joined, are squeezed by the fingers in the middle, and grip with the tips at the far end.")}
+  let a={pick(v, "The pull of the hand", "The squeeze of the fingers")}
+  let b={pick(v, "The lift on the cap", "The grip of the tips")}
+
+  scene 36x42 {
+    lever bar fulcrum=3 load=60 push=30 unit=N marks=1 at=canvas(1, 0)
+    text ask "This crowbar has its pivot between the stone and the push. Which of these has its pivot between the two as well: scissors, a bottle opener or tweezers?" narrate width=34 below=bar gap=1
+    choice which options=["Scissors", "Opener", "Tweezers"] stack=row below=ask gap=1
+    text then "{tool} Which force is bigger?" narrate width=34 below=which gap=1
+    choice pick options=["{a}", "{b}", "Neither: they are the same"] stack=column below=then gap=1
+  }
+
+  answer which="Scissors" pick=pick(v, "The lift on the cap", "The squeeze of the fingers")
+  feedback {
+    when (pick == "Neither: they are the same") point=then {
+      say "Compare how far each force is from the pivot. Equal moments need the nearer force to be bigger."
+    }
+    when (which != "Scissors") point=bar {
+      say "Find the pivot in that tool. Is it between the two forces, or at one end?"
+    }
+  }
+  hint "Where is the pivot in each tool: in the middle or at one end?"
+  hint "Which force is nearer the pivot? For the moments to match, that one must be the bigger."
+}

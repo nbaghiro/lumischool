@@ -1,6 +1,6 @@
 # The first music lesson, and the one that sets the rule the strand keeps: every note that sounds is
 # also drawn, so the lesson works with the volume at zero and on paper.
-lesson music-keyboard v=1 format=teach grade=1 unit=1 subject=music levels=[easy, medium, hard] {
+lesson music-keyboard v=1 format=teach grade=1 unit=2 subject=music levels=[easy, medium, hard] {
   title "The keys and the letters"
   goal "Find middle C on a keyboard, and read the first notes of a staff by their letters."
 

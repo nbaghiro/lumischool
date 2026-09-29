@@ -1,0 +1,36 @@
+# The two-star: Leo takes the middle of the list as it is written. The reason is that the median is
+# the middle of the values in order.
+item data.median-mistake v=1 stars=2 skills=[data.median, reasoning.find-the-mistake] {
+  title "Leo's median"
+  difficulty pick(v, 0, 0, 1, 1)
+  let v=0..3
+  let x1={pick(v, 12, 8, 5, 21)}
+  let x2={pick(v, 9, 14, 13, 6)}
+  let x3={pick(v, 15, 3, 9, 14)}
+  let x4={pick(v, 4, 17, 16, 10)}
+  let x5={pick(v, 11, 10, 2, 3)}
+  let x6={pick(v, 20, 6, 11, 17)}
+  let x7={pick(v, 7, 12, 18, 8)}
+  let x8={pick(v, 0, 0, 7, 12)}
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+
+  scene 33x14 {
+    table data cols=8 cells=[x1, x2, x3, x4, x5, x6, x7, if v < 2 then "" else x8] at=canvas(1, 1)
+    text ask "These are the fish caught each day from the ice hole. Leo says the median is {pick(v, 4, 17, 9, 6.5)}, the middle of the list. He is wrong. What is the median?" narrate width=32 below=data gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer pick(v, 11, 10, 10, 11)
+  feedback {
+    when (answer == pick(v, 4, 17, 9, 6.5)) point=data {
+      say "That is Leo's answer, the middle of the list as written. Put the numbers in order first."
+    }
+  }
+  hint "Are the numbers in order?"
+  hint "Write them from smallest to biggest, then find the middle."
+}

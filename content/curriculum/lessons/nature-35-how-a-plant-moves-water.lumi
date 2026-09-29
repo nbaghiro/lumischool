@@ -1,0 +1,65 @@
+lesson nature-how-a-plant-moves-water v=1 format=teach grade=6 unit=6 subject=nature levels=[easy, medium, hard] {
+  title "How a plant moves water"
+  goal "Follow water from the soil through a plant's roots, stem and leaves into the air, and say what pulls it up."
+
+  look {
+    scene 34x15 {
+      row all at=canvas(1, 1) space=2 align=end {
+        waterfall wf drops=2 rainbow=1
+        parts fig of=plant
+        kingfisher kf flying=1 facing=-1
+      }
+    }
+    say """
+      On the wet walls of the gorge, plants grow out of cracks in the rock. Each one is drinking all
+      the time. Water goes in through tiny hairs on the roots and climbs through thin tubes in the
+      stem to the leaves. A little is used to make food in the light, but most of it leaves as water
+      vapour through tiny holes, mostly on the underside of the leaves. As it goes, it pulls more
+      water up behind it, the way a drink comes up a straw.
+      """
+  }
+  do {
+    level easy {
+      worked nature.water-part k=2 level=medium
+    }
+    practice nature.water-part count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.water-path count=1 seed=1 easy-seed=2 hard-seed=3
+    practice nature.bag-leaves count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.wilt-why count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show nature.water-pull k=1 level=medium
+    }
+  }
+  story {
+    show nature.dye-climbs k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.water-pull k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.fair-plant k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Water goes in at the roots, up the stem, and out of the leaves as vapour, and what leaves pulls more up behind it."
+  }
+
+  grown-ups """
+    Water moves through a plant in one direction: into the root hairs from the soil, up thin tubes
+    in the stem, and out of tiny holes in the leaves as water vapour, which pulls more water up
+    behind it. The wrong ideas to watch for are that the roots pump the water up like a heart, and
+    that a plant keeps the water it drinks; most of it goes back to the air. Sun, wind and dry air
+    all make the leaves lose water faster, and a plant droops when more goes out than comes in. The
+    bag test is the heart of the lesson, and it is one to do: tie clear bags over leafy twigs in sun
+    and shade and over a twig with its leaves stripped, and look after an hour. The child should
+    choose the two bags that differ in one thing only. The three-star question moves the test onto the
+    leaf itself: grease blocks the holes on one side, and the child plans or reads the leaves that
+    show which side the water leaves by. If the roots are still pumping after the core, stay here another
+    day and stand a stick of celery or a white flower in water with food colouring overnight.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the leaves as the way out) opens the core, the parts to find are the roots and the stem, the bags read the most water and the pair for sunshine, the drooping questions are why it droops and why it stands again, the blue ink climbs 2 cm an hour up 16 cm, the two-star question asks what lifts the water, and the greased leaves are two to read."
+  }
+  level hard {
+    grown-ups "At this level the parts are the leaves and the last part the ink reaches, the bags are the pair for the leaves and why two bags cannot be compared, the drooping questions are the wind and the waterfall's spray, a second reasoning question in the core has a cutting's leaves picked off, the blue ink's rate is asked for from 20 cm in 5 hours, the two-star question is the greased leaves, and the four greased leaves need the water lost through the stalk and skin taken away."
+  }
+}

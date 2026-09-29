@@ -1,0 +1,37 @@
+# Reading a tune's shape: moves of a 3rd or more are leaps, the rest steps. A tune that moves mostly
+# by step with a few leaps is easy to sing. 1, 3 and 4 leaps in the three versions.
+item music.compose-leaps v=1 skills=[music.composing, music.intervals] {
+  title "Steps and leaps"
+  difficulty v
+  let v=0..2
+  let n1={pick(v, "C4", "E4", "G4")}
+  let n2={pick(v, "D4", "G4", "C5")}
+  let n3={pick(v, "E4", "F4", "B4")}
+  let n4={pick(v, "G4", "D4", "G4")}
+  let n5={pick(v, "F4", "E4", "A4")}
+  let n6={pick(v, "E4", "C4", "F4")}
+  let n7={pick(v, "D4", "D4", "E4")}
+  let n8={pick(v, "C4", "C4", "C4")}
+  let right={pick(v, 1, 3, 4)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 34x21 {
+    notes tune clef=treble notes=[n1, n2, n3, n4, n5, n6, n7, n8] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=4 at=canvas(1, 1)
+    text ask "Bars 7 and 8 of a tune from the library's music shelf. A move of a 3rd or more is a leap. How many of the seven moves are leaps?" narrate width=32 below=tune gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 7 - right) point=tune {
+      say "That counts the steps, the moves to the very next line or space."
+    }
+  }
+  hint "Go from each note to the next. Is the next one on the very next line or space?"
+  hint "A move from a line to the next line, or a space to the next space, is already a leap."
+}

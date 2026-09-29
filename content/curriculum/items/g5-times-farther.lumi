@@ -1,0 +1,28 @@
+# The second reasoning question in the core: how many times bigger one number is than another, found
+# by comparing the places of the digits rather than dividing.
+item place.times-farther v=1 skills=[place-value.powers-of-ten, reasoning.multiplicative] {
+  title "How many times as far"
+  difficulty k
+  let d={15, 23, 45, 78} k=1..3
+  level easy {
+    let k={1}
+  }
+  level hard {
+    let k={3}
+  }
+
+  scene 35x10 {
+    planets row count=5 names=1 at=canvas(1, 1)
+    text ask "A weather balloon rose {thousands(d * 1000)} m above the observatory. A space probe is {thousands(d * 10 ^ (k + 3))} m away. How many times as far away is the probe?" narrate width=20 right-of=row gap=2
+    number-input answer width=5 below=row gap=1
+  }
+
+  answer (10 ^ k)
+  feedback {
+    when (answer == k or answer == k + 1) point=ask {
+      say "The digits moved {k} {if k == 1 then \"place\" else \"places\"}. Each place is ten times as much, so what is {k} lots of ten times?"
+    }
+  }
+  hint "Line the two numbers up by their last digits. How many places has each digit moved?"
+  hint "Each place is ten times as much."
+}

@@ -1,0 +1,32 @@
+# The two-star reason: equal gaps along the towpath shrink in the drawing, for the same reason the
+# posts do. The wrong reasons keep the gaps the size they really are, or grow them.
+item art.canal-gaps-why v=1 stars=2 skills=[art.perspective, reasoning.explain] {
+  title "The gaps between the posts"
+  difficulty k
+  let k=0..1 r=0..2
+  let thing={pick(k, "mooring posts", "lamp posts")}
+  let right={"Smaller: far gaps shrink, just as far posts do"}
+  let w1={"The same: the posts really are 10 metres apart"}
+  let w2={"Bigger: the canal gets longer further back"}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x23 {
+    perspective canal horizon=4 vp=8 posts=0 wall=true at=canvas(1, 1)
+    text ask "The {thing} along the towpath stand 10 metres apart. As they go back in Ada's drawing, do the gaps between them get bigger, smaller or stay the same, and why?" width=18 right-of=canal gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=canal gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=canal {
+      say "A gap along the towpath is a length running away from Ada, like the post's own height but lying down. Things further away are drawn smaller, and that includes the gaps."
+    }
+  }
+  hint "Is a gap between two far posts nearer to Ada or further away than a gap between two near ones?"
+  hint "What happens in a drawing to anything that is further away?"
+}

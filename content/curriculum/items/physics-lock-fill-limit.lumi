@@ -1,0 +1,32 @@
+# Three stars: a limit worked backwards and then a rate. The push at the chamber's floor may reach
+# a set number of kN a square metre, which fixes the deepest water, and the lock fills at a steady
+# rate from where it starts, so the answer is the whole minutes it can fill.
+item physics.lock-fill-limit v=1 stars=3 skills=[physics.pressure, reasoning.constraints, reasoning.work-backwards] {
+  title "How long can the lock fill?"
+  difficulty v
+  let v=0..3
+  let most={pick(v, 30, 35, 42, 38)}
+  let start={pick(v, 1, 1, 1.5, 1.2)}
+  let rate={pick(v, 50, 50, 25, 20)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 31x21 {
+    canallock l level=0 boat=1 at=canvas(1, 0)
+    text ask "An old lock's floor is cracked, so the push on it must never be more than {most} kN on each square metre. Water pushes 10 kN on each square metre for every metre of depth. The lock holds {start} m of water and fills {rate} cm deeper every minute. For how many whole minutes can the lock keeper let it fill?" narrate width=30 below=l gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer plain(((most / 10 - start) * 100 - (most / 10 - start) * 100 % rate) / rate)
+  feedback {
+    when (answer == most / 10) point=l {
+      say "That is the deepest the water may be, in metres. It starts at {start} m, and it is the rise that takes time."
+    }
+  }
+  hint "How deep can the water be before the push on the floor is {most} kN?"
+  hint "How many centimetres can it rise from {start} m, and how many minutes does that take at {rate} cm a minute?"
+}

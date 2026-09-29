@@ -1,0 +1,31 @@
+# The way in: a force's turning effect about the pivot, its moment, is the force times its distance
+# from the pivot, here in newton centimetres with the steps 10 cm apart.
+item physics.moment-of v=1 skills=[physics.moments, decimals.multiply] {
+  title "A turning effect"
+  difficulty (w * s)
+  let w=2..10 s=1..5
+  level easy {
+    let w=2..5 s=1..3
+  }
+  level hard {
+    let w=6..10 s=3..5
+  }
+
+  scene 28x21 {
+    seesaw plank left=w atleft=s right=0 atright=1 unit=N marks=true held=1 at=canvas(1, 0)
+    text ask "The steps are 10 cm apart. What is the moment of the {w} N weight about the pivot, in N cm?" narrate width=26 below=plank gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (w * s * 10)
+  feedback {
+    when (answer == w * s) point=plank {
+      say "That counts steps. Each step is 10 cm, and the moment is newtons times centimetres."
+    }
+    when (answer == w + s * 10) point=plank {
+      say "A moment is the force times the distance, not the two added."
+    }
+  }
+  hint "How many centimetres from the pivot is the weight?"
+  hint "Multiply the force by that distance."
+}

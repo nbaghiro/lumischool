@@ -1,0 +1,33 @@
+# The two-star reason: filter paper stops only what has not dissolved, so clear water can still hold
+# dissolved salts, and canal water stained brown by dissolved plant matter stays brown however often
+# it is filtered.
+item chem.filtered-clear v=1 stars=2 skills=[chemistry.separating, reasoning.evidence] {
+  title "Clear, but is it pure?"
+  difficulty k
+  let k=0..1 r=0..2
+  let asks={pick(k, "The water that drips through is clear. Is it pure water?", "Ana filters the water twice more through fresh paper, and it is still pale brown. Why?")}
+  let right={pick(k, "No: dissolved things pass through the paper", "Something brown is dissolved in it")}
+  let w1={pick(k, "Yes: the paper kept everything back", "The paper was too thin to stop the mud")}
+  let w2={pick(k, "Yes: clear water has nothing in it", "Filtering always leaves a little mud")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x28 {
+    funnel f residue=8 level=2 unit=ml drops=3 at=canvas(1, 0)
+    text ask "Ana pours canal water through filter paper, and the mud stays on the paper. {asks}" narrate width=21 right-of=f gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=f gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=f {
+      say "The paper holds back grains that have not dissolved. Anything dissolved is spread through the water and goes straight through the paper."
+    }
+  }
+  hint "What does filter paper stop: grains, or things dissolved in the water?"
+  hint "Salt water poured through filter paper comes out clear. Is the salt still in it?"
+}

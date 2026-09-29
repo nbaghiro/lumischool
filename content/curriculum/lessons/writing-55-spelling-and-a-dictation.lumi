@@ -1,0 +1,74 @@
+# The hard endings of England's year 5 and 6 spelling list, each decided by a clue the word itself
+# gives (its root, a related word, the letter before the ending, its job in the sentence), then
+# a dictation from the canal of about a hundred words, marked word by word.
+lesson writing-spelling-and-a-dictation v=1 format=teach grade=5 unit=2 subject=writing levels=[easy, medium, hard] {
+  title "Spelling the hard endings"
+  goal "Choose the spelling of a hard ending from a clue in the word, and write a dictation of about a hundred words."
+
+  look {
+    scene 34x9 {
+      row all at=canvas(1, 1) space=2 align=end {
+        narrowboat boat windows=4 pots=3
+        wordbricks b bricks=["space", "ious"] root=0 roots=1 blank=-1 word="spacious" labels=true
+      }
+    }
+    say """
+      Some endings sound the same but are spelt in different ways: spacious and cautious, official
+      and partial, observant and frequent. The word itself usually holds a clue. Space ends in -ce,
+      so spacious keeps the c. Observation has a clear a sound, so observant ends -ant. Listen for
+      the clue, look at the letters just before the ending, and ask what job the word does.
+      """
+  }
+  do {
+    level easy {
+      worked writing.cious-tious k=0
+    }
+    show writing.cious-tious k=3 easy-k=1 hard-k=6
+    show writing.ant-or-ent k=3 easy-k=1 hard-k=5
+    show writing.cial-or-tial k=4 easy-k=2 hard-k=6
+    show writing.able-join k=3 easy-k=0 hard-k=4
+    show writing.ice-or-ise k=2 easy-k=1 hard-k=3
+    level hard {
+      show writing.ough-sounds k=3
+    }
+  }
+  story {
+    show writing.canal-dictation k=3 easy-k=0 hard-k=5
+    show writing.canal-dictation k=4 easy-k=1 hard-k=6
+    show writing.canal-dictation k=5 easy-k=2 hard-k=7
+  }
+  try stars=2 {
+    show writing.sign-rule k=1 easy-k=0 hard-k=3
+  }
+  try stars=3 {
+    show writing.lock-notice k=0 hard-k=1
+  }
+  remember {
+    say "A hard ending has a clue: the root, a related word, the letter before it, or the word's job."
+  }
+
+  grown-ups """
+    The lesson takes the endings on England's spelling list for years 5 and 6 and gives each the
+    clue that decides it: a root ending in -ce keeps its c (spacious), -cial follows a vowel letter
+    and -tial a consonant letter (official, partial), a related word with a clear a sound points to
+    -ant and one with a clear e sound to -ent (observation, confidential), -able keeps the e after c
+    or g (noticeable), and a noun ends -ice where its verb ends -ise (practice, practise). The wrong
+    idea to watch for is spelling by what sounds right, which cannot work for endings that sound
+    alike; after each answer ask "what was the clue?" The dictation is three sentences from the
+    canal that also carry silent letters (doubt, solemn, island), ei after c (receive, ceiling) and
+    -ough (thought, through). Read each sentence aloud once at a steady pace, then again in chunks
+    of four or five words while the child types, and let the screen mark it word by word; case and
+    punctuation are not marked. If the child is stuck, go back to the look and say the clue for
+    spacious aloud together, and leave the dictation for the next day. Off the page, hunt for
+    -cious, -tial and -able words on signs, packets and posters, and sort them by their clue. The
+    two-star question judges a painted sign by the rule that decides it, and the three-star is a
+    notice the child writes, which you mark against the list. Russia's federal work programme for
+    grade five teaches «Орфография» in every section and asks for a dictation of 90 to 110 words.
+    """
+  level easy {
+    grown-ups "At this level the -cious word is worked once first, each ending is asked with its plainest clue (a -ce root, an -ation word, a whole root before -able, two nouns for -ice), and the dictation is three shorter sentences of 70 words in all."
+  }
+  level hard {
+    grown-ups "At this level the roots are the less familiar vice and confidential, the sort holds initial and financial, which break the rule, the root before -able is notice, one gap needs licence and the other license, the sounds of -ough are sorted as well, and the dictation's 99 words bring in affect and effect."
+  }
+}

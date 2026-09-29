@@ -1,0 +1,41 @@
+# Hinge joints and ball-and-socket joints: the shoulder and the hip turn every way, the elbow and the
+# knee bend one way like a door. The hip at hard has to be placed with the shoulder by how it moves.
+item nature.joint-kind v=1 skills=[nature.body] {
+  title "Which kind of joint?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..2
+  let asks={pick(k, "Ben swings his arm round in a whole circle, like a windmill. Which joint lets him do that?", "Which of these joints only bends one way, like a door on its hinges?", "A ball and socket joint turns in every direction. Which of these is one?")}
+  let ans={pick(k, "shoulder", "knee", "hip")}
+  let o1={pick(k, "elbow", "shoulder", "knee")}
+  let o2={pick(k, "knee", "hip", "elbow")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x26 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      parts fig of=skeleton
+      windmill wm sails=4 turn=20
+    }
+    text ask "{asks}" narrate width=32 below=pics gap=1
+    choice pick options=[o1, ans, o2] below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=fig {
+      say "That joint bends one way only. Try it: can it go round in a circle? The arm swings from the top."
+    }
+    when (k == 1 and pick != ans) point=fig {
+      say "That joint can turn in more than one direction. Which one only folds forward and back?"
+    }
+    when (k == 2 and pick != ans) point=fig {
+      say "That joint bends one way, like a hinge. Which joint lets the leg swing forward, back and out to the side?"
+    }
+  }
+  hint "Try it with your own body. Which way can that joint move?"
+  hint "A joint that turns every way is a ball sitting in a cup. A joint that folds one way is a hinge."
+}

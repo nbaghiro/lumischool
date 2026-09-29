@@ -1,0 +1,28 @@
+# Riddles about the old city's landmarks: each clue alone fits two places, and the clues together
+# fit one. The riddles were written for the lesson.
+item reading.city-riddle v=1 skills=[reading.inference] {
+  title "Which place am I?"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let right={pick(k, "well", "walls", "library", "clock tower")}
+
+  scene 36x21 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=1 align=end {
+        passage p title="What am I?" text="{pick(k, \"I am round and made of stone, and I stand in the square. I have no door, but people come to me every day with a bucket.\", \"I go all the way round the city, but I never move. I have towers but no rooms to live in, and one gate that shuts at night.\", \"I am full of voices that make no sound. You may take one of them home, but you must bring it back.\", \"I tell the whole city when to wake, but I never sleep. Climb the steps and you will find my heart of wheels.\")}" width=19 numbers=false
+        clocktower tower hour=9 minute=0
+        well w courses=3 bucket=1
+      }
+      choice pick options=[pick(k, "fountain", "walls", "market", "temple"), pick(k, "well", "temple", "library", "clock tower"), pick(k, "temple", "gate", "fountain", "walls")]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == "fountain") point=p {
+      say "A fountain is in the square too. Which one do people bring a bucket to?"
+    }
+  }
+  hint "Take one clue at a time. Which places does it fit?"
+  hint "Cross out any place that fails a clue. What is left?"
+}

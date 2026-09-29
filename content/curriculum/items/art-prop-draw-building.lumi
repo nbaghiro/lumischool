@@ -1,0 +1,10 @@
+item art.prop-draw-building v=1 stars=3 skills=[art.proportion, art.drawing, reasoning.plan] {
+  title "A building measured by eye"
+
+  scene 37x17 {
+    text ask "Draw a building you can see, from looking. Hold your pencil out at arm's length, count how many widths tall it is, and keep that in your drawing. Measure a door and a window the same way." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="squared" guide="none" outline="none" pots=["black", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A building drawn from looking whose proportions were measured rather than guessed: its height a set number of its widths, as the pencil found, and a door and a window sized against the whole in the same way, so the drawing has the building's shape even if its lines wobble." notice=["Height measured in widths", "A door sized against the whole", "Windows sized and placed by measuring", "Drawn from looking"] ask="How many widths tall did your building measure, and did the drawing keep it?"
+}

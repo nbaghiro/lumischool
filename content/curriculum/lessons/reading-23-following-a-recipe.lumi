@@ -1,4 +1,4 @@
-lesson reading-following-a-recipe v=1 format=teach grade=2 unit=4 subject=reading levels=[easy, medium, hard] {
+lesson reading-following-a-recipe v=1 format=teach grade=2 unit=8 subject=reading levels=[easy, medium, hard] {
   title "Following a recipe"
   goal "Read a set of instructions in order, and spot the step that is missing."
 

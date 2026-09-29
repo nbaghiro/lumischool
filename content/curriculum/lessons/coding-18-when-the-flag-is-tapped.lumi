@@ -1,4 +1,4 @@
-lesson coding-when-the-flag-is-tapped v=1 format=teach grade=1 unit=6 subject=coding levels=[easy, medium, hard] {
+lesson coding-when-the-flag-is-tapped v=1 format=teach grade=1 unit=8 subject=coding levels=[easy, medium, hard] {
   title "When the flag is tapped"
   goal "Read a program that starts when the flag is tapped, and say where the rabbit ends up."
 

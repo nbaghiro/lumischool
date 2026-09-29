@@ -1,4 +1,4 @@
-lesson physics-near-and-far v=1 format=teach grade=1 unit=7 subject=physics levels=[easy, medium, hard] {
+lesson physics-near-and-far v=1 format=teach grade=1 unit=6 subject=physics levels=[easy, medium, hard] {
   title "Near and far: sound gets quieter"
   goal "Say that a sound is louder close by and quieter far away, and read how loud a drum is from the rings drawn round it."
 

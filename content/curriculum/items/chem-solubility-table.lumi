@@ -1,0 +1,37 @@
+# Reading the table of grams that dissolve in 100 ml of water, from published solubilities rounded to
+# whole grams (salt 35.7, 35.9, 36.4, 37.0; sugar 179, 204, 238, 287; baking soda 6.9, 9.6, 12.7, 16.4).
+item chem.solubility-table v=1 skills=[chemistry.dissolving, data.tables] {
+  title "Grams in 100 millilitres"
+  difficulty w
+  let w=0..1 s=0..2 r=0..3
+  where (not (w == 1 and r == 0))
+  let name={pick(s, "salt", "sugar", "baking soda")}
+  let temp={pick(r, 0, 20, 40, 60)}
+  let g0={pick(s, 36, 179, 7)}
+  let second={pick(w, "Where do that row and that column meet?", "Read the coldest row in the same column too. How far apart are the two numbers?")}
+  let g={pick(s, pick(r, 36, 36, 36, 37), pick(r, 179, 204, 238, 287), pick(r, 7, 10, 13, 16))}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 35x21 {
+    table data cols=4 head=["Water °C", "Salt", "Sugar", "Soda"] cells=["0", "36", "179", "7", "20", "36", "204", "10", "40", "36", "238", "13", "60", "37", "287", "16"] at=canvas(1, 0)
+    text ask "The mill's cook wrote down how many grams of each solid dissolve in 100 ml of water before grains stay on the floor. Soda is baking soda. {if w == 0 then \"How many grams of \" else \"How many more grams of \"}{name}{if w == 0 then \" dissolve at \" else \" dissolve at \"}{temp}{if w == 0 then \" °C?\" else \" °C than at 0 °C?\"}" narrate width=34 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then g else g - g0)
+  feedback {
+    when (w == 1 and answer == g and g != g - g0) point=data {
+      say "That is the whole amount at {temp} °C. The question asks how many more than at 0 °C, so take the 0 °C row away."
+    }
+    when (w == 0 and answer == temp) point=data {
+      say "That is the temperature. Read across its row to the {name} column."
+    }
+  }
+  hint "Find the {name} column, then the row for {temp} °C."
+  hint "{second}"
+}

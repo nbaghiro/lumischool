@@ -1,0 +1,40 @@
+# The way in to a fair test: two dishes of cress on the narrowboat's roof that differ in one thing
+# only, read from the table under them. The checker reads the dishes, so the one condition that
+# differs is proved from the picture.
+item nature.sprout-pair v=1 skills=[nature.seeds, reasoning.fair-test] {
+  title "What does this pair test?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let wb={pick(k, 0, 1, 1, 1)} ab={pick(k, 1, 0, 1, 1)} tb={pick(k, 1, 1, 0, 1)} lb={pick(k, 1, 1, 1, 0)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x25 {
+    seedtest s mode=0 water=[1, wb] air=[1, ab] warmth=[1, tb] light=[1, lb] seeds=8 rate=100 after=0 at=canvas(1, 1)
+    narrowboat nb windows=3 pots=4 right-of=s gap=2
+    text ask "Ada sets up two dishes of cress seeds for the narrowboat's roof. The table says what each dish has. Dishes A and B differ in one thing only. Which thing does this pair of dishes test?" narrate width=32 below=s gap=1
+    choice pick options=["water", "air", "warmth", "light"] below=ask gap=1
+  }
+
+  check nature.seeds of=s pick="differ(A B)"
+  feedback {
+    when (pick != "water" and wb == 0) point=s {
+      say "Read across each row of the table. In which row do A and B say different things?"
+    }
+    when (pick != "air" and ab == 0) point=s {
+      say "Dish B's seeds are under water with oil on top. Which row of the table says no for B?"
+    }
+    when (pick != "warmth" and tb == 0) point=s {
+      say "Dish B goes in the fridge. Which row of the table says no for B and yes for A?"
+    }
+    when (pick != "light" and lb == 0) point=s {
+      say "Dish B goes in a dark cupboard. Which row of the table says no for B and yes for A?"
+    }
+  }
+  hint "Put a finger on each row of the table in turn. Do A and B say the same?"
+  hint "The row where they differ is the thing the pair tests."
+}

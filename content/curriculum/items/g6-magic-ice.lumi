@@ -1,0 +1,31 @@
+# The three-star: nine numbers in a row, one in each square of a magic square. Every row adds to the
+# same, so each row is a third of the sum of all nine; proved as one named part.
+item negative.magic-ice v=1 stars=3 skills=[number.negatives, reasoning.structure] negatives {
+  title "The magic square"
+  difficulty -s
+  let s={-4, -3, -2, -1, 2}
+  level easy {
+    let s={2}
+  }
+  level hard {
+    let s={-4, -3}
+  }
+
+  scene 31x14 {
+    table sq cols=3 cells=["{s - 3}", "", "", "", "", "", "", "", "{s + 3}"] at=canvas(1, 1)
+    text ask "The nine whole numbers from {s - 4} to {s + 4} are written in the squares, one in each. Every row, every column and both diagonals add up to the same total. What is that total?" narrate width=18 right-of=sq gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (3 * s)
+  feedback {
+    when (answer == 9 * s) point=sq {
+      say "That is all nine numbers added. How many rows share them?"
+    }
+    when (answer == s) point=sq {
+      say "That is the middle number. A row holds three numbers."
+    }
+  }
+  hint "What do all nine numbers add up to? Pair the numbers from the two ends."
+  hint "The three rows hold every number once, and each row has the same total."
+}

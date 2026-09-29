@@ -1,0 +1,40 @@
+# The four parts of a short balanced argument muddled: the question, a point for, a turn to a point
+# against, and a conclusion that weighs them. The order is tied to k so no two versions share text.
+item writing.argument-order v=1 skills=[writing.argument, writing.sequencing] {
+  title "Build the argument"
+  difficulty k
+  let k=0..2
+  let a={pick(k, 2, 3, 1)}
+  let b={pick(k, 0, 1, 3)}
+  let c={pick(k, 3, 0, 2)}
+  let d={pick(k, 1, 2, 0)}
+  let t0={pick(k, "Should the library open on Sundays?", "Should children borrow ten books at once?", "Should people eat in the reading room?")}
+  let t1={pick(k, "Some say families are free to visit then.", "Some say they would read more that way.", "Some say readers would stay longer.")}
+  let t2={pick(k, "On the other hand, the staff need a rest.", "However, books might be lost or kept too long.", "However, crumbs can spoil the old books.")}
+  let t3={pick(k, "On balance, it could open on Sunday mornings.", "On balance, six books is a fair number.", "On balance, food should stay in the garden.")}
+  let wa={pick(a, t0, t1, t2, t3)}
+  let wb={pick(b, t0, t1, t2, t3)}
+  let wc={pick(c, t0, t1, t2, t3)}
+  let wd={pick(d, t0, t1, t2, t3)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 33x29 {
+    library lib columns=6 open=0 at=canvas(1, 0)
+    text ask "The four parts of a short argument about the library are muddled. Number them 1 to 4." narrate width=32 below=lib gap=1
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}"] blanks=[q, x, y, z] below=ask gap=1
+  }
+
+  answer q=(a + 1) x=(b + 1) y=(c + 1) z=(d + 1)
+  feedback {
+    when ((if a == 3 then q else if b == 3 then x else if c == 3 then y else z) != 4) point=s {
+      say "The conclusion weighs both sides, so it can only come after both have been given. Look for the words that start a conclusion."
+    }
+  }
+  hint "Which line asks the question the argument is about? Which line decides?"
+  hint "The joining words help: a line that starts by turning to the other side must follow a point for."
+}

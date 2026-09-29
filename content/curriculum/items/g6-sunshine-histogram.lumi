@@ -1,0 +1,35 @@
+# A histogram: the bars are groups of values, so a question about a range of values adds whole bars.
+item data.sunshine-histogram v=1 skills=[data.histograms] {
+  title "Days in groups"
+  difficulty ((if ask == "fewer" then 1 else 0) + v / 4)
+  let v=0..3 ask={"least", "fewer"}
+  let c0={pick(v, 2, 1, 3, 0)}
+  let c1={pick(v, 5, 4, 6, 3)}
+  let c2={pick(v, 8, 6, 7, 5)}
+  let c3={pick(v, 6, 9, 5, 8)}
+  let c4={pick(v, 3, 4, 2, 7)}
+  level easy {
+    let ask={"least"} v=0..1
+  }
+  level hard {
+    let ask={"fewer"} v=2..3
+  }
+
+  scene 36x14 {
+    bargraph g labels=["0-4", "5-9", "10-14", "15-19", "20-24"] values=[c0, c1, c2, c3, c4] max=10 color=tang at=canvas(1, 0)
+    text ask "The histogram groups the days of the summer by their hours of sunshine. On how many days were there {if ask == \"least\" then \"at least 10 hours\" else \"fewer than 15 hours\"} of sunshine?" narrate width=14 right-of=g gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (if ask == "least" then c2 + c3 + c4 else c0 + c1 + c2)
+  feedback {
+    when (ask == "least" and answer == c3 + c4) point=g {
+      say "The group 10-14 starts at 10 hours, so it counts too."
+    }
+    when (ask == "fewer" and answer == c0 + c1) point=g {
+      say "The group 10-14 is all fewer than 15 hours, so it counts too."
+    }
+  }
+  hint "Which groups of hours does the question ask about? Read the labels under the bars."
+  hint "Each bar counts the days in its group. Add the bars you need."
+}

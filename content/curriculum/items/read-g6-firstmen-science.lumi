@@ -1,0 +1,20 @@
+# The three-star question: the book set against what is now known about the moon. The book's moon
+# is invented (air that freezes by night, plants, people inside); its weight of a sixth is right.
+item reading.firstmen-science v=1 stars=3 skills=[reading.evidence, reading.comparison, reading.whole-book] {
+  title "Made up, or true?"
+
+  scene 34x27 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=centre {
+        footprints f
+        moon m
+        text ask "Wells wrote this in 1901, long before anyone went to the moon. Name two things the book says about the moon that are not true, and one it gets right, each with its chapter." width=14
+      }
+      writinglines w lines=4 width=33
+    }
+  }
+
+  check writing.by-eye look-for="Two invented things with their chapters (air frozen in drifts that melts at sunrise in chapter 7, plants that grow in minutes in chapter 8, mooncalves and Selenites living inside the moon from chapter 9 on, Cavorite itself in chapter 2) and one right one (Bedford weighing about a sixth of his Earth weight, chapter 9; the craters, chapter 6), each matched to a chapter the book bears out." notice=["Two things the book invents, each with a chapter", "One thing it gets right, with a chapter", "Says how we know, from what the moon lessons taught"] ask="Why might Wells have wanted air and plants on his moon?"
+  hint "Think of what Bedford and Cavor see at sunrise. Could that happen on the real moon?"
+  hint "Think of Bedford's first big jump. What does the book say about his weight there?"
+}

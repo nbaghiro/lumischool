@@ -1,0 +1,40 @@
+# Percentages of a volume of dry air: 78 per cent nitrogen and 21 per cent oxygen. The unknown is the
+# gas in a given flask, or the air that holds a given amount of oxygen, so the flask never shows it.
+item chem.air-in-flask v=1 skills=[chemistry.gases, percentages.of-amount] {
+  title "How much of it is oxygen?"
+  difficulty (d * 2 + (if v == 100 or v == 1000 then 0 else 1))
+  let d=0..1 n=0..1 v={100, 200, 500, 1000}
+  where (not (d == 1 and n == 0))
+  let gas={pick(n, "nitrogen", "oxygen")}
+  let p={pick(n, 78, 21)}
+  let part={v * p / 100}
+  let h1={pick(d, "How many millilitres of the gas are in each 100 ml of air?", "How much oxygen is in each hundred millilitres of air? How many lots of that are in this flask?")}
+  let h2={pick(d, "How many lots of 100 ml fit in the flask?", "Each lot of oxygen comes with its own hundred millilitres of air.")}
+  level easy {
+    let d=0..0 v={100, 1000}
+  }
+  level hard {
+    let d=1..1
+  }
+
+  scene 35x25 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      percentbar bar percent=p show=true whole=0
+      flask f shape=round fill=0 bubbles=0 balloon=0 bung=1
+    }
+    text ask "Dry air is 78 per cent nitrogen and 21 per cent oxygen. {if d == 0 then \"The astronomer's stoppered flask holds \" else \"Another flask of air holds \"}{if d == 0 then v else part}{if d == 0 then \" ml of air. How many millilitres of it are \" else \" ml of oxygen. How many millilitres of air are in it?\"}{if d == 0 then gas else \"\"}{if d == 0 then \"?\" else \"\"}" narrate width=34 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if d == 0 then part else v)
+  feedback {
+    when (d == 0 and answer == p and v != 100) point=bar {
+      say "{p} is the per cent, the part of every 100 ml. The flask holds {v} ml, so how many lots of 100 ml is that?"
+    }
+    when (d == 1 and answer == part) point=bar {
+      say "That is the oxygen alone. The oxygen is only 21 of every 100 ml of air, so the air is far more."
+    }
+  }
+  hint "{h1}"
+  hint "{h2}"
+}

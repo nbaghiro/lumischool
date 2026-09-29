@@ -1,0 +1,28 @@
+# The two-star reason: someone reads a word by its sound or by one part, and the child picks the
+# reason from the roots that shows the mistake.
+item reading.root-reason v=1 stars=2 skills=[reading.morphology, reasoning.explain] {
+  title "What went wrong?"
+  difficulty pick(k, 1, 1, 2, 1)
+  let k=0..3
+  let right={pick(k, "Phono means sound, so it writes down sound.", "Tele means far, so it is for far-off things.", "Micro means small, not quieter: it picks up sound.", "Aqua means water: it carries water.")}
+  let whole={pick(k, "Graph means chart, so it is a chart of phones.", "Photo means picture, so it takes small ones.", "Phone means telephone, so it is a small phone.", "Duck is in the word, so it is for ducks.")}
+  let sound={pick(k, "It sounds like photograph, so it takes photos.", "Tele is short for television.", "Micro means quiet, so Sam is right.", "Aqua means blue, so it is a blue bridge.")}
+
+  scene 35x22 {
+    text ask "{pick(k, \"Leo says a phonograph is a drawing of a phone.\", \"Mia says a telephoto lens makes near things look small.\", \"Sam says a microphone makes sounds quieter.\", \"Leo says an aqueduct is a pond for ducks.\")} Which reason shows the mistake?" at=canvas(1, 1) width=34
+    wordbricks word bricks=[pick(k, "phono", "tele", "micro", "aque"), pick(k, "graph", "photo", "phone", "duct")] root=0 roots=2 labels=false below=ask gap=1
+    choice pick options=[pick(k, whole, right, sound, whole), pick(k, right, sound, whole, sound), pick(k, sound, whole, right, right)] stack=column below=word gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == whole) point=word {
+      say "That takes one brick to mean a whole modern word. What does the root itself mean?"
+    }
+    when (pick == sound) point=word {
+      say "A word that sounds alike is not the same root. Read the first brick's meaning."
+    }
+  }
+  hint "What does each brick mean on its own?"
+  hint "Put the meanings together. Does the mistake still fit?"
+}

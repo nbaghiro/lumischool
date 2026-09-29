@@ -1,4 +1,4 @@
-lesson physics-a-circuit-that-works v=1 format=teach grade=3 unit=4 subject=physics levels=[easy, medium, hard] {
+lesson physics-a-circuit-that-works v=1 format=teach grade=3 unit=1 subject=physics levels=[easy, medium, hard] {
   title "A circuit that works"
   goal "Say whether a bulb, a buzzer or a motor will work, by following the wire all the way round."
 

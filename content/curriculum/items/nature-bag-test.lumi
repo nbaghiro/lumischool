@@ -1,0 +1,43 @@
+# The two-star reason: the squash flowers under bags, the one test Japan's fifth grade does by hand.
+# A squash plant has separate male and female flowers, and only a female flower can become a squash.
+# Both female flowers are bagged, and only one is given pollen with a brush, so the test shows pollen is
+# needed, that the bag was there to keep the test fair, and that it says nothing about bees.
+item nature.bag-test v=1 stars=2 skills=[nature.pollination, reasoning.fair-test] {
+  title "Two flowers in bags"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "What does the test show?", "Why did Ada put a bag on flower 1 too, when she gave it pollen herself?", "Ben says the test shows that squash plants need bees. What is wrong with that?")}
+  let ans={pick(k, "A flower needs pollen to make a fruit", "So that pollen was the only difference", "No bee came near: Ada used a brush")}
+  let o1={pick(k, "The bag stopped flower 2 from growing", "To keep it warm so it grew faster", "Nothing: it shows exactly that")}
+  let o2={pick(k, "Only bees can carry pollen", "So that bees could find it more easily", "Bees would have eaten the squash")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x31 {
+    table t cols=4 head=["Flower", "Bag", "Pollen", "Later"] cells=["1", "yes", "yes", "a squash", "2", "yes", "no", "withered"] at=canvas(1, 1)
+    text ask "On their allotment by the lock, Ada put bags over two female squash flowers, the kind with a tiny squash behind the petals, before they opened. When they opened she brushed pollen from a male squash flower onto flower 1 and put its bag back. Flower 2 got no pollen. {asks}" narrate width=32 below=t gap=1
+    choice pick options=[o1, o2, ans] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick == o1) point=t {
+      say "Flower 1 had a bag on too, and its squash grew. The bag was the same for both; the pollen was not."
+    }
+    when (k == 0 and pick == o2) point=t {
+      say "No bee touched either flower: the bags kept them out. The pollen went on with a brush, and that was enough."
+    }
+    when (k == 1 and pick != ans) point=t {
+      say "Compare the two rows. If only one had a bag, you could not tell whether the bag or the pollen made the difference."
+    }
+    when (k == 2 and pick != ans) point=ask {
+      say "The bags kept every insect out, and flower 1 still grew a squash. So what did the test really need?"
+    }
+  }
+  hint "Read the two rows. What is the same for both flowers, and what is different?"
+  hint "The one thing that is different is what the test is about."
+}

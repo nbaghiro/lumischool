@@ -1,0 +1,36 @@
+# Evidence of form: a haiku has lines of five, seven and five syllables, and each of these breaks it
+# on one line. The counts: rainbow line 2 has 8, bridge line 3 has 9, falls line 1 has 7, and
+# kingfisher line 2 has 6; every other line keeps the pattern.
+item reading.haiku-count v=1 skills=[reading.poetry, reading.evidence, reading.syllables] {
+  title "Which line breaks the pattern?"
+  difficulty pick(k, 1, 0, 1, 2)
+  let k=0..3
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 35x12 {
+    row top at=canvas(1, 1) space=1 align=start {
+      poem p title="{pick(k, \"Rainbow\", \"The bridge\", \"The falls\", \"Kingfisher\")}" lines=[pick(k, "A rainbow hangs low", "The bridge sways and creaks,", "Water pours over the edge,", "A kingfisher dives"), pick(k, "over the gorge where the spray drifts", "my feet find each plank in turn,", "it thunders down to the pool,", "and comes up with a fish;"), pick(k, "and then fades away.", "I made it across to the far side.", "and mist fills the air.", "the ripples go still.")] rhymes=[-1, -1, -1] width=22
+      column side space=1 align=start {
+        text ask "A haiku has lines of five, seven and five syllables. Which line breaks it?" width=11
+        number-input answer
+      }
+    }
+  }
+
+  answer pick(k, 2, 3, 1, 2)
+  feedback {
+    when (k == 3 and answer == 1) point=p {
+      say "Kingfisher has three syllables: king, fish, er. Count line 1 again, then line 2."
+    }
+    when (k == 2 and answer == 2) point=p {
+      say "Thunders has two syllables, thun and ders. Count that line again, and then the first."
+    }
+  }
+  hint "Clap each line and count the claps, one for each syllable."
+  hint "Which line has too many claps, or too few?"
+}

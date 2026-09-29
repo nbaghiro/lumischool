@@ -1,0 +1,64 @@
+lesson g6-ratio v=1 format=teach grade=6 unit=2 subject=maths levels=[easy, medium, hard] {
+  title "Ratio, and the ratio table"
+  goal "Write a ratio in its simplest form, find equal ratios in a ratio table, and share an amount in a given ratio."
+
+  look {
+    scene 30x19 {
+      ratio bars parts=[5, 2] labels=["Dogs", "Children"] unit=0 total=false at=canvas(1, 1)
+      sledge sl slats=6 right-of=bars gap=2
+      ratiotable t first=[5, 10, 15] second=[2, 4, 6] labels=["Dogs", "Children"] hide=[] arrows=1 below=bars gap=1
+    }
+    say """
+      The sledges on the ice shelf are pulled by 5 dogs for every 2 children: the ratio 5 : 2. Two
+      sledges need 10 dogs for 4 children, and 10 : 4 is the same ratio, because both parts were
+      multiplied by 2. Equal ratios have the same ratio value, the first part divided by the second:
+      5 ÷ 2 and 10 ÷ 4 are both 2.5. Adding the same number to both parts does not keep a ratio.
+      """
+  }
+  do {
+    show ratio.dog-team a=6 b=1 k=3 easy-a=4 easy-k=2 hard-a=4 hard-b=3 hard-k=5
+    level easy {
+      worked ratio.share-the-catch a=3 b=1 u=6 w=0 level=medium
+    }
+    practice ratio.cocoa-table count=1 seed=4
+    practice ratio.simplest-puffins count=1 seed=5
+    show ratio.cocoa-proportion v=1 a=3 b=5 c=20 easy-v=0 easy-a=2 easy-b=3 easy-c=12 hard-v=2 hard-a=6 hard-b=8 hard-c=12
+    practice ratio.equal-ratio count=1 seed=6
+    practice ratio.share-the-catch count=1 seed=7
+    show ratio.stronger-cocoa v=3 easy-v=4 hard-v=2
+    practice ratio.part-from-part count=1 seed=8
+    level hard {
+      practice ratio.three-teams count=1 seed=2
+    }
+  }
+  try stars=2 {
+    show ratio.add-mistake-cocoa a=3 b=5 k=4 easy-a=2 easy-k=3 hard-k=5
+  }
+  try stars=3 {
+    show ratio.seals-arrive v=0 easy-v=1 hard-v=5
+  }
+  remember {
+    say "Equal ratios multiply both parts by the same number, so they have the same ratio value."
+  }
+
+  grown-ups """
+    A ratio compares two amounts by multiplying, and the mistake to watch for is adding: a child who
+    turns 2 : 3 into 4 : 5 has kept the difference, not the ratio. The bars help, because every part
+    is the same size, so sharing 35 kg in the ratio 4 : 3 is seven equal parts before anything else.
+    In the ratio table, ask how many times bigger one column is than another, and do the same to
+    both rows. Two equal ratios written with an equals sign, such as 3 : 5 = 12 : x, are a
+    proportion, and the same question: how many times bigger is the new amount? When it is not a
+    whole number of times, as in 6 : 8 = x : 12, find what one cup of milk takes first. In the
+    stronger cocoa question the ratio value settles it, and South's extra spoons and cups are a
+    trap. In the two-star question Ana added instead of multiplying. In the three-star question the
+    puffins stay the same, so write both ratios with the same number of puffin parts. If sharing is
+    still slow, stay here another day with the bars. Off the page, mix squash in the ratio 1 : 4 and
+    then make a jug twice as big.
+    """
+  level easy {
+    grown-ups "At this level there is one child to a group of dogs, sharing the catch is worked once in the teacher's pen, the table's hidden cell is in the doubled column, the ratios to simplify put the smaller number first, the proportion 2 : 3 = x : 12 has a whole-number multiplier, the equal ratio is doubled, the teams share in a ratio with 1, the cocoa comparison is plain, the snow blocks ask for the small blocks only, Ana's batch is three times as big, and the seals end at 1 : 1."
+  }
+  level hard {
+    grown-ups "At this level the groups have three children, the table hides a first-column cell or the column eight times as big, the ratios to simplify share a factor of 6 or 8, the proportion 6 : 8 = x : 12 has no whole-number multiplier, the equal ratio is three or four times as big, the teams share in 4 : 3 or 5 : 3, the cocoa comparison needs the ratio value, the snow blocks ask for the total, three teams share in a ratio of three parts from the difference between two shares, Ana's batch is five times as big, and the seals change 5 : 3 into 5 : 4."
+  }
+}

@@ -1,0 +1,35 @@
+# A fraction divided by a whole number: sharing makes each part smaller, so the bottom grows.
+item fraction.cocoa-share v=1 skills=[fractions.divide] {
+  title "Cocoa for every mug"
+  difficulty (d * n / 10 + (if c % n == 0 then 0 else 0.5))
+  let c=1..5 d={3, 4, 5, 6} n={2, 3, 4}
+  where (c < d and gcd(c, d) == 1)
+  level easy {
+    let n={2} d={3, 4}
+  }
+  level hard {
+    let n={3, 4} d={5, 6}
+  }
+
+  scene 35x12 {
+    fraction tin n=d k=c shape=bar at=canvas(1, 1)
+    text ask "{c}/{d} of a tin of cocoa is left in the hut. It is shared equally between {n} mugs. What fraction of a tin goes in each mug? Write it in its simplest form." narrate width=20 right-of=tin gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input top width=3
+      text slash "/"
+      number-input bottom width=3
+    }
+  }
+
+  answer top=num(c / d / n) bottom=den(c / d / n)
+  feedback {
+    when (top == c * n and bottom == d) point=tin {
+      say "Sharing makes each part smaller. That multiplied by {n} instead."
+    }
+    when (top == c and bottom == d + n) point=tin {
+      say "Cut every shaded part into {n}. What size are the small parts now?"
+    }
+  }
+  hint "Will each mug get more or less than what is left in the tin?"
+  hint "Cut each part of the bar into as many pieces as there are mugs. How many small pieces make a whole tin?"
+}

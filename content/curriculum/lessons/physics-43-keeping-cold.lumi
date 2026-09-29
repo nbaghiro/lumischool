@@ -1,6 +1,6 @@
 # Keeping ice cold: a wrap slows the warmth that reaches the ice, so the best wrap is the one whose
 # cup stays coldest, read on a thermometer that stays at 0 while any ice is left.
-lesson physics-keeping-cold v=1 format=teach grade=1 unit=2 subject=physics levels=[easy, medium, hard] {
+lesson physics-keeping-cold v=1 format=teach grade=1 unit=3 subject=physics levels=[easy, medium, hard] {
   title "Keeping it cold"
   goal "Say which wrapping keeps an ice cube longest, and read the thermometer to check."
 

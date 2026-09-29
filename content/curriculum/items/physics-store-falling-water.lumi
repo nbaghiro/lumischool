@@ -1,0 +1,34 @@
+# Work done is force times distance: water weighs 10 N for each kilogram, and as it falls onto the
+# wheel it gives the weight times the height in joules.
+item physics.store-falling-water v=1 skills=[physics.energy, physics.forces, decimals.multiply] {
+  title "Water falling on the wheel"
+  difficulty (m * h)
+  let m={2, 5, 8, 12} h={3, 4, 6}
+  level easy {
+    let m={2, 5} h={3, 4}
+  }
+  level hard {
+    let m={8, 12} h={4, 6}
+  }
+
+  scene 30x28 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      waterfall f drops=1 rainbow=0
+      waterwheel w paddles=8 lit=0
+    }
+    text ask "A bucket of the wheel holds {m} kg of water, and it falls {h} m from the top of the wheel to the bottom. Each kilogram weighs 10 N, and a force gives its size times the distance it moves in joules. How many joules does the water give the wheel?" narrate width=27 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (m * 10 * h)
+  feedback {
+    when (answer == m * h) point=ask {
+      say "That uses the kilograms. The force is the weight in newtons, 10 N for each kilogram."
+    }
+    when (answer == m * 10 + h) point=ask {
+      say "The weight and the distance are multiplied, not added."
+    }
+  }
+  hint "What does {m} kg of water weigh, in newtons?"
+  hint "Multiply the weight by the distance it falls."
+}

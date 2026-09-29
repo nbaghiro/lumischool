@@ -1,0 +1,64 @@
+lesson chemistry-how-much-dissolves v=1 format=teach grade=5 unit=1 subject=chemistry levels=[easy, medium, hard] {
+  title "How much dissolves"
+  goal "Use the grams that dissolve in 100 ml of water to work out whether a solution is saturated and how much stays as grains."
+
+  look {
+    scene 36x13 {
+      row all at=canvas(1, 0) space=2 align=end {
+        narrowboat boat windows=2 pots=2
+        beaker clear max=200 step=50 level=100 unit=ml solid=0 rod=true label="20 g"
+        beaker full max=200 step=50 level=100 unit=ml solid=12 rod=true label="50 g"
+      }
+    }
+    say """
+      The salt boat is moored by the lock. Leo stirs 20 g of salt into 100 ml of water at 20 °C, and
+      it all dissolves. He stirs 50 g into another 100 ml, and grains stay on the floor however long
+      he stirs. At 20 °C, 100 ml of water holds 36 g of salt and no more: that water is saturated,
+      and the other 14 g stay as grains. Twice the water holds twice the salt.
+      """
+  }
+  do {
+    practice chem.which-saturated count=1 seed=1
+    practice chem.solubility-table count=2 seed=3 easy-seed=2 hard-seed=5
+    level easy {
+      worked chem.grains-stay v=100 x=14 level=medium
+    }
+    practice chem.salt-in-jug count=2 seed=2 easy-seed=4 hard-seed=3
+    practice chem.grains-stay count=2 seed=4 hard-seed=2
+    level hard {
+      show chem.salt-in-jug d=1 s=0 v=250
+    }
+  }
+  story {
+    show chem.solution-weighs d=0 w=350 s=45 hard-d=1 hard-w=400 hard-s=35
+  }
+  try stars=2 {
+    show chem.cool-or-dry k=0 r=1 hard-k=1 hard-r=2
+  }
+  try stars=3 {
+    show chem.pour-together k=0 v=50 easy-k=1 hard-k=1 hard-v=100
+  }
+  remember {
+    say "At 20 °C, 100 ml of water holds 36 g of salt. Twice the water holds twice the salt, and any more stays as grains."
+  }
+
+  grown-ups """
+    The idea is that a given amount of water at a given temperature holds a measured amount of a
+    solid and no more, and that the amount scales with the water: 100 ml at 20 °C holds 36 g of
+    salt, 50 ml holds 18 g and 250 ml holds 90 g. The table is published solubility rounded to whole
+    grams, and it shows what surprises most adults: salt hardly changes with temperature (36 g at
+    0 °C, 37 g at 60 °C), while sugar goes from 179 g to 287 g. The wrong ideas to watch for are that
+    dissolved sugar weighs nothing because it cannot be seen, and that hot water always holds much
+    more of everything. The two-star question asks why cooling brings sugar out as crystals and
+    hardly any salt, and the three-star question pours two beakers together, where grains in one can
+    dissolve in the other's spare room. If the child adds the grains of each beaker instead, stay
+    here another day. Off the page: weigh a glass of water on kitchen scales, stir in two teaspoons
+    of sugar, and read the scales again. Nothing in this lesson is heated.
+    """
+  level easy {
+    grown-ups "At this level the grains are worked out once in the teacher's pen, the table is read for one cell, the jug holds 50 or 200 ml and the grams are asked, the beaker holds 100 ml, the scales are read after the sugar goes in, the two-star question compares salt and sugar cooling, and the three-star jug ends with no grains."
+  }
+  level hard {
+    grown-ups "At this level the table is read for how much more dissolves than at 0 °C, the jug's water is worked back from the grams, a second jug is worked back from 90 g, the beakers hold 50 or 150 ml, the sugar added is worked back from two readings, the two-star question asks how to get salt back, and the three-star beakers hold 100 ml each."
+  }
+}

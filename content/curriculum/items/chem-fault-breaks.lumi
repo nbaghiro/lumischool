@@ -1,0 +1,31 @@
+# The way in: a fault breaks the lowest layers of a cliff, and the layers lying unbroken over it were
+# laid down after it (cross-cutting and superposition; BGS). The checker counts the broken layers.
+item chem.fault-breaks v=1 skills=[chemistry.rocks, reasoning.order] {
+  title "How far did the crack go?"
+  difficulty (if f >= 3 then 1 else 0)
+  let l={5, 6} f=1..4
+  level easy {
+    let f={1, 2}
+  }
+  level hard {
+    let f={3, 4}
+  }
+
+  scene 29x24 {
+    row kit at=canvas(1, 0) space=2 align=start {
+      strata s layers=l names=1 ash=0 fault=f
+      waterfall fall drops=2 rainbow=0
+    }
+    text ask "An earthquake long ago cracked the rocks of the gorge's wall, and one side slipped down. How many of the layers has the crack broken?" narrate width=28 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check chem.rocks of=s answer=broken
+  feedback {
+    when (answer == l) point=s {
+      say "Follow the crack up from the bottom. Does it reach the top layer, or stop below it?"
+    }
+  }
+  hint "Find the slanting crack. Where does it stop?"
+  hint "Count the layers it breaks, from the bottom up."
+}

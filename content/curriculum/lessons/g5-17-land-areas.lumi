@@ -1,0 +1,62 @@
+lesson g5-land-areas v=1 format=teach grade=5 unit=3 subject=maths levels=[easy, medium, hard] {
+  title "Land areas: hectares, square kilometres, and a field's area estimated"
+  goal "Measure land in hectares and square kilometres, and estimate the area of a field with a curved edge by counting squares."
+
+  look {
+    scene 36x15 {
+      outlinearea field shape=3 side=100 unit="m" mark=1 show=1 at=canvas(1, 1)
+      canallock lock level=0.5 boat=1 right-of=field gap=2
+    }
+    say """
+      Land is measured in bigger squares than a room. A hectare is a square 100 m by 100 m, which is
+      10,000 m². A square kilometre is 1,000 m by 1,000 m: ten rows of ten hectares, 100 ha. Woods
+      and fields by the canal have curved and crooked edges, so their area is estimated on squares.
+      Count the whole squares, dotted here, and add half the squares the edge cuts, ringed: this wood
+      has 48 whole and 38 cut, so it is about 48 + 19 = 67 hectares.
+      """
+  }
+  do {
+    show land.plan-hectares l=7 w=5 easy-l=5 easy-w=4 hard-l=8 hard-w=6
+    show land.convert-units q=0 a=3 easy-a=2 hard-q=1 hard-a=6
+    level easy {
+      worked land.outline-estimate i=2 level=medium
+    }
+    show land.outline-estimate i=1 easy-i=0 hard-i=2
+    show land.bounds i=1 easy-i=0 hard-i=2
+    show land.outline-scale t=0 easy-t=1 hard-t=2
+    show land.convert-units q=2 a=12 easy-a=3 hard-q=3 hard-a=12
+    practice land.missing-side count=1 seed=4 hard-count=2
+    show land.which-bigger t=0 easy-t=1 hard-t=2
+  }
+  try stars=2 {
+    show land.square-side k=4 easy-k=3 hard-k=6
+  }
+  try stars=3 {
+    show land.fence-most p=800 easy-p=400 hard-p=600
+  }
+  remember {
+    say "A hectare is 100 m by 100 m, 10,000 m², and a square kilometre is 100 hectares."
+  }
+
+  grown-ups """
+    The units are squares, and that is the whole idea: a hectare is a square 100 m on each side, and
+    a square kilometre is ten of those along and ten down. The common slip is treating them like
+    lengths, so that 1 km² becomes 1,000 ha because 1 km is 1,000 m. Draw a 10 by 10 square and ask
+    how many hectares fit. On a curved outline, the whole squares are certainly inside and the cut
+    squares only partly, so the true area lies between the two counts, and half of each cut square
+    is a fair middle. The reservoir question uses squares that are not a hectare, so each one has to
+    be turned into hectares first. In the two-star question a square field of 16 ha is 4 by 4
+    hectare squares, so its side is 400 m. In the three-star question the square holds the most
+    land for its fence. If the units still slide, stay here another day with the 10 by 10 square.
+    Off the page, pace out a square 10 m on a side in a park and work out how many of them make a
+    hectare. This lesson meets China's 2022 standard for grades 5 and 6, 图形与几何 1(3),
+    「知道面积单位千米²、公顷……会估计不规则图形的面积」, and Russia's grade 6 programme, «Приближённое
+    измерение площади фигур, в том числе на квадратной сетке».
+    """
+  level easy {
+    grown-ups "At this level the field on hectare squares is 5 by 4, the units change from square metres to hectares and from square kilometres to hectares, a marsh's estimate is worked once in the teacher's pen before the same count on the reservoir, the reservoir's squares are 200 m, the missing width is on a field four squares wide, the fields to compare are 8 ha and 7.5 ha, the two-star field is 9 ha, and the fence is 400 m."
+  }
+  level hard {
+    grown-ups "At this level the field on hectare squares is 8 by 6, the units change from hectares to square metres and from hectares to square kilometres, the reservoir's squares are 500 m, the missing width is asked twice on bigger fields, the fields to compare turn out the same, the two-star field is 36 ha, and the fence is 600 m, so the answer is not a whole number of hectares."
+  }
+}

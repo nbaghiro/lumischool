@@ -1,0 +1,25 @@
+# The way in: fresh water freezes at 0 °C and sea water, with 35 g of salt in a litre, at about
+# −2 °C (a sodium chloride brine table gives −1.9 °C at 3.5 per cent salt by weight). A reading between the two freezes the pond and not the sea.
+item chem.fresh-or-sea v=1 skills=[chemistry.freezing, number.negatives] {
+  title "The pond and the sea"
+  let t={-5, -1, 3}
+  let right={if t < -2 then "both" else if t < 0 then "the pond only" else "neither"}
+
+  scene 36x26 {
+    thermometer th from=-6 to=6 step=2 value=t unit="°C" at=canvas(1, 0)
+    text ask "Behind the research hut is a pond of fresh water, which freezes at 0 °C. In front is the sea, which freezes at about -2 °C because of its salt. The water in both has cooled to the reading on the thermometer. Which has ice on it?" narrate width=25 right-of=th gap=1
+    choice pick options=["the pond only", "the sea only", "both", "neither"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "the sea only") point=th {
+      say "The salty sea has to get colder than the fresh pond before it freezes, not warmer."
+    }
+    when (pick != right and pick != "the sea only") point=th {
+      say "Read the thermometer, then compare the reading with 0 °C and with -2 °C in turn."
+    }
+  }
+  hint "What does the thermometer read? Is it above or below 0 °C?"
+  hint "Is it also below -2 °C, where the sea freezes?"
+}

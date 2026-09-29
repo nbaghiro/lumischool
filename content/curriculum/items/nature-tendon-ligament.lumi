@@ -1,0 +1,48 @@
+# What joins what: a tendon joins a muscle to a bone and hardly stretches, a ligament holds the bones
+# of a joint together. The reasons at the top are why a tendon must not stretch, and what the calf
+# tendon does, found from which way it pulls the heel.
+item nature.tendon-ligament v=1 skills=[nature.body] {
+  title "Tendons and ligaments"
+  difficulty pick(k, 0, 0.33, 0.67, 1)
+  let k=0..3
+  let asks={pick(k, "When Ben's calf muscle pulls, the pull reaches his heel bone through a tough cord. What is a cord that joins a muscle to a bone called?", "Ada jumps off a low step by the city wall and twists her ankle. The straps that hold the bones of the joint together are stretched. What are they?", "A tendon is tough and hardly stretches at all. Why is that useful?", "The tendon at the back of Ben's heel tears. Which of these can he no longer do?")}
+  let ans={pick(k, "a tendon", "ligaments", "All of the muscle's pull reaches the bone", "Push up onto his tiptoes")}
+  let o1={pick(k, "a ligament", "tendons", "It lets the bone grow longer", "Lift his toes up towards his shin")}
+  let o2={pick(k, "a joint", "muscles", "It stops the muscle getting tired", "Straighten his knee")}
+  let s1={pick(k, o1, o1, ans, o1)}
+  let s2={pick(k, ans, o2, o1, ans)}
+  let s3={pick(k, o2, ans, o2, o2)}
+  level easy {
+    let k=0..1
+  }
+  level medium {
+    let k=1..2
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x26 {
+    parts fig of=arm at=canvas(1, 1)
+    text ask "{asks}" narrate width=19 right-of=fig gap=2
+    choice pick options=[s1, s2, s3] stack=column below=fig gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=ask {
+      say "A ligament ties bone to bone. The cord from a muscle to a bone is the other one."
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "The straps in a sprain hold bone to bone. Tendons join muscles to bones."
+    }
+    when (k == 2 and pick != ans) point=fig {
+      say "Think of pulling a cart with a rope, then with a rubber band. With which does the cart move as soon as you pull?"
+    }
+    when (k == 3 and pick != ans) point=ask {
+      say "The calf muscle is at the back of the leg and its tendon pulls the heel up. Which movement lifts the heel?"
+    }
+  }
+  hint "Does the part in the question join a muscle to a bone, or a bone to a bone?"
+  hint "Try the movement yourself and feel which part of your leg or arm goes tight."
+}

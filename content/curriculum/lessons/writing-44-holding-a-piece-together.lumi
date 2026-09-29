@@ -1,0 +1,64 @@
+# Cohesion: a piece holds together when its pronouns point back clearly and its linking adverbials
+# say how each sentence follows the last, across full stops and paragraphs.
+lesson writing-holding-a-piece-together v=1 format=teach grade=5 unit=8 subject=writing levels=[easy, medium, hard] {
+  title "Holding a piece together"
+  goal "Link the sentences of a piece with clear pronouns and linking adverbials so it reads as one."
+
+  look {
+    scene 34x22 {
+      row top at=canvas(1, 0) space=2 align=start {
+        passage para title="The map that went missing" text="At noon the library's oldest map went missing. Everyone thought it had been stolen. However, Nadia searched the top shelves with a lamp. Meanwhile, Farid asked Mrs Adeyemi at the desk. After that, Nadia found the map inside a book of stars. As a result, the map was back in its case by evening." width=19 numbers=false
+        library lib columns=6 open=1
+      }
+    }
+    say """
+      Read Nadia's story and notice what joins it up. It is a pronoun: it stands in for a noun, the
+      map, so the map is not named again. However turns the story, meanwhile shows two things at
+      once, and after that and as a result say what came next and why. Words like these at the start
+      of a sentence are linking adverbials. With clear pronouns and linking adverbials a reader
+      always knows who is meant and how each sentence follows the one before.
+      """
+  }
+  do {
+    level easy {
+      worked writing.pronoun-points-to k=3 level=medium
+    }
+    practice writing.pronoun-points-to count=2 seed=1
+    practice writing.replace-the-name count=2 seed=1
+    practice writing.unclear-pronoun count=1 seed=1
+    practice writing.joining-word-job count=1 seed=1
+    practice writing.pick-the-adverbial count=1 seed=1
+    practice writing.order-by-clues count=1 seed=1 hard-count=2
+  }
+  try stars=2 {
+    show writing.which-holds-together k=0 r=1 hard-k=1
+  }
+  try stars=3 {
+    show writing.join-the-notes k=0 hard-k=1
+  }
+  remember {
+    say "A pronoun must point back to one noun only. A linking adverbial tells the reader how the next sentence follows."
+  }
+
+  grown-ups """
+    A piece holds together when a reader never has to ask who is meant or how one sentence follows
+    another. The look is Nadia's story of the map that went missing from the library, joined by the
+    pronoun it and the linking adverbials however, meanwhile, after that and as a result; the lesson
+    names pronoun, noun and adverbial alongside "joining words", as the curricula expect by this
+    age. The way in finds what a pronoun points back to, and the core replaces a repeated name,
+    spots a pronoun that could mean two people, matches linking adverbials to their jobs, picks the
+    adverbial for a pair of sentences, and orders a muddled piece by nothing but its pronouns and
+    adverbials. The wrong idea to watch for is that more pronouns always read better: "Farid told
+    Ben that he had won" leaves the reader guessing, and naming again is right there. If the child
+    is stuck, read the sentence aloud with each possible person in place of the pronoun. Off the
+    page, take a page of any story and circle every he, she, it and they, then draw an arrow back to
+    who each one means. The two-star question compares two versions of a piece, and the three-star
+    question turns choppy notes into one paragraph, which you mark.
+    """
+  level easy {
+    grown-ups "At this level the map that it points to is worked once in the teacher's pen, the pronouns point to the only noun they could, the repeated names are a person and one thing, the unclear pronoun is he between two boys, the linking adverbials turn, add time or cause, the pairs to join are a result and a turn, the muddled piece is the key, the two-star is about too many repeats, and the notes come in order."
+  }
+  level hard {
+    grown-ups "At this level the pronouns come after two possible nouns, the repeated words are more than one thing or are the object, after the verb, the unclear pronoun is her between two girls, the linking adverbials are about time and adding, the pairs to join need a turn or meanwhile, two muddled pieces are ordered, the two-star is a pronoun that could mean two things, and the notes come muddled."
+  }
+}

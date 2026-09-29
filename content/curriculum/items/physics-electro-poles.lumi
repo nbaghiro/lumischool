@@ -1,0 +1,35 @@
+# An electromagnet's poles swap when the cell is turned round, and its strength does not change: it
+# holds one clip for every ten turns on each cell. t is the turns before, c the cells.
+item physics.electro-poles v=1 skills=[physics.magnets, physics.circuits, reasoning.predict] {
+  title "Turn the cell round"
+  difficulty (c - 1)
+  let t={20, 30, 40} c=1..2
+  level easy {
+    let c={1}
+  }
+  level hard {
+    let c={2}
+  }
+  let before={t / 10 * c}
+  let more={t + 10}
+
+  scene 30x28 {
+    electromagnet m turns=more cells=c core=0 closed=1 show=0 at=canvas(1, 0)
+    text ask "Kit's electromagnet had {t} turns and held {before} clips, with a north pole at the nail's point. She turns the cell round and winds 10 more turns, as drawn. How many clips will it hold, and which pole is at the point now?" narrate width=28 below=m gap=1
+    number-input clips below=ask gap=1
+    choice pole options=["North", "South"] stack=row right-of=clips gap=2
+  }
+
+  answer pole="South"
+  check physics.circuit of=m clips=holds
+  feedback {
+    when (pole == "North") point=m {
+      say "Turning the cell round sends the current the other way round the coil. What does that do to the poles?"
+    }
+    when (clips < before) point=m {
+      say "Turning the cell round does not weaken the magnet. Count the turns and cells as drawn."
+    }
+  }
+  hint "Which change makes it stronger: the extra turns or the cell turned round?"
+  hint "It holds one clip for every ten turns on each cell. What does turning the cell round change?"
+}

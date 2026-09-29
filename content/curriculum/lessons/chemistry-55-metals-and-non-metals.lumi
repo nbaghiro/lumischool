@@ -1,0 +1,62 @@
+lesson chemistry-metals-and-non-metals v=1 format=teach grade=5 unit=6 subject=chemistry levels=[easy, medium, hard] {
+  title "Metals and non-metals"
+  goal "Sort elements into metals and non-metals by what they do, and say why no single test proves a metal."
+
+  look {
+    scene 34x13 {
+      row all at=canvas(1, 0) space=2 align=end {
+        telescope scope tilt=40
+        periodic t rows=4 blank=0 mark=0 shade=metal
+      }
+    }
+    say """
+      Most elements are metals. A metal is shiny when it is cut or polished, lets heat and
+      electricity through, and bends when it is hammered instead of shattering, and every metal
+      but mercury is a solid at 20 °C. The telescope's tube is aluminium and its wires are copper.
+      Non-metals are mostly dull and brittle, and many are gases. Some things fool a single test:
+      graphite in a pencil lets electricity through, and a magnet pulls only iron, nickel and cobalt.
+      """
+  }
+  do {
+    practice chem.ringed-metal count=1 seed=3 hard-count=2
+    level easy {
+      worked chem.metals-in-row w=0 r=4 level=medium
+    }
+    practice chem.metals-in-row count=2 seed=2 easy-seed=4 hard-seed=1
+    practice chem.magnet-not-test count=2 seed=1
+    practice chem.melt-gap count=2 seed=3 easy-seed=2 hard-seed=1
+  }
+  story {
+    show chem.bulb-predict k="foil" easy-k="coin" hard-k="marble"
+  }
+  try stars=2 {
+    show chem.pencil-lead k=1 r=2 easy-k=0 hard-k=2 hard-r=0
+  }
+  try stars=3 {
+    show chem.sample-clues t=1 p=2 easy-t=0 hard-p=3
+  }
+  remember {
+    say "Metals are shiny, conduct and bend. No one test proves a metal: graphite conducts, and a magnet pulls only iron, nickel and cobalt."
+  }
+
+  grown-ups """
+    The idea is that metals and non-metals are told apart by several properties together: a metal is
+    shiny when fresh, conducts heat and electricity, bends rather than shatters, and is a solid at
+    20 °C except mercury. Non-metals are mostly dull, brittle and poor conductors, and many are
+    gases. The wrong ideas to watch for are that a magnet finds metals (it pulls only iron, nickel,
+    cobalt and steel, so foil and a brass coin are left alone) and that anything that conducts is a metal
+    (graphite, a form of carbon, conducts). Boron and silicon sit between the two and are never asked
+    about. Melting points are from the Royal Society of Chemistry's periodic table. The two-star
+    question asks why one test is not enough, and the three-star question finds a sample from three
+    tests, crossing out a sample at each. If the child answers from one column of the table only,
+    stay here another day and do the magnet test on the fridge door, a foil tray and a brass coin
+    (many coins, such as UK 1p and 2p coins since 1992, are steel under a copper coat, and a magnet
+    pulls them, which is itself worth finding). Anything hammered or heated is done by a grown-up.
+    """
+  level easy {
+    grown-ups "At this level the metals in row 4 are counted once in the teacher's pen, the rows are counted for metals, the melting points are the gap between two metals, the story's coin lights the bulb, the two-star question is the pencil lead, and the three-star question finds iron."
+  }
+  level hard {
+    grown-ups "At this level the elements that are not metals are counted, mercury is cooled below zero and heated to its boil, the story's marble does not light the bulb, the two-star question is the solid sulfur, and the three-star question finds aluminium, which needs all three tests."
+  }
+}

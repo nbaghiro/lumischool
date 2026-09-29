@@ -1,0 +1,24 @@
+# The way in: the US Geological Survey's scale of water hardness, in milligrams of dissolved calcium
+# and magnesium, counted as calcium carbonate, in each litre: 0 to 60 soft, 61 to 120 moderately
+# hard, 121 to 180 hard, more than 180 very hard.
+item chem.hardness-table v=1 skills=[chemistry.hard-water, data.tables] {
+  title "How hard is the water?"
+  let m={40, 95, 150, 240}
+  let right={if m <= 60 then "soft" else if m <= 120 then "moderately hard" else if m <= 180 then "hard" else "very hard"}
+  let where={if m == 40 then "the rain barrel" else if m == 95 then "the stream above the waterfall" else if m == 150 then "the pool below the waterfall" else "the mill's well"}
+
+  scene 35x32 {
+    table data cols=2 head=["mg in a litre", "The water is"] cells=["0 to 60", "soft", "61 to 120", "moderately hard", "121 to 180", "hard", "over 180", "very hard"] at=canvas(1, 0)
+    text ask "Mei tests water from {where} in the gorge. It has {m} mg of calcium and magnesium, as chalk, in each litre. How hard is it?" narrate width=34 below=data gap=1
+    choice pick options=["soft", "moderately hard", "hard", "very hard"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=data {
+      say "Find the row whose range has {m} in it."
+    }
+  }
+  hint "Which range in the first column does {m} fall inside?"
+  hint "Read across that row to the second column."
+}

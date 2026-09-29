@@ -1,0 +1,29 @@
+# The two-star reason: what is wrong with the King's argument about the unsigned verses. The wrong
+# reasons are both things a skimming reader might believe about the verses.
+item reading.alice-verdict v=1 stars=2 skills=[reading.inference, reading.evidence, reading.whole-book] {
+  title "Is the King right?"
+  let right={"Having no name on it proves nothing."}
+
+  scene 34x27 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        cards d
+        bookcast a who=alice pose=point dir=-1
+      }
+      text ask "In chapter 12 the verses have no name at the end, and the King says that proves the Knave meant mischief. Why is the King's reasoning wrong?" width=33
+      choice pick options=["The verses are in the Knave's own hand.", "The Knave signed them with a false name.", right] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "The verses are in the Knave's own hand.") point=pick {
+      say "Check what the White Rabbit says when a juror asks about the handwriting."
+    }
+    when (pick == "The Knave signed them with a false name.") point=pick {
+      say "Check the end of the verses. Is there any name there at all?"
+    }
+  }
+  hint "What would it take to prove who wrote the verses?"
+  hint "If a letter has no name on it, what does that tell you about who wrote it?"
+}

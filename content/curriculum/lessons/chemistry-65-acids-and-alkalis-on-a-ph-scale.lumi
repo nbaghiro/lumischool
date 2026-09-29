@@ -1,0 +1,67 @@
+lesson chemistry-acids-and-alkalis-on-a-ph-scale v=1 format=teach grade=6 unit=5 subject=chemistry levels=[easy, medium, hard] {
+  title "Acids and alkalis on a pH scale"
+  goal "Read a liquid's place on the pH scale and say whether it is an acid, neutral or an alkali, and how strong."
+
+  look {
+    scene 27x25 {
+      phscale p liquids=["lemon", "rain", "water", "seawater", "limewater"] letters=1 names=1 at=canvas(1, 0)
+      cabbage c liquids=["lemon", "water", "washingsoda"] chart=1 show=1 names=1 below=p gap=1
+    }
+    say """
+      Red cabbage juice, below, showed acid or alkali with a few colours, and its blue covers both 7
+      and 8. Universal indicator has a colour for each part of the pH scale, from 0 to 14. Below 7
+      is an acid, 7 is neutral and above 7 is an alkali, and the further a liquid is from 7, the
+      stronger it is. Lemon juice is about pH 2, rain about 5.6, pure water 7, the sea about 8.1 and
+      limewater 12.4. A grown-up handles the limewater, and everyone wears goggles.
+      """
+  }
+  do {
+    practice chem.ph-kind count=1 seed=1 hard-seed=2
+    level easy {
+      worked chem.ph-strongest s=0 level=medium
+    }
+    practice chem.ph-strongest count=1 seed=1 hard-count=2 easy-seed=7
+    practice chem.ph-alkali count=1 seed=1
+    practice chem.ph-evidence count=2 seed=1 easy-seed=1 hard-seed=1
+    practice chem.ph-count count=1 seed=1
+  }
+  story {
+    practice chem.ph-nearest count=1 seed=1
+    practice chem.ph-mix count=1 seed=1 easy-seed=2 hard-seed=3
+  }
+  try stars=2 {
+    show chem.why-universal k=1 r=2 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show chem.ph-ten-times k=1 easy-k=0 hard-k=3
+  }
+  remember {
+    say "Below 7 is an acid, 7 is neutral, above 7 is an alkali, and the further from 7, the stronger."
+  }
+
+  grown-ups """
+    The idea is the pH scale: a number from 0 to 14 that says whether a liquid is an acid, neutral
+    or an alkali, and how strong, read with universal indicator, which has a colour for each
+    number. The values are typical ones (lemon juice about 2, vinegar 2.5, orange juice about 3.5,
+    rain 5.6, milk 6.5, sea water 8.1, baking soda 8.3, milk of magnesia 10.5, washing soda 11.4 and
+    limewater 12.4), and real liquids vary a little. The wrong ideas to watch for are that a bigger
+    number is always a stronger acid, and that a liquid nearest 7 must be on one particular side.
+    The core now asks for evidence as well as reading: which liquid a colour from the chart could
+    be, and which two liquids could be mixed to reach 7 (an acid and an alkali, which lesson 66
+    measures). The colour bands in the chart are a typical universal indicator's, and brands vary
+    by a step at the edges, so no liquid in the questions sits on an edge. The two-star question is
+    about what a colour can prove: red cabbage's blue covers 7 and 8, lemon juice stirred into a jug
+    of water turns orange because the same acid is spread through more water, and a reading of 7
+    says only neutral, not which liquid. The three-star question uses the rule that
+    each step down is ten times as acidic, so two steps is a hundred times. If the child reads the
+    alkali side backwards, stay here another day with the scale and three kitchen liquids. Off the
+    page: with a grown-up, test lemon juice, water and a little bicarbonate of soda in water with
+    universal indicator paper or red cabbage juice, wearing goggles, and taste nothing.
+    """
+  level easy {
+    grown-ups "At this level the strongest acid is found once in the teacher's pen, the liquids to judge are plainly one side or the other, the counts and the nearest to 7 are the plainer sets, the colours point to the plainer liquids, the two-star compares red cabbage and universal indicator, and the three-star compares liquids one or two steps apart."
+  }
+  level hard {
+    grown-ups "At this level the sets put pointers close together, there is a second strongest acid to find, the colours sit next to each other on the chart, the two-star asks why a green reading is not proof of water, and the three-star compares liquids two or three steps apart."
+  }
+}

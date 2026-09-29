@@ -1,0 +1,31 @@
+# Multiplying a change by a time: a fall of f each hour for h hours is (-f) × h, and h hours ago is
+# (-f) × (-h), a rise, which is where negative times negative first means something.
+item negative.fall-each-hour v=1 skills=[number.negatives.multiply, reasoning.work-backwards] negatives {
+  title "Hours ahead, hours ago"
+  difficulty (v + f * h / 8)
+  let v=0..1 n=-4..2 f=1..2 h=2..4
+  level easy {
+    let v={0} f={1}
+  }
+  level hard {
+    let v={1} f={2}
+  }
+
+  scene 36x18 {
+    thermometer th from=-20 to=10 step=5 value=n unit="°C" at=canvas(1, 1)
+    text ask "Since the evening the temperature at the weather station has changed by -{f} °C every hour, and it is {n} °C now. It keeps changing the same way all night. {if v == 0 then \"What will the reading be \" else \"What was the reading \"}{h} hours {if v == 0 then \"from now?\" else \"ago?\"}" narrate width=24 right-of=th gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (if v == 0 then n + -f * h else n + -f * -h)
+  feedback {
+    when (v == 1 and answer == n - f * h) point=th {
+      say "That is {h} hours from now. Going back in time undoes the fall, so the reading was higher."
+    }
+    when (v == 0 and answer == n + f * h) point=th {
+      say "The change is below zero each hour, so the reading goes down the scale."
+    }
+  }
+  hint "Will the reading you want be higher or lower than the reading now?"
+  hint "How many degrees does it change over all those hours, and which way?"
+}

@@ -1,0 +1,30 @@
+# Three-star: every order of the hops 1, 2 and 3 ends on the same square, but the stops on the way
+# differ, and only some orders stop on the green mooring squares each time. Six orders, listed and
+# checked, is the method; the counts for the three maps are 2, 3 and 4.
+item coding.each-orders v=1 stars=3 skills=[coding.lists, reasoning.all-the-ways] {
+  title "Only on the mooring squares"
+  difficulty pick(k, 1, 0, 2)
+  let k=0..2
+  level easy {
+    let k={1}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x19 {
+    maze m map=["{pick(k, \"S g . g . g g\", \"S g . g g . g\", \"S g . g g g g\")}"] at=canvas(1, 0)
+    program p code=["set hops to list 1, 2, 3", "for each h in hops", "  right h"] below=m gap=1
+    text ask "The boat may only stop on the green squares. The list could hold 1, 2 and 3 in any order. How many of the orders stop on green every time?" width=14 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 2, 3, 4)
+  feedback {
+    when (answer == 6) point=m {
+      say "Every order ends on the last square, but look at the squares where it stops on the way."
+    }
+  }
+  hint "Write out every order the three hops can go in. There are six of them."
+  hint "For each order, which squares does the boat stop on? Are they all green?"
+}

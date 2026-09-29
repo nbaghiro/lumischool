@@ -1,0 +1,39 @@
+# The same notice with its lines numbered, and the line that gives a rule or its reason. The answers
+# are its line breaks at width 22 (39 letters to a line), so the text and the width stay as they
+# are.
+item reading.notice-line v=1 skills=[reading.evidence, reading.old-words] {
+  title "Which line of the notice?"
+  difficulty pick(q, 0, 1, 1, 2)
+  let q=0..3
+  level easy {
+    let q={0, 1}
+  }
+  level hard {
+    let q={2, 3}
+  }
+
+  scene 36x18 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=1 align=end {
+        passage notice title="Notice, 1702" text="Whosoever taketh a book hence shall bring it back ere the next market day. Thou shalt not write upon the pages, nor fold them. Speak not above a whisper, for many read here." width=22
+        library lib columns=5 open=1
+      }
+      row bottom space=1 align=centre {
+        text ask "{pick(q, \"Which line tells you when to bring a book back?\", \"Which line tells you not to write in a book?\", \"Which line tells you not to fold the pages?\", \"Which line gives the reason for whispering?\")}" width=30
+        number-input answer
+      }
+    }
+  }
+
+  answer pick(q, 2, 3, 4, 5)
+  feedback {
+    when (q == 3 and answer == 4) point=notice {
+      say "That line starts the rule about whispering. The reason comes after the word for."
+    }
+    when (q == 2 and answer == 3) point=notice {
+      say "That line is about writing. Nor fold them carries on to the next line."
+    }
+  }
+  hint "Read the notice a line at a time, with the glossary words in your head."
+  hint "Which line holds the words that answer the question?"
+}

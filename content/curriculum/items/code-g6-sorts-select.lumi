@@ -1,0 +1,35 @@
+# The selection sort as text: its question is asked 3, then 2, then 1 times, which is 6 whatever the
+# order, and line 8 runs only when a shorter plank than the shortest so far turns up.
+item coding.sorts-select v=1 skills=[coding.algorithms, coding.text, coding.lists] {
+  title "Counting the selection sort's steps"
+  difficulty (s / 2 + q / 2)
+  let s=0..3 q=0..1
+  let a={pick(s, 2, 3, 4, 4)} b={pick(s, 1, 1, 2, 3)} c={pick(s, 3, 4, 3, 2)} d={pick(s, 4, 2, 1, 1)}
+  level easy {
+    let s={0, 1} q={0}
+  }
+  level hard {
+    let s={2, 3} q={1}
+  }
+
+  scene 36x36 {
+    program p code=["set logs to list {a}, {b}, {c}, {d}", "set i to 1", "repeat 3", "  set m to i", "  set j to i + 1", "  repeat 4 - i", "    if item j of logs is less than item m of logs", "      set m to j", "    add 1 to j", "  set t to item i of logs", "  replace item i of logs with item m of logs", "  replace item m of logs with t", "  add 1 to i"] text=true at=canvas(0, 0)
+    text ask "This sort finds the shortest plank left and swaps it into place. How many times is the question on line 7 asked? How many times does line {if q == 0 then 10 else 8} run?" width=24 at=canvas(0, 29)
+    text t1 "line 7" right-of=ask gap=1
+    number-input asks right-of=t1 gap=1
+    text t2 "line {if q == 0 then 10 else 8}" below=t1 gap=1
+    number-input other right-of=t2 gap=1
+  }
+
+  check coding.runs of=p asks="ran(7)" other="ran({if q == 0 then 10 else 8})"
+  feedback {
+    when (asks == 9) point=p {
+      say "The inner repeat goes round 4 - i times: 3 times, then 2, then 1."
+    }
+    when (q == 0 and other < 3) point=p {
+      say "Lines 10 to 12 are not inside an if, so they run every round, even when the plank is already in place."
+    }
+  }
+  hint "How many times does the inner repeat go round in each round of the outer one?"
+  hint "{if q == 0 then \"Is line 10 inside an if, or does it run every time round?\" else \"Keep m written down, and change it only when a shorter plank turns up.\"}"
+}

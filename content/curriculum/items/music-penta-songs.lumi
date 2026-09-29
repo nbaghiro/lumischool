@@ -1,0 +1,32 @@
+# Four songs by the notes each uses, from the sources in .docs/sound.md: Mo Li Hua in C (C D E G A),
+# Auld Lang Syne in G (G A B D E), Sakura (E F A B C, the in scale) and the Russian Birch Tree in A
+# minor (A B C D E G). The question names a property and the child finds the song that has it.
+item music.penta-songs v=1 skills=[music.pentatonic, music.scales, music.world] {
+  title "Four songs from Earth"
+  difficulty (if q <= 1 then 0 else 1)
+  let q=0..3
+  let ask={pick(q, "Which song uses exactly the five notes of the major pentatonic scale on C: C, D, E, G and A?", "Which song uses exactly the five notes of the major pentatonic scale on G: G, A, B, D and E?", "Which song uses more than five different notes?", "Which song uses five notes, but with two steps of a semitone between them?")}
+  let right={pick(q, "Mo Li Hua", "Auld Lang Syne", "The Birch Tree", "Sakura")}
+
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=2..3
+  }
+
+  scene 36x37 {
+    table songs cols=3 head=["Song", "From", "Its notes"] cells=["Mo Li Hua", "China", "C D E G A", "Sakura", "Japan", "E F A B C", "The Birch Tree", "Russia", "A B C D E G", "Auld Lang Syne", "Scotland", "G A B D E"] at=canvas(1, 1)
+    text ask "Over the moon's edge the Earth hangs still, and the crew sing songs from four of its countries. The table lists every note each song uses. {ask}" narrate width=34 below=songs gap=1
+    choice pick options=["Mo Li Hua", "Sakura", "The Birch Tree", "Auld Lang Syne"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=songs {
+      say "Read the last column for that song letter by letter, and compare it with what the question asks."
+    }
+  }
+  hint "What does the question ask about the notes: which letters, or how many, or the steps between them?"
+  hint "{if q <= 1 then \"Find the row whose notes are exactly those five letters.\" else if q == 2 then \"Count the letters in each row.\" else \"Put each row's letters on a keyboard. Which has two pairs of neighbours with no key between?\"}"
+}

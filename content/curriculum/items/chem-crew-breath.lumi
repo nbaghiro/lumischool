@@ -1,0 +1,37 @@
+# The two-star reason: a crew member uses about 0.84 kg of oxygen a day and breathes out about 1.00 kg
+# of carbon dioxide (NASA, Baseline Values and Assumptions
+# Document, NASA/CR-2004-208941). The extra 160 g is carbon from the food
+# they ate, which joined the oxygen; no mass is made from nothing.
+item chem.crew-breath v=1 stars=2 skills=[chemistry.conservation, reasoning.explain] {
+  title "More out than in?"
+  difficulty k
+  let k=0..1 r=0..2
+  let q={pick(k, "Each astronaut breathes in about 840 g of oxygen a day and breathes out about 1000 g of carbon dioxide. Where do the extra grams come from?", "Leo says the lander's air must be getting heavier, since the crew breathe out more grams than they breathe in. What is wrong?")}
+  let right={pick(k, "Carbon from their food joined the oxygen", "The extra grams come from their food")}
+  let w1={pick(k, "Breathing makes new grams from nothing", "Carbon dioxide weighs nothing, so nothing changes")}
+  let w2={pick(k, "The oxygen tanks leak into their lungs", "The air really is getting heavier")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x26 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      lander l rungs=5
+      molecule m kind="carbon-dioxide" count=2
+    }
+    text ask "{q}" narrate width=34 below=kit gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=kit {
+      say "Carbon dioxide is carbon and oxygen. The oxygen came from the air. Where did the carbon come from?"
+    }
+  }
+  hint "What two elements make carbon dioxide?"
+  hint "The oxygen came from the air they breathed. What else goes into their bodies each day?"
+}

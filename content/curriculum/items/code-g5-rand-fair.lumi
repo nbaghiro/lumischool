@@ -1,0 +1,34 @@
+# A fair die gives each number it can say the same chance. The first program's if never comes true,
+# so it is fair; the second turns 0 into 6, so 6 comes up two ways out of seven; the third turns 1
+# into 2, so 2 comes up two ways out of six.
+item coding.rand-fair v=1 skills=[coding.random, chance.likelihood] {
+  title "Is it a fair die?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let lo={pick(k, 1, 0, 1)} was={pick(k, 0, 0, 1)} now={pick(k, 6, 6, 2)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x15 {
+    program p code=["set roll to random {lo} to 6", "if roll is {was}", "  set roll to {now}", "say roll"] at=canvas(1, 0)
+    die d face=3 right-of=p gap=2
+    text ask "A fair die says each number it can say with the same chance. Is this program fair?" width=22 below=p gap=1
+    choice pick options=["yes", "no"] right-of=ask gap=1
+  }
+
+  check coding.runs of=p pick="fair(value(roll))"
+  feedback {
+    when (k == 0 and pick == "no") point=p {
+      say "The if asks about {was}, which random {lo} to 6 never draws, so it never changes the roll."
+    }
+    when (k > 0 and pick == "yes") point=p {
+      say "Look at what the if turns {was} into. Can {now} now come up in two ways?"
+    }
+  }
+  hint "Which numbers can the program say?"
+  hint "Can any number come up in more than one way?"
+}

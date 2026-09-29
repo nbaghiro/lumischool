@@ -1,0 +1,28 @@
+# Work backwards from a turn to the time: a camera left open draws each star as an arc round the pole
+# star, and the arc's angle over 15 degrees an hour is how long it was open. a is the arc.
+item physics.star-trail-hours v=1 skills=[physics.sky, reasoning.work-backwards] {
+  title "Star trails"
+  difficulty (if a > 90 then 1 else 0)
+  let a={30, 45, 60, 75, 105, 135}
+  level easy {
+    let a={30, 45, 60}
+  }
+  level hard {
+    let a={105, 135}
+  }
+
+  scene 30x31 {
+    starmap m sky=13 clock=22 looks=1 pointers=0 names=0 turn=1 at=canvas(1, 0)
+    text ask "The observatory leaves its camera pointing at the pole star with the shutter open. Each star draws a curved trail round the pole star as the sky turns, and each trail is an arc of {a} degrees. For how many hours was the shutter open?" narrate width=28 below=m gap=1
+    number-input hours below=ask gap=1
+  }
+
+  answer hours=(a / 15)
+  feedback {
+    when (hours == a * 15) point=m {
+      say "The sky turns 15 degrees in one hour. How many lots of 15 degrees make the arc?"
+    }
+  }
+  hint "How many degrees does the sky turn in one hour?"
+  hint "How many of those make an arc of {a} degrees?"
+}

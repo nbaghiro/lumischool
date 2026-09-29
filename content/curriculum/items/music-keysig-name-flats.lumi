@@ -1,0 +1,35 @@
+# Naming a flat key: with two or more flats the flat before the last names the key (B flat, E flat,
+# A flat); one flat is F major, the one to learn by heart.
+item music.keysig-name-flats v=1 skills=[music.key-signatures, music.keys] {
+  title "Which key has these flats?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let right={pick(k, "F major", "B flat major", "E flat major", "A flat major")}
+  let last={pick(k, "B flat major", "E flat major", "A flat major", "D flat major")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..3
+  }
+
+  scene 36x33 {
+    row top space=2 align=start at=canvas(1, 1) {
+      notes sig clef=treble notes=[] values=[] key=pick(k, "F", "Bf", "Ef", "Af")
+      text ask "With two or more flats, the flat before the last one names the major key. One flat on its own is F major. Which major key has this signature?" narrate width=19
+    }
+    choice pick options=["F major", "B flat major", "E flat major", "A flat major", "D flat major"] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == last) point=sig {
+      say "That is named after the last flat. The key is the flat one place before it."
+    }
+    when (pick != right and pick != last) point=sig {
+      say "Count the flats first, then read the letter of the one before the last."
+    }
+  }
+  hint "How many flats are there?"
+  hint "{if k == 0 then \"One flat is the key to remember by heart. Which key is it?\" else \"Read the flats in order from the left. Which letter is the one before the last?\"}"
+}

@@ -1,0 +1,77 @@
+lesson physics-turning-forces v=1 format=teach grade=6 unit=6 subject=physics levels=[easy, medium, hard] {
+  title "Turning forces"
+  goal "Work out a force's moment about a pivot, and balance a lever by making the moments on each side equal."
+
+  look {
+    scene 28x14 {
+      seesaw plank left=6 atleft=2 right=4 atright=3 unit=N marks=true held=0 at=canvas(1, 0)
+    }
+    say """
+      A force that turns something about a pivot has a turning effect called its moment: the force
+      times its distance from the pivot. Here the steps are 10 cm apart, so the 6 N weight's moment
+      is 6 N times 20 cm, 120 N cm, and the 4 N weight's is 4 N times 30 cm, also 120 N cm. Equal
+      moments on each side balance, and the pivot pushes up as hard as both weights pull down, so
+      the plank neither turns nor falls. Tools are levers with the pivot in different places: in the
+      middle in scissors, at one end in a bottle opener or tweezers. That is why a long spanner, a
+      crowbar or the mill's sluice lever lets a small push do a big job.
+      """
+  }
+  do {
+    level easy {
+      worked physics.moment-of w=4 s=3 level=medium
+    }
+    practice physics.moment-of count=2 seed=1 easy-seed=2 hard-seed=3
+    level easy {
+      practice physics.moment-tips count=2 seed=2
+    }
+    level medium hard {
+      practice physics.moment-pivot-push count=1 seed=1 hard-seed=3
+      practice physics.moment-tools count=1 seed=1 hard-seed=2
+    }
+    practice physics.moment-distance count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.moment-sluice count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.moment-lifts count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.moment-spanner count=1 seed=1 easy-seed=2 hard-seed=3
+  }
+  story {
+    show physics.moment-wheelbarrow v=1 easy-v=0 hard-v=3
+  }
+  try stars=2 {
+    show physics.moment-door
+  }
+  try stars=3 {
+    level easy {
+      show physics.moment-all-ways v=0
+    }
+    level medium {
+      show physics.moment-add-weight v=1
+    }
+    level hard {
+      show physics.moment-add-weight v=3
+    }
+  }
+  remember {
+    say "A moment is the force times its distance from the pivot, and equal moments balance."
+  }
+
+  grown-ups """
+    The idea to watch for is "the heavier side goes down". Children who hold it will get the turning
+    questions wrong exactly when a light weight sits far out, which is why those questions are
+    there. Ask for both moments aloud, force times distance, before the child says which way it
+    turns, and check the units: newtons times centimetres. If it stalls, go back to a ruler balanced
+    on a pencil with coins stacked on it, two coins at 5 cm against one at 10 cm, then return to the
+    page. Grade four's see-saw lesson already had the balancing rule, so this lesson adds what it
+    lacked: the pivot's own push, which balances the weights just as the moments balance each other,
+    and where the pivot, the load and the push sit in everyday tools. Off the page, try opening a
+    door by pushing near the hinges and then at the handle, and find the pivot in a pair of
+    scissors, a bottle opener and tweezers. The three-star question is solved by working out both
+    moments first: the extra weight goes on the side with the smaller moment, which is not always
+    the side with the lighter weight.
+    """
+  level easy {
+    grown-ups "At this level a worked example finds one moment, the weights and steps are small, the see-saw questions from grade four stay, with the plank tipping clearly one way, the pivot sits close to the gate, the crowbar clearly lifts or not, and the three-star question counts the ways to balance a moment of 12 steps times newtons."
+  }
+  level hard {
+    grown-ups "At this level the weights sit further out, the new weight hangs far out, the balanced planks carry bigger weights for the pivot's push, the tool is a pair of tweezers, the crowbar's moments are close, the spanners are 15 and 25 cm, and in the three-star question the heavier weight has the smaller moment."
+  }
+}

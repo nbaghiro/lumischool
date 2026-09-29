@@ -1,0 +1,33 @@
+# A bar of a public domain tune read in its key and played: London Bridge's first bar in F and in
+# B flat, and Ode to Joy's bar 2 (Beethoven, 1824) in D and in A, since bar 1 repeats a note, which
+# music.plays cannot hear. The signature's sharps and flats are not written by the
+# notes, so the black keys have to come from it.
+item music.keysig-play-bar v=1 skills=[music.key-signatures, music.keys] {
+  title "A bar in its key"
+  difficulty v
+  let v=0..3
+  let tune={pick(v, "London Bridge in F major", "Ode to Joy in D major", "London Bridge in B flat major", "Ode to Joy in A major")}
+  let which={pick(v, "The first bar", "Bar 2", "The first bar", "Bar 2")}
+  let a={pick(v, "C5", "A4", "F5", "E5")}
+  let b={pick(v, "D5", "G4", "G5", "D5")}
+  let c={pick(v, "C5", "Fs4", "F5", "Cs5")}
+  let d={pick(v, "Bf4", "E4", "Ef5", "B4")}
+  let l1={pick(v, 1.5, 1, 1.5, 1)}
+  let l2={pick(v, 0.5, 1, 0.5, 1)}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 32x26 {
+    text ask "{which} of {tune}. Play its four notes in order." narrate width=30 at=canvas(1, 1)
+    notes bar clef=treble notes=[a, b, c, d] values=[l1, l2, 1, 1] meter=4 key=pick(v, "F", "D", "Bf", "A") below=ask gap=1
+    piano keys from=C4 whites=15 wide=2 labels=letters below=bar gap=1
+  }
+
+  check music.plays notes=[{a}, {b}, {c}, {d}]
+  hint "Which letters does the key signature change? Look for those letters in the bar."
+  hint "Name each note from its line or space, then add the sharp or flat the key gives it."
+}

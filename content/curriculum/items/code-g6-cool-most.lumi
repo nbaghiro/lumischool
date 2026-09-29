@@ -1,0 +1,33 @@
+# Two-star: which ten minutes loses the most is answered by the model's own line, half the gap, with
+# no need to run it: the gap is biggest at the start. A steady-drop program is the wrong idea.
+item coding.cool-most v=1 stars=2 skills=[coding.simulation, reasoning.compare, reasoning.explain] {
+  title "Which ten minutes cools the most?"
+  difficulty (k + g / 64)
+  let g={32, 64} k=0..1
+  let s={20 + g}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+    let g={64}
+  }
+
+  scene 36x24 {
+    program p code=["set air to 20", "set cocoa to {s}", "repeat 3", "  set gap to cocoa - air", "  take gap / 2 from cocoa"] text=true at=canvas(1, 0)
+    text ask "The program runs for thirty minutes. {pick(k, \"In which ten minutes does the cocoa lose the most?\", \"How many degrees does the cocoa lose in the third ten minutes?\")}" width=22 below=p gap=1
+    choice pick options=[pick(k, "first", g / 8), pick(k, "second", g / 2), pick(k, "third", g / 4)] below=ask gap=1
+  }
+
+  answer pick=pick(k, "first", g / 8)
+  feedback {
+    when (k == 0 and pick == "third") point=p {
+      say "Line 5 takes away half the gap, and by the third ten minutes the gap is the smallest it has been."
+    }
+    when (k == 1 and pick == g / 2) point=p {
+      say "That is the first drop. The gap is worked out again each time round, and it halves."
+    }
+  }
+  hint "What is the gap at the start? What is the gap ten minutes later?"
+  hint "Half of a big gap is more than half of a small one."
+}

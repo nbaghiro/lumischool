@@ -1,0 +1,38 @@
+# The two-star reason: why the foxes rise a summer after the lemmings, why the lemmings then crash,
+# and what is wrong with Ben's plan to get rid of the foxes. Each answer names the food.
+item nature.why-later v=1 stars=2 skills=[nature.populations, reasoning.explain] {
+  title "Why a year later?"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "The foxes were at their most in the summer after the lemmings were. Why not in the same summer?", "The foxes were at their most in summer 4, and over summers 4 and 5 the lemmings fell to their lowest. What is one reason?", "Ben says: \"Get rid of every fox, and the lemmings will go on rising for ever.\" What is wrong with that?")}
+  let ans={pick(k, "Foxes need a year of plenty to raise young", "More foxes ate more of the lemmings", "They would eat their plants and then fall")}
+  let o1={pick(k, "Foxes only hunt in the winter", "The lemmings ate all the foxes' food", "Nothing: only foxes stop lemmings")}
+  let o2={pick(k, "The scientists counted them late", "Lemmings turn into foxes", "They would fall at once without foxes")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x33 {
+    table t cols=3 head=["Summer", "Lemmings", "Arctic foxes"] cells=["1", "10", "3", "2", "25", "3", "3", "40", "5", "4", "10", "8", "5", "5", "4", "6", "20", "2"] at=canvas(1, 1)
+    text ask "{asks}" narrate width=32 below=t gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=t {
+      say "A summer full of lemmings is a summer of plenty for the foxes. What do they do with plenty of food?"
+    }
+    when (k == 1 and pick != ans) point=t {
+      say "Look at the foxes' column in summer 4. What were all those foxes eating?"
+    }
+    when (k == 2 and pick != ans) point=ask {
+      say "Foxes are not the only limit on lemmings. What do lemmings eat, and could it run short?"
+    }
+  }
+  hint "What does a fox need to raise its young? When was there most of it?"
+  hint "Every animal in the web is held back by its food and by what eats it."
+}

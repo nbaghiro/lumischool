@@ -1,0 +1,58 @@
+lesson g5-volume-of-cuboids v=1 format=teach grade=5 unit=3 subject=maths levels=[easy, medium, hard] {
+  title "Volume of cuboids"
+  goal "Find the volume of a cuboid in cubic centimetres or cubic metres, and the water it holds."
+
+  look {
+    scene 36x10 {
+      cubestack stack l=4 w=3 h=2 count=1 at=canvas(1, 1)
+      canallock lock level=0.5 boat=1 right-of=stack gap=2
+    }
+    say """
+      Volume is how many cubes fill a shape. One layer of this cuboid is 4 × 3 = 12 cubes, and two
+      layers are 24, so volume is length × width × height. A centimetre cube holds a millilitre of
+      water, and a cube one metre each way holds a thousand litres, which is how the lock keeper
+      knows how much water lifts a boat. That metre cube is 100 × 100 × 100 centimetre cubes: a
+      million of them.
+      """
+  }
+  do {
+    practice volume.cube-count count=1 seed=3
+    practice volume.layers-left count=1 seed=4
+    level easy {
+      worked volume.box-volume l=7 w=4 h=5 level=medium
+    }
+    practice volume.box-volume count=1 seed=5
+    practice volume.missing-height count=1 seed=6 hard-count=2
+    practice volume.same-volume count=1 seed=7
+    practice volume.lock-volume count=1 seed=2
+    practice volume.metre-cube count=1 seed=4
+    practice volume.tank-millilitres count=1 seed=8
+  }
+  try stars=2 {
+    show volume.double-edges v=90 k=2 easy-k=1 hard-v=120 hard-k=3
+  }
+  try stars=3 {
+    show volume.all-cuboids n=24 easy-n=12 hard-n=36
+  }
+  remember {
+    say "Volume is length × width × height: one layer, times the number of layers. One cubic metre holds a thousand litres."
+  }
+
+  grown-ups """
+    Layers are the idea: the bottom layer is length times width, and the height says how many
+    layers. If the child counts only the cubes they can see, build a small cuboid from sugar cubes
+    or dice and take it apart. A missing edge is the same sum run backwards: divide the volume by
+    the bottom layer. A cubic metre is a million cubic centimetres, not a hundred, because each of
+    the three edges is 100 cm. In the two-star question each edge that doubles doubles the whole
+    again, which is why doubling all three gives eight times as much. In the three-star question a
+    list with the edges in order, smallest first, finds every cuboid once. If the formula is still
+    guesswork, stay here another day. Off the page, measure a cereal box and work out how many
+    centimetre cubes would fill it.
+    """
+  level easy {
+    grown-ups "At this level the cuboids to count are two or three cubes long, one layer is lifted off a small crate, a 7 by 4 by 5 box is worked once in the teacher's pen before a box up to 6 by 3 by 4, the missing height is two or three, the crates to compare have floors of different sizes, the lock rises two metres and is asked in cubic metres, the grit bin is one cubic metre, the tank takes two or four jugs, the two-star doubles only the length, and the three-star counts the cuboids of 12 cubes."
+  }
+  level hard {
+    grown-ups "At this level the cuboids to count are four or five long and three or four tall, two or three layers are lifted off, the boxes are 8 to 10 long and 6 to 8 tall, the missing height is four to six and is asked twice, the crates to compare have the same floor split another way, the lock rises three metres and is asked in litres, the grit bin has a half-metre edge, the tank takes ten or twelve jugs, the two-star doubles every edge, and the three-star counts the cuboids of 36 cubes."
+  }
+}

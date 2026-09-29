@@ -1,0 +1,37 @@
+# A scale written as a proportion: plan centimetres to real metres stays the same for every length on
+# the plan of the mill.
+item proportion.plan-wheel v=1 skills=[algebra.equations.proportion, measure.scale] {
+  title "The wheel on the plan"
+  difficulty s
+  let s=0..4
+  let p={pick(s, 2, 3, 2, 4, 5)}
+  let r={pick(s, 5, 4, 3, 10, 8)}
+  let big={pick(s, 10, 10, 9, 6, 12)}
+  level easy {
+    let s={0, 1}
+  }
+  level hard {
+    let s={3, 4}
+  }
+
+  scene 36x14 {
+    waterwheel wheel paddles=10 lit=0 at=canvas(1, 1)
+    text ask "On the plan of the mill, {p} cm stands for {r} m. The water wheel is {big} m across. How many centimetres across is it on the plan?" narrate width=18 right-of=wheel gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "cm"
+    }
+  }
+
+  answer decimals(p * big / r, 0)
+  feedback {
+    when (answer == r * big / p) point=wheel {
+      say "That turns the scale round. On this plan there are fewer centimetres than real metres, so x is less than {big}."
+    }
+    when (answer == big - r + p) point=wheel {
+      say "Adding the same amount does not keep a scale. Write {p} : {r} = x : {big}."
+    }
+  }
+  hint "Write the proportion with plan centimetres first on both sides."
+  hint "What is {p} × {big}? Which number times {r} makes that?"
+}

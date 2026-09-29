@@ -1,0 +1,32 @@
+# Work backwards from a gap to the air: the gap opens by 0.6 mm for each degree colder, so the extra
+# width tonight gives how many degrees the air has fallen. t is today, d how much colder tonight.
+item physics.joint-how-cold v=1 skills=[physics.heat, reasoning.work-backwards] {
+  title "How cold is it tonight?"
+  difficulty (if d > 15 then 1 else 0)
+  let t={30, 35} d={10, 15, 20, 25}
+  level easy {
+    let d={10}
+  }
+  level hard {
+    let d={20, 25}
+  }
+  let wide={6 * (55 - t) / 10 + 6 * d / 10}
+
+  scene 30x25 {
+    expansion j mode=0 span=50 temp=t show=1 at=canvas(1, 0)
+    text ask "This bridge's gap opens by 0.6 mm for every degree the air cools. The picture is the joint this afternoon. Tonight the lock keeper measures the gap again and it is {wide} mm. What is the air's temperature tonight?" narrate width=28 below=j gap=1
+    number-input deg below=ask gap=1
+  }
+
+  answer deg=(t - d)
+  feedback {
+    when (deg == t + d) point=j {
+      say "The gap is wider tonight. A wider gap means shorter steel. Is the air warmer or colder?"
+    }
+    when (deg == d and d * 2 != t) point=j {
+      say "That is how many degrees the air has fallen. Take it from this afternoon's temperature."
+    }
+  }
+  hint "How much wider is the gap tonight than in the picture?"
+  hint "Each 0.6 mm of that is one degree colder. How many degrees is that?"
+}

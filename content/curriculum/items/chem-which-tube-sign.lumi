@@ -1,0 +1,21 @@
+# The way in: three test tubes a moment after something was added to each. One shows a gas being
+# given off, bubbles rising where there were none; the others are unchanged.
+item chem.which-tube-sign v=1 skills=[chemistry.changes] {
+  title "Which one is fizzing?"
+  let s=0..2
+
+  scene 35x12 {
+    testtubes t fills=[0.5, 0.5, 0.5] paints=["", "", ""] fizz=[if s == 0 then 8 else 0, if s == 1 then 8 else 0, if s == 2 then 8 else 0] bungs=0 letters=1 at=canvas(1, 0)
+    text ask "In the temple's workroom, Ana drops a pinch of powder into each tube of clear liquid. A gas given off is one sign that a new substance has formed. Which tube shows that sign?" narrate width=24 right-of=t gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=pick(s, "A", "B", "C")
+  feedback {
+    when (pick != pick(s, "A", "B", "C")) point=t {
+      say "A gas shows as bubbles rising through the liquid. That tube has none."
+    }
+  }
+  hint "Look inside each tube. Where are bubbles rising?"
+  hint "In a liquid, a gas shows as bubbles. Which tube has them?"
+}

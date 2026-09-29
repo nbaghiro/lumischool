@@ -1,0 +1,69 @@
+# The three primary chords, I, IV and V, built on notes 1, 4 and 5 of a major scale: named, played on
+# the keyboard, ukulele and guitar, and put under a tune, with Twinkle Twinkle at the observatory.
+lesson music-primary-chords v=1 format=teach grade=5 unit=5 subject=music levels=[easy, medium, hard] {
+  title "The three primary chords"
+  goal "Build chords I, IV and V on notes 1, 4 and 5 of a major scale, and choose the one that holds a tune's note."
+
+  look {
+    scene 36x23 {
+      row top space=2 align=end at=canvas(1, 1) {
+        observatory dome open=1
+        telescope scope tilt=40
+      }
+      notes three clef=treble notes=[C4, E4, G4, F4, A4, C5, G4, B4, D5] values=[1, 1, 1, 1, 1, 1, 1, 1, 1] meter=3 letters=true below=top gap=1
+    }
+    say """
+      The band at the observatory needs only three chords for most songs in C major. Number the
+      notes of the scale from C: C is 1, F is 4 and G is 5. Build a chord on each by skipping a
+      letter twice: C, E and G is chord I, F, A and C is chord IV, and G, B and D is chord V. The
+      staff shows the three, one to a bar. Between them they hold every note of the scale, so
+      whatever note the tune sings, one of them fits under it.
+      """
+  }
+  do {
+    practice music.chords-roman-name count=1 seed=1 easy-seed=1 hard-seed=1
+    level easy {
+      worked music.chords-note-home k=1 level=medium
+    }
+    practice music.chords-note-home count=1 seed=1 easy-seed=1 hard-seed=1
+    practice music.chords-play-triad count=1 seed=1 easy-seed=1 hard-seed=1
+    practice music.chords-bar-fits count=1 seed=1 easy-seed=5 hard-seed=1
+    practice music.chords-uke-strum count=1 seed=2 easy-seed=1 hard-seed=3
+    show music.chords-bar-fits k=5 easy-k=0 hard-k=4
+    practice music.chords-guitar-key-g count=1 seed=2 easy-seed=1 hard-seed=3
+    level hard {
+      show music.chords-claim q=1 r=1
+    }
+    practice music.observatory-twinkle-chords count=1 seed=2 easy-seed=1 hard-seed=1
+  }
+  try stars=2 {
+    show music.chords-claim q=0 r=0 easy-r=1 hard-r=0
+  }
+  try stars=3 {
+    show music.chords-count-ways v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "Chords I, IV and V sit on notes 1, 4 and 5 of the scale, and between them they hold every note."
+  }
+
+  grown-ups """
+    The idea is that the three chords most songs need are named by where they sit in the key, on
+    notes 1, 4 and 5, which is why one Roman numeral means C in C major and D in G major, and that a
+    chord fits a bar when it holds the bar's notes. The wrong ideas to watch for are reading IV as the
+    fourth letter from A rather than the fourth note of the scale, and stopping at the first chord
+    that holds a note when C and G each belong to two. In the working, look for the child counting
+    up the scale on their fingers before naming a chord. The two-star question asks whether the three
+    chords cover every note; the three-star question counts the ways to accompany a short tune, which
+    at hard is easiest backwards from the last bar. A child who is stuck can play the three chords
+    on a keyboard and sing a note over each to hear which fits, and go back to the way in; stay on
+    this lesson another day if IV and V are still found by guessing. Playing along with a sung tune
+    is for you to judge in the room. Off the page, sing a song you both know and strum C, F and G7
+    under it, changing when the note no longer fits.
+    """
+  level easy {
+    grown-ups "At this level the chords to name are in C and G major, which chord holds E is worked once in the teacher's pen before a note with one home, the chord to play is one of C major's, the bars to name are in C major, the two-star is as written with its answers in another order, and the three-star counts the ways to accompany three notes with no other rule."
+  }
+  level hard {
+    grown-ups "At this level the chords to name are in G, D or A major, with their sharps, the note to place may have two chords, the chord to play is V of G, D or A with its black key, the bars to name are in G major, a claim that C fits only chord I is judged before the two-star, the Twinkle chart counts changes over three runs, and the three-star adds the rule that no chord comes twice in a row."
+  }
+}

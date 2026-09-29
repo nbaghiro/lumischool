@@ -1,0 +1,33 @@
+# Dividing by a power of ten, the unknown in the result: the mill's flour shared into bags.
+item decimal.power-share v=1 skills=[decimals.by-ten, decimals.thousandths] {
+  title "Flour into bags"
+  difficulty ((if k == 10 then 0 else if k == 100 then 1 else 2) + (if n < 100 then 1 else 0))
+  let n={36, 45, 125, 283, 475} k={10, 100, 1000}
+  level easy {
+    let k={10}
+  }
+  level hard {
+    let k={1000}
+  }
+
+  scene 36x11 {
+    windmill mill sails=4 at=canvas(1, 1)
+    text ask "The mill grinds {n} kilograms of flour and shares it equally into {k} bags. How many kilograms go in each bag?" narrate width=22 right-of=mill gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      equation sum "{n} ÷ {k} ="
+      number-input each width=6
+    }
+  }
+
+  answer each=decimals(n / k, 0)
+  feedback {
+    when (each == n * k) point=eq {
+      say "Sharing makes each bag smaller than the whole, so the digits move to the right."
+    }
+    when (each == n / k * 10 or each == n / k / 10) point=eq {
+      say "Count the zeros in {k}. The digits move that many places, no more and no fewer."
+    }
+  }
+  hint "Will each bag hold more or less than {n} kilograms?"
+  hint "Dividing by {k} moves every digit to the right. How many places?"
+}

@@ -1,0 +1,33 @@
+# Two pipes filling a lock together: each fills a fraction of it every hour, and the fractions add.
+# The Russian work problem, with whole-hour answers.
+item puzzle.two-pipes v=1 stars=3 skills=[fractions.add-unlike, reasoning.model] {
+  title "Two pipes, one lock"
+  difficulty s
+  let s=0..3
+  let x={pick(s, 3, 4, 6, 10)}
+  let y={pick(s, 6, 12, 12, 15)}
+  level easy {
+    let s={0}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 31x14 {
+    well well courses=3 bucket=1 at=canvas(1, 1)
+    text ask "The old city's reservoir has two pipes. The big pipe alone fills it in {x} hours. The small pipe alone fills it in {y} hours. With both pipes open, how many hours does it take to fill?" narrate width=20 right-of=well gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (x * y / (x + y))
+  feedback {
+    when (answer == (x + y) / 2) point=ask {
+      say "Two pipes are faster than either one alone, so the answer is less than {x} hours."
+    }
+    when (answer == x + y) point=ask {
+      say "Both pipes pour at once, so it fills faster than with one. How much of it fills in one hour?"
+    }
+  }
+  hint "What fraction of the reservoir does each pipe fill in one hour?"
+  hint "Add those fractions. How many hours make a whole reservoir?"
+}

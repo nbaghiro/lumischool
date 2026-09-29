@@ -1,0 +1,31 @@
+# From the diameter: halve it first, since the rule is about the radius.
+item circle.crater-across v=1 skills=[circles.area, circles.parts] {
+  title "Across the crater"
+  difficulty d
+  let d={6, 8, 10, 12, 14, 16}
+  level easy {
+    let d={6, 10, 14}
+  }
+  level hard {
+    let d={12, 14, 16}
+  }
+
+  scene 35x21 {
+    circleparts c size=5 lines=2 diameter=d unit="m" at=canvas(1, 1)
+    earth e up=1 right-of=c gap=2
+    text ask "Seen from above, the rim of a young crater is a circle {d} m across. Using 3.14, what is the area inside the rim, in square metres?" narrate width=18 below=e gap=1
+    number-input answer width=7 below=ask gap=1
+  }
+
+  answer decimals(d * d / 4 * 3.14, 0)
+  feedback {
+    when (answer == d * d * 3.14) point=c {
+      say "The line drawn goes right across, so it is a diameter. Halve it to get the radius first."
+    }
+    when (answer == d * 3.14) point=c {
+      say "That is the distance round. The area uses the radius times the radius."
+    }
+  }
+  hint "Which line is drawn, a radius or a diameter?"
+  hint "What is the radius? Now use the rule for the area."
+}

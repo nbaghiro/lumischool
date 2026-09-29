@@ -1,0 +1,31 @@
+# A cubic centimetre holds a millilitre, so a tank's volume in cm³ is its capacity in ml, and the
+# jug says how many jugs it takes.
+item volume.tank-millilitres v=1 skills=[volume.cuboids, volume.capacity, capacity.millilitres] {
+  title "Filling the tank"
+  difficulty t
+  let t=0..5
+  let l={pick(t, 20, 20, 25, 30, 40, 40)}
+  let w={pick(t, 10, 20, 20, 20, 25, 20)}
+  let h={pick(t, 10, 10, 10, 15, 10, 15)}
+  level easy {
+    let t=0..1
+  }
+  level hard {
+    let t=4..5
+  }
+
+  scene 34x13 {
+    jug jug max=1000 step=100 level=1000 unit=ml at=canvas(1, 1)
+    text ask "A water tank on the narrowboat's roof is {l} cm long, {w} cm wide and {h} cm deep. How many full 1000 ml jugs fill it? A cubic centimetre holds one millilitre." narrate width=20 right-of=jug gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (l * w * h / 1000)
+  feedback {
+    when (answer == l * w * h) point=ask {
+      say "That is the tank in millilitres. How many lots of 1000 ml is it?"
+    }
+  }
+  hint "What is the tank's volume in cubic centimetres?"
+  hint "How many millilitres does one jug hold?"
+}

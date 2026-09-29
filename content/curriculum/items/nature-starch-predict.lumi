@@ -1,0 +1,42 @@
+# The core: a leaf still on the plant under its foil, and where the iodine will turn blue-black: only
+# where the leaf is green, uncovered and had light (starchIn in the drawing). A plant left in the dark
+# makes starch nowhere, which tests the rule rather than the picture.
+item nature.starch-predict v=1 skills=[nature.photosynthesis, reasoning.predict] {
+  title "Where will it turn blue-black?"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..2
+  let cover={pick(k, 0, 2, 1)} kind={pick(k, 0, 1, 0)} sun={pick(k, 1, 1, 0)}
+  let ans={pick(k, "the whole leaf", "the green part of the left half", "nowhere")}
+  let o1={pick(k, "the middle only", "the whole left half, green and white", "the two ends, either side of the strip")}
+  let o2={pick(k, "nowhere", "the green parts of both halves", "the whole leaf")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x31 {
+    leaftest l stage=0 cover=cover kind=kind sun=sun at=canvas(1, 1)
+    text ask "The plant was kept in the dark for two days, and then this leaf spent a day as the picture shows. After the iodine test, where will it be blue-black?" narrate width=32 below=l gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=l {
+      say "Nothing covers this leaf, it is green all over, and it had a day of light. Which parts could not make starch?"
+    }
+    when (k == 1 and pick == o1) point=l {
+      say "The white edge had light too. Can a white part make starch?"
+    }
+    when (k == 1 and pick == o2) point=l {
+      say "Could light reach the part under the foil?"
+    }
+    when (k == 2 and pick != ans) point=l {
+      say "The plant used up its starch in the dark, and this day was dark too. Could the leaf make any?"
+    }
+  }
+  hint "Three things are needed for starch: a green part, no cover, and light. Check each part of the leaf."
+  hint "Rule out every part that is covered, white, or in the dark."
+}

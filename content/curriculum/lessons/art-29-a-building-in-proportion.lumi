@@ -1,0 +1,67 @@
+# Drawing a building of the old city in proportion: measured in its own widths with a pencil held
+# at arm's length, shrunk by multiplying rather than taking away, and copied onto a bigger grid.
+lesson art-a-building-in-proportion v=1 format=teach grade=5 unit=7 subject=art levels=[easy, medium, hard] {
+  title "A building in proportion"
+  goal "Measure a building in its own widths and draw it at any size so that it keeps its shape."
+
+  look {
+    scene 30x17 {
+      row all at=canvas(1, 1) space=1 align=end {
+        clocktower tower hour=10 minute=40
+        library front columns=6 open=1
+        temple shrine rows=3
+      }
+    }
+    say """
+      A drawing of a building keeps its shape when every part is the right size compared with the
+      others. That is proportion. Artists measure it by holding a pencil out at arm's length, lining
+      its tip up with the building's width, and counting how many widths fit into its height. The
+      clock tower in the old city is a little over two widths tall, and the library is wider than it
+      is tall. A drawing of any size keeps those numbers.
+      """
+  }
+  do {
+    practice art.prop-tower-tall count=1 seed=1
+    practice art.prop-which-size count=2 seed=2
+    level easy {
+      worked art.prop-scale f=4 l=24 level=medium
+    }
+    practice art.prop-scale count=2 seed=3
+    practice art.prop-door count=2 seed=1
+    practice art.prop-grid count=1 hard-count=2 seed=2
+  }
+  try stars=2 {
+    show art.prop-who-kept k=0 easy-k=2 hard-k=1
+  }
+  try stars=3 {
+    show art.prop-draw-building
+  }
+  remember {
+    say "A drawing keeps its shape when every side is shrunk by the same number of times, not by the same amount."
+  }
+
+  grown-ups """
+    Drawing in proportion is where art and ratio meet, and it serves what KS2 art asks for in
+    improving mastery of drawing and recording observations. The machine marks the questions. The
+    first measures the clock tower in widths with a pencil held at arm's length. The core chooses
+    the drawing that keeps the library's shape, scales the city wall down and back up, finds the
+    temple door as a fraction of its front, and copies a drawing onto a bigger grid, where the number
+    of squares stays the same and each square grows.
+
+    The wrong idea to watch for is adding or taking away the same amount from both sides. It feels
+    fair and it squashes the building; the two-star question has one drawing made that way. If the
+    child is stuck, draw a rectangle two squares by one, then four by two, then four by three, and ask
+    which still looks like the first. The drawing is the three-star question and is responded to
+    rather than marked. Off the page, go outside with a pencil and measure a real door and a real
+    window in pencil lengths.
+
+    Respond by measuring one part together: "Your tower is three widths tall, just as you measured."
+    Ask which part was hardest to measure.
+    """
+  level easy {
+    grown-ups "At this level the tower is two widths tall, the library's drawings shrink by halves or two thirds, the wall scaled down is worked once in the teacher's pen before walls three or four times as long as they are high, the door is a third or three quarters of the front, the copy asks for big squares, the two-star has Ada's drawing right and Ben's wrong, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the tower is three widths tall, the library's drawings shrink by three fifths or three quarters, the wall's height is given and its length found, the door is drawn first and the front found from it, the copy asks for centimetres and a second copy is added, the two-star has Ada's drawing made by adding the same amount to both sides, and the three-star is as written."
+  }
+}

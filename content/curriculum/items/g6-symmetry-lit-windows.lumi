@@ -1,0 +1,37 @@
+# The three-star: every way to light exactly k windows so the panel matches itself after a half turn.
+# The squares fall into pairs opposite the centre, and a 3 by 3 panel has a centre square with no
+# partner, so an odd k needs it lit.
+item symmetry.lit-windows v=1 stars=3 skills=[shapes.symmetry.point, reasoning.all-the-ways] {
+  title "Lit windows"
+  difficulty t
+  let t=0..4
+  let g={pick(t, 3, 4, 3, 3, 4)}
+  let k={pick(t, 2, 2, 3, 4, 4)}
+  level easy {
+    let t={0, 1}
+  }
+  level hard {
+    let t={3, 4}
+  }
+
+  scene 36x17 {
+    grid panel rows=g cols=g shade=0 color=glow cell=2 at=canvas(1, 1)
+    text ask "The moon base has a {g} by {g} panel of windows. Exactly {k} windows are to be lit so that the panel looks the same after a half turn about its centre. How many different ways are there to choose them?" narrate width=22 right-of=panel gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer pick(t, 4, 8, 4, 6, 28)
+  feedback {
+    when (t == 2 and answer == 0) point=panel {
+      say "An odd number can work: one window has no partner. Which one?"
+    }
+    when (t == 3 and answer == 4) point=panel {
+      say "Four windows are two pairs. How many ways are there to choose two pairs from four?"
+    }
+    when (t == 4 and answer == 8) point=panel {
+      say "Four windows are two pairs, not one. How many ways are there to choose two of the eight pairs?"
+    }
+  }
+  hint "Each lit window needs its partner, opposite it through the centre, lit too. How many pairs are there?"
+  hint "Does any window turn onto itself?"
+}

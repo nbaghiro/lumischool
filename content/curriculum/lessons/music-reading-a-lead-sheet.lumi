@@ -1,0 +1,72 @@
+# Reading a lead sheet: the tune on a staff, the words under it and chord symbols over it, each symbol
+# lasting until the next; what C, Am, Dm, Em, F, G7, D and B flat name; playing them; notes outside
+# the chord; and moving a lead sheet to another key, with Au clair de la lune (French, 1700s) on the moon.
+lesson music-reading-a-lead-sheet v=1 format=teach grade=6 unit=7 subject=music levels=[easy, medium, hard] {
+  title "Reading a lead sheet"
+  goal "Read a lead sheet's tune, words and chord symbols, and play the chord each symbol names."
+
+  look {
+    scene 36x15 {
+      row top space=1 align=end at=canvas(1, 1) {
+        column sheet space=0 align=start {
+          notes line clef=treble notes=[C5, C5, C5, D5, E5, D5] values=[1, 1, 1, 1, 2, 2] meter=4 chords=[C, _, _, _, G7, _]
+          text words "Au clair de la lu-ne"
+        }
+        lander ship rungs=5
+      }
+    }
+    say """
+      On the moon, beside the lander, the crew sing Au clair de la lune, a French song from the
+      1700s whose name means by the light of the moon. They read it from a lead sheet: the tune on
+      the staff, the words under it, and a chord symbol over the note where each chord starts. C
+      means C major, Am means A minor, and G7 means G major with F added. A symbol lasts until the
+      next one, so one line gives the singer the tune and the player the chords. The song is in C
+      major, and like most tunes it ends on its home note, C, over the chord of C.
+      """
+  }
+  do {
+    practice music.lead-which-chord count=1 seed=2 easy-seed=1 hard-seed=2
+    level easy {
+      worked music.lead-symbol-notes k=0 r=0 level=medium
+    }
+    practice music.lead-symbol-notes count=1 seed=1 easy-seed=1 hard-seed=1
+    practice music.lead-play-chord count=1 seed=3 easy-seed=1 hard-seed=1
+    practice music.lead-uke-strum count=1 seed=2 easy-seed=1 hard-seed=1
+    practice music.lead-odd-note count=1 seed=1 easy-seed=1 hard-seed=1
+    practice music.lead-transpose count=1 seed=3 easy-seed=1 hard-seed=1
+    show music.lead-odd-note k=1 hard-k=3
+    level hard {
+      show music.lead-claim q=1 r=1
+    }
+    practice music.moon-lander-beats count=1 seed=2 easy-seed=1 hard-seed=1
+  }
+  try stars=2 {
+    show music.lead-claim q=0 r=0 easy-r=1 hard-r=0
+  }
+  try stars=3 {
+    show music.lead-harmonise v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A chord symbol names a whole chord, and it lasts until the next symbol."
+  }
+
+  grown-ups """
+    The idea is that a lead sheet is a whole song on one line: the tune to sing, the words, and a
+    chord symbol wherever the harmony changes, which a player spells as a chord and keeps playing
+    until the next symbol. The wrong ideas to watch for are playing a chord only under the note its
+    symbol sits over, and reading Am as A major or G7 as three notes. In the working, look for the
+    child spelling the chord from its letter, taking every other letter, before choosing. The
+    two-star question is the claim that a symbol lasts one note; the three-star question writes
+    symbols for a bare tune from six chords, which needs each bar checked against all six and then
+    the rules applied. A child who is stuck can sing the line while you play or strum the chords, and
+    go back to the way in; stay on this lesson another day if the symbols are still read as notes
+    rather than chords. Off the page, find a songbook with chord symbols over the words and play or
+    clap the changes while the child sings.
+    """
+  level easy {
+    grown-ups "At this level the chord to find is under a note with a symbol not far before it, spelling Am is worked once in the teacher's pen before another minor chord, the chords to play are Am or F on white keys, the chords to strum are C and G7, the notes outside the chord are under C or F, the lead sheet moves from C to G for F or Am, the beats are counted for G7, the two-star is as written with its answers in another order, and the three-star writes chords for two bars."
+  }
+  level hard {
+    grown-ups "At this level the chord to find is under a note that is not in it, the symbols to spell include G7 or D, the chords to play include D and B flat with a black key, the chords to strum are Dm and Am, the notes outside the chord are under G7, Dm or Em, the lead sheet moves to F with B flat, a claim that Am is A, C sharp and E is judged before the two-star, the beats of G7 are counted over the whole song, and the three-star adds the rule that no chord is used twice."
+  }
+}

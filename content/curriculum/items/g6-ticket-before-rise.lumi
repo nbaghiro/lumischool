@@ -1,0 +1,29 @@
+# Working backwards from a percent rise: the new price is the old one and its percent on top, so it
+# is shared into equal blocks rather than having the percent taken off it.
+item percent.ticket-before-rise v=1 skills=[percentages.change, reasoning.work-backwards] {
+  title "What was it before"
+  difficulty (s + u / 5)
+  let s=0..2 u={2, 3, 4, 5}
+  let n={pick(s, 2, 4, 5)}
+  level easy {
+    let s={0}
+  }
+  level hard {
+    let s={1, 2}
+  }
+
+  scene 35x12 {
+    ratio bars parts=[n, 1] labels=["Old", "Rise"] unit=0 total=false at=canvas(1, 1)
+    text ask "The ticket to the water wheel went up by {pick(s, 50, 25, 20)}%. It now costs {u * (n + 1)} dollars. What did it cost before the rise?" narrate width=14 right-of=bars gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (u * n)
+  feedback {
+    when (answer == u * (n + 1) * (100 - pick(s, 50, 25, 20)) / 100) point=bars {
+      say "The {pick(s, 50, 25, 20)}% was of the old price, not the new one. The bars show the new price as {n + 1} equal blocks."
+    }
+  }
+  hint "In the bars, how many equal blocks make the new price?"
+  hint "What is one block worth? How many blocks were the old price?"
+}

@@ -1,0 +1,33 @@
+# A fault is younger than every layer it breaks and older than every layer lying unbroken across it
+# (the principle of cross-cutting relationships; BGS). k is the layer from the top, f the layers the
+# fault breaks; the checker decides.
+item chem.fault-or-layer v=1 skills=[chemistry.rocks, reasoning.order] {
+  title "Older or younger than the crack?"
+  difficulty (if k == 6 - f or k == 5 - f then 1 else 0)
+  let f=2..4 k=1..5
+  level easy {
+    where (k != 6 - f and k != 5 - f)
+  }
+  level hard {
+    where (k == 6 - f or k == 5 - f)
+  }
+  let ord={pick(k - 1, "top", "second", "third", "fourth", "bottom")}
+
+  scene 29x23 {
+    strata s layers=5 names=1 ash=0 fault=f at=canvas(1, 0)
+    text ask "Look at the {ord} layer{if k == 1 or k == 5 then \"\" else \" from the top\"}. Was the crack in the rock made before or after that layer was laid down? Is the crack older or younger than that layer?" narrate width=28 below=s gap=1
+    choice pick options=["older", "younger"] stack=row below=ask gap=1
+  }
+
+  check chem.rocks of=s pick="fault({k})"
+  feedback {
+    when (pick == "older" and k > 5 - f) point=s {
+      say "The crack runs through that layer, so the layer was already there to be broken."
+    }
+    when (pick == "younger" and k <= 5 - f) point=s {
+      say "That layer lies across the top of the crack without being broken. What does that say about when it was laid down?"
+    }
+  }
+  hint "Does the crack break the {ord} layer, or stop below it?"
+  hint "A rock has to be there before it can be broken. Which came first?"
+}

@@ -1,0 +1,39 @@
+# The two-star reason: something wrong with a question in Ben's key. A question of size is answered
+# differently by different people; naming the creature is not a question about it; and a question
+# that lets the bee through with the ants names the bee wrongly.
+item nature.key-mistake v=1 stars=2 skills=[nature.keys, reasoning.find-the-mistake] {
+  title "What is wrong with Ben's key?"
+  difficulty k
+  let k=0..2
+  let says={pick(k, "Ben's key starts with the question: Is it big?", "Ben's key asks: Is it a bee? Yes: bee. No: go on.", "Ben's key asks: Has it got six legs? Yes: ant. No: spider.")}
+  let ans={pick(k, "Two people could answer it differently", "It needs the name before it can help", "A bee has six legs too, and is called an ant")}
+  let o1={pick(k, "Big creatures are not minibeasts", "Bees should come last in a key", "Spiders have six legs, so they are ants")}
+  let o2={pick(k, "It should start with the smallest", "Nothing: that is how a key works", "Nothing: it names both of them")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x26 {
+    minibeasts row kinds=["ant", "bee", "spider", "ladybird"] legs=false at=canvas(1, 1)
+    text ask "{says} What is wrong with that?" narrate width=32 below=row gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=ask {
+      say "Is a bee big? Next to an ant, yes; next to a butterfly, no. A key's question needs one answer everyone agrees on."
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "A key is for someone who does not know what the creature is yet. Can they answer that question?"
+    }
+    when (k == 2 and pick != ans) point=row {
+      say "Count the bee's legs. What would Ben's key call it?"
+    }
+  }
+  hint "Try the question yourself on one of the creatures. Can you answer it, and would everyone agree?"
+  hint "A key's question is about something you can see, and it must send every creature to its own name."
+}

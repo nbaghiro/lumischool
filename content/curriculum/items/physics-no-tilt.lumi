@@ -1,0 +1,28 @@
+# What if the Earth did not lean: every circle of latitude would be cut in half by the line between
+# day and night, so every place would have twelve hours of day, the hut included.
+item physics.no-tilt v=1 skills=[physics.sky, reasoning.predict] {
+  title "An Earth that did not lean"
+  difficulty (if lat == 80 then 1 else 0)
+  let lat={80, 60, 40}
+  level easy {
+    let lat={60, 40}
+  }
+  level hard {
+    let lat={80}
+  }
+
+  scene 26x25 {
+    tilt e places=[lat, 0] season=0 tilt=0 circles=0 names=1 at=canvas(1, 0)
+    text ask "Suppose the Earth's axis did not lean at all, as drawn. How many hours of daylight would place A at {lat}° N have on 21 June?" narrate width=24 below=e gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer 12
+  feedback {
+    when (answer == 24) point=e {
+      say "With no lean, A's circle is not all on the lit side. How much of it is?"
+    }
+  }
+  hint "Where does the line between day and night cut A's circle?"
+  hint "Half of a turn of 24 hours is how long?"
+}

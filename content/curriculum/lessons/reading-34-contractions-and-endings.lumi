@@ -1,6 +1,6 @@
 # The endings that change when a thing happens, ing for now and ed for over, and the short forms
 # with an apostrophe where letters were left out.
-lesson reading-contractions-and-endings v=1 format=teach grade=1 unit=2 subject=reading levels=[easy, medium, hard] {
+lesson reading-contractions-and-endings v=1 format=teach grade=1 unit=6 subject=reading levels=[easy, medium, hard] {
   title "Contractions and endings"
   goal "Read words with ing and ed and short forms like can't and it's, and say what they come from."
 

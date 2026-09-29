@@ -1,0 +1,70 @@
+lesson chemistry-gases-dissolved-in-water v=1 format=teach grade=5 unit=2 subject=chemistry levels=[easy, medium, hard] {
+  title "Gases dissolved in water: soda water, and the fish in a warm canal"
+  goal "Use a table to say how much gas water can hold as it warms, and tell which solutions leave a solid when the water dries up."
+
+  look {
+    scene 35x15 {
+      row all at=canvas(1, 0) space=1 align=end {
+        flask fl shape=conical fill=0.6 paint="" bubbles=8 balloon=0 bung=0
+        canallock lock
+        fishshoal f rows=2 cols=3 facing=1
+      }
+    }
+    say """
+      A gas can dissolve in water just as salt can. Soda water is water with carbon dioxide pressed
+      into it, and when the bottle is opened the gas comes out as bubbles. The canal holds a little
+      oxygen, which the fish breathe. Warm water holds less gas than cold water, the opposite of
+      salt and sugar, so warm soda water goes flat sooner. When a solution dries up, a dissolved
+      solid is left behind, but a dissolved gas goes into the air and leaves nothing.
+      """
+  }
+  do {
+    practice chem.soda-bubbles count=1 seed=1
+    show chem.dry-dish-left k=2 easy-k=0 hard-k=2
+    show chem.dry-dish-left k=0 easy-k=1 hard-k=3
+    level easy {
+      worked chem.co2-table w=0 r=2 level=medium
+    }
+    show chem.co2-table w=0 r=2 easy-r=0 hard-w=1 hard-r=0
+    show chem.co2-table w=1 r=0 easy-w=0 easy-r=1 hard-r=1
+    level hard {
+      show chem.co2-table w=1 r=2
+    }
+    show chem.five-dishes k=0 hard-k=2
+    show chem.fish-need k=2 easy-k=0 hard-k=1
+  }
+  story {
+    show chem.roof-bottle n=2 r=1 easy-n=1 hard-n=3 hard-r=2
+  }
+  try stars=2 {
+    show chem.which-tank-more k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show chem.half-the-gas k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Warm water holds less gas than cold. A dried solution leaves its solid behind, and its gas goes into the air."
+  }
+
+  grown-ups """
+    The idea is that gases dissolve in water too, and that they do the opposite of salt and sugar:
+    the warmer the water, the less gas it holds. The carbon dioxide figures are from a published
+    table (3.3 g a litre at 0 °C down to 1.0 g at 40 °C), and the oxygen figures are the ones the
+    canal water lesson used. The wrong ideas to watch for are that the bubbles in soda water are
+    air or steam, and that anything clear leaves nothing when it dries. The two-star question
+    compares a bigger warm tank with a smaller cold one, and the child has to work out both totals
+    rather than trust the bigger number. The three-star question asks the child to find half of the
+    starting amount and then walk down the table. If the table is the trouble, read one row aloud
+    together and point along it, then stay here another day. Off the page, leave one glass of soda
+    water in the fridge and one in a warm room for an hour, and see which is flatter; and dry a
+    saucer of salty water on a sunny sill beside one of soda water. The official line this lesson
+    meets is Japan's Course of Study (2017), grade 6 science A(2)(イ), that some solutions have a
+    gas dissolved in them.
+    """
+  level easy {
+    grown-ups "At this level the table is read once in the teacher's pen, the dishes are salt and sugar water, the carbon dioxide is read for one row, the fish need 7 or 14 mg, the roof bottle holds one litre, the two-star tanks are 10 and 12 litres, and the three-star starts at 0 °C."
+  }
+  level hard {
+    grown-ups "At this level the dishes are soda water and limewater, the table is read for differences, the fish need 9 or 11 mg, the roof bottle holds three litres and reaches 40 °C, the two-star has the bigger warm tank win, and the three-star starts at 20 °C."
+  }
+}

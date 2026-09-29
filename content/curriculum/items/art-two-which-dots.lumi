@@ -1,0 +1,34 @@
+# The way in: a box seen corner-on has two sets of edges running back, and a ruler laid along each
+# set finds its own point on the horizon.
+item art.two-which-dots v=1 skills=[art.perspective, art.looking] {
+  title "Where do the edges meet?"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3
+  let l={pick(k, 1, 1, 4, 4)}
+  let rr={pick(k, 15, 12, 15, 12)}
+  let right={pick(k, "A and E", "A and D", "B and E", "B and D")}
+  let o1={pick(k, "B and D", "C and E", "A and D", "A and E")}
+  let o2={pick(k, "A and C", "B and E", "C and D", "B and C")}
+  let r={k % 3}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 36x23 {
+    twopoint crate horizon=2 left=l right=rr corner=8 stage=3 door=true dots=true at=canvas(1, 1)
+    text ask "Ada draws the supply crate beside the lander, turned corner-on. Lay a ruler along the edges on each side and carry them on to the horizon. At which two dots do they meet?" width=18 right-of=crate gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then o1 else o2, if r == 0 then o1 else if r == 1 then o2 else right, if r == 0 then o2 else if r == 1 then right else o1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=crate {
+      say "Lay the ruler along the top edge and the bottom edge of one side. They cross the horizon at the same dot. Then do the other side."
+    }
+  }
+  hint "Start with the left side of the crate. Where does its top edge cross the horizon when you carry it on?"
+  hint "The two sides run back in different directions, so each has its own point. Is either of them C?"
+}

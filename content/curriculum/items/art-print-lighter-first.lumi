@@ -1,0 +1,28 @@
+# The way in: a two-colour print lays the lighter ink first, and the checker's mixing model says
+# which of the two paints is lighter.
+item art.print-lighter-first v=1 skills=[art.printing, art.tints] {
+  title "Which colour goes first?"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3
+  let r={k % 2}
+  let light={pick(k, "yellow", "yellow", "orange", "pink")}
+  let dark={pick(k, "blue", "red", "blue", "green")}
+  let a={if r == 0 then light else dark}
+  let b={if r == 0 then dark else light}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 30x11 {
+    mixingtray prints wells=["{a}", "{b}"] ring=-1 labels=true at=canvas(1, 1)
+    text ask "Ada prints fish posters for the canal market in {a} and {b}, one block for each. Which ink should she print first?" width=19 right-of=prints gap=1
+    choice pick options=["{a}", "{b}"] below=ask gap=1
+  }
+
+  check paint.mixes pick=lighter
+  hint "Look at the two inks in the tray. Which is paler?"
+  hint "A pale ink printed over a dark one hardly shows. Which one could not cover the other?"
+}

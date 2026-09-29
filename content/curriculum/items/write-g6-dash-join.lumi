@@ -1,0 +1,38 @@
+# The dash between two main clauses, as a semicolon would join them (England's year 6). One choice
+# joins two clauses; in one the words after the dash are not a clause, and in one the dash splits a
+# clause in two.
+item writing.dash-join v=1 skills=[writing.punctuation, writing.colons-semicolons] {
+  title "Which dash joins two clauses?"
+  difficulty k
+  let k=0..2 r=0..2
+  let right={pick(k, "The fog lifted – the iceberg was right there.", "The stove went out – nobody had matches.", "Nobody spoke – the whale was only metres away.")}
+  let w1={pick(k, "The fog lifted – slowly at first.", "The stove went out – at midnight.", "Nobody spoke – not even Isla.")}
+  let w2={pick(k, "We packed – a stove, a tent and a rope.", "The stove – went out at midnight.", "Nobody – spoke when the whale came.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x27 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      whale w spout=1 facing=1
+      hut h pictures=4
+    }
+    text ask "In a diary a dash can join two main clauses, groups of words that could each stand as a sentence, the way a semicolon does. Which sentence uses the dash that way?" narrate width=33 below=pics gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=ask {
+      say "Read the words after the dash on their own. They are not a main clause, so this dash adds a detail and does not join two clauses."
+    }
+    when (pick == w2) point=ask {
+      say "Read the words before the dash on their own. They are not a whole sentence, so the dash has split one clause in two."
+    }
+  }
+  hint "Cover everything after the dash. Could the words before it stand as a sentence?"
+  hint "Now cover everything before it. Could the words after it stand as a sentence too?"
+}

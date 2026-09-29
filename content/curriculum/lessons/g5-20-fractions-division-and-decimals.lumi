@@ -1,0 +1,66 @@
+lesson g5-fractions-division-and-decimals v=1 format=teach grade=5 unit=7 subject=maths levels=[easy, medium, hard] {
+  title "Fractions, division and decimals"
+  goal "Write a division as a fraction, and change a fraction into a decimal and a decimal into a fraction."
+
+  look {
+    scene 36x20 {
+      decimalsquare square hundredths=75 write=true at=canvas(1, 1)
+      longcake cake whole=16 from=0 to=16 candles=4 right-of=square gap=2
+      library hall columns=6 below=cake gap=1
+    }
+    say """
+      Three cakes are shared equally by four children at the library's feast. Each child cannot have
+      a whole cake, but each can have a quarter of every cake: three quarters in all. So 3 ÷ 4 = 3/4,
+      and any division of whole numbers can be written as a fraction, the top shared by the bottom.
+      Going on with the division past the point turns the fraction into a decimal: 3 ÷ 4 = 0.75,
+      seventy-five hundredths of the square. Read back, 0.75 is 75/100, which is 3/4 again.
+      """
+  }
+  do {
+    show quotient.rope a=3 b=5 easy-a=1 easy-b=3 hard-a=5 hard-b=8
+    show quotient.pizzas a=7 b=4 easy-a=5 easy-b=3 hard-a=11 hard-b=6
+    level easy {
+      worked quotient.to-decimal n=3 d=4 level=medium
+    }
+    show quotient.to-decimal n=3 d=8 easy-n=1 easy-d=5 hard-n=7 hard-d=25
+    show quotient.remainder a=29 b=4 easy-a=13 easy-b=2 hard-a=27 hard-b=8
+    practice quotient.from-decimal count=1 seed=5
+    show quotient.order t=1 easy-t=0 hard-t=2
+    show quotient.ends t=5 easy-t=3 hard-t=4
+    practice quotient.share-compare count=1 seed=7
+    level hard {
+      show quotient.ends t=6
+    }
+  }
+  try stars=2 {
+    show quotient.unit-step d=8 k=5 easy-d=4 easy-k=3 hard-d=16 hard-k=7
+  }
+  try stars=3 {
+    show quotient.count-ends n=10 easy-n=5 hard-n=20
+  }
+  remember {
+    say "A fraction is a division: 3/4 is 3 ÷ 4. Divide the top by the bottom to get the decimal."
+  }
+
+  grown-ups """
+    The fraction line is a division sign, and that one fact joins the two ways of writing a part.
+    Sharing is the way in: three cakes among four children is three quarters each, not four thirds,
+    so ask each time what is being shared and among how many. To make the decimal, the division
+    carries on past the point with zeros; 3 ÷ 8 needs three places. A remainder is not the digit
+    after the point: 17 ÷ 5 leaves 2 m, which is 2/5 of a metre each, 0.4, not 0.2. Only fractions
+    whose bottom, in the simplest form, is made of twos and fives end as decimals, which is why 3/12
+    ends and 4/14 does not. In the two-star question 5/8 is five lots of 1/8, so the board's 0.125
+    is multiplied rather than divided again. In the three-star question a list by bottom, 2, 4, 5,
+    8, 10, with only the tops that share nothing with the bottom, counts each fraction once. If the
+    decimals are still guesswork, stay here another day with tenths and hundredths on the square.
+    Off the page, share a bar of chocolate among the family and write each share three ways. This
+    lesson meets Japan's grade 5 course of study, A(4)ア(イ), 「整数の除法の結果は，分数を用いると常に
+    一つの数として表すことができることを理解すること。」
+    """
+  level easy {
+    grown-ups "At this level one or two metres of rope are shared, the loaves are shared among two or three children, 3/4 is worked once in the teacher's pen before 1/5, the chain is shared in halves, 13 m in two, the decimals to write are tenths and quarters, the list to order is the widest apart, the two-star uses 1 ÷ 4, and the three-star counts bottoms up to 5."
+  }
+  level hard {
+    grown-ups "At this level four or five metres are shared among six to eight, the fractions to change are 7/25 and eighths, 27 m of chain is shared in eighths, the decimals simplify to twentieths and twenty-fifths, the list to order has 5/8 against 0.65, the question of stopping is asked twice with fractions that simplify, the two-star uses 1 ÷ 16, and the three-star counts bottoms up to 20."
+  }
+}

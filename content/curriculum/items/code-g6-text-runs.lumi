@@ -1,0 +1,35 @@
+# How often a line runs, read from the spaces alone: a line two levels in runs outer times inner,
+# a line one level in runs outer times. The unknown moves between the two lines.
+item coding.text-runs v=1 skills=[coding.text, coding.repetition, coding.tracing] {
+  title "How many times does it run?"
+  difficulty (a * b / 6 + q)
+  let a=2..4 b=2..4 q=0..1
+  where (a != b)
+  let line={if q == 0 then 5 else 6}
+  level easy {
+    let q={0}
+    where (a * b <= 8)
+  }
+  level hard {
+    let q={1}
+    where (a * b >= 8)
+  }
+
+  scene 36x16 {
+    program p code=["set fuel to 30", "repeat {a}", "  forward 2", "  repeat {b}", "    turn left", "  take 1 from fuel"] text=true title="sledge run" at=canvas(1, 0)
+    text ask "The sledge's program is printed as text. How many times does line {line} run?" width=16 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="ran({line})"
+  feedback {
+    when (q == 0 and answer == b) point=p {
+      say "That line runs {b} times each time the outer repeat goes round, and the outer repeat goes round {a} times."
+    }
+    when (q == 1 and answer == a * b) point=p {
+      say "The last line is set in two spaces, not four, so it is inside the outer repeat only."
+    }
+  }
+  hint "Count the spaces before line {line}. Which repeats hold it?"
+  hint "How many times does each of those repeats go round?"
+}

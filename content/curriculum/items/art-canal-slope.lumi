@@ -1,0 +1,30 @@
+# Above the eye a line running back slopes down to the point; below the eye it slopes up; at eye
+# height it stays level along the horizon.
+item art.canal-slope v=1 skills=[art.perspective, reasoning.predict] {
+  title "Up or down to the point?"
+  difficulty (if k == 4 then 2 else if k >= 2 then 1 else 0)
+  let k=0..3
+  let thing={pick(k, "the top of the tall mill wall, high above her eyes", "the edge of the towpath at her feet", "the top of a low fence along the towpath, below her eyes", "the roof of a warehouse on the far bank, above her eyes", "a handrail exactly as high as her eyes")}
+  let way={pick(k, "down", "up", "up", "down", "level")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3, 4}
+  }
+
+  scene 36x15 {
+    perspective canal horizon=4 vp=8 posts=0 guide=true ring=true at=canvas(1, 1)
+    text ask "Ada stands on the towpath to draw. As {thing} runs back to the vanishing point, does it slope up or down, or stay level?" width=18 right-of=canal gap=1
+    choice pick options=["up", "down", "level"] below=canal gap=1
+  }
+
+  answer pick=way
+  feedback {
+    when (pick != way) point=canal {
+      say "The vanishing point is on the horizon, at the height of Ada's eyes. A line that starts above her eyes has to come down to reach it, and one that starts below has to go up."
+    }
+  }
+  hint "Does the line start above the horizon, below it, or on it?"
+  hint "It has to end at the ringed point on the horizon. Which way must it go to get there?"
+}

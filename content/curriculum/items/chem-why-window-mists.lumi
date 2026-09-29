@@ -1,0 +1,35 @@
+# The two-star reason: warm air holds more water vapour; on cold glass or cold metal it cools below
+# what it can hold, and the extra comes out as drops, or as ice when that is below 0 °C.
+item chem.why-window-mists v=1 stars=2 skills=[chemistry.water-cycle, reasoning.explain] {
+  title "Why the inside of the window?"
+  difficulty k
+  let k=0..1 r=0..2
+  let q={pick(k, "On a cold morning the hut's windows mist on the inside, not the outside. Why?", "On a clear night frost grows on the sledge's metal runners, though the air a metre up stays above 0 °C. Why?")}
+  let right={pick(k, "The warm, damp air inside cools on the cold glass", "The runners cool below 0 °C and chill the air on them")}
+  let w1={pick(k, "Cold air outside pushes water through the glass", "Frost falls out of the sky onto metal")}
+  let w2={pick(k, "The glass sweats water of its own", "Frost comes up through the metal from the snow")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x28 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      condense c kind="cold-glass" drops=6
+      table data cols=2 head=["Air °C", "Most, g per m³"] cells=["0", "5", "10", "9", "20", "17"]
+    }
+    text ask "{q}" narrate width=34 below=kit gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=data {
+      say "The table says colder air holds less water. Where is air being cooled against something cold?"
+    }
+  }
+  hint "Which air holds more water vapour, warm or cold?"
+  hint "What happens to that water when the air touches something colder?"
+}

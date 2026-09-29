@@ -1,0 +1,70 @@
+lesson chemistry-layers-and-the-earth-inside v=1 format=teach grade=6 unit=4 subject=chemistry levels=[easy, medium, hard] {
+  title "Layers from rivers and volcanoes, and the Earth inside"
+  goal "Read the order of events in a cliff from its ash and its cracks, and name the Earth's layers from the depths they reach."
+
+  look {
+    scene 29x30 {
+      row top at=canvas(1, 0) space=2 align=end {
+        strata s layers=5 names=1 ash=2 fault=3
+        volcano v smoke=1 island=0
+      }
+      earthinside e names=1 depths=1 ask=0 scale=1 below=top gap=1
+    }
+    say """
+      Rivers lay down sand and mud in layers, one on top of another. A volcano's ash falls over a
+      wide area in a few days, so an ash band is the same age wherever it is found. An earthquake
+      can crack the layers and slip one side down: the crack is younger than every layer it breaks.
+      Rocks are made of grains of minerals; granite is quartz, feldspar and mica. Deep below the
+      thin crust is the mantle, then a core of iron and nickel, liquid outside and solid inside.
+      """
+  }
+  do {
+    practice chem.fault-breaks count=1 seed=1 easy-seed=1 hard-seed=1
+    show chem.fault-or-layer f=3 k=1 easy-f=2 hard-k=2
+    level easy {
+      worked chem.drill-layer d=1 level=medium
+    }
+    show chem.drill-layer d=3 easy-d=5 hard-d=2
+    show chem.fault-or-layer f=2 k=5 easy-f=3 easy-k=5 hard-k=4
+    show chem.layer-thick k=3 easy-k=2 hard-k=4
+    show chem.granite-sand
+    show chem.core-depth k=3 hard-k=2
+    level hard {
+      show chem.drill-layer d=4
+    }
+  }
+  story {
+    show chem.volcano-ash w=0 a=3 easy-a=2 hard-w=1 hard-a=4
+  }
+  try stars=2 {
+    show chem.ash-two-cliffs v=1 easy-v=0 hard-v=3
+  }
+  try stars=3 {
+    show chem.events-in-order v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A layer is younger than the one under it, a crack is younger than the layers it breaks, and one ash band is one moment."
+  }
+
+  grown-ups """
+    The idea is to read a cliff as a story: layers laid one on another, the lowest first; a band of
+    volcanic ash that marks one moment in every cliff it reaches; and a crack from an earthquake
+    that came after every layer it breaks and before any layer lying unbroken over it. The second
+    idea is the Earth under the crust, with depths from published measurements: the mantle to
+    2,890 km, the outer core to 5,150 km and the centre at 6,371 km. The drawing shows the crust
+    thicker than it is, and says so. The wrong ideas to watch for are that a layer lower down one
+    cliff must be older than a higher layer in another cliff (the two-star question), and that the
+    centre of the Earth is all melted rock. If the child reads the cliff from the top as oldest,
+    stay here another day and lay books one on another. Off the page, look at a brick wall or a
+    road cutting for layers, and at a piece of granite for its speckles of three minerals. The
+    official line this lesson meets is Japan's Course of Study (2017), grade 6 science B(4), that
+    the land is made of layers of gravel, sand, mud and volcanic ash that can hold fossils, and is
+    changed by volcanoes and earthquakes.
+    """
+  level easy {
+    grown-ups "At this level the crack breaks one or two layers, the layer compared is well above or below it, one depth is worked in the teacher's pen, the thickness is the mantle's, the hidden depth is the outer core's, the ash story counts layers after it, and the two-star and three-star use the plainer cliffs."
+  }
+  level hard {
+    grown-ups "At this level the crack breaks three or four layers, the layers compared sit just at its top, the depths are close to a boundary, the thicknesses are the inner core's and the mantle is worked back, the ash story counts layers before it, the two-star has the deeper layer the younger, and the three-star's ash sits at the crack's top."
+  }
+}

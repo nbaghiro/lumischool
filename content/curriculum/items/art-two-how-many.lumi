@@ -1,0 +1,33 @@
+# How many vanishing points a picture needs: one for a box square-on, two corner-on, shared by boxes
+# turned the same way, and two more for a box turned another way.
+item art.two-how-many v=1 skills=[art.perspective, reasoning.generalise] {
+  title "How many points?"
+  difficulty (if k == 3 then 2 else if k == 2 then 1 else 0)
+  let k=0..3
+  let what={pick(k, "one crate turned corner-on", "one crate turned square-on, with one side facing her flat", "a row of three crates, all turned corner-on the same way", "two crates, both corner-on, but turned at different angles to each other")}
+  let n={pick(k, 2, 1, 2, 4)}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 36x16 {
+    twopoint crate horizon=2 left=1 right=15 corner=8 stage=3 door=true guide=true ring=true at=canvas(1, 1)
+    text ask "Each set of edges that run back the same way meets at its own point. How many vanishing points does Ada need on her horizon for {what}?" width=18 right-of=crate gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (k == 2 and answer == 6) point=crate {
+      say "The crates are turned the same way, so their edges run back in the same two directions and share the same two points."
+    }
+    when (k == 1 and answer == 2) point=crate {
+      say "The side facing her flat has edges that run across, level, not away. Only one set of edges runs away from her."
+    }
+  }
+  hint "How many different directions do the edges that run away from Ada go in?"
+  hint "Edges that run back in the same direction share one point, even on different crates."
+}

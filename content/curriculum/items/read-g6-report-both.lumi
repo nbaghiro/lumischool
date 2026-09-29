@@ -1,0 +1,37 @@
+# Integrating a report's words with its table: the paragraph says how the kingfishers' year works,
+# the table says when the count peaked, and only the two together give the month asked for.
+item reading.report-both v=1 skills=[reading.text-features] {
+  title "The words and the table together"
+  difficulty pick(k, 1, 2, 2, 2)
+  let k=0..3
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 35x23 {
+    text ask "{pick(k, \"In which month did the chicks leave the nest?\", \"In which month did the chicks hatch?\", \"In which month did the adult birds arrive?\", \"By which month had the young birds left?\")}" at=canvas(1, 1) width=34
+    row bottom below=ask gap=1 space=1 align=start {
+      table counts cols=2 head=["Month", "Birds"] cells=["Mar", "4", "Apr", "6", "May", "6", "Jun", "12", "Jul", "9", "Aug", "5"]
+      passage p title="From the report" text="{pick(k, \"Kingfishers nest in the sandy bank below the waterfall. The most birds are counted in the month after the chicks leave the nest.\", \"The chicks hatch, and a month later they leave the nest. The most birds are counted in the month after they leave.\", \"The adults arrive in the gorge a month before the ranger's first count of the year.\", \"After the busiest month, the young birds leave. They have all gone by the first month after it whose count is lower than April's.\")}" width=23 numbers=false
+    }
+    choice pick options=["Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"] below=bottom gap=1
+  }
+
+  answer pick=pick(k, "May", "Apr", "Feb", "Aug")
+  feedback {
+    when (pick == "Jun") point=counts {
+      say "June has the most birds. The report says that comes after the month you want. Count back."
+    }
+    when (k == 3 and pick == "Mar") point=p {
+      say "March is lower than April, but it comes before the busiest month. Start counting after June."
+    }
+    when (k == 2 and pick == "Mar") point=p {
+      say "March is the first count. The adults came a month before it."
+    }
+  }
+  hint "What does the report say happens, and when, compared with something in the table?"
+  hint "Find that month in the table, then count forward or back as the report says."
+}

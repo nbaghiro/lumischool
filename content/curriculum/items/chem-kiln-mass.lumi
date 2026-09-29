@@ -1,0 +1,44 @@
+# Mass is kept in the lime kiln: calcium carbonate (100) gives calcium oxide (56) and carbon dioxide
+# (44), from the molar masses 100.09, 56.08 and 44.01, so every 100 g of limestone gives 56 g of
+# quicklime and 44 g of gas. The unknown is the gas, the quicklime, or the limestone.
+item chem.kiln-mass v=1 skills=[chemistry.changes, chemistry.conservation, ratio.scaling] {
+  title "Where did the grams go?"
+  difficulty (d * 2 + (if n == 1 or n == 2 then 0 else 1))
+  let d=0..2 n={1, 2, 3, 5}
+  where (not (d >= 1 and n == 1))
+  let lime={100 * n}
+  let quick={56 * n}
+  let gas={44 * n}
+  let p1={pick(d, "", "The scales show ", "The scales show ")}
+  let a={pick(d, lime, lime, quick)}
+  let p2={pick(d, " g of limestone went into the kiln and ", " g of limestone. How many grams of quicklime will the kiln make from it?", " g of quicklime that a kiln made. How many grams of limestone went in?")}
+  let p3={pick(d, " g of quicklime came out. How many grams of carbon dioxide went up the chimney?", "", "")}
+  let second={pick(d, "Nothing is lost: the limestone's grams are shared between the quicklime and the gas. Which part is missing?", "How many lots of 100 g are on the scales? Each lot gives the same amount.", "How many lots of 56 g are on the scales? Each lot came from its own 100 g.")}
+  level easy {
+    let d=0..0
+  }
+  level hard {
+    let d=1..2
+  }
+
+  scene 36x17 {
+    dialscale scales max=(if n == 5 then 1000 else 500) step=100 value=(if d == 2 then quick else lime) unit=g at=canvas(1, 0)
+    text ask "In the lime kiln by the city walls, limestone is heated to about 900 °C and turns into quicklime, giving off carbon dioxide gas. Every 100 g of limestone gives 56 g of quicklime. {p1}{a}{p2}{if d == 0 then quick else \"\"}{p3}" narrate width=22 right-of=scales gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(d, gas, quick, lime)
+  feedback {
+    when (d == 0 and answer == lime + quick) point=scales {
+      say "The gas came out of the limestone, so it is part of the {lime} g, not added to it."
+    }
+    when (d == 1 and answer == gas) point=scales {
+      say "That is the carbon dioxide that left. The quicklime is the part that stays in the kiln."
+    }
+    when (d == 2 and answer == quick + 44) point=scales {
+      say "Each 56 g of quicklime came from 100 g of limestone. How many lots of 56 g are there?"
+    }
+  }
+  hint "Read the scales. What does that number weigh: the limestone or the quicklime?"
+  hint "{second}"
+}

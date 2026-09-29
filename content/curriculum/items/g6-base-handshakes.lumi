@@ -1,0 +1,28 @@
+# Three stars: handshakes worked backwards. Each astronaut shakes hands with every other one once, so
+# the count is 1 + 2 + 3 + ... up to one fewer than the crew. One named part: the crew.
+item puzzle.base-handshakes v=1 stars=3 skills=[counting.cases, reasoning.work-backwards] {
+  title "Handshakes at the base"
+  difficulty n
+  let n=5..9
+  level easy {
+    let n={5, 6}
+  }
+  level hard {
+    let n={8, 9}
+  }
+
+  scene 34x12 {
+    flag f stripes=3 at=canvas(1, 1)
+    text ask "At the party when the base opened, every astronaut shook hands once with every other astronaut. There were {n * (n - 1) / 2} handshakes in all. How many astronauts were at the party?" narrate width=26 right-of=f gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == n * (n - 1) / 4 and whole(n * (n - 1) / 4) and n != 5) point=ask {
+      say "Each handshake is one pair of people, not two. Try a small party and count its handshakes."
+    }
+  }
+  hint "With 3 astronauts, how many handshakes are there? With one more astronaut?"
+  hint "When one more astronaut arrives, how many new handshakes does that make?"
+}

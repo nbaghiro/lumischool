@@ -1,0 +1,37 @@
+# What the remainder means when both numbers are decimals: whole pieces, and the length left over.
+# The second reasoning question in the core, since the leftover is a length and not a count.
+item decimal.rope-pieces v=1 skills=[decimals.divide, reasoning.interpret] {
+  title "Pieces and what is left"
+  difficulty (p * 10 + l / 10)
+  let l={8.5, 6.7, 9.3, 5.9} p={0.4, 0.6, 0.8}
+  where (not whole(l / p))
+  level easy {
+    let p={0.4} l={8.5, 5.9}
+  }
+  level hard {
+    let p={0.6, 0.8} l={9.3, 6.7}
+  }
+
+  scene 29x16 {
+    narrowboat boat windows=3 pots=2 at=canvas(1, 1)
+    text ask "A {l} m rope is cut into pieces {p} m long to tie fenders on the boat. How many whole pieces are there, and how many metres are left over?" narrate width=28 below=boat gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input pieces width=3
+      text t1 "pieces, and"
+      number-input left width=4
+      text t2 "m left"
+    }
+  }
+
+  answer pieces=floor(l / p) left=decimals(l - floor(l / p) * p, 1)
+  feedback {
+    when (left == l * 10 % (p * 10)) point=eq {
+      say "That leftover is in tenths of a metre. How many metres is it?"
+    }
+    when (pieces == floor(l / p) + 1) point=eq {
+      say "The last piece would be too short. Only whole pieces of {p} m count."
+    }
+  }
+  hint "How many tenths of a metre is the rope? How many tenths is one piece?"
+  hint "Divide those whole numbers. The remainder is in tenths of a metre."
+}

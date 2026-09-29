@@ -1,0 +1,24 @@
+# The reason in the core: every lump weighs the same, so the difference is the water each shape has
+# to shove out of its way.
+item physics.drop-why-flat v=1 skills=[physics.water-resistance, reasoning.explain] {
+  title "Why is the flat one slowest?"
+  let t=1..2
+
+  scene 32x29 {
+    droptube tb shapes=["ball", "flat", "pointed"] time=t grams=[20, 20, 20] at=canvas(1, 0)
+    text ask "All three lumps weigh 20 g. Why does the flat one sink the slowest?" narrate width=13 right-of=tb gap=1
+    choice pick options=["Its wide face has to push the most water aside", "It is the lightest of the three", "Water pulls flat things upwards"] stack=column below=tb gap=1
+  }
+
+  answer pick="Its wide face has to push the most water aside"
+  feedback {
+    when (pick == "It is the lightest of the three") point=tb {
+      say "Look under the tubes: each lump weighs 20 g. Something other than weight is different."
+    }
+    when (pick == "Water pulls flat things upwards") point=tb {
+      say "Water pushes back on anything moving through it, but it does not pull. What is the flat one pushing against?"
+    }
+  }
+  hint "What is the same about the three lumps, and what is different?"
+  hint "As each shape sinks, water has to move out of its way. Which moves the most water?"
+}

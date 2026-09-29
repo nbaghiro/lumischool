@@ -1,0 +1,27 @@
+# One bar of the blues in C on the ukulele, read from the numeral chart and played: I is C, IV is F
+# and V is played as G7. The bar is named by number, so the child finds its line first.
+item music.blues-uke-strum v=1 skills=[music.blues, music.chord-boxes] {
+  title "Strum a bar of the blues"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let n={pick(k, 5, 2, 9, 10)}
+  let want={pick(k, "F", "C", "G7", "F")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 33x32 {
+    table chart cols=5 head=["Bars", "1st", "2nd", "3rd", "4th"] cells=["1 to 4", "I", "I", "I", "I", "5 to 8", "IV", "IV", "I", "I", "9 to 12", "V", "IV", "I", "I"] at=canvas(1, 1)
+    row low space=2 align=start below=chart gap=1 {
+      fretboard neck tuning=uke frets=3 view=chart labels=numbers strum=true
+      text ask "Ana plays the blues in C on the ukulele by the water wheel, with V played as V7. Hold the chord for bar {n} and strum it." narrate width=18
+    }
+  }
+
+  check music.chord chord={want} tuning=uke
+  hint "Which line is bar {n} in, and which numeral is written there?"
+  hint "In C major, I is C, IV is F and V7 is G7. C is one finger, F two and G7 three."
+}

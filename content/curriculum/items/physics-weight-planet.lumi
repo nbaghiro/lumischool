@@ -1,0 +1,34 @@
+# Weight on another world: the mass is the same everywhere and the pull on each kilogram changes, so
+# the weight is the mass times the pull, from the table.
+item physics.weight-planet v=1 skills=[physics.weight, physics.sky, decimals.multiply] {
+  title "Weighed on another world"
+  difficulty (if p == 2 then 0 else if p == 0 then 1 else 2)
+  let p=0..2 m={2, 5, 10, 20, 30}
+  let place={pick(p, "the Moon", "Mars", "Jupiter")}
+  let g={pick(p, 1.6, 3.7, 25)}
+  level easy {
+    let p={0, 2} m={2, 10, 20}
+  }
+  level hard {
+    let p={0, 1} m={5, 20, 30}
+  }
+
+  scene 33x20 {
+    planets pl count=5 names=1 at=canvas(1, 0)
+    table g cols=2 head=["Place", "Pull on 1 kg"] cells=["Earth", "10 N", "Moon", "1.6 N", "Mars", "3.7 N", "Venus", "9 N", "Jupiter", "25 N"] below=pl gap=1
+    text ask "An astronaut takes a {m} kg case of tools to {place}. How many newtons does it weigh there?" narrate width=14 right-of=g gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if m * g * 10 % 10 == 0 then plain(m * g) else decimals(m * g, 1))
+  feedback {
+    when (answer == m * 10) point=g {
+      say "That is its weight on Earth. On {place} each kilogram is pulled with a different number of newtons."
+    }
+    when (answer == m) point=g {
+      say "That is its mass, which does not change. The weight is the mass times the pull on each kilogram."
+    }
+  }
+  hint "How many newtons pull on each kilogram on {place}?"
+  hint "Multiply that by the number of kilograms."
+}

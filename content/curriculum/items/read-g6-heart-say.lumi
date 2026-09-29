@@ -1,0 +1,19 @@
+# The poem said by heart to a grown-up, who ticks what they heard. The Brook's first three stanzas
+# are from Tennyson's poem (1855, Gutenberg eBook 56913); Where Go the Boats? is Stevenson's (1885,
+# eBook 136), four stanzas. The first stanza is on the page as a start, so the rest is from memory.
+item reading.heart-say v=1 skills=[reading.poetry, reading.recited] {
+  title "Say it by heart"
+  let k=0..1
+
+  scene 36x18 {
+    row top at=canvas(1, 1) space=2 align=end {
+      poem p title="{pick(k, \"The Brook\", \"Where Go the Boats?\")}" lines=[pick(k, "I come from haunts of coot and hern,", "Dark brown is the river,"), pick(k, "I make a sudden sally", "Golden is the sand."), pick(k, "And sparkle out among the fern,", "It flows along for ever,"), pick(k, "To bicker down a valley.", "With trees on either hand.")] rhymes=[-1, -1, -1, -1] width=24
+      kingfisher bird flying=1 facing=1
+    }
+    text ask "{pick(k, \"Learn the first three stanzas of The Brook, one a day. Then say all three to a grown-up without the page.\", \"Learn all four stanzas of Where Go the Boats? Then say them to a grown-up without the page.\")}" below=top gap=1 width=34
+  }
+
+  check reading.recited look-for="The stanzas said from memory in their order, every word as the poem has it, with the beat heard and a small pause at the end of each stanza." notice=["Every line, in order", "No looking at the page", "The beat heard in each line", "A pause between stanzas"]
+  hint "Say the stanza you know best first. What is the first word of the next one?"
+  hint "If a line will not come, say its first letters to yourself and let the words follow."
+}

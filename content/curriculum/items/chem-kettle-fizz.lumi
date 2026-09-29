@@ -1,0 +1,32 @@
+# Limescale is calcium carbonate, the same substance as chalk and limestone, left when hard water is
+# heated; an acid such as vinegar fizzes it away, giving off carbon dioxide.
+item chem.kettle-fizz v=1 skills=[chemistry.hard-water, chemistry.acids] {
+  title "Vinegar on the limescale"
+  difficulty k
+  let k=0..1 r=0..2
+  let q={pick(k, "The mill's kettle is crusted with white limescale. What is limescale mostly?", "A grown-up pours vinegar into the crusted kettle and it fizzes. What is the gas?")}
+  let right={pick(k, "calcium carbonate, like chalk", "carbon dioxide")}
+  let w1={pick(k, "salt from the water", "oxygen")}
+  let w2={pick(k, "rust from the kettle", "steam")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x25 {
+    rocks rk rocks=["chalk", "limestone", "marble"] test=2 letters=1 names=1 at=canvas(1, 0)
+    text ask "{q}" narrate width=34 below=rk gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=rk {
+      say "Chalk, limestone and marble all fizz in vinegar, and so does limescale. They are the same substance."
+    }
+  }
+  hint "What do the rocks that fizz in vinegar have in common?"
+  hint "{if k == 0 then \"Where did the water get its minerals from as it ran through the gorge?\" else \"Which gas makes baking soda fizz in vinegar too?\"}"
+}

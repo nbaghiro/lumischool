@@ -1,0 +1,33 @@
+# Proverbs from other countries, given in English, matched to the fable whose moral they share. The
+# Russian proverb is Тише едешь, дальше будешь; the Japanese is 塵も積もれば山となる; the Chinese
+# is 滴水穿石, and the last Chinese one is 未雨绸缪. The wrong fables are chosen so that only one fits each proverb.
+item reading.fable-proverb-world v=1 skills=[reading.proverbs, reading.fables, reading.comparison] {
+  title "A proverb from far away"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let right={pick(k, "The Hare and the Tortoise", "The Crow and the Jug", "The Hare and the Tortoise", "The Ant and the Grasshopper")}
+  let a={pick(k, "The Fox and the Grapes", "The Fox and the Grapes", "The Fox and the Grapes", "The Fox and the Grapes")}
+  let b={pick(k, "The Farmer and the Stump", "The Farmer and the Stump", "The Ant and the Grasshopper", "The Hare and the Tortoise")}
+
+  scene 36x20 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=2 align=end {
+        text ask "{pick(k, \"In Russia people say: The quieter you go, the further you will get. Which fable teaches the same thing?\", \"In Japan people say: Even dust, piled up, becomes a mountain. Which fable teaches the same thing?\", \"In China people say: Dripping water wears through stone. Which fable teaches the same thing?\", \"In China people say: Mend the roof before it rains. Which fable teaches the same thing?\")}" width=24
+        bookcast t who=tortoise pose=walk dir=-1
+      }
+      choice pick options=[pick(k, a, right, b, b), pick(k, right, a, a, right), pick(k, b, b, right, a)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == a) point=ask {
+      say "The fox gives up and pretends she never wanted the grapes. Does the proverb praise that?"
+    }
+    when (pick != right and pick != a) point=ask {
+      say "Say the proverb as plain advice first. Which fable's winner followed that advice?"
+    }
+  }
+  hint "What is the proverb telling you to do? Say it in plain words."
+  hint "In which fable does the one who does that come out well?"
+}

@@ -1,0 +1,41 @@
+# Making a key rather than following one: the next question has to split the group it is given in
+# two, with a feature anyone can see. Easy splits two animals that share the first answer; hard
+# chooses the first question for four living things so that each side needs only one more.
+item nature.make-key v=1 skills=[nature.keys, nature.sorting, reasoning.systematic] {
+  title "The next question"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "Ada's key starts: \"Has it got fur or feathers?\" The owl and the bat both answer yes. Which question should come next to name them?", "Ada's key starts: \"Has it got fur or feathers?\" The frog and the fish both answer no. Which question should come next to name them?", "Ada is making a key to a toadstool, some moss, a snail and a worm. Which first question lets each side be named with one more question?")}
+  let ans={pick(k, "Has it got feathers?", "Has it got fins?", "Does it move about by itself?")}
+  let o1={pick(k, "Can it fly?", "Can it swim?", "Has it got a shell?")}
+  let o2={pick(k, "Does it come out at night?", "Does it live near water?", "Is it green?")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x23 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      owlflying o facing=1
+      bats b count=1 flying=1
+      frog f pose=sit facing=-1
+      fish fi size=2 facing=-1
+    }
+    text ask "{asks}" narrate width=32 below=pics gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k <= 1 and pick != ans) point=pics {
+      say "Ask that question of both of them. If they give the same answer, it cannot tell them apart."
+    }
+    when (k == 2 and pick != ans) point=ask {
+      say "That question puts one on one side and three on the other, and three need two more questions. Which splits them two and two?"
+    }
+  }
+  hint "Ask each question of every living thing in the group. How many say yes?"
+  hint "A good next question gives a different answer for each one it has to split."
+}

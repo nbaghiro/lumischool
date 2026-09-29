@@ -1,0 +1,37 @@
+# The three-star: two capped syringes with particles drawn in them. How far to push A so its air is
+# as crowded as B's, when pushing never changes how many particles there are.
+item chem.match-crowding v=1 stars=3 skills=[chemistry.gases, ratio.scaling, reasoning.constraints] {
+  title "Just as crowded"
+  difficulty k
+  let k=0..3
+  let la={pick(k, 60, 60, 60, 50)}
+  let na={pick(k, 18, 24, 30, 20)}
+  let lb={pick(k, 20, 40, 40, 30)}
+  let nb={pick(k, 12, 20, 24, 15)}
+  let goal={na * lb / nb}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 37x21 {
+    syringe a max=60 step=10 level=la capped=1 water=0 particles=na at=canvas(3, 0)
+    syringe b max=60 step=10 level=lb capped=1 water=0 particles=nb below=a gap=1
+    text la "A" left-of=a gap=0
+    text lb "B" left-of=b gap=0
+    text ask "Syringe A holds {na} particles of air and syringe B holds {nb}. Leo wants the air in A to be exactly as crowded as the air in B. To what reading should he push A's plunger?" narrate width=34 below=b gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer goal
+  feedback {
+    when (answer == lb) point=b {
+      say "That is B's room, but A has a different number of particles. How many particles are in each 10 ml of B?"
+    }
+  }
+  hint "How many particles are in each 10 ml of B?"
+  hint "Pushing A's plunger keeps all {na} of its particles. How many lots of 10 ml do they need to be that crowded?"
+  hint "Turn the lots of 10 ml into millilitres."
+}

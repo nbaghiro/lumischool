@@ -1,0 +1,10 @@
+item art.print-two-colours v=1 stars=3 skills=[art.printing, art.painting, reasoning.plan] {
+  title "A poster in two colours"
+
+  scene 37x17 {
+    text ask "Design a poster for the canal market printed in two colours. Plan big shapes in the light colour first, then lines and details in the dark one, with one place where they overlap and mix." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="plain" guide="none" outline="none" pots=["yellow", "blue"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A two-colour design planned in layers: large shapes in the lighter colour that would be printed first, lines and details in the darker colour that would be printed over them, and at least one place where the two overlap and mix into a third colour, with the paper left showing somewhere." notice=["Big shapes in the light colour", "Lines and details in the dark colour", "A place where the two overlap and mix", "Paper left showing"] ask="Which colour would you print first, and what would the poster look like after only that one?"
+}

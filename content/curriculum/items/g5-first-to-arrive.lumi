@@ -1,0 +1,43 @@
+# The three-star: two boats leave at different times at different speeds, and the child decides which
+# reaches the Quarry first and by how long. No method is signalled; times on a 24-hour clock.
+item rates.first-to-arrive v=1 stars=3 skills=[rates.speed, time.twenty-four-hour, time.elapsed, reasoning.compare] {
+  title "Which boat is first"
+  difficulty s
+  let s=0..2
+  let km={pick(s, 12, 12, 18)}
+  let va={pick(s, 4, 4, 4)}
+  let vb={pick(s, 6, 6, 9)}
+  let lag={pick(s, 25, 70, 135)}
+  level easy {
+    let s={0}
+  }
+  level medium {
+    let s={1}
+  }
+  level hard {
+    let s={2}
+  }
+
+  scene 33x23 {
+    canalmap map at=canvas(1, 1)
+    text ask "Boat A leaves the Mill at {pick(s, \"13:40\", \"13:40\", \"10:15\")} and goes at {va} km an hour. Boat B leaves the Mill at {pick(s, \"14:05\", \"14:50\", \"12:30\")} and goes at {vb} km an hour. The Quarry is {km} km along the canal. Which boat reaches the Quarry first, and how many minutes before the other?" narrate width=32 below=map gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      choice pick options=["boat A", "boat B"]
+      text by "by"
+      number-input mins width=3
+      text unit "minutes"
+    }
+  }
+
+  answer pick=(if 60 * km / va < lag + 60 * km / vb then "boat A" else "boat B") mins=abs(60 * km / va - lag - 60 * km / vb)
+  feedback {
+    when (pick == "boat B" and 60 * km / va < lag + 60 * km / vb) point=ask {
+      say "Boat B is faster, but it left later. Work out the time each one arrives."
+    }
+    when (pick == "boat A" and 60 * km / va > lag + 60 * km / vb) point=ask {
+      say "Boat A had a head start, but it is slower. Work out the time each one arrives."
+    }
+  }
+  hint "How long does each boat take to go {km} km?"
+  hint "At what time does each one reach the Quarry?"
+}

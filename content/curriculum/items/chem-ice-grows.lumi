@@ -1,0 +1,33 @@
+# Ice is 0.92 g/cm³ and water 1 g/cm³, so 92 g of water takes 92 cm³ as water and 100 cm³ as ice.
+# The unknown is the ice's volume or how much room it gained.
+item chem.ice-grows v=1 skills=[chemistry.density, chemistry.states] {
+  title "Ice takes more room"
+  difficulty (w * 2 + (if m <= 46 then 0 else 1))
+  let w=0..1 m={23, 46, 69, 138, 184}
+  let ice={plain(m / 0.92)}
+  where (w == 1 or m != 92)
+  level easy {
+    let w=0..0 m={23, 46, 69}
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 35x17 {
+    cylinder c max=200 step=50 minor=5 level=m unit=ml at=canvas(1, 0)
+    text ask "In the hut, Ana pours {m} ml of water, which weighs {m} g, into an ice tray and freezes it. Ice is 0.92 g in each cm³, so 92 g of ice takes 100 cm³. {if w == 0 then \"How many cm³ does her ice take?\" else \"How many cm³ more room does the ice take than the water did?\"}" narrate width=25 right-of=c gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then ice else ice - m)
+  feedback {
+    when (answer == m) point=c {
+      say "That is the water's room. Freezing keeps every gram but spreads them out."
+    }
+    when (w == 1 and answer == ice) point=c {
+      say "That is all the ice. Take away the room the water took."
+    }
+  }
+  hint "Freezing keeps the grams: the ice weighs {m} g. How many lots of 92 g is that?"
+  hint "Each 92 g of ice takes 100 cm³. {if w == 1 then \"Then compare with the room the water took.\" else \"How many cm³ is that?\"}"
+}

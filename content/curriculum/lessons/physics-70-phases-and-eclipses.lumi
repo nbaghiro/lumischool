@@ -1,0 +1,63 @@
+lesson physics-phases-and-eclipses v=1 format=teach grade=6 unit=8 subject=physics levels=[easy, medium, hard] {
+  title "Phases and eclipses"
+  goal "Use where the sun, the Earth and the moon stand to work out the moon's shape and when an eclipse happens."
+
+  look {
+    scene 36x13 {
+      row all at=canvas(0, 0) space=1 align=end {
+        eclipse e moon=0 offset=0 show=1 names=1
+        earth en up=1
+      }
+    }
+    say """
+      Half of the moon is always lit by the sun, and its shape is how much of that half faces the
+      Earth: none at new moon, all at full moon, and round again every 29.5 days. The growing half
+      moon, a quarter of the way round, is called the first quarter, and the shrinking half moon the
+      last quarter. When a new moon is exactly on the line through the sun and the Earth, its shadow
+      falls on the Earth: an eclipse of the sun. When a full moon is on the line, it moves into the
+      Earth's shadow and turns dim and red: an eclipse of the moon. Most months the moon passes just
+      above or below the line.
+      """
+  }
+  do {
+    practice physics.eclipse-read count=1 seed=1 easy-seed=2 hard-seed=3
+    level easy {
+      worked physics.eclipse-predict m=1 o=0 level=medium
+    }
+    practice physics.eclipse-predict count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.phase-earth count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.eclipse-who-sees count=1 seed=1
+    practice physics.phase-half-month count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.phase-name count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.eclipse-400 count=1 seed=1
+  }
+  story {
+    show physics.phase-earthrise k=6 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show physics.eclipse-not-monthly o=1
+  }
+  try stars=3 {
+    show physics.phase-opposite e=1 easy-e=0 hard-e=2
+  }
+  remember {
+    say "The moon's shape is how much of its lit half we see; an eclipse needs the sun, the Earth and the moon in one line."
+  }
+
+  grown-ups """
+    The idea to listen for is that the moon's shape is the Earth's shadow on it. The drawings keep
+    the two apart: the shape is how much of the always-lit half faces us, and the Earth's shadow
+    reaches the moon only at a full moon exactly on the line, which is an eclipse and happens a few
+    times a year. If the child mixes up which eclipse is which, ask whose shadow falls on whom. If
+    the shapes stall, stand the child by a lamp holding a ball at arm's length and turn slowly,
+    watching the lit part grow and shrink, then stay here another day. Off the page, look up the next
+    full moon and the next eclipse, and check the moon's shape on a clear evening. The three-star
+    question is solved by drawing the three in a line and turning the view round.
+    """
+  level easy {
+    grown-ups "At this level a worked example predicts an eclipse of the moon, the moon is new or full on the line, the Earth is seen full or new from the moon, the stretch of days is half a month, the sun's distance is multiplied out, and the three-star astronaut sees a full Earth."
+  }
+  level hard {
+    grown-ups "At this level the moon passes above or below the line, the Earth is seen as a crescent or a gibbous, the eclipse to judge is of the sun, the stretch of days is two months or a quarter, the sun's width is worked out, and the three-star astronaut sees a half Earth."
+  }
+}

@@ -1,0 +1,33 @@
+# The way in: energy sits in a store, named by what holds it. k picks the thing at the mill, and the
+# answer is the store it is in: water held up high, a turning wheel, hot flour, food, a stretched spring.
+item physics.store-which v=1 skills=[physics.energy] {
+  title "Which store?"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..4
+  }
+  let thing={pick(k, "the water held behind the weir, high above the wheel", "the heavy wheel as it turns", "the flour, warm from the millstones", "the miller's lunch of bread and cheese", "the stretched spring that pulls the mill door shut")}
+  let ans={pick(k, "Gravitational", "Kinetic", "Thermal", "Chemical", "Elastic")}
+
+  scene 31x28 {
+    waterwheel w paddles=8 lit=0 at=canvas(1, 0)
+    text ask "Which store is the energy in: {thing}?" narrate width=13 right-of=w gap=1
+    choice pick options=["Gravitational", "Kinetic", "Thermal", "Chemical", "Elastic"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "Kinetic" and k == 0) point=w {
+      say "The water behind the weir is still. Its energy is stored by being high up, ready to fall."
+    }
+    when (pick == "Gravitational" and k == 1) point=w {
+      say "The wheel stays at the same height. Its energy is in its movement."
+    }
+  }
+  hint "Is the energy there because the thing is high up, moving, hot, stretched, or made of food or fuel?"
+  hint "Moving is kinetic, high up is gravitational, hot is thermal, food and fuel are chemical, stretched is elastic."
+}

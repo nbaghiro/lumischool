@@ -1,0 +1,35 @@
+# England's year 5 and 6 guidance: -ant when a related word has the a sound clearly (often an
+# -ation word), -ent after a soft c, a soft g or qu, or when a related word has a clear e sound.
+# Each version gives the clue the guidance uses, so the ending is reasoned, not remembered.
+item writing.ant-or-ent v=1 skills=[writing.spelling] {
+  title "An -ant or an -ent word"
+  difficulty pick(k, 0, 0, 1, 1, 1, 2)
+  let k=0..5
+  let word={pick(k, "observant", "hesitant", "tolerant", "frequent", "innocent", "confident")}
+  let swap={pick(k, "observent", "hesitent", "tolerent", "frequant", "innocant", "confidant")}
+  level easy {
+    let k={0, 1, 3}
+  }
+  level hard {
+    let k={2, 4, 5}
+  }
+
+  scene 34x17 {
+    canallock lock level=0.5 boat=1 at=canvas(1, 1)
+    caption clue text="{pick(k, \"Clue: a related word is observation.\", \"Clue: a related word is hesitation.\", \"Clue: a related word is toleration.\", \"Clue: see the qu before the ending.\", \"Clue: the c before the ending says s.\", \"Clue: a related word is confidential.\")}" width=16 right-of=lock gap=1
+    caption line text="{pick(k, \"The lock-keeper notices every boat that passes. She is very ...\", \"Tom stopped at the edge of the lock and would not step on. He was ...\", \"The swans let the boats go by without a hiss. They are ...\", \"Boats pass the mill all day long. Their visits are ...\", \"The dog did not take the bread from the stall. It was ...\", \"Nell steers into the lock without a wobble. She is ...\")}" width=32 below=lock gap=1
+    word-input pick options=[word] letters=11 below=line gap=1
+  }
+
+  answer pick=word
+  feedback {
+    when (k <= 2 and pick == swap) point=clue {
+      say "Say the related word in the clue. Which vowel sound can you hear clearly in it, before the ending?"
+    }
+    when (k >= 3 and pick == swap) point=clue {
+      say "Read the clue again. After qu, a soft c or a soft g, or with a clear e sound in a related word, the ending is spelt with e."
+    }
+  }
+  hint "Read the clue. Which vowel sound do you hear clearly in it, just before the ending?"
+  hint "An a sound in the related word points to -ant. What points to -ent?"
+}

@@ -1,0 +1,38 @@
+# The two-star reason: the same words punctuated two ways, and who found the comet in each, which
+# depends on who is speaking.
+item writing.speech-meaning v=1 stars=2 skills=[writing.speech-punctuation, reasoning.explain] {
+  title "Who found the comet?"
+  difficulty k
+  let k=0..1 r=0..2
+  let who={pick(k, "Ada", "Dr Shah")}
+  let right={pick(k, "B: Dr Shah is telling us about Ada", "A: Ada is telling us about Dr Shah")}
+  let w1={pick(k, "A: Ada is speaking, so it is hers", "B: Dr Shah is speaking, so it is hers")}
+  let w2={pick(k, "A: Ada's name is in the middle", "B: Dr Shah's name comes first")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x24 {
+    row top at=canvas(1, 0) space=2 align=end {
+      column two space=1 align=start {
+        caption a text="A: “Dr Shah,” said Ada, “has found a comet.”" width=24
+        caption b text="B: Dr Shah said, “Ada has found a comet.”" width=24
+        text ask "The same words, marked two ways. In which one has {who} found the comet, and why?" narrate width=24
+      }
+      shootingstar comet sparkles=3 facing=1
+    }
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=two {
+      say "Only the words inside the speech marks are spoken. Read them alone in each sentence and ask who says them and who they are about."
+    }
+  }
+  hint "In A, which words are inside the marks? Put them together and read them."
+  hint "Now do the same for B. Who is speaking, and whose comet is it?"
+}

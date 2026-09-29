@@ -1,0 +1,28 @@
+# The two-star reason: why the last chapters come as Cavor's messages. Each wrong reason is
+# something a skimming reader might believe from the chapter titles.
+item reading.firstmen-teller v=1 stars=2 skills=[reading.inference, reading.whole-book] {
+  title "Why the messages"
+  let right={"C"}
+
+  scene 36x39 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=centre {
+        bookcast c who=sphere pose=stand dir=1
+        text ask "Bedford tells most of the book, but chapters 23 to 26 are mostly Cavor's messages. Why does the book need them?" width=25
+      }
+      passage a title="A" text="Cavor has come home, and he tells Bedford what happened in person." width=34 numbers=false
+      passage b title="B" text="Bedford went down to the Grand Lunar's palace but forgot what he saw." width=34 numbers=false
+      passage d title="C" text="Bedford is back on Earth, so only Cavor, still on the moon, can tell what happens there." width=34 numbers=false
+      choice pick options=["A", "B", "C"] stack=row
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=c {
+      say "Check where each man is. Who flies back in the sphere in chapter 20, and who is left behind?"
+    }
+  }
+  hint "Where is Bedford at the end of chapter 20? Where is Cavor?"
+  hint "Could Bedford tell what happened in a place where he was not?"
+}

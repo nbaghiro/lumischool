@@ -1,0 +1,35 @@
+# Two panels under the same sun: the one whose rays arrive nearer square on reads more, and two
+# panels tilted as far either side of square on read the same. v picks the pair; o swaps them.
+item physics.panel-tilts v=1 skills=[physics.energy, angles.degrees, reasoning.compare] {
+  title "Which panel gives more?"
+  difficulty (if v <= 1 then 0 else 1)
+  let v=0..4
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3, 4}
+  }
+  let s={pick(v, 20, 30, 20, 15, 25)}
+  let a={pick(v, 0, 50, 60, 90, 75)}
+  let b={pick(v, 70, 80, 80, 60, 45)}
+
+  scene 23x38 {
+    solarpanel p sun=s slope=a rated=200 light=100 marks=1 show=0 at=canvas(1, 0)
+    solarpanel q sun=s slope=b rated=200 light=100 marks=1 show=0 below=p gap=1
+    text ask "Two 200 W panels stand side by side at the hut: the top one, P, and the lower one, Q. Which meter will read more?" narrate width=21 below=q gap=1
+    choice pick options=["P", "Q", "Same"] stack=row below=ask gap=1
+  }
+
+  check physics.energy of=p vs=q pick=more
+  feedback {
+    when (pick != "Same" and (v == 2 or v == 3)) point=q {
+      say "Work out how far each panel is from square on. Are they as far from it as each other?"
+    }
+    when (pick == "Same" and (v <= 1 or v == 4)) point=p {
+      say "One panel is nearer to facing the sun square on. Which?"
+    }
+  }
+  hint "What tilt would face this sun square on?"
+  hint "How many degrees away from that tilt is each panel?"
+}

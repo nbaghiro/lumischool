@@ -1,0 +1,30 @@
+# Which way it turns when the props are taken away: the side whose moment is bigger goes down, and
+# equal moments balance, whatever the weights alone say.
+item physics.moment-tips v=1 skills=[physics.moments, reasoning.compare] {
+  title "Which way will it turn?"
+  difficulty (if abs(a * p - b * q) >= 8 then 0 else if a * p != b * q then 1 else 2)
+  let a={3, 4, 6, 8} p=1..4 b={2, 3, 5, 6} q=1..4
+  where (a != b)
+  level easy {
+    where (abs(a * p - b * q) >= 8)
+  }
+  level hard {
+    where (abs(a * p - b * q) < 8)
+  }
+  let ans={if a * p > b * q then "The left end goes down" else if a * p < b * q then "The right end goes down" else "It stays level"}
+
+  scene 28x30 {
+    seesaw plank left=a atleft=p right=b atright=q unit=N marks=true held=1 at=canvas(1, 0)
+    text ask "The steps are 10 cm apart. What happens when the props are taken away?" narrate width=26 below=plank gap=1
+    choice pick options=["The left end goes down", "The right end goes down", "It stays level"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans and (a > b) == (pick == "The left end goes down")) point=plank {
+      say "The heavier weight does not always win. Its distance from the pivot counts just as much."
+    }
+  }
+  hint "What is the moment of each weight, force times distance?"
+  hint "Which moment is bigger, or are they the same?"
+}

@@ -1,0 +1,26 @@
+# Three-star: not a bug but a long program to fold into a list and a repeat through it, built from the
+# tray. The moves come in pairs, a right by some number and then up 1, so the list holds the rights
+# in order; the four slots are too few for Tom's six lines, and the builder proves the folded program
+# draws exactly his steps.
+item coding.bug-refactor v=2 stars=3 skills=[coding.debugging, coding.lists, reasoning.structure] {
+  title "Fold it into a list"
+  difficulty k
+  let k=0..1
+  let a={pick(k, 2, 3)} b={pick(k, 3, 1)} c={pick(k, 1, 2)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x36 {
+    turtle t cols=(a + b + c + 1) rows=4 col=1 row=4 moves=[] target=["right {a}", "up 1", "right {b}", "up 1", "right {c}", "up 1"] mark=false at=canvas(0, 0)
+    text ask "Tom's program walks the city steps in six lines: right {a}, up 1, right {b}, up 1, right {c}, up 1. Build a program of four blocks that draws exactly the same steps, with a repeat through a list." width=18 right-of=t gap=1
+    codepad answer tray=["set stairs to list {c}, {b}, {a}", "set stairs to list {a}, {b}, {c}", "set stairs to list {b}, {a}, {c}", "for each s in stairs", "right s", "up 1"] lines=4 key=["set stairs to list {a}, {b}, {c}", "for each s in stairs", "  right s", "  up 1"] below=t gap=1
+  }
+
+  check coding.builds of=t goal=target
+  hint "What does Tom's program do again and again?"
+  hint "Each time round, s is the next item. Which number goes with each right?"
+}

@@ -1,0 +1,72 @@
+# The colon after a whole sentence, before a list or an explanation; the semicolon between two main
+# clauses that belong together, and between list items that have commas inside; the dash between
+# two main clauses in informal writing, as England's year 6 asks.
+lesson writing-colons-and-semicolons v=1 format=teach grade=6 unit=2 subject=writing levels=[easy, medium, hard] {
+  title "Colons and semicolons"
+  goal "Use a colon after a main clause to bring in a list or an explanation, and a semicolon or a dash to join two linked main clauses."
+
+  look {
+    scene 34x25 {
+      row pics at=canvas(1, 0) space=2 align=end {
+        sledge sl slats=5
+        hut h pictures=6
+        puffins pf count=2 facing=-1
+      }
+      passage p title="Pinned to the hut door" text="We took four things: the tent, the stove, the food and the ice drill. The wind dropped at noon; we set off at once. We are going to the ice cliff: the puffins there need counting. We will stop at the old hut, which has no roof; the cliff, where the puffins nest; and the tide crack. We will be back by six – nobody needs to wait up." width=33 numbers=false below=pics gap=1
+    }
+    say """
+      Isla pinned this note to the hut door. A group of words that could stand as a sentence is a
+      main clause. The first colon comes after a main clause and brings in a list. The second brings
+      in an explanation of why they went. The semicolon between the wind and setting off joins two
+      main clauses that belong together, closer than a full stop would. The places in the list
+      already have commas inside them, so semicolons show where each place ends. In the last line a
+      dash joins two main clauses, as a semicolon would, in a note that is not formal. Test every
+      colon by covering what follows it: the words left must still be a sentence.
+      """
+  }
+  do {
+    level easy {
+      worked writing.colon-or-semicolon k=2 level=medium
+    }
+    practice writing.colon-or-semicolon count=1 seed=2
+    practice writing.colon-before count=1 seed=3
+    practice writing.semicolon-join count=1 seed=4
+    practice writing.colon-job count=1 seed=5
+    practice writing.list-semicolons count=1 seed=6 hard-count=2
+    practice writing.mark-mistake count=2 seed=7
+    practice writing.dash-join count=1 seed=1
+  }
+  try stars=2 {
+    show writing.semicolon-reason k=0 r=2 hard-k=1
+  }
+  try stars=3 {
+    show writing.write-kit-note k=0 hard-k=1
+  }
+  remember {
+    say "A colon follows a main clause and brings in a list or an explanation. A semicolon, or in a note a dash, joins two main clauses that belong together."
+  }
+
+  grown-ups """
+    Both marks sit where a sentence could end, which is the test for each: the words before a colon
+    make a main clause, a group of words that could stand as a sentence, and the words on both sides
+    of a semicolon do. A dash can join two main clauses as a semicolon does, in writing that is not
+    formal; the core has one question on it. A colon then brings in a list or an explanation; a
+    semicolon brings in a second sentence closely linked to the first, and in a list whose items
+    already have commas it separates the items. The look is the note Isla pinned to the hut door.
+    The way in chooses the mark for a gap, and the core finds the colon that follows a whole
+    sentence, the semicolon between two linked sentences, the ending each start needs, how many
+    semicolons a long list takes, and which of the robot's two marks is wrong. The wrong idea to
+    watch for is a colon after "we need" or "such as", or a comma joining two sentences; ask the
+    child to cover the words after the mark. If the child is stuck, write two short sentences on
+    strips of paper and join them with a full stop, a semicolon and a colon in turn, reading each
+    aloud. Off the page, look for colons and semicolons in a recipe book or a newspaper and test
+    each one. The two-star question asks why a semicolon is right, and the three-star question is a
+    note of the child's own, which you mark.
+    """
+  level easy {
+    grown-ups "At this level a colon before a list is worked once in the teacher's pen, the gap is before the list, the colons and semicolons to judge are the plainer ones, the list has three places, the robot's wrong mark is the colon or neither, the dash question is the stove, the two-star is two sentences joined, and the note has no list of places."
+  }
+  level hard {
+    grown-ups "At this level the gap is before the rule, the colons and semicolons to judge are the subtler ones, the endings to match are the iceberg's, the lists have four and five places and are counted twice, the robot's wrong mark may be the semicolon, the dash question is the whale, the two-star is the list with commas inside, and the note adds a list of places separated by semicolons."
+  }
+}

@@ -1,0 +1,27 @@
+# The way in: after an hour on the lock wall, the shaken canal mud has settled into layers and the
+# coloured water has not changed. What settles is a suspension; what stays evenly mixed and clear,
+# however coloured, is a solution.
+item chem.suspension-or-not v=1 skills=[chemistry.mixtures] {
+  title "Which one settled?"
+  let q=0..1
+  let asks={pick(q, "Which one is a suspension?", "Which one is a solution?")}
+  let right={pick(q, "The jar", "The flask")}
+
+  scene 35x28 {
+    row two at=canvas(1, 0) space=2 align=end {
+      soiljar jar stones=1 sand=3 silt=2 clay=1 bits=3 names=0
+      flask fl shape=conical fill=0.5 paint="blue" bubbles=0 balloon=0 bung=0
+    }
+    text ask "An hour ago Sam shook canal mud into a jar of water and stirred blue food colouring into a flask of water. Both have stood on the lock wall since. A suspension is cloudy at first and settles; a solution stays clear and never settles, even when it has a colour. {asks}" narrate width=34 below=two gap=1
+    choice pick options=["The jar", "The flask"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=two {
+      say "Look for layers on the bottom. Bits that settle out were only hanging in the water, which makes a suspension."
+    }
+  }
+  hint "Which one has something lying on its floor?"
+  hint "A colour can be dissolved. Is the blue water cloudy, or clear and even all through?"
+}

@@ -1,0 +1,33 @@
+# A turtle's spiral from a list: each side is the next item, with a left turn after it, so the end
+# square comes from tracing the sides in order, not from adding them.
+item coding.each-turtle v=1 skills=[coding.lists, coding.drawing, coding.tracing] {
+  title "A spiral from a list"
+  difficulty ((a + b + c + d) / 3)
+  let a=1..3 b=1..3 c=1..3 d=1..3
+  where (a != c and b != d)
+  level easy {
+    where (a + b + c + d <= 7)
+  }
+  level hard {
+    where (a + b + c + d >= 9)
+  }
+
+  scene 36x28 {
+    program p code=["set sides to list {a}, {b}, {c}, {d}", "for each s in sides", "  forward s", "  turn left"] at=canvas(1, 0)
+    turtle t cols=7 rows=7 col=4 row=4 face=right moves=["set sides to list {a}, {b}, {c}, {d}", "for each s in sides", "  forward s", "  turn left"] show=false mark=false below=p gap=1
+    text ask "The turtle starts on the ring, facing right. Which column and row does it end on?" width=16 right-of=t gap=1
+    text tc "column" below=ask gap=1
+    number-input col right-of=tc gap=1
+    text tr "row" below=tc gap=1
+    number-input row right-of=tr gap=1
+  }
+
+  check coding.runs of=t col=col row=row
+  feedback {
+    when (col == 4 + a and row == 4) point=t {
+      say "That is where the first side ends. The repeat goes round once for every item."
+    }
+  }
+  hint "Draw each side on the squares as you go: forward by the item, then a quarter turn left."
+  hint "After the first turn left the turtle faces up. Which way does it face after the second?"
+}

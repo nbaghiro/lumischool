@@ -1,0 +1,31 @@
+# The way in: one step undone. A times is undone by sharing, and a share by multiplying.
+item algebra.flour-sacks-one-step v=1 skills=[algebra.equations] {
+  title "One step back"
+  difficulty (f + x / 25)
+  let n={4, 6, 8} x={12, 15, 24, 25, 30, 40} f=0..1
+  where (f == 0 or whole(x / n))
+  level easy {
+    let f={0} x={12, 15}
+  }
+  level hard {
+    let f={1} x={24, 30, 40}
+  }
+
+  scene 33x14 {
+    unknown eq terms=["{if f == 0 then n else \"x\"}", "{if f == 0 then \"×\" else \"÷\"}", "{if f == 0 then \"x\" else n}", "=", "{if f == 0 then n * x else x / n}"] at=canvas(1, 1)
+    text ask "{if f == 0 then \"Some sacks of flour at the mill each weigh x kg, and the equation says what they weigh together.\" else \"A load of x kg of flour is shared into sacks, and the equation says what each sack weighs.\"} What number is x?" narrate width=32 below=eq gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer x
+  feedback {
+    when (f == 0 and answer == n * x - n) point=eq {
+      say "x is multiplied by {n}, so undo it by sharing, not by taking away."
+    }
+    when (f == 1 and answer == x / n / n) point=eq {
+      say "x was shared by {n}. Undo a share by multiplying."
+    }
+  }
+  hint "What was done to x?"
+  hint "Do the opposite to the other side."
+}

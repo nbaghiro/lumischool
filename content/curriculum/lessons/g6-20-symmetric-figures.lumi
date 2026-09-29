@@ -1,0 +1,67 @@
+lesson g6-symmetric-figures v=1 format=teach grade=6 unit=7 subject=maths levels=[easy, medium, hard] {
+  title "Symmetric figures: line, point and congruent"
+  goal "Tell whether a figure has line symmetry, point symmetry or both, find where a point lands in a half turn about a centre, and match the sides of congruent shapes."
+
+  look {
+    scene 34x22 {
+      moveshape pair max=4 shape=1 x=-3 y=-2 move="rotate" turn=180 cx=0 cy=1 image=1 names=0 at=canvas(1, 1)
+      lander base right-of=pair gap=3
+    }
+    say """
+      A figure has line symmetry when a fold along a line lays one half exactly on the other. It has
+      point symmetry when a half turn about one point, its centre of symmetry, lays it exactly on
+      itself. On the grid the triangle and its hatched copy make one figure with point symmetry
+      about the ringed point: every corner has a partner the same distance away on the opposite
+      side. Two shapes are congruent when one fits exactly on the other, turned or flipped, so their
+      matching sides and angles are equal.
+      """
+  }
+  do {
+    show symmetry.hatch-order n=6 q=0 easy-n=4 hard-n=8 hard-q=1
+    show symmetry.half-turn-same s="rectangle" easy-s="square" hard-s="ell"
+    level easy {
+      worked symmetry.complete-reflect c=12 level=medium
+    }
+    show symmetry.complete-reflect c=10 easy-c=8 hard-c=12
+    practice symmetry.lander-half-turn count=1 seed=4
+    show symmetry.marks-lines k="kite" easy-k="trapezium" hard-k="rhombus"
+    practice symmetry.congruent-match count=1 seed=3
+    show symmetry.congruent-sure v=1 easy-v=2 hard-v=3
+    practice symmetry.panel-half-turn count=1 seed=5 hard-count=2
+  }
+  try stars=2 {
+    level easy medium {
+      show symmetry.which-kind k="parallelogram" easy-k="rhombus"
+    }
+    level hard {
+      show symmetry.which-kind k="kite" level=medium
+    }
+  }
+  try stars=3 {
+    show symmetry.lit-windows t=2 easy-t=0 hard-t=4
+  }
+  remember {
+    say "Line symmetry is a fold that lands a figure on itself; point symmetry is a half turn that does."
+  }
+
+  grown-ups """
+    Two kinds of symmetry are in play, and the common mix-up is thinking a shape with equal sides
+    must fold onto itself. Keep tracing paper to hand: fold it for line symmetry, and pin it at the
+    centre and turn it for point symmetry. For a half turn about a point, ask how far the corner is
+    from the centre across and up, then go the same distance the other way; a child who changes
+    the signs as if the centre were (0, 0) has forgotten the centre. For congruent triangles the
+    letters say which corners match, so PQ matches the side joining the corners P and Q match, not
+    the side written first. Three equal angles are not enough, since an enlargement keeps them. In
+    the two-star question the parallelogram has point symmetry and no line of symmetry. In the
+    three-star question the windows fall into pairs opposite the centre. If the two symmetries
+    still blur, stay here another day with tracing paper. Off the page, look for letters, road
+    signs and playing cards that look the same upside down. This lesson meets Japan's grade 6
+    Course of Study, B(1) 「対称な図形について理解すること」, with the terms 線対称, 点対称 and 対称の中心.
+    """
+  level easy {
+    grown-ups "At this level the hatch has four repeats, the plate to turn is a square, a fin twelve cells wide is completed once in the teacher's pen before one eight wide, the half turn is about a point one along, the window is a trapezium, the congruent triangles match in order or nearly, the plates have unequal sides, fewer than half the panel is tinted, the two-star shape is a rhombus, and the three-star lights two windows of a 3 by 3 panel."
+  }
+  level hard {
+    grown-ups "At this level the hatch asks for the smallest turn of eight repeats, the plate to turn is an L, the fin is twelve cells wide, the half turn moves corners B or C about a point two along, the window is a rhombus, the congruent triangles match in a scrambled order, the plates give two sides and the angle between them, the panel is asked twice with more than half tinted, the two-star shape is a kite, and the three-star lights four windows of a 4 by 4 panel."
+  }
+}

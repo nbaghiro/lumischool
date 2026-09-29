@@ -1,0 +1,35 @@
+# The three-star question: a ranger's note from the upper gorge and two bar graphs. Each wrong graph
+# breaks exactly one clue, so every clue has to be checked against both.
+item reading.report-which-graph v=1 stars=3 skills=[reading.text-features, reasoning.logic] {
+  title "Which graph fits the note?"
+  difficulty pick(k, 2, 2, 3, 2)
+  let k=0..3
+  let right={pick(k, "Graph A", "Graph B", "Neither", "Graph A")}
+
+  scene 35x28 {
+    passage note title="Which graph fits this note?" text="{pick(k, \"Fewest in June and most in August. September fell, but stayed above June.\", \"Same in June and July. Then the count rose in August and again in September.\", \"The count rose every month, and September was double June.\", \"Most in July. August was half of July, and September was the fewest.\")}" width=34 numbers=false at=canvas(1, 1)
+    row graphs below=note gap=1 space=1 align=start {
+      column left space=0 align=centre {
+        text la "Graph A" width=8
+        bargraph a labels=["Jun", "Jul", "Aug", "Sep"] values=[pick(k, 2, 3, 3, 4), pick(k, 5, 3, 4, 8), pick(k, 7, 5, 5, 4), pick(k, 4, 4, 7, 2)] max=8 color=sky
+      }
+      column right space=0 align=centre {
+        text lb "Graph B" width=8
+        bargraph b labels=["Jun", "Jul", "Aug", "Sep"] values=[pick(k, 2, 3, 3, 4), pick(k, 7, 3, 5, 8), pick(k, 5, 5, 4, 4), pick(k, 4, 7, 6, 5)] max=8 color=mint
+      }
+    }
+    choice pick options=["Graph A", "Graph B", "Neither"] below=graphs gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right and pick != "Neither") point=note {
+      say "That graph fits some of the note. Take the clues one at a time and find the one it breaks."
+    }
+    when (pick == "Neither" and right != "Neither") point=note {
+      say "One graph fits every clue. Check each clue against both graphs again."
+    }
+  }
+  hint "Split the note into clues. Check the first clue against both graphs."
+  hint "Cross out a graph as soon as it breaks one clue."
+}

@@ -1,0 +1,46 @@
+# Whether pollen that lands somewhere will make a seed: only on the stigma of a flower of the same
+# kind. The bramble to bramble is the yes, the buttercup to rose is the no, the pollen on the
+# flower's own petal is the no that needs the stigma named, and the grass pollen blown across the
+# canal is the yes that needs no insect.
+item nature.same-kind v=1 skills=[nature.pollination] {
+  title "Will it make a seed?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let told={pick(k, "A bee carries pollen from a buttercup and it rubs off on the stigma of a rose.", "A bee carries pollen from one bramble flower and it rubs off on the stigma of another bramble flower.", "Pollen falls out of a bramble flower's anther and lands on one of its own petals.", "The wind blows pollen from a grass flower onto the stigma of the same grass across the canal.")}
+  let ans={pick(k, "No: it is pollen from a different kind", "Yes: it is on the stigma of the same kind", "No: it has to land on a stigma", "Yes: it is on the stigma of the same kind")}
+  let o1={pick(k, "Yes: any pollen will do", "No: it came from a different flower", "Yes: it is on the same flower", "No: only insects can carry pollen")}
+  let o2={pick(k, "Yes: it reached a stigma", "No: brambles do not need pollen", "Yes: a petal is part of the flower", "No: it came from too far away")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x32 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      parts fig of=flower
+      bumblebee bee facing=-1
+    }
+    text ask "{told} Can that pollen start a seed growing?" narrate width=32 below=pics gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=ask {
+      say "A rose can only use rose pollen. Buttercup pollen on a rose's stigma starts nothing."
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "Pollen from one bramble flower to another is just what a bramble needs. Different flowers, same kind."
+    }
+    when (k == 3 and pick != ans) point=ask {
+      say "The wind carries grass pollen a long way, and this grain reached the stigma of its own kind. That is all it needs."
+    }
+    when (k == 2 and pick != ans) point=fig {
+      say "Find the stigma in the drawing. Pollen has to land there, not on a petal, to start a seed."
+    }
+  }
+  hint "Where does pollen have to land? Find that part on the drawing."
+  hint "It also has to be the right pollen: from a flower of the same kind."
+}

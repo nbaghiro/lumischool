@@ -1,0 +1,28 @@
+# Three angles of a quadrilateral given, the fourth from 360: two triangles make one quadrilateral.
+item angles.quad-corner v=1 skills=[angles.sums] {
+  title "The fourth corner"
+  difficulty ((if b == 90 then 0 else 1) + (if a % 10 == 0 then 0 else 1) + (if c % 10 == 0 then 0 else 1))
+  let a={70, 85, 95, 110} b={75, 90, 100, 120} c={65, 80, 105}
+  where (a + b + c < 320 and a + b + c > 200 and a + b + c != 270)
+  level easy {
+    let b={90} c={80}
+  }
+  level hard {
+    let a={85, 95} b={75, 120} c={65, 105}
+  }
+
+  scene 32x14 {
+    anglesum quad kind=quad a=a b=b c=c ask=3 at=canvas(1, 1)
+    text ask "The four panes of the observatory window make this shape. What is the angle marked with a question mark?" narrate width=12 right-of=quad gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (360 - a - b - c)
+  feedback {
+    when (answer == 180 - a - b - c or answer == a + b + c - 180) point=quad {
+      say "A quadrilateral splits into two triangles, so its angles make 360 degrees, not 180."
+    }
+  }
+  hint "Draw a line from one corner to the opposite one. How many triangles do you get?"
+  hint "So what do the four angles add up to? Take away the three you know."
+}

@@ -1,0 +1,34 @@
+# Puzzle: a repeat that goes round far more times than it needs, with an if that does nothing once the
+# total is reached. The steps as written are run; the smallest repeat that does the job is stated.
+item coding.puzzle-steps v=1 skills=[coding.efficiency, coding.decisions, reasoning.fewest] {
+  title "Going round for nothing"
+  difficulty (n / 10)
+  let n={10, 15} a={4, 5} m={20, 30}
+  where (m % a == 0)
+  level easy {
+    let n={10}
+  }
+  level hard {
+    let n={15}
+  }
+
+  scene 36x21 {
+    program p code=["set rocks to 0", "repeat {n}", "  if rocks is less than {m}", "    add {a} to rocks"] text=true at=canvas(0, 0)
+    crater cr count=3 right-of=p gap=1
+    text ask "How many times is the question on line 3 asked? The same job needs only a repeat and the add, with no if. What is the smallest number the repeat could have?" width=34 at=canvas(0, 11)
+    text ts "asked" below=ask gap=1
+    number-input asked right-of=ts gap=1
+    text tr "repeat" right-of=asked gap=2
+    number-input fewest right-of=tr gap=1
+  }
+
+  check coding.runs of=p asked="ran(3)"
+  answer fewest=(m / a)
+  feedback {
+    when (asked == m / a) point=p {
+      say "The question on line 3 is asked every time round, even after rocks has reached {m}."
+    }
+  }
+  hint "How many times does the repeat go round? Is the question asked every time?"
+  hint "How many times must {a} be added to reach {m}?"
+}

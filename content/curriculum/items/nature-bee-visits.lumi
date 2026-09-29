@@ -1,0 +1,46 @@
+# The story: a bumblebee along the towpath, and how many flowers it visits in a time. Easy and medium
+# multiply a rate by minutes; hard gives a count over five minutes first, so the rate for one minute
+# has to be found before scaling up.
+item nature.bee-visits v=1 skills=[nature.pollination, multiplication.short] {
+  title "A bee on the towpath"
+  difficulty k
+  let k=0..2
+  let told={pick(k, "Ada times a bumblebee: it visits 6 flowers every minute.", "Ada times a bumblebee: it visits 8 flowers every minute.", "Ada counts a bumblebee visit 45 flowers in 5 minutes.")}
+  let mins={pick(k, 10, 15, 20)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x23 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      flowers f count=4 petals=5
+      bumblebee bee facing=-1
+    }
+    text ask "Every flower the bee visits is a chance to leave pollen behind. {told} If it keeps going at the same rate along the towpath, how many flowers will it visit in {mins} minutes?" narrate width=32 below=pics gap=1
+    row r below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text u "flowers"
+    }
+  }
+
+  answer pick(k, 60, 120, 180)
+  feedback {
+    when (k == 2 and answer == 900) point=ask {
+      say "45 flowers took 5 minutes, not 1. Find how many it visits in one minute first."
+    }
+    when (k == 2 and answer == 225) point=ask {
+      say "That is 45 flowers five times over, which is 25 minutes. 20 minutes is four lots of 5 minutes."
+    }
+    when (k <= 1 and answer == pick(k, 16, 23, 0)) point=ask {
+      say "Adding the flowers and the minutes does not give the count. Every minute brings the same number of flowers again."
+    }
+  }
+  hint "How many flowers in one minute? How many minutes are there?"
+  hint "The same number of flowers comes every minute, so multiply."
+  level hard {
+    hint "20 minutes is how many lots of 5 minutes?"
+  }
+}

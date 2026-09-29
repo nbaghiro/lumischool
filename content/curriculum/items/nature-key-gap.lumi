@@ -1,0 +1,33 @@
+# The key with one question rubbed out, and the question that fits the gap: it has to split the two
+# things the row names, so a question both of them answer the same way will not do.
+item nature.key-gap v=1 skills=[nature.keys, reasoning.what-is-missing] {
+  title "The missing question"
+  let k=0..2
+  let q2={pick(k, "?", "Has it got eight legs?", "Has it got eight legs?")}
+  let q3={pick(k, "Has it got wings?", "?", "Has it got wings?")}
+  let q5={pick(k, "Has it got big, patterned wings?", "Has it got big, patterned wings?", "?")}
+  let ans={pick(k, "Has it got eight legs?", "Has it got wings?", "Has it got big, patterned wings?")}
+  let o1={pick(k, "Has it got a shell?", "Has it got six legs?", "Has it got wings?")}
+  let o2={pick(k, "Has it got legs?", "Has it got legs?", "Has it got six legs?")}
+
+  scene 34x28 {
+    column t at=canvas(1, 1) space=0 align=start {
+      text t1 "1  Has it got legs?  Yes: go to 2.  No: snail." width=32
+      text t2 "2  {q2}  Yes: spider.  No: go to 3." width=32
+      text t3 "3  {q3}  Yes: go to 4.  No: ant." width=32
+      text t4 "4  Has it got hard, spotted wing cases?  Yes: ladybird.  No: go to 5." width=32
+      text t5 "5  {q5}  Yes: butterfly.  No: bee." width=32
+    }
+    text ask "Rain smudged one question on Ada's key. Which question belongs where the question mark is?" narrate width=32 below=t gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans) point=t {
+      say "Read the row's two answers. The question has to say yes to one of them and no to the other."
+    }
+  }
+  hint "Read where the row's two answers lead. What is different about the creatures on each side?"
+  hint "A question both creatures answer the same way cannot split them."
+}

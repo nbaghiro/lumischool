@@ -1,0 +1,40 @@
+# The story: the end of each line of Au clair de la lune, C for two beats, G7 for two, then C for a
+# whole bar of four. G7 lasts 2 beats and C 6; the ending closes three of the song's four lines, so
+# 6 beats of G7 in all.
+item music.moon-lander-beats v=1 skills=[music.lead-sheets, music.note-values] {
+  title "By the light of the Earth"
+  difficulty q
+  let q=0..2
+  let ask={pick(q, "For how many beats is G7 played?", "For how many beats is C played in these two bars?", "This ending closes three of the song's four lines. How many beats of G7 is that in the whole song?")}
+  let right={pick(q, 2, 6, 6)}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=2..2
+  }
+
+  scene 36x25 {
+    row top space=2 align=end at=canvas(1, 1) {
+      notes line clef=treble notes=[C5, E5, D5, D5, C5] values=[1, 1, 1, 1, 4] meter=4 chords=[C, _, G7, _, C]
+      lander ship rungs=5
+    }
+    text ask "Beside the lander, with the Earth up in the black sky, the crew sing the end of a line of Au clair de la lune from the lead sheet. {ask}" narrate width=34 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (q == 0 and answer == 1) point=line {
+      say "G7 starts over note 3 and lasts until the next symbol. How many beats is that?"
+    }
+    when (q == 1 and answer == 4) point=line {
+      say "C is also played at the start of bar 1, before G7 comes in."
+    }
+    when (q == 2 and answer == 2) point=line {
+      say "That is for one line. The same ending comes three times."
+    }
+  }
+  hint "Where does each symbol start, and where does the next one take over?"
+  hint "Count the beats under each symbol: a crotchet is 1 and a semibreve 4."
+}

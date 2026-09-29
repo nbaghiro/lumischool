@@ -1,0 +1,36 @@
+# Placing things on the lines of thirds, worked out from the size of the sheet. At hard the unknown
+# moves to the point where two lines cross.
+item art.earth-thirds v=1 skills=[art.composition, fractions.of-amount, reasoning.multiplicative] {
+  title "On the lines of thirds"
+  difficulty (q + (if w == 18 then 0 else 1))
+  let w={18, 24, 30} h={12, 15, 18} q=0..1
+  let hh={if w == 18 then 12 else if w == 24 then 15 else 18}
+  level easy {
+    let w={18, 24} q={0}
+  }
+  level hard {
+    let q=1..2
+  }
+  where (h == hh)
+
+  scene 35x33 {
+    paintsheet sheet w=w h=h paper="squared" guide="none" outline="none" pots=["black", "white", "blue"] at=canvas(1, 1)
+    text ask "{pick(q, \"Ada's sheet is \" , \"Ada's sheet is \", \"Ada's sheet is \")}{w} squares wide and {h}{pick(q, \" high. She rules the moon's horizon on the lower line of thirds. How many squares up from the bottom is it?\", \" high. She puts the middle of the Earth on the right-hand line of thirds. How many squares from the left edge is it?\", \" high. She puts the Earth where the right-hand and the top lines of thirds cross. How many squares down from the top is that?\")}" width=34 below=sheet gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if q == 0 then h / 3 else if q == 1 then 2 * w / 3 else h / 3)
+  feedback {
+    when (q == 0 and answer == 2 * h / 3) point=sheet {
+      say "That is the upper line. The lower line is one third of the way up from the bottom."
+    }
+    when (q == 1 and answer == w / 3) point=sheet {
+      say "That is the left-hand line. The right-hand one is two thirds of the way across."
+    }
+    when (q == 2 and answer == 2 * h / 3) point=sheet {
+      say "The top line of thirds is one third of the way down from the top, not two."
+    }
+  }
+  hint "The lines of thirds cut the sheet into three equal parts each way. How big is one third?"
+  hint "Which line is it, the first third or the second, counted from the edge the question names?"
+}

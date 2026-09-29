@@ -1,0 +1,22 @@
+# The way in: a compass left open at the radius steps round its own circle exactly six times, which
+# is where every six-fold pattern of the old city starts. The drawing is the compass's arcs, not a
+# six-petal rosette, so the picture does not answer it.
+item art.compass-six-steps v=1 skills=[art.pattern, art.geometry] {
+  title "Stepping round the circle"
+  difficulty 0
+
+  scene 36x24 {
+    construction arcs kind="perpendicular" at=canvas(1, 1)
+    text ask "Ada draws a circle, then leaves her compass open the same width. She puts its point on the edge, marks where the pencil crosses, moves the point to that mark, and does it again. How many marks go round before she is back where she started?" width=34 below=arcs gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer 6
+  feedback {
+    when (answer == 4) point=arcs {
+      say "Four would be a square's corners, and each step here is shorter than a square's side. Each step is exactly as long as the radius."
+    }
+  }
+  hint "Try it on scrap paper with a compass, keeping the same opening all the way round."
+  hint "Count the marks as you go, and stop when the compass lands back on the first one."
+}

@@ -1,0 +1,43 @@
+# Layout as part of instructions: a list whose order matters is numbered, and a list whose order does
+# not is set out with bullet points. Three lists from the mill's card; only one has an order that
+# matters, and at hard the checks before starting look like steps but can be done in any order.
+item writing.instr-numbers-or-bullets v=1 skills=[writing.instructions, writing.layout, reasoning.explain] {
+  title "Numbers or bullet points?"
+  difficulty k
+  let k=0..1 r=0..2
+  let t1={pick(k, "What you need", "Checks before you start")}
+  let t2={pick(k, "Starting the wheel", "Stopping the wheel")}
+  let t3={pick(k, "Rules at the mill", "Signs the axle needs oil")}
+  let l1={pick(k, "gloves, the sluice key, the oil can", "the brake pin is out, the gate is shut, the paddles are clear")}
+  let l2={pick(k, "climb to the gate, fit the key, turn it three times", "close the gate, wait for the wheel to stop, push in the brake pin")}
+  let l3={pick(k, "no running, no loose sleeves, nobody works alone", "it squeaks, it smokes, it turns more slowly")}
+  let first={if r == 0 then t1 else if r == 1 then t2 else t3}
+  let second={if r == 0 then t2 else if r == 1 then t3 else t1}
+  let third={if r == 0 then t3 else if r == 1 then t1 else t2}
+  let body1={if r == 0 then l1 else if r == 1 then l2 else l3}
+  let body2={if r == 0 then l2 else if r == 1 then l3 else l1}
+  let body3={if r == 0 then l3 else if r == 1 then l1 else l2}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x41 {
+    passage p1 title="{first}" text="{body1}" width=33 numbers=false at=canvas(1, 0)
+    passage p2 title="{second}" text="{body2}" width=33 numbers=false below=p1 gap=1
+    passage p3 title="{third}" text="{body3}" width=33 numbers=false below=p2 gap=1
+    text ask "The miller is laying out the card. A list gets numbers when its order matters and bullet points when it does not. Which list should be numbered?" narrate width=33 below=p3 gap=1
+    choice pick options=["{first}", "{second}", "{third}"] stack=column below=ask gap=1
+  }
+
+  answer pick=t2
+  feedback {
+    when (pick != t2) point=p1 {
+      say "Try that list in a different order. Would it still work? If it would, bullet points are enough."
+    }
+  }
+  hint "For each list, swap the first and the last. Does anything go wrong?"
+  hint "Which list is a job done one step after another?"
+}

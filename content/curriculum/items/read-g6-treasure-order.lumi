@@ -1,0 +1,21 @@
+# Four moments of a sitting put back in the book's order. The moments sit in different chapters of
+# the sitting, so the order cannot be read off one page.
+item reading.treasure-order v=1 skills=[reading.sequencing, reading.whole-book] {
+  title "In the book's order"
+  difficulty pick(k, 0, 1, 1)
+  let k=0..2
+
+  scene 36x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=centre {
+        bookcast c who=jim pose=walk dir=1
+        text ask "{pick(k, \"Number these in the order they happen in chapters 1 to 3.\", \"Number these in the order they happen in chapters 8 to 11.\", \"Number these in the order they happen in chapters 24 to 26.\")}" width=26
+      }
+      sequence s items=[pick(k, "The doctor warns the captain that rum will kill him.", "Mr Arrow disappears one night and is not seen again.", "Jim pulls down the pirates' flag."), pick(k, "A blind man puts a paper into the captain's hand.", "Black Dog runs out of the Spy-glass tavern.", "Jim climbs the rigging with Hands coming after him."), pick(k, "Black Dog and the captain fight with cutlasses.", "Jim listens to Silver and Dick from inside the barrel.", "Jim drifts along the coast in Ben Gunn's little boat."), pick(k, "Jim's father dies.", "Captain Smollett tells the squire he does not like the voyage.", "Hands sends Jim below for a bottle of wine.")] blanks=[p1, p2, p3, p4]
+    }
+  }
+
+  answer p1=pick(k, 2, 3, 2) p2=pick(k, 4, 1, 4) p3=pick(k, 1, 4, 1) p4=pick(k, 3, 2, 3)
+  hint "Which of these happens in the first chapter of the sitting, and which in the last?"
+  hint "Put the two ends in first, then decide the order of the two in the middle."
+}

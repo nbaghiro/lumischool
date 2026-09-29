@@ -1,0 +1,29 @@
+# How thick a layer is, from the depths it runs between (EARTH_LAYERS: 35, 2,890, 5,150 and 6,371 km).
+# k is the layer from the top; the checker works out its thickness.
+item chem.layer-thick v=1 skills=[chemistry.rocks, subtraction.columns] {
+  title "How thick is the layer?"
+  difficulty (k - 2)
+  let k=2..4
+  level easy {
+    let k={2}
+  }
+  level hard {
+    let k={3, 4}
+  }
+  let what={pick(k - 2, "the mantle, from the bottom of the crust to its own bottom", "the outer core", "the inner core, from its edge to the centre")}
+
+  scene 29x27 {
+    earthinside e names=1 depths=1 ask=0 scale=0 at=canvas(1, 0)
+    text ask "Take the crust to be 35 km thick, as it is under much of the land. How many kilometres thick is {what}?" narrate width=28 below=e gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check chem.rocks of=e answer="thick({k})"
+  feedback {
+    when (answer == 2890 or answer == 5150 or answer == 6371) point=e {
+      say "That is how deep the layer goes from the ground. Take away how deep its top is."
+    }
+  }
+  hint "How deep is the top of the layer, and how deep is its bottom?"
+  hint "How far is it from one of those depths to the other?"
+}

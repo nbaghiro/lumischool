@@ -1,0 +1,26 @@
+# Predict, then check: the holes are taped and lettered in a shuffled order, so the deepest is not
+# always C, and the checker works out every jet from the rule the drawing throws them by.
+item physics.spouts-furthest v=1 skills=[physics.pressure, reasoning.predict] {
+  title "Which jet goes furthest?"
+  difficulty (if o < 2 then 0 else 1)
+  let o=0..5
+  let ha={pick(o, 10, 30, 20, 30, 10, 20)}
+  let hb={pick(o, 20, 20, 10, 10, 30, 30)}
+  let hc={pick(o, 30, 10, 30, 20, 20, 10)}
+  level easy {
+    let o=0..1
+  }
+  level hard {
+    let o=2..5
+  }
+
+  scene 32x24 {
+    spouts t depth=40 holes=[ha, hb, hc] show=0 at=canvas(1, 0)
+    text ask "Three holes in the lock keeper's water tank are taped over. When the tape comes off, which hole's jet will land furthest from the tank?" narrate width=16 right-of=t gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  check physics.forces of=t pick=furthest
+  hint "Which hole has the most water above it?"
+  hint "Read each hole's depth on the scale. The deeper the hole, the harder the water behind it pushes."
+}

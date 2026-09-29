@@ -1,0 +1,10 @@
+item art.canal-draw v=1 stars=3 skills=[art.perspective, art.drawing, reasoning.plan] {
+  title "A view that runs away"
+
+  scene 37x17 {
+    text ask "Draw the canal or a street running away from you. Rule a horizon at your eye level with one vanishing point on it, rule the edges to it, and draw three things of one size getting smaller." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="plain" guide="none" outline="none" pots=["black", "blue", "green", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A view in one-point perspective: a horizon ruled at the artist's eye level, one vanishing point on it, the edges that run away from the viewer ruled to that point while lines across stay level and upright lines stay upright, and three things of one real size drawn smaller the further back they stand." notice=["A horizon and one vanishing point on it", "The edges running away ruled to the point", "Three things of one size getting smaller", "Lines across level and upright lines upright"] ask="Where were your eyes when you imagined this view, and how does the drawing show it?"
+}

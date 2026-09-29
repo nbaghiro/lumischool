@@ -1,0 +1,28 @@
+# Bearings are measured clockwise from north, in three figures: the compass needle between the eight
+# points, read as a number of degrees.
+item angles.needle-bearing v=1 skills=[angles.bearings] {
+  title "Which bearing"
+  difficulty (if d % 90 == 0 then 0 else if d < 180 then 1 else 2)
+  let d={45, 90, 135, 180, 225, 270, 315}
+  level easy {
+    let d={90, 180, 270}
+  }
+  level hard {
+    let d={225, 315, 135}
+  }
+
+  scene 31x12 {
+    compass rose needle=d at=canvas(1, 1)
+    text ask "The observatory's compass needle points where the telescope is aimed. A bearing is measured clockwise from north. What bearing, in degrees, does the needle show?" narrate width=20 right-of=rose gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer d
+  feedback {
+    when (d != 180 and answer == 360 - d) point=rose {
+      say "Bearings turn clockwise from north, the way a clock's hands go. Which way did you turn?"
+    }
+  }
+  hint "How many degrees is a quarter turn from north to east?"
+  hint "Count the quarter and eighth turns clockwise from north to the needle."
+}

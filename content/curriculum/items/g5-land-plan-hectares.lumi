@@ -1,0 +1,33 @@
+# The way in: a field on hectare squares, so the area in hectares is the squares counted.
+item land.plan-hectares v=1 skills=[measure.metric.hectares, area.rectangles] {
+  title "Hectare squares"
+  difficulty (l * w / 10)
+  let l=5..8 w=4..6
+  level easy {
+    let l=5..6 w={4}
+  }
+  level hard {
+    let l=7..8 w=5..6
+  }
+
+  scene 36x16 {
+    scaleplan field plan=2 l=l w=w scale=100 unit="m" dims=1 at=canvas(1, 1)
+    text ask "A farm field by the canal is drawn on squares. Each square is 100 m by 100 m, which is one hectare. How many hectares is the field?" narrate width=16 right-of=field gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text unit "ha"
+    }
+  }
+
+  answer (l * w)
+  feedback {
+    when (answer == 2 * (l + w)) point=field {
+      say "That counts the squares round the edge. The field is every square inside it."
+    }
+    when (answer == l + w) point=field {
+      say "That adds the two sides. How many rows of {l} squares are there?"
+    }
+  }
+  hint "How many hectare squares are in one row?"
+  hint "How many rows are there?"
+}

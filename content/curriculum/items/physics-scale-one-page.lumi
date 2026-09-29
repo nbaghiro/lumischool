@@ -1,0 +1,25 @@
+# Two stars: sizes and distances cannot share one scale on a page. At the size model's scale, where
+# the Earth is a 13 mm bead, the Earth would sit 150 metres from the Sun, and Mia's claim is wrong.
+item physics.scale-one-page v=1 stars=2 skills=[physics.sky, reasoning.claims, measure.scale] {
+  title "Can one page show it all?"
+  let k={3, 4}
+  let name={pick(k - 3, "Earth", "Mars")}
+  let d={pick(k - 3, 150, 228)}
+
+  scene 33x31 {
+    planets p count=8 names=1 at=canvas(1, 0)
+    text ask "This drawing shows the planets in order, not to scale. Mia says one page could show both their sizes and their distances to a single scale. In the size model, 1 mm stands for 1,000 km, and {name} is {d} million km from the Sun. At that scale, how many metres from the Sun would {name}'s bead be?" narrate width=30 below=p gap=1
+    number-input metres below=ask gap=1
+    text then "So is Mia right?" narrate width=30 below=metres gap=1
+    choice pick options=["Yes, a big page would hold it", "No, the gaps would be far too long for any page"] stack=column below=then gap=1
+  }
+
+  answer metres=d pick="No, the gaps would be far too long for any page"
+  feedback {
+    when (metres == d * 1000) point=ask {
+      say "That is millimetres. There are a thousand millimetres in a metre."
+    }
+  }
+  hint "One million kilometres is a thousand lots of a thousand kilometres. How many millimetres is that?"
+  hint "Each million kilometres comes to a thousand millimetres. How many metres is a thousand millimetres?"
+}

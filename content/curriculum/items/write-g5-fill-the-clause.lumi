@@ -1,0 +1,21 @@
+# The word that starts a relative clause, typed: which for a thing, who for a person, where for a
+# place, and whose for something that belongs to someone, the hardest.
+item writing.fill-the-clause v=1 skills=[writing.relative-clauses, writing.spelling] {
+  title "The word that starts the relative clause"
+  difficulty (if k == 3 then 1 else 0)
+  let k=0..3
+  let t={pick(k, "The tower, ____ is the oldest in the city, has no door.", "Nadia is the girl ____ found the lost map.", "This is the square ____ the market is held.", "Farid, ____ sister lost the key, ran to the gate.")}
+  let right={pick(k, "which", "who", "where", "whose")}
+
+  scene 33x15 {
+    row top at=canvas(1, 0) space=2 align=start {
+      tower tw courses=7 flag=0
+      text ask "{t} Write the word that fills the gap." narrate width=24
+    }
+    word-input word options=["{right}"] letters=5 below=top gap=1
+  }
+
+  answer word=right
+  hint "Look at the noun just before the gap. Is that a person, a thing or a place?"
+  hint "Does the part after the gap tell you something that belongs to that noun?"
+}

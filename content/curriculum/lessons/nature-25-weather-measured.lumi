@@ -1,6 +1,6 @@
 # Weather measured: three instruments read off the page, a week's chart built from them, and two
 # questions about what a reading can and cannot say.
-lesson nature-weather-measured v=1 format=teach grade=3 unit=8 subject=nature levels=[easy, medium, hard] {
+lesson nature-weather-measured v=1 format=teach grade=3 unit=9 subject=nature levels=[easy, medium, hard] {
   title "Weather measured"
   goal "Read a thermometer, a rain gauge and a windsock, and use a week of readings to answer a question about the weather."
 

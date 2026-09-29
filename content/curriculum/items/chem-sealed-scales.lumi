@@ -1,0 +1,29 @@
+# The way in: a pinch of baking soda tipped into vinegar in a stoppered flask, on the scales. Nothing
+# gets in or out, so the reading at the end is the reading at the start (conservation of mass; RSC).
+# A stopper, not a balloon: a swelling balloon pushes air aside and reads light (about 1.2 g a
+# litre). A pinch, about half a gram, makes a quarter of a litre of gas, which a stopper holds.
+item chem.sealed-scales v=1 skills=[chemistry.conservation] {
+  title "Sealed on the scales"
+  let m={420, 450, 480}
+
+  scene 35x27 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      flask f shape="conical" fill=0.35 bubbles=8 balloon=0 bung=1
+      dialscale d max=1000 step=200 value=m unit=g
+    }
+    text ask "In the moon base's test chamber, Ana stands a flask of vinegar on the scales with a pinch of baking soda in a paper twist beside it. The scales read {m} g. She drops the twist in and pushes the stopper in tight; it fizzes. When it stops, what do the scales read, in grams?" narrate width=34 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer m
+  feedback {
+    when (answer < m) point=f {
+      say "The gas is trapped under the stopper, and the flask is still on the scales. Did anything leave?"
+    }
+    when (answer > m) point=f {
+      say "Nothing was added from outside. Did anything come in?"
+    }
+  }
+  hint "Did anything get into the flask or out of it?"
+  hint "The gas is new, but where did its grams come from?"
+}

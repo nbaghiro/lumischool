@@ -1,0 +1,73 @@
+# Poems learned by heart and said to a grown-up, with the stanza, the rhyme scheme and the metre
+# (iamb and trochee) as the handholds that make a poem stay. The poems are public-domain works
+# quoted exactly from Project Gutenberg: Tennyson's "The Brook" (1855), Stevenson's "Where Go the
+# Boats?" (1885) and Blake's "The Tiger" (1794).
+lesson reading-poems-to-learn-by-heart v=1 format=teach grade=6 unit=6 subject=reading levels=[easy, medium, hard] {
+  title "Poems to learn by heart"
+  goal "Learn a poem by heart, a stanza at a time, using its beat and its rhymes, and say it to a grown-up."
+
+  look {
+    scene 36x13 {
+      row all at=canvas(1, 1) space=2 align=end {
+        poem p title="The Brook" lines=["I come from haunts of coot and hern,", "I make a sudden sally", "And sparkle out among the fern,", "To bicker down a valley."] rhymes=[0, 1, 0, 1] beats=[4, 3, 4, 3] width=24
+        kingfisher bird flying=1 facing=-1
+      }
+    }
+    say """
+      A poem learned by heart is yours to keep. Learn it a stanza a day: read the stanza aloud, say
+      it line by line with the page covered, then say it from the first letters only. The beat
+      helps. The Brook goes da-DUM, a weak syllable then a strong one, which is called an iamb;
+      DUM-da, strong then weak, is a trochee. The rhymes help too: here lines 1 and 3 rhyme, and so
+      do 2 and 4.
+      """
+  }
+  do {
+    level easy {
+      worked reading.heart-beats k=2
+    }
+    show reading.heart-beats k=0 hard-k=4
+    show reading.heart-foot k=1 easy-k=0 hard-k=4
+    show reading.heart-rhymes k=0 hard-k=3
+    show reading.heart-foot k=2 easy-k=1 hard-k=5
+    show reading.heart-rhymes k=4 easy-k=1 hard-k=5
+    show reading.heart-first-letters k=2 easy-k=0 hard-k=4
+    show reading.heart-differs k=1 easy-k=2 hard-k=0
+  }
+  story {
+    show reading.heart-say k=0
+    level hard {
+      show reading.heart-say k=1
+    }
+  }
+  try stars=2 {
+    show reading.heart-same-metre k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show reading.heart-own-stanza k=0 hard-k=1
+  }
+  remember {
+    say "Learn a poem a stanza a day, and let the beat and the rhymes carry you to the next line."
+  }
+
+  grown-ups """
+    The idea is that a poem stays in the memory by its shape: a stanza is a chunk to learn in a day,
+    the rhymes say which word comes at the end of a line, and the metre, the pattern of weak and
+    strong beats, says how the line must sound. The way in counts the strong beats in a line of The
+    Brook, the core names a line as iambs (da-DUM) or trochees (DUM-da), writes a stanza's rhyme
+    scheme in letters, matches a line to its first letters, and finds the one line that changes
+    between two stanzas that look alike, which is where a recitation slips. The child then learns
+    three stanzas of The Brook over three days and says them to you; tick what you hear. The wrong
+    idea to watch for is counting syllables instead of beats: the short lines of The Brook have
+    seven syllables and three beats. If the child is stuck, say the line with them and clap only
+    on the loud syllables, then let them clap alone. Off the page, say a stanza together on a walk,
+    one line each. The poems are Tennyson's The Brook (1855), Stevenson's Where Go the Boats? (1885)
+    and Blake's The Tiger (1794), quoted from Project Gutenberg. Russia's literature programme for
+    grade six asks for at least seven poems learned by heart, наизусть, with metre and stanza named.
+    """
+  level easy {
+    grown-ups "At this level a line's beats are counted once in the teacher's pen first, the lines to count and name are the plainest iambs and the Tiger's first line, the stanzas rhyme ABAB or AABB, the first letters differ early, the stanzas to compare are the brook's refrain, and the two-star is the tiger and the brook."
+  }
+  level hard {
+    grown-ups "At this level the lines end on a weak syllable or are Blake's short trochees, the rhyme schemes include Stevenson's ABCB where river and valley do not rhyme, the first letters differ only late in the line, the change between stanzas is one word, the child also says Where Go the Boats? by heart, and the three-star ends on the brook's own line."
+  }
+}

@@ -1,0 +1,24 @@
+# The way in: which energy resources nature keeps replacing (sunlight, wind, flowing water, heat from
+# inside the Earth) and which run out once used (coal, oil, gas). k picks the list.
+item physics.resource-sort v=1 skills=[physics.energy, reasoning.sort] {
+  title "Will it run out?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+  let n={pick(k, 2, 3, 2, 4)}
+
+  scene 24x25 {
+    turbine t wind=2 lamps=3 at=canvas(1, 0)
+    text ask "{pick(k, \"Sunlight, coal, wind, gas.\", \"Oil, flowing water, sunlight, coal, wind.\", \"Gas, heat from inside the Earth, oil, wind, coal.\", \"Flowing water, gas, sunlight, heat from inside the Earth, wind, oil.\")} How many of these energy resources are renewable, replaced by nature so that they will not run out?" narrate width=22 below=t gap=1
+    number-input count below=ask gap=1
+  }
+
+  answer count=n
+  hint "Which of them were made long ago and are dug or pumped out of the ground?"
+  hint "Which keep coming back, day after day, whether we use them or not?"
+}

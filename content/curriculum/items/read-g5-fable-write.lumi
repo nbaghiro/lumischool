@@ -1,0 +1,20 @@
+# The three-star question: a fable of the child's own that teaches a given proverb, marked by eye.
+item reading.fable-write v=1 stars=3 skills=[reading.fables, writing.composition] {
+  title "A fable of your own"
+  let k=0..1
+
+  scene 36x30 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=2 align=end {
+        text ask "{pick(k, \"Write a fable of your own that teaches: Look before you leap. Give an animal a fault that gets it into trouble, and end with the moral.\", \"Write a fable of your own that teaches: Pride comes before a fall. Give an animal a fault that gets it into trouble, and end with the moral.\")}" width=25
+        fox f facing=1
+      }
+      writinglines lines lines=7 width=34 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="A short fable with animals as its characters, one of whom has a fault (rushing in without looking, or pride) that leads to trouble in a clear middle, and a last line that states the moral, which the story has shown and not only said." notice=["Animals as the characters", "One has a fault that causes the trouble", "The trouble follows from the fault", "Ends with the moral in one line"] ask="Which animal did you choose, and why that one?"
+  hint "Choose the animal first. What is its fault?"
+  hint "What trouble would that fault get it into? Plan the start, the trouble and the end."
+  hint "Write the moral last, as one short sentence of advice."
+}

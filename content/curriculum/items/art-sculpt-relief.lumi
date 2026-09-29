@@ -1,0 +1,31 @@
+# The way in: three reliefs of one fish, each shown from the front and cut through along the dashed
+# line. Low stands out less than half the fish's depth, high more than half with its edges undercut,
+# and sunk is cut into the ground. The drawing letters them A (low), B (high), C (sunk).
+item art.sculpt-relief v=1 skills=[art.sculpture, art.looking] {
+  title "Cut through"
+  difficulty (if q == 0 then 0 else 1)
+  let q=0..2
+  let kind={pick(q, "sunk relief, cut into the surface", "high relief, standing out more than half its depth", "low relief, standing out less than half its depth")}
+  let right={pick(q, "C", "B", "A")}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x24 {
+    sculpture fish mode=1 shape=0 ask=0 solid=0 kind=-1 names=0 at=canvas(1, 1)
+    text ask "The team at the research hut carve the same fish three ways into ice panels. Under each panel it is shown cut through along the dashed line. Which one is {kind}?" narrate width=34 below=fish gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=fish {
+      say "Look at the cut-through under each panel. Does the fish rise above the flat ground, or dip below it, and by how much?"
+    }
+  }
+  hint "In each cut-through, find the flat ground of the panel. Where is the fish: above it or below it?"
+  hint "{if q == 0 then \"Which fish dips below the ground?\" else \"Compare how far each raised fish rises with how thick a whole fish would be.\"}"
+}

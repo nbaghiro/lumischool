@@ -1,0 +1,22 @@
+# The three-star question: a simile and a metaphor of the child's own, each with what it makes a
+# reader see. There is no key, so a grown-up marks it against the look-for.
+item reading.write-figures v=1 stars=3 skills=[reading.figurative, writing.composition] {
+  title "Your own simile and metaphor"
+  let k=0..1
+
+  scene 35x29 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        observatory dome open=1
+        moon m phase=0.25
+        owlflying owl facing=1
+      }
+      text ask "{pick(k, \"Write a simile and a metaphor about the observatory at night.\", \"Write a simile and a metaphor about the moon over the sea.\")} Under each, say what it makes a reader see." width=34
+      writinglines lines lines=4 width=34 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="One simile (with like or as) and one metaphor (one thing called another), each comparing the observatory or the moon with something different from it, and each followed by what the reader should see: a shape, a colour, a movement or a feeling. A comparison of two things that really are alike (the moon is like a planet) does not count. A fresh comparison of the child's own is worth more than a common one (as white as snow)."
+  hint "Look at the picture. What else is that shape, that colour, or that still?"
+  hint "Write it once with like, then again as if it really were that thing."
+}

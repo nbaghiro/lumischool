@@ -1,0 +1,35 @@
+# The method for a decimal divided by a whole number: divide as whole numbers at the bus stop, then
+# put the point in the answer above the point in the number divided.
+item decimal.bus-stop-point v=1 skills=[decimals.divide, division.short] {
+  title "Bus stop, then the point"
+  difficulty (d + q / 100)
+  let d={3, 4, 6, 7, 8} q={124, 238, 156, 312, 409}
+  where (d * q < 10000)
+  level easy {
+    let d={3, 4} q={124, 238, 156}
+  }
+  level hard {
+    let d={7, 8} q={312, 409}
+  }
+
+  scene 29x14 {
+    text ask "{decimals(d * q / 100, 2)} litres of water drain from a lock paddle in {d} minutes, the same each minute. Divide {d * q} by {d} first." narrate width=28 at=canvas(1, 1)
+    longdiv sum n=(d * q) by=d blanks=[whole, rest] below=ask gap=1
+    row eq below=sum gap=1 space=1 align=centre {
+      equation sum2 "{decimals(d * q / 100, 2)} ÷ {d} ="
+      number-input each width=6
+    }
+  }
+
+  answer whole=q rest=0 each=decimals(q / 100, 0)
+  feedback {
+    when (each == q / 10) point=eq {
+      say "The point in the answer sits above the point in {decimals(d * q / 100, 2)}. How many digits come after it?"
+    }
+    when (each == q) point=eq {
+      say "Dividing by {d} makes the answer smaller than {decimals(d * q / 100, 2)}. Where does the point go?"
+    }
+  }
+  hint "How many times does {d} go into each digit, carrying what is left to the next?"
+  hint "Now write the point in the answer straight above the point in the number you divided."
+}

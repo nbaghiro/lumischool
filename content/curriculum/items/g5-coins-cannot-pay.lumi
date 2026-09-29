@@ -1,0 +1,30 @@
+# The Kangaroo extreme: with coins of two values only, the biggest whole amount that cannot be paid
+# exactly. Every amount above it can be, which the child checks by listing.
+item puzzle.coins-cannot-pay v=1 stars=3 skills=[reasoning.extremes, money.decimals] {
+  title "The amount you cannot pay"
+  difficulty (a * b)
+  let s=0..3
+  let a={pick(s, 2, 3, 3, 4)}
+  let b={pick(s, 5, 5, 7, 7)}
+  level easy {
+    let s={0}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 33x14 {
+    stallcounter stall w=12 h=10 counter=4 at=canvas(1, 1)
+    text ask "A stall in the old market takes only {a}-dollar and {b}-dollar tokens and gives no change. Some whole amounts cannot be paid exactly. What is the biggest amount that cannot be paid?" narrate width=18 right-of=stall gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (a * b - a - b)
+  feedback {
+    when (answer == 1) point=ask {
+      say "1 dollar cannot be paid, but bigger amounts cannot either. Try every amount in order."
+    }
+  }
+  hint "List the amounts from 1 upwards and mark the ones you can make."
+  hint "Once you can make {a} amounts in a row, every bigger amount can be made too. Why?"
+}

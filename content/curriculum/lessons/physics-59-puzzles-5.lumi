@@ -1,0 +1,65 @@
+lesson physics-puzzles-5 v=1 format=puzzles grade=5 unit=9 subject=physics levels=[easy, medium, hard] {
+  title "Physics puzzles: water, light and magnets"
+  goal "Use the fifth year's rules, for swings, water, planets, light and electromagnets, to solve puzzles with no method given."
+
+  puzzle stars=1 {
+    show physics.swing-predict w=0 m=200 g=25 hard-w=2
+  }
+  puzzle stars=1 {
+    show physics.coil-predict t=30 c=2 easy-c=1 hard-t=50 hard-c=3
+  }
+  puzzle stars=1 {
+    show physics.reflect-target o=1 easy-o=0 hard-o=3
+  }
+  level easy {
+    puzzle stars=1 {
+      show physics.spouts-furthest o=1
+    }
+  }
+  puzzle stars=2 {
+    show physics.upthrust-float-or-sink u=2 easy-u=1 hard-u=3
+  }
+  puzzle stars=2 {
+    show physics.swing-fair t=2 e=1 easy-e=0 hard-t=0 hard-e=2
+  }
+  puzzle stars=2 {
+    show physics.weight-which-planet p=3 m=20 easy-p=0 easy-m=10 hard-m=10
+  }
+  puzzle stars=2 {
+    show physics.drop-fair w=2 heavy=40 hard-w=0 hard-heavy=30
+  }
+  puzzle stars=3 {
+    show physics.telescope-build v=2 easy-v=0 hard-v=3
+  }
+  puzzle stars=3 {
+    show physics.lock-fill-limit v=2 easy-v=0 hard-v=3
+  }
+  level medium hard {
+    puzzle stars=3 {
+      show physics.coil-fewest-turns v=2 hard-v=3
+    }
+  }
+  level hard {
+    puzzle stars=3 {
+      show physics.scale-fit-corridor v=3
+    }
+  }
+
+  grown-ups """
+    Let the child try each puzzle alone first, at the observatory or at the table; the hints and
+    answers are on this sheet, not on theirs. Every puzzle comes from a lesson this year and can be
+    started by looking closely at its drawing: which string, which hole is deepest, which way the
+    beam leans, how many turns and cells. The one-star puzzles use a rule once. The two-star puzzles
+    each need a reason: whether a tin's push beats its weight, what else changed in a test, which
+    world pulls a kilogram that hard, and which lump spoils a fair test. The three-star puzzles are
+    for a quiet moment: every pair of lenses before the shortest tube, a limit worked backwards and
+    then a rate, the fewest turns with all the cells in use. Ask for the reason as well as the
+    answer. A puzzle left unsolved today is often solved on Saturday.
+    """
+  level easy {
+    grown-ups "At this level a fourth one-star puzzle asks which jet lands furthest, the numbers are the smallest, the test to judge changes the string, the planet is Jupiter, and the three-star puzzles are a 20 times telescope and a lock filling 50 cm a minute; the electromagnet puzzle is left for another day."
+  }
+  level hard {
+    grown-ups "At this level the strings, coils and angles are the largest and closest, the test to judge hides a change of angle, the tin rises, the heavy lump is the pointed one, and there is a fourth three-star puzzle that fits the solar system in an 8 m corridor."
+  }
+}

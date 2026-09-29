@@ -1,0 +1,37 @@
+# A semicolon joins two whole sentences about the same thing. One choice has that; in one the second
+# part is not a sentence, and in one the two sentences have nothing to do with each other.
+item writing.semicolon-join v=1 skills=[writing.punctuation, writing.colons-semicolons] {
+  title "Which semicolon is right?"
+  difficulty k
+  let k=0..2 r=0..2
+  let right={pick(k, "The ice creaked; we stepped back.", "The whale dived; its tail rose high.", "The puffins flew off; the seals stayed.")}
+  let w1={pick(k, "The ice creaked; because it was warm.", "The whale dived; into the dark water.", "The puffins flew off; after the fish.")}
+  let w2={pick(k, "The ice creaked; my sister likes jam.", "The whale dived; the hut needs a door.", "The puffins flew off; the radio is old.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 32x21 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      whale w spout=0 facing=1
+      puffins pf count=2 facing=-1
+    }
+    text ask "Which sentence uses the semicolon correctly?" narrate width=31 below=pics gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=ask {
+      say "Read the part after the semicolon on its own. It is not a main clause, a whole sentence, so a semicolon cannot sit before it."
+    }
+    when (pick == w2) point=ask {
+      say "Both halves are sentences, but they have nothing to do with each other. A semicolon joins two sentences that belong together."
+    }
+  }
+  hint "Read each half on its own. Is it a main clause, one that could stand as a whole sentence?"
+  hint "If both halves are sentences, are they about the same moment?"
+}

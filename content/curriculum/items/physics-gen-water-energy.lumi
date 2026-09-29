@@ -1,0 +1,28 @@
+# The water turbine's energy each second: the kilograms of water falling each second weigh 10 N each,
+# and fall the height, so the joules each second are kilograms times 10 times metres.
+item physics.gen-water-energy v=1 skills=[physics.energy, decimals.multiply] {
+  title "Energy from the waterfall"
+  difficulty (m * h)
+  let m={20, 50, 100} h={5, 10, 20}
+  level easy {
+    let m={20, 50} h={5, 10}
+  }
+  level hard {
+    let m={50, 100} h={10, 20}
+  }
+
+  scene 29x17 {
+    waterfall f drops=1 rainbow=1 at=canvas(1, 0)
+    text ask "A pipe takes {m} kg of water each second from the top of the waterfall down {h} m to a turbine. Each kilogram weighs 10 N. How many joules does the water give the turbine each second?" narrate width=14 right-of=f gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (m * 10 * h)
+  feedback {
+    when (answer == m * h) point=ask {
+      say "That uses kilograms. The force is the weight, 10 N for each kilogram."
+    }
+  }
+  hint "What does {m} kg of water weigh?"
+  hint "Multiply the weight by how far it falls."
+}

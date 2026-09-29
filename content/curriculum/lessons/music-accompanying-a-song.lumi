@@ -1,7 +1,7 @@
 # Accompanying a song on the guitar from a chord chart: the chord for each bar, the change on the
 # first word of a new bar, and the chords that fit a tune. London Bridge and Skip to My Lou are
 # traditional.
-lesson music-accompanying-a-song v=1 format=teach grade=4 unit=6 subject=music levels=[easy, medium, hard] {
+lesson music-accompanying-a-song v=1 format=teach grade=4 unit=9 subject=music levels=[easy, medium, hard] {
   title "Accompanying a song"
   goal "Play the chords under a song from its chart, changing on the word where the chord changes."
 

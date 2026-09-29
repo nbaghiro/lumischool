@@ -1,0 +1,71 @@
+# A poem's form, read in poems about the waterfall gorge: the haiku's five, seven and five, the
+# limerick's long and short lines, rhyming couplets, alternate rhyme and free verse, and why a poet
+# might choose one. Every poem was written for the lesson.
+lesson reading-a-poems-form v=1 format=teach grade=6 unit=6 subject=reading levels=[easy, medium, hard] {
+  title "A poem's form"
+  goal "Name a poem's form from its lines, rhymes and beats, and say why the form suits what the poem is about."
+
+  look {
+    scene 36x15 {
+      row all at=canvas(0, 1) space=1 align=end {
+        poem p title="The waterfall" lines=["White water falling,", "all day and all night it roars,", "a rainbow in spray."] rhymes=[-1, -1, -1] width=23
+        waterfall fall drops=2 rainbow=1
+      }
+    }
+    say """
+      A poem's form is the shape it is built in. A group of lines with a space after it is a stanza,
+      like a verse of a song, and the pattern of beats in a line is its metre. When the beat falls
+      on every second syllable, da-DUM, as in ‘the water falls’, each pair is an iamb and the metre
+      is iambic; when it falls on every first, DUM-da, as in ‘tumble, tumble’, each pair is a
+      trochee and the metre is trochaic. A haiku has three
+      lines of five, seven and five syllables, and holds one moment. A limerick has five lines:
+      three long ones that rhyme and two short ones in the middle, and it tells a joke. Rhyming
+      couplets rhyme in pairs, alternate rhyme skips a line, and free verse keeps no set rhyme or
+      length. Poets choose a form because of what it does to the way the poem sounds.
+      """
+  }
+  do {
+    level easy {
+      worked reading.poem-form k=1 level=medium
+    }
+    show reading.poem-form k=0 hard-k=3
+    practice reading.poem-rhyme-word count=2 seed=1 easy-seed=1 hard-seed=1
+    practice reading.haiku-count count=2 seed=1 easy-seed=1 hard-seed=1
+    show reading.poem-form k=2 hard-k=1
+    practice reading.limerick-lines count=2 seed=1 easy-seed=1 hard-seed=1
+    practice reading.poem-metre count=1 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show reading.limerick-lines k=0 level=medium
+    }
+  }
+  try stars=2 {
+    show reading.poem-why-form k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show reading.write-haiku k=0 hard-k=1
+  }
+  remember {
+    say "Form is a poem's shape: its stanzas, lines, rhymes and metre. Ask what the shape does to the poem."
+  }
+
+  grown-ups """
+    The idea is that a poem's form is evidence you can point at: the rhymes at the ends of lines,
+    the number of syllables or beats in a line (its metre), the number of lines and stanzas. The
+    lesson names the two commonest metres, the iamb (da-DUM) and the trochee (DUM-da), and asks
+    the child to hear which a line has by saying it aloud and tapping the beat. The way
+    in names the form of a four-line poem, the core chooses a last word that keeps both the rhyme
+    and the sense, finds the line that breaks a haiku's five, seven and five, and names the lines of
+    a limerick that rhyme or are short. The wrong idea to watch for is counting words instead of
+    syllables; clap each line together, one clap for each syllable (king, fish, er). The two-star
+    question says why a form suits a poem, against one reason that misreads its rhymes and one that
+    misreads what it says, and the three-star question writes a haiku, marked by eye. If the child
+    is stuck, read the poem aloud twice, the second time tapping the beat. Off the page, read a
+    limerick by Edward Lear aloud and mark its long and short lines.
+    """
+  level easy {
+    grown-ups "At this level the water wheel's alternate rhyme is worked once in the teacher's pen, the forms to name are the rope bridge and Spray, the words to fit are hope and dream, the haiku to check are the rainbow and the bridge, the limerick questions ask which lines rhyme with the first, the two-star is Spray, and the three-star is the rope bridge."
+  }
+  level hard {
+    grown-ups "At this level the forms to name are the water wheel and the rainbow, the words to fit are grow and bed, the haiku to check are the falls and the kingfisher, where a long word is the trap, the limerick questions ask for the short lines and the middle rhyme, with one more, the two-star is why the rainbow ends on dream, and the three-star is the rainbow."
+  }
+}

@@ -1,0 +1,36 @@
+# The way in: a stone weighed on a force meter in the air and again hanging in the canal water. The
+# water pushes up on it, and the push is what the reading lost.
+item physics.upthrust-read v=1 skills=[physics.floating, physics.forces] {
+  title "The water's push"
+  difficulty u
+  let a=6..10 u=1..4
+  level easy {
+    let u=1..2
+  }
+  level hard {
+    let u=3..4
+  }
+
+  scene 30x19 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      springscale air max=10 step=2 value=a unit=N
+      springscale water max=10 step=2 value=(a - u) unit=N
+      text ask "Kai hangs a stone on a force meter in the air, then lowers it into the canal until it is under the water. How many newtons does the water push up on it?" narrate width=13
+    }
+    text la "in air" below=kit gap=0
+    text lb "in water" right-of=la gap=3
+    number-input answer below=la gap=1
+  }
+
+  answer u
+  feedback {
+    when (answer == a - u and a != 2 * u) point=water {
+      say "That is what the meter reads in the water. The push is how much less it reads than in the air."
+    }
+    when (answer == a) point=air {
+      say "That is the stone's weight in the air. How much of it has the water taken?"
+    }
+  }
+  hint "What does the meter read in the air, and what in the water?"
+  hint "The water's push is the difference between the two readings."
+}

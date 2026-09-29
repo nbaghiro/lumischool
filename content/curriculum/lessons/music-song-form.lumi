@@ -1,0 +1,73 @@
+# A song's form: phrases and sections named with letters by their tune, not their words; verse and
+# chorus in Jingle Bells, Clementine's chorus on its verse's tune, ternary A B A, and the rondo,
+# A B A C A, in Beethoven's Für Elise, with the old city's street band and its clock tower.
+lesson music-song-form v=1 format=teach grade=5 unit=7 subject=music levels=[easy, medium, hard] {
+  title "A song's form"
+  goal "Name the form of a piece with letters that follow its tunes, not its words."
+
+  look {
+    scene 36x16 {
+      row top space=2 align=end at=canvas(1, 1) {
+        citywalls walls towers=3 open=1
+        table plan cols=2 head=["Jingle Bells", "Für Elise"] cells=["verse", "A", "chorus", "B", "verse", "A", "chorus", "C", "verse", "A"]
+      }
+    }
+    say """
+      In the old city a street band plays by the gate. Every piece they play has a plan, called its
+      form, and each part gets a letter by its tune: the same tune gets the same letter, whatever
+      the words. Jingle Bells has verses and a chorus. Each verse has new words to one tune, A, and
+      the chorus has a tune of its own, B, so the song goes A B A B. Clementine's chorus is sung to
+      its verse's tune, so all of Clementine is A. A piece that goes A B A, out to a new tune and
+      home again, is in ternary form. Beethoven's Für Elise is a rondo: its first tune, A, keeps
+      coming back, with a different new tune, B and then C, between the returns.
+      """
+  }
+  do {
+    practice music.form-letters count=1 seed=1 easy-seed=1 hard-seed=1
+    level easy {
+      worked music.form-chorus-count q=1 level=medium
+    }
+    practice music.form-chorus-count count=1 seed=2 easy-seed=1 hard-seed=1
+    practice music.form-rondo-which count=1 seed=1 easy-seed=1 hard-seed=1
+    show music.form-fur-elise
+    practice music.form-ternary count=1 seed=2 easy-seed=1 hard-seed=1
+    show music.form-letters f=1 hard-f=3
+    show music.form-tap-chorus
+    level hard {
+      show music.form-claim q=1 r=0
+    }
+    practice music.oldcity-chime-notes count=1 seed=2 easy-seed=1 hard-seed=1
+  }
+  try stars=2 {
+    show music.form-claim q=0 r=0 easy-r=1 hard-r=1
+  }
+  try stars=3 {
+    show music.form-plan-count v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A form's letters follow the tune, not the words: the same tune always gets the same letter."
+  }
+
+  grown-ups """
+    The idea is that a piece has a plan made of sections, that we name the plan with letters by
+    giving the same tune the same letter, and that verse and chorus with two tunes (A B A B),
+    ternary form (A B A) and the rondo (A B A C A) are different plans. The wrong ideas to watch for
+    are giving a section a new letter because its words are new, when its tune is the same
+    (Clementine's chorus is sung to its verse's tune, so the whole song is A), and calling any piece
+    where something returns a rondo. In the working, look for the child comparing a section with the
+    first one before giving it a letter. The core asks for a reason once, whether a plan with a
+    return is a rondo; the two-star question tests Clementine against the rondo's rule; the
+    three-star question counts every plan that starts and ends with A, which is easiest by filling
+    the middle sections one at a time. A child who is stuck can sing a song they know and hold up a
+    hand at every new section, then name the sections, and go back to the way in; stay on this
+    lesson another day if verses still get new letters. Playing and tapping are judged on the music
+    page; on paper you are the judge. Off the page, listen to Für Elise together and raise a hand
+    each time A comes back.
+    """
+  level easy {
+    grown-ups "At this level the forms to name are A A B B and A B A B, the fourth chorus of Clementine is found once in the teacher's pen before the choruses are counted, the rondo is picked from a short list, the plan to judge is A B A, which is ternary, the chimes are counted over one hour ending on the hour, the two-star is as written with its answers in another order, and the three-star plans a piece of three sections."
+  }
+  level hard {
+    grown-ups "At this level the forms to name are A A B A and A B A C, the song is counted in bars, the rondo is picked from forms that nearly are one, the plan to judge is a long rondo, A B A C A D A, a claim about Für Elise's sections is judged before the two-star, the chimes are counted over times that cross an hour, and the three-star plans five sections that use all three tunes."
+  }
+}

@@ -1,0 +1,32 @@
+# The three-star: a path round a round floor has k times the floor's area. The whole circle is then
+# k + 1 times the floor, so its radius is 2, 3 or 4 times as long. No 3.14 and no method on the page.
+# The pins keep the answer different from k, which a child might otherwise copy.
+item circle.path-as-big v=1 stars=3 skills=[circles.area, reasoning.work-backwards] {
+  title "A path as big as the floor"
+  difficulty (k + r / 10)
+  let r={3, 4, 5, 6} k={3, 8, 15}
+  level easy {
+    let k={3} r={3, 4}
+  }
+  level hard {
+    let k={8, 15} r={5, 6}
+  }
+
+  scene 35x15 {
+    circleparts c size=5 lines=1 radius=r unit="m" at=canvas(1, 1)
+    text ask "The round floor of the moon base has a radius of {r} m. A flat path of the same width all the way round it is to cover {k} times the area of the floor. How wide is the path, in metres?" narrate width=18 right-of=c gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (if k == 3 then r else if k == 8 then 2 * r else 3 * r)
+  feedback {
+    when (answer == k and k != (if k == 3 then r else if k == 8 then 2 * r else 3 * r)) point=ask {
+      say "{k} is how many times the floor's area the path covers, not its width in metres. How many times the floor is the whole circle, floor and path together?"
+    }
+    when (answer == r * k) point=ask {
+      say "The path goes round the outside, so its area grows with the radius times itself, not with the radius alone."
+    }
+  }
+  hint "Floor and path together: how many times the floor's area is that?"
+  hint "When a radius is made some number of times as long, how many times the area does the circle get? Try a few."
+}

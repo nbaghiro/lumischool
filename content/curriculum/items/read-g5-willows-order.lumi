@@ -1,0 +1,20 @@
+# The order of events inside one sitting, given jumbled. Each list crosses the whole sitting, so it
+# cannot be done from the first page.
+item reading.willows-order v=1 skills=[reading.sequencing, reading.whole-book] {
+  title "Put them in order"
+  let k=0..1
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        bookcast c who=toad pose=walk dir=1
+        text ask "{pick(k, \"Number these in the order they happen in chapter 6.\", \"Number these in the order they happen in chapter 10.\")}" width=24
+      }
+      sequence s items=[pick(k, "Toad drives off in a car from an inn-yard.", "Toad sells the horse to a gipsy."), pick(k, "Toad's friends lock him in his room.", "Toad reaches the Rat's front door."), pick(k, "Toad is sent to prison for twenty years.", "A barge-woman throws Toad into the canal."), pick(k, "Toad climbs down from his window.", "Toad drives a car into a horse-pond.")] blanks=[p1, p2, p3, p4]
+    }
+  }
+
+  answer p1=pick(k, 3, 2) p2=pick(k, 1, 4) p3=pick(k, 4, 1) p4=pick(k, 2, 3)
+  hint "Which of these starts the chapter? Which ends it?"
+  hint "Place the two ends first, then ask which of the middle two has to come first."
+}

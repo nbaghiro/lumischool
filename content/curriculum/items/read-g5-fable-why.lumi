@@ -1,0 +1,33 @@
+# Why a character in a fable acts as they do, read from the story's own words. The fables are the
+# same five retellings as reading.fable-moral, shown as a comic of the moment asked about; one wrong
+# reason is a guess the story rules out, the other misreads what happens.
+item reading.fable-why v=1 skills=[reading.fables, reading.inference, reading.evidence] {
+  title "Why did they do it?"
+  difficulty pick(k, 0, 1, 1, 0, 2)
+  let k=0..4
+  let right={pick(k, "He was so sure of winning he had time to spare.", "She could not reach them and felt foolish.", "He should have worked in summer, as she did.", "She thought of a way, then kept at it.", "He thought one lucky hare meant more to come.")}
+  let guess={pick(k, "He was worn out from running so fast.", "She had tasted one and found it sour.", "She had no grain left to give him.", "It rained, and the jug filled up.", "He was too tired after a big supper.")}
+  let misread={pick(k, "He wanted to let Tortoise catch up, to be fair.", "She wanted to warn the sparrow off them.", "He had woken her in the middle of winter.", "The jug tipped over and the water ran out.", "The hare had broken his plough.")}
+
+  scene 36x24 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=2 align=end {
+        text ask "{pick(k, \"In The Hare and the Tortoise, why did Hare lie down to sleep in the middle of the race?\", \"In The Fox and the Grapes, why did the fox say the grapes were sour?\", \"In The Ant and the Grasshopper, why would the ant not share her grain?\", \"In The Crow and the Jug, how did the crow get her drink when another bird might have flown away?\", \"In The Farmer and the Stump, why did the farmer stop ploughing?\")}" width=22
+        library lib columns=6 open=0
+      }
+      choice pick options=[pick(k, right, guess, misread, misread, right), pick(k, guess, misread, right, right, misread), pick(k, misread, right, guess, guess, guess)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == guess) point=ask {
+      say "That could happen in a story, but not in this one. Look again at what the character says or does just before."
+    }
+    when (pick == misread) point=ask {
+      say "Check that against the fable. Does it happen at all?"
+    }
+  }
+  hint "Find the moment in the fable. What does the character say or think just then?"
+  hint "Which reason do the fable's own words back up?"
+}

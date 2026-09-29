@@ -1,0 +1,63 @@
+lesson g6-negative-numbers-order-and-multiply v=1 format=teach grade=6 unit=1 subject=maths levels=[easy, medium, hard] {
+  title "Negative numbers: in order, how far from zero, times and divide"
+  goal "Put numbers below zero in order, read their distance from zero, and multiply and divide with negative numbers."
+
+  look {
+    scene 34x16 {
+      thermometer th from=-15 to=10 step=5 value=-6 unit="°C" at=canvas(1, 1)
+      midnightsun sky suns=4 midnight=1 right-of=th gap=2
+    }
+    say """
+      Below zero, the number further from zero is the smaller one: -7.5 is colder than -7.25. The
+      distance from zero is written |-7.5| = 7.5, and it is the same either side. On the ice shelf
+      the temperature can fall 3 °C an hour. Four hours of that is (-3) × 4 = -12. Four hours ago
+      it was 12 °C warmer, which is (-3) × (-4) = 12. Dividing undoes multiplying: (-12) ÷ 4 = -3,
+      because -3 × 4 = -12. When the two signs are the same the answer is above zero, and when they
+      differ it is below.
+      """
+  }
+  do {
+    show negative.order-readings t=1 easy-t=0 hard-t=3
+    show negative.flags-from-hut v=0 k=6 easy-k=3 hard-v=1 hard-k=7
+    level easy {
+      worked negative.fall-each-hour v=1 n=-2 f=2 h=3 level=medium
+    }
+    practice negative.sign-grid count=1 seed=4 hard-count=2
+    show negative.fall-each-hour v=1 n=-3 f=2 h=3 easy-v=0 easy-n=1 easy-f=1 easy-h=3 hard-n=-4 hard-h=4
+    show negative.steady-fall s=6 d=12 easy-s=4 easy-d=6 hard-s=6 hard-d=15
+    show negative.divide-undo v=0 x=-7 b=6 easy-x=6 easy-b=-4 hard-v=1 hard-x=-8 hard-b=-6
+    show negative.smallest-result t=2 easy-t=1 hard-t=3
+    show negative.mean-fourth m=-2 a=-4 b=1 c=-6 easy-m=-1 easy-a=-5 easy-b=2 easy-c=-3 hard-m=-3 hard-a=-4 hard-b=2 hard-c=-6
+  }
+  try stars=2 {
+    show negative.count-the-signs t=2 easy-t=0 hard-t=3
+  }
+  try stars=3 {
+    show negative.best-cards t=1 easy-t=0 hard-t=2
+  }
+  remember {
+    say "Multiply or divide the sizes, then look at the signs: the same signs give an answer above zero, different signs give one below."
+  }
+
+  grown-ups """
+    Keep the thermometer in view: every question here is a place on it or a move along it. The
+    common slips are ordering by the digits, so that -7.25 looks smaller than -7.5, and treating a
+    negative times a negative as more negative. The weather-station question is where the rule comes
+    from: a fall of 2 °C an hour, run back four hours, is a rise of 8. For division, ask what times
+    the second number gives the first, and the sign follows. The comparison of four calculations
+    rewards sorting by sign before working anything out, and the mean question runs backwards from
+    a total below zero. In the two-star question Ana counts the wrong thing: what matters is whether
+    the negative numbers pair up, not whether they outnumber the positive ones. In the three-star
+    question the two coldest cards can beat the two largest. If the signs still get muddled, stay
+    here another day with the sign grid and small numbers. Off the page, find the coldest and
+    warmest places in a weather report and work out how far apart they are. This lesson meets
+    Russia's grade 6 programme, «Модуль числа… Сравнение чисел. Арифметические действия с
+    положительными и отрицательными числами».
+    """
+  level easy {
+    grown-ups "At this level the readings to order are whole numbers, the flags are within 3 m, a fall run back three hours is worked in the teacher's pen before one run forward, the sign grid uses numbers to 5 with one negative, the steady fall is a whole number each hour, the division has one negative, the calculations to compare are plain, Ana's rule is tested on three numbers, and the cards give 30 from the two coldest."
+  }
+  level hard {
+    grown-ups "At this level the readings are close decimals below -7, the flags include those exactly 7 m away, the sign grid is asked twice with numbers to 9 and both negative, the fall is run back four hours at 2 °C from -4 °C, the steady fall is a decimal, the division has the unknown first with both numbers negative, the calculations to compare are within 3 of each other, Ana's rule is tested on seven numbers, and three cards are chosen from five."
+  }
+}

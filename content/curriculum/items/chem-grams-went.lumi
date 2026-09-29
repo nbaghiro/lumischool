@@ -1,0 +1,45 @@
+# The three-star: the soda is added after the vinegar is weighed, so the gas lost is what went in
+# less what is left. 21 g of baking soda gives 11 g of carbon dioxide (84 g gives 44 g) when the
+# vinegar is enough: 300 ml at 5 g of acid in 100 ml, and each jug holds 400 ml for each 21 g. With
+# more vinegar the gas is the same, since the soda runs out first. No balloon: a balloon of 6 litres
+# pushes aside about 7 g of air, so the scales would read light.
+item chem.grams-went v=1 stars=3 skills=[chemistry.conservation, reasoning.constraints] {
+  title "Where did the grams go?"
+  difficulty (q * 2 + (if n == 2 then 1 else 0))
+  let q=0..2 j={500, 550} n={1, 2}
+  let v={j + 400 * (n - 1)}
+  let soda={21 * n}
+  let gas={11 * n}
+  let open={v + soda - gas}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 35x28 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      flask a shape="conical" fill=0.35 bubbles=6 balloon=0 tag="A"
+      flask b shape="conical" fill=(if q == 2 then 0.7 else 0.35) bubbles=6 balloon=0 tag="B"
+    }
+    text ask "{if q == 1 then \"Ana forgot to write down what her jug of vinegar weighed. She tipped in \" else \"Ana weighs her jug of vinegar, A, holding \"}{if q == 1 then soda else 400 * n}{if q == 1 then \" g of baking soda, which gives off \" else \" ml: \"}{if q == 1 then gas else v}{if q == 1 then \" g of gas, and at the end the open jug read \" else \" g. She tips in \"}{if q == 1 then open else soda}{if q == 1 then \" g. What did the jug of vinegar weigh before the soda went in?\" else \" g of baking soda, and it fizzes. \"}{if q == 0 then \"When the fizzing stops, the open jug reads \" else if q == 2 then \"At the end it reads \" else \"\"}{if q == 1 then \"\" else open}{if q == 0 then \" g. How many grams of gas left it?\" else if q == 2 then \" g. Leo's jug B holds twice as much vinegar, and he tips in the same amount of soda. How many grams lighter is his jug at the end than just after the soda went in?\" else \"\"}" narrate width=34 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(q, gas, v, gas)
+  feedback {
+    when (q == 0 and answer == v - open) point=kit {
+      say "The soda went in after the vinegar was weighed. Before the fizz, the jug held {v + soda} g."
+    }
+    when (q == 1 and answer == open - soda) point=kit {
+      say "The {gas} g of gas left the jug, so the jug and soda weighed more before the fizz than at the end."
+    }
+    when (q == 2 and answer == 2 * gas) point=b {
+      say "The gas comes from the soda, and Leo used the same {soda} g. The extra vinegar has no more soda to fizz with."
+    }
+  }
+  hint "What did the jug weigh with the soda in it, before any fizz?"
+  hint "{if q == 2 then \"Which runs out first in Leo's jug, the vinegar or the soda?\" else \"Without a lid, where does the gas go?\"}"
+  hint "Nothing is lost, only moved. Where are the missing grams?"
+}

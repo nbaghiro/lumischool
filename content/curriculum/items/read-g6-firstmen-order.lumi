@@ -1,0 +1,20 @@
+# Four moments of a sitting put back in the book's order, from different chapters of the sitting.
+item reading.firstmen-order v=1 skills=[reading.sequencing, reading.whole-book] {
+  title "In the book's order"
+  difficulty pick(k, 0, 1)
+  let k=0..1
+
+  scene 36x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=centre {
+        bookcast c who=bedford pose=walk dir=1
+        text ask "{pick(k, \"Number these in the order they happen in chapters 1 and 2.\", \"Number these in the order they happen in chapters 15 to 17.\")}" width=26
+      }
+      sequence s items=[pick(k, "Bedford learns what Cavor is trying to make.", "Bedford sees that their chains are gold."), pick(k, "Cavor's chimneys fly up into the sky.", "Cavor sees white light far above them."), pick(k, "Bedford comes to Lympne to write a play.", "Bedford will not walk the plank."), pick(k, "Cavor walks past buzzing at sunset.", "Bedford picks up a crowbar in the cave.")] blanks=[p1, p2, p3, p4]
+    }
+  }
+
+  answer p1=pick(k, 3, 2) p2=pick(k, 4, 4) p3=pick(k, 1, 1) p4=pick(k, 2, 3)
+  hint "Which of these happens in the first chapter of the sitting, and which in the last?"
+  hint "Put the two ends in first, then decide the order of the two in the middle."
+}

@@ -1,0 +1,27 @@
+# The other way: a real length turned into squares on the plan, by dividing by the scale.
+item scale.base-new-room v=1 skills=[scale.drawings, measure.scale] {
+  title "Drawing the store room"
+  difficulty ((if whole(s) then 0 else 2) + n / 10)
+  let s={2, 3, 0.5, 1.5} n={4, 5, 6, 7}
+  level easy {
+    let s={2, 3} n={4, 5}
+  }
+  level hard {
+    let s={0.5, 1.5} n={6, 7}
+  }
+
+  scene 28x19 {
+    scaleplan p plan=1 l=8 w=5 scale=s unit="m" dims=1 ask=0 at=canvas(1, 1)
+    text ask "A new store room {decimals(n * s, 0)} m long is to be added to this plan, at the same scale. How many squares long should it be drawn?" narrate width=11 right-of=p gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == n * s * s) point=p {
+      say "Going from metres to squares is the other way round from squares to metres. Divide by {s}."
+    }
+  }
+  hint "What does one square of the plan stand for?"
+  hint "How many lots of that length make {decimals(n * s, 0)} m?"
+}

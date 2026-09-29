@@ -22,6 +22,10 @@ lesson physics-speed-from-distance-and-time v=1 format=worked grade=3 unit=5 sub
     show physics.speed-meet a=2 b=3 t=5 easy-a=2 easy-b=2 easy-t=4 hard-a=3 hard-b=4 hard-t=6
   }
 
+  remember {
+    say "Speed is the distance divided by the time."
+  }
+
   grown-ups """
     Pace out ten metres in the garden or the hallway and time a walk and a run over it. Dividing by
     the seconds gives a number the child can compare with a bicycle or a car.

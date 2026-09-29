@@ -1,0 +1,31 @@
+# A build task on places in a list: the robot can only move by items of boats, so the child finds the
+# places that hold the moves it needs, and where no item fits, adds one and reads it from the end. Any
+# program that reaches the flag is right, so two items added together also work.
+item coding.list-build v=1 skills=[coding.lists, coding.sequences] {
+  title "Moves kept in a list"
+  difficulty k
+  let k=0..2
+  let a={pick(k, 3, 2, 5)} b={pick(k, 1, 5, 1)} c={pick(k, 4, 1, 3)} d={pick(k, 2, 3, 2)}
+  let fc={pick(k, 5, 7, 7)} fr={pick(k, 3, 2, 1)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x38 {
+    row top at=canvas(0, 0) space=1 align=start {
+      maze m cols=7 rows=5 col=1 row=5 flag=[fc, fr]
+      column side space=1 align=start {
+        text ask "The robot moves only by numbers in the list boats. Build a program that takes it to the flag, and keep the list as it is." width=18
+        listbox l name=boats code=["set boats to list {a}, {b}, {c}, {d}"]
+      }
+    }
+    codepad answer tray=["set boats to list {a}, {b}, {c}, {d}", "add 1 to boats", "right item 1 of boats", "up item 1 of boats"] lines=5 key=["set boats to list {a}, {b}, {c}, {d}", pick(k, "right item 3 of boats", "add 6 to boats", "add 6 to boats"), pick(k, "up item 4 of boats", "right item 5 of boats", "add 4 to boats"), pick(k, "", "up item 4 of boats", "right item 5 of boats"), pick(k, "", "", "up item 6 of boats")] below=top gap=1
+  }
+
+  check coding.builds of=m goal=flag
+  hint "How many squares right and how many up is the flag? Is each of those numbers in the list?"
+  hint "A number added to boats goes on the end. What is its place then?"
+}

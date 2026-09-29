@@ -1,0 +1,28 @@
+# Energy is not made or lost in a solar panel: the light's joules come out as electricity and as
+# heating. i is the light in, b the band left to work out; this panel's share is a fifth.
+item physics.panel-energy v=1 skills=[physics.energy, reasoning.backwards] {
+  title "Where the sunlight goes"
+  difficulty (if b == 1 then 0 else 1)
+  let i={500, 1000, 1500} b={1, 2}
+  level easy {
+    let b={1}
+  }
+  level hard {
+    let i={1500} b={2}
+  }
+
+  scene 24x21 {
+    energyflow e thing="solar panel" from="light" to="electricity" input=i useful=(i / 5) wasted=[i * 4 / 5] wastes=["heating"] blank=b unit=J at=canvas(1, 0)
+    text ask "Each second {i} J of sunlight falls on this panel. How many joules go where the question mark is?" narrate width=22 below=e gap=1
+    number-input j below=ask gap=1
+  }
+
+  check physics.energy of=e j=missing
+  feedback {
+    when (j == i) point=e {
+      say "That is all the light going in. Some of it comes out another way."
+    }
+  }
+  hint "What happens to all the energy that goes in?"
+  hint "Take the band you know away from the light going in."
+}

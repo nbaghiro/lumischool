@@ -1,0 +1,10 @@
+item art.tone-dome v=1 stars=3 skills=[art.tone, art.drawing, reasoning.plan] {
+  title "The dome by moonlight"
+
+  scene 37x17 {
+    text ask "Draw the observatory's dome, or the moon, lit from one side. Use all five tones of your scale: white paper where the light hits, then darker as it turns away, and step 5 for the darkest shadow." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="plain" guide="none" outline="none" pots=["black", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A round form that looks solid because its tone changes in five clear steps: bare paper left where the light hits, a light and a middle tone as the surface turns away, a dark tone on the far side, and the darkest tone kept for a shadow, all consistent with one light." notice=["White paper left where the light hits", "Five different tones", "The tones in order round the form", "The darkest tone in the shadow"] ask="Where is the light coming from, and which tone was hardest to get right?"
+}

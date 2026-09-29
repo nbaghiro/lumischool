@@ -1,0 +1,27 @@
+# The way in: a price with cents times a whole number of kilograms, before both numbers are decimals.
+item decimal.cheese-kilos v=1 skills=[decimals.multiply, money.decimals] {
+  title "Cheese by the kilogram"
+  difficulty ((if c % 100 == 0 then 0 else if c % 10 == 0 then 1 else 2) + k / 3)
+  let c={450, 380, 625, 845, 1275} k={2, 3, 4, 6}
+  level easy {
+    let c={450, 380} k={2, 3}
+  }
+  level hard {
+    let c={625, 845, 1275} k={4, 6}
+  }
+
+  scene 33x10 {
+    pricetag tag now=c was=0 at=canvas(1, 1)
+    text ask "At the canal market, cheese costs the price on the tag for one kilogram. How many dollars do {k} kilograms cost?" narrate width=20 right-of=tag gap=2
+    number-input answer width=6 below=ask gap=1
+  }
+
+  answer decimals(c * k / 100, 2)
+  feedback {
+    when (answer == c * k) point=tag {
+      say "That is the price in cents. How many dollars is it?"
+    }
+  }
+  hint "What is the price of one kilogram in dollars and cents?"
+  hint "Multiply the dollars and the cents by {k} and add them."
+}

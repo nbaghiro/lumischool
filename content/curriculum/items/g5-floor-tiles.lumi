@@ -1,0 +1,28 @@
+# The highest common factor as the biggest square tile for a rectangle, then the number of tiles.
+item number.floor-tiles v=1 skills=[number.hcf, area.rectangles] {
+  title "The biggest square tiles"
+  difficulty (x * y)
+  let g={10, 12, 15} x={2, 3, 4} y={3, 5, 7}
+  where (x < y and gcd(x, y) == 1 and x * y != g)
+  level easy {
+    let x={2} y={3}
+  }
+  level hard {
+    let x={3, 4} y={5, 7}
+  }
+
+  scene 31x20 {
+    observatory floor open=1 at=canvas(1, 1)
+    text ask "The floor of the telescope room is {g * y} cm by {g * x} cm. It is covered with the biggest square tiles that fit with none cut. How many tiles are there?" narrate width=30 below=floor gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (x * y)
+  feedback {
+    when (answer == g) point=ask {
+      say "{g} cm is the side of each tile. How many tiles fit along each edge?"
+    }
+  }
+  hint "What is the biggest number that divides {g * y} and {g * x}?"
+  hint "How many tiles fit along each edge? Multiply them."
+}

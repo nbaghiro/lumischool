@@ -1,6 +1,6 @@
 # Strumming in four and in three: a pattern is a rhythm on the half beats, down on the numbers and up
 # on the ands, and a bar in three counts 1 and 2 and 3 and.
-lesson music-strum-patterns v=1 format=teach grade=4 unit=2 subject=music levels=[easy, medium, hard] {
+lesson music-strum-patterns v=1 format=teach grade=4 unit=3 subject=music levels=[easy, medium, hard] {
   title "Strum patterns in four and three"
   goal "Read a strum pattern of downs and ups, and play it in a bar of four or a bar of three."
 

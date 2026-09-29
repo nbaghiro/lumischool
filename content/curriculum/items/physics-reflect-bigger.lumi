@@ -1,0 +1,21 @@
+# Two stars: the beam out follows the beam in. Tilting the torch so the beam comes in at a bigger angle
+# sends the beam out at a bigger angle too, further along the screen, away from the torch.
+item physics.reflect-bigger v=1 stars=2 skills=[physics.light, reasoning.cause-and-effect] {
+  title "Tilting the torch"
+  let a={30, 40} u=0..1
+
+  scene 23x30 {
+    mirrorangle m angle=a targets=[20, 40, 60] marks=1 show=1 at=canvas(1, 0)
+    text ask "Ava tilts the torch so its beam comes in at {if u == 0 then a + 10 else a - 10}° to the upright line. Where on the screen will the beam land now?" narrate width=22 below=m gap=1
+    choice pick options=["Further from the torch", "Nearer to the torch", "In the same place"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if u == 0 then "Further from the torch" else "Nearer to the torch")
+  feedback {
+    when (pick == "In the same place") point=m {
+      say "The beam out always matches the beam in. If the angle in changes, so does the angle out."
+    }
+  }
+  hint "If the angle in gets {if u == 0 then \"bigger\" else \"smaller\"}, what happens to the angle out?"
+  hint "A beam that leans further from the upright line lands further along the screen."
+}

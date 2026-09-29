@@ -1,0 +1,31 @@
+# Three stars: the fewest 100 g masses that sink the toy boat. It can push aside at most `most` ml
+# before the water comes over its side, so it floats while it and its load weigh no more than that
+# many grams. most - m is never a whole number of hundreds, so there is no exact balance to argue over.
+item physics.boat-fewest-sink v=1 stars=3 skills=[physics.floating, reasoning.fewest, reasoning.constraints] {
+  title "The fewest masses to sink it"
+  difficulty v
+  let v=0..3
+  let m={pick(v, 150, 120, 200, 250)}
+  let most={pick(v, 480, 590, 670, 830)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 30x17 {
+    boat b cargo=2 side=5 sits=1 at=canvas(1, 0)
+    text ask "A toy boat weighs {m} g. It can push aside at most {most} ml of water before the water comes over its side. What is the fewest 100 g masses that will sink it?" narrate width=12 right-of=b gap=1
+    number-input answer below=b gap=1
+  }
+
+  answer ((most - m - (most - m) % 100) / 100 + 1)
+  feedback {
+    when (answer == (most - m - (most - m) % 100) / 100) point=b {
+      say "With that many the boat and its load weigh less than {most} g of water, so it still floats. One more."
+    }
+  }
+  hint "How many grams can it carry before it has pushed aside {most} ml?"
+  hint "Try the masses one at a time: at what number does the load go past that?"
+}

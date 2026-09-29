@@ -1,0 +1,20 @@
+# The three-star question: part of the report written from the notes and the plan, in the child's
+# own words, with Armstrong's words quoted and the sources named. A grown-up marks it by eye.
+item writing.report-write v=1 stars=3 skills=[writing.report, writing.composing, writing.research] {
+  title "Write the report"
+  let k=0..1
+
+  scene 36x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        text ask "{pick(k, \"Write the landing and the moonwalk parts of your report from your notes, in your own words. Quote Armstrong's words exactly, and end with a list of the sources you used.\", \"Write your report from your plan: a paragraph for each heading, in your own words, with Armstrong's words quoted exactly and a list of your sources at the end.\")}" width=22
+        loosepages pages count=3
+      }
+      writinglines lines lines=8 width=34 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="Paragraphs that follow the plan's headings in order, give facts from more than one source in the child's own sentences, quote Armstrong's words exactly inside speech marks, and end with a list naming the transcript, The Daily Lantern and the encyclopaedia." notice=["Follows the plan's headings", "Facts from two or more sources", "Own words, not copied", "Armstrong quoted exactly", "Sources listed at the end"] ask="Which fact did you find in two sources?"
+  hint "Take one heading of your plan and the notes under it. Say the paragraph aloud before you write it."
+  hint "Where you use someone's exact words, put them in speech marks and say whose they are."
+}

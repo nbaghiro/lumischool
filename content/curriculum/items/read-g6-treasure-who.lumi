@@ -1,0 +1,32 @@
+# Who said it, on Treasure Island. The wrong names are people who are in the same scene or who
+# talk in the same way, so the child has to remember the moment rather than guess from the voice.
+# The last two need more than the words: Jim at his boldest, and the voice the pirates take for a
+# ghost.
+item reading.treasure-who v=1 skills=[reading.characters, reading.whole-book] {
+  title "Who said it?"
+  difficulty pick(k, 0, 0, 0, 0, 0, 1, 1)
+  let k=0..6
+  let right={pick(k, "Dr Livesey", "Captain Smollett", "Ben Gunn", "Ben Gunn", "Captain Smollett", "Jim Hawkins", "Ben Gunn")}
+
+  scene 34x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=centre {
+        parrot p
+        text ask "{pick(k, \"In chapter 2, who asks Jim if he is afraid of blood?\", \"In chapter 9, who says, 'I don't like this cruise; I don't like the men'?\", \"In chapter 15, who has spent many long nights dreaming of toasted cheese?\", \"In chapter 19, who tells Jim he is a good boy, but only a boy?\", \"In chapter 20, who tells Silver that if he is a pirate, he can go hang?\", \"In chapter 28, who says, 'I no more fear you than I fear a fly'?\", \"In chapter 32, whose voice sings and calls in the trees?\")}" width=26
+      }
+      choice pick options=[pick(k, right, "Squire Trelawney", "Long John Silver", "Long John Silver", right, right, "Long John Silver"), pick(k, "the captain", right, right, "Dr Livesey", "Long John Silver", "Long John Silver", right), pick(k, "Black Dog", "Long John Silver", "Israel Hands", right, "Squire Trelawney", "Captain Smollett", "Captain Flint's ghost")] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 6 and pick == "Captain Flint's ghost") point=p {
+      say "That is what the pirates fear. Read on into chapter 33: who was ahead of them in the trees?"
+    }
+    when (k == 5 and pick != right) point=p {
+      say "Those words sound like a grown man, but who stands among the pirates in chapter 28 with everything to lose?"
+    }
+  }
+  hint "Find the chapter the question names. Who is in the scene at that moment?"
+  hint "Of the people in the scene, whose way of talking does the line fit, and who could know what it says?"
+}

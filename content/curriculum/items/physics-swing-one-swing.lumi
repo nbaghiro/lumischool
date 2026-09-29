@@ -1,0 +1,33 @@
+# The way in: ten swings timed on the stopwatch to the nearest second, as a thumb on a button can,
+# and one swing is a tenth of that. The times follow the real rule for a pendulum, about two seconds
+# times the square root of the string's length in centimetres, for ten swings.
+item physics.swing-one-swing v=1 skills=[physics.motion, physics.measuring, decimals.tenths] {
+  title "One swing from ten"
+  difficulty l
+  let l=2..8
+  let secs={pick(l - 2, 9, 11, 13, 14, 16, 17, 18)}
+  level easy {
+    let l=2..4
+  }
+  level hard {
+    let l=6..8
+  }
+
+  scene 23x22 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      pendulum p length=l mass=100
+      stopwatch w seconds=secs
+    }
+    text ask "Mia times ten swings of the mill's pendulum, to and fro. How many seconds does one swing to and fro take?" narrate width=22 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals(secs / 10, 1)
+  feedback {
+    when (answer == secs) point=w {
+      say "That is the time for all ten swings. One swing is a tenth of it."
+    }
+  }
+  hint "How many swings does the stopwatch time?"
+  hint "Share the time between ten swings: each digit moves one place to the right."
+}

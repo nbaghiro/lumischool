@@ -1,0 +1,35 @@
+# An explanation answers why as well as what. Each version asks the reason behind one step, with a
+# right reason, a wrong one about the machine and one that names no reason.
+item writing.explain-why v=1 skills=[writing.explanations, reasoning.cause-and-effect] {
+  title "Why does it happen?"
+  difficulty k
+  let k=0..2 r=0..2
+  let q={pick(k, "Why does the boat rise?", "Why are the bottom gates shut before water comes in?", "Why can the top gates open only when the chamber is full?")}
+  let right={pick(k, "It floats on water that is getting deeper.", "Otherwise the water would run straight out.", "Water holds them shut until it is level.")}
+  let w1={pick(k, "The keeper pulls it up with a rope.", "So that the boat cannot be seen.", "They are locked with a key.")}
+  let w2={pick(k, "Because it is going up.", "Because that is the rule.", "Because the boat is in the way.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 32x24 {
+    canallock lock level=(if k == 0 then 0.5 else 0.25) boat=1 at=canvas(1, 0)
+    text ask "Nell's explanation must say why. {q}" narrate width=31 below=lock gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w2) point=ask {
+      say "That repeats what happens without saying why. A reason names what makes it happen."
+    }
+    when (pick == w1) point=lock {
+      say "Look at the drawing: nothing pulls or locks anything. The water is what does the work."
+    }
+  }
+  hint "Look at the drawing. What is doing the work in the lock?"
+  hint "A good reason could be checked by watching the water."
+}

@@ -1,0 +1,29 @@
+# The two-star reason: letters follow the tune, not the words. Clementine's chorus is sung to its verse's
+# tune, so every section is A and nothing new comes between returns; and Für Elise, A B A C A, has five
+# sections from three tunes.
+item music.form-claim v=1 stars=2 skills=[music.form, reasoning.claims] {
+  title "Is it a rondo?"
+  let q=0..1 r=0..1
+  let claim={pick(q, "Clementine's chorus is sung to the same tune as its verses. Ben says Clementine is a rondo, because its chorus keeps coming back between the verses.", "Ana says Für Elise, A B A C A, has five sections but only three different tunes.")}
+  let right={pick(q, "No: it has one tune, so every section is A", "Yes: A, B and C, with A played three times")}
+  let w1={pick(q, "Yes: the chorus comes back between new verses", "No: it has five different tunes")}
+  let w2={pick(q, "No: verse then chorus makes it A B A B", "No: it has only four sections")}
+
+  scene 36x35 {
+    table plan cols=3 head=["Clementine", "Its tune", "Für Elise"] cells=["verse", "tune 1", "A", "chorus", "tune 1", "B", "verse", "tune 1", "A", "chorus", "tune 1", "C", "verse", "tune 1", "A", "chorus", "tune 1", ""] at=canvas(1, 1)
+    text ask "{claim} Is that right, and why?" narrate width=34 below=plan gap=1
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=plan {
+      say "{if q == 0 then \"New words are not a new tune. What tune is each verse sung to?\" else \"Count the letters that are different, not the sections.\"}"
+    }
+    when (pick == w2) point=plan {
+      say "{if q == 0 then \"A new letter needs a new tune. Is the chorus a new tune?\" else \"Count the letters down the column one by one.\"}"
+    }
+  }
+  hint "Write each piece in letters, the same tune getting the same letter."
+  hint "{if q == 0 then \"The chorus has the verse's tune. What letter does it get, then?\" else \"How many sections, and how many different letters?\"}"
+}

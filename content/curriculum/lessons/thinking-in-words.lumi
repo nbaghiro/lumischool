@@ -1,4 +1,4 @@
-lesson thinking-in-words v=1 format=teach grade=3 unit=8 subject=coding levels=[easy, medium, hard] {
+lesson thinking-in-words v=1 format=teach grade=3 unit=9 subject=coding levels=[easy, medium, hard] {
   title "Always, sometimes, never"
   goal "Say whether a statement is always true, sometimes true or never true, find the case that breaks it, and work out an answer from clues."
 

@@ -1,0 +1,27 @@
+# The second reasoning question of the core: the same two tests joined by and and by or. Whatever
+# passes and also passes or, so "only A" is never the answer, which is worth noticing.
+item coding.and-both v=1 skills=[coding.decisions, reasoning.logic, reasoning.compare] {
+  title "And against or"
+  difficulty k
+  let k=0..2 b={3, 6} h={20, 50}
+  let bb={pick(k, b + 3, b + 3, b - 2)} hh={pick(k, h + 20, h - 15, h - 15)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x26 {
+    column both at=canvas(1, 0) space=1 align=start {
+      program pa code=["if bright is more than {b} and high is more than {h}", "  say look"] title="A"
+      program pb code=["if bright is more than {b} or high is more than {h}", "  say look"] title="B"
+    }
+    text ask "A star has bright {bb} and high {hh}. Which programs say look?" width=20 below=both gap=1
+    choice pick options=["Only A", "Only B", "Both", "Neither"] below=ask gap=1
+  }
+
+  answer pick=pick(k, "Both", "Only B", "Neither")
+  hint "Ask the two tests about this star. Which pass?"
+  hint "And needs both tests to pass. Or needs at least one."
+}

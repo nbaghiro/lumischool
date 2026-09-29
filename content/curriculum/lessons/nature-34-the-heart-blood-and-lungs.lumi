@@ -1,0 +1,65 @@
+lesson nature-the-heart-blood-and-lungs v=1 format=teach grade=6 unit=4 subject=nature levels=[easy, medium, hard] {
+  title "The heart, blood and lungs"
+  goal "Follow the blood from the heart to the lungs, back to the heart and round the body, and say what it carries on each part of the trip."
+
+  look {
+    scene 34x15 {
+      row all at=canvas(1, 1) space=2 align=end {
+        waterfall wf drops=2 rainbow=1
+        parts fig of=chest
+        kingfisher kf flying=0 facing=-1
+      }
+    }
+    say """
+      Ada climbs the steep path beside the waterfall to the rope bridge, and by the top her heart is
+      thumping. The heart is a pump of muscle about the size of her fist. With every beat it pushes
+      blood into tubes called blood vessels. First the blood goes to the lungs, where it picks up
+      oxygen from the air she breathes in and leaves carbon dioxide to be breathed out. Then it comes
+      back to the heart, which sends it round her body with oxygen and food, and back again.
+      """
+  }
+  do {
+    level easy {
+      worked nature.chest-letter k=2 level=medium
+    }
+    practice nature.chest-letter count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.blood-next count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.blood-carries count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.heart-faster count=1 seed=2 easy-seed=1 hard-seed=7
+    level hard {
+      show nature.heart-mistake k=1 level=medium
+    }
+  }
+  story {
+    show nature.pulse-count k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.heart-mistake k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.blood-trip k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "The heart pumps blood to the lungs for oxygen, back to the heart, then round the body and back."
+  }
+
+  grown-ups """
+    The lesson is one loop inside another. The heart pumps blood to the lungs, where it takes in
+    oxygen and gives up carbon dioxide, and it comes back to the heart to be pumped round the body,
+    where it gives oxygen and food to the muscles and picks up carbon dioxide, and then it comes back
+    again. The wrong ideas to watch for are that blood goes from the lungs straight to the body, that
+    the lungs pump, and that blood is used up and made new; the child who says "twice through the
+    heart" has the loop. Blood is never blue: a vein looks blue through skin. The story counts a
+    pulse for 15 seconds and makes it a minute. The three-star question has a drop of blood travel
+    from the toe to the brain, and the way in is to write the stops in order and count the hearts. If
+    the lungs still come straight before the body after the core, stay here another day: walk the
+    loop round the kitchen table with two chairs for the heart's two sides and a bowl for the lungs,
+    then take each other's pulse before and after running up the stairs.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the windpipe) opens the core, the parts to find are the heart and a lung, the blood's next stop is from the legs and out of the heart to the body, the blood carries oxygen and carbon dioxide, the heart speeds up on the climb, the pulse is 20 beats in 15 seconds, the two-star question is Ben's pumping lungs, and the drop of blood starts in the lungs."
+  }
+  level hard {
+    grown-ups "At this level the parts are the windpipe and a blood vessel, the blood's next stop is after the lungs and the passes through the heart are counted, the blood carries digested food and Ben's veins look blue, the pulse slows at rest, a second reasoning question in the core has Ben saying blood is used up, the story asks what 90 beats a minute is in 20 seconds, the two-star question is a held breath, and the drop of blood goes from the toe to the brain and back."
+  }
+}

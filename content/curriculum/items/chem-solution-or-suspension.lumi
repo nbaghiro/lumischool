@@ -1,0 +1,24 @@
+# Sugar and salt dissolve, so stirred into water they make a solution that never settles and passes
+# through filter paper; flour does not dissolve, so it makes a cloudy suspension that settles.
+item chem.solution-or-suspension v=1 skills=[chemistry.mixtures, chemistry.dissolving] {
+  title "Solution or suspension?"
+  let t={"sugar", "salt", "flour"}
+
+  scene 35x10 {
+    mixture m things=[t] water=1 names=1 at=canvas(1, 0)
+    text ask "At the market, Ana stirs {t} into a glass of canal-side tap water and leaves it for an hour. Is it a solution or a suspension?" narrate width=24 right-of=m gap=1
+    choice pick options=["A solution", "A suspension"] below=ask gap=1
+  }
+
+  answer pick=(if t == "flour" then "A suspension" else "A solution")
+  feedback {
+    when (pick == "A solution" and t == "flour") point=m {
+      say "Flour does not dissolve. Its bits hang in the water and make it cloudy, and in time they settle."
+    }
+    when (pick == "A suspension" and t != "flour") point=m {
+      say "The {t} dissolved and cannot be seen at all. Nothing is left to settle, so it is a solution."
+    }
+  }
+  hint "Can you still see the {t} in the glass?"
+  hint "Did the {t} dissolve, or is it only hanging in the water?"
+}

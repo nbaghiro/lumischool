@@ -1,0 +1,35 @@
+# The two-star: a longer part in a band is a bigger share, not more children, when the bands are
+# classes of different sizes. The child names the class and says how many more.
+item survey.band-compare v=1 stars=2 skills=[data.band-graphs, reasoning.compare] {
+  title "Longer is not more"
+  difficulty t
+  let t=0..2
+  level easy {
+    let t={0}
+  }
+  level hard {
+    let t={2}
+  }
+
+  scene 36x24 {
+    percentbar bands counts=[pick(t, 5, 4, 6), pick(t, 9, 10, 12), pick(t, 6, 6, 7), pick(t, 20, 16, 30), pick(t, 15, 16, 24), pick(t, 15, 8, 26)] bands=["5A", "5B"] kinds=["Moon", "Saturn", "Jupiter"] at=canvas(1, 1)
+    text ask "Mo says more children in 5A chose Saturn, because its Saturn part is longer. Which class had more children choose Saturn, and how many more?" narrate width=34 below=bands gap=1
+    choice pick options=["5A", "5B", "the same"] below=ask gap=1
+    row more below=pick gap=1 space=1 align=centre {
+      number-input answer width=3
+      text unit "more children"
+    }
+  }
+
+  answer pick="5B" answer=pick(t, 6, 6, 12)
+  feedback {
+    when (pick == "5A") point=bands {
+      say "5A's part is a bigger share of a smaller class. Work out how many children each part is."
+    }
+    when (pick == "the same") point=bands {
+      say "The parts are different shares of different totals. Find each number of children."
+    }
+  }
+  hint "How many children are in each class? The totals are at the right."
+  hint "What is {pick(t, 45, 50, 48)}% of the smaller class, and {pick(t, 30, 40, 30)}% of the bigger one?"
+}

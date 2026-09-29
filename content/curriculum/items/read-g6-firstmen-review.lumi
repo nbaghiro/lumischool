@@ -1,0 +1,18 @@
+# The review that ends the book, about a hundred words, marked by a grown-up from the notice list.
+item reading.firstmen-review v=1 skills=[writing.review, reading.whole-book] {
+  title "Your review"
+
+  scene 34x32 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=centre {
+        bookcast s who=sphere pose=open dir=1
+        text ask "Write a review of The First Men in the Moon for a friend your age, in about 100 words. Say what it is about without giving away the end, which part you liked most and why, and who would enjoy it." width=24
+      }
+      writinglines w lines=7 width=33
+    }
+  }
+
+  check writing.by-eye look-for="A review of about 100 words that says what the book is about without the ending, names one part and why it worked, and says who would enjoy the book." notice=["What it is about, without the ending", "A part named, and why it worked", "Who would enjoy it", "About 100 words, in whole sentences"] ask="Would you rather have been Bedford or Cavor?"
+  hint "Start with one sentence on what the book is about."
+  hint "Which part do you still think about? Say why in a sentence."
+}

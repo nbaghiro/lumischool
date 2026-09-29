@@ -1,0 +1,42 @@
+# Three-star: how many living things a key can name. Each question splits every group in two, so a
+# key whose every path asks the same number of questions names 2, 4, 8 and so on; working back, the
+# fewest questions on the longest path to name a number of things is the first doubling past it.
+item nature.group-key v=1 stars=3 skills=[nature.keys, reasoning.patterns] {
+  title "How far can a key go?"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "Every path through Ada's key asks exactly 3 yes-or-no questions before it names a living thing. What is the most living things the key could name?", "Every path through Ada's key asks exactly 4 yes-or-no questions before it names a living thing. What is the most living things the key could name?", "Ada wants a key that names all 20 living things she found in the temple garden. Each question splits a group into two. What is the fewest questions the longest path through her key can ask?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x19 {
+    row pics at=canvas(1, 1) space=1 align=end {
+      toadstools ts count=2 spots=5
+      minibeasts mb kinds=["snail", "spider", "ladybird"] legs=false
+    }
+    text ask "{asks}" narrate width=32 below=pics gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 8, 16, 5)
+  feedback {
+    when (k <= 1 and answer == pick(k, 6, 8, 0)) point=ask {
+      say "Each question splits every group, so the groups double. Two groups, then four, then how many?"
+    }
+    when (k <= 1 and answer == pick(k, 4, 5, 0)) point=ask {
+      say "A key that asks one question after another down one side names that many. Can every answer lead to another question?"
+    }
+    when (k == 2 and answer == 19) point=ask {
+      say "19 questions in all would do it, but the question is about the longest path. How many times must the 20 be halved?"
+    }
+    when (k == 2 and answer == 4) point=ask {
+      say "Four questions on every path can name at most 16. Is that enough for 20?"
+    }
+  }
+  hint "After one question there are two groups. After two questions, how many?"
+  hint "Keep doubling, one question at a time."
+}

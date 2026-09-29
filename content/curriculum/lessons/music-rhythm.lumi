@@ -1,4 +1,4 @@
-lesson music-rhythm v=1 format=teach grade=2 unit=1 subject=music levels=[easy, medium, hard] {
+lesson music-rhythm v=1 format=teach grade=2 unit=2 subject=music levels=[easy, medium, hard] {
   title "Counting a bar"
   goal "Count the beats in a written bar, clap it, and work out the note that finishes it."
 

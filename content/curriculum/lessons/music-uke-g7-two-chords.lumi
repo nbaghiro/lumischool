@@ -1,6 +1,6 @@
 # The second ukulele chord, and the first change: G7 needs three fingers, and moving between C and
 # G7 on the count of 1 is the whole of playing a song.
-lesson music-uke-g7-two-chords v=1 format=teach grade=1 unit=4 subject=music levels=[easy, medium, hard] {
+lesson music-uke-g7-two-chords v=1 format=teach grade=1 unit=9 subject=music levels=[easy, medium, hard] {
   title "G7 and a two-chord song"
   goal "Play G7 and change between C and G7 on the beat through a short song."
 

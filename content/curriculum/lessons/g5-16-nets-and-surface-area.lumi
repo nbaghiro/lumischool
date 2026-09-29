@@ -1,0 +1,60 @@
+lesson g5-nets-and-surface-area v=1 format=teach grade=5 unit=3 subject=maths levels=[easy, medium, hard] {
+  title "Nets and surface area: a crate for the market"
+  goal "Open a solid out into its net, and find the surface area of a cuboid as the total area of its faces."
+
+  look {
+    scene 36x16 {
+      cubestack crate l=4 w=3 h=2 outline=1 edges=1 unit="cm" at=canvas(1, 2)
+      net flat solid=cuboid cell=1 l=4 w=3 h=2 unit="cm" right-of=crate gap=2
+    }
+    say """
+      A crate for the canal market is folded from card. Cut along some of its edges and it opens flat
+      into its net: six rectangles, in three pairs of the same size. The surface area is the total
+      area of the faces. Here the top and bottom are 4 × 3, the front and back 4 × 2, and the two
+      ends 3 × 2, so the card is 2 × (12 + 8 + 6) = 52 square centimetres. Volume counts the cubes
+      inside; surface area counts the squares that cover the outside.
+      """
+  }
+  do {
+    show solids.which-net k="prism" easy-k="cube" hard-k="pyramid"
+    show solids.cube-surface e=5 easy-e=3 hard-e=9
+    level easy {
+      worked solids.net-area l=5 w=2 h=3 level=medium
+    }
+    show solids.net-area l=6 w=3 h=2 easy-l=4 easy-w=2 easy-h=1 hard-l=5 hard-w=3 hard-h=4
+    practice solids.crate-paint count=1 seed=5
+    show solids.open-crate l=6 w=3 h=4 easy-l=3 easy-w=2 easy-h=3 hard-l=7 hard-w=4 hard-h=5
+    practice solids.missing-edge count=1 seed=7 hard-count=2
+    practice solids.tin-label count=1 seed=3
+    practice solids.less-card count=1 seed=4
+  }
+  try stars=2 {
+    show solids.double-card s=62 k=2 easy-s=52 hard-s=94 hard-k=3
+  }
+  try stars=3 {
+    show solids.fewest-card n=24 easy-n=12 hard-n=36
+  }
+  remember {
+    say "Surface area is the area of all the faces added together. A cuboid's faces come in three pairs."
+  }
+
+  grown-ups """
+    The net is the idea: a solid opened flat shows every face at once, so nothing is missed. The
+    common slip is adding the three faces that can be seen and stopping, or multiplying the three
+    edges, which gives the volume. Ask each time how many faces there are and which ones match. The
+    open crate bends the rule on purpose, since the lid is one face and not a pair. In the tin
+    question the label's long side is the distance round the end, from the circles lesson. In the
+    two-star question each face grows in two directions, so doubling every edge makes four times
+    the card, not two or eight. In the three-star question a list of crates in order finds the one
+    nearest a cube, which always needs least. If the faces are still being lost, stay here another
+    day and cut a cereal box along its edges. Off the page, open out a small box and measure each
+    face. This lesson meets Russia's grade 5 programme, «Развертки куба и параллелепипеда», and
+    China's 2022 standard for grades 5 and 6, 图形与几何 1(5), 展开图 and 表面积.
+    """
+  level easy {
+    grown-ups "At this level a 5 by 2 by 3 net is worked once in the teacher's pen, the crates are three to five centimetres long and two wide, the cube's edge is two to four, the tin's radius is two or three, the crates to compare are the plainer pairs, the two-star doubles a crate of 52 cm², and the three-star packs 12 cubes."
+  }
+  level hard {
+    grown-ups "At this level the crates are six to nine long and up to six tall, the cube's edge is eight to ten, the missing height is asked twice, the tin's radius is five or six, the crates to compare are close in card, the two-star trebles every edge, and the three-star packs 36 cubes."
+  }
+}

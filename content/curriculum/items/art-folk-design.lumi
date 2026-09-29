@@ -1,0 +1,25 @@
+# The three-star, made to a brief: a printed border the child designs and prints with the stamps,
+# responded to by a grown-up. Easy asks for a repeat of three; hard adds a block turned the other way.
+item art.folk-design v=1 stars=3 skills=[art.design, art.printing, reasoning.plan] {
+  title "A border to a brief"
+  difficulty v
+  let v=0..2
+  let rep={pick(v, "three", "four", "four")}
+  let extra={pick(v, "", " Say who the cloth is for.", " One block in the repeat is printed turned the other way, and you say who the cloth is for.")}
+
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x21 {
+    text ask "Design a border for a cloth in the old city's temple, to this brief: a repeat {rep} prints long, two colours only, and it ends with a whole repeat.{extra}" narrate width=34 at=canvas(1, 1)
+    paintsheet sheet w=26 h=7 paper="squared" guide="row" outline="none" pots=["red", "black", "yellow", "blue"] stamps=["flower", "leaf", "star", "bird"] below=ask gap=1
+  }
+
+  check art.by-eye look-for="A border printed from the stamps whose repeat is the length the brief asks, in two colours only, carried on without a slip to the end of the paper and stopping at the end of a whole repeat; at medium and hard it says who the cloth is for, and at hard one block in each repeat faces the other way." notice=["The repeat is the length the brief asks", "Two colours only", "No slip in the repeat", "Ends with a whole repeat"] ask="Which part of the brief was hardest to keep to, and how did you plan for it?"
+  hint "Plan one repeat first: which blocks, in which order and which colours?"
+  hint "Before you print, count how many whole repeats will fit on the strip."
+}

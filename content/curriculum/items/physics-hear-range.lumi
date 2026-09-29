@@ -1,0 +1,39 @@
+# Hearing ranges, from a table of real sounds: people hear from about 20 to 20 000 Hz and a dog up to
+# about 45 000 Hz. v changes which sounds the underwater microphone and the hut picked up.
+item physics.hear-range v=1 skills=[physics.sound, data.tables, number.compare] {
+  title "Too high or too low to hear"
+  difficulty (if v == 0 then 0 else 1)
+  let v=0..2
+  level easy {
+    let v={0}
+  }
+  level hard {
+    let v={1, 2}
+  }
+  let s4={pick(v, "A person talking", "A bat's call", "A seal's trill")}
+  let f4={pick(v, "200 Hz", "50 000 Hz", "3000 Hz")}
+  let people={pick(v, 2, 1, 2)}
+
+  scene 32x41 {
+    column kit at=canvas(1, 0) space=1 align=start {
+      whale w spout=0 facing=1
+      table t cols=2 head=["Sound", "Vibrations a second"] cells=["A blue whale's call", "15 Hz", "A humpback's song", "400 Hz", "A dog whistle", "30 000 Hz", "{s4}", "{f4}"]
+    }
+    text ask "People hear from about 20 Hz to 20 000 Hz, and a dog up to about 45 000 Hz. How many of these sounds can a person hear?" narrate width=30 below=kit gap=1
+    number-input people below=ask gap=1
+    text then "Which one can a dog hear but a person cannot?" narrate width=30 below=people gap=1
+    choice dog options=["The blue whale's call", "The humpback's song", "The dog whistle"] stack=column below=then gap=1
+  }
+
+  answer people=people dog="The dog whistle"
+  feedback {
+    when (people == 4) point=t {
+      say "Check each sound against 20 Hz and 20 000 Hz. Some are below or above what a person hears."
+    }
+    when (dog == "The blue whale's call") point=t {
+      say "15 Hz is below what a person hears, and a dog cannot hear it either. Which sound is above 20 000 Hz?"
+    }
+  }
+  hint "Which sounds are between 20 Hz and 20 000 Hz?"
+  hint "A dog hears higher notes than a person. Which sound is above 20 000 Hz but below 45 000 Hz?"
+}

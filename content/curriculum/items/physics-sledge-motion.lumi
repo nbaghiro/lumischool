@@ -1,0 +1,38 @@
+# What the sledge does, by the rule the drawing is drawn by: only the difference between the forward
+# and the back forces changes its speed, and a still sledge stays still until the pull is bigger.
+item physics.sledge-motion v=1 skills=[physics.forces, physics.motion, reasoning.compare] {
+  title "What does the sledge do?"
+  difficulty (if v < 2 then 0 else if v < 4 then 1 else 2)
+  let v=0..5
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={3, 4, 5}
+  }
+  let f={pick(v, 160, 80, 100, 90, 60, 110)}
+  let b={pick(v, 90, 120, 100, 90, 80, 110)}
+  let m={pick(v, 1, 1, 1, 0, 0, 1)}
+  let state={if m == 1 then "moving along" else "standing still"}
+
+  scene 30x35 {
+    sledgeforce s forward=[f] back=[b] weight=0 moving=m show=0 names=1 at=canvas(1, 0)
+    text ask "The sledge is {state} when the pull and friction are as drawn. What does it do next?" narrate width=27 below=s gap=1
+    choice pick options=["Speeds up", "Keeps a steady speed", "Slows down", "Starts to move", "Stays still"] stack=column below=ask gap=1
+  }
+
+  check physics.forces of=s pick=motion
+  feedback {
+    when (pick == "Slows down" and f == b) point=s {
+      say "The forces are balanced. A moving sledge with balanced forces does not slow down: nothing changes its speed."
+    }
+    when (pick == "Starts to move" and m == 0 and f <= b) point=s {
+      say "Friction holds the sledge back with up to {b} N. Is the pull bigger than that?"
+    }
+    when ((pick == "Starts to move" or pick == "Stays still") and m == 1) point=s {
+      say "The sledge is already moving. Does it speed up, slow down or keep going as it is?"
+    }
+  }
+  hint "Is the pull bigger than, smaller than, or the same as friction?"
+  hint "Is the sledge moving already, or standing still?"
+}

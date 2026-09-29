@@ -1,0 +1,33 @@
+# The way in: a very short story from the moon base, and the sentence where it turns, where what the
+# character thought was true stops being true. The turn moves from the fourth sentence to the second.
+item writing.story-turn v=1 skills=[writing.story-structure, reading.story-structure] {
+  title "Where does it turn?"
+  difficulty k
+  let k=0..2
+  let t={pick(k, "Kit wanted to walk to the crater rim with the crew. They said she was too young and left her at the lander. She sat at the window, sulking. Then the radio died out on the rim, and only Kit could see the crew's lamps.", "Omar had planned the rover trip for a week. On the first night a wheel broke, and he was sure the trip was ruined. At dawn he saw that the broken wheel had stopped them just short of a deep crack. He never complained about a slow start again.", "Lena hated the silence of the moon base. The night the music player broke, she lay awake and heard, for the first time, her own heart, slow and steady. After that she kept the music off. She called the silence her clock.")}
+  let right={pick(k, "the fourth", "the third", "the second")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 35x25 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage p title="A very short story" text="{t}" width=24 numbers=false
+      lander lnd rungs=5
+    }
+    text ask "A story with a turn changes direction at one moment. Which sentence is the turn?" narrate width=33 below=top gap=1
+    choice pick options=["the second", "the third", "the fourth"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "At that sentence the story is still going the way it started. Find the moment after which the character sees things differently."
+    }
+  }
+  hint "At the start, what does the character think or want?"
+  hint "At which sentence does that stop being true?"
+}

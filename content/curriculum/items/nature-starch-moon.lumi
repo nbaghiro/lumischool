@@ -1,0 +1,41 @@
+# Three-star: plants on the moon need light to make food, and a day on the moon lasts about 30 of
+# ours, about 15 of sunlight and 15 of darkness, as tracks.md records. The lamps are needed only in the
+# moon's night, which is the step the question leaves for the child to find.
+item nature.starch-moon v=1 stars=3 skills=[nature.photosynthesis, reasoning.plan] {
+  title "Lamps through the moon's night"
+  difficulty k
+  let k=0..2
+  let hrs={pick(k, 12, 16, 12)}
+  let asks={pick(k, "How many hours must the lamps shine through one whole day and night on the moon?", "How many hours must the lamps shine through one whole day and night on the moon?", "In one whole day and night on the moon, how many more hours of light do the plants get in the sunlit half than in the dark half with the lamps?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x29 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      earth e up=1
+      moon mn phase=0.5
+    }
+    text told "A day on the moon lasts about 30 of our days: about 15 days of sunlight, and then about 15 days of darkness. The greenhouse's lettuces need light for {hrs} hours in every 24 to make enough food. In the sunlit half the sun shines on them all day and night." narrate width=32 below=pics gap=1
+    text ask "{asks}" narrate width=32 below=told gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 180, 240, 180)
+  feedback {
+    when (k <= 1 and answer == 30 * hrs) point=told {
+      say "In the sunlit half the sun gives the light. When are the lamps needed?"
+    }
+    when (k <= 1 and answer == hrs) point=told {
+      say "That is for one of our days. How many of our days does the moon's darkness last?"
+    }
+    when (k == 2 and answer == 360) point=told {
+      say "That is the sunlit half alone. Take away the hours the lamps give in the dark half."
+    }
+  }
+  hint "In which half of the moon's day do the lamps have to shine?"
+  hint "How many of our days is that half, and how many hours each?"
+}

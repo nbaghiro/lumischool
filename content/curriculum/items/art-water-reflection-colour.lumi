@@ -1,0 +1,28 @@
+# A reflection in water is a little darker than what it reflects, so its paint is the same colour
+# with a little black, found by mixing.
+item art.water-reflection-colour v=1 skills=[art.water, art.colour-mixing, reasoning.compare] {
+  title "Paint for the reflection"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2
+  let thing={pick(k, "the blue sky", "the green wall of the gorge", "the orange sunset")}
+  let o1={pick(k, "sky", "green", "orange")}
+  let o2={pick(k, "sky and 1 white", "green and 1 white", "orange and 1 white")}
+  let o3={pick(k, "sky and 1 black", "green and 1 black", "orange and 1 black")}
+  let r={k % 3}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 35x23 {
+    waterfall falls drops=2 rainbow=0 at=canvas(1, 1)
+    text ask "The reflection of a bright thing in the pool looks a little darker than the thing itself. Ada painted {thing} with the first paint below. Which should she use for its reflection?" width=21 right-of=falls gap=1
+    choice pick options=[o1, if r == 0 then o2 else o3, if r == 0 then o3 else o2] stack=column below=ask gap=1
+  }
+
+  check paint.mixes pick=darker
+  hint "Should the reflection be lighter or darker than {thing}?"
+  hint "Which paint makes a colour darker without changing it into another colour?"
+}

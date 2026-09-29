@@ -1,0 +1,38 @@
+# The three-star: a model of the pool. Every fish has one young like itself each spring, so each
+# kind doubles, and the kingfisher takes half the pale fish each summer and no dark ones, so the
+# pale stay at 4 while the dark double. The easy trap is to expect the pale to change; the hard one
+# needs the doubling carried on until dark fish outnumber pale by more than 10 to 1.
+item nature.dark-fish v=1 stars=3 skills=[nature.inheritance, reasoning.model] {
+  title "A model of the pool"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "How many pale fish are there at the end of the third summer?", "At the end of which summer are there first 4 times as many dark fish as pale?", "At the end of which summer are there first more than 10 dark fish for every pale one?")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x19 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      kingfisher kf flying=0 facing=1
+      fishshoal fs rows=2 cols=4 facing=1
+    }
+    text ask "Ada makes a model of the pool below the waterfall. It starts with 4 dark fish and 4 pale fish. Every spring each fish has one young like itself. Every summer the kingfisher catches half of the pale fish, and none of the dark ones. {asks}" narrate width=32 below=pics gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 4, 2, 4)
+  feedback {
+    when (k == 0 and answer == 32) point=ask {
+      say "That is the pale fish without the kingfisher. Each summer it takes half of them back again."
+    }
+    when (k >= 1 and answer == pick(k, 0, 4, 3)) point=ask {
+      say "Make a table, one row a summer, with the dark and the pale fish at the end of each, and check again."
+    }
+  }
+  hint "Write the numbers down summer by summer: dark fish, then pale fish."
+  hint "In spring each kind doubles. In summer only the pale fish are halved."
+  hint "What happens to the pale fish when they are doubled and then halved?"
+}

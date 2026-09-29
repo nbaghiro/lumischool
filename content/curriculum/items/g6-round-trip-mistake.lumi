@@ -1,0 +1,34 @@
+# The two-star: the average speed of a trip there and back is not the average of the two speeds,
+# because the slow way takes longer. Total distance over total time.
+item speed.round-trip-mistake v=1 stars=2 skills=[rates.speed, reasoning.find-the-mistake] {
+  title "There and back"
+  difficulty s
+  let s=0..3
+  let u={pick(s, 3, 4, 6, 4)}
+  let w={pick(s, 6, 12, 12, 6)}
+  let d={pick(s, 12, 12, 24, 12)}
+  level easy {
+    let s={0}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 35x12 {
+    rowboat boat facing=0 at=canvas(1, 1)
+    text ask "A boat goes {d} km up the gorge river at {u} km/h and comes back down at {w} km/h. Mo says its average speed is {decimals((u + w) / 2, 0)} km/h, halfway between. What is the average speed for the whole trip?" narrate width=24 right-of=boat gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "km/h"
+    }
+  }
+
+  answer (2 * d / (d / u + d / w))
+  feedback {
+    when (answer == (u + w) / 2) point=ask {
+      say "That is Mo's answer. The boat spends longer going slowly, so the slow speed counts for more."
+    }
+  }
+  hint "How long does the trip up take? And the trip down?"
+  hint "How far is the whole trip, and how long does it take altogether?"
+}

@@ -1,0 +1,21 @@
+# The three-star question turns the riddles round: two clues for one thing in the picture, where
+# each clue alone fits two things. There is no key, so a grown-up marks it against the look-for.
+item reading.write-moon-riddle v=1 stars=3 skills=[reading.inference, writing.composition] {
+  title "Write a two-clue riddle"
+  let k=0..1
+
+  scene 35x23 {
+    row top at=canvas(1, 1) space=1 align=end {
+      rocket r flame=0
+      lander l rungs=5
+      earth e up=1
+      crater c count=1
+    }
+    text ask "Write a riddle for {pick(k, \"the lander\", \"the crater\")}: two clues, where each clue on its own fits two things in the picture, and both together fit only one." below=top gap=1 width=34
+    writinglines lines lines=2 width=34 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Two clues about the thing named. Check each clue against every thing in the picture together: the first should fit two of them (for the lander: I have legs fits the rocket and the lander; for the crater: I am round fits the crater and the Earth), and the second should rule one of those out (I have a ladder; nobody made me). A riddle whose first clue already fits only one thing works, but is not yet the puzzle asked for; ask which other thing it could fit."
+  hint "List what is special about it. Which of those things does another picture share?"
+  hint "Use a shared thing first, then the thing that only it has."
+}

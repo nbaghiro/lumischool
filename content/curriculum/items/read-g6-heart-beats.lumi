@@ -1,0 +1,36 @@
+# The way in to metre: count the strong beats in one line of the brook's song, said aloud. The
+# lines are from "The Brook" by Alfred Tennyson (died 1892), first published in Maud, and Other Poems
+# (1855), as Project Gutenberg eBook 56913 prints them. The short lines end on a weak syllable
+# (sally, valley), which is the trap for a child who counts syllables.
+item reading.heart-beats v=1 skills=[reading.poetry, reading.metre] {
+  title "Count the strong beats"
+  difficulty pick(k, 0, 0, 1, 1, 1, 2)
+  let k=0..5
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={3, 4, 5}
+  }
+
+  scene 36x14 {
+    row top at=canvas(1, 1) space=2 align=end {
+      poem p title="The Brook" lines=[pick(k, "I come from haunts of coot and hern,", "By thirty hills I hurry down,", "I make a sudden sally", "Or slip between the ridges,", "To bicker down a valley.", "And half a hundred bridges.")] rhymes=[-1] width=24
+      kingfisher bird flying=0 facing=-1
+    }
+    text ask "Say the line aloud and tap the strong beats, the syllables you say loudest. How many strong beats are in the line?" below=top gap=1 width=26
+    number-input answer right-of=ask gap=1
+  }
+
+  answer pick(k, 4, 4, 3, 3, 3, 3)
+  feedback {
+    when (answer == pick(k, 8, 8, 7, 7, 7, 7)) point=p {
+      say "That counts every syllable. Tap only the loud ones: da-DUM, da-DUM."
+    }
+    when (answer == pick(k, 5, 5, 4, 4, 4, 4)) point=p {
+      say "Check the last word. Is its last syllable loud or quiet?"
+    }
+  }
+  hint "Say the line slowly, as if you were telling it to someone across the gorge. Which syllables are loud?"
+  hint "Does the line start on a quiet syllable or a loud one? Then count the loud ones only."
+}

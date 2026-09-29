@@ -1,0 +1,34 @@
+# The story: a wheelbarrow is a lever with its pivot at the wheel. The sack's moment near the wheel is
+# matched by a smaller lift far away at the handles. v picks the sack and the distances.
+item physics.moment-wheelbarrow v=1 skills=[physics.moments, physics.machines] {
+  title "A sack in the wheelbarrow"
+  difficulty v
+  let v=0..3
+  let w={pick(v, 300, 450, 600, 500)}
+  let c={pick(v, 40, 40, 30, 40)}
+  let l={pick(v, 120, 120, 120, 100)}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 30x24 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      art b asset="wheelbarrow"
+      waterwheel m paddles=8 lit=0
+    }
+    text ask "At the mill a {w} N sack of flour sits in a wheelbarrow, {c} cm from the wheel's axle, which is the pivot. The miller lifts the handles {l} cm from the axle. How big a lift holds the barrow up?" narrate width=27 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (w * c / l)
+  feedback {
+    when (answer == w) point=b {
+      say "The handles are much further from the pivot than the sack, so the lift is smaller than the sack's weight."
+    }
+  }
+  hint "What is the sack's moment about the axle?"
+  hint "What lift at {l} cm makes the same moment?"
+}

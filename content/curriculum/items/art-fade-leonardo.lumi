@@ -1,0 +1,33 @@
+# Looking at a real painting: in the Mona Lisa the land behind her runs from warm browns near her
+# shoulders to pale blue mountains at the top, which is aerial perspective in Leonardo's own work.
+item art.fade-leonardo v=1 skills=[art.space, art.looking, art.artists] {
+  title "Behind the Mona Lisa"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2
+  let r={(k + 1) % 3}
+  let asks={pick(k, "Which part of the land behind her did he paint palest and bluest?", "Which part did he paint with the warmest colour and the most detail?", "Where do the light and dark tones sit closest together?")}
+  let right={pick(k, "The mountains furthest back", "The winding road nearest her shoulder", "The mountains furthest back")}
+  let w1={pick(k, "The winding road nearest her shoulder", "The mountains furthest back", "The winding road nearest her shoulder")}
+  let w2={pick(k, "The bridge in the middle distance", "The sky above the mountains", "The folds of her dress")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x31 {
+    layers land labels=false ring=-1 sun=false light="noon" at=canvas(1, 1)
+    text ask "Leonardo painted the Mona Lisa in about 1503 to 1519. Behind her, a road and a river wind back past a small bridge to mountains far away. {asks}" width=34 below=land gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=land {
+      say "Put the parts in order from nearest to furthest. Leonardo followed his own rule: the further back, the paler, bluer and softer."
+    }
+  }
+  hint "Which part of the land is nearest to her, and which is furthest back?"
+  hint "What happens to colour, detail and contrast as the land goes back?"
+}

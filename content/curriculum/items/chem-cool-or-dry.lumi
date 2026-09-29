@@ -1,0 +1,31 @@
+# The two-star reason: salt dissolves almost the same at 20 °C and 60 °C, and sugar far less when
+# cold, so cooling brings sugar back out and hardly any salt; salt comes back by evaporating.
+item chem.cool-or-dry v=1 stars=2 skills=[chemistry.dissolving, reasoning.evidence] {
+  title "Cool it or dry it?"
+  difficulty k
+  let k=0..1 r=0..2
+  let right={pick(k, "The sugar: it dissolves much less when cold", "Evaporate it: cooling gives back almost no salt")}
+  let w1={pick(k, "The salt: salt makes crystals and sugar does not", "Cool it: hot water holds far more salt")}
+  let w2={pick(k, "Both the same: both were saturated", "Cool it: cold water holds no salt at all")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x26 {
+    table data cols=3 head=["Water °C", "Salt", "Sugar"] cells=["20", "36", "204", "60", "37", "287"] at=canvas(1, 0)
+    text ask "The table gives grams that dissolve in 100 ml. {if k == 0 then \"Mei makes two hot saturated beakers at 60 °C, one of salt and one of sugar, and lets both cool to 20 °C. Which one grows a heap of crystals, and why?\" else \"Mei has 100 ml of hot salty water, saturated at 60 °C. What is the better way to get the salt back, and why?\"}" narrate width=34 below=data gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=data {
+      say "Read each column from 60 °C down to 20 °C. The one that falls a long way has to let its extra out as crystals."
+    }
+  }
+  hint "How many grams of salt fewer dissolve at 20 °C than at 60 °C? And of sugar?"
+  hint "{if k == 0 then \"Crystals come out when the water can no longer hold what is in it. Which drop is big?\" else \"If cooling gives back only a gram, what else could leave the salt behind?\"}"
+}

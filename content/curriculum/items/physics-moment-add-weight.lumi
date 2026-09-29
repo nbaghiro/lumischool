@@ -1,0 +1,39 @@
+# Three stars: one 2 N weight to hang where it balances the plank. The side is the one with the
+# smaller moment, which need not be the lighter weight's side, and the step is the gap in moments
+# over two.
+item physics.moment-add-weight v=1 stars=3 skills=[physics.moments, reasoning.constraints, reasoning.backwards] {
+  title "One more weight"
+  difficulty v
+  let v=0..3
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..3
+  }
+  let a={pick(v, 6, 5, 9, 8)}
+  let p={pick(v, 2, 4, 1, 1)}
+  let b={pick(v, 4, 6, 3, 2)}
+  let q={pick(v, 4, 2, 5, 5)}
+  let side={if a * p < b * q then "On the left" else "On the right"}
+
+  scene 28x27 {
+    seesaw plank left=a atleft=p right=b atright=q unit=N marks=true held=1 at=canvas(1, 0)
+    text ask "The steps are 10 cm apart. Leo has one 2 N weight to hang at a step so that the plank balances when the props are taken away. Which side does it go on?" narrate width=26 below=plank gap=1
+    choice where options=["On the left", "On the right"] stack=row below=ask gap=1
+    text then "At which step from the pivot?" narrate width=16 below=where gap=1
+    number-input step right-of=then gap=1
+  }
+
+  answer where=side step=(abs(a * p - b * q) / 2)
+  feedback {
+    when (where != side and (a > b) == (where == "On the right")) point=plank {
+      say "The heavier weight does not decide it. Work out both moments: which side's is smaller?"
+    }
+    when (step == abs(a * p - b * q)) point=plank {
+      say "That is the moment still missing, in newtons times steps. At which step does 2 N make it?"
+    }
+  }
+  hint "What is the moment on each side, in newtons times steps? Which is smaller?"
+  hint "How much more does the side with the smaller moment need? At which step does Leo's weight give that?"
+}

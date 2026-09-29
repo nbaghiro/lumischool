@@ -1,0 +1,38 @@
+# Three stars, with no ring to look at: the astronaut sees the Earth's shape, and the moon seen from
+# the Earth that night is the opposite shape. e is the Earth's shape the astronaut reports.
+item physics.phase-opposite v=1 stars=3 skills=[physics.sky, reasoning.work-backwards, reasoning.model] {
+  title "Looking back from the moon"
+  difficulty e
+  let e=0..2
+  level easy {
+    let e=0..0
+  }
+  level hard {
+    let e=1..2
+  }
+  let saw={pick(e, "a full Earth", "a crescent Earth", "a half Earth, lit on its left")}
+  let ans={pick(e, "New moon", "Gibbous", "Half moon")}
+  let up={pick(e, 2, 1, 0)}
+
+  scene 32x36 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      earth en up=up
+      lander l rungs=5
+      footprints fp count=3
+    }
+    text ask "The astronaut radios home: from the moon she sees {saw}. What shape is the moon to people on the Earth that night?" narrate width=30 below=kit gap=1
+    choice pick options=["New moon", "Crescent", "Half moon", "Gibbous", "Full moon"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "Full moon" and e == 0) point=ask {
+      say "If she sees the Earth's lit side full on, she is between the Earth and the sun. Which side of the moon faces the Earth then?"
+    }
+    when (pick == "Crescent" and e == 1) point=ask {
+      say "A thin lit part for her means the Earth sees most of the moon's lit half. The shapes go opposite ways."
+    }
+  }
+  hint "Draw the sun, the Earth and the moon. Where must the moon be for her to see that shape?"
+  hint "From there, how much of the moon's lit half faces the Earth?"
+}

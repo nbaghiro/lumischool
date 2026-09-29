@@ -1,0 +1,25 @@
+# The turn is right for a hexagon but the repeat goes round too few times, so the shape does not
+# close. The checker proves the repeat's count is the only single change that draws the pale target.
+item coding.bug-short-side v=1 skills=[coding.debugging, coding.drawing, angles.turns] {
+  title "One side short"
+  difficulty q
+  let q=0..1 m=1..2
+  let n={pick(q, 6, 8)} cols={pick(q, 6, 7)} rows={pick(q, 5, 6)} sc={pick(q, 3, 3)}
+  level easy {
+    let q={0} m={1}
+  }
+  level hard {
+    let q={1}
+  }
+
+  scene 36x18 {
+    turtle t cols=cols rows=rows col=sc row=rows face=right moves=["repeat {n - m}", "  forward 2", "  turn left {360 / n}"] target=["repeat {n}", "  forward 2", "  turn left {360 / n}"] at=canvas(1, 0)
+    program p code=["repeat {n - m}", "  forward 2", "  turn left {360 / n}"] right-of=t gap=1
+    text ask "The turtle should draw the pale shape. What number should the repeat have?" width=15 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=t goal=target answer=fix
+  hint "Is the turn right for the pale shape? Count its corners."
+  hint "How many sides are missing from the drawing?"
+}

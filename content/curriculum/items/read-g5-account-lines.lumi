@@ -1,0 +1,34 @@
+# The two accounts with their lines numbered, and one account's words matched to the line of the
+# other that tells the same thing. The answers are the line breaks at width 35 (67 letters to a
+# line), so the texts and the width stay as they are.
+item reading.account-lines v=1 skills=[reading.comparison, reading.evidence] {
+  title "Match the line"
+  difficulty pick(q, 0, 1, 0, 1)
+  let q=0..3
+  level easy {
+    let q={0, 2}
+  }
+  level hard {
+    let q={1, 3}
+  }
+
+  scene 36x28 {
+    column all at=canvas(0, 1) space=1 align=start {
+      passage diary title="Mira's diary, 3 March" text="Gran woke me at nine, and we ran up to the cliff in our coats. The comet hung over the sea like a white feather, its tail as long as my arm. Everyone went quiet. I did not feel the cold." width=35
+      passage log title="Dr Osei's log, 3 March" text="Comet Arlen first seen at 8.40 pm, low in the west over the sea. Tail 20 degrees long. About sixty people on the cliff path. Frost by 10 pm. Seen again on 4 March, fainter." width=35
+      row bottom space=1 align=centre {
+        text ask "{pick(q, \"Which line of the log tells you how many people the diary's everyone was?\", \"Which line of the log tells you the comet was still there the next night?\", \"Which line of the diary tells you where the comet was?\", \"Which line of the diary tells you who Mira went up to the cliff with?\")}" width=30
+        number-input answer
+      }
+    }
+  }
+
+  answer pick(q, 2, 3, 2, 1)
+  feedback {
+    when (q == 3 and answer == 2) point=diary {
+      say "That line describes the comet. Look for the person who woke Mira up."
+    }
+  }
+  hint "Which account does the question ask about? Read only that one, a line at a time."
+  hint "Find the words that answer it, then read the number beside that line."
+}

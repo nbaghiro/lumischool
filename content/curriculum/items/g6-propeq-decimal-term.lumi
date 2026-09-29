@@ -1,0 +1,33 @@
+# A term that is a decimal: no whole-number scale is in sight, so the products carry it.
+item proportion.decimal-term v=1 skills=[algebra.equations.proportion, decimals.multiply] {
+  title "A decimal term"
+  difficulty s
+  let s=0..4
+  let a={pick(s, 1.5, 2.5, 0.4, 1.2, 0.6)}
+  let b={pick(s, 2, 4, 3, 5, 1.5)}
+  let c={pick(s, 6, 10, 2, 6, 4)}
+  level easy {
+    let s={0, 1}
+  }
+  level hard {
+    let s={3, 4}
+  }
+
+  scene 36x14 {
+    balanceeq beam left="{a} : {b}" right="{c} : x" at=canvas(1, 1)
+    text ask "A recipe at the mill tea room keeps flour to water in the same ratio. The beam shows the proportion. What number is x?" narrate width=15 right-of=beam gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer plain(b * c / a)
+  feedback {
+    when (answer == c + b - a) point=beam {
+      say "Adding the same amount does not keep a ratio. Use the products of the outer and inner terms."
+    }
+    when (answer == a * c / b) point=beam {
+      say "That multiplies the wrong pair. x is an outer term, so {a} × x equals {b} × {c}."
+    }
+  }
+  hint "Which term is paired with x as the outer terms?"
+  hint "What is {b} × {c}? Which number times {a} makes that?"
+}

@@ -1,0 +1,39 @@
+# Burning magnesium joins it to oxygen from the air: 24.3 g of magnesium makes 40.3 g of magnesium
+# oxide (RSC molar masses), so 3 g makes about 5 g and the extra 2 g is oxygen. The unknown moves.
+item chem.magnesium-mass v=1 skills=[chemistry.conservation, ratio.scaling] {
+  title "The ash is heavier"
+  difficulty (w + (if n == 1 then 0 else 1))
+  let w=0..2 n={1, 2, 3, 4}
+  where (w == 0 or n > 1)
+  let mg={3 * n}
+  let ash={5 * n}
+  let ox={2 * n}
+  let asks={pick(w, "How many grams of oxygen from the air joined it?", "How many grams of white ash will it make?", "How many grams of magnesium must be burned to make this much ash?")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 35x27 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      flame fl height=2 on=1 stand=false holds=0
+      dialscale d max=50 step=10 value=(if w == 2 then ash else mg) unit=g
+    }
+    text ask "In the moon base's test chamber a grown-up burns magnesium ribbon in a dish, with goggles on and without looking at the bright flame. 3 g of magnesium burns to about 5 g of white ash, magnesium oxide. {if w == 2 then \"The scales show the ash she wants.\" else \"The scales show the magnesium she burns.\"} {asks}" narrate width=34 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(w, ox, ash, mg)
+  feedback {
+    when (w == 0 and answer == ash) point=d {
+      say "That is the ash. How much of it was not magnesium?"
+    }
+    when (w == 1 and answer == ox) point=d {
+      say "That is the oxygen that joins. The ash is the magnesium and the oxygen together."
+    }
+  }
+  hint "3 g of magnesium makes 5 g of ash. How many lots of 3 g, or of 5 g, are here?"
+  hint "The ash is the magnesium and the oxygen together. Which part is the question asking for?"
+}

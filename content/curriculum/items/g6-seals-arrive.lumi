@@ -1,0 +1,34 @@
+# The three-star: a ratio before and after more seals arrive, with the puffins unchanged. Drawing the
+# puffins as the same number of parts before and after finds the size of a part; proved as one named
+# part.
+item ratio.seals-arrive v=1 stars=3 skills=[ratio.parts, reasoning.model] {
+  title "More seals arrive"
+  difficulty pick(v, 1, 0, 2, 0, 0.5, 2)
+  let v=0..5
+  let a={pick(v, 3, 2, 5, 4, 3, 5)}
+  let b={pick(v, 1, 1, 2, 3, 2, 3)}
+  let c={pick(v, 3, 1, 5, 1, 1, 5)}
+  let d={pick(v, 2, 1, 3, 1, 1, 4)}
+  let m={pick(v, 8, 5, 6, 4, 7, 6)}
+  level easy {
+    let v={1, 3}
+  }
+  level hard {
+    let v={2, 5}
+  }
+
+  scene 33x20 {
+    ratio bars parts=[a, b] labels=["Puffins", "Seals"] unit=0 total=false at=canvas(1, 1)
+    text ask "On an ice floe the ratio of puffins to seals is {a} : {b}. Then {m} more seals climb on, and no puffins come or go. Now the ratio is {c} : {d}. How many puffins are there?" narrate width=32 below=bars gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (a * c * m / (d * a - c * b))
+  feedback {
+    when (answer == m) point=bars {
+      say "That counts seals. The question asks for the puffins, which did not change."
+    }
+  }
+  hint "The puffins do not change. Can you write both ratios with the same number for the puffins?"
+  hint "Then how many parts did the seals grow by? Those parts are the {m} new seals."
+}

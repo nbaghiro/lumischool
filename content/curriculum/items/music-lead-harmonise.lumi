@@ -1,0 +1,37 @@
+# The three-star count: writing symbols for a line that has none, from C, Dm, Em, F, G7 and Am, each
+# holding both notes of its bar. Bars E G, A C, F D, E C have two chords each (C or Em, F or Am, Dm or
+# G7, C or Am): two bars 4 ways; four bars ending on C 8; ending on C with no chord twice 4.
+item music.lead-harmonise v=1 stars=3 skills=[music.lead-sheets, music.chords, reasoning.all-the-ways] {
+  title "Chords for a bare tune"
+  difficulty v
+  let v=0..2
+  let which={pick(v, "the first two bars", "all four bars", "all four bars")}
+  let rule={pick(v, "", " The last chord must be C.", " The last chord must be C, and no chord may be used twice.")}
+  let right={pick(v, 4, 8, 4)}
+  let loose={pick(v, 0, 16, 8)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x25 {
+    notes line clef=treble notes=[E4, G4, A4, C5, F4, D5, E4, C5] values=[2, 2, 2, 2, 2, 2, 2, 2] meter=4 at=canvas(1, 1)
+    text ask "A tune with no chords yet. Ana writes one symbol over each bar, from C, Dm, Em, F, G7 and Am, and each chord must hold both notes of its bar.{rule} How many different ways can she write symbols for {which}?" narrate width=34 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == loose) point=line {
+      say "That leaves out the rule at the end of the question. Which choices does it take away?"
+    }
+    when (answer * 2 == right or answer == 2) point=line {
+      say "Some bars have more than one chord that fits. Check all six chords against each bar."
+    }
+  }
+  hint "Spell the six chords: C is C E G, Dm is D F A, Em is E G B, F is F A C, G7 is G B D F, Am is A C E."
+  hint "For each bar, which chords hold both of its notes?"
+  hint "Multiply the choices for each bar, then take out any way that breaks a rule."
+}

@@ -1,0 +1,31 @@
+# Who said it, on The First Men in the Moon. The two men are nearly always together, so the child
+# has to remember which of them wanted what; the third name is someone a skimming reader might
+# place in the scene.
+item reading.firstmen-who v=1 skills=[reading.characters, reading.whole-book] {
+  title "Who said it?"
+  difficulty pick(k, 0, 0, 1, 0, 1, 0)
+  let k=0..5
+  let right={pick(k, "Cavor", "Cavor", "Cavor", "Bedford", "the Grand Lunar", "Cavor")}
+
+  scene 34x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=centre {
+        bookcast c who=cavor pose=think dir=1
+        text ask "{pick(k, \"In chapter 1, who asks whether he really makes a buzzing noise?\", \"In chapter 3, who first says they could travel to the moon?\", \"In chapter 15, who says the moon people cannot know what it is to feel giddy?\", \"In chapter 16, who says that if only they can get some of the gold back to Earth, the next trip could bring guns?\", \"In chapter 25, who asks why men kill one another?\", \"In chapter 18, who says they must separate, and put up a handkerchief to find their way back?\")}" width=26
+      }
+      choice pick options=[pick(k, right, "Bedford", "Bedford", "Cavor", "Phi-oo", "Bedford"), pick(k, "Bedford", right, "a Selenite", right, right, right), pick(k, "Gibbs", "Spargus", right, "the Grand Lunar", "Bedford", "a Selenite")] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 4 and pick == "Bedford") point=c {
+      say "Where is Bedford by chapter 25? Check who is telling the story in that part."
+    }
+    when (k == 2 and pick == "Bedford") point=c {
+      say "Bedford feels giddy, but does he say this? Look for the one who explains the Selenites."
+    }
+  }
+  hint "Find the chapter the question names. Who is in the scene at that moment?"
+  hint "Of the people in the scene, who wants what the line wants?"
+}

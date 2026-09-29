@@ -1,0 +1,32 @@
+# The way in: a distance in the hundreds of millions read as a number of millions, the planets in
+# their order from the sun beside it. The distances are the planets' semi-major axes in millions of
+# km (J2000 orbital elements as Wikipedia lists them): Venus 108.2, Earth 149.6, Mars 227.9, Jupiter
+# 778.5, Saturn 1433.5, Uranus 2871.0.
+item place.planet-millions v=1 skills=[place-value.large-numbers] {
+  title "How many millions"
+  difficulty (if m > 1000 then 1 else 0)
+  let p=0..5
+  let m={pick(p, 108, 150, 228, 778, 1434, 2871)}
+  let name={pick(p, "Venus", "the Earth", "Mars", "Jupiter", "Saturn", "Uranus")}
+  level easy {
+    let p=0..2
+  }
+  level hard {
+    let p=4..5
+  }
+
+  scene 33x15 {
+    planets row count=8 names=1 at=canvas(1, 1)
+    text ask "The observatory's chart says {name} is {thousands(m * 1000000)} km from the sun. How many millions of kilometres is that?" narrate width=32 below=row gap=1
+    number-input answer width=5 below=ask gap=1
+  }
+
+  answer m
+  feedback {
+    when (answer == m * 1000 or answer == m * 1000000) point=ask {
+      say "Cover the last six zeros: they are the million itself. What is left counts the millions."
+    }
+  }
+  hint "How many zeros does one million have?"
+  hint "Cover that many digits at the end. What number is left?"
+}

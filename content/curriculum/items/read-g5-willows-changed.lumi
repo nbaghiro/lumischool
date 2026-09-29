@@ -1,0 +1,19 @@
+# The three-star question, with no method on the page: Toad says he is a changed Toad more than once,
+# and the child judges each time against what he does next, over the whole book.
+item reading.willows-changed v=1 stars=3 skills=[reading.characters, reading.evidence, reading.whole-book, writing.composition] {
+  title "Has Toad really changed?"
+
+  scene 34x29 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        bookcast a who=toad pose=stand dir=1
+        text ask "Toad says he is sorry and will change more than once in the book. Choose two times. Did he mean it each time? Say what he did next that proves it, then say whether the change at the end is real." width=24
+      }
+      writinglines lines lines=6 width=33 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="Two times Toad promises to change (in chapter 6 to the Badger in the smoking-room, in chapter 10 when he runs from the car, in chapter 11 to the Rat, or in chapter 12 before the banquet), for each what he did next (took it back in front of the others, stole the car, sang a boastful song, or kept quiet at the banquet and sent the locket and letters), and a judgement on the last change with a reason from chapter 12." notice=["Finds two separate promises", "Says what Toad did after each", "Judges the last change and says why", "Names chapters or copies words exactly"] ask="Do you think Toad stays changed after the book ends?"
+  hint "Where does Toad first promise to give up motor-cars? What does he do an hour later?"
+  hint "What is different about the banquet in chapter 12 from every earlier time?"
+}

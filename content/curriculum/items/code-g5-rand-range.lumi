@@ -1,0 +1,35 @@
+# Two random numbers added: the least is both at their least, the most both at their most, and every
+# whole number between can happen.
+item coding.rand-range v=1 skills=[coding.random, coding.variables] {
+  title "The least and the most"
+  difficulty (k + (if m == 1 then 1 else 0))
+  let k=0..2 m=0..1
+  let hi={pick(k, 6, 4, 8)}
+  level easy {
+    let m={0} k=0..1
+  }
+  level hard {
+    let m={1}
+  }
+
+  scene 36x11 {
+    program p code=["set a to random 1 to {hi}", "set b to random 1 to {hi}", "set total to a {if m == 0 then \"+\" else \"*\"} b"] at=canvas(1, 0)
+    text ask "What is the least total could be? What is the most?" width=14 right-of=p gap=1
+    text tl "least" below=p gap=1
+    number-input least right-of=tl gap=1
+    text tm "most" right-of=least gap=2
+    number-input most right-of=tm gap=1
+  }
+
+  check coding.runs of=p least="least(value(total))" most="most(value(total))"
+  feedback {
+    when (least == 0) point=p {
+      say "Random 1 to {hi} is never 0. The least each can be is 1."
+    }
+    when (most == hi) point=p {
+      say "Both a and b can be {hi} at the same time."
+    }
+  }
+  hint "What is the least a can be? The least b can be?"
+  hint "Now the most each can be."
+}

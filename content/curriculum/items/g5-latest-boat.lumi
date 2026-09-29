@@ -1,0 +1,31 @@
+# The core's reasoning question: which boat to catch to arrive in time, working back from a
+# deadline through a journey that takes a fixed time.
+item time.latest-boat v=1 skills=[time.timetables, reasoning.working-backwards] {
+  title "The latest boat"
+  difficulty (j / 10 + k)
+  let j={35, 50, 65, 80} k=0..2 d={14, 15, 16}
+  level easy {
+    let j={35} k={0}
+  }
+  level medium {
+    let j={35, 50, 65}
+  }
+  level hard {
+    let j={65, 80} k={1, 2}
+  }
+
+  scene 36x17 {
+    departureboard board platforms=0 mark=-1 head=["boat", "leaves"] trains=["A, {d - 2}:40", "B, {d - 1}:05", "C, {d - 1}:25", "D, {d - 1}:45"] at=canvas(1, 1)
+    text ask "The boat from the Mill takes {j} minutes to reach the Quarry. Mo must be at the Quarry by {d}:{pick(k, \"00\", \"10\", \"20\")}. Which is the latest boat he can catch?" narrate width=16 right-of=board gap=2
+    choice pick options=["A", "B", "C", "D"] below=board gap=1
+  }
+
+  answer pick=(if 60 + 10 * k - j >= 45 then "D" else if 60 + 10 * k - j >= 25 then "C" else if 60 + 10 * k - j >= 5 then "B" else "A")
+  feedback {
+    when (pick == "A" and 60 + 10 * k - j >= 5) point=board {
+      say "Boat A gets there in time, but a later one does too. Work back {j} minutes from {d}:{pick(k, \"00\", \"10\", \"20\")}."
+    }
+  }
+  hint "What time must the boat leave the Mill to arrive exactly on time?"
+  hint "Which boat leaves at that time or just before it?"
+}

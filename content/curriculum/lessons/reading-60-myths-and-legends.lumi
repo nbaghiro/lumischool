@@ -1,0 +1,91 @@
+# Myths and legends at the midnight sun's research hut: a Greek myth, a Norse myth and a Russian
+# bylina read whole, what sets a myth apart from a legend and a fable, what a myth explains, and the
+# parts of a plot named on the story mountain. Every telling was written for the lesson.
+lesson reading-myths-and-legends v=1 format=teach grade=6 unit=2 subject=reading levels=[easy, medium, hard] {
+  title "Myths, legends and the shape of a plot"
+  goal "Tell a myth from a legend and a fable, and name the part of the plot any event of one belongs to."
+
+  look {
+    scene 36x30 {
+      column all at=canvas(0, 1) space=1 align=start {
+        row top space=2 align=end {
+          hut h pictures=6
+          seaserpent s loops=3 facing=-1
+          puffins p count=2 facing=1
+        }
+        storymountain m stages=["Exposition", "Rising action", "Climax", "Falling action", "Resolution"] notes=["", "", "", "", ""]
+      }
+    }
+    say """
+      On long light evenings in the research hut, the crew tell old stories. A myth has gods in it
+      and explains something about the world. A legend tells of a hero who may once have lived. A
+      fable uses animals to teach a moral. Each one climbs the same mountain: the exposition sets
+      it up, the rising action builds the problem, the climax is the turn, the falling action
+      follows from it, and the resolution ends it.
+      """
+  }
+  do {
+    show reading.myth-kind k=0 easy-k=2 hard-k=3
+    level easy {
+      show reading.myth-kind k=1
+    }
+    show reading.myth-why k=0
+    level easy {
+      worked reading.myth-plot-part q=2
+    }
+    show reading.myth-plot-part q=1 easy-q=0
+    level easy medium {
+      show reading.myth-explains k=0
+    }
+    show reading.myth-why k=1
+    level medium {
+      show reading.myth-plot-part q=3
+    }
+    level hard {
+      show reading.myth-explains k=1
+      show reading.myth-plot-part q=4
+    }
+    show reading.myth-why k=2
+    level easy {
+      show reading.myth-plot-part q=7
+    }
+    level medium {
+      show reading.myth-plot-order k=1
+    }
+    level hard {
+      show reading.myth-plot-part q=5
+      show reading.myth-plot-order k=2
+    }
+  }
+  try stars=2 {
+    show reading.myth-climax-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show reading.myth-plan k=0 hard-k=1
+  }
+  remember {
+    say "A myth explains the world, a legend tells of a hero, a fable teaches a moral. Every plot climbs to one turn, its climax."
+  }
+
+  grown-ups """
+    The idea is two things a traditional tale has: its kind, told by who is in it and what it is
+    for, and its shape, the five parts of a plot. The way in sorts short tales into myth, legend and
+    fable. The core reads three tales of about 130 words each (Daedalus and Icarus from Greece,
+    Thor's fishing trip from the Norse, Ilya of Murom from a Russian bylina), asks why a character
+    acts as they do, what a myth explains, which part of the plot an event is, and the plot in
+    order. The wrong idea to watch for is calling the most exciting moment the climax: the climax is
+    the turn after which things cannot go back, so ask "what changed for good just then?" The two-
+    star question gives a friend's wrong climax to correct, and the three-star question plans a myth
+    of the child's own on the mountain, marked by eye against the list. If the child is stuck, find
+    the climax first and place everything else before or after it. Off the page, tell a family story
+    or a film on the five parts. This meets Russia's grade six literature programme, which names the
+    plot's parts «экспозиция, завязка, развитие действия, кульминация, развязка», after its grade
+    five «Мифы народов России и мира».
+    """
+  level easy {
+    grown-ups "At this level the tales to sort are the fable of the farmer and Robin Hood, the falling action of Icarus is worked once in the teacher's pen, the parts to name are the two openings, the order is not asked, and the two-star is Icarus's wings."
+  }
+  level hard {
+    grown-ups "At this level the tale to sort is Odin's eye, the parts to name include Thor rowing on, which is still rising action, and the fight with the robber, the myth to explain is Thor's, the plot to order is Icarus's, whose events sit close together, the two-star is Ilya standing up, and the three-star myth explains the puffin's beak."
+  }
+}

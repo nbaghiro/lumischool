@@ -1,0 +1,19 @@
+# Interpretive, marked by a grown-up: obedience to the club in chapter 1 against love for Thornton in
+# chapter 6, argued with words from both.
+item reading.wild-love v=1 skills=[reading.characters, reading.evidence, writing.composing] {
+  title "Obeying and loving"
+
+  scene 35x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        bookcast b who=buck pose=stand dir=1
+        text ask "In chapter 1 Buck obeys the man in the red sweater. In chapter 6 he would jump off a cliff for John Thornton. How is what Buck feels for Thornton different?" width=25
+      }
+      writinglines lines lines=4 width=34 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="The difference named: Buck obeys the man with the club out of fear, because he cannot win, and never fawns on him; he obeys Thornton out of love, because Thornton saved him and treats him kindly. The answer uses a few words from chapter 1 (the lesson of the club, a master to be obeyed) and from chapter 6 (love, nothing was too great for Buck to do)." notice=["Says Buck obeyed the first man out of fear", "Says Buck obeys Thornton out of love", "Says why Buck loves Thornton", "Uses words from both chapters"] ask="Which of the two men does Buck trust, and how can you tell?"
+  hint "Why did Buck obey the man in the red sweater? What had he learned?"
+  hint "What did Thornton do for Buck in chapter 5, and how does he treat him?"
+}

@@ -1,0 +1,36 @@
+# Looking before measuring: what the eye sees in a compass pattern. The tile looks as if it turns
+# because one shape is repeated, the same each time, turned round one middle.
+item art.compass-look v=1 skills=[art.pattern, art.looking] {
+  title "Why the tile seems to turn"
+  difficulty k
+  let k=0..2
+  let n={pick(k, 6, 8, 12)}
+  let m={pick(k, "leaf", "drop", "leaf")}
+  set right="One petal, turned round the middle each time"
+  set w1="Every petal a different shape"
+  set w2="Petals growing bigger to the edge"
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x26 {
+    radial tile repeats=n motif=m missing=-1 colour=blue at=canvas(1, 1)
+    text ask "Look at the temple tile for a while, then half close your eyes. It seems to turn, like a wheel. What in the pattern makes it look that way?" width=21 right-of=tile gap=2
+    choice pick options=[pick(k, right, w1, w2), pick(k, w1, w2, right), pick(k, w2, right, w1)] stack=column below=tile gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=tile {
+      say "Put a finger on one petal and go round. Is the next one a new shape, or the same one turned?"
+    }
+    when (pick == w2) point=tile {
+      say "Look from the middle out along one petal and then another. Are they different sizes?"
+    }
+  }
+  hint "Look at one petal, then the one beside it. What is the same, and what has changed?"
+  hint "Where is the point that every petal turns round?"
+}

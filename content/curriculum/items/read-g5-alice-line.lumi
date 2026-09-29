@@ -1,0 +1,24 @@
+# The evidence questions of every sitting, four versions a sitting: k = 4s asks for a line whose
+# words are close to the question's, 4s + 1 and 4s + 2 ask for a reason or a cause in other words,
+# and 4s + 3 asks for what the line shows without saying it. The first two cite the sitting's first
+# chapter and the last two its second.
+item reading.alice-line v=1 skills=[reading.evidence, reading.whole-book] {
+  title "Which line proves it?"
+  difficulty pick(k - 4 * floor(k / 4), 0, 1, 1, 2)
+  let k=0..23
+
+  scene 34x8 {
+    row all at=canvas(1, 1) space=2 align=centre {
+      bookcast c who=pick(k, "alice", "alice", "alice", "alice", "alice", "alice", "alice", "alice", "caterpillar", "alice", "alice", "alice", "alice", "alice", "alice", "alice", "alice", "alice", "alice", "alice", "alice", "alice", "alice", "alice") pose=pick(k, "hold", "hold", "stand", "think", "wave", "stand", "walk", "think", "stand", "stand", "stand", "hold", "stand", "walk", "point", "hold", "think", "stand", "point", "think", "stand", "stand", "point", "think") dir=1
+      column q space=1 align=start {
+        text ask "{pick(k, \"Which line of chapter 1 tells you what was written on the jar Alice took from a shelf?\", \"Which line of chapter 1 shows why Alice did not just let the empty jar fall?\", \"Which line of chapter 2 tells you what was making Alice shrink?\", \"Which line of chapter 2 gives Alice's reason for speaking French to the Mouse?\", \"Which line of chapter 3 tells you who won the race?\", \"Which line of chapter 3 tells you why the animals ran a race at all?\", \"Which line of chapter 4 tells you who the Rabbit took Alice for?\", \"Which line of chapter 4 shows Alice noticed the others always made the lizard do the work?\", \"Which line of chapter 5 tells you how tall the Caterpillar was?\", \"Which line of chapter 5 shows why the Pigeon took Alice for a serpent?\", \"Which line of chapter 6 gives the reason everyone in the kitchen kept sneezing?\", \"Which line of chapter 6 is the first sign that the baby is not a baby at all?\", \"Which line of chapter 7 tells you what time it always is at the tea-party?\", \"Which line of chapter 7 shows what Alice thought of the tea-party after she left?\", \"Which line of chapter 8 explains why the gardeners were painting the roses?\", \"Which line of chapter 8 shows how Alice kept the gardeners from the soldiers?\", \"Which line of chapter 9 says what the Duchess thinks makes people bad-tempered?\", \"Which line of chapter 9 shows Alice put up with the Duchess only to be polite?\", \"Which line of chapter 10 gives the Gryphon's answer to what a whiting does?\", \"Which line of chapter 10 shows Alice thinks she is not the same girl she was?\", \"Which line of chapter 11 tells you what the Hatter carried into the court?\", \"Which line of chapter 11 gives Alice's excuse when the Dormouse says she is squeezing him?\", \"Which line of chapter 12 shows the King made up a rule to get Alice out of court?\", \"Which line of chapter 12 shows the King turns a missing name into proof against the Knave?\")}" width=24
+        number-input answer
+      }
+    }
+  }
+
+  check book.line book=alice-in-wonderland chapter="{pick(k, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12)}" holds="{pick(k, \"it was labelled “ORANGE MARMALADE”\", \"did not like to drop the jar for fear\", \"the cause of this was the fan she was holding\", \"a French mouse, come over with William the Conqueror\", \"Everybody has won, and all must have prizes\", \"the best thing to get us dry would be a Caucus-race\", \"Why, Mary Ann, what are you\", \"they seem to put everything upon Bill\", \"it was exactly three inches high\", \"one with such a neck as that\", \"too much pepper in that soup\", \"its eyes were getting extremely small for a baby\", \"It’s always six o’clock now\", \"the stupidest tea-party I ever was at\", \"red rose-tree, and we put a white one in by mistake\", \"and she put them into a large\", \"Maybe it’s always pepper that makes people\", \"uncomfortably sharp chin. However, she did not like to be rude\", \"It does the boots and shoes\", \"because I was a different person then\", \"He came in with a teacup in one hand\", \"said Alice very meekly\", \"Forty-two. All persons more than a mile high\", \"You must have meant some mischief\")}"
+  hint "Which part of the chapter is the question about? Turn to the page where that happens."
+  hint "Say the answer in your own words first, then look for the line that says the same thing."
+  hint "Is the whole idea on your line, or does it start on the line before?"
+}

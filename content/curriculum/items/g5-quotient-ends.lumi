@@ -1,0 +1,36 @@
+# The second reason in the core: a fraction in its simplest form ends as a decimal only when its
+# bottom is made of twos and fives, so 3/12 ends (it is 1/4) and 4/14 does not (it is 2/7).
+item quotient.ends v=1 skills=[fractions.decimals, reasoning.explain] {
+  title "Does it stop"
+  difficulty pick(t, 0, 0, 1, 1, 2, 2, 2, 2)
+  let t=0..7
+  let n={pick(t, 1, 2, 3, 5, 3, 6, 4, 9)}
+  let d={pick(t, 8, 3, 20, 6, 12, 15, 14, 12)}
+  level easy {
+    let t=0..3
+  }
+  level hard {
+    let t=4..7
+  }
+
+  scene 36x14 {
+    sign sum lines=["{n} ÷ {d} = ?"] kind=board color=sky at=canvas(1, 1)
+    text ask "In the library a scribe divides {n} by {d} to write {n}/{d} as a decimal. Does the division stop, or does it go on for ever?" narrate width=20 right-of=sum gap=2
+    choice pick options=["it stops", "it goes on for ever"] below=sum gap=1
+  }
+
+  answer pick=(if t == 1 or t == 3 or t == 6 then "it goes on for ever" else "it stops")
+  feedback {
+    when ((t == 4 or t == 5 or t == 7) and pick == "it goes on for ever") point=sum {
+      say "Write {n}/{d} in its simplest form first. What is left on the bottom?"
+    }
+    when ((t == 0 or t == 2) and pick == "it goes on for ever") point=sum {
+      say "{d} is made of twos and fives only, so a number of tenths, hundredths or thousandths fits it exactly."
+    }
+    when ((t == 1 or t == 3 or t == 6) and pick == "it stops") point=sum {
+      say "A 3 or a 7 stays in the bottom of {n}/{d} in its simplest form, and no number of tenths or hundredths shares out by it exactly."
+    }
+  }
+  hint "Can {n}/{d} be simplified? What is its bottom then?"
+  hint "Can that bottom be made into 10, 100 or 1000 by multiplying?"
+}

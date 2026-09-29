@@ -1,0 +1,35 @@
+# Reading the marks under a tune in order: is the end louder or softer than the start? A hairpin moves
+# only between the marks either side of it, so the answer compares the first and last marks.
+item music.dyn-end-louder v=1 skills=[music.dynamics, music.staff] {
+  title "Louder by the end?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..4
+  let m1={pick(k, "p", "f", "mf", "p", "f")}
+  let m2={pick(k, "cresc", "dim", "cresc", "cresc", "dim")}
+  let m3={pick(k, "mf", "mf", "f", "ff", "pp")}
+  let m4={pick(k, "cresc", "dim", "dim", "dim", "cresc")}
+  let m5={pick(k, "f", "p", "mf", "mp", "mf")}
+  let right={pick(k, "louder", "softer", "just as loud", "louder", "softer")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=2..4
+  }
+
+  scene 36x26 {
+    notes tune clef=treble notes=[G4, E4, G4, C5, B4, A4, G4] values=[1, 1, 1, 1, 1, 1, 2] meter=4 at=canvas(1, 1)
+    dynamics marks marks=[m1, m2, m3, m4, m5] words=false ring=-1 below=tune gap=0
+    text ask "The marks under the gorge band's tune, in the order they are played. Is the last note louder or softer than the first, or just as loud?" narrate width=34 below=marks gap=1
+    choice pick options=["louder", "softer", "just as loud"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=marks {
+      say "The hairpins only move between the marks either side of them. Compare the first mark with the last one."
+    }
+  }
+  hint "What is the first mark, and what is the last?"
+  hint "Put those two on the ladder pp, p, mp, mf, f, ff. Which is higher?"
+}

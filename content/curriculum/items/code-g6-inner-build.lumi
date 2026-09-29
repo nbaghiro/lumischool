@@ -1,0 +1,25 @@
+# A build task on a decision inside a decision: the rover asks about the red square only when a ridge
+# is ahead, so the if on red goes inside the if about the ridge and its otherwise lines up with it. A
+# red square in the middle of a straight run turns a rover that asks about red every time round, and
+# the way has five straight parts, so moves written out do not fit in the eight slots.
+item coding.inner-build v=1 skills=[coding.decisions, coding.repetition, reasoning.planning] {
+  title "Turn at the ridge"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x29 {
+    maze m map=[pick(k, ". . . . . # .", "S . r . # . ."), pick(k, ". . . . . . F", ". . . . . . ."), pick(k, ". . # . . . .", ". . . r r . #"), pick(k, ". . . r . r #", ". . . # . . ."), pick(k, "S r r # . . .", ". . . . . r F")] face=right at=canvas(0, 0)
+    text ask "The dark squares are ice ridges. When a ridge is ahead, the rover turns left if it stands on red and right if it does not; with no ridge ahead it goes forward 1, whatever colour it is on. Build the program that takes it to the flag." width=17 below=m gap=1
+    codepad answer tray=["repeat until at flag", "if wall ahead", "if on red", "turn left", "turn right", "otherwise", "forward 1"] lines=8 key=["repeat until at flag", "  if wall ahead", "    if on red", "      turn left", "    otherwise", "      turn right", "  otherwise", "    forward 1"] right-of=m gap=1
+  }
+
+  check coding.builds of=m goal=flag
+  hint "Which question does the rover ask first each time round? Which question does it ask only when the answer to that one is yes?"
+  hint "An otherwise belongs to the if it lines up with. Which if does each otherwise answer?"
+}

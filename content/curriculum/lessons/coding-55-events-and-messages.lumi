@@ -1,0 +1,70 @@
+# When something happens: events and messages. One script sends a message and every script that
+# receives it runs to its end before the sender carries on. In the old city the stage in the temple
+# square, the market, the clock tower and the library's steps.
+lesson coding-events-and-messages v=1 format=teach grade=5 unit=8 subject=coding levels=[easy, medium, hard] {
+  title "When something happens: events and messages"
+  goal "Work out what a program does when one script sends a message that starts another."
+
+  look {
+    scene 30x28 {
+      flowchart f code=["when the flag is tapped", "say ready", "broadcast go", "when I receive go", "jump 2"] at=canvas(0, 0)
+      stage st cols=7 col=2 who=bot code=["when the flag is tapped", "say ready", "broadcast go", "when I receive go", "jump 2"] upto=0 below=f gap=1
+    }
+    say """
+      A program can have more than one script, each starting with a when block. The flag starts the
+      first script here. When it reaches broadcast go, it sends a message called go, and every
+      script that begins when I receive go starts. Each of those runs to its end, in the order they
+      are written, before the sender carries on with its next line. In the flowchart each script is
+      a column of its own.
+      """
+  }
+  do {
+    show coding.msg-stage a=2 b=2 easy-a=1 easy-b=1 hard-a=3 hard-b=2
+    level easy {
+      worked coding.msg-stage a=2 b=1 level=medium
+    }
+    show coding.msg-order a=3 b=2 easy-a=2 easy-b=1 hard-a=4 hard-b=3
+    show coding.msg-two k=0 a=3 b=3 easy-a=2 easy-b=1 hard-k=1 hard-a=4
+    show coding.msg-flow k=1 easy-k=0 hard-k=2
+    show coding.msg-count h=5 c=2 easy-h=4 easy-c=1 hard-h=7 hard-c=3
+    show coding.msg-build k=0 easy-k=1 hard-k=2
+    show coding.msg-order a=5 b=4 easy-a=3 easy-b=2 hard-a=5 hard-b=4
+    show coding.msg-two k=1 a=2 b=1 easy-k=0 easy-a=3 easy-b=3 hard-a=3 hard-b=3
+    level hard {
+      show coding.msg-count h=9 c=2 level=medium
+    }
+  }
+  try stars=2 {
+    show coding.msg-where k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show coding.msg-ways k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A broadcast starts every script that receives its message, and they run to their end before the next line of the sender."
+  }
+
+  grown-ups """
+    A message lets one script start another: broadcast go sends it, and every script that begins when
+    I receive go runs, one after another in the order they are written, before the sending script
+    goes on to its next line. Two slips are common: forgetting that the receiving script runs at all,
+    and running it after the sender has finished rather than at the moment of the broadcast. In the
+    child's working, look for a finger that jumps to the receiving script at the broadcast and comes
+    back to the line after it. If the child is stuck, act it out with two people: one reads the first
+    script aloud and calls out the message, and the other reads the second script while the first
+    waits; stay another day if the order is still guessed. Off the page, play a game of messages at
+    home, such as "when you hear the bell, clap twice", and change where the bell rings. The build
+    question has one down card that the robot needs twice, so the child has to see that a message
+    sent twice runs its script twice. The two-star question works out where a broadcast must go for a
+    given number, and the three-star question finds how many different numbers four arrangements of
+    the same lines give. This meets the Russian grade five programming course, «Параллельные скрипты,
+    анимация. Передача сообщений» (scripts side by side and passing messages), and CSTA 1B-AP-10,
+    "Create programs that include sequences, events, loops, and conditionals".
+    """
+  level easy {
+    grown-ups "At this level the rabbit's moves are short and one is worked in the teacher's pen, the numbers to add and double are small, the two scripts that hear one message double first, the missing step in the flowchart adds, the clock strikes 3 to 5 with 1 or 2 added each time, and the steps to build go right 2 and then down 1 or 2, twice over. The broadcast to place goes between lines 3 and 4, and the three-star's four programs all end differently."
+  }
+  level hard {
+    grown-ups "At this level the rabbit moves further, the numbers are larger, the two scripts that hear one message add first, the missing step comes before the sender's own doubling, the clock strikes 6 to 9 with 2 or 3 added and a second strike question is added, and the steps to build go right 1 and down 1 each time, with the receiving script holding two cards. The broadcast to place goes after the last line, and in the three-star two of the four programs end at the same number."
+  }
+}

@@ -1,0 +1,35 @@
+# The two-star: a square of so many hectares. Hectares add up as squares of 100 m, so 4 ha is a
+# square 2 by 2 hectares, 200 m on a side, not 400 m and not a quarter of the area.
+item land.square-side v=1 stars=2 skills=[measure.metric.hectares, reasoning.explain] {
+  title "A square field"
+  difficulty k
+  let k=2..6
+  level easy {
+    let k={2, 3}
+  }
+  level hard {
+    let k={5, 6}
+  }
+
+  scene 36x14 {
+    windmill mill sails=4 at=canvas(1, 1)
+    sign board lines=["FOR SALE", "{k * k} ha"] kind=post color=berry right-of=mill gap=1
+    text ask "The field by the windmill is a square of {k * k} hectares. How long is each side, in metres?" narrate width=15 right-of=board gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "m"
+    }
+  }
+
+  answer (k * 100)
+  feedback {
+    when (answer == k * k * 100) point=board {
+      say "A hectare is a square, not a length of 100 m. Put hectare squares in a square: how many along a side?"
+    }
+    when (answer == k * k * 2500) point=board {
+      say "Sharing the area between four sides gives square metres, not a length. Which number times itself makes the area?"
+    }
+  }
+  hint "How many hectare squares make a square 2 by 2? And 3 by 3?"
+  hint "How many hectare squares go along one side of this field?"
+}

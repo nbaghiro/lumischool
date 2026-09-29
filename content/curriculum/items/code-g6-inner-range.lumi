@@ -1,0 +1,32 @@
+# How many temperatures reach the inner branch: the outer test cuts the range once and the inner test
+# cuts it again, so the answer is the numbers strictly between two ends, counted.
+item coding.inner-range v=1 skills=[coding.decisions, coding.random, reasoning.all-the-ways] {
+  title "Days for skating"
+  difficulty ((a - b) / 10 + (if a == 0 then 0 else 0.5))
+  let a={0, -2, -5} b={-15, -12, -10}
+  level easy {
+    let a={0}
+  }
+  level hard {
+    let a={-2, -5}
+  }
+
+  scene 36x25 {
+    program p code=["set temp to random -20 to 10", "if temp is less than {a}", "  if temp is more than {b}", "    say skate", "  otherwise", "    say stay in", "otherwise", "  say walk"] text=true at=canvas(0, 0)
+    thermometer th from=-20 to=10 step=10 value=b right-of=p gap=1
+    text ask "The noon temperature is a whole number from -20 to 10. For how many of those temperatures does the program say skate?" width=24 below=p gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=p answer="ways(said=skate)"
+  feedback {
+    when (answer == a - b + 1) point=p {
+      say "Less than {a} leaves {a} out, and more than {b} leaves {b} out."
+    }
+    when (answer == a + 21) point=p {
+      say "That counts every temperature line 2 lets through. Line 3 asks again."
+    }
+  }
+  hint "Which temperatures get past line 2? Which of those get past line 3?"
+  hint "List the temperatures that pass both, from the smallest up, and count them."
+}

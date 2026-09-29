@@ -1,0 +1,34 @@
+# The two-star reason: two skies equally dark, one the star's opposite and one its neighbour, so
+# darkness alone cannot be the reason.
+item art.glow-why v=1 stars=2 skills=[art.complementary, reasoning.explain] {
+  title "Which sky makes it glow?"
+  difficulty k
+  let k=0..1 r=0..2
+  let c={pick(k, "yellow star", "orange moon")}
+  let s1={pick(k, "deep purple", "deep blue")}
+  let s2={pick(k, "deep green", "deep red")}
+  let right={pick(k, "Purple: yellow's opposite", "Blue: orange's opposite")}
+  let w1={pick(k, "Green: it has yellow in it", "Red: it has red in it")}
+  let w2={"Both: they are as dark"}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x20 {
+    text ask "Ada paints the same {c} twice: once on a {s1} sky and once on a {s2} sky, just as dark. On which does it glow, and why?" width=34 at=canvas(1, 1)
+    colourwheel wheel segments=6 blank=[] ring=-1 labels=true split="none" below=ask gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column right-of=wheel gap=2
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=wheel {
+      say "The two skies are equally dark, so darkness is not the difference. Find the {c}'s colour on the wheel and look straight across."
+    }
+  }
+  hint "The skies are just as dark as each other. What else is different about them?"
+  hint "Which sky is straight across the wheel from the {c}?"
+}

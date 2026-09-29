@@ -1,0 +1,24 @@
+# The story: a visiting astronaut and the suit she wore on the Moon. Her mass with the suit is the
+# same on both worlds, and the weight is ten times it on Earth and 1.6 times it on the Moon.
+item physics.observatory-astronaut v=1 skills=[physics.weight, physics.sky, decimals.multiply] {
+  title "The astronaut's visit"
+  difficulty (m / 10)
+  let m={100, 120, 150}
+
+  scene 32x18 {
+    observatory o open=1 at=canvas(1, 0)
+    text ask "An astronaut visits the observatory. In her spacesuit she has a mass of {m} kg. How many newtons did she and the suit weigh on the Moon, where each kilogram is pulled with 1.6 N?" narrate width=21 right-of=o gap=1
+    number-input moon below=o gap=1
+    text then "How many newtons more do they weigh on Earth, at 10 N a kilogram?" narrate width=30 below=moon gap=1
+    number-input more below=then gap=1
+  }
+
+  answer moon=plain(m * 1.6) more=plain(m * 10 - m * 1.6)
+  feedback {
+    when (moon == m) point=ask {
+      say "That is her mass. Her weight on the Moon is the mass times the pull on each kilogram."
+    }
+  }
+  hint "Multiply the mass by the pull on each kilogram there."
+  hint "Work out her weight on Earth too, then find the difference."
+}

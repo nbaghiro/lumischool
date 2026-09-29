@@ -1,0 +1,42 @@
+# The Arctic fox's coat changes with the season, brown on the summer rocks and white and thick in
+# winter. The middle one separates the two reasons, colour for hiding and thickness for warmth; the
+# hard version has the snow come early, before the coat has turned.
+item nature.coat-season v=1 skills=[nature.adaptation] {
+  title "A coat for the season"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "In summer the snow on the shore melts, and the ground is brown rock and moss. Which coat helps the Arctic fox creep up on a nesting bird without being seen?", "In winter the Arctic fox's coat grows white and about twice as thick as in summer. Which reason explains why it grows thicker?", "One autumn the snow comes three weeks early, before the Arctic fox's coat has turned. Why is that a hard time for the fox?")}
+  let ans={pick(k, "a brown coat", "More fur traps more air to hold its heat", "Its brown coat shows up against the snow")}
+  let o1={pick(k, "a white coat", "A thick coat hides it better in the snow", "Its coat is too warm for the snow")}
+  let o2={pick(k, "a bright orange coat", "Its weight stops the wind blowing it over", "The snow turns its coat brown")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x20 {
+    icecliff ic height=1 floes=2 at=canvas(1, 1)
+    text ask "{asks}" narrate width=16 right-of=ic gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ic gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=ask {
+      say "Hiding means looking like what is round you. What colour is the ground in this season?"
+    }
+    when (k == 1 and pick == o1) point=ask {
+      say "The white is what hides it. The question is about the thickness: what does a thick coat hold close to the body?"
+    }
+    when (k == 1 and pick == o2) point=ask {
+      say "Fur weighs very little. Think of a thick jumper: what does it trap that keeps you warm?"
+    }
+    when (k == 2 and pick != ans) point=ic {
+      say "The coat is still its summer colour. How does a brown fox look on white snow?"
+    }
+  }
+  hint "Is the question about the coat's colour or about how thick it is?"
+  hint "Colour decides what the fox looks like against the ground. What does thickness decide?"
+}

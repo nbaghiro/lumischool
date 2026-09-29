@@ -1,0 +1,33 @@
+# A blank in the text read back from the drawing: the turtle's line is on the squares, so the missing
+# number is found by counting the side that line draws, and the other side is the slip.
+item coding.text-blank v=1 skills=[coding.text, coding.drawing, reasoning.work-backwards] {
+  title "The rubbed-out number"
+  difficulty ((w + h) / 4 + k)
+  let w=3..6 h=2..4 k=0..1
+  where (w != h)
+  let line={if k == 0 then 2 else 4}
+  level easy {
+    let k={0}
+    where (w + h <= 7)
+  }
+  level hard {
+    let k={1}
+    where (w + h >= 7)
+  }
+
+  scene 36x22 {
+    turtle t cols=(w + 2) rows=(h + 2) col=2 row=(h + 2) face=right moves=["repeat 2", "  forward {w}", "  turn left", "  forward {h}", "  turn left"] at=canvas(0, 0)
+    program p code=["repeat 2", "  forward {w}", "  turn left", "  forward {h}", "  turn left"] text=true blank=line right-of=t gap=1
+    text ask "Frost has rubbed out line {line} of the text. The turtle drew its line on the snow before it went. What number came after forward on that line?" width=24 at=canvas(0, 16)
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then w else h)
+  feedback {
+    when (answer == (if k == 0 then h else w)) point=t {
+      say "That is the other side. Which way does the turtle face when that line runs?"
+    }
+  }
+  hint "The turtle starts on the ring, facing right. Which side does it draw first?"
+  hint "Which turn comes just before the rubbed-out line? Which way is the turtle facing when it runs?"
+}

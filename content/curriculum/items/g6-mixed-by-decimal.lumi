@@ -1,0 +1,35 @@
+# A mixed number times a decimal: both parts of the mixed number are multiplied, the whole and the
+# fraction, which is what taking only the whole part forgets.
+item fraction.mixed-by-decimal v=1 skills=[fractions.multiply.mixed, fractions.multiply.decimals] {
+  title "Buckets of snow"
+  difficulty (w + x + (if b == 2 then 0 else 1))
+  let w=1..4 a=1..4 b={2, 4, 5} x={0.4, 0.6, 0.8, 1.2}
+  where (a < b and gcd(a, b) == 1)
+  level easy {
+    let w=1..2 b={2} x={0.4, 0.8}
+  }
+  level hard {
+    let w=3..4 b={4, 5} x={0.6, 1.2}
+  }
+
+  scene 36x22 {
+    mixed m whole=w n=b k=a write=false at=canvas(1, 1)
+    text ask "Snow melted in the hut's pot gives {x} litres of water a bucket. The team melts the {w} {a}/{b} buckets in the picture. How many litres of water is that? Write the answer as a decimal." narrate width=34 below=m gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=5
+      text unit "litres"
+    }
+  }
+
+  answer decimals((w + a / b) * x, 0)
+  feedback {
+    when (answer == w * x) point=m {
+      say "That is the whole buckets only. The part bucket gives water too."
+    }
+    when (answer == w * x + a / b) point=m {
+      say "The part bucket was added without multiplying. Every bucket, and the part one, is times {x}."
+    }
+  }
+  hint "How many buckets is the mixed number as a decimal, or as a top-heavy fraction?"
+  hint "Multiply the whole and the part by {x}, or the whole mixed number at once."
+}

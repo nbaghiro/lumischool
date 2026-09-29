@@ -1,0 +1,31 @@
+# The canal's rule, with real numbers: water pushes 10 kilonewtons on every square metre for each
+# metre of depth. q=0 asks the push at a depth, q=1 the depth for a push.
+item physics.pressure-depth v=1 skills=[physics.pressure, decimals.tenths, reasoning.backwards] {
+  title "The push at the bottom of the lock"
+  difficulty (q * 2 + (if d * 2 % 2 == 1 then 1 else 0))
+  let q=0..1 d={2, 2.5, 3, 3.5, 4}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..1
+  }
+
+  scene 32x14 {
+    canallock l level=0.5 boat=1 at=canvas(1, 0)
+    text ask "Water pushes 10 kN on every square metre of a lock gate for each metre of depth. {if q == 0 then \"The lock is \" else \"At the bottom of one lock gate the water pushes \"}{if q == 0 then d else d * 10}{if q == 0 then \" m deep. How many kN does it push on each square metre at the bottom?\" else \" kN on each square metre. How deep is the water, in metres?\"}" narrate width=14 right-of=l gap=1
+    number-input answer below=l gap=1
+  }
+
+  answer (if q == 0 then plain(d * 10) else d)
+  feedback {
+    when (q == 0 and answer == d) point=l {
+      say "That is the depth. Each metre of it adds 10 kN of push."
+    }
+    when (q == 1 and answer == d * 100) point=l {
+      say "Each metre adds 10 kN, so share the push into tens rather than multiplying."
+    }
+  }
+  hint "How many kN of push does each metre of depth add?"
+  hint "Multiply the depth by ten for the push, or divide the push by ten for the depth."
+}

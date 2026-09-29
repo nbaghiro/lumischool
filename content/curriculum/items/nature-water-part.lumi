@@ -1,0 +1,40 @@
+# The way in: the lettered plant, and where water goes into it, up it and out of it. The roots and
+# the stem are the plain two; the leaves have to be known as the way out, and the flower found as
+# the last part the blue ink reaches.
+item nature.water-part v=1 skills=[nature.plants] {
+  title "Where does the water go?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let job={pick(k, "the part where water goes in from the soil", "the part whose thin tubes carry water up from the roots", "the part where most of the water leaves the plant, as water vapour through tiny holes", "the part the blue ink reaches last, when the stem stands in a jar of ink")}
+  let letter={pick(k, "D", "C", "B", "A")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x15 {
+    parts fig of=plant at=canvas(1, 1)
+    text ask "A plant grows out of a crack in the gorge wall, where the spray from the waterfall keeps it wet. Which letter points at {job}?" narrate width=20 right-of=fig gap=2
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=letter
+  feedback {
+    when (k == 0 and pick != letter) point=fig {
+      say "The water is in the soil. Which part of the plant is down in the soil with it?"
+    }
+    when (k == 1 and pick != letter) point=fig {
+      say "Water has to get from the bottom of the plant to the top. Which part joins them?"
+    }
+    when (k == 2 and pick != letter) point=fig {
+      say "The tiny holes are in the flat green parts that grow out from the stem."
+    }
+    when (k == 3 and pick != letter) point=fig {
+      say "The ink climbs from the bottom. Which part is furthest from the jar?"
+    }
+  }
+  hint "Water goes in at the bottom, climbs up, and goes out at the top. Where is the question in that trip?"
+  hint "Put a finger on the soil and move it up the plant. Which part does the water reach at that point in its trip?"
+}

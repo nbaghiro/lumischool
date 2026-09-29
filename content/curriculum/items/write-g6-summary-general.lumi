@@ -1,0 +1,39 @@
+# A summary saves words by naming a group: a list of things replaced by the one word that covers
+# them all and nothing else. One wrong choice is one of the list; one is a word for something else.
+item writing.summary-general v=1 skills=[writing.summarising, writing.vocabulary] {
+  title "One word for the list"
+  difficulty k
+  let k=0..2 r=0..2
+  let s={pick(k, "Kingfishers, dippers and grey wagtails live by the falls.", "Oak, ash, hazel and rowan grow on the sides of the gorge.", "The wheel, the gears, the axle and the millstones all need oil.")}
+  let right={pick(k, "birds", "trees", "the machinery")}
+  let w1={pick(k, "wagtails", "oaks", "the wheel")}
+  let w2={pick(k, "fish", "flowers", "the building")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x28 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      kingfisher kf flying=0 facing=1
+      waterwheel wheel paddles=8 lit=0
+    }
+    passage p title="The guidebook says" text="{s}" width=31 numbers=false below=pics gap=1
+    text ask "Which word could stand for the whole list in a summary?" narrate width=31 below=p gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=p {
+      say "That is one thing from the list, so the others are lost. Find the word that covers all of them."
+    }
+    when (pick == w2) point=p {
+      say "Is every thing in the list one of those? Find the word that covers all of them and nothing else."
+    }
+  }
+  hint "What do all the things in the list have in common?"
+  hint "Would each thing in the list fit under your word?"
+}

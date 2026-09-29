@@ -1,0 +1,34 @@
+# The same sentence with one gap, and three exact words that each paint the moon a different way. The
+# mood Kit wants picks the word; the options stay in one order.
+item writing.word-mood v=1 skills=[writing.vocabulary, writing.word-choice, writing.describing] {
+  title "The word for the mood"
+  difficulty k
+  let k=0..2
+  let mood={pick(k, "lonely", "beautiful", "dangerous")}
+  let right={pick(k, "desolate", "glittering", "jagged")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 32x26 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      crater cr count=3
+      earth globe up=2
+    }
+    passage p title="Kit's story" text="The _____ rocks stretched away to the rim under the black sky." width=31 numbers=false below=pics gap=1
+    text ask "Kit wants the moon to feel {mood} here. Which adjective fills the gap?" narrate width=31 below=p gap=1
+    choice pick options=["desolate", "glittering", "jagged"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "Every choice is exact, but each one makes the reader feel something different. Which one makes the rocks feel {mood}?"
+    }
+  }
+  hint "Say the sentence with each word. How does each one make you feel?"
+  hint "Which word would make a reader want to be there, which would make them uneasy, and which would make them feel alone?"
+}

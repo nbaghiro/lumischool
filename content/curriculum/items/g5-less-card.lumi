@@ -1,0 +1,35 @@
+# The second reason in the core: two crates hold the same number of cubes, and the one nearer a cube
+# needs less card. Worked out from the faces, not guessed from the volume.
+item solids.less-card v=1 skills=[solids.surface-area, reasoning.compare] {
+  title "Less card"
+  difficulty t
+  let t=0..3
+  let a={pick(t, 4, 5, 6, 8)}
+  let b={pick(t, 3, 2, 2, 2)}
+  let c={pick(t, 2, 2, 3, 2)}
+  let d={pick(t, 6, 5, 4, 4)}
+  let e={pick(t, 2, 4, 3, 4)}
+  let f={pick(t, 2, 1, 3, 2)}
+  level easy {
+    let t={0, 1}
+  }
+  level hard {
+    let t={2, 3}
+  }
+
+  scene 36x18 {
+    solid crate kind=cuboid label="" at=canvas(1, 1)
+    table sizes cols=4 head=["Crate", "Length", "Width", "Height"] cells=["A", "{a} cm", "{b} cm", "{c} cm", "B", "{d} cm", "{e} cm", "{f} cm"] right-of=crate gap=2
+    text ask "Crates A and B hold the same number of centimetre cubes. Which one needs less card to cover it?" narrate width=24 below=sizes gap=1
+    choice pick options=["A", "B", "the same"] below=ask gap=1
+  }
+
+  answer pick=(if 2 * (a * b + a * c + b * c) < 2 * (d * e + d * f + e * f) then "A" else "B")
+  feedback {
+    when (pick == "the same") point=crate {
+      say "The cubes inside are the same, but the faces outside need not be. Work out the card for each."
+    }
+  }
+  hint "How many cubes does each crate hold? Check they match."
+  hint "Work out the card for one crate, then for the other."
+}

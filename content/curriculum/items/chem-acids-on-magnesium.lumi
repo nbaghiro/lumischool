@@ -1,0 +1,28 @@
+# An acid gives off hydrogen with magnesium and an alkali or a neutral liquid does not (RSC), so the
+# pH scale says which liquids will fizz. The checker counts the acids on the scale.
+item chem.acids-on-magnesium v=1 skills=[chemistry.acids, chemistry.metals, reasoning.predict] {
+  title "Which liquids will fizz?"
+  difficulty (if v >= 2 then 1 else 0)
+  let v=0..3
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+
+  scene 33x19 {
+    phscale p liquids=["{pick(v, \"lemon\", \"vinegar\", \"orange\", \"washingsoda\")}", "{pick(v, \"water\", \"washingsoda\", \"bakingsoda\", \"vinegar\")}", "{pick(v, \"washingsoda\", \"lemon\", \"seawater\", \"orange\")}", "{pick(v, \"limewater\", \"water\", \"lemon\", \"bakingsoda\")}"] letters=1 names=1 at=canvas(1, 0)
+    text ask "A strip of magnesium is dropped into a little of each liquid on the scale. How many of the four liquids will fizz with hydrogen?" narrate width=32 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check chem.indicator of=p answer="count(acid)"
+  feedback {
+    when (answer == 4) point=p {
+      say "Magnesium fizzes in an acid. Are all four liquids on the acid side of 7?"
+    }
+  }
+  hint "Which kind of liquid makes magnesium give off hydrogen?"
+  hint "Which of the pointers sit below 7?"
+}

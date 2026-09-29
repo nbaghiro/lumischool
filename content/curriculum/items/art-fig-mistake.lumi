@@ -1,0 +1,32 @@
+# Finding the mistake in a figure against the head lines: short arms, high knees or a big head.
+item art.fig-mistake v=1 skills=[art.proportion, art.figure, reasoning.error-spotting] {
+  title "What is drawn wrong?"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2
+  let w={pick(k, "arms", "knees", "head")}
+  let right={pick(k, "The arms are too short", "The knees are too high", "The head is too big")}
+  let o1={pick(k, "The knees are too high", "The head is too big", "The arms are too short")}
+  let o2={pick(k, "The head is too big", "The arms are too short", "The knees are too high")}
+  let r={k % 3}
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 28x19 {
+    layfigure fig heads=7.5 lines=true action=false wrong=w at=canvas(1, 1)
+    text ask "Ada's figure of the miller has one mistake in its proportions. Which is it?" width=18 right-of=fig gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then o1 else o2, if r == 0 then o1 else if r == 1 then o2 else right, if r == 0 then o2 else if r == 1 then right else o1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=fig {
+      say "That part is where it should be. Check the wrists against the top of the legs, the knees against halfway down the legs, and the head against one line."
+    }
+  }
+  hint "Check one thing at a time. Do the wrists reach the top of the legs?"
+  hint "Are the knees halfway between the hips and the feet? Does the head fit between two lines?"
+}

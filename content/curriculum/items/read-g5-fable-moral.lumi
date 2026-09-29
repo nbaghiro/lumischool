@@ -1,0 +1,38 @@
+# The way in: a fable read whole, and the moral it teaches. The five fables retell Aesop's The Hare
+# and the Tortoise, The Fox and the Grapes, The Ant and the Grasshopper and The Crow and the Pitcher,
+# and the Chinese fable of the farmer by the stump (Han Feizi); all five were written for the lesson.
+# One wrong moral is what a character believed, the other is another fable's.
+item reading.fable-moral v=1 skills=[reading.fables, reading.theme] {
+  title "What does the fable teach?"
+  difficulty pick(k, 0, 1, 1, 0, 2)
+  let k=0..4
+  let story={pick(k, "Hare was the fastest runner in the valley, and he laughed at Tortoise for her short legs. ‘Race me to the oak on the hill,’ said Tortoise quietly. Hare shot away, and soon he could not see her at all. The grass was soft and warm. ‘I could sleep for an hour and still win,’ he said, and he lay down and slept. Tortoise did not stop once. Step after step, she plodded past him and on up the hill. When Hare woke, the sun was low. He ran as fast as he had ever run, but Tortoise was already resting under the oak.", "On a hot afternoon a thirsty fox saw purple grapes hanging from a vine above a wall. She stood on her back legs and snapped at them, but they were just out of reach. She ran and jumped, and missed. She jumped again and again until her legs ached. Then she lifted her nose in the air and walked off. ‘Those grapes are sour,’ she told a sparrow on the wall. ‘I would not eat one if you paid me.’ The sparrow watched her go, then hopped up and pecked a grape. It was as sweet as honey.", "All summer the grasshopper sang in the grass, while the ant carried grain to her nest. ‘Why work so hard?’ he asked. ‘There is food everywhere. Come and sing.’ ‘I am storing food for the winter,’ said the ant, ‘and you would be wise to do the same.’ The grasshopper laughed and sang on. Then the days grew short. Snow hid the last seeds, and the grasshopper found nothing to eat. Cold and hungry, he knocked at the ant’s door and begged for a little grain. ‘You sang all summer while I worked,’ said the ant, ‘so now you must go hungry while I eat.’", "It had not rained for weeks, and a crow was very thirsty. In a garden she found a tall stone jug with a little water at the bottom. Her beak could not reach it, and the jug was too heavy to tip over. Another bird might have flown away. The crow looked round and saw a path of pebbles. She dropped one into the jug, then another, and another. With every pebble the water rose a little. It took more than a hundred trips, but at last the water was near the top, and the crow drank her fill.", "Long ago in the land of Song, in China, a farmer was ploughing his field when a hare ran out of the woods. It ran straight into a tree stump and fell down dead. ‘Why should I plough all day,’ thought the farmer, ‘when hares will run into my stump?’ The next morning he put down his plough and sat by the stump to wait. He waited all that day, and the next, and the next. No hare came. Weeds grew among his crops, birds ate his seed, and by autumn his field was ruined.")}
+  let title={pick(k, "The Hare and the Tortoise", "The Fox and the Grapes", "The Ant and the Grasshopper", "The Crow and the Jug", "The Farmer and the Stump")}
+  let right={pick(k, "Slow and steady wins the race.", "It is easy to scorn what you cannot have.", "Work today for the days of need.", "Little by little does the trick.", "Do not give up honest work to wait for luck.")}
+  let belief={pick(k, "The fastest runner always wins.", "If at first you fail, try, try again.", "Life is for singing, not for working.", "A bird in the hand is worth two in the bush.", "Good things come to those who wait.")}
+  let other={pick(k, "It is easy to scorn what you cannot have.", "Slow and steady wins the race.", "It is easy to scorn what you cannot have.", "It is easy to scorn what you cannot have.", "Slow and steady wins the race.")}
+
+  scene 36x47 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=1 align=end {
+        text ask "A fable is a short story, often about animals, that teaches a lesson called its moral. Read this one. Which moral does it teach?" width=23
+        library lib columns=6 open=1
+      }
+      passage p title="{title}" text="{story}" width=36
+      choice pick options=[pick(k, belief, right, other, other, right), pick(k, right, other, belief, right, belief), pick(k, other, belief, right, belief, other)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == belief) point=p {
+      say "That is what a character in the fable believes, or a saying that only fits one detail. What happens to the one who acts that way?"
+    }
+    when (pick == other) point=p {
+      say "That is the moral of another fable. Check it against what happens at the end of this one."
+    }
+  }
+  hint "Who ends the fable better off, and who ends it worse off?"
+  hint "What did each of them do to get there?"
+  hint "Say that as a piece of advice for anyone, not just for these animals."
+}

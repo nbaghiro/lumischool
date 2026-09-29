@@ -1,0 +1,45 @@
+# Density is mass divided by volume. The blocks are real materials with whole-gram masses: ice 0.92
+# g/cm³ (50 cm³ is 46 g), aluminium 2.7 (20 cm³ is 54 g, 30 cm³ is 81 g) and copper 9.0 (8.96, RSC;
+# 12 cm³ is 108 g). The unknown is the density, the mass, or the volume.
+item chem.density-block v=1 skills=[chemistry.density, volume.cuboids] {
+  title "Grams in each cubic centimetre"
+  difficulty (w * 2 + (if k == 0 or k == 1 then 0 else 1))
+  let w=0..2 k=0..3
+  let name={pick(k, "ice", "aluminium", "copper", "aluminium")}
+  let l={pick(k, 5, 5, 3, 5)}
+  let wd={pick(k, 5, 2, 2, 3)}
+  let h={pick(k, 2, 2, 2, 2)}
+  let vol={l * wd * h}
+  let dens={pick(k, 0.92, 2.7, 9, 2.7)}
+  let mass={pick(k, 46, 54, 108, 81)}
+  level easy {
+    let w=0..0 k=0..1
+  }
+  level medium {
+    let w=0..1
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 35x20 {
+    cubestack blk l=l w=wd h=h outline=1 edges=(if w == 2 then 0 else 1) unit="cm" at=canvas(1, 0)
+    text ask "A block of {name} from the research hut's kit box. {if w == 0 then \"It weighs \" else \"\"}{if w == 0 then mass else \"\"}{if w == 0 then \" g. \" else \"\"}{if w == 0 then \"How many grams is each cubic centimetre of it? That is its density, in g/cm³.\" else \"Its density is \"}{if w == 0 then \"\" else dens}{if w == 1 then \" g/cm³. How many grams does the block weigh?\" else if w == 2 then \" g/cm³, and it weighs \" else \"\"}{if w == 2 then mass else \"\"}{if w == 2 then \" g. How many cubic centimetres is it?\" else \"\"}" narrate width=34 below=blk gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then dens else if w == 1 then mass else vol)
+  feedback {
+    when (w == 0 and answer == vol) point=blk {
+      say "That is the volume, the cubic centimetres. Share the grams out over them."
+    }
+    when (w == 0 and answer == mass) point=blk {
+      say "That is the whole block. The question asks for one cubic centimetre."
+    }
+    when (w == 1 and answer == vol) point=blk {
+      say "That is how many cubic centimetres there are. Each one weighs {dens} g."
+    }
+  }
+  hint "{if w == 2 then \"Each cubic centimetre has the same grams. What do the grams share out over?\" else \"How many cubic centimetres is the block? Multiply its three edges.\"}"
+  hint "{if w == 0 then \"Divide the grams by the cubic centimetres.\" else \"How many lots of \"}{if w == 0 then \"\" else dens}{if w == 1 then \" g are in the block?\" else if w == 2 then \" g make \" else \"\"}{if w == 2 then mass else \"\"}{if w == 2 then \" g?\" else \"\"}"
+}

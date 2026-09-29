@@ -1,0 +1,42 @@
+# The way in: a feature of an animal on the ice, and the job it does. Blubber and the white coat are
+# the plain two; the fox's small ears and the puffin's full beak need the job worked out.
+item nature.cold-feature v=1 skills=[nature.adaptation] {
+  title "What is it for?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let told={pick(k, "Under its skin the seal has a layer of fat called blubber, as thick as your hand is wide.", "When winter comes, the Arctic fox's coat turns from brown to white.", "The Arctic fox has short, rounded ears, far smaller than a desert fox's.", "A puffin can carry ten or more small fish at once, held crosswise in its beak.")}
+  let ans={pick(k, "keeps its body heat in", "hides it against the snow", "keeps its body heat in", "carries food home to its young")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x25 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      seal ps rock=1 facing=1
+      puffins pp count=3 facing=-1
+    }
+    text ask "On the ice shelf the scientists at the research hut keep notes on the animals. {told} What does that do for it?" narrate width=32 below=pics gap=1
+    choice pick options=["keeps its body heat in", "hides it against the snow", "carries food home to its young"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=ps {
+      say "A thick layer of fat sits between the seal's warm insides and the icy water. What does it stop from getting out?"
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "The coat changes colour, not thickness. What colour is everything round the fox in winter?"
+    }
+    when (k == 2 and pick != ans) point=ask {
+      say "Ears are thin and full of warm blood. The less ear there is, the less skin heat can escape through."
+    }
+    when (k == 3 and pick != ans) point=pp {
+      say "The puffin does not eat those fish on the spot. Where is it flying with a beak full of them?"
+    }
+  }
+  hint "Think about what the cold, the snow or the long flight home would do to this animal without it."
+  hint "Keeping warm, staying hidden and feeding the young are three different jobs. Which one fits?"
+}

@@ -1,0 +1,61 @@
+lesson g5-numbers-to-a-billion v=1 format=teach grade=5 unit=4 subject=maths levels=[easy, medium, hard] {
+  title "Numbers to a billion, and powers of ten"
+  goal "Read, write, round and compare numbers to a billion, and use powers to write a number by its places."
+
+  look {
+    scene 34x10 {
+      planets row count=8 names=1 at=canvas(1, 1)
+      observatory dome open=1 right-of=row gap=2
+      text note "1,000,000,000 = 10 to the power 9" below=row gap=1
+    }
+    say """
+      From the observatory the planets are hundreds of millions of kilometres away: Jupiter is about
+      778,000,000 km from the sun. A thousand millions make a billion, and Neptune is about four and
+      a half billion kilometres out. Nine tens multiplied together make a billion, written 10 to the
+      power 9: a one with nine zeros. Other numbers have powers too: 2 to the power 3 is 2 × 2 × 2 =
+      8.
+      """
+  }
+  do {
+    practice place.planet-millions count=1 seed=3
+    level easy {
+      worked place.power-value k=6 a=1 level=medium
+    }
+    practice place.power-value count=1 seed=4
+    practice place.expanded-powers count=1 seed=5
+    practice place.farther-planet count=1 seed=5
+    practice place.round-mars count=1 seed=6 hard-count=2
+    practice place.light-seconds count=1 easy-count=0 seed=2
+    practice place.times-farther count=1 seed=7
+    practice place.billion-words count=0 easy-count=1 seed=8
+    practice place.power-compare count=1 seed=3
+  }
+  try stars=2 {
+    show place.power-mistake k=6 easy-k=4 hard-k=8
+  }
+  try stars=3 {
+    show place.rounded-twice h=46 most=1 easy-most=0 hard-h=45 hard-most=0
+  }
+  remember {
+    say "A billion is a thousand million, a one with nine zeros. 10 to the power 9 means nine tens multiplied together."
+  }
+
+  grown-ups """
+    Group the digits in threes from the right: ones, thousands, millions, billions. If the child
+    reads 4,500,000,000 as four million, count the groups together. A power says how many times a
+    number is multiplied by itself, so ten to the power six is a one with six zeros, not sixty, and
+    each digit of a big number is that digit times a power of ten: the power is how many places come
+    after it. When two distances are written differently, one in millions and one in billions,
+    change one so they match before comparing. With two powers, the bigger number is not always the
+    bigger power, so both are worked out. In the two-star question the child picks what the little
+    number counts. In the three-star question each rounding gives a range, and the answer is at the
+    edge of the range both allow. If the groups of three are still slow, stay here another day. Off
+    the page, look up the population of your country and read it aloud in words.
+    """
+  level easy {
+    grown-ups "At this level the planets are Venus, the Earth or Mars, 10 to the power 6 is worked once in the teacher's pen before a power from 3 to 5, the star counts have a zero in the middle, the comets compare a number under a thousand million or over four thousand million with billions, the distance is rounded to the nearest million and rounds down, there is no light to time, the probe is ten times as far, the billions and millions in words are whole hundreds, the powers to compare are 2 to the power 3 and 3 to the power 2, Ivy's mistake is 10 to the power 4, and the three-star asks for the smallest number that rounds to 4,600,000."
+  }
+  level hard {
+    grown-ups "At this level the planets are Saturn or Uranus, past a billion, the powers go from 7 to 9 with 3, 4 or 7 times them, the star counts run to ten millions or billions, the comets are within 500 million kilometres of each other, the distance is rounded to the nearest ten million and asked twice, light is taken for a thousand seconds, the probe is a thousand times as far, the powers to compare are 2 to the power 4 against 4 to the power 2, or 3 to the power 5 against 5 to the power 3, Ivy's mistake is 10 to the power 8, and the three-star asks for the smallest distance, where both roundings matter."
+  }
+}

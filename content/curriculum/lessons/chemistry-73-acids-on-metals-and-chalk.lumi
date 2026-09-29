@@ -1,0 +1,69 @@
+lesson chemistry-acids-on-metals-and-chalk v=1 format=teach grade=6 unit=5 subject=chemistry levels=[easy, medium, hard] {
+  title "What acids do to metals and to chalk"
+  goal "Predict which metals and rocks an acid attacks, and name the gas each one gives off."
+
+  look {
+    scene 37x14 {
+      row all at=canvas(1, 0) space=2 align=end {
+        testtubes t fills=[0.5, 0.5, 0.5, 0.5] paints=["", "", "", ""] fizz=[0, 0, 0, 0] bungs=0 letters=1 metals=[1, 2, 3, 4] acid=1
+        rocks r rocks=["chalk", "granite"] test=2 letters=0 names=1
+        waterfall fall drops=2 rainbow=0
+      }
+    }
+    say """
+      At the mill by the waterfall, a grown-up pours a little dilute acid over four strips of
+      metal. Magnesium fizzes hard, zinc less, iron slowly, and copper not at all. The gas is
+      hydrogen, and the metal is slowly used up, turning into a new substance called a salt, which
+      stays in the liquid. An acid on chalk, limestone or marble fizzes too, but that gas is carbon
+      dioxide. Rocks and metals that an acid attacks are slowly worn away by it.
+      """
+  }
+  do {
+    show chem.fizziest-tube p=1 easy-p=0 hard-p=2
+    level easy {
+      worked chem.which-gas-fizz k=0 level=medium
+    }
+    show chem.which-gas-fizz k=1 hard-k=2
+    practice chem.water-then-acid count=1 seed=1 easy-seed=1 hard-seed=2
+    show chem.statue-rain v=3 easy-v=0 hard-v=2
+    show chem.acids-on-magnesium v=1 easy-v=0 hard-v=2
+    show chem.which-gas-fizz k=2 easy-k=3 hard-k=3
+    level hard {
+      show chem.acids-on-magnesium v=3
+    }
+    show chem.statue-rain v=1 hard-v=3
+  }
+  story {
+    show chem.which-strip u=2 easy-u=4 hard-u=3
+  }
+  try stars=2 {
+    show chem.metal-gone
+  }
+  try stars=3 {
+    show chem.strip-puzzle p=1 q=0 easy-p=0 hard-p=2 hard-q=1
+  }
+  remember {
+    say "Acids make most metals fizz with hydrogen and make chalk fizz with carbon dioxide; copper does not fizz."
+  }
+
+  grown-ups """
+    The idea is that an acid reacts with some metals and with carbonate rocks, using them up and
+    making a gas: hydrogen from a metal, carbon dioxide from chalk, limestone or marble. The order
+    magnesium, zinc, iron, copper is the real order of how readily these metals react with a dilute
+    acid, and copper does not react at all; the bubble counts in the tubes are the drawing's own
+    readings for that order, not measurements. The wrong ideas to watch for are that the metal
+    melts or simply dissolves like sugar (the two-star question), and that every fizz is the same
+    gas. Safety: dilute acid is a grown-up's job, and at home vinegar on chalk is enough. If the
+    child mixes up the two gases, sort the things that fizz into metals and rocks first, then stay
+    here another day. Off the page, drop a piece of blackboard chalk into a glass of vinegar and
+    watch it fizz and shrink over an hour. The three-star question needs every clue used together.
+    The official line this lesson meets is Japan's Course of Study (2017), grade 6 science
+    A(2)(ウ), that some solutions change metals.
+    """
+  level easy {
+    grown-ups "At this level the tubes include magnesium, the prediction has one copper strip, the gases are worked for zinc and asked for chalk and an iron nail, the liquids hold one or two acids, the statues include marble, the unlabelled strip is magnesium or copper, and the three-star asks for the magnesium."
+  }
+  level hard {
+    grown-ups "At this level the fizziest tube is zinc or iron, the prediction has two copper strips, the gases are for marble and an iron nail, the liquids hold more acids, the statues are mostly limestone and marble, the unlabelled strip is zinc or iron, and the three-star asks for the zinc."
+  }
+}

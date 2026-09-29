@@ -1,0 +1,33 @@
+# Up and down: the sledge's weight pulls it down and the snow pushes up just as hard, so it neither
+# sinks nor lifts; its mass is the weight over 10 N for each kilogram.
+item physics.sledge-weight v=1 skills=[physics.forces, physics.weight, division.sharing] {
+  title "Weight and the snow"
+  difficulty (if w < 1000 then 0 else 1)
+  let w={450, 600, 1200, 1350}
+  level easy {
+    let w={450, 600}
+  }
+  level hard {
+    let w={1200, 1350}
+  }
+
+  scene 36x39 {
+    sledgeforce s forward=[70] back=[70] weight=w moving=1 show=0 names=1 at=canvas(1, 0)
+    text ask "Each kilogram weighs 10 N on Earth. What is the mass of the sledge and its load, in kilograms?" narrate width=27 below=s gap=1
+    number-input mass below=ask gap=1
+    text then "Why does the sledge not sink into the snow?" narrate width=27 below=mass gap=1
+    choice pick options=["The snow pushes up as hard as the weight pulls down", "The pull holds it up", "It is moving too fast to sink", "Its weight is less than the snow's push"] stack=column below=then gap=1
+  }
+
+  answer mass=(w / 10) pick="The snow pushes up as hard as the weight pulls down"
+  feedback {
+    when (mass == w * 10) point=s {
+      say "Each kilogram weighs 10 N, so there are fewer kilograms than newtons."
+    }
+    when (pick == "Its weight is less than the snow's push") point=s {
+      say "Read the two upright arrows: they are the same size. If the push were bigger, the sledge would lift."
+    }
+  }
+  hint "How many lots of 10 N are in the weight?"
+  hint "Compare the arrow pointing down with the arrow pointing up."
+}

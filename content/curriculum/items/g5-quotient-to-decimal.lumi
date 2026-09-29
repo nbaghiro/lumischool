@@ -1,0 +1,31 @@
+# A fraction to a decimal by dividing the top by the bottom, carrying on past the point with zeros.
+item quotient.to-decimal v=1 skills=[fractions.decimals, decimals.divide] {
+  title "Top divided by bottom"
+  difficulty (d / 5 + n / 10)
+  let n=1..7 d={2, 4, 5, 8, 20, 25}
+  where (n < d and gcd(n, d) == 1)
+  level easy {
+    let d={2, 4, 5}
+  }
+  level hard {
+    let d={8, 25}
+  }
+
+  scene 36x10 {
+    fraction sum n=d k=n shape=bar at=canvas(1, 1)
+    text ask "The library shelf is {n}/{d} full, as the bar shows. Write {n}/{d} as a decimal by dividing {n} by {d}." narrate width=20 right-of=sum gap=2
+    number-input answer width=5 below=ask gap=1
+  }
+
+  answer decimals(n / d, 1)
+  feedback {
+    when (answer == n + d / 10 or answer == n + d / 100) point=sum {
+      say "The top and bottom are not the digits of the decimal. Divide {n} by {d}."
+    }
+    when (answer == d / n) point=sum {
+      say "That divides {d} by {n}. The fraction is the top shared by the bottom."
+    }
+  }
+  hint "{n} ÷ {d} is less than 1. What goes before the point?"
+  hint "Write {n} as {n}.000 and divide by {d}, one place at a time."
+}

@@ -1,0 +1,25 @@
+# Three-star: the moon rocks lie on a staircase, so the fewest blocks is a repeat round a step, and
+# the pad's slots allow nothing longer. The builder proves the program for every map.
+item coding.least-fewest v=1 stars=3 skills=[coding.efficiency, coding.repetition, reasoning.planning] {
+  title "Every moon rock in three blocks"
+  difficulty (dx + dy)
+  let k=0..3
+  let dx={pick(k, 1, 2, 1, 2)} dy={pick(k, 1, 1, 2, 2)}
+  let cols={1 + 3 * dx} rows={1 + 3 * dy}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={3}
+  }
+
+  scene 36x24 {
+    maze g cols=cols rows=rows col=1 row=rows face=right gems=[1 + dx, rows - dy, 1 + 2 * dx, rows - 2 * dy, 1 + 3 * dx, rows - 3 * dy] at=canvas(0, 0)
+    codepad answer tray=["right 1", "up 1", "repeat 2"] lines=3 at=canvas(18, 0)
+    text ask "Pick up every moon rock using only 3 blocks. A block's number can be changed." width=16 below=g gap=1
+  }
+
+  check coding.builds of=g goal=gems
+  hint "Trace the rocks with a finger from the rover. What pair of moves takes it from one to the next?"
+  hint "How many times does that pair have to happen?"
+}

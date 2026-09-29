@@ -1,0 +1,32 @@
+# The range of decimal measurements: the biggest take away the smallest, wherever they sit in the
+# table.
+item data.pup-range v=1 skills=[data.range, decimals.subtract] {
+  title "Seal pups on the scale"
+  difficulty ((hi - lo) / 2)
+  let lo={9.5, 10.2, 10.8} hi={13.1, 14.6, 15.4}
+  level easy {
+    let lo={9.5} hi={13.1}
+  }
+  level hard {
+    let lo={10.2, 10.8} hi={14.6, 15.4}
+  }
+
+  scene 34x16 {
+    table data cols=6 head=["Pup", "A", "B", "C", "D", "E"] cells=["kg", 11.4, hi, 12.5, lo, 12.0] at=canvas(1, 1)
+    text ask "Scientists from the hut weighed five seal pups on the ice. What is the range of their weights, in kilograms?" narrate width=22 below=data gap=1
+    seal sl rock=1 facing=1 right-of=ask gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer decimals(hi - lo, 0)
+  feedback {
+    when (answer == decimals(12.0 - 11.4, 0)) point=data {
+      say "The range is the biggest weight take away the smallest, not the last take away the first."
+    }
+    when (answer == decimals(hi - 11.4, 0)) point=data {
+      say "Look along the whole row for the smallest weight."
+    }
+  }
+  hint "Which pup is heaviest, and which is lightest?"
+  hint "Take the smallest weight away from the biggest."
+}

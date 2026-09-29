@@ -1,0 +1,32 @@
+# Each account is good for some questions and useless for others: the log for times and numbers,
+# the diary for what it was like to be there, and neither for what nobody wrote down.
+item reading.which-account v=1 skills=[reading.comparison, reading.purpose] {
+  title "Which would you read?"
+  difficulty pick(x, 0, 0, 1, 1, 2, 2)
+  let x=0..5
+  let right={pick(x, "Dr Osei's log", "Mira's diary", "Dr Osei's log", "Mira's diary", "Neither", "Neither")}
+  level easy {
+    let x={0, 1, 2}
+  }
+  level hard {
+    let x={3, 4, 5}
+  }
+
+  scene 36x29 {
+    column all at=canvas(0, 1) space=1 align=start {
+      passage diary title="Mira's diary, 3 March" text="Gran woke me at nine, and we ran up to the cliff in our coats. The comet hung over the sea like a white feather, its tail as long as my arm. Everyone went quiet. I did not feel the cold." width=35 numbers=false
+      passage log title="Dr Osei's log, 3 March" text="Comet Arlen first seen at 8.40 pm, low in the west over the sea. Tail 20 degrees long. About sixty people on the cliff path. Frost by 10 pm. Seen again on 4 March, fainter." width=35 numbers=false
+      text ask "Which would you read to find out {pick(x, \"when the comet was first seen\", \"how it felt to be on the cliff\", \"whether it came back the next night\", \"what the comet looked like to a child\", \"how many kilometres long the tail was\", \"when the comet will come back again\")}?" width=35
+      choice pick options=["Mira's diary", "Dr Osei's log", "Neither"]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (x >= 4 and pick != "Neither") point=log {
+      say "Check the account for it. Twenty degrees is how long the tail looked in the sky, and nobody wrote down when it will be back."
+    }
+  }
+  hint "What kind of thing is the question after: a time, a number, or what it was like?"
+  hint "Look for it in the account you chose. Is it really there?"
+}

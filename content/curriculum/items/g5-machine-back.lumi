@@ -1,0 +1,32 @@
+# The core's reasoning question: a two-step machine run backwards, undoing the last step first.
+item algebra.machine-back v=1 skills=[algebra.expressions, reasoning.inverse] {
+  title "What went in"
+  difficulty (m + k / 3 + n / 5)
+  let m={2, 3, 4, 6} k={1, 3, 5, 7} n=3..12 up=0..1
+  where (up == 1 or m * n > k)
+  where (n != m)
+  level easy {
+    let m={2, 3} up={1} n=3..8
+  }
+  level hard {
+    let m={4, 6} up={0} n=6..12
+  }
+
+  scene 34x10 {
+    machine mach rule="× {m} {if up == 1 then \"+\" else \"−\"} {k}" input="?" output="{if up == 1 then m * n + k else m * n - k}" at=canvas(1, 1)
+    text ask "A number went into the temple's machine and {if up == 1 then m * n + k else m * n - k} came out. What number went in?" narrate width=14 right-of=mach gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer != n and answer == (if up == 1 then m * n + k else m * n - k) * m + (if up == 1 then k else -k)) point=mach {
+      say "That runs the machine forwards again. Undo each step, the last one first."
+    }
+    when (answer != n and answer == (if up == 1 then m * n + k else m * n - k) / m + (if up == 1 then -k else k)) point=mach {
+      say "Undo the last step first: the {if up == 1 then \"adding\" else \"taking away\"} came last, so undo it before the multiplying."
+    }
+  }
+  hint "What was the last thing the machine did? What undoes it?"
+  hint "Then what undoes multiplying by {m}?"
+}

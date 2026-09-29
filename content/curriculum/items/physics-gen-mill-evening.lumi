@@ -1,0 +1,33 @@
+# The story: an evening at the mill. The generator gives e joules of electricity each second; the
+# lamps take theirs first and the heater in the kitchen has what is left.
+item physics.gen-mill-evening v=1 skills=[physics.energy, physics.circuits] {
+  title "Lamps and a heater"
+  difficulty ((e - 1200) / 600 + n / 5)
+  let e={1200, 1800} n={5, 10}
+  level easy {
+    let e={1200} n={5}
+  }
+  level hard {
+    let e={1800} n={10}
+  }
+
+  scene 31x32 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      waterwheel w paddles=10 lit=1
+      dipper d under=0 facing=-1
+    }
+    text ask "At dusk the wheel turns the mill's generator, which gives {e} J of electricity each second. The miller lights {n} lamps that use 60 J each second each. How many joules each second do the lamps use?" narrate width=29 below=kit gap=1
+    number-input lamps below=ask gap=1
+    text then "The rest goes to the heater. How many joules each second is that?" narrate width=29 below=lamps gap=1
+    number-input heater below=then gap=1
+  }
+
+  answer lamps=(n * 60) heater=(e - n * 60)
+  feedback {
+    when (heater == e) point=then {
+      say "The lamps have taken their share first. Take it away from {e} J."
+    }
+  }
+  hint "What do {n} lamps at 60 J each second use together?"
+  hint "Take that away from what the generator gives."
+}

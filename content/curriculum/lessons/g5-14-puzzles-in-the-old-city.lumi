@@ -1,0 +1,59 @@
+lesson g5-puzzles-in-the-old-city v=1 format=puzzles grade=5 unit=9 subject=maths levels=[easy, medium, hard] {
+  title "Puzzles in the old city"
+  goal "Solve problems with no method to follow, by drawing, listing or trying and checking, and prove the answer."
+
+  puzzle stars=1 {
+    show puzzle.gates-meet a=3 b=6 t=3 easy-b=5 easy-t=2 hard-a=4 hard-t=4
+  }
+  puzzle stars=1 {
+    show puzzle.wall-decimals a=2.5 b=1.25 c=0.25 easy-b=0.5 easy-c=3.5 hard-a=0.75 hard-b=2.25 hard-c=1.75
+  }
+  puzzle stars=2 {
+    show puzzle.clock-strikes n1=4 g=2 n2=9 easy-n1=3 easy-n2=7 hard-n1=6 hard-g=3 hard-n2=12
+  }
+  puzzle stars=2 {
+    show puzzle.mother-and-daughter s=1 easy-s=0 hard-s=2
+  }
+  puzzle stars=2 {
+    show puzzle.market-bars k=3 u=8 easy-k=2 easy-u=6 hard-k=4 hard-u=15
+  }
+  puzzle stars=3 {
+    show puzzle.two-pipes s=1 easy-s=0 hard-s=3
+  }
+  puzzle stars=3 {
+    show puzzle.painted-cube n=4 f=2 easy-n=3 easy-f=3 hard-n=5 hard-f=1
+  }
+  puzzle stars=3 {
+    show puzzle.digit-sum-count s=5 easy-s=3 hard-s=6
+  }
+  puzzle stars=3 {
+    show puzzle.coins-cannot-pay s=1 easy-s=0 hard-s=3
+  }
+  puzzle stars=3 {
+    show puzzle.matchsticks-temple
+  }
+  level hard {
+    puzzle stars=3 {
+      show puzzle.mirror-times s=0
+    }
+  }
+
+  grown-ups """
+    These are meant to take time, and a puzzle put down on Tuesday and finished on Saturday has
+    taught more than one finished by being told. Every one can be started by drawing or trying: a
+    line for the road with both walkers on it, the strikes as dots with the gaps between them, a
+    table of ages that goes up a year at a time. The messengers close the gap from both ends at
+    once. The pipes fill a fraction of the reservoir each hour, and the fractions add. The painted
+    cube is easiest to think about one edge or one face at a time. For the tokens, once enough
+    amounts in a row can be paid, every bigger one can be too, which is why there is a biggest
+    amount that cannot. The matchstick sum has two answers, 8 − 3 = 5 and 8 − 5 = 3, each made by
+    moving one stick of a 3; either is marked right, and finding both is the full solution. A child
+    who gets stuck here has not failed the lesson.
+    """
+  level easy {
+    grown-ups "At this level the messengers walk 3 and 5 km an hour for two hours, the wall's decimals are halves and quarters that add without carrying, the clock strikes 3 and then 7, Lia's mother is three times her age, the market bars are two to one, the pipes take 3 and 6 hours, the painted cube is 3 by 3 by 3 and the corners are counted, the digits add to 3, and the tokens are 2 and 5 dollars."
+  }
+  level hard {
+    grown-ups "At this level the messengers walk 4 and 6 km an hour for four hours, the wall's decimals carry, the clock strikes 6 and then 12, Lia's mother is four times her age, the market bars are four to one, the pipes take 10 and 15 hours, the painted cube is 5 by 5 by 5 and the cubes with one painted face are counted, the digits add to 6, the tokens are 4 and 7 dollars, and an eleventh puzzle counts the times in a day that the clock tower's display reads the same backwards."
+  }
+}

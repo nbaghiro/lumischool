@@ -1,0 +1,34 @@
+# A percent of a percent: a share of a share of the whole, which multiplies the two percents.
+item percent.bridge-children-percent v=1 skills=[percentages.of-percent] {
+  title "A part of a part"
+  difficulty ((if b % 25 == 0 then 0 else 1) + a / 100)
+  let a={40, 50, 60, 80} b={10, 25, 50, 75, 30}
+  where whole(a * b / 100)
+  level easy {
+    let b={25, 50}
+  }
+  level hard {
+    let b={10, 30, 75}
+  }
+
+  scene 34x18 {
+    percentbar kids percent=a show=true whole=0 at=canvas(1, 1)
+    text ask "Of the visitors to the gorge on Saturday, {a}% were children, as the bar shows. {b}% of the children crossed the rope bridge. What percent of all the visitors were children who crossed it?" narrate width=15 right-of=kids gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text unit "%"
+    }
+  }
+
+  answer (a * b / 100)
+  feedback {
+    when (answer == b) point=kids {
+      say "{b}% is of the children, not of all the visitors. The children are only part of the bar."
+    }
+    when (answer == a - b or answer == a + b) point=kids {
+      say "A percent of a percent is a part of a part, which multiplies. What is {b}% of the {a}%?"
+    }
+  }
+  hint "Suppose there were 100 visitors. How many were children?"
+  hint "What is {b}% of that many children?"
+}

@@ -1,0 +1,40 @@
+# The three-star count: bars of six-eight made from shapes that each fill one big beat. Two shapes
+# give 2 x 2 = 4 bars, three give 9, and four with the two beats different give 4 x 3 = 12.
+item music.six8-all-ways v=1 stars=3 skills=[music.six-eight, reasoning.all-the-ways] {
+  title "Every bar of six-eight"
+  difficulty v
+  let v=0..2
+  let shapes={pick(v, "a dotted crotchet, or a crotchet then a quaver", "a dotted crotchet, a crotchet then a quaver, or three quavers", "a dotted crotchet, a crotchet then a quaver, a quaver then a crotchet, or three quavers")}
+  let rule={pick(v, "", "", " The two big beats of a bar must be different.")}
+  let right={pick(v, 4, 9, 12)}
+  let all={pick(v, 4, 9, 16)}
+  let add={pick(v, 0, 6, 8)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x29 {
+    notes eg clef=treble notes=[G4, G4, A4, B4, B4, A4] values=[1.5, 1, 0.5, 0.5, 1, 1.5] meter=6 quavers=true at=canvas(1, 1)
+    row mid space=2 align=start below=eg gap=1 {
+      text ask "Ana writes bars of six-eight for the puffins' dance. She fills each big beat with {shapes}.{rule} How many different bars can she write?" narrate width=22
+      puffins birds count=2 facing=-1
+    }
+    number-input answer below=mid gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == all and v == 2) point=ask {
+      say "That counts bars whose two big beats are the same. Take those out."
+    }
+    when (answer == add and v >= 1) point=eg {
+      say "Each of the two big beats has its own choice. For every choice for the first beat, how many for the second?"
+    }
+  }
+  hint "How many ways are there to fill one big beat?"
+  hint "List the bars that start with a dotted crotchet. How many are there? Now do the same for each other start."
+  hint "{if v == 2 then \"How many bars have the same shape twice?\" else \"Multiply the ways for the first beat by the ways for the second.\"}"
+}

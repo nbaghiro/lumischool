@@ -1,0 +1,71 @@
+# A landscape that fades into the distance up the waterfall gorge: aerial perspective, where each
+# ridge further back is paler, bluer, softer and lower in contrast than the one in front.
+lesson art-a-landscape-that-fades v=1 format=teach grade=6 unit=5 subject=art levels=[easy, medium, hard] {
+  title "A landscape that fades"
+  goal "Paint a landscape that goes back into the distance by making each further ridge paler, bluer, softer and lower in contrast."
+
+  look {
+    scene 33x15 {
+      row all at=canvas(1, 1) space=1 align=end {
+        layers land labels=true ring=-1 sun=true light="noon"
+        waterfall falls drops=3 rainbow=0
+      }
+    }
+    say """
+      Standing at the mouth of the gorge, the ridges seem to fade one behind another. Leonardo da
+      Vinci noticed this five hundred years ago and wrote in his notebooks that far mountains look
+      bluer and paler because of the air between. Painters call it aerial perspective. A far ridge
+      is paler, cooler, softer at its edge and lower in contrast than a near one, and a flat sheet
+      of paper seems to go back a long way.
+      """
+  }
+  do {
+    practice art.fade-which-step count=1 hard-count=2 seed=1
+    level easy {
+      worked art.fade-white n=5 q=0 level=medium
+    }
+    practice art.fade-white count=1 seed=2
+    practice art.fade-contrast count=2 seed=3
+    practice art.fade-cues count=2 seed=1
+    practice art.fade-leonardo count=1 seed=2
+    practice art.fade-detail count=1 seed=2
+  }
+  try stars=2 {
+    show art.fade-warm-why r=1 easy-r=0 hard-r=2
+  }
+  try stars=3 {
+    show art.fade-gorge
+  }
+  remember {
+    say "Further away is paler, bluer, softer and lower in contrast."
+  }
+
+  grown-ups """
+    Leonardo da Vinci lived from 1452 to 1519, and his notebooks are long out of copyright; the
+    lesson uses drawings of our own. Grade three painted a landscape in three layers that grow
+    paler, cooler, smaller and less detailed further back; this lesson measures contrast on a tone
+    scale, looks for aerial perspective in a real painting, and asks what to change when the clues
+    to distance disagree. Most of the questions are marked by the machine. The first chooses a step
+    of a tint ladder for a ridge. The core follows the ladder's doubling of white back through the
+    ridges, pairs tones by how much contrast a near or far thing has, puts right a picture whose
+    colour says far while its overlap, size or place on the page says near, finds the palest or
+    warmest part of the land behind the Mona Lisa, and chooses sharp or soft edges by distance.
+
+    Watch for a child who makes far things paler but keeps them warm, or keeps outlining every ridge
+    in black; either one pulls the ridge forward, and the two-star question is about the first. If
+    the tone pairs are stuck, shade the five-step scale together and hold near and far pairs against
+    a view out of the window. The painting is the three-star question and is responded to rather
+    than marked. Off the page, look at hills or tall buildings on a hazy day and put them in order
+    by how pale they are.
+
+    Respond by running a finger from the front to the back of the painting: "Each ridge is quieter
+    than the one before, and the waterfall looks miles away." Ask which ridge was hardest to push
+    back.
+    """
+  level easy {
+    grown-ups "At this level the step is for the nearest or the furthest ridge, the fifth ridge is worked once in the teacher's pen before more, the tone pairs are for the front and the far ridge, the clues that disagree are overlap and size, the Mona Lisa questions ask for the palest and the warmest part, the edges are for a far ridge or a near rock, the two-star ridge is orange, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level a second step question is added and the middle ridge appears, the ridge is found from its white, the tone pairs include the middle hills, the clues that disagree include place on the page, the Mona Lisa question asks where contrast is lowest, the edges are for the far waterfall and a near bird, the two-star ridge is pink, and the three-star is as written."
+  }
+}

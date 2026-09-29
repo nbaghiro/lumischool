@@ -1,0 +1,62 @@
+lesson physics-falling-on-the-moon v=1 format=teach grade=6 unit=7 subject=physics levels=[easy, medium, hard] {
+  title "Falling on the moon"
+  goal "Work out how things fall on the moon, where the pull is weaker and there is no air to push back."
+
+  look {
+    scene 36x18 {
+      row all at=canvas(0, 0) space=1 align=end {
+        falling f things=["hammer", "feather"] time=1 show=1 names=1 air=0
+        lander l rungs=5
+        earth e up=2
+      }
+    }
+    say """
+      The moon pulls each kilogram with 1.6 N, where the Earth pulls with 10 N, so things fall more
+      slowly there: a falling rock gains 1.6 m/s of speed every second instead of about 10. And the
+      moon has no air. On Earth the air pushes back hardest on light, wide things like a feather, but
+      on the moon nothing pushes back, so a hammer and a feather let go together land together.
+      """
+  }
+  do {
+    practice physics.moondrop-predict count=1 seed=1 easy-seed=2 hard-seed=3
+    level easy {
+      worked physics.moondrop-speed k=5 level=medium
+    }
+    practice physics.moondrop-speed count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.moondrop-distance count=1 seed=1
+    practice physics.moondrop-parachute count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.moondrop-how-long count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.moondrop-jump count=1 seed=1
+    practice physics.moondrop-legs count=1 seed=1
+  }
+  story {
+    show physics.moondrop-scott h=3.2 hard-h=7.2
+  }
+  try stars=2 {
+    show physics.moondrop-why-together
+  }
+  try stars=3 {
+    show physics.moondrop-shelf te=0.6 easy-te=0.4 hard-te=0.8
+  }
+  remember {
+    say "On the moon everything falls together, more slowly than on Earth, because the pull is weaker and there is no air."
+  }
+
+  grown-ups """
+    The idea to listen for is that heavy things fall faster. On Earth it looks true, because the air
+    holds back a feather far more than a hammer, and the lesson keeps the two causes apart: the
+    moon's weaker pull slows everything by the same amount, and the missing air lets a feather keep
+    up. If the child says the feather "weighs nothing on the moon", ask whether it would fall at all.
+    The tables carry the numbers: speed grows by the same step each second, but distance grows as the
+    seconds times themselves. If that stalls, count 1, 4, 9 on squares of dots before going on, and
+    stay here another day if needed. Off the page, drop a book and a sheet of paper laid flat on top
+    of it: with no air under the paper, they fall together. The three-star question is solved by
+    finding the shelf's height with the Earth's rule first.
+    """
+  level easy {
+    grown-ups "At this level a worked example reads the speed table first, the speeds and drops are for three and four seconds, the drop to compare is the middle one, the jump is 0.4 m, and the three-star shelf takes 0.4 s on Earth."
+  }
+  level hard {
+    grown-ups "At this level the speeds are for five and six seconds, the pebble falls for five seconds, the drop to compare is the shortest or the longest, the lander is heavier, David Scott's drop is 7.2 m, and the three-star shelf takes 0.8 s on Earth."
+  }
+}

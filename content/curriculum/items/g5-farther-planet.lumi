@@ -1,0 +1,29 @@
+# The core's reasoning question: two distances written in different forms, millions against a
+# decimal of a billion, compared by writing them the same way first.
+item place.farther-planet v=1 skills=[place-value.large-numbers, reasoning.compare] {
+  title "Which is farther"
+  difficulty (if abs(m - b * 1000) < 500 then 1 else 0)
+  let b={1.4, 2.9, 4.5} m={780, 1200, 2500, 3800, 4495}
+  where (m != b * 1000)
+  level easy {
+    where (m < 1000 or m > 4000)
+  }
+  level hard {
+    where (m > 1000 and m < 4000 and abs(m - b * 1000) < 500)
+  }
+
+  scene 34x13 {
+    comet tail at=canvas(1, 1)
+    text ask "One comet's path takes it {m} million km from the sun. Another's takes it {b} billion km away. A billion is a thousand million. Which comet goes farther?" narrate width=22 right-of=tail gap=2
+    choice pick options=["the first", "the second"] below=ask gap=1
+  }
+
+  answer pick=(if m > b * 1000 then "the first" else "the second")
+  feedback {
+    when (m < b * 1000 and pick == "the first") point=ask {
+      say "{m} is a bigger number than {b}, but they are counting different things. Write {b} billion as millions."
+    }
+  }
+  hint "How many millions are in one billion?"
+  hint "Write {b} billion as a number of millions, then compare."
+}

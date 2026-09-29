@@ -1,0 +1,34 @@
+# The gap from the air's temperature: it is shut at 55 °C and opens by a set amount for each degree
+# colder, 0.012 mm for each metre of steel. k picks the deck's length, t the air.
+item physics.joint-gap v=1 skills=[physics.heat, reasoning.two-steps] {
+  title "How wide is the gap?"
+  difficulty ((if k == 1 then 0 else 1) + (if t < 0 then 1 else 0))
+  let k=0..3 t={-15, -5, 5, 15, 25, 35, 45}
+  level easy {
+    let k={1} t={25, 35, 45}
+  }
+  level hard {
+    let k={2, 3} t={-15, -5, 5}
+  }
+  let s={pick(k, 25, 50, 75, 100)}
+  let rate={pick(k, "0.3", "0.6", "0.9", "1.2")}
+  let per={pick(k, 3, 6, 9, 12) / 10}
+
+  scene 30x26 {
+    expansion j mode=0 span=s temp=t show=0 at=canvas(1, 0)
+    text ask "This bridge's gap closes up at 55 °C. For every degree colder than that, the gap opens by {rate} mm, since each side is {s} m of steel. The air is {t} °C. How wide is the gap, in millimetres?" narrate width=28 below=j gap=1
+    number-input mm below=ask gap=1
+  }
+
+  check physics.forces of=j mm=gap
+  feedback {
+    when (mm == per * t and t != 0) point=j {
+      say "The gap is shut at 55 °C, not at 0 °C. Count the degrees from the air's temperature up to 55."
+    }
+    when (mm == 55 - t) point=j {
+      say "That is how many degrees colder than 55 °C it is. Each of those degrees opens the gap by {rate} mm."
+    }
+  }
+  hint "At 55 °C the gap is shut. How many degrees colder than 55 °C is the air?"
+  hint "For each of those degrees the gap opens by {rate} mm."
+}

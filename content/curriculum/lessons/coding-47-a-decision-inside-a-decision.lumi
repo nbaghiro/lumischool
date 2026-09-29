@@ -1,0 +1,67 @@
+# A decision inside a decision: the inner if is asked only when the outer one says yes, an otherwise
+# belongs to the if it lines up with in the text, and counting every way through means adding the
+# branches. The research station decides whether the sledge goes out in the midnight sun.
+lesson coding-a-decision-inside-a-decision v=1 format=teach grade=6 unit=3 subject=coding levels=[easy, medium, hard] {
+  title "A decision inside a decision"
+  goal "Follow a program with an if inside an if, and say which inputs reach each branch."
+
+  look {
+    scene 36x21 {
+      program p code=["set temp to -15", "set wind to 35", "if temp is less than -10", "  if wind is more than 30", "    say stay in", "  otherwise", "    say wrap up", "otherwise", "  say sledge"] text=true at=canvas(0, 0)
+      thermometer th from=-30 to=10 step=10 value=-15 right-of=p gap=1
+      sledge sl slats=5 below=th gap=1
+    }
+    say """
+      Before the sledge goes out, the station's program asks two questions. The wind question on
+      line 4 is set in under the temperature question, so it is asked only on a day colder than
+      -10 °C. On a milder day the program jumps straight to the last otherwise and says sledge. Today
+      it is -15 °C with a wind of 35, so both answers are yes and it says stay in.
+      """
+  }
+  do {
+    show coding.inner-said k=1 t=-15 w=35 easy-k=0 easy-t=-4 easy-w=40 hard-t=-10
+    level easy {
+      worked coding.inner-said k=1 t=-15 w=35 level=medium
+    }
+    show coding.inner-count s=1 q=0 easy-s=0 hard-s=2 hard-q=1
+    show coding.inner-pair k=0 t=-4 w=10 easy-t=-15 easy-w=40 hard-k=1 hard-t=-15
+    show coding.inner-range a=-2 b=-12 easy-a=0 easy-b=-15 hard-a=-5
+    show coding.inner-build k=0 hard-k=1
+    show coding.inner-count s=2 q=1 easy-s=1 easy-q=0 hard-s=3
+    show coding.inner-pair k=1 t=-15 w=40 easy-k=0 easy-t=-4
+    show coding.inner-range a=0 b=-12 easy-b=-10 hard-a=-2 hard-b=-15
+    level hard {
+      show coding.inner-range a=-5 b=-10
+    }
+  }
+  try stars=2 {
+    show coding.inner-never k=1 easy-k=0
+  }
+  try stars=3 {
+    show coding.inner-ways k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "An if inside an if is asked only when the outer if says yes, and an otherwise belongs to the if it lines up with."
+  }
+
+  grown-ups """
+    The inner decision is reached only through the outer one, which is the idea most children miss:
+    they ask both questions every time, so a mild but windy day comes out as stay in. In text, the
+    otherwise that lines up with an if belongs to it, and the same lines with the otherwise two
+    spaces further in make a different program. In the child's working, look for the path traced
+    down the text with a finger, stopping at the first question whose answer sends it elsewhere. If
+    the child is stuck, draw the program as a path that splits and then splits again on one of its
+    branches, and walk one day down it. Off the page, play a guessing game with two questions where
+    the second depends on the first answer. The two-star question has a branch that can never run;
+    the three-star question counts all 36 ways two dice can land and adds the two branches. In the
+    build question the rover asks about the red square only when a ridge is ahead, so the if on red
+    goes inside the other if; a rover that asks about red every time round turns on the red squares
+    in the middle of a run.
+    """
+  level easy {
+    grown-ups "At this level the temperatures are well away from -10, one program is worked in the teacher's pen, the lists count cold and bitter days, the otherwise always lines up with the outer if, the ranges to count start at 0, the branch that never runs asks for more than 5 degrees on a day below 0, and the dice question has the fewest branches to add. The rover to program meets its first ridge on red."
+  }
+  level hard {
+    grown-ups "At this level the temperature or the wind sits exactly on the line, so less than and more than have to be read with care, the lists ask how often the inner question is asked, the otherwise lines up with the inner if, the ranges to count sit between two negative numbers, and a third range is added. The branch that never runs asks for below -5 on a day above 0, and the rover to program meets its first ridge off red."
+  }
+}

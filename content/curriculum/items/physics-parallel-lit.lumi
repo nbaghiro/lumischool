@@ -1,0 +1,29 @@
+# The way in: in a parallel circuit each branch is joined straight across the cells, so a bulb is lit
+# whenever its own switch is closed. v picks the switches, y whether it is drawn in symbols.
+item physics.parallel-lit v=1 skills=[physics.circuits, physics.symbols] {
+  title "How many bulbs light?"
+  difficulty y
+  let v=0..5 y=0..1
+  level easy {
+    let y={0}
+  }
+  level hard {
+    let y={1}
+  }
+  let n={if v < 2 then 2 else 3}
+
+  scene 36x21 {
+    parallel p cells=2 branches=n closed=[pick(v, 1, 0, 1, 0, 1, 0), pick(v, 0, 1, 0, 1, 1, 0), pick(v, 1, 1, 1, 1, 0, 1)] show=0 symbols=y at=canvas(1, 0)
+    text ask "The bulbs are joined side by side, each in its own branch with its own switch. How many bulbs will light?" narrate width=17 right-of=p gap=1
+    number-input lit below=ask gap=1
+  }
+
+  check physics.circuit of=p lit=lit
+  feedback {
+    when (lit == 0) point=p {
+      say "An open switch breaks only its own branch. Is there a branch whose switch is closed?"
+    }
+  }
+  hint "Look at each branch on its own. Is its switch open or closed?"
+  hint "Count the branches with a closed switch."
+}

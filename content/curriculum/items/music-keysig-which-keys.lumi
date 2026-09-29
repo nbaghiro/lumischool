@@ -1,0 +1,43 @@
+# The three-star count: which major keys hold every note of a tune. A key fits when none of its sharps
+# or flats is a letter the tune plays plain. C D E G A fits C, G and F (3 of C, G, D, F); E F-sharp G
+# A B fits G and D (2 of C, G, D, F, B flat); C D F G A fits C, F and B flat (3 of seven keys).
+item music.keysig-which-keys v=1 stars=3 skills=[music.key-signatures, reasoning.all-the-ways] {
+  title "Which keys could it be in?"
+  difficulty v
+  let v=0..2
+  let n1={pick(v, "C4", "E4", "C4")}
+  let n2={pick(v, "D4", "Fs4", "D4")}
+  let n3={pick(v, "E4", "G4", "F4")}
+  let n4={pick(v, "G4", "A4", "G4")}
+  let n5={pick(v, "A4", "B4", "A4")}
+  let keys={pick(v, "C, G, D and F major", "C, G, D, F and B flat major", "C, G, D, A, F, B flat and E flat major")}
+  let right={pick(v, 3, 2, 3)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x23 {
+    row top space=2 align=start at=canvas(1, 1) {
+      notes tune clef=treble notes=[n1, n2, n3, n4, n5] values=[] letters=true
+      iceberg berg under=0
+    }
+    text ask "A whale's song, as the team wrote it down: only these five notes. Of {keys}, how many hold every one of the five notes, with none of them changed?" narrate width=34 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 1) point=tune {
+      say "More than one key can hold the same five notes. Check every key in the list, one at a time."
+    }
+    when (answer > right) point=tune {
+      say "A key fails if it changes a letter the tune plays plain, or leaves plain a letter the tune plays sharp."
+    }
+  }
+  hint "Write the letters each key changes: G has F sharp, D has F sharp and C sharp, F has B flat."
+  hint "For each key, is any letter it changes in the tune without that sharp or flat?"
+  hint "Count the keys that pass."
+}

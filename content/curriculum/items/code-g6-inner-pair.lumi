@@ -1,0 +1,37 @@
+# In text an otherwise belongs to the if it lines up with. The same words with the otherwise two
+# spaces further in pair it with the inner if, and the program says something different.
+item coding.inner-pair v=1 skills=[coding.decisions, coding.text, coding.tracing] {
+  title "Which if does it belong to?"
+  difficulty (k + (if t < -10 then 0.5 else 0))
+  let k=0..1 t={-15, -4} w={10, 40}
+  where (k == 0 and (t == -4 or w == 40) or k == 1 and t == -15)
+  let pad={if k == 0 then "" else "  "}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x21 {
+    program p code=["set temp to {t}", "set wind to {w}", "if temp is less than -10", "  if wind is more than 30", "    say stay in", "{pad}otherwise", "{pad}  say wrap up"] text=true at=canvas(0, 0)
+    puffins pf count=3 right-of=p gap=1
+    text ask "Which line's if does the otherwise on line 6 belong to? What does the program say?" width=14 below=pf gap=1
+    text tl "line" below=p gap=1
+    number-input line right-of=tl gap=1
+    choice pick options=["stay in", "wrap up", "nothing"] right-of=line gap=2
+  }
+
+  check coding.runs of=p pick=said
+  answer line=(if k == 0 then 3 else 4)
+  feedback {
+    when (line == (if k == 0 then 4 else 3)) point=p {
+      say "An otherwise belongs to the if it lines up with. Put a ruler down from line 6's first letter."
+    }
+    when (pick == "nothing") point=p {
+      say "Follow the lines the answers send you to: one of them says something."
+    }
+  }
+  hint "Look straight up from the o of otherwise. Which if starts in the same place?"
+  hint "Now run it: ask the outer if's question, and then only the lines it sends you to."
+}

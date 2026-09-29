@@ -1,0 +1,30 @@
+# The search starts at place 0, which the list does not have, so the program stops with a problem on
+# its first question. Lists count from 1.
+item coding.bug-zero v=1 skills=[coding.debugging, coding.lists, coding.algorithms] {
+  title "The search that will not start"
+  difficulty k
+  let k=0..1
+  let t={pick(k, 25, 40)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x20 {
+    program p code=["set shelf to list 12, 25, 31, 40", "set i to 0", "repeat until item i of shelf is {t}", "  add 1 to i"] at=canvas(0, 0)
+    bookhouse lib floors=2 full=1 right-of=p gap=1
+    text ask "The program stops at once and says: shelf has no item 0. Which line has the bug?" width=24 below=p gap=1
+    choice pick options=[1, 2, 3, 4] below=ask gap=1
+  }
+
+  answer pick=2
+  feedback {
+    when (pick == 3) point=p {
+      say "Line 3 is where the problem shows, but i was given 0 before that. Where does i get its first number?"
+    }
+  }
+  hint "What is i the first time line 3 asks about item i?"
+  hint "What is the first place in a list?"
+}

@@ -1,0 +1,36 @@
+# The two-star reason: the same message written formally and chattily, and which suits a named
+# reader. At hard the reader is a cousin, so the chatty letter is right and formality is the trap.
+# The right reason is offered for both letters, so the child has to tell which letter is which.
+item writing.which-register v=1 stars=2 skills=[writing.letters, writing.formality, reasoning.explain] {
+  title "Which letter suits the reader?"
+  difficulty k
+  let k=0..1 r=0..2
+  let reader={pick(k, "Dr Shah, the director", "Leo's cousin Priya")}
+  let right={pick(k, "B: she is a stranger in charge", "A: she is family and knows Leo")}
+  let w1={pick(k, "A: she is a stranger in charge", "B: she is family and knows Leo")}
+  let w2={pick(k, "A: it asks straight away and saves her time", "B: it asks properly, as Priya deserves")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x31 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage two title="Two letters" text="A: Hi, can we come and see the comet on Friday? It'll be great. Leo  B: Dear Dr Shah, Our class would like to see the comet on Friday evening. Could you tell us if that is possible? Yours sincerely, Leo Hart" width=23 numbers=false
+      observatory obs open=1
+    }
+    text ask "Leo sends one of these to {reader}. Which one, and why?" narrate width=32 below=top gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=two {
+      say "Neither letter is better on its own: the reader decides. Full, polite words are for someone in charge whom Leo has not met; easy, friendly words are for someone close."
+    }
+  }
+  hint "Who is the reader, and how well does Leo know her?"
+  hint "Two choices give the same reason. Which letter is written for a stranger in charge, and which for someone close?"
+}

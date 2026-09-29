@@ -1,0 +1,71 @@
+# A summary as the main points in the writer's order, in fewer words and your own: details, examples
+# and opinions left out, a list named by one word, and the words counted.
+lesson writing-a-summary-in-fifty-words v=1 format=teach grade=6 unit=6 subject=writing levels=[easy, medium, hard] {
+  title "A summary in fifty words"
+  goal "Summarise a passage in fifty words or fewer, keeping its main points in order and leaving out details and opinions."
+
+  look {
+    scene 36x47 {
+      row pics at=canvas(1, 0) space=2 align=end {
+        waterfall falls drops=2 rainbow=1
+        kingfisher kf flying=1 facing=-1
+      }
+      passage p title="The gorge" text="The river has been cutting the gorge for about ten thousand years. Each spring, melting snow on the hills swells it into a brown flood, and the fast water carries stones that scrape the rock like sandpaper. The rock here lies in layers, and from the rope bridge you can see them in the cliff: pale sandstone below, grey limestone on top. Soft sandstone wears away quickly, but the hard limestone does not, so the river drops over a shelf of limestone as a waterfall. Below the falls, the spray has scooped out a deep round pool where kingfishers fish. Year by year the water eats into the soft rock under the shelf until nothing holds it up. Then a slab breaks off and crashes into the pool, and the waterfall has moved back up the valley. It moves about a hand's width a year, so the falls your grandparents saw stood a little further down the gorge. Nobody alive will see it move far, but the gorge is still growing." width=35 numbers=false below=pics gap=1
+    }
+    say """
+      Mia has fifty words for the gorge's page in the village guidebook, and the writer's page is
+      about 170. Her summary reads: "Over ten thousand years the river has cut the gorge, helped by
+      the stones its floods carry. It drops over a shelf of hard rock that sits on soft rock. As the
+      soft rock wears away, the shelf breaks, and the falls move slowly back up the valley." That is
+      forty-eight words. She kept the main points in the writer's order, in her own words, and left
+      out the sandpaper, the pool and the hand's width.
+      """
+  }
+  do {
+    level easy {
+      worked writing.summary-main k=2 r=0 level=medium
+    }
+    practice writing.summary-main count=1 seed=4
+    practice writing.summary-point count=2 seed=3
+    practice writing.summary-cut count=2 seed=8
+    practice writing.summary-general count=1 seed=5 hard-count=2
+    practice writing.summary-count count=1 seed=6
+  }
+  story {
+    show writing.summary-trim k=1 r=2 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show writing.summary-reason k=0 r=2 hard-k=1
+  }
+  try stars=3 {
+    show writing.write-summary k=0 hard-k=1
+  }
+  remember {
+    say "A summary keeps the main points, in order, in your own words, and leaves out details, examples and opinions."
+  }
+
+  grown-ups """
+    A summary is a short, faithful version of what a writer said: the main points, in the
+    writer's order, in the summariser's own words, with nothing added. Working to a limit such
+    as fifty words forces the choices, and it is only a real cut when the page is three or four
+    times longer than the limit, as the guidebook pages here are. The look is the gorge page, about
+    170 words, and Mia's forty-eight-word summary of it. The way in chooses the sentence that sums
+    up a short paragraph; the core finds the writer's main point in a page of about 160 words
+    (never the first sentence, which opens with a picture), finds the sentence a summary can drop,
+    names a list with one word and counts a summary's words; the story trims Mia's first draft to
+    the limit by choosing a cut that keeps every main point. The wrong idea to watch for is a
+    summary that is the first sentence copied out, or one that keeps the liveliest detail and
+    loses a main point; ask what the reader would miss. If the child is stuck, cover the page and
+    ask them to tell you what it said in one breath, then write that down. Off the page, summarise
+    a news story or a film for someone who has not seen it, in three sentences. The two-star
+    question compares two summaries that give the same reason, so the child has to check both
+    against the paragraph, and the three-star question is a summary of the child's own, which you
+    count and mark.
+    """
+  level easy {
+    grown-ups "At this level choosing the sentence that sums up the bridge's paragraph is worked once in the teacher's pen, the main points to find are the bridge's and the mill's, the detail to drop is the boulder or the miller's cat, one list is named, one summary is counted, the draft to trim loses a sentence and two words, the two-star summary that fails keeps the lively details and loses the nest, and the child writes one summary in fifty words."
+  }
+  level hard {
+    grown-ups "At this level the main points to find are the mill's and the kingfishers' bank, the detail to drop may be the last sentence, two lists are named, the draft to trim needs exactly four words cut and one wrong cut leaves it at fifty-two, the two-star summary that fails adds an opinion, and the child writes the summary in fifty words and again in twenty-five."
+  }
+}

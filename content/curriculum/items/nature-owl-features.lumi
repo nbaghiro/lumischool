@@ -1,0 +1,23 @@
+# Four parts of an owl matched to the job each does for a hunter at night, shuffled three ways, none
+# in the parts' own order, so one answer does not give the rest.
+item nature.owl-features v=1 skills=[nature.night-animals, nature.habitats] {
+  title "Built to hunt at night"
+  let k=0..2
+  let j1={pick(k, "fly silently", "grip a mouse", "hear faint sounds")}
+  let j2={pick(k, "see in dim light", "fly silently", "grip a mouse")}
+  let j3={pick(k, "grip a mouse", "hear faint sounds", "see in dim light")}
+  let j4={pick(k, "hear faint sounds", "see in dim light", "fly silently")}
+
+  scene 34x24 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      owlflying o facing=1
+      mice m count=1 facing=-1
+    }
+    text ask "A tawny owl hunts over the fields below the observatory. Write the number of the job next to each part of the owl." narrate width=32 below=pics gap=1
+    match m2 left=["huge eyes", "a dish face", "soft feathers", "sharp claws"] right=[j1, j2, j3, j4] blanks=[a, b, c, d] below=ask gap=1
+  }
+
+  answer a=pick(k, 2, 4, 3) b=pick(k, 4, 3, 1) c=pick(k, 1, 2, 4) d=pick(k, 3, 1, 2)
+  hint "Start with the one you are surest of. What are claws for?"
+  hint "The face is shaped like a dish that catches sound. Soft edges on the feathers hush the air as it flies."
+}

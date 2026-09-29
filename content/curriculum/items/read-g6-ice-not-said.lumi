@@ -1,0 +1,36 @@
+# The other side of inference: two of the choices have a clue in the lines and one has none. A child
+# who fills the gap from their own ideas picks a choice the lines do give a clue for.
+item reading.ice-not-said v=1 skills=[reading.inference, reading.evidence] {
+  title "Which has no clue?"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+  let right={pick(k, "What they had eaten", "Where the ice drifted", "How old Noor is", "What Noor was doing")}
+  let clue1={pick(k, "It was very cold", "The hut was in danger", "The light is strong", "The sound was loud")}
+  let clue2={pick(k, "They had come far", "Lind called for help", "Lind thinks ahead", "It came suddenly")}
+
+  scene 36x15 {
+    text ask "Which of these do the lines give no clue about at all?" at=canvas(1, 1) width=34
+    row bottom below=ask gap=1 space=1 align=start {
+      passage p text="{pick(k, \"Part 2: Next morning a sledge came hissing over the ice, pulled by four tired people with frost in their beards.\", \"Part 3: Aunt Lind ran to the window, then to the radio. ... By evening the hut was empty.\", \"Part 1: Aunt Lind handed her dark glasses before she handed her a bag.\", \"Part 3: That afternoon Noor heard a crack like a door slamming far away.\")}" width=18 numbers=false
+      choice pick options=[pick(k, clue1, clue1, right, clue2), pick(k, right, clue2, clue1, right), pick(k, clue2, right, clue2, clue1)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == clue1) point=p {
+      say "The lines do give a clue for that one. Find the words that point to it."
+    }
+    when (pick == clue2) point=p {
+      say "There is a clue for that one too, in what someone does. Read the lines again."
+    }
+  }
+  hint "Take each choice in turn. Can you point to words in the lines that suggest it?"
+  hint "The answer is the choice you could only guess at."
+}

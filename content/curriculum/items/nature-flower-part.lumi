@@ -1,0 +1,40 @@
+# The way in: the flower cut in half, and the part to find. The petal is the plain one; the anther
+# and the stigma have to be told apart by which one makes pollen and which one catches it, and the
+# ovary is hidden at the bottom.
+item nature.flower-part v=1 skills=[nature.pollination] {
+  title "Which part of the flower?"
+  difficulty (if k == 0 then 0 else if k == 3 then 2 else 1)
+  let k=0..3
+  let p={pick(k, "a petal, which is bright to catch an insect's eye", "an anther, which makes the pollen", "the stigma, which catches pollen", "the ovary, where the seeds grow")}
+  let letter={pick(k, "C", "B", "A", "D")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x14 {
+    parts fig of=flower at=canvas(1, 1)
+    text ask "Ada cuts a flower from the towpath in half to see inside. Which letter points at {p}?" narrate width=20 right-of=fig gap=2
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=letter
+  feedback {
+    when (k == 1 and pick == "A") point=fig {
+      say "That one sits in the middle on its own stalk and catches pollen. The anthers are on the thin stalks round it, dusted with pollen."
+    }
+    when (k == 2 and pick == "B") point=fig {
+      say "That one is dusted with pollen: it makes it. The stigma stands alone in the middle, at the top of its stalk."
+    }
+    when (k == 3 and pick == "A") point=fig {
+      say "That is the top of the middle stalk. Follow the stalk down to the round part at the bottom, where the seeds are."
+    }
+    when (k == 0 and pick != letter) point=fig {
+      say "The petals are the big coloured parts round the outside of the flower."
+    }
+  }
+  hint "Look for the dots of pollen. Which part is covered in them?"
+  hint "The stigma is at the top of the stalk in the middle. The ovary is the round part at its foot, with the seeds in it."
+}

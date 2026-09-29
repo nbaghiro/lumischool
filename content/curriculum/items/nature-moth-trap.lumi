@@ -1,0 +1,45 @@
+# A moth trap by the observatory lamp, emptied every hour on a warm night and a cold one. Easy reads
+# the busiest hour; the rest test a claim against the table, link the bats' hunting hours to it, and
+# explain the cold night, so the child reasons from counts rather than from what they were told.
+item nature.moth-trap v=1 skills=[nature.night-animals, data.tables, reasoning.explain] {
+  title "The moth trap"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "In which hour did the trap catch the most moths on the warm night?", "Ben says: \"Moths fly most in the middle of the night.\" Does the table agree?", "The bats leave the roof soon after dark and hunt hardest for the first two hours. Why does that suit them, from the table?", "What is the best reason the trap caught so few moths on the cold night?")}
+  let ans={pick(k, "the hour from 10 pm", "No: most came in the first hours after dark", "Most moths are flying in those two hours", "Moths need warmth to fly, so fewer flew")}
+  let o1={pick(k, "the hour from 9 pm", "Yes: the most came in the hour from midnight", "The moths are all asleep by then", "The moths had all been caught the night before")}
+  let o2={pick(k, "the hour from midnight", "Yes: moths fly only in the middle of the night", "The bats cannot hear after midnight", "Moths fly only when the moon is full")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x35 {
+    table t cols=3 head=["Hour from", "Warm night", "Cold night"] cells=["9 pm", "12", "2", "10 pm", "24", "6", "11 pm", "12", "4", "midnight", "6", "2", "1 am", "3", "1"] at=canvas(1, 1)
+    text ask "The astronomer runs a moth trap by the observatory lamp and counts the moths in it every hour, on a warm night and on a cold one. It gets dark at 9 pm. {asks}" narrate width=32 below=t gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=t {
+      say "Read down the warm night's column and find its biggest number first."
+    }
+    when (k == 1 and pick != ans) point=t {
+      say "Compare the hour from midnight with the hours from 10 pm and 11 pm. Which caught more?"
+    }
+    when (k == 2 and pick != ans) point=t {
+      say "Add up the first two hours after dark and the rest of the night. When are there more moths to catch?"
+    }
+    when (k == 3 and pick == o1) point=t {
+      say "A trap catches only a few of the moths in the fields. Something about that night kept them from flying at all."
+    }
+    when (k == 3 and pick == o2) point=t {
+      say "The table says nothing about the moon, only about warm and cold. What does a small insect need to get its wings going?"
+    }
+  }
+  hint "Which column, or which rows, does the question need?"
+  hint "Look for where the numbers are biggest, and ask what is different about those hours or that night."
+}

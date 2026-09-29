@@ -1,0 +1,39 @@
+# The same word in two classes, decided only by its job in the sentence: fast as adjective and
+# adverb, light as noun and verb, after and before as a preposition (a noun group follows) and as
+# a conjunction (a clause with its own verb follows). Grade four did this with naming and doing
+# words; here the terms are named and the pairs are harder.
+item writing.same-word-new-job v=1 skills=[writing.word-classes, writing.grammar] {
+  title "The same word, a new job"
+  difficulty pick(k, 1, 1, 0, 0, 2, 2, 2, 2)
+  let k=0..7
+  let w={pick(k, "fast", "fast", "light", "light", "after", "after", "before", "before")}
+  let term={pick(k, "adverb", "adjective", "verb", "noun", "preposition", "conjunction", "preposition", "conjunction")}
+  level easy {
+    let k=0..3
+  }
+  level hard {
+    let k=4..7
+  }
+
+  scene 34x20 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      observatory dome open=1
+      comet c tail=5
+    }
+    caption line text="{pick(k, \"The comet moved fast across the sky.\", \"A fast comet crossed the sky.\", \"We will light the lamp in the dome.\", \"The light from that star is very old.\", \"We went home after the eclipse.\", \"We went home after the moon had set.\", \"Ada saw the comet before dawn.\", \"Ada checked the clock before she opened the dome.\")}" width=32 below=pics gap=1
+    text ask "In this sentence, what is the word class of {w}?" width=32 below=line gap=1
+    word-input pick options=[term] letters=11 below=ask gap=1
+  }
+
+  answer pick=term
+  feedback {
+    when (k >= 4 and pick != term and (pick == "preposition" or pick == "conjunction")) point=line {
+      say "Look at what comes after {w}. Is it a group of words with its own verb, or a noun with its little words?"
+    }
+    when (k <= 1 and pick != term and (pick == "adjective" or pick == "adverb")) point=line {
+      say "Ask what fast tells you about: the comet itself, or how it moved?"
+    }
+  }
+  hint "Cover {w} with a finger. What job is missing from the sentence now?"
+  hint "What comes just after {w}, and what does {w} tell you about?"
+}

@@ -1,0 +1,24 @@
+# Why an electromagnet is useful: it is a magnet only while the current flows, so opening the switch
+# lets every clip go, which a lock or a crane depends on.
+item physics.coil-switch v=1 skills=[physics.magnets, physics.circuits, reasoning.explain] {
+  title "When the switch opens"
+  let t={20, 30} c=1..2
+
+  scene 31x26 {
+    electromagnet e turns=t cells=c core=0 closed=1 show=1 at=canvas(1, 0)
+    text ask "The old city's gate is held shut by an electromagnet like this one. What happens to the clips when the switch is opened?" narrate width=14 right-of=e gap=1
+    choice pick options=["They all drop: the nail is a magnet no longer", "They stay: the nail keeps its magnetism", "Half of them drop"] stack=column below=e gap=1
+  }
+
+  answer pick="They all drop: the nail is a magnet no longer"
+  feedback {
+    when (pick == "They stay: the nail keeps its magnetism") point=e {
+      say "The nail is a magnet only while electricity flows round the coil. Opening the switch stops it."
+    }
+    when (pick == "Half of them drop") point=e {
+      say "Opening the switch stops all of the electricity, not half of it."
+    }
+  }
+  hint "What does opening the switch do to the electricity in the coil?"
+  hint "Without electricity in the coil, is the nail still a magnet?"
+}

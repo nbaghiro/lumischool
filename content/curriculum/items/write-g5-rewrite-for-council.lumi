@@ -1,0 +1,20 @@
+# The three-star rewrite: Farid's chatty note about the broken well turned into a formal letter to
+# the council, with a clause and a joining word, marked by a grown-up; at hard it needs a fact too.
+item writing.rewrite-for-council v=1 stars=3 skills=[writing.formality, writing.letters, writing.composing] {
+  title "Write it for the council"
+  difficulty k
+  let k=0..1
+
+  scene 34x36 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage note title="Farid's note" text="hi council, the well in the square's been broken for ages and it's well annoying. can u fix it asap? thx, Farid" width=23 numbers=false
+      well wl courses=3 bucket=0
+    }
+    text ask "{if k == 0 then \"Rewrite the note as a letter the council would take seriously. Use a proper greeting and sign-off, no short forms, one clause starting with which, and one joining word.\" else \"Rewrite the note as a letter the council would take seriously. Use a proper greeting and sign-off, no short forms, one clause starting with which, one joining word, and one fact that shows why the well matters.\"}" narrate width=32 below=top gap=1
+    letterpage page greeting="Dear Councillors," body="" lines=5 closing="Yours faithfully," width=32 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A letter that opens Dear Councillors and closes Yours faithfully with a name, has no short forms or slang (no u, thx, asap, it's well annoying), keeps the request (please mend the well) and says politely why, uses a clause with which inside commas (the well, which stands in the square, ...) and a joining word such as because, however or as a result; at hard it adds a fact such as how long it has been broken or who uses it."
+  hint "Pick out each word Farid would never say to someone he has not met. What would he write instead?"
+  hint "Where could which add news about the well?"
+}

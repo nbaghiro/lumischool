@@ -1,6 +1,6 @@
 # Hiroshige's rain: weather drawn as straight lines all going one way, and distance drawn as lines
 # that thin and close up as they go back.
-lesson art-hiroshiges-rain v=1 format=teach grade=4 unit=4 subject=art levels=[easy, medium, hard] {
+lesson art-hiroshiges-rain v=1 format=teach grade=4 unit=9 subject=art levels=[easy, medium, hard] {
   title "Hiroshige's rain"
   goal "Read a rainy print for its weather and its distance, and make one where the rain falls one way and the far bank falls back."
 

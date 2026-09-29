@@ -1,0 +1,34 @@
+# A rotation about the origin: a half turn changes both signs; a quarter turn clockwise sends
+# (x, y) to (y, -x). Asked at hard only.
+item quadrant.turn-corner v=1 skills=[position.transformations, position.four-quadrants] negatives {
+  title "A turn about the base"
+  difficulty ((if t == 90 then 2 else 0) + c / 2)
+  let x={1, 2} y={0, 1} t={180, 90} c=0..2
+  level easy {
+    let t={180}
+  }
+  level hard {
+    let t={90}
+  }
+
+  scene 35x21 {
+    moveshape m max=4 shape=1 x=x y=y move="rotate" turn=t image=0 names=1 at=canvas(1, 1)
+    text ask "The triangle turns {if t == 90 then \"a quarter turn clockwise\" else \"a half turn\"} about the base at (0, 0). Where does corner {pick(c, \"A\", \"B\", \"C\")} land?" narrate width=12 right-of=m gap=2
+    row eq below=ask gap=1 space=0 align=centre {
+      text o "("
+      number-input ix width=3
+      text comma ","
+      number-input iy width=3
+      text cl ")"
+    }
+  }
+
+  answer ix=(if t == 180 then 0 - (x + pick(c, 0, 2, 0)) else y + pick(c, 0, 0, 3)) iy=(if t == 180 then 0 - (y + pick(c, 0, 0, 3)) else 0 - (x + pick(c, 0, 2, 0)))
+  feedback {
+    when (t == 90 and ix == 0 - (y + pick(c, 0, 0, 3)) and iy == x + pick(c, 0, 2, 0)) point=m {
+      say "That is a quarter turn anticlockwise. Clockwise goes the way a clock's hands go, from up towards the right."
+    }
+  }
+  hint "Trace the triangle and pin the tracing at the base. Which way does it turn?"
+  hint "Where is corner {pick(c, \"A\", \"B\", \"C\")} before the turn, and how far is it from the base across and up?"
+}

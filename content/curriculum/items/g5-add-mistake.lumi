@@ -1,0 +1,41 @@
+# The two-star: Leo adds the tops and the bottoms. The child names that mistake among three plausible
+# ones and corrects the sum; the size of Leo's answer, smaller than 1/b alone, is the check.
+item fraction.add-mistake v=1 stars=2 skills=[fractions.add-unlike, reasoning.find-the-mistake] {
+  title "Too small"
+  difficulty (b * d / 10)
+  let b={2, 3, 4} d={3, 4, 5}
+  where (b < d)
+  level easy {
+    let b={2} d={3}
+  }
+  level hard {
+    let b={3, 4} d={5}
+  }
+
+  scene 30x22 {
+    sign note lines=["1/{b} + 1/{d} = 2/{b + d}"] kind=board color=tang at=canvas(1, 1)
+    text ask "Leo added two fractions on the library board. What did he do wrong?" narrate width=16 right-of=note gap=2
+    choice why options=["he added the bottoms as well", "he should have multiplied the tops", "he should have taken away"] stack=column below=note gap=1
+    row eq below=why gap=1 space=1 align=centre {
+      text ask2 "1/{b} + 1/{d} ="
+      number-input top width=3
+      text slash "/"
+      number-input bottom width=3
+    }
+  }
+
+  answer why="he added the bottoms as well" top=num(1 / b + 1 / d) bottom=den(1 / b + 1 / d)
+  feedback {
+    when (why == "he should have multiplied the tops") point=note {
+      say "Multiplying the tops gives 1/{b + d}, which is smaller still than 1/{b} on its own. Look at what Leo did to the bottoms."
+    }
+    when (why == "he should have taken away") point=note {
+      say "The sign says add, and adding makes more than 1/{b}. Look at what Leo did to the bottoms."
+    }
+    when (top == 2 and bottom == b + d) point=note {
+      say "That is Leo's answer. Parts of different sizes have to be made the same size before they are added."
+    }
+  }
+  hint "Is 2/{b + d} bigger or smaller than 1/{b}? Can a sum be smaller than one of its parts?"
+  hint "Write both fractions with the same bottom number, then add the tops."
+}

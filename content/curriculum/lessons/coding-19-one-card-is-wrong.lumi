@@ -1,4 +1,4 @@
-lesson coding-one-card-is-wrong v=1 format=teach grade=1 unit=4 subject=coding levels=[easy, medium, hard] {
+lesson coding-one-card-is-wrong v=1 format=teach grade=1 unit=6 subject=coding levels=[easy, medium, hard] {
   title "One card is wrong"
   goal "Find the card in a program that sends the robot the wrong way."
 

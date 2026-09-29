@@ -1,0 +1,33 @@
+# The three-star: rain with almost no minerals mixed with the well water dilutes it, and the mix is
+# soft at 60 mg a litre or less (USGS). The fewest whole litres of rain for each litre of well water.
+item chem.mix-soft v=1 stars=3 skills=[chemistry.hard-water, reasoning.constraints] {
+  title "Soft enough to wash in"
+  difficulty (if m <= 180 then 0 else 1)
+  let m={120, 180, 240, 300}
+  let rain={m / 60 - 1}
+  level easy {
+    let m={120, 180}
+  }
+  level hard {
+    let m={240, 300}
+  }
+
+  scene 35x24 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      jug a max=1000 step=200 level=1000 unit=ml
+      table data cols=2 head=["mg in a litre", "The water is"] cells=["0 to 60", "soft", "61 to 120", "moderately hard", "121 to 180", "hard", "over 180", "very hard"]
+    }
+    text ask "The mill's well water has {m} mg of calcium and magnesium in each litre; rain has almost none. The miller mixes a litre of well water with whole litres of rain water. What is the fewest litres of rain that make the mix soft?" narrate width=34 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer rain
+  feedback {
+    when (answer == m / 60) point=data {
+      say "Count all the litres in the mix, the well water's litre too. The minerals are shared over all of them."
+    }
+  }
+  hint "The minerals from one litre get shared over every litre in the mix. How many mg is soft enough?"
+  hint "How many litres must {m} mg be shared over to be 60 mg or less in each?"
+  hint "One of those litres is the well water. How many are rain?"
+}

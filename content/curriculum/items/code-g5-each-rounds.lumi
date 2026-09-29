@@ -1,0 +1,35 @@
+# Two things a repeat through a list comes to: how many times its line runs, which is the list's
+# length after the add, and how far the robot goes, which is the items added up.
+item coding.each-rounds v=1 skills=[coding.lists, coding.repetition, coding.tracing] {
+  title "How many times round"
+  difficulty ((a + b + c + x) / 3)
+  let a=1..3 b=2..4 c=1..2 x=1..3
+  where (a != b)
+  level easy {
+    where (a + b + c + x <= 7)
+  }
+  level hard {
+    where (a + b + c + x >= 10)
+  }
+
+  scene 36x13 {
+    program p code=["set hops to list {a}, {b}, {c}", "add {x} to hops", "for each h in hops", "  right h"] at=canvas(1, 0)
+    text ask "How many times does line 4 run? How many squares does the robot move in all?" width=14 right-of=p gap=1
+    text tr "line 4 runs" below=p gap=1
+    number-input rounds right-of=tr gap=1
+    text tm "squares" right-of=rounds gap=2
+    number-input moves right-of=tm gap=1
+  }
+
+  check coding.runs of=p rounds="ran(4)" moves=moves
+  feedback {
+    when (rounds == 3) point=p {
+      say "Line 2 adds one more item before the repeat starts, so there are four items to go through."
+    }
+    when (moves == a + b + c) point=p {
+      say "The item that line 2 adds is walked too."
+    }
+  }
+  hint "Write hops out as it is after line 2."
+  hint "The last line runs once for each item. Each time, the robot moves by that item."
+}

@@ -1,0 +1,43 @@
+# What makes a key's question good: it is about something anyone can see and answer the same way,
+# and at hard it splits a group evenly. The first two reject questions of taste; the last two test
+# each question on four creatures.
+item nature.good-question v=1 skills=[nature.keys, reasoning.systematic] {
+  title "A good question for a key"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "Which question is a good one to put in a key?", "Which question is a good one to put in a key?", "Which question splits a snail, a spider, an ant and a bee into two groups of two?", "Which question splits a ladybird, a bee, a spider and a snail into two groups of two?")}
+  let ans={pick(k, "Has it got wings?", "Has it got more than six legs?", "Has it got six legs?", "Has it got six legs?")}
+  let o1={pick(k, "Is it pretty?", "Is it big?", "Has it got legs?", "Has it got legs?")}
+  let o2={pick(k, "Is it my favourite?", "Is it scary?", "Has it got wings?", "Has it got eight legs?")}
+  let o3={pick(k, "Is it nice to hold?", "Is it fast?", "Has it got a shell?", "Has it got spots?")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x31 {
+    minibeasts row kinds=["snail", "spider", "ant", "ladybird", "bee"] legs=false at=canvas(1, 1)
+    text ask "Ada is writing her own key to the creatures by the observatory lamp. {asks}" narrate width=32 below=row gap=1
+    choice pick options=[o1, o2, ans, o3] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k <= 1 and pick != ans) point=ask {
+      say "Two people could answer that one differently. A key's question has one answer that anyone can see."
+    }
+    when (k >= 2 and pick == o1) point=row {
+      say "Only the snail has no legs, so that splits them three and one. Try each question on all four."
+    }
+    when (k >= 2 and pick != ans and pick != o1) point=row {
+      say "Ask that question of each of the four and count the yeses. You want exactly two."
+    }
+  }
+  hint "Could two people look at the same creature and give different answers to it?"
+  hint "A good question is about something on the creature itself that you can see or count."
+  level hard {
+    hint "Take one question at a time and ask it of all four creatures."
+  }
+}

@@ -1,0 +1,28 @@
+# Two stars: the mill clock gains or loses, and only the string's length can put it right; a
+# shorter string swings faster. u=0 the clock is slow, u=1 it is fast.
+item physics.swing-clock v=1 stars=2 skills=[physics.motion, reasoning.explain] {
+  title "Mending the mill clock"
+  let u=0..1
+  let now={pick(u, 2.1, 1.9)}
+
+  scene 29x35 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      pendulum p length=8 mass=200
+      clock c h=4 m=(if u == 0 then 55 else 5)
+    }
+    text ask "The mill clock's pendulum takes {now} seconds for each swing, when it should take 2.0 seconds, so the clock is {pick(u, \"slow\", \"fast\")}. What should the clockmaker change?" narrate width=28 below=kit gap=1
+    choice pick options=["Make the string a little shorter", "Make the string a little longer", "Hang a heavier bob on it", "Let it go from further out"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if u == 0 then "Make the string a little shorter" else "Make the string a little longer")
+  feedback {
+    when (pick == "Hang a heavier bob on it") point=p {
+      say "The weight of the bob does not change how long a swing takes. Only one thing on the pendulum does."
+    }
+    when (pick == "Let it go from further out") point=p {
+      say "Swinging further out does not change the time of a swing. Only one thing on the pendulum does."
+    }
+  }
+  hint "Is each swing too long or too short a time?"
+  hint "Which makes a pendulum swing faster, a short string or a long one?"
+}

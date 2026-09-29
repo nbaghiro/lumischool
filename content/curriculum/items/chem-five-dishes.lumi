@@ -1,0 +1,32 @@
+# Five solutions dried in dishes: those of a solid (salt, sugar, limewater, alum) leave it behind,
+# those of a gas (soda water, water holding oxygen) leave nothing. k is the one of the six
+# left out of the five.
+item chem.five-dishes v=1 skills=[chemistry.dissolving, chemistry.mixtures, reasoning.evidence] {
+  title "Five dishes on the sill"
+  let k=0..5
+  let c0={pick(if 0 < k then 0 else 1, "salt water", "sugar water", "soda water", "limewater", "alum water", "water holding oxygen")}
+  let c1={pick(if 1 < k then 1 else 2, "salt water", "sugar water", "soda water", "limewater", "alum water", "water holding oxygen")}
+  let c2={pick(if 2 < k then 2 else 3, "salt water", "sugar water", "soda water", "limewater", "alum water", "water holding oxygen")}
+  let c3={pick(if 3 < k then 3 else 4, "salt water", "sugar water", "soda water", "limewater", "alum water", "water holding oxygen")}
+  let c4={pick(if 4 < k then 4 else 5, "salt water", "sugar water", "soda water", "limewater", "alum water", "water holding oxygen")}
+  let solids={if k == 2 or k == 5 then 4 else 3}
+
+  scene 33x32 {
+    table data cols=2 head=["Dish", "What was poured in"] cells=["A", c0, "B", c1, "C", c2, "D", c3, "E", c4] at=canvas(1, 0)
+    dish d left=0 day=6 sun=1 below=data gap=1
+    text ask "Five dishes on the lock-keeper's sill were filled with the solutions in the table and left until all the water had gone. How many dishes have something left in them?" narrate width=32 below=d gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer solids
+  feedback {
+    when (answer == 5) point=data {
+      say "Two kinds of solution are in the table. Which of these hold a gas rather than a solid?"
+    }
+    when (answer == 0) point=d {
+      say "The water goes into the air. Does a dissolved solid go with it?"
+    }
+  }
+  hint "For each dish, is the thing dissolved a solid or a gas?"
+  hint "Which of the two leaves something behind when the water has gone?"
+}

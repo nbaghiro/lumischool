@@ -1,0 +1,34 @@
+# On open scales a burning candle gets lighter (its gases leave), burning iron wool gets heavier
+# (oxygen joins the iron and stays), and anything burning sealed in a jar stays the same (RSC,
+# conservation of mass).
+item chem.open-or-sealed v=1 skills=[chemistry.conservation, reasoning.predict] {
+  title "Lighter, heavier or the same?"
+  difficulty k
+  let k=0..2
+  let what={pick(k, "a lit candle, open to the air,", "a tuft of iron wool, lit and glowing orange in the open air,", "a lit candle sealed inside a glass jar")}
+  let right={pick(k, "lighter", "heavier", "the same")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 35x24 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      candle c start=10 burnt=4 lit=1 jar=(if k == 2 then 1 else 0)
+      dialscale d max=500 step=100 value=300 unit=g
+    }
+    text ask "A grown-up stands {what} on the scales. As it burns, what happens to the reading?" narrate width=34 below=kit gap=1
+    choice pick options=["lighter", "heavier", "the same"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=c {
+      say "Ask what the flame joins with and what it makes, and whether those can leave the scales or come onto them."
+    }
+  }
+  hint "What does burning join the fuel with, and what does it make?"
+  hint "{if k == 0 then \"Carbon dioxide and water are gases here. Where do they go?\" else if k == 1 then \"Iron and oxygen make a solid. Does it stay on the scales?\" else \"Can anything get into the jar, or out of it?\"}"
+}

@@ -1,0 +1,17 @@
+# What happens along an arrow of the rock cycle, from ROCK_CYCLE, the table the rockcycle drawing is
+# drawn from: one name in the key is a question mark. The checker reads the blank arrow.
+item chem.cycle-process v=1 skills=[chemistry.rocks] {
+  title "What happens along the arrow?"
+  difficulty (if b <= 3 then 0 else 1)
+  let b=1..5 r=0..1
+
+  scene 35x43 {
+    rockcycle c arrows=[1, 2, 3, 4, 5] blank=b hide=-1 key=1 at=canvas(1, 0)
+    text ask "The guide at the gorge draws the rock cycle. What happens along the arrow whose name is missing from the key?" narrate width=34 below=c gap=1
+    choice pick options=[pick(r, "weathering and erosion", "melting"), "pressing and cementing", "heat and pressure", pick(r, "melting", "weathering and erosion"), "cooling"] stack=column below=ask gap=1
+  }
+
+  check chem.rocks of=c pick=missing
+  hint "Find the arrow with the question mark. Which box does it start from, and which does it point to?"
+  hint "What has to happen to turn the first box into the second?"
+}

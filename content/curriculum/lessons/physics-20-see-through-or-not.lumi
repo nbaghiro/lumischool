@@ -1,4 +1,4 @@
-lesson physics-see-through-or-not v=1 format=teach grade=2 unit=8 subject=physics levels=[easy, medium, hard] {
+lesson physics-see-through-or-not v=1 format=teach grade=2 unit=7 subject=physics levels=[easy, medium, hard] {
   title "See-through or not"
   goal "Say whether a sheet lets all, some or none of the light through, and what that makes on the wall behind it."
 

@@ -1,0 +1,31 @@
+# The story: a camera by the river waits for the kingfisher on one cell. The seconds are the joules
+# over the joules each second, and only whole minutes of filming count.
+item physics.cell-camera v=1 skills=[physics.energy, division.remainders] {
+  title "Waiting for the kingfisher"
+  difficulty (if c == 4 then 0 else if c == 5 then 1 else 2)
+  let c={2, 4, 5}
+  level easy {
+    let c={4}
+  }
+  level hard {
+    let c={2}
+  }
+
+  scene 31x15 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      kingfisher k flying=0 facing=1
+      dipper d under=0 facing=-1
+    }
+    text ask "A camera on the bank films the kingfisher. Its cell stores 10 000 J, and the camera uses {c} J each second. How many whole minutes can it film?" narrate width=29 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((10000 / c - 10000 / c % 60) / 60)
+  feedback {
+    when (answer == 10000 / c) point=ask {
+      say "That is in seconds. How many whole minutes of 60 seconds is it?"
+    }
+  }
+  hint "For how many seconds can the camera run?"
+  hint "How many whole lots of 60 seconds are in that?"
+}

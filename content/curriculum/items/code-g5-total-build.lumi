@@ -1,0 +1,26 @@
+# A build task on counting with a condition: six cards, each used once, make a count that starts at 0
+# before the repeat, adds 1 inside the if, and moves the robot once, after the repeat. Setting the
+# count inside the repeat, or moving inside it, stops the robot in the wrong place.
+item coding.total-build v=1 skills=[coding.variables, coding.decisions, coding.lists] {
+  title "Count the heavy boats"
+  difficulty k
+  let k=0..2
+  let t={pick(k, 5, 5, 6)}
+  let crates={pick(k, "set crates to list 3, 8, 6, 2, 9", "set crates to list 7, 2, 9, 6, 8", "set crates to list 5, 9, 3, 7, 6, 8")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x31 {
+    maze m cols=(pick(k, 4, 5, 4) + 2) rows=1 col=1 row=1 flag=[pick(k, 4, 5, 4), 1] at=canvas(0, 0)
+    codepad answer tray=["for each c in crates", "right big", "add 1 to big", crates, "if c is more than {t}", "set big to 0"] lines=6 once=true key=[crates, "set big to 0", "for each c in crates", "  if c is more than {t}", "    add 1 to big", "right big"] below=m gap=1
+    text ask "Boats with more than {t} crates pay the big toll. Put the six cards in order, and set them in, so the robot moves one square for each of those boats. Use every card once." width=10 right-of=answer gap=1
+  }
+
+  check coding.builds of=m goal=flag
+  hint "Which card has to come before the repeat, so the count starts once and not every time round?"
+  hint "Should the robot move every time round, or once, when the counting is done?"
+}

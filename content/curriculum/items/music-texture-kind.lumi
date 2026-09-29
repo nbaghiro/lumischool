@@ -1,0 +1,46 @@
+# Texture read from two staves and named: the cello doubling the flute's tune an octave lower
+# (monophonic, one tune), a broken chord under it (homophonic), or a line of its own (polyphonic).
+item music.texture-kind v=1 skills=[music.texture, music.staff] {
+  title "What kind of texture?"
+  difficulty v
+  let v=0..2
+  let b1={pick(v, "E3", "C3", "C3")}
+  let b2={pick(v, "E3", "G3", "D3")}
+  let b3={pick(v, "F3", "E3", "E3")}
+  let b4={pick(v, "G3", "G3", "F3")}
+  let b5={pick(v, "G3", "B2", "G3")}
+  let b6={pick(v, "F3", "G3", "A3")}
+  let b7={pick(v, "E3", "D3", "B3")}
+  let b8={pick(v, "D3", "G3", "G3")}
+  let right={pick(v, "monophonic: one tune, doubled", "homophonic: a tune and an accompaniment", "polyphonic: two tunes at once")}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=1..2
+  }
+
+  scene 36x41 {
+    column score space=0 align=start at=canvas(1, 1) {
+      notes top clef=treble notes=[E4, E4, F4, G4, G4, F4, E4, D4] values=[] meter=4
+      notes low clef=bass notes=[b1, b2, b3, b4, b5, b6, b7, b8] values=[] meter=4
+    }
+    text ask "Ode to Joy by the waterfall: the flute plays the top staff and the cello the bottom. What is the texture?" narrate width=34 below=score gap=1
+    choice pick options=["monophonic: one tune, doubled", "homophonic: a tune and an accompaniment", "polyphonic: two tunes at once"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "polyphonic: two tunes at once" and v == 0) point=low {
+      say "Read the letters of the bottom staff. Are they the same as the top staff's, only lower?"
+    }
+    when (pick != right and v == 1) point=low {
+      say "The bottom staff goes round the same few notes of a chord, again and again. Is that a tune of its own?"
+    }
+    when (pick != right and v == 2) point=low {
+      say "The bottom staff climbs step by step to a shape of its own, with different letters from the flute."
+    }
+  }
+  hint "Name the notes on the bottom staff. Are they the flute's notes, a pattern, or something new?"
+  hint "A doubled tune has the same letters. An accompaniment repeats a chord's notes. A second tune goes its own way."
+}

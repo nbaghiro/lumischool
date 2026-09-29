@@ -1,0 +1,27 @@
+# Predict, then check: a fatter lens bends light more and brings it to a point nearer to itself; the
+# light beyond each lens is hidden and the checker compares the two focuses.
+item physics.lens-fatter v=1 skills=[physics.light, reasoning.predict] {
+  title "Which lens bends light more?"
+  difficulty (6 - abs(a - b) / 4)
+  let a={6, 10, 16, 24} b={6, 10, 16, 24}
+  where (a != b)
+  level easy {
+    where (abs(a - b) >= 10)
+  }
+  level hard {
+    where (abs(a - b) < 10)
+  }
+
+  scene 26x28 {
+    column two at=canvas(1, 0) space=1 align=start {
+      lens a mode=lens focus=a show=0 tag="A"
+      lens b mode=lens focus=b show=0 tag="B"
+    }
+    text ask "Which lens will bring the light to a point nearer to itself?" narrate width=25 below=two gap=1
+    choice pick options=["A", "B"] below=ask gap=1
+  }
+
+  check physics.light of=a vs=b pick=sharper
+  hint "Look at how fat each lens is in the middle."
+  hint "The fatter the lens, the more it bends light. Does light that bends more meet sooner or later?"
+}

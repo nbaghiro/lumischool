@@ -1,0 +1,30 @@
+# The way in: a length read off the plan in squares, then turned into metres through the scale.
+item scale.base-room v=1 skills=[scale.drawings, measure.scale] {
+  title "The workshop on the plan"
+  difficulty ((if whole(s) then 0 else 2) + l / 10)
+  let l={5, 6, 7, 8} s={2, 3, 0.5, 1.5}
+  level easy {
+    let s={2, 3} l={5, 6}
+  }
+  level hard {
+    let s={0.5, 1.5} l={7, 8}
+  }
+
+  scene 28x19 {
+    scaleplan p plan=1 l=l w=5 scale=s unit="m" dims=0 ask=1 at=canvas(1, 1)
+    text ask "This is a plan of the workshop in the moon base. Read the scale under it. How long is the workshop really, in metres?" narrate width=11 right-of=p gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer decimals(l * s, 0)
+  feedback {
+    when (answer == l) point=p {
+      say "That is the number of squares. Each square stands for {s} m of the real room."
+    }
+    when (answer == l + s) point=p {
+      say "Every square stands for {s} m, so the squares are multiplied by {s}, not added to it."
+    }
+  }
+  hint "How many squares long is the room on the plan?"
+  hint "What does one square stand for? How much do all of them stand for?"
+}

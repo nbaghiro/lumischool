@@ -1,0 +1,33 @@
+# Glass bends light more than water: at the same angle in, the angle inside glass is smaller. k picks
+# the angle; w and s are the angles inside water and glass by Snell's law, to the nearest degree.
+item physics.refract-which-more v=1 skills=[physics.light, physics.materials, reasoning.compare] {
+  title "Water or glass?"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+  let a={pick(k, 30, 40, 50, 60)}
+  let w={pick(k, 22, 29, 35, 41)}
+  let s={pick(k, 19, 25, 31, 35)}
+
+  scene 30x40 {
+    refraction top mode=0 into=0 angle=a marks=1 show=1 at=canvas(1, 0)
+    refraction low mode=0 into=1 angle=a marks=1 show=1 below=top gap=1
+    text ask "The same torch shines at {a} degrees into water, above, and into glass, below. Which bends the beam more, and by how many more degrees?" narrate width=28 below=low gap=1
+    choice pick options=["Water", "Glass"] stack=row below=ask gap=1
+    number-input more right-of=pick gap=3
+  }
+
+  answer pick="Glass" more=(w - s)
+  feedback {
+    when (pick == "Water") point=low {
+      say "The beam that bends more ends up nearer the upright line. Which angle inside is smaller?"
+    }
+  }
+  hint "Read the angle inside the water and the angle inside the glass."
+  hint "The smaller angle inside means the bigger bend. How far apart are the two angles?"
+}

@@ -23,6 +23,10 @@ lesson g1-taking-away-to-twenty v=1 format=worked grade=1 unit=2 subject=maths l
     show sub.work-back a=3 b=4 c=5 easy-a=2 easy-b=3 easy-c=2 hard-a=5 hard-c=8
   }
 
+  remember {
+    say "To take away, start at the bigger number and count back."
+  }
+
   grown-ups """
     Counting back is harder to say than counting on, so let the child use fingers while they say the
     numbers. How many more is also a taking away, even though nothing leaves: the towers show it as

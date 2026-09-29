@@ -1,0 +1,40 @@
+# The three kinds of teeth by what they do: the flat front ones cut, the pointed ones tear and the
+# broad back ones grind. The canine at hard is found from a dog's, which has to be matched to a
+# child's own.
+item nature.teeth-job v=1 skills=[nature.digestion] {
+  title "Which teeth do the work?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..2
+  let asks={pick(k, "Ada bites a piece off an apple from the market stall. Which teeth cut it off?", "Ben chews a mouthful of nuts until it is a paste. Which teeth grind it?", "A market dog tears a scrap of meat with its long pointed teeth. Which of Ada's teeth are shaped like those?")}
+  let ans={pick(k, "the flat, sharp ones at the front", "the broad, bumpy ones at the back", "the pointed ones at each corner")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x27 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      basket b item=apple count=5
+      fruitbowl fb fruit=4
+    }
+    text ask "{asks}" narrate width=32 below=pics gap=1
+    choice pick options=["the flat, sharp ones at the front", "the pointed ones at each corner", "the broad, bumpy ones at the back"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=ask {
+      say "Biting a piece off is cutting, like scissors. The teeth that cut are the flat ones at the front."
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "Grinding needs a wide, bumpy surface, like a millstone. Those teeth are at the back."
+    }
+    when (k == 2 and pick != ans) point=ask {
+      say "The dog's teeth are long and pointed, for gripping and tearing. People have one pointed tooth at each corner of the mouth."
+    }
+  }
+  hint "Is the job cutting, tearing or grinding?"
+  hint "Run your tongue along your own teeth. Which are thin and sharp, which pointed, and which broad?"
+}

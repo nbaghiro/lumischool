@@ -1,0 +1,27 @@
+# A build task on a repeat through a list: the pale spiral is drawn one side for each item, so the
+# child picks the list whose items are the sides in the order drawn, and puts the move and the turn
+# inside the repeat. The three lists hold the same numbers, so the order is what has to be read.
+item coding.each-build v=1 skills=[coding.lists, coding.repetition, coding.drawing] {
+  title "A spiral from a list"
+  difficulty k
+  let k=0..2
+  let good={pick(k, "set sides to list 1, 2, 3", "set sides to list 1, 2, 3, 4", "set sides to list 2, 3, 1, 4")}
+  let back={pick(k, "set sides to list 3, 2, 1", "set sides to list 4, 3, 2, 1", "set sides to list 4, 1, 3, 2")}
+  let mixed={pick(k, "set sides to list 2, 1, 3", "set sides to list 1, 3, 2, 4", "set sides to list 3, 2, 1, 4")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x26 {
+    turtle t cols=5 rows=5 col=(if k == 2 then 2 else 3) row=(if k == 1 then 3 else 4) face=right moves=[] target=[good, "for each s in sides", "  forward s", "  turn left"] mark=false at=canvas(0, 0)
+    text ask "The barge painter wants the pale spiral on the lock gate, starting on the ring and facing right. Build a program that draws it with a repeat through a list." width=13 below=t gap=1
+    codepad answer tray=[pick(k, back, good, mixed), pick(k, good, mixed, back), pick(k, mixed, back, good), "for each s in sides", "forward s", "turn left", "turn right"] lines=4 key=[good, "for each s in sides", "  forward s", "  turn left"] right-of=t gap=1
+  }
+
+  check coding.builds of=t goal=target
+  hint "How long is the first side the turtle draws? The second?"
+  hint "Each time round, s is the next item. What does the turtle do with it, and which way does it turn after?"
+}

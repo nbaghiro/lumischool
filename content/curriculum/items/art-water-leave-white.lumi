@@ -1,0 +1,32 @@
+# The way in: in watercolour the whites of water are the paper left bare, planned before painting.
+item art.water-leave-white v=1 skills=[art.water, art.painting] {
+  title "White water with no white paint"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3
+  let thing={pick(k, "the white foam at the foot of the falls", "the spray rising from the pool", "a sparkle of light on the pool", "the thin white threads of falling water")}
+  let right={"Leave the paper bare there"}
+  let w1={"Paint white over the blue"}
+  let w2={"Mix white into the blue for it"}
+  let r={k % 3}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 35x19 {
+    waterfall falls drops=2 rainbow=0 at=canvas(1, 1)
+    text ask "Ada is painting the gorge in watercolour. How should she paint {thing}?" width=21 right-of=falls gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=falls {
+      say "The brightest white in a watercolour is the paper itself. Paint round the white part and leave it bare."
+    }
+  }
+  hint "What is the whitest thing on the page before any paint goes on?"
+  hint "Can watercolour be made lighter once it is on the paper? So which parts must be planned first?"
+}

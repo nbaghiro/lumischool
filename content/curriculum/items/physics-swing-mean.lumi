@@ -1,0 +1,33 @@
+# Three timings of ten swings on one pendulum, as a class would take them, their mean, and one swing
+# from the mean. Each set's mean is the real time for that string, and each set adds to a multiple of
+# three tenths so the mean is exact.
+item physics.swing-mean v=1 skills=[physics.method, physics.measuring, data.mean, decimals.tenths] {
+  title "The mean of three timings"
+  let l=2..8
+  let a={pick(l - 2, 9.1, 11.2, 12.6, 14.0, 15.4, 16.6, 17.8)}
+  let b={pick(l - 2, 8.8, 10.9, 12.8, 14.3, 15.7, 17.0, 18.1)}
+  let c={pick(l - 2, 9.1, 10.9, 12.7, 14.3, 15.4, 16.8, 17.8)}
+
+  scene 31x26 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      pendulum p length=l mass=100
+      table t cols=2 head=["Timing", "Ten swings"] cells=["1st", "{a} s", "2nd", "{b} s", "3rd", "{c} s"]
+    }
+    text ask "Leo times ten swings three times. What is the mean time for ten swings?" narrate width=30 below=kit gap=1
+    number-input mean below=ask gap=1
+    text then "So how many seconds does one swing take?" narrate width=30 below=mean gap=1
+    number-input one below=then gap=1
+  }
+
+  answer mean=decimals((a + b + c) / 3, 1) one=decimals((a + b + c) / 30, 2)
+  feedback {
+    when (mean == decimals(a + b + c, 1)) point=t {
+      say "That is the three timings added. The mean shares that total between the three."
+    }
+    when (one == mean) point=t {
+      say "That is still the time for ten swings. One swing is a tenth of it."
+    }
+  }
+  hint "Add the three timings. How many timings are sharing that total?"
+  hint "Divide the total by three for the mean, then by ten for one swing."
+}

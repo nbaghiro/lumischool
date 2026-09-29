@@ -1,0 +1,29 @@
+# The sky turns 15 degrees an hour round the pole star, so the turn from the first look to the last
+# is 15 times the hours between. n is how many looks, e the hours between them.
+item physics.sky-turned v=1 skills=[physics.sky, physics.measuring] {
+  title "How far has the sky turned?"
+  difficulty (n - 2)
+  let n=2..4 e={2, 3, 4, 5}
+  level easy {
+    let n={2} e={2, 4}
+  }
+  level hard {
+    let n={4} e={3, 5}
+  }
+  let first={if e == 5 then 17 else 19}
+
+  scene 30x31 {
+    starmap m sky=10 clock=first looks=n every=e show=1 pointers=0 names=0 turn=1 at=canvas(1, 0)
+    text ask "Kit drew the Plough through one night at the times written beside it. The sky turns round the pole star by 15 degrees every hour. How many degrees has it turned from her first drawing to her last?" narrate width=28 below=m gap=1
+    number-input deg below=ask gap=1
+  }
+
+  check physics.sky of=m deg=turned
+  feedback {
+    when (deg == 15 * e and n > 2) point=m {
+      say "That is the turn between two drawings next to each other. Count the hours from the first to the last."
+    }
+  }
+  hint "How many hours is it from the first time to the last?"
+  hint "Each of those hours turns the sky by 15 degrees."
+}

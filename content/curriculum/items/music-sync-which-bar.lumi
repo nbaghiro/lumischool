@@ -1,0 +1,50 @@
+# Which of three bars is syncopated: a crotchet that starts on an and and is held over the next
+# number. The other two have quavers too, but every quaver on an and ends on the next number.
+item music.sync-which-bar v=1 skills=[music.syncopation, music.note-values] {
+  title "Which bar is pushed?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let a1={pick(k, 0.5, 1, 1, 0.5)}
+  let a2={pick(k, 1, 0.5, 1, 1)}
+  let a3={pick(k, 0.5, 0.5, 0.5, 1)}
+  let a4={pick(k, 1, 1, 0.5, 1)}
+  let a5={pick(k, 1, 1, 1, 0.5)}
+  let b1={pick(k, 1, 0.5, 1, 1)}
+  let b2={pick(k, 1, 0.5, 1, 0.5)}
+  let b3={pick(k, 0.5, 1, 0.5, 0.5)}
+  let b4={pick(k, 0.5, 1, 1, 1)}
+  let b5={pick(k, 1, 1, 0.5, 1)}
+  let c1={pick(k, 0.5, 1, 1, 0.5)}
+  let c2={pick(k, 0.5, 0.5, 0.5, 0.5)}
+  let c3={pick(k, 1, 1, 0.5, 1)}
+  let c4={pick(k, 1, 0.5, 1, 1)}
+  let c5={pick(k, 1, 1, 1, 1)}
+  let right={pick(k, "top", "bottom", "middle", "top")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x37 {
+    column bars space=1 align=start at=canvas(1, 1) {
+      notes ta clef=treble notes=[E5, D5, C5, D5, E5] values=[a1, a2, a3, a4, a5] meter=4
+      notes tb clef=treble notes=[E5, D5, C5, D5, E5] values=[b1, b2, b3, b4, b5] meter=4
+      notes tc clef=treble notes=[E5, D5, C5, D5, E5] values=[c1, c2, c3, c4, c5] meter=4
+    }
+    column side space=1 align=start right-of=bars gap=2 {
+      text ask "Only one bar is syncopated, with a crotchet that starts on an and. Which bar?" narrate width=10
+      choice pick options=["top", "middle", "bottom"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=bars {
+      say "In that bar every note on an and is a quaver, over by the next number. Look for a crotchet on an and."
+    }
+  }
+  hint "Count each bar 1 and 2 and 3 and 4 and, and say where every crotchet starts."
+  hint "A crotchet starting on an and is still sounding when the next number is counted."
+}

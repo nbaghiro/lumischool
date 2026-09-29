@@ -1,0 +1,14 @@
+# Checked by code: the checker moves one stick every way it can and keeps the true equations, so the
+# verifier proves the puzzle is solvable and the answer sheet lists every solution.
+item puzzle.matchsticks-temple v=1 stars=3 skills=[reasoning.digits] {
+  title "The temple's matchstick sum"
+
+  scene 25x13 {
+    matchsticks eq eq="8-3=3" at=canvas(1, 1)
+    text ask "Move exactly one matchstick so the sum on the temple floor is true. There are two different ways. Find one, then look for the other." narrate width=24 below=eq gap=1
+  }
+
+  check matchsticks.one-move from="8-3=3"
+  hint "Look at what one stick would turn each digit into, and at the minus sign."
+  hint "A stick taken from one digit has to go somewhere else in the sum."
+}

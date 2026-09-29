@@ -1,0 +1,32 @@
+# The way in: a parallelogram is a rectangle with one end moved to the other, so its area is the base
+# times the height, and the sloping side is not used.
+item area.parallelogram-area v=1 skills=[area.parallelograms] {
+  title "A parallelogram stone"
+  difficulty (b * h / 10)
+  let b=4..10 h=3..7 s=2..4
+  where (b * h != 2 * (b + h))
+  level easy {
+    let b=4..6 h=3..4
+  }
+  level hard {
+    let b=8..10 h=6..7
+  }
+
+  scene 33x27 {
+    areashape stone kind=parallelogram base=b height=h shift=s unit=cm at=canvas(1, 1)
+    text ask "A stone in the temple floor is a parallelogram. What is its area in square centimetres?" narrate width=30 below=stone gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (b * h)
+  feedback {
+    when (answer == b * h / 2) point=stone {
+      say "A parallelogram is not halved. Cut the triangle off one end and move it to the other: it makes a rectangle."
+    }
+    when (answer == 2 * (b + h)) point=stone {
+      say "That is the way round. Area is the base times the height."
+    }
+  }
+  hint "If you cut off the slanting end and moved it to the other end, what shape would you have?"
+  hint "How long and how tall is that rectangle?"
+}

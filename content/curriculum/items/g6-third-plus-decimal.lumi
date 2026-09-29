@@ -1,0 +1,33 @@
+# The two-star: a third has no exact decimal, so Tom's rounded answer is close but not right. The
+# reason is the fraction that never ends; the exact answer comes from working in fractions.
+item fraction.third-plus-decimal v=1 stars=2 skills=[fractions.multiply.decimals, reasoning.find-the-mistake] {
+  title "Tom's rounding"
+  difficulty (d / 3 + x)
+  let d={3, 6} x={0.25, 0.75, 0.2}
+  level easy {
+    let d={3} x={0.25}
+  }
+  level hard {
+    let d={6}
+  }
+
+  scene 36x24 {
+    fractionwall wall rows=[1, d, den(x)] shade=[0, 0] at=canvas(1, 1)
+    text ask "Tom adds 1/{d} + {x}. He writes 1/{d} as {pick(d / 3 - 1, 0.33, 0.17)} and gets {pick(d / 3 - 1, 0.33, 0.17) + x}. Is his answer exact? Give the exact answer as a fraction in its simplest form." narrate width=34 below=wall gap=1
+    choice pick options=["exact", "not exact"] below=ask gap=1
+    row eq below=pick gap=1 space=1 align=centre {
+      number-input top width=3
+      text slash "/"
+      number-input bottom width=3
+    }
+  }
+
+  answer pick="not exact" top=num(1 / d + x) bottom=den(1 / d + x)
+  feedback {
+    when (pick == "exact") point=wall {
+      say "Does 1/{d} ever end as a decimal? Try dividing 1 by {d}."
+    }
+  }
+  hint "Can 1/{d} be written as a decimal that stops?"
+  hint "Write {x} as a fraction, then give both fractions the same bottom number."
+}

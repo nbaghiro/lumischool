@@ -1,6 +1,6 @@
 # The first program a child makes that is not about getting somewhere: a dance, which the robot
 # does on screen to a beat and which prints as a strip of frames to read, draw and count.
-lesson coding-a-dance-in-a-loop v=2 format=teach grade=2 unit=3 subject=coding levels=[easy, medium, hard] {
+lesson coding-a-dance-in-a-loop v=2 format=teach grade=2 unit=6 subject=coding levels=[easy, medium, hard] {
   title "A dance in a loop"
   goal "Read a dance written as a program with a repeat, count its moves, and work out the repeat from the dance."
 

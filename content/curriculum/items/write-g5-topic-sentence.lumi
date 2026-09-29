@@ -1,0 +1,36 @@
+# The way in: a paragraph about the lock, its boat or its keeper has lost its first sentence. One choice is too narrow (one detail), one
+# is off the topic, and one is wide enough to hold every sentence after it.
+item writing.topic-sentence v=1 skills=[writing.paragraphs, writing.planning] {
+  title "Which sentence goes first?"
+  difficulty k
+  let k=0..2 r=0..2
+  let body={pick(k, "It is twenty metres long and only two metres wide. Inside there is a stove, two bunks and a tiny kitchen. Pots of herbs grow along its roof.", "It has a gate at each end and a chamber of water between them. When the chamber fills, a boat inside it rises. When it empties, the boat goes down again.", "He opens the gates for every boat that comes. He knows the name of each boat and where it is going. In winter, while the canal is quiet, he mends the gates.")}
+  let right={pick(k, "The Otter is a boat that is also a home.", "A lock lifts boats up or down the hill.", "Mr Hale looks after the lock and its boats.")}
+  let w1={pick(k, "The Otter has a stove inside.", "A lock has a gate at each end.", "Mr Hale opens the lock gates.")}
+  let w2={pick(k, "The canal was dug long ago.", "Narrowboats are painted brightly.", "Winter on the canal is quiet.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 33x31 {
+    canallock lock level=0.5 boat=1 at=canvas(1, 0)
+    passage para title="" text="__________ {body}" width=32 numbers=false below=lock gap=1
+    text ask "Which sentence should fill the gap at the start?" narrate width=32 below=para gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=para {
+      say "That sentence is about one detail, and the paragraph says more than that. A topic sentence is wide enough to hold every sentence after it."
+    }
+    when (pick == w2) point=para {
+      say "The paragraph never talks about that. Read its three sentences and say in a few words what they share."
+    }
+  }
+  hint "Read the three sentences that are there. What are they all about?"
+  hint "Try each choice at the top. Does every sentence after it fit under it?"
+}

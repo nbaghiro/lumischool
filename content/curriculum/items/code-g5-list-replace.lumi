@@ -1,0 +1,36 @@
+# The list at the end, with one cell left for the child: the cell a replace changed, the cell an add
+# made, or at hard a cell replaced twice, where only the last replace counts.
+item coding.list-replace v=1 skills=[coding.lists, coding.tracing] {
+  title "What is in the list now"
+  difficulty (t + (if x > 6 then 0.3 else 0))
+  let t=0..2 a={4} b={9} c={2, 3} d={6} x={5, 7} y={1, 3} z={8, 9}
+  let i={pick(t, 1, 1, 2)} j={pick(t, 3, 2, 2)} m={pick(t, 3, 5, 2)}
+  level easy {
+    let t={0}
+  }
+  level hard {
+    let t=1..2
+  }
+
+  scene 36x16 {
+    listbox l name=cargo code=["set cargo to list {a}, {b}, {c}, {d}", "replace item {i} of cargo with {x}", "add {y} to cargo", "replace item {j} of cargo with {z}"] blank=m at=canvas(1, 0)
+    program p code=["set cargo to list {a}, {b}, {c}, {d}", "replace item {i} of cargo with {x}", "add {y} to cargo", "replace item {j} of cargo with {z}"] below=l gap=1
+    text ask "This is cargo at the end. What goes in the empty item {m}?" width=11 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=l answer="item({m}).cargo"
+  feedback {
+    when (t == 0 and answer == c) point=p {
+      say "{c} was item 3 before line 4. Line 4 puts a new number there."
+    }
+    when (t == 1 and answer == d) point=p {
+      say "Add puts {y} on the end, after {d}, so the list is one longer."
+    }
+    when (t == 2 and answer == x) point=p {
+      say "Line 2 puts {x} there, but line 4 replaces item 2 again. The last change is the one that stays."
+    }
+  }
+  hint "Copy the list as the first line makes it, then change your copy one line at a time."
+  hint "Which lines touch item {m}? Which of them runs last?"
+}

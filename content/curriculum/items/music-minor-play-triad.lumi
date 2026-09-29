@@ -1,0 +1,27 @@
+# A named chord played on the keyboard, the three keys at once or one after another. Easy keeps to
+# the chords of white keys; hard needs the black key a major or minor third lands on.
+item music.minor-play-triad v=1 skills=[music.major-minor, music.keys] {
+  title "Play the chord"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let name={pick(k, "A minor", "C major", "D minor", "E major", "D major", "C minor")}
+  let r={pick(k, "A4", "C4", "D4", "E4", "D4", "C4")}
+  let t={pick(k, "C5", "E4", "F4", "Gs4", "Fs4", "Ds4")}
+  let f={pick(k, "E5", "G4", "A4", "B4", "A4", "G4")}
+  let size={pick(k, "three", "four", "three", "four", "four", "three")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 32x17 {
+    text ask "Play {name}: its bottom note, the middle note, and the top note, all together or one at a time." narrate width=30 at=canvas(1, 1)
+    piano keys from=C4 whites=10 wide=3 labels=letters below=ask gap=1
+  }
+
+  check music.plays notes=[{r}, {t}, {f}] ordered=false
+  hint "The bottom note is the chord's name. The middle note is {size} semitones above it."
+  hint "The top note is seven semitones above the bottom note, in major and in minor alike."
+}

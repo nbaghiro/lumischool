@@ -1,0 +1,65 @@
+# Conditions joined with and and or: and needs both tests to pass, or needs one. At the observatory
+# the telescope picks stars by brightness and the dome opens by the hour and the clouds.
+lesson coding-and-and-or v=1 format=teach grade=5 unit=5 subject=coding levels=[easy, medium, hard] {
+  title "Conditions joined with and and or"
+  goal "Work out what an if does when its question joins two tests with and or with or."
+
+  look {
+    scene 36x23 {
+      program p code=["if n is more than 3 and n is less than 8", "  say look", "otherwise", "  say skip"] at=canvas(1, 0)
+      fork f ask="Is n more than 3 and less than 8?" yes="look" no="skip" cond="n is more than 3 and n is less than 8" n=5 below=p gap=1
+      telescope tel tilt=45 right-of=f gap=2
+    }
+    say """
+      The observatory's telescope has time for only some stars tonight, so its program asks two
+      questions about each star's brightness n. Joined with and, the if says yes only when both
+      tests pass: 5 is more than 3 and less than 8, so the path goes to look. Joined with or, one
+      test passing is enough. And is harder to pass than or.
+      """
+  }
+  do {
+    show coding.and-fork n=5 easy-n=6 hard-n=8
+    show coding.or-fork n=2 easy-n=4 hard-n=10
+    level easy {
+      worked coding.and-fork n=2 level=medium
+    }
+    show coding.and-count j=0 s=0 hard-j=1 hard-s=1
+    show coding.and-dome k=1 j=0 easy-k=0 hard-j=1 hard-k=2
+    show coding.and-build k=1 easy-k=0 hard-k=2
+    show coding.or-fork n=9 easy-n=7 hard-n=1
+    show coding.and-both k=1 b=3 h=20 easy-k=0 hard-k=2 hard-b=6
+    show coding.and-count j=1 s=2 easy-j=0 easy-s=1 hard-s=0
+    level hard {
+      show coding.and-dome k=0 j=1
+    }
+  }
+  try stars=2 {
+    show coding.and-range k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show coding.and-nights k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "And says yes only when both tests pass. Or says yes when at least one passes."
+  }
+
+  grown-ups """
+    Everyday speech uses and and or loosely, and a program does not: and needs both tests to pass,
+    or needs at least one. The slips to watch for are treating and as "one of them will do", and
+    thinking or needs both. In the child's working, look for each test asked separately and marked
+    yes or no before the two answers are joined. If the child is stuck, play it with two cards held
+    up, a yes card and a no card for each test, and say the joining word out loud; stay another day
+    if and and or are still swapped. Off the page, make rules at home with the two words, such as
+    "you may go out if it is dry and your shoes are on", and ask what happens in each case. The
+    two-star question needs a reason for each wrong condition, and the three-star question is
+    counted in a table of hours and clouds. In the build question the rover moves one square for
+    each star in the range, so the if inside the repeat has to join its two tests with and; the or
+    card walks the whole list.
+    """
+  level easy {
+    grown-ups "At this level the numbers tested sit clearly inside or outside the range, one fork is worked in the teacher's pen, the stars are counted with and, the dome's condition uses and, the star to compare passes both tests, the range to pick is from 4 to 7, and the nights to count are the ones the and alone picks out. The rover to build for counts the stars from 4 to 7."
+  }
+  level hard {
+    grown-ups "At this level the numbers tested with and sit on the edges of the range, where more than and less than say no, the ones tested with or are far outside it, the stars are counted with or, the dome's condition uses or, the star to compare passes one test or none, the range to pick is from 5 to 9, and the nights to count include the ones an or adds to the and. The rover to build for counts the stars from 5 to 9 in a list of ten."
+  }
+}

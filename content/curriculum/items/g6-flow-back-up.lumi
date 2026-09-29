@@ -1,0 +1,31 @@
+# The second reasoning question in the core: after a fall of p%, a rise of p% does not get back,
+# since it is a percent of a smaller amount. The rise needed is the fall compared with what is left.
+item percent.flow-back-up v=1 skills=[percentages.change, reasoning.inverse] {
+  title "Back to where it was"
+  difficulty (p / 20)
+  let p={20, 50, 60, 75, 80}
+  level easy {
+    let p={20, 50}
+  }
+  level hard {
+    let p={75, 80}
+  }
+
+  scene 34x14 {
+    percentbar left percent=(100 - p) show=false whole=0 at=canvas(1, 1)
+    text ask "In a dry week the water wheel's flow fell by {p}%. The bar shows what was left. By what percent must the flow now rise to get back to where it was?" narrate width=15 right-of=left gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text unit "%"
+    }
+  }
+
+  answer (100 * p / (100 - p))
+  feedback {
+    when (answer == p) point=left {
+      say "The rise is a percent of what is left, which is less than before. So it has to be a bigger percent."
+    }
+  }
+  hint "Try a flow of 200 litres a second. How much is left after the fall?"
+  hint "How much must be added back, and what percent of what is left is that?"
+}

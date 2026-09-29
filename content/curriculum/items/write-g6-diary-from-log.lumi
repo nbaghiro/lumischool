@@ -1,0 +1,31 @@
+# Production: the hut's log for one day, in clock times and notes, rewritten as Isla's diary for that
+# day, marked by a grown-up. The log has no I, no feeling and no look ahead, so the child adds them;
+# at hard the log's notes are out of time order and one line belongs to nobody's diary; medium has
+# the longer log in order.
+item writing.diary-from-log v=1 skills=[writing.diaries, writing.composing] {
+  title "From the log to the diary"
+  difficulty k
+  let k=0..2
+  let day={pick(k, "Wednesday 19 July", "Monday 24 July", "Tuesday 25 July")}
+  let log={pick(k, "06:00 Sun high, wind calm. 08:30 Sledge out to the ice cliff, 3 km. 11:00 Two seals on a floe. 17:00 Back at the hut.", "07:00 Fog. 09:00 Fog lifts, sledge out to the iceberg. 12:30 Whale seen, 200 m off the shelf. 15:00 Ice measured, 212 cm. 18:00 Back at the hut.", "15:00 Ice drill jams. 09:00 Sledge out to the tide crack, 5 km. 16:30 Drill mended, hole finished. 12:00 Lunch on the sledge, fox seen. Radio battery 40 per cent.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x40 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      hut h pictures=6
+      seal ps rock=1 facing=-1
+    }
+    passage p title="The hut's log, {day}" text="{log}" width=33 numbers=false below=pics gap=1
+    text ask "Write Isla's diary entry for {day} from the log: I or we, the past tense, time words in place of clock times, and a feeling and a look ahead that the log leaves out." narrate width=33 below=p gap=1
+    writinglines lines lines=4 width=33 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="The date at the top; the log's events told in the first person and the past tense, in time order (at hard, put back into order from the clock times), with time words such as early, after breakfast, by noon in place of the clock times; at least one feeling that the log does not give; and a last line that looks ahead. The log's shorthand is turned into whole sentences, and at hard the radio battery is left out or given a reason to matter."
+  hint "Read the log and say the day aloud as Isla would, starting with I or we."
+  hint "The log never says how anyone felt. Which moment would Isla have felt something about?"
+}

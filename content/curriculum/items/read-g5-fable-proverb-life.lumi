@@ -1,0 +1,34 @@
+# A proverb used about everyday life. A grown-up says it, and the child picks the moment it fits.
+# One wrong moment takes the proverb's words literally (a sour lemon, cutting grass), the other is
+# its opposite.
+item reading.fable-proverb-life v=1 skills=[reading.proverbs, reading.inference] {
+  title "When would you say it?"
+  difficulty pick(k, 1, 2, 0)
+  let k=0..2
+  let right={pick(k, "Sam is not picked, and says football is boring.", "Ana does her homework while she is free.", "Lena learns five French words a day all year.")}
+  let literal={pick(k, "Sam bites a lemon and says it is too sour.", "Ana helps cut the grass on a sunny day.", "Lena is the smallest, so she hides best.")}
+  let opposite={pick(k, "Sam is not picked, so he practises every day.", "Ana leaves her homework until Sunday night.", "Lena tries to learn a dictionary in one night.")}
+
+  scene 36x21 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=1 align=end {
+        person gran pose=point age=older hair=bun colour=grey top=berry tone=3
+        bubble says "{pick(k, \"Sour grapes.\", \"Make hay while the sun shines.\", \"Little by little does the trick.\")}" width=12 from=gran
+        text ask "A proverb is an old saying that gives advice. Which moment is Gran's proverb about?" width=16
+      }
+      choice pick options=[pick(k, literal, right, opposite), pick(k, right, opposite, literal), pick(k, opposite, literal, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == literal) point=says {
+      say "That takes the words as they are. A proverb means more than its words: what advice is hiding in it?"
+    }
+    when (pick == opposite) point=says {
+      say "That is the opposite of what the proverb says. Which fable does it come from, and what happens there?"
+    }
+  }
+  hint "Which fable does the proverb remind you of?"
+  hint "What does a person do in that fable? Look for someone doing the same thing today."
+}

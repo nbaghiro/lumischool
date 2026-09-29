@@ -26,6 +26,10 @@ lesson g3-short-multiplication v=1 format=worked grade=3 unit=3 subject=maths le
     show multiply.biggest-product a=3 b=5 c=8 easy-a=3 easy-b=4 easy-c=9 hard-a=1 hard-b=7 hard-c=8
   }
 
+  remember {
+    say "Multiply each digit by the single number, starting with the ones, and carry into the next column."
+  }
+
   grown-ups """
     The grid is worth keeping even after the columns arrive: it is the picture that explains why
     the columns work. In the ferry question the last trip is not full, so it is added on rather than

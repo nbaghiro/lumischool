@@ -1,0 +1,58 @@
+# Grade six's coding puzzles, one on each thing the year added: spaces in text, a cooling model, a tank
+# that stops a minute late, an otherwise at the wrong depth, a swap with no spare name, a spiral that
+# stops early, an orbit one step out, a repeat that goes round for nothing, a sort with a pass too few,
+# and a long program folded into three blocks. The moon's base is where the puzzles are set.
+lesson coding-g6-coding-puzzles v=1 format=puzzles grade=6 unit=9 subject=coding levels=[easy, medium, hard] {
+  title "Coding puzzles"
+  goal "Find what a program really does, name the one line to change, and make a program shorter where it can be."
+
+  puzzle stars=1 {
+    show coding.puzzle-spaces n=4 k=0 a=2 easy-n=3 hard-k=1 hard-a=5
+  }
+  puzzle stars=1 {
+    show coding.puzzle-cool n=2 g=64 easy-g=32 hard-n=3 hard-g=32
+  }
+  puzzle stars=1 {
+    show coding.puzzle-tank c=80 r=10 easy-c=60 hard-c=90 hard-r=15
+  }
+  puzzle stars=2 {
+    show coding.puzzle-inner k=1 easy-k=0
+    say "An otherwise belongs to the if it lines up with."
+  }
+  puzzle stars=2 {
+    show coding.puzzle-swap k=1 easy-k=0
+  }
+  puzzle stars=2 {
+    show coding.puzzle-self s=6 c=2 easy-s=5 hard-s=7 hard-c=3
+  }
+  puzzle stars=2 {
+    show coding.puzzle-orbit k=1 easy-k=0 hard-k=2
+  }
+  puzzle stars=2 {
+    show coding.puzzle-steps n=10 a=5 m=30 easy-a=4 easy-m=20 hard-n=15
+  }
+  puzzle stars=3 {
+    show coding.puzzle-passes k=1 easy-k=0 hard-k=2
+  }
+  puzzle stars=3 {
+    show coding.puzzle-fewest a=2 easy-a=1 hard-a=3
+  }
+
+  grown-ups """
+    Each puzzle is a program from this year that runs but does not do what was meant, or does it in
+    more steps than it needs. The task is to say what it really does and then name the one line or
+    number to change. The wrong idea to watch for is guessing a fix before running the program by
+    hand; in the child's working, look for the numbers written down as the program would make them.
+    If the child is stuck, ask what the program was meant to do in words, then run it one line at a
+    time and stop at the first line whose result is a surprise; stay on a puzzle another day rather
+    than guessing. Off the page, give a recipe that says to stir once when it meant stir every
+    minute, and ask which step to change. The last two puzzles have no single method: which list a
+    sort with a pass too few gets wrong, and a long program folded into three blocks.
+    """
+  level easy {
+    grown-ups "At this level the fish repeat goes round three times, the cooling runs for twenty minutes, the tank holds 60 litres at 10 a minute, the otherwise puzzle is on a cold day, the swap uses 5 and 2, the spiral stops at 2, the orbit turns 40 degrees a step, the repeat for nothing adds 4 to reach 20, the sort's lists have the shortest plank last in one of them, and the square to fold has sides of 1."
+  }
+  level hard {
+    grown-ups "At this level the fish line should run inside the repeat after a say, the cooling runs for thirty minutes and ends colder than the air, the tank fills 15 a minute, the otherwise puzzle is on a day above freezing, the spiral stops at 3, the orbit turns 24 degrees a step, the repeat for nothing goes round 15 times, the sort's lists include one in reverse order, and the square to fold has sides of 3."
+  }
+}

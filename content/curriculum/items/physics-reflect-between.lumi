@@ -1,0 +1,25 @@
+# The angle between the beam going in and the beam coming out is twice the angle in, since each is
+# that far from the upright line on either side of it.
+item physics.reflect-between v=1 skills=[physics.light, angles.additive] {
+  title "Between the two beams"
+  difficulty (a / 10)
+  let a={20, 25, 30, 35, 40, 45}
+
+  scene 23x19 {
+    mirrorangle m angle=a targets=[] marks=1 show=1 at=canvas(1, 0)
+    text ask "How many degrees are there between the beam going in and the beam coming out?" narrate width=22 below=m gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (2 * a)
+  feedback {
+    when (answer == a) point=m {
+      say "That is the angle on one side of the dashed line. The beam coming out is as far again on the other side."
+    }
+    when (answer == 180 - 2 * a and a != 45) point=m {
+      say "That is the angle between the beams and the mirror together. Measure the gap between the two beams, across the dashed line."
+    }
+  }
+  hint "How far is each beam from the dashed line?"
+  hint "Add the angle on one side of the line to the angle on the other."
+}

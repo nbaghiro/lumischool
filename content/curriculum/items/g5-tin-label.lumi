@@ -1,0 +1,37 @@
+# A cylinder's net: the label unrolls to a rectangle as long as the distance round the end (g5-09),
+# with pi as 3.14.
+item solids.tin-label v=1 skills=[solids.nets, circles.circumference] {
+  title "The label on a tin"
+  difficulty r
+  let r={3, 4, 6} h=6..10
+  level easy {
+    let r={3}
+  }
+  level hard {
+    let r={6}
+  }
+
+  scene 36x15 {
+    net tin solid=cylinder cell=1 r=r h=h ask=4 unit="cm" at=canvas(1, 1)
+    text ask "A market jam tin is opened out into its net. The ends have a radius of {r} cm. How long is the rectangle that wraps round it? Take pi as 3.14." narrate width=20 right-of=tin gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=5
+      text unit "cm"
+    }
+  }
+
+  answer (2 * 3.14 * r)
+  feedback {
+    when (answer == 3.14 * r) point=tin {
+      say "That is half way round. The label goes all the way round the end: use the diameter."
+    }
+    when (answer == h) point=tin {
+      say "That is the height of the tin. The long side goes round the circle."
+    }
+    when (answer == 3.14 * r * r) point=tin {
+      say "That is the area of an end. The label's long side is a length, the distance round."
+    }
+  }
+  hint "When the label is wrapped on, where does its long side go?"
+  hint "The distance round a circle is pi times the diameter. What is the diameter here?"
+}

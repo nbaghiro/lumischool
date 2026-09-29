@@ -1,0 +1,16 @@
+# The three-star question: the child invents the name of a new machine from the key's roots and says
+# what each root does in it. More than one name can fit, so a grown-up marks it against the look-for.
+item reading.root-invent v=1 stars=3 skills=[reading.morphology, reasoning.logic] {
+  title "Name the new machine"
+  let k=0..2
+
+  scene 35x27 {
+    text ask "{pick(k, \"The team builds a machine that writes down whale songs from far away.\", \"The team builds a machine that measures the light under the ice.\", \"The team builds a machine to look at tiny living things in sea water.\")} Invent its name from roots in the key. Then write what each root in your name does." at=canvas(1, 1) width=34
+    table key cols=4 head=["Root", "Means", "Root", "Means"] cells=["tele", "far", "hydro", "water", "phono", "sound", "meter", "measure", "graph", "write", "photo", "light", "scope", "look", "micro", "small"] below=ask gap=1
+    writinglines lines lines=2 width=34 prompt="" below=key gap=1
+  }
+
+  check writing.by-eye look-for="A name built only from roots in the key, with one root for each job the machine does, and each root's job said. Whale songs from far away: tele (far), phono (sound) and graph (write), as telephonograph or phonotelegraph; a name that leaves out tele or graph has missed a job. Light under the ice: photo (light) and meter (measure), as photometer; hydrophotometer is a fair extra for the sea water. Tiny living things in sea water: micro (small) and scope (look), as microscope, with hydro (water) for hydromicroscope. The order of the roots may differ; what matters is that every job has its root and no root does a job the machine does not do."
+  hint "List the jobs the machine does. Which root in the key does each job?"
+  hint "Join those roots into one word, then read it back root by root."
+}

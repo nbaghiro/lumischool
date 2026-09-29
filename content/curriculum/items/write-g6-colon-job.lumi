@@ -1,0 +1,32 @@
+# Three sentence starts from the hut's noticeboard, each ending in a colon or a semicolon, matched to
+# the only ending that fits: a list, an explanation, or a second linked sentence.
+item writing.colon-job v=1 skills=[writing.punctuation, writing.colons-semicolons, reasoning.sorting] {
+  title "Which ending fits?"
+  difficulty k
+  let k=0..1 r=0..2
+  let s1={pick(k, "We packed three things:", "We saw three animals:")}
+  let s2={pick(k, "The wind dropped at noon;", "The puffins flew off;")}
+  let s3={pick(k, "Dr Berg has one rule:", "The iceberg was huge:")}
+  let c1={pick(k, "a stove, a tent and a rope.", "a whale, a seal and a fox.")}
+  let c2={pick(k, "we set off at once.", "the seals stayed put.")}
+  let c3={pick(k, "nobody walks alone.", "it was as big as a church.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x23 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      hut h pictures=8
+      seal ps rock=1 facing=1
+    }
+    text ask "The ends of three notes on the hut's board have come off. Write the number of the ending that fits each start." narrate width=33 below=pics gap=1
+    match m left=["{s1}", "{s2}", "{s3}"] right=["{if r == 1 then c3 else c2}", "{if r == 0 then c3 else c1}", "{if r == 0 then c1 else if r == 1 then c2 else c3}"] blanks=[x, y, z] below=ask gap=1
+  }
+
+  answer x=(if r == 0 then 3 else 2) y=(if r == 1 then 3 else 1) z=(if r == 0 then 2 else if r == 1 then 1 else 3)
+  hint "Which start promises a list? Find the list."
+  hint "A semicolon is followed by a whole sentence that could stand alone. Which ending is one, and fits the start?"
+}

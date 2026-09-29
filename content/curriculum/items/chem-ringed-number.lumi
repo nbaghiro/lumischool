@@ -1,0 +1,16 @@
+# The way in: each cell of the table carries its atomic number in the corner, so reading the ringed
+# cell is the answer. The numbers come from ELEMENTS, the table the drawing is drawn from.
+item chem.ringed-number v=1 skills=[chemistry.elements] {
+  title "Read the number"
+  let m={6, 8, 11, 13, 17}
+
+  scene 36x11 {
+    periodic t rows=3 blank=0 mark=m shade=none at=canvas(1, 0)
+    text ask "In the observatory's copy of the table, one element is ringed. What is its atomic number?" narrate width=13 right-of=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check chem.elements of=t answer=number(mark)
+  hint "Find the ringed cell. Which small number sits in its corner?"
+  hint "The big letters are the symbol. Is the number you want the small one or the big one?"
+}

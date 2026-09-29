@@ -1,0 +1,38 @@
+# A fair comparison with four jars: each pair offered differs in one thing only, so each is a fair
+# test of something; the child picks the one that tests the question asked. Water against dry air
+# tests water, water against water under oil tests air, water against salty water tests salt.
+item chem.rust-pair v=1 skills=[chemistry.rusting, reasoning.fair-test] {
+  title "Which two jars?"
+  difficulty (if t == 1 then 1 else 0)
+  let o=0..2 t=0..2
+  let j1={pick(o, "water", "dry", "oil")}
+  let j2={pick(o, "salt", "water", "dry")}
+  let j3={pick(o, "dry", "oil", "salt")}
+  let j4={pick(o, "oil", "salt", "water")}
+  let asks={pick(t, "rust needs water", "rust needs air", "salt makes rust come faster")}
+  let o1={pick(o, "A and B", "A and B", "A and D")}
+  let o2={pick(o, "A and C", "B and C", "B and D")}
+  let o3={pick(o, "A and D", "B and D", "C and D")}
+  let right={pick(o, pick(t, "A and C", "A and D", "A and B"), pick(t, "A and B", "B and C", "B and D"), pick(t, "B and D", "A and D", "C and D"))}
+  level easy {
+    let t={0, 2}
+  }
+  level hard {
+    let t={1, 2}
+  }
+
+  scene 35x18 {
+    nails jars jars=[j1, j2, j3, j4] days=10 letters=1 names=1 at=canvas(1, 0)
+    text ask "Four nails, one in each jar, for 10 days. Which two jars together show that {asks}?" narrate width=34 below=jars gap=1
+    choice pick options=[o1, o2, o3] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=jars {
+      say "Each pair differs in one thing. Read the names under your two jars: is that one thing the thing the question asks about?"
+    }
+  }
+  hint "Find the jar of plain water. Every pair on offer has it."
+  hint "Which other jar is the same as plain water except for {if t == 0 then \"the water\" else if t == 1 then \"the air\" else \"the salt\"}?"
+}

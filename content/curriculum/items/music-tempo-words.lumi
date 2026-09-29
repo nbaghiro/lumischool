@@ -1,0 +1,50 @@
+# Tempo, the other half of how a piece is played: the Italian words for speed, largo, andante, allegro
+# and presto in order from slow to fast, then ritardando and a tempo for a change of speed. Each
+# setting is a place in the gorge with its own pace.
+item music.tempo-words v=1 skills=[music.tempo] {
+  title "How fast?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let want={pick(k, "at a steady walking pace as they cross the rope bridge", "fast and lively, like the mill wheel turning in the flood", "very slowly and broadly, like the deep pool under the falls", "as fast as they can, for the kingfisher's dive", "slowing down little by little over the last two bars", "back at the first speed after slowing down for the rainbow")}
+  let right={pick(k, "Andante", "Allegro", "Largo", "Presto", "Ritardando", "A tempo")}
+  let o1={pick(k, "Largo", "Largo", "Largo", "Largo", "Accelerando", "Accelerando")}
+  let o2={pick(k, "Andante", "Andante", "Andante", "Andante", "Ritardando", "Ritardando")}
+  let o3={pick(k, "Allegro", "Allegro", "Allegro", "Allegro", "A tempo", "A tempo")}
+  let o4={pick(k, "Presto", "Presto", "Presto", "Presto", "Largo", "Largo")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x36 {
+    row top space=2 align=end at=canvas(1, 1) {
+      table words cols=2 head=["Word", "Speed"] cells=["Largo", "very slow, broad", "Andante", "walking pace", "Allegro", "fast, lively", "Presto", "very fast"]
+      waterfall falls drops=1 rainbow=1
+    }
+    text ask "The gorge band wants to play {want}. Which word goes over that part of the score?" narrate width=34 below=top gap=1
+    choice pick options=[o1, o2, o3, o4] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k <= 3 and pick != right) point=words {
+      say "Find the speed in the table that matches what the band wants, then read its word."
+    }
+    when (k >= 4 and pick == "Accelerando") point=ask {
+      say "Accelerando gets faster, like accelerating in a car. Which way does the band want to go?"
+    }
+    when (k >= 4 and pick == "Largo") point=ask {
+      say "Largo is one steady speed, slow all through. The band wants a change of speed here."
+    }
+    when (k == 4 and pick == "A tempo") point=ask {
+      say "A tempo means back to the speed from before. The band is still slowing down."
+    }
+    when (k == 5 and pick == "Ritardando") point=ask {
+      say "Ritardando is the slowing down itself. What word brings the old speed back?"
+    }
+  }
+  hint "Is the band asking for one steady speed, or for a change of speed?"
+  hint "{if k <= 3 then \"Which row of the table fits?\" else \"Is the band getting faster, getting slower, or going back to a speed it had before?\"}"
+}

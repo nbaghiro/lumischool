@@ -1,0 +1,29 @@
+# Three stars: routes along a grid of tracks, only right or up. The number of ways to reach each
+# crossing is the sum of the ways to reach the crossing to its left and the one below. A count.
+item puzzle.crater-routes v=1 stars=3 skills=[counting.cases, reasoning.systematic] {
+  title "Routes to the crater"
+  difficulty (m + n)
+  let m={2, 3} n={2, 3, 4}
+  where (m <= n)
+  level easy {
+    let m={2} n={2, 3}
+  }
+  level hard {
+    let m={3} n={3, 4}
+  }
+
+  scene 35x14 {
+    grid tracks rows=m cols=n shade=0 cell=2 at=canvas(1, 1)
+    text ask "The rover's tracks run along the lines of this grid. It starts at the bottom left corner and drives to the top right corner, only ever to the right or up. How many different routes can it take?" narrate width=22 right-of=tracks gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer pick(m - 2 + (n - 2) * 2, 6, 0, 10, 20, 15, 35)
+  feedback {
+    when (answer == m * n or answer == m + n) point=tracks {
+      say "Every route is {m} steps up and {n} steps to the right, in some order. Count how many ways each crossing can be reached."
+    }
+  }
+  hint "In how many ways can the rover reach each crossing on the bottom edge? On the left edge?"
+  hint "A crossing is reached from the one to its left or the one below it. How do their counts combine?"
+}

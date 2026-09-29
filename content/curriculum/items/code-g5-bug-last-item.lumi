@@ -1,0 +1,29 @@
+# The list grew after the line that reads it was written: item 4 is no longer the last boat, and the
+# place of the last item is the list's length.
+item coding.bug-last-item v=1 skills=[coding.debugging, coding.lists] {
+  title "The last boat"
+  difficulty x
+  let x=1..2 a={5, 8} b={3} c={9, 6} d={4}
+  level easy {
+    let x={1}
+  }
+  level hard {
+    let x={2}
+  }
+
+  scene 36x18 {
+    program p code=["set cargo to list {a}, {b}, {c}, {d}", "add 7 to cargo", "{if x == 2 then \"add 2 to cargo\" else \"replace item 1 of cargo with 2\"}", "set last to item 4 of cargo"] at=canvas(1, 0)
+    narrowboat boat windows=3 pots=1 right-of=p gap=1
+    text ask "Mira wants last to be the crates on the last boat in the list, but it is not. What number should replace the 4 in line 4?" width=34 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (5 + x - 1)
+  feedback {
+    when (answer == 5 and x == 2) point=p {
+      say "Line 3 adds another boat as well, so the list is longer still."
+    }
+  }
+  hint "How many items does cargo hold when line 4 runs?"
+  hint "Which lines make the list longer? Which only change an item?"
+}

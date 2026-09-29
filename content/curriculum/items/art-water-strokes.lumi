@@ -1,0 +1,33 @@
+# Each kind of water is painted with the stroke that follows how it moves: falling water down, still
+# water across, spray in dabs.
+item art.water-strokes v=1 skills=[art.water, art.mark-making] {
+  title "A stroke for each water"
+  difficulty (if k >= 2 then 1 else 0)
+  let k=0..3
+  let thing={pick(k, "the water falling down the cliff", "the flat, still water of the pool", "the spray rising where the water lands", "the thin threads of water running down the face of the mill wheel")}
+  let right={pick(k, "Long upright strokes", "Long level strokes", "Dabs and dots", "Long upright strokes")}
+  let o1={pick(k, "Long level strokes", "Dabs and dots", "Long upright strokes", "Long level strokes")}
+  let o2={pick(k, "Dabs and dots", "Long upright strokes", "Long level strokes", "Dabs and dots")}
+  let r={k % 3}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 35x21 {
+    waterfall falls drops=1 rainbow=0 at=canvas(1, 1)
+    text ask "Hokusai drew each kind of water with lines that follow how it moves. Which strokes should Ada use for {thing}?" width=21 right-of=falls gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then o1 else o2, if r == 0 then o1 else if r == 1 then o2 else right, if r == 0 then o2 else if r == 1 then right else o1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=falls {
+      say "Which way does that water move, or lie? The stroke goes the same way."
+    }
+  }
+  hint "Is this water moving? If it is, which way?"
+  hint "Still water lies flat. Falling water runs down. Spray is broken into drops."
+}

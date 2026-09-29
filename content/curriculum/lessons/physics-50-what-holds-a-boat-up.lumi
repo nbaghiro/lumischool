@@ -1,0 +1,63 @@
+lesson physics-what-holds-a-boat-up v=1 format=teach grade=5 unit=2 subject=physics levels=[easy, medium, hard] {
+  title "What holds a boat up"
+  goal "Work out the water's push on a thing from the water it pushes aside, and use it to say whether a boat floats."
+
+  look {
+    scene 36x16 {
+      row all at=canvas(1, 0) space=1 align=start {
+        springscale air max=10 step=2 value=8 unit=N
+        springscale water max=10 step=2 value=5 unit=N
+        boat b cargo=2 side=5 sits=1 arrows=1
+      }
+    }
+    say """
+      Hang a stone on a force meter and it reads 8 N. Lower it into the canal and the meter reads
+      only 5 N, because the water pushes up on the stone with 3 N. That push is called upthrust, and
+      it is exactly the weight of the water the stone pushes out of its way. A boat sinks into the
+      water until it has pushed aside its own weight of water, and then it floats. Every 100 ml of
+      water weighs about 1 N, and 1 ml weighs 1 g.
+      """
+  }
+  do {
+    level easy {
+      worked physics.upthrust-read a=8 u=3 level=medium
+    }
+    practice physics.upthrust-read count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.upthrust-find count=2 seed=2
+    practice physics.displace-read count=1 seed=3
+    practice physics.displace-push count=1 seed=1 easy-seed=1 hard-seed=4 hard-count=2
+    practice physics.boat-spill count=1 seed=2
+    practice physics.boat-spill-load count=1 seed=5 easy-seed=1 hard-seed=3
+  }
+  story {
+    show physics.canal-coal k=4 easy-k=2 hard-k=6
+  }
+  try stars=2 {
+    show physics.upthrust-float-or-sink u=0 easy-u=1 hard-u=3
+  }
+  try stars=3 {
+    show physics.boat-fewest-sink v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "The water pushes up with the weight of the water a thing pushes aside, and a boat floats once that push equals its weight."
+  }
+
+  grown-ups """
+    The idea to listen for is that heavy things sink and light things float. A steel narrowboat
+    weighs many tonnes and floats, because its shape lets it push aside that many tonnes of water
+    before the canal comes over its side. The lesson measures the push twice, as the weight lost on a
+    force meter and as the water that rises in a cylinder, and the two agree, which is worth saying
+    out loud. If the newtons and millilitres get tangled, go back to the look picture: 8 N in the
+    air, 5 N in the water, 3 N of push. If the child is still unsure after the core, stay here
+    another day. Off the page, a kitchen scale, a bowl filled to the brim inside a tray, and a
+    plastic tub loaded with coins: weigh the tub, float it, and weigh what spills. In the three-star
+    question the boat still floats with one mass fewer, so the answer is one more than the masses
+    that fit.
+    """
+  level easy {
+    grown-ups "At this level a worked example reads the push first, the pushes are one or two newtons, only one question works backwards, the cylinder rises by one or two hundred millilitres, the coal is two tonnes, and the boat to sink weighs 150 g."
+  }
+  level hard {
+    grown-ups "At this level the pushes are three or four newtons, two questions go from the rising water to the meter's reading, the boat carries more blocks, the coal is six tonnes, and the boat to sink weighs 250 g and can push aside 830 ml."
+  }
+}

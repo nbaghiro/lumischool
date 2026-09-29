@@ -1,0 +1,37 @@
+# Was or were agrees with the thing that comes first in a passive sentence. At hard the subject is
+# each of or two things joined by and, which are the ones children get wrong.
+item writing.was-or-were v=1 skills=[writing.passive, writing.grammar] {
+  title "Was or were?"
+  difficulty k
+  let k=0..3
+  let s={pick(k, "The jars of sea water _____ sealed and labelled.", "The sledge _____ pulled up the slope by four people.", "Each of the seals _____ counted twice.", "The ropes and the stove _____ packed last.")}
+  let right={pick(k, "were", "was", "was", "were")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 32x19 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      sledge sl slats=5
+      seal ps rock=1 facing=1
+    }
+    passage p title="The hut's log" text="{s}" width=31 numbers=false below=pics gap=1
+    text ask "Which word fills the gap?" narrate width=31 below=p gap=1
+    choice pick options=["was", "were", "been"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "been") point=p {
+      say "Been needs a helper before it, such as has or have. Here the gap needs was or were on its own."
+    }
+    when (pick != right and pick != "been") point=p {
+      say "Find the subject, the thing that was done to. Is it one thing or more than one?"
+    }
+  }
+  hint "Find the subject of the sentence, the thing being done to."
+  hint "Is the subject one thing, or more than one? The verb in the gap has to agree with it."
+}

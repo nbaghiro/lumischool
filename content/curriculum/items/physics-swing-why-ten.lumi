@@ -1,0 +1,27 @@
+# The reason for timing ten swings: a thumb is late on the button by about the same amount whether it
+# times one swing or ten, so over ten swings that lateness is shared ten ways.
+item physics.swing-why-ten v=1 skills=[physics.method, reasoning.explain] {
+  title "Why time ten swings?"
+  let l=3..7
+
+  scene 31x29 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      pendulum p length=l mass=50
+      stopwatch w seconds=(l * 2 + 4)
+    }
+    text ask "Mia times ten swings and divides by ten, rather than timing one swing. Why is that better?" narrate width=28 below=kit gap=1
+    choice pick options=["A late thumb is shared out over ten swings", "A pendulum speeds up after a few swings", "Ten swings stretch the string to full length"] stack=column below=ask gap=1
+  }
+
+  answer pick="A late thumb is shared out over ten swings"
+  feedback {
+    when (pick == "A pendulum speeds up after a few swings") point=p {
+      say "Every swing of one pendulum takes the same time. That is what makes it good for a clock."
+    }
+    when (pick == "Ten swings stretch the string to full length") point=p {
+      say "The string is the same length all the time. Think about the stopwatch and the thumb on its button."
+    }
+  }
+  hint "A thumb presses the button a little late, perhaps a fifth of a second. Does that change with more swings?"
+  hint "A fifth of a second out of one swing, or out of ten swings: which is the smaller mistake for each swing?"
+}

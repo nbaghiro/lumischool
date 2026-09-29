@@ -1,0 +1,35 @@
+# A pH meter's readings as an alkali is added 5 ml at a time to 20 ml of an acid of the same
+# strength (worked out for 0.1 M hydrochloric acid and sodium hydroxide: 1.0, 1.2, 1.5, 1.8, 7.0,
+# 12.0, 12.3). It stays acid until the very end, then jumps through 7.
+item chem.neutral-graph v=1 skills=[chemistry.neutralising, data.line-graph] {
+  title "The jump through 7"
+  difficulty w
+  let w=0..3 m={2, 3}
+  where (w == 3 or m == 2)
+  let first={pick(w, "Find where the line reaches 7, neutral.", "Find the first point, where no alkali has gone in yet.", "Find 25 ml along the bottom.", "Find where the line reaches 7, neutral.")}
+  let second={pick(w, "Read straight down to the millilitres.", "Read across to the pH on the side.", "Read across to the pH. Is it acid or alkali now?", "How many lots of 20 ml of acid is that? Each lot takes the same alkali.")}
+  level easy {
+    let w=0..1
+  }
+  level hard {
+    let w=2..3
+  }
+
+  scene 35x28 {
+    linegraph g labels=["0", "5", "10", "15", "20", "25", "30"] values=[1, 1.2, 1.5, 1.8, 7, 12, 12.3] min=0 max=14 per=1 step=2 color=berry at=canvas(1, 0)
+    text ask "Along the bottom is the alkali a grown-up has added, in ml, to 20 ml of an acid; up the side is the pH. {if w == 0 then \"How many millilitres of alkali made the acid neutral?\" else if w == 1 then \"What was the pH of the acid before any alkali went in?\" else if w == 2 then \"She adds 25 ml in all. What is the pH now, to the nearest whole number?\" else \"How many millilitres of this alkali would she need to make \"}{if w == 3 then m * 20 else \"\"}{if w == 3 then \" ml of the same acid neutral?\" else \"\"}" narrate width=34 below=g gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then 20 else if w == 1 then 1 else if w == 2 then 12 else m * 20)
+  feedback {
+    when (w == 0 and answer == 7) point=g {
+      say "7 is the pH when it is neutral. The question asks how much alkali, read along the bottom."
+    }
+    when (w == 2 and answer == 7) point=g {
+      say "It was 7 at 20 ml. Read the point for 25 ml."
+    }
+  }
+  hint "{first}"
+  hint "{second}"
+}

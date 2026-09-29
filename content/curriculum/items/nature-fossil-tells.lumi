@@ -1,0 +1,41 @@
+# What a fossil tells us: the sea once covered the cliff, some living things have died out, living
+# things change over many generations, and on the moon nothing has ever lived to leave one.
+item nature.fossil-tells v=1 skills=[nature.fossils, reasoning.evidence] {
+  title "What the fossil tells us"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "The fossil is of a reptile that lived in the sea, but it was found high in a cliff on land. What does that tell us about the rock?", "No animal like it is alive anywhere today. What does that tell us?", "In the same cliff the lower layers of rock are older. A fossil fish low down looks a little different from fossil fish of the same kind higher up. What does that show?", "Why will the crew never find a fossil in the moon's rocks?")}
+  let ans={pick(k, "It was once under the sea", "Some kinds of living thing have died out", "Living things change over many generations", "Nothing has ever lived on the moon")}
+  let o1={pick(k, "Sea reptiles once climbed cliffs", "It is still hiding deep in the sea", "Fish shrink when they are buried", "Moon rock is too hard to dig")}
+  let o2={pick(k, "A river carried it up there", "It was never really alive", "The lower fish was only a baby", "Fossils only form in the dark")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x33 {
+    fossil fo dug=1 close=0 at=canvas(1, 1)
+    text ask "On the moon base Ada keeps a photo of a fossil she found in a cliff on Earth: a sea reptile's bones turned to stone. {asks}" narrate width=32 below=fo gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=fo {
+      say "A sea animal died where it lived, and mud covered it there. So where was this rock when it formed?"
+    }
+    when (k == 1 and pick != ans) point=fo {
+      say "Its bones are real bone turned to stone. If none like it are alive now, what happened to its kind?"
+    }
+    when (k == 2 and pick != ans) point=ask {
+      say "The lower fish lived long before the higher ones, and grown fish of each are compared. What changed between them?"
+    }
+    when (k == 3 and pick != ans) point=ask {
+      say "A fossil is what is left of something that lived. What has lived on the moon?"
+    }
+  }
+  hint "A fossil is the remains of a living thing, kept in the rock where it died."
+  hint "What does the rock round it, or the living thing itself, say about long ago?"
+}

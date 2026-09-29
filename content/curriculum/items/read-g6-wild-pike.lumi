@@ -1,0 +1,30 @@
+# The two-star reason: why Buck defends Pike. The chapter says he threatened Spitz's leadership on
+# purpose; fair play is ruled out a few lines later ("fair play was a forgotten code"), and Pike is
+# the team's shirker, not Buck's friend, so each wrong reason is answered by the text.
+item reading.wild-pike v=1 stars=2 skills=[reading.inference, reading.characters, reading.evidence] {
+  title "Why does Buck do it?"
+  set right="To show the team Spitz could be beaten."
+
+  scene 35x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        bookcast b who=buck pose=stand dir=1
+        wolf w pose=stand dir=-1
+        text ask "In chapter 3, Spitz goes to punish Pike for hiding, and Buck jumps in between them. Why does Buck do it?" width=19
+      }
+      choice pick options=["Fair play: he stood up for a weaker dog.", right, "Pike was his closest friend in the team."] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "Fair play: he stood up for a weaker dog.") point=b {
+      say "Read on to what Buck does after Pike jumps on Spitz. Does the chapter say he cared about fair play?"
+    }
+    when (pick == "Pike was his closest friend in the team.") point=b {
+      say "What kind of dog is Pike in this chapter? Does Buck treat him as a friend anywhere else?"
+    }
+  }
+  hint "What had Buck been doing to Spitz in the days before this?"
+  hint "What does Buck himself do to Spitz once Spitz is knocked over?"
+}

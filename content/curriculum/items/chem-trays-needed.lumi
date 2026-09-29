@@ -1,0 +1,26 @@
+# Three stars: the rates are worked out from two readings rather than told. In these readings 2 crew
+# lower the oxygen 2 per cent in 4 hours, and 2 crew with 1 tray in light lower it 1 per cent, so a
+# tray in light gives back what one person uses (the chamber drawing's model). q is the question.
+item chem.trays-needed v=1 stars=3 skills=[chemistry.gases, reasoning.constraints, reasoning.model] {
+  title "Enough seedlings for the crew"
+  difficulty q
+  let q=0..2
+  level easy {
+    let q={0}
+  }
+  level hard {
+    let q={2}
+  }
+
+  scene 31x41 {
+    chamber a place=1 plants=0 candle=0 people=2 light=1 hours=4 show=1 at=canvas(1, 0)
+    chamber b place=1 plants=1 candle=0 people=2 light=1 hours=4 show=1 below=a gap=1
+    text ask "Both cabins started at 21 per cent oxygen, with the grow lamp on. {if q == 0 then \"What is the fewest trays of seedlings that would keep the oxygen at 21 per cent for a crew of 3?\" else if q == 1 then \"With 2 trays, and the oxygen falling 1 per cent every 4 hours, how many crew are in the cabin?\" else \"A crew of 3 has 1 tray. What per cent is the oxygen after 8 hours?\"}" narrate width=30 below=b gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if q == 0 then 3 else if q == 1 then 3 else 17)
+  hint "How much does the oxygen fall in 4 hours for 2 crew with no trays? For one person?"
+  hint "How much less does it fall with one tray? What does one tray give back?"
+  hint "Now put the crew's use and the trays' gift together for the new cabin."
+}

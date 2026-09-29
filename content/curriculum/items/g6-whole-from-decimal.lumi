@@ -1,0 +1,30 @@
+# The whole from a part given as a decimal: 0.35 of the colony is a number of seals, so the decimal
+# becomes a fraction and the part is shared back into the whole.
+item fraction.whole-from-decimal v=1 skills=[fractions.multiply.decimals, fractions.of-amount, reasoning.work-backwards] {
+  title "The whole colony"
+  difficulty (den(x) / 5 + t / 40)
+  let x={0.4, 0.6, 0.75, 0.35, 0.45, 0.8} t={20, 40, 60, 80}
+  where whole(x * t)
+  level easy {
+    let x={0.4, 0.75, 0.8} t={20, 40}
+  }
+  level hard {
+    let x={0.35, 0.45} t={60, 80}
+  }
+
+  scene 36x20 {
+    percentbar bar percent=(100 * x) show=false at=canvas(1, 1)
+    seal s rock=1 facing=-1 right-of=bar gap=2
+    text ask "{x * t} seals are resting on the ice floe. They are {x} of all the seals in the colony, as the bar shows. How many seals are in the colony?" narrate width=34 below=bar gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer t
+  feedback {
+    when (answer == x * x * t) point=bar {
+      say "That takes {x} of the seals on the floe. They are already the part, so the colony is bigger."
+    }
+  }
+  hint "Write {x} as a fraction. How many seals make one part of that fraction?"
+  hint "How many parts make the whole bar?"
+}

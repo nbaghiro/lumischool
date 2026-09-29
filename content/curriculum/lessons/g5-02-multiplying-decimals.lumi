@@ -1,0 +1,57 @@
+lesson g5-multiplying-decimals v=1 format=worked grade=5 unit=1 subject=maths levels=[easy, medium, hard] {
+  title "Multiplying decimals"
+  goal "Multiply a decimal by a decimal, and use the size of the numbers to put the point in the right place."
+
+  example {
+    worked decimal.grid-point a=24 b=15 level=medium
+    say """
+      Multiply as if the points were not there, 24 × 15 = 360, then count the decimal places in the
+      two numbers: one and one make two. So 2.4 × 1.5 = 3.60, which is 3.6. Rounding checks it:
+      about 2 × 2 is 4, and 3.6 is near 4. Multiply without the points, give the answer as many
+      decimal places as the two numbers have between them, and estimate to check.
+      """
+  }
+  exercises {
+    practice decimal.cheese-kilos count=1 seed=3
+    practice decimal.from-a-fact count=1 seed=4
+    practice decimal.grid-point count=1 hard-count=2 seed=6
+    practice decimal.rope-price count=2 hard-count=1 seed=5
+    practice decimal.roof-panel count=1 seed=2
+    practice decimal.more-or-less count=1 seed=7
+    level hard {
+      practice decimal.from-a-fact count=1 seed=9
+    }
+    practice decimal.cheese-kilos count=1 seed=8 easy-count=0
+    level easy {
+      practice decimal.roof-panel count=1 seed=11
+    }
+  }
+  try stars=2 {
+    show decimal.check-by-size a=4.8 b=3.2 r=1 easy-a=3.9 easy-b=2.4 easy-r=0 hard-a=7.5 hard-b=0.6 hard-r=2
+  }
+  try stars=3 {
+    show decimal.cards-product x=2 y=5 z=8 easy-x=1 easy-y=4 easy-z=7 hard-x=3 hard-y=6 hard-z=9
+  }
+
+  remember {
+    say "Multiply without the points, give the answer as many decimal places as the two numbers have between them, and estimate to check."
+  }
+
+  grown-ups """
+    Counting decimal places is the method, and estimating is the check; ask for both. If the child
+    writes 36.0 for 2.4 × 1.5, ask what 2 × 2 is and whether 36 is anywhere near it. Multiplying by
+    a number less than one makes the answer smaller, which surprises most children the first time;
+    half of something is the example to reach for. The roof panel is drawn in tenths of a metre, so
+    each small square is a hundredth of a square metre and the squares can be counted as a check. In
+    the two-star question rounding each number to a whole one settles where the point goes. In the
+    three-star question the card on its own multiplies the whole decimal, so the biggest card
+    belongs there. If the grid is still slow, stay with one-place decimals another day. Off the
+    page, work out a shop receipt with prices by the kilogram.
+    """
+  level easy {
+    grown-ups "At this level the cheese costs $4.50 or $3.80 a kilogram for two or three kilograms, the facts give tenths times tenths, the grid multiplies numbers under 26 by numbers under 20, the rope is $1.20 or $2.40 a metre for one and a half or two and a half metres and is asked twice, the roof panel is 1.1 or 1.2 metres long, the numbers to judge are times a half or one and a half, the two-star is 3.9 × 2.4, and the three-star uses the cards 1, 4 and 7."
+  }
+  level hard {
+    grown-ups "At this level the cheese costs $6.25 to $12.75 a kilogram for four or six, the facts give thousandths and are asked twice, the grid multiplies numbers in the thirties and forties, the rope is $3.50 or $4.60 a metre, the roof panel is 0.6 or 0.8 metres by 0.3 or 0.9, the numbers to judge are times 0.95 or 1.05, the two-star is 7.5 × 0.6, and the three-star uses the cards 3, 6 and 9."
+  }
+}

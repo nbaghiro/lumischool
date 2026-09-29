@@ -1,0 +1,45 @@
+# The way in: four phrases of a tune written as a form, the same tune given the same letter. AABB and
+# ABAB first, then AABA, where the letter comes back after a new one, and ABAC.
+item music.form-letters v=1 skills=[music.form, music.staff] {
+  title "Letters for the phrases"
+  difficulty (if f <= 1 then 0 else 1)
+  let f=0..3
+  let right={pick(f, "A A B B", "A B A B", "A A B A", "A B A C")}
+  let p2a={pick(f, "C5", "G4", "C5", "G4")}
+  let p2b={pick(f, "D5", "A4", "D5", "A4")}
+  let p2c={pick(f, "E5", "B4", "E5", "B4")}
+  let p3a={pick(f, "G4", "C5", "G4", "C5")}
+  let p3b={pick(f, "A4", "D5", "A4", "D5")}
+  let p3c={pick(f, "B4", "E5", "B4", "E5")}
+  let p4a={pick(f, "G4", "G4", "C5", "E5")}
+  let p4b={pick(f, "A4", "A4", "D5", "D5")}
+  let p4c={pick(f, "B4", "B4", "E5", "C5")}
+  level easy {
+    let f=0..1
+  }
+  level hard {
+    let f=2..3
+  }
+
+  scene 36x35 {
+    row one space=2 align=start at=canvas(1, 1) {
+      notes s1 clef=treble notes=[C5, D5, E5] values=[1, 1, 2] meter=0
+      notes s2 clef=treble notes=[p2a, p2b, p2c] values=[1, 1, 2] meter=0
+    }
+    row two space=2 align=start below=one gap=0 {
+      notes s3 clef=treble notes=[p3a, p3b, p3c] values=[1, 1, 2] meter=0
+      notes s4 clef=treble notes=[p4a, p4b, p4c] values=[1, 1, 2] meter=0
+    }
+    text ask "The four phrases of a tune the street band plays by the city gate, in order. The first is A. A phrase with the same notes gets the same letter, and a new one gets the next letter. What is the form?" narrate width=34 below=two gap=1
+    choice pick options=["A A B B", "A B A B", "A A B A", "A B A C"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=one {
+      say "Compare each phrase with the first one, note by note. Only a phrase with exactly the same notes is A again."
+    }
+  }
+  hint "Is phrase 2 the same as phrase 1? Check every note."
+  hint "Give each new phrase the next letter, and a phrase you have seen before its old letter."
+}

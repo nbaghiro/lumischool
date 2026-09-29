@@ -1,0 +1,38 @@
+# The three-star: the whole curve worked out without a picture of it. Ice warms about twice as fast as
+# water on the same flame (its heat capacity is about half, 2.1 J against 4.18 J per gram and degree),
+# and melting takes as long as warming the water by 80 degrees (334 J per gram against 4.18).
+item chem.ice-to-boil v=1 stars=3 skills=[chemistry.heating, reasoning.planning] {
+  title "When will it boil?"
+  difficulty (if s == -40 and r == 10 then 2 else if r == 20 then 0 else 1)
+  let s={-20, -40} r={10, 20}
+  where (not (s == -20 and r == 20))
+  let total={0 - s / (2 * r) + 80 / r + 100 / r}
+  level easy {
+    where (r == 20)
+  }
+  level hard {
+    where (s == -40 and r == 10)
+  }
+
+  scene 35x29 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      thermometer tube from=-40 to=120 step=40 value=s unit="°C"
+      flame stove height=3 on=1 stand=true holds=0.4 minutes=0
+    }
+    text ask "A grown-up puts a pan of ice at {s} °C on the stove. On this flame the water warms {r} degrees a minute and the ice warms twice as fast. Melting takes as long as warming the water by 80 degrees. After how many minutes does the water reach 100 °C and start to boil?" narrate width=34 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer total
+  feedback {
+    when (answer == total - 80 / r) point=tube {
+      say "The ice stays at 0 while it melts, and that takes minutes too. Count the flat part."
+    }
+    when (answer == 100 / r) point=tube {
+      say "That is the water warming from 0 to 100. The ice had to warm up to 0 and melt first."
+    }
+  }
+  hint "Break the journey into three parts: up to 0, the flat part, and 0 up to 100."
+  hint "How many degrees does the ice climb to reach 0, and how fast does ice warm?"
+  hint "How long does it take the water to warm by 80 degrees? That is the flat part."
+}

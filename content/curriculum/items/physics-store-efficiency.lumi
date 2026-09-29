@@ -1,0 +1,31 @@
+# Efficiency: the useful share of every hundred joules put in, read from the bands of the wheel.
+# i is the joules in each second and u the useful share of a hundred.
+item physics.store-efficiency v=1 skills=[physics.energy, percentages.of-amount] {
+  title "How much is useful?"
+  difficulty (if i == 200 then 0 else if i == 500 then 1 else 2)
+  let i={200, 500, 800} u={50, 60, 75}
+  level easy {
+    let i={200}
+  }
+  level hard {
+    let i={800}
+  }
+
+  scene 24x23 {
+    energyflow e thing="water wheel" from="moving water" to="turning millstone" input=i useful=(i * u / 100) wasted=[i * (100 - u) / 100 - 2, 2] wastes=["heating", "sound"] blank=-1 unit=J at=canvas(1, 0)
+    text ask "Of every 100 J the water gives this wheel, how many joules come out turning the millstone? That number is the wheel's efficiency, in per cent." narrate width=22 below=e gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.energy of=e answer=efficiency
+  feedback {
+    when (answer == i * u / 100) point=e {
+      say "That is the useful energy out of {i} J. How much is that out of every 100 J?"
+    }
+    when (answer == 100 - u and u != 50) point=e {
+      say "That is the share that is wasted. The question asks for the useful band."
+    }
+  }
+  hint "How many hundreds are there in {i} J?"
+  hint "Share the useful joules between that many hundreds."
+}

@@ -1,0 +1,36 @@
+# Puzzle: an otherwise written flush pairs with the outer if, so the program says wrap up on mild days
+# and nothing on cold calm ones. What it says as written is run; the otherwise and the line under it
+# both have to move one step in, so the question asks for two lines.
+item coding.puzzle-inner v=1 skills=[coding.debugging, coding.decisions, coding.text] {
+  title "Wrap up on a mild day?"
+  difficulty k
+  let k=0..1
+  let t={pick(k, -4, 2)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x28 {
+    program p code=["set temp to {t}", "set wind to 10", "if temp is less than -10", "  if wind is more than 30", "    say stay in", "otherwise", "  say wrap up"] text=true at=canvas(0, 0)
+    puffins pf count=2 right-of=p gap=1
+    text ask "Wrap up was meant for cold days with little wind. What does the program say on this {t} °C day? Two lines have the wrong spaces. Which are they?" width=34 at=canvas(0, 17)
+    choice pick options=["stay in", "wrap up", "nothing"] below=ask gap=1
+    text tl "lines" below=pick gap=1
+    number-input line right-of=tl gap=1
+    text tand "and" right-of=line gap=1
+    number-input line2 right-of=tand gap=1
+  }
+
+  check coding.runs of=p pick=said
+  answer line=6 line2=7
+  feedback {
+    when (pick == "nothing") point=p {
+      say "Line 6 lines up with the if on line 3, so a day that is not below -10 goes to it."
+    }
+  }
+  hint "Which if does the otherwise line up with?"
+  hint "Which if should it belong to, if that line is meant for cold days with little wind?"
+}

@@ -1,0 +1,35 @@
+# A word to finish from its meaning: the missing brick is a root in the key, and the others are
+# roots that fit the sound of the word but not its meaning.
+item reading.root-build v=1 skills=[reading.morphology, reading.vocabulary] {
+  title "The missing root"
+  difficulty pick(k, 0, 0, 1, 0, 1, 1)
+  let k=0..5
+  level easy {
+    let k={0, 1, 3}
+  }
+  level hard {
+    let k={2, 4, 5}
+  }
+  let right={pick(k, "scope", "meter", "graphy", "phone", "trans", "aud")}
+
+  scene 35x17 {
+    text ask "{pick(k, \"A tool for looking at tiny things is a\", \"A tool for measuring heat is a\", \"A book about someone's life is a\", \"A tool for hearing sounds in water is a\", \"To carry something across is to\", \"A sound that can be heard is\")} ... Which root finishes the word?" at=canvas(1, 1) width=34
+    row bottom below=ask gap=1 space=2 align=start {
+      wordbricks word bricks=[pick(k, "micro", "thermo", "bio", "hydro", "?", "?"), pick(k, "?", "?", "?", "?", "port", "ible")] root=0 roots=2 blank=pick(k, 1, 1, 1, 1, 0, 0) labels=false
+      table key cols=2 head=["Root", "Means"] cells=[pick(k, "scope", "meter", "graphy", "phone", "trans", "aud"), pick(k, "look", "measure", "writing", "sound", "across", "hear"), pick(k, "phone", "scope", "logy", "scope", "sub", "vis"), pick(k, "sound", "look", "study", "look", "under", "see"), pick(k, "meter", "graph", "scope", "graph", "pre", "port"), pick(k, "measure", "write", "look", "write", "before", "carry")]
+    }
+    choice pick options=[pick(k, "phone", "scope", "logy", "scope", "sub", "vis"), pick(k, "scope", "graph", "scope", "graph", "pre", "port"), pick(k, "meter", "meter", "graphy", "phone", "trans", "aud")] below=bottom gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick == "logy") point=key {
+      say "Logy means study, so that word is the study of life. The book is written about one life."
+    }
+    when (k != 2 and pick != right) point=key {
+      say "Read that root's meaning in the key. Does the whole word then mean what the question says?"
+    }
+  }
+  hint "Which word in the question is the job the missing root must do?"
+  hint "Find that job in the key's Means column."
+}

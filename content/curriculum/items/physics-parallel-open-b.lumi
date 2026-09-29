@@ -1,0 +1,33 @@
+# Opening one switch puts out only its own branch's bulb. x is the switch Kit has opened; the question
+# is always about bulb B.
+item physics.parallel-open-b v=1 skills=[physics.circuits, reasoning.predict] {
+  title "One switch opened"
+  difficulty (if x == 1 then 0 else 1)
+  let x=0..2
+  level easy {
+    let x={1}
+  }
+  level hard {
+    let x={0, 2}
+  }
+  let sw={pick(x, "A", "B", "C")}
+  let ans={if x == 1 then "No" else "Yes"}
+
+  scene 36x21 {
+    parallel p cells=2 branches=3 closed=[if x == 0 then 0 else 1, if x == 1 then 0 else 1, if x == 2 then 0 else 1] show=0 symbols=0 at=canvas(1, 0)
+    text ask "All three bulbs were lit. Then Kit opened switch {sw}, as drawn. Is bulb B still lit?" narrate width=17 right-of=p gap=1
+    choice pick options=["Yes", "No"] stack=row below=ask gap=1
+  }
+
+  check physics.circuit of=p pick=on(b)
+  feedback {
+    when (pick == "No" and x != 1) point=p {
+      say "In a loop of bulbs one after another, one open switch puts them all out. Here, does B's branch still join both sides of the cells?"
+    }
+    when (pick == "Yes" and x == 1) point=p {
+      say "Switch B is in bulb B's own branch. With it open, can any current get through B?"
+    }
+  }
+  hint "Follow the wire from the cells through bulb B and back. Does it pass switch {sw}?"
+  hint "Is B's own switch closed?"
+}

@@ -1,0 +1,30 @@
+# Division as the inverse of multiplication: the quotient's sign comes from asking what times the
+# divisor gives the dividend, and the unknown moves from the answer to the first number.
+item negative.divide-undo v=1 skills=[number.negatives.divide, algebra.unknowns] negatives {
+  title "What times"
+  difficulty (v + (if x < 0 and b < 0 then 1 else 0) + abs(x * b) / 60)
+  let v=0..1 x={-9, -8, -7, -6, -4, -3, 3, 4, 6, 7, 8, 9} b={-8, -7, -6, -5, -4, -3, 3, 4, 5, 6, 7, 8}
+  where (x < 0 or b < 0)
+  where (abs(x) != abs(b))
+  level easy {
+    let v={0} x={-6, -4, -3, 3, 4, 6} b={-5, -4, -3, 3, 4, 5}
+  }
+  level hard {
+    let v={1} x={-9, -8, -7, -6} b={-8, -7, -6, -5}
+  }
+
+  scene 36x10 {
+    sign board lines=["{if v == 0 then \"(\" else \"? × (\"}{if v == 0 then x * b else b}{if v == 0 then \") ÷ (\" else \") = \"}{if v == 0 then b else x * b}{if v == 0 then \") = ?\" else \"\"}"] kind=board color=sky at=canvas(1, 1)
+    text ask "A calculation on the hut's board. What number goes in place of the question mark?" narrate width=16 right-of=board gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer x
+  feedback {
+    when (answer == -x) point=board {
+      say "Check it: multiply your answer by {b}. Does it give {x * b}?"
+    }
+  }
+  hint "Which number times {b} gives {x * b}?"
+  hint "First find the size, then ask: must it be above or below zero?"
+}

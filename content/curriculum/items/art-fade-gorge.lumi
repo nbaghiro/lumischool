@@ -1,0 +1,10 @@
+item art.fade-gorge v=1 stars=3 skills=[art.space, art.painting, reasoning.plan] {
+  title "The gorge fading into the distance"
+
+  scene 37x21 {
+    text ask "Paint the gorge from its mouth, looking up it: at least four ridges one behind another, the waterfall far back, and something close at the front. Make each ridge paler, bluer, softer and less detailed than the one in front." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="plain" guide="none" outline="none" pots=["green", "blue", "brown", "yellow", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A landscape that recedes by aerial perspective: four or more ridges overlapping one behind another, each further one paler with more white, cooler with more blue, softer at its edge and with less detail, and a near thing painted with the strongest colour, the darkest darks and sharp detail, so the eye travels from the front to the far waterfall." notice=["Four or more overlapping ridges", "Paler and bluer further back", "Soft edges and little detail far away", "Strong colour and sharp detail at the front"] ask="Which ridge looks furthest away to you, and what did you do to it?"
+}

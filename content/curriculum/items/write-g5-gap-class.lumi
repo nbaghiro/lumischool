@@ -1,0 +1,26 @@
+# A gap's word class read from its place in the sentence: after very, after an object at the end,
+# before a noun group, between two clauses; the core's second reasoning question. A pronoun is
+# left out, since a noun fits any gap a pronoun fits.
+item writing.gap-class v=1 skills=[writing.word-classes, writing.grammar] {
+  title "What class goes in the gap?"
+  difficulty pick(k, 0, 1, 0, 2, 2, 1, 0)
+  let k=0..6
+  let term={pick(k, "adjective", "adverb", "verb", "preposition", "conjunction", "preposition", "noun")}
+  level easy {
+    let k={0, 2, 6, 1}
+  }
+  level hard {
+    let k={1, 3, 4, 5}
+  }
+
+  scene 34x15 {
+    sentence strip before="{pick(k, \"The comet was very\", \"The comet crossed the sky\", \"Ada\", \"The owl hid\", \"We opened the dome\", \"The telescope stands\", \"We saw a\")}" blank=5 after="{pick(k, \".\", \".\", \"the rings of Saturn.\", \"the dome.\", \"the clouds had cleared.\", \"the dome.\", \"through the lens.\")}" answer="" size=16 at=canvas(1, 1)
+    shootingstar star sparkles=3 facing=1 below=strip gap=1
+    text ask "Any word that fits the gap belongs to one word class. Which class?" width=24 right-of=star gap=1
+    word-input pick options=[term] letters=11 below=ask gap=1
+  }
+
+  answer pick=term
+  hint "Try two or three words in the gap. What do the words that fit have in common?"
+  hint "Look at the words on each side of the gap. What job is left for the missing word?"
+}

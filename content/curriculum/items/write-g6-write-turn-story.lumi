@@ -1,0 +1,23 @@
+# The three-star: a story set on the moon with a turn, planned, drafted and revised over three
+# sittings, marked by a grown-up against the plan; at hard the turn needs a clue planted early.
+item writing.write-turn-story v=1 stars=3 skills=[writing.composing, writing.story-structure, writing.revising] {
+  title "Your story with a turn"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x45 {
+    storymountain hill stages=["Who and where", "Wants", "Trouble", "The turn", "Ending"] notes=["", "", "", "", ""] ring=3 at=canvas(0, 0)
+    text ask "{if k == 0 then \"Write a story set on the moon that turns. First sitting: a note on each card. Second: a paragraph for each card, written fast, starting on these lines and going on to more paper. Third: read it aloud and mend three sentences, one of them a told feeling you now show.\" else \"Write a story set on the moon that turns. First sitting: a note on each card, and a clue for the turn to plant early. Second: a paragraph for each card, written fast, starting on these lines and going on to more paper. Third: read it aloud, check the clue is there, and mend three sentences.\"}" narrate width=33 below=hill gap=1
+    writinglines lines lines=4 width=33 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A plan with a note on each of the five cards; a draft of about five paragraphs set on the moon, one a card, where the turn is a clear moment after which the character sees things differently and the ending follows from it; a revised copy with at least three changes that make it better, including at least one feeling shown through what the character does; at hard, a sentence early in the story that prepares for the turn without giving it away."
+  hint "Plan the turn first: what does your character believe, and what shows them otherwise?"
+  hint "In the third sitting, read it aloud to someone. Where do they lose interest, and why?"
+}

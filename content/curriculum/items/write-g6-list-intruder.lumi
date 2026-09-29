@@ -1,0 +1,36 @@
+# A puzzle over a summary's one word for a list: the list has an intruder, and it has to come out
+# before one word (birds, trees, machinery) can stand for the rest.
+item writing.list-intruder v=1 skills=[writing.summarising, writing.vocabulary, reasoning.odd-one-out] {
+  title "What spoils the list?"
+  difficulty k
+  let k=0..2 r=0..2
+  let s={pick(k, "Kingfishers, dippers, otters and grey wagtails live by the falls.", "Oak, ash, bracken and rowan grow on the sides of the gorge.", "The wheel, the gears, the miller and the millstones all need looking after.")}
+  let right={pick(k, "otters", "bracken", "the miller")}
+  let w1={pick(k, "dippers", "rowan", "the gears")}
+  let w2={pick(k, "grey wagtails", "ash", "the millstones")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x30 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      kingfisher kf flying=0 facing=1
+      waterwheel wheel paddles=8 lit=0
+    }
+    passage p title="Mia's notes" text="{s}" width=33 numbers=false below=pics gap=1
+    text ask "Mia wants one word for this list in her summary, but one thing in it does not belong. Which?" narrate width=33 below=p gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "That one belongs with the rest. What word would cover it and most of the others? Which one would that word leave out?"
+    }
+  }
+  hint "What are most of the things in the list?"
+  hint "Which one is a different kind of thing?"
+}

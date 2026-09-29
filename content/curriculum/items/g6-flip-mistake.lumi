@@ -1,0 +1,34 @@
+# The two-star: Mo divides by turning the wrong fraction over. The reason is that it is the number
+# divided by that turns over.
+item fraction.flip-mistake v=1 stars=2 skills=[fractions.divide, reasoning.find-the-mistake] {
+  title "Mo turns one over"
+  difficulty (b * d / 10)
+  let a=1..4 b={3, 4, 5, 6} c=1..4 d={3, 5, 7, 8}
+  where (a < b and c < d and gcd(a, b) == 1 and gcd(c, d) == 1 and a != 1 and b != d)
+  where (b * c != a * d and den(b / a * c / d) != den(a / b * d / c))
+  level easy {
+    where (b * d <= 15)
+  }
+  level hard {
+    where (b * d >= 30)
+  }
+
+  scene 33x14 {
+    unknown eq terms=["{a}/{b}", "÷", "{c}/{d}", "=", "{b}/{a}", "×", "{c}/{d}"] at=canvas(1, 1)
+    text ask "Mo started to work out {a}/{b} ÷ {c}/{d} like this. The step is wrong. What is the right answer, in its simplest form?" narrate width=32 below=eq gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      number-input top width=3
+      text slash "/"
+      number-input bottom width=3
+    }
+  }
+
+  answer top=num(a / b / (c / d)) bottom=den(a / b / (c / d))
+  feedback {
+    when (top == num(b / a * c / d) and bottom == den(b / a * c / d)) point=eq {
+      say "That is where Mo's step leads. Keep {a}/{b} as it is, and turn over {c}/{d}, the number you divide by."
+    }
+  }
+  hint "Which fraction is the one you divide by?"
+  hint "Dividing by a fraction is multiplying by it turned upside down. Which one turns?"
+}

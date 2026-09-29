@@ -1,0 +1,29 @@
+# Why Buck will not get up at the end of chapter 5. The chapter says he was barely able to rise, like
+# the others, but had made up his mind not to, because of the rotten ice he had felt all day; and
+# Thornton had not yet become his master, so each wrong reason is answered by a line.
+item reading.wild-refuses v=1 skills=[reading.inference, reading.characters, reading.whole-book] {
+  title "Why does Buck lie still?"
+  set right="He had felt the ice going rotten ahead."
+
+  scene 35x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        bookcast b who=buck pose=stand dir=1
+        text ask "Near the end of chapter 5 the other dogs struggle up when Hal beats them, but Buck lies still. Why?" width=22
+      }
+      choice pick options=["He was too weak to stand up at all.", "He wanted Thornton to take him instead.", right] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "He was too weak to stand up at all.") point=b {
+      say "The chapter compares Buck with his mates. Could he have got up, as they did?"
+    }
+    when (pick == "He wanted Thornton to take him instead.") point=b {
+      say "Does Buck know Thornton yet? Find what Buck had felt on the trail all that day."
+    }
+  }
+  hint "Find the lines just after the whip is swapped for the club. What had Buck made up his mind to do?"
+  hint "What had Buck felt under his feet all day, out on the river?"
+}

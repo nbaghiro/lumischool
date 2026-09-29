@@ -1,0 +1,34 @@
+# A puzzle over the speech's devices: four lines of Tam's speech for the bridge, three with a device (a
+# rhetorical question, the rule of three, speaking to the listeners as you) and one plain. At hard the
+# plain line has the number three in it, which is not the rule of three.
+item writing.speech-plain-line v=1 skills=[writing.persuasion, reasoning.odd-one-out] {
+  title "The plain line"
+  difficulty k
+  let k=0..2
+  let t={pick(k, "1. Who wants to cross a bridge with holes in it? 2. You walk over it every day. 3. It is old, it is rotten and it is dangerous. 4. The bridge was built a hundred years ago.", "1. It creaks, it sways and it is losing planks. 2. The ropes were last changed in the spring. 3. Would you let your little sister cross it? 4. You can mend it this summer.", "1. Three planks fell last week. 2. Do we wait until a child falls? 3. You can mend it, you can save it, you can do it now. 4. Every one of you crosses it twice a day.")}
+  let right={pick(k, "line 4", "line 2", "line 1")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x23 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage p title="Tam's speech" text="{t}" width=22 numbers=false
+      person tam pose=point age=child hair=curly colour=black top=tang
+    }
+    text ask "Three lines use a device: a rhetorical question, the rule of three, or speaking to the listeners as you. Which line uses none?" narrate width=33 below=top gap=1
+    choice pick options=["line 1", "line 2", "line 3", "line 4"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "That line has a device in it. Is it a question nobody needs to answer, three things in a row, or a line that speaks to the listeners?"
+    }
+  }
+  hint "Take each line in turn and name its device, if it has one."
+  hint "The rule of three is three things in a row, not the word three."
+}

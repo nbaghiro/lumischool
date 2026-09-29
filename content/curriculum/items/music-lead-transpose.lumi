@@ -1,0 +1,39 @@
+# Moving a lead sheet to another key: every chord moves the same distance, so in C to G each letter
+# goes up four (F to C, Am to Em, G7 to D7) and in C to F up three (G7 to C7, Am to Dm, F to B flat).
+item music.lead-transpose v=1 skills=[music.lead-sheets, music.chords, music.keys] {
+  title "The same song, lower"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let key={pick(k, "G", "G", "G", "F", "F", "F")}
+  let x={pick(k, "F", "Am", "G7", "G7", "Am", "F")}
+  let flat={pick(k, "", "", "", " F major has B flat.", " F major has B flat.", " F major has B flat.")}
+  let right={pick(k, "C", "Em", "D7", "C7", "Dm", "B flat")}
+  let o1={pick(k, "C", "C", "C", "C7", "C7", "C7")}
+  let o2={pick(k, "Em", "Em", "Em", "Dm", "Dm", "Dm")}
+  let o3={pick(k, "D7", "D7", "D7", "B flat", "B flat", "B flat")}
+  let o4={pick(k, "A", "A", "A", "G", "G", "G")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..5
+  }
+
+  scene 36x26 {
+    row top space=1 align=end at=canvas(1, 1) {
+      notes line clef=treble notes=[C5, C5, C5, D5, E5, D5] values=[1, 1, 1, 1, 2, 2] meter=4 chords=[C, _, _, _, G7, _]
+      earth earth up=1
+    }
+    text ask "The crew's lead sheet is in C major, with the chords C, Am, F and G7. For a lower voice Ben rewrites it in {key} major, so C becomes {key} and every chord moves by the same number of letters.{flat} What does {x} become?" narrate width=34 below=top gap=1
+    choice pick options=[o1, o2, o3, o4] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=line {
+      say "Count the letters from C up to {key}. Move {x}'s letter up the same number, and keep its m or its 7."
+    }
+  }
+  hint "How many letters up is it from the old key's note to {key}? Count the old key's note as the start."
+  hint "Count the same number of letters up from {x}'s letter. Does the new chord keep its m or its 7?"
+}

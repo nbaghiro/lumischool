@@ -1,0 +1,43 @@
+# The thermostat as a flowchart with one shape rubbed off: which box belongs on the yes way out of each
+# diamond, and why the wait is what lets a minute pass. The flowchart runs with the hut's thermometer
+# as its sensor, so the missing shape is read off the program and Run shows the reading change.
+item coding.sense-flow v=1 skills=[coding.sensors, coding.flowcharts, coding.decisions] {
+  title "The heater's flowchart"
+  difficulty k
+  let k=0..2
+  let right={pick(k, "switch heater on", "switch heater off", "wait 1")}
+  let o1={pick(k, "switch heater off", "wait 1", "switch heater on")}
+  let o2={pick(k, "wait 1", "switch heater on", "switch heater off")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x36 {
+    flowchart f code=["repeat 20", "  if temp is less than 18", "    switch heater on", "  if temp is more than 21", "    switch heater off", "  wait 1"] blank=pick(k, 3, 5, 6) sense=["temp starts 19 changes -1 heater 2"] at=canvas(0, 0)
+    text ask "The research hut's heater switches on below 18 °C and off above 21 °C. One shape of its flowchart has rubbed off. What goes in it?" width=18 right-of=f gap=2
+    choice pick options=[pick(k, right, o1, o2), pick(k, o1, o2, right), pick(k, o2, right, o1)] stack=column below=ask gap=1
+    thermometer th from=0 to=30 step=10 value=19 unit="°C" below=pick gap=2
+  }
+
+  check coding.runs of=f pick=blank
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == "switch heater off") point=f {
+      say "This box is on the yes way out of temp is less than 18. What should happen when the hut is cold?"
+    }
+    when (k == 1 and pick == "switch heater on") point=f {
+      say "This box is on the yes way out of temp is more than 21. What should happen when the hut is too warm?"
+    }
+    when (k == 2 and pick != right) point=f {
+      say "Without this box no time passes, and the hut's reading never changes. Which box lets a minute go by?"
+    }
+    when (pick == "wait 1" and k != 2) point=f {
+      say "The wait is at the bottom of the loop. This box is on the yes way out of a diamond."
+    }
+  }
+  hint "Which diamond does the empty shape hang from, and is it on the yes way or the no way?"
+  hint "Say what the diamond asks, then what the heater should do if the answer is yes."
+}

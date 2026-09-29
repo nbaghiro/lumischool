@@ -1,0 +1,31 @@
+# The lowest common multiple as a time: two lights flash together, and the next time they do.
+item number.beacons v=1 skills=[number.lcm] {
+  title "Flashing together"
+  difficulty (lcm(a, b) / 10)
+  let a={4, 6, 8, 9} b={6, 10, 12, 15}
+  where (a < b and lcm(a, b) != a * b and lcm(a, b) != b)
+  level easy {
+    where (lcm(a, b) <= 24)
+  }
+  level hard {
+    where (lcm(a, b) >= 36)
+  }
+
+  scene 34x12 {
+    observatory dome open=0 at=canvas(1, 1)
+    text ask "Two lights on the observatory flash together at midnight. One flashes every {a} seconds, the other every {b} seconds. After how many seconds do they next flash together?" narrate width=22 right-of=dome gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer lcm(a, b)
+  feedback {
+    when (answer == a * b) point=ask {
+      say "They do flash together then, but sooner too. List the multiples of {b} and find the first that {a} divides."
+    }
+    when (answer == gcd(a, b)) point=ask {
+      say "That is a number both divide into. The time must be a number both {a} and {b} go into."
+    }
+  }
+  hint "List the multiples of {b} in order. Which is the first that is also in the {a} times table?"
+  hint "Check each one by dividing it by {a}."
+}

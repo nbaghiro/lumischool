@@ -1,0 +1,77 @@
+# Five-note tunes from four countries: the major pentatonic scale as the major scale without its 4th
+# and 7th, the black keys as one, and songs of China, Japan, Russia and Scotland sorted by the notes
+# and steps they use, sung by the crew on the moon with the Earth over the edge.
+lesson music-five-note-tunes v=1 format=teach grade=6 unit=7 subject=music levels=[easy, medium, hard] {
+  title "Five-note tunes from four countries"
+  goal "Build the major pentatonic scale and tell it from other five-note scales by the steps between its notes."
+
+  look {
+    scene 36x23 {
+      row top space=2 align=end at=canvas(1, 1) {
+        tunegrid scale notes=["C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6"] columns=2 meter=2 tune=[] now=-1 labels="letters" down=[] lit=[] mark=[0, 1, 2, 4, 5, 7]
+        lander l rungs=5
+        earth home up=2
+      }
+    }
+    say """
+      On the moon the crew have a small glockenspiel, and at the end of each day they play songs
+      from home, with the Earth hanging still over the edge of the moon. Many folk songs use only
+      five notes. The best known five-note scale, the major pentatonic, is the major scale with its
+      4th and 7th notes left out: from C, that is C, D, E, G and A, ringed on the grid. The five
+      black keys of a piano make the same scale starting on F sharp. No two of its neighbouring
+      notes are a semitone apart. Other five-note scales keep semitones in: the Japanese song Sakura
+      uses E, F, A, B and C.
+      """
+  }
+  do {
+    show music.penta-left-out k=0 r=0 hard-k=1
+    level easy {
+      worked music.penta-build k=0 r=1 level=medium
+    }
+    show music.penta-black
+    show music.penta-songs q=1 easy-q=0 hard-q=2
+    show music.penta-build k=1 r=2 easy-k=1 hard-k=2
+    show music.penta-steps k=0 hard-k=1
+    show music.penta-left-out k=2 r=1 easy-k=1 hard-k=2
+    show music.penta-songs q=2 easy-q=1 hard-q=3
+    show music.penta-steps k=2 easy-k=3 hard-k=2
+    level hard {
+      show music.penta-build k=1 r=0
+    }
+  }
+  try stars=2 {
+    show music.penta-claim q=0 r=0 easy-r=1 hard-q=1
+  }
+  try stars=3 {
+    show music.penta-transpose
+  }
+  remember {
+    say "The major pentatonic scale is the major scale without its 4th and 7th notes, so it has no semitone steps."
+  }
+
+  grown-ups """
+    The idea is that many folk songs use five notes, that the major pentatonic is the major scale
+    with its 4th and 7th notes left out, and that a scale is known by the steps between its notes,
+    not just by how many notes it has. The wrong idea to watch for is that any five notes make a
+    pentatonic scale in the same sense; Sakura's five notes have two semitone steps and Mo Li Hua's
+    have none, which the two-star question asks about. In the working, look for the child numbering
+    the notes of the major scale, and checking a pair of neighbouring keys for a key between them.
+    The three-star question plays the start of Mo Li Hua on the black keys, which works because the
+    black keys are the same scale, starting on F sharp.
+
+    The songs are old folk songs in the public domain: Mo Li Hua from China, first written in
+    Western notation by John Barrow in 1793; Sakura from Japan, printed in a collection of koto
+    music in 1888; The Birch Tree from Russia; and Auld Lang Syne from Scotland, with Robert Burns's
+    words. If the steps are stuck, have the child play each pair of neighbours on a keyboard and
+    look for the key between. Off the page, play any tune on the black keys alone and notice that no
+    note clashes. This lesson meets China's 2022 arts standard for grade 6, 听赏与评述:
+    "能感知民族五声调式和大调式、小调式的音乐特点" (sense the character of the Chinese five-tone mode and of major and
+    minor keys).
+    """
+  level easy {
+    grown-ups "At this level the scales are on C, F and G, the major pentatonic on F is built once in the teacher's pen before the one on G, the songs are found by their exact notes, the steps are counted in Mo Li Hua's and Auld Lang Syne's scales, which have none, the two-star is as written with its answers in another order, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the scales are on G and D, with sharps, the songs are found by how many notes they use and by their semitone steps, the steps are counted in Sakura's scale, one more scale is built, and the two-star asks whether the first line of The Birch Tree is pentatonic."
+  }
+}

@@ -1,0 +1,32 @@
+# Filling until full: the repeat stops the first minute the tank holds at least its size, so a rate
+# that does not divide the size runs over into one more minute.
+item coding.tank-until v=1 skills=[coding.simulation, coding.variables, coding.repetition] {
+  title "Minutes to fill it"
+  difficulty (c / (r * 3) + (if c % r == 0 then 0 else 0.5))
+  let c={60, 80, 100, 120} r={8, 10, 12, 15}
+  where (c / r >= 4 and c / r <= 12)
+  level easy {
+    where (c % r == 0)
+  }
+  level hard {
+    where (c % r != 0)
+  }
+
+  scene 36x14 {
+    program p code=["set water to 0", "set minutes to 0", "repeat until water is at least {c}", "  add {r} to water", "  add 1 to minutes"] text=true at=canvas(0, 0)
+    text ask "The tank holds {c} litres. How many minutes does the program say it takes to fill?" width=10 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="value(minutes)"
+  feedback {
+    when (c % r != 0 and answer == (c - c % r) / r) point=p {
+      say "After that many minutes the tank is not yet full. The repeat goes round once more."
+    }
+    when (answer == c) point=p {
+      say "That is the size of the tank. The question asks what minutes holds."
+    }
+  }
+  hint "Write water and minutes side by side, and change both each time round."
+  hint "Stop at the first minute the water is at least the size of the tank."
+}

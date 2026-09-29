@@ -22,6 +22,10 @@ lesson g2-taking-away-with-an-exchange v=1 format=worked grade=2 unit=3 subject=
     show sub.no-exchange-count ta=4 oa=3 easy-ta=3 easy-oa=2 hard-ta=6 hard-oa=5
   }
 
+  remember {
+    say "If the top ones digit is too small, exchange a ten for ten ones."
+  }
+
   grown-ups """
     Do the first few with real rods and ones, swapping a rod for ten cubes before writing anything
     down. The writing makes sense once the swap has been done by hand. The first two questions ask

@@ -1,0 +1,34 @@
+# Three-star: the biggest so far starts at 100, bigger than every load, so the if is never true. The
+# child predicts the wrong result and names the line; any start below the smallest load would do, so
+# the question asks for the line, not a number.
+item coding.bug-best v=1 stars=3 skills=[coding.debugging, coding.variables, coding.decisions] {
+  title "Nothing is ever the biggest"
+  difficulty k
+  let k=0..1
+  let s={pick(k, 100, 50)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x15 {
+    program p code=["set loads to list 12, 30, 25, 41", "set best to {s}", "for each x in loads", "  if x is more than best", "    set best to x"] at=canvas(1, 0)
+    text ask "The market keeper wanted the biggest load. What is best at the end, and which line is the bug?" width=10 right-of=p gap=1
+    text tb "best" below=p gap=1
+    number-input best right-of=tb gap=1
+    text tl "line" right-of=best gap=2
+    number-input line right-of=tl gap=1
+  }
+
+  check coding.runs of=p best="value(best)"
+  answer line=2
+  feedback {
+    when (best == 41) point=p {
+      say "41 is the biggest load, but ask the if about each load with best as it really is."
+    }
+  }
+  hint "What is best before the first load is looked at? Is any load more than that?"
+  hint "Which line decides what best holds before the repeat starts?"
+}

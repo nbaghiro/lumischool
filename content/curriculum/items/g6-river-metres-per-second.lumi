@@ -1,0 +1,33 @@
+# Changing units of speed: an hour is 3600 seconds and a kilometre 1000 metres, so 1 m/s is 3.6 km/h.
+item speed.river-metres-per-second v=1 skills=[rates.speed, measure.convert] {
+  title "Metres each second"
+  difficulty (d + v / 12)
+  let v={5, 8, 10, 12} d=0..1
+  level easy {
+    let d={0} v={5, 10}
+  }
+  level hard {
+    let d={1} v={8, 12}
+  }
+
+  scene 34x8 {
+    kingfisher bird flying=1 facing=1 at=canvas(1, 1)
+    text ask "The kingfisher flies at {if d == 0 then v else v * 3.6} {if d == 0 then \"metres per second\" else \"km/h\"}. How many {if d == 0 then \"kilometres per hour\" else \"metres per second\"} is that? An hour is 3600 seconds." narrate width=26 right-of=bird gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "{if d == 0 then \"km/h\" else \"m/s\"}"
+    }
+  }
+
+  answer (if d == 0 then decimals(v * 3.6, 0) else v)
+  feedback {
+    when (d == 0 and answer == v * 60) point=ask {
+      say "That is the metres in one minute. An hour has 60 minutes, and a kilometre is 1000 m."
+    }
+    when (d == 1 and answer == v * 3.6 * 3.6) point=ask {
+      say "Metres per second is the smaller number, since a second is so short. Share by 3.6."
+    }
+  }
+  hint "How many metres does it fly in an hour, going the same each second?"
+  hint "How many kilometres is that many metres?"
+}

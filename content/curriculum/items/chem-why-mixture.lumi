@@ -1,0 +1,34 @@
+# The two-star reason: a compound has a fixed recipe and one boiling point, and air has neither. Its
+# gases turn liquid at different temperatures, and the share of each can change, as breathing shows.
+item chem.why-mixture v=1 stars=2 skills=[chemistry.gases, chemistry.mixtures, reasoning.evidence] {
+  title "How do we know air is a mixture?"
+  difficulty k
+  let k=0..1 r=0..2
+  let right={pick(k, "Its gases turn liquid at different temperatures", "The shares change, so it has no fixed recipe")}
+  let w1={pick(k, "It cannot be seen, so it must be many things", "Breathing turns oxygen into nitrogen")}
+  let w2={pick(k, "It has oxygen in it, and oxygen is an element", "Breathed-out air is a new compound")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x27 {
+    row kit at=canvas(1, 0) space=2 align=start {
+      atombox box a="nitrogen" na=4 b="oxygen" nb=1
+      table data cols=3 head=["Gas", "In (%)", "Out (%)"] cells=["Oxygen", "21", "16", "CO2", "0.04", "4"]
+    }
+    text ask "{if k == 0 then \"Air is nitrogen and oxygen, not joined to each other. Which fact shows it is a mixture and not one compound?\" else \"Sam's breathed-out air has less oxygen and more carbon dioxide than the air he breathed in. What does that show about air?\"}" narrate width=34 below=kit gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=box {
+      say "A compound is one substance with a fixed recipe of atoms, like water. Look at the box: are the nitrogen and oxygen joined to each other?"
+    }
+  }
+  hint "In the box, is each molecule joined to the others, or moving on its own?"
+  hint "{if k == 0 then \"Water, a compound, boils at one temperature. What would a mixture of two gases do?\" else \"Could a compound's recipe change from one breath to the next?\"}"
+}

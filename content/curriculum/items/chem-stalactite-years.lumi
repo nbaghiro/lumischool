@@ -1,0 +1,29 @@
+# Hard water dripping in a cave leaves calcium carbonate behind, and stalactites grow on average
+# about 0.13 mm a year (Wikipedia, Stalactite), so about 13 cm in 1000 years. The unknown is the
+# years for a length, or the length after some years.
+item chem.stalactite-years v=1 stars=1 skills=[chemistry.hard-water, ratio.scaling] {
+  title "How old is the stalactite?"
+  difficulty (w * 2 + (if n <= 3 then 0 else 1))
+  let w=0..1 n={2, 3, 4, 5}
+  level easy {
+    let w=0..0 n={2, 3}
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 36x13 {
+    stalactites st pairs=3 joined=1 rock=1 at=canvas(1, 0)
+    text ask "Behind the waterfall is a cave. Hard water drips from its roof and leaves a little calcium carbonate behind each time, so stalactites grow about 13 cm in 1000 years. {if w == 0 then \"About how many centimetres does one grow in \" else \"About how many years did it take to grow one \"}{if w == 0 then n * 1000 else n * 13}{if w == 0 then \" years?\" else \" cm long?\"}" narrate width=22 right-of=st gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then n * 13 else n * 1000)
+  feedback {
+    when (w == 1 and answer == n) point=st {
+      say "That is how many lots of 13 cm. Each lot takes 1000 years."
+    }
+  }
+  hint "{if w == 0 then \"How many lots of 1000 years is that?\" else \"How many lots of 13 cm is that?\"}"
+  hint "{if w == 0 then \"Each lot of 1000 years adds 13 cm.\" else \"Each lot of 13 cm takes 1000 years.\"}"
+}

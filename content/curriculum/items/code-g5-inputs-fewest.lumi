@@ -1,0 +1,31 @@
+# Three-star: each climb goes right and up by at least 1 and at most 3, so the fewest climbs is set
+# by the longer of the two distances, and every climb must still go up at least 1. The answers are
+# 3, 2 and 4.
+item coding.inputs-fewest v=1 stars=3 skills=[coding.procedures, reasoning.fewest, reasoning.constraints] {
+  title "The fewest climbs to the tower"
+  difficulty pick(k, 1, 0, 2)
+  let k=0..2
+  let x={pick(k, 8, 5, 9)} y={pick(k, 3, 5, 4)}
+  level easy {
+    let k={1}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x26 {
+    maze m cols=(x + 1) rows=6 col=1 row=6 face=right flag=[x + 1, 6 - y] at=canvas(0, 0)
+    text ask "Each number after climb can be 1, 2 or 3, and each climb uses the block once. What is the fewest climbs that stop the robot on the flag?" width=12 right-of=m gap=1
+    number-input answer below=ask gap=1
+    program p code=["define climb across high", "  right across", "  up high", "climb ? ?"] below=m gap=1
+  }
+
+  answer pick(k, 3, 2, 3)
+  feedback {
+    when (k == 0 and answer == 2) point=m {
+      say "Two climbs go up far enough, but the most they can go across is 6, and the flag is {x} across."
+    }
+  }
+  hint "How far across is the flag, and how far up?"
+  hint "What is the most one climb can go across? And up? Every climb has to go up at least 1."
+}

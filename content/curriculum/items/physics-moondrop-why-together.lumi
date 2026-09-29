@@ -1,0 +1,29 @@
+# Two stars: the same hammer and feather let go on Earth and on the moon. The difference is the air,
+# which pushes back hardest on the light, wide feather; weight alone does not make things fall faster.
+item physics.moondrop-why-together v=1 stars=2 skills=[physics.forces, reasoning.explain, reasoning.compare] {
+  title "Why together on the moon?"
+
+  scene 34x38 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      falling earth things=["hammer", "feather"] time=1 show=1 names=1 air=1
+      falling moon things=["hammer", "feather"] time=1 show=1 names=1 air=0
+    }
+    text ask "On Earth, left, the feather falls behind the hammer. On the moon, right, they fall together. Why?" narrate width=32 below=kit gap=1
+    choice pick options=["No air pushes back on the feather", "The feather weighs as much as the hammer", "Heavy things fall more slowly there", "Nothing has any weight there"] stack=column below=ask gap=1
+  }
+
+  answer pick="No air pushes back on the feather"
+  feedback {
+    when (pick == "The feather weighs as much as the hammer") point=moon {
+      say "The moon pulls both less than the Earth does, by the same share, so the hammer still weighs far more."
+    }
+    when (pick == "Heavy things fall more slowly there") point=moon {
+      say "Everything falls more slowly on the moon, light and heavy alike. What slows only the feather on Earth?"
+    }
+    when (pick == "Nothing has any weight there") point=moon {
+      say "The moon does pull on them, which is why they fall at all."
+    }
+  }
+  hint "What is on Earth that is not on the moon?"
+  hint "Which of the two does that push back on more, the heavy narrow hammer or the light wide feather?"
+}

@@ -1,0 +1,21 @@
+# The three-star question: two characters' changes side by side, each proved with a line from near
+# the start and one from near the end, and what changed them. A grown-up marks it.
+item reading.garden-change v=1 stars=3 skills=[reading.characters, reading.evidence, reading.whole-book, writing.composing] {
+  title "Two children change"
+
+  scene 35x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        bookcast m who=mary pose=walk dir=1
+        robin r post=1 facing=-1
+        flowers f count=3 petals=5
+      }
+      text ask "Mary and Colin both change. For each of them, copy a few words from near the start of the book and a few from near the end that show the change, and say what changed them." width=34
+      writinglines lines lines=5 width=34 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="Both changes named, each with two short quotations copied exactly: Mary from sour, cross and unloved (a sour expression, quite contrary, the most disagreeable-looking child) to kind and eager; Colin from sure he will die (no one believes I shall live to grow up, screaming, a lump) to strong (as straight as an arrow, I shall live forever, burst through it at full speed). What changed them is named: the garden, the moor air and work, Dickon and his mother, each other, and for Colin the Magic he believes in." notice=["Says how Mary changes", "Says how Colin changes", "A quotation from the start and the end for each", "Says what changed them"] ask="Which of the two changes more, do you think?"
+  hint "How is Mary described on the very first page? How is she by the last chapters?"
+  hint "What did Colin believe about himself when Mary met him? What does he do in the last chapter?"
+}

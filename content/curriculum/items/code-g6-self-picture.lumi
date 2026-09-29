@@ -1,0 +1,33 @@
+# Working back from the drawing: the trunk is as long as the number after tree, and each branch is
+# half the one it grew from, so the picture says which tree was drawn.
+item coding.self-picture v=1 skills=[coding.recursion, coding.drawing, reasoning.work-backwards] {
+  title "Which tree was drawn?"
+  difficulty k
+  let k=0..1
+  let s={pick(k, 2, 4)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x27 {
+    turtle t cols=5 rows=(s + 2) col=3 row=(s + 2) face=up moves=["define tree n", "  forward n", "  if n is more than 1", "    turn left", "    tree n / 2", "    turn around", "    tree n / 2", "    turn left", "  back n", "tree {s}"] at=canvas(0, 0)
+    program p code=["define tree n", "  forward n", "  if n is more than 1", "    turn left", "    tree n / 2", "    turn around", "    tree n / 2", "    turn left", "  back n", "tree {s}"] text=true blank=10 right-of=t gap=1
+    text ask "Frost covered the last line. The turtle started on the ring, facing up. What number came after tree?" width=13 below=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer s
+  feedback {
+    when (answer == 2 * s) point=t {
+      say "The trunk is the first line drawn, and forward n draws it n squares long. Count its squares."
+    }
+    when (answer == s * 2 - 1) point=t {
+      say "That counts the lines. The number after tree is how long the trunk is."
+    }
+  }
+  hint "Which line did the turtle draw first, from the ring?"
+  hint "Which line of the block draws it, and what number does that line use the first time the block runs?"
+}

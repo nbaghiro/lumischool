@@ -1,0 +1,33 @@
+# The way in to an orbit: the lander goes straight for a moment and the moon's pull turns it a little,
+# over and over. The count is hidden, and one whole orbit is 360 degrees shared into equal turns.
+item coding.orbit-steps v=1 skills=[coding.simulation, angles.turns, coding.repetition] {
+  title "Steps round the moon"
+  difficulty (k / 2)
+  let k=0..4
+  let n={pick(k, 6, 8, 9, 10, 12)} cols={pick(k, 5, 5, 6, 7, 7)} rows={pick(k, 4, 5, 5, 6, 6)} col={pick(k, 2, 2, 3, 3, 3)}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={3, 4}
+  }
+
+  scene 36x27 {
+    program p code=["repeat {n}", "  forward 1", "  turn left {360 / n}"] text=true blank=1 at=canvas(0, 0)
+    turtle t cols=cols rows=rows col=col row=rows face=right moves=["repeat {n}", "  forward 1", "  turn left {360 / n}"] show=false right-of=p gap=1
+    text ask "Each step the lander goes forward 1, then the moon's pull turns it {360 / n} degrees. The number on line 1 is covered. How many steps make one whole orbit, back to the start facing the same way?" width=15 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=t answer=sides
+  feedback {
+    when (answer == 360) point=p {
+      say "360 is how many degrees make a whole turn. Each step turns only {360 / n} of them."
+    }
+    when (answer == 4) point=p {
+      say "A square turns 90 degrees at each corner. This orbit turns {360 / n} at each step."
+    }
+  }
+  hint "How many degrees does the lander turn in one whole orbit?"
+  hint "How many turns of {360 / n} degrees make that?"
+}

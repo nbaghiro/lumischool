@@ -1,0 +1,16 @@
+# The three-star question: a one-sentence summary of a paragraph in no more than twenty words. There
+# is no key, so a grown-up marks it against the look-for.
+item reading.summary-write v=1 stars=3 skills=[reading.summary, writing.composition] {
+  title "Twenty words or fewer"
+  let k=0..1
+
+  scene 35x44 {
+    passage p title="{pick(k, \"The face we see\", \"Moon days\")}" text="{pick(k, \"The moon turns once on its axis in the time it takes to go once round the Earth, about twenty-seven days. Because of this, the same side of the moon always faces us, and the dark patches that people call the man in the moon never move. Nobody saw the far side until 1959, when a spacecraft called Luna 3 flew behind the moon and photographed it. It sent the pictures home by radio, and newspapers around the world printed them. They were blurred, but they held a surprise: the far side has hardly any dark patches and is covered in craters instead. People sometimes call it the dark side of the moon, but that is a mistake. The far side gets just as much sunlight as the side we see, and when our side has its long night, the far side has its long day. We are simply never in the right place to see it lit.\", \"A day on the moon, from one sunrise to the next, lasts about twenty-nine and a half Earth days, so the sun stays up for about two weeks at a time and then stays down for two weeks. With no air to hold the heat or spread it around, the ground changes more than anywhere on Earth. In sunlight it grows hotter than boiling water, and in the long night it becomes colder than anywhere on Earth, even the South Pole in winter. A machine left out through the night needs a heater, or its parts can crack in the cold. The sky stays black even at noon, because there is no air to scatter the sunlight and turn it blue. The first astronauts landed in the early morning of a moon day, when the ground was neither too hot nor too cold, and left long before the noon heat arrived.\")}" width=34 numbers=false at=canvas(1, 1)
+    text ask "Summarise the paragraph in one sentence of twenty words or fewer, in your own words." below=p gap=1 width=34
+    writinglines lines lines=2 width=34 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="One sentence, twenty words or fewer, in the child's own words, with the main point and nothing that is not in the text. For the face we see: the moon spins once each time it goes round the Earth, so we only ever see one side (that the far side, first seen in 1959, is not dark is a fair extra if it fits). For moon days: days and nights on the moon each last about two weeks, burning hot and then freezing cold. Luna 3, the heater, the black sky and the astronauts' landing time are details to leave out. Count the words together. A child who copies a sentence from the text has not yet summarised; ask what the whole paragraph is about."
+  hint "Say what the whole paragraph is about in a few words first."
+  hint "Now add only what is needed to make that a sentence. Count the words."
+}

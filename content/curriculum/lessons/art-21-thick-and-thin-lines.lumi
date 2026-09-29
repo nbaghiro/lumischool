@@ -1,6 +1,6 @@
 # Thick and thin lines: the width of a line is one of the things a drawing says with, and what it says
 # is how near and how heavy a thing is.
-lesson art-thick-and-thin-lines v=1 format=teach grade=1 unit=3 subject=art levels=[easy, medium, hard] {
+lesson art-thick-and-thin-lines v=1 format=teach grade=1 unit=8 subject=art levels=[easy, medium, hard] {
   title "Thick and thin lines"
   goal "Use a thick line for what is near and heavy and a thin line for what is far and light, and read a drawing that does."
 

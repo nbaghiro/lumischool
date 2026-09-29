@@ -1,0 +1,32 @@
+# Longer is not bigger: three depths to order where the one with most digits is never the deepest.
+# The core's reasoning question, since the digits have to be compared column by column.
+item decimal.deepest-lock v=1 skills=[decimals.compare, reasoning.find-the-mistake] {
+  title "The deepest lock"
+  difficulty ((if b == a then 2 else 0) + (if c == 0 then 1 else 0))
+  let a=2..4 b=2..4 c={0, 5} d=1..8 e=1..9 q=0..2
+  where (b == a or b == a - 1)
+  level easy {
+    where (b == a - 1)
+  }
+  level hard {
+    where (b == a and c == 0)
+  }
+
+  scene 35x19 {
+    canallock lock level=0.6 boat=1 at=canvas(1, 1)
+    text ask "Nell says the lock with the most digits in its depth must be the deepest. Which of these three locks is really the deepest?" narrate width=16 right-of=lock gap=2
+    text la "A:   {if q == 0 then decimals(a + (d + 1) / 10, 0) else if q == 1 then decimals(b + d / 10 + c / 100 + e / 1000, 0) else decimals(a + d / 10, 0)} m" below=lock gap=1
+    text lb "B:   {if q == 0 then decimals(b + d / 10 + c / 100 + e / 1000, 0) else if q == 1 then decimals(a + d / 10, 0) else decimals(a + (d + 1) / 10, 0)} m" below=la gap=0
+    text lc "C:   {if q == 0 then decimals(a + d / 10, 0) else if q == 1 then decimals(a + (d + 1) / 10, 0) else decimals(b + d / 10 + c / 100 + e / 1000, 0)} m" below=lb gap=0
+    choice pick options=["A", "B", "C"] below=lc gap=1
+  }
+
+  answer pick=(if q == 0 then "A" else if q == 1 then "C" else "B")
+  feedback {
+    when (pick == (if q == 0 then "B" else if q == 1 then "A" else "C")) point=ask {
+      say "More digits does not mean bigger. Compare the ones, then the tenths, before anything else."
+    }
+  }
+  hint "Look at the ones first. Which depths have the most whole metres?"
+  hint "If the ones are the same, compare the tenths."
+}

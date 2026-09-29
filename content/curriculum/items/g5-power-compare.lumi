@@ -1,0 +1,38 @@
+# The core's reasoning question on powers: two powers with the base and the power swapped, compared by
+# working both out rather than by the bigger base (Russia's grade 5 powers with any base).
+item place.power-compare v=1 skills=[place-value.powers-of-ten, reasoning.compare] {
+  title "The bigger power"
+  difficulty s
+  let s=0..4
+  let a={pick(s, 2, 2, 3, 2, 3)}
+  let p={pick(s, 3, 10, 4, 4, 5)}
+  let c={pick(s, 3, 10, 4, 4, 5)}
+  let q={pick(s, 2, 3, 3, 2, 3)}
+  level easy {
+    let s={0}
+  }
+  level medium {
+    let s={1, 2}
+  }
+  level hard {
+    let s={3, 4}
+  }
+
+  scene 31x12 {
+    sign note lines=["A:  {a} to the power {p}", "B:  {c} to the power {q}"] kind=board color=tang at=canvas(1, 1)
+    text ask "{a} to the power {p} means {p} of the number {a} multiplied together. Which of these is bigger?" narrate width=14 right-of=note gap=2
+    choice pick options=["A", "B", "the same"] below=note gap=1
+  }
+
+  answer pick=(if a ^ p > c ^ q then "A" else if a ^ p < c ^ q then "B" else "the same")
+  feedback {
+    when (pick == "B" and a ^ p >= c ^ q and c > a) point=note {
+      say "B has the bigger number multiplied, but A multiplies more times. Work out both."
+    }
+    when (pick == "A" and a ^ p <= c ^ q and p > q) point=note {
+      say "A multiplies more times, but by a smaller number. Work out both."
+    }
+  }
+  hint "Write {a} to the power {p} as {a} × {a} × ... with {p} of them. What is it?"
+  hint "Now work out {c} to the power {q} in that way, and compare."
+}

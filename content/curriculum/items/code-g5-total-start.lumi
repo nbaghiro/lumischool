@@ -1,0 +1,29 @@
+# The unknown is the start: total ends as the start plus the items, so the start is found by taking
+# the items away from the end.
+item coding.total-start v=1 skills=[coding.variables, reasoning.work-backwards] {
+  title "Where did the total start?"
+  difficulty ((a + b + c + s) / 5)
+  let a=2..6 b=2..6 c=1..5 s=3..9
+  where (a != b and s != a and s != b and s != c and s != a + b + c)
+  level easy {
+    where (a + b + c + s <= 15)
+  }
+  level hard {
+    where (a + b + c + s >= 20)
+  }
+
+  scene 36x13 {
+    program p code=["set loads to list {a}, {b}, {c}", "set total to ?", "for each x in loads", "  add x to total"] at=canvas(1, 0)
+    text ask "The market keeper's total already had some crates in it from yesterday. At the end total is {a + b + c + s}. What number replaces the question mark?" width=14 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer s
+  feedback {
+    when (answer == a + b + c) point=p {
+      say "That is what the loads add up to. The question asks where total started before they were added."
+    }
+  }
+  hint "What do the loads add up to?"
+  hint "Total started at some number and then had the loads added. Take them away from the end."
+}

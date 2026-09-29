@@ -1,0 +1,30 @@
+# Halving on a shelf in order: the first look is the middle, and the book being bigger or smaller
+# than it throws half the shelf away. When an even number of cups is left the question says to lift
+# the left of the two middles, which is the rule the cups checker uses to work out the lifts.
+item coding.search-halve v=1 skills=[coding.algorithms, reasoning.search] {
+  title "Halving the shelf"
+  difficulty pick(t - 1, 3, 2, 3, 4, 1, 3, 2, 3, 4)
+  let t=1..9
+  let book={pick(t - 1, 103, 118, 126, 140, 155, 162, 177, 185, 199)}
+  level easy {
+    let t={2, 5, 8}
+  }
+  level hard {
+    let t={1, 4, 6, 9}
+  }
+
+  scene 36x17 {
+    cups c cards=[103, 118, 126, 140, 155, 162, 177, 185, 199] open=[] target=book at=canvas(1, 0)
+    text ask "The library's books are under the cups in number order. Lift the middle of what is left each time, and when two cups share the middle, lift the left one. How many lifts find book {book}?" width=26 below=c gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=c answer=lifts
+  feedback {
+    when (answer == t and t > 3 and pick(t - 1, 3, 2, 3, 4, 1, 3, 2, 3, 4) != t) point=c {
+      say "That is lifting one cup at a time from the left. Halving starts in the middle."
+    }
+  }
+  hint "Which cup is in the middle? Is book {book} bigger or smaller than the book under it?"
+  hint "Throw away the half it cannot be in, and lift the middle of what is left."
+}

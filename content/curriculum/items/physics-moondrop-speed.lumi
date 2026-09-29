@@ -1,0 +1,34 @@
+# A pattern in a table: on the moon a falling thing gains 1.6 m/s of speed every second, so its speed
+# after k seconds is 1.6 times k. The table shows the first three seconds.
+item physics.moondrop-speed v=1 skills=[physics.forces, physics.speed, decimals.multiply, reasoning.patterns] {
+  title "Faster every second"
+  difficulty k
+  let k=3..6
+  level easy {
+    let k=3..4
+  }
+  level hard {
+    let k=5..6
+  }
+
+  scene 33x19 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      lander l rungs=5
+      table t cols=2 head=["Seconds falling", "Speed"] cells=["0", "0 m/s", "1", "1.6 m/s", "2", "3.2 m/s"]
+    }
+    text ask "A rock falls from a cliff on the moon. The table gives its speed as it falls. How fast is it going after {k} seconds, in metres a second?" narrate width=22 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals(1.6 * k, if k == 5 then 0 else 1)
+  feedback {
+    when (answer == 1.6 * k + 1.6) point=t {
+      say "Count the seconds from 0: after 1 second it has gained 1.6 m/s once."
+    }
+    when (answer == 3.2 + k - 2) point=t {
+      say "It does not gain 1 m/s each second. How much does the speed grow from one row to the next?"
+    }
+  }
+  hint "How much faster is the rock after each second than the second before?"
+  hint "How many lots of that has it gained after {k} seconds?"
+}

@@ -1,0 +1,34 @@
+# The three-star: how many questions a whole key has when it names so many creatures and each
+# question splits one group in two. Every question makes one more group, from one group to one per
+# creature, so the count is one less than the creatures. The traps are the creatures themselves and
+# the number of questions on the longest path.
+item nature.key-count v=1 stars=3 skills=[nature.keys, reasoning.generalise] {
+  title "How many questions in the whole key?"
+  difficulty k
+  let k=0..2
+  let n={pick(k, 4, 6, 10)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x19 {
+    minibeasts row kinds=["snail", "spider", "ant", "ladybird", "butterfly", "bee"] legs=false at=canvas(1, 1)
+    text ask "Ben writes a key that names {n} different creatures. Each question splits one group into two smaller groups, and the key ends when every creature has its own name. How many questions does the whole key have?" narrate width=32 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n - 1)
+  feedback {
+    when (answer == n) point=ask {
+      say "The first question already splits the creatures into two groups. Count the groups after each question: two, then three."
+    }
+    when (answer < n - 1) point=ask {
+      say "That is how many questions one creature might answer on its way. The question asks for every question in the key."
+    }
+  }
+  hint "Before any question, all {n} are in one group. After the first question, how many groups are there?"
+  hint "Every question makes one more group. How many groups are there when every creature has its own name?"
+}

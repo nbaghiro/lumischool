@@ -1,0 +1,25 @@
+# Sizes to a scale of one millimetre for every thousand kilometres, so the Earth is a bead 13 mm
+# across and the Sun a ball more than a metre wide. Widths rounded to the nearest thousand km.
+item physics.scale-size v=1 skills=[physics.sky, place-value.divide-by-thousand, measure.scale] {
+  title "How big is the bead?"
+  difficulty (if k > 5 then 1 else 0)
+  let k=1..6
+  let name={pick(k - 1, "Earth", "Mars", "Neptune", "Uranus", "Jupiter", "The Sun")}
+  let w={pick(k - 1, 13000, 7000, 50000, 51000, 143000, 1392000)}
+  let wide={pick(k - 1, "13,000", "7,000", "50,000", "51,000", "143,000", "1,392,000")}
+
+  scene 31x14 {
+    planets p count=8 names=1 at=canvas(1, 0)
+    text ask "For the size model, 1 mm stands for 1,000 km. {name} is {wide} km across. How many millimetres across is its bead?" narrate width=30 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (w / 1000)
+  feedback {
+    when (answer == w / 100) point=ask {
+      say "Each millimetre stands for a thousand kilometres, so divide by a thousand."
+    }
+  }
+  hint "How many thousands of kilometres across is it?"
+  hint "Each thousand kilometres is one millimetre."
+}

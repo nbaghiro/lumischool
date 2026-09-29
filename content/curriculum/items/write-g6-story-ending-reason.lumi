@@ -1,0 +1,40 @@
+# The two-star reason: two endings for a story with a turn, one that grows from what the turn changed
+# and one that only looks like it does (a prize, a spare wheel), with the same reason offered for each.
+item writing.story-ending-reason v=1 stars=2 skills=[writing.story-structure, reasoning.explain] {
+  title "Which ending, and why?"
+  difficulty k
+  let k=0..1 r=0..2
+  let turn={pick(k, "The turn: Kit, left behind at the lander, is the only one who can see the lost crew's lamps, and she guides them home.", "The turn: the broken wheel that Omar cursed stopped the rover just short of a deep crack.")}
+  let two={pick(k, "A: The next week Kit won a prize for the best drawing at the base. B: After that the crew always left someone at the high window, and Kit asked to be the one.", "A: From then on Omar let the slow days be slow, and he checked the map more carefully. B: The next morning a supply rover brought a spare wheel, and Omar drove on to the far crater.")}
+  let right={pick(k, "B: it grows from what the turn changed", "A: it grows from what the turn changed")}
+  let w1={pick(k, "A: it grows from what the turn changed", "B: it grows from what the turn changed")}
+  let w2={pick(k, "A: it rewards Kit for what she did", "B: it mends the wheel, so the trouble is over")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x39 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      lander lnd rungs=5
+      crater cr count=2
+    }
+    passage p title="The story so far" text="{turn} {two}" width=33 numbers=false below=pics gap=1
+    text ask "Which ending has the story earned, and why?" narrate width=33 below=p gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=p {
+      say "That is the right test, but check it against that ending. Does it come from what the turn changed, or could it end almost any story?"
+    }
+    when (pick == w2) point=p {
+      say "That ending tidies things up, but not because of the turn. What did the character learn at the turn, and which ending shows it?"
+    }
+  }
+  hint "What did the turn change for the character?"
+  hint "Which ending shows that change lasting?"
+}

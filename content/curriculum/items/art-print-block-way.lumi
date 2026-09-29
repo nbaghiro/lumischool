@@ -1,0 +1,34 @@
+# Both blocks are carved turned over. One carved the way the picture looks prints facing the other
+# way from the other colour; both carved that way line up but the whole print is turned over.
+item art.print-block-way v=1 skills=[art.printing, reasoning.predict] {
+  title "Carved the wrong way round"
+  difficulty k
+  let k=0..1 m={"fish", "bird"}
+  let r={if m == "fish" then k else k + 1}
+  let what={pick(k, "the yellow block turned over, but the blue block the way the picture looks", "both blocks the way the picture looks, not turned over")}
+  let right={pick(k, "The blue faces the other way from the yellow", "They line up, but the whole picture is turned over")}
+  let o1={"The blue faces the other way from the yellow"}
+  let o2={"They line up, but the whole picture is turned over"}
+  let o3={"They line up the right way round"}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x21 {
+    stamps block motif=m show="both" colour=blue flip=false made="print" at=canvas(1, 1)
+    text ask "Ada carves {what}. What happens on her print?" width=17 right-of=block gap=1
+    choice pick options=[if r == 0 then o1 else if r == 1 then o2 else o3, if r == 0 then o2 else if r == 1 then o3 else o1, if r == 0 then o3 else if r == 1 then o1 else o2] stack=column below=block gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=block {
+      say "Look at the block and its print: the fish swims one way on the block and the other way on the paper. Follow each of Ada's blocks through that turn."
+    }
+  }
+  hint "Which way does a fish face on the print if it faces right on the block?"
+  hint "Follow each block in turn. Do the two colours come out facing the same way?"
+}

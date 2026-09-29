@@ -1,0 +1,41 @@
+# Two stanzas that look alike are where a poem said by heart goes wrong, so the child finds the one
+# line that differs. Blake's "The Tiger" (1794, Gutenberg eBook 1934) changes one word, Could to
+# Dare, between its first and last stanzas; Tennyson's "The Brook" (1855, eBook 56913) keeps the
+# last three lines of a stanza as a refrain and changes the first.
+item reading.heart-differs v=1 skills=[reading.poetry, reading.recited] {
+  title "Spot the line that changes"
+  difficulty pick(k, 1, 0, 0)
+  let k=0..2
+  level easy {
+    let k={1, 2}
+  }
+  level hard {
+    let k={0}
+  }
+
+  scene 36x31 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        poem first title="{pick(k, \"The Tiger: first stanza\", \"The Brook: stanza 3\", \"The Brook: stanza 3\")}" lines=[pick(k, "Tiger, tiger, burning bright", "Till last by Philip's farm I flow", "Till last by Philip's farm I flow"), pick(k, "In the forests of the night,", "To join the brimming river,", "To join the brimming river,"), pick(k, "What immortal hand or eye", "For men may come and men may go,", "For men may come and men may go,"), pick(k, "Could frame thy fearful symmetry?", "But I go on for ever.", "But I go on for ever.")] rhymes=[-1, -1, -1, -1] width=26
+        kingfisher bird flying=0 facing=-1
+      }
+      poem last title="{pick(k, \"The Tiger: last stanza\", \"The Brook: stanza 6\", \"The Brook: last stanza\")}" lines=[pick(k, "Tiger, tiger, burning bright", "I chatter, chatter, as I flow", "And out again I curve and flow"), pick(k, "In the forests of the night,", "To join the brimming river,", "To join the brimming river,"), pick(k, "What immortal hand or eye", "For men may come and men may go,", "For men may come and men may go,"), pick(k, "Dare frame thy fearful symmetry?", "But I go on for ever.", "But I go on for ever.")] rhymes=[-1, -1, -1, -1] width=26
+      row bottom space=1 align=centre {
+        text ask "When you say the poem by heart, the line that changes is the one to watch. Which line of the second stanza is different?" width=28
+        number-input answer
+      }
+    }
+  }
+
+  answer pick(k, 4, 1, 1)
+  feedback {
+    when (k == 0 and answer != 4) point=last {
+      say "Read the two stanzas word by word, side by side. Look closely at the first word of each line."
+    }
+    when (k > 0 and answer != 1) point=last {
+      say "Those lines come back in every few stanzas. Which line tells something new?"
+    }
+  }
+  hint "Put a finger on the first line of each stanza and read them together. Are they the same?"
+  hint "Move both fingers down a line at a time, comparing every word."
+}

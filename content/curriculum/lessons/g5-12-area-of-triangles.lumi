@@ -1,0 +1,60 @@
+lesson g5-area-of-triangles v=1 format=teach grade=5 unit=8 subject=maths levels=[easy, medium, hard] {
+  title "Area of triangles, parallelograms and trapezia"
+  goal "Find the area of a parallelogram, a triangle and a trapezium from a base and a height, and a missing height from an area."
+
+  look {
+    scene 36x16 {
+      areashape stone kind=parallelogram base=6 height=4 shift=2 unit=cm at=canvas(1, 1)
+      tessellation floor tile=triangle cols=4 rows=3 right-of=stone gap=2
+    }
+    say """
+      The temple floor is laid with stones of three shapes. Cut the end off a parallelogram and move
+      it to the other side, and it is a rectangle: base times height, 6 × 4 = 24 square centimetres.
+      A triangle is half a parallelogram, so it is half of base times height. Two trapezia make a
+      parallelogram, so a trapezium is half of the two parallel sides added, times the height. The
+      height is always measured straight up from the base, never along a sloping side.
+      """
+  }
+  do {
+    practice area.parallelogram-area count=1 seed=3
+    level easy {
+      worked area.triangle-area b=10 h=6 s=4 level=medium
+    }
+    practice area.triangle-area count=2 seed=4
+    practice area.trapezium-area count=1 seed=5 hard-count=2
+    practice area.height-from-area count=1 seed=6
+    practice area.temple-tiles count=1 seed=2
+    practice area.leaning-triangle count=1 seed=7
+    practice area.trapezium-area count=1 seed=8 hard-count=0
+    level hard {
+      practice area.height-from-area count=1 seed=11
+    }
+  }
+  try stars=2 {
+    show area.halve-mistake s=1 easy-s=0 hard-s=2
+  }
+  try stars=3 {
+    show area.all-triangles n=12 easy-n=10 hard-n=18
+  }
+  remember {
+    say "Parallelogram: base × height. Triangle: half of base × height. Trapezium: half of the two parallel sides added, × height."
+  }
+
+  grown-ups """
+    Paper and scissors make every rule here: cut a parallelogram into a rectangle, cut a rectangle
+    along its diagonal into two triangles, and put two copies of a trapezium together. The mistake
+    to watch for is using a sloping side as the height; point at the dashed line and ask whether it
+    is straight up from the base. Forgetting to halve a triangle is the other, and the parallelogram
+    it came from is the check. In the two-star question the child picks what Nell did wrong: she
+    used a sloping side, whose true length is given, in place of the height. In the three-star
+    question double the area is what base times height must make, and a list of factor pairs in
+    order finds every stone. If the halving is still guesswork, stay here another day. Off the page,
+    measure a triangular sandwich or a slice of pizza and work out its area.
+    """
+  level easy {
+    grown-ups "At this level the parallelograms are 4 to 6 long, a triangle 10 by 6 is worked once in the teacher's pen before triangles with even bases up to 8, the trapezia have sides that add to an even number, the missing height is of a parallelogram, the tiles are 10 or 20 cm across and there are 12, the leaning pennant has an even base, Nell's mistake is on a base of 6 with a sloping side of 5, and the three-star is for an area of 10."
+  }
+  level hard {
+    grown-ups "At this level the parallelograms are 8 to 10 long and 6 or 7 tall, the triangles are 9 to 12 long, the trapezia are 10 to 12 long and 6 to 8 tall and asked twice, the missing height is of a triangle and asked twice, the tiles are 30 by 30 or 40 and there are 36, the leaning pennant has an odd base, Nell's mistake is on a base of 12 with a sloping side of 10, and the three-star is for an area of 18."
+  }
+}

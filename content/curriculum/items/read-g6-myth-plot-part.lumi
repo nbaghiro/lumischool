@@ -1,0 +1,34 @@
+# The parts of a plot named on the story mountain: exposition, rising action, climax, falling action
+# and resolution. An event from one of the three tales read in reading.myth-why, and which part it
+# is; the two wrong parts are its neighbours on the mountain.
+item reading.myth-plot-part v=1 skills=[reading.story-structure, reading.myths] {
+  title "Which part of the plot?"
+  difficulty pick(q, 0, 1, 1, 1, 2, 1, 0, 0)
+  let q=0..7
+  let right={pick(q, "Exposition", "Rising action", "Falling action", "Climax", "Rising action", "Climax", "Resolution", "Exposition")}
+  let near={pick(q, "Rising action", "Climax", "Resolution", "Rising action", "Climax", "Falling action", "Falling action", "Rising action")}
+  let far={pick(q, "Climax", "Exposition", "Climax", "Falling action", "Exposition", "Rising action", "Climax", "Climax")}
+
+  scene 36x30 {
+    column all at=canvas(0, 1) space=1 align=start {
+      text ask "{pick(q, \"Daedalus and Icarus: they were kept prisoner on Crete by King Minos. Which part of the plot is this?\", \"Daedalus and Icarus: Icarus forgot the warning and climbed towards the sun. Which part of the plot is this?\", \"Daedalus and Icarus: his father searched the water and found only feathers. Which part of the plot is this?\", \"Thor’s fishing trip: the serpent’s head rose out of the waves, and Hymir cut the line. Which part of the plot is this?\", \"Thor’s fishing trip: Thor rowed on, far past Hymir’s fishing grounds. Which part of the plot is this?\", \"Ilya of Murom: Ilya shot Nightingale the Robber in the eye. Which part of the plot is this?\", \"Ilya of Murom: he rode on to Kyiv, where the people called him a hero. Which part of the plot is this?\", \"Ilya of Murom: for thirty-three years he sat by the stove. Which part of the plot is this?\")}" width=36
+      storymountain m stages=["Exposition", "Rising action", "Climax", "Falling action", "Resolution"] notes=["", "", "", "", ""]
+      choice pick options=[pick(q, right, near, far, far, far, near, right, right), pick(q, near, right, near, right, near, far, near, near), pick(q, far, far, right, near, right, right, far, far)] stack=row
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "Climax" and right != "Climax") point=m {
+      say "The climax is the one turning point where the problem comes to a head. Does everything change at this moment, or is it building to it or winding down from it?"
+    }
+    when (pick == "Rising action" and right != "Rising action") point=m {
+      say "Rising action builds the problem up, after the opening and before the turn. Has the turn already happened here?"
+    }
+    when (pick != right and pick != "Climax" and pick != "Rising action") point=m {
+      say "Find the climax of this story first. Does this come before it or after it, and how far?"
+    }
+  }
+  hint "Find the climax of this story first: the moment everything turns."
+  hint "Does this event come before the climax or after it? At the very start or end, or on the way?"
+}

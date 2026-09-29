@@ -1,0 +1,39 @@
+# Two programs for the same trip: one moves a square at a time in a repeat, the other moves along each
+# straight part in one line. Both reach the flag; one takes far fewer steps.
+item coding.least-two v=1 skills=[coding.efficiency, reasoning.compare] {
+  title "Same trip, fewer steps"
+  difficulty ((a + b) / 3)
+  let a=3..6 b=2..4
+  level easy {
+    where (a + b <= 6)
+  }
+  level hard {
+    where (a + b >= 8)
+  }
+
+  scene 36x27 {
+    row both at=canvas(0, 0) space=1 align=start {
+      program pa code=["repeat {a}", "  right 1", "repeat {b}", "  up 1"] text=true title="A"
+      program pb code=["right {a}", "up {b}"] text=true title="B"
+    }
+    maze g cols=8 rows=5 col=1 row=5 face=right flag=[1 + a, 5 - b] code=["repeat {a}", "  right 1", "repeat {b}", "  up 1"] upto=0 trail=none below=both gap=1
+    text ask "Both programs take the rover to the flag. How many steps does A take? How many does B take?" width=14 right-of=g gap=1
+    text ta "A" below=ask gap=1
+    number-input sa right-of=ta gap=1
+    text tb "B" right-of=sa gap=2
+    number-input sb right-of=tb gap=1
+  }
+
+  check coding.runs of=g sa=steps
+  answer sb=2
+  feedback {
+    when (sa == 4) point=pa {
+      say "A has four lines, but the moving lines run once each time round. Count the times they run."
+    }
+    when (sb == a + b) point=pb {
+      say "B moves {a + b} squares, but in only two lines, so two steps."
+    }
+  }
+  hint "In A, how many times does each moving line run?"
+  hint "In B, each line runs once. How many lines are there?"
+}

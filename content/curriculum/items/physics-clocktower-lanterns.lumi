@@ -1,0 +1,37 @@
+# The story: each lit branch draws as much current as one lantern alone, so the cells run down that
+# many times as fast. v picks the switches, h how long the cells last with one lantern.
+item physics.clocktower-lanterns v=1 skills=[physics.circuits, division.grouping] {
+  title "The clock tower's lanterns"
+  difficulty (if v == 2 then 1 else 0)
+  let v=0..2 h={12, 24}
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2}
+  }
+  let on={if v == 2 then 3 else 2}
+
+  scene 30x35 {
+    row two at=canvas(1, 0) space=2 align=end {
+      clocktower t
+      parallel p cells=2 branches=3 closed=[1, if v == 1 then 0 else 1, if v == 0 then 0 else 1] show=0 symbols=1
+    }
+    text ask "The clock tower's three lanterns are on branches side by side, with the switches set as drawn. With one lantern lit, these cells last {h} hours. Each lit lantern draws its own current from the cells. How many lanterns are lit, and how many hours will the cells last tonight?" narrate width=28 below=two gap=1
+    number-input lit below=ask gap=1
+    number-input hours right-of=lit gap=3
+  }
+
+  answer hours=(h / on)
+  check physics.circuit of=p lit=lit
+  feedback {
+    when (hours == h) point=p {
+      say "The lanterns are no dimmer, but each one draws its own current. Do the cells run down faster or slower?"
+    }
+    when (hours == h * on) point=p {
+      say "More lanterns lit takes more current from the cells, so they run down sooner, not later."
+    }
+  }
+  hint "Count the branches with closed switches."
+  hint "Each lit lantern takes as much current as one lantern alone. How many times as fast do the cells run down?"
+}

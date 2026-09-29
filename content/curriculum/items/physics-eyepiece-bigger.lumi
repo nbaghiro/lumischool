@@ -1,0 +1,24 @@
+# Two stars: with the same big lens, the eyepiece with the shorter focus magnifies more, although the
+# bigger eyepiece might be expected to. v says which telescope has the shorter one.
+item physics.eyepiece-bigger v=1 stars=2 skills=[physics.light, reasoning.compare] {
+  title "Which eyepiece?"
+  let v=0..1 s={3, 4} l={6, 10}
+
+  scene 33x30 {
+    column two at=canvas(1, 0) space=1 align=start {
+      lens a mode=telescope objective=60 eyepiece=(if v == 0 then s else l) show=1 tag="A"
+      lens b mode=telescope objective=60 eyepiece=(if v == 0 then l else s) show=1 tag="B"
+    }
+    text ask "Both telescopes have the same big lens. Which makes the Moon look bigger?" narrate width=32 below=two gap=1
+    choice pick options=["A", "B", "The same"] below=ask gap=1
+  }
+
+  answer pick=(if v == 0 then "A" else "B")
+  feedback {
+    when (pick == "The same") point=two {
+      say "The big lenses are the same, but the eyepieces are not. Work out how many times bigger each one makes it."
+    }
+  }
+  hint "How many times bigger does each telescope make things look?"
+  hint "Divide 60 by each eyepiece's focus. Which answer is larger?"
+}

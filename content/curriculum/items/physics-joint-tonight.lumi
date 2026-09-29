@@ -1,0 +1,26 @@
+# The way in: the gap is read off the joint, and a colder night shrinks the steel, so the gap widens.
+# t is the air today.
+item physics.joint-tonight v=1 skills=[physics.heat, physics.measuring] {
+  title "The gap at the bridge's joint"
+  let t={15, 25, 35}
+
+  scene 34x24 {
+    expansion j mode=0 span=50 temp=t show=1 at=canvas(1, 0)
+    text ask "The canal bridge's two steel decks meet over a pier with a gap between their ends. How wide is the gap today, in millimetres? Tonight the air cools to 5 °C. Will the gap be wider or narrower then?" narrate width=32 below=j gap=1
+    number-input mm below=ask gap=1
+    choice way options=["Wider", "Narrower", "The same"] stack=row right-of=mm gap=2
+  }
+
+  answer way="Wider"
+  check physics.forces of=j mm=gap
+  feedback {
+    when (way == "Narrower") point=j {
+      say "Cold steel shrinks. When each deck gets a little shorter, what happens to the space between their ends?"
+    }
+    when (way == "The same") point=j {
+      say "Steel changes length with its temperature, even when nobody can see it move."
+    }
+  }
+  hint "Read the number written above the gap."
+  hint "When steel cools, does each deck get longer or shorter?"
+}

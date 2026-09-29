@@ -1,0 +1,75 @@
+# A piece played with both hands: reading a piano score on two staves spaced by length, the left
+# hand's finger numbers and bass notes, each hand alone, then both at once and a long note held while
+# the other hand moves, with Ode to Joy (Beethoven, 1824) in the lander on the moon.
+lesson music-both-hands v=1 format=teach grade=6 unit=8 subject=music levels=[easy, medium, hard] {
+  title "A piece with both hands"
+  goal "Read a piano piece on two staves and play it with both hands, sounding together the notes that line up."
+
+  look {
+    scene 33x37 {
+      column score space=0 align=start at=canvas(1, 1) {
+        notes right clef=treble notes=[E4, E4, F4, G4, G4, F4, E4, D4] values=[] meter=4 spaced=true
+        notes left clef=bass notes=[C3, G2] values=[4, 4] meter=4 spaced=true
+      }
+      row low space=3 align=end below=score gap=1 {
+        hand hands side=both numbers=piano ring=0 colours=false
+        lander ship rungs=5
+      }
+    }
+    say """
+      In the lander there is a small keyboard, and the crew play Ode to Joy, Beethoven's tune from
+      1824. Piano music is written on two staves joined together: the top one, with the treble clef,
+      is for the right hand, and the bottom one, with the bass clef, is for the left. Notes written
+      one above the other are played at the same moment. Here the left hand holds C for the whole of
+      bar 1 while the right hand plays four notes, then moves down to G for bar 2.
+      """
+  }
+  do {
+    practice music.hands-together-note count=1 seed=7 easy-seed=7 hard-seed=7
+    level easy {
+      worked music.hands-lh-finger k=1 level=medium
+    }
+    practice music.hands-lh-finger count=1 seed=9 easy-seed=1 hard-seed=1
+    practice music.hands-play-left count=1 seed=2 easy-seed=1 hard-seed=7
+    practice music.hands-play-right count=1 seed=7 easy-seed=1 hard-seed=7
+    practice music.hands-play-together count=1 seed=7 easy-seed=1 hard-seed=7
+    practice music.hands-together-note count=1 seed=2 easy-seed=2 hard-seed=2
+    practice music.hands-held-count count=1 seed=2 easy-seed=1 hard-seed=7
+    level hard {
+      show music.hands-claim q=1 r=1
+    }
+    practice music.moon-hands-count count=1 seed=2 easy-seed=1 hard-seed=7
+  }
+  try stars=2 {
+    show music.hands-claim q=0 r=0 easy-r=1 hard-r=0
+  }
+  try stars=3 {
+    show music.hands-perform v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "On a piano score, notes one above the other are played together: left to right is time."
+  }
+
+  grown-ups """
+    The idea is that a piano score is read like a map: left to right is time and top to bottom is
+    the two hands, so notes lined up one above the other sound together and a long note in one hand
+    is held while the other hand moves. The wrong ideas to watch for are reading the top staff first
+    and the bottom one after it, counting the left hand's fingers from the thumb the wrong way,
+    since the little finger is 5 on the lowest note, and playing a held note again on the next beat.
+    In the working, look for the child's finger running straight down the page before playing. The
+    two-star question is the claim that the top staff is played first; the three-star question is a
+    performance for you to judge against what it asks, each hand alone first and then together, and
+    at medium it asks the child to choose the left hand for bars 3 and 4 by which chord holds more
+    of the right hand's notes. A child who is stuck can play each hand alone and then very slowly
+    together, saying the beats, and go back to the way in; stay on this lesson another day if the
+    hands still take turns. The notes played are judged on the music page; the performance is yours
+    to judge in the room. Off the page, play the first line of Ode to Joy together, one of you on
+    each hand, then swap.
+    """
+  level easy {
+    grown-ups "At this level the notes played together are at the start of a bar, a left-hand finger in C position is worked once in the teacher's pen before another, the left hand to play is C, E, G, B, the notes to play together start bar 1 or bar 2, the held note is the left hand's first, the moments both hands start together are counted under a left hand of C, G, B, the two-star is as written with its answers in another order, and the three-star plays two bars with both hands."
+  }
+  level hard {
+    grown-ups "At this level the notes played together are on beat 3, the left hand moves to G position, the left hands to play move between C and G by skips, the notes to play together are on beat 3, the held note is a crotchet B under the right hand's held minim, a claim that a left-hand minim is played again is judged before the two-star, the left hands to compare start a note where the right hand is holding, and the three-star plays the whole line with a left hand in minims and makes up a left hand for the second line."
+  }
+}

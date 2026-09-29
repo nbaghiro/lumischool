@@ -1,0 +1,34 @@
+# Opposites on a wheel of twelve: the opposite of two parts of one primary and one of another is two
+# parts of the missing primary and one of the same other one.
+item art.glow-recipe v=1 skills=[art.complementary, art.colour-mixing, reasoning.generalise] {
+  title "The opposite of an in-between colour"
+  difficulty (if j == 1 or j == 3 then 0 else 1)
+  let j=0..5
+  let r={j % 3}
+  let i={2 * j + 1}
+  let own={pick(i, "", "two red and one yellow", "", "two yellow and one red", "", "two yellow and one blue", "", "two blue and one yellow", "", "two blue and one red", "", "two red and one blue")}
+  let opp={pick((i + 6) % 12, "", "two red and one yellow", "", "two yellow and one red", "", "two yellow and one blue", "", "two blue and one yellow", "", "two blue and one red", "", "two red and one blue")}
+  let a={pick((i + 4) % 12, "", "two red and one yellow", "", "two yellow and one red", "", "two yellow and one blue", "", "two blue and one yellow", "", "two blue and one red", "", "two red and one blue")}
+  let b={pick((i + 8) % 12, "", "two red and one yellow", "", "two yellow and one red", "", "two yellow and one blue", "", "two blue and one yellow", "", "two blue and one red", "", "two red and one blue")}
+  level easy {
+    let j={1, 3}
+  }
+  level hard {
+    let j={0, 2, 4, 5}
+  }
+
+  scene 34x19 {
+    colourwheel wheel segments=12 blank=[] ring=i labels=true split="none" at=canvas(1, 1)
+    text ask "The ringed colour is mixed from {own}. Which mix sits opposite it on the wheel?" width=18 right-of=wheel gap=1
+    choice pick options=[if r == 0 then opp else if r == 1 then a else b, if r == 0 then a else if r == 1 then b else opp, if r == 0 then b else if r == 1 then opp else a] stack=column below=ask gap=1
+  }
+
+  answer pick=opp
+  feedback {
+    when (pick != opp) point=wheel {
+      say "Go straight across the middle of the wheel and look at the two named colours either side of the one you land on."
+    }
+  }
+  hint "Go straight across the wheel from the ringed colour. Which two named colours is it between?"
+  hint "It is mostly the primary the ringed colour has none of. What is the one part?"
+}

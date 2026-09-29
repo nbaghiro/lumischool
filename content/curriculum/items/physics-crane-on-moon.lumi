@@ -1,0 +1,34 @@
+# The same crane on another world, in the core: its winch can pull 2000 N anywhere, so the heaviest
+# load is 2000 divided by the pull on each kilogram there, in whole kilograms, rounded down.
+item physics.crane-on-moon v=1 skills=[physics.weight, physics.sky, reasoning.constraints] {
+  title "The heaviest load"
+  difficulty v
+  let v=0..3
+  let place={pick(v, "Jupiter", "the Moon", "Venus", "Mars")}
+  let most={pick(v, 80, 1250, 222, 540)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 33x22 {
+    planets pl count=5 names=1 at=canvas(1, 0)
+    table g cols=2 head=["Place", "Pull on 1 kg"] cells=["Earth", "10 N", "Moon", "1.6 N", "Mars", "3.7 N", "Venus", "9 N", "Jupiter", "25 N"] below=pl gap=1
+    text ask "A crane's winch can pull up to 2000 N. On Earth it lifts at most 200 kg. What is the heaviest load, in whole kilograms, it can lift on {place}?" narrate width=14 right-of=g gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer most
+  feedback {
+    when (answer == 200) point=g {
+      say "That is its limit on Earth. On {place} each kilogram pulls on the winch with a different number of newtons."
+    }
+    when (answer == most + 1) point=g {
+      say "Check that load: it would pull a little more than 2000 N."
+    }
+  }
+  hint "How many newtons does each kilogram pull with on {place}?"
+  hint "How many kilograms make 2000 N at that pull? Round down, so the winch is never pulled past 2000 N."
+}

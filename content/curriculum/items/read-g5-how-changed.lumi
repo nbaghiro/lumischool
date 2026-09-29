@@ -1,0 +1,21 @@
+# The three-star question: the change in the child's own words, backed by a quotation from the start
+# and one from the end. A grown-up marks it against the look-for.
+item reading.how-changed v=1 stars=3 skills=[reading.character, reading.evidence, writing.composition] {
+  title "How and why she changed"
+  let k=0..1
+
+  scene 35x29 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        face before mood=cross hair=3 name="Part 1"
+        face after mood=happy hair=3 name="Part 3"
+      }
+      text ask "{pick(k, \"Write how Iris changed and what changed her. Copy a few words from the start and a few from the end to prove it.\", \"Write how Mr Tamas changed and what changed him. Copy a few words from the start and a few from the end to prove it.\")}" width=34
+      writinglines lines lines=4 width=34 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="A sentence on the change (Iris goes from not wanting to be there to proud and eager, or Mr Tamas from ignoring her to trusting her with a key), a reason that names the stopped clock and Iris squeezing in to free the gear, and two short quotations copied exactly, one from Part 1 (kicked the bottom step, Clocks are boring, as slowly as she could, did not look up) and one from Part 3 (grinned, before Mr Tamas arrived, a key of her own). A quotation must be in the story word for word."
+  hint "Say the change in one sentence first: from what, to what?"
+  hint "Find the words that prove the start, then the words that prove the end, and copy them exactly."
+}

@@ -1,0 +1,32 @@
+# Blending across opposites passes through a dull middle; going round the wheel through the colours
+# between keeps every band bright.
+item art.sky-round-the-wheel v=1 skills=[art.blending, art.complementary, reasoning.strategy] {
+  title "The long way round"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let p={k % 3}
+  let a={pick(k, "yellow", "red", "orange")}
+  let b={pick(k, "purple", "green", "blue")}
+  let via={pick(k, "green", "yellow", "purple")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x15 {
+    colourwheel wheel segments=6 blank=[] ring=-1 labels=true split="none" at=canvas(1, 1)
+    text ask "Ada's sky goes from {a} at the bottom to {b} at the top, and she wants every band between them bright. Which colour could one of the bands between be?" width=18 right-of=wheel gap=1
+    choice pick options=[if p == 0 then via else if p == 1 then "brown" else "grey", if p == 0 then "brown" else if p == 1 then "grey" else via, if p == 0 then "grey" else if p == 1 then via else "brown"] below=ask gap=1
+  }
+
+  answer pick=via
+  feedback {
+    when (pick != via) point=wheel {
+      say "Where are {a} and {b} on the wheel? Mixed straight together, opposites turn dull. Walk round the wheel from one to the other instead."
+    }
+  }
+  hint "Find {a} and {b} on the wheel. Can you walk from one to the other round the edge?"
+  hint "Which colours do you pass on the way? Each of them could be a band."
+}

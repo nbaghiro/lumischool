@@ -1,0 +1,31 @@
+# The mean worked backwards across a change: a new day that moves the mean by one has to lift every
+# day's share, so it is the old mean plus five times the change, not the new mean.
+item data.hut-mean-missing v=1 skills=[data.mean, reasoning.work-backwards] {
+  title "Friday lifts the mean"
+  difficulty (v + m / 10)
+  let v=0..2 m={12, 15, 18}
+  level easy {
+    let v={0}
+  }
+  level hard {
+    let v={2}
+  }
+
+  scene 33x17 {
+    table data cols=6 head=["Day", "Mon", "Tue", "Wed", "Thu", "Fri"] cells=["Puffins", m + pick(v, -3, 4, -6), m + pick(v, 5, -2, -4), m + pick(v, -4, -3, 3), m + pick(v, 2, 1, 7), "?"] at=canvas(1, 1)
+    text ask "From Monday to Thursday the mean count was {m} puffins a day. Friday's count {if v == 2 then \"pulled\" else \"lifted\"} the mean of all five days to {m + pick(v, 1, 2, -2)}. How many puffins were counted on Friday?" narrate width=32 below=data gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (m + 5 * pick(v, 1, 2, -2))
+  feedback {
+    when (answer == m + pick(v, 1, 2, -2)) point=data {
+      say "That is the new mean. Friday has to change the share of all five days, not only its own."
+    }
+    when (answer == m) point=data {
+      say "That is the mean of the first four days. What must all five days add up to now?"
+    }
+  }
+  hint "What did the four days add up to? What must all five add up to?"
+  hint "How many puffins does Friday add to the total?"
+}

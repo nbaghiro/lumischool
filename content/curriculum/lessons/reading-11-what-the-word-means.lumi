@@ -1,4 +1,4 @@
-lesson reading-what-the-word-means v=1 format=teach grade=3 unit=2 subject=reading levels=[easy, medium, hard] {
+lesson reading-what-the-word-means v=1 format=teach grade=3 unit=1 subject=reading levels=[easy, medium, hard] {
   title "What the word means here"
   goal "Work out what a word means from the sentence it sits in, and tell a saying from words that mean exactly what they say."
 

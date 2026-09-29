@@ -1,0 +1,31 @@
+# Two-star: where the broadcast goes decides when the doubling happens. The child reasons which
+# place gives the number wanted, rather than running each place one by one.
+item coding.msg-where v=1 stars=2 skills=[coding.events, coding.messages, reasoning.work-backwards] {
+  title "Where should the message go?"
+  difficulty k
+  let k=0..2
+  let a={pick(k, 3, 4, 5)} b={pick(k, 2, 3, 1)} c={pick(k, 1, 2, 4)}
+  let want={pick(k, 11, 13, 20)}
+  let right={pick(k, "between lines 3 and 4", "between lines 2 and 3", "after line 4")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x27 {
+    program p code=["when the flag is tapped", "set lamps to {a}", "add {b} to lamps", "add {c} to lamps", "when I receive dusk", "double lamps"] at=canvas(0, 0)
+    text ask "The city's lamp program is missing one line: broadcast dusk. Where must it go so that lamps ends at {want}?" width=16 right-of=p gap=1
+    choice pick options=["between lines 2 and 3", "between lines 3 and 4", "after line 4"] stack=column below=p gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "Put the broadcast there and work it out: lamps doubles at that moment, then the lines after it run. Does it end at {want}?"
+    }
+  }
+  hint "The doubling happens where the broadcast is. Which lines run before it, and which after?"
+  hint "Work back from {want}: which number doubled, with what added after, gives it?"
+}

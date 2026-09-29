@@ -1,0 +1,31 @@
+# The Earth's layers by depth, from EARTH_LAYERS (crust to 35 km under a continent, mantle to 2,890 km,
+# outer core to 5,150 km, inner core to the centre at 6,371 km; IUGG, PREM, USGS). The checker names
+# the layer and refuses a depth near a boundary; the crust, 5 to 70 km thick, is never the answer.
+item chem.drill-layer v=1 skills=[chemistry.rocks, measure.scale] {
+  title "Which layer is that deep?"
+  difficulty (if d == 2 or d == 4 then 1 else 0)
+  let d=0..5
+  level easy {
+    let d={0, 1, 3, 5}
+  }
+  level hard {
+    let d={2, 4}
+  }
+  let km={pick(d, 400, 1000, 2700, 4000, 5300, 6000)}
+  let words={pick(d, "400", "1,000", "2,700", "4,000", "5,300", "6,000")}
+
+  scene 29x38 {
+    earthinside e names=1 depths=1 ask=0 scale=1 at=canvas(1, 0)
+    text ask "Imagine a place {words} km straight down from the ground. Which layer of the Earth is it in?" narrate width=28 below=e gap=1
+    choice pick options=["crust", "mantle", "outer core", "inner core"] stack=column below=ask gap=1
+  }
+
+  check chem.rocks of=e pick="layer({km})"
+  feedback {
+    when (pick == "crust") point=e {
+      say "The crust is only 5 to 70 km thick. {words} km is much deeper than that."
+    }
+  }
+  hint "Read how deep each layer goes, from the top down."
+  hint "Which is the first layer that goes deeper than {words} km?"
+}

@@ -1,0 +1,34 @@
+# A pronoun that could point two ways, mended by turning the report into speech. Which girl is to
+# open the gate turns with k, so the child has to read who each version names.
+item writing.two-way-pronoun v=1 skills=[writing.pronouns, writing.speech-punctuation] {
+  title "Who will open the gate?"
+  difficulty k
+  let k=0..1
+  let who={pick(k, "Ana", "Nadia")}
+  let o1={"Nadia said to Ana, “You will open the gate.”"}
+  let o2={"Nadia told Ana that she would open it."}
+  let o3={"Nadia said to Ana, “I will open the gate.”"}
+  let right={pick(k, o1, o3)}
+
+  scene 33x25 {
+    row top at=canvas(1, 0) space=1 align=end {
+      person a pose=point age=child hair=braids colour=black top=glow
+      person b pose=stand age=child hair=bob colour=auburn top=mint
+      citywalls walls towers=2 open=0
+    }
+    text ask "Nadia told Ana that she would open the gate. Who is she? The reader cannot tell. Which version makes it clear that {who} will open it?" narrate width=32 below=top gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == o2) point=ask {
+      say "That still has she, and she could still be either girl. A clear version names who, or uses I and you inside speech marks."
+    }
+    when (pick != right and pick != o2) point=ask {
+      say "Inside the speech marks Nadia is talking. Who is I when Nadia speaks, and who is you?"
+    }
+  }
+  hint "Which version still leaves the same word that could mean either girl?"
+  hint "When Nadia speaks, I means Nadia and you means the girl she is talking to."
+}

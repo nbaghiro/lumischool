@@ -1,0 +1,29 @@
+# The three-star: the fewest arrows of the rock cycle from one kind of rock to another, worked out by
+# the checker along the arrows drawn (stepsAlong). Some routes go most of the way round the loop, and
+# a shortcut, where it is drawn, changes the answer.
+item chem.cycle-steps v=1 stars=3 skills=[chemistry.rocks, reasoning.all-the-ways] {
+  title "The shortest way round"
+  difficulty (k + (if all == 1 then 0 else 1))
+  let k=0..3 all=0..1
+  let from={pick(k, 0, 3, 0, 1)}
+  let to={pick(k, 3, 2, 4, 0)}
+  let a={pick(k, "igneous rock", "metamorphic rock", "igneous rock", "sediment")}
+  let b={pick(k, "metamorphic rock", "sedimentary rock", "magma", "igneous rock")}
+  level easy {
+    let all=1..1 k=0..2
+  }
+  level hard {
+    let all=0..0 k=1..3
+  }
+
+  scene 35x30 {
+    rockcycle c arrows=[1, 2, 3, 4, 5, if all == 1 then 6 else 5, if all == 1 then 7 else 5] blank=0 hide=-1 key=1 start=from end=to at=canvas(1, 0)
+    text ask "Rock can take many paths through the cycle. Following the arrows, what is the fewest arrows that take {a}, the box marked S, to {b}, the box marked E?" narrate width=34 below=c gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check chem.rocks of=c answer=steps
+  hint "Start at {a}. Where can each arrow leaving it take you?"
+  hint "Try every route. Count the arrows on each."
+  hint "Is there a shortcut across the middle that saves a step?"
+}

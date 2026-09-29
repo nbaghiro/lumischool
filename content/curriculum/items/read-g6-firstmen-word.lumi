@@ -1,0 +1,30 @@
+# A word's meaning from its sentence in The First Men in the Moon. Each wrong meaning fits a
+# careless reading of the sentence, so the child has to read the lines around the word.
+item reading.firstmen-word v=1 skills=[reading.vocabulary, reading.whole-book] {
+  title "What does the word mean?"
+  difficulty pick(k, 1, 1, 0, 1)
+  let k=0..3
+  let right={pick(k, "it stops it, as a wall stops light", "thin, with very little air in it", "made and trained for one job only", "saying what should have been kept secret")}
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=centre {
+        moon m
+        text ask "{pick(k, \"In chapter 2 Cavor says his new stuff is opaque to gravitation. What does opaque mean here?\", \"In chapter 9 the men fear the moon's air might be so rarefied that it harms them. What does rarefied mean?\", \"In chapter 24 Cavor says each Selenite is specialised. What does that mean?\", \"In chapter 26 Bedford speaks of Cavor's fatal indiscretion. What was an indiscretion?\")}" width=26
+      }
+      choice pick options=[pick(k, "it makes it stronger", right, "chosen to be a leader", "a mistake with a machine"), pick(k, right, "very cold, like ice", "clever at every kind of work", right), pick(k, "it lets it through", "full of poison gas", right, "a fight that he started")] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == "it lets it through") point=m {
+      say "That is the opposite. What happens to things once the stuff is under them in chapter 2?"
+    }
+    when (k == 3 and pick != right) point=m {
+      say "Read the lines before it in chapter 26. What had Cavor told the Grand Lunar about men?"
+    }
+  }
+  hint "Read the sentences around the word, not just the word itself."
+  hint "Put each meaning into the sentence in place of the word. Which one makes sense there?"
+}

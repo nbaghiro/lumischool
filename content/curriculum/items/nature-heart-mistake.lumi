@@ -1,0 +1,38 @@
+# The two-star reason: the mistake in what Ben says, or the reason behind a gasp. The lungs do not
+# pump, blood is not used up but goes round, and a held breath fills the blood with carbon dioxide.
+item nature.heart-mistake v=1 stars=2 skills=[nature.circulation, reasoning.find-the-mistake] {
+  title "What is wrong?"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "Ben says: \"The lungs pump the blood round the body.\" What is wrong with that?", "Ben says: \"Blood goes out to the body and gets used up, so the heart makes new blood with every beat.\" What is wrong with that?", "Ada holds her breath under the water of the pool for 20 seconds, then comes up gasping. Why does she have to breathe so hard?")}
+  let ans={pick(k, "The heart pumps; the lungs give blood oxygen", "The same blood goes round and round", "Carbon dioxide built up in her blood")}
+  let o1={pick(k, "Nothing: the lungs and heart both pump", "Nothing: new blood is made every beat", "Her lungs filled up with pool water")}
+  let o2={pick(k, "The blood moves round by itself", "Blood is made in the lungs instead", "Her heart stopped while she was under")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x26 {
+    parts fig of=chest at=canvas(1, 1)
+    text ask "{asks}" narrate width=19 right-of=fig gap=2
+    choice pick options=[o1, ans, o2] stack=column below=fig gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=fig {
+      say "The lungs fill with air and empty again. Which part is a muscle that squeezes blood along?"
+    }
+    when (k == 1 and pick != ans) point=fig {
+      say "Blood leaves the heart in tubes and comes back to it in tubes. Where does that leave it?"
+    }
+    when (k == 2 and pick != ans) point=fig {
+      say "Her muscles kept working while she held her breath. What waste gas were they still making?"
+    }
+  }
+  hint "What does each part in the drawing do: move air, or move blood?"
+  hint "Blood travels in a closed loop of tubes, out from the heart and back again."
+}

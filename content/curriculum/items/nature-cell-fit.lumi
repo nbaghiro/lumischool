@@ -1,0 +1,35 @@
+# The story: from micrometres back to the ruler. A millimetre is 1,000 micrometres, so the number of
+# whole cells that fit end to end along it is 1,000 shared by one cell's length, with any remainder
+# left over. The checker takes the cell's length from the view.
+item nature.cell-fit v=1 skills=[nature.cells, division.short-with-remainder, measure.metric] {
+  title "Cells along a millimetre"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let kind={pick(k, 1, 2, 3)} mag={pick(k, 400, 400, 1000)}
+  let len={pick(k, 50, 90, 6)}
+  let what={pick(k, "cheek cells", "pondweed leaf cells", "yeast cells")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x32 {
+    microview m kind=kind mag=mag scale=1 field=0 at=canvas(1, 1)
+    text ask "Ada worked out that one of these {what} is {len} µm long. A millimetre on her ruler is 1,000 µm. How many whole cells would fit end to end along one millimetre?" narrate width=32 below=m gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check nature.cells of=m answer="fit(1000)"
+  feedback {
+    when (answer == floor(100 / len)) point=ask {
+      say "A millimetre is 1,000 µm, not 100 µm."
+    }
+    when (answer == floor(1000 / len) + 1) point=ask {
+      say "The last cell would not fit whole. How many whole ones fit?"
+    }
+  }
+  hint "How many micrometres are in one millimetre?"
+  hint "How many times does {len} go into 1,000?"
+}

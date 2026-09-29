@@ -1,4 +1,4 @@
-lesson coding-two-ways-to-start v=2 format=teach grade=2 unit=6 subject=coding levels=[easy, medium, hard] {
+lesson coding-two-ways-to-start v=2 format=teach grade=2 unit=8 subject=coding levels=[easy, medium, hard] {
   title "Two ways to start"
   goal "Read a program with two when blocks, say what happens when each one is started, and follow them one after the other."
 

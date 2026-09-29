@@ -1,4 +1,4 @@
-lesson chemistry-same-shape-different-material v=1 format=teach grade=1 unit=1 subject=chemistry levels=[easy, medium, hard] {
+lesson chemistry-same-shape-different-material v=1 format=teach grade=1 unit=5 subject=chemistry levels=[easy, medium, hard] {
   title "Same shape, different material"
   goal "Say what changes when a spoon is wood, metal or plastic, and what stays the same."
 

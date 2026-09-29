@@ -1,0 +1,36 @@
+# The two-star reason: six-eight and three-four both hold six quavers, but six-eight is two big beats
+# of three and three-four three beats of two. The hard claim is that six-eight has six beats.
+item music.six8-claim v=1 stars=2 skills=[music.six-eight, reasoning.claims] {
+  title "Six quavers either way?"
+  let q=0..1 r=0..1
+  let claim={pick(q, "Ana says six-eight is the same as three-four, because both hold six quavers in a bar.", "Ben says a bar of six-eight has six beats, so it takes six strong claps.")}
+  let right={pick(q, "No: it is two beats of three, not three of two", "No: it has two beats, on 1 and on 4")}
+  let w1={pick(q, "Yes: six quavers make the same bar", "Yes: the 6 on top counts the beats")}
+  let w2={pick(q, "No: six-eight holds more quavers", "No: it has three beats, on 1, 3 and 5")}
+
+  scene 36x47 {
+    column bars space=0 align=start at=canvas(1, 1) {
+      text la "A"
+      notes a clef=treble notes=[G4, A4, B4] values=[1, 1, 1] meter=3
+      text lb "B"
+      notes b clef=treble notes=[G4, B4] values=[1.5, 1.5] meter=6 quavers=true
+    }
+    text ask "Bar A is three-four and bar B is six-eight. {claim} Is that right, and why?" narrate width=34 below=bars gap=1
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1 and q == 0) point=b {
+      say "Clap each bar, loudly on its beats. Bar A has three claps and bar B has two."
+    }
+    when (pick == w1 and q == 1) point=b {
+      say "The 6 says how many quavers, and the 8 says they are quavers. Where do the long notes in bar B start?"
+    }
+    when (pick == w2) point=b {
+      say "Count bar B in quavers, 1 to 6, and say where each note starts."
+    }
+  }
+  hint "How many notes are in each bar, and how long is each one in quavers?"
+  hint "Which counts do the notes of bar B start on?"
+}

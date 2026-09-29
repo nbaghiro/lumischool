@@ -1,0 +1,37 @@
+# The most water vapour a cubic metre of air can hold, rounded to whole grams (HyperPhysics, saturated
+# vapour density: -10 °C 2.36, 0 °C 4.85, 5 °C 6.8, 10 °C 9.4, 15 °C 12.83, 20 °C 17.3, 25 °C 23,
+# 30 °C 30.4 g per cubic metre). The unknown is the grams, the temperature, or the room left.
+item chem.air-holds-table v=1 skills=[chemistry.water-cycle, data.tables] negatives {
+  title "How much water can the air hold?"
+  difficulty w
+  let w=0..2 r=0..7 h={5, 7, 9}
+  let t={pick(r, -10, 0, 5, 10, 15, 20, 25, 30)}
+  let g={pick(r, 2, 5, 7, 9, 13, 17, 23, 30)}
+  where (w == 2 and r >= 4 or w == 0 and h == 5 or w == 1 and h == 5 and r != 7)
+  let first={pick(w, "Find the row for the temperature.", "Find the grams in the second column.", "Find the row for the temperature.")}
+  let second={pick(w, "Read across that row to the other column.", "Read across that row to the other column.", "How far is the most it can hold from what it holds now?")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 35x29 {
+    table data cols=2 head=["Air °C", "Most water, g per m³"] cells=["-10", "2", "0", "5", "5", "7", "10", "9", "15", "13", "20", "17", "25", "23", "30", "30"] at=canvas(1, 0)
+    text ask "The research hut's weather station keeps this table: the most water vapour that each cubic metre of air can hold. {if w == 0 then \"How many grams can a cubic metre hold at \" else if w == 1 then \"At what temperature can a cubic metre hold at most \" else \"A cubic metre of air at \"}{if w == 1 then g else t}{if w == 0 then \" °C?\" else if w == 1 then \" g?\" else \" °C holds \"}{if w == 2 then h else \"\"}{if w == 2 then \" g of water vapour. How many more grams could it hold?\" else \"\"}" narrate width=34 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then g else if w == 1 then t else g - h)
+  feedback {
+    when (w == 2 and answer == g) point=data {
+      say "That is the most it can hold. It already holds {h} g."
+    }
+    when (w == 1 and answer == g) point=data {
+      say "That is the grams. Read across to the temperature in the same row."
+    }
+  }
+  hint "{first}"
+  hint "{second}"
+}

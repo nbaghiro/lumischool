@@ -1,0 +1,14 @@
+# Bar 3 of the Jingle Bells chorus (James Lord Pierpont, 1857), "jin-gle all the way": two crotchets,
+# a dotted crotchet and a quaver. The quaver comes on the and of 4. Judged at the grade five window.
+item music.form-tap-chorus v=1 skills=[music.form, music.rhythm] {
+  title "Tap the chorus"
+
+  scene 34x20 {
+    notes bar clef=treble notes=[E4, G4, C4, D4] values=[1, 1, 1.5, 0.5] meter=4 at=canvas(1, 1)
+    text ask "Jingle Bells has a verse and a chorus. This is bar 3 of the chorus, on the words jin-gle all the way. Count 1 and 2 and 3 and 4 and, and tap once for each note." narrate width=32 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 1, 2, 3.5] grade=5
+  hint "The third note has a dot. How long does it last?"
+  hint "So the last note comes after 4, on its and."
+}

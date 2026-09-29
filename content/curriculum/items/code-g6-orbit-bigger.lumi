@@ -1,0 +1,35 @@
+# Two-star: two orbits with the same step and different turns. A smaller turn means more steps to go
+# round, so a longer way round and a bigger orbit, which can be seen without drawing either.
+item coding.orbit-bigger v=1 stars=2 skills=[coding.simulation, angles.turns, reasoning.compare] {
+  title "Which orbit is bigger?"
+  difficulty k
+  let k=0..1
+  let a={pick(k, 30, 45)} b={pick(k, 60, 40)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x20 {
+    row both at=canvas(0, 0) space=1 align=start {
+      program pa code=["repeat {360 / a}", "  forward 2", "  turn left {a}"] text=true title="A"
+      program pb code=["repeat {360 / b}", "  forward 2", "  turn left {b}"] text=true title="B"
+    }
+    text ask "Two landers orbit the moon, each going forward 2 at every step. How far does lander A go in one orbit? Which lander goes round the bigger orbit?" width=34 below=both gap=1
+    text ta "A goes" below=ask gap=1
+    number-input far right-of=ta gap=1
+    choice pick options=["A", "B"] right-of=far gap=2
+  }
+
+  check coding.runs of=pa far=moves
+  answer pick=(if a < b then "A" else "B")
+  feedback {
+    when (pick == (if a < b then "B" else "A")) point=both {
+      say "The bigger turn gets round in fewer steps. Fewer steps of the same length is a shorter way round."
+    }
+  }
+  hint "How many steps does each lander take to get round once?"
+  hint "Each step is 2 long. Which way round is longer?"
+}

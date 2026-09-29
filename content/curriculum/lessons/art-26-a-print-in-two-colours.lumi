@@ -1,0 +1,68 @@
+# A print in two colours: the light ink first, thin inks mixing where they overlap, one pull of the
+# press for each colour, and every block carved turned over.
+lesson art-a-print-in-two-colours v=1 format=teach grade=5 unit=2 subject=art levels=[easy, medium, hard] {
+  title "A print in two colours"
+  goal "Plan a print in two colours, printing the light colour first and using the overlap to make a third."
+
+  look {
+    scene 32x11 {
+      row all at=canvas(1, 1) space=1 align=end {
+        printingpress press printed=1
+        stamps block motif="fish" show="both" colour=green flip=false made="print"
+      }
+    }
+    say """
+      The canal town's printer makes posters for the market in two colours, one block for each. The
+      light colour is printed first, in big shapes, and the dark colour goes over it for the lines.
+      Printing ink is thin, so where the two overlap they mix and make a third colour. Every block is
+      carved turned over, because a print comes out the other way round from its block.
+      """
+  }
+  do {
+    practice art.print-lighter-first count=1 hard-count=2 seed=1
+    level easy {
+      worked art.print-register k=2 level=medium
+    }
+    practice art.print-register count=2 seed=2
+    practice art.print-pulls count=2 seed=3
+    practice art.print-block-way count=2 seed=1
+    practice art.print-ink-colours count=1 seed=1
+  }
+  try stars=2 {
+    show art.print-dark-first-why r=2 easy-r=0 hard-r=1
+  }
+  try stars=3 {
+    show art.print-two-colours
+  }
+  remember {
+    say "Light colour first, dark colour over it, and where thin inks overlap they mix."
+  }
+
+  grown-ups """
+    Printing in colour still uses one block, screen or plate for each colour, laid down one after
+    another; in relief and screen printing by hand the lightest ink goes first, while a printing
+    press in a factory has its own order. The machine marks the questions. The first chooses which
+    ink goes first. The core asks why every block must land in the same place on the sheet, what a
+    block set to one side does to the poster and, with a third ink, what order the blocks go in. It
+    counts pulls of the press, which is multiplication and, at hard, division, and it follows each
+    block through the turn a print makes, which children usually get wrong the first time. The last
+    question counts the colours overlapping inks can make, and the usual slip is to forget the place
+    where all three overlap.
+
+    The two-star question asks why the light colour goes first, and the three-star design is responded
+    to rather than marked. Off the page, a potato or a piece of card can print one colour, and a second
+    card cut smaller can print the second over it once the first is dry; the child sees the order
+    matter straight away. If the turned-over blocks are confusing, write a letter on a piece of card,
+    press it onto wet paint and print it, and look at both together.
+
+    Respond by asking the child to show which parts would be printed first and which second: "The
+    yellow goes down first as the big shapes, and the blue makes the lines." Ask what the poster would
+    look like after only the first colour.
+    """
+  level easy {
+    grown-ups "At this level the colours to order are yellow with blue or with red, the order of three blocks is worked once in the teacher's pen before why the blocks sit in one corner and what a block set to one side does, the press prints six or eight posters in two colours, the block carved the wrong way is one of the two, two inks overlap, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level two pairs of colours are put in order, orange with blue and pink with green, the blocks include one set to one side and the order of three, the press prints in three colours and the number of posters is worked back from the pulls, both blocks are carved the wrong way, three inks overlap, the two-star's inks are pink and green, and the three-star is as written."
+  }
+}

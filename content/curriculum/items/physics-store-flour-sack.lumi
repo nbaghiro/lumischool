@@ -1,0 +1,36 @@
+# The story: the miller carries a sack up to the loft. Lifting it is a force through a distance, the
+# weight times the height, and the energy goes into the sack's gravitational store.
+item physics.store-flour-sack v=1 skills=[physics.energy, physics.forces] {
+  title "Up to the loft"
+  difficulty (m * h)
+  let m={10, 20, 25} h={3, 4}
+  level easy {
+    let m={10} h={3}
+  }
+  level hard {
+    let m={25} h={4}
+  }
+
+  scene 29x37 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      waterwheel w paddles=8 lit=1
+      kingfisher k flying=1 facing=-1
+    }
+    text ask "At dusk the miller carries a {m} kg sack of flour up the ladder to the loft, {h} m above the floor. Each kilogram weighs 10 N. How many joules does she give the sack?" narrate width=27 below=kit gap=1
+    number-input lift below=ask gap=1
+    text then "Which store does that energy go into?" narrate width=27 below=lift gap=1
+    choice store options=["Gravitational", "Kinetic", "Elastic"] stack=column below=then gap=1
+  }
+
+  answer lift=(m * 10 * h) store="Gravitational"
+  feedback {
+    when (lift == m * h) point=ask {
+      say "The force is the sack's weight in newtons, 10 N for each kilogram."
+    }
+    when (store == "Kinetic") point=ask {
+      say "The sack sits still in the loft. Its energy is there because it is high up."
+    }
+  }
+  hint "What does the sack weigh, in newtons?"
+  hint "Multiply the weight by the height. Is the sack moving, or high up, when she puts it down?"
+}

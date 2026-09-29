@@ -1,0 +1,30 @@
+# The way in: the diameter is two radii, and a radius is half the diameter.
+item circle.across-the-dome v=1 skills=[circles.parts] {
+  title "Radius and diameter"
+  difficulty ((if half == 1 then 1 else 0) + v / 10)
+  let v={4, 6, 7.5, 9, 12.5} half=0..1
+  level easy {
+    let half={0} v={4, 6, 9}
+  }
+  level hard {
+    let half={1} v={7.5, 12.5}
+  }
+
+  scene 31x15 {
+    circleparts c size=5 lines=3 radius=(if half == 1 then 0 else v) diameter=(if half == 1 then 2 * v else 0) ask=(if half == 1 then 1 else 2) unit="m" at=canvas(1, 1)
+    text ask "The floor of the observatory dome is a circle. What is its {if half == 1 then \"radius\" else \"diameter\"}, in metres?" narrate width=14 right-of=c gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer decimals(if half == 1 then v else 2 * v, 0)
+  feedback {
+    when (half == 0 and answer == v / 2) point=c {
+      say "The diameter goes all the way across, through the centre. It is two radii long."
+    }
+    when (half == 1 and answer == 4 * v) point=c {
+      say "The radius goes from the centre to the edge, which is half of the way across."
+    }
+  }
+  hint "Which line goes from the centre to the edge, and which goes right across?"
+  hint "How many radii fit along a diameter?"
+}

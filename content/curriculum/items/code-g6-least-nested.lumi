@@ -1,0 +1,36 @@
+# Steps and squares are different counts: a repeat inside a repeat of forward 1 walks outer times
+# inner squares in as many steps, and one line forward walks the same squares in one step.
+item coding.least-nested v=1 skills=[coding.efficiency, coding.repetition, coding.text] {
+  title "Squares and steps"
+  difficulty (a * b / 6)
+  let a=2..4 b=2..5
+  where (a * b <= 16 and a * b != a + b)
+  level easy {
+    where (a * b <= 8)
+  }
+  level hard {
+    where (a * b >= 10)
+  }
+
+  scene 36x23 {
+    program p code=["set fuel to 50", "repeat {a}", "  repeat {b}", "    forward 1", "    take 1 from fuel"] text=true at=canvas(0, 0)
+    crater cr count=2 right-of=p gap=1
+    text ask "Each run of a line that moves the rover or changes a name is one step; the repeat lines are not steps. How many squares does the rover go, and how many steps does the program take?" width=34 below=p gap=1
+    text t1 "squares" below=ask gap=1
+    number-input squares right-of=t1 gap=1
+    text t2 "steps" right-of=squares gap=2
+    number-input steps right-of=t2 gap=1
+  }
+
+  check coding.runs of=p squares=moves steps=steps
+  feedback {
+    when (squares == a + b) point=p {
+      say "The inner repeat runs all of its {b} times on every one of the outer repeat's {a} times."
+    }
+    when (steps == squares) point=p {
+      say "Line 5 is a step too, and so is line 1."
+    }
+  }
+  hint "How many times does line 4 run? That is the squares."
+  hint "Add the times lines 1, 4 and 5 run."
+}

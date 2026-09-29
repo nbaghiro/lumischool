@@ -1,0 +1,10 @@
+item art.fig-gestures v=1 stars=3 skills=[art.gesture, art.drawing, reasoning.plan] {
+  title "Quick figures and one measured one"
+
+  scene 37x19 {
+    text ask "Ask someone to hold six poses, thirty seconds each: walking, reaching, bending, sitting, balancing and one of their own. Start each with its line of action. Then draw one standing figure slowly, measured in heads." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="plain" guide="none" outline="none" pots=["black", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="Six gesture drawings made quickly, each begun with one line of action that shows how the body moves and where its weight is, with the body's shapes hung on that line rather than outlined in detail, and one slower standing figure whose height was measured in heads, with the elbows at the waist, the wrists at the top of the legs and the knees halfway down the legs." notice=["A line of action in every gesture", "The weight over the standing foot", "Movement shown rather than detail", "The standing figure measured in heads"] ask="Which of your quick figures moves the most, and what did its line of action do?"
+}

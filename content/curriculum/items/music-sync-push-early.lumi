@@ -1,0 +1,35 @@
+# Pushing a note early: a bar of four crotchets with one note moved half a beat earlier and held
+# on, which is how a syncopation is made from a plain bar. The counts it starts on change.
+item music.sync-push-early v=1 skills=[music.syncopation, music.rhythm] {
+  title "Push it early"
+  difficulty p
+  let p=0..2 r=0..1
+  let which={pick(p, "2", "3", "4")}
+  let right={pick(p, "1, 1 and, 3, 4", "1, 2, 2 and, 4", "1, 2, 3, 3 and")}
+  let w1={pick(p, "1, 2 and, 3, 4", "1, 2, 3 and, 4", "1, 2, 3, 4 and")}
+  let w2={pick(p, "1, 1 and, 2, 3", "1, 2, 2 and, 3", "1, 2, 3, 3 and, 4")}
+  level easy {
+    let p=0..0
+  }
+  level hard {
+    let p=1..2
+  }
+
+  scene 34x32 {
+    notes bar clef=treble notes=[G4, A4, C5, A4] values=[1, 1, 1, 1] meter=4 at=canvas(1, 1)
+    text ask "Ben plays this bar, then pushes the note on beat {which} half a beat earlier and holds it on to where the next note was. On which counts do the notes start now?" narrate width=32 below=bar gap=1
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=bar {
+      say "Earlier means before beat {which}, not after it. Half a beat before {which} is the and after the number below it."
+    }
+    when (pick == w2) point=bar {
+      say "The bar still has four notes. Only the pushed note moves; the others keep their counts."
+    }
+  }
+  hint "Which count comes half a beat before {which}?"
+  hint "The other three notes stay where they were. Write all four counts in order."
+}

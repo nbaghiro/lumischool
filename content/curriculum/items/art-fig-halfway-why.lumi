@@ -1,0 +1,33 @@
+# The two-star reason: on a small child the body's halfway point is higher than on a grown-up,
+# because the head is bigger and the legs shorter for the size, so the drawing is right.
+item art.fig-halfway-why v=1 stars=2 skills=[art.proportion, art.figure, reasoning.explain] {
+  title "Is the halfway point wrong?"
+  difficulty k
+  let k=0..1 r=0..2
+  let h={pick(k, 4, 5)}
+  let who={pick(k, "her baby brother, who is one, standing by the path", "her cousin, who is three, paddling below the falls")}
+  let right={"No: a small child's legs are shorter for their size"}
+  let w1={"Yes: halfway is always the top of the legs"}
+  let w2={"Yes: the head should be smaller"}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x27 {
+    layfigure fig heads=h lines=true action=false at=canvas(1, 1)
+    text ask "Ada draws {who}, {h} heads tall. Halfway down the drawing comes above the top of the legs, near the tummy. Her friend says it is wrong, because on a grown-up halfway is the top of the legs. Is it wrong?" width=18 right-of=fig gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column at=canvas(1, 16)
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=fig {
+      say "Proportions change as a child grows: the head is a big share of a small child and the legs a small one, so the middle of the body is higher up."
+    }
+  }
+  hint "Is a small child built like a grown-up made smaller, or are the parts different sizes for the body?"
+  hint "Count the heads. Is the head a bigger share of this figure than of a grown-up?"
+}

@@ -1,0 +1,70 @@
+# Syncopation read and tapped: a note that starts on an and and is held over the next beat, in note
+# values on the staff and in a strum pattern, with Scott Joplin's rags (The Entertainer, 1902) as the
+# music it comes from.
+lesson music-syncopation v=1 format=teach grade=5 unit=2 subject=music levels=[easy, medium, hard] {
+  title "Syncopation"
+  goal "Find and tap a syncopated note, one that starts on an and and is held over the next beat."
+
+  look {
+    scene 35x23 {
+      row top space=2 align=end at=canvas(1, 1) {
+        notes bar clef=treble notes=[C5, A4, G4, E4, G4] values=[0.5, 1, 0.5, 1, 1] meter=4
+        narrowboat boat windows=2 pots=2
+      }
+      strumtrack strum strums=D-DU-UDU counts=true chord=Am ring=3 below=top gap=1
+    }
+    say """
+      A street band plays on the towpath while the boats wait for the lock. Count their bar 1 and 2
+      and 3 and 4 and. The first note is a quaver, so the second note starts on the and of 1, and it
+      is a crotchet, so it is still sounding when 2 is counted. A note pushed early like that, onto an
+      and and held over the beat, is syncopated. The strum pattern does the same: the up strum on the
+      and of 2 rings on through 3. Scott Joplin's rags, like The Entertainer, are full of it.
+      """
+  }
+  do {
+    practice music.sync-where-starts count=1 seed=1 hard-seed=1
+    level easy {
+      worked music.sync-count-ands c=1 level=medium
+    }
+    practice music.sync-count-ands count=1 seed=2 easy-seed=2 hard-seed=2
+    practice music.sync-which-bar count=1 seed=1 easy-seed=1 hard-seed=1
+    show music.sync-tap-bar
+    show music.sync-which-bar k=1 hard-k=3
+    practice music.sync-push-early count=1 seed=3 easy-seed=1 hard-seed=1
+    show music.sync-tap-strum
+    level hard {
+      show music.sync-claim q=1 r=0
+    }
+    practice music.canal-lock-bars count=1 seed=1 easy-seed=1 hard-seed=1
+  }
+  try stars=2 {
+    show music.sync-claim q=0 r=0 easy-r=1 hard-r=1
+  }
+  try stars=3 {
+    show music.sync-all-ways v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A syncopated note starts on an and and is held over the next beat."
+  }
+
+  grown-ups """
+    The idea is that syncopation is about where a note starts and how long it lasts: a note that
+    lands on an and and is still sounding when the next number is counted pushes against the beat.
+    The wrong ideas to watch for are thinking that any quaver, or any bar with many short notes, is
+    syncopated, and losing the count during the held note so the next note comes early. In the
+    working, look for the child writing or saying the count under each note before tapping. The
+    two-star question sets a bar of paired quavers against a bar with a pushed note; the three-star
+    question counts every order of a set of notes and finds the ones with a crotchet on an and, which
+    is easiest by placing the quavers first. A child who is stuck can clap a steady beat with one
+    hand and tap the bar with the other, and go back to the way in; stay on this lesson another day
+    if the held note still cuts the count short. The taps are judged on the music page; on paper you
+    are the judge. Off the page, listen to The Entertainer together and clap where the tune lands
+    between the beats.
+    """
+  level easy {
+    grown-ups "At this level the note to place starts on the and of 1 or 2, the notes on an and are counted once in the teacher's pen before a second bar, the pushed bar is found among plainer ones, the note pushed early is beat 2's, the lock fills for 2 minutes and the bars are counted, the two-star is as written with its answers in another order, and the three-star counts the pushed bars of three beats."
+  }
+  level hard {
+    grown-ups "At this level the note to place comes later in a bar with two held notes, the bar of notes on an and has four of them, the bars to sort are closer to each other, the note pushed early is beat 3's or beat 4's, a claim that any note on an and is syncopated is judged before the two-star, the pushed notes are counted while the lock fills, and the three-star counts the pushed bars from four quavers and two crotchets."
+  }
+}

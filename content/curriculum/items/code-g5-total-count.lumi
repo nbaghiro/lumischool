@@ -1,0 +1,31 @@
+# A count is a running total that adds 1 when the item passes a test, not the item itself.
+item coding.total-count v=1 skills=[coding.variables, coding.decisions, coding.lists] {
+  title "Boats that pay the big toll"
+  difficulty (t / 2 + (if n == 1 then 1 else 0))
+  let n=0..1 t=4..6 s=0..2
+  let a={pick(s, 3, 8, 6)} b={pick(s, 7, 2, 5)} c={pick(s, 5, 6, 9)} d={pick(s, 9, 4, 3)} e={pick(s, 2, 7, 7)}
+  level easy {
+    let n={0}
+  }
+  level hard {
+    let n={1} t=5..6
+  }
+
+  scene 36x14 {
+    program p code=["set crates to list {a}, {b}, {c}, {d}, {e}", "set big to 0", "for each c in crates", "  if c is more than {t}", "    {if n == 0 then \"add 1 to big\" else \"add c to big\"}"] at=canvas(1, 0)
+    text ask "Boats with more than {t} crates pay the big toll. What is big when the program ends?" width=10 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="value(big)"
+  feedback {
+    when (n == 0 and answer > 5) point=p {
+      say "Line 5 adds 1, not the crates. big counts the boats."
+    }
+    when (n == 1 and answer <= 5) point=p {
+      say "This time line 5 adds c, the boat's crates, so big is a total of crates, not a count of boats."
+    }
+  }
+  hint "Go through the crates one boat at a time. Which boats pass the test in the if?"
+  hint "What does line 5 add each time the if is true?"
+}

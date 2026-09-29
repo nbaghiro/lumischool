@@ -1,0 +1,67 @@
+# Searching a list two ways in the old city's library: one by one from the left, which works on any
+# shelf and takes as many looks as the book's place, and by halving, which needs the shelf in order
+# and throws half of it away with every look.
+lesson coding-searching-a-list v=1 format=teach grade=5 unit=8 subject=coding levels=[easy, medium, hard] {
+  title "Searching a list, one by one and by halving"
+  goal "Search a list one item at a time and by halving, and say which takes fewer looks and when halving works."
+
+  look {
+    scene 36x17 {
+      listbox l name=shelf code=["set shelf to list 12, 18, 25, 31, 40, 47, 53"] mark=5 crossed=4 at=canvas(1, 0)
+      cups c cards=[12, 18, 25, 31, 40, 47, 53] open=[4] target=40 crossed=true below=l gap=1
+      library lib columns=6 open=1 right-of=c gap=1
+    }
+    say """
+      The old city's library keeps its books in number order. To find book 40 one by one, the
+      librarian looks at the first book, then the second, and crosses each off until book 40 turns
+      up, which is five looks. Halving looks at the middle book first: 31 is too small, so every
+      book before it can go. Each look throws half of what is left away, and when two books share the
+      middle, halving looks at the left one.
+      """
+  }
+  do {
+    show coding.search-where s=0 k=3 easy-k=2 hard-k=5
+    show coding.search-halve t=2 easy-t=5 hard-t=4
+    level easy {
+      worked coding.search-halve t=8 level=medium
+    }
+    show coding.search-looks n=0 k=2 easy-k=1 hard-n=1 hard-k=3
+    show coding.search-compare p=6 easy-p=4 hard-p=13
+    show coding.search-where s=1 k=5 easy-k=1 hard-k=6
+    show coding.search-halve t=7 easy-t=2 hard-t=9
+    show coding.search-compare p=11 easy-p=8 hard-p=15
+    show coding.search-build k=1 easy-k=0 hard-k=2
+    level hard {
+      show coding.search-looks n=1 k=1
+    }
+  }
+  try stars=2 {
+    show coding.search-sorted k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show coding.search-most k=1 easy-k=0 hard-k=3
+  }
+  remember {
+    say "One by one works on any list. Halving needs the list in order, and each look throws half of what is left away."
+  }
+
+  grown-ups """
+    There are two ways to search, and the point is to compare them: one by one works on any shelf
+    but can take as many looks as there are books, and halving needs the books in order but takes
+    very few looks even on a long shelf. The wrong ideas to watch for are halving a shelf that is
+    not in order, and thinking a search stops by itself when it finds the book, which a repeat
+    through the whole list does not. In the child's working, look for books crossed off, one at a
+    time or half at a time. If the child is stuck, play the guessing game: think of a number to 100
+    and answer only higher or lower; stay another day if the middle is not the first guess. Off the
+    page, find a word in a dictionary and count how many times the book is opened. The two-star
+    question asks why halving needs order, and the three-star question follows the doubling. The
+    build question asks for the search itself: a repeat until that adds 1 to i and moves the robot
+    each time round, and the shelf is too long for moves written out.
+    """
+  level easy {
+    grown-ups "At this level the books to find are near the front, the halving questions are for the middle book and its neighbours, with one worked in the teacher's pen, the repeat through the shelf has four books, the books to compare are in places 4 and 8, the shelf in order is the first list, and the library to halve has 31 books. The search to build finds the seventh book."
+  }
+  level hard {
+    grown-ups "At this level the books to find are near the end, the halving questions take three or four lifts, the repeat through the shelf has five books and is asked twice, the books to compare are in places 13 and 15, the shelf in order is the last list and the others are nearly in order, and the library to halve has 1000 books. The search to build finds the last of eight books."
+  }
+}

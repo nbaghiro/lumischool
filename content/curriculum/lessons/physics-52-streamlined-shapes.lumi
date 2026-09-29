@@ -1,0 +1,66 @@
+lesson physics-streamlined-shapes v=1 format=teach grade=5 unit=3 subject=physics levels=[easy, medium, hard] {
+  title "Streamlined shapes"
+  goal "Measure how fast shapes sink through water and explain why a streamlined shape meets the least water resistance."
+
+  look {
+    scene 36x17 {
+      row all at=canvas(1, 0) space=1 align=start {
+        droptube tb shapes=["ball", "flat", "pointed", "cube"] time=2 grams=[20, 20, 20, 20]
+        narrowboat b windows=4 pots=2
+      }
+    }
+    say """
+      Anything moving through water has to push the water out of its way, and the water pushes back.
+      That push is called water resistance. Four lumps of clay, each weighing 20 g, were let go
+      together in tubes of canal water. After two seconds the pointed one has sunk furthest and the
+      flat one the least, because a flat face has to shove the most water aside. A shape that slips
+      through with little push is streamlined, like a fish, a duck or the pointed front of a boat.
+      """
+  }
+  do {
+    practice physics.drop-fastest count=1 seed=1 easy-seed=2 hard-seed=3
+    level easy {
+      worked physics.drop-read w=2 t=2 level=medium
+    }
+    practice physics.drop-read count=2 seed=2 easy-seed=3 hard-seed=4
+    practice physics.drop-why-flat count=1 seed=1
+    practice physics.drop-bottom count=2 seed=1 easy-seed=5 hard-seed=2
+    practice physics.drop-fastest count=1 seed=2 easy-seed=7 hard-seed=8
+    level hard {
+      show physics.drop-read w=2 t=2 level=medium
+    }
+  }
+  story {
+    show physics.canal-bows p=0 easy-p=1 hard-p=2
+  }
+  try stars=2 {
+    show physics.drop-fair w=1 heavy=30 easy-w=2 easy-heavy=40 hard-w=0
+  }
+  try stars=3 {
+    show physics.drop-together v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "Water pushes back on anything moving through it, and least on a streamlined shape."
+  }
+
+  grown-ups """
+    Children often think the heaviest thing always wins, so every lump in these tests weighs the
+    same and only the shape changes; the two-star question has one lump that is heavier and asks
+    which tube spoils the test. Ask for the reason in the child's own words: the flat shape has to
+    push the most water out of the way. The speeds are read off the scale in centimetres a second,
+    and the time to the bottom is the depth divided by the speed, which is the same sharing as in
+    maths. If the reading of the scale is shaky, stay with the first two questions for another day.
+    Off the page, fill a tall jar or a vase with water, press the same piece of modelling clay into
+    a ball, a flat pancake and a point, and time each to the bottom. In the three-star question the
+    slower shape is let go first, and the gap is the difference between the two times. The speeds on
+    the drawings are the lesson's round numbers, chosen to keep the order and the sharing clear, not
+    measurements: a real 20 g lump falls faster than this in water, and a flat pancake tends to
+    tumble. A tall jar of wallpaper paste or cooking oil slows every shape enough to see the order.
+    """
+  level easy {
+    grown-ups "At this level the shapes to predict include the pointed one or the flat one, a worked example reads a speed first, the drawings show one second, the odd lump weighs twice as much, and the two shapes to arrive together are a ball and a pointed one."
+  }
+  level hard {
+    grown-ups "At this level the shapes to predict are closer in speed, the drawings show two seconds so a speed has to be shared, the heavy lump is the pointed one, which would win anyway, and the shapes to arrive together are the flat one and the pointed one."
+  }
+}

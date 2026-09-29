@@ -1,0 +1,38 @@
+# The two-star reason: water leaving the leaves pulls more up behind it. What does the lifting, why
+# a cutting has its leaves stripped, and why greasing the underside of a leaf stops it losing water.
+item nature.water-pull v=1 stars=2 skills=[nature.plants, reasoning.explain] {
+  title "What pulls it up?"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "Water runs downhill, yet a plant lifts it all the way up its stem. What does most of the work?", "Before a gardener plants a cutting, she picks off most of its leaves. Why does that stop the cutting drooping?", "Ada smears grease on the underside of some leaves and on the top of others. The leaves greased underneath lose far less water. Why?")}
+  let ans={pick(k, "Leaves losing water pull more up behind", "Fewer leaves lose less water", "Most of the tiny holes are underneath")}
+  let o1={pick(k, "The roots pump it up like a heart", "Leaves are too heavy for a cutting", "Grease makes the leaves heavier")}
+  let o2={pick(k, "The flower sucks it up to drink", "The leaves eat the cutting's food", "The top of a leaf holds no water")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x25 {
+    parts fig of=plant at=canvas(1, 1)
+    text ask "{asks}" narrate width=20 right-of=fig gap=2
+    choice pick options=[o1, ans, o2] stack=column below=fig gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=fig {
+      say "A plant has no heart. Think of a drink through a straw: where does the pull come from?"
+    }
+    when (k == 1 and pick != ans) point=fig {
+      say "A cutting has no roots yet to take in water. What do the leaves do with water all day?"
+    }
+    when (k == 2 and pick != ans) point=fig {
+      say "Water leaves through tiny holes. If blocking the underside stops it, where must the holes be?"
+    }
+  }
+  hint "Where does water leave a plant, and what happens to the water behind it?"
+  hint "The more water the leaves let out, the more is pulled up from the roots."
+}

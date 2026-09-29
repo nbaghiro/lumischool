@@ -1,0 +1,36 @@
+# Three stars, worked backwards: the clips are the tens of turns times the cells, so the clips one
+# more cell adds are the tens of turns, and the cells before are the old clips over that.
+item physics.coil-work-back v=1 stars=3 skills=[physics.magnets, reasoning.work-backwards, reasoning.constraints] {
+  title "The guard's lock"
+  difficulty v
+  let v=0..3
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..3
+  }
+  let a={pick(v, 3, 4, 8, 10)}
+  let b={pick(v, 6, 6, 12, 15)}
+
+  scene 34x34 {
+    citywalls w towers=2 open=0 at=canvas(1, 0)
+    table t cols=3 head=["Lock", "Cells", "Clips held"] cells=["before", "?", "{a}", "after", "one more", "{b}"] below=w gap=1
+    text ask "The gate's lock is an electromagnet round an iron nail, which holds one clip for every ten turns on each cell. The guard adds one more cell and winds on no turns, and the clips go from {a} to {b}. How many turns does the coil have?" narrate width=32 below=t gap=1
+    number-input turns below=ask gap=1
+    text then "How many cells does the lock have now?" narrate width=32 below=turns gap=1
+    number-input cells below=then gap=1
+  }
+
+  answer turns=((b - a) * 10) cells=(b / (b - a))
+  feedback {
+    when (turns == b - a) point=t {
+      say "That is how many clips the one cell added. How many turns hold that many clips on one cell?"
+    }
+    when (cells == a / (b - a)) point=t {
+      say "That is how many cells the lock had before the guard added one."
+    }
+  }
+  hint "How many clips did the one extra cell add? Every cell adds that many."
+  hint "How many turns give that many clips on one cell? And how many lots of that make {b}?"
+}

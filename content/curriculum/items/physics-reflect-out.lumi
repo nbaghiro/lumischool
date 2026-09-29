@@ -1,0 +1,31 @@
+# The way in, predict then check: the beam's angle in is written, the beam out is hidden, and the
+# checker takes the angle out from the rule the drawing reflects by.
+item physics.reflect-out v=1 skills=[physics.light, angles.degrees] {
+  title "The angle out"
+  difficulty (if a % 10 == 0 then 0 else 1)
+  let a={20, 30, 40, 50, 60, 25, 35, 55}
+  level easy {
+    let a={20, 30, 40, 50, 60}
+  }
+  level hard {
+    let a={25, 35, 55}
+  }
+
+  scene 31x19 {
+    mirrorangle m angle=a targets=[] marks=1 show=0 at=canvas(1, 0)
+    text ask "The torch's beam meets the mirror at {a}° to the dashed upright line. At what angle to the upright line will it leave the mirror?" narrate width=30 below=m gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.light of=m answer=out
+  feedback {
+    when (answer == 90 - a) point=m {
+      say "That is the angle between the beam and the mirror itself. Measure from the dashed upright line, as the beam coming in is."
+    }
+    when (answer == 180 - a) point=m {
+      say "The beam bounces off on the other side of the upright line, as far from it as it came in."
+    }
+  }
+  hint "Look at the angle between the beam coming in and the dashed line."
+  hint "A mirror sends light back out at the same angle to the upright line, on the other side."
+}

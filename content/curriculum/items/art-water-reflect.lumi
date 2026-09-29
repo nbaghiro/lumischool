@@ -1,0 +1,34 @@
+# A reflection in still water is the thing turned upside down, as far below the water line as the
+# thing is above it. At hard the gap between a twig and its reflection is asked.
+item art.water-reflect v=1 skills=[art.water, art.looking, reasoning.predict] {
+  title "How far down the reflection goes"
+  difficulty (if q == 2 then 3 else q)
+  let q=0..1 d={3, 4, 5}
+  level easy {
+    let q={0}
+  }
+  level hard {
+    let q={2}
+  }
+
+  scene 32x14 {
+    row birds at=canvas(1, 1) space=1 align=end {
+      heron bird facing=1 reeds=2
+      kingfisher perch flying=0 facing=-1
+    }
+    text ask "{pick(q, \"The heron stands at the edge of the still pool, its head \", \"The kingfisher sits on a twig \", \"The kingfisher sits on a twig \")}{d}{pick(q, \" squares above the water. In Ada's painting, how many squares below the water line does the reflection of its head come?\", \" squares above the still pool. How many squares below the water line does Ada paint the twig's reflection?\", \" squares above the still pool. How many squares apart are the twig and its reflection in Ada's painting?\")}" width=18 right-of=birds gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if q == 2 then 2 * d else d)
+  feedback {
+    when (q < 2 and answer == 0) point=birds {
+      say "The reflection does not start where the bird is. It starts at the water line and goes down as far as the bird is above it."
+    }
+    when (q == 2 and answer == d) point=birds {
+      say "That is how far the twig is above the water. Its reflection is as far again below the water."
+    }
+  }
+  hint "Still water is a mirror lying flat. Where is the mirror line?"
+  hint "A mirror puts a thing's reflection as far behind the mirror as the thing is in front of it."
+}

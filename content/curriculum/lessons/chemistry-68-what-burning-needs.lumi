@@ -1,0 +1,72 @@
+lesson chemistry-what-burning-needs v=1 format=teach grade=6 unit=7 subject=chemistry levels=[easy, medium, hard] {
+  title "What burning needs, and the candle under the jar"
+  goal "Say what a flame needs and makes, and work out the oxygen a jar, a crew or a rocket has to have."
+
+  look {
+    scene 31x15 {
+      row all at=canvas(1, 0) space=2 align=end {
+        candle open start=10 burnt=3 lit=1 jar=0
+        candle shut start=10 burnt=3 lit=0 jar=1
+        lander l rungs=5
+      }
+    }
+    say """
+      Back in the research hut a grown-up lights two candles and puts a jar over one. The open one
+      burns on; the one under the jar soon goes out, because a flame needs fuel, heat and oxygen,
+      and the jar's air runs short of oxygen. Air is only 21 per cent oxygen, and the flame dies
+      when the jar's air is down to about 16 per cent, with oxygen still left in it. The flame joins
+      the wax to oxygen and makes carbon dioxide and water. On the moon there is no air at all, so
+      nothing burns out there, and the lander carries oxygen in tanks for its crew to breathe.
+      """
+  }
+  do {
+    practice chem.fire-triangle count=1 seed=1
+    level easy {
+      worked chem.oxygen-in-jar w=0 v=2000 level=medium
+    }
+    practice chem.oxygen-in-jar count=1 seed=4 easy-seed=1 hard-seed=1
+    practice chem.jar-goes-out count=2 seed=3 easy-seed=1 hard-seed=2
+    practice chem.moon-burn count=2 seed=1
+  }
+  story {
+    show chem.lander-oxygen w=0 c=2 d=3 easy-d=2 hard-w=1
+    show chem.lander-oxygen w=0 c=3 d=3 easy-c=1 easy-d=2 hard-w=1 hard-d=2
+    level hard {
+      show chem.lander-oxygen w=1 c=3 d=3
+    }
+  }
+  try stars=2 {
+    show chem.why-rocket-oxygen k=0 r=1 hard-k=1
+  }
+  try stars=3 {
+    show chem.oxygen-tanks k=0 easy-k=1 hard-k=2
+  }
+  remember {
+    say "A flame needs fuel, heat and oxygen, and turns the fuel into carbon dioxide and water. Take one away and it goes out."
+  }
+
+  grown-ups """
+    The idea is the fire triangle, fuel, heat and oxygen, with putting a fire out as taking one of
+    them away, and burning as a reaction that joins the fuel to oxygen and makes carbon dioxide and
+    water. Air is about 21 per cent oxygen, so a litre jar holds about 210 ml of it, and a candle
+    under the jar goes out at about 16 per cent, so it burns only about 50 ml of that. A tea light
+    burns about 2 ml of oxygen a second (3 g of wax an hour, 3.45 g of oxygen to the gram), which
+    is where the grade four lesson's 20 or so seconds a litre comes from. A crew member
+    breathes about 840 g of oxygen a day, NASA's planning figure, which is why the lander carries
+    tanks, and why a rocket carries liquid oxygen as well as fuel. The wrong ideas to watch for are
+    that the jar's candle goes out because it gets too hot or too smoky, or because every bit of
+    oxygen has gone, and that a flame could burn
+    on the moon if it were warm enough. A grown-up lights and puts out every candle and match; the
+    child watches and times. The two-star question compares a jet and a rocket, or asks why no
+    candles are allowed in the cabin. The three-star question rounds up to whole tanks, since part
+    of a tank will not do. If the child forgets the crew when working out the oxygen, stay here
+    another day. Off the page: watch a grown-up put out a candle with a snuffer and say which side
+    of the triangle it took away.
+    """
+  level easy {
+    grown-ups "At this level the oxygen in a two-litre jar is worked once in the teacher's pen, the jars hold 500 or 1000 ml and are worked for the oxygen the flame burns, the moon question asks why a candle cannot burn out there, the crews are one or two for two days, the two-star compares a jet and a rocket, and the three-star needs a plainer rounding up."
+  }
+  level hard {
+    grown-ups "At this level the jars are worked back from their oxygen, to the seconds the flame lasts and to the oxygen still left when it dies, the moon question asks what a rocket must carry, the tanks are worked to the days they last with a third story, the two-star asks why no candles in the cabin, and the three-star rounds up with three crew or four days."
+  }
+}

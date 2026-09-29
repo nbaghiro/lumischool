@@ -1,0 +1,32 @@
+# A word's meaning worked out from its sentence and what is happening around it. The wrong meanings
+# fit a nearby detail (the night walk, the gambling; the cliff's danger) but not the word.
+item reading.wild-word v=1 skills=[reading.vocabulary, reading.whole-book] {
+  title "What does the word mean here?"
+  difficulty pick(k, 0, 1)
+  let k=0..1
+  let right={pick(k, "betraying someone who trusted you", "so strange it is hard to explain")}
+  let near={pick(k, "a secret walk taken at night", "so dangerous it could kill you")}
+  let far={pick(k, "losing money by gambling", "so brave that others cheer")}
+
+  scene 35x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        bookcast b who=buck pose=stand dir=-1
+        text ask "{pick(k, \"Chapter 1 calls the night Manuel led Buck away and sold him “the memorable night of Manuel’s treachery.” What does treachery mean here?\", \"In chapter 6 Thornton tells Buck to jump off a cliff, and Buck leaps at once. Afterwards Pete says, “It’s uncanny.” What does uncanny mean here?\")}" width=25
+      }
+      choice pick options=[pick(k, near, right), pick(k, right, far), pick(k, far, near)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == near) point=b {
+      say "That is part of what happened, not what the word means. Ask what Manuel did to a dog that trusted him."
+    }
+    when (pick == far) point=b {
+      say "Something nearby in the story, but try that meaning in the sentence. Does it fit?"
+    }
+  }
+  hint "Put each meaning in place of the word. Which one makes sense of the whole sentence?"
+  hint "{pick(k, \"How did Buck feel about Manuel before that night?\", \"Would a dog usually do that? How did the men feel watching it?\")}"
+}

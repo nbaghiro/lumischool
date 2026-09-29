@@ -1,0 +1,33 @@
+# Puzzle: more than where at least was meant, so the tank runs one minute over when the rate shares its
+# size exactly. The minutes as written are run; the line to mend is stated.
+item coding.puzzle-tank v=1 skills=[coding.debugging, coding.simulation, coding.decisions] {
+  title "One minute too many"
+  difficulty ((if r == 15 then 1 else 0) + c / 100)
+  let c={60, 80, 90} r={10, 15}
+  where (c % r == 0)
+  level easy {
+    let r={10} c={60, 80}
+  }
+  level hard {
+    let r={15}
+  }
+
+  scene 36x21 {
+    program p code=["set water to 0", "set minutes to 0", "repeat until water is more than {c}", "  add {r} to water", "  add 1 to minutes"] text=true at=canvas(0, 0)
+    text ask "The mill's tank holds {c} litres and fills {r} a minute. What does minutes hold as written? Which line is wrong?" width=34 at=canvas(0, 12)
+    text tm "minutes" below=ask gap=1
+    number-input minutes right-of=tm gap=1
+    text tl "line" right-of=minutes gap=2
+    number-input line right-of=tl gap=1
+  }
+
+  check coding.runs of=p minutes="value(minutes)"
+  answer line=3
+  feedback {
+    when (minutes == c / r) point=p {
+      say "That is how long it should take. As written the tank is full at {c / r} minutes, but {c} is not more than {c}."
+    }
+  }
+  hint "When the tank holds exactly {c}, does the question at the top of the repeat say stop?"
+  hint "Which words on that line would stop it at exactly {c}?"
+}

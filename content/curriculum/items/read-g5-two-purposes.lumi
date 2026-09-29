@@ -1,0 +1,23 @@
+# The three-star question: the same notes about a comet written twice, once to inform and once to
+# persuade. The hard notes are about a faint second comet and hold facts that would put a reader
+# off, so the persuading sentence has to choose. There is no key, so a grown-up marks it against the
+# look-for.
+item reading.two-purposes v=1 stars=3 skills=[reading.purpose, writing.composition] {
+  title "One comet, two purposes"
+  let k=0..1
+
+  scene 35x27 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=2 align=centre {
+        comet c tail=pick(k, 6, 3)
+        passage facts title="Dr Osei's notes" text="{pick(k, \"Comet Arlen: seen from the star cliffs on 3 March. Back in 76 years. Tail about as long as the moon is wide, ten times over.\", \"Comet Tamsin: faint, seen only through the great telescope. Short tail. Best at 4 am. Gone by the end of April.\")}" width=24 numbers=false
+      }
+      text ask "Use the notes to write two sentences: one to inform a reader, and one to persuade them to come and look." width=35
+      writinglines lines lines=3 width=35 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="Two sentences built from the same notes. The one to inform keeps to facts that could be checked (the date, the place, how long until it comes back, or at hard that it is faint and seen only through the telescope). The one to persuade speaks to the reader and uses words that push, such as do not miss, only or the chance of a lifetime, and may leave out facts that would put a reader off (at hard, the 4 am start and the faintness). Both must keep the facts right."
+  hint "Which facts would a report keep? Write those plainly first."
+  hint "Now talk to the reader. What would make them want to come out on a cold night?"
+}

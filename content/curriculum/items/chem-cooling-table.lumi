@@ -1,0 +1,35 @@
+# A capped syringe of air that slides freely, 100 ml at 20 °C: its volume goes with the temperature
+# above absolute zero (Charles's law), 100 × (273 + T) / 293, rounded to whole millilitres:
+# -20 °C 86, 0 °C 93, 20 °C 100, 40 °C 107, 60 °C 114, 80 °C 120.
+item chem.cooling-table v=1 skills=[chemistry.gases, data.tables] {
+  title "Cooled air takes less room"
+  difficulty w
+  let w=0..2 r=0..5
+  let t={pick(r, -20, 0, 20, 40, 60, 80)}
+  let ml={pick(r, 86, 93, 100, 107, 114, 120)}
+  where (r != 2 and (w != 2 or r >= 3))
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 35x27 {
+    table data cols=2 head=["Temperature °C", "Air in syringe, ml"] cells=["-20", "86", "0", "93", "20", "100", "40", "107", "60", "114", "80", "120"] at=canvas(1, 0)
+    text ask "Ana caps a syringe with 100 ml of air in the warm hut at 20 °C. A grown-up stands it in water baths and the freezer, and the plunger slides to a new reading each time. {if w == 0 then \"How many millilitres does the air fill at \" else if w == 1 then \"How many millilitres more or less than at 20 °C does the air fill at \" else \"How many millilitres does the air shrink by when it goes from the bath at \"}{t}{if w == 2 then \" °C into the freezer at -20 °C?\" else \" °C?\"}" narrate width=34 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then ml else if w == 1 then abs(ml - 100) else ml - 86)
+  feedback {
+    when (w == 1 and answer == ml) point=data {
+      say "That is the whole reading. The question asks how far it is from the 100 ml at 20 °C."
+    }
+    when (w == 2 and answer == 86) point=data {
+      say "That is the reading in the freezer. How far is it from the reading in the bath?"
+    }
+  }
+  hint "Find the row for the temperature."
+  hint "{if w == 0 then \"Read across to the millilitres.\" else if w == 1 then \"How far is that reading from 100 ml?\" else \"How far is that from the freezer's reading?\"}"
+}

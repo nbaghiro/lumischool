@@ -1,0 +1,30 @@
+# A sitting summed up in one sentence. One wrong sentence is true but only covers one moment, and
+# the other belongs to another part of the book.
+item reading.firstmen-gist v=1 skills=[reading.summary, reading.whole-book] {
+  title "Sum it up"
+  difficulty pick(k, 0, 1, 1, 0, 1)
+  let k=0..4
+  let right={pick(k, "B", "A", "C", "A", "B")}
+
+  scene 36x36 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=centre {
+        crater cr
+        text ask "{pick(k, \"Which sentence sums up chapters 3 to 6 best?\", \"Which sentence sums up chapters 7 to 10 best?\", \"Which sentence sums up chapters 11 to 14 best?\", \"Which sentence sums up chapters 18 to 20 best?\", \"Which sentence sums up chapters 21 and 22 best?\")}" width=20
+      }
+      passage a title="A" text="{pick(k, \"Cavor and Bedford float about inside the dark sphere.\", \"At sunrise the frozen air melts and plants spring up, and the two men leap off exploring and lose the sphere.\", \"A huge mooncalf wallows past them in the scrub.\", \"Back in the sunlight the two men split up to search; Bedford finds the sphere but loses Cavor, and flies back alone.\", \"Bedford carries two bars of gold up to the hotel.\")}" width=34 numbers=false
+      passage b title="B" text="{pick(k, \"Cavor builds a sphere with blinds that shut out the pull of the Earth, and he and Bedford ride it to a snowy crater on the moon.\", \"Bedford jumps much farther than he meant to.\", \"Bedford flies home alone and lands in the sea.\", \"Bedford finds Cavor's note ending in a crooked line.\", \"Bedford lands in England, loses the sphere when a boy climbs in, and learns that Cavor's messages are reaching the Earth.\")}" width=34 numbers=false
+      passage c title="C" text="{pick(k, \"The sun rises, the frozen air melts and plants grow in minutes.\", \"They are chained in the dark by the moon people.\", \"Starving, they eat a fungus that makes them giddy, are caught by the Selenites and taken underground, where Cavor tries to talk with them.\", \"They fight their way out of the moon butchers' cave.\", \"Cavor meets the Grand Lunar and tells him about the Earth.\")}" width=34 numbers=false
+      choice pick options=["A", "B", "C"] stack=row
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=cr {
+      say "That did happen in the book. Is it the whole of these chapters, and is it in these chapters at all?"
+    }
+  }
+  hint "Say to yourself what happened at the start of these chapters and at the end."
+  hint "Which sentence reaches from the start to the end, and happens only in these chapters?"
+}

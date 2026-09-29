@@ -1,0 +1,32 @@
+# Three lines from Tam's speech matched to the way each one works on the listeners: a question they
+# answer in their heads, a group of three, and speaking to them as you.
+item writing.speech-device v=1 skills=[writing.persuasion, writing.speeches, reasoning.sorting] {
+  title "How does each line persuade?"
+  difficulty k
+  let k=0..1 r=0..2
+  let s1={pick(k, "Would your child cross it now?", "What will we tell our children?")}
+  let s2={pick(k, "It is old, loose and unsafe.", "It is cheap, quick and strong.")}
+  let s3={pick(k, "You cross it every single day.", "You know this gorge best of all.")}
+  let c1={"a question"}
+  let c2={"a group of three"}
+  let c3={"speaking to you"}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x21 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      ropebridge br planks=10 gaps=3
+      person tam pose=point age=child hair=curly colour=black top=tang
+    }
+    text ask "Write the number of the way each line from Tam's speech works on the listeners." narrate width=33 below=pics gap=1
+    match m left=["{s1}", "{s2}", "{s3}"] right=["{if r == 1 then c3 else c2}", "{if r == 0 then c3 else c1}", "{if r == 0 then c1 else if r == 1 then c2 else c3}"] blanks=[x, y, z] below=ask gap=1
+  }
+
+  answer x=(if r == 0 then 3 else 2) y=(if r == 1 then 3 else 1) z=(if r == 0 then 2 else if r == 1 then 1 else 3)
+  hint "Say each line aloud to a listener. What does it make them do: answer in their head, count along, or feel spoken to?"
+  hint "Look at each line's shape: how it ends, how many things it names, and who it talks to."
+}

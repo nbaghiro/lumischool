@@ -1,0 +1,35 @@
+# Dividing a mixed number by a decimal: how many mugs of 0.75 litres a flask of 4 1/2 litres fills,
+# which is dividing, and the answer is more than the flask's number of litres.
+item fraction.cups-from-mixed v=1 skills=[fractions.multiply.mixed, fractions.divide] {
+  title "Mugs from the flask"
+  difficulty pick(t, 0, 1, 2, 3, 3)
+  let t=0..4
+  let w={pick(t, 2, 3, 3, 4, 2)}
+  let a={pick(t, 1, 3, 3, 1, 2)}
+  let b={pick(t, 2, 4, 5, 2, 5)}
+  let x={pick(t, 0.5, 0.25, 0.4, 0.75, 0.6)}
+  level easy {
+    let t={0, 1}
+  }
+  level hard {
+    let t={3, 4}
+  }
+
+  scene 36x20 {
+    mixed m whole=w n=b k=a write=false at=canvas(1, 1)
+    text ask "The big flask in the hut holds {w} {a}/{b} litres of cocoa, the circles in the picture. Each mug takes {x} litres. How many mugs can be filled?" narrate width=34 below=m gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer plain((w + a / b) / x)
+  feedback {
+    when (answer == (w + a / b) * x) point=m {
+      say "Multiplying by {x} makes less than the flask holds. How many mugs of {x} fit in it?"
+    }
+    when (answer == w / x) point=m {
+      say "That fills mugs from the whole litres only. The part litre fills mugs too."
+    }
+  }
+  hint "Is the number of mugs more or less than {w} {a}/{b}?"
+  hint "Write both numbers as decimals, or both as fractions, then divide."
+}

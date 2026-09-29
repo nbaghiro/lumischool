@@ -1,0 +1,75 @@
+# The twelve-bar blues: I, IV and V in the order I I I I, IV IV I I, V IV I I, read from a chart in
+# numerals and in chords, played on the ukulele in C and the guitar in A and G, with its three lines
+# of words, at the waterfall gorge. W. C. Handy's St. Louis Blues (1914) is named as its source.
+lesson music-twelve-bar-blues v=1 format=teach grade=6 unit=4 subject=music levels=[easy, medium, hard] {
+  title "The twelve-bar blues"
+  goal "Play the twelve-bar blues on the ukulele or guitar, changing between chords I, IV and V where its chart says."
+
+  look {
+    scene 36x25 {
+      row top space=2 align=end at=canvas(1, 1) {
+        table chart cols=5 head=["Bars", "1st", "2nd", "3rd", "4th"] cells=["1 to 4", "I", "I", "I", "I", "5 to 8", "IV", "IV", "I", "I", "9 to 12", "V", "IV", "I", "I"]
+        kingfisher bird flying=0 facing=-1
+      }
+      row boxes space=2 align=start below=top gap=1 {
+        chordbox c tuning=uke chord=C frets=3 show=fingers name=true letters=false lit=[]
+        chordbox f tuning=uke chord=F frets=3 show=fingers name=true letters=false lit=[]
+        chordbox g tuning=uke chord=G7 frets=3 show=fingers name=true letters=false lit=[]
+      }
+    }
+    say """
+      By the water wheel the gorge band plays the blues, the music that grew up in the American
+      South a little over a hundred years ago; W. C. Handy printed the St. Louis Blues in 1914. The
+      most common blues uses twelve bars in three lines of four: four bars of chord I, two of IV and
+      two of I, then V, IV, I and I. On the ukulele in C major that is C, F and G7.
+      """
+  }
+  do {
+    practice music.blues-count-bars count=1 seed=2 easy-seed=1 hard-seed=7
+    level easy {
+      worked music.blues-missing-bar k=0 level=medium
+    }
+    practice music.blues-missing-bar count=1 seed=10 easy-seed=7 hard-seed=1
+    practice music.blues-uke-strum count=1 seed=2 easy-seed=1 hard-seed=7
+    practice music.blues-changes count=1 seed=2 easy-seed=1 hard-seed=7
+    practice music.blues-guitar-strum count=1 seed=7 easy-seed=1 hard-seed=7
+    practice music.blues-words-lines count=1 seed=2 easy-seed=1 hard-seed=7
+    practice music.blues-play-roots count=1 seed=2 easy-seed=1 hard-seed=7
+    level hard {
+      show music.blues-claim q=1 r=1
+    }
+    practice music.gorge-bass-notes count=1 seed=2 easy-seed=1 hard-seed=1
+  }
+  try stars=2 {
+    show music.blues-claim q=0 r=0 easy-r=1 hard-r=0
+  }
+  try stars=3 {
+    show music.blues-open-keys v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "The twelve-bar blues is I I I I, IV IV I I, V IV I I, and chord I has eight of the bars."
+  }
+
+  grown-ups """
+    The idea is that the twelve-bar blues is one fixed plan that works in any key, so a player who
+    knows I, IV and V in a key can play it, and that the words fit the plan in three lines, the
+    first sung twice and the third answering it. The wrong ideas to watch for are thinking the bars
+    are shared evenly between the chords, and changing chord a bar late in the last line, where it
+    changes every bar. In the working, look for the child saying the numerals aloud in time before
+    playing. The two-star question is the claim that each chord gets four bars; the three-star
+    question checks a list of keys against the open guitar shapes a child already knows, which means
+    finding I, IV and V in every key and rejecting any that needs F, B or B flat. A child who is
+    stuck can say the plan as a chant, four, two, two, then one each, and go back to the way in;
+    stay on this lesson another day if the last line still comes out wrong. Playing a whole blues in
+    time is for you to judge in the room. Off the page, listen to a recording of the St. Louis Blues
+    or any twelve-bar blues and count the bars together, raising a hand at bar 5 and bar 9. W. C.
+    Handy died in 1958, so the St. Louis Blues is public domain in the United States but stays in
+    copyright in the UK and the EU until 2029; the lesson names it and quotes none of it.
+    """
+  level easy {
+    grown-ups "At this level the bars to count are of I or IV, finding a missing bar is worked once in the teacher's pen before one in C major, the bars to strum are early in the blues in C and A, the changes are counted for one time through, the lines of words are found by where they start, the bass notes are counted for chord V, the two-star is as written with its answers in another order, and the three-star checks three keys."
+  }
+  level hard {
+    grown-ups "At this level the bars to count include those that are not I, the missing bars are in G or A on the guitar, the bars to strum are in the last line or in G major, the changes are counted with bar 12 turned to V, the chord of the answer line is read, the line starts are played in F, with its B flat, or in A, a claim that the chord changes only at a new line is judged before the two-star, the bass notes are counted over three times through, and the three-star checks all seven keys."
+  }
+}

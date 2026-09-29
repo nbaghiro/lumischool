@@ -1,0 +1,42 @@
+# The three-star: a bat closes on a moth it has found by echo. The echo gives the distance only after
+# halving, and the time to reach the moth needs the bat's speed, or at hard the speed at which it
+# gains on a moth flying away. The traps are the whole out-and-back distance and the bat's own speed.
+item nature.echo-distance v=1 stars=3 skills=[nature.night-animals, physics.sound, reasoning.two-steps] {
+  title "Closing on the moth"
+  difficulty k
+  let k=0..2
+  let told={pick(k, "The squeak and its echo travel 20 metres altogether, out to the moth and back. The moth hovers still, and the bat flies straight at it at 5 metres every second.", "Sound travels about 340 metres in a second, and the echo comes back 0.1 seconds after the squeak. The moth hovers still, and the bat flies straight at it at 8.5 metres every second.", "Sound travels about 340 metres in a second, and the echo comes back 0.05 seconds after the squeak. The bat flies at 8.5 metres every second, and the moth flies straight away from it at 3.5 metres every second.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x22 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      moon mo phase=0.25
+      bats b count=1 flying=1
+    }
+    text ask "Over the star cliffs a bat squeaks, too high for Ada to hear, and listens for the echo from a moth. {told} How many seconds until the bat reaches the moth?" narrate width=32 below=pics gap=1
+    row r below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text u "seconds"
+    }
+  }
+
+  answer pick(k, 2, 2, 1.7)
+  feedback {
+    when (answer == pick(k, 4, 4, 3.4)) point=ask {
+      say "That uses the whole way out and back. The moth is only as far away as the way out."
+    }
+    when (k == 2 and answer == 1) point=ask {
+      say "The moth is flying away while the bat chases it. How much closer does the bat get each second?"
+    }
+  }
+  hint "How far away is the moth? The sound went there and came back."
+  hint "How much closer does the bat get in each second?"
+  level medium hard {
+    hint "Sound goes 340 metres in a whole second. In the echo's time it goes only a part of that, there and back."
+  }
+}

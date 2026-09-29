@@ -1,0 +1,46 @@
+# Point of view shapes what a reader is told: a narrator inside the story knows only what they see
+# and feel and must guess at others, and a narrator outside it can see into every mind. One night at
+# the telescope is told three ways, and the wrong choices mistake who is speaking or what they know.
+item reading.teller-knows v=1 skills=[reading.point-of-view, reading.inference] {
+  title "What can this teller know?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+  let right={pick(k, "Mira tells it, and she cannot see into others.", "The narrator stands outside and sees every mind.", "She tells it from inside, so she can only guess.")}
+  let w1={pick(k, "The sigh does not matter to the story.", "Tom tells it, because he feels cold.", "She does not like the boy.")}
+  let w2={pick(k, "A narrator outside would not know either.", "Mira tells it, because she is next to Tom.", "The boy told her he was cold.")}
+
+  scene 35x30 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        passage p text="{pick(k, \"I waited in the line for an hour. When my turn came I saw Saturn at last, pale and small, with its ring. Behind me somebody sighed, loudly. I pretended not to hear, and I kept looking.\", \"Mira waited an hour in the line. Behind her, Tom sighed; he was cold, and he wished he had stayed at home. Dr Osei watched them both and hoped the clouds would stay away.\", \"The girl at the eyepiece had waited an hour, and I let her look for longer than I should have. The boy behind her sighed. I expect he was cold.\")}" width=21 numbers=false
+        telescope scope tilt=40
+      }
+      text ask "{pick(k, \"The story never says why somebody sighed. Why not?\", \"How does this story tell us what Tom and Dr Osei feel?\", \"Dr Osei says I expect he was cold. Why does she not just say he was cold?\")}" width=34
+      choice pick options=[pick(k, right, w1, w2), pick(k, w1, right, w1), pick(k, w2, w2, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == w2) point=p {
+      say "A narrator outside the story can tell what anyone thinks. This teller says I. Who is it, and what can she see?"
+    }
+    when (k == 1 and pick != right) point=p {
+      say "Look for I in the passage. If nobody says I, the teller stands outside the story. How does it know what two people feel?"
+    }
+    when (k == 2 and pick != right) point=p {
+      say "The teller says I and is Dr Osei. Can she see inside the boy's head, or only watch him?"
+    }
+    when (k == 0 and pick == w1) point=p {
+      say "The sigh is in the story, so it matters to someone. Who is telling it, and could she know why?"
+    }
+  }
+  hint "Who is telling this: someone inside the story who says I, or someone outside it?"
+  hint "What can that teller see, and what can only be guessed?"
+}

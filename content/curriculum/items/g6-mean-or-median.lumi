@@ -1,0 +1,35 @@
+# The second reasoning question in the core: one value far from the rest pulls the mean towards it
+# and leaves the median where it is, so the two can be compared without adding.
+item data.mean-or-median v=1 skills=[data.mean, data.median, reasoning.compare] {
+  title "Mean or median"
+  difficulty pick(v, 0, 1, 1.5)
+  let v=0..2 a={12, 20, 25}
+  where (v != 1 or a >= 20)
+  level easy {
+    let v={0}
+  }
+  level hard {
+    let v={1, 2}
+  }
+
+  scene 33x15 {
+    table data cols=6 head=["Pup", "A", "B", "C", "D", "E"] cells=["kg", a - 1, pick(v, a + 15, a - 14, a + 3), a, a + pick(v, 2, 2, 1), a - pick(v, 2, 2, 3)] at=canvas(1, 1)
+    text ask "Five seal pups were weighed. Without adding them all up, which is bigger: the mean weight or the median weight, or are they the same?" narrate width=32 below=data gap=1
+    choice pick options=["mean", "median", "the same"] below=ask gap=1
+  }
+
+  answer pick=pick(v, "mean", "median", "the same")
+  feedback {
+    when (v == 0 and pick != "mean") point=data {
+      say "One pup is much heavier than the rest. What does that do to the total, and so to the mean?"
+    }
+    when (v == 1 and pick != "median") point=data {
+      say "One pup is much lighter than the rest. What does that do to the mean?"
+    }
+    when (v == 2 and pick != "the same") point=data {
+      say "The weights are spread evenly either side of the middle one. Where does the mean land?"
+    }
+  }
+  hint "Put the weights in order. Which one is in the middle?"
+  hint "Is any weight far from the others? Which way would it pull the total?"
+}

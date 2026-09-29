@@ -1,4 +1,4 @@
-lesson physics-what-lets-electricity-through v=1 format=teach grade=3 unit=4 subject=physics levels=[easy, medium, hard] {
+lesson physics-what-lets-electricity-through v=1 format=teach grade=3 unit=3 subject=physics levels=[easy, medium, hard] {
   title "What lets electricity through"
   goal "Predict whether a bulb lights with a thing across the gap, and sort things into conductors and insulators."
 

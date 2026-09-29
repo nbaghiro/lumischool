@@ -1,0 +1,35 @@
+# Who said a line. The line is given without its speaker, and the right speaker is the one who says
+# it in the chapter, which the child finds by reading round the line. The last version is speech
+# reported by the Badger, so the speaker is not the one reporting it.
+item reading.willows-who v=1 skills=[reading.characters, reading.evidence, reading.whole-book] {
+  title "Who said it?"
+  let k=0..3
+  let right={pick(k, "The Mole", "The Rat", "The Mole", "Toad's father")}
+
+  scene 34x24 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row cast space=2 align=end {
+        bookcast m who=mole pose=stand dir=1
+        bookcast r who=rat pose=stand dir=1
+        bookcast t who=toad pose=stand dir=-1
+      }
+      text ask "{pick(k, \"In chapter 4, who says this? ‘Once well underground, you know exactly where you are.’\", \"In chapter 7, who says this? ‘Such music I never dreamed of.’\", \"In chapter 9, who says this? ‘It’s quite a long time since you did any poetry.’\", \"In chapter 11, whose words are these? ‘Don’t let my son know about it.’\")}" width=33
+      choice pick options=[pick(k, "The Badger", "The Mole", "The Rat", "The Badger"), pick(k, "The Mole", "The Rat", "The Mole", "Toad"), pick(k, "The Rat", "The Otter", "The Sea Rat", "Toad's father")] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == "The Badger") point=ask {
+      say "The Badger agrees with it, but he answers someone else. Look at who speaks first."
+    }
+    when (k == 3 and pick == "The Badger") point=ask {
+      say "The Badger says these words aloud, but he is repeating what someone once said to him. Who was it?"
+    }
+    when (k == 1 and pick == "The Mole") point=ask {
+      say "Read on a line. What does the Mole say he can hear?"
+    }
+  }
+  hint "Find the words in the chapter. Who is speaking in that paragraph?"
+  hint "Look at the words just before or after the speech marks: said who?"
+}

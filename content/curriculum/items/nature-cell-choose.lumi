@@ -1,0 +1,38 @@
+# Three-star: planning a view before looking. The child knows a cell's length and wants a number of
+# cells across the field, so works back to the field's width and then the magnification. The table of
+# fields is the microscope's own; the checker's rule gives the same widths.
+item nature.cell-choose v=1 stars=3 skills=[nature.cells, reasoning.plan] {
+  title "Which lens to choose"
+  difficulty k
+  let k=0..2
+  let what={pick(k, "onion skin cells, each 225 µm long", "pondweed leaf cells, each 90 µm long", "yeast cells, each 6 µm long")}
+  let want={pick(k, 20, 20, 30)}
+  let ans={pick(k, "× 40", "× 100", "× 1000")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x22 {
+    row pics at=canvas(1, 1) space=2 align=start {
+      microscope sc slide=1 lamp=0
+      table t cols=2 head=["Magnification", "Field across"] cells=["× 40", "4,500 µm", "× 100", "1,800 µm", "× 400", "450 µm", "× 1000", "180 µm"]
+    }
+    text ask "Ada wants to see {want} {what}, lying end to end across the field. Which magnification should she choose?" narrate width=32 below=pics gap=1
+    choice pick options=["× 40", "× 100", "× 400", "× 1000"] below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "× 1000" and k != 2) point=t {
+      say "The strongest lens shows the least of the slide. Would {want} cells fit across 180 µm?"
+    }
+    when (pick != ans and pick != "× 1000") point=t {
+      say "How wide must the field be for {want} cells of that length? Find that width in the table."
+    }
+  }
+  hint "How long would {want} cells be, laid end to end?"
+  hint "Which field in the table is that wide?"
+}

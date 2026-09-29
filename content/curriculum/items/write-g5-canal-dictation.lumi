@@ -1,0 +1,24 @@
+# The dictation: sentences set on the canal that carry the lesson's endings, with silent letters,
+# ei after c and -ough words from England's years 5 and 6 list. Easy's three make 70 words, medium's
+# 98 and hard's 99, near the 90 to 110 words the Russian programme asks of a fifth-grade dictation.
+item writing.canal-dictation v=1 skills=[writing.spelling, writing.dictation] {
+  title "A dictation from the canal"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=5..7
+  }
+
+  scene 34x11 {
+    narrowboat boat windows=4 pots=2 at=canvas(1, 1)
+    text ask "Listen to the sentence, then type it. Your grown-up will read it, or press play." width=19 right-of=boat gap=1
+    number-input answer width=32 below=boat gap=3
+  }
+
+  check writing.dictation text="{pick(k, \"The keeper of the lock gave us good advice: take the wet steps with caution and never rush a boat through the gate.\", \"Our narrowboat is small but spacious, and my brother practises steering it every morning until he feels confident enough to take it through the tunnel alone.\", \"At the market by the mill, an observant girl noticed that the bread was reasonable and the hot soup was nutritious.\", \"It was an official notice: the canal would be closed for a week, so the tolerant crew tied up by the bridge and made themselves comfortable in the cabin until the water rose again.\", \"Nobody could doubt that the old stone bridge looked solemn in the thick autumn fog, and the swans by the island were almost invisible until they glided out into the light.\", \"Before the boats could move on, the crew thought it was essential to receive the new licence from the office, although the rough weather made the walk through the town a long one.\", \"The miller was gracious and patient, but he gave the ambitious boy some sensible advice: a noticeable crack in a lock gate is a danger, and a cautious crew always stops to report it.\", \"Frequent rain can affect the canal, and its effect is plain to see: the water creeps over the towpath, the ceiling of the old tunnel drips, and the ducks look thoroughly pleased.\")}"
+  hint "Listen to the whole sentence once before you type a word."
+  hint "Type it a few words at a time. For each long word, ask which ending from today it has."
+}

@@ -1,0 +1,18 @@
+# The five black keys, played in order from F sharp, are a major pentatonic scale: F sharp, G sharp,
+# A sharp, C sharp and D sharp (Wikipedia, "Pentatonic scale": the black keys are the G-flat or
+# F-sharp major pentatonic).
+item music.penta-black v=1 skills=[music.pentatonic, music.keys] {
+  title "The black-key scale"
+
+  scene 36x18 {
+    row top space=2 align=end at=canvas(1, 1) {
+      piano keys from=F4 whites=7 wide=3 labels=letters down=[] lit=[]
+      earth home up=2
+    }
+    text ask "The five black keys together make a pentatonic scale. Play them in order from F sharp, the black key just above F, up to D sharp, with no white key at all." narrate width=34 below=top gap=1
+  }
+
+  check music.plays notes=[Fs4, Gs4, As4, Cs5, Ds5]
+  hint "Find the group of three black keys. F sharp is the lowest of them."
+  hint "Play the group of three, then the group of two above it."
+}

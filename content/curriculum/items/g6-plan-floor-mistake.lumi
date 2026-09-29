@@ -1,0 +1,28 @@
+# The two-star: Ada multiplies the squares by the scale once, but every square of the plan stands for
+# s by s metres, so the area is multiplied by s × s. The reason is what one square is in real life.
+item scale.plan-floor-mistake v=1 stars=2 skills=[scale.drawings, area.rectangles, reasoning.find-the-mistake] {
+  title "Ada's floor area"
+  difficulty (s + l / 10)
+  let s={2, 3, 4} l={5, 6, 7, 8}
+  level easy {
+    let s={2} l={5, 6}
+  }
+  level hard {
+    let s={3, 4} l={7, 8}
+  }
+
+  scene 28x18 {
+    scaleplan p plan=1 l=l w=4 scale=s unit="m" dims=0 ask=0 at=canvas(1, 1)
+    text ask "Ada says the floor of this room is {l} × 4 × {s} = {l * 4 * s} square metres, because each square is {s} m. What is the real area of the floor, in square metres?" narrate width=11 right-of=p gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (l * 4 * s * s)
+  feedback {
+    when (answer == l * 4 * s) point=p {
+      say "That is Ada's answer. How long and how wide is one square of the plan in real life?"
+    }
+  }
+  hint "How long is the real room? How wide is it?"
+  hint "One square of the plan is {s} m long and {s} m wide. What area is that?"
+}

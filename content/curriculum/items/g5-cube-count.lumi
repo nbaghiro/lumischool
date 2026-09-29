@@ -1,0 +1,27 @@
+# The way in: a cuboid of cubes, some hidden at the back, counted as layers rather than one by one.
+item volume.cube-count v=1 skills=[volume.cuboids] {
+  title "How many cubes"
+  difficulty (l * w * h / 10)
+  let l=2..5 w=2..3 h=2..4
+  level easy {
+    let l=2..3 w={2} h=2..3
+  }
+  level hard {
+    let l=4..5 w={3} h={3, 4}
+  }
+
+  scene 34x14 {
+    cubestack stack l=l w=w h=h at=canvas(1, 1)
+    text ask "The cuboid is made of cubes, with no gaps inside. How many cubes is it made of?" narrate width=14 right-of=stack gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (l * w * h)
+  feedback {
+    when (answer == l * h + w * h + l * w - l - w - h + 1) point=stack {
+      say "That counts only the cubes you can see. Some are hidden at the back and in the middle."
+    }
+  }
+  hint "How many cubes are in the top layer?"
+  hint "How many layers are there?"
+}

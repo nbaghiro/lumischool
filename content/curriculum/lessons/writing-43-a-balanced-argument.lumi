@@ -1,0 +1,63 @@
+# A balanced argument: a question put to the old city, points for and against built on facts,
+# joining words that add and turn, and a conclusion that weighs both sides before it decides.
+lesson writing-a-balanced-argument v=1 format=teach grade=5 unit=7 subject=writing levels=[easy, medium, hard] {
+  title "A balanced argument"
+  goal "Write an argument that gives both sides of a question and then weighs them to decide."
+
+  look {
+    scene 34x23 {
+      citywalls walls towers=3 open=1 at=canvas(1, 0)
+      passage para title="Should carts come through the gate?" text="Carts bring fresh food to the market every morning. Also, they carry stone to mend the walls. However, the gate is narrow, and people on foot are pushed aside. On balance, carts could come through before nine, when the streets are quiet." width=32 numbers=false below=walls gap=1
+    }
+    say """
+      The city council has asked a question, and Ana has written both sides of the answer. First she
+      gives points for carts, and each one is a fact someone could check. Also adds a second point
+      to the same side. However turns to the other side. Only then does she decide, and her
+      conclusion keeps something from each side: carts, but before nine. An argument that gives one
+      side only is a notice; a balanced argument lets the reader see both.
+      """
+  }
+  do {
+    level easy {
+      worked writing.for-or-against k=1 r=0 level=medium
+    }
+    practice writing.for-or-against count=1 seed=1
+    show writing.fact-or-opinion k=2 easy-k=0 hard-k=3
+    show writing.fact-or-opinion k=3 easy-k=1 hard-k=4
+    practice writing.argument-joining-word count=2 seed=1
+    practice writing.missing-side count=1 seed=1
+    practice writing.argument-order count=1 seed=1 hard-count=2
+    practice writing.weighs-both count=1 seed=1
+  }
+  try stars=2 {
+    show writing.balanced-or-not k=0 r=2 hard-k=1
+  }
+  try stars=3 {
+    show writing.write-balanced k=0 hard-k=1
+  }
+  remember {
+    say "Give the points for, turn with however, give the points against, then weigh them both to decide."
+  }
+
+  grown-ups """
+    A balanced argument hears both sides before it decides, which is harder than a notice that
+    persuades, because the child has to argue against their own view for a while. The look is Ana's
+    answer to the council about carts at the gate. The way in sorts lines into for, against and no
+    reason at all, and the core picks the fact among opinions, one of them dressed as a fact, then
+    the evidence for one side from a fact that does not help it and an opinion dressed as a fact,
+    the joining word that adds, turns or decides, the sentence that balances a one-sided argument,
+    the four parts in order and the ending that weighs both sides. The wrong idea to watch for is
+    that an argument is stronger for being louder or longer; ask "what would the other side say?" of
+    every piece. If the child is stuck, argue the question aloud together, you taking one side and
+    the child the other, then swap. Off the page, pick a real family question (a later bedtime, a
+    pet) and list two points each way before anyone decides. The two-star question compares a
+    balanced argument with a loud one, and the three-star question is the child's own, which you
+    mark.
+    """
+  level easy {
+    grown-ups "At this level the library's lines are sorted once in the teacher's pen, the lines to sort are about the gate, the facts are the plainer ones, with no evidence question, the joining words turn or add, the missing side is for carts, the argument to order is the Sunday library, the ending is about the bell, the two-star is about carts, and the child's argument has two points each way."
+  }
+  level hard {
+    grown-ups "At this level the lines to sort are about the library, the evidence is chosen for each side in turn, the joining words add without argument words or start a conclusion, the missing side is for shutting the gate, two arguments are ordered, the ending that weighs has to be told from one that names both sides and never decides, the two-star is about the gate at sunset, and each of the child's points needs a fact."
+  }
+}

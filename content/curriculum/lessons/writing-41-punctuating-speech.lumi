@@ -1,0 +1,65 @@
+# Speech set out for a reader: the spoken words inside the marks with their own mark, speech split
+# by said, a new line for each speaker, and speech reported without marks.
+lesson writing-punctuating-speech v=1 format=teach grade=5 unit=5 subject=writing levels=[easy, medium, hard] {
+  title "Punctuating speech"
+  goal "Punctuate speech, including speech split by said, and start a new line for each new speaker."
+
+  look {
+    scene 35x10 {
+      row all at=canvas(1, 0) space=2 align=start {
+        column talk space=0 align=start {
+          text l1 "“Look,” said Ada, pointing up. “The comet has a tail.”" width=22
+          text l2 "“Where?” asked Leo." width=22
+          text l3 "“Above the clock tower,” said Ada, “just left of the moon.”" width=22
+        }
+        telescope scope tilt=50
+      }
+    }
+    say """
+      Ada and Leo are at the telescope on the star cliffs. Only the words each of them says go
+      inside the speech marks, and each spoken part keeps its own comma, question mark or full
+      stop inside the closing mark. When Ada's sentence is split by said Ada, it carries on after
+      a comma with a small letter. When Leo speaks, a new line starts, so the reader always knows
+      who is talking.
+      """
+  }
+  do {
+    level easy {
+      worked writing.split-speech k=2 r=0 level=medium
+    }
+    practice writing.split-speech count=1 seed=1 hard-count=2
+    practice writing.mark-inside count=2 seed=1
+    practice writing.speech-mistake count=1 seed=1
+    practice writing.new-line-speaker count=1 seed=1
+    practice writing.who-said count=1 seed=1
+    practice writing.reported-speech count=2 seed=1
+  }
+  try stars=2 {
+    show writing.speech-meaning k=0 r=1 hard-k=1
+  }
+  try stars=3 {
+    show writing.write-dialogue k=0 hard-k=1
+  }
+  remember {
+    say "Only the spoken words go inside the marks, with their own mark, and each new speaker starts a new line."
+  }
+
+  grown-ups """
+    Speech punctuation is there so a reader knows exactly which words were said and who said
+    them. The look is Ada and Leo at the telescope. The core splits a spoken sentence around said,
+    chooses the mark that goes inside the closing speech mark, names the robot's mistake, finds
+    where a new speaker's line should start, follows two speakers when the said is left off, and
+    turns quoted speech into reported speech. The wrong idea to watch for is a capital after said
+    Ada when the spoken sentence has not finished; ask whether the words inside the marks are one
+    sentence or two. If the child is stuck, act the lines out with two voices and write down only
+    what each voice says. Off the page, open a novel at a page of talk and count the new lines.
+    The two-star question shows that the marks change who found the comet, and the three-star
+    question is a conversation of the child's own, which you mark.
+    """
+  level easy {
+    grown-ups "At this level Gran's two sentences are worked once in the teacher's pen, the split sentence carries on after said, the marks inside are question marks, the robot misses a comma or a capital, the new line comes at the plainer places, line 3 is asked, the reported speech is the plainer pair, the two-star asks about Ada, and the conversation has no reported line."
+  }
+  level hard {
+    grown-ups "At this level two split sentences are asked, one carrying on and one starting again, the marks inside are the comma before said and the full stop at the end, the robot's mistake includes a question mark outside, the new line comes after an untagged second sentence, line 5 is asked, the reported speech steps will back to would, the two-star asks about Dr Shah, and the conversation includes one line of reported speech."
+  }
+}

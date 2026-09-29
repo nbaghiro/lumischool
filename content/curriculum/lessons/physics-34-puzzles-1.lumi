@@ -1,4 +1,4 @@
-lesson physics-puzzles-1 v=1 format=puzzles grade=1 unit=9 subject=physics levels=[easy, medium, hard] {
+lesson physics-puzzles-1 v=1 format=puzzles grade=1 unit=8 subject=physics levels=[easy, medium, hard] {
   title "Physics puzzles: push, pull and shadow"
   goal "Work out which push wins, which thing is heavier, what moves each thing, and whose shadow is longer."
 

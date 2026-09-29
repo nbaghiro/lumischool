@@ -1,0 +1,66 @@
+# A short story with a turn, over three sittings: planned on five cards with the turn on the fourth,
+# drafted fast, then revised aloud; the turn prepared by an early clue and the ending earned by it.
+lesson writing-a-short-story-with-a-turn v=1 format=teach grade=6 unit=7 subject=writing levels=[easy, medium, hard] {
+  title "A short story with a turn"
+  goal "Plan, draft and revise over three sittings a short story that turns at one moment and ends because of it."
+
+  look {
+    scene 34x30 {
+      storymountain hill stages=["Who and where", "Wants", "Trouble", "The turn", "Ending"] notes=["Kit, moon base", "to see sunrise", "left at the lander", "only Kit sees lamps", "guides crew home"] ring=3 at=canvas(0, 0)
+      row pics below=hill gap=1 space=2 align=end {
+        lander lnd rungs=5
+        crater cr count=2
+        earth globe up=1
+      }
+    }
+    say """
+      Kit's plan is a story with a turn. Kit wants to watch the sun rise over the crater rim,
+      but the crew leave her at the lander. Then the turn: out on the rim their radio dies, and
+      from the lander's high window only Kit can see their lamps. Being left behind was the thing
+      that saved them. The story takes three sittings: the plan, a fast draft with a paragraph
+      for each card, and a revision read aloud, when weak sentences are mended.
+      """
+  }
+  do {
+    level easy {
+      worked writing.story-turn k=2 level=medium
+    }
+    practice writing.story-turn count=1 seed=2
+    practice writing.story-plan-order count=1 seed=3 hard-count=2
+    practice writing.story-clue count=2 seed=1
+    practice writing.story-show count=2 seed=5
+    practice writing.story-sitting-job count=1 seed=6
+    practice writing.story-cut count=1 seed=7
+  }
+  try stars=2 {
+    show writing.story-ending-reason k=0 r=1 hard-k=1
+  }
+  try stars=3 {
+    show writing.write-turn-story k=0 hard-k=1
+  }
+  remember {
+    say "A turn is the moment the story changes direction. Plant a clue for it early, and let the ending grow from it."
+  }
+
+  grown-ups """
+    A story with a turn has one moment after which the character sees things differently, and
+    the ending follows from that change; a good turn surprises and still feels fair, because a
+    clue was planted early. The look is Kit's plan on five cards, with the turn on the fourth.
+    The way in finds the turn in a very short story, and the core puts a plan in order, finds the
+    early clue that makes a turn fair, picks the sentence that shows a feeling rather than naming
+    it, matches jobs to the three sittings, and cuts the sentence that says something twice. The
+    wrong idea to watch for is a turn that comes from nowhere (a spaceship lands and fixes
+    everything); ask what the reader could have guessed. The three sittings are the point:
+    planning, drafting fast without fixing, and revising aloud on another day are different
+    jobs, and a child who does all three at once usually does none of them well. If the child is
+    stuck, retell a story you both know and find its turn together. Off the page, read a fable
+    and name its turn and its clue. The two-star question compares two endings, and the
+    three-star question is the child's own story over three sittings, which you mark.
+    """
+  level easy {
+    grown-ups "At this level Kit's turn is worked once in the teacher's pen, the turns to find are Kit's and Omar's, the plan to order is Kit's, the clues are for Kit's and Omar's turns, the feelings are fear and delight, the sitting jobs are the plainer ones, the repeated sentence is plain, the two-star ending from nowhere is a prize, and the story needs no planted clue."
+  }
+  level hard {
+    grown-ups "At this level the turns to find are Omar's and Lena's, the plan to order is Omar's and is ordered twice, the clues include Lena's, the feelings include loneliness, the sitting jobs are the subtler ones, the repeated sentence is close to its twin, the two-star ending from nowhere is a rescue, and the story plants a clue for its turn."
+  }
+}

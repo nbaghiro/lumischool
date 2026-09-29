@@ -1,0 +1,31 @@
+# The two-star reason: change the ending and the theme goes, because a theme is shown by what the
+# character does and what comes of it, not by the setting or the title.
+item reading.moon-theme-ending v=1 stars=2 skills=[reading.theme, reasoning.explain] {
+  title "What if the ending changed?"
+  difficulty pick(k, 1, 1, 2)
+  let k=0..2
+  let right={pick(k, "No: the ending is what shows it", "No: she has to choose to ask", "No: then it is not small steps")}
+  let setting={pick(k, "Yes: it is still on the moon", "Yes: it is still on the moon", "Yes: it is still on the moon")}
+  let title={pick(k, "Yes: it is still a greenhouse log", "Yes: Obi still comes in the end", "Yes: the panels still shine")}
+
+  scene 35x21 {
+    row top at=canvas(1, 1) space=1 align=end {
+      rocket r flame=0
+      crater c count=2
+      text ask "{pick(k, \"What if Ada's log stopped on day twenty, when she gave up? Would it still teach that small steps each day add up?\", \"What if Kai never pressed the button, and Obi found her by chance? Would the story still teach that asking takes courage?\", \"What if Ren cleaned all hundred panels in one day? Would the story still teach that small steps add up?\")}" width=17
+    }
+    choice pick options=[pick(k, setting, right, title), pick(k, right, title, setting), pick(k, title, setting, right)] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == setting) point=c {
+      say "The setting would be the same, but a theme is not a place. What would the character's actions now teach?"
+    }
+    when (pick == title) point=r {
+      say "That part stays, but it is not what shows the theme. What the character chooses and what comes of it does."
+    }
+  }
+  hint "Which part of the story shows the theme: the place, the title, or what the character does?"
+  hint "With the new ending, what would the story teach instead?"
+}

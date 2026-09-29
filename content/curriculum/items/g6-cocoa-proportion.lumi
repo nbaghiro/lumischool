@@ -1,0 +1,33 @@
+# A proportion written as an equation, two equal ratios with one term missing. When the new amount
+# is not a whole number of lots of the old one, the ratio value, or one cup's worth, finds it.
+item ratio.cocoa-proportion v=1 skills=[ratio.proportion, ratio.value] {
+  title "Two equal ratios"
+  difficulty (v + c / 20)
+  let v=0..2 a={2, 3, 4, 5, 6} b={3, 4, 5, 6, 8} c={6, 8, 9, 10, 12, 15, 16, 20, 24}
+  where (a < b and c > b and (v == 2 or gcd(a, b) == 1))
+  where (if v == 2 then c % b != 0 and whole(a * c / b) else c % b == 0)
+  level easy {
+    let v={0} b={3, 4, 5}
+  }
+  level hard {
+    let v={1, 2}
+  }
+
+  scene 34x18 {
+    unknown eq terms=["{a} : {b}", "=", "{if v == 1 then a * c / b else \"x\"} : {if v == 1 then \"x\" else c}"] at=canvas(1, 1)
+    text ask "The hut's cocoa is {a} spoons of cocoa to {b} cups of milk. For a bigger pot the ratio stays the same, so the two ratios are equal. {if v == 1 then \"How many cups of milk go with\" else \"How many spoons of cocoa go with\"} {if v == 1 then a * c / b else c} {if v == 1 then \"spoons of cocoa?\" else \"cups of milk?\"} What number is x?" narrate width=32 below=eq gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (if v == 1 then c else a * c / b)
+  feedback {
+    when (v != 1 and answer == a + c - b) point=eq {
+      say "That adds the same to both parts. Equal ratios multiply both parts by the same number."
+    }
+    when (v == 1 and answer == b + a * c / b - a) point=eq {
+      say "That adds the same to both parts. How many times bigger is the new cocoa than {a}?"
+    }
+  }
+  hint "How many times bigger is the known new amount than the old one? It need not be a whole number."
+  hint "How much cocoa goes with one cup of milk? Then with {c} cups?"
+}

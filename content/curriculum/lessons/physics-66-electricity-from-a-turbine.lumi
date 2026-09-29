@@ -1,0 +1,59 @@
+lesson physics-electricity-from-a-turbine v=1 format=teach grade=6 unit=5 subject=physics levels=[easy, medium, hard] {
+  title "Electricity from a turbine"
+  goal "Work out how much electricity a turbine gives each second from the water or wind that turns it."
+
+  look {
+    scene 24x26 {
+      waterwheel w paddles=10 lit=1 at=canvas(1, 0)
+      energyflow e thing="turbine" from="moving water" to="electricity" input=2000 useful=1800 wasted=[198, 2] wastes=["heating", "sound"] blank=-1 unit=J below=w gap=1
+    }
+    say """
+      A generator is a coil of wire with magnets spinning inside it. While they turn, electricity
+      flows; the faster they turn, the more each second. Moving water or wind turns a turbine, and
+      the turbine turns the generator. Water falling 10 m gives 100 J for each kilogram, and this
+      turbine turns 9 of every 10 of those joules into electricity. A joule each second is called a
+      watt.
+      """
+  }
+  do {
+    practice physics.gen-wind-lamps count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.gen-faster count=1 seed=1 easy-seed=2 hard-seed=3
+    level easy {
+      worked physics.gen-water-energy m=20 h=5 level=medium
+    }
+    practice physics.gen-water-energy count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.gen-electric count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.gen-steady count=1
+    practice physics.gen-power-station count=1
+  }
+  story {
+    show physics.gen-mill-evening e=1800 n=5 easy-e=1200 hard-n=10
+  }
+  try stars=2 {
+    show physics.gen-double-height f=2 hard-f=3
+  }
+  try stars=3 {
+    show physics.gen-water-for-lamps v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "A generator turned faster gives more electricity each second, and none when it stops."
+  }
+
+  grown-ups """
+    Many children think a generator stores electricity, or that the river "has" electricity in it.
+    The lesson keeps the chain in view: moving water or wind turns a turbine, the turbine spins
+    magnets in a coil, and only while they move does electricity flow. Listen for "more height,
+    more joules" and check that the child multiplies by the weight, 10 N a kilogram, not the
+    kilograms. If the joules each second stall the child, do one kilogram at a time, then ten,
+    and stay with the first questions another day. Off the page, a bicycle dynamo lamp is a small
+    generator: the light is brighter the faster the wheel spins and goes out when it stops. The
+    three-star question is worked backwards from the lamps, allowing for the joules the turbine
+    wastes.
+    """
+  level easy {
+    grown-ups "At this level a worked example finds the water's joules first, the wind never lights more lamps than there are, the electricity asked for is from 1000 J, the evening's generator gives 1200 J, and the three-star question needs 18 lamps from water falling 5 m."
+  }
+  level hard {
+    grown-ups "At this level more wind blows than there are lamps, the wheel slows or stops, the pipes are taller and carry more water, the band asked for is the heating one, ten lamps are lit at dusk, the height is tripled, and the three-star lamps are 90 at 25 m."
+  }
+}

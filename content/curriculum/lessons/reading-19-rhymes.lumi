@@ -1,4 +1,4 @@
-lesson reading-rhymes v=1 format=teach grade=1 unit=2 subject=reading levels=[easy, medium, hard] {
+lesson reading-rhymes v=1 format=teach grade=1 unit=5 subject=reading levels=[easy, medium, hard] {
   title "Words that rhyme"
   goal "Hear which words rhyme, and use a rhyme to finish a line."
 

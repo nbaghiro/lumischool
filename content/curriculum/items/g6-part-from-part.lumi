@@ -1,0 +1,31 @@
+# One part is known and the other part or the total is found, so the unknown moves.
+item ratio.part-from-part v=1 skills=[ratio.parts, ratio.sharing] {
+  title "Blocks in the wall"
+  difficulty ((if ask == "altogether" then 1 else 0) + u / 4)
+  let a={2, 3, 5} b={3, 4, 7} u={3, 4, 6, 8} ask={"small", "altogether"}
+  where (a != b and gcd(a, b) == 1)
+  level easy {
+    let ask={"small"} u={3, 4}
+  }
+  level hard {
+    let ask={"altogether"} u={6, 8}
+  }
+
+  scene 33x20 {
+    ratio bars parts=[a, b] labels=["Big", "Small"] unit=0 total=false at=canvas(1, 1)
+    text ask "The wall round the research hut is built of big and small snow blocks in the ratio {a} : {b}. There are {a * u} big blocks. How many {if ask == \"small\" then \"small blocks are there\" else \"blocks are there altogether\"}?" narrate width=32 below=bars gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (if ask == "small" then b * u else (a + b) * u)
+  feedback {
+    when (ask == "altogether" and answer == b * u) point=bars {
+      say "That is the small blocks. Add the big blocks too."
+    }
+    when (answer == a * u + b - a or answer == a * u * b) point=bars {
+      say "How many blocks does one part of the bar stand for?"
+    }
+  }
+  hint "The big blocks are {a} parts. How many blocks are in one part?"
+  hint "How many parts are you looking for?"
+}

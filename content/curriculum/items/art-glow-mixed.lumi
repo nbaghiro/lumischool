@@ -1,0 +1,37 @@
+# Opposites side by side glow; mixed wet into each other they cancel to a dull brown-grey.
+item art.glow-mixed v=1 skills=[art.complementary, art.colour-mixing] {
+  title "When the star runs into the sky"
+  difficulty k
+  let k=0..2
+  let c={pick(k, "orange", "red", "yellow")}
+  let sky={pick(k, "blue", "green", "red+blue")}
+  let skyname={pick(k, "blue", "green", "purple")}
+  let r={k % 3}
+  let dull={"A dull brown-grey"}
+  let bright={pick(k, "A brighter orange", "A brighter red", "A brighter yellow")}
+  let clean={pick(k, "A clean line of green", "A clean line of orange", "A clean line of green")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x20 {
+    paintpots pots pots=["{c}", "{sky}"] result="?" labels=true at=canvas(1, 1)
+    text ask "Ada's {c} star is still wet when she paints the {skyname} sky, and at the edge the two paints run together and mix. What does she see at that edge?" width=18 right-of=pots gap=1
+    choice pick options=[if r == 0 then dull else if r == 1 then bright else clean, if r == 0 then bright else if r == 1 then clean else dull, if r == 0 then clean else if r == 1 then dull else bright] stack=column below=pots gap=1
+  }
+
+  answer pick=dull
+  feedback {
+    when (pick == bright) point=pots {
+      say "Side by side, opposites make each other glow. Mixed wet into each other, they cancel out."
+    }
+    when (pick == clean) point=pots {
+      say "Wet paint runs and mixes at the edge. What do two opposites make when they mix?"
+    }
+  }
+  hint "Where are these two on the colour wheel?"
+  hint "Opposites side by side glow. What happens to them when they are mixed?"
+}

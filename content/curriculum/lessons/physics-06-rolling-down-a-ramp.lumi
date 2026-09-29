@@ -1,4 +1,4 @@
-lesson physics-rolling-down-a-ramp v=1 format=worked grade=2 unit=3 subject=physics levels=[easy, medium, hard] {
+lesson physics-rolling-down-a-ramp v=1 format=worked grade=2 unit=4 subject=physics levels=[easy, medium, hard] {
   title "Rolling down a ramp"
   goal "Measure how far a ball rolls from a slope, say what happens when the slope is raised, and pick out a fair test."
 
@@ -20,6 +20,10 @@ lesson physics-rolling-down-a-ramp v=1 format=worked grade=2 unit=3 subject=phys
   }
   try stars=3 {
     show physics.ramp-which-fair f=2
+  }
+
+  remember {
+    say "The higher the slope, the further the ball rolls."
   }
 
   grown-ups """

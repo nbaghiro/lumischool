@@ -1,0 +1,40 @@
+# Direct speech turned into reported speech: no speech marks, the speaker's I or we becomes she
+# or they, and the verb steps back in time. The wrong choices keep one of the three.
+item writing.reported-speech v=1 skills=[writing.speech, writing.tense] {
+  title "Said, not quoted"
+  difficulty k
+  let k=0..2 r=0..2
+  let said={pick(k, "Ada said, “I can see the comet.”", "Leo asked, “Is the dome open?”", "Dr Shah said, “We will open the dome at nine.”")}
+  let right={pick(k, "Ada said that she could see the comet.", "Leo asked if the dome was open.", "Dr Shah said they would open it at nine.")}
+  let w1={pick(k, "Ada said that I can see the comet.", "Leo asked if the dome is open?", "Dr Shah said we will open it at nine.")}
+  let w2={pick(k, "Ada said, “she could see the comet.”", "Leo asked “if the dome was open.”", "Dr Shah said, “they would open it at nine.”")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x20 {
+    row top at=canvas(1, 0) space=2 align=end {
+      column words space=1 align=start {
+        caption strip text="{said}" width=25
+        text ask "Which sentence reports what was said, without speech marks?" narrate width=25
+      }
+      person who pose=point age=(if k == 2 then "grownup" else "child") hair=(if k == 1 then "short" else "bun") colour=brown top=mint
+    }
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=strip {
+      say "Reported speech is told by someone else, so the speaker's I or we becomes she or they, and the verb moves back in time, can to could, is to was, will to would."
+    }
+    when (pick == w2) point=strip {
+      say "Speech marks are only for the exact words spoken. Reported speech tells what was said in the writer's own words, with no marks."
+    }
+  }
+  hint "In reported speech, who is telling it: the speaker, or someone else?"
+  hint "Check three things in each choice: the marks, the word for the speaker, and the time of the verb."
+}

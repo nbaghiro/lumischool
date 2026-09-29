@@ -1,0 +1,31 @@
+# Which material passes heat along best: the rod that has dropped the most beads in the same time,
+# with every rod as thick and the beads as far apart. v picks the three rods.
+item physics.heat-rod-best v=1 skills=[physics.heat, physics.materials, reasoning.compare] {
+  title "The best conductor"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+  let a={pick(v, "glass", "steel", "brass", "steel")}
+  let b={pick(v, "copper", "wood", "steel", "aluminium")}
+  let c={pick(v, "steel", "aluminium", "aluminium", "brass")}
+
+  scene 32x16 {
+    heatflow t mode=0 rods=[a, b, c] thick=[1, 1, 1] minutes=10 show=1 at=canvas(1, 0)
+    text ask "Which rod is the best conductor of heat?" narrate width=18 below=t gap=1
+    choice pick options=["A", "B", "C"] stack=row right-of=ask gap=1
+  }
+
+  check physics.forces of=t pick=best
+  feedback {
+    when (pick == "A" and a == "glass") point=t {
+      say "The glass rod still holds all its beads. Heat has hardly moved along it."
+    }
+  }
+  hint "Heat moving along a rod melts the wax. Which rod has lost the most beads?"
+  hint "A good conductor lets heat through quickly."
+}

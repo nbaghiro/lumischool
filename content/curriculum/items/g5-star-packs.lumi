@@ -1,0 +1,30 @@
+# The highest common factor as a sharing: the most identical packs with nothing left over.
+item number.star-packs v=1 skills=[number.hcf] {
+  title "The most packs"
+  difficulty ((a + b) / 12)
+  let g={4, 6, 8, 12} x={2, 3, 5} y={3, 4, 7}
+  where (x < y and gcd(x, y) == 1)
+  let a={g * x}
+  let b={g * y}
+  level easy {
+    let g={4, 6} x={2} y={3}
+  }
+  level hard {
+    let g={8, 12} y={7}
+  }
+
+  scene 35x12 {
+    telescope scope tilt=40 at=canvas(1, 1)
+    text ask "The observatory has {a} star maps and {b} moon maps. It makes packs that are all the same, with nothing left over. What is the most packs it can make?" narrate width=22 right-of=scope gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer g
+  feedback {
+    when (answer == g / 2) point=ask {
+      say "That many packs works, but you can make more. Is there a bigger number that divides both?"
+    }
+  }
+  hint "Which numbers divide {a} exactly? Which divide {b}?"
+  hint "The biggest number in both lists is the most packs."
+}

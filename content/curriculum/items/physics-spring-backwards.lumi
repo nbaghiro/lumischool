@@ -1,0 +1,34 @@
+# Working backwards: a spring in step measures a load, since the load is the stretch shared by the
+# centimetres one newton gives. q picks the spring, x the stretch a bag gives.
+item physics.spring-backwards v=1 skills=[physics.forces, reasoning.work-backwards] {
+  title "How heavy is the bag?"
+  difficulty (if q == 0 then 0 else 1)
+  let q=0..2 bi=0..2
+  level easy {
+    let q={0}
+  }
+  level hard {
+    let q={1, 2}
+  }
+  let per={pick(q, 2, 1.5, 0.5)}
+  let b={pick(bi, 3, 5, 6)}
+  let x={pick(q, pick(bi, 6, 10, 12), pick(bi, 4.5, 7.5, 9), pick(bi, 1.5, 2.5, 3))}
+
+  scene 36x16 {
+    spring s load=2 per=per limit=10 natural=5 from=0 at=canvas(1, 0)
+    text ask "With 2 N on it this spring stretches as the ruler shows. A bag of dried fruit hung on it instead stretches it {x} cm. How many newtons does the bag weigh?" narrate width=22 right-of=s gap=1
+    number-input n below=ask gap=1
+  }
+
+  answer n=b
+  feedback {
+    when (n == x) point=s {
+      say "That is the stretch in centimetres. How many centimetres does each newton give?"
+    }
+    when (n == x * per) point=s {
+      say "A heavier load stretches it further, so share the stretch out rather than multiplying."
+    }
+  }
+  hint "How many centimetres does one newton stretch this spring?"
+  hint "How many of those are in {x} cm?"
+}

@@ -1,0 +1,28 @@
+# The Kangaroo counting problem: how many three-digit numbers have digits that add to a small total.
+# A count, found by fixing the first digit and listing the rest in order.
+item puzzle.digit-sum-count v=1 stars=3 skills=[reasoning.systematic, place-value.hundreds] {
+  title "Digits that add up"
+  difficulty s
+  let s=3..6
+  level easy {
+    let s={3}
+  }
+  level hard {
+    let s={6}
+  }
+
+  scene 33x12 {
+    library lib columns=6 open=0 at=canvas(1, 1)
+    text ask "The library's books are numbered from 100 to 999. How many of those numbers have digits that add up to exactly {s}? For example, {if s == 3 then 201 else if s == 4 then 310 else if s == 5 then 104 else 330} is one." narrate width=18 right-of=lib gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (s * (s + 1) / 2)
+  feedback {
+    when (answer == s * (s + 1) / 2 - 1) point=ask {
+      say "Close. Did you count the number with {s} first and two zeros after it?"
+    }
+  }
+  hint "Start with a first digit of 1. How many ways can the other two digits add up to {s - 1}?"
+  hint "Then a first digit of 2, then 3, and so on. Keep a list."
+}

@@ -1,6 +1,6 @@
 # A pattern of flashes is a code: the key says what each pattern means, a message is its flashes
 # in order, and a new message needs a pattern the key does not already use.
-lesson coding-a-message-in-flashes v=1 format=teach grade=1 unit=6 subject=coding levels=[easy, medium, hard] {
+lesson coding-a-message-in-flashes v=1 format=teach grade=1 unit=9 subject=coding levels=[easy, medium, hard] {
   title "A message in flashes"
   goal "Read a pattern of long and short flashes as a code, and choose the program that sends one back."
 

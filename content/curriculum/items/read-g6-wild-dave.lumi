@@ -1,0 +1,20 @@
+# An interpretive question marked by a grown-up: the drivers put the dying Dave back in his traces.
+# Either view is right if it is argued from the chapter.
+item reading.wild-dave v=1 skills=[reading.inference, reading.evidence, writing.composing] {
+  title "Kind or cruel?"
+
+  scene 35x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        sledge s
+        bookcast b who=buck pose=pull dir=-1
+        text ask "In chapter 4 the drivers put Dave back in harness, though he is dying. Was that kind or cruel? Give your reason, with a few words from the chapter." width=17
+      }
+      writinglines lines lines=4 width=34 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="A clear view (kind, cruel, or something of both) with a reason drawn from the chapter: the drivers say a dog can break its heart when it is kept from its work and that Dave should die in the traces, heart-easy and content; against that, he cries out with pain, falls and is dragged, and the sled runs over him. A few words are copied from the chapter." notice=["Says kind, cruel or both", "Gives a reason from the story", "Copies a few words from chapter 4", "Notices what Dave himself wanted"] ask="What would you have done if you were the driver?"
+  hint "What does Dave do when he is taken out of the traces?"
+  hint "What do the drivers say to each other before they put him back?"
+}

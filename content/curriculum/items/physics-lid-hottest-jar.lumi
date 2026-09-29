@@ -1,0 +1,29 @@
+# Three stars, an extreme: the lid at l °C grows by 12 millionths a degree above 20 and the glass by
+# 9, so the jar may be warmed while 9 × (jar − 20) stays under 12 × (l − 20). Temperatures in tens.
+item physics.lid-hottest-jar v=1 stars=3 skills=[physics.heat, reasoning.constraints, reasoning.limits] {
+  title "How hot may the jar get?"
+  difficulty (if l == 60 then 0 else 1)
+  let l={50, 60, 70}
+  level easy {
+    let l={60}
+  }
+  level hard {
+    let l={50, 70}
+  }
+
+  scene 30x29 {
+    expansion e mode=3 lid=l jar=20 show=0 at=canvas(1, 0)
+    text ask "Kit runs hot water over the steel lid until it is at {l} °C. Some of the water warms the glass jar too. For each degree above 20 °C, the lid grows by 12 millionths of its width and the jar's rim by 9 millionths. What is the hottest the jar can be, in whole tens of degrees, with the lid still looser than it was at 20 °C?" narrate width=28 below=e gap=1
+    number-input jar below=ask gap=1
+  }
+
+  answer jar=(if l == 50 then 50 else if l == 60 then 70 else 80)
+  feedback {
+    when (jar == l and l != 50) point=e {
+      say "At {l} °C the jar is looser, but glass grows less for each degree. Try the next ten degrees up."
+    }
+  }
+  hint "How many degrees above 20 °C is the lid? How many millionths has it grown?"
+  hint "Try the jar at each ten degrees. When does the rim grow as much as the lid, or more?"
+  hint "The rim has to grow less than the lid did."
+}

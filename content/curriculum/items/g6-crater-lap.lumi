@@ -1,0 +1,34 @@
+# Three stars: two rovers round a crater rim from one point, the same way. The faster one laps the
+# slower when it has gained one whole rim on it: the rim divided by the difference of the speeds.
+item puzzle.crater-lap v=1 stars=3 skills=[rates.speed, reasoning.model] {
+  title "Lapped on the rim"
+  difficulty (v / 2)
+  let v=0..5
+  let l={pick(v, 6, 12, 10, 12, 15, 16)}
+  let a={pick(v, 3, 4, 3, 5, 4, 5)}
+  let b={pick(v, 5, 6, 5, 8, 9, 9)}
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={4, 5}
+  }
+
+  scene 35x18 {
+    circleparts c size=5 lines=0 around=l unit="km" at=canvas(1, 1)
+    text ask "The rim of a crater is {l} km round. Two rovers start together from the same point and drive round the rim the same way, one at {a} km an hour and one at {b} km an hour. After how many hours does the faster rover first catch up with the slower one from behind?" narrate width=18 right-of=c gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (l / (b - a))
+  feedback {
+    when (answer == l / a or answer == l / b) point=c {
+      say "That is one rover going once round. The faster one has to gain a whole rim on the slower one."
+    }
+    when (answer == l / (a + b)) point=c {
+      say "They drive the same way, so the faster one gains only the difference of the speeds each hour."
+    }
+  }
+  hint "How many kilometres does the faster rover gain on the slower one each hour?"
+  hint "How far ahead must it get before it is right behind the slower one again?"
+}

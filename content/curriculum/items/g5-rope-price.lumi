@@ -1,0 +1,30 @@
+# Decimal times decimal in a price: the answer is money, so it is written with two places.
+item decimal.rope-price v=1 skills=[decimals.multiply, money.decimals] {
+  title "Rope by the metre"
+  difficulty (m * p)
+  let p={1.20, 2.40, 3.50, 1.80, 4.60} m={1.5, 2.5, 3.5}
+  level easy {
+    let m={1.5, 2.5} p={1.20, 2.40}
+  }
+  level hard {
+    let m={2.5, 3.5} p={3.50, 4.60}
+  }
+
+  scene 34x10 {
+    narrowboat boat windows=3 pots=1 at=canvas(1, 1)
+    text ask "Mooring rope costs {p} dollars a metre. Ana buys {m} metres of it for her boat. How much does she pay?" narrate width=20 right-of=boat gap=2
+    number-input answer width=6 below=ask gap=1
+  }
+
+  answer decimals(p * m, 2)
+  feedback {
+    when (answer == p * (m - 0.5)) point=ask {
+      say "The half metre costs something too. Half of {p} is how much?"
+    }
+    when (answer == p * m * 10) point=ask {
+      say "Check the size: about {round(m)} metres at about {round(p)} dollars. Where does the point go?"
+    }
+  }
+  hint "How much do {m - 0.5} metres cost?"
+  hint "Half a metre costs half of {p}. Add the two."
+}

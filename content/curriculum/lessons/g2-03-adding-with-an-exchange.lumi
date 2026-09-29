@@ -29,6 +29,10 @@ lesson g2-adding-with-an-exchange v=1 format=worked grade=2 unit=2 subject=maths
     show add.cards-near-hundred p=2 q=3 r=6 s=8
   }
 
+  remember {
+    say "When the ones make ten or more, carry the ten into the tens column."
+  }
+
   grown-ups """
     Say the carried ten out loud as a ten, not as a one. A child who says "carry the one" often has
     no idea what it is worth. The missing digit questions are worked from the ones column: which

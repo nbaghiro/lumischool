@@ -1,0 +1,35 @@
+# The lemmings beside the Arctic foxes that hunt them, over six summers. The foxes peak a summer
+# after the lemmings, and fall after them: the child reads the lag off the table.
+item nature.fox-follow v=1 skills=[nature.populations, data.tables] {
+  title "The foxes follow"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "In which summer did they see the most foxes?", "How many foxes did they see in the summer after the lemmings were at their most?", "After the foxes were at their most, how many fewer did they see two summers later?")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x27 {
+    table t cols=3 head=["Summer", "Lemmings", "Arctic foxes"] cells=["1", "10", "3", "2", "25", "3", "3", "40", "5", "4", "10", "8", "5", "5", "4", "6", "20", "2"] at=canvas(1, 1)
+    text ask "Arctic foxes hunt the lemmings on the patch. The scientists counted both each summer. {asks}" narrate width=32 below=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 4, 8, 6)
+  feedback {
+    when (k == 0 and answer == 3) point=t {
+      say "Summer 3 has the most lemmings. Look down the foxes' column instead."
+    }
+    when (k == 1 and answer == 5) point=t {
+      say "5 foxes is summer 3 itself. The question asks about the summer after the lemmings' highest count."
+    }
+    when (k == 2 and answer == 4) point=t {
+      say "That is one summer later. Go on to the second summer after the foxes' highest count."
+    }
+  }
+  hint "Which column does the question ask about: the lemmings or the foxes?"
+  hint "Find the highest number in that column first, then move down the rows from there."
+}

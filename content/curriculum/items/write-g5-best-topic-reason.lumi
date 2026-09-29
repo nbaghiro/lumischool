@@ -1,0 +1,38 @@
+# The two-star reason: two candidate topic sentences for one paragraph about the mill, one that
+# holds only its first detail and one wide enough for all three. The right reason is offered for
+# both letters and the third choice names the first detail, so only the paragraph decides.
+item writing.best-topic-reason v=1 stars=2 skills=[writing.paragraphs, reasoning.explain] {
+  title "Which topic sentence, and why?"
+  difficulty k
+  let k=0..1 r=0..2
+  let body={pick(k, "Its sails turn in the wind and drive a heavy millstone. The stone grinds wheat into flour. Bakers in the town buy the flour for their bread.", "She is up before dawn to catch the morning wind. She sets the sails, pours in the wheat and fills the sacks. By noon she is white from head to foot.")}
+  let da={pick(k, "A: The windmill's sails turn in the wind.", "A: The miller works hard from dawn until noon.")}
+  let db={pick(k, "B: The windmill by the canal still makes flour.", "B: The miller sets the sails each morning.")}
+  let right={pick(k, "B: every sentence fits under it", "A: every sentence fits under it")}
+  let w1={pick(k, "A: every sentence fits under it", "B: every sentence fits under it")}
+  let w2={pick(k, "A: it leads straight into the first sentence", "B: it says what she does, like the rest")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x31 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage para title="The rest of the paragraph" text="{body}" width=23 numbers=false
+      windmill mill sails=4 turn=30
+    }
+    text ask "Two topic sentences could go first. {da} {db} Which is better, and why?" narrate width=32 below=top gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=para {
+      say "Put that sentence on top and read the whole paragraph under it. A topic sentence that is really the first detail leaves the other sentences out."
+    }
+  }
+  hint "Read the paragraph with A on top, then with B. Which one leaves sentences it does not cover?"
+  hint "Two choices give the same reason. Which sentence does that reason really fit?"
+}

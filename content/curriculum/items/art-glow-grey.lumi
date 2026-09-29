@@ -1,0 +1,37 @@
+# The core's reason: simultaneous contrast. The same grey looks tinged with the opposite of whatever
+# surrounds it, so two patches from one pot can look like two different paints.
+item art.glow-grey v=1 skills=[art.complementary, art.looking, reasoning.explain] {
+  title "Two greys from one pot"
+  difficulty (if k >= 3 then 1 else 0)
+  let k=0..5
+  let r={(k + 1) % 3}
+  let c={pick(k, "orange", "blue", "red", "green", "yellow", "purple")}
+  let opp={pick(k, "blue", "orange", "green", "red", "purple", "yellow")}
+  let right={"A grey takes a hint of the opposite of its sky"}
+  let w1={"Some sky paint ran into that grey"}
+  let w2={"Ben is right: they are two greys"}
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={3, 4, 5}
+  }
+
+  scene 36x27 {
+    colourwheel wheel segments=6 blank=[] ring=-1 labels=true split="none" at=canvas(1, 1)
+    text ask "Ada paints two clouds over the observatory from the same pot of grey, one on a {c} sky and one on white paper. Ben says the cloud on the {c} sky looks faintly {opp}, so it must be a different grey. What is really happening?" width=20 right-of=wheel gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=wheel gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=wheel {
+      say "If {c} had run in, the cloud would look more {c}. It looks {opp}. Where is {opp} on the wheel from {c}?"
+    }
+    when (pick == w2) point=wheel {
+      say "Both clouds came from one pot. The paint is the same, so what is different is what lies round each one."
+    }
+  }
+  hint "The paint is the same in both clouds. What is different about where each one sits?"
+  hint "Find {c} and {opp} on the wheel. How are they placed?"
+}

@@ -10,11 +10,12 @@ lesson physics-sun-earth-and-moon-from-above v=1 format=teach grade=4 unit=9 sub
       orbit sky moon=2 places=1 arrow=1 person=1 time=0 at=canvas(1, 0)
     }
     say """
-      Stand above the north pole and look down. The sunlight comes from one side, so half the Earth is
-      in daylight and half is in night, and the turning Earth carries you from noon into dusk, night
-      and dawn. The moon goes round the Earth in twenty eight days, and half of it is lit too. What
-      changes is how much of that lit half we can see from where we are: none of it when the moon is
-      between us and the sun, all of it when the moon is on the far side.
+      Stand above the north pole and look down. The sunlight comes from one side, so half the Earth
+      is in daylight and half is in night, and the turning Earth carries you from noon into dusk,
+      night and dawn. The moon goes from one new moon to the next in about twenty nine and a half
+      days, a little over four weeks, and half of it is lit too. What changes is how much of that
+      lit half we can see from where we are: none of it when the moon is between us and the sun, all
+      of it when the moon is on the far side.
       """
   }
   do {

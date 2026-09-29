@@ -1,0 +1,37 @@
+# The core's reason: the clues to distance can disagree. Overlap, size and place on the page each say
+# near or far, and a ridge painted pale but in front, or a tree painted sharp but small, looks wrong
+# until colour and edge agree with the other clues.
+item art.fade-cues v=1 skills=[art.space, reasoning.find-the-mistake] {
+  title "When the clues disagree"
+  difficulty k
+  let k=0..2
+  let r={(k + 1) % 3}
+  let asks={pick(k, "In Ada's gorge, a pale, blue, soft ridge hides the bottom of a dark green, sharp-edged ridge. The picture looks wrong. What should she change?", "Ada paints two pine trees of the same kind. The small one is dark with sharp needles; the big one is pale and soft. The picture looks wrong. What should she change?", "Ada paints a boat low on the page, near the bottom edge, in pale grey-blue with soft edges, and the far bank above it in strong dark green. The picture looks wrong. What should she change?")}
+  let right={pick(k, "Make the front ridge stronger, the back one paler", "Make the small tree pale and soft", "Paint the boat strong and the far bank paler")}
+  let w1={pick(k, "Give the pale ridge a black outline", "Make both trees the same dark green", "Move the far bank lower down the page")}
+  let w2={pick(k, "Nothing: pale ridges are always far", "Nothing: small trees are nearer", "Nothing: boats are always pale")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x31 {
+    layers land labels=true ring=-1 sun=false light="noon" at=canvas(1, 1)
+    text ask "{asks}" width=34 below=land gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w2) point=land {
+      say "Two clues are saying different things here. Which clue cannot be argued with: what hides what, what is bigger, or what sits lower on the page?"
+    }
+    when (pick == w1) point=land {
+      say "That changes the picture without making the clues agree. Which thing is really nearer, and does its colour say so?"
+    }
+  }
+  hint "List the clues: which thing hides the other, which is bigger, which is lower on the page? What do they say is near?"
+  hint "Now look at colour and edges. Do they say the same thing, or the opposite?"
+}

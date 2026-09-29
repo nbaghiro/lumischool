@@ -1,0 +1,31 @@
+# Two stars: the ages of three sisters from their sum and the gaps between them. Take the gaps away
+# and three equal parts are left, the youngest's age each.
+item puzzle.three-sisters-base v=1 stars=2 skills=[algebra.equations, reasoning.model] {
+  title "Three sisters at the base"
+  difficulty ((a + b) / 4 + (if a == b then 0 else 1))
+  let y={24, 27, 30, 32} a={2, 3, 5} b={2, 4, 6}
+  level easy {
+    where (a == b or a + b <= 5)
+  }
+  level hard {
+    where (a + b >= 9)
+  }
+
+  scene 35x12 {
+    earth e up=2 at=canvas(1, 1)
+    text ask "Three sisters work at the moon base. Their ages add up to {3 * y + 2 * b + a}. The eldest is {a} years older than the middle sister, and the middle sister is {b} years older than the youngest. How old is the youngest?" narrate width=24 right-of=e gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer y
+  feedback {
+    when (answer == (3 * y + 2 * b + a - a - b) / 3) point=ask {
+      say "The eldest is {b} years older than the youngest and {a} years more again, so the gap of {b} is there twice."
+    }
+    when (answer == (3 * y + 2 * b + a) / 3) point=ask {
+      say "That shares the total equally, which is the middle of the three, more or less. Who is younger than that?"
+    }
+  }
+  hint "Draw three bars, one for each sister. How much longer than the youngest's is each of the others?"
+  hint "Take those extra lengths away from the total. How many equal bars are left?"
+}

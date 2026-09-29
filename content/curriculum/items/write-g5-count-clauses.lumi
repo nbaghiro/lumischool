@@ -1,0 +1,34 @@
+# Counting the relative clauses in a short passage. At medium and hard one which or where asks
+# a question or points instead, and does not start a clause, so the count is not the count of words.
+item writing.count-clauses v=1 skills=[writing.relative-clauses, reasoning.find-the-error] {
+  title "How many clauses?"
+  difficulty k
+  let k=0..2
+  let t={pick(k, "Nell, who lives on the Otter, moored by the mill. The mill, which has four sails, was turning. She walked to the bridge, where Mr Hale was waiting.", "Nell, who lives on the Otter, moored by the mill. She could not see which path led to the bridge. Mr Hale, who was waiting there, waved his hat.", "The lock, which is very old, was full. Mr Hale asked where the Otter was going. Nell pointed at the bridge, where she first met Mr Hale. Which way was the wind blowing?")}
+  let right={pick(k, 3, 2, 2)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 32x21 {
+    narrowboat boat windows=4 pots=3 at=canvas(1, 0)
+    passage para title="Nell's notebook" text="{t}" width=31 numbers=false below=boat gap=1
+    text ask "How many relative clauses, the clauses of extra news, does the passage have?" narrate width=22 below=para gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer > right) point=para {
+      say "Not every who, which or where starts a relative clause. When one asks a question or points to a choice, it is doing a different job."
+    }
+    when (answer < right) point=para {
+      say "Look again for every clause, including one at the end of a sentence after a single comma."
+    }
+  }
+  hint "Find each who, which, where and whose. Is it starting extra news about the word just before it?"
+  hint "Try taking the words out. If the sentence still stands, they were a relative clause."
+}

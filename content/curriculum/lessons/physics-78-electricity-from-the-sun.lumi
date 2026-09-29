@@ -1,0 +1,61 @@
+lesson physics-electricity-from-the-sun v=1 format=teach grade=6 unit=3 subject=physics levels=[easy, medium, hard] {
+  title "Where electricity comes from, and the solar cell"
+  goal "Tell the energy resources that will run out from those that will not, and work out what a solar panel gives from how squarely the sun meets it."
+
+  look {
+    scene 24x28 {
+      solarpanel p sun=20 slope=70 rated=200 light=100 marks=1 show=1 at=canvas(1, 0)
+      turbine t wind=2 lamps=3 below=p gap=1
+    }
+    say """
+      Electricity is made from energy resources. Sunlight, wind, flowing water and the heat inside
+      the Earth are renewable: nature keeps replacing them. Coal, oil and gas are fossil fuels,
+      formed from plants and animals that lived millions of years ago, and once burnt they are gone.
+      A solar panel turns light straight into electricity, with no turbine at all. It gives the most
+      when the sun's rays meet it square on, and less the further they are from that.
+      """
+  }
+  do {
+    practice physics.resource-sort count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.panel-square count=1 seed=4 easy-seed=2 hard-seed=3
+    level easy {
+      worked physics.panel-meter k=0 level=medium
+    }
+    practice physics.panel-meter count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.panel-tilts count=1 seed=1 easy-seed=2 hard-seed=3 hard-count=2
+    practice physics.panel-energy count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.panel-share count=1 seed=1 easy-seed=2 hard-seed=3
+  }
+  story {
+    show physics.hut-panel-lamps l=80 s=20 easy-l=100 hard-l=60
+  }
+  try stars=2 {
+    show physics.sun-renewable
+  }
+  try stars=3 {
+    show physics.panel-one-tilt v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "Sunlight, wind, flowing water and the Earth's heat are renewable, and fossil fuels run out; a solar panel gives most square on to the sun."
+  }
+
+  grown-ups """
+    The lesson adds the resources and the solar cell to "Electricity from a turbine": a panel
+    needs no turbine and no moving part. The common wrong ideas are that renewable means
+    "there all the time" (the two-star question), that a panel stores sunlight, and that a panel
+    should lie flat to catch the sun. At the hut, 80 degrees north, the midnight sun is only about
+    13 to 34 degrees up all day, so a flat panel catches the rays at a slant and a steep one faces
+    them. The panels' watts and their share of a fifth are these panels' own numbers; the best on
+    sale turn about a quarter of the light into electricity. If the angles stall the child, stand
+    a book upright on a table and shine a torch at it from low down, then lay it flat. Off the page,
+    find a solar garden light or calculator and cover half of its cell. The lesson meets China's
+    2022 science standard for grades 5 and 6, 4.2 ⑤, «了解太阳能、水能、风能、地热能、化石能等能源»,
+    knowing solar, water, wind, geothermal and fossil energy.
+    """
+  level easy {
+    grown-ups "At this level the lists of resources are short, the noon sun is 30 degrees up, a worked example finds a cloud's share of a 200 W panel, the pairs of panels differ plainly, the missing band is the electricity, and the story's panel is in full sun."
+  }
+  level hard {
+    grown-ups "At this level the lists hold the Earth's heat, the sun is low, the panels are 400 W, two pairs of panels are as far from square on as each other, the missing band is the heating, the shares need working out of 1200 or 800 J, and the three-star day has a sun only 5 degrees up at midnight."
+  }
+}

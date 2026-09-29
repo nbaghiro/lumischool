@@ -1,0 +1,31 @@
+# Three steps: the brackets are multiplied out, the x terms are collected, and the two-step equation
+# left is undone. The slip is multiplying only the x inside the brackets.
+item algebra.bridge-sections v=1 skills=[algebra.equations, algebra.expressions] {
+  title "Brackets to multiply out"
+  difficulty (a / 2 + b / 5 + x / 10)
+  let a={2, 3, 4} b={2, 3, 4, 5} x={3, 4, 5, 6, 7, 8}
+  level easy {
+    let a={2} b={2, 3} x={3, 4, 5}
+  }
+  level hard {
+    let a={3, 4} b={4, 5} x={6, 7, 8}
+  }
+
+  scene 33x19 {
+    unknown eq terms=["{a}(x + {b}) + x", "=", "{(a + 1) * x + a * b}"] at=canvas(1, 1)
+    text ask "The rope bridge is made of {a} long sections, each x + {b} m, and one short section of x m. The whole bridge is {(a + 1) * x + a * b} m long, as the equation says. Multiply out the brackets, collect the x terms, and solve. What number is x?" narrate width=32 below=eq gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer x
+  feedback {
+    when (answer == ((a + 1) * x + a * b - b) / (a + 1)) point=eq {
+      say "The {a} multiplies everything in the brackets, the {b} as well as the x."
+    }
+    when (answer == ((a + 1) * x + a * b - a * b) / a) point=eq {
+      say "Count the x terms again: {a} from the brackets and one more outside them."
+    }
+  }
+  hint "What is {a}(x + {b}) without the brackets?"
+  hint "How many x are there altogether, and what number is added to them?"
+}

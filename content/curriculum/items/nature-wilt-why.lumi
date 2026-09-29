@@ -1,0 +1,41 @@
+# Why a plant droops and why it stands up again: water in and water out. The hard two are the wind
+# carrying vapour away and the spray keeping the roots wet.
+item nature.wilt-why v=1 skills=[nature.plants, reasoning.explain] {
+  title "Drooping and standing"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "On a hot dry afternoon a plant on a sunny ledge droops. Why?", "Ben waters the drooping plant, and an hour later it is standing up again. Why?", "On a hot windy day the leaves lose water faster than on a hot still day. Why?", "The plants right beside the waterfall almost never droop, even on the hottest days. Why?")}
+  let ans={pick(k, "It lost more water than its roots took in", "Water filled its cells and made them firm", "Moving air carries the water vapour away", "The spray keeps the soil round their roots wet")}
+  let o1={pick(k, "The sun pushed its leaves down", "The water made it heavier, so it stood", "The wind blows water out of the roots", "Plants by water need no water")}
+  let o2={pick(k, "It grew too tall for its stem", "Watering makes a plant grow a new stem", "Wind makes the leaves grow bigger", "The noise of the water keeps them up")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x27 {
+    waterfall wf drops=1 rainbow=0 at=canvas(1, 1)
+    text ask "{asks}" narrate width=19 right-of=wf gap=2
+    choice pick options=[o1, ans, o2] stack=column below=wf gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=ask {
+      say "A plant is held up by water in its cells. What happens to them when more water goes out than comes in?"
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "It has not grown in an hour. What has the water done to the soft parts that had gone limp?"
+    }
+    when (k == 2 and pick != ans) point=ask {
+      say "Water leaves the leaves as vapour. What does moving air do with the vapour round a leaf?"
+    }
+    when (k == 3 and pick != ans) point=wf {
+      say "These plants lose water like any other. Where does their water come from so easily?"
+    }
+  }
+  hint "Is more water going into the plant, or coming out of it?"
+  hint "A plant stays firm when its cells are full of water."
+}

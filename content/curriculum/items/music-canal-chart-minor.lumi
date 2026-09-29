@@ -1,0 +1,41 @@
+# The story: Ben's chord chart for The Erie Canal (Thomas S. Allen, 1905), written in A minor with a
+# chorus in C major. A chord name with a small m is minor; a bare letter is major.
+item music.canal-chart-minor v=1 skills=[music.major-minor, music.chord-changes] {
+  title "The canal song's chart"
+  difficulty q
+  let q=0..2
+  let ask={pick(q, "How many bars of the verse are minor?", "How many bars of the whole song are major?", "The band plays verse, chorus, verse, chorus as the lock fills. How many minor bars do they play?")}
+  let right={pick(q, 6, 10, 12)}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x27 {
+    row top space=2 align=start at=canvas(1, 1) {
+      table chart cols=3 head=["Bar", "Verse", "Chorus"] cells=["1", "Am", "C", "2", "Am", "G", "3", "E", "C", "4", "Am", "C", "5", "Am", "F", "6", "Dm", "C", "7", "E", "G", "8", "Am", "C"]
+      column side space=1 align=start {
+        canallock lock level=0.5 boat=1
+        text ask "Ben's chart for The Erie Canal, an old canal song. A small m after a letter means a minor chord, and a letter alone is major. {ask}" narrate width=16
+      }
+    }
+    number-input answer below=top gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 8 and q == 0) point=chart {
+      say "E has no m after it, so bars 3 and 7 are major."
+    }
+    when (answer == 8 and q == 1) point=chart {
+      say "The chorus is all major, and so are two bars of the verse. Look for an E in the verse."
+    }
+    when (answer == 6 and q == 2) point=chart {
+      say "The verse is played twice, so its minor bars are played twice."
+    }
+  }
+  hint "Go down one column at a time. Does each chord name have a small m?"
+  hint "{if q == 2 then \"Count the minor bars in one verse and one chorus, then think how many times each is played.\" else \"Mark each bar major or minor, then count the ones asked for.\"}"
+}

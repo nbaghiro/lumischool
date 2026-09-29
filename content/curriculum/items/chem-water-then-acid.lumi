@@ -1,0 +1,43 @@
+# Predict, then check: strips in water give off nothing; in dilute acid every strip but copper gives
+# off hydrogen (RSC). The picture shows the strips in water, so the prediction is not read off it.
+item chem.water-then-acid v=1 skills=[chemistry.acids, chemistry.metals, reasoning.predict] {
+  title "Water first, then acid"
+  difficulty (if p == 0 then 0 else 1)
+  let p=0..2
+  level easy {
+    let p={0}
+  }
+  level hard {
+    let p={1, 2}
+  }
+  let m0={pick(p, 1, 4, 3)}
+  let m1={pick(p, 2, 2, 4)}
+  let m2={pick(p, 3, 4, 4)}
+  let m3={pick(p, 4, 1, 2)}
+  let n0={pick(m0, "none", "magnesium", "zinc", "iron", "copper")}
+  let n1={pick(m1, "none", "magnesium", "zinc", "iron", "copper")}
+  let n2={pick(m2, "none", "magnesium", "zinc", "iron", "copper")}
+  let n3={pick(m3, "none", "magnesium", "zinc", "iron", "copper")}
+  let still={pick(p, 1, 2, 2)}
+
+  scene 33x21 {
+    row kit at=canvas(1, 0) space=2 align=start {
+      testtubes t fills=[0.5, 0.5, 0.5, 0.5] paints=["", "", "", ""] fizz=[0, 0, 0, 0] bungs=0 letters=1 metals=[m0, m1, m2, m3] acid=0
+      table key cols=2 head=["Tube", "Strip"] cells=["A", n0, "B", n1, "C", n2, "D", n3]
+    }
+    text ask "These strips stand in water, and none of them gives off gas. The water is poured away and dilute acid is poured in instead. How many of the four strips will still give off no gas?" narrate width=32 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer still
+  feedback {
+    when (answer == 4) point=t {
+      say "Water does nothing to these metals, but an acid is different. Which metals give off hydrogen in acid?"
+    }
+    when (answer == 0) point=key {
+      say "Look at the key again. Is there a metal on it that no dilute acid can make fizz?"
+    }
+  }
+  hint "Which of these metals give off hydrogen in dilute acid?"
+  hint "Which metal in the key does not, and how many strips of it are there?"
+}

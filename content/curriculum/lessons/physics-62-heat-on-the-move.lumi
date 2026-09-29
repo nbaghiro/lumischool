@@ -1,0 +1,62 @@
+lesson physics-heat-on-the-move v=1 format=teach grade=6 unit=2 subject=physics levels=[easy, medium, hard] {
+  title "Heat on the move"
+  goal "Explain how heat moves through a solid and round a room, and choose what slows it down."
+
+  look {
+    scene 36x12 {
+      row all at=canvas(1, 0) space=1 align=end {
+        heatflow t mode=0 rods=["copper", "steel", "glass"] thick=[1, 1, 1] minutes=10 show=1
+        seal s rock=1 facing=-1
+      }
+    }
+    say """
+      Heat moves from hot to cold. In a solid it is passed along from particle to particle, which is
+      conduction: metals conduct well, and glass, wood and plastic hardly at all, so the copper rod
+      has dropped all its beads and the glass rod none. In air and water the warm part itself moves:
+      warm air is lighter for its size, so it rises and cool air sinks in its place, which is
+      convection. Trapped air conducts heat badly, so fur, feathers and wool keep warmth in, and a
+      seal's blubber, which is a thick layer of fat, conducts heat badly too.
+      """
+  }
+  do {
+    practice physics.heat-rod-read count=2 seed=1 easy-seed=2 hard-seed=3
+    level easy {
+      worked physics.heat-rod-best v=0 level=medium
+    }
+    practice physics.heat-rod-best count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.heat-rod-predict count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.heat-rod-fair count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.heat-handle count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.hut-reading count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.hut-heater-where count=1
+  }
+  story {
+    show physics.hut-flask m=30 o=2 easy-m=20 easy-o=0 hard-m=40 hard-o=1
+  }
+  try stars=2 {
+    show physics.heat-hat
+  }
+  try stars=3 {
+    show physics.heat-mystery-rod v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "Heat is passed along through solids, carried by moving air and water, and slowed by trapped air."
+  }
+
+  grown-ups """
+    The strongest wrong idea here is that a coat or a wool hat makes heat. The two-star question
+    tests it with ice: the cube in wool melts slowest, so wool slows heat whichever way it is going
+    and makes none. Listen for "cold gets in"; it is heat getting out. The second is that heat
+    "falls" to the floor, which the hut's thermometers answer. If the rods confuse the child, count
+    the dropped beads together and say "heat got this far". Off the page, stand a metal spoon and a
+    wooden spoon in a mug of hot water (a grown-up pours it) and feel the handles after a minute,
+    then hold a hand above and beside a radiator. The three-star question is solved by working out
+    every metal's five-minute count first.
+    """
+  level easy {
+    grown-ups "At this level the rods are read after ten minutes, a worked example finds the best conductor, the rods compared include glass or wood, the heater is low, and the mystery rod is found from one clue."
+  }
+  level hard {
+    grown-ups "At this level the rods are read after five minutes, the metals compared are close, the thicker rod hides among the first two, the heater is high, the flasks travel for forty minutes, and the mystery rod needs both clues."
+  }
+}

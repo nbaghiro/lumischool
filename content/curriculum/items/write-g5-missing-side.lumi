@@ -1,0 +1,36 @@
+# An argument that gives two points for and none against; the child picks the sentence that
+# balances it, against another point for and an opinion shouted as a fact.
+item writing.missing-side v=1 skills=[writing.argument, writing.editing] {
+  title "What does it still need?"
+  difficulty k
+  let k=0..1 r=0..2
+  let t={pick(k, "Should carts come through the gate? Carts bring fresh food to the market. They also carry stone to mend the walls.", "Should the gate be shut at sunset? A shut gate keeps the city safe at night. It also keeps the streets quiet.")}
+  let right={pick(k, "However, carts crowd people on foot.", "However, late travellers are left outside.")}
+  let w1={pick(k, "Carts also bring cloth and wood.", "The gate is also strong and tall.")}
+  let w2={pick(k, "Carts are the best thing in the city.", "Shutting it is obviously right.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 33x32 {
+    citywalls walls towers=3 open=(1 - k) at=canvas(1, 0)
+    passage para title="Ana's argument so far" text="{t}" width=32 numbers=false below=walls gap=1
+    text ask "Which sentence would make Ana's argument balanced?" narrate width=32 below=para gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=para {
+      say "That adds another point to the side Ana has already given. A balanced argument needs the other side too."
+    }
+    when (pick == w2) point=para {
+      say "That tells the reader what to think without a reason. What would someone on the other side say?"
+    }
+  }
+  hint "Which side are both of Ana's points on?"
+  hint "Look for the choice a person on the other side would say."
+}

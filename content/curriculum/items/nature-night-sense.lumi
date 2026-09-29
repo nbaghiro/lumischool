@@ -1,0 +1,43 @@
+# The way in: three night animals drawn together, and the sense one of them hunts by. The bat hears
+# the echoes of its own squeaks; the badger and the hedgehog see poorly and follow their noses.
+item nature.night-sense v=1 skills=[nature.night-animals] {
+  title "Finding food in the dark"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2
+  let who={pick(k, "bat", "badger", "hedgehog")}
+  let ans={pick(k, "hearing", "smell", "smell")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x21 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      bats b count=2 flying=1
+      badger bd facing=1
+      art h asset="hedgehog"
+    }
+    text ask "Out on the star cliffs after dark, Ada watches from the observatory steps. Which sense does the {who} mostly use to find its food in the dark?" narrate width=32 below=pics gap=1
+    choice pick options=["sight", "hearing", "smell"] below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick == "sight") point=pics {
+      say "A bat can see, but a tiny moth in the dark is hard to spot. It squeaks and listens for the echo."
+    }
+    when (k >= 1 and pick == "sight") point=pics {
+      say "Its eyes are small and not much use at night. Look at where its nose is: close to the ground."
+    }
+    when (k >= 1 and pick == "hearing") point=pics {
+      say "Hearing helps it notice danger, but it tracks down worms and beetles with its nose, sniffing along the ground."
+    }
+    when (k == 0 and pick == "smell") point=pics {
+      say "A bat hunts insects in the air as it flies. It finds them by sending out squeaks and listening."
+    }
+  }
+  hint "Night is dark, so eyes are not much help. What else could lead an animal to its food?"
+  hint "Which of these animals chases insects through the air, and which snuffle along the ground?"
+}

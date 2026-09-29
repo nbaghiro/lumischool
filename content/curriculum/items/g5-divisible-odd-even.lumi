@@ -1,0 +1,23 @@
+# The way in: even and odd sort every whole number, and only the ones digit decides which. The first
+# digit is chosen with the other parity, so reading the wrong end shows.
+item divisible.odd-even v=1 skills=[number.multiples.odd-even] {
+  title "Even or odd"
+  let a=1..9 b=0..9 c=0..9 d=0..9
+  where (a % 2 != d % 2)
+
+  scene 36x20 {
+    telescope scope tilt=35 at=canvas(1, 1)
+    digitcards cards digits=[a, b, c, d] right-of=scope gap=2
+    text ask "The star in the telescope is number {a}{b}{c}{d} in the observatory's catalogue. Is that number even or odd?" narrate width=34 below=scope gap=1
+    choice pick options=["even", "odd"] below=ask gap=1
+  }
+
+  answer pick=(if d % 2 == 0 then "even" else "odd")
+  feedback {
+    when (pick == (if a % 2 == 0 then "even" else "odd")) point=cards {
+      say "That goes by the first card. The tens, hundreds and thousands are all even, so only the ones digit decides."
+    }
+  }
+  hint "Which card is the ones digit?"
+  hint "Can {d} things be put into pairs with none left over?"
+}

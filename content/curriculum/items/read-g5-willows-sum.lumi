@@ -1,0 +1,35 @@
+# A sitting summed up in one sentence. The wrong sentences are a true detail too small to sum up the
+# sitting, and a true summary of another part of the book, so only reading the whole sitting tells them
+# apart. The right sentence is not always the longest.
+item reading.willows-sum v=1 skills=[reading.summary, reading.whole-book] {
+  title "The sitting in one sentence"
+  let k=0..3
+  let right={pick(k, "The Mole leaves his spring-cleaning for the river, the Rat takes him in, and they meet Toad, who falls for motor-cars.", "Walking home in the snow, the Mole smells his old home, and the Rat helps him find it and make it cheerful.", "Toad escapes from prison dressed as a washerwoman and gets away on a railway engine.", "On his way home Toad loses a barge, sells a horse, crashes the car he once stole and ends up at the Rat's door.")}
+  let narrow={pick(k, "The Mole grabs the sculls and tips the Rat's boat over.", "Field-mice sing a carol at the Mole's front door.", "Toad cannot pay for a ticket because his money is in his waistcoat.", "Toad makes up a song in praise of himself.")}
+  let other={pick(k, "Toad steals a motor-car and is sent to prison for twenty years.", "The Mole gets lost in the Wild Wood, and the Rat comes to find him.", "Toad tricks a barge-woman and sells her horse to a gipsy.", "Toad and his friends win back Toad Hall from the weasels.")}
+
+  scene 34x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        bookcast who who=pick(k, "mole", "mole", "toad", "toad") pose=pick(k, "wave", "walk", "walk", "stand") dir=1
+        text ask "{pick(k, \"Which sentence sums up chapters 1 and 2 best?\", \"Which sentence sums up chapter 5 best?\", \"Which sentence sums up chapter 8 best?\", \"Which sentence sums up chapter 10 best?\")}" width=24
+      }
+      text a "A. {pick(k, narrow, right, other, right)}" width=33
+      text b "B. {pick(k, right, other, right, narrow)}" width=33
+      text c "C. {pick(k, other, narrow, narrow, other)}" width=33
+      choice pick options=["A", "B", "C"] stack=row
+    }
+  }
+
+  answer pick=pick(k, "B", "A", "B", "A")
+  feedback {
+    when (pick == pick(k, "A", "C", "C", "B")) point=pick {
+      say "That happens, but it is one moment. A summary has to hold the whole sitting, start to end."
+    }
+    when (pick == pick(k, "C", "B", "A", "C")) point=pick {
+      say "That happens in the book, but not in these chapters. Check where the sitting starts and ends."
+    }
+  }
+  hint "What happens at the start of the sitting, and what at the end?"
+  hint "Which sentence reaches from the start to the end without stopping at one moment?"
+}

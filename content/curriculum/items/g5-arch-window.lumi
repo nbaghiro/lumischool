@@ -1,0 +1,31 @@
+# A half circle: half the distance round, and then the straight edge added, which is the step that is
+# forgotten.
+item circle.arch-window v=1 skills=[circles.circumference, reasoning.two-steps] {
+  title "The half-round window"
+  difficulty d
+  let d={2, 4, 6, 10}
+  level easy {
+    let d={2, 4}
+  }
+  level hard {
+    let d={6, 10}
+  }
+
+  scene 33x18 {
+    circleparts c size=5 lines=2 diameter=d sector=180 unit="m" at=canvas(1, 1)
+    text ask "The observatory has a half-round window, a half circle {d} m across along its straight edge. A strip of lead goes all the way round its edge, the curve and the straight side. How long is the strip? Use 3.14." narrate width=16 right-of=c gap=2
+    number-input answer width=6 below=ask gap=1
+  }
+
+  answer decimals(d * 3.14 / 2 + d, 0)
+  feedback {
+    when (answer == d * 3.14 / 2) point=ask {
+      say "That is the curve. The strip goes along the straight edge too."
+    }
+    when (answer == d * 3.14 + d or answer == d * 3.14) point=ask {
+      say "The window is half a circle, so the curve is half the distance round."
+    }
+  }
+  hint "How far round is a whole circle {d} m across? What is half of that?"
+  hint "Add the straight edge."
+}

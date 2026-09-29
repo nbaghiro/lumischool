@@ -1,7 +1,7 @@
 # Air pushes back: everything is pulled down the same, but the air has to be pushed out of the way,
 # and a wide light thing has more of it to push, so it comes down slowly. The order from fastest to
 # slowest is the stone, the paper ball, the leaf, the flat sheet, the parachute and the feather.
-lesson physics-air-pushes-back v=1 format=teach grade=2 unit=1 subject=physics levels=[easy, medium, hard] {
+lesson physics-air-pushes-back v=1 format=teach grade=2 unit=2 subject=physics levels=[easy, medium, hard] {
   title "Air pushes back"
   goal "Say why a leaf, a parachute and a feather come down slowly, and work out which of two things lands first."
 

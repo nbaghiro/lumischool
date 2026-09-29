@@ -1,0 +1,31 @@
+# The two commonest metres by name: an iamb is a weak beat then a strong one (da-DUM), a trochee a
+# strong beat then a weak one (DUM-da). The child says the line aloud and hears where the beat falls.
+item reading.poem-metre v=1 skills=[reading.poetry] {
+  title "Where the beat falls"
+  difficulty pick(k, 0, 1, 1, 0)
+  let k=0..3
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k={1, 2}
+  }
+  let line={pick(k, "The water falls all day and night.", "Tumble, tumble, down the stone,", "Across the bridge the ropes are wet,", "Swallows sweeping, diving low,")}
+  let right={pick(k, "iambic", "trochaic", "iambic", "trochaic")}
+  let wrong={pick(k, "trochaic", "iambic", "trochaic", "iambic")}
+
+  scene 35x18 {
+    poem p title="The gorge" lines=[line] rhymes=[-1] width=34 at=canvas(0, 1)
+    text ask "Say the line aloud and tap the beat. An iamb is a weak beat then a strong one, da-DUM. A trochee is a strong beat then a weak one, DUM-da. Which is this line's metre?" below=p gap=1 width=34
+    choice pick options=["iambic", "trochaic"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == wrong) point=p {
+      say "Say the first two syllables aloud. Is the first one or the second one louder?"
+    }
+  }
+  hint "Clap once for each syllable, and clap harder on the loud ones."
+  hint "Does the line start on a loud beat or a quiet one?"
+}

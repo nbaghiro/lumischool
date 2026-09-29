@@ -1,0 +1,31 @@
+# Iron and steel are made a magnet by the coil: the same coil round a wooden or an aluminium rod holds
+# no clips at all, which a child who thinks every metal is magnetic does not expect.
+item physics.coil-core v=1 skills=[physics.magnets, physics.materials] {
+  title "What is inside the coil?"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2 t={20, 30} c=1..2
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 31x15 {
+    electromagnet e turns=t cells=c core=k closed=1 show=0 at=canvas(1, 0)
+    text ask "Leo winds the coil round the rod written at the top. It holds one clip for every ten turns on each cell round iron. How many clips will this coil hold?" narrate width=14 right-of=e gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.circuit of=e answer=holds
+  feedback {
+    when (k == 2 and answer > 0) point=e {
+      say "Aluminium is a metal, but a magnet does not pull it, and the coil cannot make it a magnet."
+    }
+    when (k == 1 and answer > 0) point=e {
+      say "The coil turns iron and steel into a magnet. Wood stays as it is."
+    }
+  }
+  hint "What is the coil wound round?"
+  hint "Which materials does a magnet pull? Is this rod one of them?"
+}

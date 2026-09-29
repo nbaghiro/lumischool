@@ -1,0 +1,63 @@
+lesson physics-the-angle-a-mirror-sends-light v=1 format=teach grade=5 unit=5 subject=physics levels=[easy, medium, hard] {
+  title "The angle a mirror sends light back at"
+  goal "Predict where a beam goes after a flat mirror, using the rule that it leaves at the same angle to the upright line as it came in."
+
+  look {
+    scene 34x12 {
+      row all at=canvas(1, 0) space=1 align=start {
+        mirrorangle m angle=40 targets=[20, 40, 60] marks=1 show=1
+        observatory o open=1
+      }
+    }
+    say """
+      Light travels in straight lines until it meets something. When a beam meets a flat mirror,
+      picture a line standing straight up from the mirror where the beam lands. The beam leaves on
+      the other side of that upright line, at exactly the same angle as it came in: in at 40°, out at
+      40°. That one rule tells you where every beam goes, and it is how the observatory's
+      periscope and mirrors send light where it is wanted.
+      """
+  }
+  do {
+    level easy {
+      worked physics.reflect-out a=30 level=medium
+    }
+    practice physics.reflect-out count=1 seed=1 easy-seed=2 hard-seed=3 easy-count=2
+    practice physics.reflect-target count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.reflect-between count=1 seed=2 easy-seed=1 hard-seed=3
+    practice physics.reflect-from-mirror count=2 seed=1 easy-count=1
+    practice physics.periscope-turn count=1 seed=1
+    level hard {
+      show physics.reflect-between a=35
+    }
+  }
+  story {
+    show physics.observatory-signal o=1 easy-o=0 hard-o=2
+  }
+  try stars=2 {
+    show physics.reflect-bigger a=30 u=0 easy-a=40 hard-u=1
+  }
+  try stars=3 {
+    show physics.reflect-turn-angle v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "A mirror sends light out at the same angle to the upright line as it came in."
+  }
+
+  grown-ups """
+    The angle that trips children up is the one they measure. The rule works from the upright line
+    standing out of the mirror, and a child who measures from the mirror's surface gets the
+    complement, 50° instead of 40°. One question gives the angle to the surface on purpose, so the
+    child has to take it from 90° first. Listen for the rule said in full: same angle, other side of
+    the upright line. If the angles are muddled, draw the upright line in pencil on every question
+    and stay here another day. Off the page, a torch, a small mirror flat on a table and a sheet of
+    paper to draw the beams on, with a protractor to check the two angles are equal. In the
+    three-star question the turn and the gap between the beams add to 180°, and the gap is shared
+    equally either side of the upright line.
+    """
+  level easy {
+    grown-ups "At this level a worked example comes first, the angles are whole tens, the targets are far apart, the surface angles are tens, the signal and the two-star question start from 30° and 40°, and the three-star turn is a right angle."
+  }
+  level hard {
+    grown-ups "At this level the angles end in five, the targets are close together, the angles to the surface end in five, a second gap between two beams is asked, the torch is tilted to a smaller angle rather than a bigger one, and the three-star turn is 130°, which gives 25°."
+  }
+}

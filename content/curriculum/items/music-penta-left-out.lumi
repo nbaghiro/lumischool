@@ -1,0 +1,42 @@
+# The way in: a major scale on the tune grid with the major pentatonic's five notes ringed, which
+# are its 1st, 2nd, 3rd, 5th and 6th. The two left out are always the 4th and the 7th, the two notes
+# a semitone from a neighbour. C, then G (C and F sharp left out) and D (G and C sharp left out).
+item music.penta-left-out v=1 skills=[music.pentatonic, music.scales] {
+  title "The two notes left out"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2 r=0..2
+  let n1={pick(k, "C5", "G4", "D5")}
+  let n2={pick(k, "D5", "A4", "E5")}
+  let n3={pick(k, "E5", "B4", "Fs5")}
+  let n4={pick(k, "F5", "C5", "G5")}
+  let n5={pick(k, "G5", "D5", "A5")}
+  let n6={pick(k, "A5", "E5", "B5")}
+  let n7={pick(k, "B5", "Fs5", "Cs6")}
+  let n8={pick(k, "C6", "G5", "D6")}
+  let home={pick(k, "C", "G", "D")}
+  let right={pick(k, "F and B", "C and F sharp", "G and C sharp")}
+  let w1={pick(k, "D and A", "A and E", "E and B")}
+  let w2={pick(k, "E and B", "B and F sharp", "F sharp and C sharp")}
+  let w3={pick(k, "F and G", "C and D", "G and A")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x35 {
+    notes scale clef=treble notes=[n1, n2, n3, n4, n5, n6, n7, n8] values=[] letters=true lit=[n1, n2, n3, n5, n6, n8] meter=0 at=canvas(1, 1)
+    text ask "On the moon the crew's glockenspiel has the {home} major scale. The notes of its pentatonic scale are lit. Which two letters of the major scale are left out?" narrate width=34 below=scale gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1), w3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=scale {
+      say "Read the letters along the staff and find the notes that are not lit."
+    }
+  }
+  hint "Which notes on the staff are not lit?"
+  hint "Count up from {home}: which numbers in the scale are those notes?"
+}

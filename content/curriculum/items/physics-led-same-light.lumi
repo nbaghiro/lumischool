@@ -1,0 +1,31 @@
+# The same light for less: this bulb gives about 5 of every 100 J as light and this LED about 40, so
+# the LED needs an eighth as many joules each second for the same light. p is the bulb's joules a second.
+item physics.led-same-light v=1 skills=[physics.energy, reasoning.proportion] {
+  title "The same light for less"
+  difficulty (p / 40)
+  let p={40, 80, 120, 200}
+  level easy {
+    let p={40, 80}
+  }
+  level hard {
+    let p={120, 200}
+  }
+
+  scene 24x23 {
+    energyflow e thing="filament bulb" from="electricity" to="light" input=p useful=(p / 20) wasted=[p * 19 / 20] wastes=["heating"] blank=-1 unit=J at=canvas(1, 0)
+    text ask "Each second this bulb is given {p} J and gives {p / 20} J of light. An LED turns 40 of every 100 J into light. How many joules each second must the LED be given for the same light?" narrate width=22 below=e gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (p / 8)
+  feedback {
+    when (answer == p * 2 / 5) point=e {
+      say "That is the light the LED would give from {p} J. The LED only has to give {p / 20} J of light."
+    }
+    when (answer == p / 20) point=e {
+      say "That is the light itself. The LED turns only 40 of every 100 J it is given into light."
+    }
+  }
+  hint "How many joules of light does the bulb give each second?"
+  hint "If 40 of every 100 J the LED is given become light, how much must it be given for that light?"
+}

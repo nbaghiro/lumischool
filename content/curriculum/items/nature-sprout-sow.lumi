@@ -1,0 +1,36 @@
+# The story: the packet's share that sprout, read from the warm dish, used to plan the roof garden.
+# The unknown moves from the seedlings to the seeds sown at the harder level.
+item nature.sprout-sow v=1 skills=[nature.seeds, percentages.of-amounts] {
+  title "Seeds for the roof garden"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..1 r={60, 70, 80, 90} n={30, 40, 50, 60}
+  let got={n * r / 100}
+  let lead={pick(k, "Ben sows", "Ben wants")}
+  let tail={pick(k, "seeds from the same packet in the pots on the narrowboat's roof and keeps them warm and wet. About how many will sprout?", "seedlings in the pots on the narrowboat's roof, from the same packet, kept warm and wet. About how many seeds should he sow?")}
+  where (n * r % 100 == 0)
+  level easy {
+    let k={0} r={80, 90}
+  }
+  level hard {
+    let k={1} r={60, 70}
+  }
+
+  scene 34x24 {
+    seedtest s mode=0 water=[1, 1] air=[1, 1] warmth=[1, 0] light=[1, 1] seeds=10 rate=r after=1 at=canvas(1, 1)
+    narrowboat nb windows=3 pots=4 right-of=s gap=2
+    text ask "Dish A was warm and wet. {lead} {pick(k, n, got)} {tail}" narrate width=32 below=s gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 0 then got else n)
+  feedback {
+    when (k == 0 and answer == n) point=s {
+      say "Count the seedlings in dish A. Did every one of its 10 seeds sprout?"
+    }
+    when (k == 1 and answer == got) point=s {
+      say "That many seeds would give fewer seedlings than he wants, since not every seed sprouts."
+    }
+  }
+  hint "How many of dish A's 10 seeds sprouted?"
+  hint "That is how many in every 10. How many tens are there in the seeds he sows, or in the seedlings he wants?"
+}

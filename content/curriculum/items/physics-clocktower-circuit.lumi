@@ -1,0 +1,21 @@
+# The story: the old city's clock tower rings a bell and lights a lamp from one loop, drawn as a
+# diagram; the bell is the buzzer symbol, and the checker says whether it sounds.
+item physics.clocktower-circuit v=1 skills=[physics.circuits, physics.symbols] {
+  title "The clock tower's bell"
+  difficulty (if k == 1 then 0 else 1)
+  let k=0..1 c=2..3
+
+  scene 27x32 {
+    clocktower t hour=6 minute=0 at=canvas(1, 0)
+    series s cells=c bulbs=1 buzzer=1 closed=k show=0 symbols=1 right-of=t gap=1
+    text ask "The clock tower's bell and lamp work from this loop. The bell is the dome. Does the bell ring?" narrate width=18 below=s gap=1
+    choice pick options=["Yes", "No"] below=ask gap=1
+    text then "How many volts do the cells give, at 1.5 volts each?" narrate width=18 below=pick gap=1
+    number-input volts below=then gap=1
+  }
+
+  check physics.circuit of=s pick=sounds
+  answer volts=(if c % 2 == 0 then plain(c * 1.5) else decimals(c * 1.5, 1))
+  hint "Is the switch open or closed?"
+  hint "Add 1.5 volts for every cell."
+}

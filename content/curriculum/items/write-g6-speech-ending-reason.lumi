@@ -1,0 +1,41 @@
+# The two-star reason: two endings, one that fizzles and one that tells the listeners what to do with
+# the reason still ringing, and why the second persuades. At k=1 the fizzling one is the longer. The
+# right reason is offered for both endings, so the endings themselves must be read.
+item writing.speech-ending-reason v=1 stars=2 skills=[writing.persuasion, writing.speeches, reasoning.explain] {
+  title "Which ending, and why?"
+  difficulty k
+  let k=0..1 r=0..2
+  let ea={pick(k, "A: So that is all really. Thanks for listening.", "A: Mend it this month, mend it together, and no child will be afraid to cross.")}
+  let eb={pick(k, "B: Vote tonight, and no child will ever be afraid to cross again.", "B: So, to sum up what I have been saying, I think the bridge is quite old, and it might be a good idea for someone to look at it at some point.")}
+  let right={pick(k, "B: it says what to do and why it matters", "A: it says what to do and why it matters")}
+  let w1={pick(k, "A: it says what to do and why it matters", "B: it says what to do and why it matters")}
+  let w2={pick(k, "A: it thanks them, and politeness wins votes", "B: it sums up, so nobody forgets the reasons")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x34 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      ropebridge br planks=10 gaps=3
+      person tam pose=point age=child hair=curly colour=black top=tang
+    }
+    passage p title="Two endings" text="{ea} {eb}" width=33 numbers=false below=pics gap=1
+    text ask "Which ending is more likely to persuade the meeting, and why?" narrate width=33 below=p gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=p {
+      say "Read that ending again. Does it tell the meeting to do something, and give a reason in the same breath?"
+    }
+    when (pick == w2) point=p {
+      say "The last words are what the listeners carry out of the room. Which ending leaves them knowing what to do, and why they should?"
+    }
+  }
+  hint "After each ending, would a listener know what to do next?"
+  hint "Which ending gives a reason in the same breath as the ask?"
+}

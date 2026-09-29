@@ -1,0 +1,24 @@
+# The way in: lime is made by heating calcium carbonate, and chalk, limestone and marble are all
+# calcium carbonate, which is why a drop of vinegar fizzes on them. One rock in the row fizzes.
+item chem.rock-for-lime v=1 skills=[chemistry.rocks, chemistry.changes] {
+  title "Which rock makes lime?"
+  let k=0..3
+  let r1={pick(k, "limestone", "granite", "slate", "basalt")}
+  let r2={pick(k, "granite", "chalk", "sandstone", "slate")}
+  let r3={pick(k, "slate", "sandstone", "marble", "limestone")}
+
+  scene 31x16 {
+    rocks r rocks=[r1, r2, r3] test=2 letters=1 names=0 at=canvas(1, 0)
+    text ask "The builders of the city walls burn one kind of rock in a kiln to make lime for mortar: the kind that fizzes with vinegar. A drop of vinegar is on each rock. Which one should go in the kiln?" narrate width=16 right-of=r gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  check chem.rocks of=r pick="only(fizzes)"
+  feedback {
+    when (pick != pick(k, "A", "B", "C", "C")) point=r {
+      say "Look for bubbles above the drop. A rock that does not fizz is not the kind that makes lime."
+    }
+  }
+  hint "Which drop has bubbles rising from it?"
+  hint "The rock that fizzes is the one the vinegar reacts with. Which letter is under it?"
+}

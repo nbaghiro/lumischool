@@ -1,0 +1,33 @@
+# The two-star reason: rain is a weak acid (about pH 5.6, from carbon dioxide; USGS) and dissolves a
+# little limestone as it soaks through the gorge's rock, so the water that comes out is hard; rain
+# that falls on granite stays soft.
+item chem.why-hard v=1 stars=2 skills=[chemistry.hard-water, reasoning.explain] {
+  title "Why is the gorge's water hard?"
+  difficulty k
+  let k=0..1 r=0..2
+  let q={pick(k, "Rain water is soft, but the spring at the bottom of the limestone gorge is hard. Why?", "Two valleys get the same rain. The one on limestone has hard water and the one on granite has soft water. Why?")}
+  let right={pick(k, "Rain is a weak acid that dissolves limestone", "Rain dissolves limestone but not granite")}
+  let w1={pick(k, "The waterfall churns minerals into it from the air", "Granite soaks up the minerals")}
+  let w2={pick(k, "Cold spring water makes its own minerals", "More rain falls on limestone")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x27 {
+    phscale kit liquids=["rain", "water"] letters=1 names=1 at=canvas(1, 0)
+    text ask "{q}" narrate width=34 below=kit gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=kit {
+      say "Where is rain on the pH scale? What does an acid do to limestone?"
+    }
+  }
+  hint "Is rain an acid, neutral or an alkali? Look at A."
+  hint "What happens to limestone when an acid touches it?"
+}

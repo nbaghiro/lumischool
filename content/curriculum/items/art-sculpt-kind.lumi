@@ -1,0 +1,35 @@
+# Low, high or sunk, from measurements: a relief standing out more than half the figure's depth in
+# the round is high, less is low, and one cut into the surface is sunk. The figure in the round is
+# 10 cm thick in easy and medium, 12 cm at hard; no version sits on the half.
+item art.sculpt-kind v=1 skills=[art.sculpture, reasoning.compare] {
+  title "Low, high or sunk"
+  difficulty (if f <= 1 then 0 else 1)
+  let f=0..3
+  let full={pick(f, 10, 10, 12, 12)}
+  let how={pick(f, "stands out 2 cm from the flat ice", "is cut 3 cm down into the flat ice", "stands out 7 cm from the flat ice", "stands out 5 cm from the flat ice")}
+  let right={pick(f, "low relief", "sunk relief", "high relief", "low relief")}
+  level easy {
+    let f=0..1
+  }
+  level hard {
+    let f=2..3
+  }
+
+  scene 36x19 {
+    row top space=2 align=end at=canvas(1, 1) {
+      icecliff ice height=1 floes=1
+      seal ps rock=1 facing=1
+    }
+    text ask "A seal carved in the round from the ice would be {full} cm thick. On the ice wall by the hut, the carved seal {how}. What kind of relief is it?" narrate width=34 below=top gap=1
+    choice pick options=["low relief", "high relief", "sunk relief"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "{if f == 1 then \"Does it stand out, or is it cut in?\" else \"What is half of {full} cm? Is the seal standing out more or less than that?\"}"
+    }
+  }
+  hint "Does the seal stand out of the wall or go into it?"
+  hint "What is half of {full} cm? Compare how far it stands out with that."
+}

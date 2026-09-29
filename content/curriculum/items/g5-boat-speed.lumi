@@ -1,0 +1,30 @@
+# Speed as a rate per hour: kilometres in one hour from a journey, then used for a new time.
+item rates.boat-speed v=1 skills=[rates.speed, rates.per-unit] {
+  title "How far in the time"
+  difficulty (t + v / 2)
+  let v={4, 5, 6} h={2, 3} t={1.5, 2.5, 3.5}
+  level easy {
+    let t={1.5}
+  }
+  level hard {
+    let t={2.5, 3.5} v={5, 6}
+  }
+
+  scene 31x9 {
+    narrowboat boat windows=4 pots=2 at=canvas(1, 1)
+    text ask "The narrowboat went {v * h} km in {h} hours at a steady speed. How far does it go in {t} hours at the same speed?" narrate width=15 right-of=boat gap=2
+    row eq below=boat gap=1 space=1 align=centre {
+      number-input answer width=4
+      text km "km"
+    }
+  }
+
+  answer decimals(v * t, 0)
+  feedback {
+    when (answer == v * h * t) point=ask {
+      say "{v * h} km is for {h} hours. How far is it in one hour?"
+    }
+  }
+  hint "How many kilometres does the boat go in one hour?"
+  hint "How far in {plain(t - 0.5)} hours? Then add half an hour more."
+}

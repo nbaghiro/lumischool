@@ -1,0 +1,37 @@
+# An explanation says why one thing leads to another. Each version joins two facts about the lock
+# with the word that says how they are linked; the three choices change with the sentence.
+item writing.cause-word v=1 skills=[writing.explanations, writing.joining-sentences] {
+  title "The word that explains"
+  difficulty (if k == 0 or k == 3 then 0 else if k == 1 or k == 2 then 1 else 2)
+  let k=0..5
+  let t={pick(k, "The paddles are opened. ___, water pours in.", "The chamber fills ___ the water is level with the top.", "The gates are heavy, ___ the keeper leans on a long beam.", "The boat rises ___ water is pouring into the chamber.", "Leaves can jam a paddle. ___, the keeper clears them daily.", "The canal is busy in summer. ___ the keeper starts at six.")}
+  let o1={pick(k, "As a result", "until", "so", "because", "Therefore", "This means")}
+  let o2={pick(k, "However", "because", "unless", "until", "For example", "For example")}
+  let o3={pick(k, "For example", "although", "until", "unless", "However", "However")}
+  let right={pick(k, "As a result", "until", "so", "because", "Therefore", "This means")}
+  level easy {
+    let k={0, 1, 3}
+  }
+  level hard {
+    let k=2..5
+  }
+
+  scene 32x19 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      canallock lock level=0.25 boat=1
+      person keeper pose=hold age=grownup hair=short colour=grey top=mint
+    }
+    caption strip text="{t}" width=31 below=pics gap=1
+    text ask "Which words fill the gap?" narrate width=31 below=strip gap=1
+    choice pick options=["{if k == 1 or k == 3 then o2 else if k == 2 or k == 5 then o3 else o1}", "{if k == 1 or k == 3 then o1 else o2}", "{if k == 2 or k == 5 then o1 else o3}"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=strip {
+      say "Read the two halves and ask how they are linked: does the second happen because of the first, is it the reason for the first, or does the first go on up to the moment of the second?"
+    }
+  }
+  hint "Read the sentence with each choice in the gap. Which one says truly how the two parts are linked?"
+  hint "Does the second part follow from the first, explain why the first happens, or say how long it goes on?"
+}

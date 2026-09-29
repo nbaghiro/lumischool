@@ -1,0 +1,27 @@
+# How long a cell lasts: the joules it stores shared by the joules the lamp uses each second.
+item physics.cell-lasts v=1 skills=[physics.energy, physics.circuits, division.grouping] {
+  title "How long will it last?"
+  difficulty (if u == 2 or u == 5 then 0 else 1)
+  let u={2, 4, 5, 8}
+  level easy {
+    let u={2, 5}
+  }
+  level hard {
+    let u={4, 8}
+  }
+
+  scene 18x25 {
+    series s cells=1 bulbs=1 closed=1 show=1 at=canvas(1, 0)
+    text ask "The cell stores 10 000 J in its chemical store. The lamp uses {u} J each second. For how many seconds can it stay lit?" narrate width=16 below=s gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (10000 / u)
+  feedback {
+    when (answer == 10000 * u) point=ask {
+      say "The lamp takes {u} J away every second, so the cell lasts fewer seconds than it has joules."
+    }
+  }
+  hint "How many joules does the lamp take in one second?"
+  hint "How many lots of {u} J are there in 10 000 J?"
+}

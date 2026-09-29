@@ -1,0 +1,32 @@
+# Squashing a capped syringe of air: the particles stay the same in number and get closer. The
+# unknown is how far the plunger went in, or how many particles are in each 10 ml.
+item chem.syringe-squash v=1 skills=[chemistry.gases, chemistry.particles, ratio.scaling] {
+  title "Squashed into less room"
+  difficulty (w * 2 + (if l >= 30 then 0 else 1))
+  let w=0..1 l={20, 30, 40} n={12, 24}
+  where (w == 0 or n * 10 / l == floor(n * 10 / l))
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 35x15 {
+    syringe s max=60 step=10 level=l capped=1 water=0 particles=n at=canvas(1, 0)
+    text ask "Mei fills the syringe with 60 ml of air, caps it and pushes the plunger to the reading shown. {if w == 0 then \"By how many millilitres did she squash the air?\" else \"There are \"}{if w == 0 then \"\" else n}{if w == 0 then \"\" else \" particles drawn in the air. How many particles are in each 10 ml now?\"}" narrate width=34 below=s gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then 60 - l else n * 10 / l)
+  feedback {
+    when (w == 0 and answer == l and l != 30) point=s {
+      say "That is where the plunger is now. It started at 60 ml."
+    }
+    when (w == 1 and answer == n / 6) point=s {
+      say "That was before it was squashed, in 60 ml. The same particles now share less room."
+    }
+  }
+  hint "{if w == 0 then \"Read where the plunger's seal is now.\" else \"Pushing the plunger takes no particles out. How many millilitres do they share now?\"}"
+  hint "{if w == 0 then \"How far is that from 60 ml?\" else \"How many lots of 10 ml is that? Share the particles between them.\"}"
+}

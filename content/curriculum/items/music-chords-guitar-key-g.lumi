@@ -1,0 +1,20 @@
+# The primary chords of G major on the guitar, G, C and D, the open shapes from grade four. The chord
+# is named only by its numeral, so the child finds the letter from the scale first.
+item music.chords-guitar-key-g v=1 skills=[music.chords, music.chord-boxes] {
+  title "Chords in G"
+  let k=0..2
+  let roman={pick(k, "I", "IV", "V")}
+  let want={pick(k, "G", "C", "D")}
+  let deg={pick(k, "1", "4", "5")}
+
+  scene 35x22 {
+    row top space=2 align=start at=canvas(1, 1) {
+      fretboard neck tuning=guitar frets=3 view=chart labels=numbers strum=true
+      text ask "Ben plays a song in G major on the guitar at the observatory's open night. The chart says {roman}. Hold that chord and strum it." narrate width=16
+    }
+  }
+
+  check music.chord chord={want} tuning=guitar
+  hint "Count up the G major scale: G is 1, A is 2. Which letter is note {deg}?"
+  hint "G plays all six strings, C leaves out string 6, and D leaves out strings 6 and 5."
+}

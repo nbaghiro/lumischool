@@ -1,0 +1,31 @@
+# Debugging a polygon against its pale target: only the turn is wrong, and the checker proves that
+# no other single change draws the target and that one number mends it.
+item coding.poly-fix v=1 skills=[coding.drawing, coding.debugging, angles.turns] {
+  title "The shape that does not close"
+  difficulty (pick(q, 0, 1, 2) + (if w > 0 then 0.3 else 0))
+  let q=0..2 w={-6, 5}
+  where (q < 2 or w > 0)
+  let n={pick(q, 5, 6, 8)} cols={pick(q, 5, 6, 7)} rows={pick(q, 5, 5, 6)} sc={pick(q, 2, 3, 3)}
+  level easy {
+    let q={0}
+  }
+  level hard {
+    let q={2}
+  }
+
+  scene 36x19 {
+    turtle t cols=cols rows=rows col=sc row=rows face=right moves=["repeat {n}", "  forward 2", "  turn left {360 / n + w}"] target=["repeat {n}", "  forward 2", "  turn left {360 / n}"] at=canvas(1, 0)
+    program p code=["repeat {n}", "  forward 2", "  turn left {360 / n + w}"] right-of=t gap=1
+    text ask "The turtle should draw the pale shape, but it misses. What should the turn be?" width=15 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=t goal=target answer=fix
+  feedback {
+    when (answer == 360 / n + w) point=p {
+      say "That is the turn the program has now, and it misses the pale shape."
+    }
+  }
+  hint "Count the corners of the pale shape."
+  hint "Share 360 degrees among those corners."
+}

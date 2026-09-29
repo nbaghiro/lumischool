@@ -1,0 +1,71 @@
+# Colour that changes across a sky, after William Bradford's Arctic summers under the midnight sun:
+# a blend in small steps, the mix in the middle, and a path round the wheel that keeps every band
+# clear.
+lesson art-a-sky-that-changes-colour v=1 format=teach grade=6 unit=1 subject=art levels=[easy, medium, hard] {
+  title "A sky that changes colour"
+  goal "Paint a sky whose colour changes gradually from one colour to another, planning the bands in between so none turns muddy."
+
+  look {
+    scene 32x15 {
+      row all at=canvas(1, 1) space=1 align=end {
+        icecliff cliff height=2 floes=2
+        colourwheel wheel segments=6 blank=[] ring=-1 labels=true split="none"
+      }
+    }
+    say """
+      In the summer of 1869 William Bradford sailed to Greenland to paint ships and icebergs under
+      the midnight sun. At midnight the sun only skims along the sea, so the sky glows gold and
+      pink near it and turns slowly to blue higher up, a sunset that never ends. A sky like that
+      is a blend. Each band is a small step from the one below it, so the eye sees one colour
+      turning into another. The band in the middle is the two ends mixed, which is why a painter
+      plans the path round the colour wheel before starting.
+      """
+  }
+  do {
+    level easy {
+      worked art.sky-bands n=4 q=0 k=2 level=medium
+    }
+    practice art.sky-bands count=2 seed=5
+    practice art.sky-nearer count=2 seed=1
+    practice art.sky-paler count=1 hard-count=2 seed=3
+    practice art.sky-middle count=1 seed=1
+    practice art.sky-round-the-wheel count=2 seed=2
+  }
+  try stars=2 {
+    show art.sky-muddy-why r=1 easy-r=0 hard-r=2
+  }
+  try stars=3 {
+    show art.sky-midnight-glow
+  }
+  remember {
+    say "A sky that changes colour is a blend of small steps, and the band in the middle is the two ends mixed."
+  }
+
+  grown-ups """
+    William Bradford lived from 1823 to 1892, and his paintings of the Arctic summer are long out of
+    copyright; the lesson uses drawings of our own. The sky is the midnight sun's glow rather than
+    the northern lights, which cannot be seen in an Arctic summer because the sky never gets dark.
+    The questions are marked by the machine, which mixes the paints the way the paint box does. The
+    first counts the bands in a blend of equal steps. The core compares mixes by their share of pink
+    rather than their amount, places a tint between two others, predicts that two mixed colours
+    blended straight across turn dull in the middle (they share one primary, and the other two make
+    its opposite), and plans a blend between opposite colours that goes round the wheel through the
+    colours between them.
+
+    Watch for a child who counts the parts but forgets the band at the bottom, which has none of the
+    top colour; writing the bands out in a list settles it. If the wheel questions are stuck, paint
+    a wheel together from the three primaries and walk a finger round it. The two-star question asks
+    why a band went dull, which is the grade four idea of opposites met again in a sky. The painting
+    is the three-star question and is responded to rather than marked. Off the page, look at a sky
+    just after sunset, where the colour changes from the horizon upwards, and name the bands.
+
+    Respond by running a finger up the child's sky and saying where it changes: "Here the gold
+    turns to pink so slowly I cannot see the join." Ask which band was hardest to mix.
+    """
+  level easy {
+    grown-ups "At this level the middle band of a straight blend is orange into purple or orange into green, a sky of four parts is worked once in the teacher's pen, the bands to compare are simpler shares, the tints are blue or pink, the opposites to go round are yellow and purple or red and green, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the straight blend includes green into purple, the blends have six parts and the band is found from its recipe, the shares to compare are closer, a second tint question is added and orange appears, the opposites include orange and blue, the two-star sky is yellow into purple, and the three-star is as written."
+  }
+}

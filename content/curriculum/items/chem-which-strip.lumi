@@ -1,0 +1,33 @@
+# A strip whose label fell off, named by matching its bubbles to the labelled strips in the same acid
+# (these tubes: ten bubbles on magnesium, six on zinc, three on iron, none on copper). u is the
+# unknown metal, which the key's four strips do not give away.
+item chem.which-strip v=1 skills=[chemistry.acids, chemistry.metals, reasoning.evidence] {
+  title "The strip with no label"
+  difficulty (if u == 1 or u == 4 then 0 else 1)
+  let u=1..4
+  level easy {
+    let u={1, 4}
+  }
+  level hard {
+    let u={2, 3}
+  }
+  let right={pick(u, "none", "magnesium", "zinc", "iron", "copper")}
+
+  scene 36x24 {
+    row kit at=canvas(1, 0) space=2 align=start {
+      testtubes t fills=[0.5, 0.5, 0.5, 0.5, 0.5] paints=["", "", "", "", ""] fizz=[0, 0, 0, 0, 0] bungs=0 letters=1 metals=[1, 2, 3, 4, u] acid=1
+      table key cols=2 head=["Tube", "Strip"] cells=["A", "magnesium", "B", "zinc", "C", "iron", "D", "copper", "E", "?"]
+    }
+    text ask "The miller at the gorge found a scrap of metal with no label. Each tube holds the same dilute acid and a strip of the same size, and the scrap is in tube E. Which metal is it?" narrate width=32 below=kit gap=1
+    choice pick options=["magnesium", "zinc", "iron", "copper"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=t {
+      say "Count the bubbles on tube E's strip again, then find the labelled strip with the same number."
+    }
+  }
+  hint "How many bubbles rise from tube E's strip?"
+  hint "Which labelled strip in the same acid gives off that many?"
+}

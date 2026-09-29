@@ -1,0 +1,31 @@
+# The two-star: Leo takes away a negative number as if it were positive. The reason is that taking
+# away a negative is adding its opposite.
+item negative.leo-minus-negative v=1 stars=2 skills=[number.negatives, reasoning.find-the-mistake] negatives {
+  title "Leo's logbook"
+  difficulty ((if a < 0 then 1 else 0) - b / 10)
+  let a={-5, -2, 3, 6, 7} b={-11, -8, -4}
+  level easy {
+    let a={3, 6, 7} b={-4}
+  }
+  level hard {
+    let a={-5, -2} b={-11, -8}
+  }
+
+  scene 36x12 {
+    unknown eq terms=["{a}", "-", "({b})", "=", "{a + b}"] at=canvas(1, 1)
+    text ask "Leo wrote this in the hut's logbook. His answer is wrong. What should the answer be?" narrate width=13 right-of=eq gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (a - b)
+  feedback {
+    when (answer == a + b) point=eq {
+      say "That is Leo's answer. He took away {-b}. Taking away {b} is adding {-b}."
+    }
+    when (answer == b - a) point=eq {
+      say "The size is right, but check the sign: which side of zero do you land on?"
+    }
+  }
+  hint "Is taking away a negative number the same as taking away a positive one?"
+  hint "What is the opposite of the number Leo took away? Add that instead."
+}

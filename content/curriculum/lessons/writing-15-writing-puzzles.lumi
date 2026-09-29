@@ -1,4 +1,4 @@
-lesson writing-puzzles v=1 format=puzzles grade=4 unit=3 subject=writing levels=[easy, medium, hard] {
+lesson writing-puzzles v=1 format=puzzles grade=4 unit=2 subject=writing levels=[easy, medium, hard] {
   title "Writing puzzles"
   goal "Find a mistake and fix it, sort a hard word, punctuate speech, and write for a reader."
 

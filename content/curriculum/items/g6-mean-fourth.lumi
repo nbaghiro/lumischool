@@ -1,0 +1,34 @@
+# Working back from a mean below zero: the total is the mean times the number of days, a negative
+# times a positive, and the missing reading is what the three known ones leave of it.
+item negative.mean-fourth v=1 skills=[number.negatives.multiply, data.mean, reasoning.work-backwards] negatives {
+  title "The missing day"
+  difficulty (-m + (if c < -4 then 1 else 0))
+  let m={-1, -2, -3} a={-5, -4} b={1, 2} c={-3, -6}
+  where (4 * m - a - b - c >= -12 and 4 * m - a - b - c <= 8)
+  where (4 * m - a - b - c != m)
+  level easy {
+    let m={-1} c={-3}
+  }
+  level hard {
+    let m={-3}
+  }
+
+  scene 36x24 {
+    thermometer th from=-15 to=10 step=5 value=m unit="°C" at=canvas(1, 1)
+    table log cols=2 head=["Day", "Noon, °C"] cells=["Monday", "{a}", "Tuesday", "{b}", "Wednesday", "{c}", "Thursday", "?"] right-of=th gap=2
+    text ask "The thermometer shows the mean noon reading for the four days: {m} °C. What was Thursday's reading?" narrate width=34 below=th gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (4 * m - a - b - c)
+  feedback {
+    when (answer == 3 * m - a - b - c) point=log {
+      say "The mean is shared over four days, so the total is four times the mean."
+    }
+    when (answer == -4 * m - a - b - c) point=th {
+      say "Four times {m} is below zero. The total of the four readings is {4 * m}."
+    }
+  }
+  hint "The mean is the total shared equally between the days. What must the total be?"
+  hint "What do Monday, Tuesday and Wednesday add up to? What is left for Thursday?"
+}

@@ -1,0 +1,14 @@
+# The rhythm of bar 5, "morning bells are ringing": four quavers, then two crotchets. Onsets 0, 0.5,
+# 1, 1.5, 2 and 3, judged at the grade five window.
+item music.round-rhythm v=1 skills=[music.singing, music.rhythm] {
+  title "Tap the busy bar"
+
+  scene 34x20 {
+    notes bar clef=treble notes=[G4, A4, G4, F4, E4, C4] values=[0.5, 0.5, 0.5, 0.5, 1, 1] meter=4 at=canvas(1, 1)
+    text ask "Every voice of the round has to fit this bar in the same time. Count 1 and 2 and 3 and 4 and, and tap once for each note." narrate width=32 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 0.5, 1, 1.5, 2, 3] grade=5
+  hint "The first four notes are joined by a beam. How long is each of them?"
+  hint "Four quavers take two beats, so the crotchets fall on beats 3 and 4."
+}

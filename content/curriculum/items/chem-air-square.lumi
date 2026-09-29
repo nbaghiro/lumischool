@@ -1,0 +1,22 @@
+# The way in: a hundred square is dry air, one small square for each per cent. Nitrogen is 78 per
+# cent and oxygen 21 (NOAA and the Met Office give 78.08 and 20.95), so the shaded part is read off.
+item chem.air-square v=1 skills=[chemistry.gases, percentages.of-hundred] {
+  title "A hundred squares of air"
+  let g=0..2
+  let gas={pick(g, "nitrogen", "oxygen", "nitrogen")}
+
+  scene 35x14 {
+    decimalsquare sq hundredths=(if g == 1 then 21 else 78) write=false at=canvas(1, 0)
+    text ask "At the observatory, the air is drawn as 100 small squares, one for each per cent. The shaded squares are the {gas}. {if g == 2 then \"What percentage of the air is not nitrogen?\" else \"What percentage of the air is \"}{if g == 2 then \"\" else gas}{if g == 2 then \"\" else \"?\"}" narrate width=21 right-of=sq gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if g == 0 then 78 else if g == 1 then 21 else 22)
+  feedback {
+    when (g == 2 and answer == 78) point=sq {
+      say "That is the shaded part, the nitrogen. The question asks about the squares left white."
+    }
+  }
+  hint "Each full column holds ten squares. How many full columns are shaded, and how many squares more?"
+  hint "{if g == 2 then \"The whole square is 100. How many squares are left white?\" else \"Each square is one per cent, so the count of shaded squares is the percentage.\"}"
+}

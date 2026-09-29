@@ -1,0 +1,38 @@
+# The story: a bottle filled full of gas in a cool cellar at 10 °C warms on the narrowboat's roof and
+# can no longer hold all its carbon dioxide (the table as in chem.co2-table, in tenths of a gram).
+item chem.roof-bottle v=1 skills=[chemistry.gases, measure.temperature, reasoning.two-steps] {
+  title "A bottle on the roof"
+  difficulty (n + r / 2)
+  let n={1, 2, 3} r=0..2
+  level easy {
+    let n={1}
+  }
+  level hard {
+    let n={3}
+  }
+  let t={pick(r, 20, 30, 40)}
+  let s={pick(r, 17, 13, 10)}
+
+  scene 33x38 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      narrowboat nb windows=3
+      thermometer th from=0 to=50 step=10 value=t unit="°C"
+    }
+    table data cols=2 head=["Water °C", "Carbon dioxide, g a litre"] cells=["10", "2.3", "20", "1.7", "30", "1.3", "40", "1.0"] below=kit gap=1
+    text ask "{n} litre{if n == 1 then \"\" else \"s\"} of soda water, holding all the carbon dioxide {if n == 1 then \"it\" else \"they\"} could at 10 °C, sat in a sealed bottle on the narrowboat's roof until {if n == 1 then \"it\" else \"they\"} reached the temperature on the thermometer. When the bottle is opened, how many grams of gas can the water no longer hold?" narrate width=32 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n * (23 - s) / 10)
+  feedback {
+    when (answer * 10 == 23 - s and n > 1) point=data {
+      say "That is for one litre. The bottle holds {n} litres."
+    }
+    when (answer * 10 == n * s) point=data {
+      say "That is what the warm water can still hold. The question asks how much it has to let go."
+    }
+  }
+  hint "Read the thermometer. What temperature did the soda water reach?"
+  hint "How much does a litre hold at 10 °C, and how much at that temperature?"
+  hint "How many litres are there?"
+}

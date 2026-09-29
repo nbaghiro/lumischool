@@ -1,0 +1,65 @@
+# A biography as a true life told by someone else: the third person and the past tense, facts that
+# can be checked, time words that carry the reader through the years, a paragraph for each part.
+lesson writing-a-short-biography v=1 format=teach grade=5 unit=6 subject=writing levels=[easy, medium, hard] {
+  title "A short biography"
+  goal "Write a short biography of a real astronomer in the third person, in order, with time words."
+
+  look {
+    scene 30x18 {
+      row all at=canvas(1, 0) space=2 align=start {
+        passage bio title="Caroline Herschel" text="Caroline Herschel was one of the first women to be paid to study the stars. She was born in Hanover, in Germany, in 1750. At twenty-two she moved to England to help her brother William with his telescopes. Fourteen years later, she found her first comet." width=23 numbers=false
+        person her pose=think age=older hair=bun colour=grey top=mint glasses=true
+      }
+    }
+    say """
+      A biography is the true story of someone's life, written by someone else. This one is about
+      Caroline Herschel, who swept the night sky with a telescope and found eight comets. It says
+      she, never I, because the writer is telling her story. It is in the past tense and in the
+      order things happened, and time words such as at twenty-two and fourteen years later carry the
+      reader from one fact to the next. Every fact could be checked.
+      """
+  }
+  do {
+    level easy {
+      worked writing.bio-belongs k=2 r=0 level=medium
+    }
+    practice writing.bio-belongs count=2 seed=1
+    practice writing.bio-third-person count=2 seed=1
+    practice writing.bio-time-word count=1 seed=1 hard-count=2
+    practice writing.bio-paragraphs count=1 seed=1
+    practice writing.bio-order count=1 seed=1
+  }
+  story {
+    show writing.bio-check-years k=2 easy-k=0 hard-k=3
+  }
+  try stars=2 {
+    show writing.bio-best-opening k=0 r=2 hard-k=1
+  }
+  try stars=3 {
+    show writing.write-a-bio k=0 hard-k=1
+  }
+  remember {
+    say "A biography tells a real life in order: she or he, the past tense, and time words between the facts."
+  }
+
+  grown-ups """
+    A biography is a true life told by someone else, so it is written with she or he, in the past
+    tense, in the order things happened, and every fact in it could be checked. The look is the
+    start of a biography of Caroline Herschel, the astronomer who found eight comets. The way in
+    picks the sentence that belongs in a biography, and the core turns her own words into the
+    biographer's, finds the time words that fit two facts from her card, sorts facts into paragraphs
+    by part of her life, and puts a muddled life in order. The story checks a three-sentence draft
+    against the card and finds the sentence the card does not bear out, which is how a biographer
+    proofreads. The wrong idea to watch for is an opinion slipped in as a fact ("which is amazing");
+    ask whether it could be checked. If the child is stuck, make a timeline of the card on a strip
+    of paper first and write one sentence a date. Off the page, read a short biography together and
+    underline its time words. The two-star question compares two openings, and the three-star
+    question is a biography of Maria Mitchell, which you mark.
+    """
+  level easy {
+    grown-ups "At this level the sentence with an opinion slipped in is worked once in the teacher's pen, the wrong sentences use I or plain opinions, the missing words are she and her, the time words are fourteen years later and the next year, the facts to sort are the plainer ones, the life to order is Caroline's, the draft has a wrong year, the two-star is Caroline's opening, and the biography has two paragraphs."
+  }
+  level hard {
+    grown-ups "At this level the wrong sentences slip into the present tense or an opinion, the missing words are her and they, the time words are asked twice with twenty years later, the facts to sort are the harder set, the life to order is Maria Mitchell's, the draft's slip is a wrong gap before her death, the two-star is Maria's opening, and the biography has three paragraphs that start with why she matters."
+  }
+}

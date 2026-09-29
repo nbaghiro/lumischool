@@ -1,0 +1,30 @@
+# The angle measured from the wrong line: the beam's angle to the mirror's surface is given, and the
+# angle to the upright line is what the rule works with; the two add to 90 degrees.
+item physics.reflect-from-mirror v=1 skills=[physics.light, angles.additive, reasoning.two-steps] {
+  title "Measured from the mirror"
+  difficulty (if b % 10 == 0 then 0 else 1)
+  let b={30, 40, 50, 60, 35, 65}
+  level easy {
+    let b={30, 40, 50, 60}
+  }
+  level hard {
+    let b={35, 65}
+  }
+
+  scene 31x25 {
+    mirrorangle m angle=(90 - b) targets=[] marks=0 show=0 at=canvas(1, 0)
+    text ask "Kai measures the angle between the beam and the mirror's surface: {b}°. What angle does the beam make with the dashed upright line?" narrate width=30 below=m gap=1
+    number-input inside below=ask gap=1
+    text then "At what angle to the mirror's surface will it leave?" narrate width=30 below=inside gap=1
+    number-input surface below=then gap=1
+  }
+
+  answer inside=(90 - b) surface=b
+  feedback {
+    when (inside == b) point=m {
+      say "The upright line stands at a right angle to the mirror, so the two angles add to 90°."
+    }
+  }
+  hint "The upright line and the mirror make a right angle. What must the two angles add to?"
+  hint "The beam leaves at the same angle to the upright as it came in, so it also leaves at the same angle to the surface."
+}

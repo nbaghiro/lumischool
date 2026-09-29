@@ -1,0 +1,29 @@
+# A common slip made into a question: the inside angle written as the turn. A hexagon's inside angle
+# turns the turtle round a triangle twice, and a triangle's leaves half a hexagon, open.
+item coding.poly-inside v=1 skills=[coding.drawing, angles.turns, coding.debugging] {
+  title "The inside angle"
+  difficulty k
+  let k=0..1
+  let want={pick(k, "hexagon", "triangle")} n={pick(k, 6, 3)} d={pick(k, 120, 60)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x20 {
+    program p code=["repeat {n}", "  forward 3", "  turn left {d}"] at=canvas(1, 0)
+    text ask "Kit wants a {want}. Its corners measure {d} degrees inside, so Kit writes this. What does the turtle draw?" width=18 right-of=p gap=1
+    choice pick options=["A triangle", "A hexagon", "An open line"] stack=column below=p gap=1
+  }
+
+  answer pick=pick(k, "A triangle", "An open line")
+  feedback {
+    when (pick == (if k == 0 then "A hexagon" else "A triangle")) point=p {
+      say "That is the shape Kit wants. The turtle turns by the angle outside each corner, which is 360 shared among the corners, not the angle inside."
+    }
+  }
+  hint "Follow the turtle for two corners. How far has it turned so far?"
+  hint "How many turns of {d} bring the turtle round to face the way it started?"
+}

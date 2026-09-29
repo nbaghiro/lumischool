@@ -1,0 +1,33 @@
+# The same idea on the guitar: E minor and E major, and A minor and A major, differ by one finger,
+# on the string that plays the chord's middle note, the third.
+item music.minor-guitar-string v=1 skills=[music.major-minor, music.chord-boxes] {
+  title "One finger apart"
+  difficulty m
+  let m=0..1
+  let said={pick(m, "E minor and E major", "A minor and A major")}
+  let right={pick(m, 3, 2)}
+  level easy {
+    let m=0..0
+  }
+  level hard {
+    let m=1..1
+  }
+
+  scene 34x24 {
+    row cards space=3 align=start at=canvas(1, 1) {
+      chordbox a tuning=guitar chord=pick(m, "Em", "Am") frets=3 show=fingers name=true letters=true lit=[]
+      chordbox b tuning=guitar chord=pick(m, "E", "A") frets=3 show=fingers name=true letters=true lit=[]
+    }
+    text ask "Ben's cards for {said}. Only one string plays a different note in the two chords. Which string number is it?" narrate width=32 below=cards gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer != right) point=b {
+      say "Compare the cards one string at a time, from string 6 on the left. Where is a dot on one card and not in the same place on the other?"
+    }
+  }
+  hint "Strings are numbered from the thin one on the right, string 1, to the thick one on the left, string 6."
+  hint "Find the string where one card has a dot on a lower fret or no dot at all."
+}

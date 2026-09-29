@@ -1,0 +1,45 @@
+# Changes people made to real places, and what happened to one animal. Rats brought to a puffin
+# island and later cleared are the plain two; the poison that takes the swallows' insects and the
+# cod fished out, which leaves their prey, go through a link.
+item nature.people-change v=1 skills=[nature.ecosystems, reasoning.predict] {
+  title "What people change"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "Rats came ashore from a ship onto an island where puffins nest, and ate their eggs and chicks. What happened to the puffins?", "Years later people cleared every rat off the island. What happened to the puffins after that?", "Farmers sprayed a poison that killed the insects in their fields. What happened to the swallows that catch flying insects there?", "Boats caught so many cod in one sea that few were left. What happened at first to the shrimps that cod eat?")}
+  let ans={pick(k, "fewer puffins", "more puffins", "fewer swallows", "more shrimps")}
+  let o1={pick(k, "more puffins", "fewer puffins", "more swallows", "fewer shrimps")}
+  let o2={pick(k, "no change to the puffins", "no change to the puffins", "no change to the swallows", "no change to the shrimps")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x28 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      earth e up=2
+      puffins pp count=2 facing=-1
+    }
+    text ask "From the moon, Ada reads the news from Earth about places people have changed. {asks}" narrate width=32 below=pics gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=ask {
+      say "The rats ate the eggs and chicks. How many young puffins grew up?"
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "With the rats gone, what happens to the puffins' eggs and chicks now?"
+    }
+    when (k == 2 and pick != ans) point=ask {
+      say "The poison did not touch the swallows. What did it take away from them?"
+    }
+    when (k == 3 and pick != ans) point=ask {
+      say "Cod eat shrimps. With few cod left, fewer shrimps are eaten."
+    }
+  }
+  hint "What did the change do to the animal's food, or to what eats it?"
+  hint "Follow it one link at a time, from what people did to the animal in the question."
+}

@@ -1,0 +1,30 @@
+# The leak traced in a table: the add and the take are separate steps, so after an add the tank holds
+# more than it will at the end of that minute.
+item coding.tank-trace v=1 skills=[coding.simulation, coding.tracing, coding.variables] {
+  title "Trace the tank"
+  difficulty (j + r / 20)
+  let r={10, 12, 15} l={3, 4} j=0..2
+  let step={pick(j, 4, 6, 9)}
+  level easy {
+    let j={0}
+  }
+  level hard {
+    let j={1, 2}
+  }
+
+  scene 36x26 {
+    program p code=["set water to 0", "repeat 3", "  add {r} to water", "  take {l} from water"] text=true at=canvas(0, 0)
+    tracetable tr code=["set water to 0", "repeat 3", "  add {r} to water", "  take {l} from water"] show=value name=water filled=3 right-of=p gap=1
+    text ask "The table has a row for each step and shows what water holds after it. What does water hold after step {step}?" width=17 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=tr answer="after({step}).water"
+  feedback {
+    when (j > 0 and answer == (j + 1) * (r - l)) point=tr {
+      say "Step {step} is an add. The take for that minute comes on the next row."
+    }
+  }
+  hint "Fill in the empty rows one at a time. Which line ran on each?"
+  hint "On a row for line 3, water goes up by {r}. On a row for line 4, it goes down by {l}."
+}

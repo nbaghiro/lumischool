@@ -1,0 +1,33 @@
+# A still sledge: friction holds it back with whatever force is needed, up to its most, so it moves
+# only once the pull is more than that. The answer is the smallest whole number of newtons that is.
+item physics.sledge-start v=1 skills=[physics.forces, physics.friction, reasoning.extremes] {
+  title "Just enough to start"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+  let most={pick(v, 150, 90, 175, 230)}
+  let p={pick(v, 100, 60, 150, 180)}
+
+  scene 30x22 {
+    sledgeforce s forward=[p] back=[most] weight=0 moving=0 show=0 names=1 at=canvas(1, 0)
+    text ask "The loaded sledge stands still on the snow. Friction can hold it back with up to {most} N, and Mia pulls with {p} N, so it does not move. What is the smallest whole number of newtons she must pull with to start it moving?" narrate width=27 below=s gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (most + 1)
+  feedback {
+    when (answer == most) point=s {
+      say "At {most} N the pull and the most friction balance, so the sledge still stays where it is."
+    }
+    when (answer == most - p) point=s {
+      say "That is how much more she needs than now. The question asks for her whole pull."
+    }
+  }
+  hint "Will the sledge move if the pull and the friction are the same?"
+  hint "The pull has to be more than the most friction can give."
+}

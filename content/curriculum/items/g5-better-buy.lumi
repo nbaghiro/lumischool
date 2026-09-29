@@ -1,0 +1,27 @@
+# The price of one, to compare two packs: the per-unit quantity Japan's fifth grade builds on.
+item rates.better-buy v=1 skills=[rates.unit-price, money.decimals] {
+  title "The better buy"
+  difficulty (a + b)
+  let a={4, 5, 6} b={8, 10} p={0.60, 0.75, 0.80} r=0..1
+  let q={if r == 0 then p - 0.05 else p + 0.05}
+  level easy {
+    let a={4} b={8}
+  }
+  level hard {
+    let a={6} b={10}
+  }
+
+  scene 33x19 {
+    text ask "At the canal market, a bag of {a} bread rolls costs {decimals(a * p, 2)} dollars, and a bag of {b} rolls costs {decimals(b * q, 2)} dollars. Which bag costs less for each roll?" narrate width=32 at=canvas(1, 1)
+    choice pick options=["the smaller bag", "the bigger bag", "the same"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if r == 0 then "the bigger bag" else "the smaller bag")
+  feedback {
+    when (r == 1 and pick == "the bigger bag") point=ask {
+      say "The bigger bag costs more in all. Share each price by its number of rolls and compare."
+    }
+  }
+  hint "How much is one roll from the bag of {a}?"
+  hint "How much is one roll from the bag of {b}?"
+}

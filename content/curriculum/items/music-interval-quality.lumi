@@ -1,0 +1,40 @@
+# An interval's size as well as its number: every 3rd spans three letters, but four semitones is a
+# major 3rd and three a minor 3rd, the gaps already met in major and minor chords. Counting letters
+# gives the number, and the table of semitones gives the size.
+item music.interval-quality v=1 skills=[music.intervals, music.major-minor] {
+  title "Major or minor 3rd?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let low={pick(k, "C5", "A4", "D5", "E4", "B4", "Fs4")}
+  let high={pick(k, "E5", "C5", "F5", "Gs4", "D5", "A4")}
+  let right={pick(k, "a major 3rd", "a minor 3rd", "a minor 3rd", "a major 3rd", "a minor 3rd", "a minor 3rd")}
+  let other={if right == "a major 3rd" then "a minor 3rd" else "a major 3rd"}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 34x27 {
+    row top space=2 align=start at=canvas(1, 1) {
+      notes pair clef=treble notes=[low, high] values=[2, 2] meter=0
+      text ask "Ana's star tune jumps a 3rd between these two notes. Is it a major 3rd, four semitones, or a minor 3rd, three?" narrate width=18
+    }
+    text key "Semitones from each white key to the next. A sharp is one semitone higher." narrate width=32 below=top gap=1
+    table steps cols=7 head=["C-D", "D-E", "E-F", "F-G", "G-A", "A-B", "B-C"] cells=["2", "2", "1", "2", "2", "2", "1"] below=key gap=1
+    choice pick options=["a major 3rd", "a minor 3rd", "a 2nd"] stack=row below=steps gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == other) point=steps {
+      say "Add the two steps in the table from the lower letter to the higher one. A sharp on the top note adds one, and a sharp on the bottom note takes one away."
+    }
+    when (pick == "a 2nd") point=pair {
+      say "Count the letters from the lower note to the higher one, both included. How many is that?"
+    }
+  }
+  hint "Name both notes. Is there a sharp before either of them?"
+  hint "Which two steps in the table lie between the two letters? Add them."
+}

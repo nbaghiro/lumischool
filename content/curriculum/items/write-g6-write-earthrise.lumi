@@ -1,0 +1,27 @@
+# The three-star: the Earth hanging over the moon's rim, described in exact words to constraints and
+# marked by a grown-up; at hard, two paragraphs, a thin crescent by day and a full disc by night.
+item writing.write-earthrise v=1 stars=3 skills=[writing.word-choice, writing.describing, writing.composing] {
+  title "The Earth over the rim"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x35 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      earth globe up=1
+      crater cr count=2
+      lander lnd rungs=5
+    }
+    text ask "{if k == 0 then \"Describe the Earth hanging over the moon's rim, as Kit sees it from the lander, in five sentences. Use three exact verbs and one comparison, and none of very, nice, good, thing, went or got.\" else \"Describe the Earth over the moon's rim in two paragraphs: by day, a thin blue crescent in a black sky, and in the long night, a full bright disc over the dark ground. Use five exact verbs, two comparisons, a word chosen for mood, and none of very, nice, good, thing, went or got.\"}" narrate width=33 below=pics gap=1
+    writinglines lines lines=5 width=33 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Five sentences (two paragraphs at hard) about the Earth as seen from the moon, hanging still over the rim, with at least three exact verbs (five at hard) such as hung, gleamed, shone or glowed, at least one comparison (two at hard), nouns that name things exactly (the rim, the crater, the lander), none of the banned words, and at hard a word chosen to set a mood; the reader can picture the moment."
+  hint "Before writing, list five verbs for how the Earth hangs or shines, and cross out the plain ones."
+  hint "Read each sentence and ask: could this word be more exact?"
+}

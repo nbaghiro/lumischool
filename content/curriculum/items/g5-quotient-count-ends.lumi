@@ -1,0 +1,28 @@
+# The three-star: every fraction less than 1 in its simplest form, with a bottom up to n, that ends as
+# a decimal. Only bottoms made of twos and fives count, and within each only tops sharing no factor.
+item quotient.count-ends v=1 stars=3 skills=[fractions.decimals, reasoning.all-the-ways] {
+  title "Every one that stops"
+  difficulty n
+  let n={5, 10, 20}
+  level easy {
+    let n={5}
+  }
+  level hard {
+    let n={20}
+  }
+
+  scene 36x16 {
+    fractionwall wall rows=[2, 3, 4, 5, 6, 8] at=canvas(1, 1)
+    text ask "The library's scribe wants every fraction less than 1, in its simplest form, with a bottom from 2 to {n}, that ends as a decimal. 1/2 counts, 2/4 does not, since it is 1/2 again. How many are there?" narrate width=16 right-of=wall gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (if n == 5 then 7 else if n == 10 then 15 else 31)
+  feedback {
+    when (answer == (if n == 5 then 8 else if n == 10 then 24 else 58)) point=ask {
+      say "That counts fractions like 2/4 twice. Keep only those in their simplest form."
+    }
+  }
+  hint "Which bottoms up to {n} are made of twos and fives only?"
+  hint "For each of those bottoms, which tops share no factor with it?"
+}

@@ -1,0 +1,36 @@
+# The evidence for each feeling, found by its line. The answers are the line breaks of the three
+# parts at width 34 (65 letters to a line), so the texts and the width stay as they are. The last
+# version asks about Mr Tamas in Part 2, where his view of Iris starts to turn.
+item reading.change-line v=1 skills=[reading.character, reading.evidence] {
+  title "Which line shows it?"
+  difficulty pick(q, 0, 1, 0, 1, 0, 2)
+  let q=0..5
+  level easy {
+    let q={0, 2, 4}
+  }
+  level hard {
+    let q={1, 3, 5}
+  }
+
+  scene 35x32 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p title="{pick(q, \"Part 1: The apprentice\", \"Part 1: The apprentice\", \"Part 2: The stopped clock\", \"Part 2: The stopped clock\", \"Part 3: Midnight\", \"Part 2: The stopped clock\")}" text="{pick(q, \"Iris kicked the bottom step of the clock tower. Her mother had sent her to help old Mr Tamas for the summer, and she had wanted to spend it at the fountain with her friends. \\\"Clocks are boring,\\\" she muttered, and she climbed the steps as slowly as she could, counting all ninety-two of them out loud. At the top, the workroom smelled of oil and dust. Mr Tamas did not look up from his bench. He pointed at a pile of brass wheels and a rag, and said only, \\\"Clean those. Gently.\\\" Iris rubbed at the wheels and stared out of the little window, where she could just see her friends splashing round the fountain. When the bell struck five, she was down the steps before its last note had faded.\", \"Iris kicked the bottom step of the clock tower. Her mother had sent her to help old Mr Tamas for the summer, and she had wanted to spend it at the fountain with her friends. \\\"Clocks are boring,\\\" she muttered, and she climbed the steps as slowly as she could, counting all ninety-two of them out loud. At the top, the workroom smelled of oil and dust. Mr Tamas did not look up from his bench. He pointed at a pile of brass wheels and a rag, and said only, \\\"Clean those. Gently.\\\" Iris rubbed at the wheels and stared out of the little window, where she could just see her friends splashing round the fountain. When the bell struck five, she was down the steps before its last note had faded.\", \"Two days before the festival, the great clock stopped. Its hands stood at twenty past four, and the square below filled with people looking up and shaking their heads. Mr Tamas opened the back of the clock and peered in. A gear deep inside had jammed, and Mr Tamas was too big to reach it. He tried with a long hook and then with a stick, and at last he sat down on the floor with his head in his hands. Iris looked into the dark gap between the wheels. It was narrow and smelled of old grease. Her hands shook, but she squeezed in with an oil can and a torch, and she pushed until the gear turned. When she wriggled out, black to the elbows, Mr Tamas was staring at her as if he had never seen her before.\", \"Two days before the festival, the great clock stopped. Its hands stood at twenty past four, and the square below filled with people looking up and shaking their heads. Mr Tamas opened the back of the clock and peered in. A gear deep inside had jammed, and Mr Tamas was too big to reach it. He tried with a long hook and then with a stick, and at last he sat down on the floor with his head in his hands. Iris looked into the dark gap between the wheels. It was narrow and smelled of old grease. Her hands shook, but she squeezed in with an oil can and a torch, and she pushed until the gear turned. When she wriggled out, black to the elbows, Mr Tamas was staring at her as if he had never seen her before.\", \"At midnight on the festival night, the great bell rang out over the old city, and the whole square cheered. Up in the tower the floor shook with every stroke, and dust fell from the beams like snow. Iris stood at the top of the tower and grinned. She could see the fountain lit with lanterns and her friends waving up at her, and she did not wish she were down there. The next morning she was on the bottom step before Mr Tamas arrived, with a cloth to polish the brass. He climbed the ninety-two steps beside her, and at the top he gave her a key of her own. \\\"The clock needs two keepers now,\\\" he said.\", \"Two days before the festival, the great clock stopped. Its hands stood at twenty past four, and the square below filled with people looking up and shaking their heads. Mr Tamas opened the back of the clock and peered in. A gear deep inside had jammed, and Mr Tamas was too big to reach it. He tried with a long hook and then with a stick, and at last he sat down on the floor with his head in his hands. Iris looked into the dark gap between the wheels. It was narrow and smelled of old grease. Her hands shook, but she squeezed in with an oil can and a torch, and she pushed until the gear turned. When she wriggled out, black to the elbows, Mr Tamas was staring at her as if he had never seen her before.\")}" width=34
+      row bottom space=1 align=centre {
+        text ask "{pick(q, \"Which line shows Iris was cross before she even went in?\", \"Which line shows Iris did not want to climb the tower?\", \"Which line shows why Mr Tamas could not free the gear himself?\", \"Which line shows Iris was brave even though she was scared?\", \"Which line shows Iris was proud?\", \"Which line shows that Mr Tamas begins to see Iris in a new way?\")}" width=29
+        number-input answer
+      }
+    }
+  }
+
+  answer pick(q, 1, 4, 5, 9, 4, 11)
+  feedback {
+    when (q == 3 and answer == 8) point=p {
+      say "That line shows she was scared. Brave is what she did next: find the word but."
+    }
+    when (q == 1 and answer == 2) point=p {
+      say "That line says what she wanted. The question asks how she climbed."
+    }
+  }
+  hint "Find the words that answer the question first, then read the number beside them."
+  hint "Check the whole answer is on your line, not just the start of it."
+}

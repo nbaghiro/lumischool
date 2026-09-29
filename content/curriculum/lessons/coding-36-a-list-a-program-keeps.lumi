@@ -1,0 +1,66 @@
+# The first lesson of grade five's coding: a list as one name for several numbers, each found by its
+# place, and changed by add and replace. The canal town's boats and their cargo are the numbers.
+lesson coding-a-list-a-program-keeps v=1 format=teach grade=5 unit=1 subject=coding levels=[easy, medium, hard] {
+  title "A list a program keeps"
+  goal "Keep several numbers in one list and find any of them by its place."
+
+  look {
+    scene 36x12 {
+      narrowboat boat windows=4 pots=2 at=canvas(1, 0)
+      listbox l name=cargo code=["set cargo to list 4, 7, 2, 5"] right-of=boat gap=2
+      program p code=["set cargo to list 4, 7, 2, 5", "set n to item 2 of cargo"] below=boat gap=1
+    }
+    say """
+      Four boats wait at the canal lock, and the lock keeper's program keeps how many crates each
+      one carries. One name, cargo, holds all four numbers in a list. Each number has a place,
+      counted from 1 at the left, so item 2 of cargo is 7. Add puts a new number on the end of the
+      list, and replace changes the number in one place.
+      """
+  }
+  do {
+    show coding.list-item s=3 k=2 easy-k=1 hard-k=3
+    show coding.list-item s=1 k=4 easy-k=2
+    show coding.list-add t=1 j=2 a=6 b=5 c=2 d=8 easy-t=0 easy-j=1 hard-j=3
+    level easy {
+      worked coding.list-two-items s=0 i=1 j=2 level=medium
+    }
+    show coding.list-replace t=0 c=3 x=7 y=1 hard-t=1 hard-y=3
+    show coding.list-replace t=1 c=2 x=5 y=3 z=9 easy-t=0 hard-t=2
+    show coding.list-build k=1 easy-k=0 hard-k=2
+    show coding.list-two-items s=2 i=1 j=3 hard-i=2
+    show coding.list-two-items s=1 i=2 j=4 easy-i=1 easy-j=2 hard-i=3
+    level hard {
+      show coding.list-which-place s=1 k=5
+    }
+  }
+  try stars=2 {
+    show coding.list-missing-line k=1 a=5 c=2 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show coding.list-two-hops s=0 q=2 easy-q=0 hard-s=1 hard-q=4
+  }
+  remember {
+    say "A list keeps many numbers under one name. Item 1 is the first, and add puts a new one on the end."
+  }
+
+  grown-ups """
+    A list is an egg box with numbered cups: the box has one name, and every cup holds one number.
+    The two slips to watch are giving the place when the number is asked for, and counting the first
+    item as nought. In the child's working, look for the list written out again after every line
+    that changes it; that habit is what makes add and replace easy to tell apart. If the child is
+    stuck, write the list on squared paper with the places above the cells, point at item 2 and ask
+    what is in it, and stay on this lesson another day if places and numbers still get mixed up. Off
+    the page, number a shopping list and ask for item 3, then add something to the end and ask how
+    many items there are now. The two-star question is solved by trying each line in the gap, and
+    the three-star question by adding every pair from the list until one reaches the flag. The build
+    question asks for a program that moves the robot only by items of the list; any program that
+    reaches the flag is right, and a child who adds a missing number and then reads it from the last
+    place has understood where add puts it.
+    """
+  level easy {
+    grown-ups "At this level the items asked for are the first or second, add makes the list longer by one each time, the empty cell is one a single replace changed, the two items added are near the front and one pair is worked in the teacher's pen, the missing line is an add, and the two hops use a list whose pairs are small. The program to build needs two items already in the list."
+  }
+  level hard {
+    grown-ups "At this level the items asked for are the third and fourth, a replace sits among the adds so the list is not always longer, the empty cell is the one on the end or one replaced twice, where only the last replace counts, the place to find is the fifth in the longer list, the missing line is a replace, and the two hops use a list with bigger numbers and pairs further along it. The program to build needs two numbers the list does not hold, so two adds, or two items for each way."
+  }
+}

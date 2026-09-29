@@ -1,0 +1,39 @@
+# Verse and chorus in Clementine (1884) as the street band sings it: three verses, each followed by
+# the chorus. The chorus comes back with the same words; each verse has new words to the same tune.
+item music.form-chorus-count v=1 skills=[music.form, music.counting-beats] {
+  title "Verse and chorus"
+  difficulty q
+  let q=0..2
+  let ask={pick(q, "How many times is the chorus sung?", "Section 7 would be a fourth verse. In which section would the chorus come for the fourth time?", "Each section is 8 bars long. How many bars long is the whole song?")}
+  let right={pick(q, 3, 8, 48)}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=2..2
+  }
+
+  scene 36x27 {
+    row top space=2 align=start at=canvas(1, 1) {
+      table song cols=2 head=["Section", "First words"] cells=["1", "In a cavern", "2", "Oh my darling", "3", "Light she was", "4", "Oh my darling", "5", "Drove she ducklings", "6", "Oh my darling"]
+      lamppost lamp
+    }
+    text ask "The street band in the old city sings Clementine. The chorus has the same words every time; each verse has new words. {ask}" narrate width=34 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (q == 0 and answer == 6) point=song {
+      say "That counts every section. Only the sections that start with the same words are the chorus."
+    }
+    when (q == 1 and answer == 7) point=song {
+      say "Section 7 is the verse. The chorus comes straight after it."
+    }
+    when (q == 2 and answer == 24) point=song {
+      say "That counts only the verses or only the choruses. Count all six sections."
+    }
+  }
+  hint "Which sections start with the same words?"
+  hint "{if q == 0 then \"Count those sections.\" else if q == 1 then \"Verse and chorus take turns. What comes after a verse?\" else \"How many sections are there, and how long is each?\"}"
+}

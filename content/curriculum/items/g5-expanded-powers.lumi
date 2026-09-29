@@ -1,0 +1,29 @@
+# A large number written as a sum of its places with powers of ten (Russia's grade 5 «запись числа в
+# виде суммы разрядных слагаемых»): the child finds the power that one digit's place needs.
+item place.expanded-powers v=1 skills=[place-value.powers-of-ten, place-value.large-numbers] {
+  title "Each digit's power"
+  difficulty (s + (if s == 2 then 1 else 0))
+  let s=0..3
+  let dg={pick(s, 6, 2, 6, 5)}
+  level easy {
+    let s={0, 1}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 29x20 {
+    sign note lines=["{pick(s, \"3,060,900\", \"7,020,300\", \"50,600,080\", \"8,005,070,000\")} =", "{pick(s, \"3 × 10 to the power 6\", \"7 × 10 to the power 6\", \"5 × 10 to the power 7\", \"8 × 10 to the power 9\")}", "+ {dg} × 10 to the power ?", "+ {pick(s, \"9 × 10 to the power 2\", \"3 × 10 to the power 2\", \"8 × 10 to the power 1\", \"7 × 10 to the power 4\")}"] kind=board color=tang at=canvas(1, 1)
+    text ask "The observatory's star count is written on the board by its places. Which power of ten goes where the question mark is?" narrate width=28 below=note gap=1
+    number-input answer width=2 below=ask gap=1
+  }
+
+  answer pick(s, 4, 4, 5, 6)
+  feedback {
+    when (answer == pick(s, 5, 5, 6, 7)) point=note {
+      say "That counts the {dg} itself as well. How many places come after it?"
+    }
+  }
+  hint "Find the digit {dg} in the number. How many places come after it?"
+  hint "10 to the power 1 is ten, 10 to the power 2 is a hundred. Which place is the {dg} in?"
+}

@@ -1,0 +1,33 @@
+# The way in: three lines about a question put to the city, each matched to what it is: a point
+# for, a point against, or a true line that is no reason either way. The labels turn with r.
+item writing.for-or-against v=1 skills=[writing.argument, reasoning.sorting] {
+  title "For, against, or neither?"
+  difficulty k
+  let k=0..1 r=0..2
+  let s1={pick(k, "Carts bring food to market.", "Families are free on Sundays.")}
+  let s2={pick(k, "Carts crowd people on foot.", "The staff need a day off.")}
+  let s3={pick(k, "The gate has two towers.", "The library has a dome.")}
+  let q={pick(k, "should carts come through the gate?", "should the library open on Sundays?")}
+  let c1={"for"}
+  let c2={"against"}
+  let c3={"not a reason"}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x26 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      citywalls walls towers=2 open=1
+      library lib columns=6 open=1
+    }
+    text ask "The city asks: {q} Write the number that says what each line is." narrate width=34 below=pics gap=1
+    match m left=["{s1}", "{s2}", "{s3}"] right=["{if r == 0 then c2 else if r == 1 then c3 else c1}", "{if r == 0 then c3 else if r == 1 then c1 else c2}", "{if r == 0 then c1 else if r == 1 then c2 else c3}"] blanks=[x, y, z] below=ask gap=1
+  }
+
+  answer x=(if r == 0 then 3 else if r == 1 then 2 else 1) y=(if r == 0 then 1 else if r == 1 then 3 else 2) z=(if r == 0 then 2 else if r == 1 then 1 else 3)
+  hint "Read each line and ask: would it make someone say yes to the question, say no, or neither?"
+  hint "A line can be true and still not help either side. Which line would nobody use to argue?"
+}

@@ -1,0 +1,19 @@
+# A floating boat pushes aside its own weight of water: the toy narrowboat is lowered into a can full
+# to its spout and the water that spills is caught in the cylinder. One millilitre of water is one gram.
+item physics.boat-spill v=1 skills=[physics.floating, physics.weight] {
+  title "What spills when a boat floats"
+  difficulty (m / 50)
+  let m={150, 200, 250, 350}
+
+  scene 30x20 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      cylinder c max=500 step=100 minor=10 level=m unit=ml
+      text ask "Tom floats a toy narrowboat in a can filled to its spout, and catches what spills in the cylinder. One millilitre of water weighs one gram. How many grams does the boat weigh?" narrate width=20
+    }
+    number-input answer below=kit gap=1
+  }
+
+  answer m
+  hint "A floating boat pushes aside as much water as it weighs. How much water spilled?"
+  hint "One millilitre of water weighs one gram."
+}

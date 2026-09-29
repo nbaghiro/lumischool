@@ -1,0 +1,39 @@
+# Numbered sentences of a conversation run together; the child writes where the first new line
+# should start, which is where a new person speaks. A speaker's untagged second line is the trap.
+item writing.new-line-speaker v=1 skills=[writing.speech-punctuation, writing.layout] {
+  title "A new speaker, a new line"
+  difficulty (if k == 1 then 0 else 1)
+  let k=0..2
+  let t={pick(k, "(1) Ada turned the handle and the dome slid open. (2) “There it is,” she said. (3) “The comet is right above the clock tower.” (4) “Can I look now?” asked Leo.", "(1) “Is the lens clean?” asked Dr Shah. (2) She held it up to the lamp. (3) “It has a thumbprint on it,” said Leo. (4) “Sorry, that was me.”", "(1) Leo peered into the eyepiece. (2) “I can see four tiny dots,” he said. (3) “They are in a straight line.” (4) “Those are the moons of Jupiter,” said Ada.")}
+  let right={pick(k, 4, 3, 4)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k={0, 2}
+  }
+
+  scene 33x18 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage para title="Written as one block" text="{t}" width=24 numbers=false
+      column people space=1 align=centre {
+        person ada pose=point age=child hair=bun colour=brown top=berry
+        person leo pose=think age=child hair=short colour=black top=sky
+      }
+    }
+    text ask "Each new speaker starts a new line. At which sentence should the first new line start?" narrate width=22 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == right - 1) point=para {
+      say "That sentence is still the first speaker. A speaker can say two sentences, or the second can have no said at all. Start the new line where someone else speaks."
+    }
+    when (answer < right - 1) point=para {
+      say "The first speaker is still talking there. Follow who is speaking, sentence by sentence."
+    }
+  }
+  hint "Say who speaks in each sentence, one at a time."
+  hint "A sentence with no said still belongs to whoever spoke just before it. Where does the speaker change?"
+}

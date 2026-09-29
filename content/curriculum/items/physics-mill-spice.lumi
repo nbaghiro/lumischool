@@ -1,0 +1,31 @@
+# The story: the mill weighs small bags on a spring. Each 100 g weighs about 1 N, so a bag's grams
+# give its newtons and the spring's rate gives the stretch. g is the bag in grams.
+item physics.mill-spice v=1 skills=[physics.forces, physics.weight, reasoning.proportion] {
+  title "Weighing at the mill"
+  difficulty (if g <= 400 then 0 else 1)
+  let g={300, 400, 600, 700}
+  level easy {
+    let g={300, 400}
+  }
+  level hard {
+    let g={600, 700}
+  }
+
+  scene 29x22 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      spring s load=1 per=1.5 limit=8 natural=4 from=0
+      waterwheel m paddles=8 lit=0
+    }
+    text ask "The miller hangs 1 N on the mill's spring to test it, and reads the ruler. Each 100 g weighs about 1 N. How far will a {g} g bag of seeds stretch the spring?" narrate width=26 below=kit gap=1
+    number-input cm below=ask gap=1
+  }
+
+  answer cm=(if g == 300 then 4.5 else if g == 400 then 6 else if g == 600 then 9 else 10.5)
+  feedback {
+    when (cm == g / 100) point=s {
+      say "That is the bag's weight in newtons. Each newton stretches this spring more than 1 cm."
+    }
+  }
+  hint "How many newtons does a {g} g bag weigh?"
+  hint "How far does one newton stretch this spring?"
+}

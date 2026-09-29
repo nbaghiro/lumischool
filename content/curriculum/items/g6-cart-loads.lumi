@@ -1,0 +1,34 @@
+# The three-star: one equation with two letters and many answers, of which only the whole ones count.
+# The child finds every load that fits by stepping one kind of sack at a time, with no method given.
+item algebra.cart-loads v=1 stars=3 skills=[algebra.equations, reasoning.systematic] {
+  title "Every load that fits"
+  difficulty pick(v, 0, 0.3, 1, 1.5, 2, 2.3)
+  let v=0..5
+  level easy {
+    let v={0, 1}
+  }
+  level medium {
+    let v={2, 3}
+  }
+  level hard {
+    let v={4, 5}
+  }
+
+  scene 36x16 {
+    waterwheel wheel paddles=8 lit=0 at=canvas(1, 1)
+    text ask "The mill cart takes exactly {pick(v, 24, 30, 40, 60, 50, 30)} kg. Sacks of flour weigh {pick(v, 2, 2, 3, 3, 4, 2)} kg and sacks of oats {pick(v, 5, 5, 5, 5, 6, 3)} kg, so x sacks of flour and y of oats fit when {pick(v, 2, 2, 3, 3, 4, 2)}x + {pick(v, 5, 5, 5, 5, 6, 3)}y = {pick(v, 24, 30, 40, 60, 50, 30)}. Each load has at least one sack of each. How many different loads are there?" narrate width=18 right-of=wheel gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer pick(v, 2, 2, 2, 3, 4, 4)
+  feedback {
+    when (pick(v, 1, 2, 1, 2, 0, 2) > 0 and answer == pick(v, 2, 2, 2, 3, 4, 4) + pick(v, 1, 2, 1, 2, 0, 2)) point=ask {
+      say "A load of only one kind of sack does not count. Each load has at least one of each."
+    }
+    when (answer == 1) point=ask {
+      say "That is one load. Try other numbers of oat sacks: which of them leave a weight the flour sacks fit exactly?"
+    }
+  }
+  hint "Try 1 sack of oats, then 2, then 3. Does the weight left share exactly into flour sacks?"
+  hint "Once one load works, how many oat sacks can be swapped for flour sacks and keep the weight the same?"
+}

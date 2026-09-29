@@ -1,0 +1,30 @@
+# A triangle is half of a parallelogram on the same base and height, so its area is half of base times
+# height, and the sloping sides are not used.
+item area.triangle-area v=1 skills=[area.triangles] {
+  title "A triangular tile"
+  difficulty (b * h / 10 + (if b * h % 4 == 0 then 0 else 1))
+  let b=4..12 h=3..9 s=1..6
+  where (b * h % 2 == 0 and s < b)
+  level easy {
+    let b=4..8 h=3..6
+    where (b % 2 == 0)
+  }
+  level hard {
+    let b=9..12 h=7..9
+  }
+
+  scene 31x31 {
+    areashape tile kind=triangle base=b height=h shift=s unit=cm at=canvas(1, 1)
+    text ask "The temple floor has triangular tiles. What is the area of this tile in square centimetres?" narrate width=30 below=tile gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (b * h / 2)
+  feedback {
+    when (answer == b * h) point=tile {
+      say "That is a whole parallelogram. Two tiles like this one make that, so one tile is half."
+    }
+  }
+  hint "Two of these triangles fit together into a parallelogram. What is its area?"
+  hint "The triangle is half of that."
+}

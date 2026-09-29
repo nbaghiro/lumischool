@@ -1,0 +1,36 @@
+# From a flowchart back to words: the loop holds two boxes in an order, and the say sits after the
+# loop. The wrong words swap the two boxes or put the say inside the loop.
+item coding.flow-words v=1 skills=[coding.flowcharts, coding.algorithms, coding.repetition] {
+  title "Say it in words"
+  difficulty k
+  let k=0..2
+  let s={pick(k, 3, 5, 4)} r={pick(k, 2, 3, 2)}
+  let right={pick(k, "From 3, twice: add 1, then double. Then say n.", "From 5, 3 times: take 1, then double. Then say n.", "From 4, twice: add 3, then double. Then say n.")}
+  let swapped={pick(k, "From 3, twice: double, then add 1. Then say n.", "From 5, 3 times: double, then take 1. Then say n.", "From 4, twice: double, then add 3. Then say n.")}
+  let inside={pick(k, "From 3, twice: add 1, double and say n.", "From 5, 3 times: take 1, double and say n.", "From 4, twice: add 3, double and say n.")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x40 {
+    flowchart f code=["set n to {s}", "repeat {r}", pick(k, "  add 1 to n", "  take 1 from n", "  add 3 to n"), "  double n", "say n"] at=canvas(0, 0)
+    planets pl right-of=f gap=2
+    text ask "Ada has to tell the rover's steps to someone over the radio. Which words say exactly what the flowchart does?" width=20 below=pl gap=1
+    choice pick options=[pick(k, right, swapped, inside), pick(k, swapped, inside, right), pick(k, inside, right, swapped)] stack=column below=f gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == swapped) point=f {
+      say "Follow the arrow down from the diamond. Which box comes first inside the loop?"
+    }
+    when (pick == inside) point=f {
+      say "The say box is only reached when the diamond says yes, after the last round. Is it inside the loop?"
+    }
+  }
+  hint "Start at the oval that says start and read each shape in the order the arrows take you."
+  hint "Which shapes does the arrow up the left bring you back to? Those are the ones done {r} times."
+}

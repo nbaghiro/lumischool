@@ -1,0 +1,37 @@
+# Evaporating a solution to dryness leaves the solid it held and nothing of a gas it held (Japan,
+# grade 6 A(2)(イ)): salt and sugar water and limewater leave a white solid, soda water made from
+# distilled water leaves nothing. k is the solution.
+item chem.dry-dish-left v=1 skills=[chemistry.dissolving, chemistry.gases, chemistry.evaporating] {
+  title "Anything left in the dish?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+  let what={pick(k, "salt water", "sugar water", "soda water made from distilled water", "limewater")}
+  let right={if k == 2 then "No, nothing" else "Yes, a solid"}
+
+  scene 29x26 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      beaker b max=200 step=50 level=100 unit=ml solid=0
+      dish d left=2 day=3 sun=1
+    }
+    text ask "At the lock-keeper's cottage, some {what} is poured from the beaker into a dish and left on the sunny windowsill until all the water has gone. Is anything left in the dish?" narrate width=28 below=kit gap=1
+    choice pick options=["Yes, a solid", "No, nothing"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "Yes, a solid" and k == 2) point=b {
+      say "Soda water holds a gas. What does a gas do when the water it was in has gone?"
+    }
+    when (pick == "No, nothing" and k != 2) point=d {
+      say "The water goes into the air, but a dissolved solid cannot. Look at the salty dish beside it."
+    }
+  }
+  hint "Is the thing dissolved in {what} a solid or a gas?"
+  hint "When the water has gone, where can a solid go? Where can a gas go?"
+}

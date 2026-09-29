@@ -1,0 +1,21 @@
+# A word's meaning from its sentence in the book, and one of Carroll's jokes on a word, where the
+# meaning is the word it sounds like.
+item reading.alice-word v=1 skills=[reading.vocabulary, reading.whole-book] {
+  title "What does the word mean here?"
+  let k=0..2
+  let right={pick(k, "dared", "as if Alice were not worth much", "Reading and Writing")}
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        bookcast c who=pick(k, "alice", "caterpillar", "alice") pose=pick(k, "hold", "stand", "think") dir=1
+        text ask "{pick(k, \"In chapter 1 the bottle is not marked poison, ‘so Alice ventured to taste it’. What does ventured mean there?\", \"In chapter 5 the Caterpillar says ‘You’ contemptuously. How does it say it?\", \"In chapter 9 the Mock Turtle learnt ‘Reeling and Writhing’ at school. Which lessons is that a joke on?\")}" width=24
+      }
+      choice pick options=[pick(k, "forgot", right, "Singing and Dancing"), pick(k, right, "very kindly", "Sums and Spelling"), pick(k, "refused", "in a whisper", right)] stack=column
+    }
+  }
+
+  answer pick=right
+  hint "Read the sentence round the word in the chapter. What happens next?"
+  hint "Try each meaning in the sentence. Which one fits?"
+}

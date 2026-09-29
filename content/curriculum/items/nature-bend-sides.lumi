@@ -1,0 +1,42 @@
+# The two sides of a bend: the water on the outside runs fast and deep and wears the bank away, and
+# the water on the inside runs slow and shallow and drops what it carries. The first two ask where;
+# the last two ask what follows from it.
+item nature.bend-sides v=1 skills=[nature.rivers] {
+  title "The two sides of the bend"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "Where does the water run fastest and wear the bank away?", "Where does the water slow down and drop small stones in a little beach?", "A willow grows right on the edge of the bank at B. What is likely to happen to it over the years?", "Where would Ben find the deepest water at the bend?")}
+  let right={pick(k, "At B, on the outside of the bend", "At C, on the inside of the bend", "The bank under it wears away and it may fall in", "At B, on the outside of the bend")}
+  let o1={pick(k, "At C, on the inside of the bend", "At B, on the outside of the bend", "Stones pile up round it and the bank grows", "At C, on the inside of the bend")}
+  let o2={pick(k, "At D, where the river meets the sea", "At A, high in the hills", "Nothing, since the water there is slow", "At A, high in the hills")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x26 {
+    parts fig of=river at=canvas(1, 1)
+    text ask "Ada and Ben walk along the river where it bends round below the mill. {asks}" narrate width=14 right-of=fig gap=1
+    choice pick options=[o1, right, o2] stack=column below=fig gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when ((k == 0 or k == 3) and pick == o1) point=fig {
+      say "C is on the inside, where the water takes the short way round and slows down. The fast water swings out to the far bank."
+    }
+    when (k == 1 and pick == o1) point=fig {
+      say "B is the outside, where the water is fast and wears the bank. Slow water, where stones are dropped, is on the inside."
+    }
+    when (k == 2 and pick == o1) point=fig {
+      say "Stones pile up on the inside of a bend. B is on the outside, where the fast water takes the bank away."
+    }
+    when (k == 2 and pick == o2) point=fig {
+      say "B is on the outside of the bend. Is the water there slow, or is it the fastest on the river?"
+    }
+  }
+  hint "At a bend the water swings out to the outside bank, the way you lean out on a fast turn. Which letter is on the outside?"
+  hint "Fast water wears the bank away and digs the bed deeper. Slow water drops the stones and sand it carries."
+}

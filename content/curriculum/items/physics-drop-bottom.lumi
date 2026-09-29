@@ -1,0 +1,22 @@
+# From a speed to a time: the tube is 60 cm deep, the drawing shows the shapes after one second, and
+# the checker gives the seconds each takes to reach the bottom.
+item physics.drop-bottom v=1 skills=[physics.forces, physics.speed, division.grouping] {
+  title "How long to the bottom?"
+  difficulty (if s == "flat" then 2 else if s == "cube" then 1 else 0)
+  let s={"pointed", "ball", "cube", "flat"}
+
+  scene 27x17 {
+    droptube tb shapes=[s, "ball"] time=1 grams=[20, 20] at=canvas(1, 0)
+    text ask "The tubes are 60 cm deep. Shape A keeps sinking at the same speed. How many seconds will it take to reach the bottom?" narrate width=15 right-of=tb gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.forces of=tb answer=bottom(a)
+  feedback {
+    when (answer == 60) point=tb {
+      say "That is the depth of the tube. How far does A sink in one second?"
+    }
+  }
+  hint "How far has A sunk after one second?"
+  hint "How many of those steps make 60 cm?"
+}

@@ -1,0 +1,38 @@
+# Letters to the town paper about the new street lamps on Cliff Road. The writer's view is read
+# from the words and the reasons: for, against, or a report that takes no side. The hard letter
+# starts with praise and turns it round.
+item reading.writer-thinks v=1 skills=[reading.point-of-view, reading.inference] {
+  title "What does the writer think?"
+  difficulty pick(k, 0, 0, 1, 2)
+  let k=0..3
+  let right={pick(k, "Against them", "For them", "Does not say", "Against them")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 35x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        passage p title="{pick(k, \"A letter to the Cliff Gazette\", \"A letter to the Cliff Gazette\", \"From the Cliff Gazette\", \"A letter to the Cliff Gazette\")}" text="{pick(k, \"Since the new lamps went up on Cliff Road, the sky above the observatory glows orange all night. Last week forty children came to see Saturn, and we could not show them a single ring.\", \"Before the new lamps, Cliff Road was so dark that my customers tripped on the kerb. Now people walk home safely, and my shop stays open an hour later. I hope the council puts up more.\", \"Forty new lamps were put up on Cliff Road in May. They are brighter than the old ones and switch on at dusk. The council says they cost $12,000 in all.\", \"The new lamps on Cliff Road are certainly bright. You could read a newspaper there at midnight. Sadly, you can no longer see a single star from it.\")}" width=29 numbers=false
+        lamppost lamp lit=1 letterbox=0
+      }
+      text ask "What does the writer think of the new lamps?" width=34
+      choice pick options=["For them", "Against them", "Does not say"]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 3 and pick == "For them") point=p {
+      say "The first two sentences sound like praise. Read the last one: what has the brightness cost?"
+    }
+    when (k == 2 and pick != "Does not say") point=p {
+      say "Every sentence here is a fact that could be checked. Is there a word that shows what the writer feels?"
+    }
+  }
+  hint "Find a word or a reason that shows a feeling about the lamps."
+  hint "Is the writer glad of the lamps, sorry about them, or only telling you about them?"
+}

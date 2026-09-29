@@ -1,0 +1,32 @@
+# Air comes apart when it is cooled, because each gas turns liquid at its own temperature: nitrogen
+# boils at -196 °C and oxygen at -183 °C (SUBSTANCES, from the RSC periodic table). At -190 or -188
+# oxygen is a liquid and nitrogen still a gas, which is how the two are separated.
+item chem.cool-air-apart v=1 skills=[chemistry.gases, chemistry.states, number.negatives] {
+  title "Cooled until it comes apart"
+  difficulty (if st == "solid" then 0 else 1)
+  let t={-190, -188} st={"gas", "liquid", "solid"}
+  level easy {
+    let st={"solid", "gas"}
+  }
+  level hard {
+    let st={"gas", "liquid"}
+  }
+
+  scene 35x20 {
+    table data cols=3 head=["Stuff", "Melts", "Boils"] cells=["Nitrogen", -210, -196, "Oxygen", -219, -183, "Water", 0, 100] at=canvas(1, 0)
+    text ask "At a factory, damp air from the star cliffs is cooled until it is {t} °C. The table gives the temperatures in °C. At {t} °C, which of these is a {st}?" narrate width=34 below=data gap=1
+    choice pick options=["Nitrogen", "Oxygen", "Water"] below=ask gap=1
+  }
+
+  check chem.state of=data temp="{t}" pick="which({st})"
+  feedback {
+    when (st == "liquid" and pick == "Nitrogen") point=data {
+      say "-196 is colder than {t}. Nitrogen only turns liquid below -196, so at {t} it is still a gas."
+    }
+    when (st == "gas" and pick == "Oxygen") point=data {
+      say "-183 is warmer than {t}. Oxygen is below its boiling point, so it has turned liquid."
+    }
+  }
+  hint "For each row, is {t} below where it melts, between the two, or above where it boils?"
+  hint "Which is colder, {t} or -196? And {t} or -183?"
+}

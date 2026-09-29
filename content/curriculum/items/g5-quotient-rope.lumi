@@ -1,0 +1,37 @@
+# The way in (Japan grade 5 A(4)ア(イ)): a whole-number division that does not come out even is still
+# one number, the fraction a/b. Rope shared into equal lengths on a line in metres.
+item quotient.rope v=1 skills=[fractions.division] {
+  title "Equal lengths"
+  difficulty (a + b / 4)
+  let a=1..5 b=2..8
+  where (a < b and gcd(a, b) == 1)
+  level easy {
+    let a=1..2 b=2..4
+  }
+  level hard {
+    let a=4..5 b=6..8
+  }
+
+  scene 36x13 {
+    numberline rope from=0 to=a step=1 at=canvas(1, 1)
+    text ask "The clock tower's keeper cuts {a} m of rope into {b} equal lengths. How long is each length, as a fraction of a metre?" narrate width=20 right-of=rope gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input top width=2
+      text slash "/"
+      number-input bottom width=2
+      text unit "m"
+    }
+  }
+
+  answer top=a bottom=b
+  feedback {
+    when (top == b and bottom == a) point=ask {
+      say "That is {b} ÷ {a}, more than a metre each. {a} m shared {b} ways gives less than a metre."
+    }
+    when (a != 1 and top == 1 and bottom == b) point=rope {
+      say "That is one metre shared {b} ways. There are {a} metres to share."
+    }
+  }
+  hint "If there were only one metre of rope, how long would each length be?"
+  hint "Each length gets one of those pieces from every metre. How many pieces is that?"
+}

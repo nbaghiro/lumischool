@@ -1,0 +1,32 @@
+# Three moon texts told in a sentence each, each named by its form: two share a theme and one does
+# not, though all three happen on the moon. The odd one out by form is usually a different text from
+# the odd one out by theme, so only the theme finds the answer. Versions 4 and 5 are for the puzzle
+# sheet (reading-54) and are shown nowhere else.
+item reading.moon-theme-odd v=1 skills=[reading.theme, reading.comparison] {
+  title "Which story is the odd one out?"
+  difficulty pick(k, 0, 1, 1, 2, 1, 2)
+  let k=0..5
+  let odd={pick(k, "C", "B", "A", "C", "B", "A")}
+  let form={pick(k, "B", "C", "B", "B", "none", "B")}
+
+  scene 35x19 {
+    passage p title="Three moon texts" text="{pick(k, \"A. A story: Kai is too shy to call for help, but at last she does. B. A talk: Obi tells how she was once too proud to say she was lost. C. A story: Tom races down the ladder first, trips, and ends up last.\", \"A. A log: Ada gives the plants ten drops a day until one fruits. B. A log: Tom races down the ladder first, trips, and ends up last. C. A story: Ren cleans one panel a day until all of them shine.\", \"A. A poem: Kai and the help button she was afraid to press. B. A talk: Ada on sixty days of ten drops and one tomato. C. A poem: Ren and a hundred panels, cleaned one a day.\", \"A. A story: Tom races down the ladder first, trips, and ends up last. B. A talk: Lin on the day she rushed the rover into soft dust and the walkers passed her. C. A story: Ren cleans one panel a day until all of them shine.\", \"A. A poem: Sol counts the rocket's rivets, one row each night, until the count is done. B. A story: Kai presses the help button, though everyone will hear. C. A talk: Ren on a hundred panels, cleaned one a day.\", \"A. A log: Lin rushes the rover into soft dust and the walkers pass her. B. A poem: Obi's hour in the crater, too proud to call. C. A log: Tom, afraid the crew will laugh, admits he cannot open the hatch, and they show him how.\")}" width=34 numbers=false at=canvas(1, 1)
+    row bottom below=p gap=1 space=1 align=centre {
+      moon m phase=0.75
+      text ask "All three happen on the moon. Which has a different theme?" width=14
+      choice pick options=["A", "B", "C"]
+    }
+  }
+
+  answer pick=odd
+  feedback {
+    when (pick == form) point=p {
+      say "That one is told in a different form, but a form is not a theme. Say what each text teaches."
+    }
+    when (pick != odd and pick != form) point=p {
+      say "That text shares its idea about life with another one. Say what each text teaches in a few words."
+    }
+  }
+  hint "Say what each text teaches, not where it happens or what form it is."
+  hint "Which two teach the same thing? The third is the answer."
+}

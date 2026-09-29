@@ -1,0 +1,33 @@
+# Which of the three chords holds a note of the tune: every note of C major is in I, IV or V, and C
+# and G are each in two of them. Hard asks for the notes with two homes.
+item music.chords-note-home v=1 skills=[music.chords, music.staff] {
+  title "Where does the note live?"
+  difficulty (if k <= 4 then 0 else 1)
+  let k=0..6
+  let x={pick(k, "D", "E", "A", "B", "F", "C", "G")}
+  let right={pick(k, "G", "C", "F", "G", "F", "C and F", "C and G")}
+  level easy {
+    let k=0..4
+  }
+  level hard {
+    let k=3..6
+  }
+
+  scene 36x38 {
+    notes three clef=treble notes=[C4, E4, G4, F4, A4, C5, G4, B4, D5] values=[1, 1, 1, 1, 1, 1, 1, 1, 1] meter=3 letters=true at=canvas(1, 1)
+    text ask "Chords I, IV and V of C major, C, F and G, one to a bar. A bar of Ben's tune is all {x}. Which chord or chords hold {x}?" narrate width=34 below=three gap=1
+    choice pick options=["C", "F", "G", "C and F", "C and G"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right and (k == 5 or k == 6)) point=three {
+      say "Look in every bar, not only the first one you find. {x} is in two of the chords."
+    }
+    when (pick != right and k <= 4) point=three {
+      say "Look for the letter {x} under the notes in each bar. Which bar has it?"
+    }
+  }
+  hint "Read the letters under the notes, one bar at a time."
+  hint "Look at all three bars before you choose. A note can be in more than one chord."
+}

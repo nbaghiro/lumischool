@@ -1,0 +1,36 @@
+# The second reasoning question in the core: choosing the equation that says what the story says.
+# Without brackets the share is done before the adding, and the numbers have their own jobs.
+item algebra.which-equation-fits v=1 skills=[algebra.equations, algebra.expressions, reasoning.model] {
+  title "Which equation fits"
+  difficulty (c / 2 + (if b > c then 0 else 1))
+  let a={5, 6, 8} b={3, 4, 7} c={2, 3, 4} o=0..2
+  where (b != c)
+  level easy {
+    let c={2}
+  }
+  level hard {
+    let c={4}
+  }
+
+  scene 33x20 {
+    text ask "Some sacks came down from the mill, x of them. Then {b} more arrived, and all the sacks were loaded equally onto {c} carts, {a} sacks on each cart. Which equation fits the story?" narrate width=32 at=canvas(1, 1)
+    column eqs below=ask gap=1 space=1 {
+      equation ea "A:  {if (o % 3) == 1 then \"\" else \"(\"}x + {if (o % 3) == 2 then c else b}{if (o % 3) == 1 then \"\" else \")\"} ÷ {if (o % 3) == 2 then b else c} = {a}"
+      equation eb "B:  {if ((1 + o) % 3) == 1 then \"\" else \"(\"}x + {if ((1 + o) % 3) == 2 then c else b}{if ((1 + o) % 3) == 1 then \"\" else \")\"} ÷ {if ((1 + o) % 3) == 2 then b else c} = {a}"
+      equation ec "C:  {if ((2 + o) % 3) == 1 then \"\" else \"(\"}x + {if ((2 + o) % 3) == 2 then c else b}{if ((2 + o) % 3) == 1 then \"\" else \")\"} ÷ {if ((2 + o) % 3) == 2 then b else c} = {a}"
+    }
+    choice pick options=["A", "B", "C"] below=eqs gap=1
+  }
+
+  answer pick=pick(o, "A", "C", "B")
+  feedback {
+    when (pick == pick(o, "B", "A", "C")) point=eqs {
+      say "Without brackets only the {b} is shared. The sacks are all put together before they are shared."
+    }
+    when (pick == pick(o, "C", "B", "A")) point=eqs {
+      say "Check the numbers: {b} sacks were added, and there are {c} carts."
+    }
+  }
+  hint "What happened first to the x sacks, and what happened next?"
+  hint "Which equation adds before it shares, with the right numbers?"
+}

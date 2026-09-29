@@ -1,0 +1,28 @@
+# Three lines from a letter to the city council and one that is too chatty for it; the odd one
+# moves place, and at hard it is a single informal word in a plain sentence.
+item writing.formal-odd-one v=1 skills=[writing.formality, writing.letters] {
+  title "Which line does not belong?"
+  difficulty k
+  let k=0..2
+  let o1={pick(k, "I am writing about the city gate.", "Could the council look into this?", "Kids get tired standing up.")}
+  let o2={pick(k, "Carts block the gate every morning.", "Thanks loads for reading this.", "The market needs more benches.")}
+  let o3={pick(k, "It's a total nightmare, to be honest.", "I look forward to your reply.", "I am writing about the market square.")}
+  let right={pick(k, o3, o2, o1)}
+
+  scene 35x20 {
+    row top at=canvas(1, 0) space=2 align=start {
+      envelope env open=1 code="" stamp=berry
+      text ask "Ana is writing to the city council, which she has never met. Three of these lines belong in her letter. Which one does not?" narrate width=23
+    }
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "That line is polite and plain enough for a reader Ana has never met. Look for the one that sounds like a note to a friend."
+    }
+  }
+  hint "Read each line as if the council were reading it. Which one sounds like chatting with a friend?"
+  hint "Look for short forms, slang or words used only at home."
+}

@@ -1,0 +1,66 @@
+lesson g5-asking-a-question-with-data v=1 format=teach grade=5 unit=6 subject=maths levels=[easy, medium, hard] {
+  title "Asking a question with data: collect, sort, and choose the graph"
+  goal "Answer a question with data: collect it, sort it into a table, choose the graph that fits the question, and say what the data can and cannot show."
+
+  look {
+    scene 36x16 {
+      table votes cols=2 head=["Look at", "Children"] cells=["Moon", "6", "Saturn", "9", "Jupiter", "5"] at=canvas(1, 1)
+      bargraph chart labels=["Moon", "Saturn", "Jupiter"] values=[6, 9, 5] max=10 color=sky right-of=votes gap=2
+    }
+    say """
+      The star club asked a question: what should we look at through the telescope tonight? Each of
+      the 20 children voted, and the votes were tallied into a table and drawn as a bar chart. The
+      graph is chosen to fit the question. Bars compare how many, a line shows a change over time, a
+      pie shows shares of one whole, and a band graph sets shares of groups of different sizes side
+      by side. Saturn won with 9 votes, but only the club was asked, so that is all the data can say.
+      """
+  }
+  do {
+    show survey.missing-bar a=6 b=4 c=7 d=8 easy-a=5 easy-b=3 easy-c=4 easy-d=2 hard-a=9 hard-b=6 hard-c=5 hard-d=10
+    show survey.sort t=1 k=2 easy-t=0 easy-k=0 hard-t=2 hard-k=1
+    show survey.choose-graph p=4 easy-p=0 hard-p=3
+    level easy {
+      worked survey.band-count t=0 b=1 level=medium
+    }
+    practice survey.band-share count=1 seed=4
+    practice survey.band-count count=1 seed=5
+    practice survey.line count=1 seed=6
+    show survey.cannot-show k=1 a=7 b=3 c=5 easy-k=0 hard-k=3
+    level easy medium {
+      show survey.choose-graph p=2 easy-p=1
+    }
+    level hard {
+      practice survey.band-share count=1 seed=9
+      show survey.band-count t=2 b=1
+    }
+  }
+  try stars=2 {
+    show survey.band-compare t=1 easy-t=0 hard-t=2
+  }
+  try stars=3 {
+    show survey.combine t=1 easy-t=0 hard-t=2
+  }
+  remember {
+    say "Start with a question, then collect, sort and draw. Choose the graph that answers the question."
+  }
+
+  grown-ups """
+    The idea is the whole cycle: a question first, then data collected to answer it, sorted into a
+    table, drawn, and read back against the question. The common slip is choosing a graph by habit;
+    ask each time whether the question is about how many, a change over time, a share of one whole,
+    or shares of groups of different sizes. In the band graph every band is 100 per cent of its own
+    group, so a longer part is a bigger share, not more people, which is the two-star question. In
+    the three-star question the shares cannot simply be averaged, because the bigger class counts
+    for more; find the numbers, add them, and make a share of the new total. Leo's claims are there
+    to ask who was asked and what they were asked. If the tables are slow, stay here another day
+    and tally a real question at home. Off the page, ask everyone at a meal one question, tally the
+    answers and choose how to draw them. This lesson meets Japan's grade 5 course of study, D(1)ア(イ),
+    「データの収集や適切な手法の選択など統計的な問題解決の方法を知ること」, with its band graph, 帯グラフ.
+    """
+  level easy {
+    grown-ups "At this level the missing bar is small, the list of lights has the most meteors, the graph to choose is a line or bars, a band graph's count is worked once in the teacher's pen, Leo's claim is one the graph shows, the two-star classes are 20 and 50 children, and the three-star club puts 20 and 30 children together."
+  }
+  level hard {
+    grown-ups "At this level the missing bar is ten, the list of lights is the most mixed, the graph to choose is a band graph, the hidden share is asked twice, a count is found on each night from shares like 35 per cent, the line asks for the biggest rise, Leo's claim is about the planets themselves, the two-star classes are 25 and 80, and the three-star club is 40 and 60 children."
+  }
+}

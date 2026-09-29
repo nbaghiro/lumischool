@@ -1,0 +1,16 @@
+# The first two bars of the A tune of Handel's Alla Hornpipe (Water Music, suite in D, HWV 349), as
+# Richard Robinson's tunebook writes it for one instrument in 3/2 (abcnotation.com): A, D, E, then F
+# sharp, D, E, F sharp, D. No note is played twice in a row, so music.plays hears it in order.
+item music.water-theme v=1 skills=[music.listening, music.staff, music.keys] {
+  title "Play the hornpipe's tune"
+
+  scene 34x31 {
+    notes tune clef=treble notes=[A4, D5, E5, Fs5, D5, E5, Fs5, D5] values=[2, 2, 2, 1, 2, 1, 1, 1] meter=0 at=canvas(1, 1)
+    text ask "This is how Handel's hornpipe begins, the tune A of the listening map. The sharp sign before the fourth note makes it F sharp, the black key just above F. Play the eight notes." narrate width=32 below=tune gap=1
+    piano keys from=A4 whites=7 wide=3 labels=letters below=ask gap=1
+  }
+
+  check music.plays notes=[A4, D5, E5, Fs5, D5, E5, Fs5, D5]
+  hint "The first note sits in the second space from the bottom. Which letter is it?"
+  hint "After the first three notes the tune rocks between D, E and F sharp. Find the black key just above F."
+}

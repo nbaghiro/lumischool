@@ -1,0 +1,31 @@
+# A cylinder is a prism with a circle for its base: the circle's area, radius times radius times
+# 3.14, times the height.
+item volume.grain-cylinder v=1 skills=[volume.cylinders, circles.area] {
+  title "The mill's grain cylinder"
+  difficulty (r / 2 + h / 10)
+  let r={1, 3, 4, 5, 6} h={2, 3, 5, 10}
+  level easy {
+    let r={1, 3} h={2, 5, 10}
+  }
+  level hard {
+    let r={5, 6} h={3, 5}
+  }
+
+  scene 33x15 {
+    circleparts base size=5 lines=1 radius=r unit="m" at=canvas(1, 1)
+    text ask "The mill stores grain in a cylinder. Its circular base has the radius shown, and it is {h} m tall. Using 3.14, what is its volume in m³?" narrate width=16 right-of=base gap=2
+    number-input answer width=6 below=ask gap=1
+  }
+
+  answer (r * r * 3.14 * h)
+  feedback {
+    when (answer == 2 * r * 3.14 * h) point=base {
+      say "That used the distance round the circle. The base's area is radius times radius times 3.14."
+    }
+    when (answer == r * r * 3.14) point=base {
+      say "That is the area of the base, one layer 1 m deep. How many layers tall is it?"
+    }
+  }
+  hint "What is the area of the circle at the bottom?"
+  hint "How many metres tall is it? Multiply the base's area by that."
+}

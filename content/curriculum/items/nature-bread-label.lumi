@@ -1,0 +1,42 @@
+# The story: the label on the bakery's rolls gives grams in every 100 g, and a piece of another size
+# holds that fraction of each. Easy halves; medium takes three tenths; hard adds two rolls first and
+# asks about the protein.
+item nature.bread-label v=1 skills=[nature.digestion, fractions.of-amount, decimals.tenths] {
+  title "Reading the label"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "Ada eats a 50 g roll. How many grams of carbohydrate is that?", "Ben eats a 30 g piece of a roll. How many grams of carbohydrate is that?", "Ada eats two small rolls of 40 g each. How many grams of protein is that?")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x21 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      table t cols=2 head=["In 100 g", "grams"] cells=["carbohydrate", "50", "protein", "10", "fat", "2", "fibre", "3"]
+      bakingtray b rows=2 cols=3 iced=0
+    }
+    text ask "The bread rolls from the old city bakery come with this label. {asks}" narrate width=32 below=pics gap=1
+    row r below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text u "g"
+    }
+  }
+
+  answer pick(k, 25, 15, 8)
+  feedback {
+    when (k <= 1 and answer == 50) point=t {
+      say "50 g is what 100 g of bread holds. The piece is smaller than 100 g, so it holds less."
+    }
+    when (k == 2 and answer == 4) point=t {
+      say "That is one roll. Ada eats two, which is 80 g of bread."
+    }
+    when (k == 2 and answer == 40) point=t {
+      say "That is the carbohydrate row. The question asks about protein."
+    }
+  }
+  hint "What fraction of 100 g is the piece?"
+  hint "Take that same fraction of the number on the label."
+}

@@ -1,0 +1,36 @@
+# One sentence about the moon and three rewrites: a fair paraphrase keeps every idea in new words,
+# one rewrite copies with a word or two dropped, and one changes the meaning. Armstrong's words of
+# 20 July 1969 are given as NASA's transcript prints them, with the a in brackets because it is not
+# clearly heard on the recording.
+item reading.para-best v=1 skills=[reading.paraphrase] {
+  title "The best paraphrase"
+  difficulty pick(k, 0, 1, 1, 2, 0)
+  let k=0..4
+  level easy {
+    let k={0, 4}
+  }
+  level hard {
+    let k={1, 3}
+  }
+  let right={pick(k, "With no air on the moon, no wind moves its dust.", "The prints may last for ages if no rock hits them.", "We always see the same half of the moon.", "My step is small, but for all people it is huge.", "The Earth is a lot bigger than the moon.")}
+  let copy={pick(k, "The moon has no air, so no wind blows its dust.", "Unless a space rock lands on them, they could last.", "The same side of the moon always looks at us.", "One small step for a man, a giant leap for mankind.", "The moon is much smaller than our Earth.")}
+  let changed={pick(k, "The moon has a little air, but no wind blows dust.", "They will last for ever, and rocks cannot harm them.", "The moon shows us a different side each night.", "One man took a short step and then a giant jump.", "The moon is a little smaller than the Earth.")}
+
+  scene 36x24 {
+    passage p title="{pick(k, \"About moon dust\", \"About the footprints\", \"About the moon's face\", \"Neil Armstrong, 1969\", \"About the moon's size\")}" text="{pick(k, \"The moon has no air, so no wind blows its dust about.\", \"Unless a rock from space lands on them, the footprints could last for millions of years.\", \"The same side of the moon always faces us.\", \"That's one small step for (a) man, one giant leap for mankind.\", \"The moon is much smaller than the Earth.\")}" width=34 numbers=false at=canvas(1, 1)
+    text ask "Which is the best paraphrase: the same meaning, in your own words?" below=p gap=1 width=34
+    choice pick options=[pick(k, copy, right, changed, copy, changed), pick(k, right, changed, copy, changed, right), pick(k, changed, copy, right, right, copy)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == copy) point=p {
+      say "That keeps almost every word of the original. A paraphrase says it in new words."
+    }
+    when (pick == changed) point=p {
+      say "That uses new words, but it changes what the sentence means. Check each idea against the original."
+    }
+  }
+  hint "Which rewrite keeps every idea? Which uses its own words?"
+  hint "Cross out any rewrite that copies, then any that changes the meaning."
+}

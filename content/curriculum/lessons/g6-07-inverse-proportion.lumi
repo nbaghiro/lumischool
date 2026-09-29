@@ -1,0 +1,60 @@
+lesson g6-inverse-proportion v=1 format=teach grade=6 unit=4 subject=maths levels=[easy, medium, hard] {
+  title "Inverse proportion: more pipes, less time"
+  goal "Recognise when one amount goes down as another goes up with their product staying the same, and use that product to find a missing value."
+
+  look {
+    scene 27x13 {
+      waterwheel wheel paddles=8 lit=0 at=canvas(1, 1)
+      table data cols=2 head=["Pipes", "Hours"] cells=["1", "12", "2", "6", "3", "4", "4", "3"] right-of=wheel gap=2
+    }
+    say """
+      The mill pond below the water wheel is filled by pipes of the same size. One pipe takes 12
+      hours, two take 6, three take 4. When the pipes double the hours halve, and pipes times hours
+      is always 12. That is inverse proportion: the product stays the same. In direct proportion it
+      is the quotient that stays the same.
+      """
+  }
+  do {
+    practice inverse.pipes-mill-pond count=1 seed=3
+    level easy {
+      worked inverse.bridge-menders w=3 d=8 w2=4 level=medium
+    }
+    practice inverse.bridge-menders count=1 seed=4
+    practice inverse.bucket-table count=1 seed=5
+    level hard {
+      show inverse.bridge-menders w=6 d=6 w2=3
+    }
+    practice inverse.boat-slower-trip count=1 seed=6
+    show inverse.direct-or-inverse kind=2 a=3 k=12 easy-kind=0 easy-a=2 hard-kind=1 hard-a=2 hard-k=24
+    practice inverse.pipes-graph count=1 seed=7
+    show inverse.bridge-menders w=6 d=4 w2=8 easy-w=3 easy-d=4 easy-w2=6 hard-w=6 hard-d=8 hard-w2=12
+    practice inverse.boat-slower-trip count=1 seed=9
+  }
+  try stars=2 {
+    show inverse.double-pipes-mistake p=2 h=8 k=2 easy-h=6 hard-p=3 hard-h=12 hard-k=3
+  }
+  try stars=3 {
+    show inverse.menders-join-later w=6 d=10 a=4 j=3 easy-w=4 easy-d=12 easy-a=2 easy-j=6 hard-d=12 hard-a=4 hard-j=2
+  }
+  remember {
+    say "In inverse proportion one amount times the other stays the same, so twice as many take half as long."
+  }
+
+  grown-ups """
+    Inverse proportion is the first relationship a child meets where more gives less. The common
+    slip is to treat it as direct: twice the pipes, twice the time. Ask before any working whether
+    the answer should be bigger or smaller, and then find the product (pipes times hours, workers
+    times days, the length of a trip) and share it. In the table question the step between columns
+    is not the same, which rules out adding. In the two-star question the reason is that more pipes
+    pour faster. In the three-star question the work is counted in worker-days: some are done before
+    the others join, and the rest is shared by everyone. If the product still feels strange, stay
+    here another day with pipes and hours only. Off the page, share a job such as folding washing
+    between one, two and three people and time it.
+    """
+  level easy {
+    grown-ups "At this level two or three pipes share 12 or 24 hours, a bridge mended by 3 workers in 8 days is worked in the teacher's pen, more workers join rather than leave, the buckets are 2, 3 and 4 litres, the boat goes slower, the table is direct, the graph asks for 12 pipes, Ana doubles 3 pipes, and 6 workers join 4 after 2 days of a 12-day job."
+  }
+  level hard {
+    grown-ups "At this level four or six pipes share 24 or 36 hours, the bridge is asked three times, apart, and workers may leave, the buckets are 2, 6 and 12 litres, the boat goes faster, the table is inverse, the graph starts at 24 hours, Ana trebles 3 pipes, and 2 workers join 6 after 4 days of a 12-day job."
+  }
+}

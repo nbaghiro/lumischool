@@ -1,0 +1,27 @@
+# When a bulb breaks it leaves a gap where it was: a loop goes dark, and the other branches of a
+# parallel circuit stay lit. The broken bulb is drawn as a loose wire and an open branch.
+item physics.fairy-lights v=1 skills=[physics.circuits, reasoning.explain] {
+  title "One bulb breaks"
+  let c=1..2
+
+  scene 36x28 {
+    row two at=canvas(1, 0) space=2 align=start {
+      series a cells=c bulbs=2 loose=1 show=0 tag="A"
+      parallel b cells=c branches=2 closed=[0, 1] show=0 symbols=0
+    }
+    text ask "The market's lamps are wired two ways. In each circuit one bulb has broken, which leaves a gap where it was, drawn as a loose wire in A and an open branch in B. In which circuit does the other bulb stay lit?" narrate width=32 below=two gap=1
+    choice pick options=["A", "B", "Both", "Neither"] stack=row below=ask gap=1
+  }
+
+  answer pick="B"
+  feedback {
+    when (pick == "A" or pick == "Both") point=a {
+      say "In A there is only one path round. With a gap in it, can current get round at all?"
+    }
+    when (pick == "Neither") point=b {
+      say "In B the other bulb has its own branch across the cells. Is that branch broken?"
+    }
+  }
+  hint "In each circuit, is there still an unbroken path from one end of the cells to the other?"
+  hint "Does that path go through the other bulb?"
+}

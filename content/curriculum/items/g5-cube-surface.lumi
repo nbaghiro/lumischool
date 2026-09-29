@@ -1,0 +1,37 @@
+# A cube's net is six equal squares, so its surface area is six times one face.
+item solids.cube-surface v=1 skills=[solids.surface-area] {
+  title "Six squares"
+  difficulty e
+  let e=2..10
+  where (e != 6)  # six times a face is also the volume when the edge is 6
+  level easy {
+    let e=2..4
+  }
+  level hard {
+    let e=8..10
+  }
+
+  scene 34x12 {
+    net cube solid=cube cell=2 l=e unit="cm" at=canvas(1, 1)
+    text ask "A dice seller at the market folds cubes from this net. Each edge is {e} cm. How much card does one cube need?" narrate width=16 right-of=cube gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "cm²"
+    }
+  }
+
+  answer (6 * e * e)
+  feedback {
+    when (answer == 6 * e) point=cube {
+      say "That is six edges. Each face is a square: what is its area?"
+    }
+    when (answer == e * e * e) point=cube {
+      say "That is the volume. The card is the six square faces."
+    }
+    when (answer == 4 * e * e) point=cube {
+      say "Count the squares in the net again, the top and the bottom as well."
+    }
+  }
+  hint "What is the area of one square face?"
+  hint "How many faces does the net have?"
+}

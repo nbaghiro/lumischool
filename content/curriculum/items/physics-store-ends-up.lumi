@@ -1,0 +1,23 @@
+# A second reason in the core: follow the energy from the weir to the end, where every bit of it,
+# the useful turning as well, has warmed the mill and the air a little.
+item physics.store-ends-up v=1 skills=[physics.energy, reasoning.explain] {
+  title "Where it all ends up"
+
+  scene 29x34 {
+    energyflow e thing="water wheel" from="moving water" to="turning millstone" input=1000 useful=600 wasted=[398, 2] wastes=["heating", "sound"] blank=-1 unit=J at=canvas(1, 0)
+    text ask "The millstone grinds the grain, and the sound fades away. Where has all 1000 J ended up by the time the grinding stops?" narrate width=24 below=e gap=1
+    choice pick options=["Warming the mill, the flour and the air", "Used up, so it is gone", "Back in the water", "In the millstone's turning"] stack=column below=ask gap=1
+  }
+
+  answer pick="Warming the mill, the flour and the air"
+  feedback {
+    when (pick == "Used up, so it is gone") point=e {
+      say "Energy is never used up. It moves into another store, however spread out."
+    }
+    when (pick == "In the millstone's turning") point=e {
+      say "The grinding has stopped, so the millstone is still. Where did rubbing the grain send its energy?"
+    }
+  }
+  hint "Can energy be lost?"
+  hint "When the grain is rubbed and the sound fades, what gets a little warmer?"
+}

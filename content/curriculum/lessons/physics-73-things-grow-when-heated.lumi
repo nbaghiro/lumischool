@@ -1,0 +1,63 @@
+lesson physics-things-grow-when-heated v=1 format=teach grade=5 unit=3 subject=physics levels=[easy, medium, hard] {
+  title "Things grow when they are heated"
+  goal "Use the rule that heating makes a thing grow and cooling makes it shrink to work out a gap at a bridge's joint."
+
+  look {
+    scene 34x13 {
+      row all at=canvas(1, 0) space=1 align=start {
+        expansion j mode=0 span=50 temp=20 show=1
+        expansion b mode=1 ball=300 ring=20 show=1
+      }
+    }
+    say """
+      Nearly everything grows a little when it is heated and shrinks when it cools. Steel grows by
+      about 12 millionths of its length for each degree, so a 50 m steel deck is 0.6 mm longer on a
+      day one degree warmer. That is why a steel bridge is built with a gap at each joint: on a hot
+      day the decks grow into it instead of pushing against each other. The heated brass ball has
+      grown too much to pass through the cold ring.
+      """
+  }
+  do {
+    practice physics.joint-tonight count=1 seed=1
+    level easy {
+      worked physics.joint-gap k=1 t=45 level=medium
+    }
+    practice physics.joint-gap count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.rail-predict count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.joint-how-cold count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.ball-ring count=1 seed=1 easy-seed=2 hard-seed=3 hard-count=2
+    practice physics.lid-loosen count=1 seed=1 easy-seed=2 hard-seed=3
+  }
+  story {
+    show physics.lock-footbridge k=1 t=-5 hard-k=2 hard-t=-15
+  }
+  try stars=2 {
+    show physics.lid-both t=60 easy-t=40 hard-t=80
+  }
+  try stars=3 {
+    show physics.lid-hottest-jar l=60 hard-l=70
+  }
+  remember {
+    say "Heating makes things grow a little and cooling makes them shrink, so steel bridges are built with gaps."
+  }
+
+  grown-ups """
+    The idea is that solids grow when heated and shrink when cooled, by an amount that can be
+    measured: a 50 m steel deck grows 0.6 mm for each degree, so a joint's gap is widest on the
+    coldest night. The common wrong idea is that the gap is set from 0 °C, so a child multiplies
+    the rate by the air's temperature; the questions count degrees from the temperature at which the
+    gap shuts. The second is that a heated ring's hole gets smaller, which the ball and ring answer:
+    the ring grows all over, hole and all. If the numbers get in the way, stay with the ball and
+    ring and the jam jar for a day and say aloud what grows. Off the page, run a tight metal lid
+    under the hot tap for half a minute (a grown-up checks the water) and try it again. The lesson
+    meets China's standard for grades 3 to 4, 科学课程标准 2022 4.1 ③, "知道物体一般具有热胀冷缩的性
+    质" (know that things generally grow when heated and shrink when cooled), which Japan teaches in
+    grade 4 (小4 A(2)(ア)).
+    """
+  level easy {
+    grown-ups "At this level a worked example finds one gap, the decks are 50 m, the days are warm, the rails' second day is warmer, the ball or the ring alone is heated, and the three-star lid is at 60 °C."
+  }
+  level hard {
+    grown-ups "At this level the decks are 75 or 100 m long, the nights are below freezing, the rails' second day is colder, both ball and ring are compared, the jar is the warm one, and the three-star lid is at 70 °C."
+  }
+}

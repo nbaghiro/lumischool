@@ -1,0 +1,36 @@
+# Two-star: work back up the arrows. The flowchart's first box is rubbed off and the number it says at
+# the end is known, so the child undoes each round in reverse, the last box first.
+item coding.flow-back v=1 stars=2 skills=[coding.flowcharts, coding.tracing, reasoning.work-backwards] {
+  title "Work back up the arrows"
+  difficulty k
+  let k=0..2
+  let s={pick(k, 3, 5, 2)}
+  let said={pick(k, 18, 26, 58)}
+  let right={pick(k, "set n to 3", "set n to 5", "set n to 2")}
+  let wrong1={pick(k, "set n to 8", "set n to 12", "set n to 10")}
+  let wrong2={pick(k, "set n to 18", "set n to 26", "set n to 58")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x28 {
+    flowchart f code=["set n to {s}", pick(k, "repeat 2", "repeat 2", "repeat 3"), pick(k, "  add 1 to n", "  double n", "  add 3 to n"), pick(k, "  double n", "  add 2 to n", "  double n"), "say n"] blank=1 at=canvas(0, 0)
+    text ask "The rover's flowchart said {said} at the end, but its first box has rubbed off. Which box was it?" width=18 right-of=f gap=2
+    choice pick options=[pick(k, right, wrong1, wrong2), pick(k, wrong1, wrong2, right), pick(k, wrong2, right, wrong1)] stack=column below=ask gap=1
+  }
+
+  check coding.runs of=f pick=blank
+  feedback {
+    when (pick == wrong1) point=f {
+      say "That undoes one round too few. How many times does the loop go round?"
+    }
+    when (pick == wrong2) point=f {
+      say "{said} is where n ends, not where it starts. Undo each round, last step first."
+    }
+  }
+  hint "Start at the say with {said} and walk back up the arrows."
+  hint "What undoes doubling? What undoes adding? Undo the rounds one at a time, last step first."
+}

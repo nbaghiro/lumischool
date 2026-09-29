@@ -1,0 +1,25 @@
+# The story: a narrowboat on the canal loaded with coal pushes aside a litre more water for every
+# kilogram, and the water has nowhere to go but up its sides. Its bottom is 20 m by 2 m, 40 square
+# metres, so a tonne more sits it 2.5 cm deeper.
+item physics.canal-coal v=1 skills=[physics.floating, physics.weight, reasoning.two-steps] {
+  title "Coal on the narrowboat"
+  difficulty k
+  let k={2, 4, 6}
+
+  scene 31x23 {
+    narrowboat b windows=6 pots=2 at=canvas(1, 0)
+    text ask "At the canal wharf, {k} tonnes of coal ({k * 1000} kg) are loaded onto a narrowboat. One litre of water weighs one kilogram. How many more litres of canal water does the boat push aside now?" narrate width=30 below=b gap=1
+    number-input litres below=ask gap=1
+    text then "The boat's bottom is 20 m long and 2 m wide, and every 400 litres more sit it 1 cm deeper. How many centimetres deeper does it sit?" narrate width=30 below=litres gap=1
+    number-input deeper below=then gap=1
+  }
+
+  answer litres=(k * 1000) deeper=(k * 1000 / 400)
+  feedback {
+    when (litres == k) point=b {
+      say "That is the tonnes. A tonne is 1000 kg, so how many litres is that?"
+    }
+  }
+  hint "The boat floats, so it pushes aside as much water as it weighs. How many kilograms more is it?"
+  hint "How many lots of 400 litres are there in that many litres?"
+}

@@ -1,0 +1,28 @@
+# One star: a number wall with numbers below zero, the top given and the middle of the bottom row
+# missing. The top counts the middle brick twice, which is the thing to see.
+item puzzle.moon-wall v=1 stars=1 skills=[number.negatives, reasoning.number-walls] negatives {
+  title "A wall below zero"
+  difficulty ((if b < 0 then 1 else 0) + (if a < 0 and c < 0 then 1 else 0))
+  let a={-7, -4, -2, 3, 5, 8} b={-6, -3, 2, 4, 6} c={-8, -5, -3, 2, 6, 7}
+  where (a != c and (a < 0 or c < 0))
+  level easy {
+    where (b > 0 and (a > 0 or c > 0))
+  }
+  level hard {
+    where (b < 0)
+  }
+
+  scene 32x8 {
+    pyramid wall cells=[a, ?, c, ?, ?, a + 2 * b + c] blanks=[middle, left, right] at=canvas(1, 1)
+    text ask "On the base's number wall every brick is the sum of the two under it. Fill in the missing bricks." narrate width=16 right-of=wall gap=2
+  }
+
+  answer middle=b left=(a + b) right=(b + c)
+  feedback {
+    when (middle == a + 2 * b + c - a - c) point=wall.brick(1) {
+      say "The top brick adds the middle brick twice, once through each side. Halve what is left."
+    }
+  }
+  hint "The top brick adds up the two end bricks of the bottom row and the missing brick. How many times does the missing brick count?"
+  hint "Take the two end bricks away from the top brick. What is left, and how many missing bricks make it?"
+}

@@ -1,0 +1,64 @@
+lesson g6-median-mode-range-and-histogram v=1 format=teach grade=6 unit=3 subject=maths levels=[easy, medium, hard] {
+  title "Median, mode, range and the histogram"
+  goal "Describe a set of data by its mean, median, mode and range, and read a histogram whose bars are groups of values."
+
+  look {
+    scene 32x15 {
+      dotplot plot from=2 to=8 counts=[2, 2, 4, 1, 1, 1, 0] label=puffins at=canvas(1, 1)
+      weatherstation ws cups=3 right-of=plot gap=3
+    }
+    say """
+      Each dot is one morning's count of puffins by the research hut. The mode is the count that
+      comes most often, here 4. The median is the middle count when all eleven are put in order,
+      also 4. The mean shares the total out equally: 44 puffins over 11 days is 4 a day. The range,
+      the biggest take away the smallest, is 7 - 2 = 5. A histogram does the same with groups, such
+      as 10 to 14 hours of sunshine, one bar for each group.
+      """
+  }
+  do {
+    show data.puffin-mode v=3 ask="range" easy-v=1 easy-ask="mode" hard-v=2
+    level easy {
+      worked data.sunshine-median v=2 level=medium
+    }
+    show data.sunshine-median v=1 easy-v=0 hard-v=3
+    practice data.pup-range count=1 seed=5
+    show data.fish-median w=1 easy-w=0 hard-w=3
+    practice data.sunshine-histogram count=1 seed=7
+    practice data.group-the-hours count=1 seed=3
+    practice data.mean-or-median count=1 seed=2
+    practice data.hut-mean-missing count=1 seed=8
+    level hard {
+      show data.fish-median w=2
+    }
+  }
+  try stars=2 {
+    show data.median-mistake v=1 easy-v=0 hard-v=3
+  }
+  try stars=3 {
+    show data.largest-count d=4 e=6 easy-d=3 easy-e=5 hard-d=6 hard-e=9
+  }
+  remember {
+    say "The median is the middle value in order, the mode the most common, and the range the biggest take away the smallest."
+  }
+
+  grown-ups """
+    The four numbers each answer a different question about the same data, and the mistake to watch
+    for is taking the median from a list that is not in order, which is Leo's mistake in the
+    two-star question. With an even number of values the median is halfway between the two in the
+    middle, so it can be a half. On a dot plot, ask the child to count all the dots before looking
+    for the middle one. On the histogram the bars are groups, so "at least 10 hours" starts at the
+    bar labelled 10-14, and when the child sorts the raw hours into groups, a value on the edge of a
+    group belongs to it. In the mean or median question, one value far from the others pulls the
+    mean towards it and leaves the median alone. In the three-star question the other counts are
+    made as small as the median allows. When Friday lifts the mean by one, it has to give one more
+    to each of the five days, so it is five more than the old mean. If the child mixes up the words,
+    stay here another day. Off the page, time how long everyone at home takes to tie their shoes and
+    find all four numbers.
+    """
+  level easy {
+    grown-ups "At this level the dot plot asks for the mode, the median of an even list is worked once in the teacher's pen before an odd one, the pup weights run from 9.5 kg, the fish have an odd count, the histogram asks for days with at least 10 hours, the raw hours are grouped into 10-14, the mean or median has one heavy pup, Friday lifts the mean by one, Leo's list has seven numbers, and the counts have median 3 and mean 5."
+  }
+  level hard {
+    grown-ups "At this level the dot plot asks for the range, the sunshine list has eight days, the fish median is asked twice and can be a half, the histogram asks for days with fewer than 15 hours, the raw hours have several values on the edges of the group, the mean or median has no value far away, Friday pulls the mean down by two, Leo's list has eight numbers, and the counts have median 6 and mean 9."
+  }
+}

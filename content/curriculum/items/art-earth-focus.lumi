@@ -1,0 +1,35 @@
+# The way in: in a picture of greys, the eye goes first to the one thing in colour and light.
+item art.earth-focus v=1 skills=[art.composition, art.looking] {
+  title "Where the eye goes first"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..1
+  let r={(k + 1) % 3}
+  let right={pick(k, "The blue Earth", "The gold lander", "The bright horizon")}
+  let o1={pick(k, "The biggest crater", "The dim Earth", "The dim Earth")}
+  let o2={pick(k, "The flat grey ground", "The flat grey ground", "The black sky")}
+  let what={pick(k, "the Earth in blue and white", "the lander's foil in bright gold, with the Earth small and dim grey", "a thin sunlit edge along the horizon, with the Earth dim grey")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 34x25 {
+    row moon at=canvas(1, 1) space=1 align=end {
+      earth home up=1
+      lander craft rungs=5
+    }
+    text ask "Ada paints the sky black, the ground and the craters in dark greys, and {what}. Which part will the eye go to first?" width=15 right-of=moon gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then o1 else o2, if r == 0 then o1 else if r == 1 then o2 else right, if r == 0 then o2 else if r == 1 then right else o1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=moon {
+      say "The eye goes first to what is most different from everything round it. Which part is not dark grey?"
+    }
+  }
+  hint "What is different about one part of Ada's picture?"
+  hint "In a dark grey picture, does a patch of colour or light stand out or hide?"
+}

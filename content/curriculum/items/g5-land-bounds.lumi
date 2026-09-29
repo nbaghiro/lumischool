@@ -1,0 +1,38 @@
+# The second reason in the core: the whole squares are all inside and the cut squares only partly,
+# so the true area lies between the whole count and the whole and cut count together.
+item land.bounds v=1 skills=[measure.metric.land-area, area.estimate, reasoning.limits] {
+  title "At least and at most"
+  difficulty pick(i, 0, 1, 1)
+  let i=0..2
+  let s={pick(i, 1, 2, 0)}
+  level easy {
+    let i={0}
+  }
+
+  scene 36x17 {
+    outlinearea map shape=s side=100 unit="m" mark=1 show=1 at=canvas(1, 1)
+    text ask "Every dotted hectare square is inside {pick(i, \"the field\", \"the marsh\", \"the reservoir\")}. A ringed square is only partly inside. What is the least and the most its area could be?" narrate width=17 right-of=map gap=2
+    row lo below=ask gap=1 space=1 {
+      text least "at least"
+      number-input low width=3
+      text u1 "ha"
+    }
+    row hi below=lo gap=1 space=1 {
+      text most "at most"
+      number-input high width=3
+      text u2 "ha"
+    }
+  }
+
+  answer low=pick(i, 49, 44, 52) high=pick(i, 82, 84, 88)
+  feedback {
+    when (high == pick(i, 65.5, 64, 70)) point=map {
+      say "That is the estimate. At most, every ringed square could be nearly all inside."
+    }
+    when (low == 0) point=map {
+      say "The dotted squares are certainly inside, so the area is at least those."
+    }
+  }
+  hint "Which squares are certainly inside?"
+  hint "If every ringed square were almost all inside, how many hectares would that make?"
+}

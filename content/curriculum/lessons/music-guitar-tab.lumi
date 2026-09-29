@@ -1,6 +1,6 @@
 # The guitar from grade three, and tab with it: the chord card turned a quarter turn, so string 1 is
 # on top. The neck in the question is laid down the same way as the tab above it.
-lesson music-guitar-tab v=1 format=teach grade=3 unit=2 subject=music levels=[easy, medium, hard] {
+lesson music-guitar-tab v=1 format=teach grade=3 unit=5 subject=music levels=[easy, medium, hard] {
   title "Six strings and tab"
   goal "Read tab on six lines for its string and fret, play a line of it, and read a guitar chord card."
 

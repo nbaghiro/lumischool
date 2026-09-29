@@ -1,0 +1,71 @@
+lesson nature-built-for-the-cold v=1 format=teach grade=6 unit=1 subject=nature levels=[easy, medium, hard] {
+  title "Built for the cold"
+  goal "Say how an Arctic animal's body and habits keep its heat in, and why each one works."
+
+  look {
+    scene 34x15 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=2 align=end {
+          icecliff ic height=1 floes=1
+          whale pw spout=1 facing=-1
+        }
+        row low space=2 align=end {
+          seal ps rock=1 facing=1
+          puffins pp count=2 facing=-1
+        }
+      }
+    }
+    say """
+      On the ice shelf the summer sun never sets, but the sea round the floes is colder than the
+      inside of a fridge. Water carries heat away far better than air, so a warm body loses heat
+      into cold water many times faster than into air just as cold, and every animal here has a way of keeping its heat in. The seal and the whale
+      wear a thick layer of fat called blubber. The puffins' feathers trap air. Some animals do
+      something instead: the puffins leave for the open sea in winter, and the whale swims south.
+      """
+  }
+  do {
+    level easy {
+      worked nature.cold-feature k=2 level=medium
+    }
+    practice nature.cold-feature count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.heat-test count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.body-or-habit count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.coat-season count=1 seed=2 easy-seed=1 hard-seed=11
+    level hard {
+      show nature.why-blubber k=1 level=medium
+    }
+  }
+  story {
+    show nature.whale-krill k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.why-blubber k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.cube-animals k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "In the cold, heat escapes through skin, and fastest into water: blubber, trapped air and small ears keep it in."
+  }
+
+  grown-ups """
+    The idea is heat loss. A warm animal is always losing heat to the cold round it, faster into water
+    than into air, and faster the more skin it has for its size, so the features of Arctic animals are
+    answers to one question: how is the heat kept in? The wrong ideas to watch for are that blubber
+    or fur makes heat (it only slows its escape) and that water is warmer so it is kinder (sea water
+    under the ice is warmer than winter air, and still takes heat far faster). The tins in the snow are
+    a real test the child can do with lard and feathers; the drop is start take away end, not the end
+    reading. The core also sorts body features from habits, like leaving for the winter, and asks
+    why the fox's winter coat is thick as well as white, two reasons that are easy to run together. The
+    three-star question folds cubes into the shape with the fewest outside faces, which is why Arctic
+    animals are round with short ears and legs. If heat still sounds like something blubber makes after
+    the core, stay here another day: put a hand in a bowl of iced water, then in a food bag of lard
+    (both in a second bag) in the same water, and feel the difference.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the fox's small ears) opens the core, the features are the seal's blubber and the fox's white coat, the tins asked about are the bare one and the one in lard, the lists to sort are shorter, the whale eats a tonne a day for 30 days, the two-star question is blubber against fur, and the model animal has 4 cubes."
+  }
+  level hard {
+    grown-ups "At this level the features are the fox's ears and the puffin's full beak, the tin questions compare two drops, the lists to sort are longer, the coat question has the snow come early, a second reasoning question in the core compares the Arctic fox's ears with the desert fox's, the whale's total is given and a day's eating is asked for, Ben says water is warmer than winter air, and the model animal has 12 cubes."
+  }
+}

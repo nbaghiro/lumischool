@@ -1,0 +1,30 @@
+# Metres to millimetres is times a thousand: the lock gate's width, in a unit the carpenter uses.
+item decimal.gate-millimetres v=1 skills=[decimals.by-ten, measure.convert] {
+  title "The lock gate in millimetres"
+  difficulty ((if to == "millimetres" then 1 else 0) + (if m < 5 then 1 else 0))
+  let m={3.25, 4.075, 4.8, 5.125, 6.405} to={"centimetres", "millimetres"}
+  level easy {
+    let to={"centimetres"} m={4.8, 3.25}
+  }
+  level hard {
+    let to={"millimetres"} m={4.075, 5.125, 6.405}
+  }
+
+  scene 33x11 {
+    canallock lock level=0 boat=0 at=canvas(1, 1)
+    text ask "The new lock gate is {m} metres wide. How many {to} is that?" narrate width=14 right-of=lock gap=2
+    number-input answer width=6 below=lock gap=1
+  }
+
+  answer plain(if to == "millimetres" then m * 1000 else m * 100)
+  feedback {
+    when (to == "millimetres" and answer == m * 100) point=ask {
+      say "That is centimetres. A metre is a thousand millimetres."
+    }
+    when (to == "centimetres" and answer == m * 1000) point=ask {
+      say "That is millimetres. A metre is a hundred centimetres."
+    }
+  }
+  hint "How many {to} make one metre?"
+  hint "Multiply by that, moving every digit to the left."
+}

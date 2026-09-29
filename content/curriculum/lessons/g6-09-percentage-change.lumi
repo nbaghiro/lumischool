@@ -1,0 +1,62 @@
+lesson g6-percentage-change v=1 format=teach grade=6 unit=6 subject=maths levels=[easy, medium, hard] {
+  title "Percentage change, and a percentage of a percentage"
+  goal "Find an amount after a percent rise or fall, find the percent from the change, and take a percent of a percent."
+
+  look {
+    scene 25x15 {
+      waterfall fall drops=2 rainbow=1 at=canvas(1, 1)
+      pricetag tag now=1200 was=1000 right-of=fall gap=2
+    }
+    say """
+      A ticket for the gorge walk cost 10 dollars and went up by 20%. 20% of 10 dollars is 2
+      dollars, so it now costs 12 dollars, which is 120% of the old price. A change is always a
+      percent of the amount before the change. That is why going up 20% and then down 20% does not
+      come back to the start: the second 20% is of a bigger amount. A percent of a percent
+      multiplies, so half of 40% is 20%.
+      """
+  }
+  do {
+    practice percent.gorge-ticket-rise count=1 seed=3
+    level easy {
+      worked percent.walk-sale-price p=40 d=30 level=medium
+    }
+    practice percent.walk-sale-price count=1 seed=4
+    practice percent.flow-rise-percent count=1 seed=5
+    practice percent.ticket-before-rise count=1 seed=6
+    practice percent.flow-back-up count=1 seed=2
+    show percent.bridge-children-percent a=60 b=25 easy-a=40 easy-b=50 hard-b=30
+    level hard {
+      show percent.flow-rise-percent a=50 r=30 d=1
+    }
+    practice percent.walk-sale-price count=1 seed=8
+    practice percent.gorge-ticket-rise count=1 seed=9 easy-seed=12 hard-seed=13
+  }
+  try stars=2 {
+    show percent.two-discounts-mistake s=1 easy-s=0 hard-s=2
+  }
+  try stars=3 {
+    show percent.rise-and-fall-same c=200 r=20 easy-c=100 easy-r=20 hard-c=400 hard-r=30
+  }
+  remember {
+    say "A percent change is a percent of the amount before the change. A percent of a percent multiplies."
+  }
+
+  grown-ups """
+    Everything here turns on one question: a percent of what? A rise or a fall is a percent of the
+    amount before it, so to find the percent compare the change with the old amount, and to work
+    backwards from a new price share it into equal blocks rather than taking the percent off it. The
+    common slips are treating a percent as dollars (20% off 40 dollars is not 20 dollars off) and
+    adding two discounts. Trying a price of 100 dollars settles most of these. In the second
+    reasoning question a fall of 20% needs a rise of 25% to get back. In the two-star question the
+    second discount is of the smaller sale price. In the three-star question the child tries a
+    percent, works it up and down, and adjusts; a table of tries is the real work. If a percent of
+    an amount is still slow, stay here another day with 10% and 50%. Off the page, find a sale sign
+    in a shop and work out the price before and after.
+    """
+  level easy {
+    grown-ups "At this level the rises are 10% or 50% on prices of 10 or 20 dollars, a jacket of 40 dollars with 30% off is worked in the teacher's pen, the discounts are 10% or 30%, the flow rises by 10, 25 or 50%, the ticket went up by 50%, the flow fell by 20% or 50%, the share of the children is a quarter or a half, the two discounts are 20% and 10%, and the canoe cost 100 dollars."
+  }
+  level hard {
+    grown-ups "At this level the rises are 20% or 25% on prices of 8, 12 or 25 dollars, the discounts are 15% or 35% on 60 or 80 dollars, the flow falls and the percent is asked twice, the ticket went up by 25% or 20%, the flow fell by 75% or 80%, the share of the children is 10, 30 or 75%, the two discounts are 50% and 20%, and the canoe cost 400 dollars and changed by 30%."
+  }
+}

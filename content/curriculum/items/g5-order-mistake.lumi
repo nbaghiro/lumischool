@@ -1,0 +1,30 @@
+# The two-star: a line worked from left to right when the division should come first. The child finds
+# the right answer and so the step that went wrong.
+item algebra.order-mistake v=1 stars=2 skills=[algebra.order-of-operations, reasoning.find-the-mistake] {
+  title "Left to right"
+  difficulty (a / 10 + (if op == "÷" then 1 else 0))
+  let a={20, 24, 36, 40} b={4, 8, 12} c={2, 4} op={"÷", "×"}
+  where (a > b and (op == "×" or b % c == 0) and (a - b) % c == 0)
+  where (op == "÷" or a > b * c)
+  level easy {
+    let op={"×"} a={20, 24}
+  }
+  level hard {
+    let op={"÷"} a={36, 40}
+  }
+
+  scene 28x8 {
+    sign note lines=["{a} − {b} {op} {c}", "= {if op == \"÷\" then (a - b) / c else (a - b) * c}"] kind=board color=tang at=canvas(1, 1)
+    text ask "Leo worked from left to right. What is the right answer?" narrate width=16 right-of=note gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (if op == "÷" then a - b / c else a - b * c)
+  feedback {
+    when (answer == (if op == "÷" then (a - b) / c else (a - b) * c)) point=note {
+      say "That is Leo's answer. {if op == \"÷\" then \"Dividing\" else \"Multiplying\"} comes before taking away."
+    }
+  }
+  hint "Which part of the line has to be worked out first?"
+  hint "Work that out, then take it away from {a}."
+}

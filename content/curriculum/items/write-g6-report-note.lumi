@@ -1,0 +1,44 @@
+# A note keeps the key words of a sentence and drops the rest. Each wrong note is a real habit:
+# copying the whole sentence, or keeping the words and losing the fact (a date, a time, a place, or
+# yesterday, which means nothing once the note is off the newspaper). The sentences are from the
+# two sources written for this lesson.
+item writing.report-note v=1 skills=[writing.notes, writing.research] {
+  title "Make a note"
+  difficulty pick(k, 0, 0, 1, 2)
+  let k=0..3
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+  let sentence={pick(k, "Apollo 11 was launched on 16 July 1969.", "Michael Collins stayed in orbit in Columbia.", "They spent about two and a half hours outside.", "Two astronauts landed yesterday in the Eagle.")}
+  let right={pick(k, "Launch: 16 July 1969", "Collins: in orbit, in Columbia", "Moonwalk: about 2.5 hours", "Eagle landed 20 July")}
+  let lost={pick(k, "Apollo 11 launched", "Collins stayed", "They went outside", "Eagle landed yesterday")}
+
+  scene 36x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p title="{pick(k, \"The encyclopaedia\", \"The Daily Lantern\", \"The encyclopaedia\", \"The Daily Lantern, 21 July 1969\")}" text="{sentence}" width=21
+        listpad pad title="My notes" items=["", "", ""] count=0 width=11 ticks=false
+      }
+      text ask "Which is the best note of this sentence for your report?" width=34
+      choice pick options=[pick(k, right, sentence, lost, lost), pick(k, sentence, lost, right, sentence), pick(k, lost, right, sentence, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == sentence) point=p {
+      say "That copies the whole sentence. A note keeps only the key words, so the report can be written in your own."
+    }
+    when (pick == lost and k == 3) point=p {
+      say "Yesterday means nothing once the note leaves the newspaper. Look at the paper's date."
+    }
+    when (pick == lost and k < 3) point=p {
+      say "That note is short, but it has lost a fact. Which word, number or name did it drop?"
+    }
+  }
+  hint "Which words carry the fact: who, what, when or where?"
+  hint "Will the note still make sense a week from now, away from the source?"
+}

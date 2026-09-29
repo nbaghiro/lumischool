@@ -1,0 +1,29 @@
+# Two notes at once, one in each hand: the left-hand note and the right-hand note straight above it
+# in Ode to Joy's score, played together, in either order within the moment.
+item music.hands-play-together v=1 skills=[music.hands-together, music.keys] {
+  title "Both hands at once"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let where={pick(k, "beat 1 of bar 1", "beat 1 of bar 2", "beat 3 of bar 1", "beat 3 of bar 2")}
+  let l={pick(k, "C3", "G2", "E3", "B2")}
+  let r={pick(k, "E4", "G4", "F4", "E4")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x37 {
+    column score space=0 align=start at=canvas(1, 1) {
+      notes right clef=treble notes=[E4, E4, F4, G4, G4, F4, E4, D4] values=[] meter=4 spaced=true
+      notes left clef=bass notes=[C3, E3, G2, B2] values=[2, 2, 2, 2] meter=4 spaced=true
+    }
+    text ask "Play {where} with both hands at the same moment: the left hand's note and the right hand's note above it." narrate width=32 below=score gap=1
+    piano keys from=G2 whites=15 wide=2 labels=letters below=ask gap=1
+  }
+
+  check music.plays notes=[{l}, {r}] ordered=false
+  hint "Find {where} on both staves. Which note is on the bottom staff, and which is straight above it?"
+  hint "The left hand plays below middle C and the right hand above it."
+}

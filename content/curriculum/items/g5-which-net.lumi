@@ -1,0 +1,29 @@
+# The way in: the solid beside three nets, and the net that folds into it picked by its faces.
+item solids.which-net v=1 skills=[solids.nets] {
+  title "Which net"
+  let k={"pyramid", "prism", "cube"}
+
+  scene 36x26 {
+    solid shape kind=k label="" at=canvas(1, 1)
+    text ask "A stall at the canal market sells boxes in this shape, folded from card. Which net folds into it?" narrate width=24 right-of=shape gap=2
+    net a solid=pyramid cell=2 below=shape gap=1
+    net b solid=prism cell=2 right-of=a gap=2
+    net c solid=cube cell=2 right-of=b gap=2
+    text la "A" below=a gap=0
+    text lb "B" below=b gap=0
+    text lc "C" below=c gap=0
+    choice pick options=["A", "B", "C"] below=lb gap=1
+  }
+
+  answer pick=(if k == "pyramid" then "A" else if k == "prism" then "B" else "C")
+  feedback {
+    when (k == "prism" and pick == "C") point=b {
+      say "Count the faces of the solid first. Two of them are triangles."
+    }
+    when (k != "pyramid" and pick == "A") point=a {
+      say "Net A has four triangles meeting at a point when it folds. Does the solid have a point?"
+    }
+  }
+  hint "What shape are the faces of the solid, and how many are there?"
+  hint "Find the net with the same faces."
+}

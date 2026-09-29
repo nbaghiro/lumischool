@@ -1,0 +1,24 @@
+# The way in: two capped syringes, one of air and one of water. The air's particles are far apart
+# and can be pushed closer; water's already touch, so it hardly squashes at all.
+item chem.squash-which v=1 skills=[chemistry.gases, chemistry.particles] {
+  title "Which one squashes?"
+  let s=0..1
+
+  scene 37x20 {
+    syringe a max=60 step=10 level=60 capped=1 water=s particles=(if s == 0 then 18 else 0) at=canvas(3, 0)
+    syringe b max=60 step=10 level=60 capped=1 water=(1 - s) particles=(if s == 1 then 18 else 0) below=a gap=1
+    text la "A" left-of=a gap=0
+    text lb "B" left-of=b gap=0
+    text ask "In the research hut Leo caps two syringes. One is full of air and one of water. He pushes each plunger hard. Which plunger moves in?" narrate width=34 below=b gap=1
+    choice pick options=["A", "B"] below=ask gap=1
+  }
+
+  answer pick=pick(s, "A", "B")
+  feedback {
+    when (pick != pick(s, "A", "B")) point=ask {
+      say "The water's particles already touch each other. Where are the particles far apart, with room between them?"
+    }
+  }
+  hint "Which syringe has particles with space between them?"
+  hint "Can particles that already touch be pushed any closer?"
+}

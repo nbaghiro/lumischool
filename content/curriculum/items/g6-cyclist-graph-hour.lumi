@@ -1,0 +1,29 @@
+# Reading speed off a distance-time graph: the speed in one hour is how far the line climbs in that
+# hour, and a flat piece is a rest.
+item speed.cyclist-graph-hour v=1 skills=[rates.distance-time, data.line-graphs] {
+  title "The steepest hour"
+  difficulty (k + (if q == 0 or r == 0 then 1 else 0))
+  let p={10, 12, 15} q={0, 6, 9, 18} r={8, 12, 15} k=1..3
+  where (p != r and q != r and p != q)
+  level easy {
+    let k={1} q={6, 9, 18}
+  }
+  level hard {
+    let k={2, 3} q={0, 6}
+  }
+
+  scene 33x20 {
+    linegraph graph labels=["start", "1 h", "2 h", "3 h"] values=[0, p, p + q, p + q + r] min=0 max=45 per=3 step=9 color=sky at=canvas(1, 1)
+    text ask "The graph shows how far Ana has cycled from the mill, in km, after each hour. How fast did she ride in the {pick(k - 1, \"first\", \"second\", \"third\")} hour, in km/h?" narrate width=14 right-of=graph gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer pick(k - 1, p, q, r)
+  feedback {
+    when (k > 1 and answer == pick(k - 1, p, p + q, p + q + r)) point=graph {
+      say "That is her whole distance from the mill. How far did the line climb in that one hour?"
+    }
+  }
+  hint "Where is the line at the start of that hour, and where at the end?"
+  hint "How many kilometres did it climb between them?"
+}

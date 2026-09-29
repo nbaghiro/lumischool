@@ -1,0 +1,36 @@
+# A turn is fair when an earlier sentence has quietly prepared for it. The turn is given; the child
+# finds the sentence that, placed early, lets a reader say afterwards that they could have guessed.
+item writing.story-clue v=1 skills=[writing.story-structure, writing.planning, reasoning.explain] {
+  title "The clue planted early"
+  difficulty k
+  let k=0..2 r=0..2
+  let turn={pick(k, "The radio died out on the rim, and only Kit could see the crew's lamps.", "At dawn Omar saw that the broken wheel had stopped them just short of a deep crack.", "In the dark, Lena heard her own heart, slow and steady, like a clock.")}
+  let right={pick(k, "Kit's high window looked over the whole crater.", "The map showed a crack somewhere on the plain.", "Gran used to say the body keeps its own time.")}
+  let w1={pick(k, "Kit's boots were a size too big.", "Omar had painted the rover blue.", "Lena's bunk was the top one.")}
+  let w2={pick(k, "The crew sang as they walked away.", "The rover's radio played old songs.", "The base had twelve rooms.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x35 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      lander lnd rungs=6
+      footprints fp count=4
+    }
+    passage p title="The turn" text="{turn}" width=33 numbers=false below=pics gap=1
+    text ask "Which sentence, placed early in the story, would make this turn feel fair?" narrate width=33 below=p gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "That sentence is true to the story but has nothing to do with the turn. Which one would make a reader think back and say, of course?"
+    }
+  }
+  hint "What does the reader need to already know for the turn to make sense?"
+  hint "Which sentence mentions something the turn depends on?"
+}

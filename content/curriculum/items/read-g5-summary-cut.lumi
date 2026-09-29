@@ -1,0 +1,33 @@
+# Leo's summary of one chapter has one sentence too many: a small detail that the summary could lose
+# and still tell the chapter. The detail moves between the first, second and third sentence.
+item reading.summary-cut v=1 skills=[reading.summary, reading.main-idea] {
+  title "Cut the detail"
+  difficulty pick(k, 1, 0, 2, 1)
+  let k=0..3
+  let text={pick(k, "The canal froze in the winter of 1895. The boats had gone sixteen kilometres every week. Stuck in the ice, they could not take flour to Kingsford.", "Mrs Pell came out and shook her head. The boatmen tried poles, axes and an icebreaker. The ice beat them every time.", "Nia saw that the ice could hold the skating children. So the flour was tied to a sledge and pulled to Kingsford. The sledge was the longest one the miller had.", "The sledges took flour to Kingsford every day until the thaw. The people came out to meet them in the dark. When the canal opened, a boat was named after Nia.")}
+  let cut={pick(k, "the 2nd", "the 1st", "the 3rd", "the 2nd")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 35x20 {
+    row top at=canvas(1, 1) space=1 align=end {
+      passage p title="Leo's summary of chapter {k + 1}" text="{text}" width=29 numbers=false
+      person leo pose=think age=child hair=crop top=mint
+    }
+    text ask "Which sentence should Leo cut, so the summary keeps only what matters?" width=34 below=top gap=1
+    choice pick options=["the 1st", "the 2nd", "the 3rd"] below=ask gap=1
+  }
+
+  answer pick=cut
+  feedback {
+    when (pick != cut) point=p {
+      say "Without that sentence the summary loses a main event. Find the one it could lose and still tell the chapter."
+    }
+  }
+  hint "Read the summary three times, leaving out a different sentence each time."
+  hint "Which version still tells you what happened in the chapter?"
+}

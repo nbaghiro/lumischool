@@ -1,0 +1,44 @@
+# Semitone steps in a five-note scale, counted on the keyboard between neighbouring lit keys. The major
+# pentatonic (Mo Li Hua's C, D, E, G, A) has none; Sakura's in scale (E, F, A, B, C, from the
+# Wikipedia article on the song) has two, E to F and B to C. The first line of The Birch Tree (A B C
+# D E) has one, B to C, and Auld Lang Syne (G A B D E) none.
+item music.penta-steps v=1 skills=[music.pentatonic, music.intervals] {
+  title "Any semitones?"
+  difficulty (if k == 0 or k == 3 then 0 else 1)
+  let k=0..3
+  let song={pick(k, "the Chinese song Mo Li Hua, Jasmine Flower, uses", "the Japanese song Sakura, Cherry Blossom, uses", "the first line of the Russian song The Birch Tree uses", "the Scottish song Auld Lang Syne uses")}
+  let a={pick(k, "C4", "E4", "A4", "G4")}
+  let b={pick(k, "D4", "F4", "B4", "A4")}
+  let c={pick(k, "E4", "A4", "C5", "B4")}
+  let d={pick(k, "G4", "B4", "D5", "D5")}
+  let e={pick(k, "A4", "C5", "E5", "E5")}
+  let right={pick(k, 0, 2, 1, 0)}
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x30 {
+    row top space=2 align=end at=canvas(1, 1) {
+      notes scale clef=treble notes=[a, b, c, d, e] values=[] letters=true meter=0
+      lander l rungs=5
+    }
+    table steps cols=7 head=["C-D", "D-E", "E-F", "F-G", "G-A", "A-B", "B-C"] cells=["2", "2", "1", "2", "2", "2", "1"] below=top gap=1
+    text ask "These are the five notes {song}, from low to high. The table gives the semitones between neighbouring white keys. Going up from each note to the next, how many of the steps are only one semitone?" narrate width=34 below=steps gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 1 and right != 1) point=steps {
+      say "Check every pair of neighbouring notes, including the last two."
+    }
+    when (answer > 2) point=steps {
+      say "A step that skips a letter is at least a tone. Only a step of exactly 1 in the table counts."
+    }
+  }
+  hint "Take the first two notes. How many semitones apart are they, from the table?"
+  hint "A step that jumps over a letter adds up two numbers from the table. Which steps are only one semitone?"
+}

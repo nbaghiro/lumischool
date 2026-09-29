@@ -1,0 +1,36 @@
+# The way in to a program printed as text: the two spaces before lines 3 and 4 are all that put them
+# inside the repeat, and line 5, written flush, runs once after it. The maze shows only the start.
+item coding.text-where v=1 skills=[coding.text, coding.repetition, coding.tracing] {
+  title "Across the ice shelf"
+  difficulty ((a + 2 * n + d) / 4)
+  let a=1..3 n=2..4 d=1..2
+  where (1 + a + n <= 8 and d < n)
+  level easy {
+    let n={2} d={1}
+  }
+  level hard {
+    let n={3, 4} d={2}
+  }
+
+  scene 36x19 {
+    program p code=["right {a}", "repeat {n}", "  up 1", "  right 1", "down {d}"] text=true at=canvas(1, 0)
+    maze g cols=8 rows=5 col=1 row=5 face=right code=["right {a}", "repeat {n}", "  up 1", "  right 1", "down {d}"] upto=0 trail=none right-of=p gap=1
+    text ask "The research station's robot starts on the ring. Read the program from the top. Which column and row does it stop on?" width=22 below=p gap=1
+    text tc "column" right-of=ask gap=1
+    number-input col right-of=tc gap=1
+    text tr "row" below=tc gap=1
+    number-input row right-of=tr gap=1
+  }
+
+  check coding.runs of=g col=col row=row
+  feedback {
+    when (col == 2 + a and row == 4 + d) point=p {
+      say "Lines 3 and 4 are set in by two spaces, so they run every time round: {n} times, not once."
+    }
+    when (col == 1 + a + n and row == 5 - n) point=p {
+      say "That is where the repeat ends. Line 5 is written flush, so it still runs once, after the repeat."
+    }
+  }
+  hint "Which lines start with two spaces? Those are the lines the repeat holds."
+  hint "Follow the robot with a finger: the first line, then the two lines set in, as many times as the repeat says, then the last line."
+}

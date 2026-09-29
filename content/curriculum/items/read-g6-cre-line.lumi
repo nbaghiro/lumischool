@@ -1,0 +1,42 @@
+# Two letters to the gorge council of about 140 words each, and the line that holds a claim, a
+# reason, its evidence or the writer's answer to the other side. The answers are the line breaks of
+# the letters at width 34 (65 letters to a line), so the texts and the width stay as they are.
+item reading.cre-line v=1 skills=[reading.argument, reading.evidence] {
+  title "Which line gives it?"
+  difficulty pick(q, 0, 1, 1, 1, 0, 2, 2, 1)
+  let q=0..7
+  level easy {
+    let q={0, 2, 4}
+  }
+  level hard {
+    let q={1, 3, 5, 6}
+  }
+
+  scene 35x32 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p title="{pick(q, \"Ada Mensah to the council\", \"Ada Mensah to the council\", \"Ada Mensah to the council\", \"Mr Hale to the council\", \"Mr Hale to the council\", \"Mr Hale to the council\", \"Ada Mensah to the council\", \"Mr Hale to the council\")}" text="{pick(q, \"The old water wheel in the gorge should turn again. First, it could light the village hall: an engineer says a wheel this size makes enough electricity for thirty homes. Second, visitors would come to see it. When the mill opened for one day last May, four hundred people came. Some people say the wheel is too old to mend. It is true that the axle is cracked, but the carpenter who looked at it in March says a new axle would cost less than the hall spends on electricity in one year. Third, the wheel belongs to the gorge. Our great-grandparents ground their flour with it, and children should be able to see how that was done. I ask the council to vote to mend the wheel this summer, before the autumn rains make the work harder.\", \"The old water wheel in the gorge should turn again. First, it could light the village hall: an engineer says a wheel this size makes enough electricity for thirty homes. Second, visitors would come to see it. When the mill opened for one day last May, four hundred people came. Some people say the wheel is too old to mend. It is true that the axle is cracked, but the carpenter who looked at it in March says a new axle would cost less than the hall spends on electricity in one year. Third, the wheel belongs to the gorge. Our great-grandparents ground their flour with it, and children should be able to see how that was done. I ask the council to vote to mend the wheel this summer, before the autumn rains make the work harder.\", \"The old water wheel in the gorge should turn again. First, it could light the village hall: an engineer says a wheel this size makes enough electricity for thirty homes. Second, visitors would come to see it. When the mill opened for one day last May, four hundred people came. Some people say the wheel is too old to mend. It is true that the axle is cracked, but the carpenter who looked at it in March says a new axle would cost less than the hall spends on electricity in one year. Third, the wheel belongs to the gorge. Our great-grandparents ground their flour with it, and children should be able to see how that was done. I ask the council to vote to mend the wheel this summer, before the autumn rains make the work harder.\", \"The rope bridge over the gorge should be closed until it is mended, because it is no longer safe. Three planks cracked this spring, and one fell into the river. The handrail is lower than a child's waist. It is also the only way to the kingfisher bank, so it should be mended quickly. Some say a closed bridge will keep visitors away, but a bridge closed for a month is better than a bridge where someone falls. The ranger counted 120 crossings last Saturday, and many of them were families with small children. The carpenter can fit new planks and a higher handrail in three weeks, and the council has money left from the spring fair. I ask the council to close the bridge on Monday and open it again when the work is done.\", \"The rope bridge over the gorge should be closed until it is mended, because it is no longer safe. Three planks cracked this spring, and one fell into the river. The handrail is lower than a child's waist. It is also the only way to the kingfisher bank, so it should be mended quickly. Some say a closed bridge will keep visitors away, but a bridge closed for a month is better than a bridge where someone falls. The ranger counted 120 crossings last Saturday, and many of them were families with small children. The carpenter can fit new planks and a higher handrail in three weeks, and the council has money left from the spring fair. I ask the council to close the bridge on Monday and open it again when the work is done.\", \"The rope bridge over the gorge should be closed until it is mended, because it is no longer safe. Three planks cracked this spring, and one fell into the river. The handrail is lower than a child's waist. It is also the only way to the kingfisher bank, so it should be mended quickly. Some say a closed bridge will keep visitors away, but a bridge closed for a month is better than a bridge where someone falls. The ranger counted 120 crossings last Saturday, and many of them were families with small children. The carpenter can fit new planks and a higher handrail in three weeks, and the council has money left from the spring fair. I ask the council to close the bridge on Monday and open it again when the work is done.\", \"The old water wheel in the gorge should turn again. First, it could light the village hall: an engineer says a wheel this size makes enough electricity for thirty homes. Second, visitors would come to see it. When the mill opened for one day last May, four hundred people came. Some people say the wheel is too old to mend. It is true that the axle is cracked, but the carpenter who looked at it in March says a new axle would cost less than the hall spends on electricity in one year. Third, the wheel belongs to the gorge. Our great-grandparents ground their flour with it, and children should be able to see how that was done. I ask the council to vote to mend the wheel this summer, before the autumn rains make the work harder.\", \"The rope bridge over the gorge should be closed until it is mended, because it is no longer safe. Three planks cracked this spring, and one fell into the river. The handrail is lower than a child's waist. It is also the only way to the kingfisher bank, so it should be mended quickly. Some say a closed bridge will keep visitors away, but a bridge closed for a month is better than a bridge where someone falls. The ranger counted 120 crossings last Saturday, and many of them were families with small children. The carpenter can fit new planks and a higher handrail in three weeks, and the council has money left from the spring fair. I ask the council to close the bridge on Monday and open it again when the work is done.\")}" width=34
+      row bottom space=1 align=centre {
+        text ask "{pick(q, \"Which line states Ada's claim?\", \"Which line starts the evidence that visitors would come?\", \"Which line names the expert who backs Ada's first reason?\", \"Which line gives Mr Hale's reason for closing the bridge?\", \"Which line gives evidence that a plank fell?\", \"Which line gives a reason for mending it quickly?\", \"Which line starts Ada's answer to people who disagree with her?\", \"Which line starts the evidence that children cross the bridge?\")}" width=29
+        number-input answer
+      }
+    }
+  }
+
+  answer pick(q, 1, 4, 2, 2, 3, 4, 5, 7)
+  feedback {
+    when (q == 1 and answer == 3) point=p {
+      say "That line gives the reason, that visitors would come. The evidence is what happened on one day."
+    }
+    when (q == 3 and answer == 1) point=p {
+      say "That line starts the claim, what he wants. Find the word because."
+    }
+    when (q == 6 and answer == 6) point=p {
+      say "That line carries on her answer. Find where she first says what other people think."
+    }
+    when (q == 5 and answer == 5) point=p {
+      say "That line says what he wants done. Find the line that says why it should be quick."
+    }
+  }
+  hint "Is the question after the claim, a reason or the evidence? Find those words first."
+  hint "Check your line holds the words themselves, not only the start of the sentence."
+}

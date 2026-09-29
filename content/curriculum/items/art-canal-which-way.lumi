@@ -1,0 +1,30 @@
+# The core rule of one-point perspective: only lines that run away from you meet at the point;
+# lines straight across stay level, and upright ones stay upright.
+item art.canal-which-way v=1 skills=[art.perspective, reasoning.generalise] {
+  title "Which lines meet?"
+  difficulty (if t == 2 or t == 3 or t == 4 or t == 6 or t == 7 then 1 else 0)
+  let t=0..7
+  let thing={pick(t, "the edge of the towpath", "a lamp post on the towpath", "the top of the far bridge", "the roof of a narrowboat moored along the bank", "the beam of a lock gate straight across the canal", "the corner where two walls of the mill meet", "the gutter along the mill wall beside the canal", "the step of a lock straight across the water")}
+  let way={pick(t, "to the point", "upright", "level", "to the point", "level", "upright", "to the point", "level")}
+  level easy {
+    let t={0, 1, 2, 3}
+  }
+  level hard {
+    let t={4, 5, 6, 7}
+  }
+
+  scene 36x15 {
+    perspective canal horizon=5 vp=10 posts=2 wall=true at=canvas(1, 1)
+    text ask "Ada is drawing the canal, looking straight along it. In her drawing, does {thing} run to the vanishing point, stay level, or stay upright?" width=18 right-of=canal gap=1
+    choice pick options=["to the point", "level", "upright"] below=canal gap=1
+  }
+
+  answer pick=way
+  feedback {
+    when (pick != way) point=canal {
+      say "Ask which way the real thing runs: away from Ada along the canal, straight across it, or straight up. Only lines running away from her meet at the point."
+    }
+  }
+  hint "Does the real thing run along the canal, across it, or straight up?"
+  hint "Look at the posts, the bridge and the edges in the drawing. Which of them lean in towards one spot?"
+}

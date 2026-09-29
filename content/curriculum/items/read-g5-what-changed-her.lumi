@@ -1,0 +1,25 @@
+# What turned Iris round: the story map of the three parts, and the event in the middle that caused
+# the change. The wrong options are true events that come too late to cause it, or no event at all.
+item reading.what-changed-her v=1 skills=[reading.character, reading.cause-effect] {
+  title "What changed her?"
+  difficulty pick(k, 0, 1)
+  let k=0..1
+  let right={pick(k, "She did a hard job that only she could do.", "Iris showed she could mend the clock.")}
+
+  scene 35x32 {
+    column all at=canvas(1, 1) space=1 align=start {
+      storymap map stops=["Iris sulks", "Clock stops", "Iris squeezes in", "Bells ring"] icons=["girl", "moon", "lantern", "star"] heads=["Part 1", "Part 2", "Part 2", "Part 3"]
+      text ask "{pick(k, \"Iris is cross at the start and proud at the end. What changed her?\", \"Mr Tamas ignores Iris at the start and gives her a key at the end. What changed him?\")}" width=34
+      choice pick options=[pick(k, "Her mother told her to cheer up.", "Iris was his apprentice for the summer."), right, pick(k, "The whole square cheered.", "The bell rang at midnight.")] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "The whole square cheered." or pick == "The bell rang at midnight.") point=map {
+      say "That happens, but only because of something earlier. What made it possible?"
+    }
+  }
+  hint "Find the place on the story map where things turn round."
+  hint "What did Iris do there that she had never done before?"
+}

@@ -1,0 +1,25 @@
+# A logic puzzle in words: three children, three library books, and clues that each rule out a pair.
+# The grid is for the child's crosses; every version has exactly one answer.
+item reading.library-logic v=1 skills=[reading.inference, reasoning.logic] {
+  title "Who borrowed which book?"
+  difficulty pick(k, 0, 2, 1)
+  let k=0..2
+  let right={pick(k, "stars", "clocks", "walls")}
+
+  scene 35x17 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=1 align=start {
+        passage clues title="Clues" text="{pick(k, \"Ada did not borrow the book about stars. Ben's book is about the things that tell the time.\", \"Ben's book is about something in the night sky. Nobody's book starts with the same letter as their name.\", \"Cal's book is not about the walls or the stars. Ada did not borrow the book about the walls.\")}" width=17 numbers=false
+        logicgrid grid rows=["Ada", "Ben", "Cal"] cols=["stars", "walls", "clocks"] marks=[0, 0, 0, 0, 0, 0, 0, 0, 0]
+      }
+      row bottom space=1 align=centre {
+        text ask "{pick(k, \"Which book did Cal borrow?\", \"Which book did Ada borrow?\", \"Which book did Ben borrow?\")}" width=14
+        choice pick options=["stars", "walls", "clocks"]
+      }
+    }
+  }
+
+  answer pick=right
+  hint "Put a cross in the grid for every pair a clue rules out, and a tick for every pair it tells you."
+  hint "When a row has two crosses, the last box must be a tick. What does that tick rule out below it?"
+}

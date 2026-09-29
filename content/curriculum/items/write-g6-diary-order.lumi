@@ -1,0 +1,47 @@
+# A day's entry muddled into five sentences, put back in order by their time words. At k=0 the time
+# words name the hour; at k=1 they only say what came before, so each has to be read for its link.
+item writing.diary-order v=1 skills=[writing.diaries, writing.sequencing] {
+  title "The day in order"
+  difficulty (if k == 0 then p else 2 + p)
+  let k=0..1 p=0..2
+  let a={pick(p, 2, 4, 1)}
+  let b={pick(p, 0, 2, 3)}
+  let c={pick(p, 4, 0, 0)}
+  let d={pick(p, 1, 3, 4)}
+  let e={pick(p, 3, 1, 2)}
+  let t0={pick(k, "At six the sun was already high over the ice.", "First we loaded the sledge in the bright night.")}
+  let t1={pick(k, "After breakfast we pulled the sledge north.", "Once the ropes were tight, we set off north.")}
+  let t2={pick(k, "By noon we had reached the ice cliff.", "When the fog came down, we stopped and waited.")}
+  let t3={pick(k, "In the afternoon we measured the ice.", "As soon as it lifted, we saw the iceberg ahead.")}
+  let t4={pick(k, "Before bed I wrote this by the stove.", "By the time we got back, the stove was cold.")}
+  let wa={pick(a, t0, t1, t2, t3, t4)}
+  let wb={pick(b, t0, t1, t2, t3, t4)}
+  let wc={pick(c, t0, t1, t2, t3, t4)}
+  let wd={pick(d, t0, t1, t2, t3, t4)}
+  let we={pick(e, t0, t1, t2, t3, t4)}
+  level easy {
+    let k=0..0 p=0..1
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x29 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      sledge sl slats=5
+      iceberg berg under=0
+      hut h pictures=3
+    }
+    text ask "A page of Isla's diary came loose and the sentences are muddled. Number them 1 to 5." narrate width=33 below=pics gap=1
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}", "{we}"] blanks=[q, x, y, u, v] below=ask gap=1
+  }
+
+  answer q=(a + 1) x=(b + 1) y=(c + 1) u=(d + 1) v=(e + 1)
+  feedback {
+    when ((if a == 4 then q else if b == 4 then x else if c == 4 then y else if d == 4 then u else v) < 5) point=s {
+      say "One sentence says the day is over. Whatever else happened, it comes last."
+    }
+  }
+  hint "Find the words at the start of each sentence that say when. Which one starts the day?"
+  hint "For each sentence, ask what must already have happened before it."
+}

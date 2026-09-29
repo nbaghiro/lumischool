@@ -1,0 +1,68 @@
+lesson nature-passed-on-and-changed v=1 format=teach grade=6 unit=9 subject=nature levels=[easy, medium, hard] {
+  title "Passed on, and changed over time"
+  goal "Say which features living things inherit from their parents, and how small differences passed on over many generations change them, as fossils show."
+
+  look {
+    scene 34x11 {
+      row all at=canvas(1, 1) space=2 align=end {
+        fossil fo dug=1 close=1
+        flowers fl count=2 petals=6
+        earth e up=2
+      }
+    }
+    say """
+      Ada has brought seeds from Earth to the moon base: sunflower seeds from one flower head and a
+      packet of peas. She has a photo of a fossil too, a sea reptile like the one Mary Anning dug out
+      of the cliffs at Lyme Regis two hundred years ago. Every seedling gets its features from its
+      parents, but no two are exactly alike. Charles Darwin saw that where a difference helps, such
+      as a colour that hides a fish from a kingfisher, the ones that have it live longer, leave more
+      young and pass it on. Over thousands of generations that changes living things, and fossils in
+      the rock show the ones that came before.
+      """
+  }
+  do {
+    level easy {
+      worked nature.inherited-or-not k=1 level=medium
+    }
+    practice nature.inherited-or-not count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.pea-heights count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.who-survives count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.fossil-tells count=1 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show nature.why-change k=1 level=medium
+    }
+  }
+  story {
+    show nature.pea-generations k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.why-change k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.dark-fish k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Young take after their parents but are never quite the same, and the ones that suit the place best pass their features on."
+  }
+
+  grown-ups """
+    Three ideas meet here. Living things inherit their features from their parents, but not every
+    feature is inherited: a scar or a trick is picked up in a life, and a plant starved of light or
+    room grows differently whatever its parents were. The young of the same parents vary, as the twenty
+    sunflowers show: they grew in the same soil and light, and their head was pollinated from many
+    plants, so most of the spread is inherited (seeds of one pea plant would show little, since peas
+    pollinate themselves). And when a difference helps, the ones that have it leave more young, so over many
+    generations a kind of living thing changes; fossils are the evidence of what came before. The
+    wrong idea to watch for is that animals change because they need or want to, or pass on what
+    they did in their lives; the two-star question is built on it. The story shows how many more
+    young are made than can ever survive. The three-star question is a model of the pool, and the
+    way in is a table, summer by summer. If wanting still explains change after the core, stay here
+    another day: sow a row of seeds from one sunflower head in the same soil, and look at how different the seedlings are.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the bean in the dim corner) opens the core, the features are the purple flowers and Ben's scar, the graph questions read one bar and add two, the fish question is which live to have young and what the pool becomes, the fossil tells of the sea and of animals that died out, the plant makes 24 peas, the two-star question asks why chicks differ, and the pale fish are counted after three summers."
+  }
+  level hard {
+    grown-ups "At this level the features are the pale bean and the tall family's short sunflower, the graph questions add the taller bars and compare two, the pool floor turns pale and the Arctic fox's fur is asked about, the fossil fish in the older layers and the moon's rocks are asked about, a second reasoning question in the core is Ben's fox that wanted thick fur, the story gives 900 peas and asks for the first plant's, the giraffe's stretched neck is the mistake, and the model runs until dark fish outnumber pale by more than 10 to 1."
+  }
+}

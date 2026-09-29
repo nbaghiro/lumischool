@@ -1,0 +1,35 @@
+# Two-star: a line inside the repeat that does the same thing every time round can move out and run
+# once, which saves a step every time round but one. The reason is that nothing in the repeat changes it.
+item coding.least-hoist v=1 stars=2 skills=[coding.efficiency, reasoning.explain] {
+  title "A line that need not repeat"
+  difficulty (n / 4)
+  let n={4, 6, 8, 10}
+  level easy {
+    let n={4, 6}
+  }
+  level hard {
+    let n={8, 10}
+  }
+
+  scene 36x21 {
+    program p code=["set fuel to 90", "repeat {n}", "  set speed to 2", "  forward speed", "  take speed from fuel"] text=true at=canvas(0, 0)
+    rocket r flame=1 right-of=p gap=1
+    text ask "One line inside the repeat does exactly the same every time round. Which line is it? If it runs once, before the repeat, how many steps are saved?" width=34 below=p gap=1
+    text t1 "line" below=ask gap=1
+    number-input line right-of=t1 gap=1
+    text t2 "saved" right-of=line gap=2
+    number-input saved right-of=t2 gap=1
+  }
+
+  answer line=3 saved=(n - 1)
+  feedback {
+    when (line == 4 or line == 5) point=p {
+      say "Line {line} changes where the rover is or what fuel holds each time, so it has to stay inside."
+    }
+    when (saved == n) point=p {
+      say "The line still runs once, before the repeat, so one of its runs is kept."
+    }
+  }
+  hint "Which line gives the same result whatever has happened before it?"
+  hint "How many times does it run now? How many times would it run outside the repeat?"
+}

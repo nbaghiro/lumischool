@@ -1,0 +1,69 @@
+# Geometric patterns made with compasses, as the tiles of the old walled city are: one circle, the
+# six marks the compass steps round it, the turn between repeats, and the shapes the marks make.
+lesson art-patterns-with-compasses v=1 format=teach grade=5 unit=8 subject=art levels=[easy, medium, hard] {
+  title "Patterns with compasses"
+  goal "Build a geometric pattern from one circle with a compass and a ruler, and work out the turn and the shapes inside it."
+
+  look {
+    scene 29x14 {
+      row all at=canvas(1, 1) space=1 align=end {
+        radial rosette repeats=6 motif="leaf" missing=-1 colour=blue
+        construction arcs kind="bisect"
+      }
+    }
+    say """
+      The floors and walls of the old walled city are covered in patterns that start from one circle.
+      A compass left open at the circle's radius steps round its edge exactly six times, and those six
+      marks give a six-petal rosette, a hexagon and a star. Halving the gaps with the compass gives
+      twelve marks, and from them the tile makers built patterns that repeat all the way round and
+      join on to the next tile.
+      """
+  }
+  do {
+    practice art.compass-six-steps count=1
+    show art.compass-look k=0 hard-k=2
+    show art.compass-rosette
+    practice art.compass-bisect count=1 seed=1
+    practice art.compass-which-way count=2 seed=1
+    practice art.compass-join count=2 hard-count=3 seed=3
+  }
+  try stars=2 {
+    show art.compass-why-six r=1 easy-r=0 hard-r=2
+  }
+  try stars=3 {
+    show art.compass-pattern
+  }
+  remember {
+    say "A compass open at the radius steps round its circle six times, and every pattern here grows from those six marks."
+  }
+
+  grown-ups """
+    Geometric patterns built with a compass and a ruler are one of the great traditions of design,
+    seen in the tilework of the Alhambra in Granada and across the old cities of North Africa, the
+    Middle East and Spain; the Metropolitan Museum's guide to Islamic geometric design teaches them
+    to children this way. The lesson uses a rosette and tiles of our own. The machine marks the
+    questions but one. The first finds the six steps of the compass round its circle. Then the child
+    looks before measuring, saying what in a temple tile makes it seem to turn, and makes a six-petal
+    rosette on paper with a compass, which you look at with them rather than mark. The core doubles
+    the marks by bisecting, chooses the construction that works (for a star, for twelve marks, for a tile that
+    joins the next) and says why the others fail, and names the shape made by joining every second
+    or third mark.
+
+    Watch for a child who counts the gaps round a circle as one more than the marks, as they would
+    along a line; round a circle the last gap closes back to the first mark. If the compass slips
+    while stepping round, hold it by the top only and press lightly; a rosette that does not close
+    is the usual first try, and the second closes. The two-star question asks why the
+    compass goes round exactly six times, and the pattern is the three-star question, responded to
+    rather than marked. Off the page, a compass, a ruler and a sheet of paper are all it needs, and
+    the construction lines are part of the pattern, so leave them in.
+
+    Respond by finding the six marks in the child's pattern together: "Everything here starts from
+    these six points." Ask which part repeats as it goes round.
+    """
+  level easy {
+    grown-ups "At this level the tile to look at has six petals, four or six marks are bisected once, the constructions to choose are the star and the twelve marks, the shapes are the hexagon, the triangle and the octagon, the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the tile to look at has twelve petals, six or eight marks are bisected twice, the constructions to choose are the twelve marks and a tile's edge, the shapes come from twelve marks joined every second, third or fourth, and a third shape is added, the two-star and three-star are as written."
+  }
+}

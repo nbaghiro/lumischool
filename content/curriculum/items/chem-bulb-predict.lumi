@@ -1,0 +1,22 @@
+# The story: things from the observatory's desk put across the tester's clips, and whether the bulb
+# lights. In THINGS only the metal ones conduct, and the tester draws its bulb from the same table.
+item chem.bulb-predict v=1 skills=[chemistry.metals, physics.circuits] {
+  title "Will it light?"
+  let k={"coin", "foil", "clip", "ruler", "eraser", "stick", "marble"}
+  let metal={k == "coin" or k == "foil" or k == "clip"}
+
+  scene 36x16 {
+    tester tt thing=k show=0 at=canvas(1, 0)
+    text ask "The dome is dark, so Sam tests things from the desk drawer with a torch bulb. Before the clips close, will the bulb light?" narrate width=18 right-of=tt gap=1
+    choice pick options=["Yes: it is a metal", "No: it is not a metal"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if metal then "Yes: it is a metal" else "No: it is not a metal")
+  feedback {
+    when (pick != (if metal then "Yes: it is a metal" else "No: it is not a metal")) point=tt {
+      say "The bulb lights only if the thing between the clips lets electricity through. What is this thing made of?"
+    }
+  }
+  hint "What is the thing between the clips made of?"
+  hint "Which kind of material lets electricity through: metal, or plastic, rubber, wood and glass?"
+}

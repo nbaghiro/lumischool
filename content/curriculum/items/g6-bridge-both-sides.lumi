@@ -1,0 +1,28 @@
+# A letter on both sides: the same number of x taken off both pans leaves a two-step equation.
+item algebra.bridge-both-sides v=1 skills=[algebra.equations] {
+  title "x on both sides"
+  difficulty (a - c + x / 6)
+  let a={3, 4, 5, 6} c={1, 2} x=2..9 b={1, 2, 3, 5}
+  where (a > c + 1)
+  level easy {
+    let a={3, 4} c={1} x=2..5
+  }
+  level hard {
+    let a={5, 6} c={2} x=6..9
+  }
+
+  scene 29x19 {
+    balanceeq scales left="{a}x + {b}" right="{if c == 1 then \"\" else c}x + {(a - c) * x + b}" at=canvas(1, 1)
+    text ask "Each bag on the rope bridge's scale holds x kg of rope, and the pans balance. What number is x?" narrate width=28 below=scales gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer x
+  feedback {
+    when (answer == ((a - c) * x + b - b) / (a + c)) point=scales {
+      say "Take {c}x off both sides, so there is x on one side only. Adding them does not balance."
+    }
+  }
+  hint "Take the same number of x off both pans. What is left?"
+  hint "Now solve the two-step equation that is left."
+}

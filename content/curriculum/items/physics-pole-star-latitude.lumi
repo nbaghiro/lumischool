@@ -1,0 +1,31 @@
+# The story: the pole star stands as high above the horizon as your latitude, so the difference in
+# its height is the difference in how far north two places are. L is the observatory, h the ship.
+item physics.pole-star-latitude v=1 skills=[physics.sky, angles.degrees] {
+  title "The navigator's star"
+  difficulty (if L - h > 15 then 1 else 0)
+  let L={55, 60, 65} h={40, 45, 50}
+  level easy {
+    let h={50}
+  }
+  level hard {
+    let h={40}
+  }
+
+  scene 31x37 {
+    row pair at=canvas(1, 0) space=2 align=end {
+      observatory o open=1
+      starmap m sky=13 looks=1 pointers=1 names=0 horizon=1 lat=L
+    }
+    text ask "From the observatory on the star cliffs, the pole star stands at the height drawn. A ship's navigator far to the south sees the pole star only {h} degrees above her horizon. How many degrees further north is the observatory than the ship?" narrate width=29 below=pair gap=1
+    number-input deg below=ask gap=1
+  }
+
+  answer deg=(L - h)
+  feedback {
+    when (deg == L + h) point=m {
+      say "The ship sees the pole star lower. Is it further north or further south, and by how much?"
+    }
+  }
+  hint "How high does the pole star stand over the observatory?"
+  hint "The pole star is as many degrees high as the place is degrees north of the equator."
+}

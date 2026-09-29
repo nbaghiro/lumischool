@@ -1,0 +1,24 @@
+# Backwards from a reading on the Moon, where each kilogram is pulled with 1.6 N, to the mass.
+item physics.weight-moon-mass v=1 skills=[physics.weight, physics.sky, reasoning.backwards] {
+  title "Mass from a reading on the Moon"
+  difficulty (w / 8)
+  let w={8, 16, 24, 32}
+
+  scene 28x14 {
+    springscale s max=40 step=8 value=w unit=N at=canvas(1, 0)
+    text ask "On the Moon each kilogram is pulled down with 1.6 N. A bag of Moon rock on this force meter reads what you see. What is the rock's mass, in kilograms?" narrate width=19 right-of=s gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer plain(w / 1.6)
+  feedback {
+    when (answer == w / 10) point=s {
+      say "That would be right on Earth. On the Moon each kilogram weighs only 1.6 N."
+    }
+    when (answer == w * 1.6) point=s {
+      say "Multiplying gives newtons from kilograms. Here the newtons are known, so divide instead."
+    }
+  }
+  hint "How many newtons does each kilogram weigh on the Moon?"
+  hint "How many lots of 1.6 N make the reading? Count up in steps of 1.6 N, or divide."
+}

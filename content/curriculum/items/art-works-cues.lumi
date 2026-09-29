@@ -1,0 +1,30 @@
+# The two-star reason, with cues that disagree: in Early Spring the great peak is drawn larger than
+# the pines near the bottom, yet it is the far layer. Guo Xi shows its distance by placing it high
+# and behind mist. In Hokusai's print the waterfall is bigger than the travellers but behind them.
+item art.works-cues v=1 stars=2 skills=[art.artists, art.space, reasoning.evidence] {
+  title "Big, but far away"
+  let q=0..1 r=0..2
+  let work={pick(q, 0, 1)}
+  let claim={pick(q, "In Guo Xi's Early Spring the great peak is drawn much bigger than the rocks and pines at the bottom. Mia says it must be the nearest thing.", "In Hokusai's Kirifuri Waterfall the waterfall is drawn far bigger than the three travellers. Mia says the waterfall must be nearer than them.")}
+  let right={pick(q, "No: it is high up and behind mist, so it is far", "No: the travellers are low and in front, so nearer")}
+  let w1={pick(q, "Yes: in a painting bigger is always nearer", "Yes: in a painting bigger is always nearer")}
+  let w2={pick(q, "Yes: it is at the top, and the top is nearest", "Yes: the middle of a picture is nearest")}
+
+  scene 36x37 {
+    studies s work=work names=1 card=1 at=canvas(1, 1)
+    text ask "{claim} Is she right?" narrate width=12 right-of=s gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=s gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=s {
+      say "A far mountain is really huge, so it can still look big. What else in the picture tells you how far away something is?"
+    }
+    when (pick == w2) point=s {
+      say "In a landscape, where does the ground nearest you usually sit in the picture: at the top or at the bottom?"
+    }
+  }
+  hint "Size is one clue to distance. What other clues does a landscape painter use?"
+  hint "Look at where it sits in the picture, what is in front of it, and how clear or misty it is."
+}

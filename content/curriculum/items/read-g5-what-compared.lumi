@@ -1,0 +1,29 @@
+# Every simile and metaphor joins two things. Naming both is the first step to saying what the
+# comparison means, and the wrong options take a word from the line that is not one of the two.
+item reading.what-compared v=1 skills=[reading.figurative, reading.inference] {
+  title "What is compared with what?"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let right={pick(k, "the comet's tail and a scarf", "the dome and a shell", "the northern lights and curtains", "the telescope and a finger")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 36x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        passage line text="{pick(k, \"The comet's tail was a torn silk scarf, trailing silver across the sky.\", \"The dome on the cliff is a white shell, closed tight against the day.\", \"The northern lights came down like curtains over the cold sea.\", \"The great telescope pointed at the sky like a long brass finger.\")}" width=24 numbers=false
+        telescope scope tilt=40
+      }
+      text ask "What two things does the line compare?" width=34
+      choice pick options=[pick(k, "the comet's tail and a scarf", "the sky and a shell", "the northern lights and curtains", "the sky and a finger"), pick(k, "the comet and the sky", "the dome and a shell", "the sea and curtains", "the telescope and a finger"), pick(k, "silk and a scarf", "the cliff and the day", "the northern lights and the sea", "the telescope and the sky")] stack=column
+    }
+  }
+
+  answer pick=right
+  hint "Find the thing the line is really about. What is it said to be, or to be like?"
+  hint "One of the two is really there, and the other is only in the picture the words make."
+}

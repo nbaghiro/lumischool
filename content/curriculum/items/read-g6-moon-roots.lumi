@@ -1,0 +1,30 @@
+# Space words built from Greek and Latin roots, read with a key. Astronaut and aquanaut are real
+# words; selenograph and selenologist are real too, if rare.
+item reading.moon-roots v=1 skills=[reading.morphology, reading.vocabulary] {
+  title "Space words from old roots"
+  difficulty pick(k, 0, 1, 2, 0)
+  let k=0..3
+  let right={pick(k, "a star sailor", "a moon drawing", "a moon scientist", "a water sailor")}
+  let wrong1={pick(k, "a far sailor", "a moon scientist", "a moon drawing", "a star sailor")}
+  let wrong2={pick(k, "a star writer", "a moon sailor", "a moon sailor", "a far sailor")}
+
+  scene 35x21 {
+    text ask "Use the key. What is {pick(k, \"an astronaut\", \"a selenograph\", \"a selenologist\", \"an aquanaut\")}, root by root?" at=canvas(1, 1) width=34
+    row bottom below=ask gap=1 space=1 align=start {
+      table key cols=4 head=["Root", "Means", "Root", "Means"] cells=["astro", "star", "selene", "moon", "naut", "sailor", "graph", "draw", "aqua", "water", "logist", "studier", "tele", "far", "scope", "look"]
+      column side space=1 align=start {
+        rocket r flame=1
+        choice pick options=[pick(k, wrong1, right, wrong2, wrong2), pick(k, right, wrong2, wrong1, right), pick(k, wrong2, wrong1, right, wrong1)] stack=column
+      }
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=key {
+      say "Split the word into two roots and find each one in the key. Which choice uses both meanings?"
+    }
+  }
+  hint "Where does the first root end and the second begin?"
+  hint "Put the two meanings together, the second one last."
+}

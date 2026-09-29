@@ -1,0 +1,29 @@
+# Two stars: a pan balance compares masses, and the Moon pulls both pans less by the same share, so it
+# still balances; a force meter measures the pull, which is less. d chooses the mass on the pans.
+item physics.balance-on-moon v=1 stars=2 skills=[physics.weight, reasoning.explain] {
+  title "Balance or force meter?"
+  let d={2, 5}
+
+  scene 32x30 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      springscale s max=50 step=10 value=(d * 10) unit=N
+      text ask "On Earth a {d} kg bag of flour balances {d} kg of weights on a pan balance, and pulls a force meter to {d * 10} N. An astronaut does both again on the Moon. What happens?" narrate width=20
+    }
+    choice pick options=["The balance stays level, the meter reads less", "The balance tips, the meter reads less", "The balance stays level, the meter is the same", "Both are the same as on Earth"] stack=column below=kit gap=1
+  }
+
+  answer pick="The balance stays level, the meter reads less"
+  feedback {
+    when (pick == "The balance tips, the meter reads less") point=kit {
+      say "The Moon pulls the flour less, but it pulls the weights less by just as much. What does a balance compare?"
+    }
+    when (pick == "The balance stays level, the meter is the same") point=s {
+      say "A force meter measures how hard the flour is pulled down, and the Moon pulls less than the Earth."
+    }
+    when (pick == "Both are the same as on Earth") point=s {
+      say "A force meter measures how hard the flour is pulled down, and the Moon pulls less than the Earth."
+    }
+  }
+  hint "A balance compares one mass with another. Does the Moon pull one pan less than the other?"
+  hint "A force meter measures the pull itself. Is the pull on the Moon the same as on Earth?"
+}

@@ -1,0 +1,39 @@
+# The first leap of four public domain tunes, read from the staff: Kumbaya a 3rd, Here Comes the
+# Bride (Wagner, 1850) a 4th, Twinkle Twinkle a 5th after a repeated note, My Bonnie a 6th.
+item music.interval-tune-opening v=1 skills=[music.intervals, music.staff] {
+  title "The first jump"
+  difficulty (if t <= 1 then 0 else if t == 2 then 1 else 2)
+  let t=0..3
+  let tune={pick(t, "Kumbaya", "Here Comes the Bride", "Twinkle Twinkle Little Star", "My Bonnie Lies Over the Ocean")}
+  let n1={pick(t, "C4", "C4", "C4", "G4")}
+  let n2={pick(t, "E4", "F4", "C4", "E5")}
+  let n3={pick(t, "G4", "F4", "G4", "D5")}
+  let n4={pick(t, "G4", "F4", "G4", "C5")}
+  let right={pick(t, 3, 4, 5, 6)}
+  level easy {
+    let t=0..2
+  }
+  level hard {
+    let t=2..3
+  }
+
+  scene 36x19 {
+    row top space=2 align=start at=canvas(1, 1) {
+      notes tune clef=treble notes=[n1, n2, n3, n4] values=[] meter=0
+      text ask "The first four notes of {tune}, which the band plays at the observatory's open night. What interval is its first jump, the first time it moves to a new note?" narrate width=15
+    }
+    number-input answer below=top gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == right - 1) point=tune {
+      say "That counts the gaps. Count the letters, the first note of the jump and the last one too."
+    }
+    when (t == 2 and answer == 1) point=tune {
+      say "The first two notes are the same. Look for the first note that moves to a new line or space."
+    }
+  }
+  hint "Which two notes make the first jump? Name them both."
+  hint "Count the letters from the lower one up to the higher one, counting both."
+}

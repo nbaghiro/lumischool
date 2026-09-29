@@ -1,6 +1,6 @@
 # A four-bar phrase read from the staff for pitch and time together: the opening of the Ode to Joy
 # (Beethoven, 1824, public domain) in C position, with a dotted crotchet in its last bar.
-lesson music-playing-a-short-phrase v=1 format=teach grade=4 unit=5 subject=music levels=[easy, medium, hard] {
+lesson music-playing-a-short-phrase v=1 format=teach grade=4 unit=8 subject=music levels=[easy, medium, hard] {
   title "Playing a short phrase"
   goal "Read a four-bar phrase from the staff and play it with the right notes in the right time."
 

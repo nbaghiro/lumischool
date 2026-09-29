@@ -1,0 +1,35 @@
+# The unknown moves: the area in hectares and one side are known, so the area goes back into square
+# metres and is shared by the length.
+item land.missing-side v=1 skills=[measure.metric.hectares, reasoning.work-backwards] {
+  title "How wide"
+  difficulty (l * w / 10)
+  let l=6..12 w=4..8
+  where (l * w % 4 == 0 and l > w)
+  level easy {
+    let l=6..8 w={4}
+  }
+  level hard {
+    let l=10..12 w=6..8
+  }
+
+  scene 36x17 {
+    scaleplan field plan=2 l=l w=w scale=50 unit="m" dims=1 ask=2 at=canvas(1, 1)
+    text ask "A field by the canal is {l * 50} m long and has an area of {l * w / 4} hectares. How wide is it?" narrate width=15 right-of=field gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "m"
+    }
+  }
+
+  answer (w * 50)
+  feedback {
+    when (answer == w) point=field {
+      say "That counts squares. Each square on the plan is 50 m."
+    }
+    when (answer == w * 5) point=field {
+      say "A hectare is 10,000 m², not 1,000. Change the area into square metres again."
+    }
+  }
+  hint "How many square metres is {l * w / 4} hectares?"
+  hint "Length times width is the area. What times {l * 50} makes it?"
+}

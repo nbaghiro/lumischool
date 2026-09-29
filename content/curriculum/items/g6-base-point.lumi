@@ -1,0 +1,36 @@
+# Reading a point in any of the four quadrants: across first, then up, with negatives left and down.
+item quadrant.base-point v=1 skills=[position.four-quadrants, number.negatives] negatives {
+  title "Where is the beacon"
+  difficulty ((if px < 0 then 1 else 0) + (if py < 0 then 1 else 0))
+  let px={-4, -3, -2, 2, 3, 4} py={-4, -3, -1, 1, 2, 3}
+  level easy {
+    where (px > 0 or py > 0)
+  }
+  level hard {
+    where (px < 0 and py < 0)
+  }
+
+  scene 36x21 {
+    plotpoint grid max=4 quadrants=4 px=px py=py mark="B" at=canvas(1, 1)
+    text ask "The base is at (0, 0). A beacon is marked B. What are its coordinates?" narrate width=13 right-of=grid gap=2
+    row eq below=ask gap=1 space=0 align=centre {
+      text o "("
+      number-input x width=3
+      text comma ","
+      number-input y width=3
+      text c ")"
+    }
+  }
+
+  answer x=px y=py
+  feedback {
+    when (x == py and y == px and px != py) point=grid {
+      say "Across comes first, then up or down. Read along the x axis first."
+    }
+    when (x == abs(px) and y == abs(py) and (px < 0 or py < 0)) point=grid {
+      say "Left of the base and below it the numbers are below zero, so they have a minus sign."
+    }
+  }
+  hint "Is B to the left or the right of the base? Above it or below it?"
+  hint "How many units across from (0, 0)? How many up or down?"
+}

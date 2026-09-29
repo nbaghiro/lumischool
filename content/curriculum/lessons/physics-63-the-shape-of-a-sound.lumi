@@ -1,0 +1,60 @@
+lesson physics-the-shape-of-a-sound v=1 format=teach grade=6 unit=2 subject=physics levels=[easy, medium, hard] {
+  title "The shape of a sound"
+  goal "Read a sound's pitch and loudness from the shape of its wave, and work out its vibrations a second in hertz."
+
+  look {
+    scene 36x13 {
+      row all at=canvas(0, 0) space=1 align=end {
+        wave s waves=[3, 6] heights=[3, 1] across=10 letters=1 blank=-1
+        whale w spout=1 facing=-1
+      }
+    }
+    say """
+      A sound is something vibrating. A microphone turns the vibrations into a wave on a screen, and
+      every screen here shows 0.01 s. The more waves across the screen, the faster the vibrations and
+      the higher the note: A has 3 waves, so it vibrates 300 times a second, 300 hertz (Hz), and B is
+      600 Hz. The taller the waves, the harder it vibrates and the louder it is, so A is louder.
+      """
+  }
+  do {
+    practice physics.wave-hertz count=2 seed=1 easy-seed=2 hard-seed=3
+    level easy {
+      worked physics.wave-higher v=0 level=medium
+    }
+    practice physics.wave-higher count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.wave-loudest count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.wave-what-changed count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.wave-band count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.wave-half-band count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.hear-range count=1 seed=1 easy-seed=2 hard-seed=3
+  }
+  story {
+    show physics.wave-whale w=2 s=8 easy-w=1 easy-s=6 hard-w=3
+  }
+  try stars=2 {
+    show physics.wave-harder-pluck w=3 hard-w=5
+  }
+  try stars=3 {
+    show physics.wave-length-for v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "More waves across the screen is a higher note; taller waves are a louder one."
+  }
+
+  grown-ups """
+    The usual mix-up is between high and loud: children call a loud sound "high" and a quiet one
+    "low", and pick the taller wave as the higher note. The questions keep changing both, so the
+    child has to count waves for pitch and look at height for loudness. Listen for the child
+    counting whole waves, from one crossing of the middle line to the next going the same way. If
+    the hertz stall, go back to one screen of 2 waves: 0.01 s, so a hundred screens a second, so 200
+    Hz. Off the page, hum low and high with a hand on your throat, or pluck a ruler over the edge of
+    a table and shorten the part that shakes. The three-star question is solved by noticing that
+    length times hertz stays the same for one band.
+    """
+  level easy {
+    grown-ups "At this level the screens have few waves, a worked example picks the higher note, the traces keep one thing the same, only people and dogs are compared by hearing, and the three-star band doubles its note."
+  }
+  level hard {
+    grown-ups "At this level the screens are crowded, the taller trace is often the lower note, the harder pluck and the whale have more waves, a bat is among the sounds, and the three-star band goes from 300 to 400 Hz."
+  }
+}

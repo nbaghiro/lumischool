@@ -1,0 +1,30 @@
+# The way in: a letter stands for a number, and the expression is worked out once the number is known.
+item algebra.letter-value v=1 skills=[algebra.expressions] {
+  title "When the letter is known"
+  difficulty (m * n / 10 + (if k > 0 then 1 else 0))
+  let m={2, 3, 4, 5} n=3..9 k={0, 4, 7}
+  level easy {
+    let m={2, 3} k={0}
+  }
+  level hard {
+    let m={4, 5} k={4, 7} n=6..9
+  }
+
+  scene 32x12 {
+    machine mach rule="× {m}{if k > 0 then \" + \" else \"\"}{if k > 0 then k else \"\"}" input="n" output="" at=canvas(1, 1)
+    text ask "The temple's number machine turns n into {m}n{if k > 0 then \" + \" else \"\"}{if k > 0 then k else \"\"}. What comes out when n = {n}?" narrate width=12 right-of=mach gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (m * n + k)
+  feedback {
+    when (answer == 10 * m + n + k) point=ask {
+      say "{m}n means {m} times n, not a two-digit number. What is {m} × {n}?"
+    }
+    when (k > 0 and answer == m * (n + k)) point=ask {
+      say "Multiply first, then add {k}."
+    }
+  }
+  hint "What does {m}n mean?"
+  hint "Put {n} in place of n and work it out."
+}

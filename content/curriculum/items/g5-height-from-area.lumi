@@ -1,0 +1,30 @@
+# The core's reasoning question: the area and the base given, the height found by running the rule
+# backwards, doubled first for a triangle.
+item area.height-from-area v=1 skills=[area.triangles, area.parallelograms, reasoning.inverse] {
+  title "How tall is it"
+  difficulty ((if k == "triangle" then 1 else 0) + b * h / 20)
+  let k={"triangle", "parallelogram"} b=4..10 h=3..8 s=1..3
+  where (k == "parallelogram" or b * h % 2 == 0)
+  where (s < b)
+  level easy {
+    let k={"parallelogram"} b=4..6
+  }
+  level hard {
+    let k={"triangle"} b=7..10
+  }
+
+  scene 31x29 {
+    areashape shape kind=k base=b height=h shift=s ask=2 unit=m at=canvas(1, 1)
+    text ask "A {k} of stone in the temple wall has an area of {if k == \"triangle\" then b * h / 2 else b * h} square metres. How tall is it?" narrate width=30 below=shape gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer h
+  feedback {
+    when (k == "triangle" and answer == h / 2) point=shape {
+      say "A triangle's area is half of base times height. Double the area before you divide by the base."
+    }
+  }
+  hint "Write the rule for the area. Which number is missing?"
+  hint "What number times the base gives {if k == \"triangle\" then \"double the area\" else \"the area\"}?"
+}

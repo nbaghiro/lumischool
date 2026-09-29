@@ -1,0 +1,17 @@
+# The way in: each rock's kind from the table the rocks drawing is drawn from (British Geological
+# Survey): granite and basalt igneous, sandstone and limestone sedimentary, marble and slate
+# metamorphic. The checker reads the kind of the lettered rock.
+item chem.rock-kind v=1 skills=[chemistry.rocks] {
+  title "What kind of rock?"
+  let s=0..2
+
+  scene 33x18 {
+    rocks r rocks=[pick(s, "granite", "sandstone", "slate"), pick(s, "limestone", "marble", "basalt"), pick(s, "marble", "granite", "sandstone")] test=0 letters=1 names=1 at=canvas(1, 0)
+    text ask "Mei picks up three rocks at the foot of the waterfall gorge. Which kind of rock is B?" narrate width=18 right-of=r gap=1
+    choice pick options=["igneous", "sedimentary", "metamorphic"] stack=column below=ask gap=1
+  }
+
+  check chem.rocks of=r pick=kind(B)
+  hint "Read B's name. Was it cooled from melted rock, laid down in layers, or changed by heat and pressure?"
+  hint "Granite and basalt cooled from melted rock; sandstone and limestone were laid down; marble and slate were changed."
+}

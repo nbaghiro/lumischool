@@ -1,0 +1,35 @@
+# The three-star: two salty jugs of 100 g of water poured together make 200 g of water with all the
+# salt, so the salt in each 100 g is the average, and the brine table (whole degrees) gives where
+# the mix freezes. No method is on the page. Jug B never holds more than 35 g, under salt's 36 g
+# in 100 g of water, so every grain is dissolved.
+item chem.pour-brine v=1 stars=3 skills=[chemistry.freezing, reasoning.constraints] negatives {
+  title "Two jugs of salty water"
+  difficulty (k + (if a == 0 then 0 else 1))
+  let k=0..2 a={0, 5, 10}
+  let b={pick(k, 20, 30, 35)}
+  let each={(a + b) / 2}
+  where (each == 10 or each == 15 or each == 20 or each == 25)
+  let t={if each == 10 then -6 else if each == 15 then -9 else if each == 20 then -13 else -16}
+  level easy {
+    let a={0} k=0..1
+  }
+  level hard {
+    let a={5, 10}
+  }
+
+  scene 35x25 {
+    table data cols=2 head=["Salt in 100 g", "Freezes at °C"] cells=["0 g", "0", "5 g", "-3", "10 g", "-6", "15 g", "-9", "20 g", "-13", "25 g", "-16"] at=canvas(1, 0)
+    text ask "In the hut, jug A has 100 g of water with {a} g of salt in it, and jug B has 100 g of water with {b} g of salt. Ana pours them together and stirs. At what temperature does the mix freeze?" narrate width=34 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer t
+  feedback {
+    when (answer != t and (answer == pick(k, -13, -21, -21) or answer == (if a == 0 then 0 else if a == 5 then -3 else -6))) point=data {
+      say "That is one jug on its own. Poured together, how much water and how much salt is there?"
+    }
+  }
+  hint "How many grams of water are in the mix, and how many grams of salt?"
+  hint "The table is for 100 g of water. How much salt is in each 100 g of the mix?"
+  hint "Find that row in the table."
+}

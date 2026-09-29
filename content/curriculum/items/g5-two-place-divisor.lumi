@@ -1,0 +1,29 @@
+# A divisor with two decimal places: both numbers are made a hundred times bigger, not ten, before
+# dividing.
+item decimal.two-place-divisor v=1 skills=[decimals.divide, reasoning.equivalence] {
+  title "Bags of a quarter"
+  difficulty ((if c == 0.25 then 0 else if c == 0.15 then 1 else 2) + a / c / 10)
+  let a={1.5, 1.8, 2.4, 3.0, 3.6} c={0.25, 0.15, 0.12}
+  where whole(a / c)
+  level easy {
+    let c={0.25}
+  }
+  level hard {
+    let c={0.12, 0.15} a={2.4, 3.0, 3.6}
+  }
+
+  scene 23x10 {
+    sack bag label="{a} kg" at=canvas(1, 1)
+    text ask "A stall at the canal market packs {a} kg of dried peas into bags of {c} kg each. How many bags does it fill?" narrate width=18 right-of=bag gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer plain(a / c)
+  feedback {
+    when (answer == a / c / 10) point=ask {
+      say "{c} has two decimal places. Multiplying both numbers by ten is not enough to make it whole."
+    }
+  }
+  hint "How many times bigger must {c} be to become a whole number?"
+  hint "Make both numbers that many times bigger. What is {plain(100 * a)} ÷ {plain(100 * c)}?"
+}

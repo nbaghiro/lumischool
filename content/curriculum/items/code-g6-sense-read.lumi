@@ -1,0 +1,37 @@
+# The way in to sensors: a light meter gives the program a number it cannot set, and one if decides
+# whether the lamp outside the research hut is switched on. At midnight in the Arctic summer the sun
+# is still up, so the lamp stays off unless fog rolls in.
+item coding.sense-read v=1 skills=[coding.sensors, coding.decisions, coding.text] {
+  title "Does the lamp come on?"
+  difficulty (if v == d then 1 else if v == d - 1 then 0.5 else 0)
+  let d={4, 5} v=1..8
+  where (v >= d - 3 and v <= d + 3)
+  level easy {
+    where (v != d and v != d - 1)
+  }
+  level hard {
+    where (v == d or v == d - 1)
+  }
+
+  scene 36x23 {
+    program p code=["if daylight is less than {d}", "  switch lamp on", "otherwise", "  switch lamp off"] text=true sense=["daylight starts {v}"] at=canvas(0, 0)
+    midnightsun ms suns=5 midnight=1 below=p gap=1
+    text ask "It is midnight at the research hut and the sun is still up. The light meter reads {v}, and the program runs once. Is the lamp switched on or off?" width=14 right-of=p gap=1
+    choice pick options=["on", "off"] below=ask gap=1
+  }
+
+  check coding.runs of=p pick="on(lamp)"
+  feedback {
+    when (v == d and pick == "on") point=p {
+      say "{d} is not less than {d}. So the if says no and the otherwise runs."
+    }
+    when (pick == "on" and v > d) point=p {
+      say "{v} is more than {d}. Is it less than {d}?"
+    }
+    when (pick == "off" and v < d) point=p {
+      say "{v} is less than {d}, so the if says yes. Which line runs then?"
+    }
+  }
+  hint "What number does the light meter give daylight? Ask line 1's question about it."
+  hint "If the answer is yes, line 2 runs. If it is no, which line runs?"
+}

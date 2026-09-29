@@ -1,0 +1,34 @@
+# The story: the street band plays Ana's eight bars in the market square at a steady speed, four beats
+# to a bar. 32 beats at 80, 96 or 120 beats a minute last 24, 20 or 16 seconds; twice through, double.
+item music.oldcity-market-seconds v=1 skills=[music.composing, music.counting-beats] {
+  title "How long is the tune?"
+  difficulty (t + (if b == 1 then 1 else 0))
+  let t=0..1 b=0..2
+  let bpm={pick(b, 120, 96, 80)}
+  let times={pick(t, "once", "twice")}
+  level easy {
+    let t=0..0 b={0, 2}
+  }
+  level hard {
+    let t=1..1
+  }
+
+  scene 36x13 {
+    row top space=2 align=start at=canvas(1, 1) {
+      art stall asset="market-stall"
+      column side space=1 align=start {
+        text ask "In the market square the street band plays Ana's eight bars {times}, four beats to a bar, at {bpm} beats a minute. How many seconds do they play for?" narrate width=18
+        number-input answer
+      }
+    }
+  }
+
+  answer (32 * 60 / bpm * (t + 1))
+  feedback {
+    when (answer == 32 * (t + 1)) point=ask {
+      say "That counts beats. At {bpm} beats a minute, how many seconds does one beat last?"
+    }
+  }
+  hint "How many beats are in eight bars of four?"
+  hint "{bpm} beats take 60 seconds. How long do the tune's beats take?"
+}

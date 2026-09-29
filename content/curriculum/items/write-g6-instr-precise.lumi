@@ -1,0 +1,34 @@
+# A step someone new could follow exactly: an amount, a direction, a sign to stop at. The others
+# leave the reader guessing with a bit, until it feels right, or do it properly.
+item writing.instr-precise v=1 skills=[writing.instructions, writing.vocabulary] {
+  title "Which step can you follow exactly?"
+  difficulty k
+  let k=0..2 r=0..2
+  let right={pick(k, "Turn the key three full turns to the left.", "Oil each end of the axle with two drops.", "Wait until the wheel turns once every five seconds.")}
+  let w1={pick(k, "Turn the key a bit.", "Oil the axle a little.", "Wait a while for the wheel.")}
+  let w2={pick(k, "Turn the key until it feels right.", "Oil the axle properly, as usual.", "Wait until the wheel is going well.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 35x29 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      waterwheel wheel paddles=10 lit=0
+      person new pose=think age=child hair=bun colour=auburn top=mint
+    }
+    text ask "Ana has never worked the wheel before. Which step could she follow exactly?" narrate width=32 below=pics gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=new {
+      say "The miller knows what that means, but Ana does not. How much, which way, or until what?"
+    }
+  }
+  hint "Read each step as if you had never seen the wheel. Which one leaves you guessing?"
+  hint "Look for a number, a direction or a sign to stop at."
+}

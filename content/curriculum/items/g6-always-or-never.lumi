@@ -1,0 +1,34 @@
+# The second reasoning question in the core: a claim about negative numbers judged always, sometimes
+# or never true, by trying numbers of both signs on the line.
+item negative.always-or-never v=1 skills=[number.negatives, reasoning.always-sometimes] {
+  title "Always, sometimes or never"
+  difficulty pick(c, 0, 1, 1.5, 1, 0, 1.5)
+  let c=0..5
+  level easy {
+    let c={0, 4}
+  }
+  level hard {
+    let c={1, 2, 5}
+  }
+
+  scene 36x15 {
+    numberline line from=-8 to=8 at=canvas(1, 1)
+    text ask "{pick(c, \"Adding a negative number to a number gives a smaller answer.\", \"Taking away a negative number from a number gives a smaller answer.\", \"A positive number added to a negative number gives an answer below zero.\", \"Taking a number away from a smaller number gives an answer below zero.\", \"Two negative numbers added together give an answer above zero.\", \"Taking away a positive number gives an answer below zero.\")} Is this always, sometimes or never true?" narrate width=31 below=line gap=1
+    choice pick options=["always true", "sometimes true", "never true"] below=ask gap=1
+  }
+
+  answer pick=pick(c, "always true", "never true", "sometimes true", "always true", "never true", "sometimes true")
+  feedback {
+    when ((c == 2 or c == 5) and pick != "sometimes true") point=line {
+      say "Try a small number and a big number. Does one example settle it?"
+    }
+    when ((c == 1 or c == 4) and pick == "sometimes true") point=line {
+      say "Look for an example where it is true. On the line, which way does the answer move each time?"
+    }
+    when ((c == 0 or c == 3) and pick != "always true") point=line {
+      say "Try several numbers on the line. Does the answer ever move the other way?"
+    }
+  }
+  hint "Try it with two or three pairs of numbers, some positive and some negative."
+  hint "Which way along the line does the answer move? Can it ever move the other way?"
+}

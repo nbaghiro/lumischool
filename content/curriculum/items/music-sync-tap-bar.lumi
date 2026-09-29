@@ -1,0 +1,14 @@
+# The syncopated bar tapped: quaver, crotchet, quaver, then two crotchets, so the second note starts
+# on the and of 1 and is held over beat 2. music.rhythm judges the taps at the grade five window.
+item music.sync-tap-bar v=1 skills=[music.syncopation, music.rhythm] {
+  title "Tap the pushed note"
+
+  scene 34x18 {
+    notes bar clef=treble notes=[C5, A4, G4, E4, G4] values=[0.5, 1, 0.5, 1, 1] meter=4 at=canvas(1, 1)
+    text ask "Count 1 and 2 and 3 and 4 and out loud. Tap once for each note, where it starts, and keep counting through the long note." narrate width=32 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 0.5, 1.5, 2, 3] grade=5
+  hint "Which count does the second note start on? Say that one loudly."
+  hint "Is there a tap on 2? Look at how long the second note lasts."
+}

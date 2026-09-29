@@ -1,0 +1,59 @@
+# Grade five's debugging puzzles, one on each thing the year's coding added: a list read at the
+# wrong place, a total set inside its repeat, a polygon one side short, or in place of and, inputs
+# swapped, a search from place 0, a line not inside its repeat, a die with a zero, a biggest that
+# never changes, and a long program folded into a list.
+lesson coding-g5-debugging-puzzles v=1 format=puzzles grade=5 unit=9 subject=coding levels=[easy, medium, hard] {
+  title "Debugging puzzles"
+  goal "Find the one thing wrong in a program with lists, conditions, inputs or random numbers, and say how to mend it."
+
+  puzzle stars=1 {
+    show coding.bug-last-item x=1 a=5 c=9 hard-x=2
+    say "Something happened to the list before line 4 read it."
+  }
+  puzzle stars=1 {
+    show coding.bug-reset a=5 b=4 c=3 easy-a=4 easy-b=3 easy-c=2 hard-a=6 hard-b=5 hard-c=4
+  }
+  puzzle stars=1 {
+    show coding.bug-short-side q=0 m=2 easy-m=1 hard-q=1
+  }
+  puzzle stars=2 {
+    show coding.bug-or k=1 easy-k=0
+  }
+  puzzle stars=2 {
+    show coding.bug-swapped v=1 easy-v=0 hard-v=2
+  }
+  puzzle stars=2 {
+    show coding.bug-zero k=0 hard-k=1
+  }
+  puzzle stars=2 {
+    show coding.bug-indent k=1 easy-k=0
+  }
+  puzzle stars=2 {
+    show coding.bug-die k=0 hard-k=1
+  }
+  puzzle stars=3 {
+    show coding.bug-best k=0 hard-k=1
+  }
+  puzzle stars=3 {
+    show coding.bug-refactor k=1 easy-k=0
+  }
+
+  grown-ups """
+    Each puzzle is a program that runs but does the wrong thing, or is refused, and the task is to
+    find the one line or word to blame by comparing what the program does with what it was meant to
+    do. The wrong idea to watch for is blaming the line where the problem shows, as in the search
+    that stops on line 3 because of a 0 set on line 2. In the child's working, look for a finger on
+    the line before any change is made, and for a quick trace of what the program really does. If
+    the child is stuck, ask what the program was meant to do in words, then run it by hand one line
+    at a time and stop at the first line whose result is surprising; stay on a puzzle another day
+    rather than guessing. Off the page, give the child a recipe with one step in the wrong place and
+    ask them to find it. The last two puzzles have no single method: a biggest that never changes,
+    and a long program folded into a list and a repeat, which the child builds from the tray and runs.
+    """
+  level easy {
+    grown-ups "At this level the list grows by one before it is read, the totals are small, the hexagon is one side short, the range to fix is 4 to 7, the garden is 4 by 2, the book to find is second, the line to move in is the add, the die's range starts at 0, the biggest starts at 100, and the steps to fold go right 2, 3 and 1."
+  }
+  level hard {
+    grown-ups "At this level the list grows by two before it is read, the totals are bigger, the octagon is two sides short, the range to fix is 6 to 9, the garden is 5 by 3, the book to find is last, the line to move in is the add under an if inside the repeat, the die's range goes to 7, the biggest starts at 50, and the steps to fold go right 3, 1 and 2."
+  }
+}

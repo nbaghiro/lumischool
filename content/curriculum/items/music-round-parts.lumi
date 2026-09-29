@@ -1,0 +1,24 @@
+# The three-star, sung: the round in parts, the child holding their own part against the others.
+# Easy is two parts with the child first; hard is four parts with the child coming in last.
+item music.round-parts v=1 stars=3 skills=[music.singing, music.texture, reasoning.plan] {
+  title "Hold your part"
+  difficulty v
+  let v=0..2
+  let parts={pick(v, "two", "three", "four")}
+  let when={pick(v, "first", "second", "last")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x19 {
+    table song cols=2 head=["Bars", "Words"] cells=["1 and 2", "Are you sleeping", "3 and 4", "Brother John", "5 and 6", "Morning bells are ringing", "7 and 8", "Ding dang dong"] at=canvas(1, 1)
+    text ask "Sing Frère Jacques as a round in {parts} parts with grown-ups or friends. You come in {when}. Sing your part twice through and keep going while the others sing different words." narrate width=34 below=song gap=1
+  }
+
+  check music.sung look-for="The child's own part held from the first bar to the last while other voices sing other words, coming in at the right moment two bars after the voice before, keeping to the shared beat, and finishing their own second time through rather than stopping when another voice does." notice=["Came in at the right moment", "Kept their own words and tune", "Stayed with the shared beat", "Finished their own part"]
+  hint "Before you start, sing your own part alone once while a grown-up taps the beat."
+  hint "If you get lost, listen for your next phrase in the table and come back in at the start of it."
+}

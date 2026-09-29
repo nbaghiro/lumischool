@@ -1,0 +1,35 @@
+# The way in: in a round each voice starts the same tune two bars after the one before, so the
+# first voice is two bars further on for every voice that has come in. Frère Jacques is a French
+# round, first written down in a manuscript of about 1780.
+item music.round-bar v=1 skills=[music.singing, music.form] {
+  title "Where is the first voice?"
+  difficulty (if v <= 1 then 0 else 1)
+  let v=0..3
+  let who={pick(v, "voice 2", "voice 3", "voice 4", "voice 4")}
+  let ahead={pick(v, "voice 1", "voice 1", "voice 1", "voice 2")}
+  let right={pick(v, 3, 5, 7, 5)}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 36x22 {
+    table song cols=2 head=["Bars", "Words"] cells=["1 and 2", "Are you sleeping", "3 and 4", "Brother John", "5 and 6", "Morning bells are ringing", "7 and 8", "Ding dang dong"] at=canvas(1, 1)
+    text ask "Four friends sing Frère Jacques as a round under the clock tower. Each voice starts at bar 1 two bars after the voice before it. When {who} starts bar 1, which bar is {ahead} starting?" narrate width=34 below=song gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 2 and right > 3) point=song {
+      say "Two bars later the first voice has finished bars 1 and 2. Which bar does it start next?"
+    }
+    when (answer == right - 1) point=song {
+      say "That is the bar just finished. The voice is starting the bar after it."
+    }
+  }
+  hint "How many voices came in before {who}, each two bars after the last?"
+  hint "Count on two bars for each voice between {ahead} and {who}, starting from bar 1."
+}

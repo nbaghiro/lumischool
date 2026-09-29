@@ -1,0 +1,82 @@
+# Fables and proverbs in the old city's library: five fables read whole (four of Aesop's and the
+# Chinese farmer by the stump), the moral each teaches, why a character acts as they do, proverbs
+# from Russia, Japan and China and from everyday English, and one fable as Aesop and Krylov told it.
+# Every telling was written for the lesson.
+lesson reading-fables-and-proverbs v=1 format=teach grade=5 unit=8 subject=reading levels=[easy, medium, hard] {
+  title "Fables and proverbs"
+  goal "Say the moral a fable teaches, with what happens in it as the proof, and match a proverb to it."
+
+  look {
+    scene 36x12 {
+      row all at=canvas(0, 1) space=1 align=end {
+        library lib columns=6 open=1
+        fox f facing=1
+        bookcast t who=tortoise pose=walk dir=-1
+        rabbits r count=1 facing=-1
+      }
+    }
+    say """
+      In the old city's library there is a shelf of fables: short stories, often about animals, that
+      teach a lesson called a moral. A fox, a hare and a tortoise stand for kinds of people. A
+      proverb is an old saying that gives the same kind of advice in a few words. Every country has
+      its own, and many say the same thing in different words.
+      """
+  }
+  do {
+    level easy {
+      worked reading.fable-moral k=0
+      show reading.fable-why k=0
+      show reading.fable-moral k=3
+      show reading.fable-why k=3
+    }
+    level medium {
+      show reading.fable-moral k=0
+      show reading.fable-why k=0
+    }
+    show reading.fable-moral k=1
+    show reading.fable-why k=1
+    level medium hard {
+      show reading.fable-moral k=4
+    }
+    level hard {
+      show reading.fable-why k=4
+      show reading.fable-moral k=2
+      show reading.fable-why k=2
+    }
+    show reading.fable-proverb-world k=0 hard-k=3
+    show reading.fable-proverb-life k=0 easy-k=2 hard-k=1
+    show reading.fable-two-tellings k=0 hard-k=1
+  }
+  try stars=2 {
+    show reading.fable-wrong-moral k=0 easy-k=1 hard-k=2
+  }
+  try stars=3 {
+    show reading.fable-write k=0 hard-k=1
+  }
+  remember {
+    say "A fable's moral is the advice its ending proves. Ask who ends up better off, and what they did."
+  }
+
+  grown-ups """
+    The idea is that a fable's moral is proved by what happens in it: the one who acts well ends
+    better off, and the moral is that action said as advice for anyone. The way in reads a whole
+    fable of about a hundred words and picks its moral; the core asks why a character acts as they
+    do, matches proverbs from Russia, Japan and China to the fable they share a moral with, finds
+    the everyday moment a proverb fits, and compares Aesop's telling of a fable with Ivan Krylov's.
+    The wrong idea to watch for is taking a character's own belief as the moral (Hare thinks the
+    fastest always wins), or taking a proverb's words literally (a lemon is not sour grapes); ask
+    "who ends up better off?" The two-star question gives a friend's wrong moral to disprove from
+    the story, and the three-star question is a fable of the child's own, marked by eye against the
+    list. If the child is stuck, tell the fable back together in three sentences before choosing.
+    Off the page, collect three proverbs the family uses and find a fable for one. This meets
+    Russia's grade five literature programme, which lists «Малые жанры: пословицы, поговорки,
+    загадки» beside Krylov's fables, and China's 2022 standards for grades five and six, 思辨性阅读与表达
+    (4) 「阅读哲人故事、寓言故事、成语故事」.
+    """
+  level easy {
+    grown-ups "At this level the hare's moral is worked once in the teacher's pen, the fables are the hare, the crow and the fox, the proverb from far away is the Russian one, Gran's proverb is little by little, the two tellings are the crow and the fox, the two-star is the fox and the grapes, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the fables are the fox, the farmer by the stump and the ant and the grasshopper, the proverb from far away is the Chinese one about mending the roof, Gran's proverb is make hay while the sun shines, the two tellings are the ant and Krylov's dragonfly, the two-star is the hare, and the three-star fable teaches pride comes before a fall."
+  }
+}

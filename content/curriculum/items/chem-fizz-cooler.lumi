@@ -1,0 +1,32 @@
+# Vinegar and baking soda take in heat as they react, so the mixture gets a few degrees colder
+# (an endothermic reaction; a drop of a few degrees, up to about 6, is typical for kitchen amounts). The
+# unknown is the drop, or the temperature it started at.
+item chem.fizz-cooler v=1 skills=[chemistry.changes, measure.temperature] {
+  title "It got colder"
+  difficulty d
+  let d=0..1 t={20, 22, 24} f={4, 6}
+  level easy {
+    let d=0..0
+  }
+  level hard {
+    let d=1..1
+  }
+
+  scene 35x14 {
+    thermometer th from=10 to=30 step=2 value=(t - f) unit="°C" at=canvas(1, 0)
+    text ask "By the market fountain, Leo stirs baking soda into vinegar. It fizzes, and the thermometer shows the mixture now. {if d == 0 then \"The vinegar was at \" else \"The mixture got \"}{if d == 0 then t else f}{if d == 0 then \" °C before. How many degrees colder did it get?\" else \" degrees colder. What was the vinegar's temperature before?\"}" narrate width=24 right-of=th gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if d == 0 then f else t)
+  feedback {
+    when (answer == t - f) point=th {
+      say "That is the reading now. The question asks {if d == 0 then \"how far it fell\" else \"where it started, before it fell\"}."
+    }
+    when (d == 1 and answer == t - 2 * f) point=th {
+      say "Colder means it went down to this reading. Before, it was higher."
+    }
+  }
+  hint "Read the thermometer. Each mark is 2 degrees."
+  hint "{if d == 0 then \"How far is it from the reading now up to the temperature before?\" else \"It fell to this reading. Was it higher or lower before?\"}"
+}

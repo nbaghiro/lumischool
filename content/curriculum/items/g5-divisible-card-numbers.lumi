@@ -1,0 +1,36 @@
+# The three-star: every three-digit number from the cards (each used once) that is in the 3 or 9 times
+# table. Only the choice of three digits matters to the test, and each good choice makes six orders.
+item divisible.card-numbers v=1 stars=3 skills=[number.multiples.divisibility, reasoning.all-the-ways] {
+  title "Every number from the cards"
+  difficulty pick(t, 1, 0, 2)
+  let t=0..2
+  let p={pick(t, 1, 3, 1)}
+  let q={pick(t, 2, 6, 2)}
+  let r={pick(t, 3, 9, 6)}
+  let s={pick(t, 4, 1, 7)}
+  let k={pick(t, 3, 3, 9)}
+  level easy {
+    let t={1}
+  }
+  level hard {
+    let t={2}
+  }
+
+  scene 36x17 {
+    digitcards cards digits=[p, q, r, s] at=canvas(1, 1)
+    text ask "Three of these four cards are laid down in a row to make a three-digit number. How many different numbers can be made this way that are in the {k} times table?" narrate width=34 below=cards gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer pick(t, 12, 6, 6)
+  feedback {
+    when (answer == pick(t, 2, 1, 1)) point=cards {
+      say "That counts the sets of three cards. Each set can be laid down in several orders."
+    }
+    when (answer == 24) point=cards {
+      say "That is every number the cards make. Which of them pass the test for {k}?"
+    }
+  }
+  hint "Which card is left out each time? There are four ways to leave one out."
+  hint "For each set of three, do the digits add to a number in the {k} times table? In how many orders can three cards go?"
+}

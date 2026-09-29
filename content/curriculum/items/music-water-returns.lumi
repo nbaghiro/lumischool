@@ -1,0 +1,36 @@
+# The way in: a listening map read for the tune that comes back. Each letter has its own shape, so a
+# returning tune is seen as well as heard: A B A B A and A B B A B, then a rondo and A A B A A.
+item music.water-returns v=1 skills=[music.listening, music.form] {
+  title "The tune that comes back"
+  difficulty (if f <= 1 then 0 else 1)
+  let f=0..3
+  let s1={pick(f, 1, 1, 1, 0)}
+  let s2={pick(f, 0, 1, 0, 1)}
+  let s3={pick(f, 1, 0, 2, 0)}
+  let s4={pick(f, 0, 1, 0, 0)}
+  let right={pick(f, 3, 2, 3, 4)}
+  level easy {
+    let f=0..1
+  }
+  level hard {
+    let f=2..3
+  }
+
+  scene 36x25 {
+    listenmap map title="The canal band's piece" sections=[0, s1, s2, s3, s4] bars=[] tune=[-1, -1, -1, -1, -1] loud=[-1, -1, -1, -1, -1] tempo=[0, 0, 0, 0, 0] count=0 ask=-1 at=canvas(1, 1)
+    text ask "A listening map draws a piece from left to right in the order it is heard. The same tune always gets the same letter and the same shape. How many times do you hear tune A in this piece?" narrate width=34 below=map gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 1) point=map {
+      say "Tune A starts the piece, but look along the strip. Does its shape come back later?"
+    }
+    when (answer == 5) point=map {
+      say "Not every section is A. Count only the shapes with the letter A on them."
+    }
+  }
+  hint "Which shape is the first section? Look for that shape again along the strip."
+  hint "Touch each A shape in turn and count as you go."
+}

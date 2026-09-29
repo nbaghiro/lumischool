@@ -1,0 +1,40 @@
+# The two-star reason: two wrong ideas about syncopation, answered from two bars. Quavers in pairs on
+# the beat are not syncopated; a note that starts on an and is only pushed when it is held over the
+# next beat.
+item music.sync-claim v=1 stars=2 skills=[music.syncopation, reasoning.claims] {
+  title "More quavers, more pushed?"
+  let q=0..1 r=0..1
+  let claim={pick(q, "Ana says bar A is the syncopated one, because it has more quavers.", "Ben says bar A is syncopated, because some of its notes start on an and.")}
+  let right={pick(q, "No: in B a note on an and is held over", "No: no note in A is held over a beat")}
+  let w1={pick(q, "Yes: more quavers make more syncopation", "Yes: any note on an and is syncopated")}
+  let w2={pick(q, "No: neither bar is syncopated", "No: A has no notes on an and")}
+
+  scene 34x45 {
+    column bars space=0 align=start at=canvas(1, 1) {
+      text la "A"
+      notes a clef=treble notes=[E5, D5, C5, D5, E5, E5] values=[0.5, 0.5, 0.5, 0.5, 1, 1] meter=4
+      text lb "B"
+      notes b clef=treble notes=[E5, D5, C5, D5, E5] values=[1, 0.5, 1, 0.5, 1] meter=4
+    }
+    text ask "{claim} Is that right, and why?" narrate width=32 below=bars gap=1
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1 and q == 0) point=a {
+      say "Count bar A. Each pair of quavers fills one beat, and the next note starts on a number."
+    }
+    when (pick == w1 and q == 1) point=a {
+      say "A note on an and is only pushed when it is still sounding on the next number. Count bar A."
+    }
+    when (pick == w2 and q == 0) point=b {
+      say "Count bar B. The third note starts on the and of 2. What happens on 3?"
+    }
+    when (pick == w2 and q == 1) point=a {
+      say "Count bar A. The second quaver of each pair starts on an and."
+    }
+  }
+  hint "Count each bar 1 and 2 and 3 and 4 and. Where does each note start?"
+  hint "Which bar has a note that is still sounding when the next number is counted?"
+}

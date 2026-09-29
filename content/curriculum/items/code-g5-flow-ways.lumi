@@ -1,0 +1,33 @@
+# Three-star: the number in the decision diamond has rubbed off, and only the count at the end is
+# known. Every whole number between the right two stars would give the same count, so the child finds
+# all of them rather than one.
+item coding.flow-ways v=1 stars=3 skills=[coding.flowcharts, coding.decisions, reasoning.all-the-ways] {
+  title "Every number that fits"
+  difficulty k
+  let k=0..2
+  let c={pick(k, 2, 3, 4)} t={pick(k, 7, 4, 5)} ways={pick(k, 2, 3, 4)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x34 {
+    flowchart f code=["set seen to 0", pick(k, "set stars to list 2, 9, 4, 12, 7", "set stars to list 2, 9, 4, 12, 7", "set stars to list 5, 14, 9, 2, 12, 20"), "for each s in stars", "  if s is more than {t}", "    add 1 to seen", "say seen"] blank=4 at=canvas(0, 0)
+    text ask "The second diamond asked if s is more than a whole number, but it has rubbed off. The telescope photographed {c} stars. How many whole numbers could have been in it?" width=16 right-of=f gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer ways
+  feedback {
+    when (answer == 1) point=f {
+      say "One number works, but so do others next to it. Try the number one more and one less."
+    }
+    when (answer == ways + 1) point=f {
+      say "Check the smallest number you counted. Is the star with that brightness more than it?"
+    }
+  }
+  hint "Put the stars in order from dimmest to brightest. Which of them were photographed?"
+  hint "The number has to be at least as bright as the brightest star left out, and less than the dimmest star photographed. Which whole numbers are those?"
+}

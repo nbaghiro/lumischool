@@ -1,0 +1,34 @@
+# The way in to searching one by one: i starts at the first place and goes up by one until the item
+# there is the book wanted, so i ends as the book's place and the search has looked at that many.
+item coding.search-where v=1 skills=[coding.algorithms, coding.lists, reasoning.search] {
+  title "One shelf at a time"
+  difficulty k
+  let s=0..1 k=1..6
+  let a={pick(s, 21, 35)} b={pick(s, 18, 12)} c={pick(s, 34, 27)} d={pick(s, 10, 41)} e={pick(s, 26, 19)} f={pick(s, 33, 15)}
+  let t={pick(k - 1, a, b, c, d, e, f)}
+  level easy {
+    let k=1..3
+  }
+  level hard {
+    let k=4..6
+  }
+
+  scene 36x22 {
+    program p code=["set shelf to list {a}, {b}, {c}, {d}, {e}, {f}", "set i to 1", "repeat until item i of shelf is {t}", "  add 1 to i"] at=canvas(1, 0)
+    listbox l name=shelf code=["set shelf to list {a}, {b}, {c}, {d}, {e}, {f}"] below=p gap=1
+    text ask "The librarian wants book {t}. What is i when the search stops?" width=10 right-of=l gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="value(i)"
+  feedback {
+    when (answer == k - 1) point=p {
+      say "The search stops when item i is the book, so i is the book's own place, not the one before."
+    }
+    when (answer == t) point=l {
+      say "{t} is the book's number. The question asks for its place on the shelf."
+    }
+  }
+  hint "What does the search check each time round, and when does it stop?"
+  hint "i goes up by one each time round and stops as soon as item i is the book."
+}

@@ -1,0 +1,29 @@
+# A line from Leo's chatty note rewritten for his letter to the director, marked by eye: the same
+# request in full, polite words. At hard the chatty line has more to change and needs a reason.
+item writing.formal-rewrite v=1 skills=[writing.letters, writing.formality, writing.composing] {
+  title "Say it for the director"
+  difficulty k
+  let k=0..1
+  let line={pick(k, "Can u tell us if we can come Fri? Thx", "Can loads of us pop up Fri night? Dying to.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x18 {
+    row top at=canvas(1, 0) space=2 align=end {
+      column words space=1 align=start {
+        caption strip text="{line}" width=23
+        text ask "{if k == 0 then \"Leo wrote this in a note. Rewrite it so it can go in his letter to Dr Shah.\" else \"Leo wrote this in a note. Rewrite it for his letter to Dr Shah, and add why the class wants to come.\"}" narrate width=23
+      }
+      observatory obs open=0
+    }
+    writinglines lines lines=2 width=34 prompt="" below=top gap=1
+  }
+
+  check writing.by-eye look-for="The same request in full, polite words: no short forms (u, Fri, thx), no slang (loads, dying to, pop up), a polite question such as Could you tell us whether our class may visit on Friday evening?, and at hard a short reason such as to see the comet through the telescope. It need not be long."
+  hint "Pick out each word Leo would only say to a friend. What would he write instead?"
+  hint "Read your line aloud as Dr Shah would. Does every word sound full and polite?"
+}

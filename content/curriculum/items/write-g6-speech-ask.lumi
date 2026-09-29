@@ -1,0 +1,37 @@
+# The way in: three lines from a speech to the gorge's village meeting, and the one that says what
+# the speaker wants the listeners to do. The others are a greeting or a feeling, and a fact.
+item writing.speech-ask v=1 skills=[writing.persuasion, writing.speeches] {
+  title "What does the speaker want?"
+  difficulty k
+  let k=0..2 r=0..2
+  let right={pick(k, "Please vote to mend the rope bridge this month.", "Keep the water wheel turning: vote to repair it.", "Let us ask the council to protect the riverbank.")}
+  let w1={pick(k, "Three planks fell into the gorge last week.", "The wheel has turned for two hundred years.", "Kingfishers nest in the soft bank by the falls.")}
+  let w2={pick(k, "Good evening, and thank you for coming.", "The wheel is the heart of our village.", "It is a joy to see a kingfisher dive.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 33x31 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      ropebridge br planks=10 gaps=3
+      waterfall falls drops=2 rainbow=1
+    }
+    text ask "Tam is giving a speech at the village meeting. Which line says what Tam wants the listeners to do?" narrate width=32 below=pics gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=ask {
+      say "That is a fact that supports the speech, a reason. The ask is the line that tells the listeners what to do."
+    }
+    when (pick == w2) point=ask {
+      say "That line sets a mood, but it does not ask for anything. Look for the line the listeners could act on."
+    }
+  }
+  hint "If the listeners did just one thing after the speech, what would it be?"
+  hint "Which line starts with, or contains, a word telling people what to do?"
+}

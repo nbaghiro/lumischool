@@ -1,0 +1,69 @@
+lesson nature-animals-of-the-night v=1 format=teach grade=5 unit=5 subject=nature levels=[easy, medium, hard] {
+  title "Animals of the night"
+  goal "Explain from counts and senses how animals of the night find their food in the dark, and when and why they hunt."
+
+  look {
+    scene 34x10 {
+      row all at=canvas(1, 1) space=1 align=end {
+        telescope t tilt=40
+        owlflying o facing=1
+        bats b count=2 flying=1
+        badger bd facing=-1
+      }
+    }
+    say """
+      When the astronomers at the observatory open the dome, the star cliffs wake up. A tawny owl
+      drifts over the fields: its huge eyes gather what little light there is, and its dish of a face
+      catches the rustle of a mouse. Bats pour out from under the roof, squeaking too high for Ada to
+      hear and listening to the echoes to find moths. Below, a badger follows its nose along the path.
+      The astronomer keeps a moth trap by the lamp and a bat detector on the roof, and their counts
+      show that the hunters come out when their food does, and stay in when the night is cold.
+      """
+  }
+  do {
+    level easy {
+      worked nature.night-sense k=2 level=medium
+    }
+    practice nature.night-sense count=2 seed=1 easy-seed=2 hard-seed=1
+    practice nature.owl-features count=1 seed=1 easy-seed=2 hard-seed=3
+    practice nature.moth-trap count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.why-night count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show nature.night-claim k=1 level=medium
+    }
+  }
+  story {
+    show nature.bat-passes k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.night-claim k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.echo-distance k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "At night eyes are not enough: owls listen, bats hear their echoes, and badgers follow their noses."
+  }
+
+  grown-ups """
+    The lesson is about senses and evidence. In the dark an animal finds its food with whatever sense
+    works without light, and the counts from the moth trap and the bat detector show when and why it
+    hunts: moths fly most in the first hours after dark and hardly at all on a cold night, and the
+    bats are out when the moths are. The wrong ideas to watch for are that bats are blind (they can
+    see, and use echoes to find small insects in the dark), that an owl sees in total darkness (no eye
+    can; an owl in a pitch-dark barn hunts by ear), and that the middle of the night is the busiest
+    time. In the table questions the child should find the biggest numbers first and then ask what
+    is different about those hours or that night. The story reads the bat detector's table. The
+    two-star question finds the mistake in something Ben says, and the reason should name the sense.
+    The three-star question has a squeak going out and an echo coming back, so the sound travels the
+    distance twice, and then the bat has to close that gap. If the senses are still mixed up after the
+    core, stay here another day, and on a warm evening stand by a lit window for half an hour, count
+    the moths that come in each ten minutes, and do it again on a cold evening.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the hedgehog) opens the core, the animals to find food for are the bat and the badger, the moth trap asks for the busiest hour and whether moths fly most at midnight, the reasons asked about are the moths' and the hedgehog's, the story finds how many more passes there were on a warmer night, Ben says bats are blind, and the squeak and echo travel 20 metres altogether before the bat flies at 5 metres a second."
+  }
+  level hard {
+    grown-ups "At this level the animals are the badger and the hedgehog, the moth trap asks why the bats hunt hardest soon after dark and why the cold night caught so few, the reasons asked about are the hedgehog's and the owl's, a second reasoning question in the core has the owl in a pitch-dark barn, the story finds the passes in an hour, Ben says the badger hunts by sight, and the moth flies away from the bat, so the gap closes at the difference of their speeds."
+  }
+}

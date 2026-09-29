@@ -1,0 +1,60 @@
+lesson physics-the-sun-that-does-not-set v=1 format=teach grade=6 unit=1 subject=physics levels=[easy, medium, hard] {
+  title "The sun that does not set"
+  goal "Use the lean of the Earth's axis to work out where the sun stays up all day and how high it stands."
+
+  look {
+    scene 36x16 {
+      row all at=canvas(0, 0) space=1 align=end {
+        tilt e places=[80, 45, 0] season=0 circles=1 names=1
+        hut h pictures=0
+      }
+    }
+    say """
+      The Earth turns once a day about an axis that leans 23.5° from upright. On 21 June the north
+      end leans towards the sun. A place goes round its dashed circle as the Earth turns: the hut at
+      80° N stays on the lit side all the way round, so the sun never sets, while the equator is half
+      in day and half in night. The sun is overhead at 23.5° N, and 1° lower for each degree away.
+      """
+  }
+  do {
+    practice physics.tilt-sun count=2 seed=1 easy-seed=2 hard-seed=3
+    level easy {
+      worked physics.tilt-noon lat=70 s=0 level=medium
+    }
+    practice physics.tilt-noon count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.midnight-first count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.tilt-midnight count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.arctic-circle count=1 seed=1 hard-seed=2
+    practice physics.no-tilt count=1 seed=1 easy-seed=2
+  }
+  story {
+    show physics.hut-sails-south lat=60 easy-lat=70 hard-lat=50
+  }
+  try stars=2 {
+    show physics.summer-nearest
+  }
+  try stars=3 {
+    show physics.hut-latitude lat=80 hard-lat=75
+  }
+  remember {
+    say "The Earth's axis leans, so in June the far north stays in the sunlight as the Earth turns."
+  }
+
+  grown-ups """
+    Two ideas get in the way here. Many adults and children believe summer comes from the Earth
+    being nearer the sun, and the two-star question takes that on with the real distances: the
+    Earth is nearest in January. The other is that the sun "goes round" the sky; the dashed circles
+    show the place going round instead. Listen for the child tracing a circle with a finger and
+    asking whether any of it crosses into the night. If the degrees stall the child, stay with the
+    first question of each kind and draw the lean with a pencil through an orange. Off the page,
+    shine a torch on a ball held with a leaning pencil through it, turn it, and watch a spot near
+    the top stay lit. The three-star question is solved by adding the two heights, which gives
+    twice the lean, and then working back to the latitude.
+    """
+  level easy {
+    grown-ups "At this level everything is on 21 June, a worked example finds a noon height first, the far north is at 75 to 80 degrees, the last-drawn midnight sun is simpler, and the harbour on the voyage is still inside the Arctic circle."
+  }
+  level hard {
+    grown-ups "At this level the questions are on 21 December as well, when the far north has no sun at all, the what-if leans are not the Earth's, the harbour is far to the south, and the three-star hut is at 75 degrees."
+  }
+}

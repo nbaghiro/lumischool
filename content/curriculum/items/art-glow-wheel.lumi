@@ -1,0 +1,31 @@
+# The way in: a colour glows most beside its opposite, read straight across a labelled wheel.
+item art.glow-wheel v=1 skills=[art.complementary, art.looking] {
+  title "The colour that makes it glow"
+  difficulty (if k == 1 or k == 5 then 1 else 0)
+  let k=0..5
+  let r={k % 3}
+  let opp={pick((k + 3) % 6, "red", "orange", "yellow", "green", "blue", "purple")}
+  let n1={pick((k + 1) % 6, "red", "orange", "yellow", "green", "blue", "purple")}
+  let n2={pick((k + 5) % 6, "red", "orange", "yellow", "green", "blue", "purple")}
+  level easy {
+    let k={0, 2, 4}
+  }
+  level hard {
+    let k={1, 3, 5}
+  }
+
+  scene 36x15 {
+    colourwheel wheel segments=6 blank=[] ring=k labels=true split="none" at=canvas(1, 1)
+    text ask "A colour glows most when it sits beside its opposite. Which colour would make the ringed one glow?" width=18 right-of=wheel gap=1
+    choice pick options=[if r == 0 then opp else if r == 1 then n1 else n2, if r == 0 then n1 else if r == 1 then n2 else opp, if r == 0 then n2 else if r == 1 then opp else n1] below=ask gap=1
+  }
+
+  answer pick=opp
+  feedback {
+    when (pick != opp) point=wheel {
+      say "That colour sits next to the ringed one on the wheel, so the two are alike. The opposite is straight across the middle."
+    }
+  }
+  hint "Put your finger on the ringed colour. Where is the colour straight across the middle from it?"
+  hint "Neighbours on the wheel are alike. Opposites are as different as two colours can be."
+}

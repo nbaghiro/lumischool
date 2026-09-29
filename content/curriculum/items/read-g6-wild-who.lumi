@@ -1,0 +1,27 @@
+# Who said a line, from the speech in its chapter. The wrong names are people in the same scene.
+item reading.wild-who v=1 skills=[reading.characters, reading.evidence, reading.whole-book] {
+  title "Who said it?"
+  difficulty pick(k, 0, 1)
+  let k=0..1
+  let right={pick(k, "Perrault", "François")}
+
+  scene 35x13 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        sledge s
+        bookcast b who=buck pose=stand dir=-1
+        text ask "{pick(k, \"Who gives this order in chapter 4, so that Buck will come to the front of the team: “T’row down de club”?\", \"Who says this in chapter 2, after Buck digs out of the snow: “Dat Buck for sure learn queek”?\")}" width=15
+      }
+      choice pick options=[pick(k, "François", "Perrault"), right, pick(k, "Thornton", "Manuel")] stack=row
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=b {
+      say "Find the words in the chapter, then look just before or after them for the name of the speaker."
+    }
+  }
+  hint "Who is in the scene when this is said?"
+  hint "{pick(k, \"Who is holding the club, and who is giving the orders?\", \"Who drives the sled and speaks in this way through the book?\")}"
+}

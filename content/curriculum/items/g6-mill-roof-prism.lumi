@@ -1,0 +1,32 @@
+# A triangular prism: the area of the triangle at the end, times the length. The slip is to forget
+# that a triangle is half of its rectangle.
+item volume.mill-roof-prism v=1 skills=[volume.prisms, area.triangles] {
+  title "The space under the roof"
+  difficulty (b * t * l / 100 + (if l > 10 then 1 else 0))
+  let b={4, 6, 8} t={3, 4, 5} l={8, 10, 12, 15}
+  level easy {
+    let b={4, 6} t={3, 4} l={8, 10}
+  }
+  level hard {
+    let b={8} t={4, 5} l={12, 15}
+  }
+
+  scene 33x19 {
+    areashape end kind=triangle base=b top=1 height=t shift=(b / 2) cell=1 unit=m at=canvas(1, 1)
+    solid roof kind=prism label="" below=end gap=1
+    text ask "The mill's roof space is a triangular prism. The triangle at its end is drawn: base {b} m and height {t} m. The roof is {l} m long. What is the volume of the roof space, in m³?" narrate width=18 right-of=end gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (b * t / 2 * l)
+  feedback {
+    when (answer == b * t * l) point=end {
+      say "That is the box round the roof. The triangle is half of its rectangle."
+    }
+    when (answer == b * t / 2) point=end {
+      say "That is the area of the end. The prism is that end, carried {l} m along."
+    }
+  }
+  hint "What is the area of the triangle at the end?"
+  hint "How many metres long is the prism? Multiply the end's area by it."
+}

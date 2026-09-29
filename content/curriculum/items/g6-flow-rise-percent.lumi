@@ -1,0 +1,37 @@
+# The unknown moves to the percent: the change is compared with the amount before it, not after.
+item percent.flow-rise-percent v=1 skills=[percentages.change, percentages.find-percent] {
+  title "By what percent"
+  difficulty (d + r / 50)
+  let a={40, 50, 80, 200} r={10, 20, 25, 30, 50} d=0..1
+  where whole(a * r / 100)
+  level easy {
+    let d={0} r={10, 25, 50}
+  }
+  level hard {
+    let d={1} r={20, 25, 30}
+  }
+
+  scene 33x15 {
+    waterfall fall drops=2 rainbow=0 at=canvas(1, 1)
+    text ask "{if d == 0 then \"After the rain\" else \"In the dry week\"} the waterfall's flow went from {a} to {if d == 0 then a + a * r / 100 else a - a * r / 100} litres a second. By what percent did it {if d == 0 then \"rise\" else \"fall\"}?" narrate width=18 right-of=fall gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text unit "%"
+    }
+  }
+
+  answer r
+  feedback {
+    when (answer == a * r / 100 and a * r / 100 != r) point=ask {
+      say "That is the change in litres. What percent of the flow before is it?"
+    }
+    when (d == 1 and answer == 100 * r / (100 - r)) point=ask {
+      say "Compare the fall with the flow before it fell, not after."
+    }
+    when (d == 0 and answer == 100 * r / (100 + r)) point=ask {
+      say "Compare the rise with the flow before it rose, not after."
+    }
+  }
+  hint "How many litres a second did it change by?"
+  hint "What percent of the flow before is that change?"
+}

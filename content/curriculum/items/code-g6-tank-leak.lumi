@@ -1,0 +1,32 @@
+# In and out at once: the tank gains the difference each minute, so the rate that matters is the pipe
+# less the leak. Adding the two is the slip the feedback names.
+item coding.tank-leak v=1 skills=[coding.simulation, coding.variables, reasoning.compare] {
+  title "A leak in the tank"
+  difficulty (c / ((r - l) * 4) + l / 4)
+  let c={60, 72, 90, 96} r={12, 15, 18} l={2, 3, 6}
+  where (c % (r - l) == 0 and c / (r - l) >= 5 and c / (r - l) <= 12)
+  level easy {
+    let l={2, 3}
+    where (c / (r - l) <= 8)
+  }
+  level hard {
+    let l={3, 6}
+    where (c / (r - l) >= 7)
+  }
+
+  scene 36x21 {
+    program p code=["set water to 0", "set minutes to 0", "repeat until water is at least {c}", "  add {r} to water", "  take {l} from water", "  add 1 to minutes"] text=true at=canvas(0, 0)
+    kingfisher kf flying=1 right-of=p gap=1
+    text ask "The pipe brings {r} litres a minute, but a crack lets {l} litres out. The tank holds {c} litres. What does minutes hold at the end?" width=24 at=canvas(0, 15)
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=p answer="value(minutes)"
+  feedback {
+    when (answer == c / r) point=p {
+      say "That leaves out line 5. Each minute the crack takes {l} litres back out."
+    }
+  }
+  hint "How much more water is in the tank after one whole minute?"
+  hint "How many of those minutes make {c} litres?"
+}

@@ -1,0 +1,36 @@
+# Scaling the city wall: a length and a height in metres, one side drawn in squares, the other found.
+# At hard the height is given and the length asked.
+item art.prop-scale v=1 skills=[art.proportion, ratio.parts, reasoning.multiplicative] {
+  title "The wall to scale"
+  difficulty (l / 12 + 2 * q)
+  let f={3, 4} l={12, 24} q={0}
+  let wl={if f == 4 then 40 else 36}
+  let wh={if f == 4 then 10 else 12}
+  let given={if q == 0 then l else l / f}
+  let side={pick(q, "long", "high")}
+  let other={pick(q, "high", "long")}
+  level easy {
+    let f={3, 4} l={12}
+  }
+  level hard {
+    let f={3, 4} q={1}
+  }
+
+  scene 36x12 {
+    citywalls wall towers=3 open=1 at=canvas(1, 1)
+    text ask "The city wall is {wl} metres long and {wh} metres high. Ada draws it {given} squares {side}. How many squares {other} should it be?" width=18 right-of=wall gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if q == 0 then l / f else l)
+  feedback {
+    when (q == 0 and answer == l * f) point=wall {
+      say "The wall is lower than it is long, so its height is the smaller number."
+    }
+    when (q == 1 and answer == l / f / f) point=wall {
+      say "The wall is longer than it is high, so its length is the bigger number."
+    }
+  }
+  hint "How many times longer is the wall than it is high?"
+  hint "The drawing keeps that: its length is that many times its height."
+}

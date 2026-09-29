@@ -1,0 +1,23 @@
+# The way in: adding an alkali to an acid moves its pH up towards 7, and adding an acid to an alkali
+# moves it down towards 7. The pH values are from LIQUIDS.
+item chem.neutral-which-way v=1 skills=[chemistry.acids, chemistry.neutralising] {
+  title "Which way does it move?"
+  let s=0..2
+  let right={pick(s, "up, towards 7", "down, towards 7", "up, towards 7")}
+  let what={pick(s, "Lemon juice, A, has limewater added to it, a few drops at a time.", "Washing soda, B, has vinegar added to it, a few drops at a time.", "Rain water, A, has milk of magnesia added to it, a drop at a time.")}
+
+  scene 35x29 {
+    phscale p liquids=[pick(s, "lemon", "vinegar", "rain"), pick(s, "limewater", "washingsoda", "magnesia")] letters=1 names=1 at=canvas(1, 0)
+    text ask "In the mill's back room a grown-up mixes two liquids with universal indicator in them. {what} Which way does its pH move?" narrate width=34 below=p gap=1
+    choice pick options=["up, towards 7", "down, towards 7", "it stays the same"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "Start at the first liquid's pointer. Is the liquid going in on the other side of 7?"
+    }
+  }
+  hint "Which side of 7 does the first liquid start on?"
+  hint "The liquid going in is on the other side. Which way does it pull the pH?"
+}

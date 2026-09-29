@@ -1,0 +1,37 @@
+# Metals' melting and boiling points, checked row by row against SUBSTANCES (RSC periodic table): how
+# much hotter one metal must get than another, and how far mercury is from freezing or boiling at 20 °C.
+item chem.melt-gap v=1 skills=[chemistry.metals, chemistry.states, number.negatives] {
+  title "How much hotter?"
+  difficulty (if w == 0 then 0 else 1)
+  let w=0..2 p=0..2
+  let a={pick(p, "iron", "aluminium", "gold")}
+  let b={pick(p, "gold", "lead", "aluminium")}
+  let gap={pick(p, 474, 333, 404)}
+  let asks={pick(w, "How many degrees hotter must a furnace be to melt {a} than to melt {b}?", "Mercury is the only metal that is a liquid at 20 °C. How many degrees colder than 20 °C must it get to freeze?", "How many degrees must mercury be heated from 20 °C before it boils?")}
+  where (w == 0 or p == 0)
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 35x13 {
+    table data cols=3 head=["Metal", "Melts", "Boils"] cells=["Gold", 1064, 2856, "Aluminium", 660, 2519, "Iron", 1538, 2861, "Lead", 327, 1749, "Mercury", -39, 357] at=canvas(1, 0)
+    text ask "The temperatures are in °C. {asks}" narrate width=14 right-of=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check chem.state of=data
+  answer pick(w, gap, 59, 337)
+  feedback {
+    when (w == 1 and answer == 19) point=data {
+      say "Mercury freezes below zero. From 20 down to 0 is 20 degrees, and from 0 down to -39 is 39 more."
+    }
+    when (w == 2 and answer == 357) point=data {
+      say "357 °C is where it boils. It starts at 20 °C, so how far does it have to climb?"
+    }
+  }
+  hint "{pick(w, \"Find both metals in the Melts column.\", \"Where does mercury melt, and so freeze? Is that above or below zero?\", \"Find mercury in the Boils column.\")}"
+  hint "{pick(w, \"How far apart are the two numbers?\", \"How far is it from 20 down to 0, and then from 0 down to that number?\", \"How far is it from 20 up to that number?\")}"
+}

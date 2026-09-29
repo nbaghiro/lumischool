@@ -1,0 +1,65 @@
+lesson chemistry-getting-clean-water-back v=1 format=teach grade=5 unit=2 subject=chemistry levels=[easy, medium, hard] {
+  title "Getting clean water back"
+  goal "Explain how distilling gets clean water out of salty water, and work out what is collected, what is left and how fast."
+
+  look {
+    scene 36x17 {
+      row all at=canvas(1, 0) space=1 align=end {
+        flame burner height=3 on=1 stand=true holds=0.5
+        condense lid kind=hot-lid drops=6
+        beaker got max=200 step=50 level=50 unit=ml solid=0 rod=false label="clean"
+      }
+    }
+    say """
+      A boat from the sea has brought a barrel of sea water up the canal, and every litre holds 35 g
+      of salt. A grown-up in goggles and an oven glove boils some in a flask. Only the water turns to
+      steam. The steam runs along a tube kept cold, turns back into drops, like the drops under a cold
+      lid, and drips into a beaker as clean water. The salt stays in the flask. This is distilling.
+      """
+  }
+  do {
+    practice chem.where-the-salt-went count=1 seed=1 easy-seed=2 hard-seed=4
+    practice chem.still-curve count=2 seed=2 easy-seed=1 hard-seed=3
+    level easy {
+      worked chem.drip-rate d=0 k=0 level=medium
+    }
+    practice chem.drip-rate count=2 seed=3 easy-seed=5 hard-seed=2
+    practice chem.sea-salt-left count=2 seed=4 easy-seed=1 hard-seed=3
+    level hard {
+      show chem.still-scales d=2 s=480 c=150
+    }
+  }
+  story {
+    show chem.still-scales d=0 s=460 c=120 hard-d=1 hard-s=520 hard-c=180
+  }
+  try stars=2 {
+    show chem.why-cold-tube k=0 r=2 hard-k=1 hard-r=1
+  }
+  try stars=3 {
+    show chem.sun-stills rate=10 hours=6 need=200 easy-rate=15 easy-hours=4 easy-need=100 hard-rate=15 hard-hours=4 hard-need=250
+  }
+  remember {
+    say "Distilling boils the water off and cools the steam back into clean water. The salt stays behind, and no grams are lost."
+  }
+
+  grown-ups """
+    The idea is that boiling separates water from what is dissolved in it, because only the water
+    turns to steam at 100 °C, and a cold tube turns the steam back into water that can be collected.
+    Salt melts at 801 °C and boils at 1465 °C, so none comes over. Anything hot is done by a grown-up
+    in goggles and an oven glove, with the child watching from a step away. The wrong ideas to watch
+    for are that the salt goes off with the steam, and that grams vanish when water boils away: the
+    flask loses exactly what the beaker gains. The thermometer sits in the steam, so it reads 100 °C
+    for as long as water is collecting. The two-star question asks why the tube is kept cold or why
+    the collected water is not salty, and the three-star question works out the fewest sun stills,
+    where the answer is always rounded up. If the child divides and stops at a remainder, stay here
+    another day and draw the stills as boxes. Off the page, make a sun still with no flame: a bowl
+    of salty water in the sun, a clean cup in the middle, cling film over the top with a coin above
+    the cup, and after a few sunny hours the cup holds water that is not salty.
+    """
+  level easy {
+    grown-ups "At this level the rate is worked once in the teacher's pen, the curve is read for when the first drop fell, the rate is asked from the cylinder, the jug holds 200 or 400 ml of sea water, the scales are read after distilling, the two-star question asks why the tube is cold, and the stills need 100 ml."
+  }
+  level hard {
+    grown-ups "At this level the curve is read for how long water collected, the minutes to collect 60 ml are worked from the rate, the sea water is worked back from the salt left, the flask's starting weight is worked back as well, the two-star question asks why the water is not salty, and the stills need 250 ml over four hours at 15 ml an hour."
+  }
+}

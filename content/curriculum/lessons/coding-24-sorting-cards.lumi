@@ -1,4 +1,4 @@
-lesson coding-sorting-cards v=2 format=teach grade=3 unit=8 subject=coding levels=[easy, medium, hard] {
+lesson coding-sorting-cards v=2 format=teach grade=3 unit=7 subject=coding levels=[easy, medium, hard] {
   title "Sorting cards two at a time"
   goal "Carry out a sorting program by hand: compare two cards side by side, swap them if they are the wrong way round, and keep going until nothing moves."
 

@@ -1,0 +1,64 @@
+lesson g6-two-travellers-and-a-current v=1 format=worked grade=6 unit=4 subject=maths levels=[easy, medium, hard] {
+  title "Two travellers, and a boat on the current"
+  goal "Solve a problem about two movers, meeting, moving apart or catching up, or a boat with and against the current, by first finding how fast the gap between them changes."
+
+  example {
+    worked travel.meet-hours v1=40 v2=60 t=2 level=medium
+    say """
+      The road through the gorge is 200 km. A blue car leaves A at 40 km/h and an orange car leaves B
+      at 60 km/h at the same time, towards each other. In one hour the gap closes by 40 + 60 = 100 km,
+      so the 200 km closes in 200 ÷ 100 = 2 hours. Moving apart, the gap grows by the sum of the
+      speeds. When one car chases another, the gap closes by the difference. On a river the current
+      adds to a boat's speed going downstream and takes away going upstream.
+      """
+  }
+  exercises {
+    show travel.meet-hours v1=50 v2=40 t=3 easy-v1=30 easy-v2=50 easy-t=2 hard-v1=50 hard-v2=60 hard-t=2.5
+    show travel.meet-where v1=50 v2=70 t=2 easy-v1=30 easy-v2=50 easy-t=1 hard-v1=60 hard-v2=40 hard-t=3
+    show travel.apart a=4 b=5 t=3 easy-a=3 easy-b=4 easy-t=2 hard-a=5 hard-b=6 hard-t=4
+    level easy {
+      worked travel.river-time s=1 q="down" level=medium
+    }
+    show travel.river-time s=2 q="up" easy-s=0 easy-q="down" hard-s=4 hard-q="up"
+    show travel.meet-late v1=50 v2=40 late=1 k=2 easy-v1=40 easy-v2=50 easy-late=1 easy-k=1 hard-v1=60 hard-v2=50 hard-late=0.5 hard-k=2
+    show travel.catch-where v1=40 g=10 late=0.5 easy-v1=40 easy-g=20 easy-late=1 hard-v1=40 hard-g=20 hard-late=1.5
+    show travel.still-water s=2 q="current" easy-s=0 easy-q="still" hard-s=5 hard-q="current"
+    level hard {
+      show travel.catch-where v1=40 g=10 late=1.5
+    }
+    show travel.river-time s=1 q="up" easy-s=0 easy-q="up" hard-s=3 hard-q="up"
+  }
+  try stars=2 {
+    show travel.hat m=15 v=8 f=2 easy-m=10 easy-v=6 easy-f=1 hard-m=20 hard-v=8 hard-f=3
+  }
+  try stars=3 {
+    show travel.raft s=1 easy-s=0 hard-s=3
+  }
+  remember {
+    say "Towards each other or apart, the gap changes by the sum of the speeds; one behind the other, by the difference."
+  }
+
+  grown-ups """
+    Every question here turns on one step: how fast does the gap change? Towards each other or
+    apart it changes by the sum of the two speeds, one car chasing another by the difference, and a
+    boat's speed over the ground is its still-water speed plus or minus the current. The common slip
+    is to let one mover do all the work, dividing the road by one speed, so ask each time who is
+    moving and which way. When one car sets off later, the head start comes first and the sum of
+    the speeds only closes what is left. In the still-water question the two speeds sit the same
+    distance either side of the still-water speed, so halving is the step children miss. In the
+    two-star question the current carries the hat and the canoe alike, so it can be left out: Kit
+    comes back to the hat in the same time he paddled away. In the three-star question any length
+    can be chosen for the stretch; the raft's speed is the current. If the sum and the difference
+    still get mixed, stay here another day and act it out with two toy cars on a ruler. Off the
+    page, walk towards a friend from two ends of a path and time the meeting. This lesson meets
+    Russia's grade 6 programme, «Решение задач, содержащих зависимости, связывающих величины:
+    скорость, время, расстояние», with the meeting and river problems of Vilenkin's grade 5 and 6
+    textbooks.
+    """
+  level easy {
+    grown-ups "At this level a downstream trip is worked a second time in the teacher's pen, the cars meet after one or two whole hours, the walkers are apart after two hours, the river questions go downstream first, the later car sets off an hour late and the chase closes 20 km an hour, the still-water speed is asked rather than the current, the hat drifts for 10 minutes on a slow current, and the raft stretch is the plainest."
+  }
+  level hard {
+    grown-ups "At this level the cars meet after two and a half hours or three, the walkers are apart after four hours, the river questions go upstream over longer stretches, the later car sets off half an hour late, the lorry has an hour and a half's head start and a second chase closes only 10 km an hour, the current's speed is a half number, the hat drifts for 20 minutes on a 3 km/h current, and the raft takes 12 hours to the canoe's 4."
+  }
+}

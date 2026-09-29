@@ -1,0 +1,33 @@
+# The second reasoning question in the core: two canoes compared by speed, where the one that went
+# further is not always the faster, because the times differ.
+item speed.which-canoe-faster v=1 skills=[rates.speed, reasoning.compare] {
+  title "Which canoe was faster"
+  difficulty (if (a > b) == (a * t2 > b * t1) then 0 else 1)
+  let a={9, 12, 15, 16, 18} t1={1.5, 2, 3} b={10, 14, 20, 21, 24} t2={2, 2.5, 3, 4}
+  where (t1 != t2 and a != b and a * t2 != b * t1)
+  where (whole(a / t1) and whole(b / t2))
+  level easy {
+    where ((a > b) == (a * t2 > b * t1))
+  }
+  level hard {
+    where ((a > b) != (a * t2 > b * t1))
+  }
+
+  scene 33x13 {
+    row boats at=canvas(1, 1) space=3 {
+      canoe red top=berry
+      canoe green top=mint
+    }
+    text ask "On the gorge river the red canoe went {a} km in {t1} hours. The green canoe went {b} km in {t2} hours. Which canoe went faster?" narrate width=32 below=boats gap=1
+    choice pick options=["red", "green"] below=ask gap=1
+  }
+
+  answer pick=(if a * t2 > b * t1 then "red" else "green")
+  feedback {
+    when ((a > b) != (a * t2 > b * t1) and pick == (if a > b then "red" else "green")) point=ask {
+      say "Further is not faster when it took longer. Find how far each canoe went in one hour."
+    }
+  }
+  hint "How far did each canoe go in one hour?"
+  hint "Share each distance by its time, then compare."
+}

@@ -1,0 +1,23 @@
+# Two stars: the idea that wool makes heat. Ice cubes wrapped the same way melt slowest in wool, so
+# wool slows heat moving in either direction and makes none of its own.
+item physics.heat-hat v=1 stars=2 skills=[physics.heat, physics.materials, reasoning.evidence] {
+  title "Does wool make heat?"
+
+  scene 25x38 {
+    wrapped w wraps=["none", "foil", "wool"] minutes=20 show=1 ice=1 room=20 at=canvas(1, 0)
+    text ask "Leo says his wool hat keeps him warm because wool makes heat. Three ice cubes were wrapped for 20 minutes in a room at 20 °C. What do they show?" narrate width=22 below=w gap=1
+    choice pick options=["Wool slows heat moving either way", "Wool makes heat", "Wool makes things cold", "Foil makes the most heat"] stack=column below=ask gap=1
+  }
+
+  answer pick="Wool slows heat moving either way"
+  feedback {
+    when (pick == "Wool makes heat") point=w {
+      say "If wool made heat, the ice in wool would melt first. Which cube has melted least?"
+    }
+    when (pick == "Wool makes things cold") point=w {
+      say "Wool kept the ice cold and would keep Leo warm: it keeps each as it was. What does it do to heat?"
+    }
+  }
+  hint "Which ice cube has melted the least?"
+  hint "Heat from the room has to get in to melt the ice. What did the wool do to it?"
+}

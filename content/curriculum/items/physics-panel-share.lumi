@@ -1,0 +1,30 @@
+# The share of every 100 J of light that a panel turns into electricity. These panels' shares are
+# 15 to 20; the best on sale turn about 24 of every 100 J (Wikipedia, "Solar panel").
+item physics.panel-share v=1 skills=[physics.energy, percentages.of-amounts] {
+  title "How much of the light?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..3
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2, 3}
+  }
+  let i={pick(k, 1000, 500, 1200, 800)}
+  let u={pick(k, 200, 75, 240, 120)}
+
+  scene 24x19 {
+    energyflow e thing="solar panel" from="light" to="electricity" input=i useful=u wasted=[i - u] wastes=["heating"] blank=-1 unit=J at=canvas(1, 0)
+    text ask "Of every 100 J of light that falls on this panel, how many joules come out as electricity?" narrate width=22 below=e gap=1
+    number-input share below=ask gap=1
+  }
+
+  check physics.energy of=e share=efficiency
+  feedback {
+    when (share == u) point=e {
+      say "That is out of {i} J. How much would it be out of 100 J?"
+    }
+  }
+  hint "How many hundreds of joules go in?"
+  hint "Share the electricity out between those hundreds."
+}

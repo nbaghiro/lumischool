@@ -1,0 +1,31 @@
+# The two-star reason: whether a boat could go from the mill to Hill Top in a given year takes the
+# timeline and the map together. The canal can be open and still not reach Hill Top, which is the
+# case the child who reads only one flag gets wrong.
+item reading.could-a-boat-go v=1 stars=2 skills=[reading.timeline, reading.map, reading.inference] {
+  title "Could a boat get there?"
+  difficulty pick(k, 1, 0, 1, 2, 1)
+  let k=0..4
+  let year={pick(k, 1800, 1850, 1970, 2000, 2015)}
+  let right={pick(k, "No: the canal was open, but not to Hill Top.", "Yes: the canal was open as far as Hill Top.", "No: the canal was closed all the way.", "No: the canal was open, but not to Hill Top.", "Yes: the canal was open as far as Hill Top.")}
+
+  scene 36x35 {
+    column all at=canvas(0, 1) space=1 align=start {
+      canalmap map stops=["Mill", "Kingsford", "Hill Top", "Quarry"] locks=[3, 5, 2]
+      timeline line from=1780 to=2020 step=40 years=[1796, 1805, 1852, 1895, 1961, 1994, 2008] labels=["Opens", "To Hill Top", "Railway", "Big freeze", "Closes", "Reopens", "Hill Top again"]
+      text ask "Could a boat go from the mill up to Hill Top in {year}?" width=35
+      choice pick options=["Yes: the canal was open as far as Hill Top.", "No: the canal was closed all the way.", "No: the canal was open, but not to Hill Top."] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (year == 2000 and pick == "No: the canal was closed all the way.") point=line {
+      say "By 2000 the canal had reopened. Which part reopened first, and when did boats reach Hill Top again?"
+    }
+    when (year == 1800 and pick == "Yes: the canal was open as far as Hill Top.") point=line {
+      say "The canal was open in 1800, but only to Kingsford. When did it reach Hill Top?"
+    }
+  }
+  hint "Find {year} on the timeline. Which flags come just before it?"
+  hint "Hill Top is past Kingsford on the map. Was that stretch open in {year}?"
+}

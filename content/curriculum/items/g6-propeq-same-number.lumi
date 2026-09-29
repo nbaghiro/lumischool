@@ -1,0 +1,33 @@
+# The three-star: the same unknown is both inner terms, so its square is the product of the outer
+# terms. No scale is given and the child has to see that.
+item proportion.same-number v=1 stars=3 skills=[algebra.equations.proportion, reasoning.structure] {
+  title "The same number twice"
+  difficulty (s / 2)
+  let s=0..5
+  let a={pick(s, 2, 4, 3, 2, 4, 9)}
+  let b={pick(s, 8, 9, 12, 18, 25, 16)}
+  level easy {
+    let s={0}
+  }
+  level medium {
+    let s={1, 2, 3}
+  }
+  level hard {
+    let s={4, 5}
+  }
+
+  scene 36x14 {
+    balanceeq beam left="{a} : x" right="x : {b}" at=canvas(1, 1)
+    text ask "The same whole number goes in both places marked x, and the beam is a true proportion. What is x?" narrate width=15 right-of=beam gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer pick(s, 4, 6, 6, 6, 10, 12)
+  feedback {
+    when (answer == (a + b) / 2) point=beam {
+      say "Halfway between {a} and {b} keeps the same difference, not the same ratio. Check with the products."
+    }
+  }
+  hint "The outer terms are {a} and {b}. What do the inner terms multiply to?"
+  hint "Both inner terms are x. Which number times itself makes that?"
+}

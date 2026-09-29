@@ -1,0 +1,30 @@
+# The core's reasoning question: which of the two is asked for. Sharing into the most equal groups
+# is a common factor; waiting for two cycles to meet is a common multiple.
+item number.lcm-or-hcf v=1 skills=[number.lcm, number.hcf, reasoning.choose-strategy] {
+  title "Multiple or factor"
+  difficulty s
+  let s=0..3
+  level easy {
+    let s={0, 1}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 31x15 {
+    text ask "{pick(s, \"Two moons line up tonight. One goes round in 6 days and the other in 8. When will they next line up?\", \"24 red stars and 36 gold stars go on cards, the same on every card, with none left. What is the most cards?\", \"A path 48 m long and another 60 m long get lamps at equal gaps, a lamp at each end, as far apart as possible. How far apart?\", \"Telescope A is free every 4th night and telescope B every 10th. Both are free tonight. When are both next free?\")} Which do you need?" narrate width=30 at=canvas(1, 1)
+    choice pick options=["the lowest common multiple", "the highest common factor"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if s == 0 or s == 3 then "the lowest common multiple" else "the highest common factor")
+  feedback {
+    when ((s == 0 or s == 3) and pick == "the highest common factor") point=ask {
+      say "The answer has to be a number both cycles reach, so it is bigger than both. That is a multiple."
+    }
+    when ((s == 1 or s == 2) and pick == "the lowest common multiple") point=ask {
+      say "The answer has to divide both numbers exactly, so it is smaller than both. That is a factor."
+    }
+  }
+  hint "Will the answer be bigger than both numbers, or smaller than both?"
+  hint "A number both go into is a multiple. A number that goes into both is a factor."
+}

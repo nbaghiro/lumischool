@@ -1,0 +1,31 @@
+# The three-star: a sun still (a bowl of salty water under cling film with a cup in the middle) makes
+# clean water with no flame. The rate is the lock keeper's own measure; the question is the fewest
+# stills, which needs rounding up.
+item chem.sun-stills v=1 stars=3 skills=[chemistry.separating, reasoning.constraints] {
+  title "How many sun stills?"
+  difficulty (need / (rate * hours))
+  let rate={10, 15} hours={4, 6} need={100, 150, 200, 250}
+  where (need % (rate * hours) != 0)
+  level easy {
+    let need={100, 150}
+  }
+  level hard {
+    let need={200, 250}
+  }
+
+  scene 35x15 {
+    condense lid kind=hot-lid drops=8 at=canvas(1, 0)
+    text ask "The lock keeper makes sun stills: a bowl of canal water in the sun, cling film over the top, and drops that run down into a cup. One still gives about {rate} ml of clean water an hour. The sun shines for {hours} hours today, and she wants {need} ml. What is the fewest stills she needs?" narrate width=23 right-of=lid gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((need + rate * hours - 1) // (rate * hours))
+  feedback {
+    when (answer == need // (rate * hours)) point=lid {
+      say "That many stills give less than {need} ml. One more still is needed to get over the line."
+    }
+  }
+  hint "How much clean water does one still give in the whole day?"
+  hint "How many whole stills reach {need} ml? Would one fewer be enough?"
+  hint "Can she use part of a still?"
+}

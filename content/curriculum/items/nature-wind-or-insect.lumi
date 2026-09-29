@@ -1,0 +1,37 @@
+# A flower described by what it has, and whether insects or the wind carry its pollen. Bright petals,
+# a smell and nectar are for insects; dull flowers, dusty pollen and anthers hanging out are for the
+# wind. The night-scented flower at hard has no bright petals and is still an insect's.
+item nature.wind-or-insect v=1 skills=[nature.pollination] {
+  title "Wind or insect?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let flower={pick(k, "has big bright petals, a sweet smell and nectar inside", "has tiny green flowers with no smell, and pollen as light as dust", "has its anthers hanging outside on long threads, and feathery stigmas", "is pale with no bright colours, but smells strongly at night and has nectar deep inside")}
+  let ans={pick(k, "insects", "the wind", "the wind", "insects")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x22 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      flowers f count=3 petals=5
+      bumblebee bee facing=-1
+    }
+    text ask "A plant on the towpath {flower}. What carries its pollen from flower to flower?" narrate width=32 below=pics gap=1
+    choice pick options=["insects", "the wind"] below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (ans == "insects" and pick != ans) point=ask {
+      say "A smell and nectar are no use to the wind. They are there to bring an insect to the flower."
+    }
+    when (ans == "the wind" and pick != ans) point=ask {
+      say "Nothing here would call an insect: no bright colour, no smell, no nectar. The pollen is made to blow."
+    }
+  }
+  hint "Does the flower have anything that would call a visitor to it: colour, smell or food?"
+  hint "A flower that nothing visits does not need to be seen. Its pollen is light, and its parts hang out in the air."
+}

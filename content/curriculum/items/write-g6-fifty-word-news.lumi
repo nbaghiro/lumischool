@@ -1,0 +1,21 @@
+# The three-star piece: a news item for the moon base's board that brings the year's tools together
+# in fifty words, marked by a grown-up; at hard, exactly fifty words and a headline.
+item writing.fifty-word-news v=1 stars=3 skills=[writing.composing, writing.concision, writing.word-choice] {
+  title "Fifty words for the board"
+  difficulty k
+  let k=0..1
+
+  scene 34x35 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      earth globe up=2
+      lander lnd rungs=5
+      sign board lines=["BASE NEWS"] kind=board color=sky
+    }
+    text ask "{if k == 0 then \"Write a news item of fifty words or fewer for the moon base's board about the day the sun rose over the rim after two weeks of night. Use one colon, one semicolon, one passive sentence and one exact verb.\" else \"Write a news item of exactly fifty words for the moon base's board about the day the sun rose over the rim after two weeks of night, with a headline. Use one colon, one semicolon, one passive sentence and two exact verbs.\"}" narrate width=33 below=pics gap=1
+    writinglines lines lines=5 width=33 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A short news item about the sunrise after the long night, counted at fifty words or fewer (exactly fifty, with a headline, at hard), with a colon after a whole sentence before a list or an explanation, a semicolon between two linked whole sentences, one passive sentence where the doer does not matter (the rim was reached at dawn), and an exact verb (two at hard) where a plain one would have done; the facts come in a sensible order and nothing is there only to fill space."
+  hint "Write it first without counting, then cut to fifty."
+  hint "Tick each tool as you use it: colon, semicolon, passive, exact verb."
+}

@@ -1,0 +1,45 @@
+# After heavy rain the river is fuller and faster, so it wears away more and carries more, and when
+# it goes down again it leaves sand and mud where the water slowed. The last one needs both halves.
+item nature.after-rain v=1 skills=[nature.rivers, reasoning.cause-and-effect] {
+  title "After the storm"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..2
+  let asks={pick(k, "What else changes while the water is high?", "Why has the water turned brown?", "When the river goes down again, where will fresh sand and mud be left behind?")}
+  let ans={pick(k, "It rolls bigger stones and wears banks faster", "It carries soil and sand it has worn away", "Inside the bends and on the flooded fields")}
+  let o1={pick(k, "It drops more stones, as it has more water", "The rain that fell was brown", "On the outside of the bends, where it was fast")}
+  let o2={pick(k, "It slows down, because it is deeper", "Mud rains down from the storm cloud", "Nowhere, because the sea takes it all")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x26 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      cloud c puffs=4 rain=1
+      streambank b w=10 h=5 edge=right cliff=0
+      current flow length=10 facing=1
+    }
+    text ask "It has rained hard for two days in the hills above the canal town. The river by the mill is higher and running fast. {asks}" narrate width=32 below=pics gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick == o1) point=ask {
+      say "More water running fast does the opposite: it can lift and roll bigger stones than before."
+    }
+    when (k == 0 and pick == o2) point=ask {
+      say "The question says the river is higher and running fast. Fast water wears away more than slow water."
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "Rain is clear when it falls. The colour comes from what the fast river has picked up on the way."
+    }
+    when (k == 2 and pick == o1) point=ask {
+      say "The fast water on the outside of a bend wears away. Sand and mud are dropped where the water slows."
+    }
+  }
+  hint "Is the river faster or slower than usual? What does fast water do to the banks?"
+  hint "Fast water picks things up and carries them. Slow water puts them down."
+}

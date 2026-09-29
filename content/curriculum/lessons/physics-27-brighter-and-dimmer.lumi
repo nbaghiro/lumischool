@@ -1,4 +1,4 @@
-lesson physics-brighter-and-dimmer v=1 format=teach grade=4 unit=4 subject=physics levels=[easy, medium, hard] {
+lesson physics-brighter-and-dimmer v=1 format=teach grade=4 unit=1 subject=physics levels=[easy, medium, hard] {
   title "Brighter and dimmer"
   goal "Predict how bright the bulbs in a circuit will be from the number of cells and bulbs, and choose the change that makes them brighter."
 

@@ -1,0 +1,45 @@
+# The two-star: a triangle measured with its sloping side instead of its height, so the answer is too
+# big. The gable is isosceles with Pythagorean halves, so the sloping side given is its true length.
+item area.halve-mistake v=1 stars=2 skills=[area.triangles, reasoning.find-the-mistake] {
+  title "The wrong side"
+  difficulty s
+  let s=0..2
+  let b={pick(s, 6, 8, 12)}
+  let h={pick(s, 4, 3, 8)}
+  let side={pick(s, 5, 5, 10)}
+  level easy {
+    let s={0}
+  }
+  level medium {
+    let s={1}
+  }
+  level hard {
+    let s={2}
+  }
+
+  scene 35x28 {
+    areashape roof kind=triangle base=b height=h shift=(b / 2) cell=1 unit=m at=canvas(1, 1)
+    text ask "A gable of the library roof is a triangle. Nell measured a sloping side, {side} m, and worked out {b} × {side} ÷ 2 = {b * side / 2}. What did she do wrong?" narrate width=16 right-of=roof gap=2
+    choice why options=["she used a sloping side, not the height", "she should not have halved", "she should have added the sides"] stack=column below=roof gap=1
+    row eq below=why gap=1 space=1 align=centre {
+      text ask2 "The area is"
+      number-input answer width=4
+      text unit "square metres"
+    }
+  }
+
+  answer why="she used a sloping side, not the height" answer=(b * h / 2)
+  feedback {
+    when (why == "she should not have halved") point=roof {
+      say "A triangle is half of a rectangle, so halving is right. Which length did she use as the height?"
+    }
+    when (why == "she should have added the sides") point=roof {
+      say "Adding the sides gives the distance round, not the area. Which line is the height?"
+    }
+    when (answer == b * side / 2) point=roof {
+      say "That is Nell's answer. The height is the dashed line straight up, not the sloping side."
+    }
+  }
+  hint "Which line on the drawing is the height?"
+  hint "Use the base and the dashed height."
+}

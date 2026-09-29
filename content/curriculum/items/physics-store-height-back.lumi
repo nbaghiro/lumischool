@@ -1,0 +1,31 @@
+# Worked backwards: the joules the water gave and its weight say how far it fell, the height being
+# the joules over the weight.
+item physics.store-height-back v=1 skills=[physics.energy, reasoning.backwards, division.grouping] {
+  title "How far did it fall?"
+  difficulty (m * h)
+  let m={4, 5, 10} h={2, 3, 5}
+  level easy {
+    let m={4, 5} h={2, 3}
+  }
+  level hard {
+    let m={10} h={3, 5}
+  }
+
+  scene 30x22 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      waterfall f drops=2 rainbow=1
+      waterwheel w paddles=10 lit=0
+    }
+    text ask "{m} kg of water gives the wheel {m * 10 * h} J as it falls. Each kilogram weighs 10 N. How many metres did the water fall?" narrate width=27 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer h
+  feedback {
+    when (answer == m * 10 * h / m) point=ask {
+      say "That shares the joules by the kilograms. Share them by the weight in newtons instead."
+    }
+  }
+  hint "What does the water weigh, in newtons?"
+  hint "The joules are the weight times the height. What times the weight makes {m * 10 * h}?"
+}

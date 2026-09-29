@@ -1,0 +1,29 @@
+# The unknown moves into the number: the test is known to pass and a digit is missing. For 9 there is
+# one digit (the where line rules out 0 and 9 both working); for 3 the smallest is asked.
+item divisible.missing-digit v=1 skills=[number.multiples.divisibility, reasoning.work-backwards] {
+  title "The missing digit"
+  difficulty (if k == 3 then 0 else 1)
+  let k={3, 9} a=1..9 c=0..9
+  where ((a + c) % 9 != 0)
+  level easy {
+    let k={3}
+  }
+  level hard {
+    let k={9}
+  }
+
+  scene 36x15 {
+    sign lock lines=["{a} ? {c}"] kind=board color=sky at=canvas(1, 1)
+    text ask "The lens box in the observatory has a lock number {a}?{c}, with one digit rubbed out. The number is in the {k} times table. {if k == 3 then \"What is the smallest digit that can go in the gap?\" else \"Which digit goes in the gap?\"}" narrate width=26 right-of=lock gap=2
+    number-input answer width=2 below=ask gap=1
+  }
+
+  answer (if k == 9 then (9 - (a + c) % 9) % 9 else (3 - (a + c) % 3) % 3)
+  feedback {
+    when ((a + answer + c) % k != 0) point=lock {
+      say "Add your digit to {a} and {c}. Is the total in the {k} times table?"
+    }
+  }
+  hint "What do the two digits you can see add up to?"
+  hint "What is the next number in the {k} times table after that?"
+}

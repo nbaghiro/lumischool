@@ -1,0 +1,28 @@
+# A riddle about the moon base in two clues, where each clue alone fits more than one thing in the
+# picture and only both together fit one.
+item reading.moon-riddle v=1 skills=[reading.inference, reasoning.logic] {
+  title "What am I?"
+  difficulty pick(k, 0, 1, 2, 0)
+  let k=0..3
+  let right={pick(k, "lander", "Earth", "crater", "rocket")}
+
+  scene 35x23 {
+    row top at=canvas(1, 1) space=1 align=end {
+      rocket r flame=0
+      lander l rungs=5
+      earth e up=1
+      crater c count=1
+    }
+    passage p title="What am I?" text="{pick(k, \"I stand on legs but never walk. I have a ladder but no house.\", \"I am round, and I hang still in the black sky. I am blue and white, and I am home.\", \"I am round, but I am not a ball. A rock from space made me, and nobody dug me.\", \"I stand tall and point at the sky. When I leave, fire comes out of my feet.\")}" width=34 numbers=false below=top gap=1
+    choice pick options=["rocket", "lander", "Earth", "crater"] below=p gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "That fits one clue. Check it against every part of the riddle."
+    }
+  }
+  hint "Read the first clue. Which things in the picture could it be?"
+  hint "Now read the second clue. Which of those is left?"
+}

@@ -1,0 +1,34 @@
+# Three-star: the slowest pipe that fills the tank in time, worked backwards from the gain a minute the
+# tank needs and the leak that has to be made up as well.
+item coding.tank-slowest v=1 stars=3 skills=[coding.simulation, reasoning.work-backwards, reasoning.fewest] {
+  title "The slowest pipe that will do"
+  difficulty k
+  let k=0..2
+  let c={pick(k, 60, 90, 100)} m={pick(k, 6, 8, 8)} l={pick(k, 2, 3, 4)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x21 {
+    program p code=["set water to 0", "set minutes to 0", "repeat until water is at least {c}", "  add pipe to water", "  take {l} from water", "  add 1 to minutes"] text=true at=canvas(0, 0)
+    kingfisher kf flying=0 right-of=p gap=1
+    text ask "The tank must be full, {c} litres, within {m} minutes, and the crack lets {l} litres out each minute. What is the smallest whole number of litres a minute the pipe can bring?" width=30 at=canvas(0, 15)
+    number-input answer right-of=ask gap=0
+  }
+
+  answer pick(k, 12, 15, 17)
+  feedback {
+    when (answer == pick(k, 10, 12, 13)) point=p {
+      say "That fills it only if nothing leaks. The pipe also has to make up the {l} litres the crack lets out."
+    }
+    when (answer == pick(k, 12, 15, 17) - 1) point=p {
+      say "Try it: after {m} minutes the tank is just short of {c}."
+    }
+  }
+  hint "How many litres must the tank gain each minute to reach {c} in {m} minutes?"
+  hint "If the answer is not a whole number, will rounding down be enough?"
+  hint "The pipe has to bring that gain and the leak together."
+}

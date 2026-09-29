@@ -1,0 +1,29 @@
+# The three-star: every triangle with whole-number base and height up to 12 that has a given area. The
+# base and the height are different jobs, so 4 by 6 and 6 by 4 count as two. A count, found by listing
+# the factor pairs of double the area.
+item area.all-triangles v=1 stars=3 skills=[area.triangles, reasoning.all-the-ways] {
+  title "Every base and height"
+  difficulty n
+  let n={6, 10, 12, 18}
+  level easy {
+    let n={10}
+  }
+  level hard {
+    let n={18}
+  }
+
+  scene 35x15 {
+    temple temple rows=4 at=canvas(1, 1)
+    text ask "A mason cuts triangular stones with an area of {n} square decimetres. The base and the height are whole numbers of decimetres, each at most 12. How many different base and height pairs can the stones have? A base of 4 with a height of 6 is different from a base of 6 with a height of 4." narrate width=22 right-of=temple gap=2
+    number-input answer width=3 below=temple gap=1
+  }
+
+  answer (if n == 6 or n == 12 then 6 else if n == 10 then 4 else 5)
+  feedback {
+    when (answer == (if n == 6 or n == 12 then 3 else if n == 10 then 2 else 3)) point=ask {
+      say "A base of 4 and a height of 6 is not the same stone as a base of 6 and a height of 4. Count both."
+    }
+  }
+  hint "Base times height has to make double the area. What is that?"
+  hint "List the pairs of numbers that multiply to make it, keeping both at 12 or less."
+}

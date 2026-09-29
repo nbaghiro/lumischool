@@ -1,0 +1,35 @@
+# The second reason in the core: three sides, or two sides and the angle between them, fix a triangle;
+# three angles alone do not, since an enlargement keeps them.
+item symmetry.congruent-sure v=1 skills=[shapes.congruent, reasoning.explain] {
+  title "Certainly the same"
+  difficulty (if v == 0 or v == 2 then 0 else 1)
+  let v=0..3
+  level easy {
+    let v={0, 2}
+  }
+  level hard {
+    let v={1, 3}
+  }
+
+  scene 36x22 {
+    lander base at=canvas(1, 1)
+    table facts cols=2 head=["First plate", "Second plate"] cells=[pick(v, "sides 5, 6, 7 cm", "angles 50°, 60°, 70°", "sides 5, 6, 7 cm", "5 cm, 7 cm, 40°"), pick(v, "sides 7, 5, 6 cm", "angles 70°, 50°, 60°", "sides 5, 6, 8 cm", "7 cm, 5 cm, 40°")] right-of=base gap=1
+    text ask "Two triangular plates for the lander's legs are measured.{if v == 3 then \" On each plate the 40° angle is between the two sides.\" else \"\"} Are they certainly congruent, the same shape and the same size?" narrate width=34 below=base gap=1
+    choice pick options=["yes", "no"] below=ask gap=1
+  }
+
+  answer pick=(if v == 0 or v == 3 then "yes" else "no")
+  feedback {
+    when (v == 1 and pick == "yes") point=facts {
+      say "The same angles can come in a small size and a large size, like a photo and its enlargement."
+    }
+    when (v == 0 and pick == "no") point=facts {
+      say "The lengths are listed in a different order, but they are the same three lengths."
+    }
+    when (v == 3 and pick == "no") point=facts {
+      say "Two sides with the angle between them can only be joined up one way. Try drawing it."
+    }
+  }
+  hint "Could you draw two different triangles that both fit the facts for the plates?"
+  hint "Would a bigger copy of one plate still fit its facts?"
+}

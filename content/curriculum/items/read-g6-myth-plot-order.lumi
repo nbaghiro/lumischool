@@ -1,0 +1,21 @@
+# Four events of one tale put back in plot order. The events are chosen close together so the order
+# comes from the story and not from what usually happens first.
+item reading.myth-plot-order v=1 skills=[reading.sequencing, reading.story-structure, reading.myths] {
+  title "The plot in order"
+  difficulty pick(k, 1, 1, 2)
+  let k=0..2
+
+  scene 36x18 {
+    row all at=canvas(0, 1) space=2 align=end {
+      column left space=1 align=start {
+        text ask "{pick(k, \"Thor’s fishing trip: number these in the order they happen.\", \"Ilya of Murom: number these in the order they happen.\", \"Daedalus and Icarus: number these in the order they happen.\")}" width=24
+        sequence s items=[pick(k, "Hymir begged Thor to stop.", "Ilya rode off to Kyiv.", "They rose over the waves."), pick(k, "Hymir cut the line.", "Ilya drank from the cup.", "Icarus climbed higher."), pick(k, "Thor took the ox’s head.", "Ilya shot the robber.", "Daedalus warned his son."), pick(k, "The serpent took the bait.", "The pilgrims asked for a drink.", "The wax grew soft.")] blanks=[p1, p2, p3, p4]
+      }
+      rowboat b stroke=0.5 facing=-1
+    }
+  }
+
+  answer p1=pick(k, 2, 3, 2) p2=pick(k, 4, 2, 3) p3=pick(k, 1, 4, 1) p4=pick(k, 3, 1, 4)
+  hint "Which of these happens first in the story? Which happens last?"
+  hint "Put the two ends first, then decide the order of the two in the middle."
+}

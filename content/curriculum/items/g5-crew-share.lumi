@@ -1,0 +1,31 @@
+# The way in: money shared by a whole number, where the point stays where it is.
+item decimal.crew-share v=1 skills=[decimals.divide, money.decimals] {
+  title "Sharing the takings"
+  difficulty (d + q / 100)
+  let d={2, 3, 4, 6} q={124, 236, 185, 248, 317}
+  let c={d * q}
+  level easy {
+    let d={2}
+  }
+  level hard {
+    let d={6} q={185, 317, 236}
+  }
+
+  scene 32x11 {
+    narrowboat boat windows=4 pots=3 at=canvas(1, 1)
+    text ask "The {d} people who crew the narrowboat sold flowers at the market for {decimals(c / 100, 2)} dollars. They share it equally. How much does each get?" narrate width=16 right-of=boat gap=2
+    number-input answer width=6 below=boat gap=1
+  }
+
+  answer decimals(q / 100, 2)
+  feedback {
+    when (answer == q) point=ask {
+      say "That is the share in cents. Write it in dollars, with the point."
+    }
+    when (answer == q / 10) point=ask {
+      say "Keep the point in line with the point in {decimals(c / 100, 2)}."
+    }
+  }
+  hint "Share the dollars first. What is left over?"
+  hint "Change what is left into cents and share those."
+}

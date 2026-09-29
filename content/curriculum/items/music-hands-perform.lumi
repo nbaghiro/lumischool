@@ -1,0 +1,29 @@
+# The three-star, made and heard: Ode to Joy's first line with both hands, the right hand as written
+# and a left hand of long notes, played to a grown-up at a steady speed. Hard adds a left hand of the
+# child's own for the second line, from C and G only.
+item music.hands-perform v=1 stars=3 skills=[music.hands-together, music.keys] {
+  title "A piece with both hands"
+  difficulty v
+  let v=0..2
+  let what={pick(v, "bars 1 and 2 with both hands, the left hand holding C for bar 1 and G for bar 2", "the whole first line with both hands, the left hand holding C for bar 1 and G for bar 2. For bars 3 and 4 choose the left hand yourself: hold C or G in each bar, whichever chord, C E G or G B D, holds more of that bar's notes", "the whole first line with both hands, the left hand in minims: C and E, then G and B, then C and E, then G twice")}
+  let extra={pick(v, "", "", " Then make up a left hand of your own for the second line, using only C and G, and play that too.")}
+
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 34x37 {
+    column score space=0 align=start at=canvas(1, 1) {
+      notes right clef=treble notes=[E4, E4, F4, G4, G4, F4, E4, D4] values=[] meter=4 spaced=true
+      notes left clef=bass notes=[C3, G2] values=[4, 4] meter=4 spaced=true
+    }
+    text ask "Ode to Joy's first line is these two bars, then C C D E and E, D, D long. Play {what}. Keep a steady speed and do not stop for a slip.{extra} Then play it to a grown-up." narrate width=32 below=score gap=1
+  }
+
+  check writing.by-eye look-for="Ode to Joy played with the right hand as written and the left hand's notes sounding exactly with the right-hand notes above them, held for their full length: at easy two bars over C then G; at medium four bars over C, G and then the child's own choice for bars 3 and 4, where C then G fits best since bar 3 is C C D E and bar 4 is E, D, D; at hard four bars with the left hand in minims C E, G B, C E, G G, then a second line with a left hand of C and G that fits; at a steady speed without stopping."
+  hint "Play each hand alone first, then put them together slowly."
+  hint "Say the beats out loud. The left hand plays only where its note starts, then holds."
+}

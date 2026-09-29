@@ -1,0 +1,76 @@
+# A program that watches and switches: a sensor gives the program a number it cannot set, an if with
+# a threshold decides a switch, and the switch changes what the sensor reads next. At the research
+# hut under the midnight sun the heater keeps the hut warm and a lamp comes on in fog.
+lesson coding-sensors-and-feedback v=1 format=teach grade=6 unit=3 subject=coding levels=[easy, medium, hard] {
+  title "A program that watches and switches"
+  goal "Work out what a program that reads a sensor and switches a heater does to the reading, minute by minute."
+
+  look {
+    scene 36x27 {
+      program p code=["repeat 20", "  if temp is less than 18", "    switch heater on", "  if temp is more than 21", "    switch heater off", "  wait 1"] text=true sense=["temp starts 15 changes -1 heater 2"] at=canvas(0, 0)
+      thermometer th from=0 to=30 step=10 value=15 unit="°C" right-of=p gap=1
+      switched sw names=["heater"] on=[] below=th gap=1
+      midnightsun ms suns=5 midnight=1 below=p gap=1
+    }
+    say """
+      The research hut on the ice shelf loses 1 degree a minute. Its program reads temp from the
+      thermometer, a sensor: the program can ask about it but cannot set it. Below 18 it switches the
+      heater on, and above 21 it switches it off. With the heater on the hut gains 2 degrees a
+      minute and still loses 1, so it warms by 1. Each wait 1 is a minute. What the program switches
+      changes what it reads next, and that loop is called feedback.
+      """
+  }
+  do {
+    show coding.sense-read d=4 v=6 easy-v=7 hard-v=4
+    level easy {
+      worked coding.sense-minute s=12 h=2 m=5 level=medium
+    }
+    show coding.sense-minute s=13 h=2 m=5 easy-s=12 easy-m=3 hard-h=3 hard-m=8
+    show coding.sense-not t=18 v=18 easy-v=16 hard-t=17
+    show coding.sense-count k=1 easy-k=0 hard-k=2
+    show coding.sense-flow k=1 easy-k=0 hard-k=2
+    show coding.sense-lamp k=1 easy-k=0 hard-k=2
+    show coding.sense-high k=1 easy-k=0 hard-k=2
+    show coding.sense-minute s=14 h=3 m=3 easy-s=14 easy-h=2 easy-m=5 hard-s=12 hard-m=8
+    level hard {
+      show coding.sense-not t=18 v=19 level=medium
+    }
+  }
+  try stars=2 {
+    show coding.sense-fewer k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show coding.sense-most k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A sensor gives the program a number, an if compares it with a threshold and switches something, and what is switched changes the next reading."
+  }
+
+  grown-ups """
+    A thermostat is the plainest example of control with feedback: a sensor reads the room, the
+    program compares the reading with a threshold, switches the heater, and the heater changes the
+    reading the program sees next. The program can ask about a sensor but cannot set it. The common
+    slips are forgetting that the hut still cools while the heater is on, expecting the heater to
+    switch off exactly at the top number when it waits until the reading is more than it, and reading
+    not more than 18 as less than 18. In the child's working, look for a table with a row a minute and
+    columns for the reading and for the heater. If the child is stuck, play it with a real
+    thermometer in a glass of water and a cup of warm water to pour in when it drops below a line;
+    stay another day if the table still skips the heater column. Off the page, find the thermostats at
+    home (the fridge, the oven, the hot water) and ask what each reads and what it switches. The
+    two-star question compares three changes to the thresholds without running each one, and the
+    three-star question finds the highest switch-on number that keeps the heater to a set number of
+    starts. On screen, Run shows the thermometer's reading and the heater change minute by minute, once
+    a question has been answered; on paper every question is worked from the program and the numbers
+    printed with it. This meets China's 2022 standard
+    for grades five and six, 过程与控制 内容要求 3 and 4, 「反馈是过程与控制中的重要手段」 (feedback is an
+    important means of control) and 「连续量可以经由阈值判断形成开关量」 (a continuous quantity becomes an
+    on or off one through a threshold), and Japan's 2017 course of study, 理科 第3の2(2), where a
+    program is considered as acting on the conditions it is given.
+    """
+  level easy {
+    grown-ups "At this level the readings asked about are well away from the thresholds, the hut warms by 1 degree a minute with the heater on and one minute-by-minute table is worked in the teacher's pen, the minutes asked are 3 or 5, the heater comes on twice, the empty shape switches the heater on, and the fog is the plainest. The two-star question starts from 18 and 21, and the three-star allows the heater three starts."
+  }
+  level hard {
+    grown-ups "At this level the readings sit on the thresholds, where less than and not more than differ, the hut warms by 2 degrees a minute and the table runs to minute 8, past the top and back down, the heater warms by 2 in the counting and warmest questions, the empty shape is the wait that lets a minute pass, and a second not question is added. The two-star question starts from 17 and 22 with a stronger heater, and the three-star uses the stronger heater with three starts."
+  }
+}

@@ -1,0 +1,40 @@
+# The three-star count: bars made from two quavers and crotchets (or four quavers and two crotchets),
+# and how many are syncopated, with a crotchet starting on an and. A crotchet starts on an and when
+# an odd number of quavers come before it. Three-time 2Q 2C: 6 bars, 3 syncopated; four-time 2Q 3C:
+# 10 bars, 6 syncopated; four-time 4Q 2C: 15 bars, 9 syncopated.
+item music.sync-all-ways v=1 stars=3 skills=[music.syncopation, reasoning.all-the-ways] {
+  title "Every pushed bar"
+  difficulty v
+  let v=0..2
+  let what={pick(v, "a bar of three beats from two quavers and two crotchets", "a bar of four beats from two quavers and three crotchets", "a bar of four beats from four quavers and two crotchets")}
+  let right={pick(v, 3, 6, 9)}
+  let all={pick(v, 6, 10, 15)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 35x25 {
+    row top space=2 align=start at=canvas(1, 1) {
+      notes eg clef=treble notes=[G4, A4, G4, A4, G4] values=[0.5, 1, 0.5, 1, 1] meter=4
+      narrowboat boat windows=2 pots=1
+    }
+    text ask "Ben writes {what}, in every different order. A bar is syncopated when a crotchet starts on an and, like the one in this bar. How many of his bars are syncopated?" narrate width=32 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == all) point=eg {
+      say "That counts every bar. Some orders keep every crotchet on a number, like two quavers side by side."
+    }
+    when (answer == all - right and v != 0) point=eg {
+      say "That counts the bars with no pushed crotchet. The question asks for the others."
+    }
+  }
+  hint "Where can the quavers go? Try the bars where two quavers sit side by side first."
+  hint "A crotchet starts on an and when an odd number of quavers come before it."
+  hint "Count every order, then take away the ones with no crotchet on an and."
+}

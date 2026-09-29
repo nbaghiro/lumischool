@@ -1,0 +1,24 @@
+# The story: the observatory's own telescope, how many times bigger it shows Jupiter, and what an
+# eyepiece with twice the focus does to that: the magnification is the focuses divided, so it halves.
+item physics.observatory-jupiter v=1 skills=[physics.light, physics.sky, reasoning.predict] {
+  title "Jupiter through the telescope"
+  difficulty (fo / fe / 10)
+  let fo={120, 150} fe={3, 5}
+
+  scene 33x26 {
+    lens t mode=telescope objective=fo eyepiece=fe show=1 at=canvas(1, 0)
+    text ask "Leo looks at Jupiter through the observatory's telescope. How many times bigger does it make Jupiter look?" narrate width=32 below=t gap=1
+    number-input times below=ask gap=1
+    text then "He swaps the eyepiece for one whose focus is twice as long. How many times bigger does Jupiter look now?" narrate width=32 below=times gap=1
+    number-input now below=then gap=1
+  }
+
+  answer times=(fo / fe) now=(fo / fe / 2)
+  feedback {
+    when (now == fo / fe * 2) point=then {
+      say "The magnification is the big lens's focus divided by the eyepiece's. Does a longer eyepiece focus give a bigger answer or a smaller one?"
+    }
+  }
+  hint "Divide the big lens's focus by the eyepiece's."
+  hint "Now divide by an eyepiece focus twice as long."
+}

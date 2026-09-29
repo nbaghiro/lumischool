@@ -1,0 +1,27 @@
+# Price for one kilogram from a price for a decimal number of kilograms: divide by a decimal.
+item decimal.apples-per-kilo v=1 skills=[decimals.divide, rates.unit-price] {
+  title "The price of one kilogram"
+  difficulty ((if k == 0.5 then 0 else if k == 2.5 then 1 else 2) + u)
+  let k={0.5, 2.5, 1.5, 0.4} u={1.20, 2.40, 3.60, 2.80}
+  level easy {
+    let k={0.5}
+  }
+  level hard {
+    let k={1.5, 0.4} u={2.80, 3.60}
+  }
+
+  scene 32x10 {
+    pricetag tag now=(100 * k * u) was=0 at=canvas(1, 1)
+    text ask "At the canal market, a bag of {k} kg of apples costs the price on the tag. How much is one kilogram?" narrate width=20 right-of=tag gap=2
+    number-input answer width=6 below=ask gap=1
+  }
+
+  answer decimals(u, 2)
+  feedback {
+    when (answer == k * u * k) point=tag {
+      say "Multiplying makes the price bigger than the bag's. One kilogram is found by dividing by {k}."
+    }
+  }
+  hint "Is one kilogram more or less than {k} kg? So is its price more or less than the tag?"
+  hint "Divide the price by {k}. Make {k} whole first by multiplying both numbers by ten."
+}

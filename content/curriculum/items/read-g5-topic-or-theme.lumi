@@ -1,0 +1,42 @@
+# Four canal-town stories, each with a theme, a topic and a plot. The child picks the theme: the
+# idea about life the story's events show. A rival is also a general sentence about life, but one
+# the story does not teach, so the form of a choice never gives the theme away.
+item reading.topic-or-theme v=1 skills=[reading.theme, reading.inference] {
+  title "What is the theme?"
+  difficulty pick(k, 0, 1, 0, 1)
+  let k=0..3
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1, 3}
+  }
+  let title={pick(k, "The race to the lock", "The miller's flour", "The broken paddle", "Learning the tiller")}
+  let theme={pick(k, "Rushing can cost more time than it saves.", "Kindness you show can come back to you.", "Owning up is hard, but it is right.", "Practice makes a hard thing easy.")}
+  let plot={pick(k, "Kit's boat got stuck across the lock.", "The miller mended the baker's oven.", "Nia broke a tooth off the lock gear.", "Esi steered the boat through a tunnel.")}
+  let topic={pick(k, "Boats and canal locks.", "A mill and a bakery.", "A lock paddle.", "Steering a narrowboat.")}
+  let rival={pick(k, "Older people are always wiser than children.", "Always keep something spare for a dry summer.", "Children should never play near machines.", "If a thing is too hard, it is best to give up.")}
+
+  scene 35x32 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p title="{title}" text="{pick(k, \"Kit saw old Mr Amos steering his slow boat towards the lock, and he pushed ahead to get there first. In his hurry he swung the tiller too hard, and his boat jammed sideways across the lock mouth. It took an hour to free it. Mr Amos helped with a long pole, then took his own boat through. \\\"Slow and steady gets you there,\\\" he said, \\\"and in one piece.\\\"\", \"One dry summer the mill stream ran low, and the miller had no water to turn his wheel. The baker, who had flour to spare, sent him three sacks and would take no money. That winter the baker's oven cracked. Before she could ask, the miller was at her door with bricks and a trowel. \\\"You helped me when I had nothing,\\\" he said. \\\"Now it is my turn.\\\"\", \"Nia was playing with the lock paddle when it slipped and a tooth snapped off the gear. Nobody had seen. When Gran asked who had broken it, Nia's cheeks burned. She could have blamed the boys from the barge. Instead she said, \\\"It was me.\\\" Gran hugged her, and they mended the gear together that afternoon.\", \"The first time Esi steered the narrowboat she hit the bank twice and scraped a bridge. She wanted to give up. Her uncle said nothing, but every evening he let her steer a little further. By the end of the summer she took the boat through the long tunnel without a scratch, while her uncle sat on the roof and ate an apple.\")}" width=34
+      text ask "Which is the theme of the story, the idea about life it teaches?" width=34
+      choice pick options=[pick(k, rival, theme, plot, theme), pick(k, theme, rival, rival, topic), pick(k, plot, topic, theme, rival)] stack=column
+    }
+  }
+
+  answer pick=theme
+  feedback {
+    when (pick == plot) point=p {
+      say "That is what happens in the story. A theme is what the story teaches, and it would still be true in a story with no boat in it."
+    }
+    when (pick == rival) point=p {
+      say "That is a sentence about life, but is it what this story teaches? Check it against what happens at the end."
+    }
+    when (pick == topic) point=p {
+      say "That is the topic, what the story is about. The theme says something about life."
+    }
+  }
+  hint "What does a character learn, or find out, by the end?"
+  hint "Which choice do the events of this story, from start to end, really show?"
+}

@@ -1,0 +1,36 @@
+# The rate clean water collects: a lab still drips about 3 to 6 ml a minute. The cylinder shows what
+# collected in the minutes given; the unknown is the rate, or the minutes to collect 60 ml.
+item chem.drip-rate v=1 skills=[chemistry.separating, ratio.rates] {
+  title "How fast does it drip?"
+  difficulty (d * 2 + (if k >= 3 then 1 else 0))
+  let d=0..1 k=0..4
+  let got={pick(k, 12, 18, 16, 24, 30)}
+  let mins={pick(k, 4, 6, 4, 4, 6)}
+  let rate={got / mins}
+  let asks={pick(d, "How many millilitres collected each minute?", "At the same rate, how many minutes does it take to collect 60 ml?")}
+  let second={pick(d, "Share the millilitres out equally between the minutes.", "How many lots of the millilitres in one minute make 60 ml?")}
+  level easy {
+    let d=0..0
+  }
+  level hard {
+    let d=1..1
+  }
+
+  scene 35x17 {
+    cylinder c max=100 step=10 minor=5 level=got unit=ml at=canvas(1, 0)
+    text ask "At the mill, a grown-up distils water from the canal. The cylinder shows the clean water that dripped in over {mins} minutes, steadily. {asks}" narrate width=25 right-of=c gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if d == 0 then rate else 60 / rate)
+  feedback {
+    when (answer == got) point=c {
+      say "That is everything in the cylinder after {mins} minutes. How much of it fell in one minute?"
+    }
+    when (d == 1 and answer == 60 / got) point=c {
+      say "Work out one minute's water first, then how many minutes make 60 ml."
+    }
+  }
+  hint "Read the cylinder at the bottom of the curve. Each small mark is 2 ml."
+  hint "{second}"
+}

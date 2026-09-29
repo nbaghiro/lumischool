@@ -1,0 +1,31 @@
+# The two-star reason: a chord symbol lasts until the next one, not just under the note it is written
+# over. The hard claim: Am is A minor, A C E, not A C-sharp E, since m means minor.
+item music.lead-claim v=1 stars=2 skills=[music.lead-sheets, reasoning.claims] {
+  title "How long does a symbol last?"
+  let q=0..1 r=0..1
+  let claim={pick(q, "Ben says a chord symbol is played only under the note it is written over, so notes 2, 3 and 4 have no chord.", "Ana says the symbol Am on the next line means play A, C sharp and E.")}
+  let right={pick(q, "No: a symbol lasts until the next one", "No: m means minor, so it is A, C and E")}
+  let w1={pick(q, "Yes: each note has its own chord", "Yes: every chord symbol is a major chord")}
+  let w2={pick(q, "No: a symbol lasts for the whole line", "No: Am is two notes, A and m")}
+
+  scene 36x32 {
+    row top space=2 align=end at=canvas(1, 1) {
+      notes line clef=treble notes=[C5, C5, C5, D5, E5, D5] values=[1, 1, 1, 1, 2, 2] meter=4 chords=[C, _, _, _, G7, _]
+      rocket rocket flame=0
+    }
+    text ask "The first line of Au clair de la lune on the crew's lead sheet. {claim} Is that right, and why?" narrate width=34 below=top gap=1
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=line {
+      say "{if q == 0 then \"Only two symbols are written for six notes. What plays under the others?\" else \"A letter alone is major. What is the m there for?\"}"
+    }
+    when (pick == w2) point=line {
+      say "{if q == 0 then \"A new symbol, G7, comes in at bar 2. What happens to C there?\" else \"A chord symbol always names a whole chord of three or more notes.\"}"
+    }
+  }
+  hint "{if q == 0 then \"How many symbols are there, and how many notes?\" else \"What does the m in a chord symbol stand for?\"}"
+  hint "{if q == 0 then \"What would a guitarist play while notes 2, 3 and 4 are sung?\" else \"In a minor chord, the middle note is three semitones above the bottom.\"}"
+}

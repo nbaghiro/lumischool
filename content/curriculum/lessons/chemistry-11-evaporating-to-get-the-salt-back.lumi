@@ -24,6 +24,10 @@ lesson chemistry-evaporating-to-get-the-salt-back v=2 format=worked grade=3 unit
     show chem.salt-concentration w=200 g=20 d=3 q=0 easy-w=100 easy-g=10 easy-d=2 easy-q=1 hard-g=30
   }
 
+  remember {
+    say "When salty water evaporates, the water goes into the air and the salt stays behind."
+  }
+
   grown-ups """
     Salty water left in a saucer on a windowsill for a few days does this without a flame, and the
     crust it leaves is worth looking at through a magnifying glass; it is not tasted. If the water is

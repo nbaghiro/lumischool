@@ -1,0 +1,34 @@
+# The three-star: a fraction as the sum of two different unit fractions, as the scribes of old cities
+# wrote them. There is only one way for these fractions, and one named part is asked.
+item fraction.two-unit-fractions v=1 stars=3 skills=[fractions.add-unlike, reasoning.guess-and-check] {
+  title "The scribe's fractions"
+  difficulty s
+  let s=0..3
+  let t={pick(s, 3 / 4, 5 / 6, 2 / 3, 7 / 10)}
+  level easy {
+    let s={0}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 33x12 {
+    temple temple rows=4 at=canvas(1, 1)
+    text ask "The temple's scribes wrote every fraction as two different fractions with 1 on top, added together. How did they write {t}? Put the bigger fraction first." narrate width=20 right-of=temple gap=2
+    row eq below=temple gap=1 space=1 align=centre {
+      equation sum "{t} = 1/"
+      number-input first width=3
+      equation plus "+ 1/"
+      number-input second width=3
+    }
+  }
+
+  answer first=2 second=pick(s, 4, 3, 6, 5)
+  feedback {
+    when (first == 1) point=eq {
+      say "1/1 is a whole, which is bigger than {t}. Try the next unit fraction down."
+    }
+  }
+  hint "Which fractions with 1 on top are smaller than the scribes' fraction? Try the biggest of them first."
+  hint "Take it away. Is what is left a fraction with 1 on top?"
+}

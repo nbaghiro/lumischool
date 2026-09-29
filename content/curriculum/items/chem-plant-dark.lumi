@@ -1,0 +1,27 @@
+# Two stars: a plant breathes all the time, taking in oxygen, and only in light does it take in more
+# carbon dioxide than it gives out. The card shows the jar's oxygen fall in the dark. The wrong options
+# are common ideas: plants breathe the other way round, or use oxygen to make their food.
+item chem.plant-dark v=1 stars=2 skills=[chemistry.gases, reasoning.explain, reasoning.evidence] {
+  title "A plant in the dark"
+
+  scene 34x40 {
+    chamber c place=0 plants=1 candle=0 people=0 light=0 hours=10 show=1 at=canvas(1, 0)
+    text ask "A plant was sealed in a jar with the lamp off for 10 hours, and the card shows what happened to the air. Mo says plants always make oxygen, so the card must be wrong. Which is the best explanation?" narrate width=28 below=c gap=1
+    choice pick options=["In the dark a plant only breathes, and uses oxygen", "The plant used the oxygen to make its food", "Plants breathe in oxygen by day and out at night", "The jar let the oxygen leak out"] stack=column below=ask gap=1
+  }
+
+  answer pick="In the dark a plant only breathes, and uses oxygen"
+  feedback {
+    when (pick == "The plant used the oxygen to make its food") point=c {
+      say "A plant makes its food from carbon dioxide and water, in light. Is there light here, and which gas went up?"
+    }
+    when (pick == "Plants breathe in oxygen by day and out at night") point=c {
+      say "It is night in this jar, and the oxygen went down, not up. Look at both numbers on the card."
+    }
+    when (pick == "The jar let the oxygen leak out") point=c {
+      say "The jar is sealed. And if gas leaked, why would the carbon dioxide go up?"
+    }
+  }
+  hint "Which gas went down on the card, and which went up?"
+  hint "What does a plant need to make oxygen, and did it have it here?"
+}

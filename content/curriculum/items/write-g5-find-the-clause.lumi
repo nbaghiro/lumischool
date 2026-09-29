@@ -1,0 +1,37 @@
+# Which words are the relative clause? The clause sits in the middle between two commas, or at the
+# end after one; k=5 is a that clause with no commas, and k=6 leaves its relative pronoun out
+# ("the boat Nell painted"). The choices are always three parts of the sentence itself.
+item writing.find-the-clause v=1 skills=[writing.relative-clauses, writing.commas] {
+  title "Find the clause"
+  difficulty (if k == 0 or k == 1 then 0 else if k == 2 or k == 3 or k == 5 then 1 else 2)
+  let k=0..6 r=0..2
+  let t={pick(k, "The Otter, which has a blue door, went into the lock.", "Nell, who paints the canal, lives on the Otter.", "Nell waved to Mr Hale, who was opening the gate.", "The boat waited by the gate, where the water was deep.", "The miller, whose sails had stopped, waited for wind.", "The boat that won the race was the Otter.", "The boat Nell painted last spring is the Otter.")}
+  let right={pick(k, "which has a blue door", "who paints the canal", "who was opening the gate", "where the water was deep", "whose sails had stopped", "that won the race", "Nell painted last spring")}
+  let w1={pick(k, "The Otter", "Nell", "Nell waved", "The boat waited", "The miller", "The boat", "The boat")}
+  let w2={pick(k, "went into the lock", "lives on the Otter", "to Mr Hale", "by the gate", "waited for wind", "was the Otter", "is the Otter")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=3..6
+  }
+
+  scene 32x29 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      narrowboat boat windows=5 pots=2
+      person nell pose=point age=grownup hair=long colour=auburn top=berry
+    }
+    caption strip text="{t}" width=31 below=pics gap=1
+    text ask "Which words are the relative clause? The sentence still makes sense without it." narrate width=31 below=strip gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=strip {
+      say "Take those words out and read what is left: the sentence falls apart. The relative clause is the part that can go. It starts with who, which, where, whose or that, and sometimes that word is left out."
+    }
+  }
+  hint "Find the comma or commas. What sits between them, or after the last one? With no commas, look for the words that say which one."
+  hint "Read the sentence without each choice. Which one leaves a whole sentence behind?"
+}

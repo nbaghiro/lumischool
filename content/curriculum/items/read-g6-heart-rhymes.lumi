@@ -1,0 +1,43 @@
+# A stanza's rhyme scheme, written in letters: alternate rhyme (ABAB) in Tennyson's "The Brook"
+# (1855, Gutenberg eBook 56913), couplets (AABB) in Blake's "The Tiger" (1794, eBook 1934), and
+# only the second and fourth lines rhyming (ABCB) in Stevenson's "Where Go the Boats?" (1885, eBook
+# 136), where river and valley look as if they should rhyme and do not.
+item reading.heart-rhymes v=1 skills=[reading.poetry, reading.rhyme] {
+  title "The stanza's rhyme scheme"
+  difficulty pick(k, 0, 1, 0, 1, 2, 2)
+  let k=0..5
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={3, 4, 5}
+  }
+  let right={pick(k, "ABAB", "AABB", "ABAB", "AABB", "ABCB", "ABCB")}
+
+  scene 36x22 {
+    row top at=canvas(1, 1) space=2 align=end {
+      poem p title="{pick(k, \"The Brook\", \"The Tiger\", \"The Brook\", \"The Tiger\", \"Where Go the Boats?\", \"Where Go the Boats?\")}" lines=[pick(k, "I come from haunts of coot and hern,", "In what distant deeps or skies", "By thirty hills I hurry down,", "What the hammer? what the chain?", "On goes the river", "Away down the river,"), pick(k, "I make a sudden sally", "Burnt the fire of thine eyes?", "Or slip between the ridges,", "In what furnace was thy brain?", "And out past the mill,", "A hundred miles or more,"), pick(k, "And sparkle out among the fern,", "On what wings dare he aspire?", "By twenty thorps, a little town,", "What the anvil? what dread grasp", "Away down the valley,", "Other little children"), pick(k, "To bicker down a valley.", "What the hand dare seize the fire?", "And half a hundred bridges.", "Dare its deadly terrors clasp?", "Away down the hill.", "Shall bring my boats ashore.")] rhymes=[-1, -1, -1, -1] width=24
+      kingfisher bird flying=0 facing=-1
+    }
+    text ask "Give each line a letter: the same letter for lines that rhyme, a new letter for a new sound. Which is the stanza's rhyme scheme?" below=top gap=1 width=34
+    choice pick options=["ABAB", "AABB", "ABCB"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (right == "ABAB" and pick == "AABB") point=p {
+      say "Say the last words of lines 1 and 2 together. Do they rhyme, or does line 1 rhyme further down?"
+    }
+    when (right == "AABB" and pick == "ABAB") point=p {
+      say "Say the last words of lines 1 and 2 together. They rhyme, so they share a letter."
+    }
+    when (right == "ABCB" and pick == "ABAB") point=p {
+      say "Say the last words of lines 1 and 3 aloud. They end alike on the page, but do they rhyme?"
+    }
+    when (right != "ABCB" and pick == "ABCB") point=p {
+      say "Say the last words of lines 1 and 3. They rhyme, so line 3 is not a new letter."
+    }
+  }
+  hint "Say only the last word of each line, one after another. Which of them rhyme?"
+  hint "Line 1 is A. Is line 2 A again, or B? Then do the same for lines 3 and 4."
+}

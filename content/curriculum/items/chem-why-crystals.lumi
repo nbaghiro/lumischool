@@ -1,0 +1,33 @@
+# The two-star reason: granite cooled slowly deep underground, so its crystals had time to grow big;
+# basalt cooled fast from lava at the surface, so its crystals are tiny (BGS). They are not from the
+# same melt: granite's is rich in silica and basalt's is not, so the question says only melted rock.
+item chem.why-crystals v=1 stars=2 skills=[chemistry.rocks, reasoning.explain] {
+  title "Big crystals and tiny ones"
+  difficulty k
+  let k=0..1 r=0..2
+  let q={pick(k, "Granite and basalt both formed from melted rock. Granite has crystals as big as peas; basalt has crystals too small to see. Why?", "Marble and limestone are both made of the same stuff and both fizz in vinegar. How did limestone become marble?")}
+  let right={pick(k, "Granite cooled slowly underground, basalt fast", "Heat and pressure changed it without melting it")}
+  let w1={pick(k, "Basalt's crystals were worn away by rain", "It melted and cooled into new rock")}
+  let w2={pick(k, "Granite is older, so its crystals grew", "Sand was pressed and cemented onto it")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x25 {
+    rocks rk rocks=[pick(k, "granite", "limestone"), pick(k, "basalt", "marble")] test=(if k == 0 then 0 else 2) letters=1 names=1 at=canvas(1, 0)
+    text ask "{q}" narrate width=34 below=rk gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=rk {
+      say "{if k == 0 then \"Crystals grow while melted rock cools. Which one had longer to grow them?\" else \"Look at the rock cycle: which arrow changes a rock without melting it?\"}"
+    }
+  }
+  hint "{if k == 0 then \"Where did each one cool, deep under the ground or at the surface?\" else \"Marble is a metamorphic rock. What makes one?\"}"
+  hint "{if k == 0 then \"Which cools faster, lava in the open air or magma deep inside the Earth?\" else \"Did it melt, or was it changed while it stayed solid?\"}"
+}

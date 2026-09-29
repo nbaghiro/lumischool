@@ -1,0 +1,35 @@
+# The needle is a small magnet: a bar magnet brought up from the east pushes a like pole away and
+# pulls an unlike pole towards it. e is the magnet's end facing the compass, q the needle's end asked.
+item physics.compass-deflect v=1 skills=[physics.magnets, reasoning.predict] {
+  title "A magnet beside the compass"
+  difficulty q
+  let e=0..1 q=0..1
+  level easy {
+    let q={0}
+  }
+  level hard {
+    let q={1}
+  }
+  let near={pick(e, "north", "south")}
+  let asked={pick(q, "north", "south")}
+  let ans={if e == q then "Away from the magnet" else "Towards the magnet"}
+
+  scene 30x23 {
+    compass c needle=0 at=canvas(1, 0)
+    text note "magnet here, {near} end first" right-of=c gap=2
+    text ask "The compass needle is a small magnet pointing north. Kit brings a bar magnet up to the compass from the east, with its {near} end first. Which way does the needle's {asked} end swing?" narrate width=28 below=c gap=1
+    choice pick options=["Towards the magnet", "Away from the magnet"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick != ans and e == q) point=c {
+      say "The needle's {asked} end and the magnet's {near} end are the same kind of pole. Do like poles pull or push?"
+    }
+    when (pick != ans and e != q) point=c {
+      say "A {near} pole and a {asked} pole are unlike poles. Do unlike poles pull or push?"
+    }
+  }
+  hint "Which pole of the needle is the question about, and which pole of the magnet comes near it?"
+  hint "Are they the same kind of pole, or different?"
+}

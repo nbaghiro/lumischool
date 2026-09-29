@@ -1,0 +1,40 @@
+# A simile compares with like or as; a metaphor says one thing is another. A plain comparison
+# of sizes or facts is neither, which is the trap in the hard versions.
+item reading.simile-or-metaphor v=1 skills=[reading.figurative, reading.vocabulary] {
+  title "Simile or metaphor?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+  let right={pick(k, "Metaphor", "Simile", "Simile", "Metaphor", "Neither", "Neither")}
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={3, 4, 5}
+  }
+
+  scene 31x14 {
+    row all at=canvas(1, 1) space=1 align=end {
+      column left space=1 align=start {
+        passage line text="{pick(k, \"The moon was a silver coin above the sea.\", \"The comet's tail was like a long white scarf.\", \"The stars were as bright as sparks from a fire.\", \"The night was a blanket over the sleeping town.\", \"Saturn is much bigger than the Earth.\", \"The moon looks like a half circle tonight.\")}" width=24 numbers=false
+        text ask "Is it a simile, a metaphor, or neither?" width=24
+        choice pick options=["Simile", "Metaphor", "Neither"]
+      }
+      moon m phase=0.5
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 5 and pick == "Simile") point=line {
+      say "It uses like, but the moon really does look like a half circle. A simile compares two different things to make you see one of them."
+    }
+    when (k == 4 and pick != "Neither") point=line {
+      say "Bigger than compares two real sizes. Nothing is being turned into something else."
+    }
+    when (k == 3 and pick == "Simile") point=line {
+      say "There is no like or as. The night is called a blanket, as if it really were one."
+    }
+  }
+  hint "Is there a like or an as? Then ask whether two different things are being compared."
+  hint "Could the sentence be true exactly as written, or is it a picture in words?"
+}

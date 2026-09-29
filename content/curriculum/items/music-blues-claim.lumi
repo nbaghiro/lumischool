@@ -1,0 +1,28 @@
+# The two-star reason: the twelve bars are not shared evenly (I has eight, IV three, V one), and the
+# chord changes inside lines 2 and 3, not only where a line starts.
+item music.blues-claim v=1 stars=2 skills=[music.blues, reasoning.claims] {
+  title "Four bars each?"
+  let q=0..1 r=0..1
+  let claim={pick(q, "Ben says the twelve bars are shared out evenly, four bars for each of the three chords.", "Ana says the chord changes only where a new line of the chart starts.")}
+  let right={pick(q, "No: I has eight bars, IV three and V one", "No: it changes inside lines 2 and 3 as well")}
+  let w1={pick(q, "Yes: twelve shared by three is four", "Yes: each line of the blues has one chord")}
+  let w2={pick(q, "No: V has the most bars", "No: the chord never changes inside a line")}
+
+  scene 36x28 {
+    table chart cols=5 head=["Bars", "1st", "2nd", "3rd", "4th"] cells=["1 to 4", "I", "I", "I", "I", "5 to 8", "IV", "IV", "I", "I", "9 to 12", "V", "IV", "I", "I"] at=canvas(1, 1)
+    text ask "{claim} Is that right, and why?" narrate width=34 below=chart gap=1
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=chart {
+      say "Count the bars of each numeral on the chart rather than dividing."
+    }
+    when (pick == w2) point=chart {
+      say "Read line 2 and line 3 bar by bar. Is it the same numeral all the way along?"
+    }
+  }
+  hint "Count the bars of I, of IV and of V."
+  hint "Where on the chart does the numeral change?"
+}

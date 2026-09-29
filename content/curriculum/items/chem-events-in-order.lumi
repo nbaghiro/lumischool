@@ -1,0 +1,27 @@
+# Three stars: the story of a cliff put in order from superposition and cross-cutting (BGS). If the
+# fault breaks the ash, the ash fell first; if the ash lies unbroken over the fault, the earthquake
+# came first. a is the ash's place from the top of five, f the layers the fault breaks.
+item chem.events-in-order v=1 stars=3 skills=[chemistry.rocks, reasoning.order] {
+  title "The cliff's story in order"
+  difficulty v
+  let v=0..3
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+  let a={pick(v, 4, 2, 3, 3)}
+  let f={pick(v, 3, 3, 3, 2)}
+  let broken={if 6 - a <= f then 1 else 0}
+
+  scene 29x30 {
+    strata s layers=5 names=0 ash=a fault=f at=canvas(1, 0)
+    text ask "Number these from 1, what happened first, to 4, what happened last." width=28 below=s gap=1
+    sequence seq items=["the bottom layer was laid down", "the ash fell", "the earthquake cracked the rocks", "the top layer was laid down"] blanks=[b1, b2, b3, b4] below=ask gap=1
+  }
+
+  answer b1=1 b2=(if broken == 1 then 2 else 3) b3=(if broken == 1 then 3 else 2) b4=4
+  hint "Which layers does the crack break? Is the ash one of them?"
+  hint "A layer has to be there before a crack can break it, and a layer laid over a crack came after it."
+}

@@ -1,0 +1,30 @@
+# The cabin's own rate, stated as these readings: each person lowers the oxygen by 0.25 of a per cent
+# an hour (the chamber drawing's model, not a measured figure). The checker works out the card.
+item chem.cabin-oxygen v=1 skills=[chemistry.gases, decimals.multiply] {
+  title "Oxygen after a shift"
+  difficulty (v // 2)
+  let v=0..5
+  level easy {
+    let v={0, 1, 2}
+  }
+  level hard {
+    let v={4, 5}
+  }
+  let p={pick(v, 1, 2, 2, 3, 1, 3)}
+  let h={pick(v, 4, 2, 6, 4, 12, 8)}
+
+  scene 31x25 {
+    chamber c place=1 plants=0 candle=0 people=p light=0 hours=h show=0 at=canvas(1, 0)
+    text ask "In these readings, each person's breathing lowers the cabin's oxygen by 0.25 of a per cent every hour. The air started at 21 per cent oxygen. What per cent is it after {h} hours?" narrate width=30 below=c gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check chem.change of=c answer=oxygen
+  feedback {
+    when (answer == 21 - h / 4 and p > 1) point=c {
+      say "That is for one person. Count the crew in the cabin."
+    }
+  }
+  hint "How many people are breathing in the cabin?"
+  hint "How much do they lower the oxygen in one hour together? And in {h} hours?"
+}

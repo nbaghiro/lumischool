@@ -1,0 +1,31 @@
+# The five works in time, from the dates on the studies' cards: Early Spring 1072, Kirifuri
+# Waterfall about 1832, The Fighting Temeraire shown 1839, Morning in a Pine Forest 1889, March 1895.
+# The table is not in date order; the child orders them, or counts 50 years on from 1839.
+item art.works-dates v=1 skills=[art.artists, time.years, reasoning.compare] {
+  title "Nine centuries of landscapes"
+  difficulty (if q <= 1 or q == 4 then 0 else 1)
+  let q=0..4
+  let ask={pick(q, "Which work was made first?", "Which work was made third?", "Which work was made fourth?", "Which work was made 50 years after The Fighting Temeraire?", "Which work was made second?")}
+  let right={pick(q, "Early Spring", "The Fighting Temeraire", "Morning in a Pine Forest", "Morning in a Pine Forest", "Kirifuri Waterfall")}
+  level easy {
+    let q={0, 1, 4}
+  }
+  level hard {
+    let q=2..3
+  }
+
+  scene 36x39 {
+    table works cols=2 head=["Work", "Made"] cells=["Morning in a Pine Forest", "1889", "Early Spring", "1072", "March", "1895", "Kirifuri Waterfall", "about 1832", "The Fighting Temeraire", "1839"] at=canvas(1, 1)
+    text ask "The five landscapes in this lesson, with the year each was made. {ask}" narrate width=34 below=works gap=1
+    choice pick options=["Early Spring", "Kirifuri Waterfall", "The Fighting Temeraire", "Morning in a Pine Forest", "March"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=works {
+      say "Write the five years in order from the earliest, then read the question again."
+    }
+  }
+  hint "Which year is the smallest? Start the order there."
+  hint "{if q == 3 then \"What year is 50 years after 1839?\" else \"Count along the years in order to the place the question asks for.\"}"
+}

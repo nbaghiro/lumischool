@@ -1,0 +1,37 @@
+# Old endings on words we still use: -eth where today says -s, and -est after thou. The wrong
+# options change the time as well as the ending.
+item reading.old-ending v=1 skills=[reading.word-parts, reading.old-words] {
+  title "An old ending"
+  difficulty pick(k, 0, 0, 2, 1)
+  let k=0..3
+  let right={pick(k, "rings", "walks", "know", "sings")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        wordbricks w bricks=[pick(k, "ring", "walk", "know", "sing"), pick(k, "eth", "eth", "est", "eth")] root=0 word="{pick(k, \"ringeth\", \"walketh\", \"knowest\", \"singeth\")}"
+        passage old title="In an old book" text="{pick(k, \"The bell ringeth at noon.\", \"The keeper walketh the walls.\", \"Thou knowest the way home.\", \"The bell ringer singeth.\")}" width=17 numbers=false
+      }
+      text ask "Which word would we write today, if we keep it happening now?" width=33
+      choice pick options=[pick(k, "rang", "walks", "knew", "sang"), pick(k, "rings", "walked", "know", "singing"), pick(k, "ringing", "walking", "knows", "sings")]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "rang" or pick == "walked" or pick == "knew" or pick == "sang") point=w {
+      say "That moves it into the past. The old ending only shows who is doing it, not when."
+    }
+    when (k == 2 and pick == "knows") point=old {
+      say "Thou is you, and today we say you know, not you knows."
+    }
+  }
+  hint "Take the old ending off the root. What ending does the root need today?"
+  hint "Say the sentence aloud with today's word. Does it still mean the same?"
+}

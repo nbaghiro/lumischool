@@ -1,0 +1,14 @@
+# The syncopated strum tapped: down on 1, down on 2, up on the and of 2, nothing on 3, then up, down,
+# up. The missing down on 3 is what makes it pushed. Judged at the grade five window.
+item music.sync-tap-strum v=1 skills=[music.syncopation, music.strumming, music.rhythm] {
+  title "Tap the towpath strum"
+
+  scene 30x16 {
+    strumtrack bar strums=D-DU-UDU counts=true chord=Am ring=-1 at=canvas(1, 1)
+    text ask "Count 1 and 2 and 3 and 4 and. Tap once for every arrow, and stay still on each dot." narrate width=28 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 1, 1.5, 2.5, 3, 3.5] grade=5
+  hint "Which counts have an arrow over them? Say those loudly."
+  hint "Is there an arrow on 3? The up strum before it is held over."
+}

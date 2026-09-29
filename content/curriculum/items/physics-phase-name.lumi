@@ -1,0 +1,29 @@
+# The moon's shapes by their astronomers' names, which China's 5-6 standard and older books use: the
+# half moons are the first and last quarter, and a crescent or a gibbous is waxing while it grows and
+# waning while it shrinks. Each day sits near the middle of its shape, so none is between two.
+item physics.phase-name v=1 skills=[physics.sky] {
+  title "The moon's names"
+  difficulty (if d == 7 or d == 22 then 0 else 1)
+  let d={3, 7, 11, 18, 22, 26}
+  level easy {
+    let d={7, 22}
+  }
+  level hard {
+    let d={3, 11, 18, 26}
+  }
+
+  scene 36x29 {
+    moonphases m from=d step=7 count=4 at=canvas(1, 0)
+    text ask "Astronomers name each shape of the moon, and say waxing while it grows and waning while it shrinks. What is the moon in the first box, on day {d}, called?" narrate width=16 below=m gap=1
+    choice pick options=["waxing crescent", "first quarter", "waxing gibbous", "waning gibbous", "last quarter", "waning crescent"] stack=column right-of=ask gap=1
+  }
+
+  check physics.sky of=m pick="name(0)"
+  feedback {
+    when (d == 7 and pick == "last quarter" or d == 22 and pick == "first quarter") point=m {
+      say "Both half moons are quarters. Is this one lit on the right, growing, or on the left, shrinking?"
+    }
+  }
+  hint "Is the moon in the first box growing or shrinking? Look at the next box along."
+  hint "Is it less than half lit, half lit, or more than half lit?"
+}

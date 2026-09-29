@@ -1,0 +1,38 @@
+# Six numbered sentences that hold two paragraphs run together; the child writes the number of the
+# sentence where the second should start. The turn is a new thing, a new time, or a new side of one
+# person, which is the subtlest.
+item writing.new-paragraph v=1 skills=[writing.paragraphs] {
+  title "Where does the new paragraph start?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let t={pick(k, "(1) The lock lifts boats up the hill. (2) Its chamber fills with water from the top. (3) A boat inside rises as it fills. (4) Beside the lock stands the old windmill. (5) Its sails turn whenever there is wind. (6) The miller grinds flour there every day.", "(1) On Saturday the towpath becomes a market. (2) Farmers tie their boats along the bank. (3) They sell apples, cheese and bread. (4) By noon the stalls are packed away. (5) On Sunday the canal is quiet. (6) Only the ducks and one fisherman are about.", "(1) Nell lives on the Otter all year round. (2) In summer she moves the boat every two weeks. (3) She likes to wake up somewhere new. (4) Nell's other love is painting. (5) Her pictures of the canal hang in the cafe. (6) She sells one or two each week.")}
+  let right={pick(k, 4, 5, 4)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 33x30 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      canallock lock level=1 boat=1
+      windmill mill sails=4 turn=0
+    }
+    passage para title="Two paragraphs run together" text="{t}" width=32 numbers=false below=pics gap=1
+    text ask "Write the number of the sentence where the second paragraph should start." narrate width=22 below=para gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == right - 1) point=para {
+      say "That sentence still belongs with the ones before it. The new paragraph starts with the first sentence about the new subject."
+    }
+    when (answer == 1 or answer == 2) point=para {
+      say "Those sentences start the first paragraph. Read on until the subject changes."
+    }
+  }
+  hint "What are the first two sentences about? Read on until that changes."
+  hint "A new place, a new time or a new side of a person starts a new paragraph."
+}

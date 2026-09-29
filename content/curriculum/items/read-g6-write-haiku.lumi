@@ -1,0 +1,19 @@
+# The three-star question: a haiku about one moment in the gorge, in lines of five, seven and five
+# syllables. There is no key, so a grown-up marks it against the look-for.
+item reading.write-haiku v=1 stars=3 skills=[reading.poetry, writing.composition] {
+  title "Write a haiku"
+  let k=0..1
+
+  scene 35x24 {
+    row top at=canvas(1, 1) space=2 align=end {
+      ropebridge bridge planks=10 gaps=0
+      rainbow bow bands=5 clouds=1
+    }
+    text ask "Write a haiku about {pick(k, \"crossing the rope bridge\", \"the rainbow in the spray\")}: three lines of five, seven and five syllables, about one moment." below=top gap=1 width=34
+    writinglines lines lines=3 width=34 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Three lines with five, seven and five syllables (count them together by clapping; a line one out is a near miss worth fixing, not a fail). The haiku should be about one moment you can see or hear, not the whole story of a day, and it need not rhyme. A strong one uses a picture word or a comparison (the bridge sways like a hammock; the rainbow sits in the spray)."
+  hint "Pick one moment. What can you see or hear in it?"
+  hint "Write it in a sentence first, then clap it and cut it into lines."
+}

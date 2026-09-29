@@ -1,0 +1,20 @@
+# Four places on the river matched to what the water does most there. The jobs are shuffled three
+# ways, none of them in the places' own order, so one answer does not give the rest.
+item nature.river-jobs v=1 skills=[nature.rivers] {
+  title "What the water does"
+  let k=0..2
+  let j1={pick(k, "drops small stones in a beach", "wears the bank into a cliff", "slows at the sea, drops sand and mud")}
+  let j2={pick(k, "wears away its bed, rolls big stones", "slows at the sea, drops sand and mud", "drops small stones in a beach")}
+  let j3={pick(k, "slows at the sea, drops sand and mud", "wears away its bed, rolls big stones", "wears the bank into a cliff")}
+  let j4={pick(k, "wears the bank into a cliff", "drops small stones in a beach", "wears away its bed, rolls big stones")}
+
+  scene 34x32 {
+    parts fig of=river at=canvas(1, 1)
+    text ask "Write the number of what the water does most at each place on Ben's river." narrate width=32 below=fig gap=1
+    match m left=["A", "B", "C", "D"] right=[j1, j2, j3, j4] blanks=[a, b, c, d] below=ask gap=1
+  }
+
+  answer a=pick(k, 2, 3, 4) b=pick(k, 4, 1, 3) c=pick(k, 1, 4, 2) d=pick(k, 3, 2, 1)
+  hint "Start with the one you are surest of. Where do the big, sharp stones start their journey?"
+  hint "For each letter, ask: is the water here fast or slow? Then find the job that fits that speed."
+}

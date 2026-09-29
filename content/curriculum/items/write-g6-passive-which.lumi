@@ -1,0 +1,37 @@
+# The way in: three sentences about one thing at the hut, one of them passive. At k=1 and k=2 a
+# distractor has was or had with an adjective, which looks passive and is not.
+item writing.passive-which v=1 skills=[writing.passive, writing.sentences] {
+  title "Which sentence is passive?"
+  difficulty k
+  let k=0..2 r=0..2
+  let right={pick(k, "The seal was photographed by Isla.", "A hole was drilled in the ice.", "The flag had been knocked over in the night.")}
+  let w1={pick(k, "Isla photographed the seal.", "Dr Berg drilled a hole in the ice.", "The wind knocked the flag over in the night.")}
+  let w2={pick(k, "The seal slept on the floe.", "The hole was deep and narrow.", "The flag was crooked in the morning.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 32x25 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      hut h pictures=4
+      seal ps rock=1 facing=-1
+    }
+    text ask "In a passive sentence the subject, the part that comes first, is the thing something was done to. Which sentence is passive?" narrate width=31 below=pics gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=ask {
+      say "In that sentence the subject is the one doing it. That is the active way round."
+    }
+    when (pick == w2) point=ask {
+      say "Nothing is done to anything in that sentence: was only joins it to an adjective. Look for was or been with a verb such as drilled or knocked."
+    }
+  }
+  hint "In each sentence, who or what is doing something?"
+  hint "Look for was, were or been followed by a verb. Is the doer the subject, after by, or missing?"
+}

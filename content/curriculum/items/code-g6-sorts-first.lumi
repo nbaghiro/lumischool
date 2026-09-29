@@ -1,0 +1,33 @@
+# The selection sort's first round: the shortest plank is swapped to the front, so the plank that was
+# at the front goes to the place the shortest came from. The unknown moves between the two places.
+item coding.sorts-first v=1 skills=[coding.algorithms, coding.lists, coding.tracing] {
+  title "After the first round"
+  difficulty (s / 2 + q)
+  let s=0..3 q=0..1
+  let a={pick(s, 3, 4, 5, 6)} b={pick(s, 5, 6, 2, 3)} c={pick(s, 1, 2, 4, 5)} d={pick(s, 4, 3, 6, 1)}
+  let place={if q == 0 then 1 else pick(s, 3, 3, 2, 4)}
+  level easy {
+    let q={0}
+  }
+  level hard {
+    let q={1}
+  }
+
+  scene 36x36 {
+    program p code=["set logs to list {a}, {b}, {c}, {d}", "set i to 1", "repeat 1", "  set m to i", "  set j to i + 1", "  repeat 4 - i", "    if item j of logs is less than item m of logs", "      set m to j", "    add 1 to j", "  set t to item i of logs", "  replace item i of logs with item m of logs", "  replace item m of logs with t", "  add 1 to i"] text=true at=canvas(0, 0)
+    text ask "The selection sort is stopped after its first round: line 3 says repeat 1. What is item {place} of logs now?" width=28 at=canvas(0, 29)
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=p answer="item({place}).logs"
+  feedback {
+    when (q == 1 and answer == pick(s, c, c, b, d)) point=p {
+      say "The shortest plank has gone to the front. Line 12 puts the plank that was in front where it came from."
+    }
+    when (q == 1 and answer == pick(s, 1, 2, 2, 1)) point=p {
+      say "That is the shortest plank's length. Where is the shortest plank now?"
+    }
+  }
+  hint "Which plank is the shortest? Where is it in the list?"
+  hint "Lines 10 to 12 swap the front plank with the plank at that place. What goes where?"
+}

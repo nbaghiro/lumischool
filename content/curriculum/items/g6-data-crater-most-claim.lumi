@@ -1,0 +1,32 @@
+# The second reason in the core: a claim about most of the data judged by adding the bars, not by the
+# tallest one.
+item data.crater-most-claim v=1 skills=[data.claims, data.histograms, reasoning.claims] {
+  title "Most of them"
+  difficulty (if v == 1 then 0 else 1)
+  let v=0..2
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={0, 2}
+  }
+
+  scene 36x18 {
+    bargraph g labels=["0-4", "5-9", "10-14", "15-19", "20-24"] values=[pick(v, 4, 2, 5), pick(v, 5, 3, 6), pick(v, 7, 6, 8), pick(v, 1, 4, 0), pick(v, 1, 2, 1)] max=8 color=mint touch=1 at=canvas(1, 1)
+    text ask "Ana says most of the craters are at least 10 m wide, because the tallest bar is 10-14. How many craters are at least 10 m wide? Is Ana right?" narrate width=18 right-of=g gap=2
+    number-input count width=3 below=g gap=1
+    choice pick options=["yes", "no"] right-of=count gap=2
+  }
+
+  answer count=pick(v, 9, 12, 9) pick=(if v == 1 then "yes" else "no")
+  feedback {
+    when (count == pick(v, 7, 6, 8)) point=g {
+      say "That is only the tallest bar. At least 10 m takes in every bar from 10-14 up."
+    }
+    when (v != 1 and pick == "yes") point=g {
+      say "Most means more than half. How many craters are there in all?"
+    }
+  }
+  hint "Which bars are at least 10 m wide? Add them."
+  hint "How many craters are there in all, and what is half of that?"
+}

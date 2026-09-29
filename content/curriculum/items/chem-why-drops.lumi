@@ -1,0 +1,32 @@
+# The two-star reason: an alkali is added a little at a time with the pH checked, because too much
+# overshoots 7 and leaves the liquid alkaline, as the jump in the pH curve shows.
+item chem.why-drops v=1 stars=2 skills=[chemistry.neutralising, reasoning.explain] {
+  title "Why a little at a time?"
+  difficulty k
+  let k=0..1 r=0..2
+  let q={pick(k, "To make an acid exactly neutral, the grown-up adds the alkali a few drops at a time and checks the pH after each. Why?", "Leo tipped the whole bottle of alkali into the acid at once. The pH meter now reads 12. What went wrong?")}
+  let right={pick(k, "Too much would carry the pH past 7", "He added more than the acid needed")}
+  let w1={pick(k, "Drops of alkali work faster than a pour", "The acid turned into an alkali by itself")}
+  let w2={pick(k, "The alkali would run out otherwise", "Alkalis always read 12 in the end")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x35 {
+    linegraph g labels=["0", "5", "10", "15", "20", "25", "30"] values=[1, 1.2, 1.5, 1.8, 7, 12, 12.3] min=0 max=14 per=1 step=2 color=berry at=canvas(1, 0)
+    text ask "{q}" narrate width=34 below=g gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=g {
+      say "Look at the line near 20 ml. How much does one small pour change the pH there?"
+    }
+  }
+  hint "Where does the line cross 7? What happens just after it?"
+  hint "If more alkali goes in than the acid needs, which side of 7 does it end on?"
+}

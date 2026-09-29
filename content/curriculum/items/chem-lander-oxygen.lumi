@@ -1,0 +1,35 @@
+# A crew member uses about 0.84 kg, 840 g, of oxygen a day (NASA, Baseline Values and
+# Assumptions Document, NASA/CR-2004-208941). The unknown is the oxygen for a crew and some days, or the days it lasts.
+item chem.lander-oxygen v=1 stars=1 skills=[chemistry.burning, multiplication.groups] {
+  title "Oxygen for the crew"
+  difficulty (w * 2 + (if c * d <= 4 then 0 else 1))
+  let w=0..1 c={1, 2, 3} d={2, 3}
+  let need={840 * c * d}
+  level easy {
+    let w=0..0 c={1, 2} d={2}
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 35x19 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      lander l rungs=5
+      crater cr count=2
+    }
+    text ask "There is no air on the moon, so the lander carries oxygen for its crew to breathe. Each person uses about 840 g of oxygen a day. {if w == 0 then \"How many grams does a crew of \" else \"The tank holds \"}{if w == 0 then c else need}{if w == 0 then \" need for \" else \" g of oxygen for a crew of \"}{if w == 0 then d else c}{if w == 0 then \" days?\" else \". How many days does it last?\"}" narrate width=34 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then need else d)
+  feedback {
+    when (w == 0 and c != 1 and answer == 840 * d) point=l {
+      say "That is for one person. There are {c} in the crew."
+    }
+    when (w == 1 and c != 1 and answer == c * d) point=l {
+      say "That is how many person-days of oxygen there are. Share them among the crew."
+    }
+  }
+  hint "{if w == 0 then \"How much does one person use in all those days?\" else \"How much does the whole crew use in one day?\"}"
+  hint "{if w == 0 then \"Then for the whole crew.\" else \"How many of those days fit in the tank?\"}"
+}

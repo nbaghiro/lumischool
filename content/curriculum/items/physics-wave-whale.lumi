@@ -1,0 +1,37 @@
+# The story: an underwater microphone lowered through the ice picks up a humpback whale and a bearded
+# seal; the whale's song here is a few hundred hertz and the seal's trill higher.
+item physics.wave-whale v=1 skills=[physics.sound, decimals.multiply] {
+  title "Listening under the ice"
+  difficulty (w - 1)
+  let w=1..3 s={6, 8}
+  level easy {
+    let w=1..1
+  }
+  level hard {
+    let w=3..3
+  }
+
+  scene 34x21 {
+    row kit at=canvas(0, 0) space=1 align=end {
+      wave s waves=[w, s] heights=[3, 1] across=10 letters=1 blank=-1
+      seal l rock=0 facing=-1
+    }
+    text ask "A microphone lowered through the ice picks up a humpback whale's song, A, and a seal's trill, B. How many hertz is the whale's song?" narrate width=34 below=kit gap=1
+    number-input hz below=ask gap=1
+    text then "Which sound is louder?" narrate width=12 right-of=hz gap=2
+    choice pick options=["A", "B"] stack=row right-of=then gap=1
+  }
+
+  answer hz=(w * 100)
+  check physics.sound of=s hz=hertz(a) pick=loudest
+  feedback {
+    when (hz == w) point=s {
+      say "That is the waves in 0.01 s. The hertz are the vibrations in a whole second."
+    }
+    when (pick == "B") point=s {
+      say "B has more waves, which makes it higher. Which has the taller waves?"
+    }
+  }
+  hint "Count the whale's waves, and remember the screen shows only 0.01 s."
+  hint "Louder sounds have taller waves."
+}

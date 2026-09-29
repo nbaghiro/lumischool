@@ -1,0 +1,37 @@
+# Each colour is one pull of the press for every sheet. At hard the unknown moves to the number of
+# posters, and a third colour comes in.
+item art.print-pulls v=1 skills=[art.printing, multiplication.groups, reasoning.work-backwards] {
+  title "Pulls of the press"
+  difficulty (c + 2 * q)
+  let n={6, 8, 12, 15} c={2} q=0..1
+  let pulls={n * c}
+  let x={if q == 0 then n else pulls}
+  let s1={pick(q, "The market orders", "Ada has made")}
+  let s2={pick(q, "posters, each printed in", "pulls of the press for posters in")}
+  let s3={pick(q, "Each colour is one pull of the press per poster. How many pulls does Ada make?", "Each colour was one pull per poster. How many posters are there?")}
+  let step={pick(q, "Count one lot of pulls for every poster.", "How many lots of that many pulls make the total?")}
+  level easy {
+    let n={6, 8} q={0}
+  }
+  level hard {
+    let c={3} q={1}
+  }
+
+  scene 36x14 {
+    printingpress press printed=1 at=canvas(1, 1)
+    text ask "{s1} {x} {s2} {c} colours. {s3}" width=22 right-of=press gap=1
+    number-input answer below=press gap=1
+  }
+
+  answer (if q == 0 then pulls else n)
+  feedback {
+    when (q == 0 and answer == n) point=press {
+      say "That is one pull for each poster. Each poster needs one pull for every colour."
+    }
+    when (q == 1 and answer == pulls) point=press {
+      say "That is the number of pulls. Each poster took {c} of them."
+    }
+  }
+  hint "How many pulls does one poster need?"
+  hint "{step}"
+}

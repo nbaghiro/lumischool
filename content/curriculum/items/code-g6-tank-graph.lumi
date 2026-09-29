@@ -1,0 +1,33 @@
+# A simulation's numbers as a graph: the water goes up by the same step each minute, and with a leak
+# of known size the pipe's rate is that step and the leak put back together.
+item coding.tank-graph v=1 skills=[coding.simulation, data.line-graphs, reasoning.work-backwards] {
+  title "What the graph says about the pipe"
+  difficulty (g / 8 + l / 4)
+  let g={6, 8, 10, 12} l={1, 2, 4}
+  let r={g + l}
+  level easy {
+    let l={1, 2}
+  }
+  level hard {
+    let l={4}
+  }
+
+  scene 36x20 {
+    linegraph gr labels=["0", "1", "2", "3"] values=[0, g, 2 * g, 3 * g] max=40 per=5 step=10 color=sky at=canvas(0, 0)
+    program p code=["set water to 0", "repeat 3", "  add r to water", "  take {l} from water"] text=true right-of=gr gap=1
+    text ask "The graph shows the litres in the tank at the end of each minute. What number goes where the program says r?" width=28 at=canvas(0, 16)
+    number-input answer right-of=ask gap=1
+  }
+
+  answer r
+  feedback {
+    when (answer == g) point=p {
+      say "That is how much the tank gains each minute. Line 4 takes {l} back out, so the pipe brings more."
+    }
+    when (answer == 3 * g) point=gr {
+      say "That is the water after three minutes. The pipe's number is what one minute adds."
+    }
+  }
+  hint "How far does the line climb from one minute to the next?"
+  hint "The tank gains that much in a minute after the take on line 4. What must line 3 add?"
+}

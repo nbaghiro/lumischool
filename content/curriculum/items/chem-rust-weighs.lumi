@@ -1,0 +1,36 @@
+# Rust weighs more than the iron, because oxygen from the air joins it. Dry iron oxide: 111.7 g of
+# iron in every 159.7 g, which is 7 g of iron to 10 g of oxide (0.699). Real rust also holds water,
+# which the grown-ups note says. The unknown is the rust, the oxygen that joined, or the iron.
+item chem.rust-weighs v=1 skills=[chemistry.rusting, chemistry.conservation, ratio.scaling] {
+  title "What does the rust weigh?"
+  difficulty d
+  let d=0..2 i={70, 140, 210, 280, 350}
+  let rust={i * 10 / 7}
+  level easy {
+    let d=0..0 i={70, 140, 210, 280}
+  }
+  level hard {
+    let d=1..2
+  }
+
+  scene 36x13 {
+    dialscale scales max=1000 step=100 value=(if d == 2 then rust else i) unit=g at=canvas(1, 0)
+    text ask "Every 7 g of iron that rusts right through becomes 10 g of rust, because oxygen from the air joins it. {if d == 2 then \"An old gate pin has rusted right through, and the scales show the rust: \" else \"The scales show an iron pin from the lock gate: \"}{if d == 2 then rust else i}{if d == 0 then \" g. It rusts right through. What does the rust weigh?\" else if d == 1 then \" g. It rusts right through. How many grams of oxygen joined it?\" else \" g. What did the iron weigh before it rusted?\"}" narrate width=22 right-of=scales gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if d == 0 then rust else if d == 1 then rust - i else i)
+  feedback {
+    when (d == 0 and answer == i) point=scales {
+      say "Rust is not only the iron. Oxygen from the air joined it, so the rust weighs more than the pin did."
+    }
+    when (d == 1 and answer == rust) point=scales {
+      say "That is the whole rust, iron and oxygen together. Take the iron away to leave the oxygen."
+    }
+    when (d == 2 and answer == rust) point=scales {
+      say "That is the rust. The iron was only part of it: 7 g of every 10 g."
+    }
+  }
+  hint "How many lots of {if d == 2 then \"10 g\" else \"7 g\"} are on the scales?"
+  hint "Each lot of 7 g of iron gains 3 g of oxygen. What does each lot become?"
+}

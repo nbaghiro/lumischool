@@ -1,0 +1,38 @@
+# The three-star: the fewest litres of warm water that hold as much oxygen as a few litres of cold,
+# from the saturation table (0 °C 14.6, 10 °C 11.3, 20 °C 9.1, 30 °C 7.6 mg a litre), rounded up.
+# Worked in tenths so the rounding up is exact.
+item chem.oxygen-litres v=1 stars=3 skills=[chemistry.dissolving, reasoning.constraints] {
+  title "How much warm water?"
+  difficulty (n * a / b)
+  let k=0..4
+  let n={pick(k, 3, 4, 5, 5, 6)}
+  let ta={pick(k, 10, 0, 10, 0, 0)}
+  let tb={pick(k, 30, 20, 30, 20, 30)}
+  let a={pick(k, 113, 146, 113, 146, 146)}
+  let b={pick(k, 76, 91, 76, 91, 76)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=3..4
+  }
+
+  scene 35x21 {
+    table data cols=2 head=["Water °C", "Oxygen, mg a litre"] cells=["0", "14.6", "10", "11.3", "20", "9.1", "30", "7.6"] at=canvas(1, 0)
+    text ask "The mill's fish tank must hold at least as much oxygen as {n} litres of canal water at {ta} °C can. In summer the water is at {tb} °C. What is the fewest whole litres it needs?" narrate width=34 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((n * a + b - 1) // b)
+  feedback {
+    when (answer == n) point=data {
+      say "Warm water holds less oxygen in each litre, so it takes more litres to hold the same."
+    }
+    when (answer == n * a // b) point=data {
+      say "That many litres hold a little less than is needed. Round up to the next whole litre."
+    }
+  }
+  hint "How much oxygen do the {n} cold litres hold altogether?"
+  hint "How much does one litre hold at {tb} °C? How many of those make the total?"
+  hint "If the litres do not come out whole, is one fewer enough?"
+}

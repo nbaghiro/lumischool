@@ -1,0 +1,26 @@
+# How many times bigger: a telescope makes a far thing look as many times bigger as the big lens's
+# focus divides by the eyepiece's; the checker takes it from the drawing.
+item physics.telescope-magnify v=1 skills=[physics.light, division.grouping] {
+  title "How many times bigger?"
+  difficulty (fo / fe / 10)
+  let fo={60, 90, 120} fe={2, 3, 4, 5, 6}
+  where (fo % fe == 0)
+
+  scene 33x20 {
+    lens t mode=telescope objective=fo eyepiece=fe show=1 at=canvas(1, 0)
+    text ask "A telescope makes a star look as many times bigger as the big lens's focus divided by the eyepiece's focus. How many times bigger does this one make it look?" narrate width=32 below=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.light of=t answer=magnify
+  feedback {
+    when (answer == fo + fe) point=t {
+      say "That is the length of the tube. Divide the focuses rather than adding them."
+    }
+    when (answer == fo - fe) point=t {
+      say "Divide the big lens's focus by the eyepiece's rather than taking one from the other."
+    }
+  }
+  hint "Read the focus of each lens under the tube."
+  hint "How many times does the eyepiece's focus go into the big lens's?"
+}

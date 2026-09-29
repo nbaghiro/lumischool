@@ -1,0 +1,27 @@
+# Writing a number of billions and millions given in words, with the zeros that hold the empty places.
+item place.billion-words v=1 skills=[place-value.large-numbers] {
+  title "Billions in digits"
+  difficulty ((if m < 100 then 1 else 0) + (if m % 100 == 0 then 0 else 1))
+  let b={1, 2, 4} m={500, 870, 45, 8, 300}
+  level easy {
+    let m={500, 300}
+  }
+  level hard {
+    let m={45, 8}
+  }
+
+  scene 32x12 {
+    observatory dome open=0 at=canvas(1, 1)
+    text ask "At its farthest, a comet is {pick(b - 1, \"one\", \"two\", \"three\", \"four\")} billion, {if m == 500 then \"five hundred\" else if m == 870 then \"eight hundred and seventy\" else if m == 45 then \"forty-five\" else if m == 8 then \"eight\" else \"three hundred\"} million kilometres from the sun. Write the number in digits." narrate width=20 right-of=dome gap=2
+    number-input answer width=11 below=ask gap=1
+  }
+
+  answer (b * 1000000000 + m * 1000000)
+  feedback {
+    when (m < 100 and (answer == b * 100000000 + m * 1000000 or answer == b * 10000000 + m * 1000000)) point=ask {
+      say "The millions need three places: {m} million is {if m < 10 then \"00\" else \"0\"}{m},000,000 after the billions."
+    }
+  }
+  hint "How many zeros follow the millions? How many places do the millions need?"
+  hint "Write the billions, then the millions in three places, then six zeros."
+}

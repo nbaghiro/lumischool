@@ -1,0 +1,36 @@
+# Why the moon can just cover the sun: the sun is about 400 times as wide as the moon and about 400
+# times as far away, so the two look the same size. v asks the distance or the width.
+item physics.eclipse-400 v=1 skills=[physics.sky, number.large, reasoning.proportion] {
+  title "Four hundred times"
+  difficulty v
+  let v=0..1
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=1..1
+  }
+  let known={pick(v, "The moon is about 384 000 km from the Earth", "The moon is about 3 500 km wide")}
+  let what={pick(v, "going by the 400 times, how far away is the sun, in km", "going by the 400 times, how wide is the sun, in km")}
+
+  scene 34x25 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      eclipse e moon=0 offset=0 show=1 names=1
+      moon m phase=0
+    }
+    text ask "In an eclipse of the sun the moon just covers the sun, so from the Earth the two look the same size. The sun is about 400 times as far away as the moon, and 400 times as wide. {known}; {what}?" narrate width=32 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(v, 153600000, 1400000)
+  feedback {
+    when (answer == pick(v, 384000, 3500) / 400) point=ask {
+      say "The sun is bigger and further away, not smaller and nearer. Multiply rather than divide."
+    }
+    when (v == 0 and answer >= 149000000 and answer <= 151000000) point=ask {
+      say "That is the sun's measured distance, and the 400 times comes close to it. Work out what the 400 times gives from the moon's distance."
+    }
+  }
+  hint "Is the sun nearer or further than the moon, and by how many times?"
+  hint "Multiply the moon's number by 400."
+}

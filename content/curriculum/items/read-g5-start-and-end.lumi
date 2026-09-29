@@ -1,0 +1,26 @@
+# The beginning and the end side by side. A change is shown by the same kind of act done the other
+# way: dragging her feet up the steps at the start, waiting on the step before anyone at the end.
+item reading.start-and-end v=1 skills=[reading.character, reading.comparison, reading.evidence] {
+  title "The start and the end"
+  difficulty pick(k, 0, 2, 1)
+  let k=0..2
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1}
+  }
+  let right={pick(k, "She waits on the step before he arrives.", "She polishes the brass.", "He gives her a key of her own.")}
+
+  scene 35x42 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage end title="Part 3: Midnight" text="At midnight on the festival night, the great bell rang out over the old city, and the whole square cheered. Up in the tower the floor shook with every stroke, and dust fell from the beams like snow. Iris stood at the top of the tower and grinned. She could see the fountain lit with lanterns and her friends waving up at her, and she did not wish she were down there. The next morning she was on the bottom step before Mr Tamas arrived, with a cloth to polish the brass. He climbed the ninety-two steps beside her, and at the top he gave her a key of her own. \"The clock needs two keepers now,\" he said." width=34 numbers=false
+      text ask "{pick(k, \"At the start, Iris climbs the steps as slowly as she can. What does she do at the end that shows the opposite?\", \"At the start, Iris says clocks are boring. What does she do at the end that shows she now cares for the clock?\", \"At the start, Mr Tamas does not look up. What does he do at the end that shows he has changed?\")}" width=34
+      choice pick options=[pick(k, "She hears the bell ring out.", "She grins at the top of the tower.", "He hears the bell ring out."), pick(k, "She waits on the step before he arrives.", "She polishes the brass.", "He gives her a key of her own."), pick(k, "She climbs the steps again.", "She hears the square cheer.", "He arrives after Iris.")] stack=column
+    }
+  }
+
+  answer pick=right
+  hint "Find the start's words in the question. Now look at the end for the same kind of thing, done the other way."
+  hint "Which choice would not have happened at the start?"
+}

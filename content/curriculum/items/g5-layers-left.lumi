@@ -1,0 +1,32 @@
+# Some top layers taken away and drawn dashed: the cubes still there, a layer times the layers left.
+item volume.layers-left v=1 skills=[volume.cuboids] {
+  title "Layers taken off"
+  difficulty (l * w + hide)
+  let l=3..6 w=2..4 h=4..6 hide=1..3
+  where (hide < h - 1)
+  where (h != 2 * hide)
+  level easy {
+    let hide={1} l=3..4 w={2}
+  }
+  level hard {
+    let hide={2, 3} l=5..6 w={3, 4}
+  }
+
+  scene 37x19 {
+    cubestack stack l=l w=w h=h hide=hide at=canvas(1, 1)
+    text ask "A crate of {l} by {w} by {h} cubes had its top {hide} {if hide == 1 then \"layer\" else \"layers\"} lifted off, shown dashed. How many cubes are left?" narrate width=14 right-of=stack gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (l * w * (h - hide))
+  feedback {
+    when (answer == l * w * h) point=stack {
+      say "That was the full crate. {hide} {if hide == 1 then \"layer has\" else \"layers have\"} gone."
+    }
+    when (answer == l * w * hide) point=stack {
+      say "That is how many were lifted off. How many are still there?"
+    }
+  }
+  hint "How many cubes are in one layer?"
+  hint "How many layers are still solid?"
+}

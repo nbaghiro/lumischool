@@ -1,0 +1,36 @@
+# A thermostat minute by minute: the hut cools by 1 degree a minute, and with the heater on it
+# warms instead. The child keeps a column of readings and of the heater, since the program decides
+# the heater from the reading and the heater changes the next reading.
+item coding.sense-minute v=1 skills=[coding.sensors, coding.simulation, coding.tracing] {
+  title "Minute by minute"
+  difficulty ((m - 3) / 5 + (h - 2) * 0.6)
+  let s={12, 13, 14} h={2, 3} m={3, 5, 8}
+  level easy {
+    let h={2} m={3, 5}
+  }
+  level hard {
+    let m={8}
+  }
+
+  scene 36x26 {
+    program p code=["repeat 12", "  if temp is less than 16", "    switch heater on", "  if temp is more than 20", "    switch heater off", "  wait 1"] text=true sense=["temp starts {s} changes -1 heater {h}"] at=canvas(0, 0)
+    thermometer th from=0 to=30 step=10 value=s unit="°C" right-of=p gap=2
+    text ask "The research hut is at {s} °C. Each minute it cools by 1 degree, but while the heater is on it warms by {h - 1} degree{if h == 2 then \"\" else \"s\"} a minute instead. Each wait 1 is one minute. What does the thermometer read after {m} minutes?" width=34 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="minute({m}).temp"
+  feedback {
+    when (answer == s + (h - 1) * m and m == 8 and s + (h - 1) * m > 21) point=p {
+      say "The heater does not stay on. When the hut is more than 20, line 5 switches it off."
+    }
+    when (answer == s - m) point=p {
+      say "At {s} the hut is less than 16, so line 3 switches the heater on before the first minute."
+    }
+    when (answer == s + h * m) point=p {
+      say "The heater gives {h} degrees but the hut still loses 1, so it warms by {h - 1} a minute."
+    }
+  }
+  hint "Make a table: minute, temp, heater. At minute 0 temp is {s}. Is the heater switched on?"
+  hint "For each minute, ask lines 2 and 4 about the reading, then change the reading by what the heater does."
+}

@@ -1,0 +1,32 @@
+# The three-star: the largest product from k of five cards. Two negatives make a positive, so the
+# biggest answer may come from the two coldest numbers rather than the two largest; an extreme found
+# by trying the candidates.
+item negative.best-cards v=1 stars=3 skills=[number.negatives.multiply, reasoning.extremes] {
+  title "The biggest product"
+  difficulty t
+  let t=0..3
+  level easy {
+    let t={0}
+  }
+  level medium {
+    let t={1}
+  }
+  level hard {
+    let t={2, 3}
+  }
+
+  scene 36x13 {
+    table cards cols=5 cells=["{pick(t, -6, -7, -8, -5)}", "{pick(t, -5, -3, -2, -4)}", "{pick(t, 1, 2, 1, -1)}", "{pick(t, 2, 4, 3, 2)}", "{pick(t, 4, 5, 6, 3)}"] at=canvas(1, 1)
+    text ask "Five cards are pinned on the hut's board. Choose {if t < 2 then \"two\" else \"three\"} of them and multiply their numbers. What is the largest product you can make?" narrate width=34 below=cards gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer pick(t, 30, 21, 96, 60)
+  feedback {
+    when (answer == pick(t, 8, 20, 18, -6)) point=cards {
+      say "Those are the largest cards. What do two negative numbers make when they are multiplied?"
+    }
+  }
+  hint "Which cards give a product above zero?"
+  hint "Compare the best product from positive cards with the best from two negative cards."
+}

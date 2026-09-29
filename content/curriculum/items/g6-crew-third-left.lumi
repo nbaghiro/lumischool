@@ -1,0 +1,31 @@
+# Two stars: a part-whole problem. The fractions that went out leave a fraction behind, and that
+# fraction is the n who stayed, so the whole is found from one part.
+item puzzle.crew-third-left v=1 stars=2 skills=[fractions.of-amount, reasoning.work-backwards] {
+  title "Who stayed at the base"
+  difficulty (v / 2)
+  let v=0..5
+  let p={pick(v, 2, 3, 3, 4, 3, 4)}
+  let q={pick(v, 3, 4, 4, 6, 5, 5)}
+  let n={pick(v, 4, 5, 10, 7, 7, 11)}
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={4, 5}
+  }
+
+  scene 35x12 {
+    lander l rungs=4 at=canvas(1, 1)
+    text ask "One morning 1/{p} of the crew went out to the crater, 1/{q} of the crew went to check the lander, and the other {n} stayed at the base. How many are in the crew?" narrate width=24 right-of=l gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (n / (1 - 1 / p - 1 / q))
+  feedback {
+    when (answer == n + p + q and n + p + q != n / (1 - 1 / p - 1 / q)) point=ask {
+      say "1/{p} and 1/{q} are parts of the crew, not numbers of people. What part of the crew stayed?"
+    }
+  }
+  hint "What fraction of the crew went out altogether? What fraction stayed?"
+  hint "{n} people are that fraction of the crew. How many is one part?"
+}

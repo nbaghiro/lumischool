@@ -1,0 +1,35 @@
+# The second car sets off later: the first drives alone for a while, then the rest of the road closes
+# at the sum of the speeds. Hours are counted from the first car's start, as the drawing writes them.
+item travel.meet-late v=1 skills=[rates.speed.meeting, reasoning.two-steps] {
+  title "One sets off later"
+  difficulty (late + k)
+  let v1={40, 50, 60} v2={40, 50, 60} late={0.5, 1} k={1, 2}
+  let d={plain(v1 * late + (v1 + v2) * k)}
+  level easy {
+    let late={1} k={1} v1={40, 50}
+  }
+  level hard {
+    let late={0.5} k={2}
+  }
+
+  scene 36x23 {
+    motionline road mode=0 dist=d v1=v1 v2=v2 late=late show=0 at=canvas(1, 1)
+    text ask "A blue car leaves A at {v1} km/h. {if late == 1 then \"An hour\" else \"Half an hour\"} later an orange car leaves B at {v2} km/h, driving towards it. The road is {d} km. How many hours after the blue car sets off do they meet?" narrate width=34 below=road gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "hours"
+    }
+  }
+
+  answer (late + k)
+  feedback {
+    when (answer == k) point=road {
+      say "That is how long the orange car drives. The blue car had already been driving before it set off."
+    }
+    when (answer == d / (v1 + v2)) point=road {
+      say "That would be right if they left together. How far had the blue car gone before the orange one started?"
+    }
+  }
+  hint "How far does the blue car go before the orange one sets off? How much road is left then?"
+  hint "From then on, how fast does the gap close?"
+}

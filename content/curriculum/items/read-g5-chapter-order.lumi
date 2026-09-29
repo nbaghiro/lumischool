@@ -1,0 +1,23 @@
+# Four chapter summaries of a short canal book, muddled. There are no time words, so the order comes
+# from what has to happen before what, and each book is muddled differently.
+item reading.chapter-order v=1 skills=[reading.summary, reading.sequencing] {
+  title "Put the chapters in order"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+  let book={pick(k, "The Mill Fire", "The Runaway Boat", "The Lock-Keeper's Cat", "The Market Boat")}
+
+  scene 33x18 {
+    text ask "The chapter summaries of {book} are muddled. Number them in the order the chapters come." width=32 at=canvas(1, 1)
+    sequence s items=[pick(k, "Boats bring buckets of canal water.", "Nia shuts the lock gate just in time.", "The cat sleeps by the fire again.", "It reaches the market two hours late."), pick(k, "The town builds the mill a new roof.", "A storm snaps the Kingfisher's rope.", "Nia hears mewing inside a lock gate.", "The stalls stay open till dark."), pick(k, "Smoke pours from the mill roof.", "The owner thanks Nia with a ride.", "Mrs Pell's cat goes missing.", "The market boat's engine breaks down."), pick(k, "The fire is out, but the roof has gone.", "The boat drifts towards the top lock.", "The lock is emptied to reach the cat.", "A horse tows it along the towpath.")] blanks=[p1, p2, p3, p4] below=ask gap=1
+  }
+
+  answer p1=pick(k, 2, 3, 4, 3) p2=pick(k, 4, 1, 2, 4) p3=pick(k, 1, 4, 1, 1) p4=pick(k, 3, 2, 3, 2)
+  hint "Which chapter could not happen until another one had?"
+  hint "Find the chapter that starts the trouble, then ask what it made happen next."
+}

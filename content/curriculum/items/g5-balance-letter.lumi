@@ -1,0 +1,27 @@
+# A balanced equation with a letter: take the same from both sides, then share.
+item algebra.balance-letter v=1 skills=[algebra.unknowns, algebra.expressions] {
+  title "Keep it balanced"
+  difficulty (m + n / 4)
+  let m={2, 3, 4, 5} n=2..9 k={3, 4, 7, 9}
+  level easy {
+    let m={2, 3} n=2..6
+  }
+  level hard {
+    let m={4, 5} n=6..9
+  }
+
+  scene 29x19 {
+    balanceeq scales left="{m}n + {k}" right="{m * n + k}" at=canvas(1, 1)
+    text ask "The two sides of the temple's scale weigh the same. What number is n?" narrate width=28 below=scales gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == (m * n + k) / m or answer == m * n + k - k) point=scales {
+      say "Take {k} away from both sides first, then share what is left by {m}."
+    }
+  }
+  hint "Take the same amount off both sides, so only the lots of n are left on the left."
+  hint "How many lots of n are left? Share the right side between them."
+}

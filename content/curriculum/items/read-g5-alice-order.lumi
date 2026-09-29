@@ -1,0 +1,19 @@
+# The order of events inside one sitting, given jumbled, each list crossing both of its chapters.
+item reading.alice-order v=1 skills=[reading.sequencing, reading.whole-book] {
+  title "Put them in order"
+  let k=0..1
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        bookcast c who=alice pose=walk dir=1
+        text ask "{pick(k, \"Number these in the order they happen in chapters 3 and 4.\", \"Number these in the order they happen in chapters 11 and 12.\")}" width=24
+      }
+      sequence s items=[pick(k, "Alice talks about Dinah, and the birds hurry off.", "Alice knocks over the jury-box."), pick(k, "The Rabbit sends Alice to fetch his gloves.", "Alice wakes up on the bank."), pick(k, "The animals run a race to get dry.", "The Hatter gives his evidence."), pick(k, "The Mouse tells a long, sad tale.", "The White Rabbit reads out the verses.")] blanks=[p1, p2, p3, p4]
+    }
+  }
+
+  answer p1=pick(k, 3, 2) p2=pick(k, 4, 4) p3=pick(k, 1, 1) p4=pick(k, 2, 3)
+  hint "Which of these starts the sitting? Which ends it?"
+  hint "Place the two ends first, then ask which of the middle two has to come first."
+}

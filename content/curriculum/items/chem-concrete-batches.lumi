@@ -1,0 +1,35 @@
+# The three-star: whole batches of 1 cement, 2 sand and 3 gravel from what is in the yard, where the
+# ingredient that runs out first sets the number, and it is not always the smallest heap.
+item chem.concrete-batches v=1 stars=3 skills=[chemistry.materials, ratio.parts, reasoning.limits] {
+  title "How many batches?"
+  difficulty k
+  let k=0..3
+  let c={pick(k, 4, 6, 5, 7)}
+  let s={pick(k, 10, 10, 12, 11)}
+  let g={pick(k, 9, 21, 12, 20)}
+  let most={min(c, min(s // 2, g // 3))}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x13 {
+    table data cols=2 head=["In the yard", "Buckets"] cells=["Cement", "{c}", "Sand", "{s}", "Gravel", "{g}"] at=canvas(1, 0)
+    text ask "One batch of concrete for the market square is 1 bucket of cement, 2 of sand and 3 of gravel. How many whole batches can the builders make from what is in the yard?" narrate width=17 right-of=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer most
+  feedback {
+    when (answer == c and c != most) point=data {
+      say "There is cement for {c} batches, but is there enough sand and gravel for that many?"
+    }
+    when (answer == min(c, min(s, g)) and answer != most) point=data {
+      say "That is the smallest heap, but a batch takes 2 of sand and 3 of gravel, not 1."
+    }
+  }
+  hint "How many batches could the cement make on its own? The sand? The gravel?"
+  hint "Which one runs out first?"
+}

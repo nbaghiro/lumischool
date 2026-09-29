@@ -1,0 +1,63 @@
+lesson physics-light-bends-at-a-surface v=1 format=teach grade=5 unit=5 subject=physics levels=[easy, medium, hard] {
+  title "Light bends at a surface"
+  goal "Say which way a beam of light bends where it goes into water or glass, and use that to explain why things under water look raised."
+
+  look {
+    scene 31x14 {
+      row all at=canvas(1, 0) space=1 align=end {
+        refraction r mode=0 into=0 angle=40 marks=1 show=1
+        telescope t
+      }
+    }
+    say """
+      Light travels in straight lines, but where it crosses from air into water or glass it bends.
+      Going in, a slanting beam bends towards the dashed upright line; coming out into air again, it
+      bends away from it by the same amount. The further from the upright the beam comes in, the
+      more it bends, and a beam along the upright does not bend at all. Glass bends light more than
+      water, which is how the telescope's lenses work.
+      """
+  }
+  do {
+    level easy {
+      worked physics.refract-read a=50 g=0 level=medium
+    }
+    practice physics.refract-read count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.refract-predict count=1 seed=1 easy-seed=2 hard-seed=3 hard-count=2
+    practice physics.refract-turn-bigger count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.refract-which-more count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.pencil-broken count=1 seed=1
+    practice physics.coin-appears count=1
+  }
+  story {
+    show physics.pond-key d=8 easy-d=12 hard-d=10
+  }
+  try stars=2 {
+    show physics.refract-aim d=8
+  }
+  try stars=3 {
+    show physics.refract-out a=50 g=0 easy-a=40 hard-a=60 hard-g=1
+  }
+  remember {
+    say "Light bends where it goes into water or glass, towards the upright going in and away from it coming out."
+  }
+
+  grown-ups """
+    The idea is refraction: light changes direction where it crosses from one clear material into
+    another, and not inside either. Children often think the water bends the pencil itself, or
+    that light bends all the way through the water; the pencil and the stick questions answer
+    both, since each part is seen straight except where its light crosses the surface. Watch the
+    beam questions for a child who measures from the water's surface rather than from the dashed
+    upright, and for the beam along the upright, which goes straight on. If the angles get in the
+    way, stay with the coin, the pencil and the pond for a day and say which way the light bends.
+    Off the page, put a coin in an empty mug, move back until the rim hides it, and pour in water
+    without moving your head. The lesson meets China's standard for grades 5 and 6, 科学课程标准 2022
+    学业要求, "能通过实验认识光在传播过程中会发生折射现象" (know from experiment that light is
+    refracted as it travels), which Japan teaches in junior high (中1).
+    """
+  level easy {
+    grown-ups "At this level a worked example reads one bend, the beams go into water, the torch tilts further from the upright, the angles compared are small, the key is 12 cm deep, and the three-star beam is a diver's torch at 40 degrees."
+  }
+  level hard {
+    grown-ups "At this level the beams go into glass, the beam along the upright is asked twice, the torch tilts nearer the upright, the angles compared are large, the key is 10 cm deep, and the three-star beam starts inside a glass block."
+  }
+}

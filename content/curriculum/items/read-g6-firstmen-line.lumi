@@ -1,0 +1,23 @@
+# Evidence questions on The First Men in the Moon, one line of the book each, proved against the
+# volume by book.line. A version is 0 when the line says the thing outright and 1 when the child
+# has to see what the line implies, such as Bedford only imagining how Cavor's story ended.
+item reading.firstmen-line v=1 skills=[reading.evidence, reading.whole-book] {
+  title "Which line tells you?"
+  difficulty pick(k, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1)
+  let k=0..15
+
+  scene 34x9 {
+    row all at=canvas(1, 1) space=2 align=centre {
+      bookcast c who=bedford pose=think dir=1
+      column q space=1 align=start {
+        text ask "{pick(k, \"Which line of chapter 1 tells you what Bedford decided he must do to earn a living?\", \"Which line of chapter 2 shows Cavor saying the blast was not what it seemed?\", \"Which line of chapter 7 tells you what the white drifts in the crater really were?\", \"Which line of chapter 9 explains why Bedford flew so far when he only meant to jump?\", \"Which line of chapter 16 shows Bedford noticing what their chains are made of?\", \"Which line of chapter 19 tells you how the writing on Cavor's paper ends?\", \"Which line of chapter 21 shows Bedford working out what the boy did to the sphere?\", \"Which line of chapter 24 shows Cavor comparing each Selenite to one part of something bigger?\", \"Which line of chapter 26 shows Bedford does not know how Cavor's story ended, and is picturing it?\", \"Which line of chapter 20 shows Bedford, alone in space, seeing himself as if he were someone else?\", \"Which line of chapter 22 tells you who first picked up Cavor's messages on Earth?\", \"Which line of chapter 15 shows Bedford making up his mind not to cross?\", \"Which line of chapter 3 tells you what the sphere is to be made of?\", \"Which line of chapter 5 shows that in the sphere, down no longer means towards the Earth?\", \"Which line of chapter 12 tells you how Bedford first found out his hands were tied?\", \"Which line of chapter 14 shows Bedford admitting they pictured the Selenites wrongly?\")}" width=26
+        number-input answer
+      }
+    }
+  }
+
+  check book.line book=first-men-in-the-moon chapter="{pick(k, 1, 2, 7, 9, 16, 19, 21, 24, 26, 20, 22, 15, 3, 5, 12, 14)}" holds="{pick(k, \"there was nothing for it but to write a play\", \"It was not an explosion. It’s perfectly simple.\", \"mounds and masses of frozen air\", \"my weight was barely a\", \"these chains are of gold\", \"writing ending at last in a crooked streak\", \"had crawled into the sphere, meddled with the studs\", \"each is a perfect unit in a world machine\", \"a vivid dream has come to my\", \"I looked down on Bedford as\", \"Mr. Julius Wendigee, a Dutch\", \"Well, I wasn’t going to walk the\", \"made of steel lined with thick glass\", \"pull of gravitation was towards the moon\", \"felt the cold smoothness of metal\", \"human heads inside their masks\")}"
+  hint "Which part of the chapter is the question about? Turn to that page first."
+  hint "Read the lines there slowly. Which one holds the whole answer, not just the start of it?"
+  hint "Check the words of your line against the question once more before you write its number."
+}

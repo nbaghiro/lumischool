@@ -1,0 +1,32 @@
+# The two-star reason: while the line is flat the flame is still heating, and the heat goes into the
+# change of state. The second version asks which evidence shows the flame did not go out. The curve
+# keeps to the lesson's rule: ice warms 40 degrees a reading, water 20, and the melt lasts four.
+item chem.heat-goes-where v=1 stars=2 skills=[chemistry.heating, reasoning.explain] {
+  title "Where does the heat go?"
+  difficulty k
+  let k=0..1 r=0..2
+  let right={pick(k, "Into melting the ice, not into warming it", "The lump of ice got smaller all the time")}
+  let w1={pick(k, "Nowhere: heat stops going in at 0", "The thermometer read 0 the whole time")}
+  let w2={pick(k, "Into the air, because ice pushes heat away", "The line on the graph stayed level")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x29 {
+    heatcurve curve temps=[-40, 0, 0, 0, 0, 0, 20] every=2 min=-40 max=20 step=20 at=canvas(1, 0)
+    text ask "{if k == 0 then \"The camping stove stayed lit the whole time, but the ice in the pan stayed at 0 °C for 8 minutes. Where was the heat going?\" else \"The pan sat on the frosty balcony. Leo says the stove must have gone out while the line was flat at 0. Which fact shows he is wrong?\"}" narrate width=34 below=curve gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=curve {
+      say "{if k == 0 then \"The flame kept heating. On the flat part, the heat is used to turn ice into water instead of making anything warmer.\" else \"A flat line and a steady 0 would also fit a stove that went out. Something had to be changing while the heat went in.\"}"
+    }
+  }
+  hint "What was happening to the ice while the thermometer stayed at 0?"
+  hint "{if k == 0 then \"Melting ice takes heat. Where could that heat have come from?\" else \"If the stove had gone out, would the ice still be melting?\"}"
+}

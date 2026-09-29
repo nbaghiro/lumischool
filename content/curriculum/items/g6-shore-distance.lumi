@@ -1,0 +1,32 @@
+# Distance from zero (the modulus): a number below zero can be smaller than another and still further
+# from zero, so comparing sizes and comparing distances are two different questions.
+item negative.shore-distance v=1 skills=[number.negatives, number.compare] {
+  title "Further from the hut"
+  difficulty ((if b < 0 then 1 else 0) + abs(b) / 5)
+  let a={-9, -8, -7, -6} b={-5, -3, -2, 2, 3, 4, 5}
+  where (-a > abs(b) and -a - abs(b) != abs(b))
+  level easy {
+    let b={2, 3}
+  }
+  level hard {
+    let b={-5, -3, -2}
+  }
+
+  scene 36x20 {
+    numberline shore from=-10 to=10 step=2 at=canvas(1, 1)
+    text ask "Along the shore, metres east of the hut are positive and metres west are negative. A seal lies at {a} m and a puffin stands at {b} m. The distance from the hut is written with bars: the seal is |{a}| = {-a} m away. How many metres further from the hut is the seal than the puffin?" narrate width=34 below=shore gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (-a - abs(b))
+  feedback {
+    when (b > 0 and answer == abs(a - b)) point=shore {
+      say "That is how far apart the two animals are. The question is about their distances from the hut, at 0."
+    }
+    when (answer == -a + abs(b)) point=shore {
+      say "The distances are both measured from 0. Which is further, and by how much?"
+    }
+  }
+  hint "How many metres is the puffin from the hut, whichever way?"
+  hint "Mark both distances from 0 on the line. What is the gap between them?"
+}

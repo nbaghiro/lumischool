@@ -1,0 +1,36 @@
+# Two stars: compare without being fooled by the bigger tank. Oxygen at saturation from USGS
+# DOTABLES in tenths of a milligram (0 °C 146, 10 °C 113, 20 °C 91, 30 °C 76); the pairs are close.
+item chem.which-tank-more v=1 stars=2 skills=[chemistry.gases, reasoning.compare, data.tables] {
+  title "Which tank holds more oxygen?"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+  let na={pick(k, 10, 5, 6)}
+  let ta={pick(k, 10, 0, 10)}
+  let nb={pick(k, 12, 8, 9)}
+  let tb={pick(k, 20, 20, 30)}
+  let right={pick(k, "Tank A", "Tank A", "Tank B")}
+
+  scene 33x30 {
+    table data cols=2 head=["Water °C", "Oxygen, mg a litre"] cells=["0", "14.6", "10", "11.3", "20", "9.1", "30", "7.6"] at=canvas(1, 0)
+    text ask "The mill keeps fish in two tanks, each full of all the oxygen its water can hold. Tank A has {na} litres at {ta} °C and tank B has {nb} litres at {tb} °C. Which tank's water holds more oxygen?" narrate width=32 below=data gap=1
+    choice pick options=["Tank A", "Tank B", "They hold the same"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "Tank B" and k != 2) point=data {
+      say "Tank B has more litres, but each of its litres is warmer and holds less. Work out both totals."
+    }
+    when (pick == "Tank A" and k == 2) point=data {
+      say "Tank A's water is cooler, but tank B has half as much water again. Work out both totals."
+    }
+  }
+  hint "Does the bigger tank or the colder tank win? Why can you not tell without working?"
+  hint "How much oxygen do all of tank A's litres hold? And tank B's?"
+}

@@ -1,0 +1,36 @@
+# The three-star: three corners of a square, tilted or not, and the fourth to find. No method on the
+# page; the step from A to B turned a quarter gives the step from A to D. One named part, D.
+item quadrant.fourth-corner v=1 stars=3 skills=[position.four-quadrants, reasoning.structure] negatives {
+  title "The fourth corner"
+  difficulty ((if v == 0 then 0 else 2) + u / 3)
+  let p=-3..2 q=-3..1 u={1, 2, 3} v={0, 1, 2}
+  where (p + u <= 4 and p + u - v >= -4 and p - v >= -4 and q + v + u <= 4 and q + u <= 4)
+  where (p - v < 0 or q + u < 0)
+  level easy {
+    let v={0}
+  }
+  level hard {
+    let v={1, 2} u={2, 3}
+  }
+
+  scene 36x21 {
+    plotpoint grid max=4 quadrants=4 px=p py=q mark="A" at=canvas(1, 1)
+    text ask "Three corners of a square landing pad, going round in order, are A ({p}, {q}), B ({p + u}, {q + v}) and C ({p + u - v}, {q + v + u}). Where is the fourth corner, D?" narrate width=13 right-of=grid gap=2
+    row eq below=ask gap=1 space=0 align=centre {
+      text o "("
+      number-input x width=3
+      text comma ","
+      number-input y width=3
+      text cl ")"
+    }
+  }
+
+  answer x=(p - v) y=(q + u)
+  feedback {
+    when (x == p + u + u - v and y == q + v + v + u) point=grid {
+      say "D comes after C and before A going round, so it joins onto A, not onto C."
+    }
+  }
+  hint "Mark B and C on the grid. How far across and how far up is it from B to C?"
+  hint "The side from A to D is parallel to the side from B to C and the same length."
+}

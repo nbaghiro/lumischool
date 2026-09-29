@@ -1,0 +1,31 @@
+# Three stars, worked backwards: noon is 90 less the latitude plus the lean, midnight is the latitude
+# plus the lean less 90, so noon less midnight is 180 less twice the latitude, and their mean the lean.
+item physics.hut-latitude v=1 stars=3 skills=[physics.sky, reasoning.work-backwards, angles.degrees] {
+  title "Where is the hut?"
+  difficulty (if lat == 80 then 0 else 1)
+  let lat={70, 75, 80, 85}
+  level easy {
+    let lat={80}
+  }
+  level hard {
+    let lat={75, 85}
+  }
+
+  scene 36x32 {
+    midnightsun sky suns=5 midnight=1 at=canvas(1, 0)
+    text ask "On 21 June a scientist at a hut on the ice measures the sun at {plain(113.5 - lat)}° above the horizon at noon and {plain(lat - 66.5)}° at midnight. At noon the sun is 90° less the hut's latitude plus the lean of the Earth's axis; at midnight it is the latitude plus the lean less 90°." narrate width=34 below=sky gap=1
+    text then "How far north is the hut, in degrees?" narrate width=34 below=ask gap=1
+    number-input where below=then gap=1
+    text more "How many degrees does the axis lean?" narrate width=34 below=where gap=1
+    number-input lean below=more gap=1
+  }
+
+  answer where=lat lean=decimals(23.5, 1)
+  feedback {
+    when (where == 113.5 - lat + lat - 66.5) point=then {
+      say "That is the two heights added. Try a latitude, and work out the noon and midnight heights it would give."
+    }
+  }
+  hint "What do the noon and midnight heights add up to? The latitude cancels out."
+  hint "Now try your lean in the noon rule to find the latitude."
+}

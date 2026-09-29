@@ -1,0 +1,33 @@
+# Estimating an irregular area on hectare squares: the whole squares, and half the squares the edge
+# cuts. The counts are the drawing's own (squaresOf in outlinearea.ts): lake 52 and 36, field 49 and
+# 33, ice floe (a marsh here) 44 and 40.
+item land.outline-estimate v=1 skills=[measure.metric.land-area, area.estimate] {
+  title "Squares the edge cuts"
+  difficulty pick(i, 0, 1, 1)
+  let i=0..2
+  let s={pick(i, 0, 1, 2)}
+  level easy {
+    let i={0}
+  }
+
+  scene 36x15 {
+    outlinearea map shape=s side=100 unit="m" mark=1 show=1 at=canvas(1, 1)
+    text ask "{pick(i, \"The reservoir that fills the canal\", \"A field of wheat\", \"A marsh beside the towpath\")} is drawn on hectare squares. A dot is a whole square, a ring is a square the edge cuts. About how many hectares is it?" narrate width=17 right-of=map gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "ha"
+    }
+  }
+
+  answer pick(i, 70, 65.5, 64)
+  feedback {
+    when (answer == pick(i, 52, 49, 44)) point=map {
+      say "That counts only the whole squares. The ringed squares are partly inside too."
+    }
+    when (answer == pick(i, 88, 82, 84)) point=map {
+      say "That counts every ringed square as whole. On average a cut square is about half inside."
+    }
+  }
+  hint "How many dotted squares are there, and how many ringed?"
+  hint "Count each ringed square as half a hectare."
+}

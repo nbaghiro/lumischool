@@ -1,0 +1,70 @@
+# The fewest steps for the same task: two programs that do the same job can take very different
+# numbers of steps, and a program's steps are counted by the lines that run, not the lines written or
+# the squares moved. The rover among the craters of the moon.
+lesson coding-the-fewest-steps v=1 format=teach grade=6 unit=8 subject=coding levels=[easy, medium, hard] {
+  title "The fewest steps for the same task"
+  goal "Count the steps a program takes, and find a program that does the same task in fewer."
+
+  look {
+    scene 36x27 {
+      row both at=canvas(0, 0) space=1 align=start {
+        program pa code=["repeat 4", "  right 1", "repeat 3", "  up 1"] text=true title="A"
+        program pb code=["right 4", "up 3"] text=true title="B"
+      }
+      maze g cols=8 rows=5 col=1 row=5 face=right flag=[5, 2] code=["right 4", "up 3"] below=both gap=1
+      lander l rungs=4 right-of=g gap=1
+    }
+    say """
+      Both programs drive the rover from the ring to the flag on the moon. A moves one square at a
+      time, so its moving lines run 7 times: 7 steps. B moves along each straight part in one line:
+      2 steps. The rover ends in the same place either way. When two programs do the same job, the
+      one with fewer steps is quicker to run, however many lines each has. A step here is one
+      instruction given to the rover, not a square driven: right 4 is one step, though the rover
+      still drives four squares.
+      """
+  }
+  do {
+    show coding.least-count n=3 a=2 easy-n=2 hard-n=4
+    level easy {
+      worked coding.least-count n=2 a=3
+    }
+    show coding.least-two a=4 b=3 easy-a=3 easy-b=2 hard-a=5 hard-b=4
+    show coding.least-nested a=3 b=4 easy-a=2 easy-b=3 hard-a=4 hard-b=4
+    show coding.least-sum n=10 easy-n=4 hard-n=20
+    show coding.least-build k=1 easy-k=0 hard-k=2
+    show coding.least-two a=6 b=2 easy-a=4 hard-b=3
+    show coding.least-nested a=2 b=5 easy-a=4 easy-b=2 hard-a=3
+    show coding.least-sum n=6 hard-n=50
+    level hard {
+      show coding.least-nested a=4 b=3
+    }
+  }
+  try stars=2 {
+    show coding.least-hoist n=6 easy-n=4 hard-n=10
+  }
+  try stars=3 {
+    show coding.least-fewest k=1 easy-k=0 hard-k=3
+  }
+  remember {
+    say "A step is one instruction run, a line that moves or changes something, however far it moves; of two programs for the same task, the one with fewer steps is quicker."
+  }
+
+  grown-ups """
+    The lesson compares programs that do the same job by how many steps they take, where a step is
+    one run of a line that moves the rover or changes a name; the repeat line itself is not counted.
+    The common mistakes are counting the lines written instead of the lines run, and counting
+    squares moved instead of lines run; a repeat inside a repeat multiplies. In the child's working,
+    look for the times each line runs written beside it. If the child is stuck, run the program by
+    hand and make a tally mark every time a line is read. Off the page, time two ways of doing a
+    chore, such as laying the table one thing at a time or a trayful at a time. The sum of 1 to n
+    shows a clever method beating a repeat by far. The two-star question moves a line that does the
+    same thing every time out of the repeat; the three-star question fits a trail of moon rocks into
+    three blocks.
+    """
+  level easy {
+    grown-ups "At this level the repeats go round two or three times, one count is worked in the teacher's pen, the numbers to add go up to 4 or 6, the map to build for has the simplest way round, and the moon rocks are one square apart."
+  }
+  level hard {
+    grown-ups "At this level the repeats go round four or five times, the numbers to add go up to 20 and 50, the map to build for has the longest way round, a third count of squares and steps is added, and the moon rocks are two squares apart each way."
+  }
+}

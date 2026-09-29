@@ -1,0 +1,26 @@
+# The three-star: Isla's scribbled notes turned into the method of the team's report, in the passive
+# where the doer does not matter, marked by a grown-up; at hard one sentence stays active, with a reason.
+item writing.passive-rewrite v=1 stars=3 skills=[writing.passive, writing.formality, writing.composing] {
+  title "Write the method"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x40 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage note title="Isla's notes" text="{if k == 0 then \"Dr Berg drilled a hole in the ice. I dropped the thermometer down on a rope. We read it every ten minutes.\" else \"Dr Berg drilled a hole in the ice. I dropped the thermometer down on a rope. We read it every ten minutes. Sam wrote the numbers in the log. A seal popped up in the hole and I nearly screamed.\"}" width=21 numbers=false
+      hut h pictures=6
+    }
+    text ask "{if k == 0 then \"Rewrite Isla's notes as the method for the team's report, in the passive, so it says what was done and not who did it.\" else \"Rewrite Isla's notes as the method for the team's report, in the passive where the doer does not matter. Leave out what does not belong in a report. Keep one sentence active, and say why.\"}" narrate width=33 below=top gap=1
+    writinglines lines lines=5 width=33 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="The steps in the order they happened, each in the passive with was or were agreeing with what comes first (a hole was drilled in the ice, a thermometer was lowered on a rope, it was read every ten minutes), no I or we, and nothing chatty; at hard, the numbers were written in the log, the seal left out or given as a plain observation, and one sentence kept active with a sensible reason, such as that it matters who drilled the hole because only Dr Berg may use the drill."
+  hint "For each note, ask what was done, and start the sentence with that."
+  hint "Read your method aloud. Does any sentence still say I or we?"
+}

@@ -1,0 +1,30 @@
+# The overshoot: the heater is switched off only once the hut is more than the top number, so the
+# warmest reading is past it. The slip is answering with the top number itself.
+item coding.sense-high v=1 skills=[coding.sensors, coding.decisions, reasoning.explain] {
+  title "The warmest the hut gets"
+  difficulty k
+  let k=0..2
+  let lo={pick(k, 16, 17, 18)} hi={pick(k, 20, 19, 21)} s={pick(k, 14, 14, 15)} h={pick(k, 2, 2, 3)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x28 {
+    program p code=["repeat 20", "  if temp is less than {lo}", "    switch heater on", "  if temp is more than {hi}", "    switch heater off", "  wait 1"] text=true sense=["temp starts {s} changes -1 heater {h}"] at=canvas(0, 0)
+    thermometer th from=0 to=30 step=10 value=s unit="°C" right-of=p gap=2
+    text ask "The hut starts at {s} °C. It cools by 1 degree a minute, and warms by {h - 1} a minute while the heater is on. In the 20 minutes, what is the warmest the thermometer reads?" width=34 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="highest(temp)"
+  feedback {
+    when (answer == hi) point=p {
+      say "At {hi} the hut is not more than {hi}, so the heater is still on for another minute."
+    }
+  }
+  hint "When is the heater switched off? Read line 4 carefully."
+  hint "Find the minute the reading is first more than {hi}. What does it read then?"
+}

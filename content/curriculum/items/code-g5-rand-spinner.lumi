@@ -1,0 +1,33 @@
+# Two-star: three questions for the spinner's if, and only one gives red and blue the same chance.
+# The reason is in how many of the random numbers lead to each colour, not in trying the program.
+item coding.rand-spinner v=1 stars=2 skills=[coding.random, chance.likelihood, reasoning.compare] {
+  title "Which spinner is fair?"
+  difficulty k
+  let k=0..2
+  let fair={pick(k, "random 1 to 2 is 1", "random 1 to 4 is more than 2", "random 1 to 6 is less than 4")}
+  let u1={pick(k, "random 1 to 3 is 1", "random 1 to 4 is 1", "random 1 to 6 is less than 3")}
+  let u2={pick(k, "random 1 to 4 is more than 1", "random 1 to 3 is more than 1", "random 1 to 6 is more than 4")}
+  let o1={pick(k, fair, u1, u2)} o2={pick(k, u1, u2, fair)} o3={pick(k, u2, fair, u1)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x29 {
+    program p code=["if ?", "  say red", "otherwise", "  say blue"] at=canvas(1, 0)
+    spinner s right-of=p gap=1
+    text ask "Which question in place of the question mark gives red and blue the same chance?" width=34 at=canvas(1, 13)
+    choice pick options=[o1, o2, o3] stack=column below=ask gap=1
+  }
+
+  answer pick=fair
+  feedback {
+    when (pick != fair) point=pick {
+      say "Count the random numbers that lead to red and the ones that lead to blue for that question: they are not the same."
+    }
+  }
+  hint "For each question, how many of the random numbers lead to red, and how many to blue?"
+  hint "The same chance means the same number of numbers for each colour."
+}

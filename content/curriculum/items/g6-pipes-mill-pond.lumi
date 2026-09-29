@@ -1,0 +1,31 @@
+# The way in: more pipes of the same size fill the mill pond in less time, and the time is shared
+# by the number of pipes.
+item inverse.pipes-mill-pond v=1 skills=[proportion.inverse] {
+  title "More pipes, less time"
+  difficulty (n + t / 12)
+  let t={12, 24, 36} n={2, 3, 4, 6}
+  level easy {
+    let n={2, 3} t={12, 24}
+  }
+  level hard {
+    let n={4, 6} t={24, 36}
+  }
+
+  scene 35x10 {
+    tap pipe running=true at=canvas(1, 1)
+    text ask "One pipe fills the mill pond in {t} hours. How many hours do {n} pipes the same size take to fill it, all running together?" narrate width=26 right-of=pipe gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text unit "hours"
+    }
+  }
+
+  answer (t / n)
+  feedback {
+    when (answer == t * n) point=ask {
+      say "More pipes pour more water each hour, so the pond fills faster, not slower."
+    }
+  }
+  hint "Do more pipes take more time or less?"
+  hint "Each pipe does its share of the pond. How much time does that take?"
+}

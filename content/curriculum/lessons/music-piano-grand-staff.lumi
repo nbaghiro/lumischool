@@ -1,6 +1,6 @@
 # The grand staff read from three landmarks, bass F, middle C and treble G, with everything else a
 # step or a skip from the nearest one. This is the landmark reading the intervallic methods use.
-lesson music-piano-grand-staff v=1 format=teach grade=3 unit=1 subject=music levels=[easy, medium, hard] {
+lesson music-piano-grand-staff v=1 format=teach grade=3 unit=2 subject=music levels=[easy, medium, hard] {
   title "The grand staff and three landmarks"
   goal "Find bass F, middle C and treble G on the grand staff, and read the notes a step or a skip from them."
 

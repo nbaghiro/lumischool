@@ -1,0 +1,43 @@
+# The five steps of the explanation muddled, going up at easy and medium and going down at hard,
+# where the gates and paddles swap ends and the boat sinks.
+item writing.lock-steps-order v=1 skills=[writing.explanations, writing.sequencing] {
+  title "The steps in order"
+  difficulty (if k == 0 then p else 2 + p)
+  let k=0..1 p=0..2
+  let a={pick(p, 2, 4, 1)}
+  let b={pick(p, 0, 2, 3)}
+  let c={pick(p, 4, 0, 0)}
+  let d={pick(p, 1, 3, 4)}
+  let e={pick(p, 3, 1, 2)}
+  let t0={pick(k, "The boat moves into the empty chamber.", "The boat moves into the full chamber.")}
+  let t1={pick(k, "The bottom gates are shut behind it.", "The top gates are shut behind it.")}
+  let t2={pick(k, "Paddles let water in from the top.", "Paddles let water out at the bottom.")}
+  let t3={pick(k, "The boat rises as the chamber fills.", "The boat sinks as the chamber empties.")}
+  let t4={pick(k, "The top gates open and the boat goes on.", "The bottom gates open and the boat goes on.")}
+  let wa={pick(a, t0, t1, t2, t3, t4)}
+  let wb={pick(b, t0, t1, t2, t3, t4)}
+  let wc={pick(c, t0, t1, t2, t3, t4)}
+  let wd={pick(d, t0, t1, t2, t3, t4)}
+  let we={pick(e, t0, t1, t2, t3, t4)}
+  level easy {
+    let k=0..0 p=0..1
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 32x28 {
+    canallock lock level=(if k == 0 then 0 else 1) boat=1 at=canvas(1, 0)
+    text ask "The steps for a boat going {if k == 0 then \"up\" else \"down\"} through the lock are muddled. Number them 1 to 5." narrate width=31 below=lock gap=1
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}", "{we}"] blanks=[q, x, y, u, v] below=ask gap=1
+  }
+
+  answer q=(a + 1) x=(b + 1) y=(c + 1) u=(d + 1) v=(e + 1)
+  feedback {
+    when ((if a == 2 then q else if b == 2 then x else if c == 2 then y else if d == 2 then u else v) < (if a == 1 then q else if b == 1 then x else if c == 1 then y else if d == 1 then u else v)) point=s {
+      say "The water can only be let in or out once the gates behind the boat are shut, or it would run straight through."
+    }
+  }
+  hint "Start with the boat outside the lock. What has to happen before the water can move?"
+  hint "Ask of each step: could it happen if the one before it had not?"
+}

@@ -1,0 +1,35 @@
+# Canal mud shaken in water settles biggest first: stones, sand, silt, then clay. Each layer is a whole
+# number of squares, so its share of the settled mud is a percentage of the whole.
+item chem.mud-layers v=1 skills=[chemistry.mixtures, percentages.of-amounts] {
+  title "What share is silt?"
+  difficulty (if total == 10 then 0 else 1)
+  let k=0..3 j=0..2
+  let st={pick(k, 1, 2, 0, 1)}
+  let sa={pick(k, 3, 4, 2, 1)}
+  let si={pick(k, 4, 3, 2, 2)}
+  let cl={pick(k, 2, 1, 1, 1)}
+  let total={st + sa + si + cl}
+  let layer={pick(j, "silt", "clay", "sand")}
+  let got={pick(j, si, cl, sa)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x14 {
+    soiljar jar stones=st sand=sa silt=si clay=cl bits=3 names=1 at=canvas(1, 0)
+    text ask "The lock keeper shook a spade of mud from the canal bed in a jar of water and left it to settle. What percentage of the settled mud is {layer}? Count squares up the side." narrate width=19 right-of=jar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (got * 100 / total)
+  feedback {
+    when (answer == got) point=jar {
+      say "That is how many squares thick the {layer} is. The question asks what share of all the settled mud that is, out of 100."
+    }
+  }
+  hint "How many squares high is all the settled mud, from the stones up to the top of the clay?"
+  hint "How many squares is the {layer}? What is one square worth out of 100 per cent?"
+}

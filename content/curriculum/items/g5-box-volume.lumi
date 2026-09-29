@@ -1,0 +1,32 @@
+# The formula on a bare outline: length times width times height, in cubic centimetres.
+item volume.box-volume v=1 skills=[volume.cuboids, measure.metric] {
+  title "Volume of a box"
+  difficulty (l * w * h / 50)
+  let l=4..10 w=2..6 h=2..8
+  where (l > w)
+  where (l * w * h != 2 * (l * w + l * h + w * h))
+  level easy {
+    let l=4..6 w=2..3 h=2..4
+  }
+  level hard {
+    let l=8..10 w=5..6 h=6..8
+  }
+
+  scene 34x34 {
+    cubestack box l=l w=w h=h outline=1 edges=1 unit="cm" at=canvas(1, 1)
+    text ask "What is the volume of this box of spices from the market, in cubic centimetres?" narrate width=28 below=box gap=1
+    number-input answer width=5 below=ask gap=1
+  }
+
+  answer (l * w * h)
+  feedback {
+    when (answer == l + w + h) point=box {
+      say "Adding the edges gives a length. Volume counts cubes: length times width times height."
+    }
+    when (answer == 2 * (l * w + l * h + w * h)) point=box {
+      say "That is the area of all the faces. Volume counts the cubes that fill the box."
+    }
+  }
+  hint "How many centimetre cubes fit along the bottom in one row? How many rows?"
+  hint "That is one layer. How many layers fill the height?"
+}

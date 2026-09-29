@@ -1,0 +1,59 @@
+lesson physics-heat-that-crosses-empty-space v=1 format=teach grade=6 unit=2 subject=physics levels=[easy, medium, hard] {
+  title "Heat that crosses empty space"
+  goal "Explain how the sun's heat crosses empty space, and choose the surface that takes in the most of it or turns the most away."
+
+  look {
+    scene 22x27 {
+      midnightsun s suns=5 midnight=1 at=canvas(1, 0)
+      heatflow t mode=2 cans=["black", "white", "silver"] insun=30 show=1 below=s gap=1
+    }
+    say """
+      The sun is about 150 million kilometres away, and nearly all of that is empty space, with no
+      particles to pass heat along or carry it. Its heat still arrives, as radiation. When radiation
+      falls on something, some is taken in and warms it and the rest is reflected. Matt black takes
+      in the most, white much less, and shiny metal least of all. These cans have stood in the
+      midnight sun for 30 minutes.
+      """
+  }
+  do {
+    practice physics.sun-can-rise count=1 seed=1 easy-seed=2 hard-seed=3
+    level easy {
+      worked physics.sun-can-predict r=2 m=20 level=medium
+    }
+    practice physics.sun-can-predict count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.sun-can-coldest count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.heat-three-ways count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.sea-ice-sun count=1 seed=1 easy-seed=2 hard-seed=3 hard-count=2
+  }
+  story {
+    show physics.tank-paint r=1 m=20 easy-m=10 hard-m=30
+  }
+  try stars=2 {
+    show physics.foil-why
+  }
+  try stars=3 {
+    show physics.sun-cans-meet v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "The sun's heat crosses empty space as radiation: matt black takes in the most, and shiny surfaces turn the most away."
+  }
+
+  grown-ups """
+    This is the third way heat moves, after conduction and convection in "Heat on the move": it
+    needs no particles at all, which is how the sun's heat crosses space. The common wrong ideas are
+    that white is the coolest colour (a shiny surface reflects more), that shiny foil "keeps the
+    cold out" (cold does not move; heat does), and that foil stops heat altogether (the foil cup
+    still cooled). The cans' warming, 6, 2 and 1 degrees in ten minutes, is these readings and not
+    a rule for every can; the snow and sea figures are measured ones. If the child stalls, go back
+    to one can and count its ten-minute steps aloud. Off the page, on a sunny day lay a black and a
+    white sock on a sunny sill for half an hour and feel them, or look inside a flask for its shiny
+    wall. The lesson meets China's 2022 science standard for grades 5 and 6, whose 学业要求 asks that
+    children «能对热传递的方式进行分析和推理», analyse and reason about the ways heat is passed on.
+    """
+  level easy {
+    grown-ups "At this level the cans are read after ten minutes, a worked example predicts a can at twenty minutes, the pictures sorted are the hut and the cans, the sunlight is 1000 J, and the three-star cans are black and white."
+  }
+  level hard {
+    grown-ups "At this level the cans are read after twenty or thirty minutes, the predictions go to thirty, the rods are among the pictures sorted, the sunlight is 1500 or 2000 J and asked twice, and the three-star cans went out ten minutes apart."
+  }
+}

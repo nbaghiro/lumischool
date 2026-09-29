@@ -1,0 +1,71 @@
+# Why a text was written and from where it is told: purpose read from what a text does, and point
+# of view from who says I and what they think. Every text is about the star cliffs' observatory.
+lesson reading-the-writers-purpose v=1 format=teach grade=5 unit=4 subject=reading levels=[easy, medium, hard] {
+  title "The writer's purpose and point of view"
+  goal "Say why a text was written and who is telling it, and point to the words that show both."
+
+  look {
+    scene 34x11 {
+      row all at=canvas(1, 1) space=1 align=end {
+        observatory dome open=1
+        person osei pose=point age=older hair=crop colour=grey top=mint tone=5 glasses=true
+        sign poster lines=["OPEN NIGHT", "SEE SATURN", "ONLY $3"] kind=board color=berry
+        moon m phase=0.8
+      }
+    }
+    say """
+      Dr Osei is the astronomer at the Star Cliffs Observatory. Everything written about it has a
+      purpose: an advert wants to persuade you to come, a set of steps tells you how to use the
+      telescope, a report informs you about it, and a story sets out to entertain you. Every text
+      also has a point of view. Some are told by someone inside the story, who says I, and some by a
+      narrator outside it. That changes what you are told: a teller inside the story knows only what
+      they see and feel, and has to guess at everyone else, while a narrator outside can tell you
+      what every person thinks. A writer can be for something, against it, or take no side.
+      """
+  }
+  do {
+    level easy {
+      worked reading.why-written k=2 level=medium
+    }
+    show reading.why-written k=1 hard-k=2
+    practice reading.purpose-words count=2 seed=4 easy-seed=1 hard-seed=1
+    practice reading.who-tells count=1 seed=4 easy-seed=1 hard-seed=1
+    practice reading.teller-knows count=2 seed=1 easy-seed=1 hard-seed=1
+    practice reading.writer-thinks count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show reading.who-tells k=0 level=medium
+    }
+  }
+  try stars=2 {
+    show reading.left-out k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show reading.two-purposes k=0 hard-k=1
+  }
+  remember {
+    say "Ask what a text wants you to do or know, and who is telling it. The words will show both."
+  }
+
+  grown-ups """
+    The idea is that a text's purpose is read from what it does (persuade, instruct, inform or
+    entertain), not from what it is about, and that its point of view is read from who says I and
+    what the writer shows they think. Every text in the lesson is about the observatory, so the
+    topic never gives the purpose away. The core finds the words that do the persuading or the
+    instructing, says who is telling a story (the hard versions put an I inside speech marks, which
+    belongs to a character, not the narrator), works out what that teller can and cannot know (a
+    teller who says I has to guess at other people's feelings, and a narrator outside can see into
+    every mind), and reads a letter for the writer's view, one of which is a report with no view at
+    all. The wrong idea to watch for is calling anything with facts in it a report: an advert is
+    full of facts too. The two-star question asks why a fact was left out, and the answer is the
+    purpose again. The three-star question writes the same notes twice, to inform and to persuade,
+    marked by eye. If the child is stuck on who is telling a story, cover everything inside speech
+    marks and look for I in what is left. Off the page, sort the post that comes through the door by
+    purpose, and read one advert together for the words that push.
+    """
+  level easy {
+    grown-ups "At this level the report's purpose is worked once in the teacher's pen before the steps, the words to find are in the advert and the steps, the teller is Mira saying I or a narrator saying she, what the teller can know is Mira's unexplained sigh and a narrator who knows Tom's thoughts, the letters are plainly for or against the lamps, the two-star fact left out is the shut dome, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the text to judge is the report, the words to find are in the comet advert and the northern lights steps, the tellers include Dr Osei saying I and a Mira who says I only inside speech marks, what the teller can know includes Dr Osei guessing that the boy was cold, the letters include the plain report and one that praises before it complains, the two-star question is why a report leaves out an opinion, with the report on the page, and the three-star is written about a faint second comet whose notes hold facts that would put a reader off."
+  }
+}

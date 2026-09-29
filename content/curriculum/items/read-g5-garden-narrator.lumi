@@ -1,0 +1,28 @@
+# What the narrator tells the reader that a character does not know. Each wrong choice is true or
+# nearly true elsewhere, so the child has to find the place.
+item reading.garden-narrator v=1 skills=[reading.inference, reading.evidence, reading.whole-book] {
+  title "What the narrator knows"
+  let k=0..1
+  let right={pick(k, "Going out is making her stronger.", "A voice in a dream said those words.")}
+  let a={pick(k, "The robin has chosen her as a friend.", "Mrs Medlock told him Colin was out.")}
+  let b={pick(k, "Someone is crying in the house.", "He had watched them from the house.")}
+
+  scene 35x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        text ask "{pick(k, \"At the start of chapter 5 Mary goes out each day only because staying in is dull. What does the narrator know that Mary does not?\", \"In chapter 27 Mr Craven says “In the garden,” and Colin does not know what he means. What does the reader know that Colin does not?\")}" width=20
+        hedge h clumps=2 berries=3
+      }
+      choice pick options=[pick(k, a, right), pick(k, right, b), pick(k, b, a)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=h {
+      say "{pick(k, \"Mary knows that one, or finds it out soon. Look for the words did not know near the start of the chapter.\", \"Look back at what happened to Mr Craven by the lake, earlier in the chapter.\")}"
+    }
+  }
+  hint "Look for a place where the narrator tells you something the character cannot see."
+  hint "{pick(k, \"What is the wind doing to Mary when she runs?\", \"Why did Mr Craven come home at all?\")}"
+}

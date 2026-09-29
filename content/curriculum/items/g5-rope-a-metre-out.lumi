@@ -1,0 +1,31 @@
+# The three-star: a path round the dome and a second one a metre further out. The extra length is
+# the same for any dome, 3.14 times the extra width across, which is the surprise to find.
+item circle.rope-a-metre-out v=1 stars=3 skills=[circles.circumference, reasoning.generalise] {
+  title "A metre further out"
+  difficulty (w + r / 10)
+  let r={5, 8, 10, 20} w={1, 2}
+  level easy {
+    let r={5} w={1}
+  }
+  level hard {
+    let r={10, 20} w={2}
+  }
+
+  scene 33x17 {
+    circleparts c size=6 lines=1 radius=r unit="m" at=canvas(1, 1)
+    text ask "A gravel path runs round a round dome of radius {r} m. A second path runs round it {w} m further out all the way. How many metres longer is the outer path? Use 3.14." narrate width=14 right-of=c gap=2
+    number-input answer width=6 below=ask gap=1
+  }
+
+  answer decimals(2 * w * 3.14, 0)
+  feedback {
+    when (answer == w * 3.14) point=ask {
+      say "The outer circle is {w} m further out on both sides, so it is {2 * w} m wider across."
+    }
+    when (answer == 2 * (r + w) * 3.14) point=ask {
+      say "That is the whole outer path. How much longer is it than the inner one?"
+    }
+  }
+  hint "How much wider across is the outer circle than the inner one?"
+  hint "How much further round does that extra width make?"
+}

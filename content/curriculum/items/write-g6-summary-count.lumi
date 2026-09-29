@@ -1,0 +1,34 @@
+# Counting the words of a summary, since a summary in fifty words has to be counted. A word is
+# whatever sits between two spaces, so a word with a comma after it counts once.
+item writing.summary-count v=1 skills=[writing.summarising, writing.concision] {
+  title "How many words?"
+  difficulty k
+  let k=0..2
+  let s={pick(k, "Falling water turns the wheel, which drives the millstones.", "The river cut the gorge over ten thousand years, and it is still cutting.", "Kingfishers nest in the soft bank by the falls, so the village has fenced it off to keep people from trampling it.")}
+  let n={pick(k, 9, 14, 22)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x26 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      waterfall falls drops=1 rainbow=1
+      kingfisher kf flying=1 facing=-1
+    }
+    passage p title="Mia's summary" text="{s}" width=33 numbers=false below=pics gap=1
+    text ask "How many words is Mia's summary?" narrate width=22 below=p gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == n - 1 or answer == n + 1) point=p {
+      say "Nearly. Point at each word in turn, including the small ones such as the and it."
+    }
+  }
+  hint "Point at each word as you count it. Small words such as the and it count too."
+  hint "Count in fives, making a small mark after every fifth word."
+}

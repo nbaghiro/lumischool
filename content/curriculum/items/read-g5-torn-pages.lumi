@@ -1,0 +1,21 @@
+# The pages of an old story, blown out of order. Words like then, so, at last and it, which point
+# back to something already said, decide the order.
+item reading.torn-pages v=1 skills=[reading.sequencing, reading.cohesion] {
+  title "The pages blew away"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 36x20 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=2 align=centre {
+        text ask "The pages of a story from the library blew out of order. Number them in the right order." width=23
+        loosepages pages count=4
+      }
+      sequence s items=[pick(k, "At last the keeper found it, inside an old atlas.", "Then she carried it down the two hundred steps.", "The guard heard him knocking and let him in."), pick(k, "One morning the library's oldest map went missing.", "The bell-ringer's girl found a kitten in the tower.", "After that, the gate was never locked at sunset."), pick(k, "He searched every shelf, but it was not there.", "Its owner, the baker, gave her a warm loaf.", "Each night the guard locked the city gate at sunset."), pick(k, "So he began to look inside the other books.", "She wrapped it in her scarf to keep it warm.", "One night a traveller arrived too late, in a storm.")] blanks=[p1, p2, p3, p4]
+    }
+  }
+
+  answer p1=pick(k, 4, 3, 3) p2=pick(k, 1, 1, 4) p3=pick(k, 2, 4, 1) p4=pick(k, 3, 2, 2)
+  hint "Which page could only come first, because it points back to nothing?"
+  hint "Look for then, so, at last, it and him. What does each one point back to?"
+}

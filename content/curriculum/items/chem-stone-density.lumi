@@ -1,0 +1,45 @@
+# A stone's volume from the water it pushes aside, and its density from that and its mass: granite
+# about 2.7 g/cm³ and basalt about 3.0 (British Geological Survey; standard tables). The unknown is
+# the density, the mass, or how high the water will rise.
+item chem.stone-density v=1 skills=[chemistry.density, volume.capacity] {
+  title "The stone in the cylinder"
+  difficulty (w * 2 + (if v == 10 then 0 else 1))
+  let w=0..2 k=0..1 v={10, 20, 30} b={40, 50}
+  where (not (k == 1 and v == 30))
+  let name={pick(k, "granite", "basalt")}
+  let dens={pick(k, 2.7, 3)}
+  let mass={plain(dens * v)}
+  level easy {
+    let w=0..0 v={10, 20}
+  }
+  level medium {
+    let w=0..1
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 35x17 {
+    row kit at=canvas(1, 0) space=2 align=start {
+      cylinder one max=100 step=10 minor=5 level=b unit=ml
+      cylinder two max=100 step=10 minor=5 level=(if w == 2 then b else b + v) unit=ml
+    }
+    text ask "Leo finds a stone of {name} on the beach below the ice shelf. {if w == 0 then \"It weighs \" else \"\"}{if w == 0 then mass else \"\"}{if w == 0 then \" g, and he lowers it into the water. What is its density, in g/cm³?\" else \"\"}{if w == 1 then \"Its density is \" else \"\"}{if w == 1 then dens else \"\"}{if w == 1 then \" g/cm³, and it raises the water from the first reading to the second. How many grams does it weigh?\" else \"\"}{if w == 2 then \"It weighs \" else \"\"}{if w == 2 then mass else \"\"}{if w == 2 then \" g and its density is \" else \"\"}{if w == 2 then dens else \"\"}{if w == 2 then \" g/cm³. Before it goes in, the water reads as shown. What will the water read with the stone in?\" else \"\"}" narrate width=15 right-of=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then dens else if w == 1 then mass else b + v)
+  feedback {
+    when (w == 0 and answer == b + v) point=two {
+      say "That is the reading with the stone in. The stone's own volume is how far the water rose."
+    }
+    when (w == 1 and answer == v) point=two {
+      say "That is the stone's volume in cm³. Each one weighs {dens} g."
+    }
+    when (w == 2 and answer == v) point=one {
+      say "That is how far the water rises. Add it to the first reading."
+    }
+  }
+  hint "{if w == 2 then \"How many cubic centimetres of stone make the grams it weighs?\" else \"How far did the water rise? One millilitre is one cubic centimetre.\"}"
+  hint "{if w == 0 then \"Divide the grams by the cubic centimetres.\" else if w == 1 then \"Each of those cubic centimetres weighs the density in grams.\" else \"The water rises by the stone's volume. Where does it start?\"}"
+}

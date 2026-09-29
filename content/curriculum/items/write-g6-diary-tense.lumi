@@ -1,0 +1,37 @@
+# A diary tells the day in the past, the moment of writing in the present, and the plan in the
+# future. The gap's time word says which tense the verb takes. Two versions for each tense, the
+# second with an irregular or a plural verb, so a lesson can ask twice without repeating.
+item writing.diary-tense v=1 skills=[writing.diaries, writing.tense] {
+  title "Which verb fits?"
+  difficulty k
+  let k=0..5 r=0..2
+  let s={pick(k, "Yesterday we _____ to the top of the ice cliff.", "Last night the wind _____ so hard that the hut shook.", "Right now I _____ this by the stove, and my fingers are still cold.", "At this moment the seals _____ on the floe below the hut.", "Tomorrow we _____ to the iceberg if the sea stays calm.", "Next week the ship _____ us back to the town.")}
+  let right={pick(k, "climbed", "blew", "am writing", "are sleeping", "will sail", "will take")}
+  let w1={pick(k, "climb", "blows", "wrote", "slept", "sailed", "took")}
+  let w2={pick(k, "will climb", "will blow", "will write", "will sleep", "have sailed", "has taken")}
+  level easy {
+    let k=0..3
+  }
+  level hard {
+    let k=2..5
+  }
+
+  scene 33x26 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      hut h pictures=5
+      icecliff ice height=1 floes=1
+    }
+    passage p title="Isla's diary" text="{s}" width=31 numbers=false below=pics gap=1
+    text ask "Which verb fills the gap? The time word tells you its tense: past, present or future." narrate width=31 below=p gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "Look at the word that says when. It tells you the tense the verb needs: the past, happening now, or the future."
+    }
+  }
+  hint "Find the word in the sentence that says when."
+  hint "Has it happened (the past tense), is it happening as she writes (the present), or is it still to come (the future)?"
+}

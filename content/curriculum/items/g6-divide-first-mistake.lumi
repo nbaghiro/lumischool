@@ -1,0 +1,29 @@
+# The two-star: sharing only part of one side. Leo divides the x term by a but not the added number,
+# and the reason he is wrong is that the whole side has to be shared, or the adding undone first.
+item algebra.divide-first-mistake v=1 stars=2 skills=[algebra.equations, reasoning.find-the-mistake] {
+  title "Leo shares first"
+  difficulty (a + x / 6)
+  let a={2, 3, 4} k={2, 3} x=5..12
+  where (x + k - a * k > 0)
+  level easy {
+    let a={2} x=5..8
+  }
+  level hard {
+    let a={4} x=9..12
+  }
+
+  scene 35x12 {
+    balanceeq scales left="{a}x + {a * k}" right="{a * (x + k)}" at=canvas(1, 1)
+    text ask "Leo shares both sides by {a} and writes x + {a * k} = {x + k}, so x = {x + k - a * k}. Check his x in the balance. What is x really?" narrate width=14 right-of=scales gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer x
+  feedback {
+    when (answer == x + k - a * k) point=scales {
+      say "That is Leo's x. Put it into {a}x + {a * k}: does it make {a * (x + k)}?"
+    }
+  }
+  hint "Try Leo's x in the left pan. Does it balance?"
+  hint "Leo shared {a}x by {a} but not the {a * k}. Take {a * k} off both sides first."
+}

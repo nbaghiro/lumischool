@@ -1,0 +1,37 @@
+# The three-star: from the table for 10 g of wax (34 g of oxygen in; 31 g of carbon dioxide and 13 g
+# of water out, worked from C25H52), the grams made by a different amount of wax. Every gram out is
+# a gram in, so the products are the wax and its oxygen together. A candle in a jar goes out with
+# oxygen to spare, so the chamber is fed oxygen until the wax is gone: 30 g of wax needs about 103 g
+# of oxygen, the oxygen in some 350 litres of air.
+item chem.wax-burns-sealed v=1 stars=3 skills=[chemistry.conservation, ratio.scaling] {
+  title "The gases from the wax"
+  difficulty k
+  let k=0..3
+  let w={pick(k, 5, 20, 15, 30)}
+  let made={w * 44 / 10}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 35x19 {
+    table data cols=2 head=["For 10 g of wax", "Grams"] cells=["oxygen used", "34", "carbon dioxide made", "31", "water made", "13"] at=canvas(1, 0)
+    text ask "In the moon base's sealed test chamber, kept apart from the crew and fed with oxygen, {w} g of wax burns until none is left. How many grams of carbon dioxide and water does it make altogether?" narrate width=34 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer made
+  feedback {
+    when (answer == w * 34 / 10) point=data {
+      say "That is the oxygen the wax used. The products are the wax and that oxygen together."
+    }
+    when (answer == 44) point=data {
+      say "44 g is for 10 g of wax. This candle burned {w} g."
+    }
+  }
+  hint "For 10 g of wax, how many grams come out altogether?"
+  hint "Where do those grams come from? Compare them with what went in."
+  hint "How many lots of 10 g of wax burned here?"
+}

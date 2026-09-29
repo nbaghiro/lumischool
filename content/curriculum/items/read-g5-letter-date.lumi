@@ -1,0 +1,27 @@
+# The three-star question: an undated letter, and two clues in it that pin it between two flags on
+# the timeline. No clue gives a year; one says what had already happened and one what had not yet.
+item reading.letter-date v=1 stars=3 skills=[reading.timeline, reading.inference, reading.evidence] {
+  title "When was the letter written?"
+  difficulty pick(k, 1, 2, 1)
+  let k=0..2
+
+  scene 36x29 {
+    column all at=canvas(0, 1) space=1 align=start {
+      passage p title="A letter in the canal museum" text="{pick(k, \"Dear Bess, We brought stone down the five new locks from Hill Top this morning, and the boat sat low in the water. Folk in Kingsford say a railway is coming. I hope it never does, for it would take our trade. Your brother, Tom\", \"Dear Ada, The canal froze again this winter, but it was nothing like the great freeze Grandad tells of, when the flour went by sledge. Trains carry most things now, and they say the last working boat will tie up soon. Love, May\", \"Dear Jo, We hired a holiday boat at the mill and went up to Kingsford. We wanted to go on to Hill Top, but those five locks are still being mended, so we turned round at Kingsford. Love, Sam\")}" width=35 numbers=false
+      timeline line from=1780 to=2020 step=40 years=[1796, 1805, 1852, 1895, 1961, 1994, 2008] labels=["Opens", "To Hill Top", "Railway", "Big freeze", "Closes", "Reopens", "Hill Top again"]
+      row bottom space=1 align=centre {
+        text ask "The letter was written between two flags that are next to each other. What is the year on the first of the two?" width=30
+        number-input answer width=5
+      }
+    }
+  }
+
+  answer pick(k, 1805, 1895, 1994)
+  feedback {
+    when (answer == pick(k, 1852, 1961, 2008)) point=line {
+      say "That is the flag after the letter. The writer says it has not happened yet, so the letter comes before it."
+    }
+  }
+  hint "Find one thing the writer says has already happened. Which flag is it?"
+  hint "Find one thing the writer says has not happened yet. The letter sits between those two flags."
+}

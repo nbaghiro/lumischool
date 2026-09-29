@@ -1,0 +1,36 @@
+# The way in: which sentence belongs in a biography of Caroline Herschel, with the others slipping
+# into the first person, the present tense or the writer's own opinion.
+item writing.bio-belongs v=1 skills=[writing.biography] {
+  title "Which sentence belongs?"
+  difficulty k
+  let k=0..2 r=0..2
+  let right={pick(k, "In 1786 she found her first comet.", "The king paid her to study the stars.", "She found eight comets in all.")}
+  let w1={pick(k, "I found my first comet in 1786.", "I was paid by the king to study the stars.", "She finds eight comets in all.")}
+  let w2={pick(k, "Comets are the prettiest things in the sky.", "Being paid to look at stars must be fun.", "She found eight comets, which is amazing.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 32x20 {
+    row top at=canvas(1, 0) space=2 align=end {
+      text ask "A biography tells the true story of someone's life, written by someone else. Which sentence belongs in a biography of Caroline Herschel?" narrate width=25
+      person her pose=think age=older hair=bun colour=grey top=mint glasses=true
+    }
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=ask {
+      say "Check who is telling it and when. A biography is told by someone else, so it says she, not I, and it happened in the past."
+    }
+    when (pick == w2) point=ask {
+      say "That is the writer's own opinion. A biography tells what is true about the person's life, facts that could be checked."
+    }
+  }
+  hint "Who is telling each sentence, and could its fact be checked?"
+  hint "Look for I, for a verb in the present, and for words that only give an opinion."
+}

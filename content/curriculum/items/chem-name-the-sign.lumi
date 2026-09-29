@@ -1,0 +1,44 @@
+# Naming the sign from something seen in the old city. Copper on a fountain goes green over years;
+# limewater goes cloudy when carbon dioxide is bubbled through it, because tiny bits of solid calcium
+# carbonate form (worded as bits forming, so a colour change is not also right); quicklime and water
+# get hot; chalk and vinegar fizz; silver tarnishes black.
+item chem.name-the-sign v=1 skills=[chemistry.changes, reasoning.classify] {
+  title "Which sign is it?"
+  difficulty (if k == 1 or k == 4 then 1 else 0)
+  let k=0..4
+  let seen={pick(k, "The copper spout of the fountain was orange-brown when it was new. Now, many years later, it is green.", "A grown-up blows through a straw into a tube of clear limewater. The clear water goes cloudy as tiny white bits form in it, and the bits settle on the bottom.", "A builder pours water on quicklime. It steams, and the bucket is too hot to hold.", "A drop of vinegar lands on the chalk of the temple steps, and bubbles rise from it.", "The silver cup in the library was bright when it was polished. A year later it has gone dark grey, almost black.")}
+  let right={pick(k, "A colour change", "A solid appears", "A temperature change", "A gas is given off", "A colour change")}
+  level easy {
+    let k={0, 2, 3}
+  }
+  level hard {
+    let k={1, 4}
+  }
+
+  scene 36x26 {
+    well w courses=3 bucket=0 at=canvas(1, 0)
+    text ask "{seen} Which sign of a new substance is this?" narrate width=26 right-of=w gap=1
+    choice pick options=["A gas is given off", "A colour change", "A temperature change", "A solid appears"] stack=column below=w gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 1 and pick == "A colour change") point=ask {
+      say "The water has not taken on a new colour. It is cloudy because tiny bits of a new solid have formed in it, and they settle."
+    }
+    when ((k == 0 or k == 4) and pick == "A solid appears") point=ask {
+      say "Nothing new has fallen out or settled. The surface has changed how it looks. Which sign is that?"
+    }
+    when (k == 3 and pick != right) point=ask {
+      say "Bubbles rising are a gas coming out of the chalk where the vinegar landed."
+    }
+    when (k == 2 and pick != right) point=ask {
+      say "Steam and a bucket too hot to hold both say the same thing: it got hot."
+    }
+    when (pick != right) point=ask {
+      say "Read what changed from before to after. Was it how it looks, how hot it is, bubbles, or bits that were not there?"
+    }
+  }
+  hint "What was it like before, and what is it like after?"
+  hint "Which word in the story tells you what changed?"
+}

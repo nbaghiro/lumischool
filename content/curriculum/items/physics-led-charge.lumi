@@ -1,0 +1,31 @@
+# Charge a store with a hand generator, then light a bulb or an LED from it: the LED gives the same
+# light for an eighth of the joules each second, so the same store lasts eight times as long.
+item physics.led-charge v=1 skills=[physics.energy, physics.circuits, reasoning.proportion] {
+  title "Charged by hand"
+  difficulty (g / 4)
+  let g={8, 12, 20}
+  level easy {
+    let g={8}
+  }
+  level hard {
+    let g={12, 20}
+  }
+
+  scene 30x25 {
+    energyflow e thing="LED" from="electricity" to="light" input=100 useful=40 wasted=[60] wastes=["heating"] blank=-1 unit=J at=canvas(1, 0)
+    text ask "Mia turns a hand generator 50 times to charge a store, then lights a filament bulb from it: it glows for {g} seconds. She charges it the same way again and lights an LED as bright, which needs an eighth of the bulb's joules each second. For how many seconds does the LED glow?" narrate width=28 below=e gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (g * 8)
+  feedback {
+    when (answer == g / 8) point=ask {
+      say "The LED uses less each second, so the same store lasts longer, not shorter."
+    }
+    when (answer == g) point=ask {
+      say "The store holds the same joules, but the LED takes them eight times more slowly."
+    }
+  }
+  hint "The store holds the same joules both times. Which lamp takes them out faster?"
+  hint "If the LED uses an eighth as much each second, how many times as long does the store last?"
+}

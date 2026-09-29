@@ -1,0 +1,36 @@
+# England's year 5 and 6 rule: a root that ends in -ce keeps its c before -ious (space, spacious).
+# The -tion roots are the Appendix's own t examples. The box is twelve letters long for every
+# version, so its length never says which ending.
+item writing.cious-tious v=1 skills=[writing.spelling] {
+  title "Spell the -cious or -tious word"
+  difficulty (if k == 0 or k == 1 then 0 else if k <= 4 then 1 else 2)
+  let k=0..7
+  let root={pick(k, "space", "grace", "caution", "ambition", "nutrition", "malice", "vice", "infection")}
+  let word={pick(k, "spacious", "gracious", "cautious", "ambitious", "nutritious", "malicious", "vicious", "infectious")}
+  let swap={pick(k, "spatious", "gratious", "caucious", "ambicious", "nutricious", "malitious", "vitious", "infecious")}
+  level easy {
+    let k=0..4
+  }
+  level hard {
+    let k=2..7
+  }
+
+  scene 34x16 {
+    narrowboat boat windows=4 pots=2 at=canvas(1, 1)
+    caption clue text="{pick(k, \"The cabin has lots of space.\", \"The miller thanked the crew with grace.\", \"Take the wet lock steps with caution.\", \"Her ambition is to steer the boat.\", \"The market soup is full of nutrition.\", \"The dog barked, but it meant no malice.\", \"The swan hissed, but it was not full of vice.\", \"The cold spread like an infection.\")}" width=19 right-of=boat gap=1
+    text ask "The root is {root}. Write the word that ends in -ious and means full of {root}." width=32 below=boat gap=2
+    word-input pick options=[word] letters=12 below=ask gap=1
+  }
+
+  answer pick=word
+  feedback {
+    when ((k <= 1 or k == 5 or k == 6) and pick == swap) point=clue {
+      say "Look at how the root ends. A root that ends in -ce keeps its c before -ious."
+    }
+    when ((k >= 2 and k <= 4 or k == 7) and pick == swap) point=clue {
+      say "The root ends in -tion, not -ce, so the t stays."
+    }
+  }
+  hint "How does the root {root} end: in -ce or in -tion?"
+  hint "Keep the letter the root gives you, then add -ious. What happens to the e or the -ion?"
+}

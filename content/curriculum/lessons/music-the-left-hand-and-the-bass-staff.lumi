@@ -1,6 +1,6 @@
 # The bottom staff read downwards from middle C, with bass F as the landmark, and played with the
 # left hand.
-lesson music-the-left-hand-and-the-bass-staff v=1 format=teach grade=3 unit=3 subject=music levels=[easy, medium, hard] {
+lesson music-the-left-hand-and-the-bass-staff v=1 format=teach grade=3 unit=9 subject=music levels=[easy, medium, hard] {
   title "The left hand and the bass staff"
   goal "Read the bass staff from middle C down and play a left-hand note."
 

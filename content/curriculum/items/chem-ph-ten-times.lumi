@@ -1,0 +1,37 @@
+# The three-star: each step down the pH scale is ten times as acidic (ten times the hydrogen ions;
+# USGS, pH and water). Normal rain is about 5.6 and acid rain lower (USGS). The rule is on the page;
+# using it across more than one step is the puzzle.
+item chem.ph-ten-times v=1 stars=3 skills=[chemistry.acids, place-value.powers-of-ten] {
+  title "Ten times for every step"
+  difficulty (a - b)
+  let k=0..3
+  let a={pick(k, 5.6, 7, 5.6, 6)}
+  let b={pick(k, 4.6, 5, 3.6, 3)}
+  let times={pick(k, 10, 100, 100, 1000)}
+  let what={pick(k, "normal rain, at pH 5.6, and rain by the gorge at pH 4.6", "pure water, at pH 7, and a stream at pH 5", "normal rain, at pH 5.6, and acid rain at pH 3.6", "a pond at pH 6 and a bog pool at pH 3")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 35x20 {
+    phscale p liquids=["rain", "water"] letters=1 names=1 at=canvas(1, 0)
+    text ask "Each step down the pH scale makes a liquid ten times as acidic. Mei compares {what}. How many times as acidic is the second one?" narrate width=34 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer times
+  feedback {
+    when (answer == (a - b) * 10 and answer != times) point=p {
+      say "Each step multiplies by ten again, so two steps is ten times ten, not ten plus ten."
+    }
+    when (answer == a - b) point=p {
+      say "That is how many steps apart they are. Each step makes it ten times as acidic."
+    }
+  }
+  hint "How many steps apart are the two pH numbers?"
+  hint "One step is ten times. What is two steps?"
+  hint "Multiply by ten once for every step."
+}

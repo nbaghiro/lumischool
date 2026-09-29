@@ -1,0 +1,46 @@
+# The steps for starting the water wheel (k=0) or stopping it (k=1), muddled, numbered back in order
+# by what each step needs to have happened first.
+item writing.instr-order v=1 skills=[writing.instructions, writing.sequencing] {
+  title "The steps in order"
+  difficulty (if k == 0 then p else 2 + p)
+  let k=0..1 p=0..2
+  let a={pick(p, 2, 4, 1)}
+  let b={pick(p, 0, 2, 3)}
+  let c={pick(p, 4, 0, 0)}
+  let d={pick(p, 1, 3, 4)}
+  let e={pick(p, 3, 1, 2)}
+  let t0={"Climb the steps to the sluice gate."}
+  let t1={"Fit the key onto the gate's handle."}
+  let t2={pick(k, "Turn the key three times to lift the gate.", "Turn the key back to close the gate.")}
+  let t3={pick(k, "Watch the water fill the top paddles.", "Wait until the wheel has stopped.")}
+  let t4={pick(k, "Start the millstones once the wheel is steady.", "Push the brake pin in so it cannot turn.")}
+  let wa={pick(a, t0, t1, t2, t3, t4)}
+  let wb={pick(b, t0, t1, t2, t3, t4)}
+  let wc={pick(c, t0, t1, t2, t3, t4)}
+  let wd={pick(d, t0, t1, t2, t3, t4)}
+  let we={pick(e, t0, t1, t2, t3, t4)}
+  level easy {
+    let k=0..0 p=0..1
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x33 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      waterwheel wheel paddles=8 lit=0
+      waterfall falls drops=1 rainbow=0
+    }
+    text ask "The steps for {if k == 0 then \"starting\" else \"stopping\"} the water wheel are muddled. Number them 1 to 5." narrate width=33 below=pics gap=1
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}", "{we}"] blanks=[q, x, y, u, v] below=ask gap=1
+  }
+
+  answer q=(a + 1) x=(b + 1) y=(c + 1) u=(d + 1) v=(e + 1)
+  feedback {
+    when ((if a == 2 then q else if b == 2 then x else if c == 2 then y else if d == 2 then u else v) > (if a == 3 then q else if b == 3 then x else if c == 3 then y else if d == 3 then u else v)) point=s {
+      say "{if k == 0 then \"The paddles only fill once the gate is open.\" else \"The wheel only stops once the gate is closed and no more water falls on it.\"}"
+    }
+  }
+  hint "Which step can be done before anything else? Which one only makes sense at the very end?"
+  hint "For each step, ask: could it happen if the one before had not?"
+}

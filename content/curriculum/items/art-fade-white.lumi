@@ -1,0 +1,29 @@
+# The ladder doubles the white at each step, so the ridges follow a pattern of doubling. At hard the
+# unknown moves and the ridge is found from its white.
+item art.fade-white v=1 skills=[art.space, art.tints, reasoning.pattern] {
+  title "White for the ridge"
+  difficulty (q * 2 + (if n >= 5 then 1 else 0))
+  let n=3..5 q={0}
+  let w={if n == 3 then 2 else if n == 4 then 4 else 8}
+  level easy {
+    let n={3, 4}
+  }
+  level hard {
+    let n={3, 5} q={1}
+  }
+
+  scene 35x17 {
+    tintladder ladder colour="green" toward="white" steps=5 blank=(n - 1) ring=-1 labels=true at=canvas(1, 1)
+    text ask "{if q == 0 then \"Ada's second ridge back has 1 part of white to its green, and each ridge further back has twice the white of the one in front. How many parts of white go in ridge \" else \"Ada's second ridge back has 1 part of white to its green, and each ridge further back has twice the white of the one in front. Counting the nearest as ridge 1, which ridge has \"}{if q == 0 then n else w}{if q == 0 then \", counting the nearest, with no white, as ridge 1?\" else \" parts of white?\"}" width=34 below=ladder gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if q == 0 then w else n)
+  feedback {
+    when (q == 0 and n > 3 and answer == n - 1) point=ladder {
+      say "Each ridge has twice the white of the one in front, not one more. Double as you go back."
+    }
+  }
+  hint "Start from the nearest ridge, which has no white. Which ridge is the first to have some?"
+  hint "Keep doubling the white, one ridge further back at a time, and count the ridges as you go."
+}

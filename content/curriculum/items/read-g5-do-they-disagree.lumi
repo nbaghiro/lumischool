@@ -1,0 +1,42 @@
+# The two-star reason: two accounts that seem to disagree often do not. The tail is one tail told in
+# two ways, and the time and the cold are both true once the reader asks when and to whom. In the
+# last version they really do conflict: a clear sky and thick cloud over the same cliff at the same
+# hour cannot both be true, so one account is wrong.
+item reading.do-they-disagree v=1 stars=2 skills=[reading.comparison, reasoning.explain] {
+  title "Do they disagree?"
+  difficulty pick(k, 0, 2, 1, 1)
+  let k=0..3
+  let right={pick(k, "No: they tell the same thing in two ways.", "No: both are true, as Mira came later.", "No: both are true, as Mira did not notice it.", "Yes: they cannot both be true.")}
+
+  scene 35x33 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=2 align=centre {
+        column people space=1 align=start {
+          row m space=1 align=end {
+            person mira pose=point age=child hair=braids top=sky tone=4
+            bubble said "{pick(k, \"Its tail was as long as my arm.\", \"Gran woke me at nine.\", \"I did not feel the cold.\", \"The sky was clear from nine to ten.\")}" width=14 from=mira
+          }
+          row o space=1 align=end {
+            person osei pose=think age=older hair=crop colour=grey top=mint tone=5 glasses=true
+            bubble wrote "{pick(k, \"Tail 20 degrees long.\", \"First seen at 8.40 pm.\", \"Frost by 10 pm.\", \"9 to 10 pm: thick cloud over the cliffs.\")}" width=14 from=osei
+          }
+        }
+        comet c tail=6
+      }
+      text ask "Mira and Dr Osei wrote about the same comet on the same night, from the same cliff top. Do these two disagree?" width=35
+      choice pick options=["Yes: they cannot both be true.", pick(k, "No: both are true, as Mira came later.", "No: they tell the same thing in two ways.", "No: they tell the same thing in two ways.", "No: they tell the same thing in two ways."), pick(k, "No: they tell the same thing in two ways.", "No: both are true, as Mira came later.", "No: both are true, as Mira did not notice it.", "No: both are true, as Mira came later.")] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k < 3 and pick == "Yes: they cannot both be true.") point=top {
+      say "Can both be true at once? Think about who is measuring, when, and how."
+    }
+    when (k == 3 and pick != right) point=top {
+      say "Mira and Dr Osei were on the same cliff in the same hour. Could the sky there be clear and cloudy at once?"
+    }
+  }
+  hint "Could both sentences be true on the same night?"
+  hint "{pick(k, \"Is an arm held out a measurement or a way of picturing it?\", \"Was the comet there before nine o'clock?\", \"Can it be cold without Mira feeling it?\", \"Is there any way both skies could be true at the same place and time?\")}"
+}

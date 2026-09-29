@@ -1,4 +1,4 @@
-lesson physics-a-loop-with-a-break v=1 format=teach grade=3 unit=4 subject=physics levels=[easy, medium, hard] {
+lesson physics-a-loop-with-a-break v=1 format=teach grade=3 unit=3 subject=physics levels=[easy, medium, hard] {
   title "A loop with a break in it"
   goal "Spot the circuit that will not light, and say what is wrong with it."
 

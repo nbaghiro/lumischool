@@ -1,0 +1,34 @@
+# Three-star: a turn that is a multiple of the polygon's turn still brings the turtle home after the
+# same number of sides, but goes round more than once and draws a star. The smallest such turn and
+# the number of times round are asked; 5 sides give 144 and 2, 9 sides give 80 and 2.
+item coding.poly-star v=1 stars=3 skills=[coding.drawing, angles.turns, reasoning.constraints] {
+  title "A star from the same repeat"
+  difficulty k
+  let k=0..1
+  let n={pick(k, 5, 9)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x18 {
+    program p code=["repeat {n}", "  forward 4", "  turn right ?"] at=canvas(1, 0)
+    observatory obs open=1 right-of=p gap=1
+    text ask "Turning {360 / n} draws a shape with {n} sides. Find the smallest bigger turn that still brings the turtle back to the start after {n} sides. How many times round does it turn in all?" width=34 below=p gap=1
+    text tt "turn" below=ask gap=1
+    number-input turn right-of=tt gap=1
+    text tr "times round" right-of=turn gap=2
+    number-input times right-of=tr gap=1
+  }
+
+  answer turn=(2 * 360 / n) times=2
+  feedback {
+    when (turn == 180 - 360 / n) point=p {
+      say "That is the angle inside the corner of the shape. After {n} of those turns the turtle is not facing the way it started."
+    }
+  }
+  hint "After {n} turns the turtle must have turned all the way round a whole number of times."
+  hint "Once round is 360 degrees. What if it went round twice?"
+}

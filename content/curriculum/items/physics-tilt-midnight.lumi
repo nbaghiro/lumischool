@@ -1,0 +1,32 @@
+# The midnight sun's height: at midnight the place has turned to the far side of its circle, and the
+# sun stands the latitude plus the tilt less 90 degrees above the horizon.
+item physics.tilt-midnight v=1 skills=[physics.sky, angles.degrees, decimals.add] {
+  title "The sun at midnight"
+  difficulty (if lat == 75 or lat == 80 then 0 else 1)
+  let lat={70, 75, 80, 85}
+  level easy {
+    let lat={75, 80}
+  }
+  level hard {
+    let lat={70, 85}
+  }
+
+  scene 26x27 {
+    tilt e places=[lat] season=0 circles=1 names=1 at=canvas(1, 0)
+    text ask "On 21 June the Earth's axis leans 23.5° towards the sun. How many degrees above the horizon is the sun at place A at midnight?" narrate width=24 below=e gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals(lat - 66.5, 1)
+  check physics.sky of=e answer=midnight(a)
+  feedback {
+    when (answer == lat + 23.5) point=e {
+      say "That is the latitude and the lean added. The sun's height is how far that goes past 90°."
+    }
+    when (answer == 90 - lat + 23.5) point=e {
+      say "That is the sun at noon, when A faces the sun. At midnight A is on the far side of its circle."
+    }
+  }
+  hint "At the Arctic circle, 66.5° N, the midnight sun just touches the horizon. How far north of that is A?"
+  hint "Each degree further north lifts the midnight sun one degree higher."
+}

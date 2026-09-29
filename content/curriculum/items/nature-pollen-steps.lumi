@@ -1,0 +1,27 @@
+# The journey of pollen as four muddled cards, numbered in order. Each shuffle puts a different card
+# first, and none is already in order, so the order has to come from the idea rather than the page.
+item nature.pollen-steps v=1 skills=[nature.pollination, reasoning.order] {
+  title "The journey of a grain of pollen"
+  let p=0..3
+  let a={pick(p, 2, 1, 3, 0)}
+  let b={pick(p, 0, 3, 1, 2)}
+  let c={pick(p, 3, 0, 2, 1)}
+  let d={pick(p, 1, 2, 0, 3)}
+  let wa={pick(a, "pollen is made in an anther", "pollen sticks to a bee's fur", "pollen rubs onto a stigma of the same kind", "a seed starts in that ovary")}
+  let wb={pick(b, "pollen is made in an anther", "pollen sticks to a bee's fur", "pollen rubs onto a stigma of the same kind", "a seed starts in that ovary")}
+  let wc={pick(c, "pollen is made in an anther", "pollen sticks to a bee's fur", "pollen rubs onto a stigma of the same kind", "a seed starts in that ovary")}
+  let wd={pick(d, "pollen is made in an anther", "pollen sticks to a bee's fur", "pollen rubs onto a stigma of the same kind", "a seed starts in that ovary")}
+
+  scene 34x31 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      parts fig of=flower
+      bumblebee bee facing=-1
+    }
+    text ask "Ben wrote the journey of one grain of pollen on four cards, then dropped them. Number the cards 1 to 4 in order." narrate width=32 below=pics gap=1
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}"] blanks=[q, r, t, u] below=ask gap=1
+  }
+
+  answer q=(a + 1) r=(b + 1) t=(c + 1) u=(d + 1)
+  hint "Follow one grain. Which card could only happen before any of the others?"
+  hint "Find the flower part named on each card in the drawing. Which flower is the grain in at each step?"
+}

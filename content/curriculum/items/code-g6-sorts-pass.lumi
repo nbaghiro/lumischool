@@ -1,0 +1,30 @@
+# The way in to comparing sorts: one pass of the bubble sort on the cards, counting the swaps and
+# seeing that the longest plank has moved all the way to the end.
+item coding.sorts-pass v=1 skills=[coding.algorithms, coding.tracing] {
+  title "One pass along the planks"
+  difficulty (s / 2 + (if s >= 2 then 0.5 else 0))
+  let s=0..3
+  let a={pick(s, 3, 5, 6, 7)} b={pick(s, 1, 2, 7, 3)} c={pick(s, 4, 6, 2, 8)} d={pick(s, 2, 3, 4, 1)} e={pick(s, 6, 1, 5, 4)}
+  level easy {
+    let s={0, 1}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 36x21 {
+    sortcards sc cards=[a, b, c, d, e] compare=1 swap=false at=canvas(1, 0)
+    ropebridge rb planks=8 gaps=3 right-of=sc gap=2
+    text ask "The bridge builders sort planks by length, looking at two side by side from the left and swapping them if the longer is first. In one pass along the row, how many swaps are made?" width=30 at=canvas(1, 14)
+    number-input answer right-of=ask gap=0
+  }
+
+  check coding.runs of=sc answer=swaps
+  feedback {
+    when (answer == 4) point=sc {
+      say "Only a pair with the longer plank first is swapped. Look at each pair as it is after the swap before it."
+    }
+  }
+  hint "Start with the first two cards. Swap them only if the first is longer."
+  hint "Move one place right, and look at the pair as the row is now."
+}

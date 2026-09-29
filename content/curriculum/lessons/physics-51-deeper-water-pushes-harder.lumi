@@ -1,0 +1,65 @@
+lesson physics-deeper-water-pushes-harder v=1 format=teach grade=5 unit=2 subject=physics levels=[easy, medium, hard] {
+  title "Deeper water pushes harder"
+  goal "Use the depth of water to work out how hard it pushes, and explain why a lock gate is built strongest at the bottom."
+
+  look {
+    scene 27x32 {
+      column all at=canvas(1, 0) space=1 align=start {
+        spouts t depth=40 holes=[10, 20, 30] show=1
+        canallock l level=0.5 boat=1
+      }
+    }
+    say """
+      Water pushes on everything it touches, and the deeper it is, the harder it pushes. Make three
+      holes in a tank and the jet from the lowest hole comes out fastest, because it has the most
+      water above it; with the tank up on its stand, as here, that jet also lands furthest. Twice as
+      deep pushes twice as hard. In the canal, water pushes 10 kilonewtons (10 kN) on every square
+      metre for each metre of depth, so a lock's gates are built thickest at the bottom. How much
+      water there is does not matter, only how deep it is.
+      """
+  }
+  do {
+    practice physics.spouts-furthest count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.lock-gates count=1 seed=1
+    level easy {
+      worked physics.pressure-depth q=0 d=4 level=medium
+    }
+    practice physics.pressure-depth count=2 seed=2 easy-seed=5 hard-seed=4
+    practice physics.spouts-depth count=2 seed=1 easy-seed=1 hard-seed=3 hard-count=1
+    practice physics.spouts-furthest count=1 seed=5 easy-seed=9 hard-seed=7
+    level hard {
+      show physics.spouts-depth v=2
+      show physics.pressure-depth q=1 d=2.5
+    }
+  }
+  story {
+    show physics.lock-difference u=3.5 c=1.5 easy-u=3 easy-c=2 hard-u=4 hard-c=1
+  }
+  try stars=2 {
+    show physics.spouts-same-depth v=0 easy-v=1 hard-v=2
+  }
+  try stars=3 {
+    show physics.lock-fill-limit v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "The deeper the water, the harder it pushes: 10 kN on each square metre for every metre of depth."
+  }
+
+  grown-ups """
+    The common wrong idea is that more water pushes harder, so a wide tank or a big lake would push
+    harder than a narrow one. It is the depth alone that counts, and the two-star question puts a
+    narrow tank beside a wide one to test exactly that. Listen for "more water" in the child's
+    reasons and ask "how deep is the hole?" instead. The numbers are real: at the bottom of a lock
+    3 m deep the water pushes 30 kN, about the weight of three tonnes, on every square metre of the
+    gate. If the kilonewtons get in the way, go back to the tank and the jets, which show the same
+    rule without numbers, then stay here another day. Off the page, pierce three holes one above the
+    other in a plastic bottle, fill it in the sink, and watch which jet goes furthest. The three-star
+    question is worked backwards from a limit and then forwards at a rate.
+    """
+  level easy {
+    grown-ups "At this level the deepest hole is lettered C, a worked example turns a depth into a push, the depths are whole metres going to a push, the lock's two sides are a metre apart, and the three-star lock starts at 1 m and fills 50 cm a minute."
+  }
+  level hard {
+    grown-ups "At this level the holes are lettered in a shuffled order, the pushes are worked back to depths, a second depth question is asked, the lock's sides are three metres apart, and the three-star lock starts at 1.2 m and fills 20 cm a minute."
+  }
+}

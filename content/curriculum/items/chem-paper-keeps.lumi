@@ -1,0 +1,23 @@
+# Filter paper keeps back what has not dissolved and lets the solution through, worked out by
+# chem.separate from the mixture drawn. Three things at once, two of them dissolved.
+item chem.paper-keeps v=1 skills=[chemistry.separating, chemistry.mixtures] {
+  title "What stays on the paper?"
+  let k=0..3
+  let a={pick(k, "sand", "flour", "salt", "sugar")}
+  let b={pick(k, "salt", "sugar", "iron", "flour")}
+  let c={pick(k, "sugar", "salt", "sugar", "salt")}
+  let names={pick(k, "sand, salt and sugar", "flour, sugar and salt", "salt, iron filings and sugar", "sugar, flour and salt")}
+  let o1={pick(k, "sand", "flour", "salt", "sugar")}
+  let o2={pick(k, "salt", "sugar", "iron filings", "flour")}
+  let o3={pick(k, "sugar", "salt", "sugar", "salt")}
+
+  scene 35x18 {
+    mixture m things=[a, b, c] water=1 names=1 at=canvas(1, 0)
+    text ask "Leo stirs {names} into water from the canal and pours it through filter paper. What stays on the paper?" narrate width=24 right-of=m gap=1
+    choice pick options=[o1, o2, o3] stack=column below=ask gap=1
+  }
+
+  check chem.separate of=m pick=residue
+  hint "Which of the three cannot be seen in the water, because it dissolved?"
+  hint "What can pass through the tiny holes in filter paper: something dissolved, or grains?"
+}

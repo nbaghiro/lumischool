@@ -1,0 +1,34 @@
+# Three-star: the total that comes up most often with two dice, and in how many of the ways. No
+# method is on the page; a table of every pair finds it. With 1 to 6 it is 7 in 6 of 36 ways, with 1
+# to 4 it is 5 in 4 of 16, and with 1 to 5 it is 6 in 5 of 25.
+item coding.rand-likeliest v=1 stars=3 skills=[coding.random, chance.likelihood, reasoning.all-the-ways] {
+  title "The total that comes up most"
+  difficulty pick(k, 1, 0, 2)
+  let k=0..2
+  let hi={pick(k, 6, 4, 5)} t={pick(k, 7, 5, 6)}
+  level easy {
+    let k={1}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x16 {
+    program p code=["set a to random 1 to {hi}", "set b to random 1 to {hi}", "set total to a + b"] at=canvas(1, 0)
+    observatory obs open=0 right-of=p gap=2
+    text ask "Which total comes up most often? In how many of the {hi * hi} ways does it come up?" width=34 below=p gap=1
+    text tt "total" below=ask gap=1
+    number-input total right-of=tt gap=1
+    text tw "ways" right-of=total gap=2
+    number-input ways right-of=tw gap=1
+  }
+
+  check coding.runs of=p total="likeliest(value(total))" ways="ways(value(total)={t})"
+  feedback {
+    when (total == 2 * hi) point=p {
+      say "The biggest total can happen only one way, both at {hi}. Which total has the most pairs?"
+    }
+  }
+  hint "Make a table: a along the top, b down the side, and the total in each square."
+  hint "Which total fills the most squares?"
+}

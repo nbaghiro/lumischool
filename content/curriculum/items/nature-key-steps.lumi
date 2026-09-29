@@ -1,0 +1,40 @@
+# The way in: the observatory's key to six minibeasts, and how many questions it asks before it names
+# one. The snail is named at the first question and the butterfly and the bee only at the last, so the
+# count grows with how far down the key the child has to follow.
+item nature.key-steps v=1 skills=[nature.keys] {
+  title "How many questions?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let who={pick(k, "snail", "spider", "ant", "ladybird", "butterfly", "bee")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 34x29 {
+    minibeasts row kinds=["snail", "spider", "ant", "ladybird", "butterfly", "bee"] legs=false at=canvas(1, 1)
+    column t below=row gap=1 space=0 align=start {
+      text t1 "1  Has it got legs?  Yes: go to 2.  No: snail." width=32
+      text t2 "2  Has it got eight legs?  Yes: spider.  No: go to 3." width=32
+      text t3 "3  Has it got wings?  Yes: go to 4.  No: ant." width=32
+      text t4 "4  Has it got hard, spotted wing cases?  Yes: ladybird.  No: go to 5." width=32
+      text t5 "5  Has it got big, patterned wings?  Yes: butterfly.  No: bee." width=32
+    }
+    text ask "Ada uses the key to name a {who}. She starts at question 1 and follows the answers. How many questions does she answer before the key names it?" narrate width=32 below=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 1, 2, 3, 4, 5, 5)
+  feedback {
+    when (answer == 6) point=t {
+      say "There are only five questions in the key, and the last one names two creatures. Count the ones she answers."
+    }
+    when (k >= 2 and answer == pick(k, 0, 0, 1, 1, 1, 1)) point=t {
+      say "Question 1 does not name it: it sends her on. Follow where each answer sends her."
+    }
+  }
+  hint "Start at question 1. Does the {who} have legs? Where does that answer send you?"
+  hint "Keep a finger on each question she answers, until the key gives a name instead of a number."
+}

@@ -1,0 +1,35 @@
+# The bubble sort as text: the question on line 6 is asked three times in each of three passes
+# whatever the order, and the swap on lines 7 to 9 runs once for each pair out of order.
+item coding.sorts-bubble v=1 skills=[coding.algorithms, coding.text, coding.lists] {
+  title "Counting the bubble sort's steps"
+  difficulty (s / 2)
+  let s=0..3
+  let a={pick(s, 2, 3, 4, 4)} b={pick(s, 1, 1, 2, 3)} c={pick(s, 3, 4, 3, 2)} d={pick(s, 4, 2, 1, 1)}
+  level easy {
+    let s={0, 1}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 36x29 {
+    program p code=["set logs to list {a}, {b}, {c}, {d}", "repeat 3", "  set i to 1", "  repeat 3", "    set j to i + 1", "    if item i of logs is more than item j of logs", "      set t to item i of logs", "      replace item i of logs with item j of logs", "      replace item j of logs with t", "    add 1 to i"] text=true at=canvas(0, 0)
+    text ask "The planks for the rope bridge are in the list logs. How many times is the question on line 6 asked? How many times does line 7 run?" width=24 at=canvas(0, 23)
+    text t1 "line 6" right-of=ask gap=1
+    number-input asks right-of=t1 gap=1
+    text t2 "line 7" below=t1 gap=1
+    number-input swaps right-of=t2 gap=1
+  }
+
+  check coding.runs of=p asks="ran(6)" swaps="ran(7)"
+  feedback {
+    when (asks == 3) point=p {
+      say "Line 6 is inside two repeats of 3, so it is asked 3 times in each of 3 passes."
+    }
+    when (swaps == asks) point=p {
+      say "Line 7 runs only when the pair is the wrong way round, the longer first."
+    }
+  }
+  hint "Which repeats hold the question? How many times does each go round?"
+  hint "For line 7, do the passes by hand on the list and count the swaps."
+}

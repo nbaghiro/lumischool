@@ -1,0 +1,65 @@
+# A speech as writing for listeners: one clear ask, reasons with evidence, the other side answered,
+# a question or a group of three, and an ending that says what to do.
+lesson writing-a-speech-that-persuades v=1 format=teach grade=6 unit=4 subject=writing levels=[easy, medium, hard] {
+  title "A speech that persuades"
+  goal "Write a speech that makes one clear ask, backs it with evidence, answers an objection and ends by saying what to do."
+
+  look {
+    scene 34x25 {
+      row pics at=canvas(1, 0) space=2 align=end {
+        ropebridge br planks=10 gaps=3
+        person tam pose=point age=child hair=curly colour=black top=tang
+      }
+      passage p title="Tam's speech" text="Good evening, everyone. I am here to ask you for one thing: help us mend the rope bridge before winter. Twenty children cross it every morning to reach the school. Three planks have already fallen into the gorge. Some of you say it costs too much, but a new path would cost twice as much. Would you let your own child cross it now? Mend it this month, mend it together, and mend it for good." width=33 numbers=false below=pics gap=1
+    }
+    say """
+      The rope bridge over the gorge is losing its planks, and Tam is speaking at the village
+      meeting. A speech is heard once, so it says what it wants early and again at the end. Tam's
+      reasons have evidence that anyone could check: twenty children, three planks. Tam names the
+      other side's worry and answers it with a reason. A question makes each listener answer in
+      their head, and a group of three makes the last line easy to remember.
+      """
+  }
+  do {
+    level easy {
+      worked writing.speech-ask k=2 r=2 level=medium
+    }
+    practice writing.speech-ask count=1 seed=2
+    practice writing.speech-evidence count=2 seed=3
+    practice writing.speech-device count=1 seed=4
+    practice writing.speech-parts-order count=1 seed=5 hard-count=2
+    practice writing.speech-counter count=2 seed=6
+    practice writing.speech-register count=1 seed=7
+  }
+  try stars=2 {
+    show writing.speech-ending-reason k=0 r=1 hard-k=1
+  }
+  try stars=3 {
+    show writing.write-speech k=0 hard-k=1
+  }
+  remember {
+    say "A speech that persuades says what it wants early, proves it with evidence, answers the other side and ends by saying what to do."
+  }
+
+  grown-ups """
+    A speech is writing for listeners, who hear it once and cannot read back, so it states its
+    ask early and repeats it at the end, gives reasons with evidence that can be checked, and
+    answers the other side rather than ignoring it. The look is Tam's speech to the village
+    meeting about the rope bridge over the gorge. The way in finds the ask among a fact and a
+    greeting, and the core picks the reason with evidence, names how three lines work on the
+    listeners, puts a speech's parts in order, chooses the reply that answers an objection, and
+    matches an opening to the people in the room. The wrong idea to watch for is persuading by
+    feeling alone (everyone loves it, surely you agree); ask how a doubter at the meeting could
+    check it. If the child is stuck, argue the other side yourself and let them answer you aloud
+    before they write. Off the page, watch a short speech together, a head teacher's assembly or
+    a campaign clip, and count the reasons and the questions. The two-star question compares two
+    endings, and the three-star question is a speech of the child's own, read aloud to you, which
+    you mark.
+    """
+  level easy {
+    grown-ups "At this level finding the ask is worked once in the teacher's pen with the riverbank's, the ask to find is the bridge's, the reasons with evidence are the plainer ones, the lines to match are the bridge's, the speech to order is the bridge's, the objections are cost and that the bridge is fine, the openings are for the village and the council, the two-star ending that fizzles is the short one, and the speech has two reasons."
+  }
+  level hard {
+    grown-ups "At this level the asks include the riverbank's, the reasons include one that only sounds like evidence, the lines to match are the subtler ones, the speech to order is the water wheel's and is ordered twice, the objections include the path round the gorge, the openings include one for the youngest children, the two-star ending that fizzles is the long one, and the speech has three reasons and is timed."
+  }
+}

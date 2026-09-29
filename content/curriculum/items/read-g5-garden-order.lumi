@@ -1,0 +1,20 @@
+# Four events of a sitting put back in the order the book tells them, shuffled so no two neighbours
+# on the page are neighbours in the story.
+item reading.garden-order v=1 skills=[reading.sequencing, reading.whole-book] {
+  title "In the order it happened"
+  let k=0..1
+
+  scene 35x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        text ask "These happen in chapters {pick(k, \"6 to 8\", \"16 to 18\")}. Number them in the order the book tells them." width=22
+        robin r post=1 facing=-1
+      }
+      sequence s items=[pick(k, "The robin shows Mary the key.", "Mary looks at Colin’s back."), pick(k, "The wind lifts the ivy off a door.", "Mary quarrels with Colin."), pick(k, "Mary explores the shut-up rooms.", "Dickon says Colin must go out."), pick(k, "Martha brings a skipping rope.", "Mary screams at Colin to stop.")] blanks=[p1, p2, p3, p4]
+    }
+  }
+
+  answer p1=pick(k, 2, 3) p2=pick(k, 4, 1) p3=pick(k, 1, 4) p4=pick(k, 3, 2)
+  hint "Which one starts these chapters? Which one ends them?"
+  hint "Put the two ends first, then ask which of the middle two leads to the other."
+}

@@ -1,0 +1,27 @@
+# The unknown moved: the empty boat's spill is known, blocks of 50 g are loaded, and the new spill is
+# the boat and its load together.
+item physics.boat-spill-load v=1 skills=[physics.floating, physics.weight, reasoning.two-steps] {
+  title "A loaded boat spills more"
+  difficulty k
+  let m={150, 200, 250} k=1..4
+
+  scene 31x17 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      boat b cargo=k side=5 sits=1
+      text ask "Empty, Tom's toy boat spilled {m} ml from the full can. He loads {k} blocks of 50 g and floats it in the full can again. How many millilitres spill now?" narrate width=13
+    }
+    number-input answer below=kit gap=1
+  }
+
+  answer (m + 50 * k)
+  feedback {
+    when (answer == m) point=b {
+      say "The blocks are carried too, so the boat and its load push aside more water together."
+    }
+    when (answer == 50 * k) point=b {
+      say "The boat itself still floats and pushes aside its own weight as well as the blocks'."
+    }
+  }
+  hint "How many grams do the boat and its blocks weigh together?"
+  hint "A floating boat pushes aside its own weight of water: one millilitre for every gram."
+}

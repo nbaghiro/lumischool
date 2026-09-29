@@ -1,0 +1,35 @@
+# Finishing a bar of six-eight: the notes so far, counted in quavers, and the one note that makes six.
+# The dotted crotchet is the note a child who counts in crotchets leaves out.
+item music.six8-fill-bar v=1 skills=[music.six-eight, music.note-values] {
+  title "Fill the bar"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..4
+  let v1={pick(k, 1.5, 1, 0.5, 1, 0.5)}
+  let v2={pick(k, 0.5, 0.5, 0.5, 0.5, 1)}
+  let v3={pick(k, 0.5, 0.5, 0.5, 1, 0.5)}
+  let right={pick(k, "a quaver", "a crotchet", "a dotted crotchet", "a quaver", "a crotchet")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=2..4
+  }
+
+  scene 34x34 {
+    notes bar clef=treble notes=[C5, B4, A4] values=[v1, v2, v3] meter=6 quavers=true at=canvas(1, 1)
+    text ask "A bar of six-eight for the sledge team's song, with its last note missing. Which one note fills the bar?" narrate width=32 below=bar gap=1
+    choice pick options=["a quaver", "a crotchet", "a dotted crotchet", "a dotted minim"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "a dotted minim") point=bar {
+      say "A dotted minim is six quavers, a whole bar on its own. Count what is there already."
+    }
+    when (pick != right and pick != "a dotted minim") point=bar {
+      say "Count the bar in quavers: a quaver is 1, a crotchet 2, a dotted crotchet 3. How many more make 6?"
+    }
+  }
+  hint "How many quavers are in the bar already?"
+  hint "Six take away that many. Which note lasts that long?"
+}

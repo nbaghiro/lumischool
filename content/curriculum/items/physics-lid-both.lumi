@@ -1,0 +1,26 @@
+# Two stars: warm the lid and the jar together. Steel grows by 12 millionths of its width for each
+# degree and glass by 9, so the lid grows more than the rim and comes looser. t is the water.
+item physics.lid-both v=1 stars=2 skills=[physics.heat, physics.materials, reasoning.explain] {
+  title "Lid and jar warmed together"
+  let t={40, 60, 80}
+
+  scene 34x38 {
+    expansion e mode=3 lid=t jar=t show=0 at=canvas(1, 0)
+    text ask "The whole jar stands in hot water, so the steel lid and the glass jar both reach {t} °C. For each degree, steel grows by 12 millionths of its width and glass by 9 millionths. Is the lid looser than when it was screwed on at 20 °C, and why?" narrate width=32 below=e gap=1
+    choice pick options=["Yes", "No"] stack=row below=ask gap=1
+    choice why options=["Steel grows more than glass", "Both grow, so the fit is the same", "Glass grows more than steel"] stack=column below=pick gap=1
+  }
+
+  answer why="Steel grows more than glass"
+  check physics.forces of=e pick=loosens
+  feedback {
+    when (why == "Both grow, so the fit is the same") point=e {
+      say "Both grow, but by the same amount? Compare 12 millionths with 9 millionths for each degree."
+    }
+    when (why == "Glass grows more than steel") point=e {
+      say "Read the two numbers again: which is bigger, the steel's or the glass's?"
+    }
+  }
+  hint "Both warm by the same number of degrees. Which grows more for each degree?"
+  hint "If the lid grows more than the rim it sits on, is its grip looser or tighter?"
+}

@@ -1,0 +1,21 @@
+# Predict the Plough's place: the sky turns anticlockwise round the pole star, 15 degrees an hour, so
+# three hours after midnight it has turned another 45 degrees. s is the sky at 9 pm.
+item physics.plough-later v=1 skills=[physics.sky, reasoning.predict] {
+  title "Where will the Plough be?"
+  let s={1, 7, 13, 19}
+
+  scene 34x28 {
+    starmap m sky=s clock=21 looks=3 every=3 show=0 pointers=0 names=0 turn=1 at=canvas(1, 0)
+    text ask "Kit drew the Plough at 9 pm and at midnight. The sky turns the way the arrow shows. Where will the Plough stand at 3 am, compared with the pole star?" narrate width=28 below=m gap=1
+    choice pick options=["Above", "To the right", "Below", "To the left"] stack=column right-of=m gap=1
+  }
+
+  check physics.sky of=m pick=place(2)
+  feedback {
+    when (pick != "Above" and s == 7 or pick != "Below" and s == 19) point=m {
+      say "Three more hours is another turn as big as the one from 9 pm to midnight, the same way round."
+    }
+  }
+  hint "How far did the Plough turn from 9 pm to midnight, and which way?"
+  hint "From midnight to 3 am is three hours again. Turn it that far once more."
+}

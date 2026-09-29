@@ -1,0 +1,32 @@
+# The branching tree: each tree that is not the smallest uses itself twice, so the uses double at every
+# level, 1, 2, 4, 8, and the lines drawn are those added together.
+item coding.self-calls v=1 skills=[coding.recursion, coding.procedures, reasoning.patterns] {
+  title "How many times does tree run?"
+  difficulty (pick(k, 0, 1, 2) + q / 2)
+  let k=0..2 q=0..1
+  let s={pick(k, 2, 4, 8)}
+  level easy {
+    let k={0, 1} q={0}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x24 {
+    program p code=["define tree n", "  forward n", "  if n is more than 1", "    turn left", "    tree n / 2", "    turn around", "    tree n / 2", "    turn left", "  back n", "tree {s}"] text=true at=canvas(0, 0)
+    text ask "The turtle draws a branching tree by the waterfall. {if q == 0 then \"How many times does line 2 run, drawing one line each time?\" else \"How many times does line 4 run?\"}" width=15 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="{if q == 0 then \"ran(2)\" else \"ran(4)\"}"
+  feedback {
+    when (q == 0 and answer == s) point=p {
+      say "That counts only the smallest branches. Every use of tree runs line 2, the big ones too."
+    }
+    when (q == 1 and answer == 2 * s - 1) point=p {
+      say "Line 4 is inside the if, so it runs only for the trees bigger than the smallest."
+    }
+  }
+  hint "Each tree bigger than the smallest uses tree twice more, with half its n. What does each of those use?"
+  hint "Write how many trees there are of each size, and add them."
+}

@@ -1,0 +1,31 @@
+# Multiplying by a number less than one makes the answer smaller: the second reasoning question in
+# the core, decided without working anything out.
+item decimal.more-or-less v=1 skills=[decimals.multiply, reasoning.predict] {
+  title "More or less"
+  difficulty ((if q > 1 then 0 else 1) + (if q > 0.9 and q < 1.1 then 1 else 0))
+  let n={36, 48, 125, 64} q={0.8, 0.95, 1.05, 1.5, 0.5}
+  level easy {
+    let q={0.5, 1.5}
+  }
+  level hard {
+    let q={0.95, 1.05}
+  }
+
+  scene 29x12 {
+    text ask "Without working it out, is the answer more than {n}, less than {n}, or exactly {n}?" narrate width=28 at=canvas(1, 1)
+    equation sum "{n} × {q}" below=ask gap=1
+    choice pick options=["more", "less", "the same"] below=sum gap=1
+  }
+
+  answer pick=(if q > 1 then "more" else "less")
+  feedback {
+    when (q < 1 and pick == "more") point=sum {
+      say "Multiplying always makes bigger only when the number is more than one. {q} is less than one whole."
+    }
+    when (pick == "the same") point=sum {
+      say "Only times one leaves {n} as it is. Is {q} more or less than one?"
+    }
+  }
+  hint "Where is {q} on a number line: before 1 or after it?"
+  hint "{n} × 1 is {n}. Is {n} × {q} a whole lot of {n} and a bit, or only part of one lot?"
+}

@@ -1,0 +1,34 @@
+# The purpose is given; the child finds the words that do the persuading or the instructing. The
+# other two options are true words from the same text that carry a fact instead.
+item reading.purpose-words v=1 skills=[reading.purpose, reading.evidence] {
+  title "Which words show it?"
+  difficulty pick(k, 0, 0, 1, 2)
+  let k=0..3
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+  let right={pick(k, "the most amazing night", "First, point the tube", "before they are all gone", "Face north")}
+
+  scene 35x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p text="{pick(k, \"Come to Open Night at the Star Cliffs Observatory and see the rings of Saturn with your own eyes. Tickets cost only $3, and children under five go free. Do not miss the most amazing night of the year.\", \"How to find the moon with the small telescope. First, point the tube at the moon. Next, look through the little finder and move the tube until the moon is in the middle. Then look through the eyepiece and turn the focus wheel slowly until the edges are sharp.\", \"Comet Arlen passes the star cliffs on 3 March, and it will not be back for 76 years. Book your seat at the great telescope today, before they are all gone.\", \"To watch the northern lights, wait for a clear winter night. Walk out past the observatory to the cliff edge, where no lamps shine. Face north and give your eyes ten minutes to get used to the dark.\")}" width=34 numbers=false
+      text ask "The writer wants {pick(k, \"to persuade you to come\", \"to tell you how to do it\", \"to persuade you to book\", \"to tell you how to do it\")}. Which words do that?" width=34
+      row bottom space=2 align=centre {
+        choice pick options=[pick(k, "Star Cliffs Observatory", "the small telescope", "on 3 March", "no lamps shine"), pick(k, "the most amazing night", "the edges are sharp", "76 years", "Face north"), pick(k, "children under five", "First, point the tube", "before they are all gone", "the observatory")] stack=column
+        telescope scope tilt=40
+      }
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "Those words are true, but they only tell you something. Look for the words that {pick(k, \"push you to come\", \"tell you what to do, a command built on a verb\", \"push you to book\", \"tell you what to do, a command built on a verb\")}."
+    }
+  }
+  hint "Read each choice aloud. Does it tell you a fact, or does it try to get you to do something?"
+  hint "{pick(k, \"Which words would sound odd in a report?\", \"Imagine you have the telescope in front of you. After reading each choice, would you know what to do?\", \"Which words would sound odd in a report?\", \"Imagine you are at the cliff edge. After reading each choice, would you know what to do?\")}"
+}

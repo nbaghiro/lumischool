@@ -1,0 +1,37 @@
+# Two scripts drawn as a flowchart, one column each, with the receiving script's step rubbed off. The
+# number said at the end tells which step it was.
+item coding.msg-flow v=1 skills=[coding.events, coding.messages, coding.flowcharts] {
+  title "The missing step in the second column"
+  difficulty k
+  let k=0..2
+  let a={pick(k, 3, 6, 5)} b={pick(k, 4, 2, 3)}
+  let end={pick(k, 7, 12, 4)}
+  let right={pick(k, "add 4 to gold", "double gold", "take 3 from gold")}
+  let o1={pick(k, "double gold", "add 2 to gold", "add 3 to gold")}
+  let o2={pick(k, "take 4 from gold", "take 2 from gold", "double gold")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x34 {
+    flowchart f code=["when the flag is tapped", "set gold to {a}", "broadcast count", pick(k, "say gold", "say gold", "double gold"), "when I receive count", right] blank=6 at=canvas(0, 0)
+    text ask "The treasurer in the old city's library keeps count of the gold with two scripts. At the end gold is {end}. What is in the empty shape?" width=34 below=f gap=1
+    choice pick options=[pick(k, right, o1, o2), pick(k, o1, o2, right), pick(k, o2, right, o1)] stack=column below=ask gap=1
+  }
+
+  check coding.runs of=f pick=blank
+  answer pick=right
+  feedback {
+    when (pick == o1) point=f {
+      say "Start gold at {a} and try it. Does it end at {end}?"
+    }
+    when (pick == o2) point=f {
+      say "Start gold at {a} and try it. Does it end at {end}?"
+    }
+  }
+  hint "Which column starts when the message count is sent? When does it run?"
+  hint "Try each step in the empty shape, starting from gold at {a}{if k == 2 then \", and remember what the first column does after the broadcast\" else \"\"}."
+}

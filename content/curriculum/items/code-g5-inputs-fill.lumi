@@ -1,0 +1,37 @@
+# The unknown moves to the call: the pale rectangle says which numbers go after box, and the order
+# says which is the width.
+item coding.inputs-fill v=1 skills=[coding.procedures, coding.drawing, reasoning.work-backwards] {
+  title "Which numbers go in?"
+  difficulty (w + h + (if f == 1 then 2 else 0))
+  let w=2..4 h=1..4 f=0..1
+  where (w != h and w - f != h)
+  level easy {
+    let f={0}
+    where (w + h <= 6)
+  }
+  level hard {
+    let f={1}
+  }
+
+  scene 36x24 {
+    turtle t cols=(w + 2) rows=(h + 2) col=2 row=(h + 2) face=right moves=[] target=["repeat 2", "  forward {w}", "  turn left", "  forward {h}", "  turn left"] at=canvas(0, 0)
+    program p code=["define box width height", "  repeat 2", "    forward {if f == 0 then \"width\" else \"width + 1\"}", "    turn left", "    forward height", "    turn left", "box ? ?"] right-of=t gap=1
+    text ask "The turtle starts on the ring, facing right, and should draw the pale shape. Which numbers go after box?" width=34 at=canvas(0, 17)
+    text tw "first" below=ask gap=1
+    number-input first right-of=tw gap=1
+    text th "second" right-of=first gap=2
+    number-input second right-of=th gap=1
+  }
+
+  answer first=(w - f) second=h
+  feedback {
+    when (first == h and second == w - f) point=p {
+      say "The first number goes to width, which the turtle draws first, along the bottom."
+    }
+    when (f == 1 and first == w) point=p {
+      say "The block goes forward width + 1, so width is one less than the bottom side."
+    }
+  }
+  hint "Which side of the pale shape does the turtle draw first, and which name does the block use for it?"
+  hint "{if f == 0 then \"Which name gets the first number after box, and which the second?\" else \"The block does not go forward width. What does it go forward, and what must width be for the bottom to come out right?\"}"
+}

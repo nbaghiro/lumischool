@@ -1,0 +1,30 @@
+# A straight-line graph through zero, read and then continued past its end, in both directions.
+item proportion.snow-water v=1 skills=[proportion.direct, proportion.graphs] {
+  title "Snow into water"
+  difficulty ((if ask == "buckets" then 1 else 0) + w / 3)
+  let w={2, 3, 4} n={6, 7, 9} ask={"litres", "buckets"}
+  level easy {
+    let ask={"litres"} w={2, 3}
+  }
+  level hard {
+    let ask={"buckets"} w={3, 4}
+  }
+
+  scene 35x15 {
+    linegraph g labels=["0", "1", "2", "3", "4"] values=[0, w, 2 * w, 3 * w, 4 * w] max=16 per=2 step=4 color=sky at=canvas(1, 0)
+    text ask "At the hut, buckets of snow are melted for water. The graph shows litres of water against buckets of snow. {if ask == \"litres\" then \"How many litres of water do\" else \"How many buckets of snow are needed for\"} {if ask == \"litres\" then n else n * w} {if ask == \"litres\" then \"buckets make?\" else \"litres?\"}" narrate width=13 right-of=g gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (if ask == "litres" then n * w else n)
+  feedback {
+    when (ask == "litres" and answer == 4 * w + n - 4) point=g {
+      say "Each bucket adds {w} litres. How many litres does one bucket make?"
+    }
+    when (ask == "buckets" and answer == n * w * w) point=g {
+      say "That multiplied. How many buckets make {w} litres, and how many lots of {w} litres are needed?"
+    }
+  }
+  hint "How many litres does one bucket of snow make? Read it off the graph."
+  hint "The line keeps going up by the same amount for every bucket."
+}

@@ -1,0 +1,31 @@
+# The way in to random numbers: a random number from 1 to 6 could be any of those and nothing else.
+# The question asks what could happen, which every run agrees on, never what did.
+item coding.rand-could v=1 skills=[coding.random, chance.likelihood] {
+  title "What could it be?"
+  difficulty k
+  let k=0..2
+  let lo={pick(k, 1, 2, 0)} hi={pick(k, 6, 5, 9)}
+  let o1={pick(k, 0, 1, 10)} o2={pick(k, 4, 6, 7)} o3={pick(k, 7, 3, 12)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x13 {
+    program p code=["set roll to random {lo} to {hi}", "say roll"] at=canvas(1, 0)
+    die d face=4 right-of=p gap=2
+    text ask "On a cloudy night at the observatory the astronomers play a game. Which of these could the program say?" width=20 below=p gap=1
+    choice pick options=[o1, o2, o3] right-of=ask gap=1
+  }
+
+  check coding.runs of=p pick="could(value(roll))"
+  feedback {
+    when (pick == hi + 1 or pick == lo - 1) point=p {
+      say "The random number is never less than {lo} or more than {hi}."
+    }
+  }
+  hint "What is the smallest number random {lo} to {hi} can give? The biggest?"
+  hint "Which choice is between those two, counting both ends?"
+}

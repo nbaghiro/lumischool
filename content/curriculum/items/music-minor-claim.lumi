@@ -1,0 +1,46 @@
+# The two-star reason: two claims children make about minor chords, each answered from the staff. A
+# minor is all white keys and D major has a black one; and it is the middle note, not the top, that
+# drops a semitone between A major and A minor.
+item music.minor-claim v=1 stars=2 skills=[music.major-minor, reasoning.claims] {
+  title "Is Ben right?"
+  let q=0..1 r=0..1
+  let claim={pick(q, "Ben says a chord with a black key in it is minor, and a chord of white keys only is major.", "Ben says that to turn A major into A minor you move the top note down a semitone.")}
+  let right={pick(q, "No: A minor is all white, D major has a black key", "No: the middle note moves, C sharp to C")}
+  let w1={pick(q, "Yes: a black key makes a chord minor", "Yes: the top note decides it")}
+  let w2={pick(q, "No: a minor chord has two black keys", "No: the bottom note moves, A to G sharp")}
+  let a1={pick(q, "A4", "A4")}
+  let a2={pick(q, "C5", "Cs5")}
+  let a3={pick(q, "E5", "E5")}
+  let b1={pick(q, "D4", "A4")}
+  let b2={pick(q, "Fs4", "C5")}
+  let b3={pick(q, "A4", "E5")}
+  let one={pick(q, "A minor", "A major")}
+  let two={pick(q, "D major", "A minor")}
+
+  scene 35x32 {
+    text ask "{claim} Is he right, and why?" narrate width=32 at=canvas(1, 1)
+    row both space=2 align=start below=ask gap=1 {
+      column c1 space=0 align=start {
+        text first "{one}" width=12
+        notes s1 clef=treble notes=[a1, a2, a3] values=[2, 2, 4] meter=0
+      }
+      column c2 space=0 align=start {
+        text second "{two}" width=12
+        notes s2 clef=treble notes=[b1, b2, b3] values=[2, 2, 4] meter=0
+      }
+    }
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=both gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=s1 {
+      say "Work out each chord's gap from the bottom note to the middle one. Four semitones is major, three is minor, whatever colour the keys are."
+    }
+    when (pick == w2) point=s2 {
+      say "Compare the two chords note by note. Which of the three notes is not the same in both?"
+    }
+  }
+  hint "Name the notes of each chord, with any sharp."
+  hint "Which chord is major and which is minor? Does that agree with Ben?"
+}

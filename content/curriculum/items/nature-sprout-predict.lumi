@@ -1,0 +1,34 @@
+# The core of the fair test: dishes as they are set up on day one, and how many will have sprouted a
+# week later. A seed needs water, air and warmth and not light, so a dish in the dark still sprouts;
+# counting the dark dishes out is the slip the feedback names. The checker reads the dishes.
+item nature.sprout-predict v=1 skills=[nature.seeds, reasoning.fair-test] {
+  title "Which will sprout?"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let w1={pick(k, 1, 1, 1, 1)} w2={pick(k, 0, 1, 1, 1)} w3={pick(k, 1, 1, 1, 0)} w4={pick(k, 1, 1, 1, 1)}
+  let a1={pick(k, 1, 1, 1, 1)} a2={pick(k, 1, 0, 1, 0)} a3={pick(k, 1, 1, 1, 1)} a4={pick(k, 1, 1, 1, 1)}
+  let t1={pick(k, 1, 1, 1, 0)} t2={pick(k, 1, 1, 1, 1)} t3={pick(k, 1, 0, 1, 1)} t4={pick(k, 0, 1, 0, 1)}
+  let l1={pick(k, 1, 1, 0, 0)} l2={pick(k, 1, 1, 0, 0)} l3={pick(k, 0, 1, 1, 0)} l4={pick(k, 1, 0, 0, 0)}
+  let lit={pick(k, 1, 1, 1, 0)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x24 {
+    seedtest s mode=0 water=[w1, w2, w3, w4] air=[a1, a2, a3, a4] warmth=[t1, t2, t3, t4] light=[l1, l2, l3, l4] seeds=8 rate=100 after=0 at=canvas(1, 1)
+    text ask "Ada sets out these dishes of cress seeds on day 1, and the table says what each one has. How many of the dishes will have sprouted seeds a week later?" narrate width=32 below=s gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check nature.seeds of=s answer=dishes
+  feedback {
+    when (answer == lit) point=s {
+      say "A seed sprouts on the food stored inside it, so it does not need light yet. Look again at the dishes with no in the light row."
+    }
+  }
+  hint "For each dish, read down its column. Has it got water, air and warmth?"
+  hint "Which of the four rows does a seed not need in order to sprout?"
+}

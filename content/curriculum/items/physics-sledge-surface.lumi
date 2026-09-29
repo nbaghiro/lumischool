@@ -1,0 +1,36 @@
+# Friction on different surfaces, from a table: pulled with the same steady force from ice onto
+# packed snow and then fresh snow, the sledge speeds up only where the pull beats the friction.
+item physics.sledge-surface v=1 skills=[physics.forces, physics.friction, data.tables] {
+  title "Ice, packed snow, fresh snow"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+  let p={pick(v, 40, 200, 60, 150)}
+  let n={pick(v, 1, 3, 1, 2)}
+
+  scene 31x19 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      sledge sl slats=5
+      table t cols=2 head=["Surface", "Friction"] cells=["ice", "30 N", "packed snow", "60 N", "fresh snow", "150 N"]
+    }
+    text ask "The same sledge is pulled with a steady {p} N from ice onto packed snow and then fresh snow. On how many of the three surfaces does it speed up?" narrate width=29 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == n + 1 and v == 2) point=t {
+      say "On packed snow the pull and the friction are both 60 N, so the forces are balanced and the speed stays the same."
+    }
+    when (answer == 3 and n < 3) point=t {
+      say "It speeds up only where the pull is bigger than the friction. Check each surface."
+    }
+  }
+  hint "Compare {p} N with the friction on each surface."
+  hint "Where the pull is bigger it speeds up; where they match it keeps its speed."
+}

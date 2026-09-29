@@ -1,0 +1,32 @@
+# Two stars: held right under the water, a thing is pushed up by the weight of the water it pushes
+# aside, so it rises if that push is more than its weight and sinks if it is less. u says which.
+item physics.upthrust-float-or-sink v=1 stars=2 skills=[physics.floating, physics.forces, reasoning.compare] {
+  title "Float up or sink?"
+  let u=0..3
+  let w={pick(u, 6, 3, 9, 4)}
+  let vol={pick(u, 400, 500, 700, 600)}
+
+  scene 33x29 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      springscale s max=10 step=2 value=w unit=N
+      cylinder c max=1000 step=100 minor=50 level=(200 + vol) unit=ml
+      text ask "A sealed tin weighs {w} N. Held right under the water in a cylinder that held 200 ml, it makes the water rise to the level shown. Every 100 ml of water weighs 1 N. When it is let go, what will it do?" narrate width=15
+    }
+    choice pick options=["Sink to the bottom", "Float up to the top", "Stay where it is"] stack=column below=kit gap=1
+  }
+
+  answer pick=(if vol / 100 > w then "Float up to the top" else "Sink to the bottom")
+  feedback {
+    when (pick == "Stay where it is") point=c {
+      say "It stays only when the push up and the weight are exactly the same. Are they?"
+    }
+    when (pick == "Float up to the top" and vol / 100 < w) point=s {
+      say "The push up is {vol / 100} N and the weight is {w} N. Which is bigger?"
+    }
+    when (pick == "Sink to the bottom" and vol / 100 > w) point=s {
+      say "The push up is {vol / 100} N and the weight is {w} N. Which is bigger?"
+    }
+  }
+  hint "How many newtons does the water push up with? Count the hundreds of millilitres it rose."
+  hint "Is that push more or less than the tin's weight?"
+}

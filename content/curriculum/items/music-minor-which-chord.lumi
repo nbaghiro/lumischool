@@ -1,0 +1,39 @@
+# A broken chord read from the staff and called major or minor by the size of its lower gap, worked
+# out from the table of steps between white keys: four semitones is major and three is minor. Hard
+# adds chords with a sharp: on the middle note it adds one, on the bottom note it takes one away, and
+# on the top note it changes nothing, so a sharp alone never says major (B D F#, F# A C#).
+item music.minor-which-chord v=1 skills=[music.major-minor, music.staff] {
+  title "Major or minor?"
+  difficulty (if k <= 5 then 0 else 1)
+  let k=0..10
+  let r={pick(k, "C4", "A4", "F4", "D4", "E4", "G4", "D4", "A4", "E4", "B4", "Fs4")}
+  let t={pick(k, "E4", "C5", "A4", "F4", "G4", "B4", "Fs4", "Cs5", "Gs4", "D5", "A4")}
+  let f={pick(k, "G4", "E5", "C5", "A4", "B4", "D5", "A4", "E5", "B4", "Fs5", "Cs5")}
+  let right={pick(k, "major", "minor", "major", "minor", "minor", "major", "major", "major", "major", "minor", "minor")}
+  let wrong={if right == "major" then "minor" else "major"}
+  level easy {
+    let k=0..5
+  }
+  level hard {
+    let k=3..10
+  }
+
+  scene 34x28 {
+    row top space=2 align=start at=canvas(1, 1) {
+      notes chord clef=treble notes=[r, t, f] values=[1, 1, 2] meter=0
+      text ask "Ana plays this chord one note at a time on the canal boat's keyboard. Is it major or minor?" narrate width=16
+    }
+    text key "Semitones from each white key to the next. A sharp is one semitone higher." narrate width=32 below=top gap=1
+    table steps cols=7 head=["C-D", "D-E", "E-F", "F-G", "G-A", "A-B", "B-C"] cells=["2", "2", "1", "2", "2", "2", "1"] below=key gap=1
+    choice pick options=["major", "minor"] stack=row below=steps gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == wrong) point=steps {
+      say "Add up the steps from the bottom note to the middle one. A sharp on the middle note adds one, and a sharp on the bottom note takes one away. Four semitones is major and three is minor."
+    }
+  }
+  hint "Name the three notes on the staff. Is there a sharp sign before any of them?"
+  hint "Add the steps in the table from the bottom note's letter to the middle note's letter."
+}

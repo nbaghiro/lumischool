@@ -1,0 +1,31 @@
+# Two equal angles: the top angle of an isosceles triangle given, and each base angle found by halving
+# what is left of 180.
+item angles.isosceles-base v=1 skills=[angles.sums, shapes.triangles] {
+  title "Two equal angles"
+  difficulty (if t % 20 == 0 then 0 else 1)
+  let t={20, 40, 50, 70, 80, 110}
+  level easy {
+    let t={20, 40, 80}
+  }
+  level hard {
+    let t={50, 70, 110}
+  }
+
+  scene 30x14 {
+    shapemarks tri kind=isosceles labels=true at=canvas(1, 1)
+    text ask "The roof of the telescope hut is an isosceles triangle. The angle at the top is {t} degrees. What is each of the two equal angles at the bottom?" narrate width=16 right-of=tri gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer ((180 - t) / 2)
+  feedback {
+    when (answer == 180 - t) point=ask {
+      say "That is both bottom angles together. They are equal, so share it between two."
+    }
+    when (answer == t) point=tri {
+      say "The two bottom angles are equal to each other, not to the top one."
+    }
+  }
+  hint "What is left of 180 after the top angle?"
+  hint "The two bottom angles share that equally."
+}

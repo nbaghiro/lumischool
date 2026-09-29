@@ -1,0 +1,31 @@
+# The way in: cans of water warmed by the sun's radiation, read off their thermometers. r turns the
+# order of the cans, m the minutes they have stood out.
+item physics.sun-can-rise v=1 skills=[physics.heat, physics.measuring] {
+  title "Warmed by the sun"
+  difficulty (if m == 10 then 0 else 1)
+  let r=0..2 m={10, 20, 30}
+  level easy {
+    let m={10}
+  }
+  level hard {
+    let m={20, 30}
+  }
+  let rise={pick(r, 6, 2, 1) * m / 10}
+
+  scene 22x25 {
+    heatflow t mode=2 cans=[pick(r, "black", "white", "silver"), pick(r, "white", "silver", "black"), pick(r, "silver", "black", "white")] insun=m show=1 at=canvas(1, 0)
+    text ask "These cans of water started at 20 °C and have stood in the midnight sun for {m} minutes. What does can A read, and how many degrees has it warmed?" narrate width=20 below=t gap=1
+    number-input now below=ask gap=1
+    number-input warmed right-of=now gap=3
+  }
+
+  answer warmed=rise
+  check physics.forces of=t now=reading(a)
+  feedback {
+    when (warmed == 20 + rise) point=t {
+      say "That is the reading. The can started at 20 °C: how far has it climbed since?"
+    }
+  }
+  hint "Which thermometer stands in can A, and what does it say?"
+  hint "Every can started at 20 °C. How far above that is A now?"
+}

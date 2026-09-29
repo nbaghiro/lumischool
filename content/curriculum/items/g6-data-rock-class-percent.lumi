@@ -1,0 +1,31 @@
+# A class as a share of all the data: its frequency over the total, as a percentage, so tables of
+# different sizes can be compared.
+item data.rock-class-percent v=1 skills=[data.frequency, percentages.of-amount] {
+  title "What share"
+  difficulty (v + h / 4)
+  let v=0..2 h=0..3
+  level easy {
+    let v={0}
+  }
+  level hard {
+    let v={2}
+  }
+
+  scene 36x13 {
+    table freq cols=2 head=["Mass (g)", "Pebbles"] cells=["10-19", "{pick(v, 3, 4, 6)}", "20-29", "{pick(v, 8, 10, 17)}", "30-39", "{pick(v, 6, 6, 19)}", "40-49", "{pick(v, 3, 5, 8)}"] at=canvas(1, 1)
+    text ask "The frequency table shows the pebbles the crew brought back from one crater. What percentage of the pebbles are in the class {pick(h, \"10-19\", \"20-29\", \"30-39\", \"40-49\")} g?" narrate width=18 right-of=freq gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text unit "%"
+    }
+  }
+
+  answer pick(v * 4 + h, 15, 40, 30, 15, 16, 40, 24, 20, 12, 34, 38, 16)
+  feedback {
+    when (answer == pick(v * 4 + h, 3, 8, 6, 3, 4, 10, 6, 5, 6, 17, 19, 8) and answer != pick(v * 4 + h, 15, 40, 30, 15, 16, 40, 24, 20, 12, 34, 38, 16)) point=freq {
+      say "That is how many pebbles, not what percentage. Out of how many pebbles in all?"
+    }
+  }
+  hint "How many pebbles are there in all?"
+  hint "What fraction of them are in the class? Write it out of a hundred."
+}

@@ -1,0 +1,38 @@
+# How many notes of a bar the key signature changes: every note on a line or space the signature
+# names, in every octave, though none of them has a sign of its own.
+item music.keysig-count-changed v=1 skills=[music.key-signatures, music.staff] {
+  title "Notes the key changes"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let n1={pick(k, "D4", "F4", "D4", "Bf4", "A4", "Ef4")}
+  let n2={pick(k, "Fs4", "A4", "Fs4", "C5", "Cs5", "G4")}
+  let n3={pick(k, "A4", "Bf4", "A4", "D5", "E5", "Bf4")}
+  let n4={pick(k, "D5", "C5", "Cs5", "Ef5", "Gs4", "Ef5")}
+  let n5={pick(k, "Fs5", "D5", "D5", "D5", "Fs4", "Af4")}
+  let n6={pick(k, "D5", "Bf4", "Fs5", "Ef4", "Cs4", "G4")}
+  let right={pick(k, 2, 2, 3, 3, 4, 4)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..5
+  }
+
+  scene 36x21 {
+    notes bar clef=treble notes=[n1, n2, n3, n4, n5, n6] values=[] key=pick(k, "G", "F", "D", "Bf", "A", "Ef") at=canvas(1, 1)
+    text ask "Six notes from a song the team sing on the ice shelf. None of them has a sign of its own. How many of them does the key signature change?" narrate width=34 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer < right) point=bar {
+      say "A sign in the key signature changes its letter in every octave, not only on the line where it is written. Look for the same letter higher or lower."
+    }
+    when (answer > right) point=bar {
+      say "Only the letters the signature names are changed. Say each note's letter and check it against the signs."
+    }
+  }
+  hint "Which letters does the key signature change?"
+  hint "Name every note in the bar. Which of them have one of those letters, high or low?"
+}

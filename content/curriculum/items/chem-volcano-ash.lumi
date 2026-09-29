@@ -1,0 +1,34 @@
+# The story: an ash band is laid by one eruption, so layers above it came after and layers below it
+# before (superposition; BGS). w asks after or before; a is the ash's place from the top.
+item chem.volcano-ash v=1 skills=[chemistry.rocks, reasoning.order] {
+  title "After the eruption"
+  difficulty (w + (a - 2) / 2)
+  let w=0..1 a={2, 3, 4}
+  level easy {
+    let w={0}
+  }
+  level hard {
+    let w={1}
+  }
+
+  scene 31x22 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      volcano v smoke=1 island=0
+      strata s layers=6 names=1 ash=a fault=0
+    }
+    text ask "Long ago the volcano across the gorge erupted once, and its ash fell as the pale band in the cliff. How many of the cliff's layers were laid down {if w == 0 then \"after\" else \"before\"} the eruption?" narrate width=30 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then a - 1 else 6 - a)
+  feedback {
+    when (w == 0 and answer == 6 - a) point=s {
+      say "Those are the layers under the ash. Layers laid later lie on top."
+    }
+    when (w == 1 and answer == a - 1) point=s {
+      say "Those are the layers on top of the ash. The ones laid before it are underneath."
+    }
+  }
+  hint "Find the ash band. Which layers lie on top of it, and which under it?"
+  hint "Which of those were laid down {if w == 0 then \"after\" else \"before\"} the ash fell? Do not count the ash itself."
+}

@@ -1,0 +1,38 @@
+# The two-star reason: "add two zeros" works for whole numbers and fails for decimals. The child names
+# the mistake among three plausible ones, then says what really happens to the digits.
+item decimal.hundred-mistake v=1 stars=2 skills=[decimals.by-ten, reasoning.find-the-mistake] {
+  title "Add two zeros"
+  difficulty ((if many == 1000 then 2 else 0) + (if p < 1 then 1 else 0))
+  let p={0.6, 3.7, 4.25, 0.45, 12.5} many={100, 1000}
+  level easy {
+    let many={100} p={3.7, 12.5}
+  }
+  level hard {
+    let many={1000} p={0.45, 4.25}
+  }
+
+  scene 30x23 {
+    sign note lines=["{p} × {many}", "= {p}{if many == 100 then \"00\" else \"000\"}"] kind=board color=tang at=canvas(1, 1)
+    text ask "Ivy multiplied {p} by {many} on the board. What did she do wrong?" narrate width=18 right-of=note gap=2
+    choice why options=["zeros after the point change nothing", "she wrote too few zeros", "the point should move left"] stack=column below=note gap=1
+    row eq below=why gap=1 space=1 align=centre {
+      text ask2 "{p} × {many} really is"
+      number-input answer width=6
+    }
+  }
+
+  answer why="zeros after the point change nothing" answer=decimals(p * many, 0)
+  feedback {
+    when (why == "she wrote too few zeros") point=note {
+      say "More zeros after the last decimal digit still change nothing. Is {p}{if many == 100 then \"00\" else \"000\"} any bigger than {p}?"
+    }
+    when (why == "the point should move left") point=note {
+      say "Moving the point left makes a number smaller. Multiplying by {many} makes it bigger."
+    }
+    when (answer == p) point=note {
+      say "Zeros written after the last decimal digit do not change a number. {p}{if many == 100 then \"00\" else \"000\"} is still {p}."
+    }
+  }
+  hint "Is {p}{if many == 100 then \"00\" else \"000\"} any bigger than {p}?"
+  hint "Move each digit left instead. How many places does {many} move them?"
+}

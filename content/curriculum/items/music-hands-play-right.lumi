@@ -1,0 +1,22 @@
+# The right hand alone before the two go together: bar 2 of Ode to Joy, G, F, E, D, and bar 1 of Frère
+# Jacques, C, D, E, C, read from the treble staff with no letters written.
+item music.hands-play-right v=1 skills=[music.hands-together, music.keys] {
+  title "The right hand alone"
+  difficulty v
+  let v=0..1
+  let tune={pick(v, "bar 2 of Ode to Joy", "bar 1 of Frère Jacques")}
+  let a={pick(v, "G4", "C4")}
+  let b={pick(v, "F4", "D4")}
+  let c={pick(v, "E4", "E4")}
+  let d={pick(v, "D4", "C4")}
+
+  scene 32x26 {
+    notes right clef=treble notes=[a, b, c, d] values=[] meter=4 at=canvas(1, 1)
+    text ask "Then the right hand on its own: {tune}. Play its four notes in order." narrate width=30 below=right gap=1
+    piano keys from=G2 whites=15 wide=2 labels=letters below=ask gap=1
+  }
+
+  check music.plays notes=[{a}, {b}, {c}, {d}]
+  hint "Middle C sits on its own short line below the treble staff. Count up from it."
+  hint "The bottom line of the treble staff is E. Which notes are just above and below it?"
+}

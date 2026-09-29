@@ -1,0 +1,32 @@
+# Choosing an insulator: the handle of the hut's kettle has to keep heat from reaching the hand, so it
+# is made of the material the rods show heat moves through most slowly.
+item physics.heat-handle v=1 skills=[physics.heat, physics.materials, reasoning.explain] {
+  title "The kettle's handle"
+  difficulty (if v == 0 then 0 else 1)
+  let v=0..1
+  level easy {
+    let v={0}
+  }
+  level hard {
+    let v={1}
+  }
+  let other={pick(v, "copper", "steel")}
+
+  scene 30x32 {
+    heatflow t mode=0 rods=[other, "wood", "aluminium"] thick=[1, 1, 1] minutes=10 show=1 at=canvas(1, 0)
+    text ask "The kettle in the research hut needs a new handle. Which rod's material should it be made of, and why?" narrate width=28 below=t gap=1
+    choice pick options=["Wood: heat moves through it slowly", "Wood: it melts the wax slowly", "Aluminium: it is light", "A metal: heat moves through it quickly"] stack=column below=ask gap=1
+  }
+
+  answer pick="Wood: heat moves through it slowly"
+  feedback {
+    when (pick == "A metal: heat moves through it quickly") point=t {
+      say "A handle that lets heat through quickly would burn the hand. Which rod kept all its beads?"
+    }
+    when (pick == "Wood: it melts the wax slowly") point=t {
+      say "The wax only shows where heat has reached. What matters for the hand is how slowly heat moves through the wood."
+    }
+  }
+  hint "What should a handle stop from reaching your hand?"
+  hint "Which rod did heat move along most slowly?"
+}

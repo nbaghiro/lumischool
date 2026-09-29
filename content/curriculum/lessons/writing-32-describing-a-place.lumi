@@ -1,6 +1,6 @@
 # Describing a place from its picture: a describing word before each thing, in sentences that
 # fit what is drawn.
-lesson writing-a-place-in-a-world v=1 format=teach grade=2 unit=6 subject=writing levels=[easy, medium, hard] {
+lesson writing-a-place-in-a-world v=1 format=teach grade=2 unit=9 subject=writing levels=[easy, medium, hard] {
   title "Describing a place"
   goal "Write two sentences that describe a place from its picture, using a describing word in each."
 

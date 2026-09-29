@@ -1,0 +1,39 @@
+# Not turns a question round: "not more than 18" says yes for 18 itself and everything below it. The
+# reading on the edge is where the slip shows.
+item coding.sense-not v=1 skills=[coding.sensors, coding.decisions, reasoning.logic] {
+  title "Not more than"
+  difficulty (if v == t then 1 else if v == t + 1 then 0.6 else 0)
+  let t={17, 18} v=14..21
+  where (v >= t - 2 and v <= t + 2)
+  level easy {
+    where (v != t and v != t + 1)
+  }
+  level hard {
+    where (v == t or v == t + 1)
+  }
+
+  scene 36x23 {
+    program p code=["if temp is not more than {t}", "  switch heater on", "otherwise", "  switch heater off"] text=true sense=["temp starts {v}"] at=canvas(0, 0)
+    thermometer th from=0 to=30 step=10 value=v unit="°C" right-of=p gap=2
+    text ask "The seal researchers' hut reads {v} °C and the program runs once. Is the heater switched on or off?" width=34 at=canvas(0, 15)
+    choice pick options=["on", "off"] below=ask gap=1
+  }
+
+  check coding.runs of=p pick="on(heater)"
+  feedback {
+    when (v == t and pick == "off") point=p {
+      say "{t} is not more than {t}: it is equal. So the question says yes."
+    }
+    when (v == t + 1 and pick == "on") point=p {
+      say "{v} is more than {t}, so not more than {t} is no."
+    }
+    when (v < t and pick == "off") point=p {
+      say "{v} is less than {t}, so it is not more than {t}. The question says yes."
+    }
+    when (v > t + 1 and pick == "on") point=p {
+      say "{v} is more than {t}. Not turns that yes into a no."
+    }
+  }
+  hint "First ask the question without not: is {v} more than {t}?"
+  hint "Not turns the answer round. What is the answer now, and which line runs?"
+}

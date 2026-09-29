@@ -1,0 +1,29 @@
+# The story: towing boats along the canal at walking pace, the pull a horse needs depends on the
+# shape of the front. The pulls are for one boat of each shape, loaded the same; p picks the two
+# boats compared.
+item physics.canal-bows v=1 skills=[physics.water-resistance, physics.forces, data.tables] {
+  title "The horse on the towpath"
+  difficulty (if p == 1 then 0 else 1)
+  let p=0..2
+  let one={pick(p, "pointed", "pointed", "rounded")}
+  let two={pick(p, "square", "rounded", "square")}
+  let less={pick(p, 500, 150, 350)}
+
+  scene 31x32 {
+    narrowboat b windows=5 pots=3 at=canvas(1, 0)
+    table t cols=2 head=["Front of the boat", "Pull needed"] cells=["pointed", "400 N", "rounded", "550 N", "square", "900 N"] below=b gap=1
+    text ask "A horse tows boats along the canal towpath at walking pace. How many newtons less does it need to pull the {one} boat than the {two} one?" narrate width=30 below=t gap=1
+    number-input answer below=ask gap=1
+    text then "Which front is the most streamlined?" narrate width=30 below=answer gap=1
+    choice pick options=["pointed", "rounded", "square"] below=then gap=1
+  }
+
+  answer answer=less pick="pointed"
+  feedback {
+    when (pick == "square") point=t {
+      say "Streamlined means the water pushes back least. Which front needs the smallest pull?"
+    }
+  }
+  hint "Find the two boats in the table and read the pull for each."
+  hint "Take the smaller pull from the larger one. Which pull in the table is smallest of all?"
+}

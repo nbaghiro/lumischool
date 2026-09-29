@@ -1,0 +1,36 @@
+# A bar of a tune whose notes all belong to one primary chord, named as I, IV or V. Hard moves to G
+# major, where IV is C and V is D with its F sharp.
+item music.chords-bar-fits v=1 skills=[music.chords, music.staff] {
+  title "The chord under the bar"
+  difficulty (if k <= 3 then 0 else 1)
+  let k=0..6
+  let key={pick(k, "C", "C", "C", "C", "G", "G", "G")}
+  let n1={pick(k, "E4", "F4", "D4", "A4", "D4", "C4", "B4")}
+  let n2={pick(k, "G4", "A4", "G4", "F4", "Fs4", "E4", "G4")}
+  let n3={pick(k, "C5", "C5", "B4", "A4", "A4", "G4", "D5")}
+  let n4={pick(k, "G4", "A4", "G4", "C5", "Fs4", "E4", "B4")}
+  let right={pick(k, "I", "IV", "V", "IV", "V", "IV", "I")}
+  level easy {
+    let k=0..3
+  }
+  level hard {
+    let k=4..6
+  }
+
+  scene 36x17 {
+    row top space=2 align=start at=canvas(1, 1) {
+      notes bar clef=treble notes=[n1, n2, n3, n4] values=[1, 1, 1, 1] meter=4
+      text ask "A bar of Ben's tune in {key} major. All its notes belong to one chord. Which chord, I, IV or V?" narrate width=13
+    }
+    choice pick options=["I", "IV", "V"] stack=row below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=bar {
+      say "Name the notes and put them in order of letters, skipping one each time. The lowest letter of that chord is the one it is built on."
+    }
+  }
+  hint "Name the notes of the bar. Which three different letters are there?"
+  hint "Count up the {key} major scale from {key} as 1. Which number is the chord built on?"
+}

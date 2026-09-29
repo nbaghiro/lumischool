@@ -1,0 +1,10 @@
+item art.two-base v=1 stars=3 skills=[art.perspective, art.drawing, reasoning.plan] {
+  title "The moon base in two-point perspective"
+
+  scene 37x17 {
+    text ask "Draw the moon base: at least three crates or huts, turned corner-on, all sharing the same two points at the ends of one horizon. Give one a door and a window whose edges run to the points too." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="plain" guide="none" outline="none" pots=["black", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A group of boxes in two-point perspective: one horizon at the artist's eye with a vanishing point near each end, every box's near corner drawn upright and tallest, its edges ruled back to the two shared points, back edges upright, the top shown only on boxes below the horizon, and a door and a window whose tops and bottoms run to the same points." notice=["One horizon and two shared points", "Upright lines kept upright", "Edges on each side ruled to their point", "A door or window whose edges follow the points"] ask="Which box is nearest to you in your drawing, and how can someone else tell?"
+}

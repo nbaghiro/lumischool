@@ -1,0 +1,31 @@
+# The way in: the ruler's zero sits at the unloaded foot, so the pointer reads the stretch itself,
+# and each newton stretches this spring as much as the last. q picks the spring, w the load.
+item physics.spring-read v=1 skills=[physics.forces, physics.measuring] {
+  title "How far it stretched"
+  difficulty (if q == 0 then 0 else 1)
+  let q=0..2 w=2..4
+  level easy {
+    let q={0}
+  }
+  level hard {
+    let q={1, 2}
+  }
+  let per={pick(q, 2, 1.5, 0.5)}
+
+  scene 36x21 {
+    spring s load=w per=per limit=8 natural=5 from=0 at=canvas(1, 0)
+    text ask "The ruler's 0 is where the foot of the spring was with nothing on it. How many centimetres has the load stretched it, and how many for each newton?" narrate width=22 right-of=s gap=1
+    number-input cm below=ask gap=1
+    number-input each below=cm gap=1
+  }
+
+  answer each=per
+  check physics.forces of=s cm=stretch
+  feedback {
+    when (each == w and w != per) point=s {
+      say "That is the load in newtons. How many centimetres is the stretch shared between them?"
+    }
+  }
+  hint "Where does the pointer sit on the ruler?"
+  hint "Share the stretch out among the newtons hanging on it."
+}

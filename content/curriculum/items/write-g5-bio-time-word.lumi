@@ -1,0 +1,33 @@
+# The time word that joins two facts from the card, worked out from the years on it.
+item writing.bio-time-word v=1 skills=[writing.biography, writing.joining-sentences] {
+  title "Which time words fit?"
+  difficulty k
+  let k=0..2
+  let before={pick(k, "In 1772 she moved to England.", "In 1786 she found her first comet.", "In 1828 she won a gold medal.")}
+  let after={pick(k, "she found her first comet.", "the king began to pay her.", "she died in Hanover, aged 97.")}
+  let right={pick(k, "Fourteen years later,", "The next year,", "Twenty years later,")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 33x27 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage card title="Caroline Herschel" text="Born in Hanover: 1750. Moved to England: 1772. First comet: 1786. Paid by the king: from 1787. Gold medal: 1828. Died: 1848." width=23 numbers=false
+      person her pose=think age=older hair=bun colour=grey top=mint glasses=true
+    }
+    text ask "{before} ____ {after} Which time words go in the gap?" narrate width=32 below=top gap=1
+    choice pick options=["Fourteen years later,", "The next year,", "Twenty years later,"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=card {
+      say "Find both things on the card and read their years. The time words have to say how far apart they are."
+    }
+  }
+  hint "Find the second thing on the card. In what year did it happen?"
+  hint "How many years are there between the two years?"
+}

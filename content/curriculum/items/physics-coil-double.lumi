@@ -1,0 +1,27 @@
+# Two stars: which one change doubles the clips, tested against each option by the rule, clips are the
+# tens of turns times the cells. Only doubling the turns works for these coils, since they already
+# have two or three cells.
+item physics.coil-double v=1 stars=2 skills=[physics.magnets, reasoning.compare, reasoning.guess-and-check] {
+  title "Twice as strong"
+  let v=0..2
+  let t={pick(v, 20, 10, 20)}
+  let c={pick(v, 2, 3, 3)}
+
+  scene 31x30 {
+    electromagnet e turns=t cells=c core=0 closed=1 show=1 at=canvas(1, 0)
+    text ask "Which one change will make this electromagnet hold twice as many clips?" narrate width=14 right-of=e gap=1
+    choice pick options=["Wind on {t} more turns", "Add one more cell", "Wind on 10 more turns and add a cell", "Wind the coil round a wooden rod"] stack=column below=e gap=1
+  }
+
+  answer pick=pick(v, "Wind on 20 more turns", "Wind on 10 more turns", "Wind on 20 more turns")
+  feedback {
+    when (pick == "Add one more cell") point=e {
+      say "With {c + 1} cells it holds {t / 10 * (c + 1)} clips, not {t / 10 * c * 2}."
+    }
+    when (pick == "Wind on 10 more turns and add a cell") point=e {
+      say "Work it out: {t + 10} turns on {c + 1} cells holds {(t + 10) / 10 * (c + 1)} clips. Is that twice as many?"
+    }
+  }
+  hint "How many clips does it hold now? What is twice that?"
+  hint "Work out the clips for each change: tens of turns times cells."
+}

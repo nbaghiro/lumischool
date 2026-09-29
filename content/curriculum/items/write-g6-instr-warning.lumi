@@ -1,0 +1,33 @@
+# A warning goes just before the step it is about, where the reader needs it. Three warnings, each
+# about a different step of the same card.
+item writing.instr-warning v=1 skills=[writing.instructions, writing.layout] {
+  title "Where does the warning go?"
+  difficulty k
+  let k=0..2
+  let warn={pick(k, "Keep hands and sleeves clear of the paddles.", "The steps are wet, so hold the rail.", "Stand back: the wheel may lurch when the pin comes out.")}
+  let right={pick(k, "3", "1", "2")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x27 {
+    row top at=canvas(1, 0) space=2 align=start {
+      howto card title="Starting the wheel" need=["the sluice key"] steps=["Climb the steps to the sluice gate.", "Take the brake pin out of the wheel.", "Turn the key to lift the gate.", "Start the millstones."] blank=-1 width=18
+      waterwheel wheel paddles=8 lit=0
+    }
+    text ask "The miller wants to add this warning: {warn} It should go just before which step?" narrate width=33 below=top gap=1
+    choice pick options=["1", "2", "3", "4"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=card {
+      say "Which step makes this warning matter? The warning goes just before that one."
+    }
+  }
+  hint "What is the danger in the warning? Find the step where it happens."
+  hint "Would the reader need the warning before doing that step, or after?"
+}

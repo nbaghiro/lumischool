@@ -1,0 +1,22 @@
+# The three-star question: an old word the glossary does not list, worked out from the words around
+# it, with the clue words named. A grown-up marks it against the look-for.
+item reading.no-glossary v=1 stars=3 skills=[reading.old-words, reading.inference, reading.evidence] {
+  title "A word the glossary leaves out"
+  let k=0..1
+  let word={pick(k, "betwixt", "morrow")}
+
+  scene 36x29 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=1 align=end {
+        passage p title="From an old city chronicle" text="{pick(k, \"Each week the market is held betwixt the temple and the fountain, and on market day the square is full of stalls from one to the other.\", \"We rode all night by the light of the moon, and came to the city gate upon the morrow, just as the sun rose over the walls.\")}" width=24 numbers=false
+        temple t rows=4
+      }
+      text ask "The glossary has no entry for {word}. What does it mean, and which words around it tell you?" width=34
+      writinglines lines lines=3 width=34 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="Betwixt means between, and the clues are the two places named on either side of it and the stalls filling the square from one to the other. Morrow means the next day or the next morning, and the clues are that they rode all night and arrived as the sun rose. Accept any meaning that fits the sentence and is backed by at least one clue in the words around it."
+  hint "Cover the old word and read the sentence. What word would fit the gap?"
+  hint "Which words in the sentence made you choose it? Those are your clues."
+}

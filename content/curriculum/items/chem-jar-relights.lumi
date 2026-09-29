@@ -1,0 +1,38 @@
+# A candle under a jar goes out at about 16 per cent oxygen (.docs/chemistry.md); a plant in light
+# gives oxygen back and a new flame can burn again, which is Priestley's experiment with a sprig of
+# mint in 1771. In the dark the plant only breathes. The checker decides whether a flame would burn.
+item chem.jar-relights v=1 skills=[chemistry.burning, chemistry.gases, reasoning.predict] {
+  title "Will the candle burn again?"
+  difficulty (if v >= 2 then 1 else 0)
+  let v=0..3
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+  let pl={pick(v, 1, 0, 1, 2)}
+  let l={pick(v, 1, 1, 0, 1)}
+  let h={pick(v, 2, 4, 4, 1)}
+
+  scene 29x26 {
+    chamber c place=0 plants=pl candle=1 people=0 light=l hours=h show=0 at=canvas(1, 0)
+    text ask "The candle under the jar went out. {h} hour{if h == 1 then \"\" else \"s\"} later, with the lamp {if l == 1 then \"on\" else \"off\"} all that time, a spark lights the wick again without the jar being opened. Will it burn?" narrate width=28 below=c gap=1
+    choice pick options=["yes", "no"] stack=row below=ask gap=1
+  }
+
+  check chem.change of=c pick=relights
+  feedback {
+    when (pick == "yes" and pl == 0) point=c {
+      say "The flame went out because the oxygen was used up. Has anything in the jar made more?"
+    }
+    when (pick == "yes" and l == 0) point=c {
+      say "In the dark a plant does not make oxygen. It breathes, and uses a little."
+    }
+    when (pick == "no" and l == 1 and pl > 0) point=c {
+      say "The plant has had light. What does a plant in the light give out?"
+    }
+  }
+  hint "Why did the candle go out?"
+  hint "Is there anything in the jar that could give oxygen back, and could it do so here?"
+}

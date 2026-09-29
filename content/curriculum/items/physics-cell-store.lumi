@@ -1,0 +1,33 @@
+# The way in: a cell holds its energy in a chemical store until a loop is closed, and the lit bulb
+# passes it on as light and by heating. k is what is asked about.
+item physics.cell-store v=1 skills=[physics.energy, physics.circuits] {
+  title "Where the energy waits"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+  let what={pick(k, "Before the switch is closed, which store holds the energy in the cell?", "The bulb is lit. Where does most of the energy it is given go?")}
+  let ans={pick(k, "A chemical store", "Heating the bulb and the air")}
+
+  scene 22x36 {
+    series s cells=1 bulbs=1 closed=(if k == 0 then 0 else 1) show=1 at=canvas(1, 0)
+    text ask "{what}" narrate width=16 below=s gap=1
+    choice pick options=["A chemical store", "A kinetic store", "Heating the bulb and the air", "Light"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "Light" and k == 1) point=s {
+      say "Touch a filament bulb that has been on and it is hot. Most of its energy heats it and the air."
+    }
+    when (pick == "A kinetic store" and k == 0) point=s {
+      say "Nothing in the cell is moving yet. Its energy waits in the substances inside it."
+    }
+  }
+  hint "Is the energy in the cell there because something is moving, hot, or made of substances that can react?"
+  hint "Once the bulb has been on a while, what would a finger near it feel?"
+}

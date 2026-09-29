@@ -1,0 +1,15 @@
+# The clock tower's chime, E C D G, played on the glockenspiel from the staff: the motif Ana's eight
+# bars grow from. Four different notes, so music.plays hears them in order.
+item music.compose-play-chime v=1 skills=[music.composing, music.staff] {
+  title "Play the chime"
+
+  scene 22x31 {
+    notes chime clef=treble notes=[E5, C5, D5, G4] values=[1, 1, 1, 1] meter=4 at=canvas(1, 1)
+    text ask "The old city clock chimes these four notes. Play them on the glockenspiel, in order." narrate width=20 below=chime gap=1
+    glockenspiel glock from=G4 bars=6 wide=3 below=ask gap=1
+  }
+
+  check music.plays notes=[E5, C5, D5, G4]
+  hint "Name each note from its line or space before you play."
+  hint "The last note is the lowest one, below the others. Find it at the long end."
+}

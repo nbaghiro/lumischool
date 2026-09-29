@@ -1,0 +1,34 @@
+# The way in: a tally already counted into a table, and the bar chart drawn from it with one bar still
+# to set, which the child sets on the chart. Reading the table is the whole question.
+item survey.missing-bar v=1 skills=[data.collect, data.bar-charts] {
+  title "The last bar"
+  difficulty d
+  let a=3..9 b=2..9 c=2..9 d=2..11
+  where (a != b and b != c and c != d and a != d)
+  level easy {
+    let d=2..5
+  }
+  level hard {
+    let d=8..11
+  }
+
+  scene 36x24 {
+    table votes cols=2 head=["Look at", "Children"] cells=["Moon", "{a}", "Saturn", "{b}", "Jupiter", "{c}", "Mars", "{d}"] at=canvas(1, 1)
+    bargraph chart labels=["Moon", "Saturn", "Jupiter", "Mars"] values=[a, b, c, 0] max=11 color=sky set=1 right-of=votes gap=2
+    text ask "The star club voted on what to look at through the telescope. The bars are drawn from the table. Make the bar for Mars the right height." narrate width=30 at=canvas(1, 18)
+  }
+
+  answer chart=(bar4 == d) {
+    say "The bar for Mars is {d} squares tall."
+  }
+  feedback {
+    when (bar4 > d) point=votes {
+      say "The Mars bar is taller than the votes for Mars. It shows only the votes for Mars, not every vote."
+    }
+    when (bar4 < d) point=votes {
+      say "The Mars bar is shorter than the votes for Mars in the table."
+    }
+  }
+  hint "Find Mars in the table."
+  hint "One square on the chart is one child. How many squares tall is that?"
+}

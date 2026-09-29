@@ -1,0 +1,39 @@
+# Who did it, in a passive sentence: named after by, or not said at all. The trap is the thing the
+# action was done to, which comes first.
+item writing.passive-doer v=1 skills=[writing.passive, reading.comprehension] {
+  title "Who did it?"
+  difficulty k
+  let k=0..2 r=0..2
+  let s={pick(k, "The jars were sealed by Dr Berg.", "The hut door was left open in the night.", "The puffins were counted by the two youngest in the team.")}
+  let right={pick(k, "Dr Berg", "the sentence does not say", "the two youngest in the team")}
+  let w1={pick(k, "the jars", "the hut door", "the puffins")}
+  let w2={pick(k, "the sentence does not say", "the night", "the sentence does not say")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 33x30 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      hut h pictures=2
+      puffins pf count=3 facing=1
+    }
+    passage p title="The hut's log" text="{s}" width=32 numbers=false below=pics gap=1
+    text ask "Who did it?" narrate width=32 below=p gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=p {
+      say "That is the subject, but in a passive sentence the subject is the thing the action was done to. The doer comes after by, or is left out."
+    }
+    when (pick == w2) point=p {
+      say "Look for the word by. If it is there, the words after it name the doer; if it is missing, the doer is left out."
+    }
+  }
+  hint "Is the word by in the sentence?"
+  hint "The words after by name the doer. With no by, is anyone named?"
+}

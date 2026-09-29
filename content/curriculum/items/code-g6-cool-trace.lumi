@@ -1,0 +1,31 @@
+# The same model traced in a table: the repeat's rows and the gap's rows leave cocoa as it was, so the
+# row asked for is found by following the lines that ran, not by counting times round.
+item coding.cool-trace v=1 skills=[coding.simulation, coding.tracing, coding.variables] {
+  title "Trace the cooling"
+  difficulty (r + (if g == 64 then 0.3 else 0))
+  let g={32, 64} r=0..2
+  let s={20 + g} step={pick(r, 5, 8, 11)}
+  level easy {
+    let r={0}
+  }
+  level hard {
+    let r={1, 2}
+    let g={64}
+  }
+
+  scene 36x26 {
+    program p code=["set air to 20", "set cocoa to {s}", "repeat 3", "  set gap to cocoa - air", "  take gap / 2 from cocoa"] text=true at=canvas(0, 0)
+    tracetable tr code=["set air to 20", "set cocoa to {s}", "repeat 3", "  set gap to cocoa - air", "  take gap / 2 from cocoa"] show=value name=cocoa filled=4 right-of=p gap=0
+    text ask "The table has a row for each step the program takes and shows what cocoa holds after it. What does cocoa hold after step {step}?" width=19 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=tr answer="after({step}).cocoa"
+  feedback {
+    when (answer == s - g / 2 and step > 5) point=tr {
+      say "That is cocoa after the first time round. Keep going down the table: which line ran at step {step}?"
+    }
+  }
+  hint "Fill in the empty rows one at a time. Which line ran on each?"
+  hint "Only the line that takes away changes cocoa. On the other rows it stays the same."
+}

@@ -1,0 +1,47 @@
+lesson chemistry-year-review-6 v=1 format=review grade=6 unit=9 subject=chemistry levels=[easy, medium, hard] {
+  title "Chemistry review: the sixth year"
+  goal "Look back over the year: density, salt and freezing, gases, water in the air, rocks, acids and alkalis, hard water, burning and mass."
+
+  warm-up {
+    practice chem.density-floats count=1 seed=2
+    practice chem.fresh-or-sea count=1 seed=2
+    practice chem.ph-kind count=1 seed=2 hard-seed=1
+  }
+  exercises {
+    practice chem.density-block count=1 seed=1 easy-seed=24 easy-level=medium
+    practice chem.salt-freeze-graph count=1 seed=1 easy-seed=2
+    practice chem.cooling-table count=1 seed=1 easy-seed=4
+    practice chem.dew-point count=1 seed=2 easy-seed=24 easy-level=medium
+    practice chem.cycle-process count=1 seed=2
+    practice chem.ph-strongest count=1 seed=2 easy-seed=1
+    practice chem.neutral-graph count=1 seed=4 easy-seed=24 hard-seed=2 easy-level=medium
+    practice chem.soap-drops count=1 seed=2 easy-seed=24 hard-seed=1 easy-level=medium
+    practice chem.oxygen-in-jar count=1 seed=1 easy-seed=7 hard-seed=7
+    practice chem.wax-balance count=1 seed=2 easy-seed=24 hard-seed=1 easy-level=medium
+  }
+  puzzle stars=2 {
+    practice chem.why-window-mists count=1 seed=1 easy-seed=2 hard-seed=2
+  }
+  puzzle stars=3 {
+    practice chem.cycle-steps count=1 seed=2 easy-seed=1 hard-seed=1
+  }
+
+  grown-ups """
+    This is a check, not a test, to do at the end of the sixth year. The warm-up is the first
+    question of three lessons: the block that floats, the pond and the sea at one temperature, and a
+    liquid's place on the pH scale. The exercises take one question each from the year: a block's
+    density, the line of freezing points, the syringe of air cooled, when dew forms, an arrow of the
+    rock cycle, the strongest acid, the pH meter's jump through 7, the drops of soap in hard water,
+    the oxygen in a jar of air, and the grams in and out when wax burns. Anything that needs the way
+    in again is worth another week with that lesson, and everything else can move on. The two
+    puzzles are there to be enjoyed: why a window mists on the inside or frost grows on the sledge's
+    runners, and the fewest arrows from one rock to another round the cycle. Ask for the reason as
+    well as the answer.
+    """
+  level easy {
+    grown-ups "At this level each exercise is drawn from the plainer versions its lesson asks at its own easier level, and the two puzzles are the misted window and a route through the cycle with its shortcuts drawn."
+  }
+  level hard {
+    grown-ups "At this level each exercise is drawn from the versions its lesson asks at its harder level, with amounts worked backwards, and the puzzles are frost on the runners and a route round the loop with no shortcuts."
+  }
+}

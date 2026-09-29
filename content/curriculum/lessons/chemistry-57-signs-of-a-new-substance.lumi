@@ -1,0 +1,69 @@
+lesson chemistry-signs-of-a-new-substance v=1 format=teach grade=5 unit=8 subject=chemistry levels=[easy, medium, hard] {
+  title "The signs of a new substance"
+  goal "Name the sign that a new substance may have formed, measure it, and say when a sign is not enough on its own."
+
+  look {
+    scene 32x14 {
+      row all at=canvas(1, 0) space=2 align=end {
+        fizz cup stage=2 spoons=2
+        testtubes t fills=[0.5, 0.5, 0.5] paints=["", "", "green"] fizz=[0, 6, 0] bungs=0 letters=1
+        thermometer th from=10 to=30 step=2 value=16 unit="°C"
+      }
+    }
+    say """
+      At the fountain, vinegar and baking soda fizz: a gas is given off, and the thermometer shows
+      the mixture has gone a few degrees colder. The signs that a new substance has formed are a
+      gas, a new colour, a change in temperature, a solid appearing in a clear liquid, and a new
+      smell or light. A sign is only a clue. Boiling water bubbles too, and it is still water, so
+      ask what went in and whether it can go straight back.
+      """
+  }
+  do {
+    practice chem.which-tube-sign count=1 seed=1
+    practice chem.name-the-sign count=2 seed=3 easy-seed=1 hard-seed=2
+    level easy {
+      worked chem.fizz-cooler d=0 t=20 f=6 level=medium
+    }
+    practice chem.fizz-cooler count=2 seed=2 easy-seed=3 hard-seed=4
+    practice chem.change-temps count=1 seed=2 hard-count=2 easy-seed=1 hard-seed=3
+  }
+  story {
+    show chem.open-cup-gas d=0 b=650 easy-b=600 hard-d=1 hard-b=700
+    show chem.open-cup-gas d=1 b=600 easy-b=700 hard-b=650
+  }
+  try stars=2 {
+    show chem.sign-counter k=0 r=1 hard-k=2 hard-r=2
+  }
+  try stars=3 {
+    show chem.grams-went q=1 j=500 n=1 easy-q=0 easy-n=2 hard-q=2 hard-n=2
+  }
+  remember {
+    say "A gas, a new colour, a temperature change or a new solid are signs of a new substance, but only signs: check what went in and whether it goes straight back."
+  }
+
+  grown-ups """
+    The idea is that a new substance usually shows itself by a sign, and that a sign is evidence
+    to weigh rather than proof. Vinegar and baking soda take in heat as they react, so the mixture
+    cools by a few degrees; a hand warmer is iron powder rusting fast and gives out heat; limewater
+    turns milky because carbon dioxide makes solid chalk in it; copper roofs and fountains go green
+    over years and silver goes black. The wrong ideas to watch for are that bubbles always mean
+    something new (boiling water bubbles too), and that the gas from an open jug weighs nothing, so
+    the jug should read the same. The two-star question asks for the one example that shows a rule
+    with always in it is wrong. The three-star question weighs the vinegar before the soda goes
+    in, so the gas lost is the vinegar and the soda together less what is left; at medium it is
+    worked backwards, to what the jug of vinegar weighed. The jugs hold 400
+    ml of vinegar or more, enough for 21 g of soda (lesson 66's 7 g of soda for each 100 ml), so
+    the soda runs out first and 21 g always gives 11 g of gas. Catching the gas in a balloon is
+    not used here: a balloon of gas pushes aside its own volume of air, and kitchen scales read a
+    few grams light. If the child reads
+    the scales and stops, stay here another day with the look picture and a kitchen scale. Off the
+    page: with a grown-up, stir a teaspoon of baking soda into a glass of vinegar with a cooking
+    thermometer in it and watch the reading fall, with goggles on and nothing tasted.
+    """
+  level easy {
+    grown-ups "At this level the drop in temperature is worked once in the teacher's pen, the signs named are the plainer ones (green copper, hot quicklime, fizzing chalk), the temperatures ask how far the fizz fell, the table asks for the colder change, the jugs are read for the gas lost and then for the reading after, the two-star rule is about bubbles, and the three-star asks for the gas lost from the readings."
+  }
+  level hard {
+    grown-ups "At this level the signs are the milky limewater and the black silver, the thermometer is worked back to where it started, the table asks for the warmer change and the gap between two after readings, the jugs are worked forward to the reading after, the two-star rule is about looking different, and the three-star asks how much lighter a jug with twice the vinegar and the same soda gets."
+  }
+}

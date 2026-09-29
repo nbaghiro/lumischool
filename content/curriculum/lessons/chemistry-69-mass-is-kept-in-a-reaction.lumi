@@ -1,0 +1,74 @@
+lesson chemistry-mass-is-kept-in-a-reaction v=1 format=teach grade=6 unit=8 subject=chemistry levels=[easy, medium, hard] {
+  title "Mass is kept in a reaction"
+  goal "Use the rule that no mass is made or lost in a reaction to find a missing mass, and say where grams went."
+
+  look {
+    scene 34x15 {
+      row all at=canvas(1, 0) space=2 align=end {
+        flask f shape="conical" fill=0.35 bubbles=8 balloon=0 bung=1
+        dialscale d max=1000 step=200 value=450 unit=g
+        lander l rungs=5
+      }
+    }
+    say """
+      In the moon base's test chamber, sealed off from the crew's cabin, Ana weighs a flask of
+      vinegar with a pinch of baking soda beside it: 450 g. She drops the soda in and pushes the
+      stopper in tight, it fizzes, and the scales still read 450 g. A reaction rearranges what is
+      there; it never makes grams or loses them. When something seems lighter, a gas has left; when
+      it seems heavier, like burnt magnesium, oxygen from the air has joined it. Count everything
+      that goes in and comes out, and the grams agree.
+      """
+  }
+  do {
+    practice chem.sealed-scales count=1 seed=1
+    level easy {
+      worked chem.magnesium-mass w=0 n=2 level=medium
+    }
+    practice chem.magnesium-mass count=2 seed=2 easy-seed=8 hard-seed=3
+    practice chem.open-or-sealed count=1 seed=1
+    practice chem.wax-balance count=2 seed=1 hard-seed=4
+  }
+  story {
+    show chem.cloudy-mix w=0 a=60 b=45 easy-a=50 hard-w=1 hard-a=80
+    show chem.cloudy-mix w=0 a=80 b=75 easy-a=60 easy-b=75 hard-w=1 hard-a=50
+    level hard {
+      show chem.magnesium-mass w=2 n=4
+    }
+  }
+  try stars=2 {
+    show chem.crew-breath k=0 r=1 hard-k=1
+  }
+  try stars=3 {
+    show chem.wax-burns-sealed k=0 easy-k=1 hard-k=2
+  }
+  remember {
+    say "No grams are made or lost in a reaction. Lighter means a gas got out; heavier means something from the air joined in."
+  }
+
+  grown-ups """
+    The idea is conservation of mass: in a reaction the total mass of what goes in equals the total
+    mass of what comes out, as long as everything is counted, gases included. A sealed flask on the
+    scales keeps its reading; a candle in the open gets lighter because its carbon dioxide and water
+    drift away; magnesium and iron wool get heavier because oxygen from the air joins them. The wax
+    figures are worked from the formula of paraffin wax (about C25H52): 10 g of wax uses about 34 g
+    of oxygen and makes about 31 g of carbon dioxide and 13 g of water. The burning happens in the
+    base's test chamber, sealed off from the crew and fed with oxygen, because lesson 68 has just
+    taught that no flame is allowed in the cabin, and because a candle in a closed jar goes out with
+    oxygen to spare. The astronaut figures are NASA's: about 840 g of oxygen in and 1000 g of carbon
+    dioxide out a day, the difference being carbon from the food. The wrong ideas to watch for are
+    that a gas weighs nothing and that burning destroys matter. A grown-up burns the magnesium, with
+    goggles, and nobody looks straight at its flame. If the child adds all four numbers in the
+    table, stay here another day with a capped bottle of fizz on the kitchen scale. Off the page:
+    put a little vinegar in a small plastic bottle, stand a quarter teaspoon of baking soda in a
+    twist of paper in its neck, and weigh it with the cap screwed on; tip it to mix, and weigh
+    again. Keep to a quarter teaspoon so the pressure stays small, and use a cap rather than a
+    balloon or a bag: anything that swells pushes air aside, and kitchen scales then read a gram or
+    two light.
+    """
+  level easy {
+    grown-ups "At this level the oxygen that joins 6 g of magnesium is worked once in the teacher's pen, the magnesium asks for the oxygen, the scales question is the open candle, the wax table hides an easier cell, the cloudy mixes are added up, the two-star asks where the astronauts' extra grams come from, and the three-star burns 5 g or 20 g of wax."
+  }
+  level hard {
+    grown-ups "At this level the magnesium is worked to the ash and back to the metal, the scales questions include iron wool and a sealed jar, the wax table hides the wax or the carbon dioxide and is doubled, the cloudy mixes are worked back to one solution, the two-star asks what is wrong with a claim, and the three-star burns 15 g or 30 g."
+  }
+}

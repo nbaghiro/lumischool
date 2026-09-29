@@ -1,0 +1,14 @@
+# The last bar of Ana's tune tapped: two quavers, a crotchet and a long minim to land on C. Judged at
+# the grade five window.
+item music.compose-tap-end v=1 skills=[music.composing, music.rhythm] {
+  title "Tap the last bar"
+
+  scene 34x18 {
+    notes bar clef=treble notes=[G4, E4, D4, C4] values=[0.5, 0.5, 1, 2] meter=4 at=canvas(1, 1)
+    text ask "The last bar of Ana's tune, which lands on the home note. Count 1 and 2 and 3 and 4 and, and tap once for each note." narrate width=32 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 0.5, 1, 2] grade=5
+  hint "The first two notes share beat 1. Where does the third start?"
+  hint "The last note is long. Keep counting through it without tapping."
+}

@@ -1,0 +1,39 @@
+# The two-star reason: why a semicolon and not a comma between two sentences (k=0), and why
+# semicolons and not commas between the items of a list that has commas inside (k=1).
+item writing.semicolon-reason v=1 stars=2 skills=[writing.colons-semicolons, reasoning.explain] {
+  title "Why a semicolon?"
+  difficulty k
+  let k=0..1 r=0..2
+  let s={pick(k, "The wind dropped at noon; we set off at once.", "We passed three places: the hut, which has no roof; the cliff, where puffins nest; and the tide crack.")}
+  let right={pick(k, "Each half is a sentence, and a comma cannot join two.", "The places already have commas inside them.")}
+  let w1={pick(k, "A semicolon always comes before the word we.", "Every list needs semicolons between its items.")}
+  let w2={pick(k, "A semicolon is a longer stop than a full stop.", "Each place is a whole sentence of its own.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x31 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      sledge sl slats=5
+      icecliff ice height=1 floes=1
+    }
+    passage p title="Isla's notes" text="{s}" width=33 numbers=false below=pics gap=1
+    text ask "{if k == 0 then \"Why is a semicolon right here, and not a comma?\" else \"Why are semicolons right between the places, and not commas?\"}" narrate width=33 below=p gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=p {
+      say "That is not a rule. A semicolon is chosen for the job it does between the parts, not for the word that follows or the kind of writing."
+    }
+    when (pick == w2) point=p {
+      say "Look again at the parts either side of each semicolon, and test that reason against them."
+    }
+  }
+  hint "Put a comma in place of each semicolon and read it aloud. What goes wrong?"
+  hint "Ask what the parts on either side of the semicolon are."
+}

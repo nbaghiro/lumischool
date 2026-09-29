@@ -1,0 +1,36 @@
+# Two steps with a mixed number and a decimal share: the share eaten is taken from 1 to find the share
+# left, or found and taken from the whole; the slip is taking the decimal away as kilograms.
+item fraction.oats-left v=1 skills=[fractions.multiply.mixed, fractions.multiply.decimals, reasoning.two-steps] {
+  title "Oats left on the sledge"
+  difficulty (w + b / 4 + x)
+  let w=2..4 a={1, 3} b={2, 4} x={0.2, 0.4, 0.6, 0.8}
+  where (a < b)
+  level easy {
+    let w={2} b={2} x={0.4, 0.6}
+  }
+  level hard {
+    let w={4} b={4} x={0.4, 0.6}
+  }
+
+  scene 36x20 {
+    percentbar bar percent=(100 * x) show=false at=canvas(1, 1)
+    sledge s slats=5 right-of=bar gap=3
+    text ask "The team set out with {w} {a}/{b} kg of oats on the sledge. They have eaten {x} of the oats, the shaded part of the bar. How many kilograms are left? Write the answer as a decimal." narrate width=34 below=bar gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=5
+      text unit "kg"
+    }
+  }
+
+  answer decimals((w + a / b) * (1 - x), 0)
+  feedback {
+    when (answer == (w + a / b) * x) point=bar {
+      say "That is the oats eaten. The question asks for the part of the bar that is not shaded."
+    }
+    when (answer == w + a / b - x) point=bar {
+      say "{x} is a share of the oats, not a number of kilograms. Find {x} of {w} {a}/{b} kg first."
+    }
+  }
+  hint "What share of the oats is left?"
+  hint "Find that share of the whole amount. Is it easier with decimals or fractions here?"
+}

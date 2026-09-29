@@ -1,0 +1,31 @@
+# The way in: the floor cut into thin slices and laid head to tail is nearly a rectangle, the radius
+# tall and half the way round long, so its area is radius × radius × 3.14.
+item circle.moon-slices v=1 skills=[circles.area] {
+  title "Slices into a rectangle"
+  difficulty r
+  let r={3, 4, 5, 6, 7}
+  level easy {
+    let r={3, 4}
+  }
+  level hard {
+    let r={6, 7}
+  }
+
+  scene 35x16 {
+    circleparts c size=5 lines=1 radius=r unit="m" at=canvas(1, 1)
+    text ask "The floor of a crater is cut into thin slices on paper and laid head to tail. They make nearly a rectangle {r} m tall and {decimals(r * 3.14, 0)} m long, half the way round. What is the area of the floor, in square metres?" narrate width=18 right-of=c gap=2
+    number-input answer width=6 below=ask gap=1
+  }
+
+  answer decimals(r * r * 3.14, 0)
+  feedback {
+    when (answer == r + r * 3.14) point=ask {
+      say "The area of a rectangle is its length times its height, not the two added."
+    }
+    when (answer == 2 * r * 3.14) point=c {
+      say "That is the whole way round the crater. The area is the rectangle's length times its height."
+    }
+  }
+  hint "What is the area of a rectangle, from its length and its height?"
+  hint "What are the rectangle's length and height?"
+}

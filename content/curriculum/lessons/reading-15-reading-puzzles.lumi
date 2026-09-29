@@ -1,4 +1,4 @@
-lesson reading-puzzles v=1 format=puzzles grade=4 unit=3 subject=reading levels=[easy, medium, hard] {
+lesson reading-puzzles v=1 format=puzzles grade=4 unit=4 subject=reading levels=[easy, medium, hard] {
   title "Reading puzzles"
   goal "Use every part of a clue, and work out a missing word from the rest of the sentence."
 

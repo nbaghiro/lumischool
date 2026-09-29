@@ -1,0 +1,28 @@
+# One bar of the blues on the guitar in A (A, D, E) or in G (G, C, D), the open shapes from grade
+# four, read from the numeral chart. The numeral has to be turned into the key's letter first.
+item music.blues-guitar-strum v=1 skills=[music.blues, music.chord-boxes] {
+  title "The blues on the guitar"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let key={pick(k, "A", "A", "G", "G")}
+  let n={pick(k, 5, 9, 9, 10)}
+  let want={pick(k, "D", "E", "D", "C")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 35x32 {
+    table chart cols=5 head=["Bars", "1st", "2nd", "3rd", "4th"] cells=["1 to 4", "I", "I", "I", "I", "5 to 8", "IV", "IV", "I", "I", "9 to 12", "V", "IV", "I", "I"] at=canvas(1, 1)
+    row low space=2 align=start below=chart gap=1 {
+      fretboard neck tuning=guitar frets=3 view=chart labels=numbers strum=true
+      text ask "Ben plays the blues in {key} major on the guitar on the rope bridge. Hold the chord for bar {n} and strum it." narrate width=16
+    }
+  }
+
+  check music.chord chord={want} tuning=guitar
+  hint "Which numeral is in bar {n}?"
+  hint "Count up the {key} major scale from {key} as 1. Which letter is that numeral's note?"
+}

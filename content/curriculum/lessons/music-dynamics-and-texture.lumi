@@ -1,0 +1,79 @@
+# Dynamics, tempo and texture read from a score: the marks as the Italian words they stand for, the
+# words for speed, where a part gets louder or softer, and how many parts sound at once and how they
+# fit, named monophonic, homophonic and polyphonic, with Haydn's Surprise Symphony (1791), Ode to Joy
+# and Frère Jacques at the waterfall gorge.
+lesson music-dynamics-and-texture v=1 format=teach grade=6 unit=5 subject=music levels=[easy, medium, hard] {
+  title "Dynamics and texture"
+  goal "Read a score along each part for how loud and how fast it goes, and down the page for its texture."
+
+  look {
+    scene 33x30 {
+      column score space=0 align=start at=canvas(1, 1) {
+        notes flute clef=treble notes=[E4, E4, F4, G4, G4, F4, E4, D4] values=[] meter=4 spaced=true
+        dynamics marks marks=["p", "cresc", "f"] words=true ring=-1
+        notes cello clef=bass notes=[C3, G2] values=[4, 4] meter=4 spaced=true
+      }
+    }
+    say """
+      By the waterfall the band reads from a score, one staff for each part. The marks under a part
+      are short for Italian words: p is piano, soft, f is forte, loud, and m is mezzo, half, so mf
+      is moderately loud. A hairpin that opens is a crescendo, getting gradually louder; one that
+      closes is a diminuendo, getting gradually softer. Sfz, sforzando, pushes one note hard, and
+      fp, forte-piano, is loud then soft at once. Words over the score give the speed, from largo,
+      very slow, through andante, a walking pace, and allegro, fast, to presto, very fast;
+      ritardando slows down and a tempo goes back to the speed before. The texture is how the parts
+      sound together. One tune, even doubled, is monophonic. A tune with an accompaniment, like the
+      flute here over the cello's long notes, is homophonic. Two tunes at once, as in a round, is
+      polyphonic.
+      """
+  }
+  do {
+    show music.dyn-words k=4 easy-k=1 hard-k=5
+    level easy {
+      worked music.dyn-end-louder k=0 level=medium
+    }
+    practice music.dyn-end-louder count=1 seed=2 easy-seed=1 hard-seed=1
+    show music.tempo-words k=4 easy-k=0 hard-k=5
+    practice music.texture-kind count=1 seed=2 easy-seed=1 hard-seed=7
+    practice music.texture-round count=1 seed=4 easy-seed=1 hard-seed=1
+    practice music.dyn-surprise count=1 seed=2 easy-seed=1 hard-seed=1
+    show music.texture-round b=3 easy-b=2 hard-b=4
+    level hard {
+      show music.dyn-claim q=1 r=1
+    }
+    practice music.gorge-parts-count count=1 seed=2 easy-seed=1 hard-seed=1
+  }
+  try stars=2 {
+    show music.dyn-claim q=0 r=0 easy-r=1 hard-r=0
+  }
+  try stars=3 {
+    show music.dyn-bridge-paths v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "Read along a part for how loud and how fast; read down the score for how the parts fit together."
+  }
+
+  grown-ups """
+    The idea is that a score shows several things at once: along each staff, how loud and how fast
+    the part plays and where that changes, written in Italian words and their short marks, and down
+    the page, how the parts fit together, named monophonic (one tune, even doubled), homophonic (a
+    tune and an accompaniment) and polyphonic (two tunes at once, as in a round). The wrong ideas to
+    watch for are reading a crescendo as loud rather than as getting louder from wherever the music
+    is, taking a sudden mark such as sfz or fp for a gradual one, and calling two instruments on the
+    same tune two tunes. In the working, look for the child saying the Italian word for a mark before
+    choosing, and running a finger straight down the page to find what sounds together. The two-star
+    question is the claim that a hairpin means loud, when this one ends at mp; the three-star question
+    counts the ways a line of marks can climb and fall one step at a time, which needs every way
+    written as ups and downs and checked against the ends of the ladder. A child who is stuck can sing
+    a phrase getting louder and then softer, then slower, and go back to the way in; stay on this
+    lesson another day if parts on a score are still read one after another rather than together. Off
+    the page, listen to the slow movement of Haydn's Surprise Symphony and wait for the chord, then
+    listen to a round and count the voices.
+    """
+  level easy {
+    grown-ups "At this level the word to read is mezzo forte, reading louder or softer by the end is worked once in the teacher's pen before a tune with two hairpins, the speed to name is andante, the textures are a doubled tune and an accompaniment, the round is read on beats 1 and 2, Haydn's marks are one step apart, the parts are counted where only rests stand in the way, the two-star is as written with its answers in another order, and the three-star climbs from p in three bars."
+  }
+  level hard {
+    grown-ups "At this level the word to read is forte-piano, loud then soft at once, the tunes to read have a loud or soft middle that is a trap, the speed word is a tempo after a ritardando, the textures include a second tune, the round is read where a long note is still sounding, Haydn's chord is played one step softer, a claim that two players make two tunes is judged before the two-star, rests are scattered through three parts, and the three-star returns to f without passing ff."
+  }
+}

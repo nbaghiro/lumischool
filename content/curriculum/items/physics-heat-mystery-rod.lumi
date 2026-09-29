@@ -1,0 +1,26 @@
+# Three stars, from two clues: a rod drops seven tenths of its ten-minute count by five minutes,
+# rounded down, so one count fits two metals and the second count picks between them.
+item physics.heat-mystery-rod v=1 stars=3 skills=[physics.heat, reasoning.evidence, reasoning.constraints] {
+  title "Which metal is it?"
+  difficulty (if v == 1 or v == 2 then 1 else 0)
+  let v=0..3
+  level easy {
+    let v={0}
+  }
+  level hard {
+    let v={1, 2}
+  }
+  let five={pick(v, 1, 2, 2, 3)}
+  let ten={pick(v, 2, 4, 3, 5)}
+  let ans={pick(v, "Steel", "Aluminium", "Brass", "Copper")}
+
+  scene 31x41 {
+    heatflow t mode=0 rods=["copper", "aluminium", "brass", "steel"] thick=[1, 1, 1, 1] minutes=10 show=1 at=canvas(1, 0)
+    text ask "The rods above stood in hot water for ten minutes. By five minutes, a rod has dropped seven tenths of its ten-minute count, rounded down. An unmarked metal rod as thick as these had dropped {five} beads at five minutes and {ten} at ten. Which metal is it?" narrate width=29 below=t gap=1
+    choice pick options=["Copper", "Aluminium", "Brass", "Steel"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  hint "Work out what each metal would have dropped by five minutes. Which fit the first clue?"
+  hint "Now which of those also fits the ten-minute count?"
+}

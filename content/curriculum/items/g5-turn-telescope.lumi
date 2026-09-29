@@ -1,0 +1,30 @@
+# A turn added to a bearing, going past north when it passes 360.
+item angles.turn-telescope v=1 skills=[angles.bearings, angles.turns] {
+  title "Turning the telescope"
+  difficulty (if b + t >= 360 then 1 else 0)
+  let b={70, 150, 240, 290, 320} t={45, 90, 120, 135}
+  level easy {
+    where (b + t < 360)
+  }
+  level hard {
+    where (b + t >= 360)
+  }
+
+  scene 33x10 {
+    telescope scope tilt=30 at=canvas(1, 1)
+    text ask "The telescope points on a bearing of {b} degrees. It turns {t} degrees clockwise. What bearing does it point on now?" narrate width=20 right-of=scope gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer ((b + t) % 360)
+  feedback {
+    when (b + t >= 360 and answer == b + t) point=ask {
+      say "A bearing is never 360 or more. Once it passes north it starts again from 0."
+    }
+    when (answer == b - t or answer == b - t + 360) point=ask {
+      say "Clockwise adds to the bearing. Which way did you turn?"
+    }
+  }
+  hint "Does turning clockwise make the bearing bigger or smaller?"
+  hint "If you pass north at 360, start counting again from 0."
+}

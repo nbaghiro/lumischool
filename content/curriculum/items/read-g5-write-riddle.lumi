@@ -1,0 +1,22 @@
+# The three-star puzzle turns the riddles round: two clues that each fit two places and together fit
+# one. A grown-up marks it by checking each clue against every place.
+item reading.write-riddle v=1 stars=3 skills=[reading.inference, writing.composition] {
+  title "Write a city riddle"
+  let k=0..1
+
+  scene 36x30 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=1 align=end {
+        temple t rows=4
+        citywalls walls towers=2 open=1
+        clocktower tower hour=3 minute=0
+      }
+      text ask "{pick(k, \"Write a riddle for the temple with two clues. Each clue must fit two of these places, and both together only the temple.\", \"Write a riddle for the city walls with two clues. Each clue must fit two of these places, and both together only the walls.\")}" width=35
+      writinglines lines lines=2 width=35 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="Two clues, each true of the chosen place and of one other in the picture, and together true of the chosen place only. For the temple, for example: I am made of stone and built in steps (the walls are stone too, the tower is not in steps), and people climb me to reach the top (so do the tower's steps). Read each clue against every place with the child."
+  hint "List what the place has. Which of those things does one other place have too?"
+  hint "Check your two clues together against every place. Does only one fit both?"
+}

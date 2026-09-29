@@ -1,0 +1,27 @@
+# Reading the push from the depth: the push is in step with the depth, so a hole three times as deep
+# is pushed three times as hard. The deepest over the shallowest is always a whole number here.
+item physics.spouts-depth v=1 skills=[physics.pressure, ratio.times-as-many] {
+  title "How much harder?"
+  difficulty (deep / shallow)
+  let v=0..3
+  let shallow={pick(v, 10, 15, 10, 5)}
+  let deep={pick(v, 20, 45, 40, 35)}
+  let mid={pick(v, 15, 30, 25, 20)}
+
+  scene 31x38 {
+    spouts t depth=50 holes=[shallow, mid, deep] show=1 at=canvas(1, 0)
+    text ask "How many centimetres below the surface is hole C?" narrate width=30 below=t gap=1
+    number-input depth below=ask gap=1
+    text then "The push of water is in step with its depth. How many times as hard does it push at C as at A?" narrate width=30 below=depth gap=1
+    number-input times below=then gap=1
+  }
+
+  answer depth=deep times=(deep / shallow)
+  feedback {
+    when (times == deep - shallow) point=t {
+      say "That is how much deeper C is. Twice as deep pushes twice as hard, so compare them by dividing."
+    }
+  }
+  hint "Read the scale down the side of the tank, from the surface."
+  hint "How many times does A's depth go into C's depth?"
+}

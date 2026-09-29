@@ -1,0 +1,38 @@
+# Three-star: planning a whole fair test before any seed is sown. Each thing is tested by a dish that
+# leaves out that thing alone, and every one of them is compared with a dish that has everything.
+item nature.sprout-fewest v=1 stars=3 skills=[nature.seeds, reasoning.fair-test] {
+  title "The fewest dishes"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "Ada wants to test water, air and warmth, each on its own. Each dish may leave out one thing only, and each must be compared with a dish that has everything. What is the fewest dishes she needs?", "Ada wants to test water, air, warmth and light, each on its own. Each dish may leave out one thing only, and each must be compared with a dish that has everything. What is the fewest dishes she needs?", "Ada wants to test water, air, warmth and light, each on its own, with two dishes of every kind in case one packet of seeds is poor. Each dish may leave out one thing only. What is the fewest dishes she needs?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x22 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      narrowboat nb windows=4 pots=5
+      heron h facing=-1 reeds=3
+    }
+    text ask "{asks}" narrate width=32 below=pics gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 4, 5, 10)
+  feedback {
+    when (answer == pick(k, 3, 4, 8)) point=ask {
+      say "That tests each thing, but what is each of those dishes compared with?"
+    }
+    when (k == 2 and answer == 5) point=ask {
+      say "That is one dish of each kind. How many of each kind does she want?"
+    }
+    when (k == 2 and answer == 9) point=ask {
+      say "The dish with everything is a kind of dish too. Does she want two of it?"
+    }
+  }
+  hint "List the dishes: one that has everything, then one for each thing left out."
+  hint "Count the list. Does every thing she wants to test have its own dish?"
+}

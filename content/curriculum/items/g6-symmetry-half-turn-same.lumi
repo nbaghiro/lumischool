@@ -1,0 +1,34 @@
+# Point symmetry: the shape turned half a turn about its centre lands on itself. A square, a
+# rectangle and the regular hexagon do; the triangle and the L do not.
+item symmetry.half-turn-same v=1 skills=[shapes.symmetry.point] {
+  title "Upside down"
+  difficulty (if s == "square" or s == "isosceles" then 0 else if s == "rectangle" or s == "hexagon" then 1 else 2)
+  let s={"square", "rectangle", "isosceles", "ell", "hexagon"}
+  level easy {
+    let s={"square", "isosceles"}
+  }
+  level hard {
+    let s={"hexagon", "ell"}
+  }
+
+  scene 34x11 {
+    mirror fig shape=s line=none size=7 at=canvas(1, 1)
+    text ask "A floor plate in the lander is this shape. Turned half a turn about its centre, does it look exactly the same as before?" narrate width=20 right-of=fig gap=2
+    choice pick options=["Yes", "No"] below=ask gap=1
+  }
+
+  answer pick=(if s == "isosceles" or s == "ell" then "No" else "Yes")
+  feedback {
+    when (pick == "Yes" and s == "isosceles") point=fig {
+      say "After a half turn the point at the top is at the bottom, so it looks different."
+    }
+    when (pick == "Yes" and s == "ell") point=fig {
+      say "Trace the L and turn the tracing upside down. Where has the long arm gone?"
+    }
+    when (pick == "No" and s != "isosceles" and s != "ell") point=fig {
+      say "Every corner lands where the opposite corner was. Trace it and turn the tracing to check."
+    }
+  }
+  hint "Imagine a pin through the centre. Turn the shape until it is upside down."
+  hint "Does every corner land on a corner, and every side on a side?"
+}

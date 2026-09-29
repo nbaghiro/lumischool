@@ -1,0 +1,22 @@
+# The tube's length: both lenses bring far light to the same point, so the tube is the two focuses
+# end to end; the length is hidden and the checker adds them.
+item physics.telescope-tube v=1 skills=[physics.light, measure.length] {
+  title "How long a tube?"
+  difficulty (fo / 30)
+  let fo={40, 60, 90, 120} fe={2, 3, 4, 5}
+
+  scene 33x18 {
+    lens t mode=telescope objective=fo eyepiece=fe show=0 at=canvas(1, 0)
+    text ask "The big lens and the eyepiece must both bring the star's light to the same point. How many centimetres long must the tube be?" narrate width=32 below=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.light of=t answer=tube
+  feedback {
+    when (answer == fo) point=t {
+      say "That reaches only to where the light meets. The eyepiece sits its own focus beyond that point."
+    }
+  }
+  hint "How far behind the big lens does the light meet?"
+  hint "The eyepiece stands its own focus further on from that point."
+}

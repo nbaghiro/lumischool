@@ -1,0 +1,23 @@
+# The three-star, painted: the waterfall gorge painted with the plan of one of the five works, its
+# three layers and its two colour areas, and the work named. Responded to by a grown-up.
+item art.works-paint v=1 stars=3 skills=[art.artists, art.painting, reasoning.plan] {
+  title "The gorge, after a master"
+  difficulty v
+  let v=0..2
+  let brief={pick(v, "Paint the waterfall gorge with a near, a middle and a far layer, like the five works.", "Paint the waterfall gorge using the plan of one of the five works: its three layers and its two colour areas. Write which work you chose.", "Paint the waterfall gorge twice, small, with the plans of two different works, one tall and one wide, and write which works you chose.")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 37x17 {
+    text ask "{brief} Use your own gorge, not a copy of the painting." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="plain" guide="none" outline="none" pots=["blue", "green", "brown", "yellow", "white", "black"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="The gorge painted with a near, a middle and a far layer that read as near, middle and far (the far layer higher up, paler or smaller, and behind what is in front), and at medium and hard the plan of a named work followed: its format, its three layers and its two colour areas, in the child's own gorge rather than a copy." notice=["Three layers that read as near, middle and far", "Far things paler, higher or behind", "The plan of a named work followed", "The child's own gorge, not a copy"] ask="Which work did you borrow the plan from, and what did you keep from it?"
+  hint "Choose the plan first: what goes in the near layer, the middle and the far?"
+  hint "Paint the far layer first, pale, and work forwards."
+}

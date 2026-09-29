@@ -1,0 +1,33 @@
+# The two-star reason: lime mortar sets by taking carbon dioxide from the air and turning back into
+# calcium carbonate, so it gets heavier (74 g of slaked lime takes 44 g of the gas). Carbonating
+# needs a little water and is slow in a lump, so the question uses a thin layer kept damp for months.
+item chem.mortar-heavier v=1 stars=2 skills=[chemistry.changes, chemistry.conservation, reasoning.explain] {
+  title "Why did it get heavier?"
+  difficulty k
+  let k=0..1 r=0..2
+  let right={pick(k, "Carbon dioxide from the air joined it", "The lime takes carbon dioxide from the air")}
+  let w1={pick(k, "It soaked up rain", "The walls keep it wet")}
+  let w2={pick(k, "Dust from the air settled on it", "The sand in it slowly turns to stone")}
+  let asks={pick(k, "A thin layer of slaked lime, the stuff lime mortar is made from, is kept just damp on a tray under the library's roof, and dried before each weighing. It weighed 148 g at first and about 200 g many months later, hard as stone. Why is it heavier?", "Lime mortar between the stones of the old walls sets over months and turns back into the same stuff as limestone. Where does what it needs come from?")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x23 {
+    library l columns=6 open=1 at=canvas(1, 0)
+    text ask "{asks}" narrate width=22 right-of=l gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=l gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=l {
+      say "Heavier means something joined it. The lump was kept dry, and nothing grows in mortar. What is all around it?"
+    }
+  }
+  hint "When something gets heavier, something must have joined it. What is it touching all the time?"
+  hint "Limestone gave off carbon dioxide in the kiln. What would mortar need to take back to be like limestone again?"
+}

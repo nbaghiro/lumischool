@@ -1,0 +1,20 @@
+# What the child thinks, with a reason from the book, marked by a grown-up from the notice list.
+item reading.firstmen-think v=1 skills=[reading.inference, reading.characters, reading.whole-book] {
+  title "What do you think?"
+  let k=0..2
+
+  scene 34x23 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=centre {
+        bookcast b who=bedford pose=point dir=1
+        bookcast c who=cavor pose=think dir=-1
+        text ask "{pick(k, \"Chapter 16 is called Points of View. What does Bedford want from the moon, and what does Cavor want? Whose side are you on, and why?\", \"In chapter 20, alone in space, Bedford looks back on his own life. What does he think of himself, and has the moon changed him?\", \"In chapter 26 Bedford blames Cavor for telling the Grand Lunar too much. Was it Cavor's fault? Give a reason from the book.\")}" width=19
+      }
+      writinglines w lines=4 width=33
+    }
+  }
+
+  check writing.by-eye look-for="{pick(k, \"Bedford wants gold and a bigger trip back with guns; Cavor wants to learn about the moon and its people and is horrified by the guns; the child takes a side with a reason of their own.\", \"Bedford sees his old self as foolish and greedy, looking down on himself as if on another man, and the child says whether that lasts once he lands in chapter 21, where he still thinks of the gold.\", \"Cavor told the Grand Lunar about war and that only he could bring men back, which made him dangerous to the moon; the child weighs that against Cavor's honesty, and may note that Bedford is only guessing.\")}" notice=["Gives a reason from the chapters", "Uses a detail only a reader would know", "Says what they think, not only what happened"]
+  hint "What happens just before and just after this moment?"
+  hint "Which detail from the chapters would you point to if someone disagreed with you?"
+}

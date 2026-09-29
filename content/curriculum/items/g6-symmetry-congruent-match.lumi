@@ -1,0 +1,37 @@
+# Congruent triangles: the matching corners say which sides match, so the letters in the name are read
+# rather than the positions. The construction triangle is drawn with AB 6, BC 4 and CA 5 to scale.
+item symmetry.congruent-match v=1 skills=[shapes.congruent, reasoning.order] {
+  title "Matching sides"
+  difficulty (if t == 0 then 0 else if t < 3 then 1 else 2)
+  let t=0..5 j=0..2
+  let p0={pick(t, 0, 0, 1, 1, 2, 2)}
+  let p1={pick(t, 1, 2, 0, 2, 0, 1)}
+  let p2={pick(t, 2, 1, 2, 0, 1, 0)}
+  let u={pick(j, p0, p1, p2)}
+  let v={pick(j, p1, p2, p0)}
+  level easy {
+    let t={0, 1}
+  }
+  level hard {
+    let t=3..5
+  }
+
+  scene 36x22 {
+    construction plate kind=triangle at=canvas(1, 1)
+    table sides cols=2 head=["Side", "Length"] cells=["AB", "6 cm", "BC", "4 cm", "CA", "5 cm"] right-of=plate gap=2
+    text ask "Triangle PQR is cut to be congruent to ABC: P matches {pick(p0, \"A\", \"B\", \"C\")}, Q matches {pick(p1, \"A\", \"B\", \"C\")} and R matches {pick(p2, \"A\", \"B\", \"C\")}. How long is side {pick(j, \"PQ\", \"QR\", \"RP\")}?" narrate width=34 below=plate gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=2
+      text unit "cm"
+    }
+  }
+
+  answer pick(u + v - 1, 6, 5, 4)
+  feedback {
+    when (answer == pick(j, 6, 4, 5) and pick(u + v - 1, 6, 5, 4) != pick(j, 6, 4, 5)) point=sides {
+      say "That side is in the same place in the list, not the matching one. Which two corners do its letters match?"
+    }
+  }
+  hint "Which corners of ABC do the two letters of {pick(j, \"PQ\", \"QR\", \"RP\")} match?"
+  hint "Find the side of ABC that joins those two corners."
+}

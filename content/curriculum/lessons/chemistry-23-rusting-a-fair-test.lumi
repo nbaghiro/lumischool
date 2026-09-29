@@ -23,6 +23,10 @@ lesson chemistry-rusting-a-fair-test v=1 format=worked grade=4 unit=6 subject=ch
     show chem.rust-oxygen n=3 m=10 easy-n=2 hard-n=5 hard-m=20
   }
 
+  remember {
+    say "Iron rusts only when it has both water and air."
+  }
+
   grown-ups """
     This is the classic rusting test (the Royal Society of Chemistry's nail experiment): one nail in
     water, one in dry air with a drying chemical, one in boiled water sealed under oil, one in salty

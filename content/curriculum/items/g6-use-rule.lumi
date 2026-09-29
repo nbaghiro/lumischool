@@ -1,0 +1,30 @@
+# The rule y = k × x used both ways: the unknown is y, or it is x, found by dividing.
+item proportion.use-rule v=1 skills=[proportion.direct, algebra.equations] {
+  title "Using the rule"
+  difficulty ((if ask == "x" then 1 else 0) + k / 4)
+  let k={1.5, 2.5, 3, 4} x={6, 8, 12, 14} ask={"y", "x"}
+  level easy {
+    let ask={"y"} k={3, 4}
+  }
+  level hard {
+    let ask={"x"} k={1.5, 2.5}
+  }
+
+  scene 35x14 {
+    unknown eq terms=["y", "=", "{k}", "×", "x"] at=canvas(1, 1)
+    text ask "Melting snow on the hut's stove, y is the litres of water and x is the minutes. The rule is y = {k} × x. {if ask == \"y\" then \"How many litres are melted in\" else \"How many minutes does it take to melt\"} {if ask == \"y\" then x else plain(k * x)} {if ask == \"y\" then \"minutes?\" else \"litres?\"}" narrate width=18 right-of=eq gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (if ask == "y" then k * x else x)
+  feedback {
+    when (ask == "x" and answer == k * k * x) point=eq {
+      say "Here y is known. Which number times {k} makes it?"
+    }
+    when (ask == "y" and answer == x / k) point=eq {
+      say "The rule multiplies the minutes by {k}."
+    }
+  }
+  hint "Which letter do you know, and which is the one to find?"
+  hint "Put the number you know into the rule. Multiply, or undo the multiplying by dividing."
+}

@@ -1,0 +1,36 @@
+# The two-star reason: metre is where the strong beats fall, not only how many there are. Each wrong
+# reason is one a child really holds: that the count of beats is the metre, or that syllables at the
+# end decide it. Lines from Tennyson's "The Brook" (1855, Gutenberg eBook 56913), Blake's "The
+# Tiger" (1794, eBook 1934) and Stevenson's "Where Go the Boats?" (1885, eBook 136).
+item reading.heart-same-metre v=1 stars=2 skills=[reading.metre, reasoning.explain] {
+  title "Is it the same metre?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let right={pick(k, "The beats fall in other places in each line.", "One starts on a strong beat, one on a weak.", "It goes da-DUM from its very first syllable.")}
+  let count={pick(k, "He is right: same beats, same metre.", "He is right: three beats each, one metre.", "She is right: ending weak makes a trochee.")}
+  let length={pick(k, "Metre counts syllables; the tiger has fewer.", "Metre counts syllables; that line has fewer.", "It has seven syllables, and odd makes iambs.")}
+
+  scene 36x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        person leo pose=think age=child hair=curly top=tang tone=2
+        bubble says "{pick(k, \"Tiger, tiger, burning bright and I come from haunts of coot and hern have the same metre. Both have four strong beats.\", \"Other little children and I make a sudden sally have the same metre. Both have three strong beats.\", \"Mia says Or slip between the ridges is a trochee line, because it ends on a weak syllable.\")}" width=16 from=leo
+        kingfisher bird flying=0 facing=-1
+      }
+      text ask "{pick(k, \"Why is Leo wrong?\", \"Why is Leo wrong?\", \"Why is Mia wrong?\")}" width=34
+      choice pick options=[pick(k, right, count, length), pick(k, count, length, right), pick(k, length, right, count)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == count) point=says {
+      say "Say both lines aloud and clap. Does the first clap fall on the first syllable in both?"
+    }
+    when (pick == length) point=says {
+      say "Count again, then clap. Is the number of syllables what makes da-DUM or DUM-da?"
+    }
+  }
+  hint "Say each line aloud and clap on the strong beats. Where is the first clap?"
+  hint "Metre is the pattern of weak and strong. Is the pattern the same in both?"
+}

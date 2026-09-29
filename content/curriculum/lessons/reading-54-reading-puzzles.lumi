@@ -1,0 +1,63 @@
+# Reading puzzles at the moon base: riddles whose clues only work together, space words read root by
+# root, a note with a clue that rules out, a shuffled log put back by the words that point back, and
+# a logic puzzle told in clues. Every puzzle was written for the lesson.
+lesson reading-moon-puzzles v=1 format=puzzles grade=6 unit=9 subject=reading levels=[easy, medium, hard] {
+  title "Reading puzzles on the moon"
+  goal "Use every clue, every root and every word that points back to solve a puzzle told in words."
+
+  puzzle stars=1 {
+    show reading.moon-riddle k=0 hard-k=2
+  }
+  puzzle stars=1 {
+    show reading.moon-roots k=0 hard-k=1
+  }
+  puzzle stars=2 {
+    show reading.lander-note k=0 hard-k=1
+    say "One clue says what the lander is not. Use it to cross one out."
+  }
+  puzzle stars=2 {
+    show reading.log-order k=0 easy-k=1 hard-k=2
+    say "Then, so, it and after that all point back to something. Find what."
+  }
+  puzzle stars=2 {
+    show reading.moon-riddle k=1 easy-k=3 hard-k=1
+  }
+  puzzle stars=2 {
+    show reading.moon-roots k=1 easy-k=3 hard-k=2
+  }
+  puzzle stars=2 {
+    show reading.lander-note k=2 easy-k=3 hard-k=2
+  }
+  puzzle stars=2 {
+    show reading.moon-theme-odd k=4 hard-k=5
+  }
+  level hard {
+    puzzle stars=2 {
+      show reading.log-order k=3
+    }
+  }
+  puzzle stars=3 {
+    show reading.moon-logic k=2 easy-k=0 hard-k=1
+  }
+  puzzle stars=3 {
+    show reading.write-moon-riddle k=0 hard-k=1
+  }
+
+  grown-ups """
+    These puzzles use the reading habits of the year: check an answer against every clue, split a
+    long word into its roots, follow the small words that point back (then, so, it, after that) to
+    put a text in order, and tell a theme from a setting or a form. Children stop at the first clue
+    that fits and choose a lander or a thing that fits half of it; ask them to check their answer
+    against every part. In the logic puzzle a clue that rules a pair out is a cross in the grid, and
+    a row with two crosses gives a tick. The last puzzle turns the riddles round, and is marked by
+    eye: check the child's two clues against every thing in the picture together. If a puzzle
+    stalls, read it aloud and stop after each clue. Off the page, write two-clue riddles about
+    things in the kitchen for each other.
+    """
+  level easy {
+    grown-ups "At this level the riddles are the lander and the rocket, the space words are the astronaut and the aquanaut, the landers are found by the most rungs and by neither the most nor the fewest, the log is the first walk, the odd text out is Kai's, whose form is no clue, the logic puzzle asks who drives, and the riddle to write is for the lander."
+  }
+  level hard {
+    grown-ups "At this level the riddles are the crater and the Earth, the space words are the moon drawing and the moon scientist, the landers are found by a comparison and by an odd number of rungs, the logs are the rover and the greenhouse, the odd text out is about rushing and the odd form is a trap, the logic puzzle asks who keeps the garden, and the riddle to write is for the crater."
+  }
+}

@@ -1,0 +1,31 @@
+# Grouping raw values into the classes of a histogram: a value on a class's edge belongs to the
+# class it starts or ends, so 10 and 14 both go in 10-14 and 15 goes in the next one.
+item data.group-the-hours v=1 skills=[data.histograms, data.tables] {
+  title "Into groups"
+  difficulty (v / 3)
+  let v=0..3
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+
+  scene 34x17 {
+    table data cols=6 cells=[pick(v, 12, 16, 3, 18), pick(v, 7, 9, 11, 24), pick(v, 15, 21, 20, 6), pick(v, 10, 14, 15, 13), pick(v, 22, 5, 9, 20), pick(v, 14, 19, 14, 15), pick(v, 9, 15, 19, 10), pick(v, 18, 24, 10, 21), pick(v, 11, 10, 22, 19), pick(v, 5, 12, 17, 9), pick(v, 20, 8, 5, 14), pick(v, 13, 17, 15, 23)] at=canvas(1, 1)
+    text ask "Ivo wrote down the hours of sunshine at the hut on twelve days. To draw a histogram he puts the days into groups: 0-4, 5-9, 10-14, 15-19 and 20-24 hours. How tall is the bar for {pick(v, \"10-14\", \"15-19\", \"10-14\", \"20-24\")} hours?" narrate width=32 below=data gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer pick(v, 5, 4, 3, 4)
+  feedback {
+    when (answer == pick(v, 3, 2, 1, 2)) point=data {
+      say "A value on the edge of a group, such as {pick(v, \"10 or 14\", \"15 or 19\", \"10 or 14\", \"20 or 24\")}, belongs to that group too."
+    }
+    when (answer == pick(v, 6, 5, 5, 5)) point=data {
+      say "Check the edges: the group stops at {pick(v, 14, 19, 14, 24)}, and the next group starts one hour later."
+    }
+  }
+  hint "Go through the twelve values one at a time and tick each one that belongs to the group."
+  hint "Which values sit exactly on the edges of the group? Are they in it?"
+}

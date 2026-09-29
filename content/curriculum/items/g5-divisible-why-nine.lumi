@@ -1,0 +1,32 @@
+# The second reason in the core: why the digit sum works. 100 is 99 + 1 and 10 is 9 + 1, so a number
+# is a multiple of 9 plus its digit sum, and the remainder on sharing into nines is the digit sum's.
+item divisible.why-nine v=1 skills=[number.multiples.divisibility, reasoning.explain] {
+  title "Why the digits"
+  difficulty (a + b + c)
+  let a=1..9 b=0..9 c=0..9
+  where ((a + b + c) % 9 != 0 and a + b + c > 9 and (a + b) % 9 != 0)
+  level easy {
+    where (a + b + c < 14)
+  }
+  level hard {
+    where (a + b + c > 17)
+  }
+
+  scene 36x19 {
+    sign board lines=["{a}{b}{c} = {a} × 99 + {b} × 9 + {a} + {b} + {c}"] kind=board color=glow at=canvas(1, 1)
+    text ask "The astronomer splits {a}{b}{c} like this on the board. {a} × 99 and {b} × 9 are both in the nine times table. What is left over when {a}{b}{c} is shared into nines?" narrate width=34 below=board gap=1
+    number-input answer width=2 below=ask gap=1
+  }
+
+  answer ((a + b + c) % 9)
+  feedback {
+    when (answer == a + b + c) point=board {
+      say "{a + b + c} is more than 9, so more nines can be taken out of it. What is left after that?"
+    }
+    when (answer == c) point=board {
+      say "The ones digit is the remainder for 10, not for 9. Look at the digits added at the end."
+    }
+  }
+  hint "Which part of the board is not already in the nine times table?"
+  hint "Add the three digits on their own. How many nines can come out of that total?"
+}

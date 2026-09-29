@@ -1,0 +1,73 @@
+lesson chemistry-the-air-the-crew-breathe v=1 format=teach grade=6 unit=7 subject=chemistry levels=[easy, medium, hard] {
+  title "The air the crew breathe and the plants make"
+  goal "Work out how breathing, burning and plants in light change the oxygen and carbon dioxide in a sealed space."
+
+  look {
+    scene 35x15 {
+      row all at=canvas(1, 0) space=2 align=end {
+        chamber c place=0 plants=1 candle=1 people=0 light=1 hours=0 show=1
+        lander l
+      }
+    }
+    say """
+      On the moon the crew live in a sealed cabin, so every breath matters. Breathing and burning
+      both take oxygen from the air and give out carbon dioxide. Green plants in the light do the
+      opposite: they take in carbon dioxide and give out oxygen. In the dark a plant only breathes.
+      On the Earth, burning coal, oil and gas adds carbon dioxide to the air, and more carbon
+      dioxide keeps more of the sun's heat in and warms the climate.
+      """
+  }
+  do {
+    show chem.cabin-gas v=0 easy-v=1 hard-v=3
+    level easy {
+      worked chem.cabin-oxygen v=0 level=medium
+    }
+    show chem.cabin-oxygen v=2 easy-v=1 hard-v=4
+    show chem.jar-relights v=0 easy-v=1 hard-v=2
+    show chem.cabin-gas v=2 easy-v=0 hard-v=5
+    show chem.jar-oxygen v=2 easy-v=0 hard-v=4
+    show chem.co2-record w=1 r=0 easy-w=0 easy-r=1 hard-r=1
+    level hard {
+      show chem.co2-record w=2 r=0
+    }
+    show chem.cabin-oxygen v=3 easy-v=2 hard-v=5
+  }
+  story {
+    show chem.cabin-backwards v=2 easy-v=1 hard-v=5
+  }
+  try stars=2 {
+    show chem.plant-dark
+  }
+  try stars=3 {
+    show chem.trays-needed q=1 easy-q=0 hard-q=2
+  }
+  remember {
+    say "Breathing and burning use oxygen and make carbon dioxide; plants in light take in carbon dioxide and give out oxygen."
+  }
+
+  grown-ups """
+    The idea is the exchange of two gases: people, animals and flames take in oxygen and give out
+    carbon dioxide, and green plants in light take in carbon dioxide and give out oxygen, while in
+    the dark a plant only breathes like us. The rates in the cabin and the jar are the drawing's
+    own model, and the questions call them "these readings": they keep the sums whole, and a real
+    cabin is much larger and has machines that clean its air. The real numbers are that air is
+    about 21 per cent oxygen, a candle under a jar goes out at about 16 per cent, and the
+    carbon dioxide measured at Mauna Loa rose from about 317 parts in a million in 1960 to 414 in
+    2020. The wrong ideas to watch for are that plants never use oxygen (the two-star question) and
+    that plants breathe in carbon dioxide the way we breathe in oxygen. The three-star question has
+    no rate given: the child works out what a person uses and a tray gives back from the two cards.
+    If the child is lost, list who is in the space and write beside each one "uses oxygen" or
+    "makes oxygen", then stay here another day. Off the page, put a pot of cress on a sunny sill and
+    another in a dark cupboard for a week, and compare. The official line this lesson meets is
+    China's 2022 science standard for grades 5 and 6, section 1.2 ②:
+    "知道空气是一种混合物，含有氮气、氧气、二氧化碳等气体" (know that air is a mixture holding nitrogen,
+    oxygen, carbon dioxide and other gases), which the lesson takes on to what uses and makes two
+    of them.
+    """
+  level easy {
+    grown-ups "At this level the cabin holds only crew, the oxygen is worked once in the teacher's pen for one person, the jar's candle is relit after a plant has had light or with no plant, the graph is read for one year, the story has one or two crew, and the three-star asks how many trays a crew of three needs."
+  }
+  level hard {
+    grown-ups "At this level the cabin has seedlings in the dark or enough to balance the crew, the oxygen falls over long shifts, the jar is kept dark or holds two plants, the graph compares two decades' rises, the story has three crew and a lower floor, and the three-star works the oxygen after eight hours from the two cards."
+  }
+}

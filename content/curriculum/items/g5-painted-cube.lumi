@@ -1,0 +1,31 @@
+# The painted cube: a big cube painted on the outside and cut into small cubes. Corners have three
+# painted faces, edges two, faces one and the hidden middle none; one of those is counted.
+item puzzle.painted-cube v=1 stars=3 skills=[volume.cuboids, reasoning.structure] {
+  title "The painted cube"
+  difficulty (n + (if f == 1 or f == 0 then 1 else 0))
+  let n=3..5 f=0..3
+  level easy {
+    let n={3} f={2, 3}
+  }
+  level hard {
+    let n={5} f={0, 1}
+  }
+
+  scene 36x18 {
+    cubestack cube l=n w=n h=n at=canvas(1, 1)
+    text ask "A stone cube for the temple is painted red all over the outside, then cut into {n * n * n} small cubes, {n} by {n} by {n}. How many of the small cubes have exactly {pick(f, \"no\", \"one\", \"two\", \"three\")} painted {if f == 1 then \"face\" else \"faces\"}?" narrate width=14 right-of=cube gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer pick(f, (n - 2) ^ 3, 6 * (n - 2) ^ 2, 12 * (n - 2), 8)
+  feedback {
+    when (f == 2 and answer == 12 * n) point=cube {
+      say "The corner cubes on each edge have three painted faces. Leave them out."
+    }
+    when (f == 3 and answer != 8) point=cube {
+      say "Only the corners show three faces. How many corners does a cube have?"
+    }
+  }
+  hint "Where on the big cube are the small cubes with that many painted faces: corners, edges, faces or hidden inside?"
+  hint "Count one edge or one face, then how many edges or faces a cube has."
+}

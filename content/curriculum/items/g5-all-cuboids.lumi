@@ -1,0 +1,28 @@
+# The three-star: every cuboid that uses exactly n cubes, counting a cuboid once whichever way it
+# stands. A count, found by listing the edges in order.
+item volume.all-cuboids v=1 stars=3 skills=[volume.cuboids, reasoning.all-the-ways] {
+  title "Every cuboid"
+  difficulty n
+  let n={12, 24, 30, 36}
+  level easy {
+    let n={12}
+  }
+  level hard {
+    let n={36}
+  }
+
+  scene 33x14 {
+    cubestack stack l=4 w=3 h=2 count=2 at=canvas(1, 1)
+    text ask "This cuboid uses 24 cubes. How many different cuboids can be built with exactly {n} cubes? A cuboid turned round or on its side counts once, and 1 by 1 by {n} counts." narrate width=15 right-of=stack gap=2
+    number-input answer width=3 below=stack gap=1
+  }
+
+  answer (if n == 12 then 4 else if n == 24 then 6 else if n == 30 then 5 else 8)
+  feedback {
+    when (answer == (if n == 12 then 3 else if n == 24 then 5 else if n == 30 then 4 else 7)) point=ask {
+      say "Close. Did you count the long thin one, 1 by 1 by {n}?"
+    }
+  }
+  hint "Start with a height of 1. Which floors make {n}?"
+  hint "Then try a smallest edge of 2, then 3. Keep the edges in order, smallest first."
+}

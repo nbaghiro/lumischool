@@ -1,0 +1,19 @@
+# The three-star question: the two accounts joined into one short report for the town paper, which
+# takes a fact from each and must not contradict either. A grown-up marks it against the look-for.
+item reading.one-report v=1 stars=3 skills=[reading.comparison, writing.composition] {
+  title "One report from two accounts"
+  let k=0..1
+
+  scene 36x36 {
+    column all at=canvas(0, 1) space=1 align=start {
+      passage diary title="Mira's diary, 3 March" text="Gran woke me at nine, and we ran up to the cliff in our coats. The comet hung over the sea like a white feather, its tail as long as my arm. Everyone went quiet. I did not feel the cold." width=35 numbers=false
+      passage log title="Dr Osei's log, 3 March" text="Comet Arlen first seen at 8.40 pm, low in the west over the sea. Tail 20 degrees long. About sixty people on the cliff path. Frost by 10 pm. Seen again on 4 March, fainter." width=35 numbers=false
+      text ask "{pick(k, \"Write two sentences for the town paper, with something from each account.\", \"Write two sentences for readers who missed it, with something from each.\")}" width=35
+      writinglines lines lines=3 width=35 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="Two sentences in the voice of a report, not a diary (no I), with at least one fact from the log (the time, the sixty people, the frost, the second night) and one detail from the diary (the white feather, the silence). Nothing in them may contradict either account: for instance, the comet was first seen at 8.40 pm, not at nine."
+  hint "Pick the one fact from the log a reader most needs, and the one picture from the diary that makes them see it."
+  hint "Check each sentence against both accounts. Is anything in it wrong for either?"
+}

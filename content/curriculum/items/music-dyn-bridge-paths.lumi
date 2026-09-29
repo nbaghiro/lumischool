@@ -1,0 +1,41 @@
+# The three-star count: one mark to a bar, each one step louder or softer than the last, on the ladder
+# pp (0) to ff (5). p to mp by bar 4: 3 ways. pp to mf by bar 6: 4, since it cannot start softer
+# than pp. f back to f by bar 5: 5 of the 6 orders, since up twice from f would pass ff.
+item music.dyn-bridge-paths v=1 stars=3 skills=[music.dynamics, reasoning.all-the-ways] {
+  title "Every way across the bridge"
+  difficulty v
+  let v=0..2
+  let a={pick(v, "p", "pp", "f")}
+  let n={pick(v, 4, 6, 5)}
+  let b={pick(v, "mp", "mf", "f")}
+  let right={pick(v, 3, 4, 5)}
+  let loose={pick(v, 0, 5, 6)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x20 {
+    row top space=2 align=end at=canvas(1, 1) {
+      dynamics ladder marks=["pp", "p", "mp", "mf", "f", "ff"] words=true ring=-1
+      kingfisher bird flying=1 facing=-1
+    }
+    text ask "The band crosses the rope bridge playing one mark to a bar. Each bar is one step louder or one step softer than the bar before, and nothing is softer than pp or louder than ff. Bar 1 is {a} and bar {n} must be {b}. How many different ways can the marks go?" narrate width=34 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == loose and v == 1) point=ladder {
+      say "One of those ways starts by going softer than pp, which the ladder does not allow."
+    }
+    when (answer == loose and v == 2) point=ladder {
+      say "One of those ways goes up twice from f, past ff, which the ladder does not allow."
+    }
+  }
+  hint "How many steps up and how many steps down must there be altogether?"
+  hint "Write each way as a row of ups and downs, and check none of them runs off the ladder."
+  hint "Count the rows that work."
+}

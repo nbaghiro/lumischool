@@ -1,0 +1,27 @@
+# The three-star: Isla's entry for the day the sledge reached the iceberg, written to constraints and
+# marked by a grown-up; at hard, two entries on two days, the second picking up the first's plan.
+item writing.write-diary v=1 stars=3 skills=[writing.diaries, writing.composing] {
+  title "Your diary entry"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x35 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      sledge sl slats=5
+      iceberg berg under=0
+      puffins pf count=2 facing=-1
+    }
+    text ask "{if k == 0 then \"Write Isla's diary entry for the day the sledge reached the iceberg. Give it a date. Use I and we and the past tense, three time words, one detail a reader could see or hear, one feeling, and a last line that looks ahead.\" else \"Write two of Isla's entries, for the day the sledge set off and the day it reached the iceberg. Each has a date, the past tense, time words, a detail to see or hear and a feeling; the second picks up where the first one's last line looked ahead.\"}" narrate width=33 below=pics gap=1
+    writinglines lines lines=6 width=33 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A date at the top, the first person throughout (I, we), the day told in the past tense in the order it happened with at least three time words or phrases (at six, by noon, once the ropes were tight), at least one detail a reader could see or hear, at least one feeling said or shown, and a last line about what comes next; at hard, a second dated entry that picks up the first one's plan and says whether it happened."
+  hint "Before writing, say the day aloud in four parts: the start, the journey, the iceberg, the evening."
+  hint "Read your last line. Does it say what Isla hopes or plans for next?"
+}

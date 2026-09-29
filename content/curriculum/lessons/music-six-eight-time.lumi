@@ -1,0 +1,68 @@
+# Six-eight time: six quavers to a bar felt as two big beats of three, read in quavers, told from
+# three-four by where the notes start, and tapped, with Row, Row, Row Your Boat (traditional) and a
+# jig on the midnight sun's ice shelf.
+lesson music-six-eight-time v=1 format=teach grade=6 unit=2 subject=music levels=[easy, medium, hard] {
+  title "Six-eight time"
+  goal "Count six-eight as two big beats of three quavers, and read and tap its rhythms."
+
+  look {
+    scene 35x13 {
+      row top space=2 align=end at=canvas(1, 1) {
+        notes row clef=treble notes=[C5, C5, C5, D5, E5] values=[1.5, 1.5, 1, 0.5, 1.5] meter=6 quavers=true
+        seal seal rock=1 facing=-1
+      }
+    }
+    say """
+      The crew row out from the research hut to count seals, singing Row, Row, Row Your Boat to keep
+      their oars together. The song is in six-eight: six quavers in a bar, felt as two big beats of
+      three. Count 1 2 3 4 5 6 and pull on 1 and 4. A dotted crotchet lasts three quavers, a whole big
+      beat, so each row is one stroke. A crotchet then a quaver fills a big beat too, long then short,
+      which is the swing of a jig.
+      """
+  }
+  do {
+    practice music.six8-quavers-in count=1 seed=7 easy-seed=5 hard-seed=7
+    level easy {
+      worked music.six8-where-starts k=2 level=medium
+    }
+    practice music.six8-where-starts count=1 seed=5 easy-seed=1 hard-seed=7
+    practice music.six8-fill-bar count=1 seed=2 easy-seed=2 hard-seed=2
+    show music.six8-where-starts k=1 hard-k=4
+    show music.six8-tap-row
+    practice music.six8-which-jig count=1 seed=2 easy-seed=1 hard-seed=1
+    show music.six8-tap-sledge
+    level hard {
+      show music.six8-claim q=1 r=1
+    }
+    practice music.iceberg-row-strokes count=1 seed=2 easy-seed=1 hard-seed=1
+  }
+  try stars=2 {
+    show music.six8-claim q=0 r=0 easy-r=1 hard-r=0
+  }
+  try stars=3 {
+    show music.six8-all-ways v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "Six-eight is six quavers in a bar, felt as two big beats: 1 2 3, 4 5 6."
+  }
+
+  grown-ups """
+    The idea is that six-eight counts quavers and groups them in threes, so a bar has two big beats,
+    on 1 and 4, and a dotted crotchet lasts one big beat. The wrong ideas to watch for are counting
+    six-eight in crotchets, so a dotted crotchet reads as one and a half and the bar never adds up,
+    and hearing it as six beats or as three-four, which also holds six quavers but in three twos. In
+    the working, look for the child writing the count under each note before answering. The two-star
+    question sets a bar of three-four beside a bar of six-eight; the three-star question counts every
+    bar made from shapes that each fill a big beat, which is a multiplication once the shapes for
+    one beat are listed. A child who is stuck can march or row to the song, stepping on 1 and 4, and
+    go back to the way in; stay on this lesson another day if dotted notes are still read short. The
+    taps are judged on the music page; on paper you are the judge. Off the page, sing Row, Row, Row
+    Your Boat or Here We Go Round the Mulberry Bush and clap only the big beats.
+    """
+  level easy {
+    grown-ups "At this level the notes to count are a quaver, crotchet or dotted crotchet, where a note starts is worked once in the teacher's pen before bars of crotchets and quavers, the bars to fill need a quaver, a crotchet or a dotted crotchet, the jig is found among plain waltzes, the crew's strokes are counted for one time through, the two-star is as written with its answers in another order, and the three-star counts bars from two shapes."
+  }
+  level hard {
+    grown-ups "At this level the notes to count include the dotted minim, the notes to place come later in bars that start with a quaver or a dotted crotchet, the jig hides among waltzes with long notes across the beat, a claim that six-eight has six beats is judged before the two-star, the crew's distance is turned into times through the song, and the three-star counts bars from four shapes with the two beats different."
+  }
+}

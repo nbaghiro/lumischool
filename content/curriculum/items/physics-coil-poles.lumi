@@ -1,0 +1,37 @@
+# Two stars: the coil makes the nail's point a pole, and turning the cell round sends the current the
+# other way and swaps the poles, so a bar magnet's end that was pushed away is now pulled. v = 2 turns
+# the cell round twice, which puts the poles back.
+item physics.coil-poles v=1 stars=2 skills=[physics.magnets, physics.circuits, reasoning.explain] {
+  title "Turn the cell round"
+  let v=0..2
+  let first={pick(v, "north", "south", "north")}
+  let turned={pick(v, "She turns the cell round the other way.", "She turns the cell round the other way.", "She turns the cell round, and then round again.")}
+  let ans={pick(v, "It pulls it: the point is now the other pole", "It pulls it: the point is now the other pole", "It pushes it away, as before")}
+
+  scene 36x39 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      electromagnet e turns=20 cells=1 core=0 closed=1 show=1
+      magnet m mode=poles same=1
+    }
+    text ask "With the switch closed, the point of Mia's nail is a {first} pole, so it pushes away the {first} end of her bar magnet, the way the like poles drawn push apart. {turned} What does the nail's point do to that end of the bar magnet now?" narrate width=34 below=kit gap=1
+    choice pick options=["It pulls it: the point is now the other pole", "It pushes it away, as before", "Nothing: the nail stops being a magnet", "It pulls it: magnets pull anything iron"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "Nothing: the nail stops being a magnet") point=e {
+      say "The loop is still closed, so electricity still flows round the coil, only the other way."
+    }
+    when (pick == "It pulls it: magnets pull anything iron") point=m {
+      say "Two magnets can push apart as well as pull. Which way round are the nail's poles now?"
+    }
+    when (pick == "It pushes it away, as before" and v != 2) point=e {
+      say "The electricity now goes round the coil the other way. What does that do to the nail's poles?"
+    }
+    when (pick == "It pulls it: the point is now the other pole" and v == 2) point=e {
+      say "Turning the cell round swaps the poles. What does turning it round a second time do?"
+    }
+  }
+  hint "What does turning the cell round do to the way the electricity goes round the coil?"
+  hint "Like poles push apart and unlike poles pull together. Which pole is the point now?"
+}

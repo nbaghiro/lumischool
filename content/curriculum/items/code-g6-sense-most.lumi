@@ -1,0 +1,34 @@
+# Three-star: the highest number the switch-on test can use and still keep the heater to a given
+# number of times in 30 minutes. The child finds the pattern of warming and cooling, or tries numbers
+# from the top down, since a higher number makes the heater come on sooner and more often.
+item coding.sense-most v=1 stars=3 skills=[coding.sensors, coding.simulation, reasoning.planning] {
+  title "The warmest setting that is not too often"
+  difficulty k
+  let k=0..2
+  let h={pick(k, 2, 2, 3)} n={pick(k, 3, 2, 3)} most={pick(k, 18, 15, 16)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x27 {
+    program p code=["repeat 30", "  if temp is less than {most}", "    switch heater on", "  if temp is more than 21", "    switch heater off", "  wait 1"] text=true sense=["temp starts 15 changes -1 heater {h}"] blank=2 at=canvas(0, 0)
+    weatherstation ws cups=3 right-of=p gap=3
+    text ask "The hut starts at 15 °C. It cools by 1 degree a minute and warms by {h - 1} a minute while the heater is on. Line 2 has rubbed off: it said if temp is less than a number. It was the highest whole number that lets the heater come on no more than {n} times in the 30 minutes. What was it?" width=34 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer most
+  feedback {
+    when (answer > most) point=p {
+      say "Try {answer} in line 2 and count. Does the heater come on more than {n} times?"
+    }
+    when (answer < most) point=p {
+      say "That works, but a higher number works too. Try one more."
+    }
+  }
+  hint "Try a number in line 2 and count how often the heater comes on in 30 minutes. Is it too many, or could the number go higher?"
+  hint "A higher number means the heater comes on sooner. Where does the count go past {n}?"
+}

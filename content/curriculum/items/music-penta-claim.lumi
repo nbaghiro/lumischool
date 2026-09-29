@@ -1,0 +1,29 @@
+# The two-star reason: five notes do not make a major pentatonic scale on their own; what matters is
+# the steps, and the major pentatonic has no semitone. Sakura's E F A B C has two; the Birch Tree's
+# first line, E D C B A, has one (B to C).
+item music.penta-claim v=1 stars=2 skills=[music.pentatonic, reasoning.claims] {
+  title "Five notes, same scale?"
+  let q=0..1 r=0..2
+  let claim={pick(q, "Sakura uses five notes, E F A B C, and so does Mo Li Hua, C D E G A. Leo says they use the same kind of scale.", "The first line of The Birch Tree uses five notes, E D C B A. Ana says it is in the major pentatonic scale.")}
+  let right={pick(q, "No: Sakura has semitone steps, Mo Li Hua none", "No: B to C is a semitone step")}
+  let w1={pick(q, "Yes: any five notes make the same scale", "Yes: any five notes are pentatonic")}
+  let w2={pick(q, "No: Sakura has more notes", "No: it would have to start on C")}
+
+  scene 36x23 {
+    table steps cols=7 head=["C-D", "D-E", "E-F", "F-G", "G-A", "A-B", "B-C"] cells=["2", "2", "1", "2", "2", "2", "1"] at=canvas(1, 1)
+    text ask "{claim} Is that right, and why?" narrate width=34 below=steps gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=steps {
+      say "Work out the steps between neighbouring notes with the table. Are they the same kinds of step in both?"
+    }
+    when (pick == w2) point=steps {
+      say "{if q == 0 then \"Count the notes in each. Is the number different?\" else \"A pentatonic scale can start on any note. Look at the steps instead.\"}"
+    }
+  }
+  hint "Use the table to find the semitones between each pair of neighbouring notes."
+  hint "How many semitone steps does a major pentatonic scale have?"
+}

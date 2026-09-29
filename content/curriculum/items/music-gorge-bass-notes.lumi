@@ -1,0 +1,40 @@
+# The story: the bass player on the rope bridge plays the chord's own note on every beat, four to a bar.
+# F (chord IV) comes in three bars, so 12 times; G (V) in one, so 4; three times through, C (I) in 8
+# bars each time is 96.
+item music.gorge-bass-notes v=1 skills=[music.blues, music.chords] {
+  title "The bass on the bridge"
+  difficulty q
+  let q=0..2
+  let ask={pick(q, "How many times does he play G in one time through?", "How many times does he play F in one time through?", "The band plays the blues three times. How many times does he play C?")}
+  let right={pick(q, 4, 12, 96)}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=2..2
+  }
+
+  scene 36x29 {
+    table chart cols=5 head=["Bars", "1st", "2nd", "3rd", "4th"] cells=["1 to 4", "C", "C", "C", "C", "5 to 8", "F", "F", "C", "C", "9 to 12", "G7", "F", "C", "C"] at=canvas(1, 1)
+    row low space=2 align=end below=chart gap=1 {
+      text ask "Ben plays the bass on the rope bridge. On every beat, four to a bar, he plays the letter of the chord in that bar, so G for G7. {ask}" narrate width=16
+      ropebridge bridge planks=5 gaps=0
+    }
+    number-input answer below=low gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer * 4 == right) point=chart {
+      say "That counts bars. He plays four times in every bar."
+    }
+    when (q == 1 and answer == 8) point=chart {
+      say "F comes back in bar 10, in the last line."
+    }
+    when (q == 2 and answer == 32) point=chart {
+      say "That is C for one time through. The band plays it three times."
+    }
+  }
+  hint "In how many bars is the chord you want?"
+  hint "Four notes a bar, so multiply by 4."
+}

@@ -1,0 +1,35 @@
+# The story: the team pulls supplies from the hut and crosses from snow onto smooth sea ice, where the
+# friction drops but the dogs keep pulling as hard, so the forces are no longer balanced.
+item physics.sledge-sea-ice v=1 skills=[physics.forces, physics.friction, physics.motion] {
+  title "Onto the sea ice"
+  difficulty (if v == 0 then 0 else 1)
+  let v=0..2
+  level easy {
+    let v={0}
+  }
+  level hard {
+    let v={2}
+  }
+  let p={pick(v, 150, 180, 240)}
+  let ice={pick(v, 40, 55, 70)}
+
+  scene 30x37 {
+    sledgeforce s forward=[p] back=[ice] weight=0 moving=1 show=0 names=1 at=canvas(1, 0)
+    text ask "The dogs pull the supply sledge from the hut at a steady speed with {p} N. Then it slides onto smooth sea ice, where friction is only {ice} N, as drawn, and the dogs pull just as hard. What is the net force now, in newtons?" narrate width=27 below=s gap=1
+    number-input net below=ask gap=1
+    text then "What does the sledge do on the sea ice?" narrate width=27 below=net gap=1
+    choice pick options=["Speeds up", "Keeps a steady speed", "Slows down"] stack=column below=then gap=1
+  }
+
+  check physics.forces of=s net=net pick=motion
+  feedback {
+    when (pick == "Keeps a steady speed") point=s {
+      say "It kept a steady speed on the snow because the forces balanced there. Do they still balance on the ice?"
+    }
+    when (net == p) point=s {
+      say "There is still some friction on the ice. Take it away from the pull."
+    }
+  }
+  hint "On the snow the pull and friction balanced. What changed on the ice?"
+  hint "Which is bigger now, the pull or the friction?"
+}

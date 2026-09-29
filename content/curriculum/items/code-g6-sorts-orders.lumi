@@ -1,0 +1,30 @@
+# Three-star: every order of four planks, counted by how many swaps the bubble sort makes, which is how
+# many pairs are out of order. The 24 orders give 1, 3, 5, 6, 5, 3 and 1 lists for 0 to 6 swaps.
+item coding.sorts-orders v=1 stars=3 skills=[coding.algorithms, reasoning.all-the-ways] {
+  title "How many orders take this many swaps?"
+  difficulty k
+  let k=0..2
+  let n={k + 1}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x17 {
+    sortcards sc cards=[1, 3, 2, 4] compare=0 swap=false at=canvas(1, 0)
+    text ask "Four planks of lengths 1, 2, 3 and 4 can be put in a row in 24 orders. The bubble sort swaps once for every pair that is the wrong way round, so 1, 3, 2, 4 takes 1 swap. How many of the 24 orders take exactly {n} {if n == 1 then \"swap\" else \"swaps\"}?" width=20 right-of=sc gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 3, 5, 6)
+  feedback {
+    when (answer == pick(k, 1, 2, 3)) point=sc {
+      say "There are more ways than that. Try swapping each pair of neighbours in 1, 2, 3, 4, then two swaps from there."
+    }
+  }
+  hint "Start from the order already sorted, which takes no swaps. Which orders are one swap of neighbours away from it?"
+  hint "List orders in a column and count the pairs out of order in each."
+  hint "Keep the list tidy so no order is counted twice."
+}

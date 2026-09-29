@@ -1,0 +1,28 @@
+# Three-star: a bubble sort with only two passes sorts most orders of four but not all. It fails
+# exactly when the shortest plank starts last, since each pass moves it only one place towards the front.
+item coding.puzzle-passes v=1 stars=3 skills=[coding.debugging, coding.algorithms, reasoning.explain] {
+  title "Two passes are not always enough"
+  difficulty k
+  let k=0..2
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x33 {
+    program p code=["set logs to list a, b, c, d", "repeat 2", "  set i to 1", "  repeat 3", "    set j to i + 1", "    if item i of logs is more than item j of logs", "      set t to item i of logs", "      replace item i of logs with item j of logs", "      replace item j of logs with t", "    add 1 to i"] text=true at=canvas(0, 0)
+    text ask "This bubble sort makes only 2 passes. It is given each of these lists as a, b, c, d. Which list does it leave out of order? A: {pick(k, \"4, 3, 1, 2\", \"2, 4, 3, 1\", \"3, 1, 4, 2\")}. B: {pick(k, \"2, 3, 4, 1\", \"4, 1, 3, 2\", \"4, 3, 2, 1\")}. C: {pick(k, \"3, 4, 1, 2\", \"3, 2, 1, 4\", \"1, 4, 3, 2\")}." width=34 at=canvas(0, 23)
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=pick(k, "B", "A", "B")
+  feedback {
+    when (pick == pick(k, "A", "B", "A")) point=p {
+      say "The longest plank reaches the end in the first pass, however far back it starts. Which plank moves only one place a pass?"
+    }
+  }
+  hint "Try one list by hand, pass by pass. Which plank moves furthest in one pass, and which moves least?"
+  hint "Which plank moves least in a pass, and which way does it move?"
+}

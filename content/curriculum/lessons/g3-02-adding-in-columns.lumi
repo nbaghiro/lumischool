@@ -25,6 +25,10 @@ lesson g3-adding-in-columns v=1 format=worked grade=3 unit=1 subject=maths level
     show add.biggest-total a=1 b=3 c=4 d=6 e=7 f=8 hard-c=5 hard-f=9
   }
 
+  remember {
+    say "Add from the right, and carry into the next column whenever a column makes ten or more."
+  }
+
   grown-ups """
     Ask what the carried digit is worth each time. Ten, then a hundred, and saying so out loud is
     what keeps the method from becoming a trick. The bar questions have the missing number in the

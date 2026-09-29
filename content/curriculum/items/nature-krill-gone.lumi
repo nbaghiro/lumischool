@@ -1,0 +1,41 @@
+# The three-star: one animal vanishes from the ice shelf's web, and the child follows the loss up
+# every chain to count the animals left with nothing to eat. The whale keeps krill when the fish go;
+# at hard the child also has to find which one animal's loss does most harm.
+item nature.krill-gone v=1 stars=3 skills=[nature.food-webs, reasoning.systematic] {
+  title "Nothing left to eat"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "Suppose every small fish vanished. How many kinds of animal would in the end have nothing at all to eat?", "Suppose all the krill vanished. How many kinds of animal would in the end have nothing at all to eat?", "Suppose one kind of animal vanished (not the tiny plants). Choose the one that leaves the most other animals with nothing at all to eat. How many animals is that?")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x24 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      whale pw spout=0 facing=1
+      fishshoal fs rows=2 cols=4 facing=-1
+    }
+    text web "Tiny plants grow under the ice. Krill eat the tiny plants. Small fish eat krill. Whales eat krill and small fish. Puffins and seals eat small fish. Polar bears eat seals." narrate width=32 below=pics gap=1
+    text ask "{asks}" narrate width=32 below=web gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 3, 5, 5)
+  feedback {
+    when (k == 0 and answer == 4) point=pw {
+      say "The whale loses the small fish, but it still has something else to eat."
+    }
+    when (k == 0 and answer == 2) point=web {
+      say "Puffins and seals starve. Then what happens to the animal that eats seals?"
+    }
+    when (k >= 1 and answer == 1) point=web {
+      say "The small fish go first, but the loss does not stop there. Follow it up every chain."
+    }
+  }
+  hint "Cross out the animal that vanished. Which animals had it as their only food?"
+  hint "Cross those out too, and keep going until no more animals lose all their food."
+  hint "An animal with two foods is only in trouble if both are crossed out."
+}

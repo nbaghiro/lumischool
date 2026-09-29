@@ -1,0 +1,46 @@
+# A bar missing from the blues chart written in chords: I, IV or V of C on the ukulele (C, F, G7), or
+# of G and A on the guitar (G, C, D and A, D, E), found from where the bar sits in the twelve.
+item music.blues-missing-bar v=1 skills=[music.blues, music.chords] {
+  title "The missing bar"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..5
+  let key={pick(k, "C", "C", "G", "A", "A", "G")}
+  let inst={pick(k, "ukulele", "ukulele", "guitar", "guitar", "guitar", "guitar")}
+  let c1={pick(k, "C", "C", "G", "A", "A", "G")}
+  let c2={pick(k, "C", "C", "G", "A", "A", "G")}
+  let c3={pick(k, "C", "C", "G", "A", "A", "G")}
+  let c4={pick(k, "C", "C", "G", "A", "A", "G")}
+  let c5={pick(k, "?", "F", "C", "D", "D", "C")}
+  let c6={pick(k, "F", "F", "?", "D", "D", "C")}
+  let c7={pick(k, "C", "C", "G", "A", "A", "G")}
+  let c8={pick(k, "C", "C", "G", "A", "A", "G")}
+  let c9={pick(k, "G7", "?", "D", "E", "?", "?")}
+  let c10={pick(k, "F", "F", "C", "?", "D", "C")}
+  let c11={pick(k, "C", "C", "G", "A", "A", "G")}
+  let c12={pick(k, "C", "C", "G", "A", "A", "G")}
+  let right={pick(k, "F", "G7", "C", "D", "E", "D")}
+  let o1={pick(k, "C", "C", "G", "A", "A", "G")}
+  let o2={pick(k, "F", "F", "C", "D", "D", "C")}
+  let o3={pick(k, "G7", "G7", "D", "E", "E", "D")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..5
+  }
+
+  scene 36x20 {
+    table chart cols=5 head=["Bars", "1st", "2nd", "3rd", "4th"] cells=["1 to 4", c1, c2, c3, c4, "5 to 8", c5, c6, c7, c8, "9 to 12", c9, c10, c11, c12] at=canvas(1, 1)
+    text ask "The band's blues in {key} major on the {inst}, with one bar rubbed out by the spray. Which chord goes in it?" narrate width=34 below=chart gap=1
+    choice pick options=[o1, o2, o3] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=chart {
+      say "Every blues follows the same plan: four bars of I, two of IV, two of I, then V, IV, I, I. Which bar of the plan is missing?"
+    }
+  }
+  hint "Which bar number is missing? Go along the lines from bar 1."
+  hint "In {key} major, which chord is I, which is IV and which is V?"
+}

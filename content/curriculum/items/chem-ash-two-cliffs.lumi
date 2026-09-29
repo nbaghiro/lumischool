@@ -1,0 +1,40 @@
+# Two stars: a band of volcanic ash falls in a short time over a wide area, so it is the same age in
+# both cliffs and lets layers in different cliffs be compared (BGS; Japan grade 6 B(4)). A layer
+# lower in its own cliff is not always older than one in another cliff.
+item chem.ash-two-cliffs v=1 stars=2 skills=[chemistry.rocks, reasoning.order, reasoning.evidence] {
+  title "The same ash in two cliffs"
+  difficulty (if v >= 2 then 1 else 0)
+  let v=0..3
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+  let a1={pick(v, 2, 3, 4, 2)}
+  let a2={pick(v, 4, 2, 3, 5)}
+  let p={pick(v, 1, 4, 2, 3)}
+  let q={pick(v, 5, 1, 4, 4)}
+  let right={pick(v, "the right cliff's layer", "the left cliff's layer", "the right cliff's layer", "the left cliff's layer")}
+
+  scene 33x31 {
+    row kit at=canvas(1, 0) space=3 align=start {
+      strata s1 layers=5 names=0 ash=a1 fault=0
+      strata s2 layers=6 names=0 ash=a2 fault=0
+    }
+    text ask "The two cliffs face each other across the gorge, and the same band of ash from one eruption runs through both. Which is older: layer {p} from the top in the left cliff, or layer {q} from the top in the right cliff?" narrate width=32 below=kit gap=1
+    choice pick options=["the left cliff's layer", "the right cliff's layer", "you cannot tell"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "you cannot tell") point=kit {
+      say "The ash fell on both sides at the same time. Is each layer above its cliff's ash, or below it?"
+    }
+    when (pick != right and pick != "you cannot tell") point=kit {
+      say "Being further down one cliff does not make a layer older than a layer in the other cliff. Compare each with the ash."
+    }
+  }
+  hint "Find the ash band in each cliff. Is the left layer above or below it?"
+  hint "Is the right layer above or below its ash? Which of the two was laid down before the eruption?"
+}

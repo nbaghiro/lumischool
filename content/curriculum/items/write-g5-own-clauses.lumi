@@ -1,0 +1,27 @@
+# The three-star: sentences of the child's own about the canal, each with a clause of extra news
+# started by a different word, with its commas; at hard, a pair where the commas change the meaning.
+item writing.own-clauses v=1 stars=3 skills=[writing.relative-clauses, writing.composing] {
+  title "Your sentences with clauses"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x34 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      canallock lock level=1 boat=1
+      windmill mill sails=4 turn=40
+      person keeper pose=point age=grownup hair=short colour=grey top=mint
+    }
+    text ask "{if k == 0 then \"Write three sentences about the pictures: one with a who clause, one with a which clause and one with a where clause, each with its commas.\" else \"Write three sentences about the pictures with who, which and where clauses. Then write one sentence twice, with and without commas, so that it means two different things.\"}" narrate width=34 below=pics gap=1
+    writinglines lines lines=5 width=34 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Three sentences, each with a relative clause that starts with the right word (who for Mr Hale or a person, which for the mill, the boat or the lock, where for a place where something happens), sitting straight after the thing it describes, with a comma at each end in the middle of a sentence or one comma before it at the end; at hard, a fourth pair where the sentence without commas picks out some and the one with commas speaks of all."
+  hint "Start with a plain sentence about one picture. Then tuck in extra news about the thing it names."
+  hint "Read each sentence without its clause. Does it still stand on its own?"
+}

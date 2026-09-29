@@ -1,0 +1,32 @@
+# Real works sorted by kind: Michelangelo's David (1501 to 1504), carved from one block of marble
+# and walked all round; Ghiberti's Gates of Paradise at the Florence Baptistery, bronze doors with
+# scenes in high and low relief; and the walls of ancient Egyptian temples, where sunk relief is
+# very common (Wikipedia, "Relief" and "David (Michelangelo)").
+item art.sculpt-works v=1 skills=[art.sculpture, art.artists] {
+  title "In the round, or relief?"
+  difficulty (if q == 0 then 0 else 1)
+  let q=0..2
+  let work={pick(q, "Michelangelo's David, a marble figure over 5 metres tall, carved from one block between 1501 and 1504, which you can walk all the way round", "Ghiberti's Gates of Paradise, gilded bronze doors in Florence, whose scenes stand out from the flat doors without ever leaving them", "the walls of temples in ancient Egypt, where figures were cut down into the flat stone and nothing stands out above it")}
+  let right={pick(q, "in the round", "relief standing out", "sunk relief")}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x32 {
+    sculpture r mode=1 shape=0 ask=0 solid=0 kind=-1 names=1 at=canvas(1, 1)
+    text ask "Think of {work}. What kind of sculpture is it?" narrate width=34 below=r gap=1
+    choice pick options=["in the round", "relief standing out", "sunk relief"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "Read the words again: can you walk round it, does it stand out from a flat surface, or is it cut into one?"
+    }
+  }
+  hint "Is there a flat background that the figures are part of?"
+  hint "If there is, do the figures rise out of it or sink into it?"
+}

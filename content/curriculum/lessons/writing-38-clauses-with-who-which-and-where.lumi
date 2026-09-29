@@ -1,0 +1,68 @@
+# Relative clauses as extra news tucked into a sentence: who for a person, which for a thing, where
+# for a place where something happens, with a comma at each end, and what the commas do to meaning.
+lesson writing-clauses-with-who-which-and-where v=1 format=teach grade=5 unit=2 subject=writing levels=[easy, medium, hard] {
+  title "Clauses with who, which and where"
+  goal "Add extra news to a sentence with a relative clause that starts with who, which or where, and put its commas in."
+
+  look {
+    scene 33x12 {
+      row pics at=canvas(1, 0) space=2 align=end {
+        canallock lock level=0.75 boat=1
+        person keeper pose=wave age=grownup hair=short colour=grey top=mint
+      }
+      caption one text="The Otter, which has a red roof, rose in the lock." width=32 below=pics gap=1
+    }
+    say """
+      "The Otter rose in the lock" is a whole sentence. Nell tucked some extra news into it: which
+      has a red roof. That part is a relative clause, and which is its relative pronoun, chosen
+      because the Otter is a thing. For a person it would be who: Mr Hale, who keeps the lock,
+      waved. For a place where something happens it is where, and for a time, when. In the middle of
+      a sentence the clause has a comma at each end, so you could lift it out and the sentence would
+      still stand.
+      """
+  }
+  do {
+    level easy {
+      worked writing.find-the-clause k=2 r=0 level=medium
+    }
+    practice writing.who-which-where count=2 seed=1 hard-count=3
+    show writing.find-the-clause k=5 r=0 easy-k=1 hard-k=4
+    show writing.find-the-clause k=3 r=2 easy-k=0 hard-k=6
+    practice writing.clause-commas count=1 seed=1
+    practice writing.join-with-clause count=2 seed=1
+    practice writing.count-clauses count=1 seed=1
+  }
+  try stars=2 {
+    show writing.which-boats k=0 r=2 hard-k=1
+  }
+  try stars=3 {
+    show writing.own-clauses k=0 hard-k=1
+  }
+  remember {
+    say "A relative clause starts with who for a person, which for a thing, where for a place. Commas round extra news."
+  }
+
+  grown-ups """
+    A relative clause, one that starts with a relative pronoun such as who or which, or with where
+    or when, lets a writer tuck extra news into a sentence instead of writing a second one. The
+    lesson uses the terms relative clause and relative pronoun, which England makes statutory in
+    year 5, alongside "extra news". The look is the Otter rising in the lock. The way in chooses the
+    word for the gap, and the core finds the clause (one of them a that clause with no commas, and
+    at hard one with its relative pronoun left out, as in "the boat Nell painted"), chooses the
+    sentence with both commas, joins two sentences with a clause, and counts the clauses in a
+    passage where one which or where is doing a different job. Two wrong ideas are common. The first
+    is where for any place ("the lock, where is old"): where only fits when the clause says what
+    happens there. The second is a clause parked next to the wrong word, so the canal has four
+    sails; read the joined sentence aloud and ask what the clause seems to describe. If the child is
+    stuck, cover the clause with a finger and read what is left. Off the page, take turns adding
+    extra news to each other's sentences about the street outside. The two-star question is the same
+    sentence with and without commas, and the three-star is the child's own sentences, which you
+    mark.
+    """
+  level easy {
+    grown-ups "At this level finding a clause at the end is worked once in the teacher's pen, the gaps are a plain who, which and where, the clauses to find sit in the middle, the commas and the joins are the plainer ones, the passage has no trap, the two-star asks which boats stayed behind, and the child writes three sentences."
+  }
+  level hard {
+    grown-ups "At this level the gaps put a place before a which, or a time before when, three times, the clauses to find start with whose or have their relative pronoun left out, the joins need a clause for a boat and a place, the passage hides a question with which and a where that points, the two-star asks which walkers had dogs, and the child also writes one sentence twice so the commas change its meaning."
+  }
+}

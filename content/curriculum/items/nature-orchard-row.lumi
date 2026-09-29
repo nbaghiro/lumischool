@@ -1,0 +1,40 @@
+# The three-star: a row of apple trees of two varieties, planted so every tree stands next to one of
+# the other variety for its pollen. Each tree of the second variety can serve at most the two beside
+# it, so the fewest is a third of the row, rounded up; the pattern that proves it is one, two, one, two.
+item nature.orchard-row v=1 stars=3 skills=[nature.pollination, reasoning.extremes] {
+  title "A row of apple trees"
+  difficulty k
+  let k=0..2
+  let n={pick(k, 4, 7, 11)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x27 {
+    row pics at=canvas(1, 1) space=1 align=end {
+      tree t1
+      tree t2
+      bumblebee bee facing=-1
+    }
+    text ask "Most apple trees only grow apples from the pollen of a different variety of apple tree. Ben plants a row of {n} trees along the towpath, some red apples and some green, so that every tree stands right next to at least one tree of the other variety. What is the fewest green apple trees the row can have?" narrate width=32 below=pics gap=1
+    row r below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text u "green trees"
+    }
+  }
+
+  answer ceil(n / 3)
+  feedback {
+    when (answer == ceil(n / 2) and ceil(n / 2) != ceil(n / 3)) point=ask {
+      say "Red, green, red, green works, but it uses more green than it needs. One green tree can help a red tree on each side of it."
+    }
+    when (answer < ceil(n / 3)) point=ask {
+      say "Draw the row with that many green trees. Is there a red tree with only red trees beside it?"
+    }
+  }
+  hint "Draw the row as {n} circles. Each green tree helps the trees on both sides of it."
+  hint "Try red, green, red, then leave a gap and do it again. How far does one green tree reach?"
+}

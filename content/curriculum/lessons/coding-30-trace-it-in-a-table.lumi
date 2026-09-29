@@ -1,4 +1,4 @@
-lesson coding-trace-it-in-a-table v=2 format=teach grade=4 unit=7 subject=coding levels=[easy, medium, hard] {
+lesson coding-trace-it-in-a-table v=2 format=teach grade=4 unit=6 subject=coding levels=[easy, medium, hard] {
   title "Trace it in a table"
   goal "Trace a program with a repeat and changing numbers in a table, one row a step, and work back from the end."
 

@@ -1,0 +1,31 @@
+# The core: a cell's length is the field's width shared by the cells across it. The field's width is
+# written under the view; the count is in the picture. The checker works the length out by the same
+# rule the drawing is drawn by.
+item nature.cell-size v=1 skills=[nature.cells, division.sharing] {
+  title "How long is one cell?"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..2
+  let kind={pick(k, 0, 2, 2)} mag={pick(k, 400, 400, 1000)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x30 {
+    microview m kind=kind mag=mag scale=0 field=1 at=canvas(1, 1)
+    microscope sc slide=1 lamp=0 right-of=m gap=2
+    text ask "Count the cells end to end across the middle of the field. How long is one cell, in micrometres (µm)?" narrate width=32 below=m gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check nature.cells of=m answer=size
+  feedback {
+    when (answer == pick(k, 2, 5, 2)) point=m {
+      say "That is how many cells fit across. The field's width is shared between them: how long is each one?"
+    }
+  }
+  hint "How wide is the field? It is written under the circle."
+  hint "If that many cells share the width equally, what is the width divided by the number of cells?"
+}

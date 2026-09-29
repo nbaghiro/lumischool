@@ -1,0 +1,19 @@
+# Interpretive, marked by a grown-up: why Mary trusts Dickon with the garden, from chapters 10 and 11.
+item reading.garden-trust v=1 skills=[reading.characters, reading.inference, writing.composing] {
+  title "Can Dickon be trusted?"
+
+  scene 35x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        bookcast m who=mary pose=hold dir=1
+        gardengate g open=1
+        text ask "Before she shows Dickon the garden, Mary asks if he can keep a secret. Why does she decide to trust him? Use what he says or does." width=15
+      }
+      writinglines lines lines=4 width=34 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="A reason from chapters 10 and 11: Dickon says he keeps secrets all the time, about foxes' cubs and birds' nests, or else nothing on the moor would be safe; he is gentle with the robin and every creature; he talks about the garden as something to make alive, not to tell about. The answer names what he says or does, not only that he is nice." notice=["Gives a reason Mary trusts him", "Uses something Dickon says or does", "Links it to keeping a secret"] ask="Who would you trust with a secret, and why?"
+  hint "What does Dickon say when Mary asks about secrets?"
+  hint "What secrets does Dickon keep on the moor already?"
+}

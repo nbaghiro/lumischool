@@ -1,0 +1,23 @@
+# The strongest acid is the one furthest below 7: vinegar 2.5 and orange juice 3.5 (a typical value
+# in the published range 3.3 to 4.2), rain 5.6 (USGS), milk 6.5, lemon juice 2.
+item chem.ph-strongest v=1 skills=[chemistry.acids] {
+  title "The strongest acid"
+  difficulty (if s == 3 or s == 4 or s == 5 then 1 else 0)
+  let s=0..5
+  level easy {
+    let s={0, 1, 2}
+  }
+  level hard {
+    let s={3, 4, 5}
+  }
+
+  scene 35x20 {
+    phscale p liquids=[pick(s, "rain", "milk", "orange", "vinegar", "milk", "orange"), pick(s, "orange", "vinegar", "milk", "rain", "orange", "rain"), pick(s, "seawater", "rain", "lemon", "orange", "seawater", "vinegar"), pick(s, "milk", "magnesia", "limewater", "milk", "lemon", "magnesia")] letters=1 names=1 at=canvas(1, 0)
+    text ask "Mei marks four liquids from the mill's kitchen on the pH scale. Which one is the strongest acid?" narrate width=34 below=p gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  check chem.indicator of=p pick=strongest(acid)
+  hint "Which of the pointers are below 7, on the acid side?"
+  hint "The further from 7, the stronger. Which acid is furthest to the left?"
+}

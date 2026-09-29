@@ -1,0 +1,34 @@
+# Three-star: every hour from 18 to 24 and every cloud count from 0 to 4 is one night, 35 in all.
+# The count comes from a table of the nights, and the "or" adds a row or a column to the block the
+# "and" picks out: 8, 11 and 13 nights.
+item coding.and-nights v=1 stars=3 skills=[coding.decisions, reasoning.logic, reasoning.all-the-ways] {
+  title "How many nights open?"
+  difficulty k
+  let k=0..2
+  let cond={pick(k, "if h is more than 20 and c is less than 2", "if h is more than 20 and c is less than 2 or h is 24", "if h is more than 21 and c is less than 3 or c is 0")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x24 {
+    program p code=["{cond}", "  say open", "otherwise", "  say shut"] at=canvas(1, 0)
+    observatory obs open=0 below=p gap=1
+    text ask "h is the hour, any whole number from 18 to 24, and c is how many clouds, any whole number from 0 to 4. Each pair is one night.{if k == 0 then \"\" else \" The program works out the and part first, then the or.\"} On how many of the nights does the program say open?" width=24 right-of=obs gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 8, 11, 13)
+  feedback {
+    when (k == 0 and answer == 10) point=p {
+      say "More than 20 leaves hour 20 out: the hours that pass are 21, 22, 23 and 24."
+    }
+    when (k == 2 and answer == 9) point=p {
+      say "That works out the or part first. The and part is worked out first, and the or then adds every night with no clouds."
+    }
+  }
+  hint "Draw a table with a column for each hour and a row for each number of clouds."
+  hint "Tick the nights where the and part passes, then the ones the or part adds."
+}

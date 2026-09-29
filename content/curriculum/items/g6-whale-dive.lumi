@@ -1,0 +1,34 @@
+# Adding negatives: depths below the surface are negative, a dive adds a negative and a rise adds a
+# positive.
+item negative.whale-dive v=1 skills=[number.negatives, number.add-negatives] negatives {
+  title "The whale dives"
+  difficulty ((d + f + u) / 20 + (if u > d then 1 else 0))
+  let d={10, 15, 20} f={20, 25, 30} u={5, 15, 30}
+  where (u < d + f)
+  level easy {
+    let u={5}
+  }
+  level hard {
+    let u={15, 30} f={25, 30}
+    where (u > d)
+  }
+
+  scene 33x16 {
+    whale wh spout=0 facing=1 at=canvas(1, 1)
+    numberline depth from=-60 to=0 step=10 below=wh gap=1
+    text ask "Depths below the surface of the sea are written as negative numbers. A whale swims at {-d} m. It dives {f} m deeper, then rises {u} m. At what depth is it now? Write it as a negative number." narrate width=17 right-of=wh gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (-d - f + u)
+  feedback {
+    when (f != u and answer == -d + f - u) point=depth {
+      say "Diving deeper takes you further below zero, so it adds a negative: {-d} + ({-f})."
+    }
+    when (answer == d + f - u) point=depth {
+      say "The whale is below the surface, so its depth is below zero on the line."
+    }
+  }
+  hint "Where is {-d} on the number line? Which way is deeper?"
+  hint "Write the dive as adding {-f}, and the rise as adding {u}."
+}

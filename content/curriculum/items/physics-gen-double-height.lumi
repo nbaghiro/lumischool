@@ -1,0 +1,25 @@
+# Two stars: the same water falling f times as far gives f times the joules each second, because
+# each kilogram's weight works through f times the distance.
+item physics.gen-double-height v=1 stars=2 skills=[physics.energy, reasoning.proportion, reasoning.explain] {
+  title "From higher up"
+  let f={2, 3}
+  let times={pick(f - 2, "twice", "three times")}
+
+  scene 31x34 {
+    waterfall a drops=3 rainbow=1 at=canvas(1, 0)
+    text ask "A new pipe takes the same water, the same kilograms each second, from {times} as high up the waterfall. How much electricity will the turbine give now?" narrate width=16 right-of=a gap=1
+    choice pick options=["The same, because it is the same water", "Twice as much", "Three times as much", "Four times as much", "Nine times as much"] stack=column below=a gap=1
+  }
+
+  answer pick=pick(f - 2, "Twice as much", "Three times as much")
+  feedback {
+    when (pick == "The same, because it is the same water") point=a {
+      say "Each kilogram now falls further. Is the force times the distance the same?"
+    }
+    when (pick == "Four times as much" or pick == "Nine times as much") point=a {
+      say "The weight stays the same and only the height changes. How many times bigger is weight times height?"
+    }
+  }
+  hint "Does the weight of each kilogram change?"
+  hint "The joules are the weight times the height. What happens when only the height grows?"
+}

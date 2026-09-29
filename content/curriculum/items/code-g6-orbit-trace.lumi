@@ -1,0 +1,33 @@
+# The orbit seen edge on: from the side, going round looks like moving to and fro across the moon. The
+# table is filled by running the program, and the unknown is x at a later row.
+item coding.orbit-trace v=1 skills=[coding.simulation, coding.tracing, coding.variables] {
+  title "The orbit seen from the side"
+  difficulty (j + s / 4)
+  let s={2, 3, 4} j=0..2
+  let step={pick(j, 5, 8, 13)}
+  level easy {
+    let j={0} s={2, 3}
+  }
+  level hard {
+    let j={1, 2}
+  }
+
+  scene 36x32 {
+    program p code=["set x to {s}", "set v to 0", "repeat 4", "  take x from v", "  add v to x"] text=true at=canvas(0, 0)
+    tracetable tr code=["set x to {s}", "set v to 0", "repeat 4", "  take x from v", "  add v to x"] show=value name=x filled=4 right-of=p gap=1
+    text ask "Seen from the side, the lander goes to and fro across the moon. The table shows x after each step. What is x after step {step}?" width=16 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=tr answer="after({step}).x"
+  feedback {
+    when (j == 2 and answer == 0) point=tr {
+      say "Step {step} is a row for line 4, which changes v and leaves x as it was."
+    }
+    when (answer == s) point=tr {
+      say "x has moved since the start. Fill in the rows one at a time down to step {step}."
+    }
+  }
+  hint "On a row for line 4, x stays the same and v changes. On a row for line 5, x changes."
+  hint "Write v beside the table as it changes, so each new x can be worked out."
+}

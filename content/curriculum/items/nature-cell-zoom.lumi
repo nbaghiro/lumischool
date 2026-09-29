@@ -1,0 +1,35 @@
+# Two-star: turning to a stronger lens does not change the cells, only how much of the slide fits in
+# the field. The field at the new magnification is given, so the child reasons that the same cell
+# length shares a smaller width. The checker counts the cells across at the new magnification.
+item nature.cell-zoom v=1 stars=2 skills=[nature.cells, reasoning.proportion] {
+  title "A stronger lens"
+  difficulty k
+  let k=0..2
+  let kind={pick(k, 0, 2, 4)} mag={pick(k, 100, 400, 100)} to={pick(k, 400, 1000, 400)}
+  let now={pick(k, 8, 5, 8)} f2={pick(k, 450, 180, 450)}
+  let what={pick(k, "onion skin", "pondweed leaf", "pond water")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x34 {
+    microview m kind=kind mag=mag scale=0 field=1 at=canvas(1, 1)
+    text ask "At × {mag}, {now} cells of {what} fit end to end across the field. Ben turns to × {to}, where the field is only {f2} µm across. He says the cells will be bigger, so fewer will fit. How many cells will fit across the field now?" narrate width=32 below=m gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check nature.cells of=m answer="across({to})"
+  feedback {
+    when (answer == now) point=m {
+      say "The field is narrower at × {to}. Can as many cells fit across it?"
+    }
+    when (answer == now * to / mag) point=m {
+      say "The cells look bigger, so fewer fit across, not more. How many times narrower is the field?"
+    }
+  }
+  hint "Did the cells themselves change, or only how much of the slide the field shows?"
+  hint "How long is one cell? How many of that length fit across {f2} µm?"
+}

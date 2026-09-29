@@ -1,0 +1,35 @@
+# The two-star reason: a crescendo is getting louder from where the music is, so one from p may end
+# only at mp, still quite soft. The hard claim: two players on the same tune make one tune, doubled.
+item music.dyn-claim v=1 stars=2 skills=[music.dynamics, music.texture, reasoning.claims] {
+  title "Louder, or loud?"
+  let q=0..1 r=0..1
+  let claim={pick(q, "Ben says the hairpin means the fiddle plays loud.", "Ana says the flute and the fiddle play two tunes at once, so the texture is thick.")}
+  let right={pick(q, "No: it means get louder, here only up to mp", "No: they play one tune, doubled an octave apart")}
+  let w1={pick(q, "Yes: a hairpin that opens means f", "Yes: two players always make two tunes")}
+  let w2={pick(q, "No: it means get softer", "No: the fiddle plays an accompaniment")}
+
+  scene 36x47 {
+    column score space=0 align=start at=canvas(1, 1) {
+      notes flute clef=treble notes=[E5, E5, F5, G5, G5, F5, E5, D5] values=[] meter=4
+      notes fiddle clef=treble notes=[E4, E4, F4, G4, G4, F4, E4, D4] values=[] meter=4
+      dynamics marks marks=["p", "cresc", "mp"] words=false ring=-1
+    }
+    text ask "The flute on top, the fiddle below with its marks. {claim} Is that right, and why?" narrate width=34 below=score gap=1
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1 and q == 0) point=marks {
+      say "Read the mark at the end of the hairpin. Is mp loud?"
+    }
+    when (pick == w1 and q == 1) point=score {
+      say "Read the letters of both staves. Are they different tunes, or the same one?"
+    }
+    when (pick == w2) point=score {
+      say "Look again at which way the hairpin opens, and at the notes each part plays."
+    }
+  }
+  hint "{if q == 0 then \"Where does the hairpin start, and where does it end?\" else \"Compare the two staves note by note.\"}"
+  hint "{if q == 0 then \"Put p and mp on the ladder pp, p, mp, mf, f, ff.\" else \"Same letters an octave apart is one tune played twice.\"}"
+}

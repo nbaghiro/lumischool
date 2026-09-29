@@ -1,0 +1,74 @@
+lesson nature-river-source-to-mouth v=1 format=teach grade=5 unit=3 subject=nature levels=[easy, medium, hard] {
+  title "A river from source to mouth"
+  goal "Say where a river's water wears the land away and where it drops what it carries, and use that to judge where it floods and where it will move."
+
+  look {
+    scene 36x13 {
+      row all at=canvas(1, 1) space=1 align=end {
+        parts fig of=river
+        narrowboat nb windows=2 pots=1
+        heron h facing=-1 reeds=2
+      }
+    }
+    say """
+      The canal in Ada and Ben's town was dug beside a river, and the river has a story of its own.
+      It starts at a spring in the hills, its source, and tumbles down steep and rough, breaking big
+      sharp stones off the rock. On the way down it bends: on the outside of a bend the water runs
+      fast and wears the bank away, and on the inside it slows and drops small stones, so year by
+      year the bends creep outwards. After heavy rain the river rises and runs faster, wearing away
+      far more, and may spill over its fields. At its mouth it runs into the sea, slows right down
+      and leaves its sand and mud behind.
+      """
+  }
+  do {
+    level easy {
+      worked nature.river-where k=2 level=medium
+    }
+    practice nature.river-where count=1 seed=1 easy-seed=2 hard-seed=1
+    practice nature.bend-sides count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.river-jobs count=1 seed=1 easy-seed=2 hard-seed=3
+    practice nature.where-to-build count=1 seed=1 easy-seed=1 hard-seed=1
+    practice nature.after-rain count=1 seed=2 easy-seed=1 hard-seed=1
+    practice nature.flood-data count=1 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show nature.why-stones k=1 level=medium
+    }
+  }
+  story {
+    show nature.stick-race k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.why-stones k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.oxbow-years k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Fast water wears the land away and carries stones; slow water drops them. The outside of a bend and a river in flood wear away the most."
+  }
+
+  grown-ups """
+    The whole lesson rests on one pair of ideas: fast water wears away and carries, and slow water
+    drops what it was carrying. Grade four taught that stones are worn smaller and rounder on the
+    way down; this lesson uses the rule to decide things. The cliff on the outside of a bend and the
+    beach on the inside mean the bends creep outwards year by year, so a boathouse belongs on the
+    inside and stone blocks on the outside. Heavy rain makes the river higher and faster, and the
+    miller's table shows the river peaking the day after the heaviest rain, because the water takes
+    time to run off the hills; that delay is the warning a town uses before a flood. The wrong ideas
+    to watch for are that the river is at its fastest in the hills (it looks fastest there because it
+    is steep and rough, but further down the deeper, smoother channel usually carries the water
+    faster on average) and that a flood only brings water, when it also reshapes the banks. In the
+    lettered questions the child should put a finger on the river and follow it from the spring. The
+    story shares metres between seconds. The two-star question asks for the reason behind something
+    the child can see, and the three-star question follows a loop whose neck is worn from both sides
+    until a flood cuts through and leaves a curved lake. If fast and slow are still mixed up after the
+    core, stay here another day and run water from a jug down a tray of sand, one end propped on a
+    book, then pour a whole jug at once and watch how much more it digs.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the outside of the bend) opens the core, the place to find is the source, the bend questions ask where the water is fast and where it is slow, the boathouse goes on the slow bank, the storm question asks what the high water does, the table question reads the day the river was highest, the stick floats 12 metres in 6 seconds, the two-star question is the cliff at the bend, and the three-star question asks what becomes of the old loop."
+  }
+  level hard {
+    grown-ups "At this level the place to find is the outside of the bend, the bend questions ask what happens to a tree on the outside bank and where the water is deepest, the house on the outside bank worries its owner after floods, the storm question asks why the water is brown, the table asks on which days the field was flooded, a second reasoning question in the core asks why the bends grow loopier, the two sticks go 1.5 and 0.5 metres a second, the two-star question asks why the mouth is muddy, and the three-star question asks what the water does in the new short channel."
+  }
+}

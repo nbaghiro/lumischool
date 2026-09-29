@@ -1,0 +1,31 @@
+# The story: light leaving the water bends away from the upright, so seen from straight above a thing
+# under water looks raised to about three quarters of its depth (depth over 1.33). d is the depth.
+item physics.pond-key v=1 skills=[physics.light, fractions.of-amount] {
+  title "The key in the pond"
+  difficulty (if d == 8 or d == 12 then 0 else 1)
+  let d={6, 8, 10, 12}
+  level easy {
+    let d={8, 12}
+  }
+  level hard {
+    let d={6, 10}
+  }
+
+  scene 34x29 {
+    row pair at=canvas(1, 0) space=1 align=end {
+      observatory o open=1
+      refraction r mode=3 depth=d show=0
+    }
+    text ask "The astronomer drops the telescope's key in the pond by the observatory. Seen from straight above, anything in this pond looks raised to three quarters of its depth. The ruler shows how deep the key really is. How deep does it look, in centimetres?" narrate width=32 below=pair gap=1
+    number-input cm below=ask gap=1
+  }
+
+  check physics.light of=r cm=looks
+  feedback {
+    when (cm == d) point=r {
+      say "That is where the key really is. Light bends as it leaves the water, so it looks raised."
+    }
+  }
+  hint "How deep is the key on the ruler?"
+  hint "What is three quarters of that?"
+}

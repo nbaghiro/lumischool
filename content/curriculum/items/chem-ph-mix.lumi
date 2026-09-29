@@ -1,0 +1,25 @@
+# Mixing an acid with an alkali moves both towards 7, and some mix of the two comes out at 7 (lesson
+# 66's titration curve passes through it); two acids or two alkalis mixed stay on their own side.
+item chem.ph-mix v=1 skills=[chemistry.acids, reasoning.predict] {
+  title "Which two make it neutral?"
+  let m=0..2
+  let o1={pick(m, "A and B", "A and D", "A and B")}
+  let o2={pick(m, "B and C", "B and D", "B and D")}
+  let o3={pick(m, "A and D", "A and C", "C and D")}
+  let right={pick(m, "B and C", "A and C", "C and D")}
+
+  scene 35x20 {
+    phscale p liquids=[pick(m, "lemon", "seawater", "milk"), pick(m, "vinegar", "magnesia", "rain"), pick(m, "bakingsoda", "orange", "limewater"), pick(m, "orange", "washingsoda", "lemon")] letters=1 names=1 at=canvas(1, 0)
+    text ask "The miller wants a liquid at pH 7 to rinse the new millstone, and has only these four. Which two, mixed in the right amounts, could come out at pH 7?" narrate width=34 below=p gap=1
+    choice pick options=[o1, o2, o3] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "Are both of those on the same side of 7? Two acids mixed are still an acid, and two alkalis are still an alkali."
+    }
+  }
+  hint "Which of the four are acids, and which are alkalis?"
+  hint "To meet at 7, the two have to start on opposite sides of it."
+}

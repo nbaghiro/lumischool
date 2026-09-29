@@ -1,0 +1,34 @@
+# Three stars, a chain worked backwards from the lamps: the electricity they need each second, then
+# the water's joules at 9 in 10, then the kilograms that give it falling the height.
+item physics.gen-water-for-lamps v=1 stars=3 skills=[physics.energy, reasoning.work-backwards, reasoning.chain] {
+  title "Enough water for the lamps"
+  difficulty v
+  let v=0..3
+  let n={pick(v, 18, 36, 45, 90)}
+  let each={pick(v, 25, 10, 20, 10)}
+  let h={pick(v, 5, 20, 10, 25)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 30x28 {
+    row kit at=canvas(1, 0) space=1 align=end {
+      waterfall f drops=2 rainbow=0
+      waterwheel w paddles=10 lit=1
+    }
+    text ask "The mill's {n} lamps each use {each} J each second. The turbine turns 9 of every 10 J the water gives it into electricity, and the water falls {h} m to it. Each kilogram weighs 10 N. How many kilograms of water must fall each second to light every lamp?" narrate width=27 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n * each * 10 / 9 / (10 * h))
+  feedback {
+    when (answer == n * each / (10 * h)) point=ask {
+      say "That would be enough only if all the water's energy became electricity. Just 9 of every 10 J do."
+    }
+  }
+  hint "How many joules of electricity do all the lamps need each second?"
+  hint "How many joules must the water give, if only nine in every ten become electricity? How many kilograms, falling that far, give that?"
+}

@@ -1,0 +1,34 @@
+# A paragraph of about 150 words about the moon and three one-line summaries: one keeps the main point, one keeps only
+# a detail, and one gets the text wrong.
+item reading.summary-best v=1 skills=[reading.summary, reading.main-idea] {
+  title "The best summary"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+  let right={pick(k, "Two-week days and nights, burning then freezing.", "You weigh less, but stiff suits made them hop.", "With no wind, old footprints can last for ages.")}
+  let detail={pick(k, "A machine out at night needs a heater.", "A golf ball was hit on the moon in 1971.", "Moon dust smells like burnt gunpowder.")}
+  let wrong={pick(k, "The moon is hotter than Earth all the time.", "Astronauts weigh six times more on the moon.", "Wind will soon blow the footprints away.")}
+
+  scene 35x44 {
+    passage p text="{pick(k, \"A day on the moon, from one sunrise to the next, lasts about twenty-nine and a half Earth days, so the sun stays up for about two weeks at a time and then stays down for two weeks. With no air to hold the heat or spread it around, the ground changes more than anywhere on Earth. In sunlight it grows hotter than boiling water, and in the long night it becomes colder than anywhere on Earth, even the South Pole in winter. A machine left out through the night needs a heater, or its parts can crack in the cold. The sky stays black even at noon, because there is no air to scatter the sunlight and turn it blue. The first astronauts landed in the early morning of a moon day, when the ground was neither too hot nor too cold, and left long before the noon heat arrived.\", \"On the moon you weigh about one sixth of what you weigh on Earth, because the moon is much smaller and pulls on you less. An astronaut who can jump half a metre on Earth could jump about three metres there. But a space suit is stiff and heavy, and the knees and hips hardly bend inside it, so the astronauts found that big jumps made them fall over. Instead they moved in a kind of hop, pushing off with both feet like a kangaroo, and film of them shows slow, floating bounces across the ground. Falling was not dangerous in itself, because they came down slowly, but a sharp rock could tear a suit, so they tried to stay on their feet. Things they threw went further too: a golf ball hit on the moon in 1971 flew far beyond where the same swing would send it on Earth.\", \"The moon has no air, so there is no wind to blow its dust about, and no rain to wash it away. The footprints left by the first astronauts in 1969 are still there today, as sharp as the day they were made. Moon dust is not like the dust in a house. It is made of tiny broken pieces of rock and glass with sharp edges, because nothing has ever worn them smooth. It clung to the astronauts' suits and got into the joints, and brushing it off only pushed it deeper into the cloth. When they took their helmets off inside the lander, it smelled like burnt gunpowder. Unless a rock from space lands on them, the footprints could last for millions of years.\")}" width=34 numbers=false at=canvas(1, 1)
+    text ask "Which is the best summary of the paragraph, in one line?" below=p gap=1 width=34
+    choice pick options=[pick(k, detail, right, wrong), pick(k, right, wrong, detail), pick(k, wrong, detail, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == detail) point=p {
+      say "That is true, but it is one detail. A summary gives the main point of the whole paragraph."
+    }
+    when (pick == wrong) point=p {
+      say "Check that against the paragraph. It says something the text does not."
+    }
+  }
+  hint "What is the whole paragraph mostly about?"
+  hint "Which choice would still be true if you had read every sentence?"
+}

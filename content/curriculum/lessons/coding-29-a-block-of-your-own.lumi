@@ -1,4 +1,4 @@
-lesson coding-a-block-of-your-own v=2 format=teach grade=4 unit=9 subject=coding levels=[easy, medium, hard] {
+lesson coding-a-block-of-your-own v=2 format=teach grade=4 unit=8 subject=coding levels=[easy, medium, hard] {
   title "A block of your own"
   goal "Read a program that names a few blocks as one new block, use it more than once, and count what it saves."
 

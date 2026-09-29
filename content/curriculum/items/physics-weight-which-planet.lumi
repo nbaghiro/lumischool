@@ -1,0 +1,19 @@
+# Which world is it? The pull on each kilogram is the weight divided by the mass, and it names the
+# place in the table.
+item physics.weight-which-planet v=1 skills=[physics.weight, physics.sky, data.tables] {
+  title "Where was it weighed?"
+  difficulty p
+  let p=0..3 m={10, 20}
+  let g={pick(p, 25, 1.6, 9, 3.7)}
+
+  scene 33x27 {
+    planets pl count=5 names=1 at=canvas(1, 0)
+    table g cols=2 head=["Place", "Pull on 1 kg"] cells=["Earth", "10 N", "Moon", "1.6 N", "Mars", "3.7 N", "Venus", "9 N", "Jupiter", "25 N"] below=pl gap=1
+    text ask "A {m} kg pack weighs {plain(m * g)} N. Where was it weighed?" narrate width=14 right-of=g gap=1
+    choice pick options=["Moon", "Mars", "Venus", "Jupiter"] stack=column below=ask gap=1
+  }
+
+  answer pick=pick(p, "Jupiter", "Moon", "Venus", "Mars")
+  hint "How many newtons is each kilogram of the pack pulled with?"
+  hint "Divide the weight by the mass, and find that pull in the table."
+}

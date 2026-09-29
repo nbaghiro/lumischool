@@ -1,0 +1,60 @@
+lesson physics-storing-electricity v=1 format=teach grade=6 unit=5 subject=physics levels=[easy, medium, hard] {
+  title "Storing electricity, and wasting less"
+  goal "Work out how long a cell's stored energy lasts, and why a lamp that wastes less lasts longer."
+
+  look {
+    scene 24x24 {
+      energyflow a thing="filament bulb" from="electricity" to="light" input=100 useful=5 wasted=[95] wastes=["heating"] blank=-1 unit=J at=canvas(1, 0)
+      energyflow b thing="LED" from="electricity" to="light" input=100 useful=40 wasted=[60] wastes=["heating"] blank=-1 unit=J below=a gap=1
+    }
+    say """
+      A cell keeps energy in a chemical store until a loop is closed; an AA cell holds about 10 000
+      J. A lamp takes some joules every second, so the cell lasts the joules stored shared by the
+      joules used each second. This filament bulb turns about 5 of every 100 J into light and heats
+      the rest. This LED turns about 40 of every 100 J into light, so it gives the same light for an
+      eighth of the joules, and the cell lasts eight times as long.
+      """
+  }
+  do {
+    practice physics.cell-store count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.led-light count=2 seed=1 easy-seed=2 hard-seed=3
+    level easy {
+      worked physics.cell-lasts u=2 level=medium
+    }
+    practice physics.cell-lasts count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.led-same-light count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.cell-hours count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.led-charge count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.cell-switch-off count=1 seed=1 easy-seed=2 hard-seed=3
+  }
+  story {
+    show physics.cell-camera c=5 easy-c=4 hard-c=2
+  }
+  try stars=2 {
+    show physics.led-why-longer
+  }
+  try stars=3 {
+    show physics.cell-night-lamp v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "A cell lasts its stored joules shared by the joules used each second, so wasting less makes it last longer."
+  }
+
+  grown-ups """
+    Children often think a cell is "full of electricity" that the bulb uses up. The lesson talks
+    instead about energy stored in a chemical store and passed on by the circuit, most of it, in a
+    filament bulb, heating the bulb. The bulb and LED figures are measured values rounded for the
+    lesson: a filament bulb turns about 5 per cent of its energy into light and a white LED about
+    40 per cent, so the LED gives the same light for about an eighth of the joules. Watch the division: the cell lasts the joules stored divided by the joules each
+    second, and a child who multiplies gets an answer far too big. If that stalls, try a cell of 12
+    J and a lamp using 3 J each second, then go back. Off the page, feel an old filament bulb and an
+    LED after a minute switched on, and look for the energy label on a new lamp. The three-star
+    question rounds up, because a cell that runs out before morning is no use.
+    """
+  level easy {
+    grown-ups "At this level a worked example shares a cell's joules first, the lamps are given 100 J, the head torch lasts whole hours, the lamp is left on at 10 J each second, and the camera's minutes are fewer to count."
+  }
+  level hard {
+    grown-ups "At this level the lamps are given 200 or 500 J and the band to find is the heating, the torch lasts two and a half hours or one, the mill's lamps use more and stay on longer, the camera films longest, and the three-star night needs more cells."
+  }
+}

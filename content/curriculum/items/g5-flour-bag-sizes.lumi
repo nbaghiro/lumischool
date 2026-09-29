@@ -1,0 +1,28 @@
+# The three-star: every bag size from 0.1 kg to 0.9 kg that shares the flour with none left over. A
+# count, proved by trying each of the nine sizes, which is the system the child has to find.
+item decimal.flour-bag-sizes v=1 stars=3 skills=[decimals.divide, reasoning.systematic] {
+  title "Bags with none left"
+  difficulty (n / 10)
+  let n={30, 36, 42, 72}
+  level easy {
+    let n={30, 42}
+  }
+  level hard {
+    let n={72}
+  }
+
+  scene 33x14 {
+    windmill mill sails=4 turn=1 at=canvas(1, 1)
+    text ask "The mill has {decimals(n / 10, 1)} kg of flour to fill bags that are all the same size. A bag can hold 0.1 kg, 0.2 kg and so on up to 0.9 kg. How many of these sizes use up all the flour with none left?" narrate width=22 right-of=mill gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer ((if n % 1 == 0 then 1 else 0) + (if n % 2 == 0 then 1 else 0) + (if n % 3 == 0 then 1 else 0) + (if n % 4 == 0 then 1 else 0) + (if n % 5 == 0 then 1 else 0) + (if n % 6 == 0 then 1 else 0) + (if n % 7 == 0 then 1 else 0) + (if n % 8 == 0 then 1 else 0) + (if n % 9 == 0 then 1 else 0))
+  feedback {
+    when (answer == 9) point=ask {
+      say "Try 0.{if n % 7 == 0 then (if n % 8 == 0 then 5 else 8) else 7} kg. Does it share {decimals(n / 10, 1)} kg with nothing left?"
+    }
+  }
+  hint "How many tenths of a kilogram is all the flour?"
+  hint "Try each size from 1 tenth to 9 tenths. Which of them divide that number exactly?"
+}

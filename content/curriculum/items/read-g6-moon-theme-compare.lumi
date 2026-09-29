@@ -1,0 +1,19 @@
+# The three-star question: how two texts in different forms show one theme, each with a line to
+# point to. There is no key, so a grown-up marks it against the look-for.
+item reading.moon-theme-compare v=1 stars=3 skills=[reading.theme, reading.comparison, reading.evidence] {
+  title "Two stories, one theme"
+  let k=0..1
+
+  scene 36x25 {
+    row top at=canvas(1, 1) space=1 align=end {
+      lander l rungs=5
+      earth e up=2
+      text ask "{pick(k, \"Kai's story and Obi's talk both teach that asking for help takes courage.\", \"Ada's log and Ren's story both teach that small steps each day add up.\")} In two sentences, say how each one shows it, and how its form helps." width=17
+    }
+    writinglines lines lines=4 width=34 prompt="" below=top gap=1
+  }
+
+  check writing.by-eye look-for="One sentence for each story that says how it shows the theme, not just what happens. For Kai and Obi: Kai's story shows her afraid everyone will hear, asking in time and helped at once, while Obi's talk looks back on learning it the hard way, too proud to ask and nearly out of air, and gives the theme straight out as advice to new crews. For Ada and Ren: Ada's log sets down the same small step day after day with no feelings, until the tomato on day 60, while Ren's story shows him keeping going though others laugh, until all the panels shine. A strong answer says what the form adds (the story lets us watch it happen, the talk tells us the lesson, the log shows the days piling up), and quotes or points to a line from each. A child who retells both plots has not yet compared them; ask what is different about how each one gets there."
+  hint "Say the theme, then ask: what does each character do that shows it?"
+  hint "What is different: when it happens, who is watching, how it ends?"
+}

@@ -1,0 +1,39 @@
+# The story: pondweed in the base's tank gives off bubbles of oxygen, faster the nearer the lamp. The
+# counts are invented to show the pattern, as tracks.md records; the unknown moves from a difference
+# to a factor and to the distance at the harder level.
+item nature.starch-bubbles v=1 skills=[nature.photosynthesis, data.tables] {
+  title "Bubbles from the pondweed"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "How many more bubbles a minute come off at 10 cm than at 30 cm?", "The crew move the lamp from 40 cm to 10 cm. How many times as many bubbles come off a minute?", "Over 5 minutes, the crew count 100 bubbles. How far away is the lamp, in centimetres?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x25 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      pondweed pw fronds=4 tall=5
+      table t cols=2 head=["Lamp away", "Bubbles a minute"] cells=["10 cm", "40", "20 cm", "20", "30 cm", "10", "40 cm", "5"]
+    }
+    text ask "In the moon base's water tank, pondweed gives off bubbles of oxygen under a lamp. The crew count the bubbles with the lamp at different distances. {asks}" narrate width=32 below=pics gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 30, 8, 20)
+  feedback {
+    when (k == 0 and answer == 20) point=t {
+      say "That is the difference between 10 cm and 20 cm. Read the row for 30 cm."
+    }
+    when (k == 1 and answer == 35) point=t {
+      say "35 is how many more. How many times would 5 go into 40?"
+    }
+    when (k == 2 and answer == 100) point=t {
+      say "100 is the bubbles in 5 minutes. How many is that a minute?"
+    }
+  }
+  hint "Find the rows the question is about in the table."
+  hint "Is the question asking how many more, how many times, or which row?"
+}

@@ -1,0 +1,35 @@
+# The way in to a rate: each time round is one minute and the pipe adds the same number of litres, so
+# the tank holds the rate times the minutes. The box is left for the child to fill.
+item coding.tank-fill v=1 skills=[coding.simulation, coding.variables, coding.text] {
+  title "The mill's tank"
+  difficulty (n * r / 40)
+  let n=3..8 r={5, 8, 12, 15}
+  where (n * r <= 100)
+  level easy {
+    let r={5, 8}
+    where (n <= 6)
+  }
+  level hard {
+    let r={12, 15}
+    where (n >= 5)
+  }
+
+  scene 36x15 {
+    program p code=["set water to 0", "repeat {n}", "  add {r} to water"] text=true at=canvas(0, 0)
+    variable v name=water code=["set water to 0", "repeat {n}", "  add {r} to water"] blank=true history=false right-of=p gap=1
+    text ask "A pipe from the waterfall fills the mill's tank. Each time round the repeat is one minute. How many litres does water hold at the end?" width=24 below=p gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=v answer="value(water)"
+  feedback {
+    when (answer == r) point=p {
+      say "Line 3 is set in, so it runs every minute: {n} times."
+    }
+    when (answer == n + r) point=p {
+      say "Each minute adds {r} litres. {n} minutes of {r} litres is more than {n} and {r} added."
+    }
+  }
+  hint "How many litres come in each minute? For how many minutes?"
+  hint "Add the same number of litres once for every time round."
+}

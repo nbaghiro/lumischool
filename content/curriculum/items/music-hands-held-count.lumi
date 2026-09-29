@@ -1,0 +1,37 @@
+# A long note in one hand while the other moves: bars 3 and 4 of Ode to Joy, C C D E, then E. D D, over
+# a left hand of long notes. The count is the right-hand notes that start while the left note sounds;
+# under the last B, a crotchet on beat 4 of bar 2, none start, since the right hand is holding its minim.
+item music.hands-held-count v=1 skills=[music.hands-together, music.note-values] {
+  title "While the left hand holds"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let l1={pick(k, 4, 4, 3, 4)}
+  let l2={pick(k, 2, 2, 1, 3)}
+  let l3={pick(k, 2, 2, 4, 1)}
+  let which={pick(k, "first note, C", "note G", "first note, C", "last note, B")}
+  let right={pick(k, 4, 2, 3, 0)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x32 {
+    column score space=0 align=start at=canvas(1, 1) {
+      notes right clef=treble notes=[C4, C4, D4, E4, E4, D4, D4] values=[1, 1, 1, 1, 1.5, 0.5, 2] meter=4 spaced=true
+      notes left clef=bass notes=[C3, G2, B2] values=[l1, l2, l3] meter=4 spaced=true
+    }
+    text ask "The next two bars of Ode to Joy. While the left hand holds its {which}, how many right-hand notes start?" narrate width=32 below=score gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer != right) point=score {
+      say "Find where the left note starts and where the next left note takes over. Count the right-hand notes that start from its start up to, but not at, the next one."
+    }
+  }
+  hint "How many beats does the left-hand note last? Look at its head and any dot."
+  hint "Count the right-hand beats over the same stretch, and the notes that start in it."
+}

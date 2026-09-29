@@ -1,0 +1,31 @@
+# The way in: a table of densities in g/cm³ (aluminium 2.70 and copper 8.96, RSC periodic table; ice
+# 0.92; granite 2.7; glass 2.5; candle wax about 0.9, CDC NIOSH; cork 0.24), where only one is
+# less than water's 1 g/cm³, so only one floats.
+item chem.density-floats v=1 skills=[chemistry.density, data.tables] {
+  title "Which one floats?"
+  let s=0..2 r=0..2
+  let n1={pick(s, "granite", "aluminium", "copper")}
+  let d1={pick(s, "2.7", "2.7", "9.0")}
+  let n2={pick(s, "cork", "ice", "candle wax")}
+  let d2={pick(s, "0.24", "0.92", "0.9")}
+  let n3={pick(s, "iron", "copper", "glass")}
+  let d3={pick(s, "7.9", "9.0", "2.5")}
+  let a={pick(r, n1, n2, n3)}
+  let b={pick(r, n2, n3, n1)}
+  let c={pick(r, n3, n1, n2)}
+
+  scene 35x20 {
+    table data cols=2 head=["Material", "g in each cm³"] cells=[n1, d1, n2, d2, n3, d3] at=canvas(1, 0)
+    text ask "At the research hut on the ice shelf, Mei drops a block of each material into a tub of fresh water. Fresh water is 1 g in each cm³. Which block floats?" narrate width=34 below=data gap=1
+    choice pick options=[a, b, c] below=ask gap=1
+  }
+
+  answer pick=n2
+  feedback {
+    when (pick != n2) point=data {
+      say "That block has more than 1 g in every cm³, more than the same room of water, so it sinks."
+    }
+  }
+  hint "Read the second column. Which number is less than 1?"
+  hint "A block floats when each cm³ of it is lighter than a cm³ of water. Which one is?"
+}

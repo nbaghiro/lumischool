@@ -1,0 +1,34 @@
+# The model that cools like real cocoa: each ten minutes it loses half the gap between itself and
+# the air, so the drops shrink. Every start is 20 more than a gap that halves to whole numbers.
+item coding.cool-gap v=1 skills=[coding.simulation, coding.variables, coding.text] {
+  title "Half the gap each time"
+  difficulty (n + (if g == 80 then 0.5 else 0))
+  let g={32, 64, 80} n=2..4
+  let s={20 + g}
+  where (n < 4 or g != 32)
+  level easy {
+    let g={32, 64} n={2}
+  }
+  level hard {
+    let g={64, 80} n={3, 4}
+  }
+
+  scene 36x21 {
+    program p code=["set air to 20", "set cocoa to {s}", "repeat {n}", "  set gap to cocoa - air", "  take gap / 2 from cocoa"] text=true at=canvas(1, 0)
+    thermometer th from=0 to=100 step=20 value=s right-of=p gap=2
+    text ask "Real cocoa cools fastest when it is hottest. Each ten minutes this program takes away half the gap between the cocoa and the air in the hut. What is cocoa at the end?" width=26 at=canvas(1, 15)
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=p answer="value(cocoa)"
+  feedback {
+    when (answer == s - n * (g / 2)) point=p {
+      say "The gap is worked out again each time round, and it gets smaller, so the cocoa loses less each time."
+    }
+    when (answer == s - g / 2) point=p {
+      say "That is after the first ten minutes. The repeat goes round {n} times."
+    }
+  }
+  hint "What is the gap between the cocoa and the air at the start? What is half of it?"
+  hint "After the first time round, work out the new gap from the new cocoa."
+}

@@ -1,0 +1,26 @@
+# The three-star: a speech of about a minute for the village meeting, written to constraints and read
+# aloud, marked by a grown-up; at hard it answers two objections and is timed.
+item writing.write-speech v=1 stars=3 skills=[writing.persuasion, writing.speeches, writing.composing] {
+  title "Your speech"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x34 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      ropebridge br planks=10 gaps=3
+      person tam pose=point age=child hair=curly colour=black top=tang
+    }
+    text ask "{if k == 0 then \"Choose the rope bridge or the water wheel. Write a speech for the village meeting that persuades them to save it: a greeting, one clear ask, two reasons with evidence, an answer to one objection, a question or a group of three, and an ending that says what to do. Then read it aloud.\" else \"Choose the rope bridge or the water wheel. Write a speech for the village meeting that persuades them to save it: a greeting, one clear ask, three reasons with evidence, answers to two objections, a question and a group of three, and an ending that says what to do. Read it aloud and time it: about one minute.\"}" narrate width=33 below=pics gap=1
+    writinglines lines lines=5 width=33 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A greeting that suits a village meeting, the ask stated early and again at the end, two reasons (three at hard) each backed by something that could be checked (a number, a date, an event), at least one objection named and answered with a reason rather than dismissed (two at hard), a question to the listeners or a group of three (both at hard), no chatty words and no letter phrases, and an ending that tells the listeners what to do; read aloud, it sounds like someone speaking to a room (about a minute at hard)."
+  hint "Write the ask first, in one sentence. Everything else in the speech is there to make people agree with it."
+  hint "Read it aloud. Where do you stumble, and where would a listener stop listening?"
+}

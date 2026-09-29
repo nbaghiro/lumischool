@@ -1,0 +1,31 @@
+# Ice at 0.92 g/cm³ floats in sea water at about 1.03, so about nine tenths of an iceberg is under the
+# water (0.917 / 1.025 is 0.89; the USGS says ninety per cent is below the waterline). The unknown is the whole, the part under, or the part above.
+item chem.iceberg-under v=1 skills=[chemistry.density, fractions.of-amount] {
+  title "The part you cannot see"
+  difficulty (w + (if a <= 30 then 0 else 1))
+  let w=0..2 a={20, 30, 40, 60}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 36x13 {
+    iceberg berg under=1 at=canvas(1, 0)
+    text ask "Off the ice shelf floats an iceberg. About one tenth of an iceberg shows above the sea and nine tenths is under it. {if w == 0 then \"This one shows about \" else if w == 1 then \"This one is about \" else \"About \"}{if w == 0 then a else if w == 1 then a * 10 else a * 9}{if w == 0 then \" cubic metres above the water. About how many cubic metres is it altogether?\" else if w == 1 then \" cubic metres altogether. About how many cubic metres are under the water?\" else \" cubic metres of this one are under the water. About how many cubic metres show above it?\"}" narrate width=24 right-of=berg gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then a * 10 else if w == 1 then a * 9 else a)
+  feedback {
+    when (w == 0 and answer == a * 9) point=berg {
+      say "That is the part under the water. Add the part you can see."
+    }
+    when (w == 1 and answer == a) point=berg {
+      say "That is the tenth above the water. The question asks for the nine tenths below."
+    }
+  }
+  hint "{if w == 2 then \"Nine tenths is under. What is one tenth?\" else \"One tenth shows. How many tenths make the whole?\"}"
+  hint "{if w == 0 then \"Ten lots of the part above make the whole.\" else if w == 1 then \"Find one tenth of the whole, then nine of them.\" else \"Share the part under into nine equal tenths.\"}"
+}

@@ -1,0 +1,31 @@
+# Two samples of different sizes compared by share rather than by count: the bigger site has more
+# heavy pebbles and can still have a smaller share of them.
+item data.two-sites-share v=1 skills=[data.claims, data.frequency, reasoning.compare] {
+  title "Two sites"
+  difficulty (if v == 1 then 0 else if v == 0 then 1 else 2)
+  let v=0..2
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={0, 2}
+  }
+
+  scene 36x18 {
+    table freq cols=3 head=["Mass (g)", "Site A", "Site B"] cells=["10-19", "{pick(v, 3, 6, 5)}", "{pick(v, 6, 8, 10)}", "20-29", "{pick(v, 5, 7, 6)}", "{pick(v, 12, 16, 12)}", "30-39", "{pick(v, 7, 4, 5)}", "{pick(v, 14, 10, 10)}", "40-49", "{pick(v, 5, 3, 4)}", "{pick(v, 8, 6, 8)}"] at=canvas(1, 1)
+    text ask "The crew weighed 20 pebbles at site A and 40 at site B. At which site, A or B, is a greater share of the pebbles 30 g or more?" narrate width=14 right-of=freq gap=2
+    choice pick options=["A", "B", "the same"] below=freq gap=1
+  }
+
+  answer pick=pick(v, "A", "B", "the same")
+  feedback {
+    when (v != 1 and pick == "B") point=freq {
+      say "Site B has more heavy pebbles, but it has twice as many pebbles in all. Compare each site's heavy pebbles with its own total."
+    }
+    when (v == 1 and pick == "A") point=freq {
+      say "Work out each share: heavy pebbles over that site's total."
+    }
+  }
+  hint "At the first site, how many pebbles are 30 g or more, out of how many?"
+  hint "Work out that share for the other site too, as a fraction or a percentage."
+}

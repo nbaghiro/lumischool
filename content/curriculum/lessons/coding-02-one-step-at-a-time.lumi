@@ -1,4 +1,4 @@
-lesson coding-one-step-at-a-time v=2 format=teach grade=1 unit=1 subject=coding levels=[easy, medium, hard] {
+lesson coding-one-step-at-a-time v=2 format=teach grade=1 unit=2 subject=coding levels=[easy, medium, hard] {
   title "One step at a time"
   goal "Stop partway through a program and say where the robot has got to."
 

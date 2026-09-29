@@ -1,0 +1,56 @@
+lesson g5-thousandths v=1 format=teach grade=5 unit=1 subject=maths levels=[easy, medium, hard] {
+  title "Thousandths, and times ten, a hundred and a thousand"
+  goal "Read decimals to three places, and multiply and divide them by ten, a hundred and a thousand."
+
+  look {
+    scene 36x11 {
+      pvchart chart value="2.375" show=digits at=canvas(1, 1)
+      canallock lock level=0.5 boat=1 right-of=chart gap=2
+      text note "2.375 × 1000 = 2375" below=chart gap=1
+    }
+    say """
+      The lock is 2.375 metres deep: two whole metres, three tenths, seven hundredths and five
+      thousandths. A thousandth is a tenth of a hundredth. Multiplying by ten, a hundred or a
+      thousand moves every digit one, two or three places to the left, and dividing moves them
+      right, so 2.375 metres is 2375 millimetres.
+      """
+  }
+  do {
+    practice decimal.thousandth-more count=1 seed=3
+    level easy {
+      worked decimal.power-times p=0.35 many=100 level=medium
+    }
+    practice decimal.power-times count=2 seed=4
+    practice decimal.power-share count=1 seed=5
+    practice decimal.deepest-lock count=1 seed=2
+    practice decimal.gate-millimetres count=1 seed=6
+    practice decimal.round-level count=1 seed=7 hard-count=2
+    practice decimal.which-power count=1 seed=8
+  }
+  try stars=2 {
+    show decimal.hundred-mistake p=4.25 many=100 easy-p=3.7 hard-p=0.45 hard-many=1000
+  }
+  try stars=3 {
+    show decimal.round-back r=2.4 most=0 easy-r=1.5 hard-r=3.7 hard-most=1
+  }
+  remember {
+    say "Times ten, a hundred or a thousand moves every digit one, two or three places left; dividing moves them right."
+  }
+
+  grown-ups """
+    The chart is the tool. If the child writes 3.700 for 3.7 × 100, put the number on the chart and
+    slide each digit two columns left with a finger. When comparing depths, cover everything after
+    the tenths first: the longer number is often the smaller one. In the two-star question the child
+    picks the reason Ivy is wrong: zeros written on the end of a decimal change nothing. In the
+    three-star question the halfway number rounds up, so the smallest depth is exactly halfway and
+    the largest is one thousandth under the next halfway. If the chart is still needed for every
+    question, stay here another day. Off the page, measure something in metres and write it in
+    centimetres and millimetres.
+    """
+  level easy {
+    grown-ups "At this level the thousandth added never meets a nine, 0.35 × 100 is worked once in the teacher's pen before ropes of 1.6 or 2.45 metres times ten or a hundred, the flour is shared by ten, the depths to compare differ in the ones, the gate is in centimetres, the rounding is to hundredths without carrying, the missing power multiplies by ten or a hundred, Ivy's mistake is 3.7 × 100, and the three-star asks for the smallest depth that rounds to 1.5."
+  }
+  level hard {
+    grown-ups "At this level the thousandth added meets a nine, the ropes are 0.125 or 3.075 metres times a thousand, the flour is shared by a thousand, the depths share their ones and one has a zero in the hundredths, the gate is in millimetres, the rounding is to tenths and rounds up and is asked twice, the missing power divides by a hundred or a thousand, Ivy's mistake is 0.45 × 1000, and the three-star asks for the largest depth under 3.7."
+  }
+}

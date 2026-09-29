@@ -1,0 +1,40 @@
+# Working back from a piece's length: tune A is always the same number of bars, the whole piece is
+# given, and B is what is left shared between the B sections. The map's shapes are drawn as long as
+# their bars, so the picture agrees without giving the number.
+item music.water-bars v=1 skills=[music.form, music.counting-beats, reasoning.two-steps] {
+  title "How long is B?"
+  difficulty (if f <= 1 then 0 else 1)
+  let f=0..3
+  let a={pick(f, 8, 8, 6, 4)}
+  let b={pick(f, 8, 12, 12, 8)}
+  let s1={pick(f, 1, 0, 1, 0)}
+  let s2={pick(f, 0, 1, 0, 1)}
+  let s3={pick(f, 1, 0, 1, 1)}
+  let s4={pick(f, 0, 1, 0, 0)}
+  let na={1 + (1 - s1) + (1 - s2) + (1 - s3) + (1 - s4)}
+  let total={na * a + (5 - na) * b}
+  level easy {
+    let f=0..1
+  }
+  level hard {
+    let f=2..3
+  }
+
+  scene 36x23 {
+    listenmap map title="The narrowboat band" sections=[0, s1, s2, s3, s4] bars=[a, if s1 == 0 then a else b, if s2 == 0 then a else b, if s3 == 0 then a else b, if s4 == 0 then a else b] tune=[-1, -1, -1, -1, -1] loud=[-1, -1, -1, -1, -1] tempo=[0, 0, 0, 0, 0] count=0 ask=-1 at=canvas(1, 1)
+    text ask "The narrowboat band's piece is {total} bars long. Every A section is {a} bars long, and the B sections are all the same length as each other. How many bars long is each B section?" narrate width=34 below=map gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer b
+  feedback {
+    when (answer == total - na * a and 5 - na > 1) point=map {
+      say "That is all the B sections together. How many B sections are there to share it?"
+    }
+    when (answer == total - a) point=map {
+      say "Tune A is played more than once. Take away every A section, not just the first."
+    }
+  }
+  hint "How many A sections are there, and how many bars do they take up together?"
+  hint "What is left of the {total} bars once the A sections are taken away? Share it between the B sections."
+}

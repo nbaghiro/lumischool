@@ -1,0 +1,32 @@
+# Evidence from a colour: universal indicator's chart gives a band of pH for each colour, and only one
+# of three liquids marked on the scale sits in the band seen. No liquid sits on a band's edge (vinegar
+# at 2.5 and milk of magnesia at 10.5 are left out), so each colour points to one liquid.
+item chem.ph-evidence v=1 skills=[chemistry.acids, reasoning.evidence] {
+  title "Which liquid could it be?"
+  difficulty (if s == 1 or s == 2 then 1 else 0)
+  let s=0..3
+  let colour={pick(s, "blue", "orange", "yellow", "purple")}
+  let right={pick(s, "B", "A", "C", "B")}
+  level easy {
+    let s={0, 3}
+  }
+  level hard {
+    let s={1, 2}
+  }
+
+  scene 35x27 {
+    phscale p liquids=[pick(s, "rain", "orange", "lemon", "water"), pick(s, "seawater", "lemon", "seawater", "limewater"), pick(s, "limewater", "bakingsoda", "rain", "bakingsoda")] letters=1 names=1 at=canvas(1, 0)
+    table data cols=2 head=["Colour", "pH"] cells=["red", "0 to 2", "orange", "3 to 4", "yellow", "5 to 6", "green", "7", "blue", "8 to 10", "purple", "11 to 14"] below=p gap=1
+    text ask "A jar in the mill's kitchen by the waterfall has lost its label. A drop turns universal indicator {colour}. Which of the three liquids on the scale could it be?" narrate width=20 right-of=data gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=data {
+      say "Find the band of pH that {colour} covers in the chart, then find the pointer that sits inside that band."
+    }
+  }
+  hint "Which numbers on the scale does {colour} cover?"
+  hint "Which pointer sits between those numbers?"
+}

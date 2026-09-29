@@ -1,0 +1,41 @@
+# The mark that goes inside the closing speech mark: a question mark for a question, a comma when
+# the reporting clause follows a statement, a full stop when the speech ends the sentence.
+item writing.mark-inside v=1 skills=[writing.speech-punctuation, writing.punctuation] {
+  title "Which mark goes inside?"
+  difficulty (if k == 1 or k == 2 then 1 else 0)
+  let k=0..3
+  let line={pick(k, "“Is that Saturn__” asked Leo.", "“The rings are tilted__” said Ada.", "Dr Shah said, “The dome is open__”", "“Can you see the comet__” whispered Ada.")}
+  let right={pick(k, "a question mark", "a comma", "a full stop", "a question mark")}
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x21 {
+    row top at=canvas(1, 0) space=2 align=end {
+      column words space=1 align=start {
+        caption strip text="{line}" width=21
+        text ask "Which mark goes in the gap?" narrate width=21
+      }
+      telescope scope tilt=50
+    }
+    choice pick options=["a question mark", "a comma", "a full stop"] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "a full stop" and right == "a comma") point=strip {
+      say "The sentence does not end there: said Ada carries on after the speech. A statement followed by said takes a comma inside the closing mark."
+    }
+    when (pick == "a comma" and right == "a full stop") point=strip {
+      say "Nothing comes after the closing mark, so the sentence ends inside it with a full stop."
+    }
+    when (pick != "a question mark" and right == "a question mark") point=strip {
+      say "Read the spoken words alone. They ask something, and a question keeps its question mark inside the closing mark."
+    }
+  }
+  hint "Read only the spoken words. Do they ask, or tell?"
+  hint "Then look at what comes after the closing mark. Does the sentence carry on, or stop?"
+}

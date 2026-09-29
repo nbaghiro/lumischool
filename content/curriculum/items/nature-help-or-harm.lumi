@@ -1,0 +1,38 @@
+# A change people make, and whether it helps or harms the living things round it, with the reason.
+# The hedge is the plain one; the plastic bags and the road need the harm named.
+item nature.help-or-harm v=1 skills=[nature.ecosystems, reasoning.explain] {
+  title "Help or harm?"
+  difficulty k
+  let k=0..2
+  let change={pick(k, "A farmer plants a long hedge between two bare fields.", "Plastic bags blow off a rubbish tip into the sea.", "A town builds a wide, busy road straight through a wood.")}
+  let ans={pick(k, "Helps: small animals live and travel in it", "Harms: turtles eat them as jellyfish", "Harms: it cuts the wood's animals in two")}
+  let o1={pick(k, "Harms: it blocks the rain from the fields", "Helps: fish can shelter in the bags", "Helps: animals can cross it faster")}
+  let o2={pick(k, "No change: nothing lives in a hedge", "No change: bags sink and do no harm", "No change: animals never cross roads")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x28 {
+    earth e up=1 at=canvas(1, 1)
+    text ask "Ada lists changes people make to places on the Earth she can see from the moon. {change} Does it help or harm the wildlife there, and why?" narrate width=32 below=e gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=ask {
+      say "Think of the birds, mice and insects in bare fields. What does a hedge give them?"
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "A floating bag looks a lot like a jellyfish. What eats jellyfish?"
+    }
+    when (k == 2 and pick != ans) point=ask {
+      say "A hedgehog or a deer on one side of the road has food and mates on the other. What stops it?"
+    }
+  }
+  hint "Which animals live in or near this place, and what do they need from it?"
+  hint "Does the change add something they need, or take it away, or bring a danger?"
+}

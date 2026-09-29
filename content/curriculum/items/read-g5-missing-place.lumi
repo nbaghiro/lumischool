@@ -1,0 +1,33 @@
+# A towpath walk read against the canal map, with one place on the map left empty. Each wrong
+# option is something the walk mentions beside the canal (the road, the station, the cottage), so
+# the child has to read which words name a place on the canal itself.
+item reading.missing-place v=1 skills=[reading.text-features, reading.map, reading.comprehension] {
+  title "Fill the place on the map"
+  difficulty pick(b, 0, 1, 1, 0)
+  let b=0..3
+  level easy {
+    let b={0, 3}
+  }
+  level hard {
+    let b={1, 2}
+  }
+  let right={pick(b, "Ash Bridge", "Kingsford", "Hill Top", "Quarry")}
+
+  scene 36x32 {
+    column all at=canvas(0, 1) space=1 align=start {
+      passage p title="A walk along the towpath" text="Start at Millhaven Mill. One lock brings you to Ash Bridge, where Kingsford Road crosses the canal. Two more locks and you are in Kingsford, beside the railway station. Then five locks climb to Hill Top, where the lock-keeper's cottage stands, and two old locks, dry now, lead on to the stone quarry." width=35
+      canalmap map stops=[pick(b, "Mill", "Mill", "Mill", "Mill"), pick(b, "", "Ash Bridge", "Ash Bridge", "Ash Bridge"), pick(b, "Kingsford", "", "Kingsford", "Kingsford"), pick(b, "Hill Top", "Hill Top", "", "Hill Top"), pick(b, "Quarry", "Quarry", "Quarry", "")] locks=[1, 2, 5, 2] blank=(b + 1)
+      text ask "Which place goes in the empty box on the map?" width=35
+      choice pick options=[pick(b, "Kingsford Road", "Kingsford", "Hill Top", "Station"), pick(b, "Ash Bridge", "Station", "Cottage", "Quarry"), pick(b, "Station", "Kingsford Road", "Kingsford", "Cottage")]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "Kingsford Road" or pick == "Station" or pick == "Cottage") point=p {
+      say "The walk mentions that, but it is beside the canal, not a place on it. Count the locks on the map to the empty box, then find them in the walk."
+    }
+  }
+  hint "Count the locks from the mill to the empty box on the map."
+  hint "Find the same number of locks in the walk. Where does it bring you?"
+}

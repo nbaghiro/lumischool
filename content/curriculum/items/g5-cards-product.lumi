@@ -1,0 +1,31 @@
+# The three-star: three cards in the boxes of □.□ × □, the largest product. Trying the six ways is one
+# path, and seeing that the biggest card belongs on its own is the shorter one.
+item decimal.cards-product v=1 stars=3 skills=[decimals.multiply, reasoning.extremes] {
+  title "The biggest product"
+  difficulty (x + y + z)
+  let x={1, 2, 3} y={4, 5, 6} z={7, 8, 9}
+  level easy {
+    let x={1, 2} y={4, 5} z={7}
+  }
+  level hard {
+    let x={3} y={5, 6} z={8, 9}
+  }
+
+  scene 29x15 {
+    digitcards cards digits=[y, z, x] at=canvas(1, 1)
+    text ask "Put the three cards in the boxes, one each, to make the biggest answer you can:   □.□ × □. What is that answer?" narrate width=28 below=cards gap=1
+    number-input answer width=6 below=ask gap=1
+  }
+
+  answer decimals((10 * y + x) * z / 10, 0)
+  feedback {
+    when (answer == (10 * z + y) * x / 10) point=cards {
+      say "The biggest card first makes a big decimal, but it is then multiplied by the smallest. Try the biggest card on its own."
+    }
+    when (answer == (10 * z + x) * y / 10) point=cards {
+      say "Close. Try swapping {z} and {y}: which place makes {z} count for more?"
+    }
+  }
+  hint "Which box multiplies everything else: the one on its own, or one of the others?"
+  hint "Try the biggest card in each box in turn, and compare."
+}

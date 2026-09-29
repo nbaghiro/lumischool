@@ -1,6 +1,6 @@
 # Three-time and the silence in it: bars counted in threes, the dotted minim that fills one, and
 # the rest that is counted but not played.
-lesson music-rests-and-three-time v=1 format=teach grade=3 unit=2 subject=music levels=[easy, medium, hard] {
+lesson music-rests-and-three-time v=1 format=teach grade=3 unit=6 subject=music levels=[easy, medium, hard] {
   title "Rests and three-time"
   goal "Count a bar of three with a dotted minim and a rest, and clap the silence."
 

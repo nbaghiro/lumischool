@@ -1,0 +1,31 @@
+# Sharing at two tables: each child's share is the cakes divided by the children, and the shares are
+# compared as decimals or with a common bottom, not by which table has more cakes.
+item quotient.share-compare v=1 skills=[fractions.division, reasoning.compare] {
+  title "Which table"
+  difficulty pick(t, 0, 1, 2, 3, 1, 2)
+  let t=0..5
+  level easy {
+    let t={0, 1}
+  }
+  level hard {
+    let t={3, 5}
+  }
+
+  scene 36x18 {
+    table tables cols=3 head=["Table", "Cakes", "Children"] cells=["First", "{pick(t, 3, 2, 4, 7, 5, 3)}", "{pick(t, 4, 3, 5, 10, 8, 5)}", "Second", "{pick(t, 5, 3, 5, 5, 3, 6)}", "{pick(t, 7, 5, 6, 7, 5, 10)}"] at=canvas(1, 1)
+    text ask "At a feast in the temple each table shares its cakes equally among its children. At which table does each child get more cake?" narrate width=19 below=tables gap=1
+    choice pick options=["the first table", "the second table", "the same"] stack=column right-of=tables gap=2
+  }
+
+  answer pick=pick(t, "the first table", "the first table", "the second table", "the second table", "the first table", "the same")
+  feedback {
+    when (pick == "the second table" and (t == 0 or t == 1)) point=tables {
+      say "The second table has more cakes, but more children too. Work out one child's share at each."
+    }
+    when (pick == "the same" and t != 5) point=tables {
+      say "Write each child's share as a fraction, cakes over children, then as a decimal."
+    }
+  }
+  hint "What fraction of a cake does one child get at each table?"
+  hint "Write both shares as decimals, or over a common bottom, then compare."
+}

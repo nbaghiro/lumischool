@@ -1,0 +1,32 @@
+# The two-star reason: a section's letter follows its tune, not who plays it, how loud or how fast.
+# The fourth section is tune A again, played by the woodwind, softly, or getting slower. Its shape is
+# drawn as A with a question mark, since a map draws what is true; the question asks why.
+item music.water-claim v=1 stars=2 skills=[music.form, music.listening, reasoning.claims] {
+  title "A new letter?"
+  let q=0..2 r=0..2
+  let change={pick(q, "the woodwind play it instead of the strings", "the band plays it pp instead of f", "the band slows down towards its end")}
+  let right={"No: it is the same tune, so it is A again"}
+  let w1={pick(q, "Yes: new instruments make a new tune", "Yes: a soft section is a new section", "Yes: a slower section is a new section")}
+  let w2={"No: it should be B, because it comes after B"}
+  let t4={if q == 0 then 1 else 0}
+  let l4={if q == 1 then 0 else 4}
+  let e4={if q == 2 then 2 else 0}
+
+  scene 36x33 {
+    listenmap map title="A tune for the lock keeper" sections=[0, 1, 0, 0, 0] bars=[] tune=[0, 0, 0, t4, 0] loud=[4, 2, 4, l4, 4] tempo=[0, 0, 0, e4, 0] count=0 ask=3 at=canvas(1, 1)
+    text ask "The fourth section has exactly the notes of tune A, but {change}. Leo says it needs a new letter, C. Is he right?" narrate width=34 below=map gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=map {
+      say "A letter names the tune, the notes in their order. Who plays it and how it is played can change while the tune stays the same."
+    }
+    when (pick == w2) point=map {
+      say "The letter does not depend on where the section comes. Which tune are its notes?"
+    }
+  }
+  hint "What does a letter on a listening map stand for?"
+  hint "Are the notes of the fourth section the same as the notes of the first?"
+}

@@ -1,0 +1,62 @@
+# Reading puzzles in the old city: riddles whose clues only work together, old words chosen by the
+# words after a gap, pages put back in order by the words that point back, and a logic puzzle told
+# in clues. Every puzzle was written for the lesson.
+lesson reading-old-city-puzzles v=1 format=puzzles grade=5 unit=9 subject=reading levels=[easy, medium, hard] {
+  title "Reading puzzles in the old city"
+  goal "Use every part of a clue, and the words around a gap, to solve a puzzle told in words."
+
+  puzzle stars=1 {
+    show reading.city-riddle k=0 hard-k=3
+  }
+  puzzle stars=1 {
+    show reading.odd-old-word k=0 hard-k=1
+  }
+  puzzle stars=2 {
+    show reading.which-house k=0 hard-k=2
+    say "Every clue fits more than one house. Use them one after another."
+  }
+  puzzle stars=2 {
+    show reading.missing-old-word k=1 easy-k=0 hard-k=3
+  }
+  puzzle stars=2 {
+    show reading.torn-pages k=1 easy-k=0 hard-k=2
+    say "Then, so, at last and it all point back to something. Find what."
+  }
+  puzzle stars=2 {
+    show reading.city-riddle k=2 easy-k=1
+  }
+  puzzle stars=2 {
+    show reading.which-house k=1 easy-k=1 hard-k=3
+  }
+  puzzle stars=2 {
+    show reading.notice-means k=3 easy-k=1
+  }
+  level hard {
+    puzzle stars=2 {
+      show reading.odd-old-word k=2
+    }
+  }
+  puzzle stars=3 {
+    show reading.library-logic k=2 easy-k=0 hard-k=1
+  }
+  puzzle stars=3 {
+    show reading.write-riddle k=0 hard-k=1
+  }
+
+  grown-ups """
+    These puzzles use the reading habits of the year: use every part of a clue, read past a gap
+    before filling it, and follow the small words that point back (then, so, it, him) to put a story
+    in order. Children stop at the first clue that fits and choose a house or a place that fits half
+    of it; ask them to check their answer against every clue. If the child is stuck, read one clue
+    aloud, cross out every answer it rules out, and only then read the next. In the logic puzzle a
+    clue that rules a pair out is a cross in the grid, and a row with two crosses gives a tick. The
+    last puzzle turns the riddles round: check the child's two clues against every place in the
+    picture together. Off the page, write two-clue riddles about rooms at home for each other.
+    """
+  level easy {
+    grown-ups "At this level the riddle is the well, the odd word out is about time, the houses are the bookbinder's and the scribe's, the gap wants ere, the pages are the missing map, the second riddle is the walls, the notice question is what not to do to the pages, the logic puzzle asks for Cal's book, and the riddle to write is as written."
+  }
+  level hard {
+    grown-ups "At this level the riddle is the clock tower, the odd word out is about you, the houses are the mapmaker's and the inkmaker's, the gap wants hence, the pages are the gate left open, the second riddle is the library, the notice question is who may take a book, an extra odd word out is about verbs, the logic puzzle asks for Ada's book, and the riddle to write is for the walls."
+  }
+}

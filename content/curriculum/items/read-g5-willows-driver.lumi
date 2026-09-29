@@ -1,0 +1,29 @@
+# The two-star reason: why the engine-driver helps Toad once he knows the truth. The wrong reasons are
+# both true of an earlier moment in the chapter, so only reading the driver's own answer settles it.
+item reading.willows-driver v=1 stars=2 skills=[reading.inference, reading.evidence, reading.whole-book] {
+  title "Why does he help?"
+  let right={"Tears move him, and he dislikes cars and police."}
+
+  scene 34x27 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        train t carriages=1 windows=2 on=6
+        bookcast c who=toad pose=wave dir=-1
+      }
+      text ask "In chapter 8 Toad tells the engine-driver who he really is, and still the driver helps him get away. Why?" width=33
+      choice pick options=["He still thinks Toad is a poor washerwoman.", right, "Toad has promised to wash his shirts for him."] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "He still thinks Toad is a poor washerwoman.") point=pick {
+      say "That was true when Toad climbed on. Read what Toad tells him once the engine behind is gaining."
+    }
+    when (pick == "Toad has promised to wash his shirts for him.") point=pick {
+      say "That was the bargain for the ride. Read the driver's answer after he learns the truth: what reasons does he give?"
+    }
+  }
+  hint "Find the place where Toad tells the driver the truth."
+  hint "The driver gives his reasons in his very next speech. How many are there?"
+}

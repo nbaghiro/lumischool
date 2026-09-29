@@ -1,0 +1,38 @@
+# Why the plant is kept in the dark first: to use up the starch it had, so any starch after the day
+# in the light was made that day. The harder version asks what an untreated plant would have shown.
+item nature.starch-dark v=1 skills=[nature.photosynthesis, reasoning.fair-test] {
+  title "Two days in the dark first"
+  difficulty k
+  let k=0..1
+  let asks={pick(k, "Before the test, Ada keeps the plant in a dark cupboard for two days. Why?", "Ben forgot to keep his plant in the dark first. After his test, what could the strip that was under the foil show?")}
+  let ans={pick(k, "So the leaves use up the starch they already had", "Blue-black, from starch made before the foil")}
+  let o1={pick(k, "So the leaves take in more light the next day", "Brown, as no light reached it that day")}
+  let o2={pick(k, "So the iodine can soak into the leaves", "No colour, as the foil kept iodine out")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 34x29 {
+    leaftest l stage=0 cover=1 kind=0 sun=1 at=canvas(1, 1)
+    text ask "{asks}" narrate width=32 below=l gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=l {
+      say "A leaf in the light yesterday may still hold starch today. What would that do to the test?"
+    }
+    when (k == 1 and pick == o1) point=l {
+      say "No light reached it that day, but what about the days before, when there was no foil?"
+    }
+    when (k == 1 and pick == o2) point=l {
+      say "The foil comes off before the leaf is tested. What could already be in the leaf?"
+    }
+  }
+  hint "What is the test trying to show was made during the day in the light?"
+  hint "Where could starch in the leaf have come from, other than that day?"
+}

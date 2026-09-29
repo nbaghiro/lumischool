@@ -1,0 +1,59 @@
+lesson g5-rates-and-timetables v=1 format=teach grade=5 unit=3 subject=maths levels=[easy, medium, hard] {
+  title "Rates, and the 24-hour timetable"
+  goal "Compare speeds, prices and crowding by working out how much for one, and use a speed to plan a trip by the 24-hour clock."
+
+  look {
+    scene 36x14 {
+      departureboard board platforms=0 mark=-1 head=["stop", "leaves"] trains=["Mill, 13:40", "Ash Bridge, 14:05", "Hill Top, 14:35", "Quarry, 15:20"] at=canvas(1, 1)
+      doubleline line steps=4 topTo=24 bottomTo=4 topUnit="km" bottomUnit=hours mark=1 right-of=board gap=1
+    }
+    say """
+      A rate is how much for one: the boat goes 24 km in 4 hours, which is 6 km in each hour. Two
+      speeds, two prices or two crowded places are compared by finding how much for one of each, or
+      how much for the same amount of each. On the canal the boats keep 24-hour time, so after
+      midday the hours carry on from 12: twenty to two in the afternoon is 13:40.
+      """
+  }
+  do {
+    practice rates.canoe-minute count=1 seed=3
+    level easy {
+      worked rates.boat-speed v=4 h=2 t=2.5 level=medium
+    }
+    practice rates.boat-speed count=1 easy-count=2 seed=5
+    practice rates.faster-boat count=1 seed=4 hard-count=2
+    practice time.trip-length count=1 seed=4
+    practice rates.better-buy count=1 seed=2
+    practice time.latest-boat count=1 seed=6 easy-count=0
+    practice rates.busy-moorings count=1 seed=7
+    practice rates.village-density count=1 seed=5
+  }
+  try stars=2 {
+    show rates.speed-mistake v=5 k=7 easy-v=4 easy-k=5 hard-v=6
+  }
+  try stars=3 {
+    show rates.first-to-arrive s=1 easy-s=0 hard-s=2
+  }
+  remember {
+    say "To compare two rates, find how much for one of each. After midday, add 12 to the hour."
+  }
+
+  grown-ups """
+    The question to ask every time is how much for one: one minute, one hour, one roll, one square
+    kilometre. More kilometres is not the same as faster when the trip also took longer, more boats
+    is not the same as more crowded when one bank is longer, and a bigger bag can cost less for each
+    roll. A child who is stuck comparing two speeds can also scale both trips to the same number of
+    hours. For times, count minutes on to the next o'clock and then on again; a child who subtracts
+    13:40 from 15:20 as ordinary numbers gets 180, not 100 minutes. In the two-star question the
+    child picks what Nell did wrong: she added the same number to both rows of the double number
+    line, and a rate multiplies. The three-star question gives no method: each boat's arrival time
+    has to be found from its speed and its start, and the faster boat does not always win. If a
+    rate is still found by adding, stay here another day. Off the page, time a walk to the shop and
+    work out the metres in a minute.
+    """
+  level easy {
+    grown-ups "At this level the canoe goes for four or five minutes at 60 or 80 m a minute, 4 km an hour for two and a half hours is worked once in the teacher's pen before trips of one and a half hours asked twice, the faster boat is the canoe, the trip takes 80 minutes, the bags have 4 and 8 rolls, there is no latest boat to choose, the busier bank also has more boats, the villages divide easily, Nell's mistake is at 4 km an hour, and in the three-star boat B leaves 25 minutes later and arrives first."
+  }
+  level hard {
+    grown-ups "At this level the canoe goes for six or eight minutes at 45 or 75 m a minute, the boats go at 5 or 6 km an hour for two and a half or three and a half hours, which boat is faster is asked twice and the one that went further is, the trip takes 115 minutes, the deadline is ten or twenty past with a longer trip, the bags have 6 and 10 rolls, the busier bank has fewer boats, the villages' crowding is close, Nell's mistake is at 6 km an hour, and the three-star is 18 km with a trip of four and a half hours and starts more than two hours apart."
+  }
+}

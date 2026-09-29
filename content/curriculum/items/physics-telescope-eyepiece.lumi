@@ -1,0 +1,22 @@
+# Backwards from how many times bigger to the eyepiece: the eyepiece's focus is the big lens's focus
+# divided by the magnification, and it is one of the eyepieces in the box.
+item physics.telescope-eyepiece v=1 skills=[physics.light, reasoning.backwards, division.grouping] {
+  title "Choose the eyepiece"
+  difficulty (m / 10)
+  let fo={60, 120} m={10, 20, 30, 40}
+  where (fo % m == 0 and fo / m >= 2)
+
+  scene 31x20 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      telescope t tilt=40
+      table e cols=2 head=["Eyepiece", "Focus"] cells=["A", "2 cm", "B", "3 cm", "C", "4 cm", "D", "6 cm"]
+    }
+    text ask "The observatory's big lens has a focus of {fo} cm. Which eyepiece makes the Moon look {m} times bigger?" narrate width=30 below=kit gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=(if fo / m == 2 then "A" else if fo / m == 3 then "B" else if fo / m == 4 then "C" else "D")
+  where (fo / m == 2 or fo / m == 3 or fo / m == 4 or fo / m == 6)
+  hint "Times bigger is the big lens's focus divided by the eyepiece's. Which focus divides {fo} to give {m}?"
+  hint "Try each eyepiece: {fo} divided by its focus."
+}

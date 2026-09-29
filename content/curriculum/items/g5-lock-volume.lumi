@@ -1,0 +1,31 @@
+# The canal lock as a cuboid of water: cubic metres, then litres, since a cubic metre holds a
+# thousand litres.
+item volume.lock-volume v=1 skills=[volume.cuboids, volume.capacity] {
+  title "Water to fill the lock"
+  difficulty ((if unit == "litres" then 2 else 0) + d / 2)
+  let l={20, 25, 30} w={4, 5} d={2, 3} unit={"cubic metres", "litres"}
+  level easy {
+    let unit={"cubic metres"} d={2}
+  }
+  level hard {
+    let unit={"litres"} d={3}
+  }
+
+  scene 34x13 {
+    canallock lock level=1 boat=1 at=canvas(1, 1)
+    text ask "The lock chamber is {l} m long and {w} m wide. To lift a boat, the water rises {d} m. How many {unit} of water fill it that much? One cubic metre is 1000 litres." narrate width=15 right-of=lock gap=2
+    number-input answer width=6 below=lock gap=1
+  }
+
+  answer (if unit == "litres" then l * w * d * 1000 else l * w * d)
+  feedback {
+    when (unit == "litres" and answer == l * w * d) point=ask {
+      say "That is in cubic metres. Each cubic metre is a thousand litres."
+    }
+    when (answer == l * w) point=lock {
+      say "That is the floor of the lock. The water is {d} m deep as well."
+    }
+  }
+  hint "What is the area of the floor of the chamber?"
+  hint "Multiply by how far the water rises."
+}

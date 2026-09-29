@@ -1,0 +1,44 @@
+# The way in: the ice shelf's web, written as what eats what, read for arrows. Who eats the small
+# fish and the whale's two foods are the plain two; the whole web's arrows and the two chains to the
+# whale need every line read.
+item nature.ice-web-count v=1 skills=[nature.food-webs] {
+  title "Arrows in the web"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "How many kinds of animal in the web eat small fish?", "Drawn as a web, with one arrow from each food to its eater, how many arrows point into the whale?", "Drawn as a web, with one arrow from each food to its eater, how many arrows does the whole web have?", "How many different food chains run from the tiny plants to the whale?")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x24 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      whale pw spout=1 facing=1
+      seal ps rock=0 facing=-1
+      puffins pp count=2 facing=-1
+    }
+    text web "The scientists write down what eats what off the ice shelf. Tiny plants grow under the ice. Krill eat the tiny plants. Small fish eat krill. Whales eat krill and small fish. Puffins and seals eat small fish. Polar bears eat seals." narrate width=32 below=pics gap=1
+    text ask "{asks}" narrate width=32 below=web gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 3, 2, 7, 2)
+  feedback {
+    when (k == 0 and answer == 2) point=web {
+      say "Puffins and seals are two. Read the line about the whales again."
+    }
+    when (k == 1 and answer == 1) point=web {
+      say "The whale eats two things. Each food it eats sends one arrow into it."
+    }
+    when (k == 2 and answer == 6) point=web {
+      say "Every eater of two foods has two arrows. Count the whale's two, and the puffins' and the seals' one each."
+    }
+    when (k == 3 and answer == 1) point=web {
+      say "One chain goes plants, krill, whale. Is there a longer way round that also ends at the whale?"
+    }
+  }
+  hint "Each 'eat' is one arrow, from the food to the eater. Where one line names two eaters or two foods, that is two arrows."
+  hint "Put a finger on the animal the question is about and read every line it is in."
+}

@@ -1,0 +1,35 @@
+# The three-star: the Russian work problem. Some workers start, more join partway, and the work left
+# is shared among everyone. One named part: the total number of days.
+item inverse.menders-join-later v=1 stars=3 skills=[proportion.inverse, reasoning.model] {
+  title "More hands halfway"
+  difficulty (w * d / 20 + (if j >= w then 0 else 1))
+  let w={4, 6} d={9, 10, 12} a={2, 3, 4} j={2, 3, 6}
+  where (a < d and whole(w * (d - a) / (w + j)))
+  level easy {
+    where (j >= w and w * d <= 50)
+  }
+  level hard {
+    where (j < w and w * d >= 60)
+  }
+
+  scene 35x16 {
+    ropebridge bridge planks=10 gaps=1 at=canvas(1, 1)
+    text ask "{w} workers could mend the rope bridge in {d} days. After {a} days, {j} more workers join them, all working at the same rate. How many days does the mending take altogether?" narrate width=16 right-of=bridge gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text unit "days"
+    }
+  }
+
+  answer (a + w * (d - a) / (w + j))
+  feedback {
+    when (answer == w * (d - a) / (w + j)) point=ask {
+      say "That is only the days after the others joined. Add the first {a} days."
+    }
+    when (answer == w * d / (w + j)) point=ask {
+      say "For the first {a} days only {w} workers were there. How much work is left when the others join?"
+    }
+  }
+  hint "How many worker-days does the whole bridge need?"
+  hint "How many of those are done in the first {a} days? Who shares the rest?"
+}

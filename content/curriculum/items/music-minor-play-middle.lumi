@@ -1,0 +1,28 @@
+# The way in: the bottom and top keys of a chord are held, and the child plays the middle key that
+# makes it major, four semitones up, or minor, three. Hard needs a black key.
+item music.minor-play-middle v=1 skills=[music.major-minor, music.intervals] {
+  title "The middle key"
+  difficulty (if k <= 5 then 0 else 1)
+  let k=0..9
+  let name={pick(k, "C major", "A minor", "F major", "D minor", "E minor", "G major", "D major", "C minor", "E major", "A major")}
+  let kind={pick(k, "major", "minor", "major", "minor", "minor", "major", "major", "minor", "major", "major")}
+  let r={pick(k, "C4", "A4", "F4", "D4", "E4", "G4", "D4", "C4", "E4", "A4")}
+  let t={pick(k, "E4", "C5", "A4", "F4", "G4", "B4", "Fs4", "Ef4", "Gs4", "Cs5")}
+  let f={pick(k, "G4", "E5", "C5", "A4", "B4", "D5", "A4", "G4", "B4", "E5")}
+  let size={if kind == "major" then "four" else "three"}
+  level easy {
+    let k=0..5
+  }
+  level hard {
+    let k=6..9
+  }
+
+  scene 32x17 {
+    text ask "Ben holds the bottom and top keys of {name}. Play the middle key, the one that makes the chord {kind}." narrate width=30 at=canvas(1, 1)
+    piano keys from=C4 whites=10 wide=3 labels=letters down=[r, f] below=ask gap=1
+  }
+
+  check music.plays notes=[{t}]
+  hint "In a {kind} chord the middle key is {size} semitones above the bottom key."
+  hint "Start on the bottom key and move one key at a time to the right, black keys too, counting each move."
+}

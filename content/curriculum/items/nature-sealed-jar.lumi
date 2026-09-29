@@ -1,0 +1,45 @@
+# The three-star: four sealed jars, and the one that answers each question. Only a plant in the
+# light makes food and oxygen, so the pondweed and snail in the light last longest, the pondweed
+# alone can go on by itself, and the pondweed in the dark dies first.
+item nature.sealed-jar v=1 stars=3 skills=[nature.ecosystems, reasoning.deduction] {
+  title "Four sealed jars"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "Which jar can keep its snail alive the longest?", "Ben wants a jar that keeps going with only one kind of living thing in it. Which jar could?", "In which jar will the pondweed die first?")}
+  let ans={pick(k, "jar A", "jar D", "jar B")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x30 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      pondweed pw fronds=3 tall=3
+      lander ld rungs=3
+    }
+    text told "In the moon base the crew seal four jars of pond water and leave them for months. Jar A: pondweed and a water snail, in the light. Jar B: pondweed and a water snail, in a dark cupboard. Jar C: two water snails and no pondweed, in the light. Jar D: pondweed alone, in the light." narrate width=32 below=pics gap=1
+    text ask "{asks}" narrate width=32 below=told gap=1
+    choice pick options=["jar A", "jar B", "jar C", "jar D"] below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick == "jar C") point=told {
+      say "Two snails and no plant: nothing in that jar makes food or oxygen."
+    }
+    when (k == 0 and pick == "jar B") point=told {
+      say "In the dark the pondweed cannot make food or oxygen, so it is no help to the snail."
+    }
+    when (k == 1 and pick == "jar C") point=told {
+      say "Snails cannot make their own food. What kind of living thing can?"
+    }
+    when (k == 2 and pick == "jar A" or k == 2 and pick == "jar D") point=told {
+      say "That pondweed is in the light, making its own food. Which pondweed cannot?"
+    }
+  }
+  hint "Which living thing makes food and oxygen, and what does it need to do it?"
+  hint "Go through the jars one at a time: is there a plant, and is it in the light?"
+  hint "Animals only use food and oxygen up. They cannot make any."
+}

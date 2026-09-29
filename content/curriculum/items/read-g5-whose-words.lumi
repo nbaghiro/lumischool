@@ -1,0 +1,40 @@
+# A line found on a scrap of paper, and whose account it came from. The diary says I and tells a
+# feeling; the log gives times and measures and no feelings; a plain fact could be in either.
+item reading.whose-words v=1 skills=[reading.point-of-view, reading.comparison] {
+  title "Whose words are these?"
+  difficulty pick(p, 0, 0, 1, 1, 2, 2)
+  let p=0..5
+  let right={pick(p, "Mira", "Dr Osei", "Mira", "Dr Osei", "Either", "Either")}
+  level easy {
+    let p={0, 1, 2}
+  }
+  level hard {
+    let p={3, 4, 5}
+  }
+
+  scene 36x13 {
+    column all at=canvas(0, 1) space=1 align=centre {
+      row top space=1 align=end {
+        person mira pose=wave age=child hair=braids top=sky tone=4
+        passage scrap title="Found on a scrap of paper" text="{pick(p, \"My fingers went numb, but I did not care one bit.\", \"Wind from the north, twelve kilometres an hour.\", \"Gran says she saw a comet when she was my age.\", \"Tail fainter than last night, and shorter.\", \"The comet was seen from the cliff on 3 March.\", \"There were people on the cliff path after dark.\")}" width=22 numbers=false
+        person osei pose=think age=older hair=crop colour=grey top=mint tone=5 glasses=true
+      }
+      row bottom space=1 align=centre {
+        text ask "Whose account is it from?" width=12
+        choice pick options=["Mira", "Dr Osei", "Either"]
+      }
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (p >= 4 and pick != "Either") point=scrap {
+      say "Is there a feeling in it, or a measurement? A plain fact like this one could be in either account."
+    }
+    when (p == 2 and pick == "Dr Osei") point=scrap {
+      say "Who in the story has a gran and is young enough to say my age?"
+    }
+  }
+  hint "Is there an I, a feeling, a number or a measurement?"
+  hint "A diary tells what it was like. A log tells what could be measured."
+}

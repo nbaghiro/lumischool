@@ -1,0 +1,25 @@
+# A die written with the wrong range: random 0 to 6 can say 0, which no die can. The question is
+# what could happen, proved over every way the program can run.
+item coding.bug-die v=1 skills=[coding.debugging, coding.random] {
+  title "A die with a zero"
+  difficulty k
+  let k=0..1
+  let lo={pick(k, 0, 1)} hi={pick(k, 6, 7)} o1={pick(k, 8, 0)} o2={pick(k, 0, 7)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x13 {
+    program p code=["set roll to random {lo} to {hi}", "say roll"] at=canvas(1, 0)
+    die d face=5 right-of=p gap=2
+    text ask "This should be a die with faces 1 to 6. Which of these could it say that a real die never does?" width=20 below=p gap=1
+    choice pick options=[o1, o2, 9] right-of=ask gap=1
+  }
+
+  check coding.runs of=p pick="could(value(roll))"
+  hint "What are the least and the most this random line can give?"
+  hint "Which of those does a die with faces 1 to 6 not have?"
+}

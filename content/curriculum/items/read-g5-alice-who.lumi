@@ -1,0 +1,30 @@
+# Who said a line, found by reading round it. The wrong speakers are in the same scene, and the one
+# the child is most likely to guess (the Hatter, the White Rabbit) is always offered.
+item reading.alice-who v=1 skills=[reading.characters, reading.evidence, reading.whole-book] {
+  title "Who said it?"
+  let k=0..2
+  let right={pick(k, "The Caterpillar", "The March Hare", "The King")}
+
+  scene 34x23 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row cast space=2 align=end {
+        bookcast a who=alice pose=think dir=1
+        bookcast b who=pick(k, "caterpillar", "cat", "cat") pose=stand dir=-1
+      }
+      text ask "{pick(k, \"In chapter 5, who says this? ‘Keep your temper.’\", \"In chapter 7, who says this? ‘It was the best butter.’\", \"In chapter 12, who says this? ‘Begin at the beginning.’\")}" width=33
+      choice pick options=[pick(k, "Alice", "The Hatter", "The White Rabbit"), pick(k, right, "The Dormouse", "The Queen"), pick(k, "The Pigeon", right, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 1 and pick == "The Hatter") point=ask {
+      say "The Hatter speaks about butter just before. Read the next line: who answers him?"
+    }
+    when (k == 2 and pick == "The White Rabbit") point=ask {
+      say "The White Rabbit asks where to begin. Who tells him?"
+    }
+  }
+  hint "Find the words in the chapter. Who is speaking in that paragraph?"
+  hint "Look at the words just after the speech marks: said who?"
+}

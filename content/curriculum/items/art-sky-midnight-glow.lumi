@@ -1,0 +1,10 @@
+item art.sky-midnight-glow v=1 stars=3 skills=[art.blending, art.painting, reasoning.plan] {
+  title "The midnight sun over the ice"
+
+  scene 37x22 {
+    text ask "Paint the sky over the ice shelf at midnight, with the low sun glowing along the sea. Plan at least four bands that change colour from the glow up to the blue, blend each into the next, and choose a path round the wheel so no band turns muddy." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="plain" guide="none" outline="none" pots=["yellow", "orange", "pink", "blue", "white", "black"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A sky where colour changes gradually upwards from the low sun's glow to blue: four or more bands, each a small step from the last, blended where they meet so there are no hard stripes, a path round the colour wheel that keeps every band clear rather than brown or grey (through pink and purple, or through pale tints, rather than orange straight into blue), and the ice or the sea below catching the glow." notice=["Four or more bands of colour", "Blended edges with no hard stripes", "No muddy band where opposites met", "Ice or sea that catches the glow"] ask="Which way round the colour wheel did your sky go, and where is the change smoothest?"
+}

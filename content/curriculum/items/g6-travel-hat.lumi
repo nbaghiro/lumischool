@@ -1,0 +1,35 @@
+# The two-star: the current carries the hat and the canoe alike, so on the water's own terms the hat
+# is still and the canoe paddles away and back at one speed. The way back takes as long as the way out.
+item travel.hat v=1 stars=2 skills=[rates.speed.current, reasoning.explain] {
+  title "The hat in the river"
+  difficulty (m / 10 + f)
+  let m={10, 15, 20} v={6, 8} f={1, 2, 3}
+  level easy {
+    let f={1} m={10}
+  }
+  level hard {
+    let f={3} m={15, 20}
+  }
+
+  scene 36x21 {
+    canoe boat stroke=-0.4 top=sky at=canvas(1, 2)
+    current flow length=14 facing=1 right-of=boat gap=2
+    text ask "Kit paddles up the river at {v} km/h in still water, against a {f} km/h current. By the mill his hat falls in and drifts away. He notices {m} minutes later, turns round and paddles just as hard. How many minutes after turning does he reach his hat?" narrate width=34 below=boat gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer m
+  feedback {
+    when (answer == m * (v - f) / (v + f)) point=flow {
+      say "The current does help Kit on the way back, but it carries the hat away just as fast. Watch the gap between them."
+    }
+    when (answer == m * (v + f) / (v - f)) point=flow {
+      say "Going back is with the current, so Kit is not slower. The hat drifts too."
+    }
+    when (answer == 2 * m) point=flow {
+      say "Kit only paddles back the gap he opened. How fast did the gap between him and the hat grow?"
+    }
+  }
+  hint "While Kit paddles away, how fast does the gap between him and the hat grow?"
+  hint "On the way back, how fast does that gap close?"
+}

@@ -1,0 +1,31 @@
+# The whole turn: a program turns the turtle the count times the turn, and it is back where it
+# started, facing the same way, only when that is a whole number of full turns.
+item coding.poly-total v=1 skills=[coding.drawing, angles.turns, coding.tracing] {
+  title "Turned all the way round?"
+  difficulty pick(k, 0, 1, 1, 2, 2)
+  let k=0..4
+  let n={pick(k, 4, 4, 5, 3, 6)} d={pick(k, 90, 60, 72, 90, 45)}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=2..4
+  }
+
+  scene 36x15 {
+    program p code=["repeat {n}", "  forward 2", "  turn left {d}"] at=canvas(1, 0)
+    telescope tel tilt=40 right-of=p gap=1
+    text ask "How many degrees does the turtle turn in all? Is it back where it started?" width=22 below=p gap=1
+    number-input turned right-of=ask gap=1
+    choice back options=["Yes", "No"] below=turned gap=1
+  }
+
+  answer turned=(n * d) back=(if n * d % 360 == 0 then "Yes" else "No")
+  feedback {
+    when (turned == d) point=p {
+      say "That is one turn. The repeat goes round {n} times, and the turtle turns each time."
+    }
+  }
+  hint "How many times does the turn line run?"
+  hint "A whole turn is all the way round. Has the turtle turned exactly that, or a whole number of whole turns?"
+}

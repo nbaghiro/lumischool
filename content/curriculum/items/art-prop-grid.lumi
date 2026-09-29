@@ -1,0 +1,32 @@
+# The grid method: a drawing copied square by square onto bigger squares keeps its count of squares
+# and grows in centimetres. The trap doubles the count.
+item art.prop-grid v=1 skills=[art.proportion, measure.length, reasoning.relational] {
+  title "Copied onto a bigger grid"
+  difficulty (q + n / 10)
+  let n={6, 8, 10} q=0..1
+  let asked={pick(q, "How many big squares wide is it on the copy?", "The big squares are 1 centimetre wide. How many centimetres wide is the copy?")}
+  level easy {
+    let q={0}
+  }
+  level hard {
+    let n={6, 8, 10} q={1}
+  }
+
+  scene 36x16 {
+    citywalls wall towers=2 open=1 at=canvas(1, 1)
+    text ask "Ada copies her drawing of the city gate, square by square, onto squares twice as wide. The gate was {n} small squares wide. {asked}" width=18 right-of=wall gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == 2 * n) point=wall {
+      say "Each big square holds what one small square held, so the count of squares stays the same. It is the squares that got bigger."
+    }
+    when (q == 1 and answer == n / 2) point=wall {
+      say "That is the width of the first drawing, on 5 millimetre squares. On the copy each square is 1 centimetre."
+    }
+  }
+  hint "What goes into each big square on the copy?"
+  hint "{pick(q, \"Does the number of squares across change, or the size of each one?\", \"How wide is one big square? How many of them does the gate cross?\")}"
+}

@@ -1,0 +1,35 @@
+# Three sentences with a pronoun; in one of them the pronoun could point to two people or things,
+# so the reader cannot tell. Its place moves with k.
+item writing.unclear-pronoun v=1 skills=[writing.cohesion, writing.pronouns, reasoning.find-the-error] {
+  title "Which one leaves the reader unsure?"
+  difficulty k
+  let k=0..2
+  let o1={pick(k, "Farid told Ben that he had won.", "The cart hit the wall and lost a wheel.", "Nadia gave Farid her book.")}
+  let o2={pick(k, "Farid told Mia that he had won.", "The cart hit the post, and it broke.", "Nadia gave Farid his book.")}
+  let o3={pick(k, "Mia told Farid that she had won.", "The vase fell off the shelf and broke.", "Nadia gave Ana her book.")}
+  let right={pick(k, o1, o2, o3)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 36x18 {
+    row top at=canvas(1, 0) space=1 align=end {
+      person a pose=point age=child hair=curly colour=black top=berry
+      person b pose=think age=child hair=short colour=brown top=sky
+      text ask "In one of these sentences a reader cannot tell who or what the pronoun means. Which one?" narrate width=23
+    }
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "In that sentence only one person or thing fits the pronoun. Look for a sentence where two could."
+    }
+  }
+  hint "For each sentence, find the pronoun and list everyone or everything it could mean."
+  hint "If the list has two in it, the reader has to guess."
+}

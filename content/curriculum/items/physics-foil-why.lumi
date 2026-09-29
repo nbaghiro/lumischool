@@ -1,0 +1,26 @@
+# Two stars: why shiny foil slows cooling. The evidence rules out two wrong ideas: the foil cup still
+# cooled, so foil does not stop heat, and cold does not move, heat does.
+item physics.foil-why v=1 stars=2 skills=[physics.heat, reasoning.evidence] {
+  title "Why shiny?"
+
+  scene 31x37 {
+    wrapped w wraps=["none", "foil"] start=80 minutes=20 show=1 room=20 at=canvas(1, 0)
+    text ask "A survival blanket and the inside of a flask are shiny for the same reason as this foil. Both cups started at 80 °C 20 minutes ago. Why has cup B in foil cooled less than cup A?" narrate width=24 below=w gap=1
+    choice pick options=["It reflects the tea's heat back to the cup", "Foil keeps the cold out", "Foil stops all heat getting out", "Foil is metal, and metal holds heat in"] stack=column below=ask gap=1
+  }
+
+  answer pick="It reflects the tea's heat back to the cup"
+  feedback {
+    when (pick == "Foil keeps the cold out") point=w {
+      say "Cold does not travel. Heat moves from the hot tea outwards. What does the foil do to that heat?"
+    }
+    when (pick == "Foil stops all heat getting out") point=w {
+      say "Read cup B again. It started at 80 °C. Has it cooled at all?"
+    }
+    when (pick == "Foil is metal, and metal holds heat in") point=w {
+      say "Metal conducts heat well, which would let it out faster. It is the shiny surface that matters."
+    }
+  }
+  hint "Did cup B cool at all? What does that say about stopping heat?"
+  hint "What does a shiny surface do to the radiation that reaches it?"
+}

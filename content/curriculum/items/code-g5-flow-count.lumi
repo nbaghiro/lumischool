@@ -1,0 +1,34 @@
+# A loop through a list with a decision inside it, drawn as a flowchart: two diamonds, one asking
+# whether every star is done and one asking whether this star is bright enough.
+item coding.flow-count v=1 skills=[coding.flowcharts, coding.decisions, coding.lists] {
+  title "Two diamonds"
+  difficulty k
+  let k=0..2
+  let t={pick(k, 5, 5, 9)} right={pick(k, 2, 3, 2)}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x34 {
+    flowchart f code=["set seen to 0", pick(k, "set stars to list 3, 8, 5, 9, 2", "set stars to list 6, 1, 7, 4, 9, 5", "set stars to list 2, 9, 4, 12, 7, 10"), "for each s in stars", "  if s is more than {t}", "    add 1 to seen", "say seen"] at=canvas(0, 0)
+    text ask "The list is how bright each star is tonight. The telescope photographs a star only when the second diamond says yes. What number does it say at the end?" width=17 right-of=f gap=1
+    number-input answer below=ask gap=1
+    telescope tel tilt=55 below=answer gap=2
+  }
+
+  check coding.runs of=f answer="value(seen)"
+  answer right
+  feedback {
+    when (answer == right + 1) point=f {
+      say "A star of brightness {t} is not more than {t}, so the diamond says no for it."
+    }
+    when (answer == pick(k, 5, 6, 6)) point=f {
+      say "Not every star goes the yes way. Ask the second diamond about each star in turn."
+    }
+  }
+  hint "Take the stars one at a time. Which way out of the second diamond does each one go?"
+  hint "Only the yes way passes through the box that adds 1 to seen. How many stars go that way?"
+}

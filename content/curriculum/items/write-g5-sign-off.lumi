@@ -1,0 +1,32 @@
+# The sign-off follows the greeting: Yours sincerely after a name, Yours faithfully after Dear Sir
+# or Madam, and a friendly ending for family. Faithfully is the one that trips children up.
+item writing.sign-off v=1 skills=[writing.letters, writing.formality] {
+  title "How does the letter end?"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2
+  let greet={pick(k, "Dear Dr Shah,", "Dear Sir or Madam,", "Dear Priya,")}
+  let right={pick(k, "Yours sincerely,", "Yours faithfully,", "Love from")}
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x24 {
+    row top at=canvas(1, 0) space=2 align=start {
+      letterpage page greeting="{greet}" body="" lines=2 closing="" width=16
+      text ask "{if k == 0 then \"Leo writes to the director, whose name he knows.\" else if k == 1 then \"Leo writes to the observatory's shop, not knowing who will read it.\" else \"Leo writes to his cousin Priya.\"} Which ending goes on the line at the bottom?" narrate width=16
+    }
+    choice pick options=["Yours sincerely,", "Yours faithfully,", "Love from"] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=page {
+      say "Look at the greeting. A letter that names a stranger ends Yours sincerely, one that starts Dear Sir or Madam ends Yours faithfully, and a letter to family ends in a friendly way."
+    }
+  }
+  hint "Read the greeting at the top. Does it name the reader, and is the reader family?"
+  hint "A letter that names its reader ends one way; a letter that cannot name its reader ends another way."
+}

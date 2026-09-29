@@ -1,0 +1,32 @@
+# The two-star reason: no single sign makes an element a metal. Graphite, a form of carbon, conducts
+# electricity (RSC, carbon); aluminium is a metal a magnet does not pull; sulfur is a solid non-metal.
+item chem.pencil-lead v=1 stars=2 skills=[chemistry.metals, reasoning.evidence] {
+  title "Is it a metal?"
+  difficulty k
+  let k=0..2 r=0..2
+  let claim={pick(k, "A grown-up lays a pencil lead across the tester's clips and the bulb lights. Pencil lead is graphite, a form of carbon, the ringed element. Sam says carbon must be a metal.", "Ana holds a magnet to the telescope's tube, which is aluminium, the ringed element. It does not stick, so she says aluminium cannot be a metal.", "Leo says sulfur, the ringed element, must be a metal, because it is a solid at 20 °C.")}
+  let right={pick(k, "No: carbon is a non-metal that conducts", "She is wrong: a magnet pulls only a few metals", "No: many non-metals are solids")}
+  let w1={pick(k, "Yes: only metals let electricity through", "She is right: every metal sticks to a magnet", "Yes: every solid element is a metal")}
+  let w2={pick(k, "Yes: anything grey is a metal", "She is right: a metal must be heavy", "Yes: a metal is never a gas")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 35x30 {
+    periodic t rows=3 blank=0 mark=pick(k, 6, 13, 16) shade=metal at=canvas(1, 0)
+    text ask "{claim} Is that right, and why?" narrate width=34 below=t gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=t {
+      say "Look at the ringed cell and the key. One sign on its own does not make a metal, and the table says which it is."
+    }
+  }
+  hint "Is the ringed cell shaded as a metal?"
+  hint "{pick(k, \"Is conducting electricity something only metals ever do?\", \"Do all metals stick to a magnet, or only iron, nickel and cobalt?\", \"Are there solids in the table that are not shaded?\")}"
+}

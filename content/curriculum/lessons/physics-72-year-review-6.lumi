@@ -1,0 +1,46 @@
+lesson physics-year-review-6 v=1 format=review grade=6 unit=9 subject=physics levels=[easy, medium, hard] {
+  title "Physics review: the sixth year"
+  goal "Look back over the year: the tilted Earth, heat, sound waves, forces, energy and electricity, levers, falling on the moon and eclipses."
+
+  warm-up {
+    show physics.tilt-sun lat=70 s=0 easy-lat=80 hard-s=1
+    show physics.heat-rod-read r=1 m=10 hard-m=5
+    show physics.wave-hertz w=4 easy-w=2 hard-w=8
+  }
+  exercises {
+    show physics.sledge-motion v=2 easy-v=1 hard-v=4
+    show physics.store-missing b=1 i=1000 easy-b=0 easy-i=500 hard-b=3 hard-i=2000
+    show physics.gen-water-energy m=50 h=10 easy-m=20 easy-h=5 hard-m=100 hard-h=20
+    show physics.cell-lasts u=5 easy-u=2 hard-u=8
+    show physics.moment-of w=6 s=3 easy-w=4 easy-s=2 hard-w=9 hard-s=4
+    show physics.moondrop-speed k=4 easy-k=3 hard-k=6
+    show physics.phase-earth k=2 easy-k=4 hard-k=5
+    show physics.eclipse-read m=1 easy-m=0
+    show physics.hut-reading h=0 hard-h=1
+  }
+  puzzle stars=2 {
+    show physics.sledge-steady-reason v=0 hard-v=1
+  }
+  puzzle stars=3 {
+    show physics.cell-night-lamp v=1 easy-v=0 hard-v=3
+  }
+
+  grown-ups """
+    This is a check, not a test, to do on the moon at the end of the sixth year. The warm-up is the
+    first question of three lessons: whether a place has the sun all day, how many beads a rod
+    dropped, and the hertz of a sound on a screen. The exercises take one question each from the
+    year: what a sledge does, a band of energy left to find, the joules from falling water, how long
+    a cell lasts, the turning effect of a weight, a fall's speed on the moon, the Earth seen from
+    the moon, which eclipse a line-up makes, and a thermometer in the hut. Anything that needs the
+    way in again is worth another week with that lesson, and everything else can move on. The two
+    puzzles are there to be enjoyed: the sledge puzzle is answered by the forces balancing, not by
+    a bigger pull, and the lamp puzzle by working out the joules a night needs before the cells. Ask
+    for the reason as well as the number.
+    """
+  level easy {
+    grown-ups "At this level the numbers are the smallest of each lesson: the sun at 80 degrees north in June, a rod after ten minutes, two waves on the screen, a sledge with clear arrows, the input band to find, short falls, a full Earth and an eclipse of the sun."
+  }
+  level hard {
+    grown-ups "At this level the numbers are the largest: the far north in December, a rod after five minutes, eight waves on the screen, a wasted band to find, water falling 20 m, a crescent or gibbous Earth, the heater high in the hut, and the hardest lamp puzzle."
+  }
+}

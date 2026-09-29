@@ -1,0 +1,32 @@
+# The two-star reason: a character's change is in how they feel and act, not in where they are or
+# what they do all day. The wrong reasons misread the story (a place or a feeling in the wrong part)
+# or count the wrong thing as the change (a key she was given, climbing faster).
+item reading.not-changed v=1 stars=2 skills=[reading.character, reasoning.explain] {
+  title "Has she changed?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let right={pick(k, "Her place is the same, but her feelings are not.", "Same steps, but she climbs them in a new way.", "She was only scared for a moment; she ends proud.")}
+
+  scene 35x24 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        person leo pose=think age=child hair=curly top=tang tone=2
+        bubble says "{pick(k, \"Iris has not changed. She is at the clock tower at the start and at the end.\", \"Iris has not changed. She climbs the steps at the start and at the end.\", \"Iris changed from brave to scared.\")}" width=16 from=leo
+      }
+      text ask "Why is Leo wrong?" width=34
+      choice pick options=[pick(k, right, "She does not climb the steps at the end.", "She was scared at the start, brave at the end."), pick(k, "She ends at the fountain, not the tower.", right, "Leo is right: her hands shake at the end."), pick(k, "She has changed, because now she has a key.", "She climbs faster, as she is fitter now.", right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick != right) point=says {
+      say "Check that against the story. How does Iris feel in Part 1, and in which part do her hands shake?"
+    }
+    when (k < 2 and pick != right) point=says {
+      say "Check that against the story. What is different about Iris at the end: where she is, or how she feels and acts?"
+    }
+  }
+  hint "What is the same about Iris at the start and the end? What is different?"
+  hint "Which of those is the change the story is about?"
+}

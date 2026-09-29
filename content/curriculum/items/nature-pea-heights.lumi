@@ -1,0 +1,37 @@
+# Twenty sunflowers from the seeds of one flower head, grown side by side in the same soil and light
+# and grouped by height. The head was pollinated from many plants, so the spread is mostly
+# inherited; peas pollinate themselves and would show little but the place they grew. Easy reads a
+# bar and adds two; hard adds the taller bars and compares two.
+item nature.pea-heights v=1 skills=[nature.inheritance, data.bar-charts] {
+  title "Twenty sunflowers"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "How many plants were 40 to 44 cm tall?", "How many plants were shorter than 40 cm?", "How many plants were at least 40 cm tall?", "How many more plants were 35 to 39 cm tall than 45 to 49 cm tall?")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x21 {
+    bargraph g labels=["30-34", "35-39", "40-44", "45-49"] values=[2, 7, 8, 3] max=8 color=berry at=canvas(1, 1)
+    text ask "The crew grow 20 sunflowers in the moon base from the seeds of one flower head, which bees had dusted with pollen from many other sunflowers. All grow in the same soil under the same lamps. After six weeks the crew measure each in centimetres. {asks}" narrate width=15 right-of=g gap=2
+    number-input answer below=g gap=1
+  }
+
+  answer pick(k, 8, 9, 11, 4)
+  feedback {
+    when (k == 1 and answer == 7) point=g {
+      say "That is the 35 to 39 bar alone. The plants of 30 to 34 cm are shorter than 40 cm too."
+    }
+    when (k == 2 and answer == 8) point=g {
+      say "That is the 40 to 44 bar alone. The 45 to 49 cm plants are at least 40 cm too."
+    }
+    when (k == 3 and answer == 10) point=g {
+      say "That adds the two bars. The question asks how many more, so find the difference."
+    }
+  }
+  hint "Find the heights the question is about along the bottom of the graph."
+  hint "Read the top of each bar across to the numbers on the side."
+}

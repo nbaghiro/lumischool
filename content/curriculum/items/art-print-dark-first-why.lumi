@@ -1,0 +1,33 @@
+# The two-star reason: why the lighter ink goes down first. Wrong reasons blame the ink's strength
+# or the carving, which a printer can see is not what happened.
+item art.print-dark-first-why v=1 stars=2 skills=[art.printing, reasoning.explain] {
+  title "Ben's print"
+  difficulty k
+  let k=0..1 r=0..2
+  let light={pick(k, "yellow", "pink")}
+  let dark={pick(k, "blue", "green")}
+  let right={"A thin light ink cannot hide a dark one"}
+  let w1={pick(k, "Yellow ink is always weaker than blue", "Pink ink is always weaker than green")}
+  let w2={"His blocks were carved the wrong way round"}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x18 {
+    mixingtray print wells=["{light}", "{dark}"] ring=-1 labels=true at=canvas(1, 1)
+    text ask "Ben prints the {dark} block first and the {light} one over it, and the {light} fish hardly shows. Why?" width=24 right-of=print gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=print gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=print {
+      say "The ink lies on top of what is already printed, and it is thin. Can a pale colour hide a dark one under it?"
+    }
+  }
+  hint "Printing ink is thin. What shows through it?"
+  hint "Which colour would hide the other if it went on top?"
+}

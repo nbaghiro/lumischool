@@ -1,0 +1,38 @@
+# An old word worked out from the sentence around it, with no glossary. The wrong options fit the
+# grammar but not the rest of the sentence.
+item reading.old-word-context v=1 skills=[reading.vocabulary, reading.old-words, reading.inference] {
+  title "An old word from its sentence"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  let word={pick(k, "nigh", "oft", "yonder", "anon", "hark")}
+  let right={pick(k, "nearly", "often", "that one over there", "soon after", "listen")}
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={2, 3, 4}
+  }
+
+  scene 34x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p title="From an old city chronicle" text="{pick(k, \"The sun was nigh to setting, and the lamplighter came with his ladder.\", \"Oft have I walked these walls at dawn, and oft at dusk.\", \"Yonder tower, the one with the golden clock, is the oldest in the city.\", \"The gate bell rang, and anon the guards came running.\", \"Hark, the great clock strikes twelve. Can you not hear it?\")}" width=33 numbers=false
+      text ask "What does {word} mean here?" width=33
+      row bottom space=2 align=end {
+        choice pick options=[pick(k, "far from", "often", "a brand new", "a long time later", "look"), pick(k, "nearly", "once", "that one over there", "soon after", "listen"), pick(k, "never", "never", "a broken", "without a sound", "run")] stack=column
+        citywalls walls towers=3 open=1
+      }
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 4 and pick == "look") point=p {
+      say "Read the next sentence. Is the clock something to see there, or to hear?"
+    }
+    when (k == 1 and pick == "once") point=p {
+      say "The writer walked the walls at dawn and at dusk too. Is that once?"
+    }
+  }
+  hint "Read the whole sentence, and the words after the old one."
+  hint "Try each choice in place of {word}. Which one makes the sentence make sense?"
+}

@@ -1,0 +1,42 @@
+# Why a seed can sprout in the dark: it lives on the starch in its food store until its leaves are
+# green, and iodine shows the starch going. Each version is a reason, with the misconceptions
+# children hold as the other options.
+item nature.bean-starch v=1 skills=[nature.seeds, reasoning.explain] {
+  title "The food in a seed"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "A seed in a dark cupboard cannot make food, but it still sprouts. How?", "Iodine turns starch blue-black. Ben drops it on a soaked bean's food store, and it turns blue-black. On the shrivelled store of a bean seedling with green leaves, two weeks old, it stays brown. What does that show?", "Seedlings kept in the dark grow tall and pale for a week or two, then wilt and die. Why?")}
+  let ans={pick(k, "It lives on food stored in the seed", "The seedling used up the starch as it grew", "They use up the seed's food and cannot make more")}
+  let o1={pick(k, "A seed needs no food until it flowers", "The starch soaked away into the soil", "They grow too tall to hold themselves up")}
+  let o2={pick(k, "It takes its food from the water", "Iodine does not work on old seeds", "They had too much water in the cupboard")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x33 {
+    seedtest s mode=1 names=1 at=canvas(1, 1)
+    text ask "{asks}" narrate width=32 below=s gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == o1 and k == 0) point=s {
+      say "Growing a root and a shoot takes food. Which part of the bean is there to supply it?"
+    }
+    when (pick == o2 and k == 0) point=s {
+      say "Water lets the seed swell and start, but water is not food. Where is the food in the picture?"
+    }
+    when (pick != ans and k == 1) point=s {
+      say "The seedling grew a root, a stem and leaves in those two weeks. What did it build them from?"
+    }
+    when (pick != ans and k == 2) point=s {
+      say "Seedlings in the light turn green and keep going. What can a green leaf in the light do that a pale one in the dark cannot?"
+    }
+  }
+  hint "Look at the biggest part of the bean. What is it for?"
+  hint "What does a young plant live on before its leaves are green?"
+}

@@ -1,0 +1,25 @@
+# The two-star reason: why the compass steps round exactly six times. Wrong reasons are a fact that
+# is false and a slip that would give a different number each time.
+item art.compass-why-six v=1 stars=2 skills=[art.pattern, art.geometry, reasoning.explain] {
+  title "Why exactly six?"
+  difficulty 1
+  let r=0..2
+  let right={"Six equal-sided triangles fit round the middle"}
+  let w1={"Every circle has six sides"}
+  let w2={"The compass slips and lands there by chance"}
+
+  scene 36x24 {
+    construction arcs kind="triangle" at=canvas(1, 1)
+    text ask "The compass stays open at the circle's radius, so each step joins two marks on the edge that are one radius apart. Why does it go round exactly six times, every time?" width=20 right-of=arcs gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=arcs gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=arcs {
+      say "Join two neighbouring marks to the middle. All three sides of that triangle are one radius long. What does that say about its angles?"
+    }
+  }
+  hint "Join the middle to two marks next to each other. How long is each side of that triangle?"
+  hint "What is true of the angles of a triangle whose three sides are equal? And how many degrees go round the middle?"
+}

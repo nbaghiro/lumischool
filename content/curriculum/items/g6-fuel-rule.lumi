@@ -1,0 +1,31 @@
+# The constant of a direct proportion, y = k × x, found from a table where it is a decimal.
+item proportion.fuel-rule v=1 skills=[proportion.direct, decimals.divide] {
+  title "Fuel for every kilometre"
+  difficulty ((if whole(10 * k) then 0 else 1) + x1 / 40)
+  let k={0.2, 0.3, 0.4, 0.25, 0.15} x1={20, 40}
+  level easy {
+    let k={0.2, 0.3} x1={20}
+  }
+  level hard {
+    let k={0.25, 0.15} x1={40}
+  }
+
+  scene 31x18 {
+    table data cols=2 head=["km", "Fuel (L)"] cells=[x1, decimals(k * x1, 0), 2 * x1 + 10, decimals(k * (2 * x1 + 10), 0), 100, decimals(k * 100, 0)] at=canvas(1, 1)
+    unknown eq terms=["y", "=", "?", "×", "x"] right-of=data gap=2
+    text ask "The snowmobile's fuel, y litres, is in direct proportion to the distance, x km. What number goes in the rule?" narrate width=30 below=data gap=1
+    number-input answer width=5 below=ask gap=1
+  }
+
+  answer k
+  feedback {
+    when (answer == 1 / k) point=data {
+      say "That is kilometres for each litre. The rule gives litres for each kilometre."
+    }
+    when (answer == k * 100) point=data {
+      say "That is the fuel for 100 km. How much is it for 1 km?"
+    }
+  }
+  hint "How many litres does the snowmobile use for 100 km?"
+  hint "Divide the litres by the kilometres in any row. Is it the same in every row?"
+}

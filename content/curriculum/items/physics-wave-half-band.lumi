@@ -1,0 +1,31 @@
+# Predict, then check: a band plucked, then plucked again with its shaking part half as long, which
+# doubles the vibrations a second. Screen B waits under a question mark.
+item physics.wave-half-band v=1 skills=[physics.sound, reasoning.predict, multiplication.doubling] {
+  title "Half as long"
+  difficulty (if w <= 3 then 0 else 1)
+  let w=2..5
+  level easy {
+    let w=2..3
+  }
+  level hard {
+    let w=4..5
+  }
+
+  scene 23x24 {
+    wave s waves=[w, 2] heights=[2, 2] across=10 letters=1 blank=1 at=canvas(1, 0)
+    text ask "Sound A is a band plucked on the board. The bridge is moved so the shaking part is half as long, and it is plucked just as hard. How many waves will screen B show?" narrate width=20 below=s gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (2 * w)
+  feedback {
+    when (answer == w / 2) point=s {
+      say "A shorter band vibrates faster, so the note is higher and there are more waves, not fewer."
+    }
+    when (answer == w) point=s {
+      say "Changing the length changes the pitch. What does a shorter band do to the number of vibrations?"
+    }
+  }
+  hint "Does a shorter band make a higher or a lower note?"
+  hint "Half the length vibrates twice as fast."
+}

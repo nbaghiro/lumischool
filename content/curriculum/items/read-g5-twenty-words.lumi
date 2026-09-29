@@ -1,0 +1,16 @@
+# The three-star question: the whole book in twenty words or fewer, from the story map of its four
+# chapters. There is no one right summary, so a grown-up marks it against the look-for.
+item reading.twenty-words v=1 stars=3 skills=[reading.summary, writing.composition] {
+  title "The whole book in twenty words"
+  let k=0..1
+
+  scene 35x25 {
+    storymap map stops=["Canal freezes", "Ice wins", "Nia's sledge", "Bread in town"] icons=["boat", "gate", "lantern", "cake"] at=canvas(1, 1)
+    text ask "{pick(k, \"Sum up The Frozen Winter in twenty words or fewer.\", \"Sum up The Frozen Winter in fifteen words or fewer.\")} Count your words." width=33 below=map gap=1
+    writinglines lines lines=2 width=33 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A summary within the word limit that covers the frozen canal, the failed tries, Nia's sledge and the flour reaching Kingsford, in the child's own words and with no small details such as the horses or the lamp. For example: The canal froze, so Nia pulled the flour to Kingsford on sledges until the ice melted."
+  hint "Take one stop of the story map at a time. What are the fewest words that still say it?"
+  hint "Which words can go? Try joining two stops with so or until."
+}

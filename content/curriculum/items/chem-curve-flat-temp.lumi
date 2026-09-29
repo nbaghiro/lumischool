@@ -1,0 +1,22 @@
+# The way in: the flat part of a curve is where the water changes state, read off the side. A cup
+# left out on the observatory balcony freezes at 0, ice warmed melts at 0, and water boils at 100.
+item chem.curve-flat-temp v=1 skills=[chemistry.heating, data.line-graph] {
+  title "Where is it flat?"
+  let k=0..2
+  let asks={pick(k, "A cup of water was left on the observatory balcony on a frosty night, and its temperature read every 10 minutes.", "Ice from the frozen water butt was warmed in a pan, and its temperature read every 2 minutes.", "A grown-up heated a pan of water for cocoa on the camping stove, and read its temperature every 2 minutes.")}
+
+  scene 35x26 {
+    heatcurve curve temps=[pick(k, 20, -40, 20), pick(k, 10, 0, 40), pick(k, 0, 0, 60), pick(k, 0, 0, 80), pick(k, 0, 0, 100), pick(k, -10, 0, 100), pick(k, -20, 20, 100)] every=(if k == 0 then 10 else 2) min=(if k == 2 then 0 else if k == 1 then -40 else -20) max=(if k == 2 then 120 else 20) step=(if k == 0 then 10 else 20) at=canvas(1, 0)
+    text ask "{asks} At what temperature in °C does the line stay flat?" narrate width=34 below=curve gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check chem.state of=curve answer=flat
+  feedback {
+    when (answer != pick(k, 0, 0, 100) and answer > 5) point=curve {
+      say "Read the flat part against the numbers up the side, not the minutes along the bottom."
+    }
+  }
+  hint "Find the part of the line that does not go up or down."
+  hint "Follow that part across to the side. Which number is it level with?"
+}

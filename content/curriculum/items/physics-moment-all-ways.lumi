@@ -1,0 +1,31 @@
+# Three stars: every way to balance a moment with one whole-newton weight of 1 to 10 N at one of the
+# five steps. The ways are the steps that divide the moment into a weight no heavier than 10 N.
+item physics.moment-all-ways v=1 stars=3 skills=[physics.moments, reasoning.systematic] {
+  title "Every way to balance"
+  difficulty v
+  let v=0..3
+  let a={pick(v, 4, 5, 6, 8)}
+  let p={pick(v, 3, 4, 4, 5)}
+  let ways={pick(v, 3, 3, 2, 2)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 28x23 {
+    seesaw plank left=a atleft=p right=0 atright=1 unit=N marks=true held=1 at=canvas(1, 0)
+    text ask "You have one weight of a whole number of newtons, from 1 N to 10 N, to hang at one of the steps on the right. In how many different ways can it balance the plank?" narrate width=26 below=plank gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ways
+  feedback {
+    when (answer == 1) point=plank {
+      say "The same weight at the same step is one way. Try every step on the right, from 1 to 5."
+    }
+  }
+  hint "What is the left side's moment, in weight times steps?"
+  hint "For each step from 1 to 5, what weight would match it? Is it a whole number of newtons, 10 N or less?"
+}

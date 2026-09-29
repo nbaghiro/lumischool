@@ -1,0 +1,32 @@
+# The two sorts on five planks: the bubble sort asks 4 questions in each of 4 passes, the selection
+# sort 4, 3, 2 and 1. The bubble count is run by the checker; the selection count follows the pattern.
+item coding.sorts-five v=1 skills=[coding.algorithms, reasoning.patterns, reasoning.compare] {
+  title "Five planks"
+  difficulty (q + 1)
+  let q=0..1
+  level easy {
+    let q={0}
+  }
+  level hard {
+    let q={1}
+  }
+
+  scene 36x31 {
+    program p code=["set logs to list 5, 1, 4, 2, 3", "repeat 4", "  set i to 1", "  repeat 4", "    set j to i + 1", "    if item i of logs is more than item j of logs", "      set t to item i of logs", "      replace item i of logs with item j of logs", "      replace item j of logs with t", "    add 1 to i"] text=true at=canvas(0, 0)
+    text ask "The bubble sort for five planks. How many questions does it ask on line 6? The selection sort asks 4, then 3, then 2, then 1. {if q == 0 then \"How many is that?\" else \"How many fewer is that than the bubble sort?\"}" width=24 at=canvas(0, 23)
+    text t1 "bubble" right-of=ask gap=1
+    number-input bubble right-of=t1 gap=1
+    text t2 "{if q == 0 then \"selection\" else \"fewer\"}" below=t1 gap=1
+    number-input other right-of=t2 gap=1
+  }
+
+  check coding.runs of=p bubble="ran(6)"
+  answer other=(if q == 0 then 10 else 6)
+  feedback {
+    when (bubble == 9) point=p {
+      say "That is for four planks. With five, both repeats go round 4 times."
+    }
+  }
+  hint "How many times does each repeat go round now?"
+  hint "Add 4, 3, 2 and 1 for the selection sort."
+}

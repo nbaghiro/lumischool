@@ -1,0 +1,30 @@
+# The two-star reason: petals painted dark and light in turn all the way round a plate only work
+# with an even number, because going round the colours pair up, and with an odd number the last
+# petal sits between two of the same colour's neighbours.
+item art.folk-petals v=1 stars=2 skills=[art.pattern, art.design, reasoning.explain] {
+  title "Dark, light, dark, light"
+  let q=0..1 r=0..2
+  let odd={pick(q, 7, 9)}
+  let even={pick(q, 8, 10)}
+  let right={pick(q, "8: dark and light pair up, so the count must be even", "10: dark and light pair up, so the count must be even")}
+  let w1={pick(q, "7: an odd number looks more natural", "9: an odd number looks more natural")}
+  let w2={"Either: the last petal can be any colour"}
+
+  scene 36x34 {
+    radial plate repeats=odd motif="drop" missing=-1 colour=blue at=canvas(1, 1)
+    text ask "A potter paints a plate blue on white, as Gzhel potters near Moscow do. She wants dark and pale petals in turn all the way round, with no two of the same next to each other. The plate has room for {odd} or {even} petals. Which should she choose, and why?" narrate width=34 below=plate gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=plate {
+      say "Try it on the {odd} petals drawn: dark, pale, dark, and so on round. What happens when you get back to the first petal?"
+    }
+    when (pick == w2) point=plate {
+      say "The last petal has two neighbours: the one before it and the first petal. Can it differ from both?"
+    }
+  }
+  hint "Colour the drawn petals in your head, dark and pale in turn, going round."
+  hint "Which colour is the last petal, and which colour is the first petal next to it?"
+}

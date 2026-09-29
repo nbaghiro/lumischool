@@ -1,0 +1,33 @@
+# Three-star: the six-step orbit asked about far ahead. The lander is back where it began after every
+# 6 steps, so only the steps left over after the last whole orbit matter; the checker runs all of them.
+item coding.orbit-hundred v=1 stars=3 skills=[coding.simulation, reasoning.patterns] {
+  title "Where after a hundred steps?"
+  difficulty k
+  let k=0..2
+  let big={pick(k, 51, 100, 200)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x24 {
+    program p code=["set x to 2", "set y to 0", "set vx to 0", "set vy to 2", "repeat {big}", "  take x from vx", "  take y from vy", "  add vx to x", "  add vy to y"] text=true at=canvas(0, 0)
+    earth e up=1 right-of=p gap=1
+    text ask "After 6 steps this lander is back at x 2, y 0, moving the same way as at the start. Where is it after {big} steps?" width=15 below=e gap=1
+    text tx "x" below=p gap=1
+    number-input x right-of=tx gap=1
+    text ty "y" right-of=x gap=2
+    number-input y right-of=ty gap=1
+  }
+
+  check coding.runs of=p x="value(x)" y="value(y)"
+  feedback {
+    when (x == 2 and y == 0) point=p {
+      say "{big} is not a whole number of 6-step orbits. How many steps are left over?"
+    }
+  }
+  hint "How many whole orbits of 6 steps fit into {big}? How many steps are left over?"
+  hint "Work out where the lander is after that many steps from the start."
+}

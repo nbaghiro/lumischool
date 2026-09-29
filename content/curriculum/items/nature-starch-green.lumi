@@ -1,0 +1,38 @@
+# The white edge of a variegated leaf stays brown in full light, so light alone is not enough: the
+# leaf has to be green where it makes food. First find the part, then say what it shows.
+item nature.starch-green v=1 skills=[nature.photosynthesis, reasoning.explain] {
+  title "The white edge"
+  difficulty k
+  let k=0..1
+  let asks={pick(k, "This leaf has a white edge. It spent a day in the sun, with nothing covering it. Which part stayed brown after the iodine?", "The white edge was in the sun all day, the same as the green middle. What does its colour after the iodine show?")}
+  let ans={pick(k, "the white edge", "A leaf makes starch only where it is green")}
+  let o1={pick(k, "the green middle", "The white edge had less light")}
+  let o2={pick(k, "none of it", "White parts make a different food")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 34x29 {
+    leaftest l stage=1 cover=0 kind=1 sun=1 at=canvas(1, 1)
+    text ask "{asks}" narrate width=32 below=l gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=l {
+      say "Match each part of the leaf with the key. Which part has the brown pattern?"
+    }
+    when (k == 1 and pick == o1) point=ask {
+      say "Nothing covered the leaf, so the edge and the middle had the same sun. What else is different about them?"
+    }
+    when (k == 1 and pick == o2) point=l {
+      say "Iodine shows starch. If the edge had made any starch, what colour would it be?"
+    }
+  }
+  hint "What is different between the edge and the middle of this leaf?"
+  hint "Light fell on both. Which one made starch?"
+}

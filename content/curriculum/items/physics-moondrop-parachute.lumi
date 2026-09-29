@@ -1,0 +1,24 @@
+# A parachute on the moon: with no air the push up on the canopy is 0 N, so the weight is the only
+# force and the toy speeds up the whole way down. The checker reads the fall from the two forces.
+item physics.moondrop-parachute v=1 skills=[physics.forces, physics.weight, reasoning.predict] {
+  title "A parachute on the moon"
+  let w=1..3
+
+  scene 29x24 {
+    parachute p canopy=6 weight=w drag=0 labels=1 unit=N show=0 at=canvas(1, 0)
+    text ask "An astronaut drops a toy parachute from the lander's ladder. On the moon it weighs {w} N, and with no air the push up on the canopy is 0 N. How does it fall?" narrate width=14 right-of=p gap=1
+    choice pick options=["Speeding up", "Steady speed", "Slowing down"] stack=column below=ask gap=1
+  }
+
+  check physics.forces of=p pick=fall
+  feedback {
+    when (pick == "Steady speed") point=p {
+      say "A parachute falls steadily when the air pushes up as hard as the weight pulls down. How hard does the air push here?"
+    }
+    when (pick == "Slowing down") point=p {
+      say "It would slow down only if something pushed up harder than its weight. Look at the arrows."
+    }
+  }
+  hint "Which forces are drawn on the toy?"
+  hint "What happens to a falling thing when nothing pushes back against its weight?"
+}

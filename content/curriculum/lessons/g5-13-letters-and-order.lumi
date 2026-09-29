@@ -1,0 +1,57 @@
+lesson g5-letters-and-order v=1 format=teach grade=5 unit=8 subject=maths levels=[easy, medium, hard] {
+  title "Letters for numbers, and the order of operations"
+  goal "Use a letter for a number in an expression, work expressions out in the right order, and find the number a letter stands for."
+
+  look {
+    scene 20x18 {
+      letter tablet at=canvas(1, 1)
+      machine mach rule="× 3 + 1" input="a" output="" below=tablet gap=1
+    }
+    say """
+      On the temple wall a letter stands for a number. 3a + 1 means three lots of a, and then one
+      more, so when a is 4 it is 13. The order matters: multiplying and dividing come before adding
+      and taking away, and brackets come before everything. 2 + 3 × 4 is 14, but (2 + 3) × 4 is 20.
+      """
+  }
+  do {
+    practice algebra.letter-value count=1 seed=3
+    practice algebra.order-first count=2 hard-count=1 seed=4
+    level easy {
+      worked algebra.balance-letter m=3 n=5 k=4 level=medium
+    }
+    practice algebra.ticket-expression count=1 seed=5
+    practice algebra.machine-back count=1 seed=6 hard-count=2
+    practice algebra.balance-letter count=1 seed=2
+    practice algebra.where-brackets count=1 seed=7
+    practice algebra.letter-value count=1 seed=8
+    level hard {
+      practice algebra.ticket-expression count=1 seed=9
+    }
+  }
+  try stars=2 {
+    show algebra.order-mistake a=36 b=8 c=4 op="÷" easy-a=24 easy-b=4 easy-c=2 easy-op="×" hard-a=40 hard-b=12
+  }
+  try stars=3 {
+    show algebra.temple-letters x=6 y=4 easy-x=4 easy-y=3 hard-x=8 hard-y=5
+  }
+  remember {
+    say "3a means 3 × a. Brackets first, then multiply and divide, then add and take away."
+  }
+
+  grown-ups """
+    A letter is a number we do not know yet, or one that can change. If the child reads 3n as
+    thirty-something, write 3 × n underneath and read it aloud. For the order, a quick check is to
+    ask which part of the line is multiplying, and do that first. Running a machine backwards
+    undoes the last step first, which is the same as solving the balance: take the same from both
+    sides, then share. In the two-star question Leo worked from left to right. In the three-star
+    question the two lines differ by one A and one B, and adding them gives three of each; trying
+    small numbers is a fine start too. If the order of operations is still shaky, stay here another
+    day. Off the page, write a family puzzle with a letter for someone's age.
+    """
+  level easy {
+    grown-ups "At this level the machines multiply by 2 or 3 with nothing added, the lines to work out add after a multiplication, 3n + 4 = 19 is worked once in the teacher's pen before balances with 2n or 3n, the tickets come with one guidebook, the machine to run backwards adds, the brackets go round the first two numbers, Leo's mistake is 24 − 4 × 2, and the three-star has A and B under 6."
+  }
+  level hard {
+    grown-ups "At this level the machines multiply by 4 or 5 and add, the lines have two multiplications, the balances use 4n or 5n, the tickets have an extra for every person and are asked twice, the machine to run backwards takes away and is asked twice, the brackets go round the last two numbers, Leo's mistake is 40 − 12 ÷ 4, and the three-star has A and B up to 9."
+  }
+}

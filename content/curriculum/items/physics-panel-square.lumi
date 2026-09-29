@@ -1,0 +1,28 @@
+# A panel gives the most when the sun's rays meet it square on, which is when its tilt from flat and
+# the sun's height add up to 90 degrees. s is the midnight sun's height at the hut.
+item physics.panel-square v=1 skills=[physics.energy, angles.degrees] {
+  title "Square on to the sun"
+  difficulty (if s == 30 then 0 else 1)
+  let s={15, 20, 25, 30}
+  level easy {
+    let s={30}
+  }
+  level hard {
+    let s={15, 25}
+  }
+
+  scene 23x25 {
+    solarpanel p sun=s slope=0 rated=200 light=100 marks=1 show=0 at=canvas(1, 0)
+    text ask "At the research hut the sun is only {s}° above the horizon. The panel lies flat. To how many degrees from flat should it be tilted so the sun's rays meet it square on?" narrate width=21 below=p gap=1
+    number-input tilt below=ask gap=1
+  }
+
+  check physics.energy of=p tilt=square
+  feedback {
+    when (tilt == s) point=p {
+      say "That tilts the panel as much as the sun is high. Square on, the rays meet the panel's upright line."
+    }
+  }
+  hint "When the rays meet the panel square on, what angle do they make with its face?"
+  hint "The sun's height and the panel's tilt together make which angle?"
+}

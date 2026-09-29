@@ -1,0 +1,41 @@
+# Two texts in different forms with one theme show it in different ways: a story where a character
+# asks in time against a talk where a mistake is remembered and turned into advice; a log of quiet
+# work against a story of work others mocked; and what each form itself lets the reader see.
+item reading.moon-theme-how v=1 skills=[reading.theme, reading.comparison] {
+  title "The same theme, shown differently"
+  difficulty pick(k, 1, 1, 2, 2, 1)
+  let k=0..4
+  level easy {
+    let k={0, 1, 4}
+  }
+  level hard {
+    let k={2, 3}
+  }
+  let right={pick(k, "She tells her old mistake as advice", "Through people who doubted him", "She asks in time, so it ends well", "Each day's small step is set down", "It says the theme straight out")}
+  let wrong1={pick(k, "Through a character who never learns", "Through a plant that grows", "She never asks at all", "It tells how Ada felt each day", "It leaves out how she felt, like a log")}
+  let wrong2={pick(k, "By saying the theme in its first line", "Through a mistake he made", "She is lost in a crater", "It shows others laughing at her", "It shows the mistake as it happens")}
+
+  scene 36x22 {
+    row top at=canvas(1, 1) space=1 align=end {
+      lander l rungs=5
+      earth e up=1
+      text ask "{pick(k, \"Kai's story and Obi's talk both show that asking for help takes courage. How does Obi's talk show it differently?\", \"Ada's log and Ren's story both show that small steps add up. How does Ren's story show it differently?\", \"Obi's talk and Kai's story both show that asking for help takes courage. How does Kai's story show it differently?\", \"Ada's log and Ren's story both show that small steps add up. What does the log's form let a reader see?\", \"Obi's talk and Kai's story both show that asking takes courage. What does the talk do that the story does not?\")}" width=17
+    }
+    choice pick options=[pick(k, wrong1, right, wrong2, right, wrong2), pick(k, right, wrong2, wrong1, wrong1, right), pick(k, wrong2, wrong1, right, wrong2, wrong1)] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k < 3 and pick == wrong1) point=l {
+      say "Think about how the story ends. Does the character learn?"
+    }
+    when (k >= 3 and pick == wrong1) point=l {
+      say "Think about the form: what does a log or a talk put in, and what does it leave out?"
+    }
+    when (pick == wrong2) point=l {
+      say "That belongs to the other text, or to neither. What happens in this one?"
+    }
+  }
+  hint "Retell each text in one sentence, and say what form it is. What happens differently?"
+  hint "Who shows the theme, and when: now, or long ago? Alone, or with others watching?"
+}

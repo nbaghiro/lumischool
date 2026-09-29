@@ -1,0 +1,45 @@
+lesson g6-year-review v=1 format=review grade=6 unit=9 subject=maths levels=[easy, medium, hard] {
+  title "Year review"
+  goal "Look back over the year: negative numbers, fractions, proportion, data, speed, volume, percentages, equations, coordinates, ratio and counting."
+
+  warm-up {
+    practice negative.cliff-colder count=1 seed=5
+    practice proportion.use-rule count=1 seed=4
+    show quadrant.base-point px=2 py=-3 easy-px=-4 easy-py=1 hard-px=-4 hard-py=-1
+  }
+  exercises {
+    practice fraction.divide-rule count=1 seed=6
+    practice data.fish-median count=1 seed=2 hard-count=0
+    practice speed.boat-down-river count=1 seed=7
+    practice volume.grain-cylinder count=1 seed=5
+    practice percent.walk-sale-price count=1 seed=3
+    practice algebra.gorge-two-step count=1 seed=8
+    level hard {
+      practice chance.rover-crew-pick count=1 seed=4
+    }
+  }
+  puzzle stars=2 {
+    show review.biggest-share v=1 easy-v=0 hard-v=3
+  }
+  puzzle stars=3 {
+    show review.oldest-astronaut v=1 easy-v=0 hard-v=2
+  }
+
+  grown-ups """
+    Dividing by a fraction and working with 3.14 are the two to check, since several questions lean
+    on them: the grain cylinder stands on a circle's area, and the boat's minutes have to become a
+    fraction of an hour. The temperatures ask for a distance across zero, the rule y = k × x is a
+    direct proportion used forwards or backwards, the beacon is read across first and then up with
+    negatives left and down, and the balance is an equation undone one step at a time.
+    In the two-star puzzle each share is written a different way, and turning all three into
+    dollars or into percents settles it. In the three-star puzzle the total of the ages comes from
+    the mean, and the rest is making every other age as small as the median and the mode allow. If
+    one topic goes wrong more than once, go back to its lesson rather than repeating this one.
+    """
+  level easy {
+    grown-ups "At this level each question comes from the easy band of its lesson (a hut above zero and a cliff below it, the rule used forwards, a beacon with one negative coordinate, boat trips of whole or half hours, small cylinders, 10 or 30 per cent off, equations with smaller numbers), the two-star prize is shared with clear gaps, and the three-star ages have a median of 30."
+  }
+  level hard {
+    grown-ups "At this level each question comes from the hard band of its lesson (both temperatures below zero, the rule used backwards with a decimal in it, a beacon with two negative coordinates, trips of 20, 40 or 45 minutes, sale prices with 15 or 35 per cent off, equations with a take-away or a division in them), a question on choosing crew takes the dot plot's place, the two-star shares differ by 50 cents, and the three-star ages have a median of 40."
+  }
+}

@@ -1,0 +1,29 @@
+# The three-star puzzle: who has the tune in each section, worked out from the map's letters and
+# loudness and four clues. The brass can only be in the f sections, which are both A, and A keeps one
+# family, so A is brass; the woodwind take the softest of B and C and the strings the other.
+item music.water-clues v=1 stars=3 skills=[music.listening, music.instruments, reasoning.logic] {
+  title "The family puzzle"
+  let v=0..1 a=0..1
+  let lb={pick(v, 1, 3)}
+  let lc={pick(v, 3, 1)}
+  let which={pick(a, "B, the second section", "C, the fourth section")}
+  let right={pick(a, pick(v, "woodwind", "strings"), pick(v, "strings", "woodwind"))}
+
+  scene 36x40 {
+    listenmap map title="The canal town's tune" sections=[0, 1, 0, 2] bars=[] tune=[-1, -1, -1, -1] loud=[4, lb, 4, lc] tempo=[0, 0, 0, 0] count=0 ask=-1 at=canvas(1, 1)
+    text ask "The strings, the woodwind and the brass share the tune, and each has it at least once. Tune A is played by the same family both times. The brass only play in sections marked f. The woodwind have the softest section. Which family plays {which}?" narrate width=34 below=map gap=1
+    choice pick options=["strings", "woodwind", "brass", "percussion"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "percussion") point=ask {
+      say "Only three families share the tune here. Read the first clue again."
+    }
+    when (pick != right and pick != "percussion") point=map {
+      say "Start with the brass. Which sections are marked f, and what does the second clue say about them?"
+    }
+  }
+  hint "Where can the brass play? Look for the sections marked f."
+  hint "The brass must play at least once. Which family does that leave for the two quieter sections?"
+}

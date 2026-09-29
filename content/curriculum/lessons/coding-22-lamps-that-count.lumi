@@ -1,4 +1,4 @@
-lesson coding-lamps-that-count v=2 format=teach grade=2 unit=8 subject=coding levels=[easy, medium, hard] {
+lesson coding-lamps-that-count v=2 format=teach grade=2 unit=9 subject=coding levels=[easy, medium, hard] {
   title "Lamps that count"
   goal "Read a number from a row of lamps that are on or off, each worth double the one on its right, and light the lamps for a number."
 

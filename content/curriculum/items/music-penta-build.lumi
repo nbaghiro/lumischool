@@ -1,0 +1,35 @@
+# Building a major pentatonic scale: the 1st, 2nd, 3rd, 5th and 6th notes of the major scale, which
+# leaves out the 4th and 7th. On F (F G A C D), on G (G A B D E) and on D (D E F sharp A B).
+item music.penta-build v=1 skills=[music.pentatonic, music.scales] {
+  title "Build the scale"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2 r=0..2
+  let home={pick(k, "F", "G", "D")}
+  let major={pick(k, "F G A B flat C D E", "G A B C D E F sharp", "D E F sharp G A B C sharp")}
+  let right={pick(k, "F G A C D", "G A B D E", "D E F sharp A B")}
+  let w1={pick(k, "F G A B flat C", "G A B C D", "D E F sharp G A")}
+  let w2={pick(k, "F G A C E", "G A B D F sharp", "D E F sharp A C sharp")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x17 {
+    text ask "The {home} major scale is {major}. A song from the crew's home town uses the major pentatonic scale on {home}. Which five notes are they?" narrate width=34 at=canvas(1, 1)
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=ask {
+      say "Those are the first five notes in a row. The pentatonic scale skips the 4th note of the major scale."
+    }
+    when (pick == w2) point=ask {
+      say "That keeps the 7th note. The pentatonic scale leaves out the 4th and the 7th."
+    }
+  }
+  hint "Number the notes of the major scale from 1 to 7."
+  hint "Keep the notes numbered 1, 2, 3, 5 and 6."
+}

@@ -1,4 +1,4 @@
-lesson coding-finding-the-mistake v=3 format=worked grade=2 unit=4 subject=coding levels=[easy, medium, hard] {
+lesson coding-finding-the-mistake v=3 format=worked grade=2 unit=7 subject=coding levels=[easy, medium, hard] {
   title "Finding the mistake"
   goal "Find the block that is wrong by comparing what a program drew with what it should have drawn."
 
@@ -22,6 +22,10 @@ lesson coding-finding-the-mistake v=3 format=worked grade=2 unit=4 subject=codin
   }
   try stars=3 {
     show coding.build-shorter k=0 hard-k=1
+  }
+
+  remember {
+    say "Find the first place where what the program did stops matching what it should do."
   }
 
   grown-ups """

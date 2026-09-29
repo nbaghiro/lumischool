@@ -1,0 +1,32 @@
+# The way in: heat passed along a rod from its hot end melts the wax under each bead in turn, so the
+# beads dropped are read off the rod. r is rod A's metal, m the minutes it has stood in the water.
+item physics.heat-rod-read v=1 skills=[physics.heat, physics.materials] {
+  title "Beads that dropped"
+  difficulty (if m == 10 then 0 else 1)
+  let r=0..3 m={10, 5}
+  level easy {
+    let m={10}
+  }
+  level hard {
+    let m={5}
+  }
+  let metal={pick(r, "copper", "aluminium", "brass", "steel")}
+  let n={if m == 10 then pick(r, 5, 4, 3, 2) else pick(r, 3, 2, 2, 1)}
+
+  scene 30x18 {
+    heatflow t mode=0 rods=[metal, "glass"] thick=[1, 1] minutes=m show=1 at=canvas(1, 0)
+    text ask "Rod A has stood in the hot water for {m} minutes. How many of its beads have dropped off, and how far along the rod has the wax melted, in centimetres?" narrate width=28 below=t gap=1
+    number-input beads below=ask gap=1
+    number-input cm right-of=beads gap=3
+  }
+
+  answer beads=n cm=(2 * n)
+  check physics.forces of=t beads=fallen(a)
+  feedback {
+    when (beads == 5 - n and n != 5 - n) point=t {
+      say "Count the beads that have gone, the dashed rings, not the ones still hanging."
+    }
+  }
+  hint "Which beads are drawn as dashed rings?"
+  hint "Read the centimetre mark above the last bead that has gone."
+}

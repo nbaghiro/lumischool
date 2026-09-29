@@ -1,0 +1,41 @@
+# The story: a thigh bone is about a quarter of a person's height. Easy and medium find the bone from
+# the height; hard gives a bone found by the city wall and asks for the height, so the unknown moves.
+item nature.thigh-bone v=1 skills=[nature.body, fractions.of-amount] {
+  title "A quarter of the height"
+  difficulty k
+  let k=0..2
+  let told={pick(k, "The library's skeleton is 160 cm tall. About how long is its thigh bone?", "The library's skeleton is 176 cm tall. About how long is its thigh bone?", "Builders mending the city wall dig up an old thigh bone 45 cm long. About how tall was the person?")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x29 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      parts fig of=skeleton
+      citywalls w towers=2 open=0
+    }
+    text ask "A doctor at the old city library tells Ada that a thigh bone is about a quarter as long as the person is tall. {told}" narrate width=32 below=pics gap=1
+    row r below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text u "cm"
+    }
+  }
+
+  answer pick(k, 40, 44, 180)
+  feedback {
+    when (k <= 1 and answer == pick(k, 80, 88, 0)) point=ask {
+      say "That is half the height. A quarter is half of a half."
+    }
+    when (k == 2 and answer == 11.25) point=ask {
+      say "The bone is the quarter, so the person is four times as tall as the bone, not a quarter of it."
+    }
+  }
+  hint "A quarter means the height shared into four equal parts."
+  hint "Halve the height, then halve it again."
+  level hard {
+    hint "If 45 cm is one quarter, how much are all four quarters?"
+  }
+}

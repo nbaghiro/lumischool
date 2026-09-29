@@ -1,0 +1,35 @@
+# The story: the least salt in 100 g of melt water that keeps it liquid on a path at a temperature,
+# from the brine table (5 g −3, 10 g −6, 15 g −9, 20 g −13, 25 g −16 °C), and how much for a bucket.
+item chem.path-salt v=1 stars=1 skills=[chemistry.freezing, reasoning.constraints] {
+  title "Salt for the path"
+  difficulty (w * 2 + (if q > -6 then 0 else 1))
+  let w=0..1 q={-2, -5, -8, -12} m={2, 3}
+  let least={if q > -3 then 5 else if q > -6 then 10 else if q > -9 then 15 else 20}
+  level easy {
+    let w=0..0 q={-2, -5}
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 35x23 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      hut h pictures=3
+      table data cols=2 head=["Salt in 100 g", "Freezes at °C"] cells=["5 g", "-3", "10 g", "-6", "15 g", "-9", "20 g", "-13"]
+    }
+    text ask "The path from the hut to the sledges is icy, and tonight it will be {q} °C. A thin layer of melt water sits on the ice. {if w == 0 then \"What is the least salt, from the table, to stir into each 100 g of that water so it does not freeze?\" else \"There are about \"}{if w == 1 then m * 1000 else \"\"}{if w == 1 then \" g of melt water on the path. What is the least salt, in grams, that keeps all of it from freezing?\" else \"\"}" narrate width=34 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then least else least * m * 10)
+  feedback {
+    when (w == 1 and answer == least) point=data {
+      say "That is for each 100 g. How many lots of 100 g of water are on the path?"
+    }
+    when (w == 0 and answer == least - 5) point=data {
+      say "That water freezes at a temperature above {q} °C, so it would still turn to ice tonight."
+    }
+  }
+  hint "Which rows of the table freeze lower than {q} °C?"
+  hint "{if w == 0 then \"Of those rows, which has the least salt?\" else \"Find the salt for one row of the table first. How many lots of that much water are there?\"}"
+}

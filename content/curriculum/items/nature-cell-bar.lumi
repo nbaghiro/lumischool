@@ -1,0 +1,38 @@
+# Estimating with the scale bar: the bar under the view is a known length at this magnification, and
+# a cell is about half of it, about twice it, or far smaller. The options are a power of ten apart,
+# so the estimate is about size rather than exact reading.
+item nature.cell-bar v=1 skills=[nature.cells, measure.scale] {
+  title "Against the scale bar"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let kind={pick(k, 1, 4, 3)} mag={pick(k, 400, 100, 1000)}
+  let what={pick(k, "one cheek cell", "one of the slipper-shaped cells", "one yeast cell")}
+  let intro={pick(k, "Ben wipes the inside of his cheek with a cotton bud and dabs it on a slide.", "Ben puts a drop of water from the pond by the observatory on a slide.", "Ben puts a speck of bread dough from the baker on a slide.")}
+  let ans={pick(k, "about 50 µm", "about 200 µm", "about 5 µm")}
+  let o1={pick(k, "about 5 µm", "about 20 µm", "about 50 µm")}
+  let o2={pick(k, "about 500 µm", "about 2000 µm", "about 0.5 µm")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x39 {
+    microview m kind=kind mag=mag scale=1 field=0 at=canvas(1, 1)
+    text ask "{intro} Use the scale bar. About how long is {what}?" narrate width=32 below=m gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == o2) point=m {
+      say "Lay the bar beside one cell. Is the cell longer than the bar, or shorter?"
+    }
+    when (pick == o1) point=m {
+      say "Compare again: how many cells end to end would match the bar's length?"
+    }
+  }
+  hint "Read the length written by the scale bar."
+  hint "Is one cell about as long as the bar, about half of it, or many times smaller?"
+}

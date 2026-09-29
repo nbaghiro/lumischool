@@ -1,0 +1,40 @@
+# The link between the units (Japan's grade 5 B(4)イ(ア)): a cubic metre is 100 × 100 × 100 cubic
+# centimetres, a million, not a hundred or a thousand.
+item volume.metre-cube v=1 skills=[volume.cuboids, measure.units] {
+  title "A million little cubes"
+  difficulty s
+  let s=0..3
+  let l={pick(s, 1, 2, 3, 0.5)}
+  let w={pick(s, 1, 1, 2, 0.5)}
+  let h={pick(s, 1, 1, 0.5, 0.5)}
+  level easy {
+    let s={0}
+  }
+  level medium {
+    let s={1, 2}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 36x12 {
+    cubestack bin l=4 w=3 h=3 outline=1 at=canvas(1, 1)
+    text ask "The lock keeper's grit bin is {l} m long, {w} m wide and {h} m tall inside. How many cubic centimetres of grit does it hold when full?" narrate width=18 right-of=bin gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=8
+      text unit "cm³"
+    }
+  }
+
+  answer plain(l * w * h * 1000000)
+  feedback {
+    when (answer == l * w * h * 100 or answer == l * w * h * 1000) point=ask {
+      say "A metre is 100 cm along each of three edges. How many cubes is 100 × 100 × 100?"
+    }
+    when (answer == l * w * h) point=ask {
+      say "That is the volume in cubic metres. Write each edge in centimetres first."
+    }
+  }
+  hint "How many centimetres long is each edge?"
+  hint "Multiply the three edges in centimetres."
+}

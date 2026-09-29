@@ -1,0 +1,41 @@
+# The second reasoning question in the core, worked backwards: the two speeds are the still-water
+# speed plus and minus the current, so the current is half their difference.
+item travel.still-water v=1 skills=[rates.speed.current, reasoning.work-backwards] {
+  title "How fast is the current"
+  difficulty (s + (if q == "current" then 1 else 0))
+  let s=0..5 q={"still", "current"}
+  let d={pick(s, 12, 24, 30, 18, 20, 36)}
+  let a={pick(s, 2, 3, 3, 2, 2, 3)}
+  let b={pick(s, 3, 6, 5, 3, 4, 4)}
+  level easy {
+    let s={0, 1}
+  }
+  level medium {
+    let s={1, 2, 3}
+  }
+  level hard {
+    let s={3, 4, 5}
+  }
+
+  scene 36x17 {
+    canoe boat stroke=0.6 top=berry at=canvas(1, 2)
+    current flow length=12 facing=1 right-of=boat gap=1
+    text ask "A canoe paddles {d} km down the gorge river in {a} hours, then {d} km back up in {b} hours, paddling just as hard. What is {if q == \"still\" then \"its speed in still water\" else \"the speed of the current\"}, in km/h?" narrate width=34 below=boat gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer decimals(if q == "still" then (d / a + d / b) / 2 else (d / a - d / b) / 2, 0)
+  feedback {
+    when (q == "current" and answer == d / a - d / b) point=ask {
+      say "That is the whole difference between the two speeds. The current is added once and taken away once."
+    }
+    when (q == "still" and answer == d / a + d / b) point=ask {
+      say "That adds the two speeds. The still-water speed sits halfway between them."
+    }
+    when (answer == d / a or answer == d / b) point=ask {
+      say "That is the speed one way, with the current in it. Use both trips."
+    }
+  }
+  hint "How fast does the canoe go downstream? And upstream?"
+  hint "Downstream is the still-water speed plus the current. Upstream is it minus the current. Where does the still-water speed sit?"
+}

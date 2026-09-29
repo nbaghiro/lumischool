@@ -1,0 +1,38 @@
+# How many notes of a bar start on an and, worked out by adding the note values along the bar. A
+# note that starts on an and and lasts a whole beat is held over the next count.
+item music.sync-count-ands v=1 skills=[music.syncopation, music.note-values] {
+  title "Notes on an and"
+  difficulty c
+  let c=0..2
+  let v1={pick(c, 1, 0.5, 0.5)}
+  let v2={pick(c, 0.5, 1, 1)}
+  let v3={pick(c, 0.5, 0.5, 1)}
+  let v4={pick(c, 1, 1, 0.5)}
+  let v5={pick(c, 0.5, 0.5, 0.5)}
+  let v6={pick(c, 0.5, 0.5, 0.5)}
+  let right={pick(c, 2, 3, 4)}
+  level easy {
+    let c=0..1
+  }
+  level hard {
+    let c=2..2
+  }
+
+  scene 34x21 {
+    notes bar clef=treble notes=[E5, D5, C5, D5, E5, C5] values=[v1, v2, v3, v4, v5, v6] meter=4 at=canvas(1, 1)
+    text ask "Ana's bar for the canal band. How many of its six notes start on an and, between two numbers?" narrate width=32 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer < right) point=bar {
+      say "Keep a running total of beats along the bar. Every time it lands on a half, the next note starts on an and."
+    }
+    when (answer > right) point=bar {
+      say "A note that follows a whole number of beats starts on a number, even if it is a quaver."
+    }
+  }
+  hint "Say the count under each note as you go, a number or an and."
+  hint "Add the notes before each one. A total like 1 and a half means it starts on the and of 2."
+}

@@ -1,0 +1,30 @@
+# The way in: one thousandth more moves only the last column, unless that column holds a nine.
+item decimal.thousandth-more v=1 skills=[decimals.thousandths] {
+  title "One thousandth more"
+  difficulty ((if d == 9 then 2 else 0) + (if c == 9 and d == 9 then 1 else 0))
+  let a=1..4 b=1..8 c={2, 5, 9} d={3, 6, 9}
+  level easy {
+    let d={3, 6}
+  }
+  level hard {
+    let d={9}
+  }
+
+  scene 29x16 {
+    pvchart chart value="{a}.{b}{c}{d}" show=digits at=canvas(1, 1)
+    text ask "The chart shows how deep the lock is, in metres. What number is one thousandth more?" narrate width=28 below=chart gap=1
+    number-input answer width=6 below=ask gap=1
+  }
+
+  answer decimals(a + b / 10 + c / 100 + d / 1000 + 1 / 1000, 3)
+  feedback {
+    when (answer == a + b / 10 + c / 100 + d / 1000 + 1 / 100) point=chart {
+      say "That is one hundredth more. A thousandth is the last column."
+    }
+    when (answer == a + b / 10 + c / 100 + d / 1000 + 1 / 10) point=chart {
+      say "That is one tenth more. Find the thousandths column."
+    }
+  }
+  hint "Which column on the chart holds the thousandths?"
+  hint "Add one there. If it was a nine, what happens to the column on its left?"
+}

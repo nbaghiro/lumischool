@@ -1,0 +1,29 @@
+# The mill's sluice gate lever: the gate pulls down at the short end, and the push at the long end
+# that holds it level makes an equal moment. f is the pivot's step from the gate's end.
+item physics.moment-sluice v=1 skills=[physics.moments, physics.machines, reasoning.backwards] {
+  title "Holding the sluice gate"
+  difficulty (f + w / 40)
+  let f=1..4 w={40, 60, 80, 90}
+  where (w * f % (10 - f) == 0)
+  level easy {
+    where (f <= 2)
+  }
+  level hard {
+    where (f >= 3)
+  }
+
+  scene 25x24 {
+    lever bar fulcrum=f load=w push=0 unit=N marks=1 at=canvas(1, 0)
+    text ask "This lever holds up the mill's sluice gate, which pulls down on its short end with {w} N. The steps are 10 cm apart. What push on the far end holds it level?" narrate width=23 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.machine of=bar answer=balance
+  feedback {
+    when (answer == w) point=bar {
+      say "The push is much further from the pivot than the gate is, so it can be smaller."
+    }
+  }
+  hint "What is the gate's moment about the pivot?"
+  hint "How far from the pivot is the push, and what force there makes the same moment?"
+}

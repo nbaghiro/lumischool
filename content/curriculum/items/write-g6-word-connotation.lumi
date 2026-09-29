@@ -1,0 +1,43 @@
+# Two adjectives that say the same thing about what someone did, one warm and one cold, and a third
+# that says something else: the letter's purpose (praise or complaint) decides between the first two.
+item writing.word-connotation v=1 skills=[writing.vocabulary, writing.word-choice, writing.audience] {
+  title "The word for the reader"
+  difficulty k
+  let k=0..2 q=0..1 r=0..2
+  let who={pick(k, "Omar", "Lena", "Kit")}
+  let fact={pick(k, "Omar uses as little of the base's water as he can, and he never fills a cup to the top.", "Lena asks about every dial and switch in the lander, and she opens every cupboard to see what is inside.", "Kit would not turn back from the crater rim, whatever the crew said to her.")}
+  let pos={pick(k, "thrifty", "curious", "determined")}
+  let neg={pick(k, "stingy", "nosy", "stubborn")}
+  let off={pick(k, "wasteful", "bored", "timid")}
+  let aim={pick(q, "a letter praising", "a letter complaining about")}
+  let right={if q == 0 then pos else neg}
+  let other={if q == 0 then neg else pos}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 32x27 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      lander lnd rungs=5
+      crater cr count=2
+    }
+    passage p title="What happened" text="{fact}" width=31 numbers=false below=pics gap=1
+    text ask "The base leader is writing {aim} {who}: {who} is _____. Which adjective should she choose?" narrate width=31 below=p gap=1
+    choice pick options=[if r == 0 then pos else if r == 1 then neg else off, if r == 0 then neg else if r == 1 then off else pos, if r == 0 then off else if r == 1 then pos else neg] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == off) point=p {
+      say "That adjective does not match what {who} did. Read what happened again."
+    }
+    when (pick == other) point=ask {
+      say "That word fits what {who} did, but it makes the reader feel the opposite of what the letter wants. Which word sounds like praise, and which like a complaint?"
+    }
+  }
+  hint "Two of the words say much the same thing about {who}. Which two?"
+  hint "Of those two, which would you be glad to have written about you?"
+}

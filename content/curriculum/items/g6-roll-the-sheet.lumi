@@ -1,0 +1,37 @@
+# The three-star: one sheet rolled into a cylinder two ways. The way round is one side of the sheet
+# and the height the other, and the fat roll holds more by the ratio of the sides, with no 3.14
+# needed.
+item volume.roll-the-sheet v=1 stars=3 skills=[volume.cylinders, reasoning.generalise] {
+  title "Roll it two ways"
+  difficulty s
+  let s=0..3
+  let a={pick(s, 20, 30, 30, 36)}
+  let b={pick(s, 10, 20, 10, 24)}
+  level easy {
+    let s={0}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 33x21 {
+    row rolls at=canvas(1, 1) space=2 align=end {
+      solid tall kind=cylinder label="tall"
+      solid fat kind=cylinder label="fat"
+    }
+    text ask "A metal sheet {a} cm by {b} cm is rolled into a cylinder for the mill, with no overlap. Rolled one way it is tall and thin, the other way short and fat. How many times as much does the fat one hold as the tall one?" narrate width=32 below=rolls gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer decimals(a / b, 0)
+  feedback {
+    when (answer == 1) point=rolls {
+      say "The sheet is the same, but the volume is not. Try working out both volumes."
+    }
+    when (answer == a * a / (b * b)) point=rolls {
+      say "The fat one is also shorter. Take the height into account."
+    }
+  }
+  hint "For the fat one, which side of the sheet goes round, and which is the height?"
+  hint "The radius grows with the way round. How does the base's area grow, and how does the height change?"
+}

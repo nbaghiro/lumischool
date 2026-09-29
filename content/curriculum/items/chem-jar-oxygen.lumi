@@ -1,0 +1,34 @@
+# In these readings a plant in light gives back 0.5 of a per cent of oxygen an hour while there is
+# carbon dioxide to take in (the chamber drawing's model); the candle left 16 per cent. The checker
+# works out the card.
+item chem.jar-oxygen v=1 skills=[chemistry.gases, decimals.multiply] {
+  title "Oxygen from the plants"
+  difficulty (v // 2)
+  let v=0..5
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={4, 5}
+  }
+  let pl={pick(v, 1, 1, 2, 1, 2, 2)}
+  let h={pick(v, 2, 4, 1, 6, 2, 3)}
+
+  scene 29x27 {
+    chamber c place=0 plants=pl candle=1 people=0 light=1 hours=h show=0 at=canvas(1, 0)
+    text ask "The candle went out when the jar's oxygen was down to 16 per cent. In these readings each plant in the light gives back 0.5 of a per cent of oxygen an hour. What per cent of the air is oxygen after {h} hour{if h == 1 then \"\" else \"s\"}?" narrate width=28 below=c gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check chem.change of=c answer=oxygen
+  feedback {
+    when (answer == 16 + h / 2 and pl > 1) point=c {
+      say "That is what one plant gives back. How many plants are in the jar?"
+    }
+    when (answer == 21 + pl * h / 2) point=c {
+      say "The candle had already used some of the oxygen. Start from 16 per cent."
+    }
+  }
+  hint "What per cent did the oxygen start from after the candle went out?"
+  hint "How much do all the plants give back in one hour? And in {h}?"
+}

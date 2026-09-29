@@ -1,0 +1,30 @@
+# Three stars: the fewest turns, in tens, that hold at least n clips with at most three cells. Three
+# cells always need the fewest turns, so the answer is n over three rounded up to the next ten turns.
+item physics.coil-fewest-turns v=1 stars=3 skills=[physics.magnets, reasoning.fewest, reasoning.constraints] {
+  title "The fewest turns"
+  difficulty v
+  let v=0..3
+  let n={pick(v, 5, 7, 11, 13)}
+  let best={pick(v, 20, 30, 40, 50)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 31x17 {
+    electromagnet e turns=10 cells=3 core=0 closed=1 show=1 at=canvas(1, 0)
+    text ask "Round an iron nail, the coil holds one clip for every ten turns on each cell. Leo has up to three cells and winds turns in tens. What is the fewest turns that hold at least {n} clips?" narrate width=14 right-of=e gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer best
+  feedback {
+    when (answer == best - 10) point=e {
+      say "Check it with all three cells: that many turns holds {(best - 10) / 10 * 3} clips, fewer than {n}."
+    }
+  }
+  hint "Which number of cells lets you use the fewest turns?"
+  hint "With that many cells, go up in tens of turns, one step at a time, until the clips reach {n}."
+}

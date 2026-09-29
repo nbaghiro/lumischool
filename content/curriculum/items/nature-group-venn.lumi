@@ -1,0 +1,40 @@
+# The smallest living things in the sort: a Venn of making food and being a single cell, with the
+# old city's finds placed in it. Each version asks where one more belongs, so the child decides both
+# questions about it rather than reading a region.
+item nature.group-venn v=1 skills=[nature.sorting, nature.microorganisms] {
+  title "Where does it go?"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let thing={pick(k, "the moss on the city wall, a small green plant of many cells", "the yeast in the baker's dough, a fungus whose every cell lives on its own", "the grey mould on an old loaf in the library, a fungus of many threads", "the tiny green cells that turn the fountain's water green, each one living on its own")}
+  let ans={pick(k, "in the left ring only", "in the right ring only", "outside both rings", "where the rings overlap")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x38 {
+    venn v labels=["Makes its own food", "One cell only"] left=["oak", "pondweed"] both=[] right=["pond slipper"] outside=["cat", "toadstool"] at=canvas(1, 1)
+    text ask "Ada sorts what she finds into the rings. Where does {thing} go?" narrate width=32 below=v gap=1
+    choice pick options=["in the left ring only", "in the right ring only", "where the rings overlap", "outside both rings"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 1 and pick == "where the rings overlap") point=v {
+      say "Yeast is a fungus. Does a fungus have green parts to make its own food?"
+    }
+    when (k == 2 and pick == "in the right ring only") point=v {
+      say "Mould is too small to see well, but it grows as threads of many cells. Is it one cell?"
+    }
+    when (k == 3 and pick == "in the right ring only") point=v {
+      say "These cells are green. What do green parts do?"
+    }
+    when (k == 0 and pick == "where the rings overlap") point=v {
+      say "Moss is small, but is it one cell?"
+    }
+  }
+  hint "Ask the first ring's question about it: does it make its own food? Then ask the second."
+  hint "Yes to both goes in the overlap, and no to both goes outside."
+}

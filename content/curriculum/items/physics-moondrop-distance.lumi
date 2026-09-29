@@ -1,0 +1,35 @@
+# How far a thing falls on the moon from rest: 0.8 m times the seconds times the seconds, so twice the
+# time is four times the drop. The table gives one, two and three seconds.
+item physics.moondrop-distance v=1 skills=[physics.forces, physics.motion, decimals.multiply, reasoning.patterns] {
+  title "How far in the fall"
+  difficulty (t - 4)
+  let t=4..5
+  level easy {
+    let t=4..4
+  }
+  level hard {
+    let t=5..5
+  }
+
+  scene 28x21 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      crater c count=2
+      table d cols=2 head=["Seconds", "Fallen"] cells=["1", "0.8 m", "2", "3.2 m", "3", "7.2 m"]
+    }
+    text ask "A pebble drops into a deep crater on the moon. The table gives how far it has fallen. How far has it fallen after {t} seconds?" narrate width=26 below=kit gap=1
+    number-input answer below=ask gap=1
+    text unit "m" right-of=answer gap=0
+  }
+
+  answer decimals(0.8 * t * t, if t == 5 then 0 else 1)
+  feedback {
+    when (answer == 7.2 + 4 * (t - 3)) point=d {
+      say "The distance does not grow by the same amount each second: it grows faster as the pebble speeds up."
+    }
+    when (answer == 0.8 * t) point=d {
+      say "That fits 1 second but not 2 or 3. Divide each distance by 0.8 m: what do the answers have to do with the seconds?"
+    }
+  }
+  hint "Divide each distance by 0.8 m. What numbers do you get?"
+  hint "How do those numbers come from the seconds 1, 2 and 3? Do the same with {t}."
+}

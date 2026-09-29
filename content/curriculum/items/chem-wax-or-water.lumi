@@ -1,0 +1,30 @@
+# A pure substance changes state at one temperature, so its curve has a flat part. Candle wax is a
+# mixture that softens between about 46 and 68 °C (SUBSTANCES, from CDC NIOSH), so its line keeps
+# climbing, only more slowly between those two, and never goes flat.
+item chem.wax-or-water v=1 skills=[chemistry.heating, chemistry.mixtures, reasoning.evidence] {
+  title "Water or candle wax?"
+  difficulty (if c == 0 or c == 1 then 0 else 1)
+  let c=0..3
+  let right={pick(c, "Pure water: its line goes flat as it changes state", "Candle wax: its line keeps climbing as it softens", "Pure water: its line goes flat as it changes state", "Candle wax: its line keeps falling as it sets")}
+  level easy {
+    let c=0..1
+  }
+  level hard {
+    let c=2..3
+  }
+
+  scene 35x39 {
+    heatcurve curve temps=[pick(c, -40, 20, 20, 120), pick(c, 0, 40, 10, 100), pick(c, 0, 50, 0, 80), pick(c, 0, 60, 0, 70), pick(c, 0, 70, 0, 60), pick(c, 0, 80, 0, 50), pick(c, 20, 100, -10, 40), pick(c, 40, 120, -20, 20)] every=3 min=(if c == 0 then -40 else if c == 2 then -20 else 0) max=(if c == 0 then 40 else if c == 2 then 20 else 120) step=(if c == 2 then 10 else 20) at=canvas(1, 0)
+    text ask "At the observatory, a grown-up {if c == 0 or c == 1 then \"warmed\" else \"cooled\"} something gently and read its temperature every 3 minutes. It was either pure water or candle wax. Which was it, and how does the curve show it?" narrate width=34 below=curve gap=1
+    choice pick options=["Pure water: its line goes flat as it changes state", "Candle wax: its line keeps climbing as it softens", "Candle wax: its line keeps falling as it sets", "Pure water: its line keeps climbing as it melts"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=curve {
+      say "Look for a flat part. A pure substance holds one temperature while it changes; a mixture like wax changes over a range, so its line only bends."
+    }
+  }
+  hint "Does the line ever stay level for more than one reading?"
+  hint "Which one melts at one temperature, and which softens slowly over many?"
+}

@@ -1,0 +1,33 @@
+# Caroline's own words turned into a biography's: the one word that changes from her own voice to
+# the biographer's, typed into boxes.
+item writing.bio-third-person v=1 skills=[writing.biography, writing.pronouns] {
+  title "From her words to a biography"
+  difficulty (if k == 1 or k == 2 then 1 else 0)
+  let k=0..3
+  let own={pick(k, "In 1772 I moved to England.", "I helped my brother build telescopes.", "We polished the mirrors for hours.", "My brother taught me to sing.")}
+  let gap={pick(k, "In 1772 ____ moved to England.", "She helped ____ brother build telescopes.", "____ polished the mirrors for hours.", "Her brother taught ____ to sing.")}
+  let low={pick(k, "she", "her", "they", "her")}
+  let cap={pick(k, "She", "Her", "They", "Her")}
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 33x13 {
+    row top at=canvas(1, 0) space=2 align=end {
+      column words space=1 align=start {
+        caption own text="Her notebook: {own}" width=26
+        caption bio text="The biography: {gap}" width=26
+        text ask "Write the missing word." narrate width=26
+      }
+      person her pose=hold age=older hair=bun colour=grey top=mint glasses=true
+    }
+    word-input word options=["{low}", "{cap}"] letters=4 below=top gap=1
+  }
+
+  answer word=low
+  hint "Who tells a biography: the person it is about, or someone else?"
+  hint "Which word does a writer use for one woman, or for a group, when writing about them?"
+}

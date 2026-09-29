@@ -1,0 +1,20 @@
+# The review that ends the book: a paragraph a grown-up marks against the notice list.
+item reading.willows-review v=1 skills=[writing.review, writing.composition, reading.whole-book] {
+  title "Your review"
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        bookcast m who=mole pose=wave dir=1
+        bookcast r who=rat pose=stand dir=1
+        bookcast t who=toad pose=wave dir=-1
+      }
+      text ask "Write a review of the book for a friend of your age, in about 80 words. Would you tell them to read it?" width=33
+      writinglines lines lines=7 width=33 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="A paragraph of about 70 to 100 words that says whether a friend should read the book, gives a reason taken from the story, names a character or a moment, and says what kind of reader would enjoy it, without telling the ending." notice=["Says whether to read it", "Gives a reason from the story", "Names a character or a moment", "Says who would enjoy it", "Keeps the ending a surprise"] ask="Which of the four friends would you most like to spend a day with?"
+  hint "Start with your answer: read it, or not?"
+  hint "Which moment would you tell a friend about to make them want to read it, without giving the end away?"
+}

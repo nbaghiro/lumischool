@@ -1,0 +1,33 @@
+# A symbol from the lead sheet held and strummed on the ukulele: C and G7 in the first line of Au
+# clair de la lune, Dm and Am in its middle line. The symbol is found by bar, so it is read off the page.
+item music.lead-uke-strum v=1 skills=[music.lead-sheets, music.chord-boxes] {
+  title "Strum from the lead sheet"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let n1={pick(k, "C5", "C5", "D5", "D5")}
+  let n4={pick(k, "D5", "D5", "D5", "D5")}
+  let n5={pick(k, "E5", "E5", "A4", "A4")}
+  let n6={pick(k, "D5", "D5", "A4", "A4")}
+  let s1={pick(k, "C", "C", "Dm", "Dm")}
+  let s5={pick(k, "G7", "G7", "Am", "Am")}
+  let bar={pick(k, 1, 2, 2, 1)}
+  let want={pick(k, "C", "G7", "Am", "Dm")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 33x34 {
+    notes line clef=treble notes=[n1, n1, n1, n4, n5, n6] values=[1, 1, 1, 1, 2, 2] meter=4 chords=[s1, _, _, _, s5, _] at=canvas(1, 1)
+    row low space=2 align=start below=line gap=1 {
+      fretboard neck tuning=uke frets=3 view=chart labels=numbers strum=true
+      text ask "Ana plays the crew's lead sheet on the ukulele in the lander. Hold the chord for bar {bar} and strum it." narrate width=18
+    }
+  }
+
+  check music.chord chord={want} tuning=uke
+  hint "Which symbol is written over bar {bar}?"
+  hint "{if k <= 1 then \"C is one finger on string 1, and G7 is three fingers.\" else \"Am is one finger on string 4. Dm adds two more.\"}"
+}

@@ -1,0 +1,52 @@
+# The three-star: plan and read a test of where on a leaf the water leaves. Grease blocks the tiny
+# holes on the side it covers, and cut leaves hung up lose weight only as water. Easy reads two
+# leaves, medium chooses the fewest leaves that show the underside loses most, and hard takes away
+# the water a leaf loses even with both sides greased.
+item nature.fair-plant v=1 stars=3 skills=[nature.plants, reasoning.fair-test, reasoning.plan] {
+  title "Plan the test"
+  difficulty k
+  let k=0..2
+  let told={pick(k, "She greased the top of leaf A and the underside of leaf B. After a day leaf A had lost 4 g and leaf B only 1 g. What does her test show?", "She wants to show that most of the water leaves through the underside of a leaf, using as few leaves as she can. Which leaves should she hang up?", "After a day her four leaves had lost: not greased 10 g, greased on top 8 g, greased underneath 3 g, greased on both sides 1 g. About how much of an ungreased leaf's water left through its underside?")}
+  let ans={pick(k, "More water leaves through the underside", "One greased on top, one greased underneath", "About 7 g")}
+  let o1={pick(k, "More water leaves through the top", "One greased underneath, one not greased", "About 8 g")}
+  let o2={pick(k, "Grease makes a leaf lose more water", "One greased on both sides, one not greased", "About 3 g")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x40 {
+    parts fig of=plant at=canvas(1, 1)
+    text ask "In the mill by the waterfall, Ada picks leaves of the same size from one plant, smears grease on some to block their tiny holes, hangs them all up in the same place and weighs them a day later. Any weight a hung leaf loses is water. {told}" narrate width=32 below=fig gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick == o1) point=ask {
+      say "Leaf A had its top blocked, so its water could only leave underneath. It lost the most."
+    }
+    when (k == 0 and pick == o2) point=ask {
+      say "Both leaves were greased, each on one side. The difference is which side was left open."
+    }
+    when (k == 1 and pick == o1) point=ask {
+      say "Those two show the underside lets water out, but not whether it lets out more than the top. Which leaf leaves only the top open?"
+    }
+    when (k == 1 and pick == o2) point=ask {
+      say "Those two show that leaves lose water, but not which side it leaves by."
+    }
+    when (k == 2 and pick == o1) point=ask {
+      say "Even a leaf greased on both sides lost 1 g, through its stalk and skin. Is all of the 8 g from the underside?"
+    }
+    when (k == 2 and pick == o2) point=ask {
+      say "3 g is what the leaf lost with its underside blocked. How much did blocking the underside save?"
+    }
+  }
+  hint "Which side of each leaf was blocked, and which side was left open?"
+  hint "A leaf can only lose water through the parts that are not greased. Compare leaves that differ in one side only."
+  level hard {
+    hint "Compare the ungreased leaf with the one greased underneath. What did blocking the underside stop?"
+  }
+}

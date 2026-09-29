@@ -1,0 +1,32 @@
+# The two-star: one known division carries the rest. k ÷ d is k lots of 1 ÷ d, so the decimal is found
+# by multiplying rather than dividing again.
+item quotient.unit-step v=1 stars=2 skills=[fractions.decimals, reasoning.multiplicative] {
+  title "From one to many"
+  difficulty (d / 8 + k / 10)
+  let d={4, 8, 16, 20, 40} k=3..9
+  where (k < d and gcd(k, d) == 1)
+  level easy {
+    let d={4, 8} k=3..5
+  }
+  level hard {
+    let d={16, 40}
+  }
+
+  scene 36x12 {
+    sign board lines=["1 ÷ {d} = {decimals(1 / d, 1)}"] kind=board color=tang at=canvas(1, 1)
+    text ask "The temple's teacher wrote one division on the board. Use it, without dividing again, to write {k}/{d} as a decimal." narrate width=18 right-of=board gap=2
+    number-input answer width=6 below=ask gap=1
+  }
+
+  answer decimals(k / d, 1)
+  feedback {
+    when (answer == k + 1 / d) point=board {
+      say "{k}/{d} is {k} lots of 1/{d}. Multiply the decimal on the board by {k}."
+    }
+    when (answer == d / k) point=board {
+      say "That is {d} ÷ {k}. The fraction {k}/{d} is {k} ÷ {d}, less than 1."
+    }
+  }
+  hint "How many lots of 1/{d} make {k}/{d}?"
+  hint "What is {decimals(1 / d, 1)} multiplied by that?"
+}

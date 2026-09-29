@@ -1,0 +1,41 @@
+# What blood carries: oxygen from the lungs, carbon dioxide back to them, digested food from the
+# gut, and at hard Ben's blue veins, which is the colour a vein looks through skin, not the blood's.
+item nature.blood-carries v=1 skills=[nature.circulation] {
+  title "What does blood carry?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "Which gas does blood pick up in the lungs and carry to Ada's leg muscles?", "Working muscles make a waste gas. Which gas does the blood carry from them back to the lungs, to be breathed out?", "Blood leaving the small intestine carries something else to every part of the body. What is it?", "Ben says the blood in his veins is blue, because they look blue through his skin. What colour is it really?")}
+  let ans={pick(k, "oxygen", "carbon dioxide", "digested food", "dark red")}
+  let o1={pick(k, "carbon dioxide", "oxygen", "whole pieces of food", "blue")}
+  let o2={pick(k, "water vapour", "water vapour", "bubbles of air", "green")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x27 {
+    waterfall wf drops=2 rainbow=1 at=canvas(1, 1)
+    text ask "At the top of the gorge Ada sits by the waterfall to get her breath back. {asks}" narrate width=19 right-of=wf gap=2
+    choice pick options=[o1, ans, o2] stack=column below=wf gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=ask {
+      say "Muscles need a gas from the air to use their food. Which gas does the air breathed in give the blood?"
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "Oxygen goes to the muscles. The waste gas coming back is the one breathed out."
+    }
+    when (k == 2 and pick != ans) point=ask {
+      say "Food is broken down in the gut until it is small enough to pass into the blood."
+    }
+    when (k == 3 and pick != ans) point=ask {
+      say "A cut never bleeds blue. Blood low in oxygen is a darker red, and skin makes the vein look blue."
+    }
+  }
+  hint "Is the blood coming from the lungs, going back to them, or coming from the gut?"
+  hint "The lungs swap one gas for another. The gut gives the blood food."
+}

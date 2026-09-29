@@ -1,0 +1,33 @@
+# An orbit worked out with numbers: each step the pull towards the moon's centre changes the speed by
+# the position, then the speed moves the position. With these starting numbers the lander comes back
+# every 6 steps, round a six-sided path.
+item coding.orbit-xy v=1 skills=[coding.simulation, coding.variables, coding.tracing] {
+  title "Where is the lander now?"
+  difficulty (k / 2 + v / 4)
+  let k=1..5 v={2, 4}
+  level easy {
+    let k={1, 2} v={2}
+  }
+  level hard {
+    let k={3, 4, 5}
+  }
+
+  scene 36x24 {
+    program p code=["set x to {v}", "set y to 0", "set vx to 0", "set vy to {v}", "repeat {k}", "  take x from vx", "  take y from vy", "  add vx to x", "  add vy to y"] text=true at=canvas(0, 0)
+    earth e up=2 right-of=p gap=1
+    text ask "The moon's centre is where x and y are both 0. The lander starts at x {v}, y 0, moving with speed vy {v}. Where is it when the program ends?" width=15 below=e gap=1
+    text tx "x" below=p gap=1
+    number-input x right-of=tx gap=1
+    text ty "y" right-of=x gap=2
+    number-input y right-of=ty gap=1
+  }
+
+  check coding.runs of=p x="value(x)" y="value(y)"
+  feedback {
+    when (x == v and y == k * v) point=p {
+      say "Line 6 changes vx before line 8 uses it, so x changes too, not only y."
+    }
+  }
+  hint "Keep x, y, vx and vy in four columns, and change them in the order the lines say."
+  hint "Line 6 takes x from vx. Line 8 then adds the new vx to x."
+}

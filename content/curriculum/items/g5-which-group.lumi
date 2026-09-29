@@ -1,0 +1,28 @@
+# The second reasoning question in the core: two groups of different sizes compared by percent, where
+# the bigger count is not always the bigger share.
+item percent.which-group v=1 skills=[percentages.find-percent, reasoning.compare] {
+  title "Which group did better"
+  difficulty (if (a > b) == (100 * a / m > 100 * b / n) then 0 else 1)
+  let m={20, 25, 40, 50} a={6, 9, 12, 14} n={20, 25, 40, 50} b={5, 8, 10, 13}
+  where (m != n and a < m and b < n and 100 * a % m == 0 and 100 * b % n == 0 and 100 * a / m != 100 * b / n)
+  level easy {
+    where ((a > b) == (100 * a / m > 100 * b / n))
+  }
+  level hard {
+    where ((a > b) != (100 * a / m > 100 * b / n))
+  }
+
+  scene 33x11 {
+    text ask "On Monday {a} of the {m} visitors saw Saturn's rings through the telescope. On Tuesday {b} of the {n} visitors saw them. On which night did a greater percent of the visitors see them?" narrate width=32 at=canvas(1, 1)
+    choice pick options=["Monday", "Tuesday"] below=ask gap=1
+  }
+
+  answer pick=(if 100 * a / m > 100 * b / n then "Monday" else "Tuesday")
+  feedback {
+    when ((a > b) != (100 * a / m > 100 * b / n) and pick == (if a > b then "Monday" else "Tuesday")) point=ask {
+      say "More people is not a bigger percent when the group is bigger. Write each night as a percent."
+    }
+  }
+  hint "What percent of the visitors saw the rings on each night?"
+  hint "Make each group out of 100: how many times do you multiply?"
+}

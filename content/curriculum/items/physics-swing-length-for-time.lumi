@@ -1,0 +1,33 @@
+# Three stars, with no method on the page: the table hides the pendulum rule, that four times the
+# length gives twice the time, so the length is the square of half the time. The rows are real to a
+# tenth of a second.
+item physics.swing-length-for-time v=1 stars=3 skills=[physics.motion, reasoning.patterns, reasoning.generalise] {
+  title "The string for a given time"
+  difficulty v
+  let v=0..3
+  let secs={pick(v, 20, 10, 24, 28)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 31x20 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      pendulum p length=6 mass=100
+      table t cols=2 head=["String", "10 swings"] cells=["16 cm", "8 s", "36 cm", "12 s", "64 cm", "16 s"]
+    }
+    text ask "The clockmaker wants a pendulum that takes {secs} seconds for ten swings. How long must its string be, in centimetres?" narrate width=30 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (secs * secs / 4)
+  feedback {
+    when (answer == 64 + (secs - 16) * 7) point=t {
+      say "The lengths do not go up in equal steps: 16 to 36 is 20 cm, but 36 to 64 is 28 cm. Look for another pattern."
+    }
+  }
+  hint "Halve each time in the table. What do you notice about the length beside it?"
+  hint "Half of 8 is 4, and the string is 16 cm, which is 4 times 4. Does that work for the other rows?"
+}

@@ -1,0 +1,24 @@
+# The three-star count: a passage with up to three slips (a missing comma after a clause, a lost
+# capital inside speech marks, a missing comma before a clause). None is a possible answer, so
+# every place has to be checked.
+item writing.count-errors v=1 stars=3 skills=[writing.editing, writing.relative-clauses, writing.speech-punctuation, reasoning.all-the-ways] {
+  title "How many mistakes?"
+  difficulty (3 - e1 - e2 - e3)
+  let e1=0..1 e2=0..1 e3=0..1
+  let s1={if e1 == 1 then "The clock tower, which stands in the square is six hundred years old." else "The clock tower, which stands in the square, is six hundred years old."}
+  let s2={if e2 == 1 then "Nadia looked up and said, “the bell is ringing for noon.”" else "Nadia looked up and said, “The bell is ringing for noon.”"}
+  let s3={if e3 == 1 then "Farid who sold bread in the square, called back, “Then the market is closing.”" else "Farid, who sold bread in the square, called back, “Then the market is closing.”"}
+
+  scene 34x21 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage para title="Nadia's story" text="{s1} {s2} {s3}" width=24 numbers=false
+      clocktower tower hour=12 minute=0
+    }
+    text ask "Check every comma and capital. How many mistakes are there? There may be none." narrate width=22 below=top gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (e1 + e2 + e3)
+  hint "Find each relative clause, the extra news about someone or something. Does it have a comma on both sides?"
+  hint "Then look at each piece of speech. Does the first spoken word have its capital?"
+}

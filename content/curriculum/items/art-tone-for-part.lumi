@@ -1,0 +1,36 @@
+# Tone read off a lit ball, by the names artists give the parts of the light: the highlight is the
+# paper, the half-tone is the middle, the core shadow and the shadow cast on the table are the
+# darkest, and the reflected light, bounced up off the table into the dark side, is a step lighter
+# than the core shadow. Grade 3's light and shadow asked only which side is lit.
+item art.tone-for-part v=1 skills=[art.tone, art.light] {
+  title "The tone for each part"
+  difficulty (if p == 2 then 2 else if p == 1 or p == 3 then 1 else 0)
+  let p=0..4 l={"left", "right"}
+  let part={pick(p, "the highlight, where the lamp hits the ball", "the half-tone, halfway round to the dark side", "the reflected light, the thin strip lit from the table", "the core shadow, the darkest band on the ball", "the cast shadow the ball throws on the table")}
+  let step={pick(p, "step 1", "step 3", "step 4", "step 5", "step 5")}
+  level easy {
+    let p={0, 4}
+  }
+  level hard {
+    let p={2, 3}
+  }
+
+  scene 36x18 {
+    stilllife pic light=l things=["ball"] lamp=true at=canvas(1, 1)
+    tonescale scale steps=5 blank=-1 ring=-1 below=pic gap=1
+    text ask "Ada draws the moon over the observatory the way she would draw this ball, lit from one side. Her scale runs from step 1, the white paper, to step 5. Which step suits {part}?" width=18 right-of=pic gap=1
+    choice pick options=["step 1", "step 3", "step 4", "step 5"] below=scale gap=1
+  }
+
+  answer pick=step
+  feedback {
+    when (p == 2 and pick == "step 5") point=pic {
+      say "The reflected light is on the dark side, but light bounced off the table reaches it. Is it quite as dark as the core shadow beside it?"
+    }
+    when (pick != step and p != 2) point=pic {
+      say "Follow the light round the ball: palest where it hits, darker as it turns away, and darkest in the core shadow and the shadow it throws."
+    }
+  }
+  hint "Where is the lamp? Which part of the ball faces it most?"
+  hint "Is {part} the lightest part, the darkest, or in between?"
+}

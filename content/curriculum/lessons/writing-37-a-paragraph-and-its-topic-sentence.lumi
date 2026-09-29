@@ -1,0 +1,59 @@
+# A paragraph as one thing said and then shown: the topic sentence first, every sentence after it
+# fitting under it, and a new paragraph when the subject turns.
+lesson writing-a-paragraph-and-its-topic-sentence v=1 format=teach grade=5 unit=1 subject=writing levels=[easy, medium, hard] {
+  title "A paragraph and its topic sentence"
+  goal "Start a paragraph with a topic sentence and keep every sentence after it on that topic."
+
+  look {
+    scene 33x18 {
+      narrowboat boat windows=5 pots=3 at=canvas(1, 0)
+      passage para title="The Otter" text="The Otter is a narrowboat that is also a home. It is twenty metres long and only two metres wide. Inside there is a stove, two bunks and a tiny kitchen. Pots of herbs grow along its roof." width=32 numbers=false below=boat gap=1
+    }
+    say """
+      Nell wrote this paragraph for the canal guide. Her first sentence is the topic sentence: it
+      tells the reader what the whole paragraph is about, a boat that is also a home. Every sentence
+      after it shows that in a different way, the size, the inside and the roof. A sentence about
+      something else would not belong here. When Nell turns to a new subject, such as the lock or
+      the mill, she starts a new paragraph with a new topic sentence.
+      """
+  }
+  do {
+    level easy {
+      worked writing.topic-sentence k=2 r=0 level=medium
+    }
+    practice writing.topic-sentence count=2 seed=1
+    practice writing.off-topic count=2 seed=1
+    practice writing.sort-to-paragraphs count=1 seed=1
+    practice writing.paragraph-order count=1 seed=1 hard-count=2
+    practice writing.new-paragraph count=2 seed=1
+  }
+  try stars=2 {
+    show writing.best-topic-reason k=0 r=1 hard-k=1
+  }
+  try stars=3 {
+    show writing.own-paragraph k=0 hard-k=1
+  }
+  remember {
+    say "The topic sentence says what the paragraph is about. Every sentence after it fits under it."
+  }
+
+  grown-ups """
+    A paragraph is one idea: the topic sentence states it and the sentences after it show it.
+    The look is Nell's paragraph about her narrowboat. The way in chooses the missing first
+    sentence from three, one too narrow and one off the subject, and the core finds the sentence
+    that wandered off, sorts sentences under the right topic, orders a muddled paragraph and finds
+    where a new paragraph should start. The wrong idea to watch for is a topic sentence that is
+    really the first detail ("The Otter has a stove"); ask whether every other sentence fits
+    under it. If the child is stuck, read a paragraph aloud and ask them to say in five words what
+    it is about, then look for the sentence that says that. Off the page, open any information
+    book and read only the first sentence of each paragraph: together they should tell you what
+    the page says. The two-star question compares two topic sentences, and the three-star
+    question is a paragraph of the child's own, which you mark.
+    """
+  level easy {
+    grown-ups "At this level the lock keeper's missing first sentence is worked once in the teacher's pen, the missing sentences are for the boat and the lock, the stray sentences are the plainer ones, the muddled paragraph is the lock keeper's day, the new paragraphs start at a new place or a new day, the two-star is the mill, and the child writes one paragraph."
+  }
+  level hard {
+    grown-ups "At this level the missing sentences are for the lock and its keeper, the stray sentences are the subtler ones about the canal and old narrowboats, the sentences to sort are the harder set, two muddled paragraphs go from the front of the boat to the back and through the year, the new paragraph starts at a new time or a new side of a person, the two-star is the miller's day, and the child writes two paragraphs."
+  }
+}

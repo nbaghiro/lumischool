@@ -1,0 +1,39 @@
+# Lemmings counted on the tundra behind the research hut on the shore, every summer for eight
+# summers: a boom, a crash and a boom again. Easy reads a point and a fall; hard finds the next peak
+# and counts the rises.
+item nature.lemming-graph v=1 skills=[nature.populations, data.line-graphs] {
+  title "Lemmings, summer by summer"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "How many lemmings did they count in summer 2?", "By how many did the count fall from summer 3 to summer 4?", "The count was at its highest in summer 3. In which summer was it at a peak again?", "In how many of the summers did the count rise from the summer before?")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x25 {
+    linegraph g labels=["1", "2", "3", "4", "5", "6", "7", "8"] values=[10, 25, 40, 10, 5, 20, 35, 10] max=40 per=5 color=berry at=canvas(1, 1)
+    text ask "The research hut stands on the rocky shore beside the ice shelf. On the tundra behind it the scientists count the lemmings on one patch every summer, for eight summers. {asks}" narrate width=32 below=g gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 25, 30, 7, 4)
+  feedback {
+    when (k == 0 and answer != 25) point=g {
+      say "One square up the side is worth 5 lemmings. Find summer 2 along the bottom and read across from its point."
+    }
+    when (k == 1 and answer == 10) point=g {
+      say "10 is where the count ended up in summer 4. How far did it drop from summer 3 to get there?"
+    }
+    when (k == 2 and answer == 8) point=g {
+      say "Summer 8 is lower than the summer before it. A peak is a point higher than the summers on both sides."
+    }
+    when (k == 3 and answer == 3) point=g {
+      say "Go from each point to the next and mark every one that goes up. Check the start of the graph too."
+    }
+  }
+  hint "Find the summers along the bottom first. How much is one square up the side worth?"
+  hint "A line going up from one point to the next is a rise; going down is a fall."
+}

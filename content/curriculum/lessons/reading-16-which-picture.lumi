@@ -1,4 +1,4 @@
-lesson reading-which-picture v=1 format=teach grade=1 unit=3 subject=reading levels=[easy, medium, hard] {
+lesson reading-which-picture v=1 format=teach grade=1 unit=8 subject=reading levels=[easy, medium, hard] {
   title "Which picture?"
   goal "Read a short sentence and find the picture it tells you about."
 

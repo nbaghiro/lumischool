@@ -1,0 +1,65 @@
+# A running total: a name that starts at 0 and has each item added to it as a repeat goes through a
+# list, then the same pattern for a count, a toll in dollars and the biggest so far. The canal
+# town's mill, market and lock are where the numbers come from.
+lesson coding-a-running-total v=1 format=teach grade=5 unit=3 subject=coding levels=[easy, medium, hard] {
+  title "A running total"
+  goal "Keep a running total as a repeat goes through a list, and use it to count, add and find the biggest."
+
+  look {
+    scene 36x19 {
+      program p code=["set sacks to list 3, 5, 2", "set total to 0", "for each s in sacks", "  add s to total"] at=canvas(1, 0)
+      variable v name=total code=["set sacks to list 3, 5, 2", "set total to 0", "for each s in sacks", "  add s to total"] below=p gap=1
+    }
+    say """
+      Three boats bring sacks of flour to the canal town's mill, and the miller wants to know how
+      many came in all. The program sets total to 0 before the repeat, then adds each boat's sacks
+      as it goes through the list: 3, then 8, then 10. The box shows every number total held on the
+      way. A total that grows as the list is walked is called a running total.
+      """
+  }
+  do {
+    show coding.total-sum n=0 a=3 b=6 c=2 easy-b=4 hard-n=1 hard-a=5 hard-b=7 hard-c=4
+    show coding.total-trace a=4 b=5 c=3 r=1 easy-r=0 hard-r=2
+    level easy {
+      worked coding.total-sum n=0 a=2 b=5 c=3 level=medium
+    }
+    show coding.total-toll a=2 b=4 c=1 m=2 hard-m=3 hard-a=4 hard-b=5 hard-c=3
+    show coding.total-start a=4 b=3 c=2 s=5 easy-s=4 easy-a=2 hard-a=6 hard-b=5 hard-c=4 hard-s=7
+    show coding.total-count n=0 t=5 s=0 easy-t=4 hard-n=1 hard-t=6
+    show coding.total-biggest s=1 easy-s=0 hard-s=2
+    show coding.total-build k=1 easy-k=0 hard-k=2
+    show coding.total-biggest s=2 easy-s=1 hard-s=3
+    level hard {
+      show coding.total-trace a=5 b=6 c=4 r=1
+    }
+  }
+  try stars=2 {
+    show coding.total-which k=1 a=4 b=6 easy-k=0 hard-a=7
+  }
+  try stars=3 {
+    show coding.total-trips k=0 easy-k=2 hard-k=1
+  }
+  remember {
+    say "A running total starts at 0 before the repeat, and each time round the item is added on."
+  }
+
+  grown-ups """
+    The pattern is set a name before the repeat, then change it inside. Most mistakes come from
+    putting the set inside the repeat, which empties the total every time round, or from adding 1
+    when the item was meant, which counts boats instead of crates. In the child's working, look for
+    the total written after each time round rather than only at the end. If the child is stuck, use
+    a jar and counters: empty it once at the start and drop in each boat's counters in turn, and
+    stay another day if the jar still gets emptied between boats. Off the page, keep a running total
+    of the prices while shopping, in dollars, and check it against the till. The two-star question
+    is the set in the wrong place; the three-star question has no method on the page, and the total
+    of all the crates says how few trips could possibly do. The build question uses every card once:
+    the count starts before the repeat, adds 1 inside the if, and the robot moves once at the end,
+    so a count set inside the repeat, or a move inside it, stops the robot on the wrong square.
+    """
+  level easy {
+    grown-ups "At this level lists have three items with small totals and one is worked in the teacher's pen, the table is read at step 5, the toll is two dollars a crate, the start is found from a total under fifteen, the counts add 1 for each boat over the line, the biggest so far starts low and climbs, the program that adds is the first one, and the fewest trips uses four boats that pair up to ten. The count to build has five boats and the line at 5."
+  }
+  level hard {
+    grown-ups "At this level a list has four items, the table is read after the last add and again for bigger loads, the toll is three dollars a crate, the start is found from a total over twenty, the counts add the crates rather than 1, so big is a total and not a count, the biggest so far comes late in the list, the program that adds is the second one, and the fewest trips uses three boats of six that can never share a trip. The count to build has six boats and the line at 6."
+  }
+}

@@ -1,0 +1,35 @@
+# Nouns end -ice and verbs -ise in British English (practice and practise, advice and advise,
+# licence and license, device and devise); affect and effect, the other homophone pair the lesson
+# uses, split the same way as a verb and a noun. Four options, one for each way to fill both gaps.
+item writing.ice-or-ise v=1 skills=[writing.spelling, writing.homophones, writing.word-classes] {
+  title "Practice or practise?"
+  difficulty pick(k, 1, 0, 1, 2, 2, 1)
+  let k=0..5
+  let n1={pick(k, "advice", "advice", "practice", "licence", "device", "effect")}
+  let v1={pick(k, "advise", "advise", "practise", "license", "devise", "affect")}
+  let n2={pick(k, "practice", "practice", "advice", "licence", "device", "effect")}
+  let v2={pick(k, "practise", "practise", "advise", "license", "devise", "affect")}
+  let right={pick(k, "advise, practise", "advice, practice", "practise, advice", "licence, license", "device, devise", "affect, effect")}
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={2, 3, 4, 5}
+  }
+
+  scene 34x30 {
+    narrowboat boat windows=4 pots=3 at=canvas(1, 1)
+    caption line text="{pick(k, \"Our skipper will ___ us to ___ our knots every day.\", \"Her ___ was to go to rowing ___ on Friday.\", \"We ___ steering each morning and follow the lock-keeper's ___.\", \"The boat needs a ___, and the canal office will ___ it for a year.\", \"Kit wanted a ___ to lift the paddle, so she sat down to ___ one.\", \"Rain can ___ the boat race, and its ___ may be a late finish.\")}" width=32 below=boat gap=1
+    text ask "Which pair of words fills the two gaps, in order?" width=32 below=line gap=1
+    choice pick options=["{n1}, {n2}", "{n1}, {v2}", "{v1}, {n2}", "{v1}, {v2}"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=line {
+      say "Check each gap on its own. Is the word there a thing, a noun, or something someone does, a verb?"
+    }
+  }
+  hint "Put a or the in front of each gap. Does it still make sense? Then it is a noun."
+  hint "The noun ends in -ice and the verb in -ise. Which is each gap?"
+}

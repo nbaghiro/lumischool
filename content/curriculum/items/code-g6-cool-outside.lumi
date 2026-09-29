@@ -1,0 +1,30 @@
+# The same model outside the hut, where the air is below freezing: the flask cools towards -20, so it
+# passes 0 on its way, and the question is when it first goes below.
+item coding.cool-outside v=1 skills=[coding.simulation, coding.variables, coding.repetition] {
+  title "A flask on the sledge"
+  difficulty (g / 60)
+  let g={40, 64, 80, 96}
+  let s={g - 20}
+  level easy {
+    let g={40, 64}
+  }
+  level hard {
+    let g={80, 96}
+  }
+
+  scene 36x25 {
+    program p code=["set air to -20", "set tea to {s}", "set minutes to 0", "repeat until tea is less than 0", "  set gap to tea - air", "  take gap / 2 from tea", "  add 10 to minutes"] text=true at=canvas(1, 0)
+    sledge sl slats=5 right-of=p gap=1
+    text ask "The tea in a flask on the sledge starts at {s} °C, and the air outside is -20 °C. What does minutes hold when the tea first goes below freezing?" width=22 below=p gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check coding.runs of=p answer="value(minutes)"
+  feedback {
+    when (answer == 10 * (s / (g / 2))) point=p {
+      say "The tea loses half the gap each time, and the gap shrinks, so it cannot lose the same amount again."
+    }
+  }
+  hint "The gap is between the tea and -20. What is it at the start?"
+  hint "Write tea after each ten minutes. Stop at the first number below 0."
+}

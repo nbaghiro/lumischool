@@ -1,0 +1,32 @@
+# The same drop on two worlds, read from two tables: every drop takes 2.5 times as long on the moon,
+# because the moon's pull is 6.25 times weaker and 6.25 is 2.5 times 2.5. d picks the drop.
+item physics.moondrop-how-long v=1 skills=[physics.forces, physics.weight, data.tables, reasoning.compare] {
+  title "The same drop, twice as slow and more"
+  difficulty (if d == 1 then 0 else if d == 2 then 1 else 2)
+  let d=0..2
+  level easy {
+    let d=1..1
+  }
+  level hard {
+    let d={0, 2}
+  }
+  let drop={pick(d, "0.8", "3.2", "5")}
+
+  scene 33x17 {
+    table m cols=3 head=["Drop", "Time on Earth", "Time on the moon"] cells=["0.8 m", "0.4 s", "1 s", "3.2 m", "0.8 s", "2 s", "5 m", "1 s", "2.5 s"] at=canvas(1, 0)
+    text ask "How many times as long does a {drop} m drop take on the moon as on Earth?" narrate width=30 below=m gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals(2.5, 1)
+  feedback {
+    when (answer == 6.25) point=m {
+      say "The moon pulls 6.25 times more weakly, but read the times: how many times the Earth's time is the moon's?"
+    }
+    when (answer == pick(d, 0.6, 1.2, 1.5)) point=m {
+      say "That is how much longer it takes, in seconds. The question asks how many times as long."
+    }
+  }
+  hint "Find the {drop} m drop in the table. How long does each take?"
+  hint "Divide the moon's time by the Earth's."
+}

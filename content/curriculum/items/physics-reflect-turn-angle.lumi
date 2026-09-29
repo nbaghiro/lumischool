@@ -1,0 +1,30 @@
+# Three stars, backwards through a rule the child builds: a mirror turns a beam away from the way it
+# was going by 180 degrees take twice the angle in, so the angle in for a wanted turn is half of 180
+# take the turn.
+item physics.reflect-turn-angle v=1 stars=3 skills=[physics.light, angles.additive, reasoning.work-backwards] {
+  title "Turn it by just enough"
+  difficulty v
+  let v=0..3
+  let turn={pick(v, 90, 120, 110, 130)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 23x25 {
+    mirrorangle m angle=40 targets=[] marks=1 show=1 at=canvas(1, 0)
+    text ask "A beam in at 40° to the upright line comes out 80° from the way it went in, so the mirror has turned it by 180° take 80°, which is 100°. At what angle to the upright line must a beam come in to be turned by {turn}°?" narrate width=22 below=m gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((180 - turn) / 2)
+  feedback {
+    when (answer == 180 - turn) point=m {
+      say "That is the angle between the two beams. It is split equally either side of the upright line."
+    }
+  }
+  hint "If the mirror turns the beam by {turn}°, what is the angle between the two beams?"
+  hint "That angle is shared equally between the two sides of the upright line."
+}

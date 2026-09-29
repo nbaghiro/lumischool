@@ -1,0 +1,72 @@
+# A composition of the Earth seen from the moon: the lines of thirds, a focus made by the one
+# colour, the Earth's size in the moon's sky, and lines that lead the eye.
+lesson art-the-earth-from-the-moon v=1 format=teach grade=6 unit=8 subject=art levels=[easy, medium, hard] {
+  title "The Earth from the moon"
+  goal "Plan a picture of the Earth seen from the moon so that the eye goes where the artist chooses, using the lines of thirds, colour and leading lines."
+
+  look {
+    scene 31x10 {
+      row all at=canvas(1, 1) space=1 align=end {
+        earth home up=1
+        lander craft rungs=5
+        crater holes count=1
+      }
+    }
+    say """
+      In December 1968 the crew of Apollo 8, circling the moon in their spacecraft, saw the Earth
+      rise over its edge, and the astronaut William Anders took a photograph of it, called
+      Earthrise. From the moon's ground the Earth does not rise: it hangs in almost the same place
+      in the sky all month. The photograph belongs to everyone, as NASA's pictures do. In it the
+      grey moon fills the bottom of the frame, the sky is black, and the small blue Earth is the
+      only colour. Planning where the horizon, the Earth and the lines of the ground go is called
+      composition, and it decides where the eye goes first.
+      """
+  }
+  do {
+    practice art.earth-focus count=1 hard-count=2
+    level easy {
+      worked art.earth-thirds w=30 h=18 q=0 level=medium
+    }
+    practice art.earth-thirds count=2 seed=1
+    practice art.earth-scale count=2 seed=1
+    practice art.earth-contrast count=2 seed=1
+    practice art.earth-lead count=1 seed=1
+  }
+  try stars=2 {
+    show art.earth-off-centre-why r=1 easy-r=0 hard-r=2
+  }
+  try stars=3 {
+    show art.earth-rise
+  }
+  remember {
+    say "Put what matters on a line of thirds, make it the most different thing, and lead the eye to it."
+  }
+
+  grown-ups """
+    Earthrise was taken by William Anders on Apollo 8 on 24 December 1968, from lunar orbit: from
+    the moon's surface the Earth stays almost fixed in the sky, so only a craft circling the moon
+    sees it rise. As a work of NASA it is in the public domain in the United States, and the lesson
+    uses drawings of our own. Most of the questions are marked by the machine. The first asks where
+    the eye goes in a picture of greys. The core places the horizon and the Earth on the lines of
+    thirds, which is fractions of a length, sizes the Earth in the moon's sky against the full moon
+    at home, chooses the tone that pulls the eye by its contrast with the tone round it, and chooses
+    a line in the ground that leads the eye to the Earth.
+
+    Watch for a child who puts the most important thing in the middle every time, or who sizes the
+    Earth like a star. Neither is wrong as a choice, and the two-star question asks what moving the
+    Earth onto a third changes. If the thirds are stuck, fold a sheet into three each way and open
+    it out. The painting is the three-star question and is responded to rather than marked. Off the
+    page, take two photographs of the same thing on a phone, one centred and one on a third, and
+    compare them.
+
+    Respond by saying where your own eye went first and how it travelled: "I looked at the Earth
+    first, and then followed the footprints back to the lander." Ask what they wanted someone to
+    look at.
+    """
+  level easy {
+    grown-ups "At this level the eye goes to the Earth, the horizon on a sheet of thirty squares is worked once in the teacher's pen before more horizons, the Earth is sized from the moon, the tones are for the lander on a black sky and a footprint on sunlit ground, the line is the footprints, the two-star is about the Earth, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the eye goes to the lander and then to a bright horizon, the Earth is placed on the right-hand line and where two lines cross, the moon is sized from the Earth, the tones include the Earth on a dark grey sky, the line is a crater's rim, the two-star is about the horizon, and the three-star is as written."
+  }
+}

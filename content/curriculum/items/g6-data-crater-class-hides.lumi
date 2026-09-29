@@ -1,0 +1,33 @@
+# The two-star: a class hides where its values sit, so a question that cuts through a class has a
+# fewest and a most, not one answer.
+item data.crater-class-hides v=1 stars=2 skills=[data.histograms, data.claims, reasoning.limits] {
+  title "Hidden inside a bar"
+  difficulty (v / 2 + (if t == 17 then 1 else 0))
+  let v=0..1 t={12, 17}
+  level easy {
+    let t={12} v={0}
+  }
+  level hard {
+    let t={17}
+  }
+
+  scene 36x18 {
+    bargraph g labels=["0-4", "5-9", "10-14", "15-19", "20-24"] values=[pick(v, 3, 2), pick(v, 5, 4), pick(v, 6, 7), pick(v, 4, 3), pick(v, 2, 1)] max=8 color=sky touch=1 at=canvas(1, 1)
+    text ask "Kit wants to know how many craters are at least {t} m wide, with only this histogram of whole-metre widths. What is the fewest there could be, and the most?" narrate width=18 right-of=g gap=2
+    row eq below=g gap=1 space=1 align=centre {
+      text a "fewest"
+      number-input low width=3
+      text b "most"
+      number-input high width=3
+    }
+  }
+
+  answer low=(if t == 12 then pick(v, 6, 4) else pick(v, 2, 1)) high=(if t == 12 then pick(v, 12, 11) else pick(v, 6, 4))
+  feedback {
+    when (low == high) point=g {
+      say "The bar that {t} m falls inside does not say where its craters are. Some or all of them could be at least {t} m."
+    }
+  }
+  hint "Which bar has Kit's width inside it? Could all of its craters be narrower than that?"
+  hint "Could all of them be wider?"
+}

@@ -1,0 +1,32 @@
+# The way in: the lock drawn at one moment of going up, and the sentence of the explanation that
+# says what the picture shows. The level moves from empty to filling to full.
+item writing.lock-picture-step v=1 skills=[writing.explanations, reading.comprehension] {
+  title "Which step is this?"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2 r=0..2
+  let lv={pick(k, 0, 0.5, 1)}
+  let right={pick(k, "The chamber is empty and the boat is low.", "Water pours in and the boat is rising.", "The chamber is full and the boat is high.")}
+  let w1={pick(k, "Water pours in and the boat is rising.", "The chamber is full and the boat is high.", "The chamber is empty and the boat is low.")}
+  let w2={pick(k, "The chamber is full and the boat is high.", "The chamber is empty and the boat is low.", "Water pours in and the boat is rising.")}
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 32x24 {
+    canallock lock level=lv boat=1 at=canvas(1, 0)
+    text ask "Nell is writing how the lock works. Which sentence of her explanation matches the picture?" narrate width=31 below=lock gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=lock {
+      say "Look at the water in the chamber between the two gates, against the marks on the wall. Is it low, part way, or at the top?"
+    }
+  }
+  hint "Find the chamber between the two gates. Where is the water in it?"
+  hint "Compare the water in the chamber with the water on each side of the lock."
+}

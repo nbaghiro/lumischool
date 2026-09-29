@@ -1,0 +1,37 @@
+# A puzzle over the precise verb: of five verbs, how many show how Kit moved, not only that she moved.
+# The general ones (moved, travelled, went along, journeyed) are the traps; the count changes with k.
+item writing.moved-count v=1 skills=[writing.vocabulary, writing.word-choice, reasoning.all-the-ways] {
+  title "How many say how?"
+  difficulty k
+  let k=0..2
+  let words={pick(k, "bounded, moved, trudged, went along, crept", "strode, tiptoed, staggered, travelled, stumbled", "scrambled, journeyed, moved, went, lurched")}
+  let n={pick(k, 3, 4, 2)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x17 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      footprints fp count=4
+      crater cr count=2
+    }
+    passage p title="Verbs for Kit's walk" text="{words}" width=33 numbers=false below=pics gap=1
+    text ask "How many of these verbs show how Kit moved her feet and body, not only that she moved?" narrate width=24 below=p gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == n + 1 or answer == n + 2) point=p {
+      say "Some of those only say that Kit moved, or went somewhere far. Could you act each one out differently from walking?"
+    }
+    when (answer == n - 1) point=p {
+      say "Check again: one more of them shows exactly how she moved."
+    }
+  }
+  hint "Try acting each verb out. Which ones look different from plain walking?"
+  hint "Put each verb in the sentence Kit _____ to the rim. Which ones let you see her move?"
+}

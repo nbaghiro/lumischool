@@ -1,0 +1,33 @@
+# The two-star reason: salt does not warm the ice; it dissolves in the thin wet layer on top, and
+# salty water freezes below 0 °C, so the layer stays liquid and eats into the ice. Below about −21 °C
+# (the eutectic, 23.3 per cent, from the brine table) even the saltiest water freezes.
+item chem.why-salt-melts v=1 stars=2 skills=[chemistry.freezing, reasoning.explain] {
+  title "Why does salt melt the ice?"
+  difficulty k
+  let k=0..1 r=0..2
+  let q={pick(k, "Leo sprinkles salt on the icy step of the hut at -5 °C, and the ice turns to slush. Why?", "At -25 °C, salt on the step does nothing at all. Why not?")}
+  let right={pick(k, "Salty water freezes below 0 °C", "Even the saltiest water freezes by -21 °C")}
+  let w1={pick(k, "Salt is warmer than the ice", "The salt itself has frozen")}
+  let w2={pick(k, "Salt soaks the water up", "Salt breaks the ice into bits too small to freeze")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x28 {
+    table data cols=2 head=["Salt in 100 g", "Freezes at °C"] cells=["0 g", "0", "10 g", "-6", "20 g", "-13", "30 g", "-21"] at=canvas(1, 0)
+    text ask "{q}" narrate width=34 below=data gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=data {
+      say "Look at the table: the salt changes where water freezes. Where is the lowest row?"
+    }
+  }
+  hint "Does salt make anything warmer, or does it change the temperature where water freezes?"
+  hint "{if k == 0 then \"Ice always has a thin wet layer on top. What happens to salt in it?\" else \"What is the lowest freezing point in the table, however much salt goes in?\"}"
+}

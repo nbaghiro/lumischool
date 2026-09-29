@@ -1,0 +1,44 @@
+# The same steps in words and as a flowchart with one shape left empty: the words say what goes in
+# it. The shape left empty moves from the loop's box to the say at the end.
+item coding.flow-blank v=1 skills=[coding.flowcharts, coding.algorithms] {
+  title "The empty shape"
+  difficulty k
+  let k=0..2
+  let words={pick(k, "Start n at 1. Double it 3 times over. Then say n.", "Start stars at 0. Add 5 to it, 4 times over. Then say how many stars.", "Start fuel at 10. Three times over, double it and then take 2 away.")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x26 {
+    flowchart f code=[pick(k, "set n to 1", "set stars to 0", "set fuel to 10"), pick(k, "repeat 3", "repeat 4", "repeat 3"), pick(k, "  double n", "  add 5 to stars", "  double fuel"), pick(k, "say n", "say stars", "  take 2 from fuel")] blank=pick(k, 3, 4, 3) at=canvas(0, 0)
+    text ask "The astronomer wrote these steps for the observatory's rover: {words} Ben drew them as a flowchart and left one shape empty. What goes in it?" width=20 right-of=f gap=2
+    choice pick options=[pick(k, "double n", "add 5 to stars", "take 2 from fuel"), pick(k, "add 2 to n", "say stars", "double fuel"), pick(k, "say n", "set stars to 0", "add 2 to fuel")] stack=column below=ask gap=1
+  }
+
+  check coding.runs of=f pick=blank
+  feedback {
+    when (k == 0 and pick == "add 2 to n") point=ask {
+      say "Doubling 1 and adding 2 both give 2 the first time. The words say double."
+    }
+    when (k == 0 and pick == "say n") point=f {
+      say "The say is already there, after the loop ends. What do the words do inside the loop?"
+    }
+    when (k == 1 and pick == "add 5 to stars") point=f {
+      say "The loop's box already adds 5. What do the words do once the loop has finished?"
+    }
+    when (k == 1 and pick == "set stars to 0") point=f {
+      say "stars is set to 0 once, at the start, and that box is there. What comes after the loop?"
+    }
+    when (k == 2 and pick == "take 2 from fuel") point=f {
+      say "Taking 2 away is the second step of each round, and its box is drawn. What comes first?"
+    }
+    when (k == 2 and pick == "add 2 to fuel") point=ask {
+      say "The words never add anything. Read the first step inside the three times over."
+    }
+  }
+  hint "Read the words one step at a time and put your finger on the shape for each."
+  hint "Which step in the words has no shape of its own yet?"
+}

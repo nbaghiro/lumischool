@@ -1,0 +1,73 @@
+# Singing a round in parts: Frère Jacques under the old city's clock tower, where each voice
+# starts the same tune two bars after the one before, why the parts fit, and the round sung.
+lesson music-singing-a-round v=1 format=teach grade=5 unit=8 subject=music levels=[easy, medium, hard] {
+  title "Singing a round in parts"
+  goal "Sing a round in parts, knowing where every voice is and why the parts fit together."
+
+  look {
+    scene 36x29 {
+      column top space=1 align=start at=canvas(1, 1) {
+        clocktower tower hour=7 minute=0
+        table song cols=2 head=["Bars", "Words"] cells=["1 and 2", "Are you sleeping", "3 and 4", "Brother John", "5 and 6", "Morning bells are ringing", "7 and 8", "Ding dang dong"]
+      }
+    }
+    say """
+      At seven in the morning the clock tower of the old city rings its bells, and four friends
+      underneath sing Frère Jacques, a French song about a friar who has overslept and should be
+      ringing the morning bells. They sing it as a round. The first voice starts alone, and when it
+      reaches bar 3 the second voice starts at bar 1; two bars later the third comes in, and then
+      the fourth. Everyone sings the same tune, but at any moment the voices are on different words,
+      so four tunes sound at once. A round only works with a tune whose parts fit together wherever
+      the voices are.
+      """
+  }
+  do {
+    show music.round-bar v=1 easy-v=0 hard-v=2
+    level easy {
+      worked music.round-length v=0 level=medium
+    }
+    show music.round-play
+    show music.round-together v=1 easy-v=0 hard-v=2
+    show music.round-rhythm
+    show music.round-length v=2 easy-v=1 hard-v=3
+    show music.round-sing
+    show music.round-bar v=2 easy-v=1 hard-v=3
+    show music.round-together v=2 easy-v=1 hard-v=3
+    level hard {
+      show music.round-length v=2
+    }
+  }
+  try stars=2 {
+    show music.round-why r=0 easy-r=1 hard-r=2
+  }
+  try stars=3 {
+    show music.round-parts v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "In a round every voice sings the same tune, starting later, and it fits because every phrase fits the same chord."
+  }
+
+  grown-ups """
+    The idea is that a round is one tune sung by several voices starting at different times, so that
+    at any moment the voices are on different phrases, and that this only sounds right because every
+    phrase of the tune fits the same chord (here C, E and G). The wrong idea to watch for is
+    thinking that the voices sing the same words together, or that any tune can be sung as a round.
+    In the working, look for the child counting on two bars for each voice and wrapping round to the
+    start of the tune. The core finds where each voice is, plays and taps the busiest bar, works out
+    how long a round lasts, and sings the tune alone; the two-star question asks why the parts fit,
+    and the three-star question is the round itself, in parts.
+
+    The singing is marked by you, not the machine: tick what you heard. A child who loses their part
+    should sing it again alone, then in two parts with you, with you coming in second, before trying
+    three. If the counting is stuck, point at the table row by row as a voice sings it. Off the
+    page, sing another round you know, such as Row, Row, Row Your Boat, and find where the second
+    voice comes in. This lesson meets China's 2022 arts standard for grades 3 to 5, 听赏与评述:
+    "能区分独唱、齐唱、轮唱、合唱等基本演唱形式" (tell apart solo, unison, round and choir singing).
+    """
+  level easy {
+    grown-ups "At this level the voices counted are the second and third, the length of a two-voice round is worked in the teacher's pen before more, the phrases sung together are one or two rows apart, the rounds counted are sung once through, the two-star is as written with its answers in another order, and the three-star round is in two parts with the child coming in first."
+  }
+  level hard {
+    grown-ups "At this level the fourth voice is counted from the second, the phrases sung together wrap round past the end of the tune, the rounds counted are sung twice and three times through, one more length is asked, and the three-star round is in four parts with the child coming in last."
+  }
+}

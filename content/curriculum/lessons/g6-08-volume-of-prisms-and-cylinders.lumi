@@ -1,0 +1,63 @@
+lesson g6-volume-of-prisms-and-cylinders v=1 format=teach grade=6 unit=5 subject=maths levels=[easy, medium, hard] {
+  title "Volume of prisms and cylinders"
+  goal "Find the volume of a prism or a cylinder as the area of its base times its height, and give it in litres."
+
+  look {
+    scene 36x12 {
+      cubestack stack l=4 w=3 h=3 count=1 at=canvas(1, 1)
+      solid silo kind=cylinder label="" right-of=stack gap=2
+      solid roof kind=prism label="" right-of=silo gap=2
+    }
+    say """
+      A box of cubes is layers: 12 cubes in a layer, three layers, 36 cubes. Every prism works the
+      same way. Its end is the base, and the prism is that base stacked up along its height or its
+      length. So the volume is the area of the base times the height, for a cuboid, for the
+      triangle-ended roof of the mill, and for the round grain cylinder, whose base is a circle of
+      area radius times radius times 3.14. A litre is 1000 cm³.
+      """
+  }
+  do {
+    practice volume.mill-sack-layers count=1 seed=3
+    level easy {
+      worked volume.grain-cylinder r=3 h=2 level=medium
+    }
+    practice volume.mill-roof-prism count=1 seed=4
+    practice volume.grain-cylinder count=1 seed=5
+    practice volume.tank-litres count=1 seed=6
+    practice volume.wider-grain-cylinder count=1 seed=2
+    show volume.cylinder-tank-height r=4 h=2 easy-r=1 easy-h=3 hard-r=5 hard-h=4
+    level hard {
+      practice volume.tank-litres count=1 seed=11
+    }
+    practice volume.mill-roof-prism count=1 seed=8
+    practice volume.grain-cylinder count=1 seed=9 easy-seed=13 hard-seed=14
+  }
+  try stars=2 {
+    show volume.diameter-for-radius d=4 h=5 easy-d=6 easy-h=10 hard-d=8 hard-h=3
+  }
+  try stars=3 {
+    show volume.roll-the-sheet s=1 easy-s=0 hard-s=2
+  }
+  remember {
+    say "The volume of a prism or a cylinder is the area of its base times its height. A litre is 1000 cm³."
+  }
+
+  grown-ups """
+    One rule does every solid here: find the area of the end, then multiply by how far it goes. Ask
+    the child to name the base first, since a triangular prism lying down has its base standing up
+    at the end. The common slips are forgetting to halve for the triangle, using the distance round
+    a circle instead of its area, and using the diameter as the radius. For litres, 1000 cm³ make a
+    litre and 1000 litres a cubic metre. In the second reasoning question a cylinder twice as wide
+    holds four times as much, because the circle grows in both directions. In the two-star question
+    Leo's answer is four times too big for the same reason. In the three-star question the fat roll
+    holds more, by exactly the ratio of the sides, and a child who tries numbers has done real work.
+    If area of the base is still shaky, stay here another day with cuboids. Off the page, fill a tin
+    with water from a measuring jug and check its volume against the formula.
+    """
+  level easy {
+    grown-ups "At this level the boxes are at most 5 by 3 by 4, a cylinder of radius 3 m and height 2 m is worked in the teacher's pen, the roofs are 4 or 6 m wide and 8 or 10 m long, the cylinders have radius 1 or 3 m, the tanks are in centimetres, the wider cylinder is twice as wide and as tall, the tank's height is found for a base of radius 1 m, Leo's tank is 6 m across, and the sheet is 20 by 10 cm."
+  }
+  level hard {
+    grown-ups "At this level the boxes are 6 long and up to 6 layers, the roofs are 8 m wide and 12 or 15 m long, the cylinders have radius 5 or 6 m, the tanks are in metres and asked twice, apart, the wider cylinder is three times as wide and twice as tall, Leo's tank is 8 m across, and the sheet is 30 by 10 cm."
+  }
+}

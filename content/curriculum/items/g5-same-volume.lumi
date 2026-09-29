@@ -1,0 +1,28 @@
+# The core's second reasoning question: two cuboids that share a height, compared by their bases
+# without working out either volume.
+item volume.same-volume v=1 skills=[volume.cuboids, reasoning.compare-without-totalling] {
+  title "Which holds more"
+  difficulty ((if q == 2 then 0 else if q == 1 then 1 else 2) + h / 5)
+  let a={4, 6, 8} b={3, 4, 6} h={5, 7, 9} q=0..2
+  level easy {
+    let q={2}
+  }
+  level hard {
+    let q={0}
+  }
+
+  scene 37x13 {
+    narrowboat boat windows=3 pots=0 at=canvas(1, 1)
+    text ask "Two cargo crates are both {h} m tall. Crate A is {a} m by {b} m. Crate B is {if q == 0 then a / 2 else if q == 1 then a * b / 2 else a * 2} m by {if q == 0 then b * 2 else if q == 1 then 2 else b - 1} m. Which holds more, or do they hold the same?" narrate width=18 right-of=boat gap=2
+    choice pick options=["A", "B", "the same"] below=ask gap=1
+  }
+
+  answer pick=(if q == 0 or q == 1 then "the same" else "B")
+  feedback {
+    when ((q == 0 or q == 1) and pick != "the same") point=ask {
+      say "Both are {h} m tall, so only the floors matter. What is {a} × {b}, and the other floor?"
+    }
+  }
+  hint "The two crates are equally tall. What is left to compare?"
+  hint "Compare the areas of the two floors."
+}

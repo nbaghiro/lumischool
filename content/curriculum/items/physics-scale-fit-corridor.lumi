@@ -1,0 +1,33 @@
+# Three stars: choose a scale. Neptune, 4500 million km out, must fit in a corridor of m metres, so
+# each centimetre must stand for at least 4500 / (100 m) million km, rounded up to a whole number;
+# then Earth's bead goes 150 divided by that scale from the Sun.
+item physics.scale-fit-corridor v=1 stars=3 skills=[physics.sky, measure.scale, reasoning.constraints] {
+  title "Fit the solar system in"
+  difficulty v
+  let v=0..3
+  let m={pick(v, 30, 20, 12, 8)}
+  let s={pick(v, 2, 3, 4, 6)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=3..3
+  }
+
+  scene 32x20 {
+    observatory o open=1 at=canvas(1, 0)
+    text ask "The observatory's corridor is {m} m long. Neptune is 4500 million km from the Sun. For the whole solar system to fit, 1 cm must stand for how many million km? Give the smallest whole number that fits." narrate width=21 right-of=o gap=1
+    number-input scale below=o gap=1
+    text then "At that scale, how many centimetres from the Sun is the Earth's bead? The Earth is 150 million km out." narrate width=30 below=scale gap=1
+    number-input earth below=then gap=1
+  }
+
+  answer scale=s earth=decimals(150 / s, if 150 % s == 0 then 0 else 1)
+  feedback {
+    when (scale == s - 1) point=ask {
+      say "At that scale Neptune's bead would be past the end of the corridor. Try one more."
+    }
+  }
+  hint "How many centimetres long is the corridor?"
+  hint "How many million km must each of those centimetres hold for 4500 to fit?"
+}

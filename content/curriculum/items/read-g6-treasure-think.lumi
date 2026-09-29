@@ -1,0 +1,19 @@
+# What the child thinks, with a reason from the book, marked by a grown-up from the notice list.
+item reading.treasure-think v=1 skills=[reading.inference, reading.characters, reading.whole-book] {
+  title "What do you think?"
+  let k=0..2
+
+  scene 34x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=centre {
+        palms t count=2
+        text ask "{pick(k, \"In chapter 13 Jim jumps into a boat going ashore, and calls it the first of his mad notions. What does that tell you about the older Jim who tells the story? Was it a mad notion?\", \"In chapters 25 and 26 Jim takes the ship back on his own. Was that brave, or foolish? Give a reason for each side, then say what you think.\", \"In chapter 28 Silver stands up for Jim against the other pirates. Why? Use what has just happened to the ship.\")}" width=19
+      }
+      writinglines w lines=4 width=33
+    }
+  }
+
+  check writing.by-eye look-for="{pick(k, \"The older Jim is judging his younger self as rash, the word first warns that more such notions are coming, and the jump leads to something that matters (meeting Ben Gunn, or seeing Silver's true side), with the child's own view and a reason.\", \"A reason for brave (he wins the ship back and hides it from the pirates) and one for foolish (he leaves the stockade alone and nearly dies at Hands's hands), and the child's own view weighed between them.\", \"Silver has lost the ship and knows the pirates are beaten, so a living Jim is his way out: Jim has promised to speak for him at a trial, which is what Silver now needs.\")}" notice=["Gives a reason from the chapters", "Uses a detail only a reader would know", "Says what they think, not only what happened"]
+  hint "What happens just before and just after this moment?"
+  hint "Which detail from the chapters would you point to if someone disagreed with you?"
+}

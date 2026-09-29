@@ -1,0 +1,42 @@
+# The story: a pea plant makes far more seeds than one, and every generation multiplies. Easy counts
+# one plant's peas; medium goes on a generation; hard gives the second generation and asks for the
+# first plant's peas, which is the number that multiplied by itself makes 900.
+item nature.pea-generations v=1 skills=[nature.inheritance, multiplication.long] {
+  title "A pea plant's children"
+  difficulty k
+  let k=0..2
+  let told={pick(k, "One plant grows 6 pods with 4 peas in each. How many peas is that?", "One plant grows 8 pods with 5 peas in each. The crew plant every pea, and every new plant makes as many peas as the first did. How many peas do the new plants make altogether?", "The crew plant every pea from one plant, and every new plant makes as many peas as the first did. The new plants make 900 peas altogether. How many peas did the first plant make?")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x23 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      flowers fl count=3 petals=5
+      earth e up=2
+    }
+    text ask "In the moon base greenhouse the crew grow peas. {told}" narrate width=32 below=pics gap=1
+    row r below=ask gap=1 space=1 align=centre {
+      number-input answer width=5
+      text u "peas"
+    }
+  }
+
+  answer pick(k, 24, 1600, 30)
+  feedback {
+    when (k == 1 and answer == 40) point=ask {
+      say "40 is the first plant's peas. Each of those 40 grows into a plant that makes 40 more."
+    }
+    when (k == 2 and answer == 450) point=ask {
+      say "The first plant made some number of peas, and each became a plant making that many. Which number times itself is 900?"
+    }
+  }
+  hint "How many peas are in all the pods of one plant?"
+  hint "Every pea becomes a plant, and every plant makes that many peas again."
+  level hard {
+    hint "The number of new plants and the peas each makes are the same number. Try 20, then 30."
+  }
+}

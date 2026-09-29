@@ -1,0 +1,35 @@
+# The four sign cases of a product in one grid: positive times negative, negative times positive and
+# negative times negative, the last read from the pattern of the others.
+item negative.sign-grid v=1 skills=[number.negatives.multiply] negatives {
+  title "The sign grid"
+  difficulty (c + (p + q + r + s) / 40)
+  let c=1..3 p=2..9 q=2..9 r=2..9 s=2..9
+  where (p != q and r != s and p != r)
+  level easy {
+    let c={1, 2} p=2..5 q=2..5 r=2..5 s=2..5
+  }
+  level medium {
+    let c={2, 3}
+  }
+  level hard {
+    let c={3} p=6..9 q=6..9 r=6..9 s=6..9
+  }
+
+  scene 36x10 {
+    table grid cols=3 head=["×", "{p}", "{-q}"] cells=["{r}", "{if c == 0 then \"?\" else r * p}", "{if c == 1 then \"?\" else -r * q}", "{-s}", "{if c == 2 then \"?\" else -s * p}", "{if c == 3 then \"?\" else s * q}"] at=canvas(1, 1)
+    text ask "The hut's maths board: each square is its row number times its column number. What number goes in place of the question mark?" narrate width=20 right-of=grid gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer pick(c, r * p, -r * q, -s * p, s * q)
+  feedback {
+    when (c == 3 and answer == -s * q) point=grid {
+      say "Look down the column: the sign changes from one row to the next. Above it is {-r * q}."
+    }
+    when (c != 3 and answer == -pick(c, r * p, -r * q, -s * p, s * q)) point=grid {
+      say "One of the two numbers is below zero, so the product is below zero too."
+    }
+  }
+  hint "What is the size of the product, ignoring the signs?"
+  hint "How many of the two numbers are negative? What does the rest of the grid show for that?"
+}

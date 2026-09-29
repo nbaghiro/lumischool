@@ -1,0 +1,36 @@
+# The story: the steel footbridge over the lock, its widest gap on the coldest night and how much it
+# closes by the hottest afternoon at 35 °C. k picks the deck's length, t the coldest night.
+item physics.lock-footbridge v=1 skills=[physics.heat, reasoning.two-steps] {
+  title "The footbridge over the lock"
+  difficulty ((if k == 1 then 0 else 1) + (if t == -15 then 1 else 0))
+  let k=0..3 t={-15, -5}
+  level easy {
+    let k={1} t={-5}
+  }
+  level hard {
+    let k={2, 3} t={-15}
+  }
+  let s={pick(k, 25, 50, 75, 100)}
+  let rate={pick(k, "0.3", "0.6", "0.9", "1.2")}
+  let per={pick(k, 3, 6, 9, 12) / 10}
+
+  scene 34x29 {
+    row pair at=canvas(1, 0) space=1 align=end {
+      canallock l level=1 boat=1
+      expansion j mode=0 span=s temp=t show=0
+    }
+    text ask "A steel footbridge crosses the lock. Each deck is {s} m of steel, and the gap between them closes at 55 °C and opens by {rate} mm for each degree colder. How wide is the gap on the coldest night of the year, at {t} °C? How many millimetres narrower is it on the hottest afternoon, at 35 °C?" narrate width=32 below=pair gap=1
+    number-input widest below=ask gap=1
+    number-input closes right-of=widest gap=3
+  }
+
+  answer closes=(per * (35 - t))
+  check physics.forces of=j widest=gap
+  feedback {
+    when (closes == per * 35) point=j {
+      say "The night was below 0 °C. Count the degrees from {t} °C up to 35 °C, not from 0 °C."
+    }
+  }
+  hint "How many degrees colder than 55 °C is the coldest night?"
+  hint "How many degrees does the air warm from the coldest night to the hottest afternoon? Each one closes the gap by {rate} mm."
+}

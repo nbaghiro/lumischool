@@ -1,0 +1,55 @@
+lesson g5-percentages-and-pie-charts v=1 format=teach grade=5 unit=6 subject=maths levels=[easy, medium, hard] {
+  title "Percentages and pie charts"
+  goal "Write a part of a group as a percent, find a percent of an amount or the whole from a part, and read a pie chart."
+
+  look {
+    scene 36x14 {
+      pie chart show=percent at=canvas(1, 1)
+      percentbar bar percent=25 show=true whole=0 right-of=chart gap=2
+    }
+    say """
+      80 visitors came to the observatory's open night. The pie chart shows how: half by bus, a
+      quarter on foot and a quarter by car. The whole pie is 100% of the visitors, so the bus slice,
+      50%, is 40 people. The band underneath shows 25% as a strip of a hundred, which is a quarter,
+      20 of the 80.
+      """
+  }
+  do {
+    practice percent.meteor-share count=1 seed=3
+    practice percent.pie-slices count=1 seed=4
+    level easy {
+      worked percent.pie-visitors n=120 w="bus" level=medium
+    }
+    practice percent.pie-visitors count=1 seed=5
+    practice percent.ticket-percent count=2 seed=6
+    practice percent.find-the-whole count=1 seed=2 hard-count=2
+    practice percent.slice-angle count=1 seed=7
+    practice percent.which-group count=1 seed=8
+  }
+  try stars=2 {
+    show percent.pie-sizes a=240 b=80 easy-a=200 easy-b=40 hard-a=160 hard-b=120
+  }
+  try stars=3 {
+    show percent.up-then-down c=300 p=20 easy-c=200 easy-p=10 hard-c=400 hard-p=50
+  }
+  remember {
+    say "Percent means out of a hundred. A pie chart shows shares of one whole: the whole pie is 100%, and 360 degrees."
+  }
+
+  grown-ups """
+    Ten percent is the step to reach for: a tenth of the amount, and every other percent is built
+    from tens and fives. When the part is given and the whole asked, go backwards through ten
+    percent. A pie chart shows shares, not numbers, so the same slice can be ten people or a
+    hundred; the two-star question turns on exactly that. Comparing two groups of different sizes
+    needs percents, since the larger count can be the smaller share. In the three-star question the
+    second change is a percent of a different amount, so the price does not come back. If ten
+    percent is still slow, stay here another day. Off the page, find a sale sign and work out the
+    price after the discount before you reach the till.
+    """
+  level easy {
+    grown-ups "At this level the groups are 20 or 50 people, the pie is in quarters or tenths, 120 visitors by bus is worked once in the teacher's pen before 40 or 80 by bus, the tickets are 20% or 30%, the red stars are 10%, 20% or 25% of the count, the slices are 25%, 50% or 75%, the night with more people seeing the rings also has the bigger percent, the two-star compares 200 and 40 visitors, and the three-star goes up and down by 10%."
+  }
+  level hard {
+    grown-ups "At this level the groups are 25 or 40 people, the pie is in fifths or eighths, the visitors come on foot or by car from 120 to 200, the tickets are 15%, 35% or 45%, the red stars are 15%, 30% or 40% and asked twice, the slices are 15%, 35% or 40%, the night with fewer people seeing the rings has the bigger percent, the two-star compares 160 and 120 visitors, and the three-star goes up and down by 50% on 400 dollars."
+  }
+}

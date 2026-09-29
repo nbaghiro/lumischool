@@ -1,0 +1,33 @@
+# Kitchen vinegar has about 5 g of acetic acid in 100 ml; baking soda reacts with it one to one, so
+# 100 ml takes 5 × 84.0 / 60.05 = 7.0 g of baking soda to neutralise (PubChem molar masses). The
+# unknown is the soda for some vinegar, or the vinegar some soda neutralises.
+item chem.soda-for-vinegar v=1 skills=[chemistry.neutralising, ratio.scaling] {
+  title "Baking soda for the vinegar"
+  difficulty (w * 2 + (if v <= 200 then 0 else 1))
+  let w=0..1 v={50, 200, 300, 500}
+  let soda={if v == 50 then 3.5 else 7 * v / 100}
+  level easy {
+    let w=0..0 v={200, 300}
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 36x15 {
+    jug j max=500 step=100 level=v unit=ml at=canvas(1, 0)
+    text ask "The miller cleans the grinding stones with vinegar. 100 ml of his vinegar is neutralised by 7 g of baking soda, and then it fizzes no more. {if w == 0 then \"How many grams of baking soda neutralise the vinegar in the jug?\" else \"He stirs in \"}{if w == 0 then \"\" else soda}{if w == 0 then \"\" else \" g of baking soda, and the fizzing just stops. How many millilitres of vinegar did it neutralise?\"}" narrate width=23 right-of=j gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then soda else v)
+  feedback {
+    when (answer == 7) point=j {
+      say "7 g is for 100 ml. How many lots of 100 ml are in the jug?"
+    }
+    when (w == 1 and answer == soda) point=j {
+      say "That is the soda. The question asks for the millilitres of vinegar."
+    }
+  }
+  hint "{if w == 0 then \"How many lots of 100 ml are in the jug? Read its level.\" else \"How many lots of 7 g did he stir in?\"}"
+  hint "{if w == 0 then \"Each 100 ml needs 7 g. Half of 100 ml needs half as much.\" else \"Each lot of 7 g neutralises 100 ml.\"}"
+}

@@ -1,0 +1,32 @@
+# One fable told twice: Aesop's, and Ivan Krylov's in Russian two thousand years later (The Crow and
+# the Fox, 1807, which opens with its moral; The Dragonfly and the Ant, 1808, which ends on the ant's
+# joke and states no moral). Both tellings are short prose retellings written for the lesson.
+item reading.fable-two-tellings v=1 skills=[reading.fables, reading.comparison] {
+  title "One fable, two tellings"
+  difficulty pick(k, 0, 1)
+  let k=0..1
+  let right={pick(k, "He puts the moral first, before the story starts.", "He ends on the ant’s joke, with no moral said.")}
+  let trap={pick(k, "He leaves the moral for the reader to find.", "He puts the moral first, before the story starts.")}
+  let misread={pick(k, "He makes the crow trick the fox.", "He lets the ant share her food at the end.")}
+
+  scene 36x47 {
+    column all at=canvas(0, 1) space=1 align=start {
+      text ask "Ivan Krylov, a Russian writer, told Aesop’s fable again, two thousand years later. What did Krylov change about the moral?" width=36
+      passage a title="Aesop" text="{pick(k, \"A crow sat in a tree with a piece of cheese in her beak. A fox below wanted it. ‘What a beautiful bird,’ he said. ‘If your voice is as fine as your feathers, you must be the queen of birds.’ The crow opened her beak to caw, and the cheese fell to the fox. The moral: do not trust those who flatter you.\", \"All summer the grasshopper sang while the ant stored grain. When winter came, the grasshopper was starving and begged the ant for food. ‘You sang all summer,’ said the ant, ‘so now go hungry.’ The moral: work today for the days of need.\")}" width=36
+      passage b title="Krylov" text="{pick(k, \"How often we are told that flattery does harm, and still the flatterer finds a way into our hearts. A crow sat in a fir tree with a piece of cheese. A fox smelled it, and praised her feathers, her eyes and at last her voice. The crow cawed with all her might, the cheese fell, and the fox ran off with it.\", \"The dragonfly sang and danced all through the summer and never thought of winter. When the fields froze, she crept to the ant and begged for food and a warm corner. ‘What were you doing all summer?’ asked the ant. ‘I was singing, day and night.’ ‘Singing, were you? Then go and dance.’\")}" width=36
+      choice pick options=[pick(k, trap, right), pick(k, right, misread), pick(k, misread, trap)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == trap) point=b {
+      say "Read the first and the last sentence of Krylov’s telling. Is there a sentence of advice, and where is it?"
+    }
+    when (pick == misread) point=b {
+      say "Check that against Krylov’s telling. Who ends up with the food?"
+    }
+  }
+  hint "Find the moral in Aesop’s telling. Where does it come?"
+  hint "Now look for the same kind of sentence in Krylov’s. Is it there, and where?"
+}

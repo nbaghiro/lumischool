@@ -1,0 +1,36 @@
+# The median of a list: put the values in order and take the middle one, or halfway between the two
+# middle ones when the count is even.
+item data.sunshine-median v=1 skills=[data.median] {
+  title "Hours of sunshine"
+  difficulty pick(v, 0, 0.5, 1.5, 1)
+  let v=0..3
+  let h1={pick(v, 9, 15, 12, 4)}
+  let h2={pick(v, 14, 7, 5, 18)}
+  let h3={pick(v, 6, 10, 16, 10)}
+  let h4={pick(v, 11, 18, 9, 6)}
+  let h5={pick(v, 17, 4, 20, 15)}
+  let h6={pick(v, 8, 13, 7, 12)}
+  let h7={pick(v, 12, 10, 14, 8)}
+  let h8={pick(v, 0, 0, 11, 21)}
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+
+  scene 34x16 {
+    table data cols=4 head=["Day", "Hours", "Day", "Hours"] cells=["Mon", h1, "Fri", h5, "Tue", h2, "Sat", h6, "Wed", h3, "Sun", h7, "Thu", h4, if v < 2 then "" else "Mon", if v < 2 then "" else h8] at=canvas(1, 1)
+    text ask "The sun never sets in summer here, but clouds hide it. The research hut logged the hours of bright sunshine each day. What is the median number of hours?" narrate width=14 right-of=data gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer pick(v, 11, 10, 11.5, 11)
+  feedback {
+    when (v >= 2 and answer == pick(v, 0, 0, 11, 10)) point=data {
+      say "With an even number of days there are two middle values. The median is halfway between them."
+    }
+  }
+  hint "Write the hours in order from smallest to biggest."
+  hint "How many days are there? Which place in the order is the middle?"
+}

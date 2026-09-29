@@ -1,0 +1,31 @@
+# A half or a quarter of a circle: the whole circle's area, then the fraction of it that is shaded.
+item circle.half-pad v=1 skills=[circles.area, fractions.of-amount] {
+  title "Part of the pad"
+  difficulty ((if part == 90 then 2 else 0) + r / 10)
+  let r={3, 4, 5, 6, 8} part={180, 90}
+  level easy {
+    let part={180} r={3, 4, 8}
+  }
+  level hard {
+    let part={90} r={5, 6, 8}
+  }
+
+  scene 35x22 {
+    circleparts c size=5 lines=1 radius=r sector=part unit="m" at=canvas(1, 1)
+    lander l rungs=4 right-of=c gap=2
+    text ask "The lander stands on a round pad of radius {r} m. The shaded part of the pad is painted silver. Using 3.14, how many square metres are painted?" narrate width=18 below=l gap=1
+    number-input answer width=7 below=ask gap=1
+  }
+
+  answer decimals(r * r * 3.14 * part / 360, 0)
+  feedback {
+    when (answer == r * r * 3.14) point=c {
+      say "That is the whole pad. What part of the circle is shaded?"
+    }
+    when (answer == r * r * 3.14 / 2 and part == 90) point=c {
+      say "The shaded part is a quarter of the circle, not a half. Look at the angle at the centre."
+    }
+  }
+  hint "What fraction of the whole circle is shaded?"
+  hint "Find the area of the whole pad first, then take that fraction of it."
+}

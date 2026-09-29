@@ -1,0 +1,28 @@
+# The three-star, made and heard: eight bars of the child's own in four beats a bar, a question that
+# ends away from C and an answer that comes home, marked by a grown-up against what the page asks.
+item music.compose-eight-bars v=1 stars=3 skills=[music.composing, music.form] {
+  title "Eight bars of your own"
+  difficulty v
+  let v=0..2
+  let size={pick(v, "four bars: two that ask a question and two that answer it", "eight bars: four that ask a question and four that answer it", "eight bars: four that ask a question and four that answer it")}
+  let extra={pick(v, "", " Start bar 5 the same way as bar 1.", " Start bar 5 with the clock's chime moved one step higher, and use at most three leaps.")}
+
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 34x29 {
+    row top space=2 align=start at=canvas(1, 1) {
+      notes chime clef=treble notes=[E5, C5, D5, G4] values=[1, 1, 1, 1] meter=4 letters=true
+      clocktower clock hour=6 minute=0
+    }
+    text ask "Write a tune of {size}, with four beats in every bar, starting with the clock's chime. The question ends on G, D or E; the answer ends on C with a long note.{extra} Then play it to a grown-up." narrate width=32 below=top gap=1
+  }
+
+  check writing.by-eye look-for="A tune written on the staff or in letters with note lengths, whose bars each add up to four beats, that starts with E, C, D, G; the question half ends on G, D or E and the answer half ends on C with a note of two beats or more; at medium bar 5 starts like bar 1, and at hard bar 5 starts F, D, E, A with no more than three leaps; played through at a steady speed."
+  hint "Write the rhythm of each bar first and check it adds up to four."
+  hint "Sing the question half and stop. Does it sound unfinished? Then make the answer land on C."
+}

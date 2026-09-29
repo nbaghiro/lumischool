@@ -1,0 +1,64 @@
+# Old words in the old city's library: a glossary for the words that have gone, the sentence around
+# a word for the ones it leaves out, and the old endings on words we still use. The notice, the
+# chronicle and the letters were written for the lesson; Juliet's line is Shakespeare's.
+lesson reading-old-words-in-old-books v=1 format=teach grade=5 unit=7 subject=reading levels=[easy, medium, hard] {
+  title "Old words in old books"
+  goal "Read a text in old English by using a glossary, the words around an old word, and its ending."
+
+  look {
+    scene 32x13 {
+      row all at=canvas(1, 1) space=1 align=end {
+        library lib columns=6 open=1
+        book b left="Old Tales" right="of the City" lines=4 page="1702"
+      }
+    }
+    say """
+      The library of the old city keeps books and notices written hundreds of years ago. Some of
+      their words have gone out of use, like ere for before and thou for you. Some are words we
+      still use with an old ending: the bell ringeth is the bell rings. When an old word stops you,
+      look for it in a glossary; if it is not there, read the words around it and try a word of
+      today's in its place.
+      """
+  }
+  do {
+    level easy {
+      worked reading.notice-means k=1 level=medium
+    }
+    show reading.notice-means k=0 hard-k=2
+    practice reading.notice-line count=2 seed=1 easy-seed=1 hard-seed=1
+    practice reading.old-word-context count=2 seed=7 easy-seed=1 hard-seed=1
+    practice reading.old-ending count=1 seed=1 easy-seed=1 hard-seed=1
+    practice reading.old-to-new count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show reading.notice-means k=3
+    }
+  }
+  try stars=2 {
+    show reading.wherefore k=1 easy-k=2 hard-k=0
+  }
+  try stars=3 {
+    show reading.no-glossary k=0 hard-k=1
+  }
+  remember {
+    say "Stuck on an old word? Look it up in the glossary, or read around it and try a word of today's in its place."
+  }
+
+  grown-ups """
+    The idea is that old English is read with three tools: a glossary for words that have gone out
+    of use (ere, hence, whosoever), the sentence around a word the glossary leaves out (nigh, oft,
+    yonder), and old endings on words we still use (-eth where we say -s, -est after thou). The way
+    in reads the library's notice of 1702 with its glossary, and the core finds the line of the
+    notice that gives a rule, works out an old word from its sentence, takes an old ending off, and
+    chooses the best modern version of an old sentence. The wrong idea to watch for is a guess that
+    fits the grammar but not the sentence: try the guess in place and read the whole sentence again.
+    The two-star question is the famous one: Juliet's wherefore means why, and the next line proves
+    it. The three-star question works out a word the glossary lacks, marked by eye. Off the page,
+    read a nursery rhyme or a carol with an old word in it and work the word out together.
+    """
+  level easy {
+    grown-ups "At this level the rule about the pages is worked once in the teacher's pen before the market day, the notice lines to find are the plainer ones, the old words are nigh and yonder, the ending is ringeth, the sentences to put into today's English are the bell and the key, the two-star's wherefore is about the city walls, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the notice questions are why readers whisper and who may take a book, the lines to find include the reason for whispering, the old words include hark, the endings include knowest after thou, the sentences to put into today's English are the old road and tarry not, the two-star is Juliet's own line, and the three-star word is morrow."
+  }
+}

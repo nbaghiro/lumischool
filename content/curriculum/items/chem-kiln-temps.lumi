@@ -1,0 +1,31 @@
+# Kiln temperatures, rounded: clay is fired to brick at about 1000 °C (900 to 1150 in practice),
+# limestone gives off carbon dioxide at about 900 °C, and a cement kiln reaches about 1450 °C.
+item chem.kiln-temps v=1 skills=[chemistry.changes, data.tables] {
+  title "How hot is the kiln?"
+  difficulty w
+  let w=0..2
+  let asks={pick(w, "How many degrees hotter is the brick kiln than the lime kiln?", "How many degrees hotter is the cement kiln than the brick kiln?", "How many degrees hotter is the cement kiln than the lime kiln?")}
+  let second={pick(w, "Which two rows does the question name? Take the smaller number from the bigger.", "Which two rows does the question name? Count on from the smaller to the bigger in hundreds.", "Which two rows does the question name? Count on from the smaller to the bigger in hundreds.")}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 35x17 {
+    table data cols=2 head=["Kiln", "About °C"] cells=["Lime", "900", "Brick", "1000", "Cement", "1450"] at=canvas(1, 0)
+    temple t rows=3 right-of=data gap=2
+    text ask "Outside the temple, the city's builders fire three kinds of kiln. {asks}" narrate width=34 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(w, 100, 450, 550)
+  feedback {
+    when (answer == pick(w, 1000, 1450, 1450)) point=data {
+      say "That is the hotter kiln on its own. How far is it above the other one?"
+    }
+  }
+  hint "Find the two kilns in the table and read their temperatures."
+  hint "{second}"
+}

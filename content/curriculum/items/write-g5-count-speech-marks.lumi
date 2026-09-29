@@ -1,0 +1,27 @@
+# The robot's line has lost its speech marks; how many does it need? One speaker, a split sentence,
+# two speakers, and reported speech, which needs none, the trap.
+item writing.count-speech-marks v=1 skills=[writing.speech-punctuation] {
+  title "How many speech marks?"
+  difficulty (if k == 0 then 0 else if k == 3 then 2 else 1)
+  let k=0..3
+  let t={pick(k, "Is the gate open asked Farid.", "Look said Nadia the bell is moving.", "Where is the key asked Ana. On the hook said Farid.", "The guard said that the gate was shut for the night.")}
+  let right={pick(k, 2, 4, 4, 0)}
+
+  scene 35x16 {
+    fixbot bot says="{t}" width=26 fixed=0 ring=-1 at=canvas(1, 0)
+    text ask "The robot has left out every speech mark. Counting each opening and closing mark, how many does the line need?" narrate width=20 below=bot gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (right == 0 and answer > 0) point=bot {
+      say "Nobody's exact words are given here. The line reports what was said in other words, so it needs no speech marks."
+    }
+    when (right == 4 and answer == 2) point=bot {
+      say "There are two pieces of speech, and each piece needs its own opening and closing mark."
+    }
+  }
+  hint "Which words did someone say out loud, exactly as they said them?"
+  hint "Are anyone's exact words given, or only what they said, told in other words?"
+}

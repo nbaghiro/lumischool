@@ -1,0 +1,35 @@
+# Lines that lead the eye: footprints or a crater's rim pointing from the front towards the Earth.
+item art.earth-lead v=1 skills=[art.composition, reasoning.plan] {
+  title "A path for the eye"
+  difficulty k
+  let k=0..1
+  let r={(k + 1) % 3}
+  let thing={pick(k, "the line of footprints", "the curved rim of the big crater")}
+  let right={pick(k, "Run from a front corner towards the Earth", "Curve round towards the Earth")}
+  let o1={pick(k, "Run straight along the bottom edge", "Curve away off the edge of the sheet")}
+  let o2={pick(k, "Point off the edge of the sheet", "Run straight along the bottom edge")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 35x26 {
+    row ground at=canvas(1, 1) space=1 align=end {
+      footprints steps count=5
+      earth home up=1
+    }
+    text ask "Ada wants the eye to travel from the front of her picture to the Earth. Which way should {thing} go?" width=34 below=ground gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then o1 else o2, if r == 0 then o1 else if r == 1 then o2 else right, if r == 0 then o2 else if r == 1 then right else o1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ground {
+      say "The eye follows a line the way a foot follows a path. Where does that line lead it?"
+    }
+  }
+  hint "When you look at a line in a picture, does your eye follow it?"
+  hint "Where does the eye end up if the line goes that way?"
+}

@@ -1,0 +1,34 @@
+# The second reasoning question in the core: a cylinder k times as wide holds k × k times as much,
+# because the base grows both ways. No 3.14 is needed.
+item volume.wider-grain-cylinder v=1 skills=[volume.cylinders, reasoning.proportion] {
+  title "Twice as wide"
+  difficulty (k + (if m == 1 then 0 else 1))
+  let k={2, 3} m={1, 2}
+  level easy {
+    let k={2} m={1}
+  }
+  level hard {
+    let k={3} m={2}
+  }
+
+  scene 35x14 {
+    row both at=canvas(1, 1) space=2 align=end {
+      solid small kind=cylinder label="A"
+      solid big kind=cylinder label="B"
+    }
+    text ask "Grain cylinder B has {pick(k - 2, \"twice\", \"three times\")} the radius of cylinder A{if m == 1 then \", and the same height\" else \", and it is twice as tall\"}. How many times as much grain does B hold?" narrate width=14 right-of=both gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text unit "times"
+    }
+  }
+
+  answer (k * k * m)
+  feedback {
+    when (answer == k * m) point=both {
+      say "The base is a circle, and it grows both ways: {k} times as long a radius in every direction."
+    }
+  }
+  hint "How many times the area is the base of B?"
+  hint "A square {k} times as wide holds how many of the small squares? A circle grows the same way."
+}

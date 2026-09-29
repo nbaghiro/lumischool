@@ -1,0 +1,35 @@
+# Writing a story as an expression with a letter for the number not yet known, and choosing the one
+# whose order of operations matches the story: brackets when every ticket carries the extra.
+item algebra.ticket-expression v=1 skills=[algebra.expressions, algebra.order-of-operations] {
+  title "Tickets for the temple"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3 r=0..2
+  let k={pick(v, 3, 4, 3, 5)}
+  let m={pick(v, 2, 5, 2, 3)}
+  let right={pick(v, "3 × t + 2", "4 × t + 5", "3 × (t + 2)", "5 × (t + 3)")}
+  let w1={pick(v, "3 × (t + 2)", "4 × (t + 5)", "3 × t + 2", "5 × t + 3")}
+  let w2={pick(v, "3 + t × 2", "(4 + t) × 5", "3 + t + 2", "5 + t × 3")}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 31x19 {
+    text ask "A temple ticket costs t dollars. {if v < 2 then \"Ana buys\" else \"Ana and her friends buy\"} {k} tickets{if v < 2 then \" and one guidebook for\" else \", and every one of them also pays\"} {m} dollars{if v < 2 then \"\" else \" for the guided walk\"}. Which expression is the total cost in dollars?" narrate width=30 at=canvas(1, 1)
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=ask {
+      say "Read the story again: is the {m} dollars paid once, or once for every ticket?"
+    }
+    when (pick == w2) point=ask {
+      say "Multiplying comes before adding. Work that expression out for t = 10 and check it against the story."
+    }
+  }
+  hint "What would the total be if a ticket cost 10 dollars?"
+  hint "Which expression gives that total when t is 10?"
+}

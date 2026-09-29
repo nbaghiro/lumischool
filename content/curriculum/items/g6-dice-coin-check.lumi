@@ -1,0 +1,32 @@
+# The way in: every pair of a dice and a coin is a cell of the grid, so an event is counted cell by
+# cell. The last kind asks for one or the other, where the pair with both is counted once.
+item chance.dice-coin-check v=1 skills=[counting.cases, probability.outcomes] {
+  title "Dice and coin"
+  difficulty (e + (if e == 0 then m / 4 else 0))
+  let e=0..2 m={2, 3, 4}
+  where (e == 0 or m == 2)
+  level easy {
+    let e={0}
+  }
+  level hard {
+    let e={1, 2}
+  }
+
+  scene 33x18 {
+    outcomes o rows=["1", "2", "3", "4", "5", "6"] cols=["H", "T"] first=Dice second=Coin fill=1 at=canvas(1, 1)
+    text ask "For a check before landing, the crew roll a dice and toss a coin. The grid shows every pair. How many of the pairs show {pick(e, \"a head and a number more than\", \"a tail and an even\", \"a head or a six,\")} {pick(e, m, \"number\", \"or both\")}?" narrate width=18 right-of=o gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer pick(e, 6 - m, 3, 7)
+  feedback {
+    when (e == 2 and answer == 8) point=o {
+      say "The pair of a six and a head has both. Count that cell once."
+    }
+    when (e == 0 and answer == 7 - m) point=o {
+      say "More than {m} does not include {m} itself."
+    }
+  }
+  hint "Which cells of the grid have a head? Which have a six?"
+  hint "Put your finger on each cell that fits and count them."
+}

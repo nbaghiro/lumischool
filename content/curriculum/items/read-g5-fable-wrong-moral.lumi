@@ -1,0 +1,34 @@
+# The two-star reason: a friend gives a fable the wrong moral, and the child says what in the story
+# proves it wrong. One wrong reason agrees with the friend by mistake, the other misreads the fable.
+item reading.fable-wrong-moral v=1 stars=2 skills=[reading.fables, reading.evidence, reasoning.explain] {
+  title "Is that the moral?"
+  difficulty pick(k, 1, 0, 2)
+  let k=0..2
+  let right={pick(k, "He waits for days, but no hare ever comes.", "She tries hard and fails; it is about what she says.", "Hare loses because he stops, not because he is fast.")}
+  let agrees={pick(k, "He did get one hare, so waiting worked once.", "She tries many times, so it is about trying.", "Hare is fast and loses, so speed is no use at all.")}
+  let misread={pick(k, "He never waits; he goes back to ploughing.", "The fox does get the grapes in the end.", "Tortoise is really faster than Hare.")}
+
+  scene 36x27 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=1 align=end {
+        person mia pose=think age=child hair=braids top=sky tone=4
+        bubble says "{pick(k, \"The moral of The Farmer and the Stump is: good things come to those who wait.\", \"The moral of The Fox and the Grapes is: if you try hard, you get what you want.\", \"The moral of The Hare and the Tortoise is: being fast is no use.\")}" width=16 from=mia
+        library lib columns=5 open=0
+      }
+      text ask "What in the fable shows that Mia has the wrong moral?" width=36
+      choice pick options=[pick(k, agrees, right, misread), pick(k, right, misread, agrees), pick(k, misread, agrees, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == agrees) point=says {
+      say "That backs Mia up instead of showing she is wrong. What happens at the end of the fable?"
+    }
+    when (pick == misread) point=says {
+      say "Check that against the fable. Does it really happen?"
+    }
+  }
+  hint "What happens at the end of the fable?"
+  hint "Does the end fit Mia's moral, or go against it?"
+}

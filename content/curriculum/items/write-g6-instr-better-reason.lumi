@@ -1,0 +1,40 @@
+# The two-star reason: two versions of the card. At k=0 a chatty recount against numbered commands;
+# at k=1 two numbered cards, one exact (A) and one short and vague, and why the exact one is better.
+# The right reason is offered for both cards, so the cards themselves must be followed.
+item writing.instr-better-reason v=1 stars=2 skills=[writing.instructions, reasoning.explain] {
+  title "Which card, and why?"
+  difficulty k
+  let k=0..1 r=0..2
+  let two={pick(k, "A: First I went up and turned the key a bit, and then the wheel sort of went. B: 1. Climb to the sluice gate. 2. Turn the key three times. 3. Wait until the wheel turns steadily.", "A: 1. Climb to the sluice gate. 2. Turn the key three full turns to the left. 3. Wait until the wheel turns steadily. B: 1. Go up. 2. Turn it. 3. Wait.")}
+  let right={pick(k, "B: one command a step, with exact amounts", "A: each step says what, how much and until when")}
+  let w1={pick(k, "A: one command a step, with exact amounts", "B: each step says what, how much and until when")}
+  let w2={pick(k, "A: it shows Ana what the miller did", "B: short steps are quicker to read")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x38 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      waterwheel wheel paddles=8 lit=0
+      person new pose=think age=child hair=bun colour=auburn top=mint
+    }
+    passage p title="Two cards" text="{two}" width=33 numbers=false below=pics gap=1
+    text ask "Which card could Ana follow on her first day at the mill, and why?" narrate width=33 below=p gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=p {
+      say "Check that card against the reason. Find the amount in each step: how many turns, which way, until when?"
+    }
+    when (pick == w2) point=p {
+      say "Try following each card in your head as someone who has never seen the wheel. Where would you have to stop and ask?"
+    }
+  }
+  hint "Follow each card step by step. Where do you get stuck?"
+  hint "Two choices give the same reason. Which card does that reason really fit?"
+}

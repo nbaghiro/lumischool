@@ -1,0 +1,39 @@
+# A motif moved: the clock tower's chime, E C D G, repeated in bar 5 one step higher, one step lower
+# or a 3rd higher, every note moved by the same number of letters. This is a sequence.
+item music.compose-sequence v=1 skills=[music.composing, music.intervals] {
+  title "The chime, moved"
+  difficulty v
+  let v=0..2 r=0..1
+  let how={pick(v, "one step higher", "one step lower", "a 3rd higher")}
+  let right={pick(v, "F, D, E, A", "D, B, C, F", "G, E, F, B")}
+  let w1={pick(v, "F, C, D, G", "D, C, D, G", "G, C, D, G")}
+  let w2={pick(v, "D, B, C, F", "F, D, E, A", "F, D, E, A")}
+
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 34x37 {
+    row top space=2 align=start at=canvas(1, 1) {
+      notes chime clef=treble notes=[E5, C5, D5, G4] values=[1, 1, 1, 1] meter=4 letters=true
+      clocktower clock hour=6 minute=0
+    }
+    text ask "Ana starts her eight bars with the old city clock's chime. Bar 5 plays it again {how}, every note moved the same way. Which notes are in bar 5?" narrate width=32 below=top gap=1
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=chime {
+      say "Every note moves, not only the first. Move each letter in turn."
+    }
+    when (pick == w2) point=chime {
+      say "Check the direction: {how}."
+    }
+  }
+  hint "Move the first note {how}. Which letter do you land on?"
+  hint "Now move the other three notes by the same amount, one at a time."
+}

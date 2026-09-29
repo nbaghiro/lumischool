@@ -1,0 +1,39 @@
+# The unknown moves from when to where: the meeting time first, then the first car's distance, which
+# is the only one measured from A.
+item travel.meet-where v=1 skills=[rates.speed.meeting, reasoning.two-steps] {
+  title "Where they meet"
+  difficulty (t + (if v1 > v2 then 1 else 0))
+  let v1={30, 40, 50, 60} v2={40, 50, 60, 70} t={1, 2, 3}
+  where (v1 != v2)
+  let d={(v1 + v2) * t}
+  level easy {
+    let t={1, 2} v1={30, 40} v2={50, 60}
+  }
+  level hard {
+    let t={2, 3} v1={60} v2={40, 50}
+  }
+
+  scene 36x23 {
+    motionline road mode=0 dist=d v1=v1 v2=v2 late=0 show=0 at=canvas(1, 1)
+    text ask "A delivery car leaves the mill at A at {v1} km/h, and at the same time a bus leaves the waterfall at B at {v2} km/h, coming the other way. The road is {d} km long. How far from A do they meet?" narrate width=34 below=road gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "km"
+    }
+  }
+
+  answer (v1 * t)
+  feedback {
+    when (answer == v2 * t) point=road {
+      say "That is how far the bus has come, measured from B. The question asks how far from A."
+    }
+    when (answer == d / 2) point=road {
+      say "Halfway would be right only if the speeds were the same. Which car goes further in each hour?"
+    }
+    when (answer == t) point=road {
+      say "That is how many hours they drive. How far has the car from A gone in that time?"
+    }
+  }
+  hint "How many hours pass before they meet?"
+  hint "How far does the car from A go in that many hours?"
+}

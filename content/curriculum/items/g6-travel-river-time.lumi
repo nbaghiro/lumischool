@@ -1,0 +1,40 @@
+# The current adds to the boat's speed going with it and takes away going against it, so the same
+# stretch of river takes two different times.
+item travel.river-time v=1 skills=[rates.speed.current] {
+  title "With and against the current"
+  difficulty (s + (if q == "up" then 2 else 0))
+  let s=0..4 q={"down", "up"}
+  let v={pick(s, 7, 8, 10, 9, 11)}
+  let f={pick(s, 1, 2, 2, 3, 1)}
+  let d={pick(s, 24, 30, 24, 36, 60)}
+  level easy {
+    let s={0, 1}
+  }
+  level hard {
+    let s={3, 4} q={"up"}
+  }
+
+  scene 36x23 {
+    motionline river mode=2 dist=d v1=v flow=f show=0 at=canvas(1, 1)
+    text ask "A boat goes {v} km/h in still water. The gorge river flows from A to B at {f} km/h. How many hours does the boat take to go {if q == \"down\" then \"downstream from A to B\" else \"upstream from B to A\"}, {d} km?" narrate width=34 below=river gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "hours"
+    }
+  }
+
+  answer (if q == "down" then d / (v + f) else d / (v - f))
+  feedback {
+    when (answer == d / v) point=river {
+      say "That is the time on still water. The current carries the boat along or holds it back."
+    }
+    when (q == "down" and answer == d / (v - f)) point=river {
+      say "Going downstream the current helps, so the boat is faster than in still water."
+    }
+    when (q == "up" and answer == d / (v + f)) point=river {
+      say "Going upstream the boat pushes against the current, so it is slower than in still water."
+    }
+  }
+  hint "Does the current help the boat or hold it back on this trip?"
+  hint "What is the boat's speed over the ground, then?"
+}

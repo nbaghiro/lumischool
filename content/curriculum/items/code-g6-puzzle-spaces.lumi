@@ -1,0 +1,34 @@
+# Puzzle: a line written flush that was meant to be set in, so it runs once after the repeat instead
+# of every time round. The value as written is run; the line to mend is stated, and it is the only
+# line whose move in gives a program that runs, since the say after it is flush as well.
+item coding.puzzle-spaces v=1 skills=[coding.debugging, coding.text, coding.repetition] {
+  title "The line that lost its spaces"
+  difficulty (n / 3 + k)
+  let n=3..5 k=0..1 a={2, 5}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x24 {
+    program p code=["set fish to 0", "repeat {n}", "  add {a} to fish", "{if k == 0 then \"add 1 to fish\" else \"  say fed\"}", "{if k == 0 then \"say fed\" else \"add 1 to fish\"}"] text=true at=canvas(0, 0)
+    seal s rock=0 right-of=p gap=1
+    text ask "The keeper wanted each of {n} seals to get {a + 1} fish, {n * (a + 1)} in all. What does fish hold as the program is written? Which line should be set in?" width=34 below=p gap=1
+    text tf "fish" below=ask gap=1
+    number-input fish right-of=tf gap=1
+    text tl "line" right-of=fish gap=2
+    number-input line right-of=tl gap=1
+  }
+
+  check coding.runs of=p fish="value(fish)"
+  answer line=(if k == 0 then 4 else 5)
+  feedback {
+    when (fish == n * (a + 1)) point=p {
+      say "That is what the keeper wanted. Line {if k == 0 then 4 else 5} is written flush, so it runs only once, after the repeat."
+    }
+  }
+  hint "Which lines start with two spaces? Only those run every time round."
+  hint "Which line should run for every seal but runs only once?"
+}

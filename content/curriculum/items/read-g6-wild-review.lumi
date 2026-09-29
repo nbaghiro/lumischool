@@ -1,0 +1,19 @@
+# The review that ends the book, a paragraph a grown-up reads with the notice list.
+item reading.wild-review v=1 skills=[writing.review, reading.whole-book, writing.composing] {
+  title "Your review"
+
+  scene 35x39 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        bookcast b who=buck pose=pull dir=1
+        sledge s
+      }
+      text ask "Write a review of The Call of the Wild for someone your age, in about 80 words: what it is about, one part that stayed with you and why, and who you would give it to." width=34
+      writinglines lines lines=8 width=34 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="A paragraph of about 80 words that says what the book is about without retelling every chapter, names one part and says why it stayed with the writer, says who would enjoy it (and perhaps who would find it too hard on the dogs), and gives the writer's own view." notice=["Says what the book is about", "Names one part and says why it stayed", "Says who would enjoy it", "Gives an honest view of the book", "About 80 words, in sentences"] ask="Would you read another book by Jack London?"
+  hint "Begin with one sentence that says what the book is about."
+  hint "Which part would you tell a friend about first, and why?"
+}

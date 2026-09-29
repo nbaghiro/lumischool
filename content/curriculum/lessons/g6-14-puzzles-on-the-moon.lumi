@@ -1,0 +1,54 @@
+lesson g6-puzzles-on-the-moon v=1 format=puzzles grade=6 unit=9 subject=maths levels=[easy, medium, hard] {
+  title "Puzzles on the moon"
+  goal "Solve problems with no method to follow, by drawing, listing or trying and checking, and prove the answer."
+
+  puzzle stars=1 {
+    show puzzle.moon-wall a=-4 b=4 c=6 easy-a=8 easy-b=2 easy-c=-3 hard-a=-7 hard-b=-6 hard-c=-5
+  }
+  puzzle stars=1 {
+    show puzzle.base-walkway v=2 easy-v=0 hard-v=5
+  }
+  puzzle stars=2 {
+    show puzzle.three-sisters-base y=27 a=3 b=4 easy-y=24 easy-a=2 easy-b=2 hard-y=30 hard-a=5 hard-b=4
+  }
+  puzzle stars=2 {
+    show puzzle.crew-third-left v=2 easy-v=0 hard-v=5
+  }
+  puzzle stars=2 {
+    show puzzle.oxygen-leak v=2 easy-v=0 hard-v=5
+  }
+  puzzle stars=3 {
+    show puzzle.fewest-filters e=4 easy-e=0 hard-e=3
+  }
+  puzzle stars=3 {
+    show puzzle.base-handshakes n=7 easy-n=5 hard-n=9
+  }
+  puzzle stars=3 {
+    show puzzle.crater-routes m=2 n=4 easy-m=2 easy-n=3 hard-m=3 hard-n=4
+  }
+  puzzle stars=3 {
+    show puzzle.panel-squares m=3 n=4 easy-m=2 easy-n=4 hard-m=4 hard-n=5
+  }
+  puzzle stars=3 {
+    show puzzle.crater-lap v=3 easy-v=1 hard-v=5
+  }
+
+  grown-ups """
+    These are meant to take time, and a puzzle put down on Tuesday and finished on Saturday has
+    taught more than one finished by being told. Every one can be started by drawing or trying. The
+    walkway adds its speed to Kai's or takes it away, and the rovers on the rim are a line with two
+    dots on it, the gap growing by the difference of the speeds each hour until it is a whole rim.
+    The sisters are three bars, and taking the extra lengths away leaves three equal ones. The crew
+    and the tank are fractions of one whole: what went out leaves a fraction behind, and the pump's
+    fraction an hour take away the crack's is what the tank gains. For the filters, picture the
+    unluckiest order they could come out in. The handshakes, routes and squares all yield to a small
+    case first and a table that grows one step at a time. A child who gets stuck here has not failed
+    the lesson.
+    """
+  level easy {
+    grown-ups "At this level the number wall has one number below zero on the bottom row, Kai walks at 2 m a second with a walkway of 1 m a second, the sisters are two years apart each, half and a third of the crew go out, the pump takes 2 hours against a 3-hour leak, the filters asked for are two of a colour, there are 10 handshakes, the grid is 2 by 3, the panel field is 2 by 4, and the rim is 12 km with speeds of 4 and 6."
+  }
+  level hard {
+    grown-ups "At this level every number on the bottom of the wall is below zero, Kai walks against a walkway of 2 m a second at 5 m a second, the sisters are 4 and 5 years apart, a quarter and a fifth of the crew go out, the pump takes 6 hours against a 10-hour leak, the filters asked for are three red ones, there are 36 handshakes, the grid is 3 by 4, the panel field is 4 by 5, and the rim is 16 km with speeds of 5 and 9."
+  }
+}

@@ -1,0 +1,25 @@
+# The story: the lock keeper cannot open the top gate until the water is level on both sides, because
+# the deeper side pushes harder. The difference in push at the bottom is 10 kN a square metre for every
+# metre the levels differ.
+item physics.lock-difference v=1 skills=[physics.pressure, decimals.tenths, reasoning.two-steps] {
+  title "Why the gate will not open"
+  difficulty (u - c)
+  let u={3, 3.5, 4} c={1, 1.5, 2}
+
+  scene 31x27 {
+    canallock l level=0.25 boat=1 at=canvas(1, 0)
+    text ask "The canal above the lock is {u} m deep at the gate, and the water in the lock is {c} m deep. Water pushes 10 kN on each square metre for every metre of depth. How many kN more push on each square metre at the bottom of the gate comes from the canal side?" narrate width=30 below=l gap=1
+    number-input more below=ask gap=1
+    text then "The lock fills 50 cm deeper each minute. How many minutes until the push is the same on both sides?" narrate width=30 below=more gap=1
+    number-input minutes below=then gap=1
+  }
+
+  answer more=plain((u - c) * 10) minutes=plain((u - c) * 2)
+  feedback {
+    when (more == u * 10) point=l {
+      say "That is the whole push from the canal side. The water in the lock pushes back from the other side."
+    }
+  }
+  hint "What is the push at the bottom from each side?"
+  hint "The push is the same on both sides when the water is the same depth. How many half metres must the lock rise?"
+}

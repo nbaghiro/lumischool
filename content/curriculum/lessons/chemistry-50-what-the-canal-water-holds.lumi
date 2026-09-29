@@ -1,0 +1,68 @@
+lesson chemistry-what-the-canal-water-holds v=1 format=teach grade=5 unit=2 subject=chemistry levels=[easy, medium, hard] {
+  title "What the canal water holds"
+  goal "Tell a solution from a suspension by whether it settles and whether filter paper stops it, and read how much oxygen the canal water can hold."
+
+  look {
+    scene 36x16 {
+      row all at=canvas(1, 0) space=2 align=end {
+        soiljar jar stones=0 sand=1 silt=3 clay=2 bits=4 names=0
+        funnel f residue=8 level=2 unit=ml drops=3
+        flask fl shape=conical fill=0.5 paint="blue" bubbles=0 balloon=0 bung=0
+      }
+    }
+    say """
+      A jar of canal water holds three kinds of thing. Leaves float on top. Mud hangs in the water
+      and makes it cloudy, and left to stand it settles in layers: that is a suspension, and filter
+      paper keeps it back. Some things are dissolved, spread so finely they cannot be seen: salts
+      from the rocks and the oxygen the fish breathe. Water with something dissolved in it is a
+      solution. It never settles, it may have a colour, and it goes straight through the paper.
+      """
+  }
+  do {
+    practice chem.suspension-or-not count=1 seed=1 easy-seed=2 hard-seed=1
+    practice chem.solution-or-suspension count=2 seed=1
+    show chem.paper-keeps k=0 easy-k=1
+    show chem.paper-keeps k=2 easy-k=0 hard-k=3
+    level easy {
+      worked chem.oxygen-table w=0 r=2 n=2 level=medium
+    }
+    show chem.oxygen-table w=0 r=3 n=2 hard-w=1 hard-r=0
+    show chem.oxygen-table w=1 r=1 n=2 easy-w=0 easy-r=0 hard-w=2 hard-r=3 hard-n=3
+    level hard {
+      show chem.oxygen-table w=2 r=2 n=5
+    }
+  }
+  story {
+    show chem.mud-layers k=0 j=0 easy-k=1 easy-j=1 hard-k=2 hard-j=0
+  }
+  try stars=2 {
+    show chem.filtered-clear k=0 r=1 hard-k=1 hard-r=2
+  }
+  try stars=3 {
+    show chem.oxygen-litres k=2 easy-k=0 hard-k=3
+  }
+  remember {
+    say "A suspension is cloudy, settles and is caught by filter paper. A solution never settles and goes through the paper."
+  }
+
+  grown-ups """
+    The idea is that what water carries can be sorted by two tests: does it settle when left to
+    stand, and does filter paper stop it. A suspension (mud, flour) does both; a solution (salt,
+    sugar, food colouring, the oxygen in the canal) does neither, and a colour does not stop a clear
+    liquid being a solution. The oxygen figures are the most a litre of fresh water can hold at sea
+    level, from published tables: 14.6 mg at 0 °C down to 7.6 mg at 30 °C. Warm water holds less gas,
+    the opposite of salt and sugar, which is why fish in a warm pond come up to gulp. The wrong idea
+    to watch for is that water which has been filtered clear is pure; the two-star question asks
+    exactly that. The three-star question rounds up to whole litres. If the child calls anything
+    clear a solution and anything coloured a suspension, stay here another day with a glass of weak
+    squash and a glass of muddy water side by side. Off the page, shake a spoon of garden soil in a
+    jar of water, leave it overnight, and look at the layers in the morning. Milk is best left out:
+    it is neither a plain solution nor a suspension.
+    """
+  level easy {
+    grown-ups "At this level the oxygen table is read once in the teacher's pen, the jar and the flask are asked about in the easier order, the glasses and the filter paper are the plainer ones, the table is read for one row, the settled mud comes to 10 squares, the two-star asks whether clear filtered water is pure, and the tank starts from 3 litres at 10 °C."
+  }
+  level hard {
+    grown-ups "At this level the oxygen table is read for a difference and for several litres, the filter paper holds three things with iron filings among them, the settled mud comes to 5 squares, the two-star asks why filtered water stays brown, and the tank starts from 5 litres at 0 °C, where the litres only just fail to come out whole."
+  }
+}

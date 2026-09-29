@@ -1,0 +1,65 @@
+lesson g6-negative-numbers v=1 format=teach grade=6 unit=1 subject=maths levels=[easy, medium, hard] {
+  title "Negative numbers: distance from zero, and calculating across zero"
+  goal "Add and take away positive and negative numbers, tell a number's size from its distance from zero, and find a first product with a negative number by carrying a pattern past zero."
+
+  look {
+    scene 32x16 {
+      thermometer th from=-15 to=15 step=5 value=-6 unit="°C" at=canvas(1, 1)
+      midnightsun sky suns=4 midnight=1 right-of=th gap=2
+    }
+    say """
+      On the ice shelf the sun never sets in summer, but the air can still be below zero. A
+      thermometer is a number line stood on end. Adding a negative number moves down it, like a fall
+      in temperature: -6 + (-4) = -10. Taking away a negative number moves up it, the same as adding
+      the positive one: -6 - (-4) = -2. The distance of a number from zero is written with bars,
+      |-6| = 6, so -6 is smaller than 4 but further from zero. The difference between two readings
+      is the higher one take away the lower one.
+      """
+  }
+  do {
+    level easy {
+      worked negative.cliff-colder h=3 c=-14 level=medium
+    }
+    practice negative.cliff-colder count=1 seed=5
+    practice negative.whale-dive count=1 seed=4
+    practice negative.rule-sums count=1 seed=6
+    practice negative.shore-distance count=1 seed=3
+    show negative.times-pattern v=0 n=4 m=3 easy-n=2 easy-m=2 hard-v=1 hard-n=3 hard-m=3
+    show negative.rule-sums a=-6 b=-7 op="+" easy-a=5 easy-b=-9 hard-a=-6 hard-b=-9 hard-op="-"
+    practice negative.start-before count=1 seed=7
+    level hard {
+      practice negative.shore-distance count=1 seed=11
+    }
+    practice negative.always-or-never count=1 seed=2
+  }
+  try stars=2 {
+    show negative.leo-minus-negative a=3 b=-8 easy-b=-4 hard-a=-5 hard-b=-11
+  }
+  try stars=3 {
+    show negative.magic-ice s=-2 easy-s=2 hard-s=-4
+  }
+  remember {
+    say "Adding a negative number moves down the scale. Taking away a negative number moves up it."
+  }
+
+  grown-ups """
+    Keep a thermometer or a number line in view the whole time: every question here is a move up or
+    down it. The common slips are treating 3 - (-8) as 3 - 8, and adding the two sizes when working
+    out the difference between -4 and -17, so ask each time which way the answer moves and whether
+    it crosses zero. The shore question separates two ideas children mix up: -8 is smaller than 5,
+    but further from zero, and the bars |-8| mean the distance only. The logbook pattern is the
+    first multiplication with a negative number: the answers keep falling by the same step past
+    zero, which is why a negative times a positive is negative. In the start question the day is
+    undone backwards, the rise first. In the two-star question Leo took away 8 instead of adding it.
+    In the three-star question the nine numbers add to nine times the middle one, and three rows
+    share that equally. If the signs still get muddled, stay here another day with the thermometer
+    and small numbers. Off the page, read the temperature in the freezer and the fridge and work out
+    how many degrees apart they are.
+    """
+  level easy {
+    grown-ups "At this level a difference across zero is worked once in the teacher's pen, the differences start above zero, the whale rises only 5 m, the calculations add a negative, the puffin on the shore is east of the hut, the pattern reaches (-2) × 2, the midnight reading starts above zero, the claim is the plainest, Leo's mistake is with -4, and the magic square runs from -2 to 6."
+  }
+  level hard {
+    grown-ups "At this level both readings in each difference are below zero, the whale rises back further than it started, the calculations take away a negative from a negative, both animals on the shore can be west of the hut, the pattern goes on to a negative times a negative, the midnight question undoes a rise of 10, the claim needs a counterexample, Leo's mistake starts below zero, and the magic square runs from -8 to 0."
+  }
+}

@@ -1,0 +1,51 @@
+# The two-star reason: the saliva and starch test. Iodine turns blue-black where there is starch and
+# stays brown where there is none. Tube A is starch with water, tube B starch with saliva, and at hard
+# tube C is starch with saliva boiled first, which no longer breaks starch down.
+item nature.saliva-test v=1 stars=2 skills=[nature.digestion, reasoning.evidence] {
+  title "The starch test"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "Why did tube B stay brown?", "Ben says: \"The iodine in tube B had gone off, that is all.\" What shows he is wrong?", "In tube C the saliva was boiled before the starch went in, and C turned blue-black. Why?")}
+  let ans={pick(k, "The saliva broke the starch down, so none was left", "The same iodine turned tube A blue-black", "Boiling spoiled what in saliva breaks starch down")}
+  let o1={pick(k, "Saliva washes the colour out of iodine", "Tube B stayed brown", "Boiling made more starch in the saliva")}
+  let o2={pick(k, "Tube B was kept colder than tube A", "Both tubes were kept warm", "The heat broke the iodine")}
+  let s1={pick(k, ans, o1, o1)}
+  let s2={pick(k, o1, o2, ans)}
+  let s3={pick(k, o2, ans, o2)}
+  let setup={pick(k, "", "", " Tube C: starch paste with boiled saliva.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x32 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      testtubes tt fills=[0.5, 0.5, if k == 2 then 0.5 else 0] paints=["blue+black", "brown", if k == 2 then "blue+black" else ""] fizz=[0, 0, 0] bungs=0 letters=1
+      text ask "In the old city school, Ada tests a spoon of starch paste. Tube A: starch paste with water. Tube B: starch paste with her saliva.{setup} The tubes stay warm for ten minutes, then she adds iodine, which turns blue-black where there is starch and stays brown where there is none. {asks}" narrate width=22
+    }
+    choice pick options=[s1, s2, s3] stack=column below=pics gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick == o1) point=tt {
+      say "Tube A has no saliva and still turned blue-black, so the iodine works. The difference is what happened to the starch."
+    }
+    when (k == 0 and pick == o2) point=ask {
+      say "Both tubes stayed warm together. Only one thing was different between them: the saliva."
+    }
+    when (k == 1 and pick != ans) point=tt {
+      say "If the iodine had gone off, would it turn anything blue-black? Look at tube A."
+    }
+    when (k == 2 and pick == o1) point=tt {
+      say "Boiling cannot make starch. The starch paste went in as in tube B: what did it find there?"
+    }
+    when (k == 2 and pick == o2) point=tt {
+      say "The iodine was added after the boiling, and it still turned tube C blue-black. So the iodine works."
+    }
+  }
+  hint "What is the only difference between the tubes?"
+  hint "Blue-black means starch is still there. In which tube has something happened to it?"
+}

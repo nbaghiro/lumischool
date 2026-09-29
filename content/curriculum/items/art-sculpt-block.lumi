@@ -1,0 +1,38 @@
+# Carving only takes away, so a figure carved from a block must fit inside it in width, depth and
+# height, standing the way the block stands. Each wrong figure is too big in exactly one measure.
+item art.sculpt-block v=1 skills=[art.sculpture, measure.compare, reasoning.evidence] {
+  title "Will it fit the block?"
+  difficulty (if f <= 1 then 0 else 1)
+  let f=0..3
+  let bw={pick(f, 40, 40, 50, 60)}
+  let bd={pick(f, 30, 30, 40, 45)}
+  let bh={pick(f, 90, 80, 70, 100)}
+  let fits={pick(f, "a seal 35 cm wide, 25 cm deep and 80 cm tall", "a puffin 30 cm wide, 30 cm deep and 75 cm tall", "a whale's tail 48 cm wide, 38 cm deep and 70 cm tall", "a bear 58 cm wide, 44 cm deep and 99 cm tall")}
+  let wide={pick(f, "a puffin 45 cm wide, 20 cm deep and 60 cm tall", "a seal 42 cm wide, 25 cm deep and 70 cm tall", "a seal 52 cm wide, 30 cm deep and 60 cm tall", "a walrus 62 cm wide, 40 cm deep and 80 cm tall")}
+  let tall={pick(f, "a bear 30 cm wide, 25 cm deep and 95 cm tall", "a bear 38 cm wide, 28 cm deep and 85 cm tall", "a puffin 45 cm wide, 45 cm deep and 65 cm tall", "a puffin 50 cm wide, 46 cm deep and 90 cm tall")}
+  let r={f % 3}
+  level easy {
+    let f=0..1
+  }
+  level hard {
+    let f=2..3
+  }
+
+  scene 36x28 {
+    row top space=2 align=end at=canvas(1, 1) {
+      iceberg berg under=0
+      hut h pictures=5
+    }
+    text ask "Carving only takes ice away, it never adds any. The team cut a block {bw} cm wide, {bd} cm deep and {bh} cm tall, and carve it standing just as it is. Which figure can be carved from it?" narrate width=34 below=top gap=1
+    choice pick options=[pick(r, fits, wide, tall), pick(r, wide, tall, fits), pick(r, tall, fits, wide)] stack=column below=ask gap=1
+  }
+
+  answer pick=fits
+  feedback {
+    when (pick != fits) point=ask {
+      say "Compare that figure with the block one measure at a time: width, then depth, then height. Which one is bigger than the block?"
+    }
+  }
+  hint "A figure fits only if none of its three measures is bigger than the block's."
+  hint "Check each figure's width against {bw}, its depth against {bd} and its height against {bh}."
+}

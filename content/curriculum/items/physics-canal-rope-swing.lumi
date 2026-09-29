@@ -1,0 +1,31 @@
+# The story: the rope swing by the canal, where the rider is the bob. A heavier rider on the same
+# rope swings in the same time, and a rope tied up shorter swings faster.
+item physics.canal-rope-swing v=1 skills=[physics.motion, reasoning.predict] {
+  title "The swing by the canal"
+  difficulty (if dad > 60 then 1 else 0)
+  let secs={24, 28, 32} dad={50, 80}
+
+  scene 36x30 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      swing s seats=2
+      narrowboat b windows=4 pots=2
+    }
+    stopwatch w seconds=secs below=kit gap=1
+    text ask "Leo, who weighs 35 kg, sits on the swing by the canal and his sister times ten swings. His uncle, who weighs {dad} kg, sits on the same seat. How many seconds will his ten swings take?" narrate width=18 right-of=w gap=1
+    number-input ten below=w gap=1
+    text then "Leo ties the ropes up so they are shorter. Will his ten swings now take more or less time?" narrate width=28 below=ten gap=1
+    choice pick options=["More time", "Less time", "The same time"] below=then gap=1
+  }
+
+  answer ten=secs pick="Less time"
+  feedback {
+    when (ten != secs) point=w {
+      say "A heavier rider on the same ropes swings in the same time, just as a heavier bob does."
+    }
+    when (pick == "More time") point=s {
+      say "A shorter string swings faster, and so does a shorter rope."
+    }
+  }
+  hint "What is the swing's string, and what is its bob?"
+  hint "Does the weight of the bob change how long a swing takes?"
+}

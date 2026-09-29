@@ -1,4 +1,4 @@
-lesson coding-doing-it-again v=3 format=teach grade=2 unit=2 subject=coding levels=[easy, medium, hard] {
+lesson coding-doing-it-again v=3 format=teach grade=2 unit=4 subject=coding levels=[easy, medium, hard] {
   title "Doing it again: repeat"
   goal "Read a repeat, work out how far the robot goes altogether, and use a repeat to make a program fit."
 

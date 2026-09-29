@@ -1,6 +1,6 @@
 # Every treble note read from the two landmarks, middle C on its short line and treble G on the
 # second line: the lines E G B D F, the spaces F A C E, one letter a step.
-lesson music-reading-the-treble-staff v=1 format=teach grade=3 unit=3 subject=music levels=[easy, medium, hard] {
+lesson music-reading-the-treble-staff v=1 format=teach grade=3 unit=8 subject=music levels=[easy, medium, hard] {
   title "Reading the treble staff"
   goal "Name any note on the treble staff from the landmarks and play it."
 

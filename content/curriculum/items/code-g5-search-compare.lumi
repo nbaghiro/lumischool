@@ -1,0 +1,32 @@
+# The second reasoning question: the same book found both ways on a shelf of fifteen in order. One
+# by one takes as many looks as the book's place; halving never takes more than four.
+item coding.search-compare v=1 skills=[coding.algorithms, reasoning.search, reasoning.compare] {
+  title "One by one or halving?"
+  difficulty (p / 5)
+  let p=2..15
+  let h={if p % 8 == 0 then 1 else if p % 4 == 0 then 2 else if p % 2 == 0 then 3 else 4}
+  level easy {
+    let p={2, 4, 6, 8}
+  }
+  level hard {
+    let p={11, 13, 14, 15}
+  }
+
+  scene 36x14 {
+    library lib columns=6 open=0 at=canvas(1, 0)
+    text ask "The old city's library has 15 books on a shelf in number order. The book wanted is the one in place {p}. How many looks does searching one by one from the left take? How many does halving take?" width=22 right-of=lib gap=1
+    text t1 "one by one" below=lib gap=1
+    number-input one right-of=t1 gap=1
+    text t2 "halving" right-of=one gap=2
+    number-input half right-of=t2 gap=1
+  }
+
+  answer one=p half=h
+  feedback {
+    when (half == p) point=ask {
+      say "Halving looks at the middle, place 8, first, then the middle of the half that is left."
+    }
+  }
+  hint "One by one looks at the first place, then the next, and so on. Halving looks at the middle place first."
+  hint "After the middle, which half is left? What is the middle of that?"
+}

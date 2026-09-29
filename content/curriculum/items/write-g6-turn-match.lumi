@@ -1,0 +1,36 @@
+# A puzzle over the planted clue: three story openings, each with a clue, and three turns with no
+# names in them. Only the clue in each opening says which turn it prepares for.
+item writing.turn-match v=1 skills=[writing.story-structure, reasoning.logic] {
+  title "Which opening, which turn?"
+  difficulty k
+  let k=0..1 r=0..2
+  let s1={pick(k, "Ada packs her gran's paper map, though the crew laugh at it.", "Omar notices a thin crack in the dome's window.")}
+  let s2={pick(k, "Ben sees that the lander's back hatch never quite shuts.", "Lena teaches the crew's small robot to fetch her boots.")}
+  let s3={pick(k, "Cal practises the old radio code every night, just in case.", "Kit counts her steps on every walk to the rim and back.")}
+  let c1={pick(k, "When every screen goes dark, the only way home is on paper.", "When the air starts to hiss out, only one of them knows where from.")}
+  let c2={pick(k, "When the front hatch jams, there is still a way in.", "Trapped under a fallen rock, the crew need something small to crawl out for help.")}
+  let c3={pick(k, "A faint message comes through, and only one of them can read it.", "In a dust storm with no lamps, the only way back is by number.")}
+  let ta={if r == 1 then c3 else c2}
+  let tb={if r == 0 then c3 else c1}
+  let tc={if r == 0 then c1 else if r == 1 then c2 else c3}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x40 {
+    row top at=canvas(1, 0) space=1 align=start {
+      passage p title="Three openings" text="1. {s1} 2. {s2} 3. {s3}" width=24 numbers=false
+      lander lnd rungs=5
+    }
+    passage t title="Three turns" text="A. {ta} B. {tb} C. {tc}" width=33 numbers=false below=top gap=1
+    text ask "Each opening plants a clue for one of the turns. Write the number of the opening each turn belongs to." narrate width=33 below=t gap=1
+    match m left=["turn A", "turn B", "turn C"] right=["opening 1", "opening 2", "opening 3"] blanks=[x, y, z] below=ask gap=1
+  }
+
+  answer x=(if r == 1 then 3 else 2) y=(if r == 0 then 3 else 1) z=(if r == 0 then 1 else if r == 1 then 2 else 3)
+  hint "For each opening, ask: what might this matter for later?"
+  hint "Match each turn to the thing in an opening that it depends on."
+}

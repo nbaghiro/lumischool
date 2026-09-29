@@ -1,0 +1,36 @@
+# The way in: six-eight counts quavers, so every note is read as a number of quavers. A crotchet is
+# two, a dotted crotchet three (one whole big beat) and a dotted minim six, a whole bar.
+item music.six8-quavers-in v=1 skills=[music.six-eight, music.note-values] {
+  title "Counting in quavers"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let n={pick(k, "D5", "C5", "E5", "G5")}
+  let right={pick(k, 2, 1, 3, 6)}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x21 {
+    row top space=2 align=start at=canvas(1, 1) {
+      notes bar clef=treble notes=[E5, D5, C5, G5] values=[1.5, 1, 0.5, 3] meter=6 quavers=true lit=[n]
+      seal seal rock=1 facing=-1
+    }
+    text ask "Two bars of a sea song in six-eight. How many quavers long is the ringed note?" narrate width=34 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer * 2 == right) point=bar {
+      say "That counts it in crotchets. A crotchet is two quavers, so count again in quavers."
+    }
+    when (answer * 3 == right * 2 and k >= 2) point=bar {
+      say "Look for the dot after the note. A dot adds half the note again."
+    }
+  }
+  hint "Does the note have a flag, a dot, or an open head?"
+  hint "How many quavers, the notes with one flag, fit inside the ringed note? A dot adds half the note again."
+}

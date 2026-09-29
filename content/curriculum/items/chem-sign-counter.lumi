@@ -1,0 +1,32 @@
+# The two-star reason: a sign suggests a new substance but does not prove it. The right choice is the
+# counterexample, a change that shows the same sign and makes nothing new.
+item chem.sign-counter v=1 stars=2 skills=[chemistry.changes, reasoning.counterexample] {
+  title "Does the sign prove it?"
+  difficulty k
+  let k=0..2 r=0..2
+  let claim={pick(k, "Bubbles always mean a new substance has formed.", "Something getting colder always means a new substance has formed.", "Something looking different always means a new substance has formed.")}
+  let right={pick(k, "Boiling water bubbles and is still water", "Melting ice cools a drink and is still water", "Melted chocolate is still chocolate")}
+  let w1={pick(k, "Vinegar and soda bubble and make a gas", "Vinegar and soda get colder as they fizz", "Copper turns green over many years")}
+  let w2={pick(k, "Rust has no bubbles", "A hand warmer gets hot", "Toast turns brown")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 35x25 {
+    beforeafter ba change=pick(k, "boil-water", "melt-ice", "melt-chocolate") show=1 names=1 at=canvas(1, 0)
+    text ask "Ben says: {claim} Which one shows he is wrong?" narrate width=34 below=ba gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ba {
+      say "That one agrees with Ben, or is about something else. To show a rule is wrong, find the sign with nothing new made."
+    }
+  }
+  hint "To show that always is wrong, one example is enough. What would that example have to show?"
+  hint "Which choice has the sign but can be changed straight back?"
+}

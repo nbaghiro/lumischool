@@ -1,0 +1,35 @@
+# Finishing a bar: three notes are written and the last must fill the bar to four beats (three at
+# hard, in a waltz), named as the note that lasts that long.
+item music.compose-fill-bar v=1 skills=[music.composing, music.note-values] {
+  title "Finish the bar"
+  difficulty (if b <= 1 then 0 else if b <= 3 then 1 else 2)
+  let b=0..5
+  let v1={pick(b, 1, 1, 1, 1.5, 0.5, 0.5)}
+  let v2={pick(b, 1, 0.5, 0.5, 0.5, 1, 0.5)}
+  let v3={pick(b, 1, 0.5, 1, 1, 0.5, 1)}
+  let meter={pick(b, 4, 4, 4, 4, 4, 3)}
+  let right={pick(b, "a crotchet", "a minim", "a dotted crotchet", "a crotchet", "a minim", "a crotchet")}
+  level easy {
+    let b=0..3
+  }
+  level hard {
+    let b=2..5
+  }
+
+  scene 34x29 {
+    row top space=2 align=start at=canvas(1, 1) {
+      notes bar clef=treble notes=[E4, D4, E4] values=[v1, v2, v3] meter=0
+      text ask "Ana is writing bar 3 of her tune, with {meter} beats in a bar. Which note must come last to fill the bar?" narrate width=16
+    }
+    choice pick options=["a quaver", "a crotchet", "a dotted crotchet", "a minim"] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=bar {
+      say "Add up the three notes first: a quaver is half a beat, a crotchet one, a dot adds half again. How many beats are left?"
+    }
+  }
+  hint "How many beats do the three notes last together?"
+  hint "Take that from {meter}. Which note lasts the beats that are left?"
+}

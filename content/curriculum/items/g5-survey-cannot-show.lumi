@@ -1,0 +1,35 @@
+# What data can and cannot show: a vote of the club says something about the club, and nothing about
+# the country or about the planets themselves.
+item survey.cannot-show v=1 skills=[data.conclusions, reasoning.evidence] {
+  title "Can the graph show it"
+  difficulty pick(k, 0, 2, 1, 3)
+  let k=0..3 a=5..8 b=2..4 c=3..6
+  where (a + b + c <= 16)
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1, 3}
+  }
+
+  scene 36x24 {
+    bargraph chart labels=["Saturn", "Mars", "Jupiter"] values=[a, b, c] max=10 color=berry at=canvas(1, 1)
+    text ask "The star club's {a + b + c} children voted for the planet they most wanted to see. Leo says: {pick(k, \"More of the club chose Saturn than Mars.\", \"Most children in the country like Saturn best.\", \"Fewer than half the club chose Mars.\", \"Saturn is the biggest planet.\")} Can the graph show that?" narrate width=20 right-of=chart gap=2
+    choice pick options=["the graph shows it", "the graph cannot show it"] stack=column below=chart gap=1
+  }
+
+  answer pick=(if k == 0 or k == 2 then "the graph shows it" else "the graph cannot show it")
+  feedback {
+    when (k == 1 and pick == "the graph shows it") point=chart {
+      say "Only the {a + b + c} children in the club were asked. The graph says nothing about anyone else."
+    }
+    when (k == 3 and pick == "the graph shows it") point=chart {
+      say "The bars count votes, not sizes. A vote says what children wanted to see, not how big a planet is."
+    }
+    when (k == 2 and pick == "the graph cannot show it") point=chart {
+      say "Mars has {b} votes out of {a + b + c}. Is that less than half?"
+    }
+  }
+  hint "Who was asked, and what were they asked?"
+  hint "Does Leo's sentence talk about those children and that question, or about something else?"
+}

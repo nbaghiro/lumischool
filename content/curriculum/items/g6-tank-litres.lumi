@@ -1,0 +1,34 @@
+# Volume into capacity: a litre is 1000 cm³, and a cubic metre is 1000 litres.
+item volume.tank-litres v=1 skills=[volume.prisms, volume.capacity, measure.convert] {
+  title "How many litres"
+  difficulty (u + l * w * h / 60000)
+  let l={40, 50, 60} w={20, 30, 40} h={25, 30, 50} u=0..1
+  where (l > w)
+  level easy {
+    let u={0} l={40, 50} h={25, 30}
+  }
+  level hard {
+    let u={1}
+  }
+
+  scene 33x10 {
+    solid tank kind=cuboid label="" at=canvas(1, 1)
+    text ask "A water tank at the mill is {if u == 0 then l else decimals(l / 100, 1)} {if u == 0 then \"cm\" else \"m\"} long, {if u == 0 then w else decimals(w / 100, 1)} {if u == 0 then \"cm\" else \"m\"} wide and {if u == 0 then h else decimals(h / 100, 1)} {if u == 0 then \"cm\" else \"m\"} deep. How many litres does it hold? A litre is 1000 cm³." narrate width=22 right-of=tank gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "litres"
+    }
+  }
+
+  answer decimals(l * w * h / 1000, 0)
+  feedback {
+    when (answer == l * w * h) point=ask {
+      say "That is the volume in cm³. How many lots of 1000 cm³ is it?"
+    }
+    when (u == 1 and answer == l * w * h / 1000000) point=ask {
+      say "That is the volume in m³. A cubic metre holds 1000 litres."
+    }
+  }
+  hint "What is the volume of the tank?"
+  hint "How many litres are in that volume?"
+}

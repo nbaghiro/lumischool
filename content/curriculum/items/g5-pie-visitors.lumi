@@ -1,0 +1,27 @@
+# A pie chart with its percents written on: a share turned into a number of people.
+item percent.pie-visitors v=1 skills=[data.pie-charts, percentages.of-amount] {
+  title "How many came by bus"
+  difficulty ((if w == "bus" then 0 else 1) + n / 100)
+  let n={40, 80, 120, 160, 200} w={"bus", "walking", "car"}
+  level easy {
+    let w={"bus"} n={40, 80}
+  }
+  level hard {
+    let w={"walking", "car"} n={120, 160, 200}
+  }
+
+  scene 35x14 {
+    pie chart show=percent at=canvas(1, 1)
+    text ask "{n} visitors came to the observatory's open night. The pie chart shows how they came. How many came {if w == \"bus\" then \"by bus\" else if w == \"car\" then \"by car\" else \"on foot\"}?" narrate width=16 right-of=chart gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (if w == "bus" then n / 2 else n / 4)
+  feedback {
+    when (answer == (if w == "bus" then 50 else 25)) point=chart {
+      say "That is the percent. How many people is that percent of {n}?"
+    }
+  }
+  hint "What percent of the pie is that slice?"
+  hint "What fraction of {n} is that?"
+}

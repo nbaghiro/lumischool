@@ -1,0 +1,33 @@
+# The three-star: 7 g of baking soda neutralises 100 ml of the miller's vinegar, so with a given jug
+# and a given heap, one runs out first. The answer is the vinegar left with nothing to react with,
+# which is 0 when the soda runs out first.
+item chem.leftover v=1 stars=3 skills=[chemistry.neutralising, reasoning.constraints] {
+  title "Which runs out first?"
+  difficulty k
+  let k=0..3
+  let v={pick(k, 300, 200, 250, 500)}
+  let s={pick(k, 14, 21, 7, 28)}
+  let left={if s * 100 / 7 >= v then 0 else v - s * 100 / 7}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x13 {
+    jug j max=500 step=100 level=v unit=ml at=canvas(1, 0)
+    text ask "7 g of baking soda neutralises 100 ml of the miller's vinegar. He tips {s} g of baking soda into the jug and stirs until the fizzing stops. How many millilitres of vinegar are left with no soda to react with? Write 0 if none." narrate width=23 right-of=j gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer left
+  feedback {
+    when (answer == v) point=j {
+      say "Some of the vinegar has been neutralised. How much can {s} g of soda deal with?"
+    }
+  }
+  hint "How many millilitres of vinegar can {s} g of soda neutralise?"
+  hint "Is that more or less than the vinegar in the jug?"
+  hint "If the soda runs out first, how much vinegar is still waiting?"
+}

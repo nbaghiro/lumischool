@@ -1,0 +1,22 @@
+# How many of the liquids marked are alkalis, or acids, counted by the checker from each pH.
+item chem.ph-count v=1 skills=[chemistry.acids] {
+  title "How many alkalis?"
+  difficulty (if s == 3 or s == 4 or s == 5 then 1 else 0)
+  let s=0..5
+  level easy {
+    let s={0, 1, 2}
+  }
+  level hard {
+    let s={3, 4, 5}
+  }
+
+  scene 35x16 {
+    phscale p liquids=[pick(s, "lemon", "milk", "rain", "water", "seawater", "rain"), pick(s, "seawater", "bakingsoda", "water", "milk", "water", "orange"), pick(s, "water", "vinegar", "seawater", "rain", "milk", "water"), pick(s, "limewater", "washingsoda", "milk", "bakingsoda", "magnesia", "milk"), pick(s, "orange", "magnesia", "magnesia", "seawater", "bakingsoda", "vinegar")] letters=1 names=0 at=canvas(1, 0)
+    text ask "Leo tests five liquids by the gorge and marks them on the pH scale. How many of them are alkalis?" narrate width=34 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check chem.indicator of=p answer=count(alkali)
+  hint "Which side of 7 is alkali?"
+  hint "Count the pointers that sit above 7. Is a pointer at exactly 7 an alkali?"
+}

@@ -1,0 +1,43 @@
+# The arm with its two muscles. Bending is the biceps getting shorter and pulling; straightening is
+# the triceps; the joint and a bone the biceps pulls on are the other two. Straightening is the
+# harder one, since the child has to see that the biceps cannot push.
+item nature.muscle-letter v=1 skills=[nature.body] {
+  title "Bending and straightening"
+  difficulty pick(k, 0, 0.6, 0, 1)
+  let k=0..3
+  let asks={pick(k, "Ada bends her arm to lift a basket at the market. Which muscle gets shorter and pulls?", "Now Ada straightens her arm to put the basket down. Which muscle gets shorter and pulls now?", "Which letter points at the joint where the arm bends?", "Which letter points at one of the bones the front muscle pulls on to bend the arm?")}
+  let letter={pick(k, "A", "B", "C", "D")}
+  level easy {
+    let k={0, 2}
+  }
+  level medium {
+    let k=1..1
+  }
+  level hard {
+    let k=3..3
+  }
+
+  scene 34x12 {
+    parts fig of=arm at=canvas(1, 1)
+    text ask "{asks}" narrate width=19 right-of=fig gap=2
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=letter
+  feedback {
+    when (k == 0 and pick != letter) point=fig {
+      say "To bend the arm, the forearm has to be pulled up. Which muscle, on the front of the upper arm, could pull it?"
+    }
+    when (k == 1 and pick == "A") point=fig {
+      say "The front muscle can only pull, and pulling bends the arm. The muscle on the back pulls it straight."
+    }
+    when (k == 2 and pick != letter) point=fig {
+      say "The joint is where two bones meet and the arm folds. Find the corner of the arm."
+    }
+    when (k == 3 and pick != letter) point=fig {
+      say "The front muscle reaches past the elbow and pulls on a bone of the forearm."
+    }
+  }
+  hint "Muscles pull and never push. Which way does the forearm need to be pulled?"
+  hint "One muscle lies on the front of the upper arm and one on the back. Which side has to pull to fold the arm, and which to open it?"
+}

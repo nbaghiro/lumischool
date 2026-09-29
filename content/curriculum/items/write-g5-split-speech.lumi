@@ -1,0 +1,36 @@
+# Speech split by its reporting clause: one sentence carries on after said Ada with a comma and a
+# small letter; two sentences end the first part with a full stop and start again with a capital.
+item writing.split-speech v=1 skills=[writing.speech-punctuation] {
+  title "Speech split in two"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2 r=0..2
+  let right={pick(k, "“Look,” said Ada, “the dome is opening.”", "“If it clears,” said Leo, “we will see Mars.”", "“It is late,” said Gran. “Bed in ten minutes.”")}
+  let w1={pick(k, "“Look,” said Ada, “The dome is opening.”", "“If it clears.” said Leo, “We will see Mars.”", "“It is late,” said Gran, “bed in ten minutes.”")}
+  let w2={pick(k, "“Look” said Ada “the dome is opening.”", "“If it clears,” said Leo. “we will see Mars.”", "“It is late,” said Gran. “bed in ten minutes.”")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x20 {
+    row top at=canvas(1, 0) space=2 align=end {
+      text ask "{if k == 2 then \"Gran says two sentences, with said Gran between them.\" else \"One spoken sentence is split in two by the words that say who spoke.\"} Which is punctuated right?" narrate width=25
+      person who pose=point age=(if k == 2 then "older" else "child") hair=(if k == 1 then "short" else "bun") colour=(if k == 2 then "grey" else "brown") top=berry
+    }
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=ask {
+      say "Check the join. If the speech is still one sentence, it carries on after the break with a comma and a small letter; if a new sentence starts, the first part ends with a full stop and the second starts with a capital."
+    }
+    when (pick == w2) point=ask {
+      say "Each part of the speech needs its own mark inside its closing speech mark, and a sentence that starts again needs a capital."
+    }
+  }
+  hint "Read only the words inside the marks. Are they one sentence or two?"
+  hint "Look at the mark after said and at the first letter after the second opening mark."
+}

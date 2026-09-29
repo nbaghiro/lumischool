@@ -1,0 +1,125 @@
+# The First Men in the Moon read whole over nine sittings of the grade six moon term.
+lesson reading-the-first-men-in-the-moon v=1 format=book grade=6 unit=7 subject=reading book=first-men-in-the-moon levels=[easy, medium, hard] {
+  title "The First Men in the Moon"
+  goal "Read The First Men in the Moon from start to end, and say what happens, who wants what and why, with the lines that prove it."
+
+  sitting chapters=[1, 2] {
+    show reading.firstmen-line k=0
+    show reading.firstmen-who k=0
+    level medium hard {
+      show reading.firstmen-word k=0
+    }
+    level hard {
+      show reading.firstmen-line k=1
+    }
+  }
+  sitting chapters=[3, 4, 5, 6] {
+    level easy medium {
+      show reading.firstmen-line k=12
+    }
+    show reading.firstmen-gist k=0
+    level medium hard {
+      show reading.firstmen-who k=1
+    }
+    level hard {
+      show reading.firstmen-line k=13
+    }
+  }
+  sitting chapters=[7, 8, 9, 10] {
+    level easy medium {
+      show reading.firstmen-line k=2
+    }
+    level medium hard {
+      show reading.firstmen-line k=3
+    }
+    show reading.firstmen-gist k=1
+    level hard {
+      show reading.firstmen-word k=1
+    }
+  }
+  sitting chapters=[11, 12, 13, 14] {
+    level easy medium {
+      show reading.firstmen-line k=14
+    }
+    level medium hard {
+      show reading.firstmen-line k=15
+    }
+    show reading.firstmen-gist k=2
+  }
+  sitting chapters=[15, 16, 17] {
+    show reading.firstmen-line k=11
+    show reading.firstmen-order k=1
+    level medium hard {
+      show reading.firstmen-think k=0
+    }
+    level hard {
+      show reading.firstmen-who k=2
+    }
+  }
+  sitting chapters=[18, 19, 20] {
+    show reading.firstmen-line k=5
+    show reading.firstmen-gist k=3
+    level medium hard {
+      show reading.firstmen-who k=5
+    }
+    level hard {
+      show reading.firstmen-line k=9
+      show reading.firstmen-think k=1
+    }
+  }
+  sitting chapters=[21, 22] {
+    show reading.firstmen-line k=6
+    show reading.firstmen-line k=10
+    level medium hard {
+      show reading.firstmen-gist k=4
+    }
+  }
+  sitting chapters=[23, 24] {
+    level medium hard {
+      show reading.firstmen-line k=7
+    }
+    show reading.firstmen-word k=2
+    show reading.firstmen-teller
+  }
+  sitting chapters=[25, 26] {
+    level medium hard {
+      show reading.firstmen-line k=8
+    }
+    show reading.firstmen-who k=4
+    level hard {
+      show reading.firstmen-word k=3
+    }
+    show reading.firstmen-science
+    show reading.firstmen-review
+  }
+
+  grown-ups """
+    Nine sittings read the whole book, one a day spread over the term, each about 30 to 50 minutes
+    at a steady silent pace of about 200 words a minute: chapters 1 and 2 (7,900 words, about 40
+    minutes), 3 to 6 (6,900, 34), 7 to 10 (7,300, 36), 11 to 14 (8,700, 43), 15 to 17 (9,200, 46),
+    18 to 20 (9,000, 45), 21 and 22 (5,800, 29), 23 and 24 (7,800, 39) and 25 and 26 (5,400, 27).
+    Chapter 1 is long and slow to start; reading its first pages aloud together helps. The fight is
+    in chapter 17, where Bedford strikes out at the Selenites with crowbars in the butchers' cave,
+    and chapters 15 to 19 are tense; chapter 26 leaves Cavor's fate to be guessed. From chapter 22
+    the story comes as Cavor's messages from the moon, passed on by Bedford, which is why the
+    two-star question asks who can tell what. Wells's science is invented: Cavorite, air that
+    freezes on the moon by night and melts at sunrise, plants and people there. Only a few things
+    are right, such as Bedford weighing about a sixth of his Earth weight, and the three-star
+    question asks the child to sort them using what the moon world's physics lessons taught. The
+    wrong idea to watch for is taking Bedford's word for everything: he is a narrator who wants gold
+    and says so, and he guesses more than he sees at the end. After each answer ask "where does it
+    say that?" Some questions ask for a line number; on paper, with any printed edition, the answer sheet gives
+    the line's words beside its number, so mark by the words. If a child is stuck, reread the last
+    page of each chapter together and say in a sentence what changed. Off the page, look at the
+    moon on a clear night and find one thing Wells got right and one he got wrong. This meets
+    China's 2022 standards for grades five and six, 阅读与鉴赏 6, 阅读整本书，把握文本的主要内容 (read whole
+    books and grasp their main content), and Japan's 2017 course of study for grades five and six,
+    (3)オ, 日常的に読書に親しみ (make reading part of every day).
+    """
+  level easy {
+    grown-ups "At this level most sittings ask two or three questions, the lines to find say the thing outright, the word meaning of opaque, the lines that only hint and the question of opinion on Points of View are left out, and the two-star, the three-star and the review are as written."
+  }
+  level hard {
+    grown-ups "At this level two plain lines give way to ones that only hint, and the sittings add lines (the blast, which way is down, Bedford seeing himself from outside), the meaning of rarefied and indiscretion, who says the Selenites cannot feel giddy, and a second question of opinion, on whether the moon has changed Bedford."
+  }
+}

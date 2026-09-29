@@ -1,0 +1,37 @@
+# A few lines of Noor's diary with the date torn off, read against the expedition's log. The easy
+# versions match one column; the hard ones need two clues or a word like best.
+item reading.diary-which-day v=1 skills=[reading.text-types, reading.inference] {
+  title "Which day was it written?"
+  difficulty pick(k, 0, 0, 1, 2)
+  let k=0..3
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 36x23 {
+    text ask "The date is torn off this page of Noor's diary. Use the log to find the day she wrote it." at=canvas(1, 1) width=34
+    row bottom below=ask gap=1 space=1 align=start {
+      passage p title="Noor's diary" text="{pick(k, \"We stayed in the tent all day, and it shook like a drum.\", \"Wind in our faces all day. Pim's sledge runner cracked on a ridge of ice.\", \"Our best day. At the ice edge a whale blew twice.\", \"We left the hut at nine with two sledges. The sun did not set; it just went round the sky.\")}" width=18 numbers=false
+      table log cols=3 head=["Date", "km", "Weather"] cells=["3 July", "14", "sunny", "4 July", "6", "windy", "5 July", "0", "gale", "6 July", "18", "calm", "7 July", "10", "sunny"]
+    }
+    choice pick options=["3 July", "4 July", "5 July", "6 July", "7 July"] below=bottom gap=1
+  }
+
+  answer pick=pick(k, "5 July", "4 July", "6 July", "3 July")
+  feedback {
+    when (k == 2 and pick != "6 July") point=log {
+      say "Best day means the day they went furthest. Which row has the most kilometres?"
+    }
+    when (k == 1 and pick == "5 July") point=log {
+      say "On that day nobody travelled at all. Could a runner crack on a ridge that day?"
+    }
+    when (k == 3 and pick == "7 July") point=p {
+      say "That day was sunny too. Which day did they leave the hut?"
+    }
+  }
+  hint "What does the page say about the weather or the day's travel?"
+  hint "Find the row of the log that fits every clue on the page."
+}

@@ -1,0 +1,37 @@
+# Joining -able to a root: most roots stay whole, a final e is usually dropped, a y turns to i, and
+# after c or g the e stays so the letter keeps its soft sound (England, years 5 and 6).
+item writing.able-join v=1 skills=[writing.spelling, writing.suffixes] {
+  title "Join the root and -able"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+  let root={pick(k, "depend", "comfort", "adore", "rely", "notice", "change")}
+  let word={pick(k, "dependable", "comfortable", "adorable", "reliable", "noticeable", "changeable")}
+  level easy {
+    let k=0..3
+  }
+  level hard {
+    let k=2..5
+  }
+
+  scene 30x16 {
+    wordbricks b bricks=[root, "able"] root=0 roots=1 blank=-1 word="" labels=true at=canvas(1, 1)
+    narrowboat boat windows=3 pots=1 right-of=b gap=2
+    text ask "Put the two bricks together. Write the new word." width=28 below=b gap=1
+    word-input pick options=[word] letters=12 below=ask gap=1
+  }
+
+  answer pick=word
+  feedback {
+    when (k == 4 and pick == "noticable" or k == 5 and pick == "changable") point=b {
+      say "Without the e, the c or the g would sound hard. Say the word you wrote out loud."
+    }
+    when (k == 2 and pick == "adoreable") point=b {
+      say "A root that ends in e usually drops it before an ending that starts with a vowel letter."
+    }
+    when (k == 3 and pick == "relyable") point=b {
+      say "Look at the root's last letter. What happens to a y before most endings?"
+    }
+  }
+  hint "Look at the last letter of the root. Does it stay, go or change?"
+  hint "Say the new word. If the root ends in -ce or -ge, what keeps that letter soft?"
+}

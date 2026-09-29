@@ -1,0 +1,33 @@
+# The way in: which of three numbers is in both times tables. Only one is a multiple of both.
+item number.common-multiple v=1 skills=[number.lcm, number.multiples] {
+  title "In both tables"
+  difficulty (a + b)
+  let a={4, 6} b={6, 9, 10} r=0..2
+  where (a != b)
+  let right={lcm(a, b) * 2}
+  let w1={a * (b + 1)}
+  let w2={b * (a + 1)}
+  level easy {
+    let a={4} b={6}
+  }
+  level hard {
+    let a={6} b={9, 10}
+  }
+
+  scene 29x9 {
+    text ask "Which of these numbers is a multiple of {a} and also a multiple of {b}?" narrate width=28 at=canvas(1, 1)
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=ask {
+      say "{w1} is in the {a} times table. Is it in the {b} times table too?"
+    }
+    when (pick == w2) point=ask {
+      say "{w2} is in the {b} times table. Is it in the {a} times table too?"
+    }
+  }
+  hint "Divide each number by {a}. Which ones have nothing left over?"
+  hint "Of those, which also divide by {b} exactly?"
+}

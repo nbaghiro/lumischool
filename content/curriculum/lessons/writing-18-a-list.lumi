@@ -1,4 +1,4 @@
-lesson writing-a-list v=1 format=teach grade=1 unit=6 subject=writing levels=[easy, medium, hard] {
+lesson writing-a-list v=1 format=teach grade=1 unit=9 subject=writing levels=[easy, medium, hard] {
   title "A list"
   goal "Write a list with one thing to a line, for a reason."
 

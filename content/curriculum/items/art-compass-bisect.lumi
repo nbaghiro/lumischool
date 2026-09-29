@@ -1,0 +1,31 @@
+# Bisecting every gap between neighbouring marks doubles them; doing it twice doubles again.
+item art.compass-bisect v=1 skills=[art.pattern, reasoning.pattern] {
+  title "Halving every gap"
+  difficulty (n / 2 + t * 2)
+  let n={4, 6, 8} t={1}
+  let times={pick(t - 1, "She bisects the gap between every two marks next to each other and marks the middle of each.", "She bisects the gap between every two marks next to each other, marks the middles, and then does it all again.")}
+  level easy {
+    let n={4, 6}
+  }
+  level hard {
+    let n={6, 8} t={2}
+  }
+
+  scene 36x14 {
+    construction arcs kind="bisect" at=canvas(1, 1)
+    text ask "Ada has marked {n} points evenly round a circle. {times} How many marks are there round the circle now?" width=20 right-of=arcs gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n * (if t == 1 then 2 else 4))
+  feedback {
+    when (t == 1 and answer == n + 1) point=arcs {
+      say "There is a gap between every two marks, and the circle comes round again, so there are as many gaps as marks."
+    }
+    when (t == 1 and answer == n) point=arcs {
+      say "The old marks stay, and each gap gets a new one in its middle."
+    }
+  }
+  hint "How many gaps are there between the marks round a circle?"
+  hint "Each gap gets one new mark. Add them to the marks already there."
+}

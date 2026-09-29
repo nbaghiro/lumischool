@@ -1,0 +1,46 @@
+# The skeleton's four jobs, holding the body up, protecting soft parts, letting it move and making
+# blood cells in the marrow, each seen in something that happens in the old city. The ball on the
+# chest has to be read as protection, and the marrow is the job that is not about the bones' shape.
+item nature.skeleton-jobs v=1 skills=[nature.body] {
+  title "What is the skeleton doing?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 0.6 else 1)
+  let k=0..4
+  let told={pick(k, "Ada slips on the fountain steps and bumps her head, but her brain is not hurt.", "Ben stands up tall on the city wall without flopping over like a rag doll.", "At the market Ada lifts a jug: her muscles pull on the bones of her arm.", "A ball hits Ben hard in the chest during a game in the square, but his heart and lungs are not hurt.", "Deep inside Ada's thigh bone, soft marrow makes millions of new red blood cells every day.")}
+  let ans={pick(k, "protecting soft parts inside", "holding the body up", "letting the body move", "protecting soft parts inside", "making blood cells")}
+  level easy {
+    let k=0..1
+  }
+  level medium {
+    let k=2..3
+  }
+  level hard {
+    let k=3..4
+  }
+
+  scene 34x36 {
+    parts fig of=skeleton at=canvas(1, 1)
+    text ask "{told} Which job is the skeleton doing?" narrate width=20 right-of=fig gap=2
+    choice pick options=["holding the body up", "protecting soft parts inside", "letting the body move", "making blood cells"] stack=column below=fig gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=fig {
+      say "The skull is a hard case round the brain. Keeping something soft safe is which job?"
+    }
+    when (k == 1 and pick != ans) point=fig {
+      say "Without bones a body would flop like a rag doll. Standing tall is the skeleton holding the body up."
+    }
+    when (k == 2 and pick != ans) point=ask {
+      say "Muscles pull on bones, and the bones move at the joints. That is the skeleton letting the body move."
+    }
+    when (k == 3 and pick != ans) point=fig {
+      say "Nothing moved or stood up here. What did the cage of ribs do for what is inside it?"
+    }
+    when (k == 4 and pick != ans) point=ask {
+      say "This is not about the bone's shape at all. What is the marrow inside it making?"
+    }
+  }
+  hint "What would go wrong here if the bones were not there?"
+  hint "Read again what happened to the body. Which bone is in the story, and what was it doing at that moment?"
+}

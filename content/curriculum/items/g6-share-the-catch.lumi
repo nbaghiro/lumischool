@@ -1,0 +1,32 @@
+# Sharing a total in a ratio: the total is split into equal parts first, then each share is so many
+# parts.
+item ratio.share-the-catch v=1 skills=[ratio.sharing] {
+  title "Sharing the catch"
+  difficulty (a + b + (if w == 1 then 0.5 else 0))
+  let a={2, 3, 4, 5} b={1, 2, 3} u={4, 6, 7, 9} w=0..1
+  where (a > b and gcd(a, b) == 1)
+  level easy {
+    let b={1} a={2, 3}
+  }
+  level hard {
+    let a={4, 5} b={3}
+  }
+
+  scene 33x18 {
+    ratio bars parts=[a, b] labels=["Team A", "Team B"] unit=0 total=false at=canvas(1, 1)
+    text ask "{(a + b) * u} kg of fish is shared between two sledge teams in the ratio {a} : {b}. How many kilograms does {if w == 0 then \"Team A\" else \"Team B\"} get?" narrate width=32 below=bars gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (if w == 0 then a * u else b * u)
+  feedback {
+    when (answer == (a + b) * u / 2) point=bars {
+      say "A ratio of {a} : {b} is not half each. How many equal parts are there altogether?"
+    }
+    when (answer == (a + b) * u / (if w == 0 then a else b)) point=bars {
+      say "Split the whole catch into {a + b} equal parts first, then count the team's parts."
+    }
+  }
+  hint "How many equal parts are there in the bars altogether?"
+  hint "How much is one part? How many parts does that team have?"
+}

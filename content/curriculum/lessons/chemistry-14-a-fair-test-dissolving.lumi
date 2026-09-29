@@ -1,4 +1,4 @@
-lesson chemistry-a-fair-test-dissolving v=2 format=worked grade=4 unit=3 subject=chemistry levels=[easy, medium, hard] {
+lesson chemistry-a-fair-test-dissolving v=2 format=worked grade=4 unit=4 subject=chemistry levels=[easy, medium, hard] {
   title "A fair test: how fast it dissolves"
   goal "Say which one thing a test changes, tell a fair test from an unfair one, and read and predict from results."
 
@@ -20,6 +20,10 @@ lesson chemistry-a-fair-test-dissolving v=2 format=worked grade=4 unit=3 subject
   }
   try stars=3 {
     show chem.fair-between v=5 easy-v=4
+  }
+
+  remember {
+    say "In a fair test you change only one thing and keep everything else the same."
   }
 
   grown-ups """

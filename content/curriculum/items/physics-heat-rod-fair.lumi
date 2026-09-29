@@ -1,0 +1,32 @@
+# Which rod spoils a fair test of materials: every rod has to be as thick, so the one drawn thicker
+# is the odd one out. k is the thick rod.
+item physics.heat-rod-fair v=1 skills=[physics.heat, physics.method, reasoning.fair-test] {
+  title "Is the rod test fair?"
+  difficulty (if k == 3 then 0 else 1)
+  let k=0..3
+  level easy {
+    let k={3}
+  }
+  level hard {
+    let k={0, 1}
+  }
+  let pickk={pick(k, "A", "B", "C", "None, it is fair")}
+
+  scene 30x32 {
+    heatflow t mode=0 rods=["copper", "aluminium", "steel"] thick=[if k == 0 then 2 else 1, if k == 1 then 2 else 1, if k == 2 then 2 else 1] minutes=10 show=0 at=canvas(1, 0)
+    text ask "Mia wants to find which metal conducts heat best. Which rod stops her test being fair?" narrate width=28 below=t gap=1
+    choice pick options=["A", "B", "C", "None, it is fair"] stack=column below=ask gap=1
+  }
+
+  answer pick=pickk
+  feedback {
+    when (pick == "None, it is fair" and k < 3) point=t {
+      say "Look at how thick each rod is drawn. A thicker rod carries more heat whatever it is made of."
+    }
+    when (pick != "None, it is fair" and k == 3) point=t {
+      say "Only the metal changes here: the rods are as thick and the beads as far apart."
+    }
+  }
+  hint "In a fair test of the metal, what has to be the same for every rod?"
+  hint "Look at how thick each of the three rods is drawn."
+}

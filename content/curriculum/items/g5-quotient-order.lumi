@@ -1,0 +1,28 @@
+# The first reason in the core: fractions and decimals in one list, compared by writing each as a
+# decimal. The close values mean the digits alone mislead.
+item quotient.order v=1 skills=[fractions.decimals, reasoning.compare] {
+  title "The greatest"
+  difficulty t
+  let t=0..3
+  level easy {
+    let t={0, 1}
+  }
+  level hard {
+    let t={2, 3}
+  }
+
+  scene 36x13 {
+    numberline line from=0 to=1 step=0.1 at=canvas(1, 1)
+    text ask "Four stalls in the old market sold part of a sack of rice each. Which stall sold the greatest part of its sack?" narrate width=20 right-of=line gap=2
+    choice pick options=[pick(t, "1/2", "3/4", "5/8", "7/20"), pick(t, "0.4", "0.7", "0.6", "0.3"), pick(t, "3/5", "0.72", "0.65", "0.38"), pick(t, "0.55", "2/3", "3/5", "2/5")] below=line gap=1
+  }
+
+  answer pick=pick(t, "3/5", "3/4", "0.65", "2/5")
+  feedback {
+    when (pick == pick(t, "0.55", "0.72", "5/8", "0.38")) point=line {
+      say "Close, but not the greatest. Write every number as a decimal with the same number of places, then compare."
+    }
+  }
+  hint "Write each fraction as a decimal. Divide the top by the bottom."
+  hint "Where does each number go on the line from 0 to 1?"
+}

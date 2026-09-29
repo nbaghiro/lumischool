@@ -1,0 +1,10 @@
+item art.glow-night-sky v=1 stars=3 skills=[art.complementary, art.painting, reasoning.plan] {
+  title "A night sky that glows"
+
+  scene 37x17 {
+    text ask "Paint the night sky over the observatory. Use blues and purples in swirling strokes, and make the stars and the moon glow in yellow and orange, each with a ring of paler colour round it." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="plain" guide="none" outline="none" pots=["blue", "red", "yellow", "orange", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A night sky where the lights glow because they sit against their opposites: yellows and oranges for the stars and the moon set on blues and purples, the edges kept clean rather than mixed to brown, halos of paler colour round the lights, and brush marks that move across the sky as Van Gogh's do." notice=["Yellow and orange lights on blue and purple", "Clean edges where opposites meet", "A paler ring round a light", "Brush marks that move across the sky"] ask="Which part of your sky glows most, and what is next to it?"
+}

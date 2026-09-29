@@ -1,0 +1,36 @@
+# Two-star: three conditions made from the same numbers, and only one says yes for exactly the stars
+# from one number to another. The or of the two tests says yes to every number, and the other or is
+# the outside of the range; the child reasons about each rather than trying numbers one by one.
+item coding.and-range v=1 stars=2 skills=[coding.decisions, reasoning.logic] {
+  title "Only the middle stars"
+  difficulty k
+  let k=0..2
+  let lo={pick(k, 4, 2, 5)} hi={pick(k, 7, 6, 9)}
+  let c1={pick(k, "n is more than 3 and n is less than 8", "n is more than 1 and n is less than 7", "n is more than 4 and n is less than 10")}
+  let c2={pick(k, "n is more than 3 or n is less than 8", "n is more than 1 or n is less than 7", "n is more than 4 or n is less than 10")}
+  let c3={pick(k, "n is less than 4 or n is more than 7", "n is less than 2 or n is more than 6", "n is less than 5 or n is more than 9")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x21 {
+    telescope tel tilt=50 at=canvas(1, 0)
+    text ask "The astronomer wants the telescope to say yes only for stars with brightness n from {lo} to {hi}. Which question should the if ask?" width=24 right-of=tel gap=1
+    choice pick options=[pick(k, c1, c3, c2), pick(k, c2, c1, c3), pick(k, c3, c2, c1)] stack=column below=tel gap=1
+  }
+
+  answer pick=c1
+  feedback {
+    when (pick == c2) point=pick {
+      say "Every number is more than {lo - 1} or less than {hi + 1}, so this says yes to all of them."
+    }
+    when (pick == c3) point=pick {
+      say "This says yes to the stars outside the range, not the ones inside it."
+    }
+  }
+  hint "Try a number in the range and a number outside it with each question."
+  hint "Which joining word needs both tests to pass?"
+}

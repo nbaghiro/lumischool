@@ -1,0 +1,32 @@
+# Where the joints fall on a standing grown-up, read against the head lines and the body's own parts.
+item art.fig-landmark v=1 skills=[art.proportion, art.figure, art.looking] {
+  title "Where the joints come"
+  difficulty (if k >= 3 then 1 else 0)
+  let k=0..4
+  let part={pick(k, "elbows", "wrists", "knees", "eyes", "fingertips")}
+  let right={pick(k, "level with the waist", "level with the top of the legs", "halfway from hips to feet", "halfway down the head", "halfway down the thigh")}
+  let w1={pick(k, "level with the chin", "level with the waist", "a third of the way down the legs", "a third of the way down the head", "level with the knees")}
+  let w2={pick(k, "level with the knees", "halfway down the thigh", "level with the fingertips", "near the top of the head", "level with the waist")}
+  let r={k % 3}
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={3, 4}
+  }
+
+  scene 32x19 {
+    layfigure fig heads=7.5 lines=true action=false at=canvas(1, 1)
+    text ask "Ada draws the miller standing by the water wheel with his arms hanging down. Where do the {part} come?" width=18 right-of=fig gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=fig {
+      say "Find the {part} on the wooden figure and look across at what is level with them."
+    }
+  }
+  hint "Put a ruler across the figure at its {part}. What else does the ruler touch?"
+  hint "The figure is drawn in true proportion, so what is true of it is true of a real grown-up."
+}

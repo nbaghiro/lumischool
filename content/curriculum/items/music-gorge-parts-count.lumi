@@ -1,0 +1,47 @@
+# The story: the gorge band's score in three parts, flute, fiddle and cello, one minim to each half
+# bar, with rests where a part is silent. The texture is read as how many parts sound at one moment.
+item music.gorge-parts-count v=1 skills=[music.texture, music.staff] {
+  title "How many parts at once?"
+  difficulty v
+  let v=0..2
+  let f3={pick(v, "B4", "B4", "rest")}
+  let g1={pick(v, "rest", "rest", "rest")}
+  let g2={pick(v, "rest", "rest", "rest")}
+  let g3={pick(v, "E4", "E4", "E4")}
+  let c1={pick(v, "rest", "rest", "C3")}
+  let c3={pick(v, "rest", "C3", "C3")}
+  let c4={pick(v, "rest", "F3", "F3")}
+  let when={pick(v, "on beat 1 of bar 2", "on beat 1 of bar 2", "on beat 3 of bar 1")}
+  let right={pick(v, 2, 3, 1)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x45 {
+    row top space=2 align=end at=canvas(1, 1) {
+      column score space=0 align=start {
+        notes flute clef=treble notes=[G4, A4, f3, C5] values=[2, 2, 2, 2] meter=4
+        notes fiddle clef=treble notes=[g1, g2, g3, F4] values=[2, 2, 2, 2] meter=4
+        notes cello clef=bass notes=[c1, rest, c3, c4] values=[2, 2, 2, 2] meter=4
+      }
+      waterfall falls drops=1 rainbow=0
+    }
+    text ask "By the waterfall the band reads its score: flute on top, fiddle in the middle, cello at the bottom. A rest means that part is silent. How many parts are playing {when}?" narrate width=34 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 3 and v != 1) point=score {
+      say "Look for rests at that moment. A part with a rest is not playing."
+    }
+    when (answer != right and v == 1) point=score {
+      say "Find bar 2 on each staff, after the bar line, and look at its first note or rest."
+    }
+  }
+  hint "Find the moment on every staff, one below the other."
+  hint "Count the staves that have a note there, not a rest."
+}

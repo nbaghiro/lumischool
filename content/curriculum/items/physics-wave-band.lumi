@@ -1,0 +1,31 @@
+# Linking the board to the screen: of bands of one thickness, the shortest shaking part vibrates
+# fastest and so gives the trace with the most waves.
+item physics.wave-band v=1 skills=[physics.sound, reasoning.compare] {
+  title "Which band made it?"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+  let l1={pick(v, 12, 6, 10, 8)}
+  let l2={pick(v, 6, 12, 8, 9)}
+  let l3={pick(v, 9, 9, 9, 10)}
+
+  scene 22x23 {
+    bands b lengths=[l1, l2, l3] thick=[1, 1, 1] pluck=-1 loud=1 letters=1 at=canvas(1, 0)
+    text ask "Each band is plucked in turn and its sound shown on the screen. Which band's trace has the most waves across the screen?" narrate width=19 below=b gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+  }
+
+  check physics.sound of=b pick=highest
+  feedback {
+    when (pick == "A" and l1 > l2 and l1 > l3) point=b {
+      say "A is the longest band. A longer shaking part vibrates more slowly."
+    }
+  }
+  hint "More waves means more vibrations each second. Which band vibrates fastest?"
+  hint "With the bands all as thick, the shorter the shaking part, the faster it vibrates."
+}

@@ -1,0 +1,28 @@
+# Energy is never made or lost, so the bands out of the wheel add up to the band in, and the band
+# left as a question mark is worked out from the rest. b is the blank band; i the joules put in.
+item physics.store-missing v=1 skills=[physics.energy, reasoning.backwards] {
+  title "The missing band"
+  difficulty (if b == 0 then 0 else if b == 1 then 1 else 2)
+  let b=0..3 i={500, 1000, 2000}
+  level easy {
+    let b=0..1
+  }
+  level hard {
+    let b=2..3
+  }
+
+  scene 24x23 {
+    energyflow e thing="water wheel" from="moving water" to="turning millstone" input=i useful=(i * 6 / 10) wasted=[i * 4 / 10 - 2, 2] wastes=["heating", "sound"] blank=b unit=J at=canvas(1, 0)
+    text ask "Every second the moving water gives the wheel energy, and the wheel passes it on. Energy is never made or lost. How many joules are in the band marked with a question mark?" narrate width=22 below=e gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.energy of=e answer=missing
+  feedback {
+    when (b != 0 and answer > i) point=e {
+      say "The bands out cannot add up to more than the band in. Take the others away from what goes in."
+    }
+  }
+  hint "What do all the bands coming out have to add up to?"
+  hint "Take the bands you know away from that, or add them up if the band in is missing."
+}

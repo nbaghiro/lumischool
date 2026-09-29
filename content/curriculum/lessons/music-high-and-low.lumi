@@ -1,6 +1,6 @@
 # High and low as a direction: to the right on the keys and up on the staff is higher. Every note
 # that sounds is drawn, so the lesson works with the volume at zero and on paper.
-lesson music-high-and-low v=1 format=teach grade=1 unit=1 subject=music levels=[easy, medium, hard] {
+lesson music-high-and-low v=1 format=teach grade=1 unit=2 subject=music levels=[easy, medium, hard] {
   title "High and low"
   goal "Hear and see that keys to the right sound higher, and play a high note and a low note."
 

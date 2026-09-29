@@ -1,0 +1,31 @@
+# Lines of symmetry read from the marks on a shape: equal sides alone do not make a fold, which is why
+# the parallelogram has none.
+item symmetry.marks-lines v=1 skills=[shapes.symmetry.line] {
+  title "Folds in a shape"
+  difficulty (if k == "isosceles" or k == "trapezium" then 0 else if k == "kite" or k == "rhombus" then 1 else 2)
+  let k={"isosceles", "trapezium", "kite", "rhombus", "parallelogram"}
+  level easy {
+    let k={"isosceles", "trapezium"}
+  }
+  level hard {
+    let k={"rhombus", "parallelogram"}
+  }
+
+  scene 34x16 {
+    shapemarks plate kind=k labels=true at=canvas(1, 1)
+    text ask "A window of the moon base is this shape. The marks show its equal and parallel sides. How many lines of symmetry does it have?" narrate width=20 right-of=plate gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (if k == "rhombus" then 2 else if k == "parallelogram" then 0 else 1)
+  feedback {
+    when (k == "parallelogram" and answer == 2) point=plate {
+      say "Fold it down the middle or corner to corner: the halves do not sit on each other, because it leans."
+    }
+    when (k == "rhombus" and answer == 4) point=plate {
+      say "A fold down the middle of a side does not work unless the corners are right angles. Try the two folds from corner to corner."
+    }
+  }
+  hint "Try a fold from corner to corner. Would the two halves sit exactly on each other?"
+  hint "Now try a fold across the middle of two sides."
+}

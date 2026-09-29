@@ -1,0 +1,69 @@
+lesson chemistry-heating-curves v=1 format=teach grade=5 unit=5 subject=chemistry levels=[easy, medium, hard] {
+  title "Heating curves"
+  goal "Read a heating or cooling curve to say when something is changing state, how long it takes, and whether it is pure."
+
+  look {
+    scene 36x18 {
+      row all at=canvas(1, 0) space=1 align=end {
+        heatcurve curve temps=[0, 0, 0, 40, 80, 100, 100, 100, 100, 100] every=2 min=0 max=120 step=20
+        thermometer tube from=-40 to=120 step=40 value=0 unit="°C"
+      }
+    }
+    say """
+      The water butt by the observatory froze in the night. A grown-up heats a pan of its ice, at
+      0 °C, on the camping stove and reads the thermometer every 2 minutes. The line stays flat at 0
+      while the ice melts, climbs, and stays flat at 100 while the water boils. Melting took as long
+      as warming the water 80 degrees. The flame
+      is on all the time: on the flat parts the heat goes into changing the state, not into making
+      it hotter. Near sea level, pure water always goes flat at 0 and 100.
+      """
+  }
+  do {
+    practice chem.curve-flat-temp count=1 seed=1
+    practice chem.freeze-minutes count=2 seed=2 easy-seed=1 hard-seed=3
+    level easy {
+      worked chem.pan-states c=0 p=0 level=medium
+    }
+    practice chem.pan-states count=2 seed=3 easy-seed=2 hard-seed=4
+    practice chem.wax-or-water count=2 seed=1 easy-seed=2 hard-seed=3
+  }
+  story {
+    show chem.more-ice-longer d=0 f=4 m=2 hard-d=1 hard-f=6
+    level hard {
+      show chem.more-ice-longer d=1 f=4 m=3
+    }
+  }
+  try stars=2 {
+    show chem.heat-goes-where k=0 r=2 hard-k=1 hard-r=1
+  }
+  try stars=3 {
+    show chem.ice-to-boil s=-20 r=10 easy-s=-40 easy-r=20 hard-s=-40
+  }
+  remember {
+    say "While a pure substance melts, freezes or boils, its temperature stays flat: the heat goes into changing its state."
+  }
+
+  grown-ups """
+    The idea is that a heating or cooling curve goes flat while something changes state, because the
+    heat going in, or leaving, is used to change the state rather than the temperature, and that a
+    pure substance does this at one temperature while a mixture such as candle wax softens over a
+    range (about 46 to 68 °C) with no flat part. The numbers are real: melting a gram of ice takes
+    about as much heat as warming a gram of water by 80 degrees, and ice warms about twice as fast
+    as water on the same flame, which the three-star question uses to build the whole curve with no
+    picture. Every curve warmed on a flame in the lesson keeps to those two rules, which is why the
+    ice's climb is steep and its flat part long; boiling lasts over five times as long as the warm
+    from 0 to 100, so no curve here shows the ice warming and the boil together. The wrong ideas to
+    watch for are that the flame stops working on the flat part, and reading minutes for degrees or
+    degrees for minutes. The two-star question asks where the heat goes, or at hard which fact shows
+    the stove was still lit. If the child cannot find a flat part, stay here another day and run a
+    finger along the line saying "up" or "level" at each reading. Off the page: put a kitchen
+    thermometer in a glass of ice and a little water, and watch it stay near 0 until the ice is
+    gone. A grown-up does anything with a flame or boiling water.
+    """
+  level easy {
+    grown-ups "At this level one point on the pan's curve is worked in the teacher's pen, the freezing water is read every 5 minutes, the pan is asked about while the water or the ice warms or boils, the curve is warmed rather than cooled, twice the ice is predicted, the two-star asks where the heat goes, and the three-star ice starts at -40 on a hot flame."
+  }
+  level hard {
+    grown-ups "At this level the freezing curves have longer flat parts, the pan is asked about while the ice melts or the water boils, the curves are cooling ones, two pans' ice is worked back in grams from their minutes, the two-star asks which fact shows the stove was lit, and the three-star ice starts at -40 on a gentle flame."
+  }
+}

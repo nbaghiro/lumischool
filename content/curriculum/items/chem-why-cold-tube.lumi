@@ -1,0 +1,32 @@
+# The two-star reason: the tube is cooled so the steam condenses back to water, and the water is not
+# salty because salt does not turn to gas at 100 °C (it boils at 1465 °C, PubChem).
+item chem.why-cold-tube v=1 stars=2 skills=[chemistry.separating, reasoning.explain] {
+  title "Why does it work?"
+  difficulty k
+  let k=0..1 r=0..2
+  let asks={pick(k, "The tube from the flask runs through cold water. Why is it kept cold?", "The water that drips into the beaker is not salty. Why not?")}
+  let right={pick(k, "So the steam turns back into water", "Salt cannot turn to gas at 100 °C")}
+  let w1={pick(k, "So the salt stays in the flask", "The cold tube strains out the salt")}
+  let w2={pick(k, "So the flask boils faster", "The salt dissolves in the air")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x23 {
+    condense lid kind=hot-lid drops=6 at=canvas(1, 0)
+    text ask "The drops under the cold lid show what happens in a still. {asks}" narrate width=23 right-of=lid gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=lid gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=lid {
+      say "Look at the drops under the lid. Steam that touches something cold turns back into water, and only water became steam."
+    }
+  }
+  hint "Where do the drops under the lid come from?"
+  hint "What turns to steam at 100 °C: the water, the salt, or both?"
+}

@@ -1,0 +1,37 @@
+# The way in: one gap in a line from the hut's notes, filled by a colon (a list or an explanation
+# follows) or a semicolon (a second whole sentence follows). A comma there would join two sentences.
+item writing.colon-or-semicolon v=1 skills=[writing.punctuation, writing.colons-semicolons] {
+  title "A colon or a semicolon?"
+  difficulty k
+  let k=0..3
+  let s={pick(k, "We packed three things __ a stove, a tent and a rope.", "The wind dropped at noon __ we set off at once.", "Dr Berg has one rule __ nobody walks on the ice alone.", "The seals stayed on the floe __ the puffins flew out to sea.")}
+  let right={pick(k, "colon (:)", "semicolon (;)", "colon (:)", "semicolon (;)")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x24 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      sledge sl slats=5
+      hut h pictures=4
+    }
+    passage p title="The hut's notes" text="{s}" width=31 numbers=false below=pics gap=1
+    text ask "Which mark belongs in the gap?" narrate width=31 below=p gap=1
+    choice pick options=["colon (:)", "semicolon (;)", "comma (,)"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "comma (,)") point=p {
+      say "Both sides of the gap could stand alone as sentences, or the second is a list waiting to be introduced. A comma cannot do either job."
+    }
+    when (pick != right and pick != "comma (,)") point=p {
+      say "Read what comes after the gap. A list or an explanation of the first part takes a colon; a second main clause on the same subject takes a semicolon."
+    }
+  }
+  hint "Read the words after the gap. Are they a list, an explanation, or a sentence of their own?"
+  hint "A colon says a list or an explanation follows. A semicolon says a second main clause follows, closely linked to the first."
+}

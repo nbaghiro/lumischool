@@ -1,0 +1,37 @@
+# A reason from a letter about the gorge, and three sentences to back it. One is checkable evidence
+# for this reason, one is an opinion, and one is true but about something else.
+item reading.cre-best-evidence v=1 skills=[reading.argument, reading.evidence] {
+  title "The best evidence"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+  let right={pick(k, "Three planks cracked this spring.", "The ranger counted 120 crossings last Saturday.", "No chicks hatched in the summer of the road works.", "The handrail is below a ten-year-old's waist.")}
+  let opinion={pick(k, "The bridge looks frightening.", "Families love the rope bridge.", "Kingfishers are shy, gentle birds.", "Low handrails are the worst kind.")}
+  let beside={pick(k, "The bridge is forty metres long.", "The bridge was built in 1911.", "Kingfishers dive at forty kilometres an hour.", "The handrail is made of old rope.")}
+
+  scene 35x24 {
+    row top at=canvas(1, 1) space=2 align=end {
+      ropebridge bridge planks=10 gaps=1
+      kingfisher bird flying=0 facing=-1
+    }
+    text ask "The reason: {pick(k, \"the bridge is not safe.\", \"families use the bridge every day.\", \"noise scares kingfishers from their nests.\", \"the handrail is too low for children.\")} Which is the best evidence for it?" below=top gap=1 width=34
+    choice pick options=[pick(k, opinion, right, beside, beside), pick(k, right, beside, opinion, right), pick(k, beside, opinion, right, opinion)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == opinion) point=bridge {
+      say "That is what someone thinks. Evidence is something seen, counted or measured that others could check."
+    }
+    when (pick == beside) point=bridge {
+      say "That may be true, but it does not back up this reason. Read the reason again."
+    }
+  }
+  hint "Could someone check the sentence by looking, counting or measuring?"
+  hint "Does it show the reason is true, or is it about something else?"
+}

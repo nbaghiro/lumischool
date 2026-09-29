@@ -1,0 +1,72 @@
+lesson nature-skeleton-and-muscles v=1 format=teach grade=5 unit=7 subject=nature levels=[easy, medium, hard] {
+  title "The skeleton and muscles"
+  goal "Explain how muscles, tendons, bones and ligaments work together to move a joint."
+
+  look {
+    scene 34x17 {
+      row all at=canvas(1, 1) space=1 align=end {
+        parts fig of=skeleton
+        parts arm of=arm
+        clocktower ct hour=4 minute=0
+      }
+    }
+    say """
+      In the old city's library Ada and Ben find a skeleton on a stand. It holds a body up, keeps soft
+      parts safe (the skull round the brain, the ribs round the heart and lungs), lets it move, and
+      inside the big bones, soft marrow makes new blood cells. Bones meet at joints, held together by
+      tough straps called ligaments. Muscles move them: each end of a muscle is fixed to a bone by a
+      tendon, a cord that hardly stretches. A muscle can only pull, never push, so they work in pairs:
+      the front muscle of the arm pulls it bent, and the back one pulls it straight again. Bone is
+      alive, with blood flowing through it, so a broken one can mend, and the blood brings the muscles
+      the food and oxygen they need to keep pulling.
+      """
+  }
+  do {
+    level easy {
+      worked nature.bone-letter k=2 level=medium
+    }
+    practice nature.bone-letter count=1 seed=1 easy-seed=2 hard-seed=1
+    practice nature.skeleton-jobs count=1 seed=1 easy-seed=1 hard-seed=1
+    practice nature.muscle-letter count=1 seed=1 easy-seed=1 hard-seed=1
+    practice nature.tendon-ligament count=1 seed=1 easy-seed=1 hard-seed=1
+    practice nature.body-together count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.joint-kind count=1 seed=1 easy-seed=2 hard-seed=3
+    level hard {
+      show nature.muscle-pairs k=1 level=medium
+    }
+  }
+  story {
+    show nature.thigh-bone k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.muscle-pairs k=2 easy-k=0 hard-k=3
+  }
+  try stars=3 {
+    show nature.pull-cords k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A muscle can only pull, through the tendons that fix it to the bones, so every joint that bends and straightens needs a pair."
+  }
+
+  grown-ups """
+    The lesson takes the skeleton past what it looks like to how its parts work together. Bones meet
+    at joints held by ligaments, muscles are fixed to bones by tendons, and a muscle can only pull,
+    so every joint that bends and straightens has a muscle on each side. Bones are alive: blood flows
+    through them, the marrow inside makes blood cells, and a break mends as new bone grows across it,
+    which is why a cast holds the ends still. The muscles depend on the blood for food and oxygen and
+    on the nerves for the message to pull. The wrong idea to watch for is that the muscle that bent
+    the arm pushes it straight again; the arm drawing and the two-star question are built on that.
+    The story takes a quarter of a height. The three-star question is a puppet worked by cords that
+    only pull: lying flat it needs two cords a hinge, but hanging, its weight does the straightening,
+    which is the builder's hurt arm in the two-star question used on something new. Off the page,
+    hold the back of the child's ankle while they rise onto tiptoe and feel the tendon go tight. If
+    pushing muscles still come back after the core, stay here another day: hold the child's upper arm
+    while they bend and straighten it, and feel the front muscle bunch and then the back one.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the backbone) opens the core, the bone to find is the skull, the job is the bumped head, the arm question is bending, the cord from muscle to bone is named, the body questions are the blood feeding the muscles and a bone that bleeds and mends, the joint is the shoulder, the skeleton is 160 cm tall, the two-star question asks why two muscles, and the puppet lies flat with 2 hinges."
+  }
+  level hard {
+    grown-ups "At this level the bone to find is the backbone, the job is the ball on the chest, the arm question is the forearm bone, the tendon question asks why it must not stretch, the body questions are the plaster cast and the hand pulled from a hot pan, the joint is the hip, a second reasoning question in the core has Ben saying the front muscle pushes, the bone found by the wall is 45 cm long and the height is asked for, the two-star question is the builder whose arm straightens only by its weight, and the hanging puppet has 2 hinges and a shoulder that swings four ways."
+  }
+}

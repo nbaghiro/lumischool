@@ -1,0 +1,35 @@
+# Which sound is higher: the one with more waves across the same time, whatever their heights. The
+# taller trace is sometimes the lower note, so height cannot be used instead.
+item physics.wave-higher v=1 skills=[physics.sound, reasoning.compare] {
+  title "The higher note"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+  let a={pick(v, 3, 8, 4, 6)}
+  let b={pick(v, 7, 4, 5, 5)}
+  let ha={pick(v, 2, 2, 3, 1)}
+  let hb={pick(v, 2, 2, 1, 3)}
+
+  scene 24x17 {
+    wave s waves=[a, b] heights=[ha, hb] across=10 letters=1 blank=-1 at=canvas(1, 0)
+    text ask "Which sound has the higher pitch?" narrate width=14 below=s gap=1
+    choice pick options=["A", "B"] stack=row right-of=ask gap=1
+  }
+
+  check physics.sound of=s pick=highest
+  feedback {
+    when (pick == "A" and ha > hb and a < b) point=s {
+      say "A is taller, which makes it louder. Pitch is how many waves fit across the screen."
+    }
+    when (pick == "B" and hb > ha and b < a) point=s {
+      say "B is taller, which makes it louder. Pitch is how many waves fit across the screen."
+    }
+  }
+  hint "Count the waves across each screen."
+  hint "More vibrations each second make a higher note."
+}

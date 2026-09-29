@@ -1,0 +1,36 @@
+# A puzzle over the passive: the doer comes after by, or is not said at all, and here it is found by
+# following one sentence to the next. At k=1 the log never says who, and the trap is the named doer.
+item writing.passive-who v=1 skills=[writing.passive, reading.comprehension, reasoning.logic] {
+  title "Who did it?"
+  difficulty k
+  let k=0..2 r=0..2
+  let log={pick(k, "The seals were counted by Dr Berg. The puffins were counted by Ana. The samples were sealed by the person who counted the puffins.", "The hut door was left open in the night. In the morning the stove was lit by whoever came in last, and Leo came in last.", "The dogs were fed by Dr Berg. The seals were counted by the person who had fed the dogs, and the samples were sealed by Ana.")}
+  let ask={pick(k, "Who sealed the samples?", "Who left the hut door open?", "Who counted the seals?")}
+  let right={pick(k, "Ana", "the log does not say", "Dr Berg")}
+  let w1={pick(k, "Dr Berg", "Leo", "Ana")}
+  let w2={pick(k, "the log does not say", "the stove", "the log does not say")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x27 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage p title="The hut's log" text="{log}" width=22 numbers=false
+      hut h pictures=5
+    }
+    text ask "Every sentence in the log is passive. {ask}" narrate width=33 below=top gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "In a passive sentence the doer comes after by, or is not said at all. Find the sentence about that job and follow its by."
+    }
+  }
+  hint "Which sentence is about the job in the question? Is there a by in it?"
+  hint "If the by names a person only by what they did, find the sentence that says who did that."
+}

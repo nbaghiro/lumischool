@@ -1,0 +1,16 @@
+# The mission log's lines, shuffled. The small words that point back (then, it, so, after that) put
+# them in order, and the one line that points back to nothing comes first.
+item reading.log-order v=1 skills=[reading.sequencing, reading.cohesion] {
+  title "Put the log in order"
+  difficulty pick(k, 1, 0, 1, 2)
+  let k=0..3
+
+  scene 35x22 {
+    passage head title="{pick(k, \"The landing\", \"The first walk\", \"The rover\", \"The greenhouse\")}" text="The lines of the log are shuffled. Number them from 1, what happened first, to 4." width=34 numbers=false at=canvas(1, 1)
+    sequence rows items=[pick(k, "Then it touched down in a cloud of dust.", "Then Obi followed her down.", "So we fixed it with tape and wire.", "Obi said the plants needed more light."), pick(k, "The engine fired to slow the lander.", "Once it was charged, we drove it out.", "Our rover's wheel cracked on a rock.", "By the next week, the leaves were green."), pick(k, "When the dust settled, the hatch opened.", "First, Kai climbed down the ladder.", "After that, we drove slowly home.", "So Ada moved the lamps closer."), pick(k, "It dropped slowly towards the grey plain.", "After that, we unpacked the rover.", "It held all the way back.", "At first the seeds did nothing.")] blanks=[a, b, c, d] below=head gap=1
+  }
+
+  answer a=pick(k, 3, 2, 2, 2) b=pick(k, 1, 4, 1, 4) c=pick(k, 4, 1, 3, 3) d=pick(k, 2, 3, 4, 1)
+  hint "Find the line that does not point back to anything. That one comes first."
+  hint "Follow the words then, so, it and after that. What does each one point back to?"
+}

@@ -1,0 +1,31 @@
+# The two-star reason: notes written one above the other on the two staves are played together, not
+# top staff first. The hard claim: a left-hand minim is held for two beats while the right hand moves.
+item music.hands-claim v=1 stars=2 skills=[music.hands-together, reasoning.claims] {
+  title "Top staff first?"
+  let q=0..1 r=0..1
+  let claim={pick(q, "Ben says the right hand's E is played first and the left hand's C after it, because the top staff is read first.", "Ana says the left hand plays its C again on beat 2, because the right hand plays a note there.")}
+  let right={pick(q, "No: notes lined up sound together", "No: a minim is held for two beats")}
+  let w1={pick(q, "Yes: top staff first, then bottom", "Yes: both hands play every beat")}
+  let w2={pick(q, "No: the left hand always goes first", "No: the C stops on beat 2")}
+
+  scene 34x41 {
+    column score space=0 align=start at=canvas(1, 1) {
+      notes right clef=treble notes=[E4, E4, F4, G4, G4, F4, E4, D4] values=[] meter=4 spaced=true
+      notes left clef=bass notes=[C3, E3, G2, B2] values=[2, 2, 2, 2] meter=4 spaced=true
+    }
+    text ask "{claim} Is that right, and why?" narrate width=32 below=score gap=1
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=score {
+      say "{if q == 0 then \"The two staves are one piece. Look at where the C sits under the E.\" else \"Look at the C's head. Is it filled in, or open?\"}"
+    }
+    when (pick == w2) point=score {
+      say "{if q == 0 then \"Neither hand goes first. Where are the two notes on the page?\" else \"An open head with a stem lasts two beats. Is the C still sounding on beat 2?\"}"
+    }
+  }
+  hint "{if q == 0 then \"Is the left hand's C to the left of the E, under it, or to the right?\" else \"How long is the left hand's C?\"}"
+  hint "{if q == 0 then \"Across a piano score, left to right is time and top to bottom is the two hands.\" else \"A minim lasts two beats. Does anything new start in the left hand on beat 2?\"}"
+}

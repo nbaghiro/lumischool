@@ -1,0 +1,27 @@
+# A note with no sign of its own, played as the key signature says: F in G major is F sharp, B in F
+# major is B flat. The trap is the white key the note's line would give without the signature.
+item music.keysig-play-note v=1 skills=[music.key-signatures, music.keys] {
+  title "Play what the key says"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let n={pick(k, "Fs4", "Bf4", "Cs5", "Ef4", "Gs4", "Af4")}
+  let said={pick(k, "G major", "F major", "D major", "B flat major", "A major", "E flat major")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..5
+  }
+
+  scene 34x24 {
+    row top space=2 align=start at=canvas(1, 1) {
+      notes one clef=treble notes=[n] values=[4] key=pick(k, "G", "F", "D", "Bf", "A", "Ef")
+      text ask "A note from a tune in {said}. Play it on the keyboard, the way the key signature says." narrate width=18
+    }
+    piano keys from=C4 whites=10 wide=3 labels=letters below=top gap=1
+  }
+
+  check music.plays notes=[{n}]
+  hint "Which letter is the note on? Read its line or space."
+  hint "Does the key signature have a sign on that letter? If it does, the note is a black key."
+}

@@ -1,0 +1,14 @@
+# Row, Row, Row Your Boat (traditional) tapped: dotted crotchet, dotted crotchet, then crotchet,
+# quaver, dotted crotchet, in crotchet beats 0, 1.5, 3, 4, 4.5. Judged at the grade six window.
+item music.six8-tap-row v=1 skills=[music.six-eight, music.rhythm] {
+  title "Tap Row, Row, Row"
+
+  scene 34x18 {
+    notes bar clef=treble notes=[C5, C5, C5, D5, E5] values=[1.5, 1.5, 1, 0.5, 1.5] meter=6 quavers=true at=canvas(1, 1)
+    text ask "Row, row, row your boat. Count 1 2 3 4 5 6 in each bar and tap once for every note, where it starts." narrate width=32 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 1.5, 3, 4, 4.5] grade=6
+  hint "Which counts do the notes of bar 1 start on?"
+  hint "In bar 2, the word your is short. Which count is it on?"
+}

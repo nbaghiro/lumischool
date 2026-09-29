@@ -1,0 +1,33 @@
+# Two stars: the idea that a moving thing needs a bigger forward force to keep going. The sledge keeps
+# a steady speed with the forces balanced, and only a difference would change its speed.
+item physics.sledge-steady-reason v=1 stars=2 skills=[physics.forces, physics.motion, reasoning.explain] {
+  title "Does it need a bigger pull?"
+  difficulty (if v == 0 then 0 else 1)
+  let v=0..1
+  level easy {
+    let v={0}
+  }
+  level hard {
+    let v={1}
+  }
+  let f={pick(v, 100, 75)}
+  let a={pick(v, 0, 25)}
+
+  scene 34x35 {
+    sledgeforce s forward=[100] back=[f, a] weight=0 moving=1 show=0 names=1 at=canvas(1, 0)
+    text ask "The sledge slides across the snow at a steady speed with these forces. Ana says the pull must be bigger than the forces holding it back, or the sledge would stop. Is she right?" narrate width=27 below=s gap=1
+    choice pick options=["No: balanced forces keep its speed the same", "Yes: a moving thing needs a bigger forward force", "No: the backward forces are bigger", "Yes: otherwise friction would win"] stack=column below=ask gap=1
+  }
+
+  answer pick="No: balanced forces keep its speed the same"
+  feedback {
+    when (pick == "Yes: a moving thing needs a bigger forward force" or pick == "Yes: otherwise friction would win") point=s {
+      say "A bigger pull would make it speed up, not just keep going. What do the arrows add up to?"
+    }
+    when (pick == "No: the backward forces are bigger") point=s {
+      say "If the backward forces were bigger the sledge would be slowing down. Add them up and compare with the pull."
+    }
+  }
+  hint "What do the forces holding the sledge back add up to? Compare that with the pull."
+  hint "What would a bigger pull do to a moving sledge?"
+}

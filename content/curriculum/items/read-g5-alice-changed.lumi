@@ -1,0 +1,19 @@
+# The three-star question: how Alice herself changes across the book, from the girl who cries in the
+# hall to the one who stands up to the court, with a quotation from each end.
+item reading.alice-changed v=1 stars=3 skills=[reading.characters, reading.evidence, reading.whole-book, writing.composition] {
+  title "How has Alice changed?"
+
+  scene 34x27 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        bookcast a who=alice pose=hold dir=1
+        text ask "Choose a moment from the first chapters and a moment from the last. Copy a few words from each, and say how Alice has changed and what changed her." width=24
+      }
+      writinglines lines lines=6 width=33 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="An early moment (crying in the hall in chapter 2, doing as the Rabbit orders in chapter 4, being snubbed by the Caterpillar) and a late one (arguing with the King, refusing to leave the court, calling them a pack of cards in chapter 12), a few words copied exactly from each, and a reason for the change (she has learnt that the creatures' rules make no sense, or she grows used to standing up for herself)." notice=["Picks an early and a late moment", "Copies words exactly", "Says how she changed", "Gives a reason for the change"] ask="Which creature would you have stood up to first?"
+  hint "How does Alice answer when someone orders her about in chapter 4? And in chapter 12?"
+  hint "What has she learnt about these creatures by the end?"
+}

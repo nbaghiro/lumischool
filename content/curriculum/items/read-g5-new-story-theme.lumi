@@ -1,0 +1,21 @@
+# The three-star question turns the theme round: a new story, not about boats, that teaches the
+# same idea. There is no key, so a grown-up marks it against the look-for.
+item reading.new-story-theme v=1 stars=3 skills=[reading.theme, writing.composition] {
+  title "A new story with the same theme"
+  let k=0..1
+
+  scene 36x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        passage p title="{pick(k, \"The race to the lock\", \"The miller's flour\")}" text="{pick(k, \"Kit races an old boatman to the lock, jams his boat and loses an hour.\", \"A baker gives a miller flour in a dry summer. In winter he mends her oven.\")}" width=27 numbers=false
+        face kid mood=pick(k, "worried", "happy") hair=1
+      }
+      text ask "Write the beginning and end of a new story with the same theme. Keep it away from boats, mills and canals." width=34
+      writinglines lines lines=3 width=34 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="Two or three sentences with new people in a new place (not a boat, a mill or a canal) where the same idea is true: someone hurries and it costs them more time, or someone's kindness comes back to them. The ending should show the idea without the child having to state it. A child who writes the theme as a rule instead of a story has understood it but not yet shown it; ask what happens."
+  hint "Say the theme in a sentence first. Where else, at home or at school, could it be true?"
+  hint "Who hurries, or who is kind? What happens to them at the end?"
+}

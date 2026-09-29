@@ -1,0 +1,30 @@
+# Convection in the hut: warm air rises from the heater and cool air sinks, so the thermometers read
+# warmer near the ceiling. h is where the heater is; the difference ceiling to floor is read off.
+item physics.hut-reading v=1 skills=[physics.heat, physics.measuring, reasoning.compare] {
+  title "Up by the ceiling"
+  difficulty h
+  let h=0..1
+  level easy {
+    let h={0}
+  }
+  level hard {
+    let h={1}
+  }
+
+  scene 22x21 {
+    heatflow t mode=1 heater=h show=1 at=canvas(1, 0)
+    text ask "Which thermometer is coldest, and how many degrees warmer is A than C?" narrate width=19 below=t gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+    number-input more right-of=pick gap=2
+  }
+
+  answer more=(if h == 0 then 4 else 15)
+  check physics.forces of=t pick=coldest
+  feedback {
+    when (pick == "A") point=t {
+      say "A is by the ceiling, where the warm air collects. Warm air rises."
+    }
+  }
+  hint "Where does the warm air from the heater go?"
+  hint "Take the floor's reading away from the ceiling's."
+}

@@ -1,4 +1,4 @@
-lesson physics-swinging v=1 format=teach grade=3 unit=5 subject=physics levels=[easy, medium, hard] {
+lesson physics-swinging v=1 format=teach grade=3 unit=6 subject=physics levels=[easy, medium, hard] {
   title "Swinging"
   goal "Find the pattern in how a pendulum swings, use it to predict, and show with a fair test that the weight on the end does not matter."
 

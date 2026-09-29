@@ -1,0 +1,37 @@
+# One star: a moving walkway, the Russian motion problem with a current. Walking with it the speeds
+# add, walking against it they take away.
+item puzzle.base-walkway v=1 stars=1 skills=[rates.speed, reasoning.model] {
+  title "The moving walkway"
+  difficulty (v / 2 + (if v >= 3 then 2 else 0))
+  let v=0..5
+  let l={pick(v, 60, 90, 100, 60, 80, 120)}
+  let w={pick(v, 1, 1, 2, 1, 1, 2)}
+  let s={pick(v, 2, 2, 3, 3, 3, 5)}
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={4, 5}
+  }
+
+  scene 35x14 {
+    footprints f count=4 at=canvas(1, 1)
+    text ask "The long corridor of the moon base has a moving walkway {l} m long. It moves at {w} m a second, and Kai walks at {s} m a second. How many seconds does it take Kai to walk its whole length {if v >= 3 then \"the wrong way, against it\" else \"the same way as it moves\"}?" narrate width=22 right-of=f gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (if v >= 3 then l / (s - w) else l / (s + w))
+  feedback {
+    when (answer == l / s) point=ask {
+      say "The walkway moves too, so every second Kai goes further, or less far, than walking alone."
+    }
+    when (v < 3 and answer == l / (s - w)) point=ask {
+      say "Walking the same way as the walkway, its speed is added to Kai's, not taken away."
+    }
+    when (v >= 3 and answer == l / (s + w)) point=ask {
+      say "Walking against the walkway, it carries Kai back, so its speed is taken away from Kai's."
+    }
+  }
+  hint "How many metres does Kai move along the corridor in one second?"
+  hint "How many of those seconds cover {l} m?"
+}

@@ -1,0 +1,45 @@
+# The lander's greenhouse as a small ecosystem: the plants and the crew swap oxygen and carbon
+# dioxide, worms and fungi turn waste back into food for plants, and light is the one thing that has
+# to come from outside.
+item nature.sealed-greenhouse v=1 skills=[nature.ecosystems] {
+  title "A garden in a lander"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "Which gas do the plants give out that the crew breathe in?", "Which gas do the crew breathe out that the plants take in to make their food?", "The crew add worms and tiny fungi to the soil. What is their job?", "What does the greenhouse need from outside that nothing inside it can make?")}
+  let ans={pick(k, "oxygen", "carbon dioxide", "Turning waste into food for plants", "Light, for the plants to make food")}
+  let o1={pick(k, "carbon dioxide", "oxygen", "Making oxygen for the crew", "Oxygen, for the crew to breathe")}
+  let o2={pick(k, "nitrogen", "nitrogen", "Eating the crew's beans", "Soil, for the plants to stand in")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x31 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      lander ld rungs=5
+      earth e up=1
+    }
+    text ask "The crew keep a sealed greenhouse inside the moon base, with beans and lettuce growing in soil, so that one day it can help feed them and give them air. {asks}" narrate width=32 below=pics gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=ask {
+      say "Plants use one gas from the air and give out another, the one animals need."
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "The crew breathe in oxygen. What do they breathe out?"
+    }
+    when (k == 2 and pick != ans) point=ask {
+      say "Worms and fungi are the rotters. What do they do with dead leaves and waste?"
+    }
+    when (k == 3 and pick != ans) point=ask {
+      say "The plants make the oxygen, and the rotters make the soil. What can no plant make for itself?"
+    }
+  }
+  hint "What does each living thing in the greenhouse take in, and what does it give out?"
+  hint "Plants, animals and rotters pass things round in a loop. Only one thing comes in from outside."
+}

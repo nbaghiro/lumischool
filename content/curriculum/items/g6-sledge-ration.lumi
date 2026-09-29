@@ -1,0 +1,32 @@
+# The way in: a fraction times a whole number, as that many copies of the same fraction.
+item fraction.sledge-ration v=1 skills=[fractions.multiply] {
+  title "Fish for the dogs"
+  difficulty (m + b / 4)
+  let a=2..7 b={3, 4, 5, 6, 8} m={2, 3}
+  where (a < b and gcd(a, b) == 1)
+  level easy {
+    let b={3, 4} m={2}
+  }
+  level hard {
+    let b={6, 8} m={3}
+  }
+
+  scene 33x10 {
+    fraction bar n=b k=a shape=bar at=canvas(1, 1)
+    sledge sl slats=5 below=bar gap=1
+    text ask "Each sledge dog eats {a}/{b} kg of fish a day. The bar is 1 kg. How many kilograms do {b * m} dogs eat in a day?" narrate width=18 right-of=bar gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (a * m)
+  feedback {
+    when (answer == a * b * m) point=bar {
+      say "Each dog eats less than a whole kilogram, so {b * m} dogs eat less than {b * m} kg."
+    }
+    when (answer == m) point=bar {
+      say "{b} dogs eat {a} lots of 1/{b} kg each. How many kilograms is that?"
+    }
+  }
+  hint "How much do {b} dogs eat together? Count the shaded parts {b} times."
+  hint "How many groups of {b} dogs are there?"
+}

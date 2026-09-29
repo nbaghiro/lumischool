@@ -1,4 +1,4 @@
-lesson coding-a-tune-from-a-program v=2 format=teach grade=2 unit=3 subject=coding levels=[easy, medium, hard] {
+lesson coding-a-tune-from-a-program v=2 format=teach grade=2 unit=7 subject=coding levels=[easy, medium, hard] {
   title "A tune from a program"
   goal "Read a tune written as play blocks with a repeat, say which notes it plays in order, and work out a repeat from the tune."
 

@@ -1,0 +1,37 @@
+# The two-star reason: two versions of one short piece. At easy one repeats every name and has no
+# linking words (B is right); at hard one uses it where it could mean two things, and naming is
+# clearer (A is right). The right reason is offered for both letters, so the texts decide.
+item writing.which-holds-together v=1 stars=2 skills=[writing.cohesion, reasoning.explain] {
+  title "Which version reads better, and why?"
+  difficulty k
+  let k=0..1 r=0..2
+  let ta={pick(k, "Nadia climbed the ladder. Nadia took down a box. Nadia opened the box. The map was inside the box.", "The cart stopped at the gate with its horse. The cart was too wide to pass, so the horse was led through alone.")}
+  let tb={pick(k, "Nadia climbed the ladder and took down a box. When she opened it, the map was inside.", "The cart and its horse stopped at the gate. It was too wide to pass, so it was led through alone.")}
+  let right={pick(k, "B: pronouns and adverbials link it up", "A: it names the cart where it could mean two")}
+  let w1={pick(k, "A: pronouns and adverbials link it up", "B: it names the cart where it could mean two")}
+  let w2={pick(k, "A: naming Nadia each time keeps her clear", "B: its pronouns save naming the cart again")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x31 {
+    row two at=canvas(1, 0) space=1 align=start {
+      passage a title="A" text="{ta}" width=16 numbers=false
+      passage b title="B" text="{tb}" width=16 numbers=false
+    }
+    text ask "Two versions of the same piece about the old city. Which one reads better, and why?" narrate width=32 below=two gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=two {
+      say "Check that choice against its text. A piece holds together when each sentence links clearly to the last: too many repeats make it jerky, and a pronoun that could mean two nouns makes the reader guess."
+    }
+  }
+  hint "Two choices give the same reason. Read both versions aloud: which one does that reason really describe?"
+  hint "Check every pronoun, it, he or she: can you say exactly which noun it means?"
+}

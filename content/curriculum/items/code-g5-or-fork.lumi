@@ -1,0 +1,32 @@
+# Or: one test passing is enough. The slip is to want both, so the numbers that pass only one test
+# are where the question is asked.
+item coding.or-fork v=1 skills=[coding.decisions, reasoning.logic] {
+  title "One is enough"
+  difficulty (if n < lo or n > hi then 1 else 0)
+  let lo={3} hi={8} n=1..10
+  level easy {
+    let n={4, 6, 7, 1}
+  }
+  level hard {
+    let n={1, 2, 9, 10}
+  }
+
+  scene 36x23 {
+    program p code=["if n is less than {lo} or n is more than {hi}", "  say note it", "otherwise", "  say skip"] at=canvas(1, 0)
+    fork f ask="Is n less than {lo} or more than {hi}?" yes="note it" no="skip" cond="n is less than {lo} or n is more than {hi}" n=n below=p gap=1
+    text ask "The astronomer notes stars that are very faint or very bright. n is {n}. What does the program say?" width=13 right-of=f gap=1
+    choice pick options=["note it", "skip"] below=ask gap=1
+  }
+
+  check coding.runs of=f pick=said
+  feedback {
+    when (pick == "skip" and n < lo) point=p {
+      say "{n} is not more than {hi}, but it is less than {lo}. With or, one test passing is enough."
+    }
+    when (pick == "skip" and n > hi) point=p {
+      say "{n} is not less than {lo}, but it is more than {hi}. With or, one test passing is enough."
+    }
+  }
+  hint "Ask each test about {n} in turn."
+  hint "Or says yes when at least one answer is yes."
+}

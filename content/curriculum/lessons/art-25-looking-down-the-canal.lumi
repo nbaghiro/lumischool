@@ -1,0 +1,68 @@
+# One-point perspective on the canal: the horizon at the eye, one vanishing point, and things drawn
+# smaller as they go back, after Canaletto's views along the canals of Venice.
+lesson art-looking-down-the-canal v=1 format=teach grade=5 unit=1 subject=art levels=[easy, medium, hard] {
+  title "Looking down the canal"
+  goal "Draw a view that runs away from you in one-point perspective, with a horizon, one vanishing point and things that get smaller as they go back."
+
+  look {
+    scene 30x12 {
+      row all at=canvas(1, 1) space=1 align=end {
+        perspective canal horizon=5 vp=10 posts=4 guide=true ring=true
+        narrowboat boat windows=3 pots=2
+      }
+    }
+    say """
+      Canaletto painted the canals of Venice nearly three hundred years ago, and his views look deep
+      because of a rule he drew with. The horizon is ruled at the height of the painter's eyes. Every
+      edge that runs straight away from you, the banks, the water's edge, a roof along the canal,
+      meets the others at one point on the horizon, the vanishing point. Things of one size are drawn
+      smaller the further back they stand.
+      """
+  }
+  do {
+    practice art.canal-which-dot count=1 seed=1 hard-seed=2
+    practice art.canal-wrong-line count=1 seed=2
+    level easy {
+      worked art.canal-post-height h=6 m=2 a=10 q=0 level=medium
+    }
+    practice art.canal-which-way count=2 seed=1
+    practice art.canal-post-height count=2 seed=3
+    practice art.canal-eye-level count=1 hard-count=2 seed=2
+    practice art.canal-slope count=1 seed=1
+  }
+  try stars=2 {
+    show art.canal-gaps-why r=1 easy-r=0 hard-r=2
+  }
+  try stars=3 {
+    show art.canal-draw
+  }
+  remember {
+    say "The horizon is at your eyes, and every edge that runs away from you meets at one point on it."
+  }
+
+  grown-ups """
+    Giovanni Antonio Canal, called Canaletto, lived from 1697 to 1768, and his paintings of Venice are
+    long out of copyright; the lesson uses a canal of our own. One-point perspective is the first
+    drawing system children meet that has rules, and most of the questions are marked by the machine.
+    The first ones find the vanishing point with a ruler and spot the edge ruled wrong. The core
+    sorts lines by where they run (away from you, across, or up), works out how tall a post is drawn
+    further away, which is inverse proportion met in a picture, and places things above or below the
+    horizon by comparing them with the height of the artist's eyes.
+
+    Watch for a child who thinks the horizon is where the land ends in the picture. It is where the
+    eyes are, so it moves when the artist sits down or climbs the bridge. If the post questions are
+    stuck, stand at the end of a corridor or a straight path and hold a pencil out at arm's length to
+    measure a door near you and one far away; the far one really is shorter on the pencil. The
+    two-star question asks why the gaps shrink as well as the posts. The drawing is the three-star
+    question and is responded to rather than marked.
+
+    Respond by laying a ruler along two of the child's edges together and seeing where they meet:
+    "These two run to the same point on your horizon." Ask where they imagined standing.
+    """
+  level easy {
+    grown-ups "At this level the edges meet at the middle dot, the edge ruled wrong is an outer towpath edge, the lines to sort are the towpath, a lamp post, the bridge and a boat's roof, a post twice as far is worked once in the teacher's pen before two more, Ada stands on the towpath for the horizon question, the slopes are the mill wall and the towpath, and the two-star and three-star are as written."
+  }
+  level hard {
+    grown-ups "At this level the vanishing point is at the left or the right, the edge ruled wrong is one of the water's edges, the lines to sort are the lock beam, the mill's corner, its gutter and a lock step, the posts are three times as far and the far post is given and the near one asked, Ada sits on the towpath or stands on the bridge and a second horizon question is added, the slopes include a handrail at eye height, and the two-star and three-star are as written."
+  }
+}

@@ -1,0 +1,24 @@
+# The lock gate: the water pushes hardest at the bottom, so the gate is built thickest there and a
+# paddle low in the gate lets water through fastest. d is the lock's depth in metres.
+item physics.lock-gates v=1 skills=[physics.pressure, reasoning.explain] {
+  title "The thickest part of the gate"
+  let d={3, 4}
+
+  scene 36x11 {
+    canallock l level=1 boat=0 at=canvas(1, 0)
+    text ask "A lock gate holds back {d} m of water. Where does the gate have to be thickest and strongest?" narrate width=14 right-of=l gap=1
+    choice pick options=["At the top", "In the middle", "At the bottom"] below=l gap=1
+  }
+
+  answer pick="At the bottom"
+  feedback {
+    when (pick == "At the top") point=l {
+      say "Near the top there is little water above, so the push there is small. Where is the water deepest?"
+    }
+    when (pick == "In the middle") point=l {
+      say "The push keeps growing all the way down. Where is the water deepest?"
+    }
+  }
+  hint "Where on the gate is the most water above it?"
+  hint "The deeper the water, the harder it pushes."
+}

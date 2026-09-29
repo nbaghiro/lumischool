@@ -1,0 +1,75 @@
+# Listening to Handel's Water Music (1717): a piece drawn as a listening map, with letters for the
+# tunes that return, the family that has the tune and the loudness marks, and the hornpipe's own
+# tune played from its score, with the canal town's band on a narrowboat.
+lesson music-listening-to-water-music v=1 format=teach grade=5 unit=3 subject=music levels=[easy, medium, hard] {
+  title "Listening to Handel's Water Music"
+  goal "Follow a piece on a listening map, telling which tune returns, who plays it and how loud it is."
+
+  look {
+    scene 36x22 {
+      column all space=1 align=start at=canvas(1, 1) {
+        narrowboat boat windows=4 pots=2
+        listenmap map title="Handel, Water Music: Alla Hornpipe" sections=[0, 0, 1, 0] bars=[] tune=[-1, -1, -1, -1] loud=[-1, -1, -1, -1] tempo=[0, 0, 0, 0] count=0 ask=-1
+      }
+    }
+    say """
+      On 17 July 1717 King George I sailed up the River Thames in London on a royal barge, and about
+      fifty musicians played beside him on another barge. George Frideric Handel wrote the music for
+      them, and the king liked it so much that it was played at least three times that night. It is
+      called the Water Music. One of its pieces, the Alla Hornpipe, is drawn here as a listening
+      map, a strip read from left to right in the order you hear it. Each tune gets a letter and a
+      shape: tune A is played twice, then a new tune, B, and then A comes back. Under a section a
+      map can draw the family of instruments that has the tune and a mark for how loud it is.
+      """
+  }
+  do {
+    show music.water-returns f=1 easy-f=0 hard-f=2
+    level easy {
+      worked music.water-family f=0 level=medium
+    }
+    show music.water-family f=2 easy-f=1 hard-f=3
+    show music.water-loud f=1 easy-f=0 hard-f=2
+    show music.water-theme
+    show music.water-bars f=1 easy-f=0 hard-f=2
+    show music.water-returns f=2 easy-f=1 hard-f=3
+    show music.water-loud f=2 easy-f=1 hard-f=3
+    show music.water-bars f=2 easy-f=1 hard-f=3
+    level hard {
+      show music.water-family f=2
+    }
+  }
+  try stars=2 {
+    show music.water-claim q=0 r=0 easy-r=1 hard-q=2
+  }
+  try stars=3 {
+    show music.water-clues v=0 a=1 easy-a=0 hard-v=1
+  }
+  remember {
+    say "On a listening map the same tune always gets the same letter, whoever plays it and however loud."
+  }
+
+  grown-ups """
+    The idea is that a piece of music has a plan you can follow while you listen, drawn as a strip
+    of shapes with a letter for each tune, the family of instruments that has the tune, and how loud
+    it is. The wrong idea to watch for is giving a section a new letter because the instruments or
+    the loudness changed, when the tune is the same; the two-star question tests exactly that. In
+    the working, look for the child pointing along the strip and comparing each section with the
+    first. The core reads the letters, the families and the marks from pp to ff, plays the start of
+    Handel's own tune, and works back from a piece's length to the length of its B sections. The
+    three-star question is a logic puzzle with four clues, easiest by starting with the brass.
+
+    If the child is stuck, go back to the first question and trace each shape with a finger, saying
+    its letter aloud; stay on this lesson another day if new instruments still get new letters. Off
+    the page, listen to the Alla Hornpipe together (any recording from a library or a broadcast will
+    do; the lesson plays no recording) and draw your own map as you listen: raise a hand when A
+    comes back. The Water Music is from 1717 and long out of copyright. This lesson meets China's
+    2022 arts standard for grades 3 to 5, 听赏与评述: "能听出音乐的主题…了解二段体、三段体、回旋曲式等音乐结构，并能用语言、动作、图示或乐谱等加以表示"
+    (hear a piece's theme and show its form in words, movement, a diagram or a score).
+    """
+  level easy {
+    grown-ups "At this level the maps have five sections with A heard two or three times, one family count is worked in the teacher's pen before more, the loudness marks are p, mp, mf and f, the B sections come from pieces of 40 and 48 bars, the two-star is as written with its answers in another order, and the three-star asks about B, the section the woodwind clue settles."
+  }
+  level hard {
+    grown-ups "At this level the maps include a rondo and a piece with A heard four times, the families counted are the woodwind and the brass, the loudness marks run the whole way from pp to ff, the B sections come from pieces with shorter A sections, one more family question is asked, the two-star change is a slowing down rather than new instruments, and the three-star puzzle has its softest section moved."
+  }
+}

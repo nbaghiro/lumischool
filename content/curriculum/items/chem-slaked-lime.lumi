@@ -1,0 +1,33 @@
+# Quicklime and water make slaked lime, and the grams add up: calcium oxide (56) and water (18) give
+# calcium hydroxide (74). It gets very hot, so builders do it in goggles and gloves.
+item chem.slaked-lime v=1 skills=[chemistry.changes, chemistry.conservation] {
+  title "Quicklime and water"
+  difficulty d
+  let d=0..1 n={1, 2, 3}
+  let quick={56 * n}
+  let water={18 * n}
+  level easy {
+    let d=0..0
+  }
+  level hard {
+    let d=1..1
+  }
+
+  scene 36x13 {
+    well w courses=3 bucket=1 at=canvas(1, 0)
+    text ask "The builder, in goggles and gloves, pours water on {quick} g of quicklime. It hisses, gets very hot, and all of it turns into slaked lime. {if d == 0 then \"The water weighed \" else \"There are \"}{if d == 0 then water else quick + water}{if d == 0 then \" g. How many grams of slaked lime are there?\" else \" g of slaked lime and nothing left over. How many grams of water joined in?\"}" narrate width=26 right-of=w gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(d, quick + water, water)
+  feedback {
+    when (d == 0 and answer == quick) point=w {
+      say "The water did not go away: it joined the quicklime to make the new substance."
+    }
+    when (d == 1 and answer == quick + water) point=w {
+      say "That is the slaked lime. Some of it was quicklime to start with: how much came from the water?"
+    }
+  }
+  hint "Where did the water go? Did it leave, or become part of the slaked lime?"
+  hint "Nothing left and nothing came in from outside. How do the grams before and after compare?"
+}

@@ -1,0 +1,40 @@
+# The story: a bat detector on the observatory roof clicks each time a bat flies past, and four nights
+# of counts against the evening temperature. Easy finds a difference, medium a times-as-many, and
+# hard a rate per hour, so the unknown moves while the table stays.
+item nature.bat-passes v=1 skills=[nature.night-animals, data.tables, division.sharing] {
+  title "The bat detector"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "How many more bat passes were there on the 14 °C night than on the 10 °C night?", "How many times as many bat passes were there on the 14 °C night as on the 6 °C night?", "On the 18 °C night the detector ran for 5 hours. How many passes was that an hour, on average?")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x30 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      bats b count=3 flying=1
+      moon mo phase=0.5
+    }
+    table t cols=2 head=["Evening temperature", "Bat passes"] cells=["6 °C", "5", "10 °C", "15", "14 °C", "30", "18 °C", "50"] below=pics gap=1
+    text ask "Ada leaves a bat detector on the observatory roof. It clicks each time a bat flies past, and she writes down the passes for four nights. {asks}" narrate width=32 below=t gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer pick(k, 15, 6, 10)
+  feedback {
+    when (k == 0 and answer == 45) point=t {
+      say "That adds the two nights. How many more is the difference between them."
+    }
+    when (k == 1 and answer == 25) point=t {
+      say "25 is how many more. How many lots of 5 make 30?"
+    }
+    when (k == 2 and answer == 250) point=t {
+      say "The 50 passes are for all 5 hours together. Share them between the hours."
+    }
+  }
+  hint "Find the rows the question needs in the table."
+  hint "Is the question asking how many more, how many times as many, or how many each hour?"
+}

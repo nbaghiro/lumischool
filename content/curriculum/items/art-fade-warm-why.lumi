@@ -1,0 +1,32 @@
+# The two-star reason: a far ridge painted pale but warm still jumps forward, because warm colours
+# come towards the eye and the air makes far things cooler.
+item art.fade-warm-why v=1 stars=2 skills=[art.space, art.warm-cool, reasoning.explain] {
+  title "The ridge that will not sit back"
+  difficulty k
+  let k=0..1 r=0..2
+  let c={pick(k, "pale orange", "pale pink")}
+  let right={"Warm colours come forward; far ones turn cool"}
+  let w1={"It needs to be paler still"}
+  let w2={"Far ridges should be darker"}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x25 {
+    layers land labels=true ring=0 sun=false light="noon" at=canvas(1, 1)
+    text ask "Ada painted the ringed far ridge {c}, as pale as the sky, but it still looks close, as if it is floating in front. Why?" width=15 right-of=land gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column at=canvas(1, 14)
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=land {
+      say "It is already as pale as the sky, so paleness is not the trouble. Which colour is it, warm or cool?"
+    }
+  }
+  hint "Paleness is not the problem: the ridge is as pale as the sky. What else changes with distance?"
+  hint "Is {c} a warm colour or a cool one? Which kind seems to come towards you?"
+}

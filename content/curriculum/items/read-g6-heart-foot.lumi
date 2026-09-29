@@ -1,0 +1,38 @@
+# Iamb or trochee: a line goes da-DUM (weak then strong) or DUM-da (strong then weak). The iambs are
+# from Tennyson's "The Brook" (1855, Gutenberg eBook 56913); the trochees from Blake's "The Tiger"
+# in Songs of Innocence and of Experience (1794; Blake died 1827; Gutenberg eBook 1934) and
+# Stevenson's "Where Go the Boats?" in A Child's Garden of Verses (1885; Stevenson died 1894;
+# Gutenberg eBook 136).
+item reading.heart-foot v=1 skills=[reading.poetry, reading.metre] {
+  title "Iamb or trochee?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={3, 4, 5}
+  }
+  let right={pick(k, "Iamb", "Trochee", "Iamb", "Trochee", "Iamb", "Trochee")}
+
+  scene 36x16 {
+    row top at=canvas(1, 1) space=2 align=end {
+      poem p title="{pick(k, \"The Brook\", \"The Tiger\", \"The Brook\", \"Where Go the Boats?\", \"The Brook\", \"The Tiger\")}" lines=[pick(k, "For men may come and men may go,", "Tiger, tiger, burning bright", "I chatter over stony ways,", "Other little children", "I chatter, chatter, as I flow", "What the hammer? what the chain?")] rhymes=[-1] width=24
+      kingfisher bird flying=1 facing=-1
+    }
+    text ask "An iamb goes da-DUM, weak then strong. A trochee goes DUM-da, strong then weak. Which is the beat of this line?" below=top gap=1 width=34
+    choice pick options=["Iamb", "Trochee"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (right == "Iamb" and pick == "Trochee") point=p {
+      say "Say the first two syllables. Is the first one the loud one, or the second?"
+    }
+    when (right == "Trochee" and pick == "Iamb") point=p {
+      say "Say the line again and listen to its very first syllable. Is it quiet or loud?"
+    }
+  }
+  hint "Say the line aloud and clap on the loud syllables. Where does the first clap fall?"
+  hint "A line that starts with a clap goes DUM-da. A line that starts with a quiet syllable goes da-DUM."
+}

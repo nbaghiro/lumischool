@@ -1,0 +1,76 @@
+# Folk patterns and a design to a brief: the repeat of a printed border, a print far along it,
+# Chinese paper cuts folded before cutting, the three kinds of repeat, and a border that meets a
+# brief, after Khokhloma, Gzhel and paper cutting, in the old city's market by the temple.
+lesson art-folk-patterns-and-a-design-to-a-brief v=1 format=teach grade=5 unit=8 subject=art levels=[easy, medium, hard] {
+  title "Folk patterns, and a design to a brief"
+  goal "Find how a folk pattern repeats, and design a border that meets every point of a brief."
+
+  look {
+    scene 36x13 {
+      row all space=2 align=end at=canvas(1, 1) {
+        temple temple rows=4
+        radial plate repeats=8 motif="drop" missing=-1 colour=blue
+      }
+    }
+    say """
+      In the market by the old city's temple, stalls sell things made the old ways. Khokhloma, from
+      a village on the Volga in Russia, is wooden tableware painted red, black and gold with berries
+      and leaves; it began in the second half of the 1600s. Gzhel pottery, from villages southeast
+      of Moscow, is painted blue on white. In China, paper cuts in red paper decorate windows and
+      doors, and the paper is folded before cutting so that one cut makes every copy. Each pattern
+      repeats: along a border, round a plate or across a wall. A designer who makes one for a
+      customer works to a brief, a list of what the piece must be.
+      """
+  }
+  do {
+    show art.folk-unit f=1 easy-f=0 hard-f=2
+    show art.folk-far n=23 easy-n=14 hard-n=37
+    show art.folk-folds f=1 easy-f=0 hard-f=2
+    level easy {
+      worked art.folk-fit f=0 level=medium
+    }
+    show art.folk-kind q=1 easy-q=0 hard-q=2
+    show art.folk-fit f=2 easy-f=1 hard-f=3
+    show art.folk-brief r=0 easy-r=1 hard-r=2
+    show art.folk-unit f=2 easy-f=1 hard-f=3
+    show art.folk-far n=32 easy-n=16 hard-n=50
+    level hard {
+      show art.folk-folds f=3
+    }
+  }
+  try stars=2 {
+    show art.folk-petals q=0 r=0 easy-r=1 hard-q=1
+  }
+  try stars=3 {
+    show art.folk-design v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A pattern repeats by sliding or turning, and a design to a brief is checked against every point of the brief."
+  }
+
+  grown-ups """
+    The idea is that folk patterns are built from a repeat, which slides along a border, turns round
+    a plate or slides across and down a wall, and that a design for a purpose is checked point by
+    point against its brief. The wrong ideas to watch for are counting a repeat by its shapes alone
+    when the colours repeat more slowly, and counting along a border one print at a time instead of
+    using the length of the repeat. In the working, look for the child marking where each repeat
+    starts. The core finds a repeat, a print far along a border, how many times a paper cut was
+    folded, what kind of repeat a piece has, how many prints fit a brief, and which of three borders
+    meets one; the two-star question asks why alternating petals need an even number; the three-star
+    is a border printed to a brief, which you respond to rather than mark.
+
+    If the far prints are stuck, write the print numbers under the drawn strip and ring every
+    fourth. Off the page, fold a square of paper in half twice, cut a shape from the folded edges
+    and open it; then fold three times and compare. Respond to the border by saying what you see
+    ("the red flower comes back after every four prints") and asking which point of the brief was
+    hardest. This lesson meets Russia's federal work programme for fine art, grade 5, module 1,
+    «Декоративно-прикладное и народное искусство» (folk and decorative art: Khokhloma, Gzhel,
+    embroidery, emblems).
+    """
+  level easy {
+    grown-ups "At this level the repeats are two and four prints with shape and colour together, the prints asked are 14 and 16, a border fitted to its length is worked in the teacher's pen before more, the paper cut is counted in folds from 4 copies, the kind of repeat asked is the turning plate, the two-star is as written with its answers in another order, and the three-star border has a repeat of three."
+  }
+  level hard {
+    grown-ups "At this level the repeat's colours come round more slowly than its shapes, the prints asked are 37 and 50, the paper cuts ask for the copies after one more fold and the folds for 32 copies, the kind of repeat asked is the wallpaper, the two-star plate has room for 9 or 10 petals, and the three-star border has one block turned the other way."
+  }
+}

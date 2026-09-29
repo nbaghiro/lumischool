@@ -1,0 +1,33 @@
+# Two stories share a theme when they teach the same idea, however different their people and
+# places. The four one-line stories carry the four canal stories' themes in a kitchen, a street,
+# a classroom and a music lesson.
+item reading.same-theme v=1 skills=[reading.theme, reading.comparison] {
+  title "The same theme, a different story"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let rush={"Jo gulps her tea, spills it and must make more."}
+  let kind={"Sam lends Lee a coat. Later, Lee lends Sam his."}
+  let truth={"Ada breaks a cup and tells her dad straight away."}
+  let practise={"Leo plays one tune every day until it is easy."}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 36x24 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=centre {
+        passage p title="{pick(k, \"The race to the lock\", \"The miller's flour\", \"The broken paddle\", \"Learning the tiller\")}" text="{pick(k, \"Kit races an old boatman to the lock, jams his boat and loses an hour.\", \"A baker gives a miller flour in a dry summer. In winter he mends her oven.\", \"Nia breaks the lock gear. Nobody saw, but she tells Gran it was her.\", \"Esi steers the boat a little further each evening, until she can take it through the tunnel.\")}" width=27 numbers=false
+        face kid mood=pick(k, "worried", "happy", "worried", "excited") hair=pick(k, 1, 2, 3, 0)
+      }
+      text ask "Which of these stories has the same theme?" width=34
+      choice pick options=[pick(k, kind, rush, rush, truth), pick(k, rush, truth, kind, rush), pick(k, truth, kind, truth, practise)] stack=column
+    }
+  }
+
+  answer pick=pick(k, rush, kind, truth, practise)
+  hint "First say the theme of the canal story in a sentence that has no boat in it."
+  hint "Which of the three short stories would your sentence fit?"
+}

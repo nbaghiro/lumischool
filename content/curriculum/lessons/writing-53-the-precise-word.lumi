@@ -1,0 +1,70 @@
+# The precise word: an exact verb in place of a plain one and its helpers, a thing's own noun, the
+# adjective whose feeling suits the reader, one adjective for very and another, and a rewrite.
+lesson writing-the-precise-word v=1 format=teach grade=6 unit=8 subject=writing levels=[easy, medium, hard] {
+  title "The precise word"
+  goal "Choose the exact verb, noun or adjective that shows the reader what you saw and how it felt."
+
+  look {
+    scene 34x24 {
+      row pics at=canvas(1, 0) space=2 align=end {
+        lander lnd rungs=5
+        crater cr count=2
+        earth globe up=1
+      }
+      passage p title="Kit's two drafts" text="First draft: The astronaut went across the moon. It was very big and very empty, and there was a blue thing in the sky. Second draft: The astronaut bounded across the crater floor. Grey dust stretched, silent and untouched, to the rim, and over it the Earth hung like a blue marble." width=33 numbers=false below=pics gap=1
+    }
+    say """
+      Kit wrote her first draft fast, and then went back for the precise words. The verb went became
+      bounded, which shows how you move when you weigh so little. The moon became the crater
+      floor, and the blue thing became the Earth, each one named exactly. Very big and very empty
+      became one picture: dust, silent and untouched. A precise word is not a long or a rare one.
+      It is the word that lets the reader see what the writer saw.
+      """
+  }
+  do {
+    level easy {
+      worked writing.precise-verb k=0 r=1 level=medium
+    }
+    practice writing.precise-verb count=1 seed=4
+    practice writing.precise-noun count=1 seed=3
+    practice writing.word-connotation count=1 seed=2 hard-count=2
+    practice writing.very-swap count=1 seed=5
+    practice writing.word-mood count=1 seed=1
+    practice writing.precise-fix count=2 seed=7
+    practice writing.precise-rewrite count=1 seed=1
+  }
+  try stars=2 {
+    show writing.precise-reason k=0 r=0 hard-k=1
+  }
+  try stars=3 {
+    show writing.write-earthrise k=0 hard-k=1
+  }
+  remember {
+    say "The precise word shows the reader exactly what you saw: the verb bounded, not went; the noun rim, not edge."
+  }
+
+  grown-ups """
+    Precision is choosing the word that carries exactly the meaning and the feeling you want: an
+    exact verb instead of a plain one propped up by adverbs, a thing's own noun instead of a
+    phrase, and, among adjectives that mean nearly the same, the one whose feeling suits the
+    reader. The lesson names the word classes (noun, verb, adjective, adverb), since from here on
+    the child will meet them in every writing lesson. The look is Kit's two drafts of the same
+    moment on the moon. The way in chooses the verb that says exactly how, and the core names a
+    thing with its noun, chooses between two adjectives that say the same thing (thrifty or
+    stingy, curious or nosy) by whether the letter praises or complains, replaces very and an
+    adjective with one adjective, picks the adjective whose mood fits, finds the robot's vague word
+    and rewrites a vague sentence of Kit's. The wrong idea to watch for is that a precise word is
+    a long or unusual one; ask whether the reader would see the moment more clearly. If the child
+    is stuck, act the sentence out (walk, then trudge, then stride across the room) and let them
+    name the difference. Off the page, keep a list of plain words (went, got, nice, said) on the
+    fridge for a week and collect exact ones to replace each, and notice in a newspaper which
+    adjectives praise and which blame. The two-star question compares two versions, and the
+    three-star question is a description of the child's own, which you mark.
+    """
+  level easy {
+    grown-ups "At this level the exact verb for Kit's leaps is worked once in the teacher's pen, the verb to choose is for the engines, the thing to name is the crater or the lander, the adjectives to choose between are for Omar's water, the very words are big, tired and quiet, the mood is lonely, the robot's vague word is went or put, the sentence to rewrite is the rocket's, the two-star is one exact verb against three words, and the description is five sentences."
+  }
+  level hard {
+    grown-ups "At this level the verb is for the drifting dust, the things to name are the lander and the rim, the adjectives to choose between are asked twice and include Kit's (determined or stubborn), the very words are old, bright and cold, the mood is beautiful, the robot's vague word may be nice, the sentence to rewrite is the crater's, the two-star is a longer sentence that is more precise, and the description is two paragraphs."
+  }
+}

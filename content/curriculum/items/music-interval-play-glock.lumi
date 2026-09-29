@@ -1,0 +1,27 @@
+# An interval played: a bar, then the bar a named interval above it, found by counting letters up the
+# glockenspiel with the first bar as 1.
+item music.interval-play-glock v=1 skills=[music.intervals, music.keys] {
+  title "Play the jump"
+  difficulty (if n <= 4 then 0 else if n <= 6 then 1 else 2)
+  let k=0..7
+  let x={pick(k, "C5", "D5", "F5", "C5", "E5", "D5", "E5", "C5")}
+  let y={pick(k, "E5", "G5", "A5", "G5", "A5", "B5", "B5", "C6")}
+  let n={pick(k, 3, 4, 3, 5, 4, 6, 5, 8)}
+  let said={pick(k, "a 3rd", "a 4th", "a 3rd", "a 5th", "a 4th", "a 6th", "a 5th", "an octave, an 8th,")}
+  let name={pick(k, "C", "D", "F", "C", "E", "D", "E", "C")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..7
+  }
+
+  scene 28x19 {
+    text ask "Under the dome, Ana plays the start of her star tune. Tap {name}, then the bar {said} above it." narrate width=26 at=canvas(1, 1)
+    glockenspiel glock from=C5 bars=8 wide=3 below=ask gap=1
+  }
+
+  check music.plays notes=[{x}, {y}]
+  hint "Put a finger on {name} and call it 1."
+  hint "Move up one bar for each number, and stop when you reach {n}."
+}

@@ -1,0 +1,35 @@
+# A first product with a negative number, found by carrying a pattern on past zero rather than by a
+# rule: each row the answer changes by the same step, so it keeps changing below zero too.
+item negative.times-pattern v=1 skills=[number.negatives, number.multiply-negatives, number.sequences] negatives {
+  title "Carry the pattern on"
+  difficulty (v + m / 3 + n / 10)
+  let v=0..1 n={2, 3, 4, 5} m={1, 2, 3, 4}
+  where (m >= 2 or v == 1)
+  level easy {
+    let v={0} n={2, 3} m={2}
+  }
+  level medium {
+    let v={0} n={4, 5} m={3, 4}
+  }
+  level hard {
+    let v={1} n={3, 4} m={2, 3}
+  }
+
+  scene 34x24 {
+    table log cols=2 head=["Calculation", "Answer"] cells=["{pick(v, \"2\", \"(-\")}{pick(v, \"\", n)}{pick(v, \"\", \")\")} × {pick(v, n, 2)}", pick(v, 2 * n, -2 * n), "{pick(v, \"1\", \"(-\")}{pick(v, \"\", n)}{pick(v, \"\", \")\")} × {pick(v, n, 1)}", pick(v, n, -n), "{pick(v, \"0\", \"(-\")}{pick(v, \"\", n)}{pick(v, \"\", \")\")} × {pick(v, n, 0)}", 0, "(-{pick(v, m, n)}) × {pick(v, n, \"(-\")}{pick(v, \"\", m)}{pick(v, \"\", \")\")}", "?"] at=canvas(1, 1)
+    text ask "A pattern in the hut's logbook. Look at how the answer changes from one row to the next, and carry the pattern on. What goes in place of the question mark?" narrate width=32 below=log gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer pick(v, -m * n, m * n)
+  feedback {
+    when (v == 0 and answer == m * n) point=log {
+      say "Each row the answer goes down by {n}. Below zero it keeps going down."
+    }
+    when (v == 1 and answer == -m * n) point=log {
+      say "Each row the answer goes up by {n}. Past zero it keeps going up."
+    }
+  }
+  hint "From one row to the next, how much does the answer change, and which way?"
+  hint "How many more rows would the pattern need to reach the last one?"
+}

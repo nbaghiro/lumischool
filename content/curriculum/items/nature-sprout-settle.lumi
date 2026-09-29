@@ -1,0 +1,38 @@
+# Two-star: a test that changed two things at once, and the one extra dish that would settle which
+# of them mattered. The right dish differs from A in the thing asked about alone; one wrong dish
+# tests the other thing, and the other changes the same two things again.
+item nature.sprout-settle v=1 stars=2 skills=[nature.seeds, reasoning.fair-test] {
+  title "Which dish settles it?"
+  difficulty k
+  let k=0..2
+  let wb={pick(k, 1, 0, 1)} ab={pick(k, 1, 1, 0)} tb={pick(k, 0, 0, 1)} lb={pick(k, 0, 1, 0)}
+  let told={pick(k, "Ben put dish B in the fridge, where it is dark as well as cold. Nothing sprouted. Ben says seeds need light. Ada says it could be the cold.", "Ben left dish B dry, outside on the cold boat roof. Nothing sprouted. Ben says seeds need water. Ada says it could be the cold.", "Ben covered dish B's seeds with boiled water and oil and put it in a dark cupboard. Nothing sprouted. Ben says seeds need light. Ada says it could be the air.")}
+  let asks={pick(k, "Which extra dish would show whether seeds need light?", "Which extra dish would show whether seeds need warmth?", "Which extra dish would show whether seeds need air?")}
+  let ans={pick(k, "Wet seeds, warm, in a dark cupboard", "Wet seeds, outside on the cold roof", "Under boiled water and oil, warm, in the light")}
+  let o1={pick(k, "Wet seeds, cold, outside on the roof in daylight", "Dry seeds, warm, indoors on the windowsill", "Wet seeds, warm, in a dark cupboard")}
+  let o2={pick(k, "Another dish in the fridge, to be sure", "Dry seeds on the cold roof again, to be sure", "Under water and oil, dark, again to be sure")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x35 {
+    seedtest s mode=0 water=[1, wb] air=[1, ab] warmth=[1, tb] light=[1, lb] seeds=8 rate=100 after=1 at=canvas(1, 1)
+    text ask "{told} {asks}" narrate width=32 below=s gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == o1) point=s {
+      say "Compare that dish with A. Which one thing is different? Is it the thing the question asks about?"
+    }
+    when (pick == o2) point=s {
+      say "Doing B again would change the same two things at once, so it could not tell them apart."
+    }
+  }
+  hint "Dish B differs from A in two rows of the table. Which two?"
+  hint "A dish that settles it has to differ from A in one of those rows only."
+}

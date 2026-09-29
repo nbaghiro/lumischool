@@ -1,0 +1,32 @@
+# Length is not stretch: with the ruler's zero at the hook the pointer reads the whole length, and
+# the stretch is that less the spring's own length. q picks the spring, w the load.
+item physics.spring-length v=1 skills=[physics.forces, physics.measuring] {
+  title "Length and stretch"
+  difficulty (if q == 0 then 0 else 1)
+  let q=0..2 w=2..4
+  level easy {
+    let q={0}
+  }
+  level hard {
+    let q={1, 2}
+  }
+  let per={pick(q, 2, 1, 1.5)}
+  let nat={pick(q, 5, 6, 4)}
+
+  scene 36x21 {
+    spring s load=w per=per limit=8 natural=nat from=1 at=canvas(1, 0)
+    text ask "This ruler's 0 is at the hook. With nothing on it the spring is {nat} cm long. How long is it now, and how far has the load stretched it?" narrate width=22 right-of=s gap=1
+    number-input long below=ask gap=1
+    number-input cm below=long gap=1
+  }
+
+  answer cm=(per * w)
+  check physics.forces of=s long=length
+  feedback {
+    when (cm == nat + per * w) point=s {
+      say "That is the whole length. Part of it is the spring's own {nat} cm."
+    }
+  }
+  hint "Where is the ruler's 0 on this stand?"
+  hint "Take the spring's own length away from the length now."
+}

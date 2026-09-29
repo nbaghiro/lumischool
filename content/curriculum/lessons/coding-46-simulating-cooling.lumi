@@ -1,0 +1,67 @@
+# A number that changes in a loop, to simulate cooling: first the steady drop a child writes first,
+# then the model that loses half the gap to the air each ten minutes, which is how a hot drink really
+# cools. The research hut on the ice shelf, and a flask on the sledge outside it.
+lesson coding-simulating-cooling v=1 format=teach grade=6 unit=2 subject=coding levels=[easy, medium, hard] {
+  title "A program that cools the cocoa"
+  goal "Simulate a drink cooling with a number that changes each time round a repeat, and read what it holds at any step."
+
+  look {
+    scene 36x23 {
+      program p code=["set air to 20", "set cocoa to 84", "repeat 4", "  set gap to cocoa - air", "  take gap / 2 from cocoa"] text=true at=canvas(0, 0)
+      thermometer th from=0 to=100 step=20 value=84 right-of=p gap=2
+      variable v name=cocoa code=["set air to 20", "set cocoa to 84", "repeat 4", "  set gap to cocoa - air", "  take gap / 2 from cocoa"] at=canvas(0, 15)
+    }
+    say """
+      In the research hut the air is 20 °C and a mug of cocoa starts at 84 °C. A simulation is a
+      program that copies something real one small step at a time. Here each time round the repeat
+      is ten minutes, and the cocoa loses half the gap between itself and the air. The box shows
+      every number cocoa held: 84, 52, 36, 28, 24. It cools fast at first, then more and more slowly.
+      """
+  }
+  do {
+    show coding.cool-steady s=80 n=4 d=6 easy-n=3 easy-d=5 hard-s=90 hard-n=5 hard-d=8
+    level easy {
+      worked coding.cool-steady s=90 n=4 d=4 level=medium
+    }
+    show coding.cool-until s=90 w=60 d=8 easy-s=80 easy-w=60 easy-d=8 hard-s=80 hard-w=50 hard-d=6
+    show coding.cool-steady s=90 n=6 d=5 easy-s=80 easy-n=4 easy-d=4 hard-s=80 hard-n=6 hard-d=6
+    show coding.cool-until s=80 w=50 d=5 easy-s=90 easy-w=60 easy-d=8 hard-s=90 hard-w=60 hard-d=5
+    show coding.cool-gap g=64 n=3 easy-g=32 easy-n=2 hard-g=80 hard-n=4
+    show coding.cool-trace g=64 r=1 easy-g=32 easy-r=0 hard-r=2
+    show coding.cool-build k=1 easy-k=0 hard-k=2
+    show coding.cool-outside g=80 easy-g=40 hard-g=96
+    level hard {
+      show coding.cool-trace g=64 r=1
+    }
+  }
+  try stars=2 {
+    show coding.cool-most g=64 k=0 easy-g=32 hard-k=1
+  }
+  try stars=3 {
+    show coding.cool-hottest k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A simulation changes a number a little each time round a repeat, and each time round stands for a step of time."
+  }
+
+  grown-ups """
+    The lesson starts with the model a child writes first, where the cocoa loses the same amount
+    every ten minutes, and moves to the one that cools like a real drink, where it loses half the
+    gap to the air, so it cools quickly at first and slowly later. The common mistakes are working
+    out the first ten minutes and multiplying, which ignores that the gap shrinks, and stopping a
+    repeat until one step early when the number lands exactly on the line. In the child's working,
+    look for a column of numbers, one for each ten minutes. If the child is stuck, write the numbers
+    in a table by hand for two steps and compare them with the variable box. Off the page, measure a
+    mug of hot water with a kitchen thermometer every five minutes and see whether the drops shrink.
+    The two-star question is about which ten minutes cools most; the three-star question runs the
+    model backwards, doubling the gap once for each ten minutes. In the build question the turtle
+    draws the cooling as a graph, so the child sees the drops halve; the drop has to be worked out
+    before the gap shrinks.
+    """
+  level easy {
+    grown-ups "At this level the steady drops are four or five degrees, one is worked in the teacher's pen, the repeat until never lands exactly on its line, the gap model runs for twenty minutes, the table is read after the first ten minutes, the flask starts close to freezing, and the hottest start is worked back over twenty minutes. The graph to build has two drops."
+  }
+  level hard {
+    grown-ups "At this level the steady drops are six or eight degrees over five or six steps, the repeat until lands exactly on its line, the gap model runs for up to forty minutes, the table is read at the second and third ten minutes, the flask starts at 76 °C, the two-star question asks for the size of the third drop, and the hottest start is worked back over forty minutes. The graph to build has three drops, and the repeat has to be set to count them."
+  }
+}

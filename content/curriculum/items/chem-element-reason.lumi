@@ -1,0 +1,33 @@
+# The two-star reason: what makes a substance an element is one kind of atom, not being one substance
+# or one gas. Water is a compound, oxygen gas an element though its molecules are pairs, air a mixture.
+item chem.element-reason v=1 stars=2 skills=[chemistry.elements, reasoning.evidence] {
+  title "Element or not?"
+  difficulty k
+  let k=0..2 r=0..2
+  let claim={pick(k, "Leo says water is an element, because it is only one substance.", "Sam says oxygen gas cannot be an element, because each molecule is two atoms joined.", "Ana says the air round the observatory is an element, because it is one gas you cannot see.")}
+  let right={pick(k, "No: each water molecule has two kinds of atom", "It is an element: both atoms are oxygen", "No: air is a mixture of different substances")}
+  let w1={pick(k, "Yes: one substance is always an element", "It is a compound: its atoms are joined", "Yes: it is all one gas")}
+  let w2={pick(k, "No: water is hydrogen and oxygen gas mixed", "It is a mixture: there are two atoms", "No: air is one compound of two elements")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x22 {
+    atombox box a=pick(k, "water", "oxygen", "nitrogen") na=4 b=(if k == 2 then "oxygen" else "none") nb=(if k == 2 then 1 else 0) at=canvas(1, 0)
+    text ask "{claim} Is that right, and why?" narrate width=23 right-of=box gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=box gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=box {
+      say "An element has only one kind of atom. Read the letters on the atoms in the box, and see how many kinds of molecule there are."
+    }
+  }
+  hint "How many different letters are on the atoms in the box?"
+  hint "Are the molecules all the same, or are there two kinds mixed?"
+  hint "{pick(k, \"One substance can still be built from more than one kind of atom. Is water?\", \"Does being joined in pairs change what kind of atom each one is?\", \"A mixture is different substances together. How many kinds of molecule are there?\")}"
+}

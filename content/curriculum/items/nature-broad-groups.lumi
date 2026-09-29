@@ -1,0 +1,50 @@
+# Living things sorted into their broad groups by features anyone can check: a backbone, green parts
+# that make food, fur and milk, and life too small to see without a microscope. Easy sorts by a
+# backbone and says why a toadstool is not a plant; hard tells a living speck from dust and a bat
+# from a bird by the feature that decides it.
+item nature.broad-groups v=1 skills=[nature.sorting, reasoning.explain] {
+  title "Which group, and why?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "Ada sorts a frog, a snail, a spider and a fish by the question \"Has it got a backbone inside?\" Which two go on the yes side?", "Red toadstools grow on the log by the observatory door. Ben says they are plants. What is the best reason they are not?", "Under the observatory's microscope, a drop of pond water is full of tiny specks too small to see with the eye alone. What shows that the specks are living things?", "A bat has wings, like a bird. Ben's key puts it with the birds. Which feature shows it belongs with the mammals instead?")}
+  let ans={pick(k, "the frog and the fish", "They have no green parts to make their own food", "They swim about, feed, and split to make more", "It has fur and feeds its young on milk")}
+  let o1={pick(k, "the snail and the spider", "They grow out of a dead log", "They are too small to see without a lens", "It hunts at night")}
+  let o2={pick(k, "the frog and the snail", "They have a stalk and a cap", "They are green and brown", "It eats insects")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x27 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      microscope m slide=1 lamp=0
+      log lg rings=5 toadstools=3
+      frog f pose=sit facing=1
+    }
+    text ask "{asks}" narrate width=32 below=pics gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=ask {
+      say "A snail's shell and a spider's hard skin are on the outside. Which two have bones inside them?"
+    }
+    when (k == 1 and pick == o1) point=pics {
+      say "Moss grows on the log too, and moss is a plant. What do toadstools lack that every plant has?"
+    }
+    when (k == 1 and pick == o2) point=pics {
+      say "Plenty of plants have a stalk. The question is how a toadstool gets its food: does it make it in green parts, or take it from the log?"
+    }
+    when (k == 2 and pick != ans) point=m {
+      say "Dust is tiny and can be any colour too. What can a living thing do that a speck of dust cannot?"
+    }
+    when (k == 3 and pick != ans) point=ask {
+      say "Owls and swallows do that too, and they are birds. Which feature does no bird have?"
+    }
+  }
+  hint "Which feature does the question turn on? Could you check it by looking?"
+  hint "Try the reason on another living thing. Is it true of every member of that group, and of no other?"
+}

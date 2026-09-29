@@ -1,0 +1,34 @@
+# Working forward from the ten-minute readings: each can warms by as much in every ten minutes over
+# the first half hour, so can B at m minutes is 20 and m/10 of its ten-minute rise.
+item physics.sun-can-predict v=1 skills=[physics.heat, physics.rate, reasoning.predict] {
+  title "Half an hour in the sun"
+  difficulty (if m == 20 then 0 else 1)
+  let r=0..2 m={20, 30}
+  level easy {
+    let m={20}
+  }
+  level hard {
+    let m={30}
+  }
+  let a={20 + pick(r, 6, 2, 1)}
+  let b={20 + pick(r, 2, 1, 6)}
+  let c={20 + pick(r, 1, 6, 2)}
+
+  scene 22x27 {
+    heatflow t mode=2 cans=[pick(r, "black", "white", "silver"), pick(r, "white", "silver", "black"), pick(r, "silver", "black", "white")] insun=m show=0 at=canvas(1, 0)
+    text ask "After ten minutes in the sun these cans read {a} °C, {b} °C and {c} °C, A to C. In these cans' readings each can warms by as much in every ten minutes. What will can B read after {m} minutes?" narrate width=20 below=t gap=1
+    number-input now below=ask gap=1
+  }
+
+  check physics.forces of=t now=reading(b)
+  feedback {
+    when (now == b) point=t {
+      say "That is B after ten minutes. It keeps warming for every ten minutes it stays out."
+    }
+    when (now == b - 20) point=t {
+      say "That is how far B has warmed. Add it to the 20 °C it started at."
+    }
+  }
+  hint "How many degrees did B warm in the first ten minutes?"
+  hint "How many ten minutes are there in {m} minutes?"
+}

@@ -1,0 +1,32 @@
+# The way in to and: both tests have to pass. The fork lights the way the program's own test takes,
+# and a number just outside either end of the range is where the slip shows.
+item coding.and-fork v=1 skills=[coding.decisions, reasoning.logic] {
+  title "Both have to be true"
+  difficulty (if n <= lo or n >= hi then 2 else 0)
+  let lo={3} hi={8} n=1..10
+  level easy {
+    let n={2, 5, 6, 10}
+  }
+  level hard {
+    let n={3, 8, 9}
+  }
+
+  scene 36x23 {
+    program p code=["if n is more than {lo} and n is less than {hi}", "  say look", "otherwise", "  say skip"] at=canvas(1, 0)
+    fork f ask="Is n more than {lo} and less than {hi}?" yes="look" no="skip" cond="n is more than {lo} and n is less than {hi}" n=n below=p gap=1
+    text ask "The telescope looks only at stars whose brightness n passes both tests. n is {n}. What does the program say?" width=13 right-of=f gap=1
+    choice pick options=["look", "skip"] below=ask gap=1
+  }
+
+  check coding.runs of=f pick=said
+  feedback {
+    when (pick == "look" and n <= lo) point=p {
+      say "{n} is less than {hi}, but it is not more than {lo}. With and, both tests have to pass."
+    }
+    when (pick == "look" and n >= hi) point=p {
+      say "{n} is more than {lo}, but it is not less than {hi}. With and, both tests have to pass."
+    }
+  }
+  hint "Ask the first test about {n}. Then ask the second."
+  hint "And says yes only when both answers are yes."
+}

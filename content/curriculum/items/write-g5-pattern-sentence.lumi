@@ -1,0 +1,18 @@
+# The three-star: sentences built to a pattern of word classes, which a grown-up marks against the
+# list. Many sentences fit, so the child chooses every word and checks each one's job.
+item writing.pattern-sentence v=1 stars=3 skills=[writing.word-classes, writing.sentences, writing.composing] {
+  title "A sentence to a pattern"
+  let k=0..1
+
+  scene 34x30 {
+    row top at=canvas(1, 1) space=2 align=end {
+      wordtrain pattern parts=["det", "adj", "noun", "verb", "adv"] blank=-1 word=""
+    }
+    text ask "{pick(k, \"Write a sentence about the night sky in this order: determiner, adjective, noun, verb, adverb, as in The silver moon rose slowly. Then write a second one that adds a preposition and a noun after the adverb.\", \"Write two sentences about the observatory in this order: determiner, adjective, noun, verb, adverb. Then join them into one with a conjunction, and say which word is the conjunction.\")}" width=32 below=top gap=1
+    writinglines lines lines=4 width=32 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Sentences that follow the pattern word for word (a determiner such as the or a, an adjective, a noun, a verb, an adverb), make sense about the night sky or the observatory, and at the end add either a preposition with its noun (rose slowly over the hill) or a conjunction that joins two clauses (and, but, because, while)." notice=["Every word in its class, in the order", "Each sentence makes sense", "The preposition or conjunction added and doing its job", "Different words from the example"] ask="Which word was hardest to choose, and which class did it need to be?"
+  hint "Choose the noun first. What in the sky could the sentence be about?"
+  hint "Now give it an adjective in front and a verb after. How did it do that: which adverb?"
+}

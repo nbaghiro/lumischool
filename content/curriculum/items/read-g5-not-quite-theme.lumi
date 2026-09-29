@@ -1,0 +1,45 @@
+# The two-star reason: Ivy offers a theme, and the child judges it. It may be a rule for one story's
+# people, a real theme, or a rule that sounds general but still needs a boat, so the answer changes
+# with the version and every reason has to be checked against the story.
+item reading.not-quite-theme v=1 stars=2 skills=[reading.theme, reasoning.explain] {
+  title "Is it the theme, and why?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+  let said={pick(k, "Never race a boat to a lock.", "Practice can make a hard thing easy.", "Anyone can learn to steer through a tunnel.")}
+  let yes={"Yes: it is an idea about life that fits anyone."}
+  let only={"No: it fits only the things in this one story."}
+  let plot={"No: it tells what happens, not what it teaches."}
+  let right={pick(k, only, yes, only)}
+
+  scene 35x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        person ivy pose=point age=child hair=bunches top=berry
+        bubble says "{said}" width=16 from=ivy
+      }
+      text ask "Ivy says this is the theme of {pick(k, \"The race to the lock\", \"Learning the tiller\", \"Learning the tiller\")}. Is it, and why?" width=34
+      choice pick options=[yes, only, plot] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == plot) point=says {
+      say "Ivy's sentence is not a list of events. Does it fit people with no boat, no mill and no lock?"
+    }
+    when (k == 1 and pick == only) point=says {
+      say "Take the boat and the tunnel away. Is the sentence still true for someone learning to swim, or to play a tune?"
+    }
+    when (k != 1 and pick == yes) point=says {
+      say "Try it on someone with no boat and no lock. Does the sentence still mean anything to them?"
+    }
+  }
+  hint "Who could Ivy's sentence help, apart from the people in the story?"
+  hint "Say it about a kitchen or a classroom instead. Does it still work?"
+}

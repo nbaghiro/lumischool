@@ -1,0 +1,41 @@
+# A theme written well is a sentence that says something about life. "This story is about honesty"
+# names only a topic, and a rule that needs the story's boat or mill is a lesson for its people
+# alone. All three are whole sentences with no names in them, so only what they say tells them
+# apart.
+item reading.theme-sentence v=1 skills=[reading.theme, reading.evaluation] {
+  title "Write the theme as a sentence"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let good={pick(k, "If you keep practising, hard things get easier.", "If you help others, they may help you one day.", "Telling the truth is hard, but it is right.", "Hurrying can make a job take longer.")}
+  let word={pick(k, "This story is about practice.", "This story is about kindness.", "This story is about honesty.", "This story is about hurrying.")}
+  let narrow={pick(k, "Boat steerers should practise every evening.", "Bakers should give spare flour to millers.", "Children should own up when a lock gear breaks.", "Boatmen should never race to a lock.")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 36x24 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=centre {
+        passage p title="{pick(k, \"Learning the tiller\", \"The miller's flour\", \"The broken paddle\", \"The race to the lock\")}" text="{pick(k, \"Esi steers the boat a little further each evening, until she can take it through the tunnel.\", \"A baker gives a miller flour in a dry summer. In winter he mends her oven.\", \"Nia breaks the lock gear. Nobody saw, but she tells Gran it was her.\", \"Kit races an old boatman to the lock, jams his boat and loses an hour.\")}" width=27 numbers=false
+        face kid mood=pick(k, "excited", "happy", "worried", "worried") hair=pick(k, 0, 2, 3, 1)
+      }
+      text ask "Three children wrote this story's theme. Which is written best?" width=34
+      choice pick options=[pick(k, word, narrow, good, narrow), pick(k, good, word, narrow, good), pick(k, narrow, good, word, word)] stack=column
+    }
+  }
+
+  answer pick=good
+  feedback {
+    when (pick == word) point=p {
+      say "That names what the story is about, its topic, but says nothing about it. What does the story teach about that?"
+    }
+    when (pick == narrow) point=p {
+      say "That needs a boat, a mill or a lock to make sense. A theme fits anyone, anywhere."
+    }
+  }
+  hint "Does it say something, or only name something?"
+  hint "Would it still make sense to someone who has never heard of this story?"
+}

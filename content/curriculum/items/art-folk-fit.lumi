@@ -1,0 +1,35 @@
+# A border to a brief: it must end with a whole repeat, so the number of whole repeats that fit is
+# the length divided by one repeat's length, rounded down, and the prints are that times the repeat.
+item art.folk-fit v=1 skills=[art.design, art.pattern, reasoning.two-steps] {
+  title "A border that ends well"
+  difficulty (if f <= 1 then 0 else 1)
+  let f=0..3
+  let len={pick(f, 60, 90, 100, 130)}
+  let w={pick(f, 5, 5, 4, 6)}
+  let u={pick(f, 3, 4, 4, 3)}
+  let right={floor(len / (u * w)) * u}
+  level easy {
+    let f=0..1
+  }
+  level hard {
+    let f=2..3
+  }
+
+  scene 36x17 {
+    printrow row unit=["flower", "leaf", "star", "leaf"] colours=["red", "black", "yellow", "black"] count=u missing=-1 wrong=0 at=canvas(1, 1)
+    text ask "The brief: a border {len} cm long for the temple's lamp cloth, with a repeat of {u} prints, each print {w} cm wide, that ends with a whole repeat. One repeat is drawn above. How many prints can the printer make, at most, without going past the end?" narrate width=34 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == floor(len / w) and floor(len / w) != right) point=ask {
+      say "That many prints fit, but the border would stop partway through a repeat. The brief asks for whole repeats."
+    }
+    when (answer == floor(len / (u * w))) point=ask {
+      say "That is the number of whole repeats. How many prints are in them?"
+    }
+  }
+  hint "How many centimetres long is one whole repeat?"
+  hint "How many whole repeats fit in {len} cm? Each one has {u} prints."
+}

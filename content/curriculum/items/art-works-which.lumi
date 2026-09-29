@@ -1,0 +1,30 @@
+# Knowing a work by its composition: the study's lines alone, no names and no card, and the child
+# says which of the five works it is after.
+item art.works-which v=1 skills=[art.artists, art.looking] {
+  title "Which painting?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..4
+  let work={pick(k, 2, 1, 3, 0, 4)}
+  let right={pick(k, "The Fighting Temeraire", "Kirifuri Waterfall", "Morning in a Pine Forest", "Early Spring", "March")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..4
+  }
+
+  scene 36x40 {
+    studies s work=work names=0 card=0 at=canvas(1, 1)
+    text ask "A study of one of the five works, with its lines only. Which work is it after?" narrate width=12 right-of=s gap=1
+    choice pick options=["Early Spring", "Kirifuri Waterfall", "The Fighting Temeraire", "Morning in a Pine Forest", "March"] stack=column below=s gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=s {
+      say "What is in the near layer at the bottom of the study, and what is far away? Which work has those?"
+    }
+  }
+  hint "Is the picture taller than it is wide, or wider than it is tall?"
+  hint "What is the main thing in it: a mountain, water falling, ships, animals or a house?"
+}

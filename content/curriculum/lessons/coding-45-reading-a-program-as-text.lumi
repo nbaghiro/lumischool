@@ -1,0 +1,67 @@
+# Reading a program written as text: the same program as blocks and as text, where each block is a
+# line of words and the spaces at the start of a line do the work of the C shape's jaws. The research
+# station on the ice shelf in the midnight sun is where the programs run.
+lesson coding-reading-a-program-as-text v=1 format=teach grade=6 unit=1 subject=coding levels=[easy, medium, hard] {
+  title "Reading a program written as text"
+  goal "Read a program printed as text, using the spaces at the start of each line to see what a repeat or an if holds."
+
+  look {
+    scene 36x14 {
+      blocks b code=["set fish to 12", "repeat 3", "  take 4 from fish", "  if fish is 0", "    say all fed"] at=canvas(0, 0)
+      program p code=["set fish to 12", "repeat 3", "  take 4 from fish", "  if fish is 0", "    say all fed"] text=true right-of=b gap=1
+    }
+    say """
+      At the research station on the ice shelf, the keeper's program is shown twice: as blocks, and
+      as text. Each block is one line of words. Where a repeat or an if holds blocks inside its jaws,
+      the text sets those lines two spaces further in instead. Nothing else shows what belongs
+      inside, so in text the spaces at the start of a line matter as much as the words.
+      """
+  }
+  do {
+    show coding.text-where a=2 n=3 d=1 easy-a=1 easy-n=2 hard-n=3 hard-d=2
+    level easy {
+      worked coding.text-where a=3 n=2 d=1 level=medium
+    }
+    show coding.text-runs a=3 b=2 q=0 easy-a=2 easy-b=3 hard-a=3 hard-b=4 hard-q=1
+    show coding.text-value e=4 f=14 easy-e=3 easy-f=10 hard-e=5 hard-f=19
+    show coding.text-blank w=5 h=3 k=0 easy-w=4 easy-h=2 hard-k=1
+    show coding.text-build n=2 a=2 b=1 easy-a=1 easy-b=2 hard-n=3 hard-a=1 hard-b=1
+    show coding.text-where a=3 n=4 d=1 easy-a=2 easy-n=2 hard-d=2
+    show coding.text-runs a=2 b=4 q=1 easy-a=4 easy-b=2 easy-q=0 hard-a=4 hard-b=3
+    show coding.text-value e=5 f=22 easy-e=3 easy-f=11 hard-e=4 hard-f=21
+    level hard {
+      show coding.text-blank w=3 h=4 k=1
+    }
+  }
+  try stars=2 {
+    show coding.text-inside n=4 b=2 c=3 easy-n=3 easy-b=1 easy-c=3 hard-n=5 hard-b=3 hard-c=2
+  }
+  try stars=3 {
+    show coding.text-flat k=1 easy-k=0
+  }
+  remember {
+    say "In text each line is one block, and the spaces at the start of a line show which repeat or if holds it."
+  }
+
+  grown-ups """
+    This is the first lesson where a program is read as text rather than as blocks. The words are
+    the same words the blocks print; what changes is that nesting is shown only by the spaces at the
+    start of a line. The common mistake is to read every line once, top to bottom, as if the spaces
+    were not there. In the child's working, look for a finger or a pencil mark down the left edge
+    that groups the lines set in under their repeat. If the child is stuck, build the same program
+    in blocks beside the text, one line to one block, and compare the jaws of the repeat with the
+    spaces; stay here another day if the spaces are still being ignored. Off the page, write a
+    recipe with the steps inside a "three times" set in, and ask which steps are done three times.
+    The two-star question differs only in the spaces before one line. The three-star question has
+    lost its spaces, so the nesting has to be worked out from the picture. The text is the blocks'
+    own words printed as lines, which is pseudocode: it prepares a child to read a language set out
+    by indentation, such as Python, and the child still answers with a number, a choice or blocks
+    rather than by typing lines.
+    """
+  level easy {
+    grown-ups "At this level the repeats go round twice, one route is worked in the teacher's pen, the lines asked about sit two levels in, the numbers are small, the rubbed-out number is the first side, and the text with no spaces draws a staircase with one repeat."
+  }
+  level hard {
+    grown-ups "At this level the repeats go round three or four times, the line asked about is the one set in only two spaces, the seals' fish do not share out evenly, the rubbed-out number is the upright side, a second rubbed-out program is added, and the text with no spaces holds a repeat inside a repeat."
+  }
+}

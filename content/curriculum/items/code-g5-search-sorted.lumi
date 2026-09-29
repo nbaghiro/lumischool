@@ -1,0 +1,36 @@
+# Two-star: halving throws half the shelf away after one look, which is only safe when the shelf is
+# in order. Two shelves look nearly in order, and one is.
+item coding.search-sorted v=1 stars=2 skills=[coding.algorithms, reasoning.search] {
+  title "Which shelf can be halved?"
+  difficulty k
+  let k=0..2
+  let good={pick(k, "A", "B", "C")}
+  let la={pick(k, "set a to list 3, 8, 12, 19, 25", "set a to list 3, 8, 21, 12, 25", "set a to list 25, 19, 12, 8, 30")}
+  let lb={pick(k, "set b to list 3, 12, 8, 19, 25", "set b to list 3, 8, 12, 19, 25", "set b to list 3, 8, 19, 12, 25")}
+  let lc={pick(k, "set c to list 3, 8, 12, 25, 19", "set c to list 8, 3, 12, 19, 25", "set c to list 3, 8, 12, 19, 25")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x21 {
+    column all at=canvas(1, 0) space=1 align=start {
+      listbox a name=a code=["{la}"]
+      listbox b name=b code=["{lb}"]
+      listbox c name=c code=["{lc}"]
+    }
+    text ask "The librarian searches by halving: look at the middle, then keep only the half the book can be in. On which list does that always find the book?" width=15 right-of=all gap=1
+    choice pick options=["A", "B", "C"] below=all gap=1
+  }
+
+  answer pick=good
+  feedback {
+    when (pick != good) point=all {
+      say "Read that list from left to right: one number is smaller than the one before it, so the half thrown away could hold the book."
+    }
+  }
+  hint "Halving throws half the list away. When is it sure the book is not in that half?"
+  hint "Read each list from left to right. Does every number get bigger?"
+}

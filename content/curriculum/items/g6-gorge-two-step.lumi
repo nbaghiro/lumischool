@@ -1,0 +1,32 @@
+# Two steps undone in reverse order: the adding or taking away first, then the times or the share.
+item algebra.gorge-two-step v=1 skills=[algebra.equations] {
+  title "Two steps back"
+  difficulty (f + a / 5 + x / 12 + (if whole(x) then 0 else 1.5))
+  let f=0..2 a={2, 3, 4, 5} b={3, 5, 7, 9} x=2..12
+  where (f != 1 or a * x > b)
+  where (f != 2 or whole(x / a))
+  level easy {
+    let f={0} a={2, 3} x=2..6
+  }
+  level hard {
+    let f={0, 1} a={4} x={3.5, 4.5, 6.5, 7.5}
+  }
+
+  scene 29x17 {
+    balanceeq scales left="{if f == 2 then \"x/\" else \"\"}{a}{if f == 2 then \"\" else \"x\"} {if f == 1 then \"−\" else \"+\"} {b}" right="{pick(f, a * x + b, a * x - b, x / a + b)}" at=canvas(1, 1)
+    text ask "The water wheel's two pans balance. What number is x?" narrate width=28 below=scales gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer x
+  feedback {
+    when (f == 0 and answer == (a * x + b) / a - b) point=scales {
+      say "Take {b} off both sides first, then share. Sharing first shares the {b} as well."
+    }
+    when (f == 1 and answer == (a * x - 2 * b) / a) point=scales {
+      say "{b} was taken away, so add {b} back on to both sides."
+    }
+  }
+  hint "What was done to x last? Undo that first."
+  hint "What is left on the left side now? Undo that on both sides."
+}

@@ -1,0 +1,35 @@
+# Near the horizon a sky is paler: the band between two tints has an amount of white between theirs.
+item art.sky-paler v=1 skills=[art.blending, art.tints, reasoning.compare] {
+  title "Paler towards the ice"
+  difficulty (if k == 2 then 1 else 0)
+  let k=0..2
+  let p={k % 3}
+  let c={pick(k, "blue", "pink", "orange")}
+  let right={pick(k, "blue and 2 white", "pink and 2 white", "orange and 2 white")}
+  let w1={pick(k, "blue and 8 white", "pink and 8 white", "orange and 8 white")}
+  let w2={pick(k, "blue, 2 white, 1 black", "pink, 2 white, 1 black", "orange, 2 white, 1 black")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x23 {
+    icecliff cliff height=2 floes=2 at=canvas(1, 1)
+    text ask "Ada's midnight sky gets paler towards the ice. She painted one band {c} and 1 white, and the band nearer the ice {c} and 4 white. Which goes between them?" width=18 right-of=cliff gap=1
+    choice pick options=[if p == 0 then right else if p == 1 then w1 else w2, if p == 0 then w1 else if p == 1 then w2 else right, if p == 0 then w2 else if p == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  check paint.mixes pick=between from="{c} and 1 white" to="{c} and 4 white"
+  feedback {
+    when (pick == w2) point=cliff {
+      say "The black darkens it, below both bands. The band between them is a tint with no black."
+    }
+    when (pick == w1) point=cliff {
+      say "8 parts of white is paler than the band nearest the ice. The one between them has more than 1 part of white and fewer than 4."
+    }
+  }
+  hint "Is the band in between paler or darker than the one with 1 white? And than the one with 4?"
+  hint "How much white lies between 1 and 4?"
+}

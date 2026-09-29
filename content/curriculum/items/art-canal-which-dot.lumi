@@ -1,0 +1,23 @@
+# The way in: the canal's edges stop at the far bridge, and a ruler laid along them finds the point
+# where they meet on the horizon.
+item art.canal-which-dot v=1 skills=[art.perspective, art.looking] {
+  title "Where do the edges meet?"
+  difficulty (if v == 8 then 0 else 1)
+  let v={4, 8, 12} h=3..5
+  level easy {
+    let v={8}
+  }
+  level hard {
+    let v={4, 12}
+  }
+
+  scene 36x13 {
+    perspective canal horizon=h vp=v posts=3 dots=true at=canvas(1, 1)
+    text ask "Lay a ruler along each edge of the canal and carry it on past the bridge. At which dot on the horizon do the edges meet?" width=18 right-of=canal gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=(if v == 4 then "A" else if v == 8 then "B" else "C")
+  hint "Put your ruler along the left edge of the water. Where does it cross the horizon line?"
+  hint "Now try the right edge of the water. Do the two edges cross the horizon at the same dot?"
+}

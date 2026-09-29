@@ -1,0 +1,59 @@
+lesson physics-energy-at-the-water-wheel v=1 format=teach grade=6 unit=4 subject=physics levels=[easy, medium, hard] {
+  title "Energy at the water wheel"
+  goal "Follow energy from store to store at the water wheel, in joules, knowing that what goes in all comes out."
+
+  look {
+    scene 24x24 {
+      waterwheel w paddles=8 lit=0 at=canvas(1, 0)
+      energyflow e thing="water wheel" from="moving water" to="turning millstone" input=1000 useful=600 wasted=[398, 2] wastes=["heating", "sound"] blank=-1 unit=J below=w gap=1
+    }
+    say """
+      Energy is measured in joules (J). Water held high behind the weir has energy in its
+      gravitational store; as it falls it moves, and the moving water pushes the wheel round, so the
+      energy is passed by a force into the kinetic store of the wheel. Energy is never made or lost,
+      only moved: of each 1000 J here, 600 J turn the millstone and 400 J are wasted, nearly all of
+      it warming the mill and its air, and only a couple of joules as sound.
+      """
+  }
+  do {
+    practice physics.store-which count=1 seed=1 easy-seed=2 hard-seed=3
+    level easy {
+      worked physics.store-falling-water m=2 h=3 level=medium
+    }
+    practice physics.store-falling-water count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.store-missing count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.store-efficiency count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.store-height-back count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.store-ends-up count=1
+  }
+  story {
+    show physics.store-flour-sack m=20 h=3 easy-m=10 hard-m=25 hard-h=4
+  }
+  try stars=2 {
+    show physics.store-more-out o=1200 easy-o=1500 hard-o=1100
+  }
+  try stars=3 {
+    show physics.store-water-needed v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "Energy is never made or lost: the joules going in all come out, some useful and the rest wasted."
+  }
+
+  grown-ups """
+    The idea to listen for is energy being "used up". Children say a machine uses energy, and the
+    lesson keeps asking where it went instead: into turning, into warmth, into sound, and in the
+    end into a slightly warmer mill. Watch that the band diagrams are read as a sum, the bands out
+    adding to the band in, and that the falling water's joules come from its weight in newtons,
+    not its kilograms. If the joules from falling water stall the child, work one bucket aloud,
+    weight first and then times the height, and stay with the first questions another day. Off
+    the page, lift a 1 kg bag of sugar from the floor onto a table about 1 m high: that is roughly
+    10 J into its gravitational store. The three-star question is worked backwards from the
+    millstone: first the water's joules, then its kilograms.
+    """
+  level easy {
+    grown-ups "At this level a worked example finds the joules from a small bucket, the missing band is the band in or the useful one, the efficiency is out of 200 J, the sack is 10 kg, and the three-star question takes a 60 in 100 wheel and 900 J."
+  }
+  level hard {
+    grown-ups "At this level the buckets are heavier and fall further, the missing band is a wasted one, the efficiency is out of 800 J, the stores to name are thermal, chemical and elastic, the claim is only a little over, and the three-star wheel keeps half of what it gets."
+  }
+}

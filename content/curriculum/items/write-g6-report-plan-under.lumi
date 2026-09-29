@@ -1,0 +1,37 @@
+# The full plan: each note goes under one heading of the simple plan (the Russian простой и сложный
+# план). The hard notes tempt the wrong heading: Armstrong's words sound like the landing but were
+# said as he stepped off the ladder, and Aldrin climbed down after him on the moonwalk. The words
+# are as NASA's air-to-ground transcript prints them.
+item writing.report-plan-under v=1 skills=[writing.planning, writing.notes] {
+  title "Which heading?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={3, 4, 5}
+  }
+
+  scene 36x15 {
+    row all at=canvas(1, 1) space=2 align=start {
+      listpad plan title="Plan" items=["1 Who flew Apollo 11", "2 The landing", "3 The moonwalk", "4 Coming home", "5 Why it still matters"] count=0 width=18 ticks=false
+      column q space=1 align=start {
+        text ask "{pick(k, \"Under which heading does this note go? Armstrong, Aldrin and Collins\", \"Under which heading does this note go? Splashdown, Pacific, 24 July\", \"Under which heading does this note go? About 2.5 hours outside, rocks\", \"Under which heading does this note go? Eagle down, Sea of Tranquillity\", \"Under which heading does this note go? That's one small step for (a) man\", \"Under which heading does this note go? Aldrin follows him down the ladder\")}" width=14
+        number-input answer
+      }
+    }
+  }
+
+  answer pick(k, 1, 4, 3, 2, 3, 3)
+  feedback {
+    when (k == 4 and answer == 2) point=plan {
+      say "Armstrong said it hours after the landing. What was he doing as he spoke?"
+    }
+    when (k == 5 and answer == 2) point=plan {
+      say "The Eagle was already down. What were the two astronauts climbing down to do?"
+    }
+  }
+  hint "What is the note about: the crew, an event, or what it meant?"
+  hint "If it is an event, which part of the story is it: going, landing, walking or coming home?"
+}

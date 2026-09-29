@@ -1,0 +1,39 @@
+# Two-star: yeast is alive, and the proof is a comparison. Both bottles have sugar and warm water, so
+# the gas cannot come from those; only the fresh yeast blows up its balloon, so it is the living yeast
+# that makes the gas, and boiling killed it. The wrong options are each ruled out by the other bottle.
+item nature.group-yeast v=1 stars=2 skills=[nature.microorganisms, reasoning.fair-test] {
+  title "Is yeast alive?"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "What does this show?", "Ben says the sugar makes the gas on its own. What shows he is wrong?", "Ada says the warm water makes the gas. What shows she is wrong?")}
+  let ans={pick(k, "The yeast is alive, and boiling killed it", "Bottle B had sugar too, and made no gas", "Bottle B had warm water too, and made no gas")}
+  let o1={pick(k, "Boiled water makes no gas", "Bottle A's balloon is bigger", "The yeast cells are too small to see")}
+  let o2={pick(k, "Sugar makes gas when it is warm", "Yeast is only a powder", "Bottle A had fresh yeast")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x30 {
+    table t cols=5 head=["Bottle", "Yeast", "Sugar", "Water", "Balloon"] cells=["A", "fresh", "yes", "warm", "blown up", "B", "boiled", "yes", "warm", "flat"] at=canvas(1, 1)
+    text ask "The baker lends Ben some yeast. Ben fills two bottles, boiling the yeast for bottle B first and letting it cool, stretches a balloon over each and waits an hour. {asks}" narrate width=32 below=t gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick == o1) point=t {
+      say "Both bottles had warm water, not boiled water. Only the yeast in B was boiled."
+    }
+    when (k == 0 and pick == o2) point=t {
+      say "Both bottles had sugar and warm water. If sugar made the gas, what would B's balloon do?"
+    }
+    when (k >= 1 and pick != ans) point=t {
+      say "That is true, but it does not answer the claim. Which bottle had that thing and still made no gas?"
+    }
+  }
+  hint "What was the same in both bottles? What was different?"
+  hint "Only one thing differed, so only that thing can explain the balloons."
+}

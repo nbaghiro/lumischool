@@ -1,0 +1,28 @@
+# A primary chord played on the keyboard: built on its scale note, skipping a letter each time. The
+# chords of C major need only white keys; V of G, D and A major needs a black one.
+item music.chords-play-triad v=1 skills=[music.chords, music.keys] {
+  title "Play the chord"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let key={pick(k, "C", "C", "C", "G", "D", "A")}
+  let roman={pick(k, "I", "IV", "V", "V", "V", "V")}
+  let on={pick(k, "C", "F", "G", "D", "A", "E")}
+  let r={pick(k, "C4", "F4", "G4", "D4", "A4", "E4")}
+  let t={pick(k, "E4", "A4", "B4", "Fs4", "Cs5", "Gs4")}
+  let f={pick(k, "G4", "C5", "D5", "A4", "E5", "B4")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 32x17 {
+    text ask "Play chord {roman} of {key} major, all together or one note at a time. It is built on {on}, then skips a letter and takes the next, twice." narrate width=30 at=canvas(1, 1)
+    piano keys from=C4 whites=10 wide=3 labels=letters below=ask gap=1
+  }
+
+  check music.plays notes=[{r}, {t}, {f}] ordered=false
+  hint "Say the letters up from {on}, and keep every other one. Which three letters do you keep?"
+  hint "{if k <= 2 then \"In C major every note is a white key.\" else \"In {key} major one of those letters is sharp. Which one, from the scale?\"}"
+}

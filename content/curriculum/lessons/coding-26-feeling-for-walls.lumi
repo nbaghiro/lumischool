@@ -1,4 +1,4 @@
-lesson coding-feeling-for-walls v=2 format=teach grade=3 unit=5 subject=coding levels=[easy, medium, hard] {
+lesson coding-feeling-for-walls v=2 format=teach grade=3 unit=6 subject=coding levels=[easy, medium, hard] {
   title "A robot that feels for walls"
   goal "Follow a program that asks about a wall ahead every time round a repeat, say where the robot ends, and choose the count and the turn."
 

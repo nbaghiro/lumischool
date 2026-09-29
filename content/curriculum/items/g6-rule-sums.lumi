@@ -1,0 +1,31 @@
+# Adding a negative moves down the scale; taking away a negative moves up it, the same as adding its
+# opposite.
+item negative.rule-sums v=1 skills=[number.negatives, number.subtract-negatives] negatives {
+  title "Plus or minus a negative"
+  difficulty ((if op == "-" then 1 else 0) + (if a < 0 then 0.5 else 0))
+  let a={-6, -3, 2, 5, 8} b={-9, -7, -4, -2} op={"+", "-"}
+  level easy {
+    let op={"+"} a={2, 5, 8}
+  }
+  level hard {
+    let op={"-"} a={-6, -3}
+  }
+
+  scene 34x10 {
+    unknown eq terms=["{a}", op, "({b})", "=", "?"] at=canvas(1, 1)
+    text ask "Work out the calculation from the hut's logbook. Think of a thermometer." narrate width=14 right-of=eq gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (if op == "+" then a + b else a - b)
+  feedback {
+    when (op == "-" and answer == a + b) point=eq {
+      say "Taking away a negative number is the same as adding the positive one, so the answer goes up."
+    }
+    when (op == "+" and answer == a - b) point=eq {
+      say "Adding a negative number is like a fall in temperature: the answer goes down."
+    }
+  }
+  hint "Does adding or taking away a negative number move you up or down the scale?"
+  hint "Start at {a}. How many steps do you move, and which way?"
+}

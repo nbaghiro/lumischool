@@ -1,0 +1,64 @@
+lesson physics-what-changes-a-swing v=1 format=teach grade=5 unit=1 subject=physics levels=[easy, medium, hard] {
+  title "What changes a swing?"
+  goal "Time a pendulum fairly and show that only the length of its string changes how long a swing takes."
+
+  look {
+    scene 36x16 {
+      row all at=canvas(1, 0) space=1 align=start {
+        pendulum short length=3 mass=50 angle=10 tag="A"
+        pendulum long length=7 mass=200 angle=20 tag="B"
+        stopwatch w seconds=17
+      }
+    }
+    say """
+      The mill in the canal town keeps its time with a pendulum. A pendulum takes the same time for
+      every swing, so a clockmaker times ten swings and divides by ten, which shares out the mistake
+      a thumb makes on the stopwatch. Three things could change the time of a swing: the length of
+      the string, the weight of the bob and how far out it is let go. To find out which, change one
+      of them and keep the other two the same. Only the string's length matters: a longer string
+      swings more slowly.
+      """
+  }
+  do {
+    level easy {
+      worked physics.swing-one-swing l=5 level=medium
+    }
+    practice physics.swing-one-swing count=2 seed=1 easy-seed=2 hard-seed=4
+    practice physics.swing-why-ten count=1 seed=1
+    practice physics.swing-mean count=1 seed=2 hard-count=2
+    practice physics.swing-fair count=2 seed=4 easy-seed=5 hard-seed=4
+    practice physics.swing-predict count=2 seed=1 easy-seed=2 hard-seed=4
+  }
+  story {
+    show physics.canal-rope-swing secs=28 dad=80 easy-dad=50 hard-secs=32
+  }
+  try stars=2 {
+    show physics.swing-clock u=0 hard-u=1
+  }
+  try stars=3 {
+    show physics.swing-length-for-time v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "Only the length of the string changes how long a swing takes: longer is slower."
+  }
+
+  grown-ups """
+    Most children, and many adults, expect a heavier bob to swing faster, and some expect a swing
+    let go from further out to take longer. The lesson tests each idea with a fair test, where one
+    thing changes and the other two are kept the same, and the answer is the same both times: only
+    the string matters. Watch the fair-test questions closely: a child who says yes whenever the
+    thing being tested has changed has not yet looked for the second change. If the timing questions
+    stall on the decimals, work one with a real stopwatch, then stay here another day. Off the page,
+    tie a key to a piece of string, count ten swings against a phone's stopwatch three times, take
+    the mean, then halve the string and do it again. The three-star question has no method given:
+    the pattern is that four times the length takes twice the time. In the rope swing question a
+    rider is not a small bob on a string, so a heavier rider changes the time a little, but by far
+    less than a stopwatch in a hand can catch.
+    """
+  level easy {
+    grown-ups "At this level the strings are short and a worked example comes first, one fair-test question has only the thing tested changing, the story's uncle weighs 50 kg, and the three-star string is found for 20 seconds."
+  }
+  level hard {
+    grown-ups "At this level the strings are long, the mean is asked twice, the fair-test questions each hide a second change, the clock to mend is fast rather than slow, and the three-star question asks for 28 seconds, a length the table's pattern has to be carried well past."
+  }
+}

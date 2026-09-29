@@ -1,0 +1,34 @@
+# The water in a room's air, from its volume and the grams in each cubic metre, and the grams that
+# come out on the windows when it cools, from the rounded HyperPhysics table.
+item chem.water-in-hut v=1 skills=[chemistry.water-cycle, multiplication.groups] {
+  title "Water in the hut's air"
+  difficulty (w * 2 + (if v == 20 then 0 else 1))
+  let w=0..1 v={20, 30, 40} h={9, 13}
+  level easy {
+    let w=0..0 v={20, 30}
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 35x19 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      hut hut pictures=5
+      table data cols=2 head=["Air °C", "Most, g per m³"] cells=["0", "5", "10", "9", "20", "17"]
+    }
+    text ask "The research hut holds {v} cubic metres of air at 20 °C, and each cubic metre holds {h} g of water vapour. {if w == 0 then \"How many grams of water vapour are in the hut's air?\" else \"The stove goes out and the air cools to 0 °C. How many grams of water can come out onto the cold windows?\"}" narrate width=34 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then v * h else v * (h - 5))
+  feedback {
+    when (w == 1 and answer == v * h) point=data {
+      say "That is all the water in the air. At 0 °C the air can still keep some of it."
+    }
+    when (w == 1 and answer == h - 5) point=data {
+      say "That is for one cubic metre. How many cubic metres are in the hut?"
+    }
+  }
+  hint "{if w == 0 then \"How many cubic metres are there, and how many grams in each?\" else \"How many grams can each cubic metre keep at 0 °C?\"}"
+  hint "{if w == 0 then \"Multiply the grams in one cubic metre by the cubic metres.\" else \"How many grams must each cubic metre let go? Then for the whole hut.\"}"
+}

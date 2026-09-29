@@ -1,0 +1,47 @@
+lesson physics-year-review-5 v=1 format=review grade=5 unit=9 subject=physics levels=[easy, medium, hard] {
+  title "Physics review: the fifth year"
+  goal "Look back over the year: the pendulum, floating and water pressure, streamlining, the planets, mirrors and lenses, electromagnets and circuit diagrams."
+
+  warm-up {
+    show physics.swing-one-swing l=4 easy-l=3 hard-l=7
+    show physics.upthrust-read a=9 u=2 easy-a=7 easy-u=1 hard-a=10 hard-u=4
+    show physics.reflect-out a=50 easy-a=40 hard-a=55
+  }
+  exercises {
+    show physics.displace-push r=300 a=8 easy-r=200 easy-a=6 hard-r=400 hard-a=10
+    show physics.pressure-depth q=0 d=3.5 easy-d=2 hard-q=1 hard-d=2.5
+    show physics.drop-bottom s="cube" easy-s="ball" hard-s="flat"
+    show physics.scale-model-distance k=4 easy-k=7 hard-k=5
+    show physics.weight-planet p=1 m=10 easy-p=2 easy-m=2 hard-m=30
+    show physics.lens-focus f=14 easy-f=10 hard-f=36
+    show physics.telescope-magnify fo=90 fe=5 easy-fo=60 easy-fe=2 hard-fo=60 hard-fe=4
+    show physics.coil-predict t=40 c=2 easy-t=20 easy-c=1 hard-t=30 hard-c=3
+    show physics.symbol-volts c=4 b=2 easy-c=4 easy-b=1 hard-c=2 hard-b=3
+  }
+  puzzle stars=2 {
+    show physics.coil-double v=2 easy-v=1 hard-v=0
+  }
+  puzzle stars=3 {
+    show physics.swing-length-for-time v=2 easy-v=0 hard-v=3
+  }
+
+  grown-ups """
+    This is a check, not a test, to do in the old city at the end of the fifth year. The warm-up is
+    the first question of three lessons: one swing from ten on a stopwatch, the water's push on a
+    stone, and the angle a beam leaves a mirror at. The exercises take one question each from the
+    year: the push from the water a lump pushes aside, the push at the bottom of a lock, how long a
+    shape takes to sink, a planet's place in the corridor model, a weight on another world, the
+    focus of a lens, how many times bigger a telescope shows the Moon, the clips an electromagnet
+    holds, and the volts in a circuit diagram. Anything that needs the way in again is worth another
+    week with that lesson, and everything else can move on. The two puzzles are there to be enjoyed:
+    the electromagnet puzzle is answered by working out every change, and the pendulum puzzle by
+    spotting that four times the string gives twice the time. Ask for the reason as well as the
+    number.
+    """
+  level easy {
+    grown-ups "At this level the numbers are the smallest of each lesson: short strings, a push of one newton, whole-metre depths, Uranus in the corridor, Jupiter's pull on 2 kg, focuses in tens, a coil on one cell and volts from four cells, and the pendulum puzzle asks for 20 seconds."
+  }
+  level hard {
+    grown-ups "At this level the numbers are the largest: long strings, a push of four newtons, a depth worked back from a push, the flat shape's slow sink, Jupiter's place in tenths of a centimetre, Mars's pull on 30 kg, a focus between the marks, a coil on three cells, volts shared among three bulbs, and the pendulum puzzle asks for 28 seconds."
+  }
+}

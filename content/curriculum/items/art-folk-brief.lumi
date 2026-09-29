@@ -1,0 +1,63 @@
+# Design to a brief: three borders for the temple, one meeting all three points of the brief (a
+# repeat of four prints, two colours, ending with a whole repeat). One uses three colours, and one
+# stops two prints into a repeat. Which letter is which turns with r.
+item art.folk-brief v=1 skills=[art.design, art.pattern, reasoning.evidence] {
+  title "Which meets the brief?"
+  let r=0..2
+  let dA={r}
+  let dB={(r + 1) % 3}
+  let dC={(r + 2) % 3}
+  let au3={pick(dA, "flower", "star", "flower")}
+  let au4={pick(dA, "star", "leaf", "star")}
+  let ac1={pick(dA, "red", "red", "black")}
+  let ac2={pick(dA, "black", "black", "red")}
+  let ac3={pick(dA, "red", "yellow", "black")}
+  let ac4={pick(dA, "black", "black", "red")}
+  let an={pick(dA, 8, 8, 10)}
+  let bu3={pick(dB, "flower", "star", "flower")}
+  let bu4={pick(dB, "star", "leaf", "star")}
+  let bc1={pick(dB, "red", "red", "black")}
+  let bc2={pick(dB, "black", "black", "red")}
+  let bc3={pick(dB, "red", "yellow", "black")}
+  let bc4={pick(dB, "black", "black", "red")}
+  let bn={pick(dB, 8, 8, 10)}
+  let cu3={pick(dC, "flower", "star", "flower")}
+  let cu4={pick(dC, "star", "leaf", "star")}
+  let cc1={pick(dC, "red", "red", "black")}
+  let cc2={pick(dC, "black", "black", "red")}
+  let cc3={pick(dC, "red", "yellow", "black")}
+  let cc4={pick(dC, "black", "black", "red")}
+  let cn={pick(dC, 8, 8, 10)}
+  let right={pick(r, "A", "C", "B")}
+  let three={pick(r, "B", "A", "C")}
+  let short={pick(r, "C", "B", "A")}
+
+  scene 36x26 {
+    row rowA space=1 align=centre at=canvas(1, 1) {
+      text la "A" width=1
+      printrow pa unit=["flower", "leaf", au3, au4] colours=[ac1, ac2, ac3, ac4] count=an missing=-1 wrong=0
+    }
+    row rowB space=1 align=centre below=rowA gap=1 {
+      text lb "B" width=1
+      printrow pb unit=["flower", "leaf", bu3, bu4] colours=[bc1, bc2, bc3, bc4] count=bn missing=-1 wrong=0
+    }
+    row rowC space=1 align=centre below=rowB gap=1 {
+      text lc "C" width=1
+      printrow pc unit=["flower", "leaf", cu3, cu4] colours=[cc1, cc2, cc3, cc4] count=cn missing=-1 wrong=0
+    }
+    text ask "The brief for the temple's border: a repeat four prints long, only two colours, and it must end with a whole repeat. Which border meets all three?" narrate width=34 below=rowC gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == three) point=ask {
+      say "Count the colours in that border."
+    }
+    when (pick == short) point=ask {
+      say "Does that border stop at the end of a repeat, or partway through one?"
+    }
+  }
+  hint "Check one point of the brief at a time, for every border."
+  hint "Count the colours in each, and check where the last repeat of each stops."
+}

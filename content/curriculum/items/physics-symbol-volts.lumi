@@ -1,0 +1,31 @@
+# Volts: each cell gives 1.5 volts, the cells in a row add, and identical bulbs in one loop share the
+# volts equally, which is why more bulbs are dimmer.
+item physics.symbol-volts v=1 skills=[physics.circuits, physics.symbols, decimals.multiply] {
+  title "How many volts?"
+  difficulty (c + b)
+  let c=1..4 b=1..3
+  where (c * 15 % b == 0 and c > 1 and c != b)
+  level easy {
+    where (b == 1)
+  }
+  level hard {
+    where (b > 1)
+  }
+
+  scene 36x23 {
+    series s cells=c bulbs=b closed=1 symbols=1 at=canvas(1, 0)
+    text ask "Each cell gives 1.5 volts, and the cells in a row add together. How many volts do the cells give?" narrate width=12 right-of=s gap=1
+    number-input volts below=ask gap=1
+    text then "The bulbs share the volts equally. How many volts does each bulb get?" narrate width=12 below=volts gap=1
+    number-input each below=then gap=1
+  }
+
+  answer volts=(if c % 2 == 0 then plain(c * 1.5) else decimals(c * 1.5, 1)) each=(if c * 3 % (2 * b) == 0 then plain(c * 1.5 / b) else decimals(c * 1.5 / b, 1))
+  feedback {
+    when (each == c * 1.5 and b > 1) point=s {
+      say "That is all of the volts. The {b} bulbs share them."
+    }
+  }
+  hint "Count the cells and add 1.5 volts for each."
+  hint "Share the volts between the bulbs."
+}

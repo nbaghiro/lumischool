@@ -1,0 +1,39 @@
+# Learning by heart with first letters only: a line is written as the first letter of each word, and
+# the child finds which line of the stanza it is. The wrong lines share the letters at the start or
+# the length, so each letter has to be matched. Lines from Tennyson's "The Brook" (1855, Gutenberg
+# eBook 56913) and Stevenson's "Where Go the Boats?" (1885, eBook 136).
+item reading.heart-first-letters v=1 skills=[reading.poetry, reading.recited] {
+  title "First letters only"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={3, 4, 5}
+  }
+  let right={pick(k, "By twenty thorps, a little town,", "And sparkle out among the fern,", "For men may come and men may go,", "Or slip between the ridges,", "Away down the valley,", "Shall bring my boats ashore.")}
+  let near={pick(k, "By thirty hills I hurry down,", "And half a hundred bridges.", "For men may come and go,", "Or slip between the edges,", "Away down the river,", "Shall bring the boats ashore.")}
+  let far={pick(k, "To bicker down a valley.", "I make a sudden sally", "But I go on for ever.", "To join the brimming river,", "Away down the hill.", "Other little children")}
+
+  scene 36x24 {
+    row top at=canvas(1, 1) space=2 align=end {
+      listpad pad title="Mia's card" items=[pick(k, "B t t, a l t,", "A s o a t f,", "F m m c a m m g,", "O s b t r,", "A d t v,", "S b m b a.")] count=0 width=16 ticks=false
+      ropebridge bridge
+    }
+    text ask "Mia wrote only the first letter of each word to test herself on a line she is learning. Which line is it?" below=top gap=1 width=34
+    choice pick options=[pick(k, near, right, far, near, right, far), pick(k, right, far, near, far, near, right), pick(k, far, near, right, right, far, near)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == near) point=pad {
+      say "That line starts the same way. Match every letter on the card, one word at a time."
+    }
+    when (pick == far) point=pad {
+      say "Check the first letter on the card against the first word of that line."
+    }
+  }
+  hint "How many letters are on the card? How many words must the line have?"
+  hint "Match the letters one at a time. Where does each wrong line stop matching?"
+}

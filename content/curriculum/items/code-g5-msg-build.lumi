@@ -1,0 +1,25 @@
+# The build task on messages: cards to put in order, each used once, so the robot walks the old city's
+# steps to the library door. There is one down card and two broadcasts, so the robot can only go down
+# twice if the script that receives step runs twice.
+item coding.msg-build v=1 skills=[coding.events, coding.messages, coding.sequences] {
+  title "Down the library steps"
+  difficulty k
+  let k=0..2
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x38 {
+    text ask "The lamplighter robot walks down the old city's steps to the library door. Put all seven cards in order, each used once, so the robot reaches the flag." width=34 at=canvas(0, 0)
+    maze m cols=pick(k, 5, 5, 4) rows=pick(k, 3, 5, 3) col=1 row=1 face=right flag=[pick(k, 5, 5, 4), pick(k, 3, 5, 3)] rocks=[pick(k, 1, 1, 3), pick(k, 2, 2, 1), pick(k, 2, 2, 4), pick(k, 2, 2, 1), pick(k, 4, 4, 1), pick(k, 1, 1, 2), pick(k, 3, 4, 4), pick(k, 3, 2, 2), pick(k, 4, 2, 1), pick(k, 3, 4, 3), pick(k, 1, 3, 2), pick(k, 2, 4, 3), pick(k, 1, 4, 3), pick(k, 2, 4, 1), pick(k, 1, 4, 3), pick(k, 2, 5, 1)] below=ask gap=1
+    library lib columns=5 below=m gap=1
+    codepad answer tray=[pick(k, "broadcast step", "broadcast step", "when I receive step"), pick(k, "down 1", "down 2", "right 1"), pick(k, "when the flag is tapped", "when the flag is tapped", "when the flag is tapped"), pick(k, "right 2", "right 2", "broadcast step"), pick(k, "when I receive step", "when I receive step", "down 1"), pick(k, "right 2", "right 2", "right 1"), pick(k, "broadcast step", "broadcast step", "broadcast step")] lines=7 once=true key=[pick(k, "when the flag is tapped", "when the flag is tapped", "when the flag is tapped"), pick(k, "right 2", "right 2", "right 1"), pick(k, "broadcast step", "broadcast step", "broadcast step"), pick(k, "right 2", "right 2", "broadcast step"), pick(k, "broadcast step", "broadcast step", "when I receive step"), pick(k, "when I receive step", "when I receive step", "down 1"), pick(k, "down 1", "down 2", "right 1")] right-of=m gap=2
+  }
+
+  check coding.builds of=m goal=flag
+  hint "There is only one card that goes down, and the robot has to go down more than once. How can one card run twice?"
+  hint "Which script does broadcast step start? Put the down card where it runs each time step is sent."
+}

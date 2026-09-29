@@ -1,0 +1,26 @@
+# Where to put the heater: low down, because warm air rises from it and cool air sinks to take its
+# place, turning the air round the whole room. The drawing shows the heater up high and its readings.
+item physics.hut-heater-where v=1 skills=[physics.heat, reasoning.explain] {
+  title "Where does the heater go?"
+
+  scene 31x35 {
+    heatflow t mode=1 heater=1 show=1 at=canvas(1, 0)
+    text ask "The heater in the hut is high on the wall, and the floor is cold. Where should it go to warm the whole hut, and why?" narrate width=19 below=t gap=1
+    choice pick options=["Low down: warm air rises and turns the room", "Higher still: heat falls to the floor", "Low down: cold air rises from it", "Where it is: heat spreads the same any way"] stack=column below=ask gap=1
+  }
+
+  answer pick="Low down: warm air rises and turns the room"
+  feedback {
+    when (pick == "Higher still: heat falls to the floor") point=t {
+      say "Read the thermometers: the warm air is staying up by the ceiling, not falling."
+    }
+    when (pick == "Low down: cold air rises from it") point=t {
+      say "Air warmed by the heater gets lighter for its size and rises. It is the cool air that sinks."
+    }
+    when (pick == "Where it is: heat spreads the same any way") point=t {
+      say "Compare A and C: 27 degrees at the ceiling and 12 at the floor is not the same."
+    }
+  }
+  hint "Which way does warm air move, up or down?"
+  hint "If the warm air starts at the floor, where will it go next?"
+}

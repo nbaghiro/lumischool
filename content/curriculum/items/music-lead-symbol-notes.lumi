@@ -1,0 +1,35 @@
+# What a chord symbol names: a letter alone is major, m is minor with the middle note a semitone
+# lower, and 7 adds the note a tone below the top octave. Am is A C E, D is D F-sharp A, G7 is G B D F.
+item music.lead-symbol-notes v=1 skills=[music.lead-sheets, music.chords, music.keys] {
+  title "Reading a chord symbol"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..4 r=0..2
+  let sym={pick(k, "Am", "Dm", "Em", "G7", "D")}
+  let right={pick(k, "A, C and E", "D, F and A", "E, G and B", "G, B, D and F", "D, F sharp and A")}
+  let w1={pick(k, "A, C sharp and E", "D, F sharp and A", "E, G sharp and B", "G, B and D", "D, F and A")}
+  let w2={pick(k, "A, B and C", "D, E and F", "E, F and G", "G, B, D and F sharp", "D, E and F sharp")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=2..4
+  }
+
+  scene 36x30 {
+    notes keys clef=treble notes=[C4, D4, E4, F4, G4, A4, B4, C5, D5, E5] values=[] letters=true at=canvas(0, 1)
+    text ask "The letters climb the staff one line or space at a time. The lead sheet on the moon has the symbol {sym}. Which notes does it name?" narrate width=33 below=keys gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=keys {
+      say "{if k == 3 then \"The 7 adds a fourth note to the chord.\" else if k == 4 then \"A letter on its own is a major chord. Is its middle note four or three semitones up?\" else \"The m means minor, so the middle note is three semitones above the bottom one, not four.\"}"
+    }
+    when (pick == w2) point=keys {
+      say "A chord skips a letter each time: take one, leave one, take one."
+    }
+  }
+  hint "Start on the symbol's letter on the staff and take every other letter."
+  hint "{if k == 3 then \"The 7 adds one more note, a skip above the top.\" else if k == 4 then \"A major chord's middle note is four semitones above its bottom note.\" else \"The m means minor: the middle note is three semitones above the bottom.\"}"
+}

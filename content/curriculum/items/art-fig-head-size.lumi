@@ -1,0 +1,35 @@
+# Proportion as a ratio: a figure of known height in heads, drawn a set size, gives the head's size.
+# At hard the unknown moves: the head is given and the height asked.
+item art.fig-head-size v=1 skills=[art.proportion, ratio.parts, reasoning.multiplicative] {
+  title "How big a head?"
+  difficulty (q + k)
+  let k=0..1 s={2, 4, 6} q=0..1
+  let h2={pick(k, 15, 13)}
+  let hn={pick(k, "7.5", "6.5")}
+  let who={pick(k, "a grown-up", "a child of eleven")}
+  let whose={pick(k, "a grown-up's", "a child's")}
+  level easy {
+    let k={0} q={0}
+  }
+  level hard {
+    let k={1} q=0..1
+  }
+
+  scene 28x14 {
+    layfigure fig heads=(h2 / 2) lines=true action=false at=canvas(1, 1)
+    text ask "{if q == 0 then \"At the gorge, Ada is drawing \" else \"At the gorge, Ada draws \"}{if q == 0 then who else whose}{if q == 0 then \", who is \" else \" head \"}{if q == 0 then hn else s}{if q == 0 then \" heads tall, and makes the whole figure \" else \" squares tall. The figure is \"}{if q == 0 then h2 * s / 2 else hn}{if q == 0 then \" squares tall. How many squares tall is the head?\" else \" heads tall. How many squares tall is the whole figure?\"}" width=18 right-of=fig gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if q == 0 then s else h2 * s / 2)
+  feedback {
+    when (q == 0 and answer == h2 * s / 2 - h2 / 2) point=fig {
+      say "The figure is {hn} heads tall, so share its height into {hn} equal heads rather than taking {hn} away."
+    }
+    when (q == 1 and answer == s + h2 / 2) point=fig {
+      say "The figure is {hn} heads stacked up, so multiply the head by {hn} rather than adding."
+    }
+  }
+  hint "How many heads make the whole figure?"
+  hint "{if q == 0 then \"Share the height equally into that many heads.\" else \"Stack that many heads of this size on top of each other.\"}"
+}

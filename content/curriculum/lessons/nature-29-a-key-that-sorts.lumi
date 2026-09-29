@@ -1,0 +1,72 @@
+lesson nature-a-key-that-sorts v=1 format=teach grade=5 unit=4 subject=nature levels=[easy, medium, hard] {
+  title "A key that sorts living things"
+  goal "Sort living things into groups by features anyone can check, and use and write a key of yes-or-no questions that names each one."
+
+  look {
+    scene 34x9 {
+      row all at=canvas(1, 1) space=1 align=end {
+        minibeasts row kinds=["snail", "spider", "ant", "ladybird", "butterfly", "bee"] legs=false
+      }
+    }
+    say """
+      Every night creatures gather round the lamp by the observatory door, and the astronomer gives
+      Ada a card to name them with. It is a key: a list of questions with only two answers, yes or
+      no. Each answer either names the creature or sends her to another question. Does it have legs?
+      Eight of them? Wings? Ada does not need to know the creature to start, only to look carefully,
+      and every creature on the card ends up with a name of its own. Then Ada writes keys of her own.
+      Scientists sort every living thing the same way: animals with a backbone and without one,
+      plants that make their food in green parts, fungi such as toadstools that feed on dead things,
+      and microorganisms, too small to see without a microscope.
+      """
+  }
+  do {
+    level easy {
+      worked nature.key-steps k=3 level=medium
+    }
+    practice nature.key-steps count=1 seed=1 easy-seed=2 hard-seed=1
+    practice nature.key-name count=1 seed=1 easy-seed=1 hard-seed=1
+    practice nature.broad-groups count=2 seed=1 easy-seed=1 hard-seed=1
+    practice nature.good-question count=1 seed=1 easy-seed=1 hard-seed=1
+    practice nature.make-key count=1 seed=2 easy-seed=1 hard-seed=1
+    practice nature.key-gap count=1 seed=1 easy-seed=2 hard-seed=3
+    level hard {
+      show nature.key-mistake k=1 level=medium
+    }
+  }
+  story {
+    show nature.key-tally k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.key-mistake k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.key-count k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Sort by what anyone can check, a backbone, green parts, fur or feathers, and a key asks about it one yes-or-no question at a time."
+  }
+
+  grown-ups """
+    A key turns naming into following: each question has two answers, each answer names the creature
+    or points to the next question, and nothing depends on already knowing what the creature is.
+    Grade four sorted minibeasts by legs and wings; this lesson adds the broad groups scientists use
+    (animals with and without a backbone, plants, fungi and microorganisms) and has the child write
+    the next question of a key, not only follow one. The wrong ideas to watch for are skipping to the
+    question that looks likely instead of starting at 1, writing questions of taste or size (is it
+    pretty, is it big) that two people would answer differently, and sorting by what an animal does
+    (flies, hunts at night) rather than what it is: a bat flies but has fur and milk, and a toadstool
+    grows like a plant but has nothing green to make its food. In the key questions the child should
+    keep a finger on the question being answered and move it only where the answer says. The story
+    reads the key backwards from the names to count who gave which answer. The two-star question
+    finds what is wrong with a question in Ben's key, and the three-star question counts the questions
+    in a whole key, which is always one fewer than the names, since each question adds one group. If
+    the child still jumps ahead after the core, stay here another day and make a key for the family's
+    shoes, starting with one yes-or-no question, then one for five things from the garden.
+    """
+  level easy {
+    grown-ups "At this level a worked example (the ladybird) opens the core, the creature to count questions for is named at the second question, the pond creature is named at the second question, the groups are a backbone or none and why a toadstool is not a plant, the good question is chosen against questions of taste, the next question tells the owl from the bat, the tally asks how many had no legs, Ben's key asks whether it is big, and the key names 4 creatures."
+  }
+  level hard {
+    grown-ups "At this level the creature to count questions for is named at the last question, the pond creature needs three questions, the groups are the living specks under the microscope and the bat that is not a bird, the good question splits four creatures two and two, the first question of a new key has to split four living things two and two, a second reasoning question in the core has Ben's key asking whether it is a bee, the tally asks how many reached question 4, Ben's key calls a bee an ant, and the key names 10 creatures."
+  }
+}

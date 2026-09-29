@@ -1,0 +1,42 @@
+# Two steps to the reader of a letter whose greeting is torn off: the register says family or not,
+# and the sign-off says whether Leo could name the reader. The faithfully letter is the hardest.
+item writing.which-reader v=1 skills=[writing.letters, writing.formality, reasoning.explain] {
+  title "Who was it for?"
+  difficulty (if k == 1 then 1 else 0)
+  let k=0..2
+  let t={pick(k, "Thank you for letting our class visit last Friday. We learned a great deal about comets from your talk. Yours sincerely, Leo Hart", "I would like to order two copies of the star map shown in your window. Please could you tell me the price? Yours faithfully, Leo Hart", "Thank you for the star book you sent. Mum says you can stay with us when the comet comes, and I have saved you a seat. Love from Leo")}
+  let right={pick(k, "Dr Shah, the director he met", "the observatory shop, a reader he cannot name", "his cousin Priya")}
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x29 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage para title="The greeting is torn off" text="{t}" width=23 numbers=false
+      observatory obs open=1
+    }
+    text ask "Leo wrote three letters: to Dr Shah, to the observatory shop and to Priya. Who was this one for?" narrate width=32 below=top gap=1
+    choice pick options=["Dr Shah, the director he met", "the observatory shop, a reader he cannot name", "his cousin Priya"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "his cousin Priya" and right != "his cousin Priya") point=para {
+      say "The words are full and polite, the way Leo writes to someone in charge, not to family. Read the sign-off too."
+    }
+    when (pick != "his cousin Priya" and right == "his cousin Priya") point=para {
+      say "Mum, a saved seat and Love from are words for family. A letter to someone in charge would not use them."
+    }
+    when (pick == "Dr Shah, the director he met" and right != "Dr Shah, the director he met") point=para {
+      say "Yours faithfully goes after Dear Sir or Madam, when the writer cannot name the reader. Could Leo name Dr Shah?"
+    }
+    when (pick == "the observatory shop, a reader he cannot name" and right != "the observatory shop, a reader he cannot name") point=para {
+      say "Yours sincerely goes after a name. Which reader could Leo name and still write to formally?"
+    }
+  }
+  hint "First, are the words formal or friendly? That rules one reader in or out."
+  hint "Then read the sign-off. Does it go after a name, or after Dear Sir or Madam?"
+}

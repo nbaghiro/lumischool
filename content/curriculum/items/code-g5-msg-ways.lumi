@@ -1,0 +1,35 @@
+# Three-star: four programs from one set of lines. The broadcast can go before or after the adding,
+# and the two scripts that receive it can be written in either order; the child finds how many
+# different numbers the four programs end at, and at hard two of them agree.
+item coding.msg-ways v=1 stars=3 skills=[coding.events, coding.messages, reasoning.all-the-ways] {
+  title "Four ways to write it"
+  difficulty k
+  let k=0..2
+  let a={pick(k, 1, 2, 3)} b={pick(k, 2, 1, 2)} c={pick(k, 3, 4, 2)}
+  let kinds={pick(k, 4, 4, 3)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x29 {
+    program p code=["when the flag is tapped", "set n to {a}", "broadcast chime", "add {b} to n", "when I receive chime", "double n", "when I receive chime", "add {c} to n"] at=canvas(0, 0)
+    clocktower ct hour=a minute=0 right-of=p gap=2
+    text ask "The clockmaker can move broadcast chime to after line 4, and can swap the order of the two scripts that receive chime. That makes four programs, counting this one. How many different numbers can n end at?" width=34 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer kinds
+  feedback {
+    when (answer == 4 and kinds == 3) point=p {
+      say "Work out all four. Two of them end at the same number."
+    }
+    when (answer < kinds) point=p {
+      say "Write the four programs down and work out n for each. How many different answers are there?"
+    }
+  }
+  hint "Make a table: where the broadcast is, which script runs first, and n at the end."
+  hint "The scripts that receive chime run in the order they are written, at the moment of the broadcast."
+}

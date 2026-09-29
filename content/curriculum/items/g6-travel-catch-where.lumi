@@ -1,0 +1,40 @@
+# Catching up on the same road: the head start closes by the difference of the speeds. The question
+# asks where, so the time is found and then used with the faster car's speed.
+item travel.catch-where v=1 skills=[rates.speed.catching-up, reasoning.two-steps] {
+  title "Where it catches up"
+  difficulty (late + v1 * late / g)
+  let v1={30, 40, 50} g={10, 20} late={0.5, 1, 1.5}
+  where whole(v1 * late / g)
+  let x={plain((v1 + g) * v1 * late / g)}
+  let d={x + 30}
+  level easy {
+    let late={1} g={20}
+  }
+  level hard {
+    let late={1.5} g={10, 20}
+  }
+
+  scene 36x23 {
+    motionline road mode=1 dist=d v1=v1 v2=(v1 + g) late=late show=0 at=canvas(1, 1)
+    text ask "A lorry leaves the mill at A at {v1} km/h. {if late == 0.5 then \"Half an hour\" else if late == 1 then \"An hour\" else \"An hour and a half\"} later a van leaves the mill after it at {v1 + g} km/h, the same way along the road. How far from A does the van catch the lorry?" narrate width=34 below=road gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "km"
+    }
+  }
+
+  answer x
+  feedback {
+    when (answer == v1 * late) point=road {
+      say "That is the lorry's head start when the van sets off. The van still has to close it."
+    }
+    when (answer == v1 * late / g) point=road {
+      say "That is how many hours the van drives. How far does it go in that time?"
+    }
+    when (answer == (v1 + g) * v1 * late / (2 * v1 + g)) point=road {
+      say "Adding the speeds is for driving towards each other. Here the van gains only the difference."
+    }
+  }
+  hint "How far ahead is the lorry when the van sets off?"
+  hint "By how many kilometres does the van gain on it each hour?"
+}

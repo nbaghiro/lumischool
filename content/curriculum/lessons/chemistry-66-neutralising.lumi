@@ -1,0 +1,64 @@
+lesson chemistry-neutralising v=1 format=teach grade=6 unit=5 subject=chemistry levels=[easy, medium, hard] {
+  title "Neutralising"
+  goal "Work out how much of an alkali or a carbonate neutralises an acid, and say what the reaction makes."
+
+  look {
+    scene 27x12 {
+      row all at=canvas(1, 0) space=2 align=end {
+        waterwheel mill paddles=8 lit=0
+        fizz fz stage=2 spoons=2
+      }
+    }
+    say """
+      At the mill by the waterfall, the miller cleans the stones with vinegar and then stirs in
+      baking soda to make what is left safe. The acid and the soda use each other up: it fizzes,
+      and the pH climbs towards 7. That is neutralising. 100 ml of his vinegar takes 7 g of baking
+      soda, so 200 ml takes 14 g. An acid and an alkali make a salt and water; with a carbonate
+      such as baking soda they make carbon dioxide too, which is the fizz.
+      """
+  }
+  do {
+    practice chem.neutral-which-way count=1 seed=1
+    level easy {
+      worked chem.soda-for-vinegar w=0 v=500 level=medium
+    }
+    practice chem.soda-for-vinegar count=2 seed=4 easy-seed=1 hard-seed=1
+    practice chem.neutral-graph count=2 seed=1
+    practice chem.neutral-products count=1 seed=1
+    practice chem.neutralise-uses count=2 seed=1
+  }
+  level hard {
+    story {
+      show chem.soda-for-vinegar w=1 v=300
+    }
+  }
+  try stars=2 {
+    show chem.why-drops k=0 r=1 hard-k=1
+  }
+  try stars=3 {
+    show chem.leftover k=1 easy-k=0 hard-k=3
+  }
+  remember {
+    say "An acid and an alkali cancel each other out towards 7 and make a salt and water; add a little at a time, and check."
+  }
+
+  grown-ups """
+    The idea is that an acid and an alkali, or an acid and a carbonate, react and use each other
+    up, moving the pH towards 7, and that it takes a measured amount: 7 g of baking soda for each
+    100 ml of kitchen vinegar with 5 g of acid in it, worked out from the two substances' formula
+    masses. The graph shows a pH meter's readings as an alkali goes into an acid of the same
+    strength: it stays acid almost to the end and then jumps through 7, which is why it is added a
+    little at a time. The wrong ideas to watch for are that neutralising makes nothing new, and that
+    adding more alkali always helps. The three-star question gives a jug and a heap and asks which
+    runs out first. A grown-up handles the limewater, the lime and any acid stronger than vinegar,
+    and nothing is tasted, including the stomach remedy. If the child adds when they should
+    multiply, stay here another day with the jug and the scale. Off the page: with goggles on,
+    stir baking soda into vinegar a teaspoon at a time and count the spoons until the fizz stops.
+    """
+  level easy {
+    grown-ups "At this level the soda for 500 ml is worked once in the teacher's pen, the jugs hold 200 or 300 ml, the graph is read for where it turns neutral, the uses are the garden soil, the two-star asks why a little at a time, and the three-star runs out of soda or vinegar with whole lots of 100 ml."
+  }
+  level hard {
+    grown-ups "At this level the soda is worked back to the vinegar, with a story for a full 500 ml jug, the graph is read after 25 ml and scaled to more acid, the fizz's products are asked, the uses include the stomach and the kettle, the two-star asks what went wrong, and the three-star needs half lots."
+  }
+}

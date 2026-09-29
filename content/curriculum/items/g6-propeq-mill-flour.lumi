@@ -1,0 +1,41 @@
+# A word problem set up as a proportion in a ratio table: grain to flour stays the same, and the
+# unknown is the flour or, run backwards, the grain.
+item proportion.mill-flour v=1 skills=[algebra.equations.proportion, ratio.scaling] {
+  title "Grain into flour"
+  difficulty (s + (if q == 1 then 1 else 0))
+  let s=0..4 q=0..1
+  let g={pick(s, 4, 8, 10, 6, 4)}
+  let f={pick(s, 3, 6, 8, 5, 3)}
+  let big={pick(s, 12, 20, 25, 15, 10)}
+  level easy {
+    let s={0, 1} q={0}
+  }
+  level hard {
+    let s={3, 4}
+  }
+
+  scene 36x24 {
+    ratiotable tab first=[g, big] second=[f, decimals(f * big / g, 0)] labels=["Grain kg", "Flour kg"] hide=[if q == 0 then 3 else 1] at=canvas(1, 1)
+    waterwheel mill paddles=8 lit=0 right-of=tab gap=3
+    text ask "The mill grinds {g} kg of grain into {f} kg of flour, always in the same ratio. {if q == 0 then \"How much flour comes from \" else \"How much grain gives \"}{if q == 0 then big else decimals(f * big / g, 0)} kg {if q == 0 then \"of grain?\" else \"of flour?\"}" narrate width=34 at=canvas(1, 14)
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=4
+      text unit "kg"
+    }
+  }
+
+  answer (if q == 0 then decimals(f * big / g, 0) else big)
+  feedback {
+    when (q == 0 and answer == big - g + f) point=tab {
+      say "The grain went up by {big - g} kg, but the flour does not go up by the same amount. It goes up the same number of times."
+    }
+    when (q == 1 and answer == f * big / g + g - f) point=tab {
+      say "Adding the same amount does not keep the ratio. Write the proportion and use the products."
+    }
+    when (q == 0 and answer == g * big / f) point=tab {
+      say "That has the ratio upside down. There is less flour than grain, so the answer is less than {big}."
+    }
+  }
+  hint "Write it as a proportion: {g} : {f} is the same as what?"
+  hint "The outer terms multiply to the same as the inner terms. What do you know three of?"
+}

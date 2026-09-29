@@ -1,0 +1,71 @@
+# The same theme in two texts of different forms from the moon base (a story against a talk, a log
+# against a story): what they share, how each shows it, what the form itself adds, and the lines
+# that prove it. The four texts were written for the lesson.
+lesson reading-one-theme-in-two-stories v=1 format=teach grade=6 unit=7 subject=reading levels=[easy, medium, hard] {
+  title "The same theme in two stories"
+  goal "Find the theme two texts of different forms share, and compare how each shows it, with a line from each."
+
+  look {
+    scene 36x10 {
+      row all at=canvas(0, 1) space=1 align=end {
+        rocket r flame=0
+        lander l rungs=5
+        earth e up=1
+        crater c count=2
+      }
+    }
+    say """
+      Four texts come from the moon base, in different forms. A story shows Kai too shy to call for
+      help on her first moonwalk. In a talk to new crews, Commander Obi tells of the day she was too
+      proud to. Different people, different forms, and one theme: asking for help takes courage.
+      Ada's greenhouse log and Ren's story of the solar panels share another. The form changes how a
+      theme is shown: a story lets you watch it happen, a talk can say it straight out, and a log
+      sets down the same small step day after day. Comparing them tells you more about each.
+      """
+  }
+  do {
+    level easy {
+      worked reading.moon-theme-shared k=2 level=medium
+    }
+    show reading.moon-theme-shared k=0 hard-k=3
+    practice reading.moon-theme-line count=2 seed=1 easy-seed=1 hard-seed=1
+    show reading.moon-theme-how k=0 easy-k=1 hard-k=2
+    show reading.moon-theme-how k=3 easy-k=4
+    show reading.moon-theme-shared k=1 hard-k=2
+    show reading.moon-theme-odd k=0 hard-k=2
+    show reading.moon-theme-odd k=1 hard-k=3
+    level hard {
+      show reading.moon-theme-line q=5
+    }
+  }
+  try stars=2 {
+    show reading.moon-theme-ending k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show reading.moon-theme-compare k=0 hard-k=1
+  }
+  remember {
+    say "Two texts share a theme when they teach the same idea about life, even in different forms. The form changes how the theme is shown."
+  }
+
+  grown-ups """
+    The idea is that a theme travels across forms: a story, a talk and a log with different
+    characters and times can teach the same thing, and comparing how each form shows it is the
+    sixth-grade step (Common Core RL.6.9 compares texts in different forms or genres) beyond finding
+    one story's theme, which reading-39 did in grade five. The way in picks the shared theme of two
+    texts in different forms from a topic and a theme that fits only one, the core finds the line
+    where each text's theme shows, says how one text shows it differently from the other and what
+    its form lets a reader see, and finds the odd one out of three texts that all happen on the
+    moon, where the odd form is a trap. The wrong idea to watch for is matching texts by their
+    setting, their topic or their form; ask "what does each one teach?" The two-star question
+    changes an ending and asks whether the theme survives. The three-star question compares two
+    stories in writing, marked by eye. If the child is stuck, say each story's theme in five words
+    first. Off the page, find two films or books the child knows that teach the same thing.
+    """
+  level easy {
+    grown-ups "At this level Obi and Kai are worked once in the teacher's pen, the pairs to match are Kai and Obi and Ada and Ren, the lines to find are the plainer ones, the differences are Ren's doubters and what a talk says straight out, the odd ones out are the plainer sets, the two-star changes Ada's ending, and the three-star compares Kai and Obi."
+  }
+  level hard {
+    grown-ups "At this level the pairs to match are given the other way round, the lines to find include Obi's advice and what Ren's days added up to, with one more, the differences are how Kai's story differs and what a log lets a reader see, the odd ones out include a set with two texts about rushing, the two-star changes Ren's story, and the three-star compares Ada and Ren."
+  }
+}

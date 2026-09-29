@@ -1,0 +1,27 @@
+# A wheel rolls its own distance round in one turn: the circumference times the number of turns.
+item circle.wheel-turns v=1 skills=[circles.circumference, decimals.multiply] {
+  title "How far the wheel rolls"
+  difficulty ((if t == 10 then 0 else if t == 5 then 1 else 2) + d / 50)
+  let d={20, 50, 60} t={10, 5, 3}
+  level easy {
+    let t={10}
+  }
+  level hard {
+    let t={3} d={60}
+  }
+
+  scene 33x12 {
+    telescope scope tilt=20 at=canvas(1, 1)
+    text ask "The telescope's wheels are {d} cm across. The telescope is rolled out so its wheels turn {t} times. How many centimetres does it move? Use 3.14." narrate width=20 right-of=scope gap=2
+    number-input answer width=6 below=ask gap=1
+  }
+
+  answer decimals(d * 3.14 * t, 0)
+  feedback {
+    when (answer == d * t) point=ask {
+      say "One turn rolls the distance round the wheel, not the distance across."
+    }
+  }
+  hint "How far does the wheel roll in one turn?"
+  hint "Multiply that by the number of turns."
+}

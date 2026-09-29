@@ -1,0 +1,35 @@
+# Reading an inverse proportion off its graph and going past its end: the product of pipes and hours
+# is the same everywhere, so the graph gives it and the product gives a value beyond the graph.
+item inverse.pipes-graph v=1 skills=[proportion.inverse, data.line-graphs] {
+  title "Past the end of the graph"
+  difficulty (t / 24 + n / 12)
+  let t={12, 24} n={8, 12}
+  where (whole(t / n) or whole(2 * t / n))
+  level easy {
+    let t={12} n={12}
+  }
+  level hard {
+    let t={24}
+  }
+
+  scene 36x17 {
+    linegraph graph labels=["1", "2", "3", "4", "6"] values=[t, t / 2, t / 3, t / 4, t / 6] min=0 max=t per=(t / 12) step=(t / 4) color=sky at=canvas(1, 1)
+    text ask "The graph shows the hours the mill pond takes to fill with 1, 2, 3, 4 and 6 pipes. How many hours does it take with {n} pipes?" narrate width=14 right-of=graph gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text unit "hours"
+    }
+  }
+
+  answer (t / n)
+  feedback {
+    when (answer == 0) point=graph {
+      say "The line gets closer to the bottom but never reaches it. Some time is always needed."
+    }
+    when (answer == t / 6) point=graph {
+      say "That is the time for 6 pipes, the last point on the graph. {n} pipes are more than that."
+    }
+  }
+  hint "Multiply the pipes by the hours at a few points. What do you notice?"
+  hint "Which number of hours, times the pipes, gives that product?"
+}

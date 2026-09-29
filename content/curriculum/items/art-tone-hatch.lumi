@@ -1,0 +1,30 @@
+# Cross-hatching counted: each step adds one layer, so step s has s - 1 layers, and the whole scale
+# has 0 + 1 + 2 + 3 + 4 of them.
+item art.tone-hatch v=1 skills=[art.tone, reasoning.two-steps] {
+  title "Layers of lines"
+  difficulty (q * 2 + s / 5)
+  let m={4, 5, 6} s=3..5 q={0}
+  let lines={if q == 0 then (s - 1) * m else 10 * m}
+  let which={pick(q, "for the ringed step", "for all five squares together")}
+  level easy {
+    let s={3, 4}
+  }
+  level hard {
+    let s={5} q={1}
+  }
+
+  scene 35x15 {
+    tonescale scale steps=5 blank=-1 ring=(if q == 0 then s - 1 else -1) at=canvas(1, 1)
+    text ask "Ada shades by cross-hatching. Step 1 is bare paper, and each step after it has one more layer of lines than the step before. Each layer is {m} lines. How many lines does she draw {which}?" width=34 below=scale gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer lines
+  feedback {
+    when (q == 0 and answer == s * m) point=scale {
+      say "Step 1 is bare paper with no lines, so each step has one layer fewer than its number."
+    }
+  }
+  hint "How many layers does step 1 have? And step 2?"
+  hint "Work out the layers first, then the lines in them."
+}

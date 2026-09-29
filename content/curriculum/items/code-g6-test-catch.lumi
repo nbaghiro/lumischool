@@ -1,0 +1,39 @@
+# Which pair of tests catches a bug on the edge: the program and the copy with the bug differ for one
+# input only, the number on the edge, so only a pair with that number in it tells them apart.
+item coding.test-catch v=1 skills=[coding.testing, coding.debugging, reasoning.logic] {
+  title "The test that catches it"
+  difficulty k
+  let k=0..2
+  let t={pick(k, 20, 30, 15)}
+  let good={pick(k, "20 and 30", "20 and 30", "15 and 20")}
+  let far={pick(k, "5 and 40", "10 and 50", "5 and 25")}
+  let near={pick(k, "19 and 21", "29 and 32", "16 and 17")}
+  let rule={pick(k, "The lander should say return when fuel is less than 20. Someone may have typed 21 instead of 20.", "The lander should say return when fuel is less than 30. Someone may have typed 31 instead of 30.", "The rocket should say launch when fuel is more than 15. Someone may have typed 14 instead of 15.")}
+  let cmp={pick(k, "less than", "less than", "more than")} yes={pick(k, "return", "return", "launch")} no={pick(k, "land", "land", "wait")}
+  let bugline={pick(k, "1: if fuel is less than 21", "1: if fuel is less than 31", "1: if fuel is more than 14")}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={1, 2}
+  }
+
+  scene 36x30 {
+    program p code=["if fuel is {cmp} {t}", "  say {yes}", "otherwise", "  say {no}"] text=true at=canvas(0, 0)
+    rocket rk right-of=p gap=3
+    text ask "{rule} Which pair of fuel numbers would show the difference?" width=34 below=p gap=1
+    choice pick options=[pick(k, good, far, near), pick(k, far, near, good), pick(k, near, good, far)] stack=column below=ask gap=1
+  }
+
+  check coding.tests of=p input=fuel bug="{bugline}" pick=catches
+  feedback {
+    when (pick == far) point=p {
+      say "Try each number in both versions. Do they ever say different things?"
+    }
+    when (pick == near) point=p {
+      say "Try each number in both versions. The two versions differ for one number only. Which one?"
+    }
+  }
+  hint "Write the line both ways. For which fuel numbers do they give different answers?"
+  hint "The two lines agree well away from {t}. Look close to it."
+}

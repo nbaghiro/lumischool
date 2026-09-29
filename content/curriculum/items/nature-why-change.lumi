@@ -1,0 +1,42 @@
+# The two-star reason: why young differ, and what is wrong with the idea that an animal changes
+# because it wants to, or passes on what it did in its life. The answer each time is variation that
+# is inherited and the ones that do best passing it on.
+item nature.why-change v=1 stars=2 skills=[nature.inheritance, reasoning.find-the-mistake] {
+  title "How do they change?"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "A pair of puffins raise one chick every year, and no two of their chicks are exactly alike. Why not?", "Ben says: \"The Arctic fox grew thick fur because it wanted to keep warm.\" What is wrong with that?", "Ben says: \"A giraffe that stretches up for high leaves gets a longer neck, so its calves are born with longer necks.\" What is wrong with that?")}
+  let ans={pick(k, "Each gets a different mix from both parents", "Foxes with thicker fur lived and passed it on", "Stretching does not change what calves inherit")}
+  let o1={pick(k, "Each chick copies a different neighbour", "Nothing: wanting it makes fur grow", "Nothing: that is how necks got long")}
+  let o2={pick(k, "The sea changes each chick's colour", "Foxes only grow fur in summer", "Giraffes never eat high leaves")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x28 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      puffins pp count=2 facing=1
+      earth e up=1
+    }
+    text ask "{asks}" narrate width=32 below=pics gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=pp {
+      say "A chick has two parents. What does it get from each of them?"
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "No animal can grow a feature by wanting it. Foxes were already born with different fur: which ones did best?"
+    }
+    when (k == 2 and pick != ans) point=ask {
+      say "Ben's scar did not pass to anyone. Can a change in a giraffe's own life pass to its calves?"
+    }
+  }
+  hint "What does a young animal get from its parents, and what does it not get?"
+  hint "Features change over many generations when the young that have them live to have more young."
+}

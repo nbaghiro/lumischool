@@ -1,0 +1,32 @@
+# The turbine and its generator turn about 9 of every 10 joules of the water's energy into
+# electricity, and the rest heats them, with a couple of joules as sound. b is the band asked for; i the joules in.
+item physics.gen-electric v=1 skills=[physics.energy, physics.circuits, reasoning.backwards] {
+  title "What comes out as electricity"
+  difficulty ((if b == 1 then 0 else 1) + (if i == 1000 then 0 else 1))
+  let b=1..2 i={1000, 2000, 5000}
+  level easy {
+    let b=1..1 i={1000, 2000}
+  }
+  level hard {
+    let b=2..2 i={2000, 5000}
+  }
+  let asked={pick(b - 1, "come out as electricity", "go into heating the turbine and the air")}
+
+  scene 24x23 {
+    energyflow e thing="turbine" from="moving water" to="electricity" input=i useful=(i * 9 / 10) wasted=[i / 10 - 2, 2] wastes=["heating", "sound"] blank=b unit=J at=canvas(1, 0)
+    text ask "Each second the water gives the turbine {i} J. Its generator turns 9 of every 10 J into electricity. How many joules each second {asked}?" narrate width=22 below=e gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.energy of=e answer=missing
+  feedback {
+    when (answer == i / 10) point=e {
+      say "That is all the energy that does not become electricity. Heating and sound share it."
+    }
+    when (b == 2 and answer == i * 9 / 10) point=e {
+      say "That is the electricity. The question asks for the heating band."
+    }
+  }
+  hint "How much of the {i} J becomes electricity?"
+  hint "The bands out add up to the band in. What is left for the band with the question mark?"
+}

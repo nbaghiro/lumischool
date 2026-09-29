@@ -1,0 +1,28 @@
+# The two-star: the angle outside a triangle, on a straight line with the third corner, is the two far
+# angles together. Seeing that saves working out the third angle first.
+item angles.outside-angle v=1 stars=2 skills=[angles.sums, reasoning.structure] {
+  title "Outside the triangle"
+  difficulty ((a + b) / 40)
+  let a={35, 48, 62, 75} b={40, 57, 66}
+  level easy {
+    let a={35, 48} b={40}
+  }
+  level hard {
+    let a={62, 75} b={57, 66}
+  }
+
+  scene 34x16 {
+    anglesum tri kind=triangle a=a b=b ask=-1 at=canvas(1, 1)
+    text ask "The side through the third corner of the triangle is made longer, into a straight line. What is the angle outside the triangle, between the long line and the other side?" narrate width=14 right-of=tri gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (a + b)
+  feedback {
+    when (answer == 180 - a - b) point=tri {
+      say "That is the angle inside at that corner. The outside angle makes a straight line with it."
+    }
+  }
+  hint "What is the third angle inside the triangle?"
+  hint "The inside and outside angles at that corner make a straight line. What does a straight line make?"
+}

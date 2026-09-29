@@ -1,0 +1,39 @@
+# The three-star count: forms that start and end on A, from A, B and C, with no section straight
+# after itself. Three sections: ABA, ACA, so 2. Five sections: 6 (ABABA, ABCBA, ABACA, ACABA, ACACA,
+# ACBCA). Five sections that use all three letters: 4, and the rondo ABACA is one of them.
+item music.form-plan-count v=1 stars=3 skills=[music.form, reasoning.all-the-ways] {
+  title "Every plan for a piece"
+  difficulty v
+  let v=0..2
+  let n={pick(v, "three", "five", "five")}
+  let extra={pick(v, "", "", " Every plan must use all three letters.")}
+  let right={pick(v, 2, 6, 4)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 35x18 {
+    row top space=2 align=start at=canvas(1, 1) {
+      clocktower clock hour=4 minute=0
+      column side space=1 align=start {
+        text ask "Ana plans a piece of {n} sections from tunes A, B and C, for the band under the clock tower. It starts and ends with A, and no section comes straight after itself.{extra} How many different plans can she make?" narrate width=24
+        number-input answer
+      }
+    }
+  }
+
+  answer right
+  feedback {
+    when (v == 1 and answer == 4) point=ask {
+      say "A can come back in the middle too, as long as it is not next to another A."
+    }
+    when (v == 2 and answer == 6) point=ask {
+      say "Check each plan has A, B and C in it. A B A B A has no C."
+    }
+  }
+  hint "Write the first and last A, then fill the sections between them one at a time."
+  hint "For each gap, which letters are allowed next to the ones beside it?"
+}

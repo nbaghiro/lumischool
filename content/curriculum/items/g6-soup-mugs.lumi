@@ -1,0 +1,30 @@
+# A fraction divided by a fraction, asked as how many mugs the pot fills, with a whole-number answer.
+item fraction.soup-mugs v=1 skills=[fractions.divide] {
+  title "Mugs from the pot"
+  difficulty (c + (if b == d then 0 else 1))
+  let a=1..11 b={2, 3, 4, 6, 8, 9, 10, 12} c=1..5 d={4, 6, 8, 9, 10, 12}
+  where (a < b and c < d and gcd(a, b) == 1 and gcd(c, d) == 1)
+  where (whole(a * d / (b * c)) and a * d / (b * c) >= 2 and a * d / (b * c) <= 12)
+  level easy {
+    where (c == 1 and b == d)
+  }
+  level hard {
+    where (c > 1 and b != d)
+  }
+
+  scene 34x12 {
+    fraction pot n=b k=a shape=bar at=canvas(1, 1)
+    fraction mug n=d k=c shape=bar below=pot gap=1
+    text ask "The soup pot holds {a}/{b} of a litre. Each mug holds {c}/{d} of a litre. Each bar is one litre. How many mugs does the pot fill?" narrate width=19 right-of=pot gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (a * d / (b * c))
+  feedback {
+    when (a * c != a * d / (b * c) and answer == a * c) point=mug {
+      say "That multiplied the tops. How many times does the mug's amount fit into the pot's?"
+    }
+  }
+  hint "Write both amounts with the same bottom number."
+  hint "How many lots of the mug's parts make the pot's parts?"
+}

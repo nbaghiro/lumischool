@@ -1,0 +1,35 @@
+# The same jump on the moon: the moon pulls each kilogram with 1.6 N and the Earth with 10 N, 6.25
+# times as hard, and with the same push a jump rises 6.25 times as high. h is the jump on Earth.
+item physics.moondrop-jump v=1 skills=[physics.forces, physics.weight, decimals.multiply] {
+  title "A jump on the moon"
+  difficulty (h * 10)
+  let h={0.2, 0.4, 0.8}
+  level easy {
+    let h={0.4}
+  }
+  level hard {
+    let h={0.8}
+  }
+
+  scene 28x21 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      footprints fp count=4
+      lander l rungs=6
+    }
+    text ask "On Earth Mia can jump {h} m high. The Earth pulls each kilogram with 10 N and the moon with only 1.6 N. With the same push, how high does she jump on the moon?" narrate width=26 below=kit gap=1
+    number-input answer below=ask gap=1
+    text unit "m" right-of=answer gap=0
+  }
+
+  answer decimals(h * 6.25, if h == 0.2 then 2 else if h == 0.4 then 1 else 0)
+  feedback {
+    when (answer == h / 6.25) point=ask {
+      say "The moon pulls her down less, so does she rise higher or lower than on Earth?"
+    }
+    when (answer == h * 1.6) point=ask {
+      say "1.6 N is the moon's pull on each kilogram. The jump grows by how many times weaker the pull is."
+    }
+  }
+  hint "How many times weaker is the moon's pull than the Earth's? Divide 10 by 1.6."
+  hint "A pull that many times weaker lets the same push carry her that many times as high."
+}

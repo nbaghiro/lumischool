@@ -1,0 +1,34 @@
+# The way in: the forces along the snow as arrows in newtons, and the net force, the difference
+# between the forward pulls and the forces holding the sledge back.
+item physics.sledge-net v=1 skills=[physics.forces, subtraction.multi-digit] {
+  title "The net force"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+  let f={pick(v, 150, 90, 130, 200)}
+  let b1={pick(v, 100, 60, 70, 140)}
+  let b2={pick(v, 0, 0, 25, 35)}
+
+  scene 30x15 {
+    sledgeforce s forward=[f] back=[b1, b2] weight=0 moving=1 show=0 names=1 at=canvas(1, 0)
+    text ask "What is the net force on the sledge, in newtons?" narrate width=20 below=s gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check physics.forces of=s answer=net
+  feedback {
+    when (answer == f + b1 + b2) point=s {
+      say "The forces pull opposite ways, so they work against each other. Take the backward ones away from the pull."
+    }
+    when (answer == f - b1 and b2 > 0) point=s {
+      say "There are two forces holding the sledge back: friction and the air."
+    }
+  }
+  hint "Which arrows point forward and which point back?"
+  hint "Add the forces holding it back, and take them away from the pull."
+}

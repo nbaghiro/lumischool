@@ -1,0 +1,33 @@
+# A candle's wax, about C25H52, burns with about 3.45 g of oxygen for every gram and makes about 3.12 g
+# of carbon dioxide and 1.33 g of water (worked from the formula masses), so 10 g of wax and 34 g of
+# oxygen make 31 g and 13 g: 44 g in and 44 g out. One cell of the table is hidden.
+item chem.wax-balance v=1 skills=[chemistry.conservation, chemistry.burning] {
+  title "Grams in, grams out"
+  difficulty (if h == 1 or h == 3 then 0 else 1)
+  let h=0..3 n={1, 2}
+  let wax={10 * n}
+  let ox={34 * n}
+  let co2={31 * n}
+  let wat={13 * n}
+  level easy {
+    let h={1, 3} n={1}
+  }
+  level hard {
+    let h={0, 2} n={1, 2}
+  }
+
+  scene 35x19 {
+    table data cols=2 head=["Substance", "Grams"] cells=["wax burned", if h == 0 then "?" else wax, "oxygen used", if h == 1 then "?" else ox, "carbon dioxide made", if h == 2 then "?" else co2, "water made", if h == 3 then "?" else wat] at=canvas(1, 0)
+    text ask "A candle burns in the moon base's sealed test chamber, fed with oxygen, and every gram is measured. What number is missing from the table?" narrate width=34 below=data gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(h, wax, ox, co2, wat)
+  feedback {
+    when (answer == wax + ox or answer == co2 + wat) point=data {
+      say "That is the total on one side. Take away the part you know on the side with the gap."
+    }
+  }
+  hint "The grams that go in, wax and oxygen, equal the grams that come out. Which side has the gap?"
+  hint "Add up the side you know fully, then take away the known part on the other side."
+}

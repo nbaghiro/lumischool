@@ -1,0 +1,33 @@
+# Order of operations with fractions and decimals together: the multiplication or division comes
+# before the adding or taking away, however the numbers are written.
+item fraction.order-of-steps v=1 skills=[fractions.multiply.decimals, algebra.order-of-operations] {
+  title "Which step first"
+  difficulty (v + c / 10)
+  let v=0..1 a={1, 3} c={3, 5, 7} w={2, 3, 4}
+  where (v == 0 or w > a / 2)
+  level easy {
+    let v={0} c={3, 5}
+  }
+  level hard {
+    let v={1} w={3, 4}
+  }
+
+  scene 36x18 {
+    hut h pictures=2 at=canvas(1, 1)
+    sign board lines=["{if v == 0 then a else w}{if v == 0 then \"/4 + \" else \" − \"}{if v == 0 then c else a}{if v == 0 then \" × 0.5\" else \"/4 ÷ 0.5\"}"] kind=board color=tang right-of=h gap=2
+    text ask "A sum on the board in the research hut. What is it worth? Write the answer as a decimal." narrate width=34 below=h gap=1
+    number-input answer width=5 below=ask gap=1
+  }
+
+  answer decimals(if v == 0 then a / 4 + c * 0.5 else w - a / 4 / 0.5, 0)
+  feedback {
+    when (v == 0 and answer == (a / 4 + c) * 0.5) point=board {
+      say "The adding was done first. Multiply before you add, wherever the fraction is."
+    }
+    when (v == 1 and answer == (w - a / 4) / 0.5) point=board {
+      say "The taking away was done first. Divide before you take away."
+    }
+  }
+  hint "Which step comes first: the adding or taking away, or the multiplying or dividing?"
+  hint "Work that step on its own. Is {a}/4 easier as a decimal here?"
+}

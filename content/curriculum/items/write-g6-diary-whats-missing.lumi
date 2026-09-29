@@ -1,0 +1,45 @@
+# A whole entry checked against the four things a diary entry needs: time words in order, the past
+# tense, a feeling and a look ahead. Each version lacks exactly one and has the other three, so the
+# child has to test every feature against the whole entry, not spot one word.
+item writing.diary-whats-missing v=1 skills=[writing.diaries, writing.editing, reasoning.find-the-error] {
+  title "What is the entry missing?"
+  difficulty k
+  let k=0..3
+  let day={pick(k, "Thursday 20 July", "Friday 21 July", "Saturday 22 July", "Sunday 23 July")}
+  let entry={pick(k, "At eight we walked to the tide crack. By noon the fog had rolled in, so we sat on the sledge and waited. I was cold and a little scared, but when it lifted there was a whale right below us, blowing like a kettle.", "After breakfast we counted the puffins on the cliff: forty-two. At two we measured the ice again, and at teatime the stove went out and had to be lit twice. Tomorrow we will pack the sledge for the long trip north.", "At six the wind woke me. After breakfast we pull the sledge to the iceberg, and it towers over us like a white church. I feel tiny next to it. Tomorrow we will rest and mend the ropes.", "By the time we got back, the stove was cold. At six we set off for the ice cliff. At noon a fox watched us eat lunch, and I was so happy that I laughed. Tomorrow the ship will come with the post.")}
+  let right={pick(k, "a look ahead", "a feeling", "the past tense throughout", "time words in order")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x42 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      hut h pictures=6
+      sledge sl slats=5
+    }
+    passage p title="{day}" text="{entry}" width=33 numbers=false below=pics gap=1
+    text ask "A good entry has time words in order, the past tense, a feeling and a look ahead. Isla's entry is missing one. Which?" narrate width=33 below=p gap=1
+    choice pick options=["time words in order", "the past tense throughout", "a feeling", "a look ahead"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "a feeling" and right != "a feeling") point=p {
+      say "Find the words that say how Isla felt. They are there, so look for something else the entry has not got."
+    }
+    when (pick == "a look ahead" and right != "a look ahead") point=p {
+      say "Read the last sentence. It already says what comes next, so something else is missing."
+    }
+    when (pick == "the past tense throughout" and right != "the past tense throughout") point=p {
+      say "Check every verb about the day. Each one is already in the past, so something else is missing."
+    }
+    when (pick == "time words in order" and right != "time words in order") point=p {
+      say "Put the time words in a row as they come. They already go from morning to evening, so something else is missing."
+    }
+  }
+  hint "Take the four things one at a time, and find each one in the entry."
+  hint "For the tense, check every verb about the day. For the order, put the time words in a row."
+}

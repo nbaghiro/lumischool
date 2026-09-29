@@ -1,0 +1,64 @@
+lesson g6-solving-equations v=1 format=teach grade=6 unit=6 subject=maths levels=[easy, medium, hard] {
+  title "Solving equations with a letter"
+  goal "Write an equation for a story and solve it by doing the same to both sides, including equations with brackets to multiply out and with x on both sides, then check the answer in the equation."
+
+  look {
+    scene 35x13 {
+      balanceeq scales left="3x + 5" right="26" at=canvas(1, 1)
+      waterwheel wheel paddles=8 lit=0 right-of=scales gap=1
+    }
+    say """
+      Three sacks of x kg and a 5 kg weight balance 26 kg at the mill. Take 5 kg off both pans and
+      the balance still holds: 3x = 21. Share both pans into three and x = 7. Undo the steps in the
+      opposite order to the one they were done in, and do the same to both sides each time. Then
+      check: 3 × 7 + 5 is 26.
+      """
+  }
+  do {
+    level easy {
+      worked algebra.gorge-two-step f=0 a=3 b=5 x=7 level=medium
+    }
+    practice algebra.flour-sacks-one-step count=1 seed=3
+    show algebra.gorge-two-step f=1 a=3 b=7 x=9 easy-f=0 easy-a=2 easy-b=9 easy-x=5 hard-f=1 hard-a=4 hard-b=7 hard-x=4.5
+    practice algebra.miller-sacks-story count=1 seed=11
+    practice algebra.which-equation-fits count=1 seed=2
+    practice algebra.wheel-brackets count=1 seed=6
+    practice algebra.bridge-sections count=1 seed=4
+    practice algebra.same-solution count=1 seed=7
+    practice algebra.bridge-both-sides count=1 seed=9
+    level hard {
+      practice algebra.gorge-two-step count=1 seed=8
+    }
+  }
+  try stars=2 {
+    show algebra.divide-first-mistake a=3 k=2 x=7 easy-a=2 easy-x=6 hard-a=4 hard-x=10
+  }
+  try stars=3 {
+    show algebra.cart-loads v=3 easy-v=1 hard-v=5
+  }
+  remember {
+    say "Do the same to both sides, undoing the last step first. Then put the answer back in to check it."
+  }
+
+  grown-ups """
+    The balance is the picture to hold on to: whatever comes off one pan comes off the other, so it
+    stays level. Solving undoes the steps in reverse, the adding or taking away first and then the
+    times or the share. The common slip is to share first and share only part of a side, which is
+    Leo's mistake in the two-star question; putting his answer back in shows it at once, which is
+    why checking by substituting is part of the goal. In the bill question the child writes the
+    equation, so ask what x stands for before anything is written. The rope bridge needs the
+    brackets multiplied out, every term inside them, and the x terms collected, before the two
+    steps are undone. With x on both pans, take the same number of x off both first. The second
+    reasoning questions ask which equation fits a story and which keeps the balance, without
+    solving. The three-star question has many answers to the equation but only a few in whole
+    sacks: trying one oat sack, then two, then three, is the method. If two steps are still hard,
+    stay here another day with one-step equations on the balance. Off the page, think of a number,
+    double it and add 3, and have the child find the number from the result.
+    """
+  level easy {
+    grown-ups "At this level the one-step equations multiply, 3x + 5 = 26 is worked in the teacher's pen, the two-step equations only add, the bill is for 3 or 4 sacks, the story shares between 2 carts, the brackets hold 2 or 3 lots, the bridge has two long sections, the same-solution choice has doubling at A, x on both sides leaves one x, Leo shares by 2, and the cart takes 30 kg in 2 kg and 5 kg sacks."
+  }
+  level hard {
+    grown-ups "At this level the one-step equations share, two of the two-step equations have a half in the answer, the bill is for 5 or 6 sacks, the story shares between 4 carts, the brackets hold 4 or 5 lots, the bridge has three or four long sections, x on both sides leaves several x, Leo shares by 4, and the cart takes 30 kg in 2 kg and 3 kg sacks, with four loads to find."
+  }
+}

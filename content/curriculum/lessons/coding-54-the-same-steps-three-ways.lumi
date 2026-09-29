@@ -1,0 +1,71 @@
+# The same steps three ways: in words, as a flowchart and as a program. At the observatory the rover
+# and the telescope's counters are drawn as flowcharts with a loop and a decision, read in both
+# directions, and built from.
+lesson coding-the-same-steps-three-ways v=1 format=teach grade=5 unit=5 subject=coding levels=[easy, medium, hard] {
+  title "The same steps three ways"
+  goal "Write the same steps in words, as a flowchart and as a program, and read each one from the others."
+
+  look {
+    scene 36x24 {
+      program p code=["set n to 1", "repeat 3", "  double n", "say n"] at=canvas(0, 1)
+      flowchart f code=["set n to 1", "repeat 3", "  double n", "say n"] right-of=p gap=1
+      telescope tel tilt=45 below=p gap=2
+    }
+    say """
+      The astronomer writes the telescope's steps in words: start n at 1, double it three times over,
+      then say n. The program says the same with blocks, and the flowchart draws it with shapes. An
+      oval starts and stops it, a box does a step, a slanted box says something, and a diamond asks a
+      question with a yes way and a no way. The arrow that goes back up the left side is the loop:
+      the diamond asks whether it is done before every round.
+      """
+  }
+  do {
+    show coding.flow-follow a=2 r=3 b=3 easy-r=2 easy-b=2 hard-r=4 hard-b=5
+    level easy {
+      worked coding.flow-follow a=1 r=3 b=2 level=medium
+    }
+    show coding.flow-blank k=1 easy-k=0 hard-k=2
+    show coding.flow-words k=1 easy-k=0 hard-k=2
+    show coding.flow-count k=1 easy-k=0 hard-k=2
+    show coding.flow-build k=0 easy-k=1 hard-k=2
+    show coding.flow-follow a=1 r=4 b=5 easy-a=3 easy-r=2 easy-b=3 hard-a=1 hard-b=3
+    show coding.flow-blank k=0 easy-k=1 hard-k=1
+    show coding.flow-count k=0 easy-k=1 hard-k=1
+    level hard {
+      show coding.flow-words k=1 level=medium
+    }
+  }
+  try stars=2 {
+    show coding.flow-back k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show coding.flow-ways k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Words, a flowchart and a program can say the same steps: in a flowchart a box does a step, a diamond asks, and an arrow back up is a loop."
+  }
+
+  grown-ups """
+    An algorithm is a set of steps exact enough to follow without thinking, and the same steps can be
+    written three ways: in words, as a flowchart and as a program. This lesson reads each way from
+    the others. The slips to watch for are going round a loop one time too few, because the diamond
+    asks before each round and so is asked once more than the loop goes round, and putting a step
+    inside the loop that the arrows only reach after it. In the child's working, look for a finger
+    moving along the arrows and a number written down after each box. If the child is stuck, draw
+    the flowchart large on the floor in chalk and walk it, saying each box out loud; stay another day
+    if the loop is still counted wrongly. Off the page, write the steps for brushing teeth or making
+    toast as a flowchart with one question in a diamond. The build question asks the child to make
+    the program a flowchart draws, with the missing shape worked out from the rover's path. The
+    two-star question works back up the arrows from the number said, and the three-star question
+    finds every number the rubbed-off diamond could have held. This meets China's 2022 standard for
+    grades five and six (第三学段, 身边的算法, 内容要求 1): 「能用自然语言、流程图等方式描述算法」, describing an
+    algorithm in natural language and with flowcharts, and the Russian grade five programming course's
+    «Блок-схемы».
+    """
+  level easy {
+    grown-ups "At this level the loops go round two or three times and add 2 or 3, one flowchart is followed in the teacher's pen, the empty shape is the loop's own box, the words to match add 1 then double, the stars to count are five with none on the edge of the test, and the rover's climb is three or two steps with the loop's box rubbed off. The number to work back from doubles twice after adding 1, and the three-star asks about two stars photographed."
+  }
+  level hard {
+    grown-ups "At this level the loops go round four times and add 5, the empty shapes come from steps in words with two boxes inside the loop, the words to match add 3 then double, the stars to count include one exactly as bright as the test, a second matching of words is added, and the rover's climb has its repeat diamond rubbed off, so the rounds are counted from the path. The number to work back from comes from three rounds of adding 3 and doubling, and the three-star asks about four of six stars."
+  }
+}

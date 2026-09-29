@@ -1,0 +1,56 @@
+lesson g5-adding-unlike-fractions v=1 format=worked grade=5 unit=7 subject=maths levels=[easy, medium, hard] {
+  title "Adding and taking away fractions with different denominators"
+  goal "Add and take away fractions and mixed numbers whose parts are different sizes, by changing them to the same size first, and write a total as a decimal when its parts allow."
+
+  example {
+    worked fraction.add-unlike a=2 b=3 c=1 d=4 level=medium
+    say """
+      Thirds and quarters are different sizes, so they cannot be added as they are. Both can be cut
+      into twelfths, since 12 is the first number 3 and 4 both go into: 2/3 is 8/12 and 1/4 is 3/12,
+      so together they make 11/12. Change the parts to the same size, add or take away the tops, and
+      write the answer in its simplest form.
+      """
+  }
+  exercises {
+    practice fraction.same-size-parts count=1 seed=3
+    practice fraction.add-unlike count=2 hard-count=1 seed=4
+    practice fraction.take-unlike count=1 seed=5
+    practice fraction.bigger-sum count=1 seed=6
+    practice fraction.library-left count=1 seed=2
+    practice fraction.mixed-unlike count=1 seed=7 hard-count=2
+    practice fraction.decimal-total count=1 seed=5
+    level hard {
+      practice fraction.bigger-sum count=1 seed=9
+    }
+  }
+  try stars=2 {
+    show fraction.add-mistake b=2 d=5 easy-d=3 hard-b=3
+  }
+  try stars=3 {
+    show fraction.two-unit-fractions s=1 easy-s=0 hard-s=3
+  }
+
+  remember {
+    say "Change the fractions to the same size of part, add or take away the tops, and simplify the answer."
+  }
+
+  grown-ups """
+    The fraction wall shows why the parts have to match: a third and a quarter side by side do not
+    line up until both are cut into twelfths. The lowest common multiple from the observatory term
+    gives the size to use. If the child adds the bottoms, ask whether 2/7 can be the answer when
+    1/3 alone is bigger. Check each answer is in its simplest form by asking whether the top and
+    bottom share a factor. Halves, quarters, fifths, tenths and twentieths can all be written in
+    hundredths, so a total of them can be written as a decimal: 1/4 + 3/5 is 0.25 + 0.6, which is
+    0.85. In the two-star question the child picks what Leo did wrong, and the size of his answer is
+    the check. In the three-star question the biggest fraction with 1 on top that fits is the place
+    to start, and what is left has to have 1 on top as well. If changing to the same size is still
+    slow, stay with halves, quarters and eighths another day. Off the page, share a pizza cut in
+    thirds and another cut in quarters and say how much was eaten altogether.
+    """
+  level easy {
+    grown-ups "At this level the shared parts are 12 or fewer, the sums and differences are in sixths or twelfths, the paths to compare share 1/x and add unit fractions, the history and maps leave twelfths or fewer, the rope's fractions make less than one whole, the market total adds a half to quarters, fifths or tenths and stays under a kilogram, Leo's mistake is 1/2 + 1/3, and the three-star is 3/4."
+  }
+  level hard {
+    grown-ups "At this level the shared parts are 20 or more, the sums and differences are in fifteenths, twentieths or thirtieths, the paths to compare have tops bigger than one and are asked twice, the rope's fractions make more than a whole and are asked twice, the market total has twentieths and comes to more than a kilogram, Leo's mistake is 1/3 + 1/5, and the three-star is 7/10."
+  }
+}

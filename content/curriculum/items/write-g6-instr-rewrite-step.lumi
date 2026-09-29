@@ -1,0 +1,28 @@
+# Production: a vague step from the miller's old card rewritten so someone new could follow it
+# exactly, marked by a grown-up. At hard (k=2) the step also does two things, so it has to be split.
+item writing.instr-rewrite-step v=1 skills=[writing.instructions, writing.editing, writing.composing] {
+  title "Make the step exact"
+  difficulty k
+  let k=0..2
+  let step={pick(k, "Oil the axle properly, as usual.", "Turn the key a bit until the wheel is going.", "Wait a while and then sort out the pin and the stones.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x37 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      waterwheel wheel paddles=8 lit=0
+      person new pose=think age=child hair=bun colour=auburn top=mint
+    }
+    passage p title="A step from the old card" text="{step}" width=33 numbers=false below=pics gap=1
+    text ask "Ana could not follow this step. Rewrite it so she could: a command with its verb first, and how much, which way or until when. If it asks for two things, make it two numbered steps." narrate width=33 below=p gap=1
+    writinglines lines lines=3 width=33 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Each step is a command that starts with or leads straight to its verb, asks for one thing, and says exactly how much, which way or until when (two drops of oil on each end of the axle; three full turns to the left, until the wheel turns once every five seconds); words such as properly, a bit, a while and sort out are gone; at hard, a step that asked for two things is split into two numbered steps in an order that works."
+  hint "Read the step as Ana. Which word leaves her guessing?"
+  hint "Put a number, a direction or a sign to stop at in place of that word."
+}

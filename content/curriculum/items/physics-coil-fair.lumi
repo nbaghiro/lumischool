@@ -1,0 +1,33 @@
+# Is Mia's test fair? t is the thing she means to test (0 the turns, 1 the cells), e the thing that
+# also changes (0 the turns, 1 the cells, 2 the rod); when e is t the test is fair.
+item physics.coil-fair v=1 skills=[physics.method, physics.magnets, reasoning.fair-test] {
+  title "A fair test of the coil"
+  difficulty (if t == e then 1 else if e == 2 then 2 else 0)
+  let t=0..1 e=0..2
+  level easy {
+    where (e != 2)
+  }
+  level hard {
+    where (e == 2)
+  }
+  let what={pick(t, "the number of turns", "the number of cells")}
+  let ans={if t == e then "Yes, only that one thing changes" else pick(e, "No, the turns change too", "No, the cells change too", "No, the rod changes too")}
+
+  scene 32x37 {
+    row two at=canvas(1, 0) space=1 align=start {
+      electromagnet a turns=20 cells=1 core=0 closed=1 show=0 tag="A"
+      electromagnet b turns=(if t == 0 or e == 0 then 40 else 20) cells=(if t == 1 or e == 1 then 2 else 1) core=(if e == 2 then 2 else 0) closed=1 show=0 tag="B"
+    }
+    text ask "Mia wants to find out whether {what} changes how strong an electromagnet is. She counts the clips A and B hold. Is it a fair test?" narrate width=30 below=two gap=1
+    choice pick options=["Yes, only that one thing changes", "No, the turns change too", "No, the cells change too", "No, the rod changes too"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "Yes, only that one thing changes" and t != e) point=b {
+      say "Compare A and B one thing at a time: the turns, the cells, the rod. Two of them are different."
+    }
+  }
+  hint "Look at the turns, the cells and the rod of A, then of B. Which are different?"
+  hint "In a fair test only the thing being tested changes. Is that true here?"
+}

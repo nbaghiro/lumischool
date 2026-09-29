@@ -1,0 +1,68 @@
+# A theme is the idea about life a story teaches, told apart from its topic and its plot. The four
+# canal-town stories were written for the lesson, one theme each.
+lesson reading-a-storys-theme v=1 format=teach grade=5 unit=3 subject=reading levels=[easy, medium, hard] {
+  title "A story's theme"
+  goal "Say a story's theme as a sentence about life, and point to the events in the story that show it."
+
+  look {
+    scene 35x29 {
+      column all at=canvas(1, 1) space=1 align=centre {
+        storymountain m stages=["Opening", "Build-up", "Problem", "Fixing it", "Ending"] notes=["Kit sees Amos", "Kit races", "Boat jams", "Amos helps", "Slow and steady"] ring=4
+        row boats space=2 align=end {
+          canallock lock level=0.5 boat=1
+          narrowboat boat windows=4 pots=3
+        }
+      }
+    }
+    say """
+      In The race to the lock, Kit hurries to beat old Mr Amos, jams his boat and loses an hour.
+      That is the plot, what happens. Its topic, what it is about, is boats and a lock. Its theme is
+      the idea it teaches about life: rushing can cost more time than it saves. A theme is a whole
+      sentence, it would be true without any boat in it, and the events of the story show it.
+      """
+  }
+  do {
+    level easy {
+      worked reading.topic-or-theme k=1 level=medium
+    }
+    show reading.topic-or-theme k=0 hard-k=3
+    practice reading.theme-line count=2 seed=4 easy-seed=1 hard-seed=1
+    show reading.topic-or-theme k=1 easy-k=2
+    practice reading.same-theme count=2 seed=1 easy-seed=1 hard-seed=1
+    practice reading.theme-sentence count=2 seed=1 easy-seed=1 hard-seed=1
+    level hard {
+      show reading.theme-sentence k=1 level=medium
+    }
+  }
+  try stars=2 {
+    show reading.not-quite-theme k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show reading.new-story-theme k=0 hard-k=1
+  }
+  remember {
+    say "The plot is what happens. The theme is what the story teaches about life, in a sentence that fits anyone."
+  }
+
+  grown-ups """
+    The idea is that a theme is different from a topic (boats) and a plot (Kit's boat got stuck): it
+    is a sentence about life that the story's events show. The look lays out The race to the lock as
+    a story mountain, and the theme shows at the ending. The way in picks the theme from its topic
+    and plot, against a rival sentence about life that the story does not teach, so the form of a
+    choice never gives it away. The core finds the lines that carry the theme, matches a canal story
+    to a kitchen or classroom story with the same theme, and chooses the best written theme of three
+    whole sentences: "This story is about honesty" names only a topic, and a rule that needs a boat
+    or a lock is a lesson for the story's own people. The two-star question judges Ivy's theme and
+    says why: it may be a rule for one story, a real theme, or a rule that sounds general but still
+    needs a boat. The three-star question asks for a new story with the same theme, marked by eye.
+    The wrong idea to watch for is retelling the plot when asked for the theme; ask "and what does
+    that teach?" Off the page, ask the theme of a film the child knows, and whether it would still
+    be true with different people in a different place.
+    """
+  level easy {
+    grown-ups "At this level the miller's story is worked once in the teacher's pen, the stories to find a theme in are the race and the broken paddle, the lines to find are the plainer ones, the stories to match are the race and the miller's, the themes to judge are Esi's and the miller's, the two-star is Ivy's rule about racing boats, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the stories to find a theme in include the miller's and Esi's, the lines to find are the time Kit lost and the miller coming before he was asked, the stories to match are the broken paddle and Esi's, the themes to judge are the paddle's, the race's and the miller's, the two-star rule about steering sounds general but still needs a boat, and the three-star story shares the miller's theme."
+  }
+}

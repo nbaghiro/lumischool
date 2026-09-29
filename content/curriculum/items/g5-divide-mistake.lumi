@@ -1,0 +1,39 @@
+# The two-star: a division by a decimal less than one gives a bigger answer. The child picks the reason
+# Ben's answer cannot be right from three plausible ones, then corrects it.
+item decimal.divide-mistake v=1 stars=2 skills=[decimals.divide, reasoning.find-the-mistake] {
+  title "Too small to be right"
+  difficulty ((if b < 0.5 then 1 else 0) + a)
+  let a={3.6, 4.2, 5.4, 2.8} b={0.9, 0.7, 0.6, 0.4}
+  where whole(a / b)
+  level easy {
+    let b={0.9, 0.7}
+  }
+  level hard {
+    let b={0.6, 0.4} a={4.2, 5.4, 3.6}
+  }
+
+  scene 30x22 {
+    sign note lines=["{a} ÷ {b} = {decimals(a / b / 10, 0)}"] kind=board color=tang at=canvas(1, 1)
+    text ask "How can you tell Ben's answer is wrong before working it out?" narrate width=16 right-of=note gap=2
+    choice why options=["dividing by less than 1 gives more", "a decimal ÷ a decimal is whole", "his answer is too big"] stack=column below=note gap=1
+    row eq below=why gap=1 space=1 align=centre {
+      text ask2 "{a} ÷ {b} ="
+      number-input answer width=4
+    }
+  }
+
+  answer why="dividing by less than 1 gives more" answer=plain(a / b)
+  feedback {
+    when (why == "a decimal ÷ a decimal is whole") point=note {
+      say "Not always: 0.5 ÷ 0.2 is 2.5. Is {decimals(a / b / 10, 0)} bigger or smaller than {a}?"
+    }
+    when (why == "his answer is too big") point=note {
+      say "Look again: {decimals(a / b / 10, 0)} is smaller than {a}. How many lots of {b} fit into {a}?"
+    }
+    when (answer == a / b / 10) point=note {
+      say "That is Ben's answer. How many lots of {b} fit into {a}?"
+    }
+  }
+  hint "Is the answer to {a} ÷ {b} bigger or smaller than {a}? Think how many lots of {b} fit into 1."
+  hint "Multiply both numbers by ten so you divide by a whole number."
+}

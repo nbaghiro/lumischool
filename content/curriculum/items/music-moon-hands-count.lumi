@@ -1,0 +1,42 @@
+# The story: how often both hands start a note at the same moment in Ode to Joy's bars 3 and 4, with
+# three left hands. Right-hand starts are beats 0, 1, 2, 3, 4, 5.5 and 6; a left hand starting at 0,
+# 4, 6 meets all three, and one at 0, 4, 7 or 0, 4, 5 meets two.
+item music.moon-hands-count v=1 skills=[music.hands-together, music.note-values] {
+  title "Together on the moon"
+  difficulty v
+  let v=0..2
+  let l1={pick(v, 4, 4, 4)}
+  let l2={pick(v, 2, 3, 1)}
+  let l3={pick(v, 2, 1, 3)}
+  let right={pick(v, 3, 2, 2)}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=1..2
+  }
+
+  scene 36x37 {
+    column score space=0 align=start at=canvas(1, 1) {
+      notes right clef=treble notes=[C4, C4, D4, E4, E4, D4, D4] values=[1, 1, 1, 1, 1.5, 0.5, 2] meter=4 spaced=true
+      notes left clef=bass notes=[C3, G2, B2] values=[l1, l2, l3] meter=4 spaced=true
+    }
+    row low space=2 align=end below=score gap=1 {
+      text ask "In the lander, with the Earth outside the window, Ana plays these two bars with both hands. How many times do both hands start a note at the same moment?" narrate width=24
+      lander ship rungs=4
+    }
+    number-input answer below=low gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 7) point=score {
+      say "That counts the right hand's notes. Count only the moments where a left-hand note starts too."
+    }
+    when (answer != right and answer != 7) point=score {
+      say "Go along the bottom staff. For each left-hand note, is there a right-hand note starting straight above it?"
+    }
+  }
+  hint "How many notes does the left hand play? Each one is a moment to check."
+  hint "For each left-hand note, look straight up. Does a right-hand note start there, or is one still held?"
+}

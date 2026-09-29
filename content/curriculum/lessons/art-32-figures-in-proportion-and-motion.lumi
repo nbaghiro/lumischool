@@ -1,0 +1,68 @@
+# A figure's proportions, measured in heads on the artist's wooden figure, and the quick gesture
+# drawing that starts from one line of action through the body.
+lesson art-figures-in-proportion-and-motion v=1 format=teach grade=6 unit=2 subject=art levels=[easy, medium, hard] {
+  title "Figures in proportion and in motion"
+  goal "Draw a person in proportion by measuring in heads, and catch a moving pose quickly with a line of action."
+
+  look {
+    scene 23x13 {
+      row all at=canvas(1, 1) space=2 align=end {
+        layfigure stand heads=7.5 lines=true action=false
+        layfigure run heads=7.5 pose="run" lines=false action=true
+      }
+    }
+    say """
+      At the waterfall gorge Ada sketches the people crossing the rope bridge and working at the mill.
+      Artists measure a person in heads. A grown-up is about seven and a half heads tall, with the
+      elbows level with the waist, the wrists at the top of the legs and the knees halfway down the
+      legs. A child's head is a bigger share of the body. To draw someone moving there is no time to
+      measure, so a gesture drawing starts with one line of action, from the head to the foot that
+      takes the weight, and hangs the body on it in thirty seconds.
+      """
+  }
+  do {
+    practice art.fig-count count=1 seed=1
+    level easy {
+      worked art.fig-head-size k=0 s=6 q=0 level=medium
+    }
+    practice art.fig-head-size count=2 seed=5
+    practice art.fig-landmark count=2 seed=1
+    practice art.fig-mistake count=1 hard-count=2 seed=3
+    practice art.fig-gesture count=2 seed=2
+  }
+  try stars=2 {
+    show art.fig-halfway-why r=1 easy-r=0 hard-r=2
+  }
+  try stars=3 {
+    show art.fig-gestures
+  }
+  remember {
+    say "Measure a still figure in heads; catch a moving one with its line of action first."
+  }
+
+  grown-ups """
+    The wooden figure in the drawings is the jointed lay figure artists have posed for centuries.
+    Most of the questions are marked by the machine. The first counts a figure's heads and matches
+    it to an age. The core works out a head's size from a height in heads, which is ratio met in a
+    drawing, places the joints of a standing grown-up, finds a proportion drawn wrong, and matches a
+    pose to its line of action. The proportions are averages: real people differ, and the lesson
+    says "about" for that reason.
+
+    Watch for a child who draws the arms too short, with the hands at the waist; it is the commonest
+    mistake at every age, and letting the arms hang beside their own body and looking where the
+    wrists come settles it. If the head sums are stuck, stack coins or blocks, one a head, to the
+    figure's height. The two-star question asks why a small child's middle is higher, which is the
+    reason proportions are learnt rather than guessed. The gestures and the measured figure are the
+    three-star question and are responded to rather than marked. Off the page, take turns to hold a
+    pose for thirty seconds while the other draws.
+
+    Respond by pointing to a line of action: "This line leans right over, and I can feel the run."
+    Ask which pose was hardest to catch in thirty seconds.
+    """
+  level easy {
+    grown-ups "At this level the figures to match are a baby of one and a grown-up, a head is worked once in the teacher's pen before more grown-ups, the joints are the elbows, wrists and knees, the mistakes are short arms or a big head, the poses are running, bending and walking, the two-star child is one, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the figure to match can be a child of eleven, the heads are a child's six and a half and the height is asked from the head, the joints include the eyes and fingertips, a second mistake is added and high knees appear, the poses include balancing on a stepping stone and reaching up to the bridge rope, the two-star child is three, and the three-star is as written."
+  }
+}

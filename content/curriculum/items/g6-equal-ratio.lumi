@@ -1,0 +1,35 @@
+# Equal ratios have the same ratio value, a ÷ b. The wrong options add the same to both parts, or
+# turn the ratio round.
+item ratio.equal-ratio v=1 skills=[ratio.value, ratio.scaling] {
+  title "The same ratio value"
+  difficulty (k + (if a > b then 1 else 0))
+  let a={2, 3, 4, 5} b={3, 5, 7} k={2, 3, 4} o=0..2
+  where (a != b and gcd(a, b) == 1)
+  level easy {
+    let k={2}
+    where (a < b)
+  }
+  level hard {
+    let k={3, 4}
+    where (a > b)
+  }
+
+  scene 36x19 {
+    ratio bars parts=[a, b] labels=["Cocoa", "Milk"] unit=0 total=false at=canvas(1, 1)
+    table data cols=2 head=["", "Ratio"] cells=["A", "{pick(o, k * a, a + k, k * b)} : {pick(o, k * b, b + k, k * a)}", "B", "{pick(o, a + k, k * b, k * a)} : {pick(o, b + k, k * a, k * b)}", "C", "{pick(o, k * b, k * a, a + k)} : {pick(o, k * a, k * b, b + k)}"] right-of=bars gap=2
+    text ask "The ratio value of {a} : {b} is {a} ÷ {b}, which is {a}/{b}. Which ratio in the table has the same ratio value as {a} : {b}?" narrate width=32 below=bars gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=pick(o, "A", "C", "B")
+  feedback {
+    when (pick == pick(o, "B", "A", "C")) point=data {
+      say "Adding the same to both parts changes the ratio value. Work out each ratio value to check."
+    }
+    when (pick == pick(o, "C", "B", "A")) point=data {
+      say "That turns the ratio round, so it is milk to cocoa. Which part comes first?"
+    }
+  }
+  hint "Work out the ratio value of each: the first number divided by the second."
+  hint "Which one multiplies both parts by the same number?"
+}

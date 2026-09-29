@@ -1,0 +1,32 @@
+# A discount: the price left is 100% take away the percent off. The line's ticks are every 20%, so
+# the price is found from them, not read off.
+item percent.walk-sale-price v=1 skills=[percentages.change, percentages.of-amount] {
+  title "In the sale"
+  difficulty (p / 40 + (if d % 10 == 0 then 0 else 1))
+  let p={20, 40, 60, 80} d={10, 15, 30, 35}
+  where whole(p * d / 5)
+  level easy {
+    let d={10, 30} p={20, 40}
+  }
+  level hard {
+    let d={15, 35} p={60, 80}
+  }
+
+  scene 33x18 {
+    doubleline line steps=5 topTo=100 bottomTo=p topUnit="%" bottomUnit=dollars mark=-1 at=canvas(1, 1)
+    text ask "The gorge shop sells a rain jacket for {p} dollars. In the sale it has {d}% off. What is the sale price, in dollars?" narrate width=32 below=line gap=1
+    number-input answer width=5 below=ask gap=1
+  }
+
+  answer decimals(p * (100 - d) / 100, 2)
+  feedback {
+    when (answer == p * d / 100) point=line {
+      say "That is the amount taken off. What is left of the price?"
+    }
+    when (answer == p - d) point=line {
+      say "{d}% off is not {d} dollars off. What is {d}% of {p} dollars?"
+    }
+  }
+  hint "What percent of the old price is left to pay?"
+  hint "What is 10% of {p} dollars? Build the percent left from that."
+}

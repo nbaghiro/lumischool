@@ -1,0 +1,30 @@
+# Three stars: four strips named from clues before the acid goes in. In dilute acid copper gives off
+# nothing and magnesium more than zinc (RSC); only iron of the four is pulled by a magnet. p places
+# the metals and q is the tube asked about; the answer follows from the clues together.
+item chem.strip-puzzle v=1 stars=3 skills=[chemistry.metals, chemistry.acids, reasoning.constraints] {
+  title "Four strips, four clues"
+  difficulty q
+  let p=0..3 q=0..1
+  level easy {
+    let q={0}
+  }
+  level hard {
+    let q={1}
+  }
+  let mg={pick(p, "A", "C", "B", "D")}
+  let zn={pick(p, "B", "A", "D", "C")}
+  let cu={pick(p, "C", "D", "A", "B")}
+  let fe={pick(p, "D", "B", "C", "A")}
+  let asked={if q == 0 then mg else zn}
+  let right={if q == 0 then "magnesium" else "zinc"}
+
+  scene 36x24 {
+    testtubes t fills=[0.5, 0.5, 0.5, 0.5] paints=["", "", "", ""] fizz=[0, 0, 0, 0] bungs=0 letters=1 metals=[pick(p, 1, 2, 4, 3), pick(p, 2, 3, 1, 4), pick(p, 4, 1, 3, 2), pick(p, 3, 4, 2, 1)] acid=0 at=canvas(1, 0)
+    text ask "Four strips, magnesium, zinc, iron and copper, one in each tube of water, have lost their labels. Clues: in dilute acid, tube {cu}'s strip gives off no gas. A magnet pulls tube {fe}'s strip. In acid, tube {mg}'s strip gives off more gas than tube {zn}'s. Which metal is in tube {asked}?" narrate width=32 below=t gap=1
+    choice pick options=["magnesium", "zinc", "iron", "copper"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Which metal gives off no gas in acid, and which is pulled by a magnet?"
+  hint "That leaves two metals for the other two tubes. Which of them gives off more gas?"
+}

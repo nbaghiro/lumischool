@@ -1,0 +1,35 @@
+# Naming a sharp key: the last sharp of the signature is note 7 of the major scale, so the key is the
+# next letter up, one semitone above it. G has one sharp, D two, A three, E four.
+item music.keysig-name-sharps v=1 skills=[music.key-signatures, music.keys] {
+  title "Which key has these sharps?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let last={pick(k, "F", "C", "G", "D")}
+  let right={pick(k, "G", "D", "A", "E")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x17 {
+    row top space=2 align=start at=canvas(1, 1) {
+      notes sig clef=treble notes=[] values=[] key=pick(k, "G", "D", "A", "E")
+      text ask "The last sharp in a key signature is note 7 of the major key, one semitone below the key's own note. Which major key has this signature?" narrate width=19
+    }
+    choice pick options=["C", "G", "D", "A", "E"] stack=row below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == last) point=sig {
+      say "That is the last sharp's own letter. The key is one step above it."
+    }
+    when (pick != right and pick != last) point=sig {
+      say "Find the sharp furthest to the right. Which line or space is it on, and which letter is one step above that?"
+    }
+  }
+  hint "Which sharp is written last, furthest to the right?"
+  hint "Name the letter of the last sharp. Which letter comes next going up?"
+}

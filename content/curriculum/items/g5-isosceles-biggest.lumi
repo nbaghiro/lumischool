@@ -1,0 +1,31 @@
+# The three-star: an isosceles triangle with one angle known, and two ways it can be built. The
+# largest or smallest angle it could have is asked, so both cases have to be found and compared.
+item angles.isosceles-biggest v=1 stars=3 skills=[angles.sums, reasoning.all-the-ways] {
+  title "Two ways to build it"
+  difficulty (if t < 60 then 1 else 0)
+  let t={30, 40, 50, 70, 80}
+  level easy {
+    let t={70, 80}
+  }
+  level hard {
+    let t={30, 40}
+  }
+
+  scene 30x14 {
+    shapemarks tri kind=isosceles labels=true at=canvas(1, 1)
+    text ask "A triangle has two equal angles, and one of its angles is {t} degrees. It could be built in two ways. What is the {if t < 60 then \"biggest\" else \"smallest\"} angle any such triangle could have?" narrate width=16 right-of=tri gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (180 - 2 * t)
+  feedback {
+    when (answer == (180 - t) / 2) point=ask {
+      say "That is when {t} is the odd angle. What if {t} is one of the two equal angles instead?"
+    }
+    when (answer == t) point=ask {
+      say "{t} is in every such triangle. Is there a triangle with an angle {if t < 60 then \"bigger\" else \"smaller\"} than {t}?"
+    }
+  }
+  hint "Suppose {t} is one of the two equal angles. What is the third?"
+  hint "Now suppose {t} is the odd one. What are the other two? Compare the two triangles."
+}

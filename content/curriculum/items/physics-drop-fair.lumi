@@ -1,0 +1,21 @@
+# Two stars: a test of shape spoilt by one lump of a different weight, found from the weights under
+# the tubes. w is the tube with the odd lump, and of two lumps the same shape the heavier sinks faster.
+item physics.drop-fair v=1 stars=2 skills=[physics.method, physics.water-resistance, reasoning.fair-test] {
+  title "The lump that spoils the test"
+  let w=0..2 heavy={30, 40}
+
+  scene 29x33 {
+    droptube tb shapes=["ball", "cube", "pointed"] time=0 grams=[if w == 0 then heavy else 20, if w == 1 then heavy else 20, if w == 2 then heavy else 20] show=0 at=canvas(1, 0)
+    text ask "Leo wants to test which shape sinks fastest in water. Which tube stops his test being fair?" narrate width=13 right-of=tb gap=1
+    choice pick options=["A", "B", "C", "None, it is fair"] stack=column below=tb gap=1
+  }
+
+  answer pick=pick(w, "A", "B", "C")
+  feedback {
+    when (pick == "None, it is fair") point=tb {
+      say "Read the weights under the tubes. Of two lumps the same shape, the heavier sinks faster, so a heavier lump muddles the test."
+    }
+  }
+  hint "In a fair test of shape, what has to be the same for every lump?"
+  hint "Read the weight under each tube."
+}

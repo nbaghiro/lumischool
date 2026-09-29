@@ -1,0 +1,71 @@
+# Colour that glows against its opposite, after Van Gogh's night skies over the observatory: opposites
+# side by side are brightest, mixed they are dull, and a little of the opposite darkens a colour.
+lesson art-colours-that-glow v=1 format=teach grade=5 unit=4 subject=art levels=[easy, medium, hard] {
+  title "Colours that glow"
+  goal "Make a colour glow by setting it against its opposite, and find the opposite of any colour on the wheel."
+
+  look {
+    scene 26x15 {
+      row all at=canvas(1, 1) space=1 align=end {
+        colourwheel wheel segments=12 blank=[] ring=-1 labels=true split="opposite"
+        observatory dome open=1
+      }
+    }
+    say """
+      Vincent van Gogh painted the night sky again and again, with yellow stars and lamps set against
+      deep blues and purples. The stars seem to shine because each colour sits beside its opposite on
+      the colour wheel, and opposites make each other look brighter. Mixed together, the same two
+      colours cancel out into a dull brown-grey, so he kept them side by side. Opposites work on
+      each other even in a grey: a grey set on one colour seems to take on a hint of its opposite.
+      """
+  }
+  do {
+    practice art.glow-wheel count=1 seed=1
+    level easy {
+      worked art.glow-split k=2 level=medium
+    }
+    practice art.glow-split count=2 seed=2
+    practice art.glow-mixed count=1 seed=1
+    practice art.glow-grey count=1 seed=4
+    practice art.glow-recipe count=1 hard-count=2 seed=3
+    practice art.glow-scheme count=2 seed=2
+  }
+  try stars=2 {
+    show art.glow-why r=1 easy-r=0 hard-r=2
+  }
+  try stars=3 {
+    show art.glow-night-sky
+  }
+  remember {
+    say "Opposites side by side make each other glow; mixed together they turn dull."
+  }
+
+  grown-ups """
+    Vincent van Gogh lived from 1853 to 1890, and his paintings, including The Starry Night and the
+    café terrace at night, are long out of copyright; the lesson uses drawings of our own. In his
+    letters he wrote often about setting opposite colours side by side. Grade four met opposites on
+    a wheel of six; this lesson goes on to a wheel of twelve. The questions are marked by the
+    machine. The first reads an opposite off a labelled wheel. The core finds the two colours either
+    side of an opposite (a split complement, gentler than the opposite itself), checks what two
+    opposites make when they run together, explains why one grey looks different on two skies (each
+    grey seems tinged with the opposite of what surrounds it), finds the opposite of an in-between
+    colour, where two parts of one primary and one of another sits opposite two parts of the missing
+    primary with the same one part, and names the pair of opposites in a Van Gogh painting from a
+    description of its colours.
+
+    Watch for a child who thinks dark colours always make a light one glow. Darkness helps, but the
+    two-star question takes it away: two skies just as dark, and only the opposite makes the star glow.
+    If the wheel of twelve is confusing, paint one on paper together from the three primaries. The
+    painting is the three-star question and is responded to rather than marked; a torch shone through
+    yellow paper against a blue cloth shows the effect off the page.
+
+    Respond by pointing to where a light meets the sky: "Here the yellow touches the purple, and it
+    seems to shine." Ask what they would change to make another part glow.
+    """
+  level easy {
+    grown-ups "At this level the ringed colour is a primary, the colours either side of yellow's opposite are worked once in the teacher's pen before red's and blue's, the paints that run together are orange with blue or red with green, the grey sits on an orange, blue or red sky, the colours of twelve are yellow-orange or blue-green, the paintings are the café terrace and the night café, the two-star's star is yellow, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the ringed colour is a mix, the split complements are for orange, green and purple, the paints that run together include yellow with purple, the grey sits on a green, yellow or purple sky, the colours of twelve are the other in-between ones and a second is added, the paintings are the night café and Irises, the two-star's moon is orange, and the three-star is as written."
+  }
+}

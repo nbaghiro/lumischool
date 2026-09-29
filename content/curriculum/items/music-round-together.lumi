@@ -1,0 +1,35 @@
+# Which words sound together in the round: the voices are two bars apart, so one voice's phrase
+# and the next voice's phrase are next to each other in the table.
+item music.round-together v=1 skills=[music.singing, music.texture] {
+  title "Singing at the same time"
+  difficulty (if v <= 1 then 0 else 1)
+  let v=0..3
+  let mine={pick(v, "Are you sleeping", "Are you sleeping", "Brother John", "Ding dang dong")}
+  let me={pick(v, "voice 2", "voice 3", "voice 4", "voice 3")}
+  let them={pick(v, "voice 1", "voice 1", "voice 2", "voice 1")}
+  let right={pick(v, "Brother John", "Morning bells are ringing", "Ding dang dong", "Brother John")}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 36x35 {
+    table song cols=2 head=["Bars", "Words"] cells=["1 and 2", "Are you sleeping", "3 and 4", "Brother John", "5 and 6", "Morning bells are ringing", "7 and 8", "Ding dang dong"] at=canvas(1, 1)
+    text ask "In the round each voice comes in two bars after the one before, and everyone sings the tune twice through. While {me} sings {mine}, what is {them} singing?" narrate width=34 below=song gap=1
+    choice pick options=["Are you sleeping", "Brother John", "Morning bells are ringing", "Ding dang dong"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == mine) point=song {
+      say "The voices do not sing the same words at once. The other voice started earlier. How far ahead is it?"
+    }
+    when (pick != right and pick != mine) point=song {
+      say "Each voice is two bars, one row of the table, ahead of the next. How many rows ahead is {them}?"
+    }
+  }
+  hint "Which voice started first, {me} or {them}, and by how many bars?"
+  hint "Find {mine} in the table and move down one row for every two bars ahead. After the last row, go back to the top."
+}

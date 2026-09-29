@@ -1,0 +1,47 @@
+# The three-star: work back from what goes wrong to the organ that is not doing its job. Watery waste
+# points at the large intestine and waste left in the blood at the kidneys; at hard the direction
+# turns, from a shorter small intestine to what will change.
+item nature.which-organ v=1 stars=3 skills=[nature.digestion, nature.body, reasoning.work-backwards] {
+  title "Which organ is it?"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "Ada's grandad had an operation on one part of his gut. Food still goes down, is churned and passes into his blood as before, but what leaves his body is very watery. Which part was it?", "A woman in the old city digests her food and takes it into her blood as normal, but waste builds up in her blood, so three times a week a hospital machine cleans it for her. Which organs are not doing their job?", "After an operation, a man in the old city has a much shorter small intestine. The rest of his gut is as before. What would you expect?")}
+  let ans={pick(k, "the large intestine", "the kidneys", "Less food reaches his blood from each meal")}
+  let s1={pick(k, "the stomach", "the large intestine", "Less food reaches his blood from each meal")}
+  let s2={pick(k, "the small intestine", "the stomach", "What leaves his body is drier")}
+  let s3={pick(k, "the large intestine", "the small intestine", "He can no longer chew his food")}
+  let s4={pick(k, "the liver", "the kidneys", "Food cannot reach his stomach")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x32 {
+    parts fig of=gut at=canvas(1, 1)
+    text ask "{asks}" narrate width=20 right-of=fig gap=2
+    choice pick options=[s1, s2, s3, s4] stack=column below=fig gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=fig {
+      say "Churning and taking food into the blood still work. Which part takes water back from what is left?"
+    }
+    when (k == 1 and pick == "the large intestine") point=ask {
+      say "The large intestine gets rid of food that never went into the body. This waste is in the blood: which organs clean the blood?"
+    }
+    when (k == 1 and pick != ans and pick != "the large intestine") point=ask {
+      say "Her food is digested and taken in as normal, so the gut is working. The trouble is in the blood."
+    }
+    when (k == 2 and pick == "What leaves his body is drier") point=fig {
+      say "Less of the tube means less food and water taken in along the way. Would what is left be drier or wetter?"
+    }
+    when (k == 2 and (pick == "He can no longer chew his food" or pick == "Food cannot reach his stomach")) point=fig {
+      say "The mouth, the oesophagus and the stomach are as before. What does the small intestine do that there is now less room for?"
+    }
+  }
+  hint "List what still works. Which job is missing?"
+  hint "Match the missing job to the organ that does it."
+}

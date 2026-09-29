@@ -1,0 +1,29 @@
+# The way in: the Plough's pointers lead to the pole star, which is north, and the compass agrees;
+# a door on the right, behind or on the left is then east, south or west. v picks where the door is.
+item physics.pole-star-door v=1 skills=[physics.sky, physics.magnets] {
+  title "Facing the pole star"
+  let v=0..2
+  let side={pick(v, "on her right", "behind her", "on her left")}
+  let way={pick(v, "East", "South", "West")}
+
+  scene 31x32 {
+    row pair at=canvas(1, 0) space=2 align=centre {
+      starmap s sky=13 clock=21 looks=1 pointers=1 names=1
+      compass c needle=0
+    }
+    text ask "Kit follows the Plough's two pointer stars to the pole star and faces it. Her compass needle points the same way she is facing. The observatory door is {side}. Which way is the door from Kit?" narrate width=28 below=pair gap=1
+    choice pick options=["North", "East", "South", "West"] stack=row below=ask gap=1
+  }
+
+  answer pick=way
+  feedback {
+    when (pick == "North") point=c {
+      say "North is the way Kit is facing, towards the pole star. The door is not in front of her."
+    }
+    when (pick != way and pick != "North") point=c {
+      say "Put N where Kit is facing on the compass. Which letter is {side}?"
+    }
+  }
+  hint "Which way is Kit facing when she looks at the pole star?"
+  hint "Turn the compass so that N is in front of Kit. Which letter is {side}?"
+}

@@ -1,0 +1,31 @@
+# The three-star: a price goes up by a percent and then down by the same percent, and ends lower.
+# From the end the percent is found by trying, which is one named part.
+item percent.rise-and-fall-same v=1 stars=3 skills=[percentages.change, reasoning.guess-and-check] {
+  title "Up and down by the same"
+  difficulty (r / 10 + c / 200)
+  let c={100, 200, 400} r={10, 20, 30, 40}
+  level easy {
+    let c={100} r={10, 20}
+  }
+  level hard {
+    let c={200, 400} r={30, 40}
+  }
+
+  scene 36x12 {
+    pricetag tag now=(100 * c) was=0 at=canvas(1, 1)
+    text ask "A canoe cost {c} dollars. In spring its price went up by a whole number percent. In autumn it came down by the same percent, and now it costs {c * (10000 - r * r) / 10000} dollars. What was the percent?" narrate width=22 right-of=tag gap=2
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text unit "%"
+    }
+  }
+
+  answer r
+  feedback {
+    when (answer == 100 * (c - c * (10000 - r * r) / 10000) / c) point=ask {
+      say "That is how much it lost in all, as a percent. Try a percent up and then the same percent down."
+    }
+  }
+  hint "Try a small whole number percent: what does the canoe cost after going up, and after coming down?"
+  hint "Is the end price too high or too low? Try a bigger or smaller percent."
+}

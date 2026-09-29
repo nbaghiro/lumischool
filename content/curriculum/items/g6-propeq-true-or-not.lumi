@@ -1,0 +1,36 @@
+# The second reasoning question in the core: whether two ratios make a proportion, tested by the
+# products rather than by a whole-number scale. Two of the false ones keep a difference instead.
+item proportion.true-or-not v=1 skills=[algebra.equations.proportion, reasoning.explain] {
+  title "True or not"
+  difficulty (t / 2)
+  let t=0..5
+  let a={pick(t, 3, 6, 4, 6, 9, 15)}
+  let b={pick(t, 5, 9, 10, 9, 12, 20)}
+  let c={pick(t, 6, 8, 6, 9, 11, 12)}
+  let d={pick(t, 10, 11, 15, 12, 14, 16)}
+  level easy {
+    let t={0, 1}
+  }
+  level hard {
+    let t={3, 4, 5}
+  }
+
+  scene 36x20 {
+    sign board lines=["{a} : {b} = {c} : {d}"] kind=board color=glow at=canvas(1, 1)
+    waterwheel mill paddles=8 lit=0 right-of=board gap=2
+    text ask "The miller chalked this on the board. Is it a true proportion?" narrate width=34 at=canvas(1, 14)
+    choice pick options=["yes", "no"] below=ask gap=1
+  }
+
+  answer pick=(if a * d == b * c then "yes" else "no")
+  feedback {
+    when (pick == "yes" and a * d != b * c) point=board {
+      say "Each side goes up by the same amount, but a ratio is kept by multiplying. Compare {a} × {d} with {b} × {c}."
+    }
+    when (pick == "no" and a * d == b * c) point=board {
+      say "{c} is not a whole number of times {a}, but the ratios can still be equal. Compare {a} × {d} with {b} × {c}."
+    }
+  }
+  hint "Multiply the two outer terms. Then multiply the two inner terms."
+  hint "In a true proportion, how do those two products compare?"
+}

@@ -1,0 +1,38 @@
+# The three-star: no distance is given. A raft drifts at the current's speed, so choosing any length
+# for the stretch gives every speed; the answer is tr × tc ÷ (tr − 2 × tc) whatever length is chosen.
+item travel.raft v=1 stars=3 skills=[rates.speed.current, reasoning.model] {
+  title "The raft and the canoe"
+  difficulty (tr / 6 + tc)
+  let s=0..4
+  let tr={pick(s, 8, 12, 15, 12, 24)}
+  let tc={pick(s, 2, 3, 3, 4, 4)}
+  level easy {
+    let s={0}
+  }
+  level medium {
+    let s={1, 2}
+  }
+  level hard {
+    let s={3, 4}
+  }
+
+  scene 36x21 {
+    raft logs part=raft w=9 flag="" at=canvas(1, 2)
+    canoe boat stroke=0.6 top=berry right-of=logs gap=3
+    current flow length=12 facing=1 right-of=boat gap=2
+    text ask "A raft left to drift takes {tr} hours to float down the river from the mill to the bridge. A canoe paddling downstream takes {tc} hours for the same stretch. How many hours does the canoe take to paddle back up from the bridge to the mill?" narrate width=34 below=logs gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (tr * tc / (tr - 2 * tc))
+  feedback {
+    when (answer == tr - tc) point=logs {
+      say "Times do not take away like that. Think of the river as a number of equal parts and ask how many parts each goes in one hour."
+    }
+    when (answer == tr * tc / (tr - tc)) point=logs {
+      say "That is the canoe in still water. Going back up, the current takes its share off once more."
+    }
+  }
+  hint "Suppose the stretch is {tr * 2} km. How fast does the raft go? And the canoe downstream?"
+  hint "The raft's speed is the current. What is the canoe's speed in still water, and upstream?"
+}

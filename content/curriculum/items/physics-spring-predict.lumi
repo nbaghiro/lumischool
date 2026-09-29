@@ -1,0 +1,30 @@
+# In step with the load: read how far this spring stretches for its load, then work out the stretch
+# for another load inside its limit. q picks the spring, w the load drawn, n the load asked about.
+item physics.spring-predict v=1 skills=[physics.forces, reasoning.proportion] {
+  title "Another load"
+  difficulty (if n % w == 0 then 0 else 1)
+  let q=0..2 w={2, 3, 4} n={4, 5, 6, 7}
+  where (n != w and n <= 8)
+  level easy {
+    let w={2} n={4, 6}
+  }
+  level hard {
+    let w={3, 4} n={5, 7}
+  }
+  let per={pick(q, 1, 1.5, 2)}
+
+  scene 36x20 {
+    spring s load=w per=per limit=8 natural=4 from=0 at=canvas(1, 0)
+    text ask "This spring stretches in step with its load up to 8 N. How far will it stretch with {n} N on it?" narrate width=22 right-of=s gap=1
+    number-input cm below=ask gap=1
+  }
+
+  check physics.forces of=s cm="stretch({n})"
+  feedback {
+    when (cm == per * w + n and per * w + n != per * n) point=s {
+      say "Adding the newtons to the centimetres mixes two things. How far does one newton stretch it?"
+    }
+  }
+  hint "How far does the load drawn stretch it, and how many newtons is that?"
+  hint "How far does one newton stretch it? How many of those make the load asked about?"
+}

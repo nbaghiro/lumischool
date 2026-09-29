@@ -1,0 +1,32 @@
+# The two-star reason: why a solid drawing needs its full range, the white paper for the light
+# and more than one tone, with wrong reasons about neatness and speed.
+item art.tone-why v=1 stars=2 skills=[art.tone, reasoning.explain] {
+  title "Ben's flat moon"
+  difficulty k
+  let k=0..1 r=0..2
+  let what={pick(k, "shades his whole moon in step 3, one even grey", "shades his moon in steps 3 and 4 only, two greys next to each other on the scale")}
+  let right={pick(k, "One tone has no light side or dark side", "Two close greys hardly show the light turning")}
+  let w1={pick(k, "Step 3 is too dark for a moon", "Step 4 is too dark for a moon")}
+  let w2={"He should have pressed harder"}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x22 {
+    text ask "Ben {what}. It looks flat, like a paper circle. Why?" width=34 at=canvas(1, 1)
+    tonescale scale steps=5 blank=-1 ring=-1 below=ask gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=scale gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=scale {
+      say "A round thing looks round because its tones change: palest where the light hits, darker as it turns away. Which tones did Ben leave out?"
+    }
+  }
+  hint "Look at the scale. Which tones did Ben use, and which did he leave out?"
+  hint "What makes one side of a ball look lit and the other side look turned away?"
+}

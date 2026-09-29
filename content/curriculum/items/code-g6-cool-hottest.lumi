@@ -1,0 +1,34 @@
+# Three-star: the model run backwards. After each ten minutes the gap is halved, so the gap at the
+# start is the gap wanted doubled once for every ten minutes, and the hottest start is air plus that.
+item coding.cool-hottest v=1 stars=3 skills=[coding.simulation, reasoning.work-backwards] {
+  title "The hottest it can start"
+  difficulty k
+  let k=0..2
+  let t={pick(k, 35, 28, 25)} m={pick(k, 20, 30, 40)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x21 {
+    program p code=["set air to 20", "set cocoa to start", "repeat {m / 10}", "  set gap to cocoa - air", "  take gap / 2 from cocoa"] text=true at=canvas(1, 0)
+    hut h pictures=5 right-of=p gap=1
+    text ask "The sledge team will be back in {m} minutes and want the cocoa at {t} °C or cooler by then. The program cools it as before. What is the hottest the cocoa can start at?" width=24 below=p gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer pick(k, 80, 84, 100)
+  feedback {
+    when (answer == 20 + (t - 20) * (m / 10)) point=p {
+      say "The gap does not shrink by the same amount each time. It halves, so work back by doubling."
+    }
+    when (answer == (t - 20) * pick(k, 4, 8, 16)) point=p {
+      say "That is the gap at the start. The cocoa is 20 °C warmer than its gap, because the air is 20 °C."
+    }
+  }
+  hint "At the end the gap between the cocoa and the air is {t - 20}. What was it ten minutes before?"
+  hint "Work back one ten minutes at a time, doubling the gap each time."
+  hint "Add the air's 20 °C to the gap at the start."
+}

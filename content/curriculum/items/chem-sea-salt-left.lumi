@@ -1,0 +1,32 @@
+# Sea water holds about 35 g of dissolved salt in each litre (3.5 per cent, NOAA; Met Office). Boiled
+# dry, the salt is left; the unknown is the grams left or the millilitres boiled.
+item chem.sea-salt-left v=1 skills=[chemistry.separating, ratio.scaling] {
+  title "How much salt is left?"
+  difficulty (d * 2 + (if v == 200 then 0 else 1))
+  let d=0..1 v={200, 400, 600, 800}
+  let salt={35 * v / 1000}
+  level easy {
+    let d=0..0 v={200, 400}
+  }
+  level hard {
+    let d=1..1
+  }
+
+  scene 36x13 {
+    jug j max=1000 step=200 level=(if d == 0 then v else 0) unit=ml at=canvas(1, 0)
+    text ask "The boat from the sea brings a barrel of sea water up the canal. Every litre, 1000 ml, has 35 g of salt dissolved in it. {if d == 0 then \"A grown-up boils the sea water in the jug until it is dry. How many grams of salt are left?\" else \"She boiled a jugful dry and \"}{if d == 0 then \"\" else salt}{if d == 0 then \"\" else \" g of salt was left. How many millilitres of sea water were in the jug?\"}" narrate width=23 right-of=j gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if d == 0 then salt else v)
+  feedback {
+    when (d == 0 and answer == 35) point=j {
+      say "35 g is in a whole litre. Read the jug: how much of a litre is in it?"
+    }
+    when (d == 1 and answer == salt) point=j {
+      say "That is the salt. The question asks how much sea water held it."
+    }
+  }
+  hint "Each litre holds 35 g. What part of a litre is in the jug?"
+  hint "Find the salt in one fifth of a litre first. How many fifths are there?"
+}

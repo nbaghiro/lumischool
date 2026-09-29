@@ -1,0 +1,27 @@
+# The three-star: five short notes about the temple rewritten as one paragraph that holds together,
+# with pronouns and joining words, marked by a grown-up; at hard the notes come muddled.
+item writing.join-the-notes v=1 stars=3 skills=[writing.cohesion, writing.composing] {
+  title "Make the notes one piece"
+  difficulty k
+  let k=0..1
+  let t={pick(k, "The temple is on the hill. The temple is very old. People climb the temple's steps at dawn. The steps are steep. People ring a small bell at the top.", "People ring a small bell at the top. The temple is very old. The steps are steep. The temple is on the hill. People climb the temple's steps at dawn.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x36 {
+    row top at=canvas(1, 0) space=2 align=start {
+      passage notes title="Notes" text="{t}" width=23 numbers=false
+      temple tp rows=4
+    }
+    text ask "{if k == 0 then \"Write these notes as one paragraph that holds together. Use at least two pronouns and three joining words, and make every pronoun clear.\" else \"The notes are muddled. Put them in an order that makes sense, then write them as one paragraph with at least two pronouns and three joining words, every pronoun clear.\"}" narrate width=34 below=top gap=1
+    writinglines lines lines=5 width=34 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="One paragraph that keeps every fact in the notes, with the temple named once and then taken up by it or they where the meaning stays clear, at least three joining words that say how one sentence follows another (then, after that, when, so, at the top, finally), no sentence that repeats the name where a pronoun would do, and at hard an order that starts with where the temple is and ends at the bell."
+  hint "Which facts belong together? Try joining two of them into one sentence first."
+  hint "Read it aloud: is there anywhere a reader would ask who or what?"
+}

@@ -1,0 +1,37 @@
+# A reason in the core: a planet further out has a longer path round the Sun and moves along it more
+# slowly, so its year is longer. The table's years are in Earth days, rounded.
+item physics.scale-year-why v=1 skills=[physics.sky, reasoning.explain, data.tables] {
+  title "A longer year"
+  difficulty k
+  let k=0..2
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+  let near={pick(k, "the Earth", "Venus", "Mars")}
+  let far={pick(k, "Mars", "the Earth", "Jupiter")}
+
+  scene 34x41 {
+    planets pl count=5 names=1 at=canvas(1, 0)
+    table t cols=3 head=["Planet", "Million km", "Year, in days"] cells=["Mercury", "58", "88", "Venus", "108", "225", "Earth", "150", "365", "Mars", "228", "687", "Jupiter", "778", "4333"] below=pl gap=1
+    text ask "The table gives how long each planet takes to go once round the Sun. Why does {far} take longer than {near}?" narrate width=32 below=t gap=1
+    choice pick options=["Its path is longer, and it moves more slowly", "It turns more slowly on its axis", "It is bigger, so it is harder to move", "It is colder, so it moves more slowly"] stack=column below=ask gap=1
+  }
+
+  answer pick="Its path is longer, and it moves more slowly"
+  feedback {
+    when (pick == "It turns more slowly on its axis") point=t {
+      say "Turning on its axis makes a planet's day. Its year is one trip round the Sun."
+    }
+    when (pick == "It is bigger, so it is harder to move") point=t {
+      say "Size does not set the year: Mars is smaller than the Earth and still takes longer. What does the table say about how far out each one goes round?"
+    }
+    when (pick == "It is colder, so it moves more slowly") point=t {
+      say "Being cold does not slow a planet. Compare how far from the Sun each one goes round."
+    }
+  }
+  hint "Which of the two is further from the Sun?"
+  hint "Going round a bigger circle, how far does a planet have to travel?"
+}

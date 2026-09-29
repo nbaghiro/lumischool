@@ -1,6 +1,6 @@
 # The first lesson where a child writes a program rather than reading one. On screen the arrows are
 # dragged into the slots and run; on paper they are drawn in the slots and walked with a finger.
-lesson coding-arrows-to-the-gem v=1 format=teach grade=1 unit=1 subject=coding levels=[easy, medium, hard] {
+lesson coding-arrows-to-the-gem v=1 format=teach grade=1 unit=3 subject=coding levels=[easy, medium, hard] {
   title "Arrows to the gem"
   goal "Write a program of arrow blocks that takes the robot past a gem to the flag."
 

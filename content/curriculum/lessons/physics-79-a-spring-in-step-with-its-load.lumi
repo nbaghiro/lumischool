@@ -1,0 +1,63 @@
+lesson physics-a-spring-in-step-with-its-load v=1 format=teach grade=6 unit=6 subject=physics levels=[easy, medium, hard] {
+  title "A spring stretches in step with its load"
+  goal "Use a spring's stretch for one load to work out its stretch for another, or the load from its stretch, while the load is inside its limit."
+
+  look {
+    scene 26x20 {
+      row all at=canvas(1, 0) space=2 align=end {
+        spring a load=2 per=1.5 limit=8 natural=5 from=0
+        spring b load=4 per=1.5 limit=8 natural=5 from=0
+      }
+    }
+    say """
+      A stretched spring pulls back, which is an elastic force. Each newton hung on a spring
+      stretches it by the same amount, so twice the load gives twice the stretch. This is Hooke's
+      law, and it holds up to a limit: past it the spring stretches more for each newton and does
+      not spring back. The stretch is how much longer it is than with nothing on. Here 2 N stretch
+      this spring 3 cm and 4 N stretch it 6 cm.
+      """
+  }
+  do {
+    practice physics.spring-read count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.spring-length count=1 seed=1 easy-seed=2 hard-seed=3
+    level easy {
+      worked physics.spring-predict q=0 w=2 n=6 level=medium
+    }
+    practice physics.spring-predict count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.spring-backwards count=1 seed=1 easy-seed=2 hard-seed=3 hard-count=2
+    practice physics.spring-table count=1 seed=1 easy-seed=2 hard-seed=3
+  }
+  story {
+    show physics.mill-spice g=400 easy-g=300 hard-g=700
+    show physics.mill-spice g=600 easy-g=400 hard-g=600
+  }
+  try stars=2 {
+    show physics.spring-double q=0 w=2 hard-q=1
+  }
+  try stars=3 {
+    show physics.spring-choose v=0 easy-v=0 hard-v=1
+  }
+  remember {
+    say "Up to its limit, each newton stretches a spring the same amount: twice the load, twice the stretch, but not twice the length."
+  }
+
+  grown-ups """
+    A force meter is a spring behind a scale, which is why its marks are evenly spaced: every
+    newton stretches it the same amount. The common wrong ideas are that twice the load makes the
+    spring twice as long (only the stretch doubles, the two-star question), and that a spring
+    keeps stretching in step however much is hung on it (the table question finds where it stops).
+    Each spring's rate is its own, read from the picture, not a rule for all springs. If the child
+    mixes up length and stretch, measure a hair band on a ruler, then stretched, and say which is
+    which. Off the page, hang a bag on a rubber band and mark the bottom for one, two and three
+    apples, and see whether the marks are evenly spaced (a band is not quite in step). The lesson
+    meets China's 2022 science standard for grades 5 and 6, 3.1 ①, which names 弹力, the elastic
+    force, among the forces a child should know, and ②, «学会使用弹簧测力计», using a spring force
+    meter.
+    """
+  level easy {
+    grown-ups "At this level each newton stretches the spring 2 cm, a worked example finds the stretch for 6 N from 2 N, the loads asked about are whole multiples of the one drawn, the mill's bags are 300 and 400 g, and the three-star meter measures up to 8 N on a 12 cm ruler."
+  }
+  level hard {
+    grown-ups "At this level the springs stretch 1.5 or 0.5 cm a newton, the loads asked about are not multiples of the one drawn, the bag is weighed backwards twice, the table's steps are halves, the mill's bags are 600 and 700 g, and the three-star ruler is 10 cm."
+  }
+}

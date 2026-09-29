@@ -1,0 +1,34 @@
+# The two-star reason: two explanations of the same lock, one a string of thens and one that says
+# why each step follows, and which explains. The right reason is offered for both, and the third
+# choice praises the list for having every step, so the texts decide.
+item writing.better-explanation v=1 stars=2 skills=[writing.explanations, reasoning.explain] {
+  title "Which one explains?"
+  difficulty k
+  let k=0..1 r=0..2
+  let ta={pick(k, "A: The boat goes in. Then the gates shut. Then water comes in. Then the boat goes up. Then it goes out.", "A: The boat goes in and the top gates shut. Water flows out at the bottom, so the boat sinks. When it is level, the bottom gates can open.")}
+  let tb={pick(k, "B: The boat goes in and the gates shut, so no water escapes. Water pours in, and as it gets deeper, the boat floats up.", "B: The boat goes in. The top gates shut. The water goes down. The boat goes down. The gates open. The boat goes out.")}
+  let right={pick(k, "B: it says why each step happens", "A: it says why each step happens")}
+  let w1={pick(k, "A: it says why each step happens", "B: it says why each step happens")}
+  let w2={pick(k, "A: it gives every step in order", "B: it gives every step in order")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 32x32 {
+    canallock lock level=(if k == 0 then 0.75 else 0.25) boat=1 at=canvas(1, 0)
+    text ask "Two children explain the lock. {ta} {tb} Which one explains how the lock works, and why?" narrate width=31 below=lock gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "Every step in order says what happens, but not how one step makes the next one happen. Look in each explanation for so, as and when."
+    }
+  }
+  hint "Could someone who has never seen a lock understand why the boat moves, from each one?"
+  hint "Two choices give the same reason. Count the words that give a reason in each explanation: which one earns it?"
+}

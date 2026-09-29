@@ -1,0 +1,44 @@
+# A key to five pond creatures and a description of one Ben found in the canal, to be named by
+# following the key. The snail and the leech are named at the second question; the water boatman and
+# the pond skater need the third.
+item nature.key-name v=1 skills=[nature.keys] {
+  title "Name the pond creature"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..4
+  let found={pick(k, "has no legs and carries a coiled shell on its back", "has no legs and no shell, and a long flat body that stretches", "has eight legs and lives under the water in a bubble of air", "has six legs and rows along upside down under the water", "has six long thin legs and skates across the top of the water")}
+  let ans={pick(k, "pond snail", "leech", "water spider", "water boatman", "pond skater")}
+  let o1={pick(k, "leech", "pond snail", "pond skater", "pond skater", "water boatman")}
+  let o2={pick(k, "water spider", "water boatman", "water boatman", "water spider", "water spider")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..4
+  }
+
+  scene 34x30 {
+    column t at=canvas(1, 1) space=0 align=start {
+      text t1 "1  Has it got legs?  Yes: go to 3.  No: go to 2." width=32
+      text t2 "2  Has it got a shell?  Yes: pond snail.  No: leech." width=32
+      text t3 "3  Has it got eight legs?  Yes: water spider.  No: go to 4." width=32
+      text t4 "4  Does it walk on top of the water?  Yes: pond skater.  No: water boatman." width=32
+    }
+    text ask "Ben dips a net in the canal and finds a creature that {found}. Follow the key. What is it?" narrate width=32 below=t gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k <= 1 and pick != ans) point=t {
+      say "With no legs, question 1 sends you to question 2. What does question 2 ask?"
+    }
+    when (k == 2 and pick != ans) point=t {
+      say "It has legs, so go to question 3. Eight legs answers question 3 straight away."
+    }
+    when (k >= 3 and pick != ans) point=t {
+      say "Six legs is a no at question 3, so go on to question 4. Does it walk on top of the water, or swim under it?"
+    }
+  }
+  hint "Start at question 1. Does it have legs? Follow where that answer sends you."
+  hint "Answer each question from the description, one at a time, until the key gives a name."
+}

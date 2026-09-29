@@ -1,0 +1,23 @@
+# Evidence questions on Treasure Island, one line of the book each, proved against the volume by
+# book.line. A version is 0 when the line says the thing outright and 1 when the child has to see
+# what the line implies, such as the older Jim judging his younger self.
+item reading.treasure-line v=1 skills=[reading.evidence, reading.whole-book] {
+  title "Which line tells you?"
+  difficulty pick(k, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1)
+  let k=0..11
+
+  scene 34x8 {
+    row all at=canvas(1, 1) space=2 align=centre {
+      bookcast c who=jim pose=think dir=1
+      column q space=1 align=start {
+        text ask "{pick(k, \"Which line of chapter 1 tells you what the captain promised Jim, and how often?\", \"Which line of chapter 4 shows Jim's mother would take what they were owed and not a penny more?\", \"Which line of the squire's letter in chapter 7 hints, looking back, that he had hired more than he knew?\", \"Which line of chapter 8 shows Jim had feared who the tavern-keeper might be?\", \"Which line of chapter 10 shows that Jim, telling the story later, knows the barrel will matter?\", \"Which line of chapter 12 tells you how few of the people aboard the captain's side could count on?\", \"The doctor tells chapter 16. Which line shows how he found out that Jim had left the ship?\", \"Which line of chapter 22 shows the older Jim judging the way he left the stockade?\", \"Which line of chapter 24 shows Jim working out why the ship is sailing so strangely?\", \"Which line of chapter 30 shows Jim will not break a promise, even to escape?\", \"Which line of chapter 33 tells you where Ben Gunn had taken the treasure?\", \"Which line of chapter 15 shows Ben Gunn hinting at a secret that Jim takes for madness?\")}" width=26
+        number-input answer
+      }
+    }
+  }
+
+  check book.line book=treasure-island chapter="{pick(k, 1, 4, 7, 8, 10, 12, 16, 22, 24, 30, 33, 15)}" holds="{pick(k, \"silver fourpenny on the first of every month\", \"have my dues, and not a farthing over\", \"I thought I had only found a cook\", \"very one-legged sailor whom I had watched\", \"good did come of the apple barrel\", \"only seven out of the twenty-six\", \"Hawkins had slipped into a boat\", \"made the thing itself wrong\", \"Either they were dead drunk or had deserted her\", \"said I, “I passed my word.”\", \"a cave he had on the two-pointed hill\", \"lowering his voice to a whisper\")}"
+  hint "Which part of the chapter is the question about? Turn to that page first."
+  hint "Read the lines there slowly. Which one holds the whole answer, not just the start of it?"
+  hint "Check the words of your line against the question once more before you write its number."
+}

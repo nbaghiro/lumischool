@@ -1,0 +1,31 @@
+# The core's reasoning question: the bearing back along the same line is half a turn from the bearing
+# out, which is why 180 is added or taken away.
+item angles.back-bearing v=1 skills=[angles.bearings, reasoning.inverse] {
+  title "The way back"
+  difficulty (if b < 180 then 0 else 1)
+  let b={40, 65, 110, 150, 210, 245, 300, 330}
+  level easy {
+    let b={40, 65, 110}
+  }
+  level hard {
+    let b={210, 245, 300, 330}
+  }
+
+  scene 31x12 {
+    compass rose needle=b at=canvas(1, 1)
+    text ask "From the observatory, the lighthouse is on a bearing of {b} degrees. What is the bearing of the observatory from the lighthouse?" narrate width=20 right-of=rose gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (if b < 180 then b + 180 else b - 180)
+  feedback {
+    when (answer == 360 - b) point=rose {
+      say "The way back points in exactly the opposite direction, half a turn round. What is half a turn in degrees?"
+    }
+    when (b >= 180 and answer == b + 180) point=ask {
+      say "That is more than a whole turn. Take 360 away, or take 180 from {b} instead."
+    }
+  }
+  hint "Does the way back point the same way, or the opposite way?"
+  hint "How many degrees is half a turn?"
+}

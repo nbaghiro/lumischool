@@ -1,0 +1,24 @@
+# The broken pencil: light from the part under water bends as it leaves, so that part looks raised;
+# the part above the water is seen where it is. n picks how steeply the pencil leans.
+item physics.pencil-broken v=1 skills=[physics.light, reasoning.explain] {
+  title "The broken pencil"
+  let n={30, 45}
+
+  scene 30x33 {
+    refraction r mode=1 lean=n real=1 at=canvas(1, 0)
+    text ask "A pencil stands in a glass of water and looks broken at the surface. The dashed line shows where the pencil really is. Which part of the pencil is seen where it really is?" narrate width=28 below=r gap=1
+    choice pick options=["The part above the water", "The part under the water", "Neither part"] stack=column below=ask gap=1
+  }
+
+  answer pick="The part above the water"
+  feedback {
+    when (pick == "The part under the water") point=r {
+      say "Find the dashed line. Does the part under the water sit on it, or above it?"
+    }
+    when (pick == "Neither part") point=r {
+      say "Light from the dry part comes straight through the air. Does it cross a water surface?"
+    }
+  }
+  hint "Where does the light from each part of the pencil have to cross a surface?"
+  hint "Compare each part with the dashed line."
+}

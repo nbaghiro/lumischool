@@ -1,0 +1,66 @@
+# Random numbers: a program can draw a number it does not know in advance, so its questions are
+# about what could happen, how many ways, and whether every number has the same chance. The
+# observatory's astronomers play dice on a cloudy night.
+lesson coding-random-numbers-and-a-fair-die v=1 format=teach grade=5 unit=6 subject=coding levels=[easy, medium, hard] {
+  title "Random numbers and a fair die"
+  goal "Say what a program with random numbers could do, count the ways, and tell whether a die it makes is fair."
+
+  look {
+    scene 36x10 {
+      program p code=["set roll to random 1 to 6", "say roll"] at=canvas(1, 0)
+      die d1 face=3 right-of=p gap=2
+      observatory obs open=0 right-of=d1 gap=2
+    }
+    say """
+      Clouds cover the stars, so the astronomers at the observatory play a dice game, and the
+      program is their die. Random 1 to 6 picks a whole number from 1 to 6, and nobody knows which
+      until it runs. So instead of asking what it will say, ask what it could say. A die is fair
+      when every number it can say has the same chance.
+      """
+  }
+  do {
+    show coding.rand-could k=1 easy-k=0 hard-k=2
+    show coding.rand-range k=0 m=0 easy-k=1 hard-m=1 hard-k=1
+    level easy {
+      worked coding.rand-range k=0 m=0 level=medium
+    }
+    show coding.rand-never k=1 easy-k=0 hard-k=2
+    show coding.rand-fair k=0 hard-k=1
+    show coding.rand-ways t=4 easy-t=3 hard-t=7
+    show coding.rand-fair k=2 easy-k=1
+    show coding.rand-ways t=10 easy-t=11 hard-t=6
+    show coding.rand-build k=1 easy-k=0 hard-k=2
+    level hard {
+      show coding.rand-range k=2 m=1
+    }
+  }
+  try stars=2 {
+    show coding.rand-spinner k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show coding.rand-likeliest k=0 easy-k=1 hard-k=2
+  }
+  remember {
+    say "A random number could be any number in its range. A die is fair when every number it can say has the same chance."
+  }
+
+  grown-ups """
+    Nobody, the program included, knows which number random 1 to 6 will give, so the questions here
+    ask what could happen and in how many ways, which always has one answer. The wrong ideas to
+    watch for are thinking the range leaves out its ends, and thinking every total of two dice is as
+    likely as every other. In the child's working, look for lists of what could happen and tables of
+    pairs rather than guesses. If the child is stuck, roll a real die, or two, and write every
+    result down; after a few dozen rolls of two dice the sevens pile up. Stay another day if the
+    child still says one total is lucky. Off the page, check a board game's spinner or dice for
+    fairness by counting its faces or wedges. The two-star question counts the numbers that lead to
+    each colour, and the three-star question is a table of all the pairs. The build question orders
+    four cards so the rover stops on the flag whatever it rolls: it moves by the roll and then by
+    what is left, so the child reasons about every roll rather than one.
+    """
+  level easy {
+    grown-ups "At this level the ranges start at 1, the least and most of two dice are found for dice of 1 to 4 and one is worked in the teacher's pen, the change after the roll is adding 3, the programs to judge are a fair one and one that turns 0 into 6, the totals to count are at the ends, where there are few ways, the spinner's fair question is the plainest, and the three-star uses dice of 1 to 4. The cards to order are for rolls from 1 to 3."
+  }
+  level hard {
+    grown-ups "At this level the range starts at 0, the two dice are multiplied rather than added, the change after the roll takes 1 away, the programs to judge turn 0 into 6 or 1 into 2, and neither is fair, the totals to count are 6 and 7 in the middle, where there are most ways, the spinner's fair question asks about numbers less than 4 of 6, and the three-star uses dice of 1 to 5. The cards to order take the rover 9 squares on rolls from 1 to 6."
+  }
+}

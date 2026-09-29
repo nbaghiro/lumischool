@@ -1,0 +1,43 @@
+# The way in: chords I, IV and V are named by the scale notes they are built on, 1, 4 and 5, counted
+# along the scale of C, G, D or A major written on the staff with its letters.
+item music.chords-roman-name v=1 skills=[music.chords, music.keys] {
+  title "Which chord is it?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..7
+  let key={pick(k, "C", "C", "G", "G", "D", "D", "A", "A")}
+  let roman={pick(k, "IV", "V", "IV", "V", "IV", "V", "IV", "V")}
+  let num={pick(k, 4, 5, 4, 5, 4, 5, 4, 5)}
+  let s1={pick(k, "C4", "C4", "G4", "G4", "D4", "D4", "A4", "A4")}
+  let s2={pick(k, "D4", "D4", "A4", "A4", "E4", "E4", "B4", "B4")}
+  let s3={pick(k, "E4", "E4", "B4", "B4", "Fs4", "Fs4", "Cs5", "Cs5")}
+  let s4={pick(k, "F4", "F4", "C5", "C5", "G4", "G4", "D5", "D5")}
+  let s5={pick(k, "G4", "G4", "D5", "D5", "A4", "A4", "E5", "E5")}
+  let s6={pick(k, "A4", "A4", "E5", "E5", "B4", "B4", "Fs5", "Fs5")}
+  let s7={pick(k, "B4", "B4", "Fs5", "Fs5", "Cs5", "Cs5", "Gs5", "Gs5")}
+  let s8={pick(k, "C5", "C5", "G5", "G5", "D5", "D5", "A5", "A5")}
+  let right={pick(k, "F", "G", "C", "D", "G", "A", "D", "E")}
+  level easy {
+    let k=0..3
+  }
+  level hard {
+    let k=2..7
+  }
+
+  scene 34x24 {
+    notes scale clef=treble notes=[s1, s2, s3, s4, s5, s6, s7, s8] values=[] letters=true meter=0 at=canvas(1, 1)
+    text ask "Chords I, IV and V are built on notes 1, 4 and 5 of the scale. The band at the observatory plays in {key} major, and this is its scale. Which chord is {roman}?" narrate width=32 below=scale gap=1
+    choice pick options=["C", "D", "E", "F", "G", "A", "B"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == key) point=scale {
+      say "That is the chord built on note 1. Chord {roman} is built on another note of the scale."
+    }
+    when (pick != right and pick != key) point=scale {
+      say "Count along the scale with its first note as 1, and stop at the number the numeral stands for."
+    }
+  }
+  hint "The numeral IV stands for 4 and V stands for 5. Which number is {roman}?"
+  hint "Starting from the first note as 1, count along the scale. Which note is number {num}?"
+}

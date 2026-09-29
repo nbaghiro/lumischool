@@ -1,0 +1,32 @@
+# The way in: a cuboid is layers of its base, so the volume is the cubes in one layer times the
+# number of layers.
+item volume.mill-sack-layers v=1 skills=[volume.prisms, volume.cuboids] {
+  title "Layers of cubes"
+  difficulty (l * w * h / 60)
+  let l={4, 5, 6} w={2, 3, 4} h={3, 4, 5, 6}
+  where (l > w)
+  level easy {
+    let l={4, 5} w={2, 3} h={3, 4}
+  }
+  level hard {
+    let l={6} w={3, 4} h={5, 6}
+  }
+
+  scene 35x19 {
+    cubestack stack l=l w=w h=h count=1 at=canvas(1, 1)
+    text ask "Flour for the mill is packed in cubes of 1 cm³, stacked in a box. The number on top is the cubes in one layer. What is the volume of the box, in cm³?" narrate width=12 right-of=stack gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (l * w * h)
+  feedback {
+    when (answer == l * w) point=stack {
+      say "That is one layer. How many layers are there?"
+    }
+    when (answer == l * w + h) point=stack {
+      say "Each layer holds {l * w} cubes, so the layers are multiplied, not added."
+    }
+  }
+  hint "How many cubes are in one layer?"
+  hint "How many layers tall is the box?"
+}

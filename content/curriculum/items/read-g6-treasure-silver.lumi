@@ -1,0 +1,21 @@
+# The three-star question: Silver is both, and the child builds the case from moments across the
+# book with their chapters. There is no one answer, so a grown-up marks it from the notice list.
+item reading.treasure-silver v=1 stars=3 skills=[reading.characters, reading.evidence, reading.whole-book] {
+  title "Friend or enemy"
+
+  scene 34x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=centre {
+        parrot p
+        chest box
+        text ask "Is Long John Silver Jim's friend or his enemy? Give one moment for each side, with its chapter, then say which is nearer the truth." width=17
+      }
+      writinglines w lines=5 width=33
+    }
+  }
+
+  check writing.by-eye look-for="One moment where Silver is kind to Jim or saves him (the galley in chapter 10, standing up for him in chapters 28 and 29) and one where he lies or kills (the barrel in chapter 11, Tom in chapter 14), each with a chapter the book bears out, and a judgement with a reason, such as that Silver is on his own side and is kind when it serves him." notice=["A moment on the friend side, with its chapter", "A moment on the enemy side, with its chapter", "A judgement with a reason", "The chapters match the moments"] ask="Would Jim say the same at the end of the book as at the start?"
+  hint "Think of a time Silver helps Jim. Which chapter is it in?"
+  hint "Now think of a time Silver does something Jim could never forgive. Which chapter?"
+  hint "Put the two side by side. What does Silver want each time?"
+}

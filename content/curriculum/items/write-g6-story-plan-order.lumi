@@ -1,0 +1,47 @@
+# A plan for a story with a turn, five notes muddled: who and where, what they want, the trouble,
+# the turn, and the ending that follows from it. Kit's plan at k=0, Omar's at k=1.
+item writing.story-plan-order v=1 skills=[writing.story-structure, writing.planning, writing.sequencing] {
+  title "The plan in order"
+  difficulty (if k == 0 then p else 2 + p)
+  let k=0..1 p=0..2
+  let a={pick(p, 2, 4, 1)}
+  let b={pick(p, 0, 2, 3)}
+  let c={pick(p, 4, 0, 0)}
+  let d={pick(p, 1, 3, 4)}
+  let e={pick(p, 3, 1, 2)}
+  let t0={pick(k, "Kit is the youngest at the moon base.", "Omar drives the rover across the plain.")}
+  let t1={pick(k, "Kit wants to see the sun rise from the rim.", "He wants to reach the far crater by dawn.")}
+  let t2={pick(k, "The crew leave Kit behind at the lander.", "A wheel breaks on the first night.")}
+  let t3={pick(k, "The radio dies; only Kit can see their lamps.", "The break stopped them short of a deep crack.")}
+  let t4={pick(k, "Kit guides the crew home by lamp.", "Omar stops minding a slow start.")}
+  let wa={pick(a, t0, t1, t2, t3, t4)}
+  let wb={pick(b, t0, t1, t2, t3, t4)}
+  let wc={pick(c, t0, t1, t2, t3, t4)}
+  let wd={pick(d, t0, t1, t2, t3, t4)}
+  let we={pick(e, t0, t1, t2, t3, t4)}
+  level easy {
+    let k=0..0 p=0..1
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x30 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      lander lnd rungs=5
+      crater cr count=2
+      earth globe up=1
+    }
+    text ask "The notes for a story with a turn are muddled. Number them 1 to 5 in the order of the story." narrate width=33 below=pics gap=1
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}", "{we}"] blanks=[q, x, y, u, v] below=ask gap=1
+  }
+
+  answer q=(a + 1) x=(b + 1) y=(c + 1) u=(d + 1) v=(e + 1)
+  feedback {
+    when ((if a == 3 then q else if b == 3 then x else if c == 3 then y else if d == 3 then u else v) < (if a == 2 then q else if b == 2 then x else if c == 2 then y else if d == 2 then u else v)) point=s {
+      say "The turn changes the trouble into something else, so the trouble has to come first."
+    }
+  }
+  hint "Which note introduces the character? Which says what they want?"
+  hint "Find the trouble, then the moment it turns. The ending follows from the turn."
+}

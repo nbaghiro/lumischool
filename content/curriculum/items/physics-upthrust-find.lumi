@@ -1,0 +1,31 @@
+# The unknown moves: q=0 gives the weight in the air and the water's push and asks the reading in the
+# water; q=1 gives the reading in the water and the push and asks the weight in the air.
+item physics.upthrust-find v=1 skills=[physics.floating, physics.forces, reasoning.backwards] {
+  title "Weight in air, weight in water"
+  difficulty q
+  let q=0..1 a=5..10 u=1..4
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..1 u=3..4
+  }
+
+  scene 28x14 {
+    springscale s max=10 step=2 value=(if q == 0 then a else a - u) unit=N at=canvas(1, 0)
+    text ask "{if q == 0 then \"This is a brass weight hanging in the air.\" else \"This is a brass weight hanging under the water.\"} The water pushes up on it with {u} N. What will the meter read {if q == 0 then \"under the water\" else \"in the air\"}, in newtons?" narrate width=19 right-of=s gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if q == 0 then a - u else a)
+  feedback {
+    when (q == 0 and answer == a + u) point=s {
+      say "The water pushes up, so it holds some of the weight and the meter reads less, not more."
+    }
+    when (q == 1 and answer == a - 2 * u) point=s {
+      say "In the air nothing pushes up, so the meter reads more than it does under the water."
+    }
+  }
+  hint "Does the push of the water make the meter read more or less?"
+  hint "So is the push added to the reading, or taken away?"
+}

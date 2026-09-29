@@ -1,0 +1,35 @@
+# The story: the clock tower's quarter chimes, a phrase of four notes once at quarter past, twice at
+# half past, three times at quarter to and four times on the hour, the pattern of the Westminster
+# chimes. An hour ending on the hour is 4 + 8 + 12 + 16 = 40 notes.
+item music.oldcity-chime-notes v=1 skills=[music.form, multiplication.groups] {
+  title "The clock tower's chimes"
+  difficulty q
+  let q=0..2
+  let span={pick(q, "from just after 12 o'clock up to and including 1 o'clock", "from half past 2 up to and including half past 3", "from quarter to 12 up to and including quarter past 1")}
+  let right={pick(q, 40, 48, 72)}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=2..2
+  }
+
+  scene 36x18 {
+    row top space=2 align=start at=canvas(1, 1) {
+      greatclock tower figures=1 hour=12
+      column side space=1 align=start {
+        text ask "The clock tower in the old city chimes a phrase of four notes: once at quarter past, twice at half past, three times at quarter to and four times on the hour. How many notes does it chime {span}?" narrate width=22
+        number-input answer
+      }
+    }
+  }
+
+  answer right
+  feedback {
+    when (answer == right / 4) point=ask {
+      say "That counts phrases. Each phrase has four notes."
+    }
+  }
+  hint "List every quarter the chime plays in that time, and how many phrases each one has."
+  hint "Add up the phrases, then count four notes for each."
+}

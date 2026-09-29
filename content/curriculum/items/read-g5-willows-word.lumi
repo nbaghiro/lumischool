@@ -1,0 +1,21 @@
+# A word's meaning worked out from its sentence in the book. Each wrong meaning fits the sentence's
+# grammar but not what is happening in it.
+item reading.willows-word v=1 skills=[reading.vocabulary, reading.whole-book] {
+  title "What does the word mean here?"
+  let k=0..2
+  let right={pick(k, "teasing", "brave", "tricks")}
+
+  scene 34x11 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        bookcast c who=pick(k, "mole", "rat", "toad") pose=pick(k, "walk", "walk", "wave") dir=1
+        text ask "{pick(k, \"In chapter 1 the Mole trots by the hedge ‘chaffing the other rabbits’. What does chaffing mean there?\", \"In chapter 3 the faces in the wood vanish at the sight of ‘the valorous animal’. What does valorous mean there?\", \"In chapter 11 Toad boasts of his escapes, ‘such disguises such subterfuges’. What are subterfuges?\")}" width=26
+      }
+      choice pick options=[pick(k, "feeding", "lost", "journeys"), pick(k, right, "cruel", "songs"), pick(k, "chasing", right, right)] stack=row
+    }
+  }
+
+  answer pick=right
+  hint "Read the sentence round the word in the chapter. What is happening to the others?"
+  hint "Try each meaning in the sentence. Which one fits what happens next?"
+}

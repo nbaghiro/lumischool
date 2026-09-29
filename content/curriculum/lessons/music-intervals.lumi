@@ -1,0 +1,72 @@
+# Intervals named by counting letters, played on the glockenspiel, and found at the start of tunes a
+# child knows, in the observatory where the band plays Twinkle Twinkle under the stars.
+lesson music-intervals v=1 format=teach grade=5 unit=4 subject=music levels=[easy, medium, hard] {
+  title "Intervals, named and heard"
+  goal "Name the interval between two notes by counting their letter names, both notes included."
+
+  look {
+    scene 30x23 {
+      row top space=2 align=end at=canvas(1, 1) {
+        observatory dome open=1
+        telescope scope tilt=40
+      }
+      notes tune clef=treble notes=[C4, C4, G4, G4, A4, A4, G4] values=[1, 1, 1, 1, 1, 1, 2] meter=4 letters=true below=top gap=1
+    }
+    say """
+      At the observatory's open night the band plays Twinkle Twinkle Little Star. The tune jumps
+      from C up to G. To name that jump, count the letter names from the lower note to the higher
+      one and count both: C, D, E, F, G is five letters, so the jump is a 5th. On the staff a 5th
+      goes from a line to the line two above it. A 2nd is next door and an 8th, the octave, is the
+      same letter again. The number counts letters, not size: C up to E and D up to F are both 3rds,
+      but C to E is four semitones, a major 3rd, and D to F only three, a minor 3rd, the same gaps
+      as in major and minor chords.
+      """
+  }
+  do {
+    practice music.interval-count count=1 seed=1 easy-seed=1 hard-seed=1
+    level easy {
+      worked music.interval-tune-opening t=0 level=medium
+    }
+    practice music.interval-play-glock count=1 seed=1 easy-seed=1 hard-seed=1
+    practice music.interval-tune-opening count=1 seed=1 easy-seed=7 hard-seed=1
+    show music.interval-quality k=4 easy-k=0 hard-k=5
+    practice music.interval-sky-tune count=1 seed=1 easy-seed=1 hard-seed=2
+    show music.interval-play-glock k=1 easy-k=0 hard-k=5
+    show music.interval-tune-opening t=1 easy-t=2 hard-t=3
+    level hard {
+      show music.interval-claim q=1 r=1
+    }
+    show music.interval-sky-tune s=2 easy-s=1
+  }
+  try stars=2 {
+    show music.interval-claim q=0 r=0 easy-r=1 hard-r=0
+  }
+  try stars=3 {
+    show music.interval-all-pairs v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "Count the letters from one note to the other, both included: C up to G is a 5th."
+  }
+
+  grown-ups """
+    The idea is that an interval is named by the number of letter names it spans, counting both
+    ends, so C to E is a 3rd and C to G a 5th, and that the same count works on the staff, the
+    glockenspiel and the keyboard. The wrong idea to watch for, above all, is counting the gaps,
+    which gives an answer one short; the second is losing count past G, where the letters start
+    again at A. In the working, look for the child saying the letters aloud, with the first note as
+    one. The two-star question is about that gap count, and at hard about two 2nds of different
+    sizes; one core question asks whether a 3rd is major or minor, from its semitones, which joins
+    this lesson to major and minor chords; the three-star question counts every pair of chime bars
+    an interval apart and finds that the count drops by one as the interval grows. A child who is
+    stuck can sing up from the lower note, one letter to each step, and go back to the way in; stay
+    on this lesson another day if the answers still come out one short. Hearing the jumps is on the
+    music page, and on paper the drawing does the work. Off the page, hum the start of Twinkle
+    Twinkle and Here Comes the Bride and say which jump is bigger.
+    """
+  level easy {
+    grown-ups "At this level the intervals to count are 2nds, 3rds and 4ths, the first jump of Kumbaya is worked once in the teacher's pen, the bars to play are a 3rd or a 4th apart, the 3rd to size is C up to E, a major 3rd, the tunes to read are Here Comes the Bride and Twinkle Twinkle, whose first jump comes after a repeated note, the star tunes use smaller moves, the two-star is as written with its answers in another order, and the three-star counts the pairs a 5th apart."
+  }
+  level hard {
+    grown-ups "At this level the intervals to count run from a 5th to the octave, the bars to play are a 4th to an octave apart, the 3rd to size is F sharp up to A, where the sharp takes a semitone away, the tunes are Twinkle Twinkle and My Bonnie, a 6th, the star tunes move down as well as up and past G, a claim about two 2nds of different sizes is judged before the two-star, and the three-star counts the pairs more than a 5th apart."
+  }
+}

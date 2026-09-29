@@ -1,0 +1,21 @@
+# Three stars: one tilt for the whole day. The stand turns to face the sun, so only the tilt matters;
+# the best tilt is the one whose worse miss from square on, at noon or at midnight, is smallest.
+item physics.panel-one-tilt v=1 stars=3 skills=[physics.energy, angles.degrees, reasoning.constraints] {
+  title "One tilt for day and night"
+  difficulty (if v == 0 then 0 else if v == 1 then 0.5 else 1)
+  let v=0..3
+  let lo={pick(v, 15, 20, 5, 10)}
+  let hi={pick(v, 30, 35, 30, 25)}
+  let ans={pick(v, "C", "C", "D", "D")}
+
+  scene 23x30 {
+    solarpanel p sun=hi slope=0 rated=200 light=100 marks=1 show=0 at=canvas(1, 0)
+    text ask "The stand turns to face the sun all day, but the tilt is set once. The sun is {hi}° up at noon and {lo}° at midnight. The tilts on offer are A {pick(v, 30, 20, 40, 30)}°, B {pick(v, 50, 40, 50, 45)}°, C {pick(v, 70, 60, 60, 60)}° and D {pick(v, 90, 80, 80, 75)}°. Which gives the most at whichever of noon and midnight it does worse?" narrate width=21 below=p gap=1
+    choice pick options=["A", "B", "C", "D"] stack=row below=ask gap=1
+  }
+
+  answer pick=ans
+  hint "Which tilt faces the noon sun square on, and which the midnight sun?"
+  hint "For each tilt, how far is it from square on at noon, and at midnight? Which is its worse time?"
+  hint "The further from square on, the less it gives. Which tilt's worse miss is smallest?"
+}

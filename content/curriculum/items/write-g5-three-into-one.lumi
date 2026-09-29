@@ -1,0 +1,28 @@
+# Three short sentences made into one with a relative clause and a joining word; of three tries one
+# keeps every fact and has its commas right, one loses a fact, one loses a comma.
+item writing.three-into-one v=1 stars=3 skills=[writing.relative-clauses, writing.joining-sentences, reasoning.compare] {
+  title "Three into one"
+  difficulty k
+  let k=0..1
+  let t={pick(k, "The clock was built in 1602. It stopped last winter. A smith mended it.", "The library has a green dome. It holds ten thousand books. Mrs Adeyemi runs it.")}
+  let ea={pick(k, "A: The clock, which was built in 1602, stopped last winter, but a smith mended it.", "A: The library, which Mrs Adeyemi runs, has a green dome.")}
+  let eb={pick(k, "B: The clock which was built in 1602, stopped last winter but a smith mended it.", "B: The library, which has a green dome, holds ten thousand books, and Mrs Adeyemi runs it.")}
+  let ec={pick(k, "C: The clock, which a smith mended, was built in 1602.", "C: The library, which has a green dome holds ten thousand books and Mrs Adeyemi runs it.")}
+  let right={pick(k, "A", "B")}
+
+  scene 33x32 {
+    citywalls walls towers=3 open=1 at=canvas(1, 0)
+    passage para title="Three sentences" text="{t}" width=32 numbers=false below=walls gap=1
+    text ask "Three tries at making them one sentence. {ea} {eb} {ec} Which one keeps every fact and has its commas right?" narrate width=32 below=para gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ask {
+      say "Check that try twice: once for every fact in the three sentences, and once for a comma on both sides of the clause."
+    }
+  }
+  hint "Tick off the three facts in each try. Which tries still have all three?"
+  hint "Of those, which has a comma before and after the words that start with which?"
+}

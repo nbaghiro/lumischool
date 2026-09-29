@@ -1,0 +1,47 @@
+# A test at the research hut: three tins of warm water in snow, one bare, one in lard (as blubber),
+# one in a bag of feathers. The child finds how far each cooled, which means taking the end reading
+# from the start, and then compares two drops.
+item nature.heat-test v=1 skills=[nature.adaptation, data.tables, reasoning.fair-test] {
+  title "Three tins in the snow"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "How many degrees did the bare tin cool by?", "How many degrees did the tin in lard cool by?", "How many degrees more did the bare tin cool than the tin in lard?", "How many degrees more did the tin in feathers cool than the tin in lard?")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x33 {
+    thermometer th from=-10 to=50 step=10 value=40 unit="°C" at=canvas(1, 1)
+    text told "In the research hut Ada fills three tins with water at 40 °C. She wraps one in a thick layer of lard, the way blubber wraps a seal, puts one in a bag of feathers, and leaves one bare. All three stand in snow for 30 minutes." narrate width=22 right-of=th gap=2
+    table t cols=3 head=["Tin", "Start °C", "After 30 min °C"] cells=["bare", "40", "16", "in lard", "40", "33", "in feathers", "40", "30"] below=th gap=1
+    text ask "{asks}" narrate width=32 below=t gap=1
+    row r below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text u "°C"
+    }
+  }
+
+  answer pick(k, 24, 7, 17, 3)
+  feedback {
+    when (k == 0 and answer == 16) point=t {
+      say "16 °C is where the bare tin ended up. How far did it fall from 40 °C to get there?"
+    }
+    when (k == 1 and answer == 33) point=t {
+      say "33 °C is where the tin in lard ended up. How far did it fall from 40 °C?"
+    }
+    when (k == 2 and answer == 24) point=t {
+      say "24 degrees is the bare tin's fall alone. Take away how far the tin in lard fell."
+    }
+    when (k == 3 and answer == 10) point=t {
+      say "10 degrees is the tin in feathers' fall alone. Compare it with how far the tin in lard fell."
+    }
+  }
+  hint "Find the tin's row. What was it at the start, and what after 30 minutes?"
+  hint "How far it cooled is the start take away the end."
+  level hard {
+    hint "Work out each tin's fall first, then find the difference between the two falls."
+  }
+}

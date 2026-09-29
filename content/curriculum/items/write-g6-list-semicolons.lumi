@@ -1,0 +1,38 @@
+# A list whose items already have commas inside them needs semicolons between the items, one fewer
+# than the items. The count grows from three stops to five.
+item writing.list-semicolons v=1 skills=[writing.punctuation, writing.colons-semicolons, writing.commas] {
+  title "How many semicolons?"
+  difficulty n
+  let n=3..5
+  let nw={pick(n - 3, "three", "four", "five")}
+  let t={if n == 3 then "the old hut, which has no roof, the ice cliff, where the puffins nest, and the tide crack." else if n == 4 then "the old hut, which has no roof, the ice cliff, where the puffins nest, the flag, which marks the path, and the tide crack." else "the old hut, which has no roof, the ice cliff, where the puffins nest, the flag, which marks the path, the iceberg, which is as big as a church, and the tide crack."}
+  level easy {
+    let n=3..3
+  }
+  level hard {
+    let n=4..5
+  }
+
+  scene 34x28 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      sledge sl slats=5
+      iceberg berg under=0
+      hut h pictures=0
+    }
+    passage p title="Isla's notes" text="Today the sledge stopped at these places: {t}" width=33 numbers=false below=pics gap=1
+    text ask "Each place has a comma inside it, so semicolons should separate the places. How many semicolons does the sentence need?" narrate width=24 below=p gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (n - 1)
+  feedback {
+    when (answer == n) point=p {
+      say "Semicolons go between the places, not after each one. The last place ends with the full stop."
+    }
+    when (answer == 2 * (n - 1)) point=p {
+      say "The commas inside each place stay as they are. Only the gaps between one place and the next become semicolons."
+    }
+  }
+  hint "Count the places first: how many are there?"
+  hint "How many gaps are there between {nw} places in a row?"
+}

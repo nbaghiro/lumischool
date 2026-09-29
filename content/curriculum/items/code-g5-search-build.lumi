@@ -1,0 +1,26 @@
+# A build task on searching one by one: the robot walks the shelf a place at a time until item i is
+# the book wanted, so the search has to be a repeat until that adds 1 to i and moves each time round.
+# The book is seventh or further, so five moves written out cannot reach it.
+item coding.search-build v=1 skills=[coding.algorithms, coding.lists, reasoning.search] {
+  title "Walk the shelf until the book"
+  difficulty k
+  let k=0..2
+  let sh={pick(k, "set shelf to list 21, 35, 18, 34, 10, 26, 33, 15", "set shelf to list 12, 41, 27, 19, 35, 16, 24, 30", "set shelf to list 31, 17, 28, 13, 40, 22, 36, 25")}
+  let t={pick(k, 33, 24, 25)} p={pick(k, 7, 7, 8)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x32 {
+    maze m cols=8 rows=1 col=1 row=1 flag=[p, 1] at=canvas(0, 0)
+    text ask "The robot stands under the first book on the library shelf. Build a search that moves it along one book at a time and stops it under book {t}." width=34 below=m gap=1
+    codepad answer tray=[sh, "set i to 1", "repeat until item i of shelf is {t}", "add 1 to i", "right"] lines=5 key=[sh, "set i to 1", "repeat until item i of shelf is {t}", "  add 1 to i", "  right"] below=ask gap=1
+  }
+
+  check coding.builds of=m goal=flag
+  hint "What does i have to be when the search stops?"
+  hint "Each time round, the robot looks one book further on. Which two blocks happen every time round?"
+}

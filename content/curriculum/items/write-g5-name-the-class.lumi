@@ -1,0 +1,29 @@
+# The way in: one word of a sentence from the observatory, named by its word class. The child writes
+# the term, so the seven names have to be known, not picked from a list.
+item writing.name-the-class v=1 skills=[writing.word-classes, writing.grammar] {
+  title "Name the word class"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2, 0, 2)
+  let k=0..7
+  let term={pick(k, "verb", "adjective", "pronoun", "adverb", "preposition", "conjunction", "noun", "preposition")}
+  let w={pick(k, "looked", "bright", "She", "slowly", "on", "but", "time", "above")}
+  level easy {
+    let k={0, 1, 2, 6}
+  }
+  level hard {
+    let k={3, 4, 5, 7}
+  }
+
+  scene 34x21 {
+    column cards at=canvas(1, 1) space=0 align=start {
+      wordcards top words=[pick(k, "Ada", "The", "She", "The", "An", "We", "Ada", "Jupiter"), pick(k, "looked", "bright", "found", "dome", "owl", "waited", "wrote", "shone"), pick(k, "through", "comet", "Mars", "opened", "sat", "but", "the", "above")] picked=pick(k, 1, 1, 0, -1, -1, 2, -1, 2)
+      wordcards bottom words=[pick(k, "the", "crossed", "after", "slowly", "on", "clouds", "time", "the"), pick(k, "lens.", "the sky.", "midnight.", "tonight.", "the dome.", "came.", "down.", "dome.")] picked=pick(k, -1, -1, -1, 0, 0, -1, 0, -1)
+    }
+    text ask "What is the word class of the word on the picked card, {w}?" width=22 below=cards gap=1
+    telescope scope tilt=40 right-of=ask gap=1
+    word-input pick options=[term] letters=11 below=ask gap=1
+  }
+
+  answer pick=term
+  hint "What job does {w} do in this sentence? Is it a person, place or thing, an action, or something else?"
+  hint "Does it name a thing, describe one, tell how or when, stand in for a name, place one thing by another, or join two parts?"
+}

@@ -1,0 +1,46 @@
+# The three-star: a loop so tight that two outside banks face each other across a narrow neck. The
+# child has to see that both sides of the neck are outside banks, then follow what happens when a
+# flood breaks through: the old loop is sealed off as a curved lake, and the new short channel is
+# steeper, so it runs faster and digs. Nothing in the look says any of this; it follows from the rule.
+item nature.oxbow-years v=1 stars=3 skills=[nature.rivers, reasoning.predict] {
+  title "Through the neck"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "In a great flood the water cuts straight across the neck. The river now takes the short way. What happens to the old loop over the next years?", "A farmer grazes sheep on the neck and wants to keep it. Where should stone blocks go to stop the river cutting through, and why?", "Once the water cuts through the neck, the new channel is much shorter than the loop but drops the same height. What will the water in it do at first?")}
+  let ans={pick(k, "Sand seals its ends and it becomes a lake", "On both sides of the neck, the outside banks", "Run faster, and wear its bed deeper")}
+  let o1={pick(k, "It flows faster than ever, the long way round", "Inside the loop, where the stones pile up", "Run slower, and drop sand in it")}
+  let o2={pick(k, "It fills with big sharp stones from the hills", "Across the river, to slow it down", "Run just as fast: it is the same water")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x36 {
+    parts fig of=river at=canvas(1, 1)
+    text ask "Further down, the river loops so far round that two of its banks face each other across a neck of land only a few metres wide. Each year the neck is narrower. {asks}" narrate width=32 below=fig gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick == o1) point=ask {
+      say "Most of the water now takes the short new way. With little water moving through the loop, is it fast or slow there?"
+    }
+    when (k == 0 and pick == o2) point=ask {
+      say "Big sharp stones are high in the hills, far upstream. Down here the river carries sand and mud. Where will slow water drop it?"
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "The neck is being worn from both sides. For each side, is it the outside of a bend or the inside?"
+    }
+    when (k == 2 and pick == o1) point=ask {
+      say "The same drop in a shorter distance makes the channel steeper. Does water run faster or slower down a steeper slope?"
+    }
+    when (k == 2 and pick == o2) point=ask {
+      say "The water is the same, but the slope is not. What does a steeper slope do to its speed, and what does faster water do to a river bed?"
+    }
+  }
+  hint "Draw the loop and the neck. Where is the water fast, and where is it slow?"
+  hint "Fast water wears away and slow water drops things. Which is happening at each place in the question?"
+}

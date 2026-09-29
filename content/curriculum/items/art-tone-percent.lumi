@@ -1,0 +1,30 @@
+# Equal steps from 0 to 100: the gaps, not the squares, share out the hundred.
+item art.tone-percent v=1 skills=[art.tone, reasoning.pattern] {
+  title "How dark is the gap?"
+  difficulty (n * 3 + k)
+  let n={5, 6} k=1..3
+  level easy {
+    let n={5} k={1, 2}
+  }
+  level hard {
+    let n={6} k={2, 3, 4}
+  }
+
+  scene 35x15 {
+    tonescale scale steps=n blank=k ring=-1 at=canvas(1, 1)
+    text ask "Ada gives each tone a number: the bare paper is 0 and her darkest tone is 100, with equal steps between. One square is left empty. What number is its tone?" width=34 below=scale gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (100 * k / (n - 1))
+  feedback {
+    when (answer == 100 * k / n) point=scale {
+      say "There are {n} squares but only {n - 1} steps between the white and the darkest. Share the 100 out over the steps."
+    }
+    when (answer == 100 * (k + 1) / n) point=scale {
+      say "There are {n} squares but only {n - 1} steps between the white and the darkest. Share the 100 out over the steps."
+    }
+  }
+  hint "How many steps are there from the white square to the darkest one? Count the gaps, not the squares."
+  hint "Share 100 equally between those steps. How many steps along is the empty square?"
+}

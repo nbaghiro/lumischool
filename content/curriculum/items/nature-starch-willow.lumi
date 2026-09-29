@@ -1,0 +1,38 @@
+# Two-star: van Helmont's willow (1648), as tracks.md records. The soil lost almost nothing while the
+# tree gained about 75 kg, so the mass came from what the leaves and roots take in, water and the
+# carbon dioxide of the air. Sunlight is the tempting wrong answer: it lets the leaf make food but is
+# not the stuff the tree is built of.
+item nature.starch-willow v=1 stars=2 skills=[nature.photosynthesis, reasoning.explain] {
+  title "Where did the tree come from?"
+  difficulty k
+  let k=0..1
+  let asks={pick(k, "Where did most of the willow's new mass come from?", "Van Helmont decided that all of the new wood came from the water. What did he leave out?")}
+  let ans={pick(k, "From water and from carbon dioxide in the air", "The carbon dioxide the leaves took from the air")}
+  let o1={pick(k, "From the soil in the tub", "The soil the roots took in")}
+  let o2={pick(k, "From the sunlight on its leaves", "The sunlight that fell on the leaves")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 34x40 {
+    tree pics fruit=0 fallen=0 item=apple at=canvas(1, 1)
+    text told "Nearly 400 years ago, Jan van Helmont planted a willow of about 2 kg in a tub of 91 kg of dried soil, and gave it only rainwater. Five years later the willow weighed about 77 kg. He dried the soil again: it had lost less than 0.1 kg." narrate width=32 below=pics gap=1
+    text ask "{asks}" narrate width=32 below=told gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == o1) point=told {
+      say "How much did the soil lose, and how much did the tree gain? Could one make the other?"
+    }
+    when (pick == o2) point=told {
+      say "Light lets a leaf make its food, but light has no mass to add. What did the leaves take in from around them?"
+    }
+  }
+  hint "Compare what the tree gained with what the soil lost."
+  hint "What goes into a leaf to be made into food, besides the light that powers it?"
+}

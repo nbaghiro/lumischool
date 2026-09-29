@@ -1,0 +1,56 @@
+lesson g5-circles v=1 format=teach grade=5 unit=5 subject=maths levels=[easy, medium, hard] {
+  title "Circles and the distance round them"
+  goal "Name the radius and diameter of a circle, and find the distance round it as about 3.14 times the diameter."
+
+  look {
+    scene 26x16 {
+      circleparts c size=5 lines=3 radius=5 diameter=10 around=31.4 unit="m" at=canvas(1, 1)
+      observatory dome open=1 right-of=c gap=2
+    }
+    say """
+      The observatory's dome stands on a circle. The radius goes from the centre to the edge, and
+      the diameter goes right across through the centre, so it is two radii. The distance round a
+      circle is its circumference. However big the circle, the circumference is always a little more
+      than three diameters. How many exactly is a number called pi, written π, which is about 3.14.
+      A dome 10 m across is about 31.4 m round.
+      """
+  }
+  do {
+    practice circle.across-the-dome count=1 seed=3
+    level easy {
+      worked circle.round-the-dome v=8 from="diameter" level=medium
+    }
+    practice circle.round-the-dome count=2 seed=4
+    practice circle.rope-to-diameter count=1 seed=5
+    practice circle.wheel-turns count=1 seed=6
+    practice circle.wider-dome count=1 seed=2
+    practice circle.arch-window count=1 seed=7 hard-count=2
+    practice circle.across-the-dome count=1 seed=8
+  }
+  try stars=2 {
+    show circle.radius-mistake r=5 easy-r=3 hard-r=7
+  }
+  try stars=3 {
+    show circle.rope-a-metre-out r=8 w=1 easy-r=5 hard-r=20 hard-w=2
+  }
+  remember {
+    say "The diameter is two radii. The circumference, the distance round, is pi times the diameter, and pi is about 3.14."
+  }
+
+  grown-ups """
+    Wrap a string round a plate or a tin and lay it along the diameter: it goes a little more than
+    three times. That is the idea, and 3.14 is its value. The common slip is multiplying the radius
+    by 3.14, which gives only half the way round, so ask every time whether the line drawn is a
+    radius or a diameter. Going the other way, the diameter is the distance round divided by 3.14.
+    In the two-star question the reason is that 3.14 counts diameters. In the three-star question
+    the extra length does not depend on the size of the dome at all, which surprises most adults
+    too. If the child is unsure which line is which, stay here another day. Off the page, measure
+    round and across three round things at home and divide one by the other.
+    """
+  level easy {
+    grown-ups "At this level the radius is given and the diameter asked, a dome 8 m across is worked once in the teacher's pen before domes 2, 3 or 5 m across, the platform is 10 or 20 m across, the wheels turn ten times, the big dome is twice as wide, the half-round windows are 2 or 4 m, Mo's mistake is with a radius of 3, and the three-star path is 1 m further out round a dome of radius 5."
+  }
+  level hard {
+    grown-ups "At this level the diameter is given and the radius asked, with halves, the rails are found from the radius of domes 5 to 12 m, the platform is 2, 4 or 5 m across, the wheels are 60 cm and turn three times, the big dome is three or four times as wide, the windows are 6 or 10 m and asked twice, Mo's mistake is with a radius of 7, and the three-star path is 2 m further out round a dome of radius 20."
+  }
+}

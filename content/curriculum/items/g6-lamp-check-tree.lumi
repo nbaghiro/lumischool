@@ -1,0 +1,36 @@
+# Two checks one after the other, each green with its own probability: along a path of the tree the
+# fractions multiply. A fraction of a fraction, which the year has already taught.
+item chance.lamp-check-tree v=1 skills=[probability.fractions, fractions.multiply] {
+  title "Two green lamps"
+  difficulty (if b == 2 and d == 2 then 0 else if b * d <= 12 then 1 else 2)
+  let a={1, 2, 3} b={2, 3, 4, 5} c={1, 2, 3} d={2, 3, 4, 5}
+  where (a < b and c < d and gcd(a, b) == 1 and gcd(c, d) == 1)
+  level easy {
+    where (b * d <= 12)
+  }
+  level hard {
+    where (b * d > 12)
+  }
+
+  scene 35x25 {
+    probtree t first=["Green", "Red"] second=["Green", "Red"] tops=[a, b - a] over=b nexttops=[c, d - c] nextover=[d] ends=1 at=canvas(1, 1)
+    text ask "Before take-off two lamps are checked in turn, and each shows green or red with the chances on the branches. What is the probability that both show green?" narrate width=34 below=t gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input top width=3
+      text slash "/"
+      number-input bottom width=3
+    }
+  }
+
+  answer top=num(a / b * c / d) bottom=den(a / b * c / d)
+  feedback {
+    when (top == num(a / b + c / d) and bottom == den(a / b + c / d)) point=t {
+      say "Both lamps have to be green, which is less likely than either one. Along a path, multiply."
+    }
+    when (top == a + c and bottom == b + d) point=t {
+      say "Fractions are not combined by adding tops and bottoms. Take {c}/{d} of {a}/{b}."
+    }
+  }
+  hint "Which path of the tree ends in green and green?"
+  hint "The second lamp is green in only part of the times the first one is. How do you find a fraction of a fraction?"
+}

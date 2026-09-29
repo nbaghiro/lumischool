@@ -1,0 +1,28 @@
+# Working backwards from the distance round: diameter = distance round ÷ 3.14, then the radius, then
+# the area. Three steps chained.
+item circle.rim-to-floor v=1 skills=[circles.area, circles.circumference, reasoning.work-backwards] {
+  title "From the rim"
+  difficulty (if r == 5 then 0 else if r == 6 then 1 else 2)
+  let r={3, 4, 5, 6}
+  level easy {
+    let r={5, 6}
+  }
+  level hard {
+    let r={3, 4}
+  }
+
+  scene 35x17 {
+    circleparts c size=6 lines=0 around=decimals(2 * r * 3.14, 0) unit="m" at=canvas(1, 1)
+    text ask "A rover drives once round the rim of a crater and its wheels measure {decimals(2 * r * 3.14, 0)} m. Using 3.14, what is the area of the crater floor, in square metres?" narrate width=16 right-of=c gap=2
+    number-input answer width=7 below=ask gap=1
+  }
+
+  answer decimals(r * r * 3.14, 0)
+  feedback {
+    when (answer == 4 * r * r * 3.14) point=c {
+      say "Dividing the way round by 3.14 gives the diameter. Halve it to get the radius."
+    }
+  }
+  hint "The way round is 3.14 times which length?"
+  hint "Find the diameter, then the radius. What is the area from the radius?"
+}

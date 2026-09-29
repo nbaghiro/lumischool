@@ -1,6 +1,6 @@
 # The guitar's grade four: C, G and D read from their cards and played, and the change between two
 # chords measured by the fingers that stay down and the fingers that lift.
-lesson music-open-chords-on-the-guitar v=1 format=teach grade=4 unit=1 subject=music levels=[easy, medium, hard] {
+lesson music-open-chords-on-the-guitar v=1 format=teach grade=4 unit=2 subject=music levels=[easy, medium, hard] {
   title "Open chords: C, G and D"
   goal "Play C, G and D on the guitar from their chord boxes, and change from one to the next."
 

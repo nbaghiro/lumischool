@@ -1,0 +1,21 @@
+# The three-star question: a myth of the child's own that explains something about the Arctic,
+# planned on the story mountain, a note for each part. Marked by eye.
+item reading.myth-plan v=1 stars=3 skills=[reading.myths, reading.story-structure, writing.composition] {
+  title "Plan a myth of your own"
+  let k=0..1
+
+  scene 36x28 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=1 align=end {
+        text ask "{pick(k, \"Plan a myth that explains why the sun does not set in an Arctic summer. Write a note on each part of the mountain.\", \"Plan a myth that explains why the puffin has a bright orange beak. Write a note on each part of the mountain.\")}" width=25
+        puffins p count=1 facing=-1
+      }
+      storymountain m stages=["Exposition", "Rising action", "Climax", "Falling action", "Resolution"] notes=["", "", "", "", ""]
+    }
+  }
+
+  check writing.by-eye look-for="A plan in five notes: an opening that sets up the characters, at least one of them a god or a being with powers, and the world before; a build-up with a problem that grows; one clear turning point; what follows from it; and an ending that leaves the world as it is now, which is the thing the myth explains." notice=["A god or a being with powers", "A problem that builds to one turn", "The ending explains the Arctic thing", "A note on all five parts"] ask="What was the world like before your myth happened?"
+  hint "Start at the end: how is the world at the end of your myth?"
+  hint "What was different before, and who changed it?"
+  hint "Where is the one moment everything turns? Put it at the top of the mountain."
+}

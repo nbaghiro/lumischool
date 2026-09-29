@@ -1,0 +1,36 @@
+# The two-star reason: two children argue for the same thing, and only one backs the reason with
+# evidence anyone could check. Saying it more strongly is not the same as showing it.
+item reading.cre-stronger v=1 stars=2 skills=[reading.argument, reasoning.explain] {
+  title "Which argument is stronger?"
+  difficulty pick(k, 1, 1, 2)
+  let k=0..2
+  let strong={pick(k, "Tom", "Sara", "Tom")}
+  let weak={pick(k, "Sara", "Tom", "Sara")}
+  let right={pick(k, "Tom's: it has evidence you can check", "Sara's: it has evidence you can check", "Tom's: it has evidence you can check")}
+  let loud={pick(k, "Sara's: it says it more strongly", "Tom's: it says it more strongly", "Sara's: it says it more strongly")}
+  let same={pick(k, "Neither: they make the same claim", "Neither: they make the same claim", "Neither: they make the same claim")}
+
+  scene 36x26 {
+    text ask "Tom and Sara write to the council. Whose argument is stronger?" at=canvas(1, 1) width=34
+    row top below=ask gap=1 space=1 align=start {
+      passage tom title="Tom" text="{pick(k, \"Mend the bridge. Three planks cracked this spring.\", \"Turn the wheel. It is the best wheel in the world.\", \"Keep the bank quiet. No chicks hatched when the road was dug.\")}" width=17 numbers=false
+      passage sara title="Sara" text="{pick(k, \"Mend the bridge. It is really, really dangerous.\", \"Turn the wheel. Four hundred people came on the open day.\", \"Keep the bank quiet. My big brother says so.\")}" width=17 numbers=false
+    }
+    choice pick options=[pick(k, loud, right, same), pick(k, right, same, loud), pick(k, same, loud, right)] stack=column below=top gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == loud and weak == "Tom") point=tom {
+      say "Strong words are not evidence. Which argument gives something that was seen or counted?"
+    }
+    when (pick == loud and weak == "Sara") point=sara {
+      say "Strong words are not evidence. Which argument gives something that was seen or counted?"
+    }
+    when (pick == same) point=top {
+      say "The claims are the same, but the support is not. Compare what each gives to back it up."
+    }
+  }
+  hint "What does each one give to back up the claim?"
+  hint "Could you check Tom's support? Could you check Sara's?"
+}

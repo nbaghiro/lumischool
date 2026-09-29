@@ -1,0 +1,39 @@
+# A part as a fraction of the whole: the temple's door is a fraction of its front's height. At hard
+# the door is drawn and the front is found from it.
+item art.prop-door v=1 skills=[art.proportion, fractions.of-amount, reasoning.work-backwards] {
+  title "The temple door"
+  difficulty (pick(f, 0, 2, 1) + 3 * q)
+  let f=0..2 m={2, 3} q={0}
+  let part={pick(f, "a third", "two fifths", "three quarters")}
+  let den={pick(f, 3, 5, 4)}
+  let num={pick(f, 1, 2, 3)}
+  let front={den * (m + 2)}
+  let door={num * (m + 2)}
+  let given={if q == 0 then front else door}
+  let known={pick(q, "the front", "the door")}
+  let asked={pick(q, "the door", "the front")}
+  level easy {
+    let f={0, 2}
+  }
+  level hard {
+    let f={1, 2} q={1}
+  }
+
+  scene 35x12 {
+    temple front rows=4 at=canvas(1, 1)
+    text ask "The temple's door is {part} of the height of its front. Ada draws {known} {given} squares tall. How many squares tall should {asked} be?" width=22 right-of=front gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (if q == 0 then door else front)
+  feedback {
+    when (q == 0 and num != 1 and answer == front / den) point=front {
+      say "That is one {den}th share of the front. The door is {part}, so how many shares?"
+    }
+    when (q == 1 and answer == door * num / den) point=front {
+      say "The door is only part of the front, so the front must be taller than the door."
+    }
+  }
+  hint "Split the front's height into {den} equal shares. How tall is one share?"
+  hint "How many of those shares make the door?"
+}

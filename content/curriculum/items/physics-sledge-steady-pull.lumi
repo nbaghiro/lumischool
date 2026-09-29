@@ -1,0 +1,33 @@
+# The missing pull: for a steady speed the forward force has to balance everything holding the sledge
+# back, so it is friction and the air's push added. The pull's arrow is not drawn.
+item physics.sledge-steady-pull v=1 skills=[physics.forces, reasoning.work-backwards, addition.multi-digit] {
+  title "Pull for a steady speed"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 3}
+  }
+  let fr={pick(v, 80, 120, 95, 140)}
+  let air={pick(v, 20, 30, 35, 45)}
+
+  scene 30x20 {
+    sledgeforce s forward=[] back=[fr, air] weight=0 moving=1 show=0 names=1 at=canvas(1, 0)
+    text ask "Leo pulls the sledge along the snow at a steady speed. The forces holding it back are drawn. How hard is Leo pulling, in newtons?" narrate width=27 below=s gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (fr + air)
+  feedback {
+    when (answer > fr + air) point=s {
+      say "A pull bigger than the forces holding it back would make the sledge speed up. A steady speed needs them balanced."
+    }
+    when (answer == fr) point=s {
+      say "The air is holding the sledge back too."
+    }
+  }
+  hint "At a steady speed, are the forces balanced or unbalanced?"
+  hint "What do the two backward forces come to together?"
+}

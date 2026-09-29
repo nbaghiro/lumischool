@@ -1,0 +1,35 @@
+# Where a note starts in a bar of six-eight, counted 1 2 3 4 5 6 in quavers from the note values
+# before it. The two big beats fall on 1 and 4.
+item music.six8-where-starts v=1 skills=[music.six-eight, music.note-values] {
+  title "Which count does it start on?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..4
+  let v1={pick(k, 1, 1, 0.5, 0.5, 1.5)}
+  let v2={pick(k, 0.5, 0.5, 1, 1, 0.5)}
+  let v3={pick(k, 1, 1, 1, 1, 0.5)}
+  let v4={pick(k, 0.5, 0.5, 0.5, 0.5, 0.5)}
+  let n={pick(k, 3, 2, 3, 4, 3)}
+  let place={pick(k, "3", "2", "3", "4", "3")}
+  let right={pick(k, "4", "3", "4", "6", "5")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..4
+  }
+
+  scene 36x22 {
+    notes bar clef=treble notes=[G4, A4, B4, D5] values=[v1, v2, v3, v4] meter=6 quavers=true at=canvas(1, 1)
+    text ask "Count the bar 1 2 3 4 5 6, one number to each quaver. On which count does note {n} start?" narrate width=34 below=bar gap=1
+    choice pick options=["1", "2", "3", "4", "5", "6"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == place) point=bar {
+      say "That is the note's place in the bar, not its count. Add up the quavers of the notes before it."
+    }
+  }
+  hint "How many quavers do the notes before note {n} last together?"
+  hint "A crotchet is 2 quavers and a dotted crotchet is 3. Start from 1 and count on."
+}

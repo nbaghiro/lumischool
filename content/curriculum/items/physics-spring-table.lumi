@@ -1,0 +1,24 @@
+# Evidence for the limit: the stretch goes up by the same step for each newton until the spring is
+# past its limit, where each newton stretches it more. v picks the readings.
+item physics.spring-table v=1 skills=[physics.forces, data.tables, reasoning.evidence] {
+  title "Where it stops being in step"
+  difficulty (if v == 0 then 0 else 1)
+  let v=0..2
+  level easy {
+    let v={0}
+  }
+  level hard {
+    let v={1, 2}
+  }
+  let lim={pick(v, 6, 5, 7)}
+
+  scene 36x15 {
+    spring s load=2 per=pick(v, 1, 1.5, 0.5) limit=lim natural=5 from=0 at=canvas(1, 0)
+    text ask "{pick(v, \"With 2, 4, 6 and 8 N on it, this spring stretched 2, 4, 6 and 9 cm.\", \"With 1, 3, 5 and 7 N on it, this spring stretched 1.5, 4.5, 7.5 and 12 cm.\", \"With 3, 5, 7 and 9 N on it, this spring stretched 1.5, 2.5, 3.5 and 5 cm.\")} Up to which of these loads was the stretch still in step with the load?" narrate width=22 right-of=s gap=1
+    number-input n below=ask gap=1
+  }
+
+  answer n=lim
+  hint "How much more does each extra newton stretch it at the start?"
+  hint "At which reading does the stretch jump by more than that step?"
+}

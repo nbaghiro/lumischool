@@ -1,0 +1,27 @@
+# A factor tree read upwards: the number at the top is the product of the primes at the ends.
+item number.tree-top v=1 skills=[number.prime-factors, number.hcf] {
+  title "The top of the tree"
+  difficulty (n / 30)
+  let n={36, 60, 90, 126, 84, 72}
+  level easy {
+    let n={36, 60}
+  }
+  level hard {
+    let n={126, 84, 72}
+  }
+
+  scene 34x14 {
+    factortree tree n=n blank=0 at=canvas(1, 1)
+    text ask "The stars in a constellation were counted, then split into factors until only primes were left. How many stars are there?" narrate width=14 right-of=tree gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer < n / 2) point=tree {
+      say "Multiply every ringed prime at the ends of the branches, not just some of them."
+    }
+  }
+  hint "Which numbers are ringed at the ends of the branches?"
+  hint "Multiply all of them together."
+}

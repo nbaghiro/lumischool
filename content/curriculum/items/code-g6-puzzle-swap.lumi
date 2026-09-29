@@ -1,0 +1,32 @@
+# Puzzle: a swap written as two replaces with no t, so the first replace loses a plank and both places
+# end up the same. The list as written is run; the missing idea is the name that keeps a plank safe.
+item coding.puzzle-swap v=1 skills=[coding.debugging, coding.lists, coding.algorithms] {
+  title "A swap that loses a plank"
+  difficulty k
+  let k=0..1
+  let a={pick(k, 5, 7)} b={pick(k, 2, 3)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x19 {
+    program p code=["set logs to list {a}, {b}, 9", "replace item 1 of logs with item 2 of logs", "replace item 2 of logs with item 1 of logs"] text=true at=canvas(0, 0)
+    text ask "Lines 2 and 3 were meant to swap the first two planks. What are item 1 and item 2 after the program runs?" width=34 below=p gap=1
+    text t1 "item 1" below=ask gap=1
+    number-input first right-of=t1 gap=1
+    text t2 "item 2" right-of=first gap=2
+    number-input second right-of=t2 gap=1
+  }
+
+  check coding.runs of=p first="item(1).logs" second="item(2).logs"
+  feedback {
+    when (first == b and second == a) point=p {
+      say "That is a swap. But line 3 reads item 1 after line 2 has already changed it."
+    }
+  }
+  hint "What is the first item after the first replace? The second replace then reads that."
+  hint "What would keep the first plank's length safe before it is replaced?"
+}

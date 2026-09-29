@@ -1,0 +1,42 @@
+# Four sentences of a life muddled, to be numbered in the order they happened. The time words and
+# ages carry the order, so the child reads them rather than the dates.
+item writing.bio-order v=1 skills=[writing.biography, writing.sequencing] {
+  title "A life in order"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..1 p=0..2
+  let a={pick(p, 2, 3, 1)}
+  let b={pick(p, 0, 1, 3)}
+  let c={pick(p, 3, 0, 2)}
+  let d={pick(p, 1, 2, 0)}
+  let t0={pick(k, "Caroline Herschel grew up in Hanover.", "Maria Mitchell was born on Nantucket.")}
+  let t1={pick(k, "At twenty-two she moved to England.", "At twenty-nine she found a new comet.")}
+  let t2={pick(k, "Fourteen years later, she found a comet.", "The next year, a great academy chose her.")}
+  let t3={pick(k, "In her old age, she went home to Hanover.", "Later still, she taught at Vassar College.")}
+  let wa={pick(a, t0, t1, t2, t3)}
+  let wb={pick(b, t0, t1, t2, t3)}
+  let wc={pick(c, t0, t1, t2, t3)}
+  let wd={pick(d, t0, t1, t2, t3)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 33x21 {
+    row top at=canvas(1, 0) space=2 align=end {
+      text ask "The sentences of a short life story are muddled. Number them 1 to 4 in the order they happened." narrate width=26
+      person her pose=think age=older hair=bun colour=grey top=mint glasses=true
+    }
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}"] blanks=[q, x, y, z] below=top gap=1
+  }
+
+  answer q=(a + 1) x=(b + 1) y=(c + 1) z=(d + 1)
+  feedback {
+    when ((if a == 2 then q else if b == 2 then x else if c == 2 then y else z) < (if a == 1 then q else if b == 1 then x else if c == 1 then y else z)) point=s {
+      say "A sentence that says later or the next year needs something before it. Find what it comes after."
+    }
+  }
+  hint "Which sentence is about the start of her life? Which is about the end?"
+  hint "Time words such as later and the next year point back to something. What do they point back to?"
+}

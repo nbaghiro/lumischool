@@ -1,0 +1,69 @@
+# Tone drawn in five steps, from the bare paper to the darkest a pencil goes, and used to make the
+# moon and the observatory's dome look round.
+lesson art-tone-in-five-steps v=1 format=teach grade=5 unit=5 subject=art levels=[easy, medium, hard] {
+  title "Tone in five steps"
+  goal "Shade a scale of five tones in equal steps and use it to make a round thing look solid."
+
+  look {
+    scene 28x15 {
+      row all at=canvas(1, 1) space=1 align=end {
+        column left space=1 {
+          stilllife pic light="left" things=["ball"] lamp=true
+          tonescale scale steps=5 blank=-1 ring=-1
+        }
+        observatory dome open=1
+      }
+    }
+    say """
+      Tone is how light or dark something is. A pencil can make every tone from the white of the paper
+      to nearly black, and artists practise a scale of five steps, each an equal step darker than the
+      last. At the observatory at night the moon and the dome are lit from one side, and a drawing
+      of either looks round only when it uses the whole scale: white paper where the light hits, then
+      darker tones as the surface turns away, and the darkest for the shadow.
+      """
+  }
+  do {
+    practice art.tone-which-step count=1 seed=1
+    level easy {
+      worked art.tone-percent n=5 k=3 level=medium
+    }
+    practice art.tone-percent count=2 seed=2
+    practice art.tone-for-part count=2 seed=1
+    practice art.tone-hatch count=2 seed=3
+    practice art.tone-match count=1 hard-count=2 seed=1
+  }
+  try stars=2 {
+    show art.tone-why r=2 easy-r=0 hard-r=1
+  }
+  try stars=3 {
+    show art.tone-dome
+  }
+  remember {
+    say "Five equal steps from white paper to darkest, and a round thing needs all of them."
+  }
+
+  grown-ups """
+    A tone scale is the drawing exercise every art room starts with, and at ten most children can
+    make three tones easily and find the middle ones hard. The machine marks the questions. The first
+    reads a step off the scale. The core numbers the tones from 0 to 100, which is sharing a hundred
+    between the gaps rather than the squares, the usual slip; reads which tone belongs on each part
+    of a lit ball, by the names artists give them (the highlight, the half-tone, the core shadow,
+    the reflected light bounced up into the dark side, and the cast shadow); counts the lines of cross-hatching a step needs; and matches a tone between two
+    scales with different numbers of steps, which is proportion again.
+
+    If the scale questions stick, draw the five squares together and shade them with the child, then
+    count the gaps with a finger. The two-star question asks why a drawing in one tone, or with no
+    white left, looks flat, and the drawing is the three-star question, responded to rather than
+    marked. Off the page, shine a torch on a ball in a dark room and squint at it: squinting hides the
+    detail and shows the tones.
+
+    Respond by following the light across the child's drawing: "It is white here, where the moon
+    catches the light, and it gets darker round the side." Ask which step was hardest to shade.
+    """
+  level easy {
+    grown-ups "At this level the ringed step is the white, the fourth or the darkest, the tone of 75 is worked once in the teacher's pen before empty squares at 25 and 50, the parts of the ball are the highlight and the cast shadow, the lines are counted for step 3 or 4, Ben's scale has 9 steps and Ada's step is the second or the third, the two-star's moon is shaded in one grey, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the ringed step is one of the middle three, the scale has six squares so the steps are 20 apart, the parts of the ball are the reflected light and the core shadow, the lines are counted for the whole scale, Ben's scale has 13 steps and a second match is added, the two-star's moon has no white left, and the three-star is as written."
+  }
+}

@@ -1,0 +1,32 @@
+# Three stars: each branch is lit on its own switch, so the settings of three switches that light a
+# given number of lanterns can be listed and counted. w is what the keeper wants.
+item physics.parallel-ways v=1 stars=3 skills=[physics.circuits, reasoning.constraints] {
+  title "Every way to set the switches"
+  difficulty (if w == 0 then 0 else if w == 1 then 1 else 2)
+  let w=0..2
+  level easy {
+    let w={0}
+  }
+  level hard {
+    let w={2}
+  }
+  let want={pick(w, "exactly two lanterns lit", "at least two lanterns lit", "at least one lantern lit")}
+
+  scene 36x21 {
+    parallel p cells=2 branches=3 closed=[1, 0, 1] show=0 symbols=1 at=canvas(1, 0)
+    text ask "Each of the three switches can be open or closed. The drawing shows one way to set them. How many different ways of setting the three switches give {want}?" narrate width=17 right-of=p gap=1
+    number-input ways below=ask gap=1
+  }
+
+  answer ways=pick(w, 3, 4, 7)
+  feedback {
+    when (ways == 1) point=p {
+      say "The drawing is one way. Try each switch open or closed, and list every setting that works."
+    }
+    when (ways == 8) point=p {
+      say "One setting has every switch open. How many lanterns does that light?"
+    }
+  }
+  hint "Each lit lantern needs only its own switch closed. Which switches would you close?"
+  hint "List the settings: which lanterns are lit in each? Write them as A, B and C."
+}

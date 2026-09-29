@@ -1,0 +1,65 @@
+lesson chemistry-water-in-the-air-dew-and-frost v=1 format=teach grade=6 unit=3 subject=chemistry levels=[easy, medium, hard] {
+  title "Water in the air, dew and frost"
+  goal "Use the most water vapour air can hold at each temperature to say when dew or frost will form, and how much."
+
+  look {
+    scene 31x13 {
+      row all at=canvas(1, 0) space=2 align=end {
+        condense c kind="cold-glass" drops=8
+        weatherstation ws cups=3
+        sledge s slats=5
+      }
+    }
+    say """
+      Air always holds some water as a gas you cannot see, water vapour. Warm air can hold more than
+      cold: a cubic metre at 20 °C holds at most 17 g, and at 0 °C only 5 g. When air cools on a
+      cold glass, a window or the grass at night, it can no longer hold all its water, and the extra
+      comes out as drops of dew. If that happens below 0 °C, the vapour turns straight into ice,
+      and the sledge's runners are white with frost in the morning.
+      """
+  }
+  do {
+    practice chem.cold-glass-drops count=1 seed=1
+    level easy {
+      worked chem.air-holds-table w=0 r=5 h=5 level=medium
+    }
+    practice chem.air-holds-table count=2 seed=10 easy-seed=1 hard-seed=4
+    practice chem.dew-point count=2 seed=1
+    practice chem.dew-or-frost count=2 seed=1
+  }
+  story {
+    show chem.water-in-hut w=0 v=40 h=9 easy-v=20 hard-w=1 hard-v=30
+    level medium hard {
+      show chem.water-in-hut w=1 v=20 h=13 hard-v=40
+    }
+  }
+  try stars=2 {
+    show chem.why-window-mists k=0 r=2 hard-k=1
+  }
+  try stars=3 {
+    show chem.overnight-hut k=1 easy-k=0 hard-k=3
+  }
+  remember {
+    say "Warm air holds more water vapour than cold. Cool it enough and the extra comes out as dew, or as frost below 0 °C."
+  }
+
+  grown-ups """
+    The idea is that air holds water vapour, that the most it can hold depends on its temperature,
+    and that air cooled past that point lets the extra out as dew, or as frost when it is below
+    freezing. The table is the published saturated vapour density of water, rounded to whole grams
+    for each cubic metre. The wrong idea to watch for is that drops on a cold glass came through
+    it or from the ice inside; ask where water could come from on the outside of a dry glass. The
+    temperature where drops first form is the dew point, and the three-star question uses it with
+    the size of the hut: the most water that can reach the windows is the grams each cubic metre
+    must let go times the cubic metres, and one version cools the air without reaching its dew
+    point at all. If the child mixes up what the air holds and the most it can hold, stay here
+    another day with a cold drink on a warm day. Off the page: put a glass of iced water on a
+    saucer on a warm day and watch the drops form outside, then feel that the glass is dry inside.
+    """
+  level easy {
+    grown-ups "At this level the table is read once in the teacher's pen, the table asks for grams, the dew forms at 5 °C or 10 °C, the nights are plainly dew or neither, the hut is 20 or 30 cubic metres, the two-star is the misted window, and the three-star cools to 0 °C or 5 °C."
+  }
+  level hard {
+    grown-ups "At this level the table is worked back to a temperature and to the room left, the dew point is asked as degrees of cooling, one night brings frost, the hut's water is worked to what reaches the windows, the two-star is frost on the runners, and the three-star has one night where no water comes out."
+  }
+}

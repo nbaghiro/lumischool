@@ -1,0 +1,25 @@
+# The two-star reason: every note of C major is in I, IV or V (C E G, F A C, G B D), which is why the
+# three chords can go under any tune in C; and C and G each belong to two of them.
+item music.chords-claim v=1 stars=2 skills=[music.chords, reasoning.claims] {
+  title "Three chords for every note?"
+  let q=0..1 r=0..1
+  let claim={pick(q, "Ana says every note of the C major scale is in chord I, IV or V.", "Ben says the note C fits only chord I in C major.")}
+  let right={pick(q, "Yes: between them they hold all seven letters", "No: C is in chord IV too, F, A and C")}
+  let w1={pick(q, "No: D is in none of the three", "Yes: C is the name of chord I")}
+  let w2={pick(q, "No: A is in none of the three", "No: C is in all three chords")}
+
+  scene 36x30 {
+    notes three clef=treble notes=[C4, E4, G4, F4, A4, C5, G4, B4, D5] values=[1, 1, 1, 1, 1, 1, 1, 1, 1] meter=3 letters=true at=canvas(1, 1)
+    text ask "Chords I, IV and V of C major, one to a bar. {claim} Is that right, and why?" narrate width=34 below=three gap=1
+    choice pick options=[pick(r, right, w1), pick(r, w1, w2), pick(r, w2, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1 or pick == w2) point=three {
+      say "Read the letters under all nine notes. Which letters appear, and how often?"
+    }
+  }
+  hint "List the letters under each bar: C E G, then F A C, then G B D."
+  hint "{if q == 0 then \"Tick off C, D, E, F, G, A and B as you find them. Is any left?\" else \"Look for C in every bar, not just the first.\"}"
+}

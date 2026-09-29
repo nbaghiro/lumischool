@@ -1,0 +1,39 @@
+# A step is missing from the card, left as a ruled line. The child reads the steps either side and
+# picks the one that fills the gap; the others belong elsewhere or to another job.
+item writing.instr-missing v=1 skills=[writing.instructions, reasoning.order] {
+  title "The missing step"
+  difficulty k
+  let k=0..1 r=0..2
+  let right={pick(k, "Turn the key three times to lift the gate.", "Turn the key back to close the gate.")}
+  let w1={pick(k, "Push the brake pin into the wheel.", "Take the brake pin out of the wheel.")}
+  let w2={pick(k, "Oil each end of the axle.", "Start the millstones.")}
+  let miss={pick(k, 2, 1)}
+  let st1={pick(k, "Climb the steps to the sluice gate.", "Climb the steps to the sluice gate.")}
+  let st2={pick(k, "Fit the key onto the gate's handle.", "")}
+  let st3={pick(k, "", "Wait until the wheel has stopped.")}
+  let st4={pick(k, "Wait until the wheel turns steadily.", "Push the brake pin into the wheel.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x35 {
+    row top at=canvas(1, 0) space=2 align=start {
+      howto card title="{if k == 0 then \"Starting the wheel\" else \"Stopping the wheel\"}" need=["the sluice key"] steps=["{st1}", "{st2}", "{st3}", "{st4}"] blank=miss width=18
+      waterwheel wheel paddles=8 lit=0
+    }
+    text ask "A step is missing from the card. Which step belongs on the empty line?" narrate width=33 below=top gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=card {
+      say "Read the step before the line and the step after it. What has to happen in between for the next step to work?"
+    }
+  }
+  hint "What is the card for? Read the title again."
+  hint "What must have happened for the step after the gap to be possible?"
+}

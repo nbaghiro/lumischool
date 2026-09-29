@@ -1,0 +1,31 @@
+# At one temperature, air squashed into half the room pushes twice as hard (Boyle's law; KS3 gas
+# pressure). The gauge starts at 100 kilopascals, about the air's own push at sea level (101 kPa).
+item chem.squash-pressure v=1 skills=[chemistry.gases, ratio.inverse] {
+  title "Half the room, twice the push"
+  difficulty w
+  let w=0..2 l={20, 30}
+  let push={6000 / l}
+  level easy {
+    let w=0..0
+  }
+  level hard {
+    let w=1..2
+  }
+
+  scene 35x19 {
+    row kit at=canvas(1, 0) space=2 align=start {
+      table data cols=2 head=["Air in syringe", "Push, kPa"] cells=["60 ml", "100", "30 ml", "200", "20 ml", "300"]
+    }
+    text ask "A capped syringe of air is joined to a gauge that shows how hard the air pushes, in kilopascals (kPa). Leo pushes the plunger in and writes the table. {if w == 0 then \"How hard does the air push when it is squashed to \" else if w == 1 then \"How hard would it push if he squashed it to \" else \"How many millilitres would the air fill if it pushed at \"}{if w == 0 then l else if w == 1 then pick(l / 10 - 2, 15, 12) else pick(l / 10 - 2, 150, 400)}{if w == 2 then \" kPa?\" else \" ml?\"}" narrate width=34 below=kit gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then push else if w == 1 then pick(l / 10 - 2, 400, 500) else pick(l / 10 - 2, 40, 15))
+  feedback {
+    when (w == 1 and answer == pick(l / 10 - 2, 50, 20) * 10) point=data {
+      say "Less room makes the push bigger, not smaller. How many times smaller is the room than 60 ml?"
+    }
+  }
+  hint "{if w == 2 then \"How many times harder than 100 kPa is that push?\" else \"How many times smaller than 60 ml is the room?\"}"
+  hint "{if w == 2 then \"The room shrinks by the same number of times as the push grows.\" else \"The push grows by the same number of times as the room shrinks.\"}"
+}

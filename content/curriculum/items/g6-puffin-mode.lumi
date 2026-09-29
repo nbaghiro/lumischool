@@ -1,0 +1,30 @@
+# The way in: the mode and the range read from a dot plot.
+item data.puffin-mode v=1 skills=[data.mode, data.range, data.dot-plots] {
+  title "Puffins on the cliff"
+  difficulty ((if ask == "range" then 1 else 0) + v / 6)
+  let v=0..3 ask={"mode", "range"}
+  level easy {
+    let ask={"mode"}
+  }
+  level hard {
+    let ask={"range"}
+  }
+
+  scene 34x14 {
+    dotplot plot from=2 to=8 counts=[pick(v, 1, 0, 2, 1), pick(v, 2, 1, 5, 1), pick(v, 4, 2, 3, 2), pick(v, 2, 3, 1, 2), pick(v, 1, 5, 1, 3), pick(v, 1, 2, 0, 6), pick(v, 0, 1, 1, 2)] label=puffins at=canvas(1, 1)
+    text ask "Every morning Ivo counted the puffins on the cliff by the hut, and drew a dot for each day. What is the {ask} of the counts?" narrate width=13 right-of=plot gap=2
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (if ask == "mode" then pick(v, 4, 6, 3, 7) else pick(v, 5, 5, 6, 6))
+  feedback {
+    when (ask == "mode" and v > 0 and answer == pick(v, 4, 5, 5, 6)) point=plot {
+      say "The mode is the count that happened most often: the tallest column of dots, read off below it."
+    }
+    when (ask == "range" and answer == 6 and v < 2) point=plot {
+      say "The range runs from the smallest count that has a dot to the biggest that has one."
+    }
+  }
+  hint "What does one dot stand for?"
+  hint "Read along the bottom: which counts have dots above them, and how many?"
+}

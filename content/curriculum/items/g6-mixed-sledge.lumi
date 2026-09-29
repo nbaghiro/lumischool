@@ -1,0 +1,44 @@
+# Mixed numbers multiplied and divided: each is turned into a top-heavy fraction first, since the
+# wholes and the parts cannot be worked on separately.
+item fraction.mixed-sledge v=1 skills=[fractions.multiply, fractions.divide, fractions.mixed-numbers] {
+  title "Mixed numbers on the ice"
+  difficulty ((if op == "÷" then 1 else 0) + p / 3 + b * d / 12)
+  let op={"×", "÷"} p=1..3 a=1..3 b={2, 3, 4} q=1..2 c=1..3 d={2, 3, 4, 5}
+  where (a < b and c < d and gcd(a, b) == 1 and gcd(c, d) == 1)
+  where (not whole(if op == "×" then (p + a / b) * (q + c / d) else (p + a / b) / (q + c / d)))
+  where ((if op == "×" then (p + a / b) * (q + c / d) else (p + a / b) / (q + c / d)) > 1)
+  where ((if op == "×" then (p + a / b) * (q + c / d) else (p + a / b) / (q + c / d)) < 10)
+  where (den(if op == "×" then (p + a / b) * (q + c / d) else (p + a / b) / (q + c / d)) <= 12)
+  level easy {
+    let op={"×"} p={1, 2} q={1} b={2} d={2, 3}
+  }
+  level medium {
+    where (op == "×" or d <= 4)
+  }
+  level hard {
+    let op={"÷"} p={2, 3} d={3, 4, 5}
+  }
+
+  scene 34x14 {
+    sledge sl slats=5 at=canvas(1, 1)
+    text ask "{if op == \"×\" then \"The dog sledge covers\" else \"The fuel can holds\"} {p} {a}/{b} {if op == \"×\" then \"km in an hour. How far does it go in\" else \"litres, and the hut's stove burns\"} {q} {c}/{d} {if op == \"×\" then \"hours?\" else \"litres an hour. For how many hours does the can keep the stove going?\"} Write a whole number and a fraction in its simplest form." narrate width=32 below=sl gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      number-input whole width=2
+      number-input top width=3
+      text slash "/"
+      number-input bottom width=3
+    }
+  }
+
+  answer whole=floor(if op == "×" then (p + a / b) * (q + c / d) else (p + a / b) / (q + c / d)) top=num((if op == "×" then (p + a / b) * (q + c / d) else (p + a / b) / (q + c / d)) - floor(if op == "×" then (p + a / b) * (q + c / d) else (p + a / b) / (q + c / d))) bottom=den((if op == "×" then (p + a / b) * (q + c / d) else (p + a / b) / (q + c / d)) - floor(if op == "×" then (p + a / b) * (q + c / d) else (p + a / b) / (q + c / d)))
+  feedback {
+    when (op == "×" and floor(if op == "×" then (p + a / b) * (q + c / d) else (p + a / b) / (q + c / d)) != p * q and whole == p * q) point=ask {
+      say "The wholes and the parts cannot be multiplied on their own. Turn each mixed number into a top-heavy fraction first."
+    }
+    when (op == "÷" and floor((p + a / b) * (q + c / d)) != floor(if op == "×" then (p + a / b) * (q + c / d) else (p + a / b) / (q + c / d)) and whole == floor((p + a / b) * (q + c / d))) point=ask {
+      say "That multiplied. To divide, turn the second fraction upside down and then multiply."
+    }
+  }
+  hint "How many thirds, or quarters, or halves is each mixed number? Write each as a top-heavy fraction."
+  hint "Multiply, or turn the second one over and multiply. How many wholes are in the answer?"
+}

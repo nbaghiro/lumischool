@@ -1,0 +1,39 @@
+# Three stars: a pan balance gives the mass on any world, and a force meter the pull there, so the
+# pull on each kilogram, weight over mass, names the world. v picks the world.
+item physics.mystery-world v=1 stars=3 skills=[physics.weight, physics.sky, reasoning.evidence] {
+  title "Which world is this?"
+  difficulty v
+  let v=0..3
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..3
+  }
+  let m={pick(v, 2, 5, 10, 10)}
+  let w={pick(v, 50, 45, 16, 37)}
+  let ans={pick(v, "Jupiter", "Venus", "the Moon", "Mars")}
+
+  scene 34x31 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      springscale s max=50 step=10 value=w unit=N
+      table g cols=2 head=["Place", "Pull on 1 kg"] cells=["Earth", "10 N", "Moon", "1.6 N", "Mars", "3.7 N", "Venus", "9 N", "Jupiter", "25 N"]
+    }
+    text ask "A probe lands on a world it does not know. A bag of rock balances {m} kg of weights on its pan balance, and hangs from its force meter at {w} N. What is the rock's mass, in kilograms?" narrate width=32 below=kit gap=1
+    number-input mass below=ask gap=1
+    text then "Which world has the probe landed on?" narrate width=32 below=mass gap=1
+    choice pick options=["the Moon", "Mars", "Venus", "Jupiter"] stack=row below=then gap=1
+  }
+
+  answer mass=m pick=ans
+  feedback {
+    when (mass == w / 10) point=s {
+      say "Dividing by 10 turns newtons into kilograms only on Earth. What does the pan balance say?"
+    }
+    when (pick != ans) point=g {
+      say "How many newtons pull on each kilogram of the rock here? Find that pull in the table."
+    }
+  }
+  hint "A pan balance compares one mass with another. Does it care how hard the world pulls?"
+  hint "Share the force meter's newtons between the kilograms, and find that pull in the table."
+}

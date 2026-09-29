@@ -25,6 +25,10 @@ lesson g3-taking-away-in-columns v=1 format=worked grade=3 unit=2 subject=maths 
     show sub.biggest-difference a=3 b=8 c=5 easy-a=2 easy-b=4 easy-c=3 hard-a=1 hard-b=9 hard-c=5
   }
 
+  remember {
+    say "Take away from the right, and exchange from the next column when the top digit is too small."
+  }
+
   grown-ups """
     Zeros are the hard case. If the child gets stuck on 704, do it with rods and hundreds flats
     once and the exchange becomes obvious. The sheep question compares two amounts, so nothing goes

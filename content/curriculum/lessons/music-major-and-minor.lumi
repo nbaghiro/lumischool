@@ -1,0 +1,73 @@
+# Major and minor told apart on the page: a chord's bottom-to-middle gap of four semitones or three,
+# on the keyboard, the staff and the guitar, and a tune's third note that follows it.
+lesson music-major-and-minor v=1 format=teach grade=5 unit=1 subject=music levels=[easy, medium, hard] {
+  title "Major and minor"
+  goal "Tell a major chord from a minor one by counting the semitones from its bottom note to its middle note."
+
+  look {
+    scene 35x23 {
+      row all space=2 align=end at=canvas(1, 1) {
+        column keys space=1 align=start {
+          text maj "C major"
+          piano k1 from=C4 whites=8 wide=2 labels=letters down=[C4, E4, G4]
+          text min "C minor"
+          piano k2 from=C4 whites=8 wide=2 labels=letters down=[C4, Ef4, G4]
+        }
+        narrowboat boat windows=5 pots=3
+      }
+    }
+    say """
+      On a narrowboat moored by the lock, Ben plays two chords on a small keyboard. Each chord is
+      three keys: a bottom note, a middle note and a top note. The bottom and top notes are the same
+      in both. Only the middle note moves. In C major it is four semitones above C, on E. In C minor
+      it is three semitones above C, on the black key below E, called E flat. Many people hear major
+      as bright and minor as darker, but the keys tell you which is which without hearing a note.
+      """
+  }
+  do {
+    practice music.minor-play-middle count=1 seed=4 easy-seed=2 hard-seed=1
+    level easy {
+      worked music.minor-which-chord k=3 level=medium
+    }
+    practice music.minor-which-chord count=1 seed=5 easy-seed=4 hard-seed=6
+    practice music.minor-play-triad count=1 seed=2 hard-seed=2
+    show music.minor-which-chord k=7 easy-k=2 hard-k=8
+    practice music.minor-frere-jacques count=1 seed=2 easy-seed=1 hard-seed=1
+    practice music.minor-guitar-string count=1 seed=1
+    practice music.minor-strum count=1 seed=2 easy-seed=2 hard-seed=1
+    level hard {
+      show music.minor-claim q=1 r=0
+    }
+    practice music.canal-chart-minor count=1 seed=1
+  }
+  try stars=2 {
+    show music.minor-claim q=0 r=0 easy-r=1 hard-r=1
+  }
+  try stars=3 {
+    show music.minor-white-triads v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "Bottom to middle: four semitones is major, three is minor."
+  }
+
+  grown-ups """
+    The idea is that major and minor are a measurement before they are a feeling: the gap from a
+    chord's bottom note to its middle note is four semitones in a major chord and three in a minor
+    one, and the top note stays where it is. The wrong ideas to watch for are counting white keys
+    only, counting the key you start on, and deciding by whether a chord has a black key in it. In
+    the working, look for a finger moving key by key, black keys included, from the bottom note. The
+    two-star question tests the black-key idea against A minor and D major, and the core already
+    asks about B, D, F sharp, which is minor with a black key; the three-star question builds a
+    chord on every white key and sorts them, and the chord on B is neither. A child who is stuck can
+    play C major and C minor one after the other on any keyboard, point at the key that moved, and
+    go back to the way in; stay on this lesson another day if the count still starts on the bottom
+    key. Off the page, sing a tune you both know in a minor key by lowering its third note, as
+    Mahler did with Frère Jacques, and ask which version suits which moment.
+    """
+  level easy {
+    grown-ups "At this level the chords to count and to name are all white keys, one is worked in the teacher's pen, the chord to play is A minor, C major or D minor, Frère Jacques is in A, the guitar pair is E minor and E major and the finger is lifted to make the minor chord, the chart question counts the verse's minor bars, the two-star is as written with its answers in another order, and the three-star counts the major chords on the white keys."
+  }
+  level hard {
+    grown-ups "At this level the middle key to find is a black key, the chords to name include ones with a sharp, and one of them is minor, B minor or F sharp minor, so a sharp alone never says major, the chord to play needs a black key, Frère Jacques is in E where F sharp is in both versions, the guitar pair is A minor and A major and a finger is added to make the major chord, a claim about moving the top note is judged before the two-star, the chart question counts over the whole song, and the three-star asks how many of the seven white-key chords are neither major nor minor."
+  }
+}

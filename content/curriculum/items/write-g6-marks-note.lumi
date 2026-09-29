@@ -1,0 +1,46 @@
+# A puzzle over colons and semicolons: the same note punctuated three ways. In the right one the colon
+# follows a whole sentence and brings in a list, and the semicolon joins two whole sentences.
+item writing.marks-note v=1 skills=[writing.colons-semicolons, writing.editing] {
+  title "One colon, one semicolon"
+  difficulty k
+  let k=0..2 r=0..2
+  let right={pick(k, "We need four things: a tent, a rope, a stove and a map; the fog is coming.", "The sledge is packed: tent, food and fuel; we leave at six.", "Dr Berg gave one order: stay together; the ice is thin by the crack.")}
+  let w1={pick(k, "We need four things; a tent, a rope, a stove and a map: the fog is coming.", "The sledge is packed; tent, food and fuel: we leave at six.", "Dr Berg gave one order; stay together: the ice is thin by the crack.")}
+  let w2={pick(k, "We need: four things, a tent, a rope, a stove and a map; the fog is coming.", "The sledge is: packed with tent, food and fuel; we leave at six.", "Dr Berg gave: one order, stay together; the ice is thin by the crack.")}
+  let o1={if r == 0 then right else if r == 1 then w1 else w2}
+  let o2={if r == 0 then w1 else if r == 1 then w2 else right}
+  let o3={if r == 0 then w2 else if r == 1 then right else w1}
+  let letter={pick(r, "A", "C", "B")}
+  let l1={if r == 0 then "B" else if r == 1 then "A" else "C"}
+  let l2={if r == 0 then "C" else if r == 1 then "B" else "A"}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x44 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      sledge sl slats=5
+      hut h pictures=5
+    }
+    passage a title="A" text="{o1}" width=33 numbers=false below=pics gap=1
+    passage b title="B" text="{o2}" width=33 numbers=false below=a gap=1
+    passage c title="C" text="{o3}" width=33 numbers=false below=b gap=1
+    text ask "The sledge note needs one colon and one semicolon. Which version puts both in the right place?" narrate width=33 below=c gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=letter
+  feedback {
+    when (pick == l1) point=ask {
+      say "In that version the two marks have swapped jobs. A colon brings in a list or an explanation after a whole sentence; a semicolon joins two whole sentences."
+    }
+    when (pick == l2) point=ask {
+      say "Cover everything after the colon in that version. Is the part before it a whole sentence, and could each side of the semicolon stand alone?"
+    }
+  }
+  hint "Find the list or the explanation. What comes just before it?"
+  hint "Read the words on each side of the semicolon. Could each stand as a sentence?"
+}

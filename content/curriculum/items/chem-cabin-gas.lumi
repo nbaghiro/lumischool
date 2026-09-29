@@ -1,0 +1,35 @@
+# The way in: breathing takes in oxygen and gives out carbon dioxide, and plants in light take carbon
+# dioxide in; in the dark they only breathe (the chamber drawing's rule). The checker reads whether
+# the cabin's carbon dioxide went up, down or stayed the same.
+item chem.cabin-gas v=1 skills=[chemistry.gases, reasoning.predict] {
+  title "Up, down or the same?"
+  difficulty (v // 2)
+  let v=0..5
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={3, 4, 5}
+  }
+  let p={pick(v, 2, 1, 0, 0, 2, 2)}
+  let t={pick(v, 0, 0, 2, 2, 3, 2)}
+  let l={pick(v, 1, 0, 1, 0, 1, 1)}
+
+  scene 31x26 {
+    chamber c place=1 plants=t candle=0 people=p light=l hours=4 show=0 at=canvas(1, 0)
+    text ask "The lander's cabin was sealed 4 hours ago with the crew and the seedling trays you can see, and the grow lamp {if l == 1 then \"on\" else \"off\"}. Has the carbon dioxide in the cabin gone up, gone down or stayed the same?" narrate width=30 below=c gap=1
+    choice pick options=["up", "down", "same"] stack=row below=ask gap=1
+  }
+
+  check chem.change of=c pick=carbon
+  feedback {
+    when (pick == "down" and p > 0 and t == 0) point=c {
+      say "The crew breathe out carbon dioxide, and nothing in the cabin takes it in."
+    }
+    when (pick == "down" and l == 0) point=c {
+      say "The lamp is off. What can a plant do in the dark, and what can it not?"
+    }
+  }
+  hint "What does breathing give out? Who is breathing in the cabin?"
+  hint "Is the lamp on? What do seedlings in the light take in?"
+}

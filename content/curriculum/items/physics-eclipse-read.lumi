@@ -1,0 +1,37 @@
+# The way in: a line-up drawn with its shadows. The moon between the sun and the Earth is new, behind
+# the Earth it is full, and only on the line does a shadow land. m is where the moon is.
+item physics.eclipse-read v=1 skills=[physics.sky, reasoning.evidence] {
+  title "Reading a line-up"
+  difficulty m
+  let m=0..1
+  level easy {
+    let m=0..0
+  }
+  level hard {
+    let m=1..1
+  }
+  let shape={pick(m, "New moon", "Full moon")}
+
+  scene 32x30 {
+    eclipse e moon=m offset=0 show=1 names=1 at=canvas(1, 0)
+    text ask "Here the moon is on the line through the sun and the Earth. What shape would the moon be, if nothing shaded it? And what does this line-up make?" narrate width=30 below=e gap=1
+    choice shape options=["New moon", "Half moon", "Full moon"] stack=column below=ask gap=1
+    choice pick options=["Solar eclipse", "Lunar eclipse", "No eclipse"] stack=column right-of=shape gap=3
+  }
+
+  answer shape=shape
+  check physics.sky of=e pick=eclipse
+  feedback {
+    when (shape == "Full moon" and m == 0) point=e {
+      say "The moon's lit half faces the sun. From between the sun and the Earth, can the Earth see any of that half?"
+    }
+    when (pick == "Lunar eclipse" and m == 0) point=e {
+      say "Follow the moon's shadow. Does it land on the Earth, or does the moon go into the Earth's shadow?"
+    }
+    when (pick == "Solar eclipse" and m == 1) point=e {
+      say "Here the moon is in the Earth's shadow, so it is the moon that goes dark."
+    }
+  }
+  hint "Which side of the moon faces the sun, and which side faces the Earth?"
+  hint "Whose shadow falls on whom: the moon's on the Earth, or the Earth's on the moon?"
+}

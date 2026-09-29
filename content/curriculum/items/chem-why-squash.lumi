@@ -1,0 +1,36 @@
+# The two-star reason, in terms of particles: air squashes because its particles are far apart; a
+# cooled bottle crumples because its air's particles slow down and push less; a squashed syringe
+# pushes back harder because the same particles hit the plunger more often.
+item chem.why-squash v=1 stars=2 skills=[chemistry.gases, chemistry.particles, reasoning.explain] {
+  title "What are the particles doing?"
+  difficulty k
+  let k=0..2 r=0..2
+  let q={pick(k, "A capped syringe of air can be pushed in, and one of water cannot. Why?", "The capped bottle from the warm hut is crumpled after a night outside at 0 °C. Why?", "The further Mei pushes the plunger, the harder the air pushes back on her thumb. Why?")}
+  let right={pick(k, "Air's particles have space between them", "The air's particles slowed and pushed less", "The same particles hit the plunger more often")}
+  let w1={pick(k, "Water is heavier than air", "Some of the air leaked out of the cap", "More particles are made as it is squashed")}
+  let w2={pick(k, "Air's particles are smaller when squashed", "The cold air outside sucked the bottle in", "The particles get bigger and fill the room")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 35x29 {
+    row two at=canvas(1, 0) space=1 align=start {
+      particles loose spread=2 count=12 lid=true name=0 moving=(if k == 1 then 1 else 2)
+      particles tight spread=2 count=12 lid=true name=0 moving=(if k == 1 then 2 else 1)
+    }
+    text ask "{q}" narrate width=34 below=two gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=two {
+      say "Squashing or cooling never makes particles, loses them or changes their size. Think about the room between them and how fast they move."
+    }
+  }
+  hint "Does the number of particles change? Does their size?"
+  hint "{if k == 1 then \"How do particles move when they are colder?\" else \"What is between the particles of a gas that is not between the particles of a liquid?\"}"
+}

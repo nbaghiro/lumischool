@@ -1,0 +1,10 @@
+item art.earth-rise v=1 stars=3 skills=[art.composition, art.painting, reasoning.plan] {
+  title "Earthrise from orbit"
+
+  scene 37x21 {
+    text ask "Paint the Earth rising over the edge of the moon, as the crew of Apollo 8 saw it from orbit. Rule the lines of thirds lightly first, put the horizon on one and the Earth where two cross, paint the moon in greys and the sky black, and lead the eye to the Earth." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="squared" guide="none" outline="none" pots=["black", "white", "blue", "green"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A planned composition of the Earth seen from the moon: the horizon on a line of thirds rather than across the middle, the Earth placed where two lines of thirds cross and sized as a big disc, the moon painted in greys and the sky dark so the Earth's blue is the one colour the eye goes to, and a line in the ground, footprints or a crater's rim, that leads towards it." notice=["The horizon on a line of thirds", "The Earth where two lines cross", "The Earth the only strong colour", "A line that leads the eye to the Earth"] ask="Where does your eye go first in your painting, and what did you do to send it there?"
+}

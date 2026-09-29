@@ -1,0 +1,34 @@
+# The two-star: line symmetry and point symmetry are different things, and a shape can have either,
+# both or neither. The parallelogram has only the half turn, the kite only the fold.
+item symmetry.which-kind v=1 stars=2 skills=[shapes.symmetry.point, shapes.symmetry.line, reasoning.classify] {
+  title "Which symmetry"
+  difficulty (if k == "rhombus" then 0 else if k == "kite" then 1 else 2)
+  let k={"rhombus", "kite", "parallelogram"}
+  level easy {
+    let k={"rhombus"}
+  }
+  level hard {
+    let k={"parallelogram"}
+  }
+
+  scene 36x26 {
+    shapemarks plate kind=k labels=true at=canvas(1, 1)
+    text ask "Ivo says this footplate has a line of symmetry because it has equal sides. Which symmetry does it really have?" narrate width=20 right-of=plate gap=2
+    choice pick options=["a line of symmetry only", "only a half turn", "both", "neither"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == "rhombus" then "both" else if k == "kite" then "a line of symmetry only" else "only a half turn")
+  feedback {
+    when (k == "parallelogram" and pick == "both") point=plate {
+      say "Folding does not work for a shape that leans, even with equal sides. Turning it half a turn does."
+    }
+    when (k == "kite" and pick == "both") point=plate {
+      say "After a half turn the kite's sharp end points the other way, so it does not look the same."
+    }
+    when (k == "rhombus" and pick == "only a half turn") point=plate {
+      say "Fold it from one corner to the opposite corner. Do the halves match?"
+    }
+  }
+  hint "First fold: is there a line where the two halves would match?"
+  hint "Then turn: after half a turn about the centre, does it look the same?"
+}

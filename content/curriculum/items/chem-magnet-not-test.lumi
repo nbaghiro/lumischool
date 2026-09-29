@@ -1,0 +1,18 @@
+# A magnet is not a metal test: only iron, nickel, cobalt and steel are pulled, so foil (aluminium) and
+# a brass coin are metals a magnet leaves alone. physics.things marks it. The question says brass
+# because many coins are steel plated with copper or nickel (UK 1p and 2p since 1992, Canadian coins since
+# 2000) and a magnet pulls those.
+item chem.magnet-not-test v=1 skills=[chemistry.metals, physics.magnets] {
+  title "Metal, but not magnetic"
+  let s=0..3
+
+  scene 35x13 {
+    things t things=[pick(s, "nail", "clip", "foil", "coin"), pick(s, "foil", "coin", "nail", "clip"), pick(s, "coin", "stick", "clip", "foil"), pick(s, "ruler", "marble", "eraser", "nail")] at=canvas(1, 0)
+    text ask "Every one of these things from the observatory's drawer is tested with a magnet. The coin is brass. How many are made of metal, yet the magnet leaves them alone?" narrate width=17 right-of=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check physics.things of=t answer="count(metal-not-magnetic)"
+  hint "Which of these are made of metal?"
+  hint "Of the metal ones, which are iron or steel, the ones a magnet pulls?"
+}

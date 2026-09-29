@@ -1,0 +1,33 @@
+# Two-star: doubling the pipe does not halve the time when there is a leak, because the leak stays
+# the same. The first time is run by the checker; the second follows from the same program.
+item coding.tank-double v=1 stars=2 skills=[coding.simulation, reasoning.compare, reasoning.explain] {
+  title "Twice the pipe, half the time?"
+  difficulty (l / 2)
+  let k=0..4
+  let r={pick(k, 6, 6, 9, 8, 12)} l={pick(k, 2, 2, 3, 4, 4)} c={pick(k, 60, 80, 90, 96, 80)}
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={3, 4}
+  }
+
+  scene 36x19 {
+    program p code=["set water to 0", "set minutes to 0", "repeat until water is at least {c}", "  add {r} to water", "  take {l} from water", "  add 1 to minutes"] text=true at=canvas(0, 0)
+    text ask "Mia says a pipe twice as big fills the {c} litre tank in half the time. How many minutes does this program take? How many with {2 * r} on line 4?" width=34 at=canvas(0, 15)
+    text t1 "now" right-of=p gap=1
+    number-input now right-of=t1 gap=1
+    text t2 "with {2 * r}" below=t1 gap=1
+    number-input twice right-of=t2 gap=1
+  }
+
+  check coding.runs of=p now="value(minutes)"
+  answer twice=(c / (2 * r - l))
+  feedback {
+    when (twice == c / (r - l) / 2) point=p {
+      say "The crack still lets {l} litres out each minute, so the tank gains {2 * r - l} a minute, not twice {r - l}."
+    }
+  }
+  hint "How much does the tank gain in a minute now? And with the bigger pipe?"
+  hint "Share {c} litres by each gain."
+}

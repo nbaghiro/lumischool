@@ -1,0 +1,30 @@
+# The story, worked backwards: how long a crew can stay before the oxygen reaches a floor, at the
+# cabin's rate of 0.25 of a per cent an hour a person (the chamber drawing's model, as these readings).
+item chem.cabin-backwards v=1 skills=[chemistry.gases, reasoning.work-backwards] {
+  title "How long before fresh air?"
+  difficulty (v // 2)
+  let v=0..5
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={4, 5}
+  }
+  let p={pick(v, 1, 2, 2, 3, 1, 2)}
+  let lim={pick(v, 20, 19, 17, 18, 17, 15)}
+
+  scene 31x27 {
+    chamber c place=1 plants=0 candle=0 people=p light=0 hours=0 show=1 at=canvas(1, 0)
+    text ask "On the moon the lander's cabin has just been sealed. In these readings each person lowers the oxygen by 0.25 of a per cent an hour, and fresh air must be let in before it falls below {lim} per cent. How many hours can the crew stay before then?" narrate width=30 below=c gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((21 - lim) * 4 / p)
+  feedback {
+    when (answer == (21 - lim) * 4 and p > 1) point=c {
+      say "That is how long one person could stay. With more people breathing, does it go faster or slower?"
+    }
+  }
+  hint "How many per cent can the oxygen fall before it reaches {lim}?"
+  hint "How much does the whole crew lower it in one hour?"
+}

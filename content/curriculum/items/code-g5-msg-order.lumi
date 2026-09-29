@@ -1,0 +1,32 @@
+# The order of a broadcast: the script that receives the message runs to its end before the line after
+# the broadcast, so the adding happens before the doubling.
+item coding.msg-order v=1 skills=[coding.events, coding.messages, coding.variables] {
+  title "Who goes first?"
+  difficulty ((a + b) / 6)
+  let a=2..5 b=1..4
+  where (a != b)
+  level easy {
+    let a={2, 3} b={1, 2}
+  }
+  level hard {
+    let a={4, 5} b={3, 4}
+  }
+
+  scene 36x16 {
+    program p code=["when the flag is tapped", "set coins to {a}", "broadcast market", "double coins", "when I receive market", "add {b} to coins"] at=canvas(0, 0)
+    text ask "A stall at the city market runs this program. How many coins does it hold at the end?" width=16 right-of=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=p answer="value(coins)"
+  feedback {
+    when (answer == 2 * a + b) point=p {
+      say "The script that receives market runs to its end before line 4. So the adding comes first."
+    }
+    when (answer == 2 * a) point=p {
+      say "broadcast market starts the script on line 5. Its line runs too."
+    }
+  }
+  hint "Put your finger on line 3. Which lines run next, before line 4?"
+  hint "Write coins after each line that changes it, in the order they run."
+}

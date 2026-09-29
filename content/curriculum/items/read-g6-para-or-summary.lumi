@@ -1,0 +1,39 @@
+# A rewrite of two sentences about the moon, sorted: a paraphrase keeps every point in new words and
+# about the same length, a summary keeps only the main point and is shorter, and a copy keeps the
+# words.
+item reading.para-or-summary v=1 skills=[reading.paraphrase, reading.summary] {
+  title "Paraphrase, summary or copy?"
+  difficulty pick(k, 0, 1, 1, 2, 2)
+  let k=0..4
+  level easy {
+    let k={0, 1, 2}
+  }
+  level hard {
+    let k={2, 3, 4}
+  }
+  let right={pick(k, "Summary", "Paraphrase", "Summary", "Copy", "Paraphrase")}
+
+  scene 35x26 {
+    passage p title="The text" text="{pick(k, \"The moon has no air, so there is no wind to blow its dust about. The footprints left by the first astronauts in 1969 are still there today.\", \"The moon has no air, so there is no wind to blow its dust about. The footprints left by the first astronauts in 1969 are still there today.\", \"The moon turns once on its axis in the time it takes to go once round the Earth. Because of this, the same side of the moon always faces us.\", \"The moon turns once on its axis in the time it takes to go once round the Earth. Because of this, the same side of the moon always faces us.\", \"The moon turns once on its axis in the time it takes to go once round the Earth. Because of this, the same side of the moon always faces us.\")}" width=34 numbers=false at=canvas(1, 1)
+    passage r title="Leo's version" text="{pick(k, \"The 1969 footprints on the moon are still there.\", \"With no air on the moon, no wind moves its dust around. The prints the first astronauts made in 1969 have not gone away.\", \"We only ever see one side of the moon.\", \"The moon turns once on its axis in the time it takes to go once around the Earth. Because of this, the same side of the moon always faces us.\", \"It takes the moon as long to spin once as to circle the Earth once. That is why we always see the same side of it.\")}" width=34 numbers=false below=p gap=1
+    choice pick options=["Paraphrase", "Summary", "Copy"] below=r gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (right == "Summary" and pick == "Paraphrase") point=r {
+      say "Leo's version is shorter and leaves a whole point out. A paraphrase keeps every point."
+    }
+    when (right == "Paraphrase" and pick == "Summary") point=r {
+      say "Check each point of the text. Leo kept them all, in new words, so it is not shorter by much."
+    }
+    when (right != "Copy" and pick == "Copy") point=r {
+      say "Compare the words. Leo has used words of his own."
+    }
+    when (right == "Copy" and pick != "Copy") point=r {
+      say "Read the two side by side, word by word. How many words did Leo change?"
+    }
+  }
+  hint "Is Leo's version about as long as the text, or much shorter?"
+  hint "Did Leo keep every point? Did he use his own words?"
+}

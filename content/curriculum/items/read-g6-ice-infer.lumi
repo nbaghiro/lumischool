@@ -1,0 +1,45 @@
+# The way in: a few lines of The crack in the shelf, and an answer they never state. Each wrong
+# choice is ruled out by a clue in the same lines, or pointed to by nothing in them.
+item reading.ice-infer v=1 skills=[reading.inference] {
+  title "What can you work out?"
+  difficulty pick(k, 0, 1, 0, 1)
+  let k=0..3
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1, 3}
+  }
+  let right={pick(k, "Summer", "To make it dark", "Ice from deep down", "She knows it well")}
+  let against={pick(k, "Midwinter", "To keep out snow", "A baby seal", "It was not cold")}
+  let unsaid={pick(k, "Autumn", "To hide the hut", "Hot soup", "She is not kind")}
+
+  scene 35x16 {
+    text ask "{pick(k, \"What time of year is it on the ice shelf?\", \"What are the thick curtains for?\", \"What is inside the steel tube?\", \"Why does Aunt Lind ask nothing about the cold?\")}" at=canvas(1, 1) width=34
+    row bottom below=ask gap=1 space=1 align=start {
+      passage p text="{pick(k, \"The plane left Noor and Aunt Lind on the ice shelf at ten at night, and the sun still hung high over the sea.\", \"... at ten at night, and the sun still hung high over the sea. ... In the research hut, thick curtains covered every window.\", \"One carried a steel tube wrapped in a blanket, as gently as a baby. \\\"Two hundred metres down,\\\" he said, and everyone cheered.\", \"... four tired people with frost in their beards. ... Aunt Lind put the kettle on and asked not one question about the cold.\")}" width=18 numbers=false
+      choice pick options=[pick(k, against, right, unsaid, against), pick(k, right, unsaid, against, unsaid), pick(k, unsaid, against, right, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick == against) point=p {
+      say "As gently as a baby is a comparison: it says how he carried the tube, not what was in it."
+    }
+    when (k == 0 and pick != right) point=p {
+      say "Read what the sun is doing at ten at night. In which part of the year does that happen near the pole?"
+    }
+    when (k == 1 and pick != right) point=p {
+      say "Nothing here is about snow or hiding. What is the sun doing at night that people might want to shut out?"
+    }
+    when (k == 2 and pick == unsaid) point=p {
+      say "Nothing points to soup. Why would everyone cheer at two hundred metres down?"
+    }
+    when (k == 3 and pick != right) point=p {
+      say "The frost in their beards shows it was cold. What does asking nothing about it say about Aunt Lind?"
+    }
+  }
+  hint "The lines never say the answer. Which words in them are clues?"
+  hint "Put two clues together. Which answer do both of them fit?"
+}

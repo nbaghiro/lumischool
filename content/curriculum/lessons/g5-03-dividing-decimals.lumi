@@ -1,0 +1,57 @@
+lesson g5-dividing-decimals v=1 format=worked grade=5 unit=2 subject=maths levels=[easy, medium, hard] {
+  title "Dividing decimals"
+  goal "Divide a decimal by a whole number and by a decimal, carry on past the last digit, and say what the answer and the remainder mean."
+
+  example {
+    worked decimal.bus-stop-point d=4 q=238 level=medium
+    say """
+      Divide 952 by 4 at the bus stop as if there were no point: 238. The point in the answer goes
+      straight above the point in 9.52, so each minute 2.38 litres drain. To divide by a decimal,
+      multiply both numbers by ten, or by a hundred, until the number you divide by is whole:
+      1.8 ÷ 0.3 is 18 ÷ 3, and 1.5 ÷ 0.25 is 150 ÷ 25. If something is left when the digits run out,
+      write a zero after the last digit and keep dividing: 0.5 ÷ 0.4 is 5 ÷ 4, which is 1.25.
+      """
+  }
+  exercises {
+    worked decimal.keep-dividing a=0.5 b=0.4 level=medium
+    practice decimal.crew-share count=1 seed=3
+    practice decimal.bus-stop-point count=0 easy-count=1 seed=3
+    practice decimal.jug-cups count=1 easy-count=2 seed=4
+    practice decimal.same-quotient count=1 seed=6
+    practice decimal.two-place-divisor count=1 easy-count=0 seed=5
+    practice decimal.apples-per-kilo count=1 seed=2
+    practice decimal.keep-dividing count=1 seed=7 hard-seed=11
+    practice decimal.rope-pieces count=1 seed=7
+    practice decimal.round-quotient count=1 easy-count=0 hard-count=2 seed=8
+  }
+  try stars=2 {
+    show decimal.divide-mistake a=3.6 b=0.9 easy-a=4.2 easy-b=0.7 hard-a=5.4 hard-b=0.6
+  }
+  try stars=3 {
+    show decimal.flour-bag-sizes n=36 easy-n=30 hard-n=72
+  }
+
+  remember {
+    say "Make the number you divide by whole by multiplying both numbers by ten or a hundred, then divide and put the point above the point."
+  }
+
+  grown-ups """
+    Three rules carry the lesson: the point in the answer sits above the point in the number
+    divided, both numbers can be made ten or a hundred times bigger without changing the answer,
+    and a division that has not finished carries on after a written zero. If the child divides by
+    0.3 and gets a smaller number, ask how many cups of 0.3 litres fit in one litre. When the rope
+    is cut, the remainder is a length, so it is written in metres, not as a count of tenths. When an
+    answer is rounded to the nearest tenth, the hundredths digit has to be worked out first to know
+    which way to go. In the two-star question the child picks why Ben's answer cannot be right:
+    dividing by less than one gives more than you started with. In the three-star question the
+    flour is a number of tenths, and trying each size in order is the system. If the bus stop is
+    still slow, stay with sharing money another day. Off the page, share a bill between a family and
+    check it by multiplying back.
+    """
+  level easy {
+    grown-ups "At this level the takings are shared between two, the bus stop divides by three or four, the jug holds 1.2 or 1.8 litres poured into cups of 0.2 or 0.5 and is asked twice, the matching division always comes first, the apples are half a kilogram, the diesel is 0.4 litres a kilometre, the rope is cut into pieces of 0.4 m, there are no bags of two decimal places and no rounded answer, Ben's mistake is 4.2 ÷ 0.7, and the three-star shares 3.0 kg."
+  }
+  level hard {
+    grown-ups "At this level the takings are shared between six, the jug holds 2.4 or 3.6 litres poured into cups of 0.3 or 0.4, the matching division is second or third, the bags hold 0.12 or 0.15 kg, the apples are 1.5 or 0.4 kg, the diesel is 0.8 litres a kilometre, the rope is cut into pieces of 0.6 or 0.8 m, the rounded answer is asked twice with 0.7 or 0.9 hours, Ben's mistake is 5.4 ÷ 0.6, and the three-star shares 7.2 kg."
+  }
+}

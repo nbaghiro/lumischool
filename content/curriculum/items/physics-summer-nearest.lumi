@@ -1,0 +1,28 @@
+# Two stars: the idea that summer comes from being nearer the sun. The Earth is nearest the sun in
+# early January and furthest in early July, so the distance cannot be the reason; the lean is.
+item physics.summer-nearest v=1 stars=2 skills=[physics.sky, reasoning.evidence, reasoning.explain] {
+  title "Nearer the sun in winter"
+
+  scene 34x38 {
+    row kit at=canvas(1, 0) space=1 align=start {
+      tilt e places=[80] season=0 circles=1 names=1
+    }
+    text ask "The Earth is nearest the sun in early January, about 147 million km away, and furthest in early July, about 152 million km away. So why is July summer at the hut at 80° N?" narrate width=32 below=kit gap=1
+    choice pick options=["The north leans to the sun", "The Earth is nearer the sun in July", "The sun shines brighter", "The ice reflects more heat"] stack=column below=ask gap=1
+  }
+
+  answer pick="The north leans to the sun"
+  feedback {
+    when (pick == "The Earth is nearer the sun in July") point=ask {
+      say "Read the distances again: in July the Earth is at its furthest."
+    }
+    when (pick == "The sun shines brighter") point=e {
+      say "The sun gives out about the same all year. What changes is which half of the Earth leans into its light."
+    }
+    when (pick == "The ice reflects more heat") point=e {
+      say "Reflecting heat would make the hut colder, not warmer. Look at which way the north pole leans."
+    }
+  }
+  hint "If being near the sun made summer, which month would be warmest at the hut?"
+  hint "Look at the drawing: which way does the north pole lean in June and July?"
+}

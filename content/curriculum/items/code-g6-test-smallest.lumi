@@ -1,0 +1,35 @@
+# Two-star: the smallest crew that catches a bug in the load limit. The load is a multiple of each
+# person's rocks, so the child finds the first multiple past the right limit and checks it is not
+# past the typed one.
+item coding.test-smallest v=1 stars=2 skills=[coding.testing, coding.variables, reasoning.work-backwards] {
+  title "The smallest crew that shows it"
+  difficulty k
+  let k=0..2
+  let w={pick(k, 3, 4, 7)} m={pick(k, 12, 20, 20)} m2={pick(k, 15, 24, 30)} n={pick(k, 5, 6, 3)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x28 {
+    program p code=["set load to 0", "repeat crew", "  add {w} to load", "if load is more than {m}", "  say too heavy", "otherwise", "  say lift off"] text=true at=canvas(0, 0)
+    lander ld rungs=5 right-of=p gap=3
+    text ask "Each astronaut brings {w} kg of moon rock, and the lander can lift at most {m} kg. A copy of the program has {m2} in line 4 instead of {m}. What is the smallest crew that would show the copy is wrong?" width=34 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.tests of=p input=crew bug="4: if load is more than {m2}" try=1..12 answer=smallest
+  answer n
+  feedback {
+    when (answer * w == m) point=p {
+      say "A crew of {answer} brings {m} kg, which is not more than {m} in either version."
+    }
+    when (answer * w > m2) point=p {
+      say "A crew of {answer} brings {answer * w} kg, too heavy in both versions. Try a smaller crew."
+    }
+  }
+  hint "How much rock does each crew size bring? Write the load for each crew size in turn."
+  hint "Which loads are too heavy for one version and not for the other?"
+}

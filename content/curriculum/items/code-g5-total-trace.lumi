@@ -1,0 +1,31 @@
+# A running total traced in a table: the repeat's own rows leave total as it was, so the row asked
+# for is found by counting rows, not by counting items.
+item coding.total-trace v=1 skills=[coding.variables, coding.tracing] {
+  title "Trace the total"
+  difficulty (r + (a + b + c) / 10)
+  let a=2..5 b=3..6 c=2..4 r=0..2
+  let step={pick(r, 5, 6, 8)}
+  where (a != b)
+  level easy {
+    let r={0}
+  }
+  level hard {
+    let r=1..2
+  }
+
+  scene 36x21 {
+    program p code=["set bags to list {a}, {b}, {c}", "set total to 0", "for each x in bags", "  add x to total"] at=canvas(0, 0)
+    tracetable tr code=["set bags to list {a}, {b}, {c}", "set total to 0", "for each x in bags", "  add x to total"] show=value name=total filled=3 right-of=p gap=0
+    text ask "The table has a row for each step. What does total hold after step {step}?" width=18 below=p gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=tr answer="after({step}).total"
+  feedback {
+    when (answer == a + b + c and step < 8) point=tr {
+      say "That is total at the end. Count the rows down to step {step}; the repeat's rows do not change total."
+    }
+  }
+  hint "Fill the empty rows of the table in, one row at a time."
+  hint "On a row where the repeat line runs, total stays the same. On a row where the add line runs, the item is added."
+}

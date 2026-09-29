@@ -1,0 +1,62 @@
+# Puzzles over the fifth year's writing: clauses and their commas, speech marks, a pronoun that
+# points two ways, formal and chatty lines, joining words, paragraphs, and a letter rewritten.
+lesson writing-writing-puzzles-five v=1 format=puzzles grade=5 unit=9 subject=writing levels=[easy, medium, hard] {
+  title "Writing puzzles"
+  goal "Use clauses, commas, speech marks, pronouns and joining words to make writing clear to a reader."
+
+  puzzle stars=1 {
+    show writing.fill-the-clause k=1 easy-k=0 hard-k=3
+  }
+  puzzle stars=1 {
+    show writing.new-paragraph k=1 easy-k=0 hard-k=2
+  }
+  puzzle stars=1 {
+    show writing.pick-the-adverbial k=1 easy-k=0 hard-k=2
+  }
+  puzzle stars=2 {
+    show writing.commas-change-meaning k=1 easy-k=0
+    say "The words are the same in two of them. Only the commas are different."
+  }
+  puzzle stars=2 {
+    show writing.two-way-pronoun k=1 easy-k=0
+  }
+  puzzle stars=2 {
+    show writing.count-speech-marks k=1 easy-k=0 hard-k=3
+  }
+  puzzle stars=2 {
+    show writing.formal-odd-one k=1 easy-k=0 hard-k=2
+  }
+  puzzle stars=3 {
+    show writing.count-errors e1=1 e2=0 e3=1 easy-e2=1 hard-e1=0 hard-e2=1 hard-e3=0
+  }
+  puzzle stars=3 {
+    show writing.three-into-one k=1 easy-k=0
+  }
+  puzzle stars=3 {
+    show writing.rewrite-for-council k=0 hard-k=1
+  }
+  level hard {
+    puzzle stars=3 {
+      show writing.count-errors e1=0 e2=0 e3=0
+    }
+  }
+
+  grown-ups """
+    These puzzles bring back the year's writing: the relative pronoun that starts a relative clause
+    and the commas round it, where a paragraph turns, the linking adverbial between two sentences,
+    speech marks, a pronoun that could mean either of two people, and lines too chatty for a letter
+    to someone the child has never met. They are worth doing slowly. In the mistake count none is a
+    possible answer, so the child has to check every clause and every piece of speech rather than
+    stop at the first slip; the trap in the speech marks is a line that only reports what was said.
+    If a puzzle stalls, go back to the lesson it comes from and do one question there together. The
+    last puzzle is a chatty note rewritten as a letter to the council, which you mark against the
+    look-for; off the page, find a real letter from a council or a school and read it together for
+    its greeting, its sign-off and its joining words.
+    """
+  level easy {
+    grown-ups "At this level the clause word is which, the new paragraph comes at a new place, the joining word says what was caused, the commas question asks which children only, Ana is the one to open the gate, the speech marks are for one speaker, the chatty line has a short form, the story has three mistakes, the sentence to judge is the clock's, and the letter is as written."
+  }
+  level hard {
+    grown-ups "At this level the clause word is whose, the new paragraph turns to a new side of a person, the joining word is meanwhile, the speech marks puzzle only reports what was said and needs none, the chatty line is one word in a plain sentence, the story has one mistake and a second story has none, and the letter needs a fact about the well."
+  }
+}

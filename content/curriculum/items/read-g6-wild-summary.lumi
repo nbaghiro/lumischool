@@ -1,0 +1,32 @@
+# A sitting summed up in one sentence. One wrong choice is a true detail, too small to be a summary,
+# and one is true of another part of the book.
+item reading.wild-summary v=1 skills=[reading.summary, reading.whole-book] {
+  title "Sum up what you read"
+  let k=0..1
+  let gist={pick(k, "Buck is stolen and learns the law of the North.", "Hal’s team starves until Thornton saves Buck.")}
+  let detail={pick(k, "A man in a red sweater beats Buck.", "Mercedes will not get off the sled.")}
+  let other={pick(k, "Buck fights Spitz to lead the team.", "Buck saves John Thornton from the rapids.")}
+
+  scene 35x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=end {
+        bookcast b who=buck pose=pull dir=1
+        sledge s
+        text ask "Which sentence sums up {pick(k, \"chapters 1 and 2\", \"chapter 5\")} best?" width=17
+      }
+      choice pick options=[pick(k, detail, gist), pick(k, gist, other), pick(k, other, detail)] stack=column
+    }
+  }
+
+  answer pick=gist
+  feedback {
+    when (pick == detail) point=b {
+      say "That happens, but it is one moment. A summary covers the whole part you read."
+    }
+    when (pick == other) point=b {
+      say "That is from another chapter. What happens in these ones, from start to end?"
+    }
+  }
+  hint "What would you tell a friend happened, in one breath?"
+  hint "Which sentence is still true if you leave out every small detail?"
+}

@@ -1,0 +1,35 @@
+# The way in: the observatory's model of the solar system along its corridor, one centimetre for
+# every ten million kilometres, so a planet's distance in the model is its real distance divided by
+# ten. The distances are the real ones, Saturn, Uranus and Neptune to the nearest ten million.
+item physics.scale-model-distance v=1 skills=[physics.sky, place-value.divide-by-ten, measure.scale] {
+  title "The planets along the corridor"
+  difficulty (if d % 10 == 0 then 0 else 1)
+  let k=1..8
+  let name={pick(k - 1, "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune")}
+  let d={pick(k - 1, 58, 108, 150, 228, 778, 1430, 2870, 4500)}
+  level easy {
+    let k={3, 6, 7, 8}
+  }
+  level hard {
+    let k={1, 2, 4, 5}
+  }
+
+  scene 34x26 {
+    planets p count=8 names=1 at=canvas(1, 0)
+    table t cols=2 head=["Planet", "Million km"] cells=["Mercury", "58", "Venus", "108", "Earth", "150", "Mars", "228", "Jupiter", "778", "Saturn", "1430", "Uranus", "2870", "Neptune", "4500"] below=p gap=1
+    text ask "The observatory builds a model of the solar system down its corridor, with 1 cm for every 10 million km. How many centimetres from the Sun does the bead for {name} go?" narrate width=17 right-of=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer decimals(d / 10, if d % 10 == 0 then 0 else 1)
+  feedback {
+    when (answer == d) point=t {
+      say "That is the real distance in millions of kilometres. Each centimetre stands for ten of them."
+    }
+    when (answer == d / 100) point=t {
+      say "Each centimetre stands for ten million kilometres, not a hundred million."
+    }
+  }
+  hint "How many lots of 10 million km are there in {name}'s distance?"
+  hint "Dividing by ten moves each digit one place to the right."
+}

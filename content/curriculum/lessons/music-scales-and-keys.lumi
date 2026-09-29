@@ -1,6 +1,6 @@
 # The first one-octave scale: C major with the thumb passing under, the pattern of tones and
 # semitones that makes it major, and the black keys the same pattern needs from another start.
-lesson music-scales-and-keys v=1 format=teach grade=4 unit=4 subject=music levels=[easy, medium, hard] {
+lesson music-scales-and-keys v=1 format=teach grade=4 unit=6 subject=music levels=[easy, medium, hard] {
   title "Scales and keys"
   goal "Play the C major scale with the thumb passing under, and find where its semitones fall."
 

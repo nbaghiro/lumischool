@@ -1,0 +1,68 @@
+lesson g6-scale-drawings-and-four-quadrants v=1 format=teach grade=6 unit=7 subject=maths levels=[easy, medium, hard] {
+  title "Scale drawings, enlargement, and the four quadrants"
+  goal "Use a scale to go between a plan and real lengths, enlarge a shape by a scale factor, and find where a point lands in any of the four quadrants."
+
+  look {
+    scene 24x13 {
+      scaleplan p plan=1 l=8 w=5 scale=0.5 unit="m" dims=1 ask=0 at=canvas(1, 1)
+      lander l rungs=5 right-of=p gap=2
+    }
+    say """
+      This is a plan of a room in the moon base. Each square stands for 0.5 m, so the room, 8
+      squares long, is 4 m long. Every length on a plan is the real length made smaller by the same
+      number of times, and an enlargement makes every length bigger by the same number of times. On
+      a grid with four quadrants the base sits at (0, 0): across comes first, then up, and left or
+      down is below zero.
+      """
+  }
+  do {
+    practice scale.base-room count=1 seed=3
+    level easy {
+      worked scale.base-room l=6 s=2 level=medium
+    }
+    show quadrant.base-point px=-4 py=2 easy-px=3 easy-py=-4 hard-px=-3 hard-py=-4
+    practice scale.base-new-room count=1 seed=5
+    practice quadrant.reflect-corner count=1 seed=6
+    practice scale.lander-photo count=1 seed=7
+    practice quadrant.which-move count=1 seed=2
+    practice quadrant.slide-corner count=1 seed=8 hard-count=0
+    level hard {
+      practice quadrant.turn-corner count=1 seed=8
+    }
+    practice scale.panel-enlarged count=1 seed=9 easy-count=0
+    level easy {
+      practice quadrant.base-point count=1 seed=11
+    }
+    level hard {
+      practice scale.ratio-plan count=1 seed=10
+    }
+  }
+  try stars=2 {
+    show scale.plan-floor-mistake s=3 l=6 easy-s=2 easy-l=5 hard-s=4 hard-l=8
+  }
+  try stars=3 {
+    show quadrant.fourth-corner p=-2 q=-1 u=2 v=1 easy-p=-3 easy-q=-2 easy-u=2 easy-v=0 hard-p=0 hard-q=-3 hard-u=3 hard-v=2
+  }
+  remember {
+    say "On a plan every length is multiplied by the same scale. Across comes first, then up, and left or down is below zero."
+  }
+
+  grown-ups """
+    A plan is read in two steps: count the squares, then multiply by what one square stands for, and
+    going back from metres to squares divides. The common slip in enlargement is adding the same
+    amount to every length instead of multiplying, so a photo 2 cm wide made 6 cm wide does not grow
+    by 4 cm in height. On the grid, watch for coordinates written up first, and for minus signs left
+    off to the left of the base and below it. In the two-star question each square of the plan
+    stands for a real square s m by s m, so the area is multiplied by s twice. In the three-star
+    question the step from B to C is the same as the step from A to D, which a child can see by
+    drawing the three corners. If the quadrants are new, stay here another day plotting points by
+    hand. Off the page, measure a room at home and draw it on squared paper with one square for half
+    a metre.
+    """
+  level easy {
+    grown-ups "At this level one square stands for 2 or 3 m, a room 6 squares long is worked once in the teacher's pen, each beacon has one negative coordinate and is asked twice, the reflected corner is A, right of the y axis, the photo is enlarged two or three times, the move is a slide or a flip, the panel is left out, Ada's scale is 2 m, and the fourth corner makes a square that is not tilted."
+  }
+  level hard {
+    grown-ups "At this level one square stands for 0.5 or 1.5 m, the beacon has two negative coordinates, the reflected corner is B or C of a triangle left of the y axis, the photo is enlarged 1.5 or 2.5 times, the move is a flip in the x axis or a half turn, a quarter turn about (0, 0) replaces the slide, the panel is enlarged three times, a printed plan at 1 : 200 or 1 : 500 is added, Ada's scale is 4 m, and the square is tilted."
+  }
+}

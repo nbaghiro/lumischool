@@ -1,0 +1,40 @@
+# The way in: the lettered skeleton, and the bone that does a named job. The skull and the ribs are
+# the plain two, since each makes a box round something soft; the backbone and the thigh bone have to
+# be found by what they are.
+item nature.bone-letter v=1 skills=[nature.body] {
+  title "Which bone?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let job={pick(k, "protects the brain", "protects the heart and lungs", "holds the body upright and is made of many small bones in a column", "is the longest bone in the body")}
+  let letter={pick(k, "A", "B", "C", "D")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x17 {
+    parts fig of=skeleton at=canvas(1, 1)
+    text ask "In the old city's library stands a skeleton that doctors once learned from. Which letter points at the bone that {job}?" narrate width=20 right-of=fig gap=2
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=letter
+  feedback {
+    when (k == 0 and pick != letter) point=fig {
+      say "The brain is in the head. Which bone makes a hard round case at the very top?"
+    }
+    when (k == 1 and pick != letter) point=fig {
+      say "The heart and lungs are in the chest. Look for the curved bones that make a cage round them."
+    }
+    when (k == 2 and pick != letter) point=fig {
+      say "Follow the line of small bones down the middle of the back, from the skull to the hips."
+    }
+    when (k == 3 and pick != letter) point=fig {
+      say "Look at the legs. The top half of the leg holds one long bone, from the hip to the knee."
+    }
+  }
+  hint "Where in the body is the soft part the question names? Find the bone that is there."
+  hint "Some bones make a case or a cage round something soft. Others are long and hold the body up. Which kind is the question about?"
+}

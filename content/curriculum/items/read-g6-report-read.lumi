@@ -1,0 +1,36 @@
+# The way in: the ranger's bar graph of kingfishers counted on the first morning of each month, read
+# for one bar and then for the difference between two.
+item reading.report-read v=1 skills=[reading.text-features, data.bar-charts] {
+  title "Read the ranger's graph"
+  difficulty pick(k, 0, 1, 0, 1)
+  let k=0..3
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k={1, 3}
+  }
+
+  scene 36x17 {
+    row all at=canvas(1, 1) space=1 align=start {
+      bargraph birds labels=["Mar", "Apr", "May", "Jun", "Jul", "Aug"] values=[4, 6, 6, 12, 9, 5] max=12 color=sky
+      column side space=1 align=start {
+        kingfisher bird flying=0 facing=-1
+        text ask "{pick(k, \"How many kingfishers were counted in June?\", \"How many more were counted in June than in May?\", \"How many were counted in April?\", \"How many fewer were counted in August than in July?\")}" width=12
+        number-input answer
+      }
+    }
+  }
+
+  answer pick(k, 12, 6, 6, 4)
+  feedback {
+    when (k == 1 and answer == 12) point=birds {
+      say "That is June's bar on its own. The question asks how many more than May."
+    }
+    when (k == 3 and answer == 5) point=birds {
+      say "That is August's bar. How far below July's bar does it stop?"
+    }
+  }
+  hint "Find the month along the bottom, then run your finger across from the top of its bar."
+  hint "For more or fewer, read both bars first, then find the gap between them."
+}

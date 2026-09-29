@@ -1,0 +1,23 @@
+# The three-star: a balanced argument of the child's own on a question put to the library, planned
+# on a frame, marked by a grown-up; at hard each point carries a fact.
+item writing.write-balanced v=1 stars=3 skills=[writing.argument, writing.composing] {
+  title "Your balanced argument"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x30 {
+    library lib columns=6 open=1 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Should the library open on Sundays? Write a balanced argument: the question, two points for, two points against with a turning word, and a conclusion that weighs them.\" else \"Should the library open until nine at night? Write a balanced argument: the question, two points for and two against, each with a fact that could be checked, joining words that add and turn, and a conclusion that weighs them.\"}" narrate width=34 below=lib gap=1
+    writingframe plan prompts=["The question", "For", "Against", "On balance"] lines=2 width=34 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="The question stated at the start, two points for and two against that are reasons rather than opinions, a joining word that adds (also, furthermore) and one that turns (however, on the other hand), and a conclusion that names something from each side before it decides; at hard each point carries a fact someone could check."
+  hint "Before writing, list what a family would say for, and what the librarian might say against."
+  hint "Read your conclusion: does it mention both sides before it decides?"
+}

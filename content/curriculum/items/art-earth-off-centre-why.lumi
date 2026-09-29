@@ -1,0 +1,32 @@
+# The two-star reason: the Earth set exactly in the middle leaves equal spaces round it and the
+# picture sits still; on a third the spaces differ and the eye moves.
+item art.earth-off-centre-why v=1 stars=2 skills=[art.composition, reasoning.explain] {
+  title "Why not the middle?"
+  difficulty k
+  let k=0..1 r=0..2
+  let thing={pick(k, "the Earth", "the horizon")}
+  let right={"Unequal spaces round it make the eye move"}
+  let w1={"The middle is too far from the ground"}
+  let w2={"Nothing may go in the middle of a picture"}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x23 {
+    earth home up=2 at=canvas(1, 1)
+    text ask "Ada put {thing} exactly in the middle of her sheet, and the picture feels stiff and still. Her teacher suggests moving it onto a line of thirds. Why does that help?" width=26 right-of=home gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column at=canvas(1, 12)
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=home {
+      say "Painters do put things in the middle, for a calm picture. Compare the spaces on each side of {thing} when it is in the middle and when it is on a third."
+    }
+  }
+  hint "In the middle, how do the spaces on either side of {thing} compare?"
+  hint "On a line of thirds, one space is twice the other. What does the eye do?"
+}

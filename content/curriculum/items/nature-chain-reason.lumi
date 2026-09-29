@@ -1,0 +1,41 @@
+# The two-star reason: why a change travelled further than it seemed it would. The puffins recover
+# with nobody feeding them, the beavers return with the wolves, and the kelp forests shrink when the
+# otters go. Each answer names the link in between. The Yellowstone chain is still argued over (other
+# causes, and beavers released outside the park), so the question asks the child to reason inside an
+# explanation rather than state it as fact; see .docs/tracks.md.
+item nature.chain-reason v=1 stars=2 skills=[nature.ecosystems, reasoning.explain] {
+  title "Why did that happen?"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "After the rats were cleared off the puffins' island, the puffins grew in number, though nobody fed them. Why?", "In Yellowstone Park wolves were brought back, and later more willows and beavers were seen by the rivers. Many scientists explain it like this: the wolves hunted the elk that had grazed the river banks bare, and the willow grew back. If that is right, why did the beavers come back?", "Sea otters eat sea urchins, and sea urchins eat kelp, a seaweed that grows in forests under the sea. When hunters took most of the otters, the kelp forests shrank. Why?")}
+  let ans={pick(k, "More of their eggs and chicks lived", "Fewer elk ate the willow beavers need", "More urchins were left to eat the kelp")}
+  let o1={pick(k, "The rats had been eating their fish", "Wolves hunt the beavers' enemies", "The otters had planted the kelp")}
+  let o2={pick(k, "Puffins like islands with no people", "Beavers eat what the wolves leave", "The hunters cut the kelp down")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x32 {
+    earth e up=2 at=canvas(1, 1)
+    text ask "{asks}" narrate width=32 below=e gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=ask {
+      say "The rats ate eggs and chicks. What changes for the eggs and chicks when the rats are gone?"
+    }
+    when (k == 1 and pick != ans) point=ask {
+      say "Wolves do not help beavers directly. What did the elk eat, and what do beavers need?"
+    }
+    when (k == 2 and pick != ans) point=ask {
+      say "The otters ate the urchins. With the otters gone, what happened to the urchins, and what do they eat?"
+    }
+  }
+  hint "Find the animal in the middle, between the change and the result."
+  hint "Follow the arrows: who eats whom, one step at a time."
+}

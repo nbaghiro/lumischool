@@ -1,0 +1,61 @@
+lesson physics-lenses-and-a-telescope v=1 format=teach grade=5 unit=6 subject=physics levels=[easy, medium, hard] {
+  title "Lenses and a telescope"
+  goal "Find where a lens brings light to a point, and work out how many times bigger a telescope makes far things look."
+
+  look {
+    scene 34x21 {
+      column all at=canvas(1, 0) space=1 align=start {
+        lens l mode=lens focus=20 show=1
+        lens t mode=telescope objective=90 eyepiece=3 show=1
+      }
+    }
+    say """
+      A lens is glass curved so that it bends light. Light from a far-away star arrives in straight,
+      side by side beams, and a lens bends them so they meet at one point, its focus; a fatter lens
+      bends more and brings the light to a point nearer to itself. A telescope has a big lens at the
+      front and a small eyepiece at the back, and it makes things look as many times bigger as the big
+      lens's focus divided by the eyepiece's: 90 cm divided by 3 cm is 30 times.
+      """
+  }
+  do {
+    level easy {
+      worked physics.lens-focus f=30 level=medium
+    }
+    practice physics.lens-focus count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.lens-fatter count=1 seed=1 easy-seed=2 hard-seed=3
+    practice physics.telescope-magnify count=2 seed=1 easy-seed=2 hard-seed=3
+    practice physics.telescope-tube count=1 seed=1 easy-seed=2 hard-seed=3 hard-count=2
+    practice physics.telescope-eyepiece count=1 seed=1 easy-seed=2 hard-seed=3
+  }
+  story {
+    show physics.observatory-jupiter fo=120 fe=3 easy-fe=5 hard-fo=150
+  }
+  try stars=2 {
+    show physics.eyepiece-bigger v=1 s=4 l=6 easy-l=10 hard-s=3
+  }
+  try stars=3 {
+    show physics.telescope-build v=1 easy-v=0 hard-v=3
+  }
+  remember {
+    say "A telescope makes things look as many times bigger as the big lens's focus divided by the eyepiece's."
+  }
+
+  grown-ups """
+    Many children expect the bigger eyepiece to make things bigger, as a bigger magnifying glass
+    seems to. It is the other way round: with the same big lens, the eyepiece with the shorter focus
+    gives the bigger view, and the two-star question tests that directly. Watch for adding the two
+    focuses when the question asks how many times bigger; adding gives the tube's length, dividing
+    gives the magnification, and the lesson asks for both so the difference is felt. If the focus
+    is hard to find on the ruler, trace the beams with a finger to where they cross and stay here
+    another day. Off the page, a magnifying glass held in the sun over paper brings the light to a
+    small bright spot: measure how far above the paper the glass is when the spot is smallest, and
+    that is its focus. A grown-up should hold it, and nobody looks at the Sun through a lens. The
+    three-star question needs every pair that works before the shortest is chosen.
+    """
+  level easy {
+    grown-ups "At this level a worked example reads a focus first, the focuses are whole tens, the two lenses to compare are very different, the eyepiece is 5 cm, and the three-star box gives a 20 times telescope whose shortest tube is 42 cm."
+  }
+  level hard {
+    grown-ups "At this level the focuses fall between the numbered marks, the two lenses are close in fatness, the tube's length is asked twice, the big lens is 150 cm, and the three-star box asks for 30 times, whose shortest tube is 93 cm."
+  }
+}

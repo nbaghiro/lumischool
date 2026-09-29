@@ -1,0 +1,18 @@
+# The letters -ough spell several sounds (England, years 5 and 6: ought, rough, though, through).
+# The columns are headed by the sound, and one word is under the wrong one.
+item writing.ough-sounds v=1 skills=[writing.spelling] {
+  title "The sounds of -ough"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let odd={pick(k, "tough", "dough", "bought", "through")}
+
+  scene 34x22 {
+    text ask "Every word has -ough, but it says a different sound. One word is under the wrong sound. Write it." width=32 at=canvas(1, 1)
+    wordsort sort heads=["uff", "oh", "or", "oo"] words=["tough", "enough", "dough", "though", "bought", "fought", "through"] into=[pick(k, 1, 0, 0, 0), 0, pick(k, 1, 3, 1, 1), 1, pick(k, 2, 2, 1, 2), 2, pick(k, 3, 3, 3, 1)] below=ask gap=1
+    word-input pick options=[odd] letters=8 below=sort gap=1
+  }
+
+  answer pick=odd
+  hint "Say each word aloud. Which sound does its -ough make?"
+  hint "Now read down each column. Which word does not rhyme with the others under its sound?"
+}

@@ -1,0 +1,24 @@
+# Two stars: a thing under water looks raised, so to touch it a stick must go deeper than it looks.
+# d is the real depth; the coin looks three quarters as deep.
+item physics.refract-aim v=1 stars=2 skills=[physics.light, reasoning.explain] {
+  title "Where should the stick go?"
+  let d={8, 12}
+
+  scene 35x38 {
+    refraction r mode=3 depth=d show=1 at=canvas(1, 0)
+    text ask "A coin lies in the water tank. From straight above, Kit sees it where the drawing shows it looks. She pushes a long stick straight down to touch it. Where must the stick's end go, and why?" narrate width=28 below=r gap=1
+    choice pick options=["Deeper than it looks, since the coin looks raised", "To where it looks, since light goes straight", "Less deep than it looks, since water magnifies"] stack=column below=ask gap=1
+  }
+
+  answer pick="Deeper than it looks, since the coin looks raised"
+  feedback {
+    when (pick == "To where it looks, since light goes straight") point=r {
+      say "Light goes straight in the water and in the air, but not where it crosses the surface."
+    }
+    when (pick == "Less deep than it looks, since water magnifies") point=r {
+      say "Compare the depth the coin looks with the depth on the ruler. Which is bigger?"
+    }
+  }
+  hint "Compare how deep the coin looks with how deep it really is."
+  hint "Light from the coin bends as it leaves the water. Does that make it look higher or lower?"
+}

@@ -1,0 +1,43 @@
+# Two people take turns and the said is left off after the first two lines; which line does the
+# child have to follow to find who speaks? The line asked about moves further down with n.
+item writing.who-said v=1 skills=[writing.speech, reading.comprehension] {
+  title "Who says it?"
+  difficulty (n - 3)
+  let n=3..5 s=0..1
+  let first={pick(s, "Leo", "Ada")}
+  let second={pick(s, "Ada", "Leo")}
+  let right={if n == 4 then second else first}
+  level easy {
+    let n=3..3
+  }
+  level hard {
+    let n=5..5
+  }
+
+  scene 33x18 {
+    row top at=canvas(1, 0) space=2 align=start {
+      column talk space=0 align=start {
+        text l1 "(1) “Is it cloudy?” asked {first}." width=24
+        text l2 "(2) “Only over the sea,” said {second}." width=24
+        text l3 "(3) “Then can we open the dome?”" width=24
+        text l4 "(4) “Not until the wind drops.”" width=24
+        text l5 "(5) “How long will that be?”" width=24
+      }
+      column people space=1 align=centre {
+        person ada pose=point age=child hair=bun colour=brown top=berry
+        person leo pose=think age=child hair=short colour=black top=sky
+      }
+    }
+    text ask "Each new line is a new speaker. Who says line {n}?" narrate width=22 below=top gap=1
+    choice pick options=["Leo", "Ada"] right-of=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=talk {
+      say "Two people take turns, one line each. Count the turns from the first line, where the name is given."
+    }
+  }
+  hint "Who speaks line 1, and who speaks line 2?"
+  hint "The speakers take turns. Follow them down, line by line."
+}

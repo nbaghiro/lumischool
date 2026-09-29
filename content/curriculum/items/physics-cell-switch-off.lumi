@@ -1,0 +1,27 @@
+# Wasting less: a lamp left on for no one uses its joules every second all the same.
+item physics.cell-switch-off v=1 skills=[physics.energy, time.convert] {
+  title "Left on all night"
+  difficulty (u * h / 10)
+  let u={10, 20, 60} h={1, 2}
+  level easy {
+    let u={10} h={1, 2}
+  }
+  level hard {
+    let u={20, 60} h={2}
+  }
+
+  scene 17x28 {
+    waterwheel w paddles=8 lit=1 at=canvas(1, 0)
+    text ask "The lamp over the mill's door uses {u} J each second. It is left on for {h} more hours than anyone needs it. How many joules are wasted? An hour is 3600 seconds." narrate width=15 below=w gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (u * h * 3600)
+  feedback {
+    when (answer == u * h * 60) point=ask {
+      say "That is the joules for {h * 60} seconds. An hour is 3600 seconds, not 60."
+    }
+  }
+  hint "How many seconds are there in {h} hours?"
+  hint "The lamp uses {u} J in every one of them."
+}

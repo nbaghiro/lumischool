@@ -1,0 +1,34 @@
+# The two-star: Ella keeps the difference instead of the ratio. The check by products shows her x
+# fails, and the child gives the x that passes.
+item proportion.add-mistake v=1 stars=2 skills=[algebra.equations.proportion, reasoning.find-the-mistake] {
+  title "Ella's working"
+  difficulty (s + 1)
+  let s=0..3
+  let a={pick(s, 4, 6, 8, 9)}
+  let b={pick(s, 6, 8, 12, 15)}
+  let c={pick(s, 10, 9, 10, 12)}
+  level easy {
+    let s={0}
+  }
+  level hard {
+    let s={2, 3}
+  }
+
+  scene 36x18 {
+    sign board lines=["{a} : {b} = {c} : x", "{b} is {b - a} more than {a},", "so x = {c} + {b - a} = {c + b - a}"] kind=board color=tang at=canvas(1, 1)
+    text ask "Ella solved this proportion at the mill. Check her answer by multiplying the outer terms and the inner terms. What should x be?" narrate width=34 below=board gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer plain(b * c / a)
+  feedback {
+    when (answer == c + b - a) point=board {
+      say "That is Ella's answer. Try it: is {a} × {c + b - a} the same as {b} × {c}?"
+    }
+    when (answer == a * c / b) point=board {
+      say "Check the pairs: {a} and x are the outer terms, {b} and {c} the inner ones."
+    }
+  }
+  hint "Does keeping the difference the same keep the ratio the same?"
+  hint "Which number times {a} gives {b} × {c}?"
+}

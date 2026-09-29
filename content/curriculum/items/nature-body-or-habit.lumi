@@ -1,0 +1,34 @@
+# Some ways of beating the cold are part of the body and some are things the animal does. The child
+# counts the behaviours in a list, so each line has to be sorted; the longer lists at hard set the
+# fox's curled tail (a body part used in a habit) beside its white coat.
+item nature.body-or-habit v=1 skills=[nature.adaptation, reasoning.compare] {
+  title "Body or habit?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let list={pick(k, "the seal's blubber; the puffins spend the winter far out on the open sea; the Arctic fox curls its tail over its nose to sleep", "the puffins spend the winter far out on the open sea; the whale swims south to warm seas to have its calf; the puffin's oily, waterproof feathers; a seal scrapes a breathing hole in the ice with its claws", "the Arctic fox's furry feet; the fox curls its tail over its nose to sleep; the puffin's oily, waterproof feathers; the fox's white winter coat; a seal scrapes a breathing hole in the ice with its claws", "the seal's blubber; the puffins spend the winter far out on the open sea; the fox curls its tail over its nose to sleep; the whale swims south to warm seas to have its calf; a seal scrapes a breathing hole in the ice with its claws; the fox's white winter coat")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x26 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      whale pw spout=1 facing=1
+      seal ps rock=0 facing=-1
+    }
+    text told "Ben lists ways the animals of the ice shelf get through the cold: {list}." narrate width=32 below=pics gap=1
+    text ask "Some are part of the animal's body. The others are something the animal does. How many of Ben's are something the animal does?" narrate width=32 below=told gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 2, 3, 2, 4)
+  feedback {
+    when (answer == pick(k, 1, 1, 3, 2)) point=told {
+      say "That counts the parts of the body. The question asks for the things the animals do."
+    }
+  }
+  hint "Take each one in turn. Could you point to it on the animal, or is it something the animal does?"
+  hint "Could the animal stop it for a minute, the way you can stop walking? Something it can stop is a habit."
+}

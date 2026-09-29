@@ -1,0 +1,37 @@
+# The science report written in the passive: one choice is formal and passive, one is chatty and
+# active, and one uses got, the passive of speech, which a report does not use.
+item writing.passive-report v=1 skills=[writing.passive, writing.formality] {
+  title "Which belongs in the report?"
+  difficulty k
+  let k=0..2 r=0..2
+  let right={pick(k, "The ice was measured at three points.", "Two jars of sea water were collected.", "The temperature was recorded every hour.")}
+  let w1={pick(k, "We measured the ice, and it was so cool.", "I grabbed two jars of sea water.", "Isla wrote down the temperature a lot.")}
+  let w2={pick(k, "Measure the ice at three points.", "Two jars of sea water got grabbed.", "The temperature got written down every hour.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x25 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      icecliff ice height=1 floes=2
+      hut h pictures=6
+    }
+    text ask "The team's report says what was done, not who did it. Which sentence belongs in the report?" narrate width=33 below=pics gap=1
+    choice pick options=[if r == 0 then right else if r == 1 then w1 else w2, if r == 0 then w1 else if r == 1 then w2 else right, if r == 0 then w2 else if r == 1 then right else w1] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=ask {
+      say "That is how a diary or a chat sounds. A report leaves out who did it and how they felt."
+    }
+    when (pick == w2) point=ask {
+      say "{if k == 0 then \"That is an instruction telling someone what to do. A report says what was done.\" else \"Got is how people say it out loud. A report uses was or were.\"}"
+    }
+  }
+  hint "Which sentence tells you who did it, and does the report need that?"
+  hint "Which sentence would sound right read out at a meeting of scientists?"
+}

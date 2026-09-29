@@ -1,0 +1,39 @@
+# The two-star reason: what a writer leaves out follows from the purpose too. The advert and the
+# report were written from the same notebook of facts, and each left out what did not serve it. The
+# text asked about is always on the page beside the notes, and the wrong reasons are ones a reader
+# who skipped the purpose would give.
+item reading.left-out v=1 stars=2 skills=[reading.purpose, reasoning.explain] {
+  title "Why was it left out?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let right={pick(k, "It would not help to persuade you.", "It would not help to persuade you.", "It is an opinion, and a report informs.")}
+
+  scene 35x30 {
+    column all at=canvas(0, 1) space=1 align=start {
+      row top space=1 align=start {
+        passage ad title="{pick(k, \"The advert\", \"The advert\", \"Dr Osei's report\")}" text="{pick(k, \"Come to Open Night and see the rings of Saturn with your own eyes. Do not miss the most amazing night of the year.\", \"Come to Open Night and see the rings of Saturn with your own eyes. Do not miss the most amazing night of the year.\", \"The great telescope was built in 1887. Its main lens is 60 centimetres across, and it can show the rings of Saturn.\")}" width=17 numbers=false
+        passage notes title="Dr Osei's notes" text="{pick(k, \"Open Night: 8 pm. On a cloudy night the dome stays shut.\", \"Open Night: 8 pm. The dome is cold, and the line can be long.\", \"The telescope was built in 1887. It is the finest one I know.\")}" width=17 numbers=false
+      }
+      text ask "{pick(k, \"The advert leaves out that the dome stays shut on a cloudy night. Why?\", \"The advert leaves out that the line can be long. Why?\", \"Dr Osei's report on the telescope leaves out that it is the finest one she knows. Why?\")}" width=35
+      choice pick options=["It would not help to persuade you.", "It is too small a detail to matter.", "It is an opinion, and a report informs."] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick == "It is too small a detail to matter.") point=notes {
+      say "A report keeps small facts, such as the size of the lens. Could the finest one she knows be checked, like a fact?"
+    }
+    when (k < 2 and pick == "It is too small a detail to matter.") point=notes {
+      say "It would matter a lot to someone who came all the way up the cliff. Think about what the text was written to do."
+    }
+    when (k == 2 and pick == "It would not help to persuade you.") point=notes {
+      say "A report is not trying to persuade anyone. Is calling it the finest telescope a fact or an opinion?"
+    }
+    when (k < 2 and pick == "It is an opinion, and a report informs.") point=notes {
+      say "That is a fact that could be checked, and the text is an advert. What is an advert for?"
+    }
+  }
+  hint "What was the text written to do? Would this fact help it do that?"
+  hint "Imagine it had been put in. Would it make a reader more or less likely to do what the writer wants?"
+}

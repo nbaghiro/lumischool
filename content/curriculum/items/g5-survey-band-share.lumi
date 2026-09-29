@@ -1,0 +1,34 @@
+# Reading a band graph (Japan's 帯グラフ): each band is 100 per cent of its own class, so the hidden
+# share is what the others leave of 100.
+item survey.band-share v=1 skills=[data.band-graphs, percentages.of-whole] {
+  title "The hidden share"
+  difficulty t
+  let t=0..3
+  level easy {
+    let t={0, 1}
+  }
+  level hard {
+    let t={2, 3}
+  }
+
+  scene 36x20 {
+    percentbar bands counts=[pick(t, 8, 6, 9, 14), pick(t, 6, 10, 6, 18), pick(t, 6, 4, 5, 8), pick(t, 10, 5, 10, 5), pick(t, 5, 15, 10, 12), pick(t, 10, 5, 5, 8)] bands=["5A", "5B"] kinds=["Moon", "Saturn", "Jupiter"] hide=[pick(t, 4, 4, 1, 4)] at=canvas(1, 1)
+    text ask "Each class of the star club chose what to look at. Each band is one whole class. What percent of {pick(t, \"5B\", \"5B\", \"5A\", \"5B\")} chose Saturn?" narrate width=28 below=bands gap=1
+    row eq right-of=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text unit "%"
+    }
+  }
+
+  answer pick(t, 20, 60, 30, 48)
+  feedback {
+    when (answer == pick(t, 5, 15, 6, 12)) point=bands {
+      say "That is how many children. The band shows each part as a percent of its class."
+    }
+    when (answer == pick(t, 30, 50, 40, 45)) point=bands {
+      say "That is Saturn's share in the other class. Look along the right band."
+    }
+  }
+  hint "What do the parts of one band add up to?"
+  hint "Which shares in that band are written? What do they leave?"
+}

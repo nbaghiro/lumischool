@@ -1,0 +1,29 @@
+# The two-star reason: sunk relief shows best in strong sunlight, because its edges were left sharp
+# and throw shadows that draw the outlines (Wikipedia, "Relief": "most successful with strong
+# sunlight to emphasise the outlines and forms by shadow").
+item art.sculpt-sun v=1 stars=2 skills=[art.sculpture, art.light, reasoning.explain] {
+  title "Sunk relief in the sun"
+  let q=0..1 r=0..2
+  let place={pick(q, "the outside walls of temples in ancient Egypt, in strong sun", "an ice wall facing the low midnight sun")}
+  let right={"Its sharp edges cast shadows on the outline"}
+  let w1={"It looks the same in any light"}
+  let w2={"The cut part stays brighter than the wall"}
+
+  scene 36x30 {
+    sculpture r mode=1 shape=0 ask=0 solid=0 kind=2 names=1 at=canvas(1, 1)
+    text ask "Sunk relief was a favourite on {place}. Why does it show up so well in bright sunshine?" narrate width=34 below=r gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=r {
+      say "Look at the hatching inside the cut. Where does the dark come from, and would it be there on a dull day?"
+    }
+    when (pick == w2) point=r {
+      say "Is the inside of the cut lighter or darker than the wall in the drawing? What makes it so?"
+    }
+  }
+  hint "Where is the hatched, dark part of the carving in the drawing?"
+  hint "What makes a dark edge appear when the sun shines on a cut?"
+}

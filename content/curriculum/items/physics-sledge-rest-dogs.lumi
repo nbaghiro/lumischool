@@ -1,0 +1,35 @@
+# Three stars: starting needs more than the most friction a still sledge has, but once it slides the
+# friction and air are less, and a steady speed needs a pull that only balances them.
+item physics.sledge-rest-dogs v=1 stars=3 skills=[physics.forces, physics.friction, reasoning.constraints] {
+  title "Dogs that can rest"
+  difficulty (if v < 2 then 0 else 1)
+  let v=0..3
+  level easy {
+    let v={0}
+  }
+  level hard {
+    let v={2, 3}
+  }
+  let d={pick(v, 50, 40, 60, 50)}
+  let most={pick(v, 280, 150, 250, 330)}
+  let moving={pick(v, 150, 80, 120, 200)}
+
+  scene 30x26 {
+    sledgeforce s forward=[] back=[most] weight=0 moving=0 show=0 names=1 at=canvas(1, 0)
+    text ask "Each dog pulls with {d} N. Friction holds the still sledge with up to {most} N, but once it slides, friction and the air together hold it back with only {moving} N. What is the fewest dogs that start it, and how many of them can then trot alongside, not pulling, with the sledge keeping a steady speed?" narrate width=27 below=s gap=1
+    number-input start below=ask gap=1
+    number-input rest right-of=start gap=3
+  }
+
+  answer start=((most - most % d) / d + 1) rest=((most - most % d) / d + 1 - moving / d)
+  feedback {
+    when (start == (most - most % d) / d) point=s {
+      say "That team pulls with no more than {most} N, so the still sledge does not move."
+    }
+    when (rest == moving / d and moving / d * 2 != (most - most % d) / d + 1) point=s {
+      say "That is how many dogs must keep pulling. The question asks how many can rest."
+    }
+  }
+  hint "How many dogs pull more than {most} N?"
+  hint "How many dogs pull exactly {moving} N? The rest can stop pulling."
+}

@@ -1,0 +1,33 @@
+# Arrangements: the first climber can be any of n, the second any of the n - 1 left, and so on, so
+# the counts multiply. Order matters here.
+item chance.crew-ladder-order v=1 skills=[counting.cases, reasoning.systematic] {
+  title "Down the ladder"
+  difficulty pick(v, 0, 1, 2, 2, 3, 2.5, 3.5)
+  let v=0..6
+  let n={pick(v, 3, 4, 4, 5, 5, 6, 6)}
+  let k={pick(v, 3, 2, 4, 2, 3, 2, 3)}
+  level easy {
+    let v={0, 1}
+  }
+  level hard {
+    let v={2, 4, 5, 6}
+  }
+
+  scene 35x14 {
+    lander l rungs=6 at=canvas(1, 1)
+    text ask "The crew has {n} astronauts. {if k == n then \"All of them climb\" else pick(k - 2, \"Only two of them go out, climbing\", \"Only three of them go out, climbing\")} down the lander's ladder one after another. How many different orders of climbers are there, counting who comes first, who second{if k == 2 then \"\" else \", who third\"} and so on?" narrate width=24 right-of=l gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer pick(v, 6, 12, 24, 20, 60, 30, 120)
+  feedback {
+    when (answer == n * k) point=ask {
+      say "The first climber can be any of {n}. After that, how many are left to go second?"
+    }
+    when (answer == pick(v, 1, 6, 1, 10, 10, 15, 20)) point=ask {
+      say "Here the order counts: A then B is a different climb from B then A."
+    }
+  }
+  hint "How many different astronauts could climb down first?"
+  hint "For each of those, how many could come second? What does that make?"
+}

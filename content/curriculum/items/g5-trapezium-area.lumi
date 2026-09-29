@@ -1,0 +1,33 @@
+# A trapezium's area: the two parallel sides added and halved, times the height. Two copies make a
+# parallelogram with the two sides end to end as its base.
+item area.trapezium-area v=1 skills=[area.trapezia] {
+  title "The temple step"
+  difficulty ((a + b) * h / 20)
+  let b=6..12 a=2..8 h=3..8 s=1..3
+  where (a < b and (a + b) * h % 2 == 0 and s + a <= b)
+  level easy {
+    let b=6..8 h=3..4
+    where ((a + b) % 2 == 0)
+  }
+  level hard {
+    let b=10..12 h=6..8
+  }
+
+  scene 31x29 {
+    areashape step kind=trapezium base=b top=a height=h shift=s unit=m at=canvas(1, 1)
+    text ask "The side of a temple step is a trapezium. What is its area in square metres?" narrate width=30 below=step gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer ((a + b) * h / 2)
+  feedback {
+    when (answer == (a + b) * h) point=step {
+      say "Two of these steps, one turned over, make a parallelogram. The step is half of it."
+    }
+    when (answer == a * b * h / 2 or answer == b * h) point=step {
+      say "Add the two parallel sides first, then multiply by the height and halve."
+    }
+  }
+  hint "What do the top and the bottom add up to?"
+  hint "Multiply by the height, then halve."
+}

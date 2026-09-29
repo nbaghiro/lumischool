@@ -1,0 +1,43 @@
+# A paragraph's four sentences muddled: the topic sentence first, then the details in the order
+# the paragraph moves (through a day, from the front of the boat to the back, or through the year).
+item writing.paragraph-order v=1 skills=[writing.paragraphs, writing.sequencing] {
+  title "Put the paragraph together"
+  difficulty (if k == 0 then 0 else if p == 2 then 2 else 1)
+  let k=0..2 p=0..2
+  let a={pick(p, 2, 3, 1)}
+  let b={pick(p, 0, 1, 3)}
+  let c={pick(p, 3, 0, 2)}
+  let d={pick(p, 1, 2, 0)}
+  let t0={pick(k, "The lock keeper's day starts early.", "The Otter is small, but it holds a whole home.", "The canal changes with the seasons.")}
+  let t1={pick(k, "At six he checks the gates for leaks.", "At the front is a bed that folds away.", "In spring, ducklings follow their mothers.")}
+  let t2={pick(k, "By seven the first boats are waiting.", "In the middle is a stove for cooking.", "In summer, holiday boats queue at the lock.")}
+  let t3={pick(k, "He works the lock until the light goes.", "At the back is the tiller for steering.", "In winter, ice can close the canal for days.")}
+  let wa={pick(a, t0, t1, t2, t3)}
+  let wb={pick(b, t0, t1, t2, t3)}
+  let wc={pick(c, t0, t1, t2, t3)}
+  let wd={pick(d, t0, t1, t2, t3)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 33x25 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      narrowboat boat windows=4 pots=2
+      canallock lock level=0 boat=0
+    }
+    text ask "The four sentences of a paragraph are muddled. Number them 1 to 4 so the topic sentence comes first." narrate width=32 below=pics gap=1
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}"] blanks=[q, x, y, z] below=ask gap=1
+  }
+
+  answer q=(a + 1) x=(b + 1) y=(c + 1) z=(d + 1)
+  feedback {
+    when ((if a == 0 then q else if b == 0 then x else if c == 0 then y else z) != 1) point=s {
+      say "The first sentence should tell the reader what the paragraph is about. Find the one the other three are all part of."
+    }
+  }
+  hint "Which sentence could sit above the other three like a heading?"
+  hint "Then look for the order the details move in: through a day, along the boat or through the year."
+}

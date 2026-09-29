@@ -1,0 +1,28 @@
+# Checking a drawing: three edges run to the vanishing point and one was ruled a little too high.
+item art.canal-wrong-line v=1 skills=[art.perspective, reasoning.find-the-mistake] {
+  title "The edge ruled wrong"
+  difficulty (if w == 1 or w == 2 then 1 else 0)
+  let w=0..3 h={3, 4}
+  let right={pick(w, "A", "B", "C", "D")}
+  level easy {
+    let w={0, 3}
+  }
+  level hard {
+    let w={1, 2}
+  }
+
+  scene 36x11 {
+    perspective canal horizon=h vp=8 posts=2 letters=true wrong=w at=canvas(1, 1)
+    text ask "Three of the lettered edges run back to one vanishing point on the horizon. One was ruled wrong. Which one?" width=18 right-of=canal gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=canal {
+      say "That edge runs to the same point as the others. Carry each edge on with a ruler and find the one that crosses the horizon somewhere else."
+    }
+  }
+  hint "Lay a ruler along two edges and find where they cross on the horizon."
+  hint "Now check each edge in turn: does it run to that same point?"
+}

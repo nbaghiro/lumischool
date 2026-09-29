@@ -1,0 +1,31 @@
+# One whole-number fact gives every product with the same digits: count the decimal places. The
+# core's reasoning question, since nothing is multiplied out.
+item decimal.from-a-fact v=1 skills=[decimals.multiply, reasoning.structure] {
+  title "From one fact"
+  difficulty ((if f == 0 then 0 else if f == 1 then 1 else 2) + a * b / 400)
+  let a={23, 34, 46, 57} b={17, 28, 32} f=0..2
+  level easy {
+    let f={0}
+  }
+  level hard {
+    let f={2}
+  }
+
+  scene 30x10 {
+    sign fact lines=["{a} × {b} = {a * b}"] kind=board color=mint at=canvas(1, 1)
+    text ask "Use the fact on the board. Do not multiply again." narrate width=16 right-of=fact gap=2
+    row eq below=fact gap=1 space=1 align=centre {
+      equation sum "{if f == 0 then decimals(a / 10, 1) else if f == 1 then decimals(a / 100, 2) else plain(a)} × {if f == 0 then decimals(b / 10, 1) else if f == 1 then plain(b) else decimals(b / 1000, 3)} ="
+      number-input res width=6
+    }
+  }
+
+  answer res=decimals(if f == 0 then a * b / 100 else if f == 1 then a * b / 100 else a * b / 1000, 0)
+  feedback {
+    when (res == a * b) point=fact {
+      say "The digits are right. Now count how many decimal places the two numbers have between them."
+    }
+  }
+  hint "How many digits come after the point in each number?"
+  hint "Put that many decimal places into {a * b}."
+}

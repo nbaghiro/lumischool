@@ -1,6 +1,6 @@
 # Over and under: the rule a weave follows, read along a row and down the rows, and what happens when
 # a row stops following it.
-lesson art-over-and-under v=1 format=teach grade=2 unit=2 subject=art levels=[easy, medium, hard] {
+lesson art-over-and-under v=1 format=teach grade=2 unit=7 subject=art levels=[easy, medium, hard] {
   title "Weaving: over and under"
   goal "Read an over and under pattern along a row, find the row that breaks it, and weave one of your own."
 

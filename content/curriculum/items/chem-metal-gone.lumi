@@ -1,0 +1,31 @@
+# Two stars: where a strip of magnesium goes when it fizzes away in acid. It reacts to make a new
+# substance, a salt, which stays dissolved and is left as a white solid when the liquid is dried, not
+# shiny metal (RSC, "Reactions of metals with acids producing salts"). The wrong options are the
+# usual ideas: it melted, it dissolved like sugar and can be got back, it all became the gas.
+item chem.metal-gone v=1 stars=2 skills=[chemistry.acids, chemistry.changes, reasoning.explain] {
+  title "Where did the magnesium go?"
+
+  scene 33x34 {
+    row kit at=canvas(1, 0) space=2 align=end {
+      testtubes t fills=[0.5, 0.5] paints=["", ""] fizz=[0, 0] bungs=0 letters=1 metals=[1, 0] acid=1
+      dish d left=0 day=6 sun=1
+    }
+    text ask "A strip of magnesium fizzed in tube A until none was left. The liquid was then dried in a dish, and a white solid was left, not shiny metal. Where did the magnesium go?" narrate width=32 below=kit gap=1
+    choice pick options=["It reacted to make a new substance, a salt", "It melted in the hot acid", "It dissolved like sugar and can be got back", "All of it turned into the gas"] stack=column below=ask gap=1
+  }
+
+  answer pick="It reacted to make a new substance, a salt"
+  feedback {
+    when (pick == "It melted in the hot acid") point=t {
+      say "The tube gets only a little warm, far from hot enough to melt a metal. What is the white solid in the dish?"
+    }
+    when (pick == "It dissolved like sugar and can be got back") point=d {
+      say "Dried sugar water gives back sugar. Did the dish give back shiny magnesium?"
+    }
+    when (pick == "All of it turned into the gas") point=d {
+      say "The gas is hydrogen, which came from the acid. Where did the white solid in the dish come from?"
+    }
+  }
+  hint "What was left in the dish, and does it look like the strip?"
+  hint "Is fizzing in acid a change that can be undone, or one that makes something new?"
+}

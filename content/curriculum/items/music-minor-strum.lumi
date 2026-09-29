@@ -1,0 +1,28 @@
+# From the card of one chord to its partner: lift the finger that makes a chord major, or add it, and
+# strum the other. Lifting is the easier way round.
+item music.minor-strum v=1 skills=[music.major-minor, music.chord-boxes] {
+  title "Change it and strum"
+  difficulty (if s <= 1 then 0 else 1)
+  let s=0..3
+  let want={pick(s, "Em", "Am", "E", "A")}
+  let said={pick(s, "E minor", "A minor", "E major", "A major")}
+  let what={pick(s, "the major chord", "the major chord", "the minor chord", "the minor chord")}
+  level easy {
+    let s=0..1
+  }
+  level hard {
+    let s=2..3
+  }
+
+  scene 34x27 {
+    text ask "The towpath band's card shows {what}. Change the one note that makes the difference, then hold {said} and strum it." narrate width=32 at=canvas(1, 1)
+    row both space=3 align=start below=ask gap=1 {
+      chordbox card tuning=guitar chord=pick(s, "E", "A", "Em", "Am") frets=3 show=fingers name=true letters=true lit=[]
+      fretboard neck tuning=guitar frets=3 view=chart labels=numbers strum=true
+    }
+  }
+
+  check music.chord chord={want} tuning=guitar
+  hint "Which string plays the chord's middle note, the third? That is the only one that changes."
+  hint "Major is one semitone higher than minor on that string, one fret along."
+}

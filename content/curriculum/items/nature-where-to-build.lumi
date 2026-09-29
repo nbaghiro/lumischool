@@ -1,0 +1,48 @@
+# The bend put to use: where to build, where to protect, and where not to bridge. Each answer
+# needs the fast outside wearing back and the slow inside building out, applied to a choice the town
+# has to make. The hard two add floods and a bridge that has to stand for many years.
+item nature.where-to-build v=1 skills=[nature.rivers, reasoning.explain] {
+  title "Building by the bend"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "The town wants a boathouse right at the water's edge by the bend. Where should it go, and why?", "The town can afford big stone blocks along one bank only, to stop it being worn away. Where are they most needed, and why?", "A house stands on the bank at B, well back from the edge. Why does its owner worry more after every flood?", "The town wants a new footbridge over the river. Why is a straight stretch a better place for it than the bend at B?")}
+  let ans={pick(k, "At C: slow water drops sand and adds to it", "At B: the fast water there eats into the bank", "Faster flood water wears the bank back more", "The bank at B wears back and would undercut it")}
+  let o1={pick(k, "At B: the fast water makes launching easy", "At C: the water drops its stones there", "Floods leave new sand and mud on that bank", "The stones piled at C would block the boats")}
+  let o2={pick(k, "At B: the deep water keeps the bank firm", "At D: the river meets the sea there", "Floods make the water on the outside slower", "The water there is too slow to carry mud away")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x25 {
+    parts fig of=river at=canvas(1, 1)
+    text ask "Below the canal town the river bends round the mill. {asks}" narrate width=14 right-of=fig gap=1
+    choice pick options=[o1, ans, o2] stack=column below=fig gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (k == 0 and pick != ans) point=fig {
+      say "B is on the outside, where the fast water wears the bank away. A building at the edge there would slowly lose its ground."
+    }
+    when (k == 1 and pick == o1) point=fig {
+      say "Where stones are dropped the bank grows. Which bank is losing ground?"
+    }
+    when (k == 1 and pick == o2) point=fig {
+      say "The question is about the bend. Which of its two banks does the fast water wear away?"
+    }
+    when (k == 2 and pick != ans) point=fig {
+      say "In a flood there is more water, running faster than usual. What does faster water do to the outside of a bend?"
+    }
+    when (k == 3 and pick == o1) point=fig {
+      say "The beach at C is on the inside, at the edge. A bridge has to stand on its banks for many years: what happens to the bank at B?"
+    }
+    when (k == 3 and pick == o2) point=fig {
+      say "B is on the outside of the bend, where the water is fastest. What does fast water do to the bank a bridge stands on?"
+    }
+  }
+  hint "Is the water fast or slow at each bank of the bend?"
+  hint "Which bank is losing ground, and which is gaining it?"
+}

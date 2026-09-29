@@ -1,0 +1,35 @@
+# The way in to the starch test: a leaf after iodine, and the part that turned blue-black, which the
+# key beside it names. The versions cover the tip, and put a strip across a leaf with a white edge.
+item nature.starch-where v=1 skills=[nature.plants, nature.photosynthesis] {
+  title "Where is the starch?"
+  difficulty k
+  let k=0..1
+  let cover={pick(k, 2, 1)} kind={pick(k, 0, 1)}
+  let ans={pick(k, "the left half, away from the tip", "the green parts either side of the strip")}
+  let o1={pick(k, "the right half, at the tip", "the green part under the strip")}
+  let o2={pick(k, "the whole leaf", "all of the leaf outside the strip")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 34x31 {
+    leaftest l stage=1 cover=cover kind=kind sun=1 at=canvas(1, 1)
+    text ask "In the moon base's greenhouse Ada tests a leaf that had a day under the lamps. Iodine turns blue-black where there is starch. Which part of the leaf has starch in it?" narrate width=32 below=l gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == o1) point=l {
+      say "Check the key: which pattern means blue-black? Find that pattern on the leaf."
+    }
+    when (pick == o2) point=l {
+      say "Not all of the leaf is the same pattern. Which part has the blue-black pattern from the key?"
+    }
+  }
+  hint "Find blue-black in the key beside the leaf."
+  hint "Which part of the leaf is drawn with that pattern?"
+}

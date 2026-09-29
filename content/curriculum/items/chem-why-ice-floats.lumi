@@ -1,0 +1,33 @@
+# The two-star reason: water takes more room as ice (about 9 per cent), so a cm³ of ice holds fewer
+# grams than a cm³ of water. The versions ask why ice floats, why a full bottle splits in the freezer,
+# and why a lake freezes from the top.
+item chem.why-ice-floats v=1 stars=2 skills=[chemistry.density, reasoning.explain] {
+  title "Why does the ice float?"
+  difficulty k
+  let k=0..2 r=0..2
+  let q={pick(k, "Ice is the same stuff as water. Why does it float on water?", "Leo fills a glass bottle to the top with water, caps it and leaves it outside the hut in the frost. Next day the bottle has split. Why?", "In winter the lake behind the hut freezes at the top first, and fish swim in the water under the ice. Why is the ice at the top?")}
+  let right={pick(k, "Ice takes more room, so each cm³ weighs less", "The water took more room as it froze", "Each cm³ of ice weighs less, so it floats up")}
+  let w1={pick(k, "Ice has air in it, and air floats", "Cold made the glass shrink and crack", "The top is always the coldest place")}
+  let w2={pick(k, "Ice is lighter because it is colder", "Freezing made the water heavier", "Solids always float on liquids")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x25 {
+    iceberg berg under=1 at=canvas(1, 0)
+    text ask "{q}" narrate width=24 right-of=berg gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=berg gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=berg {
+      say "Think about 92 g of water: as water it takes 92 cm³, and as ice it takes 100 cm³."
+    }
+  }
+  hint "Does freezing change how many grams there are, or how much room they take?"
+  hint "If the same grams take more room, is each cm³ heavier or lighter than water?"
+}

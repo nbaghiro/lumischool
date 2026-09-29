@@ -1,0 +1,41 @@
+# The way in: in dilute acid these tubes' strips give off hydrogen, most on magnesium, then zinc, then
+# iron, and none on copper (METALS_IN_ACID, the order RSC's microscale practical reports). p places
+# the metals; the checker reads which tube fizzes most.
+item chem.fizziest-tube v=1 skills=[chemistry.acids, chemistry.metals] {
+  title "Which metal fizzes most?"
+  difficulty (if p >= 2 then 1 else 0)
+  let p=0..3
+  level easy {
+    let p={0, 1}
+  }
+  level hard {
+    let p={2, 3}
+  }
+  let m0={pick(p, 1, 2, 2, 3)}
+  let m1={pick(p, 2, 1, 3, 4)}
+  let m2={pick(p, 4, 4, 4, 2)}
+  let m3={pick(p, 3, 3, 3, 3)}
+  let n0={pick(m0, "none", "magnesium", "zinc", "iron", "copper")}
+  let n1={pick(m1, "none", "magnesium", "zinc", "iron", "copper")}
+  let n2={pick(m2, "none", "magnesium", "zinc", "iron", "copper")}
+  let cu={if p == 3 then "B" else "C"}
+  let n3={pick(m3, "none", "magnesium", "zinc", "iron", "copper")}
+
+  scene 33x20 {
+    row kit at=canvas(1, 0) space=2 align=start {
+      testtubes t fills=[0.5, 0.5, 0.5, 0.5] paints=["", "", "", ""] fizz=[0, 0, 0, 0] bungs=0 letters=1 metals=[m0, m1, m2, m3] acid=1
+      table key cols=2 head=["Tube", "Strip"] cells=["A", n0, "B", n1, "C", n2, "D", n3]
+    }
+    text ask "At the mill by the waterfall, a grown-up has poured dilute acid over four strips of metal. Which tube's strip is giving off gas fastest?" narrate width=32 below=kit gap=1
+    choice pick options=["A", "B", "C", "D"] stack=row below=ask gap=1
+  }
+
+  check chem.change of=t pick=fizziest
+  feedback {
+    when (pick == cu) point=key {
+      say "That strip is copper, which gives off no gas in dilute acid. Look for the strip with the most bubbles."
+    }
+  }
+  hint "Count the bubbles rising from each strip."
+  hint "Which strip has the most?"
+}

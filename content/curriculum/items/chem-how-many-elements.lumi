@@ -1,0 +1,33 @@
+# Substances against elements: a box of water holds one substance but two elements, since each
+# molecule has hydrogen and oxygen atoms. The checker counts kinds of atom from MOLECULES.
+item chem.how-many-elements v=1 skills=[chemistry.elements, chemistry.atoms] {
+  title "How many elements?"
+  difficulty (el + (if el != subs then 1 else 0))
+  let k=0..7
+  let a={pick(k, "hydrogen", "nitrogen", "water", "water", "methane", "carbon-dioxide", "carbon-dioxide", "methane")}
+  let b={pick(k, "none", "oxygen", "none", "oxygen", "none", "nitrogen", "water", "oxygen")}
+  let el={pick(k, 1, 2, 2, 2, 2, 3, 3, 3)}
+  let subs={pick(k, 1, 2, 1, 2, 1, 2, 2, 2)}
+  level easy {
+    let k={0, 1, 2, 4}
+  }
+  level hard {
+    let k={3, 5, 6, 7}
+  }
+
+  scene 36x10 {
+    atombox box a=a na=3 b=b nb=(if b == "none" then 0 else 2) at=canvas(1, 0)
+    text ask "A gas from the observatory's store, drawn as its molecules. Each letter is a kind of atom. How many different elements are in the box?" narrate width=23 right-of=box gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer el
+  check chem.atoms of=box answer=elements
+  feedback {
+    when (answer == subs and subs != el) point=box {
+      say "That counts the kinds of molecule. An element is one kind of atom, so count the different letters."
+    }
+  }
+  hint "Look at the letters on the atoms. How many different letters are there?"
+  hint "Two molecules that look different can still share a kind of atom. Did you count a letter twice?"
+}

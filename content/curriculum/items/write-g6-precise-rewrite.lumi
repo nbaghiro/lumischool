@@ -1,0 +1,29 @@
+# A vague sentence from Kit's first draft rewritten with an exact verb, the thing's own noun and one
+# adjective in place of very and the word after it, marked by a grown-up against the pictures.
+item writing.precise-rewrite v=1 skills=[writing.vocabulary, writing.word-choice, writing.revising] {
+  title "Rewrite it exactly"
+  difficulty k
+  let k=0..2
+  let s={pick(k, "The thing went up and made a very big noise.", "Kit went across the ground to the big hole, which was very dark.", "We got into the machine with legs and it was very cold inside.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x33 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      rocket rk flame=2
+      lander lnd rungs=5
+      crater cr count=1
+    }
+    passage p title="Kit's first draft" text="{s}" width=33 numbers=false below=pics gap=1
+    text ask "Rewrite the sentence so a reader sees it exactly: an exact verb in place of went or got, the thing's own noun, and one adjective in place of very and the word after it." narrate width=33 below=p gap=1
+    writinglines lines lines=2 width=33 prompt="" below=ask gap=1
+  }
+
+  check writing.by-eye look-for="One sentence that keeps the draft's meaning and makes three changes: an exact verb for how it moved (roared, blasted off or soared for the rocket; trudged, crept or bounded for Kit; climbed or clambered for getting in), the thing's own noun from the pictures (the rocket, the crater, the lander), and one adjective in place of very and the word after it (deafening or thunderous for very big, pitch-black or inky for very dark, freezing or icy for very cold); any verb that shows how is right, and the sentence need not be longer."
+  hint "Find the thing in the pictures. What is its own name?"
+  hint "Act out the verb. How exactly did it move?"
+}

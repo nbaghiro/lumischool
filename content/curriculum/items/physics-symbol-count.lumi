@@ -1,0 +1,25 @@
+# The way in: reading a circuit diagram, where a cell is a long and a short line and a bulb is a
+# circle with a cross in it.
+item physics.symbol-count v=1 skills=[physics.circuits, physics.symbols] {
+  title "Reading a circuit diagram"
+  difficulty (c + b)
+  let c=1..4 b=1..3
+  level easy {
+    where (c + b <= 4)
+  }
+  level hard {
+    where (c + b >= 5)
+  }
+
+  scene 36x21 {
+    series s cells=c bulbs=b closed=1 symbols=1 at=canvas(1, 0)
+    text ask "In a circuit diagram a cell is a long line beside a short one, and a bulb is a circle with a cross. How many cells are in this loop?" narrate width=12 right-of=s gap=1
+    number-input cells below=ask gap=1
+    text then "How many bulbs?" narrate width=12 below=cells gap=1
+    number-input bulbs below=then gap=1
+  }
+
+  answer cells=c bulbs=b
+  hint "Count the pairs of long and short lines along the bottom."
+  hint "Count the circles with a cross in them along the top."
+}

@@ -1,0 +1,23 @@
+# The way in, predict then check: two things let go together on the moon, where there is no air to
+# push back on either, so they land together whatever they are. v picks the pair.
+item physics.moondrop-predict v=1 skills=[physics.forces, physics.weight, reasoning.predict] {
+  title "Which lands first on the moon?"
+  let v=0..2
+  let a={pick(v, "hammer", "stone", "leaf")}
+  let b={pick(v, "feather", "parachute", "hammer")}
+
+  scene 25x29 {
+    falling f things=["{a}", "{b}"] time=0 show=0 names=1 air=0 at=canvas(1, 0)
+    text ask "On the moon an astronaut lets go of a {a} and a {b} at the same moment. Which lands first?" narrate width=10 right-of=f gap=1
+    choice pick options=["The {a}", "The {b}", "They land together"] stack=column below=f gap=1
+  }
+
+  answer pick="They land together"
+  feedback {
+    when (pick != "They land together") point=f {
+      say "On Earth the air pushes back hardest on light, wide things. Is there any air on the moon to push back?"
+    }
+  }
+  hint "What slows a feather or a leaf down when it falls on Earth?"
+  hint "Is there any of that on the moon?"
+}

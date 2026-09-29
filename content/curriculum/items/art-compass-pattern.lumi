@@ -1,0 +1,10 @@
+item art.compass-pattern v=1 stars=3 skills=[art.pattern, art.drawing, reasoning.plan] {
+  title "A pattern from one circle"
+
+  scene 37x17 {
+    text ask "Make a tile for the old city with a compass and a ruler. Draw a circle, step its six marks round it, and join them with arcs and lines. Colour it so it repeats all the way round." width=13 at=canvas(1, 1)
+    paintsheet sheet w=20 h=12 paper="squared" guide="none" outline="none" pots=["blue", "yellow", "red", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A geometric pattern built from one circle and the six marks the compass steps round it, with arcs and ruled lines that join those marks, coloured so that one part repeats evenly round the middle, as the tile makers of the old walled cities built their patterns." notice=["Built from one circle and its six marks", "Arcs and ruled lines that meet at the marks", "Colour that repeats round the middle", "Construction lines left showing"] ask="Which marks did you start from, and how did you decide what to colour?"
+}

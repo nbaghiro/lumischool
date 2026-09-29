@@ -1,0 +1,28 @@
+# The bar model: one person has so many times another's money, and after spending they are equal.
+# The bars show the difference is some equal parts, which gives one part.
+item puzzle.market-bars v=1 stars=2 skills=[reasoning.model, ratio.parts] {
+  title "Equal after spending"
+  difficulty (k + u / 10)
+  let k={2, 3, 4} u={6, 8, 12, 15}
+  level easy {
+    let k={2} u={6, 8}
+  }
+  level hard {
+    let k={4} u={12, 15}
+  }
+
+  scene 35x14 {
+    ratio bars parts=[k, 1] labels=["Ana", "Ben"] unit=0 total=false at=canvas(1, 1)
+    text ask "At the city market, Ana has {k} times as much money as Ben. Ana spends {(k - 1) * u} dollars on a lamp, and now they have the same. How many dollars does Ben have?" narrate width=16 right-of=bars gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer u
+  feedback {
+    when (k > 2 and answer == (k - 1) * u) point=bars {
+      say "That is what Ana spent. It is the part of Ana's bar that is longer than Ben's."
+    }
+  }
+  hint "Draw Ben's money as one bar and Ana's as {k} of the same bars."
+  hint "Which bars did Ana spend? How much is one bar?"
+}

@@ -1,0 +1,25 @@
+# Two stars: a picture of a loop beside a diagram that may differ by one part, and what the
+# difference is. d=0 they match; d=1 the diagram has one more cell; d=2 its switch is open; d=3 it
+# has one more bulb.
+item physics.symbol-match v=1 stars=2 skills=[physics.circuits, physics.symbols, reasoning.find-the-mistake] {
+  title "Does the diagram match?"
+  let d=0..3 c=1..2
+
+  scene 34x34 {
+    row two at=canvas(1, 0) space=1 align=start {
+      series p cells=c bulbs=1 closed=1 show=1
+      series s cells=(if d == 1 then c + 1 else c) bulbs=(if d == 3 then 2 else 1) closed=(if d == 2 then 0 else 1) symbols=1
+    }
+    text ask "Kai drew a circuit diagram of the loop on the left. Does it match?" narrate width=30 below=two gap=1
+    choice pick options=["Yes, it matches", "No, it has a cell too many", "No, its switch is open", "No, it has a bulb too many"] stack=column below=ask gap=1
+  }
+
+  answer pick=pick(d, "Yes, it matches", "No, it has a cell too many", "No, its switch is open", "No, it has a bulb too many")
+  feedback {
+    when (pick == "Yes, it matches" and d != 0) point=s {
+      say "Count each kind of part in both: the cells, the bulbs, and whether the switch is closed."
+    }
+  }
+  hint "Count the cells and the bulbs in the picture, and look at its switch."
+  hint "Now do the same in the diagram. Is any of it different?"
+}

@@ -1,0 +1,34 @@
+# Two-star: the block adds 1 to its first input before using it, so the call that draws the pale
+# frame is not the frame's own size; the order of the inputs is the other trap.
+item coding.inputs-frame v=1 stars=2 skills=[coding.procedures, coding.drawing, reasoning.work-backwards] {
+  title "Which call draws the frame?"
+  difficulty (v + k * 0.3)
+  let v=0..2 k=0..2
+  let w={pick(v, 4, 5, 5)} h={pick(v, 2, 3, 2)}
+  let good={pick(v, "frame 3 2", "frame 4 3", "frame 4 2")} whole={pick(v, "frame 4 2", "frame 5 3", "frame 5 2")} swap={pick(v, "frame 2 3", "frame 3 4", "frame 2 4")}
+  level easy {
+    let v={0}
+  }
+  level hard {
+    let v=1..2
+  }
+
+  scene 36x28 {
+    turtle t cols=(w + 2) rows=(h + 2) col=2 row=(h + 2) face=right moves=[] target=["repeat 2", "  forward {w}", "  turn left", "  forward {h}", "  turn left"] at=canvas(0, 0)
+    text ask "Which call draws the pale frame, starting on the ring and facing right?" width=15 at=canvas(21, 0)
+    choice pick options=[pick(k, good, whole, swap), pick(k, whole, swap, good), pick(k, swap, good, whole)] stack=column below=ask gap=1
+    program p code=["define frame across high", "  repeat 2", "    forward across + 1", "    turn left", "    forward high", "    turn left"] below=t gap=1
+  }
+
+  answer pick=good
+  feedback {
+    when (pick == whole) point=p {
+      say "The block goes forward across + 1, so this call makes the bottom one square too long."
+    }
+    when (pick == swap) point=p {
+      say "The first number after frame is across, which the turtle draws first, along the bottom."
+    }
+  }
+  hint "How long is the bottom of the frame? Which input makes it, and what does the block add to it?"
+  hint "Which input comes first after frame?"
+}

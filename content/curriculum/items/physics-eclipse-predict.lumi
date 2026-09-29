@@ -1,0 +1,32 @@
+# Predict, then check: the same line-up with the shadows left out. A shadow lands only when the moon is
+# on the line, so above or below it there is no eclipse. m is the moon's place and o its offset.
+item physics.eclipse-predict v=1 skills=[physics.sky, reasoning.predict] {
+  title "Will there be an eclipse?"
+  difficulty (if o == 0 then 0 else 1)
+  let m=0..1 o=-1..1
+  level easy {
+    let o=0..0
+  }
+  level hard {
+    let o={-1, 1}
+  }
+  let where={pick(m, "between the sun and the Earth", "behind the Earth")}
+
+  scene 32x23 {
+    eclipse e moon=m offset=o show=0 names=1 at=canvas(1, 0)
+    text ask "The moon is {where}. The shadows are not drawn yet. What will this line-up make?" narrate width=18 below=e gap=1
+    choice pick options=["Solar eclipse", "Lunar eclipse", "No eclipse"] stack=column right-of=ask gap=1
+  }
+
+  check physics.sky of=e pick=eclipse
+  feedback {
+    when (pick != "No eclipse" and o != 0) point=e {
+      say "Look at the dashed line through the sun and the Earth. Is the moon on it?"
+    }
+    when (pick == "No eclipse" and o == 0) point=e {
+      say "The moon is right on the line, so a shadow does land. Whose shadow falls on whom?"
+    }
+  }
+  hint "Is the moon on the dashed line, above it or below it?"
+  hint "If it is on the line, which way does the shadow fall?"
+}

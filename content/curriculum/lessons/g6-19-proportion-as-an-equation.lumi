@@ -1,0 +1,62 @@
+lesson g6-proportion-as-an-equation v=1 format=worked grade=6 unit=6 subject=maths levels=[easy, medium, hard] {
+  title "Proportion as an equation"
+  goal "Write two equal ratios as a proportion and find its missing term from the products of the outer and inner terms."
+
+  example {
+    worked proportion.missing-term t=0 m=2 n=3 pos=3 level=medium
+    say """
+      Two equal ratios make a proportion: 4 : 6 = 6 : x. The terms at the ends, 4 and x, are the
+      outer terms, and 6 and 6 are the inner terms. In a true proportion the outer terms multiply to
+      the same number as the inner terms, so 4 × x = 6 × 6 = 36, and x = 36 ÷ 4 = 9. Check it: 4 : 6
+      and 6 : 9 both have the ratio value 2/3. At the mill the grain and the flour stay in one
+      ratio, so any question about them can be written this way.
+      """
+  }
+  exercises {
+    show proportion.missing-term t=1 m=1 n=3 pos=3 easy-t=0 easy-m=1 easy-n=4 easy-pos=3 hard-t=3 hard-m=2 hard-n=5 hard-pos=0
+    show proportion.true-or-not t=2 easy-t=0 hard-t=5
+    show proportion.mill-flour s=1 q=0 easy-s=0 easy-q=0 hard-s=3 hard-q=0
+    level easy {
+      worked proportion.missing-term t=4 m=1 n=3 pos=2 level=medium
+    }
+    show proportion.missing-term t=2 m=2 n=5 pos=1 easy-t=3 easy-m=1 easy-n=2 easy-pos=2 hard-t=4 hard-m=3 hard-n=4 hard-pos=1
+    show proportion.which-equation s=1 o=1 easy-s=0 easy-o=0 hard-s=3 hard-o=2
+    show proportion.true-or-not t=3 easy-t=1 hard-t=4
+    show proportion.plan-wheel s=2 easy-s=0 hard-s=3
+    show proportion.decimal-term s=2 easy-s=0 hard-s=4
+    level hard {
+      show proportion.mill-flour s=4 q=1
+    }
+  }
+  try stars=2 {
+    show proportion.add-mistake s=1 easy-s=0 hard-s=3
+  }
+  try stars=3 {
+    show proportion.same-number s=2 easy-s=0 hard-s=5
+  }
+  remember {
+    say "In a proportion a : b = c : d, the outer terms multiply to the same as the inner terms: a × d = b × c."
+  }
+
+  grown-ups """
+    The idea is one rule: two ratios are equal exactly when the outer terms multiply to the same
+    number as the inner terms. It finds a missing term wherever it sits, including when no whole
+    number of times takes one ratio to the other, which is where the tables of the ratio lesson
+    stop. The common slip is to keep the difference instead of the ratio (4 : 6 = 10 : 12), so ask
+    for the check by products after every answer. In the setting-up question each ratio has to be
+    read the same way round, grain to flour on both sides; a flour answer bigger than the grain is
+    the sign it was turned. In the two-star question Ella's answer fails the check, and the product
+    rule gives the right one. In the three-star question the same number is both inner terms, so
+    it times itself makes the product of the outer ones. If the outer and inner terms still get
+    mixed, stay here another day and circle them in two colours. Off the page, take a recipe for
+    four and write the proportion that scales it for six. This lesson meets Russia's grade 6
+    programme, «Отношение. Деление в данном отношении. Масштаб, пропорция. Применение пропорций при
+    решении задач.»
+    """
+  level easy {
+    grown-ups "At this level a second proportion is worked in the teacher's pen, the missing term is the third or fourth and one ratio is a whole number of times the other, the proportions to test are the plainest, the grain scales by three, the plan scale is 2 cm to 5 m, the decimal term is 1.5, Ella's mistake is with 4 : 6, and the same number twice is 4."
+  }
+  level hard {
+    grown-ups "At this level the missing term is the first or second and no whole number takes one ratio to the other, the flour comes out as a half and a second grain question runs backwards, the proportions to test are close, the plan scale is 4 cm to 10 m, the decimal term is 0.6 : 1.5, Ella works with 9 : 15, and the same number twice is 12."
+  }
+}

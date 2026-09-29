@@ -1,0 +1,36 @@
+# A reason in the core: returning to A is not enough for a rondo. A B A is ternary, with one new tune;
+# A B C A has two new tunes with no return between them; A B A C A D A is still a rondo, however long.
+item music.form-ternary v=1 skills=[music.form, reasoning.claims] {
+  title "Is every return a rondo?"
+  difficulty k
+  let k=0..2 r=0..2
+  let plan={pick(k, "A B A", "A B C A", "A B A C A D A")}
+  let claim={pick(k, "Ben says it is a rondo, because A comes back at the end.", "Ben says it is a rondo, because it has two new tunes and ends on A.", "Ben says it cannot be a rondo, because a rondo has only five sections.")}
+  let right={pick(k, "No: one new tune only, so it is ternary, A B A", "No: A does not come back between B and C", "No: A returns between all its new tunes")}
+  let w1={pick(k, "Yes: any piece where A comes back is a rondo", "Yes: it has new tunes and it ends on A", "Yes: a rondo is always A B A C A")}
+  let w2={pick(k, "Yes: A B A is the shortest rondo", "No: it is ternary form, A B A", "Yes: a rondo never has a D section")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 36x28 {
+    citywalls walls towers=3 open=1 at=canvas(1, 1)
+    text ask "At the city gate the street band plays a piece whose plan is {plan}. {claim} Is that right, and why?" narrate width=34 below=walls gap=1
+    choice pick options=[pick(r, right, w1, w2), pick(r, w1, w2, right), pick(r, w2, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == w1) point=ask {
+      say "A rondo needs A to come back between new tunes, each one different. Read the letters between the A sections."
+    }
+    when (pick == w2) point=ask {
+      say "Write the plan out and look at every letter that is not A. How many different ones are there?"
+    }
+  }
+  hint "Which letters come between the A sections?"
+  hint "Does A come back after every new tune? How many new tunes are there?"
+}

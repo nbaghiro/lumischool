@@ -1,0 +1,30 @@
+# Who sees an eclipse: the Earth's shadow darkens the moon itself, so everyone whose sky has the moon
+# in it sees a lunar eclipse, while the moon's small shadow covers only a patch of the Earth.
+item physics.eclipse-who-sees v=1 skills=[physics.sky, reasoning.explain] {
+  title "Who sees it?"
+  difficulty m
+  let m=0..1
+  level easy {
+    let m=0..0
+  }
+  level hard {
+    let m=1..1
+  }
+  let kind={pick(m, "an eclipse of the moon", "an eclipse of the sun")}
+  let ans={pick(m, "Everyone on the night side", "Only people in a small patch of the day side")}
+
+  scene 32x28 {
+    eclipse e moon=(1 - m) offset=0 show=1 names=1 at=canvas(1, 0)
+    text ask "This is {kind}. Who on the Earth can see it?" narrate width=22 below=e gap=1
+    choice pick options=["Everyone on the night side", "Only people in a small patch of the day side", "Everyone on the whole Earth"] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == "Everyone on the whole Earth") point=e {
+      say "Half the Earth faces away from the moon at any time. Can people there see it at all?"
+    }
+  }
+  hint "Where does the shadow fall: on the moon itself, or on part of the Earth?"
+  hint "Who can see the moon at the time: the day side or the night side?"
+}

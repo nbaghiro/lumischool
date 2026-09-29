@@ -1,0 +1,39 @@
+# The way in: the twelve-bar blues chart in numerals, counted. Chord I has eight bars, IV three and
+# V one, which is the fact the two-star claim turns on.
+item music.blues-count-bars v=1 skills=[music.blues, music.chords] {
+  title "Bars of each chord"
+  difficulty q
+  let q=0..2
+  let ask={pick(q, "How many bars of chord IV are there?", "How many bars of chord I are there?", "How many bars are not chord I?")}
+  let right={pick(q, 3, 8, 4)}
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x29 {
+    table chart cols=5 head=["Bars", "1st", "2nd", "3rd", "4th"] cells=["1 to 4", "I", "I", "I", "I", "5 to 8", "IV", "IV", "I", "I", "9 to 12", "V", "IV", "I", "I"] at=canvas(1, 1)
+    row low space=2 align=start below=chart gap=1 {
+      text ask "The twelve-bar blues, as the gorge band's chart writes it, three lines of four bars. {ask}" narrate width=20
+      waterfall falls drops=2 rainbow=1
+    }
+    number-input answer below=low gap=1
+  }
+
+  answer right
+  feedback {
+    when (q == 0 and answer == 2) point=chart {
+      say "Look at line 3 as well as line 2. Chord IV comes back in bar 10."
+    }
+    when (q == 1 and answer != 8) point=chart {
+      say "Count chord I in every line: the whole of line 1, and the last two bars of lines 2 and 3."
+    }
+    when (q == 2 and answer != 4) point=chart {
+      say "Count the bars of IV and of V, in every line."
+    }
+  }
+  hint "Read the chart one line at a time, left to right."
+  hint "Put a finger on each bar and count the ones you want."
+}

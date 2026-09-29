@@ -1,0 +1,40 @@
+# The reason behind a group: an animal that looks or lives like one group belongs to another, and the
+# feature that decides it is the one no member of the other group has. The bat against the bird is in
+# nature-29, so these are the whale, the penguin and the newt.
+item nature.group-why v=1 skills=[nature.sorting, reasoning.explain] {
+  title "It looks like one, but it is another"
+  difficulty k
+  let k=0..2
+  let asks={pick(k, "A whale lives in the sea and swims like a fish. Which feature puts it with the mammals instead?", "A penguin cannot fly. Which feature still puts it with the birds?", "A newt has four legs and a long tail, like a lizard. Which feature puts it with the amphibians instead?")}
+  let ans={pick(k, "It breathes air and feeds its young on milk", "It has feathers and lays hard-shelled eggs", "It has moist skin and lays its eggs in water")}
+  let o1={pick(k, "It is bigger than any fish", "It has a beak and two legs", "It lives near water")}
+  let o2={pick(k, "It has a backbone", "It swims well in cold water", "It eats insects and worms")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x25 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      whale w spout=1 facing=1
+      fish f size=3 facing=-1
+      frog fr pose=sit facing=-1
+    }
+    text ask "{asks}" narrate width=32 below=pics gap=1
+    choice pick options=[o1, ans, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=ans
+  feedback {
+    when (pick == o1) point=ask {
+      say "Is that true of every animal in the group, and of no animal outside it?"
+    }
+    when (pick == o2) point=ask {
+      say "Animals in other groups have that too. Which feature does only this group have?"
+    }
+  }
+  hint "Try the feature on another member of each group. Do they all have it?"
+  hint "The deciding feature is one that no animal in the other group has."
+}

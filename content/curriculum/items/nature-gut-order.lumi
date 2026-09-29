@@ -1,0 +1,26 @@
+# The way food goes after the mouth, as five muddled cards to number, ending at the rectum. Each
+# shuffle puts a different card first, and none is in order already.
+item nature.gut-order v=1 skills=[nature.digestion, reasoning.order] {
+  title "The way food goes"
+  let p=0..3
+  let a={pick(p, 2, 4, 1, 3)}
+  let b={pick(p, 4, 0, 3, 1)}
+  let c={pick(p, 0, 3, 4, 2)}
+  let d={pick(p, 3, 1, 0, 4)}
+  let e={pick(p, 1, 2, 2, 0)}
+  let wa={pick(a, "the oesophagus", "the stomach", "the small intestine", "the large intestine", "the rectum")}
+  let wb={pick(b, "the oesophagus", "the stomach", "the small intestine", "the large intestine", "the rectum")}
+  let wc={pick(c, "the oesophagus", "the stomach", "the small intestine", "the large intestine", "the rectum")}
+  let wd={pick(d, "the oesophagus", "the stomach", "the small intestine", "the large intestine", "the rectum")}
+  let we={pick(e, "the oesophagus", "the stomach", "the small intestine", "the large intestine", "the rectum")}
+
+  scene 34x32 {
+    parts fig of=gut at=canvas(1, 1)
+    text ask "Ben writes the places his lunch goes after his mouth on five cards, and they get muddled. Number them 1 to 5 in the order the food passes through them." narrate width=20 right-of=fig gap=2
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}", "{we}"] blanks=[q, r, t, u, v] below=fig gap=1
+  }
+
+  answer q=(a + 1) r=(b + 1) t=(c + 1) u=(d + 1) v=(e + 1)
+  hint "Which card is the tube that leaves the mouth?"
+  hint "Where does food pass into the blood, where is water taken back, and where does what is left wait before it leaves?"
+}

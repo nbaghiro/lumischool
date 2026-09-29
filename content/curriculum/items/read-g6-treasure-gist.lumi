@@ -1,0 +1,30 @@
+# A sitting summed up in one sentence. One wrong sentence is true but only covers one moment, and
+# the other belongs to another part of the book, so the child needs the whole sitting in mind.
+item reading.treasure-gist v=1 skills=[reading.summary, reading.whole-book] {
+  title "Sum it up"
+  difficulty pick(k, 0, 1, 0, 1, 1)
+  let k=0..4
+  let right={pick(k, "B", "A", "B", "B", "A")}
+
+  scene 36x34 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=centre {
+        dig d
+        text ask "{pick(k, \"Which sentence sums up chapters 4 to 7 best?\", \"Which sentence sums up chapters 16 to 19 best?\", \"Which sentence sums up chapters 20 to 23 best?\", \"Which sentence sums up chapters 24 to 26 best?\", \"Which sentence sums up chapters 31 to 34 best?\")}" width=26
+      }
+      passage a title="A" text="{pick(k, \"A blind man is run down by horses on the road outside the inn.\", \"The doctor's party leaves the ship for Flint's old stockade, and Jim, coming back with Ben Gunn, finds them there.\", \"Silver comes with a white flag and asks for the map.\", \"Jim pulls down the pirates' flag and throws it into the sea.\", \"The pirates follow the map to an empty pit, because Ben Gunn has already moved the treasure, and the ship sails home with it.\")}" width=34 numbers=false
+      passage b title="B" text="{pick(k, \"Jim and his mother save the captain's papers from the pirates, and the map inside sends the squire to find a ship and a crew.\", \"The little boat sinks as they row it ashore.\", \"Silver's offer is turned down, the pirates attack the stockade and are beaten off, and Jim slips away and cuts the ship adrift.\", \"Jim gets aboard the drifting ship, wins it from Israel Hands and hides it where the pirates cannot find it.\", \"A voice in the trees frightens the pirates.\")}" width=34 numbers=false
+      passage c title="C" text="{pick(k, \"Jim hides in a barrel and hears the crew plan to take the ship.\", \"Jim cuts the ship loose and drifts out to sea in a tiny boat.\", \"Jim is caught by the pirates and made to lead them to the treasure.\", \"Jim finds the stockade and the doctor's party inside it.\", \"Silver comes with a white flag to bargain for the map.\")}" width=34 numbers=false
+      choice pick options=["A", "B", "C"] stack=row
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=d {
+      say "That did happen in the book. Is it the whole of these chapters, and is it in these chapters at all?"
+    }
+  }
+  hint "Say to yourself what happened at the start of these chapters and at the end."
+  hint "Which sentence reaches from the start to the end, and happens only in these chapters?"
+}

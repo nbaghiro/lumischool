@@ -1,0 +1,28 @@
+# The way in: a dot plot of raw widths read into one class of a grouping, with both edges of the class
+# counted in it.
+item data.crater-dot-class v=1 skills=[data.frequency] {
+  title "Craters in a class"
+  difficulty (q + v / 2)
+  let v=0..1 q=0..2
+  level easy {
+    let q={0}
+  }
+  level hard {
+    let q={1} v={1}
+  }
+
+  scene 36x22 {
+    dotplot plot from=1 to=14 counts=[pick(v, 1, 0), pick(v, 2, 1), pick(v, 3, 2), pick(v, 2, 3), pick(v, 1, 2), pick(v, 4, 2), pick(v, 3, 1), pick(v, 2, 3), pick(v, 1, 4), pick(v, 0, 2), pick(v, 2, 1), pick(v, 1, 0), pick(v, 1, 1), pick(v, 0, 1)] label=metres at=canvas(1, 1)
+    text ask "Each dot is one crater near the lander, over its width in metres. The crew group the widths in classes 0-4, 5-9 and 10-14. How many craters are in the class {pick(q, \"0-4\", \"5-9\", \"10-14\")}?" narrate width=34 below=plot gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer pick(v * 3 + q, 8, 11, 4, 6, 12, 5)
+  feedback {
+    when (answer == pick(v * 3 + q, 6, 9, 4, 3, 6, 2) and answer != pick(v * 3 + q, 8, 11, 4, 6, 12, 5)) point=plot {
+      say "A crater exactly on the edge of the class, {pick(q, \"4 m\", \"5 m or 9 m\", \"10 m or 14 m\")} wide, belongs to it too."
+    }
+  }
+  hint "Which widths along the bottom belong to that class?"
+  hint "Count the dots above each of those widths and add them."
+}

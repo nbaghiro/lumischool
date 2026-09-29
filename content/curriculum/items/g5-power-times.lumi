@@ -1,0 +1,34 @@
+# Multiplying by ten, a hundred or a thousand moves every digit left; plain() drops the places the
+# length was written with, so 0.125 × 1000 reads as 125.
+item decimal.power-times v=1 skills=[decimals.by-ten, measure.metric] {
+  title "Ropes end to end"
+  difficulty ((if many == 10 then 0 else if many == 100 then 1 else 2) + (if p < 1 then 1 else 0))
+  let p={0.125, 0.35, 1.6, 2.45, 3.075} many={10, 100, 1000}
+  level easy {
+    let p={1.6, 2.45} many={10, 100}
+  }
+  level hard {
+    let p={0.125, 3.075} many={1000}
+  }
+
+  scene 30x14 {
+    narrowboat boat windows=4 pots=2 at=canvas(1, 1)
+    text ask "A mooring rope on the narrowboat is {p} metres long. How many metres do {many} of these ropes make, laid end to end?" narrate width=28 below=boat gap=1
+    row eq below=ask gap=1 space=1 align=centre {
+      equation sum "{p} × {many} ="
+      number-input total width=6
+    }
+  }
+
+  answer total=decimals(p * many, 0)
+  feedback {
+    when (total == p) point=eq {
+      say "Multiplying by {many} makes the length bigger, so every digit moves to the left."
+    }
+    when (total == p * many / 10) point=eq {
+      say "Count the zeros in {many}. Each one moves the digits one more place."
+    }
+  }
+  hint "How many zeros does {many} have?"
+  hint "Move every digit that many places to the left. Fill any empty places with zeros."
+}

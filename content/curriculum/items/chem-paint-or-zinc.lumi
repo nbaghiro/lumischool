@@ -1,0 +1,32 @@
+# The three-star: two plans for the lock's iron over 30 years, from the lock keeper's price notes.
+# Paint is put on at the start and again each time it wears out; galvanising is paid once and lasts
+# more than 30 years. The answer is how many dollars the cheaper plan saves.
+item chem.paint-or-zinc v=1 stars=3 skills=[chemistry.rusting, reasoning.planning] {
+  title "The cheaper plan"
+  difficulty (30 / y)
+  let p={20, 30} y={5, 6, 10} z={90, 120, 150}
+  let paint={p * 30 / y}
+  where (paint != z)
+  level easy {
+    let y={10}
+  }
+  level hard {
+    let y={5}
+  }
+
+  scene 35x19 {
+    canallock lock level=1 boat=0 at=canvas(1, 0)
+    text ask "The iron on the new lock gate must be kept from rusting for 30 years. Painting costs ${p} a coat, and a coat lasts {y} years, so it is repainted each time it wears out. Coating it in zinc costs ${z} once and lasts more than 30 years. How many dollars does the cheaper plan save?" narrate width=34 below=lock gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if paint > z then paint - z else z - paint)
+  feedback {
+    when (answer == (if p > z then p - z else z - p) and answer != (if paint > z then paint - z else z - paint)) point=lock {
+      say "One coat of paint lasts only {y} years. How many coats does it take to cover 30 years?"
+    }
+  }
+  hint "How many coats of paint does it take, one after another, to cover the whole time?"
+  hint "What do all those coats cost together? Which plan costs less?"
+  hint "How far apart are the two totals?"
+}

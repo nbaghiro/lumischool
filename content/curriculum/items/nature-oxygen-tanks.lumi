@@ -1,0 +1,46 @@
+# The story: oxygen for the crew, at about 0.8 kg a person a day. Easy and medium find the oxygen
+# for a stay; hard gives the tank and the crew and asks how many days it lasts.
+item nature.oxygen-tanks v=1 skills=[nature.ecosystems, decimals.multiply] {
+  title "Oxygen for the crew"
+  difficulty k
+  let k=0..2
+  let told={pick(k, "How many kilograms of oxygen do 2 of them need for 5 days?", "How many kilograms of oxygen do 3 of them need for 10 days?", "A full tank holds 32 kg of oxygen. For how many days will it keep 4 of them breathing?")}
+  let unit={pick(k, "kg", "kg", "days")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x21 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      rocket rk flame=0
+      lander ld rungs=5
+      crater cr count=1
+    }
+    text ask "There is no air on the moon, so the crew bring their oxygen with them. Each person breathes about 0.8 kg of oxygen a day. {told}" narrate width=32 below=pics gap=1
+    row r below=ask gap=1 space=1 align=centre {
+      number-input answer width=3
+      text u "{unit}"
+    }
+  }
+
+  answer pick(k, 8, 24, 10)
+  feedback {
+    when (k == 0 and answer == 4) point=ask {
+      say "That is enough for one person for 5 days. There are 2 of them."
+    }
+    when (k == 1 and answer == 8) point=ask {
+      say "That is enough for one person for 10 days. There are 3 of them."
+    }
+    when (k == 2 and answer == 40) point=ask {
+      say "That is how long it would last one person. With 4 breathing, it runs out sooner."
+    }
+  }
+  hint "How much do all of them breathe in one day together?"
+  hint "Then multiply by the number of days."
+  level hard {
+    hint "Work out one day's oxygen for all 4 first. How many of those fit into 32 kg?"
+  }
+}

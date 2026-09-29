@@ -1,0 +1,65 @@
+# Two-point perspective at the moon base: a box seen corner-on, its near edge first, each side ruled
+# to its own point on the horizon, and the top shown only below the eye.
+lesson art-two-point-perspective v=1 format=teach grade=6 unit=7 subject=art levels=[easy, medium, hard] {
+  title "Two-point perspective"
+  goal "Draw a box seen corner-on in two-point perspective, with its near edge upright and each side ruled to its own point on the horizon."
+
+  look {
+    scene 26x12 {
+      row all at=canvas(1, 1) space=1 align=end {
+        twopoint crate horizon=2 left=1 right=15 corner=8 stage=3 door=true guide=true ring=true
+        lander craft rungs=5
+      }
+    }
+    say """
+      Down the canal, one set of edges ran away from Ada and met at one point. Turn a box so a
+      corner faces you and two sets of edges run away, one to the left and one to the right. Each
+      set meets at its own vanishing point, both on the horizon at eye level. The upright edges stay
+      upright, the nearest one is tallest, and the top shows only when it is below your eyes.
+      """
+  }
+  do {
+    practice art.two-which-dots count=1 seed=1
+    level easy {
+      worked art.two-next-step k=0 level=medium
+    }
+    practice art.two-wrong-edge count=1 seed=2
+    practice art.two-top-shows count=2 seed=1
+    practice art.two-slope count=2 seed=2
+    practice art.two-how-many count=1 hard-count=2 seed=1
+    practice art.two-next-step count=1 seed=3
+  }
+  try stars=2 {
+    show art.two-near-tallest r=1 easy-r=0 hard-r=2
+  }
+  try stars=3 {
+    show art.two-base
+  }
+  remember {
+    say "A box seen corner-on has two vanishing points on the horizon, and its upright edges stay upright."
+  }
+
+  grown-ups """
+    Two-point perspective follows the one-point perspective of the canal lesson in grade five, and
+    the questions are marked by the machine. The first finds the two points with a ruler. The core
+    spots an edge ruled to the wrong place, predicts from the horizon whether the top will show and
+    which way an edge slopes to its point, counts the points a picture needs, which includes boxes
+    that share points and boxes that do not, and puts the steps of the drawing in order.
+
+    Watch for a child who draws the top of every box, whatever the horizon; the top shows only when
+    it is below the eye, and looking at a real box on a low stool and then on a high shelf settles
+    it. If the edges wander, a long ruler and two dots made first at the ends of the horizon help
+    more than any explanation. The two-star question asks why the middle edge is tallest. The
+    drawing is the three-star question and is responded to rather than marked. Off the page, stand
+    at the corner of a building or a table and trace its edges in the air with a pencil.
+
+    Respond by laying a ruler along two edges of one side of a box and seeing where they meet:
+    "These two meet at your left point." Ask which box they imagined standing nearest to.
+    """
+  level easy {
+    grown-ups "At this level the left point is at A, the edge ruled wrong is a top edge, the horizon is well above or below the top, the slopes are for the top and bottom through the middle, the points counted are for one crate, the first step of the drawing is worked once in the teacher's pen, the two-star box is a crate, and the three-star is as written."
+  }
+  level hard {
+    grown-ups "At this level the left point is at B, the edge ruled wrong is a bottom edge, the horizon is close to the top, the slopes include an edge on the horizon, a second count is added with boxes turned different ways, the step asked includes finding the far corner of the top, the two-star box is a hut, and the three-star is as written."
+  }
+}
