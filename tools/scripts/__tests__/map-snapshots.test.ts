@@ -99,7 +99,7 @@ test("every snapshot is the map as it draws now, and stands where the map now dr
     assert.deepEqual(changed, [], `the map has changed since these snapshots were made; ${AGAIN}`);
 });
 
-test("every snapshot stands where the live map draws, on the page that opens on it, and looks like it", async (t) => {
+test("every snapshot shows where the page that opens on it puts it, with no live map behind it", async (t) => {
     if (why || !browser) {
         t.skip(why || "the map could not be drawn");
         return;
@@ -112,9 +112,5 @@ test("every snapshot stands where the live map draws, on the page that opens on 
             (r) =>
                 `${r.file} on ${r.path} at ${r.width}x${r.height} (mean difference ${r.mean.toFixed(2)}, ${(r.far * 100).toFixed(2)}% far apart)`,
         );
-    assert.deepEqual(
-        over,
-        [],
-        `a snapshot no longer matches the live map it stands in for; ${AGAIN}`,
-    );
+    assert.deepEqual(over, [], `a snapshot no longer shows where its page puts it; ${AGAIN}`);
 });

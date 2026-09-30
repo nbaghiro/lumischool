@@ -4,7 +4,7 @@
 // photographs each framing, and writes the WebP files and their framing (engine/ui/snapshots/country.ts
 // for the country with nobody on it, site.ts for the sample child's map).
 // tools/scripts/__tests__/map-snapshots.test.ts draws them again and fails when a picture has changed.
-// `--compare` builds the apps and measures each snapshot against the live map it stands in for.
+// `--compare` builds the apps and measures each snapshot where the page that opens on it puts it.
 
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { mkdtemp, rm } from "node:fs/promises";
@@ -221,8 +221,6 @@ import { declaredOf, loadDrawings } from "../../../engine/ui/drawings";
 import { fontsReady } from "../../../engine/ui/fonts";
 import { MapBackdrop } from "../../../engine/ui/backdrop";
 import { Overworld } from "../../../engine/ui/overworld";
-import { COUNTRY } from "../../../engine/ui/snapshots/country";
-import { SITE } from "../../../engine/ui/snapshots/site";
 import { aimedAt } from "../../../engine/space";
 import { refsOf, sizeOn } from "../../../school/worlds/art";
 import { apply } from "../../../school/worlds/choice";
@@ -237,8 +235,9 @@ await fontsReady(5000);
 // the sample child's journey, as the site's build writes it, from the file the tool put beside this page
 const journeyOf = async () => { const read = readSiteData(await (await fetch("/site-data.json")).json()); if (!read.ok) throw new Error(read.problem); return read.data.journey; };
 const worldOf = (id) => apply(worldById(id), undefined, still()).world;
-// what the map aims at, by the map's own reading of its layout, for the tool to record beside the picture
-if (host) render(() => createComponent(MapBackdrop, { class: "snap", aim, sample, stills: sample ? SITE : COUNTRY, ground: async () => { const drawings = await loadDrawings(refsOf(WORLDS.map((w) => w.id))); const size = sizeOn(drawings); const view = sample ? viewOfTrip(await journeyOf(), { worldOf, grown: true, still: still(), size, declared: declaredOf }) : countryViewOf({ size, still: still(), declared: declaredOf }); host.dataset.aimed = JSON.stringify(aimedAt(view.layout, view.here, aim)); return { view, map: Overworld }; } }), host);
+// what the map aims at, by the map's own reading of its layout, for the tool to record beside the picture;
+// given no stills, since a backdrop with one for the aim shows only that and never draws the map
+if (host) render(() => createComponent(MapBackdrop, { class: "snap", aim, sample, stills: [], ground: async () => { const drawings = await loadDrawings(refsOf(WORLDS.map((w) => w.id))); const size = sizeOn(drawings); const view = sample ? viewOfTrip(await journeyOf(), { worldOf, grown: true, still: still(), size, declared: declaredOf }) : countryViewOf({ size, still: still(), declared: declaredOf }); host.dataset.aimed = JSON.stringify(aimedAt(view.layout, view.here, aim)); return { view, map: Overworld }; } }), host);
 `,
     );
     const dist = join(dir, "dist");
@@ -517,7 +516,7 @@ ${mine.map(({ file, snapshot: s }) => `{ src: new URL(${JSON.stringify(`./${file
     }
 }
 
-/** How one snapshot compared with the live map on the page that opens on it. */
+/** How one snapshot compared with itself where the page that opens on it puts it. */
 export interface Compared {
     file: string;
     path: string;
@@ -529,7 +528,7 @@ export interface Compared {
 }
 
 /**
- * How far each snapshot is from the live map it stands in for, on the page that opens on it, within
+ * How far each snapshot is from itself where the page that opens on it puts it, within
  * COMPARE or not. `keep` is a folder to save the two pictures compared in.
  */
 export async function compareAll(browser: Browser, keep?: string): Promise<Compared[]> {
@@ -567,36 +566,29 @@ export async function compareAll(browser: Browser, keep?: string): Promise<Compa
                         : path,
                 );
                 const page = await context.newPage();
-                const snapshotOnly = c.width <= 700;
-                await page.addInitScript((snapshotOnly) => {
+                // a page shows its snapshot and draws no live map behind it (backdrop.tsx), so what is
+                // compared is the still where the page puts it; the harness compares it with the live map
+                await page.addInitScript(() => {
                     addEventListener("DOMContentLoaded", () => {
                         const style = document.createElement("style");
                         style.textContent =
-                            ".site-over,.site-cap,.site-bar,.page-main,.page-top,.page-foot,.m-life{visibility:hidden!important}" +
-                            (snapshotOnly ? "" : ".backdrop-still{display:none!important}");
+                            ".site-over,.site-cap,.site-bar,.page-main,.page-top,.page-foot,.m-life{visibility:hidden!important}";
                         document.head.append(style);
                     });
-                }, snapshotOnly);
+                });
                 await page.goto(`${origin}${c.path}`);
-                if (snapshotOnly) {
-                    await page.waitForFunction(
-                        (box) => {
-                            const image = document.querySelector<HTMLImageElement>(
-                                `${box} .backdrop-still`,
-                            );
-                            return image?.complete && image.naturalWidth > 0;
-                        },
-                        c.box,
-                        { timeout: 30_000 },
-                    );
-                    if (await page.locator(`${c.box} .backdrop-live`).count())
-                        throw new Error(`${f.file}: a mobile backdrop loaded the live map`);
-                } else {
-                    await page.waitForSelector(`${c.box}.drawn`, {
-                        state: "attached",
-                        timeout: 120_000,
-                    });
-                }
+                await page.waitForFunction(
+                    (box) => {
+                        const image = document.querySelector<HTMLImageElement>(
+                            `${box} .backdrop-still`,
+                        );
+                        return image?.complete && image.naturalWidth > 0;
+                    },
+                    c.box,
+                    { timeout: 30_000 },
+                );
+                if (await page.locator(`${c.box} .backdrop-live`).count())
+                    throw new Error(`${f.file}: ${c.path} loaded the live map behind its snapshot`);
                 await page.waitForTimeout(800);
                 const at = await page.evaluate(
                     ({ box, over }) => {
@@ -629,7 +621,7 @@ export async function compareAll(browser: Browser, keep?: string): Promise<Compa
                 const aim = phoneOpening
                     ? PHONE_OPENING
                     : { ...f.aim, at: f.ats[0], across: f.across };
-                // the live map opens at the growth the page shows the still at (backdrop.tsx)
+                // where the page puts the still and how much it grows it, by the arithmetic backdrop.tsx uses
                 const placed = stillFor([snapshot], aim, at.box, null, at.over)?.at;
                 if (!placed) {
                     throw new Error(`${f.file}: the snapshot does not stand in for ${aimKey(aim)}`);
@@ -642,13 +634,13 @@ export async function compareAll(browser: Browser, keep?: string): Promise<Compa
                         Math.min(at.box.top + at.box.height - at.fade, at.vh) -
                         Math.max(0, at.box.top),
                 };
-                const live = await page.screenshot({
+                const shown = await page.screenshot({
                     clip: { x: clip.left, y: clip.top, width: clip.width, height: clip.height },
                     animations: "disabled",
                 });
                 const still = readFileSync(join(OUT, `${fileOf(source)}.webp`)).toString("base64");
                 const diff = await page.evaluate(
-                    async ({ live, still, placed, clip, box, scale }) => {
+                    async ({ shown, still, placed, clip, box, scale }) => {
                         const load = async (src: string) => {
                             const img = new Image();
                             img.src = src;
@@ -668,7 +660,7 @@ export async function compareAll(browser: Browser, keep?: string): Promise<Compa
                             draw(g);
                             return g.getImageData(0, 0, w, h).data;
                         };
-                        const a = await load(`data:image/png;base64,${live}`);
+                        const a = await load(`data:image/png;base64,${shown}`);
                         const b = await load(`data:image/webp;base64,${still}`);
                         const pa = pixels((g) => g.drawImage(a, 0, 0, w, h));
                         const pb = pixels((g) =>
@@ -705,10 +697,10 @@ export async function compareAll(browser: Browser, keep?: string): Promise<Compa
                                 );
                             return canvas.toDataURL("image/png").split(",")[1] ?? "";
                         };
-                        return { mean: sum / n, far: far / n, live: png(pa), still: png(pb) };
+                        return { mean: sum / n, far: far / n, shown: png(pa), still: png(pb) };
                     },
                     {
-                        live: live.toString("base64"),
+                        shown: shown.toString("base64"),
                         still,
                         placed,
                         clip,
@@ -719,8 +711,8 @@ export async function compareAll(browser: Browser, keep?: string): Promise<Compa
                 if (keep) {
                     mkdirSync(keep, { recursive: true });
                     writeFileSync(
-                        join(keep, `${f.file}.live.png`),
-                        Buffer.from(diff.live, "base64"),
+                        join(keep, `${f.file}.shown.png`),
+                        Buffer.from(diff.shown, "base64"),
                     );
                     writeFileSync(
                         join(keep, `${f.file}.still.png`),
