@@ -27,9 +27,6 @@ lesson chemistry-gases-dissolved-in-water v=1 format=teach grade=5 unit=2 subjec
     }
     show chem.co2-table w=0 r=2 easy-r=0 hard-w=1 hard-r=0
     show chem.co2-table w=1 r=0 easy-w=0 easy-r=1 hard-r=1
-    level hard {
-      show chem.co2-table w=1 r=2
-    }
     show chem.five-dishes k=0 hard-k=2
     show chem.fish-need k=2 easy-k=0 hard-k=1
   }
