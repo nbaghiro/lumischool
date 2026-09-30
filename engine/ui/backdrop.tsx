@@ -1,10 +1,10 @@
 // The map behind a page: the sample child's on the site's opening, and the country with nobody on it
-// behind every other page. Until the live map is drawn the box shows the map's squared paper and, where
-// one was made, a snapshot of the map standing where the live map will draw (snapshot.ts). The live map
-// is Overworld (overworld.tsx) framed on the page's aim, drawn from the view the page gives once its box
-// comes near the window and the page has nothing else to do, and it fades in over the snapshot. The
-// snapshot is grown about the aim until it covers the box, so a wide, short window shows no bare edge.
-// On phones it remains the background, avoiding the full decorative SVG scene.
+// behind every other page. Where a snapshot of the map was made for the page's aim (snapshot.ts), the
+// snapshot is the map: a picture behind a page's cards needs nothing a live map adds, and drawing one
+// costs a scene of its own, which showed as it drew. Only an aim no snapshot was made for is drawn live,
+// by Overworld (overworld.tsx), from the view the page gives once its box comes near the window and
+// the page has nothing else to do. The snapshot is grown about the aim until it covers the box, so a
+// wide, short window shows no bare edge.
 
 import "./backdrop.css";
 import { createEffect, createSignal, on, onCleanup, onMount, Show, type JSX } from "solid-js";
@@ -79,7 +79,8 @@ export function MapBackdrop(props: {
     const sample = props.sample === true;
     let box: HTMLDivElement | undefined;
     let disposed = false;
-    let snapshotOnly = false;
+    /** Whether the box is near the window, which a live map is drawn only while it is. */
+    let nearNow = false;
     let announced = false;
     let generation = 0;
     const announce = (): void => {
@@ -150,8 +151,6 @@ export function MapBackdrop(props: {
         frame();
         wake();
         if (!box) return;
-        // Decorative maps keep their snapshot on phones to avoid a second, large SVG scene.
-        snapshotOnly = matchMedia("(max-width: 700px)").matches && picture() !== null;
         const watch = new ResizeObserver(() => {
             if (picture()) frame();
             wake();
@@ -160,10 +159,15 @@ export function MapBackdrop(props: {
         // the page's cards arriving or growing change the page's height before they move the framing
         watch.observe(document.body);
         onCleanup(() => watch.disconnect());
-        if (snapshotOnly) return;
         onCleanup(
             whileNear(box, (near) => {
                 const current = ++generation;
+                nearNow = near;
+                // a snapshot of the aim is the map, and is shown as the map
+                if (picture()) {
+                    announce();
+                    return;
+                }
                 if (!near) {
                     announce();
                     frame();
@@ -188,6 +192,16 @@ export function MapBackdrop(props: {
                 aim = next;
                 if (!drawn()) frame();
                 wake();
+                // an aim no snapshot was made for is drawn live
+                if (!picture() && nearNow && !live()) {
+                    const current = ++generation;
+                    void onDemand(props.ground)
+                        .then(async (ground) => {
+                            await idle();
+                            if (!disposed && generation === current) setLive(ground);
+                        })
+                        .catch(() => announce());
+                }
             },
             { defer: true },
         ),
@@ -207,7 +221,7 @@ export function MapBackdrop(props: {
                         src={p().src}
                         alt=""
                         onLoad={() => {
-                            if (snapshotOnly) announce();
+                            if (!live()) announce();
                         }}
                         style={{
                             left: `${p().at.left}px`,

@@ -22,6 +22,7 @@ import { MapBackdrop, OPENING, type Ground } from "../../engine/ui/backdrop";
 import { atFrom, hashOf, type OverlayAt } from "../../engine/ui/hash";
 import { PHONE_OPENING } from "../../engine/ui/snapshot";
 import { SITE } from "../../engine/ui/snapshots/site";
+import { PICTURES } from "./pictures";
 import { Mark } from "../../engine/ui/mark";
 import { matches, Near, scrolledPast, whileNear } from "../../engine/ui/viewport";
 import type { Sample } from "../../school/worlds/sample";
@@ -276,6 +277,8 @@ function Day(props: { sample: Sample | undefined }): JSX.Element {
 
 /** The stops of the first year and the whole run, beside the map that walks to whichever is in the middle. */
 /** The map's and the roll's components, loaded with their own code when their section comes near. */
+/** Whether the page draws its map pictures live, as tools/scripts/site-pictures.ts pictures them. */
+const LIVE = new URLSearchParams(location.search).has("livePictures");
 const Overworld = lazy(() =>
     import("../../engine/ui/overworld").then((m) => ({ default: m.Overworld })),
 );
@@ -508,7 +511,7 @@ const focusAt = (i: number, n: number): number | "all" => (i < n - 1 ? i : "all"
  * walks the guide along the road to the next world, or pulls back to every world, rather than drawing
  * another map. Drawn once its box comes near.
  */
-function JourneyMap(props: { focus: number | "all" }): JSX.Element {
+function LiveJourneyMap(props: { focus: number | "all" }): JSX.Element {
     const [host, setHost] = createSignal<HTMLDivElement>();
     const [near, setNear] = createSignal(false);
     const [view] = createResource(near, async (on) => {
@@ -537,12 +540,43 @@ function JourneyMap(props: { focus: number | "all" }): JSX.Element {
 }
 
 /**
+ * The map at each stop, as pictures of the live map (tools/scripts/site-pictures.ts) that cross from
+ * one to the next as the reader goes: a page of the site draws no map of its own, which a phone
+ * scrolling past kept failing under. The tool draws them with `?livePictures`, which shows the live map.
+ */
+function JourneyMap(props: { stop: number; focus: number | "all" }): JSX.Element {
+    if (LIVE) return <LiveJourneyMap focus={props.focus} />;
+    const narrow = matches("(max-width: 1080px)");
+    const shots = (): readonly string[] =>
+        narrow() ? PICTURES.journey.narrow : PICTURES.journey.wide;
+    return (
+        <div class="site-window paper">
+            <For each={shots()}>
+                {(src, i) => (
+                    <img
+                        class="site-still"
+                        classList={{ on: i() === Math.min(props.stop, shots().length - 1) }}
+                        src={src}
+                        alt=""
+                        aria-hidden="true"
+                        loading="lazy"
+                        decoding="async"
+                    />
+                )}
+            </For>
+        </div>
+    );
+}
+
+/**
  * The stops of the first year and the whole run beside the map, which walks to whichever stop is in
  * the middle of the window. On a narrower screen the map sits above a row of stops the reader swipes,
  * so the page itself never stops scrolling, and the stop most in view picks the map's place.
  */
 function Journey(props: { sample: Sample | undefined }): JSX.Element {
     const [at, setAt] = createSignal(0);
+    // the tool that pictures each stop moves the map to it (tools/scripts/site-pictures.ts)
+    if (LIVE) Reflect.set(window, "siteStop", (i: number) => setAt(i));
     const wide = matches("(min-width: 1081px)");
     const stops: HTMLElement[] = [];
     let row: HTMLDivElement | undefined;
@@ -550,12 +584,34 @@ function Journey(props: { sample: Sample | undefined }): JSX.Element {
         let watching: IntersectionObserver | null = null;
         const watch = (): void => {
             watching?.disconnect();
+            // two stops can share the band, and one staying in it as the other leaves is not told
+            // again, so the stop is the one in the band nearest its middle, worked out each time
+            const inBand = new Set<HTMLElement>();
             watching = new IntersectionObserver(
                 (seen) => {
                     for (const e of seen) {
-                        const i = stops.findIndex((stop) => stop === e.target);
-                        if (e.isIntersecting && i >= 0) setAt(i);
+                        if (!(e.target instanceof HTMLElement)) continue;
+                        if (e.isIntersecting) inBand.add(e.target);
+                        else inBand.delete(e.target);
                     }
+                    const band = seen[0]?.rootBounds;
+                    if (!band) return;
+                    const across = !wide();
+                    const middle = across ? band.left + band.width / 2 : band.top + band.height / 2;
+                    let best = -1,
+                        off = Infinity;
+                    for (const stop of inBand) {
+                        const r = stop.getBoundingClientRect();
+                        const d = Math.abs(
+                            (across ? r.left + r.width / 2 : r.top + r.height / 2) - middle,
+                        );
+                        const i = stops.indexOf(stop);
+                        if (i >= 0 && d < off) {
+                            off = d;
+                            best = i;
+                        }
+                    }
+                    if (best >= 0) setAt(best);
                 },
                 wide()
                     ? { rootMargin: "-46% 0px -46% 0px" }
@@ -564,8 +620,9 @@ function Journey(props: { sample: Sample | undefined }): JSX.Element {
             for (const stop of stops) watching.observe(stop);
         };
         createEffect(() => {
-            // the stops are laid once the site's words have come
-            if (props.sample) queueMicrotask(watch);
+            // the stops are laid once the site's words have come; the tool picturing each stop moves
+            // the map itself, and scrolling to picture it must not
+            if (props.sample && !LIVE) queueMicrotask(watch);
         });
         const list = matchMedia("(min-width: 1081px)");
         list.addEventListener("change", watch);
@@ -612,7 +669,7 @@ function Journey(props: { sample: Sample | undefined }): JSX.Element {
                                 </For>
                             </div>
                             <div class="site-journey-map">
-                                <JourneyMap focus={focusAt(at(), s().steps.length)} />
+                                <JourneyMap stop={at()} focus={focusAt(at(), s().steps.length)} />
                             </div>
                         </div>
                     )}
@@ -630,6 +687,30 @@ function Journey(props: { sample: Sample | undefined }): JSX.Element {
  * (site.css).
  */
 function MapPicture(props: {
+    class: string;
+    of: { is: "card"; at: number } | { is: "journal" };
+    title: string;
+}): JSX.Element {
+    if (LIVE) return <LiveMapPicture {...props} />;
+    const narrow = matches("(max-width: 1080px)");
+    const src = (): string | undefined => {
+        const kind = props.of.is === "card" ? PICTURES.cards : PICTURES.journal;
+        const shots = narrow() ? kind.narrow : kind.wide;
+        return shots[props.of.is === "card" ? props.of.at : 0];
+    };
+    return (
+        <div class={`${props.class} paper`} aria-hidden="true">
+            <Show when={src()}>
+                {(s) => (
+                    <img class="site-still on" src={s()} alt="" loading="lazy" decoding="async" />
+                )}
+            </Show>
+        </div>
+    );
+}
+
+/** A place of the sample child's map drawn live, for the tool that pictures it (`?livePictures`). */
+function LiveMapPicture(props: {
     class: string;
     of: { is: "card"; at: number } | { is: "journal" };
     title: string;

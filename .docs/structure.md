@@ -100,7 +100,7 @@ lumischool/
 │  │                               apps share, svg, view, stage, fullscreen, sound, palette.css,
 │  │                               and wire, api and kid: the grown-ups' client for the API, the
 │  │                               children's, and what the two share; snapshots/ holds the pictures
-│  │                               of the map a page shows until its live map is drawn; form holds
+│  │                               of the map a page shows behind its cards; form holds
 │  │                               what a child's screen presses and fields the grown-ups' own
 │  │                               controls, apart so the child's script never carries them; and
 │  │                               reading, overlay and hash draw a world as written and a look over
@@ -454,10 +454,10 @@ seam, which first carried the whole shelf, about 1.5 MB, because the scratchpad'
 its world drawings synchronously, and from 16 September 2026, when the painters moved, only what had
 not moved; since the seam went they come through the loader alone (`engine/ui/drawings.ts`), each
 from its own chunk of the catalogue, so a page downloads the drawings its worlds name and no others. The map's box is squared paper from the first stylesheet, and as the screen is drawn it shows a
-snapshot of the framed map from `engine/ui/snapshots/`; the live map is drawn after the drawings have
-loaded, again once the page is idle and a step at a time, and fades in over the snapshot. Screens
-opened at 700 px or narrower keep the snapshot for decorative backgrounds, including after rotation,
-to avoid rendering a full SVG map behind the page. Interactive maps still use the live renderer. It is the
+snapshot of the framed map from `engine/ui/snapshots/`. A page's background map is that snapshot on
+every screen wherever one was made for its framing, including after rotation, so no second scene is
+drawn behind the page; only a framing with no snapshot is drawn live, once the page is idle and a
+step at a time. Interactive maps still use the live renderer. It is the
 country with nobody on it (`countryViewOf` in `school/worlds/view.ts`, drawn by `Overworld`): every
 world of every year and the ways between them, in their colours, with no child's path, place or
 dated stamps. It loads the map's own modules, about 0.2 MB more, which carry no notation and never

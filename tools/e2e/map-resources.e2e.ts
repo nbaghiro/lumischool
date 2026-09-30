@@ -165,13 +165,14 @@ test("a map under the overlay lets its canvas go, and every canvas stays bounded
     page,
 }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
-    // Phone backdrops intentionally retain their snapshots instead of mounting a live map.
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/home");
     await page.locator("#you").scrollIntoViewIfNeeded();
     const canvases = page.locator(".ow-host > canvas");
+    // the page's own map sections are pictures (page.tsx), so the dialog's map is the only one drawn
     const underneath = page.locator("main .ow-host > canvas");
-    await expect.poll(() => underneath.count()).toBeGreaterThan(0);
+    await expect(page.locator("#you .site-still").first()).toBeVisible();
+    expect(await underneath.count()).toBe(0);
     await page.evaluate(() => {
         location.hash = "/map";
     });
@@ -200,7 +201,7 @@ test("a map under the overlay lets its canvas go, and every canvas stays bounded
     }
     await page.keyboard.press("Escape");
     await expect(page.getByRole("dialog")).toHaveCount(0);
-    await expect.poll(() => underneath.count()).toBeGreaterThan(0);
+    expect(await underneath.count()).toBe(0);
 });
 
 test("the map's GPU canvas and the world's clip stay viewport bounded through flight and resizing", async ({
@@ -247,21 +248,30 @@ test("the map's GPU canvas and the world's clip stay viewport bounded through fl
     }
 });
 
-test("marketing maps release offscreen scenes and recover on returning", async ({ page }) => {
+test("the site's map sections are pictures, the journey's changing with its stop, and draw no map", async ({
+    page,
+}) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/home");
-    const journey = page.locator(".site-journey-world");
     await page.locator("#map").scrollIntoViewIfNeeded();
-    await expect(journey).toBeVisible({ timeout: 60_000 });
+    const journey = page.locator(".site-journey-map .site-still.on");
+    await expect(journey).toHaveCount(1);
+    await expect
+        .poll(() => journey.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0))
+        .toBe(true);
+    const first = await journey.getAttribute("src");
+    // another stop brought to the middle of the window takes the map there, as a picture
+    await page
+        .locator(".site-step")
+        .last()
+        .evaluate((el) => el.scrollIntoView({ block: "center" }));
+    await expect.poll(() => journey.getAttribute("src")).not.toBe(first);
+    for (const section of ["#you", "#start"]) {
+        await page.locator(section).scrollIntoViewIfNeeded();
+        await expect(page.locator(`${section} .site-still`).first()).toBeVisible();
+    }
     await page.locator("footer").last().scrollIntoViewIfNeeded();
-    await expect(journey).toHaveCount(0);
-    await page.locator("#map").scrollIntoViewIfNeeded();
-    await expect(journey).toBeVisible();
-    const ids = await page
-        .locator("[data-map-surface] [id]")
-        .evaluateAll((nodes) => nodes.map((node) => node.id));
-    expect(new Set(ids).size).toBe(ids.length);
+    expect(await page.locator("canvas.map-gl").count()).toBe(0);
 });
 
 test("equivalent models and pending progress updates preserve a flight's scene", async ({

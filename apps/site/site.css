@@ -548,6 +548,28 @@ figure.site-fig figcaption {
 .site-journey-world {
     height: 100%;
 }
+/* the map at each stop is a picture of it (page.tsx JourneyMap), and the next crosses over the last */
+.site-window,
+.site-pic {
+    position: relative;
+}
+.site-still {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+.site-still.on {
+    opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+    .site-still {
+        transition: none;
+    }
+}
 /* a grown-up's notes under a world are too small to read at this size */
 .site-journey-world .ow-gnote {
     display: none;
