@@ -458,9 +458,10 @@ test("a lesson's name opens the lesson view, in the week and in the day, and the
     await expect(sheet).toBeVisible({ timeout: 40_000 });
     await expect(look.locator(".ls-sheet")).toHaveCount(1);
     await expect(look.locator(".wd, .ow-host, canvas")).toHaveCount(0);
-    // it is the child's own sheet: nothing filled in and nothing to press
+    // it is the child's own sheet: nothing filled in and nothing to press but a program's Run
+    // controls, which a coding lesson plays and never records (engine/ui/code-controls.tsx)
     await expect(sheet.locator(".ls-answer")).toHaveCount(0);
-    await expect(sheet.getByRole("button")).toHaveCount(0);
+    await expect(sheet.locator("button:not(.cr button), [role=button]")).toHaveCount(0);
     // and behind it, the still picture of the world the lesson is met in
     await expect(look.locator(".look-world .wd-picture > svg")).toBeAttached({ timeout: 20_000 });
     expect(await smallTargets(look)).toEqual([]);
@@ -680,7 +681,14 @@ test("a placed lesson is dragged to another day by a pointer on its drawing", as
         "the drag is the pointer's path",
     );
     const kid = (await page.locator(".cal-cell").first().getAttribute("data-kid")) ?? "";
-    const cell = page.locator(".cal-day").first().locator(`.cal-cell[data-kid="${kid}"]`);
+    // a new family's plan starts today, so the week's first planned day is found rather than assumed
+    const days = page.locator(".cal-day");
+    const inDay = (i: number): Locator => days.nth(i).locator(`.cal-cell[data-kid="${kid}"]`);
+    await expect(page.locator(`.cal-cell[data-kid="${kid}"] .cal-sticker`).first()).toBeVisible();
+    const count = await days.count();
+    let first = 0;
+    while (first < count - 1 && (await inDay(first).locator(".cal-sticker").count()) === 0) first++;
+    const cell = inDay(first);
     await expect(cell.locator(".cal-sticker").first()).toBeVisible();
     const hold = async (where: Locator): Promise<{ x: number; y: number }> => {
         await where.scrollIntoViewIfNeeded();
@@ -688,12 +696,14 @@ test("a placed lesson is dragged to another day by a pointer on its drawing", as
         if (!box) throw new Error("nothing to take hold of");
         return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
     };
-    const target = page.locator(".cal-day").nth(3).locator(`.cal-cell[data-kid="${kid}"]`);
+    const target = inDay(first + 2 < count ? first + 2 : first + 1);
     // the sticker's own title, since its drawing carries text of its own and its state word changes
     const held = (
         await cell.locator(".cal-sticker").first().locator(".gc-sticker-title").innerText()
     ).trim();
     const waiting = await target.locator(".cal-sticker").count();
+    // a lesson not finished is planned again on later days, so the target may hold it already
+    const alike = await target.locator(".cal-sticker", { hasText: held }).count();
     const from = await hold(cell.locator(".cal-sticker").first().locator(".gc-pic"));
     const to = await hold(target);
     await page.mouse.move(from.x, from.y);
@@ -702,7 +712,7 @@ test("a placed lesson is dragged to another day by a pointer on its drawing", as
     await page.mouse.move(to.x, to.y, { steps: 6 });
     await page.mouse.up();
     await expect(target.locator(".cal-sticker")).toHaveCount(waiting + 1);
-    await expect(target.locator(".cal-sticker", { hasText: held })).toHaveCount(1);
+    await expect(target.locator(".cal-sticker", { hasText: held })).toHaveCount(alike + 1);
 });
 
 /**

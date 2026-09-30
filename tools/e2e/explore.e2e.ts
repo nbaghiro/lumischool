@@ -159,14 +159,15 @@ test("a grown-up finds a lesson in Explore, reads it as a child meets it, prints
     ).toBeVisible();
     await page.getByRole("button", { name: "Print this sheet" }).click();
     await expect(printed.locator(".ls-sheet")).toBeVisible({ timeout: 40_000 });
-    expect(await printsAsked(page)).toBe(2);
+    // the layer is already up, so the print is asked for two frames after the click
+    await expect.poll(() => printsAsked(page)).toBe(2);
     await expect(printed.locator(".ls-answer")).toHaveCount(0);
     await expect(printed.getByText("Look for")).toHaveCount(0);
 
     // and on plain paper once the squares are turned off
     await page.getByLabel("Print on squared paper").uncheck();
     await page.getByRole("button", { name: "Print this sheet" }).click();
-    expect(await printsAsked(page)).toBe(3);
+    await expect.poll(() => printsAsked(page)).toBe(3);
     await page.emulateMedia({ media: "print" });
     expect(await grid()).toBe("none");
     await page.emulateMedia({ media: "screen" });
@@ -302,7 +303,7 @@ test("each shelf reads on as the grown-up scrolls, with nothing to press", async
     // heading still says what it holds
     const far = shelf(page, 6, "Maths");
     await expect(far.locator(".explore-tile")).toHaveCount(0);
-    await expect(far.locator(".explore-subject-count")).toHaveText("15 lessons");
+    await expect(far.locator(".explore-subject-count")).toHaveText("21 lessons");
     expect(await page.locator(".explore-tile").count()).toBeLessThan(200);
     await expect(page.getByRole("button", { name: /show more|next|previous/i })).toHaveCount(0);
 
@@ -310,13 +311,16 @@ test("each shelf reads on as the grown-up scrolls, with nothing to press", async
     await far.locator("h3").scrollIntoViewIfNeeded();
     await expect(far.locator(".explore-tile").first()).toBeVisible();
     await far.locator(".paged-end").scrollIntoViewIfNeeded();
-    await expect(far.locator(".explore-tile")).toHaveCount(15);
+    await expect(far.locator(".explore-tile")).toHaveCount(21);
     await expect(far.locator(".paged-loading")).toHaveCount(0);
 });
 
 test("a keyboard reaches every lesson of a shelf: Tab onto the last one read reads the next", async ({
     page,
+    browserName,
 }) => {
+    // Safari's Tab passes over links unless Option is held, as a Safari user with a keyboard does
+    const tab = browserName === "webkit" ? "Alt+Tab" : "Tab";
     // a page nothing scrolls, so no end ever comes near: only the keyboard reads on
     await page.addInitScript(() => {
         const told = new WeakSet<Element>();
@@ -361,12 +365,12 @@ test("a keyboard reaches every lesson of a shelf: Tab onto the last one read rea
     const tiles = maths.locator(".explore-tile");
     await expect(tiles).toHaveCount(6);
     await tiles.nth(4).focus();
-    await page.keyboard.press("Tab");
+    await page.keyboard.press(tab);
     await expect(tiles.nth(5)).toBeFocused();
     await expect(tiles).toHaveCount(12);
     await expect(tiles.nth(5)).toBeFocused();
     await expect(maths.locator(".paged-said")).toHaveText("6 more lessons in Grade 1 Maths");
-    for (let i = 6; i < 12; i++) await page.keyboard.press("Tab");
+    for (let i = 6; i < 12; i++) await page.keyboard.press(tab);
     await expect(tiles).toHaveCount(15);
     await expect(tiles.nth(11)).toBeFocused();
 });
@@ -385,18 +389,18 @@ test("a search looks across every shelf, each shelf pages its own matches, and a
     await grade6.click();
     await expect(grade6).toHaveAttribute("aria-expanded", "false");
     await field.fill("ratio");
-    await expect(said).toHaveText("5 lessons found");
+    await expect(said).toHaveText("6 lessons found");
     await expect(page).toHaveURL(/\/explore\?q=ratio$/);
     await expect(grade6).toHaveAttribute("aria-expanded", "true");
     await expect(shelf(page, 6, "Maths").locator(".explore-subject-count")).toHaveText(
-        "2 of 15 match",
+        "3 of 21 match",
     );
     await expect(page.locator(".explore-grade:visible")).toHaveCount(2);
     await expect(shelf(page, 1, "Maths")).toBeHidden();
 
     // a shelf of results is paged like any other: its first matches, and the rest as it is scrolled
     await field.fill("water");
-    await expect(said).toHaveText("40 lessons found");
+    await expect(said).toHaveText("43 lessons found");
     const chemistry = shelf(page, 3, "Chemistry");
     await expect(chemistry.locator(".explore-subject-count")).toHaveText("7 of 12 match");
     await chemistry.locator("h3").scrollIntoViewIfNeeded();
@@ -407,7 +411,7 @@ test("a search looks across every shelf, each shelf pages its own matches, and a
 
     // a new search mid-scroll starts every shelf again with its own matches, and nothing of the old
     await field.fill("circuit");
-    await expect(said).toHaveText("7 lessons found");
+    await expect(said).toHaveText("8 lessons found");
     await expect(chemistry).toBeHidden();
     const physics = shelf(page, 3, "Physics");
     await physics.scrollIntoViewIfNeeded();
@@ -419,9 +423,9 @@ test("a search looks across every shelf, each shelf pages its own matches, and a
         expect(title.toLowerCase()).not.toContain("water");
 
     // nothing found says what was looked for, and how to look wider
-    await field.fill("volcano");
+    await field.fill("zebra");
     await expect(said).toHaveText("No lesson found");
-    await expect(page.getByText("No lesson matches “volcano”.")).toBeVisible();
+    await expect(page.getByText("No lesson matches “zebra”.")).toBeVisible();
     await expect(page.locator(".explore-grade:visible")).toHaveCount(0);
     await page.getByRole("button", { name: "Clear the search" }).click();
     await expect(said).toHaveText(/^All \d+ lessons$/);
@@ -430,14 +434,14 @@ test("a search looks across every shelf, each shelf pages its own matches, and a
 
     // a result opens at its own address, and back returns to the search
     await field.fill("circuit");
-    await expect(said).toHaveText("7 lessons found");
+    await expect(said).toHaveText("8 lessons found");
     const result = physics.locator(".explore-tile").first();
     await result.click();
     await expect(page).toHaveURL(/\/explore\/[^?]+$/);
     await expect(page.getByRole("dialog")).toBeVisible({ timeout: 20_000 });
     await page.goBack();
     await expect(page).toHaveURL(/\/explore\?q=circuit$/);
-    await expect(said).toHaveText("7 lessons found");
+    await expect(said).toHaveText("8 lessons found");
 });
 
 test("a lesson's address opens its preview when its shelf has not read that far", async ({

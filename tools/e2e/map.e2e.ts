@@ -216,7 +216,8 @@ test("a grown-up goes into a world of another year from the map, reads a lesson 
     await expect(roll.locator(".j-date .d").first()).toHaveText("Lesson 1");
     const first = roll.locator(".rd-sheet.rd-read").first();
     await expect(first).toBeVisible({ timeout: 30_000 });
-    await expect(first.locator(".ls-answer").first()).toBeVisible();
+    // a section drawn for paper only comes first in the sheet and is not on the screen
+    await expect(first.locator(".ls-answer:visible").first()).toBeVisible();
     await expect(roll.locator(".wd-sheet-note", { hasText: "Finished on" })).toHaveCount(0);
     // a map that has gone in never dives again: two seconds on, the roll is still the one screen and
     // going in pushed one entry, not one every 0.8 s (engine/ui/overworld.tsx)
