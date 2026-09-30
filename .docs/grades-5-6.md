@@ -5,7 +5,7 @@ chose the sixth year's three worlds (the midnight sun, the waterfall gorge and t
 that moving a child up a grade be part of this plan. Every file and line named below was read on
 the day this was written; line numbers drift, so a builder checks each one before changing it.
 
-Progress, 28 September 2026: every step is done but the last tile rebuild. The platform, moving up,
+Progress, 29 September 2026: every step is done. The platform, moving up,
 the map and the drawings are built, the 84 lessons of each new grade have landed, and both grades are
 offered: the canal town, the observatory and the old city are the fifth year in `DEFAULT_YEARS`, and
 the midnight sun, the waterfall gorge and the moon the sixth. The six worlds' reaches are written
@@ -13,7 +13,7 @@ against the lessons as built and their `needs` sentences are gone, every world h
 for grades five and six, and the end-to-end tests cover a child at each grade and a child moved up
 into each. Every lesson outside maths now lands in the term its own unit names, so the grade six
 chemistry lessons on neutralising and hard water are in the waterfall gorge they were written for,
-and every grade five and six lesson lights a landmark of its own term's world. The map tiles and snapshots are rebuilt once, at the end.
+and every grade five and six lesson lights a landmark of its own term's world. The map tiles were rebuilt at the end into `public/assets/map-tiles/1654e3e9d8a5a0dc/`, the folder already in the tree, and the snapshots drawn again from them. The print check over grades one to six keeps every sitting to five child pages or fewer.
 
 ## The short version
 
