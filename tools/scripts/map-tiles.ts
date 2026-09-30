@@ -192,7 +192,7 @@ land.stop();
                     size: SIZE,
                     gutter: GUTTER,
                     levels: LEVELS,
-                    lines: { level: LINE_LEVEL, bareFrom: 1 },
+                    lines: { level: LINE_LEVEL, bareFrom: LINE_LEVEL },
                 }),
             )
             .digest("hex")
@@ -217,10 +217,11 @@ land.stop();
             const folder = join(out, String(level));
             mkdirSync(folder, { recursive: true });
             const pad = (span * GUTTER) / SIZE;
-            // the canvas draws the thin strokes as vectors at screen resolution, so every level but the
-            // root, which stands in while they load, is rasterized without them
+            // the canvas draws the thin strokes as vectors at screen resolution from the lines' level
+            // down, so those levels are rasterized without them; the levels over it, which show the
+            // country far out where a stroke is far under a pixel, have them in their pictures
             const drawn: Partial<Record<TileLayer, string>> =
-                level === 0 ? source.layers : source.bare;
+                level < LINE_LEVEL ? source.layers : source.bare;
             for (let y = 0; y < Math.ceil(bounds.h / span); y++)
                 for (let x = 0; x < Math.ceil(bounds.w / span); x++) {
                     const box = `${bounds.x + x * span - pad} ${bounds.y + y * span - pad} ${span + pad * 2} ${span + pad * 2}`;

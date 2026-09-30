@@ -27,7 +27,8 @@ self.onmessage = async (e: MessageEvent<unknown>) => {
         canvas ??= new OffscreenCanvas(1, 1);
         canvas.width = w;
         canvas.height = h;
-        const c = canvas.getContext("2d");
+        // its pixels are read back, which a canvas drawn on the CPU gives without a copy from the GPU
+        const c = canvas.getContext("2d", { willReadFrequently: true });
         if (!c) throw new Error("No canvas for a tile");
         c.clearRect(0, 0, w, h);
         c.drawImage(bitmap, 0, 0);

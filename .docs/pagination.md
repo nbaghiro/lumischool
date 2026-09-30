@@ -70,14 +70,14 @@ We measured Explore the way [map-stability-stages.md](map-stability-stages.md) m
 
 | Explore on the iPhone profile | Before | After |
 |---|---|---|
-| Tiles built on the first paint | 504 | not yet measured |
-| DOM nodes at the first tile | about 3,030 | not yet measured |
-| DOM nodes three seconds later | 6,066 | not yet measured |
-| Time to the first tile, full CPU | 166 to 190 ms | not yet measured |
-| Time to the first tile, CPU at a quarter | 414 to 451 ms | not yet measured |
-| JavaScript heap after garbage collection | 23 MB | not yet measured |
+| Tiles built on the first paint | 504 | 6 (120 three seconds later) |
+| DOM nodes at the first tile | about 3,030 | about 760 |
+| DOM nodes three seconds later | 6,066 | 5,813 |
+| Time to the first tile, full CPU | 166 to 190 ms | 190 to 202 ms |
+| Time to the first tile, CPU at a quarter | 414 to 451 ms | 331 to 579 ms |
+| JavaScript heap after garbage collection | 23 MB | 24.4 MB |
 
-The "after" column is to be filled in when the owner next runs the checks; the profile has not been run against the paged catalogue.
+The "after" column was measured on 29 September 2026 against the paged catalogue, with 552 lessons in the index where the "before" column had 504, by `.scratchpad/grades56/closing/explore-measure/` (a Playwright case and its config). The first paint now builds one page of the first shelf, and the page reaches its first tile with a quarter of the nodes. Three seconds later the shelves near the view have read on to 120 tiles, and about 4,600 of the 5,813 nodes are the tiles' drawings, so the settled page is close to the old one in size; the saving is in the first paint and in the shelves far down, which read nothing until they are scrolled to. Time to the first tile did not improve, which suggests it is bound by the pack index and the drawings' code rather than by the number of tiles. We have not measured this on a phone.
 
 These are measurements of a desktop browser under a phone's profile, not of a phone. The dev server serves modules unbundled, which affects both columns equally. The heap is the whole page's, including the pack index, the router and the grown-ups' bar, which is why it moves less than the node count.
 

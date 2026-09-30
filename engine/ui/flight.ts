@@ -638,7 +638,7 @@ export function fly(o: FlyOptions): Flying {
                 my = springAt(FOLLOW, cam.c.y, want.y, cam.v.y, dt);
             cam = { c: { x: mx.x, y: my.x, z: cam.c.z }, v: { x: mx.v, y: my.v, z: cam.v.z } };
         }
-        if (on) o.view.set(cam.c);
+        if (on) o.view.setNow(cam.c);
         zoomOut.disabled = zoom <= 0.4;
         zoomIn.disabled = zoom >= 1.4;
         if (checked !== plane.notch) {

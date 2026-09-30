@@ -11,7 +11,9 @@ function take(w: number, h: number): Context | null {
     const canvas = spare.pop() ?? new OffscreenCanvas(1, 1);
     canvas.width = w;
     canvas.height = h;
-    return canvas.getContext("2d");
+    // drawn on the worker's own thread: a canvas Chrome draws on the GPU does so on the GPU process's
+    // one thread, with a shared image made at every size, which the page's frames wait behind
+    return canvas.getContext("2d", { willReadFrequently: true });
 }
 function give(c: Context): void {
     c.canvas.width = 0;
@@ -216,8 +218,9 @@ async function keepAs(
     if (!store) return;
     const kind = body === null ? "empty" : body instanceof Blob ? "drawn" : "bytes";
     await store.put(keptAt(keep.key), new Response(body, { headers: { "x-art": kind } }));
-    // every so often what is kept is counted, and the oldest let go past the most kept
-    if (++puts % 32 === 0) {
+    // every so often what is kept is counted, and the oldest let go past the most kept; the store the
+    // tests and the bake keep in development (map-scene.ts) keeps everything
+    if (++puts % 32 === 0 && !keep.store.startsWith("dev")) {
         const keys = await store.keys();
         for (const old of keys.slice(0, Math.max(0, keys.length - KEPT_MOST)))
             await store.delete(old);
@@ -235,6 +238,49 @@ const sketches = new Map<number, Sketch>();
  * that will not read is taken as none. A bitmap is decoded premultiplied and as it was drawn, as the
  * canvas's own bitmap is, so a kept drawing and a fresh one look the same.
  */
+/** Sends pixels kept as `hit` (bytes, a picture, or a mark of nothing drawn), or says they will not do. */
+async function sendKept(
+    id: number,
+    job: RasterJob,
+    hit: Response,
+    kind: string | null,
+    held: Context[],
+): Promise<boolean> {
+    if (kind === "empty") {
+        self.postMessage({ id, w: job.w, h: job.h, empty: true, cached: true });
+        return true;
+    }
+    if (kind === "bytes") {
+        const pixels = await hit.arrayBuffer();
+        if (pixels.byteLength !== job.w * job.h * 4) return false;
+        self.postMessage({ id, w: job.w, h: job.h, pixels, cached: true }, { transfer: [pixels] });
+        return true;
+    }
+    const bitmap = await createImageBitmap(await hit.blob(), {
+        premultiplyAlpha: "premultiply",
+        colorSpaceConversion: "none",
+    });
+    if (bitmap.width !== job.w || bitmap.height !== job.h) {
+        bitmap.close();
+        return false;
+    }
+    if (BITMAPS) {
+        self.postMessage({ id, w: job.w, h: job.h, bitmap, cached: true }, { transfer: [bitmap] });
+        return true;
+    }
+    const c = take(job.w, job.h);
+    if (!c) {
+        bitmap.close();
+        return false;
+    }
+    held.push(c);
+    c.drawImage(bitmap, 0, 0);
+    bitmap.close();
+    const pixels = c.getImageData(0, 0, job.w, job.h).data.buffer;
+    self.postMessage({ id, w: job.w, h: job.h, pixels, cached: true }, { transfer: [pixels] });
+    return true;
+}
+
 async function fromKept(
     id: number,
     job: RasterJob,
@@ -243,52 +289,26 @@ async function fromKept(
 ): Promise<boolean> {
     try {
         const store = await keptIn(keep.store);
-        const hit = await store?.match(keptAt(keep.key));
-        if (!hit) return false;
-        const kind = hit.headers.get("x-art");
-        if (kind === "empty") {
-            self.postMessage({ id, w: job.w, h: job.h, empty: true, cached: true });
-            return true;
+        const at = keptAt(keep.key);
+        const hit = await store?.match(at);
+        if (!hit || !store) return false;
+        // the oldest written go first past the most kept, so a drawing read is written again, once a
+        // visit, and what a family comes back to is what is kept
+        if (!refreshed.has(at)) {
+            refreshed.add(at);
+            const again = hit.clone();
+            void store
+                .delete(at)
+                .then(() => store.put(at, again))
+                .catch(() => undefined);
         }
-        if (kind === "bytes") {
-            const pixels = await hit.arrayBuffer();
-            if (pixels.byteLength !== job.w * job.h * 4) return false;
-            self.postMessage(
-                { id, w: job.w, h: job.h, pixels, cached: true },
-                { transfer: [pixels] },
-            );
-            return true;
-        }
-        const bitmap = await createImageBitmap(await hit.blob(), {
-            premultiplyAlpha: "premultiply",
-            colorSpaceConversion: "none",
-        });
-        if (bitmap.width !== job.w || bitmap.height !== job.h) {
-            bitmap.close();
-            return false;
-        }
-        if (BITMAPS) {
-            self.postMessage(
-                { id, w: job.w, h: job.h, bitmap, cached: true },
-                { transfer: [bitmap] },
-            );
-            return true;
-        }
-        const c = take(job.w, job.h);
-        if (!c) {
-            bitmap.close();
-            return false;
-        }
-        held.push(c);
-        c.drawImage(bitmap, 0, 0);
-        bitmap.close();
-        const pixels = c.getImageData(0, 0, job.w, job.h).data.buffer;
-        self.postMessage({ id, w: job.w, h: job.h, pixels, cached: true }, { transfer: [pixels] });
-        return true;
+        return await sendKept(id, job, hit, hit.headers.get("x-art"), held);
     } catch {
         return false;
     }
 }
+/** The kept drawings read and written again this visit. */
+const refreshed = new Set<string>();
 
 self.onmessage = async (e: MessageEvent<RasterMessage>) => {
     const { id, sketchId, forget } = e.data;

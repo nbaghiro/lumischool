@@ -679,12 +679,19 @@ type ProgramName = keyof typeof PROGRAMS;
 const CHANNEL: Record<MaskChannel, number> = { known: 1, colour: 2, reached: 3, pencil: 4 };
 
 /** A hex colour, as the map's tokens are written, premultiplied at an alpha. */
+/** Each colour a frame draws with, read once: its channels and its own alpha. */
+const colours = new Map<string, Quad>();
 export function premultiplied(css: string, alpha: number): Quad {
-    const hex = /^#([0-9a-f]{3,8})$/i.exec(css.trim())?.[1] ?? "000";
-    const full = hex.length <= 4 ? hex.replace(/./g, (c) => c + c) : hex;
-    const n = (i: number) => parseInt(full.slice(i, i + 2), 16) / 255;
-    const a = (full.length >= 8 ? n(6) : 1) * alpha;
-    return [n(0) * a, n(2) * a, n(4) * a, a];
+    let c = colours.get(css);
+    if (!c) {
+        const hex = /^#([0-9a-f]{3,8})$/i.exec(css.trim())?.[1] ?? "000";
+        const full = hex.length <= 4 ? hex.replace(/./g, (ch) => ch + ch) : hex;
+        const n = (i: number) => parseInt(full.slice(i, i + 2), 16) / 255;
+        c = [n(0), n(2), n(4), full.length >= 8 ? n(6) : 1];
+        if (colours.size < 512) colours.set(css, c);
+    }
+    const a = c[3] * alpha;
+    return [c[0] * a, c[1] * a, c[2] * a, a];
 }
 
 interface Held {
@@ -728,6 +735,8 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
         lost = false,
         density = 1;
     const resources = new Map<GlResource, Held>();
+    /** The program last bound, so a run of draws with one program binds it once. */
+    let bound: WebGLProgram | null = null;
     const programs = new Map<
         string,
         { program: WebGLProgram; where: Map<string, WebGLUniformLocation> }
@@ -736,7 +745,8 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
         quadVao: WebGLVertexArrayObject | null = null,
         batches: { sprite: Batch; line: Batch; dots: Batch } | null = null,
         maskTarget: Target | null = null,
-        groupTarget: Target | null = null,
+        /** A target for each group of strokes a frame draws. */
+        groupTargets: Target[] = [],
         lightTarget: Target | null = null,
         fieldTarget: Target | null = null,
         blank: WebGLTexture | null = null;
@@ -752,6 +762,7 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
     };
     const build = (): void => {
         programs.clear();
+        bound = null;
         for (const [name, [vertex, fragment]] of Object.entries(PROGRAMS)) {
             const program = gl.createProgram();
             gl.attachShader(program, compile(gl.VERTEX_SHADER, vertex));
@@ -827,7 +838,8 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
             gl.UNSIGNED_BYTE,
             new Uint8Array([255, 255, 255, 255]),
         );
-        maskTarget = groupTarget = lightTarget = fieldTarget = null;
+        maskTarget = lightTarget = fieldTarget = null;
+        groupTargets = [];
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
         generation++;
     };
@@ -887,7 +899,11 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
     const use = (name: ProgramName): ((uniform: string) => WebGLUniformLocation | null) => {
         const p = programs.get(name);
         if (!p) throw new Error(`The map's ${name} program is missing`);
-        gl.useProgram(p.program);
+        // a draw after one with the same program leaves it bound
+        if (bound !== p.program) {
+            gl.useProgram(p.program);
+            bound = p.program;
+        }
         return (uniform) => p.where.get(uniform) ?? null;
     };
     const masking = (
@@ -1203,10 +1219,32 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
                 gl.blendEquation(gl.FUNC_ADD);
             }
 
+            // each group of strokes is drawn opaque into a target of its own before the screen is bound,
+            // since a phone's GPU stores the screen and loads it back each time a frame changes target
+            // partway, and the screen then only lays each down at its group's alpha
+            gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+            gl.clearColor(0, 0, 0, 0);
+            let groups = 0;
+            for (const d of frame.draws) {
+                if (d.kind !== "strokes") continue;
+                const t = (groupTargets[groups] = target(
+                    groupTargets[groups] ?? null,
+                    w,
+                    h,
+                    false,
+                ));
+                groups++;
+                gl.bindTexture(gl.TEXTURE_2D, blank);
+                gl.bindFramebuffer(gl.FRAMEBUFFER, t.framebuffer);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+                for (const run of d.runs) strokeRun(run, view, pixel, d.fade ?? null);
+            }
+
             gl.bindFramebuffer(gl.FRAMEBUFFER, null);
             gl.clearColor(0, 0, 0, 0);
             gl.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
             gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+            let group = 0;
             gl.activeTexture(gl.TEXTURE1);
             gl.bindTexture(gl.TEXTURE_2D, mask && maskTarget ? maskTarget.texture : blank);
             gl.activeTexture(gl.TEXTURE0);
@@ -1443,18 +1481,14 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
                         ALL,
                     );
                 else {
-                    // strokes are drawn opaque into a target of their own, then laid down at the group's alpha
-                    groupTarget = target(groupTarget, w, h, false);
-                    gl.bindTexture(gl.TEXTURE_2D, blank);
-                    gl.bindFramebuffer(gl.FRAMEBUFFER, groupTarget.framebuffer);
-                    gl.clear(gl.COLOR_BUFFER_BIT);
-                    for (const run of d.runs) strokeRun(run, view, pixel, d.fade ?? null);
-                    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+                    // the group's strokes, drawn before the screen was bound, at the group's alpha
+                    const drawn = groupTargets[group++];
+                    if (!drawn) continue;
                     const at = use("composite");
                     masking(at, channel(d.mask), w, h);
                     gl.uniform1i(at("image"), 0);
                     gl.uniform1f(at("alpha"), d.alpha);
-                    gl.bindTexture(gl.TEXTURE_2D, groupTarget.texture);
+                    gl.bindTexture(gl.TEXTURE_2D, drawn.texture);
                     gl.bindVertexArray(quadVao);
                     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
                 }

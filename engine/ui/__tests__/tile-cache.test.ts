@@ -203,3 +203,28 @@ test("cancelled stuck decoding releases the cache reservation, and what it decod
     await new Promise((resolve) => setImmediate(resolve));
     assert.deepEqual(discarded, ["late pixels"]);
 });
+
+test("of tiles waiting alike, the one wanted latest loads first", async () => {
+    const order: string[] = [];
+    const finishers: (() => void)[] = [];
+    const cache = tileCache({
+        budget: 100,
+        concurrency: 1,
+        load: (url) => {
+            order.push(url);
+            return new Promise<string>((resolve) => finishers.push(() => resolve(url)));
+        },
+        dispose: () => undefined,
+    });
+    // the first takes the one loader; the others wait, the level passed through asked for last
+    const busy = cache.acquire("busy", 1, 10),
+        now = cache.acquire("now", 1, 10),
+        passed = cache.acquire("passed", 1, 10);
+    assert.ok(busy && passed && now);
+    // the camera wants `now` again this frame, and `passed` no more
+    now.want(10);
+    finishers.shift()?.();
+    await busy.ready;
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.deepEqual(order, ["busy", "now"]);
+});

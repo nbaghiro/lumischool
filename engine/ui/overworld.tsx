@@ -37,8 +37,9 @@ import type { CanvasView } from "./view";
 import { mapPainter } from "./painters";
 import type { Flying } from "./flight";
 import { mapEvent, mapHook, mapVariant } from "./map-diagnostics";
-import { hold, release } from "./handoff";
+import { claim, hold, release } from "./handoff";
 import { readTokens } from "./read-tokens";
+import { smallDevice } from "./device";
 
 /** Where a page finds the map's places and buttons on the page, to write its own words beside them. */
 export interface MapAt {
@@ -76,12 +77,19 @@ let parked: {
     source: HTMLElement;
     overlay: HTMLElement;
     pending: Pending[];
+    /** The place the page went into and where the camera stood before the dive, which it rises back to. */
+    left: { place: number; cam: Camera } | null;
     expiry: ReturnType<typeof setTimeout>;
 } | null = null;
 /** The maps whose places have been painted and drawn from afar once (`warm`). */
 const warmed = new WeakSet<MapPainted>();
 /** How long a parked map is kept for a page that does not come back to it. */
 const KEPT = 10 * 60_000;
+/**
+ * The longest the map waits for its view to be painted and drawn before rising out of a world, in ms;
+ * what is not drawn by then fades in as it rises rather than holding the page still.
+ */
+const RISE_WAITS = 150;
 
 const unpark = (): void => {
     if (!parked) return;
@@ -205,6 +213,10 @@ export function Overworld(props: {
     let busy = false;
     /** Taken down to go into a world, so held on the screen until the world has drawn (handoff.ts). */
     let entering = false;
+    /** The place this map dived into and where its camera stood before, for the map it parks as. */
+    let left: { place: number; cam: Camera } | null = null;
+    // a roll held over the page as it goes waits for this map to draw (handoff.ts)
+    claim();
     let drawn = false;
     let settling = false;
     /** The pull-back out of a world runs once, on the first map this page draws, and never on a redraw. */
@@ -329,8 +341,12 @@ export function Overworld(props: {
         const step = (deadline: number): void => {
             brush = 0;
             if (!view) return;
-            // Keep a wider release margin so crossing a tile edge does not repeatedly rebuild it.
-            const margin = props.aim ? 160 : Math.min(256, Math.max(view.vp.w, view.vp.h) / 2),
+            // painted a window ahead each way, as far as the scene draws ahead (map-scene.ts), so a
+            // pan meets pieces already drawn; let go of only twice as far, so crossing an edge does
+            // not paint a piece again
+            const margin = props.aim
+                    ? 160
+                    : Math.max(view.vp.w, view.vp.h) * (smallDevice ? 0.5 : 1),
                 seen = view.visible(margin),
                 keep = view.visible(margin * 2),
                 z = view.cam.z;
@@ -455,6 +471,7 @@ export function Overworld(props: {
             { name: "fade", from: 0, to: 1, at: 0, dur: 0.22 },
         ]);
         busy = true;
+        v.locked = true;
         ticker({
             now: () => performance.now(),
             schedule: (f) => requestAnimationFrame(f),
@@ -464,10 +481,12 @@ export function Overworld(props: {
                     return false;
                 }
                 const t = Math.min(time, tl.length);
-                v.set(cameraBetween(from, to, valueAt(tl, "out", t)));
+                v.setNow(cameraBetween(from, to, valueAt(tl, "out", t)));
                 if (host && fade) host.style.opacity = String(valueAt(tl, "fade", t));
                 if (t < tl.length) return true;
                 busy = false;
+                v.locked = false;
+                painted?.scene.hold(null);
                 return false;
             },
         }).start();
@@ -518,8 +537,10 @@ export function Overworld(props: {
      */
     function warm(p: MapPainted): void {
         const v = view;
-        // a map come back to was warmed already
-        if (!v || painted !== p || mapVariant === "terrain" || warmed.has(p)) return;
+        // a map come back to was warmed already, and one nobody goes into worlds from (a page's
+        // journey, a backdrop) is not drawn back from, so has nothing to warm
+        if (!v || painted !== p || mapVariant === "terrain" || warmed.has(p) || !props.onGoIn)
+            return;
         warmed.add(p);
         const places = pending.filter((q) => (q.piece.priority ?? 0) >= 1);
         const step = (deadline: number): void => {
@@ -650,7 +671,7 @@ export function Overworld(props: {
                     s = valueAt(run, "s", t),
                     q = along(way, forward ? s : 1 - s);
                 p.place(q, forward ? q.dx : -q.dx);
-                v.set({ x: q.x, y: q.y - 120, z: z0 * (1 - 0.3 * Math.sin(Math.PI * s)) });
+                v.setNow({ x: q.x, y: q.y - 120, z: z0 * (1 - 0.3 * Math.sin(Math.PI * s)) });
                 if (last < dur / 2 && t >= dur / 2) p.token.classList.add("mid");
                 last = t;
                 if (t < run.length) return true;
@@ -733,9 +754,12 @@ export function Overworld(props: {
         }
         props.onApproach?.(i);
         busy = true;
-        // the map stays on the screen as it is taken down, until the world has drawn (handoff.ts)
-        entering = true;
+        // the dive has the camera from here, and the world opens where the place is
+        v.locked = true;
         if (quiet) {
+            // the map stays on the screen as it is taken down, until the world has drawn (handoff.ts);
+            // taken down before it has asked for the world, it goes with nothing held
+            entering = true;
             go(i, null);
             return;
         }
@@ -745,18 +769,23 @@ export function Overworld(props: {
                 y: n.box.y + n.box.h * 0.45,
                 z: clamp((v.vp.w / n.box.w) * 1.15, 0.2, 0.9),
             };
+        // the world covers the map by the dive's end, so nothing is drawn sharper for it, and the map
+        // parks with the pixels of where it stood, which is where it rises back to
+        painted?.scene.hold(from.z);
+        left = { place: i, cam: from };
         // The map dives into the place and is held there while the world is drawn, then fades out over
         // it, so what the child tapped is the last thing they see and the world opens where it was
         // (.docs/journal.md).
-        const tl = timeline([{ name: "dive", from: 0, to: 1, at: 0, dur: 0.6, ease: easeInOut }]);
+        const tl = timeline([{ name: "dive", from: 0, to: 1, at: 0, dur: 0.45, ease: easeInOut }]);
         const tk = ticker({
             now: () => performance.now(),
             schedule: (f) => requestAnimationFrame(f),
             onFrame: (time) => {
                 if (disposed || view !== v) return false;
                 const t = Math.min(time, tl.length);
-                v.set(cameraBetween(from, to, valueAt(tl, "dive", t)));
+                v.setNow(cameraBetween(from, to, valueAt(tl, "dive", t)));
                 if (t < tl.length) return true;
+                entering = true;
                 go(i, placeRect(i, true));
                 return false;
             },
@@ -820,7 +849,7 @@ export function Overworld(props: {
 
     function home(): void {
         const v = view;
-        if (!v) return;
+        if (!v || busy) return;
         setAt("frame");
         v.flyTo(nearPlace(v, chosen() ? focus() : (props.view.here ?? focus())) ?? frame(v));
         say(grown() ? "The map." : "Your part of the map. It grows as you go.");
@@ -877,7 +906,7 @@ export function Overworld(props: {
 
     function showAll(): void {
         const v = view;
-        if (!v || props.view.limits.zoomOut !== "everything") return;
+        if (!v || busy || props.view.limits.zoomOut !== "everything") return;
         setAt("all");
         v.flyTo(everything(v));
         say(`Every world: ${props.view.layout.nodes.length} of them.`);
@@ -971,11 +1000,13 @@ export function Overworld(props: {
     }
 
     /** Paints the pieces in view into a map to come, a few milliseconds at a time, before it is shown. */
-    function paintIn(v: CanvasView, pieces: Pending[]): Promise<void> {
+    function paintIn(v: CanvasView, pieces: Pending[], at?: Camera): Promise<void> {
         return new Promise((done) => {
             const margin = Math.min(256, Math.max(v.vp.w, v.vp.h) / 2),
-                seen = v.visible(margin),
-                z = v.cam.z;
+                seen = at
+                    ? visibleRect(at, { w: v.vp.w + margin * 2, h: v.vp.h + margin * 2 })
+                    : v.visible(margin),
+                z = (at ?? v.cam).z;
             const todo = pieces.filter(
                 (q) => (!q.piece.minZ || z >= q.piece.minZ) && intersects(q.piece.rect, seen),
             );
@@ -1151,24 +1182,42 @@ export function Overworld(props: {
         const c = props.aim ? aimed(props.aim) : null;
         const all = !c && props.focus === "all";
         setAt(all ? "all" : "frame");
+        // back from the place it went into, the map rises to where it stood, which it kept drawn
+        const stood =
+            !c && props.arrive && kept?.left?.place === props.arrive.place ? kept.left.cam : null;
         const rest =
-            c ?? (all ? everything(v) : props.focus === "overview" ? overview(v) : frame(v));
+            c ??
+            stood ??
+            (all ? everything(v) : props.focus === "overview" ? overview(v) : frame(v));
         // Coming back out of a world: the map opens with the place where the world left it and pulls
         // back to where it stands, so the two views are one movement (.docs/journal.md).
         const back = props.arrive && !quiet && !rose ? cameraBack(v, props.arrive) : null;
         rose = true;
         v.set(replacing ? v.cam : (back ?? rest));
+        // the rise draws as sharp as where it ends, whose pixels the map kept, and asks for nothing
+        // at the zooms it passes through; a map that opens otherwise draws for its own camera
+        p.scene.hold(back ? rest.z : null);
         // a map kept while the child was in a world draws where it opens under the roll held over
         // it, and the roll fades off it as it rises; one drawn afresh fades in as the roll fades out
         const ready = !!kept && !!back;
         if (ready) {
-            await p.prepare(v.cam);
-            if (gone()) {
+            // where it rises to, which shows the most of the map; where it rises from is the same
+            // drawings magnified under the roll fading off it
+            await Promise.race([
+                (async () => {
+                    await paintIn(v, pending, rest);
+                    await p.prepare(rest);
+                })(),
+                new Promise((done) => setTimeout(done, RISE_WAITS)),
+            ]);
+            // only a map that has gone gives up the way back; a newer view come in meanwhile is
+            // painted under this one as the map rises, as any view given again is
+            if (disposed || v !== view) {
                 release(false, "roll");
                 return false;
             }
         }
-        if (!replacing) release(true, "roll");
+        if (!replacing) release(true);
         if (host) host.style.opacity = back && !ready ? "0" : "1";
         if (back) rise(v, back, rest, !ready);
         // a backdrop shows the map as it stands; the colour washes out only as a child's own map opens
@@ -1225,6 +1274,27 @@ export function Overworld(props: {
             model = "";
             draw(v);
         });
+        // the bake (tools/scripts/art-bake.ts) paints every piece that shows this close and has the
+        // scene draw all of it at `t` pixels to a unit, and asks which worlds to open
+        mapHook("mapBake", async (t = 1) => {
+            const p = painted;
+            if (view !== v || disposed || !p) return;
+            for (const q of pending) {
+                const shows = !q.piece.minZ || t >= q.piece.minZ;
+                if (shows && !q.done) {
+                    q.done = true;
+                    q.release = q.piece.paint() ?? undefined;
+                } else if (!shows && q.release) {
+                    q.release();
+                    q.release = undefined;
+                    q.done = false;
+                }
+            }
+            await p.scene.bake(t);
+        });
+        mapHook("mapWorlds", () => [
+            ...new Set(props.view.places.flatMap((p) => (p.shown?.world ? [p.shown.world] : []))),
+        ]);
     }
     onMount(() => {
         void mount().catch(() => setFailed(true));
@@ -1297,9 +1367,12 @@ export function Overworld(props: {
                 source,
                 overlay,
                 pending,
+                left,
                 expiry: setTimeout(unpark, KEPT),
             };
-            if (entering && host) hold(host, "map", park);
+            // held over the page however the page goes to a world, the dive's own going in known to be
+            // taken over, and any other claimed by the world as it comes, or let go if none does
+            if ((entering || drawn) && host) hold(host, "map", park, { claimed: entering });
             else park();
         } else {
             for (const p of pending) p.release?.();

@@ -43,6 +43,7 @@ import {
     type TileDescriptor,
     type TileIndex,
 } from "./map-tile-schema";
+import { mapCount } from "./map-diagnostics";
 import { tileImages, type TileLease, type TilePixels } from "./tile-cache";
 
 /**
@@ -70,6 +71,11 @@ export function landscapeZoom(density: number): number {
 }
 
 /** The waves drift 22 world units either way, eased there and back over 11 s, as overworld.css has them. */
+/**
+ * The least time between frames drawn for the drift alone, in ms: each draws the whole map again, and
+ * close in the drift is a few pixels a second, which thirty frames a second show as smoothly as sixty.
+ */
+const DRIFT_EVERY = 33;
 const DRIFT = { reach: 22, period: 11_000 };
 /**
  * How long a frame may spend putting tiles' layers on the GPU, in ms; one layer goes whatever it
@@ -78,8 +84,14 @@ const DRIFT = { reach: 22, period: 11_000 };
 const UPLOADING = 4;
 /** How many frames a tile still loading is kept once no view wants it, so a flight's path is not let go of and fetched again. */
 const STALE = 60;
+/** How long the ground waits for every tile of a new level in view before it changes to it anyway, in ms. */
+const SWITCH = 1500;
+/** How much of a mark magnified past twice its size shows while the live landscape is drawn over it. */
+const BLOTTED = 0.4;
 /** How much larger each radius a wash's rim is made at is than the last. */
 const RIM = 1.25;
+/** How many rims a map keeps made before those out of view go. */
+const RIMS_KEPT = 256;
 /** How long the tiles' marks take to fade as the live landscape takes over from them, in ms. */
 const HANDOFF = 150;
 function driftAt(now: number): number {
@@ -357,6 +369,10 @@ export async function terrain(o: {
 
     let disposed = false,
         level = 0,
+        /** The level the ground is drawn at, which follows `level` once its tiles in view are all there. */
+        shownLevel = Math.min(1, MAP_TILES.levels.length - 1),
+        /** When `level` last changed, for a change that waits too long on tiles to go ahead without them. */
+        changedAt = 0,
         retry = 0,
         reach = view.reach;
     const owned = new Map<string, Held>();
@@ -455,12 +471,14 @@ export async function terrain(o: {
      * Makes a loaded tile's images textures as it is first drawn, and lets the decoded copies go once
      * they all are; while the GPU is lost it waits, and tries again on a later frame.
      */
-    const settle = (entry: Held, until = Infinity): boolean => {
+    const settle = (entry: Held, budget?: { until: number; free: boolean }): boolean => {
         if (!entry.layers) return false;
         for (const layer of entry.layers) {
             if (!("url" in layer) || !layer.image) continue;
-            if (performance.now() > until) return false;
+            // past the frame's time only the one layer a frame may take whatever the time goes
+            if (budget && performance.now() > budget.until && !budget.free) return false;
             if (!share(layer.url, layer.image)) return false;
+            if (budget) budget.free = false;
             delete layer.image;
         }
         if (entry.leases.length) {
@@ -473,7 +491,11 @@ export async function terrain(o: {
     const acquire = (cell: Cell, priority: number): Held | null => {
         locations.set(cell.key, cell);
         const existing = owned.get(cell.key);
-        if (existing) return existing;
+        if (existing) {
+            // still loading: what the camera wants now loads before what it passed on the way
+            if (!existing.layers) for (const lease of existing.leases) lease.want(priority);
+            return existing;
+        }
         if ((attempts.get(cell.key) ?? 0) >= 3) return null;
         if (!tileImages.canAcquire(requestsFor([cell]))) return null;
         const leases: TileLease<TilePixels>[] = [];
@@ -494,7 +516,8 @@ export async function terrain(o: {
             }
         }
         // every raster but the root leaves the thin strokes out, so it waits for the strokes it shows
-        const needed = cell.level ? chunksOver(cell.rect) : [];
+        // the levels under the lines' own have their strokes in their pictures, and wait for none
+        const needed = cell.level >= index.lines.level ? chunksOver(cell.rect) : [];
         const entry: Held = {
             leases,
             chunks: needed.map(claim),
@@ -550,8 +573,8 @@ export async function terrain(o: {
         for (const key of owned.keys()) remove(key);
         throw error;
     }
-    // the root has the coast's strokes in it, which magnified are dark blurs, so what stands in for a
-    // tile still loading is the first level down, which has none and is kept for as long as the map is
+    // the root is the whole country in one tile, so what stands in for a tile still loading is the first
+    // level down, twice as sharp, which is kept for as long as the map is
     const resident = cells(1, MAP_TILES.bounds);
     const residentKeys = new Set(resident.map((c) => c.key));
     for (const cell of resident) acquire(cell, 90);
@@ -585,7 +608,28 @@ export async function terrain(o: {
         { segments: Float32Array; width: number; gpu: GlStrokes | null }[]
     >();
     let rimsUsed = new Set<string>();
+    /** The reach the rims kept were made for. */
+    let rimsFor: MapReach | null = null;
     const shapes = new WeakMap<readonly { x: number; y: number }[], GlShape>();
+    const boxes = new WeakMap<readonly { x: number; y: number }[], Rect>();
+    /** An outline's box, worked out once, so what is out of view is not filled. */
+    const boxOf = (points: readonly { x: number; y: number }[]): Rect => {
+        const had = boxes.get(points);
+        if (had) return had;
+        let x0 = Infinity,
+            y0 = Infinity,
+            x1 = -Infinity,
+            y1 = -Infinity;
+        for (const p of points) {
+            x0 = Math.min(x0, p.x);
+            y0 = Math.min(y0, p.y);
+            x1 = Math.max(x1, p.x);
+            y1 = Math.max(y1, p.y);
+        }
+        const made = { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+        boxes.set(points, made);
+        return made;
+    };
     const shapeOf = (points: readonly { x: number; y: number }[]): GlShape | null => {
         const had = shapes.get(points);
         if (had && gl.live(had)) return had;
@@ -650,7 +694,7 @@ export async function terrain(o: {
                   ...wholes,
               ]
             : null;
-        rimsUsed = new Set();
+        if (reach !== rimsFor) rimsUsed = new Set();
         const colour: MaskShape[] = [];
         // what the colour has reached, without its rim: the painter's rule for the landscape's pen
         const reached: MaskShape[] = [];
@@ -677,15 +721,20 @@ export async function terrain(o: {
                     });
             }
         }
-        for (const [key, made] of rims)
-            if (!rimsUsed.has(key)) {
-                for (const rim of made) if (rim.gpu) gl.release(rim.gpu);
-                rims.delete(key);
-            }
+        // a rim panned out of view is kept for when it comes back; the rims a reach no longer has go
+        // once it changes, or once more are kept than a map has
+        if (reach !== rimsFor || rims.size > RIMS_KEPT) {
+            rimsFor = reach;
+            for (const [key, made] of rims)
+                if (!rimsUsed.has(key)) {
+                    for (const rim of made) if (rim.gpu) gl.release(rim.gpu);
+                    rims.delete(key);
+                }
+        }
         colour.push(...wholes);
         reached.push(...wholes);
         for (const isle of view.country.isles)
-            if (!reach.isles.includes(isle.node)) {
+            if (!reach.isles.includes(isle.node) && intersects(boxOf(isle.outline), seen)) {
                 const shape = shapeOf(isle.outline);
                 if (shape) {
                     colour.push({ kind: "cut", shape });
@@ -694,8 +743,9 @@ export async function terrain(o: {
             }
         return { known, colour, reached };
     };
-    const washes = (): GlDraw[] => [
+    const washes = (seen: Rect): GlDraw[] => [
         ...view.country.patches.flatMap((patch): GlDraw[] => {
+            if (!intersects(boxOf(patch.outline), seen)) return [];
             const shape = shapeOf(patch.outline);
             return shape
                 ? [
@@ -710,6 +760,7 @@ export async function terrain(o: {
                 : [];
         }),
         ...view.country.isles.flatMap((isle): GlDraw[] => {
+            if (!intersects(boxOf(isle.outline), seen)) return [];
             const shape = shapeOf(isle.outline);
             return shape
                 ? [
@@ -791,11 +842,32 @@ export async function terrain(o: {
                     TEXTURES * VIEW
             )
                 next--;
+            if (next !== level) changedAt = performance.now();
             level = next;
-            const want = cells(level, wanted),
-                wantKeys = new Set(want.map((c) => c.key));
+            const target = cells(level, wanted);
+            for (const cell of target) acquire(cell, 10);
+            const up = (cell: Cell): boolean => {
+                const entry = owned.get(cell.key);
+                return !!entry && uploaded(entry);
+            };
+            // the ground shows one level and changes to the level the camera wants in one step, once
+            // every tile of it in view is on the GPU, rather than a tile at a time; one that cannot be
+            // had soon (the budget, the network) is changed to with what stands in for the rest
+            if (
+                shownLevel !== level &&
+                (target.filter((c) => intersects(c.rect, seen)).every(up) ||
+                    performance.now() - changedAt > SWITCH)
+            ) {
+                shownLevel = level;
+                mapCount("art-ground", 1);
+            }
+            // a camera past the root is shown at least the first level down while it waits, which is
+            // always loaded, and a tile magnified far keeps only its fills (below)
+            const standing = level > 0 ? Math.max(1, shownLevel) : shownLevel;
+            const want = standing === level ? target : cells(standing, wanted);
+            if (want !== target) for (const cell of want) acquire(cell, 11);
+            const wantKeys = new Set([...want, ...target].map((c) => c.key));
             lastWant = wantKeys;
-            for (const cell of want) acquire(cell, 10);
             // what the camera has left before it came is let go of, loaded or not, so nothing is fetched
             // or put on the GPU for a view that has gone; what stands in for the rest stays
             const keeps = (key: string): boolean =>
@@ -814,24 +886,19 @@ export async function terrain(o: {
                 key === coarse.key ? 3 : wantKeys.has(key) ? 2 : residentKeys.has(key) ? 1 : 0;
             const waiting = [...owned].filter(([, entry]) => entry.layers && !uploaded(entry));
             if (waiting.length > 1) waiting.sort((a, b) => first(b[0]) - first(a[0]));
-            let started = false;
-            for (const [, entry] of waiting) {
-                // the first layer goes whatever the time, so a slow frame still makes headway
-                if (!settle(entry, started ? until : Infinity) && performance.now() > until) {
+            // one layer a frame goes whatever the time, so a slow frame still makes headway
+            const budget = { until, free: true };
+            for (const [, entry] of waiting)
+                if (!settle(entry, budget) && performance.now() > until) {
                     o.wake();
                     break;
                 }
-                started = true;
-            }
             const available = [...owned].flatMap(([key, entry]) => {
                 const cell = entry.layers && uploaded(entry) ? locations.get(key) : undefined;
                 return cell ? [cell] : [];
             });
             const regions = tileCoverage(want, available, coarse, seen);
-            covered = want.every((cell) => {
-                const entry = owned.get(cell.key);
-                return !!entry && uploaded(entry);
-            });
+            covered = target.every(up);
             const used = new Set([coarse.key, ...resident.map((c) => c.key)]);
             const layered = new Map<TileLayer, GlDraw[]>(TILE_LAYERS.map((l) => [l, []]));
             // far out a drift is under a pixel, so the waves rest there as the page's did
@@ -839,10 +906,12 @@ export async function terrain(o: {
             const drift = drifting ? translation(driftAt(performance.now()), 0) : IDENTITY;
             frames++;
             // close in, the live landscape takes over from the marks in the tiles; they stay until what
-            // is in view has been drawn, then fade out, so there is no moment with neither
+            // is in view has been drawn, then fade out, so there is no moment with neither; past twice
+            // their size a mark is a dark blot, so until then it stays faint rather than going
             const now = performance.now();
             const close = camera.z > landscapeZoom(density) * 1.3;
-            const aim = close && !drawing ? 0 : 1;
+            const blotted = camera.z > landscapeZoom(density) * 2;
+            const aim = !close ? 1 : !drawing ? 0 : blotted ? BLOTTED : 1;
             marksShown =
                 o.still || !marksAt
                     ? aim
@@ -865,8 +934,11 @@ export async function terrain(o: {
                     w: region.rect.w / full,
                     h: region.rect.h / full,
                 };
-                // standing in closer than its own zoom the root keeps only its fills
-                const fills = region.source.level === 0 && level > 0;
+                // a tile with the thin strokes in it, magnified four times or more, shows them as dark
+                // blots, so standing in that far from its zoom it keeps only its fills
+                const fills =
+                    region.source.level < index.lines.level &&
+                    (region.source.level === 0 ? level > 0 : level - region.source.level >= 2);
                 entry.layers.forEach((layer, i) => {
                     const name = TILE_LAYERS[i];
                     if (!name || (fills && name !== "sea" && name !== "land")) return;
@@ -894,14 +966,17 @@ export async function terrain(o: {
                 });
             }
             const layer = (name: TileLayer): GlDraw[] => layered.get(name) ?? [];
+            // under the lines' level the tiles draw the thin strokes themselves, which drawn as lines
+            // there would be a great many strokes each far under a pixel (tools/scripts/map-tiles.ts)
+            const lined = standing >= index.lines.level;
             const out = [
                 ...layer("sea"),
                 ...layer("pencil"),
-                ...strokes("pencil", seen),
+                ...(lined ? strokes("pencil", seen) : []),
                 ...layer("land"),
-                ...washes(),
+                ...washes(seen),
                 ...layer("colour"),
-                ...strokes("colour", seen),
+                ...(lined ? strokes("colour", seen) : []),
                 ...layer("waves"),
                 ...layer("marks-colour"),
                 ...layer("marks-pencil"),
@@ -923,11 +998,11 @@ export async function terrain(o: {
             if (freed) o.wake();
             // the eased drift is at its quickest three times its average; half a device pixel of it takes this long
             const fastest = (3 * 2 * DRIFT.reach) / DRIFT.period;
-            const settling = marksShown !== (close && !drawing ? 0 : 1);
+            const settling = marksShown !== aim;
             const again = settling
                 ? 16
                 : drifting
-                  ? Math.max(16, 0.5 / (fastest * camera.z * density))
+                  ? Math.max(DRIFT_EVERY, 0.5 / (fastest * camera.z * density))
                   : null;
             return { draws: out, mask: mask(seen), again };
         },

@@ -2,6 +2,8 @@
 export interface TileLease<T> {
     ready: Promise<T>;
     release(): void;
+    /** Says the tile is wanted now, at `priority`, so of the tiles still to load it goes first. */
+    want(priority: number): void;
 }
 
 export function tileCache<T>(o: {
@@ -15,6 +17,8 @@ export function tileCache<T>(o: {
         bytes: number;
         refs: number;
         priority: number;
+        /** When it was last wanted, so of tiles alike the one wanted latest loads first. */
+        wanted: number;
         state: "queued" | "loading" | "ready";
         controller: AbortController;
         value?: T;
@@ -29,6 +33,7 @@ export function tileCache<T>(o: {
     };
     let bytes = 0;
     let loading = 0;
+    let wants = 0;
     const drop = (e: Entry): void => {
         if (entries.get(e.url) !== e) return;
         entries.delete(e.url);
@@ -42,7 +47,7 @@ export function tileCache<T>(o: {
         while (loading < o.concurrency) {
             const e = [...entries.values()]
                 .filter((e) => e.state === "queued")
-                .sort((a, b) => b.priority - a.priority)[0];
+                .sort((a, b) => b.priority - a.priority || b.wanted - a.wanted)[0];
             if (!e) return;
             e.state = "loading";
             loading++;
@@ -90,6 +95,7 @@ export function tileCache<T>(o: {
             if (e) {
                 e.refs++;
                 e.priority = Math.max(e.priority, priority);
+                e.wanted = ++wants;
             } else {
                 if (weight <= 0 || !Number.isFinite(weight) || bytes + weight > o.budget)
                     return null;
@@ -103,6 +109,7 @@ export function tileCache<T>(o: {
                     bytes: weight,
                     refs: 1,
                     priority,
+                    wanted: ++wants,
                     state: "queued",
                     controller: new AbortController(),
                     promise,
@@ -124,6 +131,11 @@ export function tileCache<T>(o: {
                     released = true;
                     if (!--held.refs) drop(held);
                     pump();
+                },
+                want(p) {
+                    if (released || held.state !== "queued") return;
+                    held.priority = Math.max(held.priority, p);
+                    held.wanted = ++wants;
                 },
             };
         },
@@ -223,7 +235,8 @@ type Asked = Map<number, { resolve(p: TilePixels): void; reject(e: unknown): voi
 /** The worker the tiles are decoded in, started with the first tile. */
 let decoder: { worker: Worker; waiting: Asked } | null = null;
 let serial = 0;
-function decode(blob: Blob): Promise<TilePixels> {
+/** Decodes a picture off the page's thread, as the GPU takes it quickest (a map tile, a baked drawing). */
+export function decode(blob: Blob): Promise<TilePixels> {
     if (!decoder) {
         const worker = new Worker(new URL("./tiles.worker.ts", import.meta.url), {
             type: "module",

@@ -519,7 +519,13 @@ interface Pending {
     done: (r: Rastered | null) => void;
 }
 
-const WORKERS = Math.max(1, Math.min(4, (navigator.hardwareConcurrency || 2) - 1));
+/**
+ * The version of how a sketch is drawn into pixels (sketchOf and sprites.worker.ts): raise it with any
+ * change to what a drawing's pixels come out as, since the pixels kept on devices are named by it.
+ */
+export const DRAWN = 1;
+/** How many workers draw, one to four, leaving a core for the page. */
+export const WORKERS = Math.max(1, Math.min(4, (navigator.hardwareConcurrency || 2) - 1));
 interface Slot {
     worker: Worker;
     busy: Pending | null;

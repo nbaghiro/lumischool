@@ -32,9 +32,20 @@ import {
 } from "./gl";
 import { terrain, type Terrain } from "./map-tiles";
 import { atlas, CELL, PAD, type Slot } from "./atlas";
-import { movingPartsOf, PARTS, rasterize, sketchOf, warmRasterizers, type Sketch } from "./sprites";
+import {
+    movingPartsOf,
+    PARTS,
+    rasterize,
+    sketchOf,
+    warmRasterizers,
+    DRAWN,
+    WORKERS,
+    type Sketch,
+} from "./sprites";
 import { mapCount, mapNote } from "./map-diagnostics";
 import { smallDevice } from "./device";
+import { bakedArt } from "./baked";
+import { ART_BAKE } from "./art-manifest";
 
 const MB = 1024 * 1024;
 /** What rasterized drawings may hold on the GPU before the least recently drawn are let go; less on a phone. */
@@ -49,21 +60,39 @@ const PAGES = (smallDevice ? 96 : 192) * MB;
 const TILE = CELL - 2 * PAD;
 /** How large on screen a drawing may be before it is drawn as tiles, in pixels. */
 const TILED = 1024;
-/** How long a source being prepared may take to draw before it is shown as it is, in ms. */
-const PREPARING = 1000;
+/**
+ * How long a source being prepared may take to draw before it is shown as it is, in ms: long enough for
+ * a slow phone to draw what it opens on under the screen held over it (handoff.ts, which lets go at 3 s).
+ */
+const PREPARING = 2500;
 /** How long a tile with nothing drawn in it is kept for as a place in the grid, in ms. */
 const FORGOTTEN = 20_000;
 /** The largest side a texture is given; a drawing larger than that on screen is drawn a window at a time. */
 const LARGEST = 2048;
 /** How far past its box a drawing is rasterized, for the strokes and motion that overflow it. */
 const OVERFLOW = 0.2;
-/** How many drawings are with the workers at once; they draw off the page's thread, so a few at a time. */
-const DECODING = 6;
+/**
+ * How far past the window, in windows, drawings are drawn before the camera gets to them, so a pan
+ * meets drawings already drawn; a phone has the memory for less.
+ */
+const AHEAD = smallDevice ? 0.5 : 1;
+/**
+ * How many drawings are with the workers at once: one each and one waiting, since a job handed over
+ * can no longer be put behind one that has come into view.
+ */
+const DECODING = WORKERS + 1;
+/**
+ * How many of them may be drawings not yet in view (ahead of the camera, or sharper copies), so a
+ * worker is always free for one that comes into view.
+ */
+const AHEAD_DECODING = Math.max(1, WORKERS - 1);
 /**
  * And how many pixels they draw between them, so a few large drawings do not hold every worker while
  * many small ones wait; one drawing goes however large it is.
  */
 const DECODING_PIXELS = 6 * 1024 * 1024;
+/** How many baked drawings are fetched at once; they are files, and take no worker. */
+const FETCHING = 16;
 /** The most backing pixels the map's canvas has, whatever the window. */
 const PIXELS = 4_000_000;
 /** What a label holds when it holds only words, so it can move over the canvas whole. */
@@ -72,10 +101,16 @@ const INLINE = new Set(["SPAN", "B", "I", "EM", "STRONG", "BR", "SMALL"]);
 const UPLOADING = 6;
 /** How many times a drawing the workers could not draw is asked for before it is given up on. */
 const RETRIES = 4;
+/** How long a drawing the workers could not draw is left before it is asked for again, in ms. */
+const GIVE_UP_FOR = 30_000;
 /** How long a raster job waits for a frame to want it again before it is dropped, in ms. */
 const FORGET_JOB = 250;
 /** How long a drawing that arrives late takes to fade in, in ms. */
 const ARRIVES = 120;
+/** How long sharper pixels take to fade in over the softer ones they replace on the screen, in ms. */
+const SHARPENS = 150;
+/** How many frames back a drawing a parked scene keeps was shown, about the length of a dive. */
+const SHOWN_LATELY = 120;
 /** How long after the camera last moved it counts as settled, when the drawings are drawn sharp again. */
 const SETTLE = 200;
 
@@ -152,6 +187,8 @@ interface Leaf {
     own?: number;
     /** When pixels came for it while it was on the screen with none, which it fades in from, in ms. */
     born?: number;
+    /** The softer pixels it showed before sharper ones came, kept under them while they fade in. */
+    softer?: { texture: GlTexture | null; slot: Slot | null; rect: Rect; since: number };
     /** The markup and part its pixels were drawn from, by which another drawing may share them. */
     drew?: string;
     /** The last frame it was on the screen with nothing to show, which it fades in after. */
@@ -448,15 +485,38 @@ function scriptOf(
 }
 
 /**
- * The store the workers keep pixels in across visits (sprites.worker.ts), named by the renderer's
- * version: this module's own file name in a build, which carries a hash of it and the worker, so
- * pixels one build drew are never shown by another. In development there is no hash, so nothing is
- * kept unless a test asks (`?mapCache`), and a change to how drawings are drawn is always seen.
+ * The store the workers keep pixels in across visits (sprites.worker.ts), named by `DRAWN`, the version
+ * of how drawings are drawn, so a deploy that does not change it keeps every device's pixels; what a
+ * drawing is (its markup, its glow, the scale) is in each key. In development nothing is kept unless a
+ * test asks (`?mapCache`), so a change to how drawings are drawn is always seen.
  */
+/** How few jobs a bake waits for before it walks again, and the longest it goes between walks, in ms. */
+const BAKE_QUEUE = 16;
+const BAKE_WALK = 3000;
+/**
+ * The most tiles of one drawing a bake asks for at a scale. Past it the drawing covers much of the
+ * country at that scale, whose screenful of tiles is drawn when it is seen rather than baked.
+ */
+const BAKE_TILES = 256;
+/** What a bake walks, which is all of it. */
+const EVERYWHERE: Rect = { x: -1e9, y: -1e9, w: 2e9, h: 2e9 };
+/** Where the drawings baked with the build are served from (tools/scripts/art-bake.ts). */
+const BAKED = "/assets/art";
+/** The bake of each palette, shared by every scene on the page. */
+const bakes = new Map<string, ReturnType<typeof bakedArt>>();
+/** How long the scene waits for the bake's index before drawing without it, in ms. */
+const BAKE_WAITS = 1500;
+const bakeOf = (at: string | null): ReturnType<typeof bakedArt> => {
+    const had = bakes.get(at ?? "");
+    if (had) return had;
+    const made = bakedArt(at);
+    bakes.set(at ?? "", made);
+    return made;
+};
 const keptStore = ((): string | null => {
     if (typeof location === "undefined") return null;
-    const built = /-([\w-]{8,})\.js$/.exec(new URL(import.meta.url).pathname)?.[1];
-    if (built) return built;
+    // a build names its files with a hash, which development does not
+    if (/-[\w-]{8,}\.js$/.test(new URL(import.meta.url).pathname)) return `r${DRAWN}`;
     return new URLSearchParams(location.search).has("mapCache") ? "dev" : null;
 })();
 /** What the pixels kept in memory may hold, across every scene on the page. */
@@ -518,6 +578,11 @@ export interface Scene {
      * can swap it in for the source it replaces and nothing is seen being drawn (a roll drawn again).
      */
     prepare(root: Element, camera?: Camera): Promise<void>;
+    /**
+     * Draws every drawing of the source at `toScreen` pixels to a unit, as if all of it were on the
+     * screen, for the bake (tools/scripts/art-bake.ts) to keep; settles once all of it is kept.
+     */
+    bake(toScreen: number): Promise<void>;
     setReach(reach: MapView["reach"]): void;
     /**
      * Draws from `hidden` from now on, lifting into `overlay` and telling the idles through `see`: what
@@ -530,6 +595,11 @@ export interface Scene {
     /** Puts the canvas back, in `host` under `under`, to draw again from the next frame. */
     unpark(host: HTMLElement, under: Element): void;
     stop(): void;
+    /**
+     * Draws as sharp as it would with the camera at zoom `z`, while a scripted move passes through
+     * zooms it will not rest at, so the move asks for nothing it will not show; null lets go.
+     */
+    hold(z: number | null): void;
 }
 
 /**
@@ -594,6 +664,13 @@ export function mapScene(o: {
     // a drawing painted again as it was, as a world's roll is when its record is read again, is the
     // same markup: it is known by that, and takes over the pixels the drawing it replaces had
     const contents = new WeakMap<SVGSVGElement, string>();
+    /** The filter each drawing was keyed with, for a class changed on its box to be checked against. */
+    const glows = new WeakMap<SVGSVGElement, string>();
+    const glowOf = (svg: SVGSVGElement): string => {
+        const f = svg.isConnected ? getComputedStyle(svg).filter : (glows.get(svg) ?? "");
+        glows.set(svg, f);
+        return f === "none" ? "" : f;
+    };
     const contentOf = (svg: SVGSVGElement): string => {
         let c = contents.get(svg);
         if (c === undefined) {
@@ -611,7 +688,9 @@ export function mapScene(o: {
                     .replace(/\s{2,}/g, " ")
                     .replace(/[\s;]+"$/, '"'),
             );
-            const text = (root + html.slice(open))
+            // the glow a class on its box casts round it is drawn into its pixels, so it is part of
+            // what the drawing looks like though its markup does not say so
+            const text = (glowOf(svg) + root + html.slice(open))
                 .replace(/ data-anim(?:-moved|-frame)?="[^"]*"/g, "")
                 .replace(/<[a-z]+ [^>]*data-(?:anim-)?part="[^>]*>/g, (tag) =>
                     tag.replace(/ (?:transform|style|opacity)="[^"]*"/g, ""),
@@ -677,8 +756,17 @@ export function mapScene(o: {
         split: boolean;
     }[] = [];
     const waiters: (() => void)[] = [];
+    /** Lets whatever waits on a prepare or for the scene to settle go on, as the scene parks or stops. */
+    const settleAll = (): void => {
+        const p = preparing;
+        preparing = null;
+        p?.done();
+        for (const done of waiters.splice(0)) done();
+    };
     let drifting: ReturnType<typeof setTimeout> | 0 = 0;
     let wasBusy = false;
+    /** The zoom a scripted move draws as sharp as, from `hold`. */
+    let held: number | null = null;
     let moved = 0,
         settling: ReturnType<typeof setTimeout> | undefined;
     let ahead: Camera | null = null;
@@ -687,12 +775,16 @@ export function mapScene(o: {
         camera: Camera | null;
         done: () => void;
         until: number;
+        /** A bake (tools/scripts/art-bake.ts): every drawing of the source, at this many pixels to a unit. */
+        bake?: number;
     } | null = null;
     let camera: Camera | null = null,
         size: Size = { w: 0, h: 0 },
         frames = 0,
         scheduled = 0,
         decoding = 0,
+        /** Baked drawings being fetched, which take no worker. */
+        fetching = 0,
         /** The pixels the drawings with the workers take between them. */
         drawingPixels = 0,
         stopped = false,
@@ -719,6 +811,8 @@ export function mapScene(o: {
     /** Puts a job in the queue, or brings the one waiting for its leaf up to date. */
     const request = (job: Job): void => {
         if (job.leaf.retryAt !== undefined && job.wanted < job.leaf.retryAt) return;
+        // what a bake asks for waits however long it takes, since the bake does not ask every frame
+        if (bakeHolds) job.wanted = Infinity;
         const had = queued.get(job.leaf);
         if (had) {
             Object.assign(had, job);
@@ -729,6 +823,9 @@ export function mapScene(o: {
         queued.set(job.leaf, job);
         queue.push(job);
     };
+    /** Whether the walk asking for drawings is a bake's, and when a bake last walked. */
+    let bakeHolds = false,
+        bakeWalkedAt = 0;
     const wake = (): void => {
         if (!scheduled && !stopped)
             scheduled = requestAnimationFrame(() => {
@@ -762,12 +859,26 @@ export function mapScene(o: {
         for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 16777619);
         return (h >>> 0).toString(36);
     })();
+    // before the first bake there is nothing to look in
+    const bake = bakeOf(ART_BAKE === "none" ? null : `${BAKED}/${ART_BAKE}/${palette}`);
+    let bakeReady = false;
+    void Promise.race([bake.ready, new Promise((done) => setTimeout(done, BAKE_WAITS))]).then(
+        () => {
+            bakeReady = true;
+            wake();
+        },
+    );
     // half the budget for the pages the small drawings share, half for the large ones' own textures
     const pages = atlas(gl, o.tiles ? PAGES : BUDGET / 2);
     /** How many leaves share a cell or a texture beyond the one that drew it, for pixels two drawings show. */
     const sharing = new Map<object, number>();
     /** Lets a leaf's pixels go, from its own texture or its cell, once no other leaf shows them. */
-    const letGo = (leaf: Leaf): void => {
+    const letGo = (leaf: Pick<Leaf, "texture" | "slot" | "softer">): void => {
+        if (leaf.softer) {
+            const was = leaf.softer;
+            leaf.softer = undefined;
+            letGo(was);
+        }
         if (leaf.texture) {
             const n = sharing.get(leaf.texture) ?? 0;
             if (n) sharing.set(leaf.texture, n - 1);
@@ -789,6 +900,9 @@ export function mapScene(o: {
         }
     };
     /** Whether a leaf has pixels to show, in a live cell or a texture of its own. */
+    /** Whether the workers could not draw a leaf at its version, and it waits before it is asked for again. */
+    const givenUp = (l: Leaf): boolean =>
+        l.failed === l.version && performance.now() < (l.retryAt ?? 0);
     const hasPixels = (l: Leaf): boolean =>
         (!!l.texture && gl.live(l.texture)) || (!!l.slot && pages.live(l.slot));
     /** Gives `to` the pixels `from` shows, which neither lets go of while the other shows them. */
@@ -947,6 +1061,8 @@ export function mapScene(o: {
         if (src.contains(root)) walk(root);
     };
 
+    /** Whether the page hides the source as a whole, from outside it, which the scene does not follow. */
+    let pageHides = false;
     const infoOf = (el: Element): Info => {
         const had = infos.get(el);
         if (had) return had;
@@ -1015,7 +1131,7 @@ export function mapScene(o: {
         if (motion) clocks.set(el, motion);
         const info: Info = {
             kind,
-            hidden: cs.display === "none" || cs.visibility === "hidden",
+            hidden: cs.display === "none" || (!pageHides && cs.visibility === "hidden"),
             at: written ? affineOf(written) : IDENTITY,
             origin: [origin[0] ?? 0, origin[1] ?? 0],
             offset: [left, top],
@@ -1087,28 +1203,46 @@ export function mapScene(o: {
         else if (!hasMoved.has(svg)) return [];
         return partsOf(svg);
     };
+    /** The drawings changed in the records the observer is going through, dealt with once each after them. */
+    const changed = new Set<SVGSVGElement>();
     const touched = (svg: SVGSVGElement, target: Node, attribute: boolean): void => {
         // the idle writes a moving part's own transform, opacity and pivot, which move its texture only
         const part = target instanceof Element ? target.closest(PARTS) : null;
         if (attribute && part === target && movingParts(svg).includes(part)) return;
         const base = leaves.get(svg);
         if (part && base?.split && movingParts(svg).some((p) => p.contains(part))) return;
-        found.delete(svg);
-        sketches.delete(svg);
-        // what it is now is known by its markup now, and what it was stands in until it is drawn again
-        contents.delete(svg);
-        const was = ids.get(svg);
-        if (was !== undefined) previousIds.set(svg, was);
-        ids.delete(svg);
-        let drawn = false;
-        for (const leaf of every())
-            if (leaf.svg === svg) {
-                if (leaf.rastered >= 0) drawn = true;
-                leaf.version++;
+        changed.add(svg);
+    };
+    /** Takes the drawings that changed as new drawings: read again, keyed again, and drawn again. */
+    const settleChanges = (): void => {
+        if (!changed.size) return;
+        for (const svg of changed) {
+            found.delete(svg);
+            sketches.delete(svg);
+            // what it is now is known by its markup now, and what it was stands in until it is drawn again
+            contents.delete(svg);
+            const was = ids.get(svg);
+            if (was !== undefined) previousIds.set(svg, was);
+            ids.delete(svg);
+            versions.set(svg, tileVersion(svg) + 1);
+        }
+        const drawn = new Set<SVGSVGElement>();
+        const bump = (leaf: Leaf): void => {
+            if (!changed.has(leaf.svg)) return;
+            if (leaf.rastered >= 0) drawn.add(leaf.svg);
+            leaf.version++;
+            // a drawing that changed is a new drawing to the workers
+            leaf.failures = 0;
+        };
+        for (const svg of changed)
+            for (const key of keysOf.get(svg) ?? []) {
+                const leaf = leaves.get(key);
+                if (leaf) bump(leaf);
             }
+        for (const tile of tiles.values()) bump(tile);
         // a drawing is not to change once it has been drawn, apart from its moving parts
-        if (drawn) mapCount("art-mutated", 1);
-        versions.set(svg, tileVersion(svg) + 1);
+        mapCount("art-mutated", drawn.size);
+        changed.clear();
     };
     // a drawing is read into its display list once, and again only when it changes
     const grownBy = (r: Rect, by: number): Rect => ({
@@ -1169,9 +1303,19 @@ export function mapScene(o: {
                     forgetInfo(r.target);
                     const twin = twins.get(r.target);
                     if (twin) copy(r.target, twin);
+                    // a box lit or inked in place casts a glow its drawings are drawn with
+                    if (r.attributeName === "class")
+                        for (const svg of r.target instanceof SVGSVGElement
+                            ? [r.target]
+                            : r.target.querySelectorAll("svg")) {
+                            const had = glows.get(svg);
+                            if (had !== undefined && getComputedStyle(svg).filter !== had)
+                                touched(svg, svg, false);
+                        }
                 }
             }
         }
+        settleChanges();
         wake();
     });
     watching.observe(src, { childList: true, subtree: true, attributes: true });
@@ -1190,8 +1334,12 @@ export function mapScene(o: {
         }
         queue.length = left;
         queue.sort((a, b) => a.tier - b.tier || a.near - b.near);
-        while (decoding < DECODING && queue.length) {
-            const job = queue.shift();
+        // a job for the workers when they are full waits its turn, in order, and one the bake has
+        // is fetched past it
+        const later: Job[] = [];
+        let at = 0;
+        for (; at < queue.length; at++) {
+            const job = queue[at];
             if (!job) break;
             const leaf = job.leaf;
             queued.delete(leaf);
@@ -1259,24 +1407,71 @@ export function mapScene(o: {
                 wake();
                 continue;
             }
-            const pixels = (w + 2 * pad) * (h + 2 * pad);
-            if (decoding > 0 && drawingPixels + pixels > DECODING_PIXELS) {
-                queue.unshift(job);
+            // the bake's index is read before anything is drawn, so nothing it has is drawn meanwhile
+            if (!bakeReady) {
+                later.push(job);
                 queued.set(leaf, job);
-                break;
+                continue;
+            }
+            const file = bake.find(key);
+            if (file === 0) {
+                mapCount("art-baked", 1);
+                keepPixels(key, null, 64);
+                landed(null, true);
+                continue;
+            }
+            if (file !== undefined) {
+                if (fetching >= FETCHING) {
+                    later.push(job);
+                    queued.set(leaf, job);
+                    continue;
+                }
+                fetching++;
+                void bake
+                    .fetch(file)
+                    .then((got) => {
+                        if (!got || got.width !== w + 2 * pad || got.height !== h + 2 * pad) {
+                            if (got instanceof ImageBitmap) got.close();
+                            // a baked file that will not do is drawn by the workers
+                            bake.forget(key);
+                            leaf.pending = false;
+                            return;
+                        }
+                        mapCount("art-baked", 1);
+                        landed(got, keepPixels(key, got, got.width * got.height * 4));
+                    })
+                    .finally(() => {
+                        fetching--;
+                        wake();
+                        pump();
+                    });
+                continue;
+            }
+            const pixels = (w + 2 * pad) * (h + 2 * pad);
+            if (
+                decoding >= DECODING ||
+                (decoding > 0 && drawingPixels + pixels > DECODING_PIXELS) ||
+                (job.tier >= 4 && decoding >= AHEAD_DECODING)
+            ) {
+                later.push(job);
+                queued.set(leaf, job);
+                continue;
             }
             drawingPixels += pixels;
             decoding++;
-            void rasterize({
-                sketch: sketchFor(svg),
-                box,
-                w: w + 2 * pad,
-                h: h + 2 * pad,
-                only: only !== null && only >= 0 ? only : null,
-                withoutParts,
-                glowScale: job.scale,
-                ...(keptStore ? { keep: { store: `${keptStore}~${palette}`, key } } : {}),
-            })
+            void rasterize(
+                {
+                    sketch: sketchFor(svg),
+                    box,
+                    w: w + 2 * pad,
+                    h: h + 2 * pad,
+                    only: only !== null && only >= 0 ? only : null,
+                    withoutParts,
+                    glowScale: job.scale,
+                    ...(keptStore ? { keep: { store: `${keptStore}~${palette}`, key } } : {}),
+                },
+                job.tier <= 2,
+            )
                 .then((drawn) => {
                     if (!drawn) throw new Error("The drawing could not be rasterised");
                     mapCount(drawn.cached ? "art-cached" : "art-rastered", 1);
@@ -1294,8 +1489,14 @@ export function mapScene(o: {
                     // a worker short of canvas memory, or a kept copy that would not read, is often
                     // gone a moment later, so a drawing is asked for again before it is given up on
                     leaf.failures = (leaf.failures ?? 0) + 1;
-                    if (leaf.failures >= RETRIES) leaf.failed = job.version;
-                    else {
+                    if (leaf.failures >= RETRIES) {
+                        // given up on for a while, then asked for again, since what stopped it (a
+                        // worker short of memory, the network) is often gone by then
+                        leaf.failed = job.version;
+                        leaf.failures = 0;
+                        leaf.retryAt = performance.now() + GIVE_UP_FOR;
+                        setTimeout(wake, GIVE_UP_FOR + 16);
+                    } else {
                         const wait = 400 * 2 ** leaf.failures;
                         leaf.retryAt = performance.now() + wait;
                         setTimeout(wake, wait + 16);
@@ -1308,6 +1509,7 @@ export function mapScene(o: {
                     pump();
                 });
         }
+        queue.splice(0, at, ...later);
     };
 
     /** Uploads what has decoded, nearest first, for as long as the frame allows. */
@@ -1343,7 +1545,26 @@ export function mapScene(o: {
                     mapCount("art-redrawn", 1);
                 }
             }
-            letGo(leaf);
+            // sharper pixels for a drawing on the screen fade in over the softer ones, which stay
+            // until they have, rather than the drawing changing in one frame
+            const sharper =
+                !o.still &&
+                leaf.tile === undefined &&
+                hasPixels(leaf) &&
+                leaf.own !== undefined &&
+                leaf.own >= frames - 1 &&
+                d.scale > leaf.scale * 1.01;
+            if (sharper) {
+                if (leaf.softer) letGo(leaf.softer);
+                leaf.softer = {
+                    texture: leaf.texture,
+                    slot: leaf.slot,
+                    rect: leaf.rect,
+                    since: performance.now(),
+                };
+                leaf.texture = null;
+                leaf.slot = null;
+            } else letGo(leaf);
             leaf.empty = false;
             const slot = d.padded ? cell(d.w, d.h) : null;
             let texture: GlTexture | null = null;
@@ -1372,10 +1593,15 @@ export function mapScene(o: {
         pages.settle();
     };
 
-    /** Lets drawings go, seen longest ago first, until what the GPU holds for them is `to` bytes. */
-    const trim = (to: number): void => {
+    /**
+     * Lets drawings go, seen longest ago first, until what the GPU holds for them is `to` bytes, or
+     * until only what was shown lately is left when `keepShown`, which is where a scene parked
+     * under a world comes back to and must not come back without.
+     */
+    const trim = (to: number, keepShown: boolean): void => {
+        const shown = (l: Leaf): boolean => keepShown && l.drawn >= frames - SHOWN_LATELY;
         const held = kept();
-        const own = held.filter((l) => l.texture).sort((a, b) => a.drawn - b.drawn);
+        const own = held.filter((l) => l.texture && !shown(l)).sort((a, b) => a.drawn - b.drawn);
         for (const leaf of own) {
             if (bytes + pages.bytes() <= to) return;
             letGo(leaf);
@@ -1391,6 +1617,7 @@ export function mapScene(o: {
         }
         for (const page of [...byPage.values()].sort((a, b) => a.last - b.last)) {
             if (bytes + pages.bytes() <= to) return;
+            if (page.leaves.some(shown)) continue;
             for (const leaf of page.leaves) letGo(leaf);
         }
     };
@@ -1424,19 +1651,34 @@ export function mapScene(o: {
         let cam: Camera = current;
         frames++;
         const now = performance.now();
+        // a page that hides the whole source until it shows it, as the site does its sample day, is
+        // drawn for all the same, so its pixels are there when it shows; and when that changes, which
+        // is outside what the scene watches, every style it read is read again
+        const hides = getComputedStyle(src).visibility === "hidden";
+        if (hides !== pageHides) {
+            pageHides = hides;
+            infos.clear();
+        }
         upload(now);
-        // while the camera moves a drawing keeps the texture it has unless it would look four times as
-        // soft, and one new to the camera is drawn at half the sharpness, since each is drawn on the main
-        // thread; all of it is drawn sharp once the camera rests
+        // while the camera moves a drawing keeps the texture it has unless it would look twice as soft,
+        // and is drawn exactly as sharp as it is seen once the camera rests
         const still = now - moved > SETTLE;
-        const around = (c: Camera): { seen: Rect; margin: Rect } => {
+        const around = (c: Camera): { seen: Rect; margin: Rect; close: Rect } => {
             const v = visibleRect(c, size);
             return {
                 seen: v,
-                margin: { x: v.x - v.w * 0.25, y: v.y - v.h * 0.25, w: v.w * 1.5, h: v.h * 1.5 },
+                margin: {
+                    x: v.x - v.w * AHEAD,
+                    y: v.y - v.h * AHEAD,
+                    w: v.w * (1 + 2 * AHEAD),
+                    h: v.h * (1 + 2 * AHEAD),
+                },
+                // what a drawing too large for one texture is drawn a window of, which a wide margin
+                // would make softer to fit
+                close: { x: v.x - v.w * 0.25, y: v.y - v.h * 0.25, w: v.w * 1.5, h: v.h * 1.5 },
             };
         };
-        let { seen, margin } = around(cam);
+        let { seen, margin, close } = around(cam);
         // where a flight is going, drawn ahead at the sharpness it will want there
         const there = ahead ? visibleRect(ahead, size) : null;
         let reach = there ? union([margin, there]) : margin;
@@ -1507,11 +1749,11 @@ export function mapScene(o: {
             batch.count++;
         };
         let moving = false;
-        let toScreen = cam.z * density;
-        /** Whether the workers have room to draw what is new to the view at full sharpness while the camera moves. */
-        const roomy = queue.length + decoding < DECODING * 2;
+        let toScreen = (held ?? cam.z) * density;
         const idling = new Map<SVGSVGElement, { share: number; w: number; h: number }>();
         let wanting = 0;
+        /** Of those, the ones on the screen, which a source being prepared waits for; the rest are ahead. */
+        let inSight = 0;
         // what the page's diagnostics count (?mapDebug): a drawing on the screen last frame with nothing
         // this frame is a flash, and one in view that has never had pixels is late
         let lost = 0,
@@ -1520,6 +1762,8 @@ export function mapScene(o: {
         let onScreen = false;
         /** Whether the walk is of a source being prepared, which is drawn to pixels but not shown. */
         let staging = false;
+        /** Whether the walk is a bake's, which asks for each drawing at exactly its scale. */
+        let baking = false;
         const reckon = (l: Leaf, drew: boolean): void => {
             if (staging) return;
             if (drew) l.shown = frames;
@@ -1644,23 +1888,23 @@ export function mapScene(o: {
             split: boolean,
         ): void => {
             const unit = Math.sqrt(Math.abs(at[0] * at[3] - at[1] * at[2])) || 1;
-            // drawn at the sharpness it will be seen at, unless the camera is moving and the workers are
-            // behind, when a drawing new to the view is drawn at half first; what is ahead of a flight is
-            // always drawn at the sharpness it will want on arrival (.docs/map-smoothness-plan.md, phase 3)
-            let scale =
-                2 ** Math.ceil(Math.log2(Math.max(unit * zoomFor, 1 / 1024))) /
-                (still || roomy || zoomFor !== toScreen ? 1 : 2);
+            // drawn once at the sharpness it will be seen at, never a softer copy first that is drawn
+            // again as the camera rests; what is ahead of a flight at the sharpness it will want there
+            let scale = 2 ** Math.ceil(Math.log2(Math.max(unit * zoomFor, 1 / 1024)));
             // too large on screen for one texture: a window of it round what the camera sees
             let rect = whole;
             const inverse = invert(at);
             if (Math.max(whole.w, whole.h) * scale > LARGEST) {
-                rect = (inverse ? clip(bounds(inverse, margin), whole) : null) ?? whole;
+                rect = (inverse ? clip(bounds(inverse, close), whole) : null) ?? whole;
                 scale = Math.min(scale, LARGEST / Math.max(rect.w, rect.h, 1));
             }
             const wanted =
                 rect !== whole && inverse ? (clip(bounds(inverse, seen), whole) ?? whole) : whole;
             const stale =
-                !(hasPixels(l) || l.empty) ||
+                (baking && (l.scale !== scale || !contains(l.rect, wanted))) ||
+                // a bake wants a drawing drawn and kept, not held on the GPU, whose budget lets go
+                // of what the bake uploads and never shows
+                (!baking && !(hasPixels(l) || l.empty)) ||
                 l.scale < scale / (still ? 1.05 : 2.1) ||
                 l.version !== l.rastered ||
                 (!l.part && l.split !== split) ||
@@ -1670,8 +1914,9 @@ export function mapScene(o: {
                 // pixels on the screen for a softer copy
                 (still && !staging && l.scale > scale * 8.1) ||
                 (!(staging && l.scale > scale * 2) && !contains(l.rect, wanted));
-            if (stale && l.failed !== l.version) {
+            if (stale && !givenUp(l)) {
                 wanting++;
+                if (onScreen) inSight++;
                 const c = bounds(at, rect);
                 request({
                     leaf: l,
@@ -1697,7 +1942,29 @@ export function mapScene(o: {
                 l.born !== undefined && !o.still ? Math.min(1, (now - l.born) / ARRIVES) : 1;
             if (fading < 1) moving = true;
             else l.born = undefined;
-            const shown = alpha * fading;
+            let shown = alpha * fading;
+            const softer = l.softer;
+            if (softer) {
+                const t = (now - softer.since) / SHARPENS;
+                if (t >= 1 || !hasPixels(l)) {
+                    l.softer = undefined;
+                    letGo(softer);
+                } else {
+                    moving = true;
+                    if (softer.slot && pages.live(softer.slot))
+                        sprite(softer.slot, softer.rect, at, shown, tone);
+                    else if (softer.texture)
+                        draws.push({
+                            kind: "image",
+                            texture: softer.texture,
+                            rect: softer.rect,
+                            at,
+                            alpha: shown,
+                            tone,
+                        });
+                    shown *= t;
+                }
+            }
             if (l.slot && pages.live(l.slot)) sprite(l.slot, l.rect, at, shown, tone);
             else if (l.texture)
                 draws.push({
@@ -1728,22 +1995,22 @@ export function mapScene(o: {
             const unit = Math.sqrt(Math.abs(at[0] * at[3] - at[1] * at[2])) || 1;
             const wanted = 2 ** Math.ceil(Math.log2(Math.max(unit * toScreen, 1 / 1024)));
             if (Math.max(whole.w, whole.h) * wanted <= TILED) return false;
-            // while the camera moves a drawing is drawn at a quarter of its sharpness, a sixteenth of
-            // the tiles, which the workers keep up with, and keeps the tiles it has unless they are four
-            // times too soft or twice too sharp; it takes the scale it wants once the camera rests
+            // a drawing keeps the scale it is shown at while the camera is within twice of it either
+            // way, and its tiles at that scale are drawn ahead of the camera; past that, the tiles at
+            // the scale it wants are drawn behind the ones on the screen, and it changes to them in
+            // one step once every tile in view has them, so the ground never sharpens a tile at a time
             const id = idOf(svg);
             // a drawing that has just changed keeps the scale its tiles were drawn at, so its old
             // tiles stand in rather than tiles of another scale being asked for
             const before = previousIds.get(svg);
             const had =
                 tileScales.get(id) ?? (before === undefined ? undefined : tileScales.get(before));
-            const scale =
-                !still && had !== undefined && had >= wanted / 4 && had <= wanted * 2
-                    ? had
-                    : still
-                      ? wanted
-                      : wanted / 4;
-            tileScales.set(id, scale);
+            const scale = baking ? wanted : (had ?? wanted);
+            if (had === undefined && !baking) tileScales.set(id, scale);
+            const next =
+                !baking && had !== undefined && (had < wanted / 2 || had > wanted * 2)
+                    ? wanted
+                    : null;
             const inverse = invert(at);
             const shown = inverse ? clip(bounds(inverse, margin), whole) : null;
             if (!shown) return true;
@@ -1752,6 +2019,7 @@ export function mapScene(o: {
                 y0 = Math.floor(shown.y / side),
                 x1 = Math.floor((shown.x + shown.w) / side),
                 y1 = Math.floor((shown.y + shown.h) / side);
+            if (baking && (x1 - x0 + 1) * (y1 - y0 + 1) > BAKE_TILES) return true;
             /** A tile with pixels in a cell, which can stand in cropped, whether or not it is up to date. */
             const inCell = (l: Leaf | undefined): l is Leaf & { slot: Slot } =>
                 !!l && !!l.slot && pages.live(l.slot) && l.rastered >= 0;
@@ -1765,7 +2033,9 @@ export function mapScene(o: {
              */
             const split = movingParts(svg).length > 0;
             const ready = (l: Leaf): boolean =>
-                holds(l) && l.rastered === l.version && (l.empty || l.split === split);
+                (baking ? l.rastered >= 0 : holds(l)) &&
+                l.rastered === l.version &&
+                (l.empty || l.split === split);
             const put = (l: Leaf, rect: Rect): void => {
                 if (!staging) l.own = frames;
                 if (l.slot && pages.live(l.slot)) sprite(l.slot, rect, at, alpha, tone);
@@ -1773,7 +2043,7 @@ export function mapScene(o: {
                     draws.push({ kind: "image", texture: l.texture, rect, at, alpha, tone });
             };
             const ask = (l: Leaf, near: number, tier = onScreen ? 3 : 5): void => {
-                if (l.failed === l.version) return;
+                if (givenUp(l)) return;
                 request({
                     leaf: l,
                     scale: l.scale,
@@ -1831,7 +2101,10 @@ export function mapScene(o: {
                         continue;
                     }
                     ask(l, near);
-                    if (l.failed !== l.version) wanting++;
+                    if (!givenUp(l)) {
+                        wanting++;
+                        if (onScreen) inSight++;
+                    }
                     // its own pixels from before the drawing changed are the closest there is
                     if (holds(l)) {
                         put(l, l.rect);
@@ -1881,6 +2154,43 @@ export function mapScene(o: {
                     }
                     reckon(l, covered);
                 }
+            if (next !== null) {
+                const side_ = TILE / next;
+                const view_ = inverse ? clip(bounds(inverse, seen), whole) : null;
+                let all = true;
+                for (
+                    let ty = Math.floor(shown.y / side_);
+                    ty <= Math.floor((shown.y + shown.h) / side_);
+                    ty++
+                )
+                    for (
+                        let tx = Math.floor(shown.x / side_);
+                        tx <= Math.floor((shown.x + shown.w) / side_);
+                        tx++
+                    ) {
+                        const l = tileAt(next, (tx + 0.5) * side_, (ty + 0.5) * side_);
+                        if (!l || ready(l)) continue;
+                        const c = bounds(at, l.rect);
+                        const inView = !!view_ && intersects(l.rect, view_);
+                        ask(
+                            l,
+                            Math.hypot(c.x + c.w / 2 - cam.x, c.y + c.h / 2 - cam.y),
+                            inView ? 3 : 5,
+                        );
+                        if (inView) {
+                            all = false;
+                            if (!givenUp(l)) {
+                                wanting++;
+                                inSight++;
+                            }
+                        }
+                    }
+                // every tile in view has the scale it wants: the drawing changes to it in one step
+                if (all) {
+                    tileScales.set(id, next);
+                    if (view_) mapCount("art-rescaled", 1);
+                }
+            }
             return true;
         };
         const drawing = (
@@ -1955,26 +2265,58 @@ export function mapScene(o: {
                 );
             }
         };
-        for (const layer of src.children) visit(layer, IDENTITY, 1, PLAIN);
+        // a bake asks for every drawing at its scale, which the camera's own walk would ask back
+        const bake = preparing?.bake;
+        if (bake === undefined) for (const layer of src.children) visit(layer, IDENTITY, 1, PLAIN);
         if (preparing) {
             const kept = draws.length,
                 keptBatches = batches,
                 last = draws.at(-1),
                 keptCount = last?.kind === "sprites" ? last.count : 0,
-                wanted = wanting;
+                wanted = wanting,
+                sighted = inSight;
             wanting = 0;
+            inSight = 0;
             staging = true;
             // the source to come is walked with the camera it will be shown under
-            const now = { cam, seen, margin, reach, toScreen };
+            const now = { cam, seen, margin, close, reach, toScreen };
             cam = preparing.camera ?? cam;
-            ({ seen, margin } = around(cam));
+            ({ seen, margin, close } = around(cam));
             reach = margin;
             toScreen = cam.z * density;
-            for (const layer of preparing.root.children) visit(layer, IDENTITY, 1, PLAIN);
-            ({ cam, seen, margin, reach, toScreen } = now);
+            if (bake !== undefined) {
+                seen = margin = close = reach = EVERYWHERE;
+                toScreen = bake;
+            }
+            baking = bake !== undefined;
+            // a bake walks everything, which costs more than the workers' drawing, so it walks again
+            // only once they are near done with what it asked for, or a few seconds on
+            const walks =
+                !baking ||
+                queue.length < BAKE_QUEUE ||
+                performance.now() - bakeWalkedAt > BAKE_WALK;
+            if (walks) {
+                if (baking) bakeWalkedAt = performance.now();
+                bakeHolds = baking;
+                for (const layer of preparing.root.children) visit(layer, IDENTITY, 1, PLAIN);
+                bakeHolds = false;
+            }
+            baking = false;
+            ({ cam, seen, margin, close, reach, toScreen } = now);
             staging = false;
-            const ready = !wanting;
+            // ready once what the camera will see is drawn; what is ahead of it follows
+            // and a bake once every drawing is drawn and kept
+            const ready =
+                bake === undefined
+                    ? !inSight
+                    : walks &&
+                      !wanting &&
+                      !queue.length &&
+                      !decoding &&
+                      !fetching &&
+                      !decoded.length;
             wanting = wanted;
+            inSight = sighted;
             draws.length = kept;
             batches = keptBatches;
             if (last?.kind === "sprites") last.count = keptCount;
@@ -1991,12 +2333,13 @@ export function mapScene(o: {
             size,
             density,
             ahead,
-            wanting > 0 || queue.length > 0 || decoding > 0,
+            wanting > 0 || queue.length > 0 || decoding > 0 || fetching > 0,
         );
         if (under) draws.unshift(...under.draws);
         mapCount("art-lost", lost);
         mapCount("art-late", late);
-        const busy = wanting > 0 || queue.length > 0 || decoding > 0 || decoded.length > 0;
+        const busy =
+            wanting > 0 || queue.length > 0 || decoding > 0 || fetching > 0 || decoded.length > 0;
         if (!busy && wasBusy) mapNote("art-quiet-at", now);
         wasBusy = busy;
         mapNote("art-busy", busy ? 1 : 0);
@@ -2010,7 +2353,7 @@ export function mapScene(o: {
         mapNote("scene-gpu-mb", Math.round((bytes + pages.bytes()) / MB));
         mapNote("kept-mb", Math.round(drawnBytes / MB));
         mapNote("art-queued", queue.length);
-        mapNote("art-decoding", decoding + decoded.length);
+        mapNote("art-decoding", decoding + fetching + decoded.length);
         mapNote("camera-moved-at", moved);
         gl.draw(cam, size, {
             grid: { colour: o.tokens.grid, layers: paperLayers(cam.z) },
@@ -2040,6 +2383,7 @@ export function mapScene(o: {
             !wanting &&
             !queue.length &&
             !decoding &&
+            !fetching &&
             !decoded.length &&
             (o.view ? ground?.complete() : true)
         )
@@ -2090,8 +2434,23 @@ export function mapScene(o: {
             wake();
             return new Promise((done) => waiters.push(done));
         },
+        bake(t) {
+            const had = preparing;
+            preparing = null;
+            had?.done();
+            return new Promise((done) => {
+                preparing = { root: src, camera, done, until: Infinity, bake: t };
+                wake();
+            });
+        },
         prepare(root, at) {
-            preparing?.done();
+            const had = preparing;
+            preparing = null;
+            had?.done();
+            // drawings a prepare before this one walked that are in neither the source nor this root
+            // were abandoned with it, and go off the scene with their pixels kept by their markup
+            for (const svg of keysOf.keys())
+                if (!src.contains(svg) && !root.contains(svg)) drop(svg);
             return new Promise((done) => {
                 preparing = {
                     root,
@@ -2123,6 +2482,7 @@ export function mapScene(o: {
             wake();
         },
         park() {
+            settleAll();
             cancelAnimationFrame(scheduled);
             scheduled = 0;
             clearTimeout(settling);
@@ -2136,13 +2496,19 @@ export function mapScene(o: {
             // what waits to be shown again keeps what it drew up to half its pages, the most recently seen
             // first, so coming back to it draws nothing; a phone has room on its GPU for one screen, and
             // takes what this one drew from the pixels kept in memory when it comes back
-            trim(smallDevice ? 0 : (o.tiles ? PAGES : BUDGET) / 2);
+            trim(smallDevice ? 0 : (o.tiles ? PAGES : BUDGET) / 2, !smallDevice);
             ground?.park(smallDevice);
         },
         unpark(host, under) {
             host.insertBefore(canvas, under);
         },
+        hold(z) {
+            held = z;
+            wake();
+        },
         stop() {
+            if (stopped) return;
+            settleAll();
             stopped = true;
             starting.abort();
             cancelAnimationFrame(scheduled);

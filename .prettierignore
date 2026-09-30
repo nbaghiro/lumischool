@@ -18,3 +18,4 @@ content/
 
 # Content-addressed generated imagery; formatting would change its immutable identity.
 public/assets/map-tiles/
+public/assets/art/

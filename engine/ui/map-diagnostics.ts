@@ -30,7 +30,7 @@ export function mapNote(name: string, value: number): void {
 }
 
 /** Offers the suite a way to act on the map under `?mapDebug`, as `window[name]`; the last map to offer it has it. */
-export function mapHook(name: string, act: () => void): void {
+export function mapHook(name: string, act: (...args: number[]) => unknown): void {
     if (enabled) Reflect.set(window, name, act);
 }
 

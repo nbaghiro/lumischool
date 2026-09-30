@@ -13,6 +13,8 @@ const COUNTED = [
     "cached",
     "redrawn",
     "sharpened",
+    "rescaled",
+    "ground",
     "mutated",
 ] as const;
 type Counts = Record<(typeof COUNTED)[number], number>;
@@ -26,6 +28,8 @@ const countsOf = (get: (k: (typeof COUNTED)[number]) => number): Counts => ({
     cached: get("cached"),
     redrawn: get("redrawn"),
     sharpened: get("sharpened"),
+    rescaled: get("rescaled"),
+    ground: get("ground"),
     mutated: get("mutated"),
 });
 
@@ -381,4 +385,35 @@ test("a world drawn from the pixels kept on the device looks as it did drawn afr
         ] as const)
             await info.attach(name, { body: Buffer.from(png, "base64"), contentType: "image/png" });
     expect(differ, "the kept pixels do not look as the drawings drawn afresh").toBeLessThan(0.005);
+});
+
+test("a place lit in place is drawn again with its glow, which its old pixels do not have", async ({
+    page,
+}, info) => {
+    test.skip(info.project.name !== "desktop", "the glow is the same on every screen");
+    await page.goto("/?mapDebug#/map");
+    await expect(page.getByRole("dialog").locator(".ow-host.ready")).toBeVisible({
+        timeout: 60_000,
+    });
+    await expect.poll(async () => (await report(page)).busy, { timeout: 30_000 }).toBe(false);
+    const before = await report(page);
+    // the class the map puts on a place's box as the child lights it (map.ts), which casts its glow
+    const lit = await page.evaluate(() => {
+        const boxes = [...document.querySelectorAll(".ow-source .ow-art")].filter(
+            (b) => b.querySelector(":scope > svg") && !b.classList.contains("ow-lit"),
+        );
+        for (const b of boxes) b.classList.add("ow-lit");
+        return boxes.length;
+    });
+    expect(lit, "the map has places to light").toBeGreaterThan(0);
+    await expect
+        .poll(async () => (await report(page)).counts.mutated - before.counts.mutated, {
+            timeout: 10_000,
+        })
+        .toBeGreaterThan(0);
+    await expect.poll(async () => (await report(page)).busy, { timeout: 30_000 }).toBe(false);
+    const after = await report(page);
+    expect(after.counts.rastered, "the lit places were drawn again").toBeGreaterThan(
+        before.counts.rastered,
+    );
 });
