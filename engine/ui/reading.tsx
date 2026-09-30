@@ -26,9 +26,6 @@ import { matches, Near } from "./viewport";
 import { World } from "./world";
 import { Select } from "./select";
 
-/** A sheet's height on the roll while it is a card rather than the lesson, in the roll's units. */
-export const CARD = 620;
-
 export interface ReadingSource {
     description?: string;
     alternate?: string;
@@ -37,7 +34,7 @@ export interface ReadingSource {
     neighbours?: readonly { world: string; label: string }[];
     /** What a sheet's height depends on besides its lesson and the width, for the heights kept on the device (paper.ts). */
     scope?: string;
-    /** The roll, laid out round the heights the sheets measured; `CARD` stands in until one is drawn. */
+    /** The roll, laid out round the heights the sheets measured; a card's stands in until one is drawn. */
     world(o: { narrow: boolean; height: (lesson: string) => number | null }): WorldView;
     /** A lesson's sheet, drawn and measured for the roll to lay, or null while it cannot be read. */
     sheet(lesson: string, o: { narrow: boolean; measureIn: HTMLElement }): Promise<Measured | null>;
@@ -66,18 +63,21 @@ export function Reading(props: {
     onApproachWorld?: (world: string) => void;
 }): JSX.Element {
     const narrow = matches("(max-width: 700px)");
-    // bumped whenever paper lands or goes, so the roll lays out again round what it measured
+    // bumped whenever paper lands or goes, for the sheets and what says they are loading, and when a
+    // height the roll did not have is measured, for the roll to lay out again round it
     const [drew, setDrew] = createSignal(0);
+    const [measured, setMeasured] = createSignal(0);
     let measure: HTMLDivElement | undefined;
     const paper = nearPaper({
         draw: (lesson) =>
             props.source.sheet(lesson, { narrow: narrow(), measureIn: measure ?? document.body }),
         drawn: () => setDrew((n) => n + 1),
+        measured: () => setMeasured((n) => n + 1),
         scope: () => `${props.source.scope ?? "roll"}|${narrow()}`,
     });
     onCleanup(() => paper.forget());
     const view = createMemo(() => {
-        drew();
+        measured();
         return props.source.world({
             narrow: narrow(),
             height: (lesson) => paper.height(lesson),
@@ -86,6 +86,9 @@ export function Reading(props: {
     const entry = createMemo(() => entryLessons(view(), props.lesson));
     const [entered, setEntered] = createSignal(false);
     let nearby: readonly string[] = [];
+    // a card's picture is drawn only while the roll holds its lesson near, at reading distance, and
+    // goes with it, so drawing back over a year draws none and a long visit keeps only what is near
+    const [showing, setShowing] = createSignal<ReadonlySet<string>>(new Set());
     const wanted = (): string[] => [...new Set([...entry(), ...nearby])];
     const failed = (): boolean => {
         drew();
@@ -135,7 +138,7 @@ export function Reading(props: {
             const el = runWithOwner(owner, () => (
                 <article
                     class="j-sheet squared wd-sheet rd-sheet"
-                    style={{ width: `${view().layout.o.sheet}px`, "min-height": `${CARD}px` }}
+                    style={{ width: `${view().layout.o.sheet}px` }}
                     data-lesson={s.lesson}
                     aria-busy={loading()}
                     aria-label={s.title}
@@ -152,7 +155,12 @@ export function Reading(props: {
                             <span class="date hand">{words.note}</span>
                         </div>
                         <h2 class="rd-title hand">{s.title}</h2>
-                        <Show when={words.picture}>
+                        <Show
+                            when={
+                                (showing().has(s.lesson) || entry().includes(s.lesson)) &&
+                                words.picture
+                            }
+                        >
                             {(draw) => <Near class="rd-pic" draw={draw()} />}
                         </Show>
                     </div>
@@ -183,9 +191,7 @@ export function Reading(props: {
             made.set(s.lesson, had);
         }
         const p = paper.sheet(s.lesson);
-        const h = paper.height(s.lesson);
         had.el.style.width = `${view().layout.o.sheet}px`;
-        if (h !== null) had.el.style.minHeight = `${h}px`;
         if (p && !had.slot.contains(p.el)) {
             had.slot.replaceChildren(p.el);
             had.el.classList.add("rd-read");
@@ -207,8 +213,10 @@ export function Reading(props: {
                 view={view()}
                 from={props.from}
                 sheet={card}
+                sheetsAt={drew}
                 lookBack={(near) => {
                     nearby = near;
+                    setShowing(new Set(near));
                     paper.lookBack(wanted());
                 }}
                 waiting={waiting()}

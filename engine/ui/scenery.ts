@@ -7311,7 +7311,7 @@ export function paintWorldView(o: {
                 ])
                 .sort((a, b) => parseFloat(a.style.left) - parseFloat(b.style.left));
             if (!els.length) return;
-            const gap = 0.07,
+            const gap = 0.04,
                 end = settleTime(ARRIVE, 1, 0, 0) + els.length * gap;
             for (const e of els) e.style.opacity = "0";
             const tk = ticker({

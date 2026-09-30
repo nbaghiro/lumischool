@@ -65,7 +65,9 @@ export function Inside(props: {
     /** Back to the overworld at the world the child entered. */
     out: (box: DOMRect | null) => void;
 }): JSX.Element {
+    // paper landing or going changes the sheets; a height the roll did not have lays it out again
     const [drew, setDrew] = createSignal(0);
+    const [measured, setMeasured] = createSignal(0);
     const [browsing, setBrowsing] = createSignal(false);
     const readable = (id: string): boolean =>
         !browsing() ||
@@ -114,12 +116,13 @@ export function Inside(props: {
             });
         },
         drawn: () => setDrew((n) => n + 1),
+        measured: () => setMeasured((n) => n + 1),
         // a past sheet is the child's own, as they left it, at the width it is read at
         scope: () => `${props.c.pack.pack}|${props.kid.id}|${props.narrow}`,
     });
     onCleanup(() => paper.forget());
     const annualView = createMemo<WorldView | null>((prev) => {
-        drew();
+        measured();
         const c = props.c,
             built = props.sheets;
         // until the sheets of a record read again are drawn, the roll stays as it is; with nothing to
@@ -139,7 +142,7 @@ export function Inside(props: {
     const view = createMemo(() => {
         const selected = selectedJourney();
         if (!browsing() || !selected) return annualView();
-        drew();
+        measured();
         const c = props.c;
         return journeyViewOf({
             journey: selected,
@@ -228,6 +231,7 @@ export function Inside(props: {
                     <World
                         view={drawn()}
                         from={props.screen.box}
+                        sheetsAt={drew}
                         sheet={(sheet) =>
                             readable(sheet.lesson)
                                 ? (props.sheets?.sheet(sheet.lesson) ??

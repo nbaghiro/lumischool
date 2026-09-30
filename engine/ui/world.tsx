@@ -17,6 +17,7 @@ import {
     createMemo,
     createSignal,
     For,
+    Index,
     on,
     onCleanup,
     onMount,
@@ -32,6 +33,7 @@ import {
     clamp,
     DAY_AT,
     FAR_AT,
+    flight,
     intersects,
     visibleRect,
     labelGrow,
@@ -44,7 +46,7 @@ import {
 } from "../space";
 import { still } from "./art";
 import { announce } from "./say";
-import { hold, release } from "./handoff";
+import { claim, hold, release } from "./handoff";
 import type { WorldPainted } from "./scenery";
 import { CanvasView } from "./view";
 import { worldPainter } from "./painters";
@@ -53,6 +55,7 @@ import type { Group } from "./animate";
 import { readTokens } from "./read-tokens";
 import { WayOut } from "./wayout";
 import { landingRow } from "./paper";
+import { mapHook } from "./map-diagnostics";
 
 /** What a sheet raises to ask for something on it to be seen (lesson.tsx raises it by this name). */
 const REVEAL = "lumischool:reveal";
@@ -67,7 +70,11 @@ const ASK_WAITS = 2500;
 const STILL_FOR = 200;
 
 /** How long the world's horizon has to put itself together before the camera comes down to today, in ms. */
-const ARRIVING = 1400;
+const ARRIVING = 800;
+/** The longest the camera takes from the horizon down to today, however far down the roll it is, in ms. */
+const ARRIVAL_FLIGHT = 800;
+/** The longest a roll arriving from the map waits for what it grows from to be drawn, in ms. */
+const GROW_WAITS = 150;
 
 /** A day as a child reads it on a sheet's corner: "Monday, September 7". */
 /** A view's key, worked out once for each view, since a year's view is large and is asked for often. */
@@ -84,24 +91,31 @@ const keyOf = (view: WorldView, play: string | undefined): string => {
 /** How long a roll's scene is kept for the next roll a page opens, before it is let go. */
 const SPARE_FOR = 10 * 60_000;
 /** The scene of the last roll a page closed, kept drawn for the next (map-smoothness-plan.md, phase 2). */
-let spare: { scene: Scene; expiry: ReturnType<typeof setTimeout> } | null = null;
-const takeSpare = (): Scene | null => {
+let spare: { scene: Scene; still: boolean; expiry: ReturnType<typeof setTimeout> } | null = null;
+/** The spare scene for a roll drawn `still` or not, which a scene is made as and keeps. */
+const takeSpare = (still: boolean): Scene | null => {
     const s = spare;
     if (!s) return null;
     clearTimeout(s.expiry);
     spare = null;
-    return s.scene;
+    if (s.still === still) return s.scene;
+    s.scene.stop();
+    return null;
 };
-const keepSpare = (scene: Scene): void => {
+const keepSpare = (scene: Scene, still: boolean): void => {
     // a phone holds one GPU context at a time, the map's, and draws a roll again from the kept pixels
     if (smallDevice) {
         scene.stop();
         return;
     }
     scene.park();
-    takeSpare()?.stop();
+    if (spare) {
+        clearTimeout(spare.expiry);
+        spare.scene.stop();
+    }
     spare = {
         scene,
+        still,
         expiry: setTimeout(() => {
             if (spare?.scene === scene) spare = null;
             scene.stop();
@@ -123,6 +137,11 @@ export function World(props: {
     view: WorldView;
     /** The page's own sheet for a lesson, laid where the roll puts it; without one a sheet is a card with its title. */
     sheet?: (s: SheetView) => HTMLElement | null;
+    /**
+     * Changes when the page's own sheets do, which each sheet's slot reads, so a sheet the page has
+     * drawn since takes its place without the roll being laid out again.
+     */
+    sheetsAt?: () => unknown;
     /** With it, today's sheet has an Open button. */
     onOpen?: (lesson: string) => void;
     /**
@@ -166,6 +185,8 @@ export function World(props: {
     let canvasZoom = 1;
     /** A change of form asked for as the roll first draws, done once it has arrived. */
     let formAsked = false;
+    /** Where the arrival is coming down to, drawn ahead while the horizon puts itself together. */
+    let landingAhead: Camera | null = null;
     /** What the child last worked in on a sheet, which a change of form keeps where it was on the screen. */
     let reading: Element | null = null;
     function changeForm(): void {
@@ -207,7 +228,19 @@ export function World(props: {
         requestAnimationFrame(changeForm);
     }
     const followFocus = (e: FocusEvent): void => {
-        if (e.target instanceof Element && e.target.closest("[data-lesson]")) reading = e.target;
+        const el = e.target;
+        if (!(el instanceof HTMLElement) || !el.closest("[data-lesson]")) return;
+        reading = el;
+        // the roll clips what is past its edge rather than scrolling to it, so a child tabbing to
+        // something out of sight is taken to it, as a sheet's own ask to be seen is
+        const r = el.getBoundingClientRect(),
+            box = host?.getBoundingClientRect();
+        if (
+            box &&
+            el.matches(":focus-visible") &&
+            (r.top < box.top || r.bottom > box.bottom || r.left < box.left || r.right > box.right)
+        )
+            bring(el, Date.now() + ASK_WAITS);
     };
     let painted: WorldPainted | undefined;
     /**
@@ -235,6 +268,8 @@ export function World(props: {
     let busy = false;
     /** Whether the child is on the way back to the map, so the roll is held over it as it goes. */
     let leaving = false;
+    // a map or a roll held over the page as it goes waits for this roll to draw (handoff.ts)
+    claim();
     let root: HTMLElement | undefined;
     const quiet = still() || !!props.preview;
     const [ready, setReady] = createSignal(false);
@@ -304,18 +339,21 @@ export function World(props: {
     /** The roll grows out of `from` to `to`, fading in unless the map it came from fades out over it. */
     function grow(v: CanvasView, from: Camera, to: Camera, fade = true): void {
         const tl = timeline([
-            { name: "in", from: 0, to: 1, at: 0, dur: 0.58, ease: easeInOut },
+            { name: "in", from: 0, to: 1, at: 0, dur: 0.45, ease: easeInOut },
             { name: "fade", from: 0, to: 1, at: 0, dur: 0.24 },
         ]);
+        v.locked = true;
         ticker({
             now: () => performance.now(),
             schedule: (f) => requestAnimationFrame(f),
             onFrame: (time) => {
                 if (view !== v) return false;
                 const t = Math.min(time, tl.length);
-                v.set(cameraBetween(from, to, valueAt(tl, "in", t)));
+                v.setNow(cameraBetween(from, to, valueAt(tl, "in", t)));
                 if (host && fade) host.style.opacity = String(valueAt(tl, "fade", t));
-                return t < tl.length;
+                if (t < tl.length) return true;
+                v.locked = false;
+                return false;
             },
         }).start();
     }
@@ -337,33 +375,12 @@ export function World(props: {
         }
         busy = true;
         leaving = true;
-        const from = { ...v.cam },
-            to = { ...from, z: from.z * 0.5 };
-        const tl = timeline([{ name: "out", from: 0, to: 1, at: 0, dur: 0.5, ease: easeInOut }]);
-        ticker({
-            now: () => performance.now(),
-            schedule: (f) => requestAnimationFrame(f),
-            onFrame: (time) => {
-                if (view !== v) {
-                    go(null);
-                    return false;
-                }
-                const t = Math.min(time, tl.length);
-                v.set(cameraBetween(from, to, valueAt(tl, "out", t)));
-                if (t < tl.length) return true;
-                const r = h.getBoundingClientRect();
-                const w = Math.min(r.width * 0.42, r.height * 0.66);
-                go(
-                    new DOMRect(
-                        r.left + (r.width - w) / 2,
-                        r.top + (r.height - w * 0.62) / 2,
-                        w,
-                        w * 0.62,
-                    ),
-                );
-                return false;
-            },
-        }).start();
+        v.locked = true;
+        // the map's rise out of the place is the movement, with the roll fading off it, so the roll
+        // hands over at once rather than pulling back on its own first
+        const r = h.getBoundingClientRect();
+        const w = Math.min(r.width * 0.42, r.height * 0.66);
+        go(new DOMRect(r.left + (r.width - w) / 2, r.top + (r.height - w * 0.62) / 2, w, w * 0.62));
     }
 
     /** The camera on a term's horizon, as the child arrives. */
@@ -417,11 +434,13 @@ export function World(props: {
         if (!v || busy) return;
         setArrivalDue(false);
         arrive();
+        // the flight down takes over from the lead the roll had on today
+        landingAhead = null;
         const at = landing(props.view.arrival?.term);
         if (at) {
             const camera = readAt(v, at.y, at.own);
             if (quiet) v.set(camera);
-            else v.flyTo(camera);
+            else v.flyTo(camera, Math.min(ARRIVAL_FLIGHT, flight(v.cam, camera, v.vp).ms));
         }
     });
     /**
@@ -441,6 +460,13 @@ export function World(props: {
                 ? []
                 : (displayed().days[r]?.sheets ?? []).map((sheet) => sheet.lesson),
         );
+        // the sheet the keyboard is in stays, since letting it go would drop the child's place
+        const active = document.activeElement;
+        const holding =
+            active && host?.contains(active)
+                ? active.closest("[data-lesson]")?.getAttribute("data-lesson")
+                : null;
+        if (holding && !near.includes(holding)) near.push(holding);
         const key = near.join(",");
         if (key === asked) return;
         asked = key;
@@ -453,12 +479,14 @@ export function World(props: {
         const step = (deadline: number): void => {
             brush = 0;
             if (!view) return;
-            const margin = Math.min(320, view.vp.h / 2),
+            // painted a window ahead each way, as far as the scene draws ahead (map-scene.ts), so a
+            // pan meets pieces already drawn
+            const margin = Math.max(view.vp.w, view.vp.h) * (smallDevice ? 0.5 : 1),
                 seen = view.visible(margin),
                 keep = view.visible(margin * 2);
             // where a flight down the roll is going is painted as it sets off, and nothing is let go of
             // on the way (.docs/map-smoothness-plan.md, phase 3)
-            const to = view.heading;
+            const to = view.heading ?? landingAhead;
             const there = to
                 ? visibleRect(to, { w: view.vp.w + margin * 2, h: view.vp.h + margin * 2 })
                 : null;
@@ -509,6 +537,8 @@ export function World(props: {
     let covers: HTMLElement[] = [];
     const [overview, setOverview] = createSignal<{ from: number; to: number }[]>([]);
     let overviewKey = "";
+    /** The zoom step, the rows and the zoom the covers were last written for. */
+    let groupedAt: { scale: number; rows: unknown; iz: string } = { scale: 0, rows: null, iz: "" };
     /**
      * The zoom the paper's own rules read. A custom property set on the world is inherited by
      * everything on it, so writing these on the world every frame restyles the whole roll, which is
@@ -523,12 +553,17 @@ export function World(props: {
         if (!v) return;
         flags ??= v.world.querySelector<HTMLElement>(".l-flags");
         flags?.style.setProperty("--grow", labelGrow(cam.z).toFixed(3));
-        const iz = String(1 / cam.z);
-        if (level !== "day") {
+        // read by sizes, which a hundredth does not change, and written only when it does
+        const iz = (1 / cam.z).toFixed(2);
+        const rows = layout().rows;
+        const scale = 2 ** Math.floor(Math.log2(cam.z));
+        // the days fall into the same groups until the zoom crosses a power of two
+        const same = scale === groupedAt.scale && rows === groupedAt.rows && iz === groupedAt.iz;
+        if (level !== "day" && !same) {
             const groups: { from: number; to: number }[] = [];
-            const rows = layout().rows;
-            const scale = 2 ** Math.floor(Math.log2(cam.z));
-            for (let i = 0; i < rows.length; i++) {
+            const regroup = scale !== groupedAt.scale || rows !== groupedAt.rows;
+            groupedAt = { scale, rows, iz };
+            for (let i = 0; regroup && i < rows.length; i++) {
                 const from = i;
                 const first = rows[from];
                 if (!first) continue;
@@ -540,7 +575,7 @@ export function World(props: {
                 groups.push({ from, to: i });
             }
             const key = groups.map((group) => `${group.from}:${group.to}`).join(",");
-            if (key !== overviewKey) {
+            if (regroup && key !== overviewKey) {
                 overviewKey = key;
                 setOverview(groups);
                 covers = [];
@@ -561,13 +596,16 @@ export function World(props: {
             scene.canvas.style.transform = view.readingPage
                 ? `translateY(${host?.scrollTop ?? 0}px)`
                 : "";
-            scene.frame(cam, view.vp, view.heading);
+            scene.frame(cam, view.vp, view.heading ?? landingAhead);
         }
         setMoving(true);
         const lv = view.readingPage ? "day" : rollLevelOf(cam.z, level);
         if (lv !== level) {
             level = lv;
             view.world.dataset.level = lv;
+            // what is shown at the new level has its covers written afresh
+            groupedAt = { scale: 0, rows: null, iz: "" };
+            covers = [];
         }
         zoomRead(cam, false);
         rest(false);
@@ -618,6 +656,14 @@ export function World(props: {
     }
 
     /** The camera a roll comes to rest at as it opens: where its arrival lands, before any flight on to today. */
+    /** The camera a roll opened from a place's box starts at, as the arrival below takes it. */
+    function growStart(v: CanvasView, from: DOMRect): Camera | null {
+        const arrival = props.view.arrival;
+        const at0 = landing(arrival?.term);
+        if (props.open && at0 && !props.waiting) return cameraOnBox(v, at0.y, from);
+        if (arrival) return cameraIn(v, arrival.term, from);
+        return null;
+    }
     function opening(v: CanvasView): Camera {
         const arrival = props.view.arrival;
         const at0 = landing(arrival?.term);
@@ -680,7 +726,7 @@ export function World(props: {
         ]);
         if (!host || !source || !lifted || v !== view || n !== drawing) return;
         if (!scene) {
-            const kept = takeSpare();
+            const kept = takeSpare(quiet);
             const see: Group["see"] = (changes) => painted?.see?.(changes);
             if (kept) {
                 kept.rebind(source, lifted, see);
@@ -731,6 +777,9 @@ export function World(props: {
         // arrives whole rather than a piece at a time (.docs/map-smoothness-plan.md, phase 1)
         if (!drawn) setDisplayed(next);
         const first = drawn ? null : opening(v);
+        // where a roll come in from a place starts as it grows out of the place's box, which shows
+        // more of the world than where it opens, drawn first as well, so the grow shows nothing unmade
+        const growFrom = first && !quiet && props.from ? growStart(v, props.from) : null;
         if (first) {
             firstDrawing = true;
             // it waits unseen, where it will open, so nothing of it shows at another place meanwhile
@@ -765,15 +814,15 @@ export function World(props: {
                     }
                     const cam = first ?? anchored(v, was, next.layout) ?? v.cam;
                     const margin = Math.min(320, v.vp.h / 2);
-                    const seen = visibleRect(cam, {
-                        w: v.vp.w + margin * 2,
-                        h: v.vp.h + margin * 2,
-                    });
+                    const room = { w: v.vp.w + margin * 2, h: v.vp.h + margin * 2 };
+                    const seen = visibleRect(cam, room);
+                    const grows = growFrom ? visibleRect(growFrom, room) : null;
                     const todo = prepared.filter(
                         (p) =>
                             !p.done &&
                             !(level === "far" && p.piece.detail) &&
-                            intersects(p.piece.rect, seen),
+                            (intersects(p.piece.rect, seen) ||
+                                (!!grows && intersects(p.piece.rect, grows))),
                     );
                     try {
                         for (const p of todo) {
@@ -805,7 +854,18 @@ export function World(props: {
                 host.append(staged);
                 // a scene that has not been framed yet has no window to draw the staged source for
                 if (!drawn) scene.frame(v.cam, v.vp);
-                await scene.prepare(staged, first ?? anchored(v, was, next.layout) ?? v.cam);
+                const readied = (async (): Promise<void> => {
+                    await scene?.prepare(staged, first ?? anchored(v, was, next.layout) ?? v.cam);
+                    // then where it grows from, which what is drawn sharp already is not drawn again for
+                    if (growFrom && view === v && n === drawing)
+                        await scene?.prepare(staged, growFrom);
+                })();
+                // arriving, the roll grows after a moment whatever it has, and what is not drawn yet
+                // fades in as it grows, rather than the map holding the page still; drawn again in
+                // place, it is shown only once it is all there
+                await (first
+                    ? Promise.race([readied, new Promise((done) => setTimeout(done, GROW_WAITS))])
+                    : readied);
                 if (
                     view !== v ||
                     n !== drawing ||
@@ -870,7 +930,7 @@ export function World(props: {
             return;
         }
         // the map the child came from was held over the page until now, and fades out over the roll
-        const handed = release(true, "map");
+        const handed = release(true);
         if (host) host.style.opacity = "1";
         const at0 = landing(props.view.arrival?.term);
         // the place hands the roll a day and the box its paper ended in: the roll opens there and
@@ -900,12 +960,21 @@ export function World(props: {
             painted.assemble(arrival.term);
             announce(`${name(props.view.open)}. ${arrival.says}`);
             if (came) grow(v, came, open, !handed);
+            // while the horizon puts itself together, today is painted and drawn, so the camera
+            // coming down to it finds it drawn
+            const today = landing(arrival.term);
+            landingAhead = today ? readAt(v, today.y, today.own) : null;
+            if (landingAhead) {
+                scene?.frame(v.cam, v.vp, landingAhead);
+                paintNear();
+            }
             arriving = window.setTimeout(() => {
                 if (view !== v || busy) return;
                 // a child who has moved the paper themselves is not taken back, which is their own
                 // hand and nothing else: a move the roll made as the world put itself together, or a
                 // sheet asking to be seen, used to cancel the landing and leave the roll at the horizon
                 if (v.movedAgo() < ARRIVING) {
+                    landingAhead = null;
                     arrive();
                     return;
                 }
@@ -1020,6 +1089,17 @@ export function World(props: {
         if (sheets) v.world.append(sheets);
         if (props.wheel === false) v.takesWheel = false;
         retryDraw(v);
+        // the bake (tools/scripts/art-bake.ts) paints the whole roll and has its scene draw all of it
+        // at `t` pixels to a unit
+        mapHook("rollBake", async (t = 1) => {
+            if (view !== v || !scene) return;
+            for (const p of pending)
+                if (!p.done) {
+                    p.done = true;
+                    p.release = p.piece.paint() ?? undefined;
+                }
+            await scene.bake(t);
+        });
     });
     createEffect(
         on(
@@ -1066,11 +1146,13 @@ export function World(props: {
             for (const p of held) p.release?.();
             was?.stop();
             // the next roll opened takes up this one's scene, and with it what it drew
-            if (s) keepSpare(s);
+            if (s) keepSpare(s, quiet);
             v?.dispose();
         };
         // a roll left for the map stays on the screen until the map has drawn where it opens
-        if (leaving && root) hold(root, "roll", gone);
+        // held over the page however the page goes, the way out's own known to be taken over by the
+        // map, and any other claimed by the map or world that comes, or let go if none does
+        if ((leaving || ready()) && root) hold(root, "roll", gone, { claimed: leaving });
         else gone();
     });
 
@@ -1140,10 +1222,10 @@ export function World(props: {
                     class="j-layer l-sheets wd-sheets"
                 >
                     <div class="wd-overview">
-                        <For each={overview()}>
-                            {(group) => {
-                                const row = () => layout().rows[group.from];
-                                const day = () => displayed().days[group.from];
+                        <Index each={overview()}>
+                            {(at) => {
+                                const row = () => layout().rows[at().from];
+                                const day = () => displayed().days[at().from];
                                 return (
                                     <button
                                         type="button"
@@ -1166,8 +1248,8 @@ export function World(props: {
                                             {day()?.label ?? `Day ${row()?.day.n ?? 1}`}
                                         </span>
                                         <span class="hand">
-                                            {group.to > group.from
-                                                ? `${group.to - group.from + 1} days to explore`
+                                            {at().to > at().from
+                                                ? `${at().to - at().from + 1} days to explore`
                                                 : day()
                                                       ?.sheets.map((sheet) => sheet.title)
                                                       .join(" · ")}
@@ -1175,7 +1257,7 @@ export function World(props: {
                                     </button>
                                 );
                             }}
-                        </For>
+                        </Index>
                     </div>
                     <For each={[...rows().keys()]}>
                         {(key) => {
@@ -1184,6 +1266,7 @@ export function World(props: {
                             const r = () => rows().get(key) ?? first;
                             let shown: HTMLElement | null = null;
                             const own = (): HTMLElement | null => {
+                                props.sheetsAt?.();
                                 const sheet = r().sheet;
                                 // Publish prepared content with its committed row, not on a cache notification.
                                 const next = untrack(() => props.sheet?.(sheet) ?? null);
@@ -1274,6 +1357,12 @@ function Sheet(props: {
                 createEffect(() => {
                     el.style.left = `${props.rect.x}px`;
                     el.style.top = `${props.rect.y}px`;
+                    // the height the roll has laid the sheet at, not the one its paper measured: paper
+                    // that lands before the roll is laid out round it would cover the sheet after it
+                    // until then; today's grows as the child works it, and the roll with it
+                    el.style.minHeight = `${props.rect.h}px`;
+                    el.style.maxHeight = props.today ? "" : `${props.rect.h}px`;
+                    el.style.overflow = props.today ? "" : "clip";
                     el.classList.toggle("today", props.today);
                 });
                 return el;

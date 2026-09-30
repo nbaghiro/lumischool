@@ -96,6 +96,21 @@ export class CanvasView {
     spaceHeld = false;
     /** Whether the wheel zooms and pans the view; a page that scrolls past the view leaves it the wheel. */
     takesWheel = true;
+    private isLocked = false;
+    /**
+     * Whether a move the page scripts (a dive, a rise, a walk) has the camera: the viewer's hands and
+     * keys are not taken until it is done, and a gesture under way when it starts is let go of.
+     */
+    get locked(): boolean {
+        return this.isLocked;
+    }
+    set locked(on: boolean) {
+        this.isLocked = on;
+        if (!on) return;
+        this.pointers.clear();
+        this.drag = null;
+        this.pair = null;
+    }
     private pageWidth: number | null = null;
     private pageSpace: HTMLDivElement | null = null;
     /** The world's clip as last written, in world units, and the reading page's height. */
@@ -296,6 +311,19 @@ export class CanvasView {
         this.cam = this.fence(c);
         this.request();
         this.settleSoon();
+    }
+
+    /**
+     * Sets the camera and draws it in this frame, for a move the page drives from a frame callback of
+     * its own (a dive, a walk, a flight), which `set` would draw a frame late.
+     */
+    setNow(c: Camera): void {
+        if (this.disposed) return;
+        this.stop();
+        this.cam = this.fence(c);
+        this.settleSoon();
+        cancelAnimationFrame(this.raf);
+        this.tick(performance.now());
     }
 
     private run(at: (t: number) => Camera, ms: number, to: Camera): void {
@@ -514,7 +542,7 @@ export class CanvasView {
     }
 
     private down = (e: PointerEvent): void => {
-        if (this.readingPage) return;
+        if (this.readingPage || this.isLocked) return;
         if (e.target instanceof Element && e.target.closest(".hud")) return;
         if (this.hooks.claim?.(e)) return;
         if (e.pointerType === "mouse" && e.button !== 0 && e.button !== 1) return;
@@ -637,6 +665,7 @@ export class CanvasView {
         if (this.readingPage) return;
         if (!this.takesWheel) return;
         e.preventDefault();
+        if (this.isLocked) return;
         this.stop();
         this.movedAt = performance.now();
         const read = readWheel(e, this.trackpadAt, e.timeStamp);
@@ -658,7 +687,7 @@ export class CanvasView {
     };
 
     private keydown = (e: KeyboardEvent): void => {
-        if (e.metaKey || e.ctrlKey || e.altKey) return;
+        if (e.metaKey || e.ctrlKey || e.altKey || this.isLocked) return;
         if (e.target instanceof Element && e.target.closest("input, select, textarea")) return;
         if (this.readingPage) {
             if (this.hooks.key?.(e)) e.preventDefault();

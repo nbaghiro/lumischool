@@ -85,6 +85,8 @@ function keepHeight(key: string, height: number): void {
 export function nearPaper<P extends { height: number; dispose(): void }>(o: {
     draw(lesson: string): Promise<P | null>;
     drawn(): void;
+    /** Hears when a height is measured that the roll did not have, which is all its layout reads. */
+    measured?: () => void;
     scope?: () => string;
 }): NearPaper<P> {
     const paper = new Map<string, P>();
@@ -123,7 +125,9 @@ export function nearPaper<P extends { height: number; dispose(): void }>(o: {
                     else {
                         if (p) {
                             paper.set(id, p);
+                            const was = heights.get(id);
                             heights.set(id, p.height);
+                            if (was !== p.height) o.measured?.();
                             // a height measured before the page's fonts have come is not the sheet's own
                             if (o.scope && document.fonts.status === "loaded")
                                 keepHeight(`${o.scope()}|${id}`, p.height);

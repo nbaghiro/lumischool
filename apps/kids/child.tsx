@@ -43,6 +43,7 @@ import {
     todayOf,
     type Loaded,
 } from "./views";
+import { release } from "../../engine/ui/handoff";
 
 /** How long going into a world waits for today's sheets before opening it anyway, in ms. */
 const SHEETS_READY = 2500;
@@ -258,7 +259,7 @@ export function ChildMap(props: {
      * opening. A wait that runs long gives up and opens the world with that line rather than holding
      * the child on the map.
      */
-    const whenSheets = (): Promise<void> =>
+    const whenSheets = (signal: AbortSignal): Promise<void> =>
         new Promise((done) => {
             const c = loaded();
             if (drawn() || !c || !waitsForSheets(todayOf(c)?.lessons.length ?? 0, sheets.state)) {
@@ -275,7 +276,20 @@ export function ChildMap(props: {
                 clearInterval(looking);
                 done();
             }, SHEETS_READY);
+            signal.addEventListener("abort", () => {
+                clearInterval(looking);
+                clearTimeout(enough);
+            });
         });
+    /** A way into a world waiting for its sheets, called off if the child leaves the map before it opens. */
+    let goingIn: AbortController | null = null;
+    onCleanup(() => {
+        if (!goingIn) return;
+        goingIn.abort();
+        goingIn = null;
+        // the map was held over the page for a world that will not come now (handoff.ts)
+        release(false, "map");
+    });
 
     /** The sheets drawn for the record the page holds now, or null while they are being drawn. */
     const drawn = (): Sheets | null => {
@@ -327,7 +341,12 @@ export function ChildMap(props: {
                                             onGoIn={(place, box) => {
                                                 const n = m().layout.nodes[place];
                                                 const selected = m().places[place];
+                                                goingIn?.abort();
+                                                const trip = new AbortController();
+                                                goingIn = trip;
                                                 const go = (): void => {
+                                                    if (trip.signal.aborted) return;
+                                                    goingIn = null;
                                                     setScreen({
                                                         at: "world",
                                                         term:
@@ -346,10 +365,10 @@ export function ChildMap(props: {
                                                 // code is waited for here, so the movement is never
                                                 // broken by the line that says the page is opening;
                                                 // a load that fails opens the world all the same
-                                                void Promise.all([roll(), whenSheets()]).then(
-                                                    go,
-                                                    go,
-                                                );
+                                                void Promise.all([
+                                                    roll(),
+                                                    whenSheets(trip.signal),
+                                                ]).then(go, go);
                                             }}
                                         />
                                     </>

@@ -259,3 +259,15 @@ test("trying again asks for every lesson that failed, near or not, with what is 
         "a lesson asked for again no longer says it failed",
     );
 });
+
+test("the roll hears of a height only when it is new, not of paper coming and going", async () => {
+    const d = drawer();
+    let measured = 0;
+    const near = nearPaper({ draw: d.draw, drawn: () => undefined, measured: () => measured++ });
+    near.lookBack(["a"]);
+    await d.land("a", 700);
+    assert.equal(measured, 1, "a first height is new");
+    near.lookBack([]);
+    near.lookBack(["a"]);
+    assert.equal(measured, 1, "paper set aside and back has the height it had");
+});

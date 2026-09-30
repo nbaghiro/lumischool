@@ -399,6 +399,22 @@ export function todaysSheets(o: {
         string,
         { el: HTMLElement; height: number; landing: number | null; dispose: () => void }
     >();
+    // a sheet grows as the child works it (replies, hints, its finished state), and the roll lays
+    // out round what it is now, so nothing below it slides under the next sheet
+    const [grown, setGrown] = createSignal(0);
+    const growing = new ResizeObserver((entries) => {
+        let changed = false;
+        for (const entry of entries) {
+            const el = entry.target;
+            if (!(el instanceof HTMLElement) || !el.isConnected) continue;
+            const b = [...built.values()].find((x) => x.el === el);
+            // a sheet taken off the page measures nothing, and a change under a pixel moves nothing
+            if (!b || !el.offsetHeight || Math.abs(el.offsetHeight - b.height) < 1) continue;
+            b.height = el.offsetHeight;
+            changed = true;
+        }
+        if (changed) setGrown((n) => n + 1);
+    });
     const draw = (
         lessons: readonly PackLesson[],
         resumes: ReadonlyMap<string, Resume>,
@@ -462,18 +478,23 @@ export function todaysSheets(o: {
                 ? next.getBoundingClientRect().top - el.getBoundingClientRect().top
                 : null;
             built.set(lesson.id, { el, height: el.offsetHeight, landing, dispose });
+            growing.observe(el);
             el.remove();
         }
         layer.remove();
     };
     return {
         sheet: (id) => built.get(id)?.el ?? null,
-        height: (id) => built.get(id)?.height ?? null,
+        height: (id) => {
+            grown();
+            return built.get(id)?.height ?? null;
+        },
         landing: (id) => built.get(id)?.landing ?? null,
         draw,
         dispose: () => {
             for (const b of built.values()) b.dispose();
             built.clear();
+            growing.disconnect();
         },
     };
 }

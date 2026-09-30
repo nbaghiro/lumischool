@@ -85,3 +85,86 @@ test("a child keeps an unfinished answer when changing reading format", async ({
     await expect(input).toHaveValue("7");
     expect(await input.evaluate((el, old) => el === old, original)).toBe(true);
 });
+
+test("the keyboard taking a child to something off the screen takes the roll there", async ({
+    page,
+}, info) => {
+    test.skip(info.project.name === "phone-webkit", "focusVisible is Chromium's");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await signInAs(page);
+    await page.route(/\/api\/kid\/[^/]+\/record$/, async (route) => {
+        const response = await route.fetch();
+        const record = readKidRecord(await response.json());
+        if (!record) throw new Error("the record did not read");
+        const day = record.plan
+            .flatMap((track) => track.days)
+            .find((day) => day.lesson === "g1-counting-to-twenty");
+        if (!day) throw new Error("Missing maths fixture");
+        await route.fulfill({ response, json: { ...record, today: day.on } });
+    });
+    await openChildrensView(page, ["Rosie"]);
+    const map = childsMap(page, "Rosie");
+    await expect(map).toHaveClass(/ready/, { timeout: 60_000 });
+    const meadow = map.getByRole("button", { name: /The meadow/ });
+    await meadow.dispatchEvent("click");
+    await meadow.evaluateAll((els) =>
+        els[0]?.dispatchEvent(new MouseEvent("click", { bubbles: true })),
+    );
+    const host = page.locator(".wd-host");
+    await expect(host.locator('[data-lesson="g1-counting-to-twenty"] input').first()).toBeVisible({
+        timeout: 60_000,
+    });
+    // the last control of today's sheet, below the window
+    const far = host.locator('[data-lesson="g1-counting-to-twenty"] button:not(:disabled)').last();
+    await expect(far).not.toBeInViewport();
+    await far.evaluate((el: HTMLElement) => el.focus({ focusVisible: true }));
+    await expect(far).toBeInViewport({ timeout: 5000 });
+});
+
+test("today's sheet growing as the child works it moves the sheets after it down", async ({
+    page,
+}) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await signInAs(page);
+    await page.route(/\/api\/kid\/[^/]+\/record$/, async (route) => {
+        const response = await route.fetch();
+        const record = readKidRecord(await response.json());
+        if (!record) throw new Error("the record did not read");
+        const day = record.plan
+            .flatMap((track) => track.days)
+            .find((day) => day.lesson === "g1-counting-to-twenty");
+        if (!day) throw new Error("Missing maths fixture");
+        await route.fulfill({ response, json: { ...record, today: day.on } });
+    });
+    await openChildrensView(page, ["Rosie"]);
+    const map = childsMap(page, "Rosie");
+    await expect(map).toHaveClass(/ready/, { timeout: 60_000 });
+    const meadow = map.getByRole("button", { name: /The meadow/ });
+    await meadow.dispatchEvent("click");
+    await meadow.evaluateAll((els) =>
+        els[0]?.dispatchEvent(new MouseEvent("click", { bubbles: true })),
+    );
+    const host = page.locator(".wd-host");
+    const first = host.locator('.ls-sheet[data-lesson="g1-counting-to-twenty"]').first();
+    await expect(first).toBeVisible({ timeout: 60_000 });
+    const sheets = host.locator(".wd-sheets .ls-sheet.today");
+    await expect.poll(() => sheets.count()).toBeGreaterThan(1);
+    // what a child's replies and hints add to a sheet, all at once
+    await first.evaluate((el) => {
+        const more = document.createElement("div");
+        more.style.height = "800px";
+        el.append(more);
+    });
+    await expect
+        .poll(
+            () =>
+                sheets.evaluateAll((els) => {
+                    const boxes = els
+                        .map((el) => el.getBoundingClientRect())
+                        .sort((a, b) => a.top - b.top);
+                    return boxes.every((b, i) => i === 0 || b.top >= (boxes[i - 1]?.bottom ?? 0));
+                }),
+            { timeout: 10_000 },
+        )
+        .toBe(true);
+});

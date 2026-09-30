@@ -2,6 +2,7 @@
 // first screen costs nothing until the reader scrolls toward it, and whether the page has left the top.
 
 import { createSignal, onCleanup, onMount, type Accessor, type JSX } from "solid-js";
+import { smallDevice } from "./device";
 
 /** Runs `then` once, the first time `el` comes within `margin` of the window, one window's height by default; what it returns gives up waiting. */
 export function whenNear(el: Element, then: () => void, margin = "100% 0px"): () => void {
@@ -43,30 +44,59 @@ function onCover(then: () => void): () => void {
     };
 }
 
-/** A reversible scene lifetime with a small prewarm margin, paused while the tab is hidden or a modal dialog covers it. */
+/** Every scene lifetime on the page, for a phone to keep one alive at a time. */
+const lifetimes = new Set<{ near: boolean; shown: number; update: () => void }>();
+/**
+ * On a phone, the lifetime whose box shows most of itself in the window, the only one alive: two
+ * scenes at once, as two maps a scroll apart are, hold two GPU contexts and their textures, which a
+ * phone's browser ends the page for.
+ */
+const foremost = (): { near: boolean; shown: number } | null => {
+    let best: { near: boolean; shown: number } | null = null;
+    for (const l of lifetimes) if (l.near && (!best || l.shown > best.shown)) best = l;
+    return best;
+};
+
+/**
+ * A reversible scene lifetime with a small prewarm margin, paused while the tab is hidden or a modal
+ * dialog covers it, and on a phone while another is more in view.
+ */
 export function whileNear(el: Element, change: (near: boolean) => void): () => void {
-    let near = false;
     let active: boolean | undefined;
-    const update = (): void => {
-        const next = near && !document.hidden && !covered(el);
-        if (next === active) return;
-        active = next;
-        change(next);
+    const me = {
+        near: false,
+        shown: 0,
+        update: (): void => {
+            const next =
+                me.near && !document.hidden && !covered(el) && (!smallDevice || foremost() === me);
+            if (next === active) return;
+            active = next;
+            change(next);
+        },
+    };
+    lifetimes.add(me);
+    const all = (): void => {
+        for (const l of lifetimes) l.update();
     };
     const io = new IntersectionObserver(
         (entries) => {
-            near = entries.some((entry) => entry.isIntersecting);
-            update();
+            for (const entry of entries) {
+                me.near = entry.isIntersecting;
+                me.shown = entry.intersectionRect.width * entry.intersectionRect.height;
+            }
+            all();
         },
-        { rootMargin: "240px 0px" },
+        { rootMargin: "240px 0px", threshold: [0, 0.25, 0.5, 0.75, 1] },
     );
     io.observe(el);
-    document.addEventListener("visibilitychange", update);
-    const uncover = onCover(update);
+    document.addEventListener("visibilitychange", me.update);
+    const uncover = onCover(me.update);
     return () => {
         io.disconnect();
-        document.removeEventListener("visibilitychange", update);
+        lifetimes.delete(me);
+        document.removeEventListener("visibilitychange", me.update);
         uncover();
+        all();
     };
 }
 
