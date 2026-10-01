@@ -18,25 +18,31 @@ describe("authentication hardening", { skip: reason ?? false }, () => {
     beforeEach(async () => {
         if (owner) await truncate(owner);
     });
-    const issue = (ip: string | null = null) =>
-        issueCode("sign-in", {
-            hash: randomUUID(),
-            email: `${randomUUID()}@example.test`,
-            ip,
-            accept: ["test"],
-        });
-
-    it("serializes network and global email budgets across distinct addresses", async () => {
-        const network = await Promise.all(Array.from({ length: 30 }, () => issue("network")));
-        assert.equal(network.filter(Boolean).length, 20);
+    /** The network each sign-in code was asked from, as stored, oldest first. */
+    const networks = async (): Promise<(string | null)[]> => {
         if (!owner) throw new Error("no database");
-        await truncate(owner);
-        await owner.raw`insert into keys (kind, hash, email) select 'sign-in', 'seed-' || n, 'seed-' || n || '@example.test' from generate_series(1, 499) n`;
-        const global = await Promise.all(Array.from({ length: 12 }, () => issue()));
-        assert.equal(global.filter(Boolean).length, 1);
+        const rows = await owner.raw<
+            { ip: string | null }[]
+        >`select ip from keys where kind = 'sign-in' order by created_at, id`;
+        return rows.map((r) => r.ip);
+    };
+
+    it("issues a code each time one is asked for, from any network", async () => {
+        const asked = await Promise.all(
+            Array.from({ length: 30 }, () =>
+                issueCode("sign-in", {
+                    hash: randomUUID(),
+                    email: "same@example.test",
+                    ip: "network",
+                    accept: ["test"],
+                }),
+            ),
+        );
+        assert.equal(asked.length, 30);
+        assert.equal((await networks()).length, 30);
     });
 
-    it("allows bounded immediate delivery retries and invalidates failed challenges", async () => {
+    it("lets delivery be tried again and invalidates every failed challenge", async () => {
         const { config } = local();
         const browser = new Browser({
             ...config,
@@ -44,26 +50,18 @@ describe("authentication hardening", { skip: reason ?? false }, () => {
                 throw new Error("transport down");
             },
         });
-        for (let n = 0; n < 3; n++) {
+        for (let n = 0; n < 4; n++) {
             const answer = await browser.call("POST", "/api/auth/email/start", {
                 body: { email: "retry@example.test", tab: true },
             });
             assert.equal(answer.status, 503);
             assert.deepEqual(answer.body, { error: "delivery-failed" });
         }
-        assert.equal(
-            (
-                await browser.call("POST", "/api/auth/email/start", {
-                    body: { email: "retry@example.test", tab: true },
-                })
-            ).status,
-            429,
-        );
         if (!owner) throw new Error("no database");
         const rows = await owner.raw<
             { detail: { accept: unknown } }[]
         >`select detail from keys where kind = 'sign-in'`;
-        assert.equal(rows.length, 3);
+        assert.equal(rows.length, 4);
         for (const row of rows) assert.deepEqual(row.detail.accept, []);
     });
 
@@ -84,11 +82,13 @@ describe("authentication hardening", { skip: reason ?? false }, () => {
                 }),
                 "203.0.113.1",
             );
-            assert.equal(res.status, n < 20 ? 202 : 429);
+            assert.equal(res.status, 202);
         }
+        // every code is put down to the socket's address, whatever the headers claimed
+        assert.equal(new Set(await networks()).size, 1);
     });
 
-    it("Render ingress counts edge identities independently and never uses XFF or socket fallbacks", async () => {
+    it("Render ingress takes the edge identity and never XFF or the socket", async () => {
         const { config } = local();
         const handle = app({ ...config, env: "production" });
         const post = (ip: string, forged: string) =>
@@ -105,18 +105,17 @@ describe("authentication hardening", { skip: reason ?? false }, () => {
                 }),
                 "10.0.0.1",
             );
-        for (let n = 0; n < 20; n++)
+        for (let n = 0; n < 3; n++)
             assert.equal((await post("198.51.100.1", `203.0.113.${n}`)).status, 202);
-        assert.equal((await post("198.51.100.1", "203.0.113.99")).status, 429);
-        assert.equal((await post("198.51.100.2", "203.0.113.99")).status, 202);
+        assert.equal((await post("198.51.100.2", "203.0.113.0")).status, 202);
         assert.equal((await post("2001:db8:1::1", "anything")).status, 202);
         assert.equal((await post("", "203.0.113.99")).status, 503);
         assert.equal((await post("198.51.100.3, 198.51.100.4", "203.0.113.99")).status, 503);
-        if (!owner) throw new Error("no database");
-        const rows = await owner.raw<
-            { count: number }[]
-        >`select count(*)::int as count from keys where kind = 'sign-in'`;
-        assert.equal(rows[0]?.count, 22);
+        const ips = await networks();
+        assert.equal(ips.length, 5);
+        // the three asked from one edge identity share it, whatever the forwarded header said
+        assert.equal(new Set(ips.slice(0, 3)).size, 1);
+        assert.equal(new Set(ips).size, 3);
     });
 
     it("sign-out preserves the same parent's sessions in other families", async () => {

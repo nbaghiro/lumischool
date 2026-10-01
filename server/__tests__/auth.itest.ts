@@ -809,18 +809,15 @@ describe("signing in", { skip: reason ?? false }, () => {
                 error: "bad-email",
             },
         );
-        assert.equal(
-            (
-                await b.call("POST", "/api/auth/email/start", {
-                    body: { email: "rate@example.test" },
-                })
-            ).status,
-            202,
-        );
-        const again = await b.call("POST", "/api/auth/email/start", {
-            body: { email: "rate@example.test" },
-        });
-        assert.equal(again.status, 429);
-        assert.equal(text(at(again.body, "error")), "rate-limited");
+        for (let n = 0; n < 2; n++)
+            assert.equal(
+                (
+                    await b.call("POST", "/api/auth/email/start", {
+                        body: { email: "again@example.test" },
+                    })
+                ).status,
+                202,
+                "a code is sent each time one is asked for",
+            );
     });
 });

@@ -388,8 +388,7 @@ function signIn(
     });
 }
 
-export type Asked =
-    { pending: string } | { error: "bad-email" | "rate-limited" | "delivery-failed" };
+export type Asked = { pending: string } | { error: "bad-email" | "delivery-failed" };
 
 /**
  * Flow 2's first request: a code for an address, held by a new pending cookie. The answer is the same
@@ -406,7 +405,7 @@ export async function askForCode(
     // Never in production, whatever the configuration holds: there it would sign in anyone who asked.
     const fixed = config.env === "local" ? config.devCode : null;
     const pending = newSecret();
-    const issued = await issueCode("sign-in", {
+    await issueCode("sign-in", {
         hash: sha256(pending),
         email,
         ip: networkHash(config, ip),
@@ -416,7 +415,6 @@ export async function askForCode(
             : [codeHash(config, code)],
         detail: { shared: input.shared, ...(input.start ? { start: input.start } : {}) },
     });
-    if (!issued) return { error: "rate-limited" };
     try {
         await config.send(codeEmail(email, code, config.origin));
     } catch {
@@ -1732,7 +1730,7 @@ export async function requestAccountEmail(
         });
     const challenge = newSecret();
     const code = String(randomInt(0, 100_000_000)).padStart(8, "0");
-    const issued = await issueCode("confirm", {
+    await issueCode("confirm", {
         hash: sha256(challenge),
         email,
         ip: networkHash(config, ip),
@@ -1740,7 +1738,6 @@ export async function requestAccountEmail(
         accept: [codeHash(config, code)],
         detail: { purpose: "account-email", session: adult.session.id },
     });
-    if (!issued) throw new Refused(429, { error: "rate-limited" });
     try {
         await config.send(codeEmail(email, code, config.origin, "email-change"));
     } catch {

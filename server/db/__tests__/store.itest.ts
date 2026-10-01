@@ -349,14 +349,6 @@ async function refused(work: Promise<unknown>, code: string, match?: RegExp): Pr
     });
 }
 
-/** Moves a key's `created_at` into the past, as the owner, to test expiry without waiting. */
-async function age(store: Store, where: ReturnType<typeof eq>, minutes: number): Promise<void> {
-    await store.db
-        .update(keys)
-        .set({ created_at: sql`utc_iso(now() - make_interval(mins => ${minutes}))` })
-        .where(where);
-}
-
 describe("the store", { skip: reason ?? false }, () => {
     const db = () => must(owner, "the owner connection");
 
@@ -851,34 +843,22 @@ describe("the store", { skip: reason ?? false }, () => {
             assert.deepEqual(moved, [{ attempts: 1 }]);
         });
 
-        it("limits sign-in and confirm codes per address, counted from the rows", async () => {
+        it("issues sign-in and confirm codes whenever asked, stored lowercased", async () => {
             const code = (hash: string) => ({
                 hash,
                 email: "Parent@Example.test",
                 ip: "ip-1",
                 accept: [hash],
             });
-            assert.equal(await issueCode("sign-in", code("h1")), true);
-            assert.equal(
-                await issueCode("confirm", code("h2")),
-                false,
-                "one a minute, whichever kind",
-            );
-            await age(db(), eq(keys.hash, "h1"), 2);
-            assert.equal(await issueCode("confirm", code("h2")), true);
-            await age(db(), eq(keys.hash, "h2"), 3);
-            assert.equal(await issueCode("sign-in", code("h3")), true);
-            await age(db(), eq(keys.hash, "h3"), 4);
-            assert.equal(await issueCode("sign-in", code("h4")), false, "three in fifteen minutes");
-            const [row] = await db()
+            for (const [i, kind] of (
+                ["sign-in", "confirm", "sign-in", "sign-in"] as const
+            ).entries())
+                await issueCode(kind, code(`h${i}`));
+            const rows = await db()
                 .db.select({ email: keys.email })
                 .from(keys)
-                .where(eq(keys.hash, "h1"));
-            assert.equal(
-                row?.email,
-                "parent@example.test",
-                "stored lowercased, so the limit counts one address",
-            );
+                .where(eq(keys.email, "parent@example.test"));
+            assert.equal(rows.length, 4, "no limit per address");
         });
 
         it("finds a sign-in or confirm code only by its pending cookie, counts wrong guesses on it, and uses it once", async () => {

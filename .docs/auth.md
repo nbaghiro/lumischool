@@ -111,9 +111,11 @@ not analytics events. Closing a tab is not sign-out.
 Weekly email preferences live in Notifications near the bottom. The personal card has no privacy
 disclosure link; the child-consent notice remains in the add-child flow. There is no billing placeholder card.
 
-Email issuance serializes its aggregate network/global budgets as well as address limits. Delivery
-failures invalidate the challenge and allow an immediate retry within the existing 15-minute/day
-budgets. Resending creates an independent challenge; earlier challenges in other tabs can remain
+Since 1 October 2026 a sign-in or confirm code is sent whenever one is asked for, with no limit per
+address, per network or overall (migration `0011_no_code_limits`), since the limits added more to the
+sign-in flow than they protected at this stage. A code still dies after five wrong guesses, which is
+what keeps it from being guessed. Delivery failures invalidate the challenge, and the next ask sends
+a new one. Resending creates an independent challenge; earlier challenges in other tabs can remain
 valid until their ten-minute expiry. The requesting tab should use its newest code.
 
 Proxy trust and supported email compatibility checks are documented in [auth-hardening-plan.md](auth-hardening-plan.md).
@@ -153,7 +155,7 @@ Being signed in is a `session` key: one browser, in one family, with its secret 
 
 Every request reaches the database through `withFamily`, which opens a transaction with `app.family` and `app.user` set before any query runs, and every credential names its family, so a request is in exactly one family from its first statement. The only reads that come before a family is known (finding a login by its address, finding a code by its hash, and listing the families a person belongs to) go through a short list of security-definer functions that return only what that step needs.
 
-Sign-in is by an eight-digit code, or by a link that completes in the browser that asked, and later by passkey. Every code and invitation is a key, found by the hash of a secret the caller holds, and deleted when it is used. The rate limits count those same rows, so there is no table of counters.
+Sign-in is by an eight-digit code, or by a link that completes in the browser that asked, and later by passkey. Every code and invitation is a key, found by the hash of a secret the caller holds, and deleted when it is used. The PIN limits count those same rows, so there is no table of counters; codes have no limit on how many are asked for.
 
 A kid stays what the store already made them: a name, a grade, and the settings a parent chooses. A parent adds a kid and consents in the same step, which records a `consent-given` event with the notice's version, and the confirming email goes at once and says how to withdraw. Because consent and the record of access are events in the family's log, the proof of consent outlives a kid's deletion without holding their name, and all of it goes when the family is closed.
 

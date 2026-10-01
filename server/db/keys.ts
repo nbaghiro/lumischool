@@ -680,8 +680,7 @@ export async function pinTried(tx: FamilyTx, id: string, right: boolean): Promis
 
 /**
  * Makes a sign-in or confirm code, held by the browser's pending cookie (`hash` is the cookie's
- * hash) and completed by any of the hashes in `accept`. False when a limit refused, which the caller
- * must not reveal.
+ * hash) and completed by any of the hashes in `accept`. There is no limit on how many are asked for.
  */
 export async function issueCode(
     kind: "sign-in" | "confirm",
@@ -694,14 +693,12 @@ export async function issueCode(
         /** What the step after the code needs, such as whether the device is shared. */
         detail?: Record<string, unknown>;
     },
-): Promise<boolean> {
-    return withFamily({ family: null }, async (tx) => {
+): Promise<void> {
+    await withFamily({ family: null }, async (tx) => {
         const detail = JSON.stringify({ ...code.detail, accept: code.accept });
-        const rows = await tx.execute(
-            sql`select key_issue(${kind}, ${code.hash}, ${code.email}, ${code.ip}, ${code.user_id ?? null}::uuid, ${detail}::jsonb) as ok`,
+        await tx.execute(
+            sql`select key_issue(${kind}, ${code.hash}, ${code.email}, ${code.ip}, ${code.user_id ?? null}::uuid, ${detail}::jsonb)`,
         );
-        const first: unknown = rows[0];
-        return isRecord(first) && first.ok === true;
     });
 }
 

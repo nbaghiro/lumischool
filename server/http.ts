@@ -824,11 +824,9 @@ function routes(config: Config): Route[] {
                     c.ip,
                 );
                 if ("error" in asked)
-                    return asked.error === "rate-limited"
-                        ? problem(429, "rate-limited", { retryAfter: 60 })
-                        : asked.error === "delivery-failed"
-                          ? problem(503, "delivery-failed")
-                          : problem(400, "bad-email");
+                    return asked.error === "delivery-failed"
+                        ? problem(503, "delivery-failed")
+                        : problem(400, "bad-email");
                 const headers = new Headers();
                 headers.append("set-cookie", cookie(config, n.pending, asked.pending, MINUTES_15));
                 return field(c.body, "tab") === true
