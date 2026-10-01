@@ -515,6 +515,22 @@ press does (Cast, Wait, Hook!, Reel), and the ease button is the word Ease off w
 that read as pause. A strike before the bite now costs nothing but a sentence, since the button reads
 Wait until then, and the bite waits 1.2 seconds rather than 0.75. The first level, and every level
 until a fish is caught, says what to do next by the float. The rules version is `-fishing-3`.
+
+## Gone fishing: one tap a fish (1 October 2026)
+
+The owner still found the glass hard to follow: the bar read Wait and Ease off, words that do not say
+what to press, and a catch was five steps. A fish tapped to is now caught in one gesture. The float goes
+out on a flat lob, the fish swims straight to the bait, nibbles once and bites, and on the first two
+levels it hooks itself a fifth of a second after the float goes under; from the third level a press
+anywhere on the bite hooks it, which keeps one moment of timing. A hooked fish that was tapped to is
+reeled straight in, at two and a half times the keys' pace, without running or snagging, and swings up
+onto the scale at twice the fall. From the tap to the scale takes 2.9 to 3.6 seconds on every level.
+The bar holds one round button whose drawing follows what a press does (a cast arrow, a hook, a reel),
+with the word as its name, and Undo; the ease button is gone from the glass, since the down key still
+eases. A fish has a wider hit area, and a resting mouse rings the fish it is over, through a new `hover`
+point on the Pad that a tape never records. The keys and the pulled cast play exactly as before. The
+rules version is `-fishing-4`.
+
 ## Marble workshop, rebuilt as a marble run (26 September 2026)
 
 The marble workshop (`school/games/marble.ts`, `?g=marble-workshop`) is no longer three ramps nudged

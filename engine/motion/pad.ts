@@ -51,6 +51,8 @@ export interface Pad {
     flick?: { x: number; y: number } | null;
     /** What two fingers meant since the game last read them, oldest first, for a game that reads them. */
     intents?: Intent[];
+    /** Where a mouse rests on the field without pressing, in squares, for a game that marks what a click would take; never recorded on a tape. */
+    hover?: { x: number; y: number } | null;
 }
 
 /** A meaning read from the hands rather than a device's state: two fingers pinching, by the factor the view should grow by. */

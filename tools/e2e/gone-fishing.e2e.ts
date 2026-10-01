@@ -46,24 +46,40 @@ test("gone fishing: a pull back from the float and a let go casts it out over th
     await page.screenshot({ path: `/tmp/gone-fishing-${info.project.name}-cast.png` });
 });
 
-test("gone fishing: a tap on a fish casts to it, a press on the bite hooks it, and holding reels it in", async ({
+test("gone fishing: one click on a fish catches it on the first level, with nothing else to press", async ({
     page,
 }, info) => {
     await page.goto("/games?g=fish&v=0");
     await expect(page.locator(".game-player")).toHaveAttribute("data-game-ready", "true");
     const reads = page.locator('[data-game="reads"]');
-    const fish = page.locator('[data-key="fish:0:0"]');
-    const box = await fish.boundingBox();
+    const box = await page.locator('[data-key="fish:0:0"]').boundingBox();
+    if (!box) throw new Error("No fish");
+    const from = Date.now();
+    await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+    await expect(reads).toContainText("On the pan", { timeout: 10_000 });
+    expect(Date.now() - from).toBeLessThan(8000);
+    await page.screenshot({ path: `/tmp/gone-fishing-${info.project.name}-landed.png` });
+});
+
+test("gone fishing: from the third level a click on the fish casts and a click on the bite hooks it", async ({
+    page,
+}) => {
+    await page.goto("/games?g=fish&v=2");
+    await expect(page.locator(".game-player")).toHaveAttribute("data-game-ready", "true");
+    const reads = page.locator('[data-game="reads"]');
+    const box = await page.locator('[data-key="fish:0:0"]').boundingBox();
     if (!box) throw new Error("No fish");
     await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-    await expect(reads).toContainText("gone under", { timeout: 20_000 });
-    await expect(page.getByRole("button", { name: "Hook!", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Hook", exact: true })).toBeVisible();
     const field = await page.locator(".field-gl").boundingBox();
     if (!field) throw new Error("No field");
-    // a press anywhere on the bite hooks it, and the finger kept down reels it in
-    await page.mouse.move(field.x + field.width * 0.6, field.y + field.height * 0.08);
-    await page.mouse.down();
-    await expect(reads).toContainText("On the pan", { timeout: 30_000 });
-    await page.mouse.up();
-    await page.screenshot({ path: `/tmp/gone-fishing-${info.project.name}-landed.png` });
+    // a missed bite comes round again, so press as each bite shows until the fish is on
+    for (let i = 0; i < 400; i++) {
+        const now = (await reads.textContent()) ?? "";
+        if (now.includes("On the pan") || now.includes("on the line")) break;
+        if (now.includes("gone under"))
+            await page.mouse.click(field.x + field.width * 0.6, field.y + field.height * 0.08);
+        await page.waitForTimeout(50);
+    }
+    await expect(reads).toContainText("On the pan", { timeout: 15_000 });
 });

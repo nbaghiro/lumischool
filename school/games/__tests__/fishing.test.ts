@@ -508,8 +508,36 @@ test("on the glass, every level and every other day is fished by tapping fish an
     }
 });
 
-test("a tap on a fish brings that fish alone, and its bite is plain to see and hooked by any press", () => {
+/** Steps until the first fish tapped is on the pan, tapping the float's bite on a level that asks for it. */
+function catchTime(level: number): number {
+    const s = F.fishingGame.start(level, 1);
+    const first = s.fish[0];
+    assert.ok(first);
+    tap(s, { x: first.x, y: first.y });
+    let n = 2;
+    for (; n < 60 * 20 && s.pan.length === 0; n++) {
+        const pad = emptyPad();
+        if (first.mood === "bite") pad.touch = { x: 3, y: 26 };
+        F.step(s, pad);
+    }
+    return n;
+}
+
+test("one tap catches a fish in a few seconds, by itself on the first levels and with a press on the bite later", () => {
+    for (const level of F.FISH_LEVELS.keys())
+        assert.ok(catchTime(level) <= 60 * 4, `level ${level + 1} took ${catchTime(level) / 60} s`);
     const s = F.fishingGame.start(0, 1);
+    const first = s.fish[0];
+    assert.ok(first);
+    tap(s, { x: first.x, y: first.y });
+    for (let n = 0; n < 60 * 6 && s.phase !== "fight"; n++) F.step(s, emptyPad());
+    assert.equal(s.phase, "fight", "on the first level a fish tapped to hooks itself");
+    assert.equal(F.fishingGame.goLabel?.(s), "Reel");
+    assert.equal(F.fishingGame.goIcon?.(s), "reel");
+});
+
+test("a tap on a fish brings that fish alone, and from the third level its bite is hooked by any press", () => {
+    const s = F.fishingGame.start(F.SELF_HOOK, 1);
     const first = s.fish[0];
     assert.ok(first);
     tap(s, { x: first.x, y: first.y });
@@ -526,16 +554,16 @@ test("a tap on a fish brings that fish alone, and its bite is plain to see and h
     }
     assert.equal(first.mood, "bite");
     assert.ok(F.frame(s).marks.some((m) => m.kind === "word" && m.text === "!"));
-    assert.equal(F.fishingGame.goLabel?.(s), "Hook!");
+    assert.equal(F.fishingGame.goLabel?.(s), "Hook");
+    assert.equal(F.fishingGame.goIcon?.(s), "hook");
     const pad = emptyPad();
     pad.touch = { x: 3, y: 26 };
     F.step(s, pad);
     assert.equal(s.phase, "fight", "a press anywhere hooks it");
-    assert.equal(F.fishingGame.goLabel?.(s), "Reel");
 });
 
 test("a press before the bite costs nothing, and a tapped fish that is missed nibbles again twice", () => {
-    const s = F.fishingGame.start(0, 1);
+    const s = F.fishingGame.start(F.SELF_HOOK, 1);
     const first = s.fish[0];
     assert.ok(first);
     tap(s, { x: first.x, y: first.y });
@@ -553,14 +581,22 @@ test("a press before the bite costs nothing, and a tapped fish that is missed ni
     assert.equal(bites, 3, "it bites three times before it swims off");
 });
 
-test("the big button says what a press does, and easing off is a word", () => {
+test("the one round button's drawing says what a press does, there is no on-screen ease, and a resting mouse rings a fish", () => {
     const s = F.fishingGame.start(0, 1);
     assert.equal(F.fishingGame.goLabel?.(s), "Cast");
-    assert.equal(F.fishingGame.controls.brake, "Ease off");
+    assert.equal(F.fishingGame.goIcon?.(s), "launch");
+    assert.equal(F.fishingGame.controls.brake, undefined);
     assert.ok(
         F.frame(s).marks.some((m) => m.kind === "word" && /Tap a fish/.test(m.text)),
         "the first level says what to do",
     );
+    const first = s.fish[0];
+    assert.ok(first);
+    const rings = () => F.frame(s).marks.filter((m) => m.kind === "ring").length;
+    const before = rings();
+    F.step(s, { ...emptyPad(), hover: { x: first.x, y: first.y } });
+    assert.equal(s.hover, 0);
+    assert.equal(rings(), before + 1, "the fish under the mouse is ringed");
 });
 
 test("fish tapped at random make the weight at most one time in five", () => {

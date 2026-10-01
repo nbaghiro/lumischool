@@ -118,6 +118,8 @@ export interface ActionGame<S> extends Base {
     };
     /** The big button's word now, where one button does different things as the game goes on. */
     goLabel?(s: S): string;
+    /** The big button's drawing now, beside `goLabel`, for a round button whose picture follows the game. */
+    goIcon?(s: S): IconName;
     start(level: number, seed?: number): S;
     step(s: S, pad: Pad): Happening[];
     /** The position in words, for the text form and a screen reader. */

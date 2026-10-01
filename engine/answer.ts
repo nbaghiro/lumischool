@@ -50,7 +50,7 @@ export const gameRulesVersion = (game: string): string =>
                 : game === "straight"
                   ? `${GAME_CHALLENGE_VERSIONS.rules}-river-3`
                   : game === "fish"
-                    ? `${GAME_CHALLENGE_VERSIONS.rules}-fishing-3`
+                    ? `${GAME_CHALLENGE_VERSIONS.rules}-fishing-4`
                     : game === "spell"
                       ? `${GAME_CHALLENGE_VERSIONS.rules}-sound-train-2`
                       : game === "shunt"

@@ -50,14 +50,13 @@ test("penny shove accepts a forward flick and offers keyboard angle controls", a
     );
 });
 
-test("fishing labels its cast and ease buttons in words and safely cancels a held cast", async ({
+test("fishing has one round cast button and no on-screen ease, and safely cancels a held cast", async ({
     page,
 }) => {
     await page.goto("/games?g=fish");
-    await expect(page.getByRole("button", { name: "Cast", exact: true })).toHaveText("Cast");
-    await expect(page.getByRole("button", { name: "Ease off", exact: true })).toHaveText(
-        "Ease off",
-    );
+    const castButton = page.getByRole("button", { name: "Cast", exact: true });
+    await expect(castButton.locator("svg")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Ease off", exact: true })).toHaveCount(0);
     const float = page.locator('[data-key="float"]');
     await expect(float).toBeVisible();
     const box = await float.boundingBox();

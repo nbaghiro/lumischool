@@ -261,7 +261,9 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
         $("another").hidden = !won;
         const label = game.goLabel?.(s);
         if (label && goButton && goButton.title !== label) {
-            goButton.textContent = label;
+            const drawn = game.goIcon?.(s);
+            if (drawn) goButton.replaceChildren(iconElement(drawn));
+            else goButton.textContent = label;
             goButton.setAttribute("aria-label", label);
             goButton.title = label;
         }
@@ -601,6 +603,8 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
     const pointerMove = (e: PointerEvent): void => {
         if (game.intents && !shell.paused())
             intend(fingers.move(e.pointerId, e.clientX, e.clientY));
+        if (!drag && e.pointerType === "mouse" && game.touch)
+            pad.hover = field.toWorld(e.clientX, e.clientY);
         if (!drag || drag.id !== e.pointerId || shell.paused() || drag.brake) return;
         const w = field.toWorld(e.clientX, e.clientY);
         pointerTrail.push({ ...w, t: e.timeStamp });
@@ -684,6 +688,9 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
     field.el.addEventListener("pointercancel", pointerCancel);
     field.el.addEventListener("lostpointercapture", pointerCancel);
     field.el.addEventListener("contextmenu", contextMenu);
+    field.el.addEventListener("pointerleave", () => {
+        pad.hover = null;
+    });
     field.el.addEventListener("wheel", wheel, { passive: false });
 
     /** A gamepad: the d-pad or the left stick is a direction, A is the big button, B the brake. */
