@@ -21,8 +21,10 @@ test("harbour cargo: dragging each crate over the boat and letting go loads it, 
     await expect(page.getByRole("button", { name: "Ring the bell" })).toHaveCount(0);
     const level = startWorkshop(0).definition,
         plan = cargoPlan(level);
-    const { toScreen } = await fieldPoints(page);
     for (const [i, p] of level.pieces.entries()) {
+        // on a phone held upright the camera follows the play between crates, so it is read again once it rests
+        await page.waitForTimeout(800);
+        const { toScreen } = await fieldPoints(page);
         const from = toScreen(p.x, p.y),
             to = toScreen(plan[i] ?? 30, 10);
         await page.mouse.move(from.x, from.y);

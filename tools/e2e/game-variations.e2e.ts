@@ -105,7 +105,7 @@ test("parent games stay unassigned and report-free while recovering already-owne
         ).toHaveCount(0);
     };
     await finish();
-    await page.getByRole("button", { name: "Try again", exact: true }).click();
+    await page.getByRole("button", { name: "Start the level again", exact: true }).click();
     await expect(player).toHaveAttribute("data-challenge", first ?? "");
     await finish();
     await page.getByRole("button", { name: "Play another", exact: true }).click();

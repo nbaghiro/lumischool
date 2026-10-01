@@ -1199,8 +1199,9 @@ export function frame(s: FireflyState, rest = false): Frame {
     }
     marks.push({
         kind: "word",
-        x: cam.x - VIEW.w / 2 + 6.5,
-        y: cam.y - VIEW.h / 2 + 1.6,
+        x: 6.5,
+        y: 1.6,
+        fixed: true,
         text: want ? `${s.beads} beads · next ${want.n}` : `${s.beads} beads`,
         size: 0.8,
     });
@@ -1210,6 +1211,7 @@ export function frame(s: FireflyState, rest = false): Frame {
         sprites,
         marks,
         camera: cam,
+        focus: s.at,
         view: VIEW,
         world: W,
         time: rest ? 0 : t,
@@ -1275,6 +1277,7 @@ function describeWay(s: FireflyState, p: Pt): string {
 
 export const snakeGame: ActionGame<FireflyState> = {
     id: "snake",
+    portrait: { keep: 24 },
     title: "Firefly trail",
     group: "action",
     quiet: true,

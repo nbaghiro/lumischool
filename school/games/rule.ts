@@ -671,6 +671,7 @@ function say(s: MachineState): string {
 }
 
 export const ruleGame: ActionGame<MachineState> = {
+    portrait: { hint: true },
     id: "rule",
     title: "The number machine",
     group: "action",

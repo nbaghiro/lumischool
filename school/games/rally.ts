@@ -354,6 +354,7 @@ function signMarks(s: RallyState): Mark[] {
 }
 
 export const rallyGame: ActionGame<RallyState> = {
+    portrait: { hint: true },
     id: "rally",
     title: "Pocket rally",
     group: "action",

@@ -176,6 +176,7 @@ export function golfFrame(s: GolfState): Frame {
     };
 }
 export const golfGame: ActionGame<GolfState> = {
+    portrait: { hint: true },
     id: "golf",
     title: "Garden mini-golf",
     group: "action",

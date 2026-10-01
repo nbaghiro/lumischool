@@ -643,6 +643,7 @@ const SOUNDS: Kit = {
 };
 
 export const trainGame: ActionGame<TrainState> = {
+    portrait: { hint: true },
     id: "spell",
     title: "Sound train",
     group: "action",

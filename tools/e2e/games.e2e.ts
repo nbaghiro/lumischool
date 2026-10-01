@@ -275,7 +275,11 @@ test("opening a game with Enter is not its first gameplay input", async ({ page 
     await page.waitForTimeout(500);
     expect(await car.getAttribute("style")).toBe(reset);
     await page.getByRole("button", { name: "Pause & help" }).click();
-    await page.getByRole("button", { name: "New arrangement", exact: true }).click();
+    // the pause menu's button; the top bar has its own shortcut with the same name
+    await page
+        .locator(".game-menu")
+        .getByRole("button", { name: "New arrangement", exact: true })
+        .click();
     await expect(player).toHaveAttribute("data-game-ready", "true");
 });
 

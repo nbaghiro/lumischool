@@ -989,6 +989,7 @@ export function say(s: ShoveState): string {
 }
 
 export const shoveGame: ActionGame<ShoveState> = {
+    portrait: { hint: true },
     id: "pay",
     title: "Penny shove",
     group: "action",

@@ -764,7 +764,14 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
 
     function fit(): void {
         const f = sess.frame(true);
-        field.fit(f.view, f.world, shell.room(), game.seen ?? "side");
+        field.fit(
+            f.view,
+            f.world,
+            shell.room(),
+            game.seen ?? "side",
+            undefined,
+            game.portrait?.keep,
+        );
         draw(sess.frame(shell.still()), 0);
     }
 

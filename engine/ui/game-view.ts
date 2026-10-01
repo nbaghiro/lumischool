@@ -3,7 +3,7 @@
 // `probe=1` in the address a hidden copy of every sprite's box stays in the page for the tests that
 // find sprites by key. See .docs/game-engine.md.
 import { ageOf, burst, bursts, stepBursts, type Bursts, type Style } from "../motion/burst";
-import { keepInside } from "../motion/camera";
+import { keepInside, portrait, uprightSquare } from "../motion/camera";
 import { HALO, lightsOf } from "../motion/lights";
 import type { BurstKind, Frame, Mark, Pool, Sprite, Water } from "../motion/scene";
 import { ripplesOf, WAVES } from "../motion/surface";
@@ -101,13 +101,17 @@ export interface FieldView {
         pages: number;
         bytes: number;
     };
-    /** `square`, when given, is the pixels to a square the page has already chosen, kept whatever the room. */
+    /**
+     * `square`, when given, is the pixels to a square the page has already chosen, kept whatever the
+     * room; `keep` is the squares of width a room held upright shows, following the frame's focus.
+     */
     fit(
         view: { w: number; h: number },
         world: { w: number; h: number },
         room: { w: number; h: number },
         seen: "side" | "above",
         square?: number,
+        keep?: number,
     ): void;
     clear(): void;
     draw(f: Frame, dt: number): void;
@@ -198,6 +202,13 @@ export class GameView implements FieldView {
     /** The view the game drew for, which the field shows whole inside `view`. */
     private authored = { w: 36, h: 20 };
     private seen: "side" | "above" = "side";
+    /** Narrower than the view, as on a phone held upright: the camera follows the focus, eased from `follow`. */
+    private upright = false;
+    /** A phone held upright, where words keep a size a child can read however small the squares are. */
+    private phone = false;
+    private follow: { x: number; y: number } | null = null;
+    /** A finger or the mouse is down on the field: the camera holds still, so what it holds does not slide under it. */
+    private touching = false;
     private size = { w: 0, h: 0 };
     private shaken = { a: 0, t: 0 };
     private pool: Bursts = bursts(256, 7);
@@ -230,6 +241,9 @@ export class GameView implements FieldView {
         this.o = o;
         this.el = document.createElement("div");
         this.el.className = "game-field field-gl";
+        this.el.addEventListener("pointerdown", () => (this.touching = true));
+        for (const ev of ["pointerup", "pointercancel", "lostpointercapture"])
+            this.el.addEventListener(ev, () => (this.touching = false));
         this.canvas = document.createElement("canvas");
         this.canvas.setAttribute("aria-hidden", "true");
         Object.assign(this.canvas.style, {
@@ -276,12 +290,23 @@ export class GameView implements FieldView {
         room: { w: number; h: number },
         seen: "side" | "above",
         square?: number,
+        keep?: number,
     ): void {
         // the square is the largest that shows the whole authored view, and the field then fills the room
-        const sq = square ?? Math.max(6, Math.floor(Math.min(room.w / view.w, room.h / view.h)));
+        const whole = square ?? Math.max(6, Math.floor(Math.min(room.w / view.w, room.h / view.h)));
+        const upright =
+            square === undefined && portrait(room) && keep !== undefined && keep < view.w;
+        const sq = upright ? uprightSquare(view, room, keep, whole) : whole;
+        this.upright = upright && sq > whole;
+        this.phone = square === undefined && portrait(room);
+        this.follow = null;
         // less than a pixel of room to spare is no room: a caller may pass the view's own size and a little over
         const grown = (r: number, v: number): number => (r - v * sq < 1 ? v : r / sq);
-        const shown = { w: grown(room.w, view.w), h: grown(room.h, view.h) };
+        // held upright, the field is the room's width and shows part of the view, following the focus
+        const shown = {
+            w: this.upright ? room.w / sq : grown(room.w, view.w),
+            h: grown(room.h, view.h),
+        };
         this.view = { ...shown };
         this.authored = { ...view };
         this.seen = seen;
@@ -394,12 +419,26 @@ export class GameView implements FieldView {
         const tokens = this.tokens;
         const still = this.o.still();
         const zoom = f.camera.zoom ?? 1;
+        let aim: { x: number; y: number } = f.camera;
+        if (this.upright) {
+            // a field narrower than the view eases after the thing in play, and jumps to it at rest
+            const to = f.focus ?? f.camera,
+                from = this.follow,
+                k = 1 - Math.exp(-dt * 5);
+            this.follow =
+                from && this.touching
+                    ? from
+                    : from && dt > 0
+                      ? { x: from.x + (to.x - from.x) * k, y: from.y + (to.y - from.y) * k }
+                      : { x: to.x, y: to.y };
+            aim = this.follow;
+        }
         // the camera stays inside the world; across a world smaller than the field the game's own framing
         // holds, and down one a side-on scene stands on the field's foot
-        const kept = keepInside(f.camera, this.view, this.size, zoom, this.seen === "side");
+        const kept = keepInside(aim, this.view, this.size, zoom, this.seen === "side");
         const camera = {
-            x: this.size.w * zoom <= this.view.w ? f.camera.x : kept.x,
-            y: this.size.h * zoom <= this.view.h && this.seen === "above" ? f.camera.y : kept.y,
+            x: this.size.w * zoom <= this.view.w ? aim.x : kept.x,
+            y: this.size.h * zoom <= this.view.h && this.seen === "above" ? aim.y : kept.y,
         };
         this.cam = { x: camera.x, y: camera.y, zoom };
         let sx = 0,
@@ -914,9 +953,14 @@ export class GameView implements FieldView {
                 this.spans[i] = span;
             }
             if (span.textContent !== m.text) span.textContent = m.text;
-            const x = cw + (m.x - camera.x) * z,
-                y = ch + (m.y - camera.y) * z;
-            const size = (m.size ?? 0.8) * z;
+            const x = m.fixed
+                    ? m.x * (this.view.w / this.authored.w) * this.sq
+                    : cw + (m.x - camera.x) * z,
+                y = m.fixed
+                    ? m.y * (this.view.h / this.authored.h) * this.sq
+                    : ch + (m.y - camera.y) * z;
+            // 14 pixels is the least a word is read at on a phone; the stroke keeps to the squares
+            const size = Math.max(this.phone ? 14 : 0, (m.size ?? 0.8) * z);
             span.style.fontSize = `${size.toFixed(1)}px`;
             span.style.setProperty("-webkit-text-stroke-width", `${(0.12 * z).toFixed(1)}px`);
             span.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -80%)`;

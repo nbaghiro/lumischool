@@ -2000,6 +2000,7 @@ function settling(s: RescueState): boolean {
 }
 
 export const rescueGame: ActionGame<RescueState> = {
+    portrait: { keep: 26 },
     id: "rescue",
     title: "Rescue pups",
     group: "action",

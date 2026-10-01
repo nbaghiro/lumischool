@@ -1326,6 +1326,7 @@ const SOUNDS: Kit = {
 };
 
 export const clearGame: ActionGame<ClearState> = {
+    portrait: { keep: 18 },
     id: "clear",
     title: "Clear round",
     group: "action",

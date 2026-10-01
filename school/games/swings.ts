@@ -1546,6 +1546,7 @@ export function swingsFrame(s: SwingsState, rest = false): Frame {
         sprites,
         marks,
         camera: { ...s.cam },
+        focus: { x: s.x + 3, y: CAM_Y },
         view: { ...VIEW },
         world: worldOf(L),
         time: rest ? 0 : s.steps * DT,
@@ -1641,6 +1642,7 @@ const SOUNDS: Kit = {
 };
 
 export const swingsGame: ActionGame<SwingsState> = {
+    portrait: { keep: 22 },
     id: "bridge",
     title: "Charlie's rope swings",
     group: "action",

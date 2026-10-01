@@ -988,6 +988,7 @@ export function say(s: HopState): string {
 
 export const rabbitGame: ActionGame<HopState> = {
     id: "jump",
+    portrait: { keep: 22 },
     title: "Rabbit crossing",
     group: "action",
     quiet: true,

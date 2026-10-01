@@ -988,6 +988,7 @@ function say(s: PourState): string {
 }
 
 export const pourGame: ActionGame<PourState> = {
+    portrait: { hint: true },
     id: "pour",
     title: "Measure it out",
     group: "action",

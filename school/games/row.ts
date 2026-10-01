@@ -1016,6 +1016,7 @@ export function frame(s: RiverState, rest = false): Frame {
         sprites,
         marks,
         camera: rest ? { ...keepInside(wanted(s), VIEW, W), zoom: 1 } : s.cam,
+        focus: { x: s.boat.x + 3, y: s.boat.y },
         view: VIEW,
         world: W,
     };
@@ -1040,6 +1041,7 @@ export function say(s: RiverState): string {
 
 export const rowGame: ActionGame<RiverState> = {
     id: "straight",
+    portrait: { keep: 22 },
     title: "Down the river",
     group: "action",
     seen: "above",

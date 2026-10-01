@@ -783,6 +783,7 @@ export function workshopFrame(s: WorkshopState): Frame {
         sprites,
         marks,
         camera: { x: 21, y: 13.5, zoom: 1 },
+        focus: { x: cargoFocus(s), y: 13.5 },
         view: SIZE,
         world: SIZE,
         time: s.clock.t,
@@ -790,7 +791,22 @@ export function workshopFrame(s: WorkshopState): Frame {
     };
 }
 
+/**
+ * Across the harbour, the middle of what a phone held upright keeps in view: the crate in the hook,
+ * or else the next crate still on the quay, and the boat, so the crate and where it goes are both seen.
+ */
+function cargoFocus(s: WorkshopState): number {
+    const boat = s.world.where(s.barge).x,
+        held = s.held ? s.objects.get(s.held) : undefined;
+    const waiting = [...s.objects.values()]
+        .filter((b) => b !== held && !aboard(s, b))
+        .map((b) => s.world.where(b).x);
+    const crate = held ? s.world.where(held).x : waiting.length ? Math.min(...waiting) : boat;
+    return (crate + boat) / 2;
+}
+
 export const cargoGame: ActionGame<WorkshopState> = {
+    portrait: { keep: 30, hint: true },
     id: "cargo-workshop",
     title: "Harbour cargo",
     group: "action",

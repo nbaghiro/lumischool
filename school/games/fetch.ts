@@ -1380,6 +1380,7 @@ function hum(s: FetchState): Hum[] {
 }
 
 export const fetchGame: ActionGame<FetchState> = {
+    portrait: { keep: 26 },
     id: "blocks",
     title: "Fetch with the pups",
     group: "action",

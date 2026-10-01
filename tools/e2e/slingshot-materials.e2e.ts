@@ -54,7 +54,7 @@ for (const input of ["pointer", "keyboard", "reduced motion"] as const) {
         await page.screenshot({
             path: `/tmp/slingshot-materials-${info.project.name}-${input.replaceAll(" ", "-")}-won.png`,
         });
-        await page.getByRole("button", { name: "Try again", exact: true }).click();
+        await page.getByRole("button", { name: "Start the level again", exact: true }).click();
         await expect(player).toHaveAttribute("data-challenge", challenge ?? "");
         await expect(player).toHaveAttribute("data-game-ready", "true");
         await keyboardShot(page);

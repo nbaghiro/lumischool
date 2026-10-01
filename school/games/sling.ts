@@ -767,6 +767,7 @@ export function say(s: SlingState): string {
 }
 
 export const slingGame: ActionGame<SlingState> = {
+    portrait: { hint: true },
     id: "sling",
     title: "Slingshot",
     group: "action",

@@ -1809,6 +1809,7 @@ function say(s: StandState): string {
 }
 
 export const lemonadeGame: ActionGame<StandState> = {
+    portrait: { hint: true },
     id: "wardrobe",
     title: "Charlie's lemonade stand",
     group: "action",

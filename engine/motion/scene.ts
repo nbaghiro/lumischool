@@ -174,6 +174,8 @@ export interface Frame {
     /** How much of the world is in view, in squares. */
     view: { w: number; h: number };
     world: { w: number; h: number };
+    /** What a phone held upright keeps in the middle of a field narrower than the view: the thing in play. The camera, left out. */
+    focus?: { x: number; y: number };
     /**
      * The game's clock in seconds, which waves and flickers are drawn at, so what a game floats on
      * the water and the water agree. Left out, the view keeps a clock of its own.
@@ -234,5 +236,6 @@ export type Mark =
           solid?: boolean;
       }
     | { kind: "box"; x: number; y: number; w: number; h: number; on?: boolean }
-    | { kind: "word"; x: number; y: number; text: string; size?: number }
+    /** `fixed` places it in the view's own squares from its top left, as a fixed sprite is, for a readout. */
+    | { kind: "word"; x: number; y: number; text: string; size?: number; fixed?: true }
     | { kind: "puff"; x: number; y: number; r: number };

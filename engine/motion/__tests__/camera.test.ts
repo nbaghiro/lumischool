@@ -1,6 +1,15 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { easing, fitZoom, follow, keepInside, lead, seen } from "../camera";
+import {
+    easing,
+    fitZoom,
+    follow,
+    keepInside,
+    lead,
+    portrait,
+    seen,
+    uprightSquare,
+} from "../camera";
 
 const view = { w: 20, h: 10 };
 const world = { w: 60, h: 30 };
@@ -60,4 +69,21 @@ test("a far layer shows the part of itself the camera is over, across by its dep
     assert.deepEqual(seen(cam, view), { x0: 30, x1: 50, y0: 5, y1: 15 });
     assert.deepEqual(seen(cam, view, 0.5), { x0: 10, x1: 30, y0: 5, y1: 15 });
     assert.deepEqual(seen({ ...cam, zoom: 0.5 }, view, 0), { x0: -20, x1: 20, y0: 0, y1: 20 });
+});
+
+test("a phone held upright is taller than wide and narrower than 700 pixels; a desk or a phone on its side is not", () => {
+    assert.equal(portrait({ w: 422, h: 712 }), true);
+    assert.equal(portrait({ w: 1416, h: 724 }), false);
+    assert.equal(portrait({ w: 820, h: 390 }), false);
+    assert.equal(portrait({ w: 768, h: 1004 }), false);
+});
+
+test("held upright, the square shows `keep` squares across, never more than the view's height allows, never less than the whole view's", () => {
+    const view = { w: 42, h: 27 };
+    // Harbour cargo on an iPhone 14 Pro Max: 10 pixels shows all 42 squares, 14 shows 30 of them
+    assert.equal(uprightSquare(view, { w: 422, h: 660 }, 30, 10), 14);
+    // a short room caps it, so the view's height still fits
+    assert.equal(uprightSquare(view, { w: 422, h: 300 }, 20, 10), 11);
+    // a keep wider than the room's own fit leaves the whole view's square
+    assert.equal(uprightSquare(view, { w: 422, h: 660 }, 60, 10), 10);
 });

@@ -954,6 +954,70 @@
         .game-finished {
             max-width: 100%;
         }
+        /* a won round's sentence keeps the room the round icons leave it, and wraps inside its own box */
+        .game-feedback-slot:has(.game-finished) {
+            gap: 6px;
+        }
+        .game-feedback-slot .game-finished {
+            flex: 1 1 auto;
+        }
+        .game-finished [data-game="aside"] {
+            font-size: 16px;
+        }
+    }
+}
+
+/* Shown only on a phone held upright, by the rule below. */
+.game-turn-hint {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 auto;
+    padding: 2px 4px 2px 12px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--sky) 18%, var(--card));
+    font-size: 13px;
+    color: var(--ink);
+}
+.game-turn-hint button {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 10px;
+    border: 0;
+    background: transparent;
+    font: 650 15px var(--f-read);
+    color: var(--pen);
+}
+
+/* A phone held upright: the title takes the top bar's first row and the note its second, and the
+   controls keep to one row where they fit, at the 44 pixel floor. */
+@media (orientation: portrait) and (max-width: 700px) {
+    .game-room.playing {
+        .game-toolbar {
+            flex-wrap: wrap;
+        }
+        .game-toolbar h1 {
+            flex: 1 1 0;
+            max-width: none;
+        }
+        .hands {
+            gap: 4px;
+        }
+        .pad {
+            padding: 4px 6px;
+            gap: 4px;
+        }
+        .cross {
+            gap: 4px;
+        }
+        .key.big {
+            font-size: 17px;
+            padding: 6px 12px;
+        }
+        .game-turn-hint {
+            display: flex;
+        }
     }
 }
 

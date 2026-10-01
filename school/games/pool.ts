@@ -914,6 +914,7 @@ function say(s: PoolState): string {
 }
 
 export const poolGame: ActionGame<PoolState> = {
+    portrait: { keep: 28 },
     id: "pool",
     title: "Pocket pool",
     group: "action",

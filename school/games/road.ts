@@ -811,7 +811,8 @@ export function frame(s: RoadState, rest = false): Frame {
     sprites.push(listCard(s));
     const world = { w: W, h: ROAD.view.h };
     const camera = rest ? { ...keepInside(ahead(s), ROAD.view, world), zoom: 1 } : { ...s.cam };
-    return { sprites, marks, camera, view: { ...ROAD.view }, world };
+    const focus = { x: s.x + 5, y: s.y };
+    return { sprites, marks, camera, focus, view: { ...ROAD.view }, world };
 }
 
 export function say(s: RoadState): string {
@@ -881,6 +882,7 @@ function hum(s: RoadState): Hum[] {
 
 export const roadGame: ActionGame<RoadState> = {
     id: "road",
+    portrait: { keep: 22 },
     title: "The road",
     group: "action",
     seen: "above",

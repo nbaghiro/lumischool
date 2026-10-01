@@ -1286,6 +1286,7 @@ export function say(s: RaftsState): string {
 }
 
 export const raftsGame: ActionGame<RaftsState> = {
+    portrait: { hint: true },
     id: "herd",
     title: "Rafts",
     group: "action",

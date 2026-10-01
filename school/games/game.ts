@@ -155,6 +155,12 @@ export interface ActionGame<S> extends Base {
     seen?: "above";
     /** The field shows where things stand, so the line above it says only what just happened. */
     quiet?: true;
+    /**
+     * On a phone held upright: `keep` is the squares of width the field shows, larger than the whole
+     * view would be, following the frame's `focus`; `hint` offers to turn the phone for a scene too wide
+     * to crop. See .docs/engine.md.
+     */
+    portrait?: { keep?: number; hint?: true };
     /** The activity whose versions this game plays, and the level each version opens, for a link that names the activity. */
     plays?: { activity: string; levels: number[] };
     /**

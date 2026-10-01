@@ -74,6 +74,30 @@ const foundLine = (n: number, of: number): string => {
     return n === 1 ? "1 game matches" : `${n} games match`;
 };
 
+const [turnHintsHidden, setTurnHintsHidden] = createSignal<readonly string[]>(readTurnHints());
+
+function readTurnHints(): string[] {
+    try {
+        return (sessionStorage.getItem("game-turn-hints") ?? "").split(" ").filter(Boolean);
+    } catch {
+        return [];
+    }
+}
+
+/** A game too wide to crop asks once a session to be played with the phone turned; the page's CSS shows it only upright. */
+const turnHint = (g: Game): boolean =>
+    g.group === "action" && g.portrait?.hint === true && !turnHintsHidden().includes(g.id);
+
+function hideTurnHint(id: string): void {
+    const ids = [...turnHintsHidden(), id];
+    setTurnHintsHidden(ids);
+    try {
+        sessionStorage.setItem("game-turn-hints", ids.join(" "));
+    } catch {
+        // without storage the note stays hidden until the page is loaded again
+    }
+}
+
 function Cover(props: { game: Game }): JSX.Element {
     let host: HTMLSpanElement | undefined;
     onMount(() => {
@@ -154,7 +178,6 @@ export function Games(props: {
     const [challenge, setChallenge] = createSignal<GameChallenge | undefined>(
         initial ? remembered(initial, level()) : undefined,
     );
-    const [completed, setCompleted] = createSignal(false);
     const [feedback, setFeedback] = createSignal({ text: "", won: false });
     const [activeTitle, setActiveTitle] = createSignal("");
     const recent: string[] = [];
@@ -350,7 +373,6 @@ export function Games(props: {
         return untrack(() => {
             let ended = false;
             begin(false);
-            setCompleted(false);
             setFeedback({ text: "", won: false });
             const opened = openChallenge(game, selectedChallenge);
             setActiveTitle(opened.levels[version]?.title ?? "");
@@ -461,7 +483,6 @@ export function Games(props: {
                 observe: (kind, input) => {
                     if (emitted) return;
                     if (kind === "won") {
-                        setCompleted(true);
                         finish(true);
                     } else if (kind === "assist") attempt.assistance++;
                     else {
@@ -664,24 +685,41 @@ export function Games(props: {
                                         <span data-game="aside">{feedback().text}</span>
                                     </div>
                                 </Show>
-                                <button data-game="another" hidden onClick={another}>
-                                    {supportsVariations(g()) ? "Play another" : "Play again"}
+                                <button
+                                    class="game-icon"
+                                    data-game="another"
+                                    hidden
+                                    aria-label={
+                                        supportsVariations(g()) ? "Play another" : "Play again"
+                                    }
+                                    title={supportsVariations(g()) ? "Play another" : "Play again"}
+                                    onClick={another}
+                                >
+                                    <Icon name={supportsVariations(g()) ? "shuffle" : "restart"} />
                                 </button>
-                                <button data-game="watch" hidden onClick={() => runtime?.watch?.()}>
-                                    Watch it again
+                                <button
+                                    class="game-icon"
+                                    data-game="watch"
+                                    hidden
+                                    aria-label="Watch it again"
+                                    title="Watch it again"
+                                    onClick={() => runtime?.watch?.()}
+                                >
+                                    <Icon name="watch" />
                                 </button>
-                                <Show when={completed()}>
-                                    <button
-                                        onClick={() => {
-                                            retries++;
-                                            setRun(run() + 1);
-                                        }}
-                                    >
-                                        Try again
-                                    </button>
-                                </Show>
                             </div>
                             <span class="game-challenge">{activeTitle()}</span>
+                            <Show when={supportsVariations(g())}>
+                                <button
+                                    class="game-icon"
+                                    aria-label="New arrangement"
+                                    title="New arrangement"
+                                    data-game="shuffle"
+                                    onClick={another}
+                                >
+                                    <Icon name="shuffle" />
+                                </button>
+                            </Show>
                             <button
                                 class="game-icon"
                                 aria-label="Start the level again"
@@ -706,6 +744,12 @@ export function Games(props: {
                         <output class="game-feedback-live">{feedback().text}</output>
                         <Show when={failure()}>
                             <p role="alert">{failure()}</p>
+                        </Show>
+                        <Show when={turnHint(g())}>
+                            <p class="game-turn-hint">
+                                Turn your phone sideways for a bigger view.
+                                <button onClick={() => hideTurnHint(g().id)}>OK</button>
+                            </p>
                         </Show>
                         <div class="game-stage-wrap">
                             <div class="arena" inert={paused()}>

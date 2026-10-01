@@ -1218,6 +1218,7 @@ function say(s: MarbleState): string {
 }
 
 export const marbleGame: ActionGame<MarbleState> = {
+    portrait: { hint: true },
     id: "marble-workshop",
     title: "Marble workshop",
     group: "action",

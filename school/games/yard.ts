@@ -996,6 +996,7 @@ const SOUNDS: Kit = {
 const listing = (xs: string[]) => (xs.length ? xs.join(", ") : "nothing");
 
 export const yardGame: ActionGame<YardState> = {
+    portrait: { hint: true },
     id: "shunt",
     title: "Shunting yard",
     group: "action",

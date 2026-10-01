@@ -718,6 +718,7 @@ export function frame(s: PlaneState, rest = false): Frame {
         sprites,
         marks,
         camera: { ...cam },
+        focus: { x: s.plane.x + 5, y: s.plane.y },
         view: { ...VIEW },
         world: { w: lap + COURSE.pad * 2, h: VIEW.h },
     };
@@ -740,6 +741,7 @@ export function say(s: PlaneState): string {
 }
 
 export const planeGame: ActionGame<PlaneState> = {
+    portrait: { keep: 22 },
     objectives: (s) => ({ completed: s.done.filter(Boolean).length, total: s.L.gates.length }),
     id: "plane",
     title: "Paper plane",

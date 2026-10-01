@@ -83,3 +83,14 @@ export function seen(
         y1: cam.y + hh,
     };
 }
+
+/** A room held upright, as a phone is: taller than wide, and no wider than a phone. */
+export const portrait = (room: Size): boolean => room.h > room.w && room.w < 700;
+
+/**
+ * The square a room held upright shows a view at: `keep` squares across, and never so big that the
+ * view's height runs off the room, nor smaller than the square that shows the whole view.
+ */
+export function uprightSquare(view: Size, room: Size, keep: number, whole: number): number {
+    return Math.max(whole, Math.min(Math.floor(room.w / keep), Math.floor(room.h / view.h)));
+}
