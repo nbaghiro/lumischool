@@ -27,6 +27,7 @@ import {
     type Camera,
     type MapAim,
     type MapPlace,
+    type PlaceState,
     type MapView,
     type Rect,
 } from "../space";
@@ -56,6 +57,8 @@ const nameOf = (view: MapView, i: number): string => {
 };
 
 const lower = (s: string): string => s.charAt(0).toLowerCase() + s.slice(1);
+/** The states a place is drawn lit in (overworld.css), which a map whose goIn is "lit" may go into. */
+const LIT: ReadonlySet<PlaceState> = new Set(["done", "here", "begun"]);
 
 const ARROWS: readonly Arrow[] = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
 
@@ -151,6 +154,8 @@ export function Overworld(props: {
      * no card, no line, and a tap that does not travel.
      */
     onLocked?: (at: { place: MapPlace; how: "tap" | "focus" | "hover" } | null) => void;
+    /** What the map's note says of a place it will not go into, in place of the child's "opens as you learn". */
+    shut?: string;
     /**
      * Where the places and the buttons are on the page, whenever the camera comes to rest, so a page
      * may put its own words beside them, and null once the camera leaves what it was told.
@@ -251,9 +256,16 @@ export function Overworld(props: {
             !!p &&
             p.open &&
             props.view.limits.goIn !== "none" &&
+            (props.view.limits.goIn !== "lit" || LIT.has(p.state)) &&
             p.state !== "next" &&
             p.state !== "behind"
         );
+    };
+    /** A place with no way in is explained: by the page, or by the map's own note and its voice. */
+    const explain = (i: number): void => {
+        if (locked(i, "tap")) return;
+        setCard(place(i) ?? null);
+        say(props.shut ?? `The way to ${lower(nameOf(props.view, i))} opens as you learn.`);
     };
     /** What was last said about a locked place, so the page hears of it leaving exactly once. */
     let told: { i: number; how: "tap" | "focus" | "hover" } | null = null;
@@ -690,9 +702,7 @@ export function Overworld(props: {
         const there = place(target);
         if (!there?.open) {
             // the page explains a locked place in one message of its own, or the map says it itself
-            if (locked(target, "tap")) return;
-            setCard(there ?? null);
-            say(`The way to ${lower(nameOf(props.view, target))} opens as you learn.`);
+            explain(target);
             return;
         }
         const m = props.view.layout,
@@ -749,7 +759,7 @@ export function Overworld(props: {
             go = props.onGoIn;
         if (!v || !n || !go || busy) return;
         if (!mayEnter(i)) {
-            locked(i, "tap");
+            explain(i);
             return;
         }
         props.onApproach?.(i);
@@ -1133,9 +1143,7 @@ export function Overworld(props: {
                     setCard(null);
                     if (busy || flying || loadingFlight) return;
                     if (!place(i)?.open) {
-                        if (locked(i, "tap")) return;
-                        setCard(place(i) ?? null);
-                        say(`The way to ${lower(nameOf(props.view, i))} opens as you learn.`);
+                        explain(i);
                         return;
                     }
                     const camera = nearPlace(v, i);
@@ -1469,7 +1477,7 @@ export function Overworld(props: {
                     {(c) => (
                         <div class="hud ow-card" role="note">
                             <p class="ow-card-name">{c().shown?.name ?? ""}</p>
-                            <p>The way here opens as you learn.</p>
+                            <p>{props.shut ?? "The way here opens as you learn."}</p>
                             <button type="button" class="ow-btn" onClick={() => setCard(null)}>
                                 Back to the map
                             </button>

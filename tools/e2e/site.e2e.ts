@@ -183,23 +183,19 @@ test("the final marketing map fits all worlds inside its panel, including after 
     await expect(last).toBeAttached({ timeout: 60000 });
     await last.evaluate((el) => el.scrollIntoView({ block: "center" }));
     await expect(last).toHaveClass(/on/);
-    const map = page.locator(".site-journey-world.ready");
+    // the section shows pictures, and the last one, of every world, is drawn whole within its box
+    const map = page.locator(".site-journey-map .site-still.on");
     await expect(map).toBeVisible({ timeout: 60000 });
     const fits = () =>
         map.evaluate((el) => {
+            if (!(el instanceof HTMLImageElement) || !el.complete || !el.naturalWidth) return false;
             const box = el.getBoundingClientRect();
-            const nodes = [...el.querySelectorAll(".ow-node")];
+            const scale = Math.min(box.width / el.naturalWidth, box.height / el.naturalHeight);
             return (
-                nodes.length > 0 &&
-                nodes.every((node) => {
-                    const r = node.getBoundingClientRect();
-                    return (
-                        r.left >= box.left &&
-                        r.right <= box.right &&
-                        r.top >= box.top &&
-                        r.bottom <= box.bottom
-                    );
-                })
+                el.classList.contains("whole") &&
+                getComputedStyle(el).objectFit === "contain" &&
+                el.naturalWidth * scale <= box.width + 0.5 &&
+                el.naturalHeight * scale <= box.height + 0.5
             );
         });
     await expect.poll(fits).toBe(true);

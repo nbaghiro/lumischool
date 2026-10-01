@@ -41,6 +41,8 @@ export interface OverlaySource {
     whereIs(lesson: string): string | null;
     /** The sample child's own location when first opening the marketing map. */
     opening?: number;
+    /** What the map's note says of a world this look does not go into. */
+    shut?: string;
 }
 
 /** The world a place on the map is of, by its index in the view. */
@@ -221,11 +223,32 @@ export function Overlay(props: {
                                                 setBox(undefined);
                                                 props.go({ ...at(s()), grade });
                                             }}
-                                            onApproachWorld={(id) => shelf.warm(keyOf(id))}
+                                            onApproachWorld={(id) =>
+                                                shelf.warm(
+                                                    keyOf(
+                                                        id,
+                                                        at(s()).journey
+                                                            ? {
+                                                                  grade: journeyGrade(),
+                                                                  journey: true,
+                                                              }
+                                                            : {},
+                                                    ),
+                                                )
+                                            }
                                             onWorld={(world) => {
                                                 setBox(undefined);
                                                 setBack(undefined);
-                                                props.go({ world, lesson: null });
+                                                props.go(
+                                                    at(s()).journey
+                                                        ? {
+                                                              world,
+                                                              lesson: null,
+                                                              grade: journeyGrade(),
+                                                              journey: true,
+                                                          }
+                                                        : { world, lesson: null },
+                                                );
                                             }}
                                             from={box()}
                                             lesson={at(s()).lesson}
@@ -263,6 +286,7 @@ export function Overlay(props: {
                                                 );
                                         }}
                                         arrive={back()}
+                                        {...(s().shut === undefined ? {} : { shut: s().shut })}
                                         class="ov-map"
                                         title="The map of every world"
                                         onGoIn={(place, at) => {

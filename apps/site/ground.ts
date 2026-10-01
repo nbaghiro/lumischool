@@ -62,9 +62,13 @@ async function readLook(): Promise<OverlaySource> {
         import("../../school/worlds/written"),
     ]);
     const s = await schoolOf(true);
-    const map = journeyMap(await mapOf(s.data.journey, { open: true }), s.corpus);
+    const whole = journeyMap(await mapOf(s.data.journey, { open: true }), s.corpus);
+    // every world may be flown to and landed on, and only those the sample child has reached, drawn
+    // lit, are gone into
+    const map: MapView = { ...whole, limits: { ...whole.limits, goIn: "lit" } };
     return {
         map: () => map,
+        shut: "This sample opens only the worlds its child has reached. A family of your own opens the rest as the child learns.",
         opening: map.here ?? map.places.find((p) => p.shown?.world === s.child.hereWorld.id)?.i,
         nameOf: (id) => worldById(id).name,
         // the site opens no look by a lesson alone

@@ -24,7 +24,7 @@ import { Waiting } from "./waiting";
 import { entryLessons } from "./reading-source";
 import { matches, Near } from "./viewport";
 import { World } from "./world";
-import { Select } from "./select";
+import { Seg } from "./fields";
 
 export interface ReadingSource {
     description?: string;
@@ -240,24 +240,17 @@ export function Reading(props: {
                         <span class="rd-purpose">{props.source.description}</span>
                     </Show>
                     <Show when={props.onVariant && props.source.variants?.length}>
-                        <Select
-                            aria-label="Lessons to browse"
-                            value={props.source.variant}
-                            onChange={(event) =>
-                                props.onVariant?.(Number(event.currentTarget.value))
-                            }
-                        >
-                            <For each={props.source.variants}>
-                                {(v) => (
-                                    <option
-                                        value={v.value}
-                                        selected={v.value === props.source.variant}
-                                    >
-                                        {v.label}
-                                    </option>
-                                )}
-                            </For>
-                        </Select>
+                        <Seg
+                            legend="Grade"
+                            quiet
+                            compact
+                            name="rd-grade"
+                            options={props.source.variants ?? []}
+                            value={props.source.variant ?? null}
+                            onChange={(grade) => {
+                                if (grade !== null) props.onVariant?.(grade);
+                            }}
+                        />
                     </Show>
                     <Show when={props.onAlternate && props.source.alternate}>
                         <button type="button" onClick={() => props.onAlternate?.()}>

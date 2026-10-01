@@ -204,10 +204,7 @@ test("a grown-up goes into a world of another year from the map, reads a lesson 
     const map = await mapReady(page);
     // A parent browses the place independently of a child's grade or record.
     const mountains = map.locator('.ow-node[aria-label*="mountains" i]').first();
-    await expect(mountains).toHaveAttribute(
-        "aria-label",
-        "The mountains. Grade journeys · 1, 2, 3, 4, 5, 6.",
-    );
+    await expect(mountains).toHaveAttribute("aria-label", "The mountains. Year 4, term 1.");
     const entries = await page.evaluate(() => history.length);
     await goInto(page, mountains);
     const roll = await rollReady(page);
@@ -278,7 +275,7 @@ test("See the map on the site opens the sample child's map over the page, a worl
     }
     await expect(page).toHaveURL(/\/home#\/map$/);
     await expect(look.locator(".ow-host.ready")).toBeVisible({ timeout: 60_000 });
-    // the sample child's map, with every world open to go into and nothing of a real child on it
+    // the sample child's map, with every world open to travel to and nothing of a real child on it
     await expect(look.locator('.ow-node[aria-disabled="true"]')).toHaveCount(0);
     expect(await smallTargets(look.locator(".ov-top"))).toEqual([]);
     await look.getByRole("button", { name: "Fly the paper plane (P)" }).click();
@@ -286,11 +283,22 @@ test("See the map on the site opens the sample child's map over the page, a worl
     await page.keyboard.press("Escape");
     await expect(look).toBeVisible();
     await expect(look.locator(".ow-host[data-fly]")).toHaveCount(0);
+    // a world the sample child has not reached is landed on, and the map's note says why it stays shut
     const harbour = look.locator('.ow-node[aria-label*="harbour" i]').first();
     await goInto(page, harbour);
+    await expect(look.locator(".ow-card")).toContainText(
+        "This sample opens only the worlds its child has reached.",
+    );
+    await expect(look.locator(".wd")).toHaveCount(0);
+    await expect(page).toHaveURL(/#\/map$/);
+    await look.locator(".ow-card").getByRole("button", { name: "Back to the map" }).click();
+    await expect(look.locator(".ow-card")).toHaveCount(0);
+    // and the one it has, drawn lit, is gone into
+    const garden = look.locator('.ow-node[aria-label*="garden" i]').first();
+    await goInto(page, garden);
     const roll = look.locator(".wd");
     await expect(roll).toHaveClass(/ready/, { timeout: 60_000 });
-    await expect(page).toHaveURL(/#\/map\/harbour\?journey=1$/);
+    await expect(page).toHaveURL(/#\/map\/home-garden\?journey=1$/);
     await expect(roll.locator(".rd-sheet.rd-read").first()).toBeVisible({ timeout: 60_000 });
     await look.getByRole("button", { name: "Close" }).click();
     await expect(look).toBeHidden();
@@ -502,12 +510,13 @@ test("choosing a sample world prepares lessons before entry and reuses their req
     await expect(look.locator(".ow-host.ready")).toBeVisible({ timeout: 60_000 });
     await expect(look.locator(".ow-scope")).toHaveText("Every world");
     const before = counts.size;
-    const meadow = look.locator('.ow-node[aria-label*="meadow" i]').first();
-    await meadow.dispatchEvent("click");
+    // the world the sample child is in, which is the one the sample map goes into
+    const garden = look.locator('.ow-node[aria-label*="garden" i]').first();
+    await garden.dispatchEvent("click");
     await expect.poll(() => counts.size).toBeGreaterThan(before);
     await expect(page).toHaveURL(/#\/map$/);
     const enteredAt = Date.now();
-    await goInto(page, meadow);
+    await goInto(page, garden);
     await expect(look.locator(".rd-read").first()).toBeVisible({ timeout: 30_000 });
     await expect(look.getByRole("status")).toHaveCount(0);
     await test.info().attach("prepared-entry", {

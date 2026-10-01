@@ -5,7 +5,7 @@ import { journeyViewOf, worldViewOf } from "../../school/worlds/reading";
 // roll of yesterday and today, and the worlds a visitor looks into over the page. The map pictures
 // are the page's own components (page.tsx); this is what they are drawn from.
 
-import { readScene } from "../../engine/pack";
+import { gradeName, readScene } from "../../engine/pack";
 import type { Scene } from "../../engine/scene";
 import type { SceneDrawer } from "../../engine/ui/scene";
 import type { Measured } from "../../engine/ui/lesson";
@@ -381,9 +381,7 @@ export function reading(
             return {
                 description: journey.title,
                 alternate: "Original collection",
-                variants: available
-                    .filter((j) => j.lessonIds.length)
-                    .map((j) => ({ value: j.grade, label: `Grade ${j.grade}` })),
+                variants: available.map((j) => ({ value: j.grade, label: gradeName(j.grade) })),
                 variant: journey.grade,
                 world: (o) =>
                     journeyViewOf({

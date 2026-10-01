@@ -5,7 +5,7 @@ import { journeyViewOf, worldViewOf } from "../../school/worlds/reading";
 
 import { reads } from "../../engine/ui/reads";
 import type { Declared } from "../../engine/motion/world";
-import type { LessonFacts, Level, PackLesson } from "../../engine/pack";
+import { gradeName, type LessonFacts, type Level, type PackLesson } from "../../engine/pack";
 import type { Scene } from "../../engine/scene";
 import type { SceneDrawer } from "../../engine/ui/scene";
 import type { MapView, WorldView } from "../../engine/space";
@@ -14,12 +14,12 @@ import type { Maybe } from "../../engine/ui/held";
 import { declaredOf, loadDrawings } from "../../engine/ui/drawings";
 import type { Measured } from "../../engine/ui/lesson";
 import type { ReadingSource } from "../../engine/ui/reading";
-import { gradeName } from "../../school/family/names";
 import { subjectFacts } from "../../school/tracks";
 import { refsOf, sizeOn } from "../../school/worlds/art";
 import { apply, readChoice } from "../../school/worlds/choice";
-import { corpusFrom, topicsIn, type Corpus } from "../../school/worlds/lessons";
-import { journeyFor } from "../../school/worlds/journeys";
+import { corpusFrom, previewOf, topicsIn, type Corpus } from "../../school/worlds/lessons";
+import { journeyFor, journeyGrades } from "../../school/worlds/journeys";
+import type { Variants } from "../../school/year";
 import { NARROW, WIDE } from "../../school/worlds/roll";
 import type { Applied } from "../../school/worlds/types";
 import { GROWN_WORLD } from "../../school/worlds/view";
@@ -46,6 +46,13 @@ export interface School {
     size: (art: string, params?: Record<string, unknown>) => { w: number; h: number };
     declared: Declared;
     map: MapView;
+    /** The curriculum with its variants read by what the family has set (`previewOf`). */
+    previewed(set: Partial<Variants>): Corpus;
+}
+
+/** What a grown-up's journeys are read by: the family's nation, their first child's language and grade. */
+export interface Preview extends Partial<Variants> {
+    grade?: number;
 }
 
 /** Where on the map a look is, with a lesson named alone put in the world it is met in, or on the map when the school has no such lesson. */
@@ -70,7 +77,16 @@ export function placeOf(map: MapView, world: string): number | null {
  * views are built from their sizes.
  */
 export async function schoolOf(pack: PackView, still: boolean): Promise<School> {
-    const corpus = corpusFrom(pack.index.lessons, new Date().toISOString().slice(0, 10));
+    const started = new Date().toISOString().slice(0, 10);
+    const corpus = corpusFrom(pack.index.lessons, started);
+    const previews = new Map<string, Corpus>();
+    const previewed = (set: Partial<Variants>): Corpus => {
+        const v = previewOf(pack.index.lessons, set);
+        const key = `${v.language ?? ""}|${v.nation ?? ""}`;
+        let had = previews.get(key);
+        if (!had) previews.set(key, (had = corpusFrom(pack.index.lessons, started, undefined, v)));
+        return had;
+    };
     const shelf = await loadDrawings(refsOf(WORLDS.map((w) => w.id)));
     const size = sizeOn(shelf);
     const applied = new Map<string, Applied>();
@@ -89,6 +105,7 @@ export async function schoolOf(pack: PackView, still: boolean): Promise<School> 
         size,
         declared: declaredOf,
         map: journeyMap(schoolViewOf({ corpus, size, still, declared: declaredOf }), corpus),
+        previewed,
     };
 }
 
@@ -230,27 +247,28 @@ const pictureOf = (s: School, f: LessonFacts) => async (host: HTMLElement) => {
 export function readingOf(
     s: School,
     world: string,
-    o: { level: Level; key: boolean; grade?: number; journey?: boolean },
+    o: { level: Level; key: boolean; grade?: number; journey?: boolean; preview?: Preview },
 ): ReadingSource {
     const site = worldById(world).site;
     if (o.journey) {
-        const variants = s.corpus.grades
-            .filter((g) => journeyFor(world, g, s.corpus))
-            .map((g) => ({ value: g, label: `Grade ${g}` }));
-        const grade = variants.some((v) => v.value === o.grade) ? o.grade : variants[0]?.value;
-        const journey = journeyFor(world, grade ?? 1, s.corpus);
+        // the grade asked for, else the family's child's, else the world's lowest, among those with lessons
+        const corpus = s.previewed(o.preview ?? {});
+        const grades = journeyGrades(world, corpus);
+        const grade = [o.grade, o.preview?.grade].find(
+            (g) => g !== undefined && grades.includes(g),
+        );
+        const journey = journeyFor(world, grade ?? grades[0] ?? -1, corpus);
         if (journey)
             return {
-                variants: variants.filter(
-                    (v) => journeyFor(world, v.value, s.corpus)?.lessonIds.length,
-                ),
-                variant: grade,
+                variants: grades.map((g) => ({ value: g, label: gradeName(g) })),
+                variant: journey.grade,
                 description: journey.title,
                 alternate: "Original collection",
+                neighbours: neighboursWritten(s.corpus, world),
                 world: (r) =>
                     journeyViewOf({
                         journey,
-                        corpus: s.corpus,
+                        corpus,
                         worldOf: s.worldOf,
                         topics: s.topics,
                         size: s.size,
@@ -262,7 +280,7 @@ export function readingOf(
                 scope: `${s.pack.pack}|look|${o.level}|${o.key}`,
                 sheet: (lesson, r) => sheetWritten(s, lesson, { ...o, ...r }),
                 card: (id) => ({
-                    label: subjectFacts(s.corpus.lesson(id)?.subject ?? "maths").title,
+                    label: subjectFacts(corpus.lesson(id)?.subject ?? "maths").title,
                     note: "",
                 }),
             };

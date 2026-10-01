@@ -367,12 +367,14 @@ export interface Sheets {
     landing(lesson: string): number | null;
     /**
      * Draws the sheets of any of these lessons not drawn yet, picking up a sitting where the record has
-     * one, and a book lesson at the sitting it reads today.
+     * one, and a book lesson at the sitting it reads today. `drawer` draws the scenes of lessons that
+     * are not today's, such as a world's journey (inside.tsx), whose drawings today's did not load.
      */
     draw(
         lessons: readonly PackLesson[],
         resumes: ReadonlyMap<string, Resume>,
         readings: ReadonlyMap<string, Reading>,
+        drawer?: SceneDrawer,
     ): void;
     dispose(): void;
 }
@@ -419,6 +421,7 @@ export function todaysSheets(o: {
         lessons: readonly PackLesson[],
         resumes: ReadonlyMap<string, Resume>,
         readings: ReadonlyMap<string, Reading>,
+        drawer: SceneDrawer = o.draw,
     ): void => {
         const layer = document.createElement("div");
         layer.className = "ls-measure";
@@ -459,7 +462,7 @@ export function todaysSheets(o: {
                         width={o.width}
                         narrow={o.narrow}
                         limits={{ sheets: "open", state, acts, child: o.kid.name }}
-                        draw={o.draw}
+                        draw={drawer}
                         part={reading?.part}
                         book={reading ? reading.book : undefined}
                         ref={(node) => {

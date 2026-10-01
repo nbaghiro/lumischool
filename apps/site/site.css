@@ -565,6 +565,11 @@ figure.site-fig figcaption {
 .site-still.on {
     opacity: 1;
 }
+/* the last stop is every world, shown whole in a box of any shape, with the sea its edges are drawn in round it */
+.site-still.whole {
+    object-fit: contain;
+    background: color-mix(in srgb, var(--sky) 25%, #fff);
+}
 @media (prefers-reduced-motion: reduce) {
     .site-still {
         transition: none;

@@ -68,11 +68,22 @@ export function Inside(props: {
     // paper landing or going changes the sheets; a height the roll did not have lays it out again
     const [drew, setDrew] = createSignal(0);
     const [measured, setMeasured] = createSignal(0);
-    const [browsing, setBrowsing] = createSignal(false);
-    const readable = (id: string): boolean =>
-        !browsing() ||
-        !!props.c.record.years.find((year) => year.grade === props.kid.grade)?.progress.done[id] ||
-        !!todayOf(props.c)?.lessons.includes(id);
+    const progress = () =>
+        props.c.record.years.find((year) => year.grade === props.kid.grade)?.progress;
+    const done = (id: string): boolean => !!progress()?.done[id];
+    // every world but the one today's term is in shows the child's grade's journey there, whose
+    // lessons are all theirs to do; the current term's world keeps the year's roll
+    const journey = createMemo(() => {
+        const c = props.c;
+        const j = ownJournal(c);
+        const term = props.screen.term;
+        const current = j.today?.term ?? j.next?.term ?? 1;
+        const world = term !== null ? j.worlds(c.choice)[term - 1] : props.screen.world;
+        if (!world || term === current) return undefined;
+        return journeyFor(world, props.kid.grade, c.corpus);
+    });
+    /** Whether a sheet is drawn as the child left it (`pastSheetOf`), rather than one to do. */
+    const readable = (id: string): boolean => !journey() || done(id);
     const read = new Map<
         string,
         { lesson: PackLesson; events: readonly Envelope[]; date: string }
@@ -135,18 +146,14 @@ export function Inside(props: {
             height: (id) => built?.height(id) ?? paper.height(id) ?? null,
         });
     });
-    const selectedJourney = createMemo(() => {
-        const world = annualView()?.open;
-        return world ? journeyFor(world, props.kid.grade, props.c.corpus) : undefined;
-    });
     const view = createMemo(() => {
-        const selected = selectedJourney();
-        if (!browsing() || !selected) return annualView();
+        const selected = journey();
+        if (!selected) return annualView();
         measured();
         const c = props.c;
         return journeyViewOf({
             journey: selected,
-            progress: c.record.years.find((year) => year.grade === props.kid.grade)?.progress,
+            progress: progress(),
             today: todayOf(c)?.lessons,
             corpus: c.corpus,
             worldOf: c.worldOf,
@@ -181,16 +188,47 @@ export function Inside(props: {
             term: v.arrival?.term,
         });
         const live = new Set(todayOf(props.c)?.lessons ?? []);
-        return (row?.day.lessons ?? []).filter((id) => !live.has(id) && readable(id));
+        return (row?.day.lessons ?? []).filter((id) => !live.has(id));
     });
+    // a journey's lessons still to do are drawn on the page's own sheets, as today's are, so an
+    // answer is recorded against the same lesson wherever it is done
+    const drawing = new Set<string>();
+    const unread = new Set<string>();
+    const drawLive = async (ids: readonly string[]): Promise<void> => {
+        const sheets = props.sheets;
+        const c = props.c;
+        const want = ids.filter((id) => !readable(id) && !sheets?.sheet(id) && !drawing.has(id));
+        if (!sheets || !want.length) return;
+        for (const id of want) drawing.add(id);
+        try {
+            const read = await fetchLessons(c, want);
+            for (const id of want)
+                if (!read.some((l) => l.id === id)) unread.add(id);
+                else unread.delete(id);
+            const [scene, mod] = await Promise.all([import("../../engine/ui/scene"), lessons()]);
+            const [draw, resumes, readings] = await Promise.all([
+                scene.scenes(read.flatMap(scene.scenesIn)),
+                mod.resumesFor(c, read),
+                mod.readingsFor(c, read),
+            ]);
+            if (sheets !== props.sheets || c !== props.c) return;
+            sheets.draw(read, resumes, readings, draw);
+            setMeasured((n) => n + 1);
+        } finally {
+            for (const id of want) drawing.delete(id);
+            setDrew((n) => n + 1);
+        }
+    };
     let nearby: readonly string[] = [];
     const lookBack = (ids: readonly string[]): void => {
         nearby = ids;
-        paper.lookBack([...new Set([...entry(), ...nearby])].filter(readable));
+        const near = [...new Set([...entry(), ...nearby])];
+        paper.lookBack(near.filter(readable));
+        void drawLive(near);
     };
     const entryKey = createMemo(() => entry().join("|"));
     createEffect(
-        on([entryKey, () => props.narrow, () => props.c, browsing], (now, was) => {
+        on([entryKey, () => props.narrow, () => props.c, () => props.sheets], (now, was) => {
             if (was && (now[1] !== was[1] || now[2] !== was[2])) {
                 paper.forget();
                 read.clear();
@@ -198,32 +236,31 @@ export function Inside(props: {
             lookBack([]);
         }),
     );
+    /** A sheet the roll lays: the page's own for today and a journey's lessons to do, else one as it was left. */
+    const own = (id: string): HTMLElement | null =>
+        props.sheets?.sheet(id) ?? (readable(id) ? (paper.sheet(id)?.el ?? null) : null);
     const waitingForEntry = (): boolean => {
         drew();
-        return entry().some((id) => !paper.sheet(id));
+        return entry().some((id) => (readable(id) || props.sheets ? !own(id) : false));
     };
     const failedEntry = (): boolean => {
         drew();
-        return entry().some((id) => paper.failed(id));
+        return entry().some((id) => paper.failed(id) || unread.has(id));
     };
     return (
         <>
-            <Show when={selectedJourney()}>
-                <nav class="rd-neighbours" aria-label="Your world lessons">
-                    <button
-                        type="button"
-                        aria-pressed={browsing()}
-                        onClick={() => setBrowsing((value) => !value)}
-                    >
-                        {browsing() ? "My lessons" : "Grade journey"}
-                    </button>
-                </nav>
-            </Show>
             <Show when={waitingForEntry()}>
                 <Waiting
                     title={failedEntry() ? "The lessons could not load" : "Opening your lessons"}
                     pending={!failedEntry()}
-                    retry={failedEntry() ? () => lookBack(nearby) : undefined}
+                    retry={
+                        failedEntry()
+                            ? () => {
+                                  unread.clear();
+                                  lookBack(nearby);
+                              }
+                            : undefined
+                    }
                 />
             </Show>
             <Show when={view()} fallback={<Loading />}>
@@ -232,13 +269,7 @@ export function Inside(props: {
                         view={drawn()}
                         from={props.screen.box}
                         sheetsAt={drew}
-                        sheet={(sheet) =>
-                            readable(sheet.lesson)
-                                ? (props.sheets?.sheet(sheet.lesson) ??
-                                  paper.sheet(sheet.lesson)?.el ??
-                                  null)
-                                : null
-                        }
+                        sheet={(sheet) => own(sheet.lesson)}
                         lookBack={lookBack}
                         waiting={waitingForEntry()}
                         land={land()}

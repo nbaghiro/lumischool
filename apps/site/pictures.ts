@@ -10,27 +10,15 @@ export const PICTURES: {
         wide: [
             new URL("./pictures/journey-wide-0.webp", import.meta.url).href,
             new URL("./pictures/journey-wide-1.webp", import.meta.url).href,
-            new URL("./pictures/journey-wide-2.webp", import.meta.url).href,
-            new URL("./pictures/journey-wide-3.webp", import.meta.url).href,
         ],
         narrow: [
             new URL("./pictures/journey-narrow-0.webp", import.meta.url).href,
             new URL("./pictures/journey-narrow-1.webp", import.meta.url).href,
-            new URL("./pictures/journey-narrow-2.webp", import.meta.url).href,
-            new URL("./pictures/journey-narrow-3.webp", import.meta.url).href,
         ],
     },
     cards: {
-        wide: [
-            new URL("./pictures/cards-wide-0.webp", import.meta.url).href,
-            new URL("./pictures/cards-wide-1.webp", import.meta.url).href,
-            new URL("./pictures/cards-wide-2.webp", import.meta.url).href,
-        ],
-        narrow: [
-            new URL("./pictures/cards-narrow-0.webp", import.meta.url).href,
-            new URL("./pictures/cards-narrow-1.webp", import.meta.url).href,
-            new URL("./pictures/cards-narrow-2.webp", import.meta.url).href,
-        ],
+        wide: [new URL("./pictures/cards-wide-0.webp", import.meta.url).href],
+        narrow: [new URL("./pictures/cards-narrow-0.webp", import.meta.url).href],
     },
     journal: {
         wide: [new URL("./pictures/journal-wide-0.webp", import.meta.url).href],

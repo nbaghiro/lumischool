@@ -86,22 +86,16 @@
 .rd-neighbours button:hover {
     background: color-mix(in srgb, var(--glow) 40%, var(--card));
 }
-.rd-neighbours button:focus-visible,
-.rd-neighbours select:focus-visible {
+.rd-neighbours button:focus-visible {
     outline: 3px solid var(--pen);
     outline-offset: 2px;
 }
 
-.rd-neighbours .select-control {
-    min-height: 44px;
-    max-width: 160px;
-    padding: 8px 10px;
-    border: 0;
-    border-radius: 10px;
-    background: color-mix(in srgb, var(--glow) 70%, var(--card));
-    color: inherit;
-    font: inherit;
-    cursor: pointer;
+/* The grades are one pill of chips (fields.tsx `Seg`), which scrolls sideways on a phone rather than
+   pushing the bar past the screen. */
+.rd-neighbours .seg {
+    max-width: 100%;
+    overflow-x: auto;
 }
 @media (max-width: 700px) {
     .rd-neighbours {

@@ -555,7 +555,10 @@ function JourneyMap(props: { stop: number; focus: number | "all" }): JSX.Element
                 {(src, i) => (
                     <img
                         class="site-still"
-                        classList={{ on: i() === Math.min(props.stop, shots().length - 1) }}
+                        classList={{
+                            on: i() === Math.min(props.stop, shots().length - 1),
+                            whole: i() === shots().length - 1,
+                        }}
                         src={src}
                         alt=""
                         aria-hidden="true"

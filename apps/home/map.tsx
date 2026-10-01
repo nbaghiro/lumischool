@@ -26,6 +26,7 @@ import { Waiting } from "../../engine/ui/waiting";
 import { go, search, useReady } from "../../engine/ui/router";
 import type { Failure } from "../../engine/ui/wire";
 import { after, createHeld, type Maybe } from "../../engine/ui/held";
+import { settingIn } from "../../engine/answer";
 import { signInFor } from "./routes";
 import * as shared from "./shared";
 import {
@@ -34,6 +35,7 @@ import {
     placeOf,
     readingOf,
     schoolOnce,
+    type Preview,
     whereIn,
     worldAt,
     type School,
@@ -89,6 +91,28 @@ export function GrownMap(): JSX.Element {
     const [journeyGrade, setJourneyGrade] = createSignal(
         where().journey ? where().grade : undefined,
     );
+    // the family's first child and its settings, which a world's journeys are previewed by
+    const [family] = createHeld(() => shared.family.read(), [shared.family]);
+    const [settings] = createHeld(
+        () => shared.events(undefined, { kinds: ["setting-changed"] }).read(),
+        [],
+    );
+    const preview = createMemo((): Preview => {
+        const f = family.latest;
+        const e = settings.latest;
+        const list = e && !("error" in e) ? e.list : [];
+        const kid = f && !("error" in f) ? f.kids[0] : undefined;
+        return {
+            nation: settingIn(list, "nation", null) ?? null,
+            ...(kid
+                ? { grade: kid.grade, language: settingIn(list, "language", kid.id) ?? null }
+                : {}),
+        };
+    });
+    const previewKey = (): string => {
+        const p = preview();
+        return `${p.grade ?? ""},${p.language ?? ""},${p.nation ?? ""}`;
+    };
     const [box, setBox] = createSignal<DOMRect | undefined>();
     const [back, setBack] = createSignal<{ place: number; from: DOMRect } | undefined>();
     const [placeBack, setPlaceBack] = createSignal<number | undefined>();
@@ -121,6 +145,7 @@ export function GrownMap(): JSX.Element {
                                 key: true,
                                 ...(grade ? { grade: Number(grade) } : {}),
                                 journey: mode === "journey",
+                                preview: preview(),
                             });
                         });
                         onCleanup(() => shelf.dispose());
@@ -129,7 +154,7 @@ export function GrownMap(): JSX.Element {
                                 <Match
                                     when={
                                         at().world
-                                            ? `${at().world}|${at().grade ?? ""}|${at().journey ? "journey" : ""}`
+                                            ? `${at().world}|${at().grade ?? ""}|${at().journey ? "journey" : ""}|${previewKey()}`
                                             : null
                                     }
                                     keyed
@@ -150,6 +175,7 @@ export function GrownMap(): JSX.Element {
                                                             key: true,
                                                             grade: at().grade,
                                                             journey: at().journey,
+                                                            preview: preview(),
                                                         })
                                                     }
                                                     onAlternate={() => {
@@ -175,11 +201,27 @@ export function GrownMap(): JSX.Element {
                                                             }),
                                                         );
                                                     }}
-                                                    onApproachWorld={(id) => shelf.warm(`${id}||`)}
+                                                    onApproachWorld={(id) =>
+                                                        shelf.warm(
+                                                            at().journey
+                                                                ? `${id}|${journeyGrade() ?? ""}|journey|${previewKey()}`
+                                                                : `${id}|||${previewKey()}`,
+                                                        )
+                                                    }
                                                     onWorld={(id) => {
                                                         setBox(undefined);
                                                         setBack(undefined);
-                                                        go(mapHref({ world: id }));
+                                                        go(
+                                                            mapHref(
+                                                                at().journey
+                                                                    ? {
+                                                                          world: id,
+                                                                          grade: journeyGrade(),
+                                                                          journey: true,
+                                                                      }
+                                                                    : { world: id },
+                                                            ),
+                                                        );
                                                     }}
                                                     from={box()}
                                                     lesson={at().lesson}
@@ -212,7 +254,7 @@ export function GrownMap(): JSX.Element {
                                             const world = worldAt(s().map, place);
                                             if (world)
                                                 shelf.warm(
-                                                    `${world}|${journeyGrade() ?? ""}|journey`,
+                                                    `${world}|${journeyGrade() ?? ""}|journey|${previewKey()}`,
                                                 );
                                         }}
                                         arrive={back()}
