@@ -1,0 +1,22 @@
+# A reason: a job matched to what someone loves, and a reason that does not fit the job.
+item language.jobs-why v=1 stars=2 skills=[language.sentences, language.opinions, reasoning.language] {
+  title "The right reason"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Ana says [[job.i-want-to-be-a-vet]] Which reason fits?\", \"Leo says [[job.i-want-to-be-a-pilot-because-i-do-not-li]] Why is that odd?\", \"Mia wants to work outdoors with animals, not in a hospital or an office. Which place fits, and why?\")}" width=32
+      choice pick options=[pick(k, "[[job.i-love-animals]]", "A pilot travels all the time.", "[[job.the-farm]]: animals, outdoors."), pick(k, "[[job.i-love-flying]]", "Pilots work in a hospital.", "[[job.the-hospital]]: it has doctors."), pick(k, "[[job.i-love-cooking]]", "Nothing is odd.", "[[job.the-office]]: it is quiet.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[job.i-love-animals]]", "A pilot travels all the time.", "[[job.the-farm]]: animals, outdoors.")
+  feedback {
+    when (pick == pick(k, "[[job.i-love-flying]]", "Nothing is odd.", "[[job.the-hospital]]: it has doctors.")) {
+      say "{pick(k, \"Flying is a pilot's job. What does a vet look after?\", \"Where does a pilot go every day?\", \"She does not want a hospital. Where are animals outdoors?\")}"
+    }
+  }
+  hint "What does the job do every day?"
+  hint "Does the reason match it?"
+}

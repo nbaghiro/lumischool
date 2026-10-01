@@ -1,0 +1,19 @@
+# The word written from its picture: [[day.i-have-breakfast]], [[day.i-have-lunch]], [[day.i-have-dinner]], [[day.i-come-back]], [[day.i-sleep]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.my-day-write v=1 skills=[language.time, language.sentences, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+
+  scene 34x17 {
+    column all at=canvas(1, 1) space=1 align=start {
+      clock c h=pick(k, 7, 2, 9, 4, 11) m=pick(k, 30, 0, 0, 0, 0)
+      text ask "{pick(k, \"The word for I have breakfast. Write it in [[language.name]].\", \"The word for I have lunch. Write it in [[language.name]].\", \"The word for I have dinner. Write it in [[language.name]].\", \"The word for I come back. Write it in [[language.name]].\", \"The word for I sleep. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[day.i-have-breakfast]]", "[[day.i-have-lunch]]", "[[day.i-have-dinner]]", "[[day.i-come-back]]", "[[day.i-sleep]]")]
+    }
+  }
+
+  answer word=pick(k, "[[day.i-have-breakfast]]", "[[day.i-have-lunch]]", "[[day.i-have-dinner]]", "[[day.i-come-back]]", "[[day.i-sleep]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

@@ -1,0 +1,70 @@
+# Ways of travelling, from on foot to by plane, with how do you go and a reason why.
+lesson language-getting-to-school v=1 format=teach grade=4 unit=9 subject=language levels=[easy, medium, hard] {
+  title "How I get to school"
+  goal "Say how you get to school and how others travel, in [[language.name]], and ask someone how they go."
+
+  look {
+    scene 32x10 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row ways space=2 align=end {
+          bus b windows=4 on=2 sign="12"
+          ferry f cars=1 windows=4
+        }
+      }
+    }
+    say """
+      To say how you travel, say [[transport.i-go-by-bus]], I go by bus, or
+      [[transport.i-go-on-foot]], I go on foot. In the ferry town some children go to school
+      [[transport.by-boat]], by boat. To ask, say [[phrase.how-do-you-go-to-school]], how do you go
+      to school?
+      """
+  }
+  do {
+    level easy {
+      worked language.getting-to-school-name k=4
+    }
+    show language.getting-to-school-name k=2 easy-k=0 hard-k=5
+    show language.getting-to-school-meaning k=1 easy-k=0 hard-k=3
+    show language.getting-to-school-write k=2 easy-k=0 hard-k=4
+    show language.getting-to-school-name k=4 easy-k=1 hard-k=6
+    show language.getting-to-school-match k=1 easy-k=0 hard-k=2
+    show language.getting-to-school-write k=4 easy-k=1 hard-k=3
+    show language.getting-to-school-listen k=3 easy-k=0 hard-k=5
+    show language.getting-to-school-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.getting-to-school-write k=1
+    }
+  }
+  try stars=2 {
+    show language.getting-to-school-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.getting-to-school-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[phrase.how-do-you-go-to-school]] How do you go to school? [[transport.i-go-on-foot]] I go on foot. [[transport.i-go-by-bus]] I go by bus."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is the bus and the train taken for each other, and the boat and the
+    plane: each naming question describes the journey and offers the way most often mixed up. The
+    minutes on the puzzle's table are made up for the sums. The step up from the town and the
+    directions of grades three and four is how one travels rather than where to, with a reason for
+    the choice. From this grade the written words are marked with their accents: a word typed
+    without its accent is not taken. The dictation is read from this sheet, where it prints as Read
+    aloud, or played by the device. If the child is stuck, act out each way of travelling and name
+    it. Off the page, count the ways people travel past your window for five minutes and name each
+    in the language. It meets England's key stage 2 languages programme (years 3 to 6, statutory
+    from age 7): "engage in conversations; ask and answer questions; express opinions and respond to
+    those of others; seek clarification and help"; Japan's grades 3 and 4 foreign language
+    activities: "Activities to ask and answer simple questions about each other's likes and wants,
+    etc."; and CEFR A1, "Can understand and use familiar everyday expressions and very basic
+    phrases". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[transport.by-bike]] is worked first in the teacher's pen, the words to name are [[transport.on-foot]] and [[transport.by-bus]] and the words to write are [[transport.train]] and [[transport.car]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[transport.by-boat]] and [[transport.by-plane]] and the words to write are [[transport.bus]], [[transport.bike]] and [[transport.car]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

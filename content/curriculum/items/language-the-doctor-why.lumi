@@ -1,0 +1,22 @@
+# A reason: who to see and what to do worked out from what hurts.
+item language.the-doctor-why v=1 stars=2 skills=[language.body, language.sentences, reasoning.language] {
+  title "Good advice"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo says [[body.my-tooth-hurts]] Who should he see, and why?\", \"Ana says [[body.i-have-a-temperature]] The doctor says [[body.you-must-rest]] Why not [[body.you-must-run]]?\", \"Leo says [[body.my-feet-hurt]] after a day in new shoes. Which advice fits best, and why?\")}" width=32
+      choice pick options=[pick(k, "The dentist: it is a tooth.", "A body with a temperature needs rest.", "Wear old, soft shoes: the new ones rub."), pick(k, "The optician: it is an eye.", "Running cures a temperature.", "Eat less cake: his stomach hurts."), pick(k, "The vet: it is an animal.", "The doctor likes running.", "Drink water: his throat hurts.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "The dentist: it is a tooth.", "A body with a temperature needs rest.", "Wear old, soft shoes: the new ones rub.")
+  feedback {
+    when (pick == pick(k, "The optician: it is an eye.", "Running cures a temperature.", "Eat less cake: his stomach hurts.")) {
+      say "{pick(k, \"Look at the lesson: what is [[body.the-tooth]]?\", \"What does your body want when you feel hot and ill?\", \"He said his feet hurt, not his stomach.\")}"
+    }
+  }
+  hint "Which part of the body is it?"
+  hint "What would help that part?"
+}

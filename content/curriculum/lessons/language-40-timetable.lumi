@@ -1,0 +1,69 @@
+# School subjects read off a week's timetable, on Monday I have, and my favourite subject.
+lesson language-timetable v=1 format=teach grade=4 unit=3 subject=language levels=[easy, medium, hard] {
+  title "My timetable"
+  goal "Name school subjects in [[language.name]], say what you have on each day, and say your favourite."
+
+  look {
+    scene 23x15 {
+      column all at=canvas(1, 1) space=1 align=start {
+        table week cols=2 head=["Day", "Lesson"] cells=["[[time.monday]]", "[[subject.maths]]", "[[time.tuesday]]", "[[subject.music]]", "[[time.wednesday]]", "[[subject.science]]", "[[time.thursday]]", "[[subject.art]]", "[[time.friday]]", "[[subject.pe]]"]
+      }
+    }
+    say """
+      Leo's week at school: on [[time.monday]] he has [[subject.maths]], on [[time.tuesday]]
+      [[subject.music]], on [[time.wednesday]] [[subject.science]], on [[time.thursday]]
+      [[subject.art]] and on [[time.friday]] [[subject.pe]]. To say it, put the day first:
+      [[subject.on-monday-i-have-maths]], on Monday I have maths. Your favourite is
+      [[subject.my-favourite-subject-is-music]]
+      """
+  }
+  do {
+    level easy {
+      worked language.timetable-name k=4
+    }
+    show language.timetable-name k=2 easy-k=0 hard-k=5
+    show language.timetable-meaning k=4 easy-k=1 hard-k=5
+    show language.timetable-write k=3 easy-k=2 hard-k=4
+    show language.timetable-name k=4 easy-k=1 hard-k=6
+    show language.timetable-match k=1 easy-k=0 hard-k=2
+    show language.timetable-write k=5 easy-k=3 hard-k=3
+    show language.timetable-listen k=3 easy-k=0 hard-k=5
+    show language.timetable-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.timetable-write k=2
+    }
+  }
+  try stars=2 {
+    show language.timetable-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.timetable-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[subject.on-monday-i-have-maths]] On Monday I have maths. [[subject.my-favourite-subject-is-music]] My favourite subject is music."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is history and geography taken for each other, and maths and
+    science: each naming question describes the lesson and offers the subject most often mixed up.
+    The timetable is the same all through the lesson, so the questions about it can be checked
+    against one table. The step up from the days of grade two is a day joined to a subject in one
+    sentence, and an opinion about it. From this grade the written words are marked with their
+    accents: a word typed without its accent is not taken. The dictation is read from this sheet,
+    where it prints as Read aloud, or played by the device. If the child is stuck, read their own
+    school timetable aloud in the language, one day at a time. Off the page, make the week's
+    timetable in the language and pin it up. It meets England's key stage 2 languages programme
+    (years 3 to 6, statutory from age 7): "speak in sentences, using familiar vocabulary, phrases
+    and basic language structures"; Japan's grades 3 and 4 foreign language activities: "Activities
+    to talk about their own thoughts and feelings regarding familiar and simple matters in daily
+    life such as times, days of the week and places" (Japan's grade five book We Can! 1 has a unit
+    on the week's subjects, recalled); and CEFR A1, "Can understand and use familiar everyday
+    expressions and very basic phrases". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[subject.music]] is worked first in the teacher's pen, the words to name are [[subject.maths]] and [[subject.science]] and the words to write are [[subject.history]] and [[subject.geography]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[subject.art]] and [[subject.english]] and the words to write are [[subject.music]], [[subject.geography]] and [[subject.history]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

@@ -1,0 +1,78 @@
+# Six flat shapes, named from what each one is like, what is it, and how many with a plural.
+lesson language-shapes v=1 format=teach grade=3 unit=6 subject=language levels=[easy, medium, hard] {
+  title "Circles, squares and stars"
+  goal "Name six shapes in [[language.name]], ask what something is, and count shapes in [[language.name]]."
+
+  look {
+    scene 25x5 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row all-shapes space=1 align=end {
+          props s1 count=1 prop=circle
+          props s2 count=1 prop=square
+          props s3 count=1 prop=triangle
+          props s4 count=1 prop=rectangle
+          props s5 count=1 prop=pentagon
+          props s6 count=1 prop=hexagon
+        }
+      }
+    }
+    say """
+      Each shape has a name: [[shape.the-circle]], [[shape.the-square]], [[shape.the-triangle]],
+      [[shape.the-rectangle]], [[shape.the-pentagon]] and [[shape.the-hexagon]]. More than one
+      circle is [[shape.three-circles]], three circles. To ask what something is, say
+      [[shape.what-is-it]], what is it? [[shape.the-star|cap]] is a star and [[shape.the-heart]] a
+      heart.
+      """
+  }
+  do {
+    level easy {
+      worked language.shapes-name k=3
+    }
+    show language.shapes-name k=2 easy-k=0 hard-k=4
+    show language.shapes-meaning k=3 easy-k=1 hard-k=4
+    show language.shapes-write k=1 easy-k=2 hard-k=3
+    show language.shapes-name k=3 easy-k=1 hard-k=5
+    show language.shapes-match k=1 easy-k=0 hard-k=2
+    show language.shapes-write k=4 hard-k=2
+    show language.shapes-listen k=3 easy-k=0 hard-k=5
+    show language.shapes-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.shapes-write k=1
+    }
+  }
+  try stars=2 {
+    show language.shapes-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.shapes-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[shape.the-circle|cap]], [[shape.the-square]], [[shape.the-triangle]], [[shape.the-rectangle]], [[shape.the-pentagon]], [[shape.the-hexagon]]. [[shape.what-is-it]] What is it?"
+  }
+
+  grown-ups """
+    The wrong idea to watch for is the square and the rectangle taken for each other, and the
+    pentagon and the hexagon: every naming question offers the shape most often mixed up, and the
+    feedback asks the child to count the sides. The tiles are drawn from the shelf's shapes, the
+    same way each time, so the picture carries the shape and the child's job is the word. The step
+    up from the numbers of grades one and two is a number counting a plural noun, three circles, and
+    a question that asks what a thing is. The listening question is a dictation: read the sentence
+    aloud from this sheet, where it prints as Read aloud, or let the device play it. It is marked
+    word by word, and a missing accent counts there, while the words typed on their own in this
+    lesson are taken without their accents. If the child is stuck, cut the shapes from paper and
+    sort them, naming each. Off the page, go on a shape hunt round the house, naming what you find.
+    It meets England's key stage 2 languages programme (years 3 to 6, statutory from age 7):
+    "broaden their vocabulary and develop their ability to understand new words that are introduced
+    into familiar written material"; Japan's grades 3 and 4 foreign language activities: "Activities
+    to talk about the numbers and figures, etc. of surroundings while showing the actual objects"
+    (Japan's grade three book Let's Try 1 has a unit on shapes, recalled); and CEFR A1, "Can
+    understand and use familiar everyday expressions and very basic phrases". The phrases are in
+    [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[shape.the-rectangle]] is worked first in the teacher's pen, the words to name are [[shape.the-circle]] and [[shape.the-square]] and the words to write are [[shape.triangle]] and [[shape.pentagon]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[shape.the-pentagon]] and [[shape.the-hexagon]] and the words to write are [[shape.rectangle]], [[shape.triangle]] and [[shape.square]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

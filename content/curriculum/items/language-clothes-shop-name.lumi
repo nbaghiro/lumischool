@@ -1,0 +1,23 @@
+# Picture or situation to the language: [[shop.i-would-like-a-t-shirt-please]], [[shop.what-size]], [[shop.what-colour]], [[shop.can-i-try-it-on]], [[shop.it-is-too-big]], [[shop.it-is-too-small]], [[shop.how-much-is-it]], [[shop.i-will-take-it]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.clothes-shop-name v=1 skills=[language.market, language.clothes] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Ana walks into the shop and asks for a T-shirt.\", \"The shop assistant wants to know how big the T-shirt should be.\", \"The shop assistant wants to know whether Ana wants red or blue.\", \"Ana wants to put the T-shirt on before she buys it.\", \"The T-shirt hangs down to Ana's knees.\", \"Ana cannot get the T-shirt over her head.\", \"Ana wants to know the price.\", \"The T-shirt fits and Ana decides to buy it.\")}" width=32
+      choice pick options=[pick(k, "[[shop.i-will-take-it]]", "[[shop.what-colour]]", "[[shop.it-is-too-small]]", "[[shop.it-is-too-big]]", "[[shop.it-is-too-small]]", "[[shop.can-i-try-it-on]]", "[[shop.what-size]]", "[[shop.it-is-too-big]]"), pick(k, "[[shop.i-would-like-a-t-shirt-please]]", "[[shop.what-size]]", "[[shop.what-size]]", "[[shop.can-i-try-it-on]]", "[[shop.can-i-try-it-on]]", "[[shop.it-is-too-small]]", "[[shop.can-i-try-it-on]]", "[[shop.i-will-take-it]]"), pick(k, "[[shop.it-is-too-small]]", "[[shop.it-is-too-big]]", "[[shop.it-is-too-big]]", "[[shop.i-will-take-it]]", "[[shop.it-is-too-big]]", "[[shop.what-colour]]", "[[shop.it-is-too-big]]", "[[shop.what-size]]"), pick(k, "[[shop.it-is-too-big]]", "[[shop.i-will-take-it]]", "[[shop.what-colour]]", "[[shop.what-size]]", "[[shop.what-size]]", "[[shop.it-is-too-big]]", "[[shop.how-much-is-it]]", "[[shop.can-i-try-it-on]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[shop.i-would-like-a-t-shirt-please]]", "[[shop.what-size]]", "[[shop.what-colour]]", "[[shop.can-i-try-it-on]]", "[[shop.it-is-too-big]]", "[[shop.it-is-too-small]]", "[[shop.how-much-is-it]]", "[[shop.i-will-take-it]]")
+  feedback {
+    when (pick == pick(k, "-", "-", "-", "-", "[[shop.it-is-too-small]]", "[[shop.it-is-too-big]]", "-", "-")) {
+      say "{pick(k, \"Look again.\", \"Look again.\", \"Look again.\", \"Look again.\", \"[[shop.it-is-too-small]] is too small. Does it hang down to her knees?\", \"[[shop.it-is-too-big]] is too big. Can she get it on?\", \"Look again.\", \"Look again.\")}"
+    }
+  }
+  hint "What is happening in the shop at that moment?"
+  hint "What does the speaker need to say or ask?"
+}

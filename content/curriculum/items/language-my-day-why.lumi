@@ -1,0 +1,22 @@
+# A reason: a day's order and times checked against what makes sense.
+item language.my-day-why v=1 stars=2 skills=[language.time, language.sentences, reasoning.language] {
+  title "Does it make sense?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Ana says [[day.first-i-have-breakfast-and-then-i-get-up]] Why is that odd?\", \"Mia does her homework [[day.after]] of dinner. Does she do it before or after eating, and how do you know?\", \"Leo's little sister says [[day.i-go-to-bed-at-eight]] Leo says [[day.i-go-to-bed-at-ten]] Who is more likely to be younger, and why?\")}" width=32
+      choice pick options=[pick(k, "She must get up before she has breakfast.", "After: [[day.after]] means after.", "The sister: young children go to bed earlier."), pick(k, "Breakfast always comes last.", "Before: [[day.after]] means before.", "Leo: he goes to bed later."), pick(k, "Nothing is odd.", "At the same time.", "They must be twins.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "She must get up before she has breakfast.", "After: [[day.after]] means after.", "The sister: young children go to bed earlier.")
+  feedback {
+    when (pick == pick(k, "Nothing is odd.", "Before: [[day.after]] means before.", "Leo: he goes to bed later.")) {
+      say "{pick(k, \"Can she eat breakfast while still in bed asleep?\", \"Look at the words to match in the lesson.\", \"Who needs more sleep?\")}"
+    }
+  }
+  hint "Picture the day in order."
+  hint "What has to come first?"
+}

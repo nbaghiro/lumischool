@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.where-to-go-say v=1 skills=[language.travel, language.opinions, language.speaking] {
+  title "My dream journey"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Say where you want to go and why, in [[language.name]], with [[opinion.because]] or [[travel.in-order-to]].\", \"Ask a grown-up [[phrase.where-do-you-want-to-go]] and say their answer back in [[language.name]].\", \"Point at a country on a map and say one thing you can see or eat there, in [[language.name]].\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="A country said after [[travel.i-want-to-go-to|cap]], with a reason joined by [[opinion.because]] or [[travel.in-order-to]]." notice=["A country named", "[[travel.i-want-to-go-to|cap]] said", "A reason given", "The question asked back"]
+  hint "Pick a country you have heard about."
+  hint "What would you like to see there?"
+}

@@ -1,0 +1,23 @@
+# Non-routine: a country found from a numbered city and its continent on the world map.
+item language.where-to-go-puzzle v=1 stars=3 skills=[language.travel, language.opinions, reasoning.language] {
+  title "A journey on the map"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 36x38 {
+    column all at=canvas(1, 1) space=1 align=start {
+      worldmap trip names=0 blank=-1 oceans=0 places=["Tokyo", "Cairo", "Rome", "Mexico City"] numbered=1 route=0
+      text ask "{pick(k, \"Ana goes to city 2 on the map. Which country does she visit?\", \"Leo visits every city on the map that is in Europe. Which country is that?\", \"Mia flies from the city in Africa to the city in Asia. Which countries?\")}" width=32
+      choice pick options=[pick(k, "[[travel.egypt]]", "[[travel.italy]]", "from [[travel.egypt]] to [[travel.japan]]"), pick(k, "[[travel.italy]]", "[[travel.egypt]]", "from [[travel.japan]] to [[travel.egypt]]"), pick(k, "[[travel.japan]]", "[[travel.mexico]]", "from [[travel.italy]] to [[travel.mexico]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[travel.egypt]]", "[[travel.italy]]", "from [[travel.egypt]] to [[travel.japan]]")
+  feedback {
+    when (pick == pick(k, "[[travel.italy]]", "[[travel.egypt]]", "from [[travel.japan]] to [[travel.egypt]]")) {
+      say "{pick(k, \"Read the number beside each city.\", \"Cairo is in Africa. Which city is in Europe?\", \"She starts in Africa. Which city is there?\")}"
+    }
+  }
+  hint "Find the city's number or its continent first."
+  hint "Then say its country."
+}

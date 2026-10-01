@@ -1,0 +1,22 @@
+# A reason: an animal's home explained by what its body is like, from the lesson's descriptions.
+item language.wild-animals-why v=1 stars=2 skills=[language.animals, language.sentences, reasoning.language] {
+  title "Why does it live there?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Why does [[wild.the-camel]] live in [[wild.the-desert]] and not in [[wild.the-sea]]?\", \"Leo says [[wild.the-polar-bear-lives-in-the-desert]] Why is that wrong?\", \"[[wild.the-frog|cap]] and [[wild.the-fish]] both live by water. Which one can also live on land, and why?\")}" width=32
+      choice pick options=[pick(k, "Its wide feet walk on sand.", "Its white fur is for [[wild.the-ice]].", "[[wild.the-frog]]: it breathes air and hops."), pick(k, "It swims well in the sea.", "It lives in [[wild.the-jungle]].", "[[wild.the-fish]]: it has fins."), pick(k, "It likes the cold ice.", "He is right: bears like sand.", "Both: they both have legs.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Its wide feet walk on sand.", "Its white fur is for [[wild.the-ice]].", "[[wild.the-frog]]: it breathes air and hops.")
+  feedback {
+    when (pick == pick(k, "It swims well in the sea.", "He is right: bears like sand.", "[[wild.the-fish]]: it has fins.")) {
+      say "{pick(k, \"Read what the lesson says about the camel's feet.\", \"Is a white bear made for hot sand or cold ice?\", \"Can a fish breathe out of the water?\")}"
+    }
+  }
+  hint "What is the animal's body like?"
+  hint "Where would that body do well?"
+}

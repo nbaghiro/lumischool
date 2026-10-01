@@ -1,0 +1,74 @@
+# Wild animals and their homes: the sea, the desert, the jungle and the ice, with it lives and it eats.
+lesson language-wild-animals v=1 format=teach grade=4 unit=6 subject=language levels=[easy, medium, hard] {
+  title "Where animals live"
+  goal "Name wild animals and the places they live in [[language.name]], and say where an animal lives and what it eats."
+
+  look {
+    scene 23x10 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row beasts space=2 align=end {
+          camel c count=1 resting=0 facing=1
+          parrot p facing=-1
+          frog f pose=sit facing=1
+        }
+      }
+    }
+    say """
+      Every animal has its home. [[phrase.the-whale-lives-in-the-sea]], the whale lives in the sea.
+      [[phrase.the-camel-lives-in-the-desert]] [[wild.the-parrot-lives-in-the-jungle]] To ask, say
+      [[wild.where-does-it-live]], where does it live? To say what it eats, say [[wild.it-eats]]:
+      [[phrase.the-monkey-eats-fruit]], the monkey eats fruit.
+      """
+  }
+  do {
+    level easy {
+      worked language.wild-animals-name k=4
+    }
+    show language.wild-animals-name k=2 easy-k=0 hard-k=5
+    show language.wild-animals-meaning k=3 hard-k=4
+    show language.wild-animals-write k=3 easy-k=0 hard-k=4
+    show language.wild-animals-name k=4 easy-k=1 hard-k=6
+    show language.wild-animals-match k=1 easy-k=0 hard-k=2
+    show language.wild-animals-write k=4 easy-k=1 hard-k=5
+    show language.wild-animals-listen k=3 easy-k=0 hard-k=5
+    show language.wild-animals-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.wild-animals-write k=3
+    }
+  }
+  try stars=2 {
+    show language.wild-animals-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.wild-animals-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[phrase.the-whale-lives-in-the-sea]] The whale lives in the sea. [[wild.where-does-it-live]] Where does it live? [[wild.it-eats-fruit]] It eats fruit."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is two animals of the same place taken for each other, the whale and
+    the seal, the parrot and the eagle: each naming question describes the animal and offers the one
+    most often mixed up. Where each animal lives is as the shelf's drawings describe it (the camel
+    on sand, the seal on rocks, the parrot on an island, the frog by a pond), and the polar bear on
+    the ice and the monkey in the trees are recalled. The step up from the pets of grade two is that
+    an animal is now described by its home and its food, in a sentence with lives and eats. From
+    this grade the written words are marked with their accents: a word typed without its accent is
+    not taken. The dictation is read from this sheet, where it prints as Read aloud, or played by
+    the device. If the child is stuck, sort pictures of animals into piles by where they live,
+    naming each. Off the page, watch a nature programme with the sound down and name the animals and
+    their homes in the language. It meets England's key stage 2 languages programme (years 3 to 6,
+    statutory from age 7): "describe people, places, things and actions orally and in writing";
+    Japan's grades 3 and 4 foreign language activities: "Activities to listen to simple words and
+    phrases and basic expressions about their familiar people and their surroundings and match the
+    phrases and expressions with illustrations and photographs"; and CEFR A1, "Can understand and
+    use familiar everyday expressions and very basic phrases". The phrases are in
+    [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[wild.the-seal]] is worked first in the teacher's pen, the words to name are [[wild.the-whale]] and [[wild.the-camel]] and the words to write are [[wild.frog]] and [[wild.monkey]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[wild.the-polar-bear]] and [[wild.the-monkey]] and the words to write are [[wild.camel]], [[wild.whale]] and [[wild.parrot]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

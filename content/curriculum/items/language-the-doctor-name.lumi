@@ -1,0 +1,23 @@
+# Picture or situation to the language: [[body.my-head-hurts]], [[body.my-throat-hurts]], [[body.my-stomach-hurts]], [[body.my-tooth-hurts]], [[body.my-leg-hurts]], [[body.my-arm-hurts]], [[body.my-feet-hurt]], [[body.i-have-a-cough]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.the-doctor-name v=1 skills=[language.body, language.sentences] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo has been in the sun all day and holds his head.\", \"Ana can hardly swallow her soup.\", \"Leo ate far too much birthday cake.\", \"Ana bites into an ice cream and one tooth aches.\", \"Leo fell off his bike onto his knee and cannot walk well.\", \"Ana fell and landed on her elbow, and cannot lift her school bag.\", \"Leo walked all day in new shoes.\", \"Ana coughs and coughs all night.\")}" width=32
+      choice pick options=[pick(k, "[[body.my-feet-hurt]]", "[[body.i-have-a-cough]]", "[[body.my-head-hurts]]", "[[body.my-stomach-hurts]]", "[[body.my-arm-hurts]]", "[[body.my-tooth-hurts]]", "[[body.my-leg-hurts]]", "[[body.my-leg-hurts]]"), pick(k, "[[body.my-head-hurts]]", "[[body.my-throat-hurts]]", "[[body.i-have-a-cough]]", "[[body.my-tooth-hurts]]", "[[body.my-tooth-hurts]]", "[[body.my-arm-hurts]]", "[[body.my-throat-hurts]]", "[[body.i-have-a-cough]]"), pick(k, "[[body.my-throat-hurts]]", "[[body.my-tooth-hurts]]", "[[body.my-tooth-hurts]]", "[[body.my-throat-hurts]]", "[[body.my-leg-hurts]]", "[[body.my-stomach-hurts]]", "[[body.my-tooth-hurts]]", "[[body.my-throat-hurts]]"), pick(k, "[[body.my-leg-hurts]]", "[[body.my-stomach-hurts]]", "[[body.my-stomach-hurts]]", "[[body.my-leg-hurts]]", "[[body.my-throat-hurts]]", "[[body.my-leg-hurts]]", "[[body.my-feet-hurt]]", "[[body.my-tooth-hurts]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[body.my-head-hurts]]", "[[body.my-throat-hurts]]", "[[body.my-stomach-hurts]]", "[[body.my-tooth-hurts]]", "[[body.my-leg-hurts]]", "[[body.my-arm-hurts]]", "[[body.my-feet-hurt]]", "[[body.i-have-a-cough]]")
+  feedback {
+    when (pick == pick(k, "[[body.my-throat-hurts]]", "[[body.my-stomach-hurts]]", "[[body.my-head-hurts]]", "[[body.my-throat-hurts]]", "[[body.my-arm-hurts]]", "[[body.my-leg-hurts]]", "[[body.my-leg-hurts]]", "[[body.i-have-a-temperature]]")) {
+      say "{pick(k, \"That one is about the throat. Where is Leo holding?\", \"That one is about the stomach. Where do you swallow?\", \"That one is about the head. Where does too much cake go?\", \"That one is about the throat. What did she bite with?\", \"That one is about the arm. What do you walk with?\", \"That one is about the leg. What lifts a bag?\", \"That one is about one leg. What is inside the shoes?\", \"That one is about a temperature. What does Ana keep doing?\")}"
+    }
+  }
+  hint "Where does it hurt?"
+  hint "Which part of the body is that?"
+}

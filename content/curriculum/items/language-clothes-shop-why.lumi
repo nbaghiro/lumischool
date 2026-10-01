@@ -1,0 +1,22 @@
+# A reason: the next step in a shop worked out from what was said and what it costs.
+item language.clothes-shop-why v=1 stars=2 skills=[language.market, language.clothes, reasoning.language] {
+  title "What happens next?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo tries on a jumper and says [[shop.it-is-too-small-2]] What should the assistant bring, and why?\", \"The assistant asks [[shop.what-colour]] Why does Ana answer [[shop.blue-please]] and not [[phrase.size-thirty-two-please]]?\", \"Last week a jacket cost 40 euros. Today a sign says [[shop.there-is-a-sale-everything-at-half-price]] Mia has 25 euros. Why can she buy it today?\")}" width=32
+      choice pick options=[pick(k, "A bigger size: it is too small.", "She was asked the colour, not the size.", "It costs 20 euros today."), pick(k, "A smaller size: it is too big.", "Blue is cheaper.", "It costs 40 euros today."), pick(k, "A new colour: he dislikes red.", "Thirty-two is not a size.", "Shops give jackets away in a sale.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "A bigger size: it is too small.", "She was asked the colour, not the size.", "It costs 20 euros today.")
+  feedback {
+    when (pick == pick(k, "A smaller size: it is too big.", "Blue is cheaper.", "It costs 40 euros today.")) {
+      say "{pick(k, \"Read the last word Leo says.\", \"What did the assistant ask about?\", \"What is half of 40?\")}"
+    }
+  }
+  hint "What was said just before?"
+  hint "What would you do next in the shop?"
+}

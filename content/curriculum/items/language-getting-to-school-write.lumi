@@ -1,0 +1,18 @@
+# The word written from its picture: [[transport.train]], [[transport.car]], [[transport.boat]], [[transport.bike]], [[transport.bus]], [[transport.plane]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.getting-to-school-write v=1 skills=[language.town, language.travel, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x9 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"The word for train. Write it in [[language.name]].\", \"The word for car. Write it in [[language.name]].\", \"The word for boat. Write it in [[language.name]].\", \"The word for bike. Write it in [[language.name]].\", \"The word for bus. Write it in [[language.name]].\", \"The word for plane. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[transport.train]]", "[[transport.car]]", "[[transport.boat]]", "[[transport.bike]]", "[[transport.bus]]", "[[transport.plane]]")]
+    }
+  }
+
+  answer word=pick(k, "[[transport.train]]", "[[transport.car]]", "[[transport.boat]]", "[[transport.bike]]", "[[transport.bus]]", "[[transport.plane]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

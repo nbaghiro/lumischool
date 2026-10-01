@@ -1,0 +1,18 @@
+# The word written from its picture: [[job.doctor]], [[job.pilot]], [[job.cook]], [[job.astronaut]], [[job.footballer]], [[job.scientist]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.jobs-write v=1 skills=[language.sentences, language.opinions, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x9 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"The word for a doctor. Write it in [[language.name]].\", \"The word for a pilot. Write it in [[language.name]].\", \"The word for a cook. Write it in [[language.name]].\", \"The word for an astronaut. Write it in [[language.name]].\", \"The word for a footballer. Write it in [[language.name]].\", \"The word for a scientist. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[job.doctor]]", "[[job.pilot]]", "[[job.cook]]", "[[job.astronaut]]", "[[job.footballer]]", "[[job.scientist]]")]
+    }
+  }
+
+  answer word=pick(k, "[[job.doctor]]", "[[job.pilot]]", "[[job.cook]]", "[[job.astronaut]]", "[[job.footballer]]", "[[job.scientist]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

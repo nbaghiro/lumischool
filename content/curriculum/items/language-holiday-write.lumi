@@ -1,0 +1,18 @@
+# The word written from its picture: [[holiday.i-went]], [[holiday.i-saw]], [[holiday.i-ate]], [[holiday.i-swam]], [[holiday.i-visited]], [[holiday.i-played]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.holiday-write v=1 skills=[language.time, language.sentences, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x9 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"The word for I went. Write it in [[language.name]].\", \"The word for I saw. Write it in [[language.name]].\", \"The word for I ate. Write it in [[language.name]].\", \"The word for I swam. Write it in [[language.name]].\", \"The word for I visited. Write it in [[language.name]].\", \"The word for I played. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[holiday.i-went]]", "[[holiday.i-saw]]", "[[holiday.i-ate]]", "[[holiday.i-swam]]", "[[holiday.i-visited]]", "[[holiday.i-played]]")]
+    }
+  }
+
+  answer word=pick(k, "[[holiday.i-went]]", "[[holiday.i-saw]]", "[[holiday.i-ate]]", "[[holiday.i-swam]]", "[[holiday.i-visited]]", "[[holiday.i-played]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

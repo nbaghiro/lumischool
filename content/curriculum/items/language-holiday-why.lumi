@@ -1,0 +1,22 @@
+# A reason: whether a sentence tells the past, read from its words and its time.
+item language.holiday-why v=1 stars=2 skills=[language.time, language.sentences, reasoning.language] {
+  title "Then or now?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 35x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Ana says [[holiday.i-went-to-the-beach]] Is she at the beach now, or was she there before, and how do you know?\", \"Leo says [[holiday.tomorrow-i-went-to-the-cinema]] Why does that not fit?\", \"Mia's diary says [[holiday.yesterday-i-football]] Which word fills the gap, and why?\")}" width=32
+      choice pick options=[pick(k, "Before: [[holiday.i-went]] tells what already happened.", "Tomorrow has not happened, but [[holiday.i-went]] tells the past.", "[[holiday.i-played]]: [[holiday.yesterday]] is in the past."), pick(k, "Now: [[holiday.i-went]] means I go.", "[[holiday.i-went|cap]] is not a word.", "[[holiday.i-play]]: it happens every day."), pick(k, "Tomorrow: [[holiday.i-went]] means I will go.", "Nothing: it fits.", "[[holiday.i-go]]: it is happening now.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Before: [[holiday.i-went]] tells what already happened.", "Tomorrow has not happened, but [[holiday.i-went]] tells the past.", "[[holiday.i-played]]: [[holiday.yesterday]] is in the past.")
+  feedback {
+    when (pick == pick(k, "Now: [[holiday.i-went]] means I go.", "Nothing: it fits.", "[[holiday.i-play]]: it happens every day.")) {
+      say "{pick(k, \"[[holiday.i-go|cap]] tells the present. Look at the words to match.\", \"When is tomorrow: before or after today?\", \"Yesterday is over. Which word tells the past?\")}"
+    }
+  }
+  hint "Look for a word that tells when."
+  hint "Is it over, or still to come?"
+}

@@ -1,0 +1,18 @@
+# The word written from its picture: [[body.head]], [[body.arm]], [[body.leg]], [[body.hand]], [[body.back]], [[body.throat]], [[body.stomach]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.the-doctor-write v=1 skills=[language.body, language.sentences, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x9 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"The word for head. Write it in [[language.name]].\", \"The word for arm. Write it in [[language.name]].\", \"The word for leg. Write it in [[language.name]].\", \"The word for hand. Write it in [[language.name]].\", \"The word for back, the part of the body. Write it in [[language.name]].\", \"The word for throat. Write it in [[language.name]].\", \"The word for stomach. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[body.head]]", "[[body.arm]]", "[[body.leg]]", "[[body.hand]]", "[[body.back]]", "[[body.throat]]", "[[body.stomach]]")]
+    }
+  }
+
+  answer word=pick(k, "[[body.head]]", "[[body.arm]]", "[[body.leg]]", "[[body.hand]]", "[[body.back]]", "[[body.throat]]", "[[body.stomach]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.clothes-say v=1 skills=[language.clothes, language.weather, language.speaking] {
+  title "What are you wearing?"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Say three things you are wearing today in [[language.name]], each with [[clothes.i-wear]].\", \"Look out of the window. Say the weather and one thing you would wear in it, in [[language.name]].\", \"A grown-up asks [[phrase.what-are-you-wearing]]. Answer in [[language.name]], then ask them.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="Each thing named with [[clothes.i-wear]], and a weather word joined to what is worn." notice=["Three things worn, named", "[[clothes.i-wear|cap]] in each sentence", "A weather word said", "The question asked back"]
+  hint "Look down: what is on your feet?"
+  hint "Say the weather first, then what you wear."
+}

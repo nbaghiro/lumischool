@@ -1,0 +1,18 @@
+# Picture or situation to the language: [[holiday.i-went-to-the-beach]], [[holiday.i-ate-paella]], [[holiday.i-saw-dolphins]], [[holiday.i-swam-in-the-sea]], [[holiday.i-visited-my-grandparents]], [[holiday.it-was-very-hot]], [[holiday.it-was-great-fun]], [[holiday.i-stayed-at-home]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.holiday-name v=1 skills=[language.time, language.sentences] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Last summer Ana spent a day by the sea. What does she say?\", \"Yesterday Leo had paella for lunch. What does he say?\", \"On the boat trip last week Mia saw dolphins. What does she say?\", \"Last summer Ana swam in the sea every day. What does she say?\", \"In August Leo stayed with his grandparents. What does he say?\", \"Every day of the holiday was hot. What does Mia say about the weather?\", \"Ana loved her holiday. What does she say about it?\", \"Leo did not go away this summer. What does he say?\")}" width=32
+      choice pick options=[pick(k, "[[holiday.i-went-to-the-beach]]", "[[holiday.i-eat-paella]]", "[[holiday.i-see-dolphins]]", "[[holiday.i-swam-in-the-sea]]", "[[holiday.i-visit-my-grandparents]]", "[[holiday.it-is-very-hot]]", "[[holiday.it-was-great-fun]]", "[[holiday.i-stay-at-home]]"), pick(k, "[[holiday.i-go-to-the-beach]]", "[[holiday.i-ate-paella]]", "[[holiday.i-saw-fish]]", "[[holiday.i-swim-in-the-sea]]", "[[holiday.i-visited-my-grandparents]]", "[[holiday.it-was-very-cold]]", "[[holiday.it-is-great-fun]]", "[[holiday.i-stayed-at-home]]"), pick(k, "[[holiday.i-went-to-the-museum]]", "[[holiday.i-ate-pizza]]", "[[holiday.i-saw-dolphins]]", "[[holiday.i-swam-in-the-river]]", "[[holiday.i-visited-my-cousins]]", "[[holiday.it-was-very-hot]]", "[[holiday.it-was-very-boring]]", "[[holiday.i-stayed-at-the-beach]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[holiday.i-went-to-the-beach]]", "[[holiday.i-ate-paella]]", "[[holiday.i-saw-dolphins]]", "[[holiday.i-swam-in-the-sea]]", "[[holiday.i-visited-my-grandparents]]", "[[holiday.it-was-very-hot]]", "[[holiday.it-was-great-fun]]", "[[holiday.i-stayed-at-home]]")
+  hint "Did it already happen, or is it happening now?"
+  hint "Which thing was done?"
+}

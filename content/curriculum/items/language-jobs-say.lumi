@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.jobs-say v=1 skills=[language.sentences, language.opinions, language.speaking] {
+  title "When I grow up"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Say what you want to be and why, in [[language.name]], with [[opinion.because]].\", \"Ask a grown-up [[job.where-do-you-work]] and say their answer back in [[language.name]].\", \"Say what two people in your family do, in [[language.name]], as in [[phrase.my-mother-is-a-nurse]]\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="A job said after [[job.i-want-to-be|cap]], a reason with [[opinion.because]], and a place of work." notice=["A job named", "[[job.i-want-to-be|cap]] said", "A reason with [[opinion.because]]", "A place of work said"]
+  hint "What do you like doing most?"
+  hint "Which job does that?"
+}

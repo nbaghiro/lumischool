@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.clothes-shop-say v=1 skills=[language.market, language.clothes, language.speaking] {
+  title "Playing shop"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Play the shop with a grown-up: ask for a T-shirt, then give a size and a colour, in [[language.name]].\", \"Be the shop assistant: ask [[shop.what-size]] and [[shop.what-colour]] and answer the price.\", \"Try on a coat at home and say in [[language.name]] whether it is too big, too small or just right.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="A whole exchange in the language: asking, the size, the colour and whether it fits." notice=["What is wanted asked for politely", "A size or a colour given", "Too big or too small said", "The price asked or said"]
+  hint "Start with what you would like."
+  hint "What does the assistant need to know?"
+}

@@ -1,0 +1,22 @@
+# A reason: whether something has happened yet, how someone feels, and a plan told from a wish.
+item language.next-year-why v=1 stars=2 skills=[language.school, language.time, reasoning.language] {
+  title "Plans and wishes"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo says [[future.next-year-i-am-going-to-go-to-secondary]] Has he started there yet, and how do you know?\", \"Ana says [[future.i-am-going-to-miss-my-friends]] How does she feel about leaving, and why?\", \"Mia says [[future.i-want-to-join-the-chess-club]] and [[future.i-am-going-to-learn-french]] Which is a wish and which is a plan?\")}" width=32
+      choice pick options=[pick(k, "No: [[future.next-year]] is next year.", "A bit sad: she will not see them every day.", "The club is a wish; French is a plan."), pick(k, "Yes: he goes there now.", "Happy: she does not like them.", "Both are wishes."), pick(k, "Yes: he went last year.", "Cross: they are coming too.", "The club is a plan; French is a wish.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "No: [[future.next-year]] is next year.", "A bit sad: she will not see them every day.", "The club is a wish; French is a plan.")
+  feedback {
+    when (pick == pick(k, "Yes: he goes there now.", "Happy: she does not like them.", "The club is a plan; French is a wish.")) {
+      say "{pick(k, \"Read when he says it happens.\", \"To miss someone is to be sad without them.\", \"[[future.i-want|cap]] is a wish; [[future.i-am-going-to]] is a plan.\")}"
+    }
+  }
+  hint "Look for the word that says when."
+  hint "Want or going to?"
+}

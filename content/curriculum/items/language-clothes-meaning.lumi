@@ -1,0 +1,19 @@
+# The language to English: [[phrase.i-am-wearing-a-blue-t-shirt]], [[phrase.when-it-rains-i-wear-boots]], [[phrase.when-it-is-cold-i-wear-a-coat]], [[phrase.when-it-is-sunny-i-wear-a-cap]], [[phrase.what-are-you-wearing]], [[phrase.i-like-your-dress]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.clothes-meaning v=1 skills=[language.clothes, language.weather] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "boy", "gran", "girl", "boy", "girl")] says=[pick(k, "[[phrase.i-am-wearing-a-blue-t-shirt]]", "[[phrase.when-it-rains-i-wear-boots]]", "[[phrase.when-it-is-cold-i-wear-a-coat]]", "[[phrase.when-it-is-sunny-i-wear-a-cap]]", "[[phrase.what-are-you-wearing]]", "[[phrase.i-like-your-dress]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "I like your dress.", "When it is sunny, I wear a cap.", "When it rains, I wear boots.", "I like your dress.", "I like your dress.", "When it is sunny, I wear a cap."), pick(k, "I am wearing a blue T-shirt.", "When it rains, I wear boots.", "What are you wearing?", "When it is sunny, I wear a cap.", "When it is cold, I wear a coat.", "I like your dress."), pick(k, "When it is cold, I wear a coat.", "What are you wearing?", "When it is sunny, I wear a cap.", "When it rains, I wear boots.", "What are you wearing?", "When it is cold, I wear a coat."), pick(k, "What are you wearing?", "When it is cold, I wear a coat.", "When it is cold, I wear a coat.", "When it is cold, I wear a coat.", "When it is sunny, I wear a cap.", "What are you wearing?")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "I am wearing a blue T-shirt.", "When it rains, I wear boots.", "When it is cold, I wear a coat.", "When it is sunny, I wear a cap.", "What are you wearing?", "I like your dress.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

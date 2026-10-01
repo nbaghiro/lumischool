@@ -1,0 +1,18 @@
+# The word written from its picture: [[future.to-learn]], [[future.to-study]], [[future.secondary-school]], [[future.new]], [[future.uniform]], [[future.french]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.next-year-write v=1 skills=[language.school, language.time, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x9 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"The word for to learn. Write it in [[language.name]].\", \"The word for to study. Write it in [[language.name]].\", \"The word for secondary school. Write it in [[language.name]].\", \"The word for new. Write it in [[language.name]].\", \"The word for a uniform. Write it in [[language.name]].\", \"The word for French, the language. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[future.to-learn]]", "[[future.to-study]]", "[[future.secondary-school]]", "[[future.new]]", "[[future.uniform]]", "[[future.french]]")]
+    }
+  }
+
+  answer word=pick(k, "[[future.to-learn]]", "[[future.to-study]]", "[[future.secondary-school]]", "[[future.new]]", "[[future.uniform]]", "[[future.french]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

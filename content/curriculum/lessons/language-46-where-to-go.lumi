@@ -1,0 +1,70 @@
+# Countries found from a city on the world map, I want to go to, and a reason.
+lesson language-where-to-go v=1 format=teach grade=5 unit=9 subject=language levels=[easy, medium, hard] {
+  title "Where do you want to go?"
+  goal "Name countries in [[language.name]], say where you want to go and why, and what you can see or eat there."
+
+  look {
+    scene 36x19 {
+      column all at=canvas(1, 1) space=1 align=start {
+        worldmap map names=0 blank=-1 oceans=0 places=["Tokyo", "Rome", "Cairo", "Mexico City"] numbered=0 route=0
+      }
+    }
+    say """
+      To say where you want to go, say [[travel.i-want-to-go-to-italy]], I want to go to Italy. Then
+      give a reason: [[travel.i-want-to-see-the-colosseum]], I want to see the Colosseum, or
+      [[travel.i-want-to-eat-pizza]], I want to eat pizza. To ask, say
+      [[phrase.where-do-you-want-to-go]], where do you want to go?
+      """
+  }
+  do {
+    level easy {
+      worked language.where-to-go-name k=4
+    }
+    show language.where-to-go-name k=2 easy-k=0 hard-k=5
+    show language.where-to-go-meaning k=4 easy-k=2 hard-k=5
+    show language.where-to-go-write k=2 easy-k=3 hard-k=4
+    show language.where-to-go-name k=4 easy-k=1 hard-k=6
+    show language.where-to-go-match k=1 easy-k=0 hard-k=2
+    show language.where-to-go-write k=3 easy-k=4 hard-k=5
+    show language.where-to-go-listen k=3 easy-k=0 hard-k=5
+    show language.where-to-go-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.where-to-go-write k=2
+    }
+  }
+  try stars=2 {
+    show language.where-to-go-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.where-to-go-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[phrase.where-do-you-want-to-go]] Where do you want to go? [[travel.i-want-to-go-to-italy]] I want to go to Italy."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is two neighbouring countries taken for each other, China and Japan,
+    Italy and Greece: each naming question marks a capital city on the world map and offers the
+    neighbour beside the right country. The cities are the world map drawing's own, and the pyramids
+    in Egypt, Mount Fuji in Japan and the Colosseum in Rome are recalled. The step up from because
+    in grade four is a wish about another country with a reason, and what one can do there. From
+    this grade the written words are marked with their accents: a word typed without its accent is
+    not taken. The dictation is read from this sheet, where it prints as Read aloud, or played by
+    the device. If the child is stuck, find each city on a globe and say its country aloud. Off the
+    page, plan a dream journey on a map, one sentence for each country. It meets England's key stage
+    2 languages programme (years 3 to 6, statutory from age 7): "engage in conversations; ask and
+    answer questions; express opinions and respond to those of others"; Japan's grades 5 and 6
+    foreign languages: "Can exchange their own thoughts and feelings regarding familiar and simple
+    matters in daily life by using simple words and phrases and basic expressions" (Japan's grade
+    five book We Can! 1 has a unit on where you want to go, recalled); and CEFR A2, "Can understand
+    sentences and frequently used expressions related to areas of most immediate relevance (e.g.
+    very basic personal and family information, shopping, local geography, employment)". The phrases
+    are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[travel.i-want-to-go-to-china]] is worked first in the teacher's pen, the words to name are [[travel.i-want-to-go-to-japan]] and [[travel.i-want-to-go-to-italy]] and the words to write are [[travel.greece]] and [[travel.egypt]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[travel.i-want-to-go-to-russia]] and [[travel.i-want-to-go-to-greece]] and the words to write are [[travel.egypt]], [[travel.mexico]] and [[travel.japan]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

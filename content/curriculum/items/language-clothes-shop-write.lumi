@@ -1,0 +1,18 @@
+# The word written from its picture: [[shop.size]], [[shop.changing-room]], [[shop.sale]], [[shop.price]], [[shop.jacket]], [[shop.jeans]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.clothes-shop-write v=1 skills=[language.market, language.clothes, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x9 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"The word for size, as in clothes. Write it in [[language.name]].\", \"The word for the changing room. Write it in [[language.name]].\", \"The word for a sale, when prices go down. Write it in [[language.name]].\", \"The word for price. Write it in [[language.name]].\", \"The word for jacket. Write it in [[language.name]].\", \"The word for jeans. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[shop.size]]", "[[shop.changing-room]]", "[[shop.sale]]", "[[shop.price]]", "[[shop.jacket]]", "[[shop.jeans]]")]
+    }
+  }
+
+  answer word=pick(k, "[[shop.size]]", "[[shop.changing-room]]", "[[shop.sale]]", "[[shop.price]]", "[[shop.jacket]]", "[[shop.jeans]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

@@ -1,0 +1,71 @@
+# The things in a pencil case on the shelf's art tools, with do you have and I do not have.
+lesson language-pencil-case v=1 format=teach grade=3 unit=3 subject=language levels=[easy, medium, hard] {
+  title "In my pencil case"
+  goal "Name what is in a pencil case in [[language.name]], ask whether someone has one, and answer yes or no."
+
+  look {
+    scene 23x7 {
+      column all at=canvas(1, 1) space=1 align=start {
+        arttools case tools=["pencil", "crayon", "marker", "brush", "eraser"] colours=["blue", "red", "green", "yellow", "red"] layout=row ring=-1
+      }
+    }
+    say """
+      In Ana's pencil case there is [[school.the-pencil]], [[school.the-crayon]],
+      [[school.the-felt-pen]], [[school.the-brush]] and [[school.the-rubber]]. To ask for one, say
+      [[school.do-you-have-a-pencil]], do you have a pencil? The answer is [[school.yes-i-have]],
+      yes, I have, or [[school.no-i-do-not-have]], no, I do not.
+      """
+  }
+  do {
+    level easy {
+      worked language.pencil-case-name k=2
+    }
+    show language.pencil-case-name k=1 easy-k=0 hard-k=3
+    show language.pencil-case-meaning k=3 easy-k=1 hard-k=4
+    show language.pencil-case-write k=3 easy-k=1 hard-k=4
+    show language.pencil-case-name k=2 easy-k=1 hard-k=4
+    show language.pencil-case-match k=1 easy-k=0 hard-k=2
+    show language.pencil-case-write k=1 easy-k=3 hard-k=2
+    show language.pencil-case-listen k=3 easy-k=0 hard-k=5
+    show language.pencil-case-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.pencil-case-write k=0
+    }
+  }
+  try stars=2 {
+    show language.pencil-case-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.pencil-case-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[school.do-you-have-a-pencil]] Do you have a pencil? [[school.yes-i-have]] Yes, I have. [[school.no-i-do-not-have]] No, I do not."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is the pencil and the felt pen taken for each other, and a no answer
+    heard as a yes because it starts with the same verb: every naming question offers the thing most
+    often mixed up beside the right one. Each thing is drawn from the shelf's art tools, the same
+    way every time, so the picture carries the answer to the naming questions and the child's job is
+    the word. The step up from the animals lesson of grade two, which said I have a dog, is the
+    question and the negative answer, so the child both asks and refuses. The listening question is
+    a dictation: read the sentence aloud from this sheet, where it prints as Read aloud, or let the
+    device play it. It is marked word by word, and a missing accent counts there, while the words
+    typed on their own in this lesson are taken without their accents. If the child is stuck, empty
+    a real pencil case and name each thing as it comes out. Off the page, play a lending game at the
+    table: one asks for a thing in the language and the other answers yes or no before handing it
+    over. It meets England's key stage 2 languages programme (years 3 to 6, statutory from age 7):
+    "engage in conversations; ask and answer questions; express opinions and respond to those of
+    others; seek clarification and help"; Japan's grades 3 and 4 foreign language activities:
+    "Activities to ask and answer simple questions about each other's likes and wants, etc."
+    (Japan's grade four book Let's Try 2 has a unit on asking for stationery, recalled); and CEFR
+    A1, "Can understand and use familiar everyday expressions and very basic phrases". The phrases
+    are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[school.the-felt-pen]] is worked first in the teacher's pen, the words to name are [[school.the-pencil]] and [[school.the-crayon]] and the words to write are [[school.rubber]] and [[school.brush]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[school.the-brush]] and [[school.the-rubber]] and the words to write are [[school.felt-pen]], [[school.crayon]] and [[school.pencil]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

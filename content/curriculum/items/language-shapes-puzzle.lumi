@@ -1,0 +1,27 @@
+# Non-routine: shapes counted by a property, and the count given as a word in the language.
+item language.shapes-puzzle v=1 stars=3 skills=[language.shapes, language.numbers, reasoning.language] {
+  title "Count them in [[language.name]]"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x40 {
+    column all at=canvas(1, 1) space=1 align=start {
+      props circles count=3 prop=circle
+      props triangles count=2 prop=triangle
+      props squares count=2 prop=square
+      props rectangles count=3 prop=rectangle
+      props pentagons count=2 prop=pentagon
+      text ask "{pick(k, \"How many circles are there? Pick the number in [[language.name]].\", \"How many of these shapes have four sides? Pick the number in [[language.name]].\", \"Count every side of every pentagon. How many sides is that? Pick the number in [[language.name]].\")}" width=32
+      choice pick options=[pick(k, "[[num.three]]", "[[num.five]]", "[[num.ten]]"), pick(k, "[[num.two]]", "[[num.two]]", "[[num.five]]"), pick(k, "[[num.four]]", "[[num.three]]", "[[num.two]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[num.three]]", "[[num.five]]", "[[num.ten]]")
+  feedback {
+    when (pick == pick(k, "[[num.two]]", "[[num.two]]", "[[num.five]]")) {
+      say "{pick(k, \"Count only the round ones.\", \"Only the squares? [[shape.the-rectangle|cap]] has four sides too.\", \"That is one pentagon. There are two.\")}"
+    }
+  }
+  hint "Point at each shape as you count."
+  hint "Then find that number in [[language.name]]."
+}

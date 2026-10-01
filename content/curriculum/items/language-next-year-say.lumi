@@ -1,0 +1,15 @@
+# Writing, read by a grown-up who ticks what they see (writing.by-eye).
+item language.next-year-say v=1 skills=[language.school, language.time, language.writing] {
+  title "My plans"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Write four sentences in [[language.name]] about next year: where you will go, how you will get there, a club and one thing you want to learn.\", \"Write a short message in [[language.name]] to a friend starting a new school, with two things you are going to do there.\", \"Write three sentences about next year in [[language.name]]: one with [[future.i-am-going-to]], one with [[future.i-want]] and one with [[opinion.because]].\")}" width=32
+    }
+  }
+
+  check writing.by-eye look-for="Sentences with [[future.i-am-going-to]] and a thing to do, a wish with [[future.i-want]], and at least one reason." notice=["[[future.i-am-going-to|cap]] with a thing to do", "A club or a subject named", "A reason with [[opinion.because]]", "Words spelt with their accents"]
+  hint "Start with [[future.next-year]]."
+  hint "What are you going to do, and what do you want?"
+}

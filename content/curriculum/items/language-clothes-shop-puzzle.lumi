@@ -1,0 +1,23 @@
+# Non-routine: what to buy worked out from a price list and a sum of money.
+item language.clothes-shop-puzzle v=1 stars=3 skills=[language.market, language.clothes, reasoning.language] {
+  title "Shopping with a budget"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x32 {
+    column all at=canvas(1, 1) space=1 align=start {
+      table prices cols=2 head=["Clothes", "Price"] cells=["[[shop.the-t-shirt]]", "6 €", "[[shop.the-jeans]]", "20 €", "[[shop.the-jumper]]", "15 €", "[[shop.the-jacket]]", "30 €"]
+      text ask "{pick(k, \"Ana has 30 euros. She buys [[shop.the-jeans]] and one more thing. Which can she add?\", \"Leo buys two things and pays 35 euros. Which two?\", \"In the sale everything is half price. Mia has 20 euros. What is the dearest thing on the list she can buy?\")}" width=32
+      choice pick options=[pick(k, "[[shop.the-t-shirt]]", "[[shop.the-jeans]] and [[shop.the-jumper]]", "[[shop.the-jacket]]"), pick(k, "[[shop.the-jumper]]", "[[shop.the-jacket]] and [[shop.the-t-shirt]]", "[[shop.the-jeans]]"), pick(k, "[[shop.the-jacket]]", "[[shop.the-jumper]] and [[shop.the-t-shirt]]", "[[shop.the-jumper]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[shop.the-t-shirt]]", "[[shop.the-jeans]] and [[shop.the-jumper]]", "[[shop.the-jacket]]")
+  feedback {
+    when (pick == pick(k, "[[shop.the-jumper]]", "[[shop.the-jacket]] and [[shop.the-t-shirt]]", "[[shop.the-jeans]]")) {
+      say "{pick(k, \"20 and 15 make 35. Is that within 30?\", \"30 and 6 make 36. Add again.\", \"Half of 30 is 15. Is that within 20?\")}"
+    }
+  }
+  hint "Read each price off the list."
+  hint "Add them, then compare with the money."
+}

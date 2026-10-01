@@ -1,0 +1,18 @@
+# Picture or situation to the language: [[ability.i-can-swim]], [[ability.i-cannot-skate]], [[ability.i-can-ride-a-bike]], [[ability.i-cannot-cook]], [[ability.i-can-play-the-piano]], [[ability.i-can-play-chess]], [[ability.i-can-jump-very-high]], [[ability.can-you-sing]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.i-can-name v=1 skills=[language.sentences, language.questions] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo swims two lengths of the pool. What can he say?\", \"Ana falls over every time she tries to skate. What does she say?\", \"Mia rides to the park without stabilisers. What can she say?\", \"Leo has never made a meal and does not know how. What does he say?\", \"Ana plays a tune on the piano at the school concert. What can she say?\", \"Mia beats her grandfather at chess. What can she say?\", \"Leo jumps over the highest bar in the playground. What can he say?\", \"Ana wants to know whether Leo can sing. What does she ask?\")}" width=32
+      choice pick options=[pick(k, "[[ability.i-can-swim]]", "[[ability.i-can-skate]]", "[[ability.i-can-ride-a-bike]]", "[[ability.i-can-cook]]", "[[ability.i-can-play-the-guitar]]", "[[ability.i-cannot-play-chess]]", "[[ability.i-can-jump-very-high]]", "[[ability.i-can-sing]]"), pick(k, "[[ability.i-cannot-swim]]", "[[ability.i-cannot-skate]]", "[[ability.i-cannot-ride-a-bike]]", "[[ability.i-cannot-cook]]", "[[ability.i-can-play-the-piano]]", "[[ability.i-can-play-football]]", "[[ability.i-cannot-jump-very-high]]", "[[ability.can-you-sing]]"), pick(k, "[[ability.i-can-sing]]", "[[ability.i-cannot-swim]]", "[[ability.i-can-play-the-piano]]", "[[ability.i-cannot-sing]]", "[[ability.i-cannot-play-the-piano]]", "[[ability.i-can-play-chess]]", "[[ability.i-can-run-very-fast]]", "[[ability.can-you-dance]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[ability.i-can-swim]]", "[[ability.i-cannot-skate]]", "[[ability.i-can-ride-a-bike]]", "[[ability.i-cannot-cook]]", "[[ability.i-can-play-the-piano]]", "[[ability.i-can-play-chess]]", "[[ability.i-can-jump-very-high]]", "[[ability.can-you-sing]]")
+  hint "Does the child manage it or not?"
+  hint "Which thing is being done?"
+}

@@ -1,0 +1,22 @@
+# Non-routine: jobs given out from clues, or a word in a sentence corrected.
+item language.jobs-puzzle v=1 stars=3 skills=[language.sentences, language.opinions, reasoning.language] {
+  title "Who does which job?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo, Pablo and Sam want to be [[job.doctor]], [[job.pilot]] and [[job.cook]], one each. Pablo wants to work in [[job.the-hospital]]. Sam does not like flying. What does Leo want to be?\", \"Ana's mother [[job.works-in-a-hospital]], her father [[job.teaches-children]] and her aunt [[job.looks-after-animals]]. Who is the vet?\", \"Leo writes [[job.i-want-to-be-a-doctor-because-i-like-mak]] Which word should he change, and to what?\")}" width=32
+      choice pick options=[pick(k, "[[job.pilot]]", "her aunt", "[[job.doctor]] to [[job.vet]]"), pick(k, "[[job.cook]]", "her mother", "[[job.to-make-better]] to [[job.to-teach]]"), pick(k, "[[job.doctor]]", "her father", "[[job.animals]] to [[job.planes]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[job.pilot]]", "her aunt", "[[job.doctor]] to [[job.vet]]")
+  feedback {
+    when (pick == pick(k, "[[job.cook]]", "her mother", "[[job.to-make-better]] to [[job.to-teach]]")) {
+      say "{pick(k, \"Sam does not like flying, so Sam is the cook. What is left for Leo?\", \"A hospital is for people. Who looks after animals?\", \"He likes making animals better. Which job does that?\")}"
+    }
+  }
+  hint "Take the surest clue first."
+  hint "Cross off what it rules out."
+}

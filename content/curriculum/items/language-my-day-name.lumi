@@ -1,0 +1,19 @@
+# Picture or situation to the language: [[day.i-get-up-at-seven]], [[day.i-have-breakfast-at-half-past-seven]], [[day.i-go-to-school-at-eight]], [[day.i-have-lunch-at-two]], [[day.i-come-home-at-four]], [[day.i-do-my-homework-at-five]], [[day.i-have-dinner-at-nine]], [[day.i-go-to-bed-at-ten]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.my-day-name v=1 skills=[language.time, language.sentences] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      clock c h=pick(k, 7, 7, 8, 2, 4, 5, 9, 10) m=pick(k, 0, 30, 0, 0, 0, 0, 0, 0)
+      text ask "{pick(k, \"Ana gets out of bed when the clock says this. What does she say?\", \"Leo eats his cereal when the clock says this. What does he say?\", \"Mia leaves for school when the clock says this. What does she say?\", \"Ana has her lunch when the clock says this. What does she say?\", \"Leo gets home from school when the clock says this. What does he say?\", \"Mia sits down to her homework when the clock says this. What does she say?\", \"Ana has her dinner when the clock says this. What does she say?\", \"Leo goes to bed when the clock says this. What does he say?\")}" width=32
+      choice pick options=[pick(k, "[[day.i-get-up-at-seven]]", "[[day.i-have-breakfast-at-half-past-seven]]", "[[day.i-come-home-at-eight]]", "[[day.i-have-lunch-at-two]]", "[[day.i-come-home-at-five]]", "[[day.i-do-my-homework-at-five]]", "[[day.i-have-dinner-at-ten]]", "[[day.i-go-to-bed-at-ten]]"), pick(k, "[[day.i-go-to-bed-at-seven]]", "[[day.i-have-dinner-at-half-past-seven]]", "[[day.i-go-to-school-at-eight]]", "[[day.i-have-dinner-at-two]]", "[[day.i-do-my-homework-at-four]]", "[[day.i-play-at-five]]", "[[day.i-have-dinner-at-nine]]", "[[day.i-get-up-at-ten]]"), pick(k, "[[day.i-get-up-at-nine]]", "[[day.i-have-breakfast-at-half-past-eight]]", "[[day.i-go-to-school-at-nine]]", "[[day.i-have-lunch-at-twelve]]", "[[day.i-come-home-at-four]]", "[[day.i-do-my-homework-at-four]]", "[[day.i-go-to-bed-at-nine]]", "[[day.i-go-to-bed-at-nine]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[day.i-get-up-at-seven]]", "[[day.i-have-breakfast-at-half-past-seven]]", "[[day.i-go-to-school-at-eight]]", "[[day.i-have-lunch-at-two]]", "[[day.i-come-home-at-four]]", "[[day.i-do-my-homework-at-five]]", "[[day.i-have-dinner-at-nine]]", "[[day.i-go-to-bed-at-ten]]")
+  hint "Read the clock first."
+  hint "Which sentence has the right time and the right thing done?"
+}

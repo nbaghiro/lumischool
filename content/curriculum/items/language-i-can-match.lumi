@@ -1,0 +1,17 @@
+# Four words to their English, 3 sets, the later sets with the words most often mixed up.
+item language.i-can-match v=1 skills=[language.sentences, language.questions] {
+  title "Match the words"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Write the number of its English next to each [[language.name]] word." width=32
+      match m left=[pick(k, "[[ability.to-swim]]", "[[ability.to-cook]]", "[[ability.i-can]]"), pick(k, "[[ability.to-sing]]", "[[ability.to-jump]]", "[[ability.you-can]]"), pick(k, "[[ability.to-dance]]", "[[ability.to-skate]]", "[[ability.he-or-she-can]]"), pick(k, "[[ability.to-run]]", "[[ability.to-draw]]", "[[ability.i-cannot]]")] right=[pick(k, "to dance", "to draw", "he or she can"), pick(k, "to swim", "to cook", "I can"), pick(k, "to sing", "to jump", "I cannot"), pick(k, "to run", "to skate", "you can")] blanks=[a, b, c, d]
+    }
+  }
+
+  answer a=2 b=pick(k, 3, 3, 4) c=pick(k, 1, 4, 1) d=pick(k, 4, 1, 3)
+  hint "Start with the word you are surest of, and cross its English off."
+  hint "Two words look alike. Which letter is different, and what does it change?"
+}

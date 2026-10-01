@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.timetable-say v=1 skills=[language.school, language.time, language.speaking] {
+  title "My week at school"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Say what you have on two days of your week, in [[language.name]]: [[subject.on-monday-i-have-maths]]\", \"Say your favourite subject in [[language.name]], and one you do not like.\", \"Ask a grown-up [[phrase.what-do-you-have-on-tuesday]], as if they were at school, and say their answer back.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="A day and a subject in each sentence, with the day first, and a favourite said with its sentence." notice=["A day in each sentence", "A subject named in [[language.name]]", "The favourite said", "The question asked back"]
+  hint "Start with the day."
+  hint "Which lesson comes on that day?"
+}

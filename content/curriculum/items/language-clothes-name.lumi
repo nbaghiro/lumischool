@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[clothes.the-t-shirt]], [[clothes.the-dress]], [[clothes.the-skirt]], [[clothes.the-trousers]], [[clothes.the-shorts]], [[clothes.the-shoes]], [[clothes.the-boots]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.clothes-name v=1 skills=[language.clothes, language.weather] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x29 {
+    column all at=canvas(1, 1) space=1 align=start {
+      garment g kind=pick(k, "top", "dress", "skirt", "trousers", "shorts", "shoes", "boots") colour=pick(k, "sky", "berry", "glow", "mint", "tang", "sky", "berry") sleeves=short print=none pattern=plain
+      text ask "What is it called?" width=32
+      choice pick options=[pick(k, "[[clothes.the-shoes]]", "[[clothes.the-shoes]]", "[[clothes.the-dress]]", "[[clothes.the-dress]]", "[[clothes.the-trousers]]", "[[clothes.the-skirt]]", "[[clothes.the-shoes]]"), pick(k, "[[clothes.the-t-shirt]]", "[[clothes.the-dress]]", "[[clothes.the-shorts]]", "[[clothes.the-trousers]]", "[[clothes.the-shoes]]", "[[clothes.the-shoes]]", "[[clothes.the-dress]]"), pick(k, "[[clothes.the-dress]]", "[[clothes.the-trousers]]", "[[clothes.the-trousers]]", "[[clothes.the-shorts]]", "[[clothes.the-shorts]]", "[[clothes.the-shorts]]", "[[clothes.the-skirt]]"), pick(k, "[[clothes.the-trousers]]", "[[clothes.the-skirt]]", "[[clothes.the-skirt]]", "[[clothes.the-boots]]", "[[clothes.the-boots]]", "[[clothes.the-boots]]", "[[clothes.the-boots]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[clothes.the-t-shirt]]", "[[clothes.the-dress]]", "[[clothes.the-skirt]]", "[[clothes.the-trousers]]", "[[clothes.the-shorts]]", "[[clothes.the-shoes]]", "[[clothes.the-boots]]")
+  feedback {
+    when (pick == pick(k, "[[clothes.the-dress]]", "[[clothes.the-skirt]]", "[[clothes.the-dress]]", "[[clothes.the-shorts]]", "[[clothes.the-trousers]]", "[[clothes.the-boots]]", "[[clothes.the-shoes]]")) point=g {
+      say "{pick(k, \"[[clothes.the-dress|cap]] is the dress. This one stops at the waist.\", \"[[clothes.the-skirt|cap]] is the skirt. This one has a top too.\", \"[[clothes.the-dress|cap]] is the dress. This one has no top.\", \"[[clothes.the-shorts|cap]] are the shorts. These reach the ankles.\", \"[[clothes.the-trousers|cap]] are the trousers. These stop above the knee.\", \"[[clothes.the-boots|cap]] are the wellies. These are low.\", \"[[clothes.the-shoes|cap]] are the shoes. These come up the leg.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

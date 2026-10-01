@@ -1,0 +1,74 @@
+# Things a child can and cannot do, said, asked and answered.
+lesson language-i-can v=1 format=teach grade=5 unit=3 subject=language levels=[easy, medium, hard] {
+  title "What I can do"
+  goal "Say what you can and cannot do in [[language.name]], and ask someone what they can do."
+
+  look {
+    scene 20x8 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row moves space=2 align=end {
+          person a pose=run age=child hair=ponytail top=mint
+          person b pose=jump age=child hair=short top=tang
+          person c pose=balance age=child hair=curly top=berry
+        }
+      }
+    }
+    say """
+      To say what you can do, say [[ability.i-can-swim]], I can swim. To say what you cannot do, say
+      [[ability.i-cannot]]: [[ability.i-cannot-cook]], I cannot cook. To ask, say
+      [[ability.can-you-swim]], can you swim? Ana runs, Leo jumps and Mia balances: each of them can
+      do something.
+      """
+  }
+  do {
+    level easy {
+      worked language.i-can-name k=4
+    }
+    show language.i-can-name k=2 easy-k=0 hard-k=5
+    show language.i-can-meaning k=3 easy-k=1 hard-k=4
+    show language.i-can-write k=3 easy-k=1 hard-k=5
+    show language.i-can-name k=4 easy-k=1 hard-k=6
+    show language.i-can-match k=1 easy-k=0 hard-k=2
+    show language.i-can-write k=4 easy-k=2 hard-k=6
+    show language.i-can-listen k=3 easy-k=0 hard-k=5
+    show language.i-can-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.i-can-write k=4
+    }
+  }
+  try stars=2 {
+    show language.i-can-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.i-can-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[ability.i-can-swim]] I can swim. [[ability.i-cannot-swim]] I cannot swim. [[ability.can-you-swim]] Can you swim?"
+  }
+
+  grown-ups """
+    The wrong idea to watch for is can and cannot taken for each other because the sentences are the
+    same but for one small word: every naming question offers the sentence with that word added or
+    left out, and one with another thing done. In [[language.name]], being able to do something that
+    has been learnt, such as swimming, is said with [[ability.i-can]], I know how to, which is why
+    the lesson uses it. The step up from my week of this grade is from what the child does to what
+    the child is able to do, said, asked and answered. From this grade the written words are marked
+    with their accents: a word typed without its accent is not taken. The dictation is read from
+    this sheet, where it prints as Read aloud, or played by the device. If the child is stuck, act
+    each thing out and say it with yes or no. Off the page, make a family poster of what each person
+    can do, in the language. It meets England's key stage 2 languages programme (years 3 to 6,
+    statutory from age 7): "speak in sentences, using familiar vocabulary, phrases and basic
+    language structures"; Japan's grades 5 and 6 foreign languages: "Can communicate in asking and
+    answering questions about themselves, someone they communicate with and their surroundings by
+    using simple words and phrases and basic expressions on the spot" (Japan's grade five book We
+    Can! 1 has a unit on I can, recalled); and CEFR A2, "Can communicate in simple and routine tasks
+    requiring a simple and direct exchange of information on familiar and routine matters". The
+    phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[ability.i-can-play-the-piano]] is worked first in the teacher's pen, the words to name are [[ability.i-can-swim]] and [[ability.i-cannot-skate]] and the words to write are [[ability.to-sing]] and [[ability.to-dance]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[ability.i-can-play-chess]] and [[ability.i-can-jump-very-high]] and the words to write are [[ability.to-skate]], [[ability.to-run]] and [[ability.to-jump]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

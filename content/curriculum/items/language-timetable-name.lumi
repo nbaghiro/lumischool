@@ -1,0 +1,23 @@
+# Picture or situation to the language: [[subject.maths]], [[subject.science]], [[subject.history]], [[subject.geography]], [[subject.music]], [[subject.art]], [[subject.english]], [[subject.pe]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.timetable-name v=1 skills=[language.school, language.time] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"In this lesson you add, take away and measure.\", \"In this lesson you test magnets and grow seeds.\", \"In this lesson you learn about people who lived long ago.\", \"In this lesson you read maps and learn about countries and rivers.\", \"In this lesson you sing and play the drum.\", \"In this lesson you draw and paint.\", \"In this lesson you read stories and write in English.\", \"In this lesson you run, jump and play games in the hall.\")}" width=32
+      choice pick options=[pick(k, "[[subject.english]]", "[[subject.pe]]", "[[subject.geography]]", "[[subject.science]]", "[[subject.art]]", "[[subject.geography]]", "[[subject.history]]", "[[subject.science]]"), pick(k, "[[subject.maths]]", "[[subject.science]]", "[[subject.pe]]", "[[subject.geography]]", "[[subject.geography]]", "[[subject.art]]", "[[subject.science]]", "[[subject.pe]]"), pick(k, "[[subject.science]]", "[[subject.geography]]", "[[subject.science]]", "[[subject.history]]", "[[subject.music]]", "[[subject.history]]", "[[subject.music]]", "[[subject.music]]"), pick(k, "[[subject.music]]", "[[subject.maths]]", "[[subject.history]]", "[[subject.music]]", "[[subject.science]]", "[[subject.music]]", "[[subject.english]]", "[[subject.history]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[subject.maths]]", "[[subject.science]]", "[[subject.history]]", "[[subject.geography]]", "[[subject.music]]", "[[subject.art]]", "[[subject.english]]", "[[subject.pe]]")
+  feedback {
+    when (pick == pick(k, "[[subject.science]]", "[[subject.maths]]", "[[subject.geography]]", "[[subject.history]]", "[[subject.art]]", "[[subject.music]]", "[[subject.history]]", "[[subject.music]]")) {
+      say "{pick(k, \"[[subject.science|cap]] is science, with magnets and seeds. Which one has sums?\", \"[[subject.maths|cap]] is maths. Which one has experiments?\", \"[[subject.geography|cap]] is maps and countries. Which one is about the past?\", \"[[subject.history|cap]] is the past. Which one has maps?\", \"[[subject.art|cap]] is art. Which one has songs?\", \"[[subject.music|cap]] is music. Which one has paint?\", \"[[subject.history|cap]] is history. Which one is a language?\", \"[[subject.music|cap]] is music. Which one has running?\")}"
+    }
+  }
+  hint "What happens in that lesson?"
+  hint "Which subject is it?"
+}

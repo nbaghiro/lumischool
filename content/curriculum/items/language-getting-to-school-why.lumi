@@ -1,0 +1,22 @@
+# A reason: a way to travel chosen from how far it is and what lies between.
+item language.getting-to-school-why v=1 stars=2 skills=[language.town, language.travel, reasoning.language] {
+  title "Why that way?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo's school is next door to his house. Why does he say [[phrase.i-go-to-school-on-foot]]?\", \"Ana lives on an island and her school is across the water. How does she go, and why?\", \"Ana's grandmother lives in another country, far over the sea. Which way is quickest to visit her, and why?\")}" width=32
+      choice pick options=[pick(k, "It is near, so he walks.", "[[transport.by-boat]]: there is water between.", "[[transport.by-plane]]: it is far, over the sea."), pick(k, "It is far, so he takes the train.", "[[transport.on-foot]]: it is near.", "[[transport.on-foot]]: it is the quickest."), pick(k, "The school is across the sea.", "[[transport.by-bike]]: it is quick.", "[[transport.by-bike]]: it is near.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "It is near, so he walks.", "[[transport.by-boat]]: there is water between.", "[[transport.by-plane]]: it is far, over the sea.")
+  feedback {
+    when (pick == pick(k, "It is far, so he takes the train.", "[[transport.on-foot]]: it is near.", "[[transport.on-foot]]: it is the quickest.")) {
+      say "{pick(k, \"Next door is not far.\", \"Can she walk across water?\", \"Walking is the slowest way of all.\")}"
+    }
+  }
+  hint "How far is it?"
+  hint "Is there water or land between?"
+}

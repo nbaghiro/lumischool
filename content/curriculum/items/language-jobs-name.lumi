@@ -1,0 +1,18 @@
+# Picture or situation to the language: [[job.i-want-to-be-a-doctor]], [[job.i-want-to-be-a-teacher]], [[job.i-want-to-be-a-cook]], [[job.i-want-to-be-a-vet]], [[job.i-want-to-be-a-pilot]], [[job.i-want-to-be-an-astronaut]], [[job.i-want-to-be-a-footballer]], [[job.i-want-to-be-a-scientist]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.jobs-name v=1 skills=[language.sentences, language.opinions] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo wants to make sick people better.\", \"Ana wants to teach children to read.\", \"Leo wants to make food in a restaurant.\", \"Ana wants to look after sick animals.\", \"Leo wants to fly planes all over the world.\", \"Ana wants to go to the Moon in a rocket.\", \"Leo wants to play in a big team and score goals.\", \"Ana wants to test ideas in a laboratory.\")}" width=32
+      choice pick options=[pick(k, "[[job.i-want-to-be-a-doctor]]", "[[job.i-want-to-be-a-scientist]]", "[[job.i-want-to-be-a-cook]]", "[[job.i-want-to-be-a-teacher]]", "[[job.i-want-to-be-a-footballer]]", "[[job.i-want-to-be-an-astronaut]]", "[[job.i-want-to-be-a-footballer]]", "[[job.i-want-to-be-a-vet]]"), pick(k, "[[job.i-want-to-be-a-vet-2]]", "[[job.i-want-to-be-a-teacher]]", "[[job.i-want-to-be-a-doctor]]", "[[job.i-want-to-be-a-scientist]]", "[[job.i-want-to-be-a-pilot]]", "[[job.i-want-to-be-a-pilot]]", "[[job.i-want-to-be-a-pilot]]", "[[job.i-want-to-be-a-scientist]]"), pick(k, "[[job.i-want-to-be-a-teacher-2]]", "[[job.i-want-to-be-a-vet]]", "[[job.i-want-to-be-a-pilot]]", "[[job.i-want-to-be-a-vet]]", "[[job.i-want-to-be-a-cook]]", "[[job.i-want-to-be-a-scientist]]", "[[job.i-want-to-be-a-doctor]]", "[[job.i-want-to-be-an-astronaut]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[job.i-want-to-be-a-doctor]]", "[[job.i-want-to-be-a-teacher]]", "[[job.i-want-to-be-a-cook]]", "[[job.i-want-to-be-a-vet]]", "[[job.i-want-to-be-a-pilot]]", "[[job.i-want-to-be-an-astronaut]]", "[[job.i-want-to-be-a-footballer]]", "[[job.i-want-to-be-a-scientist]]")
+  hint "What does the person want to do every day?"
+  hint "Which job does that?"
+}

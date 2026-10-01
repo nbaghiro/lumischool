@@ -1,0 +1,19 @@
+# The language to English: [[phrase.on-tuesday-i-have-music]], [[phrase.my-favourite-subject-is-art]], [[phrase.what-do-you-have-on-tuesday]], [[phrase.i-like-history-but-i-do-not-like-geograp]], [[phrase.today-we-do-not-have-english]], [[phrase.the-teacher-is-very-kind]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.timetable-meaning v=1 skills=[language.school, language.time] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "boy", "girl", "boy", "gran", "girl")] says=[pick(k, "[[phrase.on-tuesday-i-have-music]]", "[[phrase.my-favourite-subject-is-art]]", "[[phrase.what-do-you-have-on-tuesday]]", "[[phrase.i-like-history-but-i-do-not-like-geograp]]", "[[phrase.today-we-do-not-have-english]]", "[[phrase.the-teacher-is-very-kind]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "The teacher is very kind.", "I like history, but I do not like geography.", "My favourite subject is art.", "The teacher is very kind.", "The teacher is very kind.", "I like history, but I do not like geography."), pick(k, "On Tuesday I have music.", "My favourite subject is art.", "Today we do not have English.", "I like history, but I do not like geography.", "What do you have on Tuesday?", "The teacher is very kind."), pick(k, "What do you have on Tuesday?", "Today we do not have English.", "I like history, but I do not like geography.", "My favourite subject is art.", "Today we do not have English.", "What do you have on Tuesday?"), pick(k, "Today we do not have English.", "What do you have on Tuesday?", "What do you have on Tuesday?", "What do you have on Tuesday?", "I like history, but I do not like geography.", "Today we do not have English.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "On Tuesday I have music.", "My favourite subject is art.", "What do you have on Tuesday?", "I like history, but I do not like geography.", "Today we do not have English.", "The teacher is very kind.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

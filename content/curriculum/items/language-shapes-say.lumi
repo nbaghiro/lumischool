@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.shapes-say v=1 skills=[language.shapes, language.numbers, language.speaking] {
+  title "Shapes out loud"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Find three shapes in the room, point at each and name it in [[language.name]].\", \"A grown-up draws a shape and asks [[shape.what-is-it]]. Answer in [[language.name]], then swap.\", \"Draw some circles and triangles. Say how many of each in [[language.name]]: [[shape.three-circles]].\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="Each shape named with its little word, and a number said before a shape with its plural." notice=["Three shapes named", "[[shape.what-is-it]] asked or answered", "A number before a shape", "Pentagon and hexagon kept apart"]
+  hint "Count the sides first."
+  hint "Which name goes with that many sides?"
+}

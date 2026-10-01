@@ -1,0 +1,19 @@
+# The language to English: [[phrase.can-you-skate]], [[phrase.yes-i-can-skate-very-well]], [[phrase.my-brother-can-play-the-piano]], [[phrase.i-cannot-cook-but-i-can-make-a-sandwich]], [[phrase.my-dog-can-jump-very-high]], [[phrase.who-can-speak-english]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.i-can-meaning v=1 skills=[language.sentences, language.questions] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "boy", "girl", "boy", "gran", "girl")] says=[pick(k, "[[phrase.can-you-skate]]", "[[phrase.yes-i-can-skate-very-well]]", "[[phrase.my-brother-can-play-the-piano]]", "[[phrase.i-cannot-cook-but-i-can-make-a-sandwich]]", "[[phrase.my-dog-can-jump-very-high]]", "[[phrase.who-can-speak-english]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "Who can speak English?", "I cannot cook, but I can make a sandwich.", "Yes, I can skate very well.", "Who can speak English?", "Who can speak English?", "I cannot cook, but I can make a sandwich."), pick(k, "Can you skate?", "Yes, I can skate very well.", "My dog can jump very high.", "I cannot cook, but I can make a sandwich.", "My brother can play the piano.", "Who can speak English?"), pick(k, "My brother can play the piano.", "My dog can jump very high.", "I cannot cook, but I can make a sandwich.", "Yes, I can skate very well.", "My dog can jump very high.", "My brother can play the piano."), pick(k, "My dog can jump very high.", "My brother can play the piano.", "My brother can play the piano.", "My brother can play the piano.", "I cannot cook, but I can make a sandwich.", "My dog can jump very high.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Can you skate?", "Yes, I can skate very well.", "My brother can play the piano.", "I cannot cook, but I can make a sandwich.", "My dog can jump very high.", "Who can speak English?")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

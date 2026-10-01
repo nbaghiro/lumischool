@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.getting-to-school-say v=1 skills=[language.town, language.travel, language.speaking] {
+  title "On the way"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Say how you go to school in [[language.name]], and how a grown-up you know goes to work.\", \"Ask a grown-up [[transport.how-do-you-go-to-work]] and say their answer back in [[language.name]].\", \"Say one way to travel that is quick and one that is slow, in [[language.name]].\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="A way of travelling said after [[transport.i-go]], and the question asked with [[question.how|cap]]." notice=["How the child goes, said", "[[transport.i-go|cap]] before the way", "The question asked back", "Quick and slow said"]
+  hint "Think about this morning: did you walk, ride or drive?"
+  hint "Which little word goes before the way you travel?"
+}

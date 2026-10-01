@@ -1,0 +1,23 @@
+# Picture or situation to the language: [[wild.the-whale]], [[wild.the-camel]], [[wild.the-frog]], [[wild.the-parrot]], [[wild.the-seal]], [[wild.the-polar-bear]], [[wild.the-monkey]], [[wild.the-eagle]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.wild-animals-name v=1 skills=[language.animals, language.sentences] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x24 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"It is the biggest animal in the sea, and it breathes out a spout of water.\", \"It walks across the desert on wide, soft feet and has a hump.\", \"It lives by the pond and catches flies with its long tongue.\", \"It is a red and green bird in the jungle that can copy what you say.\", \"It has whiskers and big dark eyes, and lies on rocks by the cold sea.\", \"It is a big white bear that lives on the ice.\", \"It swings from tree to tree in the jungle.\", \"It is a big bird that flies high over the mountains.\")}" width=32
+      choice pick options=[pick(k, "[[wild.the-monkey]]", "[[wild.the-eagle]]", "[[wild.the-seal]]", "[[wild.the-camel]]", "[[wild.the-whale]]", "[[wild.the-parrot]]", "[[wild.the-parrot]]", "[[wild.the-camel]]"), pick(k, "[[wild.the-whale]]", "[[wild.the-camel]]", "[[wild.the-eagle]]", "[[wild.the-parrot]]", "[[wild.the-polar-bear]]", "[[wild.the-polar-bear]]", "[[wild.the-camel]]", "[[wild.the-eagle]]"), pick(k, "[[wild.the-seal]]", "[[wild.the-frog]]", "[[wild.the-camel]]", "[[wild.the-eagle]]", "[[wild.the-seal]]", "[[wild.the-frog]]", "[[wild.the-seal]]", "[[wild.the-parrot]]"), pick(k, "[[wild.the-parrot]]", "[[wild.the-monkey]]", "[[wild.the-frog]]", "[[wild.the-frog]]", "[[wild.the-frog]]", "[[wild.the-seal]]", "[[wild.the-monkey]]", "[[wild.the-frog]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[wild.the-whale]]", "[[wild.the-camel]]", "[[wild.the-frog]]", "[[wild.the-parrot]]", "[[wild.the-seal]]", "[[wild.the-polar-bear]]", "[[wild.the-monkey]]", "[[wild.the-eagle]]")
+  feedback {
+    when (pick == pick(k, "[[wild.the-seal]]", "[[wild.the-monkey]]", "[[wild.the-seal]]", "[[wild.the-eagle]]", "[[wild.the-whale]]", "[[wild.the-seal]]", "[[wild.the-parrot]]", "[[wild.the-parrot]]")) {
+      say "{pick(k, \"[[wild.the-seal|cap]] is the seal, which lies on rocks. Which is the biggest?\", \"[[wild.the-monkey|cap]] is the monkey, which swings in trees. Which one has a hump?\", \"[[wild.the-seal|cap]] is the seal, which lies on rocks by the sea. Which one hops?\", \"[[wild.the-eagle|cap]] is the eagle. Which bird talks?\", \"[[wild.the-whale|cap]] is the whale, which never lies on rocks. Which has whiskers?\", \"[[wild.the-seal|cap]] is the seal. Which one is a bear?\", \"[[wild.the-parrot|cap]] is the parrot, which flies. Which one swings?\", \"[[wild.the-parrot|cap]] is the parrot of the jungle. Which flies over mountains?\")}"
+    }
+  }
+  hint "Where does the animal live?"
+  hint "What is its body like?"
+}

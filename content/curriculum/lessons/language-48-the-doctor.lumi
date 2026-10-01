@@ -1,0 +1,70 @@
+# Parts of the body, what hurts, and the doctor's advice.
+lesson language-the-doctor v=1 format=teach grade=6 unit=6 subject=language levels=[easy, medium, hard] {
+  title "At the doctor"
+  goal "Name parts of the body in [[language.name]], say what hurts, and understand a doctor's advice."
+
+  look {
+    scene 12x10 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row clinic space=2 align=end {
+          person doctor pose=stand age=grownup hair=bun top=white
+          person child pose=sit age=child hair=short top=sky mood=sad
+        }
+      }
+    }
+    say """
+      The doctor asks [[phrase.what-is-the-matter]], what is the matter? Leo answers
+      [[body.my-head-hurts]], my head hurts. For more than one, [[body.my-feet-hurt]], my feet hurt.
+      The doctor gives advice with [[body.you-must]]: [[body.you-must-rest]], you must rest.
+      """
+  }
+  do {
+    level easy {
+      worked language.the-doctor-name k=4
+    }
+    show language.the-doctor-name k=2 easy-k=0 hard-k=5
+    show language.the-doctor-meaning k=3 easy-k=1 hard-k=4
+    show language.the-doctor-write k=3 easy-k=1 hard-k=5
+    show language.the-doctor-name k=4 easy-k=1 hard-k=6
+    show language.the-doctor-match k=1 easy-k=0 hard-k=2
+    show language.the-doctor-write k=4 easy-k=3 hard-k=6
+    show language.the-doctor-listen k=3 easy-k=0 hard-k=5
+    show language.the-doctor-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.the-doctor-write k=4
+    }
+  }
+  try stars=2 {
+    show language.the-doctor-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.the-doctor-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[phrase.what-is-the-matter]] What is the matter? [[body.my-head-hurts]] My head hurts. [[body.you-must-rest]] You must rest."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is two nearby parts of the body taken for each other, the head and
+    the throat, the arm and the leg: each naming question describes what happened and offers the
+    part most often mixed up. In [[language.name]] what hurts is said with [[body.it-hurts-me]], and
+    with [[body.they-hurt-me]] for more than one, which is why the feet are said differently; a
+    language without this says them the same way. The step up from the creatures of grade four,
+    which had eyes and legs, is the human body and saying what is wrong with it, then understanding
+    advice. From this grade the written words are marked with their accents: a word typed without
+    its accent is not taken. The dictation is read from this sheet, where it prints as Read aloud,
+    or played by the device. If the child is stuck, play a game of touching each part as it is
+    named. Off the page, play doctors with a toy, in the language. It meets England's key stage 2
+    languages programme (years 3 to 6, statutory from age 7): "describe people, places, things and
+    actions orally and in writing"; Japan's grades 5 and 6 foreign languages: "Can give
+    instructions, make requests and respond to them by using basic expressions"; and CEFR A2, "Can
+    describe in simple terms aspects of his/her background, immediate environment and matters in
+    areas of immediate need". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[body.my-leg-hurts]] is worked first in the teacher's pen, the words to name are [[body.my-head-hurts]] and [[body.my-throat-hurts]] and the words to write are [[body.arm]] and [[body.hand]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[body.my-arm-hurts]] and [[body.my-feet-hurt]] and the words to write are [[body.throat]], [[body.stomach]] and [[body.back]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

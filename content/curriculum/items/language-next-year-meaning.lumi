@@ -1,0 +1,19 @@
+# The language to English: [[phrase.what-are-you-going-to-do-next-year]], [[phrase.i-am-going-to-wear-a-uniform]], [[phrase.i-am-a-bit-scared]], [[phrase.my-sister-already-goes-to-secondary-scho]], [[phrase.the-lessons-are-going-to-be-harder]], [[phrase.i-am-very-happy]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.next-year-meaning v=1 skills=[language.school, language.time] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "boy", "girl", "boy", "gran", "boy")] says=[pick(k, "[[phrase.what-are-you-going-to-do-next-year]]", "[[phrase.i-am-going-to-wear-a-uniform]]", "[[phrase.i-am-a-bit-scared]]", "[[phrase.my-sister-already-goes-to-secondary-scho]]", "[[phrase.the-lessons-are-going-to-be-harder]]", "[[phrase.i-am-very-happy]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "I am very happy.", "My sister already goes to secondary school.", "I am going to wear a uniform.", "I am very happy.", "I am very happy.", "My sister already goes to secondary school."), pick(k, "What are you going to do next year?", "I am going to wear a uniform.", "The lessons are going to be harder.", "My sister already goes to secondary school.", "I am a bit scared.", "I am very happy."), pick(k, "I am a bit scared.", "The lessons are going to be harder.", "My sister already goes to secondary school.", "I am going to wear a uniform.", "The lessons are going to be harder.", "I am a bit scared."), pick(k, "The lessons are going to be harder.", "I am a bit scared.", "I am a bit scared.", "I am a bit scared.", "My sister already goes to secondary school.", "The lessons are going to be harder.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "What are you going to do next year?", "I am going to wear a uniform.", "I am a bit scared.", "My sister already goes to secondary school.", "The lessons are going to be harder.", "I am very happy.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

@@ -1,0 +1,71 @@
+# Plans for the new school: I am going to, I want to join, and how I feel about it.
+lesson language-next-year v=1 format=teach grade=6 unit=9 subject=language levels=[easy, medium, hard] {
+  title "Next year"
+  goal "Say what you are going to do at your new school next year in [[language.name]], and which club you want to join."
+
+  look {
+    scene 24x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        comic plans who=["boy", "girl"] says=["[[future.next-year-i-am-going-to-go-to-secondary]]", "[[future.i-am-going-to-learn-french]]"] moods=["excited", "happy"] with=["", ""] thinks=[0, 0] holds=["", ""] labels=["1", "2"]
+      }
+    }
+    say """
+      To talk about plans, say [[future.i-am-going-to]] and what you will do:
+      [[future.i-am-going-to-learn-french]], I am going to learn French. Next year is
+      [[future.next-year]]. A wish is said with [[future.i-want]]:
+      [[future.i-want-to-join-the-drama-club]], I want to join the drama club.
+      """
+  }
+  do {
+    level easy {
+      worked language.next-year-name k=4
+    }
+    show language.next-year-name k=2 easy-k=0 hard-k=5
+    show language.next-year-meaning k=4 easy-k=1
+    show language.next-year-write k=2 easy-k=1 hard-k=4
+    show language.next-year-name k=4 easy-k=1 hard-k=6
+    show language.next-year-match k=1 easy-k=0 hard-k=2
+    show language.next-year-write k=4 easy-k=3 hard-k=5
+    show language.next-year-listen k=3 easy-k=0 hard-k=5
+    show language.next-year-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.next-year-write k=3
+    }
+  }
+  try stars=2 {
+    show language.next-year-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.next-year-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[future.next-year-i-am-going-to-go-to-secondary]] Next year I am going to go to secondary school. [[future.i-want-to-join-the-drama-club]]"
+  }
+
+  grown-ups """
+    The wrong idea to watch for is a plan and a wish taken for each other, and two plans that differ
+    by one word: each naming question offers the sentence with one part changed. The new school is
+    called [[future.the-secondary-school]] in Spain, where secondary school starts at twelve
+    (recalled), and [[future.i-am-going-to]] with a verb is how [[language.name]] talks about a
+    plan, much as English says going to. The step up from about me, earlier this grade, which was in
+    the present, is plans and wishes for the year ahead, written by the child and read by a grown-up
+    with the notice list. From this grade the written words are marked with their accents: a word
+    typed without its accent is not taken. The dictation is read from this sheet, where it prints as
+    Read aloud, or played by the device. If the child is stuck, talk about the new school in English
+    first, then say each plan in the language. Off the page, write a letter to yourself in the
+    language to open at the end of next year. It meets England's key stage 2 languages programme
+    (years 3 to 6, statutory from age 7): "write phrases from memory, and adapt these to create new
+    sentences, to express ideas clearly"; Japan's grades 5 and 6 foreign languages: "Can talk about
+    themselves after organizing the contents they want to communicate by using simple words and
+    phrases and basic expressions" (Japan's grade six book We Can! 2 has a unit on junior high
+    school life, recalled); and CEFR A2, "Can communicate in simple and routine tasks requiring a
+    simple and direct exchange of information on familiar and routine matters". The phrases are in
+    [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[future.i-want-to-join-the-drama-club]] is worked first in the teacher's pen, the words to name are [[future.next-year-i-am-going-to-go-to-secondary]] and [[future.i-am-going-to-learn-french]] and the words to write are [[future.to-study]] and [[future.new]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[future.i-want-to-join-the-chess-club]] and [[future.i-am-going-to-study-hard]] and the words to write are [[future.uniform]], [[future.french]] and [[future.new]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

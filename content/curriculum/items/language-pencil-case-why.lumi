@@ -1,0 +1,22 @@
+# A reason: what a question and its answer tell each speaker, read from the phrases.
+item language.pencil-case-why v=1 stars=2 skills=[language.school, language.questions, reasoning.language] {
+  title "Why ask?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Ana asks Leo [[phrase.do-you-have-a-ruler]] Why does she ask?\", \"Leo answers [[school.no-i-do-not-have]] Then Ana asks Mia the same question. Why?\", \"Ana says [[school.i-have-two-pencils]] Leo says [[school.no-i-do-not-have]] when asked for a pencil. Who should lend Mia a pencil, and why?\")}" width=32
+      choice pick options=[pick(k, "She needs a ruler and has none.", "Leo has no ruler to lend.", "Ana: she has two."), pick(k, "She wants to give Leo a ruler.", "Leo said yes.", "Leo: he has none."), pick(k, "She is telling Leo she has a ruler.", "Mia asked her first.", "Both: they have one each.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "She needs a ruler and has none.", "Leo has no ruler to lend.", "Ana: she has two.")
+  feedback {
+    when (pick == pick(k, "She is telling Leo she has a ruler.", "Leo said yes.", "Leo: he has none.")) {
+      say "{pick(k, \"Her voice goes up at the end: it is a question, not news.\", \"[[school.no-i-do-not-have]] is a no. Read it again.\", \"Leo said no. Who said she has two?\")}"
+    }
+  }
+  hint "Is it a question or an answer?"
+  hint "Who has what? Say it in English first."
+}

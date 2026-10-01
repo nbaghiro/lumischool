@@ -1,0 +1,18 @@
+# The word written from its picture: [[wild.frog]], [[wild.monkey]], [[wild.seal]], [[wild.parrot]], [[wild.camel]], [[wild.whale]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.wild-animals-write v=1 skills=[language.animals, language.sentences, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x9 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"The word for frog. Write it in [[language.name]].\", \"The word for monkey. Write it in [[language.name]].\", \"The word for seal. Write it in [[language.name]].\", \"The word for parrot. Write it in [[language.name]].\", \"The word for camel. Write it in [[language.name]].\", \"The word for whale. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[wild.frog]]", "[[wild.monkey]]", "[[wild.seal]]", "[[wild.parrot]]", "[[wild.camel]]", "[[wild.whale]]")]
+    }
+  }
+
+  answer word=pick(k, "[[wild.frog]]", "[[wild.monkey]]", "[[wild.seal]]", "[[wild.parrot]]", "[[wild.camel]]", "[[wild.whale]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

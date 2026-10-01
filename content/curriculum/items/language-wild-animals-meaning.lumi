@@ -1,0 +1,19 @@
+# The language to English: [[phrase.the-whale-lives-in-the-sea]], [[phrase.the-camel-lives-in-the-desert]], [[phrase.the-monkey-eats-fruit]], [[phrase.where-does-the-polar-bear-live]], [[phrase.the-frog-lives-near-the-river]], [[phrase.the-parrot-has-many-colours]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.wild-animals-meaning v=1 skills=[language.animals, language.sentences] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "boy", "gran", "girl", "boy", "girl")] says=[pick(k, "[[phrase.the-whale-lives-in-the-sea]]", "[[phrase.the-camel-lives-in-the-desert]]", "[[phrase.the-monkey-eats-fruit]]", "[[phrase.where-does-the-polar-bear-live]]", "[[phrase.the-frog-lives-near-the-river]]", "[[phrase.the-parrot-has-many-colours]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "The parrot has many colours.", "Where does the polar bear live?", "The camel lives in the desert.", "The parrot has many colours.", "The parrot has many colours.", "Where does the polar bear live?"), pick(k, "The whale lives in the sea.", "The camel lives in the desert.", "The frog lives near the river.", "Where does the polar bear live?", "The monkey eats fruit.", "The parrot has many colours."), pick(k, "The monkey eats fruit.", "The frog lives near the river.", "Where does the polar bear live?", "The camel lives in the desert.", "The frog lives near the river.", "The monkey eats fruit."), pick(k, "The frog lives near the river.", "The monkey eats fruit.", "The monkey eats fruit.", "The monkey eats fruit.", "Where does the polar bear live?", "The frog lives near the river.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "The whale lives in the sea.", "The camel lives in the desert.", "The monkey eats fruit.", "Where does the polar bear live?", "The frog lives near the river.", "The parrot has many colours.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

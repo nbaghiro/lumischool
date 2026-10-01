@@ -1,0 +1,22 @@
+# Non-routine: an animal found from clues about its home and body, or the odd one out.
+item language.wild-animals-puzzle v=1 stars=3 skills=[language.animals, language.sentences, reasoning.language] {
+  title "Which animal?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"An animal lives in [[wild.the-sea]]. It is not [[wild.the-whale]]. It has whiskers. Which is it?\", \"Leo's animal lives in [[wild.the-jungle]] and eats fruit. It is not [[wild.the-parrot]], because it cannot fly. Which is it?\", \"Which one is the odd one out: [[wild.the-whale]], [[wild.the-seal]], [[wild.the-camel]] or [[wild.the-fish]]?\")}" width=32
+      choice pick options=[pick(k, "[[wild.the-seal]]", "[[wild.the-monkey]]", "[[wild.the-camel]]"), pick(k, "[[wild.the-whale]]", "[[wild.the-parrot]]", "[[wild.the-seal]]"), pick(k, "[[wild.the-camel]]", "[[wild.the-frog]]", "[[wild.the-whale]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[wild.the-seal]]", "[[wild.the-monkey]]", "[[wild.the-camel]]")
+  feedback {
+    when (pick == pick(k, "[[wild.the-whale]]", "[[wild.the-parrot]]", "[[wild.the-seal]]")) {
+      say "{pick(k, \"The clue says it is not the whale.\", \"The clue says it cannot fly.\", \"Where does each one live? One of them never goes near the sea.\")}"
+    }
+  }
+  hint "Take one clue at a time."
+  hint "Cross off each animal a clue rules out."
+}

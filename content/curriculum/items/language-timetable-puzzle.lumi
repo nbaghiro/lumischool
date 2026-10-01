@@ -1,0 +1,23 @@
+# Non-routine: the timetable read with counting on, a rule, or two days missed.
+item language.timetable-puzzle v=1 stars=3 skills=[language.school, language.time, reasoning.language] {
+  title "Which day?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x34 {
+    column all at=canvas(1, 1) space=1 align=start {
+      table week cols=2 head=["Day", "Lesson"] cells=["[[time.monday]]", "[[subject.maths]]", "[[time.tuesday]]", "[[subject.music]]", "[[time.wednesday]]", "[[subject.science]]", "[[time.thursday]]", "[[subject.art]]", "[[time.friday]]", "[[subject.pe]]"]
+      text ask "{pick(k, \"Leo has a lesson two days after [[time.wednesday]]. Which lesson is it?\", \"A club meets on every day that has a lesson with singing or running in it. Which days?\", \"Leo is ill on [[time.tuesday]] and [[time.thursday]]. Which lessons does he miss?\")}" width=32
+      choice pick options=[pick(k, "[[subject.pe]]", "[[time.tuesday]] and [[time.friday]]", "[[subject.music]] and [[subject.art]]"), pick(k, "[[subject.art]]", "[[time.monday]] and [[time.wednesday]]", "[[subject.science]] and [[subject.art]]"), pick(k, "[[subject.science]]", "only [[time.friday]]", "[[subject.music]] and [[subject.science]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[subject.pe]]", "[[time.tuesday]] and [[time.friday]]", "[[subject.music]] and [[subject.art]]")
+  feedback {
+    when (pick == pick(k, "[[subject.art]]", "only [[time.friday]]", "[[subject.science]] and [[subject.art]]")) {
+      say "{pick(k, \"That is one day after. Count one more.\", \"Singing is in one lesson and running in another. Find both.\", \"[[subject.science|cap]] is on [[time.wednesday]]. Read [[time.tuesday]] again.\")}"
+    }
+  }
+  hint "Find the day first."
+  hint "Then read across."
+}

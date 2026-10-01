@@ -1,0 +1,72 @@
+# A whole exchange in a clothes shop: what you want, the size, the colour, trying on and the price.
+lesson language-clothes-shop v=1 format=teach grade=5 unit=9 subject=language levels=[easy, medium, hard] {
+  title "At the clothes shop"
+  goal "Ask for clothes in a shop in [[language.name]], give a size and a colour, and say whether they fit."
+
+  look {
+    scene 24x8 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row shop space=2 align=end {
+          garment a kind=top colour=sky sleeves=long print=none pattern=stripes
+          garment b kind=trousers colour=sky sleeves=long print=none pattern=plain
+          sign s lines=["[[shop.sale|cap]]"] kind=hanging color=berry
+        }
+      }
+    }
+    say """
+      In the shop, ask for what you want: [[shop.i-would-like-a-t-shirt-please]] The shop assistant
+      asks [[shop.what-size]], what size, and [[shop.what-colour]], what colour. Ask
+      [[shop.can-i-try-it-on]], can I try it on? If it does not fit, say [[shop.it-is-too-big]] or
+      [[shop.it-is-too-small]] If it does, [[shop.i-will-take-it]], I will take it.
+      """
+  }
+  do {
+    level easy {
+      worked language.clothes-shop-name k=4
+    }
+    show language.clothes-shop-name k=2 easy-k=0 hard-k=5
+    show language.clothes-shop-meaning k=4 easy-k=1
+    show language.clothes-shop-write k=2 easy-k=1 hard-k=4
+    show language.clothes-shop-name k=4 easy-k=1 hard-k=6
+    show language.clothes-shop-match k=1 easy-k=0 hard-k=2
+    show language.clothes-shop-write k=3 easy-k=2 hard-k=5
+    show language.clothes-shop-listen k=3 easy-k=0 hard-k=5
+    show language.clothes-shop-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.clothes-shop-write k=3
+    }
+  }
+  try stars=2 {
+    show language.clothes-shop-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.clothes-shop-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[shop.i-would-like-a-t-shirt-please]] [[shop.what-size]] [[shop.what-colour]] [[shop.it-is-too-big]] [[shop.i-will-take-it]]"
+  }
+
+  grown-ups """
+    The wrong idea to watch for is too big and too small taken for each other, and a question
+    answered with the wrong thing, a size for a colour: the naming questions describe each moment of
+    a visit to a shop. The prices on the list are made up for the sums, in euros as in Spain. The
+    step up from the clothes and the prices of grade three is a whole exchange in a shop, with the
+    assistant's questions answered in turn. From this grade the written words are marked with their
+    accents: a word typed without its accent is not taken. The dictation is read from this sheet,
+    where it prints as Read aloud, or played by the device. If the child is stuck, play shop with
+    real clothes and a price label on each. Off the page, read a shop's sale sign in the language,
+    or make one. It meets England's key stage 2 languages programme (years 3 to 6, statutory from
+    age 7): "engage in conversations; ask and answer questions; express opinions and respond to
+    those of others; seek clarification and help"; Japan's grades 5 and 6 foreign languages: "Can
+    give instructions, make requests and respond to them by using basic expressions"; and CEFR A2,
+    "Can understand sentences and frequently used expressions related to areas of most immediate
+    relevance (e.g. very basic personal and family information, shopping, local geography,
+    employment)". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[shop.it-is-too-big]] is worked first in the teacher's pen, the words to name are [[shop.i-would-like-a-t-shirt-please]] and [[shop.what-size]] and the words to write are [[shop.changing-room]] and [[shop.sale]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[shop.it-is-too-small]] and [[shop.how-much-is-it]] and the words to write are [[shop.jacket]], [[shop.jeans]] and [[shop.price]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

@@ -1,0 +1,22 @@
+# Non-routine: clothes found by crossing off what the clues rule out, or by a rule.
+item language.clothes-puzzle v=1 stars=3 skills=[language.clothes, language.weather, reasoning.language] {
+  title "Who wears what?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Three children wear [[clothes.the-skirt]], [[clothes.the-trousers]] and [[clothes.the-dress]], one each. Ana does not wear [[clothes.the-skirt]]. Mia wears [[clothes.the-dress]]. What does Ana wear?\", \"Leo packs one thing for each day. Saturday it rains. Sunday it is hot. Which two does he pack?\", \"Mia's line holds [[clothes.the-t-shirt]], [[clothes.the-skirt]], [[clothes.the-shoes]] and [[clothes.the-cap]]. She puts on everything but what goes on her feet and her head. What is she wearing?\")}" width=32
+      choice pick options=[pick(k, "[[clothes.the-trousers]]", "[[clothes.the-boots]] and [[clothes.the-shorts]]", "[[clothes.the-t-shirt]] and [[clothes.the-skirt]]"), pick(k, "[[clothes.the-skirt]]", "[[clothes.the-gloves]] and [[clothes.the-swimsuit]]", "[[clothes.the-shoes]] and [[clothes.the-cap]]"), pick(k, "[[clothes.the-dress]]", "[[clothes.the-scarf]] and [[clothes.the-boots]]", "[[clothes.the-skirt]] and [[clothes.the-cap]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[clothes.the-trousers]]", "[[clothes.the-boots]] and [[clothes.the-shorts]]", "[[clothes.the-t-shirt]] and [[clothes.the-skirt]]")
+  feedback {
+    when (pick == pick(k, "[[clothes.the-skirt]]", "[[clothes.the-scarf]] and [[clothes.the-boots]]", "[[clothes.the-skirt]] and [[clothes.the-cap]]")) {
+      say "{pick(k, \"The clue says Ana does not wear the skirt.\", \"A scarf on a hot Sunday? Think of each day.\", \"[[clothes.the-cap|cap]] goes on her head.\")}"
+    }
+  }
+  hint "Take one clue at a time."
+  hint "Cross off what each clue rules out."
+}

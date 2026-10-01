@@ -1,0 +1,22 @@
+# Non-routine: a patient found from what they can and cannot do, or doses counted.
+item language.the-doctor-puzzle v=1 stars=3 skills=[language.body, language.sentences, reasoning.language] {
+  title "Which patient?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Three patients say [[body.my-throat-hurts]], [[body.my-leg-hurts]] and [[body.my-stomach-hurts]] Which one needs crutches?\", \"Mia takes her syrup [[body.twice-a-day]] for five days. How many times does she take it?\", \"Leo cannot walk far, but his feet do not hurt, and he can still write and carry his bag. Which sentence is his?\")}" width=32
+      choice pick options=[pick(k, "[[body.my-leg-hurts]]", "ten times", "[[body.my-leg-hurts]]"), pick(k, "[[body.my-throat-hurts]]", "seven times", "[[body.my-arm-hurts]]"), pick(k, "[[body.my-stomach-hurts]]", "five times", "[[body.my-feet-hurt]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[body.my-leg-hurts]]", "ten times", "[[body.my-leg-hurts]]")
+  feedback {
+    when (pick == pick(k, "[[body.my-stomach-hurts]]", "five times", "[[body.my-feet-hurt]]")) {
+      say "{pick(k, \"Crutches help you walk. Which part do you walk on?\", \"That is once a day. She takes it twice.\", \"The clue says his feet do not hurt.\")}"
+    }
+  }
+  hint "What does each part of the body do?"
+  hint "Cross off what the clues rule out."
+}

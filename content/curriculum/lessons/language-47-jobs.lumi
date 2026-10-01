@@ -1,0 +1,71 @@
+# Jobs, the places they are done in, and what I want to be with a reason.
+lesson language-jobs v=1 format=teach grade=6 unit=3 subject=language levels=[easy, medium, hard] {
+  title "What do you want to be?"
+  goal "Name jobs and where people do them in [[language.name]], and say what you want to be and why."
+
+  look {
+    scene 24x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        comic jobs who=["girl", "boy"] says=["[[phrase.what-do-you-want-to-be]]", "[[job.i-want-to-be-a-doctor]]"] moods=["happy", "happy"] with=["", ""] thinks=[0, 0] holds=["", ""] labels=["1", "2"]
+      }
+    }
+    say """
+      To ask about the future, say [[phrase.what-do-you-want-to-be]], what do you want to be? Leo
+      answers [[job.i-want-to-be-a-doctor]], I want to be a doctor. Ana says
+      [[job.i-want-to-be-a-teacher]] A doctor works in [[job.the-hospital]] and a cook in
+      [[job.the-restaurant]]. Add a reason with [[opinion.because]].
+      """
+  }
+  do {
+    level easy {
+      worked language.jobs-name k=4
+    }
+    show language.jobs-name k=2 easy-k=0 hard-k=5
+    show language.jobs-meaning k=4 easy-k=1
+    show language.jobs-write k=3 easy-k=2 hard-k=5
+    show language.jobs-name k=4 easy-k=1 hard-k=6
+    show language.jobs-match k=1 easy-k=0 hard-k=2
+    show language.jobs-write k=4 easy-k=3 hard-k=2
+    show language.jobs-listen k=3 easy-k=0 hard-k=5
+    show language.jobs-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.jobs-write k=1
+    }
+  }
+  try stars=2 {
+    show language.jobs-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.jobs-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[phrase.what-do-you-want-to-be]] What do you want to be? [[job.i-want-to-be-a-doctor]] I want to be a doctor."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is two jobs that care for someone taken for each other, the doctor
+    and the vet, the teacher and the scientist: each naming question describes what the child wants
+    to do and offers the job most often mixed up. In [[language.name]] many jobs change their ending
+    for a woman (médico, médica; profesor, profesora), which is why Ana and Leo say them
+    differently; a language without this says them the same. The step up from where you want to go,
+    in grade five, is I want with a job and a reason, and the place it is done in. From this grade
+    the written words are marked with their accents: a word typed without its accent is not taken.
+    The dictation is read from this sheet, where it prints as Read aloud, or played by the device.
+    If the child is stuck, name the jobs of people the child knows, one at a time. Off the page,
+    interview a grown-up about their job in the language: where, what and why. It meets England's
+    key stage 2 languages programme (years 3 to 6, statutory from age 7): "speak in sentences, using
+    familiar vocabulary, phrases and basic language structures"; Japan's grades 5 and 6 foreign
+    languages: "Can talk about their own thoughts and feelings regarding familiar and simple matters
+    after organizing the contents they want to communicate" (Japan's grade six book We Can! 2 has a
+    unit on what you want to be, recalled); and CEFR A2, "Can understand sentences and frequently
+    used expressions related to areas of most immediate relevance (e.g. very basic personal and
+    family information, shopping, local geography, employment)". The phrases are in
+    [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[job.i-want-to-be-a-pilot]] is worked first in the teacher's pen, the words to name are [[job.i-want-to-be-a-doctor]] and [[job.i-want-to-be-a-teacher]] and the words to write are [[job.cook]] and [[job.astronaut]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[job.i-want-to-be-an-astronaut]] and [[job.i-want-to-be-a-footballer]] and the words to write are [[job.scientist]], [[job.cook]] and [[job.pilot]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

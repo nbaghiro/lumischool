@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.pencil-case-say v=1 skills=[language.school, language.questions, language.speaking] {
+  title "Pencil case talk"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Take three things out of your own pencil case and name each one in [[language.name]].\", \"Ask a grown-up [[phrase.do-you-have-a-ruler]] and say their answer back in [[language.name]].\", \"A grown-up asks [[school.do-you-have-a-pencil]]. Answer yes or no in [[language.name]], then ask about something else.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="Each thing named with its little word, a question that rises at the end, and [[school.i-have]] or [[school.i-do-not-have]] in the answer." notice=["Three things named", "The question asked with a rising voice", "[[school.i-have|cap]] in a yes answer", "[[school.i-do-not-have|cap]] in a no answer"]
+  hint "Hold the thing up as you name it."
+  hint "Which word starts a yes answer?"
+}

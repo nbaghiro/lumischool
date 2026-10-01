@@ -1,0 +1,18 @@
+# The word written from its picture: [[ability.to-swim]], [[ability.to-sing]], [[ability.to-dance]], [[ability.to-cook]], [[ability.to-jump]], [[ability.to-skate]], [[ability.to-run]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.i-can-write v=1 skills=[language.sentences, language.questions, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x9 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"The word for to swim. Write it in [[language.name]].\", \"The word for to sing. Write it in [[language.name]].\", \"The word for to dance. Write it in [[language.name]].\", \"The word for to cook. Write it in [[language.name]].\", \"The word for to jump. Write it in [[language.name]].\", \"The word for to skate. Write it in [[language.name]].\", \"The word for to run. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[ability.to-swim]]", "[[ability.to-sing]]", "[[ability.to-dance]]", "[[ability.to-cook]]", "[[ability.to-jump]]", "[[ability.to-skate]]", "[[ability.to-run]]")]
+    }
+  }
+
+  answer word=pick(k, "[[ability.to-swim]]", "[[ability.to-sing]]", "[[ability.to-dance]]", "[[ability.to-cook]]", "[[ability.to-jump]]", "[[ability.to-skate]]", "[[ability.to-run]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

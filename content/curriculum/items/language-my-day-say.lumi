@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.my-day-say v=1 skills=[language.time, language.sentences, language.speaking] {
+  title "My day out loud"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Tell a grown-up your morning in three sentences, each with its time, in [[language.name]].\", \"Ask a grown-up [[phrase.what-time-do-you-get-up]] and say their answer back in [[language.name]].\", \"Say what you do after school, using [[day.first]] and [[day.then]].\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="A thing done and its time in each sentence, and the order said with [[day.first]] and [[day.then]]." notice=["A time in each sentence", "Getting up, eating or going to bed said", "[[day.first|cap]] and [[day.then]] used", "The question asked back"]
+  hint "Start with getting up."
+  hint "Say the thing first, then the time."
+}

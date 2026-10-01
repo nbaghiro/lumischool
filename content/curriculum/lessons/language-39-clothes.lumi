@@ -1,0 +1,73 @@
+# Clothes on their hangers from the figure kit, with I wear and when it rains.
+lesson language-clothes v=1 format=teach grade=3 unit=9 subject=language levels=[easy, medium, hard] {
+  title "What I wear"
+  goal "Name seven things to wear in [[language.name]], and say what you wear in what weather."
+
+  look {
+    scene 25x8 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row clothes space=1 align=end {
+          garment a kind=top colour=sky sleeves=short print=none pattern=plain
+          garment b kind=skirt colour=berry sleeves=short print=none pattern=plain
+          garment c kind=trousers colour=mint sleeves=short print=none pattern=plain
+          garment d kind=boots colour=tang sleeves=short print=none pattern=plain
+        }
+      }
+    }
+    say """
+      To say what you wear, say [[clothes.i-am-wearing-a-t-shirt]], I am wearing a T-shirt. The
+      weather decides what you wear: [[phrase.when-it-rains-i-wear-boots]], when it rains, I wear
+      boots, and [[clothes.when-it-is-hot-i-wear-shorts]], when it is hot, I wear shorts.
+      """
+  }
+  do {
+    level easy {
+      worked language.clothes-name k=3
+    }
+    show language.clothes-name k=2 easy-k=0 hard-k=4
+    show language.clothes-meaning k=3 easy-k=2 hard-k=4
+    show language.clothes-write k=2 easy-k=1 hard-k=5
+    show language.clothes-name k=4 easy-k=1 hard-k=5
+    show language.clothes-match k=1 easy-k=0 hard-k=2
+    show language.clothes-write k=3
+    show language.clothes-listen k=3 easy-k=0 hard-k=5
+    show language.clothes-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.clothes-write k=2
+    }
+  }
+  try stars=2 {
+    show language.clothes-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.clothes-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[clothes.i-am-wearing-a-t-shirt]] I am wearing a T-shirt. [[phrase.when-it-rains-i-wear-boots]] When it rains, I wear boots."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is the trousers and the shorts taken for each other, and the dress
+    and the skirt: every naming question offers the one most often mixed up. The clothes are cut
+    from the shelf's figure kit and hang the same way every time, so the picture carries the answer
+    to the naming questions and the child's job is the word. The step up from the weather lesson of
+    this grade is that the weather now decides a sentence of the child's own, joined with when. The
+    listening question is a dictation: read the sentence aloud from this sheet, where it prints as
+    Read aloud, or let the device play it. It is marked word by word, and a missing accent counts
+    there, while the words typed on their own in this lesson are taken without their accents. If the
+    child is stuck, lay out real clothes and name each as it goes on. Off the page, say what to wear
+    each morning in the language, after looking at the sky. It meets England's key stage 2 languages
+    programme (years 3 to 6, statutory from age 7): "describe people, places, things and actions
+    orally and in writing"; Japan's grades 3 and 4 foreign language activities: "Activities to
+    listen to simple words and phrases and basic expressions about their familiar people and their
+    surroundings and match the phrases and expressions with illustrations and photographs"; and CEFR
+    A1, "Can understand and use familiar everyday expressions and very basic phrases". The phrases
+    are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[clothes.the-trousers]] is worked first in the teacher's pen, the words to name are [[clothes.the-t-shirt]] and [[clothes.the-dress]] and the words to write are [[clothes.skirt]] and [[clothes.boots]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[clothes.the-shorts]] and [[clothes.the-shoes]] and the words to write are [[clothes.trousers]], [[clothes.boots]] and [[clothes.dress]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

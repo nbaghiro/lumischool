@@ -1,0 +1,22 @@
+# Non-routine: a holiday read for one day, an order, or a sentence that fits a clue.
+item language.holiday-puzzle v=1 stars=3 skills=[language.time, language.sentences, reasoning.language] {
+  title "Reading a holiday"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo's week: [[holiday.on-monday-i-went-to-the-museum]] [[holiday.on-tuesday-i-swam-in-the-sea]] [[holiday.on-wednesday-i-visited-my-grandparents]] What did he do on Tuesday?\", \"Ana says [[holiday.i-went-to-the-beach-in-the-morning]] [[holiday.i-ate-paella-afterwards]] [[holiday.at-night-i-saw-a-film]] What did she do second?\", \"Leo: [[holiday.i-went-to-italy-and-ate-pizza]] Mia: [[holiday.i-went-to-japan-and-saw-mount-fuji]] Sam went to the same country as Leo, but saw something instead of eating. Which is Sam's?\")}" width=32
+      choice pick options=[pick(k, "He swam in the sea.", "She ate paella.", "[[holiday.i-went-to-italy-and-saw-the-colosseum]]"), pick(k, "He went to the museum.", "She went to the beach.", "[[holiday.i-went-to-japan-and-ate-sushi]]"), pick(k, "He visited his grandparents.", "She saw a film.", "[[holiday.i-went-to-italy-and-ate-pizza]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "He swam in the sea.", "She ate paella.", "[[holiday.i-went-to-italy-and-saw-the-colosseum]]")
+  feedback {
+    when (pick == pick(k, "He went to the museum.", "She went to the beach.", "[[holiday.i-went-to-japan-and-ate-sushi]]")) {
+      say "{pick(k, \"That was Monday. Find [[time.tuesday]].\", \"That was first, in the morning. What came after it?\", \"Sam went to Leo's country. Which country did Leo go to?\")}"
+    }
+  }
+  hint "Find the day or the time first."
+  hint "Then read what was done."
+}

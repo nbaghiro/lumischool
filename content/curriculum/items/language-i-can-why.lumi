@@ -1,0 +1,22 @@
+# A reason: what someone can do read from what they say, and used to choose.
+item language.i-can-why v=1 stars=2 skills=[language.sentences, language.questions, reasoning.language] {
+  title "Who can do it?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo says [[ability.i-cannot-swim]] Why does he stay where the water is shallow?\", \"The school play needs someone who can sing. Ana says [[ability.i-can-dance]] and Mia says [[ability.i-can-sing]] Who should sing, and why?\", \"Leo says [[ability.i-can-play-the-guitar]] His sister says [[ability.i-can-play-the-piano]] A band needs a guitar and a piano. Why does it need both of them?\")}" width=32
+      choice pick options=[pick(k, "He cannot swim yet.", "Mia: she can sing.", "Each can play only one of the two."), pick(k, "He can swim very well.", "Ana: she can dance.", "Leo can play both."), pick(k, "He is the lifeguard.", "Both: they both said sé.", "His sister can play both.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "He cannot swim yet.", "Mia: she can sing.", "Each can play only one of the two.")
+  feedback {
+    when (pick == pick(k, "He can swim very well.", "Ana: she can dance.", "Leo can play both.")) {
+      say "{pick(k, \"Is it [[ability.i-can]] or [[ability.i-cannot]]?\", \"Dancing is not singing. Read what Mia said.\", \"Leo named one instrument. Which one?\")}"
+    }
+  }
+  hint "Read each sentence slowly."
+  hint "Is it can or cannot?"
+}

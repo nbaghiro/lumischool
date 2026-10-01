@@ -1,0 +1,20 @@
+# Listening: the grown-up reads the phrase from the grown-ups' sheet, or the device plays it, and
+# the child types it. Marked word by word by the dictation checker: accent-strict, since a
+# word with its accent missing is a different spelling; case and punctuation are not marked.
+item language.clothes-listen v=1 skills=[language.clothes, language.weather, language.listening, language.spelling] {
+  title "Listen and write"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      clothesline line count=5 pattern=2
+      text ask "Listen to the [[language.name]], then write it. Your grown-up will read it, or press play." width=32
+      number-input answer width=32
+    }
+  }
+
+  check writing.dictation text="{pick(k, \"[[phrase.i-am-wearing-a-skirt]]\", \"[[phrase.today-i-am-wearing-shoes]]\", \"[[phrase.when-it-rains-i-wear-boots]]\", \"[[phrase.i-am-wearing-trousers-and-a-t-shirt]]\", \"[[phrase.when-it-is-cold-i-wear-a-coat-and-a-scar]]\", \"[[phrase.in-summer-i-wear-shorts-but-in-winter-i]]\")}"
+  hint "Listen to the whole sentence once before you write a word."
+  hint "Write it a few words at a time. Which words from today do you hear?"
+}

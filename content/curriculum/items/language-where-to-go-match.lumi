@@ -1,0 +1,17 @@
+# Four words to their English, 3 sets, the later sets with the words most often mixed up.
+item language.where-to-go-match v=1 skills=[language.travel, language.opinions] {
+  title "Match the words"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Write the number of its English next to each [[language.name]] word." width=32
+      match m left=[pick(k, "[[travel.italy]]", "[[travel.i-want]]", "[[travel.the-country]]"), pick(k, "[[travel.japan]]", "[[travel.to-go]]", "[[travel.the-city]]"), pick(k, "[[travel.egypt]]", "[[travel.to-see]]", "[[travel.the-map]]"), pick(k, "[[travel.greece]]", "[[travel.to-eat]]", "[[travel.the-journey]]")] right=[pick(k, "Egypt", "to eat", "the map"), pick(k, "Italy", "I want", "the country"), pick(k, "Japan", "to go", "the journey"), pick(k, "Greece", "to see", "the city")] blanks=[a, b, c, d]
+    }
+  }
+
+  answer a=2 b=pick(k, 3, 3, 4) c=pick(k, 1, 4, 1) d=pick(k, 4, 1, 3)
+  hint "Start with the word you are surest of, and cross its English off."
+  hint "Two words look alike. Which letter is different, and what does it change?"
+}

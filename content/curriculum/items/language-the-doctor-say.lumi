@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.the-doctor-say v=1 skills=[language.body, language.sentences, language.speaking] {
+  title "At the doctor's"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Play the doctor with a grown-up: they ask [[phrase.what-is-the-matter]] and you say what hurts, in [[language.name]].\", \"Be the doctor: give two pieces of advice in [[language.name]], each starting [[body.you-must|cap]].\", \"Point to five parts of your body and name each one in [[language.name]].\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="What hurts said with its part of the body, and advice given with [[body.you-must]]." notice=["What hurts, said", "A part of the body named", "Advice with [[body.you-must]]", "Five parts named without the page"]
+  hint "Point to where it hurts first."
+  hint "Which word in the lesson names that part?"
+}

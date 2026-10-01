@@ -1,0 +1,18 @@
+# The word written from its picture: [[shape.circle]], [[shape.square]], [[shape.triangle]], [[shape.rectangle]], [[shape.pentagon]], [[shape.hexagon]].
+# Accent-tolerant: the box takes the word with its accents left off (accents=loose); ñ is a letter and is marked.
+item language.shapes-write v=1 skills=[language.shapes, language.numbers, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x9 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"It is round, with no corners. Write it in [[language.name]].\", \"It has four sides, all the same length. Write it in [[language.name]].\", \"It has three sides and three corners. Write it in [[language.name]].\", \"It has four sides: two long and two short. Write it in [[language.name]].\", \"It has five sides. Write it in [[language.name]].\", \"It has six sides. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[shape.circle]]", "[[shape.square]]", "[[shape.triangle]]", "[[shape.rectangle]]", "[[shape.pentagon]]", "[[shape.hexagon]]")] accents=loose
+    }
+  }
+
+  answer word=pick(k, "[[shape.circle]]", "[[shape.square]]", "[[shape.triangle]]", "[[shape.rectangle]]", "[[shape.pentagon]]", "[[shape.hexagon]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

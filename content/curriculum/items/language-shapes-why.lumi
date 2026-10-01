@@ -1,0 +1,22 @@
+# A reason: a shape's name checked against what the shape is, and what a question asks.
+item language.shapes-why v=1 stars=2 skills=[language.shapes, language.numbers, reasoning.language] {
+  title "Which name, and why?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo holds up a shape and says [[shape.what-is-it]] What does he want to know?\", \"A shape has five sides. Mia says [[shape.it-is-a-hexagon]] What went wrong?\", \"A shape has four sides: two long and two short. Leo says [[shape.it-is-a-square]] Why is he wrong?\")}" width=32
+      choice pick options=[pick(k, "The name of the shape.", "Five sides is [[shape.the-pentagon]]; [[shape.the-hexagon]] has six.", "Its sides are not all the same: [[shape.the-rectangle]]."), pick(k, "How many shapes there are.", "Five sides is [[shape.the-square]].", "It has three sides: [[shape.the-triangle]]."), pick(k, "Where the shape is.", "Nothing: five sides is [[shape.the-hexagon]].", "He is right: four sides is [[shape.the-square]].")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "The name of the shape.", "Five sides is [[shape.the-pentagon]]; [[shape.the-hexagon]] has six.", "Its sides are not all the same: [[shape.the-rectangle]].")
+  feedback {
+    when (pick == pick(k, "How many shapes there are.", "Nothing: five sides is [[shape.the-hexagon]].", "He is right: four sides is [[shape.the-square]].")) {
+      say "{pick(k, \"How many would be [[question.how-many|cap]]. [[shape.what-is-it]] asks for something else.\", \"Count the sides of [[shape.the-hexagon]] in the lesson's picture.\", \"Are the four sides the same length?\")}"
+    }
+  }
+  hint "Count the sides."
+  hint "Look at the lesson's picture of each shape."
+}

@@ -1,0 +1,18 @@
+# The word written from its picture: [[subject.maths]], [[subject.science]], [[subject.history]], [[subject.geography]], [[subject.music]], [[subject.art]], [[subject.english]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.timetable-write v=1 skills=[language.school, language.time, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x11 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"In this lesson you add, take away and measure. Write it in [[language.name]].\", \"In this lesson you test magnets and grow seeds. Write it in [[language.name]].\", \"In this lesson you learn about people who lived long ago. Write it in [[language.name]].\", \"In this lesson you read maps and learn about countries and rivers. Write it in [[language.name]].\", \"In this lesson you sing and play the drum. Write it in [[language.name]].\", \"In this lesson you draw and paint. Write it in [[language.name]].\", \"In this lesson you read stories and write in English. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[subject.maths]]", "[[subject.science]]", "[[subject.history]]", "[[subject.geography]]", "[[subject.music]]", "[[subject.art]]", "[[subject.english]]")]
+    }
+  }
+
+  answer word=pick(k, "[[subject.maths]]", "[[subject.science]]", "[[subject.history]]", "[[subject.geography]]", "[[subject.music]]", "[[subject.art]]", "[[subject.english]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

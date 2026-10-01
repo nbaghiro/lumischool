@@ -1,0 +1,19 @@
+# The word written from its picture: [[travel.italy]], [[travel.china]], [[travel.japan]], [[travel.greece]], [[travel.egypt]], [[travel.mexico]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.where-to-go-write v=1 skills=[language.travel, language.opinions, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 36x27 {
+    column all at=canvas(1, 1) space=1 align=start {
+      worldmap map names=0 blank=-1 oceans=0 places=["{pick(k, \"Rome\", \"Beijing\", \"Tokyo\", \"Athens\", \"Cairo\", \"Mexico City\")}"] numbered=0 route=0
+      text ask "Write the country of the city on the map, in [[language.name]]." width=32
+      word-input word options=[pick(k, "[[travel.italy]]", "[[travel.china]]", "[[travel.japan]]", "[[travel.greece]]", "[[travel.egypt]]", "[[travel.mexico]]")]
+    }
+  }
+
+  answer word=pick(k, "[[travel.italy]]", "[[travel.china]]", "[[travel.japan]]", "[[travel.greece]]", "[[travel.egypt]]", "[[travel.mexico]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

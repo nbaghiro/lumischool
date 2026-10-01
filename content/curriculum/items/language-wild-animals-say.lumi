@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.wild-animals-say v=1 skills=[language.animals, language.sentences, language.speaking] {
+  title "Animals and their homes"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Choose an animal from the lesson. Say where it lives and what it eats, in [[language.name]].\", \"A grown-up names a place in [[language.name]], such as [[wild.the-desert]]. Say an animal that lives there.\", \"Ask a grown-up [[phrase.where-does-the-camel-live]] and check their answer.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="An animal and its home in one sentence with [[wild.it-lives]], and what it eats with [[wild.it-eats]]." notice=["An animal named", "Its home said with [[wild.lives-in]]", "What it eats said with [[wild.it-eats]]", "A question asked with [[question.where|cap]]"]
+  hint "Picture the animal first. Is it wet, hot or cold where it lives?"
+  hint "Which word in the lesson means lives?"
+}

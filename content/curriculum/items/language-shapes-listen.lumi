@@ -1,0 +1,20 @@
+# Listening: the grown-up reads the phrase from the grown-ups' sheet, or the device plays it, and
+# the child types it. Marked word by word by the dictation checker: accent-strict, since a
+# word with its accent missing is a different spelling; case and punctuation are not marked.
+item language.shapes-listen v=1 skills=[language.shapes, language.numbers, language.listening, language.spelling] {
+  title "Listen and write"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x15 {
+    column all at=canvas(1, 1) space=1 align=start {
+      props tiles count=3 prop=triangle
+      text ask "Listen to the [[language.name]], then write it. Your grown-up will read it, or press play." width=32
+      number-input answer width=32
+    }
+  }
+
+  check writing.dictation text="{pick(k, \"[[phrase.it-is-a-circle]]\", \"[[phrase.i-have-two-stars]]\", \"[[phrase.look-it-is-a-square]]\", \"[[phrase.there-are-three-triangles-and-a-circle]]\", \"[[phrase.the-rectangle-has-four-sides]]\", \"[[phrase.the-hexagon-has-six-sides-and-the-pentag]]\")}"
+  hint "Listen to the whole sentence once before you write a word."
+  hint "Write it a few words at a time. Which words from today do you hear?"
+}

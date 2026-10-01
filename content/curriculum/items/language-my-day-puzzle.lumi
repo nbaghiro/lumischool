@@ -1,0 +1,23 @@
+# Non-routine: a time worked out from another, then said in the language.
+item language.my-day-puzzle v=1 stars=3 skills=[language.time, language.sentences, reasoning.language] {
+  title "Times worked out"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      digital d time="{pick(k, \"07:00\", \"02:00\", \"10:00\")}"
+      text ask "{pick(k, \"Ana gets up at the time on the clock and leaves for school 45 minutes later. What does she say?\", \"Leo has lunch at the time on the clock and dinner seven hours later. What does he say?\", \"Mia goes to bed at the time on the clock and gets up at seven in the morning. How many hours does she sleep?\")}" width=32
+      choice pick options=[pick(k, "[[day.i-go-to-school-at-quarter-to-eight]]", "[[day.i-have-dinner-at-nine]]", "nine hours"), pick(k, "[[day.i-go-to-school-at-quarter-past-seven]]", "[[day.i-have-dinner-at-seven]]", "three hours"), pick(k, "[[day.i-go-to-school-at-quarter-past-eight]]", "[[day.i-have-lunch-at-nine]]", "seventeen hours")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[day.i-go-to-school-at-quarter-to-eight]]", "[[day.i-have-dinner-at-nine]]", "nine hours")
+  feedback {
+    when (pick == pick(k, "[[day.i-go-to-school-at-quarter-past-seven]]", "[[day.i-have-dinner-at-seven]]", "three hours")) {
+      say "{pick(k, \"That is 15 minutes later. Count on 45.\", \"That is seven o'clock. Count on seven hours from two.\", \"That is ten take away seven. Count on from ten at night to seven in the morning.\")}"
+    }
+  }
+  hint "Count on from the clock's time."
+  hint "Then find that time in a sentence."
+}

@@ -1,0 +1,23 @@
+# Non-routine: a club chosen from a timetable, minutes counted, or a way to school found by clues.
+item language.next-year-puzzle v=1 stars=3 skills=[language.school, language.time, reasoning.language] {
+  title "Planning the week"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x32 {
+    column all at=canvas(1, 1) space=1 align=start {
+      table clubs cols=2 head=["Club", "Day"] cells=["[[future.the-drama-club]]", "[[time.monday]]", "[[future.the-chess-club]]", "[[time.wednesday]]", "[[future.the-football-club]]", "[[time.friday]]"]
+      text ask "{pick(k, \"Leo has piano on Mondays after school. Which club on the list can he join and still go to piano?\", \"Ana's bus leaves at ten to eight and takes 25 minutes. School starts at half past eight. How many minutes early is she?\", \"Leo, Mia and Sam go to their new schools [[transport.by-bus]], [[transport.on-foot]] and [[transport.by-train]], one way each. Leo says [[future.i-am-going-to-go-by-bus]] Mia does not take the train. How does Sam go?\")}" width=32
+      choice pick options=[pick(k, "[[future.the-chess-club]]", "15 minutes", "[[transport.by-train]]"), pick(k, "[[future.the-drama-club]]", "40 minutes", "[[transport.on-foot]]"), pick(k, "neither", "25 minutes", "[[transport.by-bus]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[future.the-chess-club]]", "15 minutes", "[[transport.by-train]]")
+  feedback {
+    when (pick == pick(k, "[[future.the-drama-club]]", "40 minutes", "[[transport.on-foot]]")) {
+      say "{pick(k, \"Read the day of [[future.the-drama-club]].\", \"That is from ten to eight to half past eight. Take off the 25 minutes on the bus.\", \"Mia does not take the train, and Leo takes the bus. What is left for Mia?\")}"
+    }
+  }
+  hint "Read the clue that settles one thing first."
+  hint "Then work out what is left."
+}

@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.i-can-say v=1 skills=[language.sentences, language.questions, language.speaking] {
+  title "I can, I cannot"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Say three things you can do and one thing you cannot do, in [[language.name]].\", \"Ask a grown-up three questions like [[ability.can-you-swim]] and say their answers back in [[language.name]].\", \"Say what someone in your family can do, in [[language.name]], as in [[phrase.my-brother-can-play-the-piano]]\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="Sentences with [[ability.i-can]] and [[ability.i-cannot]] before a thing done, and questions like [[ability.can-you-swim]]." notice=["Three things the child can do", "One thing said with [[ability.i-cannot]]", "A question like [[ability.can-you-swim]]", "Someone else's ability said"]
+  hint "Think of a sport, a game and an instrument."
+  hint "Which little word turns can into cannot?"
+}

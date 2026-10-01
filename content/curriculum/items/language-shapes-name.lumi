@@ -1,0 +1,23 @@
+# Picture or situation to the language: [[shape.the-circle]], [[shape.the-square]], [[shape.the-triangle]], [[shape.the-rectangle]], [[shape.the-pentagon]], [[shape.the-hexagon]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.shapes-name v=1 skills=[language.shapes, language.numbers] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"It is round, with no corners.\", \"It has four sides, all the same length.\", \"It has three sides and three corners.\", \"It has four sides: two long and two short.\", \"It has five sides.\", \"It has six sides.\")}" width=32
+      choice pick options=[pick(k, "[[shape.the-pentagon]]", "[[shape.the-circle]]", "[[shape.the-square]]", "[[shape.the-triangle]]", "[[shape.the-hexagon]]", "[[shape.the-circle]]"), pick(k, "[[shape.the-circle]]", "[[shape.the-square]]", "[[shape.the-pentagon]]", "[[shape.the-rectangle]]", "[[shape.the-triangle]]", "[[shape.the-hexagon]]"), pick(k, "[[shape.the-square]]", "[[shape.the-hexagon]]", "[[shape.the-hexagon]]", "[[shape.the-square]]", "[[shape.the-pentagon]]", "[[shape.the-rectangle]]"), pick(k, "[[shape.the-rectangle]]", "[[shape.the-rectangle]]", "[[shape.the-triangle]]", "[[shape.the-pentagon]]", "[[shape.the-square]]", "[[shape.the-pentagon]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[shape.the-circle]]", "[[shape.the-square]]", "[[shape.the-triangle]]", "[[shape.the-rectangle]]", "[[shape.the-pentagon]]", "[[shape.the-hexagon]]")
+  feedback {
+    when (pick == pick(k, "[[shape.the-square]]", "[[shape.the-rectangle]]", "[[shape.the-square]]", "[[shape.the-square]]", "[[shape.the-hexagon]]", "[[shape.the-pentagon]]")) {
+      say "{pick(k, \"[[shape.the-square|cap]] has corners. This shape has none.\", \"[[shape.the-rectangle|cap]] has two long sides. Are these four sides the same?\", \"[[shape.the-square|cap]] has four sides. Count these.\", \"[[shape.the-square|cap]] has four sides the same. Two of these are longer.\", \"[[shape.the-hexagon|cap]] has six sides. Count these.\", \"[[shape.the-pentagon|cap]] has five sides. Count these.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

@@ -1,0 +1,73 @@
+# A school day from getting up to going to bed, each thing with its time on a clock.
+lesson language-my-day v=1 format=teach grade=5 unit=6 subject=language levels=[easy, medium, hard] {
+  title "My day"
+  goal "Say what you do at each time of the day in [[language.name]], from getting up to going to bed."
+
+  look {
+    scene 27x9 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row day space=2 align=end {
+          clock morning h=7 m=0
+          clock lunch h=2 m=0
+          clock night h=10 m=0
+        }
+      }
+    }
+    say """
+      Leo's day: [[day.i-get-up-at-seven]], I get up at seven. [[day.i-have-lunch-at-two]], I have
+      lunch at two. [[day.i-go-to-bed-at-ten]], I go to bed at ten. In Spain lunch is often at two
+      and dinner at nine. To ask about someone's day, say [[phrase.what-time-do-you-get-up]], what
+      time do you get up?
+      """
+  }
+  do {
+    level easy {
+      worked language.my-day-name k=4
+    }
+    show language.my-day-name k=2 easy-k=0 hard-k=5
+    show language.my-day-meaning k=3 easy-k=1 hard-k=4
+    show language.my-day-write k=2 easy-k=1 hard-k=3
+    show language.my-day-name k=4 easy-k=1 hard-k=6
+    show language.my-day-match k=1 easy-k=0 hard-k=2
+    show language.my-day-write k=3 easy-k=2 hard-k=4
+    show language.my-day-listen k=3 easy-k=0 hard-k=5
+    show language.my-day-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.my-day-write k=1
+    }
+  }
+  try stars=2 {
+    show language.my-day-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.my-day-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[day.i-get-up-at-seven]] I get up at seven. [[phrase.what-time-do-you-get-up]] What time do you get up?"
+  }
+
+  grown-ups """
+    The wrong idea to watch for is the right time with the wrong thing done, or the reverse, and
+    lunch and dinner taken for each other: each naming question shows the time on a clock and offers
+    both mistakes beside the right sentence. That lunch in Spain is often at two and dinner at nine
+    is recalled. The step up from the time of grade four and my week of this grade is the clock time
+    inside a sentence about a routine, in order from morning to night. From this grade the written
+    words are marked with their accents: a word typed without its accent is not taken. The dictation
+    is read from this sheet, where it prints as Read aloud, or played by the device. If the child is
+    stuck, go through the child's own day with a toy clock, one sentence at each time. Off the page,
+    keep a diary of one day in the language, a line for each time. It meets England's key stage 2
+    languages programme (years 3 to 6, statutory from age 7): "describe people, places, things and
+    actions orally and in writing"; Japan's grades 5 and 6 foreign languages: "Can talk about
+    themselves after organizing the contents they want to communicate by using simple words and
+    phrases and basic expressions" (Japan's grade four book Let's Try 2 has a unit on a day,
+    recalled); and CEFR A2, "Can communicate in simple and routine tasks requiring a simple and
+    direct exchange of information on familiar and routine matters". The phrases are in
+    [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[day.i-come-home-at-four]] is worked first in the teacher's pen, the words to name are [[day.i-get-up-at-seven]] and [[day.i-have-breakfast-at-half-past-seven]] and the words to write are [[day.i-have-lunch]] and [[day.i-have-dinner]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[day.i-do-my-homework-at-five]] and [[day.i-have-dinner-at-nine]] and the words to write are [[day.i-come-back]], [[day.i-sleep]] and [[day.i-have-lunch]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

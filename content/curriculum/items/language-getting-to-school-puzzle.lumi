@@ -1,0 +1,23 @@
+# Non-routine: a way to school chosen from the minutes on a table, or two journeys added.
+item language.getting-to-school-puzzle v=1 stars=3 skills=[language.town, language.travel, reasoning.language] {
+  title "The quickest way"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x30 {
+    column all at=canvas(1, 1) space=1 align=start {
+      table ways cols=2 head=["Way to school", "Minutes"] cells=["[[transport.on-foot]]", "24", "[[transport.by-bike]]", "10", "[[transport.by-bus]]", "15"]
+      text ask "{pick(k, \"Which way to school is quickest?\", \"Leo has 20 minutes to get to school. Which ways get him there in time?\", \"Mia goes to school [[transport.by-bike]] and comes home [[transport.on-foot]]. How many minutes is that in all?\")}" width=32
+      choice pick options=[pick(k, "[[transport.by-bike]]", "[[transport.by-bike]] and [[transport.by-bus]]", "34 minutes"), pick(k, "[[transport.by-bus]]", "[[transport.on-foot]] and [[transport.by-bus]]", "20 minutes"), pick(k, "[[transport.on-foot]]", "only [[transport.on-foot]]", "48 minutes")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[transport.by-bike]]", "[[transport.by-bike]] and [[transport.by-bus]]", "34 minutes")
+  feedback {
+    when (pick == pick(k, "[[transport.by-bus]]", "[[transport.on-foot]] and [[transport.by-bus]]", "48 minutes")) {
+      say "{pick(k, \"15 minutes is not the fewest. Look down the minutes.\", \"On foot takes 24 minutes. Is that within 20?\", \"That is on foot both ways. She rides one way.\")}"
+    }
+  }
+  hint "Read the minutes for each way."
+  hint "Fewer minutes is quicker."
+}

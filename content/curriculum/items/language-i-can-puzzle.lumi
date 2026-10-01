@@ -1,0 +1,22 @@
+# Non-routine: jobs given out from what each person can and cannot do.
+item language.i-can-puzzle v=1 stars=3 skills=[language.sentences, language.questions, reasoning.language] {
+  title "Who does which job?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Ana says [[ability.i-can-swim-but-i-cannot-skate]] Leo says [[ability.i-can-skate-but-i-cannot-swim]] Who can go skating on the frozen pond?\", \"One child can cook, one can draw and one can skate. Mia says [[ability.i-cannot-cook]] Leo says [[ability.i-can-draw]] What can Mia do?\", \"A show needs a singer, a dancer and a guitar player, one job each. Ana: [[ability.i-can-sing-and-dance]] Leo: [[ability.i-can-play-the-guitar]] Mia: [[ability.i-can-dance]] Who sings?\")}" width=32
+      choice pick options=[pick(k, "Leo", "[[ability.to-skate]]", "Ana"), pick(k, "Ana", "[[ability.to-cook]]", "Mia"), pick(k, "Both", "[[ability.to-draw]]", "Leo")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Leo", "[[ability.to-skate]]", "Ana")
+  feedback {
+    when (pick == pick(k, "Ana", "[[ability.to-draw]]", "Mia")) {
+      say "{pick(k, \"Ana said she cannot skate.\", \"Leo can draw, so that job is his.\", \"Mia can only dance, so she must dance. Who else can sing?\")}"
+    }
+  }
+  hint "Start with the person who can do only one thing."
+  hint "Then give out what is left."
+}

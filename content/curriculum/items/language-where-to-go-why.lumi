@@ -1,0 +1,22 @@
+# A reason: the country chosen to fit what someone wants to see, eat or avoid.
+item language.where-to-go-why v=1 stars=2 skills=[language.travel, language.opinions, reasoning.language] {
+  title "Why there?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Ana says [[phrase.i-want-to-go-to-egypt-to-see-the-pyramid]] Why Egypt?\", \"Leo says [[travel.i-do-not-want-to-go-to-russia-in-winter]] Which reason would he give?\", \"Mia wants to see Mount Fuji and eat sushi on one trip. Which country, and why?\")}" width=32
+      choice pick options=[pick(k, "The pyramids she wants to see are there.", "[[travel.it-is-very-cold]]", "[[travel.japan]]: both are there."), pick(k, "It is the coldest country.", "[[travel.it-is-hot]]", "[[travel.china]]: it is the biggest."), pick(k, "She lives there.", "[[travel.i-like-the-food]]", "[[travel.italy]]: it has pizza.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "The pyramids she wants to see are there.", "[[travel.it-is-very-cold]]", "[[travel.japan]]: both are there.")
+  feedback {
+    when (pick == pick(k, "She lives there.", "[[travel.it-is-hot]]", "[[travel.china]]: it is the biggest.")) {
+      say "{pick(k, \"She wants to go there, so she does not live there.\", \"Is a Russian winter hot?\", \"Read what the lesson says you can see in each country.\")}"
+    }
+  }
+  hint "What does the person want?"
+  hint "Which country has it?"
+}

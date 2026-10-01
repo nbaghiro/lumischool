@@ -1,0 +1,19 @@
+# The language to English: [[phrase.what-is-the-matter]], [[phrase.you-must-drink-lots-of-water]], [[phrase.you-must-rest-at-home]], [[phrase.take-this-syrup-twice-a-day]], [[phrase.i-cannot-go-to-school-today]], [[phrase.i-feel-better-now]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.the-doctor-meaning v=1 skills=[language.body, language.sentences] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "gran", "gran", "gran", "gran", "boy", "girl")] says=[pick(k, "[[phrase.what-is-the-matter]]", "[[phrase.you-must-drink-lots-of-water]]", "[[phrase.you-must-rest-at-home]]", "[[phrase.take-this-syrup-twice-a-day]]", "[[phrase.i-cannot-go-to-school-today]]", "[[phrase.i-feel-better-now]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "I feel better now.", "Take this syrup twice a day.", "You must drink lots of water.", "I feel better now.", "I feel better now.", "Take this syrup twice a day."), pick(k, "What is the matter?", "You must drink lots of water.", "I cannot go to school today.", "Take this syrup twice a day.", "You must rest at home.", "I feel better now."), pick(k, "You must rest at home.", "I cannot go to school today.", "Take this syrup twice a day.", "You must drink lots of water.", "I cannot go to school today.", "You must rest at home."), pick(k, "I cannot go to school today.", "You must rest at home.", "You must rest at home.", "You must rest at home.", "Take this syrup twice a day.", "I cannot go to school today.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "What is the matter?", "You must drink lots of water.", "You must rest at home.", "Take this syrup twice a day.", "I cannot go to school today.", "I feel better now.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

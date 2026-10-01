@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[travel.i-want-to-go-to-japan]], [[travel.i-want-to-go-to-italy]], [[travel.i-want-to-go-to-egypt]], [[travel.i-want-to-go-to-mexico]], [[travel.i-want-to-go-to-china]], [[travel.i-want-to-go-to-russia]], [[travel.i-want-to-go-to-greece]], [[travel.i-want-to-go-to-england]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.where-to-go-name v=1 skills=[language.travel, language.opinions] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 36x42 {
+    column all at=canvas(1, 1) space=1 align=start {
+      worldmap map names=0 blank=-1 oceans=0 places=["{pick(k, \"Tokyo\", \"Rome\", \"Cairo\", \"Mexico City\", \"Beijing\", \"Moscow\", \"Athens\", \"London\")}"] numbered=0 route=0
+      text ask "Ana wants to go to the country of the city marked on the map. What does she say?" width=32
+      choice pick options=[pick(k, "[[travel.i-want-to-go-to-greece]]", "[[travel.i-want-to-go-to-england]]", "[[travel.i-want-to-go-to-italy]]", "[[travel.i-want-to-go-to-italy]]", "[[travel.i-want-to-go-to-japan]]", "[[travel.i-want-to-go-to-mexico]]", "[[travel.i-want-to-go-to-italy]]", "[[travel.i-want-to-go-to-italy]]"), pick(k, "[[travel.i-want-to-go-to-japan]]", "[[travel.i-want-to-go-to-italy]]", "[[travel.i-want-to-go-to-england]]", "[[travel.i-want-to-go-to-mexico]]", "[[travel.i-want-to-go-to-russia]]", "[[travel.i-want-to-go-to-russia]]", "[[travel.i-want-to-go-to-egypt]]", "[[travel.i-want-to-go-to-england]]"), pick(k, "[[travel.i-want-to-go-to-china]]", "[[travel.i-want-to-go-to-egypt]]", "[[travel.i-want-to-go-to-mexico]]", "[[travel.i-want-to-go-to-egypt]]", "[[travel.i-want-to-go-to-china]]", "[[travel.i-want-to-go-to-egypt]]", "[[travel.i-want-to-go-to-china]]", "[[travel.i-want-to-go-to-russia]]"), pick(k, "[[travel.i-want-to-go-to-mexico]]", "[[travel.i-want-to-go-to-greece]]", "[[travel.i-want-to-go-to-egypt]]", "[[travel.i-want-to-go-to-china]]", "[[travel.i-want-to-go-to-egypt]]", "[[travel.i-want-to-go-to-china]]", "[[travel.i-want-to-go-to-greece]]", "[[travel.i-want-to-go-to-egypt]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[travel.i-want-to-go-to-japan]]", "[[travel.i-want-to-go-to-italy]]", "[[travel.i-want-to-go-to-egypt]]", "[[travel.i-want-to-go-to-mexico]]", "[[travel.i-want-to-go-to-china]]", "[[travel.i-want-to-go-to-russia]]", "[[travel.i-want-to-go-to-greece]]", "[[travel.i-want-to-go-to-england]]")
+  feedback {
+    when (pick == pick(k, "[[travel.i-want-to-go-to-china]]", "[[travel.i-want-to-go-to-greece]]", "[[travel.i-want-to-go-to-italy]]", "[[travel.i-want-to-go-to-egypt]]", "[[travel.i-want-to-go-to-japan]]", "[[travel.i-want-to-go-to-china]]", "[[travel.i-want-to-go-to-italy]]", "[[travel.i-want-to-go-to-russia]]")) point=map {
+      say "{pick(k, \"Beijing is in China. Read the city's name.\", \"Athens is in Greece. Read the city's name.\", \"Rome is in Italy. Read the city's name.\", \"Cairo is in Egypt. Read the city's name.\", \"Tokyo is in Japan. Read the city's name.\", \"Beijing is in China. Read the city's name.\", \"Rome is in Italy. Read the city's name.\", \"Moscow is in Russia. Read the city's name.\")}"
+    }
+  }
+  hint "Read the city's name on the map."
+  hint "Which country is that city in?"
+}

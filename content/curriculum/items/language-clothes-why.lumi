@@ -1,0 +1,23 @@
+# A reason: what to wear worked out from the weather on the chart.
+item language.clothes-why v=1 stars=2 skills=[language.clothes, language.weather, reasoning.language] {
+  title "Dressed for the weather"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 35x30 {
+    column all at=canvas(1, 1) space=1 align=start {
+      weatherweek sky days=["Today"] skies=["{pick(k, \"rain\", \"sun\", \"snow\")}"] temps=["{pick(k, \"12 °C\", \"30 °C\", \"-2 °C\")}"]
+      text ask "{pick(k, \"Leo looks at today's weather and says [[clothes.i-am-wearing-boots]] Why?\", \"Ana looks at today's weather and says [[clothes.i-am-wearing-a-coat]] What would be better, and why?\", \"Mia looks at today's weather. Which two things should she wear, and why?\")}" width=32
+      choice pick options=[pick(k, "It is raining.", "[[clothes.the-shorts]]: it is hot.", "[[clothes.the-coat]] and [[clothes.the-gloves]]: it is cold."), pick(k, "It is hot and sunny.", "[[clothes.the-boots]]: it is raining.", "[[clothes.the-swimsuit]] and [[clothes.the-cap]]: it is sunny."), pick(k, "It is night.", "[[clothes.the-scarf]]: it is cold.", "[[clothes.the-shorts]] and [[clothes.the-t-shirt]]: it is hot.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "It is raining.", "[[clothes.the-shorts]]: it is hot.", "[[clothes.the-coat]] and [[clothes.the-gloves]]: it is cold.")
+  feedback {
+    when (pick == pick(k, "It is hot and sunny.", "[[clothes.the-boots]]: it is raining.", "[[clothes.the-swimsuit]] and [[clothes.the-cap]]: it is sunny.")) {
+      say "{pick(k, \"Look at the sky on the chart.\", \"Is there rain on the chart? Read the temperature.\", \"Snow and below nought: is that a day for swimming?\")}"
+    }
+  }
+  hint "Read the sky and the temperature."
+  hint "What keeps you warm, dry or cool?"
+}

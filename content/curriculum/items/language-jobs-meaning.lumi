@@ -1,0 +1,19 @@
+# The language to English: [[phrase.what-do-you-want-to-be]], [[phrase.my-mother-is-a-nurse]], [[phrase.my-father-works-in-a-hospital]], [[phrase.i-want-to-be-a-pilot-because-i-love-trav]], [[phrase.i-do-not-want-to-work-in-an-office]], [[phrase.a-vet-looks-after-animals]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.jobs-meaning v=1 skills=[language.sentences, language.opinions] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "boy", "girl", "boy", "girl", "gran")] says=[pick(k, "[[phrase.what-do-you-want-to-be]]", "[[phrase.my-mother-is-a-nurse]]", "[[phrase.my-father-works-in-a-hospital]]", "[[phrase.i-want-to-be-a-pilot-because-i-love-trav]]", "[[phrase.i-do-not-want-to-work-in-an-office]]", "[[phrase.a-vet-looks-after-animals]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "A vet looks after animals.", "I want to be a pilot because I love travelling.", "My mother is a nurse.", "A vet looks after animals.", "A vet looks after animals.", "I want to be a pilot because I love travelling."), pick(k, "What do you want to be?", "My mother is a nurse.", "I do not want to work in an office.", "I want to be a pilot because I love travelling.", "My father works in a hospital.", "A vet looks after animals."), pick(k, "My father works in a hospital.", "I do not want to work in an office.", "I want to be a pilot because I love travelling.", "My mother is a nurse.", "I do not want to work in an office.", "My father works in a hospital."), pick(k, "I do not want to work in an office.", "My father works in a hospital.", "My father works in a hospital.", "My father works in a hospital.", "I want to be a pilot because I love travelling.", "I do not want to work in an office.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "What do you want to be?", "My mother is a nurse.", "My father works in a hospital.", "I want to be a pilot because I love travelling.", "I do not want to work in an office.", "A vet looks after animals.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

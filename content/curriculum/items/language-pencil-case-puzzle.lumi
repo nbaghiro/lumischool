@@ -1,0 +1,22 @@
+# Non-routine: a thing found by crossing off what each answer rules out.
+item language.pencil-case-puzzle v=1 stars=3 skills=[language.school, language.questions, reasoning.language] {
+  title "Whose pencil case?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Three children have [[school.the-ruler]], [[school.the-rubber]] and [[school.the-brush]], one each. Ana does not have [[school.the-ruler]]. Leo has [[school.the-brush]]. What does Ana have?\", \"Ana asks Leo for [[school.the-ruler]] and he says [[school.no-i-do-not-have]] She asks for [[school.the-rubber]] and he says [[school.yes-i-have]] What is in Leo's pencil case?\", \"Mia has [[school.the-pencil]] and [[school.the-rubber]]. Leo has [[school.the-ruler]] and [[school.the-pencil]]. Ana asks [[phrase.do-you-have-a-rubber]] Who says [[school.yes-i-have]]?\")}" width=32
+      choice pick options=[pick(k, "[[school.the-rubber]]", "[[school.the-rubber]]", "Mia"), pick(k, "[[school.the-ruler]]", "[[school.the-ruler]]", "Leo"), pick(k, "[[school.the-brush]]", "[[school.the-ruler]] and [[school.the-rubber]]", "Both")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[school.the-rubber]]", "[[school.the-rubber]]", "Mia")
+  feedback {
+    when (pick == pick(k, "[[school.the-ruler]]", "[[school.the-ruler]] and [[school.the-rubber]]", "Both")) {
+      say "{pick(k, \"The clue says Ana does not have the ruler.\", \"He said no to the ruler.\", \"Leo has a pencil and a ruler. Does he have a rubber?\")}"
+    }
+  }
+  hint "Cross off each thing a clue rules out."
+  hint "Which one is left?"
+}

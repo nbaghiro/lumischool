@@ -1,0 +1,23 @@
+# A reason: a sentence about the week checked against the timetable, and a feeling worked out from it.
+item language.timetable-why v=1 stars=2 skills=[language.school, language.time, reasoning.language] {
+  title "Reading the timetable"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x34 {
+    column all at=canvas(1, 1) space=1 align=start {
+      table week cols=2 head=["Day", "Lesson"] cells=["[[time.monday]]", "[[subject.maths]]", "[[time.tuesday]]", "[[subject.music]]", "[[time.wednesday]]", "[[subject.science]]", "[[time.thursday]]", "[[subject.art]]", "[[time.friday]]", "[[subject.pe]]"]
+      text ask "{pick(k, \"Leo says [[subject.on-monday-i-have-maths]] Is he right, and how do you know?\", \"Ana says [[subject.my-favourite-subject-is-music]] On which day does she look forward to school most, and why?\", \"Mia says [[subject.on-thursday-i-have-science]] Why is she wrong?\")}" width=32
+      choice pick options=[pick(k, "Yes: the row for [[time.monday]] says [[subject.maths]].", "[[routine.on-tuesday]]: it has [[subject.music]].", "[[subject.science|cap]] is on [[time.wednesday]]; [[time.thursday]] has [[subject.art]]."), pick(k, "No: [[subject.maths]] is on [[time.tuesday]].", "[[routine.on-monday]]: it has [[subject.maths]].", "[[subject.science|cap]] is on [[time.monday]]."), pick(k, "No: there is no school on [[time.monday]].", "[[notice.on-friday]]: it has [[subject.pe]].", "She is right: [[time.thursday]] has [[subject.science]].")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Yes: the row for [[time.monday]] says [[subject.maths]].", "[[routine.on-tuesday]]: it has [[subject.music]].", "[[subject.science|cap]] is on [[time.wednesday]]; [[time.thursday]] has [[subject.art]].")
+  feedback {
+    when (pick == pick(k, "No: [[subject.maths]] is on [[time.tuesday]].", "[[routine.on-monday]]: it has [[subject.maths]].", "She is right: [[time.thursday]] has [[subject.science]].")) {
+      say "{pick(k, \"Find [[time.monday]] in the left column and read across.\", \"Which day has her favourite subject on it?\", \"Find [[time.thursday]] and read across.\")}"
+    }
+  }
+  hint "Find the day on the left."
+  hint "Read across to its lesson."
+}

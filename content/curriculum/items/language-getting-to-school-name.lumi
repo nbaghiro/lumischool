@@ -1,0 +1,23 @@
+# Picture or situation to the language: [[transport.on-foot]], [[transport.by-bus]], [[transport.by-train]], [[transport.by-car]], [[transport.by-bike]], [[transport.by-boat]], [[transport.by-plane]], [[transport.by-underground]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.getting-to-school-name v=1 skills=[language.town, language.travel] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo walks to school with his dog.\", \"Ana waits at the stop for the number 12 with other children.\", \"Mia goes to the station and gets on a carriage on the rails.\", \"Leo's mother drives him to school.\", \"Ana pedals to school in her helmet.\", \"Mia lives across the water and crosses on the ferry every morning.\", \"Leo flies to see his grandmother in another country.\", \"In the big city Ana takes the train that runs under the streets.\")}" width=32
+      choice pick options=[pick(k, "[[transport.by-plane]]", "[[transport.by-underground]]", "[[transport.by-bus]]", "[[transport.by-train]]", "[[transport.on-foot]]", "[[transport.by-car]]", "[[transport.by-boat]]", "[[transport.by-bus]]"), pick(k, "[[transport.on-foot]]", "[[transport.by-bus]]", "[[transport.by-underground]]", "[[transport.by-car]]", "[[transport.by-boat]]", "[[transport.by-boat]]", "[[transport.by-bus]]", "[[transport.by-underground]]"), pick(k, "[[transport.by-bike]]", "[[transport.by-car]]", "[[transport.by-car]]", "[[transport.by-bus]]", "[[transport.by-bike]]", "[[transport.by-train]]", "[[transport.by-car]]", "[[transport.by-train]]"), pick(k, "[[transport.by-car]]", "[[transport.by-train]]", "[[transport.by-train]]", "[[transport.by-bike]]", "[[transport.by-train]]", "[[transport.by-plane]]", "[[transport.by-plane]]", "[[transport.by-car]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[transport.on-foot]]", "[[transport.by-bus]]", "[[transport.by-train]]", "[[transport.by-car]]", "[[transport.by-bike]]", "[[transport.by-boat]]", "[[transport.by-plane]]", "[[transport.by-underground]]")
+  feedback {
+    when (pick == pick(k, "[[transport.by-bike]]", "[[transport.by-train]]", "[[transport.by-bus]]", "[[transport.by-bus]]", "[[transport.on-foot]]", "[[transport.by-plane]]", "[[transport.by-boat]]", "[[transport.by-train]]")) {
+      say "{pick(k, \"[[transport.by-bike|cap]] is by bike. Leo walks.\", \"[[transport.by-train|cap]] is by train, on rails. Ana waits at a bus stop.\", \"[[transport.by-bus|cap]] is by bus, on the road. Mia is at the station.\", \"[[transport.by-bus|cap]] is by bus. Who is driving?\", \"[[transport.on-foot|cap]] is on foot. Ana pedals.\", \"[[transport.by-plane|cap]] is by plane. The ferry floats.\", \"[[transport.by-boat|cap]] is by boat. Leo flies.\", \"[[transport.by-train|cap]] is by train. This one runs underground.\")}"
+    }
+  }
+  hint "How is the child moving?"
+  hint "On foot, on the road, on rails, on water or in the air?"
+}

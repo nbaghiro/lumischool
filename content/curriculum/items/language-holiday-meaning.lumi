@@ -1,0 +1,19 @@
+# The language to English: [[phrase.what-did-you-do-in-the-summer]], [[phrase.last-summer-i-went-to-italy]], [[phrase.yesterday-i-played-football-with-my-frie]], [[phrase.we-went-by-train]], [[phrase.i-did-not-like-the-food]], [[phrase.i-had-a-very-good-time]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.holiday-meaning v=1 skills=[language.time, language.sentences] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "boy", "girl", "boy", "gran", "girl")] says=[pick(k, "[[phrase.what-did-you-do-in-the-summer]]", "[[phrase.last-summer-i-went-to-italy]]", "[[phrase.yesterday-i-played-football-with-my-frie]]", "[[phrase.we-went-by-train]]", "[[phrase.i-did-not-like-the-food]]", "[[phrase.i-had-a-very-good-time]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "I had a very good time.", "We went by train.", "Last summer I went to Italy.", "I had a very good time.", "I had a very good time.", "We went by train."), pick(k, "What did you do in the summer?", "Last summer I went to Italy.", "I did not like the food.", "We went by train.", "Yesterday I played football with my friends.", "I had a very good time."), pick(k, "Yesterday I played football with my friends.", "I did not like the food.", "We went by train.", "Last summer I went to Italy.", "I did not like the food.", "Yesterday I played football with my friends."), pick(k, "I did not like the food.", "Yesterday I played football with my friends.", "Yesterday I played football with my friends.", "Yesterday I played football with my friends.", "We went by train.", "I did not like the food.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "What did you do in the summer?", "Last summer I went to Italy.", "Yesterday I played football with my friends.", "We went by train.", "I did not like the food.", "I had a very good time.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

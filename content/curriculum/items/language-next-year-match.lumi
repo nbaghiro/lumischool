@@ -1,0 +1,17 @@
+# Four words to their English, 3 sets, the later sets with the words most often mixed up.
+item language.next-year-match v=1 skills=[language.school, language.time] {
+  title "Match the words"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Write the number of its English next to each [[language.name]] word." width=32
+      match m left=[pick(k, "[[future.the-secondary-school]]", "[[future.to-learn]]", "[[future.i-am-going-to]]"), pick(k, "[[future.the-club]]", "[[future.to-study]]", "[[future.i-want]]"), pick(k, "[[future.the-uniform]]", "[[future.to-join]]", "[[future.next-year]]"), pick(k, "[[future.the-timetable]]", "[[future.to-miss]]", "[[future.new]]")] right=[pick(k, "the uniform", "to miss", "next year"), pick(k, "the secondary school", "to learn", "I am going to"), pick(k, "the club", "to study", "new"), pick(k, "the timetable", "to join", "I want")] blanks=[a, b, c, d]
+    }
+  }
+
+  answer a=2 b=pick(k, 3, 3, 4) c=pick(k, 1, 4, 1) d=pick(k, 4, 1, 3)
+  hint "Start with the word you are surest of, and cross its English off."
+  hint "Two words look alike. Which letter is different, and what does it change?"
+}

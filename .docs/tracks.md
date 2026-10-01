@@ -283,10 +283,15 @@ concept, and filled from the chosen language's phrasebook, so a lesson is offere
 whose phrasebook holds its phrases ([notation.md](notation.md), "Phrasebooks and language
 variants"); [language-coverage.md](language-coverage.md) lists which lessons each language has.
 
-The track has thirty-six lessons, six a grade from grade one to grade six, in the order a primary
-foreign-language course takes it: greetings and names, numbers, colours, family and animals, food and
-the market, the town and directions, time, days and months, weather and seasons, describing people
-and things, and then opinions with reasons, questions, and a short text read and written by grade
+The track has fifty lessons: six a grade at grades one and two, nine at grades three and four and
+ten at grades five and six, in the order a primary foreign-language course takes it: greetings and
+names, numbers, colours, family and animals, food and the market, the town and directions, time, days
+and months, weather and seasons, describing people and things, and then opinions with reasons,
+questions, and a short text read and written by grade six. The fourteen added on 1 October fill what
+England's key stage 2, Japan's course of study and CEFR A1 and A2 expect and the first thirty-six did
+not have: school things, shapes and clothes at grade three; the timetable, wild animals and how one
+travels at grade four; what one can do, a day by the clock, a clothes shop and where one wants to go
+at grade five; and jobs, the doctor, a holiday told in the past and plans for next year at grade
 six. Grades one to three mark a typed word without minding its accents and grades four to six with
 them; a dictation always minds them. Each lesson's grown-ups note quotes the line it meets in
 England's key stage 2 languages programme, Japan's foreign language activities (grades 3 and 4) or
@@ -294,8 +299,10 @@ foreign languages (grades 5 and 6), and the Council of Europe's CEFR A1 or A2 de
 answer is marked by a grown-up against a notice list (`reading.recited`), a written text by
 `writing.by-eye`, and a heard sentence by the dictation checker, where the grown-up reads the phrase
 from the grown-ups' sheet and the device's own voice is a second channel ([sound.md](sound.md)).
-Spanish is written for all thirty-six lessons, in Castilian as it is spoken in Spain; French and
-Japanese have no phrasebook yet. Thirty-two lessons are shared concepts with Spanish written only
+Spanish is written for all fifty lessons, in Castilian as it is spoken in Spain; French and
+Japanese have no phrasebook yet. The fourteen lessons of 1 October are shared whole, their two-star
+questions included, so a phrasebook alone offers them in another language. Of the first thirty-six,
+thirty-two are shared concepts with Spanish written only
 for their two-star question where it asks why Spanish builds a phrase its way, and four (a colour
 with its noun, telling the time, a friend's character, and the present tense) are written wholly
 for Spanish, since how a language does these is its own.
@@ -364,7 +371,7 @@ What each place off the run holds today, by subject or by lesson id in its `site
 |---|---|---|
 | The marsh | science, and floating, heat, water and ice | 6 |
 | The park | music | 24 |
-| The ferry town | a second language | 36 |
+| The ferry town | a second language | 50 |
 | The painter's hut | art | 24 |
 | The old tower | history | 0 |
 | The coral reef | sea life and arrays | 6 |
@@ -527,7 +534,7 @@ decision, so this stays a plan.
   year.
 - The ferry town held the one Spanish lesson there was. Spanish was removed from the lessons on
   15 September 2026 pending a UI of its own for languages. That UI is the language picker on a
-  child's card (30 September 2026), and the ferry town now hosts the language track's thirty-six
+  child's card (30 September 2026), and the ferry town now hosts the language track's fifty
   lessons, whose skills light its market stall, clock tower, square, shop front and houses.
 
 ## Physics

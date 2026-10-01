@@ -1,0 +1,15 @@
+# Writing, read by a grown-up who ticks what they see (writing.by-eye).
+item language.holiday-say v=1 skills=[language.time, language.sentences, language.writing] {
+  title "My holiday"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Write four sentences in [[language.name]] about what you did last summer: where you went, what you ate, what you saw and how it was.\", \"Write a postcard in [[language.name]] to a friend about a day out you had last week, with three things you did.\", \"Write three sentences in [[language.name]] about yesterday, each with a different thing you did.\")}" width=32
+    }
+  }
+
+  check writing.by-eye look-for="Sentences in the past, with went, ate or saw, and how it was said at the end." notice=["Three things done, in the past", "A place gone to", "How it was, said at the end", "Words spelt with their accents"]
+  hint "Start with where you went."
+  hint "Which words in the lesson tell the past?"
+}

@@ -1,0 +1,18 @@
+# Picture or situation to the language: [[future.next-year-i-am-going-to-go-to-secondary]], [[future.i-am-going-to-learn-french]], [[future.i-am-going-to-make-new-friends]], [[future.i-am-going-to-go-by-bus]], [[future.i-want-to-join-the-drama-club]], [[future.i-want-to-join-the-chess-club]], [[future.i-am-going-to-study-hard]], [[future.i-am-going-to-miss-my-friends]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.next-year-name v=1 skills=[language.school, language.time] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo talks about September, when he starts at the big school.\", \"Ana will start a new language next year.\", \"Mia will meet lots of children she does not know yet.\", \"Leo's new school is far, and he will take the bus.\", \"Ana loves acting and wants to be in the school play.\", \"Mia loves chess and wants to play it after school.\", \"Leo wants good marks, so he will work hard.\", \"Ana's friends are going to a different school, and she will be sad without them.\")}" width=32
+      choice pick options=[pick(k, "[[future.next-year-i-am-going-to-go-to-secondary]]", "[[future.i-am-going-to-learn-english]]", "[[future.i-am-going-to-see-my-friends]]", "[[future.i-am-going-to-go-by-bus]]", "[[future.i-want-to-join-the-football-club]]", "[[future.i-want-to-join-the-chess-club]]", "[[future.i-am-going-to-study-a-little]]", "[[future.i-am-going-to-make-new-friends]]"), pick(k, "[[future.this-year-i-go-to-primary-school]]", "[[future.i-am-going-to-learn-french]]", "[[future.i-am-going-to-miss-my-friends]]", "[[future.i-am-going-to-go-on-foot]]", "[[future.i-want-to-join-the-drama-club]]", "[[future.i-want-to-join-the-drama-club]]", "[[future.i-am-going-to-study-hard]]", "[[future.i-am-going-to-see-my-friends]]"), pick(k, "[[future.i-am-going-to-go-by-train]]", "[[future.i-am-going-to-study-hard]]", "[[future.i-am-going-to-make-new-friends]]", "[[future.i-am-going-to-go-by-train]]", "[[future.i-want-to-join-the-chess-club]]", "[[future.i-want-to-join-the-football-club]]", "[[future.i-am-going-to-do-my-homework]]", "[[future.i-am-going-to-miss-my-friends]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[future.next-year-i-am-going-to-go-to-secondary]]", "[[future.i-am-going-to-learn-french]]", "[[future.i-am-going-to-make-new-friends]]", "[[future.i-am-going-to-go-by-bus]]", "[[future.i-want-to-join-the-drama-club]]", "[[future.i-want-to-join-the-chess-club]]", "[[future.i-am-going-to-study-hard]]", "[[future.i-am-going-to-miss-my-friends]]")
+  hint "What exactly does the child plan or want?"
+  hint "Which part of the sentence changes between the choices?"
+}

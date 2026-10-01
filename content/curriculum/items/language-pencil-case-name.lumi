@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[school.the-pencil]], [[school.the-crayon]], [[school.the-felt-pen]], [[school.the-brush]], [[school.the-rubber]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.pencil-case-name v=1 skills=[language.school, language.questions] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+
+  scene 34x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      arttools tool tools=["{pick(k, \"pencil\", \"crayon\", \"marker\", \"brush\", \"eraser\")}"] colours=["{pick(k, \"blue\", \"red\", \"green\", \"yellow\", \"red\")}"] layout=one ring=-1
+      text ask "What is it called?" width=32
+      choice pick options=[pick(k, "[[school.the-rubber]]", "[[school.the-felt-pen]]", "[[school.the-pencil]]", "[[school.the-rubber]]", "[[school.the-crayon]]"), pick(k, "[[school.the-pencil]]", "[[school.the-crayon]]", "[[school.the-rubber]]", "[[school.the-brush]]", "[[school.the-pencil]]"), pick(k, "[[school.the-felt-pen]]", "[[school.the-rubber]]", "[[school.the-brush]]", "[[school.the-felt-pen]]", "[[school.the-rubber]]"), pick(k, "[[school.the-brush]]", "[[school.the-pencil]]", "[[school.the-felt-pen]]", "[[school.the-pencil]]", "[[school.the-felt-pen]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[school.the-pencil]]", "[[school.the-crayon]]", "[[school.the-felt-pen]]", "[[school.the-brush]]", "[[school.the-rubber]]")
+  feedback {
+    when (pick == pick(k, "[[school.the-felt-pen]]", "[[school.the-pencil]]", "[[school.the-pencil]]", "[[school.the-felt-pen]]", "[[school.the-crayon]]")) point=tool {
+      say "{pick(k, \"[[school.the-felt-pen|cap]] is the felt pen. This one is sharpened wood.\", \"[[school.the-pencil|cap]] is the pencil. This one is wax in a paper wrapper.\", \"[[school.the-pencil|cap]] is the pencil. This one has a cap and a felt tip.\", \"[[school.the-felt-pen|cap]] is the felt pen. This one has hairs at the end, for paint.\", \"[[school.the-crayon|cap]] is the crayon. This one rubs pencil out.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}
