@@ -122,9 +122,10 @@
         height: calc(100dvh - 24px);
         border-radius: 10px;
     }
-    /* on a phone the sheet takes the width, so the world shows in a band over it */
+    /* on a phone the sheet takes the width, so the world shows in a band over it, deep enough for
+       its horizon and no deeper, so the sheet starts close under the row */
     .look-paper {
-        padding: 150px 0 32px;
+        padding: 120px 0 32px;
     }
     /* a plan band already covers the world, so the sheet under it starts where the band ends */
     .look-scroll:has(> .look-plan) .look-paper {

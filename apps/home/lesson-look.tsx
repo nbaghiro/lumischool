@@ -78,17 +78,26 @@ export function LessonLook(props: {
                 if (!(picture instanceof HTMLElement)) return;
                 const pw = parseFloat(picture.style.width),
                     ph = parseFloat(picture.style.height);
+                const top = host.parentElement?.querySelector<HTMLElement>(".look-top");
+                const below = host.parentElement?.querySelector<HTMLElement>(".look-paper");
                 const cover = (): void => {
                     const w = host.clientWidth,
                         h = host.clientHeight;
                     if (!w || !h || !pw || !ph) return;
                     const k = Math.max(w / pw, h / ph);
-                    // a phone's sheet takes the width, so its horizon comes up into the gap over the sheet
-                    const y = narrow() ? Math.min(0, 170 - 0.6 * ph * k) : (h - ph * k) / 2;
+                    // a phone's sheet takes the width, so the world shows in the gap between the row and
+                    // the sheet, its horizon on the sheet's top edge: the row is two lines deep there,
+                    // and how deep is measured rather than assumed
+                    const sheetTop =
+                        (top?.offsetHeight ?? 0) +
+                        (below ? parseFloat(getComputedStyle(below).paddingTop) || 0 : 0);
+                    const y = narrow() ? Math.min(0, sheetTop - 0.6 * ph * k) : (h - ph * k) / 2;
                     picture.style.transform = `translate(${(w - pw * k) / 2}px, ${y}px) scale(${k})`;
                 };
                 cover();
-                new ResizeObserver(cover).observe(host);
+                const watch = new ResizeObserver(cover);
+                watch.observe(host);
+                if (top) watch.observe(top);
             })
             .catch(() => undefined);
     };
