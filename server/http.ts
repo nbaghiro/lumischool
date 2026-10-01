@@ -1,13 +1,6 @@
-import {
-    startTutor,
-    loadTutor,
-    materialTutor,
-    turnTutor,
-    audioTutor,
-    tutorCapabilities,
-    tutorPreferences,
-} from "./tutoring";
+import { startTutor, loadTutor, materialTutor, turnTutor, audioTutor } from "./tutoring";
 import { helpAvailable, loadHelp, startHelpOn, turnHelp, type LessonReader } from "./adaptive-help";
+import { companionContext, companionFamily, endCompanion, startCompanion } from "./companion";
 import { isIP } from "node:net";
 // The API server (.docs/api.md). The whole app is one function from a web `Request` to a `Response`,
 // which the tests call in process, and `serve` puts it on Node's own http module. Every route is
@@ -593,63 +586,82 @@ function routes(config: Config): Route[] {
             },
         },
         {
-            method: "POST",
-            path: "/api/tutoring/preferences",
-            who: "adult",
-            run: async (c, adult) => json(200, await tutorPreferences(adult, c.body)),
-        },
-        {
             method: "GET",
-            path: "/api/kid/:kid/tutoring",
-            who: "kid",
-            run: async (c, kid) => json(200, await tutorCapabilities(kid, c.params.kid)),
-        },
-        {
-            method: "GET",
-            path: "/api/kid/:kid/tutoring/material/:material",
-            who: "kid",
-            run: async (c, kid) =>
-                json(200, await materialTutor(kid, c.params.material ?? "", c.params.kid)),
-        },
-        {
-            method: "POST",
-            path: "/api/kid/:kid/tutoring/start",
-            who: "kid",
-            run: async (c, kid) => json(200, await startTutor(kid, c.body, c.params.kid)),
-        },
-        {
-            method: "GET",
-            path: "/api/kid/:kid/tutoring/:id",
-            who: "kid",
-            run: async (c, kid) => json(200, await loadTutor(kid, c.params.id ?? "", c.params.kid)),
-        },
-        {
-            method: "POST",
-            path: "/api/kid/:kid/tutoring/:id/turn",
-            who: "kid",
-            run: async (c, kid) =>
-                json(200, await turnTutor(kid, c.params.id ?? "", c.body, c.params.kid)),
-        },
-        {
-            method: "POST",
-            path: "/api/kid/:kid/tutoring/:id/audio",
+            path: "/api/kid/:kid/companion",
             who: "kid",
             run: async (c, kid) => {
-                const audio = await audioTutor(
-                    kid,
-                    c.params.id ?? "",
-                    field(c.body, "revision"),
-                    c.params.kid,
-                );
-                return audio
-                    ? new Response(audio, {
-                          headers: {
-                              "content-type": "audio/wav",
-                              "cache-control": "private, no-store",
-                          },
-                      })
-                    : new Response(null, { status: 204 });
+                await companionFamily(kid, c.params.kid);
+                return json(200, { on: true });
             },
+        },
+        {
+            method: "POST",
+            path: "/api/kid/:kid/companion/start",
+            who: "kid",
+            run: async (c, kid) =>
+                json(
+                    200,
+                    await startCompanion(
+                        await companionFamily(kid, c.params.kid),
+                        lessonReader(config.pack),
+                        c.body,
+                    ),
+                ),
+        },
+        {
+            method: "POST",
+            path: "/api/kid/:kid/companion/context",
+            who: "kid",
+            run: async (c, kid) => {
+                await companionFamily(kid, c.params.kid);
+                return json(200, companionContext(lessonReader(config.pack), c.body));
+            },
+        },
+        {
+            method: "POST",
+            path: "/api/kid/:kid/companion/end",
+            who: "kid",
+            run: async (c, kid) =>
+                json(200, await endCompanion(await companionFamily(kid, c.params.kid), c.body)),
+        },
+        {
+            method: "GET",
+            path: "/api/companion",
+            who: "adult",
+            run: async (_c, adult) => {
+                await companionFamily(adult);
+                return json(200, { on: true });
+            },
+        },
+        {
+            method: "POST",
+            path: "/api/companion/start",
+            who: "adult",
+            run: async (c, adult) =>
+                json(
+                    200,
+                    await startCompanion(
+                        await companionFamily(adult),
+                        lessonReader(config.pack),
+                        c.body,
+                    ),
+                ),
+        },
+        {
+            method: "POST",
+            path: "/api/companion/context",
+            who: "adult",
+            run: async (c, adult) => {
+                await companionFamily(adult);
+                return json(200, companionContext(lessonReader(config.pack), c.body));
+            },
+        },
+        {
+            method: "POST",
+            path: "/api/companion/end",
+            who: "adult",
+            run: async (c, adult) =>
+                json(200, await endCompanion(await companionFamily(adult), c.body)),
         },
         {
             method: "POST",
@@ -716,7 +728,7 @@ function routes(config: Config): Route[] {
             method: "GET",
             path: "/api/tutoring/material/:material",
             who: "adult",
-            run: async (c, adult) => json(200, await materialTutor(adult, c.params.material ?? "")),
+            run: async (c, adult) => json(200, materialTutor(adult, c.params.material ?? "")),
         },
         {
             method: "POST",

@@ -33,8 +33,9 @@ describe("the built apps served from the Node process", () => {
         assert.equal(res.headers.get("content-type"), "text/html; charset=utf-8");
         assert.equal(
             res.headers.get("content-security-policy"),
-            "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; frame-ancestors 'none'",
+            "default-src 'self'; script-src 'self' https://c.daily.co; style-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://*.daily.co wss://*.daily.co; frame-ancestors 'none'",
         );
+        assert.equal(res.headers.get("permissions-policy"), "camera=(), microphone=(self)");
     });
 
     it("gives an asset a year's immutable cache", async () => {

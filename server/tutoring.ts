@@ -11,8 +11,7 @@ import { teachingMaterial } from "../school/tutoring-materials";
 import type { AdaptiveHelp } from "../school/adaptive";
 import { nextTeaching } from "../school/tutoring";
 import { TUTOR_PROMPT_VERSION } from "../school/assistant/tutoring";
-import { consented, type Adult, type KidSession } from "./auth";
-import { kidsOf } from "./db/events";
+import type { Adult } from "./auth";
 import type { TutoringSession } from "./db/schema";
 import { withFamily } from "./db/client";
 import * as store from "./db/tutoring";
@@ -27,69 +26,25 @@ const hash = (value: unknown): string =>
 const refuse = (status = 400): never => {
     throw new Refused(status, { error: status === 404 ? "not-found" : "bad-request" });
 };
-interface TutorActor {
-    family: { id: string };
-    user: string | undefined;
-    kid: string | null;
-    preferences: unknown;
-}
-async function actorOf(actor: Adult | KidSession, kidId?: string): Promise<TutorActor> {
-    if ("parent" in actor) {
-        if (!actor.parent) throw new Refused(403, { error: "not-allowed" });
-        return { family: actor.family, user: actor.user, kid: null, preferences: null };
-    }
-    if (
-        !tutorConfig(process.env).childEnabled ||
-        !kidId ||
-        !actor.keys.some((key) => key.kid_id === kidId)
-    )
-        return refuse(404);
-    return withFamily({ family: actor.family.id }, async (tx) => {
-        if (!(await consented(tx, actor.family.id)).has(kidId)) return refuse(404);
-        const kid = (await kidsOf(tx, actor.family.id)).find((k) => k.id === kidId);
-        const settings = kid && teachingObject(kid.settings) ? kid.settings : {};
-        const teaching = teachingObject(settings.teaching) ? settings.teaching : {};
-        if (!teachingObject(teaching.tutoring) || teaching.tutoring.enabled !== true)
-            return refuse(404);
-        return {
-            family: actor.family,
-            user: undefined,
-            kid: kidId,
-            preferences: teaching.tutoring,
-        };
-    });
+/** A grown-up's own preview of the board: only a parent reaches it, and no child route does. */
+function actorOf(actor: Adult): Adult {
+    if (!actor.parent) throw new Refused(403, { error: "not-allowed" });
+    return actor;
 }
 /** The prepared state of a session, or null where this row is a tutor's help on one question. */
 const preparedState = (state: TeachingState | AdaptiveHelp): TeachingState | null =>
     "materialId" in state ? state : null;
-const owns = (actor: TutorActor, row: TutoringSession): boolean =>
-    actor.kid === null
-        ? row.kid_id === null && row.user_id === actor.user
-        : row.kid_id === actor.kid;
-export async function tutorCapabilities(
-    actor: Adult | KidSession,
-    kidId?: string,
-): Promise<unknown> {
-    const adult = await actorOf(actor, kidId);
-    return { enabled: true, preferences: teachingPreferences(adult.preferences) };
-}
-/** The board's frames, which a child's app fetches rather than carries: no curriculum in that bundle. */
-export async function materialTutor(
-    actor: Adult | KidSession,
-    id: string,
-    kidId?: string,
-): Promise<unknown> {
-    await actorOf(actor, kidId);
+const owns = (actor: Adult, row: TutoringSession): boolean =>
+    row.kid_id === null && row.user_id === actor.user;
+/** The board's frames, which the page fetches rather than carries. */
+export function materialTutor(actor: Adult, id: string): unknown {
+    actorOf(actor);
     const material = teachingMaterial(id);
     if (!material) return refuse(404);
     return { material };
 }
-export async function startTutor(
-    actor: Adult | KidSession,
-    input: unknown,
-    kidId?: string,
-): Promise<unknown> {
-    const adult = await actorOf(actor, kidId);
+export async function startTutor(actor: Adult, input: unknown): Promise<unknown> {
+    const adult = actorOf(actor);
     if (
         !teachingObject(input) ||
         typeof input.material !== "string" ||
@@ -99,12 +54,7 @@ export async function startTutor(
         return refuse();
     const material = teachingMaterial(input.material);
     if (!material) return refuse(404);
-    if (
-        adult.kid &&
-        (typeof input.lesson !== "string" || !material.lessonIds.includes(input.lesson))
-    )
-        return refuse();
-    const preferences = teachingPreferences(adult.kid ? adult.preferences : input.preferences);
+    const preferences = teachingPreferences(input.preferences);
     return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
         await store.lockTutoring(tx, adult.family.id);
         await store.cleanTutoring(tx);
@@ -120,7 +70,7 @@ export async function startTutor(
             id,
             family_id: adult.family.id,
             user_id: adult.user ?? null,
-            kid_id: adult.kid,
+            kid_id: null,
             lesson_id: typeof input.lesson === "string" ? input.lesson : null,
             content_hash: hash(material),
             preferences,
@@ -132,12 +82,8 @@ export async function startTutor(
         return { id, state };
     });
 }
-export async function loadTutor(
-    actor: Adult | KidSession,
-    id: string,
-    kidId?: string,
-): Promise<unknown> {
-    const adult = await actorOf(actor, kidId);
+export async function loadTutor(actor: Adult, id: string): Promise<unknown> {
+    const adult = actorOf(actor);
     if (!uuid(id)) return refuse();
     return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
         await store.lockTutoring(tx, adult.family.id);
@@ -161,13 +107,8 @@ export async function loadTutor(
         return { id, state: row.state };
     });
 }
-export async function turnTutor(
-    actor: Adult | KidSession,
-    id: string,
-    input: unknown,
-    kidId?: string,
-): Promise<unknown> {
-    const adult = await actorOf(actor, kidId);
+export async function turnTutor(actor: Adult, id: string, input: unknown): Promise<unknown> {
+    const adult = actorOf(actor);
     if (!uuid(id) || !validTeachingCommand(input)) return refuse();
     const config = tutorConfig(process.env);
     const prepared = await withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
@@ -209,9 +150,7 @@ export async function turnTutor(
                 prompt_version: TUTOR_PROMPT_VERSION,
                 created_at: new Date().toISOString(),
             });
-        const preferences = adult.kid
-            ? teachingPreferences(adult.preferences)
-            : session.preferences;
+        const preferences = session.preferences;
         const adaptive =
             !existing &&
             state.status !== "ended" &&
@@ -228,7 +167,6 @@ export async function turnTutor(
         ? await tutorStep(config, prepared.material, prepared.state, prepared.session.preferences)
         : null;
     const state = generated ? { ...prepared.state, step: generated.step } : prepared.state;
-    await actorOf(actor, kidId);
     return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
         await store.lockTutoring(tx, adult.family.id);
         const current = await store.tutoringSession(tx, id);
@@ -246,12 +184,11 @@ export async function turnTutor(
 // Replay cache is family scoped and bounded; only a stored, accepted line can be narrated.
 const audioCache = new Map<string, { expires: number; data: Uint8Array<ArrayBuffer> }>();
 export async function audioTutor(
-    actor: Adult | KidSession,
+    actor: Adult,
     id: string,
     revision: unknown,
-    kidId?: string,
 ): Promise<Uint8Array<ArrayBuffer> | null> {
-    const adult = await actorOf(actor, kidId);
+    const adult = actorOf(actor);
     if (!uuid(id) || !Number.isSafeInteger(revision)) return refuse();
     const config = tutorConfig(process.env);
     if (!config.enabled || !config.key) return null;
@@ -260,12 +197,7 @@ export async function audioTutor(
         const session = await store.tutoringSession(tx, id);
         if (!session || !owns(adult, session) || session.expires_at < new Date().toISOString())
             return refuse(404);
-        if (
-            session.revision !== revision ||
-            (adult.kid
-                ? teachingPreferences(adult.preferences).audio
-                : session.preferences.audio) !== "gemini"
-        )
+        if (session.revision !== revision || session.preferences.audio !== "gemini")
             return refuse(409);
         const state = session.state;
         const spoken = "materialId" in state ? state.step.spokenText : state.move.say;
@@ -289,20 +221,4 @@ export async function audioTutor(
         audioCache.set(prepared.key, { data, expires: Date.now() + 15 * 60000 });
     }
     return data;
-}
-
-export async function tutorPreferences(adult: Adult, input: unknown): Promise<{ ok: true }> {
-    await actorOf(adult);
-    if (!teachingObject(input) || !uuid(input.kid) || !teachingObject(input.preferences))
-        return refuse();
-    const id = input.kid;
-    const preferences = {
-        ...teachingPreferences(input.preferences),
-        enabled: input.preferences.enabled === true,
-    };
-    return withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
-        if (!(await consented(tx, adult.family.id)).has(id)) return refuse(404);
-        await store.saveTutorPreferences(tx, id, preferences);
-        return { ok: true };
-    });
 }

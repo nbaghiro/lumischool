@@ -616,33 +616,25 @@ export async function prepareIdentityChange(): Promise<true | Failure> {
         : true;
 }
 
-/** Tutoring uses the same child credential as the worksheet. */
-export const teachingAccess = (kid: string): Promise<Answer> =>
-    call("GET", `/api/kid/${kid}/tutoring`);
-export const teachingMaterialFor = (kid: string, material: string): Promise<Answer> =>
-    call("GET", `/api/kid/${kid}/tutoring/material/${material}`);
-export function teachingGateway(
-    kid: string,
-    lesson: string,
-): import("./teaching-session").TeachingGateway {
-    const base = `/api/kid/${kid}/tutoring`;
-    return {
-        start: (id, material, preferences) =>
-            call("POST", `${base}/start`, { id, material, preferences, lesson }),
-        load: (id) => call("GET", `${base}/${id}`),
-        turn: (id, command) => call("POST", `${base}/${id}/turn`, command),
-        audio: async (id, revision, signal) => {
-            const credential = kidCredential();
-            const response = await fetch(`${base}/${id}/audio`, {
-                method: "POST",
-                signal,
-                headers: {
-                    "content-type": "application/json",
-                    ...(credential ? { "x-kid-session": credential } : {}),
-                },
-                body: JSON.stringify({ revision }),
-            });
-            return response.ok && response.status !== 204 ? response.blob() : null;
+/** Whether the family's server offers the companion (server/companion.ts). */
+export const companionOn = (kid: string): Promise<Answer> =>
+    call("GET", `/api/kid/${kid}/companion`);
+export const companionStart = (kid: string, body: unknown): Promise<Answer> =>
+    call("POST", `/api/kid/${kid}/companion/start`, body);
+export const companionContext = (kid: string, where: unknown): Promise<Answer> =>
+    call("POST", `/api/kid/${kid}/companion/context`, where);
+export const companionEnd = (kid: string, id: string): Promise<Answer> =>
+    call("POST", `/api/kid/${kid}/companion/end`, { id });
+/** The end of a call as the page goes, sent so it outlives the page. */
+export function companionGone(kid: string, id: string): void {
+    const credential = kidCredential();
+    void fetch(`/api/kid/${kid}/companion/end`, {
+        method: "POST",
+        keepalive: true,
+        headers: {
+            "content-type": "application/json",
+            ...(credential ? { "x-kid-session": credential } : {}),
         },
-    };
+        body: JSON.stringify({ id }),
+    }).catch(() => undefined);
 }

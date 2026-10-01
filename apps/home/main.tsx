@@ -28,6 +28,14 @@ const Games = lazy(() => import("./games").then((m) => ({ default: m.Games })));
 const GrownBar = lazy(() => import("./bar").then((m) => ({ default: m.GrownBar })));
 const AddKidDialog = lazy(() => import("./bar").then((m) => ({ default: m.AddKidDialog })));
 
+// the companion a grown-up can try on any lesson they look at (engine/ui/companion-dock.tsx)
+const Dock = lazy(async () => {
+    const [{ CompanionDock }, { GROWN_UP }] = await Promise.all([
+        import("../../engine/ui/companion-dock"),
+        import("./companion"),
+    ]);
+    return { default: () => <CompanionDock who="" chosen={null} reach={GROWN_UP} /> };
+});
 const OpenChild = lazy(() => import("./open-child").then((m) => ({ default: m.OpenChild })));
 
 const SCREENS: Record<Screen, Component> = {
@@ -93,7 +101,7 @@ const screenHere = (path: string): Screen => screenOf(path, { local });
  * leaves it and every stamp on it as they are, and beside it the Add a child dialog, which opens over
  * whichever of those screens is up. The page's nav box is made here, so a screen without the bar has
  * no empty box between the mark and the end. The bar itself shows nothing until it knows the family
- * (bar.tsx).
+ * (bar.tsx). The companion's dock comes with it, since a signed-in screen is where lessons are shown.
  */
 const Bar: Component = () => (
     <Show when={CARRIES[screenHere(path())]}>
@@ -101,6 +109,7 @@ const Bar: Component = () => (
             <GrownBar />
             <AddKidDialog />
         </div>
+        <Dock />
     </Show>
 );
 

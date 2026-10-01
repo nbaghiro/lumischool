@@ -4,8 +4,9 @@
 // actions, which a sheet drawn to be read is not given, so the child's world and the grown-ups'
 // journal draw one day from one piece of code and only one of them can record against it. With
 // actions, a typed or picked answer is checked with the author's reply line, the part a rule points
-// at is ringed while the child has another look, hints come as the grown-up's setting allows, I have
-// finished is at the foot, and a piece a grown-up reads is written on paper and handed in. The question to do
+// at is ringed while the child has another look, the companion (companion.ts) is asked to explain the
+// lesson or help with the question to do now and opens its hints, rings and worked example through the
+// sheet, I have finished is at the foot, and a piece a grown-up reads is written on paper and handed in. The question to do
 // now stands out, with the part of its picture that holds the answer marked, a question done is
 // ticked, and a child working down the sheet is taken on to the next question; a reader looks, with
 // the answers, the hints, what a grown-up looks for and the notes for grown-ups when the page says
@@ -68,9 +69,7 @@ import {
     type Piece,
 } from "../pack";
 import { valuesOf, type Box, type Scene } from "../scene";
-import type { GuidePose } from "../parts/guide/design";
-import { nudges } from "./nudge";
-import { GuideButton, GuideCard, type GuideAsk, type GuideLine } from "./tutor";
+import * as companion from "./companion";
 import { voice } from "./voice";
 
 /** How a question is answered on the sheet: typed or picked into the strip under it, arranged on its drawing, shown worked, written on paper for a grown-up, or in another way this sheet does not have. */
@@ -106,22 +105,13 @@ export interface SheetState {
     options(n: number, key: string): { label: string; value: string }[];
     /** Whether another hint may be opened, which is false wherever nobody is answering. */
     mayHint(n: number): boolean;
-    /** The guide's help on the question when a grown-up has it on, or null, when "A hint" stands as it always did. */
+    /** What the companion can draw beside the question, or null wherever nobody is answering. */
     help(n: number): Help | null;
 }
 
-/**
- * What the world's guide can do for a question (.docs/ai.md, "The guide"): which guide, whether it
- * reads aloud, the part Where? rings, the easier thing Easier first draws, and whether the question
- * is already pinned for the grown-up.
- */
+/** The easier thing the companion's show_worked draws beside a question: the lesson's worked example of it, or the same item asked easier. */
 export interface Help {
-    tutor?: () => void;
-    guide: string;
-    voice: boolean;
-    point: string | null;
     easier: { kind: "worked" | "easy"; question: PackQuestion } | null;
-    pinned: boolean;
 }
 
 /**
@@ -146,14 +136,10 @@ export interface SheetActs {
     handIn(n: number, timing: Timing): boolean;
     /** The next hint, opened and recorded. */
     hint(n: number): string | null;
-    /** A press on the guide's card, recorded with what it gave. */
-    asked(n: number, ask: Exclude<GuideAsk, "show" | "next">, material: string | null): void;
-    /** The question pinned for the grown-up from the guide's card and recorded; false once done or pinned. */
-    pin(n: number): boolean;
+    /** Help beyond a hint, recorded with what it gave: the part ringed, the easier thing's kind, or the companion's face. */
+    asked(n: number, ask: "where" | "easier" | "talk", material: string | null): void;
     /** The line read when a box is empty. */
     empty: string;
-    /** The guide's fixed lines: after the last hint, when nothing is easier, once pinned, and the pin's word. */
-    lines: { noHint: string; noEasier: string; handoff: string; pinned: string };
     finished(): void;
 }
 
@@ -341,7 +327,18 @@ const ON_PAPER: Record<Piece, { say: string; done: string }> = {
  * to it, closed once it is finished so what they wrote stays on it, or a reader's key.
  */
 type Reading =
-    { state: SheetState; acts: SheetActs | null; closed: boolean; flow: Flow } | { key: boolean };
+    | { state: SheetState; acts: SheetActs | null; closed: boolean; flow: Flow }
+    | { key: boolean; look: Look };
+
+/**
+ * What the companion needs on a sheet being looked at, where nothing is recorded: which lesson it is,
+ * and the lesson's worked example of an item, for show_worked.
+ */
+interface Look {
+    lesson: string;
+    level: Level;
+    worked: (item: PackItem) => PackQuestion | null;
+}
 
 /** The ways of answering a child does on the sheet itself, which the sheet takes them through in order. */
 const ON_SHEET: ReadonlySet<SheetWay> = new Set(["typed", "arranged", "program", "grown-up"]);
@@ -354,6 +351,10 @@ const ON_SHEET: ReadonlySet<SheetWay> = new Set(["typed", "arranged", "program",
 interface Flow {
     current: () => number | null;
     done: (n: number, recent: boolean) => void;
+    /** What the companion can do on each question of the sheet, by its number. */
+    desks: Map<number, companion.Desk>;
+    lesson: string;
+    level: Level;
 }
 
 /** What a sheet raises to ask the page it is on to bring something into view (world.tsx listens by this name). */
@@ -395,7 +396,6 @@ const FIRST =
     "input:not(:disabled), .ls-pick:not(:disabled), .ar-piece:not(:disabled), .pg-block:not(:disabled), .ls-go:not(:disabled)";
 
 export function LessonSheet(props: {
-    teaching?: JSX.Element;
     lesson: PackLesson;
     level: Level;
     /** The corner: "Today" and the day, or what the page calls the sheet. */
@@ -494,7 +494,31 @@ export function LessonSheet(props: {
     const current = createMemo((): number | null =>
         finished() ? null : (order().find((n) => !doneNs().has(n)) ?? null),
     );
+    const desks = new Map<number, companion.Desk>();
+    /** The lesson itself, for Explain this lesson while no question is to do. */
+    const whole: companion.Desk = {
+        where: () => ({
+            lesson: props.lesson.id,
+            level: props.level,
+            n: null,
+            variant: null,
+            hints: 0,
+            tries: 0,
+            said: null,
+            worked: false,
+        }),
+        hint: () => null,
+        ring: () => false,
+        worked: () => null,
+        talked: () => undefined,
+    };
+    const deskNow = (): companion.Desk => desks.get(current() ?? 0) ?? whole;
+    // a companion talking about this lesson follows the child on to the next question
+    createEffect(on(current, () => companion.follow(deskNow()), { defer: true }));
     const flow: Flow = {
+        desks,
+        lesson: props.lesson.id,
+        level: props.level,
         current,
         done: (n, recent) => {
             if (doneNs().has(n)) return;
@@ -512,6 +536,17 @@ export function LessonSheet(props: {
             }, NEXT_AFTER);
         },
     };
+    const look: Look = {
+        lesson: props.lesson.id,
+        level: props.level,
+        worked: (item) => {
+            for (const s of at().sections)
+                for (const b of s.blocks)
+                    if (b.k === "ask" && b.item.id === item.id && b.how === "worked")
+                        return b.questions[0] ?? null;
+            return null;
+        },
+    };
     const reading = (): Reading =>
         props.limits.sheets === "open"
             ? {
@@ -520,7 +555,7 @@ export function LessonSheet(props: {
                   closed: finished(),
                   flow,
               }
-            : { key: props.limits.key };
+            : { key: props.limits.key, look };
     return (
         <article
             ref={(el) => {
@@ -554,7 +589,15 @@ export function LessonSheet(props: {
                 <h2 class="hand">{props.lesson.title}</h2>
                 <Show when={props.lesson.goal}>{(goal) => <p class="ls-goal">{goal()}</p>}</Show>
                 <Show when={props.note}>{(note) => <p class="ls-note ls-looked">{note()}</p>}</Show>
-                {props.teaching}
+                <Show when={companion.offered() && !(open()?.acts && finished())}>
+                    <button
+                        type="button"
+                        class="ls-help ls-explain"
+                        onClick={(e) => companion.ask("explain", deskNow(), e.currentTarget)}
+                    >
+                        Explain this lesson
+                    </button>
+                </Show>
             </header>
             <For each={laid()}>
                 {(at) => (
@@ -653,6 +696,7 @@ function Block(props: { block: PackBlock; reading: Reading; draw: SceneDrawer })
     const closed = (): boolean => "closed" in props.reading && props.reading.closed;
     const key = (): boolean => "key" in props.reading && props.reading.key;
     const flow = (): Flow | null => ("flow" in props.reading ? props.reading.flow : null);
+    const look = (): Look | null => ("look" in props.reading ? props.reading.look : null);
     switch (b.k) {
         case "say":
             return (
@@ -703,6 +747,7 @@ function Block(props: { block: PackBlock; reading: Reading; draw: SceneDrawer })
                                 acts={acts()}
                                 closed={closed()}
                                 flow={flow()}
+                                look={look()}
                                 draw={props.draw}
                             />
                         )}
@@ -743,11 +788,21 @@ function Question(props: {
     /** The sheet is finished: what was written stays, and nothing more is taken. */
     closed: boolean;
     flow: Flow | null;
+    /** A sheet being looked at, where the companion still helps and nothing is recorded. */
+    look: Look | null;
     draw: SceneDrawer;
 }): JSX.Element {
     const [told, setTold] = createSignal<Told | null>(props.state?.done(props.q.n) ?? null);
-    // the part the guide's Where? rings, over what a wrong try rings
+    // the part the companion rings, over what a wrong try rings
     const [ring, setRing] = createSignal<string | null>(null);
+    let ringing = 0;
+    onCleanup(() => clearTimeout(ringing));
+    // the easier thing the companion drew beside the question
+    const [easier, setEasier] = createSignal<Help["easier"]>(null);
+    const hints = props.state ? hintsOn(props.q, props.state, props.acts) : null;
+    const [tries, setTries] = createSignal(0);
+    // the hints the companion opened on a sheet being looked at
+    const [shown, setShown] = createSignal<string[]>([]);
     let active = 0;
     let figure: HTMLElement | undefined;
     const working = (e: Event): void => {
@@ -795,8 +850,6 @@ function Question(props: {
                     done: reply.done,
                 };
             },
-            mayHint: () => props.state?.mayHint(props.q.n) ?? false,
-            hint: () => acts.hint(props.q.n),
         };
     };
     const [arrangedTold, setArrangedTold] = createSignal<Arranged | null>(
@@ -821,8 +874,6 @@ function Question(props: {
                     done: reply.done,
                 };
             },
-            mayHint: () => props.state?.mayHint(props.q.n) ?? false,
-            hint: () => acts.hint(props.q.n),
         };
     };
     const [builtTold, setBuiltTold] = createSignal<Built | null>(programming()?.part.told ?? null);
@@ -861,6 +912,112 @@ function Question(props: {
     createEffect(() => {
         if (isDone()) props.flow?.done(props.q.n, Date.now() - active < WORKING);
     });
+    const desk = deskOf();
+    /** What the companion can do on this question, for a sheet that may be answered. */
+    function deskOf(): companion.Desk | null {
+        const acts = props.acts;
+        const flow = props.flow;
+        if (props.look && props.q.n > 0) return lookDesk(props.look);
+        if (!acts || !flow || !hints || props.q.n <= 0) return null;
+        const d: companion.Desk = {
+            where: () => ({
+                lesson: flow.lesson,
+                level: flow.level,
+                n: props.q.n,
+                variant: props.q.variant,
+                hints: hints.hints().length,
+                tries: tries(),
+                said: told()?.say || arrangedTold()?.say || builtTold()?.say || null,
+                worked: easier() !== null,
+            }),
+            hint: () => {
+                const had = hints.hints().length;
+                hints.hint();
+                return hints.hints().length > had ? (hints.hints().at(-1) ?? null) : null;
+            },
+            ring: (part) => {
+                if (!props.q.scene || !(part in props.q.scene.boxes) || isDone()) return false;
+                setRing(part);
+                clearTimeout(ringing);
+                ringing = window.setTimeout(() => setRing(null), companion.RING_FOR);
+                acts.asked(props.q.n, "where", part);
+                return true;
+            },
+            worked: () => {
+                const e = props.state?.help(props.q.n)?.easier ?? null;
+                if (!e) return null;
+                setEasier(e);
+                acts.asked(props.q.n, "easier", e.kind);
+                return e.kind === "worked"
+                    ? `A worked example is showing beside the question. It asks "${e.question.ask}", and its answer is ${answerText(e.question)}.`
+                    : `An easier one like it is showing beside the question. It asks "${e.question.ask}".`;
+            },
+            talked: (face) => acts.asked(props.q.n, "talk", face),
+        };
+        flow.desks.set(props.q.n, d);
+        onCleanup(() => {
+            if (flow.desks.get(props.q.n) === d) flow.desks.delete(props.q.n);
+        });
+        return d;
+    }
+    /** On a sheet being looked at: the same help, shown on the sheet and recorded nowhere. */
+    function lookDesk(look: Look): companion.Desk {
+        return {
+            where: () => ({
+                lesson: look.lesson,
+                level: look.level,
+                n: props.q.n,
+                variant: props.q.variant,
+                hints: shown().length,
+                tries: 0,
+                said: null,
+                worked: easier() !== null,
+            }),
+            hint: () => {
+                const next = props.q.hints[shown().length];
+                if (next === undefined) return null;
+                setShown([...shown(), next]);
+                return next;
+            },
+            ring: (part) => {
+                if (!props.q.scene || !(part in props.q.scene.boxes)) return false;
+                setRing(part);
+                clearTimeout(ringing);
+                ringing = window.setTimeout(() => setRing(null), companion.RING_FOR);
+                return true;
+            },
+            worked: () => {
+                const q = look.worked(props.item);
+                if (!q) return null;
+                setEasier({ kind: "worked", question: q });
+                return `A worked example is showing beside the question. It asks "${q.ask}", and its answer is ${answerText(q)}.`;
+            },
+            talked: () => undefined,
+        };
+    }
+    /** A try told, which the companion hears about if it is talking about this question. */
+    const after = (state: string, say: string): void => {
+        setTries((n) => n + 1);
+        if (desk) companion.checked(desk, state === "right", say);
+    };
+    const onTyped = (t: Told): void => {
+        setTold(t);
+        if (t.state !== "handed-in") after(t.state, t.say);
+    };
+    const help = (
+        <Show when={desk && (props.look || current()) && !props.closed && companion.offered()}>
+            <button
+                type="button"
+                class="ls-help ls-companion"
+                onClick={(e) => {
+                    if (desk) companion.ask("help", desk, e.currentTarget);
+                }}
+            >
+                Help with this one
+            </button>
+        </Show>
+    );
+    const opened = (): string[] => hints?.hints() ?? [];
     return (
         <figure
             class="ls-q"
@@ -919,11 +1076,16 @@ function Question(props: {
                         <ArrangedQuestion
                             scene={a().scene}
                             part={a().part}
-                            opened={props.state?.opened(props.q.n) ?? []}
+                            hints={opened}
+                            help={help}
+                            point={ring()}
                             acts={arrangingActs(a().part)}
                             closed={props.closed}
                             draw={props.draw}
-                            onTold={setArrangedTold}
+                            onTold={(t) => {
+                                setArrangedTold(t);
+                                after(t.state, t.say);
+                            }}
                         />
                     )}
                 </Match>
@@ -932,11 +1094,15 @@ function Question(props: {
                         <ProgramQuestion
                             scene={p().scene}
                             part={p().part}
-                            opened={props.state?.opened(props.q.n) ?? []}
+                            hints={opened}
+                            help={help}
                             acts={programActs(p().part)}
                             closed={props.closed}
                             draw={props.draw}
-                            onTold={setBuiltTold}
+                            onTold={(t) => {
+                                setBuiltTold(t);
+                                after(t.state, t.say);
+                            }}
                         />
                     )}
                 </Match>
@@ -1002,8 +1168,9 @@ function Question(props: {
                         closed={props.closed}
                         current={current()}
                         told={told()}
-                        onTold={setTold}
-                        onRing={setRing}
+                        onTold={onTyped}
+                        hints={opened()}
+                        help={help}
                         point={ring() ?? told()?.point ?? null}
                         sceneKey={key()}
                         draw={props.draw}
@@ -1018,12 +1185,22 @@ function Question(props: {
                         state={state()}
                         acts={props.acts}
                         closed={props.closed}
-                        current={current()}
                         told={told()}
                         onTold={setTold}
+                        hints={opened()}
+                        help={help}
                     />
                 )}
             </Show>
+            <Show when={props.look && desk && companion.offered()}>
+                <div class="ls-strip ls-looked-help">
+                    <div class="ls-row">{help}</div>
+                    <ol class="ls-hints">
+                        <For each={shown()}>{(h) => <li>{h}</li>}</For>
+                    </ol>
+                </div>
+            </Show>
+            <Show when={easier()}>{(e) => <Easier easier={e()} draw={props.draw} />}</Show>
             <Show when={props.way === "other" && props.state}>
                 <p class="ls-note">{OTHER_WAY}</p>
             </Show>
@@ -1161,27 +1338,23 @@ const keyboardOf = (answer: string): "numeric" | "decimal" | "text" =>
 const TAKEN = 900;
 
 /**
- * A question's hints as the strip under it offers them: those already opened, which every sheet
- * shows, and opening another, which only a sheet with actions can do.
+ * A question's hints: those already opened, which every sheet shows, and opening another, which only
+ * a sheet with actions can do, when the companion asks for it.
  */
 function hintsOn(
     q: PackQuestion,
     state: SheetState,
     acts: SheetActs | null,
-): { hints: () => string[]; hintable: () => boolean; hint: () => void; again: () => void } {
-    const mayHint = (): boolean => !!acts && state.mayHint(q.n);
+): { hints: () => string[]; hint: () => void } {
     const [hints, setHints] = createSignal<string[]>(state.opened(q.n));
-    const [hintable, setHintable] = createSignal(mayHint());
     return {
         hints,
-        hintable,
         hint: () => {
-            const h = acts?.hint(q.n);
-            if (h === null || h === undefined) return;
-            setHints([...hints(), h]);
-            setHintable(mayHint());
+            // the grown-up's setting may hold hints back until a first try
+            if (!acts || !state.mayHint(q.n)) return;
+            const h = acts.hint(q.n);
+            if (h !== null) setHints([...hints(), h]);
         },
-        again: () => setHintable(mayHint()),
     };
 }
 
@@ -1211,233 +1384,30 @@ function timingOn(): { first: () => void; now: () => Timing } {
     };
 }
 
-/**
- * The world's guide on a question's strip, when a grown-up has the help on: the button where "A hint"
- * stands, and the card it opens under the strip with hints as Show me opens them, the reply lines as
- * they come, and the asks the question has something behind. The question stays on the sheet. The
- * bar's guide opens the card of the question to do now. A right answer closes it.
- */
-function guideOn(o: {
-    q: PackQuestion;
-    state: SheetState;
-    acts: SheetActs | null;
-    hints: ReturnType<typeof hintsOn>;
-    /** A fixed instruction the card opens with, where the sheet needs one. */
-    first: () => GuideLine[];
-    current: () => boolean;
-    done: () => boolean;
-    told: () => Told | null;
-    /** The strip's own element: a sheet drawn out of sight, or let go of, answers no tap on the bar. */
-    strip: () => HTMLElement | undefined;
-    onRing?: (part: string | null) => void;
-}): {
-    help: () => Help | null;
-    open: () => boolean;
-    toggle: () => void;
-    close: () => void;
-    lines: () => GuideLine[];
-    asks: () => Exclude<GuideAsk, "read">[];
-    pose: () => GuidePose;
-    easier: () => Help["easier"];
-    pinned: () => boolean;
-    ask: (ask: Exclude<GuideAsk, "read">) => void;
-} {
-    const help = (): Help | null => (o.acts ? o.state.help(o.q.n) : null);
-    const [open, setOpen] = createSignal(false);
-    const [lines, setLines] = createSignal<GuideLine[]>([]);
-    const [pose, setPose] = createSignal<GuidePose>("idle");
-    const [easier, setEasier] = createSignal<Help["easier"]>(null);
-    const [pinned, setPinned] = createSignal(help()?.pinned ?? false);
-    const say = (text: string, kind: GuideLine["kind"]): void => {
-        setLines([...lines(), { text, kind }]);
-    };
-    const close = (): void => {
-        setOpen(false);
-        setPose("idle");
-        o.onRing?.(null);
-    };
-    const show = (asked = false): void => {
-        if (!help()) return;
-        // A Help press is the request for the first rung. A nudge from the page only opens the card.
-        if (asked && !o.hints.hints().length && o.hints.hintable()) o.hints.hint();
-        setLines([
-            ...o.first(),
-            ...o.hints.hints().map((text): GuideLine => ({ text, kind: "hint" })),
-        ]);
-        setOpen(true);
-    };
-    // the bar's guide asks for the card of the question to do now, on the sheet the child is reading
-    createEffect(
-        on(
-            nudges,
-            () => {
-                const el = o.strip();
-                if (o.current() && !open() && el?.isConnected && el.offsetParent !== null) show();
-            },
-            { defer: true },
-        ),
-    );
-    // a right answer, or the sheet ending, closes the card; a wrong try's line is read on it
-    createEffect(
-        on(
-            o.told,
-            (t) => {
-                if (!open()) return;
-                if (o.done()) close();
-                else if (t?.say) say(t.say, "said");
-            },
-            { defer: true },
-        ),
-    );
-    const asks = (): Exclude<GuideAsk, "read" | "next">[] => {
-        const h = help();
-        if (!h || o.done()) return [];
-        return [
-            ...(o.hints.hintable() ? (["show"] as const) : []),
-            ...(h.point ? (["where"] as const) : []),
-            ...(h.easier && !easier() ? (["easier"] as const) : []),
-            ...(pinned() ? [] : (["grown-up"] as const)),
-        ];
-    };
-    const ask = (ask: Exclude<GuideAsk, "read">): void => {
-        const acts = o.acts;
-        const h = help();
-        if (!acts || !h || ask === "next") return;
-        if (ask === "show") {
-            o.hints.hint();
-            const hint = o.hints.hints().at(-1);
-            if (hint !== undefined) say(hint, "hint");
-            if (!o.hints.hintable()) say(acts.lines.noHint, "fixed");
-        } else if (ask === "where") {
-            o.onRing?.(h.point);
-            setPose("point");
-            acts.asked(o.q.n, "where", h.point);
-        } else if (ask === "easier") {
-            setEasier(h.easier);
-            if (!h.easier) say(acts.lines.noEasier, "fixed");
-            acts.asked(o.q.n, "easier", h.easier?.kind ?? null);
-        } else if (acts.pin(o.q.n)) {
-            setPinned(true);
-            say(acts.lines.handoff, "fixed");
-        }
-    };
-    return {
-        help,
-        open,
-        toggle: () => (open() ? close() : show(true)),
-        close,
-        lines,
-        asks,
-        pose,
-        easier,
-        pinned,
-        ask,
-    };
-}
-
-/** The guide's button in a strip's row, or "A hint" where the help is off. */
-function GuideOrHint(props: {
-    guide: ReturnType<typeof guideOn>;
-    hints: ReturnType<typeof hintsOn>;
-    closed: boolean;
-    lit: boolean;
-}): JSX.Element {
+/** The easier thing the companion drew beside a question: its picture, and the answer of a worked example. */
+function Easier(props: { easier: NonNullable<Help["easier"]>; draw: SceneDrawer }): JSX.Element {
     return (
-        <Show when={props.guide.help()} fallback={<Hints on={props.hints} closed={props.closed} />}>
-            {(h) => (
-                <GuideButton
-                    id={h().guide}
-                    px={56}
-                    class="ls-guide"
-                    open={props.guide.open()}
-                    lit={props.lit && !props.guide.open()}
-                    onClick={props.guide.toggle}
-                />
-            )}
-        </Show>
-    );
-}
-
-const drawable = (
-    scene: Scene | null | undefined,
-    draw: SceneDrawer | null,
-): { scene: Scene; draw: SceneDrawer } | undefined => (scene && draw ? { scene, draw } : undefined);
-
-/** The guide's card under a strip, with the easier thing drawn under it and the pin's word. */
-function GuideUnder(props: {
-    guide: ReturnType<typeof guideOn>;
-    acts: SheetActs | null;
-    draw: SceneDrawer | null;
-    /** What comes after the card once it closes: the box, or the strip's button. */
-    focus: () => HTMLElement | null;
-}): JSX.Element {
-    return (
-        <>
-            <Show when={props.guide.open() && props.guide.help()}>
-                {(h) => (
-                    <>
-                        <GuideCard
-                            id={h().guide}
-                            lines={props.guide.lines()}
-                            asks={props.guide.asks()}
-                            voice={h().voice}
-                            pose={props.guide.pose()}
-                            onAsk={props.guide.ask}
-                            onClose={() => {
-                                props.guide.close();
-                                props.focus()?.focus({ preventScroll: true });
-                            }}
-                        />
-                        <Show when={h().tutor}>
-                            {(open) => (
-                                <button class="teaching-link" onClick={() => open()()}>
-                                    Help me understand
-                                </button>
-                            )}
-                        </Show>
-                    </>
+        <figure class="ls-easier">
+            <Show
+                when={props.easier.question.scene}
+                fallback={<p class="ls-ask">{props.easier.question.ask}</p>}
+            >
+                {(scene) => (
+                    <SceneTile
+                        scene={scene()}
+                        point={null}
+                        key={props.easier.kind === "worked" ? props.easier.question.answers : null}
+                        here={[]}
+                        draw={props.draw}
+                    />
                 )}
             </Show>
-            <Show when={props.guide.easier()}>
-                {(e) => (
-                    <figure class="ls-easier">
-                        <Show
-                            when={drawable(e().question.scene, props.draw)}
-                            fallback={<p class="ls-ask">{e().question.ask}</p>}
-                        >
-                            {(tile) => (
-                                <SceneTile
-                                    scene={tile().scene}
-                                    point={null}
-                                    key={e().kind === "worked" ? e().question.answers : null}
-                                    here={[]}
-                                    draw={tile().draw}
-                                />
-                            )}
-                        </Show>
-                        <Show when={e().kind === "worked"}>
-                            <figcaption class="ls-answer">
-                                <span class="label">Worked answer</span> {answerText(e().question)}
-                            </figcaption>
-                        </Show>
-                    </figure>
-                )}
+            <Show when={props.easier.kind === "worked"}>
+                <figcaption class="ls-answer">
+                    <span class="label">Worked answer</span> {answerText(props.easier.question)}
+                </figcaption>
             </Show>
-            <Show when={props.guide.pinned() && props.acts}>
-                {(acts) => <p class="ls-pin">{acts().lines.pinned}</p>}
-            </Show>
-        </>
-    );
-}
-
-/** The hint button and the hints opened, under a question. */
-function Hints(props: { on: ReturnType<typeof hintsOn>; closed: boolean }): JSX.Element {
-    return (
-        <Show when={props.on.hintable()}>
-            <button type="button" class="ls-hint" disabled={props.closed} onClick={props.on.hint}>
-                A hint
-            </button>
-        </Show>
+        </figure>
     );
 }
 
@@ -1452,56 +1422,32 @@ function HandIn(props: {
     state: SheetState;
     acts: SheetActs | null;
     closed: boolean;
-    current: boolean;
     told: Told | null;
     onTold: (t: Told) => void;
+    hints: string[];
+    /** The button that asks the companion for help. */
+    help: JSX.Element;
 }): JSX.Element {
-    const hints = hintsOn(props.q, props.state, props.acts);
     const timing = timingOn();
     const done = (): boolean => (props.told?.done ?? false) || props.closed || !props.acts;
-    let strip: HTMLDivElement | undefined;
-    const guide = guideOn({
-        q: props.q,
-        state: props.state,
-        acts: props.acts,
-        hints,
-        first: () => [{ text: ON_PAPER[props.piece].say, kind: "fixed" }],
-        current: () => props.current,
-        done,
-        told: () => props.told,
-        strip: () => strip,
-    });
     const hand = (): void => {
         if (done()) return;
         // handed in and recorded, and the sheet reads back what the question is now
         if (!props.acts?.handIn(props.q.n, timing.now())) return;
         const t = props.state.done(props.q.n);
         if (t) props.onTold(t);
-        hints.again();
     };
     return (
-        <div
-            class="ls-strip"
-            data-state={props.told?.state ?? ""}
-            ref={(el) => {
-                strip = el;
-            }}
-        >
+        <div class="ls-strip" data-state={props.told?.state ?? ""}>
             <p class="ls-note">{ON_PAPER[props.piece].say}</p>
             <div class="ls-row">
                 <button type="button" class="ls-go" disabled={done()} onClick={hand}>
                     {ON_PAPER[props.piece].done}
                 </button>
-                <GuideOrHint guide={guide} hints={hints} closed={props.closed} lit={false} />
+                {props.help}
             </div>
-            <GuideUnder
-                guide={guide}
-                acts={props.acts}
-                draw={null}
-                focus={() => strip?.querySelector<HTMLElement>(".ls-guide") ?? null}
-            />
             <ol class="ls-hints">
-                <For each={hints.hints()}>{(h) => <li>{h}</li>}</For>
+                <For each={props.hints}>{(h) => <li>{h}</li>}</For>
             </ol>
             <p class="ls-said" aria-live="polite">
                 {props.told?.say ?? ""}
@@ -1533,9 +1479,10 @@ function Strip(props: {
     current: boolean;
     told: Told | null;
     onTold: (t: Told) => void;
-    /** The part the guide's Where? rings on the drawing, or null for none. */
-    onRing: (part: string | null) => void;
-    /** What the drawing shows: the part a rule or the guide points at, and the answers written in once it is done. */
+    hints: string[];
+    /** The button that asks the companion for help. */
+    help: JSX.Element;
+    /** What the drawing shows: the part a rule or the companion points at, and the answers written in once it is done. */
     point: string | null;
     sceneKey: Record<string, string> | null;
     draw: SceneDrawer;
@@ -1547,22 +1494,8 @@ function Strip(props: {
     const [taken, setTaken] = createSignal(false);
     let settle = 0;
     onCleanup(() => clearTimeout(settle));
-    const hints = hintsOn(props.q, props.state, props.acts);
     const timing = timingOn();
     const done = (): boolean => (props.told?.done ?? false) || props.closed || !props.acts;
-    let strip: HTMLDivElement | undefined;
-    const guide = guideOn({
-        q: props.q,
-        state: props.state,
-        acts: props.acts,
-        hints,
-        first: () => [{ text: props.q.ask, kind: "ask" }],
-        current: () => props.current,
-        done,
-        told: () => props.told,
-        strip: () => strip,
-        onRing: props.onRing,
-    });
     const put = (k: string, v: string): void => {
         timing.first();
         setTyped({ ...typed(), [k]: v });
@@ -1595,7 +1528,6 @@ function Strip(props: {
         clearTimeout(settle);
         settle = window.setTimeout(() => setTaken(false), TAKEN);
         props.onTold(t);
-        hints.again();
     };
     const label = (k: string): string =>
         keys.length > 1 ? `Question ${props.q.n}, ${k}` : `Your answer to question ${props.q.n}`;
@@ -1720,9 +1652,6 @@ function Strip(props: {
                 class="ls-strip"
                 classList={{ taken: taken(), ready: props.current }}
                 data-state={props.told?.state ?? ""}
-                ref={(el) => {
-                    strip = el;
-                }}
             >
                 <Show when={props.dictates}>
                     <div class="ls-row">
@@ -1730,7 +1659,7 @@ function Strip(props: {
                         <Show when={voice().available()}>
                             <button
                                 type="button"
-                                class="ls-hint"
+                                class="ls-help"
                                 disabled={done()}
                                 onClick={() => voice().speak(props.q.answers.answer ?? "")}
                             >
@@ -1775,26 +1704,10 @@ function Strip(props: {
                     <button type="button" class="ls-go" disabled={done()} onClick={check}>
                         Check
                     </button>
-                    <GuideOrHint
-                        guide={guide}
-                        hints={hints}
-                        closed={props.closed}
-                        lit={props.told?.state === "again"}
-                    />
+                    {props.help}
                 </div>
-                <GuideUnder
-                    guide={guide}
-                    acts={props.acts}
-                    draw={props.draw}
-                    focus={() =>
-                        // the box a child writes in may be on the picture, so the whole question is searched
-                        strip
-                            ?.closest(".ls-q")
-                            ?.querySelector<HTMLElement>(".ls-in:not(:disabled), .ls-guide") ?? null
-                    }
-                />
                 <ol class="ls-hints">
-                    <For each={hints.hints()}>{(h) => <li>{h}</li>}</For>
+                    <For each={props.hints}>{(h) => <li>{h}</li>}</For>
                 </ol>
                 <p class="ls-said" aria-live="polite">
                     {said()}

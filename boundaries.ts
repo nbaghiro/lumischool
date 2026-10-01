@@ -169,6 +169,8 @@ export const MODULES: Record<string, Module> = {
             "@fontsource/andika",
             "@fontsource-variable/shantell-sans",
             "@fontsource-variable/spline-sans-mono",
+            // the companion's call (engine/ui/companion.ts), loaded only when a child starts one
+            "@daily-co/daily-js",
         ],
     },
     space: { at: "engine/space", phase: "run", reach: ["paper", "ink", "parts"], packages: [] },

@@ -1,30 +1,13 @@
-// The world's guide as a child's help, one tap away (.docs/ai.md, "The guide"): a button that is the
-// guide drawn small, and the card it opens, with the guide turned toward the work, the lines it can
-// say and a small speaker on each, and the asks under them. The card decides nothing and holds no
-// content: the page hands it every line, each an authored string or a fixed one, and hears each
-// press. Every line can be read aloud with the device's voice (voice.ts), which the guide marks by
-// three arcs at its head while it plays; there is no lip sync and no persona. Nothing here moves
+// The world's guide drawn small, turned toward what it points at, with three arcs at its head while
+// the device's voice reads (voice.ts). The teaching board draws it (teaching.tsx). Nothing here moves
 // under reduced motion.
 
 import "./tutor.css";
-import { createEffect, createSignal, For, on, onCleanup, onMount, Show, type JSX } from "solid-js";
+import { createEffect, createSignal, on, onMount, type JSX } from "solid-js";
 import type { GuideAnchors, GuidePose } from "../parts/guide/design";
-import { ASK_WORDS, type GuideAsk } from "./asks";
-import { announce } from "./say";
 import { DEFAULT_FRAME, designOf, renderGuide } from "./guide";
 import { el } from "./svg";
 import { voice } from "./voice";
-
-export type { GuideAsk } from "./asks";
-
-/** A line on the card: the question's words, a hint, a rule's line, or a fixed line. */
-export interface GuideLine {
-    text: string;
-    kind: "ask" | "hint" | "said" | "fixed";
-}
-
-/** The guide's word on a button: "the firefly", "the paper bird". */
-export const guideWord = (id: string): string => `the ${designOf(id).name.toLowerCase()}`;
 
 const [speaking, setSpeaking] = createSignal(false);
 let listening = false;
@@ -32,12 +15,6 @@ const hear = (): void => {
     if (listening) return;
     listening = true;
     voice().onChange(setSpeaking);
-};
-
-/** Reads a line aloud, if the device can and the page has been touched. */
-export const read = (text: string): boolean => {
-    hear();
-    return voice().speak(text);
 };
 
 const still = (): boolean => matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -116,123 +93,3 @@ const arc = (r: number): string => {
         y1 = 12 + r * Math.sin(a);
     return `M ${x0.toFixed(1)} ${y0.toFixed(1)} A ${r} ${r} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`;
 };
-
-/** The guide as a button: on the bar, at the end of a question's strip, or over the map. */
-export function GuideButton(props: {
-    id: string;
-    px: number;
-    /** The card it opens is open. */
-    open?: boolean;
-    /** Lit after a wrong try, so a child who is stuck finds it. */
-    lit?: boolean;
-    onClick: () => void;
-    class?: string;
-}): JSX.Element {
-    return (
-        <button
-            type="button"
-            class={`tu-btn ${props.class ?? ""}`}
-            classList={{ lit: props.lit ?? false }}
-            aria-label={`Help from ${guideWord(props.id)}`}
-            aria-expanded={props.open ?? false}
-            onClick={props.onClick}
-        >
-            <Guide id={props.id} px={props.px} pose="idle" aim={[-40, 20]} quiet />
-            <span class="tu-label">Help</span>
-        </button>
-    );
-}
-
-/**
- * The card the guide opens: the guide turned toward the work, the lines said so far with a speaker on
- * each, and the asks. `lines[0]` is read aloud as the card opens when the voice is on. In a sheet
- * it stands in the flow under the question's strip; over the map it stands beside the guide.
- */
-export function GuideCard(props: {
-    id: string;
-    lines: readonly GuideLine[];
-    asks: readonly Exclude<GuideAsk, "read">[];
-    /** Read the first line aloud as the card opens, and offer a speaker on each line. */
-    voice: boolean;
-    pose: GuidePose;
-    onAsk: (ask: Exclude<GuideAsk, "read">) => void;
-    onClose: () => void;
-    closeWord?: string;
-    class?: string;
-}): JSX.Element {
-    hear();
-    const canRead = (): boolean => props.voice && voice().available();
-    let card: HTMLElement | undefined;
-    // the question's words alone as the card opens, whatever was already opened under it, and each
-    // new line as it comes; every line is announced for a child who uses a reader
-    let heard = 0;
-    createEffect(() => {
-        const lines = props.lines;
-        const fresh = heard === 0 ? lines.slice(0, 1) : lines.slice(heard);
-        heard = lines.length;
-        const text = fresh.map((l) => l.text).join(" ");
-        if (!text) return;
-        announce(text);
-        if (canRead()) read(text);
-    });
-    onCleanup(() => voice().stop());
-    return (
-        <section
-            class={`tu-card ${props.class ?? ""}`}
-            aria-label={`${designOf(props.id).name} says`}
-            ref={(node) => {
-                card = node;
-            }}
-        >
-            <Guide id={props.id} px={56} pose={props.pose} aim={[70, -20]} class="tu-card-guide" />
-            <div class="tu-body">
-                <Show when={props.lines.length > 0}>
-                    <ol class="tu-lines">
-                        <For each={props.lines}>
-                            {(line) => (
-                                <li class={`tu-line ${line.kind}`}>
-                                    <span class="tu-words">{line.text}</span>
-                                    <Show when={canRead()}>
-                                        <button
-                                            type="button"
-                                            class="tu-speak"
-                                            aria-label={`${ASK_WORDS.read}: ${line.text}`}
-                                            onClick={() => read(line.text)}
-                                        >
-                                            <span class="tu-ear" aria-hidden="true" />
-                                        </button>
-                                    </Show>
-                                </li>
-                            )}
-                        </For>
-                    </ol>
-                </Show>
-                <div class="tu-asks">
-                    <For each={props.asks}>
-                        {(ask) => (
-                            <button
-                                type="button"
-                                class={`tu-ask ${ask}`}
-                                onClick={() => props.onAsk(ask)}
-                            >
-                                <span class="tu-pic" aria-hidden="true" />
-                                {ASK_WORDS[ask]}
-                            </button>
-                        )}
-                    </For>
-                    <button
-                        type="button"
-                        class="tu-ask off"
-                        onClick={() => {
-                            voice().stop();
-                            props.onClose();
-                            card?.dispatchEvent(new CustomEvent("tu-closed", { bubbles: true }));
-                        }}
-                    >
-                        {props.closeWord ?? "Got it"}
-                    </button>
-                </div>
-            </div>
-        </section>
-    );
-}

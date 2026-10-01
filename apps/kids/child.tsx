@@ -17,17 +17,19 @@ import {
     Match,
     onCleanup,
     onMount,
+    Show,
     Suspense,
     Switch,
     type JSX,
 } from "solid-js";
-import { onDemand, still } from "../../engine/ui/art";
+import { Drawing, onDemand, still } from "../../engine/ui/art";
 import { Button } from "../../engine/ui/form";
 import { Offline } from "../../engine/ui/kids";
 import { Overworld } from "../../engine/ui/overworld";
 import { useLook } from "../../engine/ui/page";
 import { matches } from "../../engine/ui/viewport";
 import { familyName } from "../../school/family/names";
+import type { MapView } from "../../engine/space";
 import type { KidView } from "../../server/api";
 import type { Kid } from "../../server/db/schema";
 import type { InsideScreen } from "./inside";
@@ -44,6 +46,8 @@ import {
     type Loaded,
 } from "./views";
 import { release } from "../../engine/ui/handoff";
+import type { Reach } from "../../engine/ui/companion";
+import * as client from "../../engine/ui/kid";
 
 /** How long going into a world waits for today's sheets before opening it anyway, in ms. */
 const SHEETS_READY = 2500;
@@ -52,6 +56,22 @@ const SHEETS_READY = 2500;
 // a deploy or with a tab left open while the code changed (onDemand in engine/ui/art.tsx)
 // the world's lesson roll, which comes with the child going in rather than
 // with the map (apps/kids/inside.tsx)
+const Dock = lazy(() =>
+    onDemand(() => import("../../engine/ui/companion-dock")).then((m) => ({
+        default: m.CompanionDock,
+    })),
+);
+
+/** A child's own companion routes, which the dock is handed (engine/ui/kid.ts holds them). */
+const KID_REACH: Omit<Reach, "daily"> = {
+    on: (kid) => client.companionOn(kid),
+    start: (kid, body) => client.companionStart(kid, body),
+    context: (kid, where) => client.companionContext(kid, where),
+    end: (kid, id) => client.companionEnd(kid, id),
+    gone: (kid, id) => client.companionGone(kid, id),
+    record: (kid, doings) => client.record(kid, doings),
+};
+
 let insideCode: Promise<typeof import("./inside")> | null = null;
 const loadInside = (): Promise<typeof import("./inside")> =>
     (insideCode ??= onDemand(() => import("./inside")).catch((error: unknown) => {
@@ -137,15 +157,6 @@ export function ChildMap(props: {
         const c = loaded();
         return c ? mapOf(c) : null;
     });
-    /** The guide who belongs to the child's current world, for their lesson sheets. */
-    const guideId = (): string => {
-        const c = loaded();
-        const view = map();
-        const here = view?.here;
-        const world =
-            here === null || here === undefined ? undefined : view?.places[here]?.shown?.world;
-        return (c && world && c.worldOf(world).guide) || "firefly";
-    };
     /** Once a finished sheet's sitting has been sent, the record again, and the views from it. A sheet finished meanwhile reads it once more. */
     let reloading = false;
     let again = false;
@@ -244,7 +255,6 @@ export function ChildMap(props: {
                         narrow: isNarrow,
                         draw,
                         measureIn: page ?? document.body,
-                        guide: guideId(),
                         onFinished: refresh,
                     }),
                 };
@@ -402,6 +412,18 @@ export function ChildMap(props: {
                     <Loading failed offline={props.offline} />
                 </Match>
             </Switch>
+            {/* the companion is on a world's lessons, outside the roll so it stays put as the paper moves */}
+            <Show when={inside() && loaded()}>
+                {(c) => (
+                    <Suspense>
+                        <Dock
+                            who={c().kid.id}
+                            chosen={c().record.kept.companion}
+                            reach={KID_REACH}
+                        />
+                    </Suspense>
+                )}
+            </Show>
             <div class="kid-map-over">
                 <Offline when={props.offline} />
                 {props.view.kids.length > 1 && screen().at === "map" ? (

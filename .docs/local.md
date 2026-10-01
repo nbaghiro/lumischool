@@ -45,7 +45,9 @@ because a server that quietly moves to 5174 is a server that is now answering on
 | 8561 | the art shelf's golden and A/B compares (`.scratchpad/scripts/golden.mjs` and `golden-ab.mjs`), each on a Vite server of its own |
 | 8562 | the scratchpad served for the art shelf's scoped print and signed-out checks, started after the files it checks |
 | 8563 | the social studio's review page for a phone (`.scratchpad/social/phone.mjs`), behind an HTTPS quick tunnel so the phone can save posts to Photos |
-| 8564 to 8599 | free |
+| 8564 | the Tavus tutor demo (`node .scratchpad/tavus/serve.mjs`), a page and the few calls that keep the Tavus key on the server |
+| 8565 | a one-file image server for the Tavus demo, behind a quick tunnel for the minute Tavus takes to fetch a portrait it makes a face from |
+| 8566 to 8599 | free |
 
 Three rules keep the block honest. A port is a fixed number, set with `strictPort` or its equivalent,
 so a clash fails loudly. Every port can be overridden from the environment, so a second checkout can

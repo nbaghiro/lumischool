@@ -58,8 +58,6 @@ export interface ProgramPad {
 /** What a child may do with that pad: each run judged and recorded, and the hints. A sheet drawn to be read has none. */
 export interface Programming {
     tried(lines: ProgramLine[], timing: Timing): Built;
-    mayHint(): boolean;
-    hint(): string | null;
 }
 
 const strings = (v: unknown): string[] =>
@@ -71,8 +69,10 @@ const whole = (v: unknown, or: number): number =>
 export function ProgramQuestion(props: {
     scene: Scene;
     part: ProgramPad;
-    /** The hints opened on it already, in order. */
-    opened: string[];
+    /** The hints opened on it, in order, which the companion opens (lesson.tsx). */
+    hints: () => string[];
+    /** The button that asks the companion for help, at the end of the bar. */
+    help?: JSX.Element;
     /** What a child may do with it; without it the program is read and nothing is taken. */
     acts?: Programming;
     /** The sheet is finished, or the question was answered on another visit: nothing more is taken. */
@@ -98,8 +98,6 @@ export function ProgramQuestion(props: {
     const [said, setSaid] = createSignal(told0?.say ?? "");
     const [spoken, setSpoken] = createSignal("");
     const [playing, setPlaying] = createSignal(false);
-    const [hints, setHints] = createSignal<string[]>(props.opened);
-    const [hintable, setHintable] = createSignal(props.acts?.mayHint() ?? false);
     /** Which number of the chosen block the number tools change, from 0. */
     const [which, setWhich] = createSignal(0);
     const past: Build[] = [];
@@ -164,7 +162,6 @@ export function ProgramQuestion(props: {
                           : "";
                   setTold(b);
                   setSaid(`${said()} ${b.say}${chance}`.trim());
-                  setHintable(acts.mayHint());
                   if (b.done) {
                       setBuild({ blocks: placedFrom(b.lines, pad), chosen: -1 });
                       if (b.state !== "right") played?.show(writeLines(b.lines));
@@ -228,13 +225,6 @@ export function ProgramQuestion(props: {
         drawPad();
         played?.reset();
         setSaid("The slots are empty.");
-    };
-    const hint = (): void => {
-        const acts = props.acts;
-        const h = acts?.hint();
-        if (!acts || h === null || h === undefined) return;
-        setHints([...hints(), h]);
-        setHintable(acts.mayHint());
     };
 
     /** Plays the program on the drawing, lighting the running slot, then judges it. */
@@ -466,14 +456,10 @@ export function ProgramQuestion(props: {
                     Step
                 </button>
                 <Said said={spoken()} />
-                <Show when={hintable()}>
-                    <button type="button" class="ls-hint" disabled={props.closed} onClick={hint}>
-                        A hint
-                    </button>
-                </Show>
+                {props.help}
             </div>
             <ol class="ls-hints">
-                <For each={hints()}>{(h) => <li>{h}</li>}</For>
+                <For each={props.hints()}>{(h) => <li>{h}</li>}</For>
             </ol>
             <p class="ls-said" aria-live="polite">
                 {said()}

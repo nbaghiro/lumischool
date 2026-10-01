@@ -1,13 +1,12 @@
 import { TEACHING_MATERIALS } from "../../school/tutoring-materials";
 // Fails when a line the world's guide can say breaks the rules on its voice (.docs/ai.md, "The
 // guide"): no first person about itself, no name of its own beyond "the firefly", no relational
-// vocabulary, no sending the child to Run or Step, no exclamation mark and no em-dash. The lines are the guide's fixed lines and the
-// words on its asks, every world's own lines, and every hint and rule line of the curriculum, which
+// vocabulary, no sending the child to Run or Step, no exclamation mark and no em-dash. The lines are the guide's fixed lines,
+// every world's own lines, and every hint and rule line of the curriculum, which
 // the guide reads aloud; a question's own words are held to the marks only. The rules are
 // school/voice.ts, which the children's app holds its map's tips to in its own test. `--selftest`
 // plants each kind of breach and fails if one goes unreported.
 
-import { ASK_WORDS } from "../../engine/ui/asks";
 import { LINES } from "../../school/lessons";
 import { breachesOf, type Breach } from "../../school/voice";
 import { WORLDS } from "../../school/worlds/worlds";
@@ -28,8 +27,6 @@ export function everyLine(): Said[] {
             said.push({ where: `teaching.${m.id}.${f.id}`, line: f.caption, words: true });
     for (const [k, line] of Object.entries(LINES))
         said.push({ where: `LINES.${k}`, line, words: true });
-    for (const [k, line] of Object.entries(ASK_WORDS))
-        said.push({ where: `ASK_WORDS.${k}`, line, words: true });
     for (const w of WORLDS) {
         said.push({ where: `${w.id}.arrive`, line: w.arrive, words: true });
         for (const r of w.reaches)

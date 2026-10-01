@@ -670,11 +670,6 @@ export const helpAsked = (
     material: string | null,
 ): EventData["help-asked"] => ({ sitting, q: asked.ref, ask, material });
 
-/** The turn once the question is handed to the grown-up from the card; null once it is done or already pinned. */
-export function pinned(turn: Turn): Turn | null {
-    return turn.done || turn.pinned ? null : { ...turn, pinned: true };
-}
-
 /** Every point a rule or its rules would ring, in the order they are read. */
 function pointsIn(rules: readonly PackRule[]): string[] {
     return rules.flatMap((r) => [...(r.point ? [r.point] : []), ...pointsIn(r.children)]);
@@ -709,6 +704,17 @@ export function pointOf(q: PackQuestion): string | null {
         (n) => !SAYS.has(n.type) && !LINES_UP.has(n.type) && ringable(n.id),
     );
     return drawn?.id ?? null;
+}
+
+/** The parts of a question's picture the companion may ring, by id and kind, the one it turns on first. */
+export function ringableIn(q: PackQuestion): { id: string; type: string }[] {
+    const scene = q.scene;
+    if (!scene) return [];
+    const first = pointOf(q);
+    return scene.nodes
+        .filter((n) => n.id in scene.boxes && !SAYS.has(n.type) && !LINES_UP.has(n.type))
+        .map((n) => ({ id: n.id, type: n.type }))
+        .sort((a, b) => Number(b.id === first) - Number(a.id === first));
 }
 
 /** The easier thing the card can offer on a question: the lesson's worked example of the same item, or the same item asked at the lesson's easy level. */

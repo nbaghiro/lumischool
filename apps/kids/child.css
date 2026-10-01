@@ -1,5 +1,6 @@
-/* A child's map fills the page under the bar (child.tsx). The one thing over it is the line for when
-   the internet is away, and the way back to the pictures for a family with more than one child. On a
+/* A child's map fills the page under the bar (child.tsx). Over it are the line for when the internet
+   is away, the way back to the pictures for a family with more than one child, and in a world the
+   companion's dock (engine/ui/companion-dock.css). On a
    phone that strip sits above the map instead, so nothing is laid over a sheet. Today's sheets are
    drawn and measured out of sight (lesson.tsx) before the roll is laid out round them. */
 .kid-map {

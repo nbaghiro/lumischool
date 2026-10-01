@@ -1,0 +1,232 @@
+/* The companion's dock (companion-dock.tsx): the character's video in a small tile with a bar of
+   round icon buttons under it, floating at the top right of the window until someone drags it. It
+   sits over dialogs too, since it is drawn inside the one the lesson was asked from. */
+.cp-dock {
+    position: fixed;
+    top: 84px;
+    right: 20px;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font: 400 15px / 1.4 var(--f-read);
+    color: var(--ink);
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+.cp-dock.placed {
+    right: auto;
+}
+.cp-dock.dragging {
+    cursor: grabbing;
+}
+.cp-call {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+/* 4 by 5, the character from the shoulders up, cut from Tavus's wide frame round its middle. */
+.cp-stage {
+    position: relative;
+    width: 168px;
+    aspect-ratio: 4 / 5;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    box-shadow: 0 6px 0 var(--shade);
+}
+.cp-call.speaking .cp-stage {
+    border-color: var(--pen);
+}
+.cp-stage img,
+.cp-stage video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+    pointer-events: none;
+}
+.cp-stage video {
+    opacity: 0;
+}
+.cp-stage video.shown {
+    opacity: 1;
+}
+/* While the call joins: the still dimmed, and a ring turning in its middle. */
+.cp-call.coming .cp-stage img {
+    filter: saturate(0.6) brightness(0.85);
+}
+.cp-spin {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 36px;
+    height: 36px;
+    margin: -18px 0 0 -18px;
+    border: 4px solid color-mix(in srgb, #fff 45%, transparent);
+    border-top-color: #fff;
+    border-radius: 50%;
+}
+@media (prefers-reduced-motion: no-preference) {
+    .cp-spin {
+        animation: cp-spin 0.9s linear infinite;
+    }
+}
+@keyframes cp-spin {
+    to {
+        rotate: 1turn;
+    }
+}
+.cp-name {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    max-width: calc(100% - 16px);
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: color-mix(in srgb, #fff 88%, transparent);
+    font: 650 13px / 1.4 var(--f-hand);
+    color: var(--pen);
+}
+.cp-bar,
+.cp-pick,
+.cp-note {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    box-shadow: 0 4px 0 var(--shade);
+}
+.cp-icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--ink);
+    cursor: pointer;
+    touch-action: none;
+    -webkit-touch-callout: none;
+}
+.cp-icon:hover {
+    background: color-mix(in srgb, var(--grid) 60%, #fff);
+}
+.cp-icon[aria-pressed="true"] {
+    background: color-mix(in srgb, var(--glow) 55%, #fff);
+}
+.cp-icon.cp-talk[aria-pressed="true"] {
+    background: color-mix(in srgb, var(--sky) 70%, #fff);
+}
+.cp-icon:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+.cp-said {
+    max-width: 240px;
+    max-height: 6.6em;
+    margin: 0;
+    padding: 8px 12px;
+    overflow-y: auto;
+    touch-action: pan-y;
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 14px;
+    user-select: text;
+    -webkit-user-select: text;
+}
+.cp-face-pick {
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    overflow: hidden;
+    background: none;
+    cursor: pointer;
+}
+.cp-face-pick img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.cp-face-pick[aria-pressed="true"],
+.cp-face-pick:hover {
+    border-color: var(--pen);
+}
+.cp-note {
+    max-width: 280px;
+    padding-left: 14px;
+    border-radius: 18px;
+}
+.cp-note p {
+    margin: 0;
+}
+.cp-dock button:focus-visible {
+    outline: 3px dashed var(--pen);
+    outline-offset: 2px;
+}
+
+/* A phone's dock: a smaller video with the bar folded into two columns beside it, so the whole is
+   about 200 by 130 px and covers less of the sheet. The buttons stay 44 px. */
+@media (max-width: 700px) {
+    .cp-dock {
+        top: 72px;
+        right: 8px;
+    }
+    .cp-call {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: flex-end;
+        max-width: 208px;
+    }
+    .cp-stage {
+        width: 96px;
+        border-radius: 16px;
+    }
+    .cp-name {
+        left: 4px;
+        bottom: 4px;
+        max-width: calc(100% - 8px);
+        padding: 1px 6px;
+        font-size: 11px;
+    }
+    .cp-bar {
+        display: grid;
+        grid-template-columns: repeat(2, 44px);
+        gap: 0;
+        border-radius: 18px;
+    }
+    .cp-said {
+        flex-basis: 100%;
+        max-width: none;
+        max-height: 4.4em;
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+    .cp-face-pick {
+        width: 44px;
+        height: 44px;
+        border-width: 2px;
+    }
+}
+
+@media print {
+    .cp-dock {
+        display: none;
+    }
+}

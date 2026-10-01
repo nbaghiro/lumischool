@@ -63,11 +63,24 @@ function adultPaths(text: string): string[] {
     return [...found];
 }
 
+/**
+ * Packages whose own chunk names an `/api/` path on another host, never ours: Daily's call bundle
+ * carries Sentry's report URL, `//<host>/api/<project>/envelope/`.
+ */
+const FOREIGN = ["node_modules/@daily-co/daily-js/"];
+
 function problemsIn(manifest: Manifest, read: (file: string) => string): string[] {
     if (!manifest.has(KIDS)) return [`the build has no ${KIDS}, so nothing was checked`];
-    return reached(manifest, KIDS).flatMap((file) =>
-        adultPaths(read(file)).map((path) => `${file}, in the child's build, names ${path}`),
+    const foreign = new Set(
+        [...manifest]
+            .filter(([key]) => FOREIGN.some((f) => key.startsWith(f)))
+            .map(([, chunk]) => chunk.file),
     );
+    return reached(manifest, KIDS)
+        .filter((file) => !foreign.has(file))
+        .flatMap((file) =>
+            adultPaths(read(file)).map((path) => `${file}, in the child's build, names ${path}`),
+        );
 }
 
 async function build(dir: string): Promise<Manifest> {

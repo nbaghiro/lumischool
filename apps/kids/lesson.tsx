@@ -1,5 +1,4 @@
 import { createSignal } from "solid-js";
-import { LessonTeaching } from "./tutoring";
 // Today's lessons on a child's roll: each lesson from the family's pack set on a sheet by
 // engine/ui/lesson.tsx and measured before the roll is laid out round it, and answered through
 // school/lessons.ts, which checks each try and says what the sitting records. The first
@@ -43,8 +42,6 @@ import {
     levelIn,
     LINES,
     partToRead,
-    pinned,
-    pointOf,
     SHEET_LEVEL,
     tried,
     turnsOf,
@@ -56,7 +53,7 @@ import {
     type Turn,
 } from "../../school/lessons";
 import type { Kid } from "../../server/db/schema";
-import { helpOf, policyOf } from "./teaching";
+import { policyOf } from "./teaching";
 import type { Loaded } from "./views";
 
 /** A screen sitting begun on another visit and not ended, and where it left each question. */
@@ -204,14 +201,11 @@ function sheetFor(
     pack: string,
     resume: Resume | null,
     part: number | undefined,
-    guide: string,
     onFinished: (lesson: string) => void,
-    tutor?: () => (() => void) | null,
 ): { state: SheetState; acts: SheetActs } {
     const asked = new Map(askedIn(lesson, level, 0, part).map((a) => [a.question.n, a]));
     const turns = new Map<number, Turn>(resume?.turns ?? []);
     const policy = policyOf(kid);
-    const help = helpOf(kid);
     const sitting = new Sitting(kid, lesson, level, pack, resume?.sitting ?? null, part);
     const turnOf = (n: number): Turn => turns.get(n) ?? FRESH;
     // what the sheet reads, kept until the turn it was read from is replaced, since a turn is never
@@ -244,26 +238,16 @@ function sheetFor(
             done: next.turn.done,
         };
     };
-    /** What the guide can do for a question: the same guide the world has, and the question's own materials. */
+    /** What the companion can draw beside a question: the lesson's own easier step for it. */
     const helpAt = (n: number): Help | null => {
         const a = asked.get(n);
-        if (!help.on || !a) return null;
+        if (!a) return null;
         const easier = easierOf(lesson, level, a);
         return {
-            guide,
-            tutor: tutor?.()
-                ? () => {
-                      sitting.asked(a, "easier", "teaching");
-                      tutor?.()?.();
-                  }
-                : undefined,
-            voice: help.voice,
-            point: pointOf(a.question),
             easier: easier && {
                 kind: easier.kind,
                 question: easier.kind === "worked" ? easier.question : easier.asked.question,
             },
-            pinned: turnOf(n).pinned,
         };
     };
     const acts: SheetActs = {
@@ -305,21 +289,7 @@ function sheetFor(
             const a = asked.get(n);
             if (a) sitting.asked(a, ask, material);
         },
-        pin: (n) => {
-            const a = asked.get(n);
-            const next = a && pinned(turnOf(n));
-            if (!a || !next) return false;
-            turns.set(n, next);
-            sitting.asked(a, "grown-up", null);
-            return true;
-        },
         empty: LINES.empty,
-        lines: {
-            noHint: LINES["no-hint"],
-            noEasier: LINES["no-easier"],
-            handoff: LINES.handoff,
-            pinned: LINES.pinned,
-        },
         finished: () => {
             void sitting.finished().then((ended) => {
                 if (ended) onFinished(lesson.id);
@@ -393,8 +363,6 @@ export function todaysSheets(o: {
     narrow: boolean;
     draw: SceneDrawer;
     measureIn: HTMLElement;
-    /** The guide of the world the child is in, by its design's id, who is their help on the sheets. */
-    guide: string;
     onFinished: (lesson: string) => void;
 }): Sheets {
     const built = new Map<
@@ -430,7 +398,6 @@ export function todaysSheets(o: {
             if (built.has(lesson.id)) continue;
             // one sheet's state and actions, made outside the JSX: a prop's expression is read
             // again on every access, and a second one would be a second sitting
-            const [openTutor, setOpenTutor] = createSignal<(() => void) | null>(null);
             const reading = readings.get(lesson.id);
             const { state, acts } = sheetFor(
                 o.kid,
@@ -439,23 +406,12 @@ export function todaysSheets(o: {
                 o.pack,
                 resumes.get(lesson.id) ?? null,
                 reading?.part,
-                o.guide,
                 o.onFinished,
-                openTutor,
             );
             let el: HTMLElement | undefined;
             const dispose = render(
                 () => (
                     <LessonSheet
-                        teaching={
-                            <LessonTeaching
-                                kid={o.kid}
-                                lesson={lesson.id}
-                                guide={o.guide}
-                                reference={lesson.teaching}
-                                onReady={(open) => setOpenTutor(() => open)}
-                            />
-                        }
                         lesson={lesson}
                         level={SHEET_LEVEL}
                         strip={{ label: "Today", date: longDay(o.date) }}

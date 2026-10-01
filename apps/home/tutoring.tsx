@@ -153,24 +153,6 @@ function Preview(props: { identity: string }): JSX.Element {
         const { scenes } = await import("../../engine/ui/scene");
         return { ...found, draw: await scenes([found.scene]) };
     });
-    const [family] = createHeld(() => shared.family.read(), [shared.family]);
-    const [child, setChild] = createSignal("");
-    const [saved, setSaved] = createSignal("");
-    const children = () => {
-        const f = family();
-        return f && !("error" in f) ? f.kids : [];
-    };
-    const savePreferences = async () => {
-        const result = await call("POST", "/api/tutoring/preferences", {
-            kid: child(),
-            preferences: { ...preferences(), enabled: true },
-        });
-        setSaved(
-            result.ok
-                ? "Preferences saved. Child tutoring remains behind the rollout switch."
-                : "Could not save preferences. Please try again.",
-        );
-    };
     const preference = (key: keyof TeachingPreferences, value: string | boolean) =>
         setPreferences((p) => teachingPreferences({ ...p, [key]: value }));
     const remember = (run: number) => {
@@ -296,21 +278,6 @@ function Preview(props: { identity: string }): JSX.Element {
                         onChange={(on) => preference("adaptive", on)}
                     />
                     <Button onClick={startRun}>Start a fresh lesson</Button>
-                </div>
-                <div class="teaching-settings-fields">
-                    <label>
-                        Child preferences
-                        <Select value={child()} onChange={(e) => setChild(e.currentTarget.value)}>
-                            <option value="">Choose a child</option>
-                            <For each={children()}>
-                                {(kid) => <option value={kid.id}>{kid.name}</option>}
-                            </For>
-                        </Select>
-                    </label>
-                    <Button second disabled={!child()} onClick={() => void savePreferences()}>
-                        Save preferences
-                    </Button>
-                    <output>{saved()}</output>
                 </div>
             </details>
             <Show

@@ -24,7 +24,6 @@ import {
     leftOf,
     mayHint,
     optionsOf,
-    pinned,
     pointOf,
     tried,
     turnsOf,
@@ -856,12 +855,7 @@ describe("the guide's card", () => {
         assert.equal(easierOf(worked, "medium", p)?.kind, "worked");
     });
 
-    it("pins a question handed to the grown-up once, never a done one, and reads the pin back from the log", () => {
-        const turn = pinned(FRESH);
-        assert.ok(turn);
-        assert.equal(turn.pinned, true);
-        assert.equal(pinned(turn), null);
-        assert.equal(pinned({ ...FRESH, done: true }), null);
+    it("reads a question handed to the grown-up back from the log as pinned", () => {
         const asked = askedIn(lesson, "medium").find((a) => a.question.n === 1);
         assert.ok(asked);
         const data = helpAsked("s1", asked, "grown-up", null);

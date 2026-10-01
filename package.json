@@ -15,7 +15,7 @@
         "db:migrate": "node --import ./tools/scripts/resolve.ts server/db/migrations/migrate.ts",
         "dev": "node --import ./tools/scripts/resolve.ts tools/scripts/dev.ts",
         "dev:web": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vite",
-        "dev:api": "LUMISCHOOL_ENV=local node --import ./tools/scripts/resolve.ts server/http.ts",
+        "dev:api": "LUMISCHOOL_ENV=local node --env-file-if-exists=.env --import ./tools/scripts/resolve.ts server/http.ts",
         "build": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vite build",
         "start": "node --import ./tools/scripts/resolve.ts server/http.ts",
         "db:reset": "bash tools/scripts/db-reset.sh",
@@ -52,6 +52,7 @@
         "site:pictures": "node --import ./tools/scripts/resolve.ts tools/scripts/site-pictures.ts"
     },
     "dependencies": {
+        "@daily-co/daily-js": "0.92.2",
         "@fontsource-variable/shantell-sans": "^5.3.0",
         "@fontsource-variable/spline-sans-mono": "^5.3.0",
         "@fontsource/andika": "^5.3.0",

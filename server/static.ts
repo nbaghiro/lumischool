@@ -56,6 +56,19 @@ const BRAND_CACHE = "public, max-age=3600";
 const PAGE_CSP =
     "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; frame-ancestors 'none'";
 
+/**
+ * The pages that draw lessons for a family, a child's and a grown-up's, also reach the companion's
+ * call (server/companion.ts): Daily's call bundle comes from c.daily.co, and the call itself talks to
+ * Daily over https and websockets. The site's pages do not.
+ */
+const CALLING = new Set(["kids", "home"]);
+const CALL_CSP =
+    "default-src 'self'; script-src 'self' https://c.daily.co; style-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://*.daily.co wss://*.daily.co; frame-ancestors 'none'";
+
+/** Only those pages may ask for the microphone, which the companion hears while Talk is held. */
+const PERMISSIONS = (app: string): string =>
+    `camera=(), microphone=(${CALLING.has(app) ? "self" : ""})`;
+
 const HEADERS = { "x-content-type-options": "nosniff" };
 
 /**
@@ -133,7 +146,8 @@ export function staticFrom(
                 ...HEADERS,
                 "content-type": "text/html; charset=utf-8",
                 "cache-control": "no-store",
-                "content-security-policy": PAGE_CSP,
+                "content-security-policy": CALLING.has(app) ? CALL_CSP : PAGE_CSP,
+                "permissions-policy": PERMISSIONS(app),
             },
         });
     };

@@ -13,7 +13,9 @@ const running = await fetch(HEALTH)
 
 let api: ChildProcess | null = null;
 if (!running) {
-    api = spawn(process.execPath, ["--import", "./tools/scripts/resolve.ts", "server/http.ts"], {
+    // the root's .env holds local keys such as TAVUS_API_KEY; what the shell sets wins over it
+    const args = ["--env-file-if-exists=.env", "--import", "./tools/scripts/resolve.ts"];
+    api = spawn(process.execPath, [...args, "server/http.ts"], {
         stdio: "inherit",
         env: { ...process.env, LUMISCHOOL_ENV: "local" },
     });

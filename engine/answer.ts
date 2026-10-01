@@ -303,6 +303,10 @@ export type Language = (typeof LANGUAGES)[number];
 export const NATIONS = ["britain", "usa", "japan", "russia", "china"] as const;
 export type Nation = (typeof NATIONS)[number];
 
+/** The faces a child may choose for the companion who talks a lesson through with them (server/companion.ts). */
+export const COMPANIONS = ["dr-paws", "mr-edward", "mrs-hart"] as const;
+export type Companion = (typeof COMPANIONS)[number];
+
 /** Each setting's value. null takes a setting back to its default. */
 export interface SettingValues {
     /** The language a child learns; null until a grown-up picks one. */
@@ -315,6 +319,8 @@ export interface SettingValues {
     practice: number | null;
     /** The easel's tools and colours, read back by `readState` in engine/ui/painting-easel.ts. */
     painting: unknown;
+    /** The companion's face a child last chose in a lesson; null is Dr. Paws. */
+    companion: Companion | null;
 }
 
 export type SettingKey = keyof SettingValues;
@@ -353,15 +359,15 @@ export interface EventData {
     };
     "hint-opened": { sitting: string; q: QuestionRef; rung: number };
     /**
-     * A press on the world's guide's card under a question (.docs/ai.md, "The guide"): the question
-     * read aloud, the part it turns on ringed, the easier step opened, or the question handed to the
-     * grown-up; `material` names what was given, such as the part ringed or the easier thing's kind.
-     * Show me is `hint-opened`.
+     * Help on a question beyond its hints: the part it turns on ringed, the easier step opened, or a
+     * talk with the companion begun on it (`talk`, whose material is the face), so an answer given
+     * after it is not counted as the child's alone. `read` and `grown-up` were the old guide card's,
+     * kept so the log reads back. Opening a hint is `hint-opened`.
      */
     "help-asked": {
         sitting: string;
         q: QuestionRef;
-        ask: "read" | "where" | "easier" | "grown-up";
+        ask: "read" | "where" | "easier" | "grown-up" | "talk";
         material: string | null;
     };
     "sheet-printed": {
@@ -859,6 +865,12 @@ export const SETTINGS: Record<SettingKey, SettingRule> = {
         value: (v) => v === null || (obj(v) && JSON.stringify(v).length <= 8192 && gameJson(v)),
         says: "an object of at most 8 KB, or null",
     },
+    companion: {
+        scope: "kid",
+        of: false,
+        value: (v) => v === null || one(v, COMPANIONS),
+        says: `one of ${COMPANIONS.join(", ")}, or null`,
+    },
 };
 
 const setting = (e: Record<string, unknown>): string | null => {
@@ -927,7 +939,7 @@ const EVENT: Record<EventKind, Check> = {
     "help-asked": (e) =>
         ref(e.q) ??
         (str(e.sitting) &&
-        one(e.ask, ["read", "where", "easier", "grown-up"] as const) &&
+        one(e.ask, ["read", "where", "easier", "grown-up", "talk"] as const) &&
         nullableStr(e.material)
             ? null
             : "help-asked needs a sitting, an ask and a material that may be null"),

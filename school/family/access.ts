@@ -62,8 +62,8 @@ export const ACCESS: Record<EventKind, Access> = {
 };
 
 /**
- * Who may change each setting. A child keeps their own practice levels and easel; what they learn and
- * when the family's mornings start are a grown-up's to choose.
+ * Who may change each setting. A child keeps their own practice levels, easel and companion's face; what
+ * they learn and when the family's mornings start are a grown-up's to choose.
  */
 export const SETTING_WRITERS: Record<SettingKey, readonly Caller[]> = {
     language: ["parent"],
@@ -71,6 +71,7 @@ export const SETTING_WRITERS: Record<SettingKey, readonly Caller[]> = {
     "morning-start": ["parent"],
     practice: ["kid", "parent"],
     painting: ["kid", "parent"],
+    companion: ["kid", "parent"],
 };
 
 /**

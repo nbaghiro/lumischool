@@ -1,6 +1,5 @@
 // The teaching board: a parent's preview walked to its recap, a board that survives a reload and a
-// repeated turn, a second family that cannot reach the session, and the child's entry, which stays
-// off until a deployment sets TUTORING_CHILD_ENABLED and a parent saves a child's preferences.
+// repeated turn, and a second family that cannot reach the session.
 
 import { readFileSync } from "node:fs";
 import { expect, type Page } from "@playwright/test";
@@ -188,48 +187,6 @@ test("a board shrinks, pauses and comes back to the same step after a reload, an
         await theirs.evaluate(async (id) => (await fetch(`/api/tutoring/${id}`)).status, turns.id),
     ).toBe(404);
     await other.close();
-});
-
-test("a child keeps the help they have until a deployment turns tutoring on and a parent saves it", async ({
-    page,
-    browser,
-}) => {
-    await signInAs(page);
-    const kid = await page.evaluate(async () => {
-        const family: unknown = await (await fetch("/api/family")).json();
-        const kids =
-            typeof family === "object" && family !== null && "kids" in family ? family.kids : null;
-        const first: unknown = Array.isArray(kids) ? kids[0] : null;
-        const id = typeof first === "object" && first !== null && "id" in first ? first.id : null;
-        return typeof id === "string" ? id : "";
-    });
-    expect(kid).not.toBe("");
-
-    const child = await newDevice(browser, test.info());
-    const theirs = await child.newPage();
-    await theirs.goto("/kids");
-    // a browser with no child credential reaches no tutor at all, whatever a parent has saved
-    expect(
-        await theirs.evaluate(async (id) => (await fetch(`/api/kid/${id}/tutoring`)).status, kid),
-    ).toBe(401);
-    await child.close();
-
-    // a saved preference alone does not open it; the deployment flag is the other half
-    const saved = await page.evaluate(
-        async (id) =>
-            (
-                await fetch("/api/tutoring/preferences", {
-                    method: "POST",
-                    headers: { "content-type": "application/json" },
-                    body: JSON.stringify({
-                        kid: id,
-                        preferences: { entry: "guided", audio: "off", enabled: true },
-                    }),
-                })
-            ).status,
-        kid,
-    );
-    expect(saved).toBe(200);
 });
 
 test("the tutor teaches a question the bundles do not cover, opening on the question's own hint", async ({

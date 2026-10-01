@@ -12,7 +12,6 @@ export interface TutorConfig {
     model: string;
     ttsModel: string;
     enabled: boolean;
-    childEnabled: boolean;
 }
 export function tutorConfig(env: Readonly<Record<string, string | undefined>>): TutorConfig {
     return {
@@ -20,7 +19,6 @@ export function tutorConfig(env: Readonly<Record<string, string | undefined>>): 
         model: env.GEMINI_TUTOR_MODEL || "gemini-3.8-flash",
         ttsModel: env.GEMINI_TTS_MODEL || "gemini-3.8-flash-tts",
         enabled: env.TUTORING_ENABLED === "1",
-        childEnabled: env.TUTORING_CHILD_ENABLED === "1",
     };
 }
 interface Interaction {

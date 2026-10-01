@@ -3,7 +3,6 @@ import type { AdaptiveHelp, TeachingState } from "../../engine/teaching";
 import type { FamilyTx } from "./client";
 import {
     families,
-    kids,
     tutoringSessions,
     tutoringTurns,
     tutoringUsage,
@@ -135,6 +134,22 @@ export async function reserveTutoringUsage(
             .where(eq(tutoringUsage.id, `${family}.${period}`));
     return true;
 }
+/** One companion call counted against the family's day, and how many are left after it; null when none were. */
+export async function reserveCompanion(
+    tx: FamilyTx,
+    family: string,
+    perDay: number,
+): Promise<number | null> {
+    const period = `companion:${new Date().toISOString().slice(0, 10)}`;
+    const id = `${family}.${period}`;
+    await tx.insert(tutoringUsage).values({ id, family_id: family, period }).onConflictDoNothing();
+    const [row] = await tx
+        .update(tutoringUsage)
+        .set({ calls: sql`${tutoringUsage.calls} + 1` })
+        .where(and(eq(tutoringUsage.id, id), lt(tutoringUsage.calls, perDay)))
+        .returning({ calls: tutoringUsage.calls });
+    return row ? perDay - row.calls : null;
+}
 export async function cleanTutoring(tx: FamilyTx): Promise<void> {
     const now = new Date().toISOString();
     await tx.delete(tutoringSessions).where(lt(tutoringSessions.expires_at, now));
@@ -146,17 +161,4 @@ export async function cleanTutoring(tx: FamilyTx): Promise<void> {
                 new Date(Date.now() - 62 * 86400000).toISOString().slice(0, 7),
             ),
         );
-}
-
-export async function saveTutorPreferences(
-    tx: FamilyTx,
-    kid: string,
-    preferences: unknown,
-): Promise<void> {
-    await tx
-        .update(kids)
-        .set({
-            settings: sql`jsonb_set(${kids.settings}, '{teaching}', coalesce(${kids.settings}->'teaching', '{}'::jsonb) || jsonb_build_object('tutoring', ${JSON.stringify(preferences)}::jsonb), true)`,
-        })
-        .where(eq(kids.id, kid));
 }

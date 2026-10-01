@@ -60,11 +60,9 @@ export interface ArrangedPart {
     told: Arranged | null;
 }
 
-/** What a child may do with that part: each try checked and recorded, and the hints. A sheet drawn to be read has none. */
+/** What a child may do with that part: each try checked and recorded. A sheet drawn to be read has none. */
 export interface Arranging {
     tried(places: Arrangement, timing: Timing): Arranged;
-    mayHint(): boolean;
-    hint(): string | null;
 }
 
 const ARROWS: Record<string, number> = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
@@ -85,8 +83,12 @@ type Frame = { k: number; ox: number; oy: number; zoom: number };
 export function ArrangedQuestion(props: {
     scene: Scene;
     part: ArrangedPart;
-    /** The hints opened on it already, in order. */
-    opened: string[];
+    /** The hints opened on it, in order, which the companion opens (lesson.tsx). */
+    hints: () => string[];
+    /** The button that asks the companion for help, at the end of the bar. */
+    help?: JSX.Element;
+    /** A part the companion rings, over the part a rule points at. */
+    point?: string | null;
     /** What a child may do with it; without it the drawing is read and nothing is taken. */
     acts?: Arranging;
     /** The sheet is finished, or the question was answered on another visit: nothing more is taken. */
@@ -101,8 +103,6 @@ export function ArrangedQuestion(props: {
     const [checked, setChecked] = createSignal(props.part.told !== null);
     const [held, setHeld] = createSignal<string | null>(null);
     const [said, setSaid] = createSignal(props.part.told?.say ?? "");
-    const [hints, setHints] = createSignal<string[]>(props.opened);
-    const [hintable, setHintable] = createSignal(props.acts?.mayHint() ?? false);
     const [frame, setFrame] = createSignal<Frame>({ k: 1, ox: 0, oy: 0, zoom: 1 });
     const [knife, setKnife] = createSignal(0);
     const [aiming, setAiming] = createSignal(false);
@@ -205,7 +205,7 @@ export function ArrangedQuestion(props: {
     // the scene drawn again whenever what is on it, whether it is let go or the part pointed at changes
     createEffect(
         on(
-            () => [places(), checked(), told()?.point ?? null] as const,
+            () => [places(), checked(), props.point ?? told()?.point ?? null] as const,
             ([now, let_, point]) => {
                 if (!tile) return;
                 const svg = props.draw(tile, props.scene, {
@@ -336,7 +336,6 @@ export function ArrangedQuestion(props: {
         props.onTold?.(t);
         if (t.done) setPlaces(t.places);
         tell(t.say);
-        setHintable(acts.mayHint());
         if (!t.done) setTimeout(() => againButton?.focus(), 0);
     }
     function tryAgain(): void {
@@ -357,13 +356,6 @@ export function ArrangedQuestion(props: {
         setPlaces([]);
         setHeld(null);
         tell(props.part.board.say([]));
-    }
-    function hint(): void {
-        const acts = props.acts;
-        const h = acts?.hint();
-        if (!acts || h === null || h === undefined) return;
-        setHints([...hints(), h]);
-        setHintable(acts.mayHint());
     }
     let againButton: HTMLButtonElement | undefined;
 
@@ -755,14 +747,10 @@ export function ArrangedQuestion(props: {
                 <button type="button" class="ar-again" disabled={locked()} onClick={startAgain}>
                     Start again
                 </button>
-                <Show when={hintable()}>
-                    <button type="button" class="ls-hint" disabled={props.closed} onClick={hint}>
-                        A hint
-                    </button>
-                </Show>
+                {props.help}
             </div>
             <ol class="ls-hints">
-                <For each={hints()}>{(h) => <li>{h}</li>}</For>
+                <For each={props.hints()}>{(h) => <li>{h}</li>}</For>
             </ol>
             <p class="ls-said" aria-live="polite">
                 {said()}

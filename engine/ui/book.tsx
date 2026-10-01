@@ -55,7 +55,7 @@ export function BookPages(props: {
                         <div class="bk-turn">
                             <button
                                 type="button"
-                                class="ls-hint"
+                                class="ls-help"
                                 disabled={at() === 0}
                                 onClick={() => setAt(at() - 1)}
                             >
@@ -66,7 +66,7 @@ export function BookPages(props: {
                             </span>
                             <button
                                 type="button"
-                                class="ls-hint"
+                                class="ls-help"
                                 disabled={at() >= pages().length - 1}
                                 onClick={() => setAt(at() + 1)}
                             >

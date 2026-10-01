@@ -6,6 +6,10 @@ Reviewed teaching is always available. Enabled sessions can ask the server for a
 Gemini cannot grade work, award progress, select arbitrary activities or contact a child directly.
 Child rollout remains disabled by default. The historical exploration below is preserved for context.
 
+From 1 October 2026 a child's lessons have no guide card, no "A hint" button and no Gemini teaching
+entry. The one help on a lesson is the companion, a cartoon face on a live Tavus call, described in
+[companion.md](companion.md). The sections below on the guide's card describe what it replaced.
+
 # AI
 
 ## Decided

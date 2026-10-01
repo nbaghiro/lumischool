@@ -335,7 +335,7 @@
 }
 .ls-pick,
 .ls-go,
-.ls-hint {
+.ls-help {
     min-height: 56px;
     padding: 0 22px;
     border-radius: 12px;
@@ -343,7 +343,7 @@
     font: 700 19px / 1 var(--f-read);
 }
 .ls-sheet.big .ls-pick,
-.ls-sheet.big .ls-hint {
+.ls-sheet.big .ls-help {
     font-size: 21px;
 }
 .ls-pick {
@@ -385,23 +385,23 @@
 .ls-pick:disabled {
     cursor: default;
 }
-.ls-hint {
+.ls-help {
     background: #fff;
     color: var(--ink);
     border: 2px solid color-mix(in srgb, var(--ink) 30%, #fff);
 }
-.ls-hint:hover {
+.ls-help:hover {
     border-color: var(--pen);
     color: var(--pen);
 }
-.ls-hint:disabled {
+.ls-help:disabled {
     color: color-mix(in srgb, var(--ink) 45%, #fff);
     border-color: color-mix(in srgb, var(--ink) 18%, #fff);
     cursor: default;
 }
 .ls-pick:focus-visible,
 .ls-go:focus-visible,
-.ls-hint:focus-visible {
+.ls-help:focus-visible {
     outline: 3px dashed var(--pen);
     outline-offset: 3px;
 }
@@ -439,9 +439,14 @@
 .ls-hints:empty {
     display: none;
 }
-/* The guide's button at the end of the row, the easier thing drawn under its card, and the pin's word. */
-.ls-guide {
+/* The companion's way in at the end of a question's row and under a lesson's goal, and the easier
+   thing it draws beside a question. */
+.ls-companion {
     margin-left: auto;
+}
+.ls-explain {
+    align-self: flex-start;
+    margin-top: 6px;
 }
 .ls-easier {
     margin: 8px 0 0;
@@ -451,11 +456,6 @@
 }
 .ls-easier .ls-answer {
     margin: 8px 0 0;
-}
-.ls-pin {
-    margin: 0;
-    font: 600 16px / 1.4 var(--f-read);
-    color: var(--ink-soft);
 }
 
 /* A reader's notes for grown-ups, never on a child's sheet. */
@@ -682,7 +682,10 @@
     }
 }
 @media print {
-    .ls-sheet .ls-on-screen {
+    .ls-sheet .ls-on-screen,
+    .ls-sheet .ls-companion,
+    .ls-sheet .ls-explain,
+    .ls-sheet .ls-looked-help {
         display: none;
     }
     .ls-sheet .ls-sitting-next {

@@ -7,6 +7,7 @@ import type { ErrorCode, KidRecord, Problem } from "../../server/api";
 import type { Kid } from "../../server/db/schema";
 import {
     check,
+    COMPANIONS,
     isTweak,
     LANGUAGES,
     NATIONS,
@@ -175,7 +176,9 @@ function readKept(v: unknown): ChildRecord["kept"] | null {
         if (!(num(level) && Number.isInteger(level) && level >= 0)) return null;
         practice[game] = level;
     }
-    return { practice, painting: v.painting ?? null };
+    const companion = COMPANIONS.find((c) => c === v.companion) ?? null;
+    if (companion === null && v.companion !== undefined && v.companion !== null) return null;
+    return { practice, painting: v.painting ?? null, companion };
 }
 
 /** The fields of a child's record the server folds (school/family/family.ts), read the same for a child's view and a grown-up's page. */
