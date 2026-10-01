@@ -1,0 +1,33 @@
+# Wire for a heron, from the lengths of its parts plus 2 cm at each join for twisting. Legs count
+# twice.
+item art.wire-total v=1 skills=[art.wire, measure.length, reasoning.two-steps] {
+  title "Enough wire"
+  difficulty (j / 4 + q)
+  let q=0..1 j={3, 5} l={12, 14}
+  let right={12 + 9 + 5 + 2 * l + q * 2 * j}
+  where (q == 1 or j == 3)
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..1
+  }
+
+  scene 36x23 {
+    table parts cols=2 head=["Part of the heron", "Wire"] cells=["body", "12 cm", "neck", "9 cm", "beak", "5 cm", "each leg", "{l} cm"] at=canvas(1, 1)
+    text ask "Ben plans a wire heron with two legs.{if q == 1 then \" He also allows 2 cm of extra wire at each of the {j} joins, for twisting.\" else \"\"} How many centimetres of wire does he need in all?" narrate width=34 below=parts gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == right - l) point=parts {
+      say "The heron has two legs. Count the leg's length twice."
+    }
+    when (q == 1 and answer == right - 2 * j) point=parts {
+      say "Add the extra wire for the twists at the joins too."
+    }
+  }
+  hint "Add the body, neck and beak first."
+  hint "Then add both legs{if q == 1 then \", and 2 cm for each join\" else \"\"}."
+}

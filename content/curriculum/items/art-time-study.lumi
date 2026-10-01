@@ -1,0 +1,23 @@
+# The three-star, drawn: a study in pencil after one of the six works, from a picture of it, with a
+# card naming the work, the artist, the date and where it hangs, responded to by a grown-up.
+item art.time-study v=1 stars=3 skills=[art.artists, art.drawing, art.history] {
+  title "A study after a great work"
+  difficulty v
+  let v=0..2
+  let extra={pick(v, "", " Mark its near, middle and far parts with letters.", " Mark its near, middle and far parts, and write one sentence on what it shares with a work from another century.")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x34 {
+    studies s work=0 names=1 card=1 at=canvas(1, 1)
+    text ask "Choose one of the six works and find a picture of it in a book or on its museum's website. Draw a study of it in pencil, in its own shape, and write a card under it with the title, the artist, the date and where it hangs.{extra}" narrate width=34 below=s gap=1
+  }
+
+  check art.by-eye look-for="A pencil study of one of the works, in the work's own proportions, its main shapes placed where they are in the original, with a card naming the title, the artist, the date and the museum; at medium the near, middle and far parts lettered; at hard a sentence comparing it with a work from another century." notice=["The work's own shape and proportions", "The main shapes in the right places", "A card with title, artist, date and museum", "A comparison across centuries"] ask="What did you notice about the work by drawing it that you had not seen by looking?"
+  hint "Draw the frame in the right proportions first."
+  hint "Find the biggest shapes in the work and place those before any detail."
+}

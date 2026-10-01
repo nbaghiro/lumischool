@@ -1,0 +1,30 @@
+# The orbital canon: the gap between the eyes is one eye width, so from the outer corner of one eye
+# to the outer corner of the other is three eye widths; the nose is as wide as the gap
+# (orbitonasal).
+item art.face-corners v=1 skills=[art.proportion, art.portrait, reasoning.two-steps] {
+  title "Corner to corner"
+  difficulty (e * 2)
+  let e={2, 2.5, 3, 3.5}
+  let right={3 * e}
+  level easy {
+    let e={2, 2.5}
+  }
+  level hard {
+    let e={3, 3.5}
+  }
+
+  scene 36x21 {
+    ruler eye cm=6 length=e start=0 thing=stick at=canvas(1, 1)
+    text ask "Ana's drawn eye is as wide as the stick. The canon says the gap between the eyes is one eye wide, and the nose is as wide as the gap. How far is it from the outer corner of one eye to the outer corner of the other, in centimetres?" narrate width=34 below=eye gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 2 * e) point=eye {
+      say "That is the two eyes. Add the gap between them, which is one more eye width."
+    }
+  }
+  hint "How many eye widths are there from outer corner to outer corner?"
+  hint "Two eyes and one gap."
+}

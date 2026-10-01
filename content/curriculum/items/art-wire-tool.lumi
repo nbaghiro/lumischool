@@ -1,0 +1,30 @@
+# The way in: the right tool for each job in wire work. Japan's course of study names wire and the
+# coping saw as the materials and tools of grades 5 and 6.
+item art.wire-tool v=1 skills=[art.wire, art.making] {
+  title "Which tool?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let job={pick(k, "cut a piece of wire to length", "cut a curved shape out of a thin wooden board for the base", "bend the end of the wire into a small tight curl", "drill a small hole in the base for the wire to stand in")}
+  let right={pick(k, "wire cutters", "a coping saw", "round-nosed pliers", "a hand drill")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x36 {
+    table tools cols=2 head=["Tool", "What it does"] cells=["wire cutters", "snip wire", "a coping saw", "cut curves in thin wood", "round-nosed pliers", "bend wire round", "a hand drill", "make holes"] at=canvas(1, 1)
+    text ask "Ben is making a heron from wire on a wooden base by the canal. Which tool should he use to {job}?" narrate width=34 below=tools gap=1
+    choice pick options=["wire cutters", "a coping saw", "round-nosed pliers", "a hand drill"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=tools {
+      say "Read what each tool does in the table. Which one matches the job?"
+    }
+  }
+  hint "Is the job cutting, bending or making a hole? Is it in wire or wood?"
+  hint "Find the tool whose job matches in the table."
+}

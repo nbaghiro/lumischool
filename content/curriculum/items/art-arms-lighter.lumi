@@ -1,0 +1,23 @@
+# The rule seen as tone: the metals are the light tinctures, so a metal shows best on a dark colour.
+# The lightest of three paints is proved by the paint model.
+item art.arms-lighter v=1 skills=[art.heraldry, art.tone] {
+  title "What shows best?"
+  difficulty (if p <= 1 then 0 else 1)
+  let p=0..3
+  let fname={pick(p, "azure, blue", "sable, black", "gules, red", "vert, green")}
+  level easy {
+    let p=0..1
+  }
+  level hard {
+    let p=2..3
+  }
+
+  scene 36x18 {
+    text ask "Ben's shield has a field of {fname}. Which paint for the charge would stand out most from across the square? Choose the lightest." narrate width=34 at=canvas(1, 1)
+    choice pick options=[pick(p, "yellow", "red", "white", "blue"), pick(p, "red", "white", "black", "yellow"), pick(p, "black", "blue", "green", "black")] stack=column below=ask gap=1
+  }
+
+  check paint.mixes pick=lighter
+  hint "Picture each paint on the field. Which is furthest from it in lightness?"
+  hint "Of the three, which is a metal?"
+}

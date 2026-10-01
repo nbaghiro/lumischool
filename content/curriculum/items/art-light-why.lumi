@@ -1,0 +1,21 @@
+# The two-star reason: reflected light is light that has bounced off the table, weaker than the
+# lamp's, so it is lighter than the core shadow round it but never as light as the lit side.
+item art.light-why v=1 stars=2 skills=[art.light, reasoning.explain] {
+  title "Never as bright"
+  let r=0..1
+
+  scene 36x29 {
+    stilllife pic light="left" things=["ball", "cup"] lamp=true weights=[] at=canvas(1, 1)
+    text ask "Ana paints the reflected light as bright as the lit side, and the ball stops looking round. Why should reflected light be darker than the lit side?" narrate width=34 below=pic gap=1
+    choice pick options=[pick(r, "It is lamp light that has bounced, and is weaker", "The table is darker than the lamp, so it must be"), "Reflected light is a kind of shadow", pick(r, "The table is darker than the lamp, so it must be", "It is lamp light that has bounced, and is weaker")] stack=column below=ask gap=1
+  }
+
+  answer pick="It is lamp light that has bounced, and is weaker"
+  feedback {
+    when (pick != "It is lamp light that has bounced, and is weaker") point=pic {
+      say "Where does reflected light come from in the first place, and what happens to it on the way?"
+    }
+  }
+  hint "Where does the light in the reflected light start?"
+  hint "Does light get stronger or weaker when it bounces off a table?"
+}

@@ -1,0 +1,29 @@
+# How long a flip book lasts: pages over pages flipped a second. 12 pictures a second is about where
+# separate pictures start to look like movement (Wikipedia, "Frame rate": 10 to 12 a second are seen
+# one by one, more as motion).
+item art.flip-time v=1 skills=[art.animation, division.sharing] {
+  title "How long does it last?"
+  difficulty (p / 24)
+  let p={24, 36, 48, 60}
+  level easy {
+    let p={24, 36}
+  }
+  level hard {
+    let p={48, 60}
+  }
+
+  scene 36x15 {
+    moonphases m from=0 step=4 count=6 blank=-1 days=0 at=canvas(1, 1)
+    text ask "Ana's flip book has {p} pages, and she flips 12 pages a second with her thumb. How many seconds does the picture move for?" narrate width=34 below=m gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (p / 12)
+  feedback {
+    when (answer == p * 12) point=m {
+      say "Twelve pages go by every second, so the seconds are fewer than the pages. Share the pages into twelves."
+    }
+  }
+  hint "How many pages go by in one second?"
+  hint "How many twelves are in {p}?"
+}

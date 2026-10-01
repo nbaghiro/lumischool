@@ -1,0 +1,25 @@
+# The steps of a scored and slipped join put in order (Wikipedia, "Slip (ceramics)": score both
+# pieces with criss-cross lines, then slip, then join). The steps are listed in a different order
+# each time.
+item art.clay-order v=1 skills=[art.clay, reasoning.order] {
+  title "Joining two pieces"
+  let k=0..3
+  let s1={pick(k, "Brush slip onto the scratches", "Press the two pieces together", "Smooth the join with a finger", "Scratch criss-cross lines on both edges")}
+  let s2={pick(k, "Scratch criss-cross lines on both edges", "Brush slip onto the scratches", "Press the two pieces together", "Smooth the join with a finger")}
+  let s3={pick(k, "Smooth the join with a finger", "Scratch criss-cross lines on both edges", "Brush slip onto the scratches", "Press the two pieces together")}
+  let s4={pick(k, "Press the two pieces together", "Smooth the join with a finger", "Scratch criss-cross lines on both edges", "Brush slip onto the scratches")}
+
+  scene 36x19 {
+    text ask "Slip is clay stirred with water into a thick cream. Number these steps for joining a wall to a base, 1 for the first." narrate width=34 at=canvas(1, 1)
+    sequence s items=[s1, s2, s3, s4] blanks=[a, b, c, d] below=ask gap=1
+  }
+
+  answer a=pick(k, 2, 3, 4, 1) b=pick(k, 1, 2, 3, 4) c=pick(k, 4, 1, 2, 3) d=pick(k, 3, 4, 1, 2)
+  feedback {
+    when (a != pick(k, 2, 3, 4, 1)) point=s {
+      say "Ask what each step needs done before it. Slip goes on scratches, and a join is smoothed once it is pressed."
+    }
+  }
+  hint "Which step changes the edges before anything is added to them?"
+  hint "The finger smooths a join that is already there."
+}

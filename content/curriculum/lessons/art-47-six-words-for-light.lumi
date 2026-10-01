@@ -1,0 +1,79 @@
+# Six words for light on a form: highlight, light, half-tone, core shadow, reflected light and cast
+# shadow, named, compared and ordered, the reflected light found and explained, the lamp moved, and
+# a round thing drawn under the observatory's lamp.
+lesson art-six-words-for-light v=1 format=teach grade=5 unit=6 subject=art levels=[easy, medium, hard] {
+  title "Six words for light on a form"
+  goal "Name, order and draw the six parts of light on a rounded form lit from one side."
+
+  look {
+    scene 36x10 {
+      row all space=2 align=end at=canvas(1, 1) {
+        stilllife pic light="left" things=["ball", "apple", "cup"] lamp=true weights=[]
+        tonescale scale steps=5 blank=-1 ring=-1
+      }
+    }
+    say """
+      A round thing lit from one side has six parts of light, and artists name each one. The lit
+      side faces the lamp, and the highlight is the brightest spot on it. The half-tone is where the
+      light turns away. The core shadow is the darkest part on the thing itself. Inside the shadow
+      side, near the table, is the reflected light, a faint glow from light bouncing off the table.
+      The cast shadow is the shape the thing throws on the table, away from the lamp.
+      """
+  }
+  do {
+    show art.light-name k=0 easy-k=0 hard-k=3
+    show art.light-pair k=0 easy-k=0 hard-k=2
+    level easy {
+      worked art.light-pair k=2 level=medium
+    }
+    show art.light-where s=0 hard-s=1
+    show art.light-name k=2 easy-k=1 hard-k=5
+    show art.light-move q=0 hard-q=1
+    show art.light-pair k=2 easy-k=1 hard-k=3
+    show art.light-tones k=0 easy-k=1 hard-k=2
+    show art.light-name k=4 easy-k=2 hard-k=4
+    level medium hard {
+      show art.light-pair k=4
+    }
+  }
+  try stars=2 {
+    show art.light-why r=0 easy-r=1
+  }
+  try stars=3 {
+    show art.light-draw v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "Highlight, lit side, half-tone, reflected light, core shadow, cast shadow: from lightest to darkest, all set by where the lamp is."
+  }
+
+  grown-ups """
+    The idea is that light on a rounded form falls into six parts with names, from the highlight to
+    the cast shadow, that their order of tone follows from where each gets its light, and that the
+    reflected light, which children leave out, is light bounced off the table: lighter than the core
+    shadow, never as light as the lit side. The step up from grade 4's light and shadow, which told
+    the lit side from the shaded one, and grade 5's tone in five steps, which built the scale, is
+    the full vocabulary and the reflected light. The wrong ideas to watch for are making the
+    reflected light as bright as the lit side, and treating the cast shadow as part of the thing. In
+    the working, look for the child finding the lamp before anything else. The core names each part,
+    compares two, puts six in order, finds the reflected light and predicts what moves with the
+    lamp; the two-star asks why reflected light is weaker, and the three-star is a drawing from
+    looking, which you respond to rather than mark.
+
+    The six terms are those of Russia's federal work programme for fine art, grade 6: «свет»,
+    «блик», «полутень», «собственная тень», «рефлекс», «падающая тень» (light, here called the lit
+    side, highlight, half-tone, core shadow, reflected light, cast shadow), as quoted in the audit
+    of grades 5 and 6; the order of tone given here is the usual one in drawing teaching (recalled).
+    If the order is stuck, shine a torch on an orange in a dark room and point to each part. Off the
+    page, look at Rembrandt's The Night Watch (1642, Rijksmuseum) online, whose light and dark
+    Wikipedia calls chiaroscuro, and find a highlight and a cast shadow. This lesson meets Russia's
+    grade 6 module on tone a year early, and Japan's 2017 course of study for art and craft, grades
+    5 and 6, 第3 2(3)ウ, which asks children to catch 「動き，奥行き，バランス，色の鮮やかさ」 (movement, depth, balance
+    and the vividness of colour).
+    """
+  level easy {
+    grown-ups "At this level the parts named are the highlight, the lit side and the cast shadow, the pairs compared are far apart in tone, reflected light against the core shadow is worked once in the teacher's pen, the reflected light is found with the lamp on the left, the order is given in a gentler mix, the lamp's move asks only where the cast shadow goes, the two-star is as written with its answers in another order, and the drawing is of one ball."
+  }
+  level hard {
+    grown-ups "At this level the parts named are the half-tone, the core shadow and the reflected light, the pairs compared include reflected light against the lit side and the half-tone, the reflected light is found with the lamp on the right, the lamp's move asks what the old lit side now has, and the drawing is of an egg and a cup."
+  }
+}

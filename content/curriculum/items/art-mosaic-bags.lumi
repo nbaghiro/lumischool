@@ -1,0 +1,29 @@
+# Planning the materials: tesserae come in bags of 100, so a panel of w by h needs the count divided
+# by 100 and rounded up, since a part bag cannot be bought.
+item art.mosaic-bags v=1 skills=[art.mosaic, multiplication.arrays, reasoning.round-up] {
+  title "Bags of tesserae"
+  difficulty (if w * h <= 100 then 0 else 1)
+  let w={8, 10, 12, 15} h={6, 9, 10}
+  where (w * h % 100 != 0)
+  level easy {
+    let w={8, 10} h={6, 9}
+  }
+  level hard {
+    let w={12, 15} h={9, 10}
+  }
+
+  scene 36x18 {
+    pixels pic cols=8 rows=3 code=["8 blue", "2 white 4 yellow 2 white", "8 blue"] show=true beside=false upto=-1 at=canvas(1, 1)
+    text ask "Ben's mosaic will be {w} tesserae wide and {h} high, every square filled. Tesserae come in bags of 100. How many bags must he buy?" narrate width=34 below=pic gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (floor(w * h / 100) + 1)
+  feedback {
+    when (answer == floor(w * h / 100)) point=pic {
+      say "That many bags would leave some squares empty. One more bag is needed for the rest."
+    }
+  }
+  hint "How many tesserae does the whole mosaic need?"
+  hint "How many full bags is that, and is any left over?"
+}

@@ -1,0 +1,34 @@
+# Portrait and landscape as the shape of a canvas: taller than wide, or wider than tall, from each
+# work's measured size (Wikipedia: Mona Lisa 77 by 53 cm, The Hay Wain 130 by 185 cm).
+item art.genre-shape v=1 skills=[art.genre, measure.compare] {
+  title "Which way round?"
+  difficulty (if q <= 1 then 0 else 1)
+  let q=0..3
+  let ask={pick(q, "Is the Mona Lisa taller than it is wide, or wider than it is tall?", "Is The Hay Wain taller than it is wide, or wider than it is tall?", "How many centimetres taller than it is wide is the Mona Lisa?", "How many centimetres wider than it is tall is The Hay Wain, to the nearest centimetre?")}
+  let right={pick(q, 1, 2, 24, 55)}
+  let h2={pick(q, "If the height is the bigger number, it is taller than wide.", "If the width is the bigger number, it is wider than tall.", "Take the smaller number from the bigger one.", "Take the smaller number from the bigger one.")}
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=2..3
+  }
+
+  scene 36x21 {
+    table sizes cols=3 head=["Painting", "Height", "Width"] cells=["Mona Lisa", "77 cm", "53 cm", "The Hay Wain", "130 cm", "185 cm"] at=canvas(1, 1)
+    text ask "A sheet taller than it is wide is called portrait shape, and wider than it is tall, landscape shape, after the pictures painted on them. {ask}{if q <= 1 then \" Type 1 for taller, 2 for wider.\" else \"\"}" narrate width=34 below=sizes gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (q <= 1 and answer != right) point=sizes {
+      say "Compare the height with the width. Which number is bigger?"
+    }
+    when (q == 2 and answer == 130) point=sizes {
+      say "Those are the two heights added. Take the Mona Lisa's width from its height."
+    }
+  }
+  hint "Read the painting's height and width from the table."
+  hint "{h2}"
+}

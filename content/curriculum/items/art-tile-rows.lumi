@@ -1,0 +1,29 @@
+# Counting tiles: a floor of whole tiles in rows. Each tile still covers one square's worth of
+# floor, so a floor a tiles across and d down needs a times d of them; the bumps and notches do not
+# change it.
+item art.tile-rows v=1 skills=[art.tessellation, multiplication.arrays] {
+  title "Tiles for a floor"
+  difficulty (a * d / 10)
+  let a=3..6 d=2..4
+  level easy {
+    let a=3..4 d=2..2
+  }
+  level hard {
+    let a=5..6 d=3..4
+  }
+
+  scene 36x23 {
+    nibbletile floor bite=curve move=opposite both=1 cols=3 rows=2 ring=-1 at=canvas(1, 1)
+    text ask "Ben's tiles have two bites slid across, one from the left and one from the top. His hall needs {a} tiles along each row and {d} rows. How many tiles is that?" narrate width=34 below=floor gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a * d)
+  feedback {
+    when (answer == a + d) point=floor {
+      say "That adds the rows to the tiles in a row. Each row has {a} tiles, and there are {d} rows."
+    }
+  }
+  hint "How many tiles are in one row?"
+  hint "There are {d} rows of {a}."
+}

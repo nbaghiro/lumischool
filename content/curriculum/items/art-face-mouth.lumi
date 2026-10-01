@@ -1,0 +1,32 @@
+# The naso-oral canon: the mouth is one and a half times as wide as the nose; worked forwards, and
+# backwards from the mouth to the nose.
+item art.face-mouth v=1 skills=[art.proportion, art.portrait, ratio.scale] {
+  title "Nose and mouth"
+  difficulty (q + n / 4)
+  let q=0..1 n={2, 3, 4}
+  let right={if q == 0 then n * 1.5 else n}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..1
+  }
+
+  scene 36x11 {
+    face f mood="happy" hair=2 name="" at=canvas(1, 1)
+    text ask "Ben uses the old canons for a portrait of Ana: the mouth is one and a half times as wide as the nose. Her {if q == 0 then \"nose\" else \"mouth\"} is {if q == 0 then n else n * 1.5} cm wide. How wide should the {if q == 0 then \"mouth\" else \"nose\"} be?" narrate width=26 right-of=f gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (q == 0 and n != 3 and answer == n + 1.5) point=f {
+      say "One and a half times means the nose and half of it again, not one and a half added."
+    }
+    when (q == 1 and answer == n * 1.5 * 1.5) point=f {
+      say "This time the mouth is known. The nose is the smaller one: share the mouth by one and a half."
+    }
+  }
+  hint "Which is wider in the canon, the nose or the mouth?"
+  hint "One and a half times a number is the number plus half of it."
+}

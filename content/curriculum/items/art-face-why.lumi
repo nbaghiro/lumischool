@@ -1,0 +1,21 @@
+# The two-star reason: a canon is a starting frame for placing the features, and a portrait is the
+# drawing of how this face differs from it. The wrong reasons treat the canon as the true face.
+item art.face-why v=1 stars=2 skills=[art.portrait, reasoning.explain] {
+  title "A rule nobody fits"
+  let r=0..1
+
+  scene 36x21 {
+    face f mood="happy" hair=1 name="" at=canvas(1, 1)
+    text ask "If so few real faces fit the canons, why do artists still learn them before drawing a portrait?" narrate width=26 right-of=f gap=1
+    choice pick options=[pick(r, "A start: the portrait shows the differences", "A portrait must fit the canon"), "Faces fitted them long ago", pick(r, "A portrait must fit the canon", "A start: the portrait shows the differences")] stack=column below=f gap=1
+  }
+
+  answer pick="A start: the portrait shows the differences"
+  feedback {
+    when (pick != "A start: the portrait shows the differences") point=f {
+      say "Would a portrait that looked like the canon look like Ben, or like everybody?"
+    }
+  }
+  hint "What makes a portrait look like one person and not another?"
+  hint "How could a starting rule help you see where someone's face is different?"
+}

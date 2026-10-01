@@ -1,0 +1,24 @@
+# The three-star, drawn from looking: a still life of the child's own arranging, with an overlap and
+# a light from one side, responded to by a grown-up.
+item art.genre-draw v=1 stars=3 skills=[art.genre, art.drawing, reasoning.plan] {
+  title "A still life of your own"
+  difficulty v
+  let v=0..2
+  let extra={pick(v, "", " Put one thing partly in front of another.", " Put one thing partly in front of another, light them from one side with a lamp or a window, and shade the side away from the light.")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x32 {
+    stilllife eg light="left" things=["apple", "cup", "box"] lamp=true weights=[] at=canvas(1, 1)
+    text ask "Choose three things from the kitchen that keep still, such as a cup, a piece of fruit and a box. Arrange them on a table and draw them by looking, as big as the paper allows.{extra}" narrate width=34 below=eg gap=1
+    paintsheet sheet w=20 h=6 paper="plain" guide="none" outline="none" pots=["black", "brown", "red", "yellow"] below=ask gap=1
+  }
+
+  check art.by-eye look-for="Three real things drawn from looking, not from memory, large on the page, with their shapes and sizes compared one to another; at medium one overlaps another so it is clear which is in front; at hard the side away from the light is shaded on each thing." notice=["Drawn from looking at real things", "Big on the page", "One thing in front of another", "A dark side away from the light"] ask="Which of the three things was hardest to draw, and what did you look at again?"
+  hint "Look at the things more than at your paper. Check how big each is next to the others."
+  hint "Draw the biggest shape lightly first, then fit the others round it."
+}

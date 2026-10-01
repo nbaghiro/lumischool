@@ -1,0 +1,30 @@
+# A museum room of eight pictures described in words, counted by kind. Each description names what
+# fills the picture, so every one belongs to exactly one kind.
+item art.genre-count v=1 skills=[art.genre, data.count] {
+  title "A room in the museum"
+  difficulty (if q == 0 then 0 else 1)
+  let q=0..2
+  let kind={pick(q, "portraits", "still lifes", "landscapes")}
+  let right={pick(q, 3, 2, 3)}
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x29 {
+    table room cols=2 head=["No.", "What fills it"] cells=["1", "a king's head", "2", "a lemon and a glass", "3", "mountains by a lake", "4", "a girl holding a cat", "5", "a field of poppies", "6", "shells and a jug", "7", "an old man smiling", "8", "a beach in a storm"] at=canvas(1, 1)
+    text ask "Ben makes a plan of one room in a gallery. How many of the eight pictures are {kind}?" narrate width=34 below=room gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer != right) point=room {
+      say "Go down the list and say for each one: a person, things that keep still, or a place. Then count the {kind}."
+    }
+  }
+  hint "Put a tick by every picture that is one of the {kind}."
+  hint "{if q == 0 then \"A person, even one holding a pet, makes a portrait.\" else if q == 1 then \"Things on a table or a cloth are a still life.\" else \"Land, water or sky filling the picture make a landscape.\"}"
+}

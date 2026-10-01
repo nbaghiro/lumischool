@@ -1,0 +1,32 @@
+# The famous exception: the arms of the Kingdom of Jerusalem put gold crosses on silver, metal on
+# metal, on purpose, to mark them as special (Wikipedia, "Tincture (heraldry)").
+item art.arms-jerusalem v=1 skills=[art.heraldry, reasoning.rules] {
+  title "A rule broken on purpose"
+  difficulty q
+  let q=0..1
+  let ask={pick(q, "Which part of the rule do they break?", "Why does breaking the rule make them stand out to anyone who knows heraldry?")}
+  let right={pick(q, "metal on metal", "almost no other arms do it")}
+  let o2={pick(q, "colour on colour", "gold is always on top")}
+  let o3={pick(q, "colour on metal", "crosses are not allowed")}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..1
+  }
+
+  scene 36x26 {
+    mixingtray tray wells=["white", "yellow"] ring=-1 labels=true at=canvas(1, 1)
+    text ask "The arms of the Kingdom of Jerusalem, of the Middle Ages, are gold crosses on a silver field. {ask}" narrate width=34 below=tray gap=1
+    choice pick options=[o2, right, o3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=tray {
+      say "{pick(q, \"Is gold a metal or a colour? And silver?\", \"If nearly every shield keeps a rule, what does a shield that breaks it look like?\")}"
+    }
+  }
+  hint "Are Or and argent metals or colours?"
+  hint "{pick(q, \"Both the same kind breaks the rule. Which kind?\", \"Something rare is noticed. Is this rare or common?\")}"
+}

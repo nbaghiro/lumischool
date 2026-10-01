@@ -1,0 +1,29 @@
+# The way in: the three hand-building methods told apart by what the potter does with the clay.
+item art.clay-method v=1 skills=[art.clay, art.making] {
+  title "Pinch, coil or slab?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let what={pick(k, "Ana pushes her thumb into a ball of clay and turns it, squeezing the wall thinner.", "Ben rolls clay into long ropes and lays them round, one on top of another.", "Ana rolls clay flat like pastry, cuts out squares and joins them into a box.", "Ben makes a bowl from one ball of clay without adding any more clay to it.", "Ana builds a tall jar by adding a little more clay all the way round, again and again.", "Ben makes a pot whose walls are perfectly flat and straight, with sharp corners.")}
+  let right={pick(k, "pinch", "coil", "slab", "pinch", "coil", "slab")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x20 {
+    table ways cols=2 head=["Way", "What you do"] cells=["pinch", "press and turn a ball", "coil", "stack ropes of clay", "slab", "join flat sheets"] at=canvas(1, 1)
+    text ask "{what} Which way of making a pot is that?" narrate width=34 below=ways gap=1
+    choice pick options=["pinch", "coil", "slab"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=ways {
+      say "Think about the shape of the clay as it goes on: one ball, long ropes, or flat sheets?"
+    }
+  }
+  hint "What shape is the clay before it becomes the pot?"
+  hint "Match that shape to a row of the table."
+}

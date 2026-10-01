@@ -1,0 +1,21 @@
+# The two-star reason: scratching the edges gives slip something to grip, which makes the join
+# stronger (Wikipedia, "Slip (ceramics)"). The wrong reasons are what a child might guess.
+item art.clay-why-score v=1 stars=2 skills=[art.clay, reasoning.explain] {
+  title "Why scratch the edges?"
+  let r=0..1
+
+  scene 34x19 {
+    net plan solid="box" cell=1 l=0 w=0 h=0 r=0 ask=0 unit="cm" at=canvas(1, 1)
+    text ask "Ben says scratching the edges before brushing on slip is a waste of time, because the slip is sticky enough. Why do potters scratch the edges of both pieces first?" narrate width=26 right-of=plan gap=1
+    choice pick options=[pick(r, "The scratches give the slip more to grip", "Scratching dries the clay for joining"), "The lines make a pattern after firing", pick(r, "Scratching dries the clay for joining", "The scratches give the slip more to grip")] stack=column below=plan gap=1
+  }
+
+  answer pick="The scratches give the slip more to grip"
+  feedback {
+    when (pick != "The scratches give the slip more to grip") point=plan {
+      say "The scratches are hidden inside the join once it is pressed together. What do they do there?"
+    }
+  }
+  hint "Where do the scratches end up when the pieces are pressed together?"
+  hint "Think of glue on a smooth plate and glue on rough wood. Which holds better?"
+}

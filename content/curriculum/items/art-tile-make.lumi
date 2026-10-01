@@ -1,0 +1,23 @@
+# The three-star, made: a card tile with bites slid across, traced into a floor and drawn as a
+# creature, looked at by a grown-up with the notice list.
+item art.tile-make v=1 stars=3 skills=[art.tessellation, art.making, reasoning.plan] {
+  title "A tile that fits itself"
+  difficulty v
+  let v=0..2
+  let extra={pick(v, "Cut one bite from the left side and tape it on the right side.", "Cut one bite from the left side and tape it on the right, and one from the top and tape it on the bottom.", "Cut bites from the left and the top and tape them on the right and the bottom, then draw the tile as a creature, with an eye, so every copy is the same animal.")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x20 {
+    nibbletile eg bite=curve move=opposite both=1 cols=2 rows=1 ring=-1 at=canvas(1, 1)
+    text ask "Cut a square of card about 6 cm across. {extra} Trace round it on paper again and again, fitting each copy against the last, until the page is covered. Colour the copies in two colours." narrate width=34 below=eg gap=1
+  }
+
+  check art.made look-for="A card tile changed by cutting and taping bites, traced at least six times so the copies meet with no gaps and no overlaps, coloured in two colours so each copy can be seen; at medium bites on two sides; at hard the tile drawn as the same creature in every copy." notice=["Bites taped straight across, the same way up", "No gaps between copies", "No copies overlapping", "Two colours so each tile shows"] ask="Where did the tracing go wrong first, and how did you put it right?"
+  hint "Slide the bite straight across without turning it over before you tape it."
+  hint "Trace the first copy, then slide the card until its bump drops into the notch."
+}

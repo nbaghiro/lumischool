@@ -1,0 +1,33 @@
+# The unknown moved: two neighbours are given and the child finds the paint that makes three. Only
+# one option touches the pair; the others are two steps away or across the wheel.
+item art.neighbour-add v=1 skills=[art.colour-wheel, art.harmony] {
+  title "Make it three"
+  difficulty (if v <= 1 then 0 else 1)
+  let v=0..3
+  let w1={pick(v, "blue", "red", "yellow", "red+blue")}
+  let w2={pick(v, "blue 2+yellow", "red 2+yellow", "yellow 2+red", "red 2+blue")}
+  let right={pick(v, "green", "orange", "orange", "red")}
+  let o2={pick(v, "purple", "purple", "green", "blue")}
+  let o3={pick(v, "orange", "green", "red", "yellow")}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 36x27 {
+    mixingtray tray wells=[w1, w2, ""] ring=2 labels=true at=canvas(1, 1)
+    text ask "The first two wells hold neighbours on the twelve-part wheel. Which paint in the empty well would make a group of three neighbours, all in a row on the wheel?" narrate width=34 below=tray gap=1
+    choice pick options=[pick(v % 3, right, o2, o3), pick(v % 3, o2, o3, right), pick(v % 3, o3, right, o2)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=tray {
+      say "On the wheel, that colour does not touch either end of the pair. Find the pair on the wheel and look at the segment just beyond it."
+    }
+  }
+  hint "Find the two colours on the wheel. Which segments sit just past each end of them?"
+  hint "Only one of the three paints offered sits right at one end of the pair."
+}

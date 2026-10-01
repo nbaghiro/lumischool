@@ -1,0 +1,34 @@
+# Counting groups of neighbours: a colour can start, sit in the middle of or end a group, so it is
+# in as many groups as the group has colours; round the whole wheel there is one group starting at
+# each of the twelve segments.
+item art.neighbour-count v=1 skills=[art.harmony, reasoning.count] {
+  title "How many groups?"
+  difficulty q
+  let q=0..3
+  let ask={pick(q, "How many different groups of three neighbours include green?", "How many different groups of three neighbours include both green and blue-green?", "How many different groups of four neighbours include green?", "How many different groups of three neighbours are there round the whole wheel?")}
+  let right={pick(q, 3, 2, 4, 12)}
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=2..3
+  }
+
+  scene 36x16 {
+    colourwheel wheel segments=12 blank=[] ring=6 labels=true split="none" at=canvas(1, 1)
+    text ask "A group of neighbours is colours next to each other in a row round the wheel, with no gap. {ask}" narrate width=19 right-of=wheel gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (q == 0 and answer == 1) point=wheel {
+      say "Green can sit in the middle of a group, but it can also start one or end one."
+    }
+    when (q == 3 and answer == 4) point=wheel {
+      say "Groups can overlap. Start a group at each segment in turn and count how many starts there are."
+    }
+  }
+  hint "Put three fingers on three segments in a row. Slide them round one segment at a time."
+  hint "Count each new position that still {pick(q, \"covers green\", \"covers both colours\", \"covers green\", \"is a different group\")}."
+}

@@ -1,0 +1,37 @@
+# A two-to-one mix placed on the wheel: the wheel's in-between colours are mixed exactly so, two
+# parts of the paint it sits nearer to. The wrong idea is putting it nearer the paint there is less
+# of.
+item art.neighbour-mix v=1 skills=[art.colour-wheel, art.mixing] {
+  title "Where does this mix sit?"
+  difficulty (if v <= 1 then 0 else 1)
+  let v=0..5
+  let well={pick(v, "yellow 2+blue", "blue 2+yellow", "red 2+yellow", "yellow 2+red", "blue 2+red", "red 2+blue")}
+  let right={pick(v, "between yellow and green", "between green and blue", "between red and orange", "between orange and yellow", "between blue and purple", "between purple and red")}
+  let flip={pick(v, "between green and blue", "between yellow and green", "between orange and yellow", "between red and orange", "between purple and red", "between blue and purple")}
+  let off={pick(v, "between blue and purple", "between red and orange", "between green and blue", "between purple and red", "between yellow and green", "between orange and yellow")}
+  let big={pick(v, "yellow", "blue", "red", "yellow", "blue", "red")}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..5
+  }
+
+  scene 34x25 {
+    mixingtray tray wells=[well] ring=0 labels=true at=canvas(1, 1)
+    text ask "Ana mixed this paint for a leaf: two parts of {big} to one part of another paint. Where on the twelve-part wheel does her mix sit?" narrate width=32 below=tray gap=1
+    choice pick options=[pick(v % 3, right, flip, off), pick(v % 3, flip, off, right), pick(v % 3, off, right, flip)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == flip) point=tray {
+      say "That is the mix with more of the other paint. There are two parts of {big}, so which colour is it nearer?"
+    }
+    when (pick == off) point=tray {
+      say "Neither of those paints is in the well. Read the recipe on the label again."
+    }
+  }
+  hint "Which two paints are in the well? The mix sits between the colours they make."
+  hint "Which paint is there more of? The mix leans towards it."
+}

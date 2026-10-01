@@ -1,0 +1,33 @@
+# Four works put in order of date, from their Wikipedia entries and the studies drawing's cards: Guo
+# Xi's Early Spring 1072, the Mona Lisa about 1503, The Night Watch 1642, Hokusai's Great Wave 1831,
+# Monet's Impression, Sunrise 1872 and Van Gogh's Sunflowers 1888.
+item art.time-order v=1 skills=[art.artists, art.history, reasoning.order] {
+  title "Oldest to newest"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let s1={pick(k, "The Night Watch, Rembrandt", "Sunflowers, Van Gogh", "Impression, Sunrise, Monet")}
+  let s2={pick(k, "Early Spring, Guo Xi", "The Great Wave, Hokusai", "Mona Lisa, Leonardo")}
+  let s3={pick(k, "Sunflowers, Van Gogh", "Mona Lisa, Leonardo", "The Great Wave, Hokusai")}
+  let s4={pick(k, "Mona Lisa, Leonardo", "The Night Watch, Rembrandt", "Early Spring, Guo Xi")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x35 {
+    table works cols=2 head=["Work and artist", "Made"] cells=["Early Spring, Guo Xi", "1072", "Mona Lisa, Leonardo", "about 1503", "The Night Watch, Rembrandt", "1642", "The Great Wave, Hokusai", "1831", "Impression, Sunrise, Monet", "1872", "Sunflowers, Van Gogh", "1888"] at=canvas(1, 1)
+    text ask "On the moon base's wall, Ana pins up postcards of famous works. Number these four from 1, the oldest, to 4, the newest." narrate width=34 below=works gap=1
+    sequence s items=[s1, s2, s3, s4] blanks=[a, b, c, d] below=ask gap=1
+  }
+
+  answer a=pick(k, 3, 4, 4) b=pick(k, 1, 3, 2) c=pick(k, 4, 1, 3) d=pick(k, 2, 2, 1)
+  feedback {
+    when (a != pick(k, 3, 4, 4)) point=works {
+      say "Find each work's year in the table, then order the four years."
+    }
+  }
+  hint "Write the year beside each of the four."
+  hint "The smallest year is the oldest."
+}

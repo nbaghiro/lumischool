@@ -1,0 +1,23 @@
+# The three-star, made: a paper mosaic from cut squares with a border, gaps left like grout lines
+# and two tones in one colour, looked at by a grown-up with the notice list.
+item art.mosaic-make v=1 stars=3 skills=[art.mosaic, art.making, reasoning.plan] {
+  title "A mosaic of your own"
+  difficulty v
+  let v=0..2
+  let extra={pick(v, "", " Give it a border one square wide.", " Give it a border one square wide, and use two tones of one colour, light and dark, so one part looks rounded.")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x25 {
+    pixels eg cols=8 rows=5 code=["3 white 3 blue 2 white", "1 white 5 blue 1 white 1 blue", "1 white 1 black 6 blue", "1 white 5 blue 1 white 1 blue", "3 white 3 blue 2 white"] show=true beside=false upto=-1 at=canvas(1, 1)
+    text ask "Cut coloured paper into squares about 1 cm across. Glue them down to make a fish, a bird or a boat, leaving a thin gap between every square, as the white lines of grout show in a real mosaic.{extra}" narrate width=34 below=eg gap=1
+  }
+
+  check art.made look-for="A picture made only of small cut squares, laid in rows that follow the shape, with a thin gap between each square like grout, the subject clear from across the room; at medium a border one square wide all round; at hard two tones of one colour placed so part of the subject looks rounded." notice=["Only small squares used", "A thin gap between every square", "The subject reads from across the room", "Two tones of one colour"] ask="Which part of the picture needed the smallest squares, and why?"
+  hint "Draw the outline lightly first, then lay squares along the outline before filling in."
+  hint "Sort your squares by colour into small piles before you start."
+}

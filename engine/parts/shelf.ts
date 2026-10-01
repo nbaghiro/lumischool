@@ -2666,6 +2666,12 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         shows: ["colour"],
         words: "tray wells mix palette",
     },
+    nibbletile: {
+        on: "art",
+        also: ["shapes"],
+        shows: ["patterns", "shape"],
+        words: "tile tessellation nibble bite slide escher alhambra fits floor gaps",
+    },
     palette: {
         on: "art",
         also: [],

@@ -1,0 +1,70 @@
+# Mosaic: tesserae counted on small pictures, a border counted without counting the corners twice,
+# tiny tesserae measured along a length, materials planned in bags, and a paper mosaic made by hand.
+lesson art-pictures-from-small-stones v=1 format=teach grade=4 unit=4 subject=art levels=[easy, medium, hard] {
+  title "Pictures from small stones: mosaic"
+  goal "Plan a mosaic by counting its tesserae: by colour, round a border, along a length and by the bag."
+
+  look {
+    scene 20x14 {
+      pixels pic cols=8 rows=5 code=["3 white 3 blue 2 white", "1 white 5 blue 1 white 1 blue", "1 white 1 black 6 blue", "1 white 5 blue 1 white 1 blue", "3 white 3 blue 2 white"] show=true beside=false upto=-1 at=canvas(1, 1)
+    }
+    say """
+      A mosaic is a picture made of small pieces of coloured stone, glass or pottery called
+      tesserae, held in plaster. The Romans laid mosaic floors, and for their finest pictures they
+      used tesserae 4 mm across or smaller, like the Alexander Mosaic from Pompeii, now in the
+      museum in Naples. In the 500s, mosaic makers in Ravenna, in Italy, covered the walls of the
+      church of San Vitale with mosaics in glass and gold of the emperor Justinian and the empress
+      Theodora.
+      """
+  }
+  do {
+    show art.mosaic-count k=0 easy-k=0 hard-k=2
+    show art.mosaic-border w=6 q=0 easy-w=5 hard-w=7
+    level easy {
+      worked art.mosaic-size s=10 l=6 level=medium
+    }
+    show art.mosaic-size s=5 l=2 easy-s=10 easy-l=4 hard-s=4 hard-l=4
+    show art.mosaic-bags w=10 h=9 easy-w=8 easy-h=6 hard-w=12 hard-h=9
+    show art.mosaic-count k=1 easy-k=1 hard-k=3
+    show art.mosaic-border w=8 q=1 easy-w=6 easy-q=0 hard-q=1
+    show art.mosaic-size s=4 l=6 easy-s=5 easy-l=4 hard-s=5 hard-l=6
+    show art.mosaic-bags w=12 h=10 easy-w=10 easy-h=9 hard-w=15 hard-h=10
+  }
+  try stars=2 {
+    show art.mosaic-why r=0 easy-r=1
+  }
+  try stars=3 {
+    show art.mosaic-make v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A mosaic is planned by counting its tesserae: row by row, round the border once, and by the length of each piece."
+  }
+
+  grown-ups """
+    The idea is that a mosaic is built square by square, so it is planned by counting: tesserae by
+    colour, round a border, along a length and by the bag. The wrong ideas to watch for are counting
+    a border's corners twice, mixing centimetres with millimetres, and buying too few bags because
+    the last part bag was forgotten. In the working, look for the child writing each row's count
+    down before adding. The core counts tesserae in three small mosaics, counts a border and its
+    inside, finds how many tiny tesserae fit a length and how many bags a panel needs; the two-star
+    asks why fine pictures use small pieces, and the three-star is a paper mosaic, which you look at
+    with the notice list rather than mark.
+
+    The facts are from Wikipedia, "Mosaic": tesserae of stone, glass or pottery held in plaster or
+    mortar; opus vermiculatum, of tesserae 4 mm or less, for fine panels; the Alexander Mosaic, from
+    Pompeii, in the National Archaeological Museum, Naples; and the mosaics of Justinian and
+    Theodora in San Vitale, Ravenna, of the mid-500s. If the border is stuck, colour the border
+    squares on squared paper and count them with a tick each. Off the page, look at pictures of the
+    Ravenna mosaics and find where the smallest tesserae are. This lesson meets England's key stage
+    2 aim that pupils "improve their mastery of art and design techniques, including drawing,
+    painting and sculpture with a range of materials", and Japan's 2017 course of study for art and
+    craft, grades 3 and 4, B鑑賞(1)ア, looking at 「身近な美術作品，製作の過程」 (works of art and how they were
+    made).
+    """
+  level easy {
+    grown-ups "At this level the colours counted are the fish's blue and the flower's red, the border is round a narrower panel and only the border is counted, the tesserae along a length are worked once in the teacher's pen for pieces 1 cm wide before pieces 1 cm and 5 mm wide, the bags are for panels of 48 and 90, the two-star is as written with its answers in another order, and the mosaic needs no border."
+  }
+  level hard {
+    grown-ups "At this level the tesserae counted are those that are not white and the white round the fish, the border is round wider panels and the inside is counted too, the tesserae are 4 and 5 mm wide, the bags are for panels of 108 and 150, and the mosaic has a border and two tones of one colour."
+  }
+}

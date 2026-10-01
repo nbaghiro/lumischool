@@ -1,0 +1,30 @@
+# A border one tessera wide round a panel w wide and 5 high: 2w + 2 x 3 = 2w + 6, since the corners
+# belong to the top and bottom rows. The inside is (w - 2) x 3.
+item art.mosaic-border v=1 skills=[art.mosaic, area.counting, reasoning.two-steps] {
+  title "A border of blue"
+  difficulty (q + w / 10)
+  let w=5..8 q=0..1
+  let ask={pick(q, "How many blue tesserae does the border need?", "How many white tesserae fill the inside?")}
+  let right={if q == 0 then 2 * w + 6 else (w - 2) * 3}
+  level easy {
+    let w=5..6 q=0..0
+  }
+  level hard {
+    let w=7..8 q=0..1
+  }
+
+  scene 36x22 {
+    pixels pic cols=w rows=5 code=["{w} blue", "1 blue {w - 2} white 1 blue", "1 blue {w - 2} white 1 blue", "1 blue {w - 2} white 1 blue", "{w} blue"] show=true beside=false upto=-1 at=canvas(1, 1)
+    text ask "Ana's panel is {w} tesserae wide and 5 high, with a blue border one tessera wide all the way round. {ask}" narrate width=34 below=pic gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (q == 0 and answer == 2 * w + 10) point=pic {
+      say "Each corner tessera was counted twice, once in a row and once in a side. Count the corners once."
+    }
+  }
+  hint "Count the top row and the bottom row first."
+  hint "Then count the sides, leaving out the corners you already have."
+}

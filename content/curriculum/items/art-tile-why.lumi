@@ -1,0 +1,22 @@
+# The two-star reason: the bump on one tile is the same shape as the notch on its neighbour and
+# straight across from it, so each bump fills a notch. The wrong reasons sound like rules but are
+# not.
+item art.tile-why v=1 stars=2 skills=[art.tessellation, reasoning.explain] {
+  title "Why does it fit?"
+  let r=0..1
+
+  scene 36x26 {
+    nibbletile floor bite=curve move=opposite both=0 cols=3 rows=1 ring=1 at=canvas(1, 1)
+    text ask "M. C. Escher made tiles shaped like birds and fish that fit together, after he studied the tiles of the Alhambra in Spain in 1936. Why does a bite slid straight across make a tile that fits?" narrate width=34 below=floor gap=1
+    choice pick options=[pick(r, "Each bump fills the notch of the tile beside it", "Moving the bite makes the tile bigger"), "Curved tiles always fit together", pick(r, "Moving the bite makes the tile bigger", "Each bump fills the notch of the tile beside it")] stack=column below=ask gap=1
+  }
+
+  answer pick="Each bump fills the notch of the tile beside it"
+  feedback {
+    when (pick != "Each bump fills the notch of the tile beside it") point=floor {
+      say "Look at the ringed tile and its neighbours. What sits in each notch?"
+    }
+  }
+  hint "Look at where two tiles meet. What fills the notch?"
+  hint "Is the tile bigger than the square it came from, or the same?"
+}

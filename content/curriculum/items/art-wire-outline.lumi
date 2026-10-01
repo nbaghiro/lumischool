@@ -1,0 +1,29 @@
+# Wire bent round a flat outline: its perimeter. A boat's cabin drawn as a rectangle with a corner
+# cut away; the wire runs all the way round every labelled side.
+item art.wire-outline v=1 skills=[art.wire, perimeter.compound] {
+  title "Round the outline"
+  difficulty ((w + h) / 10)
+  let w={8, 10, 12} h={5, 6} cut={2, 3} deep={2, 3}
+  where (cut < w and deep < h)
+  level easy {
+    let w={8} h={5, 6}
+  }
+  level hard {
+    let w={10, 12} h={6}
+  }
+
+  scene 36x22 {
+    lshape cabin w=w h=h cut=cut deep=deep corner=top-right cell=1 at=canvas(1, 1)
+    text ask "Ana bends one piece of wire round the outline of a narrowboat's cabin, drawn here in centimetres with one corner stepped down. How many centimetres of wire go round the whole outline?" narrate width=34 below=cabin gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (2 * w + 2 * h)
+  feedback {
+    when (answer == 2 * w + 2 * h - cut - deep) point=cabin {
+      say "The step adds two short sides. Go round the outline side by side and add every label."
+    }
+  }
+  hint "Start at one corner and add the sides as you go round."
+  hint "The two sides of the step together are as long as the corner that was cut away."
+}

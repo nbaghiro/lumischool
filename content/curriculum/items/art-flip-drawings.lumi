@@ -1,0 +1,33 @@
+# Drawings for a length of animation: film runs at 24 frames a second, and animating on twos shows
+# each drawing for two frames, 12 drawings a second (Wikipedia, "Frame rate"). On ones is 24 a
+# second.
+item art.flip-drawings v=1 skills=[art.animation, multiplication.groups] {
+  title "How many drawings?"
+  difficulty (o + t / 4)
+  let t=2..5 o=0..1
+  let how={pick(o, "on twos, so 12 drawings make one second", "on ones, a new drawing for every one of the 24 frames in a second")}
+  level easy {
+    let t=2..3 o=0..0
+  }
+  level hard {
+    let t=3..5 o=1..1
+  }
+
+  scene 36x17 {
+    moonphases m from=0 step=4 count=6 blank=-1 days=0 at=canvas(1, 1)
+    text ask "A cartoon film shows 24 frames a second. Ana animates the moon {how}. How many drawings does she need for {t} seconds?" narrate width=34 below=m gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (t * (12 + 12 * o))
+  feedback {
+    when (o == 1 and answer == 12 * t) point=m {
+      say "That is on twos. On ones every frame has its own drawing: 24 a second."
+    }
+    when (answer == 24 * t and o == 0) point=m {
+      say "On twos each drawing is shown for two frames, so only 12 are needed for a second."
+    }
+  }
+  hint "How many drawings make one second?"
+  hint "Then how many for {t} seconds?"
+}

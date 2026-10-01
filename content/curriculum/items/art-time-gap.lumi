@@ -1,0 +1,29 @@
+# Years between two works, across centuries: subtraction on dates from the table.
+item art.time-gap v=1 skills=[art.history, time.years] {
+  title "How far apart?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let ask={pick(k, "How many years after Hokusai's Great Wave was Van Gogh's Sunflowers painted?", "How many years after The Night Watch was the Great Wave made?", "How many years after Guo Xi's Early Spring was the Mona Lisa begun?", "How many years before Monet's Impression, Sunrise was The Night Watch painted?")}
+  let right={pick(k, 57, 189, 431, 230)}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x21 {
+    timeline line from=1000 to=2000 step=200 years=[1072, 1503, 1642, 1831, 1872, 1888] labels=["Guo Xi", "Leonardo", "Rembrandt", "Hokusai", "Monet", "Van Gogh"] at=canvas(1, 1)
+    text ask "The years are 1072, 1503, 1642, 1831, 1872 and 1888, in the order shown on the timeline. {ask}" narrate width=34 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer != right) point=line {
+      say "Find the two artists on the timeline, read their years, and take the earlier from the later."
+    }
+  }
+  hint "Which two years does the question name?"
+  hint "Subtract: later year minus earlier year."
+}

@@ -1,0 +1,30 @@
+# The study's finding (PMC3532441): of 103 faces measured, 19.4 per cent fitted the orbitonasal
+# canon, about 20 people; the three-section and orbital canons fitted none.
+item art.face-percent v=1 skills=[art.proportion, percentages.of-amount, reasoning.estimate] {
+  title "How many fitted?"
+  difficulty q
+  let q=0..1
+  let ask={pick(q, "About how many of the 103 people had a nose as wide as the gap between their eyes? Round to the nearest whole person.", "About how many of the 103 did not? Round to the nearest whole person.")}
+  let right={pick(q, 20, 83)}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..1
+  }
+
+  scene 36x15 {
+    face f mood="surprised" hair=3 name="" at=canvas(1, 1)
+    text ask "Scientists measured the faces of 103 young adults to test the old canons. Only 19.4 per cent had a nose exactly as wide as the gap between their eyes. {ask}" narrate width=26 right-of=f gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 19 or answer == 84) point=f {
+      say "Work it out carefully: 19.4 per cent of 103 is a little more than 19.4 per cent of 100."
+    }
+  }
+  hint "10 per cent of 103 is 10.3. How many tens of per cent, and a little more, is 19.4?"
+  hint "19.4 per cent of 100 is 19.4. Add 19.4 per cent of the other 3."
+}

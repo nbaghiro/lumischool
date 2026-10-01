@@ -1,0 +1,30 @@
+# Slabs counted from the net of the pot: an open box has five faces, a box with a lid six. Each face
+# is one slab cut from the rolled clay.
+item art.clay-slabs v=1 skills=[art.clay, shape.faces] {
+  title "Cutting the slabs"
+  difficulty s
+  let s=0..1
+  let kind={pick(s, "an open box for pencils, with no lid", "a box with a lid, every side closed")}
+  let sol={pick(s, "box", "cube")}
+  level easy {
+    let s=0..0
+  }
+  level hard {
+    let s=1..1
+  }
+
+  scene 33x13 {
+    net plan solid=sol cell=2 l=0 w=0 h=0 r=0 ask=0 unit="cm" at=canvas(1, 1)
+    text ask "Ana draws her slab pot opened out flat: {kind}. Every square is cut from rolled clay as its own slab. How many slabs does she cut?" narrate width=20 right-of=plan gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (5 + s)
+  feedback {
+    when (answer != 5 + s) point=plan {
+      say "Count the squares in the drawing: each one is a slab."
+    }
+  }
+  hint "Touch each square of the drawing once as you count."
+  hint "Which square is the base? Which are the walls?"
+}

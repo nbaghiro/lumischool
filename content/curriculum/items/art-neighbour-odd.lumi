@@ -1,0 +1,33 @@
+# The odd one out: three wells are neighbours and one is not. The hard versions hide a colour two
+# steps from the group, which looks alike until it is found on the wheel.
+item art.neighbour-odd v=1 skills=[art.harmony, art.colour-wheel] {
+  title "The one that breaks the group"
+  difficulty (if v <= 1 then 0 else 1)
+  let v=0..3
+  let w1={pick(v, "yellow", "blue", "red+blue", "yellow 2+red")}
+  let w2={pick(v, "yellow 2+blue", "yellow 2+red", "blue 2+red", "red+yellow")}
+  let w3={pick(v, "yellow+blue", "blue 2+yellow", "yellow+blue", "red 2+blue")}
+  let w4={pick(v, "red+blue", "yellow+blue", "blue", "red 2+yellow")}
+  let right={pick(v, "the fourth well", "the second well", "the third well", "the third well")}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 36x29 {
+    mixingtray tray wells=[w1, w2, w3, w4] ring=-1 labels=true at=canvas(1, 1)
+    text ask "Ben wants a picture in neighbours only. Three of these wells are neighbours on the twelve-part wheel. Which well breaks the group?" narrate width=34 below=tray gap=1
+    choice pick options=["the first well", "the second well", "the third well", "the fourth well"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=tray {
+      say "That well touches another one in the group on the wheel. Place all four on the wheel and find the one with a gap beside it."
+    }
+  }
+  hint "Name each well's colour from its recipe, then find it on the wheel."
+  hint "Three of them sit in a row. Which one is left on its own?"
+}

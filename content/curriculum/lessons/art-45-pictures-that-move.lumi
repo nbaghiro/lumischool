@@ -1,0 +1,77 @@
+# Pictures that move: a flip book and a cartoon as still drawings shown fast, drawings counted for
+# seconds on ones and twos, a missing page, in-betweens counted, and a flip book made by hand.
+lesson art-pictures-that-move v=1 format=teach grade=4 unit=7 subject=art levels=[easy, medium, hard] {
+  title "Pictures that move: a flip book"
+  goal "Plan an animation by its drawings: how many for a second, what goes in between, and why it moves."
+
+  look {
+    scene 21x8 {
+      moonphases m from=0 step=4 count=6 blank=-1 days=0 at=canvas(1, 1)
+    }
+    say """
+      A flip book is a pad of pictures, each a little different from the last. Flip the pages fast
+      and the pictures seem to move. John Barnes Linnett patented one in 1868 and called it a
+      kineograph, a moving picture. A cartoon film works the same way: since about 1930, films have
+      shown 24 frames a second, and animators often draw on twos, showing each drawing for two
+      frames, so twelve drawings make a second. An animator draws the first and last pictures of a
+      movement, then the in-betweens.
+      """
+  }
+  do {
+    show art.flip-drawings t=2 o=0 easy-t=2 hard-t=3 hard-o=1
+    show art.flip-missing s=1 easy-s=1 hard-s=5
+    level easy {
+      worked art.flip-time p=24 level=medium
+    }
+    show art.flip-time p=36 hard-p=48
+    show art.flip-between a=2 b=14 g=3 hard-g=2
+    show art.flip-smooth r=0
+    show art.flip-drawings t=4 o=1 easy-t=3 easy-o=0 hard-t=5
+    level medium hard {
+      show art.flip-missing s=5 hard-s=12
+    }
+    show art.flip-between a=3 b=15 g=2 easy-g=3 hard-g=1
+    level medium hard {
+      show art.flip-time p=48 hard-p=60
+    }
+    level easy {
+      show art.flip-smooth r=1
+    }
+  }
+  try stars=2 {
+    show art.flip-why r=0 easy-r=1
+  }
+  try stars=3 {
+    show art.flip-make v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "Still pictures shown quickly look like one moving picture: the smaller the change from page to page, the smoother it moves."
+  }
+
+  grown-ups """
+    The idea is that animation is still pictures shown quickly, about twelve or more a second, so it
+    is planned by counting drawings and by making each change small and even. The wrong ideas to
+    watch for are mixing up drawings on ones and on twos, and counting the steps between the first
+    and last drawings as the in-betweens, which is one too many. In the working, look for the child
+    listing the heights or the pages before counting them. The core counts drawings for seconds of
+    film, fills a missing page of the moon, finds how long a flip book lasts, chooses the smoother
+    book and counts in-betweens; the two-star asks why the pictures seem to move, and the three-star
+    is a flip book of the child's own, which you look at with the notice list rather than mark.
+
+    The facts are from Wikipedia: "Flip book" for Linnett's kineograph, patented on 18 March 1868;
+    "Frame rate" for 24 frames a second, standard for sound film from 1927 to 1930, for animating on
+    twos at 12 drawings a second, and for the eye seeing 10 to 12 pictures a second one by one and
+    more as motion. If the in-betweens are stuck, write the heights in a row and ring the first and
+    last. Off the page, make a two-page flip book: draw a face on one sheet and the same face
+    winking on the sheet under it, then roll the top sheet round a pencil and flick it. China's 2022
+    arts standard asks for animation and moving pictures among the media children of grades 3 to 5
+    make with (recalled, not fetched); this lesson meets England's key stage 2 aim that pupils
+    "improve their mastery of art and design techniques".
+    """
+  level easy {
+    grown-ups "At this level the drawings are counted on twos, the missing page is between a crescent and a half moon, how long a flip book lasts is worked once in the teacher's pen before one of 36 pages, the in-betweens are 3 cm apart, both smoothness questions are asked, the two-star is as written with its answers in another order, and the flip book has 12 pages of a rolling ball."
+  }
+  level hard {
+    grown-ups "At this level the drawings are counted on ones, the missing pages are later in the month, the flip books are 48 and 60 pages, the in-betweens are 2 cm and 1 cm apart, and the flip book is a bouncing ball that slows near the top."
+  }
+}

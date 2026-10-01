@@ -1,0 +1,30 @@
+# Tesserae along a length: the Romans laid tiny tesserae of 4 mm or less for fine panels, opus
+# vermiculatum, and larger ones on site, opus tessellatum (Wikipedia, "Mosaic"). Length in cm made
+# mm.
+item art.mosaic-size v=1 skills=[art.mosaic, measure.length] {
+  title "Tiny tesserae"
+  difficulty (if s == 10 then 0 else if s == 5 then 1 else 2)
+  let s={4, 5, 10} l={2, 4, 6}
+  where (l * 10 % s == 0)
+  level easy {
+    let s={10, 5}
+  }
+  level hard {
+    let s={5, 4}
+  }
+
+  scene 36x17 {
+    ruler band cm=8 length=l start=0 thing=ribbon at=canvas(1, 1)
+    text ask "A row of tesserae, each {s} mm wide, is laid side by side with no gaps along this ribbon, which is {l} cm long. How many tesserae is that?" narrate width=34 below=band gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (l * 10 / s)
+  feedback {
+    when (answer == l * s) point=band {
+      say "A centimetre is 10 millimetres. Change the ribbon's length into millimetres first."
+    }
+  }
+  hint "How many millimetres long is the ribbon?"
+  hint "How many lots of {s} mm fit into that?"
+}

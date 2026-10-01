@@ -1,0 +1,24 @@
+# The two-star reason: small tesserae can follow small curves and details, which is why fine panels
+# and faces were laid in the tiniest. The wrong reasons are about strength and cost.
+item art.mosaic-why v=1 stars=2 skills=[art.mosaic, reasoning.explain] {
+  title "Why so small?"
+  let r=0..1
+
+  scene 36x37 {
+    row two space=2 align=end at=canvas(1, 1) {
+      pixels big cols=4 rows=4 code=["1 white 2 red 1 white", "4 red", "4 red", "1 white 2 red 1 white"] show=true beside=false upto=-1
+      pixels fine cols=8 rows=8 code=["3 white 2 red 3 white", "1 white 6 red 1 white", "1 white 6 red 1 white", "8 red", "8 red", "1 white 6 red 1 white", "1 white 6 red 1 white", "3 white 2 red 3 white"] show=true beside=false upto=-1
+    }
+    text ask "Both pictures are a red ball the same size. Roman makers laid faces and fine pictures in their tiniest tesserae. Why?" narrate width=34 below=two gap=1
+    choice pick options=[pick(r, "Small pieces can follow small curves and details", "Small pieces are stronger than big ones"), "Small pieces cost less to make", pick(r, "Small pieces are stronger than big ones", "Small pieces can follow small curves and details")] stack=column below=ask gap=1
+  }
+
+  answer pick="Small pieces can follow small curves and details"
+  feedback {
+    when (pick != "Small pieces can follow small curves and details") point=two {
+      say "Compare the edges of the two balls. Which looks rounder?"
+    }
+  }
+  hint "Which ball looks more like a circle?"
+  hint "What can a small square do that a big one cannot?"
+}

@@ -1,0 +1,22 @@
+# Impressionism named from a painting: Monet's Impression, Sunrise, 1872, shown at the 1874
+# exhibition, where a critic used the word mockingly and it stuck (Wikipedia, "Impression,
+# Sunrise").
+item art.time-name v=1 skills=[art.history, art.artists] {
+  title "A name from a title"
+  let r=0..1
+
+  scene 36x32 {
+    timeline line from=1000 to=2000 step=200 years=[1072, 1503, 1642, 1831, 1872, 1888] labels=["Guo Xi", "Leonardo", "Rembrandt", "Hokusai", "Monet", "Van Gogh"] at=canvas(1, 1)
+    text ask "Claude Monet painted the harbour of Le Havre at sunrise in 1872 and called it Impression, Sunrise. When it was shown in 1874, a critic made fun of it with a new word, and the painters took the word as their own. Which movement took its name from the painting's title?" narrate width=34 below=line gap=1
+    choice pick options=[pick(r, "Impressionism", "Realism"), "the Renaissance", pick(r, "Realism", "Impressionism")] stack=column below=ask gap=1
+  }
+
+  answer pick="Impressionism"
+  feedback {
+    when (pick != "Impressionism") point=line {
+      say "Read the painting's title again. Which movement's name is made from its first word?"
+    }
+  }
+  hint "What is the first word of the painting's title?"
+  hint "Which movement's name grows from that word?"
+}

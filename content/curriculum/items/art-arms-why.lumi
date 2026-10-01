@@ -1,0 +1,22 @@
+# The two-star reason: the rule gives contrast, so a shield can be recognised from far off
+# (Wikipedia gives it as ensuring contrast for recognition). The wrong reasons are about cost and
+# luck.
+item art.arms-why v=1 stars=2 skills=[art.heraldry, art.tone, reasoning.explain] {
+  title "Why the rule?"
+  let r=0..1
+
+  scene 36x26 {
+    mixingtray tray wells=["blue", "yellow", "red", "black"] ring=-1 labels=true at=canvas(1, 1)
+    text ask "Shields were carried in battle and hung high on gates. Why would the makers want a light metal on a dark colour, or a dark colour on a light metal?" narrate width=34 below=tray gap=1
+    choice pick options=[pick(r, "So the shield can be told apart from far away", "Because gold and silver paint cost less"), "Because two colours side by side would mix", pick(r, "Because gold and silver paint cost less", "So the shield can be told apart from far away")] stack=column below=ask gap=1
+  }
+
+  answer pick="So the shield can be told apart from far away"
+  feedback {
+    when (pick != "So the shield can be told apart from far away") point=tray {
+      say "Picture red on black from across a field. Then yellow on black. Which can you read?"
+    }
+  }
+  hint "What happens to a dark shape on a dark background seen from far away?"
+  hint "Light against dark is easy to see. Dark against dark is not."
+}

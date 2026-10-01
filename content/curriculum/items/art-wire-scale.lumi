@@ -1,0 +1,30 @@
+# Calder's Aztec Josephine Baker, about 1930, is 53 inches tall (as Wikipedia gives it). An inch is
+# about 2.5 cm, so it is about 132.5 cm, taller than many children.
+item art.wire-scale v=1 skills=[art.wire, art.artists, decimals.multiply] {
+  title "Calder's wire dancer"
+  difficulty (1 - q)
+  let q=0..1
+  let ask={pick(q, "About how many centimetres tall is it, if an inch is about 2.5 cm?", "It is 10 inches wide. About how many centimetres wide is that, if an inch is about 2.5 cm?")}
+  let right={pick(q, 132.5, 25)}
+  level easy {
+    let q=1..1
+  }
+  level hard {
+    let q=0..0
+  }
+
+  scene 31x17 {
+    layfigure fig heads=7.5 pose=reach lines=false action=true wrong=none dir=1 at=canvas(1, 1)
+    text ask "Alexander Calder bent wire into figures in the late 1920s, calling them drawings in space. His wire dancer, Aztec Josephine Baker, made about 1930, is 53 inches tall. {ask}" narrate width=22 right-of=fig gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (q == 0 and answer == 106) point=fig {
+      say "That is 53 times 2. Each inch is two and a half centimetres, so add half of 53 as well."
+    }
+  }
+  hint "Multiply the inches by 2.5."
+  hint "53 times 2.5 is 53 times 2, plus half of 53."
+}

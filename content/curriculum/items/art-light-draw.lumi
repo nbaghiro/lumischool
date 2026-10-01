@@ -1,0 +1,24 @@
+# The three-star, drawn from looking: a round thing under one lamp with all six parts of light,
+# responded to by a grown-up with the notice list.
+item art.light-draw v=1 stars=3 skills=[art.light, art.drawing, art.tone] {
+  title "Six parts, drawn"
+  difficulty v
+  let v=0..2
+  let what={pick(v, "an orange or a ball", "an egg", "an egg and a cup side by side")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x30 {
+    stilllife eg light="left" things=["ball"] lamp=true weights=[] at=canvas(1, 1)
+    text ask "In a dark room, light {what} with one lamp from the side, on a pale table. Draw it in pencil by looking, and show all six parts: highlight, lit side, half-tone, core shadow, reflected light and cast shadow." narrate width=34 below=eg gap=1
+    paintsheet sheet w=20 h=6 paper="plain" guide="none" outline="none" pots=["black"] below=ask gap=1
+  }
+
+  check art.by-eye look-for="A round thing drawn from looking under one lamp, shaded from the white of the paper at the highlight through the light and half-tone to the core shadow, with a lighter band of reflected light inside the shadow side near the table, and a cast shadow on the table away from the lamp, darkest close to the thing; at hard, two things whose shadows fall the same way." notice=["The highlight left as white paper", "The tones change gently round the form", "Reflected light lighter than the core shadow", "The cast shadow falls away from the lamp"] ask="Where did you see the reflected light, and how light did you make it?"
+  hint "Squint at the real thing: the parts of light are easier to see with half-closed eyes."
+  hint "Shade lightly first and build up the darks; you cannot get white paper back."
+}

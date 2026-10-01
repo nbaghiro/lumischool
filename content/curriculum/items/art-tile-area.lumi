@@ -1,0 +1,33 @@
+# The area of the tile: a bite slid across is still all there, so the tile covers as much floor as
+# the square did; thrown away, it covers the square less the bite. The square is 10 cm by 10 cm.
+item art.tile-area v=1 skills=[art.tessellation, area.counting, reasoning.explain] {
+  title "How much floor?"
+  difficulty (b / 20 + k)
+  let k=0..1 b={12, 15}
+  let mv={pick(k, "away", "opposite")}
+  let right={if k == 0 then 100 - b else 100}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x15 {
+    nibbletile one bite=curve move=mv both=0 cols=1 rows=1 ring=-1 at=canvas(1, 1)
+    text ask "The tile began as a square of card 10 cm by 10 cm, which covers 100 square centimetres. The bite cut from its left side covers {b} square centimetres. {pick(k, \"The bite was thrown away.\", \"The bite was stuck on the right side, the same way up.\")} How many square centimetres of floor does the tile cover now?" narrate width=26 right-of=one gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (k == 1 and answer == 100 - b) point=one {
+      say "The bite was not lost. It moved to the other side, so it still covers floor."
+    }
+    when (k == 0 and answer == 100) point=one {
+      say "This time the bite was thrown away, so that much floor is no longer covered."
+    }
+  }
+  hint "How much floor did the square cover before any cutting?"
+  hint "Is the bite still part of the tile, or was it thrown away?"
+}

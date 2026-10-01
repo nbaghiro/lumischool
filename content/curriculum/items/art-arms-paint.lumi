@@ -1,0 +1,23 @@
+# The three-star, painted to a brief: a coat of arms for the child's family or the old city's
+# market, keeping the rule of tincture, responded to by a grown-up with the notice list.
+item art.arms-paint v=1 stars=3 skills=[art.heraldry, art.design, reasoning.plan] {
+  title "Arms of your own"
+  difficulty v
+  let v=0..2
+  let extra={pick(v, "one charge on one field", "a field divided in two, each half with its own charge", "a field divided in two, with three charges, and a motto of three words on a scroll below")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x27 {
+    text ask "Paint a coat of arms for your family or for the market in the old city: {extra}. Every charge must keep the rule of tincture. Under it, write its description in the words of heraldry, such as azure, a star Or." narrate width=34 at=canvas(1, 1)
+    paintsheet sheet w=16 h=12 paper="plain" guide="mirror" outline="none" pots=["yellow", "white", "red", "blue", "green", "black"] below=ask gap=1
+  }
+
+  check art.by-eye look-for="A shield painted with the field and charges asked, every charge a metal on a colour or a colour on a metal, the charges simple enough to recognise from across the room, with its description written in heraldic words that match what is painted; at hard a divided field, three charges and a motto." notice=["Every charge keeps the rule", "Simple shapes that read from far off", "The description matches the painting", "The charges mean something to the child"] ask="What do your charges stand for, and why did you choose those tinctures?"
+  hint "Choose the field first, then decide whether the charge must be a metal or a colour."
+  hint "Use the mirror so both halves of the shield match."
+}

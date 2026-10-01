@@ -1,0 +1,36 @@
+# Named works sorted by kind, from what each shows: Leonardo's Mona Lisa (Louvre), Constable's The
+# Hay Wain (National Gallery, London), Van Gogh's Sunflowers (National Gallery, London) and
+# Levitan's March (Tretyakov Gallery), as their Wikipedia entries and the studies drawing's card
+# describe them.
+item art.genre-work v=1 skills=[art.genre, art.artists] {
+  title "Four paintings in four museums"
+  difficulty (if q <= 1 then 0 else 1)
+  let q=0..3
+  let ask={pick(q, "Which painting is a still life?", "Which painting is a portrait?", "Which two paintings are landscapes?", "Which other painting was made nearest in time to Sunflowers?")}
+  let right={pick(q, "Sunflowers", "Mona Lisa", "The Hay Wain and March", "March")}
+  let o1={pick(q, "Mona Lisa", "Sunflowers", "Mona Lisa and Sunflowers", "Mona Lisa")}
+  let o2={pick(q, "The Hay Wain", "March", "Sunflowers and March", "The Hay Wain")}
+  let h1={pick(q, "Read what each painting shows.", "Read what each painting shows.", "Read what each painting shows.", "Read the year of the painting of flowers.")}
+  let h2={pick(q, "Things on a table or in a vase that keep still make a still life.", "A person makes a portrait.", "A place out of doors makes a landscape.", "Work out how many years each other painting is from 1888.")}
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=2..3
+  }
+
+  scene 36x28 {
+    table works cols=3 head=["Painting", "When", "What it shows"] cells=["Mona Lisa", "about 1503", "a woman", "The Hay Wain", "1821", "a river and fields", "Sunflowers", "1888", "flowers in a vase", "March", "1895", "snow by a house"] at=canvas(1, 1)
+    text ask "{ask}" narrate width=34 below=works gap=1
+    choice pick options=[pick(q % 3, right, o1, o2), pick(q % 3, o1, o2, right), pick(q % 3, o2, right, o1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=works {
+      say "{if q == 3 then \"Read the When column. Which year is closest to 1888?\" else \"Read the last column. Is it a person, a place, or things that keep still?\"}"
+    }
+  }
+  hint "{h1}"
+  hint "{h2}"
+}

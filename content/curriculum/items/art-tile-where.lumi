@@ -1,0 +1,33 @@
+# Where the bite must go: straight across, to the opposite side. A bite from the top goes to the
+# bottom; from the left, to the right. The wrong options are the sides next to it and throwing it
+# away.
+item art.tile-where v=1 skills=[art.tessellation, reasoning.predict] {
+  title "Where does the bite go?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let from={pick(k, "left", "top", "right", "bottom")}
+  let right={pick(k, "the right side", "the bottom", "the left side", "the top")}
+  let o2={pick(k, "the top", "the left side", "the bottom", "the right side")}
+  let o3={pick(k, "the bottom", "the right side", "the top", "the left side")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x19 {
+    nibbletile one bite=triangle move=away both=0 cols=1 rows=1 ring=-1 at=canvas(1, 1)
+    text ask "Ana cuts a bite from the {from} of a square tile, like the one on the left. Where must she stick it, the same way up, so the tile will fit with copies of itself?" narrate width=26 right-of=one gap=1
+    choice pick options=[pick(k % 3, right, o2, o3), pick(k % 3, o2, o3, right), pick(k % 3, o3, right, o2)] stack=column below=one gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=one {
+      say "A bump on that side would meet a flat side of the next tile. Which side meets the {from} of the tile beside it?"
+    }
+  }
+  hint "When two tiles touch, which side of one meets the {from} of the other?"
+  hint "The bump has to fill the notch of the next tile, straight across."
+}

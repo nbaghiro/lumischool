@@ -1,0 +1,28 @@
+# Proportion carried into wire: a grown-up is about seven and a half heads tall, so a figure h cm
+# tall has a head h / 7.5 cm long (the layfigure drawing's canon, studied in art-32 at grade 6).
+item art.wire-head v=1 skills=[art.proportion, art.wire, decimals.divide] {
+  title "How long is the head?"
+  difficulty (h / 15)
+  let h={15, 22.5, 30, 37.5}
+  level easy {
+    let h={15, 22.5}
+  }
+  level hard {
+    let h={30, 37.5}
+  }
+
+  scene 33x15 {
+    layfigure fig heads=7.5 pose=stand lines=true action=false wrong=none dir=1 at=canvas(1, 1)
+    text ask "Ana bends a wire figure of a walker on the towpath, {h} cm tall, with the proportions of a grown-up: seven and a half heads tall. How long, in cm, should she make the loop for the head?" narrate width=22 right-of=fig gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (h / 7.5)
+  feedback {
+    when (answer == h / 8 or answer == h / 7) point=fig {
+      say "The figure is seven and a half heads tall, not seven or eight. Count the heads ruled on the drawing."
+    }
+  }
+  hint "How many heads tall is the whole figure?"
+  hint "Seven and a half heads is 15 half-heads. Find a half-head, then double it."
+}

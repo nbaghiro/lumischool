@@ -590,6 +590,7 @@ export const CATALOG = {
         lines: () => import("./art/lines").then((m) => m.lines),
         mirrorpick: () => import("./art/mirrorpick").then((m) => m.mirrorPick),
         mixingtray: () => import("./art/mixingtray").then((m) => m.mixingTray),
+        nibbletile: () => import("./art/nibbletile").then((m) => m.nibbleTile),
         oneline: () => import("./art/oneline").then((m) => m.oneLine),
         paintbox: () => import("./art/paintbox").then((m) => m.paintBox),
         paintpots: () => import("./art/paintpots").then((m) => m.paintPots),

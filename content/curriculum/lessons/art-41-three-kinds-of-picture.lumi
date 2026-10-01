@@ -1,0 +1,76 @@
+# Portrait, landscape and still life: the three kinds of picture by what fills them, named works
+# from four museums sorted by kind, the shape of a canvas, and a still life drawn from looking.
+lesson art-three-kinds-of-picture v=1 format=teach grade=3 unit=4 subject=art levels=[easy, medium, hard] {
+  title "Portrait, landscape and still life"
+  goal "Tell a portrait, a landscape and a still life apart by what fills the picture, in real paintings."
+
+  look {
+    scene 26x21 {
+      row all space=2 align=end at=canvas(1, 1) {
+        face p mood="happy" hair=2 name=""
+        layers l labels=false ring=-1 sun=true light="noon"
+      }
+      stilllife s light="left" things=["apple", "cup", "ball"] lamp=false weights=[] below=all gap=1
+    }
+    say """
+      Painters have names for three kinds of picture. A portrait is a picture of a person, like
+      Leonardo da Vinci's Mona Lisa in the Louvre in Paris. A landscape is a picture of a place out
+      of doors, like John Constable's The Hay Wain in the National Gallery in London. A still life
+      is a picture of things that keep still, arranged by the painter, like Vincent van Gogh's
+      Sunflowers, also in London. A picture is named by what fills it.
+      """
+  }
+  do {
+    show art.genre-pick q=0 easy-q=0 hard-q=1
+    show art.genre-work q=0 easy-q=0 hard-q=2
+    level easy {
+      worked art.genre-shape q=0 level=medium
+    }
+    show art.genre-shape q=1 hard-q=2
+    show art.genre-count q=0 hard-q=1
+    show art.genre-pick q=1 easy-q=1 hard-q=2
+    show art.genre-work q=1 easy-q=1 hard-q=3
+    show art.genre-count q=1 easy-q=1 hard-q=2
+    show art.genre-shape q=2 easy-q=0 hard-q=3
+    level hard {
+      show art.genre-work q=0 level=medium
+    }
+  }
+  try stars=2 {
+    show art.genre-claim r=0 easy-r=1
+  }
+  try stars=3 {
+    show art.genre-draw v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A portrait shows a person, a landscape shows a place out of doors, and a still life shows things that keep still."
+  }
+
+  grown-ups """
+    The idea is that pictures are sorted by what fills them: a person, a place out of doors, or
+    things arranged on a table. The wrong idea to watch for is naming a picture by one small thing
+    in it, so that a landscape with a tiny walker becomes a portrait; the two-star question asks
+    about exactly that. In the working, look for the child saying what each picture is mostly of
+    before choosing. The core sorts three drawings, four named paintings and a room of eight
+    described pictures, and reads the shape of two canvases from their sizes; the three-star is a
+    still life drawn from looking, which you respond to rather than mark.
+
+    The paintings and their facts are from their Wikipedia entries: the Mona Lisa, about 1503 to
+    1506 and perhaps later, 77 by 53 cm, in the Louvre; The Hay Wain, 1821, 130.2 by 185.4 cm
+    (rounded in the table), in the National Gallery, London; Sunflowers, the version with fifteen
+    flowers painted in Arles in August 1888, also in the National Gallery; and Levitan's March,
+    1895, in the Tretyakov Gallery, Moscow, which is drawn here as the shelf's study of it. If the
+    kinds are stuck, sort a pile of postcards or book covers into three heaps. Off the page, look at
+    the real paintings on a museum's website together and say which kind each is. This lesson meets
+    Japan's 2017 course of study for art and craft, grades 3 and 4, B鑑賞(1)ア:
+    「身近な美術作品，製作の過程などの造形的なよさや面白さ，表したいこと，いろいろな表し方などについて，感じ取ったり考えたりし」 (look at familiar works of art
+    and think about what they show and how), and England's key stage 2 aim that pupils learn "about
+    great artists, architects and designers in history".
+    """
+  level easy {
+    grown-ups "At this level the pictures to sort are the portrait and the still life, the named paintings asked are the still life and the portrait, the shape of the Mona Lisa is worked once in the teacher's pen before The Hay Wain, the room is counted for portraits, the two-star is as written with its answers in another order, and the still life has three things only."
+  }
+  level hard {
+    grown-ups "At this level the pictures to sort are the still life and the landscape, the named paintings are asked for both landscapes and for the year nearest Sunflowers, the canvases are compared by how many centimetres, the room is counted for still lifes and landscapes, one more named painting is sorted, and the still life is lit from one side and shaded."
+  }
+}

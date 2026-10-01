@@ -1,0 +1,35 @@
+# The way in: three pictures, a face, a table of things and hills, and the kind of picture each is.
+item art.genre-pick v=1 skills=[art.genre, art.looking] {
+  title "Which kind of picture?"
+  difficulty (if q == 2 then 1 else 0)
+  let q=0..2
+  let kind={pick(q, "a portrait", "a still life", "a landscape")}
+  let right={pick(q, "A", "B", "C")}
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x32 {
+    column all space=1 align=start at=canvas(1, 1) {
+      row top space=3 align=end {
+        face a mood="happy" hair=1 name="A"
+        stilllife b light="left" things=["apple", "cup", "box"] lamp=false weights=[]
+      }
+      layers c labels=false ring=-1 sun=true light="morning"
+    }
+    text ask "Picture A is a face, B is things on a table, and C is hills under the sky. Which picture is {kind}?" narrate width=34 below=all gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=all {
+      say "{if q == 0 then \"A portrait is a picture of a person. Which one shows a person?\" else if q == 1 then \"A still life is things that do not move, arranged on a table. Which one is that?\" else \"A landscape is a place out of doors. Which one shows land and sky?\"}"
+    }
+  }
+  hint "What is each picture mostly of: a person, things on a table, or a place out of doors?"
+  hint "{if q == 0 then \"Portrait: a person.\" else if q == 1 then \"Still life: things that keep still.\" else \"Landscape: the land.\"}"
+}

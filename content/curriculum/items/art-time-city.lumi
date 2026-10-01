@@ -1,0 +1,32 @@
+# Where the works hang (Wikipedia and the studies drawing): the Mona Lisa in the Louvre and
+# Impression, Sunrise in the Musée Marmottan Monet, both in Paris; Sunflowers and The Fighting
+# Temeraire in the National Gallery, London; Levitan's March and Shishkin's Morning in a Pine Forest
+# in the Tretyakov.
+item art.time-city v=1 skills=[art.artists, art.history] {
+  title "Two in one city"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let ask={pick(k, "Which painting hangs in the same city as the Mona Lisa?", "Which painting hangs in the same museum as Van Gogh's Sunflowers?", "Which painting hangs in the same city as Levitan's March?")}
+  let right={pick(k, "Impression, Sunrise", "The Fighting Temeraire", "Morning in a Pine Forest")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x32 {
+    table where cols=2 head=["Painting", "Where it hangs"] cells=["Mona Lisa", "Louvre, Paris", "Impression, Sunrise", "Marmottan Monet, Paris", "Sunflowers", "National Gallery, London", "The Fighting Temeraire", "National Gallery, London", "March", "Tretyakov Gallery, Moscow", "Morning in a Pine Forest", "Tretyakov Gallery, Moscow"] at=canvas(1, 1)
+    text ask "{ask}" narrate width=34 below=where gap=1
+    choice pick options=["Impression, Sunrise", "The Fighting Temeraire", "Morning in a Pine Forest"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=where {
+      say "Read the right-hand column for the painting named, then find another row with the same {pick(k, \"city\", \"museum\", \"city\")}."
+    }
+  }
+  hint "Find the named painting in the table first."
+  hint "Look down the right-hand column for a match."
+}

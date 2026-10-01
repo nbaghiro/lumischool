@@ -1,0 +1,24 @@
+# The three-star, painted: an autumn leaf in neighbours mixed from the pans, with a light and a
+# dark, responded to by a grown-up. Hard adds a fourth neighbour and one small touch of the opposite
+# colour.
+item art.neighbour-paint v=1 stars=3 skills=[art.harmony, art.painting, reasoning.plan] {
+  title "A leaf in neighbours"
+  difficulty v
+  let v=0..2
+  let extra={pick(v, "", " Make one of them lighter with white somewhere on the leaf.", " Use four neighbours, one of them lightened with white, and put one small spot of the colour opposite them on the wheel where it will show most.")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x27 {
+    text ask "Paint an autumn leaf using only three neighbours from the twelve-part wheel, mixed from the paints below, and fill the whole leaf.{extra}" narrate width=34 at=canvas(1, 1)
+    paintsheet sheet w=22 h=12 paper="plain" guide="none" outline="leaf" pots=["red", "yellow", "blue", "white"] below=ask gap=1
+  }
+
+  check art.by-eye look-for="A leaf filled with three colours that sit next to each other on the twelve-part wheel, such as red, red-orange and orange, mixed from the pans rather than one pan used three times; at medium one colour also appears lightened with white; at hard four neighbours with one tint, and a single small spot of the opposite colour placed where the eye goes first." notice=["Only neighbours on the leaf", "The colours were mixed, not just taken from the pans", "A light and a dark of one colour", "The whole leaf is filled"] ask="Which neighbours did you choose, and why do they suit an autumn leaf?"
+  hint "Choose your three on the wheel first, and mix the in-between one before you start."
+  hint "Mix the two-to-one colour by counting brushfuls: two of one paint, one of the other."
+}

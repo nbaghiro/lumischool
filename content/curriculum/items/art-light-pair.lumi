@@ -1,0 +1,32 @@
+# Which of two parts is lighter, by the usual order from lightest to darkest: highlight, lit side,
+# half-tone, reflected light, core shadow, cast shadow. Reflected light is lighter than the core
+# shadow it sits in, never as light as the lit side.
+item art.light-pair v=1 skills=[art.tone, art.light, reasoning.compare] {
+  title "Which is lighter?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..4
+  let a={pick(k, "highlight", "lit side", "reflected light", "reflected light", "half-tone")}
+  let b={pick(k, "core shadow", "cast shadow", "core shadow", "lit side", "reflected light")}
+  let right={pick(k, "highlight", "lit side", "reflected light", "lit side", "half-tone")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..4
+  }
+
+  scene 36x15 {
+    tonescale scale steps=5 blank=-1 ring=-1 at=canvas(1, 1)
+    text ask "When Ben shades the ball, which should he leave lighter: the {a} or the {b}?" narrate width=34 below=scale gap=1
+    choice pick options=[a, b] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=scale {
+      say "Where does each get its light from: straight from the lamp, bounced off the table, or almost none?"
+    }
+  }
+  hint "Which of the two gets light straight from the lamp?"
+  hint "Light bounced off the table is weaker than light from the lamp, but stronger than none."
+}

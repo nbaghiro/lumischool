@@ -1,0 +1,28 @@
+# All six put in order from lightest to darkest, as numbers 1 to 6; the list is given in a different
+# order each time. Highlight 1, lit side 2, half-tone 3, reflected light 4, core shadow 5, cast
+# shadow 6.
+item art.light-tones v=1 skills=[art.tone, art.light, reasoning.order] {
+  title "Lightest to darkest"
+  let k=0..2
+  let s1={pick(k, "core shadow", "lit side", "reflected light")}
+  let s2={pick(k, "highlight", "cast shadow", "half-tone")}
+  let s3={pick(k, "reflected light", "half-tone", "highlight")}
+  let s4={pick(k, "lit side", "core shadow", "cast shadow")}
+  let s5={pick(k, "cast shadow", "highlight", "core shadow")}
+  let s6={pick(k, "half-tone", "reflected light", "lit side")}
+
+  scene 36x30 {
+    tonescale scale steps=5 blank=-1 ring=-1 at=canvas(1, 1)
+    text ask "Number the six parts of light on the ball from 1, the lightest, to 6, the darkest." narrate width=34 below=scale gap=1
+    sequence s items=[s1, s2, s3, s4, s5, s6] blanks=[a, b, c, d, e, f] below=ask gap=1
+  }
+
+  answer a=pick(k, 5, 2, 4) b=pick(k, 1, 6, 3) c=pick(k, 4, 3, 1) d=pick(k, 2, 5, 6) e=pick(k, 6, 1, 5) f=pick(k, 3, 4, 2)
+  feedback {
+    when (a != pick(k, 5, 2, 4)) point=scale {
+      say "Find the two ends first: the brightest spot and the darkest shape. Then fit the others between."
+    }
+  }
+  hint "Which is lightest of all, and which is darkest?"
+  hint "Reflected light sits in the shadow side but is lighter than the core shadow round it."
+}

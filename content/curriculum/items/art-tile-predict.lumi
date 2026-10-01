@@ -1,0 +1,37 @@
+# Predicting from one tile which will fit, before any is laid: only the one whose bite reappears on
+# the opposite side as a bump the same shape.
+item art.tile-predict v=1 skills=[art.tessellation, reasoning.predict] {
+  title "Which tile will fit?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let bt={pick(k, "curve", "curve", "curve", "triangle", "triangle", "triangle")}
+  let ma={pick(k % 3, "opposite", "away", "next")}
+  let mb={pick(k % 3, "away", "next", "opposite")}
+  let mc={pick(k % 3, "next", "opposite", "away")}
+  let right={pick(k % 3, "A", "C", "B")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x20 {
+    row tiles space=2 align=end at=canvas(1, 1) {
+      nibbletile a bite=bt move=ma both=0 cols=1 rows=1 ring=-1
+      nibbletile b bite=bt move=mb both=0 cols=1 rows=1 ring=-1
+      nibbletile c bite=bt move=mc both=0 cols=1 rows=1 ring=-1
+    }
+    text ask "Ben cut the same bite from three tiles, A, B and C from the left, and did something different with each bite. Which tile will cover a floor with no gaps and no overlaps?" narrate width=34 below=tiles gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=tiles {
+      say "Picture two of that tile side by side. Does the bump on one side drop into the notch of the next?"
+    }
+  }
+  hint "Find the notch on each tile. Where did its bite go?"
+  hint "The bump fills a notch only if it is the same shape and straight across from it."
+}

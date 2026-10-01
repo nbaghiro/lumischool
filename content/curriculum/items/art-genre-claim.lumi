@@ -1,0 +1,21 @@
+# The two-star reason: a picture is named by what fills it, so a tiny walker on a far bank does not
+# make a landscape a portrait. The wrong reasons are plausible ideas about people in pictures.
+item art.genre-claim v=1 stars=2 skills=[art.genre, reasoning.explain] {
+  title "A person in a landscape"
+  let r=0..1
+
+  scene 36x32 {
+    layers land labels=false ring=-1 sun=true light="morning" at=canvas(1, 1)
+    text ask "Ana paints these hills and adds a tiny walker on the far hill, no bigger than a fingernail. Ben says that now it is a portrait, because it has a person in it. Is he right?" narrate width=34 below=land gap=1
+    choice pick options=[pick(r, "No: the hills fill it, so it is still a landscape", "Yes: any person in a picture makes it a portrait"), "Yes: it is a portrait if the person is the painter", pick(r, "Yes: any person in a picture makes it a portrait", "No: the hills fill it, so it is still a landscape")] stack=column below=ask gap=1
+  }
+
+  answer pick="No: the hills fill it, so it is still a landscape"
+  feedback {
+    when (pick != "No: the hills fill it, so it is still a landscape") point=land {
+      say "Look at what fills most of the picture. Is it the walker, or the place?"
+    }
+  }
+  hint "What is the picture mostly about?"
+  hint "In a portrait, the person is the main thing. How big is the walker here?"
+}

@@ -1,0 +1,75 @@
+# Drawing with wire: the tools for wire and a wooden base, a figure's head from its height in heads,
+# the wire a heron needs, a cabin's outline, Calder's wire dancer measured, and a wire figure made
+# by hand.
+lesson art-drawing-with-wire v=1 format=teach grade=5 unit=3 subject=art levels=[easy, medium, hard] {
+  title "Drawing with wire"
+  goal "Plan a wire figure: its tools, its proportions and how much wire it needs."
+
+  look {
+    scene 20x14 {
+      row all space=3 align=end at=canvas(1, 1) {
+        layfigure a heads=7.5 pose=walk lines=false action=true wrong=none dir=1
+        heron h
+      }
+    }
+    say """
+      A line does not have to stay on paper. Bent from wire, a line stands up in the air and can be
+      seen from every side. In the late 1920s the American artist Alexander Calder made wire figures
+      of people and animals, and called them drawings in space. A wire figure is planned like a
+      drawing: its proportions first, so a grown-up is about seven and a half heads tall, then how
+      much wire it needs, and then how the pieces are joined, by twisting them round each other.
+      """
+  }
+  do {
+    show art.wire-tool k=0 easy-k=0 hard-k=2
+    show art.wire-head h=15 easy-h=15 hard-h=30
+    level easy {
+      worked art.wire-total q=0 j=3 l=12 level=medium
+    }
+    show art.wire-total q=0 j=3 l=14 hard-q=1 hard-l=12
+    show art.wire-outline w=10 h=5 cut=2 deep=2 easy-w=8 hard-w=12 hard-h=6
+    show art.wire-scale q=1 hard-q=0
+    show art.wire-tool k=1 easy-k=1 hard-k=3
+    show art.wire-head h=30 easy-h=22.5 hard-h=37.5
+    show art.wire-outline w=12 h=6 cut=3 deep=2 easy-w=8 easy-h=6 hard-w=10 hard-cut=2 hard-deep=3
+    level medium hard {
+      show art.wire-total q=1 j=5 l=12 hard-l=14
+    }
+  }
+  try stars=2 {
+    show art.wire-why r=0 easy-r=1
+  }
+  try stars=3 {
+    show art.wire-make v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A wire figure is a drawing in space: plan its proportions and its length, and twist every join."
+  }
+
+  grown-ups """
+    The idea is that wire is a line that stands up, so a wire figure is planned as a drawing is, by
+    its proportions, and then by the length of wire it needs and how its pieces are joined. The step
+    up from grade 3's clay is a new material with its own tools, and the seven and a half heads
+    given here are studied fully in grade 6's lesson on figures. The wrong ideas to watch for are
+    counting a pair of legs once, forgetting the wire used up in twisted joins, and dividing by
+    seven or eight when the canon is seven and a half. In the working, look for the child listing
+    every part before adding. The core chooses tools, finds a head's length, totals the wire for a
+    heron, measures round a cabin's outline and turns Calder's inches into centimetres; the two-star
+    asks why wire is drawing in space, and the three-star is a wire figure made by hand, which you
+    look at with the notice list rather than mark.
+
+    Calder and his wire figures are from Wikipedia, "Alexander Calder" (1898 to 1976; wire
+    sculpture, or drawing in space, from about 1926; Aztec Josephine Baker, about 1930, 53 by 10 by
+    9 inches). The tools and their jobs are recalled. Use soft craft wire or pipe cleaners, and cut
+    wire yourself or supervise closely; the cut ends are sharp, so turn them in with pliers. Off the
+    page, bend one pipe cleaner into the outline of a face without cutting it. This lesson meets
+    Japan's 2017 course of study for art and craft, grades 5 and 6, 第3 2(6)ウ:
+    「第５学年及び第６学年においては，針金，糸のこぎりなどを用いること」 (at grades 5 and 6, use wire, coping saws and the like).
+    """
+  level easy {
+    grown-ups "At this level the tools are for cutting wire and wood, the figures are 15 and 22.5 cm tall, the heron's wire is worked once in the teacher's pen before it is totalled without the joins, the outlines are the smallest cabins, the dancer's width is turned into centimetres, the two-star is as written with its answers in another order, and the wire figure is a heron."
+  }
+  level hard {
+    grown-ups "At this level the tools are for curling and drilling, the figures are 30 and 37.5 cm tall, the heron's wire includes the twisted joins, the outlines are the biggest cabins, one with a deeper step, the dancer's height is turned into centimetres, and the wire figure is in action and reads from two sides."
+  }
+}

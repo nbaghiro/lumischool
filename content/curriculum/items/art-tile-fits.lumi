@@ -1,0 +1,30 @@
+# The way in: a tile laid in rows, and whether it fills the floor. A bite slid straight across fits;
+# a bite thrown away leaves gaps; a bite stuck on the next side leaves gaps and overlaps.
+item art.tile-fits v=1 skills=[art.tessellation, art.looking] {
+  title "Does it fill the floor?"
+  difficulty pick(k, 1, 0, 3)
+  let k=0..2
+  let mv={pick(k, "away", "opposite", "next")}
+  let right={pick(k, "gaps, no overlaps", "no gaps, no overlaps", "gaps and overlaps")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x30 {
+    nibbletile floor bite=curve move=mv both=0 cols=3 rows=2 ring=-1 at=canvas(1, 1)
+    text ask "Ana cut a bite from the left side of a square tile and laid copies of it in rows. What does the floor have?" narrate width=34 below=floor gap=1
+    choice pick options=["no gaps, no overlaps", "gaps, no overlaps", "gaps and overlaps"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=floor {
+      say "Look where two tiles meet. Is there white floor showing, and does any tile lie on top of another?"
+    }
+  }
+  hint "Look for white between the tiles first."
+  hint "Then look for a bump lying over the next tile."
+}

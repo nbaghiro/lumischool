@@ -1,0 +1,37 @@
+# Joins counted: every edge two slabs share has to be scored and slipped. An open box has the base's
+# four edges and the four upright corners, 8; a closed box has every edge of a cube, 12.
+item art.clay-joins v=1 skills=[art.clay, shape.edges, reasoning.two-steps] {
+  title "Score and slip every join"
+  difficulty s
+  let s=0..1
+  let kind={pick(s, "open box", "box with a lid")}
+  let sol={pick(s, "box", "cube")}
+  let right={pick(s, 8, 12)}
+  level easy {
+    let s=0..0
+  }
+  level hard {
+    let s=1..1
+  }
+
+  scene 33x13 {
+    net plan solid=sol cell=2 l=0 w=0 h=0 r=0 ask=0 unit="cm" at=canvas(1, 1)
+    text ask "When the slabs of the {kind} are stood up, every edge where two slabs meet must be scored and slipped. How many joins is that?" narrate width=20 right-of=plan gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (s == 0 and answer == 4) point=plan {
+      say "Those are the joins round the base. The walls also meet each other at the corners."
+    }
+    when (s == 0 and answer == 12) point=plan {
+      say "With no lid, the top edges of the walls do not meet anything."
+    }
+    when (s == 1 and answer == 8) point=plan {
+      say "The lid meets the top of every wall too."
+    }
+  }
+  hint "Count the joins round the base first."
+  hint "Then count the corners where two walls stand side by side{pick(s, \".\", \", and the joins round the lid.\")}"
+}

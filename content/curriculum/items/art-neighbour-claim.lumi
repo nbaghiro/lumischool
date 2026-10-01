@@ -1,0 +1,33 @@
+# The two-star reason: a claim about neighbours, judged. Ben's is about distance, which neighbours
+# can show through tone, size and overlap; Ana's is about warm and cool, which a group like purple,
+# red-purple and red crosses.
+item art.neighbour-claim v=1 stars=2 skills=[art.harmony, reasoning.explain] {
+  title "Is that true of neighbours?"
+  difficulty q
+  let q=0..1 r=0..1
+  let claim={pick(q, "Ben says: a picture painted only in neighbours cannot show near and far, because neighbours are too alike.", "Ana says: a group of three neighbours is always all warm or all cool.")}
+  let right={pick(q, "No: tone, size and overlap still show distance", "No: purple, red-purple and red cross the line")}
+  let w1={pick(q, "Yes: only opposites can show near and far", "Yes: neighbours never cross the line")}
+  let w2={pick(q, "Yes: near and far need a warm and a cool colour", "No: every group is half warm and half cool")}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..1
+  }
+
+  scene 36x28 {
+    colourwheel wheel segments=12 blank=[] ring=-1 labels=true split="warm" at=canvas(1, 1)
+    text ask "{claim} Is that right?" narrate width=19 right-of=wheel gap=1
+    choice pick options=[pick(r, right, w1), w2, pick(r, w1, right)] stack=column below=wheel gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=wheel {
+      say "{if q == 0 then \"Think of the landscape in layers: what besides colour made the far hills look far?\" else \"Follow the dashed line on the wheel. Can three neighbours sit across it?\"}"
+    }
+  }
+  hint "{if q == 0 then \"Can one colour be painted light and dark? What does white do to it?\" else \"Find the line between warm and cool. Which neighbours sit on both sides of it?\"}"
+  hint "{if q == 0 then \"Besides colour, how does a painter make one thing look nearer than another?\" else \"Try purple, red-purple and red on the wheel.\"}"
+}

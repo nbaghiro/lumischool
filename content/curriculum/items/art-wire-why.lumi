@@ -1,0 +1,22 @@
+# The two-star reason: Calder's wire figures are lines, as a pencil drawing is, but they stand in
+# the air and can be seen from all round (Wikipedia, "Alexander Calder": wire sculpture, or drawing
+# in space).
+item art.wire-why v=1 stars=2 skills=[art.wire, art.sculpture, reasoning.explain] {
+  title "Drawing in space"
+  let r=0..1
+
+  scene 36x31 {
+    layfigure fig heads=7.5 pose=walk lines=false action=true wrong=none dir=1 at=canvas(1, 1)
+    text ask "Calder called his wire figures drawings in space. Why is that a good name for them?" narrate width=34 below=fig gap=1
+    choice pick options=[pick(r, "It is a line, like a pencil line, in the air", "He drew each figure on paper first"), "They are flat pictures glued to wire", pick(r, "He drew each figure on paper first", "It is a line, like a pencil line, in the air")] stack=column below=ask gap=1
+  }
+
+  answer pick="It is a line, like a pencil line, in the air"
+  feedback {
+    when (pick != "It is a line, like a pencil line, in the air") point=fig {
+      say "Think about what a drawing is made of, and what a wire figure is made of."
+    }
+  }
+  hint "What is a drawing made of: shapes, colours, or lines?"
+  hint "Where does a wire line go that a pencil line cannot?"
+}

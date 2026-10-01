@@ -1,0 +1,33 @@
+# Where the reflected light is: on the side away from the lamp, near the bottom edge, where light
+# bouncing up from the table reaches. The wrong places are the lit side and the table.
+item art.light-where v=1 skills=[art.light, art.looking] {
+  title "Find the reflected light"
+  difficulty (if s == 0 then 0 else 1)
+  let s=0..1
+  let side={pick(s, "left", "right")}
+  let away={pick(s, "right", "left")}
+  let right={pick(s, "low on the right side of the ball, near the table", "low on the left side of the ball, near the table")}
+  let o2={pick(s, "high on the left side of the ball, near the lamp", "high on the right side of the ball, near the lamp")}
+  let o3={pick(s, "on the table, to the right of the ball", "on the table, to the left of the ball")}
+  level easy {
+    let s=0..0
+  }
+  level hard {
+    let s=1..1
+  }
+
+  scene 36x27 {
+    stilllife pic light=side things=["ball"] lamp=true weights=[] at=canvas(1, 1)
+    text ask "The lamp is on the {side}, and the ball sits on a pale table. Where will Ana see the reflected light?" narrate width=34 below=pic gap=1
+    choice pick options=[o2, right, o3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=pic {
+      say "Reflected light is light bouncing off the table onto the side of the ball the lamp cannot reach."
+    }
+  }
+  hint "Which side of the ball does the lamp not reach?"
+  hint "Where on that side could light bouncing up off the table land?"
+}

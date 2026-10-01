@@ -1,0 +1,24 @@
+# The three-star, made away from the sheet: a pot built by hand with a pressed pattern, as the Jomon
+# potters pressed cord into their clay, looked at by a grown-up with the notice list.
+item art.clay-make v=1 stars=3 skills=[art.clay, art.making, reasoning.plan] {
+  title "A pot of your own"
+  difficulty v
+  let v=0..2
+  let what={pick(v, "a pinch pot that holds an egg", "a coil pot at least 6 cm tall", "a coil pot at least 8 cm tall with a slab base")}
+  let extra={pick(v, "", " Smooth the coils together on the inside.", " Score and slip the base to the first coil, and smooth the coils together inside.")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 34x14 {
+    net plan solid="box" cell=1 l=0 w=0 h=0 r=0 ask=0 unit="cm" at=canvas(1, 1)
+    text ask "Make {what} from clay or salt dough. Press a pattern into the outside with a piece of string, a shell or a pencil end, as the Jomon potters pressed cord into theirs.{extra}" narrate width=26 right-of=plan gap=1
+  }
+
+  check art.made look-for="A pot made by hand in the way asked that stands level and holds something; walls of an even thickness with no cracks at the joins; a pressed pattern that goes round the outside; at medium and hard the coils smoothed together inside so the join cannot be seen, and at hard a slab base joined by scoring and slip." notice=["Stands level on its base", "Walls about the same thickness all round", "No cracks where pieces join", "A pressed pattern round the outside"] ask="Which part of the pot did you have to fix as you made it, and how?"
+  hint "Keep the clay damp under a cloth while you work so it does not crack."
+  hint "Turn the pot as you build, and look at it from the side to keep it straight."
+}

@@ -1,0 +1,78 @@
+# A face by its canons: the old rules of proportion for a face, five eyes wide, the gap and the nose
+# as wide as an eye, the mouth one and a half noses, checked against a measured face and a study of
+# 103, and a portrait drawn by measuring.
+lesson art-a-face-by-its-canons v=1 format=teach grade=6 unit=6 subject=art levels=[easy, medium, hard] {
+  title "A face by its canons"
+  goal "Place a face's features by the old canons of proportion, and measure where a real face differs."
+
+  look {
+    scene 36x10 {
+      row all space=3 align=end at=canvas(1, 1) {
+        face a mood="happy" hair=1 name=""
+        face b mood="surprised" hair=3 name=""
+        face c mood="happy" hair=2 name=""
+      }
+    }
+    say """
+      Artists of the Renaissance, among them Leonardo da Vinci and Albrecht Dürer, wrote down rules
+      for the proportions of a face, called canons. A face is five eyes wide. The gap between the
+      eyes is as wide as one eye, and the nose is as wide as that gap. The mouth is one and a half
+      times as wide as the nose. By the waterfall, Ana and Ben draw each other's portraits, using
+      the canons to place the features first, then measuring to see where a real face is different.
+      """
+  }
+  do {
+    show art.face-fifths e=2 easy-e=2 hard-e=3
+    show art.face-mouth q=0 n=2 hard-q=1 hard-n=3
+    level easy {
+      worked art.face-corners e=2 level=medium
+    }
+    show art.face-corners e=2.5 hard-e=3
+    show art.face-fit k=0 easy-k=0 hard-k=2
+    show art.face-percent q=0 hard-q=1
+    show art.face-fifths e=3.5 easy-e=2.5 hard-e=3.5
+    show art.face-mouth q=1 n=4 easy-q=0 easy-n=3 hard-n=4
+    show art.face-fit k=3 easy-k=1 hard-k=3
+    level medium hard {
+      show art.face-corners e=3 hard-e=3.5
+    }
+  }
+  try stars=2 {
+    show art.face-why r=0 easy-r=1
+  }
+  try stars=3 {
+    show art.face-draw v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "The canons give a face's first frame: five eyes wide, the gap and the nose one eye, the mouth one and a half noses; a portrait shows where a real face differs."
+  }
+
+  grown-ups """
+    The idea is that the proportions of a face can be described by canons, ratios that place the
+    features, and that a portrait uses them as a first frame and then records how a real face
+    differs. The step up from grade 6's figures in proportion, which measured a whole body in heads,
+    is the face's own ratios, and the finding that real faces seldom fit them. The wrong ideas to
+    watch for are reading one and a half times as adding one and a half, and treating the canon as
+    how a face must look. In the working, look for the child naming which measurements a canon
+    compares before calculating. The core finds a face's width from an eye, a mouth from a nose and
+    back, the distance across the eyes, checks a measured face against each canon and reads the
+    study's result as a number of people; the two-star asks why artists learn a rule nobody fits,
+    and the three-star is a measured portrait, which you respond to rather than mark.
+
+    The canons and the finding are from a study of 103 Southern Chinese young adults (PubMed
+    Central, PMC3532441), which lists the orbital, orbitonasal and naso-oral canons and the rule of
+    fifths, attributes them to Leonardo, Vitruvius and Dürer among others, and found that 19.4 per
+    cent fitted the orbitonasal canon and none the orbital. If the ratios are stuck, measure each
+    other's faces with a strip of paper and mark the eye width along it. Off the page, look at
+    Leonardo's Mona Lisa (Louvre) and check one canon on it with a ruler on the screen. This lesson
+    meets Russia's federal work programme for fine art, grade 6: «Построение головы человека,
+    основные пропорции лица» (constructing the human head; the main proportions of the face), as
+    quoted in the audit of grades 5 and 6.
+    """
+  level easy {
+    grown-ups "At this level the eyes are 2 and 2.5 cm wide, the mouth is worked out from the nose, the distance across the eyes is worked once in the teacher's pen for 2 cm eyes before 2.5 cm, the canons checked are the eye gap and the nose, the study is read for those who fitted, the two-star is as written with its answers in another order, and the portrait is a self-portrait in a mirror."
+  }
+  level hard {
+    grown-ups "At this level the eyes are 3 and 3.5 cm wide, the nose is worked out back from the mouth, the canons checked are the face's width and the mouth, the study is read for those who did not fit, and the portrait is a turned three-quarter view."
+  }
+}

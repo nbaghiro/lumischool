@@ -1,0 +1,31 @@
+# The way in: the six parts of light on a rounded form, named from where they are on a ball lit from
+# one side, in the words Russia's grade 6 programme lists (light, highlight, half-tone, core shadow,
+# reflected light, cast shadow).
+item art.light-name v=1 skills=[art.tone, art.light] {
+  title "Name the part"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let where={pick(k, "the small, brightest spot on the ball, nearest the lamp", "the dark shape on the table beside the ball, away from the lamp", "the side of the ball facing the lamp", "the band where the lit side turns into the dark side", "the darkest part on the ball itself, on the side away from the lamp", "a faint glow on the dark side near the table, from light bouncing off it")}
+  let right={pick(k, "highlight", "cast shadow", "lit side", "half-tone", "core shadow", "reflected light")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x41 {
+    stilllife pic light="left" things=["ball", "apple", "cup"] lamp=true weights=[] at=canvas(1, 1)
+    text ask "In the observatory at night, Ana draws a ball under the lamp. What is the name for {where}?" narrate width=34 below=pic gap=1
+    choice pick options=["lit side", "highlight", "half-tone", "core shadow", "reflected light", "cast shadow"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=pic {
+      say "Is it on the ball or on the table? Is it on the side facing the lamp or the side away from it?"
+    }
+  }
+  hint "Find the lamp first. Which side of the ball faces it?"
+  hint "Only one part is not on the ball at all."
+}

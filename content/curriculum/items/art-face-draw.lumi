@@ -1,0 +1,24 @@
+# The three-star, drawn from looking: a self-portrait or a portrait measured with a pencil held at
+# arm's length, the canons used as a frame and the differences noted, responded to by a grown-up.
+item art.face-draw v=1 stars=3 skills=[art.portrait, art.drawing, art.proportion] {
+  title "A portrait, measured"
+  difficulty v
+  let v=0..2
+  let what={pick(v, "your own face in a mirror", "a person sitting still for you", "a person sitting still for you, turned a little to one side")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x29 {
+    face f mood="happy" hair=2 name="" at=canvas(1, 1)
+    text ask "Draw {what}, face-on and life size if you can. First draw the face's oval and light lines for the canons. Then measure the real face with a pencil held at arm's length, and move each feature to where it really is. Write down one place where the face is different from the canon." narrate width=26 right-of=f gap=1
+    paintsheet sheet w=16 h=8 paper="plain" guide="none" outline="none" pots=["black"] below=ask gap=1
+  }
+
+  check art.by-eye look-for="A face drawn from life with the features placed by measuring, using the canons as light guide lines and then moving features to match the sitter; at least one difference from the canon noted in writing and visible in the drawing; at hard a three-quarter view where the far eye and the far side of the face look narrower." notice=["Drawn from a real face", "Features placed by measuring", "Light guide lines under the drawing", "One difference from the canon noted"] ask="Where is this face different from the canon, and how did you find out?"
+  hint "Hold the pencil at arm's length and slide your thumb to mark an eye's width; then count eye widths across the face."
+  hint "Draw the guide lines lightly so you can rub them out."
+}

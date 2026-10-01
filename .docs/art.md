@@ -821,6 +821,54 @@ and its notice list. The facts they use, and where each comes from:
   cards in `engine/parts/art/studies.ts`, which the drawing's author checked; the lessons take
   no other fact about them.
 
+## Grades three to six: the eleven lessons of 1 October 2026
+
+Eleven art lessons were added on 1 October 2026 to bring grades three and four to nine art lessons
+each and grades five and six to ten, filling gaps the audits named and that the official programmes
+teach at those grades: `art-40` neighbour colours (grade 3, unit 3), `art-41` portrait, landscape
+and still life (3, 4), `art-42` pots from clay (3, 7), `art-43` a tile that fits itself (4, 1),
+`art-44` mosaic (4, 4), `art-45` a flip book (4, 7), `art-46` drawing with wire (5, 3), `art-47` six
+words for light on a form (5, 6), `art-48` coats of arms and the rule of tincture (5, 9), `art-49` a
+face by its canons (6, 6) and `art-50` six artists on a timeline (6, 9). Each ends
+in a piece marked with `art.by-eye` or `art.made` and a notice list. Two drawings were added for them:
+`nibbletile`, a square tile with a bite cut from one side and thrown away, slid across or stuck on the
+next side, alone or laid in rows; and, for the music lessons, `orchestra`.
+
+The facts they use, and where each comes from:
+
+- Analogous colours are neighbours on the wheel and look calm together for lack of contrast
+  (Wikipedia, "Analogous colors"). The twelve-part wheel's in-between colours are the colour wheel
+  drawing's own two-to-one mixes.
+- The Mona Lisa, about 1503 to 1506 and perhaps later, 77 by 53 cm, the Louvre (Wikipedia, "Mona
+  Lisa"); The Hay Wain, 1821, 130.2 by 185.4 cm, the National Gallery, London (Wikipedia, "The Hay
+  Wain"); Sunflowers, the version with fifteen flowers painted in Arles in August 1888, the National
+  Gallery (Wikipedia, "Sunflowers (Van Gogh series)").
+- Coil building, and Japanese coil-built pottery from about 10,500 BC (Wikipedia, "Coiling
+  (pottery)"); scoring and slip to join pieces (Wikipedia, "Slip (ceramics)"); Jomon pottery,
+  rope-patterned, fired at about 600 to 900 degrees, and a flame-rimmed pot of 3000 to 2000 BC in the
+  Tokyo National Museum (Wikipedia, "Jōmon pottery").
+- The Alhambra's tiles inspired M. C. Escher, who visited in May and June 1936 and made interlocking
+  designs of birds, fish and reptiles (Wikipedia, "Islamic geometric patterns" and "M. C. Escher").
+  Escher's prints are in copyright, so the lesson names them and shows none.
+- Tesserae of stone, glass or pottery, opus vermiculatum of 4 mm or less, the Alexander Mosaic in
+  Naples and the mosaics of Justinian and Theodora in San Vitale, Ravenna (Wikipedia, "Mosaic").
+- Linnett's kineograph, patented on 18 March 1868 (Wikipedia, "Flip book"); 24 frames a second for
+  sound film, 12 drawings a second on twos, and 10 to 12 pictures a second as the edge of seeing
+  motion (Wikipedia, "Frame rate").
+- Calder's wire sculpture, "drawing in space", from about 1926, and Aztec Josephine Baker, about 1930,
+  53 by 10 by 9 inches (Wikipedia, "Alexander Calder"). The tools named for wire work are recalled.
+- The six terms for light on a form are Russia's grade 6 list as the audit quotes it; their order of
+  tone is the usual one in drawing teaching (recalled). The Night Watch, 1642, Rijksmuseum, and its
+  chiaroscuro (Wikipedia, "The Night Watch" and "Chiaroscuro").
+- The tinctures, the rule of tincture and the Jerusalem exception (Wikipedia, "Tincture (heraldry)").
+  That Russia's grade 5 decorative module includes the coat of arms is recalled.
+- The orbital, orbitonasal and naso-oral canons and the rule of fifths, attributed to Leonardo,
+  Vitruvius, Dürer and others, and the finding that of 103 young adults 19.4 per cent fitted the
+  orbitonasal canon and none the orbital (a study of the canons in 103 Southern Chinese young adults, PubMed Central PMC3532441).
+- Impression, Sunrise, 1872, the Musée Marmottan Monet, which named Impressionism after the 1874
+  exhibition (Wikipedia, "Impression, Sunrise"); The Great Wave off Kanagawa, late 1831, a woodblock
+  print (Wikipedia). The other works' dates and places are those on the studies drawing's cards.
+
 ## The order to build the rest
 
 1. A tablet pass: measure the tool on an iPad and a low-cost Android tablet, move the fill to a

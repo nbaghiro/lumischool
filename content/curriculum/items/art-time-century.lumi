@@ -1,0 +1,25 @@
+# The two-star reason: the 17th century is the years 1601 to 1700, so 1642 is in the 17th, not the
+# 16th; the century is one more than the hundreds of the year, except in a year ending 00.
+item art.time-century v=1 stars=2 skills=[art.history, time.centuries, reasoning.explain] {
+  title "Which century?"
+  let k=0..1 r=0..1
+  let year={pick(k, "1642", "1072")}
+  let said={pick(k, "16th", "10th")}
+  let right={pick(k, "No: 1642 is in 1601 to 1700, the 17th", "No: 1072 is in 1001 to 1100, the 11th")}
+  let w1={pick(k, "Yes: 1642 starts with 16", "Yes: 1072 starts with 10")}
+
+  scene 36x26 {
+    timeline line from=1000 to=2000 step=200 years=[1072, 1503, 1642, 1831, 1872, 1888] labels=["Guo Xi", "Leonardo", "Rembrandt", "Hokusai", "Monet", "Van Gogh"] at=canvas(1, 1)
+    text ask "Ben says a work made in {year} belongs to the {said} century. Is he right?" narrate width=34 below=line gap=1
+    choice pick options=[pick(r, right, w1), "No: centuries start at years ending 50", pick(r, w1, right)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=line {
+      say "The 1st century was the years 1 to 100. Which years make the 2nd century? Count on from there."
+    }
+  }
+  hint "Which years make up the 1st century? And the 2nd?"
+  hint "Is the year 1600 the start or the end of a century?"
+}

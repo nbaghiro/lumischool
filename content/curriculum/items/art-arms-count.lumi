@@ -1,0 +1,34 @@
+# Counting what the rule allows with five colours and two metals: a metal charge on a colour field,
+# 2 x 5 = 10 ways, or a colour on a metal, 5 x 2 = 10, so 20 in all; colour on a different colour 5
+# x 4 = 20.
+item art.arms-count v=1 skills=[art.heraldry, reasoning.count, multiplication.arrays] {
+  title "How many shields?"
+  difficulty q
+  let q=0..2
+  let ask={pick(q, "How many different shields can she make with a metal charge on a colour field?", "How many can she make in all that keep the rule, counting colour on metal too?", "How many would break the rule by putting one colour on a different colour?")}
+  let right={pick(q, 10, 20, 20)}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x20 {
+    mixingtray tray wells=["yellow", "white", "red", "blue", "green", "black", "red+blue"] ring=-1 labels=true at=canvas(1, 1)
+    text ask "Ana has the two metals, Or and argent, and five colours: gules, azure, vert, sable and purpure. Each shield is one field with one charge of a different tincture. {ask}" narrate width=34 below=tray gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (q == 0 and answer == 7) point=tray {
+      say "That adds the metals and the colours. Each of the 2 metals can go on each of the 5 colours."
+    }
+    when (q == 2 and answer == 25) point=tray {
+      say "A charge cannot be the same colour as its field, or it would not show at all."
+    }
+  }
+  hint "Make a list: Or on gules, Or on azure, and so on."
+  hint "How many choices for the field, and for each one, how many for the charge?"
+}

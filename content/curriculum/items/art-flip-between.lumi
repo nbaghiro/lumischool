@@ -1,0 +1,30 @@
+# In-betweens counted: a plant drawn first at one height and last at another, with each drawing
+# taller by the same amount. The drawings between the first and the last are one fewer than the
+# steps.
+item art.flip-between v=1 skills=[art.animation, reasoning.two-steps] {
+  title "In-between drawings"
+  difficulty ((b - a) / g / 4)
+  let a={2, 3} b={11, 14, 15} g={1, 2, 3}
+  where ((b - a) % g == 0 and (b - a) / g >= 3 and (b - a) / g <= 12)
+  level easy {
+    let g={3}
+  }
+  level hard {
+    let g={1, 2}
+  }
+
+  scene 36x23 {
+    growstages plant stages=4 numbers=false names=0 at=canvas(1, 1)
+    text ask "Ben animates a sunflower growing. His first drawing shows it {a} cm tall and his last {b} cm tall, and each drawing is {g} cm taller than the one before. How many drawings go in between the first and the last?" narrate width=34 below=plant gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((b - a) / g - 1)
+  feedback {
+    when (answer == (b - a) / g) point=plant {
+      say "That counts the steps. The last drawing is one of the steps but not one of the in-betweens."
+    }
+  }
+  hint "Work out how many equal steps take the plant from the first height to the last."
+  hint "List the heights from the first drawing to the last. Which ones are in between?"
+}

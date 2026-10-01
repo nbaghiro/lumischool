@@ -1,0 +1,24 @@
+# The three-star, made away from the sheet: a wire figure or animal that stands on a base, with
+# twisted joins, looked at by a grown-up with the notice list.
+item art.wire-make v=1 stars=3 skills=[art.wire, art.sculpture, art.making] {
+  title "A heron in wire"
+  difficulty v
+  let v=0..2
+  let what={pick(v, "a heron standing on one leg", "a walker on the towpath, seven and a half heads tall", "a figure in action, running or reaching, with its line of action showing")}
+  let extra={pick(v, "", " Plan the wire's length first and write it down.", " Plan the wire's length first, and make it look right from the front and from the side.")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x25 {
+    layfigure fig heads=7.5 pose=run lines=false action=true wrong=none dir=1 at=canvas(1, 1)
+    text ask "Bend {what} from soft wire or pipe cleaners, with a grown-up to help cut it. Twist the wire round itself at every join, and stand it in a base of clay or wood.{extra}" narrate width=34 below=fig gap=1
+  }
+
+  check art.made look-for="A figure bent from wire that stands by itself in its base, every join twisted tight so it does not slip, its parts in proportion; at medium the planned length written down and close to what was used; at hard an action pose whose line of action can be followed, and that reads from the front and from the side." notice=["Stands in its base without falling", "Joins twisted so they hold", "The parts in proportion", "Looks right from more than one side"] ask="Which join was hardest to make hold, and what did you do?"
+  hint "Make the body first and add the legs and head to it."
+  hint "Turn the figure as you work and look at it from the side."
+}

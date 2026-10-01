@@ -1,0 +1,31 @@
+# A measured face checked against a canon: does the gap between the eyes equal an eye's width, does
+# the nose equal the gap, is the face five eyes wide? Real faces seldom fit, which the measurements
+# show.
+item art.face-fit v=1 skills=[art.proportion, art.portrait, reasoning.check] {
+  title "Does this face fit?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let canon={pick(k, "the gap between the eyes equals the width of one eye", "the nose is as wide as the gap between the eyes", "the face is five eyes wide", "the mouth is one and a half times as wide as the nose")}
+  let right={pick(k, "no", "yes", "no", "yes")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x24 {
+    table m cols=2 head=["Measured on Ben's face", "cm"] cells=["one eye", "3.0", "gap between the eyes", "3.4", "nose", "3.4", "mouth", "5.1", "whole face", "14.0"] at=canvas(1, 1)
+    text ask "Ana measures Ben's real face with a ruler. Does his face fit this canon: {canon}?" narrate width=34 below=m gap=1
+    choice pick options=["yes", "no"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=m {
+      say "Work out what the canon says the measurement should be from the table, then compare it with what Ana measured."
+    }
+  }
+  hint "Which two measurements does this canon compare?"
+  hint "{pick(k, \"Is 3.4 the same as 3.0?\", \"Compare the nose with the gap.\", \"Five eyes would be how wide?\", \"What is one and a half times the nose?\")}"
+}

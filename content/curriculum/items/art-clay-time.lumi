@@ -1,0 +1,30 @@
+# The flame pot in the Tokyo National Museum (3000 to 2000 BC) and the end of the Jomon period
+# (about 300 BC), from Wikipedia, "Jomon pottery", on a timeline counted in years BC.
+item art.clay-time v=1 skills=[art.artists, time.timeline] {
+  title "Thousands of years ago"
+  difficulty q
+  let q=0..2
+  let ask={pick(q, "How many years are there from 3000 BC to 2000 BC?", "How many years are there from 3000 BC to 1000 BC?", "How many years are there from 3000 BC to 300 BC, when the Jomon period ended?")}
+  let right={pick(q, 1000, 2000, 2700)}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x23 {
+    timeline line from=-3000 to=0 step=500 years=[-3000, -2000, -300] labels=["pot made from", "pot made by", "Jomon ends"] at=canvas(1, 1)
+    text ask "A Jomon pot in the Tokyo National Museum, built from coils, was made between 3000 BC and 2000 BC. Years BC count down towards year 1, so 2000 BC is later than 3000 BC. {ask}" narrate width=34 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 5000 or answer == 4000 or answer == 3300) point=line {
+      say "Years BC count down, so take the smaller number from the bigger one."
+    }
+  }
+  hint "Find both years on the timeline. Count the steps between them."
+  hint "Each step of the timeline is 500 years."
+}

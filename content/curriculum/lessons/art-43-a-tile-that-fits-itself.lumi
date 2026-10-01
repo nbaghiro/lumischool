@@ -1,0 +1,80 @@
+# A tile that fits itself: a bite cut from a square tile and slid straight across, the only move
+# that keeps a floor free of gaps and overlaps, its area unchanged, and a card tile traced into a
+# floor.
+lesson art-a-tile-that-fits-itself v=1 format=teach grade=4 unit=1 subject=art levels=[easy, medium, hard] {
+  title "A tile that fits itself"
+  goal "Change a square tile so that copies of it still cover a floor with no gaps and no overlaps."
+
+  look {
+    scene 26x7 {
+      row all space=2 align=end at=canvas(1, 1) {
+        nibbletile one bite=curve move=opposite both=0 cols=1 rows=1 ring=-1
+        nibbletile floor bite=curve move=opposite both=0 cols=3 rows=1 ring=-1
+      }
+    }
+    say """
+      Square tiles cover a floor with no gaps and no overlaps. A designer can change a square and
+      keep that: cut a bite from one side and slide it straight across to the opposite side, the
+      same way up. The bump on one tile then drops into the notch of the next. The tilers of the
+      Alhambra palace in Spain covered its walls with tiles that fit, and the Dutch artist M. C.
+      Escher, who studied them in 1936, used the same idea to make tiles shaped like birds, fish and
+      lizards.
+      """
+  }
+  do {
+    show art.tile-fits k=1 easy-k=1 hard-k=2
+    show art.tile-predict k=0 easy-k=1 hard-k=3
+    level easy {
+      worked art.tile-where k=0 level=medium
+    }
+    show art.tile-where k=1 hard-k=2
+    show art.tile-area k=0 b=12 hard-k=1 hard-b=15
+    show art.tile-rows a=4 d=3 easy-a=3 easy-d=2 hard-a=5 hard-d=4
+    show art.tile-fits k=0 easy-k=0 hard-k=1
+    show art.tile-predict k=2 easy-k=0 hard-k=4
+    show art.tile-area k=1 b=15 easy-k=0 easy-b=15 hard-b=12
+    level medium {
+      show art.tile-where k=3
+    }
+    level hard {
+      show art.tile-predict k=5
+    }
+  }
+  try stars=2 {
+    show art.tile-why r=0 easy-r=1
+  }
+  try stars=3 {
+    show art.tile-make v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "Slide a bite straight across to the opposite side, the same way up, and the tile still fits itself."
+  }
+
+  grown-ups """
+    The idea is that a tile can change shape and still cover a floor, as long as whatever is cut
+    from one side is added, the same way up, to the side straight across from it; and that the tile
+    then covers exactly as much floor as the square did. The wrong ideas to watch for are sticking
+    the bite on the side next to it, or turning it over, and thinking the changed tile is bigger. In
+    the working, look for the child picturing two tiles side by side and checking that a bump meets
+    a notch. The core judges a floor, predicts which single tile will fit, chooses where a bite must
+    go, finds a tile's area and counts tiles for a hall; the two-star asks why the tile fits, and
+    the three-star is a card tile traced into a floor, which you look at with the notice list rather
+    than mark.
+
+    The Alhambra and M. C. Escher are from Wikipedia ("Islamic geometric patterns", whose Alhambra
+    tiles inspired Escher; "M. C. Escher", who visited the Alhambra in May and June 1936 and made
+    interlocking designs with birds, fish and reptiles). Escher's own prints are still in copyright,
+    so the lesson names them without showing them; look at them in a library book. If the bites are
+    stuck, cut the tile from card and slide the real bite across. Off the page, look for tiles that
+    fit in floors, pavements and brick walls. This lesson meets Japan's 2017 course of study for art
+    and craft, grades 3 and 4, 第3 2(3)イ: 「形の感じ，色の感じ，それらの組合せによる感じ…を捉えること」 (catch the feel of shapes
+    and of their combinations), and England's key stage 2 aim that pupils learn "about great
+    artists, architects and designers in history".
+    """
+  level easy {
+    grown-ups "At this level the floors judged are the one that fits and the one with gaps, the tiles to predict have curved bites, where to stick a bite is worked once in the teacher's pen before the top, the tile's area is asked only when the bite was thrown away, the hall is 3 tiles by 2, the two-star is as written with its answers in another order, and the card tile has one bite."
+  }
+  level hard {
+    grown-ups "At this level the floors judged include one with gaps and overlaps, the tiles to predict have triangle bites, the bites to place come from the right and the bottom, the tile's area is asked after the bite was slid across, the hall is 5 by 4, one more tile is predicted, and the card tile is drawn as a creature."
+  }
+}

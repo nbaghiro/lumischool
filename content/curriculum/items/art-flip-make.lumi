@@ -1,0 +1,23 @@
+# The three-star, made: a flip book of the child's own with even in-betweens, looked at by a
+# grown-up with the notice list.
+item art.flip-make v=1 stars=3 skills=[art.animation, art.making, reasoning.plan] {
+  title "A flip book of your own"
+  difficulty v
+  let v=0..2
+  let what={pick(v, "12 pages of a ball rolling across the page", "16 pages of a ball bouncing once", "24 pages of a ball bouncing, slowing near the top of each bounce")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x16 {
+    moonphases m from=0 step=4 count=6 blank=-1 days=0 at=canvas(1, 1)
+    text ask "Staple small pieces of paper together at one edge and draw {what}. Draw the first and the last pages first, then the in-betweens, changing each a little. Draw near the loose edge so the pictures show as you flip." narrate width=34 below=m gap=1
+  }
+
+  check art.made look-for="A flip book of the pages asked, with the first and last drawings planned and the in-betweens changing by about the same amount each page, drawn in the same place on each page near the loose edge, so it moves smoothly when flipped; at hard the ball's steps closer together near the top of each bounce, so it seems to slow there." notice=["The thing is in the same place on each page", "Each page changes a little", "The changes are about even", "It moves smoothly when flipped"] ask="Which page did you draw again, and what was wrong with it?"
+  hint "Trace through the page underneath to keep the ball the same size."
+  hint "Mark where the ball is on the first and last pages before you draw any others."
+}

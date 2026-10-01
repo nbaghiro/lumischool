@@ -1,0 +1,80 @@
+# Pots from clay: pinch, coil and slab, coils counted against a height, slabs and joins counted from
+# a pot's net, scored and slipped joins in order, the Jomon potters of Japan, and a pot made by
+# hand.
+lesson art-pots-from-clay v=1 format=teach grade=3 unit=7 subject=art levels=[easy, medium, hard] {
+  title "Pots from clay: pinch, coil and slab"
+  goal "Plan a clay pot by its method: how many coils, how many slabs, and how to join them."
+
+  look {
+    scene 36x10 {
+      row all space=3 align=end at=canvas(1, 1) {
+        solid ball kind="sphere" label="pinch"
+        solid jar kind="cylinder" label="coil"
+        solid box kind="cuboid" label="slab"
+      }
+    }
+    say """
+      There are three ways to build a pot by hand. A pinch pot is pressed out of one ball of clay
+      with the thumb. A coil pot is built from long ropes of clay laid round, one on top of another,
+      and smoothed together. A slab pot is made from flat sheets cut out and joined. Where two
+      pieces join, potters scratch both edges and brush on slip, which is clay stirred with water,
+      so that the join holds. In Japan, the Jomon potters built pots from coils thousands of years
+      ago and pressed cord into the clay; Jomon means rope-patterned.
+      """
+  }
+  do {
+    show art.clay-method k=0 easy-k=0 hard-k=3
+    show art.clay-coils t=1 h=8 hard-t=2 hard-h=10
+    level easy {
+      worked art.clay-slabs s=0 level=medium
+    }
+    level medium hard {
+      show art.clay-slabs s=0 hard-s=1
+    }
+    show art.clay-joins s=0 hard-s=1
+    show art.clay-order k=0 easy-k=1 hard-k=2
+    show art.clay-method k=4 easy-k=1 hard-k=5
+    show art.clay-time q=0 hard-q=2
+    show art.clay-coils t=1 h=7 easy-h=6 hard-t=2 hard-h=6
+    show art.clay-order k=1 easy-k=0 hard-k=3
+  }
+  try stars=2 {
+    show art.clay-why-score r=0 easy-r=1
+  }
+  try stars=3 {
+    show art.clay-make v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "Pinch from one ball, coil from ropes, slab from flat sheets; score and slip every join."
+  }
+
+  grown-ups """
+    The idea is that a pot is planned by how it will be built: a pinch pot is pressed from one ball,
+    a coil pot rises one coil at a time, and a slab pot is a box of flat sheets whose every join is
+    scored and slipped. The wrong ideas to watch for are counting only the joins round the base of a
+    slab box, and forgetting that thicker coils mean fewer of them. In the working, look for the
+    child touching each edge of the drawn net once as they count. The core sorts the three methods,
+    counts coils against a height, slabs and joins from a net, puts the steps of a join in order and
+    counts years back to the Jomon potters; the two-star asks why the edges are scratched, and the
+    three-star is a pot made by hand, which you respond to rather than mark.
+
+    The facts are from Wikipedia: coil building ("Coiling (pottery)", which dates Japanese
+    coil-built pottery to about 10,500 BC in the Jomon period), scoring and slip ("Slip
+    (ceramics)"), and Jomon pottery ("Jomon pottery": rope-patterned, fired at about 600 to 900
+    degrees, a flame-rimmed pot of 3000 to 2000 BC in the Tokyo National Museum). Air-drying clay or
+    salt dough works for the pot; it does not need a kiln. If the joins are stuck, build the box
+    from six squares of card and count the edges as they are taped. Off the page, look at the Tokyo
+    National Museum's Jomon pots online. This lesson meets Japan's 2017 course of study for art and
+    craft, grades 3 and 4, A表現 (1)イ:
+    「絵や立体，工作に表す活動を通して…表したいことや用途などを考え，形や色，材料などを生かしながら，どのように表すかについて考えること」 (in pictures,
+    three-dimensional work and craft, think about what to make and its use, and how to make it), and
+    its note that every grade should have 「版に表す経験や焼成する経験」 (the experience of printing and of
+    firing).
+    """
+  level easy {
+    grown-ups "At this level the methods are read from what the potter does, the coils are 1 cm thick, counting slabs is worked once in the teacher's pen before joins of an open box, the steps of a join are in a gentler order, the years counted are a thousand, one more method is sorted, the two-star is as written with its answers in another order, and the pot is a pinch pot."
+  }
+  level hard {
+    grown-ups "At this level the methods are read from what the pot looks like, the coils are 2 cm thick, the slabs and joins are for a box with a lid, the years are counted to 1000 BC and to the end of the Jomon period, and the pot is a tall coil pot on a slab base."
+  }
+}

@@ -1,0 +1,84 @@
+# Six artists on a timeline: works from China, Italy, the Netherlands, Japan and France put in order
+# of date, the years between them, where they hang, Impressionism named from a painting, the
+# centuries, and a study after one of them.
+lesson art-six-artists-on-a-timeline v=1 format=teach grade=6 unit=9 subject=art levels=[easy, medium, hard] {
+  title "Six artists on a timeline"
+  goal "Place famous works and their artists in time, by date and century, and know where to see them."
+
+  look {
+    scene 26x12 {
+      timeline line from=1000 to=2000 step=200 years=[1072, 1503, 1642, 1831, 1872, 1888] labels=["Guo Xi", "Leonardo", "Rembrandt", "Hokusai", "Monet", "Van Gogh"] at=canvas(1, 1)
+    }
+    say """
+      From the moon, the Earth hangs still, and on the base's wall Ana pins postcards of six works
+      made across eight hundred years. Guo Xi painted Early Spring in China in 1072. Leonardo da
+      Vinci began the Mona Lisa in Italy about 1503. Rembrandt painted The Night Watch in Amsterdam
+      in 1642, full of strong light and dark. Hokusai printed The Great Wave in Japan in 1831.
+      Claude Monet painted Impression, Sunrise in 1872, and Vincent van Gogh painted Sunflowers in
+      1888.
+      """
+  }
+  do {
+    show art.time-order k=0 hard-k=1
+    show art.time-gap k=0 hard-k=2
+    level easy {
+      worked art.time-when k=0 level=medium
+    }
+    show art.time-city k=0 hard-k=1
+    show art.time-name r=0 easy-r=1
+    show art.time-gap k=1 hard-k=3
+    show art.time-order k=2 easy-k=1 hard-k=2
+    level medium hard {
+      show art.time-city k=1 hard-k=2
+      show art.time-when k=2 hard-k=3
+    }
+    level easy {
+      show art.time-when k=1
+      show art.time-gap k=2
+    }
+    level hard {
+      show art.time-when k=2
+    }
+  }
+  try stars=2 {
+    show art.time-century k=0 r=0 easy-r=1 hard-k=1
+  }
+  try stars=3 {
+    show art.time-study v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A work is placed by its date, its century and its place: the 17th century is 1601 to 1700."
+  }
+
+  grown-ups """
+    The idea is that works of art can be placed in time and in the world: by their dates, by the
+    centuries those dates fall in, and by the museums where they can be seen today. The step up from
+    grade 3's portrait, landscape and still life, which sorted named works by kind, and grade 6's
+    landscapes across nine centuries, is a timeline of artists from five countries, with the
+    arithmetic of dates and centuries. The wrong idea to watch for is reading a century from the
+    first two digits of a year, so that 1642 is put in the 16th century. In the working, look for
+    the child writing each year down before ordering or subtracting. The core orders works by date,
+    finds the years between them and the century of each, finds two that hang in one city and names
+    the movement that took its name from a painting; the two-star asks which century a year belongs
+    to, and the three-star is a study after one of the works, which you respond to rather than mark.
+
+    The works and their facts are from Wikipedia: the Mona Lisa (about 1503 to 1506, perhaps later,
+    Louvre); The Night Watch (1642, Rijksmuseum, its light and dark called chiaroscuro); The Great
+    Wave off Kanagawa (late 1831, a woodblock print, with impressions in many museums); Impression,
+    Sunrise (1872, Musée Marmottan Monet, shown in 1874, where a critic's mocking word gave
+    Impressionism its name); and Sunflowers (August 1888, the version in the National Gallery,
+    London). Early Spring, The Fighting Temeraire, March and Morning in a Pine Forest are those on
+    the studies drawing's cards. If the centuries are stuck, write 1 to 100 as the 1st century and
+    count up. This lesson meets China's 2022 arts standard for grades 6 and 7, which asks children
+    to know 「至少6位不同历史时期中外著名的美术家」 (at least six famous artists, Chinese and foreign, from different
+    periods), as quoted in the audit of grades 5 and 6, and England's key stage 3 aim to learn
+    "about the history of art, craft, design and architecture, including periods, styles and major
+    movements".
+    """
+  level easy {
+    grown-ups "At this level the works to order are given in a gentler mix, the years between are counted for the closest works, the century of the Mona Lisa is worked once in the teacher's pen before The Great Wave's, the paintings to match are both in Paris, the two-star is as written with its answers in another order, and the study is drawn without lettering."
+  }
+  level hard {
+    grown-ups "At this level the works to order are more mixed, the years between span centuries, the paintings to match share a museum or are in Moscow, the centuries asked are of the three works of the 1800s, the two-star asks about 1072 and the 11th century, and the study is lettered and compared across centuries."
+  }
+}

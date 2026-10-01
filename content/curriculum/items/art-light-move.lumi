@@ -1,0 +1,35 @@
+# The lamp moved to the other side: every part swaps sides, so the side that had the highlight now
+# has the core shadow and the reflected light, and the cast shadow falls the other way.
+item art.light-move v=1 skills=[art.light, reasoning.predict] {
+  title "The lamp moves"
+  difficulty q
+  let q=0..1
+  let ask={pick(q, "Where does the cast shadow fall now?", "What does the left side of the ball, which had the highlight, have now?")}
+  let right={pick(q, "on the table to the left of the ball", "the core shadow and the reflected light")}
+  let o2={pick(q, "on the table to the right of the ball", "the highlight still, because it is the ball's own")}
+  let o3={pick(q, "on the ball itself, on top", "the half-tone only")}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..1
+  }
+
+  scene 36x27 {
+    row two space=2 align=end at=canvas(1, 1) {
+      stilllife before light="left" things=["ball"] lamp=true weights=[]
+      stilllife after light="right" things=["ball"] lamp=true weights=[]
+    }
+    text ask "Ben moves the lamp from the left of the ball to the right. {ask}" narrate width=34 below=two gap=1
+    choice pick options=[o3, right, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=two {
+      say "Every part of the light depends on where the lamp is. When the lamp changes sides, what happens to each part?"
+    }
+  }
+  hint "Look at the second picture. Which side of the ball faces the lamp now?"
+  hint "A shadow always falls on the side away from the light."
+}

@@ -1,0 +1,37 @@
+# The way in: the two neighbours of a ringed segment on the twelve-part wheel. The wrong options are
+# the colours two steps out (which mix to make it, the likeliest slip) and the neighbours of its
+# opposite. Easy rings a named colour; hard rings a two-to-one mix between two named ones.
+item art.neighbour-find v=1 skills=[art.colour-wheel, art.looking] {
+  title "Next door on the wheel"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let i={pick(k, 2, 6, 10, 1, 5, 9)}
+  let name={pick(k, "orange", "green", "purple", "red-orange", "yellow-green", "blue-purple")}
+  let right={pick(k, "red-orange and yellow-orange", "yellow-green and blue-green", "blue-purple and red-purple", "red and orange", "yellow and green", "blue and purple")}
+  let two={pick(k, "red and yellow", "yellow and blue", "blue and red", "red-purple and yellow-orange", "yellow-orange and blue-green", "blue-green and red-purple")}
+  let far={pick(k, "blue-green and blue-purple", "red-purple and red-orange", "yellow-orange and yellow-green", "blue and green", "purple and red", "orange and yellow")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x28 {
+    colourwheel wheel segments=12 blank=[] ring=i labels=true split="none" at=canvas(1, 1)
+    text ask "Between each two named colours sits a mix of two parts of one to one part of the other, such as red-orange. The ringed segment is {name}. Which two colours are its neighbours?" narrate width=19 right-of=wheel gap=1
+    choice pick options=[pick(k % 3, right, two, far), pick(k % 3, two, far, right), pick(k % 3, far, right, two)] stack=column below=wheel gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == two) point=wheel {
+      say "Those two are one step further out. A neighbour touches the ringed segment."
+    }
+    when (pick == far) point=wheel {
+      say "Those sit across the middle of the wheel from it. Look for the two segments touching the ring."
+    }
+  }
+  hint "Put a finger on the ringed segment. Which segments share an edge with it?"
+  hint "Name the segment on its left first, then the one on its right."
+}

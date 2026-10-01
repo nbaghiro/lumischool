@@ -1,0 +1,75 @@
+# Coats of arms and the rule of tincture: the heraldic names for the metals and colours, the rule
+# that keeps a charge visible, the shields the rule allows counted, the famous exception of
+# Jerusalem, and a coat of arms painted for the old city.
+lesson art-coats-of-arms v=1 format=teach grade=5 unit=9 subject=art levels=[easy, medium, hard] {
+  title "Coats of arms and the rule of tincture"
+  goal "Design a coat of arms that keeps the rule of tincture, and say why the rule makes it readable."
+
+  look {
+    scene 25x8 {
+      mixingtray tray wells=["yellow", "white", "red", "blue", "green", "black", "red+blue"] ring=-1 labels=true at=canvas(1, 1)
+    }
+    say """
+      The gates of the old city carry coats of arms: shields painted so that a family or a town can
+      be known from far away. Heraldry has its own names for its paints, called tinctures. There are
+      two metals, Or, gold or yellow, and argent, silver or white, and five main colours: gules red,
+      azure blue, vert green, sable black and purpure purple. Its oldest rule, the rule of tincture,
+      says never put a metal on a metal or a colour on a colour, so every charge stands out from its
+      field.
+      """
+  }
+  do {
+    show art.arms-name k=0 easy-k=0 hard-k=3
+    show art.arms-rule k=0 easy-k=0 hard-k=3
+    level easy {
+      worked art.arms-count q=0 level=medium
+    }
+    show art.arms-lighter p=0 easy-p=0 hard-p=2
+    show art.arms-rule k=2 easy-k=1 hard-k=4
+    show art.arms-name k=4 easy-k=1 hard-k=5
+    show art.arms-jerusalem q=0 hard-q=1
+    show art.arms-rule k=5 easy-k=2 hard-k=5
+    show art.arms-lighter p=3 easy-p=1 hard-p=3
+    level medium hard {
+      show art.arms-count q=1 hard-q=2
+    }
+  }
+  try stars=2 {
+    show art.arms-why r=0 easy-r=1
+  }
+  try stars=3 {
+    show art.arms-paint v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "Never metal on metal or colour on colour: a light metal on a dark colour can be read from far away."
+  }
+
+  grown-ups """
+    The idea is that heraldry is design to a strict brief: a small set of named tinctures, and one
+    rule, metal never on metal nor colour on colour, which exists so a shield reads from far off.
+    The step up from grade 5's folk patterns and design to a brief is a rule that can be proved, and
+    its link to tone: the metals are the light tinctures. The wrong ideas to watch for are treating
+    gold and silver as colours, and counting the shields the rule allows by adding rather than
+    multiplying. In the working, look for the child sorting each tincture into metal or colour
+    before deciding. The core names tinctures, judges shields by the rule, chooses the charge that
+    shows best, counts the shields the rule allows and explains the Jerusalem exception; the
+    two-star asks why the rule exists, and the three-star is a coat of arms of the child's own,
+    which you respond to rather than mark.
+
+    The tinctures, the rule and the exception of the Kingdom of Jerusalem's gold crosses on silver
+    are from Wikipedia, "Tincture (heraldry)", which gives the rule as ensuring contrast for
+    recognition. If the rule is stuck, sort the seven tincture names into two piles, metals and
+    colours, and test each shield by its two piles. Off the page, look for coats of arms on old
+    buildings, coins or football club badges, and check them against the rule. This lesson meets
+    Russia's federal work programme for fine art, grade 5, module 1, decorative art, whose topics
+    include the emblem and the coat of arms (recalled from the module's outline; the audit quotes
+    its folk and decorative content), and England's key stage 2 aim that pupils learn "about great
+    artists, architects and designers in history".
+    """
+  level easy {
+    grown-ups "At this level the tinctures named are the first three, the shields judged include the clearest cases, counting metal-on-colour shields is worked once in the teacher's pen, the charges to choose stand on blue and black, the two-star is as written with its answers in another order, and the coat of arms has one charge on one field."
+  }
+  level hard {
+    grown-ups "At this level the tinctures named are vert, sable and argent, the shields judged include black on green and silver on black, the charges stand on red and green, the count is of all the shields the rule allows and of those that break it, the Jerusalem question asks why breaking it on purpose stands out, and the coat of arms has a divided field, three charges and a motto."
+  }
+}

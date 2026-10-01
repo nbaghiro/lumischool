@@ -1,0 +1,30 @@
+# The century a date falls in: one more than its hundreds, so 1503 is in the 16th and 1831, 1872 and
+# 1888 in the 19th. The two-star's 1642 and 1072 are kept apart from these.
+item art.time-when v=1 skills=[art.history, time.centuries] {
+  title "Which century?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let work={pick(k, "the Mona Lisa, begun about 1503", "The Great Wave, made in 1831", "Sunflowers, painted in 1888", "Impression, Sunrise, painted in 1872")}
+  let right={pick(k, 16, 19, 19, 19)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x21 {
+    timeline line from=1000 to=2000 step=200 years=[1072, 1503, 1642, 1831, 1872, 1888] labels=["Guo Xi", "Leonardo", "Rembrandt", "Hokusai", "Monet", "Van Gogh"] at=canvas(1, 1)
+    text ask "The 1st century was the years 1 to 100, the 2nd 101 to 200, and so on. In which century was {work}? Type the number of the century." narrate width=34 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == right - 1) point=line {
+      say "The first two digits of the year are one less than the century. The years 1801 to 1900 are the 19th century."
+    }
+  }
+  hint "Which hundred years does the date fall in?"
+  hint "Count: the 1st century ends at 100, the 2nd at 200. Where does yours end?"
+}

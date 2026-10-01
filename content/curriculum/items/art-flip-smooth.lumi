@@ -1,0 +1,26 @@
+# Smoother movement from smaller changes: the same 18 nights of the moon in pages every six nights
+# or every three, and the one with the smaller step between pages moves more smoothly.
+item art.flip-smooth v=1 skills=[art.animation, reasoning.compare] {
+  title "Which is smoother?"
+  let r=0..1
+  let right={pick(r, "B", "A")}
+  let sa={pick(r, 6, 3)} ca={pick(r, 4, 7)} sb={pick(r, 3, 6)} cb={pick(r, 7, 4)}
+
+  scene 36x22 {
+    column books space=1 align=start at=canvas(1, 1) {
+      moonphases a from=1 step=sa count=ca blank=-1 days=1
+      moonphases b from=1 step=sb count=cb blank=-1 days=1
+    }
+    text ask "Both flip books show the moon over the same 18 nights. Flipped at the same speed, which one will move more smoothly, A at the top or B below it?" narrate width=34 below=books gap=1
+    choice pick options=["A", "B"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=books {
+      say "Look how much the moon changes from one page to the next in each book. Which has the smaller jumps?"
+    }
+  }
+  hint "Count the pages in each book."
+  hint "Small changes between pages look like smooth movement; big ones look like jumps."
+}

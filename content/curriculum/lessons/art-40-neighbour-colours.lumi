@@ -1,0 +1,75 @@
+# Neighbour colours on the twelve-part wheel: the mixes between the named colours, the two
+# neighbours of a colour, groups of three in a row and how many there are, and a leaf painted in
+# neighbours.
+lesson art-neighbour-colours v=1 format=teach grade=3 unit=3 subject=art levels=[easy, medium, hard] {
+  title "Neighbour colours"
+  goal "Find a colour's neighbours on the twelve-part wheel and use a group of neighbours together."
+
+  look {
+    scene 36x16 {
+      row all space=2 align=start at=canvas(1, 1) {
+        colourwheel wheel segments=12 blank=[] ring=-1 labels=true split="none"
+        mixingtray tray wells=["red 2+yellow", "red+yellow", "yellow 2+red"] ring=-1 labels=true
+      }
+    }
+    say """
+      This colour wheel has twelve parts. Between each two named colours sits a mix of two parts of
+      one paint to one part of the other: two parts red and one part yellow makes red-orange, which
+      sits between red and orange. Colours that sit next to each other on the wheel are neighbours.
+      A group of neighbours in a row, such as red, red-orange and orange, look calm together, like
+      the leaves of one tree in autumn, because each colour has some of the next one in it.
+      """
+  }
+  do {
+    show art.neighbour-find k=0 easy-k=1 hard-k=3
+    show art.neighbour-mix v=0 easy-v=1 hard-v=2
+    level easy {
+      worked art.neighbour-add v=0 level=medium
+    }
+    show art.neighbour-add v=1 hard-v=2
+    show art.neighbour-count q=0 easy-q=0 hard-q=2
+    show art.neighbour-odd v=1 easy-v=0 hard-v=2
+    show art.neighbour-find k=4 easy-k=2 hard-k=5
+    show art.neighbour-mix v=2 easy-v=0 hard-v=4
+    show art.neighbour-count q=1 easy-q=1 hard-q=3
+    level hard {
+      show art.neighbour-odd v=3
+    }
+  }
+  try stars=2 {
+    show art.neighbour-claim q=0 r=0 easy-r=1 hard-q=1
+  }
+  try stars=3 {
+    show art.neighbour-paint v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "Neighbours sit next to each other on the colour wheel, and a group of them in a row looks calm together."
+  }
+
+  grown-ups """
+    The idea is that colours next to each other on the wheel belong together, because each has some
+    of the next one in it, and that the in-between colours of a twelve-part wheel are mixed two
+    parts to one. The wrong ideas to watch for are counting a colour two steps away as a neighbour
+    (red and yellow are the parents of orange, not its neighbours), and placing a two-to-one mix
+    nearer the paint there is less of. In the working, look for a finger moving segment by segment
+    round the wheel. The core finds neighbours, places a mix on the wheel, adds the third of a
+    group, counts groups, and finds the well that breaks a group; the two-star question judges a
+    claim with a reason, and the three-star is a painted leaf, which you respond to rather than
+    mark.
+
+    If the in-between colours are stuck, mix one on a saucer: two brushfuls of red and one of
+    yellow, then one of each, and lay them beside the pans. Off the page, collect three or four
+    fallen leaves and lay them in wheel order. Respond to the leaf by saying what you see ("the
+    orange sits between the red and the yellow-orange") and asking about one choice. This lesson
+    meets Japan's 2017 course of study for art and craft, grades 3 and 4, 第3 2(3)イ:
+    「形の感じ，色の感じ，それらの組合せによる感じ，色の明るさなどを捉えること」 (catch the feel of shapes, colours and their
+    combinations, and the lightness of colour); China's 2022 arts standard names neighbouring
+    colours, 邻近色, for grades 3 to 5.
+    """
+  level easy {
+    grown-ups "At this level the neighbours are found for named colours, the mixes are the two greens, adding the third of a group is worked once in the teacher's pen, the groups counted are those with green in them, the odd well is far from the group, the two-star is as written with its answers in another order, and the leaf has three neighbours only."
+  }
+  level hard {
+    grown-ups "At this level the neighbours are found for the in-between colours, the mixes are the oranges and purples, the groups counted are of four and round the whole wheel, the odd well sits two steps from the group, one more odd well is asked, the two-star asks whether neighbours are always all warm or all cool, and the leaf uses four neighbours and a spot of the opposite."
+  }
+}

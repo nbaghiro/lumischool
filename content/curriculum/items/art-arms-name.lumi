@@ -1,0 +1,32 @@
+# The way in: the heraldic tinctures and the colours they are painted in (Wikipedia, "Tincture
+# (heraldry)"): the metals Or and argent, and the colours gules, azure, vert, sable and purpure.
+item art.arms-name v=1 skills=[art.heraldry, art.colour] {
+  title "Gules and azure"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let word={pick(k, "gules", "azure", "Or", "vert", "sable", "argent")}
+  let right={pick(k, "red", "blue", "gold or yellow", "green", "black", "silver or white")}
+  let o2={pick(k, "blue", "green", "silver or white", "blue", "silver or white", "gold or yellow")}
+  let o3={pick(k, "gold or yellow", "black", "red", "purple", "green", "blue")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x34 {
+    table names cols=3 head=["Tincture", "Painted", "Kind"] cells=["Or", "gold or yellow", "metal", "argent", "silver or white", "metal", "gules", "red", "colour", "azure", "blue", "colour", "vert", "green", "colour", "sable", "black", "colour"] at=canvas(1, 1)
+    text ask "The shields on the old city's gate are described in the words of heraldry. A shield is painted {word}. What colour is that?" narrate width=34 below=names gap=1
+    choice pick options=[pick(k % 3, right, o2, o3), pick(k % 3, o2, o3, right), pick(k % 3, o3, right, o2)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=names {
+      say "Find {word} in the first column of the table and read across."
+    }
+  }
+  hint "Find the word in the first column."
+  hint "The second column says how it is painted."
+}

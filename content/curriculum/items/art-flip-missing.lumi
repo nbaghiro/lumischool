@@ -1,0 +1,23 @@
+# The missing page of a flip book of the moon, a frame every three days: the shape in the gap
+# follows from the shapes either side. Proved by the moon drawing's own phase.
+item art.flip-missing v=1 skills=[art.animation, art.looking] {
+  title "The missing page"
+  difficulty (if s == 1 then 0 else 1)
+  let s={1, 5, 12}
+  level easy {
+    let s={1}
+  }
+  level hard {
+    let s={5, 12}
+  }
+
+  scene 37x16 {
+    moonphases m from=s step=3 count=5 blank=2 days=0 at=canvas(1, 1)
+    text ask "Ben's flip book shows the moon changing, one page every three nights. The middle page is blank. What should he draw on it?" narrate width=34 below=m gap=1
+    choice pick options=["crescent", "half moon", "gibbous", "full moon"] stack=row below=ask gap=1
+  }
+
+  check physics.sky of=m pick="phase(2)"
+  hint "Is the lit part growing or shrinking from page to page?"
+  hint "The missing shape comes between the one before it and the one after."
+}
