@@ -54,7 +54,7 @@ import {
     type TrackPlan,
     type YearRecord,
 } from "./rewards";
-import { reaches } from "./journeys";
+import { reaches } from "./journey-lessons";
 import { daysOf, greetAt, nameBox, skyPlaces, termsIn } from "./roll";
 import { edgeOf, landOf, reachOf as reachedOf, terrainOf } from "./terrain";
 import type { Applied, Site, World, WorldChoice } from "./types";
@@ -758,7 +758,7 @@ export function mapViewOf(o: MapIn): MapView {
             when,
         };
     };
-    // a child goes where their grade reaches (`reaches` in journeys.ts), and always into where they stand
+    // a child goes where their grade reaches (`reaches` in journey-lessons.ts), and always into where they stand
     const byGrade = (i: number, grade: number): boolean => {
         const p = placeAt(trip, i);
         return (

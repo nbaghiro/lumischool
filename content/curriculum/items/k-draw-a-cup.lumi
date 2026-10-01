@@ -1,7 +1,7 @@
 item k.draw-a-cup v=1 skills=[art.drawing, art.looking] {
   title "Draw what you see"
 
-  scene 30x16 {
+  scene 30x8 {
     art pic asset="cup" at=canvas(1, 1)
     text ask "Put a real cup on the table and look at it. Draw it big: the body first, then the small curve of the handle." narrate width=18 right-of=pic gap=2
   }

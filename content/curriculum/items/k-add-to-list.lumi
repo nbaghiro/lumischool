@@ -9,7 +9,7 @@ item k.add-to-list v=1 skills=[writing.lists, writing.spelling] {
     let w={"nut", "bun"}
   }
 
-  scene 30x18 {
+  scene 30x12 {
     listpad pad title="Shopping" items=["apples", "milk", ""] count=0 width=12 ticks=true at=canvas(1, 1)
     text q "Add {w} to the list. Say it one sound at a time and write a letter for each sound." narrate width=14 right-of=pad gap=2
     word-input word options=[w] letters=3 below=q gap=1

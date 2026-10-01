@@ -17,4 +17,5 @@ item k.sieve-stays v=1 skills=[chemistry.separating] {
 
   check chem.separate of=s pick=stays
   hint "Which one is too big to fit through the holes?"
+  hint "Think of shaking the sieve. Which bits fall through the holes, and which bits stay?"
 }

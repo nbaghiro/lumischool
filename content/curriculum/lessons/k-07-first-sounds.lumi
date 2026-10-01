@@ -3,7 +3,7 @@ lesson k-first-sounds v=1 format=teach grade=0 unit=1 subject=reading levels=[ea
   goal "Hear the first sound in a word and find the letter card that makes it."
 
   look {
-    scene 24x16 {
+    scene 24x8 {
       row top at=canvas(1, 1) space=2 align=end {
         art pic asset="sun"
         lettercards cards letters=["s", "u", "n"] picked=[0]

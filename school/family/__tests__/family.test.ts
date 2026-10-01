@@ -5,7 +5,7 @@ import { isSchoolDay, weekdayOf, type Sitting } from "../../record";
 import { DEFAULT_TRACKS, defaultTracks } from "../../tracks";
 import { forChild, variantsIn, type YearLesson } from "../../year";
 import { familyName, shortDate, spanText } from "../names";
-import { gradeName } from "../../../engine/pack";
+import { gradeName } from "../../../engine/grade";
 import { nowIn } from "../now";
 import {
     alive,
@@ -274,8 +274,19 @@ describe("the plan worked out from the log", () => {
         assert.deepEqual([...planOf([], { id: KID, grade: 1 }, TZ, "2026-08-31")].length, 7);
         assert.deepEqual(
             [...planOf([], { id: KID, grade: 0 }, TZ, "2026-08-31").keys()],
-            ["maths", "reading", "writing", "music", "nature"],
-            "the kindergarten year's own light default",
+            [
+                "maths",
+                "reading",
+                "writing",
+                "music",
+                "nature",
+                "physics",
+                "chemistry",
+                "coding",
+                "history",
+                "language",
+            ],
+            "the kindergarten year's own light default: every track once a week",
         );
     });
 
@@ -840,6 +851,8 @@ describe("a child's record, as their view reads it", () => {
                 ["writing", 1, "2026-09-02"],
                 ["physics", 1, "2026-09-02"],
                 ["nature", 1, "2026-09-02"],
+                ["history", 1, "2026-09-02"],
+                ["language", 1, "2026-09-02"],
             ],
             "the default begins on the day the child does",
         );

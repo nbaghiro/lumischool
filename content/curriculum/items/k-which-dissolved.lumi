@@ -22,4 +22,5 @@ item k.which-dissolved v=1 skills=[chemistry.dissolving] {
 
   answer pick=yes
   hint "In which jar is the water clear, with nothing to see?"
+  hint "Think of stirring a spoon of each into water. Which one would you still see?"
 }

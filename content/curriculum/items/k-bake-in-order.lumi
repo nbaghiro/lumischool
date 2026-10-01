@@ -8,4 +8,5 @@ item k.bake-in-order v=1 stars=3 skills=[chemistry.cooking, reasoning.order] {
 
   answer p=3 q=1 r=4 t=2
   hint "What has to be in the bowl before anything else?"
+  hint "For each picture, ask what has to have happened before it. Which picture can only come last?"
 }

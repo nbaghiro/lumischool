@@ -19,4 +19,5 @@ item k.what-melts v=1 skills=[chemistry.melting] {
 
   answer pick=melts
   hint "Which one is soft or runny when it is warm?"
+  hint "Think of holding each one in your hand on a hot day. Which one would drip?"
 }

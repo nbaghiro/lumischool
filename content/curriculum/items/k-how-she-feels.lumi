@@ -10,7 +10,7 @@ item k.how-she-feels v=1 skills=[art.feeling, art.looking] {
     let k=2..3
   }
 
-  scene 28x24 {
+  scene 28x15 {
     person ada pose=stand age=child hair=bunches colour=black top=berry mood=mood at=canvas(1, 1)
     text q "Look at Ada's face. How does she feel?" narrate width=22 below=ada gap=1
     choice pick options=["happy", "sad", "scared", "cross"] stack=row below=q gap=1

@@ -18,4 +18,5 @@ item k.soaks-or-not v=1 skills=[chemistry.materials] {
 
   answer pick=right
   hint "Does the water go into it, or run off it?"
+  hint "Think of drying your wet hands on it. Would your hands get dry?"
 }

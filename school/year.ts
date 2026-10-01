@@ -1,5 +1,6 @@
 import { settingIn, type Envelope, type Language, type Nation } from "../engine/answer";
-import { gradeName, type LessonFacts } from "../engine/pack";
+import { gradeName } from "../engine/grade";
+import type { LessonFacts } from "../engine/pack";
 import { mastery, progressOf, type Attempt, type Progress, type Sitting } from "./record";
 
 export type Format = "teach" | "puzzles" | "worked" | "review" | "book";

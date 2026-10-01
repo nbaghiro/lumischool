@@ -20,4 +20,5 @@ item k.water-on-top v=1 stars=3 skills=[chemistry.materials, reasoning.fair-test
 
   answer pick=dry
   hint "Which one soaks the water in, so none is left on top?"
+  hint "Which one would you use to mop up a spill on the table?"
 }

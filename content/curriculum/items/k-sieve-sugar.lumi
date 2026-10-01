@@ -11,4 +11,5 @@ item k.sieve-sugar v=1 stars=2 skills=[chemistry.dissolving, chemistry.separatin
 
   answer pick="No: it dissolved and goes through."
   hint "Can you see any sugar in the water to catch?"
+  hint "Sugar in water breaks into bits too small to see. Are they bigger or smaller than the holes?"
 }

@@ -4,7 +4,7 @@ lesson language-interview v=1 format=teach grade=6 unit=7 subject=language level
   goal "Ask and answer questions about yourself in [[language.name]], as in an interview."
 
   look {
-    scene 38x14 {
+    scene 37x14 {
       column all at=canvas(1, 1) space=1 align=start {
         comic talk who=["girl", "boy", "girl", "boy"] says=["[[interview.what-is-your-name]]", "[[interview.my-name-is-leo]]", "[[interview.where-do-you-live]]", "[[interview.i-live-in-the-town]]"] moods=["happy", "happy", "happy", "happy"] with=["", "", "", ""] thinks=[0, 0, 0, 0] holds=["", "", "", ""] labels=["1", "2", "3", "4"]
       }

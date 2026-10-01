@@ -3,7 +3,7 @@ lesson k-magnets v=1 format=teach grade=0 unit=5 subject=physics levels=[easy, m
   goal "Say which things a magnet pulls, count what it picks up, and tell a stronger magnet by what it holds."
 
   look {
-    scene 30x12 {
+    scene 22x12 {
       magnet m mode=things count=4 sticks=2 show=1 at=canvas(1, 1)
     }
     say """

@@ -5,7 +5,8 @@ import { journeyViewOf, worldViewOf } from "../../school/worlds/reading";
 
 import { reads } from "../../engine/ui/reads";
 import type { Declared } from "../../engine/motion/world";
-import { gradeName, type LessonFacts, type Level, type PackLesson } from "../../engine/pack";
+import { gradeName } from "../../engine/grade";
+import type { LessonFacts, Level, PackLesson } from "../../engine/pack";
 import type { Scene } from "../../engine/scene";
 import type { SceneDrawer } from "../../engine/ui/scene";
 import type { MapView, WorldView } from "../../engine/space";

@@ -5,7 +5,7 @@ lesson language-verbs v=1 format=teach grade=6 unit=1 subject=language levels=[e
 
   language es {
     look {
-      scene 38x14 {
+      scene 37x14 {
         column all at=canvas(1, 1) space=1 align=start {
           comic talk who=["girl", "boy", "gran", "girl"] says=["Yo hablo español.", "¿Tú hablas inglés?", "Mi abuela habla francés.", "Nosotros hablamos mucho."] moods=["happy", "happy", "happy", "happy"] with=["", "", "", ""] thinks=[0, 0, 0, 0] holds=["", "", "", ""] labels=["1", "2", "3", "4"]
         }

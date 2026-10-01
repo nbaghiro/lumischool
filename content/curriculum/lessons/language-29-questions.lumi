@@ -4,7 +4,7 @@ lesson language-questions v=1 format=teach grade=5 unit=7 subject=language level
   goal "Ask questions in [[language.name]] with where, when, who, what, how many, how, why and which."
 
   look {
-    scene 38x14 {
+    scene 37x14 {
       column all at=canvas(1, 1) space=1 align=start {
         comic ask who=["girl", "boy", "girl", "boy"] says=["[[question.where-do-you-live]]", "[[question.at-the-harbour]]", "[[phrase.how-many-brothers-and-sisters-do-you-hav]]", "[[question.two-a-brother-and-a-sister]]"] moods=["happy", "happy", "happy", "happy"] with=["", "", "", ""] thinks=[0, 0, 0, 0] holds=["", "", "", ""] labels=["1", "2", "3", "4"]
       }

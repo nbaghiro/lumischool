@@ -34,7 +34,7 @@ import { go, Link, path } from "../../engine/ui/router";
 import { Say } from "../../engine/ui/say";
 import { isParent } from "../../school/family/access";
 import { familyName } from "../../school/family/names";
-import { gradeName } from "../../engine/pack";
+import { gradeName } from "../../engine/grade";
 import { KID_FIELDS, NOTICE, NOTICE_VERSION } from "../../school/family/privacy";
 import { GROWNUPS, type GrownupKind } from "../../engine/parts/apps/grownup";
 import type { FamilyView, Me } from "../../server/api";

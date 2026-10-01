@@ -3,7 +3,7 @@ lesson k-what-soaks-up-water v=1 format=teach grade=0 unit=2 subject=chemistry l
   goal "Say which things soak up water and which keep it out, and what makes wet things dry."
 
   look {
-    scene 30x10 {
+    scene 19x10 {
       materials row things=["towel", "raincoat", "paper-bag", "plastic-bottle"] letters=1 names=1 at=canvas(1, 0)
     }
     say """

@@ -3,7 +3,7 @@ lesson k-a-bead-string v=1 format=teach grade=0 unit=4 subject=maths levels=[eas
   goal "Find a number on a bead string of ten, and say the number one more and one less."
 
   look {
-    scene 26x9 {
+    scene 14x9 {
       beadstring line beads=10 mark=6 at=canvas(1, 1)
       text note "Five, and one more: six." below=line gap=1
     }

@@ -45,9 +45,10 @@ test("every string the guide's card can read for a question is the question's ow
 
 /**
  * Questions whose scene is only words and an answer, where Where? is not offered. It may fall as
- * scenes gain drawings, and a rise means a question that draws something stopped being ringable.
+ * scenes gain drawings, and a rise means a question that draws something stopped being ringable. The
+ * kindergarten year brought 948 and the language track 401 to the 1,158 of grades one to six.
  */
-const WORDS_ONLY = 1158;
+const WORDS_ONLY = 2507;
 
 /** Parts that say the question or take its answer, which are not a place to ring (school/lessons.ts). */
 const SAYS = new Set(["text", "caption", "choice", "number-input", "word-input", "row", "column"]);

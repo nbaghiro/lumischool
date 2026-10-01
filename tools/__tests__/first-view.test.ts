@@ -30,14 +30,17 @@ const BUDGET = {
     firstJs: 100_000,
     firstCss: 30_000,
     // the sample child's run holds six years' worlds, and grades five and six at 36 lessons a term,
-    // with the reaches that light them, took it to 26,600
-    data: 27_000,
+    // with the reaches that light them, took it to 26,600; the kindergarten year's garden and the
+    // history and language lessons each year's places name took it to 30,600
+    data: 31_000,
     mapJs: 1_850_000,
     kidsFirstJs: 125_000,
     // every world is data the map reads, and the sixth year's three took it to 383,300 with nothing to
     // trim; the map's handoff, its store of drawn pixels and its ranked drawing took it to 392,600
-    // (.docs/map-smoothness-plan.md)
-    kidsMapJs: 400_000,
+    // (.docs/map-smoothness-plan.md); the kindergarten year's garden, the history and language
+    // places, the settings those read and which worlds a child's grade reaches took it to 404,500,
+    // with the journeys' titles and purposes kept out (school/worlds/journey-lessons.ts)
+    kidsMapJs: 410_000,
     homeFirstJs: 95_000,
 };
 const KIDS = "apps/kids/index.html";

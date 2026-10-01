@@ -7,8 +7,10 @@ A world's journey is the set of lessons of one grade that a child finds in that 
 offers the grades that suit it, and at each of them its journey holds between two and six real
 lessons. A child sees their own grade's journey in every world they may go into, except the world of
 the term today's lessons are in, which keeps the year's roll. A grown-up can open any world on the
-map and switch between the grades it offers. The code is `school/worlds/journeys.ts`; the view of a
-journey is `journeyViewOf` in `school/worlds/reading.ts`.
+map and switch between the grades it offers. Which lessons a journey holds, and who may go in, is
+`school/worlds/journey-lessons.ts`, which the child's map reads; the title and purpose each journey
+is shown with are `school/worlds/journeys.ts`, which the map does not carry; the view of a journey is
+`journeyViewOf` in `school/worlds/reading.ts`.
 
 ## What a journey holds
 
@@ -44,7 +46,7 @@ language the pack teaches, which is Spanish today. The site reads the same defau
 A world offers the pack's grades from its lowest to its highest:
 
 - The lowest is 0 for a place a track brings a child to and for the kindergarten world, and 1 for
-  every other world, unless the world's entry says `from`.
+  every other world, unless the world's entry in `RANGES` says `from`.
 - The six worlds of the fifth and sixth years (canal town, the observatory cliffs, the old city, the
   midnight sun, the gorge and the moon), the post office and clockwork island start at grade 3.
 - The lamp rocks stop at grade 2, and the garden, which is the kindergarten year, offers grade 0
@@ -56,7 +58,7 @@ A world offers the pack's grades from its lowest to its highest:
 
 ## What a child may go into
 
-`reaches` in `journeys.ts` decides, and `mapViewOf` in `school/worlds/view.ts` applies it to a child's
+`reaches` in `journey-lessons.ts` decides, and `mapViewOf` in `school/worlds/view.ts` applies it to a child's
 map. A child of grade g may go into:
 
 - a world of the run whose year is g or earlier,

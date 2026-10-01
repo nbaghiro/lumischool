@@ -11,7 +11,7 @@ item k.clap-repeat v=1 skills=[coding.repetition, patterns.repeating] {
     let n=3..4
   }
 
-  scene 28x13 {
+  scene 28x9 {
     text q "Do this {n} times: clap, clap, stamp. How many claps altogether?" narrate width=26 at=canvas(1, 1)
     number-input answer below=q gap=1
   }

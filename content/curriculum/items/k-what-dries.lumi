@@ -16,4 +16,5 @@ item k.what-dries v=1 skills=[chemistry.water] {
 
   answer pick=pick(k, "a warm, windy day", "it goes into the air")
   hint "When do puddles disappear fastest?"
+  hint "Think of a puddle on a sunny day. Where does its water go, and what helps it go faster?"
 }

@@ -4,9 +4,9 @@ lesson language-how-old v=1 format=teach grade=3 unit=1 subject=language levels=
   goal "Count from twenty to thirty-one in [[language.name]] and say how old you are."
 
   look {
-    scene 39x14 {
+    scene 37x14 {
       column all at=canvas(1, 1) space=1 align=start {
-        row party space=2 align=end {
+        row party space=1 align=end {
           cake c candles=8 slices=0
           comic talk who=["boy", "girl"] says=["[[phrase.how-old-are-you]]", "[[phrase.i-am-eight-years-old]]"] moods=["happy", "excited"] with=["", ""] thinks=[0, 0] holds=["", ""] labels=["1", "2"]
         }

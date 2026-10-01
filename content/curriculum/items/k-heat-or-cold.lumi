@@ -17,4 +17,5 @@ item k.heat-or-cold v=1 skills=[chemistry.melting, chemistry.changes] {
 
   answer pick=(if c == "freeze-water" then "cooling" else "warming")
   hint "Where would you put it to make this happen: somewhere hot or in the freezer?"
+  hint "Look at the before and after pictures. Did it go soft and runny, or hard and stiff?"
 }

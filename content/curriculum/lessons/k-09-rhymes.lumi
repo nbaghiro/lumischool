@@ -3,7 +3,7 @@ lesson k-rhymes v=1 format=teach grade=0 unit=7 subject=reading levels=[easy, me
   goal "Hear when two words rhyme, pick a word that rhymes, and tell a rhyme from two words that only start the same."
 
   look {
-    scene 24x14 {
+    scene 11x14 {
       picturecards card who=["cat"] where=["on"] thing=["mat"] letters=false at=canvas(1, 1)
       text note "cat, mat" below=card gap=1
     }

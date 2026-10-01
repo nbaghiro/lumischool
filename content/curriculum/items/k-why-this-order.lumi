@@ -11,7 +11,7 @@ item k.why-this-order v=1 stars=2 skills=[reading.sequencing, reasoning.explain]
     let k=1..1
   }
 
-  scene 34x26 {
+  scene 34x22 {
     picsteps steps pictures=[pick(k, "pot", "stir"), pick(k, "soil", "tin"), pick(k, "seed", "oven")] texts=["", "", ""] per=3 numbers=true write=false at=canvas(1, 1)
     text ask "{pick(k, \"Why does the soil go in before the seed?\", \"Why does the tin come before the oven?\")}" narrate width=28 below=steps gap=1
     choice pick options=[wrong, right] stack=column below=ask gap=1

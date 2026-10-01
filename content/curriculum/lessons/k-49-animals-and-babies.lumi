@@ -3,7 +3,7 @@ lesson k-animals-and-babies v=1 format=teach grade=0 unit=4 subject=nature level
   goal "Name the babies of familiar animals, say which grow up to look like their parents, and put a frog's life in order."
 
   look {
-    scene 26x14 {
+    scene 12x14 {
       frogcycle cycle stage=4 ring=1 names=1 at=canvas(1, 1)
     }
     say """

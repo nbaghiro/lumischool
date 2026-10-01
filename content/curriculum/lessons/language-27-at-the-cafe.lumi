@@ -4,7 +4,7 @@ lesson language-at-the-cafe v=1 format=teach grade=5 unit=4 subject=language lev
   goal "Order food and drink politely at a café in [[language.name]], and ask for the bill."
 
   look {
-    scene 38x26 {
+    scene 37x26 {
       column all at=canvas(1, 1) space=1 align=start {
         sign menu lines=["[[cafe.juice]] 2 €", "[[cafe.sandwich]] 5 €", "[[cafe.ice-cream]] 4 €", "[[cafe.water]] 1 €"] kind=board color=mint
         comic order who=["gran", "girl", "gran", "girl"] says=["[[cafe.what-would-you-like]]", "[[cafe.i-would-like-an-orange-juice]]", "[[cafe.anything-else]]", "[[cafe.nothing-else-thank-you]]"] moods=["happy", "happy", "happy", "happy"] with=["", "", "", ""] thinks=[0, 0, 0, 0] holds=["", "", "", ""] labels=["1", "2", "3", "4"]

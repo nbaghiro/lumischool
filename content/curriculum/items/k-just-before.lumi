@@ -11,7 +11,7 @@ item k.just-before v=1 skills=[coding.sequences] {
     let k=2..3
   }
 
-  scene 30x16 {
+  scene 30x12 {
     text q "What do you do just before {what}?" narrate width=28 at=canvas(1, 1)
     choice pick options=[right, "{pick(k, \"go to bed\", \"eat a cake\", \"brush your hair\", \"sing a song\")}"] stack=column below=q gap=1
   }

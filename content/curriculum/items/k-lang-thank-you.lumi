@@ -9,7 +9,7 @@ item k.lang-thank-you v=1 stars=2 skills=[language.greetings, reasoning.explain]
     let k=1..1
   }
 
-  scene 30x14 {
+  scene 30x8 {
     text ask "{pick(k, \"Gran gives Ana an apple. What does Ana say?\", \"Leo wants some water. What does he say at the end of asking?\")}" narrate width=28 at=canvas(1, 1)
     choice pick options=["[[greet.hello]]", "[[greet.please]]", "[[greet.thank-you]]"] stack=row below=ask gap=1
   }

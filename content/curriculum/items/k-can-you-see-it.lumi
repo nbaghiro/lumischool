@@ -17,4 +17,5 @@ item k.can-you-see-it v=1 skills=[chemistry.dissolving] {
 
   answer pick=(if x == "sugar" or x == "salt" then "no" else "yes")
   hint "Look in the water. Is anything on the bottom or floating at the top?"
+  hint "Some things mix into water and vanish, and some sink or float. Which kind is this one?"
 }

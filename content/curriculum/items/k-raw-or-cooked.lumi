@@ -18,4 +18,5 @@ item k.raw-or-cooked v=1 skills=[chemistry.cooking] {
 
   answer pick=right
   hint "Has it been heated in a pan, a toaster or an oven?"
+  hint "Is it the way it was in the shop or the garden, or has heat changed it?"
 }

@@ -5,7 +5,7 @@ lesson history-g3-usa-our-country-long-ago v=1 format=teach grade=3 unit=9 subje
   goal "Put events of the land that is now the United States in order, and say how we know about peoples who left no writing."
 
   look {
-    scene 36x9 {
+    scene 25x9 {
       timeline line from=1000 to=2000 step=200 years=[1050, 1903, 1969] labels=["Cahokia", "First flight", "Moon landing"] at=canvas(0, 0)
     }
     say """

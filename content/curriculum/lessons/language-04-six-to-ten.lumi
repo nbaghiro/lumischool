@@ -4,9 +4,9 @@ lesson language-six-to-ten v=1 format=teach grade=1 unit=5 subject=language leve
   goal "Count from six to ten in [[language.name]] and read the number words on a sign."
 
   look {
-    scene 42x8 {
+    scene 37x8 {
       column all at=canvas(1, 1) space=1 align=start {
-        row counts space=2 align=end {
+        row counts space=0 align=end {
           tenframe six count=6 color=berry
           tenframe eight count=8 color=sky
           tenframe ten count=10 color=mint

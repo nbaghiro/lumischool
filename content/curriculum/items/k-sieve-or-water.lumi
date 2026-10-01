@@ -17,4 +17,5 @@ item k.sieve-or-water v=1 stars=3 skills=[chemistry.separating, reasoning.what-i
 
   check chem.separate of=s pick="get({pick(k, \"pebbles\", \"peas\")})"
   hint "Which one is bigger? What lets small things through and keeps big things back?"
+  hint "Think of pouring the water and the pebbles through it. What would be left behind?"
 }

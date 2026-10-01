@@ -2,7 +2,8 @@
 // by grade, what the count says, and one lesson's place and the level it is read at. What a page shows
 // is its path and query, so an address can be shared and the back button works.
 
-import { gradeName, type LessonFacts, type Level } from "../../engine/pack";
+import { gradeName } from "../../engine/grade";
+import type { LessonFacts, Level } from "../../engine/pack";
 import type { Filters } from "../../school/catalogue";
 import { variantName } from "../../school/family/names";
 import { subjectFacts, TRACK_IDS } from "../../school/tracks";

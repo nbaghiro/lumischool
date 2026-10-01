@@ -10,24 +10,27 @@ import { join } from "node:path";
 import { before, test } from "node:test";
 import { gzipSync } from "node:zlib";
 import { readIndex, readLesson, readScene, type PackLesson } from "../../engine/pack";
-import { compileLessons, packOf, type BuiltPack } from "../pack";
+import { Workspace } from "../../engine/notation/notation";
+import { compileLessons, curriculum, packOf, type BuiltPack } from "../pack";
 
 const ROOT = join(import.meta.dirname, "..", "..");
 const LESSONS = join(ROOT, "content/curriculum/lessons");
 
 /**
  * Gzipped, in bytes: a lesson's file, and the index of every lesson. Every view reads the index whole,
- * at about 128 bytes a lesson, so 75,000 holds the 504 lessons of grades one to six with room for
- * their longer goals (.docs/grades-5-6.md).
+ * at about 130 bytes a lesson, so 95,000 holds the 710 lessons of the kindergarten year, grades one to
+ * six, history and the Spanish variants, with a little room.
  */
-const BUDGET = { lesson: 50_000, index: 75_000, scene: 4_000 };
+const BUDGET = { lesson: 50_000, index: 95_000, scene: 4_000 };
 
+let ws: Workspace | null = null;
 let compiled: PackLesson[] = [];
 let built: BuiltPack | null = null;
 const lessons = new Map<string, PackLesson>();
 
 before(() => {
-    compiled = compileLessons();
+    ws = new Workspace(curriculum());
+    compiled = compileLessons(ws);
     built = packOf(compiled);
     for (const [file, text] of built.lessons) {
         const read = readLesson(JSON.parse(text));
@@ -40,12 +43,20 @@ const zipped = (text: string): number => gzipSync(text).length;
 const byId = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
 
 test("every lesson of the curriculum is in the family's pack, and its file reads back as that lesson", () => {
-    assert.ok(built);
+    assert.ok(built && ws);
+    // a language template is in the pack once for each language whose phrasebook covers it
+    const offered = new Map<string, string[]>();
+    for (const c of ws.coverage)
+        offered.set(c.lesson, [
+            ...(offered.get(c.lesson) ?? []),
+            ...(c.missing.length === 0 ? [`${c.lesson}.${c.language}`] : []),
+        ]);
     const ids = readdirSync(LESSONS)
         .filter((f) => f.endsWith(".lumi"))
         .flatMap(
             (f) => /^\s*lesson\s+(\S+)/m.exec(readFileSync(join(LESSONS, f), "utf8"))?.[1] ?? [],
         )
+        .flatMap((id) => offered.get(id) ?? [id])
         .sort(byId);
     assert.deepEqual(
         built.index.lessons.map((l) => l.id),

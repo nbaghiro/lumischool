@@ -9,7 +9,7 @@ item k.steeper-faster v=1 skills=[physics.ramps] {
     let k=2..3
   }
 
-  scene 30x14 {
+  scene 30x10 {
     text q "{pick(k, \"Which slope makes a toy car go faster: a steep one or a gentle one?\", \"On which slide do you whizz down faster: the steep one or the gentle one?\", \"Ada wants her ball to roll slowly. Should she make the slope steeper or gentler?\", \"Ben lifts one end of his ramp higher. Will the car go faster or slower?\")}" narrate width=28 at=canvas(1, 1)
     choice pick options=[pick(k, "steep", "steep", "gentler", "faster"), pick(k, "gentle", "gentle", "steeper", "slower")] stack=row below=q gap=1
   }

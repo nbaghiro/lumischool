@@ -6,7 +6,7 @@ lesson history-the-race-to-space v=1 format=teach grade=6 unit=6 subject=history
   goal "Put the firsts in space from 1957 to 1969 in order, say who made each, and count the years and days between them."
 
   look {
-    scene 36x9 {
+    scene 17x9 {
       timeline line from=1955 to=1970 step=5 years=[1957, 1961, 1963, 1965, 1969] labels=["First satellite", "First person in space", "First woman in space", "First spacewalk", "Moon landing"] at=canvas(0, 0)
     }
     say """

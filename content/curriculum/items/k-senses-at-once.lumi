@@ -10,7 +10,7 @@ item k.senses-at-once v=1 stars=3 skills=[nature.senses, counting.to-five] {
     let k=0..0
   }
 
-  scene 28x13 {
+  scene 28x9 {
     text ask "{when} How many senses is that?" narrate width=26 at=canvas(1, 1)
     number-input answer below=ask gap=1
   }

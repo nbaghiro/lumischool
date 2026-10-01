@@ -3,7 +3,7 @@ lesson k-one-to-five v=1 format=teach grade=0 unit=5 subject=language levels=[ea
   goal "Count from one to five in [[language.name]], and match each word to its number."
 
   look {
-    scene 26x6 {
+    scene 13x6 {
       props row count=5 prop=apple at=canvas(1, 1)
     }
     say """

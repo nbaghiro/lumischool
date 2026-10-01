@@ -128,7 +128,7 @@ test("unknown node types and settings get a suggestion", () => {
 
 test("a node must be allowed where it is written", () => {
     assert.deepEqual(issues(`item x v=1 {\n  say "hello"\n}\n`), [
-        '2:3 "say" cannot go inside "item"; it takes title, difficulty, set, let, where, roles, scene, answer, check, feedback, hint, level',
+        '2:3 "say" cannot go inside "item"; it takes title, difficulty, set, let, where, roles, scene, answer, check, feedback, hint, level, language',
     ]);
 });
 

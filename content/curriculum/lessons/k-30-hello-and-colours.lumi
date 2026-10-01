@@ -3,7 +3,7 @@ lesson k-hello-and-colours v=1 format=teach grade=0 unit=3 subject=language leve
   goal "Say [[greet.hello]] and [[greet.goodbye]] at the right moment, and name four colours in [[language.name]]."
 
   look {
-    scene 30x7 {
+    scene 16x7 {
       mixingtray paints wells=["red", "blue", "yellow", "green"] labels=true at=canvas(1, 1)
     }
     say """

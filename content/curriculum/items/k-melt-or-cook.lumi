@@ -20,4 +20,5 @@ item k.melt-or-cook v=1 stars=2 skills=[chemistry.changes, reasoning.explain] {
 
   answer pick=back
   hint "Which one is only melted? Which one has been cooked into something new?"
+  hint "If it cooled down, would it go back to how it was before it was heated?"
 }

@@ -5,7 +5,7 @@ lesson history-g4-britain-pages-of-our-history v=1 format=teach grade=4 unit=9 s
   goal "Put the story of Roman Britain in order, count its years across year one, and say why the Romans built Hadrian's Wall."
 
   look {
-    scene 36x9 {
+    scene 25x9 {
       timeline line from=-100 to=150 step=50 years=[-55, 43, 122] labels=["Caesar lands in Britain", "Romans conquer Britain", "Hadrian's Wall begun"] at=canvas(0, 0)
     }
     say """

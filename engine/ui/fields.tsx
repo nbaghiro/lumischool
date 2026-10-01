@@ -2,10 +2,11 @@
 // carries them (.docs/structure.md): a field with its label, hint and what is wrong with it, a list
 // to choose from, a button that reads as a link, the time zone offered rather than asked,
 // the eight-digit code in eight boxes, and a row to choose. Their styles are form.css, one sheet for
-// both.
+// both, and seg.css for the row.
 
 import { Select } from "./select";
 import "./form.css";
+import "./seg.css";
 import { createSignal, createUniqueId, For, Show, type JSX } from "solid-js";
 import { digitsOf } from "./codes";
 

@@ -2,7 +2,8 @@
 // and the measures a level is compared by. The run-time twins of tagOf and sectionLabel, over a pack
 // lesson, are in engine/pack.ts.
 import { evaluate, showValue } from "../expr";
-import { gradeName, NUMBERED } from "../pack";
+import { gradeName } from "../grade";
+import { NUMBERED } from "../pack";
 import { isLevel, type Item, type Lesson, type TNode, type Workspace } from "./notation";
 import { difficultyOf, pick, type Variant } from "./verify";
 import { FORMATS, REGISTRY } from "./vocabulary";

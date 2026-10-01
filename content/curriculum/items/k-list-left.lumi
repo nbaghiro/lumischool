@@ -10,7 +10,7 @@ item k.list-left v=1 stars=3 skills=[writing.lists, counting.to-five] {
     where (n - t >= 2)
   }
 
-  scene 28x13 {
+  scene 28x9 {
     text q "Ada's list has {n} things. She has ticked {t} of them in the shop. How many are left to buy?" narrate width=26 at=canvas(1, 1)
     number-input answer below=q gap=1
   }

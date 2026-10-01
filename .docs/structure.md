@@ -74,6 +74,8 @@ lumischool/
 │  ├─ numbers.ts                   exact fractions and decimals
 │  ├─ expr.ts                      the small expression language inside the notation
 │  ├─ answer.ts                    the event and answer types, declared once          (built)
+│  ├─ grade.ts                     a grade's name as a family reads it, apart from pack.ts so a
+│  │                               light screen that names a grade does not carry the pack's reader
 │  ├─ page.ts                      a list read a page at a time: the page, its keyset cursor, and a
 │  │                               page of a sorted list in memory (.docs/pagination.md)
 │  ├─ scene.ts                     named parts on the grid, anchors resolved
@@ -190,9 +192,10 @@ paper               nothing
 numbers             nothing
 expr                numbers
 answer              nothing
+grade               nothing
 page                nothing
 scene               paper, expr, parts
-pack                answer, expr, paper, scene
+pack                answer, expr, grade, paper, scene
 ink                 paper, parts, scene
 parts               paper, ink/surface, ink/pen, numbers, sound/pitch, sound/scale, sound/beat,
                     sound/fretted, sound/keys, sound/voices, motion/animation, coding, pigment
@@ -203,20 +206,20 @@ painting            answer, pigment
 teaching            nothing
 motion              nothing
 arrange             answer, expr, motion/lever, motion/cuts
-notation            parts, games, expr, numbers, scene, ink, sound, answer, pack, painting, arrange,
-                    paper, coding, pigment
+notation            parts, games, expr, numbers, scene, ink, sound, answer, pack, grade, painting,
+                    arrange, paper, coding, pigment
 ui                  teaching, games, paper, ink, parts, scene, sound, motion, space, answer, pack,
                     painting, arrange, coding, pigment, numbers, page
 space               paper, ink, parts
 lessons             pack, answer, scene, ink, expr, arrange, teaching
 games               parts, scene, answer, motion, numbers
-worlds              parts, paper, motion, space, pack, year, record, answer
-year                pack, answer, record
+worlds              parts, paper, motion, space, pack, grade, year, record, answer
+year                pack, grade, answer, record
 tracks              year
 voice               nothing
 record              answer, numbers
 catalogue           pack, page
-family              pack, year, tracks, record, answer
+family              pack, grade, year, tracks, record, answer
 tutoring            teaching, tutoring-materials
 tutoring-materials  teaching, teaching-content
 adaptive            teaching, voice, pack

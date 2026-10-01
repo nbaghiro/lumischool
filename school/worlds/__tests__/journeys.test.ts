@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { LessonFacts } from "../../../engine/pack";
-import { journeyFor, journeyGrades, journeyProblems, MOST, reaches } from "../journeys";
+import { MOST, reaches } from "../journey-lessons";
+import { journeyFor, journeyGrades, journeyProblems } from "../journeys";
 import { corpusFrom } from "../lessons";
 
 const STARTED = "2026-08-31";

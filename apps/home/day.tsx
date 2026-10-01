@@ -19,7 +19,8 @@ import {
     type JSX,
 } from "solid-js";
 import type { Draft } from "../../engine/answer";
-import { gradeName, type LessonFacts, type PackLesson } from "../../engine/pack";
+import { gradeName } from "../../engine/grade";
+import type { LessonFacts, PackLesson } from "../../engine/pack";
 import * as api from "../../engine/ui/api";
 import * as shared from "./shared";
 import { onThisComputer } from "../../engine/ui/device";

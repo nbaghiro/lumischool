@@ -5,7 +5,7 @@ lesson history-g5-britain-our-country-in-its-time v=1 format=teach grade=5 unit=
   goal "Put England's story from Alfred to the Domesday Book in order, and say why a king wanted to know what everyone owned."
 
   look {
-    scene 36x9 {
+    scene 25x9 {
       timeline line from=850 to=1100 step=50 years=[871, 927, 1086] labels=["Alfred becomes king", "First king of England", "Domesday Book"] at=canvas(0, 0)
     }
     say """

@@ -16,4 +16,5 @@ item k.sun-or-shade v=1 stars=3 skills=[chemistry.melting, reasoning.compare] {
 
   answer pick="the one in the sun"
   hint "Look along each row of saucers. Which row runs out of ice sooner?"
+  hint "Count the saucers that still have ice in each row. Which row has fewer?"
 }

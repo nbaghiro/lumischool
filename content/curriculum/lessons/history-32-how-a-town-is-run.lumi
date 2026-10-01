@@ -4,7 +4,7 @@ lesson history-how-a-town-is-run v=1 format=teach grade=5 unit=6 subject=history
   goal "Say how a town council decides by voting, read what a town spends its money on, and give the reason for a town's rule."
 
   look {
-    scene 34x12 {
+    scene 23x12 {
       council c hands=[1, 1, 0, 1, 1, 0, 1] box=0 motion="A crossing by the school" count=1 at=canvas(1, 0)
     }
     say """

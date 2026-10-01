@@ -19,4 +19,5 @@ item k.what-heat-did v=1 skills=[chemistry.cooking, chemistry.changes] {
 
   answer pick=right
   hint "Compare the before picture with the after picture. What is different?"
+  hint "Say what it looked like before, then say what it looks like after."
 }

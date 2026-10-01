@@ -5,7 +5,7 @@ lesson history-ancient-greece v=1 format=teach grade=4 unit=1 subject=history le
   goal "Put the story of ancient Greece in order, count years BC, and say how the citizens of Athens decided things by voting."
 
   look {
-    scene 36x22 {
+    scene 22x22 {
       column all at=canvas(0, 0) space=1 align=start {
         timeline line from=-800 to=-400 step=100 years=[-776, -508, -447] labels=["First Olympic Games", "Athens votes", "Parthenon built"]
         council c hands=[1, 0, 1, 1, 0, 1, 1] box=0 motion="Build a new well" count=0

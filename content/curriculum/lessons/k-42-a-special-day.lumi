@@ -3,7 +3,7 @@ lesson k-a-special-day v=1 format=teach grade=0 unit=7 subject=history levels=[e
   goal "Count the years on a birthday, count the days to a celebration, and talk about a special day a family marks."
 
   look {
-    scene 30x10 {
+    scene 30x6 {
       days week mark=5 start=0 at=canvas(1, 1)
     }
     say """

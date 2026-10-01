@@ -3,7 +3,7 @@ lesson k-a-picture-of-a-feeling v=1 format=teach grade=0 unit=7 subject=art leve
   goal "Say which colours feel warm and which feel cool, read a feeling on a face, and paint a picture to show a feeling."
 
   look {
-    scene 30x9 {
+    scene 18x9 {
       paintpots pots pots=["red", "yellow"] result="mix" labels=true at=canvas(1, 1)
     }
     say """

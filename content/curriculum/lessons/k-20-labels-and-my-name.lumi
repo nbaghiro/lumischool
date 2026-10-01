@@ -3,7 +3,7 @@ lesson k-labels-and-my-name v=1 format=teach grade=0 unit=6 subject=writing leve
   goal "Write the first letter of my name as a capital, and write a label for a picture from its sounds."
 
   look {
-    scene 24x14 {
+    scene 12x14 {
       art pic asset="cat" at=canvas(1, 1)
       caption cap text="cat" width=10 below=pic gap=1
     }

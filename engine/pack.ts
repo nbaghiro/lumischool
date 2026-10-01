@@ -1,5 +1,6 @@
 import { LANGUAGES, NATIONS, type Given, type Language, type Nation, type Way } from "./answer";
 import { exprProblem, valueProblem, type Expr, type Value } from "./expr";
+import { gradeName } from "./grade";
 import { PAGE_SIZES, PRINT_MARGIN_MM, SQUARE_MM } from "./paper";
 import { sceneProblem, type Scene } from "./scene";
 
@@ -407,10 +408,6 @@ export function markWords(
     }
     return { right: words.every((w) => w.right) && !extra.length, words, extra };
 }
-
-/** A grade as a family reads it: the year before the first is kindergarten, not grade 0. */
-export const gradeName = (grade: number): string =>
-    grade === 0 ? "Kindergarten" : `Grade ${grade}`;
 
 /** The strip above a lesson's title: its subject unless it is maths, its grade and its unit. */
 export const tagOf = (lesson: Pick<PackLesson, "subject" | "grade" | "unit">): string =>

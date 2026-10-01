@@ -1,4 +1,4 @@
-import { gradeName } from "../../engine/pack";
+import { gradeName } from "../../engine/grade";
 import type { Day, DayView, SheetView, Standing, WorldLimits, WorldView } from "../../engine/space";
 import type { Applied, WorldChoice } from "./types";
 import type { Corpus } from "./lessons";

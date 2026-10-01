@@ -3,7 +3,7 @@ lesson k-more-fewer-the-same v=1 format=teach grade=0 unit=3 subject=maths level
   goal "Compare two groups by matching them one to one, say which has more or fewer, and make them the same."
 
   look {
-    scene 24x9 {
+    scene 11x9 {
       props top count=4 prop=apple at=canvas(1, 1)
       props bottom count=3 prop=star below=top gap=1
     }

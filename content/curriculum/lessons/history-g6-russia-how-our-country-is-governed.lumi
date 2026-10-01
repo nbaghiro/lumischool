@@ -5,7 +5,7 @@ lesson history-g6-russia-how-our-country-is-governed v=1 format=teach grade=6 un
   goal "Put the steps of Russia's government in order, and say what the State Duma does."
 
   look {
-    scene 36x9 {
+    scene 25x9 {
       timeline line from=1900 to=2000 step=20 years=[1906, 1917, 1993] labels=["State Duma first meets", "Women vote in Russia", "Constitution of Russia adopted"] at=canvas(0, 0)
     }
     say """

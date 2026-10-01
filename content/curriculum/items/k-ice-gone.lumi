@@ -17,4 +17,5 @@ item k.ice-gone v=1 skills=[chemistry.melting, counting.to-five] {
 
   check chem.change of=ice answer=melted
   hint "Find the first saucer with no ice cube on it. What number is under it?"
+  hint "Point to each saucer in turn, from the first. Stop at the first one that is empty."
 }

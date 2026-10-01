@@ -11,7 +11,7 @@ item k.lang-mix v=1 stars=3 skills=[language.colours, art.colour-mixing] {
     let k=1..1
   }
 
-  scene 30x13 {
+  scene 30x8 {
     text ask "Mix {pick(k, \"[[colour.blue]] and [[colour.yellow]]\", \"[[colour.red]] and [[colour.yellow]]\")}. What colour do you get, in [[language.name]]?" narrate width=28 at=canvas(1, 1)
     choice pick options=["[[colour.green]]", "[[colour.orange]]", "[[colour.red]]"] stack=row below=ask gap=1
   }

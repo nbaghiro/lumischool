@@ -6,7 +6,7 @@ lesson history-laws-and-votes v=1 format=teach grade=6 unit=7 subject=history le
   goal "Put the steps of making a law in order, count an election's votes, and say why votes are secret and who has won the right to vote."
 
   look {
-    scene 36x12 {
+    scene 23x12 {
       council c hands=[1, 1, 0, 1, 1, 0, 1] box=1 motion="A new law" count=1 at=canvas(1, 0)
     }
     say """

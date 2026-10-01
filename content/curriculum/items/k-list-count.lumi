@@ -9,7 +9,7 @@ item k.list-count v=1 skills=[writing.lists, counting.to-five] {
     let n=4..5
   }
 
-  scene 30x26 {
+  scene 30x16 {
     listpad pad title="Shopping" items=["apples", "milk", "bread", "eggs", "jam"] count=n width=12 ticks=true at=canvas(1, 1)
     text q "The grown-up reads the shopping list. How many things are on it?" narrate width=14 right-of=pad gap=2
     number-input answer below=q gap=1

@@ -5,7 +5,7 @@ lesson history-a-source-and-who-made-it v=1 format=teach grade=4 unit=8 subject=
   goal "Say who made a source, when and where, and whether they were there, and choose the best source for a question."
 
   look {
-    scene 36x13 {
+    scene 20x13 {
       sourcecard card title="Pliny's letter about Vesuvius" kind=3 who="Pliny the Younger, who watched from across the bay" when="about AD 106, of AD 79" where="Misenum, near Vesuvius" there=1 ask=0 at=canvas(1, 0)
     }
     say """

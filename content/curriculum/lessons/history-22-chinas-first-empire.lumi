@@ -5,7 +5,7 @@ lesson history-chinas-first-empire v=1 format=teach grade=4 unit=4 subject=histo
   goal "Say how the first emperor made one China out of many kingdoms, and count the years of the Qin and the Han across year one."
 
   look {
-    scene 36x20 {
+    scene 25x20 {
       column all at=canvas(0, 0) space=1 align=start {
         timeline line from=-300 to=200 step=100 years=[-221, -138, 105] labels=["Qin unites China", "Zhang Qian sets out", "Paper"]
         objectcard coin kind=7 name="Ban liang coin" use="Buying and selling" year=-221 about=1 place="China" ask=0

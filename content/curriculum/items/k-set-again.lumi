@@ -17,4 +17,5 @@ item k.set-again v=1 skills=[chemistry.changes] {
 
   check chem.change of=ch pick=back
   hint "What made it change? Do the opposite."
+  hint "Think of chocolate on a hot day and in the fridge. Which one makes it soft, and which one hard?"
 }

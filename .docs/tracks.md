@@ -305,7 +305,7 @@ for Spanish, since how a language does these is its own.
 `DEFAULT_TRACKS` in `school/tracks.ts` is the week a child starts from at each grade. From grade one
 it adds history and a language at one day a week each to the paces above. A language plans nothing
 until one is chosen, since its lane is empty until then. The kindergarten year, grade 0, has its own
-light week: maths, reading, writing, music and nature, one day each, one subject a day.
+light week: every track one day each, two subjects a day.
 
 Each track leans towards its own part of the week (`TRACK_TURN`), so the default spreads rather than
 piling onto Wednesday; the rule the tests hold is that no weekday of any grade's default is empty or

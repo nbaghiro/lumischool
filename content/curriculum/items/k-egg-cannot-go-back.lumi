@@ -19,4 +19,5 @@ item k.egg-cannot-go-back v=1 stars=2 skills=[chemistry.changes, reasoning.expla
 
   check chem.change of=ch pick=undo
   hint "Melted chocolate sets again when it cools. Does a cooked egg go runny again when it cools?"
+  hint "Think of the egg before and after it was cooked. Could you ever make it runny again?"
 }

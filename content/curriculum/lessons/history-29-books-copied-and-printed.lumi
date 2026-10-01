@@ -5,7 +5,7 @@ lesson history-books-copied-and-printed v=1 format=teach grade=5 unit=3 subject=
   goal "Put the steps of printing in order from East Asia to Europe, and say what printing changed for readers."
 
   look {
-    scene 36x11 {
+    scene 26x11 {
       row all at=canvas(0, 0) space=1 align=end {
         printingpress press printed=1
         library lib

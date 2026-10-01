@@ -5,7 +5,7 @@ lesson history-g5-japan-our-country-in-its-time v=1 format=teach grade=5 unit=9 
   goal "Put changes in Japan's life after 1950 in order, and say how fast railways and new machines changed how people work and travel."
 
   look {
-    scene 36x9 {
+    scene 21x9 {
       timeline line from=1950 to=1970 step=5 years=[1953, 1955, 1964] labels=["Television broadcasts in Japan", "Electric rice cooker", "Shinkansen opens"] at=canvas(0, 0)
     }
     say """

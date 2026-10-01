@@ -3,7 +3,7 @@ lesson k-mixing-colours v=1 format=teach grade=0 unit=4 subject=art levels=[easy
   goal "Say what two of red, yellow and blue make when they are mixed, and mix a green to paint with."
 
   look {
-    scene 30x9 {
+    scene 18x9 {
       paintpots pots pots=["blue", "yellow"] result="mix" labels=true at=canvas(1, 1)
     }
     say """

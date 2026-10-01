@@ -488,5 +488,5 @@ export const worldMap = defineDrawing<WorldMapParams>({
         return a;
     },
     describe: (p) =>
-        `A map of the whole world laid flat, with the seven continents and the oceans between them${p.places.length ? `, and ${p.places.length} cities marked with dots` : ""}${Math.round(p.route) ? ", and a voyage drawn as a dashed line" : ""}.`,
+        `A map of the whole world laid flat, with the seven continents and the oceans between them${p.places.length ? `, and ${p.places.length} cities marked with dots` : ""}${Math.round(p.route) ? ", and a voyage as a dashed line" : ""}.`,
 });

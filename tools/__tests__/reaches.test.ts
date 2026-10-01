@@ -7,8 +7,14 @@ import { factsOf, type LessonFacts } from "../../engine/pack";
 import { topicsOf } from "../../school/worlds/lessons";
 import { reachOf } from "../../school/worlds/rewards";
 import { termOf } from "../../school/worlds/roll";
-import { DEFAULT_YEARS, offeredGrades, worldById } from "../../school/worlds/worlds";
-import { yearOf } from "../../school/year";
+import {
+    DEFAULT_YEARS,
+    hostedLessons,
+    offeredGrades,
+    WORLDS,
+    worldById,
+} from "../../school/worlds/worlds";
+import { termsAt, yearOf } from "../../school/year";
 import { compileLessons } from "../pack";
 
 let facts: LessonFacts[] = [];
@@ -46,7 +52,10 @@ test("every lesson of the curriculum lands in the term its own unit names", () =
         const year = yearOf(facts, grade, "", "2026-08-31");
         const units = year.units.map((u) => u.n);
         const termOfUnit = (n: number) =>
-            Math.floor(Math.max(0, units.filter((u) => u <= n).length - 1) / 3) + 1;
+            Math.min(
+                termsAt(grade),
+                Math.floor(Math.max(0, units.filter((u) => u <= n).length - 1) / 3) + 1,
+            );
         for (const f of facts.filter((x) => x.grade === grade && x.unit !== null)) {
             const l = year.lessons.find((x) => x.id === f.id);
             const own = termOfUnit(f.unit ?? 1);
@@ -56,15 +65,26 @@ test("every lesson of the curriculum lands in the term its own unit names", () =
     assert.deepEqual(off, [], "these lessons land outside the term their unit names");
 });
 
-test("every lesson of grades five and six lights a landmark of its own term's world", () => {
+test("every lesson of grades five and six lights a landmark of its own term's world, or of the place a track brings it to", () => {
     const dark: string[] = [];
     for (const grade of [5, 6]) {
         const year = yearOf(facts, grade, "", "2026-08-31");
+        const hostOf = new Map(
+            WORLDS.flatMap((w) => hostedLessons(w, [year]).map((l) => [l.id, w.id] as const)),
+        );
         for (const f of facts.filter((x) => x.grade === grade)) {
             const l = year.lessons.find((x) => x.id === f.id);
-            const world = DEFAULT_YEARS[grade]?.[termOf(year, l?.unit ?? 1) - 1];
-            if (!world || !reachOf(worldById(world), topicsOf(f))) dark.push(`${f.id} in ${world}`);
+            const places = [
+                DEFAULT_YEARS[grade]?.[termOf(year, l?.unit ?? 1) - 1],
+                hostOf.get(f.id),
+            ].filter((w): w is string => w !== undefined);
+            if (!places.some((w) => reachOf(worldById(w), topicsOf(f))))
+                dark.push(`${f.id} in ${places.join(" or ")}`);
         }
     }
-    assert.deepEqual(dark, [], "these lessons light nothing in their term's world");
+    assert.deepEqual(
+        dark,
+        [],
+        "these lessons light nothing in their term's world or the place that holds them",
+    );
 });

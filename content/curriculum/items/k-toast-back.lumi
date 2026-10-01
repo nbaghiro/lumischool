@@ -17,4 +17,5 @@ item k.toast-back v=1 skills=[chemistry.changes, chemistry.cooking] {
 
   check chem.change of=ch pick=undo
   hint "Melting and freezing go both ways. Does cooking?"
+  hint "What made it change? Could you do the opposite and get back what was there before?"
 }

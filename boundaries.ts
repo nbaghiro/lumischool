@@ -61,12 +61,14 @@ export const MODULES: Record<string, Module> = {
     numbers: { at: "engine/numbers", phase: "run", reach: [], packages: [] },
     expr: { at: "engine/expr", phase: "run", reach: ["numbers"], packages: [] },
     answer: { at: "engine/answer", phase: "run", reach: [], packages: [] },
+    // apart from pack.ts so that a screen naming a grade does not carry the pack's checkers
+    grade: { at: "engine/grade", phase: "run", reach: [], packages: [] },
     page: { at: "engine/page", phase: "run", reach: [], packages: [] },
     scene: { at: "engine/scene", phase: "run", reach: ["paper", "expr", "parts"], packages: [] },
     pack: {
         at: "engine/pack",
         phase: "run",
-        reach: ["answer", "expr", "paper", "scene"],
+        reach: ["answer", "expr", "grade", "paper", "scene"],
         packages: [],
     },
     ink: {
@@ -129,6 +131,7 @@ export const MODULES: Record<string, Module> = {
             "sound",
             "answer",
             "pack",
+            "grade",
             "painting",
             "arrange",
             "paper",
@@ -184,13 +187,13 @@ export const MODULES: Record<string, Module> = {
     worlds: {
         at: "school/worlds",
         phase: "run",
-        reach: ["parts", "paper", "motion", "space", "pack", "year", "record", "answer"],
+        reach: ["parts", "paper", "motion", "space", "pack", "grade", "year", "record", "answer"],
         packages: [],
     },
     year: {
         at: "school/year",
         phase: "run",
-        reach: ["pack", "answer", "record"],
+        reach: ["pack", "grade", "answer", "record"],
         packages: [],
     },
     tracks: { at: "school/tracks", phase: "run", reach: ["year"], packages: [] },
@@ -200,7 +203,7 @@ export const MODULES: Record<string, Module> = {
     family: {
         at: "school/family",
         phase: "run",
-        reach: ["pack", "year", "tracks", "record", "answer"],
+        reach: ["pack", "grade", "year", "tracks", "record", "answer"],
         packages: [],
     },
     assistant: {

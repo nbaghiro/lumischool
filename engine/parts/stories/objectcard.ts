@@ -320,7 +320,7 @@ export const objectCard = defineDrawing<ObjectCardParams>({
         });
         y += 0.5 * U;
         valuesOf(p).forEach((lines, i) => {
-            cap(c, 11 * U, y, ROWS[i] ?? "", 10, "start");
+            cap(c, 11 * U, y, ROWS[i] ?? "", 11, "start");
             y += 0.8 * U;
             if (ask === i + 1)
                 pen.line(g, 11 * U, y + 0.1 * U, (W - 1) * U, y + 0.1 * U, "ruler", {

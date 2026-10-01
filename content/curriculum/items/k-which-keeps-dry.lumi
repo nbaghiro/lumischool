@@ -18,4 +18,5 @@ item k.which-keeps-dry v=1 skills=[chemistry.materials] {
 
   answer pick=right
   hint "Which one lets the water run off instead of soaking in?"
+  hint "What is each one made of: wool, paper, rubber or plastic?"
 }

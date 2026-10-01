@@ -12,7 +12,7 @@ item k.how-it-ends v=1 skills=[reading.story-structure, reading.comprehension] {
     let k=1..2
   }
 
-  scene 30x18 {
+  scene 30x14 {
     text q "Listen: {start} Which is the best end for the story?" narrate width=28 at=canvas(1, 1)
     choice pick options=[wrong, end] stack=column below=q gap=1
   }

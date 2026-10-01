@@ -990,7 +990,7 @@ And new ones:
     for both years is batched into one change for that reason.
 15. The grown-up's whole-country map for a family with a child in each of grades one and six: every
     year's land, each child's own land framed on their own map, and one set of bounds.
-16. Printing: the "Grade N" strip (`engine/pack.ts:205-211`) and `gradeName` (`school/family/names.ts:21-22`)
+16. Printing: the "Grade N" strip (`engine/pack.ts:205-211`) and `gradeName` (`engine/grade.ts`)
     take any number, and nothing in print depends on grade beyond that.
 17. Music played to a beat: `check music.rhythm` takes a `grade`, and grades above two get the narrow
     window (`engine/sound/beat.ts:118`), which suits five and six.

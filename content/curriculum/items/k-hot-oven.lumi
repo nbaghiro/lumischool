@@ -19,4 +19,5 @@ item k.hot-oven v=1 skills=[chemistry.cooking, safety] {
 
   answer pick=right
   hint "Heat can burn. Who should handle hot things?"
+  hint "Which answer keeps your hands well away from the heat?"
 }

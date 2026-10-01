@@ -5,7 +5,8 @@ import { journeyViewOf, worldViewOf } from "../../school/worlds/reading";
 // roll of yesterday and today, and the worlds a visitor looks into over the page. The map pictures
 // are the page's own components (page.tsx); this is what they are drawn from.
 
-import { gradeName, readScene } from "../../engine/pack";
+import { gradeName } from "../../engine/grade";
+import { readScene } from "../../engine/pack";
 import type { Scene } from "../../engine/scene";
 import type { SceneDrawer } from "../../engine/ui/scene";
 import type { Measured } from "../../engine/ui/lesson";

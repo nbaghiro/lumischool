@@ -4,7 +4,7 @@ lesson language-animals v=1 format=teach grade=2 unit=4 subject=language levels=
   goal "Name seven animals in [[language.name]], and say which pet you have."
 
   look {
-    scene 38x9 {
+    scene 37x9 {
       column all at=canvas(1, 1) space=1 align=start {
         picturecards pets who=["cat", "dog", "duck", "rabbit"] where=["by", "by", "by", "by"] thing=["box", "box", "box", "box"] letters=false
       }

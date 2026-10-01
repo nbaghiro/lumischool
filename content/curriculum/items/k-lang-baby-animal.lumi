@@ -9,7 +9,7 @@ item k.lang-baby-animal v=1 stars=2 skills=[language.animals, reasoning.explain]
     let k=1..1
   }
 
-  scene 28x12 {
+  scene 28x8 {
     text q "{pick(k, \"Which word is an animal: [[animal.cat]] or [[family.mother]]?\", \"Which word is a person: [[animal.dog]] or [[family.father]]?\")}" narrate width=26 at=canvas(1, 1)
     choice pick options=[pick(k, "[[animal.cat]]", "[[animal.dog]]"), pick(k, "[[family.mother]]", "[[family.father]]")] stack=row below=q gap=1
   }

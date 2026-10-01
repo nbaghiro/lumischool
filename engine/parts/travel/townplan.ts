@@ -18,11 +18,11 @@ interface PlanParams {
 const SLOTS: readonly { x: number; y: number }[] = [
     { x: 7, y: 17 },
     { x: 19, y: 17 },
-    { x: 3, y: 13 },
-    { x: 23, y: 13 },
-    { x: 3, y: 6 },
-    { x: 23, y: 6 },
-    { x: 13, y: 1.6 },
+    { x: 3.2, y: 13 },
+    { x: 22.8, y: 13 },
+    { x: 3.2, y: 6 },
+    { x: 22.8, y: 6 },
+    { x: 13, y: 1.9 },
 ];
 
 const WALLS: Marker[] = ["glow", "sky", "mint", "berry", "tang", "sky", "glow"];

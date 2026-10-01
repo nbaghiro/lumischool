@@ -9,4 +9,5 @@ item k.sugar-in-water v=1 skills=[chemistry.mixing] {
 
   answer pick="It is still in the water."
   hint "Taste the water. Is it sweet?"
+  hint "If you left the water in a saucer until it dried up, what would be left behind?"
 }

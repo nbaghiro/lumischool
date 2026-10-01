@@ -4,9 +4,9 @@ lesson language-one-to-five v=1 format=teach grade=1 unit=4 subject=language lev
   goal "Count from zero to five in [[language.name]] and name how many there are."
 
   look {
-    scene 42x8 {
+    scene 37x8 {
       column all at=canvas(1, 1) space=1 align=start {
-        row counts space=2 align=end {
+        row counts space=0 align=end {
           tenframe one count=1 color=sky
           tenframe three count=3 color=mint
           tenframe five count=5 color=tang

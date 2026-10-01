@@ -20,7 +20,8 @@ import {
     Show,
     type JSX,
 } from "solid-js";
-import { gradeName, type LessonFacts, type Level } from "../../engine/pack";
+import { gradeName } from "../../engine/grade";
+import type { LessonFacts, Level } from "../../engine/pack";
 import type { Scene } from "../../engine/scene";
 import * as api from "../../engine/ui/api";
 import { onThisComputer } from "../../engine/ui/device";

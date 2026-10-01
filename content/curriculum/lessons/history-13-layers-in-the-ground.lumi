@@ -5,7 +5,7 @@ lesson history-layers-in-the-ground v=1 format=teach grade=3 unit=3 subject=hist
   goal "Use the layers in the ground to say which of two finds is older, and read the date on a museum card."
 
   look {
-    scene 36x12 {
+    scene 22x12 {
       row all at=canvas(0, 0) space=1 align=end {
         strata cliff layers=5 names=0 ash=0 fault=0
         dig hole dug=1 spade=1

@@ -262,7 +262,7 @@ export const townMap = defineDrawing<TownMapParams>({
             a[`square(${squareOf(t)})`] = [cx, cy - 1.4 * U, "up"];
             if (!standsIn(t, year)) continue;
             place(c, t.name, cx, cy - (Math.round(p.labels) === 1 ? 0.3 * U : 0), old);
-            if (Math.round(p.labels) === 1) soft(c, cx, cy + 1.3 * U, t.name, 10);
+            if (Math.round(p.labels) === 1) soft(c, cx, cy + 1.3 * U, t.name, 11);
         }
         return a;
     },

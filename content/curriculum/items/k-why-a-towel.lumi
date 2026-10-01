@@ -8,4 +8,5 @@ item k.why-a-towel v=1 stars=2 skills=[chemistry.materials, reasoning.explain] {
 
   answer pick="The towel soaks up the water."
   hint "Where does the water go when you rub with each one?"
+  hint "Think of wiping a wet hand on a towel and on a plastic bag. Which leaves your hand dry?"
 }

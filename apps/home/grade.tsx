@@ -2,7 +2,8 @@
 // a move up or back at any time. It is never made for a family (.docs/grades-5-6.md, "Moving up a year").
 
 import { createSignal, Show, type JSX } from "solid-js";
-import { gradeName, type LessonFacts } from "../../engine/pack";
+import { gradeName } from "../../engine/grade";
+import type { LessonFacts } from "../../engine/pack";
 import * as api from "../../engine/ui/api";
 import { onThisComputer } from "../../engine/ui/device";
 import { failureText } from "../../engine/ui/failure";

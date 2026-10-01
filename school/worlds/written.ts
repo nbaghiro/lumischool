@@ -2,7 +2,7 @@
 // (.docs/parent-app.md, "The map, for grown-ups"): the map of every world with every place open and
 // nobody on it, every day of a year on a world's roll with none done, and where a lesson stands. Only
 // the grown-ups' app reads it, so the children's map never carries it (tools/__tests__/first-view.test.ts).
-import { gradeName } from "../../engine/pack";
+import { gradeName } from "../../engine/grade";
 import type { Declared } from "../../engine/motion/world";
 import type { Day, MapView, WorldView } from "../../engine/space";
 import type { Year } from "../year";

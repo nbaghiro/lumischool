@@ -5,7 +5,7 @@ lesson history-castles-and-walled-cities v=1 format=teach grade=5 unit=2 subject
   goal "Put walls and castles from around the world in order, and say what a town's walls, gates and towers were for in everyday life."
 
   look {
-    scene 36x12 {
+    scene 26x12 {
       row all at=canvas(1, 0) space=2 align=end {
         citywalls wall towers=3 open=1
         tower keep courses=8 flag=1

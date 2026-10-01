@@ -23,7 +23,8 @@ import {
     type JSX,
 } from "solid-js";
 import { settingIn, type Draft, type Envelope } from "../../engine/answer";
-import { gradeName, type LessonFacts } from "../../engine/pack";
+import { gradeName } from "../../engine/grade";
+import type { LessonFacts } from "../../engine/pack";
 import type { Scene } from "../../engine/scene";
 import * as api from "../../engine/ui/api";
 import { createHeld } from "../../engine/ui/held";

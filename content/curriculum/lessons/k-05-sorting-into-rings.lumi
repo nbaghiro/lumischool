@@ -3,7 +3,7 @@ lesson k-sorting-into-rings v=1 format=teach grade=0 unit=7 subject=maths levels
   goal "Sort things into a ring by one rule, count what is in the ring, and say why a thing is left out."
 
   look {
-    scene 26x19 {
+    scene 26x15 {
       venn rings labels=["Round", "Red"] left=["ball", "orange", "wheel"] both=["apple"] right=["bus", "jam"] outside=["book", "sock"] at=canvas(1, 1)
     }
     say """
