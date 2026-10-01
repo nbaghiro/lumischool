@@ -31,6 +31,13 @@ export const ICONS = [
     "grab",
     "locate",
     "faster",
+    "shuffle",
+    "watch",
+    "hook",
+    "reel",
+    "mic",
+    "close",
+    "words",
 ] as const;
 export type IconName = (typeof ICONS)[number];
 
@@ -59,6 +66,13 @@ export const ICON_LABEL: Record<IconName, string> = {
     grab: "Pick up or release",
     locate: "Your location",
     faster: "Faster",
+    shuffle: "New arrangement",
+    watch: "Watch it again",
+    hook: "Hook",
+    reel: "Reel",
+    mic: "Hold to talk",
+    close: "Close",
+    words: "Show the words",
 };
 
 /**
@@ -117,6 +131,82 @@ const DRAW: Record<IconName, <G>(c: Ctx<G>) => void> = {
                 "ruler",
                 line(c),
             );
+    },
+    shuffle: (c) => {
+        // two crossing paths with heads, the shuffle sign
+        c.pen.path(c.g, "M7 13H13C20 13 21 27 28 27H33", "ruler", null, line(c));
+        c.pen.path(c.g, "M7 27H13C20 27 21 13 28 13H33", "ruler", null, line(c));
+        for (const y of [13, 27])
+            c.pen.linear(
+                c.g,
+                [
+                    [28, y - 5],
+                    [33, y],
+                    [28, y + 5],
+                ],
+                "ruler",
+                line(c),
+            );
+    },
+    watch: (c) => {
+        c.pen.path(c.g, "M5 20C11 10 29 10 35 20C29 30 11 30 5 20Z", "ruler", null, line(c));
+        c.pen.path(
+            c.g,
+            "M24.5 20A4.5 4.5 0 1 1 15.5 20A4.5 4.5 0 1 1 24.5 20Z",
+            "ruler",
+            null,
+            line(c),
+        );
+    },
+    hook: (c) => {
+        // a fish hook with its barb, hanging from the eye
+        c.pen.path(c.g, "M24 6V24A7 7 0 1 1 10 24V21", "ruler", null, line(c));
+        c.pen.linear(
+            c.g,
+            [
+                [6, 25],
+                [10, 21],
+                [14, 25],
+            ],
+            "ruler",
+            line(c),
+        );
+        c.pen.path(c.g, "M26 6A2 2 0 1 1 22 6A2 2 0 1 1 26 6Z", "ruler", null, line(c));
+    },
+    mic: (c) => {
+        // a microphone's head on its stand, the sign for talking
+        wash(c, rounded(14, 5, 12, 20, 6), "sky");
+        c.pen.path(c.g, rounded(14, 5, 12, 20, 6), "ruler", null, line(c));
+        c.pen.path(c.g, "M9 19A11 11 0 0 0 31 19", "ruler", null, line(c));
+        c.pen.line(c.g, 20, 30, 20, 35, "ruler", line(c));
+        c.pen.line(c.g, 14, 35, 26, 35, "ruler", line(c));
+    },
+    close: (c) => {
+        c.pen.line(c.g, 10, 10, 30, 30, "ruler", line(c));
+        c.pen.line(c.g, 30, 10, 10, 30, "ruler", line(c));
+    },
+    words: (c) => {
+        // a speech bubble with two lines of writing in it, for the words said shown under the face
+        const bubble = "M8 8H32Q35 8 35 11V24Q35 27 32 27H18L11 33V27H8Q5 27 5 24V11Q5 8 8 8Z";
+        wash(c, bubble, "glow");
+        c.pen.path(c.g, bubble, "ruler", null, line(c));
+        c.pen.line(c.g, 11, 15, 29, 15, "ruler", line(c));
+        c.pen.line(c.g, 11, 20, 24, 20, "ruler", line(c));
+    },
+    reel: (c) => {
+        // a reel's drum with its handle, turned to bring the line in
+        c.pen.path(c.g, "M29 20A9 9 0 1 1 11 20A9 9 0 1 1 29 20Z", "ruler", null, line(c));
+        c.pen.path(c.g, "M23 20A3 3 0 1 1 17 20A3 3 0 1 1 23 20Z", "ruler", null, line(c));
+        c.pen.linear(
+            c.g,
+            [
+                [20, 20],
+                [33, 11],
+                [36, 14],
+            ],
+            "ruler",
+            line(c),
+        );
     },
     undo: (c) => {
         c.pen.path(c.g, "M8 15H22C37 15 36 33 22 33", "ruler", null, line(c));
@@ -440,7 +530,7 @@ export const icon = defineDrawing<{ name: IconName; on: boolean }>({
     family: "apps",
     title: "Icons for the apps' controls",
     group: "Marks",
-    about: "Home, journal, map, print, settings, back, sign out, add, help, sound and faster, drawn as one set on a two-square box: one stroke weight, round ends and one marker under the pencil. Every control supplies its name, and `on` lays a disc of highlighter behind it for the page a child or a grown-up is on.",
+    about: "Home, journal, map, print, settings, back, sign out, add, help, sound, faster, shuffle, watch, hook, reel, a microphone, close and the words said, drawn as one set on a two-square box: one stroke weight, round ends and one marker under the pencil. Every control supplies its name, and `on` lays a disc of highlighter behind it for the page a child or a grown-up is on.",
     params: { name: "home", on: false },
     settings: { name: { kind: "one of", of: ICONS }, on: { kind: "flag" } },
     takes: [
