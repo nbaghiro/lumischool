@@ -31,8 +31,9 @@ const BUDGET = {
     firstCss: 30_000,
     // the sample child's run holds six years' worlds, and grades five and six at 36 lessons a term,
     // with the reaches that light them, took it to 26,600; the kindergarten year's garden and the
-    // history and language lessons each year's places name took it to 30,600
-    data: 31_000,
+    // history and language lessons each year's places name took it to 30,600, and the 90 lessons that
+    // brought grades three to six to 125 and 150 a grade added their ids to the places, to 33,200
+    data: 34_000,
     mapJs: 1_850_000,
     // the bar's games and painting, and the logo that leads back to the map, took it to 125,200, with
     // the screens themselves coming through the map's chunk (apps/kids/child.tsx)

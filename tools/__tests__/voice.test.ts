@@ -46,9 +46,11 @@ test("every string the guide's card can read for a question is the question's ow
 /**
  * Questions whose scene is only words and an answer, where Where? is not offered. It may fall as
  * scenes gain drawings, and a rise means a question that draws something stopped being ringable. The
- * kindergarten year brought 948 and the language track 401 to the 1,158 of grades one to six.
+ * kindergarten year brought 948 and the language track 401 to the 1,158 of grades one to six. The
+ * grade three to six lessons of 1 October brought 306: 297 from language lessons that set a situation
+ * in words, since the shelf has no drawing for each noun they name, and 9 from art and music.
  */
-const WORDS_ONLY = 2507;
+const WORDS_ONLY = 2813;
 
 /** Parts that say the question or take its answer, which are not a place to ring (school/lessons.ts). */
 const SAYS = new Set(["text", "caption", "choice", "number-input", "word-input", "row", "column"]);

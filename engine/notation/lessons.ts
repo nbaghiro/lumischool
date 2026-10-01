@@ -6,7 +6,7 @@ import { gradeName } from "../grade";
 import { NUMBERED } from "../pack";
 import { isLevel, type Item, type Lesson, type TNode, type Workspace } from "./notation";
 import { difficultyOf, pick, type Variant } from "./verify";
-import { FORMATS, REGISTRY } from "./vocabulary";
+import { FORMATS, PARTS, REGISTRY } from "./vocabulary";
 
 export interface Question {
     n: number;
@@ -206,9 +206,9 @@ export function artOf(ws: Workspace, lesson: Lesson): string[] {
     const out = new Set<string>();
     const walk = (nodes: TNode[]): void => {
         for (const n of nodes) {
-            // Every scene node, including the parts read off the shelf. Listing only the hand-written
-            // types left the newer drawings out of the rail, which reads as a lesson that draws nothing.
-            if (REGISTRY[n.type]?.scene) out.add(n.type);
+            // Only the shelf's drawings: the index carries this list to every view, and its readers
+            // match it against the worlds' drawings, which a row, a text or an answer box never is.
+            if (REGISTRY[n.type]?.scene && PARTS.has(n.type)) out.add(n.type);
             for (const d of REGISTRY[n.type]?.draws ?? []) out.add(d);
             walk(n.children);
         }

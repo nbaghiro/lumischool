@@ -18,10 +18,11 @@ const LESSONS = join(ROOT, "content/curriculum/lessons");
 
 /**
  * Gzipped, in bytes: a lesson's file, and the index of every lesson. Every view reads the index whole,
- * at about 130 bytes a lesson, so 95,000 holds the 710 lessons of the kindergarten year, grades one to
- * six, history and the Spanish variants, with a little room.
+ * at about 128 bytes a lesson, so 110,000 holds the 800 lessons of the kindergarten year, grades one to
+ * six at their full 100, 125 and 150 a grade, history and the Spanish variants, with a little room. The
+ * index lists only the shelf's drawings a lesson uses, not its rows, texts and answer boxes.
  */
-const BUDGET = { lesson: 50_000, index: 95_000, scene: 4_000 };
+const BUDGET = { lesson: 50_000, index: 110_000, scene: 4_000 };
 
 let ws: Workspace | null = null;
 let compiled: PackLesson[] = [];
