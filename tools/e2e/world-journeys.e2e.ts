@@ -21,10 +21,10 @@ test("a world opens on a grade's journey, switched by grade chips, with the whol
     ).toHaveCount(1);
     await page.reload();
     await expect(grades.getByRole("radio", { name: "Grade 4" })).toBeChecked({ timeout: 60_000 });
-    await page.getByRole("button", { name: "Original collection", exact: true }).click();
+    await page.getByRole("button", { name: "All lessons", exact: true }).click();
     await expect(page).toHaveURL(/\/map\?world=meadow$/);
     await expect(page.locator(".wd-sheets > .j-sheet")).toHaveCount(38, { timeout: 60_000 });
-    await page.getByRole("button", { name: "Grade journeys", exact: true }).click();
+    await page.getByRole("button", { name: "By grade", exact: true }).click();
     await expect(grades.getByRole("radio", { name: "Grade 4" })).toBeChecked({ timeout: 60_000 });
 });
 

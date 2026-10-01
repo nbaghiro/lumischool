@@ -31,7 +31,7 @@ export interface ReadingSource {
     alternate?: string;
     variants?: readonly { value: number; label: string }[];
     variant?: number;
-    neighbours?: readonly { world: string; label: string }[];
+    neighbours?: readonly { world: string; label: string; step: "back" | "on" }[];
     /** What a sheet's height depends on besides its lesson and the width, for the heights kept on the device (paper.ts). */
     scope?: string;
     /** The roll, laid out round the heights the sheets measured; a card's stands in until one is drawn. */
@@ -235,17 +235,27 @@ export function Reading(props: {
                         props.source.alternate)
                 }
             >
-                <nav class="rd-neighbours" aria-label="World browsing">
-                    <Show when={props.source.description}>
-                        <span class="rd-purpose">{props.source.description}</span>
-                    </Show>
+                {/* kept to one low pill over the sheets: the world's purpose is its tooltip, the
+                    grades are short chips with their full names for a screen reader, and the
+                    neighbouring worlds are arrows */}
+                <nav
+                    class="rd-neighbours"
+                    aria-label="World browsing"
+                    title={props.source.description}
+                >
                     <Show when={props.onVariant && props.source.variants?.length}>
+                        <span class="rd-label" aria-hidden="true">
+                            Grade
+                        </span>
                         <Seg
                             legend="Grade"
                             quiet
                             compact
                             name="rd-grade"
-                            options={props.source.variants ?? []}
+                            options={(props.source.variants ?? []).map((v) => ({
+                                ...v,
+                                short: v.value === 0 ? "K" : String(v.value),
+                            }))}
                             value={props.source.variant ?? null}
                             onChange={(grade) => {
                                 if (grade !== null) props.onVariant?.(grade);
@@ -253,7 +263,11 @@ export function Reading(props: {
                         />
                     </Show>
                     <Show when={props.onAlternate && props.source.alternate}>
-                        <button type="button" onClick={() => props.onAlternate?.()}>
+                        <button
+                            type="button"
+                            class="rd-alternate"
+                            onClick={() => props.onAlternate?.()}
+                        >
                             {props.source.alternate}
                         </button>
                     </Show>
@@ -261,11 +275,14 @@ export function Reading(props: {
                         {(place) => (
                             <button
                                 type="button"
+                                class="rd-step"
+                                aria-label={place.label}
+                                title={place.label}
                                 onPointerEnter={() => props.onApproachWorld?.(place.world)}
                                 onFocus={() => props.onApproachWorld?.(place.world)}
                                 onClick={() => props.onWorld?.(place.world)}
                             >
-                                {place.label}
+                                <span aria-hidden="true">{place.step === "back" ? "←" : "→"}</span>
                             </button>
                         )}
                     </For>

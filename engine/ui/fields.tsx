@@ -272,7 +272,8 @@ export function Seg<V extends string | number | null>(props: {
     quiet?: boolean;
     compact?: boolean;
     name: string;
-    options: readonly { value: V; label: string }[];
+    /** `short` is drawn in place of `label` where a bar has little room; `label` stays the chip's name. */
+    options: readonly { value: V; label: string; short?: string }[];
     value: V;
     onChange: (v: V) => void;
 }): JSX.Element {
@@ -287,8 +288,9 @@ export function Seg<V extends string | number | null>(props: {
                             name={props.name}
                             checked={o.value === props.value}
                             onChange={() => props.onChange(o.value)}
+                            aria-label={o.short ? o.label : undefined}
                         />
-                        <span>{o.label}</span>
+                        <span>{o.short ?? o.label}</span>
                     </label>
                 )}
             </For>

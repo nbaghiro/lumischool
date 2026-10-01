@@ -381,7 +381,7 @@ export function reading(
         if (journey)
             return {
                 description: journey.title,
-                alternate: "Original collection",
+                alternate: "All lessons",
                 variants: available.map((j) => ({ value: j.grade, label: gradeName(j.grade) })),
                 variant: journey.grade,
                 world: (o) =>
@@ -406,7 +406,7 @@ export function reading(
     }
     const journal = visitJournal(s.child, world, CHOICE);
     return {
-        alternate: "Grade journeys",
+        alternate: "By grade",
         neighbours: neighboursWritten(s.corpus, id),
         world: (o) =>
             worldViewOf({

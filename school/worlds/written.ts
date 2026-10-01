@@ -236,7 +236,7 @@ export function neighboursWritten(
     corpus: Corpus,
     world: string,
     grade?: number,
-): { world: string; label: string }[] {
+): { world: string; label: string; step: "back" | "on" }[] {
     const site = worldById(world).site;
     const choice =
         site?.kind === "choice"
@@ -253,10 +253,10 @@ export function neighboursWritten(
     if (at < 0) return [];
     const before = run[at - 1],
         after = run[at + 1];
-    return [
-        ...(before ? [{ world: before.world, label: "Previous world" }] : []),
-        ...(after ? [{ world: after.world, label: "Next world" }] : []),
-    ];
+    const out: { world: string; label: string; step: "back" | "on" }[] = [];
+    if (before) out.push({ world: before.world, label: "Previous world", step: "back" });
+    if (after) out.push({ world: after.world, label: "Next world", step: "on" });
+    return out;
 }
 
 /**

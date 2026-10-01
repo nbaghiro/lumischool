@@ -264,7 +264,7 @@ export function readingOf(
                 variants: grades.map((g) => ({ value: g, label: gradeName(g) })),
                 variant: journey.grade,
                 description: journey.title,
-                alternate: "Original collection",
+                alternate: "All lessons",
                 neighbours: neighboursWritten(s.corpus, world),
                 world: (r) =>
                     journeyViewOf({
@@ -296,7 +296,7 @@ export function readingOf(
     return {
         variants,
         variant: grade,
-        alternate: "Grade journeys",
+        alternate: "By grade",
         neighbours: neighboursWritten(s.corpus, world, grade),
         world: (r) => worldWritten(s, world, { ...r, grade }),
         scope: `${s.pack.pack}|look|${o.level}|${o.key}`,

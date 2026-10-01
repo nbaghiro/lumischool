@@ -54,65 +54,83 @@
     color: var(--ink-soft);
 }
 
+/* One low pill at the foot of the roll, no wider than the screen less its gutters, so it covers as
+   little of a sheet as a 44 px target allows; on a phone the grade chips scroll inside it. */
 .rd-neighbours {
     position: absolute;
     z-index: 7;
-    bottom: max(16px, env(safe-area-inset-bottom));
+    bottom: max(12px, env(safe-area-inset-bottom));
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 4px;
+    gap: 2px;
+    max-width: calc(100vw - 32px);
+    padding: 2px 4px;
     border: 1px solid var(--grid);
-    border-radius: 22px 20px 23px 19px;
+    border-radius: 999px;
     background: var(--card);
     box-shadow: 0 6px 18px -10px rgba(27, 37, 64, 0.35);
     color: var(--ink);
-    font: 700 14px/1.4 var(--f-read);
-    max-width: calc(100% - 24px);
+    font: 600 14px / 1 var(--f-read);
 }
 .rd-neighbours button {
+    flex: none;
+    min-width: 44px;
     min-height: 44px;
-    padding: 8px 12px;
+    padding: 0 10px;
     border: 0;
-    border-radius: 10px;
+    border-radius: 999px;
     background: transparent;
-    color: inherit;
+    color: var(--ink-soft);
     font: inherit;
     cursor: pointer;
     white-space: nowrap;
 }
 .rd-neighbours button:hover {
     background: color-mix(in srgb, var(--glow) 40%, var(--card));
+    color: var(--ink);
 }
 .rd-neighbours button:focus-visible {
     outline: 3px solid var(--pen);
     outline-offset: 2px;
 }
-
-/* The grades are one pill of chips (fields.tsx `Seg`), which scrolls sideways on a phone rather than
-   pushing the bar past the screen. */
+.rd-label {
+    flex: none;
+    padding-left: 10px;
+    font: 500 11px / 1 var(--f-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
 .rd-neighbours .seg {
-    max-width: 100%;
+    flex: 0 1 auto;
+    min-width: 0;
     overflow-x: auto;
+    scrollbar-width: none;
+}
+.rd-neighbours .seg .seg-option span {
+    min-width: 36px;
+    justify-content: center;
+    padding: 0 8px;
+}
+.rd-step {
+    font-size: 18px;
+}
+.rd-step:first-of-type {
+    margin-left: 2px;
+    border-left: 1px solid var(--grid);
+    border-radius: 0 999px 999px 0;
+}
+.rd-alternate {
+    border-left: 1px solid var(--grid);
 }
 @media (max-width: 700px) {
-    .rd-neighbours {
-        flex-wrap: wrap;
-        justify-content: center;
-        width: max-content;
+    .rd-label,
+    .rd-alternate {
+        font-size: 12px;
     }
-    .rd-purpose {
-        flex-basis: 100%;
-        text-align: center;
+    .rd-label {
+        padding-left: 6px;
     }
-}
-
-.rd-purpose {
-    max-width: 36ch;
-    align-self: center;
-    padding: 4px 8px;
-    color: var(--ink-soft);
-    font-weight: 400;
 }
