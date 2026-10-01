@@ -156,6 +156,8 @@ export function Overworld(props: {
     onLocked?: (at: { place: MapPlace; how: "tap" | "focus" | "hover" } | null) => void;
     /** What the map's note says of a place it will not go into, in place of the child's "opens as you learn". */
     shut?: string;
+    /** Buttons a screen adds to the map's own controls, after the map's, such as a child's Today. */
+    tools?: JSX.Element;
     /**
      * Where the places and the buttons are on the page, whenever the camera comes to rest, so a page
      * may put its own words beside them, and null once the camera leaves what it was told.
@@ -1472,6 +1474,7 @@ export function Overworld(props: {
                             <span class="sr">{at() === "all" ? "Near me" : "Every world"}</span>
                         </button>
                     </Show>
+                    {props.tools}
                 </fieldset>
                 <Show when={card()}>
                     {(c) => (

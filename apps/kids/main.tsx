@@ -23,7 +23,7 @@ import * as client from "../../engine/ui/kid";
 import type { Sending } from "../../engine/ui/kid";
 import { Loading } from "./loading";
 import { Page } from "../../engine/ui/page";
-import { KidBar } from "./bar";
+import { KidBar, type Place } from "./bar";
 import type { KidView } from "../../server/api";
 import type { Kid } from "../../server/db/schema";
 
@@ -32,6 +32,9 @@ const Closed = lazy(() => onDemand(() => import("./closed")).then((m) => ({ defa
 const NotYet = lazy(() => onDemand(() => import("./closed")).then((m) => ({ default: m.NotYet })));
 const Who = lazy(() => onDemand(() => import("./who")).then((m) => ({ default: m.Who })));
 const Child = lazy(() => onDemand(() => import("./child")).then((m) => ({ default: m.ChildMap })));
+const KidPlace = lazy(() =>
+    onDemand(() => import("./child")).then((m) => ({ default: m.KidPlace })),
+);
 const GrownUps = lazy(() =>
     onDemand(() => import("./grown-ups")).then((m) => ({ default: m.GrownUps })),
 );
@@ -41,7 +44,7 @@ type Now =
     | { at: "closed" }
     | { at: "not-yet"; offline: boolean }
     | { at: "who"; view: KidView }
-    | { at: "child"; view: KidView; kid: Kid }
+    | { at: "child"; view: KidView; kid: Kid; place?: Place }
     | { at: "grown-ups"; view: KidView; from: Kid | null };
 
 /** Where a load opens: the pictures, the only child's page, or the reason neither can open. */
@@ -98,6 +101,11 @@ function View(props: { now: Accessor<Now>; setNow: Setter<Now> }): JSX.Element {
         const n = now();
         return n.at === "child" && n;
     };
+    /** A child at one of the bar's places rather than on their map. */
+    const place = (): (Extract<Now, { at: "child" }> & { place: Place }) | false => {
+        const n = child();
+        return n && n.place !== undefined && { ...n, place: n.place };
+    };
     const grownUps = (): Extract<Now, { at: "grown-ups" }> | false => {
         const n = now();
         return n.at === "grown-ups" && n;
@@ -120,6 +128,15 @@ function View(props: { now: Accessor<Now>; setNow: Setter<Now> }): JSX.Element {
                             view={n().view}
                             offline={sending().offline}
                             onChoose={(kid) => setNow({ at: "child", view: n().view, kid })}
+                        />
+                    )}
+                </Match>
+                <Match when={place()}>
+                    {(n) => (
+                        <KidPlace
+                            kid={n().kid}
+                            place={n().place}
+                            onMap={() => setNow({ at: "child", view: n().view, kid: n().kid })}
                         />
                     )}
                 </Match>
@@ -170,6 +187,14 @@ if (root) {
                 bar={() => (
                     <KidBar
                         profile={profile()}
+                        place={(() => {
+                            const n = now();
+                            return n.at === "child" ? (n.place ?? null) : null;
+                        })()}
+                        onPlace={(place) => {
+                            const n = now();
+                            if (n.at === "child") setNow({ ...n, place });
+                        }}
                         onGrownUps={() => {
                             const p = profile();
                             if (p?.view.pin)

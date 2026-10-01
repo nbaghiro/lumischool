@@ -1,7 +1,7 @@
 import { Match, Switch, type JSX } from "solid-js";
 import { createHeld } from "../../engine/ui/held";
 import * as shared from "./shared";
-import { parentPaintingGateway } from "../../engine/ui/painting-repository";
+import type { PaintingGateway } from "../../engine/ui/painting-repository";
 import { PaintingGallery } from "../../engine/ui/painting-gallery";
 import type { PaintingLayout } from "../../engine/ui/painting";
 import { useLook } from "../../engine/ui/page";
@@ -18,6 +18,14 @@ const LAYOUTS: Record<string, PaintingLayout> = {
     v2: "hand",
     v3: "pages",
     v4: "table",
+};
+
+/** A grown-up's pictures, kept by the API under the family. */
+const gateway: PaintingGateway = {
+    list: api.paintingList,
+    load: api.paintingLoad,
+    save: api.paintingSave,
+    remove: api.paintingDelete,
 };
 
 export function Painting(): JSX.Element {
@@ -72,7 +80,7 @@ export function Painting(): JSX.Element {
                     return (
                         <PaintingGallery
                             layout={layout()}
-                            gateway={parentPaintingGateway}
+                            gateway={gateway}
                             storageKey={`lumischool.painting.v1.${parent.family.id}.${parent.user.id}`}
                             identityKey={`${parent.family.id}.${parent.user.id}`}
                             preferences={preferences}

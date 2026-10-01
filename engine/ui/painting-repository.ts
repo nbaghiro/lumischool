@@ -1,21 +1,31 @@
 import { isStoredPicture, type Picture } from "../painting";
-import type { PaintingScope } from "../../server/api";
-import * as api from "./api";
+import type { Page } from "../page";
+import type {
+    ArtworkSummary,
+    PaintingLoaded,
+    PaintingSave,
+    PaintingSaved,
+    PaintingScope,
+} from "../../server/api";
 import type { PaintingRecovery, PaintingRepository } from "./painting-save";
+import type { Failure } from "./wire";
 export type { PaintingRecovery, PaintingRepository } from "./painting-save";
 
+/**
+ * Where a family's pictures are kept: the API for a grown-up (apps/home/painting.tsx), or the device
+ * for a child's view (painting-device.ts). It is written out rather than read off api.ts, so a child's
+ * page that paints carries none of the grown-ups' client.
+ */
 export interface PaintingGateway {
-    list: typeof api.paintingList;
-    load: typeof api.paintingLoad;
-    save: typeof api.paintingSave;
-    remove: typeof api.paintingDelete;
+    list(
+        scope: PaintingScope,
+        after?: string,
+        words?: string,
+    ): Promise<Page<ArtworkSummary> | Failure>;
+    load(id: string): Promise<PaintingLoaded | Failure>;
+    save(input: PaintingSave): Promise<PaintingSaved | Failure>;
+    remove(id: string, revision: number): Promise<{ ok: true } | Failure>;
 }
-export const parentPaintingGateway: PaintingGateway = {
-    list: api.paintingList,
-    load: api.paintingLoad,
-    save: api.paintingSave,
-    remove: api.paintingDelete,
-};
 
 const DB = "lumischool-painting-recovery";
 function database(): Promise<IDBDatabase> {
@@ -85,8 +95,8 @@ export function makePaintingRepository(
     scope: PaintingScope,
     identityKey: string,
     revision = 0,
-    recovery?: PaintingRecovery,
-    gateway: PaintingGateway = parentPaintingGateway,
+    recovery: PaintingRecovery | undefined,
+    gateway: PaintingGateway,
 ): PaintingRepository {
     const start = prefix(identityKey, scope);
     const writer = crypto.randomUUID();

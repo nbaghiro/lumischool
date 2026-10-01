@@ -34,7 +34,9 @@ const BUDGET = {
     // history and language lessons each year's places name took it to 30,600
     data: 31_000,
     mapJs: 1_850_000,
-    kidsFirstJs: 125_000,
+    // the bar's games and painting, and the logo that leads back to the map, took it to 125,200, with
+    // the screens themselves coming through the map's chunk (apps/kids/child.tsx)
+    kidsFirstJs: 126_000,
     // every world is data the map reads, and the sixth year's three took it to 383,300 with nothing to
     // trim; the map's handoff, its store of drawn pixels and its ranked drawing took it to 392,600
     // (.docs/map-smoothness-plan.md); the kindergarten year's garden, the history and language

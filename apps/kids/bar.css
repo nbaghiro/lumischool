@@ -1,5 +1,4 @@
-/* The guide on the bar of a child's page (bar.tsx), at the end of the room between the mark and the
-   grown-ups' tab, 48 px, still. */
+/* The bar of a child's page (bar.tsx): the portrait at its end. */
 .kid-bar {
     justify-content: flex-end;
     padding-right: 6px;
@@ -89,4 +88,30 @@
 .kid-profile-options output {
     padding: 4px 10px;
     font-size: 0.9rem;
+}
+
+/* A child's places, drawn as the grown-ups' are (apps/home/bar.css, .gb-places), pinned beside the
+   portrait at the end of the bar rather than across it. */
+.kid-places {
+    display: flex;
+    gap: 2px;
+    margin-right: 6px;
+}
+.kid-places a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 14px;
+    border-radius: 999px;
+    color: var(--ink-soft);
+    font: 700 15px / 1 var(--f-read);
+    text-decoration: none;
+}
+.kid-places a:hover {
+    color: var(--ink);
+}
+.kid-places a[aria-current] {
+    color: var(--ink);
+    background: var(--card);
+    box-shadow: inset 0 0 0 1.5px var(--rule-firm);
 }

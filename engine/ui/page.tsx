@@ -41,8 +41,8 @@ export type End = { kind: "gate"; open: () => void } | { kind: "none" };
 export interface Look {
     /** Compact, lowered authentication cards on phones. */
     auth: boolean;
-    /** Where the logo goes: to the site, or nowhere in the children's view. */
-    logo: "site" | "none";
+    /** Where the logo goes: to the site, nowhere, or back to a child's map from their other places. */
+    logo: "site" | "none" | { go: () => void };
     end: End;
     foot: readonly string[];
     /** The cards across the middle of the page, for the children's stamps. */
@@ -150,6 +150,10 @@ export function Page(props: {
     bar?: Component;
 }): JSX.Element {
     const [look, setLook] = createSignal<Look>(DEFAULT);
+    const back = (): (() => void) | undefined => {
+        const logo = look().logo;
+        return typeof logo === "object" ? logo.go : undefined;
+    };
     const [narrow, setNarrow] = createSignal(NARROW.matches);
     const changed = (): void => {
         setNarrow(NARROW.matches);
@@ -165,7 +169,11 @@ export function Page(props: {
                 </a>
                 <header class="page-top">
                     <div class="page-bar">
-                        <Mark href={look().logo === "site" ? "/home" : undefined} />
+                        <Mark
+                            href={back() ? "/kids" : look().logo === "site" ? "/home" : undefined}
+                            label={back() ? "Back to the map" : undefined}
+                            go={back()}
+                        />
                         <Show when={props.bar} keyed>
                             {(Bar) => <Bar />}
                         </Show>

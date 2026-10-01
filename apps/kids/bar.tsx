@@ -1,35 +1,23 @@
-// The world's guide on the bar of a child's page (main.tsx mounts it once): one tap opens the guide's
-// card on what the child is doing now, the question to do on their sheet or the map (engine/ui/nudge.ts
-// carries the tap and the guide's name; the screens answer it). It is drawn once a child's page has
-// named its guide, and the guide's drawing comes with that page rather than with the app, so the
-// page's first script carries none of it.
+// The bar of a child's page (main.tsx mounts it once): the child's portrait, which opens switching
+// child, signing out and the way to the grown-ups.
 
 import "./bar.css";
-import {
-    createSignal,
-    createUniqueId,
-    lazy,
-    onCleanup,
-    onMount,
-    Show,
-    Suspense,
-    type JSX,
-} from "solid-js";
+import { createSignal, createUniqueId, onCleanup, onMount, Show, type JSX } from "solid-js";
 import { Button } from "../../engine/ui/form";
 import { signOut, watch } from "../../engine/ui/kid";
 import { kidCredential } from "../../engine/ui/kid-session";
 import type { Kid } from "../../server/db/schema";
 import type { KidView } from "../../server/api";
 import { Portrait } from "../../engine/ui/kids";
-import { onDemand } from "../../engine/ui/art";
-import { guideOf, nudge } from "../../engine/ui/nudge";
 
-const GuideButton = lazy(() =>
-    onDemand(() => import("../../engine/ui/tutor")).then((m) => ({ default: m.GuideButton })),
-);
+/** The places a child's bar opens over the map, beside their portrait; the logo goes back to the map. */
+export type Place = "games" | "painting";
 
 export function KidBar(props: {
     profile?: { view: KidView; kid?: Kid };
+    /** The place open now, or null on the map; the places show only once a child is chosen. */
+    place: Place | null;
+    onPlace: (place: Place) => void;
     onGrownUps: () => void;
 }): JSX.Element {
     const [open, setOpen] = createSignal(false);
@@ -72,9 +60,27 @@ export function KidBar(props: {
         setBusy(false);
         setSaid("Connect to the internet so your answers can be sent before you sign out.");
     };
+    const link = (place: Place, label: string): JSX.Element => (
+        <a
+            href={`#${place}`}
+            aria-current={props.place === place ? "page" : undefined}
+            onClick={(e) => {
+                e.preventDefault();
+                props.onPlace(place);
+            }}
+        >
+            {label}
+        </a>
+    );
     return (
         <Show when={active()}>
             <div class="page-nav kid-bar">
+                <Show when={props.profile?.kid}>
+                    <nav class="kid-places" aria-label="Places">
+                        {link("games", "Games")}
+                        {link("painting", "Painting")}
+                    </nav>
+                </Show>
                 <div
                     class="kid-profile"
                     ref={(el) => {
@@ -135,13 +141,6 @@ export function KidBar(props: {
                         <output>{said()}</output>
                     </Show>
                 </div>
-                <Show when={guideOf()}>
-                    {(id) => (
-                        <Suspense>
-                            <GuideButton id={id()} px={48} class="kid-bar-guide" onClick={nudge} />
-                        </Suspense>
-                    )}
-                </Show>
             </div>
         </Show>
     );

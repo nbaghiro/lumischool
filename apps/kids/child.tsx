@@ -79,6 +79,13 @@ const loadInside = (): Promise<typeof import("./inside")> =>
         throw error;
     }));
 const Inside = lazy(() => loadInside().then((m) => ({ default: m.Inside })));
+/**
+ * The bar's games and painting, opened from main.tsx through this chunk, so the page's own script
+ * names none of the chunks they load (tools/__tests__/first-view.test.ts).
+ */
+export const KidPlace = lazy(() =>
+    onDemand(() => import("./play")).then((m) => ({ default: m.KidPlace })),
+);
 // `box` is where the view being left put the world on the screen, so the one opening picks the
 // movement up there: the dive into a world and the way back out are one movement (engine/ui/world.tsx)
 type Screen = { at: "map"; place: number | null; box?: DOMRect } | InsideScreen;
@@ -308,6 +315,33 @@ export function ChildMap(props: {
             ? built.sheets
             : null;
     };
+    /** Into the world at a place on the map: the dive, and the roll once its sheets are drawn. */
+    const goIn = (m: MapView, place: number, box: DOMRect | null): void => {
+        const n = m.layout.nodes[place];
+        const selected = m.places[place];
+        goingIn?.abort();
+        const trip = new AbortController();
+        goingIn = trip;
+        const go = (): void => {
+            if (trip.signal.aborted) return;
+            goingIn = null;
+            setScreen({
+                at: "world",
+                term: n && n.grade === props.kid.grade ? n.term : null,
+                world: selected?.host !== null ? (selected?.shown?.world ?? null) : null,
+                from: place,
+                ...(box ? { box } : {}),
+            });
+        };
+        // the dive has run by now, and the last of the roll's code is waited for here, so the movement
+        // is never broken by the line that says the page is opening; a load that fails opens it anyway
+        void Promise.all([roll(), whenSheets(trip.signal)]).then(go, go);
+    };
+    /** Into the world the guide stands at, which holds today's sheets. */
+    const goToday = (): void => {
+        const m = map();
+        if (m && m.here !== null) goIn(m, m.here, null);
+    };
     return (
         <div
             class="kid-map"
@@ -348,38 +382,23 @@ export function ChildMap(props: {
                                                         .catch(() => undefined);
                                                 }, 160);
                                             }}
-                                            onGoIn={(place, box) => {
-                                                const n = m().layout.nodes[place];
-                                                const selected = m().places[place];
-                                                goingIn?.abort();
-                                                const trip = new AbortController();
-                                                goingIn = trip;
-                                                const go = (): void => {
-                                                    if (trip.signal.aborted) return;
-                                                    goingIn = null;
-                                                    setScreen({
-                                                        at: "world",
-                                                        term:
-                                                            n && n.grade === props.kid.grade
-                                                                ? n.term
-                                                                : null,
-                                                        world:
-                                                            selected?.host !== null
-                                                                ? (selected?.shown?.world ?? null)
-                                                                : null,
-                                                        from: place,
-                                                        ...(box ? { box } : {}),
-                                                    });
-                                                };
-                                                // the dive has run by now, and the last of the roll's
-                                                // code is waited for here, so the movement is never
-                                                // broken by the line that says the page is opening;
-                                                // a load that fails opens the world all the same
-                                                void Promise.all([
-                                                    roll(),
-                                                    whenSheets(trip.signal),
-                                                ]).then(go, go);
-                                            }}
+                                            onGoIn={(place, box) => goIn(m(), place, box)}
+                                            tools={
+                                                <button
+                                                    type="button"
+                                                    class="ow-btn"
+                                                    onClick={() => goToday()}
+                                                    aria-label="Today"
+                                                    title="Today"
+                                                >
+                                                    <Drawing
+                                                        id="icon"
+                                                        params={{ name: "journal", on: false }}
+                                                        seed={2711}
+                                                        class="ow-tool-art"
+                                                    />
+                                                </button>
+                                            }
                                         />
                                     </>
                                 )}
