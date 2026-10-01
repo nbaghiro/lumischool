@@ -1,0 +1,21 @@
+# The three-star: a forecast for the observatory's noticeboard, with each claim as sure as the table
+# allows. A grown-up marks it against the table.
+item writing.modal-write v=1 stars=3 skills=[writing.modal-verbs, writing.evidence, writing.composing] {
+  title "Write the sky forecast"
+  let k=0..1
+
+  scene 33x34 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        table t cols=3 head=["Night", "Cloud", "Moon"] cells=["Friday", "none", "new", "Saturday", "some", "half", "Sunday", "thick", "full"]
+        telescope tel tilt=55
+      }
+      text ask "{pick(k, \"Write a sky forecast for the noticeboard: one sentence for each night, saying how sure it is that stars will be seen. Use a different word of possibility each time.\", \"Write a sky forecast for the noticeboard for all three nights, with a reason from the table for each, and at least four different words of possibility. Say which night is best, and how sure you are.\")}" width=32
+      writinglines lines lines=5 width=32 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="{pick(k, \"One sentence a night, Friday the surest (no cloud, no moon), Saturday less sure, Sunday the least, each with a different word of possibility.\", \"A forecast for all three nights with a reason from the table each time, at least four words of possibility, and Friday named the best night with a fitting degree of certainty.\")}" notice=["Friday the surest, Sunday the least", "A different word of possibility each time", "No claim surer than the table allows", "A reason from the table"] ask="Which night are you least sure about, and why?"
+  hint "Which night has the clearest sky and the darkest moon?"
+  hint "For each night choose a word: will, probably, might or will not."
+}

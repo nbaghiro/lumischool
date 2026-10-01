@@ -1,0 +1,35 @@
+# Lines from the play written for this lesson, Lost on the Pass. The speaker's name starts each line;
+# the later questions need what a line implies, not only who says a word.
+item reading.script-who v=1 skills=[reading.play-scripts, reading.characters] {
+  title "Who says it"
+  difficulty pick(k, 0, 0, 1, 1)
+  let k=0..3
+  let l1={pick(k, "GRANDAD: (looking at the sky) Snow is coming.", "RAVI: (stamping his feet) My toes are numb.", "RAVI: (whispering) Listen. What was that?", "NELL: (shivering) Which way now?")}
+  let l2={pick(k, "NELL: (shivering) How much further is it?", "GRANDAD: Not far now. Follow the posts.", "NELL: (laughing) It is only a goat.", "RAVI: (shrugging) Left, I think. Or right.")}
+  let l3={pick(k, "GRANDAD: Not far now. Follow the posts.", "RAVI: (whispering) Listen. What was that?", "GRANDAD: (pointing) Look. A light.", "GRANDAD: (pointing) Right, by the posts.")}
+  let q={pick(k, "Who wants to know how far they have to go?", "Who hears a noise?", "Who knows what made the noise?", "Who knows the way?")}
+  let right={pick(k, "Nell", "Ravi", "Nell", "Grandad")}
+
+  scene 31x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        person kid pose=walk age=child hair=long colour=brown top=berry
+        goat g facing=-1 rock=1
+      }
+      caption a text="{l1}" width=30
+      caption b text="{l2}" width=30
+      caption c text="{l3}" width=30
+      text ask "{q}" width=30
+      choice pick options=["Nell", "Ravi", "Grandad"]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=a {
+      say "The name at the start of a line is the person who says it. Read what each one says, then ask who it fits."
+    }
+  }
+  hint "Each line starts with the name of the person speaking."
+  hint "Which line answers the question? Whose name is in front of it?"
+}

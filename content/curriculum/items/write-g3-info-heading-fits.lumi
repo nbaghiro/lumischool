@@ -1,0 +1,34 @@
+# The Hill Lane sports ground and its facts were made up for this lesson. In the last version one
+# heading names only a part of the section, which is the mistake a heading most often makes.
+item writing.info-heading-fits v=1 skills=[writing.information, writing.headings] {
+  title "The heading that fits"
+  difficulty pick(k, 0, 0, 1, 2)
+  let k=0..3
+  let text={pick(k, "The track is open from eight in the morning until six in the evening. On Sundays it opens at ten.", "Bring a water bottle and shoes that grip. A sun hat is a good idea on a hot day.", "The number 4 bus stops at the gate. If you walk, follow the path past the pond.", "You can run on the track, play football on the grass or practise the long jump in the sand pit.")}
+  let right={pick(k, "When it is open", "What to bring", "How to get there", "What you can do")}
+  let near={pick(k, "What to bring", "Keeping cool", "Where to park", "The long jump")}
+  let far={pick(k, "How to get there", "When it is open", "What you can do", "How to get there")}
+
+  scene 36x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{text}" width=19 numbers=false
+        runners r count=2 numbers=1
+      }
+      text ask "This part of the page about the Hill Lane sports ground needs a heading. Which heading fits it?" width=28
+      choice pick options=[pick(k, right, near, far, near), pick(k, near, right, right, far), pick(k, far, far, near, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == near and k == 3) point=p {
+      say "The long jump is only one thing in this part. A heading has to fit every sentence under it."
+    }
+    when (pick != right and k < 3) point=p {
+      say "Read the two sentences again. What are both of them about?"
+    }
+  }
+  hint "What is every sentence in this part about?"
+  hint "Try each heading above the text. Does it fit all of it, or just one bit?"
+}

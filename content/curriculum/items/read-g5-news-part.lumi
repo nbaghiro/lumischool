@@ -1,0 +1,35 @@
+# The Canal Gazette's report on the broken gate at Mill Lock, written for this lesson. Each version
+# shows one part of it, and the child names the part by what it does.
+item reading.news-part v=1 skills=[reading.newspapers, reading.text-features] {
+  title "Which part of the report"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let text={pick(k, "Lock gate breaks, boats wait two days", "\"I heard a bang like a gunshot,\" said Ms Shah. \"By the time I got there, the water was spraying out sideways.\"", "Engineers lift the new gate into place at Mill Lock.", "More than twenty narrowboats were stuck at Mill Lock on Tuesday and Wednesday after one of its wooden gates split, the canal trust said.")}
+  let right={pick(k, "the headline", "a quotation", "a caption", "the opening paragraph")}
+
+  scene 36x34 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p title="The Canal Gazette" text="{text}" width=17 numbers=false
+        canallock l level=0.5 boat=0
+      }
+      text ask "Which part of a newspaper report is this?" width=30
+      choice pick options=["the headline", "the opening paragraph", "a quotation", "a caption"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 3 and pick == "the headline") point=p {
+      say "A headline is a few words in large print. This is a whole sentence that tells who, what, where and when."
+    }
+    when (k == 2 and pick != right) point=p {
+      say "This sentence says what a photo shows. Which part of a report sits under a picture?"
+    }
+    when (k == 1 and pick != right) point=p {
+      say "Look at the speech marks and the word said. Whose words are these?"
+    }
+  }
+  hint "What job does this part do: grab the reader, tell the main news, give someone's words, or explain a photo?"
+  hint "Look at how it is written: a few words, a full sentence, speech marks, or a sentence about a picture."
+}

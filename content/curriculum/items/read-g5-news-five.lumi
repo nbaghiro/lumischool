@@ -1,0 +1,31 @@
+# A report's opening paragraphs answer who, what, where, when and why. The wrong answers are other
+# facts from the same paragraphs, so the question word has to be read with care.
+item reading.news-five v=1 skills=[reading.newspapers, reading.retrieval] {
+  title "Who, what, where, when, why"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  let q={pick(k, "Where did the gate break?", "When was the crack found?", "Who found the crack?", "Why were the boats stuck?", "On which days were the boats stuck?")}
+  let right={pick(k, "at Mill Lock", "at seven on Tuesday morning", "the lock-keeper, Mira Shah", "a wooden gate had split", "Tuesday and Wednesday")}
+  let a={pick(k, "at the lower gate", "on Wednesday afternoon", "the canal trust", "the engineers were late", "Tuesday only")}
+  let b={pick(k, "on the towpath", "at half past five", "the engineers", "the water was too low", "Wednesday and Thursday")}
+
+  scene 31x30 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p title="The Canal Gazette" text="More than twenty narrowboats were stuck at Mill Lock on Tuesday and Wednesday after one of its wooden gates split, the canal trust said. The crack was found by the lock-keeper, Mira Shah, at seven on Tuesday morning, when water began to pour through the lower gate." width=30 numbers=false
+      text ask "{q}" width=30
+      choice pick options=[pick(k, a, right, b, a, right), pick(k, right, b, a, right, a), pick(k, b, a, right, b, b)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == a) point=p {
+      say "That is in the report, but it answers a different question. Read the question word again."
+    }
+    when (pick == b) point=p {
+      say "Find the sentence that answers this question. Does it say that?"
+    }
+  }
+  hint "Which question word is it: who, what, where, when or why?"
+  hint "Find the words in the report that answer that word."
+}

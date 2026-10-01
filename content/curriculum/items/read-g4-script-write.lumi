@@ -1,0 +1,22 @@
+# The three-star: the child carries the play on in script form and reads it aloud with a grown-up.
+# A grown-up marks the layout and whether the directions fit.
+item reading.script-write v=1 stars=3 skills=[reading.play-scripts, writing.composing, reading.performing] {
+  title "Write the next lines"
+  let k=0..1
+
+  scene 31x39 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        hut h pictures=3
+        firs f count=2 snow=1
+      }
+      caption a text="NELL: (running ahead) The hut. We made it." width=30
+      text ask "{pick(k, \"Write the next three lines of the play, in the hut. Start each with a name, and put one stage direction in brackets. Then read the scene aloud with a grown-up.\", \"Write the next four lines of the play, in the hut, with all three people speaking and a direction that shows a feeling. Then read the scene aloud with a grown-up, following the directions.\")}" width=30
+      writinglines lines lines=5 width=30 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="Lines laid out as a script, each starting with the speaker's name, with directions in brackets that say how a line is said or what is done, and spoken words that sound like the character; then read aloud following the directions." notice=["Each line starts with a name", "Directions in brackets", "No he said or she said", "Read aloud the way the directions say"] ask="Which direction changed how you read your line?"
+  hint "Who is in the hut, and what would each of them say first?"
+  hint "How do they feel now they are warm? Put that in brackets."
+}

@@ -1,0 +1,33 @@
+# An exchange of four lines in which one does no work at all: it neither shows the speaker, nor moves
+# things on, nor tells anything new. That is the line a writer cuts.
+item writing.dialogue-cut v=1 skills=[writing.dialogue, writing.editing, writing.concision] {
+  title "The line that does nothing"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let l1={pick(k, "\"Storm's coming,\" said Olaf.", "\"Where's the spare battery?\" said Ines.", "\"We can't cross tonight,\" said Lena.")}
+  let l2={pick(k, "\"Yes,\" said Sam.", "\"I used it for my music,\" said Sam. \"Sorry.\"", "\"We have to,\" said Ines. \"The food runs out tomorrow.\"")}
+  let l3={pick(k, "\"Get the dogs in and tie the sledge down,\" said Ines.", "\"Then we have one day of radio left,\" said Ines.", "\"Right,\" said Sam. \"Okay.\"")}
+  let l4={pick(k, "\"I'll take the dogs,\" said Lena, already pulling on her boots.", "\"Okay,\" said Olaf.", "\"Then we go at midnight, roped together,\" said Olaf.")}
+  let right={pick(k, "2nd", "4th", "3rd")}
+
+  scene 31x27 {
+    column all at=canvas(1, 1) space=1 align=start {
+      caption a text="{l1}" width=30
+      caption b text="{l2}" width=30
+      caption c text="{l3}" width=30
+      caption d text="{l4}" width=30
+      text ask "One line does no work in this scene. Which could be cut?" width=30
+      choice pick options=["1st", "2nd", "3rd", "4th"]
+      sledge s slats=5
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=a {
+      say "That line tells us something or makes something happen. Find the one that could go without anything being lost."
+    }
+  }
+  hint "For each line, ask: what would we lose without it?"
+  hint "Which line only agrees, and tells us nothing new?"
+}

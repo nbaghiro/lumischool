@@ -1,0 +1,69 @@
+lesson writing-words-that-sound-the-same v=1 format=teach grade=3 unit=1 subject=writing levels=[easy, medium, hard] {
+  title "Words that sound the same"
+  goal "Choose the spelling of a word that sounds like another by what it means in the sentence."
+
+  look {
+    scene 34x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=2 align=end {
+          tent t lit=1
+          moon m phase=1
+          owlflying o facing=-1
+        }
+        caption strip text="I can hear the owl from here." width=30
+      }
+    }
+    say """
+      Hear and here sound the same, but they are spelt differently because they mean different
+      things. You hear with your ear, and here is a place. Words like these are called homophones.
+      A spelling checker cannot tell them apart, so you have to read for the meaning, then choose
+      the spelling that goes with it.
+      """
+  }
+  do {
+    level easy {
+      worked writing.homophone-gap k=0
+    }
+    show writing.homophone-gap k=2 easy-k=1 hard-k=4
+    show writing.homophone-match s=0 k=1 easy-k=0 hard-s=1
+    show writing.homophone-gap k=3 easy-k=2 hard-k=5
+    show writing.homophone-type k=2 easy-k=0 hard-k=4
+    level medium hard {
+      show writing.homophone-gap k=4 hard-k=3
+    }
+    show writing.homophone-type k=3 easy-k=1 hard-k=5
+  }
+  story {
+    show writing.homophone-count k=1 easy-k=0 hard-k=2
+    show writing.homophone-count k=3 easy-k=3 hard-k=1
+  }
+  try stars=2 {
+    show writing.homophone-wrong-change k=0 easy-k=1 hard-k=2
+  }
+  try stars=3 {
+    show writing.homophone-write k=0 hard-k=1
+  }
+  remember {
+    say "When two words sound the same, ask what the word means here, then choose its spelling."
+  }
+
+  grown-ups """
+    The idea is that some words sound alike and are spelt differently because they mean different
+    things, so the spelling is chosen by meaning, not by sound. The pairs come from the list of
+    homophones that England's national curriculum gives for years 3 and 4 (here and hear, meet and
+    meat, peace and piece, whether and weather, and others). The way in picks a spelling for a gap,
+    then the child matches words to meanings, types the twin of a word from its sentence, and counts
+    the wrong twins in a short diary, which is the editing a spelling checker cannot do. The wrong
+    idea to watch for is choosing the spelling that is seen most often: a child who writes there
+    for every there-word has learnt the sound, not the meaning. If the child is stuck, say each word
+    in a sentence of its own and ask what it means, then come back. Off the page, keep a list of the
+    pairs the child mixes up on the fridge, with a picture beside each word. England's programme of
+    study for years 3 and 4 asks children to "spell further homophones".
+    """
+  level easy {
+    grown-ups "At this level one gap is worked in the teacher's pen first, the pairs are the more familiar ones (great, meet, mist), the meanings to match are knot, not, heal and heel, the diaries hold one or two wrong words, and the two-star has the wrong change first."
+  }
+  level hard {
+    grown-ups "At this level the gaps use peace, plane and whether, the meanings to match are scene, seen, mail and male, the typed words are rein and whose, a diary holds three wrong words, and the three-star asks for two pairs in one sentence."
+  }
+}

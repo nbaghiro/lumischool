@@ -1,0 +1,36 @@
+# Three versions of one list, only one punctuated the same way all through. Bullets that finish the
+# lead-in sentence start small and have no full stop; bullets that are whole sentences take both.
+item writing.bullet-consistent v=1 skills=[writing.bullet-points, writing.punctuation, writing.layout] {
+  title "The list that is consistent"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let lead={pick(k, "Before you cross the bridge:", "Things to know about the falls:", "On the path, please:")}
+  let good1={pick(k, "• check the wind", "• The path is steep.", "• keep to the left")}
+  let good2={pick(k, "• tie your laces", "• The rocks are wet.", "• let others pass")}
+  let good3={pick(k, "• hold hands", "• The spray is cold.", "• take litter home")}
+  let bad1={pick(k, "• Check the wind.", "• the path is steep", "• Keep to the left")}
+  let bad3={pick(k, "• Hold hands", "• The spray is cold", "• take litter home.")}
+  let right={pick(k, "A", "B", "C")}
+
+  scene 36x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text intro "{lead}" width=34
+      row lists space=1 align=start {
+        listpad a title="A" items=[pick(k, good1, bad1, bad1), pick(k, good2, good2, good2), pick(k, good3, bad3, good3)] count=0 width=11 ticks=false
+        listpad b title="B" items=[pick(k, bad1, good1, good1), pick(k, good2, good2, good2), pick(k, good3, good3, bad3)] count=0 width=11 ticks=false
+        listpad c title="C" items=[pick(k, good1, good1, good1), pick(k, good2, good2, good2), pick(k, bad3, bad3, good3)] count=0 width=11 ticks=false
+      }
+      text ask "Which list is punctuated the same way all through?" width=34
+      choice pick options=["A", "B", "C"]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=intro {
+      say "Check every bullet in that list: its first letter and its last mark. Is one different from the rest?"
+    }
+  }
+  hint "Look at the first letter of every bullet, then at the end of every bullet."
+  hint "Do the bullets finish the lead-in sentence, or is each one a sentence of its own?"
+}

@@ -1,0 +1,68 @@
+# The ship, its log and its crew were made up for this lesson.
+lesson writing-fronted-adverbials v=1 format=teach grade=4 unit=4 subject=writing levels=[easy, medium, hard] {
+  title "Starting with when, where or how"
+  goal "Start a sentence with when, where or how it happened, and put a comma after it."
+
+  look {
+    scene 34x18 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=2 align=end {
+          ship s sails=3 portholes=3
+          whale w spout=1 facing=-1
+        }
+        caption strip text="Far out at sea, a whale blew a spout of mist." width=30
+      }
+    }
+    say """
+      A whale blew a spout of mist far out at sea. The words far out at sea say where. Move them
+      to the front and they become a fronted adverbial: Far out at sea, a whale blew a spout of
+      mist. A fronted adverbial tells when, where or how, and a comma goes straight after it. It
+      sets the scene before the reader meets who did what.
+      """
+  }
+  do {
+    level easy {
+      worked writing.fronted-find k=0
+    }
+    show writing.fronted-find k=2 easy-k=1 hard-k=3
+    show writing.fronted-kind k=2 easy-k=0 hard-k=5
+    show writing.fronted-comma k=1 easy-k=0 hard-k=3
+    show writing.fronted-kind k=3 easy-k=1 hard-k=4
+    show writing.fronted-comma k=2 easy-k=1 hard-k=4
+  }
+  story {
+    show writing.fronted-move k=1 easy-k=0 hard-k=3
+    show writing.fronted-move k=2 easy-k=1 hard-k=2
+    show writing.fronted-count k=0 easy-k=1 hard-k=3
+  }
+  try stars=2 {
+    show writing.fronted-choose k=0 easy-k=1 hard-k=2
+  }
+  try stars=3 {
+    show writing.fronted-write k=0 hard-k=1
+  }
+  remember {
+    say "When, where or how at the front of a sentence, then a comma, then the rest."
+  }
+
+  grown-ups """
+    The idea is that the when, where or how of a sentence can move to the front, where it sets the
+    scene, and that a comma follows it. The way in finds the fronted adverbial in a sentence about
+    the ship; the core says whether it tells when, where or how, places the comma after the whole
+    adverbial, rewrites a sentence with its adverbial moved to the front, and counts the commas
+    missing from a ship's log. The wrong idea to watch for is a comma after the first word of a long
+    adverbial (Slowly, and carefully the ship) or inside the main part of the sentence. If the child
+    is stuck, ask who or what the sentence is about and put a finger just before it: that is where
+    the comma goes. Off the page, take turns starting a sentence about the day with a when or where
+    and letting the other finish it. This lesson takes writing-28 (adding when, where and why at the
+    end of a sentence) a step on, by moving those words to the front. England's programme of study
+    for years 3 and 4 asks for "using fronted adverbials", and its grammar appendix for year 4 adds
+    the comma after them (recalled).
+    """
+  level easy {
+    grown-ups "At this level a fronted adverbial is found once in the teacher's pen first, the adverbials are short (at dawn, next morning), the kinds asked are when and where, a sentence to rewrite is the sunset one, the log has one or two commas missing, and the two-star turns on a place, the top of the mast."
+  }
+  level hard {
+    grown-ups "At this level the adverbials are long or whole clauses (as the storm grew louder, just before the sun went down), the kinds include how, the log has three commas missing, and the two-star turns on how a careful captain would steer through fog."
+  }
+}

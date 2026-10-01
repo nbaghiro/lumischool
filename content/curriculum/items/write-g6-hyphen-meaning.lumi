@@ -1,0 +1,36 @@
+# A hyphen joins two words into one describing word, and taking it out changes who does what. The
+# phrases are set at the research hut on the ice shelf.
+item writing.hyphen-meaning v=1 skills=[writing.hyphens, writing.punctuation, writing.ambiguity] {
+  title "What the hyphen means"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  let line={pick(k, "The notice warned of a man-eating bear.", "Pia packed her light-blue tent.", "The hut sits on a little-known island.", "We counted forty-odd puffins on the cliff.", "Tom found three year-old seal pups on the ice.")}
+  let right={pick(k, "a bear that eats people", "a tent of a pale blue", "an island few people know", "about forty puffins", "three pups, each a year old")}
+  let a={pick(k, "a man who is eating a bear", "a blue tent that weighs little", "a small island that people know", "forty puffins that look strange", "pups that are three years old")}
+  let b={pick(k, "a bear that eats a little", "a tent with a light in it", "an island that is small", "exactly forty puffins", "one pup that is three years old")}
+
+  scene 31x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        hut h pictures=2
+        seal s rock=0 facing=-1
+        puffins p count=2 facing=1
+      }
+      caption strip text="{line}" width=30
+      text ask "What does the hyphenated phrase mean?" width=30
+      choice pick options=[pick(k, a, right, b, a, right), pick(k, right, b, a, right, a), pick(k, b, a, right, b, b)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == a) point=strip {
+      say "That is what the words would mean without the hyphen. The hyphen joins its two words into one describing word."
+    }
+    when (pick == b) point=strip {
+      say "Read the two joined words together as one. What do they describe?"
+    }
+  }
+  hint "Which two words does the hyphen join?"
+  hint "Read them as one word that describes the thing after it."
+}

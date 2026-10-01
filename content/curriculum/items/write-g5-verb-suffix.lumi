@@ -1,0 +1,30 @@
+# Which of the four endings makes a verb from this word. Only one gives a real word, which the child
+# checks by saying each aloud; the later words take the less common endings.
+item writing.verb-suffix v=1 skills=[writing.morphology, writing.word-classes] {
+  title "Which ending"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+  let root={pick(k, "deep", "beauty", "fossil", "hyphen", "captive", "electric")}
+  let right={pick(k, "-en", "-ify", "-ise", "-ate", "-ate", "-ify")}
+  let made={pick(k, "deepen", "beautify", "fossilise", "hyphenate", "captivate", "electrify")}
+
+  scene 29x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        wordbricks b bricks=[root, "?"] root=0 roots=1 blank=1 word="" labels=true
+        houses h count=2 windows=2
+      }
+      text ask "Which ending turns {root} into a verb?" width=28
+      choice pick options=["-en", "-ify", "-ise", "-ate"]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=b {
+      say "Put that ending on {root} and say it. Is it a word you have met? Try the others."
+    }
+  }
+  hint "Say {root} with each ending, one at a time."
+  hint "Which one would you find in a dictionary?"
+}

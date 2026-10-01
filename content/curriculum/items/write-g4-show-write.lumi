@@ -1,0 +1,22 @@
+# The three-star: a short paragraph that shows what a character is like through what they do, say
+# and look like, with the trait never named. A grown-up marks it.
+item writing.show-write v=1 stars=3 skills=[writing.characters, writing.describing, writing.composing] {
+  title "Show a character"
+  let k=0..1
+
+  scene 36x38 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        volcano v smoke=1 island=1
+        palms pl count=2 coconuts=3
+        parrot pr facing=-1
+      }
+      text ask "{pick(k, \"Choose a word: brave, kind or careless. Write three sentences about someone on the island that show it, one by what they do, one by what they say and one by how they look. Do not use the word.\", \"Choose two words: brave and careless, or kind and bossy. Write a short paragraph about one person on the island who is both. Show both, and do not use either word.\")}" width=30
+      writinglines lines lines=5 width=30 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="{pick(k, \"Three sentences about one character, one each of an action, speech in speech marks and a look, that together let a reader name the chosen word, which is never written.\", \"A paragraph about one character that shows both chosen traits through actions, speech and looks, so that a reader could name both without either word appearing.\")}" notice=["The trait is never named", "Something the character does", "Something they say, in speech marks", "How they look", "A reader could guess the trait"] ask="Which sentence gives the biggest clue?"
+  hint "Imagine the person on the island. What would they do when something goes wrong?"
+  hint "What would they say? How would their face or clothes look?"
+}

@@ -1,0 +1,71 @@
+# The research hut's sentences were made up for this lesson, built on the examples England's grammar
+# appendix for year 6 gives (man-eating shark, recover and re-cover, recalled).
+lesson writing-hyphens-and-commas v=1 format=teach grade=6 unit=2 subject=writing levels=[easy, medium, hard] {
+  title "Hyphens and commas that change the meaning"
+  goal "Use a hyphen or a comma so that a sentence can only be read the way you mean it."
+
+  look {
+    scene 34x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=2 align=end {
+          hut h pictures=2
+          seal s rock=0 facing=-1
+        }
+        caption strip text="Beware: man-eating bear. After the seals ate, the puffins flew off." width=30
+      }
+    }
+    say """
+      A man-eating bear is a danger; a man eating bear is just having his lunch. A hyphen joins two
+      words into one describing word, and changes who does what. A comma can do the same: After the
+      seals ate the puffins sounds like bad news for the puffins until a comma goes after ate. When a
+      sentence can be read two ways, one small mark decides which.
+      """
+  }
+  do {
+    level easy {
+      worked writing.hyphen-meaning k=0
+    }
+    show writing.hyphen-meaning k=2 easy-k=1 hard-k=3
+    show writing.hyphen-choose k=1 easy-k=0 hard-k=2
+    show writing.hyphen-re k=2 easy-k=0 hard-k=3
+    show writing.hyphen-meaning k=3 easy-k=2 hard-k=4
+    show writing.hyphen-re k=1 easy-k=1 hard-k=4
+  }
+  story {
+    show writing.comma-place k=1 easy-k=0 hard-k=3
+    show writing.comma-place k=2 easy-k=1 hard-k=2
+    level medium hard {
+      show writing.hyphen-choose k=2 hard-k=3
+    }
+  }
+  try stars=2 {
+    show writing.comma-two k=0 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show writing.hyphen-write k=0 hard-k=1
+  }
+  remember {
+    say "If a sentence can be read two ways, a hyphen or a comma decides which. Put it where you mean it."
+  }
+
+  grown-ups """
+    The idea is that punctuation carries meaning: a hyphen joins two words into one describing word
+    (a man-eating bear, forty-odd puffins), keeps re- apart where the joined word means something
+    else (re-cover and recover), and a comma marks where an opening part ends so that the reader is
+    not misled. The way in says what a hyphenated phrase means; the core chooses the hyphen for a
+    given meaning, chooses re- with or without, and places the comma that stops a misreading. The
+    wrong idea to watch for is treating these marks as decoration, so that the child adds a hyphen
+    between any two words or puts the comma after the first word. If the child is stuck, read the
+    sentence aloud both ways and draw a quick sketch of each meaning. Off the page, hunt for missing
+    hyphens on signs and menus (a hot dog stand, a small business owner) and talk about both
+    meanings. This lesson builds on the commas of writing-10 (lists) and writing-38 (clauses).
+    England's programme of study for years 5 and 6 asks for "using hyphens to avoid ambiguity" and
+    "using commas to clarify meaning or avoid ambiguity in writing".
+    """
+  level easy {
+    grown-ups "At this level a phrase is read once in the teacher's pen first, the phrases are man-eating and light-blue, the meanings to punctuate are a fast-moving sledge and twenty-odd, the re- words are re-cover and re-sign, the commas go after a short opening, and the two-star is about which researchers walked."
+  }
+  level hard {
+    grown-ups "At this level the phrases count (forty-odd, three year-old), the hyphen joins three words (three-year-old), the re- words are re-count and re-form, the comma goes after a clause that ends in a little word (hurried on), and the two-star turns on who said what about the cook."
+  }
+}

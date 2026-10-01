@@ -1,0 +1,21 @@
+# The three-star: a scene written mostly in dialogue that brings two characters to a decision, so
+# every line has a job. A grown-up marks it.
+item writing.dialogue-write v=1 stars=3 skills=[writing.dialogue, writing.characters, writing.composing] {
+  title "Write the scene in the hut"
+  let k=0..1
+
+  scene 31x36 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        hut h pictures=4
+        sledge s slats=6
+      }
+      text ask "{pick(k, \"The radio is dead. Write six lines of dialogue in the hut between two of the team that end with a decision. Give each speaker an action beside a line, and start a new line for each new speaker.\", \"The radio is dead and the food is low. Write eight lines of dialogue between three of the team that show each one's character and end with a decision. Cut any line that does no work.\")}" width=30
+      writinglines lines lines=6 width=30 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="{pick(k, \"Six lines between two speakers, set out with a new line for each speaker and punctuated as speech, each line showing a speaker or moving things on, an action beside some lines, and a decision reached by the end.\", \"Eight lines between three speakers, each with a voice of their own, no line that does no work, actions that fit, correct speech punctuation, and a decision at the end.\")}" notice=["Every line does a job", "The speakers sound different", "Actions fit the moment", "A decision is reached", "Speech punctuated, new speaker new line"] ask="Which line shows the most about its speaker?"
+  hint "Decide first: who wants what? Where must the scene end?"
+  hint "For each line ask: does it show the speaker or move things on? If neither, cut it."
+}

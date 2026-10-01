@@ -1,0 +1,68 @@
+# The research team on the ice shelf, Ines, Olaf, Lena and Sam, were made up for this lesson.
+lesson writing-dialogue-that-moves-a-story v=1 format=teach grade=6 unit=3 subject=writing levels=[easy, medium, hard] {
+  title "Dialogue that moves a story"
+  goal "Write dialogue in which every line shows the speaker, moves the story on, or tells the reader something they need."
+
+  look {
+    scene 34x10 {
+      row all at=canvas(1, 1) space=2 align=end {
+        passage p text="\"Grab the rope and pull. Now, before the ice goes.\" Lena did not look up. \"I'm fine,\" she said." width=20 numbers=false
+        hut h pictures=3
+      }
+    }
+    say """
+      In a good story, speech is never just chat. A line of dialogue shows what a speaker is like,
+      moves the action on, or tells the reader something they need, and the best lines do two of
+      these at once. An action beside the words can show what the words hide: a person who says
+      they are fine but cannot take their eyes off the ice is not fine. A line that does none of
+      these jobs is cut.
+      """
+  }
+  do {
+    level easy {
+      worked writing.dialogue-job k=0
+    }
+    show writing.dialogue-job k=2 easy-k=1 hard-k=3
+    show writing.dialogue-shows k=1 easy-k=0 hard-k=2
+    show writing.dialogue-job k=3 easy-k=2 hard-k=4
+    show writing.dialogue-shows k=2 easy-k=1 hard-k=3
+  }
+  story {
+    show writing.dialogue-cut k=1 easy-k=0 hard-k=2
+    show writing.dialogue-beat k=1 easy-k=0 hard-k=3
+    show writing.dialogue-beat k=2 easy-k=1 hard-k=2
+    level medium hard {
+      show writing.dialogue-cut k=2 hard-k=1
+    }
+  }
+  try stars=2 {
+    show writing.dialogue-next k=0 easy-k=1 hard-k=2
+  }
+  try stars=3 {
+    show writing.dialogue-write k=0 hard-k=1
+  }
+  remember {
+    say "Every line of speech shows the speaker, moves the story, or tells what the reader needs. Cut the rest."
+  }
+
+  grown-ups """
+    The idea is that dialogue is chosen, not transcribed: each line earns its place by showing a
+    character, moving the action or giving needed information, and an action beside a line can
+    show what the words hide. The way in names the job a line does; the core reads what a line
+    and its action show about the speaker, cuts the line that does no work, and chooses an action
+    that fits the moment. The wrong idea to watch for is dialogue as small talk (hello, yes,
+    okay) and taking a speaker's words at face value when the action says otherwise. If the child
+    is stuck, read a line aloud and ask what the story would lose without it. Off the page, read a
+    page of dialogue from a favourite book and mark each line with S (shows), M (moves) or T
+    (tells). This lesson takes writing-41 (punctuating speech) a step on, from how speech is set
+    out to what it is for. England's programme of study for years 5 and 6 asks for "describing
+    settings, characters and atmosphere and integrating dialogue to convey character and advance
+    the action".
+    """
+  level easy {
+    grown-ups "At this level a line's job is named once in the teacher's pen first, the jobs are plain (a fact about the sledge, Sam's grin), the speakers to read are Sam and Olaf, the line to cut only agrees, the actions to choose follow a torn tent and a found compass, and the two-star is the search for Sam."
+  }
+  level hard {
+    grown-ups "At this level the jobs are hidden (a plan, Lena's I'm fine), the speakers to read say one thing and do another, the line to cut sits third, the actions follow the cracking ice and the dead radio, and the two-star is the food that will not last."
+  }
+}

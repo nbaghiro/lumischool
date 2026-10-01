@@ -1,0 +1,29 @@
+# The two-star: Max corrected three words in his diary and one correction made it worse. Finding it
+# needs the meaning of each word, including who's as who is, rather than a remembered list.
+item writing.homophone-wrong-change v=1 stars=2 skills=[writing.homophones, writing.editing, reasoning.find-the-mistake] {
+  title "Which change was wrong"
+  let k=0..2
+  let c1={pick(k, "a plain flew over, to: a plane flew over", "a piece of cake, to: a peace of cake", "it was a grate night, to: it was a great night")}
+  let c2={pick(k, "we new the way, to: we knew the way", "we herd an owl, to: we heard an owl", "we missed the bus, to: we mist the bus")}
+  let c3={pick(k, "whose torch is this, to: who's torch is this", "the son came up, to: the sun came up", "the wind blue hard, to: the wind blew hard")}
+
+  scene 33x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        listpad pad title="Max changed" items=["1. {c1}", "2. {c2}", "3. {c3}"] count=0 width=20 ticks=false
+        owlflying o facing=-1
+      }
+      text ask "Max meant to fix three wrong words, but one change made his diary worse. Which change was wrong?" width=32
+      choice pick options=["the 1st", "the 2nd", "the 3rd"]
+    }
+  }
+
+  answer pick=pick(k, "the 3rd", "the 1st", "the 2nd")
+  feedback {
+    when (pick != pick(k, "the 3rd", "the 1st", "the 2nd")) point=pad {
+      say "That change fixes the sentence. Say what each new word means, and find the one that no longer makes sense."
+    }
+  }
+  hint "For each change, say what the new word means."
+  hint "Short forms hide two words. Say them in full to test a change."
+}

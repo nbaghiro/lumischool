@@ -1,0 +1,33 @@
+# Bullets after one lead-in all start the same way, so each one finishes it. The odd one breaks the
+# pattern (a statement among commands, a command among things), and moves round the list.
+item writing.bullet-parallel v=1 skills=[writing.bullet-points, writing.grammar, writing.layout] {
+  title "The bullet that does not fit"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let lead={pick(k, "On the bridge, please:", "At the waterfall:", "You will need:", "The path is closed when:")}
+  let i1={pick(k, "• hold the rope", "• stay behind the rail", "• strong boots", "• the river is high")}
+  let i2={pick(k, "• walk one by one", "• the rocks are slippy", "• a warm coat", "• it is very windy")}
+  let i3={pick(k, "• you should not run", "• keep to the path", "• bring a drink", "• the light is fading")}
+  let i4={pick(k, "• keep dogs on leads", "• take litter home", "• a map of the gorge", "• ice on the steps")}
+  let right={pick(k, "3rd", "2nd", "3rd", "4th")}
+
+  scene 31x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        listpad pad title="{lead}" items=[i1, i2, i3, i4] count=0 width=18 ticks=false
+        kingfisher kf flying=0 facing=-1
+      }
+      text ask "One bullet does not finish the lead-in the way the others do. Which?" width=30
+      choice pick options=["1st", "2nd", "3rd", "4th"]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=pad {
+      say "Read the lead-in, then that bullet straight after it. It fits. Find the one that does not."
+    }
+  }
+  hint "Read the lead-in followed by each bullet, one at a time."
+  hint "Do the bullets all start with the same kind of word?"
+}

@@ -1,0 +1,28 @@
+# The guide words at the top of a dictionary page are its first and last words. A word is on the
+# page only if it comes between them in dictionary order.
+item reading.dict-guide v=1 skills=[reading.dictionary, reading.alphabetical-order] {
+  title "Guide words"
+  difficulty pick(k, 0, 1, 1, 2, 2)
+  let k=0..4
+  let first={pick(k, "fox", "fox", "night", "star", "comet")}
+  let last={pick(k, "frog", "frog", "nose", "stone", "cosy")}
+  let word={pick(k, "garden", "fog", "noon", "stool", "cool")}
+  let right={pick(k, "after this page", "before this page", "on this page", "after this page", "on this page")}
+
+  scene 29x30 {
+    column all at=canvas(1, 1) space=1 align=start {
+      book b lines=4 left="{first}" right="{last}" page="42"
+      text ask "The guide words on this dictionary page are {first} and {last}. Where will you find the word {word}?" width=28
+      choice pick options=["before this page", "on this page", "after this page"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=b {
+      say "Compare {word} with {first} letter by letter, then with {last}. Does it come between them?"
+    }
+  }
+  hint "The first guide word is the first word on the page, and the last one is the last."
+  hint "Where the first letters match, compare the next ones."
+}

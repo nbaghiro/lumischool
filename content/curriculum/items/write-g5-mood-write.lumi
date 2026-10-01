@@ -1,0 +1,22 @@
+# The three-star: a setting written for a mood the child chooses, built from details and senses, with
+# the mood never named. A grown-up marks it.
+item writing.mood-write v=1 stars=3 skills=[writing.settings, writing.describing, writing.composing] {
+  title "Write a setting with a mood"
+  let k=0..1
+
+  scene 32x44 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        citywalls w towers=2 open=1
+        clocktower t hour=9 minute=0
+        lantern ln lit=1 post=1
+      }
+      text ask "{pick(k, \"Describe the walled city's market at night in four sentences. Choose a mood, peaceful or creepy, and use at least three senses. Do not name the mood.\", \"Describe the walled city's market twice, in three sentences each: once cheerful, once tense. Keep the place the same and change only the details that carry the mood.\")}" width=30
+      writinglines lines lines=6 width=30 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="{pick(k, \"Four sentences about the market at night that build one mood through light, sound, smell or touch, with at least three senses used and the mood word never written.\", \"Two short descriptions of the same market, one cheerful and one tense, where the place and its objects stay the same and the light, sounds, weather or verbs change the mood.\")}" notice=["One clear mood a reader could name", "Three or more senses", "Verbs and details chosen for the mood", "The mood is never named"] ask="Which word did the most to make the mood?"
+  hint "List what you would see, hear, smell and feel in the market at night."
+  hint "Now choose the words for each detail that fit your mood."
+}

@@ -1,0 +1,32 @@
+# A verb made from an adjective or a noun with -en, -ify, -ise or -ate, chosen to fit a canal town
+# sentence. The wrong options use a real suffix on the wrong word, so the child hears which is a word.
+item writing.verb-make v=1 skills=[writing.word-classes, writing.morphology, writing.vocabulary] {
+  title "Make the verb"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  let line={pick(k, "The cutters will ... the canal so that two boats can pass. (wide)", "The miller will ... his blade before he cuts the sacks. (sharp)", "The filter will ... the water before it goes to the town. (pure)", "Please ... the lock-keeper before you open the gate. (note)", "Days of rain will ... the towpath into mud. (soft)")}
+  let right={pick(k, "widen", "sharpen", "purify", "notify", "soften")}
+  let a={pick(k, "widify", "sharpify", "purise", "notise", "softify")}
+  let b={pick(k, "widise", "sharpate", "puren", "noten", "softise")}
+
+  scene 31x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        narrowboat nb windows=3 pots=2
+        canallock l level=0.7 boat=0
+      }
+      caption strip text="{line}" width=30
+      text ask "Which verb, made from the word in brackets, fills the gap?" width=30
+      choice pick options=[pick(k, a, right, b, a, right), pick(k, right, b, a, right, a), pick(k, b, a, right, b, b)]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=strip {
+      say "Say it in the sentence. Is it a word you have heard? Try each ending on the word in brackets."
+    }
+  }
+  hint "Say the sentence aloud with each choice."
+  hint "Which one sounds like a word people use?"
+}

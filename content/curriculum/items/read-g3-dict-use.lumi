@@ -1,0 +1,32 @@
+# A night word looked up and then used: the question can only be answered from the meaning the
+# entry gives. The entries were written for this lesson.
+item reading.dict-use v=1 skills=[reading.dictionary, reading.vocabulary] {
+  title "Use the meaning"
+  difficulty pick(k, 0, 1, 1, 2, 2)
+  let k=0..4
+  let entry={pick(k, "nocturnal. awake and busy at night, and asleep in the day.", "dusk. the time when day turns into night and the light fades.", "crescent. the curved shape of the moon when only a thin part of it is lit.", "horizon. the line far away where the land or the sea seems to meet the sky.", "orbit. the curved path that one thing takes round another in space.")}
+  let q={pick(k, "Which animal is nocturnal?", "When is dusk?", "Which moon is a crescent?", "Where is the horizon from a beach?", "What is the Moon's orbit?")}
+  let right={pick(k, "an owl that hunts at midnight", "just after the sun goes down", "a thin curve of light", "where the sea meets the sky", "the path it takes round the Earth")}
+  let a={pick(k, "a robin that sings at noon", "just before the sun comes up", "a round, white disc", "at the edge of the waves", "the light it gives at night")}
+  let b={pick(k, "a cat asleep by the fire at night", "at twelve o'clock in the day", "half a circle of light", "high up above your head", "the dark marks on its face")}
+
+  scene 29x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage d title="From the dictionary" text="{entry}" width=20 numbers=false
+        moon m phase=1
+      }
+      text ask "{q}" width=28
+      choice pick options=[pick(k, a, right, b, a, right), pick(k, right, b, a, b, a), pick(k, b, a, right, right, b)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=d {
+      say "Read the meaning again, every part of it. Which answer fits all of it?"
+    }
+  }
+  hint "Read the entry. Say the meaning in your own words."
+  hint "Check each answer against every part of the meaning."
+}

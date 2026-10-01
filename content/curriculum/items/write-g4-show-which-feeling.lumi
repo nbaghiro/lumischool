@@ -1,0 +1,32 @@
+# Reading a shown feeling back: a sentence of action, speech or look, and the feeling it shows. The
+# later ones mix a clue that points two ways.
+item writing.show-which-feeling v=1 skills=[writing.characters, reading.inference] {
+  title "What does it show"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  let line={pick(k, "Rosa stamped her foot and threw the map down on the sand.", "Kai grinned and punched the air when he saw the boat.", "Pip yawned, rubbed his eyes and lay down in the shade.", "Kai stared at the ground and said nothing when Rosa asked who had lost the water.", "Rosa kept glancing back at the smoke, and her voice went very quiet.")}
+  let right={pick(k, "cross", "happy", "tired", "guilty", "worried")}
+  let a={pick(k, "tired", "cross", "bored", "proud", "bored")}
+  let b={pick(k, "happy", "worried", "cross", "tired", "cross")}
+
+  scene 29x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        palms pl count=2 coconuts=2
+        person kid pose=stand age=child hair=short colour=brown top=mint
+      }
+      passage strip text="{line}" width=28 numbers=false
+      text ask "How is the character feeling?" width=28
+      choice pick options=[pick(k, a, right, b, a, right), pick(k, right, b, a, right, a), pick(k, b, a, right, b, b)]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=strip {
+      say "Look at what the character does, says or how they look. Would someone feel that way and do this?"
+    }
+  }
+  hint "What does the character do, say, or how do they look?"
+  hint "When do people act like that?"
+}

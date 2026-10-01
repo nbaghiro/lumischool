@@ -1,0 +1,35 @@
+# Three jobs a line of speech does in a story: it shows the speaker, moves the action on, or gives
+# the reader a fact they need. Each line here does mainly one; the later ones are less plain.
+item writing.dialogue-job v=1 skills=[writing.dialogue, writing.narrative] {
+  title "What the line does"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  let line={pick(k, "\"Grab the rope and pull. Now, before the ice goes.\"", "\"The sledge is good for another three hundred kilometres,\" said Olaf.", "\"Oh, look, the radio's dead,\" said Sam, grinning. \"Good. No more of Ines's lists.\"", "\"Pack the tent. We leave at midnight, while the crust is hard,\" said Ines.", "\"I'm fine,\" said Lena. She did not take her eyes off the cracking ice.")}
+  let right={pick(k, "moves the action on", "gives a fact the reader needs", "shows what the speaker is like", "moves the action on", "shows what the speaker is like")}
+
+  scene 35x24 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{line}" width=21 numbers=false
+        hut h pictures=3
+      }
+      text ask "What is this line of speech mainly doing in the story?" width=30
+      choice pick options=["shows what the speaker is like", "moves the action on", "gives a fact the reader needs"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 4 and pick != right) point=p {
+      say "She says she is fine, but what does she do? The gap between the two tells you about Lena."
+    }
+    when (k == 3 and pick != right) point=p {
+      say "There is a fact in it, but what does it lead to? After this line, the team has something to do."
+    }
+    when (k < 3 and pick != right) point=p {
+      say "Ask: after this line, does something happen, do we learn a fact, or do we learn about the speaker?"
+    }
+  }
+  hint "What would the story lose if this line were cut?"
+  hint "Does it change what happens, tell a fact, or show a person?"
+}

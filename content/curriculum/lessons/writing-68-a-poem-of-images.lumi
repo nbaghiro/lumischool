@@ -1,0 +1,69 @@
+# The poem lines were written for this lesson.
+lesson writing-a-poem-of-images v=1 format=teach grade=6 unit=8 subject=writing levels=[easy, medium, hard] {
+  title "A poem built from images"
+  goal "Write a short poem from fresh images, with line breaks chosen for a pause and an ending that turns."
+
+  look {
+    scene 34x14 {
+      row all at=canvas(1, 1) space=2 align=end {
+        poem p title="Earthrise" lines=["The Earth hangs", "over the edge", "like a blue marble", "left on a black floor."] rhymes=[-1, -1, -1, -1] blank=-1 beats=[0, 0, 0, 0] width=20
+        earth e up=2
+      }
+    }
+    say """
+      A poem does not report: it shows. The Earth is in the sky is a fact. The Earth hangs over the
+      edge like a blue marble is an image, and the reader sees it. A fresh image beats a worn-out
+      one, a short line beats a padded one, and where a line ends the reader pauses, so a poet
+      chooses each break. The last line often takes the image somewhere new.
+      """
+  }
+  do {
+    level easy {
+      worked writing.poem-image k=0
+    }
+    show writing.poem-image k=2 easy-k=1 hard-k=3
+    show writing.poem-fresh k=1 easy-k=0 hard-k=2
+    show writing.poem-image k=3 easy-k=2 hard-k=4
+    show writing.poem-fresh k=2 easy-k=1 hard-k=3
+  }
+  story {
+    show writing.poem-cut k=1 easy-k=0 hard-k=2
+    show writing.poem-break k=1 easy-k=0 hard-k=3
+    show writing.poem-break k=2 easy-k=1 hard-k=2
+    level medium hard {
+      show writing.poem-cut k=0 hard-k=1
+    }
+  }
+  try stars=2 {
+    show writing.poem-ending k=0 easy-k=1 hard-k=2
+  }
+  try stars=3 {
+    show writing.poem-write k=0 hard-k=1
+  }
+  remember {
+    say "Show with a fresh image, cut the empty words, and end each line where you want the reader to pause."
+  }
+
+  grown-ups """
+    The idea is that a poem is built from images that let a reader see or feel, pressed small, with
+    line breaks placed for a pause and an ending that turns. The way in tells an image from a
+    statement about the moon; the core chooses a fresh comparison over a worn-out one, cuts the
+    words that do no work, and decides where a line breaks so that a word gets weight. The wrong
+    idea to watch for is a poem made of statements or feelings (it was amazing), padded with just,
+    really and kind of, or one that must rhyme at any cost. If the child is stuck, take one thing
+    on the moon and ask what it looks like that nobody has said before. Off the page, read a short
+    poem aloud twice, the second time stopping at every line end, and talk about why the poet broke
+    the lines there. This lesson moves from reading-42 (naming similes and metaphors) and
+    reading-51 (naming a poem's form) to writing images and choosing breaks. England's programme of
+    study for years 5 and 6 asks children to "discuss and evaluate how authors use language,
+    including figurative language, considering the impact on the reader", and Japan's 2017 course
+    of study for grades 5 and 6 includes writing poems from what was felt and imagined (recalled,
+    not fetched).
+    """
+  level easy {
+    grown-ups "At this level an image is found once in the teacher's pen first, the images are of the dust and the lander, the fresh comparisons are for white rocks and a black sky, the line break stresses alone, and the two-star's ending turns the footprints into stamps."
+  }
+  level hard {
+    grown-ups "At this level the images are of the silence and the craters, the fresh comparisons are for blue seas and the cold, the draft to cut is the longest, the line breaks stress for ever and gone, and the three-star gives one word a line of its own."
+  }
+}

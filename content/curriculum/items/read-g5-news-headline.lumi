@@ -1,0 +1,37 @@
+# The two-star: a fair headline says the news in a few words without going beyond the facts. The
+# wrong ones are too big for the facts or too vague to tell the news; in the hardest set both
+# wrong ones make a claim the report does not support.
+item reading.news-headline v=1 stars=2 skills=[reading.newspapers, reading.evidence, reading.fact-opinion] {
+  title "A fair headline"
+  let k=0..2
+  let facts={pick(k, "More than twenty narrowboats were stuck at Mill Lock for two days after a wooden gate split. Nobody was hurt.", "Four hundred plastic ducks raced down the canal on Saturday and raised 840 dollars for the town's rescue boat.", "More than twenty narrowboats were stuck at Mill Lock on Tuesday and Wednesday after a wooden gate split. Nobody was hurt, and the lock opened again on Wednesday evening.")}
+  let right={pick(k, "Broken lock gate holds up boats for two days", "Duck race raises 840 dollars for rescue boat", "Old lock gate splits, boats wait two days")}
+  let big={pick(k, "Canal disaster: town cut off for a week", "Ducks save lives on the canal", "Lock-keeper hurt as gate bursts")}
+  let vague={pick(k, "Something happened at the lock", "Ducks in the water", "Canal closed all week after gate breaks")}
+
+  scene 36x32 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p title="The facts" text="{facts}" width=17 numbers=false
+        canallock l level=0.2 boat=1
+      }
+      text ask "Which headline tells the news and is fair to the facts?" width=30
+      choice pick options=[pick(k, big, right, vague), pick(k, right, vague, big), pick(k, vague, big, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == big) point=p {
+      say "That headline would sell papers, but check it against the facts. Does the report say that?"
+    }
+    when (pick == vague and k < 2) point=p {
+      say "That is true, but a reader would not know what the news is. A headline gives the news in a few words."
+    }
+    when (pick == vague and k == 2) point=p {
+      say "Check how long the lock was closed. Does the report say a week?"
+    }
+  }
+  hint "What is the news, in a few words?"
+  hint "Check each headline against the facts. Does it claim more than they say?"
+}

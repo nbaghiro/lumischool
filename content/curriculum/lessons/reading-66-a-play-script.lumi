@@ -1,0 +1,69 @@
+# The play, Lost on the Pass, was written for this lesson.
+lesson reading-a-play-script v=1 format=teach grade=4 unit=2 subject=reading levels=[easy, medium, hard] {
+  title "Reading a play script"
+  goal "Read a play script: who speaks each line, what the stage directions ask, and how a line should be said."
+
+  look {
+    scene 34x22 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=2 align=end {
+          peaks pk count=3 snow=1
+          hut h pictures=1
+        }
+        caption a text="GRANDAD: (looking at the sky) Snow is coming." width=30
+        caption b text="NELL: (shivering) How far is it?" width=30
+      }
+    }
+    say """
+      A play is written to be acted. Each line starts with the name of the person who says it, and
+      there are no speech marks. Words in brackets are stage directions: they tell the actor how to
+      say a line or what to do, and the actor never says them aloud. Reading a script well means
+      using the directions and the words together to hear how each line should sound.
+      """
+  }
+  do {
+    level easy {
+      worked reading.script-who k=0
+    }
+    show reading.script-who k=2 easy-k=1 hard-k=3
+    show reading.script-aloud k=0 easy-k=1 hard-k=3
+    show reading.script-direction k=1 easy-k=0 hard-k=3
+    level medium hard {
+      show reading.script-who k=3 hard-k=2
+    }
+    show reading.script-aloud k=2 easy-k=0 hard-k=2
+  }
+  story {
+    show reading.script-direction k=2 easy-k=1 hard-k=2
+    show reading.script-from-story k=1 easy-k=0 hard-k=2
+    show reading.script-from-story k=0 easy-k=1 hard-k=1
+  }
+  try stars=2 {
+    show reading.script-missing-direction k=0 easy-k=2 hard-k=1
+  }
+  try stars=3 {
+    show reading.script-write k=0 hard-k=1
+  }
+  remember {
+    say "A name starts each line, the words in brackets are for the actor, and only the rest is said aloud."
+  }
+
+  grown-ups """
+    The idea is that a script is read for performance: the name says who speaks, the brackets say
+    how, and the spoken words carry the rest. The way in finds who says what in three lines of the
+    play written for this lesson; the core counts the words an actor says aloud, works out why a
+    direction is there, and picks the script line that shows a moment from a story. The wrong idea
+    to watch for is reading the name or the brackets aloud, and, going the other way, writing he
+    said into a script. If the child is stuck, take two parts each and read the lines aloud, the
+    child doing what the brackets say. Off the page, act the scene out with a blanket for snow,
+    or find a short play in a library collection of plays for children. England's programme of
+    study for years 3 and 4 asks for "preparing poems and play scripts to read aloud and to perform,
+    showing understanding through intonation, tone, volume and action".
+    """
+  level easy {
+    grown-ups "At this level who speaks is worked once in the teacher's pen first, the speakers are named by what they say outright, the lines to count have no name inside a direction, the directions say how (whispering) before why, and the two-star's missing direction is a thank-you."
+  }
+  level hard {
+    grown-ups "At this level the speaker has to be inferred (who knows the way), one line to count has a name inside its direction, the directions ask why (looking at the sky, stamping feet), the story to set has two actions in one sentence, and the three-star has all three people speaking."
+  }
+}

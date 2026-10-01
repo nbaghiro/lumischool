@@ -1,0 +1,35 @@
+# The two-star: the last line of a short moon poem. The best ending turns the poem's own image round;
+# the others repeat it flatly or step out of the poem to sum it up.
+item writing.poem-ending v=1 stars=2 skills=[writing.poetry, writing.imagery, reasoning.compare] {
+  title "The last line"
+  let k=0..2
+  let l1={pick(k, "The Earth hangs over the edge", "Our footprints lie in the dust,", "The lander is a beetle of foil")}
+  let l2={pick(k, "like a blue marble", "small grey stamps", "on four thin legs.")}
+  let l3={pick(k, "left on a black floor.", "on a letter nobody sends.", "Tomorrow it will fly.")}
+  let right={pick(k, "Somewhere on it, a child is looking up at me.", "No wind will ever come to post them.", "Tonight the beetle sleeps.")}
+  let flat={pick(k, "The Earth is like a marble.", "Our footprints are in the dust.", "The lander has four legs.")}
+  let out={pick(k, "I hope you liked my poem about the Earth.", "That is what footprints are like on the moon.", "Space travel is very exciting.")}
+
+  scene 33x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        poem p title="On the moon" lines=[l1, l2, l3] rhymes=[-1, -1, -1] blank=-1 beats=[0, 0, 0] width=20
+        footprints f count=4
+      }
+      text ask "Which last line ends the poem best, turning its image in a new direction?" width=30
+      choice pick options=[pick(k, flat, right, out), pick(k, right, out, flat), pick(k, out, flat, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == flat) point=p {
+      say "That says again what the poem has already shown, more plainly. What could the image become in the last line?"
+    }
+    when (pick == out) point=p {
+      say "That steps outside the poem to talk about it. Which line stays inside the picture and surprises you?"
+    }
+  }
+  hint "What is the poem's image?"
+  hint "Which ending keeps the image but shows it in a new way?"
+}

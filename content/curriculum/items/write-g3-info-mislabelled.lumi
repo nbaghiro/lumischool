@@ -1,0 +1,27 @@
+# The two-star: three parts of Ravi's page, one under a heading that does not fit its notes. Every
+# heading is a good heading on its own, so the mistake is only found by comparing it with its notes.
+item writing.info-mislabelled v=1 stars=2 skills=[writing.headings, writing.editing, reasoning.find-the-mistake] {
+  title "Which heading is wrong"
+  let k=0..2
+
+  scene 36x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=1 align=start {
+        listpad a title="{pick(k, \"Rules\", \"When it is open\", \"What is there\")}" items=[pick(k, "No dogs on the track", "A track and a sand pit", "A track and a sand pit"), pick(k, "Walk, do not run, in the stand", "A grass field for football", "A grass field for football")] count=0 width=11 ticks=false
+        listpad b title="How to get there" items=[pick(k, "Bus number 4", "Bus number 4", "8 am to 6 pm"), pick(k, "The path past the pond", "The path past the pond", "Closed on Mondays")] count=0 width=11 ticks=false
+        listpad c title="{pick(k, \"What to bring\", \"What to bring\", \"Rules\")}" items=[pick(k, "8 am to 6 pm", "Shoes that grip", "No dogs on the track"), pick(k, "Closed on Mondays", "A water bottle", "Walk, do not run, in the stand")] count=0 width=11 ticks=false
+      }
+      text ask "Ravi put the wrong heading over one part of his page. Which part?" width=32
+      choice pick options=["the 1st", "the 2nd", "the 3rd"]
+    }
+  }
+
+  answer pick=pick(k, "the 3rd", "the 1st", "the 2nd")
+  feedback {
+    when (pick != pick(k, "the 3rd", "the 1st", "the 2nd")) point=a {
+      say "Those notes answer their heading. Ask of each part: what are these two notes about?"
+    }
+  }
+  hint "Cover the headings. What is each part about?"
+  hint "Now uncover them. Which heading does not match what you said?"
+}

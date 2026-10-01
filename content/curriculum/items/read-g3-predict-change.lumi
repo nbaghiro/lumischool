@@ -1,0 +1,32 @@
+# The two-star: a prediction made from the first part of a story, then a new sentence that changes
+# the facts. Keeping the old prediction is the wrong idea it tests, so it is always on offer.
+item reading.predict-change v=1 stars=2 skills=[reading.prediction, reading.evidence, reasoning.update] {
+  title "Change the prediction"
+  let k=0..2
+  let first={pick(k, "Ava's snowman stood in the morning sun. Ava guessed it would melt by lunch.", "Leo's bean plant had been in the dark for two weeks. Leo guessed it would die.", "The lab mouse's cage door was open a crack. Ben guessed it would get out.")}
+  let news={pick(k, "Then clouds came over, and the air stayed freezing all day.", "Then his sister put it on the sunny windowsill and watered it.", "Then someone bumped the cage, and the door clicked shut.")}
+  let right={pick(k, "The snowman is still there at lunch.", "The plant turns green and grows.", "The mouse stays in its cage.")}
+  let old={pick(k, "The snowman melts by lunch.", "The plant dies.", "The mouse gets out.")}
+  let odd={pick(k, "Ava builds a second snowman.", "Leo plants a new bean.", "Ben gives the mouse some cheese.")}
+
+  scene 31x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{first}" width=22 numbers=false
+        person kid pose=point age=child hair=long colour=black top=berry
+      }
+      caption strip text="{news}" width=30
+      text ask "Read the new sentence. What should the prediction be now?" width=30
+      choice pick options=[pick(k, old, right, odd), pick(k, right, odd, old), pick(k, odd, old, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == old) point=strip {
+      say "That was a good guess before the new sentence. What does the new sentence change?"
+    }
+  }
+  hint "What did the first prediction depend on?"
+  hint "Is that still true after the new sentence?"
+}

@@ -1,0 +1,30 @@
+# Three ways to show a character: what they do, what they say, how they look. Each sentence leans on
+# one of them; the later ones are harder to tell apart (a look that is also an action).
+item writing.show-how v=1 skills=[writing.characters, writing.describing] {
+  title "Doing, saying or looking"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  let line={pick(k, "Kai climbed the rock first and held out a hand for the others.", "\"We can do this,\" said Rosa. \"One step at a time.\"", "Pip's face was pale, and his shirt was torn at the elbow.", "Rosa's boots were caked in mud right up to the laces.", "\"Wait,\" Kai whispered. \"Did you hear that?\"")}
+  let right={pick(k, "what the character does", "what the character says", "how the character looks", "how the character looks", "what the character says")}
+
+  scene 29x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        chest c open=0 coins=0
+        seaturtle t facing=1 plates=4
+      }
+      caption strip text="{line}" width=28
+      text ask "This sentence shows the character mostly by" width=28
+      choice pick options=["what the character does", "what the character says", "how the character looks"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=strip {
+      say "Look for speech marks, an action word, or words about the face, body or clothes. Which does this sentence use?"
+    }
+  }
+  hint "Are there speech marks?"
+  hint "Is the sentence about something done, or about how someone or their things look?"
+}

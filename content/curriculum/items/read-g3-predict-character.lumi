@@ -1,0 +1,31 @@
+# A prediction from what a character is like rather than from what is happening: the first sentence
+# says how the character always behaves, and the right answer is what that kind of person would do.
+item reading.predict-character v=1 skills=[reading.prediction, reading.characters, reading.inference] {
+  title "What would they do"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let text={pick(k, "Kit always reads the label before she touches anything in the lab. Today she found a bottle with no label on it, standing by the sink.", "Raj hates being late. The bus to the science fair leaves at nine. At ten to nine he was still looking for his shoe.", "Gran never throws anything away that might be useful. The lab was clearing out its old jars, and a box of them stood by the bin.")}
+  let right={pick(k, "She asks a grown-up what is in it.", "He runs to the stop with one shoe in his hand.", "She takes the jars home for her jam.")}
+  let a={pick(k, "She pours it down the sink to see.", "He decides the fair does not matter.", "She puts the box in the bin herself.")}
+  let b={pick(k, "She smells it to find out.", "He stops to make a sandwich.", "She walks past without a look.")}
+
+  scene 34x27 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{text}" width=22 numbers=false
+        testtubes t fills=[0.5, 0.3, 0.7] bungs=1
+      }
+      text ask "What is this person most likely to do next?" width=30
+      choice pick options=[pick(k, a, right, b), pick(k, right, b, a), pick(k, b, a, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "Read the first sentence again. It says what this person is like. Would they do that?"
+    }
+  }
+  hint "What does the first sentence tell you about this person?"
+  hint "Someone like that, in this place, would most likely do what?"
+}

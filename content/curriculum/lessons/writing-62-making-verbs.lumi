@@ -1,0 +1,65 @@
+# The canal town's sentences were made up for this lesson.
+lesson writing-making-verbs v=1 format=teach grade=5 unit=2 subject=writing levels=[easy, medium, hard] {
+  title "Making verbs with -en, -ify, -ise and -ate"
+  goal "Turn a noun or an adjective into a verb with -en, -ify, -ise or -ate, and spell it."
+
+  look {
+    scene 36x12 {
+      row all at=canvas(1, 1) space=2 align=end {
+        canallock l level=0.5 boat=1
+        passage strip text="The cutters will widen the canal." width=16 numbers=false
+      }
+    }
+    say """
+      Wide describes the canal. Add -en and it becomes widen, a verb: something the cutters do. The
+      endings -en, -ify, -ise and -ate turn nouns and adjectives into verbs: dark into darken, pure
+      into purify, apology into apologise, active into activate. Watch the spelling where they join:
+      an e or a y often drops, and simple loses its le to make simplify.
+      """
+  }
+  do {
+    level easy {
+      worked writing.verb-make k=0
+    }
+    show writing.verb-make k=2 easy-k=1 hard-k=3
+    show writing.verb-suffix k=2 easy-k=0 hard-k=4
+    show writing.verb-class k=1 easy-k=0 hard-k=3
+    show writing.verb-suffix k=3 easy-k=1 hard-k=5
+    show writing.verb-class k=2 easy-k=2 hard-k=4
+  }
+  story {
+    show writing.verb-type k=2 easy-k=0 hard-k=4
+    show writing.verb-type k=3 easy-k=1 hard-k=5
+    level medium hard {
+      show writing.verb-make k=4 hard-k=4
+    }
+  }
+  try stars=2 {
+    show writing.verb-root k=1 easy-k=0 hard-k=3
+  }
+  try stars=3 {
+    show writing.verb-write k=0 hard-k=1
+  }
+  remember {
+    say "-en, -ify, -ise and -ate make verbs from other words. Check whether an e, a y or le drops."
+  }
+
+  grown-ups """
+    The idea is that a suffix can change a word's class, here making verbs from nouns and adjectives,
+    and that the spelling at the join follows a few rules. The way in chooses the verb that fills a
+    gap; the core picks the one ending that makes a real verb, says whether the root was a noun or
+    an adjective, and types verbs where a letter drops (simple to simplify, apology to apologise).
+    The wrong idea to watch for is gluing the ending on unchanged (simpleify, apologyise). If the
+    child is stuck, say the made verb slowly and write what is heard, then check the root's last
+    letters. Off the page, look for made verbs on signs and packets (sterilise, purify, freshen).
+    This lesson takes writing-56 (naming word classes) a step on, from naming a class to changing
+    one. England's grammar appendix for year 5 lists "converting nouns or adjectives into verbs
+    using suffixes [for example, -ate; -ise; -ify]" (recalled, not fetched).
+    """
+  level easy {
+    grown-ups "At this level a verb is chosen once in the teacher's pen first, the roots are short and keep their spelling (sharp, pure, deep, beauty), the roots to name are dark and pollen, the typed verbs are lengthen and activate, and the two-star goes back from widen."
+  }
+  level hard {
+    grown-ups "At this level the endings asked are -ate and -ify on captive and electric, the roots to name are glory and real, the typed verbs are solidify and classify, and the two-star goes back from apologise to apology."
+  }
+}

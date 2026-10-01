@@ -1,0 +1,35 @@
+# Each story stops just before something happens. The right prediction follows from the details;
+# one wrong one could happen but nothing points to it, and the other goes against a detail. In the
+# later versions the clue is implied rather than said.
+item reading.predict-next v=1 skills=[reading.prediction, reading.inference, reading.evidence] {
+  title "What happens next"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+  let text={pick(k, "Zara filled the beaker right to the top. She picked it up and hurried across the lab. Her foot caught on a bag strap.", "Dr Patel put a bowl of ice by the sunny window and went to lunch. She was gone for an hour.", "Leo's bean plant sat in the dark cupboard for two weeks. He forgot all about it and never watered it.", "Mia kept looking at the clock. Her cake had been in the oven for forty minutes. The recipe said thirty.", "The lab mouse sniffed the air. Someone had left its cage door open a crack. Ben was busy at the microscope with his back to the cage.", "Ana planted a seed in each of two pots. She watered the first pot every day. On the second pot she stuck a label that said no water.")}
+  let right={pick(k, "Some of the water spills.", "The ice has melted.", "The plant is pale and floppy.", "The cake is burnt at the edges.", "The mouse gets out of the cage.", "Only the first seed grows.")}
+  let maybe={pick(k, "Zara drops her bag.", "Dr Patel eats a sandwich.", "Leo finds a new pot.", "Mia makes a second cake.", "Ben looks at a hair.", "Ana plants a third seed.")}
+  let against={pick(k, "Zara walks slowly and spills nothing.", "The ice is harder than before.", "The plant is tall and green.", "The cake is still runny inside.", "The mouse stays asleep all day.", "Both seeds grow just the same.")}
+
+  scene 36x29 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{text}" width=22 numbers=false
+        beaker b max=500 step=100 level=pick(k, 500, 300, 200, 0, 0, 200) unit=ml
+      }
+      text ask "What is most likely to happen next?" width=30
+      choice pick options=[pick(k, maybe, right, against, right, maybe, against), pick(k, right, against, maybe, maybe, right, right), pick(k, against, maybe, right, against, against, maybe)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == against) point=p {
+      say "One detail in the story goes against that. Read it again and find the detail."
+    }
+    when (pick == maybe) point=p {
+      say "That could happen, but nothing in the story points to it. Which answer do the details lead to?"
+    }
+  }
+  hint "Which details in the story matter most?"
+  hint "If those details are true, what usually comes next?"
+}

@@ -1,0 +1,28 @@
+# Each entry has three numbered meanings, written for this lesson in the plain style of a
+# children's dictionary, and the sentence decides which one is meant.
+item reading.dict-sense v=1 skills=[reading.dictionary, reading.vocabulary] {
+  title "Which meaning"
+  difficulty pick(k, 0, 1, 1, 2, 2)
+  let k=0..4
+  let entry={pick(k, "light. 1. brightness that lets you see things. 2. not heavy. 3. pale in colour, as in light blue.", "set. 1. a group of things that belong together. 2. to put something down. 3. of the sun or moon, to go down below the edge of the sky.", "bright. 1. clever and quick to learn. 2. giving out a lot of light. 3. strong in colour, as in bright red.", "shoot. 1. to fire an arrow or a ball. 2. to move very fast. 3. a new stem growing from a plant.", "pole. 1. a long, thin stick or post. 2. the point at the very north or south of the Earth. 3. one end of a magnet.")}
+  let line={pick(k, "The bag of feathers was light enough to carry.", "The moon set behind the hill before dawn.", "Ava is bright and spotted the comet first.", "A star seemed to shoot across the sky.", "We held the tent up with a pole.")}
+  let right={pick(k, "meaning 2", "meaning 3", "meaning 1", "meaning 2", "meaning 1")}
+
+  scene 29x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage d title="From the dictionary" text="{entry}" width=28 numbers=false
+      caption strip text="{line}" width=28
+      text ask "Which meaning does the word have in this sentence?" width=28
+      choice pick options=["meaning 1", "meaning 2", "meaning 3"]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=strip {
+      say "That meaning is in the entry, but try it in the sentence. Does the sentence still make sense?"
+    }
+  }
+  hint "Read the sentence. What is the word doing in it?"
+  hint "Put each meaning in place of the word. Which one makes sense?"
+}

@@ -1,0 +1,31 @@
+# A hyphen after re- keeps apart two words that would otherwise be spelt the same: re-cover and
+# recover, re-sign and resign, re-count and recount, re-press and repress, re-form and reform.
+item writing.hyphen-re v=1 skills=[writing.hyphens, writing.spelling, writing.ambiguity] {
+  title "Re- with or without"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  let line={pick(k, "The wind tore the tarpaulin, so we had to ... the sledge with a new one.", "The leader will ... the logbook at the end of every day.", "Pia told us about the walk to the iceberg. She loves to ... it.", "We had to ... the puffins on the cliff, since the first total was wrong.", "After the storm the team had to ... the camp from what was left.")}
+  let right={pick(k, "re-cover", "re-sign", "recount", "re-count", "re-form")}
+  let other={pick(k, "recover", "resign", "re-count", "recount", "reform")}
+  let means={pick(k, "get it back, or get better", "give up a job", "count it again", "tell the story of it", "change it for the better")}
+
+  scene 31x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{line}" width=21 numbers=false
+        sledge s slats=5
+      }
+      text ask "Which spelling fills the gap?" width=30
+      choice pick options=[pick(k, right, other, right, other, right), pick(k, other, right, other, right, other)]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == other) point=p {
+      say "That spelling means {means}. Does the sentence mean that, or does it mean doing something again?"
+    }
+  }
+  hint "Does the gap mean doing the thing again?"
+  hint "If it does, a hyphen keeps re- apart from the word it is added to."
+}

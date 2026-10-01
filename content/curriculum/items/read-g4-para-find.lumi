@@ -1,0 +1,26 @@
+# A page about whales skimmed by its key sentences: the reader finds the paragraph that will hold a
+# fact without reading every paragraph. The later questions use no words from the key sentence.
+item reading.para-find v=1 skills=[reading.main-idea, reading.retrieval, reading.text-features] {
+  title "Which paragraph"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let q={pick(k, "where humpbacks swim to each year", "what blue whales eat", "how far away a whale's call can be heard", "why a whale has to come up to the surface")}
+  let right={pick(k, "3", "2", "4", "1")}
+
+  scene 31x24 {
+    column all at=canvas(1, 1) space=1 align=start {
+      listpad pad title="Key sentences" items=["1. Like us, whales are mammals.", "2. Whales have clever ways to feed.", "3. Some whales make long journeys.", "4. Whales are noisy animals."] count=0 width=20 ticks=false
+      text ask "Each paragraph of a page about whales starts with its key sentence. Which paragraph number will tell you {q}?" width=30
+      choice pick options=["1", "2", "3", "4"]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=pad {
+      say "That paragraph is about something else. Which key sentence would the fact you want belong under?"
+    }
+  }
+  hint "What kind of fact are you looking for: food, travel, sound or breathing?"
+  hint "Which key sentence is about that?"
+}

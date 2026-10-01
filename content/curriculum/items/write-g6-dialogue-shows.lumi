@@ -1,0 +1,34 @@
+# What a line, and the action beside it, shows about the speaker. The right reading uses both the
+# words and what the speaker does; the wrong ones take the words alone.
+item writing.dialogue-shows v=1 skills=[writing.dialogue, writing.characters, reading.inference] {
+  title "What it shows about them"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let line={pick(k, "\"Me first,\" said Sam, pushing past to the stove. \"I was cold before any of you.\"", "\"Take my gloves,\" said Olaf. \"My hands have been colder than this.\"", "\"Fine. Do it your way. You always do,\" said Lena, not looking up.", "\"We'll be home by Friday,\" said Ines, and smiled, and checked the map again for the third time.")}
+  let right={pick(k, "He thinks of himself first.", "He is generous and tough.", "She is hurt and feels ignored.", "She is less sure than she sounds.")}
+  let a={pick(k, "He is the coldest one there.", "He does not feel the cold.", "She is happy to let them choose.", "She is certain they will be home.")}
+  let b={pick(k, "He is helping the others.", "He wants Lena's gloves.", "She is too busy to talk.", "She cannot read the map.")}
+
+  scene 31x24 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{line}" width=21 numbers=false
+        person who pose=sit age=grownup hair=short colour=brown top=mint
+      }
+      text ask "What does this show about the speaker?" width=30
+      choice pick options=[pick(k, a, right, b, a), pick(k, right, b, a, right), pick(k, b, a, right, b)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == a) point=p {
+      say "That takes the words at face value. Read what the speaker does as they say it. Does it agree with the words?"
+    }
+    when (pick == b) point=p {
+      say "Nothing in the line points to that. What do the words and the action show together?"
+    }
+  }
+  hint "What does the speaker say, and what do they do?"
+  hint "Do the words and the action agree? What does that tell you?"
+}

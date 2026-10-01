@@ -1,0 +1,35 @@
+# Two sentences about the same event; which writer is surer. Some pairs differ by a modal verb, some
+# by an adverb, and in the last the surer one uses no special word at all.
+item writing.modal-compare v=1 skills=[writing.modal-verbs, writing.vocabulary] {
+  title "Which writer is surer"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let s1={pick(k, "The lights might appear tonight.", "Saturn will probably rise at nine.", "The comet could be back in spring.", "Perhaps it will snow on the cliffs.")}
+  let s2={pick(k, "The lights will appear tonight.", "Saturn may rise at nine.", "The comet should be back in spring.", "It snows on the cliffs every winter.")}
+  let right={pick(k, "the 2nd", "the 1st", "the 2nd", "the 2nd")}
+
+  scene 29x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        shootingstar st sparkles=3 facing=1
+        telescope t tilt=30
+      }
+      caption c1 text="1. {s1}" width=28
+      caption c2 text="2. {s2}" width=28
+      text ask "Which writer is surer?" width=28
+      choice pick options=["the 1st", "the 2nd"]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 3 and pick != right) point=c2 {
+      say "The second sentence has no might or perhaps in it at all. A plain statement is the surest of all."
+    }
+    when (k < 3 and pick != right) point=c1 {
+      say "Put the two words side by side. Which one leaves more room for it not to happen?"
+    }
+  }
+  hint "Find the word in each sentence that says how sure it is."
+  hint "Which of the two words leaves less room for doubt?"
+}

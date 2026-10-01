@@ -1,0 +1,38 @@
+# An image lets the reader see or feel something, where a statement only reports it. The wrong lines
+# report a fact, or a feeling, about the same thing on the moon.
+item writing.poem-image v=1 skills=[writing.poetry, writing.imagery, writing.describing] {
+  title "Which line is an image"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  let what={pick(k, "the Earth from the moon", "the moon's dust", "the lander", "the silence", "the craters")}
+  let right={pick(k, "The Earth hangs over the edge like a blue marble.", "The dust lies soft and grey as ash in a cold grate.", "Our lander squats on its four thin legs, a beetle made of foil.", "The quiet presses on my helmet like deep water.", "The craters stare up, a field of empty bowls.")}
+  let fact={pick(k, "The Earth can be seen from the moon.", "There is a lot of dust on the moon.", "The lander has four legs.", "There is no sound on the moon.", "The moon has many craters.")}
+  let feel={pick(k, "I liked looking at the Earth.", "The dust was interesting.", "Our lander was amazing.", "The silence felt strange.", "The craters were very big.")}
+
+  scene 33x42 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        earth e up=2
+        lander l rungs=5
+        crater c count=2
+      }
+      text ask "Three lines about {what}. Which one is an image that lets you see or feel it?" width=30
+      passage o1 title="1" text="{pick(k, fact, right, feel, fact, right)}" width=30 numbers=false
+      passage o2 title="2" text="{pick(k, right, feel, fact, right, feel)}" width=30 numbers=false
+      passage o3 title="3" text="{pick(k, feel, fact, right, feel, fact)}" width=30 numbers=false
+      choice pick options=["1", "2", "3"]
+    }
+  }
+
+  answer pick=pick(k, "2", "1", "3", "2", "1")
+  feedback {
+    when (pick == pick(k, "1", "3", "2", "1", "3")) point=ask {
+      say "That is true, but it reports a fact. What could you picture from it?"
+    }
+    when (pick == pick(k, "3", "2", "1", "3", "2")) point=ask {
+      say "That tells you what the writer felt, but gives you nothing to see. Which line makes a picture?"
+    }
+  }
+  hint "Close your eyes after each line. Which one puts a picture in your head?"
+  hint "Does the line compare the thing to something, or show it doing something?"
+}

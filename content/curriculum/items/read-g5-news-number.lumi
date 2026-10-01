@@ -1,0 +1,31 @@
+# Facts recorded from the body of the report, some needing two places in it. The gate's times give
+# 36 hours from the crack to the first boat through.
+item reading.news-number v=1 skills=[reading.newspapers, reading.retrieval, reading.evidence] {
+  title "Facts from the report"
+  difficulty k
+  let k=0..2
+  let q={pick(k, "How many boats waited in all, above and below the lock?", "How many more boats waited above the lock than below it?", "How many hours passed between the crack being found and the first boat going through?")}
+
+  scene 35x27 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p title="The Canal Gazette" text="The crack was found at seven on Tuesday morning. Fourteen boats waited above the lock and nine below it. Engineers fitted a new gate on Wednesday, and the first boat went through at seven that evening." width=19 numbers=false
+        narrowboat nb windows=4 pots=2
+      }
+      text ask "{q}" width=30
+      number-input n
+    }
+  }
+
+  answer n=pick(k, 23, 5, 36)
+  feedback {
+    when (k == 2 and n == 12) point=p {
+      say "Seven to seven is twelve hours on one day, but the first boat went through on the next day. Count the night too."
+    }
+    when (k == 2 and n == 24) point=p {
+      say "From seven on Tuesday morning to seven on Wednesday morning is 24 hours. The first boat went through in the evening."
+    }
+  }
+  hint "Find the sentence or sentences that hold the numbers you need."
+  hint "Do you need one number from the report, or two put together?"
+}

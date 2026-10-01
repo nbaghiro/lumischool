@@ -1,0 +1,34 @@
+# Poems are pressed small: the right version keeps the image and drops the words that do no work.
+# One wrong version keeps the empty words, the other cuts the image itself.
+item writing.poem-cut v=1 skills=[writing.poetry, writing.concision, writing.editing] {
+  title "Cut the empty words"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let draft={pick(k, "I looked and I could see that the Earth was really just like a glass bead.", "There were lots of craters and they were all sort of like the dents in an old pan.", "It was very quiet, and the quiet was kind of like a thick blanket over everything.")}
+  let right={pick(k, "The Earth, a glass bead.", "Craters, dents in an old pan.", "The quiet, a thick blanket.")}
+  let kept={pick(k, "I could see the Earth, just like a glass bead.", "Craters, sort of like dents in an old pan.", "So quiet, kind of like a thick blanket.")}
+  let lost={pick(k, "I looked at the Earth.", "There were lots of craters.", "It was very quiet.")}
+
+  scene 32x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p title="First draft" text="{draft}" width=21 numbers=false
+        earth e up=2
+      }
+      text ask "Which line keeps the image and cuts every word that does no work?" width=30
+      choice pick options=[pick(k, kept, right, lost), pick(k, right, lost, kept), pick(k, lost, kept, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == kept) point=p {
+      say "That still has words that do no work: just, sort of, kind of, I could see. Which line drops them all?"
+    }
+    when (pick == lost) point=p {
+      say "That is short, but the image has gone. Which line keeps the picture?"
+    }
+  }
+  hint "Which words in the draft carry the picture?"
+  hint "Which words could go without losing anything?"
+}

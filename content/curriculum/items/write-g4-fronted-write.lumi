@@ -1,0 +1,21 @@
+# The three-star: a ship's log written with fronted adverbials of the child's choosing, each with its
+# comma. A grown-up marks it.
+item writing.fronted-write v=1 stars=3 skills=[writing.adverbials, writing.commas, writing.composing] {
+  title "Write a ship's log"
+  let k=0..1
+
+  scene 31x38 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        ship s sails=3 portholes=4
+        whale w spout=1 facing=-1
+      }
+      text ask "{pick(k, \"Write a ship's log of four sentences about a day at sea. Start three of them with a fronted adverbial: one for when, one for where and one for how.\", \"Write a ship's log of five sentences about a storm at sea. Start four with fronted adverbials, all different, and make the order of time clear.\")}" width=30
+      writinglines lines lines=5 width=30 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="{pick(k, \"Four sentences about a day at sea, three starting with a fronted adverbial (one when, one where, one how), each followed by a comma.\", \"Five sentences about a storm, four starting with different fronted adverbials, each followed by a comma, in an order of time a reader can follow.\")}" notice=["Fronted adverbials at the start", "A comma after each one", "When, where and how all used", "The log makes sense in order"] ask="Which opening did you like best, and why?"
+  hint "Plan the day first: what happened in the morning, where, and how?"
+  hint "Start each sentence with the when, where or how, then a comma."
+}

@@ -1,0 +1,21 @@
+# The three-star: a notice for the canal using made verbs of the child's choosing, each spelt with
+# its change. A grown-up marks it.
+item writing.verb-write v=1 stars=3 skills=[writing.morphology, writing.spelling, writing.composing] {
+  title "A notice with made verbs"
+  let k=0..1
+
+  scene 31x29 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        canallock l level=0.6 boat=1
+        sign s lines=["Notice", "to boats"] kind=board color=mint
+      }
+      text ask "{pick(k, \"Write a notice for boats at the lock with four verbs made with -en, -ify, -ise or -ate, from these words: wide, note, short, length, apology, simple. Underline them.\", \"Write a notice for boats at the lock with five made verbs, at least one for each ending -en, -ify, -ise and -ate. Choose the words yourself and underline the verbs.\")}" width=30
+      writinglines lines lines=4 width=30 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="{pick(k, \"A short notice a boater could follow, with four made verbs used as verbs, such as widen, shorten, apologise and simplify, each spelt right.\", \"A short notice with five made verbs, all four endings used, each a real word, used as a verb and spelt right.\")}" notice=["Each made word is a real verb", "Used as a verb in its sentence", "Spelling changes made (e, y, le)", "Reads as a notice"] ask="Which verb was hardest to spell, and why?"
+  hint "Which words could become verbs about the lock: making something wider, safer, simpler?"
+  hint "Check each one: did a letter drop when the ending went on?"
+}

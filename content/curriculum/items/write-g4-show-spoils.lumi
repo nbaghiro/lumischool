@@ -1,0 +1,29 @@
+# The two-star: a writer wants a character to come across one way, and one of four sentences works
+# against it. Finding it means holding the trait against every sentence.
+item writing.show-spoils v=1 stars=2 skills=[writing.characters, writing.editing, reasoning.find-the-mistake] {
+  title "The sentence that spoils it"
+  let k=0..2
+  let want={pick(k, "brave", "kind", "calm")}
+  let text={pick(k, "Rosa stepped onto the rope bridge first. She tested each plank with her foot. She hid behind Pip and refused to look down. Then she waved the others across.", "Pip shared his bread with Kai. He hid the last apple in his pocket for himself. He helped Rosa carry the water. He let the parrot sit on his shoulder.", "Kai sat still while the ground shook. He spoke slowly so the little ones would not be scared. He packed the bags in order. Then he screamed and ran off down the path.")}
+  let right={pick(k, "3rd", "2nd", "4th")}
+
+  scene 36x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{text}" width=21 numbers=false
+        volcano v smoke=1 island=0
+      }
+      text ask "The writer wants this character to seem {want}. One sentence spoils it. Which? Count from the start." width=30
+      choice pick options=["1st", "2nd", "3rd", "4th"]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "That sentence fits a {want} character. Read every sentence and ask: would a {want} person do this?"
+    }
+  }
+  hint "Picture a {want} person. What would they do?"
+  hint "Which sentence shows someone quite different?"
+}

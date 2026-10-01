@@ -1,0 +1,29 @@
+# The adverbial at the end of the sentence is moved to the front, and the comma follows it. The wrong
+# rewrites put the comma inside the adverbial or inside the main part.
+item writing.fronted-move v=1 skills=[writing.adverbials, writing.commas, writing.sentences] {
+  title "Move it to the front"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let line={pick(k, "The ship sailed into the bay at sunset.", "The whale swam beside us for an hour.", "The gulls followed the boat all the way home.", "We saw the lighthouse after three days at sea.")}
+  let right={pick(k, "At sunset, the ship sailed into the bay.", "For an hour, the whale swam beside us.", "All the way home, the gulls followed the boat.", "After three days at sea, we saw the lighthouse.")}
+  let a={pick(k, "At sunset the ship, sailed into the bay.", "For an hour the whale swam, beside us.", "All the way, home the gulls followed the boat.", "After three days, at sea we saw the lighthouse.")}
+  let b={pick(k, "At, sunset the ship sailed into the bay.", "For an hour the, whale swam beside us.", "All the way home the gulls, followed the boat.", "After three days at sea we, saw the lighthouse.")}
+
+  scene 33x24 {
+    column all at=canvas(1, 1) space=1 align=start {
+      caption strip text="{line}" width=30
+      text ask "Move the when or where to the front. Which is written correctly?" width=30
+      choice pick options=[pick(k, a, right, b, a), pick(k, right, b, a, b), pick(k, b, a, right, right)] stack=column
+      fishshoal f rows=2 cols=4 facing=1
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=strip {
+      say "The comma is in the wrong place. Which words say when or where? The comma goes straight after them."
+    }
+  }
+  hint "Which words at the end of the sentence say when or where?"
+  hint "Put them first, then a comma, then the rest of the sentence."
+}

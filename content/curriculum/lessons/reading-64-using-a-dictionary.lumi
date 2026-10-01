@@ -1,0 +1,68 @@
+# The dictionary entries were written for this lesson. That Venus is the brightest planet is
+# recalled from NASA's planet pages.
+lesson reading-using-a-dictionary v=1 format=teach grade=3 unit=2 subject=reading levels=[easy, medium, hard] {
+  title "Using a dictionary"
+  goal "Find a word in a dictionary by its letters and guide words, and choose the meaning that fits the sentence."
+
+  look {
+    scene 36x14 {
+      row all at=canvas(1, 1) space=2 align=end {
+        book b lines=4 left="night" right="nose" page="74"
+        owlflying o facing=-1
+        moon m phase=1
+      }
+    }
+    say """
+      A dictionary lists words in alphabetical order. When two words start with the same letter,
+      the next letter decides, and then the one after that. The two guide words at the top of a
+      page are its first and last words, so you can tell at a glance whether your word is there.
+      Many words have more than one meaning: choose the one that makes sense in your sentence.
+      """
+  }
+  do {
+    level easy {
+      worked reading.dict-order k=0
+    }
+    show reading.dict-order k=1 easy-k=1 hard-k=2
+    show reading.dict-guide k=1 easy-k=0 hard-k=3
+    level medium hard {
+      show reading.dict-order k=3 hard-k=3
+    }
+    show reading.dict-guide k=2 easy-k=1 hard-k=4
+    show reading.dict-sense k=1 easy-k=0 hard-k=3
+    show reading.dict-sense k=2 easy-k=1 hard-k=4
+  }
+  story {
+    show reading.dict-use k=1 easy-k=0 hard-k=3
+    show reading.dict-use k=2 easy-k=1 hard-k=4
+  }
+  try stars=2 {
+    show reading.dict-root k=1 easy-k=0 hard-k=3
+  }
+  try stars=3 {
+    show reading.dict-entry k=0 hard-k=1
+  }
+  remember {
+    say "Find the page by the guide words, the word by its letters, and the meaning by the sentence."
+  }
+
+  grown-ups """
+    The idea is that a dictionary is used, not read: the child orders words by their first, second
+    and third letters, uses the guide words to find the page, chooses the meaning a sentence needs,
+    and looks up the word without its ending. The way in orders four night words; the core decides
+    from the guide words whether a word is on the page, picks the numbered meaning that fits, and
+    answers a question from a definition. The wrong idea to watch for is stopping at the first
+    letter: moth and moon, or stool and stone, need the letters after it. If the child is stuck,
+    write the two words one above the other and compare them letter by letter with a finger. Off
+    the page, look up three words from a book the child is reading in a real children's
+    dictionary and read the guide words aloud on the way. England's programme of study for years 3
+    and 4 asks children to read by "using dictionaries to check the meaning of words that they have
+    read".
+    """
+  level easy {
+    grown-ups "At this level one ordering is worked in the teacher's pen first, the words to order differ by the first or second letter, the guide words compare at the first or second letter, the meanings are light, set and bright, and the two-star word just drops its -s."
+  }
+  level hard {
+    grown-ups "At this level the words to order share two letters, the guide words compare at the third letter (stool, cool), the meanings are shoot and pole, the definitions are horizon and orbit, and the two-star word is shining, whose e came off when the ending went on."
+  }
+}

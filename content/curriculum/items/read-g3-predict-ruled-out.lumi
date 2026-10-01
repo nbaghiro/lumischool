@@ -1,0 +1,31 @@
+# Three predictions, two of which the story allows; the third is ruled out by one detail (the lid,
+# the glue, the price). The child has to find the detail, not just judge what is likely.
+item reading.predict-ruled-out v=1 skills=[reading.prediction, reading.evidence, reading.inference] {
+  title "Which cannot happen"
+  difficulty k
+  let k=0..2
+  let text={pick(k, "The lab goldfish swam round and round its tank. The tank had a lid on top. The cat sat on the shelf beside it, watching.", "Ben built a tall, wobbly tower of paper cups. He had glued every cup to the one below it. Then the door banged shut.", "Pip had saved 5 dollars. The kite in the shop window cost 8 dollars. Pip went into the shop.")}
+  let out={pick(k, "The cat catches the fish.", "The cups fall off one by one.", "Pip buys the kite with his savings.")}
+  let ok1={pick(k, "The cat taps the glass.", "The whole tower tips over.", "Pip asks if the kite will be cheaper soon.")}
+  let ok2={pick(k, "The cat gets bored and goes.", "The tower wobbles and stays up.", "Pip buys a smaller kite.")}
+
+  scene 31x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{text}" width=22 numbers=false
+        microscope m slide=1 lamp=1
+      }
+      text ask "Two of these could happen next. Which one cannot, because of something the story says?" width=30
+      choice pick options=[pick(k, ok1, out, ok2), pick(k, out, ok2, ok1), pick(k, ok2, ok1, out)] stack=column
+    }
+  }
+
+  answer pick=out
+  feedback {
+    when (pick != out) point=p {
+      say "That could still happen. Look for a detail that makes one of the others impossible."
+    }
+  }
+  hint "Read each prediction. Is there a sentence in the story that stops it happening?"
+  hint "Look closely at the small details: what is on the tank, what holds the cups, how much things cost."
+}

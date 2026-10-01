@@ -1,0 +1,40 @@
+# The prediction is given and the child finds the one sentence that leads to it. Each story has a
+# second detail that looks like a clue and is not one (the mown grass is wet, the pin, the warm
+# water).
+item reading.predict-clue v=1 skills=[reading.prediction, reading.evidence] {
+  title "Which sentence is the clue"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let text={pick(k, "Tom put on his new white trainers. He walked to the lab across the field. The grass had just been cut and was still wet with rain.", "Sam blew his balloon up so tight that it squeaked. He let go of it next to the cactus on the shelf. Then he went to find a pin for his poster.", "Nell poured warm water into the jelly mix and stirred it. She put the bowl in the fridge and went to bed. In the morning she took the bowl out.")}
+  let guess={pick(k, "Tom's trainers get green marks.", "The balloon pops.", "The jelly has set.")}
+  let right={pick(k, "the 3rd", "the 2nd", "the 2nd")}
+
+  scene 31x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{text}" width=22 numbers=false
+        person kid pose=think age=child hair=short colour=brown top=mint
+      }
+      text ask "Prediction: {guess} Which sentence of the story leads to it? Count from the start." width=30
+      choice pick options=["the 1st", "the 2nd", "the 3rd"]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 1 and pick == "the 3rd") point=p {
+      say "The pin is for the poster, not the balloon. Which sentence puts the balloon next to something sharp?"
+    }
+    when (k == 2 and pick == "the 1st") point=p {
+      say "Warm water does not set jelly. Which sentence says where it went to get cold?"
+    }
+    when (k == 2 and pick == "the 3rd") point=p {
+      say "Morning tells you time has passed, but jelly only sets when it gets cold. Which sentence says where it went?"
+    }
+    when (k == 0 and pick != right) point=p {
+      say "Read that sentence again. Would it put green marks on white trainers?"
+    }
+  }
+  hint "Read each sentence and ask: does this make the prediction more likely?"
+  hint "One sentence looks like a clue but is not. Which one really leads there?"
+}

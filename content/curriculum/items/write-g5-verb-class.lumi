@@ -1,0 +1,34 @@
+# What the suffix did: which word class the root was, and that the new word is a verb. The roots are
+# adjectives (dark, sweet, real) and nouns (pollen, glory).
+item writing.verb-class v=1 skills=[writing.word-classes, writing.morphology, writing.grammar] {
+  title "What the ending did"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  let line={pick(k, "The clouds began to darken over the mill.", "Bees pollinate the flowers along the towpath.", "Gran will sweeten the tea with honey.", "The old songs glorify the men who dug the canal.", "Mia did not realise how late it was until the bell rang.")}
+  let verb={pick(k, "darken", "pollinate", "sweeten", "glorify", "realise")}
+  let root={pick(k, "dark", "pollen", "sweet", "glory", "real")}
+  let right={pick(k, "an adjective into a verb", "a noun into a verb", "an adjective into a verb", "a noun into a verb", "an adjective into a verb")}
+
+  scene 33x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage strip text="{line}" width=22 numbers=false
+        windmill wm sails=4
+      }
+      text ask "The verb {verb} is made from {root}. What did the ending change?" width=30
+      choice pick options=["a noun into a verb", "an adjective into a verb", "a verb into a noun"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "a verb into a noun") point=strip {
+      say "Look at {verb} in the sentence. It is something done, so it is the verb. What was {root} before?"
+    }
+    when (pick != right and pick != "a verb into a noun") point=strip {
+      say "Put {root} in a sentence of its own. Does it name a thing, or describe one?"
+    }
+  }
+  hint "Is {root} the name of a thing, or a word that describes a thing?"
+  hint "Try a {root} ... or the ... is {root}. Which one works?"
+}

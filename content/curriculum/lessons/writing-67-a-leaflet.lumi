@@ -1,0 +1,66 @@
+# The waterfall gorge's visitor leaflet, its times and rules were made up for this lesson.
+lesson writing-a-leaflet v=1 format=teach grade=6 unit=5 subject=writing levels=[easy, medium, hard] {
+  title "A leaflet with bullet points"
+  goal "Lay out a leaflet with a title, headings and bullet points that follow one pattern, so a reader in a hurry finds what they need."
+
+  look {
+    scene 36x14 {
+      row all at=canvas(1, 1) space=2 align=end {
+        listpad pad title="On the bridge, please:" items=["• hold the rope", "• walk one by one", "• keep dogs on leads"] count=0 width=16 ticks=false
+        ropebridge rb planks=10 gaps=2
+      }
+    }
+    say """
+      Visitors read a leaflet standing on a path, so its layout does half the work. A title names
+      it, headings name its parts, and a warning that must not be missed sits apart at the top.
+      Bullet points list separate points in any order. After a lead-in ending in a colon, every
+      bullet finishes the lead-in, starts the same way and is punctuated the same way.
+      """
+  }
+  do {
+    level easy {
+      worked writing.leaflet-device k=0
+    }
+    show writing.leaflet-device k=2 easy-k=1 hard-k=3
+    show writing.bullet-parallel k=1 easy-k=0 hard-k=2
+    show writing.bullet-consistent k=1 easy-k=0 hard-k=2
+    show writing.leaflet-device k=3 easy-k=2 hard-k=4
+    show writing.bullet-parallel k=2 easy-k=1 hard-k=3
+  }
+  story {
+    show writing.bullet-from-prose k=1 easy-k=0 hard-k=2
+    show writing.bullet-consistent k=0 easy-k=1 hard-k=1
+    show writing.bullet-from-prose k=0 easy-k=1 hard-k=1
+  }
+  try stars=2 {
+    show writing.bullet-fix k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show writing.leaflet-write k=0 hard-k=1
+  }
+  remember {
+    say "A lead-in with a colon, then bullets that all finish it, start alike and end alike."
+  }
+
+  grown-ups """
+    The idea is that layout guides a reader: titles, headings, bullets and a set-apart warning each
+    do a job, and a bullet list is only easy to read when every bullet follows one pattern. The way
+    in chooses the device for a part of the gorge's leaflet; the core finds the bullet that does not
+    finish its lead-in, the list punctuated the same way all through, and the list that turns a
+    paragraph into bullets without losing or adding a point. The wrong idea to watch for is mixing
+    patterns (a capital and full stop on one bullet, none on the next) and bullets that do not
+    follow on from the lead-in (you will need: bring a drink). If the child is stuck, read the
+    lead-in aloud before each bullet. Off the page, collect leaflets from a museum or a park and
+    judge their bullet lists together. This lesson takes writing-59 (headings, grade three) and
+    writing-50 (numbered steps) a step on. England's programme of study for years 5 and 6 asks for
+    "using further organisational and presentational devices to structure text and to guide the
+    reader [for example, headings, bullet points, underlining]", and its year 6 grammar appendix
+    adds punctuating bullet points consistently (recalled).
+    """
+  level easy {
+    grown-ups "At this level a device is chosen once in the teacher's pen first, the devices are a title, bullets and a heading, the odd bullet is a command among commands, the consistent list is the one of short phrases, and the two-star has two bullets to mend."
+  }
+  level hard {
+    grown-ups "At this level the devices are a numbered list and a warning box, the odd bullets are a command among things and a phrase with no verb, the consistent list ends without full stops after please, the paragraph to turn into bullets is about swimming, and the two-star has three bullets to mend in a list of things."
+  }
+}

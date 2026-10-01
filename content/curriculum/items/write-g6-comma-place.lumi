@@ -1,0 +1,33 @@
+# Sentences that are misread without a comma: the reader takes the start of the main clause as the
+# end of the opening one (after the seals ate the puffins). The comma goes where the opening ends.
+item writing.comma-place v=1 skills=[writing.commas, writing.ambiguity, writing.punctuation] {
+  title "The comma that stops a misreading"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let line={pick(k, "After the seals ate the puffins flew off the rock.", "While the whale was eating the crew watched from the boat.", "Inside the hut was warm and bright.", "As the team hurried on the ice behind them began to crack.")}
+  let right={pick(k, "ate", "eating", "Inside", "on")}
+  let a={pick(k, "seals", "whale", "hut", "hurried")}
+  let b={pick(k, "puffins", "crew", "warm", "ice")}
+
+  scene 35x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        seal s rock=1 facing=1
+        puffins p count=3 facing=-1
+        hut h pictures=1
+      }
+      caption strip text="{line}" width=30
+      text ask "A reader could take this the wrong way at first. After which word does a comma stop that?" width=30
+      choice pick options=[pick(k, a, right, b, right), pick(k, right, b, a, a), pick(k, b, a, right, b)]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=strip {
+      say "Read the sentence with a pause there. Does it still trip you up? Find where the opening part ends and the main part begins."
+    }
+  }
+  hint "Read the sentence aloud. Where did you stumble?"
+  hint "Where does the opening part end? Who or what does the main thing?"
+}

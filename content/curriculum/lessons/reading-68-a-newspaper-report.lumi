@@ -1,0 +1,68 @@
+# The Canal Gazette, its reports on the broken gate at Mill Lock and the duck race, and everyone
+# quoted in them were made up for this lesson.
+lesson reading-a-newspaper-report v=1 format=teach grade=5 unit=3 subject=reading levels=[easy, medium, hard] {
+  title "A newspaper report"
+  goal "Read a newspaper report for its news: who, what, where, when and why, whose words are whose, and whether the headline is fair."
+
+  look {
+    scene 36x16 {
+      row all at=canvas(1, 1) space=2 align=end {
+        passage p title="Lock gate breaks, boats wait two days" text="More than twenty narrowboats were stuck at Mill Lock on Tuesday and Wednesday after one of its wooden gates split, the canal trust said." width=17 numbers=false
+        canallock l level=0.3 boat=1
+      }
+    }
+    say """
+      A newspaper report is built for a reader in a hurry. The headline gives the news in a few
+      words. The opening paragraph says who, what, where, when and often why. After that come the
+      details, the words of people who were there in speech marks, and last the background, which
+      an editor can cut if the page is full. Everything outside the speech marks is the reporter's.
+      """
+  }
+  do {
+    level easy {
+      worked reading.news-part k=0
+    }
+    show reading.news-part k=1 easy-k=2 hard-k=3
+    show reading.news-five k=2 easy-k=0 hard-k=3
+    show reading.news-five k=3 easy-k=1 hard-k=4
+    show reading.news-who-said k=1 easy-k=0 hard-k=2
+    level medium hard {
+      show reading.news-part k=2 hard-k=1
+    }
+  }
+  story {
+    show reading.news-number k=1 easy-k=0 hard-k=2
+    show reading.news-first k=1 easy-k=0 hard-k=3
+    show reading.news-first k=2 easy-k=2 hard-k=1
+    show reading.news-number k=0 easy-k=1 hard-k=1
+  }
+  try stars=2 {
+    show reading.news-headline k=0 easy-k=1 hard-k=2
+  }
+  try stars=3 {
+    show reading.news-write k=0 hard-k=1
+  }
+  remember {
+    say "The news comes first, the details next, the background last, and only words in speech marks are someone else's."
+  }
+
+  grown-ups """
+    The idea is that a news report has a shape made for its reader: headline, an opening that
+    answers who, what, where and when, details and quotations, then background. The way in names a
+    part of the report on the broken lock gate; the core answers a question word from the opening,
+    says whose words a sentence is, records facts from the body (some needing two places in it),
+    and decides which paragraph opens a report and which an editor would cut. The wrong idea to
+    watch for is taking the reporter's own sentences as someone's quotation, and believing a
+    headline that claims more than the facts. If the child is stuck, run a finger along the speech
+    marks and say who is talking. Off the page, read the front page of a local paper together:
+    find the five questions in its opening, and check the headline against the story. The Canal
+    Gazette and its reports were made up for this lesson. England's programme of study for years 5
+    and 6 asks children to "retrieve, record and present information from non-fiction".
+    """
+  level easy {
+    grown-ups "At this level a part is named once in the teacher's pen first, the questions ask where and when, the words to place are a witness's, the facts to record are in one sentence, the paragraph to put first is the duck race's, and the two-star's headlines include a vague one."
+  }
+  level hard {
+    grown-ups "At this level the part to name is the opening paragraph, the questions ask why and on which days, the words to place are the reporter's own, a fact needs times from two sentences (36 hours), and the two-star's wrong headlines are both claims the report does not support."
+  }
+}

@@ -1,0 +1,69 @@
+# The island crew, Rosa, Kai and Pip, and their sentences were made up for this lesson.
+lesson writing-showing-a-character v=1 format=teach grade=4 unit=8 subject=writing levels=[easy, medium, hard] {
+  title "Showing a character"
+  goal "Show what a character feels and is like through what they do, say and look like, without naming it."
+
+  look {
+    scene 34x16 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=2 align=end {
+          volcano v smoke=1 island=1
+          person kai pose=hold age=child hair=short colour=black top=mint
+        }
+        caption strip text="Kai's hands shook as he held the map." width=30
+      }
+    }
+    say """
+      Kai was scared tells the reader. Kai's hands shook as he held the map shows them, and lets
+      the reader work it out, which makes the story feel real. A writer shows a character in three
+      ways: what they do, what they say, and how they look. Do it often enough and the reader knows
+      what the character is like, not just how they feel today.
+      """
+  }
+  do {
+    level easy {
+      worked writing.show-tell k=0
+    }
+    show writing.show-tell k=2 easy-k=1 hard-k=3
+    show writing.show-which-feeling k=2 easy-k=0 hard-k=3
+    show writing.show-how k=1 easy-k=0 hard-k=3
+    show writing.show-which-feeling k=3 easy-k=1 hard-k=4
+    show writing.show-how k=2 easy-k=1 hard-k=4
+    level medium hard {
+      show writing.show-tell k=3 hard-k=4
+    }
+  }
+  story {
+    show writing.show-trait k=1 easy-k=0 hard-k=2
+    show writing.show-trait k=2 easy-k=1 hard-k=3
+  }
+  try stars=2 {
+    show writing.show-spoils k=0 easy-k=1 hard-k=2
+  }
+  try stars=3 {
+    show writing.show-write k=0 hard-k=1
+  }
+  remember {
+    say "Show what a character is like by what they do, what they say and how they look."
+  }
+
+  grown-ups """
+    The idea is that a writer lets the reader work out a character from evidence, which is the
+    reading skill of inference turned round. The way in picks the sentence that shows a feeling
+    rather than naming it; the core reads a feeling back from an action, sorts sentences into
+    doing, saying and looking, and names what a character is like from three things they do. The
+    wrong idea to watch for is a sentence that only moves the character about (Kai walked along the
+    path), which shows nothing, or one that names the feeling and calls it showing. If the child is
+    stuck, act the feeling out together without words and write down what the body did. Off the
+    page, pause a film with the sound off and ask how a character feels and what showed it. This
+    lesson turns round reading-21 (how do they feel, at grade two), where the child read feelings
+    from faces. England's programme of study for years 3 and 4 asks for writing that is "in
+    narratives, creating settings, characters and plot".
+    """
+  level easy {
+    grown-ups "At this level showing is worked once in the teacher's pen first, the feelings are the plainer ones (excited, cross, happy), the sentences to sort use one way each, the characters to name are kind and brave, and the two-star's spoiling sentence is the hidden apple."
+  }
+  level hard {
+    grown-ups "At this level the feelings are proud, jealous, guilty and worried, a sentence to sort is a look told through muddy boots, the characters to name are careless and bossy, the two-star's spoiling sentence is the last, and the three-star shows two traits at once."
+  }
+}

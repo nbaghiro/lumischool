@@ -1,0 +1,22 @@
+# The three-star: one sentence that holds both words of a pair, each used for its own meaning, which
+# no list of answers can prove. A grown-up marks it.
+item writing.homophone-write v=1 stars=3 skills=[writing.homophones, writing.sentences, writing.composing] {
+  title "Both words in one sentence"
+  let k=0..1
+
+  scene 33x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        tent t lit=1
+        moon m phase=1
+        fox f facing=-1
+      }
+      text ask "{pick(k, \"Write a sentence about a night outdoors that uses both words of one pair: hear and here, meet and meat, or weather and whether.\", \"Write one sentence about a night outdoors that uses both words of two pairs: hear and here, meet and meat, weather and whether, or peace and piece.\")}" width=32
+      writinglines lines lines=3 width=32 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="{pick(k, \"One sentence about a night outdoors with both words of one pair, each spelt for its own meaning, such as I can hear the owl from here.\", \"One sentence about a night outdoors with both words of two pairs, each spelt for its own meaning, such as We could hear the owl from here while we ate a piece of cake in peace.\")}" notice=["Both words of each pair are used", "Each spelling matches its meaning", "One sentence, with a capital and a full stop", "It is about a night outdoors"] ask="How did you check which spelling to use each time?"
+  hint "Pick the pair first. What does each word mean?"
+  hint "Say your sentence aloud before you write it. Where does each word go?"
+}

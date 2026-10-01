@@ -1,0 +1,35 @@
+# Which layout device suits a piece of the gorge's visitor leaflet. Each device has its job: a title
+# names the leaflet, a heading a section, bullets separate points, numbers an order, a box a warning.
+item writing.leaflet-device v=1 skills=[writing.layout, writing.audience] {
+  title "Which layout"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  let what={pick(k, "the name of the whole leaflet", "five things to bring, in no special order", "the start of the part about the rope bridge", "the steps to call the rescue team, in order", "the one rule every visitor must see, even if they read nothing else")}
+  let right={pick(k, "a title", "bullet points", "a heading", "a numbered list", "a warning box at the top")}
+
+  scene 31x34 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        ropebridge rb planks=10 gaps=2
+        kingfisher kf flying=1 facing=-1
+      }
+      text ask "The leaflet for visitors to the gorge needs {what}. Which layout suits it?" width=30
+      choice pick options=["a title", "a heading", "bullet points", "a numbered list", "a warning box at the top"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 1 and pick == "a numbered list") point=ask {
+      say "Numbers tell a reader to follow an order. Do these things have to be packed in order?"
+    }
+    when (k == 3 and pick == "bullet points") point=ask {
+      say "Bullets say the points can be read in any order. Can these steps?"
+    }
+    when (k == 4 and pick != right) point=ask {
+      say "A reader in a hurry may skip the rest. Where would they see it at once?"
+    }
+  }
+  hint "What does a reader need to do with this part: find it, scan it, follow it in order, or not miss it?"
+  hint "Which layout helps with that?"
+}

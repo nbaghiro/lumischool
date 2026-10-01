@@ -1,0 +1,31 @@
+# Ava's camp diary with real words in the wrong places, which a spelling checker would pass. The
+# wrong words are herd, here, new, peace, meat, threw, grate and son.
+item writing.homophone-count v=1 skills=[writing.spelling, writing.homophones, writing.editing] {
+  title "How many wrong words"
+  difficulty pick(k, 0, 1, 2, 1)
+  let k=0..3
+  let text={pick(k, "We sat by the tent in the cool night air. Max said he could here an owl. Then it was quiet, and we went to sleep.", "The sky was so clear that we could see every star. Ava new the name of one of them. Max ate a peace of cake by the fire.", "Gran came to meat us at the gate. We walked threw the long grass to the field. The moon was grate and round above the trees.", "In the morning there was a mist on the field. We herd the birds start to sing. Our boots were wet, so we left them in the son.")}
+
+  scene 36x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage d title="Ava's camp diary" text="{text}" width=24
+        tent t lit=pick(k, 1, 1, 0, 0)
+      }
+      text ask "Every word is spelt like a real word, but some are the wrong word for their meaning. How many?" width=32
+      number-input n
+    }
+  }
+
+  answer n=pick(k, 1, 2, 3, 2)
+  feedback {
+    when (n == 0) point=d {
+      say "A spelling checker would find nothing too. Read each word for what it means in its sentence."
+    }
+    when (n < pick(k, 1, 2, 3, 2) and n > 0) point=d {
+      say "There are more. Check the short words as well as the long ones."
+    }
+  }
+  hint "Read one sentence at a time. Does each word mean what the sentence needs?"
+  hint "Look hardest at words that have a twin that sounds the same."
+}

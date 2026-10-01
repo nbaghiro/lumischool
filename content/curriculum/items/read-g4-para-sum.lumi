@@ -1,0 +1,20 @@
+# The three-star: the main idea of each of three paragraphs in a few words, then one sentence for
+# all three, which is the summary the curriculum line asks for. A grown-up marks it.
+item reading.para-sum v=1 stars=3 skills=[reading.main-idea, reading.summarising, writing.composing] {
+  title "Sum up three paragraphs"
+  let k=0..1
+
+  scene 31x50 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p1 title="1" text="The blue whale is the largest animal on Earth. It can grow to more than 30 metres long and weigh 150 tonnes." width=30 numbers=false
+      passage p2 title="2" text="A blue whale eats krill. It swims at a cloud of them with its mouth open and sieves them out through its baleen." width=30 numbers=false
+      passage p3 title="3" text="Blue whales are among the loudest animals on the planet. Other whales can hear them 1,600 kilometres away." width=30 numbers=false
+      text ask "{pick(k, \"Write the main idea of each paragraph in four words or fewer. Then write one sentence that sums up all three.\", \"Write one sentence that sums up all three paragraphs, using none of the numbers. Then say which paragraph was hardest to fit in, and why.\")}" width=30
+      writinglines lines lines=4 width=30 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="{pick(k, \"Three short main ideas (size, food, sound) and one sentence covering all three, such as the blue whale is huge, eats krill and is very loud, with no single detail standing in for a whole paragraph.\", \"One sentence covering size, food and sound without numbers, and a reason naming one paragraph that was hard to fit and why.\")}" notice=["Each main idea is the whole paragraph's, not a detail", "The summary covers all three", "Short, in the child's own words", "No numbers copied in"] ask="Which word in your summary does the most work?"
+  hint "Cover each paragraph and say what it was about in a few words."
+  hint "Now join your three ideas into one sentence."
+}

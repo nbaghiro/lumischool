@@ -1,0 +1,36 @@
+# Changing the mood by changing one verb. The options are all things a fountain, a bell or a door can
+# do; only one fits the mood asked for.
+item writing.mood-swap v=1 skills=[writing.settings, writing.vocabulary, writing.precise-words] {
+  title "One word, a different mood"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  let line={pick(k, "The fountain ... in the empty square.", "The old bell ... from the tower.", "The library door ... behind them.", "Music ... out of the market.", "Lanterns ... in the windows of the lane.")}
+  let mood={pick(k, "peaceful", "frightening", "creepy", "cheerful", "tense")}
+  let right={pick(k, "splashed gently", "clanged harshly", "groaned shut", "bounced", "flickered")}
+  let a={pick(k, "gurgled and hissed", "chimed sweetly", "clicked shut", "wailed", "glowed warmly")}
+  let b={pick(k, "roared", "rang", "closed", "came", "shone")}
+
+  scene 31x29 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        lantern ln lit=1 post=1
+        citywalls w towers=2 open=1
+      }
+      caption strip text="{line}" width=30
+      text ask "Which words fill the gap to give a {mood} mood?" width=30
+      choice pick options=[pick(k, a, right, b, a, right), pick(k, right, b, a, right, a), pick(k, b, a, right, b, b)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == b) point=strip {
+      say "That word is fine, but plain: it gives no mood at all. Which choice makes the reader feel something?"
+    }
+    when (pick == a) point=strip {
+      say "That gives a mood, but a different one. Which choice fits {mood}?"
+    }
+  }
+  hint "Say the sentence with each choice. How does each one make you feel?"
+  hint "Which one fits {mood}, and which gives no mood at all?"
+}

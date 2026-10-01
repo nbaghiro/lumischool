@@ -1,0 +1,67 @@
+# The Hill Lane sports ground, its times, rules and buses were made up for this lesson.
+lesson writing-an-information-page v=1 format=teach grade=3 unit=5 subject=writing levels=[easy, medium, hard] {
+  title "An information page with headings"
+  goal "Sort facts under short headings so a reader can find what they need on an information page."
+
+  look {
+    scene 34x14 {
+      row all at=canvas(1, 1) space=2 align=end {
+        runners r count=3 numbers=1
+        listpad pad title="When it is open" items=["8 am to 6 pm", "Sundays from 10 am", "Closed on Mondays"] count=0 width=15 ticks=false
+      }
+    }
+    say """
+      An information page tells a reader facts about something. It is not read from top to bottom
+      like a story. A reader looks down the headings, finds the part they want and reads only that.
+      So every heading is short, says what its part is about, and has only the facts that belong to
+      it.
+      """
+  }
+  do {
+    level easy {
+      worked writing.info-heading-fits k=0
+    }
+    show writing.info-heading-fits k=2 easy-k=1 hard-k=3
+    show writing.info-where-look k=2 easy-k=0 hard-k=3
+    show writing.info-good-heading k=1 easy-k=0 hard-k=2
+    show writing.info-where-look k=3 easy-k=1 hard-k=4
+    level medium hard {
+      show writing.info-heading-fits k=1 hard-k=2
+    }
+  }
+  story {
+    show writing.info-wrong-column k=0 easy-k=1 hard-k=2
+    show writing.info-good-heading k=0 easy-k=1 hard-k=1
+    show writing.info-wrong-column k=1 easy-k=2 hard-k=0
+  }
+  try stars=2 {
+    show writing.info-mislabelled k=0 easy-k=1 hard-k=2
+  }
+  try stars=3 {
+    show writing.info-page k=0 hard-k=1
+  }
+  remember {
+    say "A heading is a few words that say what its part is about, and only facts about that go under it."
+  }
+
+  grown-ups """
+    The idea is that an information page is read by its headings: a reader skims them, chooses
+    one, and reads only that part, so each heading must be short and name what its part is about.
+    The way in chooses a heading for a short section; the core asks which heading a reader should
+    look under, picks the most useful heading from a sentence and a word too wide to help, and
+    finds a note sorted into the wrong column. The wrong idea to watch for is a heading that names
+    only one fact in the part (the long jump over a part about everything you can do). If the child
+    is stuck, cover the heading and ask what all the sentences under it are about, then say that in
+    three or four words. Off the page, look at an information book together and read only its
+    headings first, guessing what each part will say. The sports ground and its facts were made up
+    for this lesson. England's programme of study for years 3 and 4 asks children, "in
+    non-narrative material, using simple organisational devices [for example, headings and
+    sub-headings]".
+    """
+  level easy {
+    grown-ups "At this level a heading is chosen once in the teacher's pen first, the sections to head are opening times, what to bring and the bus, the readers' questions name their heading's words, the best heading is for the bike racks, the stray notes are the easier ones, and the two-star's wrong heading is the first."
+  }
+  level hard {
+    grown-ups "At this level a section's tempting heading names only part of it, the readers' questions (a dog, somewhere to eat) share no word with their heading, the best heading is for the running track, and the three-star is a page about a sport for a reader who is new to it."
+  }
+}

@@ -1,0 +1,31 @@
+# Ada's ship's log with some commas after fronted adverbials and some left out. Counting the missing
+# ones means finding every fronted adverbial, including the clause and the -ing phrase.
+item writing.fronted-count v=1 skills=[writing.adverbials, writing.commas, writing.editing] {
+  title "Missing commas"
+  difficulty pick(k, 1, 0, 2, 2)
+  let k=0..3
+  let text={pick(k, "At dawn the ship left the harbour. Far out at sea, a whale blew. By lunchtime we could not see land.", "Every morning, Ada checks the ropes. On the top deck the crew were busy. Later that day, the wind dropped.", "As the sky went dark the waves grew taller. Below deck the cook tied down the pots. Holding on tight, we waited for the storm to pass.", "In the harbour the boats rocked gently. Before noon the fishing boats came back. With a shout the captain called us on board.")}
+
+  scene 34x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p title="Ship's log" text="{text}" width=22
+        lighthouse l stripes=3 beam=1
+      }
+      text ask "Each sentence starts with a fronted adverbial. How many commas are missing after one?" width=30
+      number-input n
+    }
+  }
+
+  answer n=pick(k, 2, 1, 2, 3)
+  feedback {
+    when (n < pick(k, 2, 1, 2, 3)) point=p {
+      say "There are more. Find where each sentence's when, where or how ends, and check for a comma there."
+    }
+    when (n > pick(k, 2, 1, 2, 3)) point=p {
+      say "Some of the sentences already have their comma. Count only the ones without."
+    }
+  }
+  hint "In each sentence, find who or what does something."
+  hint "Is there a comma just before it?"
+}

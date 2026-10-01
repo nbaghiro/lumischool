@@ -1,0 +1,40 @@
+# Most important first: a report opens with the main news and ends with what could be cut. Two
+# reports, the broken gate and the duck race, each asked both ways.
+item reading.news-first v=1 skills=[reading.newspapers, reading.text-structure] {
+  title "Most important first"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let p1={pick(k, "The gate was more than forty years old, and the trust will check the others this winter.", "The gate was more than forty years old, and the trust will check the others this winter.", "The race has been held every spring since 1998.", "The race has been held every spring since 1998.")}
+  let p2={pick(k, "More than twenty narrowboats were stuck at Mill Lock for two days after a gate split.", "More than twenty narrowboats were stuck at Mill Lock for two days after a gate split.", "Four hundred plastic ducks raced down the canal on Saturday and raised 840 dollars for the rescue boat.", "Four hundred plastic ducks raced down the canal on Saturday and raised 840 dollars for the rescue boat.")}
+  let p3={pick(k, "\"I heard a bang like a gunshot,\" said the lock-keeper.", "\"I heard a bang like a gunshot,\" said the lock-keeper.", "The winning duck, number 212, belonged to Leo Park, who is nine.", "The winning duck, number 212, belonged to Leo Park, who is nine.")}
+  let q={pick(k, "Which paragraph should open the report?", "The editor must cut one paragraph to fit the page. Which should go?", "Which paragraph should open the report?", "The editor must cut one paragraph to fit the page. Which should go?")}
+  let right={pick(k, "B", "A", "B", "A")}
+
+  scene 31x34 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage a title="A" text="{p1}" width=30 numbers=false
+      passage b title="B" text="{p2}" width=30 numbers=false
+      passage c title="C" text="{p3}" width=30 numbers=false
+      text ask "{q}" width=30
+      choice pick options=["A", "B", "C"]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick != right) point=b {
+      say "A reader may stop after one paragraph. Which one tells them the main news?"
+    }
+    when (k == 2 and pick != right) point=b {
+      say "A reader may stop after one paragraph. Which one tells them the main news?"
+    }
+    when (k == 1 and pick != right) point=a {
+      say "Cut from the bottom: which paragraph could go without the reader missing the news?"
+    }
+    when (k == 3 and pick != right) point=a {
+      say "Cut from the bottom: which paragraph could go without the reader missing the news?"
+    }
+  }
+  hint "Which paragraph tells what happened, to whom, where and when?"
+  hint "Which one is background that the news makes sense without?"
+}

@@ -1,0 +1,31 @@
+# Descriptions of places in the walled city, written for this lesson, each building one mood
+# without naming it. The wrong moods are the ones a careless reader takes from a single word.
+item writing.mood-which v=1 skills=[writing.settings, writing.describing, reading.inference] {
+  title "What mood"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  let text={pick(k, "Swallows dipped over the fountain. Warm light lay across the stones, and somewhere a child was humming. The water whispered in its bowl.", "The lanes were packed. Stall-holders shouted prices, bells jangled on the carts, and the smell of hot bread drifted over everything.", "The library door creaked open on its own. Inside, the dust hung still, and the shelves stretched back into the dark. Something at the far end went click.", "The clock tower struck eleven. No one moved in the square. The guard at the gate gripped his lamp and stared at the road, waiting.", "Rain dripped from the walls. The square was empty, the stalls covered in grey sheets, and the fountain had been switched off for the winter.")}
+  let right={pick(k, "calm and peaceful", "busy and cheerful", "creepy", "tense, as if something will happen", "dull and sad")}
+  let a={pick(k, "busy and cheerful", "tense, as if something will happen", "dull and sad", "calm and peaceful", "creepy")}
+  let b={pick(k, "creepy", "calm and peaceful", "busy and cheerful", "creepy", "tense, as if something will happen")}
+
+  scene 32x32 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{text}" width=22 numbers=false
+        clocktower t hour=11 minute=0
+      }
+      text ask "What mood does this description create?" width=30
+      choice pick options=[pick(k, a, right, b, a, right), pick(k, right, b, a, right, b), pick(k, b, a, right, b, a)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "One word might point that way, but read all the details together. What do they make you feel?"
+    }
+  }
+  hint "What can you see, hear and smell in the description?"
+  hint "How would you feel standing there?"
+}

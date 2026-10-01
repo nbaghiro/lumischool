@@ -1,0 +1,30 @@
+# The key sentence, the one that states the main idea, is often first but not always; here it moves
+# from first to second to last. Whales breathing air through a blowhole is recalled from NOAA
+# Fisheries' species pages, and the open sea paragraph is general.
+item reading.para-key v=1 skills=[reading.main-idea, reading.text-structure] {
+  title "The key sentence"
+  difficulty k
+  let k=0..2
+  let text={pick(k, "Humpback whales have a clever way to catch fish. A group of them swims in a circle under the fish, blowing bubbles. The bubbles make a curtain the fish will not cross. Then the whales lunge up through the middle with their mouths open.", "On a calm day the sea can look empty. But the open sea is full of life. Tiny plankton drift near the top, fish swim below, and whales travel through it all.", "Whales live their whole lives in water, but they cannot breathe it. They swim up to the surface and breathe air through a blowhole on top of the head. Then they hold their breath and dive again. Like us, whales are mammals, and they must breathe air.")}
+  let right={pick(k, "1st", "2nd", "4th")}
+
+  scene 33x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{text}" width=20 numbers=false
+        dolphins d count=2
+      }
+      text ask "Which sentence is the key sentence, the one that gives the main idea? Count from the start." width=30
+      choice pick options=["1st", "2nd", "3rd", "4th"]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "That sentence gives a detail, or sets the scene. Which sentence could be the paragraph's heading if it were shorter?"
+    }
+  }
+  hint "Which sentence do all the others explain or give examples of?"
+  hint "The key sentence is not always first. Check the last one too."
+}

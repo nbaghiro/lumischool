@@ -1,0 +1,21 @@
+# The three-star: an information page of the child's own, planned under headings. What it is about
+# is the child's choice, so the facts cannot be checked by the machine; a grown-up marks it.
+item writing.info-page v=1 stars=3 skills=[writing.information, writing.headings, writing.composing] {
+  title "Write an information page"
+  let k=0..1
+
+  scene 33x40 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        listpad pad title="My page" items=["Title:", "Heading 1:", "Heading 2:", "Heading 3:"] count=0 width=16 ticks=false
+        goalposts gp ball=1
+      }
+      text ask "{pick(k, \"Write an information page about a place where you play. Give it a title, then three headings with two facts under each.\", \"Write an information page about a sport you know. Give it a title, then three headings, each with two or three facts that a reader new to the sport would need.\")}" width=32
+      writinglines lines lines=6 width=32 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="A title, then three short headings, each over facts that belong to it, written as plain sentences or notes a reader can use, with no fact under the wrong heading." notice=["A title for the whole page", "Three short headings", "Every fact sits under the right heading", "Facts, not a story"] ask="Which heading would a reader look under first, and why?"
+  hint "List everything you know first. Then sort the list into groups."
+  hint "Give each group a short heading that says what it is about."
+}

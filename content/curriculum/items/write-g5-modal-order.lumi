@@ -1,0 +1,21 @@
+# Words that say how sure a writer is, put in order from not at all to completely. Each set has one
+# pair close together (perhaps and possibly sit apart from probably), so the order needs thought.
+item writing.modal-order v=1 skills=[writing.modal-verbs, writing.vocabulary] {
+  title "From not sure to sure"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 32x23 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        telescope t tilt=40
+        text ask "Number these from least sure (1) to most sure (4)." width=19
+      }
+      sequence s items=[pick(k, "We will see the comet.", "We probably will see it.", "We should see it."), pick(k, "We will not see the comet.", "We certainly will see it.", "We cannot see it."), pick(k, "We might see the comet.", "We certainly will not see it.", "It is so bright that we must see it."), pick(k, "We will probably see the comet.", "We may see it.", "We could see it, with luck.")] blanks=[p1, p2, p3, p4]
+    }
+  }
+
+  answer p1=pick(k, 4, 3, 3) p2=pick(k, 1, 4, 1) p3=pick(k, 2, 1, 4) p4=pick(k, 3, 2, 2)
+  hint "Find the sentence that is completely sure it will not happen, and the one completely sure it will."
+  hint "Of the two in the middle, which sounds more likely?"
+}

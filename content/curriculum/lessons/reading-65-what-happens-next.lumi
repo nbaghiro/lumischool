@@ -1,0 +1,66 @@
+# The stories were written for this lesson.
+lesson reading-what-happens-next v=1 format=teach grade=3 unit=8 subject=reading levels=[easy, medium, hard] {
+  title "What happens next"
+  goal "Predict what will happen next in a story, and point to the detail that makes it likely."
+
+  look {
+    scene 34x16 {
+      row all at=canvas(1, 1) space=2 align=end {
+        passage p text="Zara filled the beaker right to the top. She picked it up and hurried across the lab. Her foot caught on a bag strap." width=20 numbers=false
+        beaker b max=500 step=100 level=500 unit=ml
+      }
+    }
+    say """
+      Good readers guess what will happen next, and their guesses are not wild. They use the
+      details: a beaker filled to the top, a hurry, a foot caught on a strap. Some details are
+      said, and some you work out. A prediction can change: if a new sentence changes the facts,
+      change your guess too.
+      """
+  }
+  do {
+    level easy {
+      worked reading.predict-next k=0
+    }
+    show reading.predict-next k=2 easy-k=1 hard-k=4
+    show reading.predict-clue k=1 easy-k=0 hard-k=2
+    show reading.predict-next k=3 easy-k=2 hard-k=5
+    show reading.predict-character k=1 easy-k=0 hard-k=2
+  }
+  story {
+    show reading.predict-ruled-out k=1 easy-k=0 hard-k=2
+    show reading.predict-clue k=0 easy-k=1 hard-k=1
+    level medium hard {
+      show reading.predict-next k=4 hard-k=3
+    }
+    show reading.predict-character k=0 easy-k=1 hard-k=1
+    show reading.predict-ruled-out k=2 easy-k=1 hard-k=0
+  }
+  try stars=2 {
+    show reading.predict-change k=0 easy-k=1 hard-k=2
+  }
+  try stars=3 {
+    show reading.predict-write k=0 hard-k=1
+  }
+  remember {
+    say "A good prediction comes from the details. Say which detail, and change it when the facts change."
+  }
+
+  grown-ups """
+    The idea is that a prediction is reasoned from details the text states or implies, so the child
+    always says which detail. The way in predicts what comes next after a beaker filled to the top;
+    the core finds the one sentence that leads to a prediction (past a detail that only looks like
+    a clue), predicts from what a character is always like, and finds the prediction a detail rules
+    out. The wrong idea to watch for is the prediction that could happen but has nothing in the
+    story behind it, and, in the two-star, keeping an old prediction after the facts change. If the
+    child is stuck, read the story aloud and stop before the last sentence each time, asking what
+    they expect and why. Off the page, pause a bedtime story before turning a page and ask for a
+    prediction and its clue, then read on to check. England's programme of study for years 3 and 4
+    asks for "predicting what might happen from details stated and implied".
+    """
+  level easy {
+    grown-ups "At this level the beaker is worked in the teacher's pen first, the clues are said outright (ice in the sun, a plant in the dark), the clue sentence is the trainers on wet grass, the ruled-out prediction is stopped by the lid, and the two-star is the bean plant."
+  }
+  level hard {
+    grown-ups "At this level the clues are implied (a door open a crack, a label that says no water), the clue sentence sits past the jelly's warm water, the ruled-out prediction turns on a price, the character is Gran and her jars, and the three-star weighs two next events."
+  }
+}

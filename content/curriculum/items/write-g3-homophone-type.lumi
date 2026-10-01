@@ -1,0 +1,31 @@
+# Typed from the meaning in the sentence, never from a list to pick from, since spelling is the
+# skill. The pairs are from England's year 3 and 4 homophone list.
+item writing.homophone-type v=1 skills=[writing.spelling, writing.homophones] {
+  title "Spell the word that fits"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+  let line={pick(k, "The pony by the camp shook its long ...", "Ava found a red ... on the bush.", "The fox likes to ... its food under the leaves.", "The tree by the tent has ... taller since last year.", "Max held the pony's ... tightly as they walked.", "Nobody knew ... torch was left on in the tent all night.")}
+  let sounds={pick(k, "main", "bury", "berry", "groan", "rain", "who's")}
+  let word={pick(k, "mane", "berry", "bury", "grown", "rein", "whose")}
+
+  scene 31x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        fox f facing=1
+        tent t lit=1
+      }
+      caption strip text="{line}" width=30
+      text ask "The missing word sounds like {sounds}, but it is spelt another way. Write it." width=30
+      word-input pick options=[word] letters=5
+    }
+  }
+
+  answer pick=word
+  feedback {
+    when (pick == sounds) point=strip {
+      say "That is a real word, but it means something else. Which spelling goes with this meaning?"
+    }
+  }
+  hint "Read the sentence. What does the missing word mean?"
+  hint "Think of another word from the same family, or where you have seen this one written."
+}

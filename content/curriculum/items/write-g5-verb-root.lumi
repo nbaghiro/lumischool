@@ -1,0 +1,31 @@
+# The two-star works backwards from the verb to the word it was made from, putting back the letters
+# the suffix took away (the y of beauty and apology, the le of simple, the e of wide).
+item writing.verb-root v=1 stars=2 skills=[writing.morphology, writing.spelling, reasoning.work-backwards] {
+  title "Back to the root"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let verb={pick(k, "widen", "beautify", "simplify", "apologise")}
+  let root={pick(k, "wide", "beauty", "simple", "apology")}
+  let wrong={pick(k, "wid", "beaut", "simpl", "apolog")}
+  let line={pick(k, "The cutters will widen the canal.", "Flowers beautify the bridge in spring.", "Can you simplify the map for me?", "The crew must apologise to the miller.")}
+
+  scene 36x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage strip text="{line}" width=17 numbers=false
+        canallock l level=0.4 boat=1
+      }
+      text ask "{verb} was made by adding an ending to another word. Write that word, spelt as it is on its own." width=28
+      word-input pick options=[root] letters=8
+    }
+  }
+
+  answer pick=root
+  feedback {
+    when (pick == wrong) point=strip {
+      say "That is what is left when the ending comes off, but it is not a word on its own. Which letter did the ending take away?"
+    }
+  }
+  hint "Take the ending off. Is what is left a word?"
+  hint "If not, which letter would make it one: an e, a y, or le?"
+}

@@ -1,0 +1,35 @@
+# Finding the word that carries the writer's certainty, which may be a modal verb (should, might) or
+# an adverb (perhaps, surely), and is not always next to the main verb.
+item writing.modal-word v=1 skills=[writing.modal-verbs, writing.grammar] {
+  title "The word that says how sure"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  let line={pick(k, "The comet should be easy to see after ten o'clock.", "Clouds might hide the moon tonight.", "Perhaps the lights will come back tomorrow.", "The old telescope can surely reach Saturn's rings.", "The observers will possibly need a second night.")}
+  let right={pick(k, "should", "might", "Perhaps", "surely", "possibly")}
+  let a={pick(k, "easy", "hide", "will", "reach", "need")}
+  let b={pick(k, "after", "tonight", "back", "old", "second")}
+
+  scene 29x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        comet c tail=5
+        observatory o open=0
+      }
+      caption strip text="{line}" width=28
+      text ask "Which word tells you how sure the writer is?" width=28
+      choice pick options=[pick(k, a, right, b, a, right), pick(k, right, b, a, right, a), pick(k, b, a, right, b, b)]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick == "will") point=strip {
+      say "Will on its own is sure. Which word in front of it makes the sentence less sure?"
+    }
+    when (pick != right) point=strip {
+      say "Take that word out. Is the writer still as sure as before? Find the word that changes how sure the sentence is."
+    }
+  }
+  hint "Read the sentence without each word in turn."
+  hint "Which word, taken out, makes the sentence sound more certain?"
+}

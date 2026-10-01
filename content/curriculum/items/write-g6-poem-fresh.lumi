@@ -1,0 +1,35 @@
+# A fresh image against a worn-out one (a cliche) and a plain word. The fresh image is exact and
+# unexpected, which is what makes a reader see the thing again.
+item writing.poem-fresh v=1 skills=[writing.poetry, writing.imagery, writing.precise-words] {
+  title "Fresh or worn out"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let what={pick(k, "the moon's white rocks", "the black sky", "the Earth's blue seas", "the cold on the moon")}
+  let fresh={pick(k, "white as the inside of an eggshell", "black as the inside of a closed piano", "blue as the flame on a gas ring", "cold enough to make my teeth ache through my helmet")}
+  let worn={pick(k, "as white as snow", "as black as night", "as blue as the sky", "as cold as ice")}
+  let plain={pick(k, "very white", "very black", "really blue", "extremely cold")}
+
+  scene 35x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        moon m phase=1
+        earth e up=1
+        footprints f count=4
+      }
+      text ask "Which describes {what} with a fresh image, not a worn-out one?" width=30
+      choice pick options=[pick(k, worn, fresh, plain, worn), pick(k, fresh, plain, worn, plain), pick(k, plain, worn, fresh, fresh)] stack=column
+    }
+  }
+
+  answer pick=fresh
+  feedback {
+    when (pick == worn) point=ask {
+      say "That comparison has been used so often that a reader no longer sees it. Which one is new to you?"
+    }
+    when (pick == plain) point=ask {
+      say "That makes it stronger, but gives no picture. Which one compares it to something you can see?"
+    }
+  }
+  hint "Which of these have you heard many times before?"
+  hint "Which one makes you see the thing as if for the first time?"
+}

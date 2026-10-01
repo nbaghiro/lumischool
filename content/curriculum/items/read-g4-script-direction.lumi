@@ -1,0 +1,33 @@
+# A stage direction in brackets tells the actor how to say a line or what to do, and is never said
+# aloud. The later versions ask why the direction is there, which needs the words of the line too.
+item reading.script-direction v=1 skills=[reading.play-scripts, reading.inference] {
+  title "What the brackets say"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let line={pick(k, "RAVI: (whispering) Listen. What was that?", "NELL: (laughing) It is only a goat on the rocks.", "GRANDAD: (looking at the sky) Snow is coming. Keep close.", "RAVI: (stamping his feet) My toes have gone numb.")}
+  let q={pick(k, "How should the actor playing Ravi say this line?", "How is Nell feeling when she says this?", "Why does Grandad look at the sky?", "Why does Ravi stamp his feet?")}
+  let right={pick(k, "very quietly", "glad it was nothing to fear", "to check the clouds for snow", "to warm up his cold feet")}
+  let a={pick(k, "in a loud shout", "scared of the goat", "to look for the hut", "because he is cross with Nell")}
+  let b={pick(k, "as fast as he can", "cross with Ravi", "to count the stars", "to knock snow off his boots")}
+
+  scene 31x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        goat g facing=-1 rock=1
+        person kid pose=think age=child hair=short colour=black top=mint
+      }
+      caption strip text="{line}" width=30
+      text ask "{q}" width=30
+      choice pick options=[pick(k, a, right, b, a), pick(k, right, a, a, right), pick(k, b, b, right, b)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=strip {
+      say "Read the words in brackets, then the words that are said. What do they tell you together?"
+    }
+  }
+  hint "The words in brackets are for the actor. What do they ask the actor to do?"
+  hint "Now read the spoken words. Why would someone do that while saying them?"
+}

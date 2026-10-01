@@ -1,0 +1,67 @@
+# The walled city's descriptions were written for this lesson.
+lesson writing-setting-a-mood v=1 format=teach grade=5 unit=8 subject=writing levels=[easy, medium, hard] {
+  title "Setting a mood"
+  goal "Describe a place so the reader feels a mood, by choosing details, senses and verbs, without naming it."
+
+  look {
+    scene 36x13 {
+      row all at=canvas(1, 1) space=2 align=end {
+        passage p text="The library door creaked open on its own. Inside, the dust hung still, and the shelves stretched back into the dark." width=20 numbers=false
+        library l columns=6 open=1
+      }
+    }
+    say """
+      The same library can feel calm or creepy. The writer decides which by choosing details: a
+      door that creaks open on its own, dust that hangs still, shelves that stretch into the dark.
+      Sounds, smells, light and weather all carry a mood, and so do verbs: a bell can chime or
+      clang. The best descriptions never name the mood. They let the reader feel it.
+      """
+  }
+  do {
+    level easy {
+      worked writing.mood-which k=0
+    }
+    show writing.mood-which k=2 easy-k=1 hard-k=3
+    show writing.mood-sense k=1 easy-k=0 hard-k=3
+    show writing.mood-detail k=1 easy-k=0 hard-k=2
+    show writing.mood-sense k=2 easy-k=1 hard-k=4
+    show writing.mood-detail k=2 easy-k=1 hard-k=3
+  }
+  story {
+    show writing.mood-swap k=2 easy-k=0 hard-k=3
+    show writing.mood-swap k=1 easy-k=1 hard-k=4
+    level medium hard {
+      show writing.mood-which k=3 hard-k=4
+    }
+  }
+  try stars=2 {
+    show writing.mood-compare k=0 easy-k=1 hard-k=2
+  }
+  try stars=3 {
+    show writing.mood-write k=0 hard-k=1
+  }
+  remember {
+    say "Choose the details, the senses and the verbs that make the reader feel the mood, and never name it."
+  }
+
+  grown-ups """
+    The idea is that atmosphere is built, not stated: a writer chooses which details of a place to
+    show, which senses to use, and which verbs to describe them, so that a reader feels a mood. The
+    way in names the mood of a description of the walled city; the core finds the sense a detail
+    uses, picks the words that do most to build the mood (past facts that would fit any mood), and
+    chooses one verb that gives a mood asked for. The wrong idea to watch for is a description that
+    lists facts (six columns, opened at eight) or names the mood (it was spooky). If the child is
+    stuck, close eyes together and imagine standing in the place: what can be heard, smelt and
+    felt. Off the page, read the first page of a ghost story or an adventure and underline the
+    words that make the mood. This lesson takes the grade two description of a place (so it can be
+    found) a step on, to a description for a feeling. England's programme of study for years 5 and
+    6 asks for "describing settings, characters and atmosphere and integrating dialogue to convey
+    character and advance the action".
+    """
+  level easy {
+    grown-ups "At this level a mood is named once in the teacher's pen first, the moods are the plain ones (busy, creepy, peaceful), the senses are sight and hearing, the verbs to choose are for a fountain and a bell, and the two-star's change is the bunting the writer kept."
+  }
+  level hard {
+    grown-ups "At this level the moods include tense and dull, the senses are touch and taste hidden in a verb, the verbs to choose make the market cheerful and the lanterns tense, and the three-star writes the market twice in two moods."
+  }
+}

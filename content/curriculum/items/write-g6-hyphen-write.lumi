@@ -1,0 +1,21 @@
+# The three-star: pairs of sentences of the child's own that differ by one hyphen or one comma and
+# mean different things, with each meaning explained. A grown-up marks it.
+item writing.hyphen-write v=1 stars=3 skills=[writing.hyphens, writing.commas, writing.ambiguity, writing.composing] {
+  title "One mark, two meanings"
+  let k=0..1
+
+  scene 34x36 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        midnightsun m suns=5 midnight=1
+        hut h pictures=1
+      }
+      text ask "{pick(k, \"Write two sentences about the research hut that use the same words but differ by one hyphen. Then say what each one means.\", \"Write two pairs of sentences about life on the ice: one pair that differs by a hyphen and one that differs by a comma. Say what each sentence means, and which one the team would want to read.\")}" width=30
+      writinglines lines lines=5 width=30 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="{pick(k, \"Two sentences with the same words, one with a hyphen, whose meanings are really different (such as a man-eating bear and a man eating bear), each meaning explained in the child's own words.\", \"One pair that differs by a hyphen and one by a comma, each sentence's meaning explained, and a sensible choice of which the team would want.\")}" notice=["The words are the same in each pair", "Only one mark differs", "The meanings really differ", "Each meaning is explained"] ask="Which of your sentences could cause real trouble if the mark were missing?"
+  hint "Start from a describing word made of two words, like fast-moving or blue-eyed."
+  hint "What would the sentence mean if the two words were read apart?"
+}

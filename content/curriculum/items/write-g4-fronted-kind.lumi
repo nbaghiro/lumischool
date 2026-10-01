@@ -1,0 +1,30 @@
+# What the fronted adverbial tells: when, where or how. How is the hardest, since a phrase like
+# with a loud creak does not use a question word.
+item writing.fronted-kind v=1 skills=[writing.adverbials, writing.grammar] {
+  title "When, where or how"
+  difficulty pick(k, 0, 0, 1, 1, 1, 2)
+  let k=0..5
+  let line={pick(k, "At midnight, the ship's bell rang.", "Above the mast, a gull circled.", "With a loud creak, the cabin door swung open.", "Before breakfast, we scrubbed the deck.", "Between the two islands, the sea was calm.", "Without a word, Ada pointed at the sky.")}
+  let right={pick(k, "when", "where", "how", "when", "where", "how")}
+
+  scene 29x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        ship s sails=2 portholes=2
+        person ada pose=point age=grownup hair=long colour=black top=mint
+      }
+      caption strip text="{line}" width=28
+      text ask "Does the fronted adverbial tell when, where or how?" width=28
+      choice pick options=["when", "where", "how"]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=strip {
+      say "Ask the question with the rest of the sentence: when did it happen, where, or how? Which one do the first words answer?"
+    }
+  }
+  hint "Read the words before the comma."
+  hint "Put a question word in front of the rest of the sentence. Which question do the first words answer?"
+}

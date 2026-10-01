@@ -1,0 +1,35 @@
+# The two-star: two sentences with the same words and different commas, and a question that only
+# one of them answers. The child has to say what each comma does to the meaning.
+item writing.comma-two v=1 stars=2 skills=[writing.commas, writing.hyphens, writing.ambiguity, reasoning.compare] {
+  title "Same words, different meaning"
+  let k=0..2
+  let s1={pick(k, "The researchers who had warm boots walked to the iceberg.", "We fed three year-old huskies.", "The cook, said the pilot, is late.")}
+  let s2={pick(k, "The researchers, who had warm boots, walked to the iceberg.", "We fed three-year-old huskies.", "The cook said the pilot is late.")}
+  let q={pick(k, "In which sentence did every researcher walk to the iceberg?", "In which sentence do you know exactly how many huskies were fed?", "In which sentence is the cook the one who is late?")}
+  let right={pick(k, "the 2nd", "the 1st", "the 1st")}
+
+  scene 31x29 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        iceberg i under=1
+        sledge s slats=6
+      }
+      caption c1 text="1. {s1}" width=30
+      caption c2 text="2. {s2}" width=30
+      text ask "{q}" width=30
+      choice pick options=["the 1st", "the 2nd", "both"]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "both") point=c1 {
+      say "The words are the same, but the punctuation is not. Read each one aloud, pausing at the marks. Do they say the same thing?"
+    }
+    when (pick != right and pick != "both") point=c1 {
+      say "Read that sentence again, pausing at its marks. Does it really answer the question?"
+    }
+  }
+  hint "Read each sentence aloud, pausing at every comma and joining the hyphenated words."
+  hint "Say what each one means in your own words. Which one answers the question?"
+}

@@ -1,0 +1,35 @@
+# The two-star: the writer left out one stage direction, and only the lines before it say which one
+# fits. Every option is a real way to say a line; the scene decides.
+item reading.script-missing-direction v=1 stars=2 skills=[reading.play-scripts, reading.inference, reading.evidence] {
+  title "The missing direction"
+  let k=0..2
+  let l1={pick(k, "NELL: (looking back down the path) Where is Ravi?", "GRANDAD: The path is icy here. Hold the rope.", "RAVI: Your bag looks heavy. I will carry it.")}
+  let l2={pick(k, "GRANDAD: (calling) Ravi. RAVI.", "NELL: ( ... ) I can't. My hands are too cold.", "NELL: ( ... ) Thank you. My arms ached.")}
+  let l3={pick(k, "RAVI: ( ... ) I am here. I stopped to tie my lace.", "GRANDAD: Then hold on to my coat.", "RAVI: (lifting the bag) It is full of stones.")}
+  let right={pick(k, "(running up, looking sorry)", "(her voice shaking)", "(gratefully, handing it over)")}
+  let a={pick(k, "(crossly, arms folded)", "(cheerfully)", "(snatching it back)")}
+  let b={pick(k, "(yawning, very slowly)", "(laughing at Grandad)", "(not looking up)")}
+
+  scene 31x36 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        goat g facing=1 rock=1
+        person kid pose=walk age=child hair=long colour=brown top=berry
+      }
+      caption a1 text="{l1}" width=30
+      caption a2 text="{l2}" width=30
+      caption a3 text="{l3}" width=30
+      text ask "The writer left out the direction where you see ( ... ). Which direction fits, from what happens around it?" width=30
+      choice pick options=[pick(k, a, right, b), pick(k, right, b, a), pick(k, b, a, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=a1 {
+      say "That is a way to say a line, but does it fit this moment? Read what happens just before."
+    }
+  }
+  hint "What has just happened in the lines before the gap?"
+  hint "How would someone feel after that? How would they say the line?"
+}

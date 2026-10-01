@@ -1,0 +1,29 @@
+# One sentence of the paragraph is about something else, so it breaks the main idea. The odd one is
+# true and about whales, so it is found by the main idea and not by a wrong fact.
+item reading.para-odd v=1 skills=[reading.main-idea, reading.text-structure] {
+  title "The sentence that does not belong"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let text={pick(k, "A blue whale eats tiny animals called krill. It swims at a cloud of them with its mouth open. Humpbacks leap right out of the water. Then the blue whale pushes the water out through its baleen and swallows the krill.", "Humpback whales make long journeys every year. Blue whales are among the loudest animals. Some humpbacks swim 8,000 kilometres each way. They go from warm seas, where the calves are born, to cold seas with more food.", "Blue whales are among the loudest animals on the planet. They make pulses, groans and moans. Other whales can hear them up to 1,600 kilometres away. A blue whale can be 30 metres long.")}
+  let right={pick(k, "3rd", "2nd", "4th")}
+
+  scene 36x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{text}" width=20 numbers=false
+        whale w spout=0 facing=1
+      }
+      text ask "One sentence does not belong in this paragraph. Which? Count from the start." width=30
+      choice pick options=["1st", "2nd", "3rd", "4th"]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "That sentence is about the main idea. Find the one that is true but about something else."
+    }
+  }
+  hint "What is the main idea of this paragraph?"
+  hint "Check each sentence against it. Which one wanders off?"
+}

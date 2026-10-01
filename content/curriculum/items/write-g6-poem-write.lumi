@@ -1,0 +1,22 @@
+# The three-star: a short poem of the child's own about the moon, built from images, with chosen line
+# breaks and an ending that turns. A grown-up marks it and hears it read aloud.
+item writing.poem-write v=1 stars=3 skills=[writing.poetry, writing.imagery, writing.composing] {
+  title "Write a moon poem"
+  let k=0..1
+
+  scene 33x37 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        earth e up=2
+        lander l rungs=5
+        crater c count=2
+      }
+      text ask "{pick(k, \"Write a poem of six to eight lines about standing on the moon, built from three images of your own. It does not need to rhyme. Choose where each line ends. Read it aloud.\", \"Write a poem of eight to ten lines about the Earth seen from the moon, built from fresh images, with one word given a line of its own and a last line that turns. Read it aloud.\")}" width=30
+      writinglines lines lines=6 width=30 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="{pick(k, \"Six to eight lines about the moon with at least three images that let a reader see or feel something, no worn-out comparisons, and line breaks that make the reader pause where it matters.\", \"Eight to ten lines about the Earth from the moon, with fresh images, one word alone on a line for weight, and a last line that turns the poem's image in a new direction.\")}" notice=["Images, not statements", "No worn-out comparisons", "Line breaks chosen for a pause", "An ending that turns", "Read aloud with the pauses"] ask="Which image are you proudest of, and why?"
+  hint "List what you would see, hear and feel standing there. Turn three of them into pictures."
+  hint "Read your lines aloud. Where do you want the reader to stop?"
+}

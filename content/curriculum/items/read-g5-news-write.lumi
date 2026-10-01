@@ -1,0 +1,21 @@
+# The three-star: a headline and opening paragraph from a reporter's notes, so the parts and the
+# order of importance are used, not just recognised. A grown-up marks it.
+item reading.news-write v=1 stars=3 skills=[reading.newspapers, writing.composing, writing.recounts] {
+  title "Write the opening"
+  let k=0..1
+
+  scene 31x41 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        listpad pad title="Reporter's notes" items=["Saturday, 9 am", "market by the mill", "boat with 300 pumpkins", "owner Sita Bell", "biggest: 41 kg", "all sold by noon"] count=0 width=17 ticks=false
+        narrowboat nb windows=3 pots=4
+      }
+      text ask "{pick(k, \"Write a headline and the opening paragraph of a report from these notes. The opening must say who, what, where and when.\", \"Write a headline, an opening paragraph that says who, what, where and when, and a second paragraph with a quotation from Sita Bell that you make up.\")}" width=30
+      writinglines lines lines=5 width=30 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="{pick(k, \"A short headline that gives the news fairly, then an opening paragraph in the past tense that says who (Sita Bell), what (300 pumpkins sold from a boat), where (the market by the mill) and when (Saturday morning).\", \"A fair headline, an opening paragraph with who, what, where and when, and a second paragraph with a made-up quotation in speech marks, said by Sita Bell.\")}" notice=["A short, fair headline", "Who, what, where and when in the opening", "The main news before the details", "Past tense, like a report", "Speech marks round a quotation"] ask="What would a reader know if they read only your first paragraph?"
+  hint "Which note is the main news? Start with that."
+  hint "Read your opening back. Does it answer who, what, where and when?"
+}

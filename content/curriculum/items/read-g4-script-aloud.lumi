@@ -1,0 +1,29 @@
+# Counting the words an actor says aloud: the name and the direction are not said. The last version
+# puts a name inside the direction (to Ravi), which is the trap.
+item reading.script-aloud v=1 skills=[reading.play-scripts] {
+  title "Words said aloud"
+  difficulty pick(k, 0, 0, 1, 2)
+  let k=0..3
+  let line={pick(k, "NELL: (running ahead) The hut. We made it.", "RAVI: (whispering) Listen. What was that?", "GRANDAD: (pointing up the path) Look. A light in the window.", "NELL: (to Ravi, quietly) Do not tell Grandad I am scared.")}
+
+  scene 31x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        hut h pictures=2
+        firs f count=3 snow=1
+      }
+      caption strip text="{line}" width=30
+      text ask "How many words does the actor say aloud?" width=30
+      number-input n
+    }
+  }
+
+  answer n=pick(k, 5, 4, 6, 7)
+  feedback {
+    when (n > pick(k, 5, 4, 6, 7)) point=strip {
+      say "That counts words the audience never hears. The name and everything in brackets are for the actor to read, not to say."
+    }
+  }
+  hint "Which parts of the line are for the actor only?"
+  hint "Cover the name and the brackets. Count what is left."
+}

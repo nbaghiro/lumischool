@@ -1,0 +1,31 @@
+# A reader skims the headings rather than reading the page, so the headings alone are shown. The
+# questions grow less direct: the last ones share no word with the heading that answers them.
+item writing.info-where-look v=1 skills=[writing.information, writing.headings, reading.text-features] {
+  title "Where would a reader look"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  let who={pick(k, "Kim wants to know what time the track opens on Sunday.", "Leo wants to know which bus to catch.", "Mia wants to know if she needs her own football.", "Sam wants to know if he can bring his dog.", "Ana wants to know if there is anywhere to eat lunch at the ground.")}
+  let right={pick(k, "When it is open", "How to get there", "What to bring", "Rules", "What is there")}
+
+  scene 32x31 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        grandstand g rows=2 seats=6 filled=5
+        text ask "{who} These are the headings on the page about the Hill Lane sports ground. Under which heading should they look first?" width=19
+      }
+      choice pick options=["What is there", "When it is open", "How to get there", "What to bring", "Rules"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 3 and pick == "What to bring") point=ask {
+      say "A dog is not something you need for the track. Is a dog allowed? Which heading tells you what is allowed?"
+    }
+    when (k == 4 and pick == "What to bring") point=ask {
+      say "Bringing a packed lunch is one answer, but the question asks what is at the ground. Which heading lists the places there?"
+    }
+  }
+  hint "What does the reader really want to find out?"
+  hint "Which heading would hold that kind of fact?"
+}

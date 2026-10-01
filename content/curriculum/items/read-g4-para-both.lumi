@@ -1,0 +1,32 @@
+# The two-star: the main idea drawn from two paragraphs at once. One wrong answer is the first
+# paragraph's main idea alone, and the other is too wide to say anything.
+item reading.para-both v=1 stars=2 skills=[reading.main-idea, reading.summarising] {
+  title "One idea for two paragraphs"
+  let k=0..2
+  let one={pick(k, "A blue whale swims at a cloud of krill with its mouth open, then pushes the water out through its baleen and swallows the krill.", "The blue whale is the largest animal on Earth. It can grow to more than 30 metres long and weigh 150 tonnes.", "Humpback whales make long journeys every year. Some swim 8,000 kilometres between warm seas and cold ones.")}
+  let two={pick(k, "Humpbacks swim in a circle under a shoal of fish, blowing a curtain of bubbles. Then they lunge up through the middle with their mouths open.", "Blue whales are among the loudest animals on the planet. Other whales can hear them up to 1,600 kilometres away.", "Humpbacks are often busy at the surface. They leap out of the water and slap the sea with their fins and tails.")}
+  let right={pick(k, "Whales have clever ways to catch food.", "The blue whale is the biggest and loudest.", "Humpbacks travel far and leap high.")}
+  let first={pick(k, "Blue whales eat krill.", "The blue whale is very big.", "Humpbacks make long journeys.")}
+  let wide={pick(k, "Whales live in the sea.", "There are many kinds of animal.", "The sea is a busy place.")}
+
+  scene 31x37 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p1 title="Paragraph 1" text="{one}" width=30 numbers=false
+      passage p2 title="Paragraph 2" text="{two}" width=30 numbers=false
+      text ask "Which sentence sums up both paragraphs together?" width=30
+      choice pick options=[pick(k, first, right, wide), pick(k, right, wide, first), pick(k, wide, first, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == first) point=p2 {
+      say "That fits the first paragraph, but what about the second? The answer has to cover both."
+    }
+    when (pick == wide) point=p1 {
+      say "That covers both, but it would fit almost any page about the sea. What do these two paragraphs share?"
+    }
+  }
+  hint "Say the main idea of each paragraph on its own first."
+  hint "What do the two main ideas have in common?"
+}

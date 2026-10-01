@@ -1,0 +1,30 @@
+# The two-star: a dictionary lists the root word, not every form, so the child works back from the
+# word with an ending to the word to look up. Typed, so it cannot be picked by its look.
+item reading.dict-root v=1 stars=2 skills=[reading.dictionary, reading.morphology] {
+  title "The word to look up"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let found={pick(k, "comets", "hooted", "brightest", "shining")}
+  let root={pick(k, "comet", "hoot", "bright", "shine")}
+  let line={pick(k, "We saw two comets in one year.", "The owl hooted twice.", "Venus is the brightest planet.", "The stars were shining over the camp.")}
+
+  scene 29x13 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        owlflying o facing=-1
+        caption strip text="{line}" width=19
+      }
+      text ask "Max looked for {found} in the dictionary and could not find it. Which word should he look up instead?" width=28
+      word-input pick options=[root] letters=6
+    }
+  }
+
+  answer pick=root
+  feedback {
+    when (pick == found) point=strip {
+      say "That is the word Max could not find. A dictionary lists a word without its ending. What is left when you take the ending off?"
+    }
+  }
+  hint "Which part of the word is an ending, like -s, -ed, -est or -ing?"
+  hint "Take the ending off. Did the spelling change when the ending went on?"
+}

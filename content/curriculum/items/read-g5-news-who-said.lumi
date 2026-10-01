@@ -1,0 +1,29 @@
+# Whose words are these: a witness, an official, or the reporter. Only words inside speech marks
+# belong to the person named; everything else is the reporter's.
+item reading.news-who-said v=1 skills=[reading.newspapers, reading.evidence] {
+  title "Whose words"
+  difficulty k
+  let k=0..2
+  let words={pick(k, "the water was spraying out sideways", "safety comes first", "the gate was more than forty years old")}
+  let right={pick(k, "Mira Shah, the lock-keeper", "Tom Reed, of the canal trust", "the reporter")}
+
+  scene 31x32 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p title="The Canal Gazette" text="\"I heard a bang like a gunshot,\" said the lock-keeper, Mira Shah. \"By the time I got there, the water was spraying out sideways.\" The gate was more than forty years old. \"Safety comes first,\" said Tom Reed, of the canal trust. \"We would rather close a lock for two days than risk a boat.\"" width=30 numbers=false
+      text ask "Whose words are these: {words}?" width=30
+      choice pick options=["Mira Shah, the lock-keeper", "Tom Reed, of the canal trust", "the reporter"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick != right) point=p {
+      say "Are these words inside speech marks? If not, nobody in the report said them: the reporter wrote them."
+    }
+    when (k < 2 and pick != right) point=p {
+      say "Find the speech marks round those words, then the name next to said."
+    }
+  }
+  hint "Find the words in the report. Are they inside speech marks?"
+  hint "If they are, look for said and the name beside it."
+}

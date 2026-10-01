@@ -1,0 +1,29 @@
+# Two pairs from England's year 3 and 4 homophone list in each set, so a child cannot match a word by
+# elimination inside its own pair without knowing the other. The meanings turn round with k.
+item writing.homophone-match v=1 skills=[writing.spelling, writing.homophones, writing.vocabulary] {
+  title "Match each word to its meaning"
+  difficulty s
+  let s=0..1 k=0..1
+  let w1={pick(s, "knot", "scene")}
+  let w2={pick(s, "not", "seen")}
+  let w3={pick(s, "heal", "mail")}
+  let w4={pick(s, "heel", "male")}
+  let m1={pick(s, "a tie in a rope", "a place where something happens")}
+  let m2={pick(s, "the word that says no", "looked at, as in I have ... it")}
+  let m3={pick(s, "get better", "letters and parcels")}
+  let m4={pick(s, "the back of your foot", "a boy or a man")}
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        tent t lit=0
+        text ask "Two pairs of words that sound the same. Write the number of each word's meaning." width=22
+      }
+      match m left=[w1, w2, w3, w4] right=[pick(k, m2, m3), pick(k, m4, m1), pick(k, m1, m4), pick(k, m3, m2)] blanks=[a, b, c, d]
+    }
+  }
+
+  answer a=pick(k, 3, 2) b=pick(k, 1, 4) c=pick(k, 4, 1) d=pick(k, 2, 3)
+  hint "Start with the word you are surest of. Which meaning is it?"
+  hint "Look at the spelling. Does it remind you of another word with the same meaning?"
+}

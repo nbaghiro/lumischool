@@ -1,0 +1,21 @@
+# The three-star: the child writes a dictionary entry of their own, so the meaning has to be put in
+# plain words without using the word itself. A grown-up marks it.
+item reading.dict-entry v=1 stars=3 skills=[reading.dictionary, reading.vocabulary, writing.composing] {
+  title "Write a dictionary entry"
+  let k=0..1
+
+  scene 31x34 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        book b lines=4 left="lantern" right="light" page="58"
+        moon m phase=1
+      }
+      text ask "{pick(k, \"Write a dictionary entry for lantern, firefly or starlight: the word, what it means, and a sentence that uses it.\", \"Write a dictionary entry for a night word with two meanings, such as light or star: the word, both meanings numbered, and a sentence for each.\")}" width=30
+      writinglines lines lines=4 width=30 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="{pick(k, \"The word, then a meaning in plain words that does not use the word itself, then a sentence in which the word is used with that meaning.\", \"The word, then two numbered meanings in plain words that do not use the word itself, then a sentence for each in which the word has that meaning.\")}" notice=["The meaning is in plain words", "The meaning does not use the word itself", "Each sentence fits its meaning", "Laid out like the entries in the lesson"] ask="Could someone who did not know the word understand it from your entry?"
+  hint "How would you explain the word to someone younger, without saying it?"
+  hint "Look back at the entries in this lesson. What comes first, and what comes next?"
+}

@@ -1,0 +1,30 @@
+# Atmosphere is built from more than sight. Each detail leans on one sense; the later ones hide the
+# sense in the verb (prickled, tasted).
+item writing.mood-sense v=1 skills=[writing.settings, writing.describing] {
+  title "Which sense"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  let line={pick(k, "Somewhere in the dark, a gate creaked.", "Grey shadows stretched across the square.", "The smell of smoke and spice hung in the lane.", "The cold stones of the wall bit into her back.", "The air by the old well tasted of rust.")}
+  let right={pick(k, "hearing", "sight", "smell", "touch", "taste")}
+
+  scene 29x37 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        citywalls w towers=3 open=0
+        lantern ln lit=0 post=1
+      }
+      caption strip text="{line}" width=28
+      text ask "Which sense does this detail use?" width=28
+      choice pick options=["sight", "hearing", "smell", "touch", "taste"] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=strip {
+      say "Which word tells you how the detail reaches the person: seen, heard, smelt, felt or tasted?"
+    }
+  }
+  hint "How would you know about this if you were there?"
+  hint "Find the word that tells you how the person knows about it."
+}

@@ -1,0 +1,34 @@
+# The child is given the meaning and chooses the punctuation that says it, with and without the
+# hyphen, or with it in a different place.
+item writing.hyphen-choose v=1 skills=[writing.hyphens, writing.ambiguity] {
+  title "Put the hyphen in"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let meaning={pick(k, "A sledge that moves fast", "About twenty scientists, not exactly twenty", "A vet who looks after small animals", "Two huskies, each three years old")}
+  let right={pick(k, "a fast-moving sledge", "twenty-odd scientists", "a small-animal vet", "two three-year-old huskies")}
+  let a={pick(k, "a fast moving sledge", "twenty odd scientists", "a small animal vet", "two three year-old huskies")}
+  let b={pick(k, "a fast moving-sledge", "twenty odd-scientists", "a small animal-vet", "two-three-year old huskies")}
+
+  scene 31x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        sledge s slats=6
+        icecliff ice height=1 floes=2
+      }
+      text ask "Which is punctuated to mean: {meaning}?" width=30
+      choice pick options=[pick(k, a, right, b, a), pick(k, right, b, a, right), pick(k, b, a, right, b)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == a) point=ask {
+      say "Without a hyphen a reader could take the words another way. Which two words belong together as one describing word?"
+    }
+    when (pick == b) point=ask {
+      say "The hyphen is between the wrong words. Which two words together describe the thing?"
+    }
+  }
+  hint "Which words together describe the thing at the end?"
+  hint "Join those, and only those, with a hyphen."
+}

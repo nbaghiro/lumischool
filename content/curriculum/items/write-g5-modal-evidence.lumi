@@ -1,0 +1,31 @@
+# The word of possibility is chosen to match the evidence. Clear facts take will or will not; mixed
+# facts take might or could; good but not certain facts take probably or should.
+item writing.modal-evidence v=1 skills=[writing.modal-verbs, writing.evidence, writing.vocabulary] {
+  title "As sure as the evidence"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+  let notes={pick(k, "The sky is clear. The forecast says no cloud all night.", "Thick cloud covers the whole sky. The forecast says it will stay all night.", "The forecast says cloud may clear after midnight, or may not.", "Most nights this week the lights came after dark. The sky tonight is clear.", "The comet was bright last night. Tonight the moon is full and very bright.", "The telescope's lens is cracked, but the spare is on its way and may come today.")}
+  let right={pick(k, "We will see the stars tonight.", "We will not see the stars tonight.", "We might see the stars after midnight.", "The lights will probably come tonight.", "The comet may be harder to see tonight.", "We could use the telescope today.")}
+  let a={pick(k, "We might see the stars tonight.", "We could see the stars tonight.", "We will see the stars after midnight.", "The lights will definitely come tonight.", "The comet will be easy to see tonight.", "We will use the telescope today.")}
+  let b={pick(k, "We will not see the stars tonight.", "We will probably see the stars tonight.", "We cannot see the stars at all.", "The lights will not come tonight.", "We cannot see the comet tonight.", "We cannot use the telescope this year.")}
+
+  scene 32x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p title="Observer's notes" text="{notes}" width=20 numbers=false
+        observatory o open=1
+      }
+      text ask "Which sentence is as sure as the notes allow, no more and no less?" width=30
+      choice pick options=[pick(k, a, right, b, a, right, b), pick(k, right, b, a, right, a, right), pick(k, b, a, right, b, b, a)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "Read the notes again. Do they make it certain, likely, or only possible?"
+    }
+  }
+  hint "Do the notes make it certain, likely or just possible?"
+  hint "Which word matches that: will, probably, might or cannot?"
+}

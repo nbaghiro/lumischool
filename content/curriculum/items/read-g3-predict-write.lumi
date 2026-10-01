@@ -1,0 +1,21 @@
+# The three-star: the child writes what happens next and names the detail it comes from, so the
+# prediction has to be tied to the text. A grown-up marks it.
+item reading.predict-write v=1 stars=3 skills=[reading.prediction, reading.evidence, writing.composing] {
+  title "Write what happens next"
+  let k=0..1
+
+  scene 31x34 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="Ivy left her bike outside the lab. Its back tyre had a tiny hole, and every morning it was a little flatter. Today she had to ride all the way to the other side of town." width=22 numbers=false
+        person kid pose=think age=child hair=long colour=brown top=mint
+      }
+      text ask "{pick(k, \"Write two sentences saying what happens next. Then write which detail in the story made you think so.\", \"Write two different things that could happen next, both fitting the story. Then say which is more likely, and which details tell you.\")}" width=30
+      writinglines lines lines=4 width=30 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="{pick(k, \"Two sentences that carry on the story, such as the tyre going flat partway across town, and a detail named from the story (the tiny hole, the tyre getting flatter each day, the long ride).\", \"Two next events that both fit the story, one chosen as more likely, with at least two details named that support it.\")}" notice=["Carries on from where the story stops", "Fits every detail of the story", "Names a detail from the story", "Says why that detail leads there"] ask="Which detail made you most sure?"
+  hint "Which details in the story could cause trouble?"
+  hint "What could the hole and the long ride lead to, together?"
+}

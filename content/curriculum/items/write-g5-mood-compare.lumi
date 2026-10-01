@@ -1,0 +1,30 @@
+# The two-star: one place, two moods, and the child works out what the writer changed and what was
+# left alone. The right answer is the change the writer did not make, so every detail has to be
+# compared.
+item writing.mood-compare v=1 stars=2 skills=[writing.settings, reading.comparing-texts, reasoning.compare] {
+  title "Same place, new mood"
+  let k=0..2
+  let one={pick(k, "The clock tower glowed gold in the evening sun. Pigeons cooed on its ledges. Below, children chased each other round the fountain.", "The market was bright with bunting. Music bounced between the stalls, and the air smelt of oranges.", "Morning light poured into the library. Readers turned pages softly, and a cat slept on the warm windowsill.")}
+  let two={pick(k, "The clock tower stood black against a grey sky. Crows croaked on its ledges. Below, children huddled together by the fountain.", "The market was bright with bunting. Thunder rumbled between the stalls, and the air smelt of rain.", "Moonlight crept into the library. Somewhere a page turned by itself, and a cat hissed at the empty dark.")}
+  let right={pick(k, "the place the children are", "the bunting", "the cat")}
+  let a={pick(k, "the light and the sky", "the sound in the market", "the light in the room")}
+  let b={pick(k, "the birds and their sounds", "the smell in the air", "what the pages do")}
+
+  scene 31x39 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p1 title="First" text="{one}" width=30 numbers=false
+      passage p2 title="Second" text="{two}" width=30 numbers=false
+      text ask "The writer changed the mood by changing some details. Which detail did the writer keep the same?" width=30
+      choice pick options=[pick(k, a, right, b), pick(k, right, b, a), pick(k, b, a, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p2 {
+      say "Put the two sentences about that detail side by side. Did the writer change it?"
+    }
+  }
+  hint "Go through the two descriptions one sentence at a time."
+  hint "For each detail, ask: same, or changed?"
+}

@@ -1,0 +1,35 @@
+# The comma goes at the end of the fronted adverbial, before the main part of the sentence. Longer
+# adverbials make the end harder to find.
+item writing.fronted-comma v=1 skills=[writing.adverbials, writing.commas, writing.punctuation] {
+  title "Where the comma goes"
+  difficulty pick(k, 0, 1, 1, 2, 2)
+  let k=0..4
+  let line={pick(k, "Next morning the crew mended the sail.", "Under the deck the cook was making soup.", "Slowly and carefully the ship slid past the rocks.", "Just before the sun went down the lookout saw land.", "In the middle of the night a wave crashed over the deck.")}
+  let right={pick(k, "morning", "deck", "carefully", "down", "night")}
+  let a={pick(k, "crew", "Under", "Slowly", "sun", "middle")}
+  let b={pick(k, "sail", "cook", "ship", "lookout", "wave")}
+
+  scene 29x30 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        ship s sails=3 portholes=4
+        lighthouse l stripes=3 beam=1
+      }
+      caption strip text="{line}" width=28
+      text ask "This sentence starts with a fronted adverbial and needs a comma. After which word?" width=28
+      choice pick options=[pick(k, a, right, a, right, b), pick(k, right, a, b, a, right), pick(k, b, b, right, b, a)]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == a) point=strip {
+      say "The comma goes after the whole adverbial, not inside it. Where does the when, where or how end?"
+    }
+    when (pick == b) point=strip {
+      say "That is inside the main part of the sentence. Who or what does something? The comma goes just before that."
+    }
+  }
+  hint "Find who or what the sentence is about, and what they do."
+  hint "Everything before that is the adverbial. The comma goes at its end."
+}

@@ -1,0 +1,35 @@
+# A paragraph turned into bullets: the right list keeps every point, short, and adds nothing. One
+# wrong list drops a point and the other adds a fact the paragraph never gave.
+item writing.bullet-from-prose v=1 skills=[writing.bullet-points, writing.concision, writing.notes] {
+  title "From a paragraph to bullets"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let text={pick(k, "The bridge is open from nine until five. Only six people may cross at a time. Dogs must be kept on a lead.", "The waterfall path has 212 steep steps. The steps are wet from the spray all year. There is a bench halfway up.", "Swimming is not allowed below the falls. The water is very cold, even in summer, and the current under the falls is strong.")}
+  let f1={pick(k, "• open 9 to 5", "• 212 steep steps", "• no swimming")}
+  let f2={pick(k, "• six at a time", "• wet all year", "• very cold water")}
+  let f3={pick(k, "• dogs on a lead", "• bench halfway", "• strong current")}
+  let x={pick(k, "• built in 1910", "• best view", "• fishing by mill")}
+  let right={pick(k, "B", "C", "A")}
+
+  scene 36x27 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage p text="{text}" width=34 numbers=false
+      row lists space=1 align=start {
+        listpad a title="A" items=[f1, pick(k, f3, x, f2), pick(k, "", f3, f3)] count=0 width=11 ticks=false
+        listpad b title="B" items=[f1, pick(k, f2, f3, x), pick(k, f3, "", f3)] count=0 width=11 ticks=false
+        listpad c title="C" items=[f1, pick(k, x, f2, f3), pick(k, f3, f3, "")] count=0 width=11 ticks=false
+      }
+      text ask "Which list turns the paragraph into bullets, keeping every point and adding none?" width=34
+      choice pick options=["A", "B", "C"]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "Tick each point of the paragraph off against that list. Is one missing, or is there one the paragraph never said?"
+    }
+  }
+  hint "How many separate points does the paragraph make?"
+  hint "Check each list: every point there, and nothing extra?"
+}

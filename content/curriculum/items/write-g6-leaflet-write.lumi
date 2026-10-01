@@ -1,0 +1,21 @@
+# The three-star: a section of the gorge's leaflet with a heading, a lead-in and bullets that follow
+# one pattern, and a warning laid out so it cannot be missed. A grown-up marks it.
+item writing.leaflet-write v=1 stars=3 skills=[writing.layout, writing.bullet-points, writing.composing] {
+  title "Write a leaflet section"
+  let k=0..1
+
+  scene 31x42 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        waterfall wf drops=2 rainbow=0
+        ropebridge rb planks=12 gaps=2
+      }
+      text ask "{pick(k, \"Write the part of the gorge leaflet about the waterfall path: a heading, a lead-in, and four bullets punctuated the same way.\", \"Write the part of the gorge leaflet about the rope bridge: a heading, one warning laid out so nobody can miss it, a lead-in and five bullets that all follow one pattern.\")}" width=30
+      writinglines lines lines=6 width=30 prompt=""
+    }
+  }
+
+  check writing.by-eye look-for="{pick(k, \"A short heading, a lead-in ending in a colon, and four bullets that each finish the lead-in, all starting the same way and punctuated the same way.\", \"A heading, a warning set apart at the top (a box or a line of its own), a lead-in with a colon, and five bullets that follow one pattern of start and punctuation.\")}" notice=["A heading that names the section", "A lead-in with a colon", "Bullets all start the same way", "Bullets punctuated the same way", "Points short and separate"] ask="Which bullet would a visitor need most, and is it easy to find?"
+  hint "Plan the points first. Which ones does a visitor need?"
+  hint "Write the lead-in, then check each bullet straight after it."
+}

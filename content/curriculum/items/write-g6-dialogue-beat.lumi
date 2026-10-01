@@ -1,0 +1,33 @@
+# The action beside a line of speech, chosen to fit the scene before it. All three are good actions;
+# only one agrees with what has just happened.
+item writing.dialogue-beat v=1 skills=[writing.dialogue, writing.characters, writing.cohesion] {
+  title "The action that fits"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let before={pick(k, "The wind had torn the tent in two. Everyone was shivering.", "Sam had just found the lost compass in his own pocket.", "The ice cracked under the sledge. Nobody moved.", "Ines had told them twice that the radio was fine. It was not.")}
+  let line={pick(k, "\"We sleep in the hut tonight,\" said Olaf, ...", "\"Well, it wasn't lost, was it?\" said Sam, ...", "\"Don't. Move,\" said Lena, ...", "\"I may have been wrong,\" said Ines, ...")}
+  let right={pick(k, "stamping his frozen feet.", "turning red.", "barely breathing.", "putting down the headset slowly.")}
+  let a={pick(k, "fanning his hot face.", "shouting at Olaf.", "laughing and jumping up.", "waving the radio about happily.")}
+  let b={pick(k, "yawning in the sun.", "throwing the compass away.", "running for the hut.", "pointing at Sam.")}
+
+  scene 33x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{before}" width=21 numbers=false
+        seal sl rock=1 facing=-1
+      }
+      caption strip text="{line}" width=30
+      text ask "Which action fits best at the end of the line?" width=30
+      choice pick options=[pick(k, a, right, b, a), pick(k, right, b, a, b), pick(k, b, a, right, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "That action does not fit what has just happened. Read the sentences before the line again."
+    }
+  }
+  hint "What has just happened, and how would the speaker feel?"
+  hint "Which action would someone feeling that do?"
+}

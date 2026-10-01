@@ -1,0 +1,33 @@
+# The pairs are from England's year 3 and 4 homophone list. Each sentence is set at the night camp,
+# and only the meaning of the sentence decides which spelling fits.
+item writing.homophone-gap v=1 skills=[writing.spelling, writing.homophones] {
+  title "Which spelling fits"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+  let line={pick(k, "We lay on the grass and looked up. It was a ... night for stars.", "Gran came out to ... us at the gate.", "A thin white ... lay over the field.", "Max wanted to know ... it would rain before morning.", "Not a sound. The whole camp was at ...", "A ... went over the camp, its lights blinking.")}
+  let right={pick(k, "great", "meet", "mist", "whether", "peace", "plane")}
+  let other={pick(k, "grate", "meat", "missed", "weather", "piece", "plain")}
+  let means={pick(k, "a metal frame in a fire", "food from an animal", "did not catch, or did not hit", "rain, wind and sun", "a part of something", "simple, or flat land")}
+
+  scene 31x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        tent t lit=1
+        moon m phase=1
+        owlflying o facing=-1
+      }
+      caption strip text="{line}" width=30
+      text ask "Which word fills the gap?" width=30
+      choice pick options=[pick(k, right, other, right, other, right, other), pick(k, other, right, other, right, other, right)]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == other) point=strip {
+      say "That word sounds right, but it means {means}. Read the sentence for what the gap has to mean."
+    }
+  }
+  hint "Both words sound the same. What does the gap have to mean here?"
+  hint "Say what each spelling means. Which meaning makes sense in the sentence?"
+}

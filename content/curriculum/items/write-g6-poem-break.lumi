@@ -1,0 +1,32 @@
+# Where a line ends, a reader pauses, so a word alone at the start or end of a line gets weight. The
+# child chooses where the last line starts so that the reader stops on the word asked for.
+item writing.poem-break v=1 skills=[writing.poetry, writing.layout] {
+  title "Where the line breaks"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let words={pick(k, "I stood on the grey dust and I was alone", "Over the edge of the moon the Earth rose slowly, blue", "We left our footprints there and they will stay for ever", "The lander lifted and the moon fell away and was gone")}
+  let stress={pick(k, "alone", "blue", "for ever", "gone")}
+  let right={pick(k, "alone", "blue", "for ever", "gone")}
+  let a={pick(k, "and I was alone", "slowly, blue", "will stay for ever", "fell away and was gone")}
+  let b={pick(k, "grey dust and I was alone", "rose slowly, blue", "and they will stay for ever", "and was gone")}
+
+  scene 35x23 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        poem p title="" lines=["{words}"] rhymes=[-1] blank=-1 beats=[0] width=22
+        footprints f count=3
+      }
+      text ask "The poet wants the reader to stop on the words {stress}, with nothing else on that line. Where should the last line begin?" width=30
+      choice pick options=[pick(k, a, right, b, a), pick(k, right, b, a, right), pick(k, b, a, right, b)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "With that break the last line holds more than {stress}. Which choice leaves {stress} as the only words on the line?"
+    }
+  }
+  hint "A reader pauses at the end of every line. Which words get the pause on their own?"
+  hint "Find the choice where the last line is the words the poet wants to stress and nothing more."
+}

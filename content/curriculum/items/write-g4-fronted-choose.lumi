@@ -1,0 +1,36 @@
+# The two-star: the fronted adverbial that fits the paragraph. Each wrong one is well formed but
+# breaks the order of time, the place or the sense of what happens.
+item writing.fronted-choose v=1 stars=2 skills=[writing.adverbials, writing.cohesion, reading.comprehension] {
+  title "The opening that fits"
+  let k=0..2
+  let text={pick(k, "We set sail at six in the morning. ... the wind began to blow hard. By evening, the storm was over.", "Ada climbed to the top of the mast. ... she could see for miles across the sea.", "The fog was thick and grey, and the rocks were close. ... the captain steered the ship between them.")}
+  let right={pick(k, "By ten o'clock,", "From up there,", "Very slowly,")}
+  let a={pick(k, "Before we set sail,", "Down in the cabin,", "As fast as he could,")}
+  let b={pick(k, "The next week,", "Under the water,", "Without looking,")}
+
+  scene 34x32 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{text}" width=22 numbers=false
+        lighthouse l stripes=2 beam=0
+      }
+      text ask "Which fronted adverbial fills the gap so the story makes sense?" width=30
+      choice pick options=[pick(k, a, right, b), pick(k, right, b, a), pick(k, b, a, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick != right) point=p {
+      say "Check the times. The gap comes after six in the morning and before the evening."
+    }
+    when (k == 1 and pick != right) point=p {
+      say "Where is Ada? Could she see for miles from there?"
+    }
+    when (k == 2 and pick != right) point=p {
+      say "Think about the fog and the rocks. How would a careful captain steer?"
+    }
+  }
+  hint "Read the sentences before and after the gap."
+  hint "Try each opening in the gap. Which one agrees with everything else?"
+}

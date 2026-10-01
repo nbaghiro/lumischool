@@ -1,0 +1,37 @@
+# The same moment told as a story and set as a script. The wrong scripts keep the story's he said
+# words in the spoken line, or give the line to the wrong person.
+item reading.script-from-story v=1 skills=[reading.play-scripts, reading.comparing-texts] {
+  title "From story to script"
+  difficulty k
+  let k=0..2
+  let story={pick(k, "Grandad smiled and told them the hut was only ten minutes away.", "In a small voice, Nell asked Ravi whether he was scared.", "Ravi shouted that he could see the hut, and he ran on ahead.")}
+  let right={pick(k, "GRANDAD: (smiling) The hut is only ten minutes away.", "NELL: (quietly, to Ravi) Are you scared?", "RAVI: (shouting, then running on) I can see the hut.")}
+  let told={pick(k, "GRANDAD: (smiling) He told them the hut was ten minutes away.", "NELL: (quietly) Nell asked Ravi if he was scared.", "RAVI: (shouting) He could see the hut, and he ran on.")}
+  let who={pick(k, "NELL: (smiling) The hut is only ten minutes away.", "RAVI: (quietly, to Nell) Are you scared?", "NELL: (shouting, then running on) I can see the hut.")}
+
+  scene 34x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{story}" width=20 numbers=false
+        hut h pictures=1
+      }
+      caption c1 text="1. {pick(k, told, right, who)}" width=30
+      caption c2 text="2. {pick(k, right, who, told)}" width=30
+      caption c3 text="3. {pick(k, who, told, right)}" width=30
+      text ask "Which line of script shows this part of the story?" width=30
+      choice pick options=["line 1", "line 2", "line 3"]
+    }
+  }
+
+  answer pick=pick(k, "line 2", "line 1", "line 3")
+  feedback {
+    when (pick == pick(k, "line 1", "line 3", "line 2")) point=p {
+      say "In a script the actor says the words themselves. Nobody says he told them. What would the person really say?"
+    }
+    when (pick == pick(k, "line 3", "line 2", "line 1")) point=p {
+      say "Check the name at the start. Who speaks in the story?"
+    }
+  }
+  hint "Who speaks in the story? Their name starts the line."
+  hint "What would they say, in their own words? How they say it goes in brackets."
+}

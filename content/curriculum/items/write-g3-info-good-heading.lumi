@@ -1,0 +1,36 @@
+# A heading is short and names what the section is about. The wrong ones are a whole sentence (a
+# fact, not a heading) and a word too wide to help a reader find anything.
+item writing.info-good-heading v=1 skills=[writing.headings, writing.information] {
+  title "The best heading"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let f1={pick(k, "There are racks for twenty bikes.", "The changing rooms are by the gate.", "The track is 400 metres round.")}
+  let f2={pick(k, "Lock your bike to the rack.", "There are showers and lockers.", "It has six lanes.")}
+  let f3={pick(k, "Bike lights are sold at the gate.", "Lockers cost 50 cents.", "Lane 1 is the shortest way round.")}
+  let right={pick(k, "Bringing your bike", "Changing rooms", "The running track")}
+  let sentence={pick(k, "There are racks for bikes by the gate", "You can get changed and have a shower", "The track has six lanes and is 400 metres round")}
+  let wide={pick(k, "Things", "Inside", "Sport")}
+
+  scene 36x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        listpad pad title="?" items=[f1, f2, f3] count=0 width=19 ticks=false
+        runners r count=2 numbers=1
+      }
+      text ask "Which is the best heading for this part of the page?" width=28
+      choice pick options=[pick(k, sentence, wide, right), pick(k, right, sentence, wide), pick(k, wide, right, sentence)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == sentence) point=pad {
+      say "That is a fact, written as a sentence. A heading is a few words that say what the part is about."
+    }
+    when (pick == wide) point=pad {
+      say "That could sit over almost anything, so it does not help a reader find this part."
+    }
+  }
+  hint "A reader looks down the headings to find the part they want. Which one tells them most?"
+  hint "Is each one short? Does it say what all three facts are about?"
+}

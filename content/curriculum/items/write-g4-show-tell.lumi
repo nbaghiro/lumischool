@@ -1,0 +1,37 @@
+# Showing a feeling instead of naming it. One wrong sentence tells the feeling outright, and the
+# other shows nothing, so the child has to know both what showing is and what it shows.
+item writing.show-tell v=1 skills=[writing.characters, writing.describing] {
+  title "Show, do not tell"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  let feel={pick(k, "scared", "excited", "tired", "proud", "jealous")}
+  let right={pick(k, "Kai's hands shook as he held the map.", "Pip ran up and down the beach, pointing at the volcano.", "Rosa sank onto the sand, her legs too heavy for another step.", "Kai held up the shell he had found so that everyone could see it.", "Pip looked at Kai's new compass and kicked the sand.")}
+  let tells={pick(k, "Kai was very scared.", "Pip was excited about the volcano.", "Rosa felt really tired.", "Kai was proud of his shell.", "Pip was jealous of Kai.")}
+  let none={pick(k, "Kai walked along the path.", "Pip stood on the beach.", "Rosa went across the sand.", "Kai picked up a shell.", "Pip saw Kai's compass.")}
+
+  scene 31x30 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        volcano v smoke=1 island=1
+        parrot p facing=-1
+      }
+      caption c1 text="1. {pick(k, tells, right, none, tells, right)}" width=30
+      caption c2 text="2. {pick(k, right, none, tells, right, none)}" width=30
+      caption c3 text="3. {pick(k, none, tells, right, none, tells)}" width=30
+      text ask "Which sentence shows that the character is {feel}, without saying it?" width=28
+      choice pick options=["1", "2", "3"]
+    }
+  }
+
+  answer pick=pick(k, "2", "1", "3", "2", "1")
+  feedback {
+    when (pick == pick(k, "1", "3", "2", "1", "3")) point=c1 {
+      say "That sentence says the feeling straight out. The question asks for one that shows it by what someone does."
+    }
+    when (pick == pick(k, "3", "2", "1", "3", "2")) point=c1 {
+      say "That sentence could be about someone feeling anything. Which one would let a reader guess the feeling?"
+    }
+  }
+  hint "Which sentence uses the feeling word itself?"
+  hint "Of the others, which gives the reader a clue to the feeling?"
+}

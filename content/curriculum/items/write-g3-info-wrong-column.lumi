@@ -1,0 +1,25 @@
+# Six notes sorted under two headings, with one in the wrong column. Each version moves a different
+# note, and the choice offers three notes, so the stray is found by reading every note against its
+# heading.
+item writing.info-wrong-column v=1 skills=[writing.information, writing.headings, writing.planning] {
+  title "The note in the wrong place"
+  let k=0..2
+  let stray={pick(k, "a sun hat", "closed on Mondays", "shoes that grip")}
+
+  scene 32x34 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Jo sorted her notes for the page under two headings. One note is in the wrong column. Which?" width=30
+      wordsort s heads=["What to bring", "When it is open"] words=["a water bottle", "shoes that grip", "a sun hat", "8 am to 6 pm", "closed on Mondays", "open late in summer"] into=[0, if k == 2 then 1 else 0, if k == 0 then 1 else 0, 1, if k == 1 then 0 else 1, 1]
+      choice pick options=[pick(k, "a water bottle", "open late in summer", "shoes that grip"), pick(k, "a sun hat", "closed on Mondays", "8 am to 6 pm"), pick(k, "8 am to 6 pm", "a water bottle", "open late in summer")] stack=column
+    }
+  }
+
+  answer pick=stray
+  feedback {
+    when (pick != stray) point=s {
+      say "That note fits the heading above it. Read each heading, then every note under it."
+    }
+  }
+  hint "Read the first heading. Does every note under it answer it?"
+  hint "Now do the same for the second heading."
+}

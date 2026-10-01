@@ -1,0 +1,33 @@
+# The two-star: an observer's evidence and a sentence written from it that claims too much or too
+# little. The child finds the fair rewrite, which needs both the evidence and the meaning of the
+# words.
+item writing.modal-overclaim v=1 stars=2 skills=[writing.modal-verbs, writing.evidence, reasoning.evidence] {
+  title "Too sure"
+  let k=0..2
+  let notes={pick(k, "One night of watching. Green light over the sea at 11 pm.", "Ten nights of watching. The comet rose a little later each night.", "The forecast: snow likely tomorrow. The road to the cliffs has no gritter.")}
+  let wrote={pick(k, "The northern lights always come at 11 pm.", "The comet might rise later tomorrow, or it might not.", "The road to the observatory will be closed tomorrow.")}
+  let right={pick(k, "The northern lights may come at about 11 pm.", "The comet will probably rise later again tomorrow.", "The road to the observatory could be closed tomorrow.")}
+  let a={pick(k, "The northern lights never come at 11 pm.", "The comet will certainly not rise tomorrow.", "The road to the observatory is closed today.")}
+  let b={pick(k, "The northern lights always come at night.", "The comet always rises at the same time.", "Snow will definitely close every road.")}
+
+  scene 36x32 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p title="Notes" text="{notes}" width=20 numbers=false
+        observatory o open=1
+      }
+      caption w text="Ana wrote: {wrote}" width=30
+      text ask "Ana's sentence does not match how sure the notes are. Which rewrite does?" width=30
+      choice pick options=[pick(k, a, right, b), pick(k, right, b, a), pick(k, b, a, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "Hold that sentence against the notes. Is it more sure, or less sure, than they allow?"
+    }
+  }
+  hint "How much evidence is in the notes: one night, many nights, a forecast?"
+  hint "Is Ana's sentence too sure or not sure enough? Which rewrite fixes that?"
+}

@@ -1,0 +1,32 @@
+# Which detail does most to build the mood. The other two are true of the place but would fit any
+# mood, which is the difference between a detail and an atmosphere.
+item writing.mood-detail v=1 skills=[writing.settings, writing.vocabulary, reading.inference] {
+  title "The detail that builds it"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let text={pick(k, "The library had six columns at the front. Its door creaked open on its own, and inside, the dust hung still in the dark.", "The market opened at eight. Stall-holders shouted and laughed, and the smell of hot bread drifted down the lanes.", "The temple stood at the top of the hill. Candles flickered in every window, and a soft bell rang now and then.", "The gate was shut for the night. The guard's lamp shook in his hand, and every few seconds he looked back over his shoulder.")}
+  let mood={pick(k, "creepy", "cheerful", "peaceful", "tense")}
+  let right={pick(k, "the door creaked open on its own", "shouted and laughed", "a soft bell rang now and then", "his lamp shook in his hand")}
+  let a={pick(k, "six columns at the front", "opened at eight", "at the top of the hill", "shut for the night")}
+  let b={pick(k, "the library", "the market", "the temple", "the gate")}
+
+  scene 36x29 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{text}" width=21 numbers=false
+        library l columns=6 open=pick(k, 1, 0, 0, 0)
+      }
+      text ask "The writer wanted a {mood} mood. Which words do most to make it?" width=30
+      choice pick options=[pick(k, a, right, b, a), pick(k, right, b, a, right), pick(k, b, a, right, b)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "Those words tell you a fact about the place, but would they change if the mood changed? Find the words that make you feel something."
+    }
+  }
+  hint "Which words would you change if you wanted a different mood?"
+  hint "Facts stay the same in any mood. Feelings come from what you hear, see and sense."
+}

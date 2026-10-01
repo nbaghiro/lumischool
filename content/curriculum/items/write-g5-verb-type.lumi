@@ -1,0 +1,30 @@
+# Typed, because the spelling changes when the suffix goes on: the e or y drops (pure, apology), le
+# goes (simple), or nothing changes (length). England's year 5 appendix lists -ate, -ise and -ify.
+item writing.verb-type v=1 skills=[writing.spelling, writing.morphology, writing.word-classes] {
+  title "Spell the verb"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+  let line={pick(k, "The boats ... their ropes in the rain. (length, with -en)", "The bell will ... the crew that the lock is full. (active, with -ate)", "The guide will ... the map for the young ones. (simple, with -ify)", "Ben had to ... to the miller for the broken sack. (apology, with -ise)", "The water will ... in the cold and turn to ice. (solid, with -ify)", "Sort and ... the stones by their colour. (class, with -ify)")}
+  let word={pick(k, "lengthen", "activate", "simplify", "apologise", "solidify", "classify")}
+  let wrong={pick(k, "lenthen", "activeate", "simpleify", "apologyise", "solidfy", "classfy")}
+
+  scene 33x13 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage strip text="{line}" width=21 numbers=false
+        narrowboat nb windows=2 pots=1
+      }
+      text ask "Add the ending to the word in brackets and write the verb." width=30
+      word-input pick options=[word] letters=10
+    }
+  }
+
+  answer pick=word
+  feedback {
+    when (pick == wrong) point=strip {
+      say "Check the end of the word in brackets. Does a letter drop or change before the ending goes on?"
+    }
+  }
+  hint "Write the word in brackets, then the ending. Say it aloud."
+  hint "Does the word end in e, y or le? Those letters often go before -ate, -ise or -ify."
+}

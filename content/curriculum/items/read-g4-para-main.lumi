@@ -1,0 +1,35 @@
+# Each paragraph is one of the page about whales written for this lesson from NOAA Fisheries' blue
+# and humpback whale pages (sizes turned into metres and tonnes). The wrong answers are a detail
+# from the paragraph and an idea too wide for it.
+item reading.para-main v=1 skills=[reading.main-idea, reading.summarising] {
+  title "The main idea"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+  let text={pick(k, "The blue whale is the largest animal on Earth. It can grow to more than 30 metres long, which is longer than two buses end to end. It can weigh as much as 150 tonnes.", "Humpback whales are often busy at the surface. They leap right out of the water. They slap the sea with their long side fins or with their tails.", "A blue whale eats tiny animals called krill. It swims at a cloud of krill with its mouth wide open. It pushes the water out through its baleen, which works like a sieve, and swallows the krill. A big whale can eat more than five tonnes of them in a day.", "Blue whales are among the loudest animals on the planet. They make pulses, groans and moans under the water. Other whales can hear these sounds up to 1,600 kilometres away.", "Humpback whales make long journeys every year. Some swim 8,000 kilometres between the warm seas where they have their calves and the cold seas where there is more food. One trip, from Alaska to Hawaii, is about 4,800 kilometres, and they can do it in 28 days.")}
+  let right={pick(k, "The blue whale is the biggest animal there is.", "Humpbacks leap and splash at the surface.", "How a blue whale catches and eats krill.", "Blue whales make very loud sounds.", "Humpbacks travel a long way each year.")}
+  let detail={pick(k, "A blue whale can weigh 150 tonnes.", "Humpbacks have long side fins.", "Baleen works like a sieve.", "Blue whales groan and moan.", "The trip to Hawaii takes 28 days.")}
+  let wide={pick(k, "Animals live in the sea.", "Whales are mammals.", "Whales eat.", "The sea is full of sound.", "Animals move about.")}
+
+  scene 36x34 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{text}" width=20 numbers=false
+        whale w spout=1 facing=-1
+      }
+      text ask "What is the main idea of this paragraph?" width=30
+      choice pick options=[pick(k, detail, right, wide, right, detail), pick(k, right, wide, right, detail, wide), pick(k, wide, detail, detail, wide, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == detail) point=p {
+      say "That is true, but it is one detail. The main idea is what every sentence in the paragraph is about."
+    }
+    when (pick == wide) point=p {
+      say "That is too wide: it could be the main idea of a whole book. What is this paragraph about?"
+    }
+  }
+  hint "What are all the sentences about?"
+  hint "Is your answer about the whole paragraph, or only one sentence of it?"
+}

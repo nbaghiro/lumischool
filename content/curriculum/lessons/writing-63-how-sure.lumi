@@ -1,0 +1,69 @@
+# The observatory's notes and forecasts were made up for this lesson. That a full moon makes faint
+# stars harder to see and a new moon leaves the sky darkest is general astronomy (recalled).
+lesson writing-how-sure v=1 format=teach grade=5 unit=5 subject=writing levels=[easy, medium, hard] {
+  title "How sure: might, could, will, must"
+  goal "Choose the word that says how sure you are, might, could, should, will or must, so it matches your evidence."
+
+  look {
+    scene 34x16 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row top space=2 align=end {
+          observatory o open=1
+          comet c tail=6
+        }
+        caption strip text="The sky is clearing. We might see the comet tonight." width=30
+      }
+    }
+    say """
+      We will see the comet, we should see it, we might see it: each says how sure the writer is.
+      Modal verbs (will, must, should, may, might, could) and adverbs (certainly, probably,
+      perhaps, possibly) set the strength of a claim. A careful writer, like a careful observer,
+      makes a claim exactly as sure as the evidence allows, and no surer.
+      """
+  }
+  do {
+    level easy {
+      worked writing.modal-word k=0
+    }
+    show writing.modal-word k=2 easy-k=1 hard-k=3
+    show writing.modal-order k=1 easy-k=0 hard-k=2
+    show writing.modal-compare k=1 easy-k=0 hard-k=3
+    show writing.modal-word k=3 easy-k=2 hard-k=4
+    show writing.modal-compare k=2 easy-k=1 hard-k=2
+  }
+  story {
+    show writing.modal-evidence k=2 easy-k=0 hard-k=4
+    show writing.modal-evidence k=3 easy-k=1 hard-k=5
+    level medium hard {
+      show writing.modal-evidence k=1 hard-k=3
+    }
+  }
+  try stars=2 {
+    show writing.modal-overclaim k=0 easy-k=2 hard-k=1
+  }
+  try stars=3 {
+    show writing.modal-write k=0 hard-k=1
+  }
+  remember {
+    say "Will, probably, might, cannot: choose the word that is as sure as your evidence, and no surer."
+  }
+
+  grown-ups """
+    The idea is that modal verbs and adverbs of possibility set how sure a sentence is, and that
+    the right strength is the one the evidence supports. The way in finds the word that carries
+    the certainty; the core orders sentences from least to most sure, compares two writers, and
+    chooses the sentence that matches an observer's notes. The wrong idea to watch for is treating
+    sure words as stronger writing, so that every claim becomes will or definitely; the two-star
+    asks the child to weaken a claim made from one night of watching. If the child is stuck, put
+    the four words will, probably, might and will not on a line from 0 to 100 and place each
+    sentence on it. Off the page, read a weather forecast together and pick out its words of
+    possibility. England's programme of study for years 5 and 6 asks for "using modal verbs or
+    adverbs to indicate degrees of possibility".
+    """
+  level easy {
+    grown-ups "At this level a word is found once in the teacher's pen first, the sentences to order and compare use will, might and will not, the notes are plainly clear or plainly cloudy, and the two-star's claim about a road is a little too sure."
+  }
+  level hard {
+    grown-ups "At this level the words include surely and possibly, one sentence to compare has no word of possibility at all, the notes need a reason (a full moon, a spare lens on its way), and the two-star's claim about the comet is not sure enough."
+  }
+}

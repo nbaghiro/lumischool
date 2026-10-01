@@ -1,0 +1,37 @@
+# The two-star: decide the pattern from the lead-in, then count the bullets that break it, by its
+# capital, its full stop or how it starts. Seeing the pattern first is the reasoning asked for.
+item writing.bullet-fix v=1 stars=2 skills=[writing.bullet-points, writing.editing, reasoning.find-the-mistake] {
+  title "How many to mend"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+  let lead={pick(k, "Before you set off, make sure you:", "On the rope bridge:", "Bring with you:")}
+  let i1={pick(k, "• Have a map.", "• hold the rope", "• a warm hat")}
+  let i2={pick(k, "• charge your phone", "• Walk one at a time.", "• water to drink")}
+  let i3={pick(k, "• tell someone your route", "• look ahead, not down", "• Boots with grip.")}
+  let i4={pick(k, "• pack a drink", "• the planks are wet", "• you need a coat")}
+  let i5={pick(k, "• you know the weather", "• Do not jump", "• a whistle.")}
+
+  scene 31x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text intro "{lead}" width=30
+      row top space=2 align=end {
+        listpad pad title="Visitor checklist" items=[i1, i2, i3, i4, i5] count=0 width=19 ticks=false
+        kingfisher kf flying=1 facing=-1
+      }
+      text ask "Most bullets follow one pattern. How many need changing to match it?" width=30
+      number-input n
+    }
+  }
+
+  answer n=pick(k, 2, 3, 3)
+  feedback {
+    when (n < pick(k, 2, 3, 3)) point=pad {
+      say "There are more. Check every bullet three ways: its first letter, its last mark, and whether it follows on from the lead-in."
+    }
+    when (n > pick(k, 2, 3, 3)) point=pad {
+      say "Some of those already match. Decide the pattern from most of the bullets first, then count only the ones that differ."
+    }
+  }
+  hint "Read the lead-in, then each bullet after it. What pattern do most of them follow?"
+  hint "Check each bullet: capital or small letter, full stop or none, and does it follow on?"
+}

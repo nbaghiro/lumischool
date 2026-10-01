@@ -1,0 +1,32 @@
+# A fronted adverbial is the when, where or how moved to the front of the sentence. The last version
+# is a whole clause (as the storm grew louder), which is still a fronted adverbial.
+item writing.fronted-find v=1 skills=[writing.adverbials, writing.grammar] {
+  title "Find the fronted adverbial"
+  difficulty pick(k, 0, 0, 1, 2)
+  let k=0..3
+  let line={pick(k, "At dawn, the ship left the harbour.", "Far out at sea, a whale blew a spout of mist.", "Without a sound, the sailors lowered the boat.", "As the storm grew louder, the captain held the wheel.")}
+  let right={pick(k, "At dawn", "Far out at sea", "Without a sound", "As the storm grew louder")}
+  let a={pick(k, "the ship", "a whale", "the sailors", "the captain held")}
+  let b={pick(k, "left the harbour", "a spout of mist", "lowered the boat", "the wheel")}
+
+  scene 30x33 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        ship s sails=2 portholes=3
+        whale w spout=1 facing=-1
+      }
+      caption strip text="{line}" width=28
+      text ask "Which words at the front tell when, where or how?" width=28
+      choice pick options=[pick(k, right, a, b, a), pick(k, a, right, right, b), pick(k, b, b, a, right)] stack=column
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=strip {
+      say "Those words say who or what. The fronted adverbial comes first and ends at the comma."
+    }
+  }
+  hint "Where is the comma? Read the words in front of it."
+  hint "Do those words say when, where or how the rest happens?"
+}

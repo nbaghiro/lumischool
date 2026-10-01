@@ -1,0 +1,31 @@
+# Not one feeling but what a character is like, worked out from three things they do or say. Each
+# wrong word fits one sentence at most.
+item writing.show-trait v=1 skills=[writing.characters, reading.inference, reading.characters] {
+  title "What kind of person"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let text={pick(k, "Pip gave the last of his water to the thirsty parrot. He carried Kai's bag up the steep path. At the top he said, \"You sit down. I'll keep watch.\"", "Rosa walked into the dark cave first. When the rocks rumbled, she told the others to stay calm and walk, not run. She went back alone for the lost torch.", "Kai left the lid of the water tub open all night. He dropped the map in a puddle. Then he forgot where he had put the matches.", "Pip told everyone where to sit. He took the best spot in the shade. \"Hurry up,\" he said to Rosa, \"and bring me my hat.\"")}
+  let right={pick(k, "kind", "brave", "careless", "bossy")}
+  let a={pick(k, "bossy", "careless", "kind", "brave")}
+  let b={pick(k, "lazy", "bossy", "brave", "kind")}
+
+  scene 31x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{text}" width=22 numbers=false
+        parrot pr facing=1
+      }
+      text ask "Which word best says what this character is like?" width=30
+      choice pick options=[pick(k, a, right, b, a), pick(k, right, b, a, right), pick(k, b, a, right, b)]
+    }
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=p {
+      say "Check the word against all three things the character does. Does it fit every one?"
+    }
+  }
+  hint "What do all three things the character does have in common?"
+  hint "Which word fits every sentence, not just one?"
+}

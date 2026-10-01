@@ -1,0 +1,68 @@
+# The page about whales was written for this lesson from NOAA Fisheries' species pages for the blue
+# whale and the humpback whale, read on 1 October 2026, with feet, miles and short tons turned into
+# metric and rounded down.
+lesson reading-the-main-idea-of-a-paragraph v=1 format=teach grade=4 unit=5 subject=reading levels=[easy, medium, hard] {
+  title "The main idea of each paragraph"
+  goal "Say what each paragraph is mainly about, find its key sentence, and sum up two paragraphs in one sentence."
+
+  look {
+    scene 36x12 {
+      row all at=canvas(1, 1) space=2 align=end {
+        passage p text="The blue whale is the largest animal on Earth. It can grow to more than 30 metres long. It can weigh 150 tonnes." width=20 numbers=false
+        whale w spout=1 facing=-1
+      }
+    }
+    say """
+      Each paragraph of a page is about one thing, its main idea. Often one sentence, the key
+      sentence, says it, and the others give details: numbers, examples, reasons. Find the main
+      idea by asking what every sentence is about. Two paragraphs next to each other often share a
+      bigger idea, and one sentence can sum up both.
+      """
+  }
+  do {
+    level easy {
+      worked reading.para-main k=0
+    }
+    show reading.para-main k=2 easy-k=1 hard-k=3
+    show reading.para-key k=1 easy-k=0 hard-k=2
+    show reading.para-find k=1 easy-k=0 hard-k=3
+    show reading.para-main k=3 easy-k=2 hard-k=4
+    level medium hard {
+      show reading.para-key k=0 hard-k=1
+    }
+  }
+  story {
+    show reading.para-odd k=1 easy-k=0 hard-k=2
+    show reading.para-find k=2 easy-k=1 hard-k=2
+    show reading.para-odd k=0 easy-k=1 hard-k=1
+  }
+  try stars=2 {
+    show reading.para-both k=0 easy-k=1 hard-k=2
+  }
+  try stars=3 {
+    show reading.para-sum k=0 hard-k=1
+  }
+  remember {
+    say "Ask what every sentence is about: that is the main idea. The rest are details."
+  }
+
+  grown-ups """
+    The idea is that a paragraph has one main idea, usually stated in a key sentence, and that the
+    main ideas of paragraphs can be joined into a summary. The way in chooses the main idea of a
+    paragraph about the blue whale's size, past a detail and an idea too wide to help; the core
+    finds the key sentence wherever it sits, finds which paragraph will hold a fact from the key
+    sentences alone, and spots the sentence that wanders off. The wrong idea to watch for is
+    choosing the most striking detail (150 tonnes) as the main idea. If the child is stuck, cover
+    the paragraph after reading it and ask what it was about in four words. Off the page, read a
+    page of an information book and give each paragraph a four-word heading together. The facts
+    are from NOAA Fisheries' pages on the blue whale and the humpback whale, converted to metric.
+    England's programme of study for years 3 and 4 asks for "identifying main ideas drawn from more
+    than 1 paragraph and summarising these".
+    """
+  level easy {
+    grown-ups "At this level a main idea is chosen once in the teacher's pen first, the paragraphs are short with the key sentence first, the fact to find names the paragraph's own words, the sentences that wander off sit in the middle, and the two-star joins the blue whale's size and loudness."
+  }
+  level hard {
+    grown-ups "At this level the paragraphs are the longer ones about sound and journeys, the key sentence comes last, the facts to find share no word with their key sentence, one sentence that wanders off is the last, and the two-star joins two paragraphs about humpbacks."
+  }
+}

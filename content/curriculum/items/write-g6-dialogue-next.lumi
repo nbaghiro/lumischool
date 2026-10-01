@@ -1,0 +1,36 @@
+# The two-star: the next line that does two jobs at once, showing the speaker and moving the story on.
+# Each wrong one does only one job, or none, so the child weighs every line against both.
+item writing.dialogue-next v=1 stars=2 skills=[writing.dialogue, writing.narrative, reasoning.compare] {
+  title "The line that does two jobs"
+  let k=0..2
+  let setup={pick(k, "The radio was dead and the plane was due in two days. Ines looked at the map.", "Sam had gone out to check the dogs an hour ago and not come back.", "The food would last three more days. The walk to the coast took four.")}
+  let right={pick(k, "\"Then we walk to the coast,\" said Ines, folding the map with steady hands. \"We leave tonight.\"", "\"I'm going after him,\" said Lena, grabbing the rope though her voice shook.", "\"Then we eat half,\" said Olaf, and pushed his own plate across to Lena. \"And we go now.\"")}
+  let one={pick(k, "\"I always knew this radio was rubbish,\" said Ines.", "\"Sam is always doing things like this,\" said Lena.", "\"We need to go,\" said Olaf.")}
+  let none={pick(k, "\"Hmm,\" said Ines.", "\"Oh dear,\" said Lena.", "\"Right,\" said Olaf.")}
+
+  scene 35x41 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        passage p text="{setup}" width=21 numbers=false
+        hut h pictures=4
+      }
+      passage c1 title="1" text="{pick(k, one, right, none)}" width=30 numbers=false
+      passage c2 title="2" text="{pick(k, right, none, one)}" width=30 numbers=false
+      passage c3 title="3" text="{pick(k, none, one, right)}" width=30 numbers=false
+      text ask "Which next line both shows what the speaker is like and moves the story on?" width=30
+      choice pick options=["1", "2", "3"]
+    }
+  }
+
+  answer pick=pick(k, "2", "1", "3")
+  feedback {
+    when (pick == pick(k, "1", "3", "2")) point=c1 {
+      say "That line does one job at most. Does it change what happens next as well as show the speaker?"
+    }
+    when (pick == pick(k, "3", "2", "1")) point=c1 {
+      say "That line does no work: it neither shows the speaker nor moves anything on."
+    }
+  }
+  hint "For each line ask two questions: does it show the speaker, and does it make something happen?"
+  hint "Which line gets two yeses?"
+}
