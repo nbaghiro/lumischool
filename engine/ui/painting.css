@@ -647,11 +647,21 @@
     .painting-header .wide-only {
         white-space: pre;
     }
-    /* what the sheet is saved and left by stands out; what empties or replaces it waits quietly */
+    /* what the sheet is saved and left by stands out; what empties or replaces it waits quietly, as
+       words on a little white with no frame, white enough to read over the grid */
     .painting-header #clear,
     .painting-header #fresh {
+        font-weight: 600;
         color: var(--ink-soft);
-        border-color: color-mix(in srgb, var(--ink) 30%, var(--card));
+        background: color-mix(in srgb, var(--card) 72%, transparent);
+        border-color: transparent;
+        box-shadow: none;
+    }
+    .painting-header #clear:hover,
+    .painting-header #fresh:hover {
+        color: var(--ink);
+        background: var(--card);
+        border-color: transparent;
     }
     .painting-header .done {
         color: var(--card);
