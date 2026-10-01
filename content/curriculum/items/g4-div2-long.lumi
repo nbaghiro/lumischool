@@ -1,0 +1,36 @@
+# Long division by a two-digit number with a two-digit answer: divide the hundreds and tens first,
+# bring down the ones, and divide again, guessing each digit from the rounded divisor.
+item division.two-digit-long v=1 skills=[division.two-digit, division.long, multiplication.long] {
+  title "A two-digit answer"
+  difficulty (q / 10 + d / 20 + (if r > 0 then 0.5 else 0))
+  let d=12..32 q=11..39 r=0..11
+  where (r < d and q * d + r < 1000 and q * d + r >= 200 and d % 10 != 0)
+  level easy {
+    let d=12..15
+    let r={0}
+  }
+  level hard {
+    let d=24..32
+    where (r > 0)
+  }
+
+  scene 36x23 {
+    row top at=canvas(1, 0) space=3 align=end {
+      longdiv sum n=(q * d + r) by=d blanks=[quotient, rest]
+      lighthouse lh stripes=3 beam=1
+    }
+    text ask "The lighthouse keeper shares {q * d + r} candles into boxes of {d}. Divide, and write what is left over in the small box." narrate width=34 below=top gap=1
+  }
+
+  answer quotient=q rest=r
+  feedback {
+    when (rest >= d) point=sum {
+      say "What is left over must be smaller than {d}, or another box could be filled."
+    }
+    when (quotient == q // 10) point=sum {
+      say "That is the first digit. Bring down the ones and divide again for the second digit."
+    }
+  }
+  hint "How many times does the divisor go into the first two digits of the number?"
+  hint "Write that digit, take away, bring down the ones, and divide again."
+}

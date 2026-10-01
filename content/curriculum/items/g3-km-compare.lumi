@@ -1,0 +1,31 @@
+# Comparing lengths written three ways: 1 km {a}00 m, 10{a}0 m and 1 km {a} m share their digits,
+# so only the places tell them apart. Each is changed to metres before comparing.
+item length.km-compare v=1 skills=[length.kilometres, place-value.compare, measure.metric] {
+  title "Which walk is longest?"
+  difficulty (v // 9 + v % 9 / 20)
+  let v=0..17
+  level easy {
+    let v=0..8
+  }
+  level hard {
+    let v=9..17
+  }
+
+  scene 36x24 {
+    row top at=canvas(1, 0) space=3 align=end {
+      tent tn lit=0
+      owlflying ow
+    }
+    text ask "Three night walks start at the tent. Which walk is the {if v < 9 then \"longest\" else \"shortest\"}?" narrate width=34 below=top gap=1
+    choice pick options=[pick(v, "1010 m", "1 km 2 m", "1 km 300 m", "1040 m", "1 km 5 m", "1 km 600 m", "1070 m", "1 km 8 m", "1 km 900 m", "1010 m", "1 km 2 m", "1 km 300 m", "1040 m", "1 km 5 m", "1 km 600 m", "1070 m", "1 km 8 m", "1 km 900 m"), pick(v, "1 km 1 m", "1 km 200 m", "1030 m", "1 km 4 m", "1 km 500 m", "1060 m", "1 km 7 m", "1 km 800 m", "1090 m", "1 km 1 m", "1 km 200 m", "1030 m", "1 km 4 m", "1 km 500 m", "1060 m", "1 km 7 m", "1 km 800 m", "1090 m"), pick(v, "1 km 100 m", "1020 m", "1 km 3 m", "1 km 400 m", "1050 m", "1 km 6 m", "1 km 700 m", "1080 m", "1 km 9 m", "1 km 100 m", "1020 m", "1 km 3 m", "1 km 400 m", "1050 m", "1 km 6 m", "1 km 700 m", "1080 m", "1 km 9 m")] stack=column below=ask gap=1
+  }
+
+  answer pick=pick(v, "1 km 100 m", "1 km 200 m", "1 km 300 m", "1 km 400 m", "1 km 500 m", "1 km 600 m", "1 km 700 m", "1 km 800 m", "1 km 900 m", "1 km 1 m", "1 km 2 m", "1 km 3 m", "1 km 4 m", "1 km 5 m", "1 km 6 m", "1 km 7 m", "1 km 8 m", "1 km 9 m")
+  feedback {
+    when (pick == pick(v, "1010 m", "1020 m", "1030 m", "1040 m", "1050 m", "1060 m", "1070 m", "1080 m", "1090 m", "1010 m", "1020 m", "1030 m", "1040 m", "1050 m", "1060 m", "1070 m", "1080 m", "1090 m")) point=ask {
+      say "Write each walk in metres. 1 km is 1000 m, so where does each digit go?"
+    }
+  }
+  hint "Change each walk into metres. How many metres is 1 km?"
+  hint "Compare the hundreds, then the tens, then the ones."
+}

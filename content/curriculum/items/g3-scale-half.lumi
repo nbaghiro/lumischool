@@ -1,0 +1,33 @@
+# A bar that ends between two marks: halfway between is half a step, so on a scale of 10 it is 5
+# more, on a scale of 2 it is 1 more. The marks either side have to be read first.
+item data.scale-half v=1 skills=[data.bar-charts, data.scales, division.halving] {
+  title "Between the marks"
+  difficulty (pick(s, 0, 1, 2) + h / 10)
+  let s=0..2 h=1..7
+  let p={pick(s, 2, 10, 50)}
+  level easy {
+    let s={0}
+  }
+  level hard {
+    let s={2}
+  }
+
+  scene 36x24 {
+    bargraph chart labels=["Mon", "Tue", "Wed"] values=[h + 1, h + 0.5, 3] max=9 color=sky per=p at=canvas(1, 0)
+    text ask "The chart shows how many drops of water the lab's dripping tap lost each day. How many drops on Tuesday?" narrate width=19 right-of=chart gap=2
+    number-input answer width=4 below=ask gap=1
+    beaker bk max=400 step=100 level=200 unit=ml right-of=answer gap=4
+  }
+
+  answer (p * h + p / 2)
+  feedback {
+    when (answer == p * h or answer == p * (h + 1)) point=chart {
+      say "Tuesday's bar stops halfway between two marks. What is halfway between them?"
+    }
+    when (answer == h + 0.5 or answer == h) point=chart {
+      say "Read the scale, not the squares. Each square stands for {p}."
+    }
+  }
+  hint "Which two numbers on the scale is the top of Tuesday's bar between?"
+  hint "What number is halfway between them?"
+}

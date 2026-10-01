@@ -1,0 +1,36 @@
+# Three sets of beams, one of which closes into a triangle. Each set is tested by adding its two
+# shorter beams; the other sets fall short or lie flat, so none can be ruled in by looks alone.
+item triangles.which-set v=1 skills=[triangles.sides, shapes.triangles, reasoning.compare] {
+  title "Which set makes a triangle?"
+  difficulty (k / 2)
+  let k=0..5
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x26 {
+    column top at=canvas(1, 0) space=1 align=start {
+      row cA space=1 align=centre {
+        text nA "A" width=2
+        rods rA rods=[pick(k, 2, 3, 5, 1, 4, 2), pick(k, 3, 5, 6, 4, 4, 7), pick(k, 6, 9, 10, 4, 9, 9)] mode=stair numbers=true
+      }
+      row cB space=1 align=centre {
+        text nB "B" width=2
+        rods rB rods=[pick(k, 3, 4, 2, 2, 5, 3), pick(k, 4, 6, 5, 2, 5, 7), pick(k, 7, 7, 8, 5, 9, 9)] mode=stair numbers=true
+      }
+      row cC space=1 align=centre {
+        text nC "C" width=2
+        rods rC rods=[pick(k, 4, 2, 3, 3, 3, 1), pick(k, 5, 4, 3, 4, 6, 8), pick(k, 6, 6, 7, 8, 9, 9)] mode=stair numbers=true
+      }
+    }
+    text ask "The fountain's railing is made of triangles. Which set of three beams can be joined into a triangle?" narrate width=17 right-of=top gap=2
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=pick(k, "C", "B", "A", "A", "B", "B")
+  hint "In each set, which beam is longest? Add the other two."
+  hint "Only a set whose two shorter beams add to more than the longest will close."
+}

@@ -1,0 +1,32 @@
+# The way in to square numbers: a square of n rows of n is n times n, written n squared, n². The
+# squares on the telescope floor are counted by rows, not one by one.
+item squares.array v=1 skills=[number.squares, multiplication.arrays] {
+  title "A square of tiles"
+  difficulty n
+  let n=4..10
+  level easy {
+    let n=4..7
+  }
+  level hard {
+    let n=8..10
+  }
+
+  scene 36x31 {
+    grid floor rows=n cols=n shade=0 color=sky cell=2 at=canvas(1, 0)
+    observatory dome open=1 right-of=floor gap=3
+    text ask "The floor under the telescope is a square of tiles, {n} along each side. How many tiles is that? It is {n} squared, written {n}²." narrate width=34 below=floor gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (n * n)
+  feedback {
+    when (answer == 2 * n) point=floor {
+      say "Squared means {n} times {n}, not {n} times 2."
+    }
+    when (answer == 4 * n and n != 4) point=floor {
+      say "That counts the tiles round the edge. The square is full of tiles inside too."
+    }
+  }
+  hint "How many tiles are in one row? How many rows are there?"
+  hint "How many is {n} rows of {n}?"
+}

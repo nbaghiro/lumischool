@@ -1,0 +1,34 @@
+# The three-star: two bars are hidden. The total and the difference between them are given, so the
+# smaller one is half of what is left after the difference is taken off, with no method on the page.
+item data.scale-hidden v=1 stars=3 skills=[data.bar-charts, reasoning.two-unknowns, reasoning.work-backwards] {
+  title "Two hidden bars"
+  difficulty (s + d / 10)
+  let s=0..1 a=2..6 c=2..6 x=1..6 d=1..3
+  let p={pick(s, 5, 10)}
+  where (x + d <= 8 and x != d)
+  level easy {
+    let s={0}
+    let d={1}
+  }
+  level hard {
+    let s={1}
+  }
+
+  scene 36x18 {
+    bargraph chart labels=["Mon", "Tue", "Wed", "Thu"] values=[0, 0, a, c] max=9 color=sky per=p at=canvas(1, 0)
+    text ask "The lab's visitors each day: Monday's and Tuesday's bars are lost. All four days had {p * (a + c + 2 * x + d)} visitors, and Monday had {p * d} more than Tuesday. How many visitors came on Tuesday?" narrate width=17 right-of=chart gap=2
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (p * x)
+  feedback {
+    when (answer == p * (x + d)) point=chart {
+      say "That is Monday, the bigger day. Tuesday had {p * d} fewer."
+    }
+    when (answer * 2 == p * (2 * x + d)) point=chart {
+      say "Monday and Tuesday are not equal. Take off the extra {p * d} first, then share."
+    }
+  }
+  hint "How many visitors came on Wednesday and Thursday? How many does that leave for Monday and Tuesday together?"
+  hint "If Monday gave up its {p * d} extra visitors, the two days would be equal. What would each be?"
+}

@@ -591,6 +591,7 @@ export function renderLaidOut(host: Element, scene: Scene, o: SceneOptions): SVG
                         color: markerOf(v.color, "sky"),
                         set: set === 1 && (paper || !shown || shown.checked) ? 2 : set,
                         touch: Number(v.touch ?? 0),
+                        per: Number(v.per ?? 1),
                     },
                     vopts,
                 );

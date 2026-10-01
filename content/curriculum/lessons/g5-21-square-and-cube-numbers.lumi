@@ -1,0 +1,68 @@
+# Square and cube numbers as shapes and as powers: a square of tiles is n², a cube of boxes n³, and
+# the small number says how many times a number is multiplied by itself. Set at the observatory.
+lesson g5-square-and-cube-numbers v=1 format=teach grade=5 unit=4 subject=maths levels=[easy, medium, hard] {
+  title "Square and cube numbers"
+  goal "Find square and cube numbers from squares of tiles and cubes of blocks, and read and compare numbers written with ² and ³."
+
+  look {
+    scene 36x16 {
+      row top at=canvas(1, 0) space=3 align=end {
+        grid g rows=5 cols=5 shade=25 color=sky cell=2
+        cubestack stack l=3 w=3 h=3
+      }
+    }
+    say """
+      The observatory floor is a square of tiles, 5 by 5, which is 25 tiles: 5 times 5, called 5
+      squared and written 5². Its store holds a cube of boxes, 3 along, 3 deep and 3 high, which is 27
+      boxes: 3 times 3 times 3, called 3 cubed and written 3³. The small number says how many times the
+      number is multiplied by itself. Numbers like 1, 4, 9, 16 and 25 are square numbers, and 1, 8,
+      27 and 64 are cube numbers.
+      """
+  }
+  do {
+    show squares.array n=6 easy-n=4 hard-n=9
+    level easy {
+      worked squares.array n=5 level=medium
+    }
+    practice squares.cube count=1 seed=2
+    practice squares.notation count=1 seed=3
+    practice squares.between count=1 seed=4
+    practice squares.compare count=1 seed=5
+    practice squares.notation count=1 seed=16
+    practice squares.cube count=1 seed=7
+    practice squares.between count=1 seed=8
+    level hard {
+      practice squares.compare count=1 seed=9
+    }
+  }
+  try stars=2 {
+    practice squares.next count=1 seed=2
+  }
+  try stars=3 {
+    show squares.both t=1 easy-t=0 hard-t=2
+  }
+  remember {
+    say "n² is n times n, a square. n³ is n times n times n, a cube. The small number is not a times table."
+  }
+
+  grown-ups """
+    Grade five met powers of ten when writing big numbers; this lesson uses powers of any number.
+    A square number is the tiles in a square, and a cube number the blocks in a cube, and the
+    small raised number says how many times the number is multiplied by itself. The common slip is
+    reading 6² as 6 × 2 or 2³ as 2 × 3; ask what the small number counts. Comparing 2⁵ with 5²
+    shows that swapping the numbers usually changes the answer. If the child is stuck, build the
+    square from counters or the cube from sugar lumps. In the two-star question the next square is
+    the last one plus a new row and a new column, n plus n + 1, so 31² comes from 30² without long
+    multiplication. In the three-star question the numbers that are both square and cube are found
+    by listing the cubes, which are fewer, and testing each. Off the page, look for square numbers
+    in a chessboard or a window of panes. This meets England's year 5 programme, "recognise and use
+    square numbers and cube numbers, and the notation for squared (²) and cubed (³)", and Russia's
+    grade 5 programme, «Степень с натуральным показателем».
+    """
+  level easy {
+    grown-ups "At this level the squares and cubes are small, one square is worked in the teacher's pen, the numbers to square stay below 7 and to cube below 4, the range of squares has no square at either end, the step to the next square starts from the teens, and the numbers that are both go up to 100."
+  }
+  level hard {
+    grown-ups "At this level the squares reach 10 by 10 and the cubes 6 by 6 by 6, the range may begin or end on a square, a pair to compare comes out the same, the step to the next square starts from the thirties, and the numbers that are both go up to 5000."
+  }
+}

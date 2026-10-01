@@ -1,0 +1,69 @@
+# Division by a two-digit number: by whole tens first, then by any two-digit number, guessing each
+# digit of the answer from the divisor rounded to tens and putting the guess right. Set at sea.
+lesson g4-dividing-by-a-two-digit-number v=1 format=teach grade=4 unit=5 subject=maths levels=[easy, medium, hard] {
+  title "Dividing by a two-digit number"
+  goal "Divide a two- or three-digit number by a two-digit number, guessing each digit from a rounded divisor and checking it."
+
+  look {
+    scene 36x16 {
+      row top at=canvas(1, 0) space=3 align=end {
+        text sum "156 ÷ 26 = 6" width=14
+        ship sp sails=3 portholes=4
+      }
+    }
+    say """
+      The ship carries 156 barrels in stacks of 26. How many stacks? Round 26 to 30 and think: 150
+      shared into 30s is 5. Check it: 5 stacks of 26 is 130, which leaves 26, enough for one more
+      stack. So the guess goes up one: 6 stacks, with nothing left. Dividing by a two-digit number
+      is guessing from a rounded divisor, multiplying to check, and putting the guess right.
+      """
+  }
+  do {
+    show division.by-tens t=3 q=4 easy-t=2 easy-q=3 hard-t=7 hard-q=8
+    level easy {
+      worked division.by-tens t=4 q=5 level=medium
+    }
+    practice division.two-digit-guess count=1 seed=2
+    practice division.two-digit-long count=1 seed=3
+    practice division.two-digit-boats count=1 seed=4
+    practice division.two-digit-guess count=1 seed=15
+    practice division.by-tens count=1 seed=16
+    practice division.two-digit-long count=1 seed=7
+    practice division.two-digit-boats count=1 seed=8
+    level hard {
+      practice division.two-digit-guess count=1 seed=9
+    }
+  }
+  try stars=2 {
+    practice division.two-digit-unknown count=1 seed=2
+  }
+  try stars=3 {
+    show division.two-digit-divisors t=2 easy-t=0 hard-t=4
+  }
+  remember {
+    say "Round the divisor to guess, multiply to check, and move the guess up or down one."
+  }
+
+  grown-ups """
+    Long division in grade four divided by one digit; this lesson divides by a two-digit number, as
+    Japan's grade 4 course does. The new skill is the guess: round the divisor to tens, use a times
+    table to guess the digit, then multiply the real divisor to check. A guess is often one out, and
+    putting it right is part of the method, not a mistake. Watch for a child who keeps a guess whose
+    remainder is bigger than the divisor, or whose product is bigger than the number. If the child
+    is stuck, write the divisor's table up to ten times beside the sum. The lifeboat question asks
+    what the remainder means: people left over still need a boat. In the two-star question the child
+    works back from the quotient and remainder to the number divided. In the three-star question
+    several numbers of pirates give the same share, and the child finds them all from the two edges.
+    Off the page, share a bag of pasta shapes into groups of 12 and count the groups. This meets
+    Japan's grade 4 course of study, A(3)ア(ア), 「除数が１位数や２位数で被除数が２位数や３位数の場合の
+    計算が，基本的な計算を基にしてできることを理解すること。また，その筆算の仕方について理解すること」,
+    and looks ahead to England's year 6 programme, "divide numbers up to 4 digits by a two-digit
+    whole number using the formal written method of long division".
+    """
+  level easy {
+    grown-ups "At this level the tens are small, one is worked in the teacher's pen, the divisors are just over a ten so the first guess is right, the long divisions have no remainder, the lifeboats are few, the shells are in fewer bags, and the coins go to 100."
+  }
+  level hard {
+    grown-ups "At this level the divisors are just under a ten so the first guess is often one too many, the long divisions have bigger divisors and a remainder, only a few passengers are left over, the shells are in more bags, and the coins go to 250 or 300."
+  }
+}

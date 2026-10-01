@@ -1,0 +1,31 @@
+# Cube numbers: a cube of n layers, each a square of n by n, is n times n times n, written n cubed,
+# n³. The stack shows the layers so the count builds from the square.
+item squares.cube v=1 skills=[number.cubes, volume.cuboids, multiplication.three-numbers] {
+  title "A cube of blocks"
+  difficulty n
+  let n=2..6
+  level easy {
+    let n=2..3
+  }
+  level hard {
+    let n=5..6
+  }
+
+  scene 36x31 {
+    cubestack stack l=n w=n h=n at=canvas(1, 0)
+    text ask "The observatory's store has a cube of boxes, {n} along, {n} deep and {n} high. How many boxes is that? It is {n} cubed, written {n}³." narrate width=34 below=stack gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (n * n * n)
+  feedback {
+    when (answer == 3 * n) point=stack {
+      say "Cubed means {n} times {n} times {n}, not {n} times 3."
+    }
+    when (answer == n * n) point=stack {
+      say "That is one layer. How many layers are there?"
+    }
+  }
+  hint "How many boxes are in the top layer?"
+  hint "How many layers like that are there?"
+}

@@ -1,0 +1,34 @@
+# What the remainder means: everyone must get a place, so the people left over need one more
+# lifeboat, and the answer is the quotient plus one. When nothing is left over, no extra boat.
+item division.two-digit-boats v=1 skills=[division.two-digit, division.remainders, division.interpret] {
+  title "Enough lifeboats"
+  difficulty (n / 100 + (if n % c == 0 then 0 else 1))
+  let c=12..25 n=100..300
+  where (c % 10 != 0 and n // c <= 9 and n % c != 0)
+  level easy {
+    let c=12..15
+    let n=100..150
+  }
+  level hard {
+    let c=21..25
+    where (n % c <= 3)
+  }
+
+  scene 36x16 {
+    row top at=canvas(1, 0) space=3 align=end {
+      rowboat rb
+      iceberg ib under=0
+    }
+    text ask "An iceberg is near, and {n} passengers must go into lifeboats. Each lifeboat holds {c} people. How many lifeboats are needed so that everyone has a place?" narrate width=34 below=top gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (n // c + 1)
+  feedback {
+    when (answer == n // c) point=ask {
+      say "That many boats leaves {n % c} people with no place. They need a boat too."
+    }
+  }
+  hint "How many full boats of {c} can {n} people fill?"
+  hint "Is anyone left over? What do they need?"
+}

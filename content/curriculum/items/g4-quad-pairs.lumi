@@ -1,0 +1,28 @@
+# Sorting four-sided shapes by their parallel sides: a trapezium has one pair, a parallelogram two,
+# and a kite or an uneven shape none. Each pair is found by counting the steps of opposite sides.
+item quad.pairs v=1 skills=[shapes.parallel, shapes.quadrilaterals, shapes.classify] {
+  title "How many pairs of parallel sides?"
+  difficulty pick(k, 0, 1, 1.5, 0, 1.5, 2)
+  let k=0..5
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k={2, 5}
+  }
+
+  scene 36x17 {
+    gridshape sh cols=7 rows=5 xs=[pick(k, 1, 1, 3, 1, 1, 1), pick(k, 5, 4, 5, 5, 5, 3), pick(k, 4, 5, 3, 5, 5, 6), pick(k, 2, 2, 1, 1, 2, 4)] ys=[pick(k, 4, 4, 0, 4, 4, 3), pick(k, 4, 4, 2, 4, 4, 1), pick(k, 1, 1, 5, 1, 2, 2), pick(k, 1, 1, 2, 1, 1, 4)] labels=["A", "B", "C", "D"] closed=true at=canvas(1, 0)
+    text ask "A tile from the island's stepped temple is drawn on dotted paper. How many pairs of parallel sides does it have?" narrate width=16 right-of=sh gap=2
+    number-input answer width=2 below=ask gap=1
+  }
+
+  answer pick(k, 1, 2, 0, 2, 0, 2)
+  feedback {
+    when (answer == 4) point=sh {
+      say "A pair is two sides. A four-sided shape can have at most two pairs."
+    }
+  }
+  hint "Look at opposite sides: AB with CD, then BC with DA."
+  hint "For each pair, count the steps across and up or down. Are they the same?"
+}

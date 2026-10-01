@@ -1,0 +1,29 @@
+# The three-star: three corners of a parallelogram are marked, but not which corners they are, so the
+# fourth can go opposite any one of them. Each choice gives one place, and only those on the grid
+# count, with no method on the page.
+item quad.corner-d v=1 stars=3 skills=[shapes.parallel, shapes.quadrilaterals, reasoning.all-the-ways] {
+  title "Where can the fourth corner go?"
+  difficulty pick(k, 0, 0.5, 0.5, 1, 2, 2.5)
+  let k=0..5
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x17 {
+    gridshape sh cols=7 rows=5 xs=[pick(k, 2, 2, 1, 1, 3, 0), pick(k, 3, 4, 3, 3, 5, 2), pick(k, 5, 4, 4, 4, 4, 5)] ys=[pick(k, 3, 2, 2, 3, 1, 3), pick(k, 1, 1, 1, 1, 2, 1), pick(k, 2, 3, 3, 3, 4, 1)] labels=["A", "B", "C"] closed=false join=false at=canvas(1, 0)
+    text ask "Three corners of a parallelogram tile are marked A, B and C on the dotted paper, but the tile could lie different ways. How many dots on this grid could be its fourth corner?" narrate width=16 right-of=sh gap=2
+    number-input answer width=2 below=ask gap=1
+  }
+
+  answer pick(k, 3, 3, 3, 3, 2, 1)
+  feedback {
+    when (answer == 1 and pick(k, 3, 3, 3, 3, 2, 1) > 1) point=sh {
+      say "That is one parallelogram. Could A, B or C be the corner opposite the missing one? Try each."
+    }
+  }
+  hint "Pick two of the marked corners to be next to each other along one side. Where must the fourth go?"
+  hint "Now let a different marked corner be opposite the missing one. Does that give another place?"
+}

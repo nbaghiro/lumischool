@@ -1,0 +1,30 @@
+# The two-star reason: the common slip adds the bottom numbers too. Checking it against sense, the
+# slip's answer is no bigger than the fraction it started from, which adding can never do.
+item fractions.same-check v=1 stars=2 skills=[fractions.add-same, reasoning.find-the-error, reasoning.compare] {
+  title "Kit's adding"
+  difficulty (if c == a then 1 else 0)
+  let b={5, 6, 7, 8} a=2..4 c=1..4
+  where (c <= a and a + c < b)
+  level easy {
+    where (c < a)
+  }
+  level hard {
+    where (c == a)
+  }
+
+  scene 36x18 {
+    fraction start n=b k=a shape=bar at=canvas(1, 0)
+    equation kit "{a}/{b} + {c}/{b} = {a + c}/{2 * b}" below=start gap=1
+    text ask "Kit adds the tops and the bottoms. Compare Kit's answer, {a + c}/{2 * b}, with {a}/{b}, the fraction Kit started with. Is Kit's answer bigger, smaller or the same?" narrate width=34 below=kit gap=1
+    choice pick options=["bigger", "smaller", "the same"] below=ask gap=1
+  }
+
+  answer pick=(if c == a then "the same" else "smaller")
+  feedback {
+    when (pick == "bigger") point=start {
+      say "Write {a}/{b} with {2 * b} as the bottom number: it is {2 * a}/{2 * b}. Which is bigger now?"
+    }
+  }
+  hint "Write {a}/{b} with {2 * b} as the bottom number. What is the top?"
+  hint "After adding {c}/{b} more, should the answer be bigger than {a}/{b}? What does that say about Kit's way?"
+}

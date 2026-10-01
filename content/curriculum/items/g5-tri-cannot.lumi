@@ -1,0 +1,33 @@
+# The two-star reason: of four lengths for the third side, exactly one cannot be, either too long or
+# too short. Both ends of the rule have to be used, since the impossible one is sometimes the short one.
+item triangles.cannot v=1 stars=2 skills=[triangles.sides, reasoning.bounds, reasoning.counterexample] {
+  title "Which length cannot be?"
+  difficulty (k / 2)
+  let k=0..5
+  let a={pick(k, 5, 4, 6, 7, 3, 9)}
+  let b={pick(k, 8, 9, 10, 7, 10, 12)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 36x24 {
+    row top at=canvas(1, 0) space=3 align=end {
+      rods sticks rods=[a, b] mode=stair numbers=true
+      fountain fn across=6 round=0 ask=0 unit=m
+    }
+    text ask "A triangle has two sides of {a} m and {b} m. Which of these cannot be the length of its third side?" narrate width=34 below=top gap=1
+    choice pick options=[pick(k, "4", "6", "3", "1", "7", "4"), pick(k, "6", "8", "5", "7", "9", "15"), pick(k, "12", "12", "12", "13", "11", "20"), pick(k, "13", "14", "15", "14", "12", "21")] below=ask gap=1
+  }
+
+  answer pick=pick(k, "13", "14", "3", "14", "7", "21")
+  feedback {
+    when (pick != pick(k, "13", "14", "3", "14", "7", "21")) point=sticks {
+      say "Try that length with {a} m and {b} m. Do the two shorter sides add to more than the longest?"
+    }
+  }
+  hint "How long can the third side be, at most, so the other two can still meet?"
+  hint "How short can it be? The two shorter sides together must be longer than the longest."
+}

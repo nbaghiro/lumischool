@@ -34,6 +34,11 @@ export const walledCity: World = {
             says: "Find the missing stone, and the floor's area.",
         },
         {
+            art: "temple",
+            when: ["skill:triangles.sides"],
+            says: "Which beams close into a triangle frame?",
+        },
+        {
             art: "chest",
             when: ["skill:fractions"],
             says: "A half and a third of the coins.",

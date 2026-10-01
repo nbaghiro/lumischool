@@ -1,0 +1,35 @@
+# Kilometres and metres together in metres: each kilometre is a thousand. The hard versions have
+# fewer than a hundred metres left over, so a zero has to hold the hundreds place.
+item length.km-mixed v=1 skills=[length.kilometres, measure.metric, place-value.thousands] {
+  title "Kilometres and metres in metres"
+  difficulty (k + (if m < 100 then 1.5 else 0))
+  let k=1..3 m=20..950
+  level easy {
+    let k=1..2
+    where (m % 100 == 0)
+  }
+  level hard {
+    where (m < 100)
+  }
+
+  scene 36x16 {
+    row top at=canvas(1, 0) space=3 align=end {
+      telescope ts tilt=40
+      fox fx facing=0
+    }
+    text ask "The fox's den is {k} km {m} m from the telescope. How many metres is that?" narrate width=34 below=top gap=1
+    number-input answer width=5 below=ask gap=1
+  }
+
+  answer (1000 * k + m)
+  feedback {
+    when (m < 100 and answer == 100 * k + m) point=ask {
+      say "{k} km is {1000 * k} m. Where does the {m} go: in the hundreds or the tens and ones?"
+    }
+    when (answer == k + m) point=ask {
+      say "Each kilometre is 1000 metres, not 1."
+    }
+  }
+  hint "How many metres is {k} km?"
+  hint "Add the {m} m to that. Which place does each digit go in?"
+}

@@ -1,0 +1,37 @@
+# The two-star: work backwards from a division to the number divided. The quotient times the divisor,
+# plus what was left over, gives it back, which is the check the lesson uses forwards.
+item division.two-digit-unknown v=1 stars=2 skills=[division.two-digit, division.inverse, reasoning.work-backwards] {
+  title "What was shared?"
+  difficulty (q * d / 150 + r / 10)
+  let d=13..29 q=6..15 r=1..12
+  where (r < d and d % 10 != 0)
+  level easy {
+    let q=6..9
+    let d=13..19
+  }
+  level hard {
+    let q=11..15
+    let d=21..29
+  }
+
+  scene 36x17 {
+    row top at=canvas(1, 0) space=3 align=end {
+      text sum "? ÷ {d} = {q} remainder {r}" width=18
+      compass cp
+    }
+    text ask "The ship's log says: shells shared into {q} bags of {d}, with {r} left over. How many shells were there?" narrate width=34 below=top gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (q * d + r)
+  feedback {
+    when (answer == q * d) point=sum {
+      say "That is the shells in the bags. Add the ones left over."
+    }
+    when (answer == q * d - r) point=sum {
+      say "The left-over shells were not in the bags, so they are added on, not taken away."
+    }
+  }
+  hint "How many shells are in {q} bags of {d}?"
+  hint "What happens to the shells left over?"
+}

@@ -885,7 +885,7 @@ export const REGISTRY: Record<string, NodeSpec> = {
         anchorsOf: (v) => indexed("row", length(v.labels)),
     },
     bargraph: {
-        doc: "A bar chart with a scale of one square per unit. `touch=1` stands the bars side by side as a histogram's classes. `set=1` makes the chart the answer: each bar drawn at nought is the child's to set, dragged or tapped to a height on the screen and shaded on paper, and the answer is a condition over bar1 to bar6 (each bar's height, from the left) and total. `set=2` draws the columns dashed to the top of the scale, to shade, without taking an answer.",
+        doc: "A bar chart with a scale of one square per unit, or per `per` units when it is set, as in a chart whose scale counts in 5s. `touch=1` stands the bars side by side as a histogram's classes. `set=1` makes the chart the answer: each bar drawn at nought is the child's to set, dragged or tapped to a height on the screen and shaded on paper, and the answer is a condition over bar1 to bar6 (each bar's height, from the left) and total. `set=2` draws the columns dashed to the top of the scale, to shade, without taking an answer.",
         scene: true,
         id: "name",
         arranges: { when: "set" },
@@ -896,6 +896,7 @@ export const REGISTRY: Record<string, NodeSpec> = {
             color: { kind: "word", values: MARKERS },
             set: { kind: "expr" },
             touch: { kind: "expr" },
+            per: { kind: "expr" },
             ...PLACE,
         },
         anchorsOf: (v) => [

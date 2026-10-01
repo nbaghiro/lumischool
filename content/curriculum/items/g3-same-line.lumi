@@ -1,0 +1,26 @@
+# Fractions on a number line from 0 to 1: each tick is one more piece, so counting on c ticks from
+# a/b lands on (a + c)/b. The hurdles stand on the ticks.
+item fractions.same-line v=1 skills=[fractions.number-line, fractions.add-same] {
+  title "Hurdles on a line"
+  difficulty (b / 4 + c / 3)
+  let b={5, 6, 8, 10} a=1..5 c=2..5
+  where (a + c < b)
+  level easy {
+    let b={5, 6}
+    let c=2..3
+  }
+  level hard {
+    let b={8, 10}
+    let c=4..5
+  }
+
+  scene 36x14 {
+    numberline line from=0 to=1 step=(1 / b) start=(a / b) jumps=[c / b] at=canvas(1, 0)
+    text ask "The track from 0 to 1 is marked in {if b == 4 then \"quarters\" else if b == 5 then \"fifths\" else if b == 6 then \"sixths\" else if b == 7 then \"sevenths\" else if b == 8 then \"eighths\" else if b == 9 then \"ninths\" else if b == 10 then \"tenths\" else \"twelfths\"}. The first hurdle is at {a}/{b}. The second hurdle is {c}/{b} further on. Where is it?" narrate width=34 below=line gap=1
+    equation eq "{a}/{b} + {c}/{b} = {?top}/{b}" below=ask gap=1
+  }
+
+  answer top=(a + c)
+  hint "Find {a}/{b} on the line. Each tick is one more piece."
+  hint "Count on {c} ticks. Which tick do you land on?"
+}

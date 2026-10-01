@@ -1389,6 +1389,12 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
     mirror: { on: "shapes", also: [], shows: ["symmetry", "halves"], words: "" },
     net: { on: "shapes", also: [], shows: ["shape"], words: "fold cube" },
     picgraph: { on: "data", also: [], shows: ["data"], words: "" },
+    gridshape: {
+        on: "shapes",
+        also: [],
+        shows: ["shape"],
+        words: "parallel perpendicular quadrilateral",
+    },
     plotpoint: { on: "shapes", also: [], shows: ["position"], words: "coordinates point" },
     probscale: { on: "data", also: [], shows: ["chance"], words: "" },
     protractor: { on: "shapes", also: [], shows: ["symmetry"], words: "angle measure" },

@@ -1,0 +1,68 @@
+# Rounding put to work: estimating a sum or product before calculating, checking an answer by its
+# size and by the inverse, and rounding up on purpose to be sure. Set in the mountains.
+lesson g4-estimating-before-calculating v=1 format=teach grade=4 unit=2 subject=maths levels=[easy, medium, hard] {
+  title "Estimating before you calculate"
+  goal "Round numbers to estimate an answer, and use the estimate or the inverse to check whether an answer makes sense."
+
+  look {
+    scene 36x14 {
+      row top at=canvas(1, 0) space=3 align=end {
+        cablecar cc cars=2 windows=3
+        peaks pk count=2 snow=1
+      }
+    }
+    say """
+      The cable car carried 382 people on Saturday and 419 on Sunday. Before adding them exactly,
+      round: about 400 and about 400, so about 800. If the exact answer then comes out as 701 or 1801,
+      something has slipped, because it is far from 800. An estimate does not replace the sum. It
+      tells you what size the answer should be, so you can spot a slip.
+      """
+  }
+  do {
+    show estimate.round-sum a=382 b=419 easy-a=312 easy-b=226 hard-a=468 hard-b=375
+    level easy {
+      worked estimate.round-sum a=541 b=228 level=medium
+    }
+    practice estimate.product count=1 seed=2
+    practice estimate.check count=1 seed=3
+    practice estimate.inverse count=1 seed=4
+    practice estimate.enough count=1 seed=5
+    practice estimate.round-sum count=1 seed=6
+    practice estimate.check count=1 seed=7
+    practice estimate.product count=1 seed=8
+    level hard {
+      practice estimate.inverse count=1 seed=9
+    }
+  }
+  try stars=2 {
+    show estimate.which-wrong a=340 b=420 c=820 d=270 e=36 f=7 k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    practice estimate.bounds count=1 seed=3
+  }
+  remember {
+    say "Estimate first: round, work it in your head, and check the real answer is near."
+  }
+
+  grown-ups """
+    Rounding was taught as a skill in grade three and earlier this year; here it becomes a tool.
+    The child rounds to estimate a sum or a product, uses the estimate to decide whether an answer
+    is sensible, checks a subtraction by adding back, and rounds every price up to be sure there is
+    enough money. Watch for a child who gives the exact answer when an estimate is asked, and for one
+    who thinks an answer near the estimate must be right: an estimate catches big slips, not small
+    ones, which is why the inverse check is there too. If the child is stuck, say the rounded numbers
+    aloud before writing anything. In the two-star question three sums are too long to redo, and
+    estimating finds the one with a slip. In the three-star question the rounded numbers hide the
+    exact ones, so the child works out the biggest or smallest total they could have been, which
+    needs the largest number that still rounds down. Off the page, estimate the shopping bill before
+    the till does. This meets England's year 4 programme, "estimate and use inverse operations to
+    check answers to a calculation", and Japan's grade 4 course of study, A(2)ア(ウ),
+    「目的に応じて四則計算の結果の見積りをすること」.
+    """
+  level easy {
+    grown-ups "At this level the numbers round down, one estimate is worked in the teacher's pen, the products are small, the subtraction to check by adding is right, the prices round up a long way, the slip is in the addition, and the bounds are the biggest total to the nearest ten."
+  }
+  level hard {
+    grown-ups "At this level the numbers round up, the products are bigger, the subtraction to check has a slip, the prices sit just over a hundred so rounding up adds a lot, the slip is in the multiplication, and the bounds are to the nearest hundred."
+  }
+}

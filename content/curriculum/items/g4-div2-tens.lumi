@@ -1,0 +1,33 @@
+# The way in to dividing by a two-digit number: dividing by a whole number of tens is the times table
+# with the tens taken off both, so 240 divided by 30 is 24 divided by 3.
+item division.by-tens v=1 skills=[division.two-digit, division.inverse, multiplication.tables] {
+  title "Sharing by tens"
+  difficulty (t / 3 + q / 4)
+  let t=2..9 q=2..9
+  level easy {
+    let t=2..4
+    let q=2..5
+  }
+  level hard {
+    let t=6..9
+    let q=6..9
+  }
+
+  scene 36x22 {
+    row top at=canvas(1, 0) space=3 align=end {
+      chest ch open=1 coins=5
+      ship sp sails=2 portholes=3
+    }
+    text ask "The ship's crew found {10 * t * q} gold coins in the chest. They pack them into bags of {10 * t}. How many bags do they fill?" narrate width=34 below=top gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer q
+  feedback {
+    when (answer == 10 * q) point=ask {
+      say "Check it: {10 * q} bags of {10 * t} would be far more than {10 * t * q} coins."
+    }
+  }
+  hint "How many tens are in {10 * t * q}? How many tens are in {10 * t}?"
+  hint "Which times table fact uses those two numbers?"
+}

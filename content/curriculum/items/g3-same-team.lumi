@@ -1,0 +1,33 @@
+# A fraction of a team: the team has as many players as the bottom number, so each piece is one
+# player. Red and blue together take some pieces, and the rest of the whole is the green shirts.
+item fractions.same-team v=1 skills=[fractions.of-a-set, fractions.add-same, fractions.subtract-same] {
+  title "Shirts in the team"
+  difficulty ((a + c) / 2 + b / 6)
+  let b={8, 10, 12} a=1..6 c=1..6
+  where (a + c < b and a != c)
+  level easy {
+    let b={8}
+  }
+  level hard {
+    let b={12}
+    where (a + c >= 7)
+  }
+
+  scene 36x16 {
+    row top at=canvas(1, 0) space=3 align=end {
+      runners rn count=4 numbers=1
+      fraction team n=b k=(a + c) shape=bar
+    }
+    text ask "A team of {b} runners wears red, blue or green shirts. {a}/{b} of the team wear red and {c}/{b} wear blue. What fraction of the team wear green?" narrate width=34 below=top gap=1
+    equation eq "1 − {a}/{b} − {c}/{b} = {?top}/{b}" below=ask gap=1
+  }
+
+  answer top=(b - a - c)
+  feedback {
+    when (top == a + c and b != 2 * (a + c)) point=team {
+      say "That is red and blue together. Green is the rest of the team."
+    }
+  }
+  hint "How many pieces make the whole team?"
+  hint "Take away the red and the blue pieces. How many are left?"
+}

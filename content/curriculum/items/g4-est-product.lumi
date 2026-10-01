@@ -1,0 +1,37 @@
+# Estimating a product: round each two-digit number to the nearest ten and multiply the tens, so
+# 38 x 21 is about 40 x 20 = 800. The answer is a guide to the size, not the exact product.
+item estimate.product v=1 skills=[estimate.rounding, multiplication.long, multiplication.by-tens] {
+  title "About how many seats?"
+  difficulty (a // 10 * (b // 10) / 10)
+  let a=12..68 b=12..48
+  where (a % 10 != 5 and b % 10 != 5 and a % 10 != 0 and b % 10 != 0)
+  level easy {
+    let a=12..34
+    let b=12..24
+  }
+  level hard {
+    let a=46..68
+    let b=36..48
+  }
+
+  scene 36x21 {
+    row top at=canvas(1, 0) space=3 align=end {
+      cablecar cc cars=1 windows=4
+      firs fr count=3 snow=1
+    }
+    text ask "The cable car makes {a} trips a day, carrying {b} skiers each trip. Round both numbers to the nearest ten and multiply. About how many skiers is that?" narrate width=34 below=top gap=1
+    number-input answer width=5 below=ask gap=1
+  }
+
+  answer (10 * ((a + 5) // 10) * 10 * ((b + 5) // 10))
+  feedback {
+    when (answer == a * b) point=ask {
+      say "That is exact. The estimate multiplies the rounded tens, which is quicker."
+    }
+    when (answer == 10 * ((a + 5) // 10) * ((b + 5) // 10)) point=ask {
+      say "Tens times tens makes hundreds. How many zeros does 40 × 20 have?"
+    }
+  }
+  hint "Round each number to the nearest ten. Which tens are they?"
+  hint "Multiply the tens digits, then think what tens times tens makes."
+}

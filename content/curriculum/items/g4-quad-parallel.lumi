@@ -1,0 +1,29 @@
+# The way in to parallel sides: two sides are parallel when they go the same number of steps across
+# for the same number of steps up or down, so they never meet. Counting steps on the dotted grid
+# settles it, slanting sides too.
+item quad.parallel v=1 skills=[shapes.parallel, shapes.quadrilaterals] {
+  title "Which side runs the same way?"
+  difficulty pick(k, 0, 1, 1, 0.5, 2, 2)
+  let k=0..5
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k={4, 5}
+  }
+
+  scene 36x17 {
+    gridshape sh cols=7 rows=5 xs=[pick(k, 1, 1, 1, 1, 1, 2), pick(k, 4, 4, 2, 1, 4, 1), pick(k, 5, 5, 5, 4, 6, 4), pick(k, 2, 2, 6, 6, 3, 5)] ys=[pick(k, 4, 4, 4, 4, 4, 4), pick(k, 4, 4, 2, 1, 4, 1), pick(k, 2, 2, 2, 1, 1, 1), pick(k, 2, 2, 4, 4, 1, 4)] labels=["A", "B", "C", "D"] closed=true at=canvas(1, 0)
+    text ask "The volcano island's new flag is drawn on dotted paper. Which side is parallel to side {(pick(k, \"AB\", \"DA\", \"BC\", \"DA\", \"BC\", \"AB\"))}?" narrate width=16 right-of=sh gap=2
+    choice pick options=["AB", "BC", "CD", "DA"] below=sh gap=1
+  }
+
+  answer pick=pick(k, "CD", "BC", "DA", "BC", "DA", "CD")
+  feedback {
+    when (pick == pick(k, "AB", "DA", "BC", "DA", "BC", "AB")) point=sh {
+      say "That is the side itself. Which other side runs the same way?"
+    }
+  }
+  hint "Count the steps along that side: how many across, and how many up or down?"
+  hint "Which other side takes the same steps, so the two would never meet?"
+}

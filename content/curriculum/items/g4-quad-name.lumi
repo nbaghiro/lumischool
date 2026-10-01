@@ -1,0 +1,31 @@
+# Naming a four-sided shape from the marks drawn on it: arrows for parallel sides, ticks for equal
+# sides. The rhombus and the kite both have four ticked sides or pairs, so the arrows decide.
+item quad.name v=1 skills=[shapes.quadrilaterals, shapes.classify, shapes.parallel] {
+  title "Name it from its marks"
+  difficulty pick(k, 0, 0.5, 1.5, 1)
+  let k=0..3
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x23 {
+    shapemarks sm kind=pick(k, "parallelogram", "trapezium", "rhombus", "kite") labels=false at=canvas(1, 0)
+    text ask "The marks show which sides are parallel, with arrows, and which are equal, with ticks. What is this shape's name?" narrate width=20 right-of=sm gap=2
+    choice pick options=["parallelogram", "trapezium", "rhombus", "kite"] stack=column below=ask gap=1
+  }
+
+  answer pick=pick(k, "parallelogram", "trapezium", "rhombus", "kite")
+  feedback {
+    when (k == 2 and pick == "parallelogram") point=sm {
+      say "It is a parallelogram, and more: what do the ticks say about all four sides?"
+    }
+    when (k == 3 and pick == "rhombus") point=sm {
+      say "Are there any arrows? A rhombus has two pairs of parallel sides."
+    }
+  }
+  hint "How many pairs of sides have arrows?"
+  hint "Now look at the ticks. Are all four sides equal, or only pairs next to each other?"
+}

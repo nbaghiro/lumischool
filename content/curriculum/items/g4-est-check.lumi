@@ -1,0 +1,32 @@
+# Using an estimate to check: the estimate is quick, and an answer far from it has a slip. Half the
+# versions are right, so the estimate has to be made each time, not guessed from the look.
+item estimate.check v=1 skills=[estimate.checking, subtraction.columns, reasoning.find-the-mistake] {
+  title "Is the answer sensible?"
+  difficulty ((if b % 100 > 60 then 1 else 0) + (if b % 100 < 40 then 0 else 0.5) + w / 4)
+  let a=520..980 b=110..480 w=0..1
+  where (a % 100 != 50 and b % 100 != 50 and a - b > 150)
+  level easy {
+    where (b % 100 < 40)
+  }
+  level hard {
+    where (b % 100 > 60)
+  }
+
+  scene 36x19 {
+    row top at=canvas(1, 0) space=3 align=end {
+      eagle eg flying=1 facing=1
+      text calc "{a} − {b} = {if w == 0 then a - b else a - b + 300}" width=18
+    }
+    text ask "A climber worked out how much higher the summit hut is than the lower hut. Estimate to the nearest hundred. Is the climber's answer sensible?" narrate width=34 below=top gap=1
+    choice pick options=["yes, it is close to the estimate", "no, it is far from the estimate"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if w == 0 then "yes, it is close to the estimate" else "no, it is far from the estimate")
+  feedback {
+    when (w == 1 and pick == "yes, it is close to the estimate") point=calc {
+      say "Round both numbers to the nearest hundred and take away. How far is the answer from that?"
+    }
+  }
+  hint "Round {a} and {b} to the nearest hundred."
+  hint "Take one round number from the other. Is the climber's answer near it?"
+}

@@ -1,0 +1,37 @@
+# The way in to the kilometre: 1 km is 1000 m, so the rest of a kilometre is what makes 1000. Easy
+# versions are whole hundreds; hard ones need an exchange across the tens.
+item length.km-left v=1 skills=[length.kilometres, measure.metric, subtraction.missing-part] {
+  title "The rest of a kilometre"
+  difficulty (if i % 10 == 0 then 0 else if i % 5 == 0 then 1 else 2)
+  let i=11..89
+  let a={10 * i}
+  where (i != 50)
+  level easy {
+    where (i % 10 == 0)
+  }
+  level hard {
+    where (i % 5 != 0)
+  }
+
+  scene 36x21 {
+    row top at=canvas(1, 0) space=2 align=end {
+      tent tn lit=1
+      roaddistances road stops=["Tent", "Owl tree"] legs=[a] unit=m
+      telescope ts tilt=30
+    }
+    text ask "The night walk from the tent to the telescope is 1 kilometre, which is 1000 metres. The owl tree is on the way. How many metres is it from the owl tree to the telescope?" narrate width=34 below=top gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (1000 - a)
+  feedback {
+    when (answer == a) point=road {
+      say "That is the part already walked. How much more makes 1000 metres?"
+    }
+    when (answer == 1100 - a) point=road {
+      say "Check it: does {a} and your answer make exactly 1000?"
+    }
+  }
+  hint "How many metres make 1 kilometre?"
+  hint "Count on from {a} to the next hundred, then on to 1000."
+}

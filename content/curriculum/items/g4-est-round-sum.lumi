@@ -1,0 +1,35 @@
+# The way in to estimating: round each number to the nearest hundred, then add the round numbers in
+# the head. The numbers avoid ending in 50, so the rounding is never in doubt.
+item estimate.round-sum v=1 skills=[estimate.rounding, place-value.rounding, addition.mental] {
+  title "About how many?"
+  difficulty ((a + b) / 400 + (if a % 100 >= 50 or b % 100 >= 50 then 1 else 0))
+  let a=110..890 b=110..890
+  where (a % 100 != 50 and b % 100 != 50 and a % 100 != 0 and b % 100 != 0)
+  level easy {
+    where (a % 100 < 40 and b % 100 < 40)
+  }
+  level hard {
+    where (a % 100 > 60 and b % 100 > 60)
+  }
+
+  scene 36x22 {
+    row top at=canvas(1, 0) space=3 align=end {
+      cablecar cc cars=2 windows=3
+      peaks pk count=2 snow=1
+    }
+    text ask "The cable car carried {a} people up the mountain on Saturday and {b} on Sunday. Round each number to the nearest hundred and add. About how many people is that?" narrate width=34 below=top gap=1
+    number-input answer width=5 below=ask gap=1
+  }
+
+  answer (100 * ((a + 50) // 100) + 100 * ((b + 50) // 100))
+  feedback {
+    when (answer == a + b and a + b != 100 * ((a + 50) // 100) + 100 * ((b + 50) // 100)) point=ask {
+      say "That is the exact total. An estimate uses the rounded numbers, which are quick to add in your head."
+    }
+    when (answer == 100 * (a // 100) + 100 * (b // 100) and (a % 100 > 50 or b % 100 > 50)) point=ask {
+      say "Check the tens digit of each number. Is it nearer the hundred above or below?"
+    }
+  }
+  hint "Is {a} nearer to the hundred below it or the hundred above?"
+  hint "Round {b} the same way, then add the two hundreds."
+}

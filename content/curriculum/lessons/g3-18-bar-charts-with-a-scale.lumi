@@ -1,0 +1,68 @@
+# Bar charts whose squares stand for 2, 5, 10 or more: read, compare and draw them, read a bar
+# between marks, and choose a scale. Set in the laboratory, term three's world.
+lesson g3-bar-charts-with-a-scale v=1 format=teach grade=3 unit=8 subject=maths levels=[easy, medium, hard] {
+  title "Bar charts with a scale"
+  goal "Read and draw bar charts where each square stands for 2, 5, 10 or more, and answer how many more and how many in all."
+
+  look {
+    scene 26x16 {
+      row top at=canvas(1, 0) space=3 align=end {
+        bargraph chart labels=["Bean", "Pea", "Cress"] values=[7, 4, 5.5] max=8 color=mint per=5
+        microscope mic slide=1 lamp=1
+      }
+    }
+    say """
+      The lab counted the sprouts in three trays. A chart with one square for each sprout would be
+      too tall, so here each square stands for 5. Read the scale, not the squares: the bean bar
+      reaches 35, the pea bar 20, and the cress bar stops halfway between 25 and 30, at 27 and a half,
+      so 27 or 28 would be a fair reading, and it is 27.5 only if half a sprout can count.
+      """
+  }
+  do {
+    show data.scale-read s=1 a=4 b=6 c=3 easy-s=0 hard-s=2
+    level easy {
+      worked data.scale-read s=0 a=3 b=7 c=5 level=medium
+    }
+    practice data.scale-more count=1 seed=2
+    practice data.scale-half count=1 seed=3
+    practice data.scale-draw count=1 seed=4
+    practice data.scale-read count=1 seed=11
+    practice data.scale-more count=1 seed=6
+    practice data.scale-draw count=1 seed=7
+    practice data.scale-half count=1 seed=14
+    level hard {
+      practice data.scale-read count=1 seed=9
+    }
+  }
+  try stars=2 {
+    show data.scale-choose t=1 easy-t=0 hard-t=3
+  }
+  try stars=3 {
+    practice data.scale-hidden count=1 seed=2
+  }
+  remember {
+    say "Read the scale, not the squares. Each square stands for the step the scale goes up in."
+  }
+
+  grown-ups """
+    Grade two read picture graphs where one picture stood for two. Here every square of a bar chart
+    stands for 2, 5, 10, 20 or 50, as most real charts do, so the child reads the numbered scale,
+    finds a value halfway between two marks, works out how many more, and draws a bar from a table.
+    The slip to watch for is counting squares and giving that as the answer. Ask "what does one
+    square stand for?" before every reading. If the child is stuck, write the scale's numbers beside
+    every square, not only the labelled ones. In the two-star question the child picks the smallest
+    step that lets the tallest bar fit in 8 squares, which is how a chart is planned. In the
+    three-star question two bars are lost and only their total and difference are known; the
+    smaller is half of what is left once the difference is taken off. Off the page, count the cars
+    of each colour that pass in ten minutes and draw them with a square for every 2. This meets
+    England's year 3 programme, "interpret and present data using bar charts, pictograms and
+    tables", and Japan's grade 3 course of study, D(1)ア(イ), 「棒グラフの特徴やその用い方を理解すること」,
+    which asks for scales whose smallest step is 2, 5, 20 or 50.
+    """
+  level easy {
+    grown-ups "At this level each square stands for 2 or 5, one reading is worked in the teacher's pen, the bar between marks is on a scale of 2, the bar to draw is on a scale of 2, the scale to choose is 2 or 5, and the lost bars differ by one square on a scale of 5."
+  }
+  level hard {
+    grown-ups "At this level each square stands for 10, 20 or 50, so halfway is 5, 10 or 25, the scale to choose is 10 or 20, and the lost bars are on a scale of 10."
+  }
+}

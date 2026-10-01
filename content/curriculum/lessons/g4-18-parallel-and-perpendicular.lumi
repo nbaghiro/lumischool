@@ -1,0 +1,71 @@
+# Pairs of lines before shapes: parallel sides never meet, perpendicular sides meet square, both
+# checked by counting steps on dotted paper; then four-sided shapes sorted by their parallel pairs.
+lesson g4-parallel-and-perpendicular v=1 format=teach grade=4 unit=7 subject=maths levels=[easy, medium, hard] {
+  title "Parallel and perpendicular lines, and four-sided shapes"
+  goal "Find parallel and perpendicular sides by counting steps on a grid, and name four-sided shapes by their parallel sides."
+
+  look {
+    scene 36x15 {
+      row top at=canvas(1, 0) space=3 align=start {
+        gridshape sh cols=7 rows=4 xs=[1, 6, 5, 2] ys=[4, 4, 1, 1] labels=["A", "B", "C", "D"] closed=true
+        volcano v smoke=1 island=1
+      }
+    }
+    say """
+      The tiles on the island's stepped temple are cut from four-sided shapes. Sides AB and DC run
+      the same way and would never meet however far they went: they are parallel. Two sides that meet
+      at a square corner are perpendicular. On dotted paper both can be checked by counting steps: a
+      parallel side goes the same steps across for the same steps up. A shape with one pair of
+      parallel sides is a trapezium; with two pairs it is a parallelogram.
+      """
+  }
+  do {
+    show quad.parallel k=0 easy-k=3 hard-k=4
+    level easy {
+      worked quad.parallel k=1 level=medium
+    }
+    practice quad.perpendicular count=1 seed=2
+    practice quad.pairs count=1 seed=3
+    practice quad.name count=1 seed=4
+    practice quad.which count=1 seed=5
+    show quad.parallel k=5 easy-k=0
+    practice quad.perpendicular count=1 seed=7
+    practice quad.pairs count=1 seed=8
+    level hard {
+      practice quad.name count=1 seed=9
+    }
+  }
+  try stars=2 {
+    practice quad.always count=1 seed=2
+  }
+  try stars=3 {
+    show quad.corner-d k=1 easy-k=0 hard-k=4
+  }
+  remember {
+    say "Parallel sides never meet. Perpendicular sides meet at a square corner. A trapezium has one parallel pair, a parallelogram two."
+  }
+
+  grown-ups """
+    Grade three found right angles one at a time; this lesson looks at pairs of lines, parallel and
+    perpendicular, and uses them to sort four-sided shapes: a trapezium has exactly one pair of
+    parallel sides, a parallelogram two, and a rhombus is a parallelogram with all sides equal. On
+    dotted paper the child counts steps rather than judging by eye, which matters most for slanting
+    sides. In this book a trapezium has exactly one parallel pair, as in Japan's course; some books
+    count a parallelogram as a trapezium too. Watch for a child who calls two sides parallel because
+    they look the same length, or who thinks a slanting square corner is not a right angle. If the
+    child is stuck, lay two pencils along the sides and slide one across to see if it fits on the
+    other. In the two-star question the child decides whether a sentence about shapes is always,
+    sometimes or never true, by trying to draw a shape that breaks it. In the three-star question the
+    fourth corner can go opposite any of the three marked corners, so there can be three places.
+    Off the page, find parallel and perpendicular lines in a window frame or a ladder. This meets
+    Japan's grade 4 course of study, B(1)ア(ア)(イ), 「直線の平行や垂直の関係について理解すること」 and
+    「平行四辺形，ひし形，台形について知ること」, and England's year 4 programme, "compare and classify
+    geometric shapes, including quadrilaterals and triangles, based on their properties".
+    """
+  level easy {
+    grown-ups "At this level the sides lie along the grid, one parallel pair is worked in the teacher's pen, the shapes are a trapezium and a rectangle, the marks name a parallelogram or a trapezium, the sentences are the clearer ones, and the three corners leave room for three places."
+  }
+  level hard {
+    grown-ups "At this level the parallel and perpendicular sides slant, the shapes include a kite and a slanting parallelogram, the marks name a rhombus or a kite, the sentences need a shape that breaks them, and some places for the fourth corner fall off the grid."
+  }
+}

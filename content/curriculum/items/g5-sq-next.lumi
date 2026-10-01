@@ -1,0 +1,32 @@
+# The two-star reason: the next square is the last one plus the two numbers either side of the step,
+# n plus n + 1, an odd number. The squares are too big to work out quickly, so the step is used.
+item squares.next v=1 stars=2 skills=[number.squares, reasoning.patterns, reasoning.generalise] {
+  title "From one square to the next"
+  difficulty (n / 10)
+  let n=11..39
+  where (n % 10 != 0)
+  level easy {
+    let n=11..15
+  }
+  level hard {
+    let n=31..39
+  }
+
+  scene 36x14 {
+    grid g rows=4 cols=5 shade=16 color=sky cell=2 at=canvas(1, 0)
+    text ask "Adding a row of 4 and a column of 5 turns the 4 by 4 square into a 5 by 5 square: 16 + 4 + 5 = 25. {n}² is {n * n}. Use the same idea: what is {n + 1}²?" narrate width=18 right-of=g gap=2
+    number-input answer width=5 below=ask gap=1
+  }
+
+  answer ((n + 1) * (n + 1))
+  feedback {
+    when (answer == n * n + n) point=g {
+      say "That adds a row only. A column is needed too, one longer than the row."
+    }
+    when (answer == n * n + 1) point=g {
+      say "Going from {n}² to {n + 1}² adds a whole row and a column, not one."
+    }
+  }
+  hint "How many squares are in the new row, and how many in the new column?"
+  hint "Add both to {n * n}."
+}

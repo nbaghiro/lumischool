@@ -1,0 +1,28 @@
+# Perpendicular sides meet at a right angle. Along the grid that is across against up; on a slant it
+# is two steps across and two up against two across and two down, which the hard versions ask.
+item quad.perpendicular v=1 skills=[shapes.perpendicular, shapes.angles, shapes.quadrilaterals] {
+  title "Which side meets it square?"
+  difficulty pick(k, 0, 0, 2, 2, 1, 1)
+  let k=0..5
+  level easy {
+    let k={0, 1}
+  }
+  level hard {
+    let k={2, 3}
+  }
+
+  scene 36x17 {
+    gridshape sh cols=7 rows=5 xs=[pick(k, 1, 1, 1, 1, 2, 2), pick(k, 5, 5, 3, 3, 6, 6), pick(k, 5, 5, 5, 5, 5, 5), pick(k, 2, 2, 4, 4, 2, 2)] ys=[pick(k, 4, 4, 3, 3, 1, 1), pick(k, 4, 4, 1, 1, 1, 1), pick(k, 2, 2, 3, 3, 4, 4), pick(k, 1, 1, 5, 5, 3, 3)] labels=["A", "B", "C", "D"] closed=true at=canvas(1, 0)
+    text ask "A path round a field on the island is drawn on dotted paper. Which side is perpendicular to side {(pick(k, \"AB\", \"BC\", \"AB\", \"BC\", \"AB\", \"DA\"))}, meeting it at a right angle?" narrate width=16 right-of=sh gap=2
+    choice pick options=["AB", "BC", "CD", "DA"] below=sh gap=1
+  }
+
+  answer pick=pick(k, "BC", "AB", "BC", "AB", "DA", "AB")
+  feedback {
+    when (pick == pick(k, "AB", "BC", "AB", "BC", "AB", "DA")) point=sh {
+      say "That is the side itself. Which side meets it at a square corner?"
+    }
+  }
+  hint "Look at the corners at each end of that side. Is either one a square corner?"
+  hint "On a slant, compare the steps: across and up on one side, across and down on the other."
+}

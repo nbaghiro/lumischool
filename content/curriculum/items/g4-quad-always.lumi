@@ -1,0 +1,35 @@
+# The two-star reason: the shapes fit inside one another. Every square is a rectangle and a rhombus,
+# every rhombus and rectangle a parallelogram; a trapezium has only one pair, so it is never a
+# parallelogram in this book's meaning. Each claim is judged always, sometimes or never.
+item quad.always v=1 stars=2 skills=[shapes.quadrilaterals, shapes.classify, reasoning.always-sometimes-never] {
+  title "Always, sometimes or never?"
+  difficulty pick(k, 0, 0.5, 1, 1.5, 2, 2.5)
+  let k=0..5
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x19 {
+    row top at=canvas(1, 0) space=3 align=end {
+      shapemarks sm kind=pick(k, "rhombus", "parallelogram", "trapezium", "rhombus", "parallelogram", "parallelogram") labels=true
+      text claim "{pick(k, \"A square is a rhombus.\", \"A parallelogram has a right angle.\", \"A trapezium is a parallelogram.\", \"A rhombus is a square.\", \"A rectangle is a parallelogram.\", \"A parallelogram has four equal sides.\")}" width=16
+    }
+    text ask "Is the sentence always true, sometimes true or never true? Think about every shape it could be, not only the one drawn." narrate width=34 below=top gap=1
+    choice pick options=["always", "sometimes", "never"] below=ask gap=1
+  }
+
+  answer pick=pick(k, "always", "sometimes", "never", "sometimes", "always", "sometimes")
+  feedback {
+    when (k == 3 and pick == "always") point=sm {
+      say "A square is a rhombus, but can a rhombus lean over, with no right angle?"
+    }
+    when (k == 2 and pick == "sometimes") point=sm {
+      say "A trapezium has exactly one pair of parallel sides. A parallelogram needs two."
+    }
+  }
+  hint "What does the shape need: how many parallel pairs, which sides equal, any right angles?"
+  hint "Can you draw one that fits the sentence? Can you draw one that does not?"
+}

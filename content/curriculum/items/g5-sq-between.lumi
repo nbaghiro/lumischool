@@ -1,0 +1,36 @@
+# Square numbers in a range: list the squares from the first one past the low end, and stop at the
+# high end. The range ends on a square in some versions, so "between" has to be read carefully.
+item squares.between v=1 skills=[number.squares, reasoning.systematic] {
+  title "Squares between two numbers"
+  difficulty (q / 5 + (if d == 0 or e == 0 then 1 else 0))
+  let p=4..10 q=8..20 d=0..1 e=0..1
+  let a={p * p - d * (p - 2)}
+  let b={q * q + e * q}
+  where (q - p >= 3 and q - p <= 8)
+  level easy {
+    let q=8..12
+    let d={1}
+    let e={1}
+  }
+  level hard {
+    let q=15..20
+  }
+
+  scene 36x20 {
+    row top at=canvas(1, 0) space=3 align=end {
+      telescope ts tilt=50
+      planets pl count=3 names=0
+    }
+    text ask "The star club gives every member a number. Members whose number is a square number get a badge. How many square numbers are there from {a} to {b}, counting {a} and {b} too?" narrate width=34 below=top gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (q - p + 1)
+  feedback {
+    when (answer == q - p and (d == 0 or e == 0)) point=ask {
+      say "Check the ends: is {a} or {b} a square number itself? Counting them too adds one."
+    }
+  }
+  hint "What is the first square number that is {a} or more? Which number squared is it?"
+  hint "Which is the last square number that is {b} or less? Count the numbers squared from the first to the last."
+}

@@ -1,0 +1,71 @@
+# Two new units at the ends of the scale: the kilometre for a long walk, a thousand metres, and the
+# millimetre for small things, a tenth of a centimetre. Set on a night walk from the tent.
+lesson g3-kilometres-and-millimetres v=1 format=teach grade=3 unit=3 subject=maths levels=[easy, medium, hard] {
+  title "Kilometres and millimetres"
+  goal "Measure long distances in kilometres and small lengths in millimetres, and change between them and metres or centimetres."
+
+  look {
+    scene 36x22 {
+      row top at=canvas(1, 0) space=2 align=end {
+        tent tn lit=1
+        roaddistances road stops=["Tent", "Pond", "Telescope"] legs=[400, 600] unit=m
+      }
+      row low below=top gap=1 space=3 align=end {
+        ruler r cm=6 length=3.5 start=0 thing=stick
+        telescope ts tilt=30
+      }
+    }
+    say """
+      Tonight's walk from the tent to the telescope is 400 metres to the pond and 600 metres more:
+      1000 metres, which is 1 kilometre, written 1 km. A long walk is measured in kilometres. Small
+      things are measured in millimetres, mm: every centimetre on a ruler holds 10 of them, so the
+      twig is 3 cm and 5 mm, which is 35 mm.
+      """
+  }
+  do {
+    show length.km-left a=300 easy-a=600 hard-a=370
+    level easy {
+      worked length.km-left a=250 level=medium
+    }
+    practice length.km-mixed count=1 seed=2
+    practice length.km-add count=1 seed=3
+    practice length.mm-ruler count=1 seed=4
+    practice length.mm-cm count=1 seed=5
+    practice length.km-compare count=1 seed=6
+    practice length.km-left count=1 seed=7
+    practice length.km-add count=1 seed=8
+    level hard {
+      practice length.km-mixed count=1 seed=9
+    }
+  }
+  try stars=2 {
+    show length.km-there-back t=3 easy-t=4 hard-t=7
+  }
+  try stars=3 {
+    show length.km-lamps s=100 easy-s=200 hard-s=125
+  }
+  remember {
+    say "1 km is 1000 m, and 1 cm is 10 mm."
+  }
+
+  grown-ups """
+    The kilometre and the millimetre are the two units that make metric length a ladder: a thousand
+    metres up, a tenth of a centimetre down. Grade two measured in metres and centimetres; here the
+    child changes kilometres to metres and back, and reads millimetres off a ruler. The slips to
+    watch for are writing 2 km 45 m as 245 m, which forgets that the 45 sits in the tens and ones of
+    2045, and reading a ruler from 1 instead of 0. If the child is stuck, pace out 100 metres
+    together on a walk and count how many would make a kilometre, or look for the millimetre marks on
+    a real ruler. In the two-star question the walk there and back is in kilometres and one way is
+    asked in metres, so changing to metres first makes an odd number of kilometres easy to halve. In
+    the three-star question there is one more lamp than there are gaps, because both ends have one.
+    Off the page, read the distances on a road sign or a map. This meets Japan's grade 3 course of
+    study, B(1)ア(ア), 「長さの単位（キロメートル（km））…について知り，測定の意味を理解すること」, and
+    England's year 3 programme, "measure, compare, add and subtract: lengths (m/cm/mm)".
+    """
+  level easy {
+    grown-ups "At this level the distances are whole hundreds of metres, one kilometre is worked in the teacher's pen, the twig starts at 0, the footprints are short, the walk there and back is an even number of kilometres, and the lamps stand every 200 metres."
+  }
+  level hard {
+    grown-ups "At this level the metres need an exchange across the tens, the kilometres and metres have fewer than a hundred metres over, the twig starts away from 0, the walk there and back is an odd number of kilometres, and the lamps stand every 125 metres."
+  }
+}

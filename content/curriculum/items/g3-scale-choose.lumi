@@ -1,0 +1,30 @@
+# The two-star reason: choosing a scale. The chart is 8 squares tall, so the step must be big enough
+# for the largest count to fit, and the smallest step that does is the most precise. Too small and
+# the bar runs off the top; too big and the bars are hard to tell apart.
+item data.scale-choose v=1 stars=2 skills=[data.scales, data.bar-charts, reasoning.compare] {
+  title "Choose the scale"
+  difficulty t
+  let t=0..3
+  let m={pick(t, 14, 35, 70, 140)}
+  level easy {
+    let t=0..1
+  }
+  level hard {
+    let t=2..3
+  }
+
+  scene 36x18 {
+    bargraph chart labels=["W", "X", "Y", "Z"] values=[0, 0, 0, 0] max=8 color=berry set=2 at=canvas(1, 0)
+    text ask "The lab will draw a bar chart of four counts. The biggest is {m}. The chart is 8 squares tall. Which is the smallest step for each square that lets every bar fit?" narrate width=17 right-of=chart gap=2
+    choice pick options=["2", "5", "10", "20"] below=chart gap=1
+  }
+
+  answer pick=pick(t, "2", "5", "10", "20")
+  feedback {
+    when (t >= 1 and pick == pick(t, "2", "2", "5", "10")) point=chart {
+      say "With that step, 8 squares only reach {pick(t, 40, 16, 40, 80)}. Does {m} fit?"
+    }
+  }
+  hint "Try each step in turn, smallest first. How high do 8 squares reach with it?"
+  hint "Which step is the first to reach {m} or more in 8 squares?"
+}

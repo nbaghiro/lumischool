@@ -1,0 +1,36 @@
+# Picking the trapezium out of three shapes: exactly one pair of parallel sides. A parallelogram
+# has two pairs and the third shape none, so each shape's opposite sides are counted.
+item quad.which v=1 skills=[shapes.quadrilaterals, shapes.classify, shapes.parallel] {
+  title "Which one is the trapezium?"
+  difficulty (v / 5)
+  let v=0..5
+  level easy {
+    let v=0..2
+  }
+  level hard {
+    let v=3..5
+  }
+
+  scene 36x21 {
+    row top at=canvas(1, 0) space=2 align=start {
+      column c1 space=0 align=centre {
+        gridshape g1 cols=3 rows=3 xs=[pick(v, 0, 0, 1, 0, 1, 0), pick(v, 3, 0, 3, 2, 3, 3), pick(v, 2, 3, 2, 3, 1, 3), pick(v, 1, 2, 0, 1, 0, 1)] ys=[pick(v, 3, 1, 3, 3, 0, 2), pick(v, 3, 3, 3, 3, 2, 3), pick(v, 1, 3, 1, 1, 3, 0), pick(v, 1, 1, 1, 1, 1, 1)] labels=[] closed=true
+        text n1 "1" width=3
+      }
+      column c2 space=0 align=centre {
+        gridshape g2 cols=3 rows=3 xs=[pick(v, 0, 1, 0, 0, 0, 1), pick(v, 2, 3, 3, 3, 0, 3), pick(v, 3, 1, 3, 2, 3, 2), pick(v, 1, 0, 1, 1, 2, 0)] ys=[pick(v, 3, 0, 3, 3, 1, 3), pick(v, 3, 2, 3, 3, 3, 3), pick(v, 1, 3, 1, 0, 3, 1), pick(v, 1, 1, 1, 1, 1, 1)] labels=[] closed=true
+        text n2 "2" width=3
+      }
+      column c3 space=0 align=centre {
+        gridshape g3 cols=3 rows=3 xs=[pick(v, 0, 0, 0, 0, 0, 0), pick(v, 3, 2, 3, 3, 2, 3), pick(v, 2, 3, 3, 2, 3, 3), pick(v, 1, 1, 1, 1, 1, 1)] ys=[pick(v, 3, 2, 2, 3, 2, 3), pick(v, 3, 3, 3, 3, 3, 3), pick(v, 0, 1, 0, 1, 1, 1), pick(v, 1, 0, 1, 1, 0, 1)] labels=[] closed=true
+        text n3 "3" width=3
+      }
+    }
+    text ask "Three tiles for the temple steps. Which one is a trapezium, with exactly one pair of parallel sides?" narrate width=34 below=top gap=1
+    choice pick options=["1", "2", "3"] below=ask gap=1
+  }
+
+  answer pick=pick(v, "1", "1", "2", "3", "2", "3")
+  hint "For each tile, check both pairs of opposite sides. Are they parallel?"
+  hint "Which tile has one parallel pair, not two and not none?"
+}

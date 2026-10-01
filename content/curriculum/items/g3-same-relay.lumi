@@ -1,0 +1,31 @@
+# The three-star: three relay runners split one lap so each runs a different whole number of
+# pieces. Listing the ways in order, smallest part first, finds them all without repeats.
+item fractions.same-relay v=1 stars=3 skills=[fractions.add-same, reasoning.all-the-ways, reasoning.systematic] {
+  title "Splitting the relay"
+  difficulty (b - 8)
+  let b={8, 9, 10, 11, 12}
+  level easy {
+    let b={8, 9}
+  }
+  level hard {
+    let b={11, 12}
+  }
+
+  scene 36x18 {
+    row top at=canvas(1, 0) space=3 align=end {
+      runners rn count=3 numbers=1
+      fraction lap n=b k=0 shape=bar
+    }
+    text ask "Three relay runners share one lap, marked in {if b == 4 then \"quarters\" else if b == 5 then \"fifths\" else if b == 6 then \"sixths\" else if b == 7 then \"sevenths\" else if b == 8 then \"eighths\" else if b == 9 then \"ninths\" else if b == 10 then \"tenths\" else if b == 11 then \"elevenths\" else \"twelfths\"}. Each runs a different whole number of {if b == 4 then \"quarters\" else if b == 5 then \"fifths\" else if b == 6 then \"sixths\" else if b == 7 then \"sevenths\" else if b == 8 then \"eighths\" else if b == 9 then \"ninths\" else if b == 10 then \"tenths\" else if b == 11 then \"elevenths\" else \"twelfths\"}, and together they run the whole lap. How many different ways can the lap be split, not counting who runs which part?" narrate width=34 below=top gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer pick(b - 8, 2, 3, 4, 5, 7)
+  feedback {
+    when (answer == 6 * pick(b - 8, 2, 3, 4, 5, 7)) point=lap {
+      say "That counts the same three parts in different orders. Who runs which does not matter here."
+    }
+  }
+  hint "Start with the shortest part as 1 piece. What could the other two be?"
+  hint "Keep the three parts in order, smallest first, so no split is counted twice."
+}

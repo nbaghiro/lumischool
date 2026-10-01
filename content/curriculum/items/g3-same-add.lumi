@@ -1,0 +1,29 @@
+# The way in to adding fractions: pieces of the same size add like anything else that is counted.
+# Two eighths and three eighths are five eighths; the bottom number names the size and stays.
+item fractions.same-add v=1 skills=[fractions.add-same, fractions.unit-fractions] {
+  title "Laps in eighths"
+  difficulty (a + c)
+  let b={5, 6, 7, 8, 9, 10} a=1..6 c=1..6
+  where (a + c < b)
+  level easy {
+    where (a + c <= 4)
+  }
+  level hard {
+    where (a + c >= 7)
+  }
+
+  scene 36x18 {
+    racetrack rt lanes=2 along=[a / b, c / b] metres=(b * 10) at=canvas(1, 0)
+    text ask "The track is split into {b} equal parts. Ann runs {a}/{b} of a lap, rests, then runs {c}/{b} more. How much of a lap has she run?" narrate width=34 below=rt gap=1
+    equation eq "{a}/{b} + {c}/{b} = {?top}/{b}" below=ask gap=1
+  }
+
+  answer top=(a + c)
+  feedback {
+    when (top == a + c + b) point=eq {
+      say "The bottom number names the size of the pieces. Count only how many pieces."
+    }
+  }
+  hint "What size is each piece? How many of them does Ann run the first time?"
+  hint "Count all the pieces she runs. Has the size of each piece changed?"
+}

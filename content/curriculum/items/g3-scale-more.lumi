@@ -1,0 +1,34 @@
+# How many more, read from a scaled chart: find the difference in squares and turn it into the
+# scale's units, or read both bars and take away. Both give the same answer.
+item data.scale-more v=1 skills=[data.bar-charts, data.scales, subtraction.difference] {
+  title "How many more?"
+  difficulty (pick(s, 0, 1, 2) + (a - b) / 6)
+  let s=0..2 a=4..9 b=1..7 c=2..8
+  let p={pick(s, 2, 5, 20)}
+  where (a > b + 1 and c != a and c != b)
+  level easy {
+    let s={0}
+  }
+  level hard {
+    let s={2}
+  }
+
+  scene 36x16 {
+    bargraph chart labels=["Frogs", "Newts", "Snails"] values=[a, c, b] max=9 color=tang per=p at=canvas(1, 0)
+    text ask "The lab's pond survey counted the animals in the pond. How many more frogs than snails were counted?" narrate width=19 right-of=chart gap=2
+    number-input answer width=4 below=ask gap=1
+    microscope mic slide=1 lamp=0 right-of=answer gap=6
+  }
+
+  answer (p * (a - b))
+  feedback {
+    when (answer == a - b) point=chart {
+      say "That is the difference in squares. Each square stands for {p}."
+    }
+    when (answer == p * (a + b)) point=chart {
+      say "That puts frogs and snails together. How many more is a difference."
+    }
+  }
+  hint "How many frogs, and how many snails? Read each from the scale."
+  hint "Take the smaller number from the bigger one."
+}

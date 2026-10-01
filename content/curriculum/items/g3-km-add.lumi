@@ -1,0 +1,37 @@
+# Adding a walk's legs in metres and giving the total in kilometres and metres: the column sum
+# passes 1000, and the thousand becomes the kilometre.
+item length.km-add v=1 skills=[length.kilometres, addition.columns, measure.metric] {
+  title "How far altogether?"
+  difficulty ((x + y - 1000) / 200 + (if x % 100 + y % 100 >= 100 then 1 else 0))
+  let p=70..170 q=70..170
+  let x={5 * p}
+  let y={5 * q}
+  where (p + q > 200 and p + q < 320)
+  level easy {
+    let p={80, 100, 120, 140, 160}
+    let q={80, 100, 120, 140, 160}
+  }
+  level hard {
+    where (x % 100 + y % 100 >= 100 and x % 10 != 0)
+  }
+
+  scene 36x18 {
+    roaddistances road stops=["Tent", "Pond", "Telescope"] legs=[x, y] unit=m at=canvas(1, 0)
+    text ask "The walk goes from the tent past the pond to the telescope. How far is it altogether? Write it in kilometres and metres." narrate width=34 below=road gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      number-input km width=2
+      text lk "km"
+      number-input m width=4
+      text lm "m"
+    }
+  }
+
+  answer km=((x + y) // 1000) m=((x + y) % 1000)
+  feedback {
+    when (km == 0 and m == x + y) point=road {
+      say "{x + y} m is more than 1000 m. How many whole kilometres is that, and how many metres over?"
+    }
+  }
+  hint "Add the two legs in columns. How many metres is that?"
+  hint "Take a whole kilometre out of the metres. How many metres are left?"
+}

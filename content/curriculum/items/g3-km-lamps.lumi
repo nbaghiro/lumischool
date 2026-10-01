@@ -1,0 +1,36 @@
+# The three-star: lamps along the kilometre path, one at the tent, one at the telescope, and one
+# every s metres between. The gaps are 1000 divided by s, and there is one more lamp than gaps, the
+# fence-post count, with no method on the page.
+item length.km-lamps v=1 stars=3 skills=[length.kilometres, division.grouping, reasoning.fence-posts] {
+  title "Lamps along the path"
+  difficulty (1000 / s / 10)
+  let s={50, 100, 125, 200, 250}
+  level easy {
+    let s={200, 250}
+  }
+  level hard {
+    let s={50, 125}
+  }
+
+  scene 36x19 {
+    row top at=canvas(1, 0) space=3 align=end {
+      tent tn lit=1
+      lantern la lit=1 post=1
+      telescope ts tilt=30
+    }
+    text ask "The path from the tent to the telescope is 1 km long. A lamp stands at the tent, another at the telescope, and one every {s} m in between. How many lamps are there?" narrate width=34 below=top gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (1000 / s + 1)
+  feedback {
+    when (answer == 1000 / s) point=top {
+      say "That counts the gaps between lamps. Is there a lamp at both ends of the path?"
+    }
+    when (answer == 1000 / s - 1) point=top {
+      say "That counts the lamps between the ends. The tent and the telescope have lamps too."
+    }
+  }
+  hint "How many gaps of {s} m fit in 1000 m?"
+  hint "Draw a short path with 3 gaps. How many lamps does it need?"
+}

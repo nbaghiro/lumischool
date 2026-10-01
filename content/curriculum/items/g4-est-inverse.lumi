@@ -1,0 +1,36 @@
+# Checking with the inverse: a subtraction is checked by adding the answer back on, which must give
+# the number taken from. When it does not, the subtraction has a slip, and the check finds it.
+item estimate.inverse v=1 skills=[estimate.checking, addition.columns, subtraction.inverse] {
+  title "Check it by adding"
+  difficulty (w + (if a % 100 < b % 100 then 0.5 else 0))
+  let a=1200..4800 b=350..980 w=0..1
+  where (a % 10 < b % 10)
+  level easy {
+    let w={0}
+  }
+  level hard {
+    let w={1}
+    where (a % 100 < b % 100)
+  }
+
+  scene 36x23 {
+    row top at=canvas(1, 0) space=3 align=end {
+      peaks pk count=2 snow=1
+      text calc "{a} − {b} = {if w == 0 then a - b else a - b + 10}" width=16
+    }
+    text ask "The guide says the camp is {a} m up, the start {b} m lower, and wrote the sum shown. Check it by adding the answer to {b}. What do you get, and does the guide's answer check out?" narrate width=34 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      number-input total width=5
+      choice right options=["it checks out", "it has a slip"]
+    }
+  }
+
+  answer total=(if w == 0 then a else a + 10) right=(if w == 0 then "it checks out" else "it has a slip")
+  feedback {
+    when (w == 1 and right == "it checks out") point=calc {
+      say "Adding back should give {a} exactly. Does it?"
+    }
+  }
+  hint "Add the guide's answer to {b} in columns."
+  hint "If the subtraction is right, adding back gives the number you started from."
+}

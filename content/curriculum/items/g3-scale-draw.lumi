@@ -1,0 +1,35 @@
+# Presenting data on a scale: the count in the table is turned into squares by dividing by the scale's
+# step before the bar is drawn. The table and the chart sit side by side.
+item data.scale-draw v=1 skills=[data.bar-charts, data.scales, division.grouping] {
+  title "Draw the last bar"
+  difficulty (pick(s, 0, 1, 2) + d / 10)
+  let s=0..2 a=2..8 b=2..8 c=2..8 d=2..8
+  let p={pick(s, 2, 5, 10)}
+  where (a != d and b != d and c != d)
+  level easy {
+    let s={0}
+  }
+  level hard {
+    let s={2}
+  }
+
+  scene 36x20 {
+    table counts cols=2 head=["Pot", "Leaves"] cells=["A", "{p * a}", "B", "{p * b}", "C", "{p * c}", "D", "{p * d}"] at=canvas(1, 1)
+    bargraph chart labels=["A", "B", "C", "D"] values=[a, b, c, 0] max=9 color=mint per=p set=1 right-of=counts gap=2
+    text ask "The lab counted the leaves on four bean plants. Bars A, B and C are drawn. Make bar D the right height." narrate width=34 below=counts gap=2
+  }
+
+  answer chart=(bar4 == d) {
+    say "Pot D's bar reaches {p * d}, which is {d} squares on this scale."
+  }
+  feedback {
+    when (bar4 > d) point=chart {
+      say "That bar reaches more than {p * d} on the scale. Each square stands for {p}."
+    }
+    when (bar4 < d) point=counts {
+      say "That bar reaches less than {p * d}. Find pot D in the table, then that number on the scale."
+    }
+  }
+  hint "Find pot D in the table."
+  hint "Which number on the scale is the same as pot D's leaves?"
+}

@@ -459,6 +459,7 @@ export const CATALOG = {
         cubestack: () => import("./shapes/cubestack").then((m) => m.cubeStack),
         moveshape: () => import("./shapes/moveshape").then((m) => m.moveShape),
         areashape: () => import("./shapes/areashape").then((m) => m.areaShape),
+        gridshape: () => import("./shapes/gridshape").then((m) => m.gridShape),
     },
     measuring: {
         containers: () => import("./measuring/containers").then((m) => m.containers),

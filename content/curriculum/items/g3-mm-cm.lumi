@@ -1,0 +1,37 @@
+# Millimetres back to centimetres and millimetres: tens of millimetres are whole centimetres, and the
+# ones are the millimetres left over.
+item length.mm-cm v=1 skills=[length.millimetres, measure.metric, place-value.tens-ones] {
+  title "Centimetres and millimetres"
+  difficulty (n / 40)
+  let n=12..98
+  where (n % 10 != 0)
+  level easy {
+    let n=12..39
+  }
+  level hard {
+    let n=60..98
+  }
+
+  scene 36x16 {
+    row top at=canvas(1, 0) space=3 align=end {
+      fox fx facing=1
+      text note "{n} mm" width=8
+    }
+    text ask "The fox's footprint in the mud is {n} mm long. How many whole centimetres and how many millimetres is that?" narrate width=34 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      number-input cm width=2
+      text lc "cm"
+      number-input mm width=2
+      text lmm "mm"
+    }
+  }
+
+  answer cm=(n // 10) mm=(n % 10)
+  feedback {
+    when (cm == n and mm == 0) point=ask {
+      say "Ten millimetres make one centimetre. How many tens are in {n}?"
+    }
+  }
+  hint "How many millimetres are in one centimetre?"
+  hint "How many tens are in {n}? What is left over?"
+}

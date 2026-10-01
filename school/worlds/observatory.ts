@@ -49,6 +49,11 @@ export const starCliffs: World = {
             says: "Two lights flash. When together again?",
         },
         {
+            art: "observatory",
+            when: ["skill:number.squares", "skill:number.cubes", "skill:number.powers"],
+            says: "The floor is 5 tiles by 5. How many tiles?",
+        },
+        {
             art: "telescope",
             when: ["skill:physics.light", "art:shadows"],
             says: "Starlight comes a long way.",

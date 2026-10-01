@@ -1,0 +1,29 @@
+# Taking away pieces of the same size: the size stays and only the count goes down. The bar shows
+# what was there before, so the child crosses off rather than adding.
+item fractions.same-take v=1 skills=[fractions.subtract-same, fractions.equal-parts] {
+  title "Squash left in the bottle"
+  difficulty (a / 2 + c / 2)
+  let b={5, 6, 8, 10} a=3..9 c=1..7
+  where (a < b and c < a)
+  level easy {
+    where (a <= 5 and c <= 2)
+  }
+  level hard {
+    where (a >= 6 and c >= 4)
+  }
+
+  scene 36x14 {
+    fraction bottle n=b k=a shape=bar at=canvas(1, 0)
+    text ask "The team's squash bottle is {a}/{b} full. At half time the players drink {c}/{b} of the bottle. How much is left?" narrate width=34 below=bottle gap=1
+    equation eq "{a}/{b} − {c}/{b} = {?top}/{b}" below=ask gap=1
+  }
+
+  answer top=(a - c)
+  feedback {
+    when (top == a + c) point=eq {
+      say "The players drink some, so there is less left. Take the pieces away."
+    }
+  }
+  hint "How many shaded pieces are there? Cross off the ones they drink."
+  hint "How many shaded pieces are left? What size is each one?"
+}

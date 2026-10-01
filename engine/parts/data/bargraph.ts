@@ -10,6 +10,8 @@ interface BarGraphParams {
     color: Marker;
     set: number;
     touch: number;
+    /** How many each square of the scale stands for: 1, or 2, 5, 10 and on for a scaled chart. */
+    per: number;
 }
 
 type Layout = Pick<BarGraphParams, "labels" | "values" | "max" | "touch">;
@@ -35,7 +37,7 @@ export const barGraph = defineDrawing<BarGraphParams>({
     family: "data",
     title: "Bar chart",
     group: "Structures",
-    about: "One square per unit, so the height is the number without a ruler. With `touch` at 1 the bars stand side by side with no gaps, as a histogram's classes do. With `set` at 1 the bars are the child's to set: each column is drawn dashed to the top of the scale, and each bar, at the height `values` holds so far, carries a handle on its top, which lands on a whole unit. With `set` at 2 the columns are dashed without handles, for bars shaded on paper.",
+    about: "One square per unit, so the height is the number without a ruler, unless `per` makes each square stand for 2, 5, 10 or more and numbers the scale to match. With `touch` at 1 the bars stand side by side with no gaps, as a histogram's classes do. With `set` at 1 the bars are the child's to set: each column is drawn dashed to the top of the scale, and each bar, at the height `values` holds so far, carries a handle on its top, which lands on a whole unit. With `set` at 2 the columns are dashed without handles, for bars shaded on paper.",
     params: {
         labels: ["Apple", "Pear", "Plum"],
         values: [6, 3, 5],
@@ -43,6 +45,7 @@ export const barGraph = defineDrawing<BarGraphParams>({
         color: "sky",
         set: 0,
         touch: 0,
+        per: 1,
     },
     settings: {
         labels: { kind: "words", most: 6 },
@@ -51,6 +54,7 @@ export const barGraph = defineDrawing<BarGraphParams>({
         color: { kind: "one of", of: MARKERS },
         set: { kind: "whole", min: 0, max: 2 },
         touch: { kind: "whole", min: 0, max: 1 },
+        per: { kind: "whole", min: 1, max: 100 },
     },
     takes: [
         {
@@ -62,6 +66,7 @@ export const barGraph = defineDrawing<BarGraphParams>({
                 color: "sky",
                 set: 0,
                 touch: 0,
+                per: 1,
             },
         },
         {
@@ -73,6 +78,7 @@ export const barGraph = defineDrawing<BarGraphParams>({
                 color: "mint",
                 set: 0,
                 touch: 0,
+                per: 1,
             },
         },
         {
@@ -84,6 +90,19 @@ export const barGraph = defineDrawing<BarGraphParams>({
                 color: "tang",
                 set: 0,
                 touch: 0,
+                per: 1,
+            },
+        },
+        {
+            label: "A scale of 5",
+            params: {
+                labels: ["Bean", "Pea", "Cress"],
+                values: [7, 4, 5.5],
+                max: 8,
+                color: "mint",
+                set: 0,
+                touch: 0,
+                per: 5,
             },
         },
         {
@@ -95,6 +114,7 @@ export const barGraph = defineDrawing<BarGraphParams>({
                 color: "berry",
                 set: 0,
                 touch: 1,
+                per: 1,
             },
         },
         {
@@ -106,6 +126,7 @@ export const barGraph = defineDrawing<BarGraphParams>({
                 color: "sky",
                 set: 1,
                 touch: 1,
+                per: 1,
             },
         },
         {
@@ -117,6 +138,7 @@ export const barGraph = defineDrawing<BarGraphParams>({
                 color: "mint",
                 set: 1,
                 touch: 0,
+                per: 1,
             },
         },
     ],
@@ -138,7 +160,7 @@ export const barGraph = defineDrawing<BarGraphParams>({
         for (let n = 0; n <= max; n += step) {
             const y = base - n * U;
             pen.line(g, 3 * U - 6, y, 3 * U, y, "ruler", { strokeWidth: 1.2 });
-            say(c, 3 * U - 12, y + 5, String(n), 13, "end");
+            say(c, 3 * U - 12, y + 5, String(n * Math.max(1, p.per)), 13, "end");
         }
         p.labels.forEach((label, i) => {
             const v = p.values[i] ?? 0,
@@ -180,5 +202,5 @@ export const barGraph = defineDrawing<BarGraphParams>({
             ? `A bar chart with a numbered axis up the left and a dashed column for each label, each with a handle to raise its ${MARKER_WORD[p.color]} bar.`
             : p.set === 2
               ? `A bar chart with a numbered axis up the left and a dashed column for each label, to shade its ${MARKER_WORD[p.color]} bar in.`
-              : `A bar chart with a numbered axis up the left, one ${MARKER_WORD[p.color]} bar per label with the label written under it, one square per unit.`,
+              : `A bar chart with a numbered axis up the left, one ${MARKER_WORD[p.color]} bar per label with the label written under it, one square per ${p.per > 1 ? String(p.per) : "unit"}.`,
 });

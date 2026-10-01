@@ -1,0 +1,41 @@
+# Reading the small 2 and 3: a squared is a times a and a cubed is a times a times a. The slip is
+# multiplying by the small number, so the versions make that slip give a different answer.
+item squares.notation v=1 skills=[number.squares, number.cubes, number.powers] {
+  title "The small number up high"
+  difficulty (a / 4 + b / 3)
+  let a=3..12 b=2..5
+  level easy {
+    let a=3..6
+    let b=2..3
+  }
+  level hard {
+    let a=9..12
+    let b=4..5
+  }
+
+  scene 36x14 {
+    row top at=canvas(1, 0) space=3 align=end {
+      planets pl count=4 names=0
+      text sums "{a}²   and   {b}³" width=12
+    }
+    text ask "The star club's quiz asks for both numbers. What is {a}², and what is {b}³?" narrate width=34 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text la "{a}² ="
+      number-input sq width=4
+      text lb "{b}³ ="
+      number-input cu width=4
+    }
+  }
+
+  answer sq=(a * a) cu=(b * b * b)
+  feedback {
+    when (sq == 2 * a) point=sums {
+      say "{a}² is {a} times {a}, not {a} times 2."
+    }
+    when (cu == 3 * b) point=sums {
+      say "{b}³ is {b} times {b} times {b}."
+    }
+  }
+  hint "The small 2 says how many {a}s to multiply together."
+  hint "The small 3 says how many {b}s to multiply together."
+}

@@ -1,0 +1,32 @@
+# The three-star: numbers that are both a square and a cube. Listing cubes and testing each for being
+# a square is quicker than the other way round; they are the sixth powers 1, 64, 729 and 4096.
+item squares.both v=1 stars=3 skills=[number.squares, number.cubes, reasoning.systematic] {
+  title "Square and cube at once"
+  difficulty t
+  let t=0..2
+  let m={pick(t, 100, 1000, 5000)}
+  level easy {
+    let t={0}
+  }
+  level hard {
+    let t={2}
+  }
+
+  scene 36x25 {
+    row top at=canvas(1, 0) space=3 align=end {
+      cubestack stack l=4 w=4 h=4
+      grid g rows=8 cols=8 shade=64 color=sky cell=1
+    }
+    text ask "64 is 8 squared and also 4 cubed: 64 small cubes make a cube, and 64 tiles make a square. How many whole numbers from 1 to {m} are both a square number and a cube number?" narrate width=34 below=top gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer pick(t, 2, 3, 4)
+  feedback {
+    when (answer == pick(t, 1, 2, 3)) point=top {
+      say "Did you count 1? It is 1 squared and 1 cubed."
+    }
+  }
+  hint "There are fewer cube numbers than square numbers. List the cubes up to {m}."
+  hint "Which of those cubes is also some number times itself?"
+}

@@ -1,0 +1,33 @@
+# The millimetre: each centimetre on the ruler holds ten. A twig ending at a half centimetre is read
+# in millimetres; the hard versions do not start at zero.
+item length.mm-ruler v=1 skills=[length.millimetres, measure.ruler, measure.metric] {
+  title "A twig in millimetres"
+  difficulty (h / 8 + s)
+  let h=5..23 s=0..2
+  where (h % 2 == 1 and h + 2 * s <= 27)
+  level easy {
+    let s={0}
+    where (h <= 13)
+  }
+  level hard {
+    let s=1..2
+  }
+
+  scene 36x15 {
+    ruler r cm=14 length=(h / 2) start=s thing=stick at=canvas(1, 0)
+    text ask "The hedgehog drags a twig past the tent. How long is the twig in millimetres?" narrate width=34 below=r gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (5 * h)
+  feedback {
+    when (s > 0 and answer == 5 * h + 10 * s) point=r {
+      say "The twig does not start at 0. Count from where it starts."
+    }
+    when (answer == h // 2) point=r {
+      say "That is the length in centimetres. Each centimetre is 10 millimetres."
+    }
+  }
+  hint "Where does the twig start, and where does it end?"
+  hint "How many whole centimetres, and how many millimetres in the last half?"
+}

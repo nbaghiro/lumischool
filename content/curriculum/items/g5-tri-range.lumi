@@ -1,0 +1,36 @@
+# The third side has a range: less than the other two added, and more than their difference. The
+# longest and the shortest whole lengths are one inside each end, which is where the slips are.
+item triangles.range v=1 skills=[triangles.sides, reasoning.bounds, shapes.triangles] {
+  title "How long can the third beam be?"
+  difficulty (q + (a + b) / 10)
+  let a=3..9 b=4..12 q=0..1
+  where (a < b)
+  level easy {
+    let q={0}
+    let b=4..8
+  }
+  level hard {
+    let q={1}
+  }
+
+  scene 36x26 {
+    row top at=canvas(1, 0) space=3 align=end {
+      rods sticks rods=[a, b] mode=stair numbers=true
+      clocktower ct hour=4 minute=0
+    }
+    text ask "The clock tower needs a triangle frame. Two beams are {a} m and {b} m. The third is a whole number of metres. What is the {if q == 0 then \"longest\" else \"shortest\"} it can be?" narrate width=34 below=top gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (if q == 0 then a + b - 1 else b - a + 1)
+  feedback {
+    when (q == 0 and answer == a + b) point=sticks {
+      say "At {a + b} m the two short beams would lie flat along it. It must be shorter."
+    }
+    when (q == 1 and answer == b - a) point=sticks {
+      say "At {b - a} m the beams of {a} m and {b - a} m would only just reach {b} m and lie flat. It must be longer."
+    }
+  }
+  hint "{if q == 0 then \"If the third beam is the longest, the other two together must be longer than it.\" else \"If the third beam is short, it and the shorter beam together must be longer than the longer beam.\"}"
+  hint "Find the length where they would just lie flat, then go one metre inside it."
+}

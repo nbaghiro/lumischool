@@ -1,0 +1,40 @@
+# Rounding up on purpose: to be sure there is enough money, round every price up to the next hundred.
+# If the rounded-up total is no more than what there is, the real total cannot be either.
+item estimate.enough v=1 skills=[estimate.rounding, money.dollars, reasoning.bounds] {
+  title "Is it enough?"
+  difficulty ((if ar < 40 then 1 else 0) + (if br < 40 then 1 else 0) + e / 4)
+  let ah=1..5 ar=1..99 bh=1..3 br=1..99 m={600, 700, 800, 900} e=0..1
+  let a={100 * ah + ar}
+  let b={100 * bh + br}
+  where (a % 100 != 0 and b % 100 != 0 and (e == 0 and 100 * ((a + 99) // 100) + 100 * ((b + 99) // 100) <= m and 100 * ((a + 99) // 100) + 100 * ((b + 99) // 100) >= m - 100 or e == 1 and a + b > m and a + b <= m + 90))
+  level easy {
+    let ar=50..99
+    let br=50..99
+  }
+  level hard {
+    let ar=1..39
+    let br=1..39
+  }
+
+  scene 36x19 {
+    row top at=canvas(1, 0) space=3 align=end {
+      pricetag tag1 now=(100 * a)
+      pricetag tag2 now=(100 * b)
+    }
+    text ask "A ski hire costs ${a} and a lift pass costs ${b}. Round each price up to the next hundred dollars. What is the rounded-up total? Is ${m} sure to be enough for both?" narrate width=34 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text ld "$"
+      number-input up width=4
+      choice enough options=["yes", "no"]
+    }
+  }
+
+  answer up=(100 * ((a + 99) // 100) + 100 * ((b + 99) // 100)) enough=(if e == 0 then "yes" else "no")
+  feedback {
+    when (up == 100 * ((a + 50) // 100) + 100 * ((b + 50) // 100) and up != 100 * ((a + 99) // 100) + 100 * ((b + 99) // 100)) point=tag1 {
+      say "That rounds to the nearest hundred. Here every price goes up to the next hundred, so the total can only be too big, never too small."
+    }
+  }
+  hint "What is the next hundred above {a}? Above {b}?"
+  hint "If the rounded-up prices fit in the money, can the real prices cost more?"
+}

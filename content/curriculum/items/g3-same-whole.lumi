@@ -1,0 +1,29 @@
+# What makes one whole: a lap is b pieces of b, so the rest of the lap after a of them is b take a.
+# The race track shows the runner part way round.
+item fractions.same-whole v=1 skills=[fractions.unit-fractions, fractions.add-same, reasoning.missing-number] {
+  title "The rest of the lap"
+  difficulty (b / 3 + (if a > b / 2 then 1 else 0))
+  let b={4, 5, 6, 8, 10, 12} a=1..11
+  where (a < b and b - a <= 9)
+  level easy {
+    let b={4, 5, 6}
+  }
+  level hard {
+    let b={10, 12}
+  }
+
+  scene 36x16 {
+    racetrack rt lanes=1 along=[a / b] metres=(b * 10) at=canvas(1, 0)
+    text ask "Ben has run {a}/{b} of a lap. What fraction of the lap is still to run?" narrate width=34 below=rt gap=1
+    equation eq "{a}/{b} + {?top}/{b} = 1" below=ask gap=1
+  }
+
+  answer top=(b - a)
+  feedback {
+    when (top == a and 2 * a != b) point=rt {
+      say "That is the part already run. How many pieces make the whole lap?"
+    }
+  }
+  hint "How many pieces make one whole lap?"
+  hint "How many of them has Ben run? How many are left?"
+}

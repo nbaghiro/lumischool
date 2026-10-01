@@ -1,0 +1,67 @@
+# The triangle inequality: three lengths close into a triangle only when the two shorter add to more
+# than the longest, which gives every third side a range. Set among the old city's builders.
+lesson g5-which-sticks-make-a-triangle v=1 format=teach grade=5 unit=8 subject=maths levels=[easy, medium, hard] {
+  title "Which three sticks make a triangle"
+  goal "Tell whether three lengths make a triangle, and find every length the third side of a triangle can have."
+
+  look {
+    scene 36x9 {
+      row top at=canvas(1, 0) space=3 align=end {
+        rods short rods=[3, 4, 8] mode=stair numbers=true
+        rods good rods=[3, 4, 6] mode=stair numbers=true
+        temple tp rows=2
+      }
+    }
+    say """
+      The builders are making triangle frames for the city wall. Beams of 3, 4 and 8 metres will not
+      do: lay the 3 and the 4 on the two ends of the 8 and they cannot reach each other, because 3 and
+      4 make only 7. Beams of 3, 4 and 6 will, because 3 and 4 make 7, which is more than 6. Three
+      lengths make a triangle when the two shorter ones add up to more than the longest.
+      """
+  }
+  do {
+    show triangles.can-make a=3 b=4 c=8 easy-c=9 hard-a=4 hard-b=5 hard-c=9
+    level easy {
+      worked triangles.can-make a=4 b=5 c=6 level=medium
+    }
+    show triangles.which-set k=0 easy-k=1 hard-k=3
+    practice triangles.range count=1 seed=3
+    practice triangles.count-third count=1 seed=4
+    practice triangles.can-make count=1 seed=5
+    practice triangles.range count=1 seed=6
+    show triangles.which-set k=4 easy-k=2 hard-k=5
+    practice triangles.count-third count=1 seed=8
+    level hard {
+      practice triangles.can-make count=1 seed=9
+    }
+  }
+  try stars=2 {
+    practice triangles.cannot count=1 seed=2
+  }
+  try stars=3 {
+    show triangles.perimeter-count t=2 easy-t=0 hard-t=4
+  }
+  remember {
+    say "Three sides make a triangle only if the two shorter add up to more than the longest."
+  }
+
+  grown-ups """
+    Grade five found a missing angle from the angle sum; this lesson is about sides. Two sides of a
+    triangle always add up to more than the third, because the straight way from one corner to
+    another is the shortest. So two known sides give the third a range: more than their difference,
+    less than their sum. The slip to watch for is the edge: 3, 4 and 7 lie flat and make no triangle,
+    so the longest third side for 3 and 4 is 6, not 7. If the child is stuck, cut straws to the
+    lengths and try to close them. In the two-star question one of four lengths cannot be the third
+    side, and sometimes it is the too-short one, so both ends of the range are needed. In the
+    three-star question every triangle with a given perimeter is listed, shortest side first, so none
+    is counted twice. Off the page, ask why a path across a field is shorter than going round two
+    sides. This meets China's 2022 curriculum standard for grades 5 and 6, 图形与几何 1(1),
+    「知道三角形任意两边之和大于第三边」.
+    """
+  level easy {
+    grown-ups "At this level the beams are far from making a flat line, one set is worked in the teacher's pen, the range asks only for the longest third side, the struts are short, the length that cannot be is the long one, and the rope is 9 or 10 m."
+  }
+  level hard {
+    grown-ups "At this level the beams lie flat or only just close, the range asks for the shortest third side, the struts are long, the length that cannot be may be the short one, and the rope is 15 or 16 m."
+  }
+}

@@ -1,0 +1,36 @@
+# The two-star reason: three worked sums, one with a slip that an estimate catches. The slip is big
+# enough that rounding cannot hide it, and the sums are too long to redo, so estimating is the way.
+item estimate.which-wrong v=1 stars=2 skills=[estimate.checking, reasoning.find-the-mistake, place-value.rounding] {
+  title "Which one has a slip?"
+  difficulty (k / 2 + (if k == 2 then 0.5 else 0))
+  let a=210..480 b=310..470 c=610..940 d=120..380 e=23..48 f=3..8 k=0..2
+  where (a % 100 != 50 and b % 100 != 50 and c % 100 != 50 and d % 100 != 50 and e % 10 != 5 and c - d > 200)
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x20 {
+    row top at=canvas(1, 0) space=3 align=start {
+      column sums space=1 align=start {
+        text s1 "A   {a} + {b} = {if k == 0 then a + b + 400 else a + b}" width=22
+        text s2 "B   {c} − {d} = {if k == 1 then c - d - 300 else c - d}" width=22
+        text s3 "C   {e} × {f} = {if k == 2 then 10 * e * f else e * f}" width=22
+      }
+      eagle eg flying=0 facing=0
+    }
+    text ask "The mountain hut's book has three sums from the warden. One of them has a slip. Estimate each one. Which sum is wrong?" narrate width=34 below=top gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=pick(k, "A", "B", "C")
+  feedback {
+    when (pick != pick(k, "A", "B", "C")) point=sums {
+      say "Round that sum's numbers and work it in your head. Is the warden's answer near your estimate?"
+    }
+  }
+  hint "Round the three-digit numbers to the nearest hundred and the two-digit one to the nearest ten. Work each sum in your head."
+  hint "Which answer is far from its estimate, not just a little off?"
+}

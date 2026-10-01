@@ -1,0 +1,31 @@
+# Comparing a power and its swap: 2 to the fifth and 5 squared use the same two numbers but are not
+# equal, so each is worked out. Only 2 and 4 swap to the same value, which the pairs avoid.
+item squares.compare v=1 skills=[number.powers, number.squares, number.cubes, reasoning.compare] {
+  title "Which is bigger?"
+  difficulty (k / 2)
+  let k=0..5
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x19 {
+    row top at=canvas(1, 0) space=3 align=end {
+      telescope ts tilt=40
+      text pair "{pick(k, \"3² or 2³\", \"5² or 2⁵\", \"4³ or 3⁴\", \"3³ or 5²\", \"10² or 5³\", \"9² or 3⁴\")}" width=12
+    }
+    text ask "Two members of the star club argue about which is bigger. Work out both. Which is bigger, or are they the same?" narrate width=34 below=top gap=1
+    choice pick options=["the first", "the second", "the same"] below=ask gap=1
+  }
+
+  answer pick=pick(k, "the first", "the second", "the second", "the first", "the second", "the same")
+  feedback {
+    when (pick == "the same" and k != 5) point=pair {
+      say "The same two numbers do not always give the same answer. Work out each one."
+    }
+  }
+  hint "Write each as a multiplication: how many times is the big number multiplied by itself?"
+  hint "Work out both and compare."
+}

@@ -1,0 +1,26 @@
+# The three-star: every triangle with whole-metre sides and a given perimeter, listed shortest side
+# first so none is counted twice. Each list is checked against the rule, with no method on the page.
+item triangles.perimeter-count v=1 stars=3 skills=[triangles.sides, reasoning.all-the-ways, reasoning.systematic] {
+  title "Every triangle of one rope"
+  difficulty t
+  let t=0..5
+  let p={pick(t, 9, 10, 12, 13, 15, 16)}
+  level easy {
+    let t=0..1
+  }
+  level hard {
+    let t=4..5
+  }
+
+  scene 36x21 {
+    row top at=canvas(1, 0) space=3 align=end {
+      citywalls cw towers=3 open=1
+    }
+    text ask "The market marks out stalls with a rope {p} m long, pegged into a triangle with a whole number of metres on each side. How many different triangles can it make? Triangles with the same three sides in another order count once." narrate width=34 below=top gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer pick(t, 3, 2, 3, 5, 7, 5)
+  hint "Start with the shortest side as small as it can be. What could the other two be, keeping them in order?"
+  hint "For each set, check the two shorter sides add to more than the longest. Then make the shortest side one metre longer, and so on."
+}

@@ -1,0 +1,35 @@
+# The two-star: work backwards from a there-and-back walk to one way. The walk is in kilometres and
+# the answer in metres, so changing to metres first makes the halving easy, including an odd number
+# of kilometres.
+item length.km-there-back v=1 stars=2 skills=[length.kilometres, division.halving, reasoning.work-backwards] {
+  title "There and back"
+  difficulty (t + (if t % 2 == 1 then 2 else 0))
+  let t=2..7
+  level easy {
+    let t={2, 4}
+  }
+  level hard {
+    let t={5, 7}
+  }
+
+  scene 36x19 {
+    row top at=canvas(1, 0) space=2 align=end {
+      tent tn lit=1
+      telescope ts tilt=30
+    }
+    text ask "A walk from the tent to the telescope and back again is {t} km in all. How many metres is it from the tent to the telescope?" narrate width=34 below=top gap=1
+    number-input answer width=5 below=ask gap=1
+  }
+
+  answer (500 * t)
+  feedback {
+    when (answer == 1000 * t) point=ask {
+      say "That is there and back. The question asks for one way."
+    }
+    when (answer * 2 == t) point=ask {
+      say "That is in kilometres. How many metres is it?"
+    }
+  }
+  hint "How many metres is the whole walk, there and back?"
+  hint "The way there and the way back are the same length. What is half of it?"
+}

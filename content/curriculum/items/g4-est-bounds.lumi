@@ -1,0 +1,37 @@
+# The three-star: rounding hides the exact numbers, so the exact total lies in a range. Each number
+# rounded to the nearest ten is at most 4 more than its round number, and at least 5 less; the
+# biggest and the smallest total follow, with no method on the page.
+item estimate.bounds v=1 stars=3 skills=[estimate.rounding, reasoning.bounds, reasoning.extremes] {
+  title "As big as it could be"
+  difficulty (q + u)
+  let r=3..9 s=2..8 q=0..1 u=0..1
+  where (r != s)
+  level easy {
+    let q={0}
+    let u={0}
+  }
+  level hard {
+    let u={1}
+  }
+
+  scene 36x18 {
+    row top at=canvas(1, 0) space=3 align=end {
+      cablecar cc cars=2 windows=2
+      eagle eg flying=1 facing=0
+    }
+    text ask "Two cable cars carried people up today. Rounded to the nearest {if u == 0 then \"ten\" else \"hundred\"}, one carried {(if u == 0 then 10 else 100) * r} and the other {(if u == 0 then 10 else 100) * s}. What is the {if q == 0 then \"biggest\" else \"smallest\"} number of people they could have carried altogether?" narrate width=34 below=top gap=1
+    number-input answer width=5 below=ask gap=1
+  }
+
+  answer (if u == 0 then 10 * (r + s) + (if q == 0 then 8 else -10) else 100 * (r + s) + (if q == 0 then 98 else -100))
+  feedback {
+    when (answer == (if u == 0 then 10 else 100) * (r + s)) point=ask {
+      say "That is the rounded total. Each number could have been a little more or a little less."
+    }
+    when (q == 0 and answer == (if u == 0 then 10 * (r + s) + 10 else 100 * (r + s) + 100)) point=ask {
+      say "A number that rounds to {(if u == 0 then 10 else 100) * r} cannot be {(if u == 0 then 10 else 100) * r + (if u == 0 then 5 else 50)}: that rounds up. What is the biggest it can be?"
+    }
+  }
+  hint "What is the biggest whole number that rounds to the first car's number? The smallest?"
+  hint "Do the same for the other car, then add."
+}

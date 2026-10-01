@@ -1,0 +1,32 @@
+# Counting the whole lengths a third side can take: from the difference plus one up to the sum less
+# one, which is always twice the shorter side less one. The child counts the range, not a rule.
+item triangles.count-third v=1 skills=[triangles.sides, reasoning.bounds, reasoning.systematic] {
+  title "How many lengths fit?"
+  difficulty (a / 3)
+  let a=2..7 b=5..10
+  where (a < b)
+  level easy {
+    let a=2..3
+  }
+  level hard {
+    let a=6..7
+  }
+
+  scene 36x18 {
+    row top at=canvas(1, 0) space=3 align=end {
+      rods sticks rods=[a, b] mode=stair numbers=true
+      temple tp rows=3
+    }
+    text ask "The temple's roof frame has two struts, {a} m and {b} m. How many different whole-metre lengths could the third strut be, if the three make a triangle?" narrate width=34 below=top gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (2 * a - 1)
+  feedback {
+    when (answer == 2 * a + 1 or answer == 2 * a) point=sticks {
+      say "Check the two ends: can the strut be exactly {b - a} m or {a + b} m?"
+    }
+  }
+  hint "What is the shortest whole length that works? The longest?"
+  hint "Count every whole number from the shortest to the longest."
+}

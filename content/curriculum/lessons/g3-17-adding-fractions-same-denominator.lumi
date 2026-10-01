@@ -1,0 +1,65 @@
+# Adding and taking away fractions whose pieces are the same size, within one whole: the pieces are
+# counted, and the bottom number, which names their size, stays. Set on the sports ground's track.
+lesson g3-adding-fractions-same-denominator v=1 format=teach grade=3 unit=6 subject=maths levels=[easy, medium, hard] {
+  title "Adding fractions with the same bottom number"
+  goal "Add and take away fractions with the same bottom number by counting the pieces, and find what makes one whole."
+
+  look {
+    scene 36x10 {
+      racetrack rt lanes=2 along=[2 / 8, 5 / 8] metres=80 at=canvas(1, 0)
+    }
+    say """
+      The track is cut into eight equal parts, so each part is one eighth of a lap. One runner has
+      gone 2/8 of the lap and the other 5/8. If the first runs 3/8 more, she has run 2 eighths and 3
+      eighths, which is 5 eighths, 5/8, the same as the other runner. When the pieces are the same
+      size we only count them; the bottom number, which says how big they are, does not change.
+      """
+  }
+  do {
+    show fractions.same-add b=8 a=2 c=3 easy-a=1 easy-c=2 hard-b=10 hard-a=3 hard-c=5
+    level easy {
+      worked fractions.same-add b=6 a=2 c=1 level=medium
+    }
+    practice fractions.same-take count=1 seed=2
+    practice fractions.same-whole count=1 seed=3
+    practice fractions.same-line count=1 seed=4
+    practice fractions.same-team count=1 seed=5
+    practice fractions.same-add count=1 seed=6
+    practice fractions.same-take count=1 seed=7
+    practice fractions.same-whole count=1 seed=8
+    level hard {
+      practice fractions.same-line count=1 seed=9
+    }
+  }
+  try stars=2 {
+    practice fractions.same-check count=1 seed=2
+  }
+  try stars=3 {
+    show fractions.same-relay b=10 easy-b=8 hard-b=12
+  }
+  remember {
+    say "When the pieces are the same size, add or take away the tops. The bottom number stays."
+  }
+
+  grown-ups """
+    A fraction with the same bottom number as another counts the same size of piece, so 2/7 and 3/7
+    add like 2 apples and 3 apples: 5/7. Grade three met equal fractions and tenths; this lesson
+    adds and takes away any size of piece within one whole, and finds what is left of a whole. The
+    slip to watch for is adding the bottom numbers too, 2/7 + 3/7 = 5/14. Ask what the 7 means: it
+    says how big each piece is, and adding does not change the size of the pieces. If the child is
+    stuck, fold a paper strip into the pieces and count them, or step along the track one piece at a
+    time. In the two-star question the child checks Kit's slip against sense: Kit's answer is no
+    bigger than the fraction Kit started from, which adding can never do. In the three-star question
+    the child lists every way to split a lap into three different whole numbers of pieces, smallest
+    first, so none is counted twice. Off the page, share a pizza cut in eighths and say what fraction
+    each person has had. This meets England's year 3 programme, "add and subtract fractions with the
+    same denominator within one whole [for example, 5/7 + 1/7 = 6/7]", and Japan's grade 3 course of
+    study, A(6)ア(ウ), 「簡単な場合について，分数の加法及び減法の意味について理解し，それらの計算ができることを知ること」.
+    """
+  level easy {
+    grown-ups "At this level the pieces are fifths, sixths or eighths, the sums stay small, one addition is worked in the teacher's pen, the team has 8 runners, Kit's slip gives a smaller answer, and the lap to split is in eighths."
+  }
+  level hard {
+    grown-ups "At this level the pieces reach tenths and twelfths, the sums are bigger, more is taken away, the team has 12 runners, Kit's slip gives exactly the starting fraction, and the lap to split is in twelfths."
+  }
+}

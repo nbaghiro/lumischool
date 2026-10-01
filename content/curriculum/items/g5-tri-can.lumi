@@ -1,0 +1,35 @@
+# The way in to the triangle rule: three sticks close into a triangle only if the two shorter ones
+# together are longer than the longest. Laid end to end and equal, they lie flat; shorter, they gape.
+item triangles.can-make v=1 skills=[shapes.triangles, triangles.sides, reasoning.compare] {
+  title "Will they make a triangle?"
+  difficulty (if a + b == c then 2 else if a + b == c + 1 then 1.5 else if a + b < c then 0.5 else 0)
+  let a=2..6 b=2..7 c=4..10
+  where (a <= b and b <= c and a + b >= c - 3 and a + b <= c + 3)
+  level easy {
+    where (a + b <= c - 2 or a + b >= c + 3)
+  }
+  level hard {
+    where (a + b == c or a + b == c + 1)
+  }
+
+  scene 36x18 {
+    row top at=canvas(1, 0) space=3 align=end {
+      rods sticks rods=[a, b, c] mode=stair numbers=true
+      citywalls cw towers=2 open=0
+    }
+    text ask "A builder in the old city has three beams, {a}, {b} and {c} metres long. Can they be joined end to end into a triangle?" narrate width=34 below=top gap=1
+    choice pick options=["yes", "no"] below=ask gap=1
+  }
+
+  answer pick=(if a + b > c then "yes" else "no")
+  feedback {
+    when (a + b == c and pick == "yes") point=sticks {
+      say "{a} and {b} together are exactly {c}. Joined at the ends, the two short beams would lie flat along the long one."
+    }
+    when (a + b < c and pick == "yes") point=sticks {
+      say "Put the two short beams on the ends of the long one. Can they reach each other?"
+    }
+  }
+  hint "Lay the two shorter beams at the two ends of the longest. What must happen for them to meet above it?"
+  hint "Add the two shorter lengths. Is that more than the longest?"
+}

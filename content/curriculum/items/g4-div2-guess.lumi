@@ -1,0 +1,35 @@
+# Estimating each digit of the quotient: round the divisor to tens to guess, then multiply to check,
+# and go one up or one down when the guess is out. The divisors are chosen so the first guess is wrong
+# at the hard level.
+item division.two-digit-guess v=1 skills=[division.two-digit, estimate.rounding, reasoning.guess-and-check] {
+  title "Guess, check, adjust"
+  difficulty (d % 10 / 4 + q / 8)
+  let d=21..39 q=3..8 r=0..20
+  where (r < d and q * d + r < 300 and d % 10 != 0 and d % 10 != 5)
+  level easy {
+    where (d % 10 <= 2)
+  }
+  level hard {
+    where (d % 10 >= 6)
+  }
+
+  scene 36x14 {
+    row top at=canvas(1, 0) space=3 align=end {
+      longdiv sum n=(q * d + r) by=d blanks=[quotient, rest]
+      whale wh spout=1 facing=0
+    }
+    text ask "{q * d + r} people queue for the whale-watching boats, and each boat takes {d}. How many boats can be filled, and how many people are left over? Round {d} to the nearest ten to make a first guess, then check it." narrate width=34 below=top gap=1
+  }
+
+  answer quotient=q rest=r
+  feedback {
+    when (quotient == q + 1) point=sum {
+      say "Multiply {q + 1} by {d}. Is it more than {q * d + r}? Then that is one boat too many."
+    }
+    when (quotient == q - 1) point=sum {
+      say "Multiply {q - 1} by {d} and take it away. Is what is left {d} or more? Then one more boat can be filled."
+    }
+  }
+  hint "Round {d} to the nearest ten. About how many of those make {q * d + r}?"
+  hint "Multiply your guess by {d}. Is it too big, or is there {d} or more left over?"
+}

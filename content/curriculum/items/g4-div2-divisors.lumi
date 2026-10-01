@@ -1,0 +1,33 @@
+# The three-star: which divisors give a quotient of exactly q? Every divisor d with q times d at most n
+# and (q + 1) times d more than n, a range to find by trying the edges, with no method on the page.
+item division.two-digit-divisors v=1 stars=3 skills=[division.two-digit, reasoning.all-the-ways, reasoning.bounds] {
+  title "Every number that shares it so"
+  difficulty (t / 2)
+  let t=0..4
+  let n={pick(t, 100, 150, 200, 250, 300)}
+  let q={pick(t, 4, 6, 7, 9, 11)}
+  level easy {
+    let t=0..1
+  }
+  level hard {
+    let t=3..4
+  }
+
+  scene 36x17 {
+    row top at=canvas(1, 0) space=3 align=end {
+      chest ch open=1 coins=5
+      whale wh spout=0 facing=1
+    }
+    text ask "The pirates share {n} coins equally, as many as they can, with some maybe left over. Each pirate gets exactly {q} coins. For how many different numbers of pirates from 10 to 99 could that be true?" narrate width=34 below=top gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer pick(t, 5, 4, 3, 2, 2)
+  feedback {
+    when (answer == 1) point=ask {
+      say "One number of pirates works, but try one more or one fewer pirate. Does each still get exactly {q}?"
+    }
+  }
+  hint "If there are d pirates, {q} coins each uses {q} × d coins. That must be {n} or less."
+  hint "With one more coin each, there would not be enough. Which numbers of pirates fit both?"
+}
