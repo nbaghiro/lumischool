@@ -1,0 +1,29 @@
+# The three-star question: a street with no year on its sign, and three years to choose from. Only
+# one year is late enough for everything in it, which the child reasons out from the newest thing.
+item history.street-which-year v=1 skills=[history.change, reasoning.logic] {
+  title "Which year is it?"
+  difficulty k
+  let k=0..2
+  let a={pick(k, "bicycle", "horse and cart", "motor car")}
+  let b={pick(k, "horse and cart", "aeroplane", "television aerial")}
+  let c={pick(k, "hot-air balloon", "motor car", "bicycle")}
+  let y1={pick(k, 1850, 1860, 1920)}
+  let y2={pick(k, 1870, 1950, 1990)}
+  let y3={pick(k, 1920, 1870, 1925)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 32x25 {
+    thenandnow street year=2026 sign=0 things=["{a}", "{b}", "{c}"] at=canvas(1, 0)
+    text ask "The sign has fallen off. Which year could this street be?" narrate width=18 below=street gap=1
+    choice pick options=[y1, y2, y3] below=ask gap=1
+  }
+
+  check history.street of=street pick="could-be(pick)"
+  hint "Find the newest thing in the street."
+  hint "The year has to be after that thing was first made."
+}

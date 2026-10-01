@@ -1,0 +1,22 @@
+# A reason: the place that fits a need, no hay, and un or una.
+item language.es-the-town-why v=1 stars=2 skills=[language.town, reasoning.language] {
+  title "Which place, and why?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo wants to catch a train. Ana says: Ve a la playa. Is that right?\", \"What does No hay parque mean?\", \"Why is it una plaza but un parque?\")}" width=32
+      choice pick options=[pick(k, "No: trains stop at la estación.", "There is no park.", "Plaza takes la, so una; parque takes el, so un."), pick(k, "Yes: la playa has trains.", "There is a park.", "A plaza is bigger."), pick(k, "Yes: all places have trains.", "Where is the park?", "It is always una.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "No: trains stop at la estación.", "There is no park.", "Plaza takes la, so una; parque takes el, so un.")
+  feedback {
+    when (pick == pick(k, "Yes: la playa has trains.", "There is a park.", "A plaza is bigger.")) {
+      say "{pick(k, \"La playa is the beach. Where do trains stop?\", \"Hay is there is. What does no do to it?\", \"Size does not decide it. Look at el and la.\")}"
+    }
+  }
+  hint "Say the Spanish in English first."
+  hint "Look at the small words: el, la, no."
+}

@@ -1,0 +1,48 @@
+lesson k-drawing-what-you-see v=1 format=teach grade=0 unit=9 subject=art levels=[easy, medium, hard] {
+  title "Drawing what you see"
+  goal "Look for the big shapes in a thing, draw the big shape first and the small parts after, and count the shapes in a picture."
+
+  look {
+    scene 26x12 {
+      collage pic scene=house at=canvas(1, 1)
+    }
+    say """
+      This house is made of shapes: a big square, a triangle for the roof, and small rectangles for
+      the door and the windows. When you draw what you see, find the big shape first, then add the
+      small parts.
+      """
+  }
+  do {
+    level easy {
+      worked k.shape-of-a-thing k=0 level=medium
+    }
+    practice k.shape-of-a-thing count=2 seed=2
+    practice k.big-shape-first count=2 seed=3 easy-count=1
+    practice k.shapes-in-a-picture count=3 seed=4 easy-count=2
+    show k.draw-a-cup
+  }
+  try stars=2 {
+    show k.bigger-is-nearer
+  }
+  try stars=3 {
+    show k.all-the-shapes s="fish" easy-s="boat" hard-s="house"
+  }
+  remember {
+    say "Look first. Draw the big shape, then the small parts."
+  }
+
+  grown-ups """
+    Read each question aloud. The drawing of the cup is for you to look at: it should come from
+    looking at a real cup, so put one on the table. Children draw what they know rather than what
+    they see, so ask where the handle really is. If the child is stuck, trace round the cup's
+    shape in the air together. Off the page, draw a toy from three sides. Japan, 幼稚園教育要領
+    (kindergarten guidelines), 表現, 内容 (4): "感じたこと，考えたことなどを音や動きなどで表現したり，自由にかいたり，つくったりなどする。"
+    (Express what they feel and think through sound and movement, and draw and make things freely.)
+    """
+  level easy {
+    grown-ups "At this level the plate is shaped in the teacher's pen first, the picture to count is the boat or the fish, and the house comes second."
+  }
+  level hard {
+    grown-ups "At this level the shapes to find are the door and the square window, the pictures to count are the fish and the house, and the three-star counts every piece of the house."
+  }
+}

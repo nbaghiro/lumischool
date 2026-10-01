@@ -1,0 +1,19 @@
+# The language to English: ¿Qué hora es?, Es la una., A las ocho voy al colegio., Es mediodía., Son las siete menos cuarto., ¿A qué hora sale el ferry?.
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.es-the-time-meaning v=1 skills=[language.time] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x33 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "boy", "girl", "gran", "boy", "gran")] says=[pick(k, "¿Qué hora es?", "Es la una.", "A las ocho voy al colegio.", "Es mediodía.", "Son las siete menos cuarto.", "¿A qué hora sale el ferry?")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "What time does the ferry leave?", "It is midday.", "It is one o'clock.", "What time does the ferry leave?", "What time does the ferry leave?", "It is midday."), pick(k, "What time is it?", "It is one o'clock.", "It is quarter to seven.", "It is midday.", "At eight I go to school.", "What time does the ferry leave?"), pick(k, "At eight I go to school.", "It is quarter to seven.", "It is midday.", "It is one o'clock.", "It is quarter to seven.", "At eight I go to school."), pick(k, "It is quarter to seven.", "At eight I go to school.", "At eight I go to school.", "At eight I go to school.", "It is midday.", "It is quarter to seven.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "What time is it?", "It is one o'clock.", "At eight I go to school.", "It is midday.", "It is quarter to seven.", "What time does the ferry leave?")
+  hint "Find a part of the Spanish you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

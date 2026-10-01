@@ -1,0 +1,22 @@
+# Non-routine: the question worked out from the answer it got.
+item language.questions-puzzle v=1 stars=3 skills=[language.questions, reasoning.language] {
+  title "Answer first"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"The answer was [[question.my-name-is-eva]] Which question was asked?\", \"The answer was [[question.because-it-is-cold]] Which question was asked?\", \"The answer was [[question.two-a-brother-and-a-sister]] Which question was asked?\")}" width=32
+      choice pick options=[pick(k, "[[question.what-is-your-name]]", "[[question.why-are-you-wearing-a-coat]]", "[[phrase.how-many-brothers-and-sisters-do-you-hav]]"), pick(k, "[[question.where-do-you-live]]", "[[question.when-do-you-arrive]]", "[[question.which-one-is-your-brother]]"), pick(k, "[[phrase.how-old-are-you]]", "[[question.who-is-it]]", "[[question.what-is-your-sister-like]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[question.what-is-your-name]]", "[[question.why-are-you-wearing-a-coat]]", "[[phrase.how-many-brothers-and-sisters-do-you-hav]]")
+  feedback {
+    when (pick == pick(k, "[[question.where-do-you-live]]", "[[question.when-do-you-arrive]]", "[[question.which-one-is-your-brother]]")) {
+      say "{pick(k, \"That asks where. The answer is a name.\", \"That asks when. The answer gives a reason.\", \"That asks which one. The answer is a number.\")}"
+    }
+  }
+  hint "What kind of answer is it: a name, a reason, a number?"
+  hint "Which question word asks for that?"
+}

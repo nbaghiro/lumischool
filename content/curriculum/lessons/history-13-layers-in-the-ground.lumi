@@ -1,0 +1,74 @@
+# Dates on the museum cards are checked against engine/notation/chronicle.ts; the dig and the layers
+# are made up for the lesson.
+lesson history-layers-in-the-ground v=1 format=teach grade=3 unit=3 subject=history levels=[easy, medium, hard] {
+  title "How we know: layers in the ground"
+  goal "Use the layers in the ground to say which of two finds is older, and read the date on a museum card."
+
+  look {
+    scene 36x12 {
+      row all at=canvas(0, 0) space=1 align=end {
+        strata cliff layers=5 names=0 ash=0 fault=0
+        dig hole dug=1 spade=1
+      }
+    }
+    say """
+      Most of the past left no writing, so how do we know about it? The ground keeps it. Mud, sand
+      and ash settle in layers, one on top of another, so the lowest layer was laid first and is the
+      oldest. When archaeologists dig, they note how deep each find lies. Deeper finds are older,
+      unless someone dug a hole there later. A find is then cleaned, dated and shown in a museum
+      with a card.
+      """
+  }
+  do {
+    level easy {
+      worked history.layer-count k=0
+    }
+    show history.layer-count k=2 easy-k=1 hard-k=4
+    show history.dig-depth k=2 easy-k=0 hard-k=4
+    show history.card-older k=2 easy-k=0 hard-k=4
+    show history.layer-count k=3 easy-k=2 hard-k=5
+    show history.dig-depth k=3 easy-k=1 hard-k=5
+    show history.card-older k=3 easy-k=1 hard-k=5
+    show history.card-older k=1 easy-k=2 hard-k=3
+    level medium hard {
+      show history.find-on-card k=1 hard-k=1
+    }
+    level easy {
+      show history.find-on-card k=0
+    }
+    level hard {
+      show history.dig-depth k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.plastic-deep k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.layer-between k=0 hard-k=1
+  }
+  remember {
+    say "In the ground, the lower the layer, the older it is, unless someone has dug there since."
+  }
+
+  grown-ups """
+    The idea is how we know about times with no writing: layers in the ground are laid in order, so
+    depth is a kind of date, and a find's layer says roughly when it was left. The way in counts
+    layers; the core orders finds by depth and compares the dates on two museum cards; the
+    two-star question is the exception, a new thing found deep because someone dug a hole. The
+    wrong idea to watch for is "higher is older", from reading top to bottom as on a page. If the
+    child is stuck, stack books one at a time and ask which went down first. Off the page, look at
+    a cutting by a road or a cliff and count its layers. England's key stage 2 history asks pupils
+    to "understand how our knowledge of the past is constructed from a range of sources", and the
+    ground is the first of them. Russia's history programme for grade five begins with
+    «Источники исторических знаний», the sources of what we know about the past.
+    Japan's 社会 takes up history only through Japan's own story, in grade six
+    (「我が国の歴史上の主な事象について，人物の働きや代表的な文化遺産を中心に」, the course of study as read in its 2008 edition), so
+    this lesson has no line of its own there; its timeline and source skills serve that grade.
+    """
+  level easy {
+    grown-ups "At this level a worked example finds the oldest of three layers, the finds are at depths already in order or nearly, and the cards compare a stone tool with a much later one."
+  }
+  level hard {
+    grown-ups "At this level the layers to name are the second or third from one end, the finds' depths are fully muddled, the cards are both BC and close together, and the three-star question moves the coin to before year one."
+  }
+}

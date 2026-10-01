@@ -1,0 +1,47 @@
+lesson k-what-soaks-up-water v=1 format=teach grade=0 unit=2 subject=chemistry levels=[easy, medium, hard] {
+  title "Wet and dry"
+  goal "Say which things soak up water and which keep it out, and what makes wet things dry."
+
+  look {
+    scene 30x10 {
+      materials row things=["towel", "raincoat", "paper-bag", "plastic-bottle"] letters=1 names=1 at=canvas(1, 0)
+    }
+    say """
+      Pour water on a towel and it soaks in. Pour water on a raincoat and it runs off, so the coat
+      keeps you dry. Paper soaks water up, and plastic does not. Wet washing dries when the water
+      goes off into the air, fastest on a warm, windy day.
+      """
+  }
+  do {
+    level easy {
+      worked k.soaks-or-not k=0 level=medium
+    }
+    practice k.soaks-or-not count=3 seed=2 easy-count=2
+    practice k.count-soakers count=2 seed=3
+    practice k.which-keeps-dry count=2 seed=4 easy-count=1
+    show k.what-dries k=0 hard-k=1
+  }
+  try stars=2 {
+    show k.why-a-towel
+  }
+  try stars=3 {
+    show k.water-on-top k=0 hard-k=1
+  }
+  remember {
+    say "Some things soak water up. Others keep it out."
+  }
+
+  grown-ups """
+    Read each question aloud. A tray, a jug of water and a few things from the kitchen make this a
+    test the child can do: guess first, then pour. If the child is stuck, let them feel a wet towel
+    and a wet plastic bag. Off the page, peg out washing together and check it every hour. Japan,
+    幼稚園教育要領 (kindergarten guidelines), 環境, 内容 (2): "生活の中で，様々な物に触れ，その性質や仕組みに興味や関心をもつ。"
+    (Touch many things in daily life and take an interest in how they behave and work.)
+    """
+  level easy {
+    grown-ups "At this level the towel is worked in the teacher's pen first, the things to judge are a towel, a cup and a sponge, and the washing is the drying question."
+  }
+  level hard {
+    grown-ups "At this level the things to judge include paper and glass, the rows are harder to count, and the drying question asks where the water goes."
+  }
+}

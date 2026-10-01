@@ -1,0 +1,22 @@
+# A reason: which little word goes before a noun, and a one-letter slip that changes the animal.
+item language.es-animals-why v=1 stars=2 skills=[language.animals, reasoning.language] {
+  title "El or la?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Why is it la gallina and not el gallina?\", \"Leo says: tengo un gata. Ana says: tengo una gata. Who is right?\", \"Leo draws a cat and writes pato under it. What went wrong?\")}" width=32
+      choice pick options=[pick(k, "Gallina ends in a, so it takes la.", "Ana: gata ends in a, so una.", "He wrote duck: cat is gato, with a g."), pick(k, "All birds take la.", "Leo: every animal takes un.", "He wrote dog."), pick(k, "Gallina is a small animal.", "Both are right.", "Nothing: pato is cat.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Gallina ends in a, so it takes la.", "Ana: gata ends in a, so una.", "He wrote duck: cat is gato, with a g.")
+  feedback {
+    when (pick == pick(k, "All birds take la.", "Leo: every animal takes un.", "Nothing: pato is cat.")) {
+      say "{pick(k, \"El pato is a bird too, and it takes el. Look at the ending.\", \"El gato takes un, but gata ends in a.\", \"Pato is the duck. Which letter starts cat in Spanish?\")}"
+    }
+  }
+  hint "Look at the last letter of the word."
+  hint "Say both and listen to the first sound."
+}

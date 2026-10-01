@@ -213,6 +213,19 @@ A lesson declares one of five formats, and the format decides which sections it 
 
 Each lesson renders in two outputs from the same file. On screen, sections are pages the child steps through, and an answer key can be switched on for grown-ups. In print, the lesson is laid out on 5 mm squared paper, one digit per square, question numbers in the margin, and paginated so a section heading never ends a page on its own. The goal, the notes for grown-ups, the answers, the hints and the solutions to code-checked puzzles go on a separate grown-ups sheet and never appear on the child's pages.
 
+### Subjects and variants
+
+A lesson's `subject=` is one of a closed list in `engine/notation/vocabulary.ts`: maths, reading, logic, science, writing, grammar, geography, music, computing, physics, chemistry, coding, art, nature, history and language. Without one, a lesson is maths.
+
+Two subjects have variants, lessons offered only for a choice a family makes. A history lesson that is a national unit names its country with `nation=`, one of `britain`, `usa`, `japan`, `russia` and `china`, and is written once per country. A language lesson is written once, as a concept, and the compiler writes a variant of it for each language whose phrasebook can fill it, with `language=` set to that language, one of `es`, `fr` and `ja` (see "Phrasebooks and language variants" below); `language=` is never written in a source file. Both lists are `LANGUAGES` and `NATIONS` in `engine/answer.ts`, the same lists the settings are checked against, so a tag and a setting cannot disagree. The checker refuses a value outside the list, `language=` on a lesson whose subject is not language or in a language lesson's source, and `nation=` on a lesson whose subject is not history. A history lesson without `nation=` is the world strand.
+
+```
+lesson language-hello v=1 format=teach grade=1 unit=1 subject=language levels=[easy, medium, hard] {
+lesson history-uk-flag v=1 format=teach grade=3 unit=4 subject=history nation=britain {
+```
+
+The tag is carried into the pack's lesson and its facts in the index (`language` and `nation` on `LessonFacts`), and `forChild` in `school/year.ts` decides who sees it: a language lesson only once a grown-up has picked a language for the child, and only for that language, and a national unit only for a family whose `nation` setting names it. The year, the plan and its lanes, the map and its track places, the calendar and the weekly letter all read lessons through it. Explore shows every variant with its tag beside the unit and can be narrowed to one.
+
 ## Levels
 
 Added 15 September 2026.
@@ -355,6 +368,46 @@ A question the machine cannot prove is a piece the child makes and a grown-up re
 ### Dictation
 
 `check writing.dictation text="..."` is a sentence the child hears and types. The checker proves the sentence has three to forty words, each with letters, and that the marking works on it: typed as written it is right, each word misspelt is caught at that word and nowhere else, and each word left out is caught as that word left out. It gives the sentence as the answer, so the scene places a box for it (`number-input answer width=32`). The typed answer is marked word by word (`markWords` in `engine/pack.ts`), lined up by the fewest words changed, so a word missed marks only itself. Spelling is marked, and case and punctuation are not.
+
+## Phrasebooks and language variants
+
+Added 30 September 2026. A language lesson is one lesson for every language: the concept (greetings, numbers to ten, the market) is written once, with its English, its pictures, its questions and its levels, and the phrases in the language being learnt come from a phrasebook. A child learning Spanish gets the Spanish variant and a child learning French the French one, and adding a language is its code in `LANGUAGES` and its phrasebook file, nothing else.
+
+### A phrasebook
+
+Each language has one file, `content/curriculum/languages/<code>.lumi`, read by the same loader as the rest of the curriculum. Its root is `phrasebook`, and each `entry` is a key, the phrase, and what marking and reading it aloud need:
+
+```
+phrasebook es v=1 lenient=[acute, diaeresis] {
+  name "Spanish"
+  variety "Castilian, as spoken in Spain"
+  entry greet.hello "hola" say="OH-lah, with the h silent" gloss="hello"
+  entry greet.goodbye "adiós" also=["adio"] say="ah-DYOSS" gloss="goodbye"
+  entry family.the-mother "la madre" gender=f gloss="the mother"
+}
+```
+
+A key is words joined by dots, each starting with a letter (`num.twenty-one`, `food.the-bread`). `also` lists other spellings a typed answer may use. `say` is how to say the phrase, in the child's own spelling, for the grown-up reading aloud. `gender` is `m`, `f` or `n` for a noun whose gender a lesson turns on. `kana` and `romaji` are for Japanese, where an entry's text is the phrase as written and these give it in kana and in the Latin alphabet. `note` is anything else a lesson may print, and `gloss` is the meaning in English, which the lesson itself carries and which is there for whoever writes another language's phrasebook. `lenient` names the marks (acute, grave, circumflex, diaeresis, tilde, cedilla, macron) that an answer box written `accents=loose` forgives in this language; Spanish forgives the acute accent and the diaeresis, and never the tilde, since ñ is a letter of its own. The checker refuses a key twice, a key that is not dotted words, a phrase holding `"`, `\`, `{`, `}`, `[` or `]` (it is written into a string that may itself be quoted), and a file not named after its language.
+
+### Keys in a lesson
+
+Inside any string of a language lesson or its items, `[[key]]` names a phrase and `[[key|field]]` a field of it: `[[greet.hello|cap]]` is the phrase with a capital, and `[[greet.hello|say]]` its line for the grown-up. `[[language.name]]` and `[[language.variety]]` are the phrasebook's own name and variety, so a question can say "Write it in [[language.name]]." The English stays in the lesson. The same key serves every use: the picture's label and the page's text, a choice's options and its answer, both sides of a matching question, the typed answer and the sentence a dictation reads aloud from the grown-ups' sheet:
+
+```
+choice pick options=[pick(k, "[[greet.hello]]", "[[greet.goodbye]]"), "[[greet.please]]"]
+word-input word options=[pick(k, "[[greet.hello]]", "[[greet.goodbye]]")] accents=loose
+check writing.dictation text="{pick(k, \"[[phrase.i-have-a-sister]]\", \"[[phrase.this-is-my-family]]\")}"
+```
+
+A part whose structure genuinely differs by language (word order, gender, a script) is written once per language inside `language <code> { ... }`, which may hold sections, blocks, grown-ups notes or an item's parts, and is opened for its language and dropped for the rest. The Spanish lessons use it for their two-star questions, most of which ask why Spanish builds a phrase the way it does, and for four lessons written wholly for Spanish (a colour with its noun, telling the time, describing a friend's character, and the present tense).
+
+### How the variants are written
+
+The workspace (`engine/notation/languages.ts`, from the `Workspace` constructor) reads every phrasebook, then takes each lesson with `subject=language` and each item that names a key or holds a `language` block as a template. A template is checked against the vocabulary as written but never built. For each lesson and each phrasebook, the lesson is offered in that language when the phrasebook has every key the lesson and its items name, with every field they ask for, and when the lesson has no `language` block or has one for that language. The lesson is then written out with its keys filled, its `language` blocks opened, `language=<code>` added and `.<code>` added to its id and to the ids of its template items (`language-hello.es` asks `language.hello-name.es`), so a child's progress in one language is kept apart from another. The variants are then read, checked and verified at every level like any lesson, and their issues are reported at the template's file with the language before them.
+
+A language that lacks a key is not an error: the lesson is simply not offered in it. `Workspace.coverage` holds every lesson by every language with what it lacks; `npm run pack` prints it, and `npm run languages:coverage` writes it as the table in [language-coverage.md](language-coverage.md).
+
+A typed answer in a variant is marked against the phrase and its `also` spellings, and in a box written `accents=loose`, against each of them with the language's lenient marks left off. The compiler puts these other spellings on the pack's question as `also`, so the page marks them without knowing any language (`checkTyped` in `school/lessons.ts`). A dictation is always strict: a missing accent is a word misspelt.
 
 ## Verification
 

@@ -1,0 +1,17 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.the-poster-say v=1 skills=[language.reading, language.speaking] {
+  title "Read it aloud"
+  let k=0..2
+
+  scene 34x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage poster title="[[notice.town-fiesta]]" text="[[notice.fiesta-poster]]" width=30 numbers=true
+      text ask "{pick(k, \"Read the first two lines of the poster aloud to a grown-up.\", \"Read the whole poster aloud to a grown-up.\", \"Tell a grown-up in [[language.name]], without reading, three things the poster says.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="The poster read aloud with the numbers and times said as words, the way earlier lessons taught them." notice=["The numbers said as words", "The times said", "Each sentence read through", "Three facts told"]
+  hint "Say the numbers as words, not digits."
+  hint "Read a line at a time."
+}

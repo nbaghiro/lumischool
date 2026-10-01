@@ -1,0 +1,48 @@
+lesson k-a-ten-frame v=1 format=teach grade=0 unit=2 subject=maths levels=[easy, medium, hard] {
+  title "Ten on a ten frame"
+  goal "Count up to ten counters on a ten frame by seeing a full row as five, and say how many more make ten."
+
+  look {
+    scene 26x11 {
+      tenframe frame count=7 color=mint at=canvas(1, 1)
+      text note "Five and two more: seven." below=frame gap=1
+    }
+    say """
+      A ten frame has two rows of five squares. When the top row is full, that is five. Seven is
+      the full row and two more. When both rows are full, that is ten.
+      """
+  }
+  do {
+    level easy {
+      worked k.frame-count n=7 level=medium
+    }
+    practice k.frame-count count=2 seed=3
+    practice k.count-stars count=1 seed=4
+    practice k.frame-empty count=2 seed=5
+    practice k.frame-one-more count=2 seed=6
+    practice k.which-frame count=1 seed=7
+  }
+  try stars=2 {
+    show k.which-frame a=8 b=9 w=1 easy-a=6 easy-b=9 easy-w=0 hard-a=9 hard-b=10 hard-w=0
+  }
+  try stars=3 {
+    show k.under-the-cup h=3 easy-h=2 hard-h=4
+  }
+  remember {
+    say "A full row is five. Two full rows are ten."
+  }
+
+  grown-ups """
+    Read each question aloud and let the child point and say the number. The frame is there so
+    that seven is seen as five and two, not counted from one: if the child counts every counter,
+    cover the top row with a hand and ask how many are under it. Off the page, an egg box with its
+    lid cut off makes a ten frame, and dried pasta makes the counters. England, Reception, ELG
+    Number: "Have a deep understanding of number to 10, including the composition of each number".
+    """
+  level easy {
+    grown-ups "At this level the frames hold five to seven, one frame is counted in the teacher's pen first, and the frames to compare differ by three or more."
+  }
+  level hard {
+    grown-ups "At this level the frames hold eight to ten, the empty squares are four or five, and the frames to compare differ by one."
+  }
+}

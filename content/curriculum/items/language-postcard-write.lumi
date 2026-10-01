@@ -1,0 +1,19 @@
+# The word written from its picture: [[postcard.parents]], [[postcard.sun]], [[postcard.beach]], [[postcard.ice-cream]], [[postcard.dolphins]], [[postcard.market]], [[postcard.grandmother]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.postcard-write v=1 skills=[language.reading, language.time, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 36x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      postcard card greeting="[[postcard.dear-grandma]]" text="[[postcard.ana-card]]" closing="[[postcard.love]]" from="Ana" to=["Rosa Díaz", "Calle Mayor 5", "Madrid"] stamp=ship date="3/8" lines=0
+      text ask "{pick(k, \"Who is Ana with? Her ___. Write it in [[language.name]].\", \"What is out? The ___. Write it in [[language.name]].\", \"Where does Ana swim? Write it in [[language.name]].\", \"What do they eat in the afternoon? Write it in [[language.name]].\", \"What did they see yesterday? Write it in [[language.name]].\", \"Where are they going tomorrow? Write it in [[language.name]].\", \"Who is the postcard to? Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[postcard.parents]]", "[[postcard.sun]]", "[[postcard.beach]]", "[[postcard.ice-cream]]", "[[postcard.dolphins]]", "[[postcard.market]]", "[[postcard.grandmother]]")]
+    }
+  }
+
+  answer word=pick(k, "[[postcard.parents]]", "[[postcard.sun]]", "[[postcard.beach]]", "[[postcard.ice-cream]]", "[[postcard.dolphins]]", "[[postcard.market]]", "[[postcard.grandmother]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

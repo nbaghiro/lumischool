@@ -1,0 +1,49 @@
+lesson k-sound-buttons v=1 format=teach grade=0 unit=4 subject=reading levels=[easy, medium, hard] {
+  title "Sound buttons"
+  goal "Say the sound over each button and push the sounds together into a word."
+
+  look {
+    scene 24x9 {
+      soundbuttons sb graphemes=["c", "a", "t"] count=false at=canvas(1, 1)
+      art pic asset="cat" right-of=sb gap=2
+    }
+    say """
+      Each dot is a button. Press it with a finger and say its sound: c, a, t. Now say them faster
+      and faster until they run together: cat. A bar under two letters is one button, because the
+      two letters make one sound.
+      """
+  }
+  do {
+    level easy {
+      worked k.blend-to-animal k=0 p=2 level=medium
+    }
+    practice k.blend-to-animal count=2 seed=7 easy-count=1
+    practice k.two-sound-word count=2 seed=3
+    practice k.missing-middle count=2 seed=4 easy-count=1
+    practice k.last-button count=2 seed=5
+  }
+  try stars=2 {
+    show k.letters-or-sounds k=0 hard-k=2
+  }
+  try stars=3 {
+    show k.make-an-animal k=0 hard-k=2
+  }
+  remember {
+    say "Press each button and say its sound. Then push the sounds together."
+  }
+
+  grown-ups """
+    Blending is hard at first, and many children say the sounds correctly and still cannot hear the
+    word. Say the sounds with them, closer and closer together, and let the child finish the word.
+    The middle sound is the hardest one to hear, so give it time. If the child is stuck, use robot
+    talk through the day: can you find your c, u, p? Off the page, sound out the names of things on
+    the table and let the child blend them. England, Reception, ELG Word Reading: "Read words
+    consistent with their phonic knowledge by sound-blending".
+    """
+  level easy {
+    grown-ups "At this level the animals are the cat and the dog, one blend is worked in the teacher's pen first, and only one middle sound is asked."
+  }
+  level hard {
+    grown-ups "At this level the blends are hen, pig and fox, the two-letter sounds are in fish and chin, and the three-star's cards make pig or hen."
+  }
+}

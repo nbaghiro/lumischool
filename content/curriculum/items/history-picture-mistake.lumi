@@ -1,0 +1,26 @@
+# An artist drew a street of a given year and made one mistake: a thing that did not exist yet.
+item history.picture-mistake v=1 skills=[history.then-and-now, history.evidence] {
+  title "The artist's mistake"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let year={pick(k, 1880, 1930, 1960, 1890)}
+  let a={pick(k, "horse and cart", "motor car", "television aerial", "hot-air balloon")}
+  let b={pick(k, "aeroplane", "mobile phone", "aeroplane", "horse and cart")}
+  let c={pick(k, "hot-air balloon", "bicycle", "mobile phone", "aeroplane")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 32x33 {
+    thenandnow street year=year sign=1 things=["{a}", "{b}", "{c}"] at=canvas(1, 0)
+    text ask "An artist drew this street as it was in {year}, and made one mistake. What should not be there?" narrate width=30 below=street gap=1
+    choice pick options=["{a}", "{b}", "{c}"] stack=column below=ask gap=1
+  }
+
+  check history.street of=street pick=could-not
+  hint "Take each thing in turn. Had it been made by {year}?"
+  hint "The mistake is the thing that came later."
+}

@@ -1,0 +1,30 @@
+# A full top row is five, so six to ten are read as five and some more rather than counted from one.
+item k.frame-count v=1 skills=[counting.to-ten] {
+  title "How many in the frame?"
+  difficulty n
+  let n=5..10
+  level easy {
+    let n=5..7
+  }
+  level hard {
+    let n=8..10
+  }
+
+  scene 22x10 {
+    tenframe frame count=n color=mint at=canvas(1, 1)
+    text ask "How many counters?" narrate below=frame gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == n - 5) point=frame {
+      say "That is the bottom row. The top row is full too: five, then count on."
+    }
+    when (n != 5 and answer == 10 - n) point=frame {
+      say "That is the empty squares. Count the squares with a counter in."
+    }
+  }
+  hint "The top row is full. How many is a full row?"
+  hint "Say five, then count on along the bottom row."
+}

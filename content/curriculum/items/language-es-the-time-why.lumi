@@ -1,0 +1,22 @@
+# A reason: es against son, menos cuarto counted from the next hour, and comparing two times.
+item language.es-the-time-why v=1 stars=2 skills=[language.time, reasoning.language] {
+  title "Why that way?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 35x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Why is it es la una but son las dos?\", \"Leo reads 5:45 as son las cinco y cuarto. What is wrong?\", \"Which is later: las siete menos cuarto or las seis y media?\")}" width=32
+      choice pick options=[pick(k, "Una is one hour, so es; two or more take son.", "5:45 is quarter to six: son las seis menos cuarto.", "las siete menos cuarto: it is 6:45"), pick(k, "Una is a girl's word.", "5:45 is half past five.", "las seis y media: seis is bigger"), pick(k, "It is only a habit.", "Nothing is wrong.", "They are the same.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Una is one hour, so es; two or more take son.", "5:45 is quarter to six: son las seis menos cuarto.", "las siete menos cuarto: it is 6:45")
+  feedback {
+    when (pick == pick(k, "It is only a habit.", "Nothing is wrong.", "They are the same.")) {
+      say "{pick(k, \"There is a reason: count the hours. One or more than one?\", \"Y cuarto is quarter past. Where is the long hand at 5:45?\", \"Write each as numbers: 6:45 and 6:30.\")}"
+    }
+  }
+  hint "Write each time as numbers first."
+  hint "Menos counts back from the next hour."
+}

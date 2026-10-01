@@ -1,0 +1,10 @@
+item k.ask-about-a-toy v=1 skills=[history.then-and-now] {
+  title "A grown-up's toy"
+
+  scene 28x9 {
+    text ask "Ask a grown-up about a toy they played with when they were little. Tell them one thing that is the same as your toys and one thing that is different." narrate width=26 at=canvas(1, 1)
+  }
+
+  check reading.recited look-for="The child asks a question, listens, and says one thing that is the same and one that is different about a toy from when the grown-up was small." notice=["asks a question", "one thing the same", "one thing different"]
+  hint "What was the toy made of? How did it work?"
+}

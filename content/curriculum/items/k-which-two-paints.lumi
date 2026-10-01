@@ -1,0 +1,20 @@
+item k.which-two-paints v=1 skills=[art.colour-mixing] {
+  title "Which two paints?"
+  difficulty (if t == "green" then 0 else 1)
+  let t={"green", "orange", "purple"}
+  level easy {
+    let t={"green", "orange"}
+  }
+  level hard {
+    let t={"orange", "purple"}
+  }
+
+  scene 30x22 {
+    text ask "Which two paints do you mix to make {t}?" narrate width=28 at=canvas(1, 1)
+    paintbox box pans=["red", "yellow", "blue"] per=3 ring=-1 labels=true below=ask gap=1
+    choice pick options=["red and yellow", "yellow and blue", "red and blue"] stack=column below=box gap=1
+  }
+
+  check paint.mixes pick=makes target="{t}"
+  hint "Which two of the three pans would you stir together?"
+}

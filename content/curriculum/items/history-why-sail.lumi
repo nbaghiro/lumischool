@@ -1,0 +1,17 @@
+# The two-star reason: European sailors looked for a sea route to Asia for its spices and silk, since
+# the goods came overland through many hands and cost a great deal.
+item history.why-sail v=1 skills=[history.voyages, reasoning.why] {
+  title "Why sail so far?"
+  difficulty k
+  let k=0..1
+
+  scene 36x34 {
+    worldmap map names=0 blank=-1 oceans=0 places=["Seville", "Calicut"] numbered=0 route=0 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Spices and silk reached Europe overland, passing through many traders. Why did sailors want a sea route to Asia?\" else \"Da Gama sailed all round Africa to reach Calicut. Why would that long voyage be worth it?\"}" narrate width=34 below=map gap=1
+    choice pick options=["To buy from Asia without so many traders between", "Because the land roads were too short", "To find a country with no people"] stack=column below=ask gap=1
+  }
+
+  answer pick="To buy from Asia without so many traders between"
+  hint "What happened to the price of silk as it passed from trader to trader?"
+  hint "Who would gain if the ships brought the goods straight home?"
+}

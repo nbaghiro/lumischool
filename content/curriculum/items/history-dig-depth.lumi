@@ -1,0 +1,20 @@
+# A dig with three finds at different depths: deeper means older where the ground has not been dug
+# before. The child numbers the finds from the oldest.
+item history.dig-depth v=1 skills=[history.evidence, history.layers] {
+  title "Deeper is older"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let da={pick(k, 3, 1, 2, 1, 2, 3)}
+  let db={pick(k, 2, 2, 3, 3, 1, 1)}
+  let dc={pick(k, 1, 3, 1, 2, 3, 2)}
+
+  scene 32x16 {
+    dig hole dug=1 spade=1 at=canvas(1, 0)
+    text ask "In a dig, a coin was found {da} metres down, a pot {db} metres down and a bone comb {dc} metres down. Number them from 1, the oldest, to 3." narrate width=24 right-of=hole gap=1
+    sequence s items=["the coin", "the pot", "the bone comb"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  answer p=(4 - da) q=(4 - db) r=(4 - dc)
+  hint "Which find was deepest in the ground?"
+  hint "The deepest was covered first, so it is the oldest."
+}

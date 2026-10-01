@@ -1,0 +1,19 @@
+# Voting age, with years: in many countries, and in Britain since 1969, people vote from 18.
+item history.vote-age v=1 skills=[history.government, number.add] {
+  title "Old enough to vote"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let born={pick(k, 2010, 2008, 1990, 1951, 1948, 1945)}
+  let ask={pick(k, "In which year does someone born in 2010 turn 18?", "Someone was born in 2008. In which year could they first vote at 18?", "Someone born in 1990 voted for the first time in the year they turned 18. Which year?", "Britain let 18-year-olds vote from 1969. Someone born in 1951 turned 18 that year. How old were they?", "Britain let 18-year-olds vote from 1969; before that it was 21. Someone born in 1948 turned 21 in which year?", "Someone born in 1945 could vote at 21 before 1969. In which year did they turn 21?")}
+  let key={pick(k, 2028, 2026, 2008, 18, 1969, 1966)}
+
+  scene 33x12 {
+    council c hands=[0, 0, 0, 0, 0] box=1 motion="Election day" count=0 at=canvas(1, 0)
+    text ask "{ask}" narrate width=16 right-of=c gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer key
+  hint "Add the age to the year they were born."
+  hint "Check: does the year make sense for someone that age?"
+}

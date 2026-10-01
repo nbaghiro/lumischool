@@ -1,0 +1,29 @@
+item k.count-circles v=1 skills=[shapes.flat, counting.to-five] {
+  title "How many circles?"
+  difficulty n
+  let n=1..4
+  level easy {
+    let n=1..2
+  }
+  level hard {
+    let n=3..4
+  }
+
+  scene 32x9 {
+    row row at=canvas(1, 1) space=1 align=centre {
+      props p1 count=1 prop=circle
+      props p2 count=1 prop=square
+      props p3 count=(if n >= 2 then 1 else 0) prop=circle
+      props p4 count=1 prop=triangle
+      props p5 count=(if n >= 3 then 1 else 0) prop=circle
+      props p6 count=1 prop=hexagon
+      props p7 count=(if n == 4 then 1 else 0) prop=circle
+      props p8 count=1 prop=square
+    }
+    text ask "How many circles?" narrate below=row gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer n
+  hint "A circle is round all the way and has no corners. Touch each round one."
+}

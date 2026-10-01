@@ -1,0 +1,39 @@
+# One ring for each colour: the square and the rectangle are both blue, so three shapes can need
+# only two rings, which is the turn.
+item k.rings-for-colours v=1 stars=3 skills=[sorting.one-rule, colours.naming, reasoning.sorting] {
+  title "How many rings?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 30x14 {
+    row things at=canvas(1, 1) space=1 align=centre {
+      props a count=(if k == 0 then 2 else if k == 2 then 1 else 0) prop=circle
+      props b count=(if k == 1 then 1 else 0) prop=square
+      props c count=(if k == 0 then 2 else 0) prop=square
+      props d count=(if k == 1 then 1 else 0) prop=rectangle
+      props e count=(if k == 2 then 2 else 0) prop=triangle
+      props f count=(if k == 1 then 1 else 0) prop=circle
+      props g count=(if k == 2 then 1 else 0) prop=hexagon
+    }
+    text ask "Ada sorts these by colour, with one ring for each colour. How many rings does she need?" narrate width=28 below=things gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 2, 2, 3)
+  feedback {
+    when (k == 1 and answer == 3) point=things {
+      say "Look at the colours, not the shapes. Are two of them the same colour?"
+    }
+    when (k == 0 and answer == 4) point=things {
+      say "Two things of the same colour share a ring. How many colours can you see?"
+    }
+  }
+  hint "Say the colour of each shape."
+  hint "How many different colours did you say?"
+}

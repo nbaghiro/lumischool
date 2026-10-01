@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.interview-say v=1 skills=[language.questions, language.speaking, language.speaking] {
+  title "Interview a grown-up"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Interview a grown-up in [[language.name]] with four questions from the lesson, and listen to each answer.\", \"Let a grown-up interview you in [[language.name]], and answer each question in a whole sentence.\", \"Interview someone about their favourite things in [[language.name]], and ask why for one of them.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="Questions asked with the voice going up, answers in whole sentences, and each answer fitting its question." notice=["Four questions asked", "The voice goes up", "Whole-sentence answers", "Why asked, and answered with because"]
+  hint "What do you want to find out?"
+  hint "Answer in a whole sentence."
+}

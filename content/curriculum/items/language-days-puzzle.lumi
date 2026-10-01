@@ -1,0 +1,23 @@
+# Non-routine: a day found by counting on or back through the week, across its end.
+item language.days-puzzle v=1 stars=3 skills=[language.time, reasoning.language] {
+  title "Count the days"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x23 {
+    column all at=canvas(1, 1) space=1 align=start {
+      days strip mark=-1 start=0
+      text ask "{pick(k, \"[[time.today-is-monday]] What day is it in two days?\", \"[[time.today-is-saturday]] What day was yesterday?\", \"Ana swims three days after [[time.thursday]]. Which day?\")}" width=32
+      choice pick options=[pick(k, "[[time.wednesday]]", "[[time.friday]]", "[[time.sunday]]"), pick(k, "[[time.tuesday]]", "[[time.sunday]]", "[[time.saturday]]"), pick(k, "[[time.thursday]]", "[[time.thursday]]", "[[time.monday]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[time.wednesday]]", "[[time.friday]]", "[[time.sunday]]")
+  feedback {
+    when (pick == pick(k, "[[time.tuesday]]", "[[time.sunday]]", "[[time.saturday]]")) {
+      say "{pick(k, \"That is one day after Monday. Count one more.\", \"That is tomorrow. Yesterday is the day before.\", \"That is two days after Thursday. Count one more.\")}"
+    }
+  }
+  hint "Put a finger on today and count one day at a time."
+  hint "After Sunday, the week starts again at Monday."
+}

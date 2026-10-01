@@ -1,0 +1,23 @@
+# Non-routine: finding the opinion with a reason, turning I into she, and putting a text's sentences in their best order.
+item language.about-me-puzzle v=1 stars=3 skills=[language.reading, language.writing, reasoning.language] {
+  title "Building a text"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x37 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage sara title="[[aboutme.title]]" text="[[aboutme.sara-text]]" width=32 numbers=true
+      text ask "{pick(k, \"Which sentence in Sara's text is an opinion with a reason?\", \"Sara's brother writes about her: Mi hermana ___ doce años y ___ en Sevilla. Which pair fills the gaps?\", \"Leo writes three sentences. A: I love football because it is fun. B: My name is Leo and I am eleven. C: I live in the town with my parents. What is the best order for a text about himself?\")}" width=32
+      choice pick options=[pick(k, "[[aboutme.i-do-not-like-winter-because-it-is-cold]]", "[[aboutme.has-lives]]", "B, C, A"), pick(k, "[[aboutme.i-live-in-seville]]", "[[aboutme.i-have-i-live]]", "A, B, C"), pick(k, "[[aboutme.i-am-twelve]]", "[[aboutme.you-have-you-live]]", "C, A, B")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[aboutme.i-do-not-like-winter-because-it-is-cold]]", "[[aboutme.has-lives]]", "B, C, A")
+  feedback {
+    when (pick == pick(k, "[[aboutme.i-live-in-seville]]", "[[aboutme.i-have-i-live]]", "A, B, C")) {
+      say "{pick(k, \"That is a fact. Which sentence says what she thinks, and why?\", \"Those are for I. Her brother is writing about her.\", \"A text about yourself starts with who you are. Which sentence says that?\")}"
+    }
+  }
+  hint "Read Sara's text again, one sentence at a time."
+  hint "Who is writing, and about whom?"
+}

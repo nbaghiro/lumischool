@@ -1,0 +1,22 @@
+# A reason: el lunes for on Monday, los lunes for every Monday, and the o ending that says I.
+item language.es-my-week-why v=1 stars=2 skills=[language.time, language.sentences, reasoning.language] {
+  title "Days in a sentence"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Why does Spanish say el lunes nado and not en lunes nado?\", \"El lunes nado or los lunes nado: which says every Monday?\", \"Nado means I swim. Which part of the word says it is I?\")}" width=32
+      choice pick options=[pick(k, "Spanish says on Monday with el, not en.", "los lunes: more than one Monday", "the o at the end"), pick(k, "En is only for months.", "el lunes: one Monday", "the n at the start"), pick(k, "Both are right.", "They mean the same.", "the d in the middle")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Spanish says on Monday with el, not en.", "los lunes: more than one Monday", "the o at the end")
+  feedback {
+    when (pick == pick(k, "Both are right.", "el lunes: one Monday", "the n at the start")) {
+      say "{pick(k, \"Only one of them is how Spanish says a day. Look at the sentences in the lesson.\", \"El lunes is one Monday. Which one says every Monday?\", \"Nadar is to swim. What is added for I?\")}"
+    }
+  }
+  hint "Look at the sentences in the lesson."
+  hint "One or more than one?"
+}

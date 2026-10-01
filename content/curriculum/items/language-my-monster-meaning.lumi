@@ -1,0 +1,19 @@
+# The language to English: [[phrase.it-is-very-big]], [[phrase.it-is-small]], [[phrase.the-house-is-small]], [[phrase.it-is-very-pretty]], [[phrase.it-is-not-ugly]], [[phrase.my-monster-has-five-legs]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.my-monster-meaning v=1 skills=[language.describing, language.numbers] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "boy", "girl", "gran", "girl", "boy", "girl")] says=[pick(k, "[[phrase.it-is-very-big]]", "[[phrase.it-is-small]]", "[[phrase.the-house-is-small]]", "[[phrase.it-is-very-pretty]]", "[[phrase.it-is-not-ugly]]", "[[phrase.my-monster-has-five-legs]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "My monster has five legs.", "It is very pretty.", "It is small.", "My monster has five legs.", "My monster has five legs.", "It is very pretty."), pick(k, "It is very big.", "It is small.", "It is not ugly.", "It is very pretty.", "The house is small.", "My monster has five legs."), pick(k, "The house is small.", "It is not ugly.", "It is very pretty.", "It is small.", "It is not ugly.", "The house is small."), pick(k, "It is not ugly.", "The house is small.", "The house is small.", "The house is small.", "It is very pretty.", "It is not ugly.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "It is very big.", "It is small.", "The house is small.", "It is very pretty.", "It is not ugly.", "My monster has five legs.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

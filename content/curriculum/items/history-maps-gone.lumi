@@ -1,0 +1,21 @@
+# Two maps of the town: the one place on the older map that has gone from the newer.
+item history.maps-gone v=1 skills=[history.maps, history.change] {
+  title "What has gone?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let y1={pick(k, 1500, 1920, 1300, 1965, 1950, 1400)}
+  let y2={pick(k, 1850, 1965, 1700, 2026, 1962, 1800)}
+
+  scene 36x27 {
+    row maps at=canvas(0, 0) space=1 align=start {
+      townmap old year=y1 town=Millbrook labels=1
+      townmap new year=y2 town=Millbrook labels=1
+    }
+    text ask "Which place was on the map of {y1} but is gone from the map of {y2}?" narrate width=20 below=maps gap=1
+    choice pick options=["castle", "mill", "farm"] stack=column right-of=ask gap=1
+  }
+
+  check history.town of=new pick="gone-since({y1})"
+  hint "Look at each square of the old map. Is the same place in that square on the new map?"
+  hint "One place is missing from the new map."
+}

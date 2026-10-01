@@ -1,0 +1,23 @@
+item k.magnet-picks v=1 skills=[physics.magnets] {
+  title "What does the magnet pick up?"
+  difficulty (if q == "ruler" or q == "eraser" then 0 else 1)
+  let p={"nail", "clip"} q={"ruler", "eraser", "coin", "foil"}
+  level easy {
+    let q={"ruler", "eraser"}
+  }
+  level hard {
+    let q={"coin", "foil"}
+  }
+
+  scene 30x18 {
+    row all at=canvas(1, 0) space=1 align=end {
+      things t things=[q, p] letters=1
+      magnet bar mode=things count=0 sticks=0 show=0
+    }
+    text q "Which one does the magnet pick up?" narrate width=28 below=all gap=1
+    choice pick options=["A", "B"] stack=row below=q gap=1
+  }
+
+  check physics.things of=t pick="only(magnetic)"
+  hint "A magnet pulls things made of iron or steel. Which one is that?"
+}

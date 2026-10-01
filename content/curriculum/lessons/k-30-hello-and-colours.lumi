@@ -1,0 +1,50 @@
+lesson k-hello-and-colours v=1 format=teach grade=0 unit=3 subject=language levels=[easy, medium, hard] {
+  title "[[greet.hello|cap]] and [[colour.red]]"
+  goal "Say [[greet.hello]] and [[greet.goodbye]] at the right moment, and name four colours in [[language.name]]."
+
+  look {
+    scene 30x7 {
+      mixingtray paints wells=["red", "blue", "yellow", "green"] labels=true at=canvas(1, 1)
+    }
+    say """
+      In [[language.name]] we say [[greet.hello]] when we arrive and [[greet.goodbye]] when we go.
+      Red is [[colour.red]], blue is [[colour.blue]], yellow is [[colour.yellow]] and green is
+      [[colour.green]]. Say each one aloud after a grown-up.
+      """
+  }
+  do {
+    level easy {
+      worked k.lang-hello-or-goodbye k=0 level=medium
+    }
+    practice k.lang-hello-or-goodbye count=2 seed=2
+    practice k.lang-what-it-means count=2 seed=3 easy-count=1
+    practice k.lang-colour-name count=2 seed=4
+    practice k.lang-find-the-paint count=2 seed=5
+    show k.lang-say-hello
+  }
+  try stars=2 {
+    show k.lang-thank-you k=0 hard-k=1
+  }
+  try stars=3 {
+    show k.lang-mix k=0 hard-k=1
+  }
+  remember {
+    say "[[greet.hello|cap]] to come and [[greet.goodbye]] to go. Red is [[colour.red]] and blue is [[colour.blue]]."
+  }
+
+  grown-ups """
+    Everything here is heard: read the words aloud, [[greet.hello]] said [[greet.hello|say]] and
+    [[greet.goodbye]] said [[greet.goodbye|say]], and let the child say them back. The child picks
+    from what you read, so nothing needs to be read by the child. The talking question is for you to
+    listen to. If the child is stuck, act it out: walk in and say [[greet.hello]], walk out and say
+    [[greet.goodbye]]. Off the page, name the colours of the fruit bowl in the language at breakfast.
+    Japan, 幼稚園教育要領 (kindergarten guidelines), 言葉, 内容 (7): "生活の中で言葉の楽しさや美しさに気付く。"
+    (Notice the fun and beauty of words in daily life.) The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level coming in is worked in the teacher's pen first, the colours are red and blue, and the two-star is thank you."
+  }
+  level hard {
+    grown-ups "At this level the words to know include [[greet.please]] and [[greet.thank-you]], the colours are yellow and green, and the three-star mix is orange."
+  }
+}

@@ -1,0 +1,17 @@
+# In the morning and evening the sun is low and shadows are long; at midday it is high and they are
+# short, which is the first link between the sun's place and a shadow.
+item k.shadow-in-the-morning v=1 stars=2 skills=[physics.shadows, reasoning.explain] {
+  title "Long shadows, short shadows"
+
+  scene 36x34 {
+    column two at=canvas(1, 1) space=1 align=start {
+      shadows low tall=3 shadow=9 unit=cm lamp=false marks=false
+      shadows high tall=3 shadow=2 unit=cm lamp=false marks=false
+    }
+    text q "One picture is at midday, when the sun is high. The other is in the evening, when the sun is low. Which is the evening?" narrate width=30 below=two gap=1
+    choice pick options=["the long shadow", "the short shadow"] stack=row below=q gap=1
+  }
+
+  answer pick="the long shadow"
+  hint "Hold a torch high over a toy, then low beside it. When is the shadow longer?"
+}

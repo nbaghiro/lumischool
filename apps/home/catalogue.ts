@@ -2,9 +2,9 @@
 // by grade, what the count says, and one lesson's place and the level it is read at. What a page shows
 // is its path and query, so an address can be shared and the back button works.
 
-import type { LessonFacts, Level } from "../../engine/pack";
+import { gradeName, type LessonFacts, type Level } from "../../engine/pack";
 import type { Filters } from "../../school/catalogue";
-import { gradeName } from "../../school/family/names";
+import { variantName } from "../../school/family/names";
 import { subjectFacts, TRACK_IDS } from "../../school/tracks";
 
 /** The subjects the lessons name, the tracks first in their order and the rest after them by title. */
@@ -60,6 +60,7 @@ export function searchedLine(f: Filters): string {
     const where = [
         f.grade === null ? "" : gradeName(f.grade),
         f.subject === null ? "" : subjectFacts(f.subject).title,
+        f.variant === null ? "" : variantName(f.variant),
     ].filter(Boolean);
     return `No lesson${words}${where.length ? ` in ${where.join(" · ")}` : ""}.`;
 }

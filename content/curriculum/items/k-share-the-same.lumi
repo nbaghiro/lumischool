@@ -1,0 +1,28 @@
+# Two plates made fair by moving apples across: one moved changes both plates, which is the turn.
+item k.share-the-same v=1 stars=3 skills=[counting.compare, reasoning.part-whole] {
+  title "Make the plates the same"
+  difficulty (a - b)
+  let a=3..6 b=1..4
+  where (a > b and (a - b) % 2 == 0)
+  level easy {
+    where (a - b == 2)
+  }
+  level hard {
+    where (a - b == 4)
+  }
+
+  scene 26x16 {
+    props top count=a prop=apple at=canvas(1, 1)
+    props bottom count=b prop=apple below=top gap=1
+    text ask "Move apples from the top plate to the bottom plate until both have the same. How many do you move?" narrate width=24 below=bottom gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer ((a - b) / 2)
+  feedback {
+    when (answer == a - b) point=top {
+      say "Move one and count both plates again. Each apple moved takes one from the top and adds one to the bottom."
+    }
+  }
+  hint "Move one apple. Count both plates. Are they the same yet?"
+}

@@ -1,0 +1,21 @@
+item k.pattern-next v=1 skills=[patterns.repeating] {
+  title "What comes next?"
+  difficulty c
+  let c=3..7
+  roles ap=apple st=star
+  level easy {
+    let c=3..4
+  }
+  level hard {
+    let c=6..7
+  }
+
+  scene 26x13 {
+    pattern strip unit=[ap, st] count=c missing=c at=canvas(1, 1)
+    text ask "Say the pattern. What goes in the empty space?" narrate width=24 below=strip gap=1
+    choice pick options=[ap, st] below=ask gap=1
+  }
+
+  answer pick=(if c % 2 == 1 then "ap" else "st")
+  hint "Say it out loud: apple, star, apple, star. What do you say next?"
+}

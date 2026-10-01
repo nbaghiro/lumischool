@@ -1,0 +1,21 @@
+item k.warm-or-cool v=1 skills=[art.warm-cool, art.feeling] {
+  title "Which colours feel warm?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let q1={pick(k, "Which colours feel warm, like the sun?", "Which colours feel cool, like the sea?", "You paint a picture of a sunny party. Which colours fit best?", "You paint a quiet picture of bedtime. Which colours fit best?")}
+  let right={pick(k, "red and orange", "blue and green", "red and orange", "blue and green")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 28x12 {
+    text q "{q1}" narrate width=26 at=canvas(1, 1)
+    choice pick options=["red and orange", "blue and green"] stack=row below=q gap=1
+  }
+
+  answer pick=right
+  hint "Think of fire and the sun. Think of water and grass."
+}

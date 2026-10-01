@@ -1,0 +1,66 @@
+# Dates from engine/notation/chronicle.ts: the Appian Way 312 BC, Caesar in Britain 55 BC, Augustus
+# 27 BC, the conquest AD 43, Vesuvius AD 79, Hadrian's Wall begun AD 122.
+lesson history-rome v=1 format=teach grade=4 unit=2 subject=history levels=[easy, medium, hard] {
+  title "Rome: roads, an empire and what it left"
+  goal "Put events of Rome in order across year one, read Roman numerals, and say what the Romans left behind."
+
+  look {
+    scene 36x9 {
+      timeline line from=-400 to=200 step=100 years=[-312, -55, 43, 122] labels=["Appian Way", "Caesar lands in Britain", "Romans conquer Britain", "Hadrian's Wall begun"] at=canvas(0, 0)
+    }
+    say """
+      Rome began as one city in Italy and came to rule lands from Britain to Egypt. In 312 BC it began
+      its first great road, the Appian Way, and its roads soon ran straight across the empire. Julius
+      Caesar landed in Britain in 55 BC, and the Romans conquered it from AD 43. They built towns,
+      baths and walls, and in AD 122 began Hadrian's Wall across the north. Their numbers are still
+      on clocks today.
+      """
+  }
+  do {
+    level easy {
+      worked history.roman-numerals k=0
+    }
+    show history.roman-numerals k=2 easy-k=1 hard-k=4
+    show history.rome-order k=2 easy-k=0 hard-k=4
+    show history.rome-between k=2 easy-k=0 hard-k=4
+    show history.roman-legacy k=2 easy-k=0 hard-k=4
+    show history.roman-numerals k=3 easy-k=2 hard-k=5
+    show history.rome-order k=3 easy-k=1 hard-k=5
+    show history.rome-between k=3 easy-k=1 hard-k=5
+    show history.roman-legacy k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.rome-between k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.why-straight-roads k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.all-seven-numerals k=0 hard-k=1
+  }
+  remember {
+    say "Rome ruled a great empire held together by its roads. Count across year one without a year nought."
+  }
+
+  grown-ups """
+    The idea is how one city came to rule an empire and what it left behind: roads, towns, words,
+    laws and numbers still in use. The way in reads a Roman numeral; the core orders events on both
+    sides of year one, counts the years between them, and names what Rome left. The wrong ideas to
+    watch for are adding the numerals left to right without taking away (IX read as 11), and
+    counting a year nought between 55 BC and AD 43. If the child is stuck on numerals, build them
+    from coins: I a penny, V a five, X a ten. Off the page, look for Roman numerals on a clock, a
+    building or the end of a film. England's key stage 2 history asks for "the Roman Empire and its
+    impact on Britain"; Russia's history programme for grade five covers Rome from its founding
+    to «Падение Западной Римской империи», and ends with «Историческое и культурное наследие
+    цивилизаций Древнего мира», the legacy of the ancient world.
+    Japan's 社会 takes up history only through Japan's own story, in grade six
+    (「我が国の歴史上の主な事象について，人物の働きや代表的な文化遺産を中心に」, the course of study as read in its 2008 edition), so
+    this lesson has no line of its own there; its timeline and source skills serve that grade.
+    """
+  level easy {
+    grown-ups "At this level a worked example reads XII, the numerals are small, the events to order sit far apart, the years counted stay on one side of year one, and what Rome left is its roads and London."
+  }
+  level hard {
+    grown-ups "At this level the numerals are years such as MCMLXIX, the events are close together, the years counted cross year one, and the legacy questions are about the numerals and the month July."
+  }
+}

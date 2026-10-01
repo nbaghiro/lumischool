@@ -1,0 +1,22 @@
+# A reason: no for a dislike, and gustan for more than one.
+item language.es-fruit-why v=1 stars=2 skills=[language.food, language.opinions, reasoning.language] {
+  title "Gusta or gustan?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo shakes his head at the lemon. Which does he say?\", \"Ana likes strawberries, more than one. Which is right?\", \"In No me gusta el tomate, which word says Leo does not like it?\")}" width=32
+      choice pick options=[pick(k, "No me gusta el limón.", "Me gustan las fresas.", "no"), pick(k, "Me gusta el limón.", "Me gusta las fresas.", "me"), pick(k, "Me gustan los limones.", "Me gustan la fresa.", "gusta")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "No me gusta el limón.", "Me gustan las fresas.", "no")
+  feedback {
+    when (pick == pick(k, "Me gusta el limón.", "Me gusta las fresas.", "gusta")) {
+      say "{pick(k, \"That says he likes it. He shook his head.\", \"Fresas is more than one, so gusta gets an n.\", \"Gusta is the liking. Which word turns it round?\")}"
+    }
+  }
+  hint "Does the person like it or not?"
+  hint "Is it one thing, or more than one?"
+}

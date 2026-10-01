@@ -1,0 +1,26 @@
+# The years between two events of the century, from the record: counted along the line.
+item history.years-apart v=1 skills=[history.timeline, number.difference] {
+  title "How many years apart?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let e1={pick(k, "First person in space", "Penicillin found", "First television service", "Moon landing")}
+  let y1={pick(k, 1961, 1928, 1936, 1969)}
+  let e2={pick(k, "Moon landing", "First television service", "First person in space", "World Wide Web")}
+  let y2={pick(k, 1969, 1936, 1961, 1991)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x14 {
+    timeline line from=1920 to=2000 step=10 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(0, 0)
+    text ask "{e1} was in {y1}. {e2} was in {y2}. How many years apart were they?" narrate width=26 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Count on from {y1} to the next ten, then in tens, then the ones."
+  hint "Check it on the line: is the answer about as far as the gap between the flags?"
+}

@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.es-verbs-say v=1 skills=[language.grammar, language.sentences, language.speaking] {
+  title "Who does what"
+  let k=0..2
+
+  scene 34x6 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Say hablar for everyone: yo hablo, tú hablas, and on to ellos hablan.\", \"Say three things your family does, each with a different person: mi madre trabaja, nosotros cantamos.\", \"Ask a grown-up two questions with tú, and answer two with yo.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="The verb's ending changed for each person, with -o for I, -as for you, -a for he or she, -amos for we and -an for they." notice=["-o for I", "-as for you", "-amos for we", "-an for they"]
+  hint "Who is doing it?"
+  hint "Which ending goes with that person?"
+}

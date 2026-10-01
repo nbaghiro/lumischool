@@ -1,0 +1,26 @@
+# A town council votes by a show of hands: does the idea pass, from the hands drawn.
+item history.council-passes v=1 skills=[history.government, history.local] {
+  title "Does it pass?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let motion={pick(k, "A new playground", "Longer library hours", "A crossing by the school", "Lights in the park", "A bus to the station", "A market on Sundays")}
+  let h1={pick(k, 1, 1, 1, 0, 1, 0)}
+  let h2={pick(k, 1, 0, 1, 1, 0, 1)}
+  let h3={pick(k, 1, 1, 0, 1, 1, 0)}
+  let h4={pick(k, 0, 0, 1, 0, 1, 1)}
+  let h5={pick(k, 1, 0, 0, 1, 0, 0)}
+  let h6={pick(k, 0, 1, 1, 0, 1, 1)}
+  let h7={pick(k, 1, 0, 0, 1, 0, 0)}
+  let h8={pick(k, 0, 0, 1, 0, 1, 1)}
+  let h9={pick(k, 1, 0, 0, 1, 0, 0)}
+
+  scene 31x17 {
+    council c hands=[h1, h2, h3, h4, h5, h6, h7, h8, h9] box=0 motion="{motion}" count=0 at=canvas(1, 0)
+    text ask "Nine councillors vote. An idea passes if more than half vote for it. Does it pass?" narrate width=20 below=c gap=1
+    choice pick options=["yes", "no"] right-of=ask gap=1
+  }
+
+  check history.vote of=c pick=passes
+  hint "Count the hands up."
+  hint "More than half of nine is five or more."
+}

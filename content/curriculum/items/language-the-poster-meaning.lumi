@@ -1,0 +1,19 @@
+# The language to English: [[phrase.free-entry]], [[phrase.no-swimming]], [[phrase.closed]], [[phrase.open]], [[phrase.exit]], [[phrase.danger]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.the-poster-meaning v=1 skills=[language.reading] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      sign card lines=[pick(k, "[[phrase.free-entry]]", "[[phrase.no-swimming]]", "[[phrase.closed]]", "[[phrase.open]]", "[[phrase.exit]]", "[[phrase.danger]]")] kind=hanging color=berry
+      text ask "What does the sign mean?" width=32
+      choice pick options=[pick(k, "Danger", "Open", "No swimming", "Danger", "Danger", "Open"), pick(k, "Free entry", "No swimming", "Exit", "Open", "Closed", "Danger"), pick(k, "Closed", "Exit", "Open", "No swimming", "Exit", "Closed"), pick(k, "Exit", "Closed", "Closed", "Closed", "Open", "Exit")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Free entry", "No swimming", "Closed", "Open", "Exit", "Danger")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

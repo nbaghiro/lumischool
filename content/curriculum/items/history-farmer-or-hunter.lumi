@@ -1,0 +1,22 @@
+# The way in: one thing people did, and whether hunters and gatherers or farmers did it. The later
+# versions are the ones children mix up (both groups made fires and tools).
+item history.farmer-or-hunter v=1 skills=[history.prehistory, history.farming] {
+  title "Farmer, or hunter?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let act={pick(k, "sowing seeds in rows", "picking wild berries in the woods", "keeping sheep in a pen all year", "following herds of deer as they moved", "storing grain in pots until spring", "moving camp with the seasons")}
+  let key={pick(k, "Farmers", "Hunters and gatherers", "Farmers", "Hunters and gatherers", "Farmers", "Hunters and gatherers")}
+
+  scene 34x13 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      crops field stage=2 rows=2 plants=5
+      sheep ewe graze=true
+    }
+    text ask "Who did this: {act}?" narrate width=28 below=pics gap=1
+    choice pick options=["Farmers", "Hunters and gatherers"] below=ask gap=1
+  }
+
+  answer pick=key
+  hint "Did it mean staying in one place, or moving about?"
+  hint "Was the food grown and kept, or found where it grew wild?"
+}

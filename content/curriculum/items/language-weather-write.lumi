@@ -1,0 +1,19 @@
+# The word written from its picture: [[weather.it-is-raining]], [[weather.sun]], [[weather.it-is-snowing]], [[weather.wind]], [[weather.cloudy]], [[weather.heat]], [[weather.cold]].
+# Accent-tolerant: the box takes the word with its accents left off (accents=loose); ñ is a letter and is marked.
+item language.weather-write v=1 skills=[language.weather, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      weatherweek chart days=[""] skies=["{pick(k, \"rain\", \"sun\", \"snow\", \"wind\", \"cloud\", \"sun\", \"cloud\")}"] temps=["{pick(k, \"\", \"\", \"\", \"\", \"\", \"38 °C\", \"-3 °C\")}"]
+      text ask "Write the weather word in [[language.name]] for what the chart shows: the rain, the sun, the snow, the wind, the cloud, the heat or the cold." width=32
+      word-input word options=[pick(k, "[[weather.it-is-raining]]", "[[weather.sun]]", "[[weather.it-is-snowing]]", "[[weather.wind]]", "[[weather.cloudy]]", "[[weather.heat]]", "[[weather.cold]]")] accents=loose
+    }
+  }
+
+  answer word=pick(k, "[[weather.it-is-raining]]", "[[weather.sun]]", "[[weather.it-is-snowing]]", "[[weather.wind]]", "[[weather.cloudy]]", "[[weather.heat]]", "[[weather.cold]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

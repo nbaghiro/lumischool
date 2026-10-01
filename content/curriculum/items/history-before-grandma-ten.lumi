@@ -1,0 +1,25 @@
+# The three-star question: which events of the century came before Grandma was ten. The child has
+# to find a year first (born + 10) and then read every flag against it.
+item history.before-grandma-ten v=1 skills=[history.timeline, reasoning.logic] {
+  title "Before Grandma was ten"
+  difficulty k
+  let k=0..2
+  let born={pick(k, 1955, 1950, 1960)}
+  let key={pick(k, 3, 2, 4)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 36x14 {
+    timeline line from=1920 to=2000 step=10 years=[1928, 1936, 1961, 1969] labels=["Penicillin found", "First television service", "First person in space", "Moon landing"] at=canvas(0, 0)
+    text ask "Grandma was born in {born}. How many of these happened before she was ten years old?" narrate width=28 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer key
+  hint "Work out the year Grandma turned ten. Mark it on the line with your finger."
+  hint "Count the flags to the left of your finger."
+}

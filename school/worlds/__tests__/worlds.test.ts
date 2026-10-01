@@ -23,7 +23,7 @@ import { corpusFrom, topicsIn } from "../lessons";
 import { layoutMap, ownLand } from "../overworld";
 import { LAND_AT, LANDS, REGIONS, SAILS, SEA_SIDES, spotsOn } from "../geography";
 import { journey, type TrackPlan, type YearRecord } from "../rewards";
-import { daysOf } from "../roll";
+import { daysOf, termOf, termsIn } from "../roll";
 import { edgeOf, terrainOf } from "../terrain";
 import type { Applied } from "../types";
 import {
@@ -39,7 +39,17 @@ import {
     SITE_MAP,
     siteWorld,
 } from "../view";
-import { DEFAULT_YEARS, isWorld, schoolRun, siteOf, worldById, WORLDS, yearOf } from "../worlds";
+import {
+    DEFAULT_YEARS,
+    hostedLessons,
+    isWorld,
+    offeredGrades,
+    schoolRun,
+    siteOf,
+    worldById,
+    WORLDS,
+    yearOf,
+} from "../worlds";
 import { refsOf } from "../art";
 
 const STARTED = "2026-08-31";
@@ -155,8 +165,9 @@ test("the record makes the map: one place the child is, a stamp and a moment onl
 test("the whole run lays out once, every world on land or at sea as it should be, and the arrow keys walk it", () => {
     const run = schoolRun();
     const map = layoutMap(run, (id) => worldOf(id).chapter.by);
-    assert.equal(map.nodes.length, 18);
-    assert.equal(map.roads.length, 17);
+    // the kindergarten year's garden, then six years of three
+    assert.equal(map.nodes.length, 19);
+    assert.equal(map.roads.length, 18);
     const terrain = terrainOf(map, worldOf);
     for (const n of map.nodes) {
         const c = { x: n.box.x + n.box.w / 2, y: n.box.y + n.box.h / 2 };
@@ -425,13 +436,14 @@ test("a year ends by sailing: the jetty waits in pencil, is inked when the year 
     );
     // a day later it is not played again
     assert.equal(childMap(2, 2).sail?.came?.on, "2026-09-01");
-    // the way between two years is said as the sail it is
+    // the way between two years is said as the sail it is: the road on from the first year's last world
     const t = terrainOf(
         layoutMap(schoolRun(), (id) => worldOf(id).chapter.by),
         worldOf,
     );
-    assert.equal(t.crossings[2], "across the sea");
-    assert.equal(t.back[2], "back across the sea");
+    const sailing = schoolRun().findIndex((r) => r.world === "railway");
+    assert.equal(t.crossings[sailing], "across the sea");
+    assert.equal(t.back[sailing], "back across the sea");
 });
 
 test("a child with nothing done stands in their own year, and one between years where they left off", () => {
@@ -597,10 +609,12 @@ test("a place a track brings a child to opens with its first lesson, wherever it
     // world of the hut's own year.
     const side = v.layout.sides.find((x) => x.world === "painters-hut");
     assert.ok(side, "the hut is on the map");
-    assert.equal(
-        v.layout.nodes[side.host]?.grade,
-        1,
-        "the hut's way leaves from a world of its year",
+    // the kindergarten garden stands on the first year's land, so its way may leave from there
+    const host = v.layout.nodes[side.host]?.grade ?? -1;
+    assert.deepEqual(
+        LAND_AT[host],
+        LAND_AT[1],
+        "the hut's way leaves from a world on its year's land",
     );
     assert.notEqual(v.here, side.host, "and the child stands somewhere else");
     assert.ok(
@@ -1331,7 +1345,55 @@ test("children share subject locations without borrowing another grade's rewards
     assert.equal(hut1.length, 1);
     assert.equal(hut2.length, 1);
     assert.deepEqual(hut1[0]?.box, hut2[0]?.box);
+    // a child goes where their grade has a journey, whether or not they have begun there
     assert.equal(hut1[0]?.open, true);
-    assert.equal(hut2[0]?.open, false);
+    assert.equal(hut2[0]?.open, true);
     assert.equal(second.limits.zoomOut, "everything");
+});
+
+test("the kindergarten year is the garden's alone, offered once its lessons land, and walks into the first year", () => {
+    assert.deepEqual(yearOf(0), ["home-garden"]);
+    assert.deepEqual(schoolRun()[0], { grade: 0, term: 1, world: "home-garden" });
+    assert.deepEqual(schoolRun()[1], { grade: 1, term: 1, world: "meadow" });
+    assert.deepEqual(offeredGrades(lessonsOf(1)), [1], "no kindergarten lessons, no grade 0");
+    assert.deepEqual(offeredGrades([...lessonsOf(0), ...lessonsOf(1)]), [0, 1]);
+    assert.deepEqual(LAND_AT[0], LAND_AT[1], "the garden stands on the first year's land");
+    const corpus = corpusFrom([...lessonsOf(0), ...lessonsOf(1)], STARTED);
+    const year = corpus.year(0, "Rosie");
+    assert.equal(termsIn(year), 1);
+    assert.ok(
+        year.lessons.every((l) => termOf(year, l.unit) === 1),
+        "every unit in the one term",
+    );
+    assert.equal(termsIn(corpus.year(1, "Rosie")), 3);
+});
+
+test("a child's language and the family's nation decide which variants the map holds", () => {
+    const variant = (id: string, over: Partial<LessonFacts>): LessonFacts => ({
+        ...factOf(id, id, 1, 1, "maths"),
+        ...over,
+    });
+    const all = [
+        ...lessonsOf(1),
+        variant("es-1", { subject: "language", language: "es" }),
+        variant("fr-1", { subject: "language", language: "fr" }),
+        variant("hist-1", { subject: "history" }),
+        variant("hist-jp", { subject: "history", nation: "japan" }),
+    ];
+    const ids = (c: ReturnType<typeof corpusFrom>): string[] =>
+        c.year(1, "Rosie").lessons.map((l) => l.id);
+    const none = ids(corpusFrom(all, STARTED, { language: null, nation: null }));
+    assert.ok(!none.includes("es-1") && !none.includes("fr-1") && !none.includes("hist-jp"));
+    assert.ok(none.includes("hist-1"), "the world strand is for everyone");
+    const picked = ids(corpusFrom(all, STARTED, { language: "fr", nation: "japan" }));
+    assert.ok(picked.includes("fr-1") && picked.includes("hist-jp") && !picked.includes("es-1"));
+    assert.ok(ids(corpusFrom(all, STARTED)).includes("es-1"), "no child, every variant");
+    const ferry = worldById("ferry-town");
+    assert.equal(
+        hostedLessons(ferry, [
+            corpusFrom(all, STARTED, { language: null, nation: null }).year(1, ""),
+        ]).length,
+        0,
+        "the ferry town holds nothing until a language is picked",
+    );
 });

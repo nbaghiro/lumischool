@@ -1,0 +1,17 @@
+# The two-star reason: writing began in cities because too much had to be remembered, grain in the
+# stores and what each person owed, which is what the first tablets record.
+item history.why-write v=1 skills=[history.writing, reasoning.why] {
+  title "Why write it down?"
+  difficulty k
+  let k=0..1
+
+  scene 34x27 {
+    objectcard card kind=3 name="Clay tablet" use="Counting sheep and grain" year=-3300 about=1 place="Uruk, Iraq" ask=0 at=canvas(0, 0)
+    text ask "{if k == 0 then \"People in small villages lived without writing. Why did the first cities need it?\" else \"The first writing was not stories or letters. Why were the first tablets lists of grain and sheep?\"}" narrate width=28 below=card gap=1
+    choice pick options=["There was too much to remember about who owned what", "Children needed something to read", "Cities had no one who could talk"] stack=column below=ask gap=1
+  }
+
+  answer pick="There was too much to remember about who owned what"
+  hint "How many people, sheep and jars of grain did a city have?"
+  hint "What happens if two people remember a deal differently?"
+}

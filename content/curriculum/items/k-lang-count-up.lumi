@@ -1,0 +1,19 @@
+item k.lang-count-up v=1 skills=[language.numbers] {
+  title "What comes next?"
+  difficulty (if n <= 2 then 0 else 1)
+  let n=1..4
+  level easy {
+    let n=1..2
+  }
+  level hard {
+    let n=3..4
+  }
+
+  scene 28x11 {
+    text q "Count in [[language.name]]. What comes after {pick(n, \"none\", \"[[num.one]]\", \"[[num.two]]\", \"[[num.three]]\", \"[[num.four]]\")}?" narrate width=26 at=canvas(1, 1)
+    choice pick options=["[[num.two]]", "[[num.three]]", "[[num.four]]", "[[num.five]]"] stack=row below=q gap=1
+  }
+
+  answer pick=pick(n, "none", "[[num.two]]", "[[num.three]]", "[[num.four]]", "[[num.five]]")
+  hint "Say the numbers in [[language.name]] from the start."
+}

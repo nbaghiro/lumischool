@@ -1,0 +1,26 @@
+# Years between two firsts in flying, from the record, counted on a line in tens.
+item history.flight-years v=1 skills=[history.timeline, number.difference] {
+  title "How long after?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let e1={pick(k, "First flight", "Across the Channel", "First flight", "Across the Atlantic")}
+  let y1={pick(k, 1903, 1909, 1903, 1919)}
+  let e2={pick(k, "Across the Channel", "Across the Atlantic", "Across the Atlantic", "Moon landing")}
+  let y2={pick(k, 1909, 1919, 1919, 1969)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x14 {
+    timeline line from=1900 to=1980 step=10 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(0, 0)
+    text ask "{e1}: {y1}. {e2}: {y2}. How many years after the first was the second?" narrate width=26 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Count on from {y1} to the next ten, then on in tens and ones."
+  hint "Check the answer against the gap between the flags."
+}

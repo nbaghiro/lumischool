@@ -1,0 +1,19 @@
+# Layers in the ground: the lowest was laid first. The child names a layer by counting from the top.
+item history.layer-count v=1 skills=[history.evidence, history.layers] {
+  title "Which layer is oldest?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let n={pick(k, 3, 4, 5, 5, 6, 7)}
+  let ask={pick(k, "the oldest", "the youngest", "the oldest", "the second oldest", "the second youngest", "the third oldest")}
+  let key={pick(k, 3, 1, 5, 4, 2, 5)}
+
+  scene 34x17 {
+    strata cliff layers=n names=0 ash=0 fault=0 at=canvas(1, 0)
+    text ask "Counting down from the top, which layer is {ask}?" narrate width=28 below=cliff gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer key
+  hint "Which layer was laid down first, before the others were put on top of it?"
+  hint "Count the layers down from the top, touching each one."
+}

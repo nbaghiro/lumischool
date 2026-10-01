@@ -1,0 +1,22 @@
+# Non-routine: the questions worked out from answers alone, one of them two answers in one.
+item language.interview-puzzle v=1 stars=3 skills=[language.questions, language.speaking, reasoning.language] {
+  title "Work back to the questions"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Which question gets: [[interview.i-live-in-madrid-but-in-summer-i-live-in]]?\", \"Eva answers two questions at once: [[interview.my-name-is-eva-and-i-am-ten]] Which two did she hear?\", \"Leo's answers come in this order: [[interview.leo-eleven-at-the-harbour]] What did the questions ask for, in order?\")}" width=32
+      choice pick options=[pick(k, "[[interview.where-do-you-live]]", "[[interview.what-is-your-name]] and [[interview.how-old-are-you]]", "name, age, place"), pick(k, "[[interview.when-is-your-birthday]]", "[[interview.where-do-you-live]] and [[interview.what-is-your-name]]", "place, name, age"), pick(k, "[[interview.do-you-have-brothers-or-sisters]]", "[[interview.do-you-have-brothers-or-sisters]] and [[interview.how-old-are-you]]", "age, place, name")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[interview.where-do-you-live]]", "[[interview.what-is-your-name]] and [[interview.how-old-are-you]]", "name, age, place")
+  feedback {
+    when (pick == pick(k, "[[interview.when-is-your-birthday]]", "[[interview.where-do-you-live]] and [[interview.what-is-your-name]]", "place, name, age")) {
+      say "{pick(k, \"The answer names places, not a day.\", \"She gave a name and an age. Which two ask for those?\", \"His first answer is a name. Which list starts with the name?\")}"
+    }
+  }
+  hint "What kind of answer is each one?"
+  hint "Match each answer to a question word."
+}

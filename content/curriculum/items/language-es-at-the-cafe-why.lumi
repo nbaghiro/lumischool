@@ -1,0 +1,22 @@
+# A reason: quisiera against quiero, what to say to ¿algo más?, and the polite desea.
+item language.es-at-the-cafe-why v=1 stars=2 skills=[language.food, language.market, reasoning.language] {
+  title "Being polite"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Quiero and quisiera both ask for something. Which is more polite?\", \"The waiter asks: ¿Algo más? Ana wants nothing else. What does she say?\", \"Why does the waiter say ¿Qué desea? and not ¿Qué deseas?\")}" width=32
+      choice pick options=[pick(k, "quisiera, I would like", "Nada más, gracias.", "Desea is the polite you, for a customer."), pick(k, "quiero, I want", "Sí, algo más.", "Deseas is only for animals."), pick(k, "They are just as polite.", "La cuenta es algo.", "Desea is shorter.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "quisiera, I would like", "Nada más, gracias.", "Desea is the polite you, for a customer.")
+  feedback {
+    when (pick == pick(k, "quiero, I want", "Sí, algo más.", "Desea is shorter.")) {
+      say "{pick(k, \"Quiero asks plainly. Which sounds softer?\", \"Sí, algo más asks for more. She wants nothing else.\", \"Length does not decide it. Who is the waiter talking to?\")}"
+    }
+  }
+  hint "Say each in English."
+  hint "Who is talking to whom?"
+}

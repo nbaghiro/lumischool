@@ -245,8 +245,11 @@ it, for a line on raised ground beside a ramp; at nought it is drawn as before.
 `sidingboard` (travel) is the sign at the end of a siding, on one short post beside the buffer stop:
 the siding's letter in a yellow ring, what the siding wants (a number its wagons must add up to, the
 order they must stand in, or the word spare), and on a line under it what the siding holds so far, with
-a tick once it is made up. The shunting yard's old lift, pit, lever and order board (`liftpit`,
-`yardlever`, `orderboard`) were deleted with the yard they served.
+a tick once it is made up. The shunting yard's old lift, pit and order board (`liftpit`,
+`orderboard`) were deleted with the yard they served. `yardlever` is back on the shelf, as the points
+lever the yard is now worked by. `railcurve` (travel) is a lead that bends down in an S from a higher
+siding to the main line, rail and sleepers on ballast with no grass of its own, in the same S as the
+rail module's ramp, so a fan of sidings seen from the side reads as tracks parting at the points.
 
 ## The pony (27 September 2026)
 
@@ -285,7 +288,8 @@ in a white spot. `poolcue` lies pointing right with its tip at the end of its bo
 `poolpatch` is a patch of soft cloth or a slope marked with arrows downhill, and `poolspinner` is a
 bar on a round pivot that the game turns. On the home shelf, `fruitbowl` is a bowl of fruit seen from
 above and `floorboards` a room's floor, wooden boards or kitchen tiles, quiet enough that what stands
-on it reads first.
+on it reads first. The game no longer lays the floor, so the table stands on the page's squared paper
+as every other game does; the drawing stays on the shelf.
 
 ## Rescue pups (28 September 2026)
 
@@ -302,6 +306,10 @@ the pivot and the bed are, so a game places a pup or a load on the drawing rathe
 `blaze` a fire of two to four tongues of flame, `rubble` a lumpy grey rock seen from the side, and
 `rescuebase` (places) a low rescue station with a green roof, garage doors, a bell and a flag. None of
 them is drawn after any show's vehicles or buildings.
+
+## The road's delivery round (30 September 2026)
+
+Three drawings on the travel shelf for The road. `parcel` is a small cardboard parcel tied with string both ways, drawn square so it reads from above on the car's roof rack and from the side on a doorstep, with or without a blank address tag; it carries no number, since lettering at its size would be under eleven units. `finishline` is a chequered line across the road's three lanes, seen from above, a square wide. `deliverylist` is a clipboard of up to five stops, each with a box that is ticked when its parcel is delivered and an arrow at the stop that comes next; the card is twelve squares wide so a stop written in words ("then 2 more than 10") fits, and the game draws it smaller in the corner of the view.
 
 ## The style guide
 
@@ -328,6 +336,14 @@ Screen readers. A drawing describes itself from its settings: who or what first,
 Words. No em-dashes anywhere, no exclamation marks in anything a child reads, and a label is the word a person would say ("Sign out", not "Log off").
 
 Targets. An icon is two squares, 40 pixels at question size, and sits in a target of at least 44 pixels beside its word.
+
+## Harbour cargo (30 September 2026)
+
+`barge` is a flat cargo barge seen from the side: a blue hull with a white stripe and portholes, a
+planked deck and a rail post at each end. `load` stands numbered crates on its deck, spread evenly,
+and `hook` adds a crane hook lowering one more, which is the Games page cover for Harbour cargo. Empty,
+it is the barge the game floats, its box a whole square taller than the hull for the rail posts. The
+`crane` drawing's width now reaches 48 squares, so it spans the harbour from the quay.
 
 ## The proof set
 

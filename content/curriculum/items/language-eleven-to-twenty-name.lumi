@@ -1,0 +1,25 @@
+# Picture or situation to the language: [[num.eleven]], [[num.twelve]], [[num.fifteen]], [[num.thirteen]], [[num.twenty]], [[num.fourteen]], [[num.sixteen]], [[num.eighteen]], [[num.seventeen]], [[num.nineteen]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.eleven-to-twenty-name v=1 skills=[language.numbers] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2)
+  let k=0..9
+
+  scene 34x36 {
+    column all at=canvas(1, 1) space=1 align=start {
+      tenframe a count=10 color=sky
+      tenframe b count=pick(k, 1, 2, 5, 3, 10, 4, 6, 8, 7, 9) color=mint
+      text ask "How many are in the two frames? Pick the word." width=32
+      choice pick options=[pick(k, "[[num.seventeen]]", "[[num.fourteen]]", "[[num.fourteen]]", "[[num.twelve]]", "[[num.nineteen]]", "[[num.twenty]]", "[[num.seventeen]]", "[[num.seventeen]]", "[[num.sixteen]]", "[[num.thirteen]]"), pick(k, "[[num.eleven]]", "[[num.twelve]]", "[[num.twenty]]", "[[num.thirteen]]", "[[num.seventeen]]", "[[num.fourteen]]", "[[num.eighteen]]", "[[num.eighteen]]", "[[num.fourteen]]", "[[num.eighteen]]"), pick(k, "[[num.twelve]]", "[[num.sixteen]]", "[[num.twelve]]", "[[num.fourteen]]", "[[num.twenty]]", "[[num.thirteen]]", "[[num.fifteen]]", "[[num.nineteen]]", "[[num.seventeen]]", "[[num.nineteen]]"), pick(k, "[[num.thirteen]]", "[[num.eleven]]", "[[num.fifteen]]", "[[num.eighteen]]", "[[num.fourteen]]", "[[num.fifteen]]", "[[num.sixteen]]", "[[num.thirteen]]", "[[num.twelve]]", "[[num.twenty]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[num.eleven]]", "[[num.twelve]]", "[[num.fifteen]]", "[[num.thirteen]]", "[[num.twenty]]", "[[num.fourteen]]", "[[num.sixteen]]", "[[num.eighteen]]", "[[num.seventeen]]", "[[num.nineteen]]")
+  feedback {
+    when (pick == pick(k, "[[num.twelve]]", "[[num.eleven]]", "[[num.fourteen]]", "[[num.fourteen]]", "[[num.nineteen]]", "[[num.fifteen]]", "[[num.seventeen]]", "[[num.nineteen]]", "[[num.sixteen]]", "[[num.twenty]]")) point=a {
+      say "{pick(k, \"[[num.twelve|cap]] is twelve. There is one more than the full frame.\", \"[[num.eleven|cap]] is eleven. Count the second frame again.\", \"[[num.fourteen|cap]] is fourteen. The second frame has a full row.\", \"[[num.fourteen|cap]] is fourteen. Count the second frame again.\", \"[[num.nineteen|cap]] is nineteen. Is there an empty square?\", \"[[num.fifteen|cap]] is fifteen. The top row of the second frame is not full.\", \"[[num.seventeen|cap]] is seventeen. Ten and how many?\", \"[[num.nineteen|cap]] is nineteen. Count the empty squares: two.\", \"[[num.sixteen|cap]] is sixteen. Ten and how many?\", \"[[num.twenty|cap]] is twenty. There is one empty square.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

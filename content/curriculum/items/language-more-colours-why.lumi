@@ -1,0 +1,23 @@
+# A reason: which colour two paints make, said in the language.
+item language.more-colours-why v=1 stars=2 skills=[language.colours, reasoning.language] {
+  title "Mixing colours"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      paintpots pots result="?" labels=true pots=["{pick(k, \"red\", \"red\", \"black\")}", "{pick(k, \"white\", \"blue\", \"white\")}"]
+      text ask "{pick(k, \"These two paints make which colour?\", \"Leo says these two make [[colour.green]]. Which is right?\", \"These two paints make which colour?\")}" width=32
+      choice pick options=[pick(k, "[[colour.pink]]", "[[colour.purple]]", "[[colour.grey]]"), pick(k, "[[colour.purple]]", "[[colour.green]]", "[[colour.pink]]"), pick(k, "[[colour.orange]]", "[[colour.brown]]", "[[colour.yellow]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[colour.pink]]", "[[colour.purple]]", "[[colour.grey]]")
+  feedback {
+    when (pick == pick(k, "[[colour.orange]]", "[[colour.green]]", "[[colour.yellow]]")) {
+      say "{pick(k, \"[[colour.orange|cap]] is made with yellow. What does white do to red?\", \"[[colour.green|cap]] comes from blue and yellow. Here it is red and blue.\", \"[[colour.yellow|cap]] is yellow, and there is no yellow here.\")}"
+    }
+  }
+  hint "Say the two colours in English."
+  hint "What do those paints make?"
+}

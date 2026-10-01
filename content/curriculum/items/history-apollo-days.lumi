@@ -1,0 +1,19 @@
+# Apollo 11 by the calendar (NASA): launched 16 July 1969, on the Moon 20 July, home 24 July; about
+# two and a half hours outside on the Moon.
+item history.apollo-days v=1 skills=[history.space, time.days] {
+  title "Days to the Moon"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ask={pick(k, "Apollo 11 left on 16 July and landed on the Moon on 20 July. How many days later did it land?", "It landed on 20 July and came home on 24 July. How many days later was that?", "It left on 16 July and came home on 24 July. How many days was the whole trip?", "The crew were on the Moon from 20 July. On which day of July did they splash down, 4 days later?", "If it had left on 16 July and taken 3 days longer to come home, on which day of July would it have come home?", "Armstrong and Aldrin walked outside for about two and a half hours. About how many minutes is that?")}
+  let key={pick(k, 4, 4, 8, 24, 27, 150)}
+
+  scene 32x11 {
+    lander l at=canvas(1, 0)
+    text ask "{ask}" narrate width=20 right-of=l gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer key
+  hint "Count on from the first date to the second."
+  hint "Count the jumps from one day to the next, not the days themselves."
+}

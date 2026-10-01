@@ -1,0 +1,27 @@
+# Mary Anning's life on a timeline (Natural History Museum): born 1799, the plesiosaur in 1823,
+# died 1847. Years between two flags, never an age at death, since a birthday falls between.
+item history.anning-line v=1 skills=[history.lives, history.timeline] {
+  title "Mary Anning's timeline"
+  difficulty k
+  let k=0..2
+  let e2={pick(k, "Plesiosaur found", "Mary Anning died", "Mary Anning died")}
+  let y2={pick(k, 1823, 1847, 1847)}
+  let e1={pick(k, "Mary Anning born", "Plesiosaur found", "Mary Anning born")}
+  let y1={pick(k, 1799, 1823, 1799)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 30x16 {
+    timeline line from=1790 to=1850 step=10 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(1, 0)
+    text ask "{e1}: {y1}. {e2}: {y2}. How many years from the first to the second?" narrate width=20 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Count on from {y1} to the next ten."
+  hint "Then count on in tens, then the ones."
+}

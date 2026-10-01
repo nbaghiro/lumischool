@@ -1,0 +1,17 @@
+# Four words to their English, 4 sets, the later sets with the words most often mixed up.
+item language.hello-match v=1 skills=[language.greetings] {
+  title "Match the words"
+  difficulty pick(k, 0, 0, 1, 2)
+  let k=0..3
+
+  scene 34x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Write the number of its English next to each [[language.name]] word." width=32
+      match m left=[pick(k, "[[greet.hello]]", "[[greet.please]]", "[[greet.good-night]]", "[[greet.good-afternoon]]"), pick(k, "[[greet.goodbye]]", "[[greet.good-morning]]", "[[greet.good-morning]]", "[[greet.good-night]]"), pick(k, "[[greet.thank-you]]", "[[greet.goodbye]]", "[[greet.thank-you]]", "[[greet.good-morning]]"), pick(k, "[[greet.yes]]", "[[greet.sorry]]", "[[greet.please]]", "[[greet.sorry]]")] right=[pick(k, "thank you", "sorry", "thank you", "good night"), pick(k, "hello", "please", "good night", "sorry"), pick(k, "goodbye", "good morning", "please", "good morning"), pick(k, "yes", "goodbye", "good morning", "good afternoon")] blanks=[a, b, c, d]
+    }
+  }
+
+  answer a=pick(k, 2, 2, 2, 4) b=pick(k, 3, 3, 4, 1) c=pick(k, 1, 4, 1, 3) d=pick(k, 4, 1, 3, 2)
+  hint "Start with the word you are surest of, and cross its English off."
+  hint "Two words look alike. Which letter is different, and what does it change?"
+}

@@ -9,19 +9,25 @@ import { childWorld, emptyProgress, GROWN_WORLD } from "../view";
 
 const ids = ["nature-living-or-not", "g1-counting-to-twenty", "later"];
 const journey: Journey = {
-    id: "meadow:g1:v1",
-    version: 1,
+    id: "meadow:g1:v2",
     world: "meadow",
     grade: 1,
     title: "Notice and count",
     purpose: "Look closely.",
     lessonIds: ids,
-    status: "curated",
-    missingIds: [],
 };
+const facts = (id: string) => ({
+    id,
+    grade: 1,
+    title: id,
+    subject: "nature",
+    art: [],
+    skills: [],
+});
 const corpus: Corpus = {
     grades: [1],
-    lesson: (id) => ({ id, grade: 1, title: id, subject: "nature", art: [], skills: [] }),
+    lesson: facts,
+    shown: () => true,
     year: () => {
         throw new Error("A visit must not replace the learning year");
     },
@@ -74,10 +80,10 @@ test("journey projection preserves canonical IDs and cannot award annual moments
     assert.equal(new Set(view.layout.rows.map((r) => r.day.id)).size, ids.length);
 });
 
-test("a curriculum gap has a real empty state and does not borrow unrelated lessons", () => {
+test("a journey with nothing in it has an empty state and does not borrow unrelated lessons", () => {
     const view = journeyViewOf({
         ...options,
-        journey: { ...journey, lessonIds: [], status: "gap" },
+        journey: { ...journey, lessonIds: [] },
     });
     assert.equal(view.days.length, 0);
     assert.equal(view.layout.rows.length, 0);

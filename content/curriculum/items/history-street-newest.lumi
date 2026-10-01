@@ -1,0 +1,25 @@
+# Which thing in today's street is the newest kind, from the record of when each first appeared.
+item history.street-newest v=1 skills=[history.change, history.order] {
+  title "The newest thing"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let a={pick(k, "horse and cart", "bicycle", "motor car", "bicycle")}
+  let b={pick(k, "aeroplane", "hot-air balloon", "television aerial", "aeroplane")}
+  let c={pick(k, "bicycle", "mobile phone", "aeroplane", "motor car")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 32x31 {
+    thenandnow street year=2026 sign=0 things=["{a}", "{b}", "{c}"] at=canvas(1, 0)
+    text ask "Which of these was first made most recently?" narrate width=30 below=street gap=1
+    choice pick options=["{a}", "{b}", "{c}"] stack=column below=ask gap=1
+  }
+
+  check history.street of=street pick=newest
+  hint "Which of the three would your great-grandparents never have seen as children?"
+  hint "Which one needs electricity or an engine that is newest of all?"
+}

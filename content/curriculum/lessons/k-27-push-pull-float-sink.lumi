@@ -1,0 +1,52 @@
+lesson k-push-pull-float-sink v=1 format=teach grade=0 unit=1 subject=physics levels=[easy, medium, hard] {
+  title "Push and pull, float and sink"
+  goal "Say whether a force is a push or a pull, which push is bigger, and whether a thing floats or sinks."
+
+  look {
+    scene 30x14 {
+      row all at=canvas(1, 1) space=3 align=end {
+        forces f thing=box push=5 labels=false
+        tank t float=2 sunk=1 letters=false
+      }
+    }
+    say """
+      A push moves a thing away from you and a pull brings it towards you. A longer arrow is a bigger
+      push. In the tank some things float at the top of the water and some sink to the bottom.
+      """
+  }
+  do {
+    level easy {
+      worked k.push-or-pull-arrow p=1 thing="box" level=medium
+    }
+    practice k.push-or-pull-arrow count=2 seed=2 easy-count=1
+    practice k.push-or-pull-job count=2 seed=3
+    practice k.bigger-push count=1 seed=4
+    show k.float-or-sink k=1
+    practice k.how-many-float count=2 seed=5
+    show k.float-or-sink k=0
+  }
+  try stars=2 {
+    show k.tug a=7 b=4 easy-a=8 easy-b=3 hard-a=6 hard-b=4
+  }
+  try stars=3 {
+    show k.more-floaters f=2 easy-f=1 hard-f=3
+  }
+  remember {
+    say "A push goes away, a pull comes towards you. Things float at the top or sink to the bottom."
+  }
+
+  grown-ups """
+    Read each question aloud. Pushes and pulls are best felt: push a chair, pull a drawer, and say
+    which it is. For floating, a washing-up bowl and some things from the kitchen do more than any
+    page. If the child is stuck on the arrows, point to where the hand would be. Off the page, guess
+    whether each thing will float before you drop it in the bath. Japan, 幼稚園教育要領 (kindergarten
+    guidelines), 環境, 内容 (2): "生活の中で，様々な物に触れ，その性質や仕組みに興味や関心をもつ。"
+    (Touch many things in daily life and take an interest in how they behave and work.)
+    """
+  level easy {
+    grown-ups "At this level a push on the box is named in the teacher's pen first, the pushes to compare are very different, and one or two things float."
+  }
+  level hard {
+    grown-ups "At this level the arrows are on a trolley and a ball, the pushes to compare are close, and three or four things float before the corks go in."
+  }
+}

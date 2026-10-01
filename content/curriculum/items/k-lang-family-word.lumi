@@ -1,0 +1,21 @@
+item k.lang-family-word v=1 skills=[language.family] {
+  title "Who is it?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let who={pick(k, "[[family.mother]]", "[[family.father]]", "[[family.grandmother]]", "[[family.brother]]")}
+  let means={pick(k, "mother", "father", "grandmother", "brother")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x20 {
+    text q "Listen: {who}. Who is that?" narrate width=28 at=canvas(1, 1)
+    choice pick options=["mother", "father", "grandmother", "brother"] stack=column below=q gap=1
+  }
+
+  answer pick=means
+  hint "Which word did the lesson give for each person?"
+}

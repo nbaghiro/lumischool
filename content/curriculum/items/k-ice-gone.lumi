@@ -1,0 +1,20 @@
+item k.ice-gone v=1 skills=[chemistry.melting, counting.to-five] {
+  title "When was the ice gone?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 32x17 {
+    text ask "Ada looked at her ice cube on the table every ten minutes. After how many minutes had it all melted?" narrate width=30 at=canvas(1, 0)
+    icemelt ice every=10 count=5 place=(if k == 0 then 2 else 1) below=ask gap=0
+    number-input answer below=ice gap=1
+  }
+
+  check chem.change of=ice answer=melted
+  hint "Find the first saucer with no ice cube on it. What number is under it?"
+}

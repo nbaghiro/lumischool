@@ -1,0 +1,82 @@
+# The national unit for the United States: the flag, the capital and a festival. Items take n=1. The
+# facts are general knowledge recalled for this lesson (see .docs/history.md, "Sources").
+lesson history-g1-usa-our-country v=1 format=teach grade=1 unit=9 subject=history nation=usa levels=[easy, medium, hard] {
+  title "Our flag, our capital, our festival"
+  goal "Find our country's flag and its capital, and say when our country keeps a festival."
+
+  look {
+    scene 36x25 {
+      column all at=canvas(1, 0) space=1 align=start {
+        flags one flags=["usa"] letters=0
+        worldmap map names=0 blank=-1 oceans=0 places=["Washington"] numbered=0 route=0
+      }
+    }
+    say """
+      Our country is the United States. Its flag is the Stars and Stripes, with thirteen stripes and fifty stars. Its capital city is Washington, where the
+      country's leaders meet, and you can find it on the map of the world. Every year we keep
+      Independence Day on 4 July, with parades and fireworks.
+      """
+  }
+  do {
+    level easy {
+      worked history.nation-continent n=1
+      show history.nation-flag-pair n=1
+      show history.nation-flag n=1 k=0
+      show history.nation-flag-colours n=1
+      show history.nation-capital n=1 k=0
+      show history.nation-capital-name n=1 k=0
+      show history.nation-ocean n=1
+      show history.nation-festival-month n=1
+    }
+    level medium {
+      show history.nation-flag n=1 k=0
+      show history.nation-flag-colours n=1
+      show history.nation-flag n=1 k=1
+      show history.nation-capital n=1 k=0
+      show history.nation-continent n=1
+      show history.nation-capital n=1 k=1
+      show history.nation-capital-name n=1 k=0
+    }
+    level hard {
+      show history.nation-flag n=1 k=1
+      show history.nation-flag-colours n=1
+      show history.nation-capital n=1 k=1
+      show history.nation-continent n=1
+      show history.nation-capital-name n=1 k=1
+      show history.nation-ocean n=1
+      show history.nation-festival-month n=1
+    }
+  }
+  story {
+    show history.nation-festival n=1
+    level hard {
+      show history.nation-flag-pair n=1
+    }
+  }
+  try stars=2 {
+    show history.nation-city-not-country n=1
+  }
+  try stars=3 {
+    show history.design-a-flag
+  }
+  remember {
+    say "Our country is the United States. Its capital is Washington."
+  }
+
+  grown-ups """
+    The idea is that a country has signs everyone in it shares: a flag, a capital city and the days
+    it keeps together. The way in finds the flag among five; the core reads its colours, finds the
+    capital on the world map and names the continent it is on; the story finds the season of a
+    festival on the year wheel. The wrong idea to watch for is a capital taken for the country
+    itself, which the two-star question asks about. If the child is stuck on the map, find the
+    country together first and then the dot inside it. The three-star question is for you to mark:
+    a flag for your family, with a meaning for each colour and shape. Off the page, look for your
+    flag in your town and talk about why it is flown. In most states social studies in the first grades teaches the nation's symbols and holidays, and this lesson does the same.
+    """
+  level easy {
+    grown-ups "At this level a worked example finds the continent, the flag is first found beside one very different flag, the flags and the dots on the map are in the order the lesson shows them, and the capital is named from the country only."
+  }
+  level hard {
+    grown-ups "At this level the flags and the dots are shuffled, the capital is asked the other way round (which country is it the capital of), and the oceans and the month of the festival are added."
+  }
+}

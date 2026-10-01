@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[greet.well]], [[greet.bad]], [[greet.very-well]], [[greet.my-name-is]], [[greet.so-so]], [[greet.how-are-you]], [[greet.great]], [[greet.what-is-your-name]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.my-name-name v=1 skills=[language.greetings, language.questions] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      face f mood=pick(k, "happy", "sad", "excited", "happy", "worried", "happy", "excited", "surprised") hair=pick(k, 0, 1, 0, 1, 1, 2, 2, 3)
+      text ask "{pick(k, \"Leo asks Ana [[greet.how-are-you]] She feels well. What does she say?\", \"Leo has hurt his knee. Ana asks [[greet.how-are-you]] What does he say?\", \"It is Ana's birthday. Leo asks [[greet.how-are-you]] What does she say?\", \"Gran asks [[greet.what-is-your-name]] What does Leo say before his name?\", \"Leo feels not good and not bad. What does he say?\", \"Ana wants to know how Leo is. What does she ask?\", \"Ana won the race. Leo asks [[greet.how-are-you]] What does she say?\", \"Ana meets a new girl. She wants to know her name. What does she ask?\")}" width=32
+      choice pick options=[pick(k, "[[greet.bad]]", "[[greet.my-name-is]]", "[[greet.my-name-is]]", "[[greet.bad]]", "[[greet.very-well]]", "[[greet.what-is-your-name]]", "[[greet.so-so]]", "[[greet.how-are-you]]"), pick(k, "[[greet.so-so]]", "[[greet.bad]]", "[[greet.very-well]]", "[[greet.my-name-is]]", "[[greet.so-so]]", "[[greet.how-are-you]]", "[[greet.bad]]", "[[greet.bad]]"), pick(k, "[[greet.well]]", "[[greet.well]]", "[[greet.bad]]", "[[greet.how-are-you]]", "[[greet.bad]]", "[[greet.very-well]]", "[[greet.great]]", "[[greet.what-is-your-name]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[greet.well]]", "[[greet.bad]]", "[[greet.very-well]]", "[[greet.my-name-is]]", "[[greet.so-so]]", "[[greet.how-are-you]]", "[[greet.great]]", "[[greet.what-is-your-name]]")
+  feedback {
+    when (pick == pick(k, "[[greet.bad]]", "[[greet.well]]", "[[greet.bad]]", "[[greet.how-are-you]]", "[[greet.very-well]]", "[[greet.what-is-your-name]]", "[[greet.so-so]]", "[[greet.how-are-you]]")) point=f {
+      say "{pick(k, \"[[greet.bad|cap]] is for feeling bad. Look at the face again.\", \"[[greet.well|cap]] is for feeling well. Leo has hurt his knee.\", \"[[greet.bad|cap]] is for feeling bad. It is her birthday.\", \"[[greet.how-are-you|cap]] asks how someone is. Gran wants his name.\", \"[[greet.very-well|cap]] is very well. Leo feels only so-so.\", \"[[question.what-is-your-name]] asks for a name. Ana wants to know how he is.\", \"[[greet.so-so|cap]] is so-so. Ana won the race.\", \"[[greet.how-are-you|cap]] asks how someone is. Ana wants her name.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

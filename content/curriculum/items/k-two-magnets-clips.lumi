@@ -1,0 +1,24 @@
+item k.two-magnets-clips v=1 stars=3 skills=[physics.magnets, counting.compare] {
+  title "The stronger magnet"
+  difficulty (if abs(a - b) >= 3 then 0 else 1)
+  let a=2..7 b=2..7
+  where (abs(a - b) >= 1)
+  level easy {
+    where (abs(a - b) >= 3)
+  }
+  level hard {
+    where (abs(a - b) <= 2)
+  }
+
+  scene 30x28 {
+    row top at=canvas(1, 0) space=3 align=start {
+      magnet one mode=chain clips=a clip=1 tag="A"
+      magnet two mode=chain clips=b clip=1 tag="B"
+    }
+    text q "The stronger magnet holds more clips. Which magnet is stronger?" narrate width=28 below=top gap=1
+    choice pick options=["A", "B"] stack=row below=q gap=1
+  }
+
+  answer pick=(if a > b then "A" else "B")
+  hint "Count the clips on each magnet."
+}

@@ -1,0 +1,20 @@
+item k.sieve-or-water v=1 stars=3 skills=[chemistry.separating, reasoning.what-if] {
+  title "Get the pebbles out"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x28 {
+    sieve s mixture=["{pick(k, \"pebbles\", \"peas\")}", "sand"] holes=2 shaken=0 names=1 at=canvas(1, 0)
+    text q "How do you get the {pick(k, \"pebbles\", \"dried peas\")} out of the sand, on their own?" narrate width=28 below=s gap=1
+    choice pick options=["sieve", "use a magnet", "evaporate the water"] stack=column below=q gap=1
+  }
+
+  check chem.separate of=s pick="get({pick(k, \"pebbles\", \"peas\")})"
+  hint "Which one is bigger? What lets small things through and keeps big things back?"
+}

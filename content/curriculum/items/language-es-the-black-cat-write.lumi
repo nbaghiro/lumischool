@@ -1,0 +1,18 @@
+# The word written from its picture: negro, blanca, roja, blanco, verde, negra, amarilla.
+# Accent-tolerant: the box takes the word with its accents left off (accents=loose); ñ is a letter and is marked.
+item language.es-the-black-cat-write v=1 skills=[language.colours, language.grammar, language.spelling] {
+  title "Finish the colour"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x7 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"El gato es ___. (black) Write it in Spanish.\", \"La casa es ___. (white) Write it in Spanish.\", \"La fresa es ___. (red) Write it in Spanish.\", \"El perro es ___. (white) Write it in Spanish.\", \"La rana es ___. (green) Write it in Spanish.\", \"La gata es ___. (black) Write it in Spanish.\", \"La flor es ___. (yellow) Write it in Spanish.\")}" width=32
+      word-input word options=[pick(k, "negro", "blanca", "roja", "blanco", "verde", "negra", "amarilla")] accents=loose
+    }
+  }
+
+  answer word=pick(k, "negro", "blanca", "roja", "blanco", "verde", "negra", "amarilla")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

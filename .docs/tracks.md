@@ -218,8 +218,8 @@ computing, and because a name a child would use is better than a curriculum word
 
 ## The track list
 
-Eight tracks are given: maths, coding, physics, chemistry, reading, writing, music and nature. Two
-more are proposed, and each of them is proposed on the same test: the art is already drawn, the
+Ten tracks are given: maths, coding, physics, chemistry, reading, writing, music, nature, history
+and language. Two more are proposed, and each of them is proposed on the same test: the art is already drawn, the
 engine needs nothing new, and a child would choose it.
 
 **Maths**, sixty lessons, built. The spine. Nothing here changes it.
@@ -271,6 +271,50 @@ the animals, the tree and the flowers from the story set and a child can be aske
 order, label and follow a life cycle, and the first six lessons needed no new drawing, only a
 setting on two of them.
 
+**History**, forty eight lessons planned in [history.md](history.md): a world strand the same for
+every family, and one national unit a grade for the country the family chooses. It is a track from
+30 September 2026, hosted at the old tower, at one day a week from grade one.
+
+**Language**, a second language, hosted at the ferry town, at one day a week from grade one. The
+language is chosen per child by a grown-up on the child's card: Spanish is written first, then
+French and Japanese. A child with no language chosen is offered no language lesson, and the ferry
+town says that a grown-up chooses the language first. Each language lesson is written once, as a
+concept, and filled from the chosen language's phrasebook, so a lesson is offered in every language
+whose phrasebook holds its phrases ([notation.md](notation.md), "Phrasebooks and language
+variants"); [language-coverage.md](language-coverage.md) lists which lessons each language has.
+
+The track has thirty-six lessons, six a grade from grade one to grade six, in the order a primary
+foreign-language course takes it: greetings and names, numbers, colours, family and animals, food and
+the market, the town and directions, time, days and months, weather and seasons, describing people
+and things, and then opinions with reasons, questions, and a short text read and written by grade
+six. Grades one to three mark a typed word without minding its accents and grades four to six with
+them; a dictation always minds them. Each lesson's grown-ups note quotes the line it meets in
+England's key stage 2 languages programme, Japan's foreign language activities (grades 3 and 4) or
+foreign languages (grades 5 and 6), and the Council of Europe's CEFR A1 or A2 descriptors. A spoken
+answer is marked by a grown-up against a notice list (`reading.recited`), a written text by
+`writing.by-eye`, and a heard sentence by the dictation checker, where the grown-up reads the phrase
+from the grown-ups' sheet and the device's own voice is a second channel ([sound.md](sound.md)).
+Spanish is written for all thirty-six lessons, in Castilian as it is spoken in Spain; French and
+Japanese have no phrasebook yet. Thirty-two lessons are shared concepts with Spanish written only
+for their two-star question where it asks why Spanish builds a phrase its way, and four (a colour
+with its noun, telling the time, a friend's character, and the present tense) are written wholly
+for Spanish, since how a language does these is its own.
+
+### The default week
+
+`DEFAULT_TRACKS` in `school/tracks.ts` is the week a child starts from at each grade. From grade one
+it adds history and a language at one day a week each to the paces above. A language plans nothing
+until one is chosen, since its lane is empty until then. The kindergarten year, grade 0, has its own
+light week: maths, reading, writing, music and nature, one day each, one subject a day.
+
+Each track leans towards its own part of the week (`TRACK_TURN`), so the default spreads rather than
+piling onto Wednesday; the rule the tests hold is that no weekday of any grade's default is empty or
+holds more than its share rounded up. History leans to Friday and a language to Monday. No single
+turn per track keeps that rule at every grade once ten tracks are on, so `TRACK_TURN_AT` turns a track
+its own way at one grade: nature at the kindergarten year, which would otherwise share maths's
+Wednesday and leave Friday empty, and language at grade six, which would otherwise make Monday a
+fourth subject.
+
 ### Proposed, for approval
 
 **Maps and journeys**, fifteen lessons. The map grid, the map with a scale, the road distances, the
@@ -289,10 +333,6 @@ sheets, and the answer is that the maths puzzle sheet stays where it is and this
 logic, deduction and crossing problems that maths has no room for.
 
 ### Considered and not proposed
-
-A second language. The art exists, matching and picture-to-word, but a language track without
-sound and without an answer a child speaks or writes is fifteen matching drills. It waits for the
-audio core and the answer model.
 
 Time and money as their own tracks. Both are drawn well and both are maths. Moving them out would
 weaken the maths track without making a new one.
@@ -324,7 +364,7 @@ What each place off the run holds today, by subject or by lesson id in its `site
 |---|---|---|
 | The marsh | science, and floating, heat, water and ice | 6 |
 | The park | music | 24 |
-| The ferry town | a second language | 1 |
+| The ferry town | a second language | 36 |
 | The painter's hut | art | 24 |
 | The old tower | history | 0 |
 | The coral reef | sea life and arrays | 6 |
@@ -413,13 +453,56 @@ world of grades one to six to at least one landmark lit by a lesson of its own t
 
 ### A kindergarten year, for the garden and the long grass
 
-The garden is the kindergarten year's first term and has nothing on its path. Its plan is about
-fifteen lessons across the year: counting to ten on a ten frame and a bead string, shapes and
-colours, sorting into rings, letter sounds with the letter cards and sound buttons, the first strokes
-of writing on the handwriting lines, clapping a beat, and minibeasts and growing things. Every one of
-those drawings is on the shelf. The long grass would take the counting and the looking closely as
-well as the four year 1 and year 2 lessons it holds now. Whether the product's ages start before the
-first year is the owner's decision, so this stays a plan.
+The owner decided on 30 September 2026 to build the kindergarten year and offer grade 0. The
+garden is the year's one world, `0: ["home-garden"]` in `DEFAULT_YEARS`, so the year has one term
+(`termsAt` in `school/year.ts`) and every unit of its lessons stands in the garden. It opens the run
+on the map at slot 0.1, on the first year's land, and a child moves up from it to grade one as from
+any grade. Like every grade it is offered only once it has lessons, so grade 0 appears in the
+add-a-child form, as "Kindergarten", when the kindergarten lessons land.
+
+The year has fifty lessons, `lessons/k-01` to `k-50` with ids `k-<slug>`, a small version of the
+later grades in shape, weighted the way an early-years year is: maths 7, reading 6, writing 5,
+nature 5, music 4, art 4, coding 4, physics 4, chemistry 4, history 4 and a second language 3.
+Every subject but the language is a short strand of four or more, so none is a single taster that
+ends in the first weeks.
+
+- Maths: counting to five, a ten frame, more, fewer and the same, a bead string, shapes and
+  colours, sorting into rings, repeating patterns.
+- Reading: first sounds, a picture story in order, sound buttons, rhymes, beginning, middle and
+  end, and listening for first sounds with more letters.
+- Writing: zigzags and waves, the first strokes on the handwriting lines, writing a list, labels
+  and the first letter of my name, the letters that start with a c.
+- Nature: minibeasts, the weather and the seasons, animals and their babies, growing things, my
+  body and senses.
+- Music: clapping a steady beat, loud and quiet and high and low, fast and slow, clapping names.
+- Art: printing patterns, mixing colours, a picture that tells a feeling, drawing what you see.
+- Coding: before and after, following arrow blocks on a grid, finding the mistake, a repeat.
+- Physics: push and pull with floating and sinking, light and shadow, magnets, rolling down a ramp.
+- Chemistry: wet and dry, dissolving and sieving, what melts, cooking changes things.
+- History: my family (`familytree`), how people travelled long ago, a special day we remember,
+  then and now (`toys`, `thenandnow`).
+- Language, through the phrasebook: hello and four colours, one to five, family and animals.
+
+A grown-up reads every question aloud, so the child answers by pointing, saying a number, picking a
+picture or a letter, or writing a single letter or a three-letter label. Each lesson has easy,
+medium and hard levels, and its grown-ups note quotes one early-years line: England's early learning
+goals, Japan's 幼稚園教育要領, or China's 3-6岁儿童学习与发展指南, with any line not fetched from its
+source marked as recalled. The lessons sit in units 1 to 9, four to seven a unit, so the one term
+alternates subjects and each strand's lessons come in order through the year: coding in units 2,
+4, 6 and 8, physics in 1, 3, 5 and 7, chemistry in 2, 4, 6 and 8, history in 3, 5, 7 and 9, art in
+2, 4, 7 and 9, and the language in 3, 5 and 8. The maths lessons are in units 1, 2, 3, 4, 5, 7 and
+8, and the others hang off them.
+
+The default week (`DEFAULT_TRACKS[0]` in `school/tracks.ts`) turns every track on at one day a
+week, two subjects a day, and art is not planned, as at every grade. The garden's reaches light a
+landmark for each subject, ordered so each lesson lights its own subject's. The long grass holds
+the counting lessons, minibeasts and growing things; book island the six reading lessons; the
+printing works the five writing lessons and wet and dry; lamp rocks the four coding lessons; the
+cloud islands the weather; the treetops push and pull and the ramp; the windmill island magnets;
+the crystal caves light and shadow; the salt flats dissolving and sieving; the geyser valley what
+melts and cooking. Art, music, history and the language reach the painter's hut, the park, the old
+tower and the ferry town through the subjects those places host, and the other nature lessons
+reach the marsh.
 
 ### A fifth year, for the canal town, the observatory and the old city
 
@@ -443,8 +526,9 @@ decision, so this stays a plan.
 - Music for the fourth year, which [sound.md](sound.md) plans, would put the park's path into every
   year.
 - The ferry town held the one Spanish lesson there was. Spanish was removed from the lessons on
-  15 September 2026 pending a UI of its own for languages; more waits for the audio core and the
-  answer model, as the section above on a second language says.
+  15 September 2026 pending a UI of its own for languages. That UI is the language picker on a
+  child's card (30 September 2026), and the ferry town now hosts the language track's thirty-six
+  lessons, whose skills light its market stall, clock tower, square, shop front and houses.
 
 ## Physics
 

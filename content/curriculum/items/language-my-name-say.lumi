@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.my-name-say v=1 skills=[language.greetings, language.questions, language.speaking] {
+  title "Meet a grown-up"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Say to a grown-up: [[greet.hello]]. Then [[greet.my-name-is]] and your name.\", \"Ask a grown-up: [[greet.what-is-your-name]] Listen to the answer, then say your own name.\", \"Ask a grown-up: [[greet.how-are-you]] Then answer when they ask you back.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="The question asked with the voice going up at the end, and the answer given with [[greet.my-name-is]] or one of the words for how you are." notice=["[[greet.my-name-is|cap]] before the name", "Voice goes up on a question", "[[greet.my-name-is|cap]] sounded as its line gives it", "An answer that fits the question"]
+  hint "A question goes up at the end. Try it."
+  hint "Did the question ask for a name, or for how you are?"
+}

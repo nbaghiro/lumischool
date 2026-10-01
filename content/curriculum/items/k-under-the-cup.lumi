@@ -1,0 +1,28 @@
+# Ten counters in all and some under a cup: the ones that show and the empty frame squares they
+# leave are the whole and a part, which is the three-star turn at this age.
+item k.under-the-cup v=1 stars=3 skills=[counting.to-ten, reasoning.part-whole] {
+  title "Under the cup"
+  difficulty h
+  let h=1..5
+  level easy {
+    let h=1..2
+  }
+  level hard {
+    let h=4..5
+  }
+
+  scene 24x18 {
+    undercup cup shown=(10 - h) cups=1 hidden=h total=10 color=berry at=canvas(1, 1)
+    text ask "There are ten counters. Some are under the cup. How many are hiding?" narrate width=22 below=cup gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer h
+  feedback {
+    when (h != 5 and answer == 10 - h) point=cup {
+      say "That is the counters you can see. How many more make ten?"
+    }
+  }
+  hint "Count the counters you can see."
+  hint "Count on from there to ten. How many more numbers did you say?"
+}

@@ -1,0 +1,22 @@
+# Non-routine: a fruit chosen from what a child likes and does not like.
+item language.fruit-puzzle v=1 stars=3 skills=[language.food, language.opinions, reasoning.language] {
+  title "Pick for a friend"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Ana says [[food.i-like-strawberry]] and [[phrase.i-do-not-like-lemon]] Which does she take from the stall?\", \"Leo likes yellow fruit, but he says [[phrase.i-do-not-like-lemon]] Which does he take?\", \"Ana likes red fruit. She says [[phrase.i-do-not-like-tomatoes]] Which does she take?\")}" width=32
+      choice pick options=[pick(k, "[[food.the-strawberry]]", "[[food.the-banana]]", "[[food.the-strawberry]]"), pick(k, "[[food.the-lemon]]", "[[food.the-lemon]]", "[[food.the-tomato]]"), pick(k, "[[food.the-pear]]", "[[food.the-strawberry]]", "[[food.the-pear]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[food.the-strawberry]]", "[[food.the-banana]]", "[[food.the-strawberry]]")
+  feedback {
+    when (pick == pick(k, "[[food.the-lemon]]", "[[food.the-lemon]]", "[[food.the-tomato]]")) {
+      say "{pick(k, \"She said she does not like lemon.\", \"A lemon is yellow, but he does not like it.\", \"A tomato is red, but she does not like tomatoes.\")}"
+    }
+  }
+  hint "Which fruit does the dislike rule out?"
+  hint "Of what is left, which fits?"
+}

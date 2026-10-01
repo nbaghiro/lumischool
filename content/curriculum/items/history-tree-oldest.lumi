@@ -1,0 +1,27 @@
+# The way in: a family tree read for who was born first. Grandparents sit at the top, but the child
+# still has to compare the years, since two of them are close.
+item history.tree-oldest v=1 skills=[history.family, history.order] {
+  title "Who was born first?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let g1={pick(k, 1950, 1952, 1947, 1953)}
+  let g2={pick(k, 1954, 1949, 1948, 1951)}
+  let g3={pick(k, 1956, 1955, 1951, 1950)}
+  let g4={pick(k, 1958, 1957, 1949, 1954)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x33 {
+    familytree tree names=["Grandma Rose", "Grandpa Tom", "Nana Mei", "Grandad Li", "Mum", "Dad", "Sam"] years=[g1, g2, g3, g4, 1982, 1980, 2019] blank=-1 at=canvas(1, 0)
+    text ask "Which of Sam's grandparents was born first?" narrate width=32 below=tree gap=1
+    choice pick options=["Grandma Rose", "Grandpa Tom", "Nana Mei", "Grandad Li"] stack=column below=ask gap=1
+  }
+
+  check history.family of=tree pick=oldest
+  hint "Read the four years in the top row."
+  hint "The earliest year is the smallest number."
+}

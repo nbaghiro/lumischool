@@ -1,0 +1,19 @@
+item k.steeper-faster v=1 skills=[physics.ramps] {
+  title "Steep or gentle?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x14 {
+    text q "{pick(k, \"Which slope makes a toy car go faster: a steep one or a gentle one?\", \"On which slide do you whizz down faster: the steep one or the gentle one?\", \"Ada wants her ball to roll slowly. Should she make the slope steeper or gentler?\", \"Ben lifts one end of his ramp higher. Will the car go faster or slower?\")}" narrate width=28 at=canvas(1, 1)
+    choice pick options=[pick(k, "steep", "steep", "gentler", "faster"), pick(k, "gentle", "gentle", "steeper", "slower")] stack=row below=q gap=1
+  }
+
+  answer pick=pick(k, "steep", "steep", "gentler", "faster")
+  hint "Think of a slide in the park. Where do you go fastest?"
+}

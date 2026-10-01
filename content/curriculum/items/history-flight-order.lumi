@@ -1,0 +1,26 @@
+# Four firsts in flying numbered in order, from the dated record.
+item history.flight-order v=1 skills=[history.order, history.flight] {
+  title "Firsts in the air"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let a={pick(k, "First flight", "Across the Channel", "Moon landing", "Across the Atlantic")}
+  let b={pick(k, "Across the Channel", "First flight", "Across the Atlantic", "Moon landing")}
+  let c={pick(k, "Across the Atlantic", "Across the Atlantic", "First flight", "First flight")}
+  let d={pick(k, "Moon landing", "Moon landing", "Across the Channel", "Across the Channel")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x26 {
+    text ask "Number these from 1, the first to happen, to 4, the last." narrate width=32 at=canvas(1, 1)
+    sequence s items=["{a}", "{b}", "{c}", "{d}"] blanks=[p, q, r, t] below=ask gap=1
+    timeline line from=1900 to=1980 step=20 years=[] labels=[] below=s gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)" t="rank(3)"
+  hint "Which had to come before all the others?"
+  hint "Crossing a short sea came before crossing an ocean, and the Moon came last."
+}

@@ -1,0 +1,20 @@
+item k.print-shape v=1 skills=[art.printing, shapes.flat] {
+  title "What shape did Ada print?"
+  difficulty (if m == "circle" then 0 else 1)
+  let m={"circle", "square", "triangle"}
+  level easy {
+    let m={"circle", "square"}
+  }
+  level hard {
+    let m={"square", "triangle"}
+  }
+
+  scene 28x16 {
+    stamps pic motif=m show="print" colour=red flip=false made="print" at=canvas(1, 1)
+    text q "What shape did Ada print?" narrate width=26 below=pic gap=1
+    choice pick options=["circle", "square", "triangle"] stack=row below=q gap=1
+  }
+
+  answer pick=m
+  hint "Count the corners of the print."
+}

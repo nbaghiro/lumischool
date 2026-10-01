@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[weather.it-is-sunny]], [[weather.it-is-raining]], [[weather.it-is-snowing]], [[weather.it-is-windy]], [[weather.it-is-cloudy]], [[weather.there-is-a-storm]], [[weather.it-is-hot]], [[weather.it-is-cold]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.weather-name v=1 skills=[language.weather] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x32 {
+    column all at=canvas(1, 1) space=1 align=start {
+      weatherweek chart days=[""] skies=["{pick(k, \"sun\", \"rain\", \"snow\", \"wind\", \"cloud\", \"storm\", \"sun\", \"cloud\")}"] temps=["{pick(k, \"\", \"\", \"\", \"\", \"\", \"\", \"38 °C\", \"-3 °C\")}"]
+      text ask "{pick(k, \"What is the weather? Pick the words.\", \"What is the weather? Pick the words.\", \"What is the weather? Pick the words.\", \"What is the weather? Pick the words.\", \"What is the weather? Pick the words.\", \"What is the weather? Pick the words.\", \"It is 38 degrees. What is the weather?\", \"It is minus three degrees. What is the weather?\")}" width=32
+      choice pick options=[pick(k, "[[weather.there-is-a-storm]]", "[[weather.it-is-cold]]", "[[weather.it-is-raining]]", "[[weather.it-is-snowing]]", "[[weather.it-is-raining]]", "[[weather.it-is-cloudy]]", "[[weather.it-is-cold]]", "[[weather.it-is-raining]]"), pick(k, "[[weather.it-is-sunny]]", "[[weather.it-is-raining]]", "[[weather.it-is-cold]]", "[[weather.it-is-windy]]", "[[weather.there-is-a-storm]]", "[[weather.there-is-a-storm]]", "[[weather.it-is-raining]]", "[[weather.it-is-cold]]"), pick(k, "[[weather.it-is-hot]]", "[[weather.it-is-windy]]", "[[weather.it-is-windy]]", "[[weather.it-is-sunny]]", "[[weather.it-is-cloudy]]", "[[weather.it-is-windy]]", "[[weather.it-is-windy]]", "[[weather.it-is-hot]]"), pick(k, "[[weather.it-is-windy]]", "[[weather.it-is-snowing]]", "[[weather.it-is-snowing]]", "[[weather.it-is-cloudy]]", "[[weather.it-is-snowing]]", "[[weather.it-is-raining]]", "[[weather.it-is-hot]]", "[[weather.it-is-snowing]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[weather.it-is-sunny]]", "[[weather.it-is-raining]]", "[[weather.it-is-snowing]]", "[[weather.it-is-windy]]", "[[weather.it-is-cloudy]]", "[[weather.there-is-a-storm]]", "[[weather.it-is-hot]]", "[[weather.it-is-cold]]")
+  feedback {
+    when (pick == pick(k, "[[weather.it-is-hot]]", "[[weather.it-is-snowing]]", "[[weather.it-is-raining]]", "[[weather.it-is-sunny]]", "[[weather.it-is-raining]]", "[[weather.it-is-raining]]", "[[weather.it-is-cold]]", "[[weather.it-is-hot]]")) point=chart {
+      say "{pick(k, \"[[weather.it-is-hot|cap]] is it is hot. There is no temperature here, only the sun.\", \"[[weather.it-is-snowing|cap]] is it is snowing. Look at what falls from the cloud.\", \"[[weather.it-is-raining|cap]] is it is raining. These are snowflakes.\", \"[[weather.it-is-sunny|cap]] is it is sunny. The lines are the wind.\", \"[[weather.it-is-raining|cap]] is it is raining. Is anything falling from the cloud?\", \"[[weather.it-is-raining|cap]] is rain. Look at the lightning: a storm.\", \"[[weather.it-is-cold|cap]] is it is cold. 38 degrees is hot.\", \"[[weather.it-is-hot|cap]] is it is hot. Below zero is cold.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

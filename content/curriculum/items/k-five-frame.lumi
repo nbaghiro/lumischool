@@ -1,0 +1,27 @@
+# Counters in the top row of a ten frame: one to five sit in a line from the left, so the empty
+# squares say how far from five a number is.
+item k.five-frame v=1 skills=[counting.to-five] {
+  title "Counters in the frame"
+  difficulty n
+  let n=1..5
+  level easy {
+    let n=1..3
+  }
+  level hard {
+    let n=3..5
+  }
+
+  scene 22x10 {
+    tenframe frame count=n color=sky at=canvas(1, 1)
+    text ask "How many counters?" narrate below=frame gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == 5 - n) point=frame {
+      say "That is the empty squares. Count the squares with a counter in."
+    }
+  }
+  hint "Look at the top row. Which squares have a counter?"
+}

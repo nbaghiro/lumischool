@@ -1,0 +1,47 @@
+lesson k-mixing-colours v=1 format=teach grade=0 unit=4 subject=art levels=[easy, medium, hard] {
+  title "Mixing colours"
+  goal "Say what two of red, yellow and blue make when they are mixed, and mix a green to paint with."
+
+  look {
+    scene 30x9 {
+      paintpots pots pots=["blue", "yellow"] result="mix" labels=true at=canvas(1, 1)
+    }
+    say """
+      Blue and yellow stirred together make green. Red and yellow make orange, and red and blue make
+      purple. Red, yellow and blue cannot be made from other paints, so we start with them.
+      """
+  }
+  do {
+    level easy {
+      worked k.mix-two k=0 level=medium
+    }
+    practice k.mix-two count=3 seed=9 easy-count=2 hard-count=2
+    practice k.which-two-paints count=2 seed=3
+    practice k.mixed-or-not count=2 seed=4 easy-count=1
+    show k.paint-a-leaf
+  }
+  try stars=2 {
+    show k.cannot-mix k=0 hard-k=1
+  }
+  try stars=3 {
+    show k.lost-paint k=1 easy-k=0 hard-k=3
+  }
+  remember {
+    say "Blue and yellow make green. Red and yellow make orange. Red and blue make purple."
+  }
+
+  grown-ups """
+    Read each question aloud. Real paint is the best teacher here: a blob of each on a plate and a
+    brush to stir them. The leaf is for you to look at; the answer sheet says what to look for.
+    Purple is the hardest mix, because a little too much blue makes it dark. If the child is stuck,
+    mix the pair in front of them and let them name what comes out. England, Reception, ELG
+    Creating with Materials (recalled, not fetched): "Safely use and explore a variety of materials,
+    tools and techniques, experimenting with colour, design, texture, form and function".
+    """
+  level easy {
+    grown-ups "At this level green is mixed in the teacher's pen first, the mixes are green and orange, and Sam has red and yellow."
+  }
+  level hard {
+    grown-ups "At this level the mixes are orange and purple, Sam has yellow and blue, and the lost paint is in the purple."
+  }
+}

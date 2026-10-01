@@ -1,0 +1,20 @@
+item k.count-fingers v=1 skills=[nature.body, counting.to-ten] {
+  title "Count the fingers"
+  difficulty (if side == "right" then 0 else 1)
+  let side={"right", "both"}
+  level easy {
+    let side={"right"}
+  }
+  level hard {
+    let side={"both"}
+  }
+
+  scene 30x20 {
+    hand h side=side numbers=none ring=0 at=canvas(1, 1)
+    text ask "How many fingers and thumbs can you count?" narrate width=26 below=h gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if side == "right" then 5 else 10)
+  hint "Touch each finger and thumb once as you count. Hold up your own hands to check."
+}

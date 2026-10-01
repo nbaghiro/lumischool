@@ -1,0 +1,30 @@
+# A kite bought yesterday is a new toy of a very old kind. The two-star reason: a thing being new
+# is not the same as its kind being new. The record gives kites in China by the 4th century BC.
+item history.new-or-old-kind v=1 skills=[history.change, reasoning.why] {
+  title "New, or a new kind?"
+  difficulty k
+  let k=0..2
+  let toy={pick(k, "kite", "spinning top", "rag doll")}
+  let when={pick(k, "yesterday", "last week", "for her birthday")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 24x23 {
+    toys shelf toys=["{toy}"] letters=0 at=canvas(1, 0)
+    text ask "Ada got this {toy} from the shop {when}. Ben says a {toy} is a new kind of toy. Is he right?" narrate width=22 below=shelf gap=1
+    choice pick options=["Yes, because Ada's is new", "No, children had them long ago"] stack=column below=ask gap=1
+  }
+
+  answer pick="No, children had them long ago"
+  feedback {
+    when (pick == "Yes, because Ada's is new") point=shelf {
+      say "Ada's one is new. Ask whether children long ago had one like it too."
+    }
+  }
+  hint "Is the question about Ada's own {toy}, or about this kind of toy?"
+  hint "Could a child a very long time ago have made or played with one?"
+}

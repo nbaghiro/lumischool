@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[family.the-mother]], [[family.the-father]], [[family.the-grandmother]], [[family.the-grandfather]], [[family.the-parents]], [[family.the-daughter]], [[family.the-grandparents]], [[family.the-granddaughter]], [[family.the-sister]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.my-family-name v=1 skills=[language.family] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2, 2)
+  let k=0..8
+
+  scene 34x37 {
+    column all at=canvas(1, 1) space=1 align=start {
+      familytree tree names=["Rosa", "Pepe", "Carmen", "Luis", "Marta", "Juan", "Ana"] years=[0, 0, 0, 0, 0, 0, 0] blank=-1
+      text ask "{pick(k, \"Look at Ana's family tree. Who is Marta to Ana?\", \"Who is Juan to Ana?\", \"Who is Rosa to Ana?\", \"Who is Luis to Ana?\", \"Who are Marta and Juan to Ana?\", \"Who is Ana to Juan?\", \"Who are Carmen and Luis to Ana?\", \"Who is Ana to Rosa?\", \"Ana's parents have a new baby girl. Who is she to Ana?\")}" width=32
+      choice pick options=[pick(k, "[[family.the-daughter]]", "[[family.the-daughter]]", "[[family.the-mother]]", "[[family.the-sister]]", "[[family.the-grandparents]]", "[[family.the-grandfather]]", "[[family.the-parents]]", "[[family.the-father]]", "[[family.the-daughter]]"), pick(k, "[[family.the-mother]]", "[[family.the-father]]", "[[family.the-daughter]]", "[[family.the-grandfather]]", "[[family.the-grandmother]]", "[[family.the-daughter]]", "[[family.the-father]]", "[[family.the-granddaughter]]", "[[family.the-grandfather]]"), pick(k, "[[family.the-father]]", "[[family.the-sister]]", "[[family.the-grandparents]]", "[[family.the-father]]", "[[family.the-parents]]", "[[family.the-father]]", "[[family.the-grandfather]]", "[[family.the-daughter]]", "[[family.the-sister]]"), pick(k, "[[family.the-grandparents]]", "[[family.the-mother]]", "[[family.the-grandmother]]", "[[family.the-daughter]]", "[[family.the-father]]", "[[family.the-sister]]", "[[family.the-grandparents]]", "[[family.the-parents]]", "[[family.the-grandparents]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[family.the-mother]]", "[[family.the-father]]", "[[family.the-grandmother]]", "[[family.the-grandfather]]", "[[family.the-parents]]", "[[family.the-daughter]]", "[[family.the-grandparents]]", "[[family.the-granddaughter]]", "[[family.the-sister]]")
+  feedback {
+    when (pick == pick(k, "[[family.the-father]]", "[[family.the-mother]]", "[[family.the-mother]]", "[[family.the-father]]", "[[family.the-grandparents]]", "[[family.the-sister]]", "[[family.the-parents]]", "[[family.the-daughter]]", "[[family.the-daughter]]")) point=tree {
+      say "{pick(k, \"[[family.the-father|cap]] is the father. Marta is a woman's name.\", \"[[family.the-mother|cap]] is the mother. Juan is a man's name.\", \"Rosa is above Marta on the tree. She is Marta's mother.\", \"Luis is above Juan on the tree. He is Juan's father.\", \"[[family.the-grandparents|cap]] are the grandparents, one row higher.\", \"Ana has no sister on the tree. She is Juan's child.\", \"[[family.the-parents|cap]] are Marta and Juan. Carmen and Luis are one row higher.\", \"[[family.the-daughter|cap]] is a daughter. Rosa is two rows above Ana.\", \"She is Marta's daughter. To Ana she is something else.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

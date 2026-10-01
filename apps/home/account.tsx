@@ -3,6 +3,7 @@ import { Members } from "./members";
 import { Select } from "../../engine/ui/select";
 import "./account.css";
 import { KidLogins } from "./kid-logins";
+import { NationPicker } from "./settings";
 import {
     createEffect,
     createResource,
@@ -117,10 +118,13 @@ export function Account(): JSX.Element {
                                 <Members family={s().me.family.id} user={s().me.user.id}>
                                     <Show when={s().me.family.id} keyed>
                                         {(_family) => (
-                                            <FamilyDetails
-                                                me={s().me}
-                                                onChanged={() => void refetch()}
-                                            />
+                                            <>
+                                                <FamilyDetails
+                                                    me={s().me}
+                                                    onChanged={() => void refetch()}
+                                                />
+                                                <NationPicker />
+                                            </>
                                         )}
                                     </Show>
                                 </Members>

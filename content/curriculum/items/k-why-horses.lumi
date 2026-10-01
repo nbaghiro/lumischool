@@ -1,0 +1,11 @@
+item k.why-horses v=1 stars=2 skills=[history.transport, reasoning.explain] {
+  title "Why horses?"
+
+  scene 30x13 {
+    text q "Why did people travel by horse long ago?" narrate width=28 at=canvas(1, 1)
+    choice pick options=["There were no cars yet.", "Horses were faster than cars."] stack=column below=q gap=1
+  }
+
+  answer pick="There were no cars yet."
+  hint "Had cars been invented then?"
+}

@@ -1,0 +1,20 @@
+# Listening: the grown-up reads the phrase from the grown-ups' sheet, or the device plays it, and
+# the child types it. Marked word by word by the dictation checker: accent-strict, since a
+# word with its accent missing is a different spelling; case and punctuation are not marked.
+item language.how-much-listen v=1 skills=[language.market, language.numbers, language.listening, language.spelling] {
+  title "Listen and write"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x24 {
+    column all at=canvas(1, 1) space=1 align=start {
+      foodstall stall foods=["bread", "cheese", "fish", "egg"] names=["[[food.bread]]", "[[food.cheese]]", "[[food.fish]]", "[[food.eggs]]"] costs=["2 €", "5 €", "7 €", "3 €"]
+      text ask "Listen to the [[language.name]], then write it. Your grown-up will read it, or press play." width=32
+      number-input answer width=32
+    }
+  }
+
+  check writing.dictation text="{pick(k, \"[[phrase.how-much-is-the-bread]]\", \"[[phrase.it-costs-two-euros]]\", \"[[phrase.the-strawberries-cost-three-euros]]\", \"[[phrase.it-is-very-expensive]]\", \"[[phrase.a-kilo-of-tomatoes-please]]\", \"[[phrase.how-much-are-the-oranges-they-cost-four]]\")}"
+  hint "Listen to the whole sentence once before you write a word."
+  hint "Write it a few words at a time. Which words from today do you hear?"
+}

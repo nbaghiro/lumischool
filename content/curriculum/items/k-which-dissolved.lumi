@@ -1,0 +1,25 @@
+item k.which-dissolved v=1 skills=[chemistry.dissolving] {
+  title "Which one dissolved?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let yes={pick(k, "sugar", "salt", "sugar", "salt")}
+  let no={pick(k, "sand", "sand", "flour", "pebbles")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x20 {
+    row jars at=canvas(1, 1) space=3 align=end {
+      mixture one things=[no] water=1 names=1
+      mixture two things=[yes] water=1 names=1
+    }
+    text q "Both were stirred into water. Which one dissolved, so you cannot see it?" narrate width=28 below=jars gap=1
+    choice pick options=[no, yes] stack=row below=q gap=1
+  }
+
+  answer pick=yes
+  hint "In which jar is the water clear, with nothing to see?"
+}

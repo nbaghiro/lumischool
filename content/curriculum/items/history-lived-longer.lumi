@@ -1,0 +1,23 @@
+# The three-star question: two lives on one line, and how many years longer one was. Anning lived
+# 1799 to 1847 and Curie 1867 to 1934; the birthdays fall so that year-counting gives the right 19.
+item history.lived-longer v=1 skills=[history.lives, reasoning.plan] {
+  title "Who lived longer?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x16 {
+    timeline line from=1790 to=1940 step=30 years=[1799, 1847, 1867, 1934] labels=["Mary Anning born", "Mary Anning died", "Marie Curie born", "Marie Curie died"] at=canvas(0, 0)
+    text ask "{if k == 0 then \"Mary Anning lived 47 years. Marie Curie lived 66 years. How many years longer did Marie Curie live?\" else \"Mary Anning lived from 1799 to 1847, and Marie Curie from 1867 to 1934. How many years longer did Marie Curie live?\"}" narrate width=26 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer 19
+  hint "{if k == 0 then \"Count on from 47 to 66.\" else \"First find how long each one lived.\"}"
+  hint "Then find the difference between the two."
+}

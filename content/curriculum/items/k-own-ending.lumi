@@ -1,0 +1,10 @@
+item k.own-ending v=1 stars=3 skills=[reading.story-structure, reading.retelling] {
+  title "Make an ending"
+
+  scene 28x11 {
+    text q "Listen: a little duck lost its way in the long grass. It quacked and quacked. Make up an end for the story and tell it to a grown-up." narrate width=26 at=canvas(1, 1)
+  }
+
+  check reading.recited look-for="An ending that follows from the beginning and the middle and finishes the story: the duck is found, or finds its way home." notice=["follows from the story", "finishes it", "own words"]
+  hint "What does the duck need? Who could help it?"
+}

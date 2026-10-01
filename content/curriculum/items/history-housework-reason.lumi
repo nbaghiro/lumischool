@@ -1,0 +1,17 @@
+# The two-star reason: by 1950 many homes had piped water, electricity and a few machines, so
+# fetching water, lighting and heating took far less of a family's day than in 1850.
+item history.housework-reason v=1 skills=[history.change, reasoning.why] {
+  title "More time in 1950"
+  difficulty k
+  let k=0..1
+
+  scene 32x35 {
+    thenandnow street year=pick(k, 1850, 1950) sign=1 things=[if k == 0 then "horse and cart" else "motor car", if k == 0 then "hot-air balloon" else "television aerial"] at=canvas(1, 0)
+    text ask "{if k == 0 then \"In 1850 a family spent hours each day fetching water, carrying coal and making light. Why did a family in 1950 often spend less time on these?\" else \"Many children in 1850 worked to help their family. Why could more children in 1950 stay at school?\"}" narrate width=30 below=street gap=1
+    choice pick options=[if k == 0 then "Taps and electricity did the work" else "School became the law for children", if k == 0 then "Families in 1950 were bigger" else "There were no jobs in 1950", if k == 0 then "Nobody washed in 1950" else "Children in 1950 were older"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Taps and electricity did the work" else "School became the law for children")
+  hint "What did a house in 1950 have that one in 1850 did not?"
+  hint "Think of water, light and heat."
+}

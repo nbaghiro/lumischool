@@ -1,0 +1,19 @@
+# The word written from its picture: [[food.pear]], [[food.strawberry]], [[food.apple]], [[food.orange-fruit]], [[food.tomato]], [[food.lemon]], [[food.banana]].
+# Accent-tolerant: the box takes the word with its accents left off (accents=loose); ñ is a letter and is marked.
+item language.fruit-write v=1 skills=[language.food, language.opinions, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x24 {
+    column all at=canvas(1, 1) space=1 align=start {
+      foodstall stall foods=["{pick(k, \"pear\", \"strawberry\", \"apple\", \"orange\", \"tomato\", \"lemon\", \"banana\")}"] names=[""] costs=[""]
+      text ask "What is in the crate? Write it in [[language.name]], without the little word before it." width=32
+      word-input word options=[pick(k, "[[food.pear]]", "[[food.strawberry]]", "[[food.apple]]", "[[food.orange-fruit]]", "[[food.tomato]]", "[[food.lemon]]", "[[food.banana]]")] accents=loose
+    }
+  }
+
+  answer word=pick(k, "[[food.pear]]", "[[food.strawberry]]", "[[food.apple]]", "[[food.orange-fruit]]", "[[food.tomato]]", "[[food.lemon]]", "[[food.banana]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

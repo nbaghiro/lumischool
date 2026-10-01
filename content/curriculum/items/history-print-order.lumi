@@ -1,0 +1,20 @@
+# Printing numbered from the earliest, from the record: the Diamond Sutra (868), Bi Sheng's clay
+# type (1039 to 1048), Jikji in metal type (1377), Gutenberg's Bible (1452 to 1455), Caxton (1476).
+item history.print-order v=1 skills=[history.medieval, history.order] {
+  title "Printing, step by step"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Diamond Sutra", "Diamond Sutra", "Gutenberg Bible", "Caxton's press", "Jikji", "Caxton's press")}
+  let b={pick(k, "Movable type", "Jikji", "Diamond Sutra", "Movable type", "Gutenberg Bible", "Jikji")}
+  let c={pick(k, "Caxton's press", "Gutenberg Bible", "Movable type", "Diamond Sutra", "Movable type", "Gutenberg Bible")}
+
+  scene 36x23 {
+    printingpress press printed=pick(k, 0, 1, 0, 1, 0, 1) at=canvas(1, 0)
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=34 below=press gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Printing began in East Asia, in China and Korea."
+  hint "It reached Europe in the 1450s and England in the 1470s."
+}

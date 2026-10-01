@@ -1,0 +1,19 @@
+# How many years a place in the town had stood by the year of the map.
+item history.town-standing v=1 skills=[history.local, number.difference] {
+  title "How long had it stood?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let what={pick(k, "school", "station", "church", "market", "bridge", "houses")}
+  let built={pick(k, 1875, 1848, 1150, 1250, 1780, 1890)}
+  let year={pick(k, 1900, 1900, 1850, 1850, 2026, 1950)}
+
+  scene 32x15 {
+    townmap map year=year town=Millbrook labels=1 at=canvas(1, 0)
+    text ask "The {what} was built in {built}. How many years had it stood when this map was drawn?" narrate width=13 right-of=map gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check history.town of=map answer="years-standing({what})"
+  hint "Find the year this map was drawn, at the top."
+  hint "Count on from {built} to that year."
+}

@@ -1,0 +1,22 @@
+# Two great fires on one timeline: Edo in 1657 and London in 1666, from the dated record.
+item history.fire-first v=1 skills=[history.order, history.timeline] {
+  title "Which fire came first?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 24x18 {
+    timeline line from=1640 to=1680 step=10 years=[1657, 1666] labels=["Edo fire", "London fire"] blank=pick(k, -1, 0) at=canvas(1, 0)
+    text ask "{if k == 0 then \"Which great fire came first?\" else \"London burned in 1666 and Edo in 1657. Which fire goes on the empty flag?\"}" narrate width=22 below=line gap=1
+    choice pick options=["Edo fire", "London fire"] below=ask gap=1
+  }
+
+  answer pick="Edo fire"
+  hint "The earlier year is further to the left."
+  hint "Which is smaller, 1657 or 1666?"
+}

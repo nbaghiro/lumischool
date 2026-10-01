@@ -43,6 +43,7 @@ import {
 import { laneOf, movesOf, sessionChanges } from "../../school/family/family";
 import { addDays, mondayOf } from "../../school/record";
 import { TRACK_IDS } from "../../school/tracks";
+import { forChild, variantsIn, type YearLesson } from "../../school/year";
 import type { Kid } from "../../server/db/schema";
 import { familyChanged, openAdd } from "./bar";
 import {
@@ -75,6 +76,10 @@ const trackRank = (track: string): number => {
 };
 
 /** The value `who` carries in the address when the calendar is showing the whole family. */
+/** The lessons one child is shown, by their language and the family's nation. */
+const shownTo = (l: Loaded, kid: string): YearLesson[] =>
+    forChild(l.pack.index.lessons, variantsIn(l.events, kid));
+
 const EVERYONE = "everyone";
 
 type View = "day" | "week" | "month" | "term";
@@ -394,7 +399,7 @@ export function Calendar(): JSX.Element {
         );
         return tracks
             .map((track) => {
-                const lane = laneOf(l.pack.index.lessons, track, who.grade);
+                const lane = laneOf(shownTo(l, who.id), track, who.grade);
                 const aside = set
                     .filter((s) => s.track === track)
                     .map((op): Shelved => ({ lesson: op.lesson, track, op }));
@@ -648,7 +653,7 @@ export function Calendar(): JSX.Element {
                 .filter(
                     (s) =>
                         !here.has(s) &&
-                        laneOf(now().pack.index.lessons, s, props.who.grade).length > 0,
+                        laneOf(shownTo(now(), props.who.id), s, props.who.grade).length > 0,
                 )
                 .sort((a, b) => trackRank(a) - trackRank(b))
                 .map(label);
@@ -1074,7 +1079,7 @@ export function Calendar(): JSX.Element {
         );
         const tracks = (): string[] =>
             [...new Set(now().pack.index.lessons.map((x) => x.subject))]
-                .filter((s) => laneOf(now().pack.index.lessons, s, props.who.grade).length)
+                .filter((s) => laneOf(shownTo(now(), props.who.id), s, props.who.grade).length)
                 .sort((a, b) => trackRank(a) - trackRank(b));
         /** How many of this subject's sessions fall in each week of the term. */
         const counts = (track: string): number[] =>
@@ -1088,7 +1093,7 @@ export function Calendar(): JSX.Element {
         const behind = (track: string) => {
             const kc = now().cal.kids.get(props.who.id);
             if (!kc) return null;
-            const lane = laneOf(now().pack.index.lessons, track, props.who.grade);
+            const lane = laneOf(shownTo(now(), props.who.id), track, props.who.grade);
             const perWeek = kc.tracks.find((x) => x.track === track)?.perWeek ?? 0;
             const up = catchUp(now().cal, kc, props.term, track, lane, perWeek);
             return up.over ? up : null;
@@ -1260,7 +1265,7 @@ export function Calendar(): JSX.Element {
         const drafts = (): Draft[] => {
             const l = now();
             const tracks = [...new Set(l.pack.index.lessons.map((x) => x.subject))].filter(
-                (s) => laneOf(l.pack.index.lessons, s, props.kid.grade).length,
+                (s) => laneOf(shownTo(l, props.kid.id), s, props.kid.grade).length,
             );
             const pauses = tracks.map((track) =>
                 draft(props.kid.id, {

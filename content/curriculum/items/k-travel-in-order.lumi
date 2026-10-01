@@ -1,0 +1,11 @@
+item k.travel-in-order v=1 stars=3 skills=[history.transport, history.order] {
+  title "From oldest to newest"
+
+  scene 30x16 {
+    text q "Put these in order from the oldest to the newest. Write 1, 2 and 3." narrate width=28 at=canvas(1, 1)
+    sequence s items=["an aeroplane", "a horse and cart", "a motor car"] blanks=[p, q, r] below=q gap=1
+  }
+
+  answer p=3 q=1 r=2
+  hint "Which one had no engine at all? Which one flies?"
+}

@@ -1,0 +1,24 @@
+# The toys of the last hundred years on a timeline, one flag left empty: the child places the toy
+# from the others. The drawn years are checked against the dated record.
+item history.toy-flag v=1 skills=[history.timeline, history.order] {
+  title "The empty flag"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let gap={pick(k, 2, 0, 1, 1, 0, 2)}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 30x21 {
+    timeline line from=1900 to=2000 step=20 years=[1902, 1949, 1974] labels=["Teddy bear", "Building bricks", "Puzzle cube"] blank=gap at=canvas(1, 0)
+    text ask "Which toy goes on the empty flag?" narrate width=16 below=line gap=1
+    choice pick options=["teddy bear", "building bricks", "puzzle cube"] stack=column right-of=ask gap=1
+  }
+
+  check history.dates of=line pick=blank
+  hint "Read the two flags that have names. Is the empty one before them, between them or after them?"
+  hint "The oldest of the three is on the left."
+}

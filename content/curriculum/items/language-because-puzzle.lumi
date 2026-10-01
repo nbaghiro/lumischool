@@ -1,0 +1,22 @@
+# Non-routine: what someone likes most, or thinks, read from two or three opinions at once.
+item language.because-puzzle v=1 stars=3 skills=[language.opinions, language.sentences, reasoning.language] {
+  title "Read the opinions"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo says [[opinion.i-love-football-but-i-hate-the-rain]] It is raining and there is a match. Which is true?\", \"Ana says [[opinion.i-like-tennis-i-love-swimming-and-i-hate]] What does she like most?\", \"Leo says [[opinion.i-do-not-like-winter-because-it-is-cold]] Which is true?\")}" width=32
+      choice pick options=[pick(k, "He loves the game but hates the rain.", "swimming", "He likes snow, but not the cold."), pick(k, "He loves the rain.", "tennis", "He likes winter because it is cold."), pick(k, "He hates football.", "running", "He hates snow.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "He loves the game but hates the rain.", "swimming", "He likes snow, but not the cold.")
+  feedback {
+    when (pick == pick(k, "He loves the rain.", "tennis", "He likes winter because it is cold.")) {
+      say "{pick(k, \"Read the second half again. What does he hate?\", \"She likes tennis, but she loves something more.\", \"Read the first half: does he like winter?\")}"
+    }
+  }
+  hint "Put the opinions in order: hate, do not like, like, love."
+  hint "Read each part of the sentence on its own."
+}

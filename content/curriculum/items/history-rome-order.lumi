@@ -1,0 +1,19 @@
+# Events of Rome and Roman Britain numbered from the earliest, from the dated record.
+item history.rome-order v=1 skills=[history.ancient, history.order] {
+  title "Rome in order"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Appian Way", "Caesar lands in Britain", "Romans conquer Britain", "Hadrian's Wall begun", "Vesuvius erupts", "Hadrian's Wall begun")}
+  let b={pick(k, "Caesar lands in Britain", "Appian Way", "Caesar lands in Britain", "Romans conquer Britain", "Augustus first emperor", "Vesuvius erupts")}
+  let c={pick(k, "Hadrian's Wall begun", "Romans conquer Britain", "Hadrian's Wall begun", "Caesar lands in Britain", "Romans conquer Britain", "Augustus first emperor")}
+
+  scene 36x22 {
+    timeline line from=-400 to=200 step=100 years=[] labels=[] at=canvas(1, 0)
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=34 below=line gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Put the BC ones first, the bigger number first."
+  hint "Then the AD ones, the smaller number first."
+}

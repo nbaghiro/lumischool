@@ -1,0 +1,73 @@
+# The time read off a clock: how a language tells the time is its own, so the lesson is written for Spanish.
+lesson language-the-time v=1 format=teach grade=4 unit=4 subject=language levels=[easy, medium, hard] {
+  title "[[time.what-time-is-it]]"
+  goal "Tell the time in [[language.name]]: o'clock, half past, quarter past and quarter to."
+
+  language es {
+    look {
+      scene 27x9 {
+        column all at=canvas(1, 1) space=1 align=start {
+          row clocks space=2 align=end {
+            clock a h=1 m=0
+            clock b h=3 m=30
+            clock d h=5 m=45
+          }
+        }
+      }
+      say """
+        To ask the time, say ¿qué hora es? At one o'clock, es la una. From two on, son las: son las
+        tres. Half past is y media: son las tres y media. Quarter past is y cuarto, and quarter to is
+        menos cuarto, which counts back from the next hour: 5:45 is son las seis menos cuarto.
+        """
+    }
+    do {
+      level easy {
+        worked language.es-the-time-name k=4
+      }
+      show language.es-the-time-name k=2 easy-k=0 hard-k=5
+      show language.es-the-time-meaning k=3 easy-k=2 hard-k=4
+      show language.es-the-time-write k=3 easy-k=2 hard-k=6
+      show language.es-the-time-name k=4 easy-k=1 hard-k=6
+      show language.es-the-time-match k=1 easy-k=0 hard-k=2
+      show language.es-the-time-write k=5 easy-k=3 hard-k=3
+      show language.es-the-time-listen k=3 easy-k=0 hard-k=5
+      show language.es-the-time-say k=1 easy-k=0 hard-k=2
+      level hard {
+        show language.es-the-time-write k=1
+      }
+    }
+    try stars=2 {
+      show language.es-the-time-why k=1 easy-k=0 hard-k=2
+    }
+    try stars=3 {
+      show language.es-the-time-puzzle k=1 easy-k=0 hard-k=2
+    }
+  }
+  remember {
+    say "[[time.what-time-is-it]] Read the short hand for the hour, then the long hand for past or to."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is quarter to read from the hour just gone rather than the next
+    hour. Each clock carries the time, and every naming question offers the near miss, so a wrong
+    pick names the slip. How a language tells the time is its own, so this lesson's questions are
+    written for each language separately. From this grade the written words are marked with their
+    accents: a word typed without its accent is not taken. The dictation is read from this sheet,
+    where it prints as Read aloud, or played by the device. If the child is stuck, write the time in
+    numbers under the clock first, then say it. Off the page, say the time in the language each time
+    you pass a clock today. It meets England's key stage 2 languages programme (years 3 to 6,
+    statutory from age 7): "listen attentively to spoken language and show understanding by joining
+    in and responding"; Japan's grades 5 and 6 foreign languages: "Activities to listen to concrete
+    information regarding familiar and simple matters in daily life such as dates, times and prices
+    etc."; and CEFR A1, "Can understand and use familiar everyday expressions and very basic
+    phrases". The phrases are in [[language.variety]].
+    """
+  language es {
+    level easy {
+      grown-ups "At this level son las cuatro y cuarto is worked first in the teacher's pen, the words to name are es la una and son las cinco and the words to write are media and diez, the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+    }
+    level hard {
+      grown-ups "At this level the words to name are son las ocho y media and son las seis menos cuarto and the words to write are once, diez and cinco, the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+    }
+  }
+}

@@ -1,0 +1,17 @@
+# The two-star reason: countries trade food because some cannot grow in their climate, or not
+# enough of it.
+item history.why-import v=1 skills=[history.food, reasoning.why] {
+  title "Why buy from abroad?"
+  difficulty k
+  let k=0..1
+
+  scene 36x34 {
+    worldmap map names=0 blank=-1 oceans=0 places=["London", "Moscow"] numbered=0 route=0 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Why do shops in London and Moscow sell bananas from far away?\" else \"A country grows lots of wheat but buys rice from abroad. Why might that be?\"}" narrate width=34 below=map gap=1
+    choice pick options=["They cannot grow well enough there", "Food from far away is always fresher", "Nobody there wants to farm"] stack=column below=ask gap=1
+  }
+
+  answer pick="They cannot grow well enough there"
+  hint "What does a banana plant need to grow?"
+  hint "Is the weather in London or Moscow like that?"
+}

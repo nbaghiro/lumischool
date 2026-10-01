@@ -1,0 +1,26 @@
+item k.pattern-count v=1 skills=[patterns.repeating, counting.to-five] {
+  title "How many stars?"
+  difficulty c
+  let c={4, 6, 8, 10}
+  roles ap=apple st=star
+  level easy {
+    let c={4, 6}
+  }
+  level hard {
+    let c={8, 10}
+  }
+
+  scene 34x9 {
+    pattern strip unit=[ap, st] count=c missing=0 at=canvas(1, 1)
+    text ask "How many stars in the pattern?" narrate below=strip gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (c / 2)
+  feedback {
+    when (answer == c) point=strip {
+      say "That counts the apples too. Count only the stars."
+    }
+  }
+  hint "Every other one is a star. Touch the stars as you count."
+}

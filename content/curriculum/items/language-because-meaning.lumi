@@ -1,0 +1,19 @@
+# The language to English: [[phrase.i-like-football-because-it-is-fun]], [[phrase.why]], [[phrase.i-love-swimming]], [[phrase.i-hate-the-rain]], [[phrase.i-prefer-summer]], [[phrase.i-do-not-like-maths-because-it-is-hard]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.because-meaning v=1 skills=[language.opinions, language.sentences] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "boy", "girl", "girl", "boy", "gran", "boy")] says=[pick(k, "[[phrase.i-like-football-because-it-is-fun]]", "[[phrase.why]]", "[[phrase.i-love-swimming]]", "[[phrase.i-hate-the-rain]]", "[[phrase.i-prefer-summer]]", "[[phrase.i-do-not-like-maths-because-it-is-hard]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "I do not like maths because it is hard.", "I hate the rain.", "Why?", "I do not like maths because it is hard.", "I do not like maths because it is hard.", "I hate the rain."), pick(k, "I like football because it is fun.", "Why?", "I prefer summer.", "I hate the rain.", "I love swimming.", "I do not like maths because it is hard."), pick(k, "I love swimming.", "I prefer summer.", "I hate the rain.", "Why?", "I prefer summer.", "I love swimming."), pick(k, "I prefer summer.", "I love swimming.", "I love swimming.", "I love swimming.", "I hate the rain.", "I prefer summer.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "I like football because it is fun.", "Why?", "I love swimming.", "I hate the rain.", "I prefer summer.", "I do not like maths because it is hard.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

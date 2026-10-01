@@ -1,0 +1,21 @@
+item k.more-claps v=1 skills=[reading.syllables] {
+  title "More claps"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let a={pick(k, "cat", "sun", "spider", "rocket")}
+  let b={pick(k, "rabbit", "butterfly", "ant", "bicycle")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 24x10 {
+    text ask "Clap {a}. Clap {b}. Which one has more claps?" narrate width=22 at=canvas(1, 1)
+    choice pick options=[a, b] stack=row below=ask gap=1
+  }
+
+  answer pick=(if k == 2 then a else b)
+  hint "Clap the first word and count. Now clap the second."
+}

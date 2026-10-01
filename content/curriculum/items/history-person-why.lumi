@@ -1,0 +1,25 @@
+# The two-star reason: why the person is still remembered, a reason and not a fact about them.
+item history.person-why v=1 skills=[history.significance, reasoning.why] {
+  title "Why remember them?"
+  let n=0..4
+  let who={pick(n, "Florence Nightingale", "Rosa Parks", "Ino Tadataka", "Yuri Gagarin", "Yuan Longping")}
+  let right={pick(n, "Nurses are still trained the way she began", "People still use buses and trains open to all", "Maps of Japan still follow his way of measuring", "People have gone into space ever since", "Much of the world's rice still comes from his kind")}
+
+  scene 36x20 {
+    person p pose=think age=grownup hair=short colour=brown top=mint at=canvas(1, 0)
+    text ask "Ben says we remember {who} because they were famous. Which is a better reason?" narrate width=26 right-of=p gap=2
+    choice pick options=["{right}", "They lived a long time ago", "They had a well-known name"] stack=column below=p gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "They lived a long time ago") point=p {
+      say "Many people lived long ago. What is different today because of this one?"
+    }
+    when (pick == "They had a well-known name") point=p {
+      say "That is being famous again. What did they change?"
+    }
+  }
+  hint "What is different today because of {who}?"
+  hint "A good reason says what changed, not how famous someone is."
+}

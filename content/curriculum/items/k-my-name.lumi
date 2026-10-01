@@ -1,0 +1,10 @@
+item k.my-name v=1 skills=[writing.letters, writing.letter-formation] {
+  title "My name"
+
+  scene 30x9 {
+    text ask "Write your name on the line. The first letter is a capital." narrate width=28 at=canvas(1, 1)
+    writinglines line lines=1 width=26 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="The name is written from left to right with a capital first letter and the rest small, each letter sitting on the line." notice=["left to right", "a capital first", "letters on the line"] ask="Which letter in your name is the tallest?"
+}

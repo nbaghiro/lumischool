@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[town.the-square]], [[town.the-cafe]], [[town.the-shop]], [[town.the-park]], [[town.the-beach]], [[town.the-museum]], [[town.the-station]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.directions-name v=1 skills=[language.town, language.directions] {
+  title "Follow the directions"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x46 {
+    column all at=canvas(1, 1) space=1 align=start {
+      townplan plan places=["[[town.the-cafe]]", "[[town.the-shop]]", "[[town.the-park]]", "[[town.the-beach]]", "[[town.the-museum]]", "[[town.the-station]]", "[[town.the-square]]"]
+      text ask "{pick(k, \"Start at the child and follow the directions. [[town.go-straight-on]] Where are you?\", \"Start at the child and follow the directions. [[town.it-is-on-the-left]], before the first street. Which place is it?\", \"Start at the child and follow the directions. [[town.it-is-on-the-right]], before the first street. Which place is it?\", \"Start at the child and follow the directions. [[town.the-first-on-the-left]] Where are you?\", \"Start at the child and follow the directions. [[town.the-first-on-the-right]] Where are you?\", \"Start at the child and follow the directions. [[town.the-second-on-the-left]] Where are you?\", \"Start at the child and follow the directions. [[town.the-second-on-the-right]] Where are you?\")}" width=32
+      choice pick options=[pick(k, "[[town.the-museum]]", "[[town.the-museum]]", "[[town.the-cafe]]", "[[town.the-cafe]]", "[[town.the-station]]", "[[town.the-shop]]", "[[town.the-museum]]"), pick(k, "[[town.the-square]]", "[[town.the-cafe]]", "[[town.the-beach]]", "[[town.the-park]]", "[[town.the-park]]", "[[town.the-museum]]", "[[town.the-cafe]]"), pick(k, "[[town.the-shop]]", "[[town.the-park]]", "[[town.the-park]]", "[[town.the-beach]]", "[[town.the-beach]]", "[[town.the-station]]", "[[town.the-shop]]"), pick(k, "[[town.the-park]]", "[[town.the-shop]]", "[[town.the-shop]]", "[[town.the-station]]", "[[town.the-museum]]", "[[town.the-park]]", "[[town.the-station]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[town.the-square]]", "[[town.the-cafe]]", "[[town.the-shop]]", "[[town.the-park]]", "[[town.the-beach]]", "[[town.the-museum]]", "[[town.the-station]]")
+  feedback {
+    when (pick == pick(k, "[[town.the-shop]]", "[[town.the-shop]]", "[[town.the-cafe]]", "[[town.the-beach]]", "[[town.the-station]]", "[[town.the-park]]", "[[town.the-museum]]")) point=plan {
+      say "{pick(k, \"That shop is on the right. Straight on is to the end.\", \"That shop is on the right. Read the direction again.\", \"That café is on the left. Read the direction again.\", \"The beach is the first on the right. Which side did it say?\", \"The station is the second on the right. Which street did it say?\", \"The park is the first on the left. Which street did it say?\", \"The museum is the second on the left. Which side did it say?\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

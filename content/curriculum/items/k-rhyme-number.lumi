@@ -1,0 +1,23 @@
+# Change the first sound and a number comes out: the child has to hear the rhyme and find the one
+# number word that makes it.
+item k.rhyme-number v=1 stars=3 skills=[reading.rhyme, reading.phonics] {
+  title "A number that rhymes"
+  difficulty k
+  let k=0..2
+  let w={pick(k, "hen", "mix", "line")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 26x11 {
+    text ask "Change the first sound of {w} to make a number. Which number is it?" narrate width=24 at=canvas(1, 1)
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 10, 6, 9)
+  hint "Count to ten out loud, slowly."
+  hint "Which number sounds like {w} at the end?"
+}

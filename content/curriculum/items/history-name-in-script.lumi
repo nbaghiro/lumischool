@@ -1,0 +1,11 @@
+# Marked by a grown-up: the child's name written in another script, with a table found together.
+item history.name-in-script v=1 stars=3 skills=[history.writing, history.enquiry] {
+  title "My name in another script"
+
+  scene 36x12 {
+    book open at=canvas(1, 0)
+    text ask "With a grown-up, find a table of Greek, Russian or Japanese letters. Write your name in it, sound by sound, and say which sounds were hard to write." width=16 right-of=open gap=1
+  }
+
+  check writing.by-eye look-for="The child's name written in another script from a table of its letters or signs, matching each sound in turn, and one sound the script writes differently or lacks (such as the English th in Russian, or a final consonant in kana)." notice=["Found a table of the script", "Wrote each sound in turn", "Name can be read back from the table", "Noticed a sound that was hard to write"] ask="Which sound in your name was hardest to write, and why?"
+}

@@ -1,0 +1,23 @@
+item k.which-can-fly v=1 skills=[nature.minibeasts] {
+  title "Which one can fly?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let a={pick(k, "snail", "ant", "spider")}
+  let b={pick(k, "bee", "butterfly", "snail")}
+  let c={pick(k, "spider", "snail", "bee")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 28x16 {
+    minibeasts row kinds=[a, b, c] spots=4 legs=false at=canvas(1, 1)
+    text ask "Which of these minibeasts can fly?" narrate width=26 below=row gap=1
+    choice pick options=[a, b, c] stack=row below=ask gap=1
+  }
+
+  answer pick=pick(k, b, b, c)
+  hint "Look for wings."
+}

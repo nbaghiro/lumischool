@@ -1,0 +1,22 @@
+# A whole label of three sounds, one letter for each: the step from hearing sounds to writing them.
+item k.label-word v=1 skills=[writing.spelling, reading.segmenting] {
+  title "Write the label"
+  difficulty (if w == "cat" or w == "sun" then 0 else 1)
+  let w={"cat", "sun", "hen", "cup"}
+  level easy {
+    let w={"cat", "sun"}
+  }
+  level hard {
+    let w={"hen", "cup"}
+  }
+
+  scene 24x19 {
+    art pic asset="{w}" at=canvas(1, 1)
+    text ask "Say the word one sound at a time. Write one letter for each sound on the label." narrate width=22 below=pic gap=1
+    word-input label options=[w] letters=3 below=ask gap=1
+  }
+
+  answer label=w
+  hint "How many sounds do you hear? That is how many letters."
+  hint "Say the sounds again, one at a time, and write each one as you say it."
+}

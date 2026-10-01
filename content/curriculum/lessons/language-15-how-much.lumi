@@ -1,0 +1,70 @@
+# Prices in euros at the ferry town's market, and dear and cheap.
+lesson language-how-much v=1 format=teach grade=3 unit=4 subject=language levels=[easy, medium, hard] {
+  title "[[phrase.how-much-is-it]]"
+  goal "Ask how much something costs in [[language.name]] and understand a price in euros."
+
+  look {
+    scene 28x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        foodstall stall foods=["bread", "cheese", "fish", "egg"] names=["[[food.bread]]", "[[food.cheese]]", "[[food.fish]]", "[[food.eggs]]"] costs=["2 €", "5 €", "7 €", "3 €"]
+      }
+    }
+    say """
+      At the market, ask [[phrase.how-much-is-it]], how much does it cost? The answer is a price:
+      [[phrase.it-costs-two-euros]], it costs two euros. The ferry town is in Spain, where people
+      pay in euros, written with €. Something that costs a lot is [[market.expensive]], and
+      something that costs little is [[market.cheap]].
+      """
+  }
+  do {
+    level easy {
+      worked language.how-much-name k=4
+    }
+    show language.how-much-name k=2 easy-k=0 hard-k=5
+    show language.how-much-meaning k=3 easy-k=2 hard-k=4
+    show language.how-much-write k=4 easy-k=2 hard-k=6
+    show language.how-much-name k=4 easy-k=1 hard-k=6
+    show language.how-much-match k=1 easy-k=0 hard-k=2
+    show language.how-much-write k=5 easy-k=4 hard-k=3
+    show language.how-much-listen k=3 easy-k=0 hard-k=5
+    show language.how-much-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.how-much-write k=2
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-how-much-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.how-much-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[phrase.how-much-is-it]] How much is it? [[phrase.it-costs-two-euros]] It costs two euros."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is a price heard as the teen it sounds like: two and twelve, three
+    and thirteen, five and fifteen, which every naming question offers side by side. Say both aloud
+    and ask which the card shows. Prices are in euros because the ferry town is in Spain; the
+    stall's cards show the digits, so the child only turns them into words. The listening question
+    is a dictation: read the sentence aloud from this sheet, where it prints as Read aloud, or let
+    the device play it. It is marked word by word, and a missing accent counts there, while the
+    words typed on their own in this lesson are taken without their accents. If the child is stuck,
+    set up a shop at home with price labels, and buy and sell in the language. Off the page, look at
+    a price in a shop and say it in the language. It meets England's key stage 2 languages programme
+    (years 3 to 6, statutory from age 7): "engage in conversations; ask and answer questions";
+    Japan's grades 5 and 6 foreign languages: "Activities to listen to concrete information
+    regarding familiar and simple matters in daily life such as dates, times and prices etc."; and
+    CEFR A2, "Can understand sentences and frequently used expressions related to areas of most
+    immediate relevance (e.g. very basic personal and family information, shopping, local geography,
+    employment)". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[market.three-euros]] is worked first in the teacher's pen, the words to name are [[market.two-euros]] and [[market.five-euros]] and the words to write are [[num.ten]] and [[num.twelve]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[market.twelve-euros]] and [[market.four-euros]] and the words to write are [[num.fifteen]], [[num.three]] and [[num.ten]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

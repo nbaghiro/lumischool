@@ -1,0 +1,26 @@
+# Fighting fire then and now: in 1666 people had buckets and hooks; a fire engine with a motor came
+# more than two hundred years later.
+item history.fire-then-now v=1 skills=[history.fire, history.then-and-now] {
+  title "Fighting fire then"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x22 {
+    row pics at=canvas(1, 1) space=2 align=end {
+      firetruck truck
+      blaze fire tongues=3
+    }
+    text ask "{if k == 0 then \"Which of these could people in 1666 not have used to fight the fire?\" else \"People in 1666 fought fire by hand. Which of these came long after 1666?\"}" narrate width=32 below=pics gap=1
+    choice pick options=["Leather buckets of water", "A fire engine with a motor", "Long hooks to pull down houses"] stack=column below=ask gap=1
+  }
+
+  answer pick="A fire engine with a motor"
+  hint "Which of the three needs an engine?"
+  hint "When were the first motor cars made?"
+}

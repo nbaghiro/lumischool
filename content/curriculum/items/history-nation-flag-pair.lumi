@@ -1,0 +1,18 @@
+# The easiest flag question: ours beside one very different flag.
+item history.nation-flag-pair v=1 skills=[history.nation, history.symbols] {
+  title "Which is ours?"
+  let n=0..4
+  let ours={pick(n, "britain", "usa", "japan", "russia", "china")}
+  let other={pick(n, "japan", "japan", "usa", "china", "russia")}
+  let country={pick(n, "the United Kingdom", "the United States", "Japan", "Russia", "China")}
+
+  scene 22x12 {
+    flags two flags=["{other}", "{ours}"] letters=1 at=canvas(1, 0)
+    text ask "Which is the flag of {country}?" narrate width=12 below=two gap=1
+    choice pick options=["A", "B"] right-of=ask gap=1
+  }
+
+  answer pick="B"
+  hint "Which one have you seen flying in our country?"
+  hint "Say the colours of each flag out loud."
+}

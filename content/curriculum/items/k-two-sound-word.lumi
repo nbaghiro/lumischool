@@ -1,0 +1,25 @@
+# Two sounds are the shortest blend there is. The grown-up reads the three words, and the child
+# says the buttons and picks the word they make.
+item k.two-sound-word v=1 skills=[reading.blending] {
+  title "Two sounds"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let w={pick(k, "up", "in", "at", "on")}
+  let o1={pick(k, "on", "at", "in", "up")}
+  let o2={pick(k, "at", "up", "on", "in")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 24x16 {
+    soundbuttons sb graphemes=["{pick(k, \"u\", \"i\", \"a\", \"o\")}", "{pick(k, \"p\", \"n\", \"t\", \"n\")}"] count=false at=canvas(1, 1)
+    text ask "Say the two sounds and push them together. Which word is it?" narrate width=22 below=sb gap=1
+    choice pick options=[o1, w, o2] stack=row below=ask gap=1
+  }
+
+  answer pick=w
+  hint "Say the first sound, then the second. Say them again, faster."
+}

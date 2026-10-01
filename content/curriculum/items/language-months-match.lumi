@@ -1,0 +1,17 @@
+# Four words to their English, 4 sets, the later sets with the words most often mixed up.
+item language.months-match v=1 skills=[language.time] {
+  title "Match the words"
+  difficulty pick(k, 0, 0, 1, 2)
+  let k=0..3
+
+  scene 34x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Write the number of its English next to each [[language.name]] word." width=32
+      match m left=[pick(k, "[[time.january]]", "[[time.may]]", "[[time.september]]", "[[time.march]]"), pick(k, "[[time.february]]", "[[time.june]]", "[[time.october]]", "[[time.may]]"), pick(k, "[[time.march]]", "[[time.july]]", "[[time.november]]", "[[time.june]]"), pick(k, "[[time.april]]", "[[time.august]]", "[[time.december]]", "[[time.july]]")] right=[pick(k, "March", "August", "November", "May"), pick(k, "January", "May", "September", "July"), pick(k, "February", "June", "December", "June"), pick(k, "April", "July", "October", "March")] blanks=[a, b, c, d]
+    }
+  }
+
+  answer a=pick(k, 2, 2, 2, 4) b=pick(k, 3, 3, 4, 1) c=pick(k, 1, 4, 1, 3) d=pick(k, 4, 1, 3, 2)
+  hint "Start with the word you are surest of, and cross its English off."
+  hint "Two words look alike. Which letter is different, and what does it change?"
+}

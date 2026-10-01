@@ -1,0 +1,19 @@
+# The two-star reason for each country's unit (n as in n6-order).
+item history.n6-why v=1 skills=[history.nation, reasoning.why] {
+  title "Why?"
+  let n=0..4
+  let ask={pick(n, "Why does Magna Carta of 1215 still matter?", "Why does the Constitution split power three ways?", "What did the vote of 1946 change for Japan's women?", "Why was Russia's 1993 constitution put to a vote of the people?", "Why do deputies come to the Congress from every province?")}
+  let right={pick(n, "It said the king too must keep the law", "So no one part has all the power", "They could vote for the first time", "So the people could agree to it", "So every part of the country is represented")}
+  let w1={pick(n, "It gave every child a school", "So there are three capitals", "They could no longer work", "So nobody would read it", "So the meeting is longer")}
+  let w2={pick(n, "It chose London as the capital", "So laws are made three times", "They had to move to Tokyo", "Because the Duma had closed for ever", "Because Beijing has no people")}
+
+  scene 36x24 {
+    timeline line from=1200 to=2000 step=100 years=[] labels=[] at=canvas(0, 0)
+    text ask "{ask}" narrate width=34 below=line gap=1
+    choice pick options=["{right}", "{w1}", "{w2}"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "What problem did people have at the time?"
+  hint "Which answer solves that problem?"
+}

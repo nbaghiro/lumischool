@@ -1,0 +1,22 @@
+# A reason: the ending of a describing word, a plural, and the one word that is wrong.
+item language.es-my-monster-why v=1 stars=2 skills=[language.describing, language.numbers, reasoning.language] {
+  title "Endings that agree"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"La jirafa es ___ (tall). Which word, and why?\", \"Why is it dos ojos but un ojo?\", \"Ana writes: Es redonda y tiene tres ojo. Which word is wrong?\")}" width=32
+      choice pick options=[pick(k, "alta: jirafa takes la", "More than one takes s.", "ojo: tres needs ojos"), pick(k, "alto: all animals take o", "Dos is a longer word.", "redonda: it should be redondo"), pick(k, "altos: it is tall", "Ojos is a different thing.", "tiene: it should be es")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "alta: jirafa takes la", "More than one takes s.", "ojo: tres needs ojos")
+  feedback {
+    when (pick == pick(k, "alto: all animals take o", "Dos is a longer word.", "redonda: it should be redondo")) {
+      say "{pick(k, \"El perro is alto, but look at la before jirafa.\", \"The length of dos does not matter. How many eyes?\", \"Redonda can be right for a la word. Look at tres.\")}"
+    }
+  }
+  hint "El or la? One or more than one?"
+  hint "Look at the ending of each word."
+}

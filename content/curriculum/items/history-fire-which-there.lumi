@@ -1,0 +1,25 @@
+# Pepys's diary, written by a Londoner as the fire burned, against a history book of 1950.
+item history.fire-which-there v=1 skills=[history.sources, history.fire] {
+  title "Who saw the fire?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x35 {
+    column cards at=canvas(1, 0) space=1 align=start {
+      sourcecard a title="{if k == 0 then \"Samuel Pepys's diary\" else \"A history of London\"}" kind=pick(k, 3, 2) who="{if k == 0 then \"Samuel Pepys, who lived in London\" else \"A historian\"}" when="{if k == 0 then \"2 September 1666\" else \"1950\"}" where="{if k == 0 then \"London\" else \"not stated\"}" there=pick(k, 1, 0) ask=4
+      sourcecard b title="{if k == 0 then \"A history of London\" else \"Samuel Pepys's diary\"}" kind=pick(k, 2, 3) who="{if k == 0 then \"A historian\" else \"Samuel Pepys, who lived in London\"}" when="{if k == 0 then \"1950\" else \"2 September 1666\"}" where="{if k == 0 then \"not stated\" else \"London\"}" there=pick(k, 0, 1) ask=4
+    }
+    text ask "Which was written by someone who saw the fire?" narrate width=34 below=cards gap=1
+    choice pick options=["Samuel Pepys's diary", "A history of London"] stack=column below=ask gap=1
+  }
+
+  check history.sources of="a b" pick=the-first-hand
+  hint "Read the when row of each card. Which was written while the fire burned?"
+  hint "A person who saw it made a first-hand source."
+}

@@ -1,0 +1,18 @@
+# Picture or situation to the language: hablo, hablas, habla, hablamos, nadan, bailas, cantamos, habláis, escucha, the plainer first.
+# Each version offers the word most often taken for it.
+item language.es-verbs-name v=1 skills=[language.grammar, language.sentences] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2, 2)
+  let k=0..8
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Yo ___ español. (hablar)\", \"¿Tú ___ inglés? (hablar)\", \"Ana ___ francés. (hablar)\", \"Nosotros ___ con la abuela. (hablar)\", \"Ellos ___ en el mar. (nadar)\", \"Tú ___ muy bien. (bailar)\", \"Leo y yo ___ en el coro. (cantar)\", \"Vosotros ___ mucho. (hablar)\", \"Mi padre ___ la radio. (escuchar)\")}" width=32
+      choice pick options=[pick(k, "hablo", "habla", "hablan", "hablamos", "nada", "bailas", "cantan", "hablan", "escucha"), pick(k, "hablas", "hablas", "hablo", "hablan", "nadan", "baila", "cantamos", "hablamos", "escuchas"), pick(k, "habla", "hablo", "habla", "hablas", "nadamos", "bailo", "canto", "habláis", "escuchan")]
+    }
+  }
+
+  answer pick=pick(k, "hablo", "hablas", "habla", "hablamos", "nadan", "bailas", "cantamos", "habláis", "escucha")
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

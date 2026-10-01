@@ -1,0 +1,65 @@
+# Six colours, each named on the tray under its paint in English, so the page reads in print.
+lesson language-colours v=1 format=teach grade=1 unit=7 subject=language levels=[easy, medium, hard] {
+  title "[[colour.red|cap]], [[colour.blue]], [[colour.yellow]]"
+  goal "Name six colours in [[language.name]]."
+
+  look {
+    scene 22x7 {
+      column all at=canvas(1, 1) space=1 align=start {
+        mixingtray paints wells=["red", "blue", "yellow", "green", "white", "black"] labels=true
+      }
+    }
+    say """
+      Colours: [[colour.red]] is red, [[colour.blue]] is blue, [[colour.yellow]] is yellow and
+      [[colour.green]] is green. [[colour.white|cap]] is white and [[colour.black]] is black. The
+      sea at the ferry town is blue, the houses are white and the sun is yellow: say each of them in
+      the language.
+      """
+  }
+  do {
+    level easy {
+      worked language.colours-name k=3
+    }
+    show language.colours-name k=2 easy-k=0 hard-k=4
+    show language.colours-meaning k=5 hard-k=0
+    show language.colours-write k=1 easy-k=2 hard-k=3
+    show language.colours-name k=3 easy-k=1 hard-k=5
+    show language.colours-match k=1 easy-k=0 hard-k=2
+    show language.colours-write k=4 hard-k=2
+    show language.colours-meaning k=0 hard-k=4
+    show language.colours-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.colours-write k=1
+    }
+  }
+  try stars=2 {
+    show language.colours-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.colours-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[colour.red|cap]], [[colour.blue]], [[colour.yellow]], [[colour.green]], [[colour.white]], [[colour.black]]: red, blue, yellow, green, white, black."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is mixing [[colour.white]] and [[colour.black]], the opposites, and
+    [[colour.blue]] and [[colour.green]]. The paint on the tray has its English name written under
+    it, so on paper the question still reads: the child turns the English name into the language.
+    The star questions use what a child knows about the world (the sun, the grass) rather than a
+    colour on the page. [[colour.yellow|cap]] is said [[colour.yellow|say]]. If the child is stuck,
+    go back to the look and say the six colours together, touching each paint. Off the page, sort a
+    handful of crayons into colours and name each pile. It meets England's key stage 2 languages
+    programme (years 3 to 6, statutory from age 7): "broaden their vocabulary"; Japan's grades 3 and
+    4 foreign language activities: "Activities to listen to simple words and phrases and basic
+    expressions about their familiar people and their surroundings and match the phrases and
+    expressions with illustrations and photographs"; and CEFR A1, "Can understand and use familiar
+    everyday expressions and very basic phrases". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[colour.white]] is worked first in the teacher's pen, the words to name are [[colour.red]] and [[colour.blue]] and the words to write are [[colour.green]] and [[colour.yellow]], the plainer ones of the lesson, with the first set to match and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[colour.yellow]] and [[colour.black]] and the words to write are [[colour.white]], [[colour.green]] and [[colour.blue]], the ones most often mixed up, with the last set to match, a third word to write and the last version of each star question."
+  }
+}

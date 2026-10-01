@@ -1,0 +1,19 @@
+# A festival the family's country keeps, its month looped on the year wheel, and the season asked.
+# China's Spring Festival falls in late January or February, which is still winter.
+item history.nation-festival v=1 skills=[history.nation, time.months] {
+  title "Our festival"
+  let n=0..4
+  let fest={pick(n, "Bonfire Night, on 5 November", "Independence Day, on 4 July", "Children's Day, on 5 May", "New Year, on 1 January", "the Spring Festival, in January or February")}
+  let month={pick(n, "Nov", "Jul", "May", "Jan", "Feb")}
+  let key={pick(n, "Autumn", "Summer", "Spring", "Winter", "Winter")}
+
+  scene 34x22 {
+    yearwheel wheel seasons=true mark="{month}" at=canvas(1, 0)
+    text ask "We keep {fest}. In which season is it?" narrate width=16 right-of=wheel gap=2
+    choice pick options=["Spring", "Summer", "Autumn", "Winter"] stack=column below=ask gap=1
+  }
+
+  answer pick=key
+  hint "Find the looped month on the wheel."
+  hint "Read the season behind that month."
+}

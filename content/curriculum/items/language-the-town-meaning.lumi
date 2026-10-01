@@ -1,0 +1,19 @@
+# The language to English: [[phrase.there-is-a-market]], [[phrase.there-is-no-beach]], [[phrase.is-there-a-park]], [[phrase.in-my-town-there-is-a-church]], [[phrase.the-station-is-nearby]], [[phrase.i-live-in-a-small-town]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.the-town-meaning v=1 skills=[language.town] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "boy", "gran", "girl", "boy", "gran")] says=[pick(k, "[[phrase.there-is-a-market]]", "[[phrase.there-is-no-beach]]", "[[phrase.is-there-a-park]]", "[[phrase.in-my-town-there-is-a-church]]", "[[phrase.the-station-is-nearby]]", "[[phrase.i-live-in-a-small-town]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "I live in a small town.", "In my town there is a church.", "There is no beach.", "I live in a small town.", "I live in a small town.", "In my town there is a church."), pick(k, "There is a market.", "There is no beach.", "The station is nearby.", "In my town there is a church.", "Is there a park?", "I live in a small town."), pick(k, "Is there a park?", "The station is nearby.", "In my town there is a church.", "There is no beach.", "The station is nearby.", "Is there a park?"), pick(k, "The station is nearby.", "Is there a park?", "Is there a park?", "Is there a park?", "In my town there is a church.", "The station is nearby.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "There is a market.", "There is no beach.", "Is there a park?", "In my town there is a church.", "The station is nearby.", "I live in a small town.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

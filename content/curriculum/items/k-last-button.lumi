@@ -1,0 +1,29 @@
+item k.last-button v=1 skills=[reading.phonics, reading.segmenting] {
+  title "The last sound"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let w={pick(k, "cat", "sun", "duck", "cup")}
+  let last={pick(k, "t", "n", "k", "p")}
+  let o1={pick(k, "c", "s", "d", "c")}
+  let o2={pick(k, "a", "u", "u", "u")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 26x18 {
+    art pic asset="{w}" at=canvas(1, 1)
+    text ask "Say the word. Which sound is at the very end?" narrate width=24 below=pic gap=1
+    choice pick options=[o1, o2, last] stack=row below=ask gap=1
+  }
+
+  answer pick=last
+  feedback {
+    when (pick == o1) point=pic {
+      say "That is the first sound. Say the whole word and listen to where it stops."
+    }
+  }
+  hint "Say the word slowly, all the way to the end."
+}

@@ -1,0 +1,25 @@
+# Two accounts of a voyage on source cards: which was written by someone who sailed.
+item history.accounts-who v=1 skills=[history.sources, history.voyages] {
+  title "Who sailed?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let first={if k == 0 or k == 2 then 1 else 0}
+  let mag={k <= 1}
+  let t1={if mag then "Pigafetta's journal" else "Ma Huan's survey of the ocean shores"}
+  let w1={if mag then "Antonio Pigafetta, who sailed with the fleet" else "Ma Huan, an interpreter on the fleet"}
+  let d1={if mag then "1519 to 1522" else "about 1416 to 1451"}
+  let p1={if mag then "on board the ships" else "written from the voyages"}
+
+  scene 36x37 {
+    column cards at=canvas(1, 0) space=1 align=start {
+      sourcecard a title="{if first == 1 then t1 else \"A book about the great explorers\"}" kind=pick(first, 2, 3) who="{if first == 1 then w1 else \"A writer of children's books\"}" when="{if first == 1 then d1 else \"2010\"}" where="{if first == 1 then p1 else \"not stated\"}" there=first ask=4
+      sourcecard b title="{if first == 0 then t1 else \"A book about the great explorers\"}" kind=pick(first, 3, 2) who="{if first == 0 then w1 else \"A writer of children's books\"}" when="{if first == 0 then d1 else \"2010\"}" where="{if first == 0 then p1 else \"not stated\"}" there=(1 - first) ask=4
+    }
+    text ask "Which was written by someone who was on the voyage?" narrate width=34 below=cards gap=1
+    choice pick options=["{t1}", "A book about the great explorers"] stack=column below=ask gap=1
+  }
+
+  check history.sources of="a b" pick=the-first-hand
+  hint "Read the who row of each card."
+  hint "Did the writer sail with the fleet?"
+}

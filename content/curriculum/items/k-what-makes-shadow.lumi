@@ -1,0 +1,19 @@
+item k.what-makes-shadow v=1 skills=[physics.light, physics.shadows] {
+  title "What makes a shadow?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x16 {
+    text q "{pick(k, \"You stand in the sun. What makes your shadow?\", \"Ada holds a teddy in front of a torch. Where is the teddy's shadow?\", \"Can you see a shadow in a room with no light at all?\", \"Does a clear glass window make a dark shadow like a door does?\")}" narrate width=28 at=canvas(1, 1)
+    choice pick options=[pick(k, "my body blocks the sunlight", "on the side away from the torch", "no", "no"), pick(k, "the ground makes it", "on the same side as the torch", "yes", "yes")] stack=column below=q gap=1
+  }
+
+  answer pick=pick(k, "my body blocks the sunlight", "on the side away from the torch", "no", "no")
+  hint "A shadow is where light cannot reach. What is in the way of the light?"
+}

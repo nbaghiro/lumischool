@@ -1,0 +1,82 @@
+# The national unit for China: the flag, the capital and a festival. Items take n=4. The
+# facts are general knowledge recalled for this lesson (see .docs/history.md, "Sources").
+lesson history-g1-china-our-country v=1 format=teach grade=1 unit=9 subject=history nation=china levels=[easy, medium, hard] {
+  title "Our flag, our capital, our festival"
+  goal "Find our country's flag and its capital, and say when our country keeps a festival."
+
+  look {
+    scene 36x25 {
+      column all at=canvas(1, 0) space=1 align=start {
+        flags one flags=["china"] letters=0
+        worldmap map names=0 blank=-1 oceans=0 places=["Beijing"] numbered=0 route=0
+      }
+    }
+    say """
+      Our country is China. Its flag is the five-star red flag. Its capital city is Beijing, where the
+      country's leaders meet, and you can find it on the map of the world. Every year we keep
+      the Spring Festival, the new year, in January or February, with dumplings and red decorations.
+      """
+  }
+  do {
+    level easy {
+      worked history.nation-continent n=4
+      show history.nation-flag-pair n=4
+      show history.nation-flag n=4 k=0
+      show history.nation-flag-colours n=4
+      show history.nation-capital n=4 k=0
+      show history.nation-capital-name n=4 k=0
+      show history.nation-ocean n=4
+      show history.nation-festival-month n=4
+    }
+    level medium {
+      show history.nation-flag n=4 k=0
+      show history.nation-flag-colours n=4
+      show history.nation-flag n=4 k=1
+      show history.nation-capital n=4 k=0
+      show history.nation-continent n=4
+      show history.nation-capital n=4 k=1
+      show history.nation-capital-name n=4 k=0
+    }
+    level hard {
+      show history.nation-flag n=4 k=1
+      show history.nation-flag-colours n=4
+      show history.nation-capital n=4 k=1
+      show history.nation-continent n=4
+      show history.nation-capital-name n=4 k=1
+      show history.nation-ocean n=4
+      show history.nation-festival-month n=4
+    }
+  }
+  story {
+    show history.nation-festival n=4
+    level hard {
+      show history.nation-flag-pair n=4
+    }
+  }
+  try stars=2 {
+    show history.nation-city-not-country n=4
+  }
+  try stars=3 {
+    show history.design-a-flag
+  }
+  remember {
+    say "Our country is China. Its capital is Beijing."
+  }
+
+  grown-ups """
+    The idea is that a country has signs everyone in it shares: a flag, a capital city and the days
+    it keeps together. The way in finds the flag among five; the core reads its colours, finds the
+    capital on the world map and names the continent it is on; the story finds the season of a
+    festival on the year wheel. The wrong idea to watch for is a capital taken for the country
+    itself, which the two-star question asks about. If the child is stuck on the map, find the
+    country together first and then the dot inside it. The three-star question is for you to mark:
+    a flag for your family, with a meaning for each colour and shape. Off the page, look for your
+    flag in your town and talk about why it is flown. In China 道德与法治 in the first grades takes up the homeland, its flag and its festivals, and this lesson is a first step into it.
+    """
+  level easy {
+    grown-ups "At this level a worked example finds the continent, the flag is first found beside one very different flag, the flags and the dots on the map are in the order the lesson shows them, and the capital is named from the country only."
+  }
+  level hard {
+    grown-ups "At this level the flags and the dots are shuffled, the capital is asked the other way round (which country is it the capital of), and the oceans and the month of the festival are added."
+  }
+}

@@ -1,0 +1,19 @@
+# How many letters or signs different scripts use: English 26, Greek 24, Russian 33, Japanese
+# hiragana 46 basic signs; Chinese uses thousands of characters.
+item history.letters-count v=1 skills=[history.writing, number.difference] {
+  title "How many signs?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ask={pick(k, "English has 26 letters and Greek has 24. How many more has English?", "Russian has 33 letters and English has 26. How many more has Russian?", "Hiragana has 46 basic signs and English 26 letters. How many more has hiragana?", "Russian has 33 letters and Greek 24. How many more has Russian?", "A child learns 26 letters, then 46 hiragana signs. How many signs is that in all?", "Greek has 24 letters, Russian 33 and English 26. How many letters are there in all three?")}
+  let key={pick(k, 2, 7, 20, 9, 72, 83)}
+
+  scene 36x12 {
+    book open at=canvas(1, 0)
+    text ask "{ask}" narrate width=16 right-of=open gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer key
+  hint "Write the numbers down first."
+  hint "More means take away; in all means add."
+}

@@ -21,7 +21,11 @@ test("every world of the run has a reach that a lesson of its own term lights, t
     const byId = new Map(facts.map((f) => [f.id, f]));
     const dark: string[] = [];
     const grades = offeredGrades(facts);
-    assert.deepEqual(grades, [1, 2, 3, 4, 5, 6], "every grade of the run is checked");
+    assert.deepEqual(
+        grades.filter((g) => g >= 1),
+        [1, 2, 3, 4, 5, 6],
+        "every grade of the run is checked, and the kindergarten year once its lessons land",
+    );
     for (const grade of grades) {
         const year = yearOf(facts, grade, "", "2026-08-31");
         (DEFAULT_YEARS[grade] ?? []).forEach((id, i) => {

@@ -1,0 +1,21 @@
+item k.which-sense v=1 skills=[nature.senses] {
+  title "Which part do you use?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let when={pick(k, "You smell a flower.", "You hear a bird sing.", "You see a rainbow.", "You taste a lemon.", "You smell toast burning.", "You hear the doorbell ring.")}
+  let part={pick(k, "nose", "ears", "eyes", "tongue", "nose", "ears")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 30x12 {
+    text ask "{when} Which part of your body do you use?" narrate width=26 at=canvas(1, 1)
+    choice pick options=["eyes", "ears", "nose", "tongue"] stack=row below=ask gap=1
+  }
+
+  answer pick=part
+  hint "Point to the part of your face or body that would do it."
+}

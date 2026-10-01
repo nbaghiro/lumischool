@@ -1,0 +1,17 @@
+# The two-star reason: few traders went the whole way; goods passed from hand to hand, and each
+# trader sold for more than they paid, so silk cost far more at the western end.
+item history.silk-price v=1 skills=[history.trade, reasoning.why] {
+  title "Why so dear?"
+  difficulty k
+  let k=0..1
+
+  scene 36x34 {
+    worldmap map names=2 blank=-1 oceans=0 places=["Chang'an", "Samarkand", "Baghdad", "Constantinople"] numbered=0 route=3 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Silk cost far more in Constantinople than in Chang'an. Why?\" else \"Most traders only went part of the way and sold to the next trader. What did that do to the price?\"}" narrate width=34 below=map gap=1
+    choice pick options=["Each trader sold it for more than they paid", "Silk got heavier on the way", "It was cheaper in the west"] stack=column below=ask gap=1
+  }
+
+  answer pick="Each trader sold it for more than they paid"
+  hint "How many times did the silk change hands on the way?"
+  hint "Why would a trader carry silk for months if they sold it for what they paid?"
+}

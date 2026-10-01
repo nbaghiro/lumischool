@@ -1,0 +1,67 @@
+# Zero to five, counted on the ten frame.
+lesson language-one-to-five v=1 format=teach grade=1 unit=4 subject=language levels=[easy, medium, hard] {
+  title "[[num.one|cap]], [[num.two]], [[num.three]]"
+  goal "Count from zero to five in [[language.name]] and name how many there are."
+
+  look {
+    scene 42x8 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row counts space=2 align=end {
+          tenframe one count=1 color=sky
+          tenframe three count=3 color=mint
+          tenframe five count=5 color=tang
+        }
+      }
+    }
+    say """
+      Count: [[num.one]], [[num.two]], [[num.three]], [[num.four]], [[num.five]]. None at all is
+      [[num.zero]]. The first frame has [[num.one]], the next has [[num.three]] and the last has
+      [[num.five]]. Say them with a finger for each counter.
+      """
+  }
+  do {
+    level easy {
+      worked language.one-to-five-name k=3
+    }
+    show language.one-to-five-name k=2 easy-k=0 hard-k=4
+    show language.one-to-five-meaning k=3 easy-k=1 hard-k=4
+    show language.one-to-five-write k=1 easy-k=2 hard-k=3
+    show language.one-to-five-name k=3 easy-k=1 hard-k=5
+    show language.one-to-five-match k=1 easy-k=0 hard-k=2
+    show language.one-to-five-write k=4 hard-k=2
+    show language.one-to-five-meaning k=2 easy-k=0 hard-k=5
+    show language.one-to-five-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.one-to-five-write k=1
+    }
+  }
+  try stars=2 {
+    show language.one-to-five-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.one-to-five-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[num.one|cap]], [[num.two]], [[num.three]], [[num.four]], [[num.five]]. None at all is [[num.zero]]."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is saying the number words as a chant without matching one word to
+    one thing, and mixing [[num.four]] with [[num.five]]. Ask the child to touch each counter as
+    they say its word. The frame holds the count, so every question can be checked by counting in
+    English first and then finding the word. [[num.five|cap]] is said [[num.five|say]]. If the child
+    is stuck, count in English, then say the same number in the language together. Off the page,
+    count the stairs, and count them back down. It meets England's key stage 2 languages programme
+    (years 3 to 6, statutory from age 7): "explore the patterns and sounds of language through songs
+    and rhymes and link the spelling, sound and meaning of words"; Japan's grades 3 and 4 foreign
+    language activities: "Activities to talk about the numbers and figures, etc. of surroundings
+    while showing the actual objects"; and CEFR A1, "Can understand and use familiar everyday
+    expressions and very basic phrases". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[num.zero]] is worked first in the teacher's pen, the words to name are [[num.one]] and [[num.two]] and the words to write are [[num.three]] and [[num.four]], the plainer ones of the lesson, with the first set to match and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[num.four]] and [[num.five]] and the words to write are [[num.zero]], [[num.three]] and [[num.two]], the ones most often mixed up, with the last set to match, a third word to write and the last version of each star question."
+  }
+}

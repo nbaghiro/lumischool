@@ -1,0 +1,17 @@
+# The two-star reason: printing made many identical copies quickly and cheaply, so books spread and
+# more people could learn to read.
+item history.why-print v=1 skills=[history.medieval, reasoning.why] {
+  title "What printing changed"
+  difficulty k
+  let k=0..1
+
+  scene 30x27 {
+    printingpress press printed=1 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Before printing, a book took a scribe months to copy. What changed when books could be printed?\" else \"Why did more people learn to read in the years after printing came to a country?\"}" narrate width=28 below=press gap=1
+    choice pick options=["More books, cheaper, for more people", "Books became longer", "Scribes wrote faster"] stack=column below=ask gap=1
+  }
+
+  answer pick="More books, cheaper, for more people"
+  hint "How many copies can a press make, compared with one scribe?"
+  hint "What happens to the price of something when there is much more of it?"
+}

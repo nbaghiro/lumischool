@@ -1,0 +1,11 @@
+item k.shadow-puppet v=1 stars=3 skills=[physics.shadows] {
+  title "A bigger shadow"
+
+  scene 30x14 {
+    text q "Ada makes a shadow puppet with her hand in front of a torch. She wants a bigger shadow on the wall. What should she do?" narrate width=28 at=canvas(1, 1)
+    choice pick options=["move her hand closer to the torch", "move her hand closer to the wall"] stack=column below=q gap=1
+  }
+
+  answer pick="move her hand closer to the torch"
+  hint "Try it with a torch. When does the shadow grow?"
+}

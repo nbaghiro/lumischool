@@ -1,0 +1,27 @@
+# Towers that grow by one: the next one is the pattern carried on, not something counted.
+item k.next-tower v=1 stars=3 skills=[counting.one-more, patterns.growing] {
+  title "The next tower"
+  difficulty a
+  let a=1..6
+  level easy {
+    let a=1..2
+  }
+  level hard {
+    let a=5..6
+  }
+
+  scene 24x24 {
+    towers row heights=[a, a + 1, a + 2] labels=false at=canvas(1, 1)
+    text ask "Each tower has one more cube than the one before. How many cubes in the next tower?" narrate width=22 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + 3)
+  feedback {
+    when (answer == a + 2) point=row {
+      say "That is the last tower. The next one has one more."
+    }
+  }
+  hint "How many cubes are in the last tower?"
+  hint "One more than that is the next number."
+}

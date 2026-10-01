@@ -1,0 +1,72 @@
+# The tens to a hundred and the numbers between them, read off digit cards and on price tags.
+lesson language-to-a-hundred v=1 format=teach grade=5 unit=1 subject=language levels=[easy, medium, hard] {
+  title "Numbers to [[num.one-hundred]]"
+  goal "Say numbers to a hundred in [[language.name]] and use them for prices."
+
+  look {
+    scene 37x8 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row tens space=2 align=end {
+          digitcards a digits=[4, 0]
+          digitcards b digits=[7, 2]
+          digitcards c digits=[1, 0, 0]
+        }
+      }
+    }
+    say """
+      The tens: [[num.forty]] (40), [[num.fifty]] (50), [[num.sixty]] (60), [[num.seventy]] (70),
+      [[num.eighty]] (80), [[num.ninety]] (90) and [[num.one-hundred]] (100). A number between the
+      tens is the ten, and, and the one: [[num.seventy-two]] is 72. Sixty and seventy sound alike,
+      so listen for the middle of the word.
+      """
+  }
+  do {
+    level easy {
+      worked language.to-a-hundred-name k=5
+    }
+    show language.to-a-hundred-name k=3 easy-k=0 hard-k=7
+    show language.to-a-hundred-meaning k=3 easy-k=2 hard-k=4
+    show language.to-a-hundred-write k=4 easy-k=1 hard-k=6
+    show language.to-a-hundred-name k=5 easy-k=2 hard-k=8
+    show language.to-a-hundred-match k=1 easy-k=0 hard-k=2
+    show language.to-a-hundred-write k=6 easy-k=3 hard-k=4
+    show language.to-a-hundred-listen k=3 easy-k=0 hard-k=5
+    show language.to-a-hundred-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.to-a-hundred-write k=3
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-to-a-hundred-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.to-a-hundred-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[num.forty|cap]], [[num.fifty]], [[num.sixty]], [[num.seventy]], [[num.eighty]], [[num.ninety]], [[num.one-hundred]]. Between the tens: [[num.seventy-two]]."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is sixty and seventy swapped, and a number between the tens said as
+    two separate numbers. The digit cards carry the number, so the child's job is the word. From
+    this grade the written words are marked with their accents: a word typed without its accent is
+    not taken. The dictation is read from this sheet, where it prints as Read aloud, or played by
+    the device. If the child is stuck, count in tens together, then add a one: forty, forty-one. Off
+    the page, read the prices in a shop window in the language. It meets England's key stage 2
+    languages programme (years 3 to 6, statutory from age 7): "explore the patterns and sounds of
+    language through songs and rhymes and link the spelling, sound and meaning of words"; Japan's
+    grades 5 and 6 foreign languages: "Activities to listen to concrete information regarding
+    familiar and simple matters in daily life such as dates, times and prices etc."; and CEFR A2,
+    "Can understand sentences and frequently used expressions related to areas of most immediate
+    relevance (e.g. very basic personal and family information, shopping, local geography,
+    employment)". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[num.seventy]] is worked first in the teacher's pen, the words to name are [[num.forty]] and [[num.one-hundred]] and the words to write are [[num.fifty]] and [[num.ninety]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[num.forty-eight]] and [[num.seventy-two]] and the words to write are [[num.eighty]], [[num.sixty]] and [[num.ninety]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

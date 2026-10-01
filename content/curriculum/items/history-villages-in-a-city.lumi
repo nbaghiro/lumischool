@@ -1,0 +1,20 @@
+# The three-star question: Uruk may have had 50,000 people at its peak around 3100 BC (Wikipedia,
+# from the archaeology of Uruk). How many villages of a given size would that be?
+item history.villages-in-a-city v=1 skills=[history.cities, reasoning.plan] {
+  title "How many villages?"
+  difficulty k
+  let k=0..1
+  let village={pick(k, 500, 250)}
+
+  scene 34x15 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      citywalls w
+    }
+    text ask "Uruk may have had about 50,000 people. A farming village had about {village}. About how many villages would make one Uruk?" narrate width=26 below=pics gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (50000 / village)
+  hint "How many {village}s make 1,000?"
+  hint "Then how many make 50,000?"
+}

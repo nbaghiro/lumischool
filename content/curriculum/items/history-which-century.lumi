@@ -1,0 +1,22 @@
+# The century a year is in, from the record: the first century was years 1 to 100, so 1666 is in the
+# 17th and 221 BC in the 3rd century BC.
+item history.which-century v=1 skills=[history.bc-ad, history.centuries] {
+  title "Which century?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ev={pick(k, "Great Fire of London", "First flight", "Moon landing", "Qin unites China", "Paper", "Great Fire of Edo")}
+  let yr={pick(k, 1666, 1903, 1969, -221, 105, 1657)}
+  let o1={pick(k, "16th century", "19th century", "19th century", "2nd century BC", "1st century", "16th century")}
+  let o2={pick(k, "17th century", "20th century", "20th century", "3rd century BC", "2nd century", "17th century")}
+  let o3={pick(k, "18th century", "21st century", "21st century", "22nd century BC", "10th century", "18th century")}
+
+  scene 34x21 {
+    timeline line from=pick(k, 1600, 1900, 1900, -300, 0, 1600) to=pick(k, 1700, 2000, 2000, -200, 200, 1700) step=pick(k, 20, 20, 20, 20, 50, 20) years=[yr] labels=["{ev}"] at=canvas(1, 0)
+    text ask "{ev} was in {if yr < 0 then 0 - yr else yr}{if yr < 0 then \" BC\" else \"\"}. Which century was that?" narrate width=18 below=line gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column right-of=ask gap=1
+  }
+
+  check history.dates of=line pick="century-name(0)"
+  hint "The first century was the years 1 to 100, the second 101 to 200."
+  hint "So a century's number is one more than its hundreds: 1666 is in the hundreds after 1600."
+}

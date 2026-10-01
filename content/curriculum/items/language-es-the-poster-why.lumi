@@ -1,0 +1,23 @@
+# A reason: working out a new word from its parts and from the poster.
+item language.es-the-poster-why v=1 stars=2 skills=[language.reading, reasoning.language] {
+  title "Guessing a word"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x31 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage poster title="Fiesta del pueblo" text="Fiesta del pueblo. Sábado 12 de agosto, en la plaza. A las seis: música y baile. A las ocho: cena para todos. A las diez: fuegos artificiales en el puerto. Entrada gratis. No hay fiesta si llueve." width=30 numbers=true
+      text ask "{pick(k, \"The poster says No hay fiesta si llueve. On the day it rains. What happens?\", \"Entrada gratis: why can Leo go in without money?\", \"Fuegos artificiales: fuego is fire and artificial is made by people. What are they?\")}" width=32
+      choice pick options=[pick(k, "There is no fiesta.", "Gratis means free.", "fireworks"), pick(k, "The fiesta moves to the harbour.", "Entrada means exit.", "a bonfire"), pick(k, "The fiesta is free.", "It is at the harbour.", "a fire engine")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "There is no fiesta.", "Gratis means free.", "fireworks")
+  feedback {
+    when (pick == pick(k, "The fiesta moves to the harbour.", "Entrada means exit.", "a bonfire")) {
+      say "{pick(k, \"Read the last line of the poster again.\", \"Salida is exit. Entrada is the way in. Which word is about money?\", \"A bonfire is one fire. These are made fires, at ten o'clock, in the sky over the harbour.\")}"
+    }
+  }
+  hint "Find the words on the poster."
+  hint "Which part of the word do you know?"
+}

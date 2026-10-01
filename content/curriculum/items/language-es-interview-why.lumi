@@ -1,0 +1,22 @@
+# A reason: an answer that does not fit, you against I, and the polite usted.
+item language.es-interview-why v=1 stars=2 skills=[language.questions, language.speaking, reasoning.language] {
+  title "Questions and answers"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"¿Dónde vives? Answer: Tengo once años. What went wrong?\", \"Vives and vivo: which is you and which is I?\", \"Leo asks his teacher ¿Dónde vive usted?, not ¿Dónde vives? Why?\")}" width=32
+      choice pick options=[pick(k, "It asked where, and the answer gave an age.", "vives is you, vivo is I", "Usted is the polite you, for an adult."), pick(k, "Tengo is spelt wrong.", "vivo is you, vives is I", "Usted is for a friend."), pick(k, "Nothing: both are about him.", "They are the same.", "Vive is wrong.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "It asked where, and the answer gave an age.", "vives is you, vivo is I", "Usted is the polite you, for an adult.")
+  feedback {
+    when (pick == pick(k, "Nothing: both are about him.", "vivo is you, vives is I", "Usted is for a friend.")) {
+      say "{pick(k, \"What did ¿dónde? ask for?\", \"Tengo is I have and tienes is you have. Which ending is I?\", \"A friend gets tú. Who is Leo talking to?\")}"
+    }
+  }
+  hint "What did the question ask for?"
+  hint "Look at the endings."
+}

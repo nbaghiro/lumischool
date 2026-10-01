@@ -1,0 +1,15 @@
+item k.rough-floor v=1 stars=2 skills=[physics.ramps, physics.forces] {
+  title "Carpet or floor?"
+
+  scene 30x38 {
+    column two at=canvas(1, 1) space=1 align=start {
+      ramp smooth height=3 ball=0 rolled=11
+      ramp carpet height=3 ball=0 rolled=6 rough=1
+    }
+    text q "The same slope, the same ball. The top ball rolled on a smooth floor and the bottom one on carpet. Why did it stop sooner on the carpet?" narrate width=28 below=two gap=1
+    choice pick options=["The carpet is rough and slows it down.", "The carpet is a different colour."] stack=column below=q gap=1
+  }
+
+  answer pick="The carpet is rough and slows it down."
+  hint "Roll a ball on a rug and on a smooth floor. Which feels bumpier?"
+}

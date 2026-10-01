@@ -1,0 +1,14 @@
+# Marked by a grown-up: a small piece of research with a grown-up about the country's past near
+# home (n as in n3-order).
+item history.n3-find-out v=1 stars=3 skills=[history.nation, history.enquiry] {
+  title "Find out near home"
+  let n=0..4
+  let task={pick(n, "Visit a museum or a website with Stone Age finds from Britain. Choose one object and make its museum card.", "Find out which Native American people lived where you live, and one thing about how they lived.", "Ask a grandparent which tools at home have changed since they were small: cooking, washing, keeping warm.", "Find the year your town, or the nearest old town, was first mentioned, and which century that was.", "Find out what grew in the fields near your home a hundred years ago, and what grows there now.")}
+
+  scene 36x13 {
+    text ask "{task}" width=34 at=canvas(1, 1)
+    writinglines w lines=2 width=34 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A short, honest piece of finding out with a grown-up: what the child asked or looked at, what they found, where they found it (a museum, a book, a website, a person), and a date or a time when it was so." notice=["Found one real fact", "Said where it came from", "Gave a date or a time", "Said what has changed"] ask="Where did you find that out, and how sure are you of it?"
+}

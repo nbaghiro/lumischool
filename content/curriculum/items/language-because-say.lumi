@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.because-say v=1 skills=[language.opinions, language.sentences, language.speaking] {
+  title "Give your reasons"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Say one thing you like in [[language.name]] and give a reason with [[opinion.because]].\", \"Say one thing you love and one you hate, each with a reason, in [[language.name]].\", \"A grown-up asks [[phrase.why]] after each thing you say. Give three things and three reasons in [[language.name]].\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="An opinion joined by [[opinion.because]] to a reason, said the way the lesson says them." notice=["A like or a love said", "A dislike or a hate said", "[[opinion.because|cap]] before the reason", "A describing word in the reason"]
+  hint "Say it in English first, then in [[language.name]]."
+  hint "Why do you like it?"
+}

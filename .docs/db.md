@@ -134,6 +134,8 @@ The rate limits are [auth.md](auth.md)'s and are counted from these rows, so the
 
 `device` is the id of the key the writer signed in with, and has no foreign key, because the log has to keep a stream whose key has ended or been deleted. `actor` is the grown-up who did it, or null when the kid or the system did, and has no foreign key either, because a family's evidence has to outlive a grown-up's login.
 
+A setting a family or a grown-up chooses is a `setting-changed` event rather than a column: a child's language, the family's national history unit, the morning's start, a game's practice level and the easel's tools. Its `data` is `{ key, of, value }`, the key from the closed list in `engine/answer.ts` (`SETTINGS`), which also says whether the key is written with a `kid_id` or with none, and the edge check refuses a key it does not list, a value the key does not allow, or a scope that does not match. The latest event for a key wins when the log is folded (`settingIn`), so changing a setting is one more row and an old value stays in the history. A child's view reads its own settings and the family's: the kid's log is read with the family's `setting-changed` events merged in by time (`withSettings` in `server/sync.ts`).
+
 A printed sheet is a `sheet-printed` event carrying its questions by value. Paper worked a week after it was printed is three events with three dates (printed, worked, marked), and marking is exact however much the lesson changed in between.
 
 A hash in the log is one of two things, and telling them apart matters. A `pack` digest, and the

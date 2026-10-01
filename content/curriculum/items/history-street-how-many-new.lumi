@@ -1,0 +1,24 @@
+# Counting every thing too new for the year on the sign: more than one can be wrong, so the child
+# has to judge each thing rather than find the odd one out.
+item history.street-how-many-new v=1 skills=[history.change, history.then-and-now] {
+  title "How many are too new?"
+  difficulty k
+  let k=0..2
+  let year={pick(k, 1920, 2000, 1870)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 32x21 {
+    thenandnow street year=year sign=1 things=["horse and cart", "bicycle", "motor car", "aeroplane", "mobile phone"] at=canvas(1, 0)
+    text ask "The sign says {year}. How many things in this picture could not have been there then?" narrate width=26 below=street gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.street of=street answer=how-many-new
+  hint "Take each thing in turn. Was it made yet in {year}?"
+  hint "Count only the things that were too new."
+}

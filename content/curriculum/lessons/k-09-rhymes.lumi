@@ -1,0 +1,47 @@
+lesson k-rhymes v=1 format=teach grade=0 unit=7 subject=reading levels=[easy, medium, hard] {
+  title "Words that rhyme"
+  goal "Hear when two words rhyme, pick a word that rhymes, and tell a rhyme from two words that only start the same."
+
+  look {
+    scene 24x14 {
+      picturecards card who=["cat"] where=["on"] thing=["mat"] letters=false at=canvas(1, 1)
+      text note "cat, mat" below=card gap=1
+    }
+    say """
+      The cat is on the mat. Cat and mat rhyme: they sound the same at the end, at. Only the first
+      sound changes. Cat and cup start the same, but they do not rhyme.
+      """
+  }
+  do {
+    practice k.rhyme-yes-no count=2 seed=2
+    level easy {
+      worked k.rhyme-pick k=0 level=medium
+    }
+    practice k.rhyme-pick count=2 seed=3
+    practice k.rhyme-odd count=2 seed=4
+    practice k.rhyme-finish count=2 seed=5 easy-count=1
+  }
+  try stars=2 {
+    show k.rhyme-or-start k=0 hard-k=1
+  }
+  try stars=3 {
+    show k.rhyme-number k=0 hard-k=2
+  }
+  remember {
+    say "Rhymes sound the same at the end."
+  }
+
+  grown-ups """
+    Everything here is heard, so say each word clearly and let the child say it back. The trap is a
+    pair that starts the same, like cat and cup: if the child says they rhyme, say both slowly and
+    stress the end. Nursery rhymes are the best practice there is, so leave a word out when you say
+    one and let the child fill it in. Japan, 幼稚園教育要領 (kindergarten guidelines), 言葉, 内容 (7):
+    "生活の中で言葉の楽しさや美しさに気付く。" (Notice the fun and beauty of words in daily life.)
+    """
+  level easy {
+    grown-ups "At this level the pairs to judge all rhyme, the rhyme for cat is chosen in the teacher's pen first, and the words are short and common."
+  }
+  level hard {
+    grown-ups "At this level the pairs to judge do not rhyme, the words are longer, and the three-star's number is six or nine."
+  }
+}

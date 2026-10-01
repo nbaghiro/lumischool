@@ -1,0 +1,19 @@
+item k.lang-add-one v=1 stars=3 skills=[language.numbers, counting.one-more] {
+  title "One more in [[language.name]]"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 26x12 {
+    text q "Ana has {pick(k, \"[[num.two]]\", \"[[num.four]]\")} apples and gets one more. How many now, in [[language.name]]?" narrate width=24 at=canvas(1, 1)
+    choice pick options=["[[num.three]]", "[[num.four]]", "[[num.five]]"] stack=row below=q gap=1
+  }
+
+  answer pick=pick(k, "[[num.three]]", "[[num.five]]")
+  hint "Count on one in English, then say it in [[language.name]]."
+}

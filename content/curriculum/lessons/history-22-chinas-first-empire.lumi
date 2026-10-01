@@ -1,0 +1,70 @@
+# Dates from engine/notation/chronicle.ts: the Qin unite China 221 BC, the Han 202 BC to AD 220,
+# Zhang Qian sent west 138 BC, paper improved AD 105; the ban liang made one currency.
+lesson history-chinas-first-empire v=1 format=teach grade=4 unit=4 subject=history levels=[easy, medium, hard] {
+  title "China's first empire"
+  goal "Say how the first emperor made one China out of many kingdoms, and count the years of the Qin and the Han across year one."
+
+  look {
+    scene 36x20 {
+      column all at=canvas(0, 0) space=1 align=start {
+        timeline line from=-300 to=200 step=100 years=[-221, -138, 105] labels=["Qin unites China", "Zhang Qian sets out", "Paper"]
+        objectcard coin kind=7 name="Ban liang coin" use="Buying and selling" year=-221 about=1 place="China" ask=0
+      }
+    }
+    say """
+      For hundreds of years China was many kingdoms. In 221 BC the king of Qin conquered the last of
+      them and called himself the first emperor. He made one kind of coin, round with a square hole,
+      one way of writing and one set of weights for all of China, and joined old walls in the north.
+      The Han who came after ruled for about four hundred years; they sent Zhang Qian west in 138 BC,
+      and under them paper was improved in AD 105.
+      """
+  }
+  do {
+    level easy {
+      worked history.qin-same k=0
+    }
+    show history.qin-same k=2 easy-k=1 hard-k=4
+    show history.china-order k=2 easy-k=0 hard-k=4
+    show history.china-between k=2 easy-k=0 hard-k=4
+    show history.which-century k=3 easy-k=0 hard-k=4
+    show history.qin-same k=3 easy-k=2 hard-k=5
+    show history.china-order k=3 easy-k=1 hard-k=5
+    show history.china-between k=3 easy-k=1 hard-k=5
+    show history.bc-ad-order k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.china-between k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.why-one-coin k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.han-times k=0 hard-k=1
+  }
+  remember {
+    say "In 221 BC the Qin made one China: one coin, one writing, one set of weights."
+  }
+
+  grown-ups """
+    The idea is how one ruler joined many kingdoms into an empire and made it work as one: the same
+    coins, the same writing and the same measures everywhere, so that people could trade and the
+    emperor could collect taxes and send orders. The way in reads what the Qin made the same; the
+    core orders early China's events, counts years across year one and names centuries. The first
+    emperor ruled harshly and many people were made to labour on his walls and roads; the lesson
+    tells what he changed, and you can talk about the cost. The wrong idea to watch for is counting
+    a year nought between 221 BC and AD 105. If the child is stuck, count to year one first. Off
+    the page, look at the coins in your purse: what makes them the same everywhere in your country?
+    Russia's history programme for grade five includes «Создание объединенной империи. Цинь
+    Шихуанди. Возведение Великой Китайской стены. Правление династии Хань». England's key stage 2
+    names "The Shang Dynasty of Ancient China" among the earliest civilisations.
+    Japan's 社会 takes up history only through Japan's own story, in grade six
+    (「我が国の歴史上の主な事象について，人物の働きや代表的な文化遺産を中心に」, the course of study as read in its 2008 edition), so
+    this lesson has no line of its own there; its timeline and source skills serve that grade.
+    """
+  level easy {
+    grown-ups "At this level a worked example says what coin all of China used, the events come nearly in order, the years counted stay before year one, and the centuries are of later events."
+  }
+  level hard {
+    grown-ups "At this level the questions ask why the coin had a hole and who the walls were meant to keep out, the events are fully muddled, the years counted cross year one, and the three-star question gives the dates rather than the lengths."
+  }
+}

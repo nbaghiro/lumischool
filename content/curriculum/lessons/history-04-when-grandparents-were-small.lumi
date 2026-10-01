@@ -1,0 +1,63 @@
+lesson history-when-grandparents-were-small v=1 format=teach grade=1 unit=6 subject=history levels=[easy, medium, hard] {
+  title "When my grandparents were small"
+  goal "Read a family tree of three generations, and work out how old someone was when someone else was born."
+
+  look {
+    scene 34x14 {
+      familytree tree names=["Grandma Rose", "Grandpa Tom", "Nana Mei", "Grandad Li", "Mum", "Dad", "Sam"] years=[1950, 1952, 1955, 1953, 1982, 1980, 2019] blank=-1 at=canvas(1, 0)
+    }
+    say """
+      This is Sam's family tree. At the top are his four grandparents, in the middle his mum and
+      dad, and Sam is at the bottom. Each box says the year that person was born. A line joins two
+      parents to their child. Grandma Rose was born in 1950, so she was small more than seventy
+      years ago, long before Sam.
+      """
+  }
+  do {
+    level easy {
+      worked history.tree-oldest k=0
+    }
+    show history.tree-oldest k=1 easy-k=1 hard-k=2
+    show history.tree-age-then k=0 easy-k=0 hard-k=2
+    show history.tree-before-year k=0 easy-k=0 hard-k=2
+    show history.tree-age-then k=1 easy-k=1 hard-k=3
+    show history.tree-oldest k=2 easy-k=0 level=medium hard-k=3
+    show history.tree-before-year k=1 easy-k=1 hard-k=3
+    level medium hard {
+      show history.tree-age-then k=2 hard-k=0 level=medium
+    }
+  }
+  story {
+    show history.tree-missing-year k=1 easy-k=0 hard-k=2
+    show history.tree-missing-year k=0 easy-k=1 hard-k=3
+  }
+  try stars=2 {
+    show history.tree-top-not-oldest k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.grandparent-questions
+  }
+  remember {
+    say "A family tree goes from the oldest at the top to the youngest at the bottom, and the years tell who is older."
+  }
+
+  grown-ups """
+    The idea is that a family has a history of its own, and that the years people were born let us
+    order them and count between them. The way in finds the grandparent born first; the core counts
+    how old a grandparent was when a parent was born, and how many in the tree were born before a
+    year; the story finds a missing year from a clue. The wrong idea to watch for is reading age
+    from where a box sits: the grandparents are side by side in pairs, not in order of age. If the
+    child is stuck on counting between years, count on in tens on your fingers, 1950, 1960, 1970,
+    then the ones. The three-star question is for you to mark: the child asks a grandparent or an
+    older friend three questions about when they were small, and tells you one thing that was
+    different. A family's own history stays in the family; nothing the child says is kept. England's
+    key stage 1 history asks for "changes within living memory", and a grandparent's childhood is
+    the living memory nearest to hand.
+    """
+  level easy {
+    grown-ups "At this level a worked example finds the oldest grandparent, the years are far apart, the counting starts from the grandparent born on a round year, and the missing year is a parent's, thirty years on."
+  }
+  level hard {
+    grown-ups "At this level the grandparents' years are only one or two apart, the ages are counted from Nana Mei and Grandad Li on the other side, the year to count before is one that falls between the boxes, and the missing year needs counting on in the thirties."
+  }
+}

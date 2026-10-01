@@ -1,0 +1,19 @@
+# The word written from its picture: una, cinco, media, diez, cuarto, menos, once.
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.es-the-time-write v=1 skills=[language.time, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x15 {
+    column all at=canvas(1, 1) space=1 align=start {
+      clock c h=pick(k, 1, 5, 8, 10, 4, 5, 10) m=pick(k, 0, 0, 30, 0, 15, 45, 45)
+      text ask "{pick(k, \"Es la ___. Write it in Spanish.\", \"Son las ___. Write it in Spanish.\", \"Son las ocho y ___. Write it in Spanish.\", \"Son las ___. Write it in Spanish.\", \"Son las cuatro y ___. Write it in Spanish.\", \"Son las seis ___ cuarto. Write it in Spanish.\", \"Son las ___ menos cuarto. Write it in Spanish.\")}" width=32
+      word-input word options=[pick(k, "una", "cinco", "media", "diez", "cuarto", "menos", "once")]
+    }
+  }
+
+  answer word=pick(k, "una", "cinco", "media", "diez", "cuarto", "menos", "once")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

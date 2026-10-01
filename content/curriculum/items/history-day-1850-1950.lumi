@@ -1,0 +1,19 @@
+# Sorting a thing a family did or used into 1850 only, 1950 only, or both, from the dates in the
+# record (steam trains from 1804, electric light about 1880, television from 1936).
+item history.day-1850-1950 v=1 skills=[history.change, history.then-and-now] {
+  title "1850, 1950, or both?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let act={pick(k, "watching television", "riding in a horse and cart", "travelling by steam train", "switching on an electric light", "riding a bicycle", "flying in an aeroplane")}
+  let key={pick(k, "1950 only", "Both", "Both", "1950 only", "1950 only", "1950 only")}
+
+  scene 32x25 {
+    thenandnow street year=pick(k, 1950, 1850, 1850, 1950, 1950, 1950) sign=1 things=["horse and cart"] at=canvas(1, 0)
+    text ask "A family in 1850 and a family in 1950: which of them could have been {act}?" narrate width=30 below=street gap=1
+    choice pick options=["1850 only", "1950 only", "Both"] below=ask gap=1
+  }
+
+  answer pick=key
+  hint "When did it first come? Was that before 1850, or between 1850 and 1950?"
+  hint "Some old things, like horses, were still around in 1950."
+}

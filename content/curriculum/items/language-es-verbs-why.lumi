@@ -1,0 +1,22 @@
+# A reason: the ending says who, two people take -an, and Spain's vosotros.
+item language.es-verbs-why v=1 stars=2 skills=[language.grammar, language.sentences, reasoning.language] {
+  title "Endings that say who"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"How can you tell hablo means I speak, without yo?\", \"Leo y Ana ___ (nadar). Why nadan?\", \"Why does Spain say vosotros habláis where Latin America says ustedes hablan?\")}" width=32
+      choice pick options=[pick(k, "The o ending says it is I.", "Two people are they, and they takes -an.", "It is Spain's word for you all."), pick(k, "Hablo is always I.", "Nadan is for animals.", "Habláis is older Spanish."), pick(k, "The h says it is I.", "Ana is a girl, so -an.", "Vosotros is only for children.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "The o ending says it is I.", "Two people are they, and they takes -an.", "It is Spain's word for you all.")
+  feedback {
+    when (pick == pick(k, "Hablo is always I.", "Ana is a girl, so -an.", "Vosotros is only for children.")) {
+      say "{pick(k, \"It is not the whole word. Which part changes for each person?\", \"It is not about girls or boys. How many people are there?\", \"Adults say vosotros too, in Spain. What does it mean?\")}"
+    }
+  }
+  hint "Look at the end of the verb."
+  hint "How many people, and who?"
+}

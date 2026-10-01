@@ -1,0 +1,68 @@
+# The first language lesson: greetings for arriving and leaving, the three times of day, please,
+# thank you and sorry, met in the ferry town's square.
+lesson language-hello v=1 format=teach grade=1 unit=1 subject=language levels=[easy, medium, hard] {
+  title "[[greet.hello|cap]] and [[greet.goodbye]]"
+  goal "Greet someone in [[language.name]], say goodbye, and say please and thank you."
+
+  look {
+    scene 35x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        comic hello who=["girl", "boy", "gran"] says=["[[greet.hello-leo]]", "[[greet.hello-ana-good-morning]]", "[[greet.goodbye-thank-you]]"] moods=["happy", "happy", "happy"] with=["", "", ""] thinks=[0, 0, 0] holds=["", "", ""] labels=["1", "2", "3"]
+      }
+    }
+    say """
+      In the ferry town people say [[greet.hello]] when they meet and [[greet.goodbye]] when they
+      go. In the morning they say [[greet.good-morning]], after lunch [[greet.good-afternoon]], and
+      at night [[greet.good-night]]. Please is [[greet.please]] and thank you is
+      [[greet.thank-you]]. Say them aloud with a grown-up, who has a line on how each one sounds.
+      """
+  }
+  do {
+    level easy {
+      worked language.hello-name k=4
+    }
+    show language.hello-name k=3 easy-k=0 hard-k=6
+    show language.hello-meaning k=4 easy-k=5 hard-k=8
+    show language.hello-write k=2 easy-k=1 hard-k=3
+    show language.hello-name k=5 easy-k=2 hard-k=7
+    show language.hello-match k=2 easy-k=0 hard-k=3
+    show language.hello-write k=4 easy-k=3 hard-k=2
+    show language.hello-meaning k=1 easy-k=6 hard-k=5
+    show language.hello-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.hello-write k=1
+    }
+  }
+  try stars=2 {
+    show language.hello-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.hello-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[greet.hello|cap]] to meet and [[greet.goodbye]] to go. [[greet.please|cap]] is please and [[greet.thank-you]] is thank you."
+  }
+
+  grown-ups """
+    This is the first lesson in the language. The wrong idea to watch for is that [[greet.hello]]
+    and [[greet.goodbye]] are one word for any greeting, and that [[greet.good-morning]] works all
+    day; each question can be settled by asking "is she coming or going?" and "what time of day is
+    it?". The phrases are on the child's page, so read them aloud together: [[greet.hello]] is said
+    [[greet.hello|say]], and [[greet.goodbye]] is said [[greet.goodbye|say]]. The device can say the
+    phrases too, but your voice is the way in: sound is a second channel here, never the only one.
+    If the child is stuck, act the moments out: walk in and say [[greet.hello]], walk out and say
+    [[greet.goodbye]]. Off the page, use one greeting in the language at every meal today. It meets
+    England's key stage 2 languages programme (years 3 to 6, statutory from age 7), which asks
+    children to "listen attentively to spoken language and show understanding by joining in and
+    responding"; Japan's grades 3 and 4 foreign language activities, "Greet, thank and give simple
+    instructions and respond to them by using basic expressions"; and the Council of Europe's CEFR
+    level A1, "Can understand and use familiar everyday expressions and very basic phrases". The
+    phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[greet.please]] is worked first in the teacher's pen, the words to name are [[greet.hello]] and [[greet.thank-you]] and the words to write are [[greet.goodbye]] and [[greet.yes]], the plainer ones of the lesson, with the first set to match and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[greet.sorry]] and [[greet.good-night]] and the words to write are [[greet.yes]], [[greet.thank-you]] and [[greet.goodbye]], the ones most often mixed up, with the last set to match, a third word to write and the last version of each star question."
+  }
+}

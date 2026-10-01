@@ -1,0 +1,24 @@
+# One block is missing from the program: the robot goes right and stops short of a flag below it.
+item k.missing-block v=1 stars=2 skills=[coding.debugging, coding.directions] {
+  title "A block is missing"
+  difficulty a
+  let a=1..3
+  level easy {
+    let a=1..1
+  }
+  level hard {
+    let a=3..3
+  }
+
+  scene 28x18 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["right {a}"] words=false numbers=false
+      maze g cols=5 rows=3 col=1 row=1 flag=[1 + a, 3] code=["right {a}"] upto=0 trail=none
+    }
+    text q "The robot stops above the flag. Which block must be added to reach it?" narrate width=26 below=top gap=1
+    choice pick options=["down 2", "right 2", "up 2"] stack=row below=q gap=1
+  }
+
+  answer pick="down 2"
+  hint "Where is the flag from where the robot stopped?"
+}

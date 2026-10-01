@@ -1,0 +1,22 @@
+# Reading the source card of Pepys's diary for when and where it was written.
+item history.fire-diary-card v=1 skills=[history.sources, history.fire] {
+  title "The diary's card"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x23 {
+    sourcecard card title="Samuel Pepys's diary" kind=3 who="Samuel Pepys, who lived in London" when="2 September 1666" where="London" there=1 ask=0 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Where did Pepys write about the fire?\" else \"Was Pepys there when the fire burned?\"}" narrate width=34 below=card gap=1
+    choice pick options=[if k == 0 then "London" else "Yes, he saw it", if k == 0 then "Edo" else "No, he read about it later"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "London" else "Yes, he saw it")
+  hint "Find the row of the card the question is about."
+  hint "Read the words in that row."
+}

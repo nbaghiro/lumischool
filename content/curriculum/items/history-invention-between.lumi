@@ -1,0 +1,20 @@
+# Years between two inventions, from the record.
+item history.invention-between v=1 skills=[history.inventions, number.difference] {
+  title "How long between?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let e1={pick(k, "Telephone", "Motor car", "Aeroplane", "Television", "Telephone", "First computer")}
+  let y1={pick(k, 1876, 1886, 1903, 1936, 1876, 1945)}
+  let e2={pick(k, "Motor car", "Aeroplane", "Television", "First computer", "World Wide Web", "World Wide Web")}
+  let y2={pick(k, 1886, 1903, 1936, 1945, 1991, 1991)}
+
+  scene 36x12 {
+    timeline line from=1860 to=2000 step=20 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(0, 0)
+    text ask "How many years after the first came the second?" narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Count on to the next ten."
+  hint "Then on in tens and ones."
+}

@@ -1,0 +1,14 @@
+item k.see-by-light v=1 skills=[nature.senses, nature.light] {
+  title "Can she see the ball?"
+  difficulty 0
+  let l=0..1
+
+  scene 30x20 {
+    seeing room lamp=l arrows=0 at=canvas(1, 1)
+    text ask "The lamp is {if l == 1 then \"on\" else \"off\"} and the room has no other light. Can the child see the ball?" narrate width=28 below=room gap=1
+    choice pick options=["yes", "no"] stack=row below=ask gap=1
+  }
+
+  answer pick=(if l == 1 then "yes" else "no")
+  hint "Our eyes need light to see. Is there any light in the room?"
+}

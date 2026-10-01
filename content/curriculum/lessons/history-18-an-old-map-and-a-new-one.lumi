@@ -1,0 +1,65 @@
+# Millbrook's places and dates are made up and kept in the town map drawing (engine/parts/travel/townmap.ts).
+lesson history-an-old-map-and-a-new-one v=1 format=teach grade=3 unit=8 subject=history levels=[easy, medium, hard] {
+  title "An old map and a new one"
+  goal "Read the squares of a map, and compare an old map with a newer one to say what was built and what has gone."
+
+  look {
+    scene 36x15 {
+      row maps at=canvas(0, 0) space=1 align=start {
+        townmap old year=1500 town=Millbrook labels=1
+        townmap new year=1900 town=Millbrook labels=1
+      }
+    }
+    say """
+      Maps are made at a certain time, so an old map is a picture of a place as it was. Put it next
+      to a newer map and the changes jump out. In 1500 Millbrook had a castle, a church, a market, a
+      mill and a farm. By 1900 the castle had gone, and a station, a school, a bridge and new houses
+      had come. Each place is in a square: a letter across the top, then a number down the side.
+      """
+  }
+  do {
+    level easy {
+      worked history.map-square k=0
+    }
+    show history.map-square k=2 easy-k=1 hard-k=4
+    show history.maps-new k=2 easy-k=0 hard-k=4
+    show history.maps-gone k=2 easy-k=0 hard-k=4
+    show history.map-square k=3 easy-k=2 hard-k=5
+    show history.maps-new k=3 easy-k=1 hard-k=5
+    show history.maps-gone k=3 easy-k=1 hard-k=5
+    show history.town-count k=4 easy-k=3 hard-k=5
+    show history.map-square k=1 easy-k=3 hard-k=0
+    level hard {
+      show history.maps-gone k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.castle-lane k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.station-between k=0 hard-k=1
+  }
+  remember {
+    say "An old map shows a place as it was. Compare it with a newer one to see what came and what went."
+  }
+
+  grown-ups """
+    The idea is that a map is a source: it was drawn at a time, and two maps of different years
+    show what changed between them. The way in reads the square a place is in, letter first; the
+    core counts what is new on the later map and finds what has gone; the two-star question asks
+    what a street name says about a building that has gone; the three-star question uses three
+    maps to say when a place was built. The wrong ideas to watch for are reading the number before
+    the letter, and counting places that are on both maps as new. If the child is stuck, cover one
+    square at a time on both maps. Off the page, find an old map of your own town (the library or
+    an online map archive often has one) and look for three changes. England's key stage 2 history
+    asks for "a local history study", and old maps are one of its commonest sources. Japan's 社会
+    for grades three and four asks children to study how their town has changed (the course of
+    study as read in its 2008 edition).
+    """
+  level easy {
+    grown-ups "At this level a worked example finds the church's square, the options for a square include the letter and number swapped, the maps compared are far apart in time with few changes, and the gone place is the castle."
+  }
+  level hard {
+    grown-ups "At this level the places to find are on the edges, the maps compared are close in time or far apart with many changes, the gone place is the mill or the farm, and the three-star question asks about the school."
+  }
+}

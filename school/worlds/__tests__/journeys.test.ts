@@ -1,136 +1,153 @@
 import assert from "node:assert/strict";
-import { createHash } from "node:crypto";
-import { readdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
 import { test } from "node:test";
-import { journeyDefinitions, journeyFor, journeyProblems, JOURNEY_VERSION } from "../journeys";
-import type { Corpus, LessonFacts } from "../lessons";
-import { offeredGrades, WORLDS } from "../worlds";
+import type { LessonFacts } from "../../../engine/pack";
+import { journeyFor, journeyGrades, journeyProblems, MOST, reaches } from "../journeys";
+import { corpusFrom } from "../lessons";
 
-// Check editorial ids against the source curriculum, not a second hand-maintained id fixture or
-// a local generated pack. The normal pack suite separately parses and compiles every full lesson.
-const directory = join(import.meta.dirname, "../../../content/curriculum/lessons");
-const facts = new Map<string, LessonFacts>();
-for (const file of readdirSync(directory).filter((name) => name.endsWith(".lumi"))) {
-    const source = readFileSync(join(directory, file), "utf8");
-    const header = /^\s*lesson\s+(\S+)\s+([^\n{]+)/m.exec(source);
-    const id = header?.[1];
-    const grade = Number(/\bgrade=(\d+)/.exec(header?.[2] ?? "")?.[1]);
-    assert.ok(id && Number.isInteger(grade), `${file}: missing canonical lesson header`);
-    facts.set(id, { id, grade, title: id, subject: "", art: [], skills: [] });
+const STARTED = "2026-08-31";
+
+function factOf(
+    id: string,
+    grade: number,
+    unit: number,
+    subject: string,
+    more: Partial<LessonFacts> = {},
+): LessonFacts {
+    return {
+        id,
+        source: `lessons/${id}.lumi`,
+        title: id,
+        goal: null,
+        grade,
+        unit,
+        subject,
+        format: "teach",
+        art: [],
+        file: `lessons/${id}-0000000000.json`,
+        levels: ["medium"],
+        first: null,
+        skills: [],
+        ...more,
+    };
 }
-const corpus: Corpus = {
-    grades: offeredGrades([...facts.values()]),
-    lesson: (id) => facts.get(id),
-    year() {
-        throw new Error("A journey lookup must not synthesize or read a learning year");
-    },
-};
 
-test("version 1 covers every known world and offered grade with valid canonical membership", () => {
-    assert.equal(JOURNEY_VERSION, 1);
-    assert.ok(corpus.grades.length >= 4);
-    assert.equal(
-        journeyDefinitions.filter((j) => corpus.grades.includes(j.grade)).length,
-        WORLDS.length * corpus.grades.length,
+/** A grade's lessons, each reaching the meadow and the garden through its skills. */
+const yearOf = (grade: number, n = 9): LessonFacts[] =>
+    Array.from({ length: n }, (_, i) =>
+        factOf(`g${grade}-l${i + 1}`, grade, i + 1, "maths", {
+            skills: ["addition.making-ten", "music"],
+        }),
     );
-    assert.deepEqual(journeyProblems(corpus), []);
-    assert.equal(new Set(journeyDefinitions.map((j) => j.id)).size, journeyDefinitions.length);
-    for (const world of WORLDS) {
-        for (const grade of corpus.grades) {
-            const journey = journeyFor(world.id, grade, corpus);
-            assert.ok(journey, `${world.id} grade ${grade}`);
-            assert.equal(journey.id, `${world.id}:g${grade}:v1`);
-            assert.equal(journey.world, world.id);
-            assert.equal(journey.grade, grade);
-            assert.ok(journey.title && journey.purpose);
-            assert.deepEqual(journey.missingIds, []);
-            assert.equal(new Set(journey.lessonIds).size, journey.lessonIds.length);
-        }
-    }
+
+const LESSONS: LessonFacts[] = [
+    ...[0, 1, 2, 3, 4, 5, 6].flatMap((g) => yearOf(g)),
+    factOf("history-toys", 1, 1, "history"),
+    factOf("history-homes", 1, 2, "history"),
+    factOf("history-g1-britain-our-country", 1, 9, "history", { nation: "britain" }),
+    factOf("history-g1-japan-our-country", 1, 9, "history", { nation: "japan" }),
+    factOf("language-hello.es", 1, 1, "language", { language: "es" }),
+    factOf("language-my-name.es", 1, 2, "language", { language: "es" }),
+];
+
+test("a journey is filled from what its world reaches, up to the most, in the year's order", () => {
+    const corpus = corpusFrom(LESSONS, STARTED);
+    const meadow = journeyFor("meadow", 2, corpus);
+    assert.equal(meadow?.id, "meadow:g2:v2");
+    assert.deepEqual(
+        meadow?.lessonIds,
+        yearOf(2)
+            .slice(0, MOST)
+            .map((l) => l.id),
+    );
+    assert.ok(meadow?.lessonIds.every((id) => corpus.lesson(id)?.grade === 2));
 });
 
-test("history and language remain explicit gaps; fossil foundations are honestly thin", () => {
-    for (const grade of corpus.grades) {
-        for (const world of ["old-tower", "ferry-town"]) {
-            const journey = journeyFor(world, grade, corpus);
-            assert.equal(journey?.status, "gap");
-            assert.deepEqual(journey?.lessonIds, []);
-        }
-    }
-    assert.equal(journeyFor("fossil-cliffs", 3, corpus)?.status, "thin");
-    assert.equal(journeyFor("fossil-cliffs", 4, corpus)?.status, "thin");
-    assert.equal(journeyFor("fossil-cliffs", 2, corpus)?.status, "curated");
+test("each world offers its own grades: the garden kindergarten only, the far worlds from grade 3, the lamp rocks to grade 2", () => {
+    const corpus = corpusFrom(LESSONS, STARTED);
+    assert.deepEqual(journeyGrades("meadow", corpus), [1, 2, 3, 4, 5, 6]);
     assert.equal(journeyFor("meadow", 0, corpus), undefined);
-    assert.equal(journeyFor("meadow", 7, corpus), undefined);
+    assert.deepEqual(journeyGrades("home-garden", corpus).slice(0, 1), [0]);
+    assert.ok(journeyGrades("home-garden", corpus).every((g) => g === 0));
+    assert.ok(journeyGrades("moon", corpus).every((g) => g >= 3));
+    assert.ok(journeyGrades("lamp-rocks", corpus).every((g) => g <= 2));
     assert.equal(journeyFor("unknown", 1, corpus), undefined);
 });
 
-test("published order and canonical ids stay stable without expanding from pack subjects", () => {
-    // Membership is the versioned contract, not the wording. Review a version migration rather
-    // than silently changing the meaning of a saved v1 journey when editing this fingerprint.
-    const membership = journeyDefinitions.map(({ id, lessonIds }) => [id, lessonIds]);
+test("the history place takes its grade from the track, with the family's national unit first", () => {
+    const none = corpusFrom(LESSONS, STARTED, { language: null, nation: null });
+    assert.deepEqual(journeyFor("old-tower", 1, none)?.lessonIds, [
+        "history-toys",
+        "history-homes",
+    ]);
+    const japan = corpusFrom(LESSONS, STARTED, { language: null, nation: "japan" });
+    assert.deepEqual(journeyFor("old-tower", 1, japan)?.lessonIds, [
+        "history-g1-japan-our-country",
+        "history-toys",
+        "history-homes",
+    ]);
+    const preview = corpusFrom(LESSONS, STARTED, undefined, { language: "es", nation: "britain" });
     assert.equal(
-        createHash("sha256").update(JSON.stringify(membership)).digest("hex"),
-        "97446f17dc24cd47b8ba5576fe001dfbad6587660a0dd90083579362e6aad0ea",
+        journeyFor("old-tower", 1, preview)?.lessonIds[0],
+        "history-g1-britain-our-country",
     );
-    assert.deepEqual(journeyFor("home-garden", 1, corpus)?.lessonIds, [
-        "nature-from-seed-to-flower",
-        "nature-the-tree-through-the-year",
-    ]);
-    assert.deepEqual(journeyFor("railway", 3, corpus)?.lessonIds, [
-        "reading-timetables",
-        "g3-minutes-and-timetables",
-        "physics-speed-from-distance-and-time",
-    ]);
-    const extra: LessonFacts = {
-        id: "future-nature-lesson",
-        title: "Another plant lesson",
-        grade: 1,
-        subject: "nature",
-        art: ["tree"],
-        skills: [],
-    };
-    const expanded: Corpus = {
-        ...corpus,
-        lesson: (id) => (id === extra.id ? extra : corpus.lesson(id)),
-    };
-    assert.deepEqual(journeyFor("home-garden", 1, expanded), journeyFor("home-garden", 1, corpus));
+    assert.ok(
+        !journeyFor("old-tower", 1, preview)?.lessonIds.includes("history-g1-japan-our-country"),
+    );
 });
 
-test("a smaller or changed pack reports missing members and never substitutes the wrong grade", () => {
-    const first = "nature-from-seed-to-flower";
-    const second = "nature-the-tree-through-the-year";
-    const smaller: Corpus = {
-        ...corpus,
-        lesson: (id) => (id === second ? undefined : corpus.lesson(id)),
-    };
-    const thin = journeyFor("home-garden", 1, smaller);
-    assert.equal(thin?.status, "thin");
-    assert.deepEqual(thin?.lessonIds, [first]);
-    assert.deepEqual(thin?.missingIds, [second]);
-    assert.equal(thin?.id, journeyFor("home-garden", 1, corpus)?.id);
-    const changed: Corpus = {
-        ...smaller,
-        lesson(id) {
-            const lesson = smaller.lesson(id);
-            return lesson && id === first ? { ...lesson, grade: 2 } : lesson;
-        },
-    };
-    const gap = journeyFor("home-garden", 1, changed);
-    assert.equal(gap?.status, "gap");
-    assert.deepEqual(gap?.lessonIds, []);
-    assert.deepEqual(gap?.missingIds, [first, second]);
-    assert.ok(journeyProblems(changed).some((p) => p.includes(`wrong grade for ${first}`)));
-    assert.ok(journeyProblems(changed).some((p) => p.includes(`missing lesson ${second}`)));
-    assert.equal(journeyFor("home-garden", 1, corpus)?.status, "curated");
+test("the language place waits for a language, and a preview reads the first one the pack teaches", () => {
+    const none = corpusFrom(LESSONS, STARTED, { language: null, nation: null });
+    assert.equal(journeyFor("ferry-town", 1, none), undefined);
+    assert.deepEqual(journeyGrades("ferry-town", none), []);
+    const spanish = corpusFrom(LESSONS, STARTED, { language: "es", nation: null });
+    assert.deepEqual(journeyFor("ferry-town", 1, spanish)?.lessonIds, [
+        "language-hello.es",
+        "language-my-name.es",
+    ]);
+    assert.deepEqual(
+        journeyFor("ferry-town", 1, corpusFrom(LESSONS, STARTED))?.lessonIds,
+        journeyFor("ferry-town", 1, spanish)?.lessonIds,
+    );
 });
 
-test("optional themed visits remain short selections rather than whole-library clones", () => {
-    for (const journey of journeyDefinitions) {
-        assert.ok(journey.lessonIds.length <= 3, `${journey.id}: review a larger editorial scope`);
-        if (journey.status === "curated") assert.ok(journey.lessonIds.length >= 2);
-        if (journey.status === "thin") assert.equal(journey.lessonIds.length, 1);
-        if (journey.status === "gap") assert.equal(journey.lessonIds.length, 0);
-    }
+test("the audit reports a grade a world offers with too few lessons", () => {
+    const thin = corpusFrom(
+        [
+            ...[0, 1, 2, 3, 4, 5, 6].flatMap((g) => yearOf(g, 1)),
+            factOf("history-toys", 1, 1, "history"),
+        ],
+        STARTED,
+    );
+    const problems = journeyProblems(thin);
+    assert.ok(
+        problems.some((p) => p.startsWith("meadow grade 1: 1 lessons")),
+        problems.join("\n"),
+    );
+    assert.ok(problems.some((p) => p.startsWith("old-tower grade 1: 1 lessons")));
+});
+
+test("a child reaches the worlds of their year and before, and the places with lessons at their grade", () => {
+    const corpus = corpusFrom(LESSONS, STARTED, { language: null, nation: null });
+    assert.ok(reaches("meadow", 1, 3, corpus), "an earlier year's world");
+    assert.ok(reaches("night-sky", 3, 3, corpus), "their own year's world");
+    assert.ok(!reaches("mountains", 4, 3, corpus), "a later year's world");
+    assert.ok(!reaches("meadow", 1, 0, corpus), "kindergarten stays in the garden");
+    assert.ok(reaches("old-tower", null, 1, corpus), "history at their grade");
+    assert.ok(!reaches("ferry-town", null, 1, corpus), "no language chosen, no ferry");
+    assert.ok(
+        reaches("winter-fair", null, 2, corpus),
+        "a world a family may choose for their year",
+    );
+});
+
+test("a lesson whose picture draws one of a world's landmarks fits it, and one that neither reaches nor draws does not", () => {
+    const corpus = corpusFrom(
+        [
+            ...yearOf(1, 1),
+            factOf("wheelbarrow-drawn", 1, 2, "art", { art: ["wheelbarrow"] }),
+            factOf("nothing-here", 1, 3, "art", { art: ["no-such-drawing"] }),
+        ],
+        STARTED,
+    );
+    assert.deepEqual(journeyFor("meadow", 1, corpus)?.lessonIds, ["g1-l1", "wheelbarrow-drawn"]);
 });

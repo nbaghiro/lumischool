@@ -1,0 +1,21 @@
+item k.mix-two v=1 skills=[art.colour-mixing] {
+  title "Two paints make"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 30x16 {
+    paintpots pots pots=["{pick(k, \"blue\", \"red\", \"red\")}", "{pick(k, \"yellow\", \"yellow\", \"blue\")}"] result="?" labels=true at=canvas(1, 1)
+    text ask "Mix these two paints. What colour do they make?" narrate width=28 below=pots gap=1
+    choice pick options=["green", "orange", "purple"] stack=row below=ask gap=1
+  }
+
+  check paint.mixes of=pots pick=name
+  hint "Say the names of the two paints."
+  hint "Think of the lesson's pots. Which colour came out of those two?"
+}

@@ -1,0 +1,23 @@
+# Non-routine: counting months on and back round the year, across its end.
+item language.months-puzzle v=1 stars=3 skills=[language.time, reasoning.language] {
+  title "Round the year"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x34 {
+    column all at=canvas(1, 1) space=1 align=start {
+      yearwheel wheel seasons=false mark=""
+      text ask "{pick(k, \"What month comes after [[time.march]]?\", \"Ana's birthday is two months after [[time.october]]. When is it?\", \"Which month is three months after [[time.november]]?\")}" width=32
+      choice pick options=[pick(k, "[[time.april]]", "[[time.december]]", "[[time.february]]"), pick(k, "[[time.may]]", "[[time.november]]", "[[time.january]]"), pick(k, "[[time.february]]", "[[time.january]]", "[[time.march]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[time.april]]", "[[time.december]]", "[[time.february]]")
+  feedback {
+    when (pick == pick(k, "[[time.may]]", "[[time.november]]", "[[time.january]]")) {
+      say "{pick(k, \"That is two months after March. Which is one?\", \"That is one month after October. Count one more.\", \"That is two after November. Count one more.\")}"
+    }
+  }
+  hint "Put a finger on the wheel and count round."
+  hint "After December the year starts again at January."
+}

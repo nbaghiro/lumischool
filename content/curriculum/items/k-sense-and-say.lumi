@@ -1,0 +1,10 @@
+item k.sense-and-say v=1 skills=[nature.senses] {
+  title "What can you sense?"
+
+  scene 28x9 {
+    text ask "Close your eyes. Tell a grown-up two things you can hear and one thing you can smell." narrate width=26 at=canvas(1, 1)
+  }
+
+  check reading.recited look-for="Two things heard and one thing smelled, each named, and the child says which part of the body did the sensing." notice=["two things heard", "one thing smelled", "names ears and nose"]
+  hint "Keep very still. What sounds come from the room, and from outside?"
+}

@@ -1,0 +1,74 @@
+# Describing a person's character, where each word takes the ending of the person it describes: written for Spanish, since agreement is its own.
+lesson language-best-friend v=1 format=teach grade=5 unit=5 subject=language levels=[easy, medium, hard] {
+  title "My best friend"
+  goal "Describe what a friend is like in [[language.name]], with each describing word matching the friend."
+
+  language es {
+    look {
+      scene 12x8 {
+        column all at=canvas(1, 1) space=1 align=start {
+          row friends space=2 align=end {
+            person eva hair=curly colour=black pose=wave
+            person leo hair=short colour=brown pose=stand
+          }
+        }
+      }
+      say """
+        To say what someone is like, use es: Eva es simpática, Eva is kind. Leo es simpático. A
+        describing word ends in o for a boy and in a for a girl: tímido and tímida (shy), divertido
+        and divertida (fun). A word that ends in e stays the same: inteligente, valiente. Words ending
+        in or add a for a girl: trabajador, trabajadora.
+        """
+    }
+    do {
+      level easy {
+        worked language.es-best-friend-name k=4
+      }
+      show language.es-best-friend-name k=2 easy-k=0 hard-k=5
+      show language.es-best-friend-meaning k=3 easy-k=1 hard-k=4
+      show language.es-best-friend-write k=3 easy-k=1 hard-k=5
+      show language.es-best-friend-name k=4 easy-k=1 hard-k=6
+      show language.es-best-friend-match k=1 easy-k=0 hard-k=2
+      show language.es-best-friend-write k=4 easy-k=2 hard-k=6
+      show language.es-best-friend-listen k=3 easy-k=0 hard-k=5
+      show language.es-best-friend-say k=1 easy-k=0 hard-k=2
+      level hard {
+        show language.es-best-friend-write k=3
+      }
+    }
+    try stars=2 {
+      show language.es-best-friend-why k=1 easy-k=0 hard-k=2
+    }
+    try stars=3 {
+      show language.es-best-friend-puzzle k=1 easy-k=0 hard-k=2
+    }
+  }
+  remember {
+    say "Describe a friend: [[person.my-best-friend-is-kind]]"
+  }
+
+  grown-ups """
+    The wrong idea to watch for is a describing word that does not match the person. This lesson
+    turns on how the language makes a describing word agree with the person it describes, so its
+    questions are written for each language separately. From this grade the written words are marked
+    with their accents: a word typed without its accent is not taken. The dictation is read from
+    this sheet, where it prints as Read aloud, or played by the device. If the child is stuck, write
+    the word twice, once for a boy and once for a girl, and read both. Off the page, write three
+    sentences about a friend and check each ending. It meets England's key stage 2 languages
+    programme (years 3 to 6, statutory from age 7): "describe people, places, things and actions
+    orally and in writing" and "understand basic grammar appropriate to the language being studied,
+    including (where relevant): feminine, masculine and neuter forms"; Japan's grades 5 and 6
+    foreign languages: "Can talk about their own thoughts and feelings regarding familiar and simple
+    matters after organizing the contents they want to communicate"; and CEFR A2, "Can describe in
+    simple terms aspects of his/her background, immediate environment and matters in areas of
+    immediate need". The phrases are in [[language.variety]].
+    """
+  language es {
+    level easy {
+      grown-ups "At this level perezoso is worked first in the teacher's pen, the words to name are habladora and tímido and the words to write are simpático and valiente, the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+    }
+    level hard {
+      grown-ups "At this level the words to name are trabajadora and divertido and the words to write are trabajador, habladora and perezosa, the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+    }
+  }
+}

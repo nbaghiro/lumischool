@@ -1,0 +1,18 @@
+# The two-star reason: in digits a zero holds an empty place, so 105 and 15 differ; Roman numerals
+# had no zero and no places at all.
+item history.why-zero v=1 skills=[number.place-value, reasoning.why] {
+  title "Why a zero?"
+  difficulty k
+  let k=0..1
+  let b={pick(k, 15, 206)}
+
+  scene 32x28 {
+    greatclock clock at=canvas(1, 0)
+    text ask "{if k == 0 then \"Paper was improved in AD 105.\" else \"A school opened in 2006.\"} Without the 0 the year would read {b}. Why does it need the 0?" narrate width=20 right-of=clock gap=1
+    choice pick options=["It shows an empty place", "It makes the number look bigger", "Every year has a nought in it"] stack=column below=clock gap=1
+  }
+
+  answer pick="It shows an empty place"
+  hint "Which place, thousands, hundreds, tens or ones, has nothing in it?"
+  hint "Without it, the other digits slide into the wrong places."
+}

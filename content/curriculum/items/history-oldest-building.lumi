@@ -1,0 +1,11 @@
+# Marked by a grown-up: the oldest building the child can find nearby, with how they found its date.
+item history.oldest-building v=1 stars=3 skills=[history.local, history.enquiry] {
+  title "The oldest building"
+
+  scene 34x15 {
+    townmap map year=2026 town=Millbrook labels=1 at=canvas(1, 0)
+    text ask "Find the oldest building near your home. Find out when it was built, and how you know: a date on it, a plaque, a book or a grown-up who remembers." width=15 right-of=map gap=1
+  }
+
+  check writing.by-eye look-for="The oldest building the child could find nearby, with a date or a date range, how the date was found (a carved date, a plaque, a local history book, the council's website, an older person's memory), and one thing that has changed about it or around it since it was built." notice=["Names the building", "Gives a date or a range", "Says how the date is known", "Says one thing that changed"] ask="How sure are you of that date, and why?"
+}

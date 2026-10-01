@@ -1,0 +1,49 @@
+lesson k-minibeasts v=1 format=teach grade=0 unit=1 subject=nature levels=[easy, medium, hard] {
+  title "Minibeasts in the garden"
+  goal "Look closely at small creatures, count their legs and spots, and say which ones can fly."
+
+  look {
+    scene 24x9 {
+      minibeasts bugs kinds=["ladybird", "snail", "spider"] spots=4 legs=false at=canvas(1, 1)
+    }
+    say """
+      Minibeasts are the small creatures in a garden. Look closely: the ladybird has six legs and
+      wings under its spotty back, the spider has eight legs, and the snail has no legs at all. It
+      slides along on its soft body.
+      """
+  }
+  do {
+    level easy {
+      worked k.legs-on-one kind="ant" level=medium
+    }
+    practice k.legs-on-one count=2 seed=2
+    practice k.ladybird-spots count=1 seed=6
+    practice k.which-can-fly count=2 seed=3
+    practice k.bee-visits count=2 seed=4 easy-count=1
+    practice k.count-ants count=1 seed=8
+  }
+  try stars=2 {
+    show k.not-an-insect k=0 hard-k=1
+  }
+  try stars=3 {
+    show k.legs-together k=0 hard-k=1
+  }
+  remember {
+    say "Look closely. Insects have six legs, spiders have eight, and snails have none."
+  }
+
+  grown-ups """
+    Read each question aloud and let the child point and count. The snail is the one to watch: a
+    child who counts legs on a snail is counting from memory, not from the picture, so ask them to
+    look underneath. If the child loses count on the spider, count one side and then the other.
+    Off the page, lift a stone or a flowerpot in the garden or the park and count what is under it,
+    then put it back gently. England, Reception, ELG The Natural World: "Explore the natural world
+    around them, making observations and drawing pictures of animals and plants".
+    """
+  level easy {
+    grown-ups "At this level the ant's legs are counted in the teacher's pen first, the creatures are the ant and the ladybird, and the flowers to visit are two or three."
+  }
+  level hard {
+    grown-ups "At this level the spider and the snail are counted, the flowers to visit are five or six, and the two-star and three-star ask about the spider."
+  }
+}

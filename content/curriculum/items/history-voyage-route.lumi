@@ -1,0 +1,21 @@
+# Reading a voyage drawn on the world map: which ocean or continent the route passed.
+item history.voyage-route v=1 skills=[history.voyages, history.maps] {
+  title "Follow the route"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let route={pick(k, 1, 2, 2, 1, 2, 2)}
+  let ask={pick(k, "Zheng He's fleets sailed from Nanjing to Calicut and Africa. Which ocean did they cross?", "The first voyage round the world set out from Seville. Which ocean did it cross first?", "The voyage round the world sailed round the south of which continent to reach the Pacific?", "Zheng He's fleets reached the coast of which continent in the far west?", "Which was the widest ocean the voyage round the world crossed?", "On the way home, the Victoria sailed round the south of which continent?")}
+  let key={pick(k, "Indian Ocean", "Atlantic Ocean", "South America", "Africa", "Pacific Ocean", "Africa")}
+  let o2={pick(k, "Atlantic Ocean", "Pacific Ocean", "Africa", "Europe", "Atlantic Ocean", "South America")}
+  let o3={pick(k, "Pacific Ocean", "Indian Ocean", "Australia", "Australia", "Indian Ocean", "Australia")}
+
+  scene 36x29 {
+    worldmap map names=0 blank=-1 oceans=1 places=[if route == 1 then "Nanjing" else "Seville"] numbered=0 route=route at=canvas(1, 0)
+    text ask "{ask}" narrate width=22 below=map gap=1
+    choice pick options=[pick(k, key, o2, o3, key, o2, o3), pick(k, o2, key, key, o3, o3, key), pick(k, o3, o3, o2, o2, key, o2)] stack=column right-of=ask gap=1
+  }
+
+  answer pick=key
+  hint "Put a finger on the start and follow the dashed line."
+  hint "Read the names of the seas and lands it passes."
+}

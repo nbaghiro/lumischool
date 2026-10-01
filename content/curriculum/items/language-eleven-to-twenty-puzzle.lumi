@@ -1,0 +1,22 @@
+# Non-routine: the next number in a chain, going up, going down, and put together.
+item language.eleven-to-twenty-puzzle v=1 stars=3 skills=[language.numbers, reasoning.language] {
+  title "Number chains"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"[[num.ten|cap]], [[num.eleven]], [[num.twelve]]. What comes next?\", \"[[num.twenty|cap]], [[num.nineteen]], [[num.eighteen]]. What comes next?\", \"[[num.fifteen|cap]] and [[num.five]] more make how many?\")}" width=32
+      choice pick options=[pick(k, "[[num.thirteen]]", "[[num.seventeen]]", "[[num.twenty]]"), pick(k, "[[num.three]]", "[[num.nineteen]]", "[[num.ten]]"), pick(k, "[[num.fourteen]]", "[[num.sixteen]]", "[[num.fifteen]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[num.thirteen]]", "[[num.seventeen]]", "[[num.twenty]]")
+  feedback {
+    when (pick == pick(k, "[[num.three]]", "[[num.nineteen]]", "[[num.ten]]")) {
+      say "{pick(k, \"[[num.three|cap]] is three. After twelve comes thirteen.\", \"The chain goes down. What comes one before [[num.eighteen]]?\", \"[[num.ten|cap]] is ten. Count on five from [[num.fifteen]].\")}"
+    }
+  }
+  hint "Say the chain aloud and keep going."
+  hint "Is it going up or going down?"
+}

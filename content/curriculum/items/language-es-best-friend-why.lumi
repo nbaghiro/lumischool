@@ -1,0 +1,22 @@
+# A reason: the ending that agrees, a word ending in e, and le gusta.
+item language.es-best-friend-why v=1 stars=2 skills=[language.describing, language.grammar, reasoning.language] {
+  title "Which ending?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo es simpático. Eva es ___?\", \"Why is it es inteligente for both Leo and Eva?\", \"Le gusta leer means she likes reading. Why le and not me?\")}" width=32
+      choice pick options=[pick(k, "simpática: Eva is a girl, so a", "It ends in e, so it does not change.", "Le is for him or her; me is for me."), pick(k, "simpático: it never changes", "Inteligente is only for boys.", "Le is for a girl only."), pick(k, "simpáticos: she is kind", "Eva should be inteligenta.", "Me is more polite.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "simpática: Eva is a girl, so a", "It ends in e, so it does not change.", "Le is for him or her; me is for me.")
+  feedback {
+    when (pick == pick(k, "simpático: it never changes", "Eva should be inteligenta.", "Me is more polite.")) {
+      say "{pick(k, \"It changes for a girl. What is its last letter then?\", \"Inteligenta is not a word. What does inteligente end in?\", \"It is not about politeness. Who likes reading?\")}"
+    }
+  }
+  hint "Boy or girl?"
+  hint "Look at the last letter."
+}

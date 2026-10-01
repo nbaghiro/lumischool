@@ -1,0 +1,23 @@
+# Drawing what you see starts with the big shape of a thing: a plate is a circle, a roof is a
+# triangle, a door is a rectangle.
+item k.shape-of-a-thing v=1 skills=[art.shape, shapes.flat] {
+  title "What shape is it?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let thing={pick(k, "a plate", "the roof of a house", "a door", "a window with four equal sides")}
+  roles circ=circle tri=triangle rect=rectangle squ=square
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 26x11 {
+    text ask "You are drawing {thing}. Which shape do you start with?" narrate width=24 at=canvas(1, 1)
+    choice pick options=[circ, tri, rect, squ] below=ask gap=1
+  }
+
+  answer pick=pick(k, "circ", "tri", "rect", "squ")
+  hint "Draw it in the air with a finger. Is it round? How many corners?"
+}

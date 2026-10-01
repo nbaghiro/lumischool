@@ -1,0 +1,12 @@
+item k.list-or-sentence v=1 stars=2 skills=[writing.lists, reasoning.explain] {
+  title "Which is a list?"
+
+  scene 30x20 {
+    listpad pad title="To pack" items=["hat", "spade", "towel"] count=0 width=12 ticks=true at=canvas(1, 1)
+    text q "Is this a list or a story? How can you tell?" narrate width=14 right-of=pad gap=2
+    choice pick options=["A list: one thing on each line.", "A story: it tells what happened."] stack=column below=pad gap=1
+  }
+
+  answer pick="A list: one thing on each line."
+  hint "Does it tell you what happened, or name things one by one?"
+}

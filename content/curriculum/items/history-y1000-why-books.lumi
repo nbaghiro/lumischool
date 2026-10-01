@@ -1,0 +1,17 @@
+# The two-star reason: books copied and translated in Baghdad carried knowledge (al-Khwarizmi's
+# algebra, the Indian digits) far beyond the city, which is why the House of Wisdom mattered.
+item history.y1000-why-books v=1 skills=[history.world, reasoning.why] {
+  title "Why copy books?"
+  difficulty k
+  let k=0..1
+
+  scene 31x30 {
+    library lib at=canvas(1, 0)
+    text ask "{if k == 0 then \"Scholars in Baghdad's House of Wisdom translated old Greek, Persian and Indian books into Arabic. Why did that matter to people far away?\" else \"The digits we write reached Europe through books written in Arabic. What does that show about the House of Wisdom?\"}" narrate width=28 below=lib gap=1
+    choice pick options=["Knowledge spread along with the copied books", "The books were only for decoration", "Nobody outside Baghdad could read"] stack=column below=ask gap=1
+  }
+
+  answer pick="Knowledge spread along with the copied books"
+  hint "What happens to an idea when a book is copied and carried to another land?"
+  hint "Where did our digits and the word algebra come from?"
+}

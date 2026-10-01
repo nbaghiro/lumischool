@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.questions-say v=1 skills=[language.questions, language.speaking] {
+  title "Ask me"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Ask a grown-up three questions in [[language.name]], each with a different question word.\", \"A grown-up gives an answer; ask the question in [[language.name]] that gets it. Do it three times.\", \"Interview a grown-up in [[language.name]]: where they live, when their birthday is, and why they like something.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="Questions with different question words, the voice going up, and each question fitting the answer it wants." notice=["Three different question words", "The voice goes up", "Each question fits its answer", "Answers listened to"]
+  hint "What do you want to find out: a place, a time, a person?"
+  hint "Which question word asks for that?"
+}

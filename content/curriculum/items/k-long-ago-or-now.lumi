@@ -1,0 +1,21 @@
+item k.long-ago-or-now v=1 skills=[history.then-and-now] {
+  title "Long ago or now?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let thing={pick(k, "a horse and cart in the street", "a mobile phone", "writing with a feather dipped in ink", "a television", "washing clothes by hand in a tub", "an aeroplane in the sky")}
+  let right={pick(k, "long ago", "now", "long ago", "now", "long ago", "now")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 26x11 {
+    text ask "Is {thing} something from long, long ago, or from now?" narrate width=24 at=canvas(1, 1)
+    choice pick options=["long ago", "now"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Did your great-great-grandparents have this when they were small?"
+}

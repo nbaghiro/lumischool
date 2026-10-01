@@ -1,0 +1,23 @@
+# Before 1903 an aeroplane in the sky is impossible; balloons had flown since 1783.
+item history.flight-could-not v=1 skills=[history.flight, history.then-and-now] {
+  title "In the sky long ago"
+  difficulty k
+  let k=0..1
+  let year={pick(k, 1850, 1890)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 32x23 {
+    thenandnow street year=year sign=1 things=["horse and cart", "hot-air balloon", "aeroplane"] at=canvas(1, 0)
+    text ask "The sign says {year}. Which could not have been in the sky then?" narrate width=30 below=street gap=1
+    choice pick options=["hot-air balloon", "aeroplane"] below=ask gap=1
+  }
+
+  check history.street of=street pick=could-not
+  hint "Which of the two first flew in 1903?"
+  hint "Is {year} before or after 1903?"
+}

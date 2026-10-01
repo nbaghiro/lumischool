@@ -1,0 +1,48 @@
+lesson k-magnets v=1 format=teach grade=0 unit=5 subject=physics levels=[easy, medium, hard] {
+  title "Magnets"
+  goal "Say which things a magnet pulls, count what it picks up, and tell a stronger magnet by what it holds."
+
+  look {
+    scene 30x12 {
+      magnet m mode=things count=4 sticks=2 show=1 at=canvas(1, 1)
+    }
+    say """
+      A magnet pulls things made of iron and steel, like a nail or a paper clip. The arrows show the
+      two things it pulls. It does not pull wood, plastic, glass, or even every metal: a coin stays
+      where it is.
+      """
+  }
+  do {
+    level easy {
+      worked k.magnet-or-not k=0 level=medium
+    }
+    practice k.magnet-or-not count=2 seed=2
+    practice k.magnet-picks count=2 seed=3
+    practice k.how-many-stuck count=2 seed=4 easy-count=1
+    practice k.clips-chain count=2 seed=5
+  }
+  try stars=2 {
+    show k.not-all-metal
+  }
+  try stars=3 {
+    show k.two-magnets-clips a=6 b=3 easy-a=7 easy-b=2 hard-a=5 hard-b=4
+  }
+  remember {
+    say "A magnet pulls iron and steel, and nothing else."
+  }
+
+  grown-ups """
+    Read each question aloud. A fridge magnet and a tray of things from a drawer do more than any
+    page: let the child guess, then test. The wrong idea to watch is that every metal sticks; try a
+    coin and some foil. Keep small magnets away from little children's mouths. Off the page, go on
+    a magnet hunt round the kitchen and sort what sticks from what does not. Japan, 幼稚園教育要領
+    (kindergarten guidelines), 環境, 内容 (2): "生活の中で，様々な物に触れ，その性質や仕組みに興味や関心をもつ。"
+    (Touch many things in daily life and take an interest in how they behave and work.)
+    """
+  level easy {
+    grown-ups "At this level the steel spoon is worked in the teacher's pen first, the things beside the nail or clip are wood and plastic, and the chains are short."
+  }
+  level hard {
+    grown-ups "At this level the things include glass and a steel key, the coin and the foil sit beside the nail, and the magnets to compare are close."
+  }
+}

@@ -1,0 +1,21 @@
+item k.dum-or-ta v=1 skills=[music.sounds] {
+  title "Dum or ta?"
+  difficulty k
+  let k=0..1
+  let sound={pick(k, "the low dum", "the high ta")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 26x20 {
+    handdrum drum wide=12 words=false at=canvas(1, 1)
+    text ask "Where do you hit the drum to make {sound}?" narrate width=24 below=drum gap=1
+    choice pick options=["in the middle", "on the edge"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "in the middle" else "on the edge")
+  hint "The deep sound comes from the middle, where the skin can move the most."
+}

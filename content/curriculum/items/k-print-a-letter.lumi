@@ -1,0 +1,23 @@
+# A letter cut into a block prints backwards: b comes out as d, which is why printers cut their
+# letters the wrong way round.
+item k.print-a-letter v=1 stars=2 skills=[art.printing, reasoning.what-if] {
+  title "Printing a letter"
+  difficulty k
+  let k=0..1
+  let cut={pick(k, "b", "d")}
+  let shows={pick(k, "d", "b")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 28x13 {
+    text q "A print faces the other way from its block. Ada cuts the letter {cut} into her block. Which letter shows on the paper?" narrate width=26 at=canvas(1, 1)
+    choice pick options=["b", "d"] stack=row below=q gap=1
+  }
+
+  answer pick=shows
+  hint "Draw {cut} and look at it in a mirror. Which letter do you see?"
+}

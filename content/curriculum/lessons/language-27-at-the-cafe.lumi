@@ -1,0 +1,70 @@
+# The ferry town's café by the harbour: ordering, anything else, and the bill.
+lesson language-at-the-cafe v=1 format=teach grade=5 unit=4 subject=language levels=[easy, medium, hard] {
+  title "At the café"
+  goal "Order food and drink politely at a café in [[language.name]], and ask for the bill."
+
+  look {
+    scene 38x26 {
+      column all at=canvas(1, 1) space=1 align=start {
+        sign menu lines=["[[cafe.juice]] 2 €", "[[cafe.sandwich]] 5 €", "[[cafe.ice-cream]] 4 €", "[[cafe.water]] 1 €"] kind=board color=mint
+        comic order who=["gran", "girl", "gran", "girl"] says=["[[cafe.what-would-you-like]]", "[[cafe.i-would-like-an-orange-juice]]", "[[cafe.anything-else]]", "[[cafe.nothing-else-thank-you]]"] moods=["happy", "happy", "happy", "happy"] with=["", "", "", ""] thinks=[0, 0, 0, 0] holds=["", "", "", ""] labels=["1", "2", "3", "4"]
+      }
+    }
+    say """
+      At the café by the harbour the waiter asks [[cafe.what-would-you-like]], what would you like?
+      Ana answers [[cafe.i-would-like-an-orange-juice]], I would like an orange juice. The waiter
+      asks [[cafe.anything-else]], anything else? [[cafe.nothing-else-thank-you]], nothing else,
+      thank you. At the end: [[cafe.the-bill-please]], the bill, please.
+      """
+  }
+  do {
+    level easy {
+      worked language.at-the-cafe-name k=4
+    }
+    show language.at-the-cafe-name k=2 easy-k=0 hard-k=5
+    show language.at-the-cafe-meaning k=3 easy-k=1 hard-k=4
+    show language.at-the-cafe-write k=3 easy-k=1 hard-k=5
+    show language.at-the-cafe-name k=4 easy-k=1 hard-k=6
+    show language.at-the-cafe-match k=1 easy-k=0 hard-k=2
+    show language.at-the-cafe-write k=4 easy-k=2 hard-k=6
+    show language.at-the-cafe-listen k=3 easy-k=0 hard-k=5
+    show language.at-the-cafe-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.at-the-cafe-write k=4
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-at-the-cafe-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.at-the-cafe-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[cafe.what-would-you-like]] [[cafe.i-would-like-a-juice-please]] [[cafe.anything-else]] [[cafe.nothing-else-thank-you]] [[cafe.the-bill-please]]"
+  }
+
+  grown-ups """
+    The wrong idea to watch for is the right phrase at the wrong moment: asking for the bill before
+    ordering, or answering anything else with an order. The naming questions each describe a moment,
+    and the near miss is the phrase for the moment next to it. The two-star question is about
+    politeness, which each language marks its own way. From this grade the written words are marked
+    with their accents: a word typed without its accent is not taken. The dictation is read from
+    this sheet, where it prints as Read aloud, or played by the device. If the child is stuck, play
+    café at home with a menu card, taking turns as the waiter. Off the page, order in the language
+    at a café or at the table. It meets England's key stage 2 languages programme (years 3 to 6,
+    statutory from age 7): "engage in conversations; ask and answer questions; express opinions and
+    respond to those of others; seek clarification and help"; Japan's grades 5 and 6 foreign
+    languages: "Can give instructions, make requests and respond to them by using basic
+    expressions"; and CEFR A2, "Can communicate in simple and routine tasks requiring a simple and
+    direct exchange of information on familiar and routine matters". The phrases are in
+    [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[cafe.how-much-is-it]] is worked first in the teacher's pen, the words to name are [[cafe.what-would-you-like]] and [[cafe.i-would-like-an-orange-juice]] and the words to write are [[cafe.sandwich]] and [[cafe.ice-cream]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[cafe.for-me-a-sandwich]] and [[cafe.nothing-else-thank-you]] and the words to write are [[cafe.i-would-like]], [[cafe.something]] and [[cafe.water]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

@@ -1,0 +1,17 @@
+# The colours of the family's flag, read from the drawing.
+item history.nation-flag-colours v=1 skills=[history.nation, history.symbols] {
+  title "The colours of our flag"
+  let n=0..4
+  let flag={pick(n, "britain", "usa", "japan", "russia", "china")}
+  let country={pick(n, "the United Kingdom", "the United States", "Japan", "Russia", "China")}
+
+  scene 24x24 {
+    flags one flags=["{flag}"] letters=0 at=canvas(1, 0)
+    text ask "Which colours are on the flag of {country}?" narrate width=22 below=one gap=1
+    choice pick options=["Red and white", "Red, white and blue", "Red and yellow"] stack=column below=ask gap=1
+  }
+
+  answer pick=pick(n, "Red, white and blue", "Red, white and blue", "Red and white", "Red, white and blue", "Red and yellow")
+  hint "Name each colour you can see, one at a time."
+  hint "Is there any blue? Any yellow?"
+}

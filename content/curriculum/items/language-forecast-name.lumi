@@ -1,0 +1,19 @@
+# Picture or situation to the language: [[weather.it-is-raining]], [[num.twenty-two]], [[weather.in-seville]], [[weather.in-the-pyrenees]], [[weather.at-night]], [[weather.it-is-windy]], [[weather.no-it-is-sunny-and-warm]], [[weather.on-saturday]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.forecast-name v=1 skills=[language.weather, language.reading] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x33 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage forecast title="[[weather.the-weather-title]]" text="[[weather.saturday-forecast]]" width=30 numbers=true
+      text ask "{pick(k, \"What is the weather in Bilbao?\", \"How many degrees is it in Madrid?\", \"Where is it warmest?\", \"Where does it snow?\", \"When does it snow?\", \"What is the weather in Valencia?\", \"Is it cold in Seville?\", \"Which day is the forecast for?\")}" width=32
+      choice pick options=[pick(k, "[[weather.it-is-raining]]", "[[num.twenty]]", "[[weather.in-madrid]]", "[[weather.in-the-pyrenees]]", "[[weather.in-the-afternoon]]", "[[weather.it-is-raining]]", "[[weather.yes-it-is-very-cold]]", "[[weather.on-saturday]]"), pick(k, "[[weather.it-is-sunny]]", "[[num.twenty-two]]", "[[weather.in-seville]]", "[[weather.in-valencia]]", "[[weather.in-the-morning]]", "[[weather.it-is-windy]]", "[[weather.no-it-is-snowing]]", "[[weather.on-sunday]]"), pick(k, "[[weather.it-is-windy]]", "[[num.fourteen]]", "[[weather.in-bilbao]]", "[[weather.in-bilbao]]", "[[weather.at-night]]", "[[weather.it-is-cloudy]]", "[[weather.no-it-is-sunny-and-warm]]", "[[weather.on-monday]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[weather.it-is-raining]]", "[[num.twenty-two]]", "[[weather.in-seville]]", "[[weather.in-the-pyrenees]]", "[[weather.at-night]]", "[[weather.it-is-windy]]", "[[weather.no-it-is-sunny-and-warm]]", "[[weather.on-saturday]]")
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

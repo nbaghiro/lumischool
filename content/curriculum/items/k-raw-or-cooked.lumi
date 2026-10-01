@@ -1,0 +1,21 @@
+item k.raw-or-cooked v=1 skills=[chemistry.cooking] {
+  title "Raw or cooked?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let food={pick(k, "Hard, dry pasta straight from the packet", "A runny egg just cracked into a bowl", "Soft, hot toast", "Crunchy carrot sticks from the fridge", "A fluffy cake from the oven", "Sticky dough in a bowl")}
+  let right={pick(k, "raw", "raw", "cooked", "raw", "cooked", "raw")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 28x11 {
+    text q "{food}. Is it raw or cooked?" narrate width=26 at=canvas(1, 1)
+    choice pick options=["raw", "cooked"] stack=row below=q gap=1
+  }
+
+  answer pick=right
+  hint "Has it been heated in a pan, a toaster or an oven?"
+}

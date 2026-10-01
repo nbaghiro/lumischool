@@ -1,0 +1,49 @@
+lesson k-animals-and-babies v=1 format=teach grade=0 unit=4 subject=nature levels=[easy, medium, hard] {
+  title "Animals and their babies"
+  goal "Name the babies of familiar animals, say which grow up to look like their parents, and put a frog's life in order."
+
+  look {
+    scene 26x14 {
+      frogcycle cycle stage=4 ring=1 names=1 at=canvas(1, 1)
+    }
+    say """
+      Animals have babies. A dog has puppies, a cat has kittens and a hen's chicks hatch from eggs.
+      Most babies look like small copies of their parents, but a frog's baby is a tadpole that
+      swims, and only later grows legs and becomes a frog.
+      """
+  }
+  do {
+    level easy {
+      worked k.baby-name k=0 level=medium
+    }
+    practice k.baby-name count=2 seed=2
+    practice k.looks-like-parent count=2 seed=3
+    practice k.frog-next count=2 seed=4 easy-count=1
+    practice k.how-many-ducklings count=2 seed=5
+  }
+  try stars=2 {
+    show k.who-feeds k=0 hard-k=1
+  }
+  try stars=3 {
+    show k.frog-in-order
+  }
+  remember {
+    say "Animals have babies, and babies grow up. A tadpole grows into a frog."
+  }
+
+  grown-ups """
+    Read each question aloud. Picture books of baby animals, and frogspawn in a pond in spring, make
+    this real. The surprise is that some babies look nothing like their parents; a caterpillar and a
+    butterfly are another pair. If the child is stuck, look at photos of the child as a baby and now.
+    Off the page, visit a farm or a pond and name the babies you see. Japan, 幼稚園教育要領
+    (kindergarten guidelines), 環境, 内容 (5): "身近な動植物に親しみをもって接し，生命の尊さに気付き，いたわったり，大切にしたりする。"
+    (Treat familiar animals and plants with affection, notice that life is precious, and care for
+    it.)
+    """
+  level easy {
+    grown-ups "At this level the puppy is named in the teacher's pen first, the babies are those of a dog, a cat and a hen, and the frog is at its first stages."
+  }
+  level hard {
+    grown-ups "At this level the babies are a lamb, a tadpole and a calf, the babies that change are asked about, and the frog is further on."
+  }
+}

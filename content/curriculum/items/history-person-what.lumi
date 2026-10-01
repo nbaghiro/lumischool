@@ -1,0 +1,18 @@
+# What the person is remembered for, among two things from earlier lessons (n as in person-line).
+item history.person-what v=1 skills=[history.lives, history.significance] {
+  title "What did they do?"
+  difficulty k
+  let n=0..4 k=0..1
+  let who={pick(n, "Florence Nightingale", "Rosa Parks", "Ino Tadataka", "Yuri Gagarin", "Yuan Longping")}
+  let did={pick(n, "Cared for sick soldiers and trained nurses", "Kept her bus seat so all would be treated alike", "Walked round Japan to make an exact map", "Was the first person to go into space", "Grew new rice so more people had food")}
+
+  scene 36x20 {
+    person p pose=think age=grownup hair=short colour=brown top=mint at=canvas(1, 0)
+    text ask "What is {who} remembered for?" narrate width=26 right-of=p gap=2
+    choice pick options=[if k == 0 then did else "Flew the first aeroplane", "Found fossils in the cliffs", if k == 0 then "Flew the first aeroplane" else did] stack=column below=p gap=1
+  }
+
+  answer pick=did
+  hint "Think back to the story of {who}'s life."
+  hint "The other two are other people from other lessons."
+}

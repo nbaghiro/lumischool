@@ -1,0 +1,17 @@
+# The two-star reason: two accounts of one voyage can give different numbers or details because
+# of who wrote them, when, and what they could know.
+item history.accounts-differ v=1 skills=[history.sources, reasoning.why] {
+  title "Why do they differ?"
+  difficulty k
+  let k=0..1
+
+  scene 36x25 {
+    ship boat at=canvas(1, 0)
+    text ask "{if k == 0 then \"A sailor's journal and a later book give different numbers for the men who came home. Why might that be?\" else \"A later book gives exact dates the sailor's journal does not. How could the later writer know them?\"}" narrate width=16 right-of=boat gap=1
+    choice pick options=[if k == 0 then "Each writer knew or counted different things" else "By reading many records from the time", if k == 0 then "One of them must be lying" else "By guessing", if k == 0 then "Numbers were not used then" else "By asking the sailors in 2010"] stack=column below=boat gap=1
+  }
+
+  answer pick=(if k == 0 then "Each writer knew or counted different things" else "By reading many records from the time")
+  hint "What could the sailor see from one ship? What could a later writer read?"
+  hint "A difference is not always a lie."
+}

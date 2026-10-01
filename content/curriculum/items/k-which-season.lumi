@@ -1,0 +1,25 @@
+item k.which-season v=1 skills=[nature.seasons] {
+  title "Which season?"
+  difficulty (if s == "winter" or s == "autumn" then 0 else 1)
+  let s={"winter", "autumn", "spring", "summer"}
+  level easy {
+    let s={"winter", "autumn"}
+  }
+  level hard {
+    let s={"spring", "summer"}
+  }
+
+  scene 30x20 {
+    seasontrees tree seasons=[s] names=0 at=canvas(1, 1)
+    text ask "Which season is it for this tree?" narrate width=28 below=tree gap=1
+    choice pick options=["spring", "summer", "autumn", "winter"] stack=row below=ask gap=1
+  }
+
+  answer pick=s
+  feedback {
+    when (s == "spring" and pick == "summer" or s == "summer" and pick == "spring") point=tree {
+      say "Look for blossom. Spring has flowers on the branches, and summer is thick with leaves."
+    }
+  }
+  hint "Are there leaves on the tree? Are some of them on the ground?"
+}

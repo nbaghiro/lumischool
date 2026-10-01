@@ -1,0 +1,19 @@
+# The language to English: [[phrase.what-do-you-do-on-saturday]], [[phrase.on-sundays-i-eat-with-my-family]], [[phrase.i-always-go-to-school-by-bike]], [[phrase.i-never-watch-television]], [[phrase.sometimes-i-play-with-my-dog]], [[phrase.after-school-i-do-my-homework]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.my-week-meaning v=1 skills=[language.time, language.sentences] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "boy", "girl", "gran", "boy", "girl")] says=[pick(k, "[[phrase.what-do-you-do-on-saturday]]", "[[phrase.on-sundays-i-eat-with-my-family]]", "[[phrase.i-always-go-to-school-by-bike]]", "[[phrase.i-never-watch-television]]", "[[phrase.sometimes-i-play-with-my-dog]]", "[[phrase.after-school-i-do-my-homework]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "After school I do my homework.", "I never watch television.", "On Sundays I eat with my family.", "After school I do my homework.", "After school I do my homework.", "I never watch television."), pick(k, "What do you do on Saturday?", "On Sundays I eat with my family.", "Sometimes I play with my dog.", "I never watch television.", "I always go to school by bike.", "After school I do my homework."), pick(k, "I always go to school by bike.", "Sometimes I play with my dog.", "I never watch television.", "On Sundays I eat with my family.", "Sometimes I play with my dog.", "I always go to school by bike."), pick(k, "Sometimes I play with my dog.", "I always go to school by bike.", "I always go to school by bike.", "I always go to school by bike.", "I never watch television.", "Sometimes I play with my dog.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "What do you do on Saturday?", "On Sundays I eat with my family.", "I always go to school by bike.", "I never watch television.", "Sometimes I play with my dog.", "After school I do my homework.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

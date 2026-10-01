@@ -1,0 +1,23 @@
+item k.story-middle v=1 skills=[reading.story-structure, reading.comprehension] {
+  title "What happened in the middle?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let story={pick(k, "Tom lost his hat. He looked under his bed. He found it in the garden.", "Ada planted a seed. She watered it every day. It grew into a sunflower.", "The cat was hungry. It miaowed at the door. Mum gave it some food.")}
+  let mid={pick(k, "He looked under his bed.", "She watered it every day.", "It miaowed at the door.")}
+  let first={pick(k, "Tom lost his hat.", "Ada planted a seed.", "The cat was hungry.")}
+  let last={pick(k, "He found it in the garden.", "It grew into a sunflower.", "Mum gave it some food.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 30x20 {
+    text q "Listen: {story} What happened in the middle?" narrate width=28 at=canvas(1, 1)
+    choice pick options=[first, mid, last] stack=column below=q gap=1
+  }
+
+  answer pick=mid
+  hint "Say the story again. What happened after the start and before the end?"
+}

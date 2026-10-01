@@ -1,0 +1,20 @@
+# What the Romans left behind in the lands they ruled: roads, towns, words and numbers.
+item history.roman-legacy v=1 skills=[history.ancient, history.significance] {
+  title "What Rome left"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ask={pick(k, "Which of these did the Romans build across their empire?", "The Romans founded a town by the River Thames. What is it called now?", "Which language did the Romans speak?", "Which wall did the Romans build across the north of Britain?", "Which numbers do we still see on some clocks and buildings?", "The month July is named after which Roman?")}
+  let right={pick(k, "Long straight roads", "London", "Latin", "Hadrian's Wall", "Roman numerals", "Julius Caesar")}
+  let w1={pick(k, "Railways", "Edinburgh", "Greek", "The Great Wall", "Digits with a zero", "Augustus")}
+  let w2={pick(k, "Castles with towers", "Cardiff", "English", "The Berlin Wall", "Tally marks", "Hadrian")}
+
+  scene 36x20 {
+    citywalls w at=canvas(1, 0)
+    text ask "{ask}" narrate width=18 right-of=w gap=1
+    choice pick options=[pick(k, right, w1, w2, right, w1, w2), pick(k, w1, right, right, w2, w2, right), pick(k, w2, w2, w1, w1, right, w1)] stack=column below=w gap=1
+  }
+
+  answer pick=right
+  hint "Think of what the Romans needed to rule a great empire."
+  hint "Rule out the answers from other places or later times."
+}

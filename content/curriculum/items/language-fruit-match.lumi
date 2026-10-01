@@ -1,0 +1,17 @@
+# Four words to their English, 4 sets, the later sets with the words most often mixed up.
+item language.fruit-match v=1 skills=[language.food, language.opinions] {
+  title "Match the words"
+  difficulty pick(k, 0, 0, 1, 2)
+  let k=0..3
+
+  scene 34x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Write the number of its English next to each [[language.name]] word." width=32
+      match m left=[pick(k, "[[food.the-apple]]", "[[food.the-pear]]", "[[food.the-tomato]]", "[[food.i-like]]"), pick(k, "[[food.the-banana]]", "[[food.the-lemon]]", "[[food.the-carrot]]", "[[food.i-do-not-like]]"), pick(k, "[[food.the-orange]]", "[[food.the-apple]]", "[[food.the-strawberry]]", "[[food.do-you-like]]"), pick(k, "[[food.the-strawberry]]", "[[food.the-grapes]]", "[[food.the-orange]]", "[[food.a-lot]]")] right=[pick(k, "the orange", "the grapes", "the strawberry", "I do not like"), pick(k, "the apple", "the pear", "the tomato", "a lot"), pick(k, "the banana", "the lemon", "the orange", "do you like?"), pick(k, "the strawberry", "the apple", "the carrot", "I like")] blanks=[a, b, c, d]
+    }
+  }
+
+  answer a=pick(k, 2, 2, 2, 4) b=pick(k, 3, 3, 4, 1) c=pick(k, 1, 4, 1, 3) d=pick(k, 4, 1, 3, 2)
+  hint "Start with the word you are surest of, and cross its English off."
+  hint "Two words look alike. Which letter is different, and what does it change?"
+}

@@ -85,7 +85,7 @@ describe("the catalogue's filters", () => {
         const subjects = ["maths", "writing", "art"];
         const grades = [1, 2, 3];
         const f = filtersFrom("?grade=1&subject=maths&q=%20ten%20", subjects, grades);
-        assert.deepEqual(f, { grade: 1, subject: "maths", words: "ten" });
+        assert.deepEqual(f, { grade: 1, subject: "maths", variant: null, words: "ten" });
         assert.equal(searchOf(f), "?grade=1&subject=maths&q=ten");
         assert.deepEqual(filtersFrom("?grade=7&subject=cooking", subjects, grades), EVERYTHING);
         assert.equal(filtersFrom("?grade=4", subjects, grades).grade, null, "a grade not offered");
@@ -98,7 +98,9 @@ describe("the catalogue's filters", () => {
             ["m1-count", "w1-letters", "m1-ten", "w1-sentence", "m2-bonds", "a3-print"],
         );
         assert.deepEqual(
-            found(LESSONS, { grade: 1, subject: "maths", words: "" }).map((l) => l.id),
+            found(LESSONS, { grade: 1, subject: "maths", variant: null, words: "" }).map(
+                (l) => l.id,
+            ),
             ["m1-count", "m1-ten"],
         );
         assert.deepEqual(
@@ -106,6 +108,46 @@ describe("the catalogue's filters", () => {
             ["m1-ten"],
         );
         assert.deepEqual(found(LESSONS, { ...EVERYTHING, words: "ten bonds" }), []);
+    });
+
+    it("reads a variant it has from an address, and narrows to the lessons tagged with it", () => {
+        const tagged = [
+            ...LESSONS,
+            {
+                ...lesson("l1-es", { grade: 1, unit: 1, subject: "language" }),
+                language: "es" as const,
+            },
+            {
+                ...lesson("l1-fr", { grade: 1, unit: 1, subject: "language" }),
+                language: "fr" as const,
+            },
+            {
+                ...lesson("h3-uk", { grade: 3, unit: 4, subject: "history" }),
+                nation: "britain" as const,
+            },
+        ];
+        const f = filtersFrom("?variant=es", ["language"], [1], ["es", "fr", "britain"]);
+        assert.equal(f.variant, "es");
+        assert.equal(searchOf(f), "?variant=es");
+        assert.equal(filtersFrom("?variant=de", [], [], ["es"]).variant, null, "a tag it lacks");
+        assert.deepEqual(
+            found(tagged, f).map((l) => l.id),
+            ["l1-es"],
+        );
+        assert.deepEqual(
+            found(tagged, { ...EVERYTHING, variant: "britain" }).map((l) => l.id),
+            ["h3-uk"],
+        );
+        assert.equal(
+            found(tagged, EVERYTHING).length,
+            LESSONS.length + 3,
+            "every variant by default",
+        );
+    });
+
+    it("reads grade 0 from an address, and no grade from an address without one", () => {
+        assert.equal(filtersFrom("?grade=0", [], [0, 1]).grade, 0);
+        assert.equal(filtersFrom("", [], [0, 1]).grade, null);
     });
 
     it("looks in every grade, whatever a page has open or loaded", () => {

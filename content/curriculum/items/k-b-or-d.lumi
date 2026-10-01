@@ -1,0 +1,24 @@
+# b and d are mirror images, and the way to tell them apart is how each one starts: d with a c
+# shape, b with a stick.
+item k.b-or-d v=1 stars=2 skills=[writing.letter-formation, writing.letter-families] {
+  title "b or d?"
+  difficulty k
+  let k=0..1
+  let a={pick(k, "b", "p")}
+  let b={pick(k, "d", "q")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 26x12 {
+    handwriting rules show="{a} {b}" rows=1 trace=0 width=12 at=canvas(1, 1)
+    text ask "Which of the two starts with a c shape?" narrate width=24 below=rules gap=1
+    choice pick options=[a, b] stack=row below=ask gap=1
+  }
+
+  answer pick=b
+  hint "Look where each letter has its round part: before its stick, or after it?"
+}

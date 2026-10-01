@@ -1,0 +1,23 @@
+# Ways of getting about on a timeline from 1780, one flag left empty.
+item history.travel-flag v=1 skills=[history.timeline, history.transport] {
+  title "The empty flag"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let gap={pick(k, 3, 0, 1, 2)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x25 {
+    timeline line from=1780 to=1920 step=20 years=[1783, 1804, 1886, 1903] labels=["Balloon", "Steam train", "Motor car", "Aeroplane"] blank=gap at=canvas(1, 0)
+    text ask "What goes on the empty flag?" narrate width=16 below=line gap=1
+    choice pick options=["Balloon", "Steam train", "Motor car", "Aeroplane"] stack=column right-of=ask gap=1
+  }
+
+  check history.dates of=line pick=blank
+  hint "Read the flags either side of the empty one."
+  hint "Which one came between them?"
+}

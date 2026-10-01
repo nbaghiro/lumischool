@@ -1,0 +1,27 @@
+# Blending: the buttons are said one at a time and pushed together, and the picture is the answer,
+# so the word never has to be read as a whole.
+item k.blend-to-animal v=1 skills=[reading.blending, reading.phonics] {
+  title "Push the sounds together"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..4 p=0..2
+  let want={pick(k, "cat", "dog", "hen", "pig", "fox")}
+  let o1={pick(k, "hen", "duck", "cat", "dog", "pig")}
+  let o2={pick(k, "fox", "pig", "duck", "cat", "dog")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..4
+  }
+
+  scene 36x18 {
+    soundbuttons sb graphemes=["{pick(k, \"c\", \"d\", \"h\", \"p\", \"f\")}", "{pick(k, \"a\", \"o\", \"e\", \"i\", \"o\")}", "{pick(k, \"t\", \"g\", \"n\", \"g\", \"x\")}"] count=false at=canvas(1, 1)
+    picturecards cards who=[if p == 0 then want else o1, if p == 1 then want else o2, if p == 2 then want else if p == 0 then o1 else o2] where=["by", "by", "by"] thing=["log", "log", "log"] letters=true right-of=sb gap=1
+    text ask "Say each sound. Push them together. Which animal is it?" narrate width=20 below=cards gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=pick(p, "A", "B", "C")
+  hint "Say the sound above each button, one at a time."
+  hint "Now say them faster until they run into a word."
+}

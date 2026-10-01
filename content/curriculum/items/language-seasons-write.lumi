@@ -1,0 +1,19 @@
+# The word written from its picture: [[weather.summer-word]], [[weather.winter-word]], [[weather.spring-word]], [[weather.autumn-word]], [[weather.flowers]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.seasons-write v=1 skills=[language.weather, language.time, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+
+  scene 34x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      seasontrees trees seasons=["{pick(k, \"summer\", \"winter\", \"spring\", \"autumn\", \"spring\")}"] names=0
+      text ask "{pick(k, \"Write the season in [[language.name]], without the little word before it.\", \"Write the season in [[language.name]], without the little word before it.\", \"Write the season in [[language.name]], without the little word before it.\", \"Write the season in [[language.name]], without the little word before it.\", \"Which grow on the tree in spring? Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[weather.summer-word]]", "[[weather.winter-word]]", "[[weather.spring-word]]", "[[weather.autumn-word]]", "[[weather.flowers]]")]
+    }
+  }
+
+  answer word=pick(k, "[[weather.summer-word]]", "[[weather.winter-word]]", "[[weather.spring-word]]", "[[weather.autumn-word]]", "[[weather.flowers]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

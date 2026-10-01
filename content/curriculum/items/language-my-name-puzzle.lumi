@@ -1,0 +1,25 @@
+# Non-routine: a short talk put in order from its lines, by what each line answers.
+item language.my-name-puzzle v=1 stars=3 skills=[language.greetings, language.questions, reasoning.language] {
+  title "Put the talk in order"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text l0 "{pick(k, \"A: [[greet.my-name-is-ana-and-you]]\", \"A: [[greet.well-thank-you]]\", \"A: [[greet.very-well-and-you]]\")}" width=32
+      text l1 "{pick(k, \"B: [[greet.hello-what-is-your-name]]\", \"B: [[greet.hello-leo-how-are-you]]\", \"B: [[greet.hello-my-name-is-leo-how-are-you]]\")}" width=32
+      text l2 "{pick(k, \"C: [[greet.my-name-is-leo]]\", \"C: [[greet.hello-ana]]\", \"C: [[greet.so-so-goodbye]]\")}" width=32
+      text ask "{pick(k, \"Which line comes first?\", \"Which line comes last?\", \"Which line comes second?\")}" width=32
+      choice pick options=["A", "B", "C"] stack=row
+    }
+  }
+
+  answer pick=pick(k, "B", "A", "A")
+  feedback {
+    when (pick == pick(k, "A", "C", "C")) {
+      say "{pick(k, \"A answers a question. Which line asks one first?\", \"C starts the talk with a greeting. What does B's question ask for?\", \"C answers [[greet.and-you]], so it comes after the line that asks it.\")}"
+    }
+  }
+  hint "Find the line that starts with a greeting."
+  hint "Each answer comes straight after its question."
+}

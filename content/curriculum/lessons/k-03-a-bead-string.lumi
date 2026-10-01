@@ -1,0 +1,50 @@
+lesson k-a-bead-string v=1 format=teach grade=0 unit=4 subject=maths levels=[easy, medium, hard] {
+  title "A bead string to ten"
+  goal "Find a number on a bead string of ten, and say the number one more and one less."
+
+  look {
+    scene 26x9 {
+      beadstring line beads=10 mark=6 at=canvas(1, 1)
+      text note "Five, and one more: six." below=line gap=1
+    }
+    say """
+      The first five beads are one colour and the next five another, so you can find six without
+      counting from one: it is the first bead after the five. One more is the next bead along. One
+      less is the bead before.
+      """
+  }
+  do {
+    practice k.bead-arrow count=2 seed=2
+    level easy {
+      worked k.bead-one-more m=3 level=medium
+    }
+    practice k.bead-one-more count=2 seed=3
+    practice k.bead-one-less count=2 seed=4 easy-count=1
+    practice k.missing-peg count=2 seed=5
+  }
+  try stars=2 {
+    show k.number-between a=5 easy-a=2 hard-a=7
+  }
+  try stars=3 {
+    show k.next-tower a=4 easy-a=2 hard-a=6
+  }
+  remember {
+    say "One more is the next number. One less is the number before."
+  }
+
+  grown-ups """
+    Say each question aloud. The two colours of beads do the work of five, so if the child counts
+    from the first bead every time, ask where five ends before they start. One less is harder than
+    one more at this age, because counting backwards is less practised; say the numbers backwards
+    together from ten when the child is stuck. Off the page, thread ten beads or pasta tubes on a
+    lace, five of one colour and five of another. Japan, 幼稚園教育要領 (kindergarten guidelines),
+    環境, 内容 (8): "日常生活の中で数量や図形などに関心をもつ。" (In daily life, take an interest in
+    numbers, amounts and shapes.)
+    """
+  level easy {
+    grown-ups "At this level the arrow stays within the first five beads, one move on is worked in the teacher's pen first, and the missing card is near the start of the line."
+  }
+  level hard {
+    grown-ups "At this level the arrow sits in the second five, and the missing card is on a line that runs up to ten."
+  }
+}

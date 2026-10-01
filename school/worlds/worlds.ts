@@ -143,6 +143,8 @@ export function findWorld(q: string): World | null {
 const FIRST_YEAR = ["meadow", "harbour", "railway"];
 
 export const DEFAULT_YEARS: Record<number, string[]> = {
+    // the kindergarten year is the garden's alone, one world for the whole year (`termsAt` in year.ts)
+    0: ["home-garden"],
     1: FIRST_YEAR,
     2: ["woods", "kitchen", "town"],
     3: ["night-sky", "sports-ground", "laboratory"],
@@ -166,7 +168,7 @@ export function offeredGrades(lessons: readonly Pick<LessonFacts, "grade">[]): n
 
 /** The worlds of one grade's year. A grade with no year of its own borrows the nearest one below it. */
 export function yearOf(grade: number): string[] {
-    for (let g = grade; g >= 1; g--) {
+    for (let g = grade; g >= 0; g--) {
         const own = DEFAULT_YEARS[g];
         if (own) return [...own];
     }
@@ -331,7 +333,7 @@ export function standsWhen(w: World, grade?: number): string {
     if (s?.kind === "track")
         return grade === undefined || grade < 1 ? everyYear(w) : `${heldBy(w)}, year ${grade}`;
     if (s?.kind === "term")
-        return s.grade === 0 ? "Before the first year" : `Year ${s.grade}, term ${s.term}`;
+        return s.grade === 0 ? "Kindergarten" : `Year ${s.grade}, term ${s.term}`;
     if (s?.kind === "choice")
         return `Chosen instead of ${s.terms.map((t) => `year ${t.grade} term ${t.term}`).join(", ")}`;
     return "";

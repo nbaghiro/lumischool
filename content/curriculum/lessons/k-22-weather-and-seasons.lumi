@@ -1,0 +1,50 @@
+lesson k-weather-and-seasons v=1 format=teach grade=0 unit=2 subject=nature levels=[easy, medium, hard] {
+  title "The weather and the seasons"
+  goal "Say what the weather is and what to wear for it, name the four seasons in order, and tell them apart on a tree."
+
+  look {
+    scene 34x14 {
+      seasontrees trees seasons=["spring", "summer", "autumn", "winter"] names=1 at=canvas(1, 1)
+    }
+    say """
+      The same tree through a year: blossom in spring, full of leaves in summer, leaves falling in
+      autumn, and bare in winter. Then spring comes again. The weather changes every day: sunny,
+      rainy, windy or snowy, and we dress for it.
+      """
+  }
+  do {
+    show k.rain-or-dry r=1
+    level easy {
+      worked k.which-season s="winter" level=medium
+    }
+    practice k.which-season count=2 seed=2
+    practice k.what-to-wear count=2 seed=3
+    practice k.sunny-days count=1 seed=4
+    practice k.season-next count=2 seed=5 easy-count=1
+    show k.rain-or-dry r=0
+  }
+  try stars=2 {
+    show k.leaves-fall
+  }
+  try stars=3 {
+    show k.season-after-next s="autumn" easy-s="spring" hard-s="winter"
+  }
+  remember {
+    say "Spring, summer, autumn, winter, and round again."
+  }
+
+  grown-ups """
+    Read each question aloud. The seasons go round, which is the hard idea: after winter comes
+    spring again, not a fifth season. If the child is stuck, look at a real tree through the window
+    and talk about what it looked like a few months ago. Off the page, look out each morning and
+    make a mark on a chart for a sunny, rainy or cloudy day. Japan, 幼稚園教育要領 (kindergarten
+    guidelines), 環境, 内容 (3): "季節により自然や人間の生活に変化のあることに気付く。" (Notice that
+    nature and people's lives change with the seasons.)
+    """
+  level easy {
+    grown-ups "At this level winter's bare tree is named in the teacher's pen first, the trees to name are winter and autumn, the weather is rain and snow, and the three-star starts in spring."
+  }
+  level hard {
+    grown-ups "At this level the trees to name are spring and summer, the weather is the beach and a windy day, and the three-star goes past the end of the year."
+  }
+}

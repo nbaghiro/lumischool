@@ -1,0 +1,21 @@
+item k.before-or-after v=1 skills=[coding.sequences, reasoning.order] {
+  title "Before or after?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let ask={pick(k, "Do you put on your socks before or after your shoes?", "Do you wash your hands before or after you eat?", "Do you open the door before or after you walk through it?", "Do you put the lid on the pen before or after you draw?", "Do you dry your hands before or after you wash them?", "Do you brush your teeth before or after you put paste on the brush?")}
+  let right={pick(k, "before", "before", "before", "after", "after", "after")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 26x12 {
+    text q "{ask}" narrate width=24 at=canvas(1, 1)
+    choice pick options=["before", "after"] stack=row below=q gap=1
+  }
+
+  answer pick=right
+  hint "Act it out. Which do you do first?"
+}

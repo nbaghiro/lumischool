@@ -1,0 +1,21 @@
+item k.lang-animal v=1 skills=[language.animals] {
+  title "Which animal is it?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let who={pick(k, "cat", "dog", "duck", "pig", "rabbit", "hen")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 30x18 {
+    picturecards card who=[who] where=["by"] thing=["log"] letters=false at=canvas(1, 1)
+    text q "What is this animal in [[language.name]]? The grown-up reads the words." narrate width=28 below=card gap=1
+    choice pick options=[pick(k, "[[animal.cat]]", "[[animal.cat]]", "[[animal.dog]]", "[[animal.dog]]", "[[animal.pig]]", "[[animal.rabbit]]"), pick(k, "[[animal.dog]]", "[[animal.dog]]", "[[animal.duck]]", "[[animal.pig]]", "[[animal.rabbit]]", "[[animal.hen]]"), pick(k, "[[animal.duck]]", "[[animal.pig]]", "[[animal.cat]]", "[[animal.cat]]", "[[animal.cat]]", "[[animal.pig]]")] stack=row below=q gap=1
+  }
+
+  answer pick=pick(k, "[[animal.cat]]", "[[animal.dog]]", "[[animal.duck]]", "[[animal.pig]]", "[[animal.rabbit]]", "[[animal.hen]]")
+  hint "Say the animal in English. Which word did the lesson give for it?"
+}

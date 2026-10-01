@@ -1,0 +1,23 @@
+# Firsts in space numbered from the earliest, from the dated record (Sputnik 1957, Gagarin 1961,
+# Tereshkova 1963, Leonov's spacewalk 1965, Apollo 11 1969).
+item history.space-order v=1 skills=[history.space, history.order] {
+  title "Firsts in space"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "First satellite", "First person in space", "Moon landing", "First spacewalk", "First woman in space", "Moon landing")}
+  let b={pick(k, "First person in space", "First woman in space", "First satellite", "First person in space", "First satellite", "First spacewalk")}
+  let c={pick(k, "Moon landing", "Moon landing", "First woman in space", "First woman in space", "First spacewalk", "First person in space")}
+
+  scene 36x22 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      rocket r flame=0
+      lander l
+    }
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=34 below=pics gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "A machine went up before any person did."
+  hint "The Moon landing came last, in 1969."
+}

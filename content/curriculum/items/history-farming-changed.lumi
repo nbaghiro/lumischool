@@ -1,0 +1,23 @@
+# What farming changed for people, one reason at a time.
+item history.farming-changed v=1 skills=[history.farming, history.change] {
+  title "What farming changed"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ask={pick(k, "Why did farmers build houses that lasted for years?", "Why did farmers make pots?", "Why could more people live in one place once they farmed?", "Why did farmers need to know the seasons well?", "Why did farmers begin to own things, like fields?", "Why did villages of farmers need someone to share out the stored grain?")}
+  let right={pick(k, "They stayed near their fields", "To store grain and water", "A field grows more food than the wild land around it", "Seeds must be sown and harvested at the right time", "They worked the same land every year", "Food was harvested once a year and had to last")}
+  let wrong1={pick(k, "They liked building", "To make music", "People ate less", "To know when to go to school", "Nobody else wanted fields", "Grain grew every day")}
+  let wrong2={pick(k, "Wild animals had all gone", "To trade them for boats", "Hunting was not allowed", "Sheep can tell the seasons", "Kings gave them away", "Everyone ate alone")}
+
+  scene 36x27 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      crops field stage=pick(k, 1, 3, 2, 0, 4, 3) rows=2 plants=5
+      objectcard pot kind=9 name="Clay pot" use="Storing grain" year=-3000 about=1 place="Skara Brae, Orkney" ask=0
+    }
+    text ask "{ask}" narrate width=32 below=pics gap=1
+    choice pick options=[pick(k, right, wrong1, wrong2, right, wrong1, wrong2), pick(k, wrong1, right, right, wrong2, wrong2, right), pick(k, wrong2, wrong2, wrong1, wrong1, right, wrong1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Think of a year of a farmer's life: sowing, growing, harvest, winter."
+  hint "What did farmers have to do that hunters did not?"
+}

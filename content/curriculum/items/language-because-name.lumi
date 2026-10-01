@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[opinion.fun]], [[opinion.boring]], [[opinion.easy]], [[opinion.hard]], [[opinion.interesting]], [[opinion.delicious]], [[opinion.great]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.because-name v=1 skills=[language.opinions, language.sentences] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x30 {
+    column all at=canvas(1, 1) space=1 align=start {
+      face f mood=pick(k, "excited", "tired", "happy", "worried", "surprised", "happy", "excited") hair=pick(k, 0, 1, 2, 3, 0, 1, 2)
+      text ask "{pick(k, \"Leo laughs all through the game. [[opinion.what-is-the-game-like]]\", \"Ana yawns all through the long film. [[opinion.what-is-the-film-like]]\", \"Leo gets every answer right in one minute. [[opinion.what-is-the-test-like]]\", \"After an hour, Ana still cannot finish the puzzle. [[opinion.what-is-it-like]]\", \"Leo wants to know everything about the old ship. [[opinion.what-is-the-boat-like]]\", \"The paella tastes very good. [[opinion.what-is-it-like]]\", \"Ana says it was the best day ever. [[opinion.what-was-it-like]]\")}" width=32
+      choice pick options=[pick(k, "[[opinion.delicious]]", "[[opinion.delicious]]", "[[opinion.hard]]", "[[opinion.boring]]", "[[opinion.boring]]", "[[opinion.easy]]", "[[opinion.boring]]"), pick(k, "[[opinion.fun]]", "[[opinion.boring]]", "[[opinion.interesting]]", "[[opinion.hard]]", "[[opinion.delicious]]", "[[opinion.delicious]]", "[[opinion.easy]]"), pick(k, "[[opinion.boring]]", "[[opinion.hard]]", "[[opinion.boring]]", "[[opinion.easy]]", "[[opinion.interesting]]", "[[opinion.great]]", "[[opinion.hard]]"), pick(k, "[[opinion.hard]]", "[[opinion.fun]]", "[[opinion.easy]]", "[[opinion.great]]", "[[opinion.great]]", "[[opinion.hard]]", "[[opinion.great]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[opinion.fun]]", "[[opinion.boring]]", "[[opinion.easy]]", "[[opinion.hard]]", "[[opinion.interesting]]", "[[opinion.delicious]]", "[[opinion.great]]")
+  feedback {
+    when (pick == pick(k, "[[opinion.boring]]", "[[opinion.fun]]", "[[opinion.hard]]", "[[opinion.easy]]", "[[opinion.boring]]", "[[opinion.hard]]", "[[opinion.boring]]")) point=f {
+      say "{pick(k, \"[[opinion.boring|cap]] is boring. Leo laughed all through it.\", \"[[opinion.fun|cap]] is fun. Ana yawned.\", \"[[opinion.hard|cap]] is hard. Leo finished in a minute.\", \"[[opinion.easy|cap]] is easy. Ana could not finish it.\", \"[[opinion.boring|cap]] is boring. Leo wants to know more.\", \"[[opinion.hard|cap]] is hard. This is about a taste.\", \"[[opinion.boring|cap]] is boring. It was her best day.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

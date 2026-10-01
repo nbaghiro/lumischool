@@ -1,0 +1,19 @@
+item k.lang-my-dog v=1 stars=3 skills=[language.animals, language.family] {
+  title "Put the words together"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x13 {
+    text q "{pick(k, \"[[family.my]] means my. How do you say my mother?\", \"[[animal.i-have]] means I have. How do you say I have a dog?\")}" narrate width=28 at=canvas(1, 1)
+    choice pick options=[pick(k, "[[family.my-mother]]", "[[animal.i-have-a-dog]]"), pick(k, "[[family.my-father]]", "[[animal.the-dog]]")] stack=column below=q gap=1
+  }
+
+  answer pick=pick(k, "[[family.my-mother]]", "[[animal.i-have-a-dog]]")
+  hint "Which one has both words you know?"
+}

@@ -1,0 +1,20 @@
+item k.claps-in-word v=1 skills=[reading.syllables, music.rhythm] {
+  title "Claps in a word"
+  difficulty (if w == "cat" or w == "kite" then 0 else if w == "rocket" or w == "pencil" then 1 else 2)
+  let w={"cat", "kite", "rocket", "pencil", "bicycle", "sandcastle"}
+  level easy {
+    let w={"cat", "kite", "rocket"}
+  }
+  level hard {
+    let w={"pencil", "bicycle", "sandcastle"}
+  }
+
+  scene 24x19 {
+    art pic asset="{w}" at=canvas(1, 1)
+    text ask "Say the word and clap it. How many claps?" narrate width=22 below=pic gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == "cat" or w == "kite" then 1 else if w == "rocket" or w == "pencil" then 2 else 3)
+  hint "Put a hand under your chin as you say it. Each time your chin drops is one clap."
+}

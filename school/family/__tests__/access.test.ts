@@ -34,6 +34,34 @@ const sitting = (mode: "screen" | "paper"): Envelope => ({
 
 const window = { kid_id: "maya", from_day: "2026-09-10", to_day: "2026-10-16", ended_at: null };
 
+const setting = (data: Extract<Envelope, { kind: "setting-changed" }>["data"]): Envelope => ({
+    ...sitting("screen"),
+    kind: "setting-changed",
+    data,
+});
+
+describe("who may change a setting", () => {
+    it("lets a child keep their own practice and easel, and leaves what they learn to a grown-up", () => {
+        assert.equal(mayWrite("kid", setting({ key: "practice", of: "jugs", value: 2 })), null);
+        assert.equal(mayWrite("kid", setting({ key: "painting", of: null, value: null })), null);
+        assert.equal(
+            mayWrite("kid", setting({ key: "language", of: null, value: "es" })),
+            "a kid may not change language",
+        );
+        assert.equal(
+            mayWrite("kid", setting({ key: "nation", of: null, value: "usa" })),
+            "a kid may not change nation",
+        );
+        assert.equal(mayWrite("parent", setting({ key: "language", of: null, value: "ja" })), null);
+        assert.equal(
+            mayWrite("tutor", setting({ key: "language", of: null, value: "ja" })),
+            "a tutor may not write setting-changed",
+        );
+        assert.equal(mayRead("kid", "setting-changed"), true);
+        assert.equal(mayRead("tutor", "setting-changed"), true);
+    });
+});
+
 describe("who may write and read each kind", () => {
     it("has an entry for every event kind", () => {
         assert.deepEqual(Object.keys(ACCESS).sort(), [...EVENT_KINDS].sort());

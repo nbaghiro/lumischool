@@ -1,0 +1,49 @@
+lesson k-cooking-changes v=1 format=teach grade=0 unit=8 subject=chemistry levels=[easy, medium, hard] {
+  title "Cooking changes things"
+  goal "Say what heat does to food when it is cooked, tell raw from cooked, and say which changes can go back."
+
+  look {
+    scene 34x12 {
+      beforeafter ch change="toast-bread" show=1 names=1 at=canvas(1, 0)
+    }
+    say """
+      Heat changes food. Soft white bread becomes brown, crisp toast. A runny egg becomes firm. A
+      runny cake mixture becomes a cake. These changes cannot go back: toast never turns into bread
+      again. Melted butter is different, because it sets again when it cools.
+      """
+  }
+  do {
+    level easy {
+      worked k.raw-or-cooked k=0 level=medium
+    }
+    practice k.raw-or-cooked count=2 seed=2
+    practice k.what-heat-did count=2 seed=3
+    practice k.toast-back count=2 seed=4 easy-count=1
+    practice k.hot-oven count=2 seed=5
+  }
+  try stars=2 {
+    show k.melt-or-cook k=0 hard-k=1
+  }
+  try stars=3 {
+    show k.bake-in-order
+  }
+  remember {
+    say "Cooking changes food, and it cannot go back. Hot things are for grown-ups."
+  }
+
+  grown-ups """
+    Read each question aloud. Cooking together is the lesson, with the grown-up at the hob and the
+    oven; the child watches, stirs cold mixtures and tastes. The idea to watch is that every change
+    can be undone; set a melted chocolate button beside a piece of toast. If the child is stuck, look
+    at a raw and a cooked egg together. Off the page, make toast and ask what the toaster did.
+    England, Reception, ELG The Natural World (recalled, not fetched): "Understand some important
+    processes and changes in the natural world around them, including the seasons and changing
+    states of matter".
+    """
+  level easy {
+    grown-ups "At this level dry pasta is worked in the teacher's pen first, the changes are toast and an egg, and the change that goes back is melted butter."
+  }
+  level hard {
+    grown-ups "At this level the changes are a cake and rising dough, freezing sits beside baking, and the change that goes back is melted chocolate."
+  }
+}

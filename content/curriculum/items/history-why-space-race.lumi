@@ -1,0 +1,20 @@
+# The two-star reason, told without verdicts: two great countries each wanted to show what its
+# science and its people could do, so each first pushed the other on.
+item history.why-space-race v=1 skills=[history.space, reasoning.why] {
+  title "Why a race?"
+  difficulty k
+  let k=0..1
+
+  scene 32x24 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      rocket r flame=2
+      flag f stripes=3
+    }
+    text ask "{if k == 0 then \"The Soviet Union and the United States raced to be first in space. Why did each want to be first?\" else \"Each first in space came only a few years after the last. What pushed each country to go faster?\"}" narrate width=30 below=pics gap=1
+    choice pick options=["Each wanted to show what it could do", "Space was running out of room", "The Moon was for sale"] stack=column below=ask gap=1
+  }
+
+  answer pick="Each wanted to show what it could do"
+  hint "What would the world think of the country that got there first?"
+  hint "What happens in any race when the other side takes the lead?"
+}

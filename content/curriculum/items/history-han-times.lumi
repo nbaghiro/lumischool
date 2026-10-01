@@ -1,0 +1,17 @@
+# The three-star question: the Qin lasted 15 years (221 to 206 BC) and the Han about 420 (202 BC to
+# AD 220): about how many times as long.
+item history.han-times v=1 skills=[history.ancient, reasoning.compare] {
+  title "How many times as long?"
+  difficulty k
+  let k=0..1
+
+  scene 36x16 {
+    timeline line from=-300 to=300 step=100 years=[-221, 105] labels=["Qin unites China", "Paper"] at=canvas(0, 0)
+    text ask "{if k == 0 then \"The Qin ruled China for 15 years. The Han ruled for about 420 years. About how many times as long did the Han rule?\" else \"The Qin ruled from 221 BC to 206 BC, and the Han from 202 BC to AD 220. About how many times as long did the Han rule? Round the Han to 420 years.\"}" narrate width=26 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer 28
+  hint "{if k == 0 then \"How many fifteens make 420?\" else \"First find how many years each ruled.\"}"
+  hint "Ten fifteens are 150. How many more fifteens to reach 420?"
+}

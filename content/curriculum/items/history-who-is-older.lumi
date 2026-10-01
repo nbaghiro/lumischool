@@ -1,0 +1,30 @@
+# Two children's birth years on a timeline. The one born first is older, which children often get
+# backwards because the later year is the bigger number.
+item history.who-is-older v=1 skills=[history.timeline, history.order] {
+  title "Who is older?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let a={pick(k, 2016, 2019, 2017, 2018, 2020, 2016)}
+  let b={pick(k, 2019, 2015, 2021, 2017, 2019, 2017)}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 30x13 {
+    timeline line from=2014 to=2022 step=2 years=[a, b] labels=["Ada born", "Ben born"] at=canvas(1, 0)
+    text ask "Who is older, Ada or Ben?" narrate width=16 below=line gap=1
+    choice pick options=["Ada", "Ben"] right-of=ask gap=1
+  }
+
+  answer pick=(if a < b then "Ada" else "Ben")
+  feedback {
+    when (a < b and pick == "Ben" or b < a and pick == "Ada") point=line {
+      say "That one was born later, further along the line. Who had their birthday years first?"
+    }
+  }
+  hint "Which flag is further to the left, nearer the start of the line?"
+  hint "Whoever was born first has had the most birthdays."
+}

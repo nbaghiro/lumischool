@@ -1,0 +1,20 @@
+item k.round-in-a-word v=1 stars=3 skills=[writing.letter-families, counting.to-five] {
+  title "c shapes in a word"
+  difficulty (if w == "dog" or w == "pig" then 0 else 1)
+  let w={"dog", "pig", "cat", "duck"}
+  level easy {
+    let w={"pig", "dog"}
+  }
+  level hard {
+    let w={"cat", "duck"}
+  }
+
+  scene 26x12 {
+    handwriting rules show="{w}" rows=1 trace=0 width=14 at=canvas(1, 1)
+    text ask "How many letters in {w} start with a c shape?" narrate width=24 below=rules gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == "dog" then 3 else if w == "pig" then 1 else 2)
+  hint "c, a, d, g, o and q start with a c shape. Check each letter of {w}."
+}

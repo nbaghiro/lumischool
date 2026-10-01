@@ -46,36 +46,40 @@ export const gameRulesVersion = (game: string): string =>
             : game === "sling"
               ? `${GAME_CHALLENGE_VERSIONS.rules}-wall-1`
               : game === "rule"
-                ? `${GAME_CHALLENGE_VERSIONS.rules}-machine-1`
+                ? `${GAME_CHALLENGE_VERSIONS.rules}-machine-2`
                 : game === "straight"
-                  ? `${GAME_CHALLENGE_VERSIONS.rules}-river-2`
+                  ? `${GAME_CHALLENGE_VERSIONS.rules}-river-3`
                   : game === "fish"
-                    ? `${GAME_CHALLENGE_VERSIONS.rules}-fishing-2`
+                    ? `${GAME_CHALLENGE_VERSIONS.rules}-fishing-3`
                     : game === "spell"
-                      ? `${GAME_CHALLENGE_VERSIONS.rules}-sound-train-1`
+                      ? `${GAME_CHALLENGE_VERSIONS.rules}-sound-train-2`
                       : game === "shunt"
-                        ? `${GAME_CHALLENGE_VERSIONS.rules}-yard-2`
+                        ? `${GAME_CHALLENGE_VERSIONS.rules}-yard-4`
                         : game === "clear"
-                          ? `${GAME_CHALLENGE_VERSIONS.rules}-show-jumping-2`
+                          ? `${GAME_CHALLENGE_VERSIONS.rules}-show-jumping-3`
                           : game === "snake"
-                            ? `${GAME_CHALLENGE_VERSIONS.rules}-firefly-1`
+                            ? `${GAME_CHALLENGE_VERSIONS.rules}-firefly-3`
                             : game === "blocks"
                               ? `${GAME_CHALLENGE_VERSIONS.rules}-fetch-1`
                               : game === "marble-workshop"
                                 ? `${GAME_CHALLENGE_VERSIONS.rules}-marble-run-3`
                                 : game === "bridge"
-                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-rope-swings-1`
-                                  : game === "road"
-                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-road-2`
-                                    : ["herd", "cargo-workshop"].includes(game)
-                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-physics-4`
-                                      : ["jump", "weigh", "share"].includes(game)
-                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-3`
-                                        : game === "wardrobe"
-                                          ? `${GAME_CHALLENGE_VERSIONS.rules}-lemonade-1`
-                                          : game === "pay"
-                                            ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-2`
-                                            : GAME_CHALLENGE_VERSIONS.rules;
+                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-rope-swings-2`
+                                  : game === "plane"
+                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-plane-2`
+                                    : game === "road"
+                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-road-3`
+                                      : game === "cargo-workshop"
+                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-cargo-5`
+                                        : game === "herd"
+                                          ? `${GAME_CHALLENGE_VERSIONS.rules}-physics-4`
+                                          : ["jump", "weigh", "share"].includes(game)
+                                            ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-3`
+                                            : game === "wardrobe"
+                                              ? `${GAME_CHALLENGE_VERSIONS.rules}-lemonade-2`
+                                              : game === "pay"
+                                                ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-2`
+                                                : GAME_CHALLENGE_VERSIONS.rules;
 
 export type GameValue =
     null | boolean | number | string | GameValue[] | { [key: string]: GameValue };
@@ -291,6 +295,39 @@ export interface WorldTweak {
     motion?: boolean;
 }
 
+/** The languages a child may learn in the ferry town, in the order they are written. */
+export const LANGUAGES = ["es", "fr", "ja"] as const;
+export type Language = (typeof LANGUAGES)[number];
+
+/** The countries a family may choose a national history unit from (.docs/history.md). */
+export const NATIONS = ["britain", "usa", "japan", "russia", "china"] as const;
+export type Nation = (typeof NATIONS)[number];
+
+/** Each setting's value. null takes a setting back to its default. */
+export interface SettingValues {
+    /** The language a child learns; null until a grown-up picks one. */
+    language: Language | null;
+    /** The family's national history unit; null reads as none. */
+    nation: Nation | null;
+    /** When the family's mornings start, "8:30" on a 24-hour clock; null is the family's own habit. */
+    "morning-start": string | null;
+    /** A game's practice level from 0, the game named by `of`. */
+    practice: number | null;
+    /** The easel's tools and colours, read back by `readState` in engine/ui/painting-easel.ts. */
+    painting: unknown;
+}
+
+export type SettingKey = keyof SettingValues;
+
+/** One setting given a value. `of` names the thing inside the setting it is about, a game for `practice`. */
+export interface SettingOf<K extends SettingKey> {
+    key: K;
+    of: string | null;
+    value: SettingValues[K];
+}
+
+export type SettingChange = { [K in SettingKey]: SettingOf<K> }[SettingKey];
+
 /** What each kind carries. The kind itself is only the `events.kind` column, never repeated in `data`. */
 export interface EventData {
     "sitting-began": {
@@ -369,6 +406,11 @@ export interface EventData {
      * (`schoolYears` in school/family/family.ts). The server writes it with the kid's row.
      */
     "moved-up": { from: number; grade: number; onDay: string };
+    /**
+     * A setting given a value, for the family (`kid_id` null) or for one kid, as `SETTINGS` says of
+     * its key. The latest for a key wins when the log is folded (`settingIn`).
+     */
+    "setting-changed": SettingChange;
     // The record of access (.docs/auth.md). The server writes these, against the family with `kid_id`
     // null, so a kid's deletion never removes one; a kid is named by id and never by name.
     "signed-in": { method: SignInMethod; session: string; shared: boolean };
@@ -773,6 +815,87 @@ const nullableStr = (v: unknown): boolean => v === null || str(v);
 const kidKeys = (v: unknown): boolean =>
     Array.isArray(v) && v.length > 0 && v.every((k) => obj(k) && uuid(k.kid) && uuid(k.key));
 
+interface SettingRule {
+    /** Whether the setting is the family's (`kid_id` null), one kid's, or either, for play a grown-up does too. */
+    scope: "family" | "kid" | "either";
+    /** Whether it is about one thing inside it, named by `of`. */
+    of: boolean;
+    value: (v: unknown) => boolean;
+    /** What the value may be, for the problem a bad one returns. */
+    says: string;
+}
+
+/** Hours without a leading zero, as the morning card writes a clock: "8:30", "13:05". */
+const CLOCK = /^(1?\d|2[0-3]):[0-5]\d$/;
+
+export const SETTINGS: Record<SettingKey, SettingRule> = {
+    language: {
+        scope: "kid",
+        of: false,
+        value: (v) => v === null || one(v, LANGUAGES),
+        says: `one of ${LANGUAGES.join(", ")}, or null`,
+    },
+    nation: {
+        scope: "family",
+        of: false,
+        value: (v) => v === null || one(v, NATIONS),
+        says: `one of ${NATIONS.join(", ")}, or null`,
+    },
+    "morning-start": {
+        scope: "family",
+        of: false,
+        value: (v) => v === null || (str(v) && CLOCK.test(v)),
+        says: "a clock such as 8:30, or null",
+    },
+    practice: {
+        scope: "either",
+        of: true,
+        value: (v) => v === null || (int(v) && v >= 0 && v <= 100),
+        says: "a level from 0 to 100, or null",
+    },
+    painting: {
+        scope: "either",
+        of: false,
+        value: (v) => v === null || (obj(v) && JSON.stringify(v).length <= 8192 && gameJson(v)),
+        says: "an object of at most 8 KB, or null",
+    },
+};
+
+const setting = (e: Record<string, unknown>): string | null => {
+    if (!keyOf(SETTINGS, e.key)) return `setting "${String(e.key)}" is not a setting`;
+    const rule = SETTINGS[e.key];
+    if (rule.of ? !(str(e.of) && e.of !== "" && e.of.length <= 100) : e.of !== null)
+        return rule.of ? `${e.key} names what it is of` : `${e.key} is of nothing, so of is null`;
+    if (!("value" in e) || !rule.value(e.value)) return `${e.key} must be ${rule.says}`;
+    return Object.keys(e).length === 3 ? null : "a setting holds its key, of and value";
+};
+
+/** Narrows a setting to one key, so its value has that key's type. */
+const isSetting = <K extends SettingKey>(
+    c: SettingChange,
+    key: K,
+): c is SettingChange & SettingOf<K> => c.key === key;
+
+/**
+ * The value a setting was last given, for one kid or with `kid` null for the family, and for `of`
+ * within it; undefined when it was never given one. Latest by `at`, and by log order on a tie.
+ */
+export function settingIn<K extends SettingKey>(
+    events: readonly Envelope[],
+    key: K,
+    kid: string | null,
+    of: string | null = null,
+): SettingValues[K] | undefined {
+    let latest: { at: string; value: SettingValues[K] } | undefined;
+    for (const e of events) {
+        if (e.kind !== "setting-changed" || e.kid_id !== kid) continue;
+        const data = e.data;
+        if (!isSetting(data, key) || data.of !== of) continue;
+        if (!latest || e.at >= latest.at) latest = { at: e.at, value: data.value };
+    }
+    return latest?.value;
+}
+
 const EVENT: Record<EventKind, Check> = {
     "sitting-began": (e) =>
         str(e.sitting) &&
@@ -888,6 +1011,7 @@ const EVENT: Record<EventKind, Check> = {
         int(e.from) && int(e.grade) && Math.abs(e.grade - e.from) === 1 && day(e.onDay)
             ? null
             : "moved-up needs the grade it moves from, a grade next to it and the day it takes effect",
+    "setting-changed": setting,
     "signed-in": (e) =>
         one(e.method, ["email-code", "link", "passkey", "switch", "pin"] as const) &&
         uuid(e.session) &&
@@ -1038,6 +1162,13 @@ function problemOf(v: unknown): string | null {
     if (kind === "game-attempted" && (v.kid_id === null || v.id !== v.data.id))
         return "game attempts name a child and use the attempt id as event id";
     if (kind === "moved-up" && v.kid_id === null) return "a move names the child who moved";
+    if (kind === "setting-changed" && keyOf(SETTINGS, v.data.key)) {
+        const scope = SETTINGS[v.data.key].scope;
+        if (scope !== "either" && (scope === "kid") !== (v.kid_id !== null))
+            return scope === "kid"
+                ? `${v.data.key} is one child's setting and names them`
+                : `${v.data.key} is the family's setting and names no child`;
+    }
     return EVENT[kind](v.data);
 }
 

@@ -1,0 +1,23 @@
+item k.not-an-insect v=1 stars=2 skills=[nature.minibeasts, reasoning.odd-one-out] {
+  title "Not an insect"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..1
+  let a={pick(k, "ant", "bee")}
+  let b={pick(k, "spider", "ladybird")}
+  let c={pick(k, "bee", "spider")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 28x16 {
+    minibeasts row kinds=[a, b, c] spots=4 legs=false at=canvas(1, 1)
+    text ask "An insect has six legs. Which one is not an insect?" narrate width=26 below=row gap=1
+    choice pick options=[a, b, c] stack=row below=ask gap=1
+  }
+
+  answer pick="spider"
+  hint "Count the legs on each one."
+}

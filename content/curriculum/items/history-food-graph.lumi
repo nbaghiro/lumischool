@@ -1,0 +1,22 @@
+# A class's lunch survey (made up for the lesson) as a bar chart: foods grown in the country, caught
+# at sea, and brought from abroad. Reading and comparing the bars.
+item history.food-graph v=1 skills=[history.food, data.bargraph] {
+  title "Where lunch came from"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, 7, 9, 8, 6, 11, 5)}
+  let b={pick(k, 3, 2, 4, 5, 3, 4)}
+  let c={pick(k, 5, 6, 9, 7, 8, 12)}
+  let ask={pick(k, "How many foods were grown in our country?", "How many were brought from abroad?", "How many foods were there in all?", "How many more came from abroad than from the sea?", "How many more were grown here than came from abroad?", "How many foods did not come from abroad?")}
+  let key={pick(k, a, c, a + b + c, c - b, a - c, a + b)}
+
+  scene 30x16 {
+    bargraph g labels=["Grown here", "From the sea", "From abroad"] values=[a, b, c] max=12 at=canvas(1, 0)
+    text ask "{ask}" narrate width=14 right-of=g gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer key
+  hint "Read the height of each bar against the scale."
+  hint "More means take away; in all means add."
+}

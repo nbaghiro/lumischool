@@ -30,6 +30,7 @@ export const ICONS = [
     "launch",
     "grab",
     "locate",
+    "faster",
 ] as const;
 export type IconName = (typeof ICONS)[number];
 
@@ -57,6 +58,7 @@ export const ICON_LABEL: Record<IconName, string> = {
     launch: "Launch",
     grab: "Pick up or release",
     locate: "Your location",
+    faster: "Faster",
 };
 
 /**
@@ -103,6 +105,19 @@ function arrow<G>(c: Ctx<G>, from: Pt, to: Pt, head = 7.5): void {
 }
 
 const DRAW: Record<IconName, <G>(c: Ctx<G>) => void> = {
+    faster: (c) => {
+        for (const x of [8, 20])
+            c.pen.linear(
+                c.g,
+                [
+                    [x, 9],
+                    [x + 11, 20],
+                    [x, 31],
+                ],
+                "ruler",
+                line(c),
+            );
+    },
     undo: (c) => {
         c.pen.path(c.g, "M8 15H22C37 15 36 33 22 33", "ruler", null, line(c));
         c.pen.linear(
@@ -425,7 +440,7 @@ export const icon = defineDrawing<{ name: IconName; on: boolean }>({
     family: "apps",
     title: "Icons for the apps' controls",
     group: "Marks",
-    about: "Home, journal, map, print, settings, back, sign out, add, help and sound, drawn as one set on a two-square box: one stroke weight, round ends and one marker under the pencil. Every control supplies its name, and `on` lays a disc of highlighter behind it for the page a child or a grown-up is on.",
+    about: "Home, journal, map, print, settings, back, sign out, add, help, sound and faster, drawn as one set on a two-square box: one stroke weight, round ends and one marker under the pencil. Every control supplies its name, and `on` lays a disc of highlighter behind it for the page a child or a grown-up is on.",
     params: { name: "home", on: false },
     settings: { name: { kind: "one of", of: ICONS }, on: { kind: "flag" } },
     takes: [

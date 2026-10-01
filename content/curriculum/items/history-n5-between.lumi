@@ -1,0 +1,24 @@
+# Years between two events of the family's country, from the record (n as in n5-order).
+item history.n5-between v=1 skills=[history.nation, history.timeline] {
+  title "How many years between?"
+  difficulty k
+  let n=0..4 k=0..1
+  let i={n + 5 * k}
+  let e1={pick(i, "Alfred becomes king", "Jamestown founded", "Television broadcasts in Japan", "Novgorod first mentioned", "Qin unites China", "First king of England", "Plymouth Colony founded", "Shinkansen opens", "Moscow first mentioned", "Grand Canal completed")}
+  let y1={pick(i, 871, 1607, 1953, 859, -221, 927, 1620, 1964, 1147, 609)}
+  let e2={pick(i, "Domesday Book", "Plymouth Colony founded", "Shinkansen opens", "Birch-bark letters found", "Grand Canal completed", "Domesday Book", "Georgia founded", "Great Hanshin earthquake", "Birch-bark letters found", "Paper money")}
+  let y2={pick(i, 1086, 1620, 1964, 1951, 609, 1086, 1732, 1995, 1951, 1024)}
+  let from={pick(i, 850, 1600, 1950, 800, -300, 900, 1600, 1960, 1100, 600)}
+  let to={pick(i, 1100, 1640, 1970, 2000, 700, 1100, 1750, 2000, 2000, 1100)}
+  let step={pick(i, 50, 5, 5, 200, 125, 25, 25, 5, 150, 100)}
+
+  scene 36x14 {
+    timeline line from=from to=to step=step years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(0, 0)
+    text ask "How many years after the first was the second? There was no year nought." narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Read the year of each flag from the scale."
+  hint "Count on from the first to the second; across year one, take one away."
+}

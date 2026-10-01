@@ -1,0 +1,49 @@
+lesson k-fast-and-slow v=1 format=teach grade=0 unit=6 subject=music levels=[easy, medium, hard] {
+  title "Fast and slow"
+  goal "Hear whether music is fast or slow, move to it, and tell fast and slow from loud and quiet."
+
+  look {
+    scene 26x9 {
+      countrow row beats=4 meter=4 now=0 at=canvas(1, 1)
+    }
+    say """
+      Music can be fast, like a rabbit running, or slow, like a snail creeping. A lullaby is slow and
+      a racing song is fast. Fast is not the same as loud: a song can be fast and quiet, or slow and
+      loud.
+      """
+  }
+  do {
+    level easy {
+      worked k.fast-or-slow k=0 level=medium
+    }
+    practice k.fast-or-slow count=3 seed=2 easy-count=2
+    show k.move-to-music
+    show k.song-parts k=0 hard-k=1
+    practice k.loud-or-quiet count=2 seed=8
+    practice k.beat-squares count=1 seed=9
+  }
+  try stars=2 {
+    show k.faster-not-louder
+  }
+  try stars=3 {
+    show k.slow-quick-quick
+  }
+  remember {
+    say "Fast or slow is how quick the music goes. It is not how loud it is."
+  }
+
+  grown-ups """
+    Sing or play each piece of music yourself and let the child move to it; the page cannot make a
+    sound. The moving and the clapping are for you to watch, and the clapped bar is judged on the
+    music page. If the child mixes up fast and loud, clap quickly and quietly, then slowly and
+    loudly. Off the page, march, tiptoe and run to music at home. Japan, 幼稚園教育要領 (kindergarten
+    guidelines), 表現, 内容 (4): "感じたこと，考えたことなどを音や動きなどで表現したり，自由にかいたり，つくったりなどする。"
+    (Express what they feel and think through sound and movement, and draw and make things freely.)
+    """
+  level easy {
+    grown-ups "At this level the snail is worked in the teacher's pen first, the music is for a snail, a rabbit and a lullaby, and the song question is about the chorus."
+  }
+  level hard {
+    grown-ups "At this level the music is for a race, an elephant and a bee, and the song question is about the verses."
+  }
+}

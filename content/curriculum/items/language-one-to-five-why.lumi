@@ -1,0 +1,23 @@
+# A reason: what went wrong in a count, and which number is bigger.
+item language.one-to-five-why v=1 stars=2 skills=[language.numbers, reasoning.language] {
+  title "Spot the slip"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x27 {
+    column all at=canvas(1, 1) space=1 align=start {
+      animals flock kind=duck count=pick(k, 4, 4, 3)
+      text ask "{pick(k, \"Leo counts the ducks: [[num.one]], [[num.two]], [[num.four]]. Which number did he miss?\", \"Ana counts the ducks: [[num.one]], [[num.two]], [[num.three]], [[num.four]], [[num.five]]. What went wrong?\", \"Which is more, [[num.three]] or [[num.four]]? Why?\")}" width=32
+      choice pick options=[pick(k, "[[num.three]]", "She said one number too many.", "[[num.four]], because it comes after [[num.three]]"), pick(k, "[[num.five]]", "She started at the wrong number.", "[[num.three]], because it is shorter"), pick(k, "[[num.zero]]", "She missed a number.", "They are the same.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[num.three]]", "She said one number too many.", "[[num.four]], because it comes after [[num.three]]")
+  feedback {
+    when (pick == pick(k, "[[num.five]]", "She missed a number.", "They are the same.")) {
+      say "{pick(k, \"[[num.five|cap]] comes after [[num.four]]. What comes between [[num.two]] and [[num.four]]?\", \"She said every number. Count the ducks: how many are there?\", \"Count them: one comes after the other. Which comes later?\")}"
+    }
+  }
+  hint "Count from [[num.one]] out loud."
+  hint "Touch each duck as you count."
+}

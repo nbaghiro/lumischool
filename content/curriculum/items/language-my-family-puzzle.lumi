@@ -1,0 +1,23 @@
+# Non-routine: a relation worked out across two steps of the tree, from someone other than Ana.
+item language.my-family-puzzle v=1 stars=3 skills=[language.family, reasoning.language] {
+  title "Round the family tree"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x33 {
+    column all at=canvas(1, 1) space=1 align=start {
+      familytree tree names=["Rosa", "Pepe", "Carmen", "Luis", "Marta", "Juan", "Ana"] years=[0, 0, 0, 0, 0, 0, 0] blank=-1
+      text ask "{pick(k, \"Carmen is Juan's mother. Who is Carmen to Ana?\", \"Who is Pepe to Marta?\", \"Who is Ana to Luis?\")}" width=32
+      choice pick options=[pick(k, "[[family.the-grandmother]]", "[[family.the-father]]", "[[family.the-granddaughter]]"), pick(k, "[[family.the-mother]]", "[[family.the-grandfather]]", "[[family.the-daughter]]"), pick(k, "[[family.the-sister]]", "[[family.the-brother]]", "[[family.the-mother]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[family.the-grandmother]]", "[[family.the-father]]", "[[family.the-granddaughter]]")
+  feedback {
+    when (pick == pick(k, "[[family.the-mother]]", "[[family.the-grandfather]]", "[[family.the-daughter]]")) {
+      say "{pick(k, \"Carmen is Juan's mother, and Juan is Ana's father. So to Ana she is one step more.\", \"Pepe is Ana's grandfather. To Marta, one row down, he is something else.\", \"Ana is Juan's daughter. Luis is two rows up.\")}"
+    }
+  }
+  hint "Put a finger on each person on the tree."
+  hint "Go one row at a time: up is a parent, down is a child."
+}

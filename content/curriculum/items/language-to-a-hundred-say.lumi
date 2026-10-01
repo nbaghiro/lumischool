@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.to-a-hundred-say v=1 skills=[language.numbers, language.market, language.speaking] {
+  title "Count in tens"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Count in tens in [[language.name]] from ten to a hundred.\", \"A grown-up writes three numbers between 40 and 99. Say each in [[language.name]].\", \"Say the price of three things at home in [[language.name]], rounded to whole euros.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="The tens in order, sixty and seventy kept apart, and a number between the tens said as the lesson says them." notice=["The tens in order", "Sixty and seventy kept apart", "A number between the tens", "A price with euros"]
+  hint "Say the ten first, then the one."
+  hint "Which is sixty and which is seventy?"
+}

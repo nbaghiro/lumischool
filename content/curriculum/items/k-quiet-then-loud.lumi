@@ -1,0 +1,22 @@
+# Reading two marks in order: start quiet, end loud. The child has to hold what each letter means
+# and the order they come in.
+item k.quiet-then-loud v=1 stars=3 skills=[music.dynamics, reasoning.order] {
+  title "Quiet, then loud"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 26x18 {
+    dynamics marks marks=["{pick(k, \"p\", \"f\")}", "{pick(k, \"f\", \"p\")}"] words=false ring=-1 at=canvas(1, 1)
+    text ask "f is loud and p is quiet. Does this music start loud or start quiet?" narrate width=24 below=marks gap=1
+    choice pick options=["It starts quiet and ends loud.", "It starts loud and ends quiet."] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "It starts quiet and ends loud." else "It starts loud and ends quiet.")
+  hint "Which mark comes first, on the left?"
+}

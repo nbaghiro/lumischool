@@ -1,0 +1,27 @@
+# The cup at the foot of the slope is pushed further by the ball from the higher slope: a bigger
+# push, which the push-and-pull lesson named, from a steeper start.
+item k.knock-the-cup v=1 stars=3 skills=[physics.ramps, physics.forces] {
+  title "Push the cup further"
+  difficulty (if a - b >= 3 then 0 else 1)
+  let a=4..8 b=2..6
+  where (a > b + 1)
+  level easy {
+    where (a - b >= 3)
+  }
+  level hard {
+    where (a - b <= 2)
+  }
+
+  scene 30x32 {
+    column two at=canvas(1, 1) space=1 align=start {
+      ramp high height=5 ball=0 cup=1 pushed=a
+      ramp low height=2 ball=0 cup=1 pushed=b
+    }
+    text q "A ball rolls into a paper cup at the foot of each slope. How many more squares did the high slope push its cup?" narrate width=28 below=two gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer (a - b)
+  hint "How far did each cup move? Count the squares."
+  hint "Now count on from the shorter one to the longer one."
+}

@@ -1,0 +1,65 @@
+# Dates from engine/notation/chronicle.ts: the United Nations 24 October 1945 (un.org, which gives the
+# 50 countries at San Francisco), UNICEF 1946, the Universal Declaration of Human Rights 1948, the
+# Convention on the Rights of the Child 1989; 193 members today.
+lesson history-countries-working-together v=1 format=teach grade=6 unit=8 subject=history levels=[easy, medium, hard] {
+  title "Countries working together"
+  goal "Put the founding of the United Nations and the promises made through it in order, and say why countries solve some problems together."
+
+  look {
+    scene 36x9 {
+      timeline line from=1940 to=2000 step=10 years=[1945, 1946, 1948, 1989] labels=["United Nations founded", "UNICEF founded", "Universal Declaration of Human Rights", "Rights of the Child"] at=canvas(0, 0)
+    }
+    say """
+      As the Second World War ended in 1945, representatives of 50 countries met to make an
+      organisation that would help keep the peace: the United Nations, which began on 24 October
+      1945. In 1946 it set up UNICEF to help children, in 1948 it agreed the Universal Declaration of
+      Human Rights, and in 1989 the rights of every child. Today 193 countries are members, and each
+      has one vote in its General Assembly.
+      """
+  }
+  do {
+    level easy {
+      worked history.un-order k=0
+    }
+    show history.un-order k=2 easy-k=1 hard-k=4
+    show history.un-between k=2 easy-k=0 hard-k=4
+    show history.un-numbers k=2 easy-k=0 hard-k=4
+    show history.child-rights k=2 easy-k=0 hard-k=4
+    show history.un-order k=3 easy-k=2 hard-k=5
+    show history.un-between k=3 easy-k=1 hard-k=5
+    show history.un-numbers k=3 easy-k=1 hard-k=5
+    show history.child-rights k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.un-numbers k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.why-together k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.assembly-majority k=0 hard-k=1
+  }
+  remember {
+    say "Since 1945 the countries of the world have met in the United Nations to keep the peace and to agree on everyone's rights."
+  }
+
+  grown-ups """
+    The idea is that some problems cross borders, so countries have built ways to work together,
+    and that the United Nations, from 1945, is the largest of them. The way in orders its founding
+    and the promises made through it; the core counts the years between them, works with its
+    numbers, and asks which of several things is a child's right under the 1989 Convention. The
+    wrong idea to watch for is that a right is anything a child wants; a right is what every child
+    everywhere needs. The lesson describes what the UN is and does and gives no verdict on how
+    well it does it; that is a question worth talking about with an older child. If the child is
+    stuck, pick one right and ask how it is kept in your town. Off the page, find out what UNICEF
+    does in one country. Japan's 社会 for grade six teaches 「外国の人々と共に生きていくためには異なる文化や習慣を理解し合うことが大切」
+    and Japan's part in the United Nations (the course of study as read in its 2008 edition).
+    Russia's history programme reaches the United Nations in grade nine (recalled, not quoted here).
+    """
+  level easy {
+    grown-ups "At this level a worked example orders the UN, the Declaration and the rights of the child, the years counted are short, the numbers are added or taken away, and the rights are school and a name."
+  }
+  level hard {
+    grown-ups "At this level the orders include the First World War, the years counted run from 1893 and to 1991, the numbers ask for more than half and for times, the rights include being heard and being safe, and the three-star vote needs two thirds."
+  }
+}

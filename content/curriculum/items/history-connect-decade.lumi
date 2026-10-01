@@ -1,0 +1,21 @@
+# The ten years a way of connecting people came in, from the record.
+item history.connect-decade v=1 skills=[history.inventions, history.decades] {
+  title "Which ten years?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ev={pick(k, "World Wide Web", "First satellite", "Telephone", "Television", "Radio across the Atlantic", "First computer")}
+  let yr={pick(k, 1991, 1957, 1876, 1936, 1901, 1945)}
+  let o1={pick(k, "1980s", "1940s", "1860s", "1920s", "1890s", "1930s")}
+  let o2={pick(k, "1990s", "1950s", "1870s", "1930s", "1900s", "1940s")}
+  let o3={pick(k, "2000s", "1960s", "1880s", "1940s", "1910s", "1950s")}
+
+  scene 36x21 {
+    timeline line from=1860 to=2000 step=20 years=[yr] labels=["{ev}"] at=canvas(0, 0)
+    text ask "In which ten years was this?" narrate width=16 below=line gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column right-of=ask gap=1
+  }
+
+  check history.dates of=line pick="decade-name(0)"
+  hint "Read the year from the scale."
+  hint "The ten years are named after the year that ends in 0."
+}

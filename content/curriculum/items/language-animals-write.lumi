@@ -1,0 +1,19 @@
+# The word written from its picture: [[animal.cat]], [[animal.duck]], [[animal.dog]], [[animal.pig]], [[animal.rabbit]], [[animal.fox]], [[animal.hen]].
+# Accent-tolerant: the box takes the word with its accents left off (accents=loose); ñ is a letter and is marked.
+item language.animals-write v=1 skills=[language.animals, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x17 {
+    column all at=canvas(1, 1) space=1 align=start {
+      picturecards cards who=["{pick(k, \"cat\", \"duck\", \"dog\", \"pig\", \"rabbit\", \"fox\", \"hen\")}"] where=["by"] thing=["box"] letters=false
+      text ask "Write this animal in [[language.name]], without the little word before it." width=32
+      word-input word options=[pick(k, "[[animal.cat]]", "[[animal.duck]]", "[[animal.dog]]", "[[animal.pig]]", "[[animal.rabbit]]", "[[animal.fox]]", "[[animal.hen]]")] accents=loose
+    }
+  }
+
+  answer word=pick(k, "[[animal.cat]]", "[[animal.duck]]", "[[animal.dog]]", "[[animal.pig]]", "[[animal.rabbit]]", "[[animal.fox]]", "[[animal.hen]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

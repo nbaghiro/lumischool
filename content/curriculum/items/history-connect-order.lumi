@@ -1,0 +1,19 @@
+# Ways of reaching people far away, numbered from the first, from the dated record.
+item history.connect-order v=1 skills=[history.inventions, history.order] {
+  title "A world connected"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Telephone", "Telephone", "First satellite", "World Wide Web", "Radio across the Atlantic", "First satellite")}
+  let b={pick(k, "Television", "First satellite", "Telephone", "Radio across the Atlantic", "Television", "First computer")}
+  let c={pick(k, "World Wide Web", "World Wide Web", "Television", "Telephone", "Telephone", "Television")}
+
+  scene 36x22 {
+    timeline line from=1860 to=2000 step=20 years=[] labels=[] at=canvas(0, 0)
+    text ask "Number these 1, 2, 3, from the first." narrate width=34 below=line gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Which could someone in 1880 already use?"
+  hint "The satellite came in 1957, the web in 1991."
+}

@@ -1,0 +1,21 @@
+item k.tug v=1 stars=2 skills=[physics.forces, reasoning.explain] {
+  title "Pulled two ways"
+  difficulty (if abs(a - b) >= 4 then 0 else 1)
+  let a=3..8 b=3..8
+  where (abs(a - b) >= 2)
+  level easy {
+    where (abs(a - b) >= 4)
+  }
+  level hard {
+    where (abs(a - b) <= 3)
+  }
+
+  scene 28x23 {
+    forces f thing=box pull=a oppose=b labels=false at=canvas(1, 1)
+    text ask "Two children pull the box, one each way. Which way will it move?" narrate width=26 below=f gap=1
+    choice pick options=["the way of the longer arrow", "the way of the shorter arrow"] stack=column below=ask gap=1
+  }
+
+  answer pick="the way of the longer arrow"
+  hint "Which child pulls harder? Look at the arrows."
+}

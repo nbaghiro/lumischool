@@ -1,0 +1,69 @@
+# Dates from engine/notation/chronicle.ts: the Theodosian walls of Constantinople (5th century), the
+# White Tower (about 1078), the Kremlin's brick walls (1485 to 1495), Himeji rebuilt (1601 to 1609).
+lesson history-castles-and-walled-cities v=1 format=teach grade=5 unit=2 subject=history levels=[easy, medium, hard] {
+  title "Castles and walled cities"
+  goal "Put walls and castles from around the world in order, and say what a town's walls, gates and towers were for in everyday life."
+
+  look {
+    scene 36x12 {
+      row all at=canvas(1, 0) space=2 align=end {
+        citywalls wall towers=3 open=1
+        tower keep courses=8 flag=1
+      }
+    }
+    say """
+      For a thousand years many towns lived inside walls. Constantinople's great walls were built in
+      the 400s; the Normans began London's White Tower about 1078; Moscow's Kremlin got its brick walls
+      between 1485 and 1495; Himeji Castle in Japan was rebuilt between 1601 and 1609. The gates
+      shut at night, carts paid tolls to come in, and the market was often just inside.
+      """
+  }
+  do {
+    level easy {
+      worked history.gate-tolls k=0
+    }
+    show history.gate-tolls k=2 easy-k=1 hard-k=4
+    show history.castle-order k=2 easy-k=0 hard-k=4
+    show history.wall-reasons k=2 easy-k=0 hard-k=4
+    show history.castle-century k=2 easy-k=0 hard-k=4
+    show history.gate-tolls k=3 easy-k=2 hard-k=5
+    show history.castle-order k=3 easy-k=1 hard-k=5
+    show history.wall-reasons k=3 easy-k=1 hard-k=5
+    show history.castle-century k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.wall-reasons k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.why-stone-tower k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.towers-on-a-wall k=0 hard-k=1
+  }
+  remember {
+    say "Walls kept a town safe, but they also shaped its day: gates shut at night, tolls at the gate, and the market inside."
+  }
+
+  grown-ups """
+    The idea is that walls and castles were built in many places and times, and that they shaped
+    ordinary life as much as war: a town's gates, tolls and markets. The way in counts the tolls
+    at a gate; the core orders walls and castles from around the world, says what each part was
+    for, and names centuries. The two-star question asks why the Normans built so big a tower in
+    London after 1066: a building can say who rules. The lesson does not tell sieges or battles;
+    if the child asks, talk about the people inside the walls. The wrong idea to watch for is
+    "castles were only for fighting". If the child is stuck, walk round your own town and find
+    where its gates or boundaries were. England's key stage 2 history allows "a study of an aspect
+    or theme in British history that extends pupils' chronological knowledge beyond 1066". Russia's
+    history programme for grade six includes «Замок сеньора», «Облик средневековых городов. Образ
+    жизни и быт горожан», castles and the everyday life of townspeople.
+    Japan's 社会 takes up history only through Japan's own story, in grade six
+    (「我が国の歴史上の主な事象について，人物の働きや代表的な文化遺産を中心に」, the course of study as read in its 2008 edition), so
+    this lesson has no line of its own there; its timeline and source skills serve that grade.
+    """
+  level easy {
+    grown-ups "At this level a worked example counts the tolls of six carts, the walls to order are far apart in time, the reasons are about gates and night, and the centuries are of Moscow and Himeji."
+  }
+  level hard {
+    grown-ups "At this level the tolls add carts and baskets, the walls are close in time, the reasons ask why towns kept their walls in peace, and the three-star wall goes all the way round."
+  }
+}

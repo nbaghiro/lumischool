@@ -1,0 +1,16 @@
+# The three-star question: six inventions on a line, and the longest wait between one and the next.
+item history.biggest-gap v=1 skills=[history.inventions, reasoning.compare] {
+  title "The longest wait"
+  difficulty k
+  let k=0..1
+
+  scene 36x14 {
+    timeline line from=1860 to=2000 step=20 years=[1876, 1886, 1903, 1936, 1945, 1991] labels=["Telephone", "Motor car", "Aeroplane", "Television", "First computer", "World Wide Web"] at=canvas(0, 0)
+    text ask "{if k == 0 then \"Between which two neighbours on the line was the longest wait? Give the number of years.\" else \"Between which two neighbours was the shortest wait? Give the number of years.\"}" narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then 46 else 9)
+  hint "Work out the gap between each flag and the next one."
+  hint "Write the five gaps down, then pick the {if k == 0 then \"biggest\" else \"smallest\"}."
+}

@@ -1,0 +1,17 @@
+# Four words to their English, 3 sets, the later sets with the words most often mixed up.
+item language.about-me-match v=1 skills=[language.reading, language.writing] {
+  title "Match the words"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Write the number of its English next to each [[language.name]] word." width=32
+      match m left=[pick(k, "[[aboutme.and]]", "[[aboutme.as-well-as-that]]", "[[aboutme.i-love]]"), pick(k, "[[aboutme.but]]", "[[aboutme.however]]", "[[aboutme.i-do-not-like]]"), pick(k, "[[aboutme.because]]", "[[aboutme.a-bit]]", "[[aboutme.my-favourite-food]]"), pick(k, "[[aboutme.also]]", "[[aboutme.very]]", "[[aboutme.on-saturdays]]")] right=[pick(k, "because", "very", "my favourite food"), pick(k, "and", "as well as that", "I love"), pick(k, "but", "however", "on Saturdays"), pick(k, "also", "a bit", "I do not like")] blanks=[a, b, c, d]
+    }
+  }
+
+  answer a=2 b=pick(k, 3, 3, 4) c=pick(k, 1, 4, 1) d=pick(k, 4, 1, 3)
+  hint "Start with the word you are surest of, and cross its English off."
+  hint "Two words look alike. Which letter is different, and what does it change?"
+}

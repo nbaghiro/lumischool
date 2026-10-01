@@ -1,0 +1,17 @@
+# The two-star reason: an alphabet needs only a few dozen signs, because each stands for a sound,
+# so it can be learnt quickly and can write any word.
+item history.why-alphabet v=1 skills=[history.writing, reasoning.why] {
+  title "Why a few letters?"
+  difficulty k
+  let k=0..1
+
+  scene 36x24 {
+    book open at=canvas(1, 0)
+    text ask "{if k == 0 then \"An alphabet has about thirty letters, but can write any word. How?\" else \"Chinese is written with thousands of characters, English with 26 letters. Why can 26 be enough?\"}" narrate width=16 right-of=open gap=1
+    choice pick options=["Each letter stands for a sound in words", "Every word has its own letter", "Most words are never written"] stack=column below=open gap=1
+  }
+
+  answer pick="Each letter stands for a sound in words"
+  hint "Say a word slowly. What is it made of?"
+  hint "How many different sounds do we need to write every word?"
+}

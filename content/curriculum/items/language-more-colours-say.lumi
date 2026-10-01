@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.more-colours-say v=1 skills=[language.colours, language.speaking] {
+  title "A rainbow out loud"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Say the colours of a rainbow in [[language.name]] to a grown-up: red, orange, yellow, green, blue, purple.\", \"Name the colour of your clothes in [[language.name]], one thing at a time.\", \"Say a colour in [[language.name]]. A grown-up finds something that colour. Swap and play three times.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="Each colour said in the language, [[colour.brown]] sounded as its line gives it, and [[colour.pink]] kept apart from [[colour.red]]." notice=["[[colour.brown|cap]] sounded as its line gives it", "[[colour.pink|cap]] and [[colour.red]] kept apart", "Every colour of the rainbow named", "Colours in rainbow order"]
+  hint "Rainbow order: red, orange, yellow, green, blue, purple."
+  hint "Say each one in English first."
+}

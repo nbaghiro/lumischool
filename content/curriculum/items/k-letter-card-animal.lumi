@@ -1,0 +1,28 @@
+# The letter is on a card and nobody says its sound: the child says it, which is the step on from
+# hearing a sound to reading a letter.
+item k.letter-card-animal v=1 skills=[reading.phonics, reading.letters] {
+  title "Read the card"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3 p=0..2
+  let letter={pick(k, "d", "h", "p", "f")}
+  let want={pick(k, "dog", "hen", "pig", "fox")}
+  let o1={pick(k, "cat", "cat", "rabbit", "hen")}
+  let o2={pick(k, "pig", "fox", "duck", "cat")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x23 {
+    lettercards card letters=["{letter}"] at=canvas(1, 1)
+    picturecards cards who=[if p == 0 then want else o1, if p == 1 then want else o2, if p == 2 then want else if p == 0 then o1 else o2] where=["by", "by", "by"] thing=["log", "log", "log"] letters=true below=card gap=1
+    text ask "Say the sound on the card. Which animal starts with it?" narrate width=28 below=cards gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=pick(p, "A", "B", "C")
+  hint "What sound does the letter on the card make?"
+  hint "Say each animal's name. Which one starts with that sound?"
+}

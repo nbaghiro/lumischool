@@ -89,6 +89,8 @@ const record = (over: Partial<GrownRecord> = {}): GrownRecord => ({
     ],
     unfinished: [],
     worlds: { terms: {}, tweaks: {}, begun: {}, kept: [] },
+    variants: { language: null, nation: null },
+    kept: { practice: {}, painting: null },
     from: "2026-09-07",
     back: [
         sheet({}),

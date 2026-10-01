@@ -1,0 +1,70 @@
+# A child interviewed for the ferry town's newsletter: questions matched to their answers.
+lesson language-interview v=1 format=teach grade=6 unit=7 subject=language levels=[easy, medium, hard] {
+  title "The interview"
+  goal "Ask and answer questions about yourself in [[language.name]], as in an interview."
+
+  look {
+    scene 38x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        comic talk who=["girl", "boy", "girl", "boy"] says=["[[interview.what-is-your-name]]", "[[interview.my-name-is-leo]]", "[[interview.where-do-you-live]]", "[[interview.i-live-in-the-town]]"] moods=["happy", "happy", "happy", "happy"] with=["", "", "", ""] thinks=[0, 0, 0, 0] holds=["", "", "", ""] labels=["1", "2", "3", "4"]
+      }
+    }
+    say """
+      Eva is writing about Leo for the ferry town's newsletter. She asks, and Leo answers:
+      [[interview.what-is-your-name]] [[interview.my-name-is-leo]] [[interview.where-do-you-live]]
+      [[interview.i-live-in-the-town]] Each answer fits its question: a name, a place, an age, a
+      reason.
+      """
+  }
+  do {
+    level easy {
+      worked language.interview-name k=4
+    }
+    show language.interview-name k=2 easy-k=0 hard-k=5
+    show language.interview-meaning k=3 easy-k=1 hard-k=4
+    show language.interview-write k=3 easy-k=1 hard-k=5
+    show language.interview-name k=4 easy-k=1 hard-k=6
+    show language.interview-match k=1 easy-k=0 hard-k=2
+    show language.interview-write k=4 easy-k=2 hard-k=6
+    show language.interview-listen k=3 easy-k=0 hard-k=5
+    show language.interview-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.interview-write k=4
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-interview-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.interview-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Each answer fits its question: [[interview.where-do-you-live]] [[interview.i-live-in-the-town]]"
+  }
+
+  grown-ups """
+    The wrong idea to watch for is an answer that is right in itself but answers another question.
+    In the naming questions the question is given and the child picks the answer, and the other
+    choices are answers to other questions of the same interview, so only fit decides. From this
+    grade the written words are marked with their accents: a word typed without its accent is not
+    taken. The dictation is read from this sheet, where it prints as Read aloud, or played by the
+    device. If the child is stuck, ask the question aloud and let the child answer in English first,
+    then find the phrase. Off the page, interview a grandparent in the language, or write an
+    interview for a family newsletter. It meets England's key stage 2 languages programme (years 3
+    to 6, statutory from age 7): "engage in conversations; ask and answer questions; express
+    opinions and respond to those of others; seek clarification and help"; Japan's grades 5 and 6
+    foreign languages: "Can communicate in asking and answering questions about themselves, someone
+    they communicate with and their surroundings by using simple words and phrases and basic
+    expressions on the spot"; and CEFR A2, "Can communicate in simple and routine tasks requiring a
+    simple and direct exchange of information on familiar and routine matters". The phrases are in
+    [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[interview.i-like-swimming]] is worked first in the teacher's pen, the words to name are [[interview.my-name-is-leo]] and [[interview.i-am-eleven]] and the words to write are [[interview.i-have]] and [[interview.call]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[interview.paella]] and [[interview.the-third-of-march]] and the words to write are [[interview.sister]], [[interview.favourite]] and [[interview.because]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

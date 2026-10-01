@@ -1,0 +1,19 @@
+# Which way of sending a message someone could have used in a given year, from the record.
+item history.message-could v=1 skills=[history.inventions, history.change] {
+  title "Sending a message"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let year={pick(k, 1890, 1950, 1920, 1960, 1980, 1990)}
+  let a={pick(k, "Telephone", "Television", "Radio across the Atlantic", "First satellite", "First satellite", "Telephone")}
+  let b={pick(k, "World Wide Web", "World Wide Web", "World Wide Web", "World Wide Web", "World Wide Web", "World Wide Web")}
+
+  scene 36x20 {
+    timeline line from=1860 to=2000 step=20 years=[year] labels=["Now"] at=canvas(0, 0)
+    text ask "It is {year}. Which of these could already reach people far away?" narrate width=34 below=line gap=1
+    choice pick options=["{a}", "{b}"] stack=column below=ask gap=1
+  }
+
+  check history.dates of=pick pick=first
+  hint "Which of the two came first?"
+  hint "Was it before {year}?"
+}

@@ -1,0 +1,21 @@
+# Which source best answers a question: the one made by someone who was there, at the time, about
+# the thing asked.
+item history.source-best v=1 skills=[history.sources, reasoning.evaluate] {
+  title "Which source would you use?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ask={pick(k, "What did the sky look like as Vesuvius erupted?", "What did the Great Fire of London look like on its first day?", "What was a birthday party like at a Roman fort in Britain?", "What did Ashoka want his people to do?", "How did the Qin unite China, as later Han writers told it?", "What is known today about Roman roads?")}
+  let key={pick(k, "Pliny's letter about Vesuvius", "Samuel Pepys's diary", "A birthday invitation from Vindolanda", "Ashoka's rock edict", "Records of the Grand Historian", "An encyclopaedia entry on Rome")}
+  let o2={pick(k, "An encyclopaedia entry on Rome", "A history of London", "An encyclopaedia entry on Rome", "Records of the Grand Historian", "Ashoka's rock edict", "A birthday invitation from Vindolanda")}
+  let o3={pick(k, "Records of the Grand Historian", "Pliny's letter about Vesuvius", "Samuel Pepys's diary", "An encyclopaedia entry on Rome", "Samuel Pepys's diary", "Pliny's letter about Vesuvius")}
+
+  scene 34x24 {
+    book open at=canvas(1, 0)
+    text ask "{ask} Which source would help most?" narrate width=14 right-of=open gap=1
+    choice pick options=[pick(k, key, o2, o3, key, o2, o3), pick(k, o2, key, key, o3, o3, key), pick(k, o3, o3, o2, o2, key, o2)] stack=column below=open gap=1
+  }
+
+  answer pick=key
+  hint "Which source is about that event or that place?"
+  hint "Was its maker there, or is it the best summary of what is known now?"
+}

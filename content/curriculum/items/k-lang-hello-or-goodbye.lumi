@@ -1,0 +1,21 @@
+# [[greet.hello]] and [[greet.goodbye]]: coming or going is the whole question.
+item k.lang-hello-or-goodbye v=1 skills=[language.greetings] {
+  title "Coming or going?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x20 {
+    person p pose=pick(k, "wave", "walk", "wave", "walk") dir=pick(k, 1, -1, 1, -1) age=child mood=happy at=canvas(1, 1)
+    text ask "{pick(k, \"Ana comes into the room. What does she say?\", \"Leo goes home. What does he say at the door?\", \"Ana meets Gran at the gate. What does she say?\", \"Gran leaves after tea. What does she say?\")}" narrate width=28 below=p gap=1
+    choice pick options=["[[greet.hello]]", "[[greet.goodbye]]"] stack=row below=ask gap=1
+  }
+
+  answer pick=pick(k, "[[greet.hello]]", "[[greet.goodbye]]", "[[greet.hello]]", "[[greet.goodbye]]")
+  hint "Is the person coming or going?"
+}

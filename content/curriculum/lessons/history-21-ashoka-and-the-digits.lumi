@@ -1,0 +1,65 @@
+# Dates from engine/notation/chronicle.ts: Ashoka ruled about 268 to 232 BC; Brahmagupta wrote zero
+# as a number in 628; Fibonacci's Liber Abaci brought the digits to Europe in 1202.
+lesson history-ashoka-and-the-digits v=1 format=teach grade=4 unit=3 subject=history levels=[easy, medium, hard] {
+  title "India: Ashoka, and the digits we write"
+  goal "Say how the digits we write travelled from India to the world, and read a king's carved words as a first-hand source."
+
+  look {
+    scene 36x9 {
+      timeline line from=-300 to=1500 step=300 years=[-268, 628, 1202] labels=["Ashoka's rule", "Zero as a number", "Digits reach Europe"] at=canvas(0, 0)
+    }
+    say """
+      About 268 BC Ashoka became emperor of most of India. He had his words carved on rocks and
+      pillars across the land, telling people to be kind and fair, and his carvings hold some of the
+      oldest number signs we know. Indian mathematicians went on to use ten digits with a place for
+      each, and in 628 Brahmagupta wrote about zero as a number. The digits travelled west, and a
+      book of 1202 brought them to Europe.
+      """
+  }
+  do {
+    level easy {
+      worked history.numeral-letters k=0
+    }
+    show history.numeral-letters k=2 easy-k=1 hard-k=4
+    show history.digits-order k=2 easy-k=0 hard-k=4
+    show history.digits-between k=2 easy-k=0 hard-k=4
+    show history.edict-first-hand k=0 hard-k=1
+    show history.numeral-letters k=3 easy-k=2 hard-k=5
+    show history.digits-order k=3 easy-k=1 hard-k=5
+    show history.digits-between k=3 easy-k=1 hard-k=5
+    show history.edict-first-hand k=1 hard-k=0
+    show history.roman-numerals k=3 easy-k=1 hard-k=5
+  }
+  try stars=2 {
+    show history.why-zero k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.digit-years k=0 hard-k=1
+  }
+  remember {
+    say "The ten digits and the zero came from India, and they won because every place has its own digit."
+  }
+
+  grown-ups """
+    The idea is that the numbers we write, ten digits whose places give their value, with zero to
+    hold an empty place, were worked out in India and travelled west over a thousand years. The way
+    in counts the letters a year needs in Roman numerals; the core orders the digits' journey,
+    counts years across year one, and reads Ashoka's carved edicts as a first-hand source (the
+    king's own words) against a history written long after. The wrong idea to watch for is "zero
+    is nothing, so it does not matter", which the two-star question tests. If the child is stuck,
+    write 105 and 15 on cards and ask what the 0 does. Off the page, find the oldest date you can
+    on a building near you and write it both ways. England's key stage 2 history asks for "a
+    non-European society that provides contrasts with British history"; Russia's history
+    programme for grade five includes «Держава Маурьев» and «Культурное наследие Древней Индии
+    (... научное познание)», the Mauryan empire and ancient India's learning.
+    Japan's 社会 takes up history only through Japan's own story, in grade six
+    (「我が国の歴史上の主な事象について，人物の働きや代表的な文化遺産を中心に」, the course of study as read in its 2008 edition), so
+    this lesson has no line of its own there; its timeline and source skills serve that grade.
+    """
+  level easy {
+    grown-ups "At this level a worked example counts the letters of MMXXVI, the numerals are short, the digits' journey comes nearly in order, and the years counted stay after year one."
+  }
+  level hard {
+    grown-ups "At this level the numerals are long years such as MDCCCLXXXVIII, the journey is fully muddled, the years counted cross year one, and the three-star puzzle asks which years come after AD 300."
+  }
+}

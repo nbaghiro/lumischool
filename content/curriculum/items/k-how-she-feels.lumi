@@ -1,0 +1,21 @@
+item k.how-she-feels v=1 skills=[art.feeling, art.looking] {
+  title "How does she feel?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let mood={pick(k, "happy", "sad", "scared", "cross")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 28x24 {
+    person ada pose=stand age=child hair=bunches colour=black top=berry mood=mood at=canvas(1, 1)
+    text q "Look at Ada's face. How does she feel?" narrate width=22 below=ada gap=1
+    choice pick options=["happy", "sad", "scared", "cross"] stack=row below=q gap=1
+  }
+
+  answer pick=mood
+  hint "Look at her mouth and her eyebrows."
+}

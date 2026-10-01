@@ -1,0 +1,19 @@
+item k.candles-last-year v=1 stars=2 skills=[history.celebrations, counting.one-more] {
+  title "Candles last year"
+  difficulty a
+  let a=3..6
+  level easy {
+    let a=3..3
+  }
+  level hard {
+    let a=6..6
+  }
+
+  scene 26x12 {
+    text q "Last year Ada had {a} candles on her birthday cake. How many will she have this year?" narrate width=24 at=canvas(1, 1)
+    number-input answer below=q gap=1
+  }
+
+  answer (a + 1)
+  hint "She is one year older now."
+}

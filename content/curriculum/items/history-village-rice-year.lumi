@@ -1,0 +1,17 @@
+# The three-star question with round made-up numbers: how much food a village needs in a year, and
+# how many fields that takes.
+item history.village-rice-year v=1 skills=[history.food, reasoning.plan] {
+  title "Enough for a year"
+  difficulty k
+  let k=0..1
+
+  scene 34x9 {
+    crops field stage=3 rows=3 plants=7 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Say 30 people each eat 3 kg of rice a month. How many kilograms of rice do they eat in a year?\" else \"Say 30 people each eat 3 kg of rice a month, and one field gives 540 kg a year. How many fields do they need?\"}" narrate width=20 right-of=field gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 0 then 1080 else 2)
+  hint "How much do they eat in one month, all together?"
+  hint "{if k == 0 then \"Then for twelve months.\" else \"Then how many fields of 540 kg make that much?\"}"
+}

@@ -1,0 +1,23 @@
+# Non-routine: directions chosen for a place, directions given facing the other way, and a route with two stops.
+item language.directions-puzzle v=1 stars=3 skills=[language.town, language.directions, reasoning.language] {
+  title "Routes on the plan"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x42 {
+    column all at=canvas(1, 1) space=1 align=start {
+      townplan plan places=["[[town.the-cafe]]", "[[town.the-shop]]", "[[town.the-park]]", "[[town.the-beach]]", "[[town.the-museum]]", "[[town.the-station]]", "[[town.the-square]]"]
+      text ask "{pick(k, \"Leo wants the museum. Which directions take him there from the child?\", \"Ana stands at the square, facing back down the road towards the child. She takes [[town.the-first-on-the-right]] Where does she go?\", \"Leo goes [[town.the-first-on-the-right]], comes back to the road, then goes straight on to the end. Which two places does he visit?\")}" width=32
+      choice pick options=[pick(k, "[[town.the-second-on-the-left]]", "[[town.the-museum]]", "[[town.the-beach]] and [[town.the-square]]"), pick(k, "[[town.the-first-on-the-left]]", "[[town.the-station]]", "[[town.the-park]] and [[town.the-square]]"), pick(k, "[[town.the-second-on-the-right]]", "[[town.the-park]]", "[[town.the-beach]] and [[town.the-museum]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[town.the-second-on-the-left]]", "[[town.the-museum]]", "[[town.the-beach]] and [[town.the-square]]")
+  feedback {
+    when (pick == pick(k, "[[town.the-first-on-the-left]]", "[[town.the-station]]", "[[town.the-park]] and [[town.the-square]]")) {
+      say "{pick(k, \"That leads to the park. The museum is one street further.\", \"Facing down, her right is the child's left. Which street does she reach first?\", \"The first on the right is not the park. Look again.\")}"
+    }
+  }
+  hint "Put a finger on the start and move it as you read."
+  hint "Turn the page round if you are facing the other way."
+}

@@ -1,0 +1,19 @@
+# The language to English: el gato negro, la casa blanca, el perro marrón, la puerta azul, el coche rojo, la mesa verde.
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.es-the-black-cat-meaning v=1 skills=[language.colours, language.grammar] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      sign card lines=[pick(k, "el gato negro", "la casa blanca", "el perro marrón", "la puerta azul", "el coche rojo", "la mesa verde")] kind=hanging color=berry
+      text ask "What does the sign say in English?" width=32
+      choice pick options=[pick(k, "the green table", "the blue door", "the white house", "the green table", "the green table", "the blue door"), pick(k, "the black cat", "the white house", "the red car", "the blue door", "the brown dog", "the green table"), pick(k, "the brown dog", "the red car", "the blue door", "the white house", "the red car", "the brown dog"), pick(k, "the red car", "the brown dog", "the brown dog", "the brown dog", "the blue door", "the red car")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "the black cat", "the white house", "the brown dog", "the blue door", "the red car", "the green table")
+  hint "Find a part of the Spanish you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

@@ -1,0 +1,17 @@
+# The three-star question: how many voters must change their minds for the result to turn, which
+# means thinking about both the for and the against at once.
+item history.change-the-vote v=1 skills=[history.government, reasoning.logic] {
+  title "Turn the vote"
+  difficulty k
+  let k=0..1
+
+  scene 34x20 {
+    council c hands=[1, 1, 1, pick(k, 0, 1), 0, 0, 0, if k == 1 then 0 else 1, if k == 1 then 0 else 1, 0, 0] box=0 motion="Build a new well" count=1 at=canvas(1, 0)
+    text ask "{if k == 0 then \"The idea lost. How many voters would have had to change their minds from against to for, for it to pass?\" else \"Eleven voted and the idea lost. What is the fewest who would have had to change sides for it to pass?\"}" narrate width=32 below=c gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check history.vote of=c answer=more
+  hint "How many votes for are more than half of all the voters?"
+  hint "Each voter who changes sides adds one for and takes one away against."
+}

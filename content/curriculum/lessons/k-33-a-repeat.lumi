@@ -1,0 +1,50 @@
+lesson k-a-repeat v=1 format=teach grade=0 unit=8 subject=coding levels=[easy, medium, hard] {
+  title "Do it again: a repeat"
+  goal "Do a pattern of claps and stamps several times, and read a repeat block that says how many times to do what is inside it."
+
+  look {
+    scene 30x10 {
+      row top at=canvas(1, 0) space=1 align=start {
+        blocks bl code=["repeat 3", "  jump"] words=false numbers=false
+        stage st cols=5 col=2 who=rabbit code=["repeat 3", "  jump"] flag=false upto=-1
+      }
+    }
+    say """
+      The orange block is a repeat. It holds a jump and says three, so the rabbit jumps three times.
+      Clap, clap, stamp done again and again is a repeat too. A repeat saves writing the same block
+      over and over.
+      """
+  }
+  do {
+    level easy {
+      worked k.clap-repeat n=2 level=medium
+    }
+    practice k.clap-repeat count=2 seed=2 easy-count=1
+    practice k.jumps-in-repeat count=3 seed=3 easy-count=2 hard-count=2
+    practice k.repeat-hops count=2 seed=4
+    show k.pattern-next c=6 easy-c=4 hard-c=7
+  }
+  try stars=2 {
+    show k.shorter-with-repeat
+  }
+  try stars=3 {
+    show k.repeat-pattern k=0 hard-k=1
+  }
+  remember {
+    say "A repeat does what is inside it again and again, as many times as it says."
+  }
+
+  grown-ups """
+    Read each question aloud and do the claps and stamps together; the body learns a loop before
+    the page does. If the child is stuck on the repeat block, put the same toy through the same
+    move three times and count. Off the page, make up a clapping pattern and repeat it, then let
+    the child say what repeats and how many times. Japan, 幼稚園教育要領 (kindergarten guidelines),
+    環境, 内容 (7), as in the first coding lesson.
+    """
+  level easy {
+    grown-ups "At this level two rounds of claps are worked in the teacher's pen first, the repeats say two or three, and the pattern to find is clap, stamp."
+  }
+  level hard {
+    grown-ups "At this level the repeats say four or five, the rabbit hops two squares each time, and the pattern to find is clap, clap, stamp."
+  }
+}

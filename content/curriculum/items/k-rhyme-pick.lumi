@@ -1,0 +1,31 @@
+# One distractor starts with the same sound as the picture's word, which is what a child who
+# confuses rhyme with alliteration picks.
+item k.rhyme-pick v=1 skills=[reading.rhyme] {
+  title "Which word rhymes?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let w={pick(k, "cat", "sun", "hen", "boat", "duck", "kite")}
+  let rhyme={pick(k, "hat", "bun", "ten", "goat", "truck", "bite")}
+  let same={pick(k, "cup", "sock", "hat", "bed", "dog", "kid")}
+  let other={pick(k, "dog", "pig", "pin", "rain", "fish", "moon")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 26x20 {
+    art pic asset="{w}" at=canvas(1, 1)
+    text ask "Which word rhymes with {w}?" narrate width=24 below=pic gap=1
+    choice pick options=[same, rhyme, other] stack=row below=ask gap=1
+  }
+
+  answer pick=rhyme
+  feedback {
+    when (pick == same) point=pic {
+      say "That one starts the same. A rhyme sounds the same at the end."
+    }
+  }
+  hint "Say {w}, then say each word after it. Which one sounds the same at the end?"
+}

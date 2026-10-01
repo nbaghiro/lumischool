@@ -1,0 +1,21 @@
+item k.story-next v=1 skills=[reading.sequencing] {
+  title "What comes next?"
+  difficulty k
+  let k=0..1
+  let right={pick(k, "water it", "put it in the oven")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x26 {
+    picsteps steps pictures=[pick(k, "pot", "eggs"), pick(k, "soil", "stir"), pick(k, "seed", "tin")] texts=["", "", ""] per=3 numbers=true write=false at=canvas(1, 1)
+    text ask "Look at the pictures in order. What happens next?" narrate width=28 below=steps gap=1
+    choice pick options=["water it", "put it in the oven", "stir it"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Say what happens in each picture: first, next, then. What would you do after that?"
+}

@@ -1,0 +1,23 @@
+# A reason: comparing two prices in Spanish, caro against a price, and cuesta against cuestan.
+item language.es-how-much-why v=1 stars=2 skills=[language.market, language.numbers, reasoning.language] {
+  title "Cheap or dear?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x31 {
+    column all at=canvas(1, 1) space=1 align=start {
+      foodstall stall foods=["bread", "cheese", "fish", "egg"] names=["pan", "queso", "pescado", "huevos"] costs=["2 €", "5 €", "7 €", "3 €"]
+      text ask "{pick(k, \"El pan cuesta dos euros. El queso cuesta cinco euros. Which is cheaper?\", \"Leo says a small cheese at veinte euros is barato. Is it?\", \"Las fresas ___ tres euros. Which word fills the gap?\")}" width=32
+      choice pick options=[pick(k, "el pan: dos is less than cinco", "No: veinte euros is a lot, so it is caro.", "cuestan"), pick(k, "el queso: cinco is less than dos", "Yes: veinte is a small number.", "cuesta"), pick(k, "They cost the same.", "Yes: all cheese is barato.", "cuesto")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "el pan: dos is less than cinco", "No: veinte euros is a lot, so it is caro.", "cuestan")
+  feedback {
+    when (pick == pick(k, "el queso: cinco is less than dos", "Yes: veinte is a small number.", "cuesta")) {
+      say "{pick(k, \"Cinco is five and dos is two. Which is less?\", \"Veinte is twenty. Is twenty euros a little for a small cheese?\", \"Fresas is more than one, like gustan in me gustan las fresas.\")}"
+    }
+  }
+  hint "Say each price in English."
+  hint "One thing or more than one?"
+}

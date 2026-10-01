@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.my-monster-say v=1 skills=[language.describing, language.numbers, language.speaking] {
+  title "Describe a monster"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Pick a creature from the lesson and describe it to a grown-up in [[language.name]]: its eyes and its legs.\", \"Draw your own monster and describe it in [[language.name]] in three sentences.\", \"Describe a creature from the lesson in [[language.name]] without saying its letter. A grown-up guesses which.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="What the creature has, with a number and the part, and what it is like, said the way the lesson says them." notice=["A number with each part", "More than one said as more than one", "Its shape said", "Stripes or spots said"]
+  hint "Count each part first."
+  hint "Say it in English first, then in [[language.name]]."
+}

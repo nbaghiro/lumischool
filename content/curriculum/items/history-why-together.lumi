@@ -1,0 +1,17 @@
+# The two-star reason: some problems cross borders (disease, rivers, the sea, peace), so countries
+# solve them together.
+item history.why-together v=1 skills=[history.world, reasoning.why] {
+  title "Why work together?"
+  difficulty k
+  let k=0..1
+
+  scene 36x34 {
+    worldmap map names=0 blank=-1 oceans=1 places=[] numbered=0 route=0 at=canvas(1, 0)
+    text ask "{if k == 0 then \"An illness is spreading from country to country. Why can no country stop it alone?\" else \"A river runs through four countries. Why must they agree together on how to use it?\"}" narrate width=34 below=map gap=1
+    choice pick options=["The problem crosses borders", "Every country has the same weather", "Borders stop illnesses and rivers"] stack=column below=ask gap=1
+  }
+
+  answer pick="The problem crosses borders"
+  hint "Does an illness, or a river, stop at a country's border?"
+  hint "What happens if only one country acts?"
+}

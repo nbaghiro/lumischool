@@ -1,0 +1,14 @@
+# A steady count with one beat left silent: the rest is what makes the child keep the beat going
+# in their head rather than clapping as fast as they can.
+item k.clap-steady v=1 skills=[music.beat] {
+  title "Clap, clap, rest, clap"
+
+  scene 24x15 {
+    countrow row beats=4 meter=4 now=2 at=canvas(1, 1)
+    text ask "Count one, two, three, four. Clap on one, two and four. On three, the filled square, open your hands and rest." narrate width=22 below=row gap=1
+  }
+
+  check music.rhythm beats=[0, 1, 3] grade=1
+  hint "Say the numbers slowly and evenly, like footsteps."
+  hint "On three, say the number in your head but do not clap."
+}

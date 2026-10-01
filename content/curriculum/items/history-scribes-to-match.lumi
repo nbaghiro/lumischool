@@ -1,0 +1,17 @@
+# The three-star question with made-up round numbers: how many scribes it would take to keep up
+# with one press.
+item history.scribes-to-match v=1 skills=[history.medieval, reasoning.plan] {
+  title "How many scribes?"
+  difficulty k
+  let k=0..1
+
+  scene 34x11 {
+    printingpress press printed=1 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Say a press printed 1,200 pages a day and a scribe copied 4. How many scribes would it take to keep up with one press?\" else \"Say a press printed 1,500 pages a day. A scribe copied 3 pages a day, but rested one day in every six. How many scribes to keep up over six days?\"}" narrate width=20 right-of=press gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 0 then 300 else 600)
+  hint "How many pages does the press make in the time?"
+  hint "{if k == 0 then \"How many fours are there in 1,200?\" else \"In six days a scribe works five of them.\"}"
+}

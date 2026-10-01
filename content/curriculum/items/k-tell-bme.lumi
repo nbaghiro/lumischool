@@ -1,0 +1,10 @@
+item k.tell-bme v=1 skills=[reading.story-structure, reading.retelling] {
+  title "Tell a story"
+
+  scene 28x9 {
+    text q "Tell a grown-up a story you know. Say what happens at the beginning, in the middle and at the end." narrate width=26 at=canvas(1, 1)
+  }
+
+  check reading.recited look-for="A story told in order with a clear beginning, a middle where something happens, and an end that finishes it." notice=["a beginning", "a middle", "an end that finishes it"]
+  hint "Who is in the story? What goes wrong? How is it put right?"
+}

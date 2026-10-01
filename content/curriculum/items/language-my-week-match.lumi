@@ -1,0 +1,17 @@
+# Four words to their English, 3 sets, the later sets with the words most often mixed up.
+item language.my-week-match v=1 skills=[language.time, language.sentences] {
+  title "Match the words"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Write the number of its English next to each [[language.name]] word." width=32
+      match m left=[pick(k, "[[routine.i-swim]]", "[[routine.always]]", "[[routine.i-play]]"), pick(k, "[[routine.i-read]]", "[[routine.never]]", "[[routine.i-play-an-instrument]]"), pick(k, "[[routine.i-dance]]", "[[routine.sometimes]]", "[[routine.i-visit]]"), pick(k, "[[routine.i-go]]", "[[routine.after]]", "[[routine.i-do]]")] right=[pick(k, "I dance", "after", "I visit"), pick(k, "I swim", "always", "I play"), pick(k, "I read", "never", "I do"), pick(k, "I go", "sometimes", "I play an instrument")] blanks=[a, b, c, d]
+    }
+  }
+
+  answer a=2 b=pick(k, 3, 3, 4) c=pick(k, 1, 4, 1) d=pick(k, 4, 1, 3)
+  hint "Start with the word you are surest of, and cross its English off."
+  hint "Two words look alike. Which letter is different, and what does it change?"
+}

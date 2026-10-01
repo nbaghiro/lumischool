@@ -1,0 +1,18 @@
+# The first cities on the world map, numbered: which continent a city is on, read from the map.
+item history.city-continent v=1 skills=[history.cities, history.maps] {
+  title "Where were they?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let i={pick(k, 0, 1, 2, 3, 2, 1)}
+  let name={pick(k, "Uruk", "Memphis", "Mohenjo-daro", "Anyang", "Mohenjo-daro", "Memphis")}
+
+  scene 36x29 {
+    worldmap map names=0 blank=-1 oceans=0 places=["Uruk", "Memphis", "Mohenjo-daro", "Anyang"] numbered=0 route=0 at=canvas(1, 0)
+    text ask "{name} was one of the first cities. Which continent is it on?" narrate width=18 below=map gap=1
+    choice pick options=["Africa", "Asia", "Europe"] stack=column right-of=ask gap=1
+  }
+
+  check history.world of=map pick="on({i})"
+  hint "Find the dot named {name}."
+  hint "Which land is the dot on? Read its name, or find its letter."
+}

@@ -1,0 +1,27 @@
+# Clapping only on the first beat of each bar: the child counts bars, not beats, which is the
+# first time the beat is grouped.
+item k.clap-on-one v=1 stars=3 skills=[music.beat, reasoning.counting] {
+  title "Clap only on one"
+  difficulty b
+  let b=2..4
+  level easy {
+    let b=2..2
+  }
+  level hard {
+    let b=3..4
+  }
+
+  scene 36x17 {
+    countrow row beats=(4 * b) meter=4 now=-1 at=canvas(1, 1)
+    text ask "Count along all the squares, but clap only when you say one. How many claps?" narrate width=30 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer b
+  feedback {
+    when (answer == 4 * b) point=row {
+      say "That claps on every beat. Clap only on the ones."
+    }
+  }
+  hint "Find every square with a 1 in it."
+}

@@ -1,0 +1,19 @@
+# Three events of the person's life, muddled, numbered from the record (n as in person-line).
+item history.person-order v=1 skills=[history.lives, history.order] {
+  title "In the order it happened"
+  difficulty k
+  let n=0..4 k=0..2
+  let e0={pick(n, "Florence Nightingale born", "Rosa Parks born", "Ino Tadataka born", "Yuri Gagarin born", "Yuan Longping born")}
+  let e1={pick(n, "Nightingale reached Scutari", "Rosa Parks kept her seat", "Survey of Japan began", "First person in space", "Wild rice plant found")}
+  let e2={pick(n, "Nursing school opened", "Montgomery buses opened to all", "Map of Japan finished", "Moon landing", "First hybrid rice")}
+
+  scene 34x23 {
+    text ask "Number these from 1, the earliest, to 3, the latest." narrate width=32 at=canvas(1, 1)
+    sequence s items=[pick(k, e1, e2, e1), pick(k, e0, e1, e2), pick(k, e2, e0, e0)] blanks=[p, q, r] below=ask gap=1
+    timeline line from=1700 to=2000 step=100 years=[] labels=[] below=s gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Being born comes before everything else in a life."
+  hint "What had to happen first for the last thing to happen?"
+}

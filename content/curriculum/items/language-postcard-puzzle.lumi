@@ -1,0 +1,23 @@
+# Non-routine: the order of what happened, a sentence that cannot belong, and an answer to a letter back.
+item language.postcard-puzzle v=1 stars=3 skills=[language.reading, language.time, reasoning.language] {
+  title "Ana's days"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 36x34 {
+    column all at=canvas(1, 1) space=1 align=start {
+      postcard card greeting="[[postcard.dear-grandma]]" text="[[postcard.ana-card]]" closing="[[postcard.love]]" from="Ana" to=["Rosa Díaz", "Calle Mayor 5", "Madrid"] stamp=ship date="3/8" lines=0
+      text ask "{pick(k, \"Which happened first: the market, the dolphins or today's ice cream?\", \"Which sentence could not go in Ana's postcard?\", \"Grandma writes back: What are you buying tomorrow? Where will Ana be?\")}" width=32
+      choice pick options=[pick(k, "the dolphins", "[[postcard.it-is-raining]]", "[[postcard.to-the-market]]"), pick(k, "the market", "[[postcard.it-is-sunny]]", "[[postcard.to-the-beach]]"), pick(k, "the ice cream", "[[postcard.she-swims-at-the-beach]]", "[[postcard.to-the-museum]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "the dolphins", "[[postcard.it-is-raining]]", "[[postcard.to-the-market]]")
+  feedback {
+    when (pick == pick(k, "the market", "[[postcard.she-swims-at-the-beach]]", "[[postcard.to-the-beach]]")) {
+      say "{pick(k, \"The market is tomorrow. What happened yesterday?\", \"Ana does swim. Which one says the opposite of her weather?\", \"She swims at the beach in the mornings. Where is she going tomorrow?\")}"
+    }
+  }
+  hint "Find yesterday, today and tomorrow on the card."
+  hint "Check each choice against the card."
+}

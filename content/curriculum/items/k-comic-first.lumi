@@ -1,0 +1,22 @@
+# The same three-panel story in three orders: the child tells which panel starts it from what the
+# girl says and how she looks, which is reading the pictures before the words.
+item k.comic-first v=1 skills=[reading.sequencing, reading.comprehension] {
+  title "Which picture starts the story?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 35x22 {
+    comic strip who=["{pick(k, \"girl\", \"girl\", \"dog\")}", "{pick(k, \"dog\", \"girl\", \"girl\")}", "{pick(k, \"girl\", \"dog\", \"girl\")}"] says=["{pick(k, \"Where is my ball?\", \"You found it.\", \"Woof, woof.\")}", "{pick(k, \"Woof, woof.\", \"Where is my ball?\", \"You found it.\")}", "{pick(k, \"You found it.\", \"Woof, woof.\", \"Where is my ball?\")}"] moods=["{pick(k, \"worried\", \"excited\", \"happy\")}", "{pick(k, \"happy\", \"worried\", \"excited\")}", "{pick(k, \"excited\", \"happy\", \"worried\")}"] with=["{pick(k, \"\", \"dog\", \"\")}", "{pick(k, \"\", \"\", \"dog\")}", "{pick(k, \"dog\", \"\", \"\")}"] thinks=[0, 0, 0] holds=["", "", ""] labels=["A", "B", "C"] at=canvas(1, 1)
+    text ask "The pictures are mixed up. Which one starts the story?" narrate width=32 below=strip gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+  }
+
+  answer pick=pick(k, "A", "B", "C")
+  hint "In which picture has the girl lost something?"
+}

@@ -564,6 +564,7 @@ The event log is the one write path for a kid's record, so authorising most acti
 | `content-verified` | no | no; the server writes it | no | no |
 | `day-added` | no | a parent | no | no |
 | `moved-up` | no | no; the server writes it with the kid's row | yes | yes |
+| `setting-changed` | a child's own practice level and easel | a parent, any key (`SETTING_WRITERS` in school/family/access.ts) | yes, with the family's own settings | yes |
 | The thirteen auth kinds, from `signed-in` to `exported` | no | no; the server writes them | no | no |
 
 Three properties follow. A child's work only ever arrives under a kid session and a person's actions only ever arrive under their session, so neither can be written in the other's name. A kid session reads back its child's own work, sheets and plan, which is what a view needs to draw the child's pages, since it keeps no copy of the log, but never a parent's note on a day, the family's authoring history, anything about who signed in, or anything about another child, even one in the same view. And a tutor reads their one kid's record and nothing about the family's members, children's views or consent.

@@ -1,0 +1,11 @@
+item k.peg-label v=1 skills=[writing.letters, writing.labels] {
+  title "A label for my peg"
+
+  scene 30x13 {
+    art pic asset="cup" at=canvas(1, 1)
+    text ask "This is your cup. Write your name on its label, so everyone knows it is yours." narrate width=20 right-of=pic gap=2
+    writinglines line lines=1 width=26 below=pic gap=1
+  }
+
+  check writing.by-eye look-for="The name is written left to right with a capital first letter, and the child can say why a label helps." notice=["capital first letter", "left to right", "says what a label is for"] ask="Why does a cup need a label?"
+}

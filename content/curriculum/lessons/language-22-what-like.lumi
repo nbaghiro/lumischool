@@ -1,0 +1,71 @@
+# People described by their hair, glasses and age.
+lesson language-what-like v=1 format=teach grade=4 unit=5 subject=language levels=[easy, medium, hard] {
+  title "[[opinion.what-is-it-like]]"
+  goal "Describe what a person looks like in [[language.name]]: hair, glasses and age."
+
+  look {
+    scene 18x10 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row people space=2 align=end {
+          person a hair=long colour=blonde glasses=true
+          person b hair=curly colour=black
+          person c age=older hair=bun colour=white
+        }
+      }
+    }
+    say """
+      To describe someone's hair: [[describe.she-has-long-hair]], she has long hair. Hair can be
+      long or short, straight or curly, and blonde, black, brown or white. For glasses:
+      [[describe.he-wears-glasses]], he wears glasses. For someone old: [[describe.he-is-old]]
+      """
+  }
+  do {
+    level easy {
+      worked language.what-like-name k=4
+    }
+    show language.what-like-name k=2 easy-k=0 hard-k=5
+    show language.what-like-meaning k=3 easy-k=1 hard-k=4
+    show language.what-like-write k=3 easy-k=2 hard-k=6
+    show language.what-like-name k=4 easy-k=1 hard-k=6
+    show language.what-like-match k=1 easy-k=0 hard-k=2
+    show language.what-like-write k=4 easy-k=3
+    show language.what-like-listen k=3 easy-k=0 hard-k=5
+    show language.what-like-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.what-like-write k=3
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-what-like-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.what-like-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[describe.she-has-long-hair]] She has long hair. [[describe.he-wears-glasses]] He wears glasses."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is carrying "her hair is long" over word for word, which the
+    two-star question asks about, and a describing word that does not match the person. The people
+    are drawn with the hair and glasses the clues name, and the three-star clue ends with two no's,
+    which is where a careful reader wins. From this grade the written words are marked with their
+    accents: a word typed without its accent is not taken. The dictation is read from this sheet,
+    where it prints as Read aloud, or played by the device. If the child is stuck, describe a person
+    in the room together, one feature at a time. Off the page, play a guessing game with family
+    photos in the language. It meets England's key stage 2 languages programme (years 3 to 6,
+    statutory from age 7): "describe people, places, things and actions orally and in writing";
+    Japan's grades 5 and 6 foreign languages: "Can talk about themselves after organizing the
+    contents they want to communicate by using simple words and phrases and basic expressions"; and
+    CEFR A2, "Can describe in simple terms aspects of his/her background, immediate environment".
+    The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[describe.he-is-old]] is worked first in the teacher's pen, the words to name are [[describe.she-has-long-hair]] and [[describe.he-has-short-hair]] and the words to write are [[describe.blonde]] and [[describe.curly]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[describe.she-has-white-hair]] and [[describe.he-has-straight-black-hair]] and the words to write are [[describe.brown-for-hair]], [[describe.white]] and [[describe.curly]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

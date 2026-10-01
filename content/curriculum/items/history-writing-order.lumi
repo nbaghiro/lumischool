@@ -1,0 +1,20 @@
+# Writing's early steps numbered from the earliest, from the record: writing on clay about 3350 BC,
+# Egyptian hieroglyphs about 3400 to 3200 BC, oracle bones about 1250 BC, paper in AD 105.
+item history.writing-order v=1 skills=[history.writing, history.order] {
+  title "Writing, step by step"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Clay tablet", "Clay tablet", "Oracle bone", "Paper", "Paper", "Oracle bone")}
+  let b={pick(k, "Oracle bone", "Paper", "Clay tablet", "Clay tablet", "Oracle bone", "Paper")}
+  let c={pick(k, "Paper", "Oracle bone", "Paper", "Oracle bone", "Clay tablet", "Clay tablet")}
+
+  scene 36x22 {
+    timeline line from=-3500 to=500 step=500 years=[] labels=[] at=canvas(0, 0)
+    text ask "Number these 1, 2, 3, from the earliest to be written on." narrate width=34 below=line gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Which came from the first cities of all, by the Tigris and Euphrates?"
+  hint "Paper came after year one, so it goes last."
+}

@@ -1,0 +1,23 @@
+# A reason: left and right, first and second, and why primera ends in a.
+item language.es-directions-why v=1 stars=2 skills=[language.town, language.directions, reasoning.language] {
+  title "Which way, and why?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x40 {
+    column all at=canvas(1, 1) space=1 align=start {
+      townplan plan places=["el café", "la tienda", "el parque", "la playa", "el museo", "la estación", "la plaza"]
+      text ask "{pick(k, \"Ana says a la izquierda and points to her right. What is wrong?\", \"The way to la estación is la segunda a la derecha. Leo turns at the first street on the right. Where does he end up?\", \"Why is it la primera and not el primero in la primera a la derecha?\")}" width=32
+      choice pick options=[pick(k, "Izquierda is left.", "At la playa: he turned one street too soon.", "It means la primera calle, and calle takes la."), pick(k, "Izquierda is straight on.", "At la estación: first and second are the same.", "Primera is always feminine."), pick(k, "Nothing is wrong.", "At el museo: derecha is left.", "Directions are always feminine.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Izquierda is left.", "At la playa: he turned one street too soon.", "It means la primera calle, and calle takes la.")
+  feedback {
+    when (pick == pick(k, "Izquierda is straight on.", "At la estación: first and second are the same.", "Primera is always feminine.")) {
+      say "{pick(k, \"Straight on is todo recto.\", \"Primera and segunda are different streets. Trace his route on the plan.\", \"El primero is used too, for a masculine word. Which word is hiding here?\")}"
+    }
+  }
+  hint "Trace the route on the plan with a finger."
+  hint "Say the direction in English first."
+}

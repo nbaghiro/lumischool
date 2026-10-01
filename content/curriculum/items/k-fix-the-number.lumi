@@ -1,0 +1,26 @@
+# A bug in a one-block program: the flag says where the robot should end, and the child finds the
+# number the block needs. The checker tries every change and proves only this number works.
+item k.fix-the-number v=1 stars=2 skills=[coding.debugging, coding.sequences] {
+  title "Mend the block"
+  difficulty a
+  let a=2..4 w=1..5
+  where (w != a)
+  level easy {
+    let a=2..2
+  }
+  level hard {
+    let a=4..4
+  }
+
+  scene 28x15 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["right {w}"] words=false numbers=false
+      maze g cols=6 rows=1 flag=[1 + a, 1] code=["right {w}"] upto=0 trail=none
+    }
+    text ask "The block has the wrong number. What number would take the robot to the flag?" narrate width=26 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=g goal=flag answer=fix
+  hint "How many squares is the flag from the robot?"
+}

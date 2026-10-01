@@ -1,0 +1,17 @@
+# The three-star puzzle: years made from the digits of one year, each used once, that come after a
+# given year. A zero cannot come first.
+item history.digit-years v=1 skills=[number.place-value, reasoning.logic] {
+  title "Years from three digits"
+  difficulty k
+  let k=0..1
+
+  scene 32x16 {
+    greatclock clock at=canvas(1, 0)
+    text ask "{if k == 0 then \"Use the digits 1, 0 and 5 once each to write years. A year cannot start with 0. How many different years can you make?\" else \"Use the digits 2, 0 and 6 once each. A year cannot start with 0. How many of the years you can make come after AD 300?\"}" narrate width=20 right-of=clock gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 0 then 4 else 2)
+  hint "Start with each digit that can go first, one at a time."
+  hint "Write each year down so you do not count one twice."
+}

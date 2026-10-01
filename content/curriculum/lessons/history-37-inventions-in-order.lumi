@@ -1,0 +1,67 @@
+# Dates from engine/notation/chronicle.ts: the telephone 1876, electric light about 1880, the motor
+# car 1886, radio across the Atlantic 1901, the aeroplane 1903, television 1936, the first computer
+# 1945, the World Wide Web 1991.
+lesson history-inventions-in-order v=1 format=teach grade=6 unit=3 subject=history levels=[easy, medium, hard] {
+  title "Inventions in order, and what each replaced"
+  goal "Put the inventions of the last 150 years in order, name the ten years each came in, and say what older way each slowly replaced."
+
+  look {
+    scene 36x9 {
+      timeline line from=1860 to=2000 step=20 years=[1876, 1886, 1903, 1936, 1945, 1991] labels=["Telephone", "Motor car", "Aeroplane", "Television", "First computer", "World Wide Web"] at=canvas(0, 0)
+    }
+    say """
+      Each invention did an old job a new way. The telephone of 1876 let people talk far apart
+      instead of writing; the motor car of 1886 took the place of the horse; electric light replaced
+      candles and oil lamps. Television came in 1936, the first electronic computer in 1945, and the
+      World Wide Web in 1991. None of them swept the old way away at once: horses, letters and lamps
+      went on for many years.
+      """
+  }
+  do {
+    level easy {
+      worked history.what-replaced k=0
+    }
+    show history.what-replaced k=2 easy-k=1 hard-k=4
+    show history.invention-order k=2 easy-k=0 hard-k=4
+    show history.invention-decade k=2 easy-k=0 hard-k=4
+    show history.invention-between k=2 easy-k=0 hard-k=4
+    show history.what-replaced k=3 easy-k=2 hard-k=5
+    show history.invention-order k=3 easy-k=1 hard-k=5
+    show history.invention-decade k=3 easy-k=1 hard-k=5
+    show history.invention-between k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.invention-order k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.letters-stayed k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.biggest-gap k=0 hard-k=1
+  }
+  remember {
+    say "Every invention did an old job a new way, and the old way lasted for years beside it."
+  }
+
+  grown-ups """
+    The idea is that inventions came in an order, each doing an old job in a new way, and that
+    change was slow: new and old lived side by side. The way in names what electric light replaced;
+    the core orders inventions, names their decades and counts the years between them. The wrong
+    idea to watch for is "when the telephone came, letters stopped", which the two-star question
+    tests. If the child is stuck, ask what job the invention does and how people did it before.
+    Off the page, choose one thing at home and find out what people used for that job a hundred
+    years ago. England's key stage 2 history allows a theme "beyond 1066"; Japan's 社会 for grade
+    six tells Japan's modern growth through its people and heritage (「我が国の歴史上の主な事象」, the
+    course of study as read in its 2008 edition). Several dates are firsts that others dispute
+    (who made the first light bulb, the first computer); the record gives the dates it uses and
+    their sources.
+    Russia's history programme reaches these inventions in grades eight and nine (recalled, not
+    quoted here).
+    """
+  level easy {
+    grown-ups "At this level a worked example says what electric light replaced, the inventions are far apart in time, the decades are of the telephone and the aeroplane, and the years counted are short."
+  }
+  level hard {
+    grown-ups "At this level the replacements are of printing and computing, the inventions are close together, the decades include 1901 and 1991, and the three-star question asks for the shortest wait."
+  }
+}

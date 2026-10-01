@@ -1,0 +1,10 @@
+item k.make-a-print v=1 skills=[art.printing, art.made] {
+  title "Print a pattern"
+
+  scene 30x10 {
+    text q "With a grown-up, cut a shape into half a potato or a sponge. Dip it in paint and print a row that repeats: two shapes, again and again." narrate width=28 at=canvas(1, 1)
+  }
+
+  check art.made look-for="A row of prints that repeats two shapes or two colours in the same order, each print pressed evenly so its shape shows." notice=["prints in a row", "a pattern that repeats", "each shape shows clearly"] ask="What comes next in your pattern?"
+  hint "Plan the pattern first: which shape, then which?"
+}

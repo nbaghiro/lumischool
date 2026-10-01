@@ -1,0 +1,66 @@
+# Dates from engine/notation/chronicle.ts: women's votes in New Zealand 1893, Russia 1917 (recalled),
+# Britain 1918, the United States 1920, Japan 1946; the secret ballot in Britain 1872; voting at 18
+# in Britain from 1969. The elections in the sums are made up.
+lesson history-laws-and-votes v=1 format=teach grade=6 unit=7 subject=history levels=[easy, medium, hard] {
+  title "How laws are made, and what a vote is"
+  goal "Put the steps of making a law in order, count an election's votes, and say why votes are secret and who has won the right to vote."
+
+  look {
+    scene 36x12 {
+      council c hands=[1, 1, 0, 1, 1, 0, 1] box=1 motion="A new law" count=1 at=canvas(1, 0)
+    }
+    say """
+      In many countries the people choose representatives in elections, and those representatives
+      make the laws. An idea for a law is proposed, debated, voted on and approved, and then everyone
+      must keep it. Votes are cast in secret so nobody can be punished or paid for theirs. The right
+      to vote was won slowly: women first voted in New Zealand in 1893, in Britain in 1918, in the
+      United States in 1920 and in Japan in 1946.
+      """
+  }
+  do {
+    level easy {
+      worked history.law-steps k=0
+    }
+    show history.law-steps k=2 easy-k=1 hard-k=4
+    show history.election-count k=2 easy-k=0 hard-k=4
+    show history.vote-order k=2 easy-k=0 hard-k=4
+    show history.vote-age k=2 easy-k=0 hard-k=4
+    show history.law-steps k=3 easy-k=2 hard-k=5
+    show history.election-count k=3 easy-k=1 hard-k=5
+    show history.vote-order k=3 easy-k=1 hard-k=5
+    show history.vote-age k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.election-count k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.why-secret k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.runoff k=0 hard-k=1
+  }
+  remember {
+    say "A law is proposed, debated, voted on and approved. Votes are secret, and the right to vote was won step by step."
+  }
+
+  grown-ups """
+    The idea is how laws are made and what a vote is: representatives chosen by voters propose,
+    debate and vote on laws; ballots are secret; and who may vote has widened over time. Countries
+    do this in different ways, and the national unit shows your own country's; this lesson keeps to
+    what they share. The way in orders the steps of a law; the core counts an election, orders when
+    women first voted, and works out when someone may first vote. The wrong idea to watch for is
+    that the winner of an election always has more than half the votes; with three candidates that
+    is often not so, which the three-star question shows. If the child is stuck, hold a family vote
+    with three choices. England's citizenship at key stage 3 goes further; Japan's 社会 for grade six
+    teaches 「国民生活には地方公共団体や国の政治の働きが反映していること」 (the course of study as read in its 2008
+    edition); Russia's обществознание comes later, in the edition our audit read. China's 道德与法治
+    in the upper grades takes up the country's system of government (recalled from the textbook
+    series).
+    """
+  level easy {
+    grown-ups "At this level a worked example orders the first three steps of a law, the election questions read one bar or add them, the countries are far apart in time, and the ages are counted forward to 18."
+  }
+  level hard {
+    grown-ups "At this level the law's later steps are muddled, the election questions ask about more than half, the countries are close in time, the ages ask about the old age of 21, and the three-star vote splits Cara's voters."
+  }
+}

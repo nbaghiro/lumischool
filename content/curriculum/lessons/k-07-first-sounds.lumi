@@ -1,0 +1,50 @@
+lesson k-first-sounds v=1 format=teach grade=0 unit=1 subject=reading levels=[easy, medium, hard] {
+  title "First sounds"
+  goal "Hear the first sound in a word and find the letter card that makes it."
+
+  look {
+    scene 24x16 {
+      row top at=canvas(1, 1) space=2 align=end {
+        art pic asset="sun"
+        lettercards cards letters=["s", "u", "n"] picked=[0]
+      }
+    }
+    say """
+      Say sun slowly: sss, u, n. The first sound is sss, and the letter card for it is s. Every
+      word starts with a sound, and a letter shows that sound.
+      """
+  }
+  do {
+    practice k.first-letter count=2 seed=2
+    level easy {
+      worked k.animal-starts k=0 p=1 level=medium
+    }
+    practice k.animal-starts count=2 seed=3 easy-count=1
+    practice k.find-the-card count=2 seed=4
+    practice k.letter-card-animal count=2 seed=5
+  }
+  try stars=2 {
+    show k.not-the-same-start k=0 hard-k=2
+  }
+  try stars=3 {
+    show k.start-and-end k=0 hard-k=1
+  }
+  remember {
+    say "Say the word slowly. The first sound tells you the first letter."
+  }
+
+  grown-ups """
+    The page shows the letters but cannot make the sounds, so every sound here comes from you. Say
+    the pure sound, sss and not suh, since that is the sound the child will blend with later. Read
+    each question aloud and let the child say the word before choosing. If a child picks a letter
+    from the end of the word, say the word again and stop after the first sound. Off the page,
+    play I spy with sounds: I spy something beginning with c. England, Reception, ELG Word Reading:
+    "Say a sound for each letter in the alphabet and at least 10 digraphs".
+    """
+  level easy {
+    grown-ups "At this level the words are sun, cat and hen, one animal is found in the teacher's pen first, and the letter cards look unlike each other."
+  }
+  level hard {
+    grown-ups "At this level the words are longer, the cards include b and d, and n and h, which look alike, and the three-star's second clue is the last sound."
+  }
+}

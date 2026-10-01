@@ -1,0 +1,22 @@
+# Melting goes both ways and cooking does not: the first time a child meets a change that cannot be
+# undone.
+item k.egg-cannot-go-back v=1 stars=2 skills=[chemistry.changes, reasoning.explain] {
+  title "Can the egg go back?"
+  difficulty (if c == "cook-egg" then 0 else 1)
+  let c={"cook-egg", "bake-cake"}
+  level easy {
+    let c={"cook-egg"}
+  }
+  level hard {
+    let c={"bake-cake"}
+  }
+
+  scene 34x19 {
+    beforeafter ch change=c show=1 names=1 at=canvas(1, 0)
+    text ask "Can this change be undone, so that what was there before comes back?" narrate width=30 below=ch gap=1
+    choice pick options=["yes", "no"] stack=row below=ask gap=1
+  }
+
+  check chem.change of=ch pick=undo
+  hint "Melted chocolate sets again when it cools. Does a cooked egg go runny again when it cools?"
+}

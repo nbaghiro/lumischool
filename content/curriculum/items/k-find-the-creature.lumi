@@ -1,0 +1,24 @@
+# Two clues that each fit two creatures and together fit one: the first time a child has to hold
+# a colour and a number at once.
+item k.find-the-creature v=1 stars=3 skills=[colours.naming, counting.to-five, reasoning.clues] {
+  title "Find the creature"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let clue={pick(k, "It is pink and it has four legs.", "It is blue and it has two legs.", "It is blue and it has two horns.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 32x20 {
+    creatures who eyes=[2, 2, 1, 2] legs=[4, 2, 4, 2] horns=[1, 0, 2, 1] coat=[0, 1, 1, 2] body=[0, 1, 2, 0] colors=["berry", "sky", "sky", "berry"] labels=["A", "B", "C", "D"] at=canvas(1, 1)
+    text ask "{clue} Which creature is it?" narrate width=30 below=who gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=pick(k, "A", "B", "C")
+  hint "Put a finger on every creature that fits the first clue."
+  hint "Which of those fits the second clue as well?"
+}

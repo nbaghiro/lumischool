@@ -1,0 +1,21 @@
+# Alphabets as a family tree: the Phoenician gave the Greek, the Greek gave the Latin and, much
+# later, the Cyrillic (Wikipedia, Greek alphabet; Cyrillic script).
+item history.alphabet-family v=1 skills=[history.writing, history.change] {
+  title "A family of alphabets"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ask={pick(k, "The Greek alphabet grew from an older one. Which?", "The letters used for English came from which alphabet?", "The Cyrillic letters of Russian were made from which alphabet, with some new letters?", "The word alphabet comes from the first two letters of which alphabet?", "Which came first, the Greek alphabet or the Latin one?", "Which is the oldest of these alphabets?")}
+  let right={pick(k, "The Phoenician", "The Latin", "The Greek", "The Greek", "The Greek", "The Phoenician")}
+  let w1={pick(k, "The Latin", "The Cyrillic", "The Latin", "The Latin", "The Latin", "The Greek")}
+  let w2={pick(k, "The Cyrillic", "The Phoenician", "The Phoenician", "The Phoenician", "They came together", "The Cyrillic")}
+
+  scene 36x21 {
+    timeline line from=-1100 to=1000 step=300 years=[-1050, -800, 900] labels=["Phoenician alphabet", "Greek alphabet", "Cyrillic alphabet"] at=canvas(0, 0)
+    text ask "{ask}" narrate width=20 below=line gap=1
+    choice pick options=[pick(k, right, w1, w2, right, w1, w2), pick(k, w1, right, right, w2, w2, right), pick(k, w2, w2, w1, w1, right, w1)] stack=column right-of=ask gap=1
+  }
+
+  answer pick=right
+  hint "An alphabet grows from one that came before it. Look at the order on the line."
+  hint "Alpha and beta are Greek letters."
+}

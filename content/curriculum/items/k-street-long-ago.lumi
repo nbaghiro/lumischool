@@ -1,0 +1,20 @@
+item k.street-long-ago v=1 skills=[history.then-and-now] {
+  title "The street long ago"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 32x27 {
+    thenandnow street year=1850 sign=0 things=["horse and cart", "{pick(k, \"motor car\", \"aeroplane\")}"] at=canvas(1, 0)
+    text ask "This street is from long ago, before your great-great-grandparents. One thing in it could not have been there then. Which one?" narrate width=30 below=street gap=1
+    choice pick options=["horse and cart", "{pick(k, \"motor car\", \"aeroplane\")}"] below=ask gap=1
+  }
+
+  check history.street of=street pick=could-not
+  hint "Which one has an engine?"
+}

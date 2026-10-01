@@ -1,0 +1,19 @@
+item k.cool-paint v=1 stars=3 skills=[art.warm-cool, reasoning.odd-one-out] {
+  title "The one cool paint"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 28x11 {
+    text q "Three of these paints are warm and one is cool. Which one is cool?" narrate width=26 at=canvas(1, 1)
+    choice pick options=["red", "orange", "{pick(k, \"blue\", \"green\")}", "yellow"] stack=row below=q gap=1
+  }
+
+  check paint.mixes pick=cool
+  hint "Which one is a colour of water or grass?"
+}

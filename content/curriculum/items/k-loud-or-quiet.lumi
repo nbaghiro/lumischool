@@ -1,0 +1,21 @@
+item k.loud-or-quiet v=1 skills=[music.dynamics] {
+  title "Loud or quiet?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let when={pick(k, "A baby is asleep. How should you sing?", "You call to a friend across the park. How do you call?", "You tiptoe past a sleeping cat. How do you walk?", "The band plays at the end of the show, as big as it can. How does it sound?", "A mouse creeps into the kitchen. What does it sound like?", "Thunder rolls over the garden. What does it sound like?")}
+  let right={pick(k, "quiet", "loud", "quiet", "loud", "quiet", "loud")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 26x11 {
+    text ask "{when}" narrate width=24 at=canvas(1, 1)
+    choice pick options=["loud", "quiet"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Would a big sound or a small sound fit here?"
+}

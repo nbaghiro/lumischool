@@ -1,0 +1,17 @@
+# Four words to their English, 3 sets, the later sets with the words most often mixed up.
+item language.es-the-black-cat-match v=1 skills=[language.colours, language.grammar] {
+  title "Match the words"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x17 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Write the number of its English next to each Spanish word." width=32
+      match m left=[pick(k, "negro", "la casa", "blanca"), pick(k, "blanco", "el mar", "negro"), pick(k, "rojo", "el sol", "roja"), pick(k, "azul", "la flor", "amarillo")] right=[pick(k, "red", "the flower", "red, for la"), pick(k, "black", "the house", "white, for la"), pick(k, "white", "the sea", "yellow, for el"), pick(k, "blue", "the sun", "black, for el")] blanks=[a, b, c, d]
+    }
+  }
+
+  answer a=2 b=pick(k, 3, 3, 4) c=pick(k, 1, 4, 1) d=pick(k, 4, 1, 3)
+  hint "Start with the word you are surest of, and cross its English off."
+  hint "Two words look alike. Which letter is different, and what does it change?"
+}

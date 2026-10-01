@@ -1,0 +1,63 @@
+# The national unit for usa. Items take n=1; the world items reviewed here change by level.
+# Dates are in engine/notation/chronicle.ts with their sources.
+lesson history-g4-usa-pages-of-our-history v=1 format=teach grade=4 unit=9 subject=history nation=usa levels=[easy, medium, hard] {
+  title "A new nation"
+  goal "Put the first steps of the United States in order, count the years between them, and say why the colonies declared independence."
+
+  look {
+    scene 36x9 {
+      timeline line from=1760 to=1980 step=40 years=[1776, 1803, 1959] labels=["Declaration of Independence", "Louisiana Purchase", "Hawaii becomes a state"] at=canvas(0, 0)
+    }
+    say """
+      In 1776 thirteen British colonies in North America declared that they were free and would govern themselves: the Declaration of Independence, adopted on 4 July. In 1787 leaders wrote the Constitution, the plan for how the country is run. In 1803 the country bought Louisiana from France, and it went on growing until Hawaii became the fiftieth state in 1959.
+      """
+  }
+  do {
+    level easy {
+      worked history.n4-what n=1
+    }
+    show history.n4-order n=1 k=1 easy-k=0 hard-k=2
+    show history.n4-between n=1 k=0 hard-k=1
+    show history.n4-century n=1 k=0 hard-k=1
+    show history.source-hand k=2 easy-k=0 hard-k=4
+    show history.bc-ad-order k=2 easy-k=0 hard-k=4
+    show history.money-order k=2 easy-k=0 hard-k=4
+    show history.n4-order n=1 k=2 easy-k=1 hard-k=0
+    level medium hard {
+      show history.n4-what n=1
+    }
+    level easy {
+      show history.n4-century n=1 k=1
+    }
+    level hard {
+      show history.source-hand k=5
+    }
+  }
+  story {
+    show history.n4-between n=1 k=1 hard-k=0
+  }
+  try stars=2 {
+    show history.n4-why n=1
+  }
+  try stars=3 {
+    show history.n4-find-out n=1
+  }
+  remember {
+    say "Every date in our country's story can be put on the line and counted from, and every one came from a source."
+  }
+
+  grown-ups """
+    The idea is to use the grade's methods (timelines across year one, centuries, sources) on a
+    chapter of the family's own country. The way in names what a thing was; the core orders three
+    events, counts the years between two, names a century, and reviews sources, BC and AD and the
+    story of money; the two-star question asks why something was done. If the child is stuck on
+    counting, count to the next hundred first. The three-star task is for you to mark: a small
+    piece of finding out with you. State standards for the fourth and fifth grades, such as California's, take children through the founding of the nation and the growth of the states.
+    """
+  level easy {
+    grown-ups "At this level a worked example says what the thing was, the events come nearly in order, the years counted are the closest pair, and the review questions are the plainest."
+  }
+  level hard {
+    grown-ups "At this level the events are fully muddled, the years counted are the longer pair, the century asked has a trap, and the review questions cross year one."
+  }
+}

@@ -1,0 +1,12 @@
+# Marked by a grown-up: a flag for the child's family or class, with a meaning for each colour and
+# shape, as the flags in the lesson have.
+item history.design-a-flag v=1 stars=3 skills=[history.symbols, art.design] {
+  title "A flag of my own"
+
+  scene 36x17 {
+    text ask "Design a flag for your family. Use two or three colours and one shape, and tell a grown-up what each one means." width=14 at=canvas(1, 1)
+    paintsheet sheet w=18 h=12 paper="plain" guide="none" outline="none" pots=["red", "blue", "yellow", "white"] right-of=ask gap=1
+  }
+
+  check art.by-eye look-for="A flag with two or three colours and one shape, drawn to fill a rectangle, where the child can say what each colour and the shape stand for in their family, as a flag's stars or stripes stand for something." notice=["Two or three colours", "One shape, such as a star, a circle or a stripe", "Says what each colour means", "Says what the shape means"] ask="Why did you choose that shape for your family?"
+}

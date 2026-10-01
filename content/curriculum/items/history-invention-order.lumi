@@ -1,0 +1,19 @@
+# Inventions numbered from the first, from the dated record.
+item history.invention-order v=1 skills=[history.inventions, history.order] {
+  title "Inventions in order"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Telephone", "Motor car", "First computer", "World Wide Web", "Television", "First computer")}
+  let b={pick(k, "Aeroplane", "Telephone", "Telephone", "Motor car", "Radio across the Atlantic", "Television")}
+  let c={pick(k, "World Wide Web", "First computer", "Aeroplane", "Television", "Aeroplane", "Radio across the Atlantic")}
+
+  scene 36x22 {
+    timeline line from=1860 to=2000 step=20 years=[] labels=[] at=canvas(0, 0)
+    text ask "Number these 1, 2, 3, from the first to be invented." narrate width=34 below=line gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Which of the three could someone born in 1870 have used as a child?"
+  hint "The web came last of all, in 1991."
+}

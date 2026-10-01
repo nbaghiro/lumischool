@@ -1,0 +1,69 @@
+# The question words, found from the answer they get.
+lesson language-questions v=1 format=teach grade=5 unit=7 subject=language levels=[easy, medium, hard] {
+  title "Asking questions"
+  goal "Ask questions in [[language.name]] with where, when, who, what, how many, how, why and which."
+
+  look {
+    scene 38x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        comic ask who=["girl", "boy", "girl", "boy"] says=["[[question.where-do-you-live]]", "[[question.at-the-harbour]]", "[[phrase.how-many-brothers-and-sisters-do-you-hav]]", "[[question.two-a-brother-and-a-sister]]"] moods=["happy", "happy", "happy", "happy"] with=["", "", "", ""] thinks=[0, 0, 0, 0] holds=["", "", "", ""] labels=["1", "2", "3", "4"]
+      }
+    }
+    say """
+      A question word tells you what the answer will be: [[question.where]] asks where,
+      [[question.when]] when, [[question.who]] who, [[question.what]] what, [[question.how-many]]
+      how many, [[question.how]] how, [[question.why]] why, and [[question.which]] which.
+      [[question.where-do-you-live]] gets a place: [[question.at-the-harbour]]
+      """
+  }
+  do {
+    level easy {
+      worked language.questions-name k=4
+    }
+    show language.questions-name k=3 easy-k=0 hard-k=6
+    show language.questions-meaning k=5 easy-k=4 hard-k=1
+    show language.questions-write k=2 easy-k=1 hard-k=5
+    show language.questions-name k=5 easy-k=2 hard-k=7
+    show language.questions-match k=1 easy-k=0 hard-k=2
+    show language.questions-write k=6 easy-k=3 hard-k=3
+    show language.questions-listen k=3 easy-k=0 hard-k=5
+    show language.questions-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.questions-write k=2
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-questions-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.questions-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[question.where|cap]] a place, [[question.when]] a time, [[question.who]] a person, [[question.what]] a thing, [[question.how-many]] a number, [[question.why]] a reason."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is where and when swapped, and why and because treated as one. Every
+    naming question gives the answer first, which is the reverse of a usual question: the child has
+    to know what kind of answer each word asks for. From this grade the written words are marked
+    with their accents: a word typed without its accent is not taken. The dictation is read from
+    this sheet, where it prints as Read aloud, or played by the device. Here every question word
+    written carries an accent, which is the point of writing them. If the child is stuck, sort
+    answers into piles (places, times, people, numbers) and name the question word for each pile.
+    Off the page, play twenty questions in the language. It meets England's key stage 2 languages
+    programme (years 3 to 6, statutory from age 7): "engage in conversations; ask and answer
+    questions"; Japan's grades 5 and 6 foreign languages: "Can communicate in asking and answering
+    questions about themselves, someone they communicate with and their surroundings by using simple
+    words and phrases and basic expressions on the spot"; and CEFR A2, "Can communicate in simple
+    and routine tasks requiring a simple and direct exchange of information on familiar and routine
+    matters". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[question.how-many]] is worked first in the teacher's pen, the words to name are [[question.where]] and [[question.who]] and the words to write are [[question.when-2]] and [[question.what-2]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[question.why]] and [[question.which]] and the words to write are [[question.how-2]], [[question.what-2]] and [[question.who-2]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

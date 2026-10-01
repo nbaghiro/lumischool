@@ -1,0 +1,28 @@
+# Two letters that make one sound: the bar under them is one button, so the buttons are counted,
+# not the letters.
+item k.letters-or-sounds v=1 stars=2 skills=[reading.phonics, reading.digraphs] {
+  title "Letters and sounds"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let w={pick(k, "ship", "shop", "fish", "chin")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 26x14 {
+    soundbuttons sb graphemes=["{pick(k, \"sh\", \"sh\", \"f\", \"ch\")}", "{pick(k, \"i\", \"o\", \"i\", \"i\")}", "{pick(k, \"p\", \"p\", \"sh\", \"n\")}"] count=false at=canvas(1, 1)
+    text ask "{w} has four letters. How many sounds does it have?" narrate width=24 below=sb gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer 3
+  feedback {
+    when (answer == 4) point=sb {
+      say "Look under the letters. Two of them share one bar, so they make one sound."
+    }
+  }
+  hint "Count the dots and bars under the word, not the letters."
+}

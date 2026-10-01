@@ -1,0 +1,25 @@
+# Three cousins' birth years from clues, not from a line: the child has to build the order. The
+# three-star question: no method is given, and a drawn timeline is the way in.
+item history.born-first-clues v=1 skills=[history.order, reasoning.logic] {
+  title "Three cousins"
+  difficulty k
+  let k=0..2
+  let clue={pick(k, "Ada was born in 2016. Ben was born 2 years after Ada. Cara was born 1 year before Ada.", "Ben was born in 2018. Ada was born 3 years before Ben. Cara was born 1 year after Ada.", "Cara was born in 2017. Ben is 2 years younger than Cara. Ada is 1 year older than Ben.")}
+  let key={pick(k, "Cara", "Ada", "Cara")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x18 {
+    timeline line from=2014 to=2020 step=1 years=[] labels=[] at=canvas(1, 0)
+    text ask "{clue} Who was born first?" narrate width=32 below=line gap=1
+    choice pick options=["Ada", "Ben", "Cara"] below=ask gap=1
+  }
+
+  answer pick=key
+  hint "Put the one year you are told on the line first."
+  hint "Before means to the left, after means to the right. Younger means born later."
+}

@@ -1,0 +1,20 @@
+item k.cannot-mix v=1 stars=2 skills=[art.colour-mixing, reasoning.what-if] {
+  title "Which colour can Sam not make?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x16 {
+    paintbox box pans=["{pick(k, \"red\", \"yellow\")}", "{pick(k, \"yellow\", \"blue\")}"] per=2 ring=-1 labels=true at=canvas(1, 1)
+    text ask "Sam has only these two paints. Which colour can he not make?" narrate width=28 below=box gap=1
+    choice pick options=["{pick(k, \"orange\", \"green\")}", "{pick(k, \"green\", \"orange\")}"] stack=row below=ask gap=1
+  }
+
+  check paint.mixes of=box pick=cannot
+  hint "Which two paints make each colour? Has Sam got both of them?"
+}

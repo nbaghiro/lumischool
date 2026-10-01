@@ -1,0 +1,13 @@
+# Marked by a grown-up: the person's story retold in order, with one date and why it matters.
+item history.person-retell v=1 stars=3 skills=[history.lives, history.enquiry] {
+  title "Tell the story"
+  let n=0..4
+  let who={pick(n, "Florence Nightingale", "Rosa Parks", "Ino Tadataka", "Yuri Gagarin", "Yuan Longping")}
+
+  scene 36x13 {
+    text ask "Tell a grown-up the story of {who} in three sentences, in the order it happened, with one year in it, and say why it still matters." width=34 at=canvas(1, 1)
+    writinglines w lines=2 width=34 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="The story of the person told in three sentences in the order things happened (early life, the thing they are known for, what changed after), with one year from the lesson and a reason it still matters today." notice=["Three sentences in order", "One year from the lesson", "What they did", "Why it still matters"] ask="What would be different today if they had not done it?"
+}

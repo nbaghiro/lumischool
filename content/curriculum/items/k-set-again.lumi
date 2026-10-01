@@ -1,0 +1,20 @@
+item k.set-again v=1 skills=[chemistry.changes] {
+  title "Can it go back?"
+  difficulty (if c == "melt-chocolate" then 0 else 1)
+  let c={"melt-chocolate", "melt-ice", "freeze-water"}
+  level easy {
+    let c={"melt-chocolate"}
+  }
+  level hard {
+    let c={"melt-ice", "freeze-water"}
+  }
+
+  scene 34x19 {
+    beforeafter ch change=c show=1 names=1 at=canvas(1, 0)
+    text ask "How can you change it back to how it was before?" narrate width=30 below=ch gap=1
+    choice pick options=["cool it", "warm it"] stack=row below=ask gap=1
+  }
+
+  check chem.change of=ch pick=back
+  hint "What made it change? Do the opposite."
+}

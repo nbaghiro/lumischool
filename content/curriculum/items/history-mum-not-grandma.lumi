@@ -1,0 +1,25 @@
+# Three generations and four toys: the toy Mum could have had as a child and Grandma could not. The
+# child has to hold two childhoods at once, which is the three-star step.
+item history.mum-not-grandma v=1 skills=[history.change, reasoning.logic] {
+  title "Mum's toy, not Grandma's"
+  difficulty k
+  let k=0..1
+  let gran={pick(k, 1950, 1945)}
+  let mum={pick(k, 1980, 1978)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x31 {
+    toys shelf toys=["teddy bear", "puzzle cube", "spinning top", "building bricks"] letters=0 at=canvas(1, 0)
+    text ask "Grandma was born in {gran} and Mum in {mum}. Which toy could Mum have had as a child, but Grandma could not have had as a child?" narrate width=28 below=shelf gap=1
+    choice pick options=["teddy bear", "puzzle cube", "spinning top", "building bricks"] stack=column below=ask gap=1
+  }
+
+  check history.dates of=pick pick="after(1960)"
+  hint "When was Grandma a child? When was Mum?"
+  hint "Look for a toy first made after Grandma grew up, but before Mum was a child."
+}

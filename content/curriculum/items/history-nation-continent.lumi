@@ -1,0 +1,16 @@
+# Which continent the capital is on, from the map.
+item history.nation-continent v=1 skills=[history.nation, history.maps] {
+  title "Our continent"
+  let n=0..4
+  let capital={pick(n, "London", "Washington", "Tokyo", "Moscow", "Beijing")}
+
+  scene 36x29 {
+    worldmap map names=0 blank=-1 oceans=0 places=["{capital}"] numbered=0 route=0 at=canvas(1, 0)
+    text ask "Which continent is {capital} on?" narrate width=18 below=map gap=1
+    choice pick options=["Europe", "North America", "Asia"] stack=column right-of=ask gap=1
+  }
+
+  check history.world of=map pick="on(0)"
+  hint "Find the dot with the name {capital}."
+  hint "Read the name of the land the dot sits on."
+}

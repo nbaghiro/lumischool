@@ -1,0 +1,27 @@
+# Could two people have met? Mary Anning died in 1847; Marie Curie was born in 1867.
+item history.could-they-meet v=1 skills=[history.lives, reasoning.logic] {
+  title "Could they have met?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x22 {
+    timeline line from=1790 to=1940 step=30 years=[1799, 1847, 1867, 1934] labels=["Mary Anning born", "Mary Anning died", "Marie Curie born", "Marie Curie died"] at=canvas(0, 0)
+    text ask "{if k == 0 then \"Could Mary Anning and Marie Curie have met?\" else \"Ben says Mary Anning must have known Marie Curie, since they were both famous scientists. Is he right?\"}" narrate width=34 below=line gap=1
+    choice pick options=["Yes, they lived at the same time", "No, one died before the other was born"] stack=column below=ask gap=1
+  }
+
+  answer pick="No, one died before the other was born"
+  feedback {
+    when (pick == "Yes, they lived at the same time") point=line {
+      say "Look at the flags: which comes first, Mary Anning died or Marie Curie born?"
+    }
+  }
+  hint "When did Mary Anning's life end, and when did Marie Curie's begin?"
+  hint "Two people can meet only if their lives overlap on the line."
+}

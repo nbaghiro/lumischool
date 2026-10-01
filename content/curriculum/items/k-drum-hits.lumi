@@ -1,0 +1,26 @@
+item k.drum-hits v=1 skills=[music.beat, counting.to-ten] {
+  title "Hits on the drum"
+  difficulty n
+  let n=3..9
+  level easy {
+    let n=3..5
+  }
+  level hard {
+    let n=7..9
+  }
+
+  scene 26x13 {
+    drum d lugs=5 at=canvas(1, 1)
+    tally marks count=n right-of=d gap=2
+    text ask "Each mark is one hit on the drum. How many hits?" narrate width=24 below=d gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (n >= 5 and answer == n - 4) point=marks {
+      say "The line across the first four marks is the fifth mark. Count it too."
+    }
+  }
+  hint "The marks go in fives: four standing up and one across."
+}

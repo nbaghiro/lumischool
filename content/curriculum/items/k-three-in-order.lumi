@@ -1,0 +1,13 @@
+# Three generations in order of age: the child puts grandparent, parent and child in order from the
+# oldest, which is a timeline of one family.
+item k.three-in-order v=1 stars=3 skills=[history.family, history.order] {
+  title "Oldest to youngest"
+
+  scene 30x16 {
+    text q "Put these in order from the oldest to the youngest. Write 1, 2 and 3." narrate width=28 at=canvas(1, 1)
+    sequence s items=["Sam", "Grandpa Tom", "Dad"] blanks=[p, q, r] below=q gap=1
+  }
+
+  answer p=3 q=1 r=2
+  hint "Who is Dad's dad? Who is Dad's child?"
+}

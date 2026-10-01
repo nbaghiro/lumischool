@@ -1,0 +1,11 @@
+item k.tell-the-story v=1 skills=[reading.sequencing, reading.retelling] {
+  title "Tell the story"
+
+  scene 30x24 {
+    picsteps steps pictures=["flour", "eggs", "stir", "tin", "oven", "cake"] texts=["", "", "", "", "", ""] per=3 numbers=true write=false at=canvas(1, 1)
+    text ask "Tell the story of the cake to a grown-up, using first, next, then and last." narrate width=28 below=steps gap=1
+  }
+
+  check reading.recited look-for="Every picture is told in order, joined with first, next, then and last, in the child's own words." notice=["tells the pictures in order", "uses first, next and last", "own words for each step"]
+  hint "What is in the first picture?"
+}

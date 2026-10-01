@@ -1,0 +1,19 @@
+# Three kinds of writing: an alphabet has a letter for each sound, a syllabary a sign for each
+# syllable, and characters a sign for each word or part of a word.
+item history.script-kind v=1 skills=[history.writing, reading.scripts] {
+  title "Letters, syllables or words?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let script={pick(k, "the English alphabet", "Chinese characters", "Japanese kana", "the Russian alphabet", "the Greek alphabet", "Korean Hangul")}
+  let key={pick(k, "A letter for each sound", "A sign for each word or part of one", "A sign for each syllable", "A letter for each sound", "A letter for each sound", "A letter for each sound")}
+
+  scene 36x24 {
+    book open at=canvas(1, 0)
+    text ask "What does each sign stand for in {script}?" narrate width=16 right-of=open gap=1
+    choice pick options=["A letter for each sound", "A sign for each syllable", "A sign for each word or part of one"] stack=column below=open gap=1
+  }
+
+  answer pick=key
+  hint "How many signs does it use: about thirty, about fifty, or thousands?"
+  hint "About thirty signs means sounds, about fifty means syllables, thousands means words."
+}

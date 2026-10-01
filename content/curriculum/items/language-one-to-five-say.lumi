@@ -1,0 +1,17 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.one-to-five-say v=1 skills=[language.numbers, language.speaking] {
+  title "Count to a grown-up"
+  let k=0..2
+
+  scene 34x17 {
+    column all at=canvas(1, 1) space=1 align=start {
+      animals ducks kind=duck count=5
+      text ask "{pick(k, \"Count the ducks to a grown-up in [[language.name]], touching each one.\", \"Count from [[num.one]] to [[num.five]] in [[language.name]], then back down to [[num.zero]].\", \"Hold up some fingers. Say in [[language.name]] how many, then ask a grown-up to try.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="The numbers said in order, one for each thing touched, with [[num.four]] and [[num.five]] kept apart." notice=["One number for each duck", "The right order", "[[num.four|cap]] and [[num.five]] kept apart", "Counted without looking at the page"]
+  hint "Touch each duck as you say its number."
+  hint "What comes after [[num.three]]?"
+}

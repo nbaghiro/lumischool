@@ -1,0 +1,17 @@
+# The three-star question: the Moon is about 384,000 km away (NASA, rounded) and Apollo 11 took about
+# 4 days to reach it; about how far it went each day, and each hour.
+item history.moon-speed v=1 skills=[history.space, reasoning.plan] {
+  title "How fast to the Moon?"
+  difficulty k
+  let k=0..1
+
+  scene 32x11 {
+    earth planet up=2 at=canvas(1, 0)
+    text ask "{if k == 0 then \"The Moon is about 384,000 km away. Apollo 11 took about 4 days to get there. About how many km a day is that?\" else \"The Moon is about 384,000 km away and the journey took about 4 days. About how many km an hour is that?\"}" narrate width=18 right-of=planet gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 0 then 96000 else 4000)
+  hint "Share the distance equally between the days."
+  hint "{if k == 0 then \"384 thousand shared by 4 is how many thousand?\" else \"First find a day, then share it between 24 hours.\"}"
+}

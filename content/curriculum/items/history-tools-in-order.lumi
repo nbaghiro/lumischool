@@ -1,0 +1,20 @@
+# Three tools numbered from the oldest, from the dated record: the hand axe, the bronze axe, the iron
+# sickle. The card shows one of them, so the child reads the others from the words.
+item history.tools-in-order v=1 skills=[history.prehistory, history.order] {
+  title "The oldest tool first"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Flint hand axe", "Bronze axe", "Flint hand axe", "Bronze axe", "Iron sickle", "Iron sickle")}
+  let b={pick(k, "Iron sickle", "Flint hand axe", "Bronze axe", "Iron sickle", "Flint hand axe", "Bronze axe")}
+  let c={pick(k, "Bronze axe", "Iron sickle", "Iron sickle", "Flint hand axe", "Bronze axe", "Flint hand axe")}
+
+  scene 34x23 {
+    text ask "Number the tools 1, 2, 3, from the oldest kind to the newest." narrate width=32 at=canvas(1, 1)
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+    timeline line from=-3000 to=0 step=500 years=[] labels=[] below=s gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Stone tools came long before anyone could make metal."
+  hint "Bronze was made before iron."
+}

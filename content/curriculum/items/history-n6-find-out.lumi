@@ -1,0 +1,13 @@
+# Marked by a grown-up: finding out about the country's story near home (n as in n6-order).
+item history.n6-find-out v=1 stars=3 skills=[history.nation, history.enquiry] {
+  title "Find out near home"
+  let n=0..4
+  let task={pick(n, "Find the name of your Member of Parliament and one thing Parliament decided this year.", "Find the names of your state's two senators and one law your state passed recently.", "Find when the Diet next meets and what one of its committees does.", "Find how many deputies sit in the State Duma and when it was last elected.", "Find how many deputies attend the National People's Congress and when it meets each year.")}
+
+  scene 36x13 {
+    text ask "{task}" width=34 at=canvas(1, 1)
+    writinglines w lines=2 width=34 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A small, true piece of finding out done with a grown-up: what was found, a date for it, where the information came from, and how the child knows it is right." notice=["Found one real fact", "Gave a date", "Said where it came from", "Said how sure they are"] ask="Where did you find that out, and could you check it somewhere else?"
+}

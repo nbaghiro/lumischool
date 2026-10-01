@@ -75,7 +75,7 @@ async function laidOut(host: HTMLElement): Promise<number> {
  * creature brought. It is worked out as the child's map works it out, from the same record.
  */
 export function whereOf(r: GrownRecord, kid: Kid, lessons: readonly LessonFacts[]): Where | null {
-    const corpus = corpusFrom(lessons, r.start ?? r.today);
+    const corpus = corpusFrom(lessons, r.start ?? r.today, r.variants);
     const choice = choiceFor(kid, r);
     const trip = journey(
         r.years.map((y) => ({

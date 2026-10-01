@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.how-much-say v=1 skills=[language.market, language.numbers, language.speaking] {
+  title "At the stall"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Point at the cheese in the lesson and ask a grown-up [[phrase.how-much-is-it]] Then say the price back in [[language.name]].\", \"Be the stall keeper. A grown-up asks the price of each crate; answer in [[language.name]].\", \"Buy two things: say what you want, ask [[phrase.how-much-is-it]], and say [[greet.thank-you]] and [[greet.goodbye]].\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="The price asked as a question, the price said with its number and euros, and the shopping closed politely." notice=["The price asked as a question", "The number right for the price", "Euros said after the number", "[[greet.thank-you|cap]] and [[greet.goodbye]] at the end"]
+  hint "Read the price in English first."
+  hint "Is it two or twelve?"
+}

@@ -1,0 +1,23 @@
+# Four events of the twentieth century on a line in tens, one flag empty.
+item history.century-empty-flag v=1 skills=[history.timeline, history.order] {
+  title "The empty flag"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let gap={pick(k, 3, 0, 1, 2)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x25 {
+    timeline line from=1920 to=2000 step=10 years=[1928, 1936, 1961, 1991] labels=["Penicillin found", "First television service", "First person in space", "World Wide Web"] blank=gap at=canvas(0, 0)
+    text ask "What goes on the empty flag?" narrate width=14 below=line gap=1
+    choice pick options=["Penicillin found", "First television service", "First person in space", "World Wide Web"] stack=column right-of=ask gap=1
+  }
+
+  check history.dates of=line pick=blank
+  hint "Read the flags on either side."
+  hint "Which of the four happened between them?"
+}

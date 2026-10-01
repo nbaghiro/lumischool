@@ -1,0 +1,51 @@
+lesson k-a-picture-of-a-feeling v=1 format=teach grade=0 unit=7 subject=art levels=[easy, medium, hard] {
+  title "A picture that tells a feeling"
+  goal "Say which colours feel warm and which feel cool, read a feeling on a face, and paint a picture to show a feeling."
+
+  look {
+    scene 30x9 {
+      paintpots pots pots=["red", "yellow"] result="mix" labels=true at=canvas(1, 1)
+    }
+    say """
+      Colours can show a feeling. Red, orange and yellow are warm, like the sun and fire, and feel
+      lively and happy. Blue and green are cool, like water and grass, and feel calm and quiet. A
+      face shows a feeling too.
+      """
+  }
+  do {
+    level easy {
+      worked k.warm-or-cool k=0 level=medium
+    }
+    practice k.warm-or-cool count=3 seed=2 easy-count=2 hard-count=2
+    practice k.warm-paint count=2 seed=3
+    level hard {
+      show k.warm-or-cool k=1 level=medium
+    }
+    practice k.how-she-feels count=2 seed=4 easy-count=1
+    show k.paint-a-feeling
+  }
+  try stars=2 {
+    show k.why-blue-sea
+  }
+  try stars=3 {
+    show k.cool-paint k=0 hard-k=1
+  }
+  remember {
+    say "Warm colours feel lively. Cool colours feel calm."
+  }
+
+  grown-ups """
+    Read each question aloud. The painting is for you to look at: ask what feeling it shows, and
+    there is no wrong answer to how a colour feels to the child, only to which colours are warm and
+    cool. If the child is stuck on the faces, make each face together in a mirror. Off the page,
+    look at a picture book and ask how the colours make you feel. Japan, 幼稚園教育要領
+    (kindergarten guidelines), 表現, 内容 (4): "感じたこと，考えたことなどを音や動きなどで表現したり，自由にかいたり，つくったりなどする。"
+    (Express what they feel and think through sound and movement, and draw and make things freely.)
+    """
+  level easy {
+    grown-ups "At this level warm colours are worked in the teacher's pen first, the faces are happy and sad, and the cool paint is blue."
+  }
+  level hard {
+    grown-ups "At this level the colours are chosen for a party and for bedtime, the faces are scared and cross, and the cool paint is green."
+  }
+}

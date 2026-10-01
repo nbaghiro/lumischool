@@ -1,0 +1,12 @@
+item k.clap-ladybird v=1 skills=[music.rhythm, reading.syllables] {
+  title "Snail, ladybird"
+
+  scene 24x13 {
+    minibeasts bugs kinds=["snail", "ladybird"] spots=4 legs=false at=canvas(1, 1)
+    text ask "Say it and clap it: snail, la-dy-bird." narrate width=22 below=bugs gap=1
+  }
+
+  check music.rhythm beats=[0, 1, 1.5, 2] grade=1
+  hint "Say the words first. Clap once for each part you say."
+  hint "la-dy is quick, and bird is as long as snail."
+}

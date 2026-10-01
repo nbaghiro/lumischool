@@ -1,0 +1,20 @@
+item k.grow-next v=1 skills=[nature.growing] {
+  title "What grows next?"
+  difficulty s
+  let s=0..2
+  level easy {
+    let s=0..1
+  }
+  level hard {
+    let s=1..2
+  }
+
+  scene 30x20 {
+    growstages grow stages=(s + 1) numbers=false names=0 at=canvas(1, 1)
+    text ask "These pictures show a bean growing. What will it grow next?" narrate width=28 below=grow gap=1
+    choice pick options=["a shoot", "leaves", "a flower"] stack=row below=ask gap=1
+  }
+
+  answer pick=pick(s, "a shoot", "leaves", "a flower")
+  hint "Look at the last picture. What has the bean got so far?"
+}

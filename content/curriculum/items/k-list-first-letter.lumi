@@ -1,0 +1,20 @@
+item k.list-first-letter v=1 skills=[writing.lists, writing.letters] {
+  title "Start the list"
+  difficulty (if w == "cup" or w == "cake" then 0 else 1)
+  let w={"cup", "cake", "boat", "kite"}
+  level easy {
+    let w={"cup", "cake"}
+  }
+  level hard {
+    let w={"boat", "kite"}
+  }
+
+  scene 26x21 {
+    art pic asset="{if w == \"cake\" then \"birthday-table\" else w}" at=canvas(1, 1)
+    text q "Ada writes a picnic list, starting each thing with its first letter. Say {w}. Write its first letter." narrate width=24 below=pic gap=1
+    word-input first options=["{if w == \"boat\" then \"b\" else if w == \"kite\" then \"k\" else \"c\"}"] letters=1 below=q gap=1
+  }
+
+  answer first=(if w == "boat" then "b" else if w == "kite" then "k" else "c")
+  hint "Say the word slowly. What is its first sound?"
+}

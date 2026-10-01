@@ -1,0 +1,24 @@
+item k.animal-starts v=1 skills=[reading.phonics] {
+  title "Which animal starts with that sound?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3 p=0..2
+  let want={pick(k, "cat", "pig", "fox", "rabbit")}
+  let o1={pick(k, "dog", "hen", "duck", "cat")}
+  let o2={pick(k, "hen", "duck", "pig", "dog")}
+  let sound={pick(k, "c", "p", "f", "r")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x16 {
+    picturecards cards who=[if p == 0 then want else o1, if p == 1 then want else o2, if p == 2 then want else if p == 0 then o1 else o2] where=["by", "by", "by"] thing=["log", "log", "log"] letters=true at=canvas(1, 1)
+    text ask "Which animal starts with the sound {sound}?" narrate width=28 below=cards gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=pick(p, "A", "B", "C")
+  hint "Say the name of each animal. Listen to its first sound."
+}

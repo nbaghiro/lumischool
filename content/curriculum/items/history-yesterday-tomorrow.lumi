@@ -1,0 +1,38 @@
+# The ringed day is today; the child names the day before or after it. Crossing the end of the week
+# (yesterday on a Monday, tomorrow on a Sunday) is the harder version.
+item history.yesterday-tomorrow v=1 skills=[history.time-words, time.days] {
+  title "Yesterday and tomorrow"
+  difficulty (w + (if t == 0 and w == 1 or t == 6 and w == 0 then 1 else 0))
+  let t=0..6 w=0..1
+  let name={pick(t, "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")}
+  let before={pick(t, "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")}
+  let after={pick(t, "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Monday")}
+  let when={if w == 0 then "tomorrow" else "yesterday"}
+  level easy {
+    let t=1..5 w=0..0
+  }
+  level hard {
+    let w=1..1
+  }
+
+  scene 30x12 {
+    days week mark=t start=0 at=canvas(1, 1)
+    text ask "The ringed day is today. Which day is {when}?" narrate width=24 below=week gap=1
+    choice pick options=["{after}", "{name}", "{before}"] below=ask gap=1
+  }
+
+  answer pick=(if w == 0 then after else before)
+  feedback {
+    when (pick == name) point=week {
+      say "That is today, the ringed day. Look at the day next to it."
+    }
+    when (w == 0 and pick == before) point=week {
+      say "That was yesterday. Tomorrow is the day after today."
+    }
+    when (w == 1 and pick == after) point=week {
+      say "That will be tomorrow. Yesterday is the day before today."
+    }
+  }
+  hint "Put a finger on the ringed day. Is {when} before it or after it?"
+  hint "The week goes round: after the last day comes the first again."
+}

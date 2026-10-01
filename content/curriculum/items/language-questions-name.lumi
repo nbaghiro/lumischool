@@ -1,0 +1,23 @@
+# Picture or situation to the language: [[question.where]], [[question.when]], [[question.who]], [[question.what]], [[question.how-many]], [[question.how]], [[question.why]], [[question.which]], [[question.at-what-time]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.questions-name v=1 skills=[language.questions] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2, 2)
+  let k=0..8
+
+  scene 34x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"The answer was [[question.at-the-harbour]]\", \"The answer was [[question.on-saturday]]\", \"The answer was [[question.my-grandmother]]\", \"The answer was [[question.a-sandwich]]\", \"The answer was [[question.three]]\", \"The answer was [[question.very-well]]\", \"The answer was [[question.because-it-is-raining]]\", \"The answer was [[question.the-red-one]]\", \"The answer was [[question.at-three-o-clock]]\")}" width=32
+      choice pick options=[pick(k, "[[question.how]]", "[[question.how]]", "[[question.what]]", "[[question.at-what-time]]", "[[question.which]]", "[[question.how-many]]", "[[question.when]]", "[[question.when]]", "[[question.when]]"), pick(k, "[[question.where]]", "[[question.when]]", "[[question.how]]", "[[question.what]]", "[[question.who]]", "[[question.how]]", "[[question.who]]", "[[question.which]]", "[[question.how-many]]"), pick(k, "[[question.when]]", "[[question.at-what-time]]", "[[question.why]]", "[[question.who]]", "[[question.how-many]]", "[[question.when]]", "[[question.how-many]]", "[[question.how-many]]", "[[question.at-what-time]]"), pick(k, "[[question.why]]", "[[question.where]]", "[[question.who]]", "[[question.how]]", "[[question.when]]", "[[question.what]]", "[[question.why]]", "[[question.how]]", "[[question.why]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[question.where]]", "[[question.when]]", "[[question.who]]", "[[question.what]]", "[[question.how-many]]", "[[question.how]]", "[[question.why]]", "[[question.which]]", "[[question.at-what-time]]")
+  feedback {
+    when (pick == pick(k, "[[question.when]]", "[[question.where]]", "[[question.what]]", "[[question.who]]", "[[question.which]]", "[[question.what]]", "[[question.when]]", "[[question.how-many]]", "[[question.when]]")) {
+      say "{pick(k, \"That asks when. The answer is a place.\", \"That asks where. The answer is a day.\", \"That asks what. The answer is a person.\", \"That asks who. The answer is a thing.\", \"That asks which. The answer is a number.\", \"That asks what. The answer says how someone is.\", \"That asks when. The answer gives a reason.\", \"That asks how many. The answer picks one of several.\", \"That asks when, which could be a day. The answer is a time on the clock.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

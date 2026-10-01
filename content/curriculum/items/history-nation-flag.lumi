@@ -1,0 +1,19 @@
+# The national unit's flag question: n is the family's country (0 the United Kingdom, 1 the United
+# States, 2 Japan, 3 Russia, 4 China), pinned by each country's lesson; k shuffles the row.
+item history.nation-flag v=1 skills=[history.nation, history.symbols] {
+  title "Our flag"
+  difficulty k
+  let n=0..4 k=0..1
+  let country={pick(n, "the United Kingdom", "the United States", "Japan", "Russia", "China")}
+  let key={if k == 0 then pick(n, "A", "B", "C", "D", "E") else pick(n, "C", "E", "A", "B", "D")}
+
+  scene 36x16 {
+    flags row flags=[if k == 0 then "britain" else "japan", if k == 0 then "usa" else "russia", if k == 0 then "japan" else "britain", if k == 0 then "russia" else "china", if k == 0 then "china" else "usa"] letters=1 at=canvas(1, 0)
+    text ask "Which is the flag of {country}?" narrate width=18 below=row gap=1
+    choice pick options=["A", "B", "C", "D", "E"] below=ask gap=1
+  }
+
+  answer pick=key
+  hint "Think of a flag you have seen on a building or at a game."
+  hint "Look at the colours and the shapes: stripes, crosses, stars or a circle."
+}

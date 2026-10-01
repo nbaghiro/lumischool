@@ -1,0 +1,18 @@
+# The word written from its picture: [[routine.i-swim]], [[routine.i-play]], [[routine.i-read]], [[routine.i-dance]], [[routine.i-play-an-instrument]], [[routine.i-go]], [[routine.i-visit]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.my-week-write v=1 skills=[language.time, language.sentences, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x9 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"The word for I swim. Write it in [[language.name]].\", \"The word for I play, as in a game. Write it in [[language.name]].\", \"The word for I read. Write it in [[language.name]].\", \"The word for I dance. Write it in [[language.name]].\", \"The word for I play, as in the piano. Write it in [[language.name]].\", \"The word for I go. Write it in [[language.name]].\", \"The word for I visit. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[routine.i-swim]]", "[[routine.i-play]]", "[[routine.i-read]]", "[[routine.i-dance]]", "[[routine.i-play-an-instrument]]", "[[routine.i-go]]", "[[routine.i-visit]]")]
+    }
+  }
+
+  answer word=pick(k, "[[routine.i-swim]]", "[[routine.i-play]]", "[[routine.i-read]]", "[[routine.i-dance]]", "[[routine.i-play-an-instrument]]", "[[routine.i-go]]", "[[routine.i-visit]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

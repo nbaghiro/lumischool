@@ -1,0 +1,21 @@
+# Reading a year on a line that crosses year one: the same number can be BC or AD, and the side of
+# year one says which. The record checks the drawn years.
+item history.read-bc-flag v=1 skills=[history.bc-ad, history.timeline] {
+  title "BC or AD?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ev={pick(k, "Romans conquer Britain", "Caesar lands in Britain", "Augustus first emperor", "Paper", "Qin unites China", "Caesar lands in Britain")}
+  let yr={pick(k, 43, -55, -27, 105, -221, -55)}
+  let n={if yr < 0 then 0 - yr else yr}
+  let alt={pick(k, 34, 45, 72, 150, 212, 50)}
+
+  scene 32x21 {
+    timeline line from=-300 to=200 step=100 years=[yr] labels=["{ev}"] at=canvas(1, 0)
+    text ask "Read the flag against the years below it. When was this?" narrate width=16 below=line gap=1
+    choice pick options=["{n} BC", "AD {n}", "{if yr < 0 then alt else \"AD\"} {if yr < 0 then \"BC\" else alt}"] stack=column right-of=ask gap=1
+  }
+
+  check history.dates of=line pick="year-name(0)"
+  hint "Is the flag to the left of year one, or to the right?"
+  hint "Left of year one is BC, right is AD."
+}

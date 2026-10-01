@@ -1,0 +1,49 @@
+lesson k-counting-to-five v=1 format=teach grade=0 unit=1 subject=maths levels=[easy, medium, hard] {
+  title "Counting to five"
+  goal "Count up to five things by touching each one once, and see small numbers without counting."
+
+  look {
+    scene 26x12 {
+      props row count=4 prop=apple at=canvas(1, 1)
+      tenframe frame count=4 color=sky below=row gap=1
+    }
+    say """
+      Four apples, and four counters in the frame. Touch each apple once and say one number for
+      each: one, two, three, four. The last number you say is how many there are.
+      """
+  }
+  do {
+    practice k.how-many-apples count=1 seed=2
+    level easy {
+      worked k.five-frame n=2 level=medium
+    }
+    practice k.five-frame count=1 seed=3
+    practice k.ladybird-spots count=2 seed=4
+    practice k.count-ants count=1 seed=5
+    practice k.more-apples-or-stars count=2 seed=6
+    practice k.how-many-apples count=1 seed=7 easy-count=0
+  }
+  try stars=2 {
+    show k.one-more-apple n=3 easy-n=2 hard-n=4
+  }
+  try stars=3 {
+    show k.make-five n=2 easy-n=4 hard-n=1
+  }
+  remember {
+    say "One number for each thing. The last number is how many."
+  }
+
+  grown-ups """
+    Read every question aloud; the child answers by saying or pointing, and you type or write the
+    number. Watch for a finger that touches one apple twice or skips one, which is the usual slip at
+    this age. If the child is stuck, put real spoons or buttons on the table and count them
+    together, moving each one aside as it is counted. Off the page, count the stairs on the way to
+    bed. England, Reception, ELG Number: "Subitise (recognise quantities without counting) up to 5".
+    """
+  level easy {
+    grown-ups "At this level the numbers stay at three or less, the frame is worked once in the teacher's pen first, and the rows to compare differ by three or more."
+  }
+  level hard {
+    grown-ups "At this level the numbers are four and five, and the rows to compare differ by one."
+  }
+}

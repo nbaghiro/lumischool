@@ -1,0 +1,50 @@
+lesson k-then-and-now v=1 format=teach grade=0 unit=9 subject=history levels=[easy, medium, hard] {
+  title "Then and now"
+  goal "Say how I have changed since I was a baby, and tell things from long ago from things of now."
+
+  look {
+    scene 36x8 {
+      toys shelf toys=["spinning top", "kite", "rag doll", "teddy bear", "building bricks", "puzzle cube"] letters=0 at=canvas(1, 0)
+    }
+    say """
+      Long, long ago children played with spinning tops, kites and rag dolls. Teddy bears came later,
+      and plastic bricks and puzzle cubes later still. You have changed too: once you were a baby who
+      could not walk, and now you can run.
+      """
+  }
+  do {
+    level easy {
+      worked k.baby-and-now k=0 level=medium
+    }
+    practice k.baby-and-now count=2 seed=2
+    practice k.oldest-person count=2 seed=3
+    practice k.long-ago-or-now count=2 seed=4 easy-count=1
+    practice k.older-toy count=1 seed=5
+    show k.street-long-ago k=0 hard-k=1
+    show k.ask-about-a-toy
+  }
+  try stars=2 {
+    show k.new-kite
+  }
+  try stars=3 {
+    show k.great-great-grandma
+  }
+  remember {
+    say "Long ago is before we were born. Now is today."
+  }
+
+  grown-ups """
+    Read each question aloud. Photographs of the child as a baby are the best way into this, and so
+    is a toy of your own from when you were small. The idea to watch is that a thing that looks new
+    is a new kind of thing: a kite bought yesterday is still a very old kind of toy. Off the page,
+    look at an old photograph together and spot what is different. England, Reception, ELG Past and
+    Present (recalled, not fetched): "Talk about the lives of the people around them and their roles
+    in society".
+    """
+  level easy {
+    grown-ups "At this level walking as a baby is asked in the teacher's pen first, the people to tell apart are far apart in age, and the street's new thing is a motor car."
+  }
+  level hard {
+    grown-ups "At this level the youngest is asked for as well as the oldest, the things to place include a television and washing by hand, and the street's new thing is an aeroplane."
+  }
+}

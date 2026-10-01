@@ -1,0 +1,21 @@
+item k.body-count v=1 skills=[nature.body, counting.to-five] {
+  title "How many has Ada got?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let part={pick(k, "legs", "eyes", "ears", "thumbs")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 24x15 {
+    person ada pose=wave age=child hair=bunches colour=black top=berry at=canvas(1, 1)
+    text ask "How many {part} has Ada got?" narrate width=22 below=ada gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer 2
+  hint "Count on your own body. Touch each one."
+}

@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[greet.hello]], [[greet.goodbye]], [[greet.thank-you]], [[greet.yes]], [[greet.please]], [[greet.good-morning]], [[greet.sorry]], [[greet.good-night]], [[greet.good-afternoon]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.hello-name v=1 skills=[language.greetings] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2, 2)
+  let k=0..8
+
+  scene 34x27 {
+    column all at=canvas(1, 1) space=1 align=start {
+      person p pose=pick(k, "wave", "walk", "hold", "cheer", "point", "wave", "stand", "stand", "wave") dir=pick(k, 1, -1, 1, 1, 1, 1, 1, 1, 1) age=pick(k, "child", "child", "older", "child", "child", "grownup", "child", "child", "older") mood=pick(k, "happy", "happy", "happy", "happy", "happy", "happy", "worried", "tired", "happy") holding="{pick(k, \"\", \"\", \"apple\", \"\", \"\", \"\", \"\", \"\", \"\")}"
+      text ask "{pick(k, \"Ana meets Leo at the gate. What does she say first?\", \"Leo goes home after tea. What does he say at the door?\", \"Gran gives Ana an apple. What does Ana say?\", \"Gran asks Leo if he wants an apple. He does. What does he say?\", \"Leo asks for some water. What does he say at the end?\", \"It is morning. Ana meets her teacher. What does she say?\", \"Leo bumps into someone by mistake. What does he say?\", \"It is night and Leo goes to bed. What does he say?\", \"It is after lunch. Ana meets a neighbour. What does she say?\")}" width=32
+      choice pick options=[pick(k, "[[greet.goodbye]]", "[[greet.good-afternoon]]", "[[greet.sorry]]", "[[greet.good-afternoon]]", "[[greet.thank-you]]", "[[greet.good-night]]", "[[greet.thank-you]]", "[[greet.good-morning]]", "[[greet.good-morning]]"), pick(k, "[[greet.sorry]]", "[[greet.goodbye]]", "[[greet.thank-you]]", "[[greet.yes]]", "[[greet.please]]", "[[greet.good-morning]]", "[[greet.goodbye]]", "[[greet.goodbye]]", "[[greet.good-afternoon]]"), pick(k, "[[greet.hello]]", "[[greet.hello]]", "[[greet.please]]", "[[greet.thank-you]]", "[[greet.goodbye]]", "[[greet.goodbye]]", "[[greet.sorry]]", "[[greet.good-night]]", "[[greet.good-night]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[greet.hello]]", "[[greet.goodbye]]", "[[greet.thank-you]]", "[[greet.yes]]", "[[greet.please]]", "[[greet.good-morning]]", "[[greet.sorry]]", "[[greet.good-night]]", "[[greet.good-afternoon]]")
+  feedback {
+    when (pick == pick(k, "[[greet.goodbye]]", "[[greet.hello]]", "[[greet.please]]", "[[greet.thank-you]]", "[[greet.thank-you]]", "[[greet.good-night]]", "[[greet.thank-you]]", "[[greet.good-morning]]", "[[greet.good-night]]")) point=p {
+      say "{pick(k, \"[[greet.goodbye|cap]] is for going away. Ana has just come.\", \"[[greet.hello|cap]] is for meeting someone. Leo is going away.\", \"[[greet.please|cap]] is please, for asking. Ana already has the apple.\", \"[[greet.thank-you|cap]] is thank you. Gran asked a question, so Leo answers it.\", \"[[greet.thank-you|cap]] is for after you are given something. Leo is still asking.\", \"[[greet.good-night|cap]] is for the night. It is the morning.\", \"[[greet.thank-you|cap]] is thank you. Leo bumped into someone.\", \"[[greet.good-morning|cap]] is for the morning. It is bedtime.\", \"[[greet.good-night|cap]] is for the night. After lunch is the afternoon.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

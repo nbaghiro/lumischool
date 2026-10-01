@@ -1,0 +1,50 @@
+lesson k-light-and-shadow v=1 format=teach grade=0 unit=3 subject=physics levels=[easy, medium, hard] {
+  title "Light and shadow"
+  goal "Say that a shadow is where something blocks the light, find which side it falls, and tell day from night."
+
+  look {
+    scene 30x14 {
+      shadows stick tall=4 shadow=6 unit=cm lamp=true marks=false at=canvas(1, 1)
+    }
+    say """
+      The lamp shines, and the stick is in the way, so behind the stick the light cannot reach. That
+      dark place is a shadow. In the day the sun gives us light; at night the sun is gone and we see
+      the moon and the stars.
+      """
+  }
+  do {
+    level easy {
+      worked k.what-makes-shadow k=0 level=medium
+    }
+    practice k.what-makes-shadow count=3 seed=2 easy-count=2 hard-count=2
+    practice k.shadow-side count=1 seed=3
+    show k.day-or-night w=0 hard-w=1
+    practice k.shadow-length count=2 seed=4 easy-count=1
+    show k.day-or-night w=1 hard-w=0
+  }
+  try stars=2 {
+    show k.shadow-in-the-morning
+  }
+  try stars=3 {
+    show k.shadow-puppet
+  }
+  remember {
+    say "A shadow is where something blocks the light. It falls on the side away from the light."
+  }
+
+  grown-ups """
+    Read each question aloud. Shadows are best made: a torch, a teddy and a dark room teach this in
+    minutes, and so does a sunny morning and a sunny midday. The idea to watch is that a shadow is
+    a thing in itself; it is only where light is missing. If the child is stuck, put a hand in the
+    torch beam and move it. Off the page, draw round each other's shadows in chalk in the morning
+    and again at lunchtime. England, Reception, ELG The Natural World: "Understand some important
+    processes and changes in the natural world around them, including the seasons and changing
+    states of matter" (recalled, not fetched).
+    """
+  level easy {
+    grown-ups "At this level the sun and a body are worked in the teacher's pen first, the sticks are tall, and the shadows to compare differ a lot."
+  }
+  level hard {
+    grown-ups "At this level the questions ask about a room with no light and a glass window, the sticks are short, and the shadows to compare are close."
+  }
+}

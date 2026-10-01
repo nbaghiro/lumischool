@@ -1,0 +1,17 @@
+# The three-star puzzle: a chain of swaps to get what you want without money, which shows why money
+# was worth inventing.
+item history.swap-chain v=1 skills=[history.money, reasoning.plan] {
+  title "A chain of swaps"
+  difficulty k
+  let k=0..1
+
+  scene 33x17 {
+    objectcard card kind=5 name="Cowrie shell" use="Paying for things" year=-1300 about=1 place="Anyang, China" ask=0 at=canvas(0, 0)
+    text ask "{if k == 0 then \"Ada has fish and wants a pot. The potter only wants bread. The baker wants fish. How many swaps does Ada need to get her pot?\" else \"Ada has fish and wants a pot. The potter wants cloth, the weaver wants bread and the baker wants fish. How many swaps does Ada need?\"}" narrate width=28 below=card gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then 2 else 3)
+  hint "Start at the end: what does the potter want?"
+  hint "Then who will give Ada that thing for what she has?"
+}

@@ -1,0 +1,19 @@
+# The language to English: [[phrase.that-is-forty-euros]], [[phrase.it-costs-fifty-cents]], [[phrase.it-is-too-expensive]], [[phrase.do-you-have-change]], [[phrase.here-are-twenty-euros]], [[phrase.the-ticket-costs-sixty-euros]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.to-a-hundred-meaning v=1 skills=[language.numbers, language.market] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "gran", "girl", "boy", "girl", "boy", "gran")] says=[pick(k, "[[phrase.that-is-forty-euros]]", "[[phrase.it-costs-fifty-cents]]", "[[phrase.it-is-too-expensive]]", "[[phrase.do-you-have-change]]", "[[phrase.here-are-twenty-euros]]", "[[phrase.the-ticket-costs-sixty-euros]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "The ticket costs sixty euros.", "Do you have change?", "It costs fifty cents.", "The ticket costs sixty euros.", "The ticket costs sixty euros.", "Do you have change?"), pick(k, "That is forty euros.", "It costs fifty cents.", "Here are twenty euros.", "Do you have change?", "It is too expensive.", "The ticket costs sixty euros."), pick(k, "It is too expensive.", "Here are twenty euros.", "Do you have change?", "It costs fifty cents.", "Here are twenty euros.", "It is too expensive."), pick(k, "Here are twenty euros.", "It is too expensive.", "It is too expensive.", "It is too expensive.", "Do you have change?", "Here are twenty euros.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "That is forty euros.", "It costs fifty cents.", "It is too expensive.", "Do you have change?", "Here are twenty euros.", "The ticket costs sixty euros.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

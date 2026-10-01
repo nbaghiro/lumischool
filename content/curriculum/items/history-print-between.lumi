@@ -1,0 +1,20 @@
+# Years between steps in printing, from the record.
+item history.print-between v=1 skills=[history.medieval, number.difference] {
+  title "How long between?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let e1={pick(k, "Jikji", "Diamond Sutra", "Diamond Sutra", "Jikji", "Paper", "Paper")}
+  let y1={pick(k, 1377, 868, 868, 1377, 105, 105)}
+  let e2={pick(k, "Caxton's press", "Jikji", "Caxton's press", "Great Fire of London", "Diamond Sutra", "Jikji")}
+  let y2={pick(k, 1476, 1377, 1476, 1666, 868, 1377)}
+
+  scene 36x12 {
+    timeline line from=0 to=1800 step=300 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(0, 0)
+    text ask "How many years after the first was the second?" narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Count on from the first year to the next hundred."
+  hint "Then on in hundreds, and the rest."
+}

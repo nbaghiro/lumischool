@@ -1,0 +1,12 @@
+item k.great-great-grandma v=1 stars=3 skills=[history.change, history.order] {
+  title "A toy from long ago"
+
+  scene 30x26 {
+    toys shelf toys=["puzzle cube", "spinning top", "teddy bear"] letters=0 at=canvas(1, 0)
+    text ask "Which of these toys was first made the longest time ago, so a child could have played with it hundreds of years ago?" narrate width=28 below=shelf gap=1
+    choice pick options=["puzzle cube", "spinning top", "teddy bear"] stack=column below=ask gap=1
+  }
+
+  check history.dates of=pick pick=first
+  hint "Which one is the simplest, made from a piece of wood?"
+}

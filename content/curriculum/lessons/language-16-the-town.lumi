@@ -1,0 +1,68 @@
+# The ferry town's places on the town plan, named from what happens in each, and there is.
+lesson language-the-town v=1 format=teach grade=3 unit=5 subject=language levels=[easy, medium, hard] {
+  title "[[town.in-the-town|cap]]"
+  goal "Name the places in a town in [[language.name]] and say what there is."
+
+  look {
+    scene 28x23 {
+      column all at=canvas(1, 1) space=1 align=start {
+        townplan plan places=["[[town.the-cafe]]", "[[town.the-market]]", "[[town.the-park]]", "[[town.the-beach]]", "[[town.the-museum]]", "[[town.the-station]]", "[[town.the-square]]"]
+      }
+    }
+    say """
+      This is the ferry town. There is a café, a market, a park, a beach, a museum, a station and a
+      square. To say there is, say [[town.there-is-a-beach]], there is a beach. To say there is not:
+      [[town.there-is-no-library]], there is no library.
+      """
+  }
+  do {
+    level easy {
+      worked language.the-town-name k=4
+    }
+    show language.the-town-name k=2 easy-k=0 hard-k=5
+    show language.the-town-meaning k=3 hard-k=5
+    show language.the-town-write k=4 easy-k=1 hard-k=5
+    show language.the-town-name k=4 easy-k=1 hard-k=6
+    show language.the-town-match k=2 easy-k=0 hard-k=3
+    show language.the-town-write k=5 easy-k=4 hard-k=6
+    show language.the-town-listen k=3 easy-k=0 hard-k=5
+    show language.the-town-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.the-town-write k=3
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-the-town-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.the-town-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[town.the-beach|cap]], [[town.the-market]], [[town.the-park]], [[town.the-station]], [[town.the-harbour]], [[town.the-square]]. [[town.there-is-a-beach]] There is a beach."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is two places with names that look alike taken for each other. The
+    places are asked from what happens in them rather than from a picture, which is a reading
+    question as much as a word question, and the town plan in the look and the three-star question
+    is the ferry town. The listening question is a dictation: read the sentence aloud from this
+    sheet, where it prints as Read aloud, or let the device play it. It is marked word by word, and
+    a missing accent counts there, while the words typed on their own in this lesson are taken
+    without their accents. If the child is stuck, walk the plan with a finger, naming each place.
+    Off the page, name five places in your own town in the language. It meets England's key stage 2
+    languages programme (years 3 to 6, statutory from age 7): "describe people, places, things and
+    actions orally and in writing"; Japan's grades 3 and 4 foreign language activities: "Situations
+    where typical expressions are often used: Greetings, Self-introductions, Shopping, Having meals,
+    Asking and giving directions"; and CEFR A2, "Can describe in simple terms aspects of his/her
+    background, immediate environment and matters in areas of immediate need". The phrases are in
+    [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[town.the-harbour]] is worked first in the teacher's pen, the words to name are [[town.the-beach]] and [[town.the-market]] and the words to write are [[town.park]] and [[town.square]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[town.the-square]] and [[town.the-library]] and the words to write are [[town.museum]], [[town.station]] and [[town.harbour]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

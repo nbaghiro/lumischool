@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[num.one]], [[num.two]], [[num.three]], [[num.zero]], [[num.four]], [[num.five]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.one-to-five-name v=1 skills=[language.numbers] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      tenframe frame count=pick(k, 1, 2, 3, 0, 4, 5) color=sky
+      text ask "How many are in the frame? Pick the word." width=32
+      choice pick options=[pick(k, "[[num.two]]", "[[num.five]]", "[[num.five]]", "[[num.three]]", "[[num.five]]", "[[num.four]]"), pick(k, "[[num.zero]]", "[[num.two]]", "[[num.three]]", "[[num.zero]]", "[[num.four]]", "[[num.five]]"), pick(k, "[[num.one]]", "[[num.three]]", "[[num.two]]", "[[num.one]]", "[[num.two]]", "[[num.zero]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[num.one]]", "[[num.two]]", "[[num.three]]", "[[num.zero]]", "[[num.four]]", "[[num.five]]")
+  feedback {
+    when (pick == pick(k, "[[num.two]]", "[[num.three]]", "[[num.two]]", "[[num.one]]", "[[num.five]]", "[[num.four]]")) point=frame {
+      say "{pick(k, \"[[num.two|cap]] is two. Count again, one counter at a time.\", \"[[num.three|cap]] is three. Count the counters again.\", \"[[num.two|cap]] is two. There is one more than that.\", \"[[num.one|cap]] is one. Is there a counter in the frame?\", \"[[num.five|cap]] is five. Count again: is the top row full?\", \"[[num.four|cap]] is four. The top row is full, and that is five.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

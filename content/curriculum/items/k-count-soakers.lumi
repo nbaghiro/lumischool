@@ -1,0 +1,20 @@
+item k.count-soakers v=1 skills=[chemistry.materials, counting.to-five] {
+  title "How many soak it up?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x16 {
+    materials row things=["{pick(k, \"towel\", \"paper-bag\", \"raincoat\", \"rubber-boot\")}", "{pick(k, \"metal-key\", \"wool-sock\", \"cardboard-box\", \"paper-book\")}", "{pick(k, \"wool-sock\", \"glass-jar\", \"wool-hat\", \"cardboard-box\")}", "{pick(k, \"plastic-bottle\", \"metal-spoon\", \"rubber-band\", \"wool-sock\")}"] letters=1 names=1 at=canvas(1, 0)
+    text q "How many of these things soak up water?" narrate width=28 below=row gap=1
+    number-input answer below=q gap=1
+  }
+
+  check chem.materials of=row answer="count(absorbent)"
+  hint "Think of pouring a little water on each. Does it go in, or run off?"
+}

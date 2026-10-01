@@ -1,0 +1,22 @@
+# The strokes children practise are inside letters: a zigzag is in w and z, a wave in s, and a
+# straight line down in l.
+item k.line-in-letter v=1 skills=[writing.first-strokes, writing.letter-formation] {
+  title "The line inside a letter"
+  difficulty (if x == "l" or x == "w" then 0 else 1)
+  let x={"l", "w", "z", "s"}
+  level easy {
+    let x={"l", "w"}
+  }
+  level hard {
+    let x={"z", "s"}
+  }
+
+  scene 26x13 {
+    handwriting rules show="{x}" rows=1 trace=1 width=12 at=canvas(1, 1)
+    text ask "Which kind of line is inside the letter {x}?" narrate width=24 below=rules gap=1
+    choice pick options=["straight", "zigzag", "wavy"] stack=row below=ask gap=1
+  }
+
+  answer pick=(if x == "l" then "straight" else if x == "s" then "wavy" else "zigzag")
+  hint "Trace the letter with a finger. Does your finger turn sharp corners or go smoothly?"
+}

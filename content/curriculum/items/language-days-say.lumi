@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.days-say v=1 skills=[language.time, language.speaking] {
+  title "The week out loud"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Say the days of the week in [[language.name]], from Monday to Sunday.\", \"Say what day it is today and tomorrow, the way the lesson does: [[time.today-is-monday]] [[phrase.tomorrow-is-tuesday]]\", \"Say the days backwards, from Sunday to Monday.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="All seven days in order, and today and tomorrow said the way the lesson says them." notice=["All seven days in order", "Tuesday and Wednesday kept apart", "Today and tomorrow said", "Said without the page"]
+  hint "The week starts on [[time.monday]]."
+  hint "Which day comes after [[time.thursday]]?"
+}

@@ -1,0 +1,21 @@
+item k.frog-next v=1 skills=[nature.life-cycles] {
+  title "What does it grow into?"
+  difficulty s
+  let s=1..3
+  let next={pick(s, "none", "a tadpole", "a froglet with legs", "a frog")}
+  level easy {
+    let s=1..2
+  }
+  level hard {
+    let s=2..3
+  }
+
+  scene 28x24 {
+    frogcycle cycle stage=s ring=0 names=0 at=canvas(1, 1)
+    text q "These are the first pictures of a frog's life. What comes next?" narrate width=26 below=cycle gap=1
+    choice pick options=["a tadpole", "a froglet with legs", "a frog"] stack=column below=q gap=1
+  }
+
+  answer pick=next
+  hint "Look at the last picture. What does it grow into?"
+}

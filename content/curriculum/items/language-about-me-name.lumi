@@ -1,0 +1,19 @@
+# Picture or situation to the language: [[num.twelve]], [[aboutme.in-seville]], [[aboutme.with-her-mother-and-her-brother]], [[aboutme.kind-and-a-bit-shy]], [[aboutme.reading-and-swimming]], [[aboutme.because-it-is-cold]], [[aboutme.she-goes-to-the-beach]], [[aboutme.gazpacho]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.about-me-name v=1 skills=[language.reading, language.writing] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x33 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage sara title="[[aboutme.title]]" text="[[aboutme.sara-text]]" width=32 numbers=true
+      text ask "{pick(k, \"How old is Sara?\", \"Where does she live?\", \"Who does she live with?\", \"What is she like?\", \"What does she love?\", \"Why does she not like winter?\", \"What does she do on Saturdays?\", \"What is her favourite food?\")}" width=32
+      choice pick options=[pick(k, "[[num.eleven]]", "[[aboutme.in-madrid]]", "[[aboutme.with-her-father]]", "[[aboutme.kind-and-a-bit-shy]]", "[[aboutme.running-and-dancing]]", "[[aboutme.because-it-is-hot]]", "[[aboutme.she-goes-to-the-beach]]", "[[aboutme.paella]]"), pick(k, "[[num.twelve]]", "[[aboutme.in-seville]]", "[[aboutme.with-her-grandparents]]", "[[aboutme.tall-and-serious]]", "[[aboutme.reading-and-swimming]]", "[[aboutme.because-there-is-no-beach]]", "[[aboutme.she-goes-to-the-park]]", "[[aboutme.gazpacho]]"), pick(k, "[[num.thirteen]]", "[[aboutme.in-bilbao]]", "[[aboutme.with-her-mother-and-her-brother]]", "[[aboutme.chatty-and-fun]]", "[[aboutme.singing-and-painting]]", "[[aboutme.because-it-is-cold]]", "[[aboutme.she-reads-at-home]]", "[[aboutme.pizza]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[num.twelve]]", "[[aboutme.in-seville]]", "[[aboutme.with-her-mother-and-her-brother]]", "[[aboutme.kind-and-a-bit-shy]]", "[[aboutme.reading-and-swimming]]", "[[aboutme.because-it-is-cold]]", "[[aboutme.she-goes-to-the-beach]]", "[[aboutme.gazpacho]]")
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

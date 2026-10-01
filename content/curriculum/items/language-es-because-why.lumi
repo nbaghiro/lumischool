@@ -1,0 +1,22 @@
+# A reason: the word that gives the reason, porque against ¿por qué?, and a plural reason.
+item language.es-because-why v=1 stars=2 skills=[language.opinions, language.sentences, reasoning.language] {
+  title "Because and why"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Which word gives the reason in: Me gusta el dibujo porque es divertido?\", \"¿Por qué? and porque: which asks, and which answers?\", \"No me gustan las matemáticas porque son difíciles. Why difíciles and not difícil?\")}" width=32
+      choice pick options=[pick(k, "porque", "¿Por qué? asks why; porque means because.", "Matemáticas is plural, so difíciles is too."), pick(k, "gusta", "Porque asks; ¿por qué? answers.", "Difíciles is harder than difícil."), pick(k, "dibujo", "They mean the same.", "It is always difíciles.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "porque", "¿Por qué? asks why; porque means because.", "Matemáticas is plural, so difíciles is too.")
+  feedback {
+    when (pick == pick(k, "gusta", "They mean the same.", "It is always difíciles.")) {
+      say "{pick(k, \"Gusta is the liking. Which word says why?\", \"One has question marks. What does a question do?\", \"El examen es difícil, so not always. Look at las matemáticas.\")}"
+    }
+  }
+  hint "Which word could you swap for because?"
+  hint "One thing or more than one?"
+}

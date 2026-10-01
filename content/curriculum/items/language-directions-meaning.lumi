@@ -1,0 +1,19 @@
+# The language to English: [[phrase.where-is-the-beach]], [[phrase.turn-left]], [[phrase.go-straight-on]], [[phrase.it-is-near]], [[phrase.it-is-very-far]], [[phrase.excuse-me-where-is-the-station]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.directions-meaning v=1 skills=[language.town, language.directions] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "gran", "boy", "girl", "gran", "boy")] says=[pick(k, "[[phrase.where-is-the-beach]]", "[[phrase.turn-left]]", "[[phrase.go-straight-on]]", "[[phrase.it-is-near]]", "[[phrase.it-is-very-far]]", "[[phrase.excuse-me-where-is-the-station]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "Excuse me, where is the station?", "It is near.", "Turn left.", "Excuse me, where is the station?", "Excuse me, where is the station?", "It is near."), pick(k, "Where is the beach?", "Turn left.", "It is very far.", "It is near.", "Go straight on.", "Excuse me, where is the station?"), pick(k, "Go straight on.", "It is very far.", "It is near.", "Turn left.", "It is very far.", "Go straight on."), pick(k, "It is very far.", "Go straight on.", "Go straight on.", "Go straight on.", "It is near.", "It is very far.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Where is the beach?", "Turn left.", "Go straight on.", "It is near.", "It is very far.", "Excuse me, where is the station?")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

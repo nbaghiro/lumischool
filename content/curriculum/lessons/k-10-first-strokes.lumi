@@ -1,0 +1,50 @@
+lesson k-first-strokes v=1 format=teach grade=0 unit=2 subject=writing levels=[easy, medium, hard] {
+  title "First strokes on the lines"
+  goal "Start a stroke at the top, pull it down or round to the line, and tell a tall letter from a small one."
+
+  look {
+    scene 30x8 {
+      handwriting rules show="l" rows=1 trace=3 width=26 at=canvas(1, 1)
+    }
+    say """
+      These are handwriting lines. Letters sit on the bottom line. A small letter reaches the dotted
+      line, and a tall letter like l goes all the way to the top. Every stroke starts at the top:
+      put the pencil on the top line and pull it straight down.
+      """
+  }
+  do {
+    show k.trace-down x="l"
+    level easy {
+      worked k.first-move x="l" level=medium
+    }
+    practice k.first-move count=2 seed=2
+    show k.trace-round x="c"
+    practice k.tall-or-small count=3 seed=3 easy-count=2
+    show k.my-name
+  }
+  try stars=2 {
+    show k.tail-below k=0 hard-k=2
+  }
+  try stars=3 {
+    show k.count-strokes x="o" easy-x="l" hard-x="t"
+  }
+  remember {
+    say "Start at the top. Sit the letter on the line."
+  }
+
+  grown-ups """
+    The tracing and the name are for you to look at, not the machine: the answer sheet says what
+    to look for. Watch where the pencil starts rather than how neat the letter is, since the start
+    is what makes writing quick later. A pencil held near the point between the thumb and first
+    finger, resting on the middle finger, is what to aim for; chunky crayons help small hands. If
+    the child is stuck, draw big strokes in the air or in sand first. Off the page, draw rain
+    falling down and snails curling round on a big sheet of paper. England, Reception, ELG Fine
+    Motor Skills: "Hold a pencil effectively in preparation for fluent writing".
+    """
+  level easy {
+    grown-ups "At this level l is looked at in the teacher's pen first, the letters to judge are l, o, h and a, and the three-star's letter is l, one stroke."
+  }
+  level hard {
+    grown-ups "At this level the letters to judge include t, which is only a little taller than a small letter, the tails are p and j, and the three-star's t takes two strokes."
+  }
+}

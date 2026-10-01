@@ -1,0 +1,22 @@
+# Non-routine: a count going up, a count going down, and two amounts put together.
+item language.one-to-five-puzzle v=1 stars=3 skills=[language.numbers, reasoning.language] {
+  title "What comes next?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"[[num.one|cap]], [[num.two]], [[num.three]]. What comes next?\", \"[[num.five|cap]], [[num.four]], [[num.three]]. What comes next?\", \"Leo has [[num.two]] apples and Ana has [[num.three]]. How many are there together?\")}" width=32
+      choice pick options=[pick(k, "[[num.two]]", "[[num.two]]", "[[num.four]]"), pick(k, "[[num.four]]", "[[num.four]]", "[[num.five]]"), pick(k, "[[num.five]]", "[[num.one]]", "[[num.three]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[num.four]]", "[[num.two]]", "[[num.five]]")
+  feedback {
+    when (pick == pick(k, "[[num.five]]", "[[num.four]]", "[[num.three]]")) {
+      say "{pick(k, \"[[num.five|cap]] is two steps on. Which number is one step after [[num.three]]?\", \"This count goes down. What comes one before [[num.three]]?\", \"[[num.three|cap]] is only Ana's. Count on from [[num.three]]: two more.\")}"
+    }
+  }
+  hint "Say the numbers in order out loud."
+  hint "Is the count going up or going down?"
+}

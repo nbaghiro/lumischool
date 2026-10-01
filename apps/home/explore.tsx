@@ -20,12 +20,13 @@ import {
     Show,
     type JSX,
 } from "solid-js";
-import type { LessonFacts, Level } from "../../engine/pack";
+import { gradeName, type LessonFacts, type Level } from "../../engine/pack";
 import type { Scene } from "../../engine/scene";
 import * as api from "../../engine/ui/api";
 import { onThisComputer } from "../../engine/ui/device";
 import { failureText } from "../../engine/ui/failure";
 import { Button, Check, Search } from "../../engine/ui/form";
+import { Seg } from "../../engine/ui/fields";
 import { LessonSheet } from "../../engine/ui/lesson";
 import { useLook } from "../../engine/ui/page";
 import { Waiting } from "../../engine/ui/waiting";
@@ -41,10 +42,11 @@ import {
     found,
     searchOf,
     shelfPage,
+    variantOf,
     type Filters,
     type Shelf,
 } from "../../school/catalogue";
-import { gradeName } from "../../school/family/names";
+import { variantName } from "../../school/family/names";
 import { subjectFacts } from "../../school/tracks";
 import type { PackView } from "../../server/api";
 import {
@@ -128,36 +130,6 @@ function NotLoaded(props: { failure: Failure; again: () => void }): JSX.Element 
 
 const plural = (n: number, one: string): string => `${n} ${one}${n === 1 ? "" : "s"}`;
 
-/** A row of choices, one at a time, each a button at least 44 pixels high. */
-function Seg<V extends string | number | null>(props: {
-    legend: string;
-    /** The legend is for a screen reader only, where a heading above already says it. */
-    quiet?: boolean;
-    name: string;
-    options: readonly { value: V; label: string }[];
-    value: V;
-    onChange: (v: V) => void;
-}): JSX.Element {
-    return (
-        <fieldset class="explore-seg">
-            <legend classList={{ sr: !!props.quiet }}>{props.legend}</legend>
-            <For each={props.options}>
-                {(o) => (
-                    <label class="explore-seg-option">
-                        <input
-                            type="radio"
-                            name={props.name}
-                            checked={o.value === props.value}
-                            onChange={() => props.onChange(o.value)}
-                        />
-                        <span>{o.label}</span>
-                    </label>
-                )}
-            </For>
-        </fieldset>
-    );
-}
-
 /** The catalogue: every lesson, narrowed by grade, subject and words, set out by grade and subject. */
 export function Explore(): JSX.Element {
     pageLook(useLook());
@@ -192,10 +164,26 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
     const grades = [...new Set(lessons.map((l) => l.grade))].sort((a, b) => a - b);
     const subjects = subjectsOf(lessons);
     const shelves = shelvesOf(lessons, subjects);
+    // a language's or a country's lessons, which a child is shown only once it is chosen for them
+    const variants = [...new Set(lessons.flatMap((l) => variantOf(l) ?? []))];
+    /** The versions a subject's lessons come in: the countries of history, the languages of language. */
+    const versionsOf = (subject: string | null): string[] =>
+        subject === null
+            ? []
+            : [
+                  ...new Set(
+                      lessons.flatMap((l) => (l.subject === subject ? (variantOf(l) ?? []) : [])),
+                  ),
+              ];
+    // an address naming a version without its subject keeps no filter the page would not show
+    const fromAddress = filtersFrom(location.search, subjects, grades, variants);
     const [filters, setFilters] = createSignal<Filters>(
-        filtersFrom(location.search, subjects, grades),
+        versionsOf(fromAddress.subject).includes(fromAddress.variant ?? "")
+            ? fromAddress
+            : { ...fromAddress, variant: null },
     );
     const [words, setWords] = createSignal(filters().words);
+    const versionsHere = createMemo(() => versionsOf(filters().subject));
     const matched = createMemo(() => found(lessons, filters()));
     /** How many lessons match on each shelf, keyed `grade subject`, and in each grade, keyed `grade`. */
     const counts = createMemo(() => {
@@ -211,12 +199,21 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
     // a grade a parent has closed; narrowing reopens one that has matches, so nothing is hidden by a
     // filter and a fold at once
     const [closed, setClosed] = createSignal<ReadonlySet<number>>(new Set());
+    /** The subjects a parent has folded inside an open grade, keyed `grade subject`. */
+    const [folded, setFolded] = createSignal<ReadonlySet<string>>(new Set());
     const change = (f: Partial<Filters>): void => {
         const next = { ...filters(), ...f };
         setFilters(next);
         setClosed((was) => {
             const open = new Set(was);
             for (const shelf of shelves) if (count(shelf.grade)) open.delete(shelf.grade);
+            return open;
+        });
+        setFolded((was) => {
+            const open = new Set(was);
+            for (const shelf of shelves)
+                for (const s of shelf.subjects)
+                    if (count(shelf.grade, s.subject)) open.delete(`${shelf.grade} ${s.subject}`);
             return open;
         });
         lastSearch = searchOf(next);
@@ -364,7 +361,7 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
     return (
         <div class="explore">
             <Show when={noSuch()}>
-                <Postcard note kicker="Explore" title="There is no such lesson">
+                <Postcard note kicker="Lessons" title="There is no such lesson">
                     <p class="note">
                         The address may be from an older set of lessons. Every lesson the family has
                         is below.
@@ -372,21 +369,6 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
                 </Postcard>
             </Show>
             <Postcard head focus={false} kicker="The lessons as written" title="Every lesson">
-                {/* one set of chips: open beside the name at a desk, behind Filter on a phone */}
-                <details class="explore-row-filter" open={!narrow()}>
-                    <summary>Filter</summary>
-                    <Seg
-                        legend="Subject"
-                        name="subject"
-                        quiet
-                        options={[
-                            { value: null, label: "Every subject" },
-                            ...subjects.map((s) => ({ value: s, label: subjectFacts(s).title })),
-                        ]}
-                        value={filters().subject}
-                        onChange={(subject) => change({ subject })}
-                    />
-                </details>
                 <Search
                     label="Search the titles"
                     placeholder="making ten, magnets, a story"
@@ -394,9 +376,50 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
                     onInput={typed}
                     found={foundLine(matched().length, lessons.length)}
                 />
+                <div class="explore-tags">
+                    <Seg
+                        legend="Subject"
+                        name="subject"
+                        quiet
+                        options={[
+                            { value: null, label: "All" },
+                            ...subjects.map((s) => ({ value: s, label: subjectFacts(s).title })),
+                        ]}
+                        value={filters().subject}
+                        onChange={(subject) => {
+                            const kept = versionsOf(subject).includes(filters().variant ?? "");
+                            change({ subject, variant: kept ? filters().variant : null });
+                        }}
+                    />
+                    {/* a subject's versions, only once there are two to choose between: a quiet line
+                        under the subjects, where pressing the chosen one again shows them all */}
+                    <Show when={versionsHere().length > 1}>
+                        <fieldset class="explore-versions">
+                            <legend class="sr">
+                                {filters().subject === "language" ? "Language" : "Country"}
+                            </legend>
+                            <span class="kicker" aria-hidden="true">
+                                {filters().subject === "language" ? "Language" : "Country"}
+                            </span>
+                            <For each={versionsHere()}>
+                                {(v) => (
+                                    <button
+                                        type="button"
+                                        aria-pressed={filters().variant === v}
+                                        onClick={() =>
+                                            change({ variant: filters().variant === v ? null : v })
+                                        }
+                                    >
+                                        {variantName(v)}
+                                    </button>
+                                )}
+                            </For>
+                        </fieldset>
+                    </Show>
+                </div>
             </Postcard>
             <Show when={!matched().length}>
-                <Postcard note kicker="Explore" title="Nothing found">
+                <Postcard note kicker="Lessons" title="Nothing found">
                     <p class="note">{searchedLine(filters())}</p>
                     <div class="explore-widen">
                         <Show when={filters().words.trim()}>
@@ -412,6 +435,13 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
                         <Show when={filters().grade !== null}>
                             <Button second onClick={() => widen({ grade: null })}>
                                 Every grade
+                            </Button>
+                        </Show>
+                        <Show when={filters().variant !== null}>
+                            <Button second onClick={() => widen({ variant: null })}>
+                                {filters().subject === "language"
+                                    ? "Every language"
+                                    : "Every country"}
                             </Button>
                         </Show>
                     </div>
@@ -458,6 +488,15 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
                                             filters={filters}
                                             matches={count(shelf.grade, s.subject)}
                                             of={s.lessons.length}
+                                            shown={!folded().has(`${shelf.grade} ${s.subject}`)}
+                                            fold={() =>
+                                                setFolded((was) => {
+                                                    const next = new Set(was);
+                                                    const k = `${shelf.grade} ${s.subject}`;
+                                                    if (!next.delete(k)) next.add(k);
+                                                    return next;
+                                                })
+                                            }
                                             digest={props.pack.pack}
                                             open={look}
                                         />
@@ -532,6 +571,9 @@ function ShelfList(props: {
     /** How many of the shelf's lessons the filters let through, and how many it holds. */
     matches: number;
     of: number;
+    /** False while the parent has folded this subject away. */
+    shown: boolean;
+    fold: () => void;
     digest: string;
     open: (lesson: string) => void;
 }): JSX.Element {
@@ -548,32 +590,38 @@ function ShelfList(props: {
             style={{ "--m": `var(--${subjectFacts(props.shelf.subject).marker})` }}
         >
             <h3>
-                {title}
-                <span class="explore-subject-count">
-                    {shelfCount(props.matches, props.of, !!props.filters().words.trim())}
-                </span>
+                <button type="button" aria-expanded={props.shown} onClick={() => props.fold()}>
+                    {title}
+                    <span class="explore-subject-count">
+                        {shelfCount(props.matches, props.of, !!props.filters().words.trim())}
+                    </span>
+                    <span class="explore-fold" aria-hidden="true" />
+                </button>
             </h3>
-            <ul class="explore-tiles" onFocusIn={readOnLastFocus(paged)}>
-                <For each={paged.state().items}>
-                    {(l) => (
-                        <li>
-                            <Tile
-                                lesson={l}
-                                digest={props.digest}
-                                warm={warmDrawer}
-                                open={() => props.open(l.id)}
-                            />
-                        </li>
-                    )}
-                </For>
-            </ul>
-            <ListEnd
-                paged={paged}
-                arrived={(n) =>
-                    `${plural(n, "more lesson")} in ${gradeName(props.shelf.grade)} ${title}`
-                }
-                local={local}
-            />
+            {/* a folded subject reads no more pages, since its end is not on the page to come near */}
+            <Show when={props.shown}>
+                <ul class="explore-tiles" onFocusIn={readOnLastFocus(paged)}>
+                    <For each={paged.state().items}>
+                        {(l) => (
+                            <li>
+                                <Tile
+                                    lesson={l}
+                                    digest={props.digest}
+                                    warm={warmDrawer}
+                                    open={() => props.open(l.id)}
+                                />
+                            </li>
+                        )}
+                    </For>
+                </ul>
+                <ListEnd
+                    paged={paged}
+                    arrived={(n) =>
+                        `${plural(n, "more lesson")} in ${gradeName(props.shelf.grade)} ${title}`
+                    }
+                    local={local}
+                />
+            </Show>
         </div>
     );
 }
@@ -588,7 +636,12 @@ function Tile(props: {
     open: () => void;
 }): JSX.Element {
     const l = props.lesson;
-    const sub = [FORMAT_WORDS[l.format] ?? l.format, l.unit === null ? "" : `Unit ${l.unit}`]
+    const tag = variantOf(l);
+    const sub = [
+        FORMAT_WORDS[l.format] ?? l.format,
+        l.unit === null ? "" : `Unit ${l.unit}`,
+        tag === null ? "" : variantName(tag),
+    ]
         .filter(Boolean)
         .join(" · ");
     const draw = async (host: HTMLElement): Promise<void> => {

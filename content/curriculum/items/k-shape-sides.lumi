@@ -1,0 +1,21 @@
+item k.shape-sides v=1 skills=[shapes.flat, counting.to-five] {
+  title "Count the sides"
+  difficulty (if kind == "triangle" then 0 else if kind == "hexagon" then 2 else 1)
+  let kind={"triangle", "square", "hexagon"}
+  roles tri=triangle squ=square hex=hexagon
+  level easy {
+    let kind={"triangle", "square"}
+  }
+  level hard {
+    let kind={"square", "hexagon"}
+  }
+
+  scene 22x13 {
+    pattern row unit=[squ, hex, tri] count=3 missing=0 at=canvas(1, 1)
+    text ask "How many straight sides does the {kind} have?" narrate width=20 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if kind == "triangle" then 3 else if kind == "hexagon" then 6 else 4)
+  hint "Put a finger on one corner. Go round the shape and count each side once."
+}

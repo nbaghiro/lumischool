@@ -88,6 +88,11 @@ test("every grade of the run has exactly nine maths units in the corpus, so exac
         });
     for (const [grade, worlds] of Object.entries(DEFAULT_YEARS)) {
         const year = yearOf(lessons, Number(grade), "", "2026-08-31");
+        // the kindergarten year is the garden's alone, whatever units its lessons carry
+        if (worlds.length === 1) {
+            assert.equal(termsIn(year), 1, `grade ${grade} is one world's year`);
+            continue;
+        }
         assert.deepEqual(
             year.units.map((u) => u.n),
             [1, 2, 3, 4, 5, 6, 7, 8, 9],

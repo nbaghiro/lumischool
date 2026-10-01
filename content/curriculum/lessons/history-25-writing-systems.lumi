@@ -1,0 +1,67 @@
+# Dates from engine/notation/chronicle.ts: the Phoenician alphabet about 1050 BC, the Greek about
+# 800 BC, kana in the 800s, Cyrillic about 900, Hangul 1443 to 1446 (kana and Cyrillic recalled).
+lesson history-writing-systems v=1 format=teach grade=4 unit=7 subject=history levels=[easy, medium, hard] {
+  title "Alphabets, characters and kana"
+  goal "Tell an alphabet from a syllabary and from characters, and put the world's scripts in the order they were made."
+
+  look {
+    scene 36x9 {
+      timeline line from=-1500 to=2000 step=500 years=[-1250, -1050, 900, 1443] labels=["Oracle bone", "Phoenician alphabet", "Cyrillic alphabet", "Hangul"] at=canvas(0, 0)
+    }
+    say """
+      People write in different ways. Chinese characters, which grew from the writing on Shang oracle
+      bones, have a sign for each word or part of a word, so there are thousands. An alphabet has a
+      letter for each sound: the Phoenicians made one about 1050 BC, the Greeks built theirs from it,
+      and Latin and Cyrillic letters grew from the Greek. Japanese kana have a sign for each
+      syllable, and in Korea King Sejong's Hangul was published in 1446.
+      """
+  }
+  do {
+    level easy {
+      worked history.script-kind k=0
+    }
+    show history.script-kind k=2 easy-k=1 hard-k=4
+    show history.script-order k=2 easy-k=0 hard-k=4
+    show history.letters-count k=2 easy-k=0 hard-k=4
+    show history.alphabet-family k=2 easy-k=0 hard-k=4
+    show history.script-kind k=3 easy-k=2 hard-k=5
+    show history.script-order k=3 easy-k=1 hard-k=5
+    show history.letters-count k=3 easy-k=1 hard-k=5
+    show history.alphabet-family k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.script-order k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.why-alphabet k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.name-in-script
+  }
+  remember {
+    say "An alphabet has a letter for each sound, kana a sign for each syllable, and Chinese characters a sign for each word or part of one."
+  }
+
+  grown-ups """
+    The idea is that writing was invented more than once and in different ways, and that scripts
+    grow from one another like a family. The way in names what the signs of English stand for; the
+    core tells the three kinds of script apart, orders scripts from the oldest, compares how many
+    signs each uses, and traces the alphabet's family from Phoenician to Greek to Latin and
+    Cyrillic. The wrong idea to watch for is that one kind of writing is better: each suits its
+    language, and Japanese uses characters and kana together. If the child is stuck, count the
+    letters of the English alphabet aloud, then think what thousands of signs would mean. The
+    three-star task is for you to mark: the child's name in another script. England's key stage 2
+    names "the achievements of the earliest civilizations" and "Ancient Greece" and its influence;
+    Russia's history programme for grade five names «Финикийский алфавит» among the achievements
+    of the ancient world.
+    Japan's 社会 takes up history only through Japan's own story, in grade six
+    (「我が国の歴史上の主な事象について，人物の働きや代表的な文化遺産を中心に」, the course of study as read in its 2008 edition), so
+    this lesson has no line of its own there; its timeline and source skills serve that grade.
+    """
+  level easy {
+    grown-ups "At this level a worked example says English has a letter for each sound, the scripts to order are far apart, the letters are compared by taking away, and the family questions ask where Greek and English letters came from."
+  }
+  level hard {
+    grown-ups "At this level the scripts are the Greek alphabet and Hangul, the scripts to order are fully muddled, the letters are added across three alphabets, and the family questions ask about the word alphabet and the oldest script."
+  }
+}

@@ -1,0 +1,21 @@
+item k.big-shape-first v=1 skills=[art.drawing, art.shape] {
+  title "Big shapes first"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let big={pick(k, "the square for the house", "the circle for the face", "the rectangle for the bus")}
+  let small={pick(k, "the little window", "the eyes", "the wheels")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 28x14 {
+    text ask "{pick(k, \"You draw a house.\", \"You draw a face.\", \"You draw a bus.\")} What do you draw first?" narrate width=26 at=canvas(1, 1)
+    choice pick options=[small, big] stack=column below=ask gap=1
+  }
+
+  answer pick=big
+  hint "Which one do the other parts sit on or inside?"
+}

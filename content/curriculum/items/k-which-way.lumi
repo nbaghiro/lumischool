@@ -1,0 +1,21 @@
+item k.which-way v=1 skills=[coding.directions] {
+  title "Which way to the flag?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let dir={pick(k, "right", "down", "left", "up")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 28x17 {
+    maze g cols=3 rows=3 col=2 row=2 flag=[pick(k, 3, 2, 1, 2), pick(k, 2, 3, 2, 1)] trail=none at=canvas(1, 1)
+    text ask "Which way must the robot go to reach the flag?" narrate width=22 below=g gap=1
+    choice pick options=["right", "down", "left", "up"] stack=row below=ask gap=1
+  }
+
+  answer pick=dir
+  hint "Put a finger on the robot. Slide it to the flag. Which way did your finger go?"
+}

@@ -1,0 +1,30 @@
+# The stars are spread out and the apples bunched, so the longer row is not the one with more:
+# the question is whether the child counts or trusts the length.
+item k.longer-row v=1 stars=2 skills=[counting.compare, reasoning.explain] {
+  title "Is the longer row more?"
+  difficulty k
+  let k=0..1
+  let n={pick(k, 4, 5)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x22 {
+    props top count=n prop=apple at=canvas(1, 1)
+    row bottom below=top gap=1 space=2 align=centre {
+      props s1 count=1 prop=star
+      props s2 count=1 prop=star
+      props s3 count=1 prop=star
+      props s4 count=1 prop=star
+      props s5 count=(n - 4) prop=star
+    }
+    text ask "Ben says there are more stars, because the row of stars is longer. Is he right?" narrate width=28 below=bottom gap=1
+    choice pick options=["Yes, the longer row has more.", "No, they are the same."] stack=column below=ask gap=1
+  }
+
+  answer pick="No, they are the same."
+  hint "Count the apples. Now count the stars."
+}

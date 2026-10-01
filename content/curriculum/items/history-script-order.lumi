@@ -1,0 +1,21 @@
+# Writing systems numbered from the earliest, from the record: oracle bones about 1250 BC, the
+# Phoenician alphabet about 1050 BC, the Greek alphabet about 800 BC, kana in the 800s, Cyrillic
+# about 900, Hangul 1443 to 1446.
+item history.script-order v=1 skills=[history.writing, history.order] {
+  title "Scripts in order"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Oracle bone", "Phoenician alphabet", "Hangul", "Kana", "Hangul", "Greek alphabet")}
+  let b={pick(k, "Greek alphabet", "Cyrillic alphabet", "Greek alphabet", "Hangul", "Phoenician alphabet", "Hangul")}
+  let c={pick(k, "Hangul", "Hangul", "Oracle bone", "Greek alphabet", "Cyrillic alphabet", "Kana")}
+
+  scene 36x22 {
+    timeline line from=-1500 to=2000 step=500 years=[] labels=[] at=canvas(0, 0)
+    text ask "Number these 1, 2, 3, from the earliest to be written." narrate width=34 below=line gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Which of the three is BC?"
+  hint "Hangul was made in Korea in the 1400s, much later than the others."
+}

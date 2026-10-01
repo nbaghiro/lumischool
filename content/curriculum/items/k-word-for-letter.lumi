@@ -1,0 +1,24 @@
+item k.word-for-letter v=1 skills=[reading.phonics, reading.letters] {
+  title "Which word starts with it?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let letter={pick(k, "m", "s", "t", "r", "l", "w")}
+  let right={pick(k, "moon", "sock", "tent", "rain", "lamp", "wind")}
+  let o1={pick(k, "sun", "moon", "door", "wet", "red", "vet")}
+  let o2={pick(k, "nest", "zoo", "cake", "log", "tap", "rug")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 26x17 {
+    lettercards card letters=[letter] at=canvas(1, 1)
+    text ask "Say the sound on the card. Listen to the words. Which one starts with that sound?" narrate width=24 below=card gap=1
+    choice pick options=[o1, right, o2] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Say the card's sound. Now say each word and listen to how it starts."
+}

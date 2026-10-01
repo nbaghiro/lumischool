@@ -1,0 +1,23 @@
+# A reason: comparing number words without the digits.
+item language.six-to-ten-why v=1 stars=2 skills=[language.numbers, reasoning.language] {
+  title "Which is right?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      tenframe frame color=mint count=pick(k, 7, 9, 6)
+      text ask "{pick(k, \"Leo says there are [[num.six]] in the frame. Is he right?\", \"Ana says [[num.nine]] is one less than [[num.ten]]. Is she right?\", \"Leo says [[num.seven]] comes before [[num.six]], because it is longer. Is he right?\")}" width=32
+      choice pick options=[pick(k, "No, there are [[num.seven]]: a full row and two more.", "Yes: nine and one more is ten.", "No: [[num.six]] is six, and six comes first."), pick(k, "Yes, [[num.six]] is right.", "No: [[num.nine]] is one more than [[num.ten]].", "Yes: longer words come first."), pick(k, "No, there are [[num.eight]].", "No: [[num.nine]] and [[num.ten]] are the same.", "Yes: [[num.seven]] is six.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "No, there are [[num.seven]]: a full row and two more.", "Yes: nine and one more is ten.", "No: [[num.six]] is six, and six comes first.")
+  feedback {
+    when (pick == pick(k, "Yes, [[num.six]] is right.", "No: [[num.nine]] is one more than [[num.ten]].", "Yes: longer words come first.")) {
+      say "{pick(k, \"Count the bottom row: how many past [[num.five]]?\", \"[[num.ten|cap]] is ten, the full frame. Is [[num.nine]] more or less?\", \"The length of a word says nothing about its number. Which is six?\")}"
+    }
+  }
+  hint "Say the number in English first."
+  hint "Count on from [[num.five]]."
+}

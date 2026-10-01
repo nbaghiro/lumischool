@@ -1,0 +1,68 @@
+# Family words read off Ana's family tree, so the question is who each person is to Ana.
+lesson language-my-family v=1 format=teach grade=2 unit=2 subject=language levels=[easy, medium, hard] {
+  title "[[family.my-family|cap]]"
+  goal "Name the people in a family in [[language.name]] and say who is who on a family tree."
+
+  look {
+    scene 34x16 {
+      column all at=canvas(1, 1) space=1 align=start {
+        familytree tree names=["Rosa", "Pepe", "Carmen", "Luis", "Marta", "Juan", "Ana"] years=[0, 0, 0, 0, 0, 0, 0] blank=-1
+      }
+    }
+    say """
+      This is Ana's family. Marta is [[family.the-mother]], her mother, and Juan is
+      [[family.the-father]], her father. Rosa and Pepe are Marta's parents, so they are Ana's
+      [[family.the-grandmother]] and [[family.the-grandfather]]. Carmen and Luis are Juan's parents,
+      her other grandparents. To Rosa, Ana is [[family.the-granddaughter]].
+      """
+  }
+  do {
+    level easy {
+      worked language.my-family-name k=4
+    }
+    show language.my-family-name k=3 easy-k=0 hard-k=6
+    show language.my-family-meaning k=3 easy-k=1 hard-k=4
+    show language.my-family-write k=2 easy-k=1 hard-k=4
+    show language.my-family-name k=5 easy-k=2 hard-k=7
+    show language.my-family-match k=2 easy-k=0 hard-k=3
+    show language.my-family-write k=5 easy-k=3 hard-k=3
+    show language.my-family-listen k=3 easy-k=0 hard-k=5
+    show language.my-family-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.my-family-write k=2
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-my-family-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.my-family-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[family.the-mother|cap]], [[family.the-father]], [[family.the-grandmother]], [[family.the-grandfather]], [[family.the-sister]], [[family.the-brother]]."
+  }
+
+  grown-ups """
+    The questions are asked about Ana's family tree, so the child works out who someone is to Ana
+    before naming the word, which is harder than naming a picture. The wrong idea to watch for is
+    reading the tree from the wrong person: Rosa is Marta's mother but Ana's grandmother. Ask "who
+    is she to Ana?" and trace the line with a finger. The listening question is a dictation: read
+    the sentence aloud from this sheet, where it prints as Read aloud, slowly and twice, or let the
+    device play it. It is marked word by word, and a missing accent counts. If the child is stuck,
+    draw your own family tree and name each person. Off the page, look at a family photo and say who
+    each person is. It meets England's key stage 2 languages programme (years 3 to 6, statutory from
+    age 7): "describe people, places, things and actions orally and in writing"; Japan's grades 3
+    and 4 foreign language activities: "Talk about themselves while showing the actual objects, etc.
+    in front of people by using simple words and phrases and basic expressions"; and CEFR A1, "Can
+    ask and answer questions about personal details such as where he/she lives, people he/she knows
+    and things he/she has". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[family.the-parents]] is worked first in the teacher's pen, the words to name are [[family.the-mother]] and [[family.the-grandmother]] and the words to write are [[family.father]] and [[family.grandfather]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[family.the-grandparents]] and [[family.the-granddaughter]] and the words to write are [[family.daughter]], [[family.grandfather]] and [[family.grandmother]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

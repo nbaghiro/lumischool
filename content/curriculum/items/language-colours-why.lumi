@@ -1,0 +1,22 @@
+# A reason: the colour a thing always has, not the colour of a picture.
+item language.colours-why v=1 stars=2 skills=[language.colours, reasoning.language] {
+  title "Which colour?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo says the sun is [[colour.blue]]. Which word should he use?\", \"Ana says grass is [[colour.yellow]]. Which word should she use, and why?\", \"Which thing is always [[colour.white]]?\")}" width=32
+      choice pick options=[pick(k, "[[colour.yellow]]", "[[colour.green]], because grass is green", "snow"), pick(k, "[[colour.green]]", "[[colour.red]], because grass is red", "grass"), pick(k, "[[colour.black]]", "[[colour.blue]], because the sky is blue", "the sea")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[colour.yellow]]", "[[colour.green]], because grass is green", "snow")
+  feedback {
+    when (pick == pick(k, "[[colour.green]]", "[[colour.blue]], because the sky is blue", "the sea")) {
+      say "{pick(k, \"[[colour.green|cap]] is green. What colour is the sun?\", \"The sky is [[colour.blue]]. What colour is grass?\", \"The sea is [[colour.blue]]. [[colour.white|cap]] is white.\")}"
+    }
+  }
+  hint "Say the colour in English first."
+  hint "Which word on the tray is that colour?"
+}

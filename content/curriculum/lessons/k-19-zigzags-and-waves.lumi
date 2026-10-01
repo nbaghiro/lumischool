@@ -1,0 +1,49 @@
+lesson k-zigzags-and-waves v=1 format=teach grade=0 unit=1 subject=writing levels=[easy, medium, hard] {
+  title "Zigzags and waves"
+  goal "Draw straight, zigzag and wavy lines from left to right, and find those lines inside letters."
+
+  look {
+    scene 26x17 {
+      lines row kinds=["straight", "zigzag", "wavy"] colour=blue at=canvas(1, 1)
+    }
+    say """
+      A straight line, a zigzag with sharp points, and a wavy line that goes up and down smoothly.
+      Draw each one from left to right, the way we write. These lines are hiding inside letters: w
+      is a zigzag, and s is a wave.
+      """
+  }
+  do {
+    show k.trace-a-line x="zigzag"
+    level easy {
+      worked k.line-kind x="straight" level=medium
+    }
+    practice k.line-kind count=2 seed=2
+    practice k.which-line count=2 seed=3
+    show k.trace-a-line x="wavy"
+    practice k.line-in-letter count=2 seed=4 easy-count=1
+  }
+  try stars=2 {
+    show k.zigzag-letter k=0 hard-k=1
+  }
+  try stars=3 {
+    show k.draw-waves
+  }
+  remember {
+    say "Draw from left to right. Zigzags have points, and waves are smooth."
+  }
+
+  grown-ups """
+    These are the strokes that letters are built from, and the traced lines are for you to look
+    at: watch that the line goes from left to right and keeps its shape. Big movements come before
+    small ones, so if the pencil wobbles, draw the lines in the air with a whole arm first, then on
+    a big sheet with a crayon. Off the page, draw zigzag mountains and wavy seas in chalk or with a
+    stick in sand. England, Reception, ELG Fine Motor Skills (recalled, not fetched): "Use a range
+    of small tools, including scissors, paint brushes and cutlery".
+    """
+  level easy {
+    grown-ups "At this level a straight line is named in the teacher's pen first, the lines to find are the zigzag and the straight one, and the letters are l and w."
+  }
+  level hard {
+    grown-ups "At this level the lines to find are the wave and the spiral, the letters are z and s, and the two-star letter is v."
+  }
+}

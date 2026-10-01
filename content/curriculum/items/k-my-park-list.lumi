@@ -1,0 +1,10 @@
+item k.my-park-list v=1 skills=[writing.lists, writing.letters] {
+  title "My own list"
+
+  scene 30x16 {
+    text q "Write a list of three things to take to the park, one on each line. Draw a little picture beside each." narrate width=28 at=canvas(1, 1)
+    writinglines lines lines=3 width=24 below=q gap=1
+  }
+
+  check writing.by-eye look-for="Three things written one to a line, down the page, each with at least its first sound written and a picture that shows it." notice=["one thing on each line", "first sounds written", "a picture for each"] ask="Which thing on your list is most important?"
+}

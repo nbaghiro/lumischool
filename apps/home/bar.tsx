@@ -33,7 +33,8 @@ import { Corner, Postcard, Stamp } from "../../engine/ui/postcard";
 import { go, Link, path } from "../../engine/ui/router";
 import { Say } from "../../engine/ui/say";
 import { isParent } from "../../school/family/access";
-import { familyName, gradeName } from "../../school/family/names";
+import { familyName } from "../../school/family/names";
+import { gradeName } from "../../engine/pack";
 import { KID_FIELDS, NOTICE, NOTICE_VERSION } from "../../school/family/privacy";
 import { GROWNUPS, type GrownupKind } from "../../engine/parts/apps/grownup";
 import type { FamilyView, Me } from "../../server/api";
@@ -47,8 +48,8 @@ const PLACES: readonly { href: string; long: string; short: string; at: (p: stri
         { href: "/", long: "Home", short: "Home", at: (p) => p === "/" },
         {
             href: "/explore",
-            long: "Explore",
-            short: "Explore",
+            long: "Lessons",
+            short: "Lessons",
             at: (p) => p === "/explore" || p.startsWith("/explore/"),
         },
         { href: "/map", long: "Map", short: "Map", at: (p) => p === "/map" },

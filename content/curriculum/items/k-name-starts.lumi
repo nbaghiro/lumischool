@@ -1,0 +1,24 @@
+item k.name-starts v=1 skills=[reading.phonics, reading.letters] {
+  title "The first letter of a name"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let name={pick(k, "Sam", "Ben", "Mia", "Tom", "Leo", "Nina")}
+  let letter={pick(k, "S", "B", "M", "T", "L", "N")}
+  let o1={pick(k, "M", "D", "N", "P", "I", "M")}
+  let o2={pick(k, "Z", "P", "W", "F", "T", "H")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 26x15 {
+    lettercards cards letters=[o1, letter, o2] capitals=true at=canvas(1, 1)
+    text ask "Say {name}. Which letter does the name start with?" narrate width=24 below=cards gap=1
+    choice pick options=[o1, letter, o2] stack=row below=ask gap=1
+  }
+
+  answer pick=letter
+  hint "A name starts with a capital letter. What is the first sound of {name}?"
+}

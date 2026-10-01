@@ -1,0 +1,28 @@
+# London's fire began early on Sunday 2 September 1666 and was out by Thursday 6 September:
+# counting the days it burned, both ends included, on a week starting Sunday.
+item history.fire-days v=1 skills=[history.time-words, time.days] {
+  title "Five days of fire"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 32x9 {
+    days week mark=0 start=6 at=canvas(1, 0)
+    text ask "The fire began on Sunday, the ringed day, and was put out on Thursday. {if k == 0 then \"On how many days did it burn?\" else \"How many nights did it burn?\"}" narrate width=26 below=week gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then 5 else 4)
+  feedback {
+    when (k == 0 and answer == 4) point=week {
+      say "Count Sunday too: it burned on Sunday, and on Thursday it was put out."
+    }
+  }
+  hint "Put a finger on Sunday and count each day to Thursday."
+  hint "{if k == 0 then \"Count both Sunday and Thursday.\" else \"A night comes between one day and the next.\"}"
+}

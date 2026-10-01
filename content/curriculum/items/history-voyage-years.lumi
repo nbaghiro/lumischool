@@ -1,0 +1,20 @@
+# Years between great voyages, from the record.
+item history.voyage-years v=1 skills=[history.voyages, number.difference] {
+  title "How many years between?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let e1={pick(k, "Magellan's fleet sets out", "Dias rounds the Cape", "Columbus crosses the Atlantic", "Zheng He's first voyage", "Zheng He's first voyage", "Zheng He's first voyage")}
+  let y1={pick(k, 1519, 1488, 1492, 1405, 1405, 1405)}
+  let e2={pick(k, "Victoria returns", "Da Gama reaches India", "Victoria returns", "Dias rounds the Cape", "Da Gama reaches India", "Victoria returns")}
+  let y2={pick(k, 1522, 1498, 1522, 1488, 1498, 1522)}
+
+  scene 36x12 {
+    timeline line from=1400 to=1540 step=20 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(0, 0)
+    text ask "How many years after the first was the second?" narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Count on from the first year to the next ten."
+  hint "Then on in tens to the second year."
+}

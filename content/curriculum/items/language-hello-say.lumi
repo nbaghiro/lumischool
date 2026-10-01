@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.hello-say v=1 skills=[language.greetings, language.speaking] {
+  title "Say it to a grown-up"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Say [[greet.hello]] to a grown-up. Then walk away and say [[greet.goodbye]].\", \"Pretend it is morning and say [[greet.good-morning]] to a grown-up. Then pretend it is bedtime and say [[greet.good-night]].\", \"Point at something and ask for it with [[greet.please]]. When you are given it, say [[greet.thank-you]].\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="Each word said for the right moment and sounded the way the grown-ups' line for it gives." notice=["The right word for the moment", "Sounded as the line gives it", "Coming and going kept apart", "Said to the grown-up, not to the page"]
+  hint "Say it once quietly to yourself first."
+  hint "Which moment is it: coming, going, or the time of day?"
+}

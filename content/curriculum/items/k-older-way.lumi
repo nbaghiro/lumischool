@@ -1,0 +1,21 @@
+item k.older-way v=1 skills=[history.transport, history.then-and-now] {
+  title "Which is older?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let old={pick(k, "a horse and cart", "a sailing ship", "a bicycle", "a steam train")}
+  let new={pick(k, "a motor car", "an aeroplane", "an electric car", "a jet plane")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 28x14 {
+    text q "Which way of travelling is older: {new} or {old}?" narrate width=26 at=canvas(1, 1)
+    choice pick options=[new, old] stack=column below=q gap=1
+  }
+
+  answer pick=old
+  hint "Which one did people use before engines, or before electricity?"
+}

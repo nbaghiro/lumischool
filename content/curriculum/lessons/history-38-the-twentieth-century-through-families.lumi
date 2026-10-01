@@ -1,0 +1,70 @@
+# Dates from engine/notation/chronicle.ts: the two world wars (1914 to 1918, 1939 to 1945), British
+# evacuation 1939, Anne Frank's diary 1942 to 1944, the UN 1945, rationing's end in Britain 1954.
+# The ration sums use round numbers made up for them.
+lesson history-the-twentieth-century-through-families v=1 format=teach grade=6 unit=4 subject=history levels=[easy, medium, hard] {
+  title "The twentieth century through families"
+  goal "Put the century's great events in order, and say from diaries and letters what they meant for families at home."
+
+  look {
+    scene 36x12 {
+      row all at=canvas(1, 0) space=2 align=start {
+        houses row count=2 windows=2
+        sourcecard card title="Anne Frank's diary" kind=3 who="Anne Frank, a girl in hiding" when="1942 to 1944" where="Amsterdam" there=1 ask=0
+      }
+    }
+    say """
+      Twice in the twentieth century great wars spread across the world, from 1914 to 1918 and from
+      1939 to 1945. For families at home they meant food shared out by rationing, children sent away
+      from cities, fathers and mothers far away, and letters waited for. Some children kept diaries,
+      like Anne Frank, who wrote while her family hid in Amsterdam. After 1945 the countries of the
+      world set up the United Nations to keep the peace.
+      """
+  }
+  do {
+    level easy {
+      worked history.wartime-home k=0
+    }
+    show history.wartime-home k=2 easy-k=1 hard-k=4
+    show history.c20-order k=2 easy-k=0 hard-k=4
+    show history.ration-sums k=2 easy-k=0 hard-k=4
+    show history.wartime-diary k=0 hard-k=1
+    show history.wartime-home k=3 easy-k=2 hard-k=5
+    show history.c20-order k=3 easy-k=1 hard-k=5
+    show history.ration-sums k=3 easy-k=1 hard-k=5
+    show history.wartime-diary k=1 hard-k=0
+    show history.source-gap k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.c20-order k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.why-diaries k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.letter-home
+  }
+  remember {
+    say "The century's wars reached every home: rationing, children sent away, and letters. Diaries kept at the time let us see it."
+  }
+
+  grown-ups """
+    This lesson touches war, and it is told through homes and children, not battles: rationing,
+    evacuation, letters and a diary. The idea is that great events are lived by ordinary families,
+    and that sources made at the time (a child's diary, letters home) let us see it. The way in
+    asks why food was rationed; the core orders the century's events, shares out a ration, and
+    finds the first-hand source. Anne Frank died in 1945 in a camp; the lesson does not tell that,
+    and you may choose when to. If your family has its own stories of those years, this is a good
+    time for them. The three-star task is for you to mark: a letter home as an evacuated child.
+    England's key stage 2 history allows "a significant turning point in British history, for
+    example ... the Battle of Britain"; Japan's 社会 for grade six reaches the war and the post-war
+    years through the lives of people (「我が国の歴史上の主な事象について，人物の働きや代表的な文化遺産を中心に」,
+    the course of study as read in its 2008 edition); Russia's history programme teaches the
+    twentieth century in its later grades, and families there keep 9 May as a day of memory.
+    """
+  level easy {
+    grown-ups "At this level a worked example says why food was rationed, the events are far apart, the rations are for one week, and the diary is the first card."
+  }
+  level hard {
+    grown-ups "At this level the home-front reasons are about letters and ration books, the events are close together, the rations run to four weeks, the diary is the second card, and the two-star question compares the diary with a history book."
+  }
+}

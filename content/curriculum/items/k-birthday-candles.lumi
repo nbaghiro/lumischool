@@ -1,0 +1,19 @@
+item k.birthday-candles v=1 skills=[history.celebrations, counting.to-ten] {
+  title "Birthday candles"
+  difficulty n
+  let n=3..8
+  level easy {
+    let n=3..5
+  }
+  level hard {
+    let n=6..8
+  }
+
+  scene 26x11 {
+    text q "Mia is {n} today. One candle for each year. How many candles go on her cake?" narrate width=24 at=canvas(1, 1)
+    number-input answer below=q gap=1
+  }
+
+  answer n
+  hint "One candle for every year Mia has been alive."
+}

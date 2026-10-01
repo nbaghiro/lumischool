@@ -1,0 +1,20 @@
+# Life at home in the Second World War, in many countries: why families lived as they did.
+item history.wartime-home v=1 skills=[history.twentieth-century, history.change] {
+  title "Home in wartime"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ask={pick(k, "Why was food rationed, with each person allowed only so much?", "Why did families grow vegetables in their gardens and parks?", "Why were many city children sent to live in the countryside?", "Why did families mend clothes instead of buying new ones?", "Why did children write so many letters home?", "Why did a family keep its ration book safe?")}
+  let right={pick(k, "So there was enough for everyone to share fairly", "To make up for food that could not be brought in", "To keep them safer away from the cities", "Cloth and new clothes were hard to get", "They lived far from their parents", "It showed how much food they were allowed")}
+  let w1={pick(k, "To make people thinner", "Because shops sold no seeds", "Because schools were closed for ever", "Because nobody cared about clothes", "Because telephones were not invented", "Because it was worth a lot of money")}
+  let w2={pick(k, "Because farmers stopped working", "To win prizes for gardens", "Because the countryside had no children", "Because mending was the law", "Because they had nothing else to do", "Because it held their passports")}
+
+  scene 33x25 {
+    houses row count=3 windows=2 at=canvas(1, 0)
+    text ask "{ask}" narrate width=30 below=row gap=1
+    choice pick options=[pick(k, right, w1, w2, right, w1, w2), pick(k, w1, right, right, w2, w2, right), pick(k, w2, w2, w1, w1, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "What was short in wartime, and what was dangerous?"
+  hint "Which answer helps a family get through?"
+}

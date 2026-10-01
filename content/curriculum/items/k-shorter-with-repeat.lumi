@@ -1,0 +1,13 @@
+# A repeat makes a program shorter: the same step written four times is one block with a four.
+item k.shorter-with-repeat v=1 stars=2 skills=[coding.repetition, reasoning.explain] {
+  title "Write it shorter"
+
+  scene 30x22 {
+    blocks long code=["clap", "clap", "clap", "clap"] words=false numbers=false at=canvas(1, 0)
+    text q "This program claps four times, one block each. How could you write it with fewer blocks?" narrate width=28 below=long gap=1
+    choice pick options=["a repeat 4 block with one clap inside", "take out two claps"] stack=column below=q gap=1
+  }
+
+  answer pick="a repeat 4 block with one clap inside"
+  hint "Does taking out claps still clap four times?"
+}

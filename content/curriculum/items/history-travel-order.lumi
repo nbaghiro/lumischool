@@ -1,0 +1,26 @@
+# Four ways of getting about numbered from the first to come, from the dated record.
+item history.travel-order v=1 skills=[history.order, history.transport] {
+  title "Getting about, in order"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "horse and cart", "steam train", "motor car", "aeroplane", "aeroplane", "motor car")}
+  let b={pick(k, "steam train", "horse and cart", "aeroplane", "motor car", "steam train", "hot-air balloon")}
+  let c={pick(k, "motor car", "motor car", "horse and cart", "steam train", "hot-air balloon", "aeroplane")}
+  let d={pick(k, "aeroplane", "aeroplane", "steam train", "horse and cart", "motor car", "steam train")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 32x32 {
+    thenandnow street year=2026 sign=0 things=["horse and cart", "motor car", "aeroplane"] at=canvas(1, 0)
+    text ask "Number these 1 to 4, from the first to come to the newest." narrate width=30 below=street gap=1
+    sequence s items=["{a}", "{b}", "{c}", "{d}"] blanks=[p, q, r, t] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)" t="rank(3)"
+  hint "Which one did people use for thousands of years? That is 1."
+  hint "Trains came before cars, and cars before aeroplanes."
+}

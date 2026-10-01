@@ -1,0 +1,22 @@
+item k.lang-what-it-means v=1 skills=[language.greetings] {
+  title "What does it mean?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let said={pick(k, "[[greet.hello]]", "[[greet.goodbye]]", "[[greet.thank-you]]", "[[greet.please]]")}
+  let means={pick(k, "hello", "goodbye", "thank you", "please")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x20 {
+    comic said who=["girl"] says=[said] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""] at=canvas(1, 1)
+    text ask "The grown-up reads what the girl says. What does it mean?" narrate width=32 below=said gap=1
+    choice pick options=["hello", "goodbye", "thank you", "please"] stack=row below=ask gap=1
+  }
+
+  answer pick=means
+  hint "Say the word aloud. Which moment would someone say it at?"
+}

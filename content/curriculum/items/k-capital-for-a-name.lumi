@@ -1,0 +1,21 @@
+item k.capital-for-a-name v=1 skills=[writing.letters, writing.capitals] {
+  title "A name starts with a capital"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let right={pick(k, "Ada", "Ben", "Sam", "Mia")}
+  let wrong={pick(k, "ada", "ben", "sam", "mia")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 26x12 {
+    text ask "Which is the name {right} written the right way, with a capital letter at the start?" narrate width=24 at=canvas(1, 1)
+    choice pick options=[wrong, right] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Look at the first letter of each. Which one is the big letter?"
+}

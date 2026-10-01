@@ -1,0 +1,10 @@
+item k.lang-say-hello v=1 skills=[language.greetings, language.speaking] {
+  title "Say it to a grown-up"
+
+  scene 30x9 {
+    text ask "Walk up to a grown-up and say [[greet.hello]]. Then walk away and say [[greet.goodbye]]." narrate width=28 at=canvas(1, 1)
+  }
+
+  check reading.recited look-for="[[greet.hello|cap]] said when arriving and [[greet.goodbye]] when leaving, each sounded the way the grown-ups' line gives it." notice=["[[greet.hello]] when coming", "[[greet.goodbye]] when going", "said to the grown-up"]
+  hint "Are you coming or going?"
+}

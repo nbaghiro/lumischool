@@ -1,0 +1,23 @@
+# Picture or situation to the language: [[town.the-beach]], [[town.the-market]], [[town.the-park]], [[town.the-station]], [[town.the-harbour]], [[town.the-square]], [[town.the-library]], [[town.the-museum]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.the-town-name v=1 skills=[language.town] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"You swim in the sea and build sandcastles here.\", \"You buy fruit and fish at stalls here.\", \"You play on the swings and run on the grass here.\", \"You catch a train here.\", \"Boats and the ferry come in here.\", \"A big open space in the middle of town, with a fountain.\", \"You borrow books here.\", \"You look at old things behind glass here.\")}" width=32
+      choice pick options=[pick(k, "[[town.the-library]]", "[[town.the-library]]", "[[town.the-harbour]]", "[[town.the-market]]", "[[town.the-park]]", "[[town.the-harbour]]", "[[town.the-museum]]", "[[town.the-park]]"), pick(k, "[[town.the-beach]]", "[[town.the-market]]", "[[town.the-museum]]", "[[town.the-station]]", "[[town.the-square]]", "[[town.the-square]]", "[[town.the-market]]", "[[town.the-museum]]"), pick(k, "[[town.the-square]]", "[[town.the-park]]", "[[town.the-market]]", "[[town.the-square]]", "[[town.the-harbour]]", "[[town.the-station]]", "[[town.the-station]]", "[[town.the-market]]"), pick(k, "[[town.the-station]]", "[[town.the-museum]]", "[[town.the-park]]", "[[town.the-park]]", "[[town.the-market]]", "[[town.the-beach]]", "[[town.the-library]]", "[[town.the-station]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[town.the-beach]]", "[[town.the-market]]", "[[town.the-park]]", "[[town.the-station]]", "[[town.the-harbour]]", "[[town.the-square]]", "[[town.the-library]]", "[[town.the-museum]]")
+  feedback {
+    when (pick == pick(k, "[[town.the-square]]", "[[town.the-museum]]", "[[town.the-harbour]]", "[[town.the-square]]", "[[town.the-park]]", "[[town.the-beach]]", "[[town.the-museum]]", "[[town.the-market]]")) {
+      say "{pick(k, \"[[town.the-square|cap]] is the square in the middle of town. Where is the sand?\", \"[[town.the-museum|cap]] is the museum. Where are the stalls?\", \"[[town.the-harbour|cap]] is the harbour. Where are the swings?\", \"[[town.the-square|cap]] is the square. Where do trains stop?\", \"[[town.the-park|cap]] is the park. Where do boats tie up?\", \"[[town.the-beach|cap]] is the beach. Where is the fountain?\", \"[[town.the-museum|cap]] shows old things. Where do you borrow books?\", \"[[town.the-market|cap]] is the market. Where are old things behind glass?\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

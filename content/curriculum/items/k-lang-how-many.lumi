@@ -1,0 +1,22 @@
+# The grown-up says a number in the language and the child counts out that many, so the word is
+# heard and shown, never read.
+item k.lang-how-many v=1 skills=[language.numbers, counting.to-five] {
+  title "Count in [[language.name]]"
+  difficulty (if n <= 3 then 0 else 1)
+  let n=1..5
+  level easy {
+    let n=1..3
+  }
+  level hard {
+    let n=3..5
+  }
+
+  scene 36x12 {
+    props row count=n prop=apple at=canvas(1, 1)
+    text q "How many apples? Choose the word the grown-up reads." narrate width=26 below=row gap=1
+    choice pick options=["[[num.one]]", "[[num.two]]", "[[num.three]]", "[[num.four]]", "[[num.five]]"] stack=row below=q gap=1
+  }
+
+  answer pick=pick(n, "none", "[[num.one]]", "[[num.two]]", "[[num.three]]", "[[num.four]]", "[[num.five]]")
+  hint "Count the apples in English first. Which word goes with that number?"
+}

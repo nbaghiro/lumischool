@@ -1,0 +1,17 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.next-to-say v=1 skills=[language.town, language.directions, language.speaking] {
+  title "Where is it?"
+  let k=0..2
+
+  scene 34x30 {
+    column all at=canvas(1, 1) space=1 align=start {
+      townplan plan places=["[[town.the-cafe]]", "[[town.the-shop]]", "[[town.the-park]]", "[[town.the-beach]]", "[[town.the-museum]]", "[[town.the-station]]", "[[town.the-square]]"]
+      text ask "{pick(k, \"Pick a place on the plan and say in [[language.name]] what it is next to and what it is opposite.\", \"A grown-up names a place on the plan; say where it is in [[language.name]] in two ways.\", \"Describe where your home is in [[language.name]]: what is next to it, near it and opposite it.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="A place described with two words for where it is, said the way the lesson says them." notice=["Next to said", "Opposite said", "Between, near or far said", "Each place named"]
+  hint "Look at what is beside it, then across the road."
+  hint "Say it in English first."
+}

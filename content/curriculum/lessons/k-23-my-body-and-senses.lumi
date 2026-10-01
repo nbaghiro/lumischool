@@ -1,0 +1,50 @@
+lesson k-my-body-and-senses v=1 format=teach grade=0 unit=7 subject=nature levels=[easy, medium, hard] {
+  title "My body and my senses"
+  goal "Name the parts of the body we sense with, say which one is used for each sense, and count parts of the body."
+
+  look {
+    scene 22x9 {
+      person ada pose=wave age=child hair=bunches colour=black top=berry at=canvas(1, 1)
+    }
+    say """
+      We find out about the world with our senses. We see with our eyes, hear with our ears, smell
+      with our nose, taste with our tongue and feel with our skin. Our eyes need light: in the dark
+      there is nothing to see by.
+      """
+  }
+  do {
+    level easy {
+      worked k.which-sense k=0 level=medium
+    }
+    practice k.which-sense count=3 seed=2 easy-count=2
+    show k.count-fingers side="right" hard-side="both"
+    practice k.body-count count=2 seed=3
+    show k.see-by-light l=1
+    show k.sense-and-say
+  }
+  try stars=2 {
+    show k.dark-room
+  }
+  try stars=3 {
+    show k.senses-at-once k=1 hard-k=0
+  }
+  remember {
+    say "Eyes see, ears hear, nose smells, tongue tastes, and skin feels."
+  }
+
+  grown-ups """
+    Read each question aloud, and let the child point to the part of their own body. Skin as the
+    sense of touch is the one children forget, since they think of hands. The listening question is
+    for you to hear. If the child is stuck on the dark room, go into a dark cupboard together and
+    see how little you can see. Off the page, play a feely bag game and a smell game with lemon and
+    mint. China, 3-6岁儿童学习与发展指南 (learning and development guide for children aged 3 to 6),
+    科学探究 (recalled, not fetched): "能用多种感官或动作去探索物体" (Explore objects with several
+    senses and movements.)
+    """
+  level easy {
+    grown-ups "At this level smelling is worked in the teacher's pen first, the senses are smell, hearing and sight, one hand is counted, and the three-star cat uses three senses."
+  }
+  level hard {
+    grown-ups "At this level the senses include taste and a smell that warns, both hands are counted, and the three-star apple uses four senses."
+  }
+}

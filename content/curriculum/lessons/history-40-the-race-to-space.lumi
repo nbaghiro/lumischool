@@ -1,0 +1,65 @@
+# Dates from engine/notation/chronicle.ts: Sputnik 4 October 1957, Gagarin 12 April 1961, Tereshkova
+# 16 June 1963, Leonov 18 March 1965, Apollo 11 20 July 1969 (NASA). The Moon's distance is NASA's
+# figure rounded.
+lesson history-the-race-to-space v=1 format=teach grade=6 unit=6 subject=history levels=[easy, medium, hard] {
+  title "The race to space"
+  goal "Put the firsts in space from 1957 to 1969 in order, say who made each, and count the years and days between them."
+
+  look {
+    scene 36x9 {
+      timeline line from=1955 to=1970 step=5 years=[1957, 1961, 1963, 1965, 1969] labels=["First satellite", "First person in space", "First woman in space", "First spacewalk", "Moon landing"] at=canvas(0, 0)
+    }
+    say """
+      In 1957 the Soviet Union sent up Sputnik, the first satellite. In 1961 Yuri Gagarin became the
+      first person in space, and in 1963 Valentina Tereshkova the first woman. In 1965 Alexei Leonov
+      stepped outside his spacecraft. The United States answered each step, and on 20 July 1969 Neil
+      Armstrong and Buzz Aldrin walked on the Moon while Michael Collins circled above. Twelve years
+      took people from the first satellite to the Moon.
+      """
+  }
+  do {
+    level easy {
+      worked history.space-order k=0
+    }
+    show history.space-order k=2 easy-k=1 hard-k=4
+    show history.space-who k=2 easy-k=0 hard-k=4
+    show history.space-between k=2 easy-k=0 hard-k=4
+    show history.apollo-days k=2 easy-k=0 hard-k=4
+    show history.space-order k=3 easy-k=2 hard-k=5
+    show history.space-who k=3 easy-k=1 hard-k=5
+    show history.space-between k=3 easy-k=1 hard-k=5
+    show history.apollo-days k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.space-between k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.why-space-race k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.moon-speed k=0 hard-k=1
+  }
+  remember {
+    say "From the first satellite in 1957 to the Moon in 1969 took twelve years."
+  }
+
+  grown-ups """
+    The idea is the space race as a sequence of firsts, each answered by the other side, and the
+    people who made them. The way in orders three firsts; the core names who made each, counts the
+    years between them and the days of Apollo 11's journey. The two-star question asks why it was a
+    race; the lesson gives the plain reason, that each country wanted to show what it could do, and
+    leaves the rivalry of those years for you to talk about. The wrong idea to watch for is counting
+    the days themselves rather than the jumps between them. If the child is stuck, count days on a
+    calendar. Off the page, look at the Moon tonight and find the Sea of Tranquillity. The moon
+    world of this term is where these lessons live. Russia's «Окружающий мир» and history keep 12
+    April as Cosmonautics Day; England's key stage 1 suggests comparing "Christopher Columbus and Neil
+    Armstrong"; Japan's 社会 for grade six includes Japan in the world after the war (the course of
+    study as read in its 2008 edition).
+    """
+  level easy {
+    grown-ups "At this level a worked example orders the satellite, Gagarin and the Moon, the firsts to name are Gagarin and Armstrong, the years counted are close together, and the days are from launch to landing."
+  }
+  level hard {
+    grown-ups "At this level the firsts are muddled and close together, the names include Leonov and Laika, the years run from the first aeroplane to the Moon, and the three-star question asks for kilometres an hour."
+  }
+}

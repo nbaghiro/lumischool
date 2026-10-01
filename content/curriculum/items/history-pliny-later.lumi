@@ -1,0 +1,17 @@
+# The two-star reason: Pliny saw the eruption himself but wrote it down about 27 years later. His
+# letter is first-hand, and it is also a memory, which is worth knowing when reading it.
+item history.pliny-later v=1 skills=[history.sources, reasoning.evaluate] {
+  title "Seen, then remembered"
+  difficulty k
+  let k=0..1
+
+  scene 36x30 {
+    sourcecard card title="Pliny's letter about Vesuvius" kind=3 who="Pliny the Younger, who watched from across the bay" when="about AD 106, of AD 79" where="Misenum, near Vesuvius" there=1 ask=0 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Pliny saw the eruption, but wrote about it about 27 years later. Is his letter first-hand?\" else \"What should a reader keep in mind about Pliny's letter?\"}" narrate width=34 below=card gap=1
+    choice pick options=[if k == 0 then "Yes, he saw it, but wrote it from memory" else "He saw it, but some details may be misremembered", if k == 0 then "No, it was written too late" else "It must be wrong because it is old", if k == 0 then "No, he read about it" else "Nothing, first-hand means perfect"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Yes, he saw it, but wrote it from memory" else "He saw it, but some details may be misremembered")
+  hint "First-hand means the maker was there. Was Pliny there?"
+  hint "What happens to what we remember over many years?"
+}

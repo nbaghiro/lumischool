@@ -1,0 +1,21 @@
+item k.why-outside v=1 stars=2 skills=[sorting.one-rule, reasoning.explain] {
+  title "Why is it outside?"
+  difficulty k
+  let k=0..1
+  let thing={pick(k, "book", "sock")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x29 {
+    venn rings labels=["Round", "Red"] left=["ball", "orange", "wheel"] both=["apple"] right=["bus", "jam"] outside=["book", "sock"] at=canvas(1, 1)
+    text ask "The {thing} is outside both rings. Why?" narrate width=28 below=rings gap=1
+    choice pick options=["It is not round and it is not red.", "It is round.", "It is red and round."] stack=column below=ask gap=1
+  }
+
+  answer pick="It is not round and it is not red."
+  hint "Is the {thing} round? Is it red?"
+}

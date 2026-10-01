@@ -1,0 +1,20 @@
+# Rights set out in the Convention on the Rights of the Child (1989), such as a name, school, play,
+# health and being heard, against things that are nice but not rights.
+item history.child-rights v=1 skills=[history.world, history.government] {
+  title "A child's rights"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let right={pick(k, "To go to school", "To have a name", "To play and rest", "To see a doctor when ill", "To say what they think about things that affect them", "To be safe from harm")}
+  let w1={pick(k, "To have a phone", "To choose their bedtime", "To have sweets every day", "To stay up late", "To never do homework", "To have a pet")}
+  let w2={pick(k, "To go on holiday", "To have their own room", "To win every game", "To pick every meal", "To choose their teacher", "To own a bicycle")}
+
+  scene 36x28 {
+    children kids count=3 at=canvas(1, 0)
+    text ask "In 1989 the world's countries agreed on the rights of every child. Which of these is one of them?" narrate width=30 below=kids gap=1
+    choice pick options=[pick(k, right, w1, w2, right, w1, w2), pick(k, w1, right, right, w2, w2, right), pick(k, w2, w2, w1, w1, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "A right is something every child everywhere needs, not something nice to have."
+  hint "Which one would matter to a child anywhere in the world?"
+}

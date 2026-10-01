@@ -31,7 +31,7 @@ import {
 } from "../../engine/space";
 import { U } from "../../engine/paper";
 import { artById } from "./art";
-import { pathOrder, type Year } from "../year";
+import { pathOrder, termsAt, type Year } from "../year";
 import type { Progress } from "../record";
 
 export const SQ = 20;
@@ -90,10 +90,11 @@ export const addDays = (iso: string, n: number): string =>
 /** Which term a unit is in. The map draws three units to a row, and a row is a term; this agrees. */
 export function termOf(year: Year, unit: number): number {
     const i = year.units.findIndex((u) => u.n === unit);
-    return Math.floor(Math.max(0, i) / 3) + 1;
+    return Math.min(termsAt(year.grade), Math.floor(Math.max(0, i) / 3) + 1);
 }
 
-export const termsIn = (year: Year): number => Math.max(1, Math.ceil(year.units.length / 3));
+export const termsIn = (year: Year): number =>
+    Math.min(termsAt(year.grade), Math.max(1, Math.ceil(year.units.length / 3)));
 
 /**
  * The year's lessons as the days they fall into: a maths lesson starts a day and a lesson from

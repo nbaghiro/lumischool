@@ -1,0 +1,17 @@
+# One continent left unnamed on the map: the child names it from its shape and place.
+item history.continent-blank v=1 skills=[history.geography, history.maps] {
+  title "The missing name"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let b={pick(k, 3, 5, 1, 0, 2, 4)}
+
+  scene 36x41 {
+    worldmap map names=0 blank=b oceans=1 places=[] numbered=0 route=0 at=canvas(1, 0)
+    text ask "Which continent goes in the empty box?" narrate width=14 below=map gap=1
+    choice pick options=["Africa", "Asia", "Australia", "Europe", "North America", "South America"] stack=column right-of=ask gap=1
+  }
+
+  check history.world of=map pick=blank
+  hint "Read the names of the continents around it."
+  hint "Which of the seven is missing from the map?"
+}

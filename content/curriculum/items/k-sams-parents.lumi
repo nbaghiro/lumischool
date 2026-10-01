@@ -1,0 +1,21 @@
+item k.sams-parents v=1 skills=[history.family] {
+  title "Who belongs where?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let right={pick(k, "Mum and Dad", "Grandma Rose and Grandpa Tom", "Sam")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x30 {
+    familytree tree names=["Grandma Rose", "Grandpa Tom", "Nana Mei", "Grandad Li", "Mum", "Dad", "Sam"] years=[1950, 1948, 1953, 1951, 1982, 1980, 2018] blank=-1 at=canvas(1, 0)
+    text q "{pick(k, \"Who are Sam's parents?\", \"Mum's line goes up to her own parents. Who are they?\", \"Who is the youngest in the family?\")}" narrate width=32 below=tree gap=1
+    choice pick options=["Mum and Dad", "Grandma Rose and Grandpa Tom", "Sam"] stack=column below=q gap=1
+  }
+
+  answer pick=right
+  hint "Follow the lines. A line joins a child to their parents above."
+}

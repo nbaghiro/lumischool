@@ -1,0 +1,25 @@
+item k.one-more-apple v=1 stars=2 skills=[counting.one-more] {
+  title "One more apple"
+  difficulty n
+  let n=1..4
+  level easy {
+    let n=1..2
+  }
+  level hard {
+    let n=3..4
+  }
+
+  scene 24x13 {
+    props row count=n prop=apple at=canvas(1, 1)
+    text ask "Ada puts one more apple in the row. How many apples now?" narrate width=22 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n + 1)
+  feedback {
+    when (answer == n) point=row {
+      say "That is how many are there now. One more comes. What number comes next?"
+    }
+  }
+  hint "Count the apples. Which number comes after that one?"
+}

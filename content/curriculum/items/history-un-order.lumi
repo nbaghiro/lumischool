@@ -1,0 +1,19 @@
+# The United Nations and the promises made through it, numbered from the earliest, from the record.
+item history.un-order v=1 skills=[history.world, history.order] {
+  title "Working together, in order"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "United Nations founded", "First World War", "Rights of the Child", "Universal Declaration of Human Rights", "Rights of the Child", "UNICEF founded")}
+  let b={pick(k, "Universal Declaration of Human Rights", "United Nations founded", "UNICEF founded", "First World War", "Universal Declaration of Human Rights", "Rights of the Child")}
+  let c={pick(k, "Rights of the Child", "Rights of the Child", "First World War", "Rights of the Child", "First World War", "First World War")}
+
+  scene 36x22 {
+    timeline line from=1900 to=2000 step=20 years=[] labels=[] at=canvas(0, 0)
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=34 below=line gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "The United Nations was founded as the Second World War ended, in 1945."
+  hint "The rights of the child were agreed much later, in 1989."
+}

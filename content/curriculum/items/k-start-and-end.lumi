@@ -1,0 +1,24 @@
+# Two clues, each of which one wrong animal also fits: duck starts with d and pig ends with g, so
+# only the whole word answers it.
+item k.start-and-end v=1 stars=3 skills=[reading.phonics, reasoning.clues] {
+  title "First and last sound"
+  difficulty k
+  let k=0..1
+  let clue={pick(k, "It starts with d and ends with g.", "It starts with d and ends with k.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x16 {
+    picturecards cards who=["duck", "pig", "dog"] where=["by", "by", "by"] thing=["log", "log", "log"] letters=true at=canvas(1, 1)
+    text ask "{clue} Which animal is it?" narrate width=28 below=cards gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=pick(k, "C", "A")
+  hint "Which animals start with d?"
+  hint "Of those, which one ends with the other sound?"
+}

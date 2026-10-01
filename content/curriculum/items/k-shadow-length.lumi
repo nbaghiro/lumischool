@@ -1,0 +1,24 @@
+item k.shadow-length v=1 skills=[physics.shadows, measure.compare] {
+  title "Which shadow is longer?"
+  difficulty (if abs(a - b) >= 4 then 0 else 1)
+  let a=3..9 b=3..9
+  where (abs(a - b) >= 2)
+  level easy {
+    where (abs(a - b) >= 4)
+  }
+  level hard {
+    where (abs(a - b) <= 3)
+  }
+
+  scene 34x32 {
+    column two at=canvas(1, 1) space=1 align=start {
+      shadows first tall=3 shadow=a unit=cm lamp=false marks=false
+      shadows second tall=3 shadow=b unit=cm lamp=false marks=false
+    }
+    text q "Which stick has the longer shadow?" narrate width=30 below=two gap=1
+    choice pick options=["the first stick", "the second stick"] stack=row below=q gap=1
+  }
+
+  answer pick=(if a > b then "the first stick" else "the second stick")
+  hint "Look along the ground from the foot of each stick. Which dark part goes further?"
+}

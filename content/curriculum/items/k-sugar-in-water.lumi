@@ -1,0 +1,12 @@
+item k.sugar-in-water v=1 skills=[chemistry.mixing] {
+  title "Where did the sugar go?"
+
+  scene 34x21 {
+    beforeafter ch change="dissolve-sugar" show=1 names=1 at=canvas(1, 0)
+    text ask "Ada stirs a spoon of sugar into warm water. Now she cannot see it. Where is the sugar?" narrate width=30 below=ch gap=1
+    choice pick options=["It has gone away for ever.", "It is still in the water."] stack=column below=ask gap=1
+  }
+
+  answer pick="It is still in the water."
+  hint "Taste the water. Is it sweet?"
+}

@@ -1,0 +1,25 @@
+# Years between events of Rome, across year one where they fall either side, from the record.
+item history.rome-between v=1 skills=[history.ancient, history.bc-ad] {
+  title "Across year one"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let e1={pick(k, "Romans conquer Britain", "Caesar lands in Britain", "Caesar lands in Britain", "Augustus first emperor", "Appian Way", "Caesar lands in Britain")}
+  let y1={pick(k, 43, -55, -55, -27, -312, -55)}
+  let e2={pick(k, "Hadrian's Wall begun", "Augustus first emperor", "Romans conquer Britain", "Vesuvius erupts", "Vesuvius erupts", "Hadrian's Wall begun")}
+  let y2={pick(k, 122, -27, 43, 79, 79, 122)}
+
+  scene 32x14 {
+    timeline line from=-400 to=200 step=100 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(1, 0)
+    text ask "How many years after the first was the second? There was no year nought." narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  feedback {
+    when (y1 < 0 and y2 > 0 and answer == y2 - y1) point=line {
+      say "That counts a year nought. From 1 BC to AD 1 is one year."
+    }
+  }
+  hint "Count from the first year to year one, then on to the second."
+  hint "Across year one, take one away, because there was no year nought."
+}

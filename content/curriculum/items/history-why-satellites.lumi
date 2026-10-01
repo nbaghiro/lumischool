@@ -1,0 +1,17 @@
+# The two-star reason: signals travel in straight lines and the Earth is round, so a satellite high up
+# can pass calls and pictures between far places.
+item history.why-satellites v=1 skills=[history.inventions, reasoning.why] {
+  title "Why a satellite?"
+  difficulty k
+  let k=0..1
+
+  scene 32x31 {
+    globe planet at=canvas(1, 0)
+    text ask "{if k == 0 then \"Why did television pictures from far across the world need satellites?\" else \"Radio signals go in straight lines. How does a satellite help them reach the other side of the world?\"}" narrate width=30 below=planet gap=1
+    choice pick options=["The round Earth blocks straight signals", "Satellites make pictures brighter", "Television cannot use wires"] stack=column below=ask gap=1
+  }
+
+  answer pick="The round Earth blocks straight signals"
+  hint "Can you see a ship that is far beyond the horizon?"
+  hint "Where would you need to be to see both far places at once?"
+}

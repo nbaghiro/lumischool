@@ -1,0 +1,24 @@
+# The strip stops at six, and the question is further along than the drawing goes, so the pattern
+# has to be said on, not looked at.
+item k.pattern-far v=1 stars=3 skills=[patterns.repeating, counting.to-ten] {
+  title "Further along"
+  difficulty p
+  let p=7..10
+  roles ap=apple st=star
+  level easy {
+    let p=7..8
+  }
+  level hard {
+    let p=9..10
+  }
+
+  scene 30x14 {
+    pattern strip unit=[ap, st] count=6 missing=0 at=canvas(1, 1)
+    text ask "The pattern keeps going. What is number {p}?" narrate width=28 below=strip gap=1
+    choice pick options=[ap, st] below=ask gap=1
+  }
+
+  answer pick=(if p % 2 == 1 then "ap" else "st")
+  hint "Count along the row, saying the number of each one."
+  hint "Keep counting and saying apple, star after the row stops."
+}

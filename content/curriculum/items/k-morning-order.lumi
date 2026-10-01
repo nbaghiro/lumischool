@@ -1,0 +1,21 @@
+# Unplugged: a routine is a program a child already runs, and putting its steps in order is the
+# first thing programming asks.
+item k.morning-order v=1 skills=[coding.sequences, reasoning.order] {
+  title "My morning in order"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 30x16 {
+    text q "{pick(k, \"Put the morning in order. Write 1, 2 and 3.\", \"Put bath time in order. Write 1, 2 and 3.\", \"Put going to bed in order. Write 1, 2 and 3.\")}" narrate width=28 at=canvas(1, 1)
+    sequence s items=["{pick(k, \"eat breakfast\", \"dry yourself\", \"get into bed\")}", "{pick(k, \"wake up\", \"fill the bath\", \"put on pyjamas\")}", "{pick(k, \"get dressed\", \"get in and wash\", \"switch off the light\")}"] blanks=[p, q, r] below=q gap=1
+  }
+
+  answer p=pick(k, 3, 3, 2) q=pick(k, 1, 1, 1) r=pick(k, 2, 2, 3)
+  hint "What happens first of all?"
+}

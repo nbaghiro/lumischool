@@ -1,0 +1,14 @@
+# In a picture, the same thing drawn smaller looks further away, which is where drawing what you see
+# starts to show a place and not only a thing.
+item k.bigger-is-nearer v=1 stars=2 skills=[art.drawing, reasoning.explain] {
+  title "Near or far?"
+
+  scene 30x18 {
+    toadstools t count=2 spots=5 at=canvas(1, 1)
+    text ask "Two toadstools of the same size, one near you and one far away. Which do you draw smaller?" narrate width=28 below=t gap=1
+    choice pick options=["the near one", "the far one"] stack=row below=ask gap=1
+  }
+
+  answer pick="the far one"
+  hint "Look at a tree near you and one far away. Which looks smaller?"
+}

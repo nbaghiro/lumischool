@@ -1,0 +1,17 @@
+# The two-star reason: a diary kept by an ordinary person at the time shows what a war was like for
+# families, which a history of battles and leaders cannot.
+item history.why-diaries v=1 skills=[history.sources, reasoning.why] {
+  title "Why read a diary?"
+  difficulty k
+  let k=0..1
+
+  scene 36x29 {
+    sourcecard card title="Anne Frank's diary" kind=3 who="Anne Frank, a girl in hiding" when="1942 to 1944" where="Amsterdam" there=1 ask=0 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Why do people still read a diary kept by a girl during the war?\" else \"A history book tells the war's dates and leaders. What can a child's diary show that the book cannot?\"}" narrate width=34 below=card gap=1
+    choice pick options=["What daily life felt like for a family", "Where every battle was fought", "Who won each election"] stack=column below=ask gap=1
+  }
+
+  answer pick="What daily life felt like for a family"
+  hint "What did the writer see and feel every day?"
+  hint "Who else could tell us that?"
+}

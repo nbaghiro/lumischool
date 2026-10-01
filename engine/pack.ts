@@ -1,4 +1,4 @@
-import type { Given, Way } from "./answer";
+import { LANGUAGES, NATIONS, type Given, type Language, type Nation, type Way } from "./answer";
 import { exprProblem, valueProblem, type Expr, type Value } from "./expr";
 import { PAGE_SIZES, PRINT_MARGIN_MM, SQUARE_MM } from "./paper";
 import { sceneProblem, type Scene } from "./scene";
@@ -43,6 +43,11 @@ export interface PackQuestion {
      * not say enough, as a book's line number does not to a family reading another edition.
      */
     explain: string | null;
+    /**
+     * For a language lesson's word boxes, by the answer's name: what else the box takes, which is the
+     * phrase's other spellings and, where the box forgives them, the spelling without its accents.
+     */
+    also?: Record<string, string[]>;
 }
 
 export interface PackItem {
@@ -96,6 +101,9 @@ export interface PackLesson {
     grade: number;
     unit: number | null;
     subject: string;
+    /** A variant's tag: shown only to a child learning this language, or a family that chose this nation. */
+    language?: Language;
+    nation?: Nation;
     format: string;
     /** The drawings its scenes place at any level, by the notation's name for them. */
     art: string[];
@@ -221,7 +229,17 @@ export interface Left {
  * them). */
 export interface LessonFacts extends Pick<
     PackLesson,
-    "id" | "source" | "title" | "goal" | "grade" | "unit" | "subject" | "format" | "art"
+    | "id"
+    | "source"
+    | "title"
+    | "goal"
+    | "grade"
+    | "unit"
+    | "subject"
+    | "language"
+    | "nation"
+    | "format"
+    | "art"
 > {
     /** The lesson's file, a path under the pack. */
     file: string;
@@ -390,13 +408,17 @@ export function markWords(
     return { right: words.every((w) => w.right) && !extra.length, words, extra };
 }
 
+/** A grade as a family reads it: the year before the first is kindergarten, not grade 0. */
+export const gradeName = (grade: number): string =>
+    grade === 0 ? "Kindergarten" : `Grade ${grade}`;
+
 /** The strip above a lesson's title: its subject unless it is maths, its grade and its unit. */
 export const tagOf = (lesson: Pick<PackLesson, "subject" | "grade" | "unit">): string =>
     [
         lesson.subject !== "maths"
             ? lesson.subject.charAt(0).toUpperCase() + lesson.subject.slice(1)
             : null,
-        `Grade ${lesson.grade}`,
+        gradeName(lesson.grade),
         lesson.unit === null ? null : `Unit ${lesson.unit}`,
     ]
         .filter((part): part is string => part !== null)
@@ -887,6 +909,8 @@ export function factsOf(lesson: PackLesson, file: string, first: string | null):
         grade: lesson.grade,
         unit: lesson.unit,
         subject: lesson.subject,
+        ...(lesson.language ? { language: lesson.language } : {}),
+        ...(lesson.nation ? { nation: lesson.nation } : {}),
         format: lesson.format,
         art: lesson.art,
         file,
@@ -952,7 +976,9 @@ function questionProblem(v: unknown): string | null {
         areTexts(v.hints) &&
         areNamedTexts(v.answers) &&
         (v.labels === null || areNamedTexts(v.labels)) &&
-        isTextOrNull(v.explain);
+        isTextOrNull(v.explain) &&
+        (v.also === undefined ||
+            (isPlain(v.also) && Object.values(v.also).every((a) => areTexts(a))));
     if (!shaped)
         return "a question holds its number, variant, ask, hints, answers, labels and explanation";
     if (!isPlain(v.env)) return "env must be an object";
@@ -1027,7 +1053,7 @@ function levelsProblem(v: unknown, problem: (level: unknown) => string | null): 
 }
 
 const LESSON_FIELDS =
-    "a lesson holds its id, source, title, goal, grade, unit, subject, format and drawings";
+    "a lesson holds its id, source, title, goal, grade, unit, subject, format and drawings, and a language or nation from the lists if it is a variant";
 
 const isLessonShaped = (v: Fields): boolean =>
     isText(v.id) &&
@@ -1037,6 +1063,8 @@ const isLessonShaped = (v: Fields): boolean =>
     isWhole(v.grade) &&
     isWholeOrNull(v.unit) &&
     isText(v.subject) &&
+    (v.language === undefined || LANGUAGES.some((l) => l === v.language)) &&
+    (v.nation === undefined || NATIONS.some((n) => n === v.nation)) &&
     isText(v.format) &&
     areTexts(v.art);
 

@@ -1,0 +1,23 @@
+# Non-routine: an age worked out from another, answered in the language.
+item language.how-old-puzzle v=1 stars=3 skills=[language.numbers, language.questions, reasoning.language] {
+  title "Birthday sums"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      cake c slices=0 candles=pick(k, 7, 9, 8)
+      text ask "{pick(k, \"Ana is [[num.seven]]. How old will she be next year?\", \"Leo is [[num.nine]]. His sister is three years older. How old is she?\", \"Ana is [[num.eight]] and her cousin is [[num.twenty]]. How many years older is he?\")}" width=32
+      choice pick options=[pick(k, "[[num.eight]]", "[[num.twelve]]", "[[num.twelve]]"), pick(k, "[[num.six]]", "[[num.six]]", "[[num.twenty-eight]]"), pick(k, "[[num.seven]]", "[[num.thirteen]]", "[[num.ten]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[num.eight]]", "[[num.twelve]]", "[[num.twelve]]")
+  feedback {
+    when (pick == pick(k, "[[num.six]]", "[[num.six]]", "[[num.twenty-eight]]")) {
+      say "{pick(k, \"That is a year younger. Next year she is one older.\", \"That is three years younger. His sister is older.\", \"That is the two ages added. How many from eight up to twenty?\")}"
+    }
+  }
+  hint "Work it out in numbers first."
+  hint "Then find the word."
+}

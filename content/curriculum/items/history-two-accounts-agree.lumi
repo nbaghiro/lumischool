@@ -1,0 +1,25 @@
+# Two short accounts of the first voyage round the world, written for the lesson from the facts in
+# the record (five ships set out from Spain in 1519; the Victoria came home in 1522). One is written
+# as a sailor's journal would be, the other as a later book: the child finds what both say.
+item history.two-accounts-agree v=1 skills=[history.sources, reading.compare] {
+  title "Where the accounts agree"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ask={pick(k, "Which fact do both accounts give?", "Where did both accounts say the fleet set out from?", "What do both accounts say about the ship that came home?", "In which year do both say the ship came home?", "Which fact is only in the journal?", "Which fact is only in the book?")}
+  let right={pick(k, "Five ships set out", "Spain", "It was called the Victoria", "1522", "The sailors ate rats when food ran out", "It was the first voyage round the world")}
+  let w1={pick(k, "The sailors ate rats", "Portugal", "It was the biggest ship", "1519", "Five ships set out", "Five ships set out")}
+  let w2={pick(k, "It was the first voyage round the world", "China", "It had no sails left", "1492", "The ship was called the Victoria", "The ship was called the Victoria")}
+
+  scene 36x36 {
+    column texts at=canvas(0, 0) space=1 align=start {
+      passage a title="A sailor's journal" text="We left Spain with five ships. The sea was wide and our food ran out; we ate rats and leather. Of all the ships only the Victoria came home, in 1522." width=36 numbers=false
+      passage b title="A book written later" text="In 1519 five ships set out from Spain to sail west to the Spice Islands. In 1522 the Victoria came home: the first ship to sail round the world." width=36 numbers=false
+    }
+    text ask "{ask}" narrate width=34 below=texts gap=1
+    choice pick options=[pick(k, right, w1, w2, right, w1, w2), pick(k, w1, right, right, w2, w2, right), pick(k, w2, w2, w1, w1, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Read both accounts, one sentence at a time."
+  hint "{if k <= 3 then \"A fact both give is in both.\" else \"A fact in one only is missing from the other.\"}"
+}

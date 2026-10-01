@@ -1,0 +1,30 @@
+# One person at three times in a life, drawn out of order: the child numbers them from the earliest.
+# The clue is age alone (a child, a grown-up, an older person with grey hair and a stick).
+item history.life-pictures v=1 skills=[history.order, history.change] {
+  title "One life in order"
+  difficulty (if k == 0 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let first={pick(k, "child", "grownup", "child", "older", "grownup", "older")}
+  let second={pick(k, "grownup", "child", "older", "grownup", "older", "child")}
+  let third={pick(k, "older", "older", "grownup", "child", "child", "grownup")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 30x24 {
+    row people at=canvas(1, 1) space=3 align=end {
+      person one pose=stand age=first hair=short colour=brown top=sky
+      person two pose=stand age=second hair=short colour=brown top=sky
+      person three pose=stand age=third hair=short colour=brown top=sky
+    }
+    text ask "These are one person at three times in her life. Number them 1, 2, 3 from the earliest." narrate width=28 below=people gap=1
+    sequence s items=["the first picture", "the second picture", "the third picture"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  answer p=(if first == "child" then 1 else if first == "grownup" then 2 else 3) q=(if second == "child" then 1 else if second == "grownup" then 2 else 3) r=(if third == "child" then 1 else if third == "grownup" then 2 else 3)
+  hint "Which picture shows her smallest and youngest? That one is 1."
+  hint "A person is a child first, then a grown-up, then older."
+}

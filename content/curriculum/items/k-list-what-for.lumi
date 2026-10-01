@@ -1,0 +1,19 @@
+item k.list-what-for v=1 skills=[writing.lists, writing.purpose] {
+  title "What is a list for?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x13 {
+    text q "{pick(k, \"Why does Mum write a shopping list?\", \"Why do we write a list before a trip?\")}" narrate width=28 at=canvas(1, 1)
+    choice pick options=["so we remember everything", "so the paper is full"] stack=column below=q gap=1
+  }
+
+  answer pick="so we remember everything"
+  hint "What might happen if there were no list?"
+}

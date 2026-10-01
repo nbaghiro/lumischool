@@ -1,0 +1,20 @@
+item k.label-first-letter v=1 skills=[writing.letters, reading.phonics] {
+  title "The first letter on the label"
+  difficulty (if w == "sun" or w == "cat" then 0 else 1)
+  let w={"sun", "cat", "hen", "duck", "kite", "boat"}
+  level easy {
+    let w={"sun", "cat", "hen"}
+  }
+  level hard {
+    let w={"duck", "kite", "boat"}
+  }
+
+  scene 24x21 {
+    art pic asset="{w}" at=canvas(1, 1)
+    text ask "Say the word. Write its first letter on the label." narrate width=22 below=pic gap=1
+    word-input label options=["{if w == \"sun\" then \"s\" else if w == \"cat\" then \"c\" else if w == \"hen\" then \"h\" else if w == \"duck\" then \"d\" else if w == \"kite\" then \"k\" else \"b\"}"] letters=1 below=ask gap=1
+  }
+
+  answer label=(if w == "sun" then "s" else if w == "cat" then "c" else if w == "hen" then "h" else if w == "duck" then "d" else if w == "kite" then "k" else "b")
+  hint "Say the word slowly. Stop after the first sound. Which letter makes it?"
+}

@@ -1,0 +1,65 @@
+# Dates from engine/notation/chronicle.ts: cowrie shells in Shang China, Lydian coins in the 7th
+# century BC, the ban liang 221 BC, the first government paper money 1024, banknotes in Europe 1661.
+lesson history-money-from-shells-to-paper v=1 format=teach grade=4 unit=6 subject=history levels=[easy, medium, hard] {
+  title "Money: shells, coins and paper"
+  goal "Put the kinds of money in the order people first used them, and say what problem each new kind solved."
+
+  look {
+    scene 36x9 {
+      timeline line from=-1600 to=2000 step=450 years=[-1300, -650, -221, 1024, 1661] labels=["Cowrie shell", "Lion coin", "Ban liang coin", "Paper money", "Banknotes in Europe"] at=canvas(0, 0)
+    }
+    say """
+      Before money, people swapped: fish for bread, a sheep for pots. In Shang China people paid with
+      cowrie shells. In Lydia, in what is now Turkey, the first coins were stamped in the 600s BC. In
+      221 BC the Qin made one round coin with a square hole for all of China. In 1024 China printed
+      the first government paper money, and Europe's first banknotes came in 1661.
+      """
+  }
+  do {
+    level easy {
+      worked history.why-coins k=0
+    }
+    show history.why-coins k=2 easy-k=1 hard-k=4
+    show history.money-order k=2 easy-k=0 hard-k=4
+    show history.money-card k=2 easy-k=0 hard-k=4
+    show history.money-between k=2 easy-k=0 hard-k=4
+    show history.why-coins k=3 easy-k=2 hard-k=5
+    show history.money-order k=3 easy-k=1 hard-k=5
+    show history.money-card k=3 easy-k=1 hard-k=5
+    show history.money-between k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.money-card k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.note-seal k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.swap-chain k=0 hard-k=1
+  }
+  remember {
+    say "Shells, then coins, then paper: each new kind of money was easier to carry, and each needed people to trust it."
+  }
+
+  grown-ups """
+    The idea is that money was invented to solve the problems of swapping, and changed as trade
+    grew: shells that were rare and lasting, coins with a ruler's mark, and paper that was light
+    but worked only if people trusted it. The way in says what money solves; the core orders the
+    kinds of money, reads museum cards, and counts years across year one. The wrong idea to watch
+    for is that paper money is worth its paper; the two-star question asks why a note needs a
+    seal. If the child is stuck on the swaps, act them out with toys. Off the page, look at a coin
+    and a note from your purse: whose mark is on them, and what stops people copying them? England's
+    key stage 2 history asks for "a study of an aspect or theme in British history that extends
+    pupils' chronological knowledge beyond 1066", and money through time is a common choice; here it
+    is told across the world, with the national units carrying each country's own coins.
+    Japan's 社会 takes up history only through Japan's own story, in grade six
+    (「我が国の歴史上の主な事象について，人物の働きや代表的な文化遺産を中心に」, the course of study as read in its 2008 edition), so
+    this lesson has no line of its own there; its timeline and source skills serve that grade.
+    """
+  level easy {
+    grown-ups "At this level a worked example shows what money solves in a swap, the kinds of money come nearly in order, the cards ask what a thing was used for, and the years counted are after year one."
+  }
+  level hard {
+    grown-ups "At this level the reasons are about marks and paper, the kinds of money are fully muddled, the cards ask which is older, the years counted cross year one, and the three-star chain needs three swaps."
+  }
+}

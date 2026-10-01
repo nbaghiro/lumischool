@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.seasons-say v=1 skills=[language.weather, language.time, language.speaking] {
+  title "My favourite season"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Say the four seasons in [[language.name]], starting with spring.\", \"Say your favourite season in [[language.name]], the way the lesson says [[phrase.my-favourite-season-is-summer]], and one thing about its weather.\", \"Say one sentence in [[language.name]] for each season, about its weather.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="The four seasons named, a favourite said the way the lesson says it, and the weather of each season." notice=["All four seasons", "A favourite said as the lesson says it", "The weather of a season", "A sentence for each season"]
+  hint "Say it in English first."
+  hint "What is the weather like in that season?"
+}

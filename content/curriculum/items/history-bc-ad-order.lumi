@@ -1,0 +1,19 @@
+# Events on both sides of year one, numbered from the earliest, from the dated record.
+item history.bc-ad-order v=1 skills=[history.bc-ad, history.order] {
+  title "BC and AD in order"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Great Pyramid", "Qin unites China", "Romans conquer Britain", "Paper", "Caesar lands in Britain", "Romans conquer Britain")}
+  let b={pick(k, "Paper", "Great Pyramid", "Caesar lands in Britain", "Qin unites China", "Paper", "Qin unites China")}
+  let c={pick(k, "Great Fire of London", "Paper", "Great Pyramid", "Caesar lands in Britain", "Qin unites China", "Caesar lands in Britain")}
+
+  scene 36x22 {
+    timeline line from=-3000 to=2000 step=1000 years=[] labels=[] at=canvas(1, 0)
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=34 below=line gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Put the BC ones first: the bigger the number BC, the longer ago."
+  hint "Then the AD ones, the smaller number first."
+}

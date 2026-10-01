@@ -1,0 +1,19 @@
+item k.repeat-pattern v=1 stars=3 skills=[coding.repetition, patterns.repeating] {
+  title "What is repeated?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x18 {
+    text q "{pick(k, \"Clap, stamp, clap, stamp, clap, stamp. What goes inside the repeat block, and how many times?\", \"Clap, clap, stamp, clap, clap, stamp. What goes inside the repeat block, and how many times?\")}" narrate width=28 at=canvas(1, 1)
+    choice pick options=["clap, stamp, 3 times", "clap, clap, stamp, 2 times", "clap, 6 times"] stack=column below=q gap=1
+  }
+
+  answer pick=pick(k, "clap, stamp, 3 times", "clap, clap, stamp, 2 times")
+  hint "Find the part that repeats. How many times does it come?"
+}

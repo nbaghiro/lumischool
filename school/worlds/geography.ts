@@ -23,6 +23,8 @@ const p = (x: number, y: number): Pt => ({ x, y });
  * out to the island.
  */
 export const LAND_AT: Record<number, Rect> = {
+    // the kindergarten year's garden stands at the west end of the first year's land, so it shares it
+    0: { x: -19000, y: 1750, w: 14800, h: 9300 },
     1: { x: -19000, y: 1750, w: 14800, h: 9300 },
     2: { x: 5500, y: 2300, w: 12600, h: 8200 },
     3: { x: 3000, y: -10600, w: 12400, h: 8000 },

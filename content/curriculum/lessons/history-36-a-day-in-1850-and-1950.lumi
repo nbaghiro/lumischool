@@ -1,0 +1,66 @@
+# The first dates are in engine/notation/chronicle.ts; the family of 1850 is made up for the lesson.
+lesson history-a-day-in-1850-and-1950 v=1 format=teach grade=6 unit=2 subject=history levels=[easy, medium, hard] {
+  title "A day in 1850 and in 1950"
+  goal "Compare a family's day in 1850 and in 1950, and say which new things came in between and what they changed."
+
+  look {
+    scene 32x33 {
+      column pics at=canvas(1, 0) space=1 align=start {
+        thenandnow a year=1850 sign=1 things=["horse and cart", "hot-air balloon"]
+        thenandnow b year=1950 sign=1 things=["motor car", "bicycle", "television aerial"]
+      }
+    }
+    say """
+      In 1850 a family fetched water from a pump, lit the house with candles and oil lamps, cooked
+      on a coal fire, and walked or went by horse; the lucky could ride the new steam trains. By 1950
+      many homes had taps, electric light and a radio, some a television; bicycles and cars filled
+      the roads, and aeroplanes crossed the sky. Children in 1850 often worked; in 1950 more stayed
+      at school.
+      """
+  }
+  do {
+    level easy {
+      worked history.day-1850-1950 k=0
+    }
+    show history.day-1850-1950 k=2 easy-k=1 hard-k=4
+    show history.street-1850-1950 k=2 easy-k=0 hard-k=4
+    show history.lifetime-firsts k=2 easy-k=0 hard-k=4
+    show history.family-1850 k=2 easy-k=0 hard-k=4
+    show history.day-1850-1950 k=3 easy-k=2 hard-k=5
+    show history.street-1850-1950 k=3 easy-k=1 hard-k=5
+    show history.lifetime-firsts k=3 easy-k=1 hard-k=5
+    show history.family-1850 k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.street-1850-1950 k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.housework-reason k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.count-lifetime k=0 hard-k=1
+  }
+  remember {
+    say "Between 1850 and 1950 came electric light, the telephone, the car, the aeroplane and television, and they changed the family's day."
+  }
+
+  grown-ups """
+    The idea is to compare everyday life across a hundred years: what a family did from morning to
+    night, and which new things changed it. The way in sorts an activity into 1850, 1950 or both;
+    the core finds what could not have been in a street, which first came in someone's lifetime, and
+    how old members of a family of 1850 were. The wrong idea to watch for is that everyone had the
+    new things at once: in 1950 many homes still had no television, and horses still worked in
+    streets. If the child is stuck, ask "could my great-great-grandparents have had one?" Off the
+    page, ask the oldest person you know what their home had when they were small. England's key
+    stage 2 history allows "a study of an aspect or theme in British history that extends pupils'
+    chronological knowledge beyond 1066". Japan's 社会 for grade six follows Japan's own story to
+    the post-war years (the course of study as read in its 2008 edition); Russia's history
+    programme reaches these years in its later grades.
+    """
+  level easy {
+    grown-ups "At this level a worked example says television belongs to 1950, the too-new thing is far newer than the sign, the lifetimes are long, and the ages are counted to 1850 for the youngest."
+  }
+  level hard {
+    grown-ups "At this level the activities are ones in both years, the street years are 1950 and 1860, the lifetimes run to 1985 and 2010, the ages are the grandparents' in 1870, and the three-star life runs to 1970."
+  }
+}

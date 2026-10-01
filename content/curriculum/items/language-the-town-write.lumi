@@ -1,0 +1,18 @@
+# The word written from its picture: [[town.beach]], [[town.park]], [[town.market]], [[town.harbour]], [[town.square]], [[town.museum]], [[town.station]].
+# Accent-tolerant: the box takes the word with its accents left off (accents=loose); ñ is a letter and is marked.
+item language.the-town-write v=1 skills=[language.town, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x11 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"You swim in the sea here. Write it in [[language.name]].\", \"You play on the swings here. Write it in [[language.name]].\", \"You buy fruit at stalls here. Write it in [[language.name]].\", \"The ferry comes in here. Write it in [[language.name]].\", \"The open space in the middle of town, with a fountain. Write it in [[language.name]].\", \"Old things behind glass. Write it in [[language.name]].\", \"You catch a train here. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[town.beach]]", "[[town.park]]", "[[town.market]]", "[[town.harbour]]", "[[town.square]]", "[[town.museum]]", "[[town.station]]")] accents=loose
+    }
+  }
+
+  answer word=pick(k, "[[town.beach]]", "[[town.park]]", "[[town.market]]", "[[town.harbour]]", "[[town.square]]", "[[town.museum]]", "[[town.station]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

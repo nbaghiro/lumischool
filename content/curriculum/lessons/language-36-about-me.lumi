@@ -1,0 +1,71 @@
+# Sara's text about herself, read closely and then used as the model for the child's own.
+lesson language-about-me v=1 format=teach grade=6 unit=8 subject=language levels=[easy, medium, hard] {
+  title "About me"
+  goal "Read a short text about someone in [[language.name]], then write one about yourself."
+
+  look {
+    scene 34x16 {
+      column all at=canvas(1, 1) space=1 align=start {
+        passage sara title="[[aboutme.title]]" text="[[aboutme.sara-text]]" width=32 numbers=true
+      }
+    }
+    say """
+      Sara writes about herself: her name and age, where she lives and with whom, what she looks
+      like, what she is like, what she loves, what she does not like and why, her favourite food,
+      and what she does at the weekend. Each sentence says one thing, and the little joining words,
+      and, but and because, tie them together.
+      """
+  }
+  do {
+    level easy {
+      worked language.about-me-name k=4
+    }
+    show language.about-me-name k=2 easy-k=0 hard-k=5
+    show language.about-me-meaning k=3 easy-k=1 hard-k=4
+    show language.about-me-write k=3 easy-k=1 hard-k=5
+    show language.about-me-name k=4 easy-k=1 hard-k=6
+    show language.about-me-match k=1 easy-k=0 hard-k=2
+    show language.about-me-write k=4 easy-k=2 hard-k=6
+    show language.about-me-listen k=3 easy-k=0 hard-k=5
+    show language.about-me-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.about-me-write k=3
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-about-me-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.about-me-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A text about yourself: who you are, where you live, what you are like, what you like and why."
+  }
+
+  grown-ups """
+    This lesson closes the six years of the language: the child reads a whole short text and writes
+    one of their own. The wrong idea to watch for is copying Sara's sentences without changing the
+    facts to the child's own, and writing about someone else with the endings for I. The writing
+    piece is read by you: tick what you see on the list, and ask the child to read it aloud. From
+    this grade the written words are marked with their accents: a word typed without its accent is
+    not taken. The dictation is read from this sheet, where it prints as Read aloud, or played by
+    the device. If the child is stuck, go through Sara's text one sentence at a time, changing one
+    fact in each. Off the page, keep the text and add a sentence to it each week. It meets England's
+    key stage 2 languages programme (years 3 to 6, statutory from age 7): "write phrases from
+    memory, and adapt these to create new sentences, to express ideas clearly" and "read carefully
+    and show understanding of words, phrases and simple writing"; Japan's grades 5 and 6 foreign
+    languages: "Can write about themselves and familiar and simple matters by using simple words and
+    phrases and basic expressions for which they are sufficiently familiar with the sounds while
+    refering to example sentences"; and CEFR A2, "Can describe in simple terms aspects of his/her
+    background, immediate environment and matters in areas of immediate need". The phrases are in
+    [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[aboutme.reading-and-swimming]] is worked first in the teacher's pen, the words to name are [[num.twelve]] and [[aboutme.in-seville]] and the words to write are [[aboutme.she-lives]] and [[aboutme.kind-for-a-girl]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[aboutme.because-it-is-cold]] and [[aboutme.she-goes-to-the-beach]] and the words to write are [[aboutme.favourite]], [[aboutme.saturdays]] and [[aboutme.delights]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

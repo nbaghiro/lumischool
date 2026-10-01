@@ -1,0 +1,19 @@
+# The language to English: [[phrase.i-have-a-sister]], [[phrase.this-is-my-family]], [[phrase.i-have-a-brother]], [[phrase.my-mother-is-called-marta]], [[phrase.i-have-no-brothers-or-sisters]], [[phrase.my-grandfather-has-a-dog]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.my-family-meaning v=1 skills=[language.family] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "boy", "girl", "girl", "boy", "gran")] says=[pick(k, "[[phrase.i-have-a-sister]]", "[[phrase.this-is-my-family]]", "[[phrase.i-have-a-brother]]", "[[phrase.my-mother-is-called-marta]]", "[[phrase.i-have-no-brothers-or-sisters]]", "[[phrase.my-grandfather-has-a-dog]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "My grandfather has a dog.", "My mother is called Marta.", "This is my family.", "My grandfather has a dog.", "My grandfather has a dog.", "My mother is called Marta."), pick(k, "I have a sister.", "This is my family.", "I have no brothers or sisters.", "My mother is called Marta.", "I have a brother.", "My grandfather has a dog."), pick(k, "I have a brother.", "I have no brothers or sisters.", "My mother is called Marta.", "This is my family.", "I have no brothers or sisters.", "I have a brother."), pick(k, "I have no brothers or sisters.", "I have a brother.", "I have a brother.", "I have a brother.", "My mother is called Marta.", "I have no brothers or sisters.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "I have a sister.", "This is my family.", "I have a brother.", "My mother is called Marta.", "I have no brothers or sisters.", "My grandfather has a dog.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

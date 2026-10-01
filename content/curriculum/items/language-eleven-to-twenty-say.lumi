@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.eleven-to-twenty-say v=1 skills=[language.numbers, language.speaking] {
+  title "Count to twenty"
+  let k=0..2
+
+  scene 34x6 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Count from [[num.ten]] to [[num.twenty]] in [[language.name]] to a grown-up.\", \"Count back from [[num.twenty]] to [[num.ten]] in [[language.name]].\", \"Count in twos in [[language.name]] from [[num.two]] to [[num.twenty]].\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="Every number in order, with [[num.eleven]] and [[num.twelve]] kept apart and no stop in the middle." notice=["Every number in order", "[[num.eleven|cap]] and [[num.twelve]] kept apart", "[[num.thirteen|cap]] not said as [[num.three]]", "No stop between fifteen and sixteen"]
+  hint "Count on from a full frame."
+  hint "Which is twelve and which is two?"
+}

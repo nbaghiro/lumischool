@@ -1,0 +1,22 @@
+# Non-routine: the greetings of a day put in order, or read back as a story.
+item language.hello-puzzle v=1 stars=3 skills=[language.greetings, reasoning.language] {
+  title "Ana's day"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Ana says three things today: [[greet.good-night]], [[greet.good-morning]], [[greet.good-afternoon]]. Which does she say second?\", \"Leo meets Gran in the morning, eats lunch with her, and goes home. Which word does he not need?\", \"Ana says [[greet.hello]], then [[greet.thank-you]], then [[greet.goodbye]]. What happened?\")}" width=32
+      choice pick options=[pick(k, "[[greet.good-night]]", "[[greet.good-morning]]", "She met someone, was given something, then left."), pick(k, "[[greet.good-morning]]", "[[greet.goodbye]]", "She left, said sorry, then met someone."), pick(k, "[[greet.good-afternoon]]", "[[greet.sorry]]", "She asked for something, then went to bed.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[greet.good-afternoon]]", "[[greet.sorry]]", "She met someone, was given something, then left.")
+  feedback {
+    when (pick == pick(k, "[[greet.good-morning]]", "[[greet.goodbye]]", "She left, said sorry, then met someone.")) {
+      say "{pick(k, \"[[greet.good-morning|cap]] comes first, in the morning. What comes after lunch?\", \"Leo goes home at the end, so he needs [[greet.goodbye]]. Did he bump into anyone?\", \"[[greet.goodbye|cap]] is for leaving, and Ana said it last.\")}"
+    }
+  }
+  hint "Put the day in order: morning, afternoon, night."
+  hint "Say what each word is for, one at a time."
+}

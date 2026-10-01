@@ -1,0 +1,49 @@
+lesson k-sorting-into-rings v=1 format=teach grade=0 unit=7 subject=maths levels=[easy, medium, hard] {
+  title "Sorting into rings"
+  goal "Sort things into a ring by one rule, count what is in the ring, and say why a thing is left out."
+
+  look {
+    scene 26x19 {
+      venn rings labels=["Round", "Red"] left=["ball", "orange", "wheel"] both=["apple"] right=["bus", "jam"] outside=["book", "sock"] at=canvas(1, 1)
+    }
+    say """
+      Two rings on the floor: one for round things and one for red things. The ball is round, so it
+      goes in the Round ring. The bus is red. The apple is round and red, so it goes where the rings
+      cross. The book is not round and not red, so it stays outside.
+      """
+  }
+  do {
+    practice k.odd-one-out count=2 seed=2
+    level easy {
+      worked k.count-by-colour k=0 level=medium
+    }
+    practice k.count-by-colour count=2 seed=3 easy-count=1
+    practice k.wings-ring count=2 seed=4
+    practice k.ring-count count=2 seed=5
+  }
+  try stars=2 {
+    show k.why-outside k=0 hard-k=1
+  }
+  try stars=3 {
+    show k.rings-for-colours k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Choose the rule first. Everything that fits goes in the ring."
+  }
+
+  grown-ups """
+    Read the names in the rings aloud; the child counts them and does not need to read them. The
+    thing in the middle is the one to talk about: it belongs to both rings, and children often
+    count it for one and forget it for the other. If the child is stuck, lay two skipping ropes on
+    the floor as rings and sort real toys into them. England's early learning goals no longer name
+    sorting, so the line quoted is China's. China, 3-6岁儿童学习与发展指南 (learning and development
+    guide for children aged 3 to 6), 数学认知 目标3, age 4 to 5: "能感知和发现常见几何图形的基本特征，并能进行分类"
+    (Perceive the basic features of common shapes and sort them.)
+    """
+  level easy {
+    grown-ups "At this level the pink creatures are counted once in the teacher's pen, the rings asked about are the plain Round and Red rings, and the colour sort in the three-star has two colours plainly apart."
+  }
+  level hard {
+    grown-ups "At this level the rings asked about are the middle and the outside, the colour asked for may have no creatures at all, and the three-star's square and rectangle are both blue."
+  }
+}

@@ -1,0 +1,24 @@
+item k.same-sound-animal v=1 skills=[reading.phonics] {
+  title "The same first sound"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5 p=0..2
+  let word={pick(k, "red", "pen", "hat", "fan", "cup", "dig")}
+  let want={pick(k, "rabbit", "pig", "hen", "fox", "cat", "duck")}
+  let o1={pick(k, "cat", "hen", "fox", "cat", "pig", "hen")}
+  let o2={pick(k, "fox", "cat", "pig", "hen", "rabbit", "fox")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 30x16 {
+    picturecards cards who=[if p == 0 then want else o1, if p == 1 then want else o2, if p == 2 then want else if p == 0 then o1 else o2] where=["by", "by", "by"] thing=["log", "log", "log"] letters=true at=canvas(1, 1)
+    text ask "Listen: {word}. Which animal starts with the same sound?" narrate width=28 below=cards gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=pick(p, "A", "B", "C")
+  hint "Say {word}, then say each animal. Listen to the very first sound."
+}

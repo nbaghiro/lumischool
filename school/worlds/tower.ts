@@ -27,16 +27,34 @@ export const oldTower: World = {
     guide: "glow",
     reaches: [
         {
-            art: "sundial",
-            when: ["skill:time.reading-clocks", "skill:physics.light"],
-            says: "The shadow tells the time.",
-        },
-        { art: "chest", when: ["skill:money.coins"], says: "Old coins in the chest. Count them." },
-        { art: "signpost", when: ["skill:geography"], says: "Find the tower on the map." },
-        {
             art: "stone-tower",
-            when: ["skill:time.elapsed"],
-            says: "One row of stones, one more time.",
+            when: ["skill:history.order", "skill:history.timeline", "skill:time.elapsed"],
+            says: "One course of stones for each age.",
+        },
+        {
+            art: "chest",
+            when: ["skill:history.money", "skill:money.coins"],
+            says: "Old coins in the chest. Which is oldest?",
+        },
+        {
+            art: "signpost",
+            when: ["skill:history.maps", "skill:history.geography", "skill:geography"],
+            says: "Find the tower on the old map.",
+        },
+        {
+            art: "sundial",
+            when: ["skill:history.centuries", "skill:history.bc-ad", "skill:time.reading-clocks"],
+            says: "The shadow counts the hours and the years.",
+        },
+        {
+            art: "lantern",
+            when: ["skill:history.sources", "skill:history.writing"],
+            says: "Old letters, read by lantern light.",
+        },
+        {
+            art: "bridge",
+            when: ["skill:history.voyages", "skill:history.trade", "skill:history.transport"],
+            says: "Travellers crossed here long ago.",
         },
     ],
     offers: {
@@ -91,7 +109,7 @@ export const oldTower: World = {
         kind: "track",
         hosts: {
             subjects: ["history"],
-            needs: "A history track, which the corpus does not have yet: timelines, then and now, old maps, reading old writing, and how a place changed.",
+            needs: "The history track, grades one to six: timelines, then and now, old maps, sources, and how places and countries changed.",
         },
         land: { terrain: "hilltop", near: ["railway", "woods"] },
     },

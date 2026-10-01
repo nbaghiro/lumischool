@@ -1,0 +1,18 @@
+# Picture or situation to the language: habladora, tímido, simpática, valiente, perezoso, trabajadora, divertido, inteligente, the plainer first.
+# Each version offers the word most often taken for it.
+item language.es-best-friend-name v=1 skills=[language.describing, language.grammar] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Eva talks all the time. Eva es ___.\", \"Leo never says a word in class. Leo es ___.\", \"Ana helps everyone. Ana es ___.\", \"Sara jumps from the high rock into the sea. Sara es ___.\", \"Pablo stays in bed all day. Pablo es ___.\", \"Marta does all her homework first. Marta es ___.\", \"Leo makes everyone laugh. Leo es ___.\", \"Eva solves every puzzle. Eva es ___.\")}" width=32
+      choice pick options=[pick(k, "habladora", "tímida", "simpático", "valiente", "perezosa", "trabajador", "divertida", "inteligenta"), pick(k, "hablador", "tímido", "perezosa", "valienta", "perezoso", "trabajadora", "aburrido", "inteligente"), pick(k, "tímida", "hablador", "simpática", "tímida", "trabajador", "perezosa", "divertido", "perezosa")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "habladora", "tímido", "simpática", "valiente", "perezoso", "trabajadora", "divertido", "inteligente")
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

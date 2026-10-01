@@ -43,6 +43,10 @@ export function PaintingGallery(props: {
     /** Which arrangement the easel is laid out in; the gallery itself is the same in every one. */
     layout?: PaintingLayout;
     children: readonly Kid[];
+    /** The easel as the family's log keeps it: undefined until read, null for none kept. */
+    preferences?: () => unknown;
+    /** Keeps the easel in the log, so it follows the painter to another device. */
+    onPreferences?: (state: unknown) => void;
 }): JSX.Element {
     const [child, setChild] = createSignal("");
     const scope = () => ({ kid_id: child() || null });
@@ -441,6 +445,8 @@ export function PaintingGallery(props: {
                         pictures={pictures().slice(0, 8)}
                         onOpenPicture={(artwork) => void open(artwork)}
                         storageKey={props.storageKey}
+                        preferences={props.preferences?.()}
+                        onPreferences={props.onPreferences}
                         document={item.document}
                         repository={makePaintingRepository(
                             { kid_id: item.kid_id },

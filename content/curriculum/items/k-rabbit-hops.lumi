@@ -1,0 +1,30 @@
+# The first program: one block, one arrow, and the square the rabbit ends on, worked out by
+# running it. The block is a picture, so nothing has to be read.
+item k.rabbit-hops v=1 skills=[coding.sequences] {
+  title "Where does the rabbit stop?"
+  difficulty n
+  let n=1..5
+  level easy {
+    let n=1..2
+  }
+  level hard {
+    let n=4..5
+  }
+
+  scene 30x19 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks bl code=["right {n}"] words=false numbers=false
+      stage s cols=7 col=1 who=rabbit code=["right {n}"] flag=false upto=0
+    }
+    text ask "The rabbit starts on square 1 and follows the arrow block. Which square does it stop on?" narrate width=28 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check coding.runs of=s answer=col
+  feedback {
+    when (answer == n) point=s {
+      say "The rabbit starts on square 1, so count each hop on from there."
+    }
+  }
+  hint "Put a finger on the rabbit. Move it one square for each step."
+}

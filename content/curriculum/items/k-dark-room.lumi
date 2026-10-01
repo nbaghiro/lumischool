@@ -1,0 +1,14 @@
+# Eyes do not send anything out: in a room with no light there is nothing for them to see by,
+# which is the wrong idea many children hold that seeing is something the eyes do on their own.
+item k.dark-room v=1 stars=2 skills=[nature.senses, reasoning.explain] {
+  title "Seeing in the dark"
+
+  scene 30x24 {
+    seeing room lamp=0 arrows=0 at=canvas(1, 1)
+    text ask "Ben says his eyes can see the ball in a dark room with no light at all. Is he right?" narrate width=28 below=room gap=1
+    choice pick options=["Yes: eyes can see in the dark.", "No: eyes need light to see."] stack=column below=ask gap=1
+  }
+
+  answer pick="No: eyes need light to see."
+  hint "What do you need to switch on before you can see in a dark room?"
+}

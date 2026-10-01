@@ -1,0 +1,48 @@
+lesson k-travel-long-ago v=1 format=teach grade=0 unit=5 subject=history levels=[easy, medium, hard] {
+  title "How people travelled long ago"
+  goal "Say how people travelled long ago and how they travel now, and put ways of travelling in order from oldest to newest."
+
+  look {
+    scene 32x18 {
+      thenandnow street year=1850 sign=0 things=["horse and cart", "hot-air balloon"] at=canvas(1, 0)
+    }
+    say """
+      Long, long ago there were no cars, trains or aeroplanes. People walked, rode horses, and rode in
+      carts pulled by horses; they crossed the sea in ships with sails. Cars came later, and later
+      still the first aeroplanes flew.
+      """
+  }
+  do {
+    level easy {
+      worked k.older-way k=0 level=medium
+    }
+    practice k.older-way count=2 seed=2
+    practice k.how-they-went count=3 seed=3 easy-count=2 hard-count=2
+    show k.travel-street
+    practice k.long-ago-or-now count=2 seed=8 easy-count=1
+  }
+  try stars=2 {
+    show k.why-horses
+  }
+  try stars=3 {
+    show k.travel-in-order
+  }
+  remember {
+    say "Long ago: horses, carts and sailing ships. Now: cars, trains and aeroplanes."
+  }
+
+  grown-ups """
+    Read each question aloud. Old pictures and a trip to a transport museum make this real, and so
+    does a question to an older relative: how did you get to school? The idea to watch is that long
+    ago means a few years; a horse and cart is from before great-great-grandparents. If the child is
+    stuck, sort toy vehicles into long ago and now. England, Reception, ELG Past and Present
+    (recalled, not fetched): "Know some similarities and differences between things in the past and
+    now, drawing on their experiences and what has been read in class".
+    """
+  level easy {
+    grown-ups "At this level a horse and cart is worked in the teacher's pen first, the pairs to judge are horse and car, and sail and aeroplane, and the ways to go are long ago."
+  }
+  level hard {
+    grown-ups "At this level the pairs are a bicycle and an electric car, and a steam train and a jet, and the ways to go are today's."
+  }
+}

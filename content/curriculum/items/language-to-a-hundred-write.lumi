@@ -1,0 +1,19 @@
+# The word written from its picture: [[num.forty]], [[num.fifty]], [[num.one-hundred]], [[num.ninety]], [[num.sixty]], [[num.seventy]], [[num.eighty]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.to-a-hundred-write v=1 skills=[language.numbers, language.market, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      digitcards num digits=[pick(k, 4, 5, 9, 9, 6, 7, 8), pick(k, 0, 0, 9, 0, 0, 0, 0)]
+      text ask "{pick(k, \"What number do the cards make? Write it in [[language.name]].\", \"What number do the cards make? Write it in [[language.name]].\", \"One more than the cards show. Write it in [[language.name]].\", \"What number do the cards make? Write it in [[language.name]].\", \"What number do the cards make? Write it in [[language.name]].\", \"What number do the cards make? Write it in [[language.name]].\", \"What number do the cards make? Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[num.forty]]", "[[num.fifty]]", "[[num.one-hundred]]", "[[num.ninety]]", "[[num.sixty]]", "[[num.seventy]]", "[[num.eighty]]")]
+    }
+  }
+
+  answer word=pick(k, "[[num.forty]]", "[[num.fifty]]", "[[num.one-hundred]]", "[[num.ninety]]", "[[num.sixty]]", "[[num.seventy]]", "[[num.eighty]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

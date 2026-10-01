@@ -1,0 +1,69 @@
+# A poster for the ferry town's fiesta, read for when, where, how much and what if.
+lesson language-the-poster v=1 format=teach grade=5 unit=8 subject=language levels=[easy, medium, hard] {
+  title "A poster in the square"
+  goal "Read a short notice in [[language.name]] and find the facts in it."
+
+  look {
+    scene 32x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        passage poster title="[[notice.town-fiesta]]" text="[[notice.fiesta-poster]]" width=30 numbers=true
+      }
+    }
+    say """
+      A poster in the square tells everyone about the fiesta. Read it for the facts: which day,
+      where, what happens at each time, how much it costs, and what happens if it rains. Words you
+      have not met can often be guessed from words you know.
+      """
+  }
+  do {
+    level easy {
+      worked language.the-poster-name k=4
+    }
+    show language.the-poster-name k=2 easy-k=0 hard-k=5
+    show language.the-poster-meaning k=3 easy-k=1 hard-k=4
+    show language.the-poster-write k=3 easy-k=2 hard-k=5
+    show language.the-poster-name k=4 easy-k=1 hard-k=6
+    show language.the-poster-match k=1 easy-k=0 hard-k=2
+    show language.the-poster-write k=5 easy-k=3 hard-k=4
+    show language.the-poster-listen k=3 easy-k=0 hard-k=5
+    show language.the-poster-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.the-poster-write k=3
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-the-poster-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.the-poster-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Read a notice for the facts: which day, where, what time, how much, and what if."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is answering from one word that looks right instead of reading the
+    line it is in, and picking the dinner's time for the fireworks. The poster is the same in every
+    question, with its lines numbered, so ask "which line says so?" before the child picks. From
+    this grade the written words are marked with their accents: a word typed without its accent is
+    not taken. The dictation is read from this sheet, where it prints as Read aloud, or played by
+    the device. If the child is stuck, read the poster aloud together first, one line at a time. Off
+    the page, read a real sign or menu in the language, or make a poster for a family event. It
+    meets England's key stage 2 languages programme (years 3 to 6, statutory from age 7): "read
+    carefully and show understanding of words, phrases and simple writing" and "broaden their
+    vocabulary and develop their ability to understand new words that are introduced into familiar
+    written material"; Japan's grades 5 and 6 foreign languages: "Reading about familiar and simple
+    matters while guessing the meaning of simple words and phrases and basic expressions"; and CEFR
+    A2, "Can understand sentences and frequently used expressions related to areas of most immediate
+    relevance (e.g. very basic personal and family information, shopping, local geography,
+    employment)". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[notice.it-is-free]] is worked first in the teacher's pen, the words to name are [[notice.on-saturday]] and [[notice.in-the-square]] and the words to write are [[num.eight]] and [[notice.harbour]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[notice.music-and-dancing]] and [[notice.if-it-rains]] and the words to write are [[notice.august]], [[notice.free]] and [[notice.harbour]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

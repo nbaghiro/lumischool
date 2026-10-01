@@ -1,0 +1,56 @@
+lesson k-follow-the-arrows v=1 format=teach grade=0 unit=4 subject=coding levels=[easy, medium, hard] {
+  title "Follow the arrows"
+  goal "Move a robot on a grid by following arrow blocks, count its steps to a goal, and put three steps in order."
+
+  look {
+    scene 30x10 {
+      row top at=canvas(1, 0) space=1 align=start {
+        blocks bl code=["right 3"] words=false numbers=false
+        stage s cols=7 col=1 who=bot code=["right 3"] flag=false upto=-1
+      }
+    }
+    say """
+      A block with an arrow tells the robot where to go, and the number tells it how many steps. This
+      one says three steps to the right: one, two, three. A program is steps in order, and the
+      robot does exactly what the blocks say.
+      """
+  }
+  do {
+    level easy {
+      worked k.rabbit-hops n=2 level=medium
+    }
+    practice k.rabbit-hops count=2 seed=2
+    practice k.which-way count=2 seed=3
+    practice k.steps-to-flag count=2 seed=4 easy-count=1
+    show k.teeth-in-order k=0 hard-k=1
+    level medium hard {
+      show k.teeth-in-order k=2
+    }
+  }
+  try stars=2 {
+    show k.fix-the-number a=3 w=5 easy-a=2 easy-w=4 hard-a=4 hard-w=2
+  }
+  try stars=3 {
+    show k.right-then-down a=2 b=1 easy-a=1 hard-a=3 hard-b=2
+  }
+  remember {
+    say "Follow each block in order. Count every step."
+  }
+
+  grown-ups """
+    Read each question aloud; the blocks are pictures, so the child reads the arrow and the dots.
+    Be the robot first: stand on a square of floor and step exactly as the block says, which shows
+    that the robot does only what it is told. Counting the starting square as a step is the usual
+    slip. Off the page, give each other instructions to reach a toy across the room, one step at a
+    time. England's early years goals do not name programming; the line quoted is Japan's.
+    Japan, 幼稚園教育要領 (kindergarten guidelines), 環境, 内容 (7):
+    "身近な物や遊具に興味をもってかかわり，考えたり，試したりして工夫して遊ぶ。" (Take an interest in
+    familiar things and toys, and play inventively by thinking and trying things out.)
+    """
+  level easy {
+    grown-ups "At this level two hops are worked in the teacher's pen first, the arrows are right and down, the flag is one or two steps away, and the three-star robot goes one step down."
+  }
+  level hard {
+    grown-ups "At this level the hops are four or five, the arrows are left and up, and the three-star robot goes two steps down."
+  }
+}

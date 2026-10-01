@@ -1,0 +1,24 @@
+# Which clue in a picture best shows it is old: the houses could be any age, the sky says little,
+# the horse and cart in the road is the clue.
+item history.picture-clue v=1 skills=[history.evidence, history.then-and-now] {
+  title "The best clue"
+  difficulty k
+  let k=0..1
+  let other={pick(k, "The houses have chimneys", "The houses have windows")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 32x31 {
+    thenandnow street year=1870 sign=0 things=["horse and cart"] at=canvas(1, 0)
+    text ask "Which clue best shows this picture is from long ago?" narrate width=30 below=street gap=1
+    choice pick options=["The horse and cart", "{other}", "There is a road"] stack=column below=ask gap=1
+  }
+
+  answer pick="The horse and cart"
+  hint "Which of these could you still see in a street today?"
+  hint "A good clue is something that is rare or gone now."
+}

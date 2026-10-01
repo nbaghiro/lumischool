@@ -1,0 +1,22 @@
+# Two seasons on, not one: the child has to go round the year twice in their head, and from autumn
+# that passes the end of the year.
+item k.season-after-next v=1 stars=3 skills=[nature.seasons, reasoning.order] {
+  title "Two seasons from now"
+  difficulty (if s == "spring" then 0 else 1)
+  let s={"spring", "autumn", "winter"}
+  level easy {
+    let s={"spring"}
+  }
+  level hard {
+    let s={"autumn", "winter"}
+  }
+
+  scene 34x21 {
+    seasontrees trees seasons=["spring", "summer", "autumn", "winter"] names=1 at=canvas(1, 1)
+    text ask "It is {s} now. Which season will it be two seasons from now?" narrate width=30 below=trees gap=1
+    choice pick options=["spring", "summer", "autumn", "winter"] stack=row below=ask gap=1
+  }
+
+  answer pick=(if s == "spring" then "autumn" else if s == "autumn" then "spring" else "summer")
+  hint "Say the next season. Then say the one after that."
+}

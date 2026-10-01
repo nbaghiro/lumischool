@@ -1,0 +1,24 @@
+# The snail has no legs, so the total is the other creature's legs: a child who counts
+# something for the snail has not looked.
+item k.legs-together v=1 stars=3 skills=[nature.minibeasts, counting.to-ten] {
+  title "Legs altogether"
+  difficulty k
+  let k=0..1
+  let other={pick(k, "ant", "spider")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 26x16 {
+    minibeasts pair kinds=["snail", other] spots=4 legs=false at=canvas(1, 1)
+    text ask "How many legs do the snail and the {other} have altogether?" narrate width=24 below=pair gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 6, 8)
+  hint "How many legs does the snail have?"
+  hint "Now count the {other}'s legs."
+}

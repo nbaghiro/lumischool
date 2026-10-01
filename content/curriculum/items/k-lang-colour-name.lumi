@@ -1,0 +1,22 @@
+# The paint is named in English under the well, so the page reads in print; the child says the
+# colour in the language.
+item k.lang-colour-name v=1 skills=[language.colours] {
+  title "Say the colour"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x14 {
+    mixingtray tray wells=["{pick(k, \"red\", \"blue\", \"yellow\", \"green\")}"] labels=true at=canvas(1, 1)
+    text ask "What is this colour in [[language.name]]?" narrate width=28 below=tray gap=1
+    choice pick options=["[[colour.red]]", "[[colour.blue]]", "[[colour.yellow]]", "[[colour.green]]"] stack=row below=ask gap=1
+  }
+
+  answer pick=pick(k, "[[colour.red]]", "[[colour.blue]]", "[[colour.yellow]]", "[[colour.green]]")
+  hint "Say the colour in English first. Which word did the lesson give for it?"
+}

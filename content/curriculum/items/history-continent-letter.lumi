@@ -1,0 +1,18 @@
+# The seven continents lettered on the world map: which letter is a named continent. The letters go
+# in the drawing's own order, so the key comes from the map.
+item history.continent-letter v=1 skills=[history.geography, history.maps] {
+  title "Name the continent"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let c={pick(k, "Africa", "Australia", "South America", "Asia", "Europe", "North America")}
+
+  scene 36x26 {
+    worldmap map names=1 blank=-1 oceans=0 places=[] numbered=0 route=0 at=canvas(1, 0)
+    text ask "Which letter is {c}?" narrate width=12 below=map gap=1
+    choice pick options=["A", "B", "C", "D", "E", "F", "G"] below=ask gap=1
+  }
+
+  check history.world of=map pick="letter({c})"
+  hint "Think of the shape of {c}, and where it lies: north or south, east or west."
+  hint "Europe and Asia are joined; Africa is below Europe; the Americas are on the left."
+}

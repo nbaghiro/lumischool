@@ -1,0 +1,11 @@
+# Marked by a grown-up: a first-hand source from the child's own family, and its card filled in.
+item history.family-source v=1 stars=3 skills=[history.sources, history.enquiry] {
+  title "A source from my family"
+
+  scene 36x11 {
+    sourcecard card title="A letter from the harbour" kind=3 who="A sailor on the ship" when="3 May 1850" where="Liverpool" there=1 ask=0 at=canvas(1, 0)
+    text ask "Find a first-hand source in your family: a photo, a letter, a postcard or a diary. Make a card for it: who made it, when, where, and were they there?" width=15 right-of=card gap=1
+  }
+
+  check writing.by-eye look-for="A real first-hand source from the family, with who made it, when and where, and whether the maker was there, and one thing it tells us that a later account might not." notice=["Who made it", "When and where", "Were they there, with a reason", "One thing only this source tells"] ask="What does this source tell us that nothing else could?"
+}

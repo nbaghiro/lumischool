@@ -1,0 +1,19 @@
+# Everyday life at a town gate: tolls paid on carts and baskets (made-up prices for the lesson).
+item history.gate-tolls v=1 skills=[history.medieval, number.multiply] {
+  title "At the town gate"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let carts={pick(k, 6, 9, 12, 15, 18, 24)}
+  let toll={pick(k, 2, 2, 3, 3, 4, 5)}
+  let baskets={pick(k, 0, 0, 10, 12, 20, 30)}
+
+  scene 34x15 {
+    citywalls wall towers=2 open=1 at=canvas(1, 0)
+    text ask "At the gate each cart paid {toll} pennies{if baskets > 0 then \" and each basket 1 penny\" else \"\"}. One morning {carts} carts{if baskets > 0 then \" and \" else \"\"}{if baskets > 0 then baskets else \"\"}{if baskets > 0 then \" baskets\" else \"\"} came in. How many pennies were paid?" narrate width=28 below=wall gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (carts * toll + baskets)
+  hint "How much did all the carts pay?"
+  hint "Then add the baskets, one penny each."
+}

@@ -1,0 +1,21 @@
+# What drove each machine before engines were everywhere: water, wind, a horse, or steam.
+item history.what-powered v=1 skills=[history.industry, physics.energy] {
+  title "What made it go?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let thing={pick(k, "the mill wheel in the picture", "a windmill's stones", "a canal narrowboat in 1800", "a steam train", "Cromford Mill's spinning machines", "a cart on a road in 1800")}
+  let key={pick(k, "Running water", "Wind", "A horse on the towpath", "Steam from burning coal", "Running water", "A horse on the towpath")}
+
+  scene 35x28 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      waterwheel mill
+      windmill wind
+    }
+    text ask "What made {thing} go?" narrate width=16 below=pics gap=1
+    choice pick options=["Running water", "Wind", "A horse on the towpath", "Steam from burning coal"] stack=column right-of=ask gap=1
+  }
+
+  answer pick=key
+  hint "Look at what turns or pulls it in the picture, or think of where it stood."
+  hint "Before engines, people used water, wind and animals."
+}

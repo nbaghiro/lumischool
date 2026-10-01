@@ -1,0 +1,23 @@
+# Ben has left a sound out of his label: the child says the word and finds which one.
+item k.missed-sound v=1 stars=2 skills=[writing.spelling, reading.segmenting] {
+  title "Which sound did Ben miss?"
+  difficulty k
+  let k=0..2
+  let w={pick(k, "dog", "sun", "hen")}
+  let wrote={pick(k, "dg", "sn", "hn")}
+  let missed={pick(k, "o", "u", "e")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 28x13 {
+    text ask "Ben wrote {wrote} for {w}. Say {w} slowly. Which sound did he leave out?" narrate width=26 at=canvas(1, 1)
+    choice pick options=["{pick(k, \"d\", \"s\", \"h\")}", missed, "{pick(k, \"g\", \"n\", \"n\")}"] stack=row below=ask gap=1
+  }
+
+  answer pick=missed
+  hint "Say {w} one sound at a time. Which sound is not in what Ben wrote?"
+}

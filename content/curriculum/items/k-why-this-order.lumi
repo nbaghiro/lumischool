@@ -1,0 +1,22 @@
+item k.why-this-order v=1 stars=2 skills=[reading.sequencing, reasoning.explain] {
+  title "Why in that order?"
+  difficulty k
+  let k=0..1
+  let right={pick(k, "The seed needs soil to go into.", "The mixture has to be in the tin before it bakes.")}
+  let wrong={pick(k, "Seeds are smaller than soil.", "The oven is bigger than the tin.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x26 {
+    picsteps steps pictures=[pick(k, "pot", "stir"), pick(k, "soil", "tin"), pick(k, "seed", "oven")] texts=["", "", ""] per=3 numbers=true write=false at=canvas(1, 1)
+    text ask "{pick(k, \"Why does the soil go in before the seed?\", \"Why does the tin come before the oven?\")}" narrate width=28 below=steps gap=1
+    choice pick options=[wrong, right] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "What would happen if you did it the other way round?"
+}

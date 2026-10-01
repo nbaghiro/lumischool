@@ -1,0 +1,47 @@
+lesson k-one-to-five v=1 format=teach grade=0 unit=5 subject=language levels=[easy, medium, hard] {
+  title "[[num.one|cap]] to [[num.five]]"
+  goal "Count from one to five in [[language.name]], and match each word to its number."
+
+  look {
+    scene 26x6 {
+      props row count=5 prop=apple at=canvas(1, 1)
+    }
+    say """
+      Count the apples in [[language.name]]: [[num.one]], [[num.two]], [[num.three]], [[num.four]],
+      [[num.five]]. Say them after a grown-up, holding up a finger for each.
+      """
+  }
+  do {
+    level easy {
+      worked k.lang-how-many n=1 level=medium
+    }
+    practice k.lang-how-many count=2 seed=2
+    practice k.lang-number-meaning count=2 seed=3
+    practice k.lang-count-up count=2 seed=4 easy-count=1
+    show k.lang-say-numbers
+  }
+  try stars=2 {
+    show k.lang-more k=0 hard-k=1
+  }
+  try stars=3 {
+    show k.lang-add-one k=0 hard-k=1
+  }
+  remember {
+    say "[[num.one|cap]], [[num.two]], [[num.three]], [[num.four]], [[num.five]]."
+  }
+
+  grown-ups """
+    Everything here is heard: read the numbers aloud, [[num.five]] said [[num.five|say]], and let
+    the child say them back with fingers up. The child picks from what you read. If the child is
+    stuck, count real things together, first in English and then in the language. Off the page,
+    count the stairs or the grapes on a plate in the language. Japan, 幼稚園教育要領 (kindergarten
+    guidelines), 言葉, 内容 (7): "生活の中で言葉の楽しさや美しさに気付く。" (Notice the fun and beauty of
+    words in daily life.) The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level one apple is worked in the teacher's pen first, the numbers are one to three, and the two-star compares two and four."
+  }
+  level hard {
+    grown-ups "At this level the numbers are three to five, and the three-star counts on from four."
+  }
+}

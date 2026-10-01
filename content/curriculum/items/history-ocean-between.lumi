@@ -1,0 +1,19 @@
+# Which ocean lies between two continents, read from the map with the oceans named.
+item history.ocean-between v=1 skills=[history.geography, history.maps] {
+  title "Across the ocean"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Europe", "Asia", "Africa", "South America", "Australia", "North America")}
+  let b={pick(k, "North America", "North America", "Australia", "Africa", "South America", "Asia")}
+  let key={pick(k, "Atlantic Ocean", "Pacific Ocean", "Indian Ocean", "Atlantic Ocean", "Pacific Ocean", "Pacific Ocean")}
+
+  scene 36x29 {
+    worldmap map names=0 blank=-1 oceans=1 places=[] numbered=0 route=0 at=canvas(1, 0)
+    text ask "A ship sails straight from {a} to {b}. Which ocean does it cross?" narrate width=20 below=map gap=1
+    choice pick options=["Atlantic Ocean", "Pacific Ocean", "Indian Ocean"] stack=column right-of=ask gap=1
+  }
+
+  answer pick=key
+  hint "Find both continents. Which sea lies between them?"
+  hint "Read the ocean's name written on the water."
+}

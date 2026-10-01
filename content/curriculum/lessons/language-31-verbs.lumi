@@ -1,0 +1,71 @@
+# The present tense of -ar verbs: how a verb's ending says who does it is Spanish's own, so the lesson is written for Spanish.
+lesson language-verbs v=1 format=teach grade=6 unit=1 subject=language levels=[easy, medium, hard] {
+  title "Who is doing it?"
+  goal "Use the present tense of regular -ar verbs in [[language.name]] for I, you, he or she, we, you all and they."
+
+  language es {
+    look {
+      scene 38x14 {
+        column all at=canvas(1, 1) space=1 align=start {
+          comic talk who=["girl", "boy", "gran", "girl"] says=["Yo hablo español.", "¿Tú hablas inglés?", "Mi abuela habla francés.", "Nosotros hablamos mucho."] moods=["happy", "happy", "happy", "happy"] with=["", "", "", ""] thinks=[0, 0, 0, 0] holds=["", "", "", ""] labels=["1", "2", "3", "4"]
+        }
+      }
+      say """
+        A Spanish verb changes its ending to say who does it. Hablar is to speak: yo hablo (I speak),
+        tú hablas (you speak), él or ella habla (he or she speaks), nosotros hablamos (we speak),
+        vosotros habláis (you all speak, in Spain) and ellos hablan (they speak). Nadar, bailar,
+        cantar and escuchar follow the same pattern. Because the ending says who, yo is often left
+        out.
+        """
+    }
+    do {
+      level easy {
+        worked language.es-verbs-name k=4
+      }
+      show language.es-verbs-name k=3 easy-k=0 hard-k=6
+      show language.es-verbs-meaning k=3 easy-k=2 hard-k=4
+      show language.es-verbs-write k=4 easy-k=1
+      show language.es-verbs-name k=5 easy-k=2 hard-k=7
+      show language.es-verbs-match k=1 easy-k=0 hard-k=2
+      show language.es-verbs-write k=5 easy-k=3 hard-k=3
+      show language.es-verbs-listen k=3 easy-k=0 hard-k=5
+      show language.es-verbs-say k=1 easy-k=0 hard-k=2
+      level hard {
+        show language.es-verbs-write k=2
+      }
+    }
+    try stars=2 {
+      show language.es-verbs-why k=1 easy-k=0 hard-k=2
+    }
+    try stars=3 {
+      show language.es-verbs-puzzle k=1 easy-k=0 hard-k=2
+    }
+  }
+  remember {
+    say "The ending says who is doing it: I, you, he or she, we, they."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is one form of a verb used for everyone, as English nearly does.
+    This lesson turns on how the language changes a verb for each person, so its questions are
+    written for each language separately. From this grade the written words are marked with their
+    accents: a word typed without its accent is not taken. The dictation is read from this sheet,
+    where it prints as Read aloud, or played by the device. If the child is stuck, write the six
+    people down the side of a page and the endings beside them, then read across. Off the page, say
+    what each person in the family is doing right now, with the right ending. It meets England's key
+    stage 2 languages programme (years 3 to 6, statutory from age 7): "understand basic grammar
+    appropriate to the language being studied, including (where relevant): ... the conjugation of
+    high-frequency verbs"; Japan's grades 5 and 6 foreign languages: "Pronouns that include basic
+    pronouns such as I, you, he, she, etc."; and CEFR A2, "Can communicate in simple and routine
+    tasks requiring a simple and direct exchange of information on familiar and routine matters".
+    The phrases are in [[language.variety]].
+    """
+  language es {
+    level easy {
+      grown-ups "At this level nadan is worked first in the teacher's pen, the words to name are hablo and habla and the words to write are hablas and hablamos, the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+    }
+    level hard {
+      grown-ups "At this level the words to name are cantamos and habláis and the words to write are nadan, hablamos and habla, the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+    }
+  }
+}

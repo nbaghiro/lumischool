@@ -1,0 +1,24 @@
+# Four cards and three of them make an animal: the child says sounds, tries orders, and hears
+# when a word comes out.
+item k.make-an-animal v=1 stars=3 skills=[reading.blending, reasoning.trial] {
+  title "Make an animal"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let w={pick(k, "cat", "dog", "pig", "hen")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 26x14 {
+    lettercards cards letters=["{pick(k, \"t\", \"g\", \"g\", \"n\")}", "{pick(k, \"a\", \"o\", \"i\", \"e\")}", "{pick(k, \"u\", \"a\", \"p\", \"o\")}", "{pick(k, \"c\", \"d\", \"n\", \"h\")}"] at=canvas(1, 1)
+    text ask "Use three of the cards to make an animal." narrate width=24 below=cards gap=1
+    word-input word options=[w] letters=3 below=ask gap=1
+  }
+
+  answer word=w
+  hint "Which card could start an animal's name? Say its sound."
+  hint "Try the other cards after it. Does it make an animal?"
+}

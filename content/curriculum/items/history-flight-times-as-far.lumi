@@ -1,0 +1,23 @@
+# The three-star question: the first flight went about 36 metres and the last that day about 256
+# (Smithsonian: 120 feet and 852 feet). About how many first flights fit into the last one?
+item history.flight-times-as-far v=1 skills=[history.flight, reasoning.estimate] {
+  title "How many times as far?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x13 {
+    numberline line from=0 to=280 step=20 at=canvas(1, 1)
+    text ask "The first flight went about {if k == 0 then \"40\" else \"36\"} metres. The last flight that day went about {if k == 0 then \"240\" else \"256\"} metres. About how many first flights would fit into the last one?" narrate width=26 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then 6 else 7)
+  hint "Make jumps of the first flight along the line from 0."
+  hint "Count the jumps until you reach the last flight's length."
+}

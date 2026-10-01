@@ -1,0 +1,16 @@
+# Writing, read by a grown-up who ticks what they see (writing.by-eye).
+item language.postcard-say v=1 skills=[language.reading, language.time, language.writing] {
+  title "Write a postcard"
+  let k=0..2
+
+  scene 36x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      postcard blank greeting="" text="" closing="" from="" to=["", "", ""] stamp=ship date="" lines=5
+      text ask "{pick(k, \"Write a postcard in [[language.name]] to someone in your family, with a greeting, two sentences and an ending, using Ana's as a model.\", \"Write a postcard in [[language.name]] from a trip: where you are, the weather, and one thing you do.\", \"Write a postcard in [[language.name]] with something from yesterday, something today and something for tomorrow.\")}" width=32
+    }
+  }
+
+  check writing.by-eye look-for="A greeting and an ending in the language, sentences that each say one thing, and at least one day word such as yesterday or tomorrow." notice=["A greeting and an ending", "The place and the weather", "Something you do", "Yesterday, today or tomorrow"]
+  hint "Start the way Ana starts."
+  hint "Where are you, and what is the weather like?"
+}

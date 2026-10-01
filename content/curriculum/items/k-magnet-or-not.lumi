@@ -1,0 +1,21 @@
+item k.magnet-or-not v=1 skills=[physics.magnets] {
+  title "Will it stick?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let thing={pick(k, "a steel spoon", "a wooden block", "a paper clip", "a plastic cup", "a glass marble", "a steel key")}
+  let right={pick(k, "yes", "no", "yes", "no", "no", "yes")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 26x11 {
+    text q "Will a magnet pick up {thing}?" narrate width=24 at=canvas(1, 1)
+    choice pick options=["yes", "no"] stack=row below=q gap=1
+  }
+
+  answer pick=right
+  hint "Is it made of iron or steel?"
+}

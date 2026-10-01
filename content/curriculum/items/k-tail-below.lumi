@@ -1,0 +1,23 @@
+item k.tail-below v=1 stars=2 skills=[writing.letter-height] {
+  title "A tail below the line"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let tail={pick(k, "g", "y", "p", "j")}
+  let o1={pick(k, "a", "u", "b", "i")}
+  let o2={pick(k, "o", "v", "d", "l")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x14 {
+    handwriting rules show="{o1} {tail} {o2}" rows=1 trace=0 width=16 at=canvas(1, 1)
+    text ask "One of these letters has a tail that hangs below the line. Which one?" narrate width=28 below=rules gap=1
+    choice pick options=[o1, tail, o2] stack=row below=ask gap=1
+  }
+
+  answer pick=tail
+  hint "Find the bottom line. Does any letter go under it?"
+}

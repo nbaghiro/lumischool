@@ -1,0 +1,21 @@
+# Red, yellow and blue come from the tube; green, orange and purple can be mixed from them.
+item k.mixed-or-not v=1 skills=[art.colour-mixing] {
+  title "Which one can you mix?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let mixable={pick(k, "green", "orange", "purple")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 26x11 {
+    text ask "Red, yellow and blue cannot be mixed from other paints. Which of these can you make by mixing?" narrate width=24 at=canvas(1, 1)
+    choice pick options=["red", mixable, "blue"] stack=row below=ask gap=1
+  }
+
+  answer pick=mixable
+  hint "Which one is not red, yellow or blue?"
+}

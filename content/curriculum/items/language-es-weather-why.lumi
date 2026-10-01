@@ -1,0 +1,22 @@
+# A reason: which weather word fits, and when hace is used.
+item language.es-weather-why v=1 stars=2 skills=[language.weather, reasoning.language] {
+  title "Hace or not?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Ana sees rain and says: Hace sol. What should she say?\", \"It is 35 degrees and sunny. Which two fit?\", \"Leo says: hace nieva. What is wrong?\")}" width=32
+      choice pick options=[pick(k, "Llueve: hace sol is for sunshine.", "hace sol y hace calor", "Nieva stands alone, like llueve."), pick(k, "Nieva: it is cold.", "hace sol y hace frío", "It should be hace frío nieva."), pick(k, "Hace viento: rain is windy.", "nieva y hace calor", "Nothing is wrong.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Llueve: hace sol is for sunshine.", "hace sol y hace calor", "Nieva stands alone, like llueve.")
+  feedback {
+    when (pick == pick(k, "Nieva: it is cold.", "hace sol y hace frío", "Nothing is wrong.")) {
+      say "{pick(k, \"Nieva is snow. What is falling?\", \"Thirty-five degrees is not cold.\", \"Llueve and nieva are said on their own, without hace.\")}"
+    }
+  }
+  hint "What is the weather in English?"
+  hint "Does it use hace, or stand alone?"
+}

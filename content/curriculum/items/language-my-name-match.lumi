@@ -1,0 +1,17 @@
+# Four words to their English, 4 sets, the later sets with the words most often mixed up.
+item language.my-name-match v=1 skills=[language.greetings, language.questions] {
+  title "Match the words"
+  difficulty pick(k, 0, 0, 1, 2)
+  let k=0..3
+
+  scene 34x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Write the number of its English next to each [[language.name]] word." width=32
+      match m left=[pick(k, "[[greet.well]]", "[[greet.very-well]]", "[[greet.how-are-you]]", "[[greet.great]]"), pick(k, "[[greet.bad]]", "[[greet.so-so]]", "[[greet.what-is-your-name]]", "[[greet.so-so]]"), pick(k, "[[greet.hello]]", "[[greet.bad]]", "[[greet.my-name-is]]", "[[greet.very-well]]"), pick(k, "[[greet.goodbye]]", "[[greet.my-name-is]]", "[[greet.well]]", "[[greet.and-you]]")] right=[pick(k, "hello", "my name is", "my name is", "so-so"), pick(k, "well", "very well", "how are you?", "and you?"), pick(k, "bad", "so-so", "well", "very well"), pick(k, "goodbye", "bad", "what is your name?", "great")] blanks=[a, b, c, d]
+    }
+  }
+
+  answer a=pick(k, 2, 2, 2, 4) b=pick(k, 3, 3, 4, 1) c=pick(k, 1, 4, 1, 3) d=pick(k, 4, 1, 3, 2)
+  hint "Start with the word you are surest of, and cross its English off."
+  hint "Two words look alike. Which letter is different, and what does it change?"
+}

@@ -1,0 +1,50 @@
+lesson k-clapping-a-beat v=1 format=teach grade=0 unit=3 subject=music levels=[easy, medium, hard] {
+  title "Clapping a steady beat"
+  goal "Clap a steady beat while counting, keep it going through a rest, and count the claps in a bar."
+
+  look {
+    scene 24x9 {
+      drum d lugs=5 at=canvas(1, 1)
+      countrow row beats=4 meter=4 now=0 right-of=d gap=2
+    }
+    say """
+      A beat is steady, like footsteps: one, two, three, four, again and again, never faster and
+      never slower. Each square is one beat. The filled square is the beat we are on now.
+      """
+  }
+  do {
+    level easy {
+      worked k.beat-squares n=3 level=medium
+    }
+    practice k.beat-squares count=2 seed=2
+    practice k.drum-hits count=2 seed=3
+    practice k.beat-now count=2 seed=4 easy-count=1
+    show k.dum-or-ta k=0 hard-k=1
+    show k.clap-steady
+  }
+  try stars=2 {
+    show k.two-rows-of-beats m=3 easy-m=2 hard-m=4
+  }
+  try stars=3 {
+    show k.clap-on-one b=3 easy-b=2 hard-b=4
+  }
+  remember {
+    say "A beat is steady. Count as you clap, and keep counting through a rest."
+  }
+
+  grown-ups """
+    The page cannot make a sound, so the counting and clapping come from you and the child
+    together. The clapped question is judged on the music page, which fits the child's own speed;
+    on paper, you are the judge. The rest is the hard part: a child who claps on three has stopped
+    counting, so count aloud together and whisper three. If the child rushes, march round the room
+    and clap on each step. Off the page, clap along to a favourite song. Japan, 幼稚園教育要領
+    (kindergarten guidelines), 表現, 内容 (6): "音楽に親しみ，歌を歌ったり，簡単なリズム楽器を使ったりなどする楽しさを味わう。"
+    (Enjoy music, singing songs and playing simple rhythm instruments.)
+    """
+  level easy {
+    grown-ups "At this level the rows are two or three beats long, one row is counted in the teacher's pen first, and the tally marks stay under five."
+  }
+  level hard {
+    grown-ups "At this level the rows are five or six beats long, the tally marks go past five, the high ta is asked about, and the three-star has three or four bars."
+  }
+}

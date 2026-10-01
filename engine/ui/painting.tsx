@@ -22,6 +22,9 @@ export function PaintingWorkspace(props: {
     onOpenPicture?: (artwork: ArtworkSummary) => void;
     onBack: () => void;
     onNew: () => void;
+    /** The easel as the log keeps it, undefined until read; this device's is used until then. */
+    preferences?: unknown;
+    onPreferences?: (state: unknown) => void;
 }): JSX.Element {
     let root: HTMLDivElement | undefined;
     onMount(() => {

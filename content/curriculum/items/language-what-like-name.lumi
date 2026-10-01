@@ -1,0 +1,19 @@
+# Picture or situation to the language: [[describe.she-has-long-hair]], [[describe.he-has-short-hair]], [[describe.she-has-blonde-hair]], [[describe.she-has-curly-hair]], [[describe.he-is-old]], [[describe.she-has-white-hair]], [[describe.he-has-straight-black-hair]], [[describe.she-has-curly-brown-hair]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.what-like-name v=1 skills=[language.describing] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x27 {
+    column all at=canvas(1, 1) space=1 align=start {
+      person p hair=pick(k, "long", "crop", "bob", "curly", "bald", "bun", "fringe", "coily") colour=pick(k, "black", "brown", "blonde", "brown", "grey", "white", "black", "brown") age=pick(k, "child", "child", "child", "child", "older", "older", "child", "child")
+      text ask "Which sentence describes the person?" width=32
+      choice pick options=[pick(k, "[[describe.she-has-long-hair]]", "[[describe.she-has-long-hair]]", "[[describe.she-has-blonde-hair]]", "[[describe.he-has-straight-hair]]", "[[describe.he-is-young]]", "[[describe.she-has-white-hair]]", "[[describe.she-has-curly-black-hair]]", "[[describe.she-has-straight-brown-hair]]"), pick(k, "[[describe.he-has-short-hair]]", "[[describe.she-has-blonde-hair]]", "[[describe.he-has-black-hair]]", "[[describe.she-has-curly-hair]]", "[[describe.it-is-a-baby]]", "[[describe.she-has-blonde-hair]]", "[[describe.he-has-straight-black-hair]]", "[[describe.she-has-curly-blonde-hair]]"), pick(k, "[[describe.she-has-curly-hair]]", "[[describe.he-has-short-hair]]", "[[describe.she-has-white-hair]]", "[[describe.she-has-white-hair]]", "[[describe.he-is-old]]", "[[describe.she-has-curly-hair]]", "[[describe.he-has-straight-blonde-hair]]", "[[describe.she-has-curly-brown-hair]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[describe.she-has-long-hair]]", "[[describe.he-has-short-hair]]", "[[describe.she-has-blonde-hair]]", "[[describe.she-has-curly-hair]]", "[[describe.he-is-old]]", "[[describe.she-has-white-hair]]", "[[describe.he-has-straight-black-hair]]", "[[describe.she-has-curly-brown-hair]]")
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

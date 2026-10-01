@@ -1,0 +1,21 @@
+item k.highest-bar v=1 skills=[music.pitch] {
+  title "The highest bar"
+  difficulty k
+  let k=0..1
+  let word={pick(k, "highest", "lowest")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 26x22 {
+    chimebars bars bars=8 letters=0 at=canvas(1, 1)
+    text ask "Short bars ring high and long bars ring low. Which bar makes the {word} sound?" narrate width=24 below=bars gap=1
+    choice pick options=["the longest bar", "the shortest bar"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "the shortest bar" else "the longest bar")
+  hint "Is the {word} sound the one a short bar makes, or a long bar?"
+}

@@ -1,0 +1,19 @@
+# The language to English: [[phrase.i-like-fruit]], [[phrase.i-do-not-like-lemon]], [[phrase.i-like-strawberries]], [[phrase.do-you-like-grapes]], [[phrase.i-do-not-like-tomatoes]], [[phrase.i-like-pears-a-lot]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.fruit-meaning v=1 skills=[language.food, language.opinions] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "boy", "girl", "gran", "boy", "girl")] says=[pick(k, "[[phrase.i-like-fruit]]", "[[phrase.i-do-not-like-lemon]]", "[[phrase.i-like-strawberries]]", "[[phrase.do-you-like-grapes]]", "[[phrase.i-do-not-like-tomatoes]]", "[[phrase.i-like-pears-a-lot]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "I like pears a lot.", "Do you like grapes?", "I do not like lemon.", "I like pears a lot.", "I like pears a lot.", "Do you like grapes?"), pick(k, "I like fruit.", "I do not like lemon.", "I do not like tomatoes.", "Do you like grapes?", "I like strawberries.", "I like pears a lot."), pick(k, "I like strawberries.", "I do not like tomatoes.", "Do you like grapes?", "I do not like lemon.", "I do not like tomatoes.", "I like strawberries."), pick(k, "I do not like tomatoes.", "I like strawberries.", "I like strawberries.", "I like strawberries.", "Do you like grapes?", "I do not like tomatoes.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "I like fruit.", "I do not like lemon.", "I like strawberries.", "Do you like grapes?", "I do not like tomatoes.", "I like pears a lot.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

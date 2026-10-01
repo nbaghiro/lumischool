@@ -1,0 +1,22 @@
+item k.what-heat-did v=1 skills=[chemistry.cooking, chemistry.changes] {
+  title "What did the heat do?"
+  difficulty (if c == "toast-bread" or c == "cook-egg" then 0 else 1)
+  let c={"toast-bread", "cook-egg", "bake-cake", "rise-dough"}
+  let right={if c == "toast-bread" then "it turned brown and crisp" else if c == "cook-egg" then "it went from runny to firm" else if c == "bake-cake" then "the runny mixture became a soft cake" else "the dough grew bigger"}
+  let wrong={if c == "toast-bread" then "it turned white and soft" else if c == "cook-egg" then "it went from firm to runny" else if c == "bake-cake" then "the cake became runny mixture" else "the dough grew smaller"}
+  level easy {
+    let c={"toast-bread", "cook-egg"}
+  }
+  level hard {
+    let c={"bake-cake", "rise-dough"}
+  }
+
+  scene 34x22 {
+    beforeafter ch change=c show=1 names=1 at=canvas(1, 0)
+    text q "Look at before and after. What did the warmth do?" narrate width=30 below=ch gap=1
+    choice pick options=[wrong, right] stack=column below=q gap=1
+  }
+
+  answer pick=right
+  hint "Compare the before picture with the after picture. What is different?"
+}

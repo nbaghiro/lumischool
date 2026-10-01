@@ -1,0 +1,28 @@
+item k.two-labels v=1 stars=3 skills=[writing.spelling, reading.segmenting] {
+  title "Two labels"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..1
+  let a={pick(k, "cat", "hen")}
+  let b={pick(k, "sun", "cup")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 32x16 {
+    row pics at=canvas(1, 1) space=3 align=end {
+      art one asset="{a}"
+      art two asset="{b}"
+    }
+    text ask "Write a label for each picture, one letter for each sound." narrate width=30 below=pics gap=1
+    row labels below=ask gap=1 space=3 align=start {
+      word-input first options=[a] letters=3
+      word-input second options=[b] letters=3
+    }
+  }
+
+  answer first=a second=b
+  hint "Do one picture at a time. Say its sounds slowly."
+}

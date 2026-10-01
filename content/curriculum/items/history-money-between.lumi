@@ -1,0 +1,20 @@
+# Years between steps in the story of money, from the record, some across year one.
+item history.money-between v=1 skills=[history.money, history.bc-ad] {
+  title "How long between?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let e1={pick(k, "Paper money", "Paper", "Qin unites China", "Paper", "Qin unites China", "Qin unites China")}
+  let y1={pick(k, 1024, 105, -221, 105, -221, -221)}
+  let e2={pick(k, "Banknotes in Europe", "Paper money", "Paper", "Banknotes in Europe", "Paper money", "Banknotes in Europe")}
+  let y2={pick(k, 1661, 1024, 105, 1661, 1024, 1661)}
+
+  scene 36x14 {
+    timeline line from=-400 to=2000 step=400 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(0, 0)
+    text ask "How many years after the first was the second? There was no year nought." narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Is either year BC?"
+  hint "Count from the first to the second; across year one, take one away."
+}

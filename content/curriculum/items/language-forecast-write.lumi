@@ -1,0 +1,19 @@
+# The word written from its picture: [[weather.it-is-raining]], [[weather.it-is-snowing]], [[weather.wind]], [[weather.degrees]], [[weather.night]], [[weather.north]], [[weather.heat]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.forecast-write v=1 skills=[language.weather, language.reading, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage forecast title="[[weather.the-weather-title]]" text="[[weather.saturday-forecast]]" width=30 numbers=true
+      text ask "{pick(k, \"What is the weather in Bilbao? One word. Write it in [[language.name]].\", \"What is the weather in the Pyrenees? One word. Write it in [[language.name]].\", \"What is there a lot of in Valencia? One word. Write it in [[language.name]].\", \"The word after each temperature. Write it in [[language.name]].\", \"When does it snow? The last word of por la ___. Write it in [[language.name]].\", \"Where is Bilbao? The last word of en el ___. Write it in [[language.name]].\", \"What is it like in Seville, with the sun? Hace sol y ___. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[weather.it-is-raining]]", "[[weather.it-is-snowing]]", "[[weather.wind]]", "[[weather.degrees]]", "[[weather.night]]", "[[weather.north]]", "[[weather.heat]]")]
+    }
+  }
+
+  answer word=pick(k, "[[weather.it-is-raining]]", "[[weather.it-is-snowing]]", "[[weather.wind]]", "[[weather.degrees]]", "[[weather.night]]", "[[weather.north]]", "[[weather.heat]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

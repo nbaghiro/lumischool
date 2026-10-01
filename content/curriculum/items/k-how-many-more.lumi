@@ -1,0 +1,27 @@
+item k.how-many-more v=1 skills=[counting.compare, reasoning.part-whole] {
+  title "How many more to make them the same?"
+  difficulty (b - a)
+  let a=1..5 b=2..6
+  where (b > a and b - a <= 3)
+  level easy {
+    where (b - a == 1)
+  }
+  level hard {
+    where (b - a == 3)
+  }
+
+  scene 26x16 {
+    props top count=a prop=apple at=canvas(1, 1)
+    props bottom count=b prop=apple below=top gap=1
+    text ask "Ada has the top row and Ben the bottom row. How many more apples does Ada need to have the same as Ben?" narrate width=24 below=bottom gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (b - a)
+  feedback {
+    when (answer == b) point=bottom {
+      say "That is how many Ben has. How many more than Ada's is that?"
+    }
+  }
+  hint "Put Ada's apples under Ben's, one under one. How many of Ben's have no partner?"
+}

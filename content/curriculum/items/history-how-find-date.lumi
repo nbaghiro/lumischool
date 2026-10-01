@@ -1,0 +1,25 @@
+# The two-star reason: which source is best for finding when a building went up, when there is no
+# date on it. An old map shows it there or not there; a guess from its look is weakest.
+item history.how-find-date v=1 skills=[history.local, reasoning.why] {
+  title "How can we find out?"
+  difficulty k
+  let k=0..1
+
+  scene 33x32 {
+    townmap map year=1850 town=Millbrook labels=1 at=canvas(1, 0)
+    text ask "{if k == 0 then \"There is no date on the old school. How could you find out roughly when it was built?\" else \"Two people disagree about when the station was built. Which would settle it best?\"}" narrate width=30 below=map gap=1
+    choice pick options=["Look at old maps: is it on the map of each year?", "Guess from how old it looks", "Ask a friend who likes old buildings"] stack=column below=ask gap=1
+  }
+
+  answer pick="Look at old maps: is it on the map of each year?"
+  feedback {
+    when (pick == "Guess from how old it looks") point=map {
+      say "Buildings can be made to look old, or be mended to look new. What would show it for sure?"
+    }
+    when (pick == "Ask a friend who likes old buildings") point=map {
+      say "A friend may be right, but how would they know? Where could you check?"
+    }
+  }
+  hint "What is made at a known time and shows what was there?"
+  hint "If it is on the map of 1900 but not of 1850, when was it built?"
+}

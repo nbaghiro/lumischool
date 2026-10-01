@@ -1,0 +1,26 @@
+# The two-star reason: a new thing found deep down means the ground was dug and filled in later, not
+# that the thing is old. It is the exception that shows how the rule works.
+item history.plastic-deep v=1 skills=[history.layers, reasoning.why] {
+  title "A bottle in an old layer"
+  difficulty k
+  let k=0..1
+  let thing={pick(k, "a plastic bottle", "a metal can")}
+
+  scene 31x31 {
+    strata cliff layers=5 names=0 ash=0 fault=0 at=canvas(1, 0)
+    text ask "Ada found {thing} in the fourth layer down, next to a stone axe. She says {thing} must be very old. What is more likely?" narrate width=28 below=cliff gap=1
+    choice pick options=["Someone dug a hole there later and buried it", "People made it in the Stone Age", "Layers are laid from the bottom up"] stack=column below=ask gap=1
+  }
+
+  answer pick="Someone dug a hole there later and buried it"
+  feedback {
+    when (pick == "People made it in the Stone Age") point=cliff {
+      say "When was {thing} first made? Could Stone Age people have made one?"
+    }
+    when (pick == "Layers are laid from the bottom up") point=cliff {
+      say "That is true, but it does not explain {thing}. How could something new get down there?"
+    }
+  }
+  hint "Could people long ago have made {thing}?"
+  hint "How could something new end up under old layers?"
+}

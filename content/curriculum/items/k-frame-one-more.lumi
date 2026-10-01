@@ -1,0 +1,26 @@
+item k.frame-one-more v=1 skills=[counting.one-more] {
+  title "One more counter"
+  difficulty n
+  let n=4..9
+  level easy {
+    let n=4..6
+  }
+  level hard {
+    let n=7..9
+  }
+
+  scene 24x15 {
+    tenframe frame count=n color=glow at=canvas(1, 1)
+    text ask "One more counter goes in the frame. How many now?" narrate width=22 below=frame gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n + 1)
+  feedback {
+    when (answer == n) point=frame {
+      say "That is how many there are before. Put one more in. What number comes next?"
+    }
+  }
+  hint "How many counters are there now?"
+  hint "One more is the next number when you count."
+}

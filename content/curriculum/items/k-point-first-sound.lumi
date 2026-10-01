@@ -1,0 +1,28 @@
+# Four cards now, and letters beyond the first sounds: the grown-up says a word and the child
+# points at the card for its first sound.
+item k.point-first-sound v=1 skills=[reading.phonics, reading.letters] {
+  title "Listen and point"
+  difficulty (if k <= 3 then 0 else 1)
+  let k=0..7
+  let word={pick(k, "bus", "red", "fan", "leg", "gate", "jam", "web", "van")}
+  let letter={pick(k, "b", "r", "f", "l", "g", "j", "w", "v")}
+  let o1={pick(k, "d", "n", "t", "i", "q", "y", "v", "w")}
+  let o2={pick(k, "p", "m", "l", "t", "p", "g", "m", "u")}
+  let o3={pick(k, "h", "s", "k", "h", "j", "i", "n", "y")}
+  level easy {
+    let k=0..3
+  }
+  level hard {
+    let k=4..7
+  }
+
+  scene 28x14 {
+    lettercards cards letters=[o1, o2, letter, o3] at=canvas(1, 1)
+    text ask "Listen: {word}. Point to the card for its first sound." narrate width=26 below=cards gap=1
+    choice pick options=[o1, o2, letter, o3] stack=row below=ask gap=1
+  }
+
+  answer pick=letter
+  hint "Say {word} slowly and stop after the first sound."
+  hint "Say the sound of each card. Which one matches?"
+}

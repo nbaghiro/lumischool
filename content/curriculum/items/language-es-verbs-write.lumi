@@ -1,0 +1,23 @@
+# The word written from its picture: hablo, hablas, habla, hablamos, nadan, cantamos, habláis.
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.es-verbs-write v=1 skills=[language.grammar, language.sentences, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x7 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Yo ___ español. (hablar) Write it in Spanish.\", \"¿Tú ___ inglés? (hablar) Write it in Spanish.\", \"Ana ___ francés. (hablar) Write it in Spanish.\", \"Nosotros ___ con la abuela. (hablar) Write it in Spanish.\", \"Ellos ___ en el mar. (nadar) Write it in Spanish.\", \"Leo y yo ___ en el coro. (cantar) Write it in Spanish.\", \"Vosotros ___ mucho. (hablar) Write it in Spanish.\")}" width=32
+      word-input word options=[pick(k, "hablo", "hablas", "habla", "hablamos", "nadan", "cantamos", "habláis")]
+    }
+  }
+
+  answer word=pick(k, "hablo", "hablas", "habla", "hablamos", "nadan", "cantamos", "habláis")
+  feedback {
+    when (word == pick(k, "-", "-", "-", "-", "-", "-", "hablais")) {
+      say "{pick(k, \"The letters are right. The word needs its accent: hablo.\", \"The letters are right. The word needs its accent: hablas.\", \"The letters are right. The word needs its accent: habla.\", \"The letters are right. The word needs its accent: hablamos.\", \"The letters are right. The word needs its accent: nadan.\", \"The letters are right. The word needs its accent: cantamos.\", \"The letters are right. The word needs its accent: habláis.\")}"
+    }
+  }
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

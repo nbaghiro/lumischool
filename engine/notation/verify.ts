@@ -4,7 +4,7 @@
 // for the correct answer, since it could not tell that mistake apart. The checkers written in code,
 // for answers an expression cannot state, are declared here with the contract they meet; each one
 // can also list its solutions, so the verifier can prove a puzzle is solvable before it ships. The
-// subjects' checkers are in chemistry.ts, coding.ts, nature.ts, paint.ts and physics.ts.
+// subjects' checkers are in chemistry.ts, coding.ts, history.ts, nature.ts, paint.ts and physics.ts.
 import { ARRANGED, prove, type Arrangement } from "../arrange";
 import {
     checkNames,
@@ -36,6 +36,7 @@ import {
 import { inRange, noteName, notesOf, RANGE } from "../sound/pitch";
 import { CHEMISTRY } from "./chemistry";
 import { CODING } from "./coding";
+import { HISTORY } from "./history";
 import {
     fill,
     fillIndex,
@@ -337,6 +338,7 @@ function byEye(rule: ByEyeRule): CodeChecker {
 export const CHECKERS: Record<string, CodeChecker> = {
     ...CHEMISTRY,
     ...CODING,
+    ...HISTORY,
     ...NATURE,
     ...PAINT,
     ...PHYSICS,

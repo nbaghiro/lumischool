@@ -1,0 +1,64 @@
+# The dates of the toys are in engine/notation/chronicle.ts with their sources: the teddy bear 1902,
+# plastic building bricks from 1949, the puzzle cube 1974, and the top, kite and rag doll long ago.
+lesson history-toys-old-and-new v=1 format=teach grade=1 unit=3 subject=history levels=[easy, medium, hard] {
+  title "Toys old and new"
+  goal "Put toys in the order they were first made, and say which could have belonged to a child long ago."
+
+  look {
+    scene 36x8 {
+      toys shelf toys=["spinning top", "kite", "rag doll", "teddy bear", "building bricks", "puzzle cube"] letters=0 at=canvas(1, 0)
+    }
+    say """
+      Some toys are very old kinds of toy. Children spun tops and flew kites long, long ago, and a
+      rag doll was found from Roman times. Some are newer: the first teddy bears were made in 1902,
+      plastic bricks about fifty years later, and the puzzle cube in 1974. The shelf goes from the
+      oldest kind on the left to the newest on the right.
+      """
+  }
+  do {
+    level easy {
+      worked history.toy-older k=0
+    }
+    show history.toy-older k=1 easy-k=2 hard-k=3
+    show history.toy-older k=2 easy-k=1 hard-k=5
+    show history.toys-in-order k=2 easy-k=0 hard-k=4
+    show history.toy-flag k=1 easy-k=0 hard-k=3
+    show history.toys-in-order k=3 easy-k=1 hard-k=5
+    show history.toy-flag k=2 easy-k=2 hard-k=4
+    level hard {
+      show history.toy-flag k=5
+    }
+  }
+  story {
+    show history.toy-too-new k=1 easy-k=0 hard-k=2
+    show history.toy-too-new k=0 easy-k=1 hard-k=3
+  }
+  try stars=2 {
+    show history.new-or-old-kind k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show history.mum-not-grandma k=0 hard-k=1
+  }
+  remember {
+    say "A new toy can be an old kind of toy. Ask when the first one like it was made."
+  }
+
+  grown-ups """
+    The idea is that things have a history: every kind of toy was first made at some time, and
+    some kinds are far older than others. The way in compares two toys, the core puts three in
+    order and places one on a timeline of the last hundred years, and the story asks which toy
+    could not have been a grandparent's. The wrong idea to watch for is "new-looking means a new
+    kind": a kite from the shop yesterday is a kind of toy older than any grandparent. If the child
+    is stuck, sort real toys at home into "Grandma could have had one" and "too new for Grandma".
+    Off the page, ask a grandparent or an older friend which toys they played with, and write the
+    list together. England's key stage 1 history asks for "changes within living memory", and toys
+    are where most schools begin it. The early dates are given as "long ago" on purpose: the
+    record only says spinning tops and kites are more than two thousand years old.
+    """
+  level easy {
+    grown-ups "At this level a worked example compares a spinning top with a puzzle cube, the toys to order are nearly in order already, the empty flag is the newest toy, and the grandparent's year is far from every toy's first date."
+  }
+  level hard {
+    grown-ups "At this level the pairs are two newer toys (the teddy bear against plastic bricks or the cube), all three toys are muddled on the shelf, the empty flag is in the middle, and the three-star question moves Grandma's birth earlier, so the bricks come in just as she was a child."
+  }
+}

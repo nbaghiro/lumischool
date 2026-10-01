@@ -1,0 +1,21 @@
+item k.what-to-wear v=1 skills=[nature.weather] {
+  title "What to wear"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let when={pick(k, "It is raining hard.", "It is snowing and very cold.", "It is hot and sunny at the beach.", "It is windy and cool in autumn.")}
+  let right={pick(k, "a raincoat and boots", "a hat, a scarf and gloves", "a sun hat", "a warm coat")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 28x21 {
+    text ask "{when} What should Ada wear to go outside?" narrate width=26 at=canvas(1, 1)
+    choice pick options=["a raincoat and boots", "a hat, a scarf and gloves", "a sun hat", "a warm coat"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "What would keep Ada dry, warm or cool in this weather?"
+}

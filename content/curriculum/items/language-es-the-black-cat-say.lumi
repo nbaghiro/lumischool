@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.es-the-black-cat-say v=1 skills=[language.colours, language.grammar, language.speaking] {
+  title "Say it with a colour"
+  let k=0..2
+
+  scene 34x6 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Say three fruits with their colour: la fresa roja, el plátano amarillo, la pera verde.\", \"Describe a pet you know, with its colour: Tengo un gato negro, or Mi perro es marrón.\", \"Point at three things in the room and say each with its colour after it.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="The colour said after the thing, with an a ending after la words and an o ending after el words." notice=["Colour after the thing", "Roja and blanca after la", "Rojo and blanco after el", "Verde and azul unchanged"]
+  hint "Say the thing first, then its colour."
+  hint "La casa: the colour ends in a too."
+}

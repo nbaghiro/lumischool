@@ -1,0 +1,19 @@
+item k.lang-more v=1 stars=2 skills=[language.numbers, counting.compare] {
+  title "Which is more?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 26x11 {
+    text q "Which is more: {pick(k, \"[[num.two]] or [[num.four]]\", \"[[num.five]] or [[num.three]]\")}?" narrate width=24 at=canvas(1, 1)
+    choice pick options=[pick(k, "[[num.two]]", "[[num.five]]"), pick(k, "[[num.four]]", "[[num.three]]")] stack=row below=q gap=1
+  }
+
+  answer pick=pick(k, "[[num.four]]", "[[num.five]]")
+  hint "Say each one in English. Which number is bigger?"
+}

@@ -1,0 +1,63 @@
+# The national unit for russia. Items take n=3; the world items reviewed here change by level.
+# Dates are in engine/notation/chronicle.ts with their sources.
+lesson history-g6-russia-how-our-country-is-governed v=1 format=teach grade=6 unit=9 subject=history nation=russia levels=[easy, medium, hard] {
+  title "How Russia is governed"
+  goal "Put the steps of Russia's government in order, and say what the State Duma does."
+
+  look {
+    scene 36x9 {
+      timeline line from=1900 to=2000 step=20 years=[1906, 1917, 1993] labels=["State Duma first meets", "Women vote in Russia", "Constitution of Russia adopted"] at=canvas(0, 0)
+    }
+    say """
+      In 1906 Russia's first elected assembly, the State Duma, met in St Petersburg. In 1917 women in Russia won the vote. On 12 December 1993 the people voted to adopt the present Constitution of the Russian Federation, under which the Federal Assembly, with the State Duma, passes the country's laws.
+      """
+  }
+  do {
+    level easy {
+      worked history.n6-what n=3
+    }
+    show history.n6-order n=3 k=1 easy-k=0 hard-k=2
+    show history.n6-between n=3 k=0 hard-k=1
+    show history.n6-century n=3 k=0 hard-k=1
+    show history.law-steps k=2 easy-k=0 hard-k=4
+    show history.vote-order k=2 easy-k=0 hard-k=4
+    show history.un-order k=2 easy-k=0 hard-k=4
+    show history.n6-order n=3 k=2 easy-k=1 hard-k=0
+    level medium hard {
+      show history.n6-what n=3
+    }
+    level easy {
+      show history.n6-century n=3 k=1
+    }
+    level hard {
+      show history.law-steps k=5
+    }
+  }
+  story {
+    show history.n6-between n=3 k=1 hard-k=0
+  }
+  try stars=2 {
+    show history.n6-why n=3
+  }
+  try stars=3 {
+    show history.n6-find-out n=3
+  }
+  remember {
+    say "Every date in our country's story can be put on the line and counted from, and every one came from a source."
+  }
+
+  grown-ups """
+    The idea is how the family's own country is governed today and how it came to be, told as
+    facts and without verdicts. The way in names what a thing was; the core orders three
+    events, counts the years between two, names a century, and reviews how laws are made, votes and
+    the United Nations; the two-star question asks why something was done. If the child is stuck on
+    counting, count to the next hundred first. The three-star task is for you to mark: a small
+    piece of finding out with you. Russia's обществознание, which teaches how the country is governed, comes in later grades in the edition our audit read; this lesson is a first look.
+    """
+  level easy {
+    grown-ups "At this level a worked example says what the thing was, the events come nearly in order, the years counted are the closest pair, and the review questions are the plainest."
+  }
+  level hard {
+    grown-ups "At this level the events are fully muddled, the years counted are the longer pair, the century asked has a trap, and the review questions cross year one."
+  }
+}

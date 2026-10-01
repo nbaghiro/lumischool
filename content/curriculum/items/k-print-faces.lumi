@@ -1,0 +1,21 @@
+# The print comes out facing the other way from the block, which the drawing shows side by side.
+item k.print-faces v=1 skills=[art.printing, art.looking] {
+  title "Which way does the print face?"
+  difficulty (if m == "fish" or m == "bird" then 0 else 1)
+  let m={"fish", "bird", "leaf", "butterfly"}
+  level easy {
+    let m={"fish", "bird"}
+  }
+  level hard {
+    let m={"leaf", "butterfly"}
+  }
+
+  scene 30x18 {
+    stamps pic motif=m show="both" colour=blue flip=false made="print" at=canvas(1, 1)
+    text q "Look at the block and the print. Does the print face the same way as the block, or the other way?" narrate width=28 below=pic gap=1
+    choice pick options=["the same way", "the other way"] stack=row below=q gap=1
+  }
+
+  answer pick="the other way"
+  hint "Which way does the {m} point on the block? Which way on the print?"
+}

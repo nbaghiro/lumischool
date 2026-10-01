@@ -28,8 +28,30 @@ export const ferryTown: World = {
     weather: "clear",
     seasons: ["summer"],
     guide: "bird",
-    // its lessons wait for languages to come back with a way of their own
-    reaches: [{ art: "hola-sign", when: ["subject:language"], says: "Hola means hello." }],
+    reaches: [
+        {
+            art: "market-stall",
+            when: ["skill:language.food", "skill:language.market"],
+            says: "Name the fruit, then ask the price.",
+        },
+        {
+            art: "clock-tower",
+            when: ["skill:language.time"],
+            says: "The clock tower strikes the hours.",
+        },
+        {
+            art: "plaza-sign",
+            when: ["skill:language.town", "skill:language.directions"],
+            says: "Every street here leads to the square.",
+        },
+        {
+            art: "shop-front",
+            when: ["skill:language.numbers"],
+            says: "Prices in the window, in words.",
+        },
+        { art: "houses", when: ["skill:language.family"], says: "Families behind the blue doors." },
+        { art: "hola-sign", when: ["subject:language"], says: "A sign that greets the ferry." },
+    ],
     offers: {
         landmarks: [
             "houses",
@@ -81,9 +103,9 @@ export const ferryTown: World = {
     site: {
         kind: "track",
         hosts: {
-            subjects: [],
+            subjects: ["language"],
             label: "a second language",
-            needs: "The language lessons, which came out of the curriculum on 15 September 2026 until languages have a way of their own, and the audio core and the answer model that tracks.md says a spoken or written answer waits for.",
+            bare: "Your language lessons start here once a grown-up has chosen your language.",
         },
         land: { terrain: "across-the-bay", near: ["harbour"] },
     },

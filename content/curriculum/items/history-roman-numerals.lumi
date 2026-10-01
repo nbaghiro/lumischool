@@ -1,0 +1,19 @@
+# Reading Roman numerals, as carved on buildings and clocks: I 1, V 5, X 10, L 50, C 100, D 500,
+# M 1000, and a smaller one before a bigger means take it away.
+item history.roman-numerals v=1 skills=[history.ancient, number.roman] {
+  title "Roman numbers"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let rn={pick(k, "XII", "XXVI", "XLIX", "CXXII", "MCMLXIX", "MDCCCL")}
+  let key={pick(k, 12, 26, 49, 122, 1969, 1850)}
+
+  scene 32x16 {
+    greatclock clock at=canvas(1, 0)
+    text ask "I is 1, V is 5, X is 10, L is 50, C is 100, D is 500, M is 1000. A smaller one before a bigger one is taken away. What number is {rn}?" narrate width=20 right-of=clock gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer key
+  hint "Read from the left. Add each letter, unless the next one is bigger."
+  hint "IX is 9 and XL is 40, because the smaller one comes first."
+}

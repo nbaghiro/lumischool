@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[town.the-shop]], [[town.the-square]], [[town.the-park]], [[town.the-station]], [[town.the-beach]], [[town.the-museum]], [[town.the-cafe]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.next-to-name v=1 skills=[language.town, language.directions] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x44 {
+    column all at=canvas(1, 1) space=1 align=start {
+      townplan plan places=["[[town.the-cafe]]", "[[town.the-shop]]", "[[town.the-park]]", "[[town.the-beach]]", "[[town.the-museum]]", "[[town.the-station]]", "[[town.the-square]]"]
+      text ask "{pick(k, \"[[town.it-is-opposite-the-cafe]] Which place is it?\", \"[[town.it-is-at-the-end-of-the-street]] Which place is it?\", \"[[town.it-is-between-the-cafe-and-the-museum]] Which place is it?\", \"[[town.it-is-opposite-the-museum]] Which place is it?\", \"[[town.it-is-opposite-the-park]] Which place is it?\", \"[[town.it-is-next-to-the-park-far-from-the-chil]] Which place is it?\", \"[[town.it-is-near-the-child-on-the-left]] Which place is it?\")}" width=32
+      choice pick options=[pick(k, "[[town.the-museum]]", "[[town.the-museum]]", "[[town.the-shop]]", "[[town.the-square]]", "[[town.the-museum]]", "[[town.the-park]]", "[[town.the-shop]]"), pick(k, "[[town.the-shop]]", "[[town.the-square]]", "[[town.the-beach]]", "[[town.the-station]]", "[[town.the-station]]", "[[town.the-museum]]", "[[town.the-park]]"), pick(k, "[[town.the-park]]", "[[town.the-park]]", "[[town.the-station]]", "[[town.the-park]]", "[[town.the-beach]]", "[[town.the-beach]]", "[[town.the-station]]"), pick(k, "[[town.the-station]]", "[[town.the-station]]", "[[town.the-park]]", "[[town.the-cafe]]", "[[town.the-cafe]]", "[[town.the-cafe]]", "[[town.the-cafe]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[town.the-shop]]", "[[town.the-square]]", "[[town.the-park]]", "[[town.the-station]]", "[[town.the-beach]]", "[[town.the-museum]]", "[[town.the-cafe]]")
+  feedback {
+    when (pick == pick(k, "[[town.the-park]]", "[[town.the-station]]", "[[town.the-shop]]", "[[town.the-park]]", "[[town.the-museum]]", "[[town.the-cafe]]", "[[town.the-shop]]")) point=plan {
+      say "{pick(k, \"The park is up the road from the café. Opposite is across the road.\", \"The station is at the end of the second street. Which place is at the end of the road?\", \"The shop is across the road. What stands between the café and the museum?\", \"The park is below the museum. Opposite is across the road.\", \"The museum is on the same side as the park. Look across the road.\", \"The café is next to the park too, but near the child.\", \"The shop is near the child too, but on the right.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

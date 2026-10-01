@@ -1,0 +1,11 @@
+# Marked by a grown-up: an old photograph of the family or the street, and what is the same and
+# what is different from today.
+item history.old-photo v=1 stars=3 skills=[history.then-and-now, history.enquiry] {
+  title "An old photograph"
+
+  scene 34x16 {
+    thenandnow street year=1950 sign=0 things=["motor car", "bicycle", "television aerial"] at=canvas(1, 0)
+  }
+
+  check writing.by-eye look-for="An old photograph from the family or the local library, looked at with a grown-up: the child says roughly when it was taken and why, names three things that are the same today and three that are different, and uses the clothes, the transport or the buildings as clues." notice=["Said roughly when it was taken", "Gave a clue for the date", "Three things the same", "Three things different"] ask="What is the clue that tells you it is old?"
+}

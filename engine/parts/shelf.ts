@@ -601,6 +601,54 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
     soundboxes: { on: "letters", also: [], shows: ["letters"], words: "" },
     soundbuttons: { on: "letters", also: [], shows: ["letters"], words: "" },
     staff: { on: "music", also: [], shows: ["music"], words: "rhythm bar" },
+    toys: {
+        on: "home",
+        also: [],
+        shows: ["ordering"],
+        words: "history toys old new then now spinning top kite doll teddy bear bricks puzzle cube play",
+    },
+    thenandnow: {
+        on: "places",
+        also: ["time"],
+        shows: ["ordering", "calendar"],
+        words: "history then now old new street long ago past present change inventions could not anachronism year horse cart balloon bicycle car light aeroplane television phone",
+    },
+    council: {
+        on: "places",
+        also: [],
+        shows: ["data", "counting"],
+        words: "history council vote voting election ballot majority mayor town meeting decide rules laws citizenship civics",
+    },
+    familytree: {
+        on: "writing",
+        also: ["people"],
+        shows: ["ordering", "calendar"],
+        words: "history family tree grandparents parents generations born birth years ancestors",
+    },
+    objectcard: {
+        on: "stories",
+        also: ["writing"],
+        shows: ["reading", "ordering"],
+        words: "history museum object artefact label case archaeology stone bronze iron tablet coin shell money ancient",
+    },
+    flags: {
+        on: "travel",
+        also: [],
+        shows: ["position"],
+        words: "history flag flags country nation union jack stars stripes sun united kingdom britain america usa japan russia china",
+    },
+    worldmap: {
+        on: "travel",
+        also: [],
+        shows: ["position"],
+        words: "history geography world map continents oceans countries capitals cities voyage route atlas globe",
+    },
+    townmap: {
+        on: "travel",
+        also: ["places"],
+        shows: ["position", "ordering"],
+        words: "history local study old map new map town then now grid squares change buildings",
+    },
     sourcecard: {
         on: "writing",
         also: ["stories"],
@@ -1621,6 +1669,12 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
     ship: { on: "travel", also: [], shows: ["counting"], words: "sailing ship sails portholes" },
     sidings: { on: "travel", also: [], shows: ["puzzles"], words: "railway shunting" },
     signpost: { on: "travel", also: [], shows: ["length", "position"], words: "directions" },
+    townplan: {
+        on: "travel",
+        also: ["places"],
+        shows: ["position", "reading"],
+        words: "town plan map directions left right straight on street crossing language spanish",
+    },
     sledge: {
         on: "travel",
         also: ["outdoors"],
@@ -2404,6 +2458,12 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         shows: ["nature"],
         words: "ice skating skate winter child",
     },
+    weatherweek: {
+        on: "outdoors",
+        also: ["time"],
+        shows: ["data", "calendar"],
+        words: "weather forecast chart sun cloud rain snow wind storm days temperature language spanish",
+    },
     snowman: {
         on: "outdoors",
         also: ["home"],
@@ -2420,6 +2480,12 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
     },
     sweetjar: { on: "food", also: [], shows: ["counting"], words: "sweets candy jar" },
     pizza: { on: "food", also: ["fractions"], shows: ["halves"], words: "slices toppings" },
+    foodstall: {
+        on: "food",
+        also: ["money"],
+        shows: ["words", "money"],
+        words: "market stall crates fruit vegetables bread cheese fish eggs names prices language spanish",
+    },
     chocolate: {
         on: "food",
         also: ["fractions"],
@@ -3010,11 +3076,41 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         shows: ["ordering"],
         words: "game buffer stop railway end line",
     },
+    yardlever: {
+        on: "travel",
+        also: ["sport", "science"],
+        shows: ["ordering"],
+        words: "game lever points handle yard switch",
+    },
+    railcurve: {
+        on: "travel",
+        also: ["sport"],
+        shows: ["ordering"],
+        words: "game railway lead curve points siding fan yard track",
+    },
     sidingboard: {
         on: "travel",
         also: ["sport"],
         shows: ["ordering", "adding"],
         words: "game board sign siding yard letter number total order spare",
+    },
+    parcel: {
+        on: "travel",
+        also: ["home"],
+        shows: [],
+        words: "game parcel package box post delivery string label",
+    },
+    finishline: {
+        on: "travel",
+        also: ["sport"],
+        shows: [],
+        words: "game finish line chequered race road end",
+    },
+    deliverylist: {
+        on: "travel",
+        also: ["sport"],
+        shows: ["ordering", "counting"],
+        words: "game delivery list clipboard round stops tick order",
     },
     rowboat: {
         on: "travel",
@@ -3118,6 +3214,12 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         also: [],
         shows: [],
         words: "game rescue boat lifeboat river sea cabin deck rail",
+    },
+    barge: {
+        on: "travel",
+        also: ["measuring"],
+        shows: ["weight"],
+        words: "game cargo barge boat harbour crates numbered deck crane hook load balance",
     },
     lifering: {
         on: "travel",

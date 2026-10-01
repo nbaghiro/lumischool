@@ -1,0 +1,70 @@
+# The two accounts on the page ("A sailor's journal" and "A book written later") were written for the
+# lesson from the facts in engine/notation/chronicle.ts; the journal's detail of eating rats and
+# leather follows Pigafetta's real journal (recalled). The source cards are the record's.
+lesson history-two-accounts-of-one-voyage v=1 format=teach grade=5 unit=8 subject=history levels=[easy, medium, hard] {
+  title "Two accounts of one voyage"
+  goal "Compare two accounts of one voyage: say where they agree and differ, who was there, and which to use for which question."
+
+  look {
+    scene 36x21 {
+      column texts at=canvas(0, 0) space=1 align=start {
+        passage a title="A sailor's journal" text="We left Spain with five ships. The sea was wide and our food ran out; we ate rats and leather. Of all the ships only the Victoria came home, in 1522." width=36 numbers=false
+        passage b title="A book written later" text="In 1519 five ships set out from Spain to sail west to the Spice Islands. In 1522 the Victoria came home: the first ship to sail round the world." width=36 numbers=false
+      }
+    }
+    say """
+      Two people can tell one story differently. A sailor who was there saw the hunger and the storms
+      but not the whole world's story; a writer long after can read many records but never felt the
+      sea. Where two accounts agree we can be surer of a fact; where they differ we ask why: who wrote
+      it, when, and what could they know?
+      """
+  }
+  do {
+    level easy {
+      worked history.two-accounts-agree k=0
+    }
+    show history.two-accounts-agree k=2 easy-k=1 hard-k=4
+    show history.accounts-who k=0 easy-k=0 hard-k=2
+    show history.accounts-use k=2 easy-k=0 hard-k=4
+    show history.source-gap k=4 easy-k=0 hard-k=5
+    show history.two-accounts-agree k=3 easy-k=2 hard-k=5
+    show history.accounts-who k=1 easy-k=1 hard-k=3
+    show history.accounts-use k=3 easy-k=1 hard-k=5
+    show history.voyage-years k=3 easy-k=0 hard-k=4
+    level hard {
+      show history.accounts-use k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.accounts-differ k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.two-views
+  }
+  remember {
+    say "Where two accounts agree, we can be surer. Where they differ, ask who wrote each one, when, and what they could know."
+  }
+
+  grown-ups """
+    The idea is that history is built by comparing accounts: a first-hand one from someone who was
+    there, and a later one written from many sources. The way in finds a fact both accounts give;
+    the core finds facts in one account only, says which was written by someone who sailed (the
+    record's cards for Pigafetta's journal and Ma Huan's survey of Zheng He's voyages), and chooses
+    the right account for a question. The wrong ideas to watch for are "the first-hand account is
+    always right" and "when accounts differ, one is lying". If the child is stuck, read the two
+    accounts aloud, one sentence each in turn. The three-star task is for you to mark: two family
+    members' accounts of one day. Russia's history programme for grade five begins with
+    «Источники исторических знаний»; England's key stage 2 asks pupils to understand "how our
+    knowledge of the past is constructed from a range of sources". The two accounts on the page
+    were written for the lesson from the recorded facts.
+    Japan's 社会 takes up history only through Japan's own story, in grade six
+    (「我が国の歴史上の主な事象について，人物の働きや代表的な文化遺産を中心に」, the course of study as read in its 2008 edition), so
+    this lesson has no line of its own there; its timeline and source skills serve that grade.
+    """
+  level easy {
+    grown-ups "At this level a worked example finds a fact both accounts give, the cards are for Magellan's voyage, and the questions to match are about food and the sea."
+  }
+  level hard {
+    grown-ups "At this level the facts asked are in one account only, the cards are for Zheng He's voyages, the questions to match ask why the voyage is remembered and how it fits other voyages, and the two-star question asks how a later writer knew exact dates."
+  }
+}

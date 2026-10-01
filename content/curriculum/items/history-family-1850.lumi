@@ -1,0 +1,20 @@
+# A made-up family of 1850 in a tree: how old each person was in a given year, or how old one was
+# when another was born.
+item history.family-1850 v=1 skills=[history.family, number.difference] {
+  title "A family in 1850"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let who={pick(k, 6, 4, 5, 0, 2, 3)}
+  let name={pick(k, "Kit", "Mother", "Father", "Grandma Ann", "Granny Bet", "Grandpa Sam")}
+  let yr={pick(k, 1850, 1850, 1850, 1850, 1870, 1870)}
+
+  scene 34x17 {
+    familytree tree names=["Grandma Ann", "Grandpa Will", "Granny Bet", "Grandpa Sam", "Mother", "Father", "Kit"] years=[1788, 1785, 1791, 1789, 1818, 1815, 1842] blank=-1 at=canvas(1, 0)
+    text ask "How old was {name} on their birthday in {yr}?" narrate width=24 below=tree gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (yr - pick(who, 1788, 1785, 1791, 1789, 1818, 1815, 1842))
+  hint "Find {name}'s box and the year they were born."
+  hint "Count on from that year to {yr}."
+}

@@ -1,0 +1,67 @@
+# Dates from engine/notation/chronicle.ts: Qin unites China 221 BC, Caesar in Britain 55 BC,
+# Augustus 27 BC, the Roman conquest AD 43, Cai Lun's paper AD 105.
+lesson history-bc-ad-and-centuries v=1 format=teach grade=3 unit=6 subject=history levels=[easy, medium, hard] {
+  title "Before and after year one"
+  goal "Read years BC and AD on a timeline, count the years across year one, and name the century a year is in."
+
+  look {
+    scene 32x9 {
+      timeline line from=-300 to=200 step=100 years=[-221, -55, 43, 105] labels=["Qin unites China", "Caesar lands in Britain", "Romans conquer Britain", "Paper"] at=canvas(1, 0)
+    }
+    say """
+      Many countries count years from year one. Years before it are BC, and they count backwards:
+      221 BC is longer ago than 55 BC. Years after it are AD. There was no year nought, so 1 BC
+      was followed straight by AD 1. A century is a hundred years: the first century was the years
+      1 to 100, so 1666 is in the 17th century.
+      """
+  }
+  do {
+    level easy {
+      worked history.read-bc-flag k=0
+    }
+    show history.read-bc-flag k=2 easy-k=1 hard-k=4
+    show history.bc-ad-order k=2 easy-k=0 hard-k=4
+    show history.which-century k=2 easy-k=0 hard-k=4
+    show history.across-year-one k=2 easy-k=0 hard-k=4
+    show history.read-bc-flag k=3 easy-k=2 hard-k=5
+    show history.bc-ad-order k=3 easy-k=1 hard-k=5
+    show history.which-century k=3 easy-k=1 hard-k=5
+    show history.across-year-one k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.across-year-one k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.century-reason k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.coin-44-bc k=0 hard-k=1
+  }
+  remember {
+    say "BC years count back to year one and AD years count on from it. There was no year nought."
+  }
+
+  grown-ups """
+    The idea is the way many countries number the years: counting back from year one for BC and on
+    for AD, with no year nought between them, and grouping them in centuries that start at 1. The
+    way in reads a year off a line that crosses year one; the core orders events on both sides,
+    names centuries, and counts years across year one. The wrong ideas to watch for are "BC runs
+    forwards" (so 221 BC seems later than 55 BC) and counting a year nought, which makes every
+    answer across year one one too big. If the child is stuck, draw a line with year one in the
+    middle and walk it. The three-star question asks why a coin stamped "44 BC" must be a fake:
+    nobody then counted years that way. Other calendars (the Chinese, Japanese and Islamic ones
+    among them) count years differently, and are worth a word. Russia's history programme for grade
+    five begins with «Историческая хронология (счет лет «до н. э.» и «н. э.»)», counting years before
+    and after year one; England's key stage 2 asks pupils to "develop a chronologically secure
+    knowledge", which rests on it.
+    Japan's 社会 takes up history only through Japan's own story, in grade six
+    (「我が国の歴史上の主な事象について，人物の働きや代表的な文化遺産を中心に」, the course of study as read in its 2008 edition), so
+    this lesson has no line of its own there; its timeline and source skills serve that grade.
+    """
+  level easy {
+    grown-ups "At this level a worked example reads AD 43 off the line, the events to order sit on one side of year one or far apart, the centuries are of AD years, and the years counted stay on one side of year one."
+  }
+  level hard {
+    grown-ups "At this level the flags are BC and close to year one, the events cross year one in muddled order, the centuries include one BC, the years counted cross year one, and the fake coin is dated 250 BC."
+  }
+}

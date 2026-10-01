@@ -1,0 +1,23 @@
+# The century of a wall or castle, from the record.
+item history.castle-century v=1 skills=[history.medieval, history.centuries] {
+  title "Which century?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ev={pick(k, "Kremlin walls built", "Himeji castle rebuilt", "White Tower begun", "Kremlin walls built", "Himeji castle rebuilt", "White Tower begun")}
+  let yr={pick(k, 1490, 1605, 1080, 1485, 1601, 1078)}
+  let o1={pick(k, "14th century", "16th century", "10th century", "14th century", "16th century", "10th century")}
+  let o2={pick(k, "15th century", "17th century", "11th century", "15th century", "17th century", "11th century")}
+  let o3={pick(k, "16th century", "18th century", "12th century", "16th century", "18th century", "12th century")}
+  let from={pick(k, 1400, 1550, 1000, 1400, 1550, 1000)}
+  let to={pick(k, 1500, 1650, 1100, 1500, 1650, 1100)}
+
+  scene 34x21 {
+    timeline line from=from to=to step=20 years=[yr] labels=["{ev}"] at=canvas(1, 0)
+    text ask "In which century was this?" narrate width=16 below=line gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column right-of=ask gap=1
+  }
+
+  check history.dates of=line pick="century-name(0)"
+  hint "Read the year of the flag."
+  hint "A century's number is one more than its hundreds."
+}

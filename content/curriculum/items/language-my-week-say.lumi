@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.my-week-say v=1 skills=[language.time, language.sentences, language.speaking] {
+  title "My week"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Tell a grown-up three things you do in a week, each with its day, in [[language.name]].\", \"Say one thing you always do and one thing you never do, in [[language.name]].\", \"Ask a grown-up [[phrase.what-do-you-do-on-saturday]] and say their answer back in [[language.name]].\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="A day and a thing done in each sentence, said the way the lesson says them." notice=["A day in each sentence", "A thing done in each sentence", "Always or never said", "The question asked back"]
+  hint "Start with the day."
+  hint "What do you do then?"
+}

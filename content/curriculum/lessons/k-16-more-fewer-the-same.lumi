@@ -1,0 +1,49 @@
+lesson k-more-fewer-the-same v=1 format=teach grade=0 unit=3 subject=maths levels=[easy, medium, hard] {
+  title "More, fewer and the same"
+  goal "Compare two groups by matching them one to one, say which has more or fewer, and make them the same."
+
+  look {
+    scene 24x9 {
+      props top count=4 prop=apple at=canvas(1, 1)
+      props bottom count=3 prop=star below=top gap=1
+    }
+    say """
+      Put one star under each apple. One apple has no star, so there are more apples and fewer
+      stars. If every apple had a star and nothing was left over, there would be the same number.
+      """
+  }
+  do {
+    practice k.same-or-not count=2 seed=2
+    level easy {
+      worked k.fewer a=5 b=2 level=medium
+    }
+    practice k.fewer count=2 seed=3
+    practice k.tallest-tower count=2 seed=4
+    practice k.how-many-more count=2 seed=5 easy-count=1
+  }
+  try stars=2 {
+    show k.longer-row k=0 hard-k=1
+  }
+  try stars=3 {
+    show k.share-the-same a=5 b=1 easy-a=4 easy-b=2 hard-a=6 hard-b=2
+  }
+  remember {
+    say "Match them one to one. The group with some left over has more."
+  }
+
+  grown-ups """
+    Read each question aloud. Matching one to one comes before counting here: put a finger on an
+    apple and a finger on a star, and move along together. The word fewer is new to many children,
+    so say "not as many" beside it. The two-star question is the classic trap of a spread-out row,
+    which looks like more; if the child agrees with Ben, count both rows together. Off the page, lay
+    out a cup for each person at the table and ask whether there are enough. England, Reception, ELG
+    Numerical Patterns (recalled, not fetched): "Compare quantities up to 10 in different contexts,
+    recognising when one quantity is greater than, less than or the same as the other quantity".
+    """
+  level easy {
+    grown-ups "At this level the groups to compare differ by two or more, one is worked in the teacher's pen first, and Ada needs one more apple."
+  }
+  level hard {
+    grown-ups "At this level the groups differ by one or are the same, the towers are close in height, Ada needs three more, and the three-star moves two apples."
+  }
+}

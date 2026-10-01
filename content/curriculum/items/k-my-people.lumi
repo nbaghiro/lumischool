@@ -1,0 +1,10 @@
+item k.my-people v=1 skills=[history.family] {
+  title "The people who look after me"
+
+  scene 28x9 {
+    text q "Tell a grown-up about the people in your family or who look after you: their names, and who is the oldest." narrate width=26 at=canvas(1, 1)
+  }
+
+  check reading.recited look-for="The child names several people in their own family or care, says how each is related to them, and says who is oldest." notice=["names the people", "says how each is related", "says who is oldest"]
+  hint "Who lives with you? Who do you visit?"
+}

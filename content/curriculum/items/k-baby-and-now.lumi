@@ -1,0 +1,21 @@
+item k.baby-and-now v=1 skills=[history.change] {
+  title "When I was a baby"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let can={pick(k, "walk", "drink milk", "ride a bike", "cry")}
+  let right={pick(k, "no", "yes", "no", "yes")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 26x11 {
+    text ask "When you were a tiny baby, could you {can}?" narrate width=24 at=canvas(1, 1)
+    choice pick options=["yes", "no"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Think of a baby you know. What can a baby do?"
+}

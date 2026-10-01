@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[cafe.what-would-you-like]], [[cafe.i-would-like-an-orange-juice]], [[cafe.anything-else]], [[cafe.the-bill-please]], [[cafe.how-much-is-it]], [[cafe.for-me-a-sandwich]], [[cafe.nothing-else-thank-you]], [[cafe.here-you-are]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.at-the-cafe-name v=1 skills=[language.food, language.market] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x36 {
+    column all at=canvas(1, 1) space=1 align=start {
+      sign menu lines=["[[cafe.juice]] 2 €", "[[cafe.sandwich]] 5 €", "[[cafe.ice-cream]] 4 €", "[[cafe.water]] 1 €"] kind=board color=mint
+      text ask "{pick(k, \"The waiter comes to your table. What does he ask?\", \"Ana wants an orange juice. What does she say?\", \"Ana has ordered. What does the waiter ask next?\", \"Leo has finished and wants to pay. What does he say?\", \"Ana wants to know the price of everything. What does she ask?\", \"Leo wants a sandwich for himself. What does he say?\", \"The waiter asks if Ana wants anything else. She does not. What does she say?\", \"The waiter hands over the juice. What does he say?\")}" width=32
+      choice pick options=[pick(k, "[[cafe.nothing-else-thank-you]]", "[[cafe.here-you-are]]", "[[cafe.what-would-you-like]]", "[[cafe.i-would-like-an-orange-juice]]", "[[cafe.the-bill-please]]", "[[cafe.the-bill-please]]", "[[cafe.for-me-a-sandwich]]", "[[cafe.i-would-like-an-orange-juice]]"), pick(k, "[[cafe.what-would-you-like]]", "[[cafe.i-would-like-an-orange-juice]]", "[[cafe.here-you-are]]", "[[cafe.the-bill-please]]", "[[cafe.for-me-a-sandwich]]", "[[cafe.for-me-a-sandwich]]", "[[cafe.i-would-like-an-orange-juice]]", "[[cafe.here-you-are]]"), pick(k, "[[cafe.anything-else]]", "[[cafe.anything-else]]", "[[cafe.the-bill-please]]", "[[cafe.how-much-is-it]]", "[[cafe.how-much-is-it]]", "[[cafe.anything-else]]", "[[cafe.the-bill-please]]", "[[cafe.anything-else]]"), pick(k, "[[cafe.how-much-is-it]]", "[[cafe.the-bill-please]]", "[[cafe.anything-else]]", "[[cafe.anything-else]]", "[[cafe.i-would-like-an-orange-juice]]", "[[cafe.nothing-else-thank-you]]", "[[cafe.nothing-else-thank-you]]", "[[cafe.the-bill-please]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[cafe.what-would-you-like]]", "[[cafe.i-would-like-an-orange-juice]]", "[[cafe.anything-else]]", "[[cafe.the-bill-please]]", "[[cafe.how-much-is-it]]", "[[cafe.for-me-a-sandwich]]", "[[cafe.nothing-else-thank-you]]", "[[cafe.here-you-are]]")
+  feedback {
+    when (pick == pick(k, "[[cafe.anything-else]]", "[[cafe.the-bill-please]]", "[[cafe.what-would-you-like]]", "[[cafe.how-much-is-it]]", "[[cafe.the-bill-please]]", "[[cafe.nothing-else-thank-you]]", "[[cafe.for-me-a-sandwich]]", "[[cafe.anything-else]]")) point=menu {
+      say "{pick(k, \"That asks if you want anything else. He has only just come.\", \"That asks for the bill. She has not had her juice yet.\", \"That is the first question. Ana has already ordered.\", \"That asks how much. Leo wants the bill brought to him.\", \"That asks for the bill to be brought. Ana asks the price.\", \"That says nothing else. Leo wants a sandwich.\", \"That orders a sandwich. Ana wants nothing else.\", \"That asks for more. He is handing something over.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

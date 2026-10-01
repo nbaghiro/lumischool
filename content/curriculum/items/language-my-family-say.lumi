@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.my-family-say v=1 skills=[language.family, language.speaking] {
+  title "My family"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Say who lives with you in [[language.name]]: [[family.my-mother]], [[family.my-father]], [[family.my-brother]], [[family.my-sister]].\", \"Say how many brothers and sisters you have: [[phrase.i-have-a-brother]], [[phrase.i-have-a-sister]] or [[phrase.i-have-no-brothers-or-sisters]]\", \"Say the name of someone in your family: [[phrase.my-mother-is-called-marta]], with their own name.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="Family words said with [[family.my]] before them, and the name given after [[family.is-called]]." notice=["[[family.my|cap]] before each family word", "Brother and sister kept apart", "[[family.is-called|cap]] before a name", "Said without the page"]
+  hint "Say it in English first, then in [[language.name]]."
+  hint "Is it a man or a woman, a boy or a girl?"
+}

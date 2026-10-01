@@ -1,0 +1,21 @@
+# The first writing was mostly counting: a scribe's tally of sheep or jars, read and added up.
+item history.tablet-tally v=1 skills=[history.writing, number.count] {
+  title "The scribe's count"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, 7, 9, 12, 14, 17, 23)}
+  let b={pick(k, 3, 5, 6, 9, 8, 16)}
+
+  scene 32x11 {
+    row marks at=canvas(1, 0) space=3 align=start {
+      tally one count=a
+      tally two count=b
+    }
+    text ask "A scribe in Uruk marked sheep on a tablet: the first group for one farmer, the second for another. How many sheep in all?" narrate width=30 below=marks gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + b)
+  hint "Count each group in fives first."
+  hint "Then add the two groups together."
+}

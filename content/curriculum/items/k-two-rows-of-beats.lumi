@@ -1,0 +1,25 @@
+item k.two-rows-of-beats v=1 stars=2 skills=[music.beat, counting.to-ten] {
+  title "Two bars"
+  difficulty m
+  let m=2..4
+  level easy {
+    let m=2..2
+  }
+  level hard {
+    let m=4..4
+  }
+
+  scene 28x17 {
+    countrow row beats=(2 * m) meter=m now=-1 at=canvas(1, 1)
+    text ask "Here are two bars of {m} beats. How many claps for both bars?" narrate width=26 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (2 * m)
+  feedback {
+    when (answer == m) point=row {
+      say "That is one bar. There are two."
+    }
+  }
+  hint "How many beats in one bar? Count the next bar on from there."
+}

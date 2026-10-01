@@ -1,0 +1,68 @@
+# Where the ferry town's places stand to each other, on the town plan.
+lesson language-next-to v=1 format=teach grade=6 unit=2 subject=language levels=[easy, medium, hard] {
+  title "Next to the museum"
+  goal "Say where places are in [[language.name]]: next to, opposite, between, near and at the end of the street."
+
+  look {
+    scene 28x23 {
+      column all at=canvas(1, 1) space=1 align=start {
+        townplan plan places=["[[town.the-cafe]]", "[[town.the-shop]]", "[[town.the-park]]", "[[town.the-beach]]", "[[town.the-museum]]", "[[town.the-station]]", "[[town.the-square]]"]
+      }
+    }
+    say """
+      To say where something is: [[town.next-to]] is next to, [[town.opposite-2]] is opposite,
+      [[town.between]] is between, [[town.near-2]] is near, [[town.far-from]] is far from, and
+      [[town.at-the-end-of-the-street]] is at the end of the street. On the plan, the café and the
+      shop face each other across the road: the shop [[town.it-is-opposite-the-cafe]]
+      """
+  }
+  do {
+    level easy {
+      worked language.next-to-name k=3
+    }
+    show language.next-to-name k=2 easy-k=0 hard-k=4
+    show language.next-to-meaning k=2 easy-k=0 hard-k=4
+    show language.next-to-write k=3 easy-k=1 hard-k=5
+    show language.next-to-name k=4 easy-k=1 hard-k=5
+    show language.next-to-match k=1 easy-k=0 hard-k=2
+    show language.next-to-write k=4 easy-k=2 hard-k=6
+    show language.next-to-listen k=3 easy-k=0 hard-k=5
+    show language.next-to-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.next-to-write k=4
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-next-to-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.next-to-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[town.next-to]], next to; [[town.opposite-2]], opposite; [[town.between]], between; [[town.at-the-end-of-the-street]], at the end of the street."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is next to and opposite swapped, and between used for only one
+    thing. Every clue in the naming questions points to one building on the plan, so ask the child
+    to put a finger on each place a clue names. The two-star question is about how the language
+    joins its little words. From this grade the written words are marked with their accents: a word
+    typed without its accent is not taken. The dictation is read from this sheet, where it prints as
+    Read aloud, or played by the device. If the child is stuck, set out three cups as buildings and
+    move a toy next to, opposite and between them, saying each. Off the page, describe where things
+    are in your kitchen in the language. It meets England's key stage 2 languages programme (years 3
+    to 6, statutory from age 7): "describe people, places, things and actions orally and in
+    writing"; Japan's grades 5 and 6 foreign languages: "Can talk about familiar and simple matters
+    in daily life by using simple words and phrases and basic expressions"; and CEFR A2, "Can
+    describe in simple terms aspects of his/her background, immediate environment and matters in
+    areas of immediate need". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[town.the-station]] is worked first in the teacher's pen, the words to name are [[town.the-shop]] and [[town.the-square]] and the words to write are [[town.opposite]] and [[town.between]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[town.the-beach]] and [[town.the-museum]] and the words to write are [[town.end]], [[town.behind]] and [[town.far]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

@@ -1,0 +1,69 @@
+# The twelve months round the year wheel, and a birthday's date.
+lesson language-months v=1 format=teach grade=3 unit=8 subject=language levels=[easy, medium, hard] {
+  title "Birthdays and months"
+  goal "Say the months in [[language.name]] and give the date of a birthday."
+
+  look {
+    scene 17x17 {
+      column all at=canvas(1, 1) space=1 align=start {
+        yearwheel wheel seasons=true mark="May"
+      }
+    }
+    say """
+      The months: [[time.january]], [[time.february]], [[time.march]], [[time.april]], [[time.may]],
+      [[time.june]], [[time.july]], [[time.august]], [[time.september]], [[time.october]],
+      [[time.november]], [[time.december]]. To ask about a birthday, say
+      [[phrase.when-is-your-birthday]] and answer [[phrase.it-is-the-fifth-of-april]], it is the
+      fifth of April.
+      """
+  }
+  do {
+    level easy {
+      worked language.months-name k=5
+    }
+    show language.months-name k=3 easy-k=0 hard-k=7
+    show language.months-meaning k=3 easy-k=1 hard-k=5
+    show language.months-write k=4 easy-k=2 hard-k=6
+    show language.months-name k=5 easy-k=2 hard-k=8
+    show language.months-match k=2 easy-k=0 hard-k=3
+    show language.months-write k=5 easy-k=4 hard-k=7
+    show language.months-listen k=3 easy-k=0 hard-k=5
+    show language.months-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.months-write k=4
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-months-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.months-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[time.january|cap]], [[time.february]], [[time.march]], [[time.april]], [[time.may]], [[time.june]], [[time.july]], [[time.august]], [[time.september]], [[time.october]], [[time.november]], [[time.december]]."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is June and July swapped, and English habits carried over into a
+    date, which the two-star question asks about. The ringed month on the wheel is written in
+    English, so on paper the question still reads. The listening question is a dictation: read the
+    sentence aloud from this sheet, where it prints as Read aloud, or let the device play it. It is
+    marked word by word, and a missing accent counts there, while the words typed on their own in
+    this lesson are taken without their accents. If the child is stuck, go round the wheel from
+    January saying each month and clapping. Off the page, write the birthdays of four people you
+    know in the language. It meets England's key stage 2 languages programme (years 3 to 6,
+    statutory from age 7): "write phrases from memory, and adapt these to create new sentences, to
+    express ideas clearly"; Japan's grades 5 and 6 foreign languages: "Activities to listen to
+    concrete information regarding familiar and simple matters in daily life such as dates, times
+    and prices etc."; and CEFR A1, "Can understand and use familiar everyday expressions and very
+    basic phrases". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[time.march]] is worked first in the teacher's pen, the words to name are [[time.january]] and [[time.august]] and the words to write are [[time.april]] and [[time.july]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[time.june]] and [[time.september]] and the words to write are [[time.august]], [[time.october]] and [[time.july]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

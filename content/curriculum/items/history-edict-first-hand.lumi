@@ -1,0 +1,17 @@
+# A source card for Ashoka's own rock edict against a history written long after of another king:
+# was the maker there, from the record of sources.
+item history.edict-first-hand v=1 skills=[history.sources, history.ancient] {
+  title "In the king's own words"
+  difficulty k
+  let k=0..1
+
+  scene 36x16 {
+    sourcecard card title="{if k == 0 then \"Ashoka's rock edict\" else \"Records of the Grand Historian\"}" kind=pick(k, 0, 2) who="{if k == 0 then \"Emperor Ashoka, carved by his order\" else \"Sima Qian, a Han court historian\"}" when="{if k == 0 then \"about 250 BC\" else \"about 91 BC\"}" where="{if k == 0 then \"on rocks across his empire, India\" else \"Chang'an, Han China\"}" there=pick(k, 1, 0) ask=4 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Ashoka ordered his words carved on rocks while he ruled. Is this a first-hand source for what Ashoka wanted?\" else \"Sima Qian wrote about the Qin, who united China in 221 BC. Is his book first-hand for the Qin?\"}" narrate width=15 right-of=card gap=1
+    choice pick options=["First-hand", "Second-hand"] stack=column below=ask gap=1
+  }
+
+  check history.sources of=card pick=hand
+  hint "Read the who and the when rows."
+  hint "Was the maker alive and there at the time the source is about?"
+}

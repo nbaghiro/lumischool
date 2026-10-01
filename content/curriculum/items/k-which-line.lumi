@@ -1,0 +1,20 @@
+item k.which-line v=1 skills=[writing.first-strokes, art.line] {
+  title "Which line is it?"
+  difficulty (if x == "zigzag" or x == "straight" then 0 else 1)
+  let x={"zigzag", "straight", "wavy", "spiral"}
+  level easy {
+    let x={"zigzag", "straight"}
+  }
+  level hard {
+    let x={"wavy", "spiral"}
+  }
+
+  scene 28x22 {
+    lines row kinds=["wavy", "zigzag", "spiral", "straight"] colour=blue at=canvas(1, 1)
+    text ask "Which line is the {x} line? Say its letter." narrate width=26 below=row gap=1
+    choice pick options=["A", "B", "C", "D"] stack=row below=ask gap=1
+  }
+
+  answer pick=(if x == "wavy" then "A" else if x == "zigzag" then "B" else if x == "spiral" then "C" else "D")
+  hint "Zigzags have sharp points. Wavy lines go up and down smoothly."
+}

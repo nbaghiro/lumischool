@@ -1,0 +1,19 @@
+item k.piano-side v=1 skills=[music.pitch, music.keyboard] {
+  title "Which end of the piano?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 26x12 {
+    text ask "On a piano the notes go up from left to right. Ada plays a key at the far {pick(k, \"right\", \"left\")}. Is it high or low?" narrate width=24 at=canvas(1, 1)
+    choice pick options=["high", "low"] stack=row below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "high" else "low")
+  hint "Which way do the notes go up: to the left or to the right?"
+}

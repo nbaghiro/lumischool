@@ -1,0 +1,19 @@
+# Picture or situation to the language: [[notice.on-saturday]], [[notice.in-the-square]], [[notice.at-eight]], [[notice.at-the-harbour]], [[notice.it-is-free]], [[notice.music-and-dancing]], [[notice.if-it-rains]], [[notice.in-august]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.the-poster-name v=1 skills=[language.reading] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x31 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage poster title="[[notice.town-fiesta]]" text="[[notice.fiesta-poster]]" width=30 numbers=true
+      text ask "{pick(k, \"Which day is the fiesta?\", \"Where is the fiesta?\", \"When is the dinner?\", \"Where are the fireworks?\", \"How much does it cost to go in?\", \"What is there at six?\", \"When is there no fiesta?\", \"Which month is the fiesta?\")}" width=32
+      choice pick options=[pick(k, "[[notice.on-saturday]]", "[[notice.at-the-harbour]]", "[[notice.at-six]]", "[[notice.at-the-harbour]]", "[[notice.five-euros]]", "[[notice.the-dinner]]", "[[notice.if-it-rains]]", "[[notice.in-july]]"), pick(k, "[[notice.on-sunday]]", "[[notice.in-the-square]]", "[[notice.at-ten]]", "[[notice.in-the-square]]", "[[notice.it-is-free]]", "[[notice.the-fireworks]]", "[[notice.if-it-is-sunny]]", "[[notice.in-august]]"), pick(k, "[[notice.on-friday]]", "[[notice.on-the-beach]]", "[[notice.at-eight]]", "[[notice.on-the-beach]]", "[[notice.at-ten]]", "[[notice.music-and-dancing]]", "[[notice.at-night]]", "[[notice.on-saturday]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[notice.on-saturday]]", "[[notice.in-the-square]]", "[[notice.at-eight]]", "[[notice.at-the-harbour]]", "[[notice.it-is-free]]", "[[notice.music-and-dancing]]", "[[notice.if-it-rains]]", "[[notice.in-august]]")
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

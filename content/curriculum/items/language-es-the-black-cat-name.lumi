@@ -1,0 +1,18 @@
+# Picture or situation to the language: el gato negro, la casa blanca, el mar azul, la fresa roja, la hierba verde, el sol amarillo, la gata negra, la flor amarilla, the plainer first.
+# Each version offers the word most often taken for it.
+item language.es-the-black-cat-name v=1 skills=[language.colours, language.grammar] {
+  title "Which is right?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"A black cat.\", \"A white house.\", \"The blue sea.\", \"A red strawberry.\", \"The green grass.\", \"The yellow sun.\", \"A black she-cat.\", \"A yellow flower.\")}" width=32
+      choice pick options=[pick(k, "el gato negro", "la casa blanca", "el mar azul", "la roja fresa", "la hierba verda", "el sol amarilla", "la gata negro", "la flor amarilla"), pick(k, "el negro gato", "la casa blanco", "el azul mar", "la fresa roja", "la verde hierba", "el sol amarillo", "la negra gata", "la flor amarillo"), pick(k, "la gato negra", "la blanca casa", "el mar azula", "la fresa rojo", "la hierba verde", "el amarillo sol", "la gata negra", "el flor amarilla")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "el gato negro", "la casa blanca", "el mar azul", "la fresa roja", "la hierba verde", "el sol amarillo", "la gata negra", "la flor amarilla")
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

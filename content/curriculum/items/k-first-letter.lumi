@@ -1,0 +1,31 @@
+# The picture is said aloud, and the child picks the letter its first sound makes. The distractors
+# are letters from the word itself, so a child who picks any letter they can see is caught.
+item k.first-letter v=1 skills=[reading.phonics, reading.letters] {
+  title "Which letter does it start with?"
+  difficulty (if k <= 2 then 0 else if k <= 4 then 1 else 2)
+  let k=0..6
+  let w={pick(k, "sun", "cat", "hen", "duck", "cup", "pencil", "rocket")}
+  let first={pick(k, "s", "c", "h", "d", "c", "p", "r")}
+  let o1={pick(k, "n", "t", "n", "k", "p", "l", "t")}
+  let o2={pick(k, "u", "a", "e", "u", "u", "n", "k")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..6
+  }
+
+  scene 26x21 {
+    art pic asset="{w}" at=canvas(1, 1)
+    text ask "Say the word. Which letter does it start with?" narrate width=24 below=pic gap=1
+    choice pick options=[o1, first, o2] stack=row below=ask gap=1
+  }
+
+  answer pick=first
+  feedback {
+    when (pick == o1) point=pic {
+      say "That sound is at the end of the word. Listen for the very first sound."
+    }
+  }
+  hint "Say the word slowly. Stop after the very first sound."
+}

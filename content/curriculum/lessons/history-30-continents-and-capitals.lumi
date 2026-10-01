@@ -1,0 +1,64 @@
+# The continents and capitals are drawn from the world map drawing's own list, which the history
+# checker reads, so the keys come from the map.
+lesson history-continents-and-capitals v=1 format=teach grade=5 unit=4 subject=history levels=[easy, medium, hard] {
+  title "Continents, countries and capitals"
+  goal "Name the seven continents and the oceans on a world map, and find which continent a country's capital is on."
+
+  look {
+    scene 36x17 {
+      worldmap map names=0 blank=-1 oceans=1 places=["London", "Washington", "Tokyo", "Moscow", "Beijing", "Cairo"] numbered=0 route=0 at=canvas(1, 0)
+    }
+    say """
+      The land of the world is in seven great pieces called continents: North America, South
+      America, Europe, Africa, Asia, Australia and Antarctica. Between them lie the oceans, the
+      Pacific, the Atlantic, the Indian and the Arctic. Each continent holds many countries, except
+      Antarctica, which holds none, and each country has a capital city where it is governed.
+      """
+  }
+  do {
+    level easy {
+      worked history.capital-continent k=0
+    }
+    show history.capital-continent k=2 easy-k=1 hard-k=4
+    show history.continent-letter k=2 easy-k=0 hard-k=4
+    show history.continent-blank k=2 easy-k=0 hard-k=4
+    show history.ocean-between k=2 easy-k=0 hard-k=4
+    show history.capital-continent k=3 easy-k=2 hard-k=5
+    show history.continent-letter k=3 easy-k=1 hard-k=5
+    show history.continent-blank k=3 easy-k=1 hard-k=5
+    show history.ocean-between k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.continent-letter k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.russia-two-continents k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.west-to-east k=0 hard-k=1
+  }
+  remember {
+    say "Seven continents: North America, South America, Europe, Africa, Asia, Australia and Antarctica, with the oceans between."
+  }
+
+  grown-ups """
+    The idea is the map every history lesson hangs on: the continents, the oceans between them, and
+    the countries and capitals on them. The way in finds a capital's continent; the core names
+    continents by letter and by shape, and the ocean a ship would cross. The wrong idea to watch
+    for is a capital taken for its country, or a country taken to lie on one continent only; the
+    two-star question asks about Russia, which is on two. Children in Japan and Russia usually
+    learn six continents, counting Europe and Asia as one, Eurasia; both ways are in use, and the
+    lesson uses the seven taught in England and the United States. If the child is stuck, trace
+    each continent's outline with a finger and say its name. Off the page, find your country on a
+    globe and name the ocean nearest to you. Japan's 社会 for grade five begins with 「国土の地形や気候の概要」,
+    the land and climate of Japan in the world (the course of study as read in its 2008 edition);
+    Russia's geography starts in grade five. England's geography programme at key stage 2 asks
+    pupils to "locate the world's countries, using maps".
+    """
+  level easy {
+    grown-ups "At this level a worked example finds Cairo's continent, the continents named are the most distinct shapes, and the oceans crossed are the Atlantic and the Pacific."
+  }
+  level hard {
+    grown-ups "At this level the continents' names are left off the map, the continents to name include Europe and North America, the ship crosses the Pacific from Australia or Asia, and the three-star capitals include Canberra and Cairo."
+  }
+}

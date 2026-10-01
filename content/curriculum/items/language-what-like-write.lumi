@@ -1,0 +1,19 @@
+# The word written from its picture: [[describe.long]], [[describe.short]], [[describe.blonde]], [[describe.curly]], [[describe.white]], [[describe.straight]], [[describe.brown-for-hair]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.what-like-write v=1 skills=[language.describing, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      person p hair=pick(k, "long", "crop", "bob", "curly", "bun", "fringe", "coily") colour=pick(k, "black", "brown", "blonde", "brown", "white", "black", "brown") age=pick(k, "child", "child", "child", "child", "older", "child", "child")
+      text ask "{pick(k, \"Her hair is long. Write it in [[language.name]].\", \"His hair is short. Write it in [[language.name]].\", \"Her hair is blonde. Write it in [[language.name]].\", \"Her hair is curly. Write it in [[language.name]].\", \"Her hair is white. Write it in [[language.name]].\", \"His hair is straight. Write it in [[language.name]].\", \"Her hair is brown. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[describe.long]]", "[[describe.short]]", "[[describe.blonde]]", "[[describe.curly]]", "[[describe.white]]", "[[describe.straight]]", "[[describe.brown-for-hair]]")]
+    }
+  }
+
+  answer word=pick(k, "[[describe.long]]", "[[describe.short]]", "[[describe.blonde]]", "[[describe.curly]]", "[[describe.white]]", "[[describe.straight]]", "[[describe.brown-for-hair]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

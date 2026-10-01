@@ -253,7 +253,8 @@ function checkDictation(q: PackQuestion, typed: string): Checked {
 
 /**
  * A typed answer, by the answer's name: right when every box says the answer or, for a picked answer,
- * its label, whatever the case, the spacing or a thousands comma. A dictation (`check` is the item's
+ * its label, or in a language lesson any other spelling the question takes (`also`), whatever the
+ * case, the spacing or a thousands comma. A dictation (`check` is the item's
  * checker) is marked word by word instead. Null while a box is empty.
  */
 export function checkTyped(
@@ -268,7 +269,12 @@ export function checkTyped(
     const right = keys.every((k, i) => {
         const g = plain(got[i] ?? "");
         const label = q.labels?.[k];
-        return g === plain(q.answers[k] ?? "") || (label !== undefined && g === plain(label));
+        const want = plain(q.answers[k] ?? "");
+        return (
+            g === want ||
+            (label !== undefined && g === plain(label)) ||
+            (q.also?.[k] ?? []).some((a) => g === plain(a))
+        );
     });
     const env: Env = {
         ...q.env,

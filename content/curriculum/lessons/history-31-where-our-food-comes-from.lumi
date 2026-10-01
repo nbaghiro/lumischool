@@ -1,0 +1,68 @@
+# The lunch survey and the village's numbers are made up for the sums; the harvest months are for
+# the northern half of the world.
+lesson history-where-our-food-comes-from v=1 format=teach grade=5 unit=5 subject=history levels=[easy, medium, hard] {
+  title "Where our food comes from"
+  goal "Say whether a food was farmed, fished or brought from abroad, read a chart of where a meal came from, and say why countries trade food."
+
+  look {
+    scene 36x16 {
+      row pics at=canvas(1, 0) space=2 align=end {
+        crops field stage=3 rows=2 plants=5
+        fishshoal fish rows=1 cols=3
+        bargraph g labels=["Grown here", "From the sea", "From abroad"] values=[7, 3, 5] max=12
+      }
+    }
+    say """
+      Every meal has a story. Some of it was grown on farms in our own country, some was caught at
+      sea, and some was brought by ship or plane from lands where the weather suits it better. Long
+      ago most families ate what grew near home and kept it through the winter by drying, salting or
+      pickling. Now food is traded all round the world, and a lunch can hold food from three
+      continents.
+      """
+  }
+  do {
+    level easy {
+      worked history.food-where k=0
+    }
+    show history.food-where k=2 easy-k=1 hard-k=4
+    show history.food-graph k=2 easy-k=0 hard-k=4
+    show history.food-season k=2 easy-k=0 hard-k=4
+    show history.food-keep k=2 easy-k=0 hard-k=4
+    show history.food-where k=3 easy-k=2 hard-k=5
+    show history.food-graph k=3 easy-k=1 hard-k=5
+    show history.food-season k=3 easy-k=1 hard-k=5
+    show history.food-keep k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.food-graph k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.why-import k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.village-rice-year k=0 hard-k=1
+  }
+  remember {
+    say "Our food is farmed, fished or traded, and countries buy what their own weather cannot grow."
+  }
+
+  grown-ups """
+    The idea is that food connects a family to farms, seas and other countries, and that this has
+    changed: once most food was local and stored for winter, now much of it is traded. The way in
+    sorts a food as farmed, fished or brought from abroad; the core reads a chart of a lunch, finds
+    harvest seasons on the year wheel, and asks how food was kept before fridges. The wrong idea to
+    watch for is that food from far away is better or fresher. If the child is stuck, look at the
+    labels in your kitchen together and find where each food came from. Off the page, keep a list
+    of a week's meals and mark each food farmed here, fished, or from abroad. Japan's 社会 for grade
+    five teaches 「様々な食料生産が国民の食生活を支えていること」, how food production supports the nation's
+    diet (the course of study as read in its 2008 edition), and this lesson follows it.
+    Russia's history programme has no line for this; its geography, taught from grade five, takes up
+    how people live from their land (recalled).
+    """
+  level easy {
+    grown-ups "At this level a worked example sorts wheat, the foods are plain (tuna, milk), the chart questions read one bar, the harvests are apples and wheat, and the ways to keep food are drying and salting."
+  }
+  level hard {
+    grown-ups "At this level the foods include coffee and prawns, the chart questions compare bars and count what did not come from abroad, the harvests are potatoes and pumpkins, and the three-star village needs a number of fields."
+  }
+}

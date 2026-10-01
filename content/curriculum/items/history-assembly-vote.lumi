@@ -1,0 +1,25 @@
+# Voting by a show of hands, as in the Athenian assembly: does the idea pass, and by how many.
+item history.assembly-vote v=1 skills=[history.government, history.ancient] {
+  title "Hands up in Athens"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let h1={pick(k, 1, 1, 0, 1, 0, 0)}
+  let h2={pick(k, 1, 0, 1, 1, 1, 0)}
+  let h3={pick(k, 1, 1, 0, 1, 1, 0)}
+  let h4={pick(k, 0, 1, 1, 0, 0, 0)}
+  let h5={pick(k, 1, 0, 1, 1, 0, 1)}
+  let h6={pick(k, 0, 1, 0, 0, 0, 0)}
+  let h7={pick(k, 1, 1, 1, 1, 1, 1)}
+  let yes={h1 + h2 + h3 + h4 + h5 + h6 + h7}
+  let ask={pick(k, "How many voted for it?", "How many voted against?", "How many more voted for than against?", "How many more voted for than against?", "How many more hands would it have needed to pass?", "How many more hands would it have needed to pass?")}
+
+  scene 30x20 {
+    council c hands=[h1, h2, h3, h4, h5, h6, h7] box=0 motion="Build a new well" count=0 at=canvas(1, 0)
+    text ask "Seven citizens vote with their hands. {ask}" narrate width=28 below=c gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, yes, 7 - yes, yes - (7 - yes), yes - (7 - yes), if yes >= 4 then 0 else 4 - yes, if yes >= 4 then 0 else 4 - yes)
+  hint "Count the hands up, then the hands down."
+  hint "An idea passes when more than half of the seven vote for it."
+}

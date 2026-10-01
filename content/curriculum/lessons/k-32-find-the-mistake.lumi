@@ -1,0 +1,51 @@
+lesson k-find-the-mistake v=1 format=teach grade=0 unit=6 subject=coding levels=[easy, medium, hard] {
+  title "Find the mistake"
+  goal "Follow a program step by step, find the block or step that goes wrong, and mend it."
+
+  look {
+    scene 30x10 {
+      row top at=canvas(1, 0) space=1 align=start {
+        blocks b code=["right 2", "up 1"] words=false numbers=true
+        maze g cols=5 rows=3 col=1 row=2 flag=[3, 3] code=["right 2", "up 1"] upto=-1 trail=line
+      }
+    }
+    say """
+      The robot should reach the flag, but it went up instead of down. A mistake in a program is
+      called a bug. Follow the blocks one at a time with a finger, and the first place the robot
+      goes wrong is where the bug is.
+      """
+  }
+  do {
+    level easy {
+      worked k.wrong-block k=0 a=2 level=medium
+    }
+    practice k.wrong-block count=2 seed=2
+    practice k.bump count=3 seed=3 easy-count=2
+    practice k.wrong-step count=2 seed=4 easy-count=1
+    show k.fix-the-number a=3 w=1 easy-a=2 easy-w=3 hard-a=4 hard-w=1
+  }
+  try stars=2 {
+    show k.missing-block a=2 easy-a=1 hard-a=3
+  }
+  try stars=3 {
+    show k.debug-two-ways a=2 b=1 w=3 hard-a=3 hard-b=2 hard-w=1
+  }
+  remember {
+    say "Follow the steps one at a time. The first step that goes wrong is the bug."
+  }
+
+  grown-ups """
+    Read each question aloud and let the child move a finger along the grid, one block at a time.
+    Finding a mistake is easier than writing a program from nothing, and it is the habit that makes
+    programmers: check each step, do not guess. If the child is stuck, be the robot on squares of
+    floor and follow the blocks exactly. Off the page, give a wrong instruction on purpose, "two
+    steps to the door" when it is five, and let the child mend it. Japan, 幼稚園教育要領
+    (kindergarten guidelines), 環境, 内容 (7), as in the first coding lesson.
+    """
+  level easy {
+    grown-ups "At this level the first block is the wrong one and is found in the teacher's pen first, the robot does not bump, and the missing block is one step short."
+  }
+  level hard {
+    grown-ups "At this level the second block is the wrong one, the robot bumps a rock, and the three-star mends a two-step-down block."
+  }
+}

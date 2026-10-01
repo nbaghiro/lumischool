@@ -1,0 +1,70 @@
+# Dates from engine/notation/chronicle.ts: the Bridgewater Canal 1761, the spinning jenny 1764 to 1765,
+# Cromford Mill 1771, Watt's engine 1776, the first public steam railway 1825, Liverpool to
+# Manchester 1830. Loads and speeds in the sums are round numbers made up for them.
+lesson history-mills-canals-and-railways v=1 format=teach grade=6 unit=1 subject=history levels=[easy, medium, hard] {
+  title "Mills, canals and railways"
+  goal "Put the machines that changed work in order, say what powered each, and compare how canals and railways carried goods."
+
+  look {
+    scene 36x12 {
+      row pics at=canvas(1, 0) space=2 align=end {
+        waterwheel mill
+        narrowboat boat
+      }
+    }
+    say """
+      In the late 1700s work began to change. In 1771 Richard Arkwright built a cotton mill at
+      Cromford whose machines were turned by a water wheel. Canals like the Bridgewater, opened in
+      1761, let a single horse pull a boat full of coal. Then steam: Watt's engines from 1776, and in
+      1830 the first railway between two cities, Liverpool and Manchester. Many people left farms to
+      work in mills and towns.
+      """
+  }
+  do {
+    level easy {
+      worked history.what-powered k=0
+    }
+    show history.what-powered k=2 easy-k=1 hard-k=4
+    show history.industry-order k=2 easy-k=0 hard-k=4
+    show history.industry-between k=2 easy-k=0 hard-k=4
+    show history.canal-horse k=2 easy-k=0 hard-k=4
+    show history.what-powered k=3 easy-k=2 hard-k=5
+    show history.industry-order k=3 easy-k=1 hard-k=5
+    show history.industry-between k=3 easy-k=1 hard-k=5
+    show history.canal-horse k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.industry-order k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.why-railways-won k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.journey-times k=0 hard-k=1
+  }
+  remember {
+    say "First water and horses, then steam: mills, canals and railways changed where people worked and how goods travelled."
+  }
+
+  grown-ups """
+    The idea is that machines changed work: water-driven mills gathered workers in one place, canals
+    and then railways carried goods and people faster and cheaper, and towns grew around them. The
+    way in says what powered a machine; the core orders the machines, counts the years between
+    them, and works out how much a canal horse could do. Mill work was long and hard, and children
+    worked in mills too; that is worth a word. The wrong idea to watch for is that each machine
+    replaced the one before at once: canal boats carried coal for a century after railways came. If
+    the child is stuck, look at the canal town's lock and mill on the map. Off the page, find an
+    old mill, canal or railway line near you, and when it was built. England's key stage 2 history
+    allows "a significant turning point in British history, for example, the first railways". Japan's
+    社会 for grade six follows Japan's own story into the Meiji years of railways and mills (the
+    course of study as read in its 2008 edition, 「我が国の歴史上の主な事象」).
+    Russia's history programme reaches the age of machines in grade eight (recalled from the federal
+    work programme's later grades, not quoted here).
+    """
+  level easy {
+    grown-ups "At this level a worked example says what turns a mill wheel, the machines to order are far apart, the years counted are short, and the loads divide evenly."
+  }
+  level hard {
+    grown-ups "At this level the power questions ask about a cart and the mill's machines, the machines are close together and muddled, the years counted run to the telephone, and the three-star journey compares a coach with a train."
+  }
+}

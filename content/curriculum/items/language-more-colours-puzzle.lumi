@@ -1,0 +1,22 @@
+# Non-routine: the gap in a rainbow's colours.
+item language.more-colours-puzzle v=1 stars=3 skills=[language.colours, reasoning.language] {
+  title "Which colour is missing?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"A rainbow: [[colour.red]], [[colour.orange]], ?, [[colour.green]], [[colour.blue]], [[colour.purple]]. Which colour is missing?\", \"A rainbow: [[colour.red]], [[colour.orange]], [[colour.yellow]], ?, [[colour.blue]], [[colour.purple]]. Which colour is missing?\", \"A rainbow: [[colour.red]], ?, [[colour.yellow]], [[colour.green]], [[colour.blue]], ?. Which two are missing?\")}" width=32
+      choice pick options=[pick(k, "[[colour.yellow]]", "[[colour.green]]", "orange and purple"), pick(k, "[[colour.pink]]", "[[colour.brown]]", "pink and grey"), pick(k, "[[colour.grey]]", "[[colour.black]]", "white and black")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[colour.yellow]]", "[[colour.green]]", "orange and purple")
+  feedback {
+    when (pick == pick(k, "[[colour.pink]]", "[[colour.brown]]", "pink and grey")) {
+      say "{pick(k, \"[[colour.pink|cap]] is not in a rainbow. What comes between orange and green?\", \"[[colour.brown|cap]] is not in a rainbow. What comes between yellow and blue?\", \"Neither is in a rainbow. What comes after red, and at the end?\")}"
+    }
+  }
+  hint "Say the rainbow in English first."
+  hint "Then say each one in [[language.name]]."
+}

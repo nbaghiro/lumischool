@@ -1,0 +1,25 @@
+item k.legs-on-one v=1 skills=[nature.minibeasts, counting.to-ten] {
+  title "Count the legs"
+  difficulty (if kind == "ant" then 0 else if kind == "spider" then 2 else 1)
+  let kind={"ant", "ladybird", "spider", "snail"}
+  level easy {
+    let kind={"ant", "ladybird"}
+  }
+  level hard {
+    let kind={"spider", "snail"}
+  }
+
+  scene 26x15 {
+    minibeasts one kinds=[kind] spots=4 legs=false at=canvas(1, 1)
+    text ask "How many legs does the {kind} have?" narrate width=24 below=one gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if kind == "spider" then 8 else if kind == "snail" then 0 else 6)
+  feedback {
+    when (kind == "snail" and answer > 0) point=one {
+      say "Look under the snail. It slides on its soft body and has no legs."
+    }
+  }
+  hint "Count the legs on one side, then on the other side."
+}

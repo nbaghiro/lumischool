@@ -1,0 +1,22 @@
+# Reading the museum card of an early piece of writing: what it was for, where it was found, or
+# which of two things came first.
+item history.writing-card v=1 skills=[history.writing, history.sources] {
+  title "The first writing"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let tablet={k % 2 == 0}
+  let ask={pick(k, "What was this tablet used for?", "What was this bone used for?", "Where was this tablet found?", "Where was this bone found?", "About how many years before year one was this tablet made?", "About how many years before year one was this bone made?")}
+  let key={pick(k, "Counting sheep and grain", "Asking questions of the ancestors", "Uruk, Iraq", "Anyang, China", "About 3,300 years", "About 1,200 years")}
+  let w1={pick(k, "Telling stories", "Counting sheep and grain", "Anyang, China", "Uruk, Iraq", "About 330 years", "About 12,000 years")}
+  let w2={pick(k, "Asking questions of the ancestors", "Writing letters home", "Memphis, Egypt", "Memphis, Egypt", "About 33,000 years", "About 120 years")}
+
+  scene 23x27 {
+    objectcard card kind=pick(k, 3, 4, 3, 4, 3, 4) name="{if tablet then \"Clay tablet\" else \"Oracle bone\"}" use="{if tablet then \"Counting sheep and grain\" else \"Asking questions of the ancestors\"}" year=pick(k, -3300, -1200, -3300, -1200, -3300, -1200) about=1 place="{if tablet then \"Uruk, Iraq\" else \"Anyang, China\"}" ask=pick(k, 1, 1, 3, 3, 0, 0) at=canvas(0, 0)
+    text ask "{ask}" narrate width=22 below=card gap=1
+    choice pick options=[pick(k, key, w1, w2, key, w1, w2), pick(k, w1, key, key, w2, key, w1), pick(k, w2, w2, w1, w1, w2, key)] stack=column below=ask gap=1
+  }
+
+  answer pick=key
+  hint "{if k <= 3 then \"That row of the card is blank. What do you know about this kind of object?\" else \"Read the made row. A year BC is that many years before year one.\"}"
+  hint "{if k <= 3 then \"Clay tablets come from the land of the Tigris and Euphrates; oracle bones from Shang China.\" else \"Round the year to the nearest hundred.\"}"
+}

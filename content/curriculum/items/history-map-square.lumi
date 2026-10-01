@@ -1,0 +1,21 @@
+# Reading an old map's grid: the square a place is in, a letter across and then a number down.
+item history.map-square v=1 skills=[history.maps, history.local] {
+  title "Which square?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let what={pick(k, "church", "market", "mill", "farm", "castle", "bridge")}
+  let year={pick(k, 1850, 1850, 1850, 1850, 1500, 1850)}
+  let o1={pick(k, "B1", "B2", "C2", "D1", "A1", "D2")}
+  let o2={pick(k, "A2", "C1", "B3", "A4", "B1", "B4")}
+  let o3={pick(k, "1B", "2B", "2C", "1D", "1A", "2D")}
+
+  scene 32x16 {
+    townmap map year=year town=Millbrook labels=1 at=canvas(1, 0)
+    text ask "Which square is the {what} in?" narrate width=13 right-of=map gap=1
+    choice pick options=[pick(k, o1, o2, o3, o1, o2, o3), pick(k, o2, o1, o1, o3, o3, o1), pick(k, o3, o3, o2, o2, o1, o2)] stack=column below=ask gap=1
+  }
+
+  check history.town of=map pick="square({what})"
+  hint "Find the {what}. Which letter is above its column?"
+  hint "Then read the number at the side of its row: letter first, then number."
+}

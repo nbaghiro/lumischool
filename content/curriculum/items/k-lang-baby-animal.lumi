@@ -1,0 +1,19 @@
+item k.lang-baby-animal v=1 stars=2 skills=[language.animals, reasoning.explain] {
+  title "Which word is the animal?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 28x12 {
+    text q "{pick(k, \"Which word is an animal: [[animal.cat]] or [[family.mother]]?\", \"Which word is a person: [[animal.dog]] or [[family.father]]?\")}" narrate width=26 at=canvas(1, 1)
+    choice pick options=[pick(k, "[[animal.cat]]", "[[animal.dog]]"), pick(k, "[[family.mother]]", "[[family.father]]")] stack=row below=q gap=1
+  }
+
+  answer pick=pick(k, "[[animal.cat]]", "[[family.father]]")
+  hint "Say what each word means in English."
+}

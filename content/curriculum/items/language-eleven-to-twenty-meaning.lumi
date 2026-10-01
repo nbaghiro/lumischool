@@ -1,0 +1,19 @@
+# The language to English: [[num.eleven]], [[num.fifteen]], [[num.twelve]], [[num.twenty]], [[num.thirteen]], [[num.fourteen]], [[num.seventeen]], [[num.eighteen]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.eleven-to-twenty-meaning v=1 skills=[language.numbers] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      sign card lines=[pick(k, "[[num.eleven]]", "[[num.fifteen]]", "[[num.twelve]]", "[[num.twenty]]", "[[num.thirteen]]", "[[num.fourteen]]", "[[num.seventeen]]", "[[num.eighteen]]")] kind=hanging color=sky
+      text ask "What number is on the sign?" width=32
+      choice pick options=[pick(k, "18", "12", "14", "13", "15", "17", "15", "13"), pick(k, "11", "15", "15", "20", "20", "14", "20", "18"), pick(k, "14", "13", "13", "18", "13", "20", "13", "15"), pick(k, "13", "18", "12", "15", "12", "15", "17", "20")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "11", "15", "12", "20", "13", "14", "17", "18")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

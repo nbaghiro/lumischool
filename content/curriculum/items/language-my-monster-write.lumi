@@ -1,0 +1,19 @@
+# The word written from its picture: [[describe.eyes]], [[describe.stripes]], [[describe.legs-of-an-animal]], [[describe.spots]], [[describe.round]], [[describe.horn]], [[describe.horns]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.my-monster-write v=1 skills=[language.describing, language.numbers, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      creatures cr eyes=[pick(k, 2, 1, 2, 2, 1, 2, 3)] legs=[pick(k, 2, 2, 4, 2, 2, 2, 2)] horns=[pick(k, 0, 0, 0, 0, 0, 1, 2)] coat=[pick(k, 0, 2, 0, 1, 0, 0, 0)] body=[pick(k, 0, 0, 1, 0, 0, 1, 0)] colors=["sky"] labels=[""] ring=-1
+      text ask "{pick(k, \"It has two eyes. Write it in [[language.name]].\", \"It has stripes. Write it in [[language.name]].\", \"It has four legs. Write it in [[language.name]].\", \"It has spots. Write it in [[language.name]].\", \"It is round. Write it in [[language.name]].\", \"It has one horn. Write it in [[language.name]].\", \"It has two horns. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[describe.eyes]]", "[[describe.stripes]]", "[[describe.legs-of-an-animal]]", "[[describe.spots]]", "[[describe.round]]", "[[describe.horn]]", "[[describe.horns]]")]
+    }
+  }
+
+  answer word=pick(k, "[[describe.eyes]]", "[[describe.stripes]]", "[[describe.legs-of-an-animal]]", "[[describe.spots]]", "[[describe.round]]", "[[describe.horn]]", "[[describe.horns]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

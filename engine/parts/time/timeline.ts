@@ -8,7 +8,7 @@ export const timeline = defineDrawing({
     family: "time",
     title: "Timeline",
     group: "Structures",
-    about: "A scale of years with events pegged to it, four squares to a step. Labels alternate above and below the line so two close dates do not collide. A lesson gives the events as years and labels, and can leave one label empty for the child to fill.",
+    about: "A scale of years with events pegged to it, four squares to a step. Labels alternate above and below the line so two close dates do not collide. A lesson gives the events as years and labels, and can leave one label empty for the child to fill. A scale that starts before year one writes its years BC and AD, with a year below nought meaning that many years BC, since there was no year nought.",
     params: {
         from: 1900,
         to: 2000,
@@ -23,12 +23,12 @@ export const timeline = defineDrawing({
         blank: -1,
     },
     settings: {
-        from: { kind: "whole", min: 0, max: 3000 },
-        to: { kind: "whole", min: 1, max: 3000 },
+        from: { kind: "whole", min: -5000, max: 3000 },
+        to: { kind: "whole", min: -4999, max: 3000 },
         step: { kind: "whole", min: 1, max: 1000 },
         unit: { kind: "text", most: 6 },
         events: { kind: "fixed" },
-        years: { kind: "numbers", min: 0, max: 3000, most: 8 },
+        years: { kind: "numbers", min: -5000, max: 3000, most: 8 },
         labels: { kind: "words", most: 8 },
         blank: { kind: "whole", min: -1, max: 7 },
     },
@@ -79,6 +79,19 @@ export const timeline = defineDrawing({
             },
         },
         {
+            label: "Before and after year one",
+            params: {
+                from: -3000,
+                to: 1000,
+                step: 1000,
+                unit: "",
+                events: [],
+                years: [-2560, -221, 105],
+                labels: ["Great Pyramid", "Qin", "Paper"],
+                blank: -1,
+            },
+        },
+        {
             label: "A lesson's dates, one label to fill",
             params: {
                 from: 1780,
@@ -98,13 +111,16 @@ export const timeline = defineDrawing({
             step = p.step || 1,
             steps = Math.max(1, Math.round((p.to - p.from) / step));
         const y = 4.5 * U,
+            bc = p.from < 0,
+            // with no year nought, 1 BC sits next to AD 1, so a year BC is placed one year on
+            onScale = (v: number) => (bc && v < 0 ? v + 1 : v),
             x = (v: number) => 2 * U + ((v - p.from) / step) * 4 * U,
             a: RawAnchors = {};
         pen.line(g, x(p.from) - 14, y, x(p.to) + 14, y, "ruler", { strokeWidth: 2.4 });
         for (let i = 0; i <= steps; i++) {
             const v = p.from + i * step;
             pen.line(g, x(v), y - 7, x(v), y + 7, "ruler", { strokeWidth: 1.6 });
-            num(c, x(v), y + 26, v, 14);
+            num(c, x(v), y + 26, bc ? (v < 0 ? `${-v} BC` : v === 0 ? "AD 1" : `AD ${v}`) : v, 14);
             a[`tick(${v})`] = [x(v), y + 7, "down"];
         }
         if (p.unit) cap(c, 2 * U, U, p.unit, 12, "start");
@@ -112,7 +128,7 @@ export const timeline = defineDrawing({
             ? p.years.map((at, i) => ({ at, label: p.labels[i] ?? "" }))
             : p.events;
         events.forEach((e, i) => {
-            const ex = x(e.at),
+            const ex = x(onScale(e.at)),
                 up = i % 2 === 0,
                 ty = up ? y - 2.1 * U : y + 2.5 * U;
             pen.line(g, ex, y, ex, ty + (up ? 14 : -14), "pencil", {

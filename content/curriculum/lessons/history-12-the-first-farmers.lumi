@@ -1,0 +1,70 @@
+# Dates from engine/notation/chronicle.ts: the first farming, 10,000 to 8,000 BC in the Fertile
+# Crescent; farming in Britain about 4000 BC; Skara Brae about 3180 to 2500 BC.
+lesson history-the-first-farmers v=1 format=teach grade=3 unit=2 subject=history levels=[easy, medium, hard] {
+  title "The first farmers"
+  goal "Say how farming changed the way people lived, and count years BC between the first farms and later ones."
+
+  look {
+    scene 36x10 {
+      column all at=canvas(0, 0) space=1 align=start {
+        row pics space=2 align=end {
+          crops field stage=3 rows=2 plants=6
+          objectcard pot kind=9 name="Clay pot" use="Storing grain" year=-3000 about=1 place="Skara Brae, Orkney" ask=0
+        }
+      }
+    }
+    say """
+      For hundreds of thousands of years people lived by hunting animals and gathering wild plants,
+      moving as the seasons changed. About 10,000 years before year one, in the land by the rivers
+      Tigris and Euphrates, people began to sow seeds and keep animals. Farming spread slowly, and
+      reached Britain about 4000 BC. Farmers stayed in one place, so they built villages, made pots to
+      store grain, and could feed many more people.
+      """
+  }
+  do {
+    level easy {
+      worked history.farmer-or-hunter k=0
+    }
+    show history.farmer-or-hunter k=2 easy-k=1 hard-k=4
+    show history.farming-order k=2 easy-k=0 hard-k=4
+    show history.farming-changed k=2 easy-k=0 hard-k=4
+    show history.bc-count k=2 easy-k=0 hard-k=4
+    show history.farmer-or-hunter k=3 easy-k=2 hard-k=5
+    show history.farming-order k=3 easy-k=1 hard-k=5
+    show history.farming-changed k=3 easy-k=1 hard-k=5
+    show history.bc-count k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.bc-count k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.why-farm k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.village-fields k=0 hard-k=1
+  }
+  remember {
+    say "Farming kept people in one place, so they built villages and could feed many more people."
+  }
+
+  grown-ups """
+    The idea is that farming was the biggest change in how people lived before cities: food grown
+    in one place meant villages, stores of grain, pots and ownership. The way in sorts what hunters
+    and farmers did; the core orders the first farms, says what farming changed, and counts years
+    BC. The wrong idea to watch for is "farming was easier": it was harder work, and it spread
+    because it fed more people from the same land, which is the two-star question. With years BC,
+    watch for adding two BC dates to find the gap between them; say "before year one" aloud. If the
+    child is stuck, plant a seed together and talk about the waiting. Off the page, visit a farm or
+    a museum's Stone Age gallery. England's key stage 2 history asks for "changes in Britain from
+    the Stone Age to the Iron Age", and names "late Neolithic hunter-gatherers and early farmers,
+    for example, Skara Brae" among its examples.
+    Japan's 社会 for grades three and four asks for 「古くから残る暮らしにかかわる道具，それらを使っていたころの暮らしの様子」 (the course
+    of study as read in its 2008 edition), which this lesson's tools and farms prepare for.
+    """
+  level easy {
+    grown-ups "At this level a worked example sorts sowing seeds, the orders start from the first farms, the reasons asked are the plainest ones (houses near the fields, pots to store grain), and the years BC are counted back to year one."
+  }
+  level hard {
+    grown-ups "At this level the activities are the ones both groups could be thought to do, the orders are fully muddled, the reasons are about owning land and sharing stored grain, the years BC are counted between two dates BC, and the three-star village must keep seed for next year."
+  }
+}

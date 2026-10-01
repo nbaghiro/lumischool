@@ -1,0 +1,23 @@
+# Some babies look like their parents and some change completely: a kitten is a small cat, a
+# tadpole is not a small frog.
+item k.looks-like-parent v=1 skills=[nature.life-cycles] {
+  title "Does it look like its mum?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let q1={pick(k, "Does a kitten look like a cat?", "Does a lamb look like a sheep?", "Does a tadpole look like a frog?", "Does a caterpillar look like a butterfly?")}
+  let right={pick(k, "yes", "yes", "no", "no")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 26x11 {
+    text q "{q1}" narrate width=24 at=canvas(1, 1)
+    choice pick options=["yes", "no"] stack=row below=q gap=1
+  }
+
+  answer pick=right
+  hint "Picture the baby and the grown-up side by side. Are they the same shape?"
+}

@@ -1,0 +1,22 @@
+# Non-routine: a season or a month worked out from months, counted round the year.
+item language.seasons-puzzle v=1 stars=3 skills=[language.weather, language.time, reasoning.language] {
+  title "Which season?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Ana's birthday is in July. Which season is it in Spain?\", \"Autumn starts in September. Which month is three months later?\", \"It is winter in Spain. Which month can it not be?\")}" width=32
+      choice pick options=[pick(k, "[[weather.summer]]", "[[time.december]]", "[[time.august]]"), pick(k, "[[weather.winter]]", "[[time.november]]", "[[time.january]]"), pick(k, "[[weather.spring]]", "[[time.january]]", "[[time.february]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[weather.summer]]", "[[time.december]]", "[[time.august]]")
+  feedback {
+    when (pick == pick(k, "[[weather.spring]]", "[[time.november]]", "[[time.february]]")) {
+      say "{pick(k, \"Spring is March to May. July is later.\", \"That is two months after September. Count one more.\", \"February is winter in Spain. Which month is summer?\")}"
+    }
+  }
+  hint "Say the months of each season."
+  hint "Count round the year one month at a time."
+}

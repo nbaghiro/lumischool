@@ -1,0 +1,27 @@
+# Years between the fires and the rebuilding, from the record: Edo 1657, London 1666, the new
+# St Paul's finished in 1710.
+item history.fire-years v=1 skills=[history.timeline, number.difference] {
+  title "How many years between?"
+  difficulty k
+  let k=0..2
+  let e1={pick(k, "Edo fire", "London fire", "Edo fire")}
+  let y1={pick(k, 1657, 1666, 1657)}
+  let e2={pick(k, "London fire", "New St Paul's finished", "New St Paul's finished")}
+  let y2={pick(k, 1666, 1710, 1710)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 34x14 {
+    timeline line from=1650 to=1720 step=10 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(1, 0)
+    text ask "{e1}: {y1}. {e2}: {y2}. How many years between them?" narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Count on from {y1} to the next ten."
+  hint "Then count on in tens and ones to {y2}."
+}

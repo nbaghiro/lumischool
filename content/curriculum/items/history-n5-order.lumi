@@ -1,0 +1,21 @@
+# The grade 5 national unit: three events of the family's country numbered from the earliest,
+# from the dated record. n is the country (0 the United Kingdom, 1 the United States, 2 Japan,
+# 3 Russia, 4 China); k changes how muddled the rows are.
+item history.n5-order v=1 skills=[history.nation, history.order] {
+  title "In order"
+  difficulty k
+  let n=0..4 k=0..2
+  let e1={pick(n, "Alfred becomes king", "Jamestown founded", "Television broadcasts in Japan", "Novgorod first mentioned", "Dujiangyan built")}
+  let e2={pick(n, "First king of England", "Plymouth Colony founded", "Electric rice cooker", "Onfim's homework", "Anji bridge built")}
+  let e3={pick(n, "Domesday Book", "Georgia founded", "Shinkansen opens", "Birch-bark letters found", "Grand Canal completed")}
+
+  scene 36x22 {
+    timeline line from=-300 to=2100 step=300 years=[] labels=[] at=canvas(0, 0)
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=34 below=line gap=1
+    sequence s items=[pick(k, e1, e2, e3), pick(k, e3, e1, e2), pick(k, e2, e3, e1)] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Which of the three happened longest ago?"
+  hint "Put a finger on the line for each one."
+}

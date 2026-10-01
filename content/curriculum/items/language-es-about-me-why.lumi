@@ -1,0 +1,22 @@
+# A reason: pero joining things that pull different ways, tiene against tengo, and a sentence with a reason.
+item language.es-about-me-why v=1 stars=2 skills=[language.reading, language.writing, reasoning.language] {
+  title "How the text is built"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 35x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Sara writes: Soy simpática, pero un poco tímida. What does pero do?\", \"Why does Sara write tengo doce años about herself, but her brother writes Sara tiene doce años?\", \"Which sentence would make Sara's text longer with a reason?\")}" width=32
+      choice pick options=[pick(k, "It joins two things that pull different ways: but.", "Tengo is I have; tiene is she has.", "Me encanta nadar porque es divertido."), pick(k, "It adds a third thing: and.", "Tiene is more polite.", "Nado."), pick(k, "It gives a reason: because.", "Her brother made a mistake.", "Me encanta nadar nadar.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "It joins two things that pull different ways: but.", "Tengo is I have; tiene is she has.", "Me encanta nadar porque es divertido.")
+  feedback {
+    when (pick == pick(k, "It adds a third thing: and.", "Her brother made a mistake.", "Nado.")) {
+      say "{pick(k, \"That would be y. Kind and shy pull different ways.\", \"Both are right. Who is writing each time?\", \"That is shorter, not longer, and has no reason.\")}"
+    }
+  }
+  hint "Say the sentence in English."
+  hint "Who is speaking?"
+}

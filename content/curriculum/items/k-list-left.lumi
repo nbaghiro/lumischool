@@ -1,0 +1,20 @@
+item k.list-left v=1 stars=3 skills=[writing.lists, counting.to-five] {
+  title "What is left to buy?"
+  difficulty (n - t)
+  let n=3..5 t=1..3
+  where (t < n)
+  level easy {
+    where (n - t == 1)
+  }
+  level hard {
+    where (n - t >= 2)
+  }
+
+  scene 28x13 {
+    text q "Ada's list has {n} things. She has ticked {t} of them in the shop. How many are left to buy?" narrate width=26 at=canvas(1, 1)
+    number-input answer below=q gap=1
+  }
+
+  answer (n - t)
+  hint "Hold up {n} fingers. Fold down one for each tick."
+}

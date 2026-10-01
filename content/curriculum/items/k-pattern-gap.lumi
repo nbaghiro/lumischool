@@ -1,0 +1,21 @@
+item k.pattern-gap v=1 skills=[patterns.repeating] {
+  title "A gap in the pattern"
+  difficulty m
+  let m=2..5
+  roles circ=circle tri=triangle
+  level easy {
+    let m=2..3
+  }
+  level hard {
+    let m=4..5
+  }
+
+  scene 26x13 {
+    pattern strip unit=[circ, tri] count=6 missing=m at=canvas(1, 1)
+    text ask "One shape is missing from the pattern. Which one?" narrate width=24 below=strip gap=1
+    choice pick options=[circ, tri] below=ask gap=1
+  }
+
+  answer pick=(if m % 2 == 1 then "circ" else "tri")
+  hint "Look at the shape just before the gap, and the shape just after it."
+}

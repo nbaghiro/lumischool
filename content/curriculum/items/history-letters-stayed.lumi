@@ -1,0 +1,17 @@
+# The two-star reason: a new invention seldom ends the old way at once. People went on writing
+# letters for a century after the telephone.
+item history.letters-stayed v=1 skills=[history.inventions, reasoning.why] {
+  title "Did the old way vanish?"
+  difficulty k
+  let k=0..1
+
+  scene 32x33 {
+    thenandnow street year=1950 sign=1 things=["horse and cart", "motor car"] at=canvas(1, 0)
+    text ask "{if k == 0 then \"The telephone came in 1876. Ben says nobody wrote letters after that. What is wrong with that?\" else \"The motor car came in 1886, but this street in 1950 still has a horse and cart. Why?\"}" narrate width=30 below=street gap=1
+    choice pick options=["New things spread slowly and old ways go on", "The telephone was never used", "Horses were faster than cars"] stack=column below=ask gap=1
+  }
+
+  answer pick="New things spread slowly and old ways go on"
+  hint "Did every family get a telephone, or a car, in its first year?"
+  hint "What does the street in the picture show?"
+}

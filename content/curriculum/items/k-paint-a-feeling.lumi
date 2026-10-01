@@ -1,0 +1,9 @@
+item k.paint-a-feeling v=1 skills=[art.feeling, art.warm-cool] {
+  title "Paint a feeling"
+
+  scene 28x9 {
+    text q "Paint a picture of a happy day with warm colours, or a calm night with cool colours." narrate width=26 at=canvas(1, 1)
+  }
+
+  check art.by-eye look-for="A picture whose colours match the feeling chosen: mostly warm reds, oranges and yellows for a happy day, or mostly cool blues and greens for a calm night." notice=["colours chosen for the feeling", "mostly warm or mostly cool", "fills the page"] ask="Which feeling did you paint, and which colour shows it best?"
+}

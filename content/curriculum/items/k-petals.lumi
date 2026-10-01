@@ -1,0 +1,20 @@
+item k.petals v=1 skills=[nature.plants, counting.to-ten] {
+  title "Count the petals"
+  difficulty p
+  let p=3..8
+  level easy {
+    let p=3..4
+  }
+  level hard {
+    let p=6..8
+  }
+
+  scene 24x18 {
+    flowers f count=1 petals=p at=canvas(1, 1)
+    text ask "How many petals does the flower have?" narrate width=22 below=f gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer p
+  hint "Start at the top petal and go round. Stop when you get back."
+}

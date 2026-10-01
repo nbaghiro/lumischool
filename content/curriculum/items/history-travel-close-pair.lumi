@@ -1,0 +1,31 @@
+# The three-star question: which two ways of getting about came closest together. The record gives
+# the balloon 1783 and the steam train 1804 (21 years), the car 1886 and the aeroplane 1903 (17).
+item history.travel-close-pair v=1 skills=[history.timeline, reasoning.compare] {
+  title "Closest together"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x28 {
+    timeline line from=1780 to=1920 step=20 years=[1783, 1804, 1886, 1903] labels=["Balloon", "Steam train", "Motor car", "Aeroplane"] at=canvas(1, 0)
+    text ask "The first balloon flew in 1783, the first steam train ran in 1804, the first motor car in 1886 and the first aeroplane in 1903. {if k == 0 then \"Which two came closest together?\" else \"Which two came closest together in time?\"}" narrate width=34 below=line gap=1
+    choice pick options=["The balloon and the steam train", "The steam train and the motor car", "The motor car and the aeroplane"] stack=column below=ask gap=1
+  }
+
+  answer pick="The motor car and the aeroplane"
+  feedback {
+    when (pick == "The steam train and the motor car") point=line {
+      say "Those two are far apart on the line. Look at the pairs whose flags are close."
+    }
+    when (pick == "The balloon and the steam train") point=line {
+      say "They are close, but count: from 1783 to 1804, and from 1886 to 1903. Which gap is smaller?"
+    }
+  }
+  hint "Which two pairs of flags are close together on the line?"
+  hint "Count the years between each of those pairs."
+}

@@ -1,0 +1,29 @@
+# The two-star reason: before cars people still travelled far, by horse, on foot, by ship and later
+# by steam train; "no cars" is not "no travel".
+item history.travel-before-cars v=1 skills=[history.transport, reasoning.why] {
+  title "Before there were cars"
+  difficulty k
+  let k=0..1
+  let year={pick(k, 1850, 1870)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 32x29 {
+    thenandnow street year=year sign=1 things=["horse and cart", "hot-air balloon"] at=canvas(1, 0)
+    text ask "Ben says that in {year} nobody could go far, because there were no cars. What is wrong with that?" narrate width=30 below=street gap=1
+    choice pick options=["People went by horse, ship and steam train", "People never left their town"] stack=column below=ask gap=1
+  }
+
+  answer pick="People went by horse, ship and steam train"
+  feedback {
+    when (pick == "People never left their town") point=street {
+      say "Look at what is in the road. Where could a horse and cart take someone?"
+    }
+  }
+  hint "What is pulling the cart in the street?"
+  hint "Had steam trains been made by {year}?"
+}

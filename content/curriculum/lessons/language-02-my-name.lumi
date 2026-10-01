@@ -1,0 +1,67 @@
+# Names and how you are: my name is, what is your name, how are you, and five answers.
+lesson language-my-name v=1 format=teach grade=1 unit=2 subject=language levels=[easy, medium, hard] {
+  title "[[greet.my-name-is|cap]] Ana"
+  goal "Ask someone's name and how they are in [[language.name]], and answer for yourself."
+
+  look {
+    scene 35x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        comic talk who=["girl", "boy", "girl"] says=["[[greet.hello-what-is-your-name]]", "[[greet.my-name-is-leo-and-you]]", "[[greet.my-name-is-ana-how-are-you]]"] moods=["happy", "happy", "happy"] with=["", "", ""] thinks=[0, 0, 0] holds=["", "", ""] labels=["1", "2", "3"]
+      }
+    }
+    say """
+      To ask a name, say [[greet.what-is-your-name]] and to give yours, say [[greet.my-name-is]] and
+      your name. To ask how someone is, say [[greet.how-are-you]] The answer can be [[greet.well]]
+      (well), [[greet.very-well]] (very well), [[greet.so-so]] (so-so), [[greet.bad]] (bad) or
+      [[greet.great]] (great).
+      """
+  }
+  do {
+    level easy {
+      worked language.my-name-name k=4
+    }
+    show language.my-name-name k=2 easy-k=0 hard-k=5
+    show language.my-name-meaning k=5 easy-k=3 hard-k=7
+    show language.my-name-write k=1 easy-k=3 hard-k=2
+    show language.my-name-name k=4 easy-k=1 hard-k=6
+    show language.my-name-match k=2 easy-k=0 hard-k=3
+    show language.my-name-write k=3 easy-k=1 hard-k=1
+    show language.my-name-meaning k=3 easy-k=5
+    show language.my-name-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.my-name-write k=0
+    }
+  }
+  try stars=2 {
+    show language.my-name-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.my-name-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[question.what-is-your-name]] asks a name, and [[greet.my-name-is]] gives yours. [[greet.how-are-you|cap]] asks how you are."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is answering [[greet.how-are-you]] with a name, or
+    [[greet.what-is-your-name]] with [[greet.well]]: the two questions sound alike to a beginner.
+    Ask "what did the question ask for?" before each answer. The faces carry how each person feels,
+    and a face's mood is a shape (the mouth and the brows), so it reads the same on paper.
+    [[greet.my-name-is|cap]] is said [[greet.my-name-is|say]]. The device can say the phrases too,
+    but your voice is the way in: sound is a second channel here, never the only one. If the child
+    is stuck, act a meeting out with two toys, one asking and one answering. Off the page, ask
+    [[greet.how-are-you]] at breakfast each day this week and wait for an answer in the language. It
+    meets England's key stage 2 languages programme (years 3 to 6, statutory from age 7): "engage in
+    conversations; ask and answer questions"; Japan's grades 3 and 4 foreign language activities:
+    "Ask and answer questions about themselves, someone they communicate with and their surroundings
+    by using simple words and phrases and basic expressions with support"; and CEFR A1, "Can
+    introduce him/herself and others and can ask and answer questions about personal details". The
+    phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[greet.so-so]] is worked first in the teacher's pen, the words to name are [[greet.well]] and [[greet.bad]] and the words to write are [[greet.great]] and [[greet.bad]], the plainer ones of the lesson, with the first set to match and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[greet.how-are-you]] and [[greet.great]] and the words to write are [[greet.so-so]], [[greet.bad]] and [[greet.well]], the ones most often mixed up, with the last set to match, a third word to write and the last version of each star question."
+  }
+}

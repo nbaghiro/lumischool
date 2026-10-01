@@ -1,0 +1,22 @@
+# Machines and ways that changed work, numbered from the earliest, from the dated record.
+item history.industry-order v=1 skills=[history.industry, history.order] {
+  title "Machines in order"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Bridgewater Canal", "Bridgewater Canal", "Watt's steam engine", "First inter-city railway", "Cromford Mill", "First inter-city railway")}
+  let b={pick(k, "Watt's steam engine", "First public steam railway", "Bridgewater Canal", "Cromford Mill", "Spinning jenny", "Steam train")}
+  let c={pick(k, "First inter-city railway", "Cromford Mill", "First inter-city railway", "Bridgewater Canal", "Watt's steam engine", "Watt's steam engine")}
+
+  scene 36x25 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      waterwheel mill
+      narrowboat boat
+    }
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=34 below=pics gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Canals and water mills came first, in the 1760s and 1770s."
+  hint "Railways came after 1800."
+}

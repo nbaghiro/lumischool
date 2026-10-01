@@ -4,7 +4,7 @@
 
 import type { Envelope, WorldTweak } from "../../engine/answer";
 import { dayIn } from "../record";
-import { yearOf, type YearLesson } from "../year";
+import { termsAt, yearOf, type YearLesson } from "../year";
 
 /** A child's worlds as their family chose them, read against the work done in each term. */
 export interface ChosenWorlds {
@@ -40,7 +40,10 @@ function termsOf(lessons: readonly YearLesson[]): Map<string, string> {
         const year = yearOf(lessons, grade, "", "");
         const units = year.units.map((u) => u.n);
         for (const l of year.lessons)
-            out.set(l.id, `${grade}.${Math.floor(Math.max(0, units.indexOf(l.unit)) / 3) + 1}`);
+            out.set(
+                l.id,
+                `${grade}.${Math.min(termsAt(grade), Math.floor(Math.max(0, units.indexOf(l.unit)) / 3) + 1)}`,
+            );
     }
     return out;
 }

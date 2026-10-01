@@ -1,0 +1,25 @@
+# Two blocks and one of them goes the wrong way: the checker runs every single change and proves
+# only one block's mistake keeps the robot from the flag.
+item k.wrong-block v=1 skills=[coding.debugging, coding.directions] {
+  title "Which block is wrong?"
+  difficulty k
+  let k=0..1 a=1..3
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 28x19 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["{if k == 0 then \"left\" else \"right\"} {a}", "{if k == 1 then \"up\" else \"down\"} 1"] words=false numbers=true
+      maze g cols=5 rows=3 col=1 row=2 flag=[1 + a, 3] code=["{if k == 0 then \"left\" else \"right\"} {a}", "{if k == 1 then \"up\" else \"down\"} 1"] upto=0 trail=none
+    }
+    text q "The robot should reach the flag, but one block points the wrong way. Which block?" narrate width=26 below=top gap=1
+    choice pick options=[1, 2] stack=row below=q gap=1
+  }
+
+  check coding.runs of=g goal=flag pick=wrong
+  hint "Do the first block with a finger. Did the robot go towards the flag?"
+}

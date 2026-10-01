@@ -1,0 +1,22 @@
+# Non-routine: a number found from a clue.
+item language.six-to-ten-puzzle v=1 stars=3 skills=[language.numbers, reasoning.language] {
+  title "Number riddles"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"It is one more than [[num.five]]. Which number is it?\", \"It is two less than [[num.ten]]. Which number is it?\", \"It is between [[num.six]] and [[num.eight]]. Which number is it?\")}" width=32
+      choice pick options=[pick(k, "[[num.four]]", "[[num.eight]]", "[[num.seven]]"), pick(k, "[[num.six]]", "[[num.nine]]", "[[num.six]]"), pick(k, "[[num.seven]]", "[[num.seven]]", "[[num.nine]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[num.six]]", "[[num.eight]]", "[[num.seven]]")
+  feedback {
+    when (pick == pick(k, "[[num.four]]", "[[num.nine]]", "[[num.nine]]")) {
+      say "{pick(k, \"[[num.four|cap]] is one less than [[num.five]]. One more goes the other way.\", \"[[num.nine|cap]] is one less than [[num.ten]]. Two less is one further.\", \"[[num.nine|cap]] is after [[num.eight]]. What is between [[num.six]] and [[num.eight]]?\")}"
+    }
+  }
+  hint "Say the numbers in order from [[num.five]]."
+  hint "Put a finger on each number as you count."
+}

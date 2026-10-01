@@ -1,0 +1,17 @@
+# The three-star question: how many whole months the first voyage round the world took, from its two
+# dates, 20 September 1519 and 6 September 1522.
+item history.voyage-months v=1 skills=[history.voyages, reasoning.plan] {
+  title "How long at sea?"
+  difficulty k
+  let k=0..1
+
+  scene 36x16 {
+    timeline line from=1518 to=1523 step=1 years=[1519, 1522] labels=["Magellan's fleet sets out", "Victoria returns"] at=canvas(0, 0)
+    text ask "{if k == 0 then \"The fleet left on 20 September 1519 and came home on 20 September 1522. How many months was that?\" else \"The fleet left on 20 September 1519 and the Victoria came home on 6 September 1522. How many whole months was it away?\"}" narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then 36 else 35)
+  hint "How many months are there in a year?"
+  hint "{if k == 0 then \"How many years is it, from one 20 September to another?\" else \"Is 6 September before or after 20 September?\"}"
+}

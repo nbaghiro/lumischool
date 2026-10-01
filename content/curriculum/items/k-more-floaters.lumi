@@ -1,0 +1,25 @@
+item k.more-floaters v=1 stars=3 skills=[physics.floating, counting.one-more] {
+  title "Two more that float"
+  difficulty f
+  let f=1..4
+  level easy {
+    let f=1..2
+  }
+  level hard {
+    let f=3..4
+  }
+
+  scene 28x22 {
+    tank t float=f sunk=2 letters=false at=canvas(1, 1)
+    text ask "Ada drops in two corks, and corks float. How many things will float now?" narrate width=22 below=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (f + 2)
+  feedback {
+    when (answer == f + 4) point=t {
+      say "The things on the bottom still sink. Count only the ones at the top, then add the corks."
+    }
+  }
+  hint "How many float now? Count on two more."
+}

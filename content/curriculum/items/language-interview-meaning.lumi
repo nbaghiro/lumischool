@@ -1,0 +1,19 @@
+# The language to English: [[phrase.where-do-you-live]], [[phrase.do-you-have-brothers-or-sisters]], [[phrase.what-do-you-like-doing]], [[phrase.what-is-your-favourite-food]], [[phrase.where-do-you-live-to-an-adult]], [[phrase.thank-you-very-much-for-the-interview]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.interview-meaning v=1 skills=[language.questions, language.speaking] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "boy", "girl", "boy", "girl", "girl")] says=[pick(k, "[[phrase.where-do-you-live]]", "[[phrase.do-you-have-brothers-or-sisters]]", "[[phrase.what-do-you-like-doing]]", "[[phrase.what-is-your-favourite-food]]", "[[phrase.where-do-you-live-to-an-adult]]", "[[phrase.thank-you-very-much-for-the-interview]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "Thank you very much for the interview.", "What is your favourite food?", "Do you have brothers or sisters?", "Thank you very much for the interview.", "Thank you very much for the interview.", "What is your favourite food?"), pick(k, "Where do you live?", "Do you have brothers or sisters?", "Where do you live? (to an adult)", "What is your favourite food?", "What do you like doing?", "Thank you very much for the interview."), pick(k, "What do you like doing?", "Where do you live? (to an adult)", "What is your favourite food?", "Do you have brothers or sisters?", "Where do you live? (to an adult)", "What do you like doing?"), pick(k, "Where do you live? (to an adult)", "What do you like doing?", "What do you like doing?", "What do you like doing?", "What is your favourite food?", "Where do you live? (to an adult)")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Where do you live?", "Do you have brothers or sisters?", "What do you like doing?", "What is your favourite food?", "Where do you live? (to an adult)", "Thank you very much for the interview.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

@@ -1,0 +1,22 @@
+# Non-routine: a thing found from a colour clue.
+item language.colours-puzzle v=1 stars=3 skills=[language.colours, reasoning.language] {
+  title "Colour clues"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"It is [[colour.yellow]] and you peel it. What is it?\", \"It is [[colour.green]] and it grows on a tree in spring. What is it?\", \"It is [[colour.white]] and [[colour.black]], with stripes. What is it?\")}" width=32
+      choice pick options=[pick(k, "a banana", "a leaf", "a zebra"), pick(k, "a tomato", "snow", "a frog"), pick(k, "grass", "a banana", "the sun")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "a banana", "a leaf", "a zebra")
+  feedback {
+    when (pick == pick(k, "a tomato", "snow", "a frog")) {
+      say "{pick(k, \"A tomato is [[colour.red]]. Which one is yellow?\", \"Snow is [[colour.white]]. Which one is green?\", \"A frog is [[colour.green]]. Which one is white and black?\")}"
+    }
+  }
+  hint "Say the colour in English."
+  hint "Which thing is that colour?"
+}

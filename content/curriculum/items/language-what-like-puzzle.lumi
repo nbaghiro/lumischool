@@ -1,0 +1,27 @@
+# Non-routine: one person picked from four by clues, with a no clue at the end.
+item language.what-like-puzzle v=1 stars=3 skills=[language.describing, reasoning.language] {
+  title "Who is it?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x41 {
+    column all at=canvas(1, 1) space=1 align=start {
+      person a hair=long colour=blonde glasses=true
+      person b hair=curly colour=black
+      person c hair=long colour=black glasses=true
+      person d hair=crop colour=brown
+      text l0 "From left to right: Ana, Eva, Sara and Lola." width=32
+      text ask "{pick(k, \"[[describe.she-has-curly-hair]] Who is it?\", \"[[describe.she-has-long-black-hair]] Who is it?\", \"[[describe.she-does-not-wear-glasses-and-her-hair-i]] Who is it?\")}" width=32
+      choice pick options=["Ana", "Eva", "Sara", "Lola"] stack=row
+    }
+  }
+
+  answer pick=pick(k, "Eva", "Sara", "Lola")
+  feedback {
+    when (pick == pick(k, "Sara", "Ana", "Eva")) {
+      say "{pick(k, \"Sara's hair is long and straight. Whose hair curls?\", \"Ana's hair is long, but is it black?\", \"Eva wears no glasses, but her hair is curly.\")}"
+    }
+  }
+  hint "Check each person against each clue."
+  hint "Cross off anyone a clue rules out."
+}

@@ -1,0 +1,13 @@
+# Marked by a grown-up: finding out about the country's story near home (n as in n4-order).
+item history.n4-find-out v=1 stars=3 skills=[history.nation, history.enquiry] {
+  title "Find out near home"
+  let n=0..4
+  let task={pick(n, "Find a Roman road, town or find near where you live, on a map or in a museum. When was it made, and how do we know?", "Find the year your state joined the United States, and one thing that happened there that year.", "Find your family's meeting place for an earthquake, and the year of the last big earthquake near you.", "Find a building near you from the 1700s or 1800s, and who had it built.", "Find one thing at home that uses an invention from China, and when that invention was first recorded.")}
+
+  scene 36x13 {
+    text ask "{task}" width=34 at=canvas(1, 1)
+    writinglines w lines=2 width=34 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="A small, true piece of finding out done with a grown-up: what was found, a date for it, where the information came from, and how the child knows it is right." notice=["Found one real fact", "Gave a date", "Said where it came from", "Said how sure they are"] ask="Where did you find that out, and could you check it somewhere else?"
+}

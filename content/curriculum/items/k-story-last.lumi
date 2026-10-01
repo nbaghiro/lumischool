@@ -1,0 +1,20 @@
+item k.story-last v=1 skills=[reading.sequencing] {
+  title "What happens last?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x18 {
+    picsteps steps pictures=[pick(k, "stir", "cake", "oven", "eggs"), pick(k, "cake", "eggs", "eggs", "oven"), pick(k, "eggs", "stir", "cake", "stir"), pick(k, "oven", "oven", "stir", "cake")] texts=["", "", "", ""] per=4 numbers=true write=false at=canvas(1, 1)
+    text ask "These pictures of baking a cake are mixed up. Which picture comes last? Say its number." narrate width=28 below=steps gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 2, 1, 3, 4)
+  hint "What is there at the very end, when the baking is done?"
+}

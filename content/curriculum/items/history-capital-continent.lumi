@@ -1,0 +1,18 @@
+# Capitals of the world on the map, numbered: the continent a capital is on.
+item history.capital-continent v=1 skills=[history.geography, history.maps] {
+  title "Capitals and continents"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let i={pick(k, 0, 3, 1, 4, 2, 5)}
+  let cap={pick(k, "Cairo", "Canberra", "Brasília", "Mexico City", "Moscow", "Tokyo")}
+
+  scene 36x41 {
+    worldmap map names=pick(k, 0, 0, 0, 2, 2, 2) blank=-1 oceans=0 places=["Cairo", "Brasília", "Moscow", "Canberra", "Mexico City", "Tokyo"] numbered=1 route=0 at=canvas(1, 0)
+    text ask "Dot {i + 1} is {cap}, a capital city. Which continent is it on?" narrate width=18 below=map gap=1
+    choice pick options=["Africa", "Asia", "Australia", "Europe", "North America", "South America"] stack=column right-of=ask gap=1
+  }
+
+  check history.world of=map pick="on({i})"
+  hint "Find dot number {i + 1}."
+  hint "{if k <= 2 then \"Read the continent's name around it.\" else \"The names are left off: which continent has that shape?\"}"
+}

@@ -1,0 +1,17 @@
+# Cities of the year 1000 on the world map, numbered: which continent each is on.
+item history.y1000-continent v=1 skills=[history.world, history.maps] {
+  title "Where in the world?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let i={pick(k, 3, 4, 0, 1, 2, 0)}
+
+  scene 36x29 {
+    worldmap map names=pick(k, 0, 0, 0, 0, 2, 2) blank=-1 oceans=0 places=["Baghdad", "Kaifeng", "Kyoto", "Kyiv", "Benin City"] numbered=1 route=0 at=canvas(1, 0)
+    text ask "Which continent is city {i + 1} on?" narrate width=18 below=map gap=1
+    choice pick options=["Europe", "Asia", "Africa"] stack=column right-of=ask gap=1
+  }
+
+  check history.world of=map pick="on({i})"
+  hint "Find the dot with the number {i + 1}."
+  hint "{if k <= 3 then \"Read the name of the land it is on.\" else \"The names are left off: which continent has that shape?\"}"
+}

@@ -1,3 +1,4 @@
+import { gradeName } from "../../engine/pack";
 import type { Day, DayView, SheetView, Standing, WorldLimits, WorldView } from "../../engine/space";
 import type { Applied, WorldChoice } from "./types";
 import type { Corpus } from "./lessons";
@@ -26,6 +27,11 @@ export interface WorldIn {
     visitOnly?: boolean;
     limits: WorldLimits;
 }
+
+/** What an empty place says to a child: its own words, or that its lessons are still being written. */
+const bareSays = (w: Applied): string =>
+    (w.site?.kind === "track" ? w.site.hosts.bare : undefined) ??
+    "The lessons here are still being written.";
 
 /**
  * A year's roll as one page draws it, opening on the world the journal visits or on today: its worlds'
@@ -119,7 +125,7 @@ export function worldViewOf(o: WorldIn): WorldView {
         open,
         arrival,
         card: j.bare
-            ? { label: "Still to come", says: "The lessons here are still being written." }
+            ? { label: "Still to come", says: bareSays(worldOf(worldAt(term))) }
             : shownDays.length
               ? undefined
               : { label: "Your first day", says: "Your first lesson will be here." },
@@ -138,7 +144,7 @@ export function journeyViewOf(
     const { journey, progress } = o;
     const world = o.worldOf(journey.world);
     const days: Day[] = journey.lessonIds.map((id, i) => ({
-        id: `${journey.id}@${journey.version}:${id}`,
+        id: `${journey.id}:${id}`,
         n: i + 1,
         term: 1,
         lessons: [id],
@@ -191,6 +197,9 @@ export function journeyViewOf(
     });
     return {
         ...view,
-        stretches: view.stretches.map((s) => ({ ...s, caption: `Grade ${journey.grade} journey` })),
+        stretches: view.stretches.map((s) => ({
+            ...s,
+            caption: `${gradeName(journey.grade)} journey`,
+        })),
     };
 }

@@ -1,0 +1,20 @@
+# The digits' journey, numbered from the earliest, from the record: Ashoka's rule (his edicts have
+# some of the oldest number signs), zero written as a number in 628, the digits in Europe in 1202.
+item history.digits-order v=1 skills=[history.ancient, history.order] {
+  title "The digits' journey"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Ashoka's rule", "Ashoka's rule", "Zero as a number", "Digits reach Europe", "Zero as a number", "Digits reach Europe")}
+  let b={pick(k, "Zero as a number", "Digits reach Europe", "Ashoka's rule", "Ashoka's rule", "Digits reach Europe", "Zero as a number")}
+  let c={pick(k, "Digits reach Europe", "Zero as a number", "Digits reach Europe", "Zero as a number", "Ashoka's rule", "Ashoka's rule")}
+
+  scene 36x22 {
+    timeline line from=-300 to=1500 step=300 years=[] labels=[] at=canvas(0, 0)
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=34 below=line gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Which of the three was before year one?"
+  hint "The digits were used in India long before they reached Europe."
+}

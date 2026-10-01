@@ -1,0 +1,22 @@
+# A number line a child can walk up to: five cards in order with one taken off the line.
+item k.missing-peg v=1 skills=[counting.to-ten, counting.order] {
+  title "The missing card"
+  difficulty (s + g)
+  let s=1..6 g=1..3
+  level easy {
+    let s=1..3
+  }
+  level hard {
+    let s=4..6
+  }
+
+  scene 26x15 {
+    washingline line values=["{s}", "{if g == 1 then \"\" else s + 1}", "{if g == 2 then \"\" else s + 2}", "{if g == 3 then \"\" else s + 3}", "{s + 4}"] at=canvas(1, 1)
+    text ask "One card fell off the line. Which number is missing?" narrate width=24 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (s + g)
+  hint "Say the numbers along the line, starting at {s}."
+  hint "Which number did you say that is not on a card?"
+}

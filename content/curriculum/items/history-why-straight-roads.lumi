@@ -1,0 +1,17 @@
+# The two-star reason: Roman roads ran as straight as the land allowed, so soldiers, messengers and
+# goods could cross the empire quickly.
+item history.why-straight-roads v=1 skills=[history.ancient, reasoning.why] {
+  title "Straight roads"
+  difficulty k
+  let k=0..1
+
+  scene 35x34 {
+    worldmap map names=0 blank=-1 oceans=0 places=["Rome", "London"] numbered=0 route=0 at=canvas(1, 0)
+    text ask "{if k == 0 then \"The Romans built long, straight roads across their empire. Why?\" else \"Rome ruled lands from Britain to Egypt. Why did it need good roads to hold them?\"}" narrate width=30 below=map gap=1
+    choice pick options=["So soldiers and messages could travel fast", "Because straight roads look tidy", "So that nobody could get lost in the woods"] stack=column below=ask gap=1
+  }
+
+  answer pick="So soldiers and messages could travel fast"
+  hint "Who needed to get from one end of the empire to the other, and quickly?"
+  hint "What would happen if a far-off town rebelled and help took months?"
+}

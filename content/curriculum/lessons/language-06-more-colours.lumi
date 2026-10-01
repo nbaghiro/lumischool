@@ -1,0 +1,63 @@
+# Five more colours, orange, pink, purple, brown and grey, with the first six to review.
+lesson language-more-colours v=1 format=teach grade=1 unit=8 subject=language levels=[easy, medium, hard] {
+  title "[[colour.orange|cap]], [[colour.pink]], [[colour.purple]]"
+  goal "Name five more colours in [[language.name]] and use all eleven."
+
+  look {
+    scene 19x8 {
+      column all at=canvas(1, 1) space=1 align=start {
+        mixingtray paints wells=["orange", "pink", "red+blue", "brown", "black+white"] labels=true
+      }
+    }
+    say """
+      Five more colours: [[colour.orange]] is orange, [[colour.pink]] is pink, [[colour.purple]] is
+      purple, [[colour.brown]] is brown and [[colour.grey]] is grey. Red and blue make purple, and
+      black and white make grey.
+      """
+  }
+  do {
+    level easy {
+      worked language.more-colours-name k=3
+    }
+    show language.more-colours-name k=2 easy-k=0 hard-k=4
+    show language.more-colours-meaning k=5 hard-k=0
+    show language.more-colours-write k=1 easy-k=2 hard-k=3
+    show language.more-colours-name k=3 easy-k=1 hard-k=5
+    show language.more-colours-match k=1 easy-k=0 hard-k=2
+    show language.more-colours-write k=4 hard-k=2
+    show language.more-colours-meaning k=0 hard-k=4
+    show language.more-colours-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.more-colours-write k=1
+    }
+  }
+  try stars=2 {
+    show language.more-colours-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.more-colours-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[colour.orange|cap]], [[colour.pink]], [[colour.purple]], [[colour.brown]], [[colour.grey]]: orange, pink, purple, brown, grey."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is mixing [[colour.pink]] and [[colour.red]]. The paints carry their
+    English names on paper, and the two-star question mixes paints the way real paint mixes, with
+    the result to name in the language. [[colour.brown|cap]] is said [[colour.brown|say]]. If the
+    child is stuck, go back to the look and mix the paints in words: red and blue make
+    [[colour.purple]]. Off the page, paint a rainbow and label each band. It meets England's key
+    stage 2 languages programme (years 3 to 6, statutory from age 7): "broaden their vocabulary";
+    Japan's grades 3 and 4 foreign language activities: "Activities to listen to simple words and
+    phrases and basic expressions about their familiar people and their surroundings and match the
+    phrases and expressions with illustrations and photographs"; and CEFR A1, "Can understand and
+    use familiar everyday expressions and very basic phrases". The phrases are in
+    [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[colour.brown]] is worked first in the teacher's pen, the words to name are [[colour.pink]] and [[colour.orange]] and the words to write are [[colour.grey]] and [[colour.purple]], the plainer ones of the lesson, with the first set to match and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[colour.purple]] and [[colour.green]] and the words to write are [[colour.brown]], [[colour.grey]] and [[colour.orange]], the ones most often mixed up, with the last set to match, a third word to write and the last version of each star question."
+  }
+}

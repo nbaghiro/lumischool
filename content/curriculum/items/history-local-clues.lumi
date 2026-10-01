@@ -1,0 +1,11 @@
+# Marked by a grown-up: a walk in the child's own place, looking for three clues to its past.
+item history.local-clues v=1 skills=[history.local, history.enquiry] {
+  title "Clues on a walk"
+
+  scene 34x15 {
+    townmap map year=1850 town=Millbrook labels=1 at=canvas(1, 0)
+    text ask "Go for a walk with a grown-up. Find three clues to your place's past: a date on a building, an old name on a sign, or something old still in use." width=15 right-of=map gap=1
+  }
+
+  check writing.by-eye look-for="Three clues found on a walk, each named and placed (where it was), with what it tells about the past: a date carved on a building, a street named after something no longer there, an old post box, a war memorial, a filled-in canal or a railway bridge with no railway." notice=["Three clues found", "Where each one was", "What each tells about the past", "One question still to find out"] ask="Which clue would you most like to find out more about?"
+}

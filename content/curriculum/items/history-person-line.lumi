@@ -1,0 +1,31 @@
+# The national unit's person on a timeline: n is the family's country (0 Florence Nightingale,
+# 1 Rosa Parks, 2 Ino Tadataka, 3 Yuri Gagarin, 4 Yuan Longping). k picks the two events counted
+# between, never an age at a date, since a birthday falls between.
+item history.person-line v=1 skills=[history.lives, history.timeline] {
+  title "A life on a line"
+  difficulty k
+  let n=0..4 k=0..2
+  let who={pick(n, "Florence Nightingale", "Rosa Parks", "Ino Tadataka", "Yuri Gagarin", "Yuan Longping")}
+  let from={pick(n, 1800, 1900, 1740, 1930, 1920)}
+  let e0={pick(n, "Florence Nightingale born", "Rosa Parks born", "Ino Tadataka born", "Yuri Gagarin born", "Yuan Longping born")}
+  let y0={pick(n, 1820, 1913, 1745, 1934, 1930)}
+  let e1={pick(n, "Nightingale reached Scutari", "Rosa Parks kept her seat", "Survey of Japan began", "First person in space", "Wild rice plant found")}
+  let y1={pick(n, 1854, 1955, 1800, 1961, 1961)}
+  let e2={pick(n, "Nursing school opened", "Montgomery buses opened to all", "Map of Japan finished", "Moon landing", "Yuan Longping died")}
+  let y2={pick(n, 1860, 1956, 1821, 1969, 2021)}
+  let q0={pick(n, "How many years after she was born did Florence Nightingale reach the hospital at Scutari?", "How many years after she was born did Rosa Parks keep her seat on the bus?", "How many years after he was born did Ino Tadataka begin to map Japan?", "How many years after he was born did Yuri Gagarin fly into space?", "How many years after he was born did Yuan Longping find the wild rice plant?")}
+  let q1={pick(n, "How many years after reaching Scutari did Florence Nightingale open her nursing school?", "How many years after Rosa Parks kept her seat were the buses opened to all?", "How many years after the survey began was the map of Japan finished?", "How many years after Gagarin's flight did people land on the Moon?", "How many years from finding the wild rice plant to the year Yuan Longping died?")}
+  let q2={pick(n, "How many years after she was born did Florence Nightingale open her nursing school?", "How many years after she was born were the Montgomery buses opened to all?", "How many years after he was born was Ino Tadataka's map finished?", "How many years after Gagarin was born did people land on the Moon?", "How many years from Yuan Longping's birth to the year he died?")}
+  let step={pick(n, 20, 20, 20, 10, 20)}
+  let to={pick(n, 1880, 1980, 1840, 1970, 2040)}
+
+  scene 36x14 {
+    timeline line from=from to=to step=step years=[y0, y1, y2] labels=["{e0}", "{e1}", "{e2}"] at=canvas(0, 0)
+    text ask "{if k == 0 then q0 else if k == 1 then q1 else q2}" narrate width=26 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="{if k == 0 then \"between(0 1)\" else if k == 1 then \"between(1 2)\" else \"between(0 2)\"}"
+  hint "Find the two flags the question is about, and read their years."
+  hint "Count on from the earlier year: to the next ten, then in tens, then the ones."
+}

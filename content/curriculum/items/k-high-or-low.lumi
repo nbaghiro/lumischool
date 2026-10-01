@@ -1,0 +1,21 @@
+item k.high-or-low v=1 skills=[music.pitch] {
+  title "High or low?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let when={pick(k, "A little bird sings in the tree. Is its song high or low?", "A cow moos in the field. Is it high or low?", "A mouse squeaks. Is it high or low?", "A big drum booms. Is it high or low?", "Ada plays a key at the far right of the piano. Is it high or low?", "A lion roars. Is it high or low?")}
+  let right={pick(k, "high", "low", "high", "low", "high", "low")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 26x11 {
+    text ask "{when}" narrate width=24 at=canvas(1, 1)
+    choice pick options=["high", "low"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Say the sound out loud. Does your voice go up or down to make it?"
+}

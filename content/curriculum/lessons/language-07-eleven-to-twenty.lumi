@@ -1,0 +1,70 @@
+# Eleven to twenty on two ten frames.
+lesson language-eleven-to-twenty v=1 format=teach grade=2 unit=1 subject=language levels=[easy, medium, hard] {
+  title "[[num.eleven|cap]] to [[num.twenty]]"
+  goal "Count from eleven to twenty in [[language.name]]."
+
+  look {
+    scene 28x8 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row ten space=2 align=end {
+          tenframe full count=10 color=sky
+          tenframe more count=3 color=mint
+        }
+      }
+    }
+    say """
+      A full frame is [[num.ten]]. With three more it is [[num.thirteen]]. Count on from
+      [[num.ten]]: [[num.eleven]], [[num.twelve]], [[num.thirteen]], [[num.fourteen]],
+      [[num.fifteen]], [[num.sixteen]], [[num.seventeen]], [[num.eighteen]], [[num.nineteen]], and
+      two full frames are [[num.twenty]].
+      """
+  }
+  do {
+    level easy {
+      worked language.eleven-to-twenty-name k=5
+    }
+    show language.eleven-to-twenty-name k=3 easy-k=0 hard-k=7
+    show language.eleven-to-twenty-meaning k=4 easy-k=1 hard-k=6
+    show language.eleven-to-twenty-write k=4 easy-k=1 hard-k=6
+    show language.eleven-to-twenty-name k=5 easy-k=2 hard-k=8
+    show language.eleven-to-twenty-match k=2 easy-k=0 hard-k=3
+    show language.eleven-to-twenty-write k=6 easy-k=3 hard-k=9
+    show language.eleven-to-twenty-listen k=3 easy-k=0 hard-k=5
+    show language.eleven-to-twenty-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.eleven-to-twenty-write k=5
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-eleven-to-twenty-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.eleven-to-twenty-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[num.eleven|cap]], [[num.twelve]], [[num.thirteen]], [[num.fourteen]], [[num.fifteen]], [[num.sixteen]], [[num.seventeen]], [[num.eighteen]], [[num.nineteen]], [[num.twenty]]."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is mixing a teen with the small number it sounds like:
+    [[num.twelve]] with [[num.two]], [[num.thirteen]] with [[num.three]]. Two frames show every
+    number as ten and some more, so ask "how many past the full frame?". The listening question is a
+    dictation: read the sentence aloud from this sheet, where it prints as Read aloud, slowly and
+    twice, or let the device play it. It is marked word by word, and a missing accent counts. If the
+    child is stuck, count the two frames together from [[num.ten]]. Off the page, count out twenty
+    pieces of pasta. It meets England's key stage 2 languages programme (years 3 to 6, statutory
+    from age 7): "explore the patterns and sounds of language through songs and rhymes and link the
+    spelling, sound and meaning of words"; Japan's grades 3 and 4 foreign language activities:
+    "Activities to talk about the numbers and figures, etc. of surroundings while showing the actual
+    objects"; and CEFR A1, "Can understand and use familiar everyday expressions and very basic
+    phrases". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[num.fourteen]] is worked first in the teacher's pen, the words to name are [[num.eleven]] and [[num.fifteen]] and the words to write are [[num.twelve]] and [[num.thirteen]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[num.eighteen]] and [[num.seventeen]] and the words to write are [[num.sixteen]], [[num.nineteen]] and [[num.fourteen]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

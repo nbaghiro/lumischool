@@ -1,0 +1,48 @@
+lesson k-growing-things v=1 format=teach grade=0 unit=5 subject=nature levels=[easy, medium, hard] {
+  title "Growing things"
+  goal "Say the order a bean grows in, count petals and flowers, and say that a seed needs water to sprout."
+
+  look {
+    scene 28x14 {
+      growstages grow stages=4 numbers=true names=1 at=canvas(1, 1)
+    }
+    say """
+      A bean starts as a seed in the soil. With water and warmth it sends up a shoot, then it grows
+      leaves, and at last it flowers. It happens in that order every time.
+      """
+  }
+  do {
+    level easy {
+      worked k.grow-next s=0 level=medium
+    }
+    practice k.grow-next count=2 seed=2
+    practice k.petals count=2 seed=3
+    practice k.count-flowers count=2 seed=4 easy-count=1
+    show k.dry-dish d=1
+    practice k.bee-visits count=1 seed=6
+  }
+  try stars=2 {
+    show k.seeds-in-the-dark
+  }
+  try stars=3 {
+    show k.bean-weeks k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Seed, shoot, leaves, flower. A seed needs water to grow."
+  }
+
+  grown-ups """
+    Read each question aloud. The seeds in the dark are a surprise to most adults too: a seed
+    carries its own food, so it sprouts without light, though it grows pale and needs light soon
+    after. If the child is stuck on the order, ask what the bean has now and what it has not got
+    yet. Off the page, put a bean on wet kitchen paper in a jar and look at it every day for a week.
+    Japan, 幼稚園教育要領 (kindergarten guidelines), 環境, 内容 (5): "身近な動植物に親しみをもって接し，生命の尊さに気付き，いたわったり，大切にしたりする。"
+    (Treat familiar animals and plants with affection, notice that life is precious, and care for it.)
+    """
+  level easy {
+    grown-ups "At this level the first stage after the seed is found in the teacher's pen, the flowers have three or four petals, and the three-star asks for two weeks."
+  }
+  level hard {
+    grown-ups "At this level the bean is further on, the flowers have six to eight petals, and the three-star counts weeks from the seed or the shoot to the flower."
+  }
+}

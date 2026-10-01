@@ -1,0 +1,22 @@
+item k.hot-oven v=1 skills=[chemistry.cooking, safety] {
+  title "Keeping safe"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let q1={pick(k, "Who takes the tray out of the hot oven?", "What do you do before touching the toaster?", "The pan on the hob is hot. What should you do?", "The cake has just come out of the oven. When can you eat it?")}
+  let right={pick(k, "a grown-up, with oven gloves", "ask a grown-up to switch it off", "keep away and let a grown-up move it", "when it has cooled down")}
+  let wrong={pick(k, "me, with my bare hands", "poke it with a fork", "touch it to see how hot it is", "straight away, while it is hot")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x14 {
+    text q "{q1}" narrate width=28 at=canvas(1, 1)
+    choice pick options=[wrong, right] stack=column below=q gap=1
+  }
+
+  answer pick=right
+  hint "Heat can burn. Who should handle hot things?"
+}

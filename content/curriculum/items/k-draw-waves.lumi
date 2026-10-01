@@ -1,0 +1,10 @@
+item k.draw-waves v=1 stars=3 skills=[writing.first-strokes] {
+  title "A row of waves"
+
+  scene 30x10 {
+    text ask "Draw a row of waves along the line, like the sea. Keep every wave the same size, and do not lift your pencil." narrate width=28 at=canvas(1, 1)
+    writinglines sea lines=1 width=26 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="The waves run left to right without the pencil lifting, each about the same height, sitting on the line and reaching the dotted line." notice=["pencil does not lift", "waves the same size", "sits on the line"] ask="Which wave is your best one?"
+}

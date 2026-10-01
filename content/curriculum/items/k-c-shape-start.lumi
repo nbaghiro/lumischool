@@ -1,0 +1,24 @@
+# The c family: a, d, g, o and q all start with the same c shape, which is why c is taught first.
+item k.c-shape-start v=1 skills=[writing.letter-formation, writing.letter-families] {
+  title "Starts with a c shape"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let fam={pick(k, "a", "o", "d", "g")}
+  let o1={pick(k, "l", "i", "b", "j")}
+  let o2={pick(k, "t", "l", "h", "y")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x12 {
+    handwriting rules show="{o1} {fam} {o2}" rows=1 trace=0 width=16 at=canvas(1, 1)
+    text ask "Which of these letters starts with a c shape?" narrate width=28 below=rules gap=1
+    choice pick options=[o1, fam, o2] stack=row below=ask gap=1
+  }
+
+  answer pick=fam
+  hint "Write c in the air. Now try each letter. Which one starts the same way?"
+}

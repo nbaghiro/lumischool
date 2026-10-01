@@ -1,0 +1,24 @@
+# Picture or situation to the language: es la una, son las cinco, son las tres y media, son las diez, son las cuatro y cuarto, son las ocho y media, son las seis menos cuarto, son las once menos cuarto, the plainer first.
+# Each version offers the word most often taken for it.
+item language.es-the-time-name v=1 skills=[language.time] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      clock c h=pick(k, 1, 5, 3, 10, 4, 8, 5, 10) m=pick(k, 0, 0, 30, 0, 15, 30, 45, 45)
+      text ask "¿Qué hora es? Pick the Spanish." width=32
+      choice pick options=[pick(k, "son las once menos cuarto", "son las tres y media", "son las ocho y media", "son las cuatro y cuarto", "son las cinco", "son las seis menos cuarto", "son las cinco", "son las cuatro y cuarto"), pick(k, "es la una", "son las cinco", "son las cinco", "son las diez", "son las diez", "son las ocho y media", "son las diez", "son las once menos cuarto"), pick(k, "son las ocho y media", "son las cuatro y cuarto", "son las cuatro y cuarto", "son las once menos cuarto", "son las cuatro y cuarto", "son las diez", "son las cuatro y cuarto", "son las cinco"), pick(k, "son las cuatro y cuarto", "son las once menos cuarto", "son las tres y media", "son las cinco", "son las tres y media", "son las cinco", "son las seis menos cuarto", "son las diez")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "es la una", "son las cinco", "son las tres y media", "son las diez", "son las cuatro y cuarto", "son las ocho y media", "son las seis menos cuarto", "son las once menos cuarto")
+  feedback {
+    when (pick == pick(k, "son las dos", "son las cuatro", "son las cuatro y media", "son las dos", "son las cuatro menos cuarto", "son las nueve y media", "son las cinco y cuarto", "son las diez menos cuarto")) point=c {
+      say "{pick(k, \"Son las dos is two o'clock. The short hand is on 1.\", \"Son las cuatro is four o'clock. Read the short hand again.\", \"The short hand is past 3, on the way to 4, so it is half past three.\", \"Son las dos is two o'clock. The short hand is on 10.\", \"Menos cuarto is quarter to. The long hand is on 3: quarter past.\", \"The short hand is between 8 and 9, so it is half past eight.\", \"Y cuarto is quarter past. The long hand is on 9: quarter to the next hour.\", \"Menos cuarto counts back from the next hour, and the next hour is eleven.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

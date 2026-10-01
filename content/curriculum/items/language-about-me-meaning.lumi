@@ -1,0 +1,19 @@
+# The language to English: [[phrase.i-like-swimming-and-reading-too]], [[phrase.she-is-kind-but-shy]], [[phrase.as-well-as-that-i-play-the-piano]], [[phrase.however-i-do-not-like-running]], [[phrase.i-live-in-a-small-flat]], [[phrase.my-friends-say-i-am-fun]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.about-me-meaning v=1 skills=[language.reading, language.writing] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "boy", "girl", "boy", "gran", "boy")] says=[pick(k, "[[phrase.i-like-swimming-and-reading-too]]", "[[phrase.she-is-kind-but-shy]]", "[[phrase.as-well-as-that-i-play-the-piano]]", "[[phrase.however-i-do-not-like-running]]", "[[phrase.i-live-in-a-small-flat]]", "[[phrase.my-friends-say-i-am-fun]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "My friends say I am fun.", "However, I do not like running.", "She is kind, but shy.", "My friends say I am fun.", "My friends say I am fun.", "However, I do not like running."), pick(k, "I like swimming and reading too.", "She is kind, but shy.", "I live in a small flat.", "However, I do not like running.", "As well as that, I play the piano.", "My friends say I am fun."), pick(k, "As well as that, I play the piano.", "I live in a small flat.", "However, I do not like running.", "She is kind, but shy.", "I live in a small flat.", "As well as that, I play the piano."), pick(k, "I live in a small flat.", "As well as that, I play the piano.", "As well as that, I play the piano.", "As well as that, I play the piano.", "However, I do not like running.", "I live in a small flat.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "I like swimming and reading too.", "She is kind, but shy.", "As well as that, I play the piano.", "However, I do not like running.", "I live in a small flat.", "My friends say I am fun.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

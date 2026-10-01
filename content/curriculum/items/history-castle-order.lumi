@@ -1,0 +1,21 @@
+# Walls and castles numbered from the earliest, from the record: Constantinople's Theodosian walls
+# (5th century), the White Tower (begun about 1078), Great Zimbabwe (11th to 15th century), the
+# Kremlin's brick walls (1485 to 1495), Himeji rebuilt (1601 to 1609).
+item history.castle-order v=1 skills=[history.medieval, history.order] {
+  title "Walls through time"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Theodosian walls", "White Tower begun", "Himeji castle rebuilt", "Kremlin walls built", "Himeji castle rebuilt", "Kremlin walls built")}
+  let b={pick(k, "White Tower begun", "Kremlin walls built", "Theodosian walls", "Theodosian walls", "Kremlin walls built", "Himeji castle rebuilt")}
+  let c={pick(k, "Himeji castle rebuilt", "Himeji castle rebuilt", "Kremlin walls built", "White Tower begun", "White Tower begun", "Theodosian walls")}
+
+  scene 36x21 {
+    citywalls wall towers=3 open=1 at=canvas(1, 0)
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=34 below=wall gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Which was built in the 400s? In the 1000s? In the 1400s? In the 1600s?"
+  hint "The smaller the year, the earlier."
+}

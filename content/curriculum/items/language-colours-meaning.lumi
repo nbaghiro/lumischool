@@ -1,0 +1,19 @@
+# The language to English: [[colour.red]], [[colour.blue]], [[colour.green]], [[colour.white]], [[colour.yellow]], [[colour.black]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.colours-meaning v=1 skills=[language.colours] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x24 {
+    column all at=canvas(1, 1) space=1 align=start {
+      sign card lines=[pick(k, "[[colour.red]]", "[[colour.blue]]", "[[colour.green]]", "[[colour.white]]", "[[colour.yellow]]", "[[colour.black]]")] kind=hanging color=glow
+      text ask "What colour is on the sign?" width=32
+      choice pick options=[pick(k, "black", "black", "black", "blue", "blue", "white"), pick(k, "green", "blue", "green", "white", "yellow", "black"), pick(k, "red", "green", "blue", "black", "green", "yellow")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "red", "blue", "green", "white", "yellow", "black")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

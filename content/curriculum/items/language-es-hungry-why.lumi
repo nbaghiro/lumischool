@@ -1,0 +1,22 @@
+# A reason: tengo hambre and tengo sed say a feeling with tengo, and what each asks for.
+item language.es-hungry-why v=1 stars=2 skills=[language.food, reasoning.language] {
+  title "Hungry or thirsty?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Ana says: Tengo sed. What does she want?\", \"Leo says: Quiero pescado. The man gives him a fish. What should Leo say next?\", \"Tengo hambre is I have hunger. Which other one also uses tengo that way?\")}" width=32
+      choice pick options=[pick(k, "Something to drink: sed is thirst.", "Gracias.", "Tengo sed: I am thirsty."), pick(k, "Something to eat.", "Hola.", "Me llamo Ana."), pick(k, "To sleep.", "Quiero.", "Hoy es lunes.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Something to drink: sed is thirst.", "Gracias.", "Tengo sed: I am thirsty.")
+  feedback {
+    when (pick == pick(k, "Something to eat.", "Quiero.", "Me llamo Ana.")) {
+      say "{pick(k, \"That would be tengo hambre. What is sed?\", \"He already has the fish. What do you say when given something?\", \"The phrase me llamo gives a name. Which one says how you feel with tengo?\")}"
+    }
+  }
+  hint "What does the Spanish mean in English?"
+  hint "What would you say at that moment in English?"
+}

@@ -1,0 +1,23 @@
+# Non-routine: places chosen from what a day needs, and a trip read back.
+item language.the-town-puzzle v=1 stars=3 skills=[language.town, reasoning.language] {
+  title "A day in town"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x42 {
+    column all at=canvas(1, 1) space=1 align=start {
+      townplan plan places=["[[town.the-cafe]]", "[[town.the-market]]", "[[town.the-park]]", "[[town.the-beach]]", "[[town.the-museum]]", "[[town.the-station]]", "[[town.the-square]]"]
+      text ask "{pick(k, \"This town has a beach, a market and a park, but no library. Ana needs a book. Can she borrow one here?\", \"Leo needs fruit and wants to see old things. Which two places does he go to?\", \"Mia swam, bought fish, then caught a train. Which list is her day?\")}" width=32
+      choice pick options=[pick(k, "No: there is no library.", "[[town.the-market]] and [[town.the-museum]]", "[[town.the-beach]], [[town.the-market]], [[town.the-station]]"), pick(k, "Yes: at [[town.the-beach]].", "[[town.the-park]] and [[town.the-beach]]", "[[town.the-park]], [[town.the-square]], [[town.the-museum]]"), pick(k, "Yes: at [[town.the-market]].", "[[town.the-station]] and [[town.the-cafe]]", "[[town.the-beach]], [[town.the-museum]], [[town.the-cafe]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "No: there is no library.", "[[town.the-market]] and [[town.the-museum]]", "[[town.the-beach]], [[town.the-market]], [[town.the-station]]")
+  feedback {
+    when (pick == pick(k, "Yes: at [[town.the-market]].", "[[town.the-park]] and [[town.the-beach]]", "[[town.the-beach]], [[town.the-museum]], [[town.the-cafe]]")) {
+      say "{pick(k, \"The market sells fruit, not library books.\", \"Neither sells fruit. Where are the stalls?\", \"She swam first, but where did she buy fish and catch a train?\")}"
+    }
+  }
+  hint "Say what each place is for."
+  hint "Match each thing done to a place."
+}

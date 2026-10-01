@@ -1,0 +1,23 @@
+# Two changes by heat side by side, only one of which goes back: melted butter sets again, toast
+# never turns back into bread.
+item k.melt-or-cook v=1 stars=2 skills=[chemistry.changes, reasoning.explain] {
+  title "Which one can go back?"
+  difficulty k
+  let k=0..1
+  let back={pick(k, "melted butter", "melted chocolate")}
+  let stuck={pick(k, "toast", "a fried egg")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x13 {
+    text q "Both were changed by heat: {back} and {stuck}. Which one can change back when it cools?" narrate width=28 at=canvas(1, 1)
+    choice pick options=[stuck, back] stack=row below=q gap=1
+  }
+
+  answer pick=back
+  hint "Which one is only melted? Which one has been cooked into something new?"
+}

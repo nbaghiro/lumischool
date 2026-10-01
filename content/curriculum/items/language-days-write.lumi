@@ -1,0 +1,19 @@
+# The word written from its picture: [[time.monday]], [[time.sunday]], [[time.friday]], [[time.tuesday]], [[time.saturday]], [[time.thursday]], [[time.wednesday]].
+# Accent-tolerant: the box takes the word with its accents left off (accents=loose); ñ is a letter and is marked.
+item language.days-write v=1 skills=[language.time, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x14 {
+    column all at=canvas(1, 1) space=1 align=start {
+      days week mark=pick(k, 0, 6, 4, 1, 5, 3, 2) start=0
+      text ask "Write the ringed day in [[language.name]]." width=32
+      word-input word options=[pick(k, "[[time.monday]]", "[[time.sunday]]", "[[time.friday]]", "[[time.tuesday]]", "[[time.saturday]]", "[[time.thursday]]", "[[time.wednesday]]")] accents=loose
+    }
+  }
+
+  answer word=pick(k, "[[time.monday]]", "[[time.sunday]]", "[[time.friday]]", "[[time.tuesday]]", "[[time.saturday]]", "[[time.thursday]]", "[[time.wednesday]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

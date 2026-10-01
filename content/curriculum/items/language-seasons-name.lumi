@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[weather.summer]], [[weather.winter]], [[weather.spring]], [[weather.autumn]], [[weather.in-summer-it-is-hot]], [[weather.in-winter-it-snows]], [[weather.in-spring-there-are-flowers]], [[weather.in-autumn-the-leaves-fall]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.seasons-name v=1 skills=[language.weather, language.time] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      seasontrees trees seasons=["{pick(k, \"summer\", \"winter\", \"spring\", \"autumn\", \"summer\", \"winter\", \"spring\", \"autumn\")}"] names=0
+      text ask "{pick(k, \"Which season does the tree show?\", \"Which season does the tree show?\", \"Which season does the tree show?\", \"Which season does the tree show?\", \"What is summer like in Seville?\", \"What happens in winter in the mountains?\", \"What is there in spring?\", \"What happens in autumn?\")}" width=32
+      choice pick options=[pick(k, "[[weather.in-spring-there-are-flowers]]", "[[weather.in-autumn-the-leaves-fall]]", "[[weather.summer]]", "[[weather.spring]]", "[[weather.in-summer-it-is-cold]]", "[[weather.in-winter-it-snows]]", "[[weather.in-autumn-there-are-flowers]]", "[[weather.in-autumn-the-leaves-fall]]"), pick(k, "[[weather.summer]]", "[[weather.winter]]", "[[weather.in-autumn-the-leaves-fall]]", "[[weather.autumn]]", "[[weather.in-summer-it-is-hot]]", "[[weather.in-winter-it-is-hot]]", "[[weather.in-spring-there-is-snow]]", "[[weather.in-summer-the-leaves-fall]]"), pick(k, "[[weather.spring]]", "[[weather.spring]]", "[[weather.autumn]]", "[[weather.winter]]", "[[weather.in-summer-it-snows]]", "[[weather.in-summer-it-snows]]", "[[weather.in-spring-there-are-flowers]]", "[[weather.in-autumn-there-are-flowers]]"), pick(k, "[[weather.in-summer-it-is-hot]]", "[[weather.autumn]]", "[[weather.spring]]", "[[weather.in-summer-it-is-hot]]", "", "", "", "")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[weather.summer]]", "[[weather.winter]]", "[[weather.spring]]", "[[weather.autumn]]", "[[weather.in-summer-it-is-hot]]", "[[weather.in-winter-it-snows]]", "[[weather.in-spring-there-are-flowers]]", "[[weather.in-autumn-the-leaves-fall]]")
+  feedback {
+    when (pick == pick(k, "[[weather.spring]]", "[[weather.autumn]]", "[[weather.summer]]", "[[weather.winter]]", "-", "-", "-", "-")) point=trees {
+      say "{pick(k, \"[[weather.spring|cap]] is spring, with blossom. This tree is in full leaf.\", \"[[weather.autumn|cap]] is autumn, with leaves falling. This tree is bare.\", \"[[weather.summer|cap]] is summer, in full leaf. This tree has blossom.\", \"[[weather.winter|cap]] is winter, when the tree is bare. Leaves are still falling here.\", \"Look again.\", \"Look again.\", \"Look again.\", \"Look again.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

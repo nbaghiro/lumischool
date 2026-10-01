@@ -1,0 +1,22 @@
+# A reason: agreement with a girl, tener for hair, and a plural colour.
+item language.es-what-like-why v=1 stars=2 skills=[language.describing, reasoning.language] {
+  title "Why that word?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Ana writes: Mi hermana es alto. What is wrong?\", \"Why is it tiene el pelo largo and not es el pelo largo?\", \"Why is it los ojos azules and not los ojos azul?\")}" width=32
+      choice pick options=[pick(k, "Hermana is a girl, so alta.", "Spanish says someone has long hair: tener.", "Ojos is more than one, so the colour is too."), pick(k, "Alto is only for boys' hair.", "Es is only for animals.", "Azules is the word for eyes."), pick(k, "Es should be tiene.", "Both are right.", "Azul is only for the sky.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Hermana is a girl, so alta.", "Spanish says someone has long hair: tener.", "Ojos is more than one, so the colour is too.")
+  feedback {
+    when (pick == pick(k, "Es should be tiene.", "Both are right.", "Azules is the word for eyes.")) {
+      say "{pick(k, \"Es alto is right for being tall. Look at the ending and who it describes.\", \"Only one of them is how Spanish says it. What does tiene mean?\", \"Los ojos is the word for eyes. Why does azul change?\")}"
+    }
+  }
+  hint "Is the person a boy or a girl?"
+  hint "One thing or more than one?"
+}

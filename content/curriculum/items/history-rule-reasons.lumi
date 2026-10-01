@@ -1,0 +1,20 @@
+# Why a town has a rule: every rule is there to solve a problem people had.
+item history.rule-reasons v=1 skills=[history.government, history.local] {
+  title "Why the rule?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let rule={pick(k, "Dogs must be on a lead in the playground.", "Bins go out on Tuesday night.", "No parking by the school gate.", "Shops must show their prices.", "Building a house needs the council's permission.", "The park shuts at dusk.")}
+  let right={pick(k, "So small children are safe while they play", "So the collectors can empty every bin on one round", "So children can cross safely and see the road", "So buyers know what they will pay", "So houses are safe and fit the street", "So nobody is hurt in the dark")}
+  let w1={pick(k, "So dogs get more exercise", "So the street looks untidy", "So cars can park closer", "So shops can charge more", "So houses can be any height", "So the grass can rest")}
+  let w2={pick(k, "Because dogs do not like slides", "Because bins are only made on Tuesday", "Because parking is not allowed anywhere", "So nobody buys anything", "So nobody can build at all", "Because the gates are heavy")}
+
+  scene 34x29 {
+    council c hands=[1, 1, 0, 1, 1] box=0 motion="New rules" count=0 at=canvas(1, 0)
+    text ask "The rule: {rule} What is it for?" narrate width=30 below=c gap=1
+    choice pick options=[pick(k, right, w1, w2, right, w1, w2), pick(k, w1, right, right, w2, w2, right), pick(k, w2, w2, w1, w1, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "What problem would happen without the rule?"
+  hint "Who does the rule keep safe, or help?"
+}

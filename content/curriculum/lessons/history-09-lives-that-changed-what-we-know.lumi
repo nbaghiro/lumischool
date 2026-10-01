@@ -1,0 +1,85 @@
+# Dates from engine/notation/chronicle.ts: Mary Anning (Natural History Museum) born 1799, the first
+# ichthyosaur 1811 to 1812, the plesiosaur December 1823, died 1847 aged 47; Marie Curie born 1867,
+# Nobel Prizes 1903 and 1911, died 1934.
+lesson history-lives-that-changed-what-we-know v=1 format=teach grade=2 unit=6 subject=history levels=[easy, medium, hard] {
+  title "Two lives that changed what we know"
+  goal "Put the events of two famous lives on one timeline, and say whether two people could have met."
+
+  look {
+    scene 36x19 {
+      column all at=canvas(0, 0) space=1 align=start {
+        timeline line from=1790 to=1940 step=30 years=[1799, 1847, 1867, 1934] labels=["Mary Anning born", "Mary Anning died", "Marie Curie born", "Marie Curie died"]
+        row pics space=2 align=end {
+          fossil f
+          person mary pose=think age=grownup hair=bun colour=brown top=tang wear=dress
+          person marie pose=stand age=grownup hair=bun colour=brown top=sky wear=dress
+        }
+      }
+    }
+    say """
+      Mary Anning was born in 1799 in Lyme Regis, by the sea in England. As a girl she dug the
+      bones of sea creatures out of the cliffs, and in 1823 she found the first whole plesiosaur.
+      Scientists learnt from her that animals had lived long ago and died out. Marie Curie was born
+      in Poland in 1867 and studied in Paris. She found new elements and won two Nobel Prizes.
+      """
+  }
+  do {
+    level easy {
+      worked history.anning-line k=0
+    }
+    show history.anning-cliff k=0 hard-k=1
+    show history.anning-line k=1 level=medium hard-k=2
+    show history.curie-prizes k=0 hard-k=1
+    show history.two-lives-order k=0 easy-k=0 hard-k=2
+    level medium hard {
+      show history.anning-line k=2 hard-k=1 level=medium
+    }
+    show history.two-lives-order k=2 easy-k=1 hard-k=3
+    level medium hard {
+      show history.curie-prizes k=1 hard-k=0 level=medium
+    }
+  }
+  story {
+    level hard {
+      show history.lived-longer k=0 level=medium
+    }
+    level medium hard {
+      show history.anning-cliff k=1 hard-k=0 level=medium
+    }
+    level easy {
+      show history.two-lives-order k=2 level=medium
+      show history.curie-prizes k=1 level=medium
+      show history.anning-cliff k=1 level=medium
+    }
+  }
+  try stars=2 {
+    show history.could-they-meet k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.lived-longer k=0 hard-k=1
+  }
+  remember {
+    say "Two people could have met only if their lives overlap on the timeline."
+  }
+
+  grown-ups """
+    The idea is that people's lives are events on a timeline like any other, so two lives can be
+    compared: who came first, how long each lived, and whether they overlapped. Mary Anning is a
+    person of the child's own kind, a girl collecting on a beach, whose finds changed what
+    scientists knew about the Earth's past; Marie Curie changed what they knew about what things
+    are made of. The way in counts years along Anning's life; the core reads the cliff, counts
+    between Curie's prizes and orders events from both lives; the two-star question asks whether
+    they could have met. The wrong idea to watch for is "famous at the same time as each other":
+    Anning died twenty years before Curie was born. If the child is stuck, walk both lives on a
+    rope on the floor. Off the page, look for fossils on a beach or in a museum, and read the date
+    on the label. England's key stage 1 history asks for "the lives of significant individuals in
+    the past who have contributed to national and international achievements", and suggests
+    comparing pairs of lives from different times, as this lesson does.
+    """
+  level easy {
+    grown-ups "At this level a worked example counts from Anning's birth to the plesiosaur, the cliff question asks only which layer is oldest, the prizes are counted between the two prizes, and the events to order come nearly in order."
+  }
+  level hard {
+    grown-ups "At this level the years counted run from the plesiosaur to Anning's death and across her whole life, the cliff compares two fossils, the prize is counted from Curie's birth, the events are fully muddled, and the three-star question gives the years rather than the lengths of the two lives."
+  }
+}

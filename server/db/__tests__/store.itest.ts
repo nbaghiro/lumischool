@@ -200,6 +200,7 @@ const SAMPLE: { [K in EventKind]: EventData[K] } = {
     "content-verified": { hash: "d".repeat(64), errors: 0, played: null, verifier: "verify@0.1.0" },
     "day-added": { onDay: "2026-09-16", subject: "science", minutes: 90, note: "The water room." },
     "moved-up": { from: 1, grade: 2, onDay: "2026-09-16" },
+    "setting-changed": { key: "language", of: null, value: "es" },
     "signed-in": { method: "email-code", session: NAIB_PHONE, shared: false },
     "signed-out": { everywhere: true },
     "session-changed": { session: NAIB_PHONE, change: "put-away" },

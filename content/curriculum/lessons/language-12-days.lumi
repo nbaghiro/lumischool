@@ -1,0 +1,67 @@
+# The seven days, their order, and today and tomorrow, on a weather chart for the ferry town's week.
+lesson language-days v=1 format=teach grade=2 unit=8 subject=language levels=[easy, medium, hard] {
+  title "[[time.monday|cap]], [[time.tuesday]]"
+  goal "Say the days of the week in [[language.name]] in order, and say what day it is today and tomorrow."
+
+  look {
+    scene 31x9 {
+      column all at=canvas(1, 1) space=1 align=start {
+        weatherweek week days=["[[time.monday]]", "[[time.tuesday]]", "[[time.wednesday]]", "[[time.thursday]]", "[[time.friday]]", "[[time.saturday]]", "[[time.sunday]]"] skies=["sun", "sun", "cloud", "rain", "sunny-spells", "sun", "sun"] temps=["", "", "", "", "", "", ""]
+      }
+    }
+    say """
+      The week: [[time.monday]], [[time.tuesday]], [[time.wednesday]], [[time.thursday]],
+      [[time.friday]], [[time.saturday]], [[time.sunday]]. Saturday and Sunday are the weekend.
+      Today is [[time.today]] and tomorrow is [[time.tomorrow]]: [[time.today-is-monday]]
+      [[phrase.tomorrow-is-tuesday]]
+      """
+  }
+  do {
+    level easy {
+      worked language.days-name k=3
+    }
+    show language.days-name k=2 easy-k=0 hard-k=4
+    show language.days-meaning k=2 hard-k=5
+    show language.days-write k=3 easy-k=2 hard-k=6
+    show language.days-name k=4 easy-k=1 hard-k=5
+    show language.days-match k=2 easy-k=0 hard-k=3
+    show language.days-write k=5 easy-k=4 hard-k=3
+    show language.days-listen k=3 easy-k=0 hard-k=5
+    show language.days-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.days-write k=2
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-days-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.days-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[time.monday|cap]], [[time.tuesday]], [[time.wednesday]], [[time.thursday]], [[time.friday]], [[time.saturday]], [[time.sunday]]. [[time.today|cap]] is today, [[time.tomorrow]] is tomorrow."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is two neighbouring days swapped. The ringed card in the naming
+    questions shows the English day, so on paper the question still reads. The listening question is
+    a dictation: read the sentence aloud from this sheet, where it prints as Read aloud, slowly and
+    twice, or let the device play it. It is marked word by word, and a missing accent counts. If the
+    child is stuck, sing the days to a tune you know, pointing at each card. Off the page, say what
+    day it is in the language at breakfast each morning this week. It meets England's key stage 2
+    languages programme (years 3 to 6, statutory from age 7): "listen attentively to spoken language
+    and show understanding by joining in and responding"; Japan's grades 3 and 4 foreign language
+    activities: "Activities to talk about their own thoughts and feelings regarding familiar and
+    simple matters in daily life such as times, days of the week and places"; and CEFR A1, "Can
+    understand and use familiar everyday expressions and very basic phrases". The phrases are in
+    [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[time.tuesday]] is worked first in the teacher's pen, the words to name are [[time.monday]] and [[time.sunday]] and the words to write are [[time.friday]] and [[time.saturday]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[time.saturday]] and [[time.thursday]] and the words to write are [[time.wednesday]], [[time.tuesday]] and [[time.friday]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

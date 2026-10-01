@@ -1,0 +1,20 @@
+# Early China numbered from the earliest, from the dated record: the Shang (about 1600 to 1046 BC),
+# the Qin unite China (221 BC), Zhang Qian sets out west (138 BC), paper improved (AD 105).
+item history.china-order v=1 skills=[history.ancient, history.order] {
+  title "Early China in order"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Shang China", "Qin unites China", "Paper", "Zhang Qian sets out", "Paper", "Zhang Qian sets out")}
+  let b={pick(k, "Qin unites China", "Shang China", "Qin unites China", "Paper", "Zhang Qian sets out", "Qin unites China")}
+  let c={pick(k, "Paper", "Zhang Qian sets out", "Zhang Qian sets out", "Qin unites China", "Qin unites China", "Paper")}
+
+  scene 36x22 {
+    timeline line from=-1600 to=400 step=250 years=[] labels=[] at=canvas(0, 0)
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=34 below=line gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Which of these is BC with the biggest number?"
+  hint "Paper came after year one."
+}

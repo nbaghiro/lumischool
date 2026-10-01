@@ -1,0 +1,19 @@
+# The language to English: [[greet.hello]], [[greet.goodbye]], [[greet.thank-you]], [[greet.yes]], [[greet.please]], [[greet.good-morning]], [[greet.sorry]], [[greet.good-night]], [[greet.good-afternoon]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.hello-meaning v=1 skills=[language.greetings] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2, 2)
+  let k=0..8
+
+  scene 34x31 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "boy", "girl", "boy", "girl", "boy", "girl", "boy", "girl")] says=[pick(k, "[[greet.hello]]", "[[greet.goodbye]]", "[[greet.thank-you]]", "[[greet.yes]]", "[[greet.please]]", "[[greet.good-morning]]", "[[greet.sorry]]", "[[greet.good-night]]", "[[greet.good-afternoon]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "goodbye", "good afternoon", "sorry", "good afternoon", "thank you", "good night", "thank you", "good morning", "good morning"), pick(k, "sorry", "goodbye", "thank you", "yes", "please", "good morning", "goodbye", "goodbye", "good afternoon"), pick(k, "hello", "hello", "please", "thank you", "goodbye", "goodbye", "sorry", "good night", "good night")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "hello", "goodbye", "thank you", "yes", "please", "good morning", "sorry", "good night", "good afternoon")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

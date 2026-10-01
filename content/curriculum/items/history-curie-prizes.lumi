@@ -1,0 +1,22 @@
+# Marie Curie's two Nobel Prizes, 1903 and 1911, on a line: which came first, and how far apart.
+item history.curie-prizes v=1 skills=[history.lives, history.timeline] {
+  title "Two prizes"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x14 {
+    timeline line from=1860 to=1940 step=10 years=[1867, 1903, 1911] labels=["Marie Curie born", "First Nobel Prize", "Second Nobel Prize"] at=canvas(0, 0)
+    text ask "{if k == 0 then \"How many years after her first Nobel Prize did Marie Curie win her second?\" else \"How many years after she was born did Marie Curie win her first Nobel Prize?\"}" narrate width=22 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="{if k == 0 then \"between(1 2)\" else \"between(0 1)\"}"
+  hint "Find the two flags the question is about."
+  hint "Count on from the earlier year to the later one."
+}

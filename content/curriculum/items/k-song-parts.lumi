@@ -1,0 +1,19 @@
+item k.song-parts v=1 skills=[music.form] {
+  title "The part that comes back"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x14 {
+    text q "{pick(k, \"In a song, the part that comes back again and again, the same each time, is called the chorus. Is it the same words each time?\", \"The verses of a song have new words each time. Do the verses change?\")}" narrate width=28 at=canvas(1, 1)
+    choice pick options=["yes", "no"] stack=row below=q gap=1
+  }
+
+  answer pick="yes"
+  hint "Sing a song you know. Which part do you know best, because it keeps coming back?"
+}

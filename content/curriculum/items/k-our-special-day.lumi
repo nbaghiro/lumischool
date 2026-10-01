@@ -1,0 +1,10 @@
+item k.our-special-day v=1 skills=[history.celebrations] {
+  title "A day we remember"
+
+  scene 28x9 {
+    text q "Tell a grown-up about a special day your family celebrates or remembers: what it is called, and what you do." narrate width=26 at=canvas(1, 1)
+  }
+
+  check reading.recited look-for="The child names a special day their family marks, says one thing that happens on it, and says whether it comes every year." notice=["names the day", "one thing that happens", "every year or once"]
+  hint "Is there a day with special food, visitors or presents?"
+}

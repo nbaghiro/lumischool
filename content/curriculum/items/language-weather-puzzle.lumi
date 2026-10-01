@@ -1,0 +1,23 @@
+# Non-routine: a place chosen from a four-town forecast by reading two things at once.
+item language.weather-puzzle v=1 stars=3 skills=[language.weather, reasoning.language] {
+  title "Where to go?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      weatherweek towns days=["Madrid", "Sevilla", "Bilbao", "León"] skies=["sun", "sun", "rain", "snow"] temps=["30 °C", "35 °C", "19 °C", "2 °C"]
+      text ask "{pick(k, \"Where is it snowing?\", \"Where is it hottest?\", \"Ana wants sun, but not above 32 degrees. Where does she go?\")}" width=32
+      choice pick options=[pick(k, "León", "Sevilla", "Madrid"), pick(k, "Sevilla", "Madrid", "Sevilla"), pick(k, "Madrid", "Bilbao", "Bilbao")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "León", "Sevilla", "Madrid")
+  feedback {
+    when (pick == pick(k, "Madrid", "Madrid", "Sevilla")) {
+      say "{pick(k, \"Madrid has sun. Which picture has snowflakes?\", \"Madrid is hot, but read the numbers: which is higher?\", \"Sevilla is sunny, but 35 is above 32.\")}"
+    }
+  }
+  hint "Read each town's picture and number."
+  hint "Cross off the towns that do not fit."
+}

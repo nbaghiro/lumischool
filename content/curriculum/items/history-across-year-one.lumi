@@ -1,0 +1,26 @@
+# Years from a date BC to a date AD, counted across year one with no year nought, from the record.
+# The easier versions stay on one side of year one; the harder cross it.
+item history.across-year-one v=1 skills=[history.bc-ad, history.timeline] {
+  title "Across year one"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let e1={pick(k, "Caesar lands in Britain", "Qin unites China", "Caesar lands in Britain", "Augustus first emperor", "Qin unites China", "Qin unites China")}
+  let y1={pick(k, -55, -221, -55, -27, -221, -221)}
+  let e2={pick(k, "Augustus first emperor", "Caesar lands in Britain", "Romans conquer Britain", "Romans conquer Britain", "Romans conquer Britain", "Paper")}
+  let y2={pick(k, -27, -55, 43, 43, 43, 105)}
+
+  scene 32x14 {
+    timeline line from=-300 to=200 step=100 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(1, 0)
+    text ask "How many years after the first was the second? There was no year nought: 1 BC was followed by AD 1." narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  feedback {
+    when (y1 < 0 and y2 > 0 and answer == y2 - y1) point=line {
+      say "That counts a year nought that never was. From 1 BC to AD 1 is one year, not two."
+    }
+  }
+  hint "Count from the first year to year one, then on to the second."
+  hint "Take one away when you cross year one, because there was no year nought."
+}

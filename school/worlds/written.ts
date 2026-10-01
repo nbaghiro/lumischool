@@ -2,6 +2,7 @@
 // (.docs/parent-app.md, "The map, for grown-ups"): the map of every world with every place open and
 // nobody on it, every day of a year on a world's roll with none done, and where a lesson stands. Only
 // the grown-ups' app reads it, so the children's map never carries it (tools/__tests__/first-view.test.ts).
+import { gradeName } from "../../engine/pack";
 import type { Declared } from "../../engine/motion/world";
 import type { Day, MapView, WorldView } from "../../engine/space";
 import type { Year } from "../year";
@@ -258,38 +259,34 @@ export function neighboursWritten(
     ];
 }
 
-/** Browse labels describe available journeys; annual route geometry and permissions stay intact. */
+/**
+ * The written map with each place's journeys beside what it holds: its year and term and its lessons
+ * stay as `schoolViewOf` wrote them, and a note names the grades it has a journey in and says what the
+ * journey is for. The routes and what may be opened are unchanged.
+ */
 export function journeyMap(view: MapView, corpus: Corpus): MapView {
     return {
         ...view,
         places: view.places.map((place) => {
             if (!place.shown) return place;
             const shown = place.shown;
-            const journeys = corpus.grades
-                .map((g) => journeyFor(shown.world, g, corpus))
-                .filter((j) => j !== undefined);
-            if (!journeys.length) return place;
-            const available = journeys.filter((j) => j.lessonIds.length > 0);
-            const when = available.length
-                ? `Grade journeys · ${available.map((j) => j.grade).join(", ")}`
-                : "Lessons still to come";
+            const journeys = corpus.grades.flatMap((g) => {
+                const j = journeyFor(shown.world, g, corpus);
+                return j ? [j] : [];
+            });
+            const first = journeys[0];
+            if (!first) return place;
+            const grades = `Journeys for ${journeys.map((j) => gradeName(j.grade)).join(", ")}`;
             return {
                 ...place,
                 shown: {
                     ...shown,
-                    when,
-                    label: `${shown.name}. ${when}.`,
-                    notes: available.length
-                        ? [
-                              available
-                                  .map(
-                                      (j) =>
-                                          `Grade ${j.grade}: ${j.lessonIds.length} ${j.lessonIds.length === 1 ? "lesson" : "lessons"}`,
-                                  )
-                                  .join(" · "),
-                              journeys[0]?.purpose ?? "",
-                          ]
-                        : [journeys[0]?.purpose ?? "Lessons still to come"],
+                    notes: [
+                        ...shown.notes.slice(0, 1),
+                        grades,
+                        first.purpose,
+                        ...shown.notes.slice(1),
+                    ],
                 },
             };
         }),

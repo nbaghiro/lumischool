@@ -1,0 +1,23 @@
+item k.bump v=1 skills=[coding.debugging, coding.tracing] {
+  title "Does it bump into the rock?"
+  difficulty (if r == 0 then 0 else 1)
+  let r=0..1 a=2..4
+  level easy {
+    let r={0}
+  }
+  level hard {
+    let r={1}
+  }
+
+  scene 28x16 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b code=["right {a}"] words=false numbers=false
+      maze g cols=6 rows=1 col=1 row=1 rocks=[if r == 1 then a else 6, 1] code=["right {a}"] upto=0 trail=none
+    }
+    text q "Will the robot bump into a rock when it follows the block?" narrate width=26 below=top gap=1
+    choice pick options=["yes", "no"] stack=row below=q gap=1
+  }
+
+  answer pick=(if r == 1 then "yes" else "no")
+  hint "Move a finger along one square for each step. Does it land on a rock?"
+}

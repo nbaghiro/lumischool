@@ -1,0 +1,22 @@
+# The three-star question: from three maps, between which two the station was built, and so about
+# when; the child must read all three and reason from what is and is not there.
+item history.station-between v=1 skills=[history.maps, reasoning.logic] {
+  title "When did it come?"
+  difficulty k
+  let k=0..1
+  let what={pick(k, "station", "school")}
+
+  scene 36x31 {
+    row maps at=canvas(0, 0) space=1 align=start {
+      townmap a year=1800 town=Millbrook labels=1
+      townmap b year=pick(k, 1850, 1860) town=Millbrook labels=1
+    }
+    townmap c year=1900 town=Millbrook labels=1 below=maps gap=1
+    text ask "When was the {what} built?" narrate width=16 right-of=c gap=1
+    choice pick options=["Before 1800", "Between 1800 and {pick(k, 1850, 1860)}", "Between {pick(k, 1850, 1860)} and 1900"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Between 1800 and 1850" else "Between 1860 and 1900")
+  hint "On which is the first map the {what} appears?"
+  hint "It was built after the map before that one."
+}

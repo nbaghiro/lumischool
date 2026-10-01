@@ -1,0 +1,17 @@
+# Four words to their English, 4 sets, the later sets with the words most often mixed up.
+item language.animals-match v=1 skills=[language.animals] {
+  title "Match the words"
+  difficulty pick(k, 0, 0, 1, 2)
+  let k=0..3
+
+  scene 34x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Write the number of its English next to each [[language.name]] word." width=32
+      match m left=[pick(k, "[[animal.the-cat]]", "[[animal.the-pig]]", "[[animal.the-fox]]", "[[animal.the-hen]]"), pick(k, "[[animal.the-dog]]", "[[animal.the-hen]]", "[[animal.the-dog]]", "[[animal.the-rabbit]]"), pick(k, "[[animal.the-duck]]", "[[animal.the-cat]]", "[[animal.the-duck]]", "[[animal.the-fox]]"), pick(k, "[[animal.the-rabbit]]", "[[animal.the-dog]]", "[[animal.the-cat]]", "[[animal.the-pig]]")] right=[pick(k, "the duck", "the dog", "the duck", "the rabbit"), pick(k, "the cat", "the pig", "the fox", "the pig"), pick(k, "the dog", "the hen", "the cat", "the fox"), pick(k, "the rabbit", "the cat", "the dog", "the hen")] blanks=[a, b, c, d]
+    }
+  }
+
+  answer a=pick(k, 2, 2, 2, 4) b=pick(k, 3, 3, 4, 1) c=pick(k, 1, 4, 1, 3) d=pick(k, 4, 1, 3, 2)
+  hint "Start with the word you are surest of, and cross its English off."
+  hint "Two words look alike. Which letter is different, and what does it change?"
+}

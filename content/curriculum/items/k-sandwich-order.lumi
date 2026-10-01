@@ -1,0 +1,11 @@
+item k.sandwich-order v=1 stars=3 skills=[coding.sequences, reasoning.order] {
+  title "Four steps in order"
+
+  scene 30x18 {
+    text q "Put the steps for making a jam sandwich in order. Write 1, 2, 3 and 4." narrate width=28 at=canvas(1, 1)
+    sequence s items=["put the top slice on", "take two slices of bread", "eat it", "spread the jam"] blanks=[p, q, r, t] below=q gap=1
+  }
+
+  answer p=3 q=1 r=4 t=2
+  hint "What do you need before you can spread anything?"
+}

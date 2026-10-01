@@ -1,0 +1,21 @@
+# What we still have from ancient Greece: words, games and buildings. One true answer among ideas
+# from other times.
+item history.greek-legacy v=1 skills=[history.ancient, history.significance] {
+  title "Still with us"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ask={pick(k, "Which of these games began in ancient Greece?", "The Greek word demokratia means rule by whom?", "Which building was made for the goddess Athena in Athens?", "The Greeks held the Olympic Games at Olympia. Every how many years?", "Which of these did the Greeks write with?", "The word alphabet comes from the first two Greek letters. What are they?")}
+  let right={pick(k, "The Olympic Games", "The people", "The Parthenon", "Four years", "An alphabet with letters for vowels", "Alpha and beta")}
+  let w1={pick(k, "Football", "The king", "The Colosseum", "One year", "Wedge marks on clay", "A and B")}
+  let w2={pick(k, "Chess", "The army", "The Great Pyramid", "Ten years", "Signs drawn on bones", "Alpha and omega")}
+
+  scene 30x20 {
+    temple t at=canvas(1, 0)
+    text ask "{ask}" narrate width=18 right-of=t gap=1
+    choice pick options=[pick(k, right, w1, w2, right, w1, w2), pick(k, w1, right, right, w2, w2, right), pick(k, w2, w2, w1, w1, right, w1)] stack=column below=t gap=1
+  }
+
+  answer pick=right
+  hint "Think back to what the Greeks gave the world."
+  hint "Rule out the answers that belong to another place or time."
+}

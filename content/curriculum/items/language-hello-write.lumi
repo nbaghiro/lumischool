@@ -1,0 +1,19 @@
+# The word written from its picture: [[greet.hello]], [[greet.goodbye]], [[greet.thank-you]], [[greet.yes]], [[greet.sorry]].
+# Accent-tolerant: the box takes the word with its accents left off (accents=loose); ñ is a letter and is marked.
+item language.hello-write v=1 skills=[language.greetings, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 1, 1, 2)
+  let k=0..4
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      person p pose=pick(k, "wave", "walk", "hold", "cheer", "stand") dir=pick(k, 1, -1, 1, 1, 1) age=pick(k, "child", "child", "older", "child", "child") mood=pick(k, "happy", "happy", "happy", "happy", "worried") holding="{pick(k, \"\", \"\", \"apple\", \"\", \"\")}"
+      text ask "{pick(k, \"Ana meets Leo at the gate. What does she say first? Write it in [[language.name]].\", \"Leo goes home after tea. What does he say at the door? Write it in [[language.name]].\", \"Gran gives Ana an apple. What does Ana say? Write it in [[language.name]].\", \"Gran asks Leo if he wants an apple. He does. What does he say? Write it in [[language.name]].\", \"Leo bumps into someone by mistake. What does he say? Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[greet.hello]]", "[[greet.goodbye]]", "[[greet.thank-you]]", "[[greet.yes]]", "[[greet.sorry]]")] accents=loose
+    }
+  }
+
+  answer word=pick(k, "[[greet.hello]]", "[[greet.goodbye]]", "[[greet.thank-you]]", "[[greet.yes]]", "[[greet.sorry]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

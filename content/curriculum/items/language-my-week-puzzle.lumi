@@ -1,0 +1,23 @@
+# Non-routine: a day found by reading two weeks against each other, or by counting on.
+item language.my-week-puzzle v=1 stars=3 skills=[language.time, language.sentences, reasoning.language] {
+  title "Whose week?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      days strip mark=-1 start=0
+      text ask "{pick(k, \"Ana says [[routine.on-tuesday-i-swim-and-on-thursday-i-read]] Leo says [[routine.on-tuesday-i-read-and-on-thursday-i-swim]] Who swims on Thursday?\", \"Mia goes to the pool two days after Monday. Which day?\", \"Leo plays football three days after Saturday. Which day?\")}" width=32
+      choice pick options=[pick(k, "Leo", "[[routine.on-wednesday]]", "[[routine.on-tuesday]]"), pick(k, "Ana", "[[routine.on-tuesday]]", "[[routine.on-monday]]"), pick(k, "Both", "[[routine.on-thursday]]", "[[routine.on-wednesday]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Leo", "[[routine.on-wednesday]]", "[[routine.on-tuesday]]")
+  feedback {
+    when (pick == pick(k, "Ana", "[[routine.on-tuesday]]", "[[routine.on-monday]]")) {
+      say "{pick(k, \"Ana swims on Tuesday. Read Leo's sentence.\", \"That is one day after Monday. Count one more.\", \"That is two days after Saturday. Count one more.\")}"
+    }
+  }
+  hint "Read each sentence slowly."
+  hint "After Sunday comes Monday again."
+}

@@ -1,0 +1,50 @@
+lesson k-rolling-down-a-ramp v=1 format=teach grade=0 unit=7 subject=physics levels=[easy, medium, hard] {
+  title "Rolling down a ramp"
+  goal "Say that a steeper slope sends a ball faster and further, count how far it rolls, and say why a rough floor stops it sooner."
+
+  look {
+    scene 30x14 {
+      ramp r1 height=5 ball=0 rolled=10 at=canvas(1, 1)
+    }
+    say """
+      A ball let go at the top of a slope rolls down and keeps going along the floor. The higher
+      and steeper the slope, the faster it goes and the further it rolls. A rough floor like a
+      carpet slows it down sooner.
+      """
+  }
+  do {
+    level easy {
+      worked k.steeper-faster k=0 level=medium
+    }
+    practice k.steeper-faster count=2 seed=2
+    practice k.how-far-rolled count=2 seed=3
+    practice k.ramp-further count=2 seed=4 easy-count=1
+    practice k.bigger-push count=1 seed=6
+    practice k.push-or-pull-job count=1 seed=7
+  }
+  try stars=2 {
+    show k.rough-floor
+  }
+  try stars=3 {
+    show k.knock-the-cup a=6 b=3 easy-a=7 easy-b=2 hard-a=5 hard-b=3
+  }
+  remember {
+    say "Steeper goes faster and further. Rough floors slow things down."
+  }
+
+  grown-ups """
+    Read each question aloud. A plank on a pile of books and a toy car are the whole lesson: add a
+    book and roll again, and let the child say what changed. Change only the height each time, so
+    the test is fair. If the child is stuck, remember the park slide. Off the page, roll a ball on
+    the kitchen floor and on a rug from the same slope. Japan, 幼稚園教育要領 (kindergarten
+    guidelines), 環境, 内容 (7): "身近な物や遊具に興味をもってかかわり，考えたり，試したりして工夫して遊ぶ。"
+    (Take an interest in familiar things and toys, and play inventively by thinking and trying
+    things out.)
+    """
+  level easy {
+    grown-ups "At this level the steep slope is chosen in the teacher's pen first, the rolls are short, and the balls to compare stop far apart."
+  }
+  level hard {
+    grown-ups "At this level the questions turn round to ask for a slow roll, the rolls are long, and the balls and cups to compare are close."
+  }
+}

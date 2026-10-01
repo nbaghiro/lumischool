@@ -1,0 +1,24 @@
+# The Games were held every four years from 776 BC: counting on in fours with years BC, which get
+# smaller as time goes on.
+item history.olympic-years v=1 skills=[history.ancient, history.bc-ad] {
+  title "Every four years"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let games={pick(k, 2, 3, 5, 6, 10, 26)}
+  let key={776 - 4 * (games - 1)}
+
+  scene 32x16 {
+    timeline line from=-800 to=-600 step=50 years=[-776] labels=["First Olympic Games"] at=canvas(1, 0)
+    text ask "The first Olympic Games were in 776 BC, and then every four years. In which year BC were the {if games == 2 then \"second\" else if games == 3 then \"third\" else if games == 5 then \"fifth\" else if games == 6 then \"sixth\" else if games == 10 then \"tenth\" else \"twenty-sixth\"} Games?" narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer key
+  feedback {
+    when (answer == 776 + 4 * (games - 1)) point=line {
+      say "Later years BC are smaller numbers, because they are nearer to year one. Count down, not up."
+    }
+  }
+  hint "Four years after 800 BC was 796 BC: BC years get smaller as time goes on."
+  hint "How many jumps of four are there from the first Games to this one?"
+}

@@ -1,0 +1,28 @@
+# A grown-up's childhood year, and three toys: the one first made after that year could not have
+# been theirs. The years are chosen so no toy's first date runs across them.
+item history.toy-too-new v=1 skills=[history.change, history.order] {
+  title "Too new for Grandad"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let who={pick(k, "Grandad", "Grandma", "Grandad", "Great-gran")}
+  let year={pick(k, 1960, 1965, 1935, 1925)}
+  let a={pick(k, "teddy bear", "kite", "spinning top", "rag doll")}
+  let b={pick(k, "puzzle cube", "spinning top", "building bricks", "teddy bear")}
+  let c={pick(k, "spinning top", "puzzle cube", "teddy bear", "building bricks")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 24x25 {
+    toys shelf toys=["{a}", "{b}", "{c}"] letters=0 at=canvas(1, 0)
+    text ask "{who} was six in {year}. Which toy could not have been {who}'s then?" narrate width=22 below=shelf gap=1
+    choice pick options=["{a}", "{b}", "{c}"] stack=column below=ask gap=1
+  }
+
+  check history.dates of=pick pick="after({year})"
+  hint "Which of these toys is new, first made after {who} was a child?"
+  hint "The other two are old kinds of toy that children had long before {year}."
+}

@@ -28,19 +28,51 @@ export const homeGarden: World = {
     seasons: ["spring", "summer"],
     guide: "dot",
     reaches: [
+        { art: "swing", when: ["skill:music"], says: "Swing to the beat. One, two, one, two." },
+        {
+            art: "flowers",
+            when: ["skill:nature.plants", "skill:nature.growing", "skill:science.plants"],
+            says: "How many petals on each flower?",
+        },
+        {
+            art: "cat",
+            when: ["skill:nature.senses", "skill:nature.body"],
+            says: "The cat hears the smallest sound.",
+        },
+        {
+            art: "washing",
+            when: ["skill:nature.weather", "skill:nature.seasons"],
+            says: "Washing dries in the sun and wind.",
+        },
+        {
+            art: "wheelbarrow",
+            when: ["skill:sorting"],
+            says: "Sort the garden things into the wheelbarrow.",
+        },
+        {
+            art: "minibeasts",
+            when: ["skill:nature.minibeasts", "skill:science.animals"],
+            says: "Look closely at the minibeasts.",
+        },
+        {
+            art: "hedgehog",
+            when: ["skill:nature.life-cycles", "skill:nature.animals"],
+            says: "A hedgehog's babies are called hoglets.",
+        },
+        { art: "washing", when: ["skill:history"], says: "Long ago washing was scrubbed by hand." },
+        { art: "birds", when: ["skill:language"], says: "Say hello to the birds." },
+        { art: "hen", when: ["skill:coding"], says: "The hen walks three steps to the gate." },
+        { art: "bicycle", when: ["skill:physics"], says: "Push the pedals and the bicycle goes." },
+        { art: "bubbles", when: ["skill:chemistry"], says: "Soap and water mix into bubbles." },
+        { art: "snail", when: ["skill:writing"], says: "The snail's trail curls round like a c." },
+        { art: "garden", when: ["skill:art"], says: "Draw the garden just as you see it." },
+        { art: "sandcastle", when: ["skill:shapes"], says: "Find the shapes in the sandpit." },
+        { art: "cat", when: ["skill:reading"], says: "Cat starts with c. c, c, cat." },
         {
             art: "washing",
             when: ["skill:patterns", "skill:counting"],
             says: "Count the pegs on the line.",
         },
-        { art: "sandcastle", when: ["skill:shapes"], says: "Find the shapes in the sandpit." },
-        { art: "flowers", when: ["skill:science.plants"], says: "How many petals on each flower?" },
-        {
-            art: "minibeasts",
-            when: ["art:minibeasts", "skill:science.animals"],
-            says: "Look closely at the minibeasts.",
-        },
-        { art: "swing", when: ["skill:counting"], says: "Count the swings. One, two, three." },
     ],
     offers: {
         landmarks: [
@@ -101,5 +133,4 @@ export const homeGarden: World = {
         rare: { art: "bubbles", way: "sky", from: "left" },
     },
     site: { kind: "term", grade: 0, term: 1, land: { terrain: "home", near: ["meadow"] } },
-    needs: "A kindergarten year of lessons: counting to ten, shapes and colours, sorting, letter sounds, the first strokes of writing, clapping a beat, and minibeasts and growing things.",
 };

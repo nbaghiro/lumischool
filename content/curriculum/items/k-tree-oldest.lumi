@@ -1,0 +1,12 @@
+item k.tree-oldest v=1 skills=[history.family, history.order] {
+  title "Who was born first?"
+
+  scene 36x24 {
+    familytree tree names=["Grandma Rose", "Grandpa Tom", "Nana Mei", "Grandad Li", "Mum", "Dad", "Sam"] years=[1950, 1948, 1953, 1951, 1982, 1980, 2018] blank=-1 at=canvas(1, 0)
+    text q "The grown-up reads the years. Who in the family was born first?" narrate width=32 below=tree gap=1
+    choice pick options=["Grandpa Tom", "Mum", "Sam"] stack=row below=q gap=1
+  }
+
+  check history.family of=tree pick=oldest
+  hint "Who is in the top row? Of them, who has the smallest year?"
+}

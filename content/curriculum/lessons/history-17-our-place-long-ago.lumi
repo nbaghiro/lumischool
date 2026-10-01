@@ -1,0 +1,67 @@
+# Millbrook is a made-up market town whose places and dates are kept in the town map drawing, so the
+# child practises the method here and then uses it on their own place with a grown-up.
+lesson history-our-place-long-ago v=1 format=teach grade=3 unit=7 subject=history levels=[easy, medium, hard] {
+  title "Our place long ago"
+  goal "Find out how a place has changed from its maps and its buildings, and look for clues to the past of your own place."
+
+  look {
+    scene 36x15 {
+      row maps at=canvas(0, 0) space=1 align=start {
+        townmap then year=1850 town=Millbrook labels=1
+        townmap now year=2026 town=Millbrook labels=1
+      }
+    }
+    say """
+      This is Millbrook, a small market town, drawn in 1850 and today. Some places are old: the
+      church was built in 1150 and still stands. Some have gone, like the mill. Some are new, like
+      the supermarket. Every town has a history like this, and clues to it are everywhere: dates on
+      buildings, old names on signs, and old maps in the library.
+      """
+  }
+  do {
+    level easy {
+      worked history.town-count k=0
+    }
+    show history.town-count k=2 easy-k=1 hard-k=4
+    show history.town-first-built k=2 easy-k=0 hard-k=4
+    show history.town-standing k=2 easy-k=0 hard-k=4
+    show history.town-count k=3 easy-k=2 hard-k=5
+    show history.town-first-built k=3 easy-k=1 hard-k=5
+    show history.town-standing k=3 easy-k=1 hard-k=5
+    show history.town-first-built k=1 easy-k=2 hard-k=3
+    level hard {
+      show history.town-standing k=3 level=medium
+    }
+  }
+  story {
+    show history.local-clues
+  }
+  try stars=2 {
+    show history.how-find-date k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.oldest-building
+  }
+  remember {
+    say "A place keeps clues to its past: old maps, dates on buildings, and names that stay after things have gone."
+  }
+
+  grown-ups """
+    The idea is that a local study is done with evidence close to home: old maps, the dates on
+    buildings, street names and people's memories. The way in counts the places on Millbrook's map
+    in a given year; the core asks which place was built first and how long a place had stood; the
+    story is a walk you take together to find three clues; the two-star question asks which source
+    would settle a date. The wrong idea to watch for is judging age from looks alone. If the child
+    is stuck, ask "how would we check?" The story and the three-star task are for you to mark, on
+    a walk and with the oldest building near you; the local library, a museum or the council's
+    heritage pages usually have old maps. England's key stage 2 history asks for "a local history
+    study". Japan's 社会 for grades three and four begins with 「身近な地域や市（区，町，村）の特色ある地形，土地利用の様子，主な公共施設などの場所と働き」,
+    the child's own neighbourhood and town (the course of study as read in its 2008 edition).
+    """
+  level easy {
+    grown-ups "At this level a worked example counts the places in 1300, the places compared were built far apart in time, and the years standing are counted to 1850 or 1900 from recent dates."
+  }
+  level hard {
+    grown-ups "At this level the maps are of 1950 and today, the places compared were built within a hundred years of each other, the years standing run across centuries, and the two-star question asks which source would settle a disagreement."
+  }
+}

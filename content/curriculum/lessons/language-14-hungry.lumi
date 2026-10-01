@@ -1,0 +1,70 @@
+# Food and drink at the ferry town's stall and café, and asking for them.
+lesson language-hungry v=1 format=teach grade=3 unit=2 subject=language levels=[easy, medium, hard] {
+  title "[[food.i-would-like-bread-please|cap]]"
+  goal "Name foods and drinks in [[language.name]] and ask for them politely."
+
+  look {
+    scene 28x27 {
+      column all at=canvas(1, 1) space=1 align=start {
+        foodstall stall foods=["bread", "cheese", "fish", "egg"] names=["[[food.the-bread]]", "[[food.the-cheese]]", "[[food.the-fish]]", "[[food.the-eggs]]"] costs=["", "", "", ""]
+        comic order who=["boy", "gran"] says=["[[food.i-am-hungry-i-would-like-bread-please]]", "[[phrase.here-you-are]]"] moods=["happy", "happy"] with=["", ""] thinks=[0, 0] holds=["", "bread"] labels=["1", "2"]
+      }
+    }
+    say """
+      At the stall there is [[food.the-bread]] (bread), [[food.the-cheese]] (cheese),
+      [[food.the-fish]] (fish) and [[food.the-eggs]] (eggs). To ask for something, say
+      [[phrase.i-would-like-bread-please]], I would like bread, please. [[phrase.i-am-hungry]] means
+      I am hungry and [[phrase.i-am-thirsty]] means I am thirsty.
+      """
+  }
+  do {
+    level easy {
+      worked language.hungry-name k=3
+    }
+    show language.hungry-name k=2 easy-k=0 hard-k=4
+    show language.hungry-meaning k=3 easy-k=1 hard-k=4
+    show language.hungry-write k=3 easy-k=1 hard-k=6
+    show language.hungry-name k=4 easy-k=1 hard-k=5
+    show language.hungry-match k=1 easy-k=0 hard-k=2
+    show language.hungry-write k=4
+    show language.hungry-listen k=3 easy-k=0 hard-k=5
+    show language.hungry-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.hungry-write k=3
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-hungry-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.hungry-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[phrase.i-would-like-bread-please]] I would like bread, please. [[phrase.i-am-hungry]] I am hungry. [[phrase.i-am-thirsty]] I am thirsty."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is mixing hungry and thirsty, and translating them word by word: the
+    two-star question is about how the language says them. The stall draws each food the same way;
+    the drinks are asked by describing them. The listening question is a dictation: read the
+    sentence aloud from this sheet, where it prints as Read aloud, or let the device play it. It is
+    marked word by word, and a missing accent counts there, while the words typed on their own in
+    this lesson are taken without their accents. If the child is stuck, play shop with real food and
+    a toy till, the child asking in the language. Off the page, ask for one thing at a meal in the
+    language each day this week. It meets England's key stage 2 languages programme (years 3 to 6,
+    statutory from age 7): "engage in conversations; ask and answer questions; express opinions and
+    respond to those of others; seek clarification and help"; Japan's grades 3 and 4 foreign
+    language activities: "Activities to exchange simple greetings with acquaintances, express
+    gratitude, give simple instructions and make requests and respond to them"; and CEFR A1, "Can
+    understand and use familiar everyday expressions and very basic phrases". The phrases are in
+    [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[food.the-eggs]] is worked first in the teacher's pen, the words to name are [[food.the-bread]] and [[food.the-fish]] and the words to write are [[food.cheese]] and [[food.water]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[food.the-potatoes]] and [[food.the-tomato]] and the words to write are [[food.milk]], [[food.water]] and [[food.eggs]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

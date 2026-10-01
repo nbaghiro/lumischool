@@ -1,0 +1,22 @@
+# A reason: the accent on a question word, cuántas for a feminine plural, and a question that got the wrong kind of answer.
+item language.es-questions-why v=1 stars=2 skills=[language.questions, reasoning.language] {
+  title "Marks on question words"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Why is there an accent in ¿Dónde vives? but not in Vivo donde vive mi abuela?\", \"¿Cuántos or ¿Cuántas? ___ hermanas tienes?\", \"Leo asks: ¿Dónde es tu cumpleaños? Ana answers: En mayo. Which question should he have asked?\")}" width=32
+      choice pick options=[pick(k, "It is a question word, so it takes an accent.", "¿Cuántas: hermanas takes las.", "¿Cuándo es tu cumpleaños?"), pick(k, "The accent is only at the start of a sentence.", "¿Cuántos: it is always cuántos.", "¿Quién es tu cumpleaños?"), pick(k, "It is a spelling mistake.", "¿Cuánto: there is only one.", "¿Qué es tu cumpleaños?")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "It is a question word, so it takes an accent.", "¿Cuántas: hermanas takes las.", "¿Cuándo es tu cumpleaños?")
+  feedback {
+    when (pick == pick(k, "It is a spelling mistake.", "¿Cuántos: it is always cuántos.", "¿Quién es tu cumpleaños?")) {
+      say "{pick(k, \"Both are spelt right. What is different about the first one?\", \"¿Cuántos hermanos, but look at hermanas.\", \"Quién asks for a person. The answer was a month.\")}"
+    }
+  }
+  hint "Is it a question?"
+  hint "What kind of answer came back?"
+}

@@ -1,0 +1,19 @@
+# The word written from its picture: [[town.straight]], [[town.left]], [[town.right]], [[town.first]], [[town.second]], [[town.near]], [[town.far]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.directions-write v=1 skills=[language.town, language.directions, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x31 {
+    column all at=canvas(1, 1) space=1 align=start {
+      townplan plan places=["[[town.the-cafe]]", "[[town.the-shop]]", "[[town.the-park]]", "[[town.the-beach]]", "[[town.the-museum]]", "[[town.the-station]]", "[[town.the-square]]"]
+      text ask "{pick(k, \"The word in straight on. Write it in [[language.name]].\", \"The word for left. Write it in [[language.name]].\", \"The word for right. Write it in [[language.name]].\", \"The word for the first street. Write it in [[language.name]].\", \"The word for the second street. Write it in [[language.name]].\", \"The word for near. Write it in [[language.name]].\", \"The word for far. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[town.straight]]", "[[town.left]]", "[[town.right]]", "[[town.first]]", "[[town.second]]", "[[town.near]]", "[[town.far]]")]
+    }
+  }
+
+  answer word=pick(k, "[[town.straight]]", "[[town.left]]", "[[town.right]]", "[[town.first]]", "[[town.second]]", "[[town.near]]", "[[town.far]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

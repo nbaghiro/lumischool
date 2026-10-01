@@ -1,0 +1,11 @@
+item k.why-at-the-end v=1 stars=2 skills=[reading.story-structure, reasoning.explain] {
+  title "Why at the end?"
+
+  scene 30x14 {
+    text q "Why does \"and they all lived happily ever after\" come at the end of a story and not the beginning?" narrate width=28 at=canvas(1, 1)
+    choice pick options=["It tells us the story is finished.", "It is the longest sentence."] stack=column below=q gap=1
+  }
+
+  answer pick="It tells us the story is finished."
+  hint "What does it tell you about what happens next?"
+}

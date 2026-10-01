@@ -1,0 +1,19 @@
+# The language to English: [[phrase.my-birthday-is-in-may]], [[phrase.when-is-your-birthday]], [[phrase.it-is-the-fifth-of-april]], [[phrase.happy-birthday]], [[phrase.in-august-it-is-hot]], [[phrase.today-is-the-first-of-january]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.months-meaning v=1 skills=[language.time] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "boy", "girl", "gran", "boy", "gran")] says=[pick(k, "[[phrase.my-birthday-is-in-may]]", "[[phrase.when-is-your-birthday]]", "[[phrase.it-is-the-fifth-of-april]]", "[[phrase.happy-birthday]]", "[[phrase.in-august-it-is-hot]]", "[[phrase.today-is-the-first-of-january]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "Today is the first of January.", "Happy birthday.", "When is your birthday?", "Today is the first of January.", "Today is the first of January.", "Happy birthday."), pick(k, "My birthday is in May.", "When is your birthday?", "In August it is hot.", "Happy birthday.", "It is the fifth of April.", "Today is the first of January."), pick(k, "It is the fifth of April.", "In August it is hot.", "Happy birthday.", "When is your birthday?", "In August it is hot.", "It is the fifth of April."), pick(k, "In August it is hot.", "It is the fifth of April.", "It is the fifth of April.", "It is the fifth of April.", "Happy birthday.", "In August it is hot.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "My birthday is in May.", "When is your birthday?", "It is the fifth of April.", "Happy birthday.", "In August it is hot.", "Today is the first of January.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

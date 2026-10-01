@@ -1,0 +1,68 @@
+# The weather words on a forecast chart.
+lesson language-weather v=1 format=teach grade=3 unit=7 subject=language levels=[easy, medium, hard] {
+  title "[[phrase.what-is-the-weather-like]]"
+  goal "Say what the weather is like in [[language.name]], from a picture or a forecast."
+
+  look {
+    scene 19x11 {
+      column all at=canvas(1, 1) space=1 align=start {
+        weatherweek chart days=["[[time.monday]]", "[[time.tuesday]]", "[[time.wednesday]]", "[[time.thursday]]"] skies=["sun", "rain", "wind", "snow"] temps=["28 °C", "18 °C", "20 °C", "1 °C"]
+      }
+    }
+    say """
+      To ask about the weather, say [[phrase.what-is-the-weather-like]] On Monday
+      [[weather.it-is-sunny]], it is sunny. On Tuesday [[weather.it-is-raining]], it rains. On
+      Wednesday [[weather.it-is-windy]], it is windy. On Thursday [[weather.it-is-snowing]], it
+      snows, and [[weather.it-is-cold]], it is cold. When it is hot, [[weather.it-is-hot]].
+      """
+  }
+  do {
+    level easy {
+      worked language.weather-name k=4
+    }
+    show language.weather-name k=2 easy-k=0 hard-k=5
+    show language.weather-meaning k=3 easy-k=2 hard-k=5
+    show language.weather-write k=3 easy-k=1 hard-k=5
+    show language.weather-name k=4 easy-k=1 hard-k=6
+    show language.weather-match k=1 easy-k=0 hard-k=2
+    show language.weather-write k=5 easy-k=2 hard-k=6
+    show language.weather-listen k=3 easy-k=0 hard-k=5
+    show language.weather-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.weather-write k=4
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-weather-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.weather-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[phrase.what-is-the-weather-like]] Answer with [[weather.it-is-sunny]], [[weather.it-is-raining]], [[weather.it-is-snowing]], [[weather.it-is-windy]], [[weather.it-is-hot]] or [[weather.it-is-cold]]."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is mixing sunny with hot: a sunny day can be cold, and the chart
+    gives the temperature under the picture where it matters. The forecast chart draws each sky as a
+    shape, not a colour, so it reads the same in print. The listening question is a dictation: read
+    the sentence aloud from this sheet, where it prints as Read aloud, or let the device play it. It
+    is marked word by word, and a missing accent counts there, while the words typed on their own in
+    this lesson are taken without their accents. If the child is stuck, read the chart aloud in
+    English, then find each phrase in the language. Off the page, say the weather in the language at
+    breakfast each day for a week and keep a chart. It meets England's key stage 2 languages
+    programme (years 3 to 6, statutory from age 7): "describe people, places, things and actions
+    orally and in writing"; Japan's grades 5 and 6 foreign languages: "Can listen to and understand
+    concrete information regarding familiar and simple matters in daily life if spoken to slowly and
+    clearly"; and CEFR A1, "Can understand and use familiar everyday expressions and very basic
+    phrases". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[weather.it-is-cloudy]] is worked first in the teacher's pen, the words to name are [[weather.it-is-sunny]] and [[weather.it-is-raining]] and the words to write are [[weather.sun]] and [[weather.it-is-snowing]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[weather.there-is-a-storm]] and [[weather.it-is-hot]] and the words to write are [[weather.heat]], [[weather.cold]] and [[weather.cloudy]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

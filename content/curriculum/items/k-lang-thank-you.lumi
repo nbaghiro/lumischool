@@ -1,0 +1,19 @@
+item k.lang-thank-you v=1 stars=2 skills=[language.greetings, reasoning.explain] {
+  title "What do you say?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x14 {
+    text ask "{pick(k, \"Gran gives Ana an apple. What does Ana say?\", \"Leo wants some water. What does he say at the end of asking?\")}" narrate width=28 at=canvas(1, 1)
+    choice pick options=["[[greet.hello]]", "[[greet.please]]", "[[greet.thank-you]]"] stack=row below=ask gap=1
+  }
+
+  answer pick=pick(k, "[[greet.thank-you]]", "[[greet.please]]")
+  hint "Is it asking for something, or after being given something?"
+}

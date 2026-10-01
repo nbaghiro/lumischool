@@ -1,0 +1,22 @@
+# A trader setting out from Chang'an: the order the cities come along the road, read off the map.
+item history.silk-cities v=1 skills=[history.trade, history.maps] {
+  title "Along the road"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Samarkand", "Samarkand", "Baghdad", "Constantinople", "Constantinople", "Baghdad")}
+  let b={pick(k, "Baghdad", "Constantinople", "Samarkand", "Samarkand", "Baghdad", "Constantinople")}
+  let c={pick(k, "Constantinople", "Baghdad", "Constantinople", "Baghdad", "Samarkand", "Samarkand")}
+  let ra={if a == "Samarkand" then 1 else if a == "Baghdad" then 2 else 3}
+  let rb={if b == "Samarkand" then 1 else if b == "Baghdad" then 2 else 3}
+  let rc={if c == "Samarkand" then 1 else if c == "Baghdad" then 2 else 3}
+
+  scene 36x32 {
+    worldmap map names=2 blank=-1 oceans=0 places=["Chang'an", "Samarkand", "Baghdad", "Constantinople"] numbered=0 route=3 at=canvas(1, 0)
+    text ask "A trader sets out west from Chang'an. Number the cities in the order the trader reaches them." narrate width=34 below=map gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  answer p=ra q=rb r=rc
+  hint "Find Chang'an at the east end of the dashed road."
+  hint "Follow the road west with a finger and number each city as you reach it."
+}

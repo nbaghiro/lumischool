@@ -1,0 +1,28 @@
+# An old picture with no date: three years to choose from, and only one late enough for everything
+# in it and early enough to leave out newer things (none of the later things are there).
+item history.guess-the-year v=1 skills=[history.then-and-now, history.evidence] {
+  title "When was it drawn?"
+  difficulty k
+  let k=0..2
+  let a={pick(k, "horse and cart", "motor car", "bicycle")}
+  let b={pick(k, "bicycle", "horse and cart", "aeroplane")}
+  let y1={pick(k, 1850, 1870, 1860)}
+  let y2={pick(k, 1920, 1920, 1870)}
+  let y3={pick(k, 1860, 1860, 1930)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 32x25 {
+    thenandnow street year=2026 sign=0 things=["{a}", "{b}"] at=canvas(1, 0)
+    text ask "This old picture has no date on it. Which of these years could it be?" narrate width=30 below=street gap=1
+    choice pick options=[y1, y2, y3] below=ask gap=1
+  }
+
+  check history.street of=street pick="could-be(pick)"
+  hint "Find the newest thing in the picture. When was it first made?"
+  hint "The picture must be from after that."
+}

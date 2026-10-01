@@ -1,0 +1,20 @@
+item k.toast-back v=1 skills=[chemistry.changes, chemistry.cooking] {
+  title "Can it change back?"
+  difficulty (if c == "toast-bread" or c == "melt-chocolate" then 0 else 1)
+  let c={"toast-bread", "melt-chocolate", "bake-cake", "freeze-water"}
+  level easy {
+    let c={"toast-bread", "melt-chocolate"}
+  }
+  level hard {
+    let c={"bake-cake", "freeze-water"}
+  }
+
+  scene 34x19 {
+    beforeafter ch change=c show=1 names=1 at=canvas(1, 0)
+    text q "Can this change go back, so that what was there before comes back?" narrate width=30 below=ch gap=1
+    choice pick options=["yes", "no"] stack=row below=q gap=1
+  }
+
+  check chem.change of=ch pick=undo
+  hint "Melting and freezing go both ways. Does cooking?"
+}

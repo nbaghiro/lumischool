@@ -1,0 +1,19 @@
+# The language to English: [[postcard.dear-grandma]], [[postcard.love]], [[phrase.see-you-soon]], [[phrase.i-am-having-a-great-time]], [[phrase.i-miss-you]], [[phrase.regards-to-everyone]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.postcard-meaning v=1 skills=[language.reading, language.time] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "girl", "boy", "girl", "gran", "boy")] says=[pick(k, "[[postcard.dear-grandma]]", "[[postcard.love]]", "[[phrase.see-you-soon]]", "[[phrase.i-am-having-a-great-time]]", "[[phrase.i-miss-you]]", "[[phrase.regards-to-everyone]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "Regards to everyone.", "I am having a great time.", "Love,", "Regards to everyone.", "Regards to everyone.", "I am having a great time."), pick(k, "Dear Grandma,", "Love,", "I miss you.", "I am having a great time.", "See you soon.", "Regards to everyone."), pick(k, "See you soon.", "I miss you.", "I am having a great time.", "Love,", "I miss you.", "See you soon."), pick(k, "I miss you.", "See you soon.", "See you soon.", "See you soon.", "I am having a great time.", "I miss you.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Dear Grandma,", "Love,", "See you soon.", "I am having a great time.", "I miss you.", "Regards to everyone.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

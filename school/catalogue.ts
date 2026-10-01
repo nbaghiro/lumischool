@@ -13,27 +13,36 @@ import {
     type Page,
 } from "../engine/page";
 
-/** What the catalogue is narrowed to. Null is every grade, or every subject. */
+/** What the catalogue is narrowed to. Null is every grade, every subject, or every variant. */
 export interface Filters {
     grade: number | null;
     subject: string | null;
+    /** A variant's tag, a language or a nation (`variantOf`). */
+    variant: string | null;
     words: string;
 }
 
-export const EVERYTHING: Filters = { grade: null, subject: null, words: "" };
+export const EVERYTHING: Filters = { grade: null, subject: null, variant: null, words: "" };
+
+/** A lesson's variant tag, its language or its nation, or null for a lesson every child is shown. */
+export const variantOf = (l: Pick<LessonFacts, "language" | "nation">): string | null =>
+    l.language ?? l.nation ?? null;
 
 /** The filters an address holds, keeping only a grade and a subject the catalogue has. */
 export function filtersFrom(
     search: string,
     subjects: readonly string[],
     grades: readonly number[],
+    variants: readonly string[] = [],
 ): Filters {
     const q = new URLSearchParams(search);
-    const grade = Number(q.get("grade"));
+    const grade = q.get("grade") === null ? NaN : Number(q.get("grade"));
     const subject = q.get("subject");
+    const variant = q.get("variant");
     return {
         grade: grades.includes(grade) ? grade : null,
         subject: subject !== null && subjects.includes(subject) ? subject : null,
+        variant: variant !== null && variants.includes(variant) ? variant : null,
         words: q.get("q")?.trim() ?? "",
     };
 }
@@ -43,6 +52,7 @@ export function searchOf(f: Filters): string {
     const q = new URLSearchParams();
     if (f.grade !== null) q.set("grade", String(f.grade));
     if (f.subject !== null) q.set("subject", f.subject);
+    if (f.variant !== null) q.set("variant", f.variant);
     if (f.words.trim()) q.set("q", f.words.trim());
     const s = q.toString();
     return s ? `?${s}` : "";
@@ -50,7 +60,10 @@ export function searchOf(f: Filters): string {
 
 const plain = (s: string): string => s.toLowerCase().replace(/\s+/g, " ").trim();
 
-type Findable = Pick<LessonFacts, "grade" | "unit" | "subject" | "title" | "goal" | "source">;
+type Findable = Pick<
+    LessonFacts,
+    "grade" | "unit" | "subject" | "language" | "nation" | "title" | "goal" | "source"
+>;
 
 /** The order a subject is taken in: grade, unit, then file, which is also a page's cursor key. */
 const orderOf = (l: Pick<LessonFacts, "grade" | "unit" | "source">): Key => [
@@ -67,6 +80,7 @@ export function found<L extends Findable>(lessons: readonly L[], f: Filters): L[
             (l) =>
                 (f.grade === null || l.grade === f.grade) &&
                 (f.subject === null || l.subject === f.subject) &&
+                (f.variant === null || variantOf(l) === f.variant) &&
                 words.every((w) => plain(`${l.title} ${l.goal ?? ""}`).includes(w)),
         )
         .sort((a, b) => compareKeys(orderOf(a), orderOf(b)));
@@ -84,7 +98,12 @@ const shelfQuery = (shelf: Shelf, f: Filters): string =>
         list: "catalogue",
         grade: shelf.grade,
         subject: shelf.subject,
-        filters: { grade: f.grade, subject: f.subject, words: plain(f.words) },
+        filters: {
+            grade: f.grade,
+            subject: f.subject,
+            variant: f.variant,
+            words: plain(f.words),
+        },
     });
 
 /**

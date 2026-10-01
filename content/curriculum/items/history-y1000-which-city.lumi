@@ -1,0 +1,18 @@
+# Five cities of the year 1000 and what each is known for, from the lesson's opening.
+item history.y1000-which-city v=1 skills=[history.world, history.cities] {
+  title "Which city?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ask={pick(k, "Where did scholars copy and translate books in the House of Wisdom?", "Where were the Song emperors' crowded markets, open late into the night?", "In which city did Murasaki Shikibu write The Tale of Genji?", "Where was the great church of St Sophia built?", "Which city had great earth walls and ditches around it?", "Where did al-Khwarizmi write the book that gave us the word algebra?")}
+  let key={pick(k, "Baghdad", "Kaifeng", "Kyoto", "Kyiv", "Benin City", "Baghdad")}
+
+  scene 36x37 {
+    worldmap map names=2 blank=-1 oceans=0 places=["Baghdad", "Kaifeng", "Kyoto", "Kyiv", "Benin City"] numbered=0 route=0 at=canvas(1, 0)
+    text ask "{ask}" narrate width=24 below=map gap=1
+    choice pick options=["Baghdad", "Kaifeng", "Kyoto", "Kyiv", "Benin City"] stack=column right-of=ask gap=1
+  }
+
+  answer pick=key
+  hint "Think back to the five cities in the lesson."
+  hint "Which city was the capital of which people?"
+}

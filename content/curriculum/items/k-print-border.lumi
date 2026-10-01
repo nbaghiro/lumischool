@@ -1,0 +1,21 @@
+item k.print-border v=1 skills=[art.printing, patterns.repeating] {
+  title "A printed border"
+  difficulty (if c % 3 == 1 then 0 else 1)
+  let c=4..8
+  roles st=star circ=circle
+  level easy {
+    let c={4, 7}
+  }
+  level hard {
+    let c={5, 6, 8}
+  }
+
+  scene 30x15 {
+    pattern strip unit=[st, circ, circ] count=c missing=c at=canvas(1, 1)
+    text q "Ada prints a border with a star and a circle stamp. Which stamp comes next?" narrate width=28 below=strip gap=1
+    choice pick options=[st, circ] below=q gap=1
+  }
+
+  answer pick=(if c % 3 == 1 then "st" else "circ")
+  hint "Say the border out loud: star, circle, circle. Where does it start again?"
+}

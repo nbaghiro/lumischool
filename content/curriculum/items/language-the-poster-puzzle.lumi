@@ -1,0 +1,23 @@
+# Non-routine: what a child can do in the time they have, how long between two things, and what the rain rule means for all of it.
+item language.the-poster-puzzle v=1 stars=3 skills=[language.reading, reasoning.language] {
+  title "Plan the evening"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x33 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage poster title="[[notice.town-fiesta]]" text="[[notice.fiesta-poster]]" width=30 numbers=true
+      text ask "{pick(k, \"Ana can only come from half past seven to nine. What can she do?\", \"How long is it from the music to the fireworks?\", \"It rains on the day. Leo says the fireworks will still happen because they are at the harbour, not in the square. Is he right?\")}" width=32
+      choice pick options=[pick(k, "[[notice.the-dinner]]", "[[notice.four-hours]]", "No: there is no fiesta at all if it rains."), pick(k, "[[notice.the-fireworks]]", "[[notice.two-hours]]", "Yes: the rain rule is only for the square."), pick(k, "[[notice.music-and-dancing]]", "[[notice.six-hours]]", "Yes: fireworks work in the rain.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[notice.the-dinner]]", "[[notice.four-hours]]", "No: there is no fiesta at all if it rains.")
+  feedback {
+    when (pick == pick(k, "[[notice.music-and-dancing]]", "[[notice.two-hours]]", "Yes: the rain rule is only for the square.")) {
+      say "{pick(k, \"The music starts at six, before she comes. What is at eight?\", \"Two hours is from six to eight. The fireworks are at ten.\", \"Read the last line. Does it say only the square?\")}"
+    }
+  }
+  hint "Read the times on the poster."
+  hint "Count the hours between."
+}

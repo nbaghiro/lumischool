@@ -1,0 +1,19 @@
+# What a place or a thing of the family's country was, from the lesson's opening (n as in n3-order).
+item history.n3-what v=1 skills=[history.nation, history.evidence] {
+  title "What was it?"
+  let n=0..4
+  let ask={pick(n, "What was Skara Brae?", "What was Cahokia?", "What did the electric rice cooker change?", "What does it mean that Moscow was first mentioned in 1147?", "What was Banpo?")}
+  let right={pick(n, "A stone village of early farmers", "A town of Native Americans with great earth mounds", "Rice could cook itself while people did other work", "It is the oldest writing we have that names Moscow", "A village of early farmers")}
+  let w1={pick(n, "A Roman fort", "A Spanish fort", "Rice grew faster in the fields", "Moscow was built in that one year", "A palace of the Shang kings")}
+  let w2={pick(n, "A castle of a king", "A railway town", "People stopped eating rice", "Moscow got its name that year", "A city by the sea")}
+
+  scene 36x24 {
+    timeline line from=-4000 to=2000 step=1000 years=[] labels=[] at=canvas(1, 0)
+    text ask "{ask}" narrate width=34 below=line gap=1
+    choice pick options=["{w1}", "{right}", "{w2}"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Think back to what the lesson told you about it."
+  hint "Which answer fits the time and the people it belonged to?"
+}

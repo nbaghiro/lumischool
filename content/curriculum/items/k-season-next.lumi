@@ -1,0 +1,20 @@
+item k.season-next v=1 skills=[nature.seasons] {
+  title "What season comes next?"
+  difficulty (if s == "winter" or s == "summer" then 0 else 1)
+  let s={"winter", "summer", "spring", "autumn"}
+  level easy {
+    let s={"winter", "summer"}
+  }
+  level hard {
+    let s={"spring", "autumn"}
+  }
+
+  scene 34x21 {
+    seasontrees trees seasons=["spring", "summer", "autumn", "winter"] names=1 at=canvas(1, 1)
+    text ask "It is {s} now. Which season comes next?" narrate width=30 below=trees gap=1
+    choice pick options=["spring", "summer", "autumn", "winter"] stack=row below=ask gap=1
+  }
+
+  answer pick=(if s == "winter" then "spring" else if s == "spring" then "summer" else if s == "summer" then "autumn" else "winter")
+  hint "Find {s} on the trees. Which tree is next along? At the end of the row, go back to the start."
+}

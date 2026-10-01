@@ -1,0 +1,50 @@
+lesson k-loud-quiet-high-low v=1 format=teach grade=0 unit=5 subject=music levels=[easy, medium, hard] {
+  title "Loud and quiet, high and low"
+  goal "Tell a loud sound from a quiet one and a high sound from a low one, and sing a song both loud and quiet."
+
+  look {
+    scene 26x9 {
+      chimebars bars bars=8 letters=0 at=canvas(1, 1)
+    }
+    say """
+      Loud and quiet is how big a sound is: a shout or a whisper. High and low is something else: a
+      bird's squeak is high and a cow's moo is low. On the chime bars the short bars ring high and
+      the long bars ring low.
+      """
+  }
+  do {
+    level easy {
+      worked k.loud-or-quiet k=0 level=medium
+    }
+    practice k.loud-or-quiet count=2 seed=2
+    practice k.high-or-low count=2 seed=3
+    show k.highest-bar k=0 hard-k=1
+    show k.loud-mark k=1 easy-k=0
+    show k.piano-side k=1 easy-k=0
+    show k.sing-loud-quiet
+  }
+  try stars=2 {
+    show k.big-drum
+  }
+  try stars=3 {
+    show k.quiet-then-loud k=0 hard-k=1
+  }
+  remember {
+    say "Loud or quiet is how big a sound is. High or low is how it goes up or down."
+  }
+
+  grown-ups """
+    Children often mix up loud with high and quiet with low, so make each sound together: sing one
+    note high and quiet, then low and loud. The song is for you to listen to; the answer sheet says
+    what to listen for. If the child is stuck, use the voice: squeak like a mouse, then growl like a
+    bear. Off the page, tap a spoon on glasses with a little and a lot of water in them. Japan,
+    幼稚園教育要領 (kindergarten guidelines), 表現, 内容 (6): "音楽に親しみ，歌を歌ったり，簡単なリズム楽器を使ったりなどする楽しさを味わう。"
+    (Enjoy music, singing songs and playing simple rhythm instruments.)
+    """
+  level easy {
+    grown-ups "At this level the sounds are everyday ones, a sleeping baby and a bird, one is worked in the teacher's pen first, the mark to read is f, and the piano question asks for the high end."
+  }
+  level hard {
+    grown-ups "At this level the sounds are the band, a lion and the piano, the bar to find is the lowest, and the three-star starts loud."
+  }
+}

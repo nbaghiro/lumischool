@@ -1,0 +1,19 @@
+# What a thing in the family's country's story was (n as in n5-order).
+item history.n5-what v=1 skills=[history.nation, history.evidence] {
+  title "What was it?"
+  let n=0..4
+  let ask={pick(n, "What was the Domesday Book?", "What was Jamestown?", "What did the Shinkansen of 1964 change?", "What was found in Novgorod in 1951?", "What was the Grand Canal for?")}
+  let right={pick(n, "A record of England's land and people", "The first lasting English town in America", "Tokyo and Osaka came hours closer", "A letter written on birch bark", "Carrying grain and goods south to north")}
+  let w1={pick(n, "A book of stories about kings", "A Spanish fort in Mexico", "Rice grew faster in the fields", "A stone carved with runes", "Keeping out raiders on horses")}
+  let w2={pick(n, "A map of the world", "The first capital of Canada", "Ships sailed faster to China", "A book printed on paper", "Making paper from river reeds")}
+
+  scene 36x24 {
+    timeline line from=-300 to=2100 step=300 years=[] labels=[] at=canvas(0, 0)
+    text ask "{ask}" narrate width=34 below=line gap=1
+    choice pick options=["{w1}", "{right}", "{w2}"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Think back to what the lesson told you."
+  hint "Which answer fits the time and the place?"
+}

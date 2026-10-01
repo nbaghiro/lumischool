@@ -1,0 +1,11 @@
+item k.why-blue-sea v=1 stars=2 skills=[art.warm-cool, reasoning.explain] {
+  title "A calm sea"
+
+  scene 30x13 {
+    text q "Ben wants his sea picture to feel calm and quiet. Why should he use blue rather than red?" narrate width=28 at=canvas(1, 1)
+    choice pick options=["Blue feels cool and calm.", "Red is harder to paint with."] stack=column below=q gap=1
+  }
+
+  answer pick="Blue feels cool and calm."
+  hint "Does red feel calm, or lively and hot?"
+}

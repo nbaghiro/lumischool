@@ -1,0 +1,26 @@
+# How old a grandparent was when a parent was born, from the two years in the tree.
+item history.tree-age-then v=1 skills=[history.family, number.difference] {
+  title "How old was Grandma?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let who={pick(k, 0, 1, 2, 3)}
+  let child={pick(k, 4, 4, 5, 5)}
+  let name={pick(k, "Grandma Rose", "Grandpa Tom", "Nana Mei", "Grandad Li")}
+  let kid={pick(k, "Mum", "Mum", "Dad", "Dad")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x17 {
+    familytree tree names=["Grandma Rose", "Grandpa Tom", "Nana Mei", "Grandad Li", "Mum", "Dad", "Sam"] years=[1950, 1952, 1955, 1953, 1980, 1981, 2019] blank=-1 at=canvas(1, 0)
+    text ask "How old was {name} when {kid} was born?" narrate width=22 below=tree gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.family of=tree answer="age({who} {child})"
+  hint "Find the two years. Which is earlier?"
+  hint "Count on from the earlier year to the later one, in tens and then ones."
+}

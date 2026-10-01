@@ -1,0 +1,22 @@
+# A reason: when the seasons fall in Spain and south of the equator, and a Spanish word with two meanings.
+item language.es-seasons-why v=1 stars=2 skills=[language.weather, language.time, reasoning.language] {
+  title "Seasons and places"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"In Spain, which months are el verano?\", \"In Australia, December is summer. Leo says: en diciembre es invierno everywhere. Is he right?\", \"Estación means season and also station. Which one is it in: La estación de tren está cerca?\")}" width=32
+      choice pick options=[pick(k, "junio, julio y agosto", "No: south of the equator, December is summer.", "A station: de tren, of the train, says so."), pick(k, "diciembre, enero y febrero", "Yes: December is always winter.", "A season: it always means season."), pick(k, "marzo, abril y mayo", "Yes: Australia has no summer.", "A season: cerca means season.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "junio, julio y agosto", "No: south of the equator, December is summer.", "A station: de tren, of the train, says so.")
+  feedback {
+    when (pick == pick(k, "diciembre, enero y febrero", "Yes: December is always winter.", "A season: it always means season.")) {
+      say "{pick(k, \"Those months are winter in Spain. When is it hot?\", \"The question says December is summer in Australia.\", \"Read the words after estación. What are they about?\")}"
+    }
+  }
+  hint "Say the months of each season in Spain."
+  hint "Read the whole sentence before you choose."
+}

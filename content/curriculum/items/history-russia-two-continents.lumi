@@ -1,0 +1,17 @@
+# The two-star reason: a country can lie on two continents. Russia's capital is in Europe, but most
+# of its land is in Asia; Turkey and Egypt also cross a line between continents.
+item history.russia-two-continents v=1 skills=[history.geography, reasoning.why] {
+  title "On two continents"
+  difficulty k
+  let k=0..1
+
+  scene 36x34 {
+    worldmap map names=0 blank=-1 oceans=0 places=["Moscow"] numbered=0 route=0 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Ben says Russia is in Europe, because Moscow is. Ada says it is in Asia, because most of its land is. Who is right?\" else \"Why is it hard to say which one continent Russia is on?\"}" narrate width=34 below=map gap=1
+    choice pick options=["Both: Russia is on two continents", "Only Ben: a country is where its capital is", "Only Ada: a country is where most of its land is"] stack=column below=ask gap=1
+  }
+
+  answer pick="Both: Russia is on two continents"
+  hint "Find Moscow, then follow Russia's land to the east."
+  hint "Does a line between continents have to follow a country's border?"
+}

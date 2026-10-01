@@ -1,0 +1,19 @@
+# Cities and kingdoms around the year 1000 numbered from the earliest, from the dated record.
+item history.y1000-order v=1 skills=[history.world, history.order] {
+  title "Around the year 1000, in order"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Baghdad founded", "Heian-kyo founded", "Song dynasty begins", "First king of England", "Vikings in America", "Song dynasty begins")}
+  let b={pick(k, "Song dynasty begins", "Baghdad founded", "Heian-kyo founded", "Baghdad founded", "Heian-kyo founded", "First king of England")}
+  let c={pick(k, "Vikings in America", "First king of England", "Baghdad founded", "Heian-kyo founded", "First king of England", "Heian-kyo founded")}
+
+  scene 36x22 {
+    timeline line from=750 to=1050 step=50 years=[] labels=[] at=canvas(1, 0)
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=34 below=line gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "All three are AD: the smaller the year, the earlier."
+  hint "Baghdad and Kyoto were both founded in the 700s."
+}

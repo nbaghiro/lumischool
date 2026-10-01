@@ -1,0 +1,19 @@
+# The word written from its picture: [[notice.saturday]], [[notice.square]], [[num.eight]], [[notice.harbour]], [[notice.free]], [[notice.august]], [[notice.music]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.the-poster-write v=1 skills=[language.reading, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x24 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage poster title="[[notice.town-fiesta]]" text="[[notice.fiesta-poster]]" width=30 numbers=true
+      text ask "{pick(k, \"Which day is the fiesta? Write the day. Write it in [[language.name]].\", \"Where is the fiesta? Write the place. Write it in [[language.name]].\", \"At what hour is the dinner? Write the number. Write it in [[language.name]].\", \"Where are the fireworks? Write the place. Write it in [[language.name]].\", \"How much is it to go in? Write the word. Write it in [[language.name]].\", \"Which month is it? Write the month. Write it in [[language.name]].\", \"What is there at six, with dancing? Write the first word. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[notice.saturday]]", "[[notice.square]]", "[[num.eight]]", "[[notice.harbour]]", "[[notice.free]]", "[[notice.august]]", "[[notice.music]]")]
+    }
+  }
+
+  answer word=pick(k, "[[notice.saturday]]", "[[notice.square]]", "[[num.eight]]", "[[notice.harbour]]", "[[notice.free]]", "[[notice.august]]", "[[notice.music]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

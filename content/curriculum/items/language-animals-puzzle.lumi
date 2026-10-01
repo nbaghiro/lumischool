@@ -1,0 +1,22 @@
+# Non-routine: a pet found by crossing off what the clues rule out.
+item language.animals-puzzle v=1 stars=3 skills=[language.animals, reasoning.language] {
+  title "Whose pet?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo's pet is not [[animal.the-cat]] and not [[animal.the-dog]]. It has long ears. Which is it?\", \"Three children have [[animal.the-cat]], [[animal.the-dog]] and [[animal.the-rabbit]], one each. Ana's pet is not [[animal.the-dog]]. Leo's pet is [[animal.the-cat]]. What is Ana's?\", \"Mia's animal is not [[animal.the-cat]], not [[animal.the-duck]] and not [[animal.the-dog]]. It lives on a farm and has a curly tail. What is it?\")}" width=32
+      choice pick options=[pick(k, "[[animal.the-rabbit]]", "[[animal.the-rabbit]]", "[[animal.the-pig]]"), pick(k, "[[animal.the-cat]]", "[[animal.the-dog]]", "[[animal.the-hen]]"), pick(k, "[[animal.the-duck]]", "[[animal.the-cat]]", "[[animal.the-fox]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[animal.the-rabbit]]", "[[animal.the-rabbit]]", "[[animal.the-pig]]")
+  feedback {
+    when (pick == pick(k, "[[animal.the-cat]]", "[[animal.the-dog]]", "[[animal.the-hen]]")) {
+      say "{pick(k, \"The first clue rules the cat out.\", \"The clue says Ana's pet is not the dog.\", \"A hen lives on a farm, but has it got a tail that curls?\")}"
+    }
+  }
+  hint "Cross off each animal a clue rules out."
+  hint "Which one is left?"
+}

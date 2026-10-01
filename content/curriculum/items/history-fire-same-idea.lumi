@@ -1,0 +1,23 @@
+# The three-star question: two cities far apart, in different years, and the one idea both had.
+# London widened its streets; Edo cleared firebreaks. The child has to see the common thread.
+item history.fire-same-idea v=1 skills=[history.fire, reasoning.compare] {
+  title "The same idea"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x26 {
+    timeline line from=1640 to=1680 step=10 years=[1657, 1666] labels=["Edo fire", "London fire"] at=canvas(1, 0)
+    text ask "{if k == 0 then \"After its fire, London made its streets wider. After its fire, Edo cleared wide open spaces. What idea did both cities have?\" else \"Edo and London are far apart, and their fires were nine years apart. Which idea did both cities have after their fire?\"}" narrate width=32 below=line gap=1
+    choice pick options=["Leave wide gaps so fire cannot jump across", "Build every house of wood again", "Move the whole city somewhere else"] stack=column below=ask gap=1
+  }
+
+  answer pick="Leave wide gaps so fire cannot jump across"
+  hint "What did a wider street and an open space have in common?"
+  hint "Think of what let the fire spread in the first place."
+}

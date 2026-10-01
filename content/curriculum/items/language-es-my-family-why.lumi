@@ -1,0 +1,22 @@
+# A reason: the ending that tells a man from a woman, and un from una.
+item language.es-my-family-why v=1 stars=2 skills=[language.family, reasoning.language] {
+  title "O or a?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Abuelo and abuela: which is the grandmother, and how can you tell?\", \"Ana says: Juan es mi madre. What is wrong?\", \"Ana says: Tengo un hermana. Which word is wrong?\")}" width=32
+      choice pick options=[pick(k, "abuela: it ends in a", "Juan is her father, so it is padre.", "un: a sister is una hermana"), pick(k, "abuelo: it ends in o", "She should say mi abuela.", "hermana: it should be hermano"), pick(k, "Both are grandmothers.", "Madre needs an accent.", "tengo: it should be tienes")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "abuela: it ends in a", "Juan is her father, so it is padre.", "un: a sister is una hermana")
+  feedback {
+    when (pick == pick(k, "abuelo: it ends in o", "She should say mi abuela.", "hermana: it should be hermano")) {
+      say "{pick(k, \"The o ending is for a man or a boy.\", \"Juan is Ana's father on the tree, not her grandmother.\", \"Ana has a sister, so hermana is right. Look at the little word before it.\")}"
+    }
+  }
+  hint "Look at the last letter of each word."
+  hint "Is the person a man or a woman?"
+}

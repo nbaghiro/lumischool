@@ -1,0 +1,14 @@
+# A sieve cannot get sugar back out of water: the sugar has dissolved and goes through with the
+# water, which is the wrong idea that a sieve catches anything.
+item k.sieve-sugar v=1 stars=2 skills=[chemistry.dissolving, chemistry.separating] {
+  title "Can a sieve catch the sugar?"
+
+  scene 30x24 {
+    mixture jar things=["sugar"] water=1 names=1 at=canvas(1, 1)
+    text q "Ben pours sugary water through a sieve to catch the sugar. Will the sugar stay in the sieve?" narrate width=28 below=jar gap=1
+    choice pick options=["Yes: a sieve catches it.", "No: it dissolved and goes through."] stack=column below=q gap=1
+  }
+
+  answer pick="No: it dissolved and goes through."
+  hint "Can you see any sugar in the water to catch?"
+}

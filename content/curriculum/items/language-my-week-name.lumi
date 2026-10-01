@@ -1,0 +1,18 @@
+# Picture or situation to the language: [[routine.on-monday-i-swim]], [[routine.on-tuesday-i-play-football]], [[routine.on-wednesday-i-play-the-piano]], [[routine.on-thursday-i-read-in-the-library]], [[routine.on-friday-i-go-to-the-cinema]], [[routine.on-saturday-i-visit-my-grandmother]], [[routine.on-sunday-i-do-nothing]], [[routine.on-mondays-and-thursdays-i-dance]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.my-week-name v=1 skills=[language.time, language.sentences] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo swims on Monday. What does he say?\", \"Ana plays football on Tuesday. What does she say?\", \"Leo plays the piano on Wednesday. What does he say?\", \"Ana reads in the library on Thursday. What does she say?\", \"Leo goes to the cinema on Friday. What does he say?\", \"Ana visits her grandmother on Saturday. What does she say?\", \"Leo does nothing at all on Sunday. What does he say?\", \"Ana dances every Monday and every Thursday. What does she say?\")}" width=32
+      choice pick options=[pick(k, "[[routine.on-monday-i-swim]]", "[[routine.on-monday-i-play-football]]", "[[routine.on-wednesday-i-read]]", "[[routine.on-thursday-i-read-in-the-library]]", "[[routine.on-friday-i-go-to-the-beach]]", "[[routine.on-saturday-i-visit-my-grandfather]]", "[[routine.on-sunday-i-do-nothing]]", "[[routine.on-mondays-and-thursdays-i-swim]]"), pick(k, "[[routine.on-monday-i-read]]", "[[routine.on-tuesday-i-play-football]]", "[[routine.on-tuesday-i-play-the-piano]]", "[[routine.on-thursday-i-swim]]", "[[routine.on-saturday-i-go-to-the-cinema]]", "[[routine.on-saturday-i-visit-my-grandmother]]", "[[routine.on-sunday-i-swim]]", "[[routine.on-tuesdays-and-fridays-i-dance]]"), pick(k, "[[routine.on-tuesday-i-swim]]", "[[routine.on-tuesday-i-play-the-piano]]", "[[routine.on-wednesday-i-play-the-piano]]", "[[routine.on-tuesday-i-read-in-the-library]]", "[[routine.on-friday-i-go-to-the-cinema]]", "[[routine.on-sunday-i-visit-my-grandmother]]", "[[routine.on-saturday-i-do-nothing]]", "[[routine.on-mondays-and-thursdays-i-dance]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[routine.on-monday-i-swim]]", "[[routine.on-tuesday-i-play-football]]", "[[routine.on-wednesday-i-play-the-piano]]", "[[routine.on-thursday-i-read-in-the-library]]", "[[routine.on-friday-i-go-to-the-cinema]]", "[[routine.on-saturday-i-visit-my-grandmother]]", "[[routine.on-sunday-i-do-nothing]]", "[[routine.on-mondays-and-thursdays-i-dance]]")
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

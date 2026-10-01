@@ -1,0 +1,17 @@
+# Reading a museum card: what the object was used for and where it was found.
+item history.find-on-card v=1 skills=[history.evidence, history.sources] {
+  title "What the card says"
+  difficulty k
+  let k=0..1
+  let kind={pick(k, 2, 1)}
+
+  scene 23x25 {
+    objectcard card kind=kind name="{if k == 0 then \"Iron sickle\" else \"Bronze axe\"}" use="{if k == 0 then \"Cutting wheat\" else \"Chopping wood\"}" year=pick(k, -300, -1500) about=1 place="Britain" ask=0 at=canvas(0, 0)
+    text ask "{if k == 0 then \"What did people use this for?\" else \"About how long before year one was this made?\"}" narrate width=22 below=card gap=1
+    choice pick options=[if k == 0 then "Cutting wheat" else "About 150 years", if k == 0 then "Chopping wood" else "About 1,500 years", if k == 0 then "Catching fish" else "About 15,000 years"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Cutting wheat" else "About 1,500 years")
+  hint "Find the row of the card the question is about."
+  hint "A year BC is that many years before year one."
+}

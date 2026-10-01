@@ -1,0 +1,29 @@
+item k.bead-one-more v=1 skills=[counting.one-more] {
+  title "One bead on"
+  difficulty m
+  let m=2..9
+  level easy {
+    let m=2..5
+  }
+  level hard {
+    let m=6..9
+  }
+
+  scene 24x14 {
+    beadstring line beads=10 mark=m at=canvas(1, 1)
+    text ask "The arrow moves one bead on. Which bead is it at now?" narrate width=22 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (m + 1)
+  feedback {
+    when (answer == m - 1) point=line {
+      say "On means the next bead along, away from the start."
+    }
+    when (answer == m) point=line {
+      say "That is where the arrow is now. Move it one bead on."
+    }
+  }
+  hint "Which bead is the arrow at now?"
+  hint "Say the next number."
+}

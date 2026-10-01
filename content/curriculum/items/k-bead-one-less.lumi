@@ -1,0 +1,26 @@
+item k.bead-one-less v=1 skills=[counting.one-less] {
+  title "One bead back"
+  difficulty m
+  let m=3..10
+  level easy {
+    let m=3..5
+  }
+  level hard {
+    let m=7..10
+  }
+
+  scene 24x14 {
+    beadstring line beads=10 mark=m at=canvas(1, 1)
+    text ask "The arrow moves one bead back. Which bead is it at now?" narrate width=22 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (m - 1)
+  feedback {
+    when (answer == m + 1) point=line {
+      say "Back means towards the start of the string, not away from it."
+    }
+  }
+  hint "Which bead is the arrow at now?"
+  hint "Say the numbers backwards from there. Which comes next?"
+}

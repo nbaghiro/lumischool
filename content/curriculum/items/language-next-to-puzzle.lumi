@@ -1,0 +1,23 @@
+# Non-routine: a place from where it stands to others, a house placed by two clues, and a walk read back.
+item language.next-to-puzzle v=1 stars=3 skills=[language.town, language.directions, reasoning.language] {
+  title "Round the plan"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x42 {
+    column all at=canvas(1, 1) space=1 align=start {
+      townplan plan places=["[[town.the-cafe]]", "[[town.the-shop]]", "[[town.the-park]]", "[[town.the-beach]]", "[[town.the-museum]]", "[[town.the-station]]", "[[town.the-square]]"]
+      text ask "{pick(k, \"Which place is opposite the beach?\", \"Eva's house is on the right of the road, between the shop and the station. Which place is next to it?\", \"Leo is at the station. He walks to the place opposite, then to the place at the end of the road. Which two places?\")}" width=32
+      choice pick options=[pick(k, "[[town.the-park]]", "[[town.the-beach]]", "[[town.the-museum-and-the-square]]"), pick(k, "[[town.the-museum]]", "[[town.the-park]]", "[[town.the-park-and-the-square]]"), pick(k, "[[town.the-shop]]", "[[town.the-square]]", "[[town.the-beach-and-the-museum]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[town.the-park]]", "[[town.the-beach]]", "[[town.the-museum-and-the-square]]")
+  feedback {
+    when (pick == pick(k, "[[town.the-museum]]", "[[town.the-park]]", "[[town.the-park-and-the-square]]")) {
+      say "{pick(k, \"The museum is on the same side as the park, one street up. Look across from the beach.\", \"The park is on the left. Which place is on the right between the shop and the station?\", \"The park is opposite the beach. What is opposite the station?\")}"
+    }
+  }
+  hint "Put a finger on each place."
+  hint "Across the road is opposite."
+}

@@ -1,0 +1,28 @@
+# The two-star reason: why a year's century is one more than its hundreds. The first century was the
+# years 1 to 100, since there was no year nought.
+item history.century-reason v=1 skills=[history.centuries, reasoning.why] {
+  title "Why the 17th?"
+  difficulty k
+  let k=0..1
+  let yr={pick(k, 1666, 1903)}
+  let c={pick(k, "17th", "20th")}
+  let h={pick(k, "16", "19")}
+
+  scene 34x26 {
+    timeline line from=0 to=400 step=100 years=[] labels=[] at=canvas(1, 0)
+    text ask "Ben says {yr} should be in the {h}th century, because it starts with {h}. Why is it in the {c} century?" narrate width=32 below=line gap=1
+    choice pick options=["The 1st century was 1 to 100, so count one ahead", "Centuries are counted backwards from today", "Every century is 99 years long"] stack=column below=ask gap=1
+  }
+
+  answer pick="The 1st century was 1 to 100, so count one ahead"
+  feedback {
+    when (pick == "Centuries are counted backwards from today") point=line {
+      say "Centuries are counted forwards from year one. Which years were the first century?"
+    }
+    when (pick == "Every century is 99 years long") point=line {
+      say "Every century is 100 years. Look at where the first one starts and ends on the line."
+    }
+  }
+  hint "Which years made up the first century?"
+  hint "Then which century are the years 101 to 200 in?"
+}

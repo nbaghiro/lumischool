@@ -1,0 +1,22 @@
+# The two-star reason: Athens was a democracy, and still only adult male citizens could vote; women,
+# slaves and foreigners living there could not (Britannica, "Democracy": ancient Athens).
+item history.who-could-vote v=1 skills=[history.government, reasoning.why] {
+  title "Rule by the people?"
+  difficulty k
+  let k=0..1
+
+  scene 32x29 {
+    council c hands=[1, 0, 1, 1, 0, 1, 1] box=0 motion="Build a new well" count=0 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Athens was a democracy: rule by the people. Could everyone who lived in Athens vote?\" else \"Ada says Athens was fair to everyone because it was a democracy. What is wrong with that?\"}" narrate width=30 below=c gap=1
+    choice pick options=["No, only men who were citizens could vote", "Yes, everyone could vote", "No, only the king could vote"] stack=column below=ask gap=1
+  }
+
+  answer pick="No, only men who were citizens could vote"
+  feedback {
+    when (pick == "No, only the king could vote") point=c {
+      say "Athens had no king in its democracy. Many people voted, but were all of them allowed to?"
+    }
+  }
+  hint "Who do you see voting in the picture? Who is missing?"
+  hint "Think of women, slaves and people born in other cities."
+}

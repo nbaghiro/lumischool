@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[food.the-apple]], [[food.the-banana]], [[food.the-orange]], [[food.the-strawberry]], [[food.the-pear]], [[food.the-lemon]], [[food.the-grapes]], [[food.the-tomato]], [[food.the-carrot]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.fruit-name v=1 skills=[language.food, language.opinions] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2, 2)
+  let k=0..8
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      foodstall stall foods=["{pick(k, \"apple\", \"banana\", \"orange\", \"strawberry\", \"pear\", \"lemon\", \"grapes\", \"tomato\", \"carrot\")}"] names=[""] costs=[""]
+      text ask "What is in the crate? Pick the word." width=32
+      choice pick options=[pick(k, "[[food.the-lemon]]", "[[food.the-pear]]", "[[food.the-apple]]", "[[food.the-carrot]]", "[[food.the-apple]]", "[[food.the-pear]]", "[[food.the-strawberry]]", "[[food.the-banana]]", "[[food.the-orange]]"), pick(k, "[[food.the-apple]]", "[[food.the-banana]]", "[[food.the-lemon]]", "[[food.the-strawberry]]", "[[food.the-strawberry]]", "[[food.the-lemon]]", "[[food.the-banana]]", "[[food.the-tomato]]", "[[food.the-pear]]"), pick(k, "[[food.the-orange]]", "[[food.the-carrot]]", "[[food.the-grapes]]", "[[food.the-tomato]]", "[[food.the-pear]]", "[[food.the-orange]]", "[[food.the-pear]]", "[[food.the-strawberry]]", "[[food.the-carrot]]"), pick(k, "[[food.the-grapes]]", "[[food.the-lemon]]", "[[food.the-orange]]", "[[food.the-pear]]", "[[food.the-orange]]", "[[food.the-banana]]", "[[food.the-grapes]]", "[[food.the-lemon]]", "[[food.the-grapes]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[food.the-apple]]", "[[food.the-banana]]", "[[food.the-orange]]", "[[food.the-strawberry]]", "[[food.the-pear]]", "[[food.the-lemon]]", "[[food.the-grapes]]", "[[food.the-tomato]]", "[[food.the-carrot]]")
+  feedback {
+    when (pick == pick(k, "[[food.the-orange]]", "[[food.the-lemon]]", "[[food.the-apple]]", "[[food.the-tomato]]", "[[food.the-apple]]", "[[food.the-banana]]", "[[food.the-strawberry]]", "[[food.the-strawberry]]", "[[food.the-orange]]")) point=stall {
+      say "{pick(k, \"[[food.the-orange|cap]] is the orange. Look at the stalk and the leaf.\", \"[[food.the-lemon|cap]] is the lemon. This one is long and curved.\", \"[[food.the-apple|cap]] is the apple. This one is round and orange.\", \"[[food.the-tomato|cap]] is the tomato. Look for the seeds on the outside.\", \"[[food.the-apple|cap]] is the apple. This one is thin at the top.\", \"[[food.the-banana|cap]] is the banana. This one is short with two points.\", \"[[food.the-strawberry|cap]] is the strawberry. These grow in bunches.\", \"[[food.the-strawberry|cap]] is the strawberry. This one is round and smooth.\", \"[[food.the-orange|cap]] is the orange, a fruit. This one grows in the ground.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { check } from "../answer";
+import { check, settingIn, type Envelope } from "../answer";
 
 const ID = "00000000-0000-4000-8000-000000000001";
 
@@ -239,4 +239,122 @@ test("session placements and routines validate identity, duration, weekdays and 
         { from: "bad" },
     ])
         assert.equal(check(plan({ ...routine, ...change })).ok, false);
+});
+
+test("a setting names a key from the list, its scope's kid or none, and a value the key allows", () => {
+    const KID = "00000000-0000-4000-8000-000000000002";
+    const setting = (kid: string | null, data: Record<string, unknown>): Record<string, unknown> =>
+        envelope({ kind: "setting-changed", kid_id: kid, data });
+    for (const [kid, data] of [
+        [KID, { key: "language", of: null, value: "es" }],
+        [KID, { key: "language", of: null, value: null }],
+        [null, { key: "nation", of: null, value: "japan" }],
+        [null, { key: "morning-start", of: null, value: "8:30" }],
+        [null, { key: "morning-start", of: null, value: "13:05" }],
+        [KID, { key: "practice", of: "jugs", value: 2 }],
+        [null, { key: "practice", of: "jugs", value: 2 }],
+        [null, { key: "painting", of: null, value: null }],
+        [KID, { key: "painting", of: null, value: { tool: "crayon", size: 3 } }],
+    ] as const)
+        assert.equal(check(setting(kid, data)).ok, true, JSON.stringify(data));
+    assert.equal(
+        problem(setting(KID, { key: "colour", of: null, value: 1 })),
+        'setting "colour" is not a setting',
+    );
+    assert.equal(
+        problem(setting(KID, { key: "language", of: null, value: "de" })),
+        "language must be one of es, fr, ja, or null",
+    );
+    assert.equal(
+        problem(setting(null, { key: "nation", of: null, value: "france" })),
+        "nation must be one of britain, usa, japan, russia, china, or null",
+    );
+    assert.equal(
+        problem(setting(null, { key: "morning-start", of: null, value: "08:30" })),
+        "morning-start must be a clock such as 8:30, or null",
+    );
+    assert.equal(
+        problem(setting(KID, { key: "practice", of: null, value: 2 })),
+        "practice names what it is of",
+    );
+    assert.equal(
+        problem(setting(KID, { key: "language", of: "x", value: "es" })),
+        "language is of nothing, so of is null",
+    );
+    assert.equal(
+        problem(setting(null, { key: "language", of: null, value: "es" })),
+        "language is one child's setting and names them",
+    );
+    assert.equal(
+        problem(setting(KID, { key: "nation", of: null, value: "usa" })),
+        "nation is the family's setting and names no child",
+    );
+    assert.equal(
+        problem(setting(KID, { key: "language", of: null, value: "es", extra: 1 })),
+        "a setting holds its key, of and value",
+    );
+});
+
+test("the latest value of a setting wins, per kid, per family and per thing it is of", () => {
+    const KID = "00000000-0000-4000-8000-000000000002";
+    const at = (minute: number): string =>
+        `2026-09-14T09:${String(minute).padStart(2, "0")}:00.000Z`;
+    const base = { family_id: ID, actor: null, device: ID, seq: 0 };
+    const events: Envelope[] = [
+        {
+            ...base,
+            id: "a",
+            kid_id: KID,
+            at: at(1),
+            kind: "setting-changed",
+            data: { key: "language", of: null, value: "fr" },
+        },
+        {
+            ...base,
+            id: "b",
+            kid_id: KID,
+            at: at(3),
+            kind: "setting-changed",
+            data: { key: "language", of: null, value: "es" },
+        },
+        {
+            ...base,
+            id: "c",
+            kid_id: KID,
+            at: at(2),
+            kind: "setting-changed",
+            data: { key: "language", of: null, value: "ja" },
+        },
+        {
+            ...base,
+            id: "d",
+            kid_id: null,
+            at: at(1),
+            kind: "setting-changed",
+            data: { key: "nation", of: null, value: "china" },
+        },
+        {
+            ...base,
+            id: "e",
+            kid_id: KID,
+            at: at(1),
+            kind: "setting-changed",
+            data: { key: "practice", of: "jugs", value: 3 },
+        },
+        {
+            ...base,
+            id: "f",
+            kid_id: KID,
+            at: at(2),
+            kind: "setting-changed",
+            data: { key: "practice", of: "pour", value: 1 },
+        },
+    ];
+    assert.equal(settingIn(events, "language", KID), "es");
+    assert.equal(settingIn(events, "language", null), undefined);
+    assert.equal(settingIn(events, "nation", null), "china");
+    assert.equal(settingIn(events, "nation", KID), undefined);
+    assert.equal(settingIn(events, "practice", KID, "jugs"), 3);
+    assert.equal(settingIn(events, "practice", KID, "pour"), 1);
+    assert.equal(settingIn(events, "practice", KID, "sling"), undefined);
 });

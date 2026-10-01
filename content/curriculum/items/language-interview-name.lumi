@@ -1,0 +1,18 @@
+# Picture or situation to the language: [[interview.my-name-is-leo]], [[interview.i-am-eleven]], [[interview.i-live-in-the-town]], [[interview.yes-i-have-a-sister]], [[interview.i-like-swimming]], [[interview.paella]], [[interview.the-third-of-march]], [[interview.because-it-is-hot]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.interview-name v=1 skills=[language.questions, language.speaking] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x22 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"[[interview.what-is-your-name]]\", \"[[interview.how-old-are-you]]\", \"[[interview.where-do-you-live]]\", \"[[interview.do-you-have-brothers-or-sisters]]\", \"[[interview.what-do-you-like-doing]]\", \"[[interview.what-is-your-favourite-food]]\", \"[[interview.when-is-your-birthday]]\", \"[[interview.why-do-you-like-summer]]\")}" width=32
+      choice pick options=[pick(k, "[[interview.because-it-is-hot]]", "[[interview.i-live-in-the-town]]", "[[interview.paella]]", "[[interview.i-like-swimming]]", "[[interview.i-am-eleven]]", "[[interview.the-third-of-march]]", "[[interview.i-am-eleven]]", "[[interview.i-like-swimming]]"), pick(k, "[[interview.my-name-is-leo]]", "[[interview.i-am-eleven]]", "[[interview.i-am-eleven]]", "[[interview.yes-i-have-a-sister]]", "[[interview.yes-i-have-a-sister]]", "[[interview.paella]]", "[[interview.yes-i-have-a-sister]]", "[[interview.because-it-is-hot]]"), pick(k, "[[interview.paella]]", "[[interview.i-like-swimming]]", "[[interview.i-like-swimming]]", "[[interview.because-it-is-hot]]", "[[interview.i-like-swimming]]", "[[interview.yes-i-have-a-sister]]", "[[interview.i-like-swimming]]", "[[interview.i-am-eleven]]"), pick(k, "[[interview.i-like-swimming]]", "[[interview.because-it-is-hot]]", "[[interview.i-live-in-the-town]]", "[[interview.i-am-eleven]]", "[[interview.i-live-in-the-town]]", "[[interview.i-am-eleven]]", "[[interview.the-third-of-march]]", "[[interview.yes-i-have-a-sister]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[interview.my-name-is-leo]]", "[[interview.i-am-eleven]]", "[[interview.i-live-in-the-town]]", "[[interview.yes-i-have-a-sister]]", "[[interview.i-like-swimming]]", "[[interview.paella]]", "[[interview.the-third-of-march]]", "[[interview.because-it-is-hot]]")
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

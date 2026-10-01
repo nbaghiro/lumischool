@@ -1,0 +1,19 @@
+# Events of the Silk Road and what travelled on it, numbered from the earliest, from the record.
+item history.silk-order v=1 skills=[history.trade, history.order] {
+  title "The road through time"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Zhang Qian sets out", "Zhang Qian sets out", "Paper", "Marco Polo's journey", "Paper money", "Marco Polo's journey")}
+  let b={pick(k, "Paper", "Paper money", "Zhang Qian sets out", "Paper", "Marco Polo's journey", "Zhang Qian sets out")}
+  let c={pick(k, "Marco Polo's journey", "Paper", "Marco Polo's journey", "Zhang Qian sets out", "Zhang Qian sets out", "Paper money")}
+
+  scene 36x22 {
+    timeline line from=-200 to=1400 step=200 years=[] labels=[] at=canvas(0, 0)
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=34 below=line gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Zhang Qian's journey opened the road. Was it BC or AD?"
+  hint "Marco Polo came much later, in the 1200s."
+}

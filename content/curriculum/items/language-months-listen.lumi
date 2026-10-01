@@ -1,0 +1,19 @@
+# Listening: the grown-up reads the phrase from the grown-ups' sheet, or the device plays it, and
+# the child types it. Marked word by word by the dictation checker: accent-strict, since a
+# word with its accent missing is a different spelling; case and punctuation are not marked.
+item language.months-listen v=1 skills=[language.time, language.listening, language.spelling] {
+  title "Listen and write"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x11 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Listen to the [[language.name]], then write it. Your grown-up will read it, or press play." width=32
+      number-input answer width=32
+    }
+  }
+
+  check writing.dictation text="{pick(k, \"[[phrase.my-birthday-is-in-may]]\", \"[[phrase.january-february-march]]\", \"[[phrase.when-is-your-birthday]]\", \"[[phrase.it-is-the-fifth-of-april]]\", \"[[phrase.my-birthday-is-the-twelfth-of-october]]\", \"[[phrase.in-july-and-august-it-is-very-hot]]\")}"
+  hint "Listen to the whole sentence once before you write a word."
+  hint "Write it a few words at a time. Which words from today do you hear?"
+}

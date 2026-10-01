@@ -1,0 +1,30 @@
+# Events from two lives mixed together and numbered in order, from the record.
+item history.two-lives-order v=1 skills=[history.lives, history.order] {
+  title "Two lives in order"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let a={pick(k, "Mary Anning born", "Plesiosaur found", "First Nobel Prize", "Marie Curie born")}
+  let b={pick(k, "Plesiosaur found", "Mary Anning born", "Mary Anning died", "Plesiosaur found")}
+  let c={pick(k, "Marie Curie born", "First Nobel Prize", "Marie Curie born", "Second Nobel Prize")}
+  let d={pick(k, "First Nobel Prize", "Marie Curie born", "Plesiosaur found", "Mary Anning died")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 35x25 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      fossil f
+      person mary pose=think age=grownup hair=bun colour=brown top=tang wear=dress
+      person marie pose=stand age=grownup hair=bun colour=brown top=sky wear=dress
+    }
+    text ask "Number these from 1, the earliest, to 4, the latest." narrate width=32 below=pics gap=1
+    sequence s items=["{a}", "{b}", "{c}", "{d}"] blanks=[p, q, r, t] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)" t="rank(3)"
+  hint "Mary Anning lived first. Put her events before Marie Curie's."
+  hint "In one life, being born comes first."
+}

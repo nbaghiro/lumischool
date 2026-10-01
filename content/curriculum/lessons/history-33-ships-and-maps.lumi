@@ -1,0 +1,67 @@
+# Dates from engine/notation/chronicle.ts: Zheng He's voyages 1405 to 1433, Dias 1488, Columbus 1492,
+# da Gama at Calicut 1498, Magellan's fleet 20 September 1519, the Victoria home 6 September 1522.
+lesson history-ships-and-maps v=1 format=teach grade=5 unit=7 subject=history levels=[easy, medium, hard] {
+  title "Ships and the maps they drew"
+  goal "Follow great voyages on the world map, put them in order, and say why sailors went so far."
+
+  look {
+    scene 36x17 {
+      worldmap map names=0 blank=-1 oceans=1 places=["Nanjing", "Calicut", "Malindi"] numbered=0 route=1 at=canvas(1, 0)
+    }
+    say """
+      Between 1405 and 1433 the Chinese admiral Zheng He led seven great fleets from China across
+      the Indian Ocean to India, Arabia and East Africa. Later, sailors from Europe looked for sea
+      routes to Asia: Dias rounded the south of Africa in 1488, and da Gama reached India in 1498.
+      In 1519 a fleet led by Magellan set out west from Spain, and in 1522 one ship, the Victoria,
+      came home, the first to sail round the world. Each voyage made the maps more complete.
+      """
+  }
+  do {
+    level easy {
+      worked history.voyage-route k=0
+    }
+    show history.voyage-route k=2 easy-k=1 hard-k=4
+    show history.voyage-order k=2 easy-k=0 hard-k=4
+    show history.voyage-years k=2 easy-k=0 hard-k=4
+    show history.ocean-between k=4 easy-k=0 hard-k=5
+    show history.voyage-route k=3 easy-k=2 hard-k=5
+    show history.voyage-order k=3 easy-k=1 hard-k=5
+    show history.voyage-years k=3 easy-k=1 hard-k=5
+    show history.voyage-years k=1 easy-k=2 hard-k=3
+    level hard {
+      show history.voyage-order k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.why-sail k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.voyage-months k=0 hard-k=1
+  }
+  remember {
+    say "Zheng He crossed the Indian Ocean from 1405; the first voyage round the world came home in 1522."
+  }
+
+  grown-ups """
+    The idea is that long voyages joined the world's coasts and filled in its maps, and that they
+    were made from more than one side: China's fleets crossed the Indian Ocean long before Europe's
+    ships reached it. The way in follows Zheng He's route; the core follows the voyage round the
+    world, orders the voyages, and counts the years between them. The voyages also brought conquest
+    and harm to many peoples who met the sailors; the lesson follows the ships and the maps, and you
+    may want to talk about who was already living on the coasts they reached. The wrong idea to
+    watch for is that the places were "discovered" as if empty. If the child is stuck, trace each
+    route with a finger. Off the page, find a map of your country's coast and the ships that came to
+    it. Russia's history programme for grade six covers China and India in the Middle Ages and ends
+    its world strand with «Появление европейских завоевателей» in the Americas. England's key stage
+    2 allows a theme beyond 1066, of which voyages are a common one.
+    Japan's 社会 takes up history only through Japan's own story, in grade six
+    (「我が国の歴史上の主な事象について，人物の働きや代表的な文化遺産を中心に」, the course of study as read in its 2008 edition), so
+    this lesson has no line of its own there; its timeline and source skills serve that grade.
+    """
+  level easy {
+    grown-ups "At this level a worked example finds the ocean Zheng He crossed, the voyages to order are far apart, and the years counted are short spans."
+  }
+  level hard {
+    grown-ups "At this level the route questions ask about continents rounded, the voyages are close together and muddled, the years counted run from Zheng He to Magellan, and the three-star question counts whole months between two dates in different Septembers."
+  }
+}

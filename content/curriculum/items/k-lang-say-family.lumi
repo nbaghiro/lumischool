@@ -1,0 +1,10 @@
+item k.lang-say-family v=1 skills=[language.family, language.speaking] {
+  title "Say who they are"
+
+  scene 28x9 {
+    text q "Point to a grown-up at home and say who they are in [[language.name]]: [[family.mother]], [[family.father]], [[family.grandmother]] or [[family.grandfather]]." narrate width=26 at=canvas(1, 1)
+  }
+
+  check reading.recited look-for="The right family word said for the person pointed at, sounded as the grown-ups' line gives it." notice=["the right word for the person", "sounded as its line gives it", "said to the person"]
+  hint "Say it in English first."
+}

@@ -1,0 +1,28 @@
+# The two-star reason: where a box sits in a row of the tree does not say who is older; the years do.
+item history.tree-top-not-oldest v=1 skills=[history.family, reasoning.why] {
+  title "First in the row?"
+  difficulty k
+  let k=0..1
+  let rose={pick(k, 1954, 1956)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x27 {
+    familytree tree names=["Grandma Rose", "Grandpa Tom", "Nana Mei", "Grandad Li", "Mum", "Dad", "Sam"] years=[rose, 1950, 1955, 1953, 1982, 1980, 2019] blank=-1 at=canvas(1, 0)
+    text ask "Sam says Grandma Rose is older than Grandpa Tom, because she comes first in the row. Is he right?" narrate width=32 below=tree gap=1
+    choice pick options=["Yes, she comes first", "No, the years say Grandpa Tom is older"] stack=column below=ask gap=1
+  }
+
+  answer pick="No, the years say Grandpa Tom is older"
+  feedback {
+    when (pick == "Yes, she comes first") point=tree {
+      say "The boxes are put side by side in pairs. Read the year each was born."
+    }
+  }
+  hint "Does the tree put people in order of age along a row?"
+  hint "Compare the two years under their names."
+}

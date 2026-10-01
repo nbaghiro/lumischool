@@ -1,0 +1,21 @@
+item k.fast-or-slow v=1 skills=[music.tempo] {
+  title "Fast or slow?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let q1={pick(k, "A snail creeps along. Should its music be fast or slow?", "A rabbit hops and runs. Should its music be fast or slow?", "A lullaby sends a baby to sleep. Is it fast or slow?", "A song for a race. Is it fast or slow?", "Music for an elephant plodding along. Is it fast or slow?", "Music for a buzzing bee. Is it fast or slow?")}
+  let right={pick(k, "slow", "fast", "slow", "fast", "slow", "fast")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 28x11 {
+    text q "{q1}" narrate width=26 at=canvas(1, 1)
+    choice pick options=["fast", "slow"] stack=row below=q gap=1
+  }
+
+  answer pick=right
+  hint "Move like it. Are you moving quickly or slowly?"
+}

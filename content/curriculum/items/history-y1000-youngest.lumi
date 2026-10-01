@@ -1,0 +1,17 @@
+# The three-star question: which of three capitals was youngest in the year 1000, and by how many
+# years; the child has to compare three dates first.
+item history.y1000-youngest v=1 skills=[history.world, reasoning.compare] {
+  title "The youngest capital"
+  difficulty k
+  let k=0..1
+
+  scene 32x14 {
+    timeline line from=750 to=1050 step=50 years=[762, 794, 960] labels=["Baghdad founded", "Heian-kyo founded", "Song dynasty begins"] at=canvas(1, 0)
+    text ask "{if k == 0 then \"In the year 1000, how many years had the youngest of these three been a capital?\" else \"In the year 1000, how many years older was the oldest of these three capitals than the youngest?\"}" narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then 40 else 198)
+  hint "Which flag is furthest right? That is the youngest."
+  hint "{if k == 0 then \"Count on from its year to 1000.\" else \"Now find the oldest, and count between the two.\"}"
+}

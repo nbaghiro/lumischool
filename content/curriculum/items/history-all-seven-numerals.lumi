@@ -1,0 +1,17 @@
+# The three-star puzzle: the year written with each Roman numeral once, from the biggest down, is
+# MDCLXVI, 1666, the year of the Great Fire of London.
+item history.all-seven-numerals v=1 skills=[number.roman, reasoning.logic] {
+  title "Every numeral once"
+  difficulty k
+  let k=0..1
+
+  scene 32x16 {
+    greatclock clock at=canvas(1, 0)
+    text ask "{if k == 0 then \"Write M, D, C, L, X, V and I once each, from the biggest down. What year is that?\" else \"Which year is written with each of the seven Roman numerals exactly once, biggest first? It is also the year of a great fire.\"}" narrate width=20 right-of=clock gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer 1666
+  hint "Add them: M is 1000, D is 500, C is 100."
+  hint "Then L, X, V and I."
+}

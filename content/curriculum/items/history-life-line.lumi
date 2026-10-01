@@ -1,0 +1,36 @@
+# Sam's life on a timeline in years old, from being born to now, at six. The child reads how old Sam
+# was at one thing, or which of two things came first; nothing here is a date, so nothing goes stale.
+item history.life-line v=1 skills=[history.timeline, history.order] {
+  title "Sam's timeline"
+  difficulty (if k <= 2 then 0 else if k <= 5 then 1 else 2)
+  let k=0..8
+  let walk={pick(k, 1, 1, 2, 1, 2, 1, 1, 2, 1)}
+  let school={pick(k, 4, 5, 4, 5, 4, 4, 5, 5, 4)}
+  let tooth={6}
+  let ask={pick(k, "When Sam started school, how old was he?", "When Sam took his first steps, how old was he?", "When Sam lost his first tooth, how old was he?", "How many years after his first steps did Sam start school?", "How many years after starting school did Sam lose his first tooth?", "How many years after his first steps did Sam lose his first tooth?", "How many years old was Sam at his first steps?", "How many years after starting school did Sam lose his first tooth?", "How many years after being born did Sam start school?")}
+  let key={pick(k, school, walk, tooth, school - walk, tooth - school, tooth - walk, walk, tooth - school, school)}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..8
+  }
+
+  scene 34x14 {
+    timeline line from=0 to=7 step=1 unit="age" years=[0, walk, school, tooth] labels=["Born", "Steps", "School", "Tooth"] at=canvas(1, 0)
+    text ask "{ask}" narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer key
+  feedback {
+    when ((k == 3 or k == 4 or k == 5 or k == 7) and answer == school) point=line {
+      say "That is how old he was at school. Count the steps along the line from one flag to the other."
+    }
+    when ((k == 3 or k == 4 or k == 5 or k == 7) and answer == tooth) point=line {
+      say "That is his age at the tooth. The question asks how far apart two flags are."
+    }
+  }
+  hint "Find the flag the question is about. Read the number under it."
+  hint "For how many years between, count the steps along the line from one flag to the other."
+}

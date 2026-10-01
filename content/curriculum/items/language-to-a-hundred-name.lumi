@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[num.forty]], [[num.fifty]], [[num.one-hundred]], [[num.ninety]], [[num.sixty]], [[num.seventy]], [[num.eighty]], [[num.forty-eight]], [[num.seventy-two]], [[num.sixty-six]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.to-a-hundred-name v=1 skills=[language.numbers, language.market] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2)
+  let k=0..9
+
+  scene 34x29 {
+    column all at=canvas(1, 1) space=1 align=start {
+      digitcards num digits=[pick(k, 4, 5, 9, 9, 6, 7, 8, 4, 7, 6), pick(k, 0, 0, 9, 0, 0, 0, 0, 8, 2, 6)]
+      text ask "{pick(k, \"What number do the cards make? Pick the words.\", \"What number do the cards make? Pick the words.\", \"What is one more than the cards show?\", \"What number do the cards make? Pick the words.\", \"What number do the cards make? Pick the words.\", \"What number do the cards make? Pick the words.\", \"What number do the cards make? Pick the words.\", \"What number do the cards make? Pick the words.\", \"What number do the cards make? Pick the words.\", \"What number do the cards make? Pick the words.\")}" width=32
+      choice pick options=[pick(k, "[[num.ninety]]", "[[num.eighty]]", "[[num.ninety]]", "[[num.sixty]]", "[[num.seventy]]", "[[num.ninety]]", "[[num.fifty]]", "[[num.sixty-six]]", "[[num.sixty]]", "[[num.fifty]]"), pick(k, "[[num.forty]]", "[[num.fifty]]", "[[num.seventy]]", "[[num.ninety]]", "[[num.sixty-six]]", "[[num.seventy]]", "[[num.forty-eight]]", "[[num.forty-eight]]", "[[num.fifty]]", "[[num.seventy-two]]"), pick(k, "[[num.eighty]]", "[[num.sixty]]", "[[num.fifty]]", "[[num.one-hundred]]", "[[num.sixty]]", "[[num.one-hundred]]", "[[num.sixty]]", "[[num.forty]]", "[[num.seventy-two]]", "[[num.sixty-six]]"), pick(k, "[[num.forty-eight]]", "[[num.one-hundred]]", "[[num.one-hundred]]", "[[num.sixty-six]]", "[[num.eighty]]", "[[num.sixty]]", "[[num.eighty]]", "[[num.sixty]]", "[[num.eighty]]", "[[num.sixty]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[num.forty]]", "[[num.fifty]]", "[[num.one-hundred]]", "[[num.ninety]]", "[[num.sixty]]", "[[num.seventy]]", "[[num.eighty]]", "[[num.forty-eight]]", "[[num.seventy-two]]", "[[num.sixty-six]]")
+  feedback {
+    when (pick == pick(k, "[[num.fourteen]]", "[[num.fifteen]]", "[[num.ninety]]", "[[num.nine]]", "[[num.seventy]]", "[[num.sixty]]", "[[num.eight]]", "[[num.forty]]", "[[num.sixty-two]]", "[[num.seventy-six]]")) point=num {
+      say "{pick(k, \"[[num.fourteen|cap]] is 14. The cards say 40.\", \"[[num.fifteen|cap]] is 15. The cards say 50.\", \"[[num.ninety|cap]] is 90. The cards say 99, and one more is 100.\", \"[[num.nine|cap]] is 9. The cards say 90.\", \"[[num.seventy|cap]] is 70. The first card is a 6.\", \"[[num.sixty|cap]] is 60. The first card is a 7.\", \"[[num.eight|cap]] is 8. The cards say 80.\", \"[[num.forty|cap]] is 40 alone. The second card is 8.\", \"[[num.sixty-two|cap]] is 62. The first card is a 7.\", \"[[num.seventy-six|cap]] is 76. The first card is a 6.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

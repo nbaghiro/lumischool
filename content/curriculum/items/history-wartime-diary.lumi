@@ -1,0 +1,20 @@
+# Two sources for life in the Second World War: Anne Frank's diary, kept in hiding, and a history
+# written long after. The record says which maker was there.
+item history.wartime-diary v=1 skills=[history.sources, history.twentieth-century] {
+  title "Written at the time"
+  difficulty k
+  let k=0..1
+
+  scene 36x36 {
+    column cards at=canvas(1, 0) space=1 align=start {
+      sourcecard a title="{if k == 0 then \"Anne Frank's diary\" else \"A history of the twentieth century\"}" kind=pick(k, 3, 2) who="{if k == 0 then \"Anne Frank, a girl in hiding\" else \"A historian\"}" when="{if k == 0 then \"1942 to 1944\" else \"2015\"}" where="{if k == 0 then \"Amsterdam\" else \"not stated\"}" there=pick(k, 1, 0) ask=4
+      sourcecard b title="{if k == 0 then \"A history of the twentieth century\" else \"Anne Frank's diary\"}" kind=pick(k, 2, 3) who="{if k == 0 then \"A historian\" else \"Anne Frank, a girl in hiding\"}" when="{if k == 0 then \"2015\" else \"1942 to 1944\"}" where="{if k == 0 then \"not stated\" else \"Amsterdam\"}" there=pick(k, 0, 1) ask=4
+    }
+    text ask "Which was written by someone living through the war?" narrate width=34 below=cards gap=1
+    choice pick options=["Anne Frank's diary", "A history of the twentieth century"] stack=column below=ask gap=1
+  }
+
+  check history.sources of="a b" pick=the-first-hand
+  hint "Read the when row of each card."
+  hint "Which writer was alive and there during the war?"
+}

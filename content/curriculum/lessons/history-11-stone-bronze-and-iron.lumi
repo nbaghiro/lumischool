@@ -1,0 +1,72 @@
+# Dates from engine/notation/chronicle.ts: Boxgrove's hand axes about 480,000 years ago; Bronze Age
+# Britain about 2500 to 800 BC; the Iron Age from about 800 BC to the Romans in AD 43.
+lesson history-stone-bronze-and-iron v=1 format=teach grade=3 unit=1 subject=history levels=[easy, medium, hard] {
+  title "Stone, bronze and iron"
+  goal "Put tools of stone, bronze and iron in the order people first made them, and read a museum card for when and where a tool was made."
+
+  look {
+    scene 34x20 {
+      column all at=canvas(0, 0) space=1 align=start {
+        objectcard card kind=0 name="Flint hand axe" use="Cutting meat and wood" year=-480000 about=1 place="Boxgrove, England" ask=0
+        timeline line from=-3000 to=0 step=500 years=[-2500, -800] labels=["Bronze Age in Britain", "Iron Age in Britain"]
+      }
+    }
+    say """
+      For most of the time people have lived, their best tools were stone. This hand axe was chipped
+      from flint about 480,000 years ago. Much later people learnt to melt copper and tin together to
+      make bronze, which can be poured into a mould and sharpened again. In Britain that was about
+      2500 BC. Iron came about 800 BC. BC means before year one, so 2500 BC is longer ago than 800 BC.
+      """
+  }
+  do {
+    level easy {
+      worked history.which-age k=0
+    }
+    show history.which-age k=1 hard-k=2
+    show history.tools-in-order k=2 easy-k=0 hard-k=4
+    show history.ages-flag k=2 easy-k=0 hard-k=4
+    show history.find-on-card k=0 hard-k=1
+    show history.tools-in-order k=3 easy-k=1 hard-k=5
+    show history.ages-flag k=3 easy-k=1 hard-k=5
+    level medium {
+      show history.which-age k=2
+    }
+    level easy {
+      show history.tools-in-order k=2 level=medium
+    }
+    show history.find-on-card k=1 easy-k=1 hard-k=0 level=medium
+    level hard {
+      show history.tools-in-order k=3 level=medium
+      show history.ages-flag k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.why-bronze k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.make-a-label
+  }
+  remember {
+    say "First stone, then bronze, then iron. A year BC counts back from year one, so the bigger the number, the longer ago."
+  }
+
+  grown-ups """
+    The idea is that the ages of the past are named after what people made their best tools from,
+    and that they came in an order that objects prove: archaeologists find stone tools far older
+    than any metal. The way in names the age of a tool from its material; the core orders three
+    tools, places the ages on a line of years BC, and reads a museum card. The wrong idea to watch
+    for is reading BC years like ordinary ones, so that 800 BC seems longer ago than 2500 BC; say
+    "two thousand five hundred years before year one" aloud. If the child is stuck, line up three
+    things at home by age. The three-star task is for you to mark: a museum card for the oldest
+    thing in your home. England's key stage 2 history begins with "changes in Britain from the
+    Stone Age to the Iron Age". Japan's 社会 for grades three and four (the course of study read
+    in its 2008 edition) asks children to study 「古くから残る暮らしにかかわる道具，それらを使っていたころの暮らしの様子」,
+    old tools and the lives of the people who used them.
+    """
+  level easy {
+    grown-ups "At this level a worked example names the Stone Age from a flint axe, the tools to order start from the axe, the empty flag is the Iron Age or the Bronze Age, and the card asks what a tool was for."
+  }
+  level hard {
+    grown-ups "At this level the tools come fully muddled, the empty flag is the earliest, the card asks how long before year one a tool was made, and the two-star question asks why iron helped farmers."
+  }
+}

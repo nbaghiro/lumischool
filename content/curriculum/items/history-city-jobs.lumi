@@ -1,0 +1,23 @@
+# In a city not everyone farmed: who did each job. The later versions are jobs cities first made.
+item history.city-jobs v=1 skills=[history.cities, history.change] {
+  title "Jobs in a city"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let thing={pick(k, "made the pots", "baked the bread", "built the temple walls", "wrote down the grain in the store", "made bronze tools", "judged arguments by the laws")}
+  let key={pick(k, "Potters", "Bakers", "Builders", "Scribes", "Smiths", "Judges")}
+  let o2={pick(k, "Scribes", "Smiths", "Scribes", "Builders", "Potters", "Scribes")}
+  let o3={pick(k, "Farmers", "Farmers", "Farmers", "Farmers", "Farmers", "Farmers")}
+
+  scene 34x20 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      temple t
+      citywalls w
+    }
+    text ask "In the first cities, not everyone farmed. Who {thing}?" narrate width=20 below=pics gap=1
+    choice pick options=[pick(k, key, o2, o3, key, o2, o3), pick(k, o2, key, key, o3, key, o2), pick(k, o3, o3, o2, o2, o3, key)] stack=column right-of=ask gap=1
+  }
+
+  answer pick=key
+  hint "Each job had its own kind of worker. Which name matches the work?"
+  hint "Farmers grew the food. The others did the new city jobs."
+}

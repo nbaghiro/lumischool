@@ -1,0 +1,22 @@
+# Non-routine: the missing person from a verb ending, the one wrong form in a list, and a new verb made by the pattern.
+item language.es-verbs-puzzle v=1 stars=3 skills=[language.grammar, language.sentences, reasoning.language] {
+  title "Mend the verbs"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"___ hablamos inglés. Which word is missing?\", \"Which one is wrong: yo hablo, tú hablas, ella hablan?\", \"Make we from the verb cantar.\")}" width=32
+      choice pick options=[pick(k, "Nosotros", "ella hablan: it should be ella habla", "cantamos"), pick(k, "Yo", "tú hablas: it should be tú habla", "cantan"), pick(k, "Ellos", "yo hablo: it should be yo habla", "canto")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Nosotros", "ella hablan: it should be ella habla", "cantamos")
+  feedback {
+    when (pick == pick(k, "Yo", "tú hablas: it should be tú habla", "cantan")) {
+      say "{pick(k, \"Yo takes -o. Which person takes -amos?\", \"Tú hablas is right. Check ella.\", \"Cantan is they. We takes -amos.\")}"
+    }
+  }
+  hint "Say each form aloud."
+  hint "Which ending goes with which person?"
+}

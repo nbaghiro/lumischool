@@ -1,0 +1,20 @@
+item k.beat-now v=1 skills=[music.beat, counting.to-five] {
+  title "Which beat are we on?"
+  difficulty b
+  let b=0..3
+  level easy {
+    let b=0..1
+  }
+  level hard {
+    let b=2..3
+  }
+
+  scene 24x17 {
+    countrow row beats=4 meter=4 now=b at=canvas(1, 1)
+    text ask "The filled square is the beat we are on. Which beat is it?" narrate width=22 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (b + 1)
+  hint "Count along the squares from the first one: one, two, three, four."
+}

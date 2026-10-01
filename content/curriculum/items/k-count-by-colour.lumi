@@ -1,0 +1,26 @@
+item k.count-by-colour v=1 skills=[sorting.one-rule, colours.naming] {
+  title "Sort by colour"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let colour={pick(k, "pink", "blue", "green", "yellow")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 32x20 {
+    creatures who eyes=[2, 1, 2, 3] legs=[2, 4, 2, 4] horns=[0, 1, 2, 0] coat=[0, 1, 2, 0] body=[1, 0, 2, 1] colors=["berry", "sky", "berry", "glow"] labels=["", "", "", ""] at=canvas(1, 1)
+    text ask "Ada puts all the {colour} creatures in one ring. How many go in the ring?" narrate width=30 below=who gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 2, 1, 0, 1)
+  feedback {
+    when (k == 2 and answer > 0) point=who {
+      say "Look again at each creature. Is any of them green?"
+    }
+  }
+  hint "Touch each creature and say its colour."
+}

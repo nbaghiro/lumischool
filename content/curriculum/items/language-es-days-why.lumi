@@ -1,0 +1,22 @@
+# A reason: the small letter for a day in Spanish, the order of the week, and the weekend.
+item language.es-days-why v=1 stars=2 skills=[language.time, reasoning.language] {
+  title "Days and their order"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo writes Lunes with a capital L in the middle of a Spanish sentence. Is that right?\", \"Ana says: Hoy es martes, mañana es lunes. What is wrong?\", \"Which two days are el fin de semana?\")}" width=32
+      choice pick options=[pick(k, "No: Spanish writes days with a small letter.", "Lunes comes before martes, not after.", "sábado y domingo"), pick(k, "Yes: days always take a capital.", "Mañana means yesterday.", "viernes y sábado"), pick(k, "Only lunes takes a capital.", "Martes is Friday.", "lunes y martes")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "No: Spanish writes days with a small letter.", "Lunes comes before martes, not after.", "sábado y domingo")
+  feedback {
+    when (pick == pick(k, "Yes: days always take a capital.", "Mañana means yesterday.", "viernes y sábado")) {
+      say "{pick(k, \"English does, but Spanish does not. Look at the chart in the lesson.\", \"Mañana is tomorrow. What comes after martes?\", \"Viernes is still a school day. Which two come at the end?\")}"
+    }
+  }
+  hint "Look at the days on the chart."
+  hint "Say the week in order."
+}

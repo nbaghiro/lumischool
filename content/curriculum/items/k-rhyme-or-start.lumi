@@ -1,0 +1,21 @@
+item k.rhyme-or-start v=1 stars=2 skills=[reading.rhyme, reasoning.explain] {
+  title "Is it a rhyme?"
+  difficulty k
+  let k=0..1
+  let a={pick(k, "cat", "sun")}
+  let b={pick(k, "cup", "sock")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x14 {
+    text ask "Ada says {a} and {b} rhyme, because they start with the same sound. Is she right?" narrate width=28 at=canvas(1, 1)
+    choice pick options=["Yes, they start the same.", "No, a rhyme sounds the same at the end."] stack=column below=ask gap=1
+  }
+
+  answer pick="No, a rhyme sounds the same at the end."
+  hint "Say {a} and {b}. Listen to the end of each word."
+}

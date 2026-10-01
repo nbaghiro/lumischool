@@ -1,0 +1,20 @@
+item k.tree-grandparents v=1 skills=[history.family, counting.to-five] {
+  title "Who is in the family tree?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x22 {
+    familytree tree names=["Grandma Rose", "Grandpa Tom", "Nana Mei", "Grandad Li", "Mum", "Dad", "Sam"] years=[1950, 1948, 1953, 1951, 1982, 1980, 2018] blank=-1 at=canvas(1, 0)
+    text q "{pick(k, \"How many grandparents does Sam have in the tree?\", \"How many parents does Sam have in the tree?\", \"How many people are in the tree altogether?\", \"How many rows of people are there, from the top to Sam?\")}" narrate width=32 below=tree gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer pick(k, 4, 2, 7, 3)
+  hint "The oldest people are in the top row, and Sam is at the bottom. Count the boxes you need."
+}

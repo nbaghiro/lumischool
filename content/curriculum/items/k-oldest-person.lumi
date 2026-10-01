@@ -1,0 +1,28 @@
+item k.oldest-person v=1 skills=[history.change, history.order] {
+  title "Who is the oldest?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let a={pick(k, "child", "older", "grownup", "child")}
+  let b={pick(k, "grownup", "child", "older", "older")}
+  let c={pick(k, "older", "grownup", "child", "grownup")}
+  let w={pick(k, 0, 0, 1, 1)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 28x17 {
+    row people at=canvas(1, 1) space=3 align=end {
+      person one pose=stand age=a hair=short colour=brown top=sky
+      person two pose=stand age=b hair=short colour=brown top=mint
+      person three pose=stand age=c hair=short colour=brown top=berry
+    }
+    text ask "Which person is the {if w == 0 then \"oldest\" else \"youngest\"}? Say 1, 2 or 3 from the left." narrate width=26 below=people gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then if a == "older" then 1 else if b == "older" then 2 else 3 else if a == "child" then 1 else if b == "child" then 2 else 3)
+  hint "Look for grey hair and a walking stick, or for the smallest person."
+}

@@ -1,0 +1,11 @@
+# Marked by a grown-up: one family event told by two people, and where their accounts differ.
+item history.two-views v=1 stars=3 skills=[history.sources, history.enquiry] {
+  title "Two accounts at home"
+
+  scene 36x15 {
+    text ask "Ask two people in your family to tell you about the same day, such as a trip or a party. Write down what each said. Where do their accounts agree, where do they differ, and why?" width=34 at=canvas(1, 1)
+    writinglines w lines=2 width=34 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Two accounts of one family event from two people, noted fairly, with one thing both agree on, one thing they differ on, and a reason for the difference that does not call either person a liar (where they were, what they cared about, how long ago it was)." notice=["Two accounts noted", "One point of agreement", "One difference", "A fair reason for the difference"] ask="Who do you think remembered it better, and how could you check?"
+}

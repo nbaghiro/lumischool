@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.fruit-say v=1 skills=[language.food, language.opinions, language.speaking] {
+  title "What do you like?"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Point at each crate in the lesson and say the fruit in [[language.name]].\", \"Say one fruit you like and one you do not, the way the lesson does: [[food.i-like-strawberry]] [[phrase.i-do-not-like-lemon]]\", \"Ask a grown-up: [[food.do-you-like-pears]] Then say what you think too.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="Fruit named in the language, a like and a dislike said the way the lesson says them, and the question asked with the voice going up." notice=["A fruit named for each crate", "A like said as the lesson says it", "A dislike said as the lesson says it", "A question that goes up at the end"]
+  hint "Say it in English first, then in [[language.name]]."
+  hint "Which words say you do not like it?"
+}

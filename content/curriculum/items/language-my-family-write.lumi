@@ -1,0 +1,19 @@
+# The word written from its picture: [[family.mother]], [[family.father]], [[family.grandmother]], [[family.grandfather]], [[family.daughter]], [[family.granddaughter]].
+# Accent-tolerant: the box takes the word with its accents left off (accents=loose); ñ is a letter and is marked.
+item language.my-family-write v=1 skills=[language.family, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x24 {
+    column all at=canvas(1, 1) space=1 align=start {
+      familytree tree names=["Rosa", "Pepe", "Carmen", "Luis", "Marta", "Juan", "Ana"] years=[0, 0, 0, 0, 0, 0, 0] blank=-1
+      text ask "{pick(k, \"Marta is Ana's mother. Write it in [[language.name]].\", \"Juan is Ana's father. Write it in [[language.name]].\", \"Carmen is Ana's grandmother. Write it in [[language.name]].\", \"Pepe is Ana's grandfather. Write it in [[language.name]].\", \"Ana is Marta's daughter. Write it in [[language.name]].\", \"Ana is Luis's granddaughter. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[family.mother]]", "[[family.father]]", "[[family.grandmother]]", "[[family.grandfather]]", "[[family.daughter]]", "[[family.granddaughter]]")] accents=loose
+    }
+  }
+
+  answer word=pick(k, "[[family.mother]]", "[[family.father]]", "[[family.grandmother]]", "[[family.grandfather]]", "[[family.daughter]]", "[[family.granddaughter]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

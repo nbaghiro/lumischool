@@ -1,0 +1,20 @@
+item k.count-ants v=1 skills=[counting.to-five] {
+  title "Ants in a line"
+  difficulty n
+  let n=2..5
+  level easy {
+    let n=2..3
+  }
+  level hard {
+    let n=4..5
+  }
+
+  scene 22x8 {
+    ants line count=n carry=1 at=canvas(1, 1)
+    text ask "How many ants are walking home?" narrate below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer n
+  hint "Start at the first ant. Say one number for each ant."
+}

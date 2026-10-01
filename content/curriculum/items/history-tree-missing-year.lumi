@@ -1,0 +1,27 @@
+# One year is left blank in the tree, and a clue gives it from another year. Working out a year from
+# a clue is the step the story asks for.
+item history.tree-missing-year v=1 skills=[history.family, number.add] {
+  title "The missing year"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let gap={pick(k, 4, 6, 4, 6)}
+  let clue={pick(k, "Mama was born 30 years after Babushka Vera.", "Nina was born 32 years after Mama.", "Mama was born 29 years after Babushka Vera.", "Nina was born 34 years after Mama.")}
+  let mama={pick(k, 1986, 1985, 1985, 1983)}
+  let key={pick(k, 1986, 2017, 1985, 2017)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x19 {
+    familytree tree names=["Babushka Vera", "Dedushka Ivan", "Gran Ada", "Grandpa Joe", "Mama", "Papa", "Nina"] years=[1956, 1954, 1958, 1955, mama, 1983, 2017] blank=gap at=canvas(1, 0)
+    text ask "{clue} Write the missing year." narrate width=24 below=tree gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer key
+  hint "Find the year the clue starts from."
+  hint "Count on that many years: tens first, then ones."
+}

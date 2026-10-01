@@ -1,0 +1,19 @@
+# The two-star reason: why people changed from stone to bronze. Bronze can be melted, poured into a
+# mould and sharpened again; stone breaks and has to be chipped anew.
+item history.why-bronze v=1 skills=[history.prehistory, reasoning.why] {
+  title "Why change to bronze?"
+  difficulty k
+  let k=0..1
+
+  scene 34x27 {
+    row cards at=canvas(0, 0) space=0 align=start {
+      objectcard a kind=pick(k, 0, 1) name="{if k == 0 then \"Flint hand axe\" else \"Bronze axe\"}" use="{if k == 0 then \"Cutting meat and wood\" else \"Chopping wood\"}" year=pick(k, -480000, -1500) about=1 place="{if k == 0 then \"Boxgrove, England\" else \"Britain\"}" ask=0
+    }
+    text ask "{if k == 0 then \"Stone tools worked well for thousands of years. Why did people change to bronze when they could make it?\" else \"Later, people changed from bronze to iron. Iron is harder, and iron ore is found in many more places. Why did that help farmers?\"}" narrate width=32 below=cards gap=1
+    choice pick options=[if k == 0 then "Bronze could be melted, shaped and sharpened again" else "More people could have strong tools", if k == 0 then "Bronze was easier to find than stone" else "Iron tools were prettier", if k == 0 then "Stone could not cut anything" else "Iron was rarer than bronze"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Bronze could be melted, shaped and sharpened again" else "More people could have strong tools")
+  hint "What happens to a stone tool when it breaks? And to a metal one?"
+  hint "Look for the reason that is true, not just one that sounds good."
+}

@@ -1,0 +1,27 @@
+item k.shape-riddle v=1 stars=2 skills=[shapes.flat, reasoning.clues] {
+  title "Guess the shape"
+  difficulty (if t == 0 then 0 else if t == 1 then 1 else 2)
+  let t=0..2
+  let clue={pick(t, "I have three sides and three corners.", "I am round and I have no corners.", "I have four sides. Two are long and two are short.")}
+  roles circ=circle squ=square tri=triangle rect=rectangle
+  level easy {
+    let t=0..1
+  }
+  level hard {
+    let t=1..2
+  }
+
+  scene 26x12 {
+    text ask "{clue} Which shape am I?" narrate width=24 at=canvas(1, 1)
+    choice pick options=[circ, squ, tri, rect] below=ask gap=1
+  }
+
+  answer pick=pick(t, "tri", "circ", "rect")
+  feedback {
+    when (t == 2 and pick == "squ") point=pick.option(1) {
+      say "The square has four sides, but they are all the same length."
+    }
+  }
+  hint "Listen to the first clue. Which shapes could it be?"
+  hint "Now listen to the next clue. Which one is left?"
+}

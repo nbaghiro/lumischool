@@ -5,7 +5,16 @@
 
 import type { ErrorCode, KidRecord, Problem } from "../../server/api";
 import type { Kid } from "../../server/db/schema";
-import { check, isTweak, type Envelope, type WorldTweak } from "../answer";
+import {
+    check,
+    isTweak,
+    LANGUAGES,
+    NATIONS,
+    type Envelope,
+    type Language,
+    type Nation,
+    type WorldTweak,
+} from "../answer";
 
 /** What went wrong: the API's own problem, or `offline` for a request that never reached it. */
 export type Failure = Omit<Problem, "error"> & { error: ErrorCode | "offline"; status: number };
@@ -147,6 +156,28 @@ function readWorlds(v: unknown): ChildRecord["worlds"] | null {
     return kept && latest ? { terms, tweaks: latest, begun, kept } : null;
 }
 
+const readLanguage = (v: unknown): Language | null | undefined =>
+    v === null ? null : LANGUAGES.find((l) => l === v);
+const readNation = (v: unknown): Nation | null | undefined =>
+    v === null ? null : NATIONS.find((n) => n === v);
+
+function readVariants(v: unknown): ChildRecord["variants"] | null {
+    if (!obj(v)) return null;
+    const language = readLanguage(v.language);
+    const nation = readNation(v.nation);
+    return language === undefined || nation === undefined ? null : { language, nation };
+}
+
+function readKept(v: unknown): ChildRecord["kept"] | null {
+    if (!(obj(v) && obj(v.practice))) return null;
+    const practice: Record<string, number> = {};
+    for (const [game, level] of Object.entries(v.practice)) {
+        if (!(num(level) && Number.isInteger(level) && level >= 0)) return null;
+        practice[game] = level;
+    }
+    return { practice, painting: v.painting ?? null };
+}
+
 /** The fields of a child's record the server folds (school/family/family.ts), read the same for a child's view and a grown-up's page. */
 export function readChildRecord(v: unknown): ChildRecord | null {
     if (!obj(v)) return null;
@@ -185,9 +216,31 @@ export function readChildRecord(v: unknown): ChildRecord | null {
             : null,
     );
     const worlds = readWorlds(v.worlds);
-    if (!(day(v.today) && dayOrNull(v.start) && tracks && years && plan && unfinished && worlds))
+    const variants = readVariants(v.variants);
+    const kept = readKept(v.kept);
+    if (!(
+        day(v.today) &&
+        dayOrNull(v.start) &&
+        tracks &&
+        years &&
+        plan &&
+        unfinished &&
+        worlds &&
+        variants &&
+        kept
+    ))
         return null;
-    return { today: v.today, start: v.start, tracks, years, plan, unfinished, worlds };
+    return {
+        today: v.today,
+        start: v.start,
+        tracks,
+        years,
+        plan,
+        unfinished,
+        worlds,
+        variants,
+        kept,
+    };
 }
 
 /** One child's record as the API answers it, with the child and the pack's digest beside it. */

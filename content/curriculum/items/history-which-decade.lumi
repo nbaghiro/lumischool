@@ -1,0 +1,27 @@
+# One event of the last century on a line counted in tens: which decade it falls in, from the record.
+item history.which-decade v=1 skills=[history.timeline, history.decades] {
+  title "Which ten years?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let ev={pick(k, "First person in space", "Penicillin found", "Moon landing", "First television service")}
+  let yr={pick(k, 1961, 1928, 1969, 1936)}
+  let o1={pick(k, "1950s", "1920s", "1960s", "1930s")}
+  let o2={pick(k, "1960s", "1930s", "1970s", "1940s")}
+  let o3={pick(k, "1970s", "1910s", "1950s", "1920s")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x21 {
+    timeline line from=1920 to=2000 step=10 years=[yr] labels=["{ev}"] at=canvas(0, 0)
+    text ask "The years from 1960 to 1969 are the 1960s. In which ten years was this?" narrate width=20 below=line gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column right-of=ask gap=1
+  }
+
+  check history.dates of=line pick="decade-name(0)"
+  hint "Which two marks on the line is the flag between?"
+  hint "The ten years are named after the mark on the left of the flag."
+}

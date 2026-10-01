@@ -1,0 +1,68 @@
+# Dates from engine/notation/chronicle.ts: Baghdad 762, the House of Wisdom under al-Ma'mun 813 to
+# 833, Heian-kyo 794, the Song from 960, Genji by 1008, St Sophia in Kyiv 1011 or 1037, the walls
+# of Benin from about 800, the Norse at L'Anse aux Meadows 1021.
+lesson history-the-world-in-the-year-1000 v=1 format=teach grade=5 unit=1 subject=history levels=[easy, medium, hard] {
+  title "The world in the year 1000"
+  goal "Find five great cities of the year 1000 on the map, say what each is known for, and count how old each was."
+
+  look {
+    scene 36x17 {
+      worldmap map names=0 blank=-1 oceans=0 places=["Baghdad", "Kaifeng", "Kyoto", "Kyiv", "Benin City"] numbered=0 route=0 at=canvas(1, 0)
+    }
+    say """
+      Around the year 1000 people lived very differently in different places. In Baghdad, founded in
+      762, scholars in the House of Wisdom copied and translated books. In Kaifeng, the Song capital,
+      markets stayed open late into the night. In Kyoto, Murasaki Shikibu wrote The Tale of Genji.
+      In Kyiv, a great church was built. Benin City was ringed by long walls of earth. And far to the
+      west, Norse sailors reached America.
+      """
+  }
+  do {
+    level easy {
+      worked history.y1000-continent k=0
+    }
+    show history.y1000-continent k=2 easy-k=1 hard-k=4
+    show history.y1000-which-city k=2 easy-k=0 hard-k=4
+    show history.y1000-order k=2 easy-k=0 hard-k=4
+    show history.y1000-how-old k=2 easy-k=0 hard-k=4
+    show history.y1000-continent k=3 easy-k=2 hard-k=5
+    show history.y1000-which-city k=3 easy-k=1 hard-k=5
+    show history.y1000-order k=3 easy-k=1 hard-k=5
+    show history.y1000-how-old k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.y1000-which-city k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.y1000-why-books k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.y1000-youngest k=0 hard-k=1
+  }
+  remember {
+    say "In the year 1000 there were great cities on several continents at once: Baghdad, Kaifeng, Kyoto, Kyiv and Benin City."
+  }
+
+  grown-ups """
+    The idea is to see one moment across the whole world rather than one country's story: in the
+    year 1000 there were great cities in Asia, Europe and Africa, each with its own learning, trade
+    and buildings. The way in finds a city's continent; the core matches cities to what they are
+    known for, orders their founding, and counts how old each was. The wrong idea to watch for is
+    that history happened in one place at a time. If the child is stuck, put a finger on each city
+    and say one thing about it. Off the page, find the year 1000 in a book or museum of your own
+    country, and what was happening there. England's key stage 2 history asks for "a non-European
+    society that provides contrasts with British history", naming "early Islamic civilization,
+    including a study of Baghdad c. AD 900" and "Benin (West Africa) c. AD 900-1300". Russia's
+    history programme for grade six includes «Арабский халифат... Культура исламского мира.
+    Образование и наука» and «Япония в Средние века».
+    Japan's 社会 takes up history only through Japan's own story, in grade six
+    (「我が国の歴史上の主な事象について，人物の働きや代表的な文化遺産を中心に」, the course of study as read in its 2008 edition), so
+    this lesson has no line of its own there; its timeline and source skills serve that grade.
+    """
+  level easy {
+    grown-ups "At this level a worked example finds Kyiv's continent, the cities are matched to their plainest facts, the founding dates are far apart, and the years counted run to 1021."
+  }
+  level hard {
+    grown-ups "At this level the continents' names are left off the map, the cities are matched to al-Khwarizmi and Benin's walls, the founding dates are muddled, and the years counted are between the capitals themselves."
+  }
+}

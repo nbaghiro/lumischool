@@ -1,0 +1,70 @@
+# Twenty to thirty-one, read off digit cards, and how old you are.
+lesson language-how-old v=1 format=teach grade=3 unit=1 subject=language levels=[easy, medium, hard] {
+  title "[[phrase.how-old-are-you]]"
+  goal "Count from twenty to thirty-one in [[language.name]] and say how old you are."
+
+  look {
+    scene 39x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row party space=2 align=end {
+          cake c candles=8 slices=0
+          comic talk who=["boy", "girl"] says=["[[phrase.how-old-are-you]]", "[[phrase.i-am-eight-years-old]]"] moods=["happy", "excited"] with=["", ""] thinks=[0, 0] holds=["", ""] labels=["1", "2"]
+        }
+      }
+    }
+    say """
+      To ask someone's age, say [[phrase.how-old-are-you]] The answer gives the number:
+      [[phrase.i-am-eight-years-old]], I am eight. After [[num.twenty]] the numbers go on:
+      [[num.twenty-one]], [[num.twenty-two]], [[num.twenty-three]], and on to [[num.thirty]] and
+      [[num.thirty-one]].
+      """
+  }
+  do {
+    level easy {
+      worked language.how-old-name k=4
+    }
+    show language.how-old-name k=3 easy-k=0 hard-k=6
+    show language.how-old-meaning k=3 easy-k=1 hard-k=4
+    show language.how-old-write k=4 easy-k=1 hard-k=5
+    show language.how-old-name k=5 easy-k=2 hard-k=7
+    show language.how-old-match k=2 easy-k=0 hard-k=3
+    show language.how-old-write k=6 easy-k=3
+    show language.how-old-listen k=3 easy-k=0 hard-k=5
+    show language.how-old-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.how-old-write k=4
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-how-old-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.how-old-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[phrase.how-old-are-you]] [[phrase.i-am-eight-years-old]] After [[num.twenty]]: [[num.twenty-one]], [[num.twenty-two]], and on to [[num.thirty-one]]."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is saying an age word for word the English way, which the two-star
+    question is about, and a number in the twenties read as the teen it sounds like. The digit cards
+    carry the number, so the child's job is only the word. The listening question is a dictation:
+    read the sentence aloud from this sheet, where it prints as Read aloud, or let the device play
+    it. It is marked word by word, and a missing accent counts there, while the words typed on their
+    own in this lesson are taken without their accents. If the child is stuck, build twenty to
+    thirty-one with two ten frames and one more, saying each. Off the page, ask three people how old
+    they are and write their answers in the language. It meets England's key stage 2 languages
+    programme (years 3 to 6, statutory from age 7): "engage in conversations; ask and answer
+    questions"; Japan's grades 3 and 4 foreign language activities: "Activities to ask and answer
+    simple questions about each other's likes and wants, etc."; and CEFR A1, "Can ask and answer
+    questions about personal details". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[num.twenty-eight]] is worked first in the teacher's pen, the words to name are [[num.twenty-one]] and [[num.twenty-five]] and the words to write are [[num.thirty]] and [[num.twenty-two]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[num.thirty-one]] and [[num.twenty-four]] and the words to write are [[num.twenty-three]], [[num.twenty-seven]] and [[num.twenty-eight]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

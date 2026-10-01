@@ -1,0 +1,12 @@
+item k.leaves-fall v=1 stars=2 skills=[nature.seasons, reasoning.explain] {
+  title "When do the leaves fall?"
+
+  scene 34x30 {
+    seasontrees trees seasons=["spring", "summer", "autumn", "winter"] names=0 at=canvas(1, 1)
+    text ask "In which season do the leaves fall, and how can you tell from the trees?" narrate width=30 below=trees gap=1
+    choice pick options=["autumn: that tree has leaves on the ground", "spring: that tree has blossom", "winter: that tree is bare"] stack=column below=ask gap=1
+  }
+
+  answer pick="autumn: that tree has leaves on the ground"
+  hint "Which tree has leaves on the ground under it?"
+}

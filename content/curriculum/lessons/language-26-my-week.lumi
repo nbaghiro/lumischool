@@ -1,0 +1,69 @@
+# A week of things to do: a day and an action together in one sentence.
+lesson language-my-week v=1 format=teach grade=5 unit=2 subject=language levels=[easy, medium, hard] {
+  title "My week"
+  goal "Say what you do on each day of the week in [[language.name]]."
+
+  look {
+    scene 31x9 {
+      column all at=canvas(1, 1) space=1 align=start {
+        weatherweek week days=["[[time.monday]]", "[[time.tuesday]]", "[[time.wednesday]]", "[[time.thursday]]", "[[time.friday]]", "[[time.saturday]]", "[[time.sunday]]"] skies=["sun", "cloud", "sun", "rain", "sun", "sun", "sunny-spells"] temps=["", "", "", "", "", "", ""]
+      }
+    }
+    say """
+      Ana's week: [[routine.on-monday-i-swim]], on Monday I swim.
+      [[routine.on-tuesday-i-play-football]] [[routine.on-wednesday-i-play-the-piano]]
+      [[routine.on-thursday-i-read-in-the-library]] [[routine.on-friday-i-go-to-the-cinema]]
+      [[routine.on-saturday-i-visit-my-grandmother]] [[routine.on-sunday-i-do-nothing]] Every
+      sentence has a day and a thing done.
+      """
+  }
+  do {
+    level easy {
+      worked language.my-week-name k=4
+    }
+    show language.my-week-name k=2 easy-k=0 hard-k=5
+    show language.my-week-meaning k=3 easy-k=1 hard-k=4
+    show language.my-week-write k=3 easy-k=2 hard-k=5
+    show language.my-week-name k=4 easy-k=1 hard-k=6
+    show language.my-week-match k=1 easy-k=0 hard-k=2
+    show language.my-week-write k=4 easy-k=3
+    show language.my-week-listen k=3 easy-k=0 hard-k=5
+    show language.my-week-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.my-week-write k=3
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-my-week-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.my-week-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A day and a thing done: [[routine.on-monday-i-swim]] On Monday I swim."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is the right day with the wrong thing done, or the reverse: every
+    naming question offers both mistakes beside the right sentence, so a wrong pick shows which part
+    was missed. The two-star question is about how the language puts a day in a sentence. From this
+    grade the written words are marked with their accents: a word typed without its accent is not
+    taken. The dictation is read from this sheet, where it prints as Read aloud, or played by the
+    device. If the child is stuck, make a week chart at home and say one sentence for each day. Off
+    the page, keep a diary of the week in the language, one line a day. It meets England's key stage
+    2 languages programme (years 3 to 6, statutory from age 7): "speak in sentences, using familiar
+    vocabulary, phrases and basic language structures"; Japan's grades 5 and 6 foreign languages:
+    "Can talk about themselves after organizing the contents they want to communicate by using
+    simple words and phrases and basic expressions"; and CEFR A2, "Can communicate in simple and
+    routine tasks requiring a simple and direct exchange of information on familiar and routine
+    matters". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[routine.on-friday-i-go-to-the-cinema]] is worked first in the teacher's pen, the words to name are [[routine.on-monday-i-swim]] and [[routine.on-tuesday-i-play-football]] and the words to write are [[routine.i-read]] and [[routine.i-dance]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[routine.on-saturday-i-visit-my-grandmother]] and [[routine.on-sunday-i-do-nothing]] and the words to write are [[routine.i-go]], [[routine.i-play-an-instrument]] and [[routine.i-dance]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

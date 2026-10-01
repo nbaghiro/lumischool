@@ -1,0 +1,71 @@
+# Dates from engine/notation/chronicle.ts: the Diamond Sutra 868, Bi Sheng's type 1039 to 1048, Jikji
+# 1377, the Gutenberg Bible 1452 to 1455, Caxton's press in Westminster 1476.
+lesson history-books-copied-and-printed v=1 format=teach grade=5 unit=3 subject=history levels=[easy, medium, hard] {
+  title "Books copied by hand and printed"
+  goal "Put the steps of printing in order from East Asia to Europe, and say what printing changed for readers."
+
+  look {
+    scene 36x11 {
+      row all at=canvas(0, 0) space=1 align=end {
+        printingpress press printed=1
+        library lib
+      }
+    }
+    say """
+      For most of history every book was copied by hand, a page at a time. The oldest printed book
+      with a date, the Diamond Sutra, was printed in China in 868 from carved wooden blocks. Between
+      1039 and 1048 Bi Sheng made movable letters of baked clay, and in Korea the book Jikji was
+      printed with metal letters in 1377. In Europe Gutenberg printed his Bible in the 1450s, and
+      Caxton brought a press to England in 1476.
+      """
+  }
+  do {
+    level easy {
+      worked history.scribe-days k=0
+    }
+    show history.scribe-days k=2 easy-k=1 hard-k=4
+    show history.print-order k=2 easy-k=0 hard-k=4
+    show history.print-between k=2 easy-k=0 hard-k=4
+    show history.writing-order k=4 easy-k=2 hard-k=5
+    show history.scribe-days k=3 easy-k=2 hard-k=5
+    show history.print-order k=3 easy-k=1 hard-k=5
+    show history.print-between k=3 easy-k=1 hard-k=5
+    show history.castle-century k=4 easy-k=0 hard-k=5
+    level hard {
+      show history.print-between k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.why-print k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.scribes-to-match k=0 hard-k=1
+  }
+  remember {
+    say "Printing began in East Asia and reached Europe in the 1450s. It made books many, cheap and the same every time."
+  }
+
+  grown-ups """
+    The idea is that printing was invented in East Asia centuries before Europe, and that it
+    changed who could own and read a book. The way in works out how long a scribe took to copy a
+    book; the core orders the steps of printing, counts the years between them, and reviews the
+    order of writing and a castle's century. The wrong idea to watch for is "Gutenberg invented
+    printing": he made a press with metal letters for European alphabets, long after printing in
+    China and Korea. The numbers for scribes and presses are round ones made up for the sums,
+    and the lesson says so. If the child is stuck, print a potato stamp and count how quickly
+    copies come. Off the page, find the oldest book in your home and where and when it was printed.
+    England's key stage 2 history allows a theme that "extends pupils' chronological knowledge
+    beyond 1066"; Russia's history programme for grade six names «Изобретение европейского
+    книгопечатания; И. Гутенберг». China's 道德与法治 for grade five has 「古代科技 耀我中华」, with
+    printing among the great inventions.
+    Japan's 社会 takes up history only through Japan's own story, in grade six
+    (「我が国の歴史上の主な事象について，人物の働きや代表的な文化遺産を中心に」, the course of study as read in its 2008 edition), so
+    this lesson has no line of its own there; its timeline and source skills serve that grade.
+    """
+  level easy {
+    grown-ups "At this level a worked example divides a short book by pages a day, the steps of printing come nearly in order, and the years counted are between Jikji and Caxton."
+  }
+  level hard {
+    grown-ups "At this level the books are long and the rates uneven, the steps are fully muddled, the years counted run from paper to printing, and the three-star scribes rest one day in six."
+  }
+}

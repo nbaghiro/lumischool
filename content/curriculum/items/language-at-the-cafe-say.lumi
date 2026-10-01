@@ -1,0 +1,17 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.at-the-cafe-say v=1 skills=[language.food, language.market, language.speaking] {
+  title "Order at the café"
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      sign menu lines=["[[cafe.juice]] 2 €", "[[cafe.sandwich]] 5 €", "[[cafe.ice-cream]] 4 €", "[[cafe.water]] 1 €"] kind=board color=mint
+      text ask "{pick(k, \"A grown-up is the waiter and asks [[cafe.what-would-you-like]] Order a drink from the menu in [[language.name]].\", \"Order a drink and a food, answer [[cafe.anything-else]], and ask for the bill, all in [[language.name]].\", \"Be the waiter: take a grown-up's order in [[language.name]] and tell them how much it is from the menu.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="An order made politely, the waiter's questions answered, and the bill asked for, all said the way the lesson says them." notice=["An order made politely", "Anything else answered", "The bill asked for", "A price read off the menu"]
+  hint "Start with what you would like."
+  hint "What do you say at the end?"
+}

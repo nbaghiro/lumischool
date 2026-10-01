@@ -1,0 +1,29 @@
+# Fewer is the harder word at this age, since more is the one children hear every day.
+item k.fewer v=1 skills=[counting.compare] {
+  title "Which are fewer?"
+  difficulty (5 - abs(a - b))
+  let a=1..6 b=1..6
+  where (a != b)
+  roles ba=ball cu=cube
+  level easy {
+    where (abs(a - b) >= 3)
+  }
+  level hard {
+    where (abs(a - b) == 1)
+  }
+
+  scene 24x15 {
+    props top count=a prop=ball at=canvas(1, 1)
+    props bottom count=b prop=cube below=top gap=1
+    text ask "Are there fewer balls or fewer cubes?" narrate width=22 below=bottom gap=1
+    choice pick options=[ba, cu] below=ask gap=1
+  }
+
+  answer pick=(if a < b then "ba" else "cu")
+  feedback {
+    when (a < b and pick == "cu" or a > b and pick == "ba") point=top {
+      say "That row has more. Fewer means not as many."
+    }
+  }
+  hint "Count the balls, then the cubes. Which number is smaller?"
+}

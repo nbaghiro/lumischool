@@ -1,0 +1,17 @@
+# The three-star question: how many members make more than half, or two thirds, of a world meeting,
+# and how many more votes an idea needed.
+item history.assembly-majority v=1 skills=[history.world, reasoning.plan] {
+  title "Enough votes"
+  difficulty k
+  let k=0..1
+
+  scene 32x19 {
+    council c hands=[1, 1, 1, 0, 1, 1, 0, 1, 1] box=0 motion="A world meeting" count=0 at=canvas(1, 0)
+    text ask "{if k == 0 then \"An idea needs more than half of 193 members. 90 voted for it. How many more votes did it need?\" else \"An idea needs two thirds of the votes cast. 180 members voted, and 110 voted for it. How many more did it need?\"}" narrate width=18 below=c gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then 7 else 10)
+  hint "First find how many votes the idea needed."
+  hint "Then take away the votes it got."
+}

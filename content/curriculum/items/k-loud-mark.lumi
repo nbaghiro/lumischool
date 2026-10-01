@@ -1,0 +1,23 @@
+# The two marks music prints for loud and quiet: f for forte and p for piano. At this age they are
+# pictures of a big sound and a small one.
+item k.loud-mark v=1 skills=[music.dynamics] {
+  title "The loud mark"
+  difficulty k
+  let k=0..1
+  let m={pick(k, "f", "p")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 24x15 {
+    dynamics mark marks=[m] words=false ring=-1 at=canvas(1, 1)
+    text ask "In music, f means loud and p means quiet. How do you play when you see this mark?" narrate width=22 below=mark gap=1
+    choice pick options=["loud", "quiet"] stack=row below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "loud" else "quiet")
+  hint "Is the mark an f or a p?"
+}

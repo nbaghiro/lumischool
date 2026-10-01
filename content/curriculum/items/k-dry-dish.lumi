@@ -1,0 +1,15 @@
+# Two dishes a week after sowing, one kept wet and one left dry. Only the wet one sprouted, which
+# is the fact the lesson turns on: a seed needs water.
+item k.dry-dish v=1 skills=[nature.growing, reasoning.fair-test] {
+  title "Which dish was dry?"
+  let d=0..1
+
+  scene 30x22 {
+    seedtest test mode=0 water=[d, 1 - d] air=[1, 1] warmth=[1, 1] light=[1, 1] seeds=5 rate=100 after=1 names=0 at=canvas(1, 1)
+    text ask "Ada kept one dish wet and forgot to water the other. Which dish was dry?" narrate width=28 below=test gap=1
+    choice pick options=["A", "B"] stack=row below=ask gap=1
+  }
+
+  answer pick=(if d == 0 then "A" else "B")
+  hint "Which dish has seeds that did not sprout?"
+}

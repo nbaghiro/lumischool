@@ -1,0 +1,22 @@
+# A reason: tengo for an age, and the pattern after treinta.
+item language.es-how-old-why v=1 stars=2 skills=[language.numbers, language.questions, reasoning.language] {
+  title "How Spanish says it"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Tengo ocho años. Which English is closest, word by word?\", \"Leo says: Soy ocho años. What is wrong?\", \"Treinta y uno is 31. How would you say 32?\")}" width=32
+      choice pick options=[pick(k, "I have eight years.", "Spanish uses tengo, I have, for an age.", "treinta y dos"), pick(k, "I am eight years.", "Ocho should be ocha.", "veintidós"), pick(k, "Eight I have.", "Años needs a capital.", "treinta dos")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "I have eight years.", "Spanish uses tengo, I have, for an age.", "treinta y dos")
+  feedback {
+    when (pick == pick(k, "I am eight years.", "Ocho should be ocha.", "veintidós")) {
+      say "{pick(k, \"That is how English says it. Tengo means I have.\", \"Ocho does not change. Which verb does Spanish use for age?\", \"Veintidós is 22. The pattern for 31 was treinta y uno.\")}"
+    }
+  }
+  hint "What does tengo mean?"
+  hint "Look at how 31 is made: treinta, y, uno."
+}

@@ -1,0 +1,18 @@
+# How long after an event its source was made, read from the card's when row.
+item history.source-gap v=1 skills=[history.sources, history.bc-ad] {
+  title "How long after?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ask={pick(k, "Pliny wrote his letter about AD 106. Vesuvius erupted in AD 79. How many years after did he write?", "Pepys wrote about the fire on 2 September 1666, the day it began. How many years after the fire did he write?", "A history of London was written in 1950, about the fire of 1666. How many years after?", "Sima Qian wrote about 91 BC about the Qin, who united China in 221 BC. How many years after?", "An encyclopaedia entry of 2020 tells of the Romans conquering Britain in AD 43. How many years after?", "An encyclopaedia entry of 2020 tells of Caesar landing in Britain in 55 BC. How many years after?")}
+  let key={pick(k, 27, 0, 284, 130, 1977, 2074)}
+
+  scene 34x15 {
+    book open at=canvas(1, 0)
+    text ask "{ask}" narrate width=14 right-of=open gap=1
+    number-input answer below=open gap=1
+  }
+
+  answer key
+  hint "Find the two years. Is either one BC?"
+  hint "Across year one, take one away, since there was no year nought."
+}

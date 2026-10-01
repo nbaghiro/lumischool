@@ -1,0 +1,19 @@
+# The language to English: [[num.one]], [[num.three]], [[num.two]], [[num.five]], [[num.four]], [[num.zero]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.one-to-five-meaning v=1 skills=[language.numbers] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x24 {
+    column all at=canvas(1, 1) space=1 align=start {
+      sign card lines=[pick(k, "[[num.one]]", "[[num.three]]", "[[num.two]]", "[[num.five]]", "[[num.four]]", "[[num.zero]]")] kind=hanging color=tang
+      text ask "What number is on the sign?" width=32
+      choice pick options=[pick(k, "2", "4", "5", "0", "0", "4"), pick(k, "4", "3", "2", "5", "4", "0"), pick(k, "1", "2", "3", "3", "5", "2")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "1", "3", "2", "5", "4", "0")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

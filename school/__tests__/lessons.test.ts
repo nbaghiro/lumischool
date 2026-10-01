@@ -279,6 +279,17 @@ describe("checking a typed answer", () => {
         assert.equal(checkTyped(question({}), { answer: "  " }), null, "an empty box is not a try");
     });
 
+    it("takes another spelling of a language answer only where the question lists it", () => {
+        const loose = question({ answers: { word: "adiós" }, also: { word: ["adios"] } });
+        assert.equal(checkTyped(loose, { word: "adios" })?.right, true);
+        assert.equal(checkTyped(loose, { word: "Adiós" })?.right, true);
+        assert.equal(
+            checkTyped(question({ answers: { word: "adiós" } }), { word: "adios" })?.right,
+            false,
+        );
+        assert.equal(checkTyped(loose, { word: "hola" })?.right, false);
+    });
+
     it("says the author's line for the mistake a wrong answer makes, and points where the rule points", () => {
         const got = checkTyped(adding, { answer: "2" });
         assert.equal(got?.right, false);

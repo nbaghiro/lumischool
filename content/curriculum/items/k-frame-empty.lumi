@@ -1,0 +1,25 @@
+item k.frame-empty v=1 skills=[counting.to-ten, reasoning.part-whole] {
+  title "Empty squares"
+  difficulty (10 - n)
+  let n=5..9
+  level easy {
+    let n=8..9
+  }
+  level hard {
+    let n=5..6
+  }
+
+  scene 22x13 {
+    tenframe frame count=n color=tang at=canvas(1, 1)
+    text ask "How many squares are empty?" narrate width=20 below=frame gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (10 - n)
+  feedback {
+    when (n != 5 and answer == n) point=frame {
+      say "That is the counters. Now count the squares with nothing in."
+    }
+  }
+  hint "Put a finger on each empty square as you count."
+}

@@ -1,0 +1,20 @@
+item k.beat-squares v=1 skills=[music.beat, counting.to-ten] {
+  title "One clap a square"
+  difficulty n
+  let n=2..6
+  level easy {
+    let n=2..3
+  }
+  level hard {
+    let n=5..6
+  }
+
+  scene 24x15 {
+    countrow row beats=n meter=n now=-1 at=canvas(1, 1)
+    text ask "Clap once for each square. How many claps?" narrate width=22 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  hint "Point at each square as you clap."
+}

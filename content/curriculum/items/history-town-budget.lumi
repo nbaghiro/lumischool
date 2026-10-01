@@ -1,0 +1,22 @@
+# A town's year of spending (made up for the lesson) in a table: reading, adding and comparing.
+item history.town-budget v=1 skills=[history.government, data.tables] {
+  title "The town's money"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let r={pick(k, 40, 35, 45, 30, 38, 42)}
+  let p={pick(k, 20, 25, 15, 20, 17, 23)}
+  let l={pick(k, 10, 15, 20, 25, 14, 11)}
+  let b={pick(k, 30, 25, 20, 25, 31, 24)}
+  let ask={pick(k, "How many thousand dollars went on roads?", "How much more went on roads than on the library?", "How many thousand dollars did the town spend in all?", "How much more went on bins than on parks?", "If the town adds 12 thousand to parks, how much will parks get?", "Which cost more, parks and the library together, or roads? Give how many thousand more.")}
+  let key={pick(k, r, r - l, r + p + l + b, b - p, p + 12, if r > p + l then r - (p + l) else p + l - r)}
+
+  scene 32x16 {
+    table t cols=2 head=["Spent on", "Thousand dollars"] cells=["Roads", "{r}", "Parks", "{p}", "Library", "{l}", "Bins", "{b}"] at=canvas(1, 0)
+    text ask "{ask}" narrate width=24 below=t gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer key
+  hint "Find the rows the question needs."
+  hint "In all means add; more means take away."
+}

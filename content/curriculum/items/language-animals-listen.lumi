@@ -1,0 +1,20 @@
+# Listening: the grown-up reads the phrase from the grown-ups' sheet, or the device plays it, and
+# the child types it. Marked word by word by the dictation checker: accent-strict, since a
+# word with its accent missing is a different spelling; case and punctuation are not marked.
+item language.animals-listen v=1 skills=[language.animals, language.listening, language.spelling] {
+  title "Listen and write"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      picturecards farm who=["cat", "dog", "duck"] where=["by", "by", "by"] thing=["box", "box", "box"] letters=false
+      text ask "Listen to the [[language.name]], then write it. Your grown-up will read it, or press play." width=32
+      number-input answer width=32
+    }
+  }
+
+  check writing.dictation text="{pick(k, \"[[phrase.i-have-a-cat]]\", \"[[phrase.the-dog-and-the-cat]]\", \"[[phrase.i-have-a-dog-and-a-rabbit]]\", \"[[phrase.my-cat-is-called-coco]]\", \"[[phrase.the-hen-and-the-duck-are-on-the-farm]]\", \"[[phrase.i-do-not-have-a-dog-but-i-have-a-cat-and]]\")}"
+  hint "Listen to the whole sentence once before you write a word."
+  hint "Write it a few words at a time. Which words from today do you hear?"
+}

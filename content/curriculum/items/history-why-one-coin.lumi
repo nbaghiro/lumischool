@@ -1,0 +1,17 @@
+# The two-star reason: one kind of coin across the empire let anyone trade anywhere and let the
+# emperor collect taxes in one money.
+item history.why-one-coin v=1 skills=[history.ancient, reasoning.why] {
+  title "Why one coin?"
+  difficulty k
+  let k=0..1
+
+  scene 30x27 {
+    objectcard coin kind=7 name="Ban liang coin" use="Buying and selling" year=-221 about=1 place="China" ask=0 at=canvas(0, 0)
+    text ask "{if k == 0 then \"Why did the first emperor want one kind of coin across all of China?\" else \"Ada says it did not matter which coins people used. Why did it matter to the emperor?\"}" narrate width=28 below=coin gap=1
+    choice pick options=["So anyone could trade and pay taxes anywhere", "So there would be fewer coins", "Because the old coins were ugly"] stack=column below=ask gap=1
+  }
+
+  answer pick="So anyone could trade and pay taxes anywhere"
+  hint "What happens when a trader from one kingdom goes to sell in another?"
+  hint "How did the emperor collect money from every part of China?"
+}

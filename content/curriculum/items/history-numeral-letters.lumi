@@ -1,0 +1,20 @@
+# Why the digits won: a year that needs four digits can need many Roman letters. Counting the
+# letters in a year written the Roman way.
+item history.numeral-letters v=1 skills=[number.roman, history.change] {
+  title "Four digits or many letters"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let yr={pick(k, 2026, 1903, 1666, 1969, 1777, 1888)}
+  let rn={pick(k, "MMXXVI", "MCMIII", "MDCLXVI", "MCMLXIX", "MDCCLXXVII", "MDCCCLXXXVIII")}
+  let key={pick(k, 6, 6, 7, 7, 10, 13)}
+
+  scene 32x16 {
+    greatclock clock at=canvas(1, 0)
+    text ask "The year {yr} takes four digits. Written the Roman way it is {rn}. How many letters is that?" narrate width=20 right-of=clock gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer key
+  hint "Count the letters one by one, touching each."
+  hint "Then compare with the four digits."
+}

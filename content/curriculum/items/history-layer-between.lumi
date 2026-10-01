@@ -1,0 +1,19 @@
+# The three-star question: a coin in one layer and a pot in a lower one fix what could lie between
+# them. The child has to use both finds at once.
+item history.layer-between v=1 skills=[history.layers, reasoning.logic] {
+  title "What lies between"
+  difficulty k
+  let k=0..1
+  let top={pick(k, "a coin made in AD 100", "a coin made in 50 BC")}
+  let low={pick(k, "a pot made in 500 BC", "a pot made in 1000 BC")}
+
+  scene 30x31 {
+    strata cliff layers=5 names=0 ash=0 fault=0 at=canvas(1, 0)
+    text ask "Layer 2 from the top holds {top}. Layer 4 holds {low}. Which could have been made when layer 3 was laid down?" narrate width=28 below=cliff gap=1
+    choice pick options=[pick(k, "A bead made in AD 400", "A bead made in AD 20"), pick(k, "A bead made in 200 BC", "A bead made in 300 BC"), pick(k, "A bead made in 900 BC", "A bead made in 1500 BC")] stack=column below=ask gap=1
+  }
+
+  answer pick=pick(k, "A bead made in 200 BC", "A bead made in 300 BC")
+  hint "Layer 3 is newer than layer 4 and older than layer 2."
+  hint "So its date must lie between the dates of the pot and the coin."
+}

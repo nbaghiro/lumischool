@@ -1,0 +1,65 @@
+# Dates from engine/notation/chronicle.ts: Uruk at its peak about 3100 BC, perhaps 50,000 people;
+# the Great Pyramid about 2560 BC; Mohenjo-daro built about 2500 BC; the Shang about 1600 to 1046 BC.
+lesson history-the-first-cities v=1 format=teach grade=3 unit=4 subject=history levels=[easy, medium, hard] {
+  title "The first cities"
+  goal "Find the first cities on the world map, put them in order, and say what a city needed that a village did not."
+
+  look {
+    scene 36x17 {
+      worldmap map names=0 blank=-1 oceans=0 places=["Uruk", "Memphis", "Mohenjo-daro", "Anyang"] numbered=0 route=0 at=canvas(1, 0)
+    }
+    say """
+      More than five thousand years ago the first cities grew up beside four great rivers. Uruk,
+      between the Tigris and the Euphrates, may have held 50,000 people around 3100 BC. Beside the
+      Nile the kings of Egypt ruled from Memphis and built the Great Pyramid. On the Indus stood
+      Mohenjo-daro, with its straight streets and drains, and by the Yellow River the Shang kings
+      ruled from Anyang. In a city, not everyone farmed.
+      """
+  }
+  do {
+    level easy {
+      worked history.city-continent k=0
+    }
+    show history.city-continent k=2 easy-k=1 hard-k=4
+    show history.cities-order k=2 easy-k=0 hard-k=4
+    show history.city-jobs k=2 easy-k=0 hard-k=4
+    show history.city-bc-gap k=2 easy-k=0 hard-k=4
+    show history.city-continent k=3 easy-k=2 hard-k=5
+    show history.cities-order k=3 easy-k=1 hard-k=5
+    show history.city-jobs k=3 easy-k=1 hard-k=5
+    show history.city-bc-gap k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.city-jobs k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.why-rivers k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.villages-in-a-city k=0 hard-k=1
+  }
+  remember {
+    say "The first cities grew beside great rivers, whose farms fed people who did other jobs."
+  }
+
+  grown-ups """
+    The idea is that cities began in several places at about the same time, each beside a great
+    river whose farms could feed thousands of people who did not farm: builders, potters, smiths
+    and scribes. The way in finds a city's continent on the map; the core orders the first cities,
+    names the new jobs, and counts years BC between them. The wrong idea to watch for is adding
+    two BC dates instead of taking one from the other. If the child is stuck on the map, trace the
+    river each city stands by. Off the page, find your own town's river, and ask why the town grew
+    where it did. England's key stage 2 history asks for "the achievements of the earliest
+    civilizations: an overview of where and when the first civilizations appeared", naming Ancient
+    Sumer, the Indus Valley, Ancient Egypt and the Shang Dynasty of Ancient China.
+    Japan's 社会 takes up history only through Japan's own story, in grade six
+    (「我が国の歴史上の主な事象について，人物の働きや代表的な文化遺産を中心に」, the course of study as read in its 2008 edition), so
+    this lesson has no line of its own there; its timeline and source skills serve that grade.
+    """
+  level easy {
+    grown-ups "At this level a worked example finds Uruk's continent, the cities to order are nearly in order, the jobs are the plainest (potters, bakers), and the years BC are far apart."
+  }
+  level hard {
+    grown-ups "At this level the cities to order are fully muddled, the jobs are the new ones (smiths, judges), the years BC are close together, and the three-star villages are smaller."
+  }
+}

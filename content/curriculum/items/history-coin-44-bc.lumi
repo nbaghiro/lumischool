@@ -1,0 +1,18 @@
+# The three-star question: a coin stamped "44 BC" cannot be real, because the people of 44 BC did not
+# know Christ would be born and did not count years as BC. Years BC were counted back much later.
+item history.coin-44-bc v=1 skills=[history.bc-ad, reasoning.logic] {
+  title "A coin that cannot be real"
+  difficulty k
+  let k=0..1
+  let yr={pick(k, 44, 250)}
+
+  scene 30x23 {
+    objectcard card kind=6 name="A coin stamped {yr} BC" use="Paying for things" year=(0 - yr) about=0 place="said to be from Rome" ask=0 at=canvas(0, 0)
+    text ask "A man offers to sell this coin. It has {yr} BC stamped on it. Could it really be from {yr} BC?" narrate width=28 below=card gap=1
+    choice pick options=["Yes, the stamp says so", "No, nobody then knew their year was BC"] stack=column below=ask gap=1
+  }
+
+  answer pick="No, nobody then knew their year was BC"
+  hint "BC means before year one. Who decided when year one was, and when?"
+  hint "Could someone in {yr} BC know how many years it was until year one?"
+}

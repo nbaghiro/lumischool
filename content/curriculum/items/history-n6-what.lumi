@@ -1,0 +1,19 @@
+# What a thing in the family's country's story was (n as in n6-order).
+item history.n6-what v=1 skills=[history.nation, history.evidence] {
+  title "What was it?"
+  let n=0..4
+  let ask={pick(n, "What is Parliament?", "What is the Constitution of the United States?", "What is the Diet of Japan?", "What is the State Duma?", "What is the National People's Congress?")}
+  let right={pick(n, "Elected people who make the laws", "The plan for how the country is run", "The elected body that makes the laws", "The elected chamber that passes laws", "The highest body of state, which passes laws")}
+  let w1={pick(n, "The king's family", "A list of the state capitals", "A plan for school meals", "The Kremlin's library", "A meeting of city mayors only")}
+  let w2={pick(n, "A court of judges", "The words of the national song", "The Emperor's palace", "A court of judges", "A court of judges")}
+
+  scene 36x24 {
+    timeline line from=1200 to=2000 step=100 years=[] labels=[] at=canvas(0, 0)
+    text ask "{ask}" narrate width=34 below=line gap=1
+    choice pick options=["{w1}", "{right}", "{w2}"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Think back to what the lesson told you."
+  hint "Which answer fits the time and the place?"
+}

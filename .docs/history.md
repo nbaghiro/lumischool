@@ -1,6 +1,8 @@
 # History
 
-Status: decided on whose history, 29 September 2026; no lesson is written yet. This
+Status: decided on whose history, 29 September 2026; written 30 September 2026, as the section
+"What is built" says: 42 world strand lessons and a national unit a grade for each of the five
+countries, 72 lessons in all, with the checker, the dated record and eight new drawings. This
 document plans a history and social studies track for grades one to six, hosted at the old tower: what
 schools in Japan, China and Russia teach under that heading at each grade, with England and the US
 beside them; the owner's decision on whose history; the principles the track
@@ -113,12 +115,68 @@ tower shows the unit for it, and a family whose country is not yet in the set ha
 alone, with the grade's lesson count one lower. The set grows one country at a time, each with an
 adviser who knows that country's curriculum.
 
+### How a family's national unit is chosen
+
+A parent chooses the country on the account page, under the family's details, from the set above or
+none. The choice is a `setting-changed` event with the key `nation`, written against the family
+rather than a child, and the latest one wins ([db.md](db.md), "The log"). Until a family chooses,
+it has no national unit: its children read the world strand, which every child is shown whatever the
+setting. A national unit is a history lesson whose header names its country, `nation=britain`
+([notation.md](notation.md), "Subjects and variants"), and `forChild` in `school/year.ts` shows it
+only to the children of a family whose setting names the same country, in the year, the plan, the
+calendar and at the tower. Explore shows every country's units with the country beside each, and can
+be narrowed to one. Changing the country changes which unit is planned from then on; work already
+done in another country's unit stays in the record.
+
 The two options set aside were the world strand alone, which misses what schools weight most at
 these ages, the child's own country, and a strand for each country, which costs about 48 lessons a
 country and puts every year inside national accounts that schools in different countries tell
 differently. The coins drawing is of quarters, dimes, nickels and pennies, and money questions are in
 dollars, so a product with no national choice reads as American by default; the national units carry
 their own coins, and the world strand uses coins of the period it shows.
+
+## What is built
+
+Written on 30 September 2026. The files are `content/curriculum/lessons/history-01-...` to
+`history-42-...` for the world strand, and `history-g<grade>-<country>-...` for the national units,
+with their items in `content/curriculum/items/history-*.lumi`. Each lesson carries its `unit=`, so it
+lands in its term: units 2 and 3, 5 and 6, 8 and 9 at grades one and two, and 1 to 9 at grades three
+to six. The national unit is unit 9 at every grade and carries `nation=`.
+
+| Grade | World strand | National unit (one for each of Britain, the USA, Japan, Russia, China) |
+|---|---|---|
+| 1 | My own timeline; toys old and new; a street then and now; when my grandparents were small; getting about | Our flag, our capital, our festival |
+| 2 | A hundred years in tens; the first flight, 1903; two great fires; two lives that changed what we know (Mary Anning, Marie Curie); reading an old picture | A life that changed things: Florence Nightingale, Rosa Parks, Ino Tadataka, Yuri Gagarin, Yuan Longping |
+| 3 | Stone, bronze and iron; the first farmers; layers in the ground; the first cities; the first writing; before and after year one; our place long ago; an old map and a new one | Our country long ago: Skara Brae and Stonehenge, Cahokia and Mesa Verde, tools at home, the Golden Ring's towns, China's first farmers |
+| 4 | Ancient Greece; Rome; Ashoka and the digits; China's first empire; the Silk Road; money; alphabets, characters and kana; a source and who made it | Pages of our history: Roman Britain, a new nation, keeping safe from earthquakes, pages of Russia's history, inventions that changed the world |
+| 5 | The world in the year 1000; castles and walled cities; books copied and printed; continents and capitals; where our food comes from; how a town is run; ships and maps; two accounts of one voyage | Our country in its time: Alfred to the Domesday Book, life in the colonies, Japan's land, birch-bark letters, great works of water and stone |
+| 6 | Mills, canals and railways; a day in 1850 and 1950; inventions in order; the twentieth century through families; a connected world; the race to space; laws and votes; countries working together | How our country is governed |
+
+The national units share their items: each item takes `n` (0 the United Kingdom, 1 the United
+States, 2 Japan, 3 Russia, 4 China) and each country's lesson pins its own, so one set of questions
+serves five countries and a new country is a new column of data. Each national lesson also reviews
+three of the grade's world questions, which is what gives its levels room to differ.
+
+The record is `engine/notation/chronicle.ts`: every event, object and invention a lesson names, with
+its year or span, whether it is known only roughly, and where the date was read, and every source a
+source card shows, with who made it, when, where and whether they were there. The checkers are in
+`engine/notation/history.ts` (`history.dates`, `history.street`, `history.sources`, `history.town`,
+`history.world`, `history.family`, `history.vote`), with tests in
+`engine/notation/__tests__/history.test.ts`. A lesson that names an event the record does not hold,
+or draws a year the record disagrees with, does not compile; a date given as a span or as "about" is
+never asked exactly, and events whose spans overlap are never put in order.
+
+The new drawings, each with its catalogue entry and shelf grouping: `thenandnow` (a street at a
+year, with things whose first dates the record holds), `familytree`, `objectcard` (a museum label
+whose objects include the coins through time), `worldmap` (continents, oceans, cities and three
+voyages), `townmap` (a made-up market town at any year), `council` (a vote by hands or ballot box),
+`toys`, and `flags` (the five countries' flags). The timeline gained years before year one, written
+BC and AD, with no change to its defaults. The period clothes, the old page and older ship rigs were
+not drawn; the lessons use the shelf's people, passages and letters instead.
+
+Grown-ups mark what the machine cannot prove: a grandparent's questions, a family's own source, a
+letter home, a walk for clues, a museum card for an old thing at home. These use `writing.by-eye`
+and `art.by-eye` with their notice lists.
 
 ## Principles
 
@@ -254,8 +312,9 @@ voyages.
 
 ## Where it sits
 
-- In the code: `history` joins `TRACK_IDS` in `school/tracks.ts` with a pace in `DEFAULT_TRACKS`, a
-  lesson header says `subject=history`, and the checker registers as the other subjects' do. A lesson
+- In the code: `history` is in `TRACK_IDS` in `school/tracks.ts` at one day a week from grade one
+  in `DEFAULT_TRACKS` (30 September 2026), a lesson header says `subject=history` and a national
+  unit adds `nation=`, and the checker registers as the other subjects' do. A lesson
   with no drawing to point at raises the `WORDS_ONLY` ratchet with its reason, as reading does.
 - On the map: the tower's `needs` sentence goes in the change that lands its first lessons, its
   reaches are rewritten against the history skills (`history.order` for the courses of stone, the
@@ -322,3 +381,19 @@ To be fetched and quoted before the lessons are written:
 - England, the history programmes of study for key stages 1 and 2.
 - The United States, the C3 Framework for Social Studies State Standards, and California's
   History-Social Science Framework.
+
+Read for the lessons on 30 September 2026:
+
+- England, the history programmes of study for key stages 1 and 2, and the geography programme, on
+  gov.uk: the lines quoted in the grown-ups notes were checked against the page.
+- Japan, 学習指導要領 社会 on the MEXT page above, which is the 2008 edition; every quotation says so.
+  The 2017 edition was not read.
+- Russia, the federal work programme for history, grades 5 to 9 (edsoo.ru, the 2023 edition):
+  https://edsoo.ru/wp-content/uploads/2023/09/frp_istoriya_5-9-klassy-1.pdf
+- China, the 2022 standard for 道德与法治 was not read; where a note names the 统编版 textbook it
+  says it is recalled.
+- Dates: the Smithsonian National Air and Space Museum (the 1903 Wright Flyer), the Natural History
+  Museum (Mary Anning), the United Nations (its founding), and otherwise Wikipedia, read as a quick
+  check. Each entry in `engine/notation/chronicle.ts` says which, and whether the date was read or
+  recalled; the Wikipedia dates are still to be confirmed against Britannica, which refused automated
+  reading, and the recalled ones (22 of about 200, marked) are to be checked first.

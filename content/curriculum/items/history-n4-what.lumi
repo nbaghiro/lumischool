@@ -1,0 +1,19 @@
+# What a thing in the family's country's story was (n as in n4-order).
+item history.n4-what v=1 skills=[history.nation, history.evidence] {
+  title "What was it?"
+  let n=0..4
+  let ask={pick(n, "What was Hadrian's Wall?", "What was the Declaration of Independence?", "Why is 1 September Disaster Prevention Day in Japan?", "Who founded St Petersburg in 1703?", "What did Shen Kuo describe in his book of 1088?")}
+  let right={pick(n, "A Roman wall across the north of Britain", "It said the colonies were free of Britain", "The great Kanto earthquake struck on that day in 1923", "Tsar Peter the Great", "A magnetic needle that points south")}
+  let w1={pick(n, "A wall round Roman London", "A peace treaty with France", "It is the first day of the school year", "Ivan the Terrible", "A telescope for the stars")}
+  let w2={pick(n, "A wall built by the Normans", "The first tax law", "The Great Fire of Edo began that day", "Catherine the Great", "Paper made from rags")}
+
+  scene 36x24 {
+    timeline line from=0 to=2000 step=250 years=[] labels=[] at=canvas(0, 0)
+    text ask "{ask}" narrate width=34 below=line gap=1
+    choice pick options=["{w1}", "{right}", "{w2}"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Think back to what the lesson told you."
+  hint "Which answer fits the time and the place?"
+}

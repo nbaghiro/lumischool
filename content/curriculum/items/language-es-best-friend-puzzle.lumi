@@ -1,0 +1,22 @@
+# Non-routine: a description matched to a friend, a sentence that cannot fit, and the one change that mends a sentence.
+item language.es-best-friend-puzzle v=1 stars=3 skills=[language.describing, language.grammar, reasoning.language] {
+  title "Fix the description"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Eva has curly hair and talks a lot. Sara has straight hair and talks a lot. Leo has curly hair and is quiet. Who is this: Tiene el pelo rizado. Es muy habladora.\", \"Which sentence cannot be about Leo, a boy?\", \"Ana writes: Mi amigo es alta y simpático. Which one change mends it?\")}" width=32
+      choice pick options=[pick(k, "Eva", "Es muy tímida.", "alta to alto"), pick(k, "Sara", "Es valiente.", "simpático to simpática"), pick(k, "Leo", "Es inteligente.", "amigo to amiga")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Eva", "Es muy tímida.", "alta to alto")
+  feedback {
+    when (pick == pick(k, "Sara", "Es valiente.", "amigo to amiga")) {
+      say "{pick(k, \"Sara talks a lot, but her hair is straight.\", \"Valiente ends in e: it fits a boy or a girl.\", \"Then simpático would be wrong. Which single change makes all of it agree?\")}"
+    }
+  }
+  hint "Check each word against the person."
+  hint "Try each change and read the sentence again."
+}

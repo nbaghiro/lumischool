@@ -1,0 +1,22 @@
+# Where a food comes from: grown on a farm, caught at sea, or brought from another country by
+# trade. The harder ones are foods children rarely think about.
+item history.food-where v=1 skills=[history.geography, history.food] {
+  title "Where does it come from?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let food={pick(k, "wheat for bread", "tuna", "bananas, in a cold country", "milk", "prawns", "coffee, in a cold country")}
+  let key={pick(k, "Grown on a farm", "Caught at sea", "Brought from another country", "Grown on a farm", "Caught at sea", "Brought from another country")}
+
+  scene 34x21 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      crops field stage=3 rows=2 plants=5
+      fishshoal fish rows=1 cols=3
+    }
+    text ask "Where does this food come from: {food}?" narrate width=32 below=pics gap=1
+    choice pick options=["Grown on a farm", "Caught at sea", "Brought from another country"] stack=column below=ask gap=1
+  }
+
+  answer pick=key
+  hint "Is it a plant, an animal from a farm, or something from the sea?"
+  hint "Could it grow in a cold country's weather?"
+}

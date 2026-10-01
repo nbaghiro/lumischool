@@ -1,0 +1,20 @@
+# How an idea becomes a law in a parliament, in its plain steps: proposed, debated, voted on,
+# approved, then everyone must keep it.
+item history.law-steps v=1 skills=[history.government, reasoning.order] {
+  title "How a law is made"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Someone proposes an idea for a law", "The members debate it", "The members vote on it", "It becomes law and everyone must keep it", "The members vote on it", "It is approved and signed")}
+  let b={pick(k, "The members debate it", "Someone proposes an idea for a law", "It becomes law and everyone must keep it", "The members vote on it", "It is approved and signed", "Someone proposes an idea for a law")}
+  let c={pick(k, "The members vote on it", "The members vote on it", "Someone proposes an idea for a law", "Someone proposes an idea for a law", "Someone proposes an idea for a law", "The members vote on it")}
+
+  scene 34x25 {
+    council c hands=[1, 1, 0, 1, 1, 0, 1] box=0 motion="A new law" count=1 at=canvas(1, 0)
+    text ask "Number these steps 1, 2, 3, in the order they happen." narrate width=32 below=c gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  answer p=pick(k, 1, 2, 2, 3, 2, 3) q=pick(k, 2, 1, 3, 2, 3, 1) r=pick(k, 3, 3, 1, 1, 1, 2)
+  hint "Nothing can be voted on until someone has proposed it."
+  hint "An idea is talked over before it is voted on."
+}

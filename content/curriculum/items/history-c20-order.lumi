@@ -1,0 +1,19 @@
+# Events of the twentieth century numbered from the earliest, from the dated record.
+item history.c20-order v=1 skills=[history.twentieth-century, history.order] {
+  title "The century in order"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "First World War", "First World War", "United Nations founded", "Rationing ends in Britain", "Universal Declaration of Human Rights", "Rights of the Child")}
+  let b={pick(k, "Children evacuated from British cities", "United Nations founded", "First World War", "First World War", "Rationing ends in Britain", "Children evacuated from British cities")}
+  let c={pick(k, "Rationing ends in Britain", "Rights of the Child", "Rationing ends in Britain", "Children evacuated from British cities", "First World War", "Universal Declaration of Human Rights")}
+
+  scene 36x22 {
+    timeline line from=1900 to=2000 step=20 years=[] labels=[] at=canvas(0, 0)
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=34 below=line gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "The First World War came first, from 1914."
+  hint "The United Nations came at the end of the Second World War, and the rights after it."
+}

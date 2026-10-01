@@ -1,0 +1,68 @@
+# The fruit stall at the ferry town's market, and I like and I do not like.
+lesson language-fruit v=1 format=teach grade=2 unit=5 subject=language levels=[easy, medium, hard] {
+  title "[[food.i-like-fruit|cap]]"
+  goal "Name eight fruits and vegetables in [[language.name]] and say which you like and which you do not."
+
+  look {
+    scene 28x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        foodstall market foods=["apple", "banana", "strawberry", "lemon"] names=["[[food.apple]]", "[[food.banana]]", "[[food.strawberry]]", "[[food.lemon]]"] costs=["", "", "", ""]
+      }
+    }
+    say """
+      The fruit stall in the ferry town has [[food.the-apple]] (the apple), [[food.the-banana]] (the
+      banana), [[food.the-strawberry]] (the strawberry) and [[food.the-lemon]] (the lemon). To say
+      you like something, say [[phrase.i-like-fruit]], I like fruit. To say you do not, say
+      [[phrase.i-do-not-like-lemon]], I do not like lemon.
+      """
+  }
+  do {
+    level easy {
+      worked language.fruit-name k=4
+    }
+    show language.fruit-name k=3 easy-k=0 hard-k=6
+    show language.fruit-meaning k=3 easy-k=1 hard-k=4
+    show language.fruit-write k=3 easy-k=1 hard-k=5
+    show language.fruit-name k=5 easy-k=2 hard-k=7
+    show language.fruit-match k=2 easy-k=0 hard-k=3
+    show language.fruit-write k=4 hard-k=6
+    show language.fruit-listen k=3 easy-k=0 hard-k=5
+    show language.fruit-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.fruit-write k=3
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-fruit-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.fruit-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[phrase.i-like-fruit]] I like fruit. [[phrase.i-do-not-like-lemon]] I do not like lemon."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is a dislike heard as a like because the child catches only the
+    liking word. The fruit stall draws each fruit the same way and the crates carry no names in the
+    questions, so the picture asks the question and the child supplies the word. The written words
+    in this lesson are marked without minding accents; the dictation minds them. The listening
+    question is a dictation: read the sentence aloud from this sheet, where it prints as Read aloud,
+    slowly and twice, or let the device play it. It is marked word by word, and a missing accent
+    counts. If the child is stuck, taste two fruits and say for each whether you like it. Off the
+    page, make a shopping list of three fruits. It meets England's key stage 2 languages programme
+    (years 3 to 6, statutory from age 7): "engage in conversations; ask and answer questions;
+    express opinions and respond to those of others"; Japan's grades 3 and 4 foreign language
+    activities: "Activities to ask and answer simple questions about each other's likes and wants,
+    etc."; and CEFR A1, "Can understand and use familiar everyday expressions and very basic
+    phrases". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[food.the-pear]] is worked first in the teacher's pen, the words to name are [[food.the-apple]] and [[food.the-orange]] and the words to write are [[food.strawberry]] and [[food.tomato]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[food.the-grapes]] and [[food.the-tomato]] and the words to write are [[food.lemon]], [[food.banana]] and [[food.orange-fruit]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

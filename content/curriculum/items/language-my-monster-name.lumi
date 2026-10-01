@@ -1,0 +1,19 @@
+# Picture or situation to the language: [[describe.it-has-two-eyes]], [[describe.it-has-stripes]], [[describe.it-has-four-legs]], [[describe.it-has-spots]], [[describe.it-is-round]], [[describe.it-has-one-horn]], [[describe.it-is-long]], [[describe.it-has-three-eyes-and-two-horns]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.my-monster-name v=1 skills=[language.describing, language.numbers] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x29 {
+    column all at=canvas(1, 1) space=1 align=start {
+      creatures cr eyes=[pick(k, 2, 1, 2, 2, 1, 2, 2, 3)] legs=[pick(k, 2, 2, 4, 2, 2, 2, 6, 2)] horns=[pick(k, 0, 0, 0, 0, 0, 1, 0, 2)] coat=[pick(k, 0, 2, 0, 1, 0, 0, 2, 0)] body=[pick(k, 0, 0, 1, 0, 0, 1, 2, 0)] colors=["sky"] labels=[""] ring=-1
+      text ask "Which sentence is true of the creature?" width=32
+      choice pick options=[pick(k, "[[describe.it-has-three-eyes]]", "[[describe.it-has-stripes]]", "[[describe.it-has-six-legs]]", "[[describe.it-has-stripes]]", "[[describe.it-is-round]]", "[[describe.it-has-two-horns]]", "[[describe.it-is-tall]]", "[[describe.it-has-three-eyes-and-two-horns]]"), pick(k, "[[describe.it-has-two-eyes]]", "[[describe.it-has-spots]]", "[[describe.it-has-two-legs]]", "[[describe.it-has-spots]]", "[[describe.it-is-tall]]", "[[describe.it-has-no-horns]]", "[[describe.it-is-long]]", "[[describe.it-has-two-eyes-and-three-horns]]"), pick(k, "[[describe.it-has-one-eye]]", "[[describe.it-has-no-stripes-or-spots]]", "[[describe.it-has-four-legs]]", "[[describe.it-has-no-stripes-or-spots]]", "[[describe.it-is-long]]", "[[describe.it-has-one-horn]]", "[[describe.it-is-round]]", "[[describe.it-has-three-eyes-and-one-horn]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[describe.it-has-two-eyes]]", "[[describe.it-has-stripes]]", "[[describe.it-has-four-legs]]", "[[describe.it-has-spots]]", "[[describe.it-is-round]]", "[[describe.it-has-one-horn]]", "[[describe.it-is-long]]", "[[describe.it-has-three-eyes-and-two-horns]]")
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

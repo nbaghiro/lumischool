@@ -1,0 +1,86 @@
+# The national unit for russia: a person from the country's past who changed how people live. Items
+# take n=3. Dates are in engine/notation/chronicle.ts with their sources.
+lesson history-g2-russia-a-life-that-changed-things v=1 format=teach grade=2 unit=9 subject=history nation=russia levels=[easy, medium, hard] {
+  title "Yuri Gagarin"
+  goal "Tell the story of Yuri Gagarin in order, and say what changed for people because of it."
+
+  look {
+    scene 36x9 {
+      row all at=canvas(1, 0) space=2 align=end {
+        person p pose=stand age=grownup hair=short colour=brown top=mint
+        timeline line from=1700 to=2000 step=50 years=[] labels=[]
+      }
+    }
+    say """
+      Yuri Gagarin was born in 1934 in a village called Klushino. On 12 April 1961 he flew round the Earth once in the spaceship Vostok 1, in 108 minutes, and came home. He was the first person in space, and eight years later people landed on the Moon.
+      """
+  }
+  do {
+    level easy {
+      worked history.person-what n=3 k=0
+      show history.person-which-first n=3 k=0
+      show history.person-order n=3 k=0
+      show history.person-line n=3 k=0
+      show history.person-changed n=3 k=0
+      show history.person-what n=3 k=1
+      show history.person-which-first n=3 k=1
+      show history.person-order n=3 k=1
+    }
+    level medium {
+      show history.person-what n=3 k=0
+      show history.person-order n=3 k=1
+      show history.person-line n=3 k=0
+      show history.person-changed n=3 k=1
+      show history.person-which-first n=3 k=1
+      show history.person-order n=3 k=2
+      show history.person-line n=3 k=1
+    }
+    level hard {
+      show history.person-what n=3 k=1
+      show history.person-which-first n=3 k=1
+      show history.person-order n=3 k=2
+      show history.person-line n=3 k=2
+      show history.person-changed n=3 k=1
+      show history.person-order n=3 k=1
+      show history.person-line n=3 k=1
+    }
+  }
+  story {
+    level easy {
+      show history.person-changed n=3 k=1
+    }
+    level medium {
+      show history.person-changed n=3 k=0
+    }
+    level hard {
+      show history.person-changed n=3 k=0
+      show history.person-line n=3 k=0
+    }
+  }
+  try stars=2 {
+    show history.person-why n=3
+  }
+  try stars=3 {
+    show history.person-retell n=3
+  }
+  remember {
+    say "Yuri Gagarin changed how people live. We remember a person for what changed because of them."
+  }
+
+  grown-ups """
+    The idea is that one person's life can change how everyone lives, and that we judge a person
+    from the past by what changed because of them rather than by how famous they were. The way in
+    names what Yuri Gagarin did; the core puts the events of the life in order, counts the years between
+    them, and says what was different before and after; the two-star question asks for a reason to
+    remember them. The wrong idea to watch for is "important because famous". If the child is
+    stuck on the years, count on to the next ten first. The three-star task is for you to mark:
+    the story in three sentences, in order, with a year. Off the page, find a picture of Yuri Gagarin
+    together and ask what the child would want to ask them. Russia's «Окружающий мир» in the first grades includes the country's famous people and its achievements, and 12 April is kept there as Cosmonautics Day.
+    """
+  level easy {
+    grown-ups "At this level a worked example names what Yuri Gagarin did, the years are counted from the birth, and the events come nearly in order; the core ends with the before-and-after question in both forms."
+  }
+  level hard {
+    grown-ups "At this level the events are muddled both ways, the years are counted both from the birth and between the later events, and the first question compares the life with an event from another lesson only a few years apart."
+  }
+}

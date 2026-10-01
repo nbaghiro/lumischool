@@ -1,0 +1,22 @@
+# A tall letter reaches the top line and a small one stops at the dotted line. t is the one that
+# fools a child: it is taller than a small letter but not as tall as l.
+item k.tall-or-small v=1 skills=[writing.letter-formation, writing.letter-height] {
+  title "Tall or small?"
+  difficulty (if x == "t" then 2 else if x == "l" or x == "o" then 0 else 1)
+  let x={"l", "o", "h", "a", "d", "c", "t"}
+  level easy {
+    let x={"l", "o", "h", "a"}
+  }
+  level hard {
+    let x={"d", "c", "t"}
+  }
+
+  scene 26x12 {
+    handwriting rules show="{x}" rows=1 trace=1 width=12 at=canvas(1, 1)
+    text ask "Is {x} a tall letter or a small letter?" narrate width=24 below=rules gap=1
+    choice pick options=["tall", "small"] below=ask gap=1
+  }
+
+  answer pick=(if x == "l" or x == "h" or x == "d" or x == "t" then "tall" else "small")
+  hint "Does the letter reach the top line, or stop at the dotted line?"
+}

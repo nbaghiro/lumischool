@@ -1,0 +1,66 @@
+# The seasons on one tree through the year, with the weather each brings in Spain.
+lesson language-seasons v=1 format=teach grade=4 unit=1 subject=language levels=[easy, medium, hard] {
+  title "The seasons"
+  goal "Name the four seasons in [[language.name]] and say what the weather is like in each."
+
+  look {
+    scene 35x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        seasontrees trees seasons=["spring", "summer", "autumn", "winter"] names=1
+      }
+    }
+    say """
+      The year has four seasons: [[weather.spring]] (spring), [[weather.summer]] (summer),
+      [[weather.autumn]] (autumn) and [[weather.winter]] (winter). In Spain summer is June, July and
+      August, and it is hot: [[weather.in-summer-it-is-hot]]. In winter it is cold, and it snows in
+      the mountains. In spring there are flowers, and in autumn the leaves fall.
+      """
+  }
+  do {
+    level easy {
+      worked language.seasons-name k=4
+    }
+    show language.seasons-name k=2 easy-k=1 hard-k=5
+    show language.seasons-meaning k=3 easy-k=2 hard-k=4
+    show language.seasons-write k=3 easy-k=0
+    show language.seasons-name k=4 easy-k=2 hard-k=6
+    show language.seasons-match k=1 easy-k=0 hard-k=2
+    show language.seasons-write k=4 easy-k=3 hard-k=2
+    show language.seasons-listen k=3 easy-k=0 hard-k=5
+    show language.seasons-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.seasons-write k=1
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-seasons-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.seasons-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[weather.spring|cap]], [[weather.summer]], [[weather.autumn]], [[weather.winter]]. [[weather.in-summer-it-is-hot|cap]]."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is that the seasons are the same everywhere, and autumn and winter
+    swapped. The tree is the same tree drawn in each season, so the picture changes only in what a
+    season changes. From this grade the written words are marked with their accents: a word typed
+    without its accent is not taken. The dictation is read from this sheet, where it prints as Read
+    aloud, or played by the device. If the child is stuck, sort the twelve months into four piles
+    for the seasons. Off the page, look outside and say which season it is and one thing that shows
+    it. It meets England's key stage 2 languages programme (years 3 to 6, statutory from age 7):
+    "describe people, places, things and actions orally and in writing"; Japan's grades 5 and 6
+    foreign languages: "Can talk about familiar and simple matters in daily life by using simple
+    words and phrases and basic expressions"; and CEFR A1, "Can understand and use familiar everyday
+    expressions and very basic phrases". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[weather.in-summer-it-is-hot]] is worked first in the teacher's pen, the words to name are [[weather.winter]] and [[weather.spring]] and the words to write are [[weather.summer-word]] and [[weather.autumn-word]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[weather.in-winter-it-snows]] and [[weather.in-spring-there-are-flowers]] and the words to write are [[weather.autumn-word]], [[weather.spring-word]] and [[weather.winter-word]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

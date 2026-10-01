@@ -1,0 +1,70 @@
+# Ana's postcard to her grandmother from the ferry town, read for who, what, when and where.
+lesson language-postcard v=1 format=teach grade=6 unit=5 subject=language levels=[easy, medium, hard] {
+  title "A postcard from the ferry town"
+  goal "Read a postcard in [[language.name]] and answer questions about now, yesterday and tomorrow."
+
+  look {
+    scene 36x17 {
+      column all at=canvas(1, 1) space=1 align=start {
+        postcard card greeting="[[postcard.dear-grandma]]" text="[[postcard.ana-card]]" closing="[[postcard.love]]" from="Ana" to=["Rosa Díaz", "Calle Mayor 5", "Madrid"] stamp=ship date="3/8" lines=0
+      }
+    }
+    say """
+      Ana writes to her grandmother from the ferry town. A postcard starts with
+      [[postcard.dear-grandma]], dear Grandma, and ends with [[postcard.love]], love. Read it for
+      who is there, the weather, what Ana does now, what happened [[postcard.yesterday]] (yesterday)
+      and what will happen [[postcard.tomorrow]] (tomorrow).
+      """
+  }
+  do {
+    level easy {
+      worked language.postcard-name k=3
+    }
+    show language.postcard-name k=2 easy-k=0 hard-k=4
+    show language.postcard-meaning k=3 easy-k=1 hard-k=4
+    show language.postcard-write k=3 easy-k=1 hard-k=6
+    show language.postcard-name k=4 easy-k=1 hard-k=5
+    show language.postcard-match k=1 easy-k=0 hard-k=2
+    show language.postcard-write k=5 easy-k=2 hard-k=3
+    show language.postcard-listen k=3 easy-k=0 hard-k=5
+    show language.postcard-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.postcard-write k=2
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-postcard-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.postcard-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A postcard: a greeting, where you are, the weather, what you do, and an ending."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is reading every sentence as now: the card has yesterday, today and
+    tomorrow, and the three-star question asks for their order. The postcard is the same in every
+    question. The writing piece is read by you: tick what you see on the list, and read it back
+    aloud with the child. From this grade the written words are marked with their accents: a word
+    typed without its accent is not taken. The dictation is read from this sheet, where it prints as
+    Read aloud, or played by the device. If the child is stuck, underline yesterday, today and
+    tomorrow on the card in three colours. Off the page, send a real postcard in the language. It
+    meets England's key stage 2 languages programme (years 3 to 6, statutory from age 7): "read
+    carefully and show understanding of words, phrases and simple writing" and "write phrases from
+    memory, and adapt these to create new sentences, to express ideas clearly"; Japan's grades 5 and
+    6 foreign languages: "Can write about themselves and familiar and simple matters by using simple
+    words and phrases and basic expressions for which they are sufficiently familiar with the sounds
+    while refering to example sentences"; and CEFR A2, "Can describe in simple terms aspects of
+    his/her background, immediate environment and matters in areas of immediate need". The phrases
+    are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[postcard.ice-cream]] is worked first in the teacher's pen, the words to name are [[postcard.with-her-parents]] and [[postcard.it-is-sunny]] and the words to write are [[postcard.sun]] and [[postcard.beach]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[postcard.dolphins]] and [[postcard.to-the-market]] and the words to write are [[postcard.grandmother]], [[postcard.ice-cream]] and [[postcard.beach]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

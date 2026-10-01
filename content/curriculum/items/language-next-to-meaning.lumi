@@ -1,0 +1,19 @@
+# The language to English: [[phrase.the-bank-is-next-to-the-chemist-s]], [[phrase.i-live-opposite-the-park]], [[phrase.the-library-is-between-the-museum-and-th]], [[phrase.the-harbour-is-far-from-the-station]], [[phrase.is-there-a-chemist-s-near-here]], [[phrase.the-dog-is-behind-the-door]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.next-to-meaning v=1 skills=[language.town, language.directions] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 35x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "gran", "girl", "boy", "gran", "girl", "boy")] says=[pick(k, "[[phrase.the-bank-is-next-to-the-chemist-s]]", "[[phrase.i-live-opposite-the-park]]", "[[phrase.the-library-is-between-the-museum-and-th]]", "[[phrase.the-harbour-is-far-from-the-station]]", "[[phrase.is-there-a-chemist-s-near-here]]", "[[phrase.the-dog-is-behind-the-door]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "The dog is behind the door.", "The harbour is far from the station.", "I live opposite the park.", "The dog is behind the door.", "The dog is behind the door.", "The harbour is far from the station."), pick(k, "The bank is next to the chemist's.", "I live opposite the park.", "Is there a chemist's near here?", "The harbour is far from the station.", "The library is between the museum and the church.", "The dog is behind the door."), pick(k, "The library is between the museum and the church.", "Is there a chemist's near here?", "The harbour is far from the station.", "I live opposite the park.", "Is there a chemist's near here?", "The library is between the museum and the church."), pick(k, "Is there a chemist's near here?", "The library is between the museum and the church.", "The library is between the museum and the church.", "The library is between the museum and the church.", "The harbour is far from the station.", "Is there a chemist's near here?")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "The bank is next to the chemist's.", "I live opposite the park.", "The library is between the museum and the church.", "The harbour is far from the station.", "Is there a chemist's near here?", "The dog is behind the door.")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

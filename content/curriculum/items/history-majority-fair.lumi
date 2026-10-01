@@ -1,0 +1,17 @@
+# The two-star reason: a vote decides, but a fair council still thinks about the people who lost the
+# vote, since a rule applies to everyone.
+item history.majority-fair v=1 skills=[history.government, reasoning.why] {
+  title "Is the most always fair?"
+  difficulty k
+  let k=0..1
+
+  scene 32x31 {
+    council c hands=[1, 1, 1, 1, 1, 0, 0] box=0 motion="{if k == 0 then \"Close the old path\" else \"Move the market\"}" count=1 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Five voted to close the old path and two voted no. The two live beside it and use it every day. What should a fair council still do?\" else \"Most people in town want the market moved. What should a fair council do about the stallholders who will lose their spot?\"}" narrate width=30 below=c gap=1
+    choice pick options=["Listen to them and help where it can", "Nothing: the most votes win and that is all", "Ask the two to leave the town"] stack=column below=ask gap=1
+  }
+
+  answer pick="Listen to them and help where it can"
+  hint "The rule will apply to everyone, including those who voted no."
+  hint "Can a council keep the decision and still help the people it hurts?"
+}

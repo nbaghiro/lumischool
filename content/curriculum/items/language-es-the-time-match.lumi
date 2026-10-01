@@ -1,0 +1,17 @@
+# Four words to their English, 3 sets, the later sets with the words most often mixed up.
+item language.es-the-time-match v=1 skills=[language.time] {
+  title "Match the words"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x17 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Write the number of its English next to each Spanish word." width=32
+      match m left=[pick(k, "y media", "es la una", "son las seis menos cuarto"), pick(k, "y cuarto", "son las dos", "son las cinco y cuarto"), pick(k, "menos cuarto", "son las tres y media", "son las cinco y media"), pick(k, "en punto", "son las cuatro y cuarto", "son las seis")] right=[pick(k, "quarter to", "4:15", "5:30"), pick(k, "half past", "1:00", "5:45"), pick(k, "quarter past", "2:00", "6:00"), pick(k, "on the dot", "3:30", "5:15")] blanks=[a, b, c, d]
+    }
+  }
+
+  answer a=2 b=pick(k, 3, 3, 4) c=pick(k, 1, 4, 1) d=pick(k, 4, 1, 3)
+  hint "Start with the word you are surest of, and cross its English off."
+  hint "Two words look alike. Which letter is different, and what does it change?"
+}

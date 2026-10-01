@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[num.twenty-one]], [[num.thirty]], [[num.twenty-five]], [[num.twenty-two]], [[num.twenty-eight]], [[num.twenty-three]], [[num.thirty-one]], [[num.twenty-four]], [[num.twenty-seven]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.how-old-name v=1 skills=[language.numbers, language.questions] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2, 2)
+  let k=0..8
+
+  scene 34x29 {
+    column all at=canvas(1, 1) space=1 align=start {
+      digitcards num digits=[pick(k, 2, 3, 2, 2, 2, 2, 3, 2, 2), pick(k, 1, 0, 5, 2, 8, 3, 1, 4, 7)]
+      text ask "What number do the cards make? Pick the word." width=32
+      choice pick options=[pick(k, "[[num.twenty-three]]", "[[num.twenty-four]]", "[[num.twenty-four]]", "[[num.thirty-one]]", "[[num.twenty-three]]", "[[num.twenty-eight]]", "[[num.twenty-one]]", "[[num.twenty-two]]", "[[num.thirty]]"), pick(k, "[[num.twenty-one]]", "[[num.thirty]]", "[[num.twenty-eight]]", "[[num.twenty-two]]", "[[num.thirty]]", "[[num.twenty-three]]", "[[num.twenty-five]]", "[[num.twenty-four]]", "[[num.twenty-five]]"), pick(k, "[[num.twenty-two]]", "[[num.twenty-eight]]", "[[num.twenty-three]]", "[[num.thirty]]", "[[num.twenty-eight]]", "[[num.twenty-two]]", "[[num.twenty-eight]]", "[[num.twenty-seven]]", "[[num.twenty-seven]]"), pick(k, "[[num.thirty-one]]", "[[num.twenty-three]]", "[[num.twenty-five]]", "[[num.twenty-four]]", "[[num.twenty-seven]]", "[[num.twenty-five]]", "[[num.thirty-one]]", "[[num.twenty-five]]", "[[num.twenty-three]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[num.twenty-one]]", "[[num.thirty]]", "[[num.twenty-five]]", "[[num.twenty-two]]", "[[num.twenty-eight]]", "[[num.twenty-three]]", "[[num.thirty-one]]", "[[num.twenty-four]]", "[[num.twenty-seven]]")
+  feedback {
+    when (pick == pick(k, "[[num.twenty-two]]", "[[num.thirteen]]", "[[num.twenty-four]]", "[[num.twelve]]", "[[num.eighteen]]", "[[num.thirteen]]", "[[num.twenty-one]]", "[[num.fourteen]]", "[[num.seventeen]]")) point=num {
+      say "{pick(k, \"[[num.twenty-two|cap]] is 22. The cards say 21.\", \"[[num.thirteen|cap]] is 13. The cards say 30.\", \"[[num.twenty-four|cap]] is 24. The second card is 5.\", \"[[num.twelve|cap]] is 12. The first card is a 2.\", \"[[num.eighteen|cap]] is 18. The first card is a 2.\", \"[[num.thirteen|cap]] is 13. The first card is a 2.\", \"[[num.twenty-one|cap]] is 21. The first card is a 3.\", \"[[num.fourteen|cap]] is 14. The first card is a 2.\", \"[[num.seventeen|cap]] is 17. The first card is a 2.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

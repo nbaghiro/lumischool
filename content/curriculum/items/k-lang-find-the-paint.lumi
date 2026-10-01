@@ -1,0 +1,22 @@
+item k.lang-find-the-paint v=1 skills=[language.colours] {
+  title "Find the paint"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let word={pick(k, "[[colour.red]]", "[[colour.blue]]", "[[colour.yellow]]", "[[colour.green]]")}
+  let english={pick(k, "red", "blue", "yellow", "green")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x16 {
+    mixingtray tray wells=["red", "blue", "yellow", "green"] labels=true at=canvas(1, 1)
+    text ask "Listen: {word}. Which paint is it?" narrate width=28 below=tray gap=1
+    choice pick options=["red", "blue", "yellow", "green"] stack=row below=ask gap=1
+  }
+
+  answer pick=english
+  hint "Say the word again. Which colour did the lesson give it for?"
+}

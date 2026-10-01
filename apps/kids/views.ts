@@ -59,7 +59,7 @@ export async function loadChild(kid: Kid, still: boolean): Promise<Loaded | null
     const [record, pack] = await Promise.all([client.read(kid.id), client.pack(kid.id)]);
     if ("error" in record || "error" in pack) return null;
     const since = record.start ?? record.today;
-    const corpus = corpusFrom(pack.index.lessons, since);
+    const corpus = corpusFrom(pack.index.lessons, since, record.variants);
     const choice = choiceOf(kid, record, corpus);
     const { loadDrawings, declaredOf } = await onDemand(() => import("../../engine/ui/drawings"));
     // every world the map draws, not only the child's own years: the places they cannot go to yet are

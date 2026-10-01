@@ -1,0 +1,14 @@
+# The surprise: a seed sprouts in the dark, since its food is inside it. The drawing shows the
+# dark dish sprouted, pale and tall.
+item k.seeds-in-the-dark v=1 stars=2 skills=[nature.growing, reasoning.explain] {
+  title "Seeds in the dark"
+
+  scene 30x26 {
+    seedtest test mode=0 water=[1, 1] air=[1, 1] warmth=[1, 1] light=[1, 0] seeds=5 rate=100 after=1 names=0 at=canvas(1, 1)
+    text ask "Dish B was kept in a dark cupboard for a week. Did its seeds sprout?" narrate width=28 below=test gap=1
+    choice pick options=["Yes, they sprouted in the dark.", "No, seeds need light to sprout."] stack=column below=ask gap=1
+  }
+
+  answer pick="Yes, they sprouted in the dark."
+  hint "Look at dish B. Are there shoots?"
+}

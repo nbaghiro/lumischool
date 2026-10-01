@@ -1,0 +1,21 @@
+item k.push-or-pull-job v=1 skills=[physics.forces] {
+  title "Push or pull in the house"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let job={pick(k, "kicking a ball", "opening a drawer", "pressing a doorbell", "a tug of war with a rope", "a dog walking you on its lead", "shutting a door")}
+  let right={pick(k, "push", "pull", "push", "pull", "pull", "push")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 26x11 {
+    text ask "Is {job} a push or a pull?" narrate width=24 at=canvas(1, 1)
+    choice pick options=["push", "pull"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Do it with your hands. Do they move away from you or towards you?"
+}

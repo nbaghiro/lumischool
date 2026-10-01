@@ -1,0 +1,14 @@
+# A toy made yesterday can be a very old kind of toy: the wrong idea is that new-looking means a new
+# kind of thing.
+item k.new-kite v=1 stars=2 skills=[history.change, reasoning.explain] {
+  title "A new kite"
+
+  scene 30x19 {
+    toys shelf toys=["kite"] letters=0 at=canvas(1, 0)
+    text ask "Ada got a new kite yesterday. Is a kite a new kind of toy?" narrate width=28 below=shelf gap=1
+    choice pick options=["Yes: it was made yesterday.", "No: children flew kites long, long ago."] stack=column below=ask gap=1
+  }
+
+  answer pick="No: children flew kites long, long ago."
+  hint "Is the question about this kite, or about kites?"
+}

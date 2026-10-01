@@ -1,0 +1,20 @@
+item k.shadow-side v=1 skills=[physics.shadows] {
+  title "Which side is the shadow?"
+  difficulty (if t >= 4 then 0 else 1)
+  let t=2..6
+  level easy {
+    let t=4..6
+  }
+  level hard {
+    let t=2..3
+  }
+
+  scene 30x24 {
+    shadows stick tall=t shadow=(t + 2) unit=cm lamp=true marks=false at=canvas(1, 1)
+    text q "The lamp shines on the stick. Is the shadow on the side of the lamp or the other side?" narrate width=28 below=stick gap=1
+    choice pick options=["on the lamp's side", "on the other side"] stack=row below=q gap=1
+  }
+
+  answer pick="on the other side"
+  hint "Follow the light from the lamp past the top of the stick. Where does it land?"
+}

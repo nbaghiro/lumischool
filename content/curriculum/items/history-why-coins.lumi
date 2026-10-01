@@ -1,0 +1,21 @@
+# Why money: the problems of swapping one thing for another that coins solved. One true answer
+# among plausible ones.
+item history.why-coins v=1 skills=[history.money, history.change] {
+  title "Swapping or paying"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ask={pick(k, "A farmer wants shoes but the shoemaker does not want eggs. What does money solve?", "A sheep cannot be cut in half to pay for one pot. What does money solve?", "Grain goes bad in a year. Why keep coins instead?", "Why were cowrie shells good as money?", "Why did coins carry a king's mark?", "Why did people start to use paper money instead of heavy strings of coins?")}
+  let right={pick(k, "The shoemaker takes money and buys what he wants", "Coins can pay exactly the price", "Coins do not go bad", "They were hard to find and last a long time", "So people trusted the metal was right", "Paper was much lighter to carry")}
+  let w1={pick(k, "The farmer must keep his eggs", "Sheep become smaller", "Coins can be eaten", "They were easy to make at home", "So they looked pretty", "Paper could be eaten")}
+  let w2={pick(k, "Nobody needs shoes", "Pots become cheaper", "Grain can be spent anywhere", "Everyone had lots of them", "So nobody could spend them", "Coins had run out everywhere")}
+
+  scene 32x27 {
+    objectcard card kind=pick(k, 7, 7, 7, 5, 6, 8) name="{pick(k, \"Ban liang coin\", \"Ban liang coin\", \"Ban liang coin\", \"Cowrie shell\", \"Lion coin\", \"Paper money\")}" use="Paying for things" year=pick(k, -221, -221, -221, -1300, -650, 1024) about=pick(k, 1, 1, 1, 1, 1, 0) place="{pick(k, \"China\", \"China\", \"China\", \"Anyang, China\", \"Sardis, Turkey\", \"Sichuan, China\")}" ask=0 at=canvas(0, 0)
+    text ask "{ask}" narrate width=28 below=card gap=1
+    choice pick options=[pick(k, right, w1, w2, right, w1, w2), pick(k, w1, right, right, w2, w2, right), pick(k, w2, w2, w1, w1, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "What goes wrong when people swap things instead of paying?"
+  hint "What can money do that eggs, sheep or grain cannot?"
+}

@@ -1,0 +1,20 @@
+item k.days-to-party v=1 skills=[history.celebrations, time.days] {
+  title "Days to the party"
+  difficulty d
+  let t=0..2 d=1..4
+  level easy {
+    let d=1..2
+  }
+  level hard {
+    let d=3..4
+  }
+
+  scene 28x13 {
+    days week mark=(t + d) start=0 at=canvas(1, 1)
+    text q "Today is card {t + 1}. The party is on the ringed day. How many days until the party?" narrate width=26 below=week gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer d
+  hint "Put a finger on today. Move one card for each day until you reach the ring."
+}

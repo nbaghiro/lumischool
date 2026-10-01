@@ -1,0 +1,17 @@
+# The three-star question with made-up habits: a family's messages to a cousin abroad in 1950 and in
+# 2000, and how many more a year.
+item history.messages-a-year v=1 skills=[history.inventions, reasoning.plan] {
+  title "More messages"
+  difficulty k
+  let k=0..1
+
+  scene 36x21 {
+    globe planet at=canvas(1, 0)
+    text ask "{if k == 0 then \"In 1950 a family wrote one letter a week to a cousin abroad. In 2000 they sent one email a day. How many more messages a year was that? Use 52 weeks and 365 days.\" else \"In 1950 a family wrote one letter a month to a cousin abroad. In 2000 they sent two emails a week. How many more messages a year was that? Use 12 months and 52 weeks.\"}" narrate width=30 below=planet gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then 313 else 92)
+  hint "Work out each year's number of messages first."
+  hint "Then take the smaller from the bigger."
+}

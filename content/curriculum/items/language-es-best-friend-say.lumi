@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.es-best-friend-say v=1 skills=[language.describing, language.grammar, language.speaking] {
+  title "Describe a friend"
+  let k=0..2
+
+  scene 34x6 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Describe your best friend to a grown-up in three sentences: their name, what they look like and what they are like.\", \"Describe yourself: Soy, and two words for what you are like.\", \"Describe a friend and a brother or sister, so that one word changes its ending.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="Es with a describing word that matches the person, o for a boy and a for a girl, and a word ending in e unchanged." notice=["Es with a describing word", "O for a boy, a for a girl", "A word ending in e unchanged", "Three sentences in a row"]
+  hint "Is the friend a boy or a girl?"
+  hint "Which ending does the word need?"
+}

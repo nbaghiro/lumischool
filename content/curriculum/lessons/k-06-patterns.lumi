@@ -1,0 +1,49 @@
+lesson k-patterns v=1 format=teach grade=0 unit=8 subject=maths levels=[easy, medium, hard] {
+  title "Patterns that repeat"
+  goal "Say a repeating pattern aloud, find what comes next or what is missing, and carry it on past the end."
+
+  look {
+    scene 26x6 {
+      pattern strip unit=[apple, star] count=6 missing=6 at=canvas(1, 1)
+    }
+    say """
+      Apple, star, apple, star, apple, and then? Say it out loud and you can hear it: star. A
+      pattern is a part that repeats, again and again.
+      """
+  }
+  do {
+    level easy {
+      worked k.pattern-next c=4 level=medium
+    }
+    practice k.pattern-next count=2 seed=2
+    practice k.pattern-gap count=2 seed=3
+    practice k.pattern-abb count=1 seed=4
+    practice k.pattern-three count=1 seed=5
+    practice k.pattern-count count=2 seed=6 easy-count=1
+  }
+  try stars=2 {
+    show k.pattern-is-she-right c=4 hard-c=5
+  }
+  try stars=3 {
+    show k.pattern-far p=8 easy-p=7 hard-p=10
+  }
+  remember {
+    say "Say the pattern out loud. Find the part that repeats."
+  }
+
+  grown-ups """
+    Read the question and then say the pattern together, pointing at each picture: the ear finds a
+    pattern before the eye does. The patterns of three are the hard ones, because the child has to
+    know where the repeat starts again. If the child is stuck, clap it: clap for an apple, pat the
+    knees for a star. Off the page, thread beads or lay spoons and forks in a repeating row and ask
+    what comes next. Japan, 幼稚園教育要領 (kindergarten guidelines), 環境, 内容 (8):
+    "日常生活の中で数量や図形などに関心をもつ。" (In daily life, take an interest in numbers, amounts and
+    shapes.)
+    """
+  level easy {
+    grown-ups "At this level the rows are short, one is worked in the teacher's pen, the patterns of three stop where they start again, and the stars to count are two or three."
+  }
+  level hard {
+    grown-ups "At this level the rows are long, the gap is near the end, the patterns of three stop in the middle of the repeat, and the three-star asks for number ten."
+  }
+}

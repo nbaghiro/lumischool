@@ -1,0 +1,22 @@
+# A reason: the ten and more pattern Spanish builds dieciséis to diecinueve with, and a teen that is not the digit it sounds like.
+item language.es-eleven-to-twenty-why v=1 stars=2 skills=[language.numbers, reasoning.language] {
+  title "Spot the pattern"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Dieciséis is diez y seis. What is diecisiete?\", \"Leo writes dos for 12. Why is that wrong?\", \"Which is more, catorce or cuatro? Why?\")}" width=32
+      choice pick options=[pick(k, "diez y siete, 17", "12 is doce; dos is 2.", "catorce: it is 14, and cuatro is 4"), pick(k, "diez y seis, 16", "12 is dos in Spanish.", "cuatro: it is shorter"), pick(k, "siete, 7", "12 is diez.", "They are the same number")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "diez y siete, 17", "12 is doce; dos is 2.", "catorce: it is 14, and cuatro is 4")
+  feedback {
+    when (pick == pick(k, "siete, 7", "12 is dos in Spanish.", "They are the same number")) {
+      say "{pick(k, \"Diecisiete starts with dieci, the ten. What is ten and seven?\", \"Dos is two. Twelve has its own word. Which is it?\", \"They sound alike, but catorce has the ten in it. Which is bigger?\")}"
+    }
+  }
+  hint "Say the Spanish in English first."
+  hint "Does the number have a ten in it?"
+}

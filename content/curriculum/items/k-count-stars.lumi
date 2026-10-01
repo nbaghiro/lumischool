@@ -1,0 +1,26 @@
+# Stars in a row with no frame to help: the child has to keep track of which are counted.
+item k.count-stars v=1 skills=[counting.to-ten] {
+  title "Count the stars"
+  difficulty n
+  let n=6..10
+  level easy {
+    let n=6..7
+  }
+  level hard {
+    let n=9..10
+  }
+
+  scene 34x8 {
+    props row count=n prop=star at=canvas(1, 1)
+    text ask "How many stars?" narrate below=row gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == n + 1 or answer == n - 1) point=row {
+      say "Start at one end and touch each star once, all the way along."
+    }
+  }
+  hint "Start with the first star on the left. Touch each one as you say a number."
+}

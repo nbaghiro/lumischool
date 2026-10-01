@@ -41,7 +41,7 @@ export async function rollFor(o: {
     const { kid, record } = o;
     const choice = choiceFor(kid, record);
     const since = record.start ?? record.today;
-    const corpus = corpusFrom(o.lessons, since);
+    const corpus = corpusFrom(o.lessons, since, record.variants);
     const shelf = await loadDrawings(
         refsOf(record.years.flatMap((y) => termsFor(choice, y.grade))),
     );

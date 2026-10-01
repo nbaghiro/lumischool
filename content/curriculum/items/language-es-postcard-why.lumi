@@ -1,0 +1,22 @@
+# A reason: querida for a woman, ayer for the past, and comemos for we.
+item language.es-postcard-why v=1 stars=2 skills=[language.reading, language.time, reasoning.language] {
+  title "Reading closely"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Why does Ana write Querida and not Querido?\", \"Ayer vimos delfines: now, before, or later?\", \"Por la tarde comemos helado: who eats?\")}" width=32
+      choice pick options=[pick(k, "Abuela is a woman, so querida.", "Before: ayer is yesterday.", "Ana and her parents: comemos is we."), pick(k, "Querida is for postcards.", "Now: vimos is now.", "Only Ana."), pick(k, "Querido is wrong always.", "Later: it is on the postcard.", "Only the parents.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Abuela is a woman, so querida.", "Before: ayer is yesterday.", "Ana and her parents: comemos is we.")
+  feedback {
+    when (pick == pick(k, "Querido is wrong always.", "Now: vimos is now.", "Only Ana.")) {
+      say "{pick(k, \"Querido is right for a man. Who is Ana writing to?\", \"Ayer is not today. What does it mean?\", \"Nado is I swim. What does the -emos ending say?\")}"
+    }
+  }
+  hint "Look at the ending of the word."
+  hint "Which word says when?"
+}

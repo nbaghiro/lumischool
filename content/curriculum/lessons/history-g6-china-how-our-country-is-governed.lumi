@@ -1,0 +1,63 @@
+# The national unit for china. Items take n=4; the world items reviewed here change by level.
+# Dates are in engine/notation/chronicle.ts with their sources.
+lesson history-g6-china-how-our-country-is-governed v=1 format=teach grade=6 unit=9 subject=history nation=china levels=[easy, medium, hard] {
+  title "How China is governed"
+  goal "Put the steps of the People's Republic of China's government in order, and say what the National People's Congress does."
+
+  look {
+    scene 36x9 {
+      timeline line from=1945 to=1985 step=5 years=[1949, 1954, 1982] labels=["People's Republic of China founded", "First National People's Congress", "Constitution of China of 1982"] at=canvas(0, 0)
+    }
+    say """
+      On 1 October 1949 the People's Republic of China was proclaimed. In 1954 the first National People's Congress met, and under the constitution it is the highest body of state power, with deputies from every province. The present constitution was adopted on 4 December 1982.
+      """
+  }
+  do {
+    level easy {
+      worked history.n6-what n=4
+    }
+    show history.n6-order n=4 k=1 easy-k=0 hard-k=2
+    show history.n6-between n=4 k=0 hard-k=1
+    show history.n6-century n=4 k=0 hard-k=1
+    show history.law-steps k=2 easy-k=0 hard-k=4
+    show history.vote-order k=2 easy-k=0 hard-k=4
+    show history.un-order k=2 easy-k=0 hard-k=4
+    show history.n6-order n=4 k=2 easy-k=1 hard-k=0
+    level medium hard {
+      show history.n6-what n=4
+    }
+    level easy {
+      show history.n6-century n=4 k=1
+    }
+    level hard {
+      show history.law-steps k=5
+    }
+  }
+  story {
+    show history.n6-between n=4 k=1 hard-k=0
+  }
+  try stars=2 {
+    show history.n6-why n=4
+  }
+  try stars=3 {
+    show history.n6-find-out n=4
+  }
+  remember {
+    say "Every date in our country's story can be put on the line and counted from, and every one came from a source."
+  }
+
+  grown-ups """
+    The idea is how the family's own country is governed today and how it came to be, told as
+    facts and without verdicts. The way in names what a thing was; the core orders three
+    events, counts the years between two, names a century, and reviews how laws are made, votes and
+    the United Nations; the two-star question asks why something was done. If the child is stuck on
+    counting, count to the next hundred first. The three-star task is for you to mark: a small
+    piece of finding out with you. China's 道德与法治 for grade six has lessons on the constitution and the country's organs of state (recalled from the 统编版 textbook; the 2022 standard itself was not read).
+    """
+  level easy {
+    grown-ups "At this level a worked example says what the thing was, the events come nearly in order, the years counted are the closest pair, and the review questions are the plainest."
+  }
+  level hard {
+    grown-ups "At this level the events are fully muddled, the years counted are the longer pair, the century asked has a trap, and the review questions cross year one."
+  }
+}

@@ -1,0 +1,19 @@
+# Why canals mattered, with round numbers made up for the sums: a horse pulls far more by boat on
+# still water than by cart on a rough road.
+item history.canal-horse v=1 skills=[history.industry, number.divide] {
+  title "One horse, one boat"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let boat={pick(k, 20, 30, 30, 24, 36, 40)}
+  let cart={pick(k, 2, 2, 3, 2, 3, 2)}
+
+  scene 32x15 {
+    narrowboat boat at=canvas(1, 0)
+    text ask "Say a horse could pull {boat} tonnes of coal in a canal boat, but only {cart} tonnes in a cart on the road. How many cart horses would it take to carry what one canal horse did?" narrate width=30 below=boat gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (boat / cart)
+  hint "How many lots of {cart} tonnes make {boat} tonnes?"
+  hint "Each cart horse carries {cart} tonnes."
+}

@@ -1,0 +1,18 @@
+# Millbrook's map in one year: how many places stood then, counted from the map. The town and its
+# dates are made up for the lessons and kept in the town map drawing.
+item history.town-count v=1 skills=[history.local, history.maps] {
+  title "What stood then?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let year={pick(k, 1300, 1500, 1850, 1900, 1950, 2026)}
+
+  scene 30x15 {
+    townmap map year=year town=Millbrook labels=1 at=canvas(1, 0)
+    text ask "This is Millbrook in {year}. How many places are on the map?" narrate width=11 right-of=map gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check history.town of=map answer=count
+  hint "Count the pictures, one square at a time."
+  hint "A square with no picture has nothing built in it yet."
+}

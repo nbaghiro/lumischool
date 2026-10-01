@@ -1,0 +1,26 @@
+# A child in a given year and three ways to travel: only one existed yet.
+item history.travel-in-1850 v=1 skills=[history.transport, history.change] {
+  title "A journey long ago"
+  difficulty k
+  let k=0..2
+  let year={pick(k, 1850, 1890, 1820)}
+  let a={pick(k, "aeroplane", "steam train", "motor car")}
+  let b={pick(k, "steam train", "aeroplane", "aeroplane")}
+  let c={pick(k, "motor car", "mobile phone", "steam train")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=2..2
+  }
+
+  scene 31x33 {
+    thenandnow street year=year sign=1 things=["horse and cart"] at=canvas(1, 0)
+    text ask "Tom went to see his aunt in {year}. Which of these could he have gone in?" narrate width=28 below=street gap=1
+    choice pick options=["{a}", "{b}", "{c}"] stack=column below=ask gap=1
+  }
+
+  check history.dates of=pick pick=first
+  hint "Which of the three had been made by {year}?"
+  hint "The other two came later."
+}

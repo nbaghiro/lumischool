@@ -1,0 +1,72 @@
+# Opinions with a reason: fun, boring, easy, hard and more, joined with because.
+lesson language-because v=1 format=teach grade=4 unit=8 subject=language levels=[easy, medium, hard] {
+  title "Opinions and [[opinion.because]]"
+  goal "Give an opinion in [[language.name]] with a reason."
+
+  look {
+    scene 24x14 {
+      column all at=canvas(1, 1) space=1 align=start {
+        comic why who=["girl", "boy"] says=["[[opinion.do-you-like-football]]", "[[opinion.yes-i-like-it-because-it-is-fun]]"] moods=["happy", "excited"] with=["", ""] thinks=[0, 0] holds=["", "ball"] labels=["1", "2"]
+      }
+    }
+    say """
+      To give a reason, join it with [[opinion.because]], because:
+      [[phrase.i-like-football-because-it-is-fun]], I like football because it is fun. Other
+      reasons: [[opinion.boring]] (boring), [[opinion.easy]] (easy), [[opinion.hard]] (hard),
+      [[opinion.interesting]] (interesting), [[opinion.great]] (great). [[phrase.why]] asks why.
+      [[phrase.i-love-swimming]] means I love swimming, and [[phrase.i-hate-the-rain]] means I hate
+      the rain.
+      """
+  }
+  do {
+    level easy {
+      worked language.because-name k=3
+    }
+    show language.because-name k=2 easy-k=0 hard-k=4
+    show language.because-meaning k=3 easy-k=1 hard-k=4
+    show language.because-write k=3 easy-k=2 hard-k=5
+    show language.because-name k=4 easy-k=1 hard-k=5
+    show language.because-match k=1 easy-k=0 hard-k=2
+    show language.because-write k=4
+    show language.because-listen k=3 easy-k=0 hard-k=5
+    show language.because-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.because-write k=3
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-because-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.because-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "An opinion and a reason, joined: [[phrase.i-like-football-because-it-is-fun]]"
+  }
+
+  grown-ups """
+    The wrong idea to watch for is the word that asks why and the word that says because treated as
+    one, which the two-star question asks about, and a reason that does not match the plural it
+    describes. The naming questions put a situation in words and a face beside it; the face shows
+    the feeling and the word names the reason. Loving is stronger than liking, and the three-star
+    question asks the child to rank them. From this grade the written words are marked with their
+    accents: a word typed without its accent is not taken. The dictation is read from this sheet,
+    where it prints as Read aloud, or played by the device. If the child is stuck, ask why in
+    English about something they like, then say the reason in the language together. Off the page,
+    give three opinions a day in the language with a reason. It meets England's key stage 2
+    languages programme (years 3 to 6, statutory from age 7): "engage in conversations; ask and
+    answer questions; express opinions and respond to those of others"; Japan's grades 5 and 6
+    foreign languages: "Can exchange their own thoughts and feelings regarding familiar and simple
+    matters in daily life by using simple words and phrases and basic expressions"; and CEFR A2,
+    "Can understand sentences and frequently used expressions related to areas of most immediate
+    relevance". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[opinion.hard]] is worked first in the teacher's pen, the words to name are [[opinion.fun]] and [[opinion.boring]] and the words to write are [[opinion.easy]] and [[opinion.great]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[opinion.interesting]] and [[opinion.delicious]] and the words to write are [[opinion.because]], [[opinion.great]] and [[opinion.hard]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

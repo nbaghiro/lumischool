@@ -260,3 +260,37 @@ export function Choice(props: {
         </button>
     );
 }
+
+/**
+ * A row of choices, one at a time, each a chip at least 44 pixels high. `compact` sets them in one
+ * pill, as a control in a bar rather than a field on a card.
+ */
+export function Seg<V extends string | number | null>(props: {
+    legend: string;
+    /** The legend is for a screen reader only, where a heading above already says it. */
+    quiet?: boolean;
+    compact?: boolean;
+    name: string;
+    options: readonly { value: V; label: string }[];
+    value: V;
+    onChange: (v: V) => void;
+}): JSX.Element {
+    return (
+        <fieldset class="seg" classList={{ compact: !!props.compact }}>
+            <legend classList={{ sr: !!props.quiet }}>{props.legend}</legend>
+            <For each={props.options}>
+                {(o) => (
+                    <label class="seg-option">
+                        <input
+                            type="radio"
+                            name={props.name}
+                            checked={o.value === props.value}
+                            onChange={() => props.onChange(o.value)}
+                        />
+                        <span>{o.label}</span>
+                    </label>
+                )}
+            </For>
+        </fieldset>
+    );
+}

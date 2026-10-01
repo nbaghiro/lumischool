@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.months-say v=1 skills=[language.time, language.speaking] {
+  title "Birthdays"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Say the twelve months in [[language.name]], from January to December.\", \"Say when your birthday is in [[language.name]], the way the lesson says [[phrase.it-is-the-fifth-of-april]]\", \"Ask a grown-up [[phrase.when-is-your-birthday]] and say their answer back in [[language.name]].\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="The months in order, and a date said the way the lesson says one." notice=["All twelve months in order", "June and July kept apart", "A date said as the lesson says one", "The question goes up at the end"]
+  hint "Say the months in English first."
+  hint "Which month comes after [[time.may]]?"
+}

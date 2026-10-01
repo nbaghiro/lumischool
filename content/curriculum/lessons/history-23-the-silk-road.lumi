@@ -1,0 +1,64 @@
+# Dates from engine/notation/chronicle.ts: Zhang Qian sent west 138 BC, paper AD 105, paper money
+# 1024, Marco Polo 1271 to 1295 (recalled, to be checked).
+lesson history-the-silk-road v=1 format=teach grade=4 unit=5 subject=history levels=[easy, medium, hard] {
+  title "The Silk Road"
+  goal "Follow the Silk Road on the map, say which way goods and ideas travelled along it, and put its story in order."
+
+  look {
+    scene 36x17 {
+      worldmap map names=2 blank=-1 oceans=0 places=["Chang'an", "Samarkand", "Baghdad", "Constantinople"] numbered=0 route=3 at=canvas(1, 0)
+    }
+    say """
+      In 138 BC the Han emperor sent Zhang Qian west from Chang'an to find allies. Traders followed,
+      and a web of roads grew across Asia, later called the Silk Road. Silk and paper went west;
+      glass, horses and grapes came east, and so did ideas and faiths. Few traders went the whole
+      way: goods passed from hand to hand through cities like Samarkand and Baghdad.
+      """
+  }
+  do {
+    level easy {
+      worked history.silk-which-way k=0
+    }
+    show history.silk-which-way k=2 easy-k=1 hard-k=4
+    show history.silk-cities k=2 easy-k=0 hard-k=4
+    show history.silk-order k=2 easy-k=0 hard-k=4
+    show history.silk-continent k=2 easy-k=0 hard-k=3
+    show history.silk-which-way k=3 easy-k=2 hard-k=5
+    show history.silk-cities k=3 easy-k=1 hard-k=5
+    show history.silk-order k=3 easy-k=1 hard-k=5
+    show history.silk-continent k=1 easy-k=1 hard-k=2
+    level hard {
+      show history.silk-order k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.silk-price k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.silk-days k=0 hard-k=1
+  }
+  remember {
+    say "Along the Silk Road, silk and paper went west, glass and horses came east, and goods changed hands many times."
+  }
+
+  grown-ups """
+    The idea is that trade joined distant peoples long before anyone travelled the whole way: goods,
+    inventions and beliefs moved from city to city. The way in asks which way silk travelled; the
+    core follows the road across the map, names the continents it crossed, and orders its story.
+    The wrong idea to watch for is one merchant carrying silk from China to Rome; the two-star
+    question asks why the price rose along the way. If the child is stuck on the map, trace the
+    dashed road with a finger from east to west. Off the page, find three things at home that came
+    from another country, and follow their route on a map. Russia's history programme for grade
+    five names «Великий шёлковый путь» among ancient China's achievements. England's key stage 2
+    asks for "a non-European society that provides contrasts with British history".
+    Japan's 社会 takes up history only through Japan's own story, in grade six
+    (「我が国の歴史上の主な事象について，人物の働きや代表的な文化遺産を中心に」, the course of study as read in its 2008 edition), so
+    this lesson has no line of its own there; its timeline and source skills serve that grade.
+    """
+  level easy {
+    grown-ups "At this level a worked example sends silk west, the things asked about are the plainest (silk, paper, glass), the cities come nearly in order along the road, and the continents asked are the two ends."
+  }
+  level hard {
+    grown-ups "At this level the things asked about are knowledge and plants (the way to make paper, grapes), the cities are fully muddled, the story's events are fully muddled, and the three-star train rests one day in five."
+  }
+}

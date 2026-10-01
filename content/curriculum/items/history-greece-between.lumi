@@ -1,0 +1,25 @@
+# Years between events of ancient Greece and Rome, all BC, from the dated record.
+item history.greece-between v=1 skills=[history.ancient, history.bc-ad] {
+  title "Years between"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let e1={pick(k, "Athens votes", "First Olympic Games", "First Olympic Games", "Athens votes", "First Olympic Games", "Athens votes")}
+  let y1={pick(k, -508, -776, -776, -508, -776, -508)}
+  let e2={pick(k, "Appian Way", "Athens votes", "Appian Way", "Qin unites China", "Qin unites China", "Caesar lands in Britain")}
+  let y2={pick(k, -312, -508, -312, -221, -221, -55)}
+
+  scene 36x12 {
+    timeline line from=-800 to=0 step=100 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(0, 0)
+    text ask "How many years after the first was the second?" narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  feedback {
+    when (answer == 0 - y1 + (0 - y2)) point=line {
+      say "Both years are BC, so the gap is the bigger number take away the smaller."
+    }
+  }
+  hint "Read the two years. Which is further back from year one?"
+  hint "Take the smaller number of years BC from the bigger."
+}

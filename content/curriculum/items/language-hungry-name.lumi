@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[food.the-bread]], [[food.the-fish]], [[food.the-cheese]], [[food.the-eggs]], [[food.the-potatoes]], [[food.the-tomato]], [[food.the-carrot]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.hungry-name v=1 skills=[language.food] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      foodstall stall foods=["{pick(k, \"bread\", \"fish\", \"cheese\", \"egg\", \"potato\", \"tomato\", \"carrot\")}"] names=[""] costs=[""]
+      text ask "What is in the crate? Pick the word." width=32
+      choice pick options=[pick(k, "[[food.the-tomato]]", "[[food.the-tomato]]", "[[food.the-eggs]]", "[[food.the-fish]]", "[[food.the-eggs]]", "[[food.the-eggs]]", "[[food.the-potatoes]]"), pick(k, "[[food.the-bread]]", "[[food.the-fish]]", "[[food.the-potatoes]]", "[[food.the-eggs]]", "[[food.the-tomato]]", "[[food.the-tomato]]", "[[food.the-fish]]"), pick(k, "[[food.the-cheese]]", "[[food.the-eggs]]", "[[food.the-fish]]", "[[food.the-potatoes]]", "[[food.the-potatoes]]", "[[food.the-carrot]]", "[[food.the-cheese]]"), pick(k, "[[food.the-eggs]]", "[[food.the-bread]]", "[[food.the-cheese]]", "[[food.the-carrot]]", "[[food.the-carrot]]", "[[food.the-cheese]]", "[[food.the-carrot]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[food.the-bread]]", "[[food.the-fish]]", "[[food.the-cheese]]", "[[food.the-eggs]]", "[[food.the-potatoes]]", "[[food.the-tomato]]", "[[food.the-carrot]]")
+  feedback {
+    when (pick == pick(k, "[[food.the-cheese]]", "[[food.the-bread]]", "[[food.the-eggs]]", "[[food.the-potatoes]]", "[[food.the-eggs]]", "[[food.the-cheese]]", "[[food.the-potatoes]]")) point=stall {
+      say "{pick(k, \"[[food.the-cheese|cap]] is cheese. This is a loaf.\", \"[[food.the-bread|cap]] is bread. This one has fins and a tail.\", \"[[food.the-eggs|cap]] are eggs. This is yellow with holes.\", \"[[food.the-potatoes|cap]] are potatoes. These are smooth and white.\", \"[[food.the-eggs|cap]] are eggs. These are brown and grow in the ground.\", \"[[food.the-cheese|cap]] is cheese. This one is round and smooth.\", \"[[food.the-potatoes|cap]] are potatoes. This is long and orange.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

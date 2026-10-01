@@ -1,0 +1,20 @@
+# Sharing out a ration, with round numbers made up for the sums: a weekly allowance for each person,
+# and what a family had.
+item history.ration-sums v=1 skills=[history.twentieth-century, number.multiply] {
+  title "The weekly ration"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let per={pick(k, 50, 100, 50, 60, 125, 55)}
+  let people={pick(k, 4, 3, 6, 5, 4, 6)}
+  let weeks={pick(k, 1, 1, 2, 2, 4, 4)}
+
+  scene 31x10 {
+    houses row count=2 windows=2 at=canvas(1, 0)
+    text ask "Say each person could have {per} g of butter a week. How many grams could a family of {people} have in {weeks} {if weeks == 1 then \"week\" else \"weeks\"}?" narrate width=18 right-of=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (per * people * weeks)
+  hint "How much does the family have in one week?"
+  hint "Then for {weeks} {if weeks == 1 then \"week\" else \"weeks\"}."
+}

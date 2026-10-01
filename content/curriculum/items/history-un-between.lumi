@@ -1,0 +1,20 @@
+# Years between the United Nations' founding and what came after it, from the record.
+item history.un-between v=1 skills=[history.world, number.difference] {
+  title "How many years after?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let e1={pick(k, "United Nations founded", "United Nations founded", "UNICEF founded", "Universal Declaration of Human Rights", "United Nations founded", "Women vote in New Zealand")}
+  let y1={pick(k, 1945, 1945, 1946, 1948, 1945, 1893)}
+  let e2={pick(k, "UNICEF founded", "Universal Declaration of Human Rights", "Rights of the Child", "Rights of the Child", "World Wide Web", "United Nations founded")}
+  let y2={pick(k, 1946, 1948, 1989, 1989, 1991, 1945)}
+
+  scene 36x12 {
+    timeline line from=1880 to=2000 step=20 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(0, 0)
+    text ask "How many years after the first was the second?" narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Count on from the first year to the next ten."
+  hint "Then on in tens and ones."
+}

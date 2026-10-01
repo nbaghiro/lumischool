@@ -1,0 +1,22 @@
+# Non-routine: the food or drink worked out from what a child wants and does not like.
+item language.hungry-puzzle v=1 stars=3 skills=[language.food, reasoning.language] {
+  title "What does each one ask for?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Ana wants something to drink that is white. What does she ask for?\", \"Leo is hungry. He does not like fish. The stall has [[food.the-fish]], [[food.the-bread]] and [[food.the-water]]. What does he ask for?\", \"Mia is thirsty. She wants a drink made from fruit, and she does not like milk. What does she ask for?\")}" width=32
+      choice pick options=[pick(k, "[[food.the-milk]]", "[[food.the-bread]]", "[[food.the-juice]]"), pick(k, "[[food.the-water]]", "[[food.the-fish]]", "[[food.the-milk]]"), pick(k, "[[food.the-cheese]]", "[[food.the-water]]", "[[food.the-water]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[food.the-milk]]", "[[food.the-bread]]", "[[food.the-juice]]")
+  feedback {
+    when (pick == pick(k, "[[food.the-cheese]]", "[[food.the-water]]", "[[food.the-water]]")) {
+      say "{pick(k, \"Cheese is white, but it is not a drink.\", \"Water is a drink. Leo is hungry.\", \"Water is a drink, but is it made from fruit?\")}"
+    }
+  }
+  hint "Cross off what each clue rules out."
+  hint "Is it food or a drink?"
+}

@@ -1,0 +1,22 @@
+# A reason: the colour's ending agrees with the noun, and a colour ending in e does not change.
+item language.es-the-black-cat-why v=1 stars=2 skills=[language.colours, language.grammar, reasoning.language] {
+  title "Why that ending?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Why is it la casa blanca and not la casa blanco?\", \"Ana writes: el negro gato. What is wrong?\", \"Which colour word stays the same after el and after la?\")}" width=32
+      choice pick options=[pick(k, "Casa takes la, so the colour ends in a too.", "The colour goes after: el gato negro.", "verde"), pick(k, "Blanco is only for houses.", "Gato needs an a.", "rojo"), pick(k, "It is always blanca.", "Negro should be black.", "blanco")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Casa takes la, so the colour ends in a too.", "The colour goes after: el gato negro.", "verde")
+  feedback {
+    when (pick == pick(k, "It is always blanca.", "Gato needs an a.", "rojo")) {
+      say "{pick(k, \"El perro is blanco, so it is not always blanca. What decides it?\", \"El gato is right. Look at where negro is.\", \"Rojo turns into roja after la. Which one ends in e?\")}"
+    }
+  }
+  hint "Look at el or la, then at the last letter of the colour."
+  hint "Where does the colour go?"
+}

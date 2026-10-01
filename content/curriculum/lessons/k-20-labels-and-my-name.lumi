@@ -1,0 +1,49 @@
+lesson k-labels-and-my-name v=1 format=teach grade=0 unit=6 subject=writing levels=[easy, medium, hard] {
+  title "Labels and my name"
+  goal "Write the first letter of my name as a capital, and write a label for a picture from its sounds."
+
+  look {
+    scene 24x14 {
+      art pic asset="cat" at=canvas(1, 1)
+      caption cap text="cat" width=10 below=pic gap=1
+    }
+    say """
+      A label tells you what something is or whose it is. This one says cat: c, a, t, one letter
+      for each sound. A name is a label for a person, and it always starts with a capital letter.
+      """
+  }
+  do {
+    show k.my-first-letter
+    level easy {
+      worked k.label-first-letter w="sun" level=medium
+    }
+    practice k.label-first-letter count=2 seed=2
+    practice k.capital-for-a-name count=2 seed=3 easy-count=1
+    practice k.label-word count=2 seed=4
+    show k.peg-label
+  }
+  try stars=2 {
+    show k.missed-sound k=0 hard-k=1
+  }
+  try stars=3 {
+    show k.two-labels k=0 hard-k=1
+  }
+  remember {
+    say "One letter for each sound. A name starts with a capital."
+  }
+
+  grown-ups """
+    The name and the cup label are for you to look at; the machine marks the picture labels. Spelling
+    by sound will not always match the dictionary, and at this age a label a reader can sound out is
+    a success. If the child is stuck, say the word slowly together and hold up a finger for each
+    sound. Off the page, write labels for toy boxes and a name card for each place at the table.
+    England, Reception, ELG Writing (recalled, not fetched): "Spell words by identifying sounds in
+    them and representing the sounds with a letter or letters".
+    """
+  level easy {
+    grown-ups "At this level the first letter of sun is written in the teacher's pen first, the labels are cat and sun, and the two-star word is dog."
+  }
+  level hard {
+    grown-ups "At this level the first letters are those of duck, kite and boat, the labels are hen and cup, and the three-star labels are hen and cup."
+  }
+}

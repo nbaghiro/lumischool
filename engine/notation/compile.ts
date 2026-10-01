@@ -26,6 +26,7 @@ import {
     type Volume,
     type Workspace,
 } from "./notation";
+import { alsoFor } from "./languages";
 import { explainAt, pick, type Variant } from "./verify";
 
 /** How many more draws of a practice block a lesson carries for another day. */
@@ -86,6 +87,7 @@ function questionOf(ws: Workspace, item: Item, v: Variant, n: number): PackQuest
     });
     const arranged = v.arranged;
     const right = arranged && item.answers.find((a) => a.name === arranged.id)?.expr;
+    const also = alsoOf(ws, item, v);
     return {
         n,
         variant: keyOf(v),
@@ -98,7 +100,29 @@ function questionOf(ws: Workspace, item: Item, v: Variant, n: number): PackQuest
         scene: item.scene ? sceneOf(instantiate(item.scene, v.env, item.roles, ws.defines)) : null,
         arranged: arranged && right ? { part: arranged.id, right, key: arranged.key } : null,
         explain: item.explain ? said(item, v, item.explain) : explainAt(item, v.env, ws.volumes),
+        ...(also ? { also } : {}),
     };
+}
+
+/**
+ * For a language variant's word boxes, what else each typed answer may be: the phrase's other
+ * spellings from the phrasebook, and in a box written accents=loose, the same with the marks the
+ * language forgives left off. Undefined where there is nothing else to take.
+ */
+function alsoOf(ws: Workspace, item: Item, v: Variant): Record<string, string[]> | undefined {
+    const accept = ws.accepts.get(item.id);
+    if (!accept) return undefined;
+    const out: Record<string, string[]> = {};
+    const all = (ns: readonly TNode[]): TNode[] => ns.flatMap((n) => [n, ...all(n.children)]);
+    for (const n of all(item.scene?.nodes ?? [])) {
+        if (n.type !== "word-input" || !n.id) continue;
+        const answer = v.answers[n.id];
+        if (answer === undefined) continue;
+        const loose = n.props.accents?.k === "word" && n.props.accents.v === "loose";
+        const also = alsoFor(answer, accept, loose);
+        if (also.length) out[n.id] = also;
+    }
+    return Object.keys(out).length ? out : undefined;
 }
 
 function itemOf(item: Item, level: Level, hashOf: HashOf): PackItem {
@@ -197,6 +221,8 @@ export function compileLesson(ws: Workspace, lesson: Lesson, hashOf: HashOf): Pa
         grade: lesson.grade ?? 1,
         unit: lesson.unit ?? null,
         subject: lesson.subject ?? "maths",
+        ...(lesson.language ? { language: lesson.language } : {}),
+        ...(lesson.nation ? { nation: lesson.nation } : {}),
         format: lesson.format,
         art: [...art].sort(),
         levels,

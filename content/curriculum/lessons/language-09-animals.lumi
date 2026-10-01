@@ -1,0 +1,67 @@
+# Seven animals from the picture cards, and I have for having a pet.
+lesson language-animals v=1 format=teach grade=2 unit=4 subject=language levels=[easy, medium, hard] {
+  title "[[animal.i-have-a-dog|cap]]"
+  goal "Name seven animals in [[language.name]], and say which pet you have."
+
+  look {
+    scene 38x9 {
+      column all at=canvas(1, 1) space=1 align=start {
+        picturecards pets who=["cat", "dog", "duck", "rabbit"] where=["by", "by", "by", "by"] thing=["box", "box", "box", "box"] letters=false
+      }
+    }
+    say """
+      At the ferry town [[animal.the-cat]] sleeps on a warm step, [[animal.the-dog]] runs by the
+      harbour, [[animal.the-duck]] swims and [[animal.the-rabbit]] hides in the garden. To say you
+      have a pet, say [[phrase.i-have-a-dog]], I have a dog.
+      """
+  }
+  do {
+    level easy {
+      worked language.animals-name k=3
+    }
+    show language.animals-name k=2 easy-k=0 hard-k=4
+    show language.animals-meaning k=4 easy-k=2
+    show language.animals-write k=4 easy-k=1 hard-k=5
+    show language.animals-name k=4 easy-k=1 hard-k=5
+    show language.animals-match k=2 easy-k=0 hard-k=3
+    show language.animals-write k=5 easy-k=3 hard-k=4
+    show language.animals-listen k=3 easy-k=0 hard-k=5
+    show language.animals-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.animals-write k=2
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-animals-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.animals-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[animal.the-cat|cap]], [[animal.the-dog]], [[animal.the-duck]], [[animal.the-rabbit]], [[animal.the-pig]], [[animal.the-fox]], [[animal.the-hen]]."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is two animal words that look alike taken for each other, and
+    leaving out the little word that goes before a noun. The picture cards draw each animal the same
+    way every time, so the picture carries the answer to the naming questions and the child's job is
+    the word. The written word is asked without the little word before it. The listening question is
+    a dictation: read the sentence aloud from this sheet, where it prints as Read aloud, slowly and
+    twice, or let the device play it. It is marked word by word, and a missing accent counts. If the
+    child is stuck, make the animal's noise, then say its name together. Off the page, play animal
+    snap with the names in the language. It meets England's key stage 2 languages programme (years 3
+    to 6, statutory from age 7): "broaden their vocabulary"; Japan's grades 3 and 4 foreign language
+    activities: "Activities to listen to simple words and phrases and basic expressions about their
+    familiar people and their surroundings and match the phrases and expressions with illustrations
+    and photographs"; and CEFR A1, "Can understand and use familiar everyday expressions and very
+    basic phrases". The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[animal.the-rabbit]] is worked first in the teacher's pen, the words to name are [[animal.the-cat]] and [[animal.the-dog]] and the words to write are [[animal.duck]] and [[animal.pig]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[animal.the-pig]] and [[animal.the-hen]] and the words to write are [[animal.fox]], [[animal.rabbit]] and [[animal.dog]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

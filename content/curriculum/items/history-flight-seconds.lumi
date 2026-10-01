@@ -1,0 +1,22 @@
+# The first flight lasted 12 seconds and the last of the day 59 (Smithsonian): comparing the two.
+item history.flight-seconds v=1 skills=[history.flight, number.difference] {
+  title "Twelve seconds"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x13 {
+    numberline line from=0 to=60 step=5 at=canvas(1, 1)
+    text ask "The first flight lasted 12 seconds. The last flight that day lasted 59 seconds. {if k == 0 then \"How many seconds longer was the last flight?\" else \"How many seconds were the two flights together?\"}" narrate width=26 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then 47 else 71)
+  hint "Find 12 and 59 on the line."
+  hint "{if k == 0 then \"Count on from 12 to 59.\" else \"Add 59 and 12, the tens first.\"}"
+}

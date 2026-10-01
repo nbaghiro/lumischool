@@ -1,0 +1,25 @@
+# A bigger push is a longer arrow, so which box goes further is read off the picture.
+item k.bigger-push v=1 skills=[physics.forces] {
+  title "The bigger push"
+  difficulty (if abs(a - b) >= 4 then 0 else 1)
+  let a=2..8 b=2..8
+  where (abs(a - b) >= 2)
+  level easy {
+    where (abs(a - b) >= 4)
+  }
+  level hard {
+    where (abs(a - b) <= 3)
+  }
+
+  scene 34x18 {
+    row boxes at=canvas(1, 1) space=3 align=end {
+      forces first thing=box push=a labels=false
+      forces second thing=box push=b labels=false
+    }
+    text ask "A longer arrow is a bigger push. Which box gets the bigger push?" narrate width=30 below=boxes gap=1
+    choice pick options=["the first box", "the second box"] stack=row below=ask gap=1
+  }
+
+  answer pick=(if a > b then "the first box" else "the second box")
+  hint "Compare the two arrows. Which is longer?"
+}

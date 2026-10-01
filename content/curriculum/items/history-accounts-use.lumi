@@ -1,0 +1,19 @@
+# Which account to use for which question: the journal for daily life on board, the later book for
+# how the voyage fits the story of the world.
+item history.accounts-use v=1 skills=[history.sources, reasoning.evaluate] {
+  title "Which account would you use?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ask={pick(k, "What did the sailors eat when food ran out?", "Which voyages came before and after this one?", "How did the sea look to a sailor on the ship?", "Why is this voyage remembered today?", "How did a sailor feel when the ship came home?", "How many years after Columbus did the fleet set out?")}
+  let key={pick(k, "A sailor's journal", "A book written later", "A sailor's journal", "A book written later", "A sailor's journal", "A book written later")}
+
+  scene 36x14 {
+    ship boat at=canvas(1, 0)
+    text ask "{ask} Which account would help most?" narrate width=16 right-of=boat gap=1
+    choice pick options=["A sailor's journal", "A book written later"] stack=column below=ask gap=1
+  }
+
+  answer pick=key
+  hint "Was the question about what it was like to be there, or about the bigger story?"
+  hint "A sailor saw the ship; a later writer can see the whole of history around it."
+}

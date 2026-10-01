@@ -8,6 +8,8 @@ import { useLook } from "../../engine/ui/page";
 import { isParent } from "../../school/family/access";
 import { Link, search, useReady } from "../../engine/ui/router";
 import { signInFor } from "./routes";
+import { settingIn } from "../../engine/answer";
+import * as api from "../../engine/ui/api";
 
 /** The four arrangements being tried, at `/painting?v1` to `?v4`; plain `/painting` is the page as
  *  it stands. */
@@ -28,6 +30,28 @@ export function Painting(): JSX.Element {
     look({ wide: true, stage: true, stageBackdrop: true, place: "meadow" });
     const [me] = createHeld(() => shared.me.read(), [shared.me]);
     const [family] = createHeld(() => shared.family.read(), [shared.family]);
+    const [settings] = createHeld(
+        () => shared.events(undefined, { kinds: ["setting-changed"] }).read(),
+        [],
+    );
+    /** The family's easel from the log, undefined until it is read. */
+    const preferences = (): unknown => {
+        const got = settings();
+        return got && !("error" in got)
+            ? (settingIn(got.list, "painting", null) ?? null)
+            : undefined;
+    };
+    const keep = (state: unknown): void => {
+        void api.append([
+            {
+                id: api.newId(),
+                kid_id: null,
+                kind: "setting-changed",
+                at: api.nowAt(),
+                data: { key: "painting", of: null, value: state },
+            },
+        ]);
+    };
     useReady(() => me.latest !== undefined);
     return (
         <Switch fallback={<output>Opening the painting table…</output>}>
@@ -51,6 +75,8 @@ export function Painting(): JSX.Element {
                             gateway={parentPaintingGateway}
                             storageKey={`lumischool.painting.v1.${parent.family.id}.${parent.user.id}`}
                             identityKey={`${parent.family.id}.${parent.user.id}`}
+                            preferences={preferences}
+                            onPreferences={keep}
                             children={(() => {
                                 const value = family();
                                 return value && !("error" in value) ? value.kids : [];

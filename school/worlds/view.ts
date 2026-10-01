@@ -54,6 +54,7 @@ import {
     type TrackPlan,
     type YearRecord,
 } from "./rewards";
+import { reaches } from "./journeys";
 import { daysOf, greetAt, nameBox, skyPlaces, termsIn } from "./roll";
 import { edgeOf, landOf, reachOf as reachedOf, terrainOf } from "./terrain";
 import type { Applied, Site, World, WorldChoice } from "./types";
@@ -335,7 +336,7 @@ export function journalOf(o: JournalIn): Journal {
         track && visit
             ? everyYear(visit)
             : outside === 0
-              ? "Before the first year"
+              ? "Kindergarten"
               : outside !== null
                 ? `Year ${outside}, term ${term}`
                 : `Term ${term}`;
@@ -757,12 +758,31 @@ export function mapViewOf(o: MapIn): MapView {
             when,
         };
     };
+    // a child goes where their grade reaches (`reaches` in journeys.ts), and always into where they stand
+    const byGrade = (i: number, grade: number): boolean => {
+        const p = placeAt(trip, i);
+        return (
+            i === trip.here ||
+            (!!p && reaches(p.world, i < trip.places.length ? p.grade : null, grade, o.corpus))
+        );
+    };
     const mayOpen = (i: number): boolean =>
         limits.goIn === "none"
             ? false
             : limits.travel === "everywhere"
               ? true
-              : canGo(trip, i, false);
+              : limits.goIn === "own" && o.grade !== undefined
+                ? byGrade(i, o.grade)
+                : canGo(trip, i, false);
+    // an earlier year's world off the child's own land is open where their grade reaches it, and the
+    // ways to it are drawn, so a child can travel back to it and go in
+    const reachable = (i: number): boolean =>
+        mine(i) ||
+        (limits.goIn === "own" &&
+            o.grade !== undefined &&
+            i < layout.nodes.length &&
+            (layout.nodes[i]?.grade ?? Infinity) <= (standing?.grade ?? -Infinity) &&
+            mayOpen(i));
     const places: MapPlace[] = layout.nodes.map((n, i) => {
         const p = trip.places[i];
         const past = i > edge;
@@ -779,17 +799,20 @@ export function mapViewOf(o: MapIn): MapView {
                       ? "next"
                       : "behind"
                   : p.state;
-        // another year's world stands closed, as a world not reached yet does, with no way in
-        if (!mine(i))
+        // another year's world stands dimmed, as a world not reached yet does: one the child's grade
+        // reaches is open, keeping its colour where the child has been, and any other has no way in
+        if (!mine(i)) {
+            const open = reachable(i);
             return {
                 i,
                 box: n.box,
                 stand: n.stand,
-                state: "ahead",
-                open: false,
+                state: open && p && (p.state === "done" || p.state === "begun") ? p.state : "ahead",
+                open,
                 host: null,
                 shown: p ? shownOf(i, p) : null,
             };
+        }
         return {
             i,
             box: n.box,
@@ -817,7 +840,7 @@ export function mapViewOf(o: MapIn): MapView {
         const opened = trip.roads[i]?.open ?? null,
             to = trip.places[road.to];
         const state: MapWay["state"] =
-            (walked && road.from > edge) || !mine(road.from) || !mine(road.to)
+            (walked && road.from > edge) || !reachable(road.from) || !reachable(road.to)
                 ? "hidden"
                 : walked && road.to > edge
                   ? "trailing"

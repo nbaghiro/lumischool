@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[market.two-euros]], [[market.five-euros]], [[market.one-euro]], [[market.ten-euros]], [[market.three-euros]], [[market.twelve-euros]], [[market.four-euros]], [[market.fifteen-euros]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.how-much-name v=1 skills=[language.market, language.numbers] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      foodstall stall foods=["{pick(k, \"bread\", \"cheese\", \"apple\", \"fish\", \"egg\", \"cheese\", \"grapes\", \"fish\")}"] names=[""] costs=["{pick(k, \"2 €\", \"5 €\", \"1 €\", \"10 €\", \"3 €\", \"12 €\", \"4 €\", \"15 €\")}"]
+      text ask "How much is it? Pick the words." width=32
+      choice pick options=[pick(k, "[[market.four-euros]]", "[[market.four-euros]]", "[[market.twelve-euros]]", "[[market.five-euros]]", "[[market.five-euros]]", "[[market.three-euros]]", "[[market.five-euros]]", "[[market.one-euro]]"), pick(k, "[[market.two-euros]]", "[[market.five-euros]]", "[[market.five-euros]]", "[[market.ten-euros]]", "[[market.ten-euros]]", "[[market.twelve-euros]]", "[[market.ten-euros]]", "[[market.fifteen-euros]]"), pick(k, "[[market.twelve-euros]]", "[[market.one-euro]]", "[[market.three-euros]]", "[[market.twelve-euros]]", "[[market.three-euros]]", "[[market.ten-euros]]", "[[market.three-euros]]", "[[market.five-euros]]"), pick(k, "[[market.ten-euros]]", "[[market.fifteen-euros]]", "[[market.one-euro]]", "[[market.one-euro]]", "[[market.one-euro]]", "[[market.two-euros]]", "[[market.four-euros]]", "[[market.ten-euros]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[market.two-euros]]", "[[market.five-euros]]", "[[market.one-euro]]", "[[market.ten-euros]]", "[[market.three-euros]]", "[[market.twelve-euros]]", "[[market.four-euros]]", "[[market.fifteen-euros]]")
+  feedback {
+    when (pick == pick(k, "[[market.twelve-euros]]", "[[market.fifteen-euros]]", "[[market.eleven-euros]]", "[[market.twelve-euros]]", "[[market.thirteen-euros]]", "[[market.two-euros]]", "[[market.fourteen-euros]]", "[[market.five-euros]]")) point=stall {
+      say "{pick(k, \"[[market.twelve-euros|cap]] is twelve. The price is 2.\", \"[[market.fifteen-euros|cap]] is fifteen. The price is 5.\", \"[[market.eleven-euros|cap]] is eleven. The price is 1.\", \"[[market.twelve-euros|cap]] is twelve. The price is 10.\", \"[[market.thirteen-euros|cap]] is thirteen. The price is 3.\", \"[[market.two-euros|cap]] is two. The price is 12.\", \"[[market.fourteen-euros|cap]] is fourteen. The price is 4.\", \"[[market.five-euros|cap]] is five. The price is 15.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

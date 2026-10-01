@@ -242,9 +242,9 @@ test("the bar stays as a grown-up moves between Home, Calendar and Explore and b
     await places.getByRole("link", { name: "Calendar" }).click();
     await atScreen(page, page.getByRole("heading", { name: "Calendar", exact: true }));
     await current("Calendar");
-    await places.getByRole("link", { name: "Explore" }).click();
+    await places.getByRole("link", { name: "Lessons" }).click();
     await atScreen(page, page.getByRole("heading", { name: "Every lesson", level: 1 }));
-    await current("Explore");
+    await current("Lessons");
     await places.getByRole("link", { name: "Home" }).click();
     await atScreen(page, page.getByRole("heading", { name: "Hello, Test Parent" }));
     await current("Home");

@@ -1,0 +1,12 @@
+# Fast and loud are different things, as high and loud were: a song can get faster and stay quiet.
+item k.faster-not-louder v=1 stars=2 skills=[music.tempo, music.dynamics] {
+  title "Faster is not louder"
+
+  scene 30x13 {
+    text q "A song gets faster and faster. Ben says that means it gets louder. Is he right?" narrate width=28 at=canvas(1, 1)
+    choice pick options=["Yes: faster is louder.", "No: it can be fast and quiet."] stack=column below=q gap=1
+  }
+
+  answer pick="No: it can be fast and quiet."
+  hint "Can you whisper quickly?"
+}

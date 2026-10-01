@@ -1,0 +1,11 @@
+item k.why-a-towel v=1 stars=2 skills=[chemistry.materials, reasoning.explain] {
+  title "Why a towel?"
+
+  scene 30x13 {
+    text q "Why do we dry ourselves with a towel and not with a plastic bag?" narrate width=28 at=canvas(1, 1)
+    choice pick options=["The towel soaks up the water.", "The towel is a nicer colour."] stack=column below=q gap=1
+  }
+
+  answer pick="The towel soaks up the water."
+  hint "Where does the water go when you rub with each one?"
+}

@@ -1,0 +1,22 @@
+item k.what-melts v=1 skills=[chemistry.melting] {
+  title "What melts in the sun?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let melts={pick(k, "an ice lolly", "a snowman", "a bar of chocolate", "a pat of butter")}
+  let o1={pick(k, "a stone", "a spoon", "a wooden block", "a coin")}
+  let o2={pick(k, "a book", "a brick", "a pebble", "a key")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 28x17 {
+    text ask "It is a hot sunny day. Which of these will melt if you leave it outside?" narrate width=26 at=canvas(1, 1)
+    choice pick options=[o1, melts, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=melts
+  hint "Which one is soft or runny when it is warm?"
+}

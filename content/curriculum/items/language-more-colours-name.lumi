@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[colour.pink]], [[colour.orange]], [[colour.grey]], [[colour.brown]], [[colour.purple]], [[colour.green]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.more-colours-name v=1 skills=[language.colours] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      mixingtray tray wells=["{pick(k, \"pink\", \"orange\", \"black+white\", \"brown\", \"red+blue\", \"green\")}"] labels=true
+      text ask "What is this colour in [[language.name]]?" width=32
+      choice pick options=[pick(k, "[[colour.grey]]", "[[colour.purple]]", "[[colour.brown]]", "[[colour.grey]]", "[[colour.green]]", "[[colour.grey]]"), pick(k, "[[colour.purple]]", "[[colour.orange]]", "[[colour.grey]]", "[[colour.brown]]", "[[colour.purple]]", "[[colour.green]]"), pick(k, "[[colour.pink]]", "[[colour.grey]]", "[[colour.orange]]", "[[colour.orange]]", "[[colour.brown]]", "[[colour.purple]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[colour.pink]]", "[[colour.orange]]", "[[colour.grey]]", "[[colour.brown]]", "[[colour.purple]]", "[[colour.green]]")
+  feedback {
+    when (pick == pick(k, "[[colour.red]]", "[[colour.yellow]]", "[[colour.black]]", "[[colour.orange]]", "[[colour.blue]]", "[[colour.grey]]")) point=tray {
+      say "{pick(k, \"[[colour.red|cap]] is red. This paint is pink.\", \"[[colour.yellow|cap]] is yellow. This paint is orange.\", \"[[colour.black|cap]] is black. Black and white together make grey.\", \"[[colour.orange|cap]] is orange. This paint is brown.\", \"[[colour.blue|cap]] is blue. Red and blue together make purple.\", \"[[colour.grey|cap]] is grey. This paint is green.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

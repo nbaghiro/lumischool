@@ -1,0 +1,18 @@
+# The person's birth against an event from another lesson: which came first, from the record.
+item history.person-which-first v=1 skills=[history.lives, history.order] {
+  title "Which came first?"
+  difficulty k
+  let n=0..4 k=0..1
+  let born={pick(n, "Florence Nightingale born", "Rosa Parks born", "Ino Tadataka born", "Yuri Gagarin born", "Yuan Longping born")}
+  let other={if k == 0 then pick(n, "First flight", "Moon landing", "Great Fire of London", "Moon landing", "Moon landing") else pick(n, "First steam train", "First flight", "Hot-air balloon", "First television service", "First television service")}
+
+  scene 36x17 {
+    timeline line from=1650 to=2000 step=50 years=[] labels=[] at=canvas(1, 0)
+    text ask "Which came first?" narrate width=16 below=line gap=1
+    choice pick options=["{born}", "{other}"] stack=column right-of=ask gap=1
+  }
+
+  check history.dates of=pick pick=first
+  hint "Think about when each happened. Put a finger on the line for each."
+  hint "The one further to the left came first."
+}

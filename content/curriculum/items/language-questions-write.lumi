@@ -1,0 +1,18 @@
+# The word written from its picture: [[question.where-2]], [[question.when-2]], [[question.who-2]], [[question.what-2]], [[question.how-many-2]], [[question.how-2]], [[question.which-2]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.questions-write v=1 skills=[language.questions, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x9 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"The question word for where. Write it in [[language.name]].\", \"The question word for when. Write it in [[language.name]].\", \"The question word for who. Write it in [[language.name]].\", \"The question word for what. Write it in [[language.name]].\", \"The question word for how many. Write it in [[language.name]].\", \"The question word for how. Write it in [[language.name]].\", \"The question word for which. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[question.where-2]]", "[[question.when-2]]", "[[question.who-2]]", "[[question.what-2]]", "[[question.how-many-2]]", "[[question.how-2]]", "[[question.which-2]]")]
+    }
+  }
+
+  answer word=pick(k, "[[question.where-2]]", "[[question.when-2]]", "[[question.who-2]]", "[[question.what-2]]", "[[question.how-many-2]]", "[[question.how-2]]", "[[question.which-2]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

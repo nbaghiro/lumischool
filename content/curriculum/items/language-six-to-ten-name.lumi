@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[num.six]], [[num.ten]], [[num.five]], [[num.eight]], [[num.seven]], [[num.nine]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.six-to-ten-name v=1 skills=[language.numbers] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      tenframe frame count=pick(k, 6, 10, 5, 8, 7, 9) color=berry
+      text ask "How many are in the frame? Pick the word." width=32
+      choice pick options=[pick(k, "[[num.seven]]", "[[num.seven]]", "[[num.nine]]", "[[num.ten]]", "[[num.six]]", "[[num.ten]]"), pick(k, "[[num.five]]", "[[num.ten]]", "[[num.five]]", "[[num.eight]]", "[[num.seven]]", "[[num.nine]]"), pick(k, "[[num.six]]", "[[num.nine]]", "[[num.six]]", "[[num.nine]]", "[[num.five]]", "[[num.seven]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[num.six]]", "[[num.ten]]", "[[num.five]]", "[[num.eight]]", "[[num.seven]]", "[[num.nine]]")
+  feedback {
+    when (pick == pick(k, "[[num.seven]]", "[[num.nine]]", "[[num.six]]", "[[num.nine]]", "[[num.six]]", "[[num.ten]]")) point=frame {
+      say "{pick(k, \"[[num.seven|cap]] is seven. A full row and one more is six.\", \"[[num.nine|cap]] is nine. Is there an empty square?\", \"[[num.six|cap]] is six. The bottom row is empty.\", \"[[num.nine|cap]] is nine. Count the empty squares: two.\", \"[[num.six|cap]] is six. Count the bottom row again.\", \"[[num.ten|cap]] is ten. There is one empty square.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

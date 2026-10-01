@@ -1,0 +1,65 @@
+# The national unit for britain. Items take n=0; the world items reviewed here change by level.
+# Dates are in engine/notation/chronicle.ts with their sources.
+lesson history-g3-britain-our-country-long-ago v=1 format=teach grade=3 unit=9 subject=history nation=britain levels=[easy, medium, hard] {
+  title "Britain before the Romans"
+  goal "Tell the story of Britain from its first farmers to the Romans in order, and say how we know about people who left no writing."
+
+  look {
+    scene 36x9 {
+      timeline line from=-4000 to=0 step=500 years=[-4000, -3000, -800] labels=["Farming in Britain", "Stonehenge begun", "Iron Age in Britain"] at=canvas(0, 0)
+    }
+    say """
+      Farmers reached Britain about 4000 BC. At Skara Brae in Orkney they built a village of stone houses, with stone beds and shelves, from about 3180 BC. Stonehenge was begun about 3000 BC, and its bluestones were set up about 2400 BC. Bronze came about 2500 BC and iron about 800 BC. Julius Caesar landed in 55 BC, and the Romans conquered Britain from AD 43.
+      """
+  }
+  do {
+    level easy {
+      worked history.n3-what n=0
+    }
+    show history.n3-order n=0 k=1 easy-k=0 hard-k=2
+    show history.n3-between n=0 k=0 hard-k=1
+    show history.n3-century n=0 k=0 hard-k=1
+    show history.bc-ad-order k=2 easy-k=0 hard-k=4
+    show history.across-year-one k=2 easy-k=0 hard-k=4
+    show history.which-century k=2 easy-k=0 hard-k=4
+    show history.n3-order n=0 k=2 easy-k=1 hard-k=0
+    level medium hard {
+      show history.n3-what n=0
+    }
+    level easy {
+      show history.n3-century n=0 k=1
+    }
+    level hard {
+      show history.bc-ad-order k=5
+    }
+  }
+  story {
+    show history.n3-between n=0 k=1 hard-k=0
+  }
+  try stars=2 {
+    show history.n3-why n=0
+  }
+  try stars=3 {
+    show history.n3-find-out n=0
+  }
+  remember {
+    say "Every country's story goes back further than its writing. Where there is no writing, the ground and the buildings tell it."
+  }
+
+  grown-ups """
+    The idea is to put the grade's methods (timelines across year one, centuries, evidence without
+    writing) to work on the family's own country. The way in names what the place or thing was;
+    the core orders three events of the country, counts the years between two, names a century,
+    and reviews three of the grade's timeline questions; the two-star question asks how we know.
+    The wrong idea to watch for is that a date in a book is when something began, when it is often
+    only the first time it was written down or the oldest thing found. If the child is stuck, put
+    the three events on a line you draw together. The three-star task is for you to mark: a small
+    piece of finding out with you, near home. England's key stage 2 history asks for "changes in Britain from the Stone Age to the Iron Age", naming Skara Brae and Stonehenge among its examples.
+    """
+  level easy {
+    grown-ups "At this level a worked example says what the place was, the events come nearly in order, the years counted are the closest pair, and the review questions stay on one side of year one."
+  }
+  level hard {
+    grown-ups "At this level the events are fully muddled, the years counted are the longer pair, the century asked has a trap in it, and the review questions cross year one."
+  }
+}

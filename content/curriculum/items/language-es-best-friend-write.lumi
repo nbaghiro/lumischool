@@ -1,0 +1,23 @@
+# The word written from its picture: tímida, simpático, valiente, perezosa, divertido, trabajador, habladora.
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.es-best-friend-write v=1 skills=[language.describing, language.grammar, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x7 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Eva hardly speaks. Eva es ___. Write it in Spanish.\", \"Leo helps everyone. Leo es ___. Write it in Spanish.\", \"Pablo is not afraid. Pablo es ___. Write it in Spanish.\", \"Ana stays in bed all day. Ana es ___. Write it in Spanish.\", \"Leo makes everyone laugh. Leo es ___. Write it in Spanish.\", \"Pablo does all his homework first. Pablo es ___. Write it in Spanish.\", \"Eva talks all the time. Eva es ___. Write it in Spanish.\")}" width=32
+      word-input word options=[pick(k, "tímida", "simpático", "valiente", "perezosa", "divertido", "trabajador", "habladora")]
+    }
+  }
+
+  answer word=pick(k, "tímida", "simpático", "valiente", "perezosa", "divertido", "trabajador", "habladora")
+  feedback {
+    when (word == pick(k, "timida", "simpatico", "-", "-", "-", "-", "-")) {
+      say "{pick(k, \"The letters are right. The word needs its accent: tímida.\", \"The letters are right. The word needs its accent: simpático.\", \"The letters are right. The word needs its accent: valiente.\", \"The letters are right. The word needs its accent: perezosa.\", \"The letters are right. The word needs its accent: divertido.\", \"The letters are right. The word needs its accent: trabajador.\", \"The letters are right. The word needs its accent: habladora.\")}"
+    }
+  }
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

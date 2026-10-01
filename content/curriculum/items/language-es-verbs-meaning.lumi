@@ -1,0 +1,19 @@
+# The language to English: ¿Hablas español?, Hablo un poco., Mis padres trabajan en el puerto., Nosotros estudiamos inglés., ¿Dónde compras el pan?, Mi hermana toca la guitarra..
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.es-verbs-meaning v=1 skills=[language.grammar, language.sentences] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x33 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "boy", "girl", "boy", "gran", "girl")] says=[pick(k, "¿Hablas español?", "Hablo un poco.", "Mis padres trabajan en el puerto.", "Nosotros estudiamos inglés.", "¿Dónde compras el pan?", "Mi hermana toca la guitarra.")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "My sister plays the guitar.", "We study English.", "I speak a little.", "My sister plays the guitar.", "My sister plays the guitar.", "We study English."), pick(k, "Do you speak Spanish?", "I speak a little.", "Where do you buy the bread?", "We study English.", "My parents work at the harbour.", "My sister plays the guitar."), pick(k, "My parents work at the harbour.", "Where do you buy the bread?", "We study English.", "I speak a little.", "Where do you buy the bread?", "My parents work at the harbour."), pick(k, "Where do you buy the bread?", "My parents work at the harbour.", "My parents work at the harbour.", "My parents work at the harbour.", "We study English.", "Where do you buy the bread?")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Do you speak Spanish?", "I speak a little.", "My parents work at the harbour.", "We study English.", "Where do you buy the bread?", "My sister plays the guitar.")
+  hint "Find a part of the Spanish you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

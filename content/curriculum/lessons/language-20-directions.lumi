@@ -1,0 +1,70 @@
+# Directions on the ferry town's plan: each one proved to lead to exactly one place.
+lesson language-directions v=1 format=teach grade=4 unit=2 subject=language levels=[easy, medium, hard] {
+  title "[[phrase.where-is-the-beach]]"
+  goal "Follow and give directions in [[language.name]] on a town plan: left, right, straight on, first and second."
+
+  look {
+    scene 28x23 {
+      column all at=canvas(1, 1) space=1 align=start {
+        townplan plan places=["[[town.the-cafe]]", "[[town.the-shop]]", "[[town.the-park]]", "[[town.the-beach]]", "[[town.the-museum]]", "[[town.the-station]]", "[[town.the-square]]"]
+      }
+    }
+    say """
+      The child stands at the bottom of the plan. [[town.it-is-on-the-left]] is on the left and
+      [[town.it-is-on-the-right]] is on the right. [[town.go-straight-on]] is straight on.
+      [[town.the-first-on-the-left]] is the first street on the left, and
+      [[town.the-second-on-the-right]] is the second street on the right. To ask the way, say
+      [[phrase.where-is-the-beach]]
+      """
+  }
+  do {
+    level easy {
+      worked language.directions-name k=3
+    }
+    show language.directions-name k=2 easy-k=0 hard-k=4
+    show language.directions-meaning k=3 easy-k=2 hard-k=5
+    show language.directions-write k=3 easy-k=1 hard-k=5
+    show language.directions-name k=4 easy-k=1 hard-k=5
+    show language.directions-match k=1 easy-k=0 hard-k=2
+    show language.directions-write k=4 easy-k=2 hard-k=6
+    show language.directions-listen k=3 easy-k=0 hard-k=5
+    show language.directions-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.directions-write k=4
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-directions-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.directions-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[town.it-is-on-the-left]] On the left. [[town.it-is-on-the-right]] On the right. [[town.go-straight-on]] Straight on."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is left and right swapped, and counting a street past the one named.
+    Every direction in the naming questions leads to exactly one building on the plan, so a wrong
+    pick shows which step went wrong: the turn or the count. The three-star question has Ana facing
+    the other way, where right and left swap, which is the hard part of directions in any language.
+    From this grade the written words are marked with their accents: a word typed without its accent
+    is not taken. The dictation is read from this sheet, where it prints as Read aloud, or played by
+    the device. If the child is stuck, walk the directions in a room at home, turning left and right
+    as you say them. Off the page, give directions in the language to someone hiding a toy. It meets
+    England's key stage 2 languages programme (years 3 to 6, statutory from age 7): "engage in
+    conversations; ask and answer questions; express opinions and respond to those of others; seek
+    clarification and help"; Japan's grades 5 and 6 foreign languages: "Can give instructions, make
+    requests and respond to them by using basic expressions"; and CEFR A2, "Can understand sentences
+    and frequently used expressions related to areas of most immediate relevance". The phrases are
+    in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[town.the-park]] is worked first in the teacher's pen, the words to name are [[town.the-square]] and [[town.the-cafe]] and the words to write are [[town.left]] and [[town.right]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[town.the-beach]] and [[town.the-museum]] and the words to write are [[town.near]], [[town.far]] and [[town.second]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

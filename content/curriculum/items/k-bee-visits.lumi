@@ -1,0 +1,23 @@
+item k.bee-visits v=1 skills=[nature.minibeasts, counting.to-five] {
+  title "The bee's visits"
+  difficulty n
+  let n=2..6
+  level easy {
+    let n=2..3
+  }
+  level hard {
+    let n=5..6
+  }
+
+  scene 36x17 {
+    row garden at=canvas(1, 1) space=1 align=end {
+      bumblebee bee facing=1
+      flowers f count=n petals=5
+    }
+    text ask "The bee visits each flower once to drink. How many visits?" narrate width=28 below=garden gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  hint "One visit for each flower. Count the flowers."
+}

@@ -1,0 +1,66 @@
+# The sources and what the record holds about them are in engine/notation/chronicle.ts (DOCUMENTS);
+# the history of London and the encyclopaedia entry were written for the lessons.
+lesson history-a-source-and-who-made-it v=1 format=teach grade=4 unit=8 subject=history levels=[easy, medium, hard] {
+  title "A source and who made it"
+  goal "Say who made a source, when and where, and whether they were there, and choose the best source for a question."
+
+  look {
+    scene 36x13 {
+      sourcecard card title="Pliny's letter about Vesuvius" kind=3 who="Pliny the Younger, who watched from across the bay" when="about AD 106, of AD 79" where="Misenum, near Vesuvius" there=1 ask=0 at=canvas(1, 0)
+    }
+    say """
+      Everything we know about the past comes from sources: things made at the time or later. A
+      first-hand source was made by someone who was there, like Pliny's letter about the volcano
+      Vesuvius, which he watched erupt in AD 79. A second-hand source was made by someone who was
+      not, like a history written later. Both are useful. Ask of each: who made it, when, where,
+      and were they there?
+      """
+  }
+  do {
+    level easy {
+      worked history.source-hand k=0
+    }
+    show history.source-hand k=2 easy-k=1 hard-k=4
+    show history.source-best k=2 easy-k=0 hard-k=4
+    show history.source-gap k=2 easy-k=0 hard-k=4
+    show history.edict-first-hand k=0 hard-k=1
+    show history.source-hand k=3 easy-k=2 hard-k=5
+    show history.source-best k=3 easy-k=1 hard-k=5
+    show history.source-gap k=3 easy-k=1 hard-k=5
+    show history.fire-which-there k=1 easy-k=0 hard-k=1
+    level hard {
+      show history.source-gap k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.pliny-later k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.family-source
+  }
+  remember {
+    say "Ask of every source: who made it, when, where, and were they there?"
+  }
+
+  grown-ups """
+    The idea is that history is built from sources, and that a source is judged by who made it and
+    whether they were there. The way in sorts one source card; the core sorts more, counts how long
+    after an event its source was made, and chooses the best source for a question. The wrong idea
+    to watch for is "first-hand means true" (the two-star question: Pliny saw the eruption but wrote
+    it down 27 years later) and its twin, "second-hand means useless": a good history draws on many
+    first-hand sources. If the child is stuck, ask "could this person have seen it?" The three-star
+    task is for you to mark: a first-hand source from your own family. England's key stage 2
+    history asks pupils to "understand how our knowledge of the past is constructed from a range of
+    sources"; Russia's history programme for grade five begins with «Источники исторических
+    знаний». The encyclopaedia entry and the history of London in this lesson were written for it.
+    Japan's 社会 takes up history only through Japan's own story, in grade six
+    (「我が国の歴史上の主な事象について，人物の働きや代表的な文化遺産を中心に」, the course of study as read in its 2008 edition), so
+    this lesson has no line of its own there; its timeline and source skills serve that grade.
+    """
+  level easy {
+    grown-ups "At this level a worked example sorts Pepys's diary, the sources to sort are plainly there or plainly later, the best source is the eyewitness one, and the years counted are after year one."
+  }
+  level hard {
+    grown-ups "At this level the sources to sort include Pliny's letter written years later, the best source is sometimes the later summary, the years counted cross year one, and the two-star question asks what a reader should keep in mind."
+  }
+}

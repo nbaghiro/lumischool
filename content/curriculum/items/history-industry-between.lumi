@@ -1,0 +1,20 @@
+# Years between steps of the age of machines, from the record.
+item history.industry-between v=1 skills=[history.industry, number.difference] {
+  title "How many years between?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let e1={pick(k, "Cromford Mill", "Bridgewater Canal", "Watt's steam engine", "Bridgewater Canal", "Steam train", "Cromford Mill")}
+  let y1={pick(k, 1771, 1761, 1776, 1761, 1804, 1771)}
+  let e2={pick(k, "Watt's steam engine", "Cromford Mill", "First public steam railway", "First inter-city railway", "First inter-city railway", "Telephone")}
+  let y2={pick(k, 1776, 1771, 1825, 1830, 1830, 1876)}
+
+  scene 36x12 {
+    timeline line from=1750 to=1890 step=20 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(0, 0)
+    text ask "How many years after the first was the second?" narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Count on from the first year to the next ten."
+  hint "Then in tens and ones to the second."
+}

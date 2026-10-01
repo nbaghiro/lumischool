@@ -1,0 +1,24 @@
+item k.debug-two-ways v=1 stars=3 skills=[coding.debugging, coding.tracing] {
+  title "Mend the number"
+  difficulty (a + b)
+  let a=2..3 b=1..2 w=1..4
+  where (w != b)
+  level easy {
+    let a={2} b={1}
+  }
+  level hard {
+    let a={3} b={2}
+  }
+
+  scene 28x22 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks b1 code=["right {a}", "down {w}"] words=false numbers=true
+      maze g cols=5 rows=5 flag=[1 + a, 1 + b] code=["right {a}", "down {w}"] upto=0 trail=none
+    }
+    text q "Block 2 has the wrong number. What number takes the robot to the flag?" narrate width=26 below=top gap=1
+    number-input answer below=q gap=1
+  }
+
+  check coding.runs of=g goal=flag answer=fix
+  hint "Do the first block. Then how many squares down is the flag?"
+}

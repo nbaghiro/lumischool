@@ -1,0 +1,20 @@
+# The two-star reason: canals carried heavy goods cheaply but slowly; railways, from 1830, were many
+# times faster and could go where no canal could.
+item history.why-railways-won v=1 skills=[history.industry, reasoning.why] {
+  title "Canal or railway?"
+  difficulty k
+  let k=0..1
+
+  scene 32x22 {
+    row pics at=canvas(1, 0) space=2 align=end {
+      narrowboat boat
+      loco engine
+    }
+    text ask "{if k == 0 then \"After 1830 many canals lost their trade to the new railways. Why?\" else \"Canal boats were still used for heavy goods like coal long after railways came. Why?\"}" narrate width=30 below=pics gap=1
+    choice pick options=[if k == 0 then "Trains were much faster and went further" else "Slow boats were cheap for heavy loads", if k == 0 then "Canals were closed by law" else "Trains could not carry coal", if k == 0 then "Horses refused to pull boats" else "Canals were faster than trains"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Trains were much faster and went further" else "Slow boats were cheap for heavy loads")
+  hint "Compare how fast each could carry goods, and how much it cost."
+  hint "Which matters more for coal: speed, or a low price?"
+}

@@ -1,0 +1,21 @@
+item k.tallest-tower v=1 skills=[measure.compare, counting.compare] {
+  title "The tallest tower"
+  difficulty (if abs(h1 - h2) == 1 or abs(h2 - h3) == 1 or abs(h1 - h3) == 1 then 1 else 0)
+  let h1=2..7 h2=2..7 h3=2..7 w=0..1
+  where (h1 != h2 and h2 != h3 and h1 != h3)
+  level easy {
+    where (abs(h1 - h2) >= 2 and abs(h2 - h3) >= 2 and abs(h1 - h3) >= 2)
+  }
+  level hard {
+    where (abs(h1 - h2) == 1 or abs(h2 - h3) == 1 or abs(h1 - h3) == 1)
+  }
+
+  scene 24x26 {
+    sizeorder row heights=[h1, h2, h3] labels=["1", "2", "3"] numbers=false at=canvas(1, 1)
+    text ask "Which tower is the {if w == 0 then \"tallest\" else \"shortest\"}? Say its number." narrate width=22 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if w == 0 then if h1 > h2 and h1 > h3 then 1 else if h2 > h3 then 2 else 3 else if h1 < h2 and h1 < h3 then 1 else if h2 < h3 then 2 else 3)
+  hint "Look along the tops of the towers. Which one sticks up the most?"
+}

@@ -1,0 +1,17 @@
+# Four words to their English, 3 sets, the later sets with the words most often mixed up.
+item language.es-best-friend-match v=1 skills=[language.describing, language.grammar] {
+  title "Match the words"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x17 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Write the number of its English next to each Spanish word." width=32
+      match m left=[pick(k, "simpático", "hablador", "mi mejor amigo"), pick(k, "tímido", "trabajador", "mi mejor amiga"), pick(k, "valiente", "divertido", "un poco"), pick(k, "perezoso", "inteligente", "muy")] right=[pick(k, "brave", "clever", "a bit"), pick(k, "kind", "chatty", "my best friend, a boy"), pick(k, "shy", "hard-working", "very"), pick(k, "lazy", "fun", "my best friend, a girl")] blanks=[a, b, c, d]
+    }
+  }
+
+  answer a=2 b=pick(k, 3, 3, 4) c=pick(k, 1, 4, 1) d=pick(k, 4, 1, 3)
+  hint "Start with the word you are surest of, and cross its English off."
+  hint "Two words look alike. Which letter is different, and what does it change?"
+}

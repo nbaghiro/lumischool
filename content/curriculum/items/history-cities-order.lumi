@@ -1,0 +1,19 @@
+# Four of the first great cities and buildings, numbered from the earliest, from the dated record.
+item history.cities-order v=1 skills=[history.cities, history.order] {
+  title "The first cities, in order"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Uruk", "Uruk", "Great Pyramid", "Shang China", "Mohenjo-daro", "Shang China")}
+  let b={pick(k, "Great Pyramid", "Mohenjo-daro", "Uruk", "Uruk", "Shang China", "Great Pyramid")}
+  let c={pick(k, "Shang China", "Shang China", "Shang China", "Great Pyramid", "Uruk", "Uruk")}
+
+  scene 36x22 {
+    timeline line from=-3500 to=-1000 step=500 years=[] labels=[] at=canvas(1, 0)
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=34 below=line gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Uruk was big about 3100 BC. Which of the others is nearest to that?"
+  hint "For years BC, the bigger the number, the longer ago."
+}

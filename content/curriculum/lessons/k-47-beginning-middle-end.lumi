@@ -1,0 +1,48 @@
+lesson k-beginning-middle-end v=1 format=teach grade=0 unit=8 subject=reading levels=[easy, medium, hard] {
+  title "Beginning, middle and end"
+  goal "Say what happens at the beginning, in the middle and at the end of a story heard aloud, and tell a story with all three."
+
+  look {
+    scene 35x14 {
+      comic strip who=["girl", "dog", "girl"] says=["Where is my ball?", "Woof, woof.", "You found it."] moods=["worried", "happy", "excited"] with=["", "", "dog"] thinks=[0, 0, 0] holds=["", "", ""] labels=["1", "2", "3"] at=canvas(1, 1)
+    }
+    say """
+      A story has a beginning, a middle and an end. At the beginning the girl has lost her ball. In
+      the middle the dog helps. At the end the ball is found and everyone is happy.
+      """
+  }
+  do {
+    level easy {
+      worked k.which-part s=0 p=0 level=medium
+    }
+    practice k.which-part count=2 seed=2
+    practice k.story-middle count=2 seed=3 easy-count=1
+    practice k.how-it-ends count=2 seed=4 easy-count=1
+    show k.tell-bme
+    practice k.story-next count=1 seed=6
+  }
+  try stars=2 {
+    show k.why-at-the-end
+  }
+  try stars=3 {
+    show k.own-ending
+  }
+  remember {
+    say "Every story has a beginning, a middle and an end."
+  }
+
+  grown-ups """
+    Read each question and each story aloud. After any story at bedtime, ask three questions: how
+    did it start, what happened, how did it end. The telling and the new ending are for you to
+    listen to. If the child is stuck on the middle, say the beginning and the end and ask what
+    happened in between. Off the page, act out a favourite story in three parts with toys. England,
+    Reception, ELG Comprehension: "Demonstrate understanding of what has been read to them by
+    retelling stories and narratives using their own words".
+    """
+  level easy {
+    grown-ups "At this level the beginning is found in the teacher's pen first, the parts asked for are the beginning and the end, and the story to finish is the seed."
+  }
+  level hard {
+    grown-ups "At this level the middle is asked for, the stories are the seed and the cat, and the endings to choose are the tower and the party."
+  }
+}

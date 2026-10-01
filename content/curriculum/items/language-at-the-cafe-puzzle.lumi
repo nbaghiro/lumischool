@@ -1,0 +1,23 @@
+# Non-routine: a bill, a choice that fits a budget exactly, and the two things a bill must have been.
+item language.at-the-cafe-puzzle v=1 stars=3 skills=[language.food, language.market, reasoning.language] {
+  title "Menu sums"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x32 {
+    column all at=canvas(1, 1) space=1 align=start {
+      sign menu lines=["[[cafe.juice]] 2 €", "[[cafe.sandwich]] 5 €", "[[cafe.ice-cream]] 4 €", "[[cafe.water]] 1 €"] kind=board color=mint
+      text ask "{pick(k, \"Leo orders a juice and an ice cream. How much is it?\", \"Ana has six euros. She wants a sandwich and one drink, and to spend it all. Which drink?\", \"Leo paid nine euros for two things. Which two?\")}" width=32
+      choice pick options=[pick(k, "[[cafe.six-euros]]", "[[cafe.water]]", "[[cafe.the-sandwich-and-the-ice-cream]]"), pick(k, "[[cafe.five-euros]]", "[[cafe.juice]]", "[[cafe.the-juice-and-the-sandwich]]"), pick(k, "[[cafe.seven-euros]]", "[[cafe.ice-cream]]", "[[cafe.the-ice-cream-and-the-juice]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[cafe.six-euros]]", "[[cafe.water]]", "[[cafe.the-sandwich-and-the-ice-cream]]")
+  feedback {
+    when (pick == pick(k, "[[cafe.five-euros]]", "[[cafe.juice]]", "[[cafe.the-juice-and-the-sandwich]]")) {
+      say "{pick(k, \"Read both prices on the menu again.\", \"A sandwich and a juice make seven. Which drink makes six?\", \"Those make seven. Which two make nine?\")}"
+    }
+  }
+  hint "Read each price off the menu."
+  hint "Add in numbers first, then find the words."
+}

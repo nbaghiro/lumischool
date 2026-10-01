@@ -1,0 +1,20 @@
+# Keeping food before refrigerators: salting, drying, smoking, pickling and cold cellars.
+item history.food-keep v=1 skills=[history.food, history.change] {
+  title "Before the fridge"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ask={pick(k, "Before fridges, how did families keep fish for the winter?", "How did families keep fruit to eat months later?", "Why did families hang meat in the smoke of the fire?", "Why did houses have a cool cellar under the floor?", "Why were vegetables kept in vinegar?", "Why did a family grow more food than it could eat in summer?")}
+  let right={pick(k, "They salted or dried it", "They dried it or made jam", "Smoke helps stop meat going bad", "Food stayed cool there and lasted longer", "Vinegar stops food going bad", "To store some for the winter")}
+  let w1={pick(k, "They froze it in a freezer", "They bought it fresh in winter", "To make it look darker", "To keep the family warm", "To make them softer", "To sell it all at once")}
+  let w2={pick(k, "They ate it all in one day", "They kept it in a warm room", "To cook it faster", "To hide from visitors", "Because water was scarce", "Because the animals ate it")}
+
+  scene 30x23 {
+    cottage home at=canvas(1, 0)
+    text ask "{ask}" narrate width=28 below=home gap=1
+    choice pick options=[pick(k, right, w1, w2, right, w1, w2), pick(k, w1, right, right, w2, w2, right), pick(k, w2, w2, w1, w1, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "What makes food go bad, and what stops it?"
+  hint "Think of winter without any shops or fridges."
+}

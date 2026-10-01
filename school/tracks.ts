@@ -17,6 +17,8 @@ export const TRACK_IDS = [
     "writing",
     "music",
     "nature",
+    "history",
+    "language",
 ] as const;
 
 export type Track = (typeof TRACK_IDS)[number];
@@ -39,12 +41,46 @@ export type Track = (typeof TRACK_IDS)[number];
  * lessons) and grade 6's chemistry (15) at two days a week, since at one they would end in weeks 48
  * and 45. Grade 5's chemistry (13) ends in week 39 at one. Their eleven and twelve days a week put
  * three on some days, which `pickWeekdays` spreads so no day holds more than its share rounded up.
+ * History (.docs/history.md) and a second language are a day a week each from grade one; a language
+ * plans nothing for a child until a grown-up picks one, since every language lesson waits for it.
  */
 export const DEFAULT_TRACKS: Readonly<Record<number, Readonly<Partial<Record<Track, number>>>>> = {
-    1: { maths: 2, reading: 2, writing: 1, physics: 1, nature: 1 },
-    2: { maths: 2, reading: 2, writing: 1, physics: 1, nature: 1 },
-    3: { maths: 2, reading: 2, writing: 1, physics: 1, nature: 1, coding: 1 },
-    4: { maths: 2, reading: 2, writing: 1, physics: 1, nature: 1, coding: 1, chemistry: 1 },
+    // the kindergarten year is light: every subject once a week, two a day
+    0: {
+        maths: 1,
+        reading: 1,
+        writing: 1,
+        music: 1,
+        nature: 1,
+        physics: 1,
+        chemistry: 1,
+        coding: 1,
+        history: 1,
+        language: 1,
+    },
+    1: { maths: 2, reading: 2, writing: 1, physics: 1, nature: 1, history: 1, language: 1 },
+    2: { maths: 2, reading: 2, writing: 1, physics: 1, nature: 1, history: 1, language: 1 },
+    3: {
+        maths: 2,
+        reading: 2,
+        writing: 1,
+        physics: 1,
+        nature: 1,
+        coding: 1,
+        history: 1,
+        language: 1,
+    },
+    4: {
+        maths: 2,
+        reading: 2,
+        writing: 1,
+        physics: 1,
+        nature: 1,
+        coding: 1,
+        chemistry: 1,
+        history: 1,
+        language: 1,
+    },
     5: {
         maths: 2,
         reading: 2,
@@ -54,6 +90,8 @@ export const DEFAULT_TRACKS: Readonly<Record<number, Readonly<Partial<Record<Tra
         coding: 1,
         chemistry: 1,
         music: 1,
+        history: 1,
+        language: 1,
     },
     6: {
         maths: 2,
@@ -64,6 +102,8 @@ export const DEFAULT_TRACKS: Readonly<Record<number, Readonly<Partial<Record<Tra
         coding: 1,
         chemistry: 2,
         music: 1,
+        history: 1,
+        language: 1,
     },
 };
 
@@ -74,14 +114,14 @@ const TOP = Math.max(...Object.keys(DEFAULT_TRACKS).map(Number));
  * any grade needs a plan and `laneOf` gives them the nearest grade's lessons of each track.
  */
 export const defaultTracks = (grade: number): Readonly<Partial<Record<Track, number>>> =>
-    DEFAULT_TRACKS[Math.min(TOP, Math.max(1, Math.round(grade)))] ?? {};
+    DEFAULT_TRACKS[Math.min(TOP, Math.max(0, Math.round(grade)))] ?? {};
 
 /**
  * How far along a child's school week each subject leans, which `pickWeekdays` in family/family.ts
  * turns its days by. Without it every track at one day a week falls on the same Wednesday, and the
  * default above would give a child one five-subject day and four empty ones. The numbers are chosen
  * so that the subjects the default turns on land on different days: no day of any grade's default
- * holds more than its share rounded up (two to grade 4, three at 5 and 6), and none is empty. Eight tracks do not fit five days, so a family that puts
+ * holds more than its share rounded up (two to grade 4, three at 5 and 6), and none is empty. Ten tracks do not fit five days, so a family that puts
  * every track on at one day a week still has some sharing a day, and that is theirs to arrange.
  */
 export const TRACK_TURN: Readonly<Record<Track, number>> = {
@@ -93,6 +133,20 @@ export const TRACK_TURN: Readonly<Record<Track, number>> = {
     writing: 3,
     music: 4,
     nature: 0,
+    history: 2,
+    language: 3,
+};
+
+/**
+ * A track's turn at one grade where `TRACK_TURN` would pile its day onto another's: the kindergarten
+ * year's nature, which would share maths's Wednesday and leave Friday empty, and its history, which
+ * would make Friday its third subject; and the sixth year's language, which would make Monday its
+ * fourth subject. No one turn per track spreads every grade.
+ */
+export const TRACK_TURN_AT: Readonly<Partial<Record<Track, Readonly<Record<number, number>>>>> = {
+    nature: { 0: 2 },
+    history: { 0: 0 },
+    language: { 6: 4 },
 };
 
 interface SubjectFacts {
@@ -147,6 +201,16 @@ export const TRACK_FACTS: Readonly<Record<string, SubjectFacts>> = {
         title: "Nature",
         about: "Living things and how to tell them, growing, the year outside, small creatures, habitats, food chains, maps and the weather, seen in the marsh, the long grass and the reef.",
         marker: "mint",
+    },
+    history: {
+        title: "History",
+        about: "Everyday life in the past, told in several places at once, with timelines, sources and old maps, and a national unit each year for the country the family chooses.",
+        marker: "tang",
+    },
+    language: {
+        title: "Language",
+        about: "A second language, in the ferry town: Spanish first, then French and Japanese, once a grown-up has chosen one for the child.",
+        marker: "berry",
     },
     science: {
         title: "Science",

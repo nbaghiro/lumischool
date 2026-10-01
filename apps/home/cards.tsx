@@ -3,7 +3,7 @@ import "./cards.css";
 import type { SceneDrawer } from "../../engine/ui/scene";
 import { createSignal, createUniqueId, For, Show, type JSX } from "solid-js";
 import type { Draft, Weekday } from "../../engine/answer";
-import type { LessonFacts } from "../../engine/pack";
+import { gradeName, type LessonFacts } from "../../engine/pack";
 import type { Scene } from "../../engine/scene";
 import * as api from "../../engine/ui/api";
 import { CloseX } from "../../engine/ui/dialog";
@@ -13,8 +13,6 @@ import { Postcard } from "../../engine/ui/postcard";
 import { Say } from "../../engine/ui/say";
 import { defaultTerms, type KidCalendar, type Term } from "../../school/family/calendar";
 import * as acts from "../../school/family/calendar";
-
-import { gradeName } from "../../school/family/names";
 
 import type { Kid } from "../../server/db/schema";
 import { dayLong, dayShort, names, plural } from "./grown";

@@ -1,0 +1,23 @@
+# The capital named from the country, or the country from the capital, with the capital's dot on
+# the map for the way in.
+item history.nation-capital-name v=1 skills=[history.nation, history.maps] {
+  title "Capital and country"
+  difficulty k
+  let n=0..4 k=0..1
+  let capital={pick(n, "London", "Washington", "Tokyo", "Moscow", "Beijing")}
+  let country={pick(n, "the United Kingdom", "the United States", "Japan", "Russia", "China")}
+  let lead={if k == 0 then "The dot is the capital of" else "This dot is"}
+  let subj={if k == 0 then country else capital}
+  let tail={if k == 0 then "What is the city called?" else "It is the capital of which country?"}
+  let other={pick(n, "Paris", "New York", "Osaka", "Saint Petersburg", "Shanghai")}
+
+  scene 36x32 {
+    worldmap map names=0 blank=-1 oceans=0 places=["{capital}"] numbered=1 route=0 at=canvas(1, 0)
+    text ask "{lead} {subj}. {tail}" narrate width=34 below=map gap=1
+    choice pick options=[if k == 0 then capital else country, if k == 0 then other else "France", if k == 0 then "Rome" else "Brazil"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then capital else country)
+  hint "Which city do we call our capital, where the country's government meets?"
+  hint "Some big cities are not the capital. Which one is?"
+}

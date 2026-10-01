@@ -1,0 +1,22 @@
+# A reason: whether an answer fits the question asked.
+item language.my-name-why v=1 stars=2 skills=[language.greetings, language.questions, reasoning.language] {
+  title "What went wrong?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Ana asks [[greet.how-are-you]] Leo answers [[greet.my-name-is-leo]] What went wrong?\", \"Leo says [[greet.my-name-is-leo-and-you]] What does he want Ana to say?\", \"Ana looks sad. She says [[greet.very-well]]. Does it match her face?\")}" width=32
+      choice pick options=[pick(k, "She asked how he is, and he gave his name.", "Her name", "No: [[greet.very-well]] is for feeling very good."), pick(k, "He should have said [[greet.goodbye]].", "How old she is", "Yes: [[greet.very-well]] is for feeling sad."), pick(k, "He said it too quietly.", "Goodbye", "No: [[greet.very-well]] is a name.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "She asked how he is, and he gave his name.", "Her name", "No: [[greet.very-well]] is for feeling very good.")
+  feedback {
+    when (pick == pick(k, "He should have said [[greet.goodbye]].", "Goodbye", "Yes: [[greet.very-well]] is for feeling sad.")) {
+      say "{pick(k, \"Nobody is leaving. What did Ana's question ask?\", \"He told his name and then asked [[greet.and-you]], and you?\", \"[[greet.very-well|cap]] is very well. Is that sad?\")}"
+    }
+  }
+  hint "What did the question ask for?"
+  hint "Does the answer give that?"
+}

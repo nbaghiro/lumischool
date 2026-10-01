@@ -1,0 +1,22 @@
+# A reason: de and el join as del, but de la does not, and entre needs two things.
+item language.es-next-to-why v=1 stars=2 skills=[language.town, language.directions, reasoning.language] {
+  title "De and el"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Why del and not de el in enfrente del café?\", \"La plaza está enfrente de la iglesia. Why not del?\", \"Entre el museo y el café: how many places does entre need?\")}" width=32
+      choice pick options=[pick(k, "De and el join to make del.", "Only de and el join; de la stays apart.", "two"), pick(k, "Del is a different word for of.", "Iglesia is a long word.", "one"), pick(k, "Café takes del always.", "Del is only for towns.", "three")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "De and el join to make del.", "Only de and el join; de la stays apart.", "two")
+  feedback {
+    when (pick == pick(k, "Café takes del always.", "Iglesia is a long word.", "one")) {
+      say "{pick(k, \"Del is used before any el word. What two words make it?\", \"Length does not matter. Which little word comes before iglesia?\", \"Between one thing is not between. How many does the sentence name?\")}"
+    }
+  }
+  hint "Say de and el quickly, one after the other."
+  hint "El or la?"
+}

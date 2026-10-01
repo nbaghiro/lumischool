@@ -1,0 +1,17 @@
+# The three-star question with round made-up speeds: the same journey by canal boat, by coach and by
+# early train, and how many times faster.
+item history.journey-times v=1 skills=[history.industry, reasoning.plan] {
+  title "How much faster?"
+  difficulty k
+  let k=0..1
+
+  scene 34x9 {
+    loco engine at=canvas(1, 0)
+    text ask "{if k == 0 then \"Say a canal boat went 4 km an hour and an early train 40 km an hour. How many hours would the boat take for a journey the train made in 2 hours?\" else \"Say a coach went 12 km an hour and a train 48 km an hour. The train took 3 hours. How many hours longer would the coach take?\"}" narrate width=24 right-of=engine gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 0 then 20 else 9)
+  hint "First find how far the journey is."
+  hint "{if k == 0 then \"Then how long at 4 km an hour?\" else \"Then how long at 12 km an hour, and take away the train's time.\"}"
+}

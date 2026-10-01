@@ -1,0 +1,22 @@
+item k.baby-name v=1 skills=[nature.life-cycles, nature.animals] {
+  title "What is the baby called?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let parent={pick(k, "a dog", "a cat", "a hen", "a sheep", "a frog", "a cow")}
+  let baby={pick(k, "a puppy", "a kitten", "a chick", "a lamb", "a tadpole", "a calf")}
+  let o1={pick(k, "a kitten", "a puppy", "a duckling", "a calf", "a chick", "a lamb")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 28x11 {
+    text q "What is the baby of {parent} called?" narrate width=26 at=canvas(1, 1)
+    choice pick options=[o1, baby] stack=row below=q gap=1
+  }
+
+  answer pick=baby
+  hint "Think of a baby animal you have seen or read about."
+}

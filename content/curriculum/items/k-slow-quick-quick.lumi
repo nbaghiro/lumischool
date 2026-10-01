@@ -1,0 +1,11 @@
+item k.slow-quick-quick v=1 stars=3 skills=[music.rhythm, music.tempo] {
+  title "Slow, slow, quick, quick, slow"
+
+  scene 26x13 {
+    countrow row beats=4 meter=4 now=-1 at=canvas(1, 1)
+    text q "Clap it: slow, slow, quick quick, slow. The two quick claps fit in one square." narrate width=24 below=row gap=1
+  }
+
+  check music.rhythm beats=[0, 1, 2, 2.5, 3] grade=1
+  hint "Say it as you clap: slow, slow, quick quick, slow."
+}

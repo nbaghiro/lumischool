@@ -1,0 +1,25 @@
+item k.sunny-days v=1 skills=[nature.weather, counting.to-ten] {
+  title "Sunny days on the chart"
+  difficulty n
+  let n=2..8
+  level easy {
+    let n=2..4
+  }
+  level hard {
+    let n=6..8
+  }
+
+  scene 26x13 {
+    tally marks count=n at=canvas(1, 1)
+    text ask "Ada made a mark for each sunny day this month. How many sunny days?" narrate width=24 below=marks gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (n >= 5 and answer == n - 1) point=marks {
+      say "The line across the four is the fifth mark. Count it too."
+    }
+  }
+  hint "Count the marks. A line across four makes five."
+}

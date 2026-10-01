@@ -1,0 +1,23 @@
+# Non-routine: a bill, change, and the one pair that spends a sum exactly, answered in the language.
+item language.how-much-puzzle v=1 stars=3 skills=[language.market, language.numbers, reasoning.language] {
+  title "Shopping sums"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x31 {
+    column all at=canvas(1, 1) space=1 align=start {
+      foodstall stall foods=["bread", "cheese", "fish", "egg"] names=["[[food.bread]]", "[[food.cheese]]", "[[food.fish]]", "[[food.eggs]]"] costs=["2 €", "5 €", "7 €", "3 €"]
+      text ask "{pick(k, \"Ana buys the bread and the eggs. How much is it?\", \"Leo has ten euros and buys [[food.the-fish]]. How much is left?\", \"Ana has twelve euros. Which two can she buy to spend it all?\")}" width=32
+      choice pick options=[pick(k, "[[market.five-euros]]", "[[market.three-euros]]", "cheese and fish"), pick(k, "[[market.six-euros]]", "[[market.seven-euros]]", "bread and fish"), pick(k, "[[market.four-euros]]", "[[market.four-euros]]", "eggs and cheese")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[market.five-euros]]", "[[market.three-euros]]", "cheese and fish")
+  feedback {
+    when (pick == pick(k, "[[market.six-euros]]", "[[market.seven-euros]]", "bread and fish")) {
+      say "{pick(k, \"Read the two prices again: bread and eggs.\", \"That is what the fish costs. What is left from ten?\", \"Bread and fish make nine. Which two make twelve?\")}"
+    }
+  }
+  hint "Read the prices off the cards."
+  hint "Work it out in numbers, then find the words."
+}

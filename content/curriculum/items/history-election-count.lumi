@@ -1,0 +1,23 @@
+# A made-up election counted as a bar chart: who won, by how many, and whether with more than half.
+item history.election-count v=1 skills=[history.government, data.bargraph] {
+  title "Counting the votes"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, 9, 7, 11, 8, 10, 6)}
+  let b={pick(k, 5, 10, 8, 8, 9, 7)}
+  let c={pick(k, 3, 4, 6, 5, 3, 8)}
+  let ask={pick(k, "How many votes did Ada get?", "How many voted in all?", "By how many votes did the winner beat the next?", "How many voted for someone other than Ben?", "How many more votes would Cara have needed to tie with the winner?", "How many more votes would the winner have needed to have more than half of all votes?")}
+  let top={max(a, max(b, c))}
+  let second={if top == a then max(b, c) else if top == b then max(a, c) else max(a, b)}
+  let key={pick(k, a, a + b + c, top - second, a + c, top - c, (a + b + c) // 2 + 1 - top)}
+
+  scene 32x16 {
+    bargraph g labels=["Ada", "Ben", "Cara"] values=[a, b, c] max=12 at=canvas(1, 0)
+    text ask "{ask}" narrate width=16 right-of=g gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer key
+  hint "Read each bar against the scale."
+  hint "In all means add; beat by means take away."
+}

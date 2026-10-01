@@ -1,0 +1,19 @@
+# The word written from its picture: [[greet.well]], [[greet.bad]], [[greet.so-so]], [[greet.great]].
+# Accent-tolerant: the box takes the word with its accents left off (accents=loose); ñ is a letter and is marked.
+item language.my-name-write v=1 skills=[language.greetings, language.questions, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 1, 2)
+  let k=0..3
+
+  scene 34x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      face f mood=pick(k, "happy", "sad", "worried", "excited") hair=pick(k, 0, 1, 1, 2)
+      text ask "{pick(k, \"Leo asks Ana [[greet.how-are-you]] She feels well. What does she say? Write it in [[language.name]].\", \"Leo has hurt his knee. Ana asks [[greet.how-are-you]] What does he say? Write it in [[language.name]].\", \"Leo feels not good and not bad. What does he say? Write it in [[language.name]].\", \"Ana won the race. Leo asks [[greet.how-are-you]] What does she say? Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[greet.well]]", "[[greet.bad]]", "[[greet.so-so]]", "[[greet.great]]")] accents=loose
+    }
+  }
+
+  answer word=pick(k, "[[greet.well]]", "[[greet.bad]]", "[[greet.so-so]]", "[[greet.great]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

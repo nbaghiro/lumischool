@@ -1,0 +1,26 @@
+# Two sources for the first flight: the photograph taken there, and a book written a hundred years
+# later. The record says which maker was there.
+item history.flight-which-there v=1 skills=[history.sources, history.flight] {
+  title "Who was there?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x37 {
+    column cards at=canvas(1, 0) space=1 align=start {
+      sourcecard a title="{if k == 0 then \"Photograph of the first flight\" else \"A book about flying machines\"}" kind=pick(k, 0, 2) who="{if k == 0 then \"John T. Daniels, with the Wrights' camera\" else \"A writer of children's books\"}" when="{if k == 0 then \"17 December 1903\" else \"2003\"}" where="{if k == 0 then \"Kill Devil Hills, North Carolina\" else \"not stated\"}" there=pick(k, 1, 0) ask=4
+      sourcecard b title="{if k == 0 then \"A book about flying machines\" else \"Photograph of the first flight\"}" kind=pick(k, 2, 0) who="{if k == 0 then \"A writer of children's books\" else \"John T. Daniels, with the Wrights' camera\"}" when="{if k == 0 then \"2003\" else \"17 December 1903\"}" where="{if k == 0 then \"not stated\" else \"Kill Devil Hills, North Carolina\"}" there=pick(k, 0, 1) ask=4
+    }
+    text ask "Which was made by someone who saw the first flight?" narrate width=34 below=cards gap=1
+    choice pick options=["Photograph of the first flight", "A book about flying machines"] stack=column below=ask gap=1
+  }
+
+  check history.sources of="a b" pick=the-first-hand
+  hint "Read the when row of each card. Was that person alive and there in 1903?"
+  hint "Someone who saw it happen made a first-hand source."
+}

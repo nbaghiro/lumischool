@@ -1,0 +1,11 @@
+item k.bake-in-order v=1 stars=3 skills=[chemistry.cooking, reasoning.order] {
+  title "Baking in order"
+
+  scene 30x18 {
+    text q "Put baking a cake in order. Write 1, 2, 3 and 4." narrate width=28 at=canvas(1, 1)
+    sequence s items=["bake it in the oven", "mix the eggs and flour", "let it cool and eat it", "pour it into the tin"] blanks=[p, q, r, t] below=q gap=1
+  }
+
+  answer p=3 q=1 r=4 t=2
+  hint "What has to be in the bowl before anything else?"
+}

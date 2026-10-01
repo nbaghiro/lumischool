@@ -1,0 +1,21 @@
+# One source card: was it made by someone who was there, from the record of sources. The last row
+# is left for the child.
+item history.source-hand v=1 skills=[history.sources, history.evidence] {
+  title "First-hand or second-hand?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let t={pick(k, "Samuel Pepys's diary", "A history of London", "A birthday invitation from Vindolanda", "Records of the Grand Historian", "Pliny's letter about Vesuvius", "An encyclopaedia entry on Rome")}
+  let who={pick(k, "Samuel Pepys, who lived in London", "A historian", "Claudia Severa, a commander's wife", "Sima Qian, a Han court historian", "Pliny the Younger, who watched from across the bay", "The encyclopaedia's writers")}
+  let when={pick(k, "2 September 1666", "1950", "about AD 100", "about 91 BC", "about AD 106, of AD 79", "2020")}
+  let where={pick(k, "London", "not stated", "Vindolanda, Roman Britain", "Chang'an, Han China", "Misenum, near Vesuvius", "not stated")}
+
+  scene 36x13 {
+    sourcecard card title="{t}" kind=pick(k, 3, 2, 3, 2, 3, 2) who="{who}" when="{when}" where="{where}" there=pick(k, 1, 0, 1, 0, 1, 0) ask=4 at=canvas(1, 0)
+    text ask "Was this made by someone who was there?" narrate width=15 right-of=card gap=1
+    choice pick options=["First-hand", "Second-hand"] stack=column below=ask gap=1
+  }
+
+  check history.sources of=card pick=hand
+  hint "Read the who, when and where rows."
+  hint "Was that person at the event itself, at the time?"
+}

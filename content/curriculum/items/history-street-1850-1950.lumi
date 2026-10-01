@@ -1,0 +1,21 @@
+# The same street in 1850 and in 1950: which of three things could have stood in it in the year on
+# the sign, from the year each first appeared.
+item history.street-1850-1950 v=1 skills=[history.then-and-now, history.change] {
+  title "Too new for the street"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let year={pick(k, 1850, 1950, 1850, 1920, 1950, 1860)}
+  let a={pick(k, "horse and cart", "motor car", "hot-air balloon", "bicycle", "aeroplane", "hot-air balloon")}
+  let b={pick(k, "hot-air balloon", "bicycle", "horse and cart", "motor car", "television aerial", "horse and cart")}
+  let c={pick(k, "electric street light", "mobile phone", "motor car", "television aerial", "mobile phone", "electric street light")}
+
+  scene 32x33 {
+    thenandnow street year=year sign=1 things=["{a}", "{b}", "{c}"] at=canvas(1, 0)
+    text ask "The sign says {year}. Which of these could not have been in the street then?" narrate width=30 below=street gap=1
+    choice pick options=["{a}", "{b}", "{c}"] stack=column below=ask gap=1
+  }
+
+  check history.street of=street pick=could-not
+  hint "Take each thing in turn: when did it first appear?"
+  hint "Was that before {year}, or after?"
+}

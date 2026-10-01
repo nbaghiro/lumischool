@@ -1,0 +1,69 @@
+# A spring forecast for five places in Spain, read with its chart.
+lesson language-forecast v=1 format=teach grade=6 unit=4 subject=language levels=[easy, medium, hard] {
+  title "The weather forecast"
+  goal "Read a weather forecast in [[language.name]] and answer questions from it."
+
+  look {
+    scene 32x16 {
+      column all at=canvas(1, 1) space=1 align=start {
+        passage forecast title="[[weather.the-weather-title]]" text="[[weather.saturday-forecast]]" width=30 numbers=true
+      }
+    }
+    say """
+      A forecast says the weather for each place. Read it one sentence at a time: the place first,
+      then its weather, then the temperature in degrees, [[weather.degrees]].
+      [[weather.at-night|cap]] is at night. The chart with the questions shows the same forecast as
+      pictures.
+      """
+  }
+  do {
+    level easy {
+      worked language.forecast-name k=4
+    }
+    show language.forecast-name k=2 easy-k=0 hard-k=5
+    show language.forecast-meaning k=2 easy-k=1 hard-k=5
+    show language.forecast-write k=3 easy-k=1 hard-k=5
+    show language.forecast-name k=4 easy-k=1 hard-k=6
+    show language.forecast-match k=1 easy-k=0 hard-k=2
+    show language.forecast-write k=5 easy-k=2 hard-k=6
+    show language.forecast-listen k=3 easy-k=0 hard-k=5
+    show language.forecast-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.forecast-write k=4
+    }
+  }
+  language es {
+    try stars=2 {
+      show language.es-forecast-why k=1 easy-k=0 hard-k=2
+    }
+  }
+  try stars=3 {
+    show language.forecast-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A forecast: the place, its weather, its degrees. [[weather.in-seville-it-is-sunny-twenty-seven-degr]]"
+  }
+
+  grown-ups """
+    The wrong idea to watch for is taking the weather of one place for another when the sentences
+    are close together, and reading rain as cold. The forecast and the chart say the same thing, one
+    in words and one in pictures, so the child can check one against the other. From this grade the
+    written words are marked with their accents: a word typed without its accent is not taken. The
+    dictation is read from this sheet, where it prints as Read aloud, or played by the device. If
+    the child is stuck, read the forecast one sentence at a time and point at the matching column of
+    the chart. Off the page, read a weather forecast online in the language, or write tomorrow's for
+    your town. It meets England's key stage 2 languages programme (years 3 to 6, statutory from age
+    7): "read carefully and show understanding of words, phrases and simple writing"; Japan's grades
+    5 and 6 foreign languages: "Can listen to and understand concrete information regarding familiar
+    and simple matters in daily life if spoken to slowly and clearly"; and CEFR A2, "Can understand
+    sentences and frequently used expressions related to areas of most immediate relevance (e.g.
+    very basic personal and family information, shopping, local geography, employment)". The phrases
+    are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[weather.at-night]] is worked first in the teacher's pen, the words to name are [[weather.it-is-raining]] and [[num.twenty-two]] and the words to write are [[weather.it-is-snowing]] and [[weather.wind]], the plainer ones of the lesson, with the first set to match, the shortest sentence to hear and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[weather.it-is-windy]] and [[weather.no-it-is-sunny-and-warm]] and the words to write are [[weather.north]], [[weather.heat]] and [[weather.night]], the ones most often mixed up, with the last set to match, the longest sentence to hear, a third word to write and the last version of each star question."
+  }
+}

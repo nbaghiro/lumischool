@@ -1,0 +1,19 @@
+# The three-star question: how many of five firsts fell in one life. The television service began
+# in 1936, a year after this life ended, which is the trap.
+item history.count-lifetime v=1 skills=[history.change, reasoning.logic] {
+  title "How many in one life?"
+  difficulty k
+  let k=0..1
+  let born={pick(k, 1845, 1880)}
+  let died={pick(k, 1935, 1970)}
+
+  scene 36x18 {
+    timeline line from=1800 to=2000 step=25 years=[born, died] labels=["Born", "Died"] at=canvas(0, 0)
+    text ask "Someone lived from {born} to {died}. How many of these first appeared in their lifetime: the steam train (1804), the telephone (1876), the motor car (1886), the aeroplane (1903), television (1936) and the Moon landing (1969)?" narrate width=26 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then 3 else 4)
+  hint "Cross out any before {born}, and any after {died}."
+  hint "Count what is left."
+}

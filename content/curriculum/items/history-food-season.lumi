@@ -1,0 +1,19 @@
+# When a crop is harvested in the northern half of the world, found on the year wheel from its month.
+item history.food-season v=1 skills=[history.food, time.months] {
+  title "Harvest time"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let crop={pick(k, "Apples are picked", "Wheat is cut", "Rice is harvested in Japan", "Strawberries are picked", "Potatoes are dug up", "Pumpkins are picked")}
+  let month={pick(k, "Oct", "Aug", "Sep", "Jun", "Sep", "Oct")}
+  let key={pick(k, "Autumn", "Summer", "Autumn", "Summer", "Autumn", "Autumn")}
+
+  scene 34x22 {
+    yearwheel wheel seasons=true mark="{month}" at=canvas(1, 0)
+    text ask "{crop} in the ringed month. Which season is that, in the north of the world?" narrate width=16 right-of=wheel gap=2
+    choice pick options=["Spring", "Summer", "Autumn", "Winter"] stack=column below=ask gap=1
+  }
+
+  answer pick=key
+  hint "Find the ringed month on the wheel."
+  hint "Read the season behind it."
+}

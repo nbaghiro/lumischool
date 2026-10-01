@@ -10,83 +10,68 @@
     width: min(100%, 1180px);
     margin-inline: auto;
 }
-.explore-seg {
+/* Under the search the subjects are plain words, not chips, so all twelve keep to one line at a desk;
+   each word keeps a 44 px target, and the chosen one is underlined in the pen. */
+.explore-tags {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 0;
-    padding: 0;
-    border: 0;
+    flex-direction: column;
+    margin-top: 6px;
 }
-.explore-seg legend {
-    margin-bottom: 4px;
-    font: 500 13px / 1 var(--f-mono);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+.explore-tags .seg {
+    gap: 0 2px;
+}
+.explore-tags .seg-option span {
+    padding: 0 9px;
+    border: 0;
+    border-radius: 4px;
+    background: none;
+    font: 500 15px / 1 var(--f-read);
     color: var(--ink-soft);
 }
-.explore-seg-option {
-    position: relative;
-    display: inline-flex;
-}
-.explore-seg-option input {
-    position: absolute;
-    opacity: 0;
-    inset: 0;
-    margin: 0;
-    cursor: pointer;
-}
-.explore-seg-option span {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    padding: 0 14px;
-    border: 1.5px solid color-mix(in srgb, var(--ink) 35%, var(--card));
-    border-radius: 999px;
-    background: var(--card);
-    font: 600 15px / 1 var(--f-read);
+.explore-tags .seg-option:hover span {
     color: var(--ink);
 }
-.explore-seg-option input:checked + span {
-    border-color: var(--pen);
-    background: color-mix(in srgb, var(--pen) 10%, var(--card));
+.explore-tags .seg-option input:checked + span {
+    background: none;
+    box-shadow: inset 0 -2px 0 var(--pen);
+    border-radius: 0;
     color: var(--pen);
-    box-shadow: inset 0 0 0 1px var(--pen);
+    font-weight: 700;
 }
-.explore-seg-option input:focus-visible + span {
+/* A subject's versions read as a footnote to it: its kicker, then smaller words, with nothing chosen
+   meaning every version, so there is no "every" word to read past. */
+.explore-versions {
+    margin: 0;
+    border: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 2px;
+    padding-left: 9px;
+}
+.explore-versions .kicker {
+    margin: 0 8px 0 0;
+}
+.explore-versions button {
+    min-height: 44px;
+    padding: 0 8px;
+    border: 0;
+    background: none;
+    font: 500 14px / 1 var(--f-read);
+    color: var(--ink-soft);
+    cursor: pointer;
+}
+.explore-versions button:hover {
+    color: var(--ink);
+}
+.explore-versions button[aria-pressed="true"] {
+    box-shadow: inset 0 -2px 0 var(--pen);
+    color: var(--pen);
+    font-weight: 700;
+}
+.explore-versions button:focus-visible {
     outline: 2px dashed var(--pen);
-    outline-offset: 3px;
-}
-/* At a desk the chips stand open under the name, so the control itself is out of the way. */
-.explore-row-filter summary {
-    display: none;
-}
-/* The chips sit closer in the head than on a card, so ten of them keep to one line at a desk. */
-.page-head .explore-seg {
-    gap: 6px;
-}
-.page-head .explore-seg-option span {
-    padding: 0 11px;
-}
-@media (max-width: 700px) {
-    .explore-row-filter summary {
-        display: inline-flex;
-        align-items: center;
-        min-height: 44px;
-        padding: 0 16px;
-        border: 1.5px solid color-mix(in srgb, var(--ink) 35%, var(--card));
-        border-radius: 999px;
-        font: 600 15px / 1 var(--f-read);
-        color: var(--ink);
-        cursor: pointer;
-    }
-    .explore-row-filter[open] summary {
-        border-color: var(--pen);
-        color: var(--pen);
-    }
-    .explore-row-filter[open] .explore-seg {
-        margin-top: 10px;
-    }
+    outline-offset: 2px;
 }
 /* The grade heading holds under the bar, so a long page keeps saying which grade is being read. */
 .explore .explore-grade-head {
@@ -182,6 +167,39 @@
     margin: 0;
     font: 700 17px / 1.2 var(--f-read);
 }
+.explore-subject h3 button {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+.explore-subject h3 button:focus-visible {
+    outline: 2px dashed var(--pen);
+    outline-offset: 3px;
+}
+/* A subject's fold is a small caret beside its count, not a second column of arrows under the grade's:
+   down while open, pointing at the name while folded, and darker under the pointer. */
+.explore-subject .explore-fold {
+    width: 6px;
+    height: 6px;
+    margin-left: 4px;
+    border-color: color-mix(in srgb, var(--ink-soft) 60%, var(--card));
+}
+.explore-subject h3 button:hover .explore-fold {
+    border-color: var(--ink);
+}
+.explore-subject h3 button[aria-expanded="false"] .explore-fold {
+    rotate: -45deg;
+    translate: -1px 0;
+}
 .explore-subject h3::before {
     content: "";
     width: 36px;
@@ -240,14 +258,14 @@
 
 /* What Explore puts beside Close in the look's own row (lesson-look.css): the level the sheet is
    read at, and the print behind one control. */
-.look-tools .explore-seg {
+.look-tools .seg {
     flex-wrap: nowrap;
     gap: 2px;
     padding: 2px;
     background: color-mix(in srgb, var(--ink) 5%, var(--card));
     border-radius: 999px;
 }
-.look-tools .explore-seg-option span {
+.look-tools .seg-option span {
     min-height: 44px;
     padding: 0 14px;
     border: 0;
@@ -256,7 +274,7 @@
     color: var(--ink-soft);
     white-space: nowrap;
 }
-.look-tools .explore-seg-option input:checked + span {
+.look-tools .seg-option input:checked + span {
     background: var(--card);
     color: var(--pen);
     box-shadow: 0 1px 3px color-mix(in srgb, var(--ink) 18%, transparent);

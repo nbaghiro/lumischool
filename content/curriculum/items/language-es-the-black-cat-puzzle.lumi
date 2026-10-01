@@ -1,0 +1,22 @@
+# Non-routine: a phrase built from word cards in the Spanish order, and a thing found from its description.
+item language.es-the-black-cat-puzzle v=1 stars=3 skills=[language.colours, language.grammar, reasoning.language] {
+  title "Build the phrase"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo's cat is not blanco and not naranja. The cats are un gato blanco, un gato negro and un gato naranja. Which is Leo's?\", \"Make a yellow flower from these cards: flor, la, amarilla. Which card comes last?\", \"Put the cards in order: negra, la, gata. Which card is in the middle?\")}" width=32
+      choice pick options=[pick(k, "el gato negro", "amarilla", "gata"), pick(k, "el gato blanco", "flor", "la"), pick(k, "el gato naranja", "la", "negra")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "el gato negro", "amarilla", "gata")
+  feedback {
+    when (pick == pick(k, "el gato blanco", "flor", "negra")) {
+      say "{pick(k, \"The clue says Leo's cat is not blanco.\", \"The thing comes before its colour. Which card is the colour?\", \"Negra is the colour, and it comes last.\")}"
+    }
+  }
+  hint "El or la comes first."
+  hint "Then the thing, then its colour."
+}

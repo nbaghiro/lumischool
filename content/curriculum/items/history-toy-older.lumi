@@ -1,0 +1,25 @@
+# Two toys on a shelf: which kind was first made longer ago. The key comes from the dated record, so
+# the teddy bear (1902) is never ranked against a toy whose first date overlaps it.
+item history.toy-older v=1 skills=[history.order, history.change] {
+  title "Which toy is older?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let one={pick(k, "spinning top", "teddy bear", "kite", "puzzle cube", "rag doll", "building bricks")}
+  let two={pick(k, "puzzle cube", "kite", "building bricks", "teddy bear", "teddy bear", "puzzle cube")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 26x15 {
+    toys shelf toys=["{one}", "{two}"] letters=0 at=canvas(1, 0)
+    text ask "Which kind of toy was first made longer ago?" narrate width=22 below=shelf gap=1
+    choice pick options=["{one}", "{two}"] below=ask gap=1
+  }
+
+  check history.dates of=pick pick=first
+  hint "Which of the two could children have played with hundreds of years ago?"
+  hint "A toy made of wood, cloth or paper can be very old. Plastic and electric toys are new."
+}

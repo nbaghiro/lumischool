@@ -1,0 +1,68 @@
+# Dates from engine/notation/chronicle.ts: proto-cuneiform about 3350 to 3200 BC at Uruk, used for
+# accounts; oracle bones about 1250 to 1050 BC; Cai Lun's paper in AD 105.
+lesson history-the-first-writing v=1 format=teach grade=3 unit=5 subject=history levels=[easy, medium, hard] {
+  title "The first writing"
+  goal "Say what the first writing was used for, read a museum card of it, and put writing's early steps in order."
+
+  look {
+    scene 34x10 {
+      row all at=canvas(0, 0) space=1 align=start {
+        objectcard card kind=3 name="Clay tablet" use="Counting sheep and grain" year=-3300 about=1 place="Uruk, Iraq" ask=0
+        tally one count=12
+      }
+    }
+    say """
+      Writing began in the first cities, and at first it was counting. In Uruk, more than five
+      thousand years ago, scribes pressed marks into wet clay to record sheep, grain and jars: who
+      had given what, and who owed what. Much later, in Shang China, kings had questions scratched
+      on bones. Writing changed slowly into signs for words and sounds, and paper came in AD 105.
+      """
+  }
+  do {
+    level easy {
+      worked history.tablet-tally k=0
+    }
+    show history.tablet-tally k=2 easy-k=1 hard-k=4
+    show history.writing-card k=2 easy-k=0 hard-k=4
+    show history.writing-order k=2 easy-k=0 hard-k=4
+    show history.tablet-tally k=3 easy-k=2 hard-k=5
+    show history.writing-card k=3 easy-k=1 hard-k=5
+    show history.writing-order k=3 easy-k=1 hard-k=5
+    show history.writing-card k=1 easy-k=2 hard-k=0
+    show history.writing-gap k=2 easy-k=0 hard-k=4
+    show history.writing-gap k=3 easy-k=1 hard-k=5
+    level hard {
+      show history.writing-gap k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.why-write k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.invent-signs
+  }
+  remember {
+    say "The first writing was counting: lists of sheep, grain and jars pressed into clay."
+  }
+
+  grown-ups """
+    The idea is that writing was invented, not always there, and that it began for a plain reason:
+    cities had more to remember than anyone could hold in their head. The way in adds a scribe's
+    tally; the core reads museum cards of a clay tablet and an oracle bone and puts writing's early
+    steps in order; the two-star question asks why cities needed writing. The wrong idea to watch
+    for is that the first writing was stories; it was accounts. If the child is stuck, keep a
+    tally of something at home for a day and ask what they would forget without it. The
+    three-star task is for you to mark: the child's own signs, and a message you try to read.
+    England's key stage 2 history asks for "the achievements of the earliest civilizations", and
+    writing is the first of them.
+    Japan's 社会 takes up history only through Japan's own story, in grade six
+    (「我が国の歴史上の主な事象について，人物の働きや代表的な文化遺産を中心に」, the course of study as read in its 2008 edition), so
+    this lesson has no line of its own there; its timeline and source skills serve that grade.
+    """
+  level easy {
+    grown-ups "At this level a worked example adds two small tallies, the card questions ask what the tablet and the bone were for, and the steps of writing are nearly in order."
+  }
+  level hard {
+    grown-ups "At this level the tallies are larger, the card questions ask how long before year one each was made, and the steps of writing are fully muddled."
+  }
+}

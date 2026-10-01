@@ -1,0 +1,23 @@
+# A reason: comparing temperatures, va a for what is coming, and a word worked out from the sky.
+item language.es-forecast-why v=1 stars=2 skills=[language.weather, language.reading, reasoning.language] {
+  title "Reading a forecast"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      weatherweek towns days=["Bilbao", "Madrid", "Sevilla", "Pirineos", "Valencia"] skies=["rain", "sunny-spells", "sun", "snow", "wind"] temps=["14 °C", "22 °C", "27 °C", "-2 °C", "20 °C"]
+      text ask "{pick(k, \"Leo says: en Bilbao hace más calor que en Sevilla. Is he right?\", \"Va a llover: is the rain now or later?\", \"Despejado means the sky has no clouds. Which place on the chart is closest to despejado?\")}" width=32
+      choice pick options=[pick(k, "No: Bilbao has 14 grados and Sevilla has 27.", "Later: va a means is going to.", "Sevilla"), pick(k, "Yes: it rains in Bilbao.", "Now: it is raining.", "Bilbao"), pick(k, "Yes: Bilbao is in the north.", "Yesterday.", "Madrid")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "No: Bilbao has 14 grados and Sevilla has 27.", "Later: va a means is going to.", "Sevilla")
+  feedback {
+    when (pick == pick(k, "Yes: it rains in Bilbao.", "Now: it is raining.", "Madrid")) {
+      say "{pick(k, \"Rain does not make it hot. Compare the numbers.\", \"Llueve is now. What does va a add?\", \"Madrid has sun and clouds. Which has only sun?\")}"
+    }
+  }
+  hint "Read the numbers on the chart."
+  hint "Is it happening now, or coming?"
+}

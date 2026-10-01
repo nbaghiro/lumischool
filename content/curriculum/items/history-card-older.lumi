@@ -1,0 +1,29 @@
+# Two museum cards: which object was made first, from the dated record behind each card.
+item history.card-older v=1 skills=[history.evidence, history.order] {
+  title "Which is older?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ka={pick(k, 0, 3, 5, 1, 6, 4)}
+  let na={pick(k, "Flint hand axe", "Clay tablet", "Cowrie shell", "Bronze axe", "Lion coin", "Oracle bone")}
+  let ua={pick(k, "Cutting meat and wood", "Counting sheep and grain", "Paying for things", "Chopping wood", "Paying for things", "Asking questions of the ancestors")}
+  let ya={pick(k, -480000, -3300, -1300, -1500, -650, -1150)}
+  let pa={pick(k, "Boxgrove, England", "Uruk, Iraq", "Anyang, China", "Britain", "Sardis, Turkey", "Anyang, China")}
+  let kb={pick(k, 1, 4, 7, 2, 7, 3)}
+  let nb={pick(k, "Bronze axe", "Oracle bone", "Ban liang coin", "Iron sickle", "Ban liang coin", "Clay tablet")}
+  let ub={pick(k, "Chopping wood", "Asking questions of the ancestors", "Buying and selling", "Cutting wheat", "Buying and selling", "Counting sheep and grain")}
+  let yb={pick(k, -1500, -1150, -221, -300, -221, -3300)}
+  let pb={pick(k, "Britain", "Anyang, China", "China", "Britain", "China", "Uruk, Iraq")}
+
+  scene 23x32 {
+    column cards at=canvas(0, 0) space=1 align=start {
+      objectcard a kind=ka name="{na}" use="{ua}" year=ya about=1 place="{pa}" ask=0
+      objectcard b kind=kb name="{nb}" use="{ub}" year=yb about=1 place="{pb}" ask=0
+    }
+    text ask "Which was made first?" narrate width=22 below=cards gap=1
+    choice pick options=["{na}", "{nb}"] stack=column below=ask gap=1
+  }
+
+  check history.dates of="a b" pick=first
+  hint "Read the made row of each card."
+  hint "With two years BC, the bigger number is longer ago."
+}

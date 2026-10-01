@@ -22,8 +22,8 @@ import {
     untrack,
     type JSX,
 } from "solid-js";
-import type { Draft, Envelope } from "../../engine/answer";
-import type { LessonFacts } from "../../engine/pack";
+import { settingIn, type Draft, type Envelope } from "../../engine/answer";
+import { gradeName, type LessonFacts } from "../../engine/pack";
 import type { Scene } from "../../engine/scene";
 import * as api from "../../engine/ui/api";
 import { createHeld } from "../../engine/ui/held";
@@ -40,7 +40,7 @@ import type { Failure } from "../../engine/ui/wire";
 import { isParent } from "../../school/family/access";
 import { KIND_LABEL } from "../../school/family/family";
 import type { Attention, Pace } from "../../school/family/morning";
-import { familyName, gradeName } from "../../school/family/names";
+import { familyName } from "../../school/family/names";
 import { subjectFacts } from "../../school/tracks";
 import { addDays, dayIn, fold, type Sitting } from "../../school/record";
 import type { SheetBack } from "../../school/family/sheets";
@@ -78,6 +78,9 @@ const Journal = lazy(() => import("./journal").then((m) => ({ default: m.Journal
 
 /** A child's grade and the move to the next, with the worlds that say which grades are offered. */
 const MoveGrade = lazy(() => import("./grade").then((m) => ({ default: m.MoveGrade })));
+const LanguagePicker = lazy(() =>
+    import("./settings").then((m) => ({ default: m.LanguagePicker })),
+);
 
 /** Which journals are open, kept on this device only. */
 const OPEN_KEY = "lumischool.grownups.journals.v1";
@@ -131,7 +134,7 @@ const TIMED_BACK = 60;
 /** The start a family is offered before their own days say otherwise. */
 const MORNING_FROM_DEFAULT = "9:00";
 
-/** The start this grown-up set by hand, kept on this device only. */
+/** The start a grown-up set by hand, kept on this device until the family's log is read. */
 const START_KEY = "lumischool.grownups.morning.start.v1";
 
 /** A clock as the time control wants it, and as the card writes it: "08:30" there, "8:30" here. */
@@ -521,6 +524,32 @@ function MorningCard(props: {
     );
     const rows = (): Row[] => order.latest?.rows ?? [];
     const [set, setSet] = createSignal<string | null>(startKept());
+    // the family's start from the log wins over this device's once it is read
+    const [kept] = createHeld(
+        () => shared.events(undefined, { kinds: ["setting-changed"] }).read(),
+        [],
+    );
+    const logged = (): string | null | undefined => {
+        const got = kept();
+        return got && !("error" in got) ? settingIn(got.list, "morning-start", null) : undefined;
+    };
+    createEffect(() => {
+        const clock = logged();
+        if (clock !== undefined) setSet(clock);
+    });
+    const keepFor = (clock: string | null): void => {
+        setSet(clock);
+        keepStart(clock);
+        void api.append([
+            {
+                id: api.newId(),
+                kid_id: null,
+                kind: "setting-changed",
+                at: api.nowAt(),
+                data: { key: "morning-start", of: null, value: clock },
+            },
+        ]);
+    };
     /** The start the card lays the clock from: the one set here, else the family's own, else nine. */
     const start = (): string => set() ?? order.latest?.began ?? MORNING_FROM_DEFAULT;
     const clock = (from: number): string => order.latest?.at(start(), from) ?? "";
@@ -532,7 +561,7 @@ function MorningCard(props: {
                 ? "Read from the days you have worked."
                 : "Until enough days have been worked for your own to say.";
         if (began && began !== set()) return `Your mornings have begun at ${began}.`;
-        return "Kept on this device.";
+        return logged() === undefined ? "Kept on this device." : "Kept for the family.";
     };
     /** Which of the two the lengths came from, in the words the card uses under the order. */
     const from = (): string => {
@@ -591,8 +620,7 @@ function MorningCard(props: {
                                     value={padded(start())}
                                     onChange={(e) => {
                                         const clock = e.currentTarget.value;
-                                        setSet(clock ? tidy(clock) : null);
-                                        keepStart(clock ? tidy(clock) : null);
+                                        keepFor(clock ? tidy(clock) : null);
                                     }}
                                 />
                             </label>
@@ -812,6 +840,11 @@ function KidCard(props: {
                                     />
                                 </Sec>
                             )}
+                        </Show>
+                        <Show when={props.parent}>
+                            <Sec title="Language">
+                                <LanguagePicker kid={props.kid} />
+                            </Sec>
                         </Show>
                     </>
                 )}

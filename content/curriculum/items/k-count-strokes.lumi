@@ -1,0 +1,27 @@
+# The count of strokes is the non-routine turn: i and t look like one stroke and are two, the
+# dot and the cross coming after the pencil lifts.
+item k.count-strokes v=1 stars=3 skills=[writing.letter-formation, counting.to-five] {
+  title "How many strokes?"
+  difficulty (if x == "l" or x == "o" then 0 else 1)
+  let x={"l", "o", "t", "i"}
+  level easy {
+    let x={"l", "o"}
+  }
+  level hard {
+    let x={"t", "i"}
+  }
+
+  scene 26x14 {
+    handwriting rules show="{x}" rows=1 trace=1 width=12 at=canvas(1, 1)
+    text ask "Each time the pencil lifts off the paper, a stroke ends. How many strokes make {x}?" narrate width=24 below=rules gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if x == "t" or x == "i" then 2 else 1)
+  feedback {
+    when ((x == "t" or x == "i") and answer == 1) point=rules {
+      say "Write it in the air. Does the pencil lift before the letter is finished?"
+    }
+  }
+  hint "Write the letter with a finger. Count each time the finger lifts."
+}

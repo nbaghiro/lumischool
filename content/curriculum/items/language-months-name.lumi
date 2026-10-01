@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[time.january]], [[time.may]], [[time.august]], [[time.april]], [[time.december]], [[time.march]], [[time.july]], [[time.june]], [[time.september]], [[time.october]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.months-name v=1 skills=[language.time] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2)
+  let k=0..9
+
+  scene 34x38 {
+    column all at=canvas(1, 1) space=1 align=start {
+      yearwheel wheel seasons=false mark="{pick(k, \"Jan\", \"May\", \"Aug\", \"Apr\", \"Dec\", \"Mar\", \"Jul\", \"Jun\", \"Sep\", \"Oct\")}"
+      text ask "What is the ringed month in [[language.name]]?" width=32
+      choice pick options=[pick(k, "[[time.april]]", "[[time.december]]", "[[time.april]]", "[[time.may]]", "[[time.may]]", "[[time.december]]", "[[time.june]]", "[[time.october]]", "[[time.december]]", "[[time.april]]"), pick(k, "[[time.january]]", "[[time.may]]", "[[time.march]]", "[[time.april]]", "[[time.april]]", "[[time.march]]", "[[time.september]]", "[[time.june]]", "[[time.may]]", "[[time.july]]"), pick(k, "[[time.july]]", "[[time.july]]", "[[time.may]]", "[[time.august]]", "[[time.december]]", "[[time.april]]", "[[time.august]]", "[[time.july]]", "[[time.september]]", "[[time.october]]"), pick(k, "[[time.june]]", "[[time.march]]", "[[time.august]]", "[[time.june]]", "[[time.july]]", "[[time.may]]", "[[time.july]]", "[[time.april]]", "[[time.july]]", "[[time.september]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[time.january]]", "[[time.may]]", "[[time.august]]", "[[time.april]]", "[[time.december]]", "[[time.march]]", "[[time.july]]", "[[time.june]]", "[[time.september]]", "[[time.october]]")
+  feedback {
+    when (pick == pick(k, "[[time.february]]", "[[time.march]]", "[[time.april]]", "[[time.august]]", "[[time.november]]", "[[time.may]]", "[[time.june]]", "[[time.july]]", "[[time.november]]", "[[time.september]]")) point=wheel {
+      say "{pick(k, \"[[time.february|cap]] is February. This is the first month.\", \"[[time.march|cap]] is March. This is two months later.\", \"[[time.april|cap]] is April. This is in the summer.\", \"[[time.august|cap]] is August. This is in the spring.\", \"[[time.november|cap]] is November. This is the last month.\", \"[[time.may|cap]] is May. This is two months before.\", \"[[time.june|cap]] is June. This is the month after.\", \"[[time.july|cap]] is July. This is the month before.\", \"[[time.november|cap]] is November. This is two months earlier.\", \"[[time.september|cap]] is September. This is the month after.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

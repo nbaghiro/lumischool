@@ -1,0 +1,18 @@
+# An ocean that touches the family's country, read off the world map with the oceans named.
+item history.nation-ocean v=1 skills=[history.nation, history.maps] {
+  title "The sea by our country"
+  let n=0..4
+  let capital={pick(n, "London", "Washington", "Tokyo", "Moscow", "Beijing")}
+  let country={pick(n, "the United Kingdom", "the United States", "Japan", "Russia", "China")}
+  let key={pick(n, "Atlantic Ocean", "Atlantic Ocean", "Pacific Ocean", "Arctic Ocean", "Pacific Ocean")}
+
+  scene 36x34 {
+    worldmap map names=0 blank=-1 oceans=1 places=["{capital}"] numbered=0 route=0 at=canvas(1, 0)
+    text ask "The dot is {capital}, in {country}. Which of these oceans touches the coast of {country}?" narrate width=34 below=map gap=1
+    choice pick options=["{key}", "Indian Ocean", "Southern Ocean"] stack=column below=ask gap=1
+  }
+
+  answer pick=key
+  hint "Find the dot, then follow the land to the nearest sea."
+  hint "Read the name written on that sea."
+}

@@ -203,4 +203,11 @@ if (import.meta.main) {
     const built = packOf(compileLessons(ws), undefined, compileBooks(ws));
     const dir = writePack(built, out);
     process.stdout.write(`${built.lessons.size} lessons in ${dir}\n`);
+    for (const book of ws.phrasebooks.values()) {
+        const rows = ws.coverage.filter((c) => c.language === book.language);
+        const short = rows.filter((c) => c.missing.length);
+        process.stdout.write(
+            `${book.name}: ${rows.length - short.length} of ${rows.length} language lessons offered${short.length ? `; not yet: ${short.map((c) => `${c.lesson} (${c.missing.length} missing)`).join(", ")}` : ""}\n`,
+        );
+    }
 }

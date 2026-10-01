@@ -1,0 +1,21 @@
+item k.rhyme-yes-no v=1 skills=[reading.rhyme] {
+  title "Do they rhyme?"
+  difficulty (if k % 2 == 0 then 0 else 1)
+  let k=0..5
+  let a={pick(k, "dog", "cat", "sun", "pig", "bed", "hat")}
+  let b={pick(k, "log", "cup", "fun", "pan", "red", "hen")}
+  level easy {
+    let k={0, 2, 4}
+  }
+  level hard {
+    let k={1, 3, 5}
+  }
+
+  scene 24x9 {
+    text ask "Listen: {a}, {b}. Do they rhyme?" narrate width=22 at=canvas(1, 1)
+    choice pick options=["yes", "no"] below=ask gap=1
+  }
+
+  answer pick=(if k % 2 == 0 then "yes" else "no")
+  hint "Say both words. Do they end with the same sound?"
+}

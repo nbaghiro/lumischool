@@ -1,0 +1,22 @@
+# Which firsts happened in one person's lifetime, from the record: a life from one year to another,
+# and a set of firsts to test against it.
+item history.lifetime-firsts v=1 skills=[history.change, history.order] {
+  title "In one lifetime"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let born={pick(k, 1850, 1880, 1890, 1845, 1900, 1930)}
+  let died={pick(k, 1930, 1960, 1975, 1935, 1985, 2010)}
+  let a={pick(k, "Aeroplane", "Television aerial", "First person in space", "Telephone", "Moon landing", "World Wide Web")}
+  let b={pick(k, "Steam train", "Steam train", "Motor car", "Steam train", "Hot-air balloon", "Aeroplane")}
+  let c={pick(k, "Hot-air balloon", "Hot-air balloon", "Hot-air balloon", "Hot-air balloon", "Steam train", "Hot-air balloon")}
+
+  scene 36x26 {
+    timeline line from=1750 to=2050 step=50 years=[born, died] labels=["Born", "Died"] at=canvas(0, 0)
+    text ask "Someone lived from {born} to {died}. Which of these first appeared in their lifetime?" narrate width=34 below=line gap=1
+    choice pick options=["{a}", "{b}", "{c}"] stack=column below=ask gap=1
+  }
+
+  check history.dates of=pick pick="after({born})"
+  hint "When did each one first appear? Before {born}, or after?"
+  hint "It has to come after they were born and before {died}."
+}

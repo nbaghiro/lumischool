@@ -1,0 +1,14 @@
+# Marked by a grown-up: the line is traced with a finger and then drawn once on the writing line,
+# left to right, which is the direction writing will go.
+item k.trace-a-line v=1 skills=[writing.first-strokes] {
+  title "Trace a line"
+  let x={"zigzag", "wavy", "straight"}
+
+  scene 30x16 {
+    lines model kinds=[x] colour=blue at=canvas(1, 1)
+    text ask "Trace the {x} line with a finger. Then draw one of your own on the line, from left to right." narrate width=28 below=model gap=1
+    writinglines own lines=1 width=26 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="The line is drawn in one movement from left to right, keeps its shape all the way along, and stays between the ruled lines." notice=["left to right", "keeps its shape", "stays on the line"] ask="Where did your line start?"
+}

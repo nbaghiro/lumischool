@@ -1,0 +1,19 @@
+item k.wrong-step v=1 skills=[coding.debugging, reasoning.order] {
+  title "The step in the wrong place"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 30x18 {
+    text q "{pick(k, \"Ada's steps: put in the seed, fill the pot with soil, water it. Which step is in the wrong place?\", \"Ben's steps: eat the toast, put bread in the toaster, spread the butter. Which step is in the wrong place?\", \"Leo's steps: put on your coat, go outside, open the door. Which step is in the wrong place?\")}" narrate width=28 at=canvas(1, 1)
+    choice pick options=["the first step", "the second step", "the third step"] stack=column below=q gap=1
+  }
+
+  answer pick=pick(k, "the first step", "the first step", "the third step")
+  hint "Try the steps in the order written. Where does it stop making sense?"
+}

@@ -1,0 +1,27 @@
+# The grown-up says a word and the child finds its letter among three cards. The cards look alike
+# on purpose at the harder end: b and d, and n and h.
+item k.find-the-card v=1 skills=[reading.letters, reading.phonics] {
+  title "Find the card"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let letter={pick(k, "s", "m", "t", "d", "n", "p")}
+  let word={pick(k, "sun", "mum", "tap", "dog", "net", "pig")}
+  let o1={pick(k, "m", "t", "o", "b", "h", "q")}
+  let o2={pick(k, "t", "o", "s", "o", "m", "b")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 24x14 {
+    lettercards cards letters=[o1, letter, o2] at=canvas(1, 1)
+    text ask "Say {word}. Find the card for its first sound." narrate width=22 below=cards gap=1
+    choice pick options=[o1, letter, o2] stack=row below=ask gap=1
+  }
+
+  answer pick=letter
+  hint "Say {word} slowly. What is the first sound?"
+  hint "Say the sound of each card in turn."
+}

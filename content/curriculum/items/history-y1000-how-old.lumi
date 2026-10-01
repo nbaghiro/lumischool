@@ -1,0 +1,20 @@
+# How old a city or a dynasty was in a given year, from the dated record.
+item history.y1000-how-old v=1 skills=[history.world, number.difference] {
+  title "How old in the year 1000?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let e1={pick(k, "Song dynasty begins", "First king of England", "Heian-kyo founded", "Baghdad founded", "Baghdad founded", "Heian-kyo founded")}
+  let y1={pick(k, 960, 927, 794, 762, 762, 794)}
+  let e2={pick(k, "Vikings in America", "Vikings in America", "Vikings in America", "Vikings in America", "Song dynasty begins", "First king of England")}
+  let y2={pick(k, 1021, 1021, 1021, 1021, 960, 927)}
+
+  scene 32x12 {
+    timeline line from=750 to=1050 step=50 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(1, 0)
+    text ask "How many years after the first was the second?" narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Count on from the first year to the next hundred."
+  hint "Then on to the second year."
+}

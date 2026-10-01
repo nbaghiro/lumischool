@@ -1,0 +1,19 @@
+# The word written from its picture: [[aboutme.she-has]], [[aboutme.she-lives]], [[aboutme.kind-for-a-girl]], [[aboutme.delights]], [[aboutme.because]], [[aboutme.favourite]], [[aboutme.saturdays]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.about-me-write v=1 skills=[language.reading, language.writing, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage sara title="[[aboutme.title]]" text="[[aboutme.sara-text]]" width=32 numbers=true
+      text ask "{pick(k, \"Sara is twelve: Sara ___ doce años. Write it in [[language.name]].\", \"Sara lives in Seville: ___ en Sevilla. Write it in [[language.name]].\", \"Sara is kind. Write kind, as her text does. Write it in [[language.name]].\", \"Sara loves reading: le ___ leer. Write it in [[language.name]].\", \"She does not like winter because it is cold: the word for because. Write it in [[language.name]].\", \"Her favourite food: su comida ___. Write it in [[language.name]].\", \"On Saturdays she goes to the beach: los ___. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[aboutme.she-has]]", "[[aboutme.she-lives]]", "[[aboutme.kind-for-a-girl]]", "[[aboutme.delights]]", "[[aboutme.because]]", "[[aboutme.favourite]]", "[[aboutme.saturdays]]")]
+    }
+  }
+
+  answer word=pick(k, "[[aboutme.she-has]]", "[[aboutme.she-lives]]", "[[aboutme.kind-for-a-girl]]", "[[aboutme.delights]]", "[[aboutme.because]]", "[[aboutme.favourite]]", "[[aboutme.saturdays]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

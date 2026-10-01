@@ -1,0 +1,19 @@
+# Which way along the Silk Road a thing travelled: silk and paper went west from China; glass,
+# horses and grapes came east to it. The route is drawn on the world map.
+item history.silk-which-way v=1 skills=[history.trade, history.maps] {
+  title "Which way did it go?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let thing={pick(k, "silk", "glass from Rome", "paper", "strong horses from Central Asia", "the way to make paper", "grapes for growing")}
+  let key={pick(k, "West, away from China", "East, towards China", "West, away from China", "East, towards China", "West, away from China", "East, towards China")}
+
+  scene 36x25 {
+    worldmap map names=2 blank=-1 oceans=0 places=["Chang'an", "Samarkand", "Baghdad", "Constantinople"] numbered=0 route=3 at=canvas(1, 0)
+    text ask "Along the Silk Road, which way did {thing} travel?" narrate width=18 below=map gap=1
+    choice pick options=["West, away from China", "East, towards China"] stack=column right-of=ask gap=1
+  }
+
+  answer pick=key
+  hint "Where was it first made or grown?"
+  hint "Things travelled from where they were made to where they were wanted."
+}

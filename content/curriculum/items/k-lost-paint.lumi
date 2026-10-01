@@ -1,0 +1,21 @@
+item k.lost-paint v=1 stars=3 skills=[art.colour-mixing, reasoning.missing-number] {
+  title "Which paint is missing?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x16 {
+    paintpots pots pots=["{pick(k, \"blue\", \"yellow\", \"red\", \"blue\")}", "?"] makes="{pick(k, \"blue+yellow\", \"blue+yellow\", \"red+yellow\", \"red+blue\")}" labels=true at=canvas(1, 1)
+    text ask "The second pot has lost its paint. Which paint was in it?" narrate width=28 below=pots gap=1
+    choice pick options=["red", "yellow", "blue"] stack=row below=ask gap=1
+  }
+
+  check paint.mixes of=pots pick=missing
+  hint "What colour is in the pot at the end?"
+  hint "Which two paints make that colour? One of them is in the first pot."
+}

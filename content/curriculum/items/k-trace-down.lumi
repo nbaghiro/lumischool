@@ -1,0 +1,13 @@
+# Nothing here is marked by the machine: a grown-up watches the pencil. Letters made of one
+# stroke down come first, because a straight line down is the stroke every other letter uses.
+item k.trace-down v=1 skills=[writing.letter-formation, writing.first-strokes] {
+  title "Straight down"
+  let x={"l", "i", "t"}
+
+  scene 30x10 {
+    text ask "Trace the {x}. Start at the top and pull the pencil down." narrate width=28 at=canvas(1, 1)
+    handwriting rules show="{x}" rows=1 trace=3 width=26 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="Each stroke starts at the top and comes straight down to the bottom line in one movement, without going back over it." notice=["starts at the top", "one stroke down", "stops on the line"] ask="Where did your pencil start?"
+}

@@ -1,0 +1,69 @@
+# Dates from engine/notation/chronicle.ts: the first Olympic Games 776 BC, Cleisthenes' democracy
+# in Athens 508 BC, the Parthenon 447 to 432 BC.
+lesson history-ancient-greece v=1 format=teach grade=4 unit=1 subject=history levels=[easy, medium, hard] {
+  title "Ancient Greece: a city that voted"
+  goal "Put the story of ancient Greece in order, count years BC, and say how the citizens of Athens decided things by voting."
+
+  look {
+    scene 36x22 {
+      column all at=canvas(0, 0) space=1 align=start {
+        timeline line from=-800 to=-400 step=100 years=[-776, -508, -447] labels=["First Olympic Games", "Athens votes", "Parthenon built"]
+        council c hands=[1, 0, 1, 1, 0, 1, 1] box=0 motion="Build a new well" count=0
+      }
+    }
+    say """
+      Ancient Greece was many small cities, each with its own rules. From 776 BC they met every four
+      years at Olympia for the Olympic Games. In 508 BC the city of Athens began to decide things by
+      voting: the citizens met and raised their hands, and the idea with more than half the votes
+      won. They called it democracy, rule by the people. But only men who were citizens could vote.
+      """
+  }
+  do {
+    level easy {
+      worked history.assembly-vote k=0
+    }
+    show history.assembly-vote k=2 easy-k=1 hard-k=4
+    show history.greece-order k=2 easy-k=0 hard-k=4
+    show history.olympic-years k=2 easy-k=0 hard-k=4
+    show history.greek-legacy k=2 easy-k=0 hard-k=4
+    show history.assembly-vote k=3 easy-k=2 hard-k=5
+    show history.greece-order k=3 easy-k=1 hard-k=5
+    show history.olympic-years k=3 easy-k=1 hard-k=5
+    show history.greek-legacy k=3 easy-k=1 hard-k=5
+    show history.greece-between k=2 easy-k=0 hard-k=4
+    level hard {
+      show history.greece-between k=5
+    }
+  }
+  try stars=2 {
+    show history.who-could-vote k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.change-the-vote k=0 hard-k=1
+  }
+  remember {
+    say "In Athens the citizens voted, and an idea passed with more than half the votes. Only men who were citizens could vote."
+  }
+
+  grown-ups """
+    The idea is that ancient Athens decided things by the votes of its citizens, a new way to rule,
+    and that it had limits: women, slaves and foreigners could not vote. The way in counts hands
+    in an assembly; the core orders events of Greece, counts Olympic years in fours with years BC,
+    and names things we still have from Greece. The wrong ideas to watch for are counting BC years
+    upwards (the second Games were in 772 BC, not 780 BC) and "democracy means everyone voted". If
+    the child is stuck on BC years, draw the line and walk towards year one. Off the page, hold a
+    family vote on a small question and count the hands. England's key stage 2 history asks for
+    "Ancient Greece: a study of Greek life and achievements and their influence on the western
+    world". Russia's history programme for grade five includes «Афины: утверждение демократии» and
+    «Общегреческие игры в Олимпии».
+    Japan's 社会 takes up history only through Japan's own story, in grade six
+    (「我が国の歴史上の主な事象について，人物の働きや代表的な文化遺産を中心に」, the course of study as read in its 2008 edition), so
+    this lesson has no line of its own there; its timeline and source skills serve that grade.
+    """
+  level easy {
+    grown-ups "At this level a worked example counts the hands for an idea, the events come nearly in order, the Olympic years are the second and third Games, and the things still with us are the Games and the word democracy."
+  }
+  level hard {
+    grown-ups "At this level the vote asks how many more hands were needed, the events are fully muddled with Rome's first road among them, the Olympic years are the tenth and twenty-sixth Games, and the years between run from Greece to Qin China and Caesar."
+  }
+}

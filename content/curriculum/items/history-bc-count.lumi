@@ -1,0 +1,24 @@
+# Counting with years BC in round thousands: years before year one, and years between two dates BC.
+item history.bc-count v=1 skills=[history.timeline, history.bc-ad] {
+  title "Counting back"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, 4000, 3000, 4000, 8000, 10000, 4000)}
+  let b={pick(k, 0, 0, 3000, 4000, 4000, 2500)}
+  let ask={pick(k, "Farming began in Britain about 4000 BC. About how many years before year one was that?", "Stonehenge was begun about 3000 BC. About how many years before year one was that?", "Farming in Britain began about 4000 BC, and Stonehenge about 3000 BC. About how many years apart?", "Farming began in the first farms about 8000 BC, and in Britain about 4000 BC. About how many years later did it reach Britain?", "The first farms were about 10,000 BC. Farming reached Britain about 4000 BC. About how many years did it take?", "Farming reached Britain about 4000 BC. The Bronze Age began there about 2500 BC. About how many years later?")}
+
+  scene 36x16 {
+    timeline line from=-4000 to=0 step=500 years=[] labels=[] at=canvas(0, 0)
+    text ask "{ask}" narrate width=28 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (a - b)
+  feedback {
+    when (answer == a + b and b > 0) point=line {
+      say "Both dates are BC, before year one. The one with the bigger number is further back, so take away."
+    }
+  }
+  hint "BC years count back from year one: 500 BC is 500 years before it."
+  hint "For two BC years, take the smaller number from the bigger one."
+}

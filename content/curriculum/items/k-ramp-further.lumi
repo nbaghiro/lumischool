@@ -1,0 +1,26 @@
+# The same ball from two heights of slope: the drawing's run-out marks show the higher slope sends
+# it further, which is the rule the lesson is after.
+item k.ramp-further v=1 skills=[physics.forces, physics.ramps] {
+  title "Which ball rolls further?"
+  difficulty (if abs(r - s) >= 5 then 0 else 1)
+  let h=2..4 r=6..12 s=3..10
+  where (r > s + 1)
+  level easy {
+    where (r - s >= 5)
+  }
+  level hard {
+    where (r - s <= 4)
+  }
+
+  scene 30x36 {
+    column two at=canvas(1, 1) space=1 align=start {
+      ramp high height=(h + 2) ball=0 rolled=r
+      ramp low height=h ball=0 rolled=s
+    }
+    text q "Two balls rolled down two slopes. Which ball rolled further along the floor?" narrate width=28 below=two gap=1
+    choice pick options=["the top one", "the bottom one"] stack=row below=q gap=1
+  }
+
+  answer pick="the top one"
+  hint "Find where each ball stopped. Which is further from the slope?"
+}

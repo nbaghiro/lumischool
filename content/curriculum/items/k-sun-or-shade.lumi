@@ -1,0 +1,19 @@
+# Two cubes, one in the sun and one on the table: the drawing melts the sunny one twice as fast,
+# so the question is read off the saucers and not guessed.
+item k.sun-or-shade v=1 stars=3 skills=[chemistry.melting, reasoning.compare] {
+  title "Which ice melts first?"
+
+  scene 34x32 {
+    column all at=canvas(1, 0) space=1 align=start {
+      text sunny "In the sun:"
+      icemelt a every=10 count=4 place=2
+      text table "On the table:"
+      icemelt b every=10 count=4 place=1
+    }
+    text ask "Which ice cube melted away first?" narrate width=30 below=all gap=1
+    choice pick options=["the one in the sun", "the one on the table"] stack=row below=ask gap=1
+  }
+
+  answer pick="the one in the sun"
+  hint "Look along each row of saucers. Which row runs out of ice sooner?"
+}

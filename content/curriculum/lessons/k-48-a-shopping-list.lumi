@@ -1,0 +1,47 @@
+lesson k-a-shopping-list v=1 format=teach grade=0 unit=5 subject=writing levels=[easy, medium, hard] {
+  title "Writing a list"
+  goal "Say what a list is for, write things on a list one to a line, and add to a list from the sounds of a word."
+
+  look {
+    scene 26x14 {
+      listpad pad title="Shopping" items=["apples", "milk", "bread"] count=0 width=12 ticks=true at=canvas(1, 1)
+    }
+    say """
+      A list helps us remember. Each thing goes on its own line, down the page, with a box to tick
+      when it is done. A shopping list says what to buy: apples, milk, bread.
+      """
+  }
+  do {
+    level easy {
+      worked k.list-count n=3 level=medium
+    }
+    practice k.list-count count=2 seed=2
+    show k.list-what-for k=0 hard-k=1
+    practice k.list-first-letter count=2 seed=3
+    practice k.add-to-list count=2 seed=4 easy-count=1
+    show k.my-park-list
+  }
+  try stars=2 {
+    show k.list-or-sentence
+  }
+  try stars=3 {
+    show k.list-left n=4 t=3 hard-n=5 hard-t=2
+  }
+  remember {
+    say "A list has one thing on each line."
+  }
+
+  grown-ups """
+    Read each question aloud. A real list is the best practice: before shopping, let the child write
+    or draw two things and tick them off in the shop. Spelling by sound is fine at this age; a word
+    a reader can sound out is a success. The park list is for you to look at. If the child is stuck,
+    draw the thing first and write its first letter beside it. England, Reception, ELG Writing
+    (recalled, not fetched): "Write simple phrases and sentences that can be read by others".
+    """
+  level easy {
+    grown-ups "At this level three things are counted in the teacher's pen first, the lists are short, the first letters are c, and the word to add is egg or jam."
+  }
+  level hard {
+    grown-ups "At this level the lists are longer, the first letters are b and k, the word to add is nut or bun, and the three-star has two left to buy."
+  }
+}

@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.what-like-say v=1 skills=[language.describing, language.speaking] {
+  title "Describe someone"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Describe yourself to a grown-up in [[language.name]]: your hair and your eyes.\", \"Describe someone in your family in [[language.name]], the way the lesson describes hair and glasses.\", \"Describe one of the people in the lesson in [[language.name]]. A grown-up guesses which one.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="Hair, eyes and glasses described the way the lesson describes them, with a describing word for each." notice=["Hair described", "Eyes described", "Glasses said", "A describing word for each thing"]
+  hint "Say it in English first."
+  hint "Long or short, straight or curly?"
+}

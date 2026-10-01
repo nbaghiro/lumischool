@@ -1,0 +1,20 @@
+# Years between steps of the digits' journey and other events, from the record.
+item history.digits-between v=1 skills=[history.bc-ad, number.difference] {
+  title "How many years?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let e1={pick(k, "Zero as a number", "Paper", "Zero as a number", "Paper", "Qin unites China", "Qin unites China")}
+  let y1={pick(k, 628, 105, 628, 105, -221, -221)}
+  let e2={pick(k, "Digits reach Europe", "Zero as a number", "Great Fire of London", "Digits reach Europe", "Zero as a number", "Digits reach Europe")}
+  let y2={pick(k, 1202, 628, 1666, 1202, 628, 1202)}
+
+  scene 36x14 {
+    timeline line from=-400 to=1800 step=400 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(0, 0)
+    text ask "How many years after the first was the second? There was no year nought." narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Read each year. Is either one BC?"
+  hint "Count from the first to the second; across year one, take one away."
+}

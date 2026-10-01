@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.es-the-time-say v=1 skills=[language.time, language.speaking] {
+  title "Tell the time"
+  let k=0..2
+
+  scene 34x6 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Look at a clock at home and tell a grown-up the time in Spanish.\", \"A grown-up sets a clock, or draws one. Say the time in Spanish. Do it three times.\", \"Say what time you get up, have lunch and go to bed: A las siete, and so on.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="Es la una for one o'clock and son las for the rest, with y media, y cuarto and menos cuarto used right." notice=["Es la una, but son las dos", "Y media for half past", "Menos cuarto from the next hour", "A las for at a time"]
+  hint "Quarter to counts back from the next hour."
+  hint "Only one o'clock uses es la."
+}

@@ -1,0 +1,19 @@
+# The word written from its picture: [[time.may]], [[time.january]], [[time.april]], [[time.march]], [[time.july]], [[time.june]], [[time.august]], [[time.october]].
+# Accent-tolerant: the box takes the word with its accents left off (accents=loose); ñ is a letter and is marked.
+item language.months-write v=1 skills=[language.time, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 1, 2, 2)
+  let k=0..7
+
+  scene 34x25 {
+    column all at=canvas(1, 1) space=1 align=start {
+      yearwheel wheel seasons=false mark="{pick(k, \"May\", \"Jan\", \"Apr\", \"Mar\", \"Jul\", \"Jun\", \"Aug\", \"Oct\")}"
+      text ask "Write the ringed month in [[language.name]]." width=32
+      word-input word options=[pick(k, "[[time.may]]", "[[time.january]]", "[[time.april]]", "[[time.march]]", "[[time.july]]", "[[time.june]]", "[[time.august]]", "[[time.october]]")] accents=loose
+    }
+  }
+
+  answer word=pick(k, "[[time.may]]", "[[time.january]]", "[[time.april]]", "[[time.march]]", "[[time.july]]", "[[time.june]]", "[[time.august]]", "[[time.october]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

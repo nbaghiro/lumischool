@@ -1,0 +1,23 @@
+# Mary Anning read the cliffs at Lyme Regis: the lower a layer, the older the rock and the animals in
+# it. The same rule dates a find before any year is known.
+item history.anning-cliff v=1 skills=[history.lives, history.evidence] {
+  title "Reading the cliff"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x25 {
+    strata s layers=5 names=0 ash=0 fault=0 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Mary found fossils in the cliff. Which layer is the oldest?\" else \"Mary found one fossil in the second layer from the top and one in the bottom layer. Which fossil is older?\"}" narrate width=28 below=s gap=1
+    choice pick options=[if k == 0 then "The top layer" else "The one in the second layer", if k == 0 then "The bottom layer" else "The one in the bottom layer"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "The bottom layer" else "The one in the bottom layer")
+  hint "Which layer was laid down first, before the others were put on top?"
+  hint "Layers are laid one on another, so the lowest came first."
+}

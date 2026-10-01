@@ -1,0 +1,21 @@
+# The grade 6 national unit: three events of the family's country numbered from the earliest,
+# from the dated record. n is the country (0 the United Kingdom, 1 the United States, 2 Japan,
+# 3 Russia, 4 China); k changes how muddled the rows are.
+item history.n6-order v=1 skills=[history.nation, history.order] {
+  title "In order"
+  difficulty k
+  let n=0..4 k=0..2
+  let e1={pick(n, "Magna Carta", "Declaration of Independence", "Meiji constitution", "State Duma first meets", "People's Republic of China founded")}
+  let e2={pick(n, "De Montfort's Parliament", "Constitution written", "Women vote in Japan", "Women vote in Russia", "First National People's Congress")}
+  let e3={pick(n, "Women vote in Britain", "Women vote in the United States", "Constitution of Japan in force", "Constitution of Russia adopted", "Constitution of China of 1982")}
+
+  scene 36x22 {
+    timeline line from=1200 to=2000 step=100 years=[] labels=[] at=canvas(0, 0)
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=34 below=line gap=1
+    sequence s items=[pick(k, e1, e2, e3), pick(k, e3, e1, e2), pick(k, e2, e3, e1)] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Which of the three happened longest ago?"
+  hint "Put a finger on the line for each one."
+}

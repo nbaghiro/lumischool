@@ -5,6 +5,7 @@
 // drawing makes it writable in a scene with no second declaration to keep in step. The catalogue is
 // loaded once, here, when the notation loads: the notation runs in Node scripts, never on a child's
 // page.
+import { LANGUAGES, NATIONS } from "../answer";
 import { LEVELS } from "../pack";
 import { CATALOG } from "../parts/catalog";
 import { isInstrument, type Drawing } from "../parts/drawing";
@@ -321,7 +322,16 @@ const SECTION_TYPES = [
     "warm-up",
     "sitting",
 ] as const;
-const BLOCKS = ["say", "scene", "practice", "show", "worked", "grown-ups", "level"] as const;
+const BLOCKS = [
+    "say",
+    "scene",
+    "practice",
+    "show",
+    "worked",
+    "grown-ups",
+    "level",
+    "language",
+] as const;
 /** A block may use its item at another level than the lesson's, as a worked example tied to its own numbers does. */
 const AT_LEVEL: Record<string, Setting> = { level: { kind: "word", values: LEVELS } };
 
@@ -358,6 +368,7 @@ export const REGISTRY: Record<string, NodeSpec> = {
             "feedback",
             "hint",
             "level",
+            "language",
         ],
     },
     lesson: {
@@ -387,14 +398,66 @@ export const REGISTRY: Record<string, NodeSpec> = {
                     "coding",
                     "art",
                     "nature",
+                    "history",
+                    "language",
                 ],
             },
+            // A variant: a language lesson is shown only to a child learning this language, and a
+            // history lesson with a nation only to a family that chose it (.docs/notation.md).
+            language: { kind: "word", values: LANGUAGES },
+            nation: { kind: "word", values: NATIONS },
             // The levels this lesson has; without it, medium alone, which is the lesson as written.
             levels: { kind: "words" },
             // The volume a book lesson reads, by its id; its sittings name the chapters.
             book: { kind: "word" },
         },
-        children: ["title", "goal", ...SECTION_TYPES, "grown-ups", "level"],
+        children: ["title", "goal", ...SECTION_TYPES, "grown-ups", "level", "language"],
+    },
+    language: {
+        doc: "Content for some languages only, named after it by code: `language es { ... }`. A language lesson is written once with phrasebook keys; a part whose structure differs by language (word order, gender, a script) is written once per language inside one of these, and the lesson is offered only in the languages that have one.",
+        rest: "words",
+        children: [
+            "title",
+            "goal",
+            ...SECTION_TYPES,
+            "grown-ups",
+            "level",
+            ...BLOCKS.filter((b) => b !== "language"),
+            "set",
+            "let",
+            "where",
+            "hint",
+            "scene",
+            "answer",
+            "check",
+            "feedback",
+            "difficulty",
+        ],
+    },
+    phrasebook: {
+        doc: "One language's phrases, by key, in content/curriculum/languages/<code>.lumi: what the language lessons show and mark in that language. `lenient` names the marks an accents=loose answer box forgives.",
+        id: "name",
+        props: { v: { kind: "num", required: true }, lenient: { kind: "words" } },
+        children: ["name", "variety", "entry"],
+    },
+    name: { doc: "The language's name, in English.", args: [{ name: "text", kind: "text" }] },
+    variety: {
+        doc: "Which variety the phrases are written in, such as Castilian as spoken in Spain.",
+        args: [{ name: "text", kind: "text" }],
+    },
+    entry: {
+        doc: "One phrase: its key, its text, other spellings a typed answer may use, how to say it for the grown-up reading aloud, a noun's gender, for Japanese its kana and romaji, and its meaning in English for whoever writes another language's phrasebook.",
+        id: "dotted",
+        args: [{ name: "text", kind: "text" }],
+        props: {
+            also: { kind: "values" },
+            say: { kind: "text" },
+            gender: { kind: "word", values: ["m", "f", "n"] },
+            kana: { kind: "text" },
+            romaji: { kind: "text" },
+            note: { kind: "text" },
+            gloss: { kind: "text" },
+        },
     },
     level: {
         doc: "Content for some levels only, named after it: easy, medium or hard. It is resolved before checking, so a level's content is checked as if written in place. In an item it holds let, where, hint or scene; in a lesson, sections, grown-ups or blocks.",
@@ -979,12 +1042,17 @@ export const REGISTRY: Record<string, NodeSpec> = {
     },
 
     "word-input": {
-        doc: "A box per letter for a word the child writes. `options` lists the answers that count as right, and the boxes are as long as the longest of them.",
+        doc: "A box per letter for a word the child writes. `options` lists the answers that count as right, and the boxes are as long as the longest of them. In a language lesson, `accents=loose` also takes the word with the marks its phrasebook calls lenient left off (adios for adiós, where ñ stays ñ), and the phrase's other spellings are always taken; the default is strict.",
         scene: true,
         id: "name",
         input: true,
         picks: true,
-        props: { options: { kind: "values", required: true }, letters: { kind: "num" }, ...PLACE },
+        props: {
+            options: { kind: "values", required: true },
+            letters: { kind: "num" },
+            accents: { kind: "pick", values: ["strict", "loose"] },
+            ...PLACE,
+        },
         anchorsOf: (v) => indexed("letter", whole(v.letters, widest(v.options))),
     },
     sequence: {
@@ -1319,7 +1387,7 @@ for (const [id, part] of PARTS) {
     SCENE_CHILDREN.push(id);
 }
 
-export const ROOTS = ["item", "lesson", "define", "volume"] as const;
+export const ROOTS = ["item", "lesson", "define", "volume", "phrasebook"] as const;
 export const BOX_ANCHORS = [
     "top",
     "bottom",

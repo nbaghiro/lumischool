@@ -1,0 +1,20 @@
+# Listening: the grown-up reads the phrase from the grown-ups' sheet, or the device plays it, and
+# the child types it. Marked word by word by the dictation checker: accent-strict, since a
+# word with its accent missing is a different spelling; case and punctuation are not marked.
+item language.the-poster-listen v=1 skills=[language.reading, language.listening, language.spelling] {
+  title "Listen and write"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x24 {
+    column all at=canvas(1, 1) space=1 align=start {
+      passage poster title="[[notice.town-fiesta]]" text="[[notice.fiesta-poster]]" width=30 numbers=true
+      text ask "Listen to the [[language.name]], then write it. Your grown-up will read it, or press play." width=32
+      number-input answer width=32
+    }
+  }
+
+  check writing.dictation text="{pick(k, \"[[phrase.entry-is-free]]\", \"[[phrase.the-fiesta-is-in-the-square]]\", \"[[phrase.at-eight-there-is-dinner-for-everyone]]\", \"[[phrase.on-saturday-the-twelfth-of-august-there]]\", \"[[phrase.there-is-no-fiesta-if-it-rains-but-today]]\", \"[[phrase.at-ten-there-are-fireworks-at-the-harbou]]\")}"
+  hint "Listen to the whole sentence once before you write a word."
+  hint "Write it a few words at a time. Which words from today do you hear?"
+}

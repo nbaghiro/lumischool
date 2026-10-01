@@ -1,0 +1,12 @@
+# Marked by a grown-up: a set of the child's own signs, as the first scribes made, and a message
+# someone else can read back.
+item history.invent-signs v=1 stars=3 skills=[history.writing, history.enquiry] {
+  title "Invent your own signs"
+
+  scene 34x14 {
+    objectcard card kind=3 name="Clay tablet" use="Counting sheep and grain" year=-3300 about=1 place="Uruk, Iraq" ask=0 at=canvas(0, 0)
+    text ask "Invent a sign for sheep, grain, a jar, a person and each number from 1 to 5. Write a message with them, and see if a grown-up can read it." width=11 right-of=card gap=1
+  }
+
+  check writing.by-eye look-for="Signs for sheep, grain, a jar and a person that look like what they stand for, a way to write numbers that a reader could work out (strokes or dots), and a short message a grown-up can read back, such as three jars of grain for one person." notice=["A sign for each thing", "A way to write numbers", "A message of two or more signs", "A grown-up could read it back"] ask="Which sign was hardest to invent, and why?"
+}

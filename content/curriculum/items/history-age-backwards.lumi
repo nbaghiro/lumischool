@@ -1,0 +1,29 @@
+# Working backwards along a life: the age at a later thing and the years before it give the age at
+# the earlier one. The flag for the earlier thing is on the line but its age is not written.
+item history.age-backwards v=1 skills=[history.timeline, reasoning.backwards] {
+  title "Back along the line"
+  difficulty s
+  let s=4..6 d=2..4
+  where (s - d >= 1)
+  level easy {
+    let s=4..5 d=2..3
+  }
+  level hard {
+    let s=6..6
+  }
+
+  scene 34x16 {
+    timeline line from=0 to=7 step=1 unit="age" years=[s] labels=["School"] at=canvas(1, 0)
+    text ask "Ben started school when he was {s}. He learnt to swim {d} years before that. How old was Ben when he learnt to swim?" narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (s - d)
+  feedback {
+    when (answer == s + d) point=line {
+      say "Before means earlier, so go back along the line, to the left of School."
+    }
+  }
+  hint "Put a finger on School. Is swimming to the left or to the right of it?"
+  hint "Move back one step for each year before."
+}

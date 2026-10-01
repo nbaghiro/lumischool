@@ -1,0 +1,19 @@
+# Picture or situation to the language: [[postcard.with-her-parents]], [[postcard.it-is-sunny]], [[postcard.she-swims-at-the-beach]], [[postcard.ice-cream]], [[postcard.dolphins]], [[postcard.to-the-market]], [[postcard.to-her-grandmother]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.postcard-name v=1 skills=[language.reading, language.time] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 36x34 {
+    column all at=canvas(1, 1) space=1 align=start {
+      postcard card greeting="[[postcard.dear-grandma]]" text="[[postcard.ana-card]]" closing="[[postcard.love]]" from="Ana" to=["Rosa Díaz", "Calle Mayor 5", "Madrid"] stamp=ship date="3/8" lines=0
+      text ask "{pick(k, \"Who is Ana with?\", \"What is the weather like?\", \"What does Ana do in the morning?\", \"What do they eat in the afternoon?\", \"What did they see yesterday?\", \"Where are they going tomorrow?\", \"Who is Ana writing to?\")}" width=32
+      choice pick options=[pick(k, "[[postcard.with-her-parents]]", "[[postcard.it-is-raining]]", "[[postcard.she-reads-a-book]]", "[[postcard.ice-cream]]", "[[postcard.a-boat]]", "[[postcard.to-the-beach]]", "[[postcard.to-her-grandmother]]"), pick(k, "[[postcard.with-her-friends]]", "[[postcard.it-is-sunny]]", "[[postcard.she-goes-to-the-market]]", "[[postcard.fish]]", "[[postcard.dolphins]]", "[[postcard.to-the-museum]]", "[[postcard.to-her-mother]]"), pick(k, "[[postcard.with-her-grandmother]]", "[[postcard.it-is-cold]]", "[[postcard.she-swims-at-the-beach]]", "[[postcard.bread]]", "[[postcard.a-whale]]", "[[postcard.to-the-market]]", "[[postcard.to-leo]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[postcard.with-her-parents]]", "[[postcard.it-is-sunny]]", "[[postcard.she-swims-at-the-beach]]", "[[postcard.ice-cream]]", "[[postcard.dolphins]]", "[[postcard.to-the-market]]", "[[postcard.to-her-grandmother]]")
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

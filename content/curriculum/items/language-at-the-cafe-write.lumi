@@ -1,0 +1,19 @@
+# The word written from its picture: [[cafe.juice]], [[cafe.sandwich]], [[cafe.ice-cream]], [[cafe.bill]], [[cafe.water]], [[cafe.i-would-like]], [[cafe.something]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.at-the-cafe-write v=1 skills=[language.food, language.market, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x21 {
+    column all at=canvas(1, 1) space=1 align=start {
+      sign menu lines=["[[cafe.juice]] 2 €", "[[cafe.sandwich]] 5 €", "[[cafe.ice-cream]] 4 €", "[[cafe.water]] 1 €"] kind=board color=mint
+      text ask "{pick(k, \"A drink squeezed from fruit. Write it in [[language.name]].\", \"Bread with something inside. Write it in [[language.name]].\", \"Something cold and sweet in a cone. Write it in [[language.name]].\", \"What you ask for before you pay. Write it in [[language.name]].\", \"A drink from the tap. Write it in [[language.name]].\", \"The polite word for I would like. Write it in [[language.name]].\", \"The word for something. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[cafe.juice]]", "[[cafe.sandwich]]", "[[cafe.ice-cream]]", "[[cafe.bill]]", "[[cafe.water]]", "[[cafe.i-would-like]]", "[[cafe.something]]")]
+    }
+  }
+
+  answer word=pick(k, "[[cafe.juice]]", "[[cafe.sandwich]]", "[[cafe.ice-cream]]", "[[cafe.bill]]", "[[cafe.water]]", "[[cafe.i-would-like]]", "[[cafe.something]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

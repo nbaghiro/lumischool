@@ -1,0 +1,17 @@
+# The three-star puzzle: which projects a town can afford together with exactly its money (made-up
+# costs), which means trying pairs.
+item history.budget-puzzle v=1 skills=[history.government, reasoning.plan] {
+  title "Spend it exactly"
+  difficulty k
+  let k=0..1
+
+  scene 32x20 {
+    table t cols=2 head=["Project", "Thousand dollars"] cells=["Playground", "40", "Crossing", "35", "Park lights", "25", "Library roof", "60", "Bus shelter", "65"] at=canvas(1, 0)
+    text ask "{if k == 0 then \"The town has 100 thousand dollars and wants to spend all of it on two projects. How many different pairs cost exactly 100?\" else \"The town has 100 thousand dollars to spend exactly, on two or three projects. How many different choices are there?\"}" narrate width=24 below=t gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then 2 else 3)
+  hint "Start with the dearest project. What else would make 100?"
+  hint "Write each choice down so you do not count one twice."
+}

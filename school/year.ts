@@ -1,4 +1,5 @@
-import type { LessonFacts } from "../engine/pack";
+import { settingIn, type Envelope, type Language, type Nation } from "../engine/answer";
+import { gradeName, type LessonFacts } from "../engine/pack";
 import { mastery, progressOf, type Attempt, type Progress, type Sitting } from "./record";
 
 export type Format = "teach" | "puzzles" | "worked" | "review" | "book";
@@ -49,8 +50,59 @@ export type State = "done" | "current" | "open" | "locked";
 /** What a year is read from: a lesson's facts, as the pack's index holds them. */
 export type YearLesson = Pick<
     LessonFacts,
-    "id" | "source" | "title" | "goal" | "grade" | "unit" | "subject" | "format" | "parts"
+    | "id"
+    | "source"
+    | "title"
+    | "goal"
+    | "grade"
+    | "unit"
+    | "subject"
+    | "language"
+    | "nation"
+    | "format"
+    | "parts"
 >;
+
+/** The settings that decide which of a lesson's variants a child is shown. */
+export interface Variants {
+    /** The child's language, or null before a grown-up picks one. */
+    language: Language | null;
+    /** The family's national history unit, or null for none. */
+    nation: Nation | null;
+}
+
+/** A child's variants from the log: their own language, and their family's nation. */
+export const variantsIn = (events: readonly Envelope[], kid: string): Variants => ({
+    language: settingIn(events, "language", kid) ?? null,
+    nation: settingIn(events, "nation", null) ?? null,
+});
+
+/**
+ * Whether a child with these settings is shown a lesson. Every language lesson waits for a language
+ * to be picked, and one tagged with a language is only for that language; a history lesson tagged
+ * with a nation is only for a family that chose it, and the world strand, untagged, is for everyone.
+ */
+export const shownTo = (
+    lesson: Pick<LessonFacts, "subject" | "language" | "nation">,
+    v: Variants,
+): boolean =>
+    (lesson.subject !== "language" ||
+        (v.language !== null &&
+            (lesson.language === undefined || lesson.language === v.language))) &&
+    (lesson.nation === undefined || lesson.nation === v.nation);
+
+/** The lessons a child with these settings is shown, in the order given. */
+export const forChild = <L extends Pick<LessonFacts, "subject" | "language" | "nation">>(
+    lessons: readonly L[],
+    v: Variants,
+): L[] => lessons.filter((l) => shownTo(l, v));
+
+/**
+ * How many terms, each a world, a grade's year is laid out in: three, and one for the kindergarten
+ * year, which is the garden's alone (`DEFAULT_YEARS` in school/worlds/worlds.ts). A grade's later
+ * units join its last term.
+ */
+export const termsAt = (grade: number): number => (grade === 0 ? 1 : 3);
 
 const MARKERS: readonly Marker[] = ["sky", "mint", "berry", "tang", "glow"];
 const FORMATS: Record<Format, true> = {
@@ -178,7 +230,7 @@ export function yearOf(
             ...(l.parts === undefined ? {} : { parts: l.parts }),
         };
     });
-    return { child, grade, title: `Grade ${grade}`, started, units, lessons: defs };
+    return { child, grade, title: gradeName(grade), started, units, lessons: defs };
 }
 
 /** Every grade the lessons cover, lowest first. */

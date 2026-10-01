@@ -1,0 +1,10 @@
+item k.lang-say-numbers v=1 skills=[language.numbers, language.speaking] {
+  title "Count aloud"
+
+  scene 28x8 {
+    text q "Count from one to five in [[language.name]] to a grown-up, holding up a finger for each." narrate width=26 at=canvas(1, 1)
+  }
+
+  check reading.recited look-for="[[num.one|cap]] to [[num.five]] said in order, one finger for each, sounded as the grown-ups' lines give them." notice=["all five in order", "one finger for each", "[[num.five]] sounded as its line gives it"]
+  hint "Start with [[num.one]]."
+}

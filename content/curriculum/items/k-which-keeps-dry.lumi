@@ -1,0 +1,21 @@
+item k.which-keeps-dry v=1 skills=[chemistry.materials] {
+  title "Which keeps you dry?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let right={pick(k, "a raincoat", "rubber boots", "an umbrella")}
+  let wrong={pick(k, "a wool jumper", "wool socks", "a paper hat")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 26x14 {
+    text q "It is raining. Which keeps you dry: {right} or {wrong}?" narrate width=24 at=canvas(1, 1)
+    choice pick options=[wrong, right] stack=column below=q gap=1
+  }
+
+  answer pick=right
+  hint "Which one lets the water run off instead of soaking in?"
+}

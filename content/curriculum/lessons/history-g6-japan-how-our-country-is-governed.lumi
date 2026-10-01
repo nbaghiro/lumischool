@@ -1,0 +1,63 @@
+# The national unit for japan. Items take n=2; the world items reviewed here change by level.
+# Dates are in engine/notation/chronicle.ts with their sources.
+lesson history-g6-japan-how-our-country-is-governed v=1 format=teach grade=6 unit=9 subject=history nation=japan levels=[easy, medium, hard] {
+  title "How Japan is governed"
+  goal "Put the steps of Japan's government in order, and say what the Diet does and who votes for it."
+
+  look {
+    scene 36x9 {
+      timeline line from=1880 to=1960 step=10 years=[1889, 1946, 1947] labels=["Meiji constitution", "Women vote in Japan", "Constitution of Japan in force"] at=canvas(0, 0)
+    }
+    say """
+      In 1889 Japan's first constitution, the Meiji Constitution, was proclaimed. In 1946 women voted in a national election for the first time. On 3 May 1947 the present Constitution of Japan came into force: the Diet, elected by the people, makes the laws, and every adult can vote.
+      """
+  }
+  do {
+    level easy {
+      worked history.n6-what n=2
+    }
+    show history.n6-order n=2 k=1 easy-k=0 hard-k=2
+    show history.n6-between n=2 k=0 hard-k=1
+    show history.n6-century n=2 k=0 hard-k=1
+    show history.law-steps k=2 easy-k=0 hard-k=4
+    show history.vote-order k=2 easy-k=0 hard-k=4
+    show history.un-order k=2 easy-k=0 hard-k=4
+    show history.n6-order n=2 k=2 easy-k=1 hard-k=0
+    level medium hard {
+      show history.n6-what n=2
+    }
+    level easy {
+      show history.n6-century n=2 k=1
+    }
+    level hard {
+      show history.law-steps k=5
+    }
+  }
+  story {
+    show history.n6-between n=2 k=1 hard-k=0
+  }
+  try stars=2 {
+    show history.n6-why n=2
+  }
+  try stars=3 {
+    show history.n6-find-out n=2
+  }
+  remember {
+    say "Every date in our country's story can be put on the line and counted from, and every one came from a source."
+  }
+
+  grown-ups """
+    The idea is how the family's own country is governed today and how it came to be, told as
+    facts and without verdicts. The way in names what a thing was; the core orders three
+    events, counts the years between two, names a century, and reviews how laws are made, votes and
+    the United Nations; the two-star question asks why something was done. If the child is stuck on
+    counting, count to the next hundred first. The three-star task is for you to mark: a small
+    piece of finding out with you. Japan's 社会 for grade six teaches 「国民生活には地方公共団体や国の政治の働きが反映していること」, how local and national government shape people's lives, and the Constitution of Japan (the course of study as read in its 2008 edition).
+    """
+  level easy {
+    grown-ups "At this level a worked example says what the thing was, the events come nearly in order, the years counted are the closest pair, and the review questions are the plainest."
+  }
+  level hard {
+    grown-ups "At this level the events are fully muddled, the years counted are the longer pair, the century asked has a trap, and the review questions cross year one."
+  }
+}

@@ -1,0 +1,19 @@
+# Before and after: what changed for people because of the person (n as in person-line).
+item history.person-changed v=1 skills=[history.lives, history.change] {
+  title "What changed?"
+  difficulty k
+  let n=0..4 k=0..1
+  let before={pick(n, "Before Florence Nightingale, most nurses had no training.", "Before 1956, Black people in Montgomery had to give up their bus seats.", "Before Ino Tadataka, maps of Japan's coast were not exact.", "Before 1961, nobody had travelled into space.", "Before hybrid rice, the same fields grew much less rice.")}
+  let after={pick(n, "Nurses were trained at a school", "Anyone could sit in any seat on the bus", "Japan had an exact map of its coast", "People knew a person could go to space and come home", "Fields grew more rice, so more people had food")}
+  let wrong1={pick(n, "Hospitals closed down", "Buses stopped running for good", "People stopped travelling", "Nobody flew in aeroplanes again", "People stopped growing rice")}
+
+  scene 36x26 {
+    timeline line from=1700 to=2000 step=50 years=[] labels=[] at=canvas(1, 0)
+    text ask "{before} What changed afterwards?" narrate width=34 below=line gap=1
+    choice pick options=[if k == 0 then after else wrong1, "Nothing changed at all", if k == 0 then wrong1 else after] stack=column below=ask gap=1
+  }
+
+  answer pick=after
+  hint "Read what it was like before. What would be different afterwards?"
+  hint "Which answer is the opposite of the problem?"
+}

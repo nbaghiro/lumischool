@@ -1,0 +1,19 @@
+item k.border-stars v=1 stars=3 skills=[art.printing, patterns.repeating] {
+  title "How many stars in the border?"
+  difficulty n
+  let n={6, 8, 10, 12}
+  level easy {
+    let n={6, 8}
+  }
+  level hard {
+    let n={10, 12}
+  }
+
+  scene 28x11 {
+    text q "Ada's border goes star, circle, star, circle. She prints {n} shapes. How many are stars?" narrate width=26 at=canvas(1, 1)
+    number-input answer below=q gap=1
+  }
+
+  answer (n / 2)
+  hint "Every other shape is a star. Say the border and count the stars."
+}

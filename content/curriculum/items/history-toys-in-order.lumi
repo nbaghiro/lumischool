@@ -1,0 +1,26 @@
+# Three toys numbered in the order they were first made, from the dated record. At hard all three
+# are out of place on the shelf.
+item history.toys-in-order v=1 skills=[history.order, history.change] {
+  title "Toys in order"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "kite", "spinning top", "teddy bear", "building bricks", "puzzle cube", "puzzle cube")}
+  let b={pick(k, "teddy bear", "puzzle cube", "kite", "rag doll", "teddy bear", "kite")}
+  let c={pick(k, "puzzle cube", "teddy bear", "puzzle cube", "teddy bear", "spinning top", "building bricks")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 24x23 {
+    toys shelf toys=["{a}", "{b}", "{c}"] letters=0 at=canvas(1, 0)
+    text ask "Number the toys 1, 2, 3, from the kind first made longest ago." narrate width=22 below=shelf gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Which toy could a child have played with long, long ago? That is 1."
+  hint "Which one is plastic, or new since your grown-ups were small? That is last."
+}

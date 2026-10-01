@@ -1,0 +1,17 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.directions-say v=1 skills=[language.town, language.directions, language.speaking] {
+  title "Give the way"
+  let k=0..2
+
+  scene 34x30 {
+    column all at=canvas(1, 1) space=1 align=start {
+      townplan plan places=["[[town.the-cafe]]", "[[town.the-shop]]", "[[town.the-park]]", "[[town.the-beach]]", "[[town.the-museum]]", "[[town.the-station]]", "[[town.the-square]]"]
+      text ask "{pick(k, \"A grown-up asks [[town.where-is-the-park]] Answer in [[language.name]] with directions from the child on the plan.\", \"Ask a grown-up the way to the station in [[language.name]], then follow their directions with a finger.\", \"Give directions at home from the front door to your bedroom, in [[language.name]].\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="Directions with left, right and straight on, and first or second for the street, all said the way the lesson says them." notice=["Left and right kept apart", "Straight on said", "First or second for the street", "The way asked as a question"]
+  hint "Point the way as you say it."
+  hint "Which side is it on?"
+}

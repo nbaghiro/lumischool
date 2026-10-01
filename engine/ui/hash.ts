@@ -41,7 +41,7 @@ export function atFrom(hash: string): OverlayAt | null {
     return {
         world,
         lesson: world ? read(parts[2]) : null,
-        ...(world && Number.isInteger(grade) && grade > 0 ? { grade } : {}),
+        ...(world && params.get("grade") && Number.isInteger(grade) && grade >= 0 ? { grade } : {}),
         ...(world && params.get("journey") === "1" ? { journey: true } : {}),
     };
 }
@@ -51,7 +51,7 @@ export function hashOf(at: OverlayAt): string {
     if (!at.world) return at.lesson ? `#/lesson/${encodeURIComponent(at.lesson)}` : "#/map";
     const world = `#/map/${encodeURIComponent(at.world)}`;
     const params = new URLSearchParams();
-    if (at.grade) params.set("grade", String(at.grade));
+    if (at.grade !== undefined) params.set("grade", String(at.grade));
     if (at.journey) params.set("journey", "1");
     const path = at.lesson ? `${world}/${encodeURIComponent(at.lesson)}` : world;
     return params.size ? `${path}?${params}` : path;

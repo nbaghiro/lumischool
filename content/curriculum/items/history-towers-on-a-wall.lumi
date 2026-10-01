@@ -1,0 +1,17 @@
+# The three-star puzzle: how many towers a wall needs when they stand at equal steps, on a wall
+# with two ends and on one that goes all the way round.
+item history.towers-on-a-wall v=1 skills=[history.medieval, reasoning.plan] {
+  title "How many towers?"
+  difficulty k
+  let k=0..1
+
+  scene 34x13 {
+    citywalls wall towers=3 open=0 at=canvas(1, 0)
+    text ask "{if k == 0 then \"A straight wall is 400 metres long, with a tower at each end and one every 40 metres between. How many towers?\" else \"A wall goes all the way round a town, 360 metres, with a tower every 40 metres. How many towers?\"}" narrate width=28 below=wall gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then 11 else 9)
+  hint "Draw a short wall with three gaps. How many towers does it need?"
+  hint "{if k == 0 then \"A wall with two ends has one more tower than gaps.\" else \"When the wall comes back to its start, the last tower is the first.\"}"
+}

@@ -1,0 +1,10 @@
+item k.draw-a-cup v=1 skills=[art.drawing, art.looking] {
+  title "Draw what you see"
+
+  scene 30x16 {
+    art pic asset="cup" at=canvas(1, 1)
+    text ask "Put a real cup on the table and look at it. Draw it big: the body first, then the small curve of the handle." narrate width=18 right-of=pic gap=2
+  }
+
+  check art.by-eye look-for="A cup drawn from looking rather than from memory: a big body shape first, the handle smaller and on the side it is on, and the drawing filling most of the page." notice=["the big shape first", "the handle smaller than the body", "the drawing fills the page"] ask="Where is the handle on your cup?"
+}

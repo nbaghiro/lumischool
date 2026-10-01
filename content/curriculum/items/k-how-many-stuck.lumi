@@ -1,0 +1,26 @@
+item k.how-many-stuck v=1 skills=[physics.magnets, counting.to-five] {
+  title "How many does it pull?"
+  difficulty c
+  let c=2..6 s=1..4
+  where (s < c)
+  level easy {
+    let c=2..3
+  }
+  level hard {
+    let c=5..6
+  }
+
+  scene 30x20 {
+    magnet m mode=things count=c sticks=s show=1 at=canvas(1, 1)
+    text q "The arrows show what the magnet pulls. How many things does it pull?" narrate width=28 below=m gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer s
+  feedback {
+    when (answer == c) point=m {
+      say "That counts everything. Count only the things with an arrow."
+    }
+  }
+  hint "Touch each thing with an arrow."
+}

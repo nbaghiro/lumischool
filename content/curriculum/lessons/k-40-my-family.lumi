@@ -1,0 +1,50 @@
+lesson k-my-family v=1 format=teach grade=0 unit=3 subject=history levels=[easy, medium, hard] {
+  title "My family"
+  goal "Read a family tree of three generations, say who is oldest, and know that every grown-up was once a baby."
+
+  look {
+    scene 36x16 {
+      familytree tree names=["Grandma Rose", "Grandpa Tom", "Nana Mei", "Grandad Li", "Mum", "Dad", "Sam"] years=[1950, 1948, 1953, 1951, 1982, 1980, 2018] blank=-1 at=canvas(1, 0)
+    }
+    say """
+      This is Sam's family tree. Sam is at the bottom. Above Sam are Mum and Dad, and above them are
+      their own parents, Sam's grandparents. The people at the top were born first, a long time ago,
+      and they were babies once too.
+      """
+  }
+  do {
+    level easy {
+      worked k.once-a-baby k=0 level=medium
+    }
+    practice k.once-a-baby count=1 seed=2
+    practice k.tree-grandparents count=2 seed=3
+    practice k.sams-parents count=2 seed=4 easy-count=1
+    show k.tree-oldest
+    practice k.oldest-person count=1 seed=6
+    show k.my-people
+  }
+  try stars=2 {
+    show k.grandma-a-child
+  }
+  try stars=3 {
+    show k.three-in-order
+  }
+  remember {
+    say "Grandparents, then parents, then children. Everyone was a baby once."
+  }
+
+  grown-ups """
+    Read each question aloud. Families come in many shapes, and Sam's tree is only one of them:
+    when the child talks about their own family, any grown-ups who look after them count, and there
+    is no right number of anybody. Photographs of the child's grown-ups as children are the best way
+    into the idea that old people were once young. If the child is stuck, draw your own family as
+    boxes and lines together. England, Reception, ELG Past and Present (recalled, not fetched):
+    "Talk about the lives of the people around them and their roles in society".
+    """
+  level easy {
+    grown-ups "At this level a parent as a baby is worked in the teacher's pen first, the counts are the grandparents and the parents, and Sam's parents are found."
+  }
+  level hard {
+    grown-ups "At this level the counts are everybody and the rows, and the questions follow a line up to Mum's own parents and find the youngest."
+  }
+}

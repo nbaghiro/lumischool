@@ -21,8 +21,17 @@ import {
     type Env,
     type Expr,
 } from "../expr";
+import { LANGUAGES, NATIONS, type Language, type Nation } from "../answer";
 import { LEVELS, type Level } from "../pack";
 import { instantiate, layout } from "./instantiate";
+import {
+    expandLanguages,
+    isTemplate,
+    readPhrasebook,
+    type Accept,
+    type Coverage,
+    type Phrasebook,
+} from "./languages";
 import { levelMeasure, questions } from "./lessons";
 import {
     answersFor,
@@ -1126,6 +1135,8 @@ export interface Lesson {
     grade?: number;
     unit?: number;
     subject?: string;
+    language?: Language;
+    nation?: Nation;
     title?: string;
     goal?: string;
     grownUps: string[];
@@ -1137,6 +1148,19 @@ export interface Lesson {
     /** The volume a book lesson reads. */
     book?: string;
 }
+const isLanguage = (v: string): v is Language => (LANGUAGES as readonly string[]).includes(v);
+const isNation = (v: string): v is Nation => (NATIONS as readonly string[]).includes(v);
+
+/** A lesson's variant tags; the vocabulary has already refused a value outside the lists. */
+function variantOf(t: TNode): { language?: Language; nation?: Nation } {
+    const language = t.props.language?.k === "word" ? t.props.language.v : undefined;
+    const nation = t.props.nation?.k === "word" ? t.props.nation.v : undefined;
+    return {
+        ...(language !== undefined && isLanguage(language) ? { language } : {}),
+        ...(nation !== undefined && isNation(nation) ? { nation } : {}),
+    };
+}
+
 export interface Define {
     kind: "define";
     id: string;
@@ -1277,6 +1301,7 @@ export function build(t: TNode, level: Level = "medium"): Document | null {
             grade: t.props.grade?.k === "num" ? t.props.grade.v : undefined,
             unit: t.props.unit?.k === "num" ? t.props.unit.v : undefined,
             subject: t.props.subject?.k === "word" ? t.props.subject.v : undefined,
+            ...variantOf(t),
             title: text(kids(t, "title")[0]),
             goal: text(kids(t, "goal")[0]),
             grownUps: texts(kids(t, "grown-ups")),
@@ -1460,6 +1485,14 @@ export class Workspace {
     /** Items and lessons at easy and hard, keyed `kind:id@level`, for files with content at that level. */
     private readonly atLevel = new Map<string, Item | Lesson>();
     private readonly levelReports = new Map<Item, ItemReport>();
+    /** The phrasebooks, by language, from `languages/<code>.lumi`. */
+    readonly phrasebooks = new Map<string, Phrasebook>();
+    /** Each language lesson by each language: empty where it is offered, else what the phrasebook lacks. */
+    readonly coverage: Coverage[] = [];
+    /** What a language variant's typed answers also take, by the variant item's id. */
+    readonly accepts = new Map<string, Accept>();
+    /** A language variant's file, by its path, and the template it was written from. */
+    private readonly templateOf = new Map<string, string>();
 
     /**
      * `verify: "when read"` is for a page that only draws lessons: an item is verified the first time
@@ -1472,7 +1505,55 @@ export class Workspace {
             o.verify === "when read"
                 ? new ReportsWhenRead(this.items, this.defines, this.volumes)
                 : new Map<string, ItemReport>();
+        const read: [string, string][] = [];
+        const templates = new Map<string, Doc>();
+        const books: Phrasebook[] = [];
         for (const [path, src] of Object.entries(sources)) {
+            const { doc, errors } = parse(src);
+            const root = doc.nodes[0];
+            const phrasebook = root?.type === "phrasebook";
+            if (!root || !(phrasebook || isTemplate(root))) {
+                read.push([path, src]);
+                continue;
+            }
+            // a phrasebook and a language template are checked as written but never built: the
+            // template's variants are, one per language, below
+            const info: FileInfo = {
+                path,
+                src,
+                doc,
+                canonical: errors.length ? null : format(doc),
+                document: null,
+                issues: errors.map((e): Issue => ({
+                    level: "error",
+                    message: e.message,
+                    line: e.line,
+                    col: e.col,
+                    length: e.length,
+                })),
+                levels: ["medium"],
+            };
+            this.files.set(path, info);
+            if (errors.length) continue;
+            info.issues.push(...checkDoc(doc).issues);
+            if (phrasebook) {
+                const { book, issues } = readPhrasebook(doc, path);
+                info.issues.push(...issues);
+                if (book) {
+                    books.push(book);
+                    this.phrasebooks.set(book.language, book);
+                }
+            } else templates.set(path, doc);
+        }
+        const expanded = expandLanguages(templates, books, format);
+        for (const [path, issues] of expanded.issues) this.files.get(path)?.issues.push(...issues);
+        this.coverage.push(...expanded.coverage);
+        for (const v of expanded.variants) {
+            read.push([v.path, v.src]);
+            this.templateOf.set(v.path, v.template);
+            if (v.kind === "item") this.accepts.set(v.id, v.accept);
+        }
+        for (const [path, src] of read) {
             const info: FileInfo = {
                 path,
                 src,
@@ -1536,7 +1617,10 @@ export class Workspace {
                     this.atLevel.set(`${d.kind}:${d.id}@${level}`, dl);
             }
         }
-        if (o.verify === "when read") return;
+        if (o.verify === "when read") {
+            this.toTemplates();
+            return;
+        }
         for (const item of this.items.values()) {
             const report = verifyItem(item, this.defines, this.volumes);
             this.reports.set(item.id, report);
@@ -1563,6 +1647,21 @@ export class Workspace {
                     info.issues.push(...atLevel(level, this.verifyLesson(other), medium));
             }
             info.issues.push(...this.lessonRises(lesson, levels));
+        }
+        this.toTemplates();
+    }
+
+    /** A language variant's issues, moved to the template it was written from, marked with its language. */
+    private toTemplates(): void {
+        for (const [path, template] of this.templateOf) {
+            const from = this.files.get(path);
+            const to = this.files.get(template);
+            if (!from || !to) continue;
+            const language = path.slice(path.lastIndexOf("#") + 1);
+            to.issues.push(
+                ...from.issues.map((i) => ({ ...i, message: `(${language}) ${i.message}` })),
+            );
+            from.issues = [];
         }
     }
 
@@ -1757,6 +1856,10 @@ export class Workspace {
         const add = (level: Issue["level"], t: TNode, message: string): void => {
             issues.push({ level, message, ...pos(t) });
         };
+        if (lesson.language && lesson.subject !== "language")
+            add("error", lesson.node, "language= is for a lesson with subject=language");
+        if (lesson.nation && lesson.subject !== "history")
+            add("error", lesson.node, "nation= is for a lesson with subject=history");
         const fmt = FORMATS[lesson.format];
         for (const s of lesson.sections) {
             if (fmt && !fmt.sections.includes(s.type))

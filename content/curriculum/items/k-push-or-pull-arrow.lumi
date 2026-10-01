@@ -1,0 +1,20 @@
+item k.push-or-pull-arrow v=1 skills=[physics.forces] {
+  title "Push or pull?"
+  difficulty (if thing == "box" then 0 else 1)
+  let p=0..1 thing={"box", "trolley", "ball"}
+  level easy {
+    let thing={"box"}
+  }
+  level hard {
+    let thing={"trolley", "ball"}
+  }
+
+  scene 20x18 {
+    forces f thing=thing push=(p * 5) pull=((1 - p) * 5) labels=false at=canvas(1, 1)
+    text ask "Is the arrow a push or a pull?" narrate width=18 below=f gap=1
+    choice pick options=["push", "pull"] stack=row below=ask gap=1
+  }
+
+  answer pick=(if p == 1 then "push" else "pull")
+  hint "Is the arrow behind the {thing} or in front of it?"
+}

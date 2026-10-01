@@ -1,0 +1,26 @@
+# The first loop, unplugged: a pattern of claps and stamps said once and done three times, which
+# is exactly what a repeat block does.
+item k.clap-repeat v=1 skills=[coding.repetition, patterns.repeating] {
+  title "Clap, clap, stamp"
+  difficulty n
+  let n=2..4
+  level easy {
+    let n=2..2
+  }
+  level hard {
+    let n=3..4
+  }
+
+  scene 28x13 {
+    text q "Do this {n} times: clap, clap, stamp. How many claps altogether?" narrate width=26 at=canvas(1, 1)
+    number-input answer below=q gap=1
+  }
+
+  answer (2 * n)
+  feedback {
+    when (answer == 3 * n) point=q {
+      say "That counts the stamps too. Count only the claps."
+    }
+  }
+  hint "Do it and count on your fingers each time you clap."
+}

@@ -1,0 +1,19 @@
+# The word written from its picture: [[num.one]], [[num.two]], [[num.three]], [[num.zero]], [[num.four]], [[num.five]].
+# Accent-tolerant: the box takes the word with its accents left off (accents=loose); ñ is a letter and is marked.
+item language.one-to-five-write v=1 skills=[language.numbers, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      tenframe frame count=pick(k, 1, 2, 3, 0, 4, 5) color=sky
+      text ask "How many are in the frame? Write it in [[language.name]]." width=32
+      word-input word options=[pick(k, "[[num.one]]", "[[num.two]]", "[[num.three]]", "[[num.zero]]", "[[num.four]]", "[[num.five]]")] accents=loose
+    }
+  }
+
+  answer word=pick(k, "[[num.one]]", "[[num.two]]", "[[num.three]]", "[[num.zero]]", "[[num.four]]", "[[num.five]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

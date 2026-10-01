@@ -108,6 +108,10 @@ export function Games(props: {
     onPlaying?: (playing: boolean) => void;
     storageKey?: string;
     onAttempt?: (attempt: GameAttempt) => void;
+    /** Each game's practice level as the family's log holds it, or undefined until it is read. */
+    practice?: () => Readonly<Record<string, number>> | undefined;
+    /** Keeps a game's practice level in the log, so it follows the player to another device. */
+    onPractice?: (game: string, level: number) => void;
 }): JSX.Element {
     const params = new URLSearchParams(location.search);
     const [chosen, choose] = createSignal<Game | undefined>(gameById(params.get("g")));
@@ -134,7 +138,8 @@ export function Games(props: {
     };
     const phaseFor = (game: Game | undefined, explicit?: number | null): number => {
         if (!game) return 0;
-        const phase = explicit ?? stored(game)?.phase ?? 0;
+        // the log's level once it is read, and this device's until then
+        const phase = explicit ?? props.practice?.()?.[game.id] ?? stored(game)?.phase ?? 0;
         return Math.min(game.levels.length - 1, Math.max(0, Math.floor(phase)) || 0);
     };
     const [level, setLevel] = createSignal(
@@ -215,8 +220,14 @@ export function Games(props: {
             });
     };
     createEffect(() => props.onPlaying?.(Boolean(chosen())));
+    const kept = new Map<string, number>();
     createEffect(() => {
         const c = challenge();
+        const logged = c ? (kept.get(c.game) ?? props.practice?.()?.[c.game]) : undefined;
+        if (c && props.onPractice && props.practice?.() !== undefined && logged !== c.phase) {
+            kept.set(c.game, c.phase);
+            props.onPractice(c.game, c.phase);
+        }
         if (c) {
             saved.set(c.game, c);
             try {
@@ -673,6 +684,18 @@ export function Games(props: {
                             <span class="game-challenge">{activeTitle()}</span>
                             <button
                                 class="game-icon"
+                                aria-label="Start the level again"
+                                title="Start the level again"
+                                data-game="restart"
+                                onClick={() => {
+                                    retries++;
+                                    setRun(run() + 1);
+                                }}
+                            >
+                                <Icon name="restart" />
+                            </button>
+                            <button
+                                class="game-icon"
                                 aria-label="Pause &amp; help"
                                 title="Pause &amp; help"
                                 onClick={() => pause(true)}
@@ -760,7 +783,7 @@ export function Games(props: {
                                     <h2>{g().title}</h2>
                                 </div>
                             </header>
-                            <details class="game-help game-challenges">
+                            <details class="game-help game-challenges" open>
                                 <summary>Choose a challenge</summary>
                                 <fieldset
                                     class="game-challenge-cards"

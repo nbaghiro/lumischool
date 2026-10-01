@@ -1,0 +1,21 @@
+# Two maps of the town, an old one and a newer one: how many places are new on the second.
+item history.maps-new v=1 skills=[history.maps, history.change] {
+  title "What is new?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let y1={pick(k, 1850, 1300, 1900, 1500, 1850, 1300)}
+  let y2={pick(k, 1900, 1500, 2026, 1850, 2026, 1900)}
+
+  scene 36x20 {
+    row maps at=canvas(0, 0) space=1 align=start {
+      townmap old year=y1 town=Millbrook labels=1
+      townmap new year=y2 town=Millbrook labels=1
+    }
+    text ask "How many places are on the map of {y2} that were not on the map of {y1}?" narrate width=28 below=maps gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.town of=new answer="new-since({y1})"
+  hint "Go square by square. Is the place on the old map too?"
+  hint "Count only the places that are new."
+}

@@ -1,0 +1,20 @@
+# Years between space firsts, from the record.
+item history.space-between v=1 skills=[history.space, number.difference] {
+  title "How many years later?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let e1={pick(k, "First satellite", "First person in space", "First woman in space", "First satellite", "First flight", "First person in space")}
+  let y1={pick(k, 1957, 1961, 1963, 1957, 1903, 1961)}
+  let e2={pick(k, "First person in space", "Moon landing", "First spacewalk", "Moon landing", "Moon landing", "First woman in space")}
+  let y2={pick(k, 1961, 1969, 1965, 1969, 1969, 1963)}
+
+  scene 36x12 {
+    timeline line from=1900 to=1970 step=10 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(0, 0)
+    text ask "How many years after the first was the second?" narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Count on from the first year."
+  hint "Check your answer against the gap between the flags."
+}

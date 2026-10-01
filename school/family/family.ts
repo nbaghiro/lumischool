@@ -1,7 +1,7 @@
 // The plan a grown-up can change, and a child's record as their view reads it. What a family and its
 // dates are called is names.ts, which the child's app reads without any of this.
 
-import type { Envelope, PlanOp, SessionOp } from "../../engine/answer";
+import { settingIn, type Envelope, type PlanOp, type SessionOp } from "../../engine/answer";
 import {
     addDays,
     dayIn,
@@ -15,8 +15,8 @@ import {
     type Progress,
     type Sitting,
 } from "../record";
-import { defaultTracks, TRACK_TURN } from "../tracks";
-import { progressIn, yearOf, type YearLesson } from "../year";
+import { defaultTracks, TRACK_TURN, TRACK_TURN_AT } from "../tracks";
+import { forChild, progressIn, variantsIn, yearOf, type Variants, type YearLesson } from "../year";
 import { chosenWorlds, type ChosenWorlds } from "./chosen";
 
 /** A day that is the same lesson again with new numbers, or a practice sheet, is a day the records count. */
@@ -522,12 +522,20 @@ export function pickWeekdays(days: readonly number[], perWeek: number, offset = 
 }
 
 const TURNS: Readonly<Record<string, number>> = TRACK_TURN;
+const TURNS_AT: Readonly<Record<string, Readonly<Record<number, number>> | undefined>> =
+    TRACK_TURN_AT;
 
-/** How far along the week a track leans. A subject that is not a track takes no turn. */
-export const turnOf = (track: string): number => TURNS[track] ?? 0;
+/**
+ * How far along the week a track leans, at a grade where it leans its own way. A subject that is not
+ * a track takes no turn.
+ */
+export const turnOf = (track: string, grade?: number): number =>
+    (grade === undefined ? undefined : TURNS_AT[track]?.[grade]) ?? TURNS[track] ?? 0;
 
 export interface PlanInput {
     track: string;
+    /** The grade of the year being planned, for a track that turns its own way there (`TRACK_TURN_AT`). */
+    grade?: number;
     /** The track's lessons for this kid, in the track's order. */
     lessons: string[];
     perWeek: number;
@@ -571,7 +579,7 @@ export function trackDays(p: PlanInput): PlannedDay[] {
             .at(-1);
         const weekdays = rule
             ? rule.weekdays
-            : pickWeekdays(schoolDaysOn(d), p.perWeek, turnOf(p.track));
+            : pickWeekdays(schoolDaysOn(d), p.perWeek, turnOf(p.track, p.grade));
         if (weekdays.includes(weekdayNumber(d)) && !offOn(d))
             for (let n = 0; n < (rule?.sessions ?? 1); n++) dates.push(d);
     }
@@ -821,12 +829,13 @@ export function lanesOf(o: {
         planOf(o.events, o.kid, o.timeZone, o.first, years[i + 1]?.from),
     );
     const now = planOf(o.events, o.kid, o.timeZone, o.first);
+    const shown = forChild(o.lessons, variantsIn(o.events, o.kid.id));
     const parts = new Map(
         o.lessons.flatMap((l) => (l.parts === undefined ? [] : [[l.id, l.parts] as const])),
     );
     return [...scheduledTracks(now, moves)].map(([track, on]) => {
         const own = placed.filter((s) => s.track === track).map((s) => s.lesson);
-        const lanes = years.map((y) => laneOf(o.lessons, track, y.grade));
+        const lanes = years.map((y) => laneOf(shown, track, y.grade));
         const inLane = new Set([...lanes.flat(), ...own]);
         const sittings = o.sittings.filter((s) => inLane.has(s.lesson));
         const days = years.flatMap((y, i) => {
@@ -836,6 +845,7 @@ export function lanesOf(o: {
             const pace = plans[i]?.get(track);
             return trackDays({
                 track,
+                grade: y.grade,
                 lessons: lane,
                 perWeek: pace?.on ? pace.perWeek : 0,
                 start: y.from,
@@ -874,6 +884,34 @@ export interface ChildRecord {
     unfinished: Unfinished[];
     /** The worlds the family chose, each term's as it stood when its first work happened. */
     worlds: ChosenWorlds;
+    /** The settings that decide which variants of a lesson the child is shown (`forChild` in year.ts). */
+    variants: Variants;
+    /** What the child's screens keep between devices: each game's practice level, and the easel. */
+    kept: Kept;
+}
+
+export interface Kept {
+    /** Each game's practice level, by the game's id. */
+    practice: Record<string, number>;
+    /** The easel's tools and colours, which `readState` in engine/ui/painting-easel.ts reads; null for none. */
+    painting: unknown;
+}
+
+/** A child's kept settings from their log, the latest of each winning. */
+export function keptIn(events: readonly Envelope[], kid: string): Kept {
+    const games = new Set(
+        events.flatMap((e) =>
+            e.kind === "setting-changed" && e.kid_id === kid && e.data.key === "practice"
+                ? [e.data.of ?? ""]
+                : [],
+        ),
+    );
+    const practice: Record<string, number> = {};
+    for (const game of games) {
+        const level = settingIn(events, "practice", kid, game);
+        if (typeof level === "number") practice[game] = level;
+    }
+    return { practice, painting: settingIn(events, "painting", kid) ?? null };
 }
 
 /** How far past today the plan is laid out for a child's view. */
@@ -882,11 +920,13 @@ const PLANNED_AHEAD = 21;
 export function childRecord(
     events: readonly Envelope[],
     kid: { id: string; grade: number },
-    lessons: readonly YearLesson[],
+    all: readonly YearLesson[],
     timeZone: string,
     today: string,
 ): ChildRecord {
-    const subjectOf = new Map(lessons.map((l) => [l.id, l.subject]));
+    const subjectOf = new Map(all.map((l) => [l.id, l.subject]));
+    const variants = variantsIn(events, kid.id);
+    const lessons = forChild(all, variants);
     const f = fold(events, timeZone, (id) => subjectOf.get(id) ?? "maths");
     const mine = f.sittings.filter((s) => s.child === kid.id);
     const start = startOf(events, kid.id, timeZone);
@@ -965,5 +1005,7 @@ export function childRecord(
         plan,
         unfinished,
         worlds: chosenWorlds(events, kid.id, lessons, timeZone),
+        variants,
+        kept: keptIn(events, kid.id),
     };
 }

@@ -1,0 +1,19 @@
+# Great voyages numbered from the earliest, from the dated record.
+item history.voyage-order v=1 skills=[history.voyages, history.order] {
+  title "Voyages in order"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Zheng He's first voyage", "Zheng He's first voyage", "Da Gama reaches India", "Victoria returns", "Columbus crosses the Atlantic", "Victoria returns")}
+  let b={pick(k, "Columbus crosses the Atlantic", "Dias rounds the Cape", "Zheng He's first voyage", "Dias rounds the Cape", "Victoria returns", "Da Gama reaches India")}
+  let c={pick(k, "Victoria returns", "Da Gama reaches India", "Victoria returns", "Zheng He's first voyage", "Dias rounds the Cape", "Columbus crosses the Atlantic")}
+
+  scene 36x22 {
+    timeline line from=1400 to=1540 step=20 years=[] labels=[] at=canvas(0, 0)
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=34 below=line gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Zheng He's fleets sailed in the early 1400s."
+  hint "The first voyage round the world came home last, in 1522."
+}

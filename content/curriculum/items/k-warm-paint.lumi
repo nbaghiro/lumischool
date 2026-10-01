@@ -1,0 +1,19 @@
+item k.warm-paint v=1 skills=[art.warm-cool] {
+  title "Which paint is warm?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 28x11 {
+    text q "Which of these paints is a warm colour?" narrate width=26 at=canvas(1, 1)
+    choice pick options=["blue", "{pick(k, \"red\", \"orange\", \"yellow\")}", "green"] stack=row below=q gap=1
+  }
+
+  check paint.mixes pick=warm
+  hint "Warm colours are the colours of fire and the sun."
+}

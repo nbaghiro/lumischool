@@ -584,11 +584,27 @@ child's finished sittings say how long their lessons take, by subject once there
 by their lessons at large once there are eight, and the table of guesses in `school/family/morning.ts`
 holds only until then. The card says which of the two it is showing, and names the children whose
 lengths are still a guess. The start is the family's own too, the middle of the times their school
-days have actually begun, and a grown-up can set it by hand on their own device. Everything on these
-screens reads the family's own log through the routes in [api.md](api.md), and nothing on them is
+days have actually begun, and a grown-up can set it by hand for the family, which is kept as a
+`morning-start` setting in the log and read on every device (this device's copy stands in only until
+the log is read). Everything on these screens reads the family's own log through the routes in [api.md](api.md), and nothing on them is
 counted or scored in anything a child sees.
 
-The screens are `apps/home/`: `home.tsx` with the cards and the morning, `mark.tsx` for marking a
+Two settings decide which lessons a child is shown, and both are pickers in the app's usual select,
+at least 44 px tall, which save as soon as they change and say what changed. A child's second
+language is under "Language" on the child's card, after the grade, for a parent: "Not chosen yet",
+Spanish, French or Japanese. Until one is chosen the child is offered no language lesson, and the
+ferry town tells the child that a grown-up chooses the language first. The family's national history
+unit is on the account page under the family's details: "None for now", Britain, the USA, Japan,
+Russia or China ([history.md](history.md), "How a family's national unit is chosen"). Each is a
+`setting-changed` event ([db.md](db.md), "The log"). A game's practice level and the easel's tools,
+which the Games and Painting pages kept on one device, are settings in the family's log as well.
+
+Grade 0, the kindergarten year, is a grade like the rest: the add-a-child form offers it as
+"Kindergarten" once its lessons land, the child's map opens in the garden, and the grade section on
+the child's card moves them up to grade 1.
+
+The screens are `apps/home/`: `home.tsx` with the cards and the morning, `settings.tsx` with the two
+pickers, `mark.tsx` for marking a
 sheet that came back, `journal.tsx` for a child's roll, `explore.tsx` and `calendar-planner.tsx`,
 with `grown.ts` and `where.ts` holding what they work out and `engine/ui/grown.ts` the reads only they
 make. `tools/e2e/grown-ups.e2e.ts` covers them at a laptop's, an iPad's and a phone's size.

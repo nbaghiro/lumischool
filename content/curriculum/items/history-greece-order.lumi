@@ -1,0 +1,19 @@
+# Events of ancient Greece and its neighbours numbered from the earliest, from the dated record.
+item history.greece-order v=1 skills=[history.ancient, history.order] {
+  title "Greece in order"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "First Olympic Games", "First Olympic Games", "Athens votes", "Parthenon built", "Appian Way", "Parthenon built")}
+  let b={pick(k, "Athens votes", "Parthenon built", "First Olympic Games", "First Olympic Games", "Athens votes", "Appian Way")}
+  let c={pick(k, "Parthenon built", "Athens votes", "Parthenon built", "Athens votes", "First Olympic Games", "First Olympic Games")}
+
+  scene 36x22 {
+    timeline line from=-800 to=-300 step=100 years=[] labels=[] at=canvas(1, 0)
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=34 below=line gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "All three are BC: the bigger the number, the longer ago."
+  hint "The first Olympic Games were held in 776 BC."
+}

@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.how-old-say v=1 skills=[language.numbers, language.questions, language.speaking] {
+  title "How old?"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Say how old you are in [[language.name]], the way the lesson does: [[phrase.i-am-eight-years-old]], with your own age.\", \"Ask a grown-up [[phrase.how-old-are-you]] and say their answer back in [[language.name]].\", \"Count from [[num.twenty]] to [[num.thirty-one]] in [[language.name]].\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="An age said the way the lesson says it, the question asked with the voice going up, and every number from twenty to thirty-one." notice=["An age said as the lesson says it", "The question goes up at the end", "Every number from twenty to thirty-one", "Twenty-two not said as twelve"]
+  hint "Say your age in English first."
+  hint "Which card is the tens and which the ones?"
+}

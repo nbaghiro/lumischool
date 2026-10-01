@@ -1,0 +1,33 @@
+# Three things and one of them is not like the others. The odd one moves along the row, so the
+# answer is never simply the last one.
+item k.odd-one-out v=1 skills=[sorting.one-rule] {
+  title "Which one does not belong?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  roles ap=apple st=star ba=ball cu=cube
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 26x13 {
+    row things at=canvas(1, 1) space=1 align=centre {
+      props a1 count=(if k == 0 then 2 else 0) prop=apple
+      props b1 count=(if k == 1 then 1 else 0) prop=ball
+      props c1 count=(if k == 2 then 1 else 0) prop=star
+      props odd0 count=(if k == 0 then 1 else 0) prop=star
+      props odd1 count=(if k == 1 then 1 else 0) prop=cube
+      props odd2 count=(if k == 2 then 1 else 0) prop=ball
+      props b2 count=(if k == 1 then 2 else 0) prop=ball
+      props c2 count=(if k == 2 then 2 else 0) prop=star
+    }
+    text ask "Which one does not belong with the others?" narrate width=24 below=things gap=1
+    choice pick options=[ap, st, ba, cu] below=ask gap=1
+  }
+
+  answer pick=pick(k, "st", "cu", "ba")
+  hint "Find the two that are the same."
+  hint "Which one is different from them?"
+}

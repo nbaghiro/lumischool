@@ -1,0 +1,10 @@
+item k.sing-loud-quiet v=1 skills=[music.dynamics, music.singing] {
+  title "Sing it loud, sing it quiet"
+
+  scene 28x8 {
+    text ask "Sing a song you know. Sing it quietly first, then sing it again loudly, without shouting." narrate width=26 at=canvas(1, 1)
+  }
+
+  check music.sung look-for="The same song sung twice, clearly quieter and then clearly louder, still in tune and not shouted." notice=["quiet the first time", "loud the second time", "sings, does not shout"]
+  hint "Which song do you know all the words to?"
+}

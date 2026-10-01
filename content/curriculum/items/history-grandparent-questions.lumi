@@ -1,0 +1,11 @@
+# Marked by a grown-up: the child asks a grandparent or an older friend about their childhood and
+# says or writes what they found. Nothing a family says here is scored or kept beyond the tick list.
+item history.grandparent-questions v=1 stars=3 skills=[history.family, history.enquiry] {
+  title "Ask a grandparent"
+
+  scene 34x14 {
+    familytree tree names=["Grandma", "Grandpa", "Nana", "Grandad", "Mum", "Dad", "Me"] years=[0, 0, 0, 0, 0, 0, 0] blank=-1 at=canvas(1, 0)
+  }
+
+  check writing.by-eye look-for="Three questions asked of a grandparent or an older person about when they were small, such as what toys they had, what their school was like and how they got about, and one thing the child found out that is different today, said aloud or written in a sentence." notice=["Asked three questions", "Listened and remembered one answer", "Said one thing that was different then", "Said one thing that is the same today"] ask="What surprised you most about when they were small?"
+}

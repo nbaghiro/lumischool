@@ -1,0 +1,19 @@
+# The word written from its picture: [[num.twenty-one]], [[num.thirty]], [[num.twenty-five]], [[num.twenty-two]], [[num.twenty-eight]], [[num.twenty-three]], [[num.twenty-seven]].
+# Accent-tolerant: the box takes the word with its accents left off (accents=loose); ñ is a letter and is marked.
+item language.how-old-write v=1 skills=[language.numbers, language.questions, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      digitcards num digits=[pick(k, 2, 3, 2, 2, 2, 2, 2), pick(k, 1, 0, 5, 2, 8, 3, 7)]
+      text ask "What number do the cards make? Write it in [[language.name]]." width=32
+      word-input word options=[pick(k, "[[num.twenty-one]]", "[[num.thirty]]", "[[num.twenty-five]]", "[[num.twenty-two]]", "[[num.twenty-eight]]", "[[num.twenty-three]]", "[[num.twenty-seven]]")] accents=loose
+    }
+  }
+
+  answer word=pick(k, "[[num.twenty-one]]", "[[num.thirty]]", "[[num.twenty-five]]", "[[num.twenty-two]]", "[[num.twenty-eight]]", "[[num.twenty-three]]", "[[num.twenty-seven]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

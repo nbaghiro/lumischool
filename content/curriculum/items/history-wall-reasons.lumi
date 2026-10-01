@@ -1,0 +1,20 @@
+# What each part of a town wall or castle was for, told through everyday life as much as defence.
+item history.wall-reasons v=1 skills=[history.medieval, history.change] {
+  title "What was it for?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ask={pick(k, "Why did a town wall have only a few gates?", "Why were the gates shut at night?", "Why did towers stick out from the wall?", "Why did carts pay money at the gate?", "Why was there a market square just inside the gate?", "Why did many towns keep their walls long after the wars had ended?")}
+  let right={pick(k, "So everyone going in or out could be seen", "To keep the town safe while people slept", "So guards could see along the wall", "The toll paid for the town and its walls", "Traders came in through the gate", "Gates still took tolls and shut at night")}
+  let w1={pick(k, "Gates were too heavy to make", "So nobody could go to work", "To make the wall look taller", "So carts would go away", "Because nobody lived there", "Walls could not be pulled down")}
+  let w2={pick(k, "To stop the wind", "To keep the sunlight out", "To hold up the roof", "Every road cost money to use", "To keep the market dry", "People forgot the walls were there")}
+
+  scene 30x25 {
+    citywalls wall towers=pick(k, 2, 3, 4, 3, 2, 4) open=pick(k, 1, 0, 1, 1, 1, 0) at=canvas(1, 0)
+    text ask "{ask}" narrate width=28 below=wall gap=1
+    choice pick options=[pick(k, right, w1, w2, right, w1, w2), pick(k, w1, right, right, w2, w2, right), pick(k, w2, w2, w1, w1, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Think of a day in a walled town: morning, market, night."
+  hint "Which answer would still matter to people who were not at war?"
+}

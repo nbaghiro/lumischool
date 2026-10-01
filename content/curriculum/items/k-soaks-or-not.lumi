@@ -1,0 +1,21 @@
+item k.soaks-or-not v=1 skills=[chemistry.materials] {
+  title "Does it soak up water?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let thing={pick(k, "a towel", "a plastic cup", "a sponge", "a metal spoon", "a paper towel", "a glass jar")}
+  let right={pick(k, "yes", "no", "yes", "no", "yes", "no")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 26x11 {
+    text q "You spill some water. Would {thing} soak it up?" narrate width=24 at=canvas(1, 1)
+    choice pick options=["yes", "no"] stack=row below=q gap=1
+  }
+
+  answer pick=right
+  hint "Does the water go into it, or run off it?"
+}

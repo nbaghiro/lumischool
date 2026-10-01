@@ -1,0 +1,29 @@
+# The two-star reason: old houses stand in today's streets, so the houses cannot date a picture;
+# the things that move can.
+item history.houses-not-the-clue v=1 skills=[history.then-and-now, reasoning.why] {
+  title "What tells the time?"
+  difficulty k
+  let k=0..1
+  let t={pick(k, "motor car", "mobile phone")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 32x29 {
+    thenandnow street year=2026 sign=0 things=["{t}", "bicycle"] at=canvas(1, 0)
+    text ask "Ben says this street is long ago, because the houses look old. What is wrong with that?" narrate width=30 below=street gap=1
+    choice pick options=["Old houses still stand today", "Houses were never built long ago"] stack=column below=ask gap=1
+  }
+
+  answer pick="Old houses still stand today"
+  feedback {
+    when (pick == "Houses were never built long ago") point=street {
+      say "People have built houses for thousands of years. Look at the {t} instead."
+    }
+  }
+  hint "Are there old houses where you live, with people in them now?"
+  hint "Which thing in the picture tells you the time better than a house does?"
+}

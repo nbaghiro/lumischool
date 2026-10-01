@@ -1,0 +1,19 @@
+item k.what-dries v=1 skills=[chemistry.water] {
+  title "What dries the washing?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x14 {
+    text q "{pick(k, \"Wet washing is pegged on the line. What dries it fastest?\", \"Ada paints with water on a wall outside. Where does the water go?\")}" narrate width=28 at=canvas(1, 1)
+    choice pick options=[pick(k, "a warm, windy day", "it goes into the air"), pick(k, "a cold, still day", "it goes into the wall for ever")] stack=column below=q gap=1
+  }
+
+  answer pick=pick(k, "a warm, windy day", "it goes into the air")
+  hint "When do puddles disappear fastest?"
+}

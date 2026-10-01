@@ -1,0 +1,22 @@
+# Non-routine: change, a bill for three, and whether two things fit a budget.
+item language.to-a-hundred-puzzle v=1 stars=3 skills=[language.numbers, language.market, reasoning.language] {
+  title "Paying and change"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x20 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Ana pays with fifty euros for a book at thirty. How much change does she get?\", \"Tickets cost sixty euros for a grown-up and thirty for a child. How much for two grown-ups and one child?\", \"Leo has a hundred euros. A lamp is seventy-five and a bell is thirty. Can he buy both?\")}" width=32
+      choice pick options=[pick(k, "[[num.twenty-euros]]", "[[num.a-hundred-and-fifty-euros]]", "No: together they cost 105 euros."), pick(k, "[[num.thirty-euros]]", "[[num.ninety-euros]]", "Yes: 75 and 30 is less than 100."), pick(k, "[[num.ten-euros]]", "[[num.a-hundred-and-twenty-euros]]", "Yes: he has a hundred.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[num.twenty-euros]]", "[[num.a-hundred-and-fifty-euros]]", "No: together they cost 105 euros.")
+  feedback {
+    when (pick == pick(k, "[[num.thirty-euros]]", "[[num.ninety-euros]]", "Yes: 75 and 30 is less than 100.")) {
+      say "{pick(k, \"That is what the book costs. What is left from fifty?\", \"That is one grown-up and one child. There are two grown-ups.\", \"Add them: 75 and 30. Is it more than 100?\")}"
+    }
+  }
+  hint "Work it out in numbers first."
+  hint "Then find the words."
+}

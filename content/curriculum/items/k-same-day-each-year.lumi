@@ -1,0 +1,21 @@
+# A birthday comes back once a year: the child counts on from an age a number of years, which is the
+# first time a year is a unit on a timeline.
+item k.same-day-each-year v=1 stars=3 skills=[history.order, counting.on] {
+  title "Birthdays to come"
+  difficulty y
+  let a=4..5 y=2..3
+  level easy {
+    let y=2..2
+  }
+  level hard {
+    let y=3..3
+  }
+
+  scene 26x12 {
+    text q "Sam is {a} today. How old will he be after {y} more birthdays?" narrate width=24 at=canvas(1, 1)
+    number-input answer below=q gap=1
+  }
+
+  answer (a + y)
+  hint "Count on one year for each birthday."
+}

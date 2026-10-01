@@ -1,0 +1,25 @@
+# The two-star reason: farming was harder work than hunting and gathering, and people farmed anyway,
+# because the same land fed many more people. The distractors are ideas children often hold.
+item history.why-farm v=1 skills=[history.farming, reasoning.why] {
+  title "Why farm at all?"
+  difficulty k
+  let k=0..1
+
+  scene 34x25 {
+    crops field stage=pick(k, 3, 1) rows=3 plants=7 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Farming meant hard work every day. Why did people farm instead of hunting and gathering?\" else \"Early farmers were often shorter and less healthy than hunters. Why did farming spread all the same?\"}" narrate width=32 below=field gap=1
+    choice pick options=["A field fed many more people than wild land", "Farming was less work than hunting", "There were no wild animals left"] stack=column below=ask gap=1
+  }
+
+  answer pick="A field fed many more people than wild land"
+  feedback {
+    when (pick == "Farming was less work than hunting") point=field {
+      say "The question says it was harder work. What did all that work give them?"
+    }
+    when (pick == "There were no wild animals left") point=field {
+      say "Wild animals lived on long after farming began. Think about how much food one field gives."
+    }
+  }
+  hint "Compare how many people one field could feed with the same land left wild."
+  hint "More food in one place means more people can live there."
+}

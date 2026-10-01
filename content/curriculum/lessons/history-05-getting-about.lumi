@@ -1,0 +1,69 @@
+# Dates from engine/notation/chronicle.ts: the first balloon flight 1783 (Annonay), Trevithick's
+# steam locomotive 1804, Benz's motor car 1886, the Wright Flyer 1903 (Smithsonian).
+lesson history-getting-about v=1 format=teach grade=1 unit=8 subject=history levels=[easy, medium, hard] {
+  title "Getting about"
+  goal "Put the ways people have travelled in the order they came, and say which a person long ago could have used."
+
+  look {
+    scene 36x9 {
+      timeline line from=1780 to=1920 step=20 years=[1783, 1804, 1886, 1903] labels=["Balloon", "Steam train", "Motor car", "Aeroplane"] at=canvas(1, 0)
+    }
+    say """
+      For thousands of years people walked, rode horses and sailed in ships. Then new ways came one
+      after another. A balloon first carried people up in 1783. The first steam train ran in 1804.
+      The first motor car drove in 1886, and in 1903 two brothers flew the first aeroplane. Each one
+      is a flag on the line, the first on the left.
+      """
+  }
+  do {
+    level easy {
+      worked history.travel-first k=0
+    }
+    show history.travel-first k=3 easy-k=1 hard-k=4
+    show history.travel-order k=1 easy-k=0 hard-k=4
+    show history.travel-flag k=0 easy-k=0 hard-k=2
+    show history.travel-first k=2 easy-k=2 hard-k=3
+    show history.travel-flag k=1 easy-k=1 hard-k=3
+    show history.travel-order k=2 easy-k=1 hard-k=5
+    level easy {
+      show history.travel-order k=3 level=medium
+    }
+    level hard {
+      show history.travel-first k=5
+    }
+  }
+  story {
+    show history.travel-in-1850 k=1 easy-k=0 hard-k=2
+    level medium hard {
+      show history.travel-in-1850 k=0 hard-k=1 level=medium
+    }
+  }
+  try stars=2 {
+    show history.travel-before-cars k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.travel-close-pair k=0 hard-k=1
+  }
+  remember {
+    say "First horses and ships, then balloons, trains, cars and aeroplanes."
+  }
+
+  grown-ups """
+    The idea is the order in which the ways of getting about came, and that each new way was added
+    to the old ones rather than replacing them at once: in 1900 a street had horses, bicycles and a
+    few cars together. The way in compares two, the core puts four in order and places one on the
+    timeline, and the story asks which a traveller in a given year could have used. The wrong idea
+    to watch for is "before cars, nobody travelled": people crossed oceans by sailing ship and
+    countries by horse long before engines. If the child is stuck, act each one out, from the
+    oldest: trot, puff, beep, zoom. Off the page, look at how the child gets to the shops and ask
+    how a child in 1850 would have gone. England's key stage 1 history asks for "the lives of
+    significant individuals in the past who have contributed to national and international
+    achievements", and the Wright brothers' flight of 17 December 1903 is one of them.
+    """
+  level easy {
+    grown-ups "At this level a worked example compares the horse and cart with the motor car, the pairs are far apart in time, the four to order are nearly in order, and the traveller's year is 1850, when only the train was running."
+  }
+  level hard {
+    grown-ups "At this level the pairs are two of the new machines, which came within a hundred years of each other, the four to order are fully muddled and include the balloon, the empty flag is in the middle, and the traveller's year is 1820."
+  }
+}

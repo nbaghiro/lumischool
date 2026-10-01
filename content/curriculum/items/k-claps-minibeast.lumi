@@ -1,0 +1,20 @@
+item k.claps-minibeast v=1 skills=[reading.syllables, nature.minibeasts] {
+  title "Clap the minibeast"
+  difficulty (if kind == "bee" or kind == "snail" then 0 else if kind == "spider" then 1 else 2)
+  let kind={"bee", "snail", "spider", "ladybird", "butterfly"}
+  level easy {
+    let kind={"bee", "snail", "spider"}
+  }
+  level hard {
+    let kind={"spider", "ladybird", "butterfly"}
+  }
+
+  scene 24x14 {
+    minibeasts one kinds=[kind] spots=6 legs=false at=canvas(1, 1)
+    text ask "Say {kind} and clap it. How many claps?" narrate width=22 below=one gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if kind == "bee" or kind == "snail" then 1 else if kind == "spider" then 2 else 3)
+  hint "Say it slowly and clap on each part."
+}

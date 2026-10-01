@@ -1,0 +1,23 @@
+item k.jumps-in-repeat v=1 skills=[coding.repetition, counting.to-ten] {
+  title "How many jumps?"
+  difficulty n
+  let n=2..5
+  level easy {
+    let n=2..3
+  }
+  level hard {
+    let n=4..5
+  }
+
+  scene 30x19 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks bl code=["repeat {n}", "  jump"] words=false numbers=false
+      stage st cols=5 col=2 who=rabbit code=["repeat {n}", "  jump"] flag=false upto=0
+    }
+    text q "The repeat block holds one jump and says {n}. How many times does the rabbit jump?" narrate width=28 below=top gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer n
+  hint "The number on the repeat says how many times to do what is inside it."
+}

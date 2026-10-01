@@ -1,0 +1,28 @@
+# Counting on a line in tens: how many years from one marked year to another.
+item history.tens-between v=1 skills=[history.timeline, number.tens] {
+  title "Jumps of ten"
+  difficulty (b - a)
+  let a={1920, 1930, 1940, 1950} b={1950, 1960, 1980, 2000}
+  where (b - a >= 20)
+  level easy {
+    let b={1950, 1960}
+  }
+  level hard {
+    let b={1980, 2000}
+  }
+
+  scene 36x12 {
+    timeline line from=1920 to=2000 step=10 years=[a, b] labels=["Start", "End"] at=canvas(0, 0)
+    text ask "How many years is it from {a} to {b}?" narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (b - a)
+  feedback {
+    when (answer * 10 == b - a) point=line {
+      say "That is how many jumps. Each jump is ten years."
+    }
+  }
+  hint "Count the jumps from Start to End."
+  hint "Each jump on this line is ten years."
+}

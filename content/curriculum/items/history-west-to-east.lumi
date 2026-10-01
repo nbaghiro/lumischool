@@ -1,0 +1,21 @@
+# The three-star question: capitals put in order from west to east on the map, which means reading
+# every dot's place across the map at once.
+item history.west-to-east v=1 skills=[history.geography, reasoning.order] {
+  title "From west to east"
+  difficulty k
+  let k=0..1
+  let a={pick(k, "Tokyo", "Canberra")}
+  let b={pick(k, "London", "Washington")}
+  let c={pick(k, "Washington", "Moscow")}
+  let d={pick(k, "Moscow", "Cairo")}
+
+  scene 36x35 {
+    worldmap map names=0 blank=-1 oceans=0 places=["{a}", "{b}", "{c}", "{d}"] numbered=0 route=0 at=canvas(1, 0)
+    text ask "Number these capitals from 1, the furthest west, to 4, the furthest east, on this map." narrate width=34 below=map gap=1
+    sequence s items=["{a}", "{b}", "{c}", "{d}"] blanks=[p, q, r, t] below=ask gap=1
+  }
+
+  answer p=pick(k, 4, 4) q=pick(k, 2, 1) r=pick(k, 1, 3) t=pick(k, 3, 2)
+  hint "West is to the left of the map, east to the right."
+  hint "Put a finger on the leftmost dot. That is 1."
+}

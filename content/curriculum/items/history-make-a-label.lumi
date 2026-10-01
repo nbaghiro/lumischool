@@ -1,0 +1,11 @@
+# Marked by a grown-up: a museum card for an old thing at home, with every row filled in.
+item history.make-a-label v=1 stars=3 skills=[history.evidence, history.enquiry] {
+  title "My own museum card"
+
+  scene 34x12 {
+    objectcard card kind=9 name="Clay pot" use="Storing food" year=-3000 about=1 place="Skara Brae, Orkney" ask=0 at=canvas(0, 0)
+    text ask "Find the oldest thing in your home. Make a card for it with its name, what it is used for, when it was made and where it came from." width=11 right-of=card gap=1
+  }
+
+  check writing.by-eye look-for="A museum card for a real old object at home, with its name, what it was used for, a date or an honest guess marked about, and where it came from, and the child can say how they found out the date (a mark on it, a grown-up's memory, or a label)." notice=["Name and use", "A date, or about a date", "Where it came from", "Said how they know the date"] ask="How did you find out how old it is?"
+}

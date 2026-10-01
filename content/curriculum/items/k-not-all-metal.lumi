@@ -1,0 +1,17 @@
+# Not every metal is pulled: a coin and foil are metal and stay put, which is the wrong idea a
+# child usually brings.
+item k.not-all-metal v=1 stars=2 skills=[physics.magnets, reasoning.explain] {
+  title "Is every metal pulled?"
+
+  scene 30x24 {
+    row all at=canvas(1, 0) space=1 align=end {
+      things t things=["coin", "foil", "nail"] letters=1
+      magnet bar mode=things count=0 sticks=0 show=0
+    }
+    text q "Ben says a magnet picks up anything made of metal. The coin and the foil are metal. Is Ben right?" narrate width=28 below=all gap=1
+    choice pick options=["Yes: all metal sticks.", "No: only iron and steel stick."] stack=column below=q gap=1
+  }
+
+  answer pick="No: only iron and steel stick."
+  hint "Try a magnet on a coin and on a spoon at home."
+}

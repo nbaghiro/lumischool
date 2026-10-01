@@ -1,0 +1,20 @@
+item k.how-far-rolled v=1 skills=[physics.ramps, counting.to-ten] {
+  title "How many squares?"
+  difficulty r
+  let r=3..10
+  level easy {
+    let r=3..5
+  }
+  level hard {
+    let r=8..10
+  }
+
+  scene 30x18 {
+    ramp r1 height=3 ball=0 rolled=r flat=12 at=canvas(1, 1)
+    text q "How many squares along the floor did the ball roll?" narrate width=28 below=r1 gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer r
+  hint "Count the squares from the foot of the slope to the ball."
+}

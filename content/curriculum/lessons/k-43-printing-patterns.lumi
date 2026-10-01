@@ -1,0 +1,49 @@
+lesson k-printing-patterns v=1 format=teach grade=0 unit=2 subject=art levels=[easy, medium, hard] {
+  title "Printing patterns"
+  goal "Print a shape with a stamp, see that the print faces the other way from the block, and print a pattern that repeats."
+
+  look {
+    scene 30x10 {
+      stamps pic motif=fish show="both" colour=blue flip=false made="print" at=canvas(1, 1)
+    }
+    say """
+      Cut a shape into a block, press it in paint and press it on paper: that is a print. The print
+      faces the other way from the block, so this fish swims the other way. Print the same shapes
+      again and again in an order and you make a pattern.
+      """
+  }
+  do {
+    level easy {
+      worked k.print-shape m="circle" level=medium
+    }
+    practice k.print-shape count=2 seed=2
+    practice k.print-faces count=2 seed=3
+    practice k.count-prints count=2 seed=4 easy-count=1
+    practice k.print-border count=1 seed=5
+    show k.make-a-print
+  }
+  try stars=2 {
+    show k.print-a-letter k=0 hard-k=1
+  }
+  try stars=3 {
+    show k.border-stars n=8 easy-n=6 hard-n=12
+  }
+  remember {
+    say "A print faces the other way. Print shapes in an order to make a pattern."
+  }
+
+  grown-ups """
+    Read each question aloud. The printing is for you to look at; half a potato, a sponge and a
+    saucer of paint are all it needs, with a grown-up doing any cutting. The surprise to enjoy is
+    that the print faces the other way. If the child is stuck, print a letter and hold it up to a
+    mirror. Off the page, print a border for a card with two shapes in turn. England, Reception, ELG
+    Creating with Materials (recalled, not fetched): "Safely use and explore a variety of materials,
+    tools and techniques, experimenting with colour, design, texture, form and function".
+    """
+  level easy {
+    grown-ups "At this level a circle print is named in the teacher's pen first, the prints face left or right plainly, and the border has six shapes."
+  }
+  level hard {
+    grown-ups "At this level the prints are a leaf and a butterfly, the letter is d, and the border has twelve shapes."
+  }
+}

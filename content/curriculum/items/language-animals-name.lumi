@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[animal.the-cat]], [[animal.the-dog]], [[animal.the-duck]], [[animal.the-rabbit]], [[animal.the-pig]], [[animal.the-hen]], [[animal.the-fox]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.animals-name v=1 skills=[language.animals] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x30 {
+    column all at=canvas(1, 1) space=1 align=start {
+      picturecards cards who=["{pick(k, \"cat\", \"dog\", \"duck\", \"rabbit\", \"pig\", \"hen\", \"fox\")}"] where=["by"] thing=["box"] letters=false
+      text ask "Which animal is on the card?" width=32
+      choice pick options=[pick(k, "[[animal.the-hen]]", "[[animal.the-pig]]", "[[animal.the-cat]]", "[[animal.the-duck]]", "[[animal.the-dog]]", "[[animal.the-rabbit]]", "[[animal.the-dog]]"), pick(k, "[[animal.the-cat]]", "[[animal.the-dog]]", "[[animal.the-pig]]", "[[animal.the-rabbit]]", "[[animal.the-hen]]", "[[animal.the-hen]]", "[[animal.the-duck]]"), pick(k, "[[animal.the-duck]]", "[[animal.the-duck]]", "[[animal.the-rabbit]]", "[[animal.the-dog]]", "[[animal.the-pig]]", "[[animal.the-fox]]", "[[animal.the-rabbit]]"), pick(k, "[[animal.the-rabbit]]", "[[animal.the-fox]]", "[[animal.the-duck]]", "[[animal.the-fox]]", "[[animal.the-fox]]", "[[animal.the-duck]]", "[[animal.the-fox]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[animal.the-cat]]", "[[animal.the-dog]]", "[[animal.the-duck]]", "[[animal.the-rabbit]]", "[[animal.the-pig]]", "[[animal.the-hen]]", "[[animal.the-fox]]")
+  feedback {
+    when (pick == pick(k, "[[animal.the-duck]]", "[[animal.the-fox]]", "[[animal.the-cat]]", "[[animal.the-dog]]", "[[animal.the-dog]]", "[[animal.the-duck]]", "[[animal.the-dog]]")) point=cards {
+      say "{pick(k, \"[[animal.the-duck|cap]] is the duck. Look at the whiskers.\", \"[[animal.the-fox|cap]] is the fox. Look at the ears and the tail.\", \"[[animal.the-cat|cap]] is the cat. This one swims.\", \"[[animal.the-dog|cap]] is the dog. Look at the long ears.\", \"[[animal.the-dog|cap]] is the dog. This one has a round snout.\", \"[[animal.the-duck|cap]] is the duck. This bird lays eggs on the farm.\", \"[[animal.the-dog|cap]] is the dog. This one has a big bushy tail.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

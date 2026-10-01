@@ -1,0 +1,64 @@
+# The town's budget, costs and rules are made up for the lesson.
+lesson history-how-a-town-is-run v=1 format=teach grade=5 unit=6 subject=history levels=[easy, medium, hard] {
+  title "How a town is run"
+  goal "Say how a town council decides by voting, read what a town spends its money on, and give the reason for a town's rule."
+
+  look {
+    scene 34x12 {
+      council c hands=[1, 1, 0, 1, 1, 0, 1] box=0 motion="A crossing by the school" count=1 at=canvas(1, 0)
+    }
+    say """
+      A town is run by a council, a group of people chosen by the town's voters. The council meets,
+      talks, and votes: an idea passes when more than half vote for it. It makes rules, such as where
+      cars may park, and it spends the town's money on roads, parks, bins and the library. Every rule
+      is there to solve a problem, and a fair council listens to everyone the rule affects.
+      """
+  }
+  do {
+    level easy {
+      worked history.council-passes k=0
+    }
+    show history.council-passes k=2 easy-k=1 hard-k=4
+    show history.town-budget k=2 easy-k=0 hard-k=4
+    show history.rule-reasons k=2 easy-k=0 hard-k=4
+    show history.assembly-vote k=4 easy-k=0 hard-k=5
+    show history.council-passes k=3 easy-k=2 hard-k=5
+    show history.town-budget k=3 easy-k=1 hard-k=5
+    show history.rule-reasons k=3 easy-k=1 hard-k=5
+    show history.town-budget k=1 easy-k=2 hard-k=3
+    level hard {
+      show history.rule-reasons k=3 level=medium
+    }
+  }
+  try stars=2 {
+    show history.majority-fair k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.budget-puzzle k=0 hard-k=1
+  }
+  remember {
+    say "A council decides by votes, spends the town's money, and makes rules, each to solve a problem."
+  }
+
+  grown-ups """
+    The idea is how the place a child lives is run: people are chosen to decide, they vote, they
+    make rules and they spend money raised from the town. The way in counts a council's vote; the
+    core reads a town's spending, says what a rule is for, and counts votes again. The two-star
+    question asks what a fair council owes the people who lost a vote; there is no single right
+    answer in real life, and the lesson asks only for listening. The wrong idea to watch for is
+    "rules are just to stop fun". If the child is stuck, pick a rule at home and ask what would go
+    wrong without it. Off the page, find your own council's website: who sits on it, and what did
+    it last decide? Japan's 社会 for grade six teaches 「国民生活には地方公共団体や国の政治の働きが反映していること」,
+    how local and national government shape people's lives (the course of study as read in its 2008
+    edition). China's 道德与法治 in the upper grades takes up how the people take part in running
+    public life (recalled from the textbook series). The towns, votes and costs are made up.
+    Russia teaches how the country is governed in обществознание, in later grades in the edition our
+    audit read.
+    """
+  level easy {
+    grown-ups "At this level a worked example counts a clear vote, the budget questions read one row or add two, the rules are about safety, and the council's votes pass or fail by a lot."
+  }
+  level hard {
+    grown-ups "At this level the votes pass or fail by one, the budget questions compare sums of rows, the rules are about permission and prices, and the three-star town spends its money on two or three projects."
+  }
+}

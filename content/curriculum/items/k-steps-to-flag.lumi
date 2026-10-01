@@ -1,0 +1,25 @@
+item k.steps-to-flag v=1 skills=[coding.sequences, counting.to-five] {
+  title "How many steps?"
+  difficulty a
+  let a=1..5
+  level easy {
+    let a=1..2
+  }
+  level hard {
+    let a=4..5
+  }
+
+  scene 28x15 {
+    maze g cols=6 rows=1 col=1 row=1 flag=[1 + a, 1] trail=none at=canvas(1, 1)
+    text ask "How many steps to the right does the robot take to reach the flag?" narrate width=26 below=g gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer a
+  feedback {
+    when (answer == a + 1) point=g {
+      say "Do not count the square the robot is on. Count each step it takes."
+    }
+  }
+  hint "Move a finger from the robot to the flag, one square at a time, and count the moves."
+}

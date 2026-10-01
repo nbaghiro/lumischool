@@ -1,0 +1,25 @@
+item k.wings-ring v=1 skills=[sorting.one-rule, nature.minibeasts] {
+  title "Minibeasts with wings"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 30x15 {
+    minibeasts row kinds=["{pick(k, \"bee\", \"snail\", \"spider\")}", "{pick(k, \"snail\", \"bee\", \"butterfly\")}", "{pick(k, \"butterfly\", \"ant\", \"bee\")}", "{pick(k, \"spider\", \"spider\", \"snail\")}"] legs=false at=canvas(1, 1)
+    text ask "The minibeasts with wings go in the ring. How many go in?" narrate width=28 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 2, 1, 2)
+  feedback {
+    when (answer == 4) point=row {
+      say "Only the ones with wings go in. Does the snail have wings?"
+    }
+  }
+  hint "Look at each minibeast. Can you see its wings?"
+}

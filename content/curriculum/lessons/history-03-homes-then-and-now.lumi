@@ -1,0 +1,62 @@
+# The first dates of the things in the street are in engine/notation/chronicle.ts with their sources.
+lesson history-homes-then-and-now v=1 format=teach grade=1 unit=5 subject=history levels=[easy, medium, hard] {
+  title "A street then and now"
+  goal "Tell a street long ago from a street today by what is in it, and find the thing that could not have been there."
+
+  look {
+    scene 32x16 {
+      thenandnow street year=1850 sign=1 things=["horse and cart", "hot-air balloon"] at=canvas(1, 0)
+    }
+    say """
+      This is a street in 1850. The houses look much like houses now, and some old houses are still
+      lived in today. What has changed is what goes along the street: in 1850 people rode horses or
+      walked, and a balloon was a wonder in the sky. There were no cars, no aeroplanes and no
+      phones yet. Each of those was first made at a time we know.
+      """
+  }
+  do {
+    level easy {
+      worked history.street-long-ago k=0
+    }
+    show history.street-long-ago k=1 easy-k=1 hard-k=2
+    show history.street-could-not k=0 easy-k=0 hard-k=3
+    show history.street-newest k=0 easy-k=0 hard-k=2
+    show history.street-could-not k=1 easy-k=1 hard-k=4
+    show history.street-long-ago k=2 easy-k=0 level=medium hard-k=3
+    show history.street-could-not k=2 easy-k=2 hard-k=5
+    show history.street-newest k=1 easy-k=1 hard-k=3
+  }
+  story {
+    show history.street-how-many-new k=0 easy-k=0 hard-k=2
+    level hard {
+      show history.street-how-many-new k=1 level=medium
+    }
+  }
+  try stars=2 {
+    show history.houses-not-the-clue k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.street-which-year k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "To tell when a picture was made, look for the newest thing in it."
+  }
+
+  grown-ups """
+    The idea is that a picture can be dated by what is in it: every thing was first made at some
+    time, so the newest thing in a street says the street cannot be older than that. The way in
+    tells long ago from today, the core finds the thing that could not have been there in the year
+    on the sign and the newest thing in today's street, and the story counts everything too new.
+    The wrong idea to watch for is dating a picture by its houses: old houses stand in streets
+    today, so they say little. If the child is stuck, ask of each thing "did Great-grandma have
+    one when she was little?" Off the page, walk down your own street and find the oldest and the
+    newest thing in it. England's key stage 1 history asks for "changes within living memory" and
+    "events beyond living memory", and this street crosses from one to the other.
+    """
+  level easy {
+    grown-ups "At this level a worked example shows a street long ago, the thing that could not be there is far newer than the year on the sign, and the newest thing is a phone or an aerial among old things."
+  }
+  level hard {
+    grown-ups "At this level the years on the sign are 1920, 1950 and 1870, so the too-new thing is only a few decades out, the newest thing is chosen among three newer ones, a second counting question is added, and the three-star question has three late years to choose between."
+  }
+}

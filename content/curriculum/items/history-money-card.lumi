@@ -1,0 +1,24 @@
+# Reading museum cards of money: what it was, when and where it was made.
+item history.money-card v=1 skills=[history.money, history.evidence] {
+  title "The money card"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let kind={pick(k, 5, 7, 6, 8, 7, 6)}
+  let name={pick(k, "Cowrie shell", "Ban liang coin", "Lion coin", "Paper money", "Ban liang coin", "Lion coin")}
+  let year={pick(k, -1300, -221, -650, 1024, -221, -650)}
+  let place={pick(k, "Anyang, China", "China", "Sardis, Turkey", "Sichuan, China", "China", "Sardis, Turkey")}
+  let ask={pick(k, "What was this shell used for?", "Where was this coin made?", "Which of these is older than this coin?", "In which century was this note made?", "Paper money was first made in China in AD 1024. Which is newer?", "Where is this coin from?")}
+  let right={pick(k, "Paying for things", "China", "A cowrie shell used as money", "The 11th century", "Paper money", "Sardis, in Turkey")}
+  let w1={pick(k, "Making music", "Rome", "A paper banknote", "The 10th century", "This coin", "Uruk, in Iraq")}
+  let w2={pick(k, "Catching fish", "Egypt", "A ban liang coin", "The 12th century", "They are the same age", "Anyang, in China")}
+
+  scene 30x27 {
+    objectcard card kind=kind name="{name}" use="{if k == 0 then \"\" else \"Paying for things\"}" year=year about=pick(k, 1, 1, 1, 0, 1, 1) place="{place}" ask=pick(k, 1, 3, 0, 0, 0, 3) at=canvas(0, 0)
+    text ask "{ask}" narrate width=28 below=card gap=1
+    choice pick options=[pick(k, right, w1, w2, right, w1, w2), pick(k, w1, right, right, w2, w2, right), pick(k, w2, w2, w1, w1, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Read the card. Which row does the question need?"
+  hint "If the row is blank, think about what kind of thing it is."
+}

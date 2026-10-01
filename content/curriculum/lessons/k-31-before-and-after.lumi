@@ -1,0 +1,49 @@
+lesson k-before-and-after v=1 format=teach grade=0 unit=2 subject=coding levels=[easy, medium, hard] {
+  title "Before and after"
+  goal "Put the steps of an everyday routine in order, and say what comes before and after a step."
+
+  look {
+    scene 34x10 {
+      picsteps steps pictures=["pot", "soil", "seed", "water"] texts=["", "", "", ""] per=4 numbers=true write=false at=canvas(1, 1)
+    }
+    say """
+      Steps come in an order: the pot before the soil, the soil before the seed, and the seed before
+      the water. Getting dressed, washing and going to bed all have steps in an order too. A robot
+      follows its steps in order, just the same.
+      """
+  }
+  do {
+    level easy {
+      worked k.before-or-after k=0 level=medium
+    }
+    practice k.before-or-after count=2 seed=2
+    practice k.morning-order count=2 seed=3 easy-count=1
+    practice k.just-before count=2 seed=4
+    practice k.yesterday-tomorrow count=2 seed=5
+  }
+  try stars=2 {
+    show k.shoes-first k=0 hard-k=1
+  }
+  try stars=3 {
+    show k.sandwich-order
+  }
+  remember {
+    say "Steps go in order. Some things have to happen before others."
+  }
+
+  grown-ups """
+    Read each question aloud. This is the idea programs are built on, taught with nothing but the
+    day: a routine is a list of steps, and the order matters. If the child is stuck, act the steps
+    out, and try them in the wrong order to see what goes wrong. Off the page, make a picture list
+    of the bedtime routine and follow it for a week. Japan, 幼稚園教育要領 (kindergarten guidelines),
+    環境, 内容 (7): "身近な物や遊具に興味をもってかかわり，考えたり，試したりして工夫して遊ぶ。"
+    (Take an interest in familiar things and toys, and play inventively by thinking and trying
+    things out.)
+    """
+  level easy {
+    grown-ups "At this level socks and shoes are worked in the teacher's pen first, every answer to before or after is before, the routine is the morning, and tomorrow is asked for."
+  }
+  level hard {
+    grown-ups "At this level every answer to before or after is after, the routines are bath time and bedtime, yesterday is asked for, and the two-star is the cake."
+  }
+}

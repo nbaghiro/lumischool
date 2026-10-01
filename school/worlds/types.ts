@@ -54,6 +54,8 @@ export interface Hosts {
     /** What its lessons are, in a word or two, where no one subject names them: "sound, light and crystals". */
     label?: string;
     needs?: string;
+    /** What the place says to a child while it holds no lesson for them, in place of "still being written". */
+    bare?: string;
 }
 
 /**

@@ -1,0 +1,17 @@
+# The two-star reason: a name can outlast a building. A lane called Castle Lane with no castle is a
+# clue that a castle once stood near it.
+item history.castle-lane v=1 skills=[history.local, reasoning.why] {
+  title "Castle Lane"
+  difficulty k
+  let k=0..1
+
+  scene 32x32 {
+    townmap map year=pick(k, 1850, 2026) town=Millbrook labels=1 at=canvas(1, 0)
+    text ask "{if k == 0 then \"There is no castle on this map, but the lane in square A1 is called Castle Lane. What does the name tell us?\" else \"A street in square C2 is called Mill Lane, but there is no mill now. What does the name tell us?\"}" narrate width=30 below=map gap=1
+    choice pick options=["It probably stood there once", "The name is a mistake", "It will be built there soon"] stack=column below=ask gap=1
+  }
+
+  answer pick="It probably stood there once"
+  hint "Why would people give a lane that name?"
+  hint "Names often stay long after the thing they are named after has gone."
+}

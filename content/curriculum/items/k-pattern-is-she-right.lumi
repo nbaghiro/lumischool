@@ -1,0 +1,22 @@
+item k.pattern-is-she-right v=1 stars=2 skills=[patterns.repeating, reasoning.explain] {
+  title "Is Ada right?"
+  difficulty (if c % 2 == 0 then 0 else 1)
+  let c=3..6
+  roles ap=apple st=star
+  level easy {
+    let c={4, 6}
+  }
+  level hard {
+    let c={3, 5}
+  }
+
+  scene 30x16 {
+    pattern strip unit=[ap, st] count=c missing=0 at=canvas(1, 1)
+    text ask "Ada says the next one in the pattern is a star. Is she right?" narrate width=28 below=strip gap=1
+    choice pick options=["Yes, a star comes next.", "No, an apple comes next."] stack=column below=ask gap=1
+  }
+
+  answer pick=(if c % 2 == 1 then "Yes, a star comes next." else "No, an apple comes next.")
+  hint "What is the last one in the row?"
+  hint "Say the pattern from the start and keep going one more."
+}

@@ -1,0 +1,21 @@
+item k.just-before v=1 skills=[coding.sequences] {
+  title "What comes just before?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let what={pick(k, "you eat your lunch", "you go outside in the rain", "you get into the bath", "you cross the road")}
+  let right={pick(k, "wash your hands", "put on your coat", "take off your clothes", "stop and look both ways")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x16 {
+    text q "What do you do just before {what}?" narrate width=28 at=canvas(1, 1)
+    choice pick options=[right, "{pick(k, \"go to bed\", \"eat a cake\", \"brush your hair\", \"sing a song\")}"] stack=column below=q gap=1
+  }
+
+  answer pick=right
+  hint "What has to be done first so the next step works?"
+}

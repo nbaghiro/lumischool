@@ -1,16 +1,19 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { check, type Envelope } from "../../../engine/answer";
+import { check, type Envelope, type SettingChange } from "../../../engine/answer";
 import { isSchoolDay, weekdayOf, type Sitting } from "../../record";
 import { DEFAULT_TRACKS, defaultTracks } from "../../tracks";
-import type { YearLesson } from "../../year";
-import { familyName, gradeName, shortDate, spanText } from "../names";
+import { forChild, variantsIn, type YearLesson } from "../../year";
+import { familyName, shortDate, spanText } from "../names";
+import { gradeName } from "../../../engine/pack";
 import { nowIn } from "../now";
 import {
     alive,
     behind,
     childRecord,
+    keptIn,
     laneOf,
+    lanesOf,
     movesOf,
     nextDay,
     outOfOrder,
@@ -247,16 +250,33 @@ describe("the plan worked out from the log", () => {
                 ["writing", 1],
                 ["physics", 1],
                 ["nature", "off"],
+                ["history", 1],
+                ["language", 1],
             ],
             "grade 1's default, with maths repaced and nature turned off",
         );
         assert.equal(plan.get("writing")?.since, "2026-08-31", "a default begins with the year");
         assert.deepEqual(
             [...planOf([], { id: KID, grade: 4 }, TZ, "2026-08-31").keys()],
-            ["maths", "reading", "writing", "physics", "nature", "coding", "chemistry"],
+            [
+                "maths",
+                "reading",
+                "writing",
+                "physics",
+                "nature",
+                "coding",
+                "chemistry",
+                "history",
+                "language",
+            ],
             "grade 4 carries two more subjects and never music",
         );
-        assert.deepEqual([...planOf([], { id: KID, grade: 1 }, TZ, "2026-08-31")].length, 5);
+        assert.deepEqual([...planOf([], { id: KID, grade: 1 }, TZ, "2026-08-31")].length, 7);
+        assert.deepEqual(
+            [...planOf([], { id: KID, grade: 0 }, TZ, "2026-08-31").keys()],
+            ["maths", "reading", "writing", "music", "nature"],
+            "the kindergarten year's own light default",
+        );
     });
 
     it("keeps the ops that move days in the order they were written, and track ops are not among them", () => {
@@ -420,7 +440,7 @@ describe("the plan worked out from the log", () => {
         for (const grade of Object.keys(DEFAULT_TRACKS).map(Number)) {
             const load = new Map<number, number>();
             for (const [track, perWeek] of Object.entries(defaultTracks(grade)))
-                for (const day of pickWeekdays(week, perWeek ?? 0, turnOf(track)))
+                for (const day of pickWeekdays(week, perWeek ?? 0, turnOf(track, grade)))
                     load.set(day, (load.get(day) ?? 0) + 1);
             const days = week.map((d) => load.get(d) ?? 0);
             const share = Math.ceil(days.reduce((a, b) => a + b, 0) / week.length);
@@ -844,5 +864,102 @@ describe("a child's record, as their view reads it", () => {
                 [2, "g2-a"],
             ],
         );
+    });
+});
+
+describe("the variants of a lesson a child is shown", () => {
+    const setting = (at: string, kid: string | null, data: SettingChange): Envelope => {
+        seq++;
+        const made = check({
+            id: `e${String(seq).padStart(7, "0")}-1111-4111-8111-111111111111`,
+            family_id: FAMILY,
+            kid_id: kid,
+            kind: "setting-changed",
+            data,
+            actor: PARENT,
+            device: PARENT,
+            seq,
+            at,
+        });
+        assert.ok(made.ok, made.ok ? "" : made.problem);
+        return made.envelope;
+    };
+    const tagged: YearLesson[] = [
+        ...LESSONS,
+        { ...facts("es-1", 1, 1, "language", "lessons/lang-es-01.lumi"), language: "es" },
+        { ...facts("fr-1", 1, 1, "language", "lessons/lang-fr-01.lumi"), language: "fr" },
+        facts("hist-1", 1, 1, "history", "lessons/history-01.lumi"),
+        { ...facts("hist-uk", 1, 2, "history", "lessons/history-uk-01.lumi"), nation: "britain" },
+        { ...facts("hist-jp", 1, 2, "history", "lessons/history-jp-01.lumi"), nation: "japan" },
+    ];
+    const lanes = (log: Envelope[]): Record<string, string[]> =>
+        Object.fromEntries(
+            lanesOf({
+                events: log,
+                kid: { id: KID, grade: 1 },
+                lessons: tagged,
+                sittings: [],
+                timeZone: TZ,
+                first: "2026-08-31",
+                today: "2026-09-01",
+                until: "2026-09-20",
+            }).map((l) => [l.track, l.lessons]),
+        );
+
+    it("offers no language before a grown-up picks one, and the world strand of history without a nation", () => {
+        const none = lanes([]);
+        assert.deepEqual(none.language, []);
+        assert.deepEqual(none.history, ["hist-1"]);
+        assert.deepEqual(variantsIn([], KID), { language: null, nation: null });
+    });
+
+    it("offers the child's own language and the family's nation, the latest setting winning", () => {
+        const log = [
+            setting("2026-08-30T10:00:00.000Z", KID, { key: "language", of: null, value: "fr" }),
+            setting("2026-08-30T11:00:00.000Z", KID, { key: "language", of: null, value: "es" }),
+            setting("2026-08-30T10:00:00.000Z", null, { key: "nation", of: null, value: "japan" }),
+        ];
+        const set = lanes(log);
+        assert.deepEqual(set.language, ["es-1"]);
+        assert.deepEqual(set.history, ["hist-1", "hist-jp"]);
+        const r = childRecord(log, { id: KID, grade: 1 }, tagged, TZ, "2026-09-01");
+        assert.deepEqual(r.variants, { language: "es", nation: "japan" });
+    });
+
+    it("keeps another child's language to that child", () => {
+        const other = "31111111-1111-4111-8111-111111111111";
+        const log = [
+            setting("2026-08-30T10:00:00.000Z", other, { key: "language", of: null, value: "es" }),
+        ];
+        assert.deepEqual(lanes(log).language, []);
+        assert.equal(
+            forChild(tagged, variantsIn(log, other)).some((l) => l.id === "es-1"),
+            true,
+        );
+    });
+
+    it("keeps each game's practice level and the easel for the child", () => {
+        const log = [
+            setting("2026-08-30T10:00:00.000Z", KID, { key: "practice", of: "jugs", value: 1 }),
+            setting("2026-08-30T12:00:00.000Z", KID, { key: "practice", of: "jugs", value: 3 }),
+            setting("2026-08-30T11:00:00.000Z", KID, { key: "practice", of: "pour", value: 2 }),
+            setting("2026-08-30T11:00:00.000Z", KID, {
+                key: "painting",
+                of: null,
+                value: { size: 4 },
+            }),
+        ];
+        assert.deepEqual(keptIn(log, KID), {
+            practice: { jugs: 3, pour: 2 },
+            painting: { size: 4 },
+        });
+        assert.deepEqual(keptIn([], KID), { practice: {}, painting: null });
+    });
+
+    it("plans the kindergarten year's nature and the sixth year's language on their own weekdays", () => {
+        assert.equal(turnOf("nature", 0), 2);
+        assert.equal(turnOf("nature", 1), 0);
+        assert.equal(turnOf("language", 6), 4);
+        assert.equal(turnOf("language"), 3);
     });
 });

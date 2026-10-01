@@ -1,0 +1,19 @@
+# When women first voted in five countries, numbered from the earliest, from the dated record.
+item history.vote-order v=1 skills=[history.government, history.order] {
+  title "Votes for women"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Women vote in New Zealand", "Women vote in New Zealand", "Women vote in Japan", "Women vote in the United States", "Women vote in Britain", "Women vote in Japan")}
+  let b={pick(k, "Women vote in Britain", "Women vote in Russia", "Women vote in New Zealand", "Women vote in Russia", "Women vote in Russia", "Women vote in the United States")}
+  let c={pick(k, "Women vote in Japan", "Women vote in the United States", "Women vote in Britain", "Women vote in New Zealand", "Women vote in the United States", "Women vote in Russia")}
+
+  scene 36x22 {
+    timeline line from=1880 to=1960 step=10 years=[] labels=[] at=canvas(0, 0)
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=34 below=line gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "New Zealand was first of all, in 1893."
+  hint "Russia, Britain and the United States came between 1917 and 1920, Japan after the Second World War."
+}

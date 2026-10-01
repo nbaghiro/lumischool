@@ -1,0 +1,23 @@
+# Non-routine: a place chosen from a five-place forecast by reading two or three things at once.
+item language.forecast-puzzle v=1 stars=3 skills=[language.weather, language.reading, reasoning.language] {
+  title "Where to go?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x28 {
+    column all at=canvas(1, 1) space=1 align=start {
+      weatherweek towns days=["Bilbao", "Madrid", "Sevilla", "Pirineos", "Valencia"] skies=["rain", "sunny-spells", "sun", "snow", "wind"] temps=["14 °C", "22 °C", "27 °C", "-2 °C", "20 °C"]
+      text ask "{pick(k, \"Where is it coldest?\", \"Ana wants sun and at least 25 degrees. Where does she go?\", \"Leo wants to fly a kite, but not in rain or snow. Where does he go?\")}" width=32
+      choice pick options=[pick(k, "[[weather.in-the-pyrenees]]", "[[weather.in-seville]]", "[[weather.in-valencia]]"), pick(k, "[[weather.in-bilbao]]", "[[weather.in-madrid]]", "[[weather.in-bilbao]]"), pick(k, "[[weather.in-valencia]]", "[[weather.in-valencia]]", "[[weather.in-the-pyrenees]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[weather.in-the-pyrenees]]", "[[weather.in-seville]]", "[[weather.in-valencia]]")
+  feedback {
+    when (pick == pick(k, "[[weather.in-bilbao]]", "[[weather.in-madrid]]", "[[weather.in-bilbao]]")) {
+      say "{pick(k, \"Bilbao has 14 degrees. Which has a number below zero?\", \"Madrid has 22 degrees. Which is at least 25?\", \"It rains in Bilbao. Which place is windy and dry?\")}"
+    }
+  }
+  hint "Read each place's picture and number."
+  hint "Cross off the places that fail a clue."
+}

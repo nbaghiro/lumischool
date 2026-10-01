@@ -1,0 +1,31 @@
+# Two rings and the things in them, named. The grown-up reads the names, and the child counts
+# what is in a ring, which is what a sort is for.
+item k.ring-count v=1 skills=[sorting.one-rule, counting.to-five] {
+  title "Count a ring"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let where={pick(k, "the Round ring", "the Red ring", "both rings at once", "no ring at all")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 28x21 {
+    venn rings labels=["Round", "Red"] left=["ball", "orange", "wheel"] both=["apple"] right=["bus", "jam"] outside=["book", "sock"] at=canvas(1, 1)
+    text ask "How many things are in {where}?" narrate width=26 below=rings gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 4, 3, 1, 2)
+  feedback {
+    when (k == 0 and answer == 3) point=rings {
+      say "The apple is in the middle, so it is in the Round ring too."
+    }
+    when (k == 1 and answer == 2) point=rings {
+      say "The apple is in the middle, so it is in the Red ring too."
+    }
+  }
+  hint "Put a finger inside the ring. Count every name your finger can reach, the middle as well."
+}

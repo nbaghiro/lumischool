@@ -1,0 +1,21 @@
+# Which of two places in the town was built first, from the dates on the town's record, shown on a
+# map of the town today with the year each was built.
+item history.town-first-built v=1 skills=[history.local, history.order] {
+  title "Built first"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "church", "school", "market", "station", "houses", "bridge")}
+  let b={pick(k, "supermarket", "church", "car park", "bridge", "school", "station")}
+  let ya={pick(k, 1150, 1875, 1250, 1848, 1890, 1780)}
+  let yb={pick(k, 1985, 1150, 1995, 1780, 1875, 1848)}
+
+  scene 32x16 {
+    townmap map year=2026 town=Millbrook labels=1 at=canvas(1, 0)
+    text ask "The {a} was built in {ya} and the {b} in {yb}. Which was built first?" narrate width=13 right-of=map gap=1
+    choice pick options=["{a}", "{b}"] stack=column below=ask gap=1
+  }
+
+  check history.town of=map pick="first({a}, {b})"
+  hint "Which year is earlier?"
+  hint "The smaller year came first."
+}

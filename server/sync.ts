@@ -137,9 +137,11 @@ export async function eventsFor(
         }
         await kidIn(tx, adult, kid);
         const caller = callerOf(adult);
-        return only(
-            (await log(tx, { ...query, kid })).filter((e) => mayRead(caller, e.kind) && within(e)),
+        const own = (await log(tx, { ...query, kid })).filter(
+            (e) => mayRead(caller, e.kind) && within(e),
         );
+        const wanted = !options.kinds || options.kinds.includes("setting-changed");
+        return only(wanted ? await withSettings(tx, adult.family.id, own, within) : own);
     });
 }
 
@@ -243,9 +245,31 @@ export async function kidView(kid: KidSession): Promise<KidView> {
     });
 }
 
+/**
+ * A kid's events with the family's own settings among them in time order, since a family setting such
+ * as the national history unit decides which lessons the kid is shown.
+ */
+async function withSettings(
+    tx: FamilyTx,
+    family: string,
+    own: Envelope[],
+    wanted: (e: Envelope) => boolean = () => true,
+): Promise<Envelope[]> {
+    const settings = (await log(tx, { family, kinds: ["setting-changed"] })).filter(
+        (e) => e.kid_id === null && wanted(e),
+    );
+    return settings.length === 0
+        ? own
+        : [...own, ...settings].sort((a, b) => a.at.localeCompare(b.at));
+}
+
 /** A kid's own log, as far as a child's view reads it (school/family/access.ts). */
 const kidLog = async (tx: FamilyTx, family: string, kid: string): Promise<Envelope[]> =>
-    (await log(tx, { family, kid })).filter((e) => mayRead("kid", e.kind));
+    withSettings(
+        tx,
+        family,
+        (await log(tx, { family, kid })).filter((e) => mayRead("kid", e.kind)),
+    );
 
 /** The events of one lesson: every event that names it, and the ends of the sittings that began it. */
 function ofLesson(events: readonly Envelope[], lesson: string): Envelope[] {
@@ -433,7 +457,11 @@ export async function grownRecord(
         const row = (await kidsOf(tx, adult.family.id)).find((k) => k.id === kidId);
         if (!row) throw new Refused(404, { error: "not-found" });
         const p = packOf(pack);
-        const events = await log(tx, { family: adult.family.id, kid: kidId });
+        const events = await withSettings(
+            tx,
+            adult.family.id,
+            await log(tx, { family: adult.family.id, kid: kidId }),
+        );
         const zone = adult.family.time_zone;
         const today = dayIn(new Date().toISOString(), zone);
         const lessons = p.index.lessons;

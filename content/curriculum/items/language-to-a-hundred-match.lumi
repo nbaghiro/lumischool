@@ -1,0 +1,17 @@
+# Four words to their English, 3 sets, the later sets with the words most often mixed up.
+item language.to-a-hundred-match v=1 skills=[language.numbers, language.market] {
+  title "Match the words"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Write the number of its English next to each [[language.name]] word." width=32
+      match m left=[pick(k, "[[num.forty]]", "[[num.sixty]]", "[[num.seventy-two]]"), pick(k, "[[num.fifty]]", "[[num.seventy]]", "[[num.sixty-two]]"), pick(k, "[[num.ninety]]", "[[num.eighty]]", "[[num.seventy-six]]"), pick(k, "[[num.one-hundred]]", "[[num.fourteen]]", "[[num.sixty-six]]")] right=[pick(k, "90", "14", "76"), pick(k, "40", "60", "72"), pick(k, "50", "70", "66"), pick(k, "100", "80", "62")] blanks=[a, b, c, d]
+    }
+  }
+
+  answer a=2 b=pick(k, 3, 3, 4) c=pick(k, 1, 4, 1) d=pick(k, 4, 1, 3)
+  hint "Start with the word you are surest of, and cross its English off."
+  hint "Two words look alike. Which letter is different, and what does it change?"
+}

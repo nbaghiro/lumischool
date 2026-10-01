@@ -1,0 +1,19 @@
+# The two-star reason for each country's grade four unit (n as in n4-order).
+item history.n4-why v=1 skills=[history.nation, reasoning.why] {
+  title "Why?"
+  let n=0..4
+  let ask={pick(n, "Why did the Romans build Hadrian's Wall?", "Why did the thirteen colonies write the Declaration of Independence?", "Why do schools in Japan practise what to do in an earthquake every year?", "Why did Peter the Great build a new city by the Baltic Sea?", "Why did the magnetic compass matter so much to sailors?")}
+  let right={pick(n, "To guard the edge of their province", "They wanted to govern themselves", "So everyone knows what to do", "To have a port facing Europe", "To steer when clouds hid the stars")}
+  let w1={pick(n, "To keep the Romans from leaving", "They wanted a new king", "Because earthquakes can be stopped", "Because Moscow had burned down", "It made ships go faster")}
+  let w2={pick(n, "To grow grapes along it", "They wanted to join France", "To win a prize for the school", "To hide from the sea", "It told them the time")}
+
+  scene 36x24 {
+    timeline line from=0 to=2000 step=250 years=[] labels=[] at=canvas(0, 0)
+    text ask "{ask}" narrate width=34 below=line gap=1
+    choice pick options=["{right}", "{w1}", "{w2}"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "What problem did people have at the time?"
+  hint "Which answer solves that problem?"
+}

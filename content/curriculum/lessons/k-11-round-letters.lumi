@@ -1,0 +1,50 @@
+lesson k-round-letters v=1 format=teach grade=0 unit=9 subject=writing levels=[easy, medium, hard] {
+  title "Letters that start with c"
+  goal "Write c and the letters that start with a c shape, and tell d from b by how each one starts."
+
+  look {
+    scene 30x8 {
+      handwriting rules show="c a d o g" rows=1 trace=1 width=26 at=canvas(1, 1)
+    }
+    say """
+      c starts near the top and goes back round, the other way from a clock. a, d, o and g all start
+      with that same c shape, and then add a little more: a stick for a and d, a join for o, and a
+      tail for g.
+      """
+  }
+  do {
+    show k.c-for-cat x="c"
+    level easy {
+      worked k.c-shape-start k=0 level=medium
+    }
+    practice k.c-shape-start count=2 seed=2
+    show k.trace-round x="o"
+    practice k.first-move count=2 seed=4
+    practice k.tall-or-small count=2 seed=5 easy-count=1
+    show k.c-for-cat x="d"
+  }
+  try stars=2 {
+    show k.b-or-d k=0 hard-k=1
+  }
+  try stars=3 {
+    show k.round-in-a-word w="dog" easy-w="pig" hard-w="duck"
+  }
+  remember {
+    say "c, a, d, o and g all start with the same c shape."
+  }
+
+  grown-ups """
+    The traced rows are for you to look at: watch that the pencil goes back round to the left at
+    the start of each letter, since a c drawn clockwise turns into a reversed letter later. b and d
+    are the pair to watch, and the rule that helps is that d starts with a c. If the child is stuck,
+    make the c shape together with a finger on the table before picking up the pencil. Off the
+    page, write c-shape letters in a tray of rice or salt. England, Reception, ELG Writing: "Write
+    recognisable letters, most of which are correctly formed".
+    """
+  level easy {
+    grown-ups "At this level the first c-shape letter is found in the teacher's pen, the letters to judge are round ones and l, and the three-star's word is pig."
+  }
+  level hard {
+    grown-ups "At this level the c-shape letters to find are d and g, the letters to judge include t, the two-star asks about p and q, and the three-star's word is duck."
+  }
+}

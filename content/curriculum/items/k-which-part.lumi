@@ -1,0 +1,23 @@
+# The three panels in order this time: the question is which one is the beginning, the middle or
+# the end, which names the parts of a story.
+item k.which-part v=1 skills=[reading.story-structure] {
+  title "Beginning, middle or end?"
+  difficulty (if p == 1 then 1 else 0)
+  let s=0..1 p=0..2
+  let part={pick(p, "beginning", "middle", "end")}
+  level easy {
+    let p={0, 2}
+  }
+  level hard {
+    let p={1}
+  }
+
+  scene 35x22 {
+    comic strip who=["{pick(s, \"girl\", \"boy\")}", "{pick(s, \"dog\", \"boy\")}", "{pick(s, \"girl\", \"boy\")}"] says=["{pick(s, \"Where is my ball?\", \"It is raining.\")}", "{pick(s, \"Woof, woof.\", \"I have my boots.\")}", "{pick(s, \"You found it.\", \"Splash.\")}"] moods=["{pick(s, \"worried\", \"sad\")}", "{pick(s, \"happy\", \"happy\")}", "excited"] with=["", "", "{pick(s, \"dog\", \"\")}"] thinks=[0, 0, 0] holds=["", "", ""] labels=["1", "2", "3"] at=canvas(1, 1)
+    text q "The story is in order. Which picture is the {part}?" narrate width=32 below=strip gap=1
+    choice pick options=["1", "2", "3"] stack=row below=q gap=1
+  }
+
+  answer pick=pick(p, "1", "2", "3")
+  hint "The beginning starts the story, the end finishes it, and the middle is in between."
+}

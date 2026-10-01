@@ -1,0 +1,19 @@
+item k.shoes-first v=1 stars=2 skills=[coding.debugging, reasoning.explain] {
+  title "What went wrong?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x16 {
+    text q "{pick(k, \"Ben put on his shoes, then his socks. What went wrong?\", \"Ada put the cake in the oven, then broke the eggs into the bowl. What went wrong?\")}" narrate width=28 at=canvas(1, 1)
+    choice pick options=["Two steps are the wrong way round.", "A step is missing."] stack=column below=q gap=1
+  }
+
+  answer pick="Two steps are the wrong way round."
+  hint "Are all the steps there? Are they in the right order?"
+}

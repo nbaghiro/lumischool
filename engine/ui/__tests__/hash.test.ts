@@ -66,3 +66,9 @@ test("grade journey links round trip independently of legacy lesson links", () =
         journey: true,
     });
 });
+
+test("the kindergarten year's grade 0 round trips, and an address without a grade names none", () => {
+    const visit = { world: "home-garden", lesson: null, grade: 0 };
+    assert.deepEqual(atFrom(hashOf(visit)), visit);
+    assert.deepEqual(atFrom("#/map/home-garden"), { world: "home-garden", lesson: null });
+});

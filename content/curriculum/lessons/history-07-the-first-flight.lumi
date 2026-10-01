@@ -1,0 +1,67 @@
+# From the Smithsonian's record of the 1903 Wright Flyer: Kitty Hawk, 17 December 1903, Orville's
+# 12-second flight of 36 m (120 ft), Wilbur's 59 seconds and 255.6 m (852 ft). Other dates are in
+# engine/notation/chronicle.ts.
+lesson history-the-first-flight v=1 format=teach grade=2 unit=3 subject=history levels=[easy, medium, hard] {
+  title "The first flight, 1903"
+  goal "Tell the story of the first aeroplane flight from a source, and place it among the firsts that followed."
+
+  look {
+    scene 36x30 {
+      column top at=canvas(1, 0) space=1 align=start {
+        sourcecard card title="Photograph of the first flight" kind=0 who="John T. Daniels, with the Wrights' camera" when="17 December 1903" where="Kill Devil Hills, North Carolina" there=1 ask=0
+        thenandnow street year=1903 sign=0 things=["aeroplane", "horse and cart"]
+      }
+    }
+    say """
+      On 17 December 1903, on the sands near Kitty Hawk in North Carolina, Orville Wright flew an
+      aeroplane with an engine for 12 seconds. His brother Wilbur flew the last flight that day, for
+      59 seconds. A man from the lifesaving station, John T. Daniels, took a photograph as it rose,
+      so we have a picture made by someone who was there.
+      """
+  }
+  do {
+    level easy {
+      worked history.flight-card k=0
+    }
+    show history.flight-card k=1 level=medium
+    show history.flight-seconds k=0 hard-k=1
+    show history.flight-order k=0 easy-k=0 hard-k=2
+    show history.flight-years k=0 easy-k=0 hard-k=2
+    show history.flight-which-there k=0 hard-k=1
+    show history.flight-order k=2 easy-k=1 hard-k=3
+    show history.flight-years k=1 easy-k=1 hard-k=3
+  }
+  story {
+    show history.flight-could-not k=0 hard-k=1
+    level medium hard {
+      show history.flight-years k=2 hard-k=0 level=medium
+    }
+  }
+  try stars=2 {
+    show history.short-but-first k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.flight-times-as-far k=0 hard-k=1
+  }
+  remember {
+    say "The first aeroplane flight was on 17 December 1903, and a photograph made by someone who was there shows it."
+  }
+
+  grown-ups """
+    The idea is that one event can be known from a source made at the time, and placed on a line
+    among the events it led to. The way in reads the source card of the photograph; the core
+    compares the first and last flights of the day, orders four firsts in flying and counts the
+    years between them, and asks which of two sources was made by someone who was there. The
+    wrong idea to watch for is "short means unimportant", which is the two-star question: the
+    flight was short and still the first of its kind. If the child is stuck on counting years,
+    count on to the next ten first. Off the page, fold a paper plane and time its flight against
+    twelve seconds. England's key stage 1 history asks for "events beyond living memory that are
+    significant nationally or globally", and gives "the first aeroplane flight" as an example.
+    """
+  level easy {
+    grown-ups "At this level a worked example reads the year off the card, the firsts to order are nearly in order, the years counted are from 1903 to 1909 and from 1909 to 1919, and the three-star question uses round numbers, 40 and 240 metres."
+  }
+  level hard {
+    grown-ups "At this level the flights are added together rather than compared, the firsts are fully muddled, the years counted run from 1919 to the Moon in 1969, the photograph is the second card, and the three-star question uses the real lengths, 36 and 256 metres."
+  }
+}

@@ -1,0 +1,22 @@
+item k.same-or-not v=1 skills=[counting.compare] {
+  title "The same or not?"
+  difficulty (if a == b then 1 else if abs(a - b) == 1 then 1 else 0)
+  let a=2..6 b=2..6
+  where (abs(a - b) <= 2)
+  level easy {
+    where (a == b or abs(a - b) == 2)
+  }
+  level hard {
+    where (abs(a - b) <= 1)
+  }
+
+  scene 24x16 {
+    props top count=a prop=apple at=canvas(1, 1)
+    props bottom count=b prop=star below=top gap=1
+    text ask "Is there the same number of apples and stars?" narrate width=22 below=bottom gap=1
+    choice pick options=["the same", "not the same"] below=ask gap=1
+  }
+
+  answer pick=(if a == b then "the same" else "not the same")
+  hint "Match each apple with a star. Is anything left over?"
+}

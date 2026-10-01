@@ -1,0 +1,13 @@
+# The round stroke goes back over the top, the way c and o are written, and a grown-up watches
+# which way the pencil turns.
+item k.trace-round v=1 skills=[writing.letter-formation, writing.first-strokes] {
+  title "Round and round"
+  let x={"c", "o"}
+
+  scene 30x10 {
+    text ask "Trace the {x}. Start near the top and go back round, the other way from a clock." narrate width=28 at=canvas(1, 1)
+    handwriting rules show="{x}" rows=1 trace=3 width=26 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="The pencil starts just below the top of the letter and moves back round to the left, anticlockwise, with the curve sitting on the line." notice=["starts near the top", "goes round to the left", "sits on the line"] ask="Which way did your pencil go round?"
+}

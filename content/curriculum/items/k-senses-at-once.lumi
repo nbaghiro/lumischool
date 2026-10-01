@@ -1,0 +1,20 @@
+item k.senses-at-once v=1 stars=3 skills=[nature.senses, counting.to-five] {
+  title "How many senses?"
+  difficulty (1 - k)
+  let k=0..1
+  let when={pick(k, "Ada eats a crunchy apple. She sees it, smells it, tastes it and hears the crunch.", "Ben strokes a purring cat. He sees it, feels its soft fur and hears it purr.")}
+  level easy {
+    let k=1..1
+  }
+  level hard {
+    let k=0..0
+  }
+
+  scene 28x13 {
+    text ask "{when} How many senses is that?" narrate width=26 at=canvas(1, 1)
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 4, 3)
+  hint "Count each thing: seeing, smelling, tasting, hearing, feeling. Which of them happened?"
+}

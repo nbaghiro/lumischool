@@ -1,0 +1,22 @@
+# A reason: a small letter for a month in Spanish, and the day before the month.
+item language.es-months-why v=1 stars=2 skills=[language.time, reasoning.language] {
+  title "Writing a date"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 35x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Which is written the Spanish way?\", \"Leo's birthday is el catorce de julio. What is the date in English?\", \"Why does Spanish say el cinco de abril and not abril cinco?\")}" width=32
+      choice pick options=[pick(k, "Mi cumpleaños es en mayo.", "14 July", "Spanish puts the day first, then de and the month."), pick(k, "Mi cumpleaños es en Mayo.", "4 July", "Abril is a short month."), pick(k, "Mi Cumpleaños es en Mayo.", "14 June", "Cinco is always first.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Mi cumpleaños es en mayo.", "14 July", "Spanish puts the day first, then de and the month.")
+  feedback {
+    when (pick == pick(k, "Mi cumpleaños es en Mayo.", "4 July", "Abril is a short month.")) {
+      say "{pick(k, \"English writes May with a capital. Spanish months take a small letter.\", \"Cuatro is four. Catorce is fourteen.\", \"The length of the month does not matter. Look at the order of the words.\")}"
+    }
+  }
+  hint "Look at the capital letters."
+  hint "Say the Spanish date slowly, word by word."
+}

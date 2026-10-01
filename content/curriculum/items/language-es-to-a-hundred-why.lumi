@@ -1,0 +1,22 @@
+# A reason: how Spanish builds sesenta and setenta from seis and siete, and a number between the tens.
+item language.es-to-a-hundred-why v=1 stars=2 skills=[language.numbers, language.market, reasoning.language] {
+  title "Sixty or seventy?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x16 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Sesenta or setenta for 70? Why?\", \"How is 48 made in Spanish?\", \"Which is more: noventa céntimos or un euro?\")}" width=32
+      choice pick options=[pick(k, "setenta: it starts like siete, seven", "cuarenta y ocho: forty and eight", "un euro: it is cien céntimos"), pick(k, "sesenta: it starts like seis", "cuatro ocho", "noventa céntimos: noventa is bigger than uno"), pick(k, "Either: they mean the same", "ocho y cuarenta", "They are the same.")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "setenta: it starts like siete, seven", "cuarenta y ocho: forty and eight", "un euro: it is cien céntimos")
+  feedback {
+    when (pick == pick(k, "sesenta: it starts like seis", "cuatro ocho", "noventa céntimos: noventa is bigger than uno")) {
+      say "{pick(k, \"Seis is six, so sesenta is sixty. Which one starts like seven?\", \"Cuatro ocho is two numbers. Spanish joins the ten and the one with y.\", \"Un euro is a hundred cents. Compare cien with noventa.\")}"
+    }
+  }
+  hint "Which small number does each start like?"
+  hint "Say it in English first."
+}

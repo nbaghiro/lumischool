@@ -1,0 +1,22 @@
+# Kinds of money numbered from the earliest, from the record: cowrie shells in Shang China, Lydian
+# coins about 650 BC, the ban liang 221 BC, paper money in 1024, banknotes in Europe in 1661.
+item history.money-order v=1 skills=[history.money, history.order] {
+  title "Money through time"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "Cowrie shell", "Lion coin", "Paper money", "Banknotes in Europe", "Ban liang coin", "Paper money")}
+  let b={pick(k, "Lion coin", "Cowrie shell", "Cowrie shell", "Lion coin", "Banknotes in Europe", "Ban liang coin")}
+  let c={pick(k, "Paper money", "Paper money", "Ban liang coin", "Paper money", "Lion coin", "Lion coin")}
+
+  scene 36x23 {
+    row cards at=canvas(0, 0) space=0 align=start {
+      objectcard shell kind=5 name="Cowrie shell" use="Paying for things" year=-1300 about=1 place="Anyang, China" ask=0
+    }
+    text ask "Number these 1, 2, 3, from the earliest kind of money." narrate width=34 below=cards gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Before coins, people used things like shells."
+  hint "Coins came before paper money, and paper money in China before banknotes in Europe."
+}

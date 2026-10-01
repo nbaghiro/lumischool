@@ -1,0 +1,26 @@
+# The century of an event of the family's country, from the record (n as in n3-order). The harder
+# version has a year that ends in 00, which belongs to the century before.
+item history.n3-century v=1 skills=[history.nation, history.centuries] {
+  title "Which century?"
+  difficulty k
+  let n=0..4 k=0..1
+  let ev={if k == 0 then pick(n, "Caesar lands in Britain", "First flight", "Great Fire of Edo", "Moscow first mentioned", "Qin unites China") else pick(n, "Great Fire of London", "Moon landing", "Survey of Japan began", "Rostov first mentioned", "Paper")}
+  let yr={if k == 0 then pick(n, -55, 1903, 1657, 1147, -221) else pick(n, 1666, 1969, 1800, 862, 105)}
+  let i={n + 5 * k}
+  let o1={pick(i, "1st century BC", "19th century", "16th century", "11th century", "2nd century BC", "16th century", "19th century", "18th century", "8th century", "1st century")}
+  let o2={pick(i, "1st century", "20th century", "17th century", "12th century", "3rd century BC", "17th century", "20th century", "19th century", "9th century", "2nd century")}
+  let o3={pick(i, "5th century BC", "21st century", "18th century", "13th century", "22nd century BC", "18th century", "21st century", "8th century", "10th century", "11th century")}
+  let from={pick(i, -100, 1900, 1600, 1100, -300, 1600, 1900, 1790, 800, 0)}
+  let to={pick(i, 100, 2000, 1700, 1200, -200, 1700, 2000, 1830, 900, 200)}
+  let step={pick(i, 50, 20, 20, 20, 20, 20, 20, 10, 20, 50)}
+
+  scene 34x21 {
+    timeline line from=from to=to step=step years=[yr] labels=["{ev}"] at=canvas(1, 0)
+    text ask "In which century was this?" narrate width=16 below=line gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column right-of=ask gap=1
+  }
+
+  check history.dates of=line pick="century-name(0)"
+  hint "Read the year of the flag. Is it BC or AD?"
+  hint "The first century was years 1 to 100, so a century's number is one more than its hundreds, unless the year ends in 00."
+}

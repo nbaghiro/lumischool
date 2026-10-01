@@ -1,0 +1,50 @@
+lesson k-family-and-animals v=1 format=teach grade=0 unit=8 subject=language levels=[easy, medium, hard] {
+  title "[[family.my-family|cap]] and the animals"
+  goal "Name four people in a family and six animals in [[language.name]]."
+
+  look {
+    scene 30x10 {
+      picturecards cards who=["cat", "dog", "duck"] where=["by", "by", "by"] thing=["log", "log", "log"] letters=false at=canvas(1, 1)
+    }
+    say """
+      Animals: a cat is [[animal.cat]], a dog is [[animal.dog]] and a duck is [[animal.duck]]. A pig
+      is [[animal.pig]], a rabbit is [[animal.rabbit]] and a hen is [[animal.hen]]. In a family,
+      mother is [[family.mother]], father is [[family.father]], grandmother is
+      [[family.grandmother]] and brother is [[family.brother]].
+      """
+  }
+  do {
+    level easy {
+      worked k.lang-animal k=0 level=medium
+    }
+    practice k.lang-animal count=3 seed=2 easy-count=2
+    practice k.lang-family-word count=2 seed=3
+    show k.lang-say-family
+    practice k.lang-hello-or-goodbye count=1 seed=9
+    practice k.lang-colour-name count=1 seed=9 easy-count=0
+  }
+  try stars=2 {
+    show k.lang-baby-animal k=0 hard-k=1
+  }
+  try stars=3 {
+    show k.lang-my-dog k=0 hard-k=1
+  }
+  remember {
+    say "[[family.mother|cap]], [[family.father]], [[animal.cat]], [[animal.dog]]."
+  }
+
+  grown-ups """
+    Read the words aloud and let the child point and say them back; nothing needs to be read by the
+    child. Families differ, so let the child use the words for their own grown-ups, and add any the
+    lesson leaves out. If the child is stuck, play a game of pointing at toy animals and naming them.
+    Off the page, name the animals in a picture book in the language. Japan, 幼稚園教育要領
+    (kindergarten guidelines), 言葉, 内容 (7): "生活の中で言葉の楽しさや美しさに気付く。" (Notice the fun
+    and beauty of words in daily life.) The phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level the cat is named in the teacher's pen first, the animals are the cat, dog and duck, and the people are mother and father."
+  }
+  level hard {
+    grown-ups "At this level the animals are the pig, rabbit and hen, the people are grandmother and brother, and the three-star puts two words together."
+  }
+}

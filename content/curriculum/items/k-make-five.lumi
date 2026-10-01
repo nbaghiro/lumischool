@@ -1,0 +1,26 @@
+# Five is the top row of the frame, so the empty squares in that row are the answer.
+item k.make-five v=1 stars=3 skills=[counting.to-five, reasoning.part-whole] {
+  title "Make five"
+  difficulty (5 - n)
+  let n=1..4
+  level easy {
+    let n=3..4
+  }
+  level hard {
+    let n=1..2
+  }
+
+  scene 24x16 {
+    tenframe frame count=n color=berry at=canvas(1, 1)
+    text ask "Five counters fill the top row. How many more do we need?" narrate width=22 below=frame gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (5 - n)
+  feedback {
+    when (answer == n) point=frame {
+      say "That is the counters already there. Count the empty squares in the top row."
+    }
+  }
+  hint "Look at the top row. Which squares are still empty?"
+}

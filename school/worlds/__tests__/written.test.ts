@@ -101,13 +101,14 @@ test("the school as written, for a grown-up's own map: every world of every year
         school.ways.every((w) => w.state === "open" || w.state === "hidden"),
         "every way is inked and none walked",
     );
-    const meadow = school.places[0]?.shown;
+    const meadow = school.places.find((p) => p.shown?.world === "meadow")?.shown;
     assert.ok(meadow);
     assert.equal(meadow.label, "The meadow. Year 1, term 1.");
     assert.deepEqual(meadow.notes[0], "3 lessons");
     assert.equal(meadow.stamp, null);
     assert.equal(meadow.moment, null);
-    const empty = school.places.find((p) => p.shown?.world === run[6]?.world)?.shown;
+    const third = run.find((p) => p.grade === 3)?.world;
+    const empty = school.places.find((p) => p.shown?.world === third)?.shown;
     assert.equal(
         empty?.notes[0],
         "No lessons are written for it yet",
@@ -248,7 +249,7 @@ test("alternative term notes name their actual eligible lessons", () => {
     );
 });
 
-test("journey atlas labels report available membership without changing routes or permissions", () => {
+test("the written map names each place's journeys beside what it holds, and changes no route", () => {
     const corpus = corpusFrom(
         [
             factOf("nature-living-or-not", "nature", 1, 1, "nature"),
@@ -263,11 +264,11 @@ test("journey atlas labels report available membership without changing routes o
     assert.equal(view.limits, original.limits);
     assert.equal(view.reach, original.reach);
     assert.deepEqual(original.places, snapshot);
-    const meadow = view.places.find((p) => p.shown?.world === "meadow");
-    assert.equal(meadow?.shown?.when, "Grade journeys · 1");
-    assert.equal(meadow?.shown?.notes[0], "Grade 1: 2 lessons");
-    assert.equal(
-        view.places.find((p) => p.shown?.world === "old-tower")?.shown?.when,
-        "Lessons still to come",
-    );
+    const was = original.places.find((p) => p.shown?.world === "meadow")?.shown;
+    const meadow = view.places.find((p) => p.shown?.world === "meadow")?.shown;
+    assert.equal(meadow?.when, was?.when);
+    assert.equal(meadow?.notes[0], was?.notes[0]);
+    assert.equal(meadow?.notes[1], "Journeys for Grade 1");
+    const tower = view.places.find((p) => p.shown?.world === "old-tower")?.shown;
+    assert.ok(!tower?.notes.some((n) => n.startsWith("Journeys")), "no history, no journey");
 });

@@ -1,0 +1,22 @@
+# The way in: a museum card for one tool, and which age it comes from, told by what it is made of.
+item history.which-age v=1 skills=[history.prehistory, history.evidence] {
+  title "Stone, bronze or iron?"
+  difficulty k
+  let k=0..2
+  let kind={pick(k, 0, 1, 2)}
+  let name={pick(k, "Flint hand axe", "Bronze axe", "Iron sickle")}
+  let use={pick(k, "Cutting meat and wood", "Chopping wood", "Cutting wheat")}
+  let year={pick(k, -480000, -1500, -300)}
+  let place={pick(k, "Boxgrove, England", "Britain", "Britain")}
+  let key={pick(k, "The Stone Age", "The Bronze Age", "The Iron Age")}
+
+  scene 23x27 {
+    objectcard card kind=kind name="{name}" use="{use}" year=year about=1 place="{place}" ask=2 at=canvas(0, 0)
+    text ask "The date is missing from this card. From what the tool is made of, which age is it from?" narrate width=22 below=card gap=1
+    choice pick options=["The Stone Age", "The Bronze Age", "The Iron Age"] stack=column below=ask gap=1
+  }
+
+  answer pick=key
+  hint "Read the name of the object. What is it made of?"
+  hint "Each age is named after what people made their best tools from."
+}

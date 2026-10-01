@@ -1,0 +1,20 @@
+item k.count-prints v=1 skills=[art.printing, counting.to-ten] {
+  title "How many prints?"
+  difficulty n
+  let n=3..9
+  level easy {
+    let n=3..5
+  }
+  level hard {
+    let n=7..9
+  }
+
+  scene 34x10 {
+    props row count=n prop=star at=canvas(1, 1)
+    text q "Ada printed a star with a sponge. How many prints did she make?" narrate width=30 below=row gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer n
+  hint "Touch each star once as you count."
+}

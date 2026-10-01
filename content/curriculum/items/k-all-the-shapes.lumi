@@ -1,0 +1,20 @@
+item k.all-the-shapes v=1 stars=3 skills=[art.shape, counting.to-ten] {
+  title "Every shape in the picture"
+  difficulty (if s == "boat" then 0 else 1)
+  let s={"boat", "fish", "house"}
+  level easy {
+    let s={"boat"}
+  }
+  level hard {
+    let s={"fish", "house"}
+  }
+
+  scene 30x14 {
+    collage pic scene=s at=canvas(1, 1)
+    text ask "How many pieces of paper make this {s} altogether?" narrate width=12 right-of=pic gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check art.shapes of=pic answer=all
+  hint "Touch each piece once. Start at the top and work down."
+}

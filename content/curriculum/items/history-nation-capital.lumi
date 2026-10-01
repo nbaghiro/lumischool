@@ -1,0 +1,19 @@
+# The capital on the world map among the five, numbered; k changes the order of the dots.
+item history.nation-capital v=1 skills=[history.nation, history.maps] {
+  title "Our capital city"
+  difficulty k
+  let n=0..4 k=0..1
+  let capital={pick(n, "London", "Washington", "Tokyo", "Moscow", "Beijing")}
+  let country={pick(n, "the United Kingdom", "the United States", "Japan", "Russia", "China")}
+  let key={if k == 0 then n + 1 else pick(n, 3, 5, 1, 2, 4)}
+
+  scene 36x22 {
+    worldmap map names=0 blank=-1 oceans=0 places=[if k == 0 then "London" else "Tokyo", if k == 0 then "Washington" else "Moscow", if k == 0 then "Tokyo" else "London", if k == 0 then "Moscow" else "Beijing", if k == 0 then "Beijing" else "Washington"] numbered=1 route=0 at=canvas(1, 0)
+    text ask "{capital} is the capital city of {country}. Which dot is {capital}?" narrate width=24 below=map gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer key
+  hint "Find {country} first. Which continent is it on?"
+  hint "The dot is inside {country}, on its land."
+}

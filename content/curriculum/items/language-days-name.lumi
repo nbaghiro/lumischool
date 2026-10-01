@@ -1,0 +1,24 @@
+# Picture or situation to the language: [[time.monday]], [[time.sunday]], [[time.friday]], [[time.tuesday]], [[time.saturday]], [[time.thursday]], [[time.wednesday]], the plainer first.
+# Each version offers the word most often taken for it.
+item language.days-name v=1 skills=[language.time] {
+  title "Which word is it?"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x27 {
+    column all at=canvas(1, 1) space=1 align=start {
+      days week mark=pick(k, 0, 6, 4, 1, 5, 3, 2) start=0
+      text ask "What is the ringed day in [[language.name]]?" width=32
+      choice pick options=[pick(k, "[[time.thursday]]", "[[time.thursday]]", "[[time.thursday]]", "[[time.sunday]]", "[[time.sunday]]", "[[time.tuesday]]", "[[time.tuesday]]"), pick(k, "[[time.monday]]", "[[time.sunday]]", "[[time.tuesday]]", "[[time.tuesday]]", "[[time.thursday]]", "[[time.thursday]]", "[[time.sunday]]"), pick(k, "[[time.tuesday]]", "[[time.friday]]", "[[time.sunday]]", "[[time.wednesday]]", "[[time.saturday]]", "[[time.wednesday]]", "[[time.friday]]"), pick(k, "[[time.friday]]", "[[time.saturday]]", "[[time.friday]]", "[[time.thursday]]", "[[time.wednesday]]", "[[time.friday]]", "[[time.wednesday]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[time.monday]]", "[[time.sunday]]", "[[time.friday]]", "[[time.tuesday]]", "[[time.saturday]]", "[[time.thursday]]", "[[time.wednesday]]")
+  feedback {
+    when (pick == pick(k, "[[time.tuesday]]", "[[time.saturday]]", "[[time.thursday]]", "[[time.wednesday]]", "[[time.sunday]]", "[[time.friday]]", "[[time.tuesday]]")) point=week {
+      say "{pick(k, \"[[time.tuesday|cap]] is Tuesday. This day starts the week.\", \"[[time.saturday|cap]] is Saturday. This is the last day of the week.\", \"[[time.thursday|cap]] is Thursday. This is the day after it.\", \"[[time.wednesday|cap]] is Wednesday. This is the second day.\", \"[[time.sunday|cap]] is Sunday. This is the first day of the weekend.\", \"[[time.friday|cap]] is Friday. This is the day before it.\", \"[[time.tuesday|cap]] is Tuesday. This is the middle of the week.\")}"
+    }
+  }
+  hint "Say each word to yourself. Which one did the lesson give for this?"
+  hint "Two of the words are close. Look at how each one ends."
+}

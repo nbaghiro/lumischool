@@ -1,0 +1,29 @@
+# A birth year and the year a photo was taken, on a line in single years, so the child counts the
+# steps between two flags. At hard the photo is taken in a year the line does not label.
+item history.how-old-in v=1 skills=[history.timeline, number.difference] {
+  title "How old in the photo?"
+  difficulty (y - b)
+  let b=2015..2018 y=2019..2023
+  where (y - b >= 2 and y - b <= 7)
+  level easy {
+    let b=2017..2018 y=2019..2021
+  }
+  level hard {
+    let b=2015..2016 y=2020..2023
+  }
+
+  scene 36x14 {
+    timeline line from=2015 to=2023 step=1 years=[b, y] labels=["Born", "Photo"] at=canvas(0, 0)
+    text ask "Mia was born in {b}. Her photo was taken in {y}. How old was she in the photo?" narrate width=26 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (y - b)
+  feedback {
+    when (answer == y - b + 1) point=line {
+      say "Count the jumps between the two flags, not the years marked. From {b} to {b + 1} is one year."
+    }
+  }
+  hint "Put a finger on Born. How many jumps along the line to Photo?"
+  hint "Each jump from one year to the next is one more birthday."
+}

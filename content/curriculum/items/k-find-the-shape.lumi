@@ -1,0 +1,31 @@
+# The shapes are the answers, so the child hears a name and points at a picture. The rectangle
+# sits beside the square, which is the pair a child this age mixes up.
+item k.find-the-shape v=1 skills=[shapes.flat] {
+  title "Find the shape"
+  difficulty (if t == 3 then 2 else if t == 1 then 1 else 0)
+  let t=0..3
+  let name={pick(t, "circle", "square", "triangle", "rectangle")}
+  roles circ=circle squ=square tri=triangle rect=rectangle
+  level easy {
+    let t={0, 2}
+  }
+  level hard {
+    let t={1, 3}
+  }
+
+  scene 24x10 {
+    text ask "Which one is the {name}?" narrate at=canvas(1, 1)
+    choice pick options=[circ, squ, tri, rect] below=ask gap=1
+  }
+
+  answer pick=pick(t, "circ", "squ", "tri", "rect")
+  feedback {
+    when (t == 1 and pick == "rect") point=pick.option(3) {
+      say "A rectangle has two long sides and two short ones. A square's sides are all the same."
+    }
+    when (t == 3 and pick == "squ") point=pick.option(1) {
+      say "All four sides of this one are the same. Look for two long sides and two short sides."
+    }
+  }
+  hint "Run a finger round each shape. Is it round, or does it have corners?"
+}

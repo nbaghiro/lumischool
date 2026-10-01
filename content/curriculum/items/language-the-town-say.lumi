@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.the-town-say v=1 skills=[language.town, language.speaking] {
+  title "My town"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Say three places in your town in [[language.name]], the way the lesson says there is: [[phrase.there-is-a-market]]\", \"Say one place your town has and one it does not have, in [[language.name]].\", \"Tell a grown-up about the ferry town from the plan in the lesson, naming four places in [[language.name]].\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="There is and there is not said the way the lesson says them, with a place after each." notice=["There is said as the lesson says it", "There is not said as the lesson says it", "Four places named", "Beach and square kept apart"]
+  hint "Say it in English first."
+  hint "Which place is it?"
+}

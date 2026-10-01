@@ -1,0 +1,17 @@
+# The three-star question, with round made-up numbers: how long a stretch of the road took a camel
+# train, and how far it could go in a given time.
+item history.silk-days v=1 skills=[history.trade, reasoning.plan] {
+  title "Days on the road"
+  difficulty k
+  let k=0..1
+
+  scene 36x24 {
+    worldmap map names=2 blank=-1 oceans=0 places=["Chang'an", "Samarkand", "Baghdad", "Constantinople"] numbered=0 route=3 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Say a camel train went 25 km a day, and it was 2,000 km from Samarkand to Baghdad. How many days would that take?\" else \"Say a camel train went 25 km a day but rested one day in every five. How many days to go 2,000 km?\"}" narrate width=26 below=map gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (if k == 0 then 80 else 100)
+  hint "How many days to go 50 km?"
+  hint "{if k == 0 then \"How many hundreds of kilometres are there in 2,000?\" else \"In five days the train moves on four of them. How far is that?\"}"
+}

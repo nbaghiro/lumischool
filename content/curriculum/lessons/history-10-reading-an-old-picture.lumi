@@ -1,0 +1,74 @@
+# The first dates of the things in the pictures are in engine/notation/chronicle.ts.
+lesson history-reading-an-old-picture v=1 format=teach grade=2 unit=8 subject=history levels=[easy, medium, hard] {
+  title "Reading an old picture"
+  goal "Find what is the same and what is different in two pictures of one place, and use the clues in a picture to say when it was made."
+
+  look {
+    scene 32x33 {
+      column pics at=canvas(1, 0) space=1 align=start {
+        thenandnow a year=1900 sign=1 things=["horse and cart", "bicycle", "hot-air balloon"]
+        thenandnow b year=2026 sign=1 things=["motor car", "bicycle", "mobile phone"]
+      }
+    }
+    say """
+      These are two pictures of the same street, one in 1900 and one today. The houses are the
+      same. The bicycle is in both, since people have ridden bicycles since before 1900. The horse
+      and cart has gone, and cars and phones are new. When a picture has no date, its newest thing
+      is the best clue: the picture cannot be older than that thing.
+      """
+  }
+  do {
+    level easy {
+      worked history.two-pictures q=0 k=0
+    }
+    show history.two-pictures q=1 k=1 easy-q=0 easy-k=1 hard-q=1 hard-k=0
+    show history.picture-clue k=0 hard-k=1
+    show history.picture-mistake k=0 easy-k=0 hard-k=2
+    level medium hard {
+      show history.two-pictures q=1 k=0 hard-q=2 hard-k=0
+    }
+    show history.guess-the-year k=1 easy-k=0 hard-k=2
+    show history.picture-mistake k=1 easy-k=1 hard-k=3
+    show history.two-pictures q=2 k=1 easy-q=1 easy-k=1 level=medium hard-q=2 hard-k=1
+  }
+  story {
+    level hard {
+      show history.picture-clue k=0 level=medium
+    }
+    level medium hard {
+      show history.guess-the-year k=2 hard-k=1 level=medium
+    }
+    level easy {
+      show history.picture-clue k=1 level=medium
+      show history.picture-mistake k=2 level=medium
+    }
+  }
+  try stars=2 {
+    show history.same-street-changed k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.old-photo
+  }
+  remember {
+    say "A picture cannot be older than the newest thing in it."
+  }
+
+  grown-ups """
+    The idea is that a picture is evidence: what is in it tells when it was made. The way in finds
+    what two pictures of one street share; the core finds what is new, which picture is older, the
+    mistake in an artist's picture of a given year and the year an undated picture could be. The
+    wrong idea to watch for is dating a picture by its houses, which may stand for centuries; the
+    best clue is the newest thing. If the child is stuck, ask of each thing "could Great-grandma
+    have seen one as a child?" The three-star task is for you to mark with the child: an old
+    photograph of your family or your street, and what is the same and what is different today.
+    England's key stage 1 history asks pupils to "use a wide vocabulary of everyday historical
+    terms" and to "understand some of the ways in which we find out about the past", and a picture
+    is the first of those ways.
+    """
+  level easy {
+    grown-ups "At this level a worked example finds what is in both pictures, every two-picture question asks what they share, the mistakes are far newer than the year, and the undated picture has a bicycle in it."
+  }
+  level hard {
+    grown-ups "At this level the two-picture questions ask what is only new and which picture is older, the mistakes are only a few decades out, and the undated picture's newest thing is the aeroplane."
+  }
+}

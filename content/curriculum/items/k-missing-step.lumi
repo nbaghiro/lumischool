@@ -1,0 +1,22 @@
+# Three steps with a gap: the child has to know the whole job to see what was left out.
+item k.missing-step v=1 stars=3 skills=[reading.sequencing, reasoning.clues] {
+  title "A step is missing"
+  difficulty k
+  let k=0..1
+  let right={pick(k, "put in the seed", "stir it")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x26 {
+    picsteps steps pictures=[pick(k, "pot", "eggs"), pick(k, "soil", "tin"), pick(k, "water", "oven")] texts=["", "", ""] per=3 numbers=true write=false at=canvas(1, 1)
+    text ask "One step was left out of these pictures. Which one?" narrate width=28 below=steps gap=1
+    choice pick options=["put in the seed", "stir it", "eat it"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Say the steps one by one. Where does something jump ahead?"
+}

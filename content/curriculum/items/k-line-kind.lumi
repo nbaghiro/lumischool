@@ -1,0 +1,20 @@
+item k.line-kind v=1 skills=[writing.first-strokes, art.line] {
+  title "What kind of line?"
+  difficulty (if x == "straight" or x == "zigzag" then 0 else 1)
+  let x={"straight", "zigzag", "wavy", "spiral"}
+  level easy {
+    let x={"straight", "zigzag"}
+  }
+  level hard {
+    let x={"wavy", "spiral"}
+  }
+
+  scene 32x12 {
+    lines one kinds=[x] colour=blue at=canvas(1, 1)
+    text ask "What kind of line is this?" narrate width=24 below=one gap=1
+    choice pick options=["straight", "zigzag", "wavy", "spiral"] stack=row below=ask gap=1
+  }
+
+  answer pick=x
+  hint "Does it have sharp points, smooth bumps, or go round and round?"
+}

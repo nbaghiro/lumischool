@@ -1,0 +1,78 @@
+# Dates from engine/notation/chronicle.ts: Edo's Meireki fire, 2 March 1657, which burned for three
+# days and destroyed 60 to 70 per cent of the city; London's fire from 2 September 1666, in
+# Farriner's bakery in Pudding Lane; the new St Paul's finished in 1710.
+lesson history-two-great-fires v=1 format=teach grade=2 unit=5 subject=history levels=[easy, medium, hard] {
+  title "Two great fires"
+  goal "Tell the story of a great fire from a source written at the time, and say how a city was built again so it would not burn the same way."
+
+  look {
+    scene 34x20 {
+      column all at=canvas(1, 0) space=1 align=start {
+        timeline line from=1640 to=1680 step=10 years=[1657, 1666] labels=["Edo fire", "London fire"]
+        row street space=0 align=end {
+          houses row count=5 windows=2
+          blaze fire tongues=4
+        }
+      }
+    }
+    say """
+      In 1657 a great fire burned for three days in Edo, the city we now call Tokyo. Nine years
+      later, in 1666, a fire began in a baker's shop in Pudding Lane in London and burned for five
+      days. Both cities were built mostly of wood, with houses close together. A Londoner called
+      Samuel Pepys wrote in his diary as he watched. Afterwards both cities were built again, in new
+      ways.
+      """
+  }
+  do {
+    level easy {
+      worked history.fire-first k=0
+    }
+    show history.fire-first k=1 easy-k=0 level=medium hard-k=1
+    show history.fire-days k=0 hard-k=1
+    show history.fire-diary-card k=0 hard-k=1
+    show history.fire-then-now k=0 hard-k=1
+    show history.fire-years k=0 easy-k=0 hard-k=2
+    show history.fire-which-there k=0 hard-k=1
+    show history.fire-rebuild k=0 hard-k=1
+    level medium hard {
+      show history.fire-years k=1 hard-k=1 level=medium
+    }
+  }
+  story {
+    level medium hard {
+      show history.fire-rebuild k=1 hard-k=0 level=medium
+    }
+    level easy {
+      show history.fire-rebuild k=1 level=medium
+    }
+  }
+  try stars=2 {
+    show history.fire-spread k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.fire-same-idea k=0 hard-k=1
+  }
+  remember {
+    say "Wooden cities burned fast, so both London and Edo were built again with gaps and stone to stop fire spreading."
+  }
+
+  grown-ups """
+    The idea is that two cities far apart had the same disaster and learnt the same lesson, and that
+    we know about it from people who were there. The way in puts the two fires on a line; the core
+    counts the days the London fire burned and the years between the fires and the rebuilding,
+    finds the first-hand source (Pepys's diary, written as the fire burned) and says why the new
+    houses were brick; the two-star question asks why the fire spread. The wrong idea to watch for
+    is counting days without the first one: Sunday to Thursday is five days of fire. If the child
+    is stuck on the years, count on to the next ten first. Off the page, look at the buildings on
+    your street: what are they made of, and what would stop a fire? This lesson touches a disaster
+    in which people lost their homes; it is told through the houses and the rebuilding. England's
+    key stage 1 history names "the Great Fire of London" among the "events beyond living memory
+    that are significant nationally or globally".
+    """
+  level easy {
+    grown-ups "At this level a worked example puts the fires in order, the years counted are the nine between them, the days are counted without the nights, and the reasons are asked about London."
+  }
+  level hard {
+    grown-ups "At this level one fire is placed from its year, the nights are counted rather than the days, the years run from Edo's fire to the new St Paul's, the diary is the second card, and the rebuilding and the spreading are asked about Edo."
+  }
+}

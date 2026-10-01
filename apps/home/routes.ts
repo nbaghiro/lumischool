@@ -102,7 +102,7 @@ export function whereIn(search: string): WhereOnMap {
         ...(q.get("journey") === "1" ? { journey: true } : {}),
         world: q.get("world") || null,
         lesson: q.get("lesson") || null,
-        ...(Number.isInteger(grade) && grade > 0 ? { grade } : {}),
+        ...(q.get("grade") && Number.isInteger(grade) && grade >= 0 ? { grade } : {}),
     };
 }
 
@@ -111,7 +111,7 @@ export function mapHref(at: Partial<WhereOnMap> = {}): string {
     const q = new URLSearchParams();
     if (at.world) q.set("world", at.world);
     if (at.lesson) q.set("lesson", at.lesson);
-    if (at.grade) q.set("grade", String(at.grade));
+    if (at.grade !== undefined) q.set("grade", String(at.grade));
     if (at.journey) q.set("journey", "1");
     const query = q.toString();
     return query ? `/map?${query}` : "/map";

@@ -82,8 +82,12 @@ describe("the grown-ups' Explore", () => {
         assert.equal(shelfCount(31, 31, false), "31 lessons");
         assert.equal(shelfCount(1, 1, false), "1 lesson");
         assert.equal(
-            searchedLine({ grade: 2, subject: "writing", words: " magnets " }),
+            searchedLine({ grade: 2, subject: "writing", variant: null, words: " magnets " }),
             "No lesson matches \u201cmagnets\u201d in Grade 2 \u00b7 Writing.",
+        );
+        assert.equal(
+            searchedLine({ grade: 3, subject: "history", variant: "japan", words: "" }),
+            "No lesson in Grade 3 \u00b7 History \u00b7 Japan.",
         );
         assert.equal(
             searchedLine({ ...EVERYTHING, words: "volcano" }),

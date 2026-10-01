@@ -1,0 +1,21 @@
+# Who made each first in space: Yuri Gagarin (1961), Valentina Tereshkova (1963), Alexei Leonov
+# (1965), Neil Armstrong (1969), and the dog Laika (1957), from the record's sources.
+item history.space-who v=1 skills=[history.space, history.lives] {
+  title "Who was first?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ask={pick(k, "Who was the first person in space, in 1961?", "Who was the first person to walk on the Moon, in 1969?", "Who was the first woman in space, in 1963?", "Who was the first person to step outside a spacecraft, in 1965?", "Which animal was one of the first to orbit the Earth, in 1957?", "Who flew round the Earth once in Vostok 1?")}
+  let right={pick(k, "Yuri Gagarin", "Neil Armstrong", "Valentina Tereshkova", "Alexei Leonov", "Laika, a dog", "Yuri Gagarin")}
+  let w1={pick(k, "Neil Armstrong", "Yuri Gagarin", "Neil Armstrong", "Neil Armstrong", "A monkey called Sam", "Alexei Leonov")}
+  let w2={pick(k, "Valentina Tereshkova", "Alexei Leonov", "Yuri Gagarin", "Valentina Tereshkova", "A cat called Tom", "Valentina Tereshkova")}
+
+  scene 32x16 {
+    rocket r flame=2 at=canvas(1, 0)
+    text ask "{ask}" narrate width=20 right-of=r gap=1
+    choice pick options=[pick(k, right, w1, w2, right, w1, w2), pick(k, w1, right, right, w2, w2, right), pick(k, w2, w2, w1, w1, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Think back to the story of the space race."
+  hint "Match the year to the first."
+}

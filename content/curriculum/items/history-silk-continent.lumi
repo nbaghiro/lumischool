@@ -1,0 +1,18 @@
+# The Silk Road's cities and the continents they are on, read from the map with the continents named.
+item history.silk-continent v=1 skills=[history.trade, history.maps] {
+  title "Across two continents"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let i={pick(k, 0, 3, 1, 2)}
+  let city={pick(k, "Chang'an", "Constantinople", "Samarkand", "Baghdad")}
+
+  scene 36x29 {
+    worldmap map names=0 blank=-1 oceans=0 places=["Chang'an", "Samarkand", "Baghdad", "Constantinople"] numbered=0 route=3 at=canvas(1, 0)
+    text ask "Which continent is {city} on?" narrate width=16 below=map gap=1
+    choice pick options=["Asia", "Europe", "Africa"] stack=column right-of=ask gap=1
+  }
+
+  check history.world of=map pick="on({i})"
+  hint "Find the dot named {city}."
+  hint "Read the name of the land it sits on."
+}

@@ -1,0 +1,17 @@
+# The two-star reason: the Normans built the White Tower after taking England in 1066, tall and of
+# stone in the middle of London, as much to show who ruled as to defend.
+item history.why-stone-tower v=1 skills=[history.medieval, reasoning.why] {
+  title "A tower to be seen"
+  difficulty k
+  let k=0..1
+
+  scene 30x24 {
+    tower keep courses=8 flag=1 at=canvas(1, 0)
+    text ask "{if k == 0 then \"After the Normans took England in 1066, they built the White Tower, tall and of white stone, in the middle of London. Why so big, and where everyone could see it?\" else \"The White Tower was much bigger than any house in London. What did that tell the people of London?\"}" narrate width=20 right-of=keep gap=1
+    choice pick options=["To show everyone who ruled now", "Because stone was cheaper than wood", "To keep the rain off the market"] stack=column below=keep gap=1
+  }
+
+  answer pick="To show everyone who ruled now"
+  hint "Who had just come to rule England, and what might Londoners have thought of them?"
+  hint "A building can send a message without any words."
+}

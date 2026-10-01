@@ -1,0 +1,27 @@
+# Years between early writings and the first cities, all BC, in the rounded dates the record gives
+# as "about" (Uruk 3100, hieroglyphs 3200, Mohenjo-daro 2500, the Great Pyramid 2560, oracle
+# bones 1250).
+item history.writing-gap v=1 skills=[history.writing, history.bc-ad] {
+  title "How long between?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, 3300, 3200, 3300, 3300, 3200, 3300)}
+  let b={pick(k, 3100, 2500, 2500, 2560, 1250, 1250)}
+  let ea={pick(k, "The first tablets in Uruk were written", "The first Egyptian hieroglyphs were carved", "The first tablets in Uruk were written", "The first tablets in Uruk were written", "The first Egyptian hieroglyphs were carved", "The first tablets in Uruk were written")}
+  let eb={pick(k, "Uruk was at its biggest", "Mohenjo-daro was built", "Mohenjo-daro was built", "the Great Pyramid was built", "the first oracle bones were written", "the first oracle bones were written")}
+
+  scene 36x16 {
+    timeline line from=-3500 to=-1000 step=500 years=[] labels=[] at=canvas(1, 0)
+    text ask "{ea} about {a} BC, and {eb} about {b} BC. About how many years apart?" narrate width=28 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer (a - b)
+  feedback {
+    when (answer == a + b) point=line {
+      say "Both years are BC, so take the smaller number from the bigger."
+    }
+  }
+  hint "Which is further back from year one?"
+  hint "Count on from the later year to the earlier one, in hundreds."
+}

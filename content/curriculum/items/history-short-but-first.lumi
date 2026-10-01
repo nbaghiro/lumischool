@@ -1,0 +1,31 @@
+# The two-star reason: the first flight was short, and still the first time an aeroplane with an
+# engine carried a person up and on under control, which is why it matters.
+item history.short-but-first v=1 skills=[history.significance, reasoning.why] {
+  title "Only twelve seconds"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 35x23 {
+    numberline line from=0 to=60 step=5 at=canvas(1, 1)
+    text ask "Ben says the first flight did not matter, because it was only {if k == 0 then \"12 seconds long\" else \"36 metres long, less than a football pitch\"}. What is wrong with that?" narrate width=32 below=line gap=1
+    choice pick options=["Nobody had flown an aeroplane with an engine before", "It was really a long flight", "Nothing, it did not matter"] stack=column below=ask gap=1
+  }
+
+  answer pick="Nobody had flown an aeroplane with an engine before"
+  feedback {
+    when (pick == "It was really a long flight") point=line {
+      say "Twelve seconds is short. Ask why a short flight could still be important."
+    }
+    when (pick == "Nothing, it did not matter") point=line {
+      say "Had anyone flown like that before 1903? Every aeroplane since came after it."
+    }
+  }
+  hint "What had nobody done before that morning?"
+  hint "Something can be small and still be the first."
+}

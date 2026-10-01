@@ -1,0 +1,17 @@
+# Four words to their English, 4 sets, the later sets with the words most often mixed up.
+item language.the-town-match v=1 skills=[language.town] {
+  title "Match the words"
+  difficulty pick(k, 0, 0, 1, 2)
+  let k=0..3
+
+  scene 34x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Write the number of its English next to each [[language.name]] word." width=32
+      match m left=[pick(k, "[[town.the-beach]]", "[[town.the-station]]", "[[town.there-is]]", "[[town.the-beach]]"), pick(k, "[[town.the-park]]", "[[town.the-harbour]]", "[[town.there-is-no]]", "[[town.the-square]]"), pick(k, "[[town.the-market]]", "[[town.the-museum]]", "[[town.the-town]]", "[[town.the-harbour]]"), pick(k, "[[town.the-square]]", "[[town.the-library]]", "[[town.near]]", "[[town.the-park]]")] right=[pick(k, "the market", "the library", "the town", "the square"), pick(k, "the beach", "the station", "there is", "the park"), pick(k, "the park", "the harbour", "near", "the harbour"), pick(k, "the square", "the museum", "there is no", "the beach")] blanks=[a, b, c, d]
+    }
+  }
+
+  answer a=pick(k, 2, 2, 2, 4) b=pick(k, 3, 3, 4, 1) c=pick(k, 1, 4, 1, 3) d=pick(k, 4, 1, 3, 2)
+  hint "Start with the word you are surest of, and cross its English off."
+  hint "Two words look alike. Which letter is different, and what does it change?"
+}

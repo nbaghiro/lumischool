@@ -18,7 +18,7 @@ export const crane = defineDrawing({
     group: "Structures",
     about: "A yellow crane seen from the side: a lattice jib across the top that a trolley runs along, and a tower at one end with a cab and a counterweight, standing on the ground.",
     params: { w: 32, tall: 18 },
-    settings: { w: { kind: "whole", min: 8, max: 36 }, tall: { kind: "whole", min: 6, max: 46 } },
+    settings: { w: { kind: "whole", min: 8, max: 48 }, tall: { kind: "whole", min: 6, max: 46 } },
     takes: [
         { label: "A long jib", params: { w: 32, tall: 18 } },
         { label: "A short crane", params: { w: 16, tall: 10 } },

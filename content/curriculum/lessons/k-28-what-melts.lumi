@@ -1,0 +1,49 @@
+lesson k-what-melts v=1 format=teach grade=0 unit=6 subject=chemistry levels=[easy, medium, hard] {
+  title "What melts, and what changes"
+  goal "Say what melts when it is warmed and sets when it is cooled, and tell a change that goes back from one that does not."
+
+  look {
+    scene 34x12 {
+      beforeafter ch change="melt-chocolate" show=1 names=1 at=canvas(1, 0)
+    }
+    say """
+      Warm chocolate, ice or butter and they melt: hard turns runny. Cool them and they set hard
+      again. Some changes cannot go back: a cooked egg never goes runny again, and a baked cake
+      never turns back into its mixture.
+      """
+  }
+  do {
+    level easy {
+      worked k.what-melts k=0 level=medium
+    }
+    practice k.what-melts count=2 seed=2
+    practice k.heat-or-cold count=2 seed=3
+    show k.ice-gone k=0 hard-k=1
+    practice k.set-again count=2 seed=4 easy-count=1
+    show k.sugar-in-water
+  }
+  try stars=2 {
+    show k.egg-cannot-go-back c="cook-egg" hard-c="bake-cake"
+  }
+  try stars=3 {
+    show k.sun-or-shade
+  }
+  remember {
+    say "Warm it and it melts. Cool it and it sets. Some changes cannot go back."
+  }
+
+  grown-ups """
+    Read each question aloud. Melting is best watched: an ice cube on a saucer on the table and
+    another on a sunny windowsill, looked at every ten minutes. Keep hot water and the hob for the
+    grown-up. If the child thinks the sugar has vanished, let them taste the water. Off the page,
+    make chocolate crispy cakes and talk about the chocolate melting and setting again. Japan,
+    幼稚園教育要領 (kindergarten guidelines), 環境, 内容 (2): "生活の中で，様々な物に触れ，その性質や仕組みに興味や関心をもつ。"
+    (Touch many things in daily life and take an interest in how they behave and work.)
+    """
+  level easy {
+    grown-ups "At this level the ice lolly is chosen in the teacher's pen first, the changes are melting ice and chocolate, the ice melts in the sun, and the two-star is the egg."
+  }
+  level hard {
+    grown-ups "At this level the things to melt are chocolate and butter, the changes include freezing and toast, the ice melts on the table, and the two-star is the cake."
+  }
+}

@@ -1,0 +1,17 @@
+# The three-star question: a vote where nobody has more than half, and what happens if the smallest
+# group's voters choose again (a made-up class vote).
+item history.runoff v=1 skills=[history.government, reasoning.logic] {
+  title "A second round"
+  difficulty k
+  let k=0..1
+
+  scene 32x16 {
+    bargraph g labels=["Ada", "Ben", "Cara"] values=[pick(k, 11, 10), pick(k, 8, 9), pick(k, 6, 6)] max=12 at=canvas(1, 0)
+    text ask "{if k == 0 then \"25 children voted. Nobody got more than half. Cara drops out, and all her voters choose Ben instead. How many votes does the winner have now?\" else \"25 children voted. Cara drops out; 4 of her voters choose Ada and 2 choose Ben. How many votes does the winner have now?\"}" narrate width=16 right-of=g gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if k == 0 then 14 else 14)
+  hint "Add Cara's votes to the one they go to."
+  hint "Then compare the two that are left."
+}

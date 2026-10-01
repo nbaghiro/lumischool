@@ -1,0 +1,15 @@
+item k.big-drum v=1 stars=2 skills=[music.pitch, reasoning.explain] {
+  title "Big drum, small drum"
+
+  scene 30x24 {
+    row drums at=canvas(1, 1) space=3 align=end {
+      handdrum big wide=14 words=false
+      handdrum small wide=7 words=false
+    }
+    text ask "Big things make low sounds and small things make high sounds. Which drum sounds lower?" narrate width=24 below=drums gap=1
+    choice pick options=["the big drum", "the small drum"] stack=row below=ask gap=1
+  }
+
+  answer pick="the big drum"
+  hint "Think of the chime bars. Did the long bars ring high or low?"
+}

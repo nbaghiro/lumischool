@@ -1,0 +1,67 @@
+# Six to ten on the ten frame, with five as the step in.
+lesson language-six-to-ten v=1 format=teach grade=1 unit=5 subject=language levels=[easy, medium, hard] {
+  title "[[num.six|cap]], [[num.seven]], [[num.eight]]"
+  goal "Count from six to ten in [[language.name]] and read the number words on a sign."
+
+  look {
+    scene 42x8 {
+      column all at=canvas(1, 1) space=1 align=start {
+        row counts space=2 align=end {
+          tenframe six count=6 color=berry
+          tenframe eight count=8 color=sky
+          tenframe ten count=10 color=mint
+        }
+      }
+    }
+    say """
+      After [[num.five]] come [[num.six]], [[num.seven]], [[num.eight]], [[num.nine]] and
+      [[num.ten]]. A full top row is [[num.five]], and one more is [[num.six]]. The frames show
+      [[num.six]], [[num.eight]] and [[num.ten]].
+      """
+  }
+  do {
+    level easy {
+      worked language.six-to-ten-name k=3
+    }
+    show language.six-to-ten-name k=2 easy-k=0 hard-k=4
+    show language.six-to-ten-meaning k=3 easy-k=1 hard-k=4
+    show language.six-to-ten-write k=1 easy-k=2 hard-k=3
+    show language.six-to-ten-name k=3 easy-k=1 hard-k=5
+    show language.six-to-ten-match k=1 easy-k=0 hard-k=2
+    show language.six-to-ten-write k=4 hard-k=2
+    show language.six-to-ten-meaning k=2 easy-k=0 hard-k=5
+    show language.six-to-ten-say k=1 easy-k=0 hard-k=2
+    level hard {
+      show language.six-to-ten-write k=1
+    }
+  }
+  try stars=2 {
+    show language.six-to-ten-why k=1 easy-k=0 hard-k=2
+  }
+  try stars=3 {
+    show language.six-to-ten-puzzle k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "[[num.six|cap]], [[num.seven]], [[num.eight]], [[num.nine]], [[num.ten]]. A full frame is [[num.ten]]."
+  }
+
+  grown-ups """
+    The wrong idea to watch for is mixing [[num.six]] and [[num.seven]], and [[num.nine]] and
+    [[num.ten]] at the top of the frame. The frame shows each number as a full row of five and some
+    more, so ask "how many past [[num.five]]?" rather than counting from one. [[num.ten|cap]] is
+    said [[num.ten|say]]. If the child is stuck, count the whole frame aloud from [[num.one]]. Off
+    the page, count ten grapes into a bowl, then eat them counting back down. It meets England's key
+    stage 2 languages programme (years 3 to 6, statutory from age 7): "explore the patterns and
+    sounds of language through songs and rhymes and link the spelling, sound and meaning of words";
+    Japan's grades 3 and 4 foreign language activities: "Activities to talk about the numbers and
+    figures, etc. of surroundings while showing the actual objects"; and CEFR A1, "Can understand
+    and use familiar everyday expressions and very basic phrases". The phrases are in
+    [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level [[num.eight]] is worked first in the teacher's pen, the words to name are [[num.six]] and [[num.ten]] and the words to write are [[num.five]] and [[num.seven]], the plainer ones of the lesson, with the first set to match and the first version of each star question."
+  }
+  level hard {
+    grown-ups "At this level the words to name are [[num.seven]] and [[num.nine]] and the words to write are [[num.eight]], [[num.five]] and [[num.ten]], the ones most often mixed up, with the last set to match, a third word to write and the last version of each star question."
+  }
+}

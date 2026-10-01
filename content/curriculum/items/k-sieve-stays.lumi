@@ -1,0 +1,20 @@
+item k.sieve-stays v=1 skills=[chemistry.separating] {
+  title "What stays in the sieve?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x22 {
+    sieve s mixture=["{pick(k, \"pebbles\", \"peas\", \"rice\", \"peas\")}", "{pick(k, \"sand\", \"flour\", \"flour\", \"rice\")}"] holes=(if k == 3 then 3 else 2) shaken=1 names=1 at=canvas(1, 0)
+    text q "The mixture was shaken in the sieve. What stayed in the sieve?" narrate width=28 below=s gap=1
+    choice pick options=["{pick(k, \"pebbles\", \"dried peas\", \"rice\", \"dried peas\")}", "{pick(k, \"sand\", \"flour\", \"flour\", \"rice\")}"] stack=row below=q gap=1
+  }
+
+  check chem.separate of=s pick=stays
+  hint "Which one is too big to fit through the holes?"
+}

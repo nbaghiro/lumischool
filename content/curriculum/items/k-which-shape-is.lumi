@@ -1,0 +1,22 @@
+# The colour turned round: the child hears a colour and points at the shape that has it.
+item k.which-shape-is v=1 skills=[colours.naming, shapes.flat] {
+  title "Which shape is it?"
+  difficulty (if t <= 1 then 0 else 1)
+  let t=0..3
+  let colour={pick(t, "pink", "blue", "orange", "green")}
+  roles circ=circle squ=square tri=triangle hex=hexagon
+  level easy {
+    let t=0..1
+  }
+  level hard {
+    let t=2..3
+  }
+
+  scene 26x9 {
+    text ask "Which shape is {colour}?" narrate at=canvas(1, 1)
+    choice pick options=[squ, hex, tri, circ] below=ask gap=1
+  }
+
+  answer pick=pick(t, "circ", "squ", "tri", "hex")
+  hint "Look at each shape in turn. Say its colour out loud."
+}

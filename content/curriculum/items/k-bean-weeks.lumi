@@ -1,0 +1,22 @@
+item k.bean-weeks v=1 stars=3 skills=[nature.growing, counting.on] {
+  title "How many weeks?"
+  difficulty k
+  let k=0..2
+  let now={pick(k, "a seed", "a seed", "a shoot")}
+  let until={pick(k, "has leaves", "flowers", "flowers")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 30x20 {
+    growstages grow stages=4 numbers=true names=1 at=canvas(1, 1)
+    text ask "The bean grows to the next picture each week. It is {now} now. How many weeks until it {until}?" narrate width=28 below=grow gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 2, 3, 2)
+  hint "Put a finger on {now}. Move one picture for each week."
+}

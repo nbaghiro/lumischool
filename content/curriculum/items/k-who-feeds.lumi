@@ -1,0 +1,19 @@
+item k.who-feeds v=1 stars=2 skills=[nature.animals, reasoning.explain] {
+  title "Who looks after the babies?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x13 {
+    text q "{pick(k, \"Baby birds in a nest cannot fly yet. How do they get food?\", \"A baby lamb is only a day old. Where does it get its milk?\")}" narrate width=28 at=canvas(1, 1)
+    choice pick options=[pick(k, "Their parents bring it.", "From its mother."), pick(k, "They fly to the shop.", "From the grass.")] stack=column below=q gap=1
+  }
+
+  answer pick=pick(k, "Their parents bring it.", "From its mother.")
+  hint "Can the baby find food on its own yet?"
+}

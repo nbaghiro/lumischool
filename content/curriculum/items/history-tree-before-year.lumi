@@ -1,0 +1,24 @@
+# Counting the people in the tree born before a year: every box has to be read against it.
+item history.tree-before-year v=1 skills=[history.family, history.order] {
+  title "Born before then"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let year={pick(k, 1970, 2000, 1954, 1981)}
+  let key={pick(k, 4, 6, 3, 5)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x17 {
+    familytree tree names=["Grandma Rose", "Grandpa Tom", "Nana Mei", "Grandad Li", "Mum", "Dad", "Sam"] years=[1950, 1952, 1955, 1953, 1982, 1980, 2019] blank=-1 at=canvas(1, 0)
+    text ask "How many people in the tree were born before {year}?" narrate width=24 below=tree gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer key
+  hint "Go box by box. Is this year before {year}?"
+  hint "Before means an earlier year, a smaller number."
+}

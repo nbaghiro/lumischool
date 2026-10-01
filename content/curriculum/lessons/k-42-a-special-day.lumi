@@ -1,0 +1,49 @@
+lesson k-a-special-day v=1 format=teach grade=0 unit=7 subject=history levels=[easy, medium, hard] {
+  title "A special day we remember"
+  goal "Count the years on a birthday, count the days to a celebration, and talk about a special day a family marks."
+
+  look {
+    scene 30x10 {
+      days week mark=5 start=0 at=canvas(1, 1)
+    }
+    say """
+      Some days come back every year: a birthday, and the special days a family celebrates or
+      remembers. On a birthday you are one year older, and a candle on the cake stands for each
+      year. We count the days until a special day comes.
+      """
+  }
+  do {
+    level easy {
+      worked k.birthday-candles n=4 level=medium
+    }
+    practice k.birthday-candles count=2 seed=2
+    practice k.next-birthday count=3 seed=3 easy-count=2
+    practice k.days-to-party count=2 seed=4 easy-count=1
+    show k.our-special-day
+  }
+  try stars=2 {
+    show k.candles-last-year a=4 easy-a=3 hard-a=6
+  }
+  try stars=3 {
+    show k.same-day-each-year a=4 y=2 hard-a=5 hard-y=3
+  }
+  remember {
+    say "A special day comes back each year. On a birthday you are one year older."
+  }
+
+  grown-ups """
+    Read each question aloud. Every family marks different days, and all of them count here:
+    birthdays, religious festivals, a new year, a day to remember someone. Let the child tell you
+    about one of yours, and share one from when you were small. If the child is stuck on the days,
+    count them on a real calendar. Off the page, make a birthday chart of the family, in order
+    through the year. England, Reception, ELG People, Culture and Communities (recalled, not
+    fetched): "Know some similarities and differences between different religious and cultural
+    communities in this country, drawing on their experiences and what has been read in class".
+    """
+  level easy {
+    grown-ups "At this level four candles are counted in the teacher's pen first, the ages are three to five, the next birthday is asked for, and the party is one or two days away."
+  }
+  level hard {
+    grown-ups "At this level the ages are six to eight, the last birthday is asked for, the party is three or four days away, and the three-star counts on three years."
+  }
+}

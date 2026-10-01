@@ -1,0 +1,35 @@
+# The two-star reason, from the picture: houses of wood built close together let a fire jump from
+# one to the next. London's houses were timber and packed tight; Edo's were wood and paper.
+item history.fire-spread v=1 skills=[history.fire, reasoning.why] {
+  title "Why did it spread?"
+  difficulty k
+  let k=0..1
+  let city={pick(k, "London in 1666", "Edo in 1657")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x28 {
+    row street at=canvas(1, 1) space=0 align=end {
+      houses row count=5 windows=2
+      blaze fire tongues=4
+    }
+    text ask "In {city} most houses were made of wood and built close together. Why did the fire spread so fast?" narrate width=32 below=street gap=1
+    choice pick options=["Flames jumped from one wooden house to the next", "The houses were made of stone", "The streets were very wide"] stack=column below=ask gap=1
+  }
+
+  answer pick="Flames jumped from one wooden house to the next"
+  feedback {
+    when (pick == "The houses were made of stone") point=street {
+      say "Read the question again: what were the houses made of?"
+    }
+    when (pick == "The streets were very wide") point=street {
+      say "Look how close the houses stand. Would a wide gap help a fire, or stop it?"
+    }
+  }
+  hint "Does wood burn? Does stone?"
+  hint "How far apart are the houses in the picture?"
+}

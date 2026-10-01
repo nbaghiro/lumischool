@@ -1,0 +1,23 @@
+# One circle then two squares: the pattern repeats every three, so the next shape depends on where
+# the row stops inside the repeat.
+item k.pattern-abb v=1 skills=[patterns.repeating] {
+  title "Circle, square, square"
+  difficulty (if c % 3 == 0 then 1 else 0)
+  let c=4..8
+  roles circ=circle squ=square
+  level easy {
+    let c={4, 7}
+  }
+  level hard {
+    let c={5, 6, 8}
+  }
+
+  scene 30x13 {
+    pattern strip unit=[circ, squ, squ] count=c missing=c at=canvas(1, 1)
+    text ask "What goes in the empty space?" narrate below=strip gap=1
+    choice pick options=[circ, squ] below=ask gap=1
+  }
+
+  answer pick=(if c % 3 == 1 then "circ" else "squ")
+  hint "Say the pattern: circle, square, square. Which part of it comes next?"
+}

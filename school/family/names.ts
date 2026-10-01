@@ -2,6 +2,7 @@
 // because the child's app names a family too, and the plan and the record in family.ts are a second
 // concept that the child's screens would otherwise carry (tools/__tests__/first-view.test.ts).
 
+import type { Language, Nation } from "../../engine/answer";
 import { weekdayOf } from "../record";
 
 /**
@@ -17,9 +18,23 @@ export function familyName(name: string, inSentence = false): string {
     return `${the} ${n} family`;
 }
 
-/** A grade as a parent reads it. Grade 0 is the year before grade 1. */
-export const gradeName = (grade: number): string =>
-    grade === 0 ? "Kindergarten" : `Grade ${grade}`;
+export const LANGUAGE_NAMES: Record<Language, string> = {
+    es: "Spanish",
+    fr: "French",
+    ja: "Japanese",
+};
+
+export const NATION_NAMES: Record<Nation, string> = {
+    britain: "Britain",
+    usa: "The USA",
+    japan: "Japan",
+    russia: "Russia",
+    china: "China",
+};
+
+/** A lesson's variant tag as a page names it: "Spanish", "Japan". */
+export const variantName = (tag: string): string =>
+    Object.entries({ ...LANGUAGE_NAMES, ...NATION_NAMES }).find(([k]) => k === tag)?.[1] ?? tag;
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 

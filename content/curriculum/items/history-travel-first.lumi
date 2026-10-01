@@ -1,0 +1,24 @@
+# Two ways of getting about: which came first, from the dated record.
+item history.travel-first v=1 skills=[history.order, history.transport] {
+  title "Which came first?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let a={pick(k, "horse and cart", "aeroplane", "steam train", "motor car", "hot-air balloon", "aeroplane")}
+  let b={pick(k, "motor car", "steam train", "aeroplane", "steam train", "steam train", "hot-air balloon")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 30x16 {
+    timeline line from=1700 to=2000 step=50 years=[] labels=[] at=canvas(1, 0)
+    text ask "Which came first, the {a} or the {b}?" narrate width=28 below=line gap=1
+    choice pick options=["{a}", "{b}"] below=ask gap=1
+  }
+
+  check history.dates of=pick pick=first
+  hint "Which one did people have longer ago?"
+  hint "Which one needs an engine? Which one was flying newest of all?"
+}

@@ -1,0 +1,12 @@
+# Marked by a grown-up: a letter home written as a child sent away from a city in wartime, using
+# what the lesson told.
+item history.letter-home v=1 stars=3 skills=[history.twentieth-century, writing.letters] {
+  title "A letter home"
+
+  scene 36x16 {
+    letterpage page greeting="Dear Mum and Dad," body="" lines=4 closing="Love from" width=18 at=canvas(1, 0)
+    text ask "Imagine you were sent from the city to the countryside in 1939. Write a short letter home about your new home, what you eat, and what you miss." width=14 right-of=page gap=1
+  }
+
+  check writing.by-eye look-for="A short letter home as a child sent away in 1939: where they are staying and with whom, one thing about food or rationing, one thing that is new (the countryside, a new school), and one thing they miss, in the voice of a child, with a greeting and a sign-off." notice=["Greeting and sign-off", "Where they are and with whom", "Food or rationing", "Something new and something missed"] ask="What would be hardest about being sent away?"
+}

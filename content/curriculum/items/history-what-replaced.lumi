@@ -1,0 +1,20 @@
+# What an invention took the place of, slowly: every new thing replaced an older way of doing a job.
+item history.what-replaced v=1 skills=[history.inventions, history.change] {
+  title "What did it replace?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let inv={pick(k, "The electric light", "The motor car", "The telephone", "The steam train", "The printed book", "The computer")}
+  let right={pick(k, "Candles and oil lamps", "The horse and cart", "Sending a letter for every message", "The stagecoach on long journeys", "Books copied by hand", "Sums worked out on paper")}
+  let w1={pick(k, "The Sun", "The aeroplane", "Talking face to face", "The bicycle", "Clay tablets", "The television")}
+  let w2={pick(k, "Fireworks", "Walking shoes", "The radio", "The canal lock", "Stories told aloud", "The telephone")}
+
+  scene 32x31 {
+    thenandnow street year=2026 sign=0 things=["motor car", "electric street light"] at=canvas(1, 0)
+    text ask "{inv} slowly took the place of what?" narrate width=30 below=street gap=1
+    choice pick options=[pick(k, right, w1, w2, right, w1, w2), pick(k, w1, right, right, w2, w2, right), pick(k, w2, w2, w1, w1, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "What job does the invention do?"
+  hint "How did people do that job before it came?"
+}

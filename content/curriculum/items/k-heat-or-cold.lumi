@@ -1,0 +1,20 @@
+item k.heat-or-cold v=1 skills=[chemistry.melting, chemistry.changes] {
+  title "Warming or cooling?"
+  difficulty (if c == "melt-ice" or c == "melt-chocolate" then 0 else 1)
+  let c={"melt-ice", "melt-chocolate", "freeze-water", "toast-bread"}
+  level easy {
+    let c={"melt-ice", "melt-chocolate"}
+  }
+  level hard {
+    let c={"freeze-water", "toast-bread"}
+  }
+
+  scene 34x19 {
+    beforeafter ch change=c show=1 names=1 at=canvas(1, 0)
+    text ask "Was this change made by warming it or by cooling it?" narrate width=30 below=ch gap=1
+    choice pick options=["warming", "cooling"] stack=row below=ask gap=1
+  }
+
+  answer pick=(if c == "freeze-water" then "cooling" else "warming")
+  hint "Where would you put it to make this happen: somewhere hot or in the freezer?"
+}

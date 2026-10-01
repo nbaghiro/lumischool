@@ -1,0 +1,20 @@
+item k.shapes-in-a-picture v=1 skills=[art.shape, counting.to-five] {
+  title "Shapes in the picture"
+  difficulty (if s == "boat" then 0 else if s == "fish" then 1 else 2)
+  let s={"boat", "fish", "house"} t={"triangle", "circle"}
+  level easy {
+    let s={"boat", "fish"}
+  }
+  level hard {
+    let s={"fish", "house"}
+  }
+
+  scene 30x14 {
+    collage pic scene=s at=canvas(1, 1)
+    text ask "This {s} is made of shapes cut from paper. How many are {t}s?" narrate width=12 right-of=pic gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check art.shapes of=pic answer="{t}"
+  hint "Touch each {t} as you count it."
+}

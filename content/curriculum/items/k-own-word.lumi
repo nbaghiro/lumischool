@@ -1,0 +1,12 @@
+item k.own-word v=1 stars=3 skills=[reading.phonics, reading.vocabulary] {
+  title "Three words of your own"
+  let letter={"b", "m", "s"}
+
+  scene 26x12 {
+    lettercards card letters=[letter] at=canvas(1, 1)
+    text ask "Say three words that start with the sound on this card. Nobody gives you the words." narrate width=24 below=card gap=1
+  }
+
+  check reading.recited look-for="Three different real words, each starting with the card's sound rather than only its letter name." notice=["three different words", "each starts with the sound", "real words"]
+  hint "Look round the room. What can you see that starts with that sound?"
+}

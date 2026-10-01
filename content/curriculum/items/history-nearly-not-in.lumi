@@ -1,0 +1,32 @@
+# The two-star reason: a year near the next ten is still in its own ten; 1969 is in the 1960s.
+item history.nearly-not-in v=1 skills=[history.decades, reasoning.why] {
+  title "Nearly the next ten"
+  difficulty k
+  let k=0..1
+  let yr={pick(k, 1969, 1928)}
+  let ev={pick(k, "Moon landing", "Penicillin found")}
+  let next={pick(k, "1970s", "1930s")}
+  let nxt={pick(k, 1970, 1930)}
+  let own={pick(k, "1960s", "1920s")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x20 {
+    timeline line from=1920 to=2000 step=10 years=[yr] labels=["{ev}"] at=canvas(0, 0)
+    text ask "Ada says {yr} is in the {next}, because it is nearly {nxt}. Is she right?" narrate width=34 below=line gap=1
+    choice pick options=["Yes, it is nearly there", "No, it is still in its own ten years"] stack=column below=ask gap=1
+  }
+
+  answer pick="No, it is still in its own ten years"
+  feedback {
+    when (pick == "Yes, it is nearly there") point=line {
+      say "Nearly there is not there yet. Which mark is just to the left of {yr}?"
+    }
+  }
+  hint "Which ten years start with the same three digits as {yr}?"
+  hint "When does the next ten years begin?"
+}

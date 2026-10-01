@@ -1,0 +1,10 @@
+item k.my-first-letter v=1 skills=[writing.letters, writing.letter-formation] {
+  title "The first letter of my name"
+
+  scene 30x11 {
+    text ask "Write the first letter of your name as a capital, three times along the line." narrate width=28 at=canvas(1, 1)
+    writinglines line lines=1 width=26 below=ask gap=1
+  }
+
+  check writing.by-eye look-for="The capital is the right letter for the child's name, written three times from the top, sitting on the line and reaching the top line." notice=["the right capital", "starts at the top", "sits on the line"] ask="Which of the three is your best?"
+}

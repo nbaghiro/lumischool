@@ -22,6 +22,9 @@ export function mountPainting(
         layout: PaintingLayout;
         onBack: () => void;
         onNew: () => void;
+        /** The easel as the log keeps it, undefined until read, which wins over this device's. */
+        preferences?: unknown;
+        onPreferences?: (state: unknown) => void;
     },
 ): () => void {
     const $ = (id: string): HTMLElement => {
@@ -38,13 +41,28 @@ export function mountPainting(
     const object = (v: unknown): v is Record<string, unknown> =>
         !!v && typeof v === "object" && !Array.isArray(v);
     let current = structuredClone(options.document);
-    let initialState: EaselState | null = null;
-    try {
-        const stored: unknown = JSON.parse(localStorage.getItem(`${KEY}.preferences`) ?? "null");
-        initialState = readState(stored);
-    } catch {
-        /* Tools can start fresh when device storage is unavailable. */
-    }
+    let initialState: EaselState | null = readState(options.preferences);
+    if (!initialState)
+        try {
+            const stored: unknown = JSON.parse(
+                localStorage.getItem(`${KEY}.preferences`) ?? "null",
+            );
+            initialState = readState(stored);
+        } catch {
+            /* Tools can start fresh when device storage is unavailable. */
+        }
+    let keptAs = JSON.stringify(initialState);
+    let keeping = 0;
+    // the log keeps the easel once it has settled, not every colour picked on the way
+    const keep = (next: EaselState): void => {
+        clearTimeout(keeping);
+        keeping = window.setTimeout(() => {
+            const text = JSON.stringify(next);
+            if (text === keptAs || !options.onPreferences) return;
+            keptAs = text;
+            options.onPreferences(next);
+        }, 3000);
+    };
     let disposed = false;
     const autosave = paintingAutosave({
         repository: options.repository,
@@ -116,6 +134,7 @@ export function mountPainting(
             state = next;
             if (ready) {
                 refresh();
+                keep(next);
                 try {
                     localStorage.setItem(`${KEY}.preferences`, JSON.stringify(state));
                 } catch {

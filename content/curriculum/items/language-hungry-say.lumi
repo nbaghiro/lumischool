@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.hungry-say v=1 skills=[language.food, language.speaking] {
+  title "Ask for it"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Ask a grown-up for bread in [[language.name]]: [[phrase.i-would-like-bread-please]] Say [[greet.thank-you]] when you get it.\", \"Say you are hungry, [[phrase.i-am-hungry]], and ask for two foods with [[greet.please]].\", \"Play the stall: a grown-up asks [[phrase.what-would-you-like]] and you answer with a food and a drink.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="Something asked for with [[greet.please]], [[greet.thank-you]] at the end, and hungry or thirsty said the way the lesson says it." notice=["Asked for with [[greet.please]]", "[[greet.thank-you|cap]] at the end", "Hungry or thirsty said", "A food and a drink named"]
+  hint "Start with the food, then say [[greet.please]]."
+  hint "Is it something to eat or to drink?"
+}

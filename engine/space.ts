@@ -1646,7 +1646,8 @@ export interface MapWay {
  */
 export interface MapLimits {
     travel: "reached" | "everywhere";
-    goIn: "own" | "everywhere" | "none";
+    /** With "lit", only the worlds the map draws lit may be gone into, though every one may be travelled to: a sample's look. */
+    goIn: "own" | "everywhere" | "lit" | "none";
     fly: boolean;
     pan: "own" | "all";
     zoomOut: "year" | "everything";

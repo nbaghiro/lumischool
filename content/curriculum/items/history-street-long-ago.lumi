@@ -1,0 +1,34 @@
+# The way in: one street with no year on its sign, drawn long ago or today. What is in the road and
+# the sky tells which: a horse and cart and a balloon, or cars, aerials and a phone.
+item history.street-long-ago v=1 skills=[history.change, history.then-and-now] {
+  title "Long ago, or today?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let year={pick(k, 1850, 2026, 1850, 2026)}
+  let t1={pick(k, "horse and cart", "motor car", "hot-air balloon", "bicycle")}
+  let t2={pick(k, "hot-air balloon", "aeroplane", "horse and cart", "mobile phone")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 33x20 {
+    thenandnow street year=year sign=0 things=["{t1}", "{t2}"] at=canvas(1, 0)
+    text ask "Is this street long ago, or today?" narrate width=16 below=street gap=1
+    choice pick options=["Long ago", "Today"] right-of=ask gap=1
+  }
+
+  answer pick=(if year < 1900 then "Long ago" else "Today")
+  feedback {
+    when (year < 1900 and pick == "Today") point=street {
+      say "The houses could be any time. Look at what is in the road and in the sky."
+    }
+    when (year > 1900 and pick == "Long ago") point=street {
+      say "Could people long ago have had the things in this road?"
+    }
+  }
+  hint "Houses can stand for hundreds of years. Look at what is moving in the road."
+  hint "Which of these things did your grandparents' grandparents never see?"
+}

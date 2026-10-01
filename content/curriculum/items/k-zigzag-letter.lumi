@@ -1,0 +1,23 @@
+item k.zigzag-letter v=1 stars=2 skills=[writing.first-strokes, writing.letter-formation] {
+  title "A zigzag in a letter"
+  difficulty k
+  let k=0..1
+  let z={pick(k, "w", "v")}
+  let o1={pick(k, "o", "c")}
+  let o2={pick(k, "c", "s")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 28x13 {
+    handwriting rules show="{o1} {z} {o2}" rows=1 trace=0 width=16 at=canvas(1, 1)
+    text ask "Which of these letters is made from a zigzag?" narrate width=26 below=rules gap=1
+    choice pick options=[o1, z, o2] stack=row below=ask gap=1
+  }
+
+  answer pick=z
+  hint "Which letter has sharp points, where the pencil changes direction?"
+}

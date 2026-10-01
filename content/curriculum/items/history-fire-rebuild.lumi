@@ -1,0 +1,23 @@
+# What each city changed after its fire: London's Rebuilding Act (brick and stone, wider streets),
+# and Edo's open firebreaks round the castle.
+item history.fire-rebuild v=1 skills=[history.fire, history.change] {
+  title "Building again"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 34x28 {
+    houses row count=4 windows=2 at=canvas(1, 1)
+    text ask "{if k == 0 then \"After the fire, new houses in London had to be built of brick or stone. Why?\" else \"After the fire, Edo left wide open spaces between parts of the city. Why?\"}" narrate width=32 below=row gap=1
+    choice pick options=["So a fire could not spread so easily", "So the city looked older", "So there were fewer houses to count"] stack=column below=ask gap=1
+  }
+
+  answer pick="So a fire could not spread so easily"
+  hint "What had just happened to the city?"
+  hint "How would {if k == 0 then \"brick\" else \"an open space\"} stop flames?"
+}

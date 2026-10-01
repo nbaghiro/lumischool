@@ -1,0 +1,20 @@
+item k.clips-chain v=1 skills=[physics.magnets, counting.to-ten] {
+  title "A chain of clips"
+  difficulty n
+  let n=2..8
+  level easy {
+    let n=2..4
+  }
+  level hard {
+    let n=6..8
+  }
+
+  scene 24x26 {
+    magnet m mode=chain clips=n clip=1 at=canvas(1, 1)
+    text q "How many clips hang from the magnet?" narrate width=22 below=m gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer n
+  hint "Start at the magnet and count down the chain."
+}

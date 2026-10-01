@@ -1,0 +1,25 @@
+# The two-star reason: two pictures that look different can be the same place at different times.
+item history.same-street-changed v=1 skills=[history.change, reasoning.why] {
+  title "Is it the same street?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 32x42 {
+    column pics at=canvas(1, 0) space=1 align=start {
+      thenandnow a year=1880 sign=1 things=["horse and cart", "hot-air balloon"]
+      thenandnow b year=2026 sign=1 things=["motor car", "mobile phone", "television aerial"]
+    }
+    text ask "{if k == 0 then \"Ada says these cannot be the same street, because they look different. What is wrong with that?\" else \"The houses are the same in both. Why are the things in the road different?\"}" narrate width=31 below=pics gap=1
+    choice pick options=["The street changed", "Streets never change"] below=ask gap=1
+  }
+
+  answer pick="The street changed"
+  hint "Read the year on each sign."
+  hint "What stayed the same, and what is new?"
+}

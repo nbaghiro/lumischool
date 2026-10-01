@@ -1,0 +1,17 @@
+# Four words to their English, 3 sets, the later sets with the words most often mixed up.
+item language.how-much-match v=1 skills=[language.market, language.numbers] {
+  title "Match the words"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x19 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "Write the number of its English next to each [[language.name]] word." width=32
+      match m left=[pick(k, "[[market.how-much-is-it]]", "[[market.it-costs]]", "[[market.two-euros]]"), pick(k, "[[market.expensive]]", "[[market.they-cost]]", "[[market.twelve-euros]]"), pick(k, "[[market.cheap]]", "[[market.a-kilo]]", "[[market.three-euros]]"), pick(k, "[[market.the-euro]]", "[[market.here-you-are-to-a-grown-up]]", "[[market.thirteen-euros]]")] right=[pick(k, "cheap", "here you are, to a grown-up", "3 €"), pick(k, "how much is it?", "it costs", "2 €"), pick(k, "expensive", "they cost", "13 €"), pick(k, "the euro", "a kilo", "12 €")] blanks=[a, b, c, d]
+    }
+  }
+
+  answer a=2 b=pick(k, 3, 3, 4) c=pick(k, 1, 4, 1) d=pick(k, 4, 1, 3)
+  hint "Start with the word you are surest of, and cross its English off."
+  hint "Two words look alike. Which letter is different, and what does it change?"
+}

@@ -1,0 +1,22 @@
+# The way in: reading a source card about the first flight's photograph for when and where it was.
+item history.flight-card v=1 skills=[history.sources, history.flight] {
+  title "Reading the card"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x16 {
+    sourcecard card title="Photograph of the first flight" kind=0 who="John T. Daniels, with the Wrights' camera" when="17 December 1903" where="Kill Devil Hills, North Carolina" there=1 ask=0 at=canvas(1, 0)
+    text ask "{if k == 0 then \"In which year was the photograph taken?\" else \"Who took the photograph?\"}" narrate width=14 right-of=card gap=1
+    choice pick options=[if k == 0 then "1903" else "The Wright brothers", if k == 0 then "1969" else "John T. Daniels", if k == 0 then "1783" else "A writer of books"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "1903" else "John T. Daniels")
+  hint "Find the row of the card the question is about."
+  hint "Read the words in that row carefully."
+}

@@ -1,0 +1,23 @@
+item k.repeat-hops v=1 skills=[coding.repetition, coding.tracing] {
+  title "A repeat block"
+  difficulty (n * s)
+  let n=2..3 s=1..2
+  level easy {
+    let s={1}
+  }
+  level hard {
+    let s={2}
+  }
+
+  scene 32x19 {
+    row top at=canvas(1, 0) space=1 align=start {
+      blocks bl code=["repeat {n}", "  right {s}"] words=false numbers=false
+      stage st cols=8 col=1 who=rabbit code=["repeat {n}", "  right {s}"] flag=false upto=0
+    }
+    text q "The orange block says do the arrow {n} times. The rabbit starts on square 1. Where does it stop?" narrate width=28 below=top gap=1
+    number-input answer below=q gap=1
+  }
+
+  check coding.runs of=st answer=col
+  hint "Do the arrow once. Now do it again, and again if the block says so."
+}

@@ -1,0 +1,48 @@
+lesson k-a-picture-story v=1 format=teach grade=0 unit=3 subject=reading levels=[easy, medium, hard] {
+  title "A picture story in order"
+  goal "Put pictures of a story in order, say what comes first, next and last, and tell the story aloud."
+
+  look {
+    scene 34x10 {
+      picsteps steps pictures=["pot", "soil", "seed", "water"] texts=["", "", "", ""] per=4 numbers=true write=false at=canvas(1, 1)
+    }
+    say """
+      First the pot, next the soil, then the seed, and last the water. A story has an order: what
+      happens first, what happens next, and how it ends. Telling it out of order makes no sense.
+      """
+  }
+  do {
+    level easy {
+      worked k.story-first k=0 level=medium
+    }
+    practice k.story-first count=2 seed=2 easy-count=1
+    practice k.story-last count=2 seed=3
+    practice k.story-next count=1 seed=4
+    practice k.comic-first count=2 seed=5 easy-count=1
+    show k.tell-the-story
+  }
+  try stars=2 {
+    show k.why-this-order k=0 hard-k=1
+  }
+  try stars=3 {
+    show k.missing-step k=0 hard-k=1
+  }
+  remember {
+    say "First, next, then, last. A story goes in order."
+  }
+
+  grown-ups """
+    Nothing here needs the child to read: say what each picture shows and let them point and say
+    its number. The telling is for you to listen to, and the answer sheet says what to listen for.
+    If the child is stuck, act the steps out with a real pot or a mixing bowl. Off the page, after a
+    story at bedtime ask what happened first and what happened at the end. England, Reception, ELG
+    Comprehension: "Demonstrate understanding of what has been read to them by retelling stories
+    and narratives using their own words".
+    """
+  level easy {
+    grown-ups "At this level the first picture is found in the teacher's pen, the mixed-up stories start with the pot or end with the cake near the front, and the comic's first panel is at the left."
+  }
+  level hard {
+    grown-ups "At this level the first and last pictures sit at the end of the row, the comic's first panel is in the middle or at the right, and the missing step is in the cake."
+  }
+}

@@ -1,0 +1,19 @@
+# Copying by hand against printing, with round numbers made up for the lesson: how long a scribe
+# took to copy a book, and how many copies a press made in the same time.
+item history.scribe-days v=1 skills=[history.medieval, number.divide] {
+  title "Copied by hand"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let pages={pick(k, 100, 200, 300, 600, 1200, 1000)}
+  let rate={pick(k, 2, 4, 3, 4, 3, 4)}
+
+  scene 34x10 {
+    printingpress press printed=0 at=canvas(1, 0)
+    text ask "Say a scribe copied {rate} pages a day. How many days to copy a book of {pages} pages?" narrate width=20 right-of=press gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (pages / rate)
+  hint "How many pages in 10 days?"
+  hint "How many lots of {rate} make {pages}?"
+}

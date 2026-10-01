@@ -1,0 +1,22 @@
+item k.how-they-went v=1 skills=[history.transport] {
+  title "How did they go?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let q1={pick(k, "Long ago, before cars, how did people go to the next town?", "Long ago, how did people cross the sea?", "Today, how do many people fly far away on holiday?", "Today, what do many people drive to work?")}
+  let right={pick(k, "on a horse or in a cart", "on a ship with sails", "in an aeroplane", "a car")}
+  let wrong={pick(k, "in an aeroplane", "in a jet plane", "on a horse", "a horse and cart")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x14 {
+    text q "{q1}" narrate width=28 at=canvas(1, 1)
+    choice pick options=[wrong, right] stack=column below=q gap=1
+  }
+
+  answer pick=right
+  hint "Was it long ago, or is it today?"
+}

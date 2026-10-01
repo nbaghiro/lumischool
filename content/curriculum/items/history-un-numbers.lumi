@@ -1,0 +1,19 @@
+# The United Nations in numbers: 50 countries met at San Francisco in 1945 (UN), and it has 193
+# members today; the sums use those numbers.
+item history.un-numbers v=1 skills=[history.world, number.arithmetic] {
+  title "The United Nations in numbers"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ask={pick(k, "Representatives of 50 countries met in 1945. There are 193 members today. How many more is that?", "In the General Assembly each of the 193 members has one vote. How many votes are there in all?", "If each of the 193 members sends 2 people to a meeting, how many people come?", "An idea passes if more than half of the 193 members vote for it. What is the fewest votes that is?", "Of 193 members, 120 voted yes. How many did not vote yes?", "If 193 members each give 3 books to a school library, how many books is that?")}
+  let key={pick(k, 143, 193, 386, 97, 73, 579)}
+
+  scene 32x19 {
+    council c hands=[1, 1, 1, 0, 1, 1, 0, 1, 1] box=0 motion="A world meeting" count=0 at=canvas(1, 0)
+    text ask "{ask}" narrate width=18 below=c gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  answer key
+  hint "Write the numbers down first."
+  hint "More than half of an odd number is half of one more than it."
+}

@@ -1,0 +1,22 @@
+item k.how-it-ends v=1 skills=[reading.story-structure, reading.comprehension] {
+  title "How does it end?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let start={pick(k, "A little seed is planted in the soil. The rain waters it.", "Ben is building a tower of blocks. It gets taller and taller.", "It is Mia's birthday. Her friends come to the party.")}
+  let end={pick(k, "It grows into a flower.", "It wobbles and falls down.", "They sing and eat the cake.")}
+  let wrong={pick(k, "It is planted in the soil.", "He takes out the first block.", "Her friends are invited.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 30x18 {
+    text q "Listen: {start} Which is the best end for the story?" narrate width=28 at=canvas(1, 1)
+    choice pick options=[wrong, end] stack=column below=q gap=1
+  }
+
+  answer pick=end
+  hint "The end comes after everything else. Which one could only happen last?"
+}

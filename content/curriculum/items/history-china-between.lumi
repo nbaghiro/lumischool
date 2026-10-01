@@ -1,0 +1,20 @@
+# Years between events of early China and the world, across year one where they fall either side.
+item history.china-between v=1 skills=[history.ancient, history.bc-ad] {
+  title "How long after?"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let e1={pick(k, "Qin unites China", "Qin unites China", "Zhang Qian sets out", "Qin unites China", "Zhang Qian sets out", "Qin unites China")}
+  let y1={pick(k, -221, -221, -138, -221, -138, -221)}
+  let e2={pick(k, "Zhang Qian sets out", "Caesar lands in Britain", "Romans conquer Britain", "Paper", "Paper", "Hadrian's Wall begun")}
+  let y2={pick(k, -138, -55, 43, 105, 105, 122)}
+
+  scene 32x14 {
+    timeline line from=-300 to=200 step=100 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(1, 0)
+    text ask "How many years after the first was the second? There was no year nought." narrate width=24 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Count from the first year to year one, then on."
+  hint "Across year one, take one away."
+}

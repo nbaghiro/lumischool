@@ -1,0 +1,19 @@
+# The ages in Britain on a timeline before year one, one flag empty; the years are written BC.
+item history.ages-flag v=1 skills=[history.prehistory, history.timeline] {
+  title "Before year one"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let gap={pick(k, 2, 1, 1, 0, 0, 2)}
+  let e0={if k <= 2 then "Stonehenge begun" else "Farming in Britain"}
+  let y0={if k <= 2 then -3000 else -4000}
+
+  scene 36x21 {
+    timeline line from=-4000 to=0 step=500 years=[y0, -2500, -800] labels=["{e0}", "Bronze Age in Britain", "Iron Age in Britain"] blank=gap at=canvas(0, 0)
+    text ask "The years are written BC, before year one. What goes on the empty flag?" narrate width=16 below=line gap=1
+    choice pick options=["{e0}", "Bronze Age in Britain", "Iron Age in Britain"] stack=column right-of=ask gap=1
+  }
+
+  check history.dates of=line pick=blank
+  hint "BC years count down towards year one, so 3000 BC is longer ago than 800 BC."
+  hint "Stone came first, then bronze, then iron."
+}

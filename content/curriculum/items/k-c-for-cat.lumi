@@ -1,0 +1,14 @@
+item k.c-for-cat v=1 skills=[writing.letter-formation, reading.phonics] {
+  title "c for cat"
+  let x={"c", "d"}
+
+  scene 34x13 {
+    art pic asset="{if x == \"c\" then \"cat\" else \"duck\"}" at=canvas(1, 1)
+    column q right-of=pic gap=2 space=1 align=start {
+      text ask "The picture starts with {x}. Trace the {x}, then write more on the line." narrate width=20
+      handwriting rules show="{x}" rows=1 trace=2 width=20
+    }
+  }
+
+  check writing.by-eye look-for="Each letter starts with the c shape near the top, goes back round to the left, and sits on the line; for d the stick goes up to the top line and back down." notice=["starts with a c shape", "goes round to the left", "sits on the line"] ask="Which part did you write first?"
+}

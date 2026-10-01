@@ -3,7 +3,7 @@
 // `EventKind`, so a new kind does not compile until someone has decided who may use it. The server
 // enforces them and the parent's app reads them to decide what to show.
 
-import type { EventKind, Envelope } from "../../engine/answer";
+import type { EventKind, Envelope, SettingKey } from "../../engine/answer";
 import type { Member } from "../../server/db/schema";
 
 /** Who is asking: a child's key in a children's view, or a person by their membership. */
@@ -43,6 +43,8 @@ export const ACCESS: Record<EventKind, Access> = {
     "day-added": PARENT_ONLY,
     // written by the move-up route with the kid's row; the plan every view folds reads it
     "moved-up": { write: [], kid: true, tutor: true },
+    // which lessons a child is shown turns on these, so every view that lists lessons reads them
+    "setting-changed": { write: ["kid", "parent"], kid: true, tutor: true },
     "signed-in": SERVER,
     "signed-out": SERVER,
     "session-changed": SERVER,
@@ -60,12 +62,26 @@ export const ACCESS: Record<EventKind, Access> = {
 };
 
 /**
- * Why this caller may not append this event, or null when it may. The kind is the table's; the one
- * rule beyond it is that a child's view records only screen sittings, since a paper sitting is
- * recorded by the grown-up who sat with it.
+ * Who may change each setting. A child keeps their own practice levels and easel; what they learn and
+ * when the family's mornings start are a grown-up's to choose.
+ */
+export const SETTING_WRITERS: Record<SettingKey, readonly Caller[]> = {
+    language: ["parent"],
+    nation: ["parent"],
+    "morning-start": ["parent"],
+    practice: ["kid", "parent"],
+    painting: ["kid", "parent"],
+};
+
+/**
+ * Why this caller may not append this event, or null when it may. The kind is the table's; the rules
+ * beyond it are that a child's view records only screen sittings, since a paper sitting is recorded
+ * by the grown-up who sat with it, and that a setting is changed only by those `SETTING_WRITERS` names.
  */
 export function mayWrite(caller: Caller, e: Envelope): string | null {
     if (!ACCESS[e.kind].write.includes(caller)) return `a ${caller} may not write ${e.kind}`;
+    if (e.kind === "setting-changed" && !SETTING_WRITERS[e.data.key].includes(caller))
+        return `a ${caller} may not change ${e.data.key}`;
     if (caller === "kid" && e.kind === "sitting-began" && e.data.mode !== "screen")
         return "a child's view records screen sittings; a paper sitting is recorded by a grown-up";
     return null;

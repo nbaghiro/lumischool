@@ -1,0 +1,22 @@
+# A reason, not a word: which greeting fits the moment, and why.
+item language.hello-why v=1 stars=2 skills=[language.greetings, reasoning.language] {
+  title "Why is it wrong?"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Leo says [[greet.good-night]] at breakfast. Why is that wrong?\", \"Ana says [[greet.hello]] as she leaves the party. What should she say, and why?\", \"Which of these could Ana say at any time of day?\")}" width=32
+      choice pick options=[pick(k, "[[greet.good-night|cap]] is for the night.", "[[greet.goodbye|cap]], because she is going.", "[[greet.hello]]"), pick(k, "[[greet.good-night|cap]] is for going away.", "[[greet.good-morning|cap]], because it is a party.", "[[greet.good-morning]]"), pick(k, "Leo should say [[greet.thank-you]].", "[[greet.please|cap]], because it is polite.", "[[greet.good-night]]")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "[[greet.good-night|cap]] is for the night.", "[[greet.goodbye|cap]], because she is going.", "[[greet.hello]]")
+  feedback {
+    when (pick == pick(k, "[[greet.good-night|cap]] is for going away.", "[[greet.good-morning|cap]], because it is a party.", "[[greet.good-morning]]")) {
+      say "{pick(k, \"[[greet.goodbye|cap]] is for going away. What time of day is breakfast?\", \"[[greet.good-morning|cap]] is for the morning, not for leaving. Ana is going.\", \"[[greet.good-morning|cap]] is only for the morning. Which word works all day?\")}"
+    }
+  }
+  hint "Say what each word is for."
+  hint "Is it about the time of day, or about coming and going?"
+}

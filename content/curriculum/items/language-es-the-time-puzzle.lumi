@@ -1,0 +1,22 @@
+# Non-routine: waiting, early or late, and an end time, worked out and answered in Spanish.
+item language.es-the-time-puzzle v=1 stars=3 skills=[language.time, reasoning.language] {
+  title "Timetable sums"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"The ferry leaves a las tres. Son las dos y media. How long is the wait?\", \"School starts a las nueve. Ana arrives a las nueve menos cuarto. Is she early or late, and by how much?\", \"The film starts a las cinco y media and lasts una hora y media. When does it end?\")}" width=32
+      choice pick options=[pick(k, "media hora", "early, by un cuarto de hora", "a las siete"), pick(k, "una hora", "late, by un cuarto de hora", "a las seis y media"), pick(k, "un cuarto de hora", "early, by media hora", "a las siete y media")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "media hora", "early, by un cuarto de hora", "a las siete")
+  feedback {
+    when (pick == pick(k, "una hora", "late, by un cuarto de hora", "a las siete y media")) {
+      say "{pick(k, \"From 2:30 to 3:00 is not a whole hour.\", \"Nueve menos cuarto is 8:45, before nine.\", \"Una hora y media after 5:30: one hour is 6:30, then half an hour more.\")}"
+    }
+  }
+  hint "Write each time as numbers."
+  hint "Count on in quarter hours."
+}

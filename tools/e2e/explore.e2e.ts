@@ -18,11 +18,12 @@ const logged = (page: Page): Promise<number> =>
 const TITLE = "Letters that sit on the line";
 const LESSON = "/explore/writing-letters-on-the-line";
 
-/** Chooses a subject on the row, opening the Filter control first where a phone folds the chips away. */
+/** Chooses a subject among the words under the search. */
 async function chooseSubject(page: Page, name: string): Promise<void> {
-    const summary = page.locator(".explore-row-filter > summary");
-    if (await summary.isVisible()) await summary.click();
-    await page.locator(".explore-row-filter").getByRole("radio", { name, exact: true }).check();
+    await page
+        .getByRole("group", { name: "Subject" })
+        .getByRole("radio", { name, exact: true })
+        .check();
 }
 
 /** Opens the preview's print menu, where the answers are chosen and the print is asked for. */
@@ -60,7 +61,7 @@ test("a grown-up finds a lesson in Explore, reads it as a child meets it, prints
     const before = await logged(page);
     await page
         .getByRole("navigation", { name: "The grown-ups' places" })
-        .getByRole("link", { name: "Explore" })
+        .getByRole("link", { name: "Lessons" })
         .click();
     await atScreen(page, page.getByRole("heading", { name: "Every lesson", level: 1 }));
     const said = page.locator(".search-found");

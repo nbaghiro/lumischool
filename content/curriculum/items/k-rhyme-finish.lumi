@@ -1,0 +1,26 @@
+# The picture shows the rhyming word, so a child who names what is in the picture and checks it
+# against the animal has the answer.
+item k.rhyme-finish v=1 skills=[reading.rhyme] {
+  title "Finish the rhyme"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let who={pick(k, "cat", "fox", "dog")}
+  let thing={pick(k, "mat", "box", "log")}
+  let wh={pick(k, "on", "in", "by")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 28x17 {
+    picturecards card who=[who] where=[wh] thing=[thing] letters=false at=canvas(1, 1)
+    text ask "The {who} is {wh} the ... Say a word that rhymes with {who}." narrate width=26 below=card gap=1
+    choice pick options=["rug", "mat", "box", "log", "bed"] stack=row below=ask gap=1
+  }
+
+  answer pick=thing
+  hint "What is the {who} {wh}? Look at the picture."
+  hint "Does that word sound like {who} at the end?"
+}

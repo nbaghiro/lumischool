@@ -1,0 +1,9 @@
+item k.paint-a-leaf v=1 skills=[art.colour-mixing, art.made] {
+  title "Mix a green and paint a leaf"
+
+  scene 28x9 {
+    text ask "Mix yellow and blue on a plate until it is green. Paint a big leaf with your green." narrate width=26 at=canvas(1, 1)
+  }
+
+  check art.by-eye look-for="A green mixed from yellow and blue rather than taken from a tube, used to fill a leaf shape that is big on the page, with the edge painted before the middle." notice=["green mixed from yellow and blue", "the leaf fills the page", "the edge painted first"] ask="Did you use more yellow or more blue?"
+}

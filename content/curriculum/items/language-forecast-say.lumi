@@ -1,0 +1,17 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.forecast-say v=1 skills=[language.weather, language.reading, language.speaking] {
+  title "Be the forecaster"
+  let k=0..2
+
+  scene 34x18 {
+    column all at=canvas(1, 1) space=1 align=start {
+      weatherweek towns days=["Bilbao", "Madrid", "Sevilla", "Pirineos", "Valencia"] skies=["rain", "sunny-spells", "sun", "snow", "wind"] temps=["14 °C", "22 °C", "27 °C", "-2 °C", "20 °C"]
+      text ask "{pick(k, \"Read the chart aloud in [[language.name]] as a forecast: each place, its weather and its degrees.\", \"Give tomorrow's forecast for your own town in [[language.name]], in three sentences.\", \"Ask a grown-up about the weather where they grew up, and say it back in [[language.name]].\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="Each place said with its weather and its temperature, the way the forecast says them." notice=["A place for each sentence", "The weather for each place", "The temperature with degrees", "Three sentences or more"]
+  hint "Start with the place."
+  hint "Then the weather, then the degrees."
+}

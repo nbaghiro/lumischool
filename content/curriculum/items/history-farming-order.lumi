@@ -1,0 +1,21 @@
+# Farming's firsts, numbered from the earliest, from the dated record: the first farms of about
+# 10,000 BC, farming in Britain about 4000 BC, Skara Brae from about 3180 BC, Stonehenge's
+# bluestones about 2400 BC.
+item history.farming-order v=1 skills=[history.farming, history.order] {
+  title "The first farms, in order"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let a={pick(k, "First farming", "Farming in Britain", "First farming", "Skara Brae", "Stonehenge bluestones set", "Skara Brae")}
+  let b={pick(k, "Skara Brae", "First farming", "Stonehenge bluestones set", "First farming", "Farming in Britain", "Stonehenge bluestones set")}
+  let c={pick(k, "Farming in Britain", "Skara Brae", "Farming in Britain", "Farming in Britain", "First farming", "First farming")}
+
+  scene 36x19 {
+    crops field stage=3 rows=2 plants=6 at=canvas(1, 0)
+    text ask "Number these 1, 2, 3, from the longest ago." narrate width=34 below=field gap=1
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Farming started in one part of the world and spread slowly to others."
+  hint "People had to farm in a place before they could build a village of stone there."
+}

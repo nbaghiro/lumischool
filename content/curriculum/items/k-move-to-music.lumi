@@ -1,0 +1,10 @@
+item k.move-to-music v=1 skills=[music.tempo, music.movement] {
+  title "Move to the music"
+
+  scene 28x9 {
+    text q "A grown-up sings or plays a song slowly, then fast. Tiptoe slowly to the slow part and jog on the spot to the fast part." narrate width=26 at=canvas(1, 1)
+  }
+
+  check music.sung look-for="The child moves slowly while the music is slow and quickly when it is fast, changing when the music changes." notice=["slow steps to slow music", "fast steps to fast music", "changes when the music does"]
+  hint "Listen first. Is it slow now, or fast?"
+}

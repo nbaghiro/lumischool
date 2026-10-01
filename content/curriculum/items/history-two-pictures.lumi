@@ -1,0 +1,29 @@
+# One street drawn at two times, the older on top or below: which is in both, which only in the new
+# one, and which picture is older. The things are chosen so the answer is always one thing.
+item history.two-pictures v=1 skills=[history.then-and-now, history.change] {
+  title "The same street, twice"
+  difficulty (if q == 0 then 0 else if q == 1 then 1 else 2)
+  let q=0..2 k=0..1
+  let top={pick(k, 1900, 2026)}
+  let low={pick(k, 2026, 1900)}
+  let ask={pick(q, "Which thing is in both pictures?", "Which thing is only in the newer picture?", "Which picture is older, the top one or the bottom one?")}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x40 {
+    column pics at=canvas(1, 0) space=1 align=start {
+      thenandnow a year=top sign=0 things=[if k == 0 then "horse and cart" else "motor car", "bicycle", if k == 0 then "hot-air balloon" else "mobile phone"]
+      thenandnow b year=low sign=0 things=[if k == 0 then "motor car" else "horse and cart", "bicycle", if k == 0 then "mobile phone" else "hot-air balloon"]
+    }
+    text ask "{ask}" narrate width=31 below=pics gap=1
+    choice pick options=[if q == 2 then "Top" else "bicycle", if q == 2 then "Bottom" else "mobile phone", if q == 2 then "Same age" else "horse and cart"] below=ask gap=1
+  }
+
+  answer pick=(if q == 0 then "bicycle" else if q == 1 then "mobile phone" else if k == 0 then "Top" else "Bottom")
+  hint "Look at each thing in the top picture, then find it in the bottom one."
+  hint "The newer picture has the newest things in it."
+}

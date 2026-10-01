@@ -1,0 +1,25 @@
+# The century of an event of the family's country, from the record (n as in n6-order).
+item history.n6-century v=1 skills=[history.nation, history.centuries] {
+  title "Which century?"
+  difficulty k
+  let n=0..4 k=0..1
+  let i={n + 5 * k}
+  let ev={pick(i, "Magna Carta", "Declaration of Independence", "Meiji constitution", "State Duma first meets", "People's Republic of China founded", "De Montfort's Parliament", "Women vote in the United States", "Constitution of Japan in force", "Constitution of Russia adopted", "Constitution of China of 1982")}
+  let yr={pick(i, 1215, 1776, 1889, 1906, 1949, 1265, 1920, 1947, 1993, 1982)}
+  let o1={pick(i, "12th century", "17th century", "18th century", "19th century", "19th century", "12th century", "19th century", "19th century", "19th century", "19th century")}
+  let o2={pick(i, "13th century", "18th century", "19th century", "20th century", "20th century", "13th century", "20th century", "20th century", "20th century", "20th century")}
+  let o3={pick(i, "14th century", "19th century", "20th century", "21st century", "21st century", "14th century", "21st century", "21st century", "21st century", "21st century")}
+  let from={pick(i, 1200, 1700, 1800, 1900, 1900, 1200, 1900, 1900, 1900, 1900)}
+  let to={pick(i, 1300, 1800, 1900, 2000, 2000, 1300, 2000, 2000, 2000, 2000)}
+  let step={pick(i, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20)}
+
+  scene 34x21 {
+    timeline line from=from to=to step=step years=[yr] labels=["{ev}"] at=canvas(1, 0)
+    text ask "In which century was this?" narrate width=16 below=line gap=1
+    choice pick options=["{o1}", "{o2}", "{o3}"] stack=column right-of=ask gap=1
+  }
+
+  check history.dates of=line pick="century-name(0)"
+  hint "Is the year BC or AD? Read it from the flag."
+  hint "A century's number is one more than its hundreds, unless the year ends in 00."
+}

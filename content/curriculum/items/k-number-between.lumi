@@ -1,0 +1,25 @@
+item k.number-between v=1 stars=2 skills=[counting.order] {
+  title "In between"
+  difficulty a
+  let a=1..8
+  level easy {
+    let a=1..3
+  }
+  level hard {
+    let a=6..8
+  }
+
+  scene 24x13 {
+    beadstring line beads=10 mark=(a + 1) at=canvas(1, 1)
+    text ask "Which number comes between {a} and {a + 2}?" narrate width=22 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (a + 1)
+  feedback {
+    when (answer == a + 3 or answer == a - 1) point=line {
+      say "Say {a} and keep counting. The next number you say is the one in between."
+    }
+  }
+  hint "Count on from the first number to the second. Which number did you say in the middle?"
+}

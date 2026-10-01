@@ -1,0 +1,69 @@
+lesson history-my-own-timeline v=1 format=teach grade=1 unit=2 subject=history levels=[easy, medium, hard] {
+  title "My own timeline"
+  goal "Put the days and the years of a life in order on a line, and read how long ago something was."
+
+  look {
+    scene 34x14 {
+      column all at=canvas(1, 0) space=1 align=start {
+        timeline line from=0 to=7 step=1 unit="age" years=[0, 1, 4, 6] labels=["Born", "Steps", "School", "Tooth"]
+        days week mark=2 start=0
+      }
+    }
+    say """
+      A timeline puts things in the order they happened, the earliest on the left. This is Sam's
+      life. He was born, then he took his first steps at one, started school at four and lost a
+      tooth at six. Days go in order too: the ringed day is today, yesterday is just before it and
+      tomorrow just after.
+      """
+  }
+  do {
+    level easy {
+      worked history.yesterday-tomorrow t=3 w=0
+    }
+    show history.yesterday-tomorrow t=2 w=1 easy-t=1 easy-w=0 hard-t=0
+    show history.life-pictures k=1 easy-k=0 hard-k=3
+    show history.life-line k=0 easy-k=1 hard-k=3
+    show history.life-line k=2 easy-k=2 hard-k=5
+    show history.who-is-older k=1 easy-k=0 hard-k=3
+    level medium hard {
+      show history.life-line k=4 hard-k=7
+    }
+    level easy {
+      show history.who-is-older k=2
+    }
+    level hard {
+      show history.who-is-older k=5
+    }
+  }
+  story {
+    show history.how-old-in b=2017 y=2021 easy-b=2018 easy-y=2020 hard-b=2015 hard-y=2022
+    show history.how-old-in b=2016 y=2020 easy-b=2017 easy-y=2021 hard-b=2016 hard-y=2023
+  }
+  try stars=2 {
+    show history.age-backwards s=5 d=3 easy-s=4 easy-d=2 hard-s=6 hard-d=4
+  }
+  try stars=3 {
+    show history.born-first-clues k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A timeline goes from the earliest on the left to the latest on the right."
+  }
+
+  grown-ups """
+    The idea is that time can be laid out in order on a line, and that the distance between two
+    flags is how long passed between them. The way in is the days of the week; the core reads
+    Sam's life in years of age, puts one person's pictures in order, and asks who of two children
+    is older from the years they were born. The wrong idea to watch for is "the bigger year is
+    older": a child born in 2019 is younger than one born in 2016, because the later birthday came
+    after. If the child is stuck, make a line on the floor with a skipping rope and walk it, one
+    step a year, from being born to now. Off the page, make the child's own timeline with a photo
+    for each year and put it on the wall. England's history programme for key stage 1 asks for
+    "changes within living memory", and a child's own life is where that starts.
+    """
+  level easy {
+    grown-ups "At this level a worked example names tomorrow, the days never cross the end of the week, the pictures are nearly in order, the ages are read straight off the line, the years between are small, and the three-star clues start from the child who is asked about."
+  }
+  level hard {
+    grown-ups "At this level yesterday crosses back over the start of the week, the pictures are fully muddled, the core asks how many years lie between two flags, a second question on who is older is added, the photos are further from the birth, and the clues have to be turned round (younger means born later)."
+  }
+}

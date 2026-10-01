@@ -1,0 +1,20 @@
+# The three-star question: how many fields a village needs, when one field feeds a few people for a
+# year and some grain must be kept back for next year's sowing.
+item history.village-fields v=1 skills=[history.farming, reasoning.plan] {
+  title "Enough fields"
+  difficulty k
+  let k=0..1
+  let people={pick(k, 24, 36)}
+  let feeds={pick(k, 6, 6)}
+  let seed={pick(k, 0, 1)}
+
+  scene 34x11 {
+    crops field stage=3 rows=2 plants=6 at=canvas(1, 0)
+    text ask "{if k == 0 then \"A village has 24 people. One field feeds 6 people for a year. How many fields must the village sow?\" else \"A village has 36 people. One field feeds 6 people for a year, and the grain of one more field must be kept to sow next year. How many fields must the village sow?\"}" narrate width=22 right-of=field gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (people / feeds + seed)
+  hint "How many groups of {feeds} people are there in the village?"
+  hint "Does any grain have to be saved, not eaten?"
+}

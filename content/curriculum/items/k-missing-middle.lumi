@@ -1,0 +1,24 @@
+item k.missing-middle v=1 skills=[reading.phonics, reading.segmenting] {
+  title "The sound in the middle"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let w={pick(k, "cat", "sun", "hen", "cup")}
+  let mid={pick(k, "a", "u", "e", "u")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 28x16 {
+    art pic asset="{w}" at=canvas(1, 1)
+    lettercards cards letters=["{pick(k, \"c\", \"s\", \"h\", \"c\")}", "?", "{pick(k, \"t\", \"n\", \"n\", \"p\")}"] right-of=pic gap=2
+    text ask "Say the word slowly. Which letter goes in the middle?" narrate width=26 below=pic gap=1
+    choice pick options=["a", "e", "o", "u"] stack=row below=ask gap=1
+  }
+
+  answer pick=mid
+  hint "Say each sound of the word slowly."
+  hint "What sound did you hear between the first and the last?"
+}

@@ -1,0 +1,63 @@
+# The national unit for usa. Items take n=1; the world items reviewed here change by level.
+# Dates are in engine/notation/chronicle.ts with their sources.
+lesson history-g5-usa-our-country-in-its-time v=1 format=teach grade=5 unit=9 subject=history nation=usa levels=[easy, medium, hard] {
+  title "Life in the colonies"
+  goal "Put the founding of the first colonies in order, count the years between them, and say why settlers crossed the ocean."
+
+  look {
+    scene 36x9 {
+      timeline line from=1600 to=1780 step=30 years=[1607, 1620, 1732] labels=["Jamestown founded", "Plymouth Colony founded", "Georgia founded"] at=canvas(0, 0)
+    }
+    say """
+      In 1607 English settlers built James Fort in Virginia, the first lasting English town in North America, on land where the Powhatan people already lived. In 1620 the Pilgrims founded Plymouth Colony in New England. By 1732, when Georgia was founded, there were thirteen colonies along the Atlantic coast, and in 1776 they declared themselves free.
+      """
+  }
+  do {
+    level easy {
+      worked history.n5-what n=1
+    }
+    show history.n5-order n=1 k=1 easy-k=0 hard-k=2
+    show history.n5-between n=1 k=0 hard-k=1
+    show history.n5-century n=1 k=0 hard-k=1
+    show history.voyage-order k=2 easy-k=0 hard-k=4
+    show history.continent-letter k=2 easy-k=0 hard-k=4
+    show history.print-order k=2 easy-k=0 hard-k=4
+    show history.n5-order n=1 k=2 easy-k=1 hard-k=0
+    level medium hard {
+      show history.n5-what n=1
+    }
+    level easy {
+      show history.n5-century n=1 k=1
+    }
+    level hard {
+      show history.voyage-order k=5
+    }
+  }
+  story {
+    show history.n5-between n=1 k=1 hard-k=0
+  }
+  try stars=2 {
+    show history.n5-why n=1
+  }
+  try stars=3 {
+    show history.n5-find-out n=1
+  }
+  remember {
+    say "Every date in our country's story can be put on the line and counted from, and every one came from a source."
+  }
+
+  grown-ups """
+    The idea is to use the grade's methods (timelines across year one, centuries, sources) on a
+    chapter of the family's own country. The way in names what a thing was; the core orders three
+    events, counts the years between two, names a century, and reviews voyages, continents and
+    printing; the two-star question asks why something was done. If the child is stuck on
+    counting, count to the next hundred first. The three-star task is for you to mark: a small
+    piece of finding out with you. State standards for the fifth grade, such as California's, take children through the colonial era and the founding of the nation (recalled, not quoted here).
+    """
+  level easy {
+    grown-ups "At this level a worked example says what the thing was, the events come nearly in order, the years counted are the closest pair, and the review questions are the plainest."
+  }
+  level hard {
+    grown-ups "At this level the events are fully muddled, the years counted are the longer pair, the century asked has a trap, and the review questions cross year one."
+  }
+}

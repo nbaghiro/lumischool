@@ -1,0 +1,21 @@
+# What the first emperor made the same across China after 221 BC: one kind of coin (the ban liang,
+# round with a square hole), one way of writing, one set of weights (Wikipedia, Ban Liang and Qin).
+item history.qin-same v=1 skills=[history.ancient, history.government] {
+  title "One empire, one way"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let ask={pick(k, "After 221 BC, what kind of coin did the whole of China use?", "Why did the ban liang coin have a square hole in the middle?", "The first emperor made everyone use one way of writing. Why would that help?", "Before the Qin, each kingdom had its own coins. What problem did that cause for traders?", "The Qin used one set of weights and measures everywhere. Who did that help most?", "The Qin joined up old walls in the north. Who were they meant to keep out?")}
+  let right={pick(k, "One round coin with a square hole", "So coins could be strung together", "Orders could be read in every part of China", "Coins from one kingdom were no use in another", "Traders buying and selling across China", "Horse riders who raided from the north")}
+  let w1={pick(k, "Paper notes", "So the coin was lighter to make", "Everyone could write poems", "Coins were too heavy to carry", "Only the emperor's cooks", "Ships from across the sea")}
+  let w2={pick(k, "Cowrie shells", "To show it was fake", "Nobody needed to learn to read", "There were too many coins", "Nobody at all", "Farmers from the south")}
+
+  scene 30x27 {
+    objectcard coin kind=7 name="Ban liang coin" use="Buying and selling" year=-221 about=1 place="China" ask=0 at=canvas(0, 0)
+    text ask "{ask}" narrate width=28 below=coin gap=1
+    choice pick options=[pick(k, right, w1, w2, right, w1, w2), pick(k, w1, right, right, w2, w2, right), pick(k, w2, w2, w1, w1, right, w1)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  hint "Think of one ruler over many lands that used to be separate kingdoms."
+  hint "Which answer makes life easier across the whole empire?"
+}

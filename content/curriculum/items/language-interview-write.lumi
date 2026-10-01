@@ -1,0 +1,18 @@
+# The word written from its picture: [[interview.i-live]], [[interview.i-have]], [[interview.call]], [[interview.pleases]], [[interview.because]], [[interview.sister]], [[interview.favourite]].
+# Accent-strict: the accent is part of the spelling, and a word typed without it is caught by the rule below.
+item language.interview-write v=1 skills=[language.questions, language.speaking, language.spelling] {
+  title "Write the word"
+  difficulty pick(k, 0, 0, 0, 1, 1, 2, 2)
+  let k=0..6
+
+  scene 34x11 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Where do you live? I live in the town: the word for I live. Write it in [[language.name]].\", \"How old are you? The word for I have, as in I am eleven. Write it in [[language.name]].\", \"What is your name? The second word of my name is. Write it in [[language.name]].\", \"What do you like doing? The second word of I like swimming. Write it in [[language.name]].\", \"Why do you like summer? The first word of the answer. Write it in [[language.name]].\", \"Do you have brothers or sisters? Yes, I have a sister: the last word. Write it in [[language.name]].\", \"What is your favourite food? The word for favourite. Write it in [[language.name]].\")}" width=32
+      word-input word options=[pick(k, "[[interview.i-live]]", "[[interview.i-have]]", "[[interview.call]]", "[[interview.pleases]]", "[[interview.because]]", "[[interview.sister]]", "[[interview.favourite]]")]
+    }
+  }
+
+  answer word=pick(k, "[[interview.i-live]]", "[[interview.i-have]]", "[[interview.call]]", "[[interview.pleases]]", "[[interview.because]]", "[[interview.sister]]", "[[interview.favourite]]")
+  hint "Say the word quietly first. What sound does it start with?"
+  hint "Count the sounds, then write one letter or pair of letters for each."
+}

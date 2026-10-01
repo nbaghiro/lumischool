@@ -1,0 +1,21 @@
+# The colour lesson and the art lesson together: the mix is worked out in English and said in the
+# language, so the answer rests on two things known.
+item k.lang-mix v=1 stars=3 skills=[language.colours, art.colour-mixing] {
+  title "Mix and say"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x13 {
+    text ask "Mix {pick(k, \"[[colour.blue]] and [[colour.yellow]]\", \"[[colour.red]] and [[colour.yellow]]\")}. What colour do you get, in [[language.name]]?" narrate width=28 at=canvas(1, 1)
+    choice pick options=["[[colour.green]]", "[[colour.orange]]", "[[colour.red]]"] stack=row below=ask gap=1
+  }
+
+  answer pick=pick(k, "[[colour.green]]", "[[colour.orange]]")
+  hint "Say the two colours in English first. What do they make?"
+}

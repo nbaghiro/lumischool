@@ -1,0 +1,20 @@
+item k.how-many-ducklings v=1 skills=[nature.animals, counting.to-ten] {
+  title "Ducks on the pond"
+  difficulty n
+  let n=2..8
+  level easy {
+    let n=2..4
+  }
+  level hard {
+    let n=6..8
+  }
+
+  scene 36x18 {
+    animals row kind=duck count=n at=canvas(1, 1)
+    text q "A mother duck and her ducklings. How many ducks are there altogether?" narrate width=30 below=row gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer n
+  hint "Touch each duck once, the mother too."
+}

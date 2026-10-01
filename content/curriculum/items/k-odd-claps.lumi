@@ -1,0 +1,22 @@
+item k.odd-claps v=1 stars=2 skills=[reading.syllables, reasoning.odd-one-out] {
+  title "A different number of claps"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let x={pick(k, "dog", "rocket", "ladybird")}
+  let y={pick(k, "rabbit", "pencil", "butterfly")}
+  let z={pick(k, "cat", "bee", "spider")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 28x10 {
+    text ask "Clap each word. Which one has a different number of claps?" narrate width=22 at=canvas(1, 1)
+    choice pick options=[x, y, z] stack=row below=ask gap=1
+  }
+
+  answer pick=pick(k, y, z, z)
+  hint "Clap all three words. Which two had the same number?"
+}

@@ -1,0 +1,17 @@
+# The two-star reason: a paper note is worth little as paper, so it works only if people trust it;
+# the first government notes of 1024 carried seals to stop forgeries (Wikipedia, Jiaozi).
+item history.note-seal v=1 skills=[history.money, reasoning.why] {
+  title "Why trust paper?"
+  difficulty k
+  let k=0..1
+
+  scene 34x27 {
+    objectcard card kind=8 name="Paper money" use="Buying and selling" year=1024 about=0 place="Sichuan, China" ask=0 at=canvas(0, 0)
+    text ask "{if k == 0 then \"The first paper notes were stamped with official seals. Why?\" else \"A paper note is only paper. Why would a trader take it in return for real goods?\"}" narrate width=28 below=card gap=1
+    choice pick options=["So people could trust it was real and would be paid", "To make the note heavier", "So it could be used as a letter"] stack=column below=ask gap=1
+  }
+
+  answer pick="So people could trust it was real and would be paid"
+  hint "What would happen if anyone could make their own notes?"
+  hint "What does a note need, if the paper itself is worth almost nothing?"
+}

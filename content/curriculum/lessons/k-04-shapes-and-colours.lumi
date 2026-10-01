@@ -1,0 +1,51 @@
+lesson k-shapes-and-colours v=1 format=teach grade=0 unit=5 subject=maths levels=[easy, medium, hard] {
+  title "Shapes and colours"
+  goal "Name a circle, a square, a triangle and a rectangle, count their sides, and say the colour of each."
+
+  look {
+    scene 26x9 {
+      pattern row unit=[circle, square, triangle, rectangle] count=4 missing=0 at=canvas(1, 1)
+      text note "circle, square, triangle, rectangle" below=row gap=1
+    }
+    say """
+      A circle is round and has no corners. A square has four sides all the same. A triangle has
+      three sides. A rectangle has four sides too, two long and two short. Each one here is a
+      different colour: pink, blue, orange and blue again.
+      """
+  }
+  do {
+    practice k.find-the-shape count=2 seed=2
+    level easy {
+      worked k.shape-sides kind="triangle" level=medium
+    }
+    practice k.shape-sides count=2 seed=3 easy-count=1
+    practice k.shape-colour count=2 seed=4
+    practice k.which-shape-is count=1 seed=5
+    practice k.count-circles count=2 seed=6
+  }
+  try stars=2 {
+    show k.shape-riddle t=1 easy-t=0 hard-t=2
+  }
+  try stars=3 {
+    show k.find-the-creature k=0 hard-k=1
+  }
+  remember {
+    say "Round with no corners is a circle. Count the sides to tell the others apart."
+  }
+
+  grown-ups """
+    Read each question aloud and let the child point. The square and the rectangle are the pair to
+    watch: if the child calls a rectangle a square, run a finger along a long side and a short side
+    and ask if they are the same. Colours are said out loud, so this is a lesson in the words as
+    much as the shapes. Off the page, hunt for shapes round the house: a plate, a window, a slice
+    of toast cut corner to corner. Japan, 幼稚園教育要領 (kindergarten guidelines), 表現, 内容 (1):
+    "生活の中で様々な音，色，形，手触り，動きなどに気付いたり，感じたりするなどして楽しむ。" (Notice and
+    enjoy the sounds, colours, shapes, textures and movements around them.)
+    """
+  level easy {
+    grown-ups "At this level the shapes asked for are the circle and the triangle, the triangle's sides are counted once in the teacher's pen, and the circles to count are one or two."
+  }
+  level hard {
+    grown-ups "At this level the square and rectangle are asked for, the hexagon's six sides are counted, and the riddle is the rectangle's."
+  }
+}

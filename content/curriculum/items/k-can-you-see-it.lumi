@@ -1,0 +1,20 @@
+item k.can-you-see-it v=1 skills=[chemistry.dissolving] {
+  title "Can you still see it?"
+  difficulty (if x == "sugar" or x == "sand" then 0 else 1)
+  let x={"sugar", "sand", "salt", "cork"}
+  level easy {
+    let x={"sugar", "sand"}
+  }
+  level hard {
+    let x={"salt", "cork"}
+  }
+
+  scene 28x20 {
+    mixture jar things=[x] water=1 names=0 at=canvas(1, 1)
+    text q "Ada stirred {x} into water. Can you still see the {x}?" narrate width=26 below=jar gap=1
+    choice pick options=["yes", "no"] stack=row below=q gap=1
+  }
+
+  answer pick=(if x == "sugar" or x == "salt" then "no" else "yes")
+  hint "Look in the water. Is anything on the bottom or floating at the top?"
+}

@@ -1,0 +1,11 @@
+item k.grandma-a-child v=1 stars=2 skills=[history.change, reasoning.explain] {
+  title "When Grandma was little"
+
+  scene 30x13 {
+    text q "Ben says Grandma was always old. Is he right?" narrate width=28 at=canvas(1, 1)
+    choice pick options=["Yes: grandmas are always old.", "No: she was a baby and a child long ago."] stack=column below=q gap=1
+  }
+
+  answer pick="No: she was a baby and a child long ago."
+  hint "Ask Grandma, or look at an old photo. Was she ever small?"
+}

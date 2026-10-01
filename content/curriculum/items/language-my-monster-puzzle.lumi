@@ -1,0 +1,23 @@
+# Non-routine: one creature of four picked from clues, the last with a no.
+item language.my-monster-puzzle v=1 stars=3 skills=[language.describing, language.numbers, reasoning.language] {
+  title "Find the creature"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x23 {
+    column all at=canvas(1, 1) space=1 align=start {
+      creatures line eyes=[1, 2, 3, 2] legs=[2, 4, 2, 6] horns=[0, 2, 1, 0] coat=[0, 1, 2, 2] body=[0, 1, 2, 0] colors=["sky", "mint", "berry", "tang"] labels=["A", "B", "C", "D"] ring=-1
+      text ask "{pick(k, \"[[describe.it-has-spots]] Which is it?\", \"[[describe.it-has-stripes-and-two-eyes]] Which is it?\", \"[[describe.it-is-round-and-does-not-have-six-legs]] Which is it?\")}" width=32
+      choice pick options=["A", "B", "C", "D"] stack=row
+    }
+  }
+
+  answer pick=pick(k, "B", "D", "A")
+  feedback {
+    when (pick == pick(k, "C", "C", "D")) {
+      say "{pick(k, \"C has stripes. Which one has spots?\", \"C has stripes, but count its eyes.\", \"D is round, but count its legs.\")}"
+    }
+  }
+  hint "Check each creature against each clue."
+  hint "Cross off any a clue rules out."
+}

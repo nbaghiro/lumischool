@@ -1,0 +1,22 @@
+# The two-star reason: every first city stood by a great river (the Tigris and Euphrates, the Nile,
+# the Indus, the Yellow River), because farms fed by the river fed the city.
+item history.why-rivers v=1 skills=[history.cities, reasoning.why] {
+  title "Beside a river"
+  difficulty k
+  let k=0..1
+
+  scene 36x34 {
+    worldmap map names=0 blank=-1 oceans=0 places=["Uruk", "Memphis", "Mohenjo-daro", "Anyang"] numbered=0 route=0 at=canvas(1, 0)
+    text ask "{if k == 0 then \"All four of these first cities were built beside great rivers. Why?\" else \"A river flooded most years and sometimes destroyed houses. Why did cities still grow beside rivers?\"}" narrate width=34 below=map gap=1
+    choice pick options=["River water fed the farms that fed the city", "Rivers kept the cities cool in summer", "People liked the sound of water"] stack=column below=ask gap=1
+  }
+
+  answer pick="River water fed the farms that fed the city"
+  feedback {
+    when (pick == "Rivers kept the cities cool in summer") point=map {
+      say "A city of thousands needs food every day. Where did the food come from?"
+    }
+  }
+  hint "What did a city of thousands of people need every day?"
+  hint "What do farms need to grow crops in a dry land?"
+}

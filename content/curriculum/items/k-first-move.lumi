@@ -1,0 +1,20 @@
+item k.first-move v=1 skills=[writing.letter-formation] {
+  title "Down or round?"
+  difficulty (if x == "l" or x == "c" then 0 else 1)
+  let x={"l", "c", "t", "o", "i", "a"}
+  level easy {
+    let x={"l", "c"}
+  }
+  level hard {
+    let x={"t", "o", "i", "a"}
+  }
+
+  scene 26x14 {
+    handwriting rules show="{x}" rows=1 trace=1 width=12 at=canvas(1, 1)
+    text ask "When you write {x}, does the pencil go straight down first, or round?" narrate width=24 below=rules gap=1
+    choice pick options=["down", "round"] below=ask gap=1
+  }
+
+  answer pick=(if x == "l" or x == "t" or x == "i" then "down" else "round")
+  hint "Trace the {x} with a finger. What does your finger do first?"
+}

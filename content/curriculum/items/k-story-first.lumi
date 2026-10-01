@@ -1,0 +1,22 @@
+# The planting pictures out of order: the child finds the one that has to come first, which is
+# the empty pot, since nothing can go in a pot that is not there.
+item k.story-first v=1 skills=[reading.sequencing] {
+  title "What happens first?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x18 {
+    picsteps steps pictures=[pick(k, "soil", "seed", "water", "seed"), pick(k, "pot", "water", "soil", "soil"), pick(k, "seed", "pot", "seed", "water"), pick(k, "water", "soil", "pot", "pot")] texts=["", "", "", ""] per=4 numbers=true write=false at=canvas(1, 1)
+    text ask "These pictures of planting a seed are mixed up. Which picture comes first? Say its number." narrate width=28 below=steps gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 2, 3, 4, 4)
+  hint "Before you plant anything, what do you need to put the soil in?"
+}

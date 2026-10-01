@@ -1,0 +1,25 @@
+# The two-star reason: a capital is a city inside a country, not the country itself.
+item history.nation-city-not-country v=1 skills=[history.nation, reasoning.why] {
+  title "A city, or a country?"
+  let n=0..4
+  let capital={pick(n, "London", "Washington", "Tokyo", "Moscow", "Beijing")}
+  let country={pick(n, "the United Kingdom", "the United States", "Japan", "Russia", "China")}
+
+  scene 36x32 {
+    worldmap map names=0 blank=-1 oceans=0 places=["{capital}"] numbered=0 route=0 at=canvas(1, 0)
+    text ask "Ben says {capital} is a country. What is wrong with that?" narrate width=34 below=map gap=1
+    choice pick options=["It is a city in a country", "It is a continent", "Nothing, it is a country"] stack=column below=ask gap=1
+  }
+
+  answer pick="It is a city in a country"
+  feedback {
+    when (pick == "Nothing, it is a country") point=map {
+      say "Look how small the dot is. A country is a big piece of land with many towns and cities in it."
+    }
+    when (pick == "It is a continent") point=map {
+      say "A continent is bigger still. It holds many countries."
+    }
+  }
+  hint "Is {capital} a dot on the map, or a whole piece of land?"
+  hint "A country has many towns and cities. One of them is its capital."
+}

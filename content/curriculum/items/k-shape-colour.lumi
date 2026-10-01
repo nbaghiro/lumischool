@@ -1,0 +1,25 @@
+# Each shape has its own colour in the drawings, so the question names a shape and the answer is
+# its colour.
+item k.shape-colour v=1 skills=[colours.naming, shapes.flat] {
+  title "What colour?"
+  difficulty (if t <= 1 then 0 else 1)
+  let t=0..3
+  let name={pick(t, "circle", "square", "triangle", "hexagon")}
+  let colour={pick(t, "pink", "blue", "orange", "green")}
+  roles circ=circle squ=square tri=triangle hex=hexagon
+  level easy {
+    let t=0..1
+  }
+  level hard {
+    let t=2..3
+  }
+
+  scene 30x13 {
+    pattern row unit=[tri, hex, circ, squ] count=4 missing=0 at=canvas(1, 1)
+    text ask "What colour is the {name}?" narrate below=row gap=1
+    choice pick options=["blue", "green", "pink", "orange"] below=ask gap=1
+  }
+
+  answer pick=colour
+  hint "Find the {name} first. Put a finger on it."
+}

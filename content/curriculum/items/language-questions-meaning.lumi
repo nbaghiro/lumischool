@@ -1,0 +1,19 @@
+# The language to English: [[phrase.where-do-you-live]], [[phrase.when-is-the-party]], [[phrase.who-is-your-teacher]], [[phrase.how-many-brothers-and-sisters-do-you-hav]], [[phrase.how-do-you-say-ferry-in-spanish]], [[phrase.why-are-you-sad]].
+# The phrase is read on a sign or in a speech bubble, and the English is picked.
+item language.questions-meaning v=1 skills=[language.questions] {
+  title "What does it mean?"
+  difficulty pick(k, 0, 0, 1, 1, 2, 2)
+  let k=0..5
+
+  scene 34x35 {
+    column all at=canvas(1, 1) space=1 align=start {
+      comic said who=[pick(k, "girl", "boy", "gran", "girl", "boy", "gran")] says=[pick(k, "[[phrase.where-do-you-live]]", "[[phrase.when-is-the-party]]", "[[phrase.who-is-your-teacher]]", "[[phrase.how-many-brothers-and-sisters-do-you-hav]]", "[[phrase.how-do-you-say-ferry-in-spanish]]", "[[phrase.why-are-you-sad]]")] moods=["happy"] with=[""] thinks=[0] holds=[""] labels=[""]
+      text ask "What does this mean in English?" width=32
+      choice pick options=[pick(k, "Why are you sad?", "How many brothers and sisters do you have?", "When is the party?", "Why are you sad?", "Why are you sad?", "How many brothers and sisters do you have?"), pick(k, "Where do you live?", "When is the party?", "How do you say ferry in Spanish?", "How many brothers and sisters do you have?", "Who is your teacher?", "Why are you sad?"), pick(k, "Who is your teacher?", "How do you say ferry in Spanish?", "How many brothers and sisters do you have?", "When is the party?", "How do you say ferry in Spanish?", "Who is your teacher?"), pick(k, "How do you say ferry in Spanish?", "Who is your teacher?", "Who is your teacher?", "Who is your teacher?", "How many brothers and sisters do you have?", "How do you say ferry in Spanish?")] stack=column
+    }
+  }
+
+  answer pick=pick(k, "Where do you live?", "When is the party?", "Who is your teacher?", "How many brothers and sisters do you have?", "How do you say ferry in Spanish?", "Why are you sad?")
+  hint "Find a part of the [[language.name]] you know. What does that part mean?"
+  hint "Read each English choice. Which one would someone say here?"
+}

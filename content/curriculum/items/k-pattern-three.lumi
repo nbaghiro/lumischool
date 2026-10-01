@@ -1,0 +1,21 @@
+item k.pattern-three v=1 skills=[patterns.repeating] {
+  title "Three in a row"
+  difficulty (if c % 3 == 1 then 0 else 1)
+  let c=4..8
+  roles ap=apple st=star ba=ball
+  level easy {
+    let c={4, 7}
+  }
+  level hard {
+    let c={5, 6, 8}
+  }
+
+  scene 30x13 {
+    pattern strip unit=[ap, st, ba] count=c missing=c at=canvas(1, 1)
+    text ask "What goes in the empty space?" narrate below=strip gap=1
+    choice pick options=[ap, st, ba] below=ask gap=1
+  }
+
+  answer pick=(if c % 3 == 1 then "ap" else if c % 3 == 2 then "st" else "ba")
+  hint "Say the pattern: apple, star, ball. Where does it start again?"
+}

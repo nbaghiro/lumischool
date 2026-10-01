@@ -1,0 +1,23 @@
+# A fair test in words: the same water on two things, and the one that does not soak it up is the
+# one with water left on top.
+item k.water-on-top v=1 stars=3 skills=[chemistry.materials, reasoning.fair-test] {
+  title "Where is the water left?"
+  difficulty k
+  let k=0..1
+  let dry={pick(k, "a plastic plate", "a foil tray")}
+  let soak={pick(k, "a paper towel", "a sponge")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x14 {
+    text q "Ada pours two spoons of water on {soak} and two spoons on {dry}. Which one still has water sitting on top?" narrate width=28 at=canvas(1, 1)
+    choice pick options=[soak, dry] stack=column below=q gap=1
+  }
+
+  answer pick=dry
+  hint "Which one soaks the water in, so none is left on top?"
+}

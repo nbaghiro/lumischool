@@ -19,7 +19,7 @@ import {
     type JSX,
 } from "solid-js";
 import type { Draft } from "../../engine/answer";
-import type { LessonFacts, PackLesson } from "../../engine/pack";
+import { gradeName, type LessonFacts, type PackLesson } from "../../engine/pack";
 import * as api from "../../engine/ui/api";
 import * as shared from "./shared";
 import { onThisComputer } from "../../engine/ui/device";
@@ -33,7 +33,7 @@ import { Say } from "../../engine/ui/say";
 import { matches } from "../../engine/ui/viewport";
 import type { Failure } from "../../engine/ui/wire";
 import { askedIn, levelIn } from "../../school/lessons";
-import { familyName, gradeName } from "../../school/family/names";
+import { familyName } from "../../school/family/names";
 import { dayIn, addDays } from "../../school/record";
 import { subjectFacts } from "../../school/tracks";
 import type { FamilyView, GrownRecord, Me, PackView } from "../../server/api";

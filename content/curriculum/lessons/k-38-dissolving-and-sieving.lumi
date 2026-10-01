@@ -1,0 +1,53 @@
+lesson k-dissolving-and-sieving v=1 format=teach grade=0 unit=4 subject=chemistry levels=[easy, medium, hard] {
+  title "Mixing and getting it back"
+  goal "Say which things dissolve in water and which do not, and use a sieve to get big things out of small."
+
+  look {
+    scene 30x12 {
+      row jars at=canvas(1, 1) space=3 align=end {
+        mixture one things=["sand"] water=1 names=1
+        mixture two things=["sugar"] water=1 names=1
+      }
+    }
+    say """
+      Stir sand into water and it sinks to the bottom where you can see it. Stir sugar in and it
+      dissolves: it spreads through the water so you cannot see it, but it is still there, and the
+      water tastes sweet. A sieve keeps big things like pebbles and lets small things like sand fall
+      through.
+      """
+  }
+  do {
+    level easy {
+      worked k.can-you-see-it x="sand" level=medium
+    }
+    practice k.can-you-see-it count=3 seed=2 easy-count=1 hard-count=2
+    practice k.which-dissolved count=2 seed=3
+    practice k.sieve-stays count=2 seed=4 easy-count=1
+    show k.sugar-in-water
+  }
+  try stars=2 {
+    show k.sieve-sugar
+  }
+  try stars=3 {
+    show k.sieve-or-water k=0 hard-k=1
+  }
+  remember {
+    say "Sugar and salt dissolve. Sand does not. A sieve keeps the big things."
+  }
+
+  grown-ups """
+    Read each question aloud. Two clear glasses, warm water, a spoon of sugar and a spoon of sand
+    are the whole lesson, and tasting is allowed for the sugar only. The wrong idea to watch is that
+    dissolved sugar has gone; let the child taste. If the child is stuck on the sieve, shake a
+    kitchen sieve of rice and flour together. Off the page, sieve flour for a cake and look at what
+    stays behind. China, 3-6岁儿童学习与发展指南 (learning and development guide for children aged 3
+    to 6), 科学探究 (recalled, not fetched): "能用多种感官或动作去探索物体" (Explore objects with several
+    senses and movements.)
+    """
+  level easy {
+    grown-ups "At this level sand is worked in the teacher's pen first, the things to stir are sugar and sand, and pebbles are sieved from sand."
+  }
+  level hard {
+    grown-ups "At this level the things to stir are salt and cork, flour and pebbles stand beside the salt, and the sieves keep rice and peas."
+  }
+}

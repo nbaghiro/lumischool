@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.colours-say v=1 skills=[language.colours, language.speaking] {
+  title "Colours around you"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Point at three things in the room and say each one's colour in [[language.name]] to a grown-up.\", \"A grown-up points at something. Say its colour in [[language.name]].\", \"Say the colours of a flag you know in [[language.name]].\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="The colour word said for each thing, with [[colour.yellow]] sounded as its line gives it." notice=["The right colour word each time", "[[colour.yellow|cap]] sounded as its line gives it", "[[colour.white|cap]] and [[colour.black]] kept apart", "Said without looking at the page"]
+  hint "Say it in English first, then in [[language.name]]."
+  hint "Which word on the tray is that colour?"
+}

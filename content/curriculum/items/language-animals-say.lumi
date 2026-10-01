@@ -1,0 +1,16 @@
+# Speaking, marked by a grown-up who ticks what they heard (reading.recited). The phrase to
+# say is on the child's page, so hearing it from the device is a second way in, never the only one.
+item language.animals-say v=1 skills=[language.animals, language.speaking] {
+  title "Animals out loud"
+  let k=0..2
+
+  scene 34x8 {
+    column all at=canvas(1, 1) space=1 align=start {
+      text ask "{pick(k, \"Point at each card in the lesson and say the animal in [[language.name]].\", \"Say whether you have a pet: [[phrase.i-have-a-dog]], with your own pet, or [[phrase.i-do-not-have-a-pet]]\", \"Say an animal in [[language.name]]. A grown-up makes its noise. Then swap.\")}" width=32
+    }
+  }
+
+  check reading.recited look-for="Each animal named with its little word before it, and [[animal.i-have]] before a pet." notice=["The little word before each animal", "Cat and duck kept apart", "[[animal.i-have|cap]] before a pet", "Said without the page"]
+  hint "Say it in English first, then in [[language.name]]."
+  hint "Which animal is it?"
+}
