@@ -1,0 +1,38 @@
+# Reading what a line is for: the line inside the if is hidden, and the list box shows what the
+# program made of the word. Only taking 26 away sends a number past Z back to the start.
+item coding.shift-missing v=1 skills=[coding.encryption, coding.decisions, coding.debugging] {
+  title "The hidden line"
+  difficulty (s / 5)
+  let a=20..26 b=1..10 c=20..26 s=2..6
+  where (a + s > 26 and c + s <= 26)
+  level easy {
+    let s=2..3
+  }
+  level hard {
+    let s=5..6
+  }
+
+  scene 36x40 {
+    column top at=canvas(1, 0) space=1 align=start {
+      program p code=["set word to list {a}, {b}, {c}", "set i to 1", "repeat 3", "  set n to item i of word", "  add {s} to n", "  if n is more than 26", "    take 26 from n", "  replace item i of word with n", "  add 1 to i"] blank=7
+      row under space=3 align=end {
+        listbox l name=word code=["set word to list {a}, {b}, {c}", "set i to 1", "repeat 3", "  set n to item i of word", "  add {s} to n", "  if n is more than 26", "    take 26 from n", "  replace item i of word with n", "  add 1 to i"]
+        canallock lk level=0.5 boat=1
+      }
+    }
+    text ask "Line 7 of the lock keeper's code is hidden. The list box shows the word after the program has run, and every number in it is from 1 to 26. Which block is line 7?" narrate width=34 below=top gap=1
+    choice pick options=["take 26 from n", "add 26 to n", "take {s} from n"] below=ask gap=1
+  }
+
+  check coding.runs of=p pick=blank
+  feedback {
+    when (pick == "add 26 to n") point=l {
+      say "Adding 26 would make the number even bigger. Item 1 is {a} + {s} = {a + s} before line 7."
+    }
+    when (pick == "take {s} from n") point=p {
+      say "That would undo line 5 and leave the letter as it was. Is item 1 the same as before?"
+    }
+  }
+  hint "Line 7 only runs when n is more than 26. What must happen to a number like that?"
+  hint "Item 1 started as {a}. What did the program turn it into?"
+}

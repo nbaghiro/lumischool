@@ -1,0 +1,71 @@
+# Boolean logic at grade six: not turns a question round, a truth table lists every way two
+# questions can come out, and two programs written differently can be shown to decide the same.
+lesson coding-not-and-truth-tables v=1 format=teach grade=6 unit=5 subject=coding levels=[easy, medium, hard] {
+  title "Not, and the truth table"
+  goal "Work out what a condition with not, and and or says in every case, and tell when two conditions always agree."
+
+  look {
+    scene 36x13 {
+      row top at=canvas(1, 0) space=2 align=start {
+        table tt cols=3 head=["windy", "flood", "open?"] cells=["yes", "yes", "no", "yes", "no", "no", "no", "yes", "no", "no", "no", "yes"]
+        ropebridge rb planks=10 gaps=0
+      }
+    }
+    say """
+      The rope bridge over the gorge opens when it is not windy and not in flood. Not turns a question
+      round: not windy is yes exactly when windy is no. Two yes-or-no questions can come out four ways,
+      so a table with four rows, called a truth table, shows every case. Only the last row, calm and
+      no flood, opens the bridge. A truth table is also how to check that two programs written
+      differently always decide the same.
+      """
+  }
+  do {
+    show coding.not-run t=30 w=24 easy-w=22 hard-w=30
+    level easy {
+      worked coding.not-run t=40 w=45 level=medium
+    }
+    practice coding.not-same count=1 seed=2
+    show coding.not-table k=1 easy-k=0 hard-k=3
+    practice coding.not-until count=1 seed=3
+    practice coding.not-run count=1 seed=5
+    show coding.not-agree k=0 hard-k=1
+    practice coding.not-same count=1 seed=6
+    level medium hard {
+      show coding.not-table k=2 hard-k=4
+    }
+    level hard {
+      practice coding.not-until count=1 seed=9
+    }
+  }
+  try stars=2 {
+    practice coding.not-edge count=1 seed=2
+  }
+  try stars=3 {
+    practice coding.not-grid count=1 seed=3
+  }
+  remember {
+    say "Not turns yes into no. A truth table has a row for every case, and two conditions agree only if every row agrees."
+  }
+
+  grown-ups """
+    Not, and and or are the three words of Boolean logic, which computers use in every decision.
+    Grade five joined two tests with and and or; this lesson adds not, and the truth table, which
+    lists every case so that a condition, or two programs, can be checked completely rather than by
+    a few tries. Watch for two slips: reading "not more than 30" as "less than 30", which is wrong
+    for 30 itself, and thinking "not windy and not flood" is the same as "not windy or not flood".
+    If the child is stuck, write the four rows of the table, yes and no for each question, and work
+    each row aloud. The two-star question finds the one reading where "not more than" and "less
+    than" disagree, and the checker proves it is the only one. The three-star question counts the
+    pairs of readings that open the path; with or it is quicker to count the pairs that keep it
+    shut and take them away. Off the page, write the rule for going out to play ("not raining and
+    homework done") and test it on all four cases. Grade six's sensor lesson used not once; here it
+    is the subject. This meets England's key stage 3 computing programme, "understand simple Boolean
+    logic [for example, AND, OR and NOT] and some of its uses in circuits and programming."
+    """
+  level easy {
+    grown-ups "At this level the wind is well away from the limit, one reading is worked in the teacher's pen, the question to rewrite is not more than, the tables have the easier rules, the river drops an even number of steps, the two programs agree, the levels to compare are low, and the path's sign uses and."
+  }
+  level hard {
+    grown-ups "At this level the wind sits on the limit or one above, the question to rewrite is not less than, the tables mix not with or, the river drops an odd number of steps, the two programs disagree in one case, the levels to compare are higher, and the path's sign uses or."
+  }
+}

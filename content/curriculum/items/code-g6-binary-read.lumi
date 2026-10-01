@@ -1,0 +1,31 @@
+# The way in: eight lamps, each worth double the one on its right, from 1 up to 128. Grade four read
+# five; the step up is the full byte, up to 255, where the big lamps carry most of the number.
+item coding.binary-read v=1 skills=[coding.binary, coding.data] {
+  title "Eight lamps on the lander"
+  difficulty (n / 64)
+  let n=20..255
+  level easy {
+    let n=20..63
+  }
+  level hard {
+    let n=160..255
+  }
+
+  scene 36x18 {
+    row top at=canvas(1, 0) space=2 align=end {
+      lamps l bits=8 n=n
+      lander ld rungs=4
+    }
+    text ask "The lander's fuel display is a row of eight lamps. What number does it show?" narrate width=34 below=top gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == n // 16 % 2 * 16 + n // 8 % 2 * 8 + n // 4 % 2 * 4 + n // 2 % 2 * 2 + n % 2 and n >= 32) point=l {
+      say "That adds the lamps on the right. The lamps on the left are worth 32, 64 and 128."
+    }
+  }
+  hint "Write the worth over each lit lamp, starting from 1 on the right and doubling."
+  hint "Add the worths of the lit lamps, biggest first."
+}

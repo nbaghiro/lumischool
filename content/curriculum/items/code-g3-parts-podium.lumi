@@ -1,0 +1,38 @@
+# Parts in order: three parts each draw one piece of the medal stand, and only one order joins them
+# into the outline. The labels move from version to version, so the order has to be read from the
+# picture, not remembered.
+item coding.parts-podium v=1 skills=[coding.decomposition, coding.drawing, coding.sequences] {
+  title "The medal stand in three parts"
+  difficulty (s - 2 + k / 2)
+  let s=2..3 k=0..2
+  level easy {
+    let s={2}
+    let k=0..1
+  }
+  level hard {
+    let s={3}
+    let k=1..2
+  }
+
+  scene 36x38 {
+    row top at=canvas(1, 0) space=2 align=start {
+      turtle t cols=5 rows=(s + 2) col=1 row=(s + 2) moves=[] target=["up {s}", "right 2", "up 1", "right 2", "down {s + 1}", "left 4"]
+      column parts space=1 align=start {
+        program pa code=["{pick(k, \"up {s}\", \"down {s + 1}\", \"up 1\")}", "{pick(k, \"right 2\", \"left 4\", \"right 2\")}"] title="Part A"
+        program pb code=["{pick(k, \"up 1\", \"up {s}\", \"down {s + 1}\")}", "{pick(k, \"right 2\", \"right 2\", \"left 4\")}"] title="Part B"
+        program pc code=["{pick(k, \"down {s + 1}\", \"up 1\", \"up {s}\")}", "{pick(k, \"left 4\", \"right 2\", \"right 2\")}"] title="Part C"
+      }
+    }
+    text ask "The turtle must draw the pale outline of the medal stand, starting at the bottom left corner. The three parts are mixed up. In which order must they run?" narrate width=34 below=top gap=1
+    choice pick options=["A, B, C", "B, C, A", "C, A, B"] below=ask gap=1
+  }
+
+  answer pick=pick(k, "A, B, C", "B, C, A", "C, A, B")
+  feedback {
+    when (pick != pick(k, "A, B, C", "B, C, A", "C, A, B")) point=t {
+      say "Which part starts by going up from the bottom left corner? That one runs first."
+    }
+  }
+  hint "The outline starts at the bottom left corner. Which part's first move goes that way?"
+  hint "Where does that part stop? Which part draws the next piece from there?"
+}

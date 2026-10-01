@@ -1,0 +1,39 @@
+# The code as a program: it walks the list by place, adds the shift to each number, and an if takes
+# 26 away when a number passes Z. The child traces it to one item; the hard versions pass Z.
+item coding.shift-trace v=1 skills=[coding.encryption, coding.lists, coding.tracing, coding.decisions] {
+  title "The program that codes a word"
+  difficulty (s / 3 + (if pick(i - 1, a, b, c) + s > 26 then 1 else 0))
+  let a=1..26 b=1..26 c=1..26 s=2..5 i=1..3
+  where (a != b and b != c)
+  level easy {
+    where (pick(i - 1, a, b, c) + s <= 26)
+    let s=2..3
+  }
+  level hard {
+    where (pick(i - 1, a, b, c) + s > 26)
+  }
+
+  scene 36x37 {
+    column top at=canvas(1, 0) space=1 align=start {
+      program p code=["set word to list {a}, {b}, {c}", "set i to 1", "repeat 3", "  set n to item i of word", "  add {s} to n", "  if n is more than 26", "    take 26 from n", "  replace item i of word with n", "  add 1 to i"]
+      row under space=3 align=end {
+        listbox l name=word code=["set word to list {a}, {b}, {c}", "set i to 1", "repeat 3", "  set n to item i of word", "  add {s} to n", "  if n is more than 26", "    take 26 from n", "  replace item i of word with n", "  add 1 to i"] upto=1
+        narrowboat nb windows=2 pots=1
+      }
+    }
+    text ask "The lock keeper's program codes a word kept as a list of letter numbers, A as 1 up to Z as 26. The list box shows the word before the program runs. What number is item {i} of word when the program ends?" narrate width=34 below=top gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  check coding.runs of=l answer="item({i}).word"
+  feedback {
+    when (answer == pick(i - 1, a, b, c) + s and answer > 26) point=p {
+      say "That number is past 26. Which line runs when n is more than 26?"
+    }
+    when (answer == pick(i - 1, a, b, c)) point=p {
+      say "That is the number before the program runs. Line 5 adds to it."
+    }
+  }
+  hint "Which number starts in that place of the list?"
+  hint "Add the shift. Does the result go past Z? If so, follow the if."
+}

@@ -1,0 +1,69 @@
+# Text as numbers and numbers as lamps: the island's lanterns send letters to a ship, a letter being
+# its place in the alphabet written in five lamps that each count double the one on their right.
+lesson coding-letters-in-lamps v=1 format=teach grade=4 unit=7 subject=coding levels=[easy, medium, hard] {
+  title "Letters in lanterns: a code made of lamps"
+  goal "Send and read letters as rows of lit and dark lamps, a number for each letter."
+
+  look {
+    scene 36x12 {
+      row top at=canvas(1, 0) space=3 align=end {
+        volcano v smoke=1 island=1
+        lamps l bits=5 n=8
+      }
+    }
+    say """
+      At dusk the lanterns on the volcano island send messages to the ships. Each lantern is worth
+      double the one on its right: 1, 2, 4, 8 and 16. A letter is sent as its place in the alphabet,
+      so A is 1, B is 2 and Z is 26. Here only the lantern worth 8 is lit, so the island is sending
+      the eighth letter, H. A computer keeps every letter you type as a number in the same way.
+      """
+  }
+  do {
+    show coding.letters-read n=7 easy-n=5 hard-n=19
+    level easy {
+      worked coding.letters-read n=10 level=medium
+    }
+    practice coding.letters-pattern count=1 seed=2
+    show coding.letters-biggest b=4 easy-b=3 hard-b=5
+    practice coding.letters-read count=1 seed=5
+    show coding.letters-word k=0 easy-k=1 hard-k=4
+    practice coding.letters-change-one count=1 seed=3
+    practice coding.letters-pattern count=1 seed=6
+    practice coding.letters-change-one count=1 seed=8
+    level hard {
+      show coding.letters-biggest b=6
+    }
+  }
+  try stars=2 {
+    show coding.letters-fewest-lamps m=26 easy-m=12 hard-m=40
+  }
+  try stars=3 {
+    show coding.letters-both-ways b=5 easy-b=4
+  }
+  remember {
+    say "A letter is a number, and a number is a row of lit and dark lamps worth 1, 2, 4, 8 and 16."
+  }
+
+  grown-ups """
+    A code is an agreement: here, a letter's place in the alphabet, written in lamps that are each
+    worth double the one on their right. This is how a computer stores text, a number for every
+    character, and the lamps are the binary digits it keeps them in. Grade two read numbers up to 15
+    in four lamps; this lesson adds the fifth lamp, letters, words and the question of how many
+    signs a row of lamps can carry. Watch for a child who counts the lit lamps instead of adding
+    their worths, and for one who writes the pattern right to left. If the child is stuck, make the
+    five lamps from paper cups worth 1, 2, 4, 8 and 16 and turn them over. In the two-star question
+    the child works backwards from how many signs are needed to the fewest lamps, using the fact that
+    each new lamp doubles what the row can show. In the three-star question the child lists the
+    patterns that read the same from both ends; leading dark lamps count. Off the page, send a
+    message across the room with a torch and five cards. This meets CSTA 2-DA-07, "Represent data
+    using multiple encoding schemes," a year or two early, and looks ahead to England's key stage 3
+    computing programme, "how data of various types (including text, sounds and pictures) can be
+    represented and manipulated digitally, in the form of binary digits."
+    """
+  level easy {
+    grown-ups "At this level the letters come from the first half of the alphabet, one letter is read in the teacher's pen, the rows are three or four lamps long, the word uses small letters, the lamp that changes goes out and is worth 1, 2 or 4, the code carries 12 signs, and the same-both-ways letters come from four lamps."
+  }
+  level hard {
+    grown-ups "At this level the letters come from the second half of the alphabet, the rows reach six lamps, the word uses big letters, a dark lamp is lit by mistake, the code carries 40 signs, and the same-both-ways letters come from five lamps."
+  }
+}

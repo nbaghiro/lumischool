@@ -1,0 +1,32 @@
+# The three-star: no method on the page. The ship reads the lanterns from the other side, right to
+# left, so only patterns that are the same both ways keep their letter. With leading dark lanterns
+# counted, five lanterns give D, J, N, Q and U; four lanterns give F, I and O.
+item coding.letters-both-ways v=1 stars=3 skills=[coding.binary, reasoning.all-the-ways, reasoning.symmetry] {
+  title "The same from both sides"
+  difficulty (b - 4)
+  let b=4..5
+  level easy {
+    let b={4}
+  }
+  level hard {
+    let b={5}
+  }
+
+  scene 36x24 {
+    row top at=canvas(1, 0) space=3 align=end {
+      lamps l bits=b n=(if b == 5 then 10 else 6)
+      ship sh sails=2 portholes=3
+    }
+    text ask "A boat behind the island sees the {b} lanterns from the back, so it reads them right to left. The lanterns here send {if b == 5 then \"J\" else \"F\"}, which looks the same both ways. How many letters from A to {if b == 5 then \"Z\" else \"O\"} look the same both ways?" narrate width=34 below=top gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (if b == 5 then 5 else 3)
+  feedback {
+    when (answer == (if b == 5 then 4 else 2)) point=l {
+      say "Count the letters with dark lanterns at both ends too. Their middle part can still match."
+    }
+  }
+  hint "Write the pattern as 1s and 0s. Which patterns read the same backwards?"
+  hint "Choose the outside lanterns, then the next ones in, then the middle. Which of those numbers is a letter?"
+}

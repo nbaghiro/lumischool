@@ -1,0 +1,37 @@
+# The three-star: the whole trick. One card of the grid was turned, anywhere, check squares too;
+# the odd row and the odd column cross at it. When the turned card is a check square, only its own
+# row and column go odd, which is the case the hard level asks.
+item coding.parity-find-card v=1 stars=3 skills=[coding.checking, coding.data, reasoning.evidence] {
+  title "Find the turned card"
+  difficulty (pick(v, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1) * 2 + pick(v, 2, 4, 1, 3, 5, 2, 1, 4, 3, 5) / 5)
+  let v=0..9
+  level easy {
+    let v={0, 2, 3}
+  }
+  level hard {
+    let v={4, 5, 8, 9}
+  }
+
+  scene 36x17 {
+    pixels p cols=5 rows=5 code=["{pick(v, \"1 black 1 white 3 black\", \"1 black 1 white 3 black\", \"2 white 1 black 2 white\", \"1 white 2 black 2 white\", \"1 black 1 white 3 black\", \"1 white 2 black 2 white\", \"1 black 1 white 1 black 1 white 1 black\", \"1 white 2 black 2 white\", \"1 black 1 white 3 black\", \"1 white 2 black 2 white\")}", "{pick(v, \"1 white 2 black 1 white 1 black\", \"1 white 1 black 2 white 1 black\", \"2 black 1 white 2 black\", \"2 black 1 white 2 black\", \"1 white 1 black 2 white 1 black\", \"2 black 1 white 1 black 1 white\", \"1 white 1 black 2 white 1 black\", \"2 black 1 white 2 black\", \"1 white 1 black 2 white 1 black\", \"2 black 1 white 2 black\")}", "{pick(v, \"2 black 1 white 2 black\", \"2 black 1 white 2 black\", \"2 white 1 black 1 white 1 black\", \"2 white 3 black\", \"2 black 1 white 2 black\", \"2 white 1 black 1 white 1 black\", \"2 black 1 white 2 black\", \"2 white 1 black 1 white 1 black\", \"2 black 1 white 1 black 1 white\", \"2 white 1 black 1 white 1 black\")}", "{pick(v, \"2 white 1 black 1 white 1 black\", \"1 black 1 white 1 black 1 white 1 black\", \"1 black 1 white 3 black\", \"1 black 1 white 3 black\", \"2 white 1 black 1 white 1 black\", \"1 black 1 white 3 black\", \"2 white 1 black 1 white 1 black\", \"1 black 2 white 2 black\", \"2 white 1 black 1 white 1 black\", \"1 black 1 white 3 black\")}", "{pick(v, \"5 white\", \"5 white\", \"2 white 1 black 1 white 1 black\", \"2 white 1 black 1 white 1 black\", \"1 white 1 black 3 white\", \"2 white 1 black 1 white 1 black\", \"5 white\", \"2 white 1 black 1 white 1 black\", \"5 white\", \"1 black 1 white 1 black 1 white 1 black\")}"] show=true beside=false at=canvas(1, 0)
+    text ask "Every row and every column had an even number of black squares, the last row and column being the checks. Then one card was turned over, maybe even a check card. Which card was it? Count rows from the top and columns from the left." narrate width=21 right-of=p gap=2
+    row ans below=ask gap=1 space=1 align=centre {
+      text lr "row"
+      number-input row width=2
+      text lc "column"
+      number-input col width=2
+    }
+  }
+
+  answer row=pick(v, 2, 4, 1, 3, 5, 2, 1, 4, 3, 5) col=pick(v, 3, 1, 2, 4, 2, 5, 4, 3, 5, 1)
+  feedback {
+    when (row == pick(v, 2, 4, 1, 3, 5, 2, 1, 4, 3, 5) and col != pick(v, 3, 1, 2, 4, 2, 5, 4, 3, 5, 1)) point=p {
+      say "The row is right. Now count the black squares down each column."
+    }
+    when (col == pick(v, 3, 1, 2, 4, 2, 5, 4, 3, 5, 1) and row != pick(v, 2, 4, 1, 3, 5, 2, 1, 4, 3, 5)) point=p {
+      say "The column is right. Now count the black squares across each row."
+    }
+  }
+  hint "Count the black squares in every row. Which row is odd?"
+  hint "Now count down every column. Where do the odd row and the odd column cross?"
+}

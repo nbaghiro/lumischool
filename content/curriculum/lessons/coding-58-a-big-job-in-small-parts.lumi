@@ -1,0 +1,73 @@
+# Decomposition before blocks of one's own: a job on the sports ground is split into parts, one a leg
+# from one thing to the next, each written and tested from where the last one stops, then joined.
+lesson coding-a-big-job-in-small-parts v=1 format=teach grade=3 unit=4 subject=coding levels=[easy, medium, hard] {
+  title "A big job in small parts"
+  goal "Split a job into parts, write each part from where the last one stops, and join them."
+
+  look {
+    scene 36x18 {
+      row top at=canvas(1, 0) space=2 align=start {
+        maze g cols=7 rows=4 gems=[3, 3] flag=[6, 2] code=["right 2", "down 2", "right 3", "up 1"]
+        column parts space=1 align=start {
+          program p1 code=["right 2", "down 2"] title="Part 1"
+          program p2 code=["right 3", "up 1"] title="Part 2"
+        }
+      }
+    }
+    say """
+      The groundskeeper robot has a job on the sports ground: pick up the gem, then park on the flag.
+      A big job is easier in parts. Part 1 goes from the start to the gem, and part 2 from the gem to
+      the flag. Each part starts where the one before it stops, so part 2 is counted from the gem.
+      Run the parts one after the other and the whole job is done.
+      """
+  }
+  do {
+    show coding.parts-where a=2 b=1 c=2 d=1 easy-a=1 easy-c=2 hard-a=3 hard-b=2 hard-c=2 hard-d=1
+    level easy {
+      worked coding.parts-where a=1 b=2 c=2 d=1 level=medium
+    }
+    practice coding.parts-second-leg count=1 seed=3
+    show coding.parts-split m=2 k=3 easy-k=2 hard-k=4
+    practice coding.parts-which-wrong count=1 seed=4
+    show coding.parts-podium s=2 k=1 easy-k=0 hard-s=3
+    practice coding.parts-second-leg count=1 seed=8
+    practice coding.parts-which-wrong count=1 seed=9
+    level medium hard {
+      practice coding.parts-where count=1 seed=6
+    }
+    level hard {
+      practice coding.parts-split count=1 seed=5
+    }
+  }
+  try stars=2 {
+    practice coding.parts-heading count=1 seed=2
+  }
+  try stars=3 {
+    show coding.parts-build k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Split a big job into parts. Each part starts where the last one stopped, facing the way it left the robot."
+  }
+
+  grown-ups """
+    Splitting a job into parts is how every long program is written: each part does one small thing,
+    is checked on its own, and is joined to the next. The idea to watch for is where a part starts.
+    A child who counts the second part from the start square has not yet seen that the parts run one
+    after the other. When a joined program goes wrong, test the parts in order and stop at the first
+    one that misses; every part after it may be right but starts in the wrong place. In the two-star
+    question the part was right on its own but assumed the robot faced right, so joining parts means
+    matching the way the robot faces too. In the three-star question the child plans the order of the
+    parts so the route never doubles back. If the child is stuck, walk the job on the floor with a
+    chalk mark where each part ends. Off the page, split a chore such as laying the table into parts
+    and say where each part leaves things for the next. This meets England's key stage 2 computing
+    programme, "solve problems by decomposing them into smaller parts", and CSTA 1B-AP-11, "Decompose
+    (break down) problems into smaller, manageable subproblems to facilitate the program development
+    process."
+    """
+  level easy {
+    grown-ups "At this level the parts make short moves, one joined program is worked in the teacher's pen, the gem ends the second line of the long program, the mistake is in the last part, the podium has a low top step, and the plan fits in three blocks with no rock in the way."
+  }
+  level hard {
+    grown-ups "At this level the moves are longer, the gem ends the fourth line, the mistake is in the first part so both later parts start in the wrong place, the robot faces up rather than down after the first part, the podium is taller, and the plan needs four blocks round rocks."
+  }
+}

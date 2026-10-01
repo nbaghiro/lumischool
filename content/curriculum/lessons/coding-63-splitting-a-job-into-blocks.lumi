@@ -1,0 +1,74 @@
+# Decomposition with blocks of one's own: the old city's wall, towers and market stalls are split into
+# a part that comes round again, written once as a block, with the length that changes as its input.
+lesson coding-splitting-a-job-into-blocks v=1 format=teach grade=5 unit=8 subject=coding levels=[easy, medium, hard] {
+  title "Splitting a job into blocks"
+  goal "Split a drawing into parts, write the part that comes round as a block with the changing length as its input, and call it for each part."
+
+  look {
+    scene 36x22 {
+      row top at=canvas(1, 0) space=2 align=start {
+        program p code=["define tower h", "  up h", "  right 2", "  down h", "tower 2", "tower 3", "tower 1"]
+        column right space=1 align=start {
+          citywalls cw
+          turtle t cols=7 rows=4 col=1 row=4 moves=["define tower h", "  up h", "  right 2", "  down h", "tower 2", "tower 3", "tower 1"]
+        }
+      }
+    }
+    say """
+      The old city wall is a long job: written out move by move, these three towers take nine lines.
+      Split it into parts instead. Every tower goes up, across and down, and only its height
+      changes, so one block, tower, draws any tower, with the height as its input h. Then
+      the job is three calls, one a tower, and a change to the towers is made in one place.
+      """
+  }
+  do {
+    show coding.split-lines n=4 h=1 easy-n=3 hard-n=6
+    level easy {
+      worked coding.split-lines n=4 h=2 level=medium
+    }
+    practice coding.split-run count=1 seed=2
+    practice coding.split-body count=1 seed=3
+    practice coding.split-input count=1 seed=4
+    practice coding.split-run count=1 seed=6
+    practice coding.split-input count=1 seed=14
+    practice coding.split-lines count=1 seed=8
+    level medium hard {
+      practice coding.split-body count=1 seed=9
+    }
+    level hard {
+      practice coding.split-input count=1 seed=24
+    }
+  }
+  try stars=2 {
+    practice coding.split-fix-call count=1 seed=2
+  }
+  try stars=3 {
+    show coding.split-build k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Find the part that comes round again, make it a block, and make the length that changes its input."
+  }
+
+  grown-ups """
+    Splitting a job into parts, and writing a part that comes round as a block of one's own, is how
+    long programs stay short and easy to change. Grade three split a route into legs; grade five's
+    blocks took inputs; this lesson puts the two together, so the child decides what the block is
+    and which number is its input. The idea to watch for is the input: it is the one length that
+    changes from part to part, and everything that stays the same is written into the block as a
+    plain number. A child who makes every length an input, or none, has not yet looked for what
+    changes. In the two-star question the block is right and one call is wrong, so the mistake is
+    found by asking which part is wrong rather than reading every line. In the three-star question
+    the slots are too few for the moves written out, so the child has to design the block first. If
+    the child is stuck, draw each tower on its own card and lay the cards side by side to see what
+    differs. Off the page, write a recipe for three sandwiches with one "make a sandwich with this
+    filling" step. This meets CSTA 2-AP-13, "Decompose problems and subproblems into parts to
+    facilitate the design, implementation, and review of programs," and England's key stage 3
+    computing programme, "design and develop modular programs that use procedures or functions."
+    """
+  level easy {
+    grown-ups "At this level the walls have three or four teeth, one count is worked in the teacher's pen, the towers are low, the input is always the height, the wrong call is the first, and the wall to build has towers of 1, 3 and 2."
+  }
+  level hard {
+    grown-ups "At this level the walls have six or seven teeth, the towers are taller, the input may be the width or the gap, the wrong call is the last, and the wall to build has its towers in another order."
+  }
+}

@@ -1,0 +1,73 @@
+# Comparing and refining programs at grade three: two or three programs that all do the job on the
+# sports ground, weighed by the blocks written and the squares moved, then made shorter.
+lesson coding-two-programs-one-job v=1 format=teach grade=3 unit=5 subject=coding levels=[easy, medium, hard] {
+  title "Two programs, one job"
+  goal "Compare two programs that do the same job by the blocks they use and the squares they move, and make one shorter."
+
+  look {
+    scene 36x27 {
+      row top at=canvas(1, 0) space=2 align=start {
+        maze g cols=6 rows=4 flag=[5, 3]
+        column progs space=1 align=start {
+          program pa code=["right 1", "right 1", "right 1", "right 1", "down 2"] title="Program A"
+          program pb code=["right 4", "down 2"] title="Program B"
+        }
+      }
+    }
+    say """
+      Both programs take the groundskeeper robot to the flag on the sports ground, and both move it
+      six squares. Program A uses five blocks and program B uses two, so B is quicker to write and to
+      read. Which program is better depends on what we count: the blocks written, or the squares the
+      robot moves. A repeat is one block, and so is every block inside it.
+      """
+  }
+  do {
+    show coding.compare-fewer-squares a=3 b=1 k=0 hard-a=4 hard-k=1
+    level easy {
+      worked coding.compare-fewer-squares a=4 b=2 k=1 level=medium
+    }
+    practice coding.compare-blocks-moves count=1 seed=2
+    show coding.compare-three q=0 a=4 hard-q=1
+    practice coding.compare-save count=1 seed=3
+    show coding.compare-fewer-squares a=5 b=2 k=1 easy-a=4 easy-k=0 hard-b=1
+    practice coding.compare-blocks-moves count=1 seed=6
+    level medium hard {
+      show coding.compare-three q=1 a=3 level=medium
+    }
+    practice coding.compare-save count=1 seed=7
+    level hard {
+      show coding.compare-blocks-moves n=2 m=3
+    }
+  }
+  try stars=2 {
+    practice coding.compare-merge count=1 seed=2
+  }
+  try stars=3 {
+    show coding.compare-build k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Better depends on what you count: the blocks you write or the squares the robot moves."
+  }
+
+  grown-ups """
+    Two programs can do one job, and choosing between them is part of programming. This lesson counts
+    two things: the blocks a program is written with, counting a repeat and every block inside it,
+    and the squares the robot moves when it runs. The common slip is counting a repeat's moves as
+    blocks, or the blocks as moves; ask "are we counting what is written or what happens?" A program
+    that goes past the flag and comes back has more squares than it needs, and a long program of
+    small moves can be joined into fewer blocks. In the two-star question the child joins moves that
+    go the same way and, at hard, spots a part that comes round twice. In the three-star question the
+    slots are too few for one block a move, so the child must find the repeating part first. If the
+    child is stuck, write each program on cards and lay them side by side. Off the page, compare two
+    ways of walking to the park: fewer turns, or fewer steps. This meets CSTA 1B-AP-08, "Compare and
+    refine multiple algorithms for the same task and determine which is the most appropriate," and
+    England's key stage 2 computing programme, "use logical reasoning to explain how some simple
+    algorithms work."
+    """
+  level easy {
+    grown-ups "At this level the long way round is always program B, one comparison is worked in the teacher's pen, the repeats run few times, the three programs are compared by blocks, the stand grows to five or six steps, the path to shorten has no repeating part, and the plan up the stand is three steps of one square."
+  }
+  level hard {
+    grown-ups "At this level the long way round is program A, the repeats move more squares, the three programs are compared by squares moved, the stand grows to nine or ten steps, the path to shorten has a part that comes round twice, and the plan up the stand has longer steps."
+  }
+}

@@ -1,0 +1,36 @@
+# The way in to comparing: two programs both reach the flag, and one takes the robot the long way
+# round. Both have three blocks, so only the squares moved can tell them apart.
+item coding.compare-fewer-squares v=1 skills=[coding.comparing, coding.tracing] {
+  title "The shorter way to the flag"
+  difficulty (a + b + k / 2)
+  let a=3..5 b=1..2 k=0..1
+  level easy {
+    let k={0}
+    let a=3..4
+  }
+  level hard {
+    let k={1}
+    let a=4..5
+  }
+
+  scene 36x31 {
+    row top at=canvas(1, 0) space=2 align=start {
+      maze g cols=6 rows=5 flag=[1 + a, 1 + b]
+      column progs space=1 align=start {
+        program pa code=["{if k == 0 then \"right 1\" else \"down {b + 2}\"}", "{if k == 0 then \"down {b}\" else \"right {a}\"}", "{if k == 0 then \"right {a - 1}\" else \"up 2\"}"] title="Program A"
+        program pb code=["{if k == 0 then \"down {b + 2}\" else \"right 1\"}", "{if k == 0 then \"right {a}\" else \"down {b}\"}", "{if k == 0 then \"up 2\" else \"right {a - 1}\"}"] title="Program B"
+      }
+    }
+    text ask "Both programs take the robot from the start to the flag. Which one moves the robot fewer squares?" narrate width=34 below=top gap=1
+    choice pick options=["Program A", "Program B"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Program A" else "Program B")
+  feedback {
+    when (pick != (if k == 0 then "Program A" else "Program B")) point=g {
+      say "Follow that program on the grid and count every square it moves, going down and coming back up too."
+    }
+  }
+  hint "Run each program with a finger on the grid. Count the squares as you go."
+  hint "Which program goes further down than it needs and has to come back up?"
+}

@@ -694,6 +694,14 @@ all of these.
 | 55 | 5 | 8 | When something happens: events and messages | teach | program, stage, flowchart, maze, codepad | build two scripts joined by a message |
 | 56 | 6 | 3 | A program that watches and switches | teach | program as text with sensors, flowchart, thermometer, table | read the heater's minutes from the program |
 | 57 | 6 | 8 | Which inputs would catch the bug: test cases | teach | program as text, lander, rocket | choose the inputs that catch a planted bug |
+| 58 | 3 | 4 | A big job in small parts | teach | maze, program, turtle, codepad | plan a route as parts and build it |
+| 59 | 3 | 5 | Two programs, one job | teach | maze, program, turtle, codepad | build up the stand in three blocks |
+| 60 | 4 | 7 | Letters in lanterns: a code made of lamps | teach | lamps, island drawings | read and write letters in five lamps |
+| 61 | 4 | 8 | A lamp that checks the others | teach | lamps, lantern, pixels | find the card that was turned |
+| 62 | 5 | 3 | A secret code that shifts | teach | program, listbox, maze, codepad | build the program that codes a word |
+| 63 | 5 | 8 | Splitting a job into blocks | teach | program, turtle, codepad | build the wall from a block and its calls |
+| 64 | 6 | 5 | Not, and the truth table | teach | program as text, table | the program says open or shut |
+| 65 | 6 | 8 | Eight lamps: adding in binary | teach | lamps, digit cards, program as text | read a byte, add two in binary |
 
 That is nine lessons in each grade, grade three's ninth being the thinking lesson moved in from
 logic (`thinking-in-words`), and two more in each of grades five and six from the gaps the audit of
@@ -701,6 +709,13 @@ those grades found (`.docs/grades-5-6.md`, "The gap lessons"): flowcharts, event
 sensors with feedback, and test cases. Every lesson but Instructions for a snack, which is about exact steps
 written in words, has at least one scene that runs or can be played with on screen, eight have a
 build task, and all of them print on squared paper in black and white.
+
+Lessons 58 to 65 bring each of grades three and four to eleven and grades five and six to thirteen,
+on topics no earlier lesson taught: splitting a job into parts (CSTA 1B-AP-11) and comparing two
+programs for one job (1B-AP-08) at grade three; letters as binary numbers and a check lamp that
+catches one changed lamp (2-DA-07, 2-NI-04) at grade four; a shift cipher kept as a list (2-NI-06) and
+splitting a drawing into a block with an input (2-AP-13) at grade five; and not with the truth
+table, and adding in binary, from England's key stage 3 programme, at grade six.
 
 ## What changed in the fifteen
 

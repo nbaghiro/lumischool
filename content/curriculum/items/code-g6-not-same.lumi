@@ -1,0 +1,35 @@
+# Writing not another way: not more than is at most, and not less than is at least. The other
+# options leave out the limit itself, or turn the question the wrong way.
+item coding.not-same v=1 skills=[coding.logic, coding.decisions, coding.text] {
+  title "The same without not"
+  difficulty (v // 9 + v // 3 % 3 / 5)
+  let v=0..17
+  let t={pick(v % 3, 20, 25, 30)}
+  level easy {
+    let v=0..8
+  }
+  level hard {
+    let v=9..17
+  }
+
+  scene 36x28 {
+    row top at=canvas(1, 0) space=2 align=end {
+      program p code=["if not wind is {if v < 9 then \"more\" else \"less\"} than {t}", "  say open", "otherwise", "  say shut"] text=true
+      kingfisher kf flying=1 facing=1
+    }
+    text ask "Which question, written without not, makes line 1 say yes for exactly the same winds?" narrate width=34 below=top gap=1
+    choice pick options=[pick(v, "wind is at most 20", "wind is at most 25", "wind is at most 30", "wind is less than 20", "wind is less than 25", "wind is less than 30", "wind is at least 20", "wind is at least 25", "wind is at least 30", "wind is at least 20", "wind is at least 25", "wind is at least 30", "wind is more than 20", "wind is more than 25", "wind is more than 30", "wind is at most 20", "wind is at most 25", "wind is at most 30"), pick(v, "wind is less than 20", "wind is less than 25", "wind is less than 30", "wind is at least 20", "wind is at least 25", "wind is at least 30", "wind is at most 20", "wind is at most 25", "wind is at most 30", "wind is more than 20", "wind is more than 25", "wind is more than 30", "wind is at most 20", "wind is at most 25", "wind is at most 30", "wind is at least 20", "wind is at least 25", "wind is at least 30"), pick(v, "wind is at least 20", "wind is at least 25", "wind is at least 30", "wind is at most 20", "wind is at most 25", "wind is at most 30", "wind is less than 20", "wind is less than 25", "wind is less than 30", "wind is at most 20", "wind is at most 25", "wind is at most 30", "wind is at least 20", "wind is at least 25", "wind is at least 30", "wind is more than 20", "wind is more than 25", "wind is more than 30")] stack=column below=ask gap=1
+  }
+
+  answer pick=pick(v, "wind is at most 20", "wind is at most 25", "wind is at most 30", "wind is at most 20", "wind is at most 25", "wind is at most 30", "wind is at most 20", "wind is at most 25", "wind is at most 30", "wind is at least 20", "wind is at least 25", "wind is at least 30", "wind is at least 20", "wind is at least 25", "wind is at least 30", "wind is at least 20", "wind is at least 25", "wind is at least 30")
+  feedback {
+    when (pick == pick(v, "wind is less than 20", "wind is less than 25", "wind is less than 30", "wind is less than 20", "wind is less than 25", "wind is less than 30", "wind is less than 20", "wind is less than 25", "wind is less than 30", "wind is more than 20", "wind is more than 25", "wind is more than 30", "wind is more than 20", "wind is more than 25", "wind is more than 30", "wind is more than 20", "wind is more than 25", "wind is more than 30")) point=p {
+      say "Try a wind of exactly {t}. What does line 1 say for it, and what does this question say?"
+    }
+    when (pick == pick(v, "wind is at least 20", "wind is at least 25", "wind is at least 30", "wind is at least 20", "wind is at least 25", "wind is at least 30", "wind is at least 20", "wind is at least 25", "wind is at least 30", "wind is at most 20", "wind is at most 25", "wind is at most 30", "wind is at most 20", "wind is at most 25", "wind is at most 30", "wind is at most 20", "wind is at most 25", "wind is at most 30")) point=p {
+      say "That turns the question the wrong way. Try a wind far from {t} in both."
+    }
+  }
+  hint "Try three winds: one below {t}, {t} itself, and one above. When does line 1 say yes?"
+  hint "Which question says yes for exactly those winds?"
+}

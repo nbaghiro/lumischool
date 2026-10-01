@@ -1,0 +1,69 @@
+# Binary at grade six: a byte of eight lamps to 255, written as eight digits, read by a program,
+# added column by column with carries, shifted to double and halve, and overflowing past the top.
+lesson coding-adding-in-binary v=1 format=teach grade=6 unit=8 subject=coding levels=[easy, medium, hard] {
+  title "Eight lamps: adding in binary"
+  goal "Read and write numbers up to 255 in eight binary digits, and add two of them column by column with carries."
+
+  look {
+    scene 36x12 {
+      row top at=canvas(1, 0) space=2 align=end {
+        lamps l bits=8 n=150
+        lander ld rungs=4
+      }
+    }
+    say """
+      Everything the lander's computer keeps is made of lamps that are on or off, written 1 or 0.
+      Eight of them, worth 128, 64, 32, 16, 8, 4, 2 and 1, make a byte, and a byte can hold any number
+      from 0 to 255. This display shows 10010110: 128, 16, 4 and 2 are lit, which is 150. Binary is
+      added like ordinary numbers, column by column from the right, except that 1 and 1 make 10, so
+      the 1 is carried.
+      """
+  }
+  do {
+    show coding.binary-read n=150 easy-n=45 hard-n=219
+    level easy {
+      worked coding.binary-read n=37 level=medium
+    }
+    practice coding.binary-write count=1 seed=2
+    practice coding.binary-program count=1 seed=3
+    show coding.binary-add k=4 easy-k=1 hard-k=9
+    practice coding.binary-shift count=1 seed=4
+    practice coding.binary-read count=1 seed=6
+    show coding.binary-add k=6 easy-k=2 hard-k=11
+    practice coding.binary-shift count=1 seed=7
+    level hard {
+      practice coding.binary-write count=1 seed=9
+    }
+  }
+  try stars=2 {
+    practice coding.binary-overflow count=1 seed=2
+  }
+  try stars=3 {
+    show coding.binary-exactly j=2 easy-j=0 hard-j=5
+  }
+  remember {
+    say "Eight lamps make a byte, from 0 to 255. In binary, 1 and 1 make 10: write 0 and carry 1."
+  }
+
+  grown-ups """
+    Grade two read four lamps and grade four sent letters in five; this lesson takes the full byte
+    of eight, writes it as digits, and does arithmetic on it, which is how a computer adds. The
+    program in the lesson reads binary the way a computer does, doubling the number so far and adding
+    each new digit. Watch for a child who adds the digits instead of their worths, who leaves out the
+    zeros on the left when writing eight digits, and who forgets the carry when a column makes 2. If
+    the child is stuck, write the worths 128 down to 1 over the columns before starting. In the
+    two-star question the counter overflows: a total of 256 or more needs a ninth lamp, so the carry
+    off the left end is lost, which is a real fault computers have to guard against. In the three-star
+    question the child counts the ways to choose which lamps are lit; choosing the dark ones gives the
+    same count, so 2 lamps and 6 lamps both give 28. Off the page, count to 31 on the fingers of one
+    hand, each finger a lamp. This meets England's key stage 3 computing programme, "understand how
+    numbers can be represented in binary, and be able to carry out simple operations on binary
+    numbers [for example, binary addition, and conversion between binary and decimal]."
+    """
+  level easy {
+    grown-ups "At this level the numbers stay below 64, one is read in the teacher's pen, the digits to read by program start with 0, the sums need one or two carries, the lamps move one place left, the counter goes just past the top, and the lamps to count are one lit or one dark."
+  }
+  level hard {
+    grown-ups "At this level the numbers are above 160, the sums carry along a run of columns, the lamps move one place right and the last one drops off, the counter goes well past the top, and the lamps to count are three or five lit."
+  }
+}

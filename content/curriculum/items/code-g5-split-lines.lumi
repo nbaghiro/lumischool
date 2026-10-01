@@ -1,0 +1,42 @@
+# The way in to splitting a job into blocks: the battlements are one tooth drawn again and again, so
+# a block for the tooth, called from a repeat, is far shorter than the moves written out. The block's
+# lines are paid once, so the saving grows with every tooth.
+item coding.split-lines v=1 skills=[coding.procedures, coding.decomposition, coding.comparing] {
+  title "A block for one tooth"
+  difficulty n
+  let n=3..7 h=1..2
+  level easy {
+    let n=3..4
+  }
+  level hard {
+    let n=6..7
+  }
+
+  scene 36x27 {
+    turtle t cols=(2 * n + 1) rows=(h + 1) col=1 row=(h + 1) moves=["define tooth", "  up {h}", "  right 1", "  down {h}", "  right 1", "repeat {n}", "  tooth"] at=canvas(1, 0)
+    row top below=t gap=1 space=2 align=start {
+      program p code=["define tooth", "  up {h}", "  right 1", "  down {h}", "  right 1", "repeat {n}", "  tooth"]
+      column q space=1 align=start {
+        text ask "This program draws the top of the old city wall with a block called tooth. Written out with every move on its own line and no block, how many lines would it need? How many lines does the block save?" narrate width=18
+        row ans space=1 align=centre {
+          text lo "written out"
+          number-input out width=3
+          text ls "saved"
+          number-input saved width=3
+        }
+      }
+    }
+  }
+
+  answer out=(4 * n) saved=(4 * n - 7)
+  feedback {
+    when (out == 4) point=p {
+      say "That is one tooth. The repeat draws {n} of them."
+    }
+    when (out == 4 * n and saved == 4 * n - 2) point=p {
+      say "The define line and the four lines inside the block count too."
+    }
+  }
+  hint "How many moves does one tooth take? How many teeth does the repeat draw?"
+  hint "Count every line of this program, the define line and the repeat too."
+}

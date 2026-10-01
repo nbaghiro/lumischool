@@ -1,0 +1,29 @@
+# The check made two-way: a grid of cards where the last square of every row and every column is
+# a check, so every row and every column has an even number of black. One card was turned over;
+# the core asks only for its row, the one with an odd count.
+item coding.parity-odd-row v=1 skills=[coding.checking, coding.data, reasoning.evidence] {
+  title "The row with an odd count"
+  difficulty (pick(v, 2, 4, 1, 3, 5, 2, 1, 4, 3, 5) / 4)
+  let v={0, 1, 2, 3, 6, 7}
+  level easy {
+    let v={2, 6}
+  }
+  level hard {
+    let v={1, 7}
+  }
+
+  scene 36x15 {
+    pixels p cols=5 rows=5 code=["{pick(v, \"1 black 1 white 3 black\", \"1 black 1 white 3 black\", \"2 white 1 black 2 white\", \"1 white 2 black 2 white\", \"1 black 1 white 3 black\", \"1 white 2 black 2 white\", \"1 black 1 white 1 black 1 white 1 black\", \"1 white 2 black 2 white\", \"1 black 1 white 3 black\", \"1 white 2 black 2 white\")}", "{pick(v, \"1 white 2 black 1 white 1 black\", \"1 white 1 black 2 white 1 black\", \"2 black 1 white 2 black\", \"2 black 1 white 2 black\", \"1 white 1 black 2 white 1 black\", \"2 black 1 white 1 black 1 white\", \"1 white 1 black 2 white 1 black\", \"2 black 1 white 2 black\", \"1 white 1 black 2 white 1 black\", \"2 black 1 white 2 black\")}", "{pick(v, \"2 black 1 white 2 black\", \"2 black 1 white 2 black\", \"2 white 1 black 1 white 1 black\", \"2 white 3 black\", \"2 black 1 white 2 black\", \"2 white 1 black 1 white 1 black\", \"2 black 1 white 2 black\", \"2 white 1 black 1 white 1 black\", \"2 black 1 white 1 black 1 white\", \"2 white 1 black 1 white 1 black\")}", "{pick(v, \"2 white 1 black 1 white 1 black\", \"1 black 1 white 1 black 1 white 1 black\", \"1 black 1 white 3 black\", \"1 black 1 white 3 black\", \"2 white 1 black 1 white 1 black\", \"1 black 1 white 3 black\", \"2 white 1 black 1 white 1 black\", \"1 black 2 white 2 black\", \"2 white 1 black 1 white 1 black\", \"1 black 1 white 3 black\")}", "{pick(v, \"5 white\", \"5 white\", \"2 white 1 black 1 white 1 black\", \"2 white 1 black 1 white 1 black\", \"1 white 1 black 3 white\", \"2 white 1 black 1 white 1 black\", \"5 white\", \"2 white 1 black 1 white 1 black\", \"5 white\", \"1 black 1 white 1 black 1 white 1 black\")}"] show=true beside=false at=canvas(1, 0)
+    text ask "Cards were set out so that every row and every column had an even number of black squares, the last row and column being the checks. Then one card was turned over. Which row is it in? Count the top row as row 1." narrate width=21 right-of=p gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(v, 2, 4, 1, 3, 5, 2, 1, 4, 3, 5)
+  feedback {
+    when (answer != pick(v, 2, 4, 1, 3, 5, 2, 1, 4, 3, 5)) point=p {
+      say "Count the black squares in that row. An even count means the turned card is not there."
+    }
+  }
+  hint "Count the black squares in each row, one row at a time."
+  hint "Which row has an odd number of black squares?"
+}

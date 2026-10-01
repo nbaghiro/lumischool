@@ -1,0 +1,35 @@
+# The two-star: eight lamps stop at 255, so a total of 256 or more needs a ninth lamp the display
+# does not have. The carry off the left end is lost and the display shows the total less 256.
+item coding.binary-overflow v=1 stars=2 skills=[coding.binary, reasoning.explain, reasoning.structure] {
+  title "Past the last lamp"
+  difficulty ((a + b - 256) / 10)
+  let a=240..254 b=4..30
+  where (a + b > 256 and a + b < 290)
+  level easy {
+    where (a + b - 256 <= 6)
+  }
+  level hard {
+    where (a + b - 256 >= 15)
+  }
+
+  scene 36x17 {
+    row top at=canvas(1, 0) space=2 align=end {
+      lamps l bits=8 n=a
+      rocket rk flame=1
+    }
+    text ask "The rocket's counter has only these eight lamps. It shows {a}, and then {b} more is added. What does the counter show now?" narrate width=34 below=top gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (a + b - 256)
+  feedback {
+    when (answer == a + b) point=l {
+      say "Eight lamps cannot show {a + b}. What is the biggest number they can show?"
+    }
+    when (answer == 255) point=l {
+      say "The counter does not stop at the top. The carry goes off the left end and is lost."
+    }
+  }
+  hint "What is the biggest number eight lamps can show? What would the next one need?"
+  hint "A ninth lamp would be worth 256, but there is none. What is left when that lamp's worth is lost?"
+}

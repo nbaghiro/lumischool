@@ -1,0 +1,25 @@
+# Past the end of the alphabet: a letter near Z goes round to the start again, which is the if in the
+# program done by hand. 26 places on is the same letter, which the hard versions lean on.
+item coding.shift-wrap v=1 skills=[coding.encryption, coding.data, reasoning.patterns] {
+  title "Round past Z"
+  difficulty (s / 4 + (n - 18) / 10)
+  let n=19..26 s=2..9
+  where (n + s > 26)
+  level easy {
+    let s=2..4
+  }
+  level hard {
+    let s=6..9
+  }
+
+  scene 36x16 {
+    text key "A 1, B 2, C 3, D 4, E 5, F 6, G 7, H 8, I 9, J 10, K 11, L 12, M 13, N 14, O 15, P 16, Q 17, R 18, S 19, T 20, U 21, V 22, W 23, X 24, Y 25, Z 26" width=34 at=canvas(1, 0)
+    text ask "In a code that moves every letter {s} places on, the letters after Z start again at A. Which letter does {pick(n - 1, \"A\", \"B\", \"C\", \"D\", \"E\", \"F\", \"G\", \"H\", \"I\", \"J\", \"K\", \"L\", \"M\", \"N\", \"O\", \"P\", \"Q\", \"R\", \"S\", \"T\", \"U\", \"V\", \"W\", \"X\", \"Y\", \"Z\")} become?" narrate width=34 below=key gap=1
+    word-input letter options=["{pick((if n + s > 26 then n + s - 26 else n + s) - 1, \"A\", \"B\", \"C\", \"D\", \"E\", \"F\", \"G\", \"H\", \"I\", \"J\", \"K\", \"L\", \"M\", \"N\", \"O\", \"P\", \"Q\", \"R\", \"S\", \"T\", \"U\", \"V\", \"W\", \"X\", \"Y\", \"Z\")}"] letters=1 below=ask gap=1
+    narrowboat nb windows=3 pots=2 right-of=letter gap=8
+  }
+
+  answer letter=pick((if n + s > 26 then n + s - 26 else n + s) - 1, "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
+  hint "Count on from the letter. How many places take it to Z?"
+  hint "The rest of the count starts again at A. How many are left after Z?"
+}

@@ -1,0 +1,27 @@
+# Writing a number as a byte: split it into lamp worths from 128 down, and write 1 for a lit lamp and
+# 0 for a dark one, all eight digits including the zeros on the left.
+item coding.binary-write v=1 skills=[coding.binary, coding.data] {
+  title "Write it in eight digits"
+  difficulty (i / 8)
+  let i=0..23
+  let n={pick(i, 3, 9, 12, 21, 33, 40, 50, 58, 70, 99, 113, 130, 150, 165, 183, 200, 201, 219, 226, 237, 240, 247, 250, 255)}
+  level easy {
+    let i=0..7
+  }
+  level hard {
+    let i=16..23
+  }
+
+  scene 36x16 {
+    row top at=canvas(1, 0) space=2 align=end {
+      lamps l bits=8 n=0
+      rocket rk flame=0
+    }
+    text ask "The rocket sends the number {n} back to Earth as eight lamps. Write the lamps as eight digits, 1 for lit and 0 for dark, left to right." narrate width=34 below=top gap=1
+    word-input digits options=["{pick(i, \"00000011\", \"00001001\", \"00001100\", \"00010101\", \"00100001\", \"00101000\", \"00110010\", \"00111010\", \"01000110\", \"01100011\", \"01110001\", \"10000010\", \"10010110\", \"10100101\", \"10110111\", \"11001000\", \"11001001\", \"11011011\", \"11100010\", \"11101101\", \"11110000\", \"11110111\", \"11111010\", \"11111111\")}"] letters=8 below=ask gap=1
+  }
+
+  answer digits=pick(i, "00000011", "00001001", "00001100", "00010101", "00100001", "00101000", "00110010", "00111010", "01000110", "01100011", "01110001", "10000010", "10010110", "10100101", "10110111", "11001000", "11001001", "11011011", "11100010", "11101101", "11110000", "11110111", "11111010", "11111111")
+  hint "Which is the biggest lamp worth no more than the number?"
+  hint "Take its worth away and do the same with what is left, down to the lamp worth 1."
+}

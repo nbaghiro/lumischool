@@ -1,0 +1,24 @@
+# The three-star: the gems sit on the steps of the stand, and the slots are too few for a move a
+# block. Only a program that finds the part that comes round again fits, so the child refines the
+# plan before building it.
+item coding.compare-build v=1 stars=3 skills=[coding.comparing, coding.repetition, reasoning.planning] {
+  title "Up the stand in three blocks"
+  difficulty k
+  let k=0..2
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x23 {
+    text ask "Write a program that collects every gem and stops on the flag, in 3 blocks or fewer. A repeat counts as a block, and so does each block inside it." narrate width=34 at=canvas(1, 0)
+    maze g map=[pick(k, "S . . . . .", "S . . . . .", "S . . . . . ."), pick(k, ". * . . . .", ". * . . . .", ". . * . . . ."), pick(k, ". . * . . .", ". . . . . .", ". . . . * . ."), pick(k, ". . . F . .", ". . . * . .", ". . . . . . F"), pick(k, ". . . . . .", ". . . . F .", ". . . . . . .")] at=canvas(1, 5)
+    codepad answer tray=["repeat 2", "repeat 3", "right 1", "down 1", "left 1", "up 1"] lines=3 right-of=g gap=2
+  }
+
+  check coding.builds of=g goal=both
+  hint "Write the route one move a block first. Which moves come round again and again?"
+  hint "Put the part that comes round inside a repeat. How many times does it come round?"
+}

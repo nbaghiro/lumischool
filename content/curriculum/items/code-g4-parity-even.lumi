@@ -1,0 +1,34 @@
+# The way in to a check lantern: it is lit exactly when the five lanterns before it have an odd
+# number lit, so that the whole row, check lantern too, always has an even number lit.
+item coding.parity-even v=1 skills=[coding.data, coding.binary, coding.checking] {
+  title "Light the check lantern?"
+  difficulty ((n // 16 % 2 + n // 8 % 2 + n // 4 % 2 + n // 2 % 2 + n % 2) / 5)
+  let n=1..31
+  level easy {
+    where (n // 16 % 2 + n // 8 % 2 + n // 4 % 2 + n // 2 % 2 + n % 2 <= 2)
+  }
+  level hard {
+    where (n // 16 % 2 + n // 8 % 2 + n // 4 % 2 + n // 2 % 2 + n % 2 >= 3)
+  }
+
+  scene 36x21 {
+    row top at=canvas(1, 0) space=3 align=end {
+      lamps l bits=5 n=n
+      lantern chk lit=0 post=1
+    }
+    text ask "After every letter the island lights a check lantern, on its post, when that makes the number of lit lanterns even, check lantern included. Should the check lantern for this row be lit or dark?" narrate width=34 below=top gap=1
+    choice pick options=["light it", "leave it dark"] below=ask gap=1
+  }
+
+  answer pick=(if (n // 16 % 2 + n // 8 % 2 + n // 4 % 2 + n // 2 % 2 + n % 2) % 2 == 1 then "light it" else "leave it dark")
+  feedback {
+    when ((n // 16 % 2 + n // 8 % 2 + n // 4 % 2 + n // 2 % 2 + n % 2) % 2 == 1 and pick == "leave it dark") point=l {
+      say "Count the lit lanterns in the row. Is that number even already?"
+    }
+    when ((n // 16 % 2 + n // 8 % 2 + n // 4 % 2 + n // 2 % 2 + n % 2) % 2 == 0 and pick == "light it") point=l {
+      say "The row already has an even number lit. Lighting the check lantern would make it odd."
+    }
+  }
+  hint "Count the lit lanterns. Do not add their worths this time."
+  hint "Is that count even? If not, one more lit lantern would make it even."
+}

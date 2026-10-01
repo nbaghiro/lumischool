@@ -1,0 +1,35 @@
+# A block with an input, used three times with different numbers: each call draws one tower of its
+# own height. The child adds up the line one call at a time, which is how a split program is read.
+item coding.split-run v=1 skills=[coding.procedures, coding.tracing, coding.decomposition] {
+  title "Three towers from one block"
+  difficulty ((a + b + c) / 3)
+  let a=1..4 b=1..4 c=1..4
+  where (a != b and b != c)
+  level easy {
+    where (a + b + c <= 6)
+  }
+  level hard {
+    where (a + b + c >= 9)
+  }
+
+  scene 36x27 {
+    row top at=canvas(1, 0) space=2 align=start {
+      program p code=["define tower h", "  up h", "  right 2", "  down h", "tower {a}", "tower {b}", "tower {c}"]
+      turtle t cols=7 rows=5 col=1 row=5 moves=["define tower h", "  up h", "  right 2", "  down h", "tower {a}", "tower {b}", "tower {c}"] upto=0
+    }
+    text ask "The block tower draws one tower of the old city wall, as high as its input h. How many squares long is the whole line the turtle draws?" narrate width=34 below=top gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  check coding.runs of=t answer=moves
+  feedback {
+    when (answer == a + b + c + 6) point=p {
+      say "Each tower goes up h and comes down h. Count both."
+    }
+    when (answer == 2 * (a + b + c)) point=p {
+      say "Line 3 moves the turtle too, across the top of every tower."
+    }
+  }
+  hint "Follow the first call: how far does that tower go up, across and down?"
+  hint "Do the same for each call, then add the three."
+}

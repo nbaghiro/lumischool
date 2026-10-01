@@ -1,0 +1,28 @@
+# The two-star reason: the check lantern says one lantern changed but not which. Knowing the island
+# sends only vowels tonight, the child works back from the letter read to the one vowel a single
+# changed lantern away. Each version has exactly one such vowel.
+item coding.parity-vowel v=1 stars=2 skills=[coding.checking, coding.binary, reasoning.work-backwards] {
+  title "Which vowel was sent?"
+  difficulty (pick(k, 2, 1, 1, 1, 1, 2, 16) / 4 + k / 10)
+  let k=0..6
+  level easy {
+    let k=1..4
+  }
+  level hard {
+    let k={0, 5, 6}
+  }
+
+  scene 36x22 {
+    row top at=canvas(1, 0) space=3 align=end {
+      lamps l bits=5 n=pick(k, 3, 4, 8, 14, 20, 23, 25)
+      lantern chk lit=((pick(k, 1, 5, 9, 15, 21, 21, 9) // 16 % 2 + pick(k, 1, 5, 9, 15, 21, 21, 9) // 8 % 2 + pick(k, 1, 5, 9, 15, 21, 21, 9) // 4 % 2 + pick(k, 1, 5, 9, 15, 21, 21, 9) // 2 % 2 + pick(k, 1, 5, 9, 15, 21, 21, 9) % 2) % 2) post=1
+    }
+    text key "A 1, E 5, I 9, O 15, U 21" width=34 below=top gap=1
+    text ask "Tonight the island sends only vowels: A, E, I, O or U. The ship reads {pick(k, \"C\", \"D\", \"H\", \"N\", \"T\", \"W\", \"Y\")}, and the check lantern shows that one lantern changed on the way. Which vowel was sent?" narrate width=34 below=key gap=1
+    word-input letter options=["{pick(k, \"A\", \"E\", \"I\", \"O\", \"U\", \"U\", \"I\")}"] letters=1 below=ask gap=1
+  }
+
+  answer letter=pick(k, "A", "E", "I", "O", "U", "U", "I")
+  hint "Changing one lantern adds or takes away its worth. Which vowels could one lantern make?"
+  hint "Try switching each lantern in turn. Which change gives a vowel?"
+}

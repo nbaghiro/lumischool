@@ -1,0 +1,31 @@
+# The two-star: not more than and less than look alike but differ at one reading, the limit itself.
+# The checker runs both versions on every reading and proves that only the limit catches the slip.
+item coding.not-edge v=1 stars=2 skills=[coding.logic, coding.testing, reasoning.counterexample] {
+  title "Where do they differ?"
+  difficulty (t / 10)
+  let t=4..12
+  level easy {
+    let t=4..6
+  }
+  level hard {
+    let t=10..12
+  }
+
+  scene 36x22 {
+    row top at=canvas(1, 0) space=2 align=start {
+      program p code=["if not river is more than {t}", "  say cross", "otherwise", "  say wait"] text=true
+      kingfisher kf flying=0 facing=0
+    }
+    text ask "A second crew wrote line 1 as: if river is less than {t}. For river levels from 0 to 20, which level is the only one where the two programs say different things?" narrate width=34 below=top gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  check coding.tests of=p input=river bug="1: if river is less than {t}" try=0..20 answer=smallest
+  feedback {
+    when (answer == t + 1 or answer == t - 1) point=p {
+      say "Work both lines for that level. Do they really disagree there?"
+    }
+  }
+  hint "Try a level well below the limit, then one well above. Do the programs agree?"
+  hint "Now try the limit itself in each line."
+}

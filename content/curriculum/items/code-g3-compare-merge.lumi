@@ -1,0 +1,35 @@
+# The two-star refine: a program that draws the right path in too many blocks. Moves that go the same
+# way one after another join into one block, and at hard a part that comes round twice becomes a
+# repeat. The answer is the fewest blocks that draw exactly the same path.
+item coding.compare-merge v=1 stars=2 skills=[coding.comparing, coding.debugging, reasoning.simplify] {
+  title "Make it shorter"
+  difficulty (k + a / 4)
+  let a=1..2 k=0..1
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x27 {
+    row top at=canvas(1, 0) space=2 align=start {
+      turtle t cols=(2 * a + 4) rows=6 col=1 row=1 face=right moves=["right {a}", "right 1", "down 1", "down 1", "right {a}", "right 1", "{if k == 0 then \"up 1\" else \"down 2\"}"]
+      program p code=["right {a}", "right 1", "down 1", "down 1", "right {a}", "right 1", "{if k == 0 then \"up 1\" else \"down 2\"}"]
+    }
+    text ask "This program draws the right path, but it is long. What is the fewest blocks a program can use to draw exactly the same path? A repeat counts as a block, and so does each block inside it." narrate width=34 below=top gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer (if k == 0 then 4 else 3)
+  feedback {
+    when (answer == 7) point=p {
+      say "That is the program as it is. Which blocks next to each other move the same way?"
+    }
+    when (k == 1 and answer == 4) point=t {
+      say "Right then down comes round twice. Could a repeat draw it?"
+    }
+  }
+  hint "Look for two blocks in a row that move the same way. Could one block do both?"
+  hint "After joining them, does any part of the path come round again the same?"
+}

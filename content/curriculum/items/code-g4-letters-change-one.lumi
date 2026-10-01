@@ -1,0 +1,26 @@
+# One lantern changes and the letter changes with it: a lantern that goes out takes its worth away,
+# and one lit by mistake adds it. This is the slip a check lantern will catch in the next lesson.
+item coding.letters-change-one v=1 skills=[coding.data, coding.binary, coding.debugging] {
+  title "One lantern goes wrong"
+  difficulty (p / 4 + k)
+  let n=3..26 p={1, 2, 4, 8, 16} k=0..1
+  where (k == 0 and n // p % 2 == 1 and n > p or k == 1 and n // p % 2 == 0 and n + p <= 26)
+  level easy {
+    let k={0}
+    let p={1, 2, 4}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x23 {
+    lamps l bits=5 n=n at=canvas(1, 0)
+    text key "A 1, B 2, C 3, D 4, E 5, F 6, G 7, H 8, I 9, J 10, K 11, L 12, M 13, N 14, O 15, P 16, Q 17, R 18, S 19, T 20, U 21, V 22, W 23, X 24, Y 25, Z 26" width=34 below=l gap=1
+    text ask "The lanterns send {pick(n - 1, \"A\", \"B\", \"C\", \"D\", \"E\", \"F\", \"G\", \"H\", \"I\", \"J\", \"K\", \"L\", \"M\", \"N\", \"O\", \"P\", \"Q\", \"R\", \"S\", \"T\", \"U\", \"V\", \"W\", \"X\", \"Y\", \"Z\")}. Then {if k == 0 then \"the wind blows out the lit lantern worth \" else \"someone lights the dark lantern worth \"}{p}. Which letter does the ship read now?" narrate width=34 below=key gap=1
+    word-input letter options=["{pick((if k == 0 then n - p else n + p) - 1, \"A\", \"B\", \"C\", \"D\", \"E\", \"F\", \"G\", \"H\", \"I\", \"J\", \"K\", \"L\", \"M\", \"N\", \"O\", \"P\", \"Q\", \"R\", \"S\", \"T\", \"U\", \"V\", \"W\", \"X\", \"Y\", \"Z\")}"] letters=1 below=ask gap=1
+  }
+
+  answer letter=pick((if k == 0 then n - p else n + p) - 1, "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
+  hint "What number do the lanterns show before the change?"
+  hint "Does that lantern add its worth or take it away? Which letter has the new number?"
+}

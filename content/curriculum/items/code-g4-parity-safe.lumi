@@ -1,0 +1,34 @@
+# Using the check: count every lit lantern, check lantern too. An even count means the row came
+# safely; an odd count means one lantern changed on the way.
+item coding.parity-safe v=1 skills=[coding.data, coding.checking, coding.debugging] {
+  title "Safe or spoilt?"
+  difficulty ((n // 16 % 2 + n // 8 % 2 + n // 4 % 2 + n // 2 % 2 + n % 2) / 5 + s / 2)
+  let n=1..31 s=0..1
+  level easy {
+    where (n // 16 % 2 + n // 8 % 2 + n // 4 % 2 + n // 2 % 2 + n % 2 <= 2)
+  }
+  level hard {
+    where (n // 16 % 2 + n // 8 % 2 + n // 4 % 2 + n // 2 % 2 + n % 2 >= 3)
+  }
+
+  scene 36x21 {
+    row top at=canvas(1, 0) space=3 align=end {
+      lamps l bits=5 n=n
+      lantern chk lit=((n // 16 % 2 + n // 8 % 2 + n // 4 % 2 + n // 2 % 2 + n % 2 + s) % 2) post=1
+    }
+    text ask "The ship sees these lanterns and the check lantern on its post. Did the row arrive safely, or did one lantern change on the way?" narrate width=34 below=top gap=1
+    choice pick options=["safe", "spoilt"] below=ask gap=1
+  }
+
+  answer pick=(if s == 0 then "safe" else "spoilt")
+  feedback {
+    when (s == 1 and pick == "safe") point=chk {
+      say "Count the check lantern too. Is the whole count even?"
+    }
+    when (s == 0 and pick == "spoilt") point=chk {
+      say "Count every lit lantern, the check lantern too. An even count means safe."
+    }
+  }
+  hint "Count every lit lantern, including the check lantern."
+  hint "Is the count even or odd? Which one means a lantern changed?"
+}

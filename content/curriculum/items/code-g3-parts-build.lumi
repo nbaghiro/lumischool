@@ -1,0 +1,23 @@
+# The three-star plan: collect both gems and stop on the flag in very few blocks. The parts can come
+# in more than one order, and only an order that does not double back fits the slots.
+item coding.parts-build v=1 stars=3 skills=[coding.decomposition, coding.sequences, reasoning.planning] {
+  title "Both gems in few blocks"
+  difficulty k
+  let k=0..2
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x24 {
+    maze g map=[pick(k, "S . . *", "S . # . *", "S . * . ."), pick(k, ". . . .", ". . . . .", ". # # # ."), pick(k, "F . . *", "* . . . F", "* . . . F")] at=canvas(1, 6)
+    codepad answer tray=["right 1", "down 1", "left 1", "up 1"] lines=(if k == 0 then 3 else 4) right-of=g gap=2
+    text ask "Write a program that collects both gems and stops on the flag, in {if k == 0 then 3 else 4} blocks or fewer. You can change the numbers. Plan it as parts: which gem first?" narrate width=34 at=canvas(1, 0)
+  }
+
+  check coding.builds of=g goal=both
+  hint "Try the parts in each order: start, gem, gem, flag. Which order never goes back the way it came?"
+  hint "A long move can pass over a gem and the flag on its way. Where does each part have to end?"
+}

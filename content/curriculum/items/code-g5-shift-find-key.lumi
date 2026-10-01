@@ -1,0 +1,38 @@
+# The two-star reason: work backwards from a word and its code to the shift. A letter that went
+# round past Z gives a negative difference, so the shift is 26 more than it; any unwrapped letter
+# gives it directly, and the hard versions start with a wrapped letter.
+item coding.shift-find-key v=1 stars=2 skills=[coding.encryption, coding.lists, reasoning.work-backwards] {
+  title "Find the shift"
+  difficulty (s / 5 + (if k >= 4 then 1 else 0))
+  let k=0..7 s=2..9
+  level easy {
+    let k=0..3
+    let s=2..5
+  }
+  level hard {
+    let k=4..7
+    let s=5..9
+  }
+
+  scene 36x23 {
+    row top at=canvas(1, 0) space=3 align=start {
+      listbox sent name=sent code=["set sent to list {pick(k, 2, 9, 13, 4, 20, 23, 25, 26)}, {pick(k, 1, 14, 1, 15, 15, 1, 5, 9)}, {pick(k, 7, 11, 16, 7, 25, 25, 19, 16)}"]
+      listbox coded name=coded code=["set coded to list {(pick(k, 2, 9, 13, 4, 20, 23, 25, 26) + s - 1) % 26 + 1}, {(pick(k, 1, 14, 1, 15, 15, 1, 5, 9) + s - 1) % 26 + 1}, {(pick(k, 7, 11, 16, 7, 25, 25, 19, 16) + s - 1) % 26 + 1}"]
+    }
+    text key "A 1, B 2, C 3, D 4, E 5, F 6, G 7, H 8, I 9, J 10, K 11, L 12, M 13, N 14, O 15, P 16, Q 17, R 18, S 19, T 20, U 21, V 22, W 23, X 24, Y 25, Z 26" width=34 below=top gap=1
+    text ask "The lock keeper coded the word in sent by moving every letter the same number of places on, starting again at A after Z. The list coded is what came out. How many places on did each letter move?" narrate width=34 below=key gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer s
+  feedback {
+    when (answer == 26 - s) point=coded {
+      say "That counts back from the coded letter. How many places on from the sent letter is it?"
+    }
+    when (answer == s - 26) point=coded {
+      say "A letter that went past Z comes back round. Add 26 to that difference."
+    }
+  }
+  hint "Compare item 1 of sent with item 1 of coded. How far apart are they?"
+  hint "Check with item 2. If a letter went past Z, count on through Z and round to A."
+}

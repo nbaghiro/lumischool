@@ -1,0 +1,29 @@
+# The two-star reason: work backwards from how many signs a code must carry to the fewest lanterns,
+# using what each extra lantern does (it doubles the patterns). All dark means nothing is sent, so
+# b lanterns carry 2 to the b, less one, signs.
+item coding.letters-fewest-lamps v=1 stars=2 skills=[coding.data, coding.binary, reasoning.work-backwards] {
+  title "The fewest lanterns"
+  difficulty m
+  let m={10, 12, 26, 33, 40, 70}
+  level easy {
+    let m={10, 12}
+  }
+  level hard {
+    let m={40, 70}
+  }
+
+  scene 36x14 {
+    lamps l bits=3 n=5 at=canvas(1, 0)
+    text ask "A code must give each of {m} signs its own pattern of lanterns, and all dark means nothing is sent. What is the fewest lanterns the row needs?" narrate width=22 right-of=l gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer (if m <= 15 then 4 else if m <= 31 then 5 else if m <= 63 then 6 else 7)
+  feedback {
+    when (answer == (if m <= 15 then 3 else if m <= 31 then 4 else if m <= 63 then 5 else 6)) point=l {
+      say "Light every lantern in a row that long. Is the biggest number at least {m}?"
+    }
+  }
+  hint "What is the biggest number three lanterns show? Four lanterns? Five?"
+  hint "Each new lantern on the left is worth double the last. When does the biggest number first reach {m}?"
+}

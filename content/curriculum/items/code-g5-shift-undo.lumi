@@ -1,0 +1,29 @@
+# Reading a coded note: the boat's program undoes the shift by taking it away, and an if adds 26 back
+# when a number drops below 1. The coded words are chosen so that at least one letter wraps.
+item coding.shift-undo v=1 skills=[coding.encryption, coding.lists, coding.tracing] {
+  title "The boat reads the note"
+  difficulty (s / 4 + k / 10)
+  let k=0..5 s=2..5
+  level easy {
+    let s=2..3
+  }
+  level hard {
+    let s=4..5
+  }
+
+  scene 36x40 {
+    column top at=canvas(1, 0) space=1 align=start {
+      program p code=["set word to list {(pick(k, 20, 23, 23, 19, 25, 26) + s - 1) % 26 + 1}, {(pick(k, 15, 1, 1, 11, 5, 9) + s - 1) % 26 + 1}, {(pick(k, 25, 25, 24, 25, 19, 16) + s - 1) % 26 + 1}", "set i to 1", "repeat 3", "  set n to item i of word", "  take {s} from n", "  if n is less than 1", "    add 26 to n", "  replace item i of word with n", "  add 1 to i"]
+      row under space=1 align=start {
+        listbox l name=word code=["set word to list {(pick(k, 20, 23, 23, 19, 25, 26) + s - 1) % 26 + 1}, {(pick(k, 15, 1, 1, 11, 5, 9) + s - 1) % 26 + 1}, {(pick(k, 25, 25, 24, 25, 19, 16) + s - 1) % 26 + 1}", "set i to 1", "repeat 3", "  set n to item i of word", "  take {s} from n", "  if n is less than 1", "    add 26 to n", "  replace item i of word with n", "  add 1 to i"] upto=1
+        text key "A 1, B 2, C 3, D 4, E 5, F 6, G 7, H 8, I 9, J 10, K 11, L 12, M 13, N 14, O 15, P 16, Q 17, R 18, S 19, T 20, U 21, V 22, W 23, X 24, Y 25, Z 26" width=19
+      }
+    }
+    text ask "A note was coded by moving every letter {s} places on. The list box shows it as it arrived. The boat runs this program to undo the code. What word was sent?" narrate width=34 below=top gap=1
+    word-input word options=["{pick(k, \"toy\", \"way\", \"wax\", \"sky\", \"yes\", \"zip\")}"] letters=3 below=ask gap=1
+  }
+
+  answer word=pick(k, "toy", "way", "wax", "sky", "yes", "zip")
+  hint "Run the program on the first number. Is it less than 1 after taking {s} away?"
+  hint "Turn each number at the end into its letter with the key."
+}

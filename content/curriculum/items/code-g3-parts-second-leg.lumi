@@ -1,0 +1,42 @@
+# Writing one part on its own: part 2 only has to get from the gem to the flag, so its numbers are
+# counted from the gem, wherever the robot began. The slip is counting from the start square.
+item coding.parts-second-leg v=1 skills=[coding.decomposition, coding.sequences, reasoning.planning] {
+  title "Write part 2"
+  difficulty (c + d + 2 * k)
+  let a=1..2 b=1..2 c=2..4 d=1..2 k=0..1
+  where (a + c <= 6 and (k == 1 or d <= b) and (k == 0 or b + d <= 4))
+  level easy {
+    let k={0}
+    where (c + d <= 4)
+  }
+  level hard {
+    let k={1}
+    where (c + d >= 5)
+  }
+
+  scene 36x22 {
+    row top at=canvas(1, 0) space=2 align=start {
+      maze g cols=7 rows=5 gems=[1 + a, 1 + b] flag=[1 + a + c, if k == 0 then 1 + b - d else 1 + b + d] code=["right {a}", "down {b}"] upto=0 trail=none
+      program p1 code=["right {a}", "down {b}"] title="Part 1"
+    }
+    text ask "Part 1 takes the robot to the gem. Part 2 must take it from the gem to the flag. What are the two numbers in part 2?" narrate width=34 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text lc "right"
+      number-input across width=3
+      text lr "{if k == 0 then \"up\" else \"down\"}"
+      number-input upto width=3
+    }
+  }
+
+  answer across=c upto=d
+  feedback {
+    when (across == a + c) point=g {
+      say "That counts from the start square. Part 2 starts on the gem."
+    }
+    when (across == d and upto == c and c != d) point=g {
+      say "The right move comes first, then the {if k == 0 then \"up\" else \"down\"} move."
+    }
+  }
+  hint "Put a finger on the gem, not on the start. That is where the second part begins."
+  hint "How many squares right is the flag from the gem? How many {if k == 0 then \"up\" else \"down\"}?"
+}

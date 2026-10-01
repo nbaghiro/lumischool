@@ -1,0 +1,27 @@
+# Adding in binary, column by column from the right: 1 and 1 make 10, so write 0 and carry 1, and
+# 1, 1 and a carry make 11. The pairs grow from one carry to a run of them.
+item coding.binary-add v=1 skills=[coding.binary, addition.columns, reasoning.structure] {
+  title "Adding binary numbers"
+  difficulty (k / 3)
+  let k=0..11
+  level easy {
+    let k=0..3
+  }
+  level hard {
+    let k=8..11
+  }
+
+  scene 36x26 {
+    column top at=canvas(1, 0) space=1 align=start {
+      digitcards da digits=[pick(k, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1), pick(k, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1), pick(k, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0), pick(k, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1), pick(k, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0), pick(k, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1)]
+      digitcards db digits=[pick(k, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), pick(k, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1), pick(k, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1), pick(k, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1), pick(k, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0), pick(k, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1)]
+    }
+    lander ld rungs=3 right-of=top gap=2
+    text ask "The lander adds two readings sent in binary, the top row and the bottom row. Add them column by column from the right, carrying 1 when a column makes 2 or more. Write the answer as seven binary digits." narrate width=34 below=top gap=1
+    word-input sum options=["{pick(k, \"0001000\", \"0001011\", \"0001111\", \"0010000\", \"0010100\", \"0011001\", \"0100001\", \"0101001\", \"0110000\", \"1000010\", \"1000001\", \"1010010\")}"] letters=7 below=ask gap=1
+  }
+
+  answer sum=pick(k, "0001000", "0001011", "0001111", "0010000", "0010100", "0011001", "0100001", "0101001", "0110000", "1000010", "1000001", "1010010")
+  hint "In the right-hand column, what do the two digits make? If it is 2, write 0 and carry 1."
+  hint "In each column add the two digits and any carry: 2 is written 0 carry 1, and 3 is written 1 carry 1."
+}

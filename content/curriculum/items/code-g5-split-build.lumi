@@ -1,0 +1,23 @@
+# The three-star build: the wall written out is nine moves and the pad has seven slots, so the
+# child has to split it into a block with an input and three calls, deciding the input and the order.
+item coding.split-build v=1 stars=3 skills=[coding.procedures, coding.decomposition, reasoning.planning] {
+  title "The wall in seven lines"
+  difficulty k
+  let k=0..2
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x38 {
+    turtle t cols=7 rows=4 col=1 row=4 moves=[] target=["define tower h", "  up h", "  right 2", "  down h", "tower {pick(k, 1, 2, 3)}", "tower {pick(k, 3, 1, 1)}", "tower {pick(k, 2, 3, 2)}"] at=canvas(1, 0)
+    text ask "Draw the pale wall in 7 lines or fewer. Build the block tower, which draws one tower as high as h, and call it for each tower. You can change the numbers." narrate width=17 right-of=t gap=1
+    codepad answer tray=["define tower h", "up h", "right 2", "down h", "tower 1"] lines=7 key=["define tower h", "  up h", "  right 2", "  down h", pick(k, "tower 1", "tower 2", "tower 3"), pick(k, "tower 3", "tower 1", "tower 1"), pick(k, "tower 2", "tower 3", "tower 2")] below=t gap=1
+  }
+
+  check coding.builds of=t goal=target
+  hint "Written out, the wall needs three moves a tower. What do the three towers have in common?"
+  hint "Put the three moves inside the block, using h for the height. Then call it once for each tower, left to right."
+}

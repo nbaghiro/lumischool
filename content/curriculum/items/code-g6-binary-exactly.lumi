@@ -1,0 +1,33 @@
+# The three-star: how many bytes light exactly k lamps is a count of ways to choose k lamps of the 8,
+# with no method on the page. Choosing the lamps that are lit is the same as choosing the dark ones,
+# so k and 8 - k give the same count, which the hard versions lean on.
+item coding.binary-exactly v=1 stars=3 skills=[coding.binary, reasoning.all-the-ways, counting.cases] {
+  title "Exactly that many lamps"
+  difficulty pick(j, 0, 0.5, 1, 1.5, 2, 2.5)
+  let j=0..5
+  let k={pick(j, 1, 7, 2, 6, 3, 5)}
+  level easy {
+    let j=0..1
+  }
+  level hard {
+    let j=4..5
+  }
+
+  scene 36x16 {
+    row top at=canvas(1, 0) space=2 align=end {
+      lamps l bits=8 n=pick(j, 64, 254, 66, 126, 69, 87)
+      moon mn phase=0.5
+    }
+    text ask "These eight lamps light exactly {k}. How many numbers from 0 to 255 light exactly {k} of the eight lamps?" narrate width=34 below=top gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer pick(j, 8, 8, 28, 28, 56, 56)
+  feedback {
+    when (j >= 2 and answer == pick(j, 0, 0, 56, 56, 336, 336)) point=l {
+      say "That counts each set of lamps more than once, once for every order. Does the order the lamps were chosen in change the number?"
+    }
+  }
+  hint "{if k > 4 then \"Lighting all but a few is the same as choosing which few stay dark. How many stay dark?\" else \"Choose the first lit lamp, then the next. Does the order you choose them in matter?\"}"
+  hint "For two lamps: the lamp worth 128 can pair with 7 others, the next with 6 new ones, and so on."
+}

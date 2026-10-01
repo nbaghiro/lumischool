@@ -1,0 +1,26 @@
+# A word is a row of letters, so it is a row of lantern patterns, one pattern a letter. The words
+# are things on the island, and later words need bigger lanterns.
+item coding.letters-word v=1 skills=[coding.data, coding.binary] {
+  title "A word in lanterns"
+  difficulty k
+  let k=0..5
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x36 {
+    lamps l1 bits=5 n=pick(k, 19, 13, 2, 19, 8, 15) at=canvas(1, 0)
+    lamps l2 bits=5 n=pick(k, 5, 1, 1, 21, 21, 23) below=l1 gap=1
+    lamps l3 bits=5 n=pick(k, 1, 16, 25, 14, 20, 12) below=l2 gap=1
+    text key "A 1, B 2, C 3, D 4, E 5, F 6, G 7, H 8, I 9, J 10, K 11, L 12, M 13, N 14, O 15, P 16, Q 17, R 18, S 19, T 20, U 21, V 22, W 23, X 24, Y 25, Z 26" width=34 below=l3 gap=1
+    text ask "The lanterns send a word of three letters, the top row first. What is the word?" narrate width=34 below=key gap=1
+    word-input word options=["{pick(k, \"sea\", \"map\", \"bay\", \"sun\", \"hut\", \"owl\")}"] letters=3 below=ask gap=1
+  }
+
+  answer word=pick(k, "sea", "map", "bay", "sun", "hut", "owl")
+  hint "Read the top row of lanterns first. What number does it make?"
+  hint "Find each number's letter in the key, then read the three letters in order."
+}

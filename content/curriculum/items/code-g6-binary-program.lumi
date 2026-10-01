@@ -1,0 +1,33 @@
+# Reading binary with a program: start at 0, and for each digit from the left, double and add the
+# digit. The child traces it to the end and finds the same number the lamps' worths give.
+item coding.binary-program v=1 skills=[coding.binary, coding.lists, coding.tracing, coding.text] {
+  title "A program that reads binary"
+  difficulty ((a * 32 + b * 16 + c * 8 + d * 4 + e * 2 + f) / 20)
+  let a=0..1 b=0..1 c=0..1 d=0..1 e=0..1 f=0..1
+  where (a + b + c + d + e + f >= 3)
+  level easy {
+    let a={0}
+  }
+  level hard {
+    let a={1}
+    let b={1}
+  }
+
+  scene 36x22 {
+    row top at=canvas(1, 0) space=2 align=start {
+      program p code=["set bits to list {a}, {b}, {c}, {d}, {e}, {f}", "set n to 0", "for each b in bits", "  double n", "  add b to n"] text=true
+      earth ea
+    }
+    text ask "The moon base receives six binary digits from Earth, kept in the list bits. This program turns them into a number. What does n hold when it ends?" narrate width=34 below=top gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  check coding.runs of=p answer="value(n)"
+  feedback {
+    when (answer == a + b + c + d + e + f) point=p {
+      say "That adds the digits. Line 4 doubles n before each digit is added."
+    }
+  }
+  hint "Write n after each time round: double it, then add the digit."
+  hint "Check: what are the digits worth as lamps, 32 down to 1?"
+}

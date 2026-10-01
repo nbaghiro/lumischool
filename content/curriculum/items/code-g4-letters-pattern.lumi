@@ -1,0 +1,25 @@
+# Writing a letter in lamps: the letter's number is split into lamp worths from the biggest down,
+# and the pattern is written as a 1 for a lit lamp and a 0 for a dark one, read left to right.
+item coding.letters-pattern v=1 skills=[coding.data, coding.binary] {
+  title "Light the lanterns for a letter"
+  difficulty (n // 16 % 2 + n // 8 % 2 + n // 4 % 2 + n // 2 % 2 + n % 2 + n / 26)
+  let n=3..26
+  where (n != 4 and n != 8 and n != 16)
+  level easy {
+    let n=3..15
+  }
+  level hard {
+    let n=17..26
+  }
+
+  scene 36x21 {
+    lamps l bits=5 n=0 at=canvas(1, 0)
+    text key "A 1, B 2, C 3, D 4, E 5, F 6, G 7, H 8, I 9, J 10, K 11, L 12, M 13, N 14, O 15, P 16, Q 17, R 18, S 19, T 20, U 21, V 22, W 23, X 24, Y 25, Z 26" width=34 below=l gap=1
+    text ask "The ship answers with the letter {pick(n - 1, \"A\", \"B\", \"C\", \"D\", \"E\", \"F\", \"G\", \"H\", \"I\", \"J\", \"K\", \"L\", \"M\", \"N\", \"O\", \"P\", \"Q\", \"R\", \"S\", \"T\", \"U\", \"V\", \"W\", \"X\", \"Y\", \"Z\")}. Which lanterns must be lit? Write them left to right, 1 for lit and 0 for dark." narrate width=34 below=key gap=1
+    word-input pattern options=["{n // 16 % 2}{n // 8 % 2}{n // 4 % 2}{n // 2 % 2}{n % 2}"] letters=5 below=ask gap=1
+  }
+
+  answer pattern=pick(n, "00000", "00001", "00010", "00011", "00100", "00101", "00110", "00111", "01000", "01001", "01010", "01011", "01100", "01101", "01110", "01111", "10000", "10001", "10010", "10011", "10100", "10101", "10110", "10111", "11000", "11001", "11010")
+  hint "What is the number of {pick(n - 1, \"A\", \"B\", \"C\", \"D\", \"E\", \"F\", \"G\", \"H\", \"I\", \"J\", \"K\", \"L\", \"M\", \"N\", \"O\", \"P\", \"Q\", \"R\", \"S\", \"T\", \"U\", \"V\", \"W\", \"X\", \"Y\", \"Z\")} in the key?"
+  hint "Start with the biggest lantern that is not more than that number. What is left to make?"
+}

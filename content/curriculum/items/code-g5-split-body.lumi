@@ -1,0 +1,33 @@
+# Choosing the body of a block: the market stalls are all the same height and differ only in width,
+# so the input must be the width and the height stays a fixed number. The other bodies make the
+# input the height, or ignore it.
+item coding.split-body v=1 skills=[coding.procedures, coding.decomposition, reasoning.patterns] {
+  title "One block for every stall"
+  difficulty ((a + b + c) / 4 + k / 10)
+  let a=1..3 b=2..4 c=1..3 k=0..2
+  where (a != b and b != c and a + b + c + 3 <= 13)
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x31 {
+    turtle t cols=14 rows=4 col=1 row=4 moves=[] target=["define stall w", "  up 2", "  right w", "  down 2", "  right 1", "stall {a}", "stall {b}", "stall {c}"] at=canvas(1, 0)
+    text ask "The pale line is the market's row of stalls, each 2 high and as wide as its number, with a gap of 1 after it. The calls are stall {a}, stall {b} and stall {c}. Which lines go inside define stall w, before the gap?" narrate width=34 below=t gap=1
+    choice pick options=[pick(k, "up 2, right w, down 2", "up w, right 2, down w", "up 2, right 2, down 2"), pick(k, "up w, right 2, down w", "up 2, right 2, down 2", "up 2, right w, down 2"), pick(k, "up 2, right 2, down 2", "up 2, right w, down 2", "up w, right 2, down w")] stack=column below=ask gap=1
+  }
+
+  answer pick="up 2, right w, down 2"
+  feedback {
+    when (pick == "up w, right 2, down w") point=t {
+      say "Those stalls would be different heights. In the picture, what changes from stall to stall?"
+    }
+    when (pick == "up 2, right 2, down 2") point=t {
+      say "Every stall would be 2 wide. The input w has to be used somewhere."
+    }
+  }
+  hint "Look at the three stalls. Which length changes from one to the next, and which stays the same?"
+  hint "The input w must be the length that changes."
+}

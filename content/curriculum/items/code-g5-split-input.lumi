@@ -1,0 +1,29 @@
+# What becomes the input: the one length that changes from part to part. The picture decides it,
+# and the versions change which length that is, so the answer has to be read from the drawing.
+item coding.split-input v=1 skills=[coding.procedures, coding.decomposition, reasoning.patterns] {
+  title "What should the input be?"
+  difficulty (k / 2 + (a + b + c) / 10)
+  let k=0..2 a=1..3 b=1..3 c=1..3
+  where (a != b and b != c and a != c)
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x33 {
+    turtle t cols=16 rows=5 col=1 row=5 moves=[] target=["define part x", "  {pick(k, \"up x\", \"up 2\", \"up 2\")}", "  {pick(k, \"right 2\", \"right x\", \"right 2\")}", "  {pick(k, \"down x\", \"down 2\", \"down 2\")}", "  {pick(k, \"right 1\", \"right 1\", \"right x\")}", "part {a}", "part {b}", "part {c}"] at=canvas(1, 0)
+    text ask "The pale line is part of the old city wall, three parts drawn by one block with one input. Each part goes up, across, down, and leaves a gap. What should the block's input be?" narrate width=34 below=t gap=1
+    choice pick options=["how tall the part is", "how wide the part is", "the gap after the part"] below=ask gap=1 stack=column
+  }
+
+  answer pick=pick(k, "how tall the part is", "how wide the part is", "the gap after the part")
+  feedback {
+    when (pick != pick(k, "how tall the part is", "how wide the part is", "the gap after the part")) point=t {
+      say "Measure that length in each of the three parts. Is it the same every time?"
+    }
+  }
+  hint "Measure each part: how tall, how wide, and how big a gap after it."
+  hint "Which of those is different from part to part? The others can be plain numbers in the block."
+}

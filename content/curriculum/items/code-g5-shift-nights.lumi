@@ -1,0 +1,33 @@
+# The three-star: no method on the page. Moving every letter s places each night brings the message
+# back once the total moved is a whole number of 26s, which is 26 divided by what s and 26 share.
+# The hard shifts share 2 with 26, so the answer is 13 rather than 26 or 26 divided by s.
+item coding.shift-nights v=1 stars=3 skills=[coding.encryption, reasoning.patterns, number.multiples] {
+  title "Back to the start"
+  difficulty pick(t, 0, 1, 1, 2, 2, 3)
+  let t=0..5
+  let s={pick(t, 13, 2, 3, 4, 6, 8)}
+  level easy {
+    let t=0..1
+  }
+  level hard {
+    let t=4..5
+  }
+
+  scene 36x18 {
+    row top at=canvas(1, 0) space=3 align=end {
+      narrowboat nb windows=2 pots=1
+      listbox board name=board code=["set board to list 13, 9, 12, 12"]
+    }
+    text ask "Each night the lock keeper moves every letter on the notice board {s} places on, starting again at A after Z. Tonight it says MILL. After how many nights will it first say MILL again?" narrate width=34 below=top gap=1
+    number-input answer width=3 below=ask gap=1
+  }
+
+  answer pick(t, 2, 13, 26, 13, 13, 13)
+  feedback {
+    when (answer == 26 and t != 2) point=board {
+      say "26 nights works, but is there a sooner night? When has every letter moved a whole number of times round?"
+    }
+  }
+  hint "Follow one letter only, M. Where is it after one night? After two?"
+  hint "M is back when it has gone round the whole alphabet a whole number of times. How many nights of {s} places does that take?"
+}

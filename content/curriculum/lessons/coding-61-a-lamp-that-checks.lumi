@@ -1,0 +1,71 @@
+# Catching a mistake in a message: a check lantern keeps the count of lit lanterns even, so one
+# lantern changed on the way shows up, and in a grid with checks both ways the changed one is found.
+lesson coding-a-lamp-that-checks v=1 format=teach grade=4 unit=8 subject=coding levels=[easy, medium, hard] {
+  title "A lamp that checks the others"
+  goal "Add a check lamp that keeps the number of lit lamps even, and use it to tell when a message was spoilt."
+
+  look {
+    scene 36x12 {
+      row top at=canvas(1, 0) space=3 align=end {
+        lamps l bits=5 n=13
+        lantern chk lit=1 post=1
+        parrot pr
+      }
+    }
+    say """
+      Wind and spray can change a lantern on the way to the ship. So after each letter the island
+      lights one more lantern, the check lantern on its post, whenever that makes the number of lit
+      lanterns even. Here M lights three lanterns, so the check lantern is lit too, making four. If
+      the ship ever counts an odd number, it knows one lantern changed and asks for the letter again.
+      """
+  }
+  do {
+    show coding.parity-even n=13 easy-n=4 hard-n=23
+    level easy {
+      worked coding.parity-even n=6 level=medium
+    }
+    practice coding.parity-safe count=1 seed=2
+    practice coding.parity-even count=1 seed=4
+    practice coding.parity-safe count=1 seed=5
+    practice coding.parity-which count=1 seed=3
+    show coding.parity-odd-row v=0 easy-v=2 hard-v=7
+    practice coding.parity-which count=1 seed=7
+    level medium hard {
+      show coding.parity-odd-row v=3 hard-v=1
+    }
+    level hard {
+      practice coding.parity-safe count=1 seed=9
+    }
+  }
+  try stars=2 {
+    show coding.parity-vowel k=2 easy-k=1 hard-k=5
+  }
+  try stars=3 {
+    show coding.parity-find-card v=6 easy-v=0 hard-v=4
+  }
+  remember {
+    say "A check lamp keeps the count of lit lamps even. An odd count means something changed."
+  }
+
+  grown-ups """
+    This is the idea behind the check digit on a barcode and the extra bit computers send with data:
+    one more lamp, chosen so the count of lit lamps is always even, lets the receiver notice when one
+    lamp has changed. It does not say which lamp, which is why the two-star question needs the extra
+    clue that only vowels are sent, and the child works back to the one vowel a single change away.
+    The three-star question is a well-known card trick: with a check in every row and every column,
+    the odd row and the odd column cross at the changed card, even when it is a check card itself.
+    Watch for a child who adds the lamps' worths instead of counting how many are lit, and for one
+    who forgets to count the check lamp. If the child is stuck, lay out real cards and turn one while
+    the child looks away. Off the page, do the card trick at home, with the child as the magician.
+    Two changed lamps keep the count even and slip through; that is worth saying aloud once. This
+    meets CSTA 2-NI-04, "Model the role of protocols in transmitting data across networks and the
+    Internet," in a first form, and builds on CSTA 2-DA-07, "Represent data using multiple encoding
+    schemes."
+    """
+  level easy {
+    grown-ups "At this level the rows have one or two lit lanterns, one check is worked in the teacher's pen, the spoilt letter is the top row, the turned card's row is near the top, the vowel is one lantern worth 1 away, and the turned card in the grid is never a check card."
+  }
+  level hard {
+    grown-ups "At this level the rows have three or more lit lanterns, the spoilt letter is the bottom row, the turned card is lower down, the vowel can be a lantern worth 2 or 16 away, and the turned card is a check card in the last row or column."
+  }
+}

@@ -1,0 +1,35 @@
+# Two programs written differently can decide the same: not this and not that is the same as
+# neither, so it agrees with "if this or that, shut". With and instead of or the two differ when
+# only one of the readings is high, which the child has to find.
+item coding.not-agree v=1 skills=[coding.logic, coding.decisions, coding.text, coding.testing] {
+  title "Do they always agree?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x36 {
+    column top at=canvas(0, 0) space=1 align=start {
+      program pa code=["if not wind is more than 20 and not river is more than 6", "  say open", "otherwise", "  say shut"] text=true title="Program A"
+      program pb code=["if wind is more than 20 {if k == 0 then \"or\" else \"and\"} river is more than 6", "  say shut", "otherwise", "  say open"] text=true title="Program B"
+    }
+    text ask "Two crews wrote the rope bridge's program. Do the two programs say the same thing for every wind and every river level?" narrate width=34 below=top gap=1
+    choice pick options=["always the same", "not always the same"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "always the same" else "not always the same")
+  feedback {
+    when (k == 1 and pick == "always the same") point=pb {
+      say "Try a strong wind with a low river. What does each program say?"
+    }
+    when (k == 0 and pick == "not always the same") point=pb {
+      say "Try all four cases: each reading high or low. Is there one where they differ?"
+    }
+  }
+  hint "Make a table: wind high or low, river high or low. That is four cases."
+  hint "Work both programs on each case. Do they ever say different things?"
+}

@@ -1,0 +1,37 @@
+# The way in to not: the rope bridge opens when the wind is not more than the limit. Not turns the
+# question round, so a reading equal to the limit is not more than it and the bridge opens; the edge
+# is where the slip shows.
+item coding.not-run v=1 skills=[coding.decisions, coding.logic, coding.text] {
+  title "Not more than the limit"
+  difficulty (if w == t then 1 else if w == t + 1 then 0.6 else 0)
+  let t={30, 40} w=20..50
+  where (w >= t - 8 and w <= t + 8)
+  level easy {
+    where (w < t - 2 or w > t + 2)
+  }
+  level hard {
+    where (w == t or w == t + 1)
+  }
+
+  scene 36x26 {
+    program p code=["set wind to {w}", "if not wind is more than {t}", "  say open", "otherwise", "  say shut"] text=true at=canvas(1, 0)
+    text ask "The rope bridge over the gorge runs this program. The wind is {w} km an hour. What does the program say?" narrate width=34 below=p gap=1
+    choice pick options=["open", "shut"] below=ask gap=1
+    ropebridge rb planks=10 gaps=0 right-of=pick gap=4
+  }
+
+  check coding.runs of=p pick=said
+  feedback {
+    when (w == t and pick == "shut") point=p {
+      say "{t} is not more than {t}, so the question in line 2 says yes."
+    }
+    when (w > t and pick == "open") point=p {
+      say "{w} is more than {t}. Not turns that yes into a no."
+    }
+    when (w < t and pick == "shut") point=p {
+      say "Is {w} more than {t}? Then what does not make of that?"
+    }
+  }
+  hint "First answer the question without not: is the wind more than {t}?"
+  hint "Not turns yes into no and no into yes. Which line runs then?"
+}

@@ -1,0 +1,27 @@
+# The build task: six cards, each used once, make a program that codes a two-letter word and moves
+# the robot along the towpath by each coded number. The if has to hold the take-away, and the move
+# has to come after it, or a letter past Z sends the robot the wrong way.
+item coding.shift-build v=1 skills=[coding.encryption, coding.lists, coding.decisions] {
+  title "Build the coding program"
+  difficulty pick(k, 1, 0, 2)
+  let k=0..2
+  let word={pick(k, "set word to list 24, 3", "set word to list 25, 2", "set word to list 23, 4")}
+  let add={pick(k, "add 4 to c", "add 3 to c", "add 5 to c")}
+  let addin={pick(k, "  add 4 to c", "  add 3 to c", "  add 5 to c")}
+  level easy {
+    let k={1}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x35 {
+    maze m cols=pick(k, 10, 8, 12) rows=1 col=1 row=1 flag=[pick(k, 10, 8, 12), 1] at=canvas(0, 0)
+    codepad answer tray=["for each c in word", "right c", add, word, "if c is more than 26", "take 26 from c"] lines=6 once=true key=[word, "for each c in word", addin, "  if c is more than 26", "    take 26 from c", "  right c"] below=m gap=1
+    text ask "Put the six cards in order, and set them in, so the program codes each letter of word and moves the robot along the towpath by the coded number. Letters past Z start again at A. Use every card once." width=12 right-of=answer gap=1
+  }
+
+  check coding.builds of=m goal=flag
+  hint "Which card must come first, so the list is there before the repeat goes through it?"
+  hint "What must happen to c before the robot moves by it? Which card only runs when c is more than 26?"
+}

@@ -1,0 +1,42 @@
+# Why a repeat is better for a long job: written out move by move, a program grows with every step,
+# but the same program with a repeat stays three blocks and only its count changes.
+item coding.compare-save v=1 skills=[coding.comparing, coding.repetition, coding.drawing] {
+  title "A taller stand"
+  difficulty m
+  let m=5..10
+  level easy {
+    let m=5..6
+  }
+  level hard {
+    let m=9..10
+  }
+
+  scene 36x33 {
+    row top at=canvas(1, 0) space=2 align=start {
+      column left space=1 align=start {
+        turtle t cols=7 rows=4 col=1 row=4 moves=["repeat 3", "  up 1", "  right 2"]
+        program pb code=["repeat 3", "  up 1", "  right 2"] title="Program B"
+      }
+      program pa code=["up 1", "right 2", "up 1", "right 2", "up 1", "right 2"] title="Program A"
+    }
+    text ask "Both programs draw these 3 steps. The stand is rebuilt with {m} steps. How many blocks would program A need, written out move by move? How many would program B need?" narrate width=34 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text la "A"
+      number-input along width=3
+      text lb "B"
+      number-input rep width=3
+    }
+  }
+
+  answer along=(2 * m) rep=3
+  feedback {
+    when (along == m) point=pa {
+      say "Each step needs an up and a right. That is two blocks a step."
+    }
+    when (rep == 2 * m or rep == m + 2) point=pb {
+      say "Program B keeps its three blocks. Only the number in the repeat changes."
+    }
+  }
+  hint "How many blocks does program A use for one step?"
+  hint "What has to change in program B for more steps? Does it need any more blocks?"
+}

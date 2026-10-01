@@ -1,0 +1,40 @@
+# Better depends on what is counted. Of three programs that all reach the flag, the fewest blocks
+# and the most squares belong to different programs, and the repeat counts as a block.
+item coding.compare-three v=1 skills=[coding.comparing, coding.repetition, coding.tracing] {
+  title "Three programs, one flag"
+  difficulty (q + a / 4)
+  let q=0..1 a=3..5
+  level easy {
+    let q={0}
+  }
+  level hard {
+    let q={1}
+  }
+
+  scene 36x34 {
+    column top at=canvas(1, 0) space=1 align=start {
+      row r1 space=2 align=start {
+        maze g cols=7 rows=4 flag=[1 + a, 3]
+        program pa code=["down 2", "right {a}"] title="Program A"
+      }
+      row r2 space=2 align=start {
+        program pb code=["right {a + 1}", "left 1", "down 2"] title="Program B"
+        program pc code=["repeat 2", "  right 1", "  down 1", "right {a - 2}"] title="Program C"
+      }
+    }
+    text ask "All three programs take the robot to the flag. {if q == 0 then \"Which program has the fewest blocks?\" else \"Which program moves the robot the most squares?\"}" narrate width=34 below=top gap=1
+    choice pick options=["Program A", "Program B", "Program C"] below=ask gap=1
+  }
+
+  answer pick=(if q == 0 then "Program A" else "Program B")
+  feedback {
+    when (q == 0 and pick == "Program C") point=pc {
+      say "The repeat saves writing a move twice, but it is a block too. Count every block in each program."
+    }
+    when (q == 1 and pick == "Program C") point=pc {
+      say "Program C has the most blocks, but count the squares it moves. Which program goes past the flag and comes back?"
+    }
+  }
+  hint "{if q == 0 then \"Point at every block of each program once, the repeat too.\" else \"Run each program with a finger and count the squares.\"}"
+  hint "{if q == 0 then \"Which program reaches the flag with only two blocks?\" else \"Moving left after moving right adds squares without getting closer.\"}"
+}

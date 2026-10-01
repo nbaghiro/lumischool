@@ -1,0 +1,42 @@
+# The two-star reason: a part tested on its own assumed the robot faced right, but the part before it
+# leaves the robot facing down (or up). Joining parts means matching the way the robot faces as well
+# as the square it is on.
+item coding.parts-heading v=1 stars=2 skills=[coding.decomposition, coding.debugging, reasoning.explain] {
+  title "Which way is it facing?"
+  difficulty k
+  let a=1..2 b=1..2 c=2..3 d=1..2 k=0..1
+  where (a + c <= 6 and (k == 1 or d <= b) and (k == 0 or b + d <= 4))
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x33 {
+    row top at=canvas(1, 0) space=2 align=start {
+      maze g cols=7 rows=5 row=(if k == 0 then 1 else 5) face=right gems=[1 + a, if k == 0 then 1 + b else 5 - b] flag=[1 + a + c, if k == 0 then 1 + b - d else 5 - b - d]
+      column parts space=1 align=start {
+        program p1 code=["forward {a}", "{if k == 0 then \"turn right\" else \"turn left\"}", "forward {b}"] title="Part 1"
+        program p2 code=["forward {c}", "turn left", "forward {d}"] title="Part 2"
+      }
+    }
+    text ask "Part 1 takes the robot to the gem. Part 2 reached the flag when it was tested on its own, with the robot on the gem facing right. Joined after part 1 it goes wrong. Which block must go at the start of part 2?" narrate width=34 below=top gap=1
+    choice pick options=["turn left", "turn right", "turn around"] below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "turn left" else "turn right")
+  feedback {
+    when (pick == "turn around") point=p1 {
+      say "Turning around would face the robot left. Which way does it face when part 1 ends?"
+    }
+    when (k == 0 and pick == "turn right") point=p1 {
+      say "After part 1 the robot faces down. A right turn from down faces it left."
+    }
+    when (k == 1 and pick == "turn left") point=p1 {
+      say "After part 1 the robot faces up. A left turn from up faces it left."
+    }
+  }
+  hint "Which way does the robot face at the very end of part 1?"
+  hint "Part 2 needs it to face right. Stand up, face that way, and turn until you face right."
+}

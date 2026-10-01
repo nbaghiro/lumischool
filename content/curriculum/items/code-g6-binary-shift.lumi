@@ -1,0 +1,34 @@
+# Moving every lamp: one place left doubles the number, two places left multiplies it by 4, and one
+# place right halves it, with the lamp worth 1 falling off the end. The child predicts it without
+# adding the lamps up afterwards.
+item coding.binary-shift v=1 skills=[coding.binary, reasoning.patterns, multiplication.doubling] {
+  title "Every lamp moves along"
+  difficulty (k + n / 60)
+  let n=5..60 k=0..2
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+    where (n % 2 == 1)
+  }
+
+  scene 36x15 {
+    lamps l bits=8 n=n at=canvas(1, 0)
+    rocket rk flame=0 right-of=l gap=3
+    text ask "Every lit lamp on the rover's display moves {if k == 0 then \"one place to the left\" else if k == 1 then \"two places to the left\" else \"one place to the right, and the lamp worth 1 drops off the end\"}. What number does it show now?" narrate width=34 below=l gap=1
+    number-input answer width=4 below=ask gap=1
+  }
+
+  answer (if k == 0 then 2 * n else if k == 1 then 4 * n else n // 2)
+  feedback {
+    when (k == 1 and answer == 2 * n) point=l {
+      say "One place left doubles. Two places left doubles twice."
+    }
+    when (k == 2 and n % 2 == 1 and answer == n / 2) point=l {
+      say "The lamp worth 1 drops off, so the half is rounded down."
+    }
+  }
+  hint "What happens to a lamp's worth when it moves one place left? One place right?"
+  hint "What number does the display show now? Change it the same way."
+}

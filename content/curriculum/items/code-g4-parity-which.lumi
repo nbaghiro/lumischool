@@ -1,0 +1,40 @@
+# Three letters arrive and one was spoilt on the way. The check lantern finds it without knowing
+# what was sent: the spoilt row is the one with an odd number of lanterns lit, check lantern too.
+item coding.parity-which v=1 skills=[coding.checking, coding.binary, coding.debugging] {
+  title "Which letter was spoilt?"
+  difficulty (k + (a // 16 % 2 + a // 8 % 2 + a // 4 % 2 + a // 2 % 2 + a % 2 + (b // 16 % 2 + b // 8 % 2 + b // 4 % 2 + b // 2 % 2 + b % 2) + (d // 16 % 2 + d // 8 % 2 + d // 4 % 2 + d // 2 % 2 + d % 2)) / 15)
+  let a=1..26 b=1..26 d=1..26 k=1..3
+  where (a != b and b != d and a != d and a // 16 % 2 + a // 8 % 2 + a // 4 % 2 + a // 2 % 2 + a % 2 >= 2 and b // 16 % 2 + b // 8 % 2 + b // 4 % 2 + b // 2 % 2 + b % 2 >= 2 and d // 16 % 2 + d // 8 % 2 + d // 4 % 2 + d // 2 % 2 + d % 2 >= 2)
+  level easy {
+    let k=1..2
+  }
+  level hard {
+    let k={3}
+  }
+
+  scene 36x33 {
+    row r1 at=canvas(1, 0) space=3 align=end {
+      lamps l1 bits=5 n=a
+      lantern c1 lit=((a // 16 % 2 + a // 8 % 2 + a // 4 % 2 + a // 2 % 2 + a % 2 + (if k == 1 then 1 else 0)) % 2) post=0
+    }
+    row r2 below=r1 gap=1 space=3 align=end {
+      lamps l2 bits=5 n=b places=false
+      lantern c2 lit=((b // 16 % 2 + b // 8 % 2 + b // 4 % 2 + b // 2 % 2 + b % 2 + (if k == 2 then 1 else 0)) % 2) post=0
+    }
+    row r3 below=r2 gap=1 space=3 align=end {
+      lamps l3 bits=5 n=d places=false
+      lantern c3 lit=((d // 16 % 2 + d // 8 % 2 + d // 4 % 2 + d // 2 % 2 + d % 2 + (if k == 3 then 1 else 0)) % 2) post=0
+    }
+    text ask "Three letters arrive, each with its check lantern at the end. One letter had a lantern change on the way. Which row is spoilt?" narrate width=34 below=r3 gap=1
+    choice pick options=["top row", "middle row", "bottom row"] below=ask gap=1
+  }
+
+  answer pick=pick(k - 1, "top row", "middle row", "bottom row")
+  feedback {
+    when (pick != pick(k - 1, "top row", "middle row", "bottom row")) point=r1 {
+      say "Count the lit lanterns in that row, the check lantern too. Is the count odd?"
+    }
+  }
+  hint "For each row, count every lit lantern, the check lantern too."
+  hint "A safe row has an even count. Which row does not?"
+}

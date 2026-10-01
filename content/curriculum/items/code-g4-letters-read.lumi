@@ -1,0 +1,38 @@
+# The way in to a code for letters: five lanterns, each worth double the one on its right, show a
+# number, and the number is the letter's place in the alphabet. Reading the number is grade two's
+# skill; the step up is that the number now stands for a letter.
+item coding.letters-read v=1 skills=[coding.data, coding.binary] {
+  title "A letter in five lanterns"
+  difficulty n
+  let n=1..26
+  level easy {
+    let n=1..12
+  }
+  level hard {
+    let n=17..26
+  }
+
+  scene 36x22 {
+    row top at=canvas(1, 0) space=3 align=end {
+      lamps l bits=5 n=n
+      lantern post lit=1 post=1
+    }
+    text key "A 1, B 2, C 3, D 4, E 5, F 6, G 7, H 8, I 9, J 10, K 11, L 12, M 13, N 14, O 15, P 16, Q 17, R 18, S 19, T 20, U 21, V 22, W 23, X 24, Y 25, Z 26" width=34 below=top gap=1
+    text ask "The lanterns on the island send one letter to the ship. Add the lit lanterns to get a number, then find its letter in the key." narrate width=34 below=key gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text ln "number"
+      number-input num width=3
+      text lt "letter"
+      word-input letter options=["{pick(n - 1, \"A\", \"B\", \"C\", \"D\", \"E\", \"F\", \"G\", \"H\", \"I\", \"J\", \"K\", \"L\", \"M\", \"N\", \"O\", \"P\", \"Q\", \"R\", \"S\", \"T\", \"U\", \"V\", \"W\", \"X\", \"Y\", \"Z\")}"] letters=1
+    }
+  }
+
+  answer num=n letter=pick(n - 1, "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
+  feedback {
+    when (num == n + 1 or num == n - 1) point=l {
+      say "Add the worth over each lit lantern again. The dark ones add nothing."
+    }
+  }
+  hint "Which lanterns are lit? Read the number over each one."
+  hint "Add those numbers. Which letter has that number in the key?"
+}

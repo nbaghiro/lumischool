@@ -1,0 +1,36 @@
+# How far a row of lanterns reaches: with every lantern lit the number is one less than the next
+# lantern's worth, so b lanterns can show every number up to 2 to the b, less one. Five is the
+# first row long enough for twenty-six letters.
+item coding.letters-biggest v=1 skills=[coding.data, coding.binary, reasoning.patterns] {
+  title "How many letters can they send?"
+  difficulty b
+  let b=3..6
+  level easy {
+    let b=3..4
+  }
+  level hard {
+    let b=5..6
+  }
+
+  scene 36x19 {
+    lamps l bits=b n=0 at=canvas(1, 0)
+    text ask "A row of {b} lanterns, each worth double the one on its right. What is the biggest number they can show? Is that enough to send every letter from A to Z?" narrate width=34 below=l gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text lb "biggest"
+      number-input most width=3
+      choice enough options=["yes", "no"]
+    }
+  }
+
+  answer most=(2 ^ b - 1) enough=(if 2 ^ b - 1 >= 26 then "yes" else "no")
+  feedback {
+    when (most == 2 ^ b) point=l {
+      say "That is the worth of the next lantern along, which this row does not have. Light them all and add."
+    }
+    when (most == 2 ^ (b - 1)) point=l {
+      say "That is only the biggest lantern. Light the others too."
+    }
+  }
+  hint "Light every lantern. What do their worths add up to?"
+  hint "Z is the 26th letter. Is the biggest number at least 26?"
+}

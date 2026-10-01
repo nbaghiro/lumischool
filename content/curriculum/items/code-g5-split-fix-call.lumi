@@ -1,0 +1,38 @@
+# The two-star: a split program draws the wrong wall, and the block itself is right. Because each
+# part is one call, the mistake is in the one call whose tower is the wrong height, and the fix is
+# that tower's height read off the pale target.
+item coding.split-fix-call v=1 stars=2 skills=[coding.procedures, coding.debugging, reasoning.find-the-error] {
+  title "The tower that is too tall"
+  difficulty (w / 2 + (a + b + c) / 10)
+  let a=1..3 b=1..3 c=1..3 w=1..3
+  where (a != b and b != c and a != c)
+  level easy {
+    let w={1}
+  }
+  level hard {
+    let w={3}
+  }
+
+  scene 36x29 {
+    row top at=canvas(1, 0) space=2 align=start {
+      program p code=["define tower h", "  up h", "  right 2", "  down h", "tower {if w == 1 then a + 1 else a}", "tower {if w == 2 then b + 1 else b}", "tower {if w == 3 then c + 1 else c}"]
+      turtle t cols=7 rows=5 col=1 row=5 moves=["define tower h", "  up h", "  right 2", "  down h", "tower {if w == 1 then a + 1 else a}", "tower {if w == 2 then b + 1 else b}", "tower {if w == 3 then c + 1 else c}"] target=["define tower h", "  up h", "  right 2", "  down h", "tower {a}", "tower {b}", "tower {c}"]
+    }
+    text ask "The turtle should draw the pale wall, but one tower comes out too tall. The block tower is right. Which line is wrong, and what number should it have?" narrate width=34 below=top gap=1
+    row ans below=ask gap=1 space=1 align=centre {
+      text ll "line"
+      number-input line width=3
+      text ln "number"
+      number-input num width=3
+    }
+  }
+
+  check coding.runs of=t goal=target line=wrong num=fix
+  feedback {
+    when (line >= 2 and line <= 4) point=p {
+      say "Changing the block would change every tower. Only one tower is wrong."
+    }
+  }
+  hint "Which tower is taller than the pale one: the first, second or third?"
+  hint "Which line calls that tower? How tall is the pale tower there?"
+}
