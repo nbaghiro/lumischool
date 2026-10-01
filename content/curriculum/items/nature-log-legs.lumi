@@ -1,0 +1,38 @@
+# The three-star: ants and spiders under a log, how many creatures and how many legs, and how many
+# of them are spiders. There is no method on the page; one way is to make them all ants first and
+# count the legs left over, two more for each spider.
+item nature.log-legs v=1 stars=3 skills=[nature.insects, reasoning.systematic] {
+  title "Ants and spiders under the log"
+  difficulty (n - 5)
+  let k=0..3
+  let n={pick(k, 5, 6, 7, 8)}
+  let s={pick(k, 2, 1, 3, 2)}
+  let legs={6 * (n - s) + 8 * s}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x19 {
+    row all at=canvas(1, 1) space=2 align=end {
+      log stone rings=5 toadstools=1
+      minibeasts two kinds=["ant", "spider"] legs=true
+    }
+    text ask "Ben rolls the fallen log by the pond over and finds only ants and spiders under it: {n} creatures in all. Ada counts {legs} legs. How many of them are spiders?" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer s
+  feedback {
+    when (answer == n - s) point=two {
+      say "That is how many ants there are. How many of the {n} are spiders?"
+    }
+    when (6 * (n - answer) + 8 * answer != legs and answer <= n) point=two {
+      say "Check it: count the legs for that many spiders and the rest ants. Do they make {legs}?"
+    }
+  }
+  hint "If all {n} were ants, how many legs would there be?"
+  hint "Each spider has two more legs than an ant. How many legs are left over?"
+}

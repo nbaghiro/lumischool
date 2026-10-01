@@ -1,0 +1,73 @@
+lesson nature-clouds-and-the-weather-to-come v=1 format=teach grade=5 unit=5 subject=nature levels=[easy, medium, hard] {
+  title "Clouds and the weather to come"
+  goal "Use how much cloud there is and which way it is moving to say what the weather will do next."
+
+  look {
+    scene 36x10 {
+      row all at=canvas(1, 1) space=2 align=end {
+        daysky sky night=false clouds=3
+        observatory ob open=0
+      }
+    }
+    say """
+      At the observatory on the star cliffs, a night at the telescope depends on the cloud. The
+      weather is written by how much of the sky is cloud: a tenth or less is clear, two to eight
+      tenths is fair, nine tenths or more is cloudy. Here the winds carry the weather from west to
+      east, so the cloud on the western horizon this evening is the cloud over the dome tonight.
+      """
+  }
+  do {
+    level easy {
+      worked nature.cloud-tenths k=3 level=medium
+    }
+    show nature.cloud-tenths k=0 hard-k=3
+    show nature.rain-moves-east k=0 hard-k=2
+    show nature.cloud-hours k=0 hard-k=2
+    show nature.cloud-tenths k=4 easy-k=1 hard-k=5
+    show nature.rain-moves-east k=2 easy-k=1 hard-k=3
+    show nature.cloud-hours k=1 hard-k=3
+    level easy medium {
+      show nature.cloud-tenths k=5 easy-k=2
+    }
+    level hard {
+      show nature.look-west k=0 level=medium
+      show nature.cloud-tenths k=4
+    }
+  }
+  story {
+    show nature.band-arrives k=1 s=30 h=3 easy-k=0 easy-s=40 hard-k=2 hard-s=40 hard-h=4
+  }
+  try stars=2 {
+    show nature.look-west k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.clear-again k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Weather here moves from west to east, so the cloud coming from the west tells what the sky will do next."
+  }
+
+  grown-ups """
+    How much cloud covers the sky, and which way it is moving, tells the weather to come. The Japan
+    Meteorological Agency's bands are used here: 「雲量が１割以下の場合は快晴」, 「２割から８割までの場合は晴れ」,
+    and 「９割以上の場合は曇り」, so a sky seven tenths cloud still counts as fair. The westerly winds
+    blow "from west to east around the Earth" (JMA, 「偏西風とは、地球の周りを西から東へ向かってふいている風のことです」),
+    and the weather of the middle latitudes moves with them; the speeds, distances and the evening's
+    cloud readings in the questions are made up. The wrong idea to watch for is that the sky
+    overhead now is the forecast, or that weather moves the way the cloud's shadow seems to on a
+    windy afternoon in any direction. In the child's working, look for the west named before any
+    forecast. If the child is stuck, put the four towns on a strip of paper and slide the weather
+    one town east, then stay here another day before the band of cloud that clears. Off the page,
+    look west at sunset for a week and write down whether the next morning was cloudy. The step up
+    from the third grade's weather measured is to forecast rather than record. This meets Japan's
+    grade five science, B(4)(ア)(イ), 「天気の変化は，雲の量や動きと関係があること」 and 「天気の変化は，映像などの気象情報を用いて予想できること」:
+    the weather changes with the amount and movement of cloud, and can be forecast from weather
+    information.
+    """
+  level easy {
+    grown-ups "At this level a worked example reads half the sky as fair, the cloud amounts are tenths, the rain moves one town, the graph is read at an hour and for the first cloudy hour, the story finds how many hours the cloud takes, the reason is to look west at a clear sky overhead, and the band of cloud clears by 22 o'clock."
+  }
+  level hard {
+    grown-ups "At this level the cloud amounts are halves, quarters and percentages, the forecasts include where it will be dry, the graph asks how many readings were fair and where the cloud grew most, a second reasoning question comes in the core, the story works back to how far away the cloud was, the reason is to trust a clear western sky, and the band of cloud is wider and faster."
+  }
+}

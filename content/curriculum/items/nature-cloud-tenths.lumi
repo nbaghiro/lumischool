@@ -1,0 +1,41 @@
+# The way in: how much of the sky is cloud, in tenths, and the weather word it gives. The Japan
+# Meteorological Agency calls a sky with a tenth or less of cloud clear (快晴), two to eight tenths
+# fair (晴れ) and nine tenths or more cloudy (曇り). The harder versions give the cloud as a fraction
+# or a percentage.
+item nature.cloud-tenths v=1 skills=[nature.weather, fractions.of-amount] {
+  title "Clear, fair or cloudy?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..5
+  let amount={pick(k, "seven tenths", "nine tenths", "one tenth", "a half", "three quarters", "95 per cent")}
+  let right={pick(k, "fair", "cloudy", "clear", "fair", "fair", "cloudy")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x24 {
+    row all at=canvas(1, 1) space=2 align=end {
+      daysky sky night=false clouds=4
+      observatory ob open=0
+    }
+    text ask "At the observatory on the star cliffs the weather is written down by how much of the sky is cloud: a tenth or less is clear, two to eight tenths is fair, and nine tenths or more is cloudy. At 17 o'clock {amount} of the sky is cloud. What does Ben write?" narrate width=34 below=all gap=1
+    choice pick options=["clear", "fair", "cloudy"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == "cloudy") point=sky {
+      say "Seven tenths is a lot of cloud, but cloudy needs nine tenths or more."
+    }
+    when (k == 4 and pick == "cloudy") point=sky {
+      say "Three quarters is seven and a half tenths. Is that nine tenths or more?"
+    }
+    when (k == 5 and pick != right) point=sky {
+      say "95 per cent is 95 hundredths. How many tenths is that?"
+    }
+  }
+  hint "Change the amount of cloud into tenths of the sky."
+  hint "Which band does it fall in: 0 or 1, 2 to 8, or 9 and 10?"
+}

@@ -1,0 +1,37 @@
+# The three-star: the snails in the tray split so one side has a set number of times as many as the
+# other, and how many are on the damp side. Equal parts, worked out without a method on the page.
+item nature.snails-twice v=1 stars=3 skills=[nature.habitats, reasoning.systematic] {
+  title "Twice as many on the damp side"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let n={pick(k, 12, 15, 16, 20)}
+  let m={pick(k, 2, 2, 3, 3)}
+  let times={pick(k, "twice", "twice", "three times", "three times")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x21 {
+    row all at=canvas(1, 1) space=2 align=end {
+      minibeasts sn kinds=["snail", "snail", "snail"] legs=false
+      log lg rings=4 toadstools=0
+    }
+    text ask "Ada puts {n} snails in a tray with a damp side and a dry side. An hour later every snail is on one side or the other, and there are {times} as many on the damp side as on the dry side. How many are on the damp side?" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (n * m / (m + 1))
+  feedback {
+    when (answer == n / (m + 1)) point=sn {
+      say "That is the dry side. The damp side has {times} as many."
+    }
+    when (answer * m == n) point=sn {
+      say "Then the dry side would have the rest. Check: is the damp side {times} the dry side?"
+    }
+  }
+  hint "Try a number for the dry side. What does the damp side have then, and do the two make {n}?"
+  hint "The snails make equal parts: one part dry and {m} parts damp."
+}

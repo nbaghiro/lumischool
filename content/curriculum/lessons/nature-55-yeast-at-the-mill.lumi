@@ -1,0 +1,76 @@
+lesson nature-yeast-at-the-mill v=1 format=teach grade=6 unit=4 subject=nature levels=[easy, medium, hard] {
+  title "Yeast at the mill: a living thing too small to see"
+  goal "Use a fair test with tubes of yeast to show that yeast is alive and needs food and warmth."
+
+  look {
+    scene 36x14 {
+      row all at=canvas(1, 1) space=2 align=end {
+        waterwheel ww paddles=8 lit=0
+        testtubes tubes fills=[0.5, 0.5, 0.5, 0.5] paints=["tang", "tang", "tang", "tang"] fizz=[12, 0, 4, 0] letters=1
+      }
+    }
+    say """
+      The water wheel in the gorge grinds the flour, and the baker at the mill makes it into bread.
+      What makes the dough rise is yeast, a living thing made of single cells too small to see. It
+      feeds on sugar and gives off a gas, carbon dioxide, which rises in bubbles and puffs up the dough.
+      To show that it is alive, the baker sets up tubes that differ in one thing at a time.
+      """
+  }
+  do {
+    level easy {
+      worked nature.yeast-flasks k=2 level=medium
+    }
+    show nature.yeast-flasks k=0 hard-k=2
+    show nature.yeast-pair k=0 hard-k=2
+    show nature.microbe-work k=0 hard-k=2
+    show nature.yeast-flasks k=1 hard-k=3
+    show nature.yeast-pair k=1 hard-k=3
+    show nature.microbe-work k=3 easy-k=1
+    level medium hard {
+      show nature.yeast-cells
+    }
+    level easy {
+      show nature.dough-rise k=1 level=medium
+    }
+    level hard {
+      show nature.yeast-alive k=0 level=medium
+    }
+  }
+  story {
+    show nature.dough-rise k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.yeast-alive k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.fewest-flasks k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Yeast is alive: it feeds on sugar, works faster when warm, makes carbon dioxide that raises bread, and boiling kills it."
+  }
+
+  grown-ups """
+    Yeast is a fungus of single cells, "a fungal microorganism that feeds on sugar and produces carbon
+    dioxide (CO2) plus ethanol" (Science World, "Yeast-inflated balloons", which uses water at 41 to
+    46 degrees). The gas makes bread rise. That boiling water kills yeast, and that cold slows it, is
+    recalled; the bubbles are drawn to that rule, and the dough's readings are made up. The
+    microscope view is drawn from the microscope's own field width and a yeast cell's typical length,
+    and the checker reads the picture. The step up from grade five, where yeast was sorted into its group
+    and two bottles showed that boiled yeast makes no gas, is to test what living yeast needs, one
+    thing at a time, and to measure it. The wrong idea to watch for is
+    that yeast is a chemical like baking soda, or that a pair of tubes that differ in two things can
+    test either one. In the child's working, look for the pair's two columns compared row by row. If
+    the child is stuck, cover all but two columns of the table, then stay here another day before
+    the fewest flasks. Off the page, do the test: a teaspoon of dried yeast and one of sugar in warm
+    water in a bottle with a balloon over the neck, beside one with no sugar and one with cold water,
+    and look after half an hour. This meets China's grades five and six science, 5.2①,
+    「列举生活中常见的微生物（如酵母菌、霉菌、病毒），举例说出感冒、痢疾等疾病是由微生物引起的」: name common microbes such as yeast,
+    moulds and viruses, and give examples of illnesses they cause.
+    """
+  level easy {
+    grown-ups "At this level a worked example finds the tube that made some gas but less, the tubes asked about made the most gas and none, the pairs test sugar and warmth, the microbes are the bread and a dirty cut, the dough is read at a time, the story finds its rise each ten minutes, the reason is what warming does to the cold tube and the boiled one, and the fewest flasks test two things."
+  }
+  level hard {
+    grown-ups "At this level the tubes asked about made less gas and no gas for two reasons, the pairs test boiling and look for a pair that does not exist, the microbes are a cold and yoghurt, a microscope question and a second reason come in the core, the story finds when the dough fills the jug, the reason is why yeast is kept cold, and the fewest flasks test four things."
+  }
+}

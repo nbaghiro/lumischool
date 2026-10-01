@@ -1,0 +1,38 @@
+# The three-star: the fewest flasks for a set of fair tests. One flask with everything the yeast likes
+# is shared by every test, and each test adds one flask that differs in its one thing, so the answer
+# is one more than the number of things to test.
+item nature.fewest-flasks v=1 stars=3 skills=[nature.microorganisms, reasoning.fewest] {
+  title "The fewest flasks"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let what={pick(k, "whether yeast needs sugar and whether it needs warmth", "whether yeast needs sugar, whether it needs warmth and whether it needs water", "whether yeast needs sugar, warmth, water and air")}
+  let right={pick(k, 3, 4, 5)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x27 {
+    row all at=canvas(1, 1) space=1 align=end {
+      flask fa shape=conical fill=0.4 paint="tang" bubbles=8 balloon=3 tag="A"
+      flask fb shape=conical fill=0.4 paint="tang" bubbles=0 balloon=0 tag="B"
+      flask fc shape=conical fill=0.4 paint="tang" bubbles=3 balloon=1 tag="C"
+    }
+    text ask "Ben wants to test {what}. Every pair he compares must differ in one thing only. What is the fewest flasks he can set up?" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 2 * (right - 1)) point=all {
+      say "Each test does not need its own two flasks. Can one flask be shared by every test?"
+    }
+    when (answer == right - 1) point=all {
+      say "Each test needs a flask to compare against. Which flask has everything the yeast likes?"
+    }
+  }
+  hint "Start with one flask that has everything the yeast likes."
+  hint "For each thing to test, how many more flasks do you need?"
+}

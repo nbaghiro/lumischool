@@ -1,0 +1,33 @@
+# The atlas's table of typical July warmth and yearly rain for five zones. The values are rounded
+# and typical, not one place's record; the question moves from one cell to a comparison and to the
+# zone that fits two conditions.
+item nature.zone-table v=1 skills=[nature.zones, data.tables] {
+  title "Read the atlas table"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "How many millimetres of rain does the fir forest get in a year?", "How many degrees warmer is the desert in July than the tundra?", "How many zones in the table are warmer than 20 degrees in July and get less than 400 mm of rain?", "How many more millimetres of rain does the fir forest get in a year than the grassland?")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x25 {
+    table zones cols=3 head=["Zone", "July °C", "Rain mm a year"] cells=["tundra", "10", "300", "fir forest", "17", "500", "grassland", "22", "350", "desert", "32", "100", "rainforest", "27", "2500"] at=canvas(1, 1)
+    text ask "The atlas gives the usual July warmth and the rain in a year for each zone. {asks}" narrate width=32 below=zones gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 500, 22, 2, 150)
+  feedback {
+    when (k == 1 and answer == 32) point=zones {
+      say "That is the desert's July. How far above the tundra's 10 is it?"
+    }
+    when (k == 2 and answer == 3) point=zones {
+      say "The rainforest is warm enough, but it gets far more than 400 mm of rain. Check both columns for every row."
+    }
+  }
+  hint "Find the row for each zone the question names, and the column it asks about."
+  hint "For two conditions, cross out every row that fails either one."
+}

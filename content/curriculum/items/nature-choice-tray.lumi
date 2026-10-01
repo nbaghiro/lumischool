@@ -1,0 +1,43 @@
+# The choice tray: four corners, damp or dry and dark or light, and where ten snails are an hour
+# later. One factor is asked at a time, so the child adds two corners against the other two.
+item nature.choice-tray v=1 skills=[nature.habitats, data.tables] {
+  title "What do the snails choose?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let a={pick(k, 6, 1, 3, 3)}
+  let b={pick(k, 2, 1, 3, 4)}
+  let c={pick(k, 1, 6, 4, 3)}
+  let d={pick(k, 1, 2, 0, 0)}
+  let asks={pick(k, "damp or dry", "dark or light", "damp or dry", "dark or light")}
+  let right={pick(k, "damp", "dark", "damp", "dark")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x22 {
+    row all at=canvas(1, 1) space=2 align=end {
+      table tray cols=3 head=["snails", "dark", "light"] cells=["damp", "{a}", "{b}", "dry", "{c}", "{d}"]
+      minibeasts sn kinds=["snail", "snail"] legs=false
+    }
+    text ask "Ada makes a tray with four corners: damp and dark, damp and light, dry and dark, dry and light. She puts ten snails in the middle, and the table shows where they are an hour later. Which do more snails choose, {asks}?" narrate width=32 below=all gap=1
+    choice pick options=["damp", "dry", "dark", "light"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when ((k == 0 or k == 2) and (pick == "dark" or pick == "light")) point=tray {
+      say "The question is about damp and dry. Add the damp row, then the dry row."
+    }
+    when ((k == 1 or k == 3) and (pick == "damp" or pick == "dry")) point=tray {
+      say "The question is about dark and light. Add the dark column, then the light column."
+    }
+    when (pick != right and k >= 2) point=tray {
+      say "One corner is the biggest, but add both corners on each side before you choose."
+    }
+  }
+  hint "Which two corners go with the first word in the question, and which two with the second?"
+  hint "Add each pair. Which side has more snails?"
+}

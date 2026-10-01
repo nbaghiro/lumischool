@@ -1,0 +1,78 @@
+lesson nature-new-land-new-life v=1 format=teach grade=4 unit=7 subject=nature levels=[easy, medium, hard] {
+  title "New land, new life"
+  goal "Explain how living things reached a new volcanic island and took hold there, and what puts them in danger."
+
+  look {
+    scene 36x10 {
+      row all at=canvas(1, 1) space=2 align=end {
+        volcano v smoke=1 island=1
+        gull g flying=1
+        seal s rock=1 facing=-1
+      }
+    }
+    say """
+      In 1963 a volcano under the sea near Iceland built a new island of bare black lava, called
+      Surtsey. Nothing lived on it. Then life came across the sea: seeds floating on the waves,
+      spores and small flies blown on the wind, seeds carried by birds. Two years later the first
+      plant grew on the beach. Birds began to nest, seals came to breed, and where the gulls settled
+      their droppings fed the ground and plants spread fast.
+      """
+  }
+  do {
+    level easy {
+      worked nature.surtsey-years k=2 level=medium
+    }
+    show nature.surtsey-years k=0 hard-k=2
+    show nature.how-arrived k=0 hard-k=2
+    show nature.lava-danger k=0 hard-k=2
+    show nature.surtsey-years k=2 easy-k=1 hard-k=3
+    show nature.how-arrived k=3 easy-k=1
+    show nature.lava-danger k=3 easy-k=1
+    level medium {
+      show nature.how-arrived k=2
+    }
+    level easy {
+      show nature.how-arrived k=2 level=medium
+    }
+    level hard {
+      show nature.gulls-help k=0 level=medium
+      show nature.arrival-chain k=1 level=medium
+    }
+  }
+  story {
+    show nature.surtsey-plants k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.gulls-help k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.arrival-chain k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "New land is reached by life on the sea, on the wind and with birds, and plants take hold where something feeds the bare ground."
+  }
+
+  grown-ups """
+    Surtsey is the clearest record there is of life arriving on new land. From Wikipedia, "Surtsey":
+    the island reached the surface on 14 November 1963 and the eruption lasted until 5 June 1967; "in
+    the spring of 1965, the first vascular plant" was found on the northern shore; birds began
+    nesting "three years after the eruptions ended"; seals bred from 1983; "a gull colony has been
+    present since 1984" and "has been particularly important in developing the plant life"; and
+    "by 2008, 69 species of plant had been found on Surtsey, of which about 30 had become
+    established". Seeds came on the currents, spores and insects on the wind, and seeds with birds.
+    That the sea rocket's seed floats and that moss spores travel on the wind is recalled. The wrong
+    idea to watch for is that the plants were already there under the lava, or that animals arrive
+    before there is anything to eat. In the child's working, look for each arrival tied to the sea,
+    the wind or a bird. If the child is stuck, ask what could cross 30 kilometres of sea without a
+    boat, then stay here another day before the chain of clues. Off the page, look at a new crack
+    in a pavement or a bare patch of ground over a few weeks and note what grows there first. This
+    meets England's year four programme of study: "recognise that environments can change and that
+    this can sometimes pose dangers to living things".
+    """
+  level easy {
+    grown-ups "At this level a worked example counts the years from the first nests to the seals, the gaps are short, the arrivals are the floating seed and the moss, the dangers are to the moss and the sea rocket plant, the story takes the plants that lasted from those found, the reason is why plants crowd round the gulls' nests, and the clues go forward to the seals."
+  }
+  level hard {
+    grown-ups "At this level the gaps are longer, the arrivals are the gulls' seeds and the flies, the dangers come from a storm and from ash, a second reasoning question and a second chain come in the core, the story asks how far 30 falls short of half, the reason is why the bare lava stayed bare, and the clues run backwards from the gulls."
+  }
+}

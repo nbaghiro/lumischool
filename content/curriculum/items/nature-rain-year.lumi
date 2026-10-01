@@ -1,0 +1,38 @@
+# The story: the tundra's rain and snow added up from its climate graph, one bar for every second
+# month, so the year is about twice the six readings. The tundra is nearly as dry as a desert, which
+# a child does not expect of a land of snow.
+item nature.rain-year v=1 skills=[nature.biomes, data.bar-graphs] {
+  title "How wet is the tundra?"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2
+  let asks={pick(k, "How many millimetres do the six bars add up to?", "Each bar stands for two months. About how many millimetres fall in the whole year?", "A place counts as a desert when less than 250 mm falls in a year. About how many more millimetres a year could fall here and it would still count as dry as a desert?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x26 {
+    row all at=canvas(1, 1) space=2 align=end {
+      bargraph rain labels=["Jan", "Mar", "May", "Jul", "Sep", "Nov"] values=[1, 1, 1, 5, 4, 2] max=6 color=sky
+    }
+    text ask "These are the rain and snow bars from the tundra's climate graph behind the research hut. Each square is 5 mm. {asks}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 70, 140, 110)
+  feedback {
+    when (k == 0 and answer == 14) point=rain {
+      say "That counts squares. Each square is 5 mm."
+    }
+    when (k == 1 and answer == 70) point=rain {
+      say "That is the six bars. Each stands for two months, so the year is about twice as much."
+    }
+    when (k == 2 and answer == 180) point=rain {
+      say "That uses the six bars alone. Find the whole year's rain first, then how far below 250 it is."
+    }
+  }
+  hint "Count the squares in all six bars."
+  hint "How many millimetres is that, and how much for the whole year?"
+}

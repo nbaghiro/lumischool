@@ -1,0 +1,30 @@
+# The three-star: a plant's needs as two conditions, and how many of five places meet both. The
+# table's numbers are rounded typical values, recalled; the child crosses out rows that fail either.
+item nature.where-grow v=1 stars=3 skills=[nature.biomes, reasoning.two-conditions] {
+  title "Where could it grow?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let needs={pick(k, "at least 4 months above 5 degrees and at least 300 mm of rain a year", "at least 6 months above 5 degrees and less than 1000 mm of rain a year", "at least 3 months above 5 degrees and between 200 and 800 mm of rain a year")}
+  let right={pick(k, 3, 3, 2)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x27 {
+    table places cols=3 head=["Place", "Warm months", "Rain in mm"] cells=["tundra", "2", "140", "fir forest", "6", "360", "leafy forest", "10", "640", "desert", "12", "25", "rainforest", "12", "2240"] at=canvas(1, 1)
+    text ask "Ben's seed packet says the plant needs {needs}. A warm month is one above 5 degrees, and the rain is for a whole year. In how many of the five places could it grow?" narrate width=32 below=places gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == right + 1) point=places {
+      say "One place passes one condition but fails the other. Check both columns for every place."
+    }
+  }
+  hint "Take the first condition and cross out every place that fails it."
+  hint "Now check the places that are left against the second condition."
+}

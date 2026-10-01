@@ -1,0 +1,39 @@
+# The way in: the farm's mean temperature month by month from March to October, as a line graph.
+# The values are made up but typical of a valley farm; the question moves from one reading to the
+# warmest months and a rise.
+item nature.farm-months v=1 skills=[nature.seasons, data.line-graphs] {
+  title "The farm's year in temperatures"
+  difficulty (if k == 0 then 0 else if k <= 2 then 1 else 2)
+  let k=0..3
+  let asks={pick(k, "What was the mean temperature in May?", "How many degrees warmer was July than April?", "In how many of these months was the mean 10 degrees or more?", "Between which two months next to each other did it warm up the most? Write the first month's number.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x27 {
+    linegraph g labels=["3", "4", "5", "6", "7", "8", "9", "10"] values=[6, 8, 12, 14, 16, 16, 13, 10] max=18 per=2 color=tang at=canvas(1, 1)
+    text ask "The farmer in the valley below the mountains writes down the mean temperature of each month, in degrees Celsius. Month 3 is March and month 10 is October. {asks}" narrate width=32 below=g gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 12, 8, 6, 4)
+  feedback {
+    when (k == 0 and answer == 6) point=g {
+      say "That is how many squares up. One square up the side is 2 degrees."
+    }
+    when (k == 1 and answer == 16) point=g {
+      say "That is July. How far is it above April's 8?"
+    }
+    when (k == 3 and answer == 6) point=g {
+      say "From month 6 to month 7 it warmed 2 degrees. Find the steepest climb from one point to the next."
+    }
+    when (k == 2 and answer == 5) point=g {
+      say "October counts too: 10 degrees is 10 or more."
+    }
+  }
+  hint "Find the month along the bottom and go up to its point. One square up the side is 2 degrees."
+  hint "Read every point the question needs before you add, take away or count."
+}

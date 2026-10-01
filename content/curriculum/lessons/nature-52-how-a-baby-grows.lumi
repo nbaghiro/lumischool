@@ -1,0 +1,73 @@
+lesson nature-how-a-baby-grows v=1 format=teach grade=5 unit=9 subject=nature levels=[easy, medium, hard] {
+  title "How a baby grows, in an egg and in the womb"
+  goal "Follow a fish growing in its egg and a baby growing in the womb, and say where each one's food comes from."
+
+  look {
+    scene 36x14 {
+      row all at=canvas(1, 1) space=2 align=end {
+        parts wb of=womb
+        fish fs size=2 tone=glow facing=-1
+        art hn asset="hen"
+      }
+    }
+    say """
+      On the school windowsill in the old city, Ada watches medaka eggs through a lens. Day by day
+      the clear egg changes: a heart starts to beat, eyes and fins appear, and on the eleventh day a
+      tiny fish wriggles out, fed all the while by the yolk stored in its egg. A human baby grows for
+      about forty weeks inside its mother, in a womb full of water, joined by a cord to the placenta,
+      where the mother's blood gives it food and oxygen.
+      """
+  }
+  do {
+    level easy {
+      worked nature.womb-part k=2 level=medium
+    }
+    show nature.womb-part k=0 hard-k=2
+    show nature.egg-days k=0 hard-k=2
+    show nature.what-feeds k=0 hard-k=2
+    show nature.womb-part k=1 hard-k=3
+    show nature.egg-days k=1 hard-k=3
+    show nature.what-feeds k=3 easy-k=1
+    show nature.life-heights k=1 easy-k=0 hard-k=2
+    level hard {
+      show nature.life-heights k=3
+    }
+  }
+  story {
+    show nature.hatch-date k=1 d=5 easy-k=0 easy-d=3 hard-k=2 hard-d=8
+  }
+  try stars=2 {
+    show nature.why-yolk k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.egg-times k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A young fish grows in its egg on the yolk's food; a baby grows in the womb on food and oxygen from its mother's blood, through the cord."
+  }
+
+  grown-ups """
+    A fish's young grows inside its egg, outside the mother, on the food stored in the yolk; a human
+    baby grows inside its mother for about nine months, fed through the cord and the placenta. The
+    medaka's days are from the Britannica film "Embryonic development of medaka fish": the heart
+    beats at about fifty hours, "by the seventh or eighth day all the internal organs are ready to
+    function", and "on the eleventh day the embryo breaks out of the shell", at about 25 degrees.
+    The NHS says "pregnancy normally lasts from 37 weeks to 42 weeks from the first day of your last
+    period". The heights by age are rounded typical values, recalled from growth charts, not one
+    child's. The step up from comparing life cycles in grade four is to look inside the egg and the
+    womb and follow the food. The wrong idea to watch for is that the baby eats or breathes in the
+    womb, or that a hatched fish was fed by its mother. In the child's working, look for "egg or
+    womb?" asked first. If the child is stuck, go back to the diagram and trace the cord with a
+    finger, then stay here another day before the hatchings puzzle. Off the page, look at a raw egg
+    in a saucer: the yolk is the food store, and ask what a chick would live on. This meets Japan's
+    grade five science, B(2)(ア)(イ), 「魚には雌雄があり，生まれた卵は日がたつにつれて中の様子が変化してかえること」 and
+    「人は，母体内で成長して生まれること」, and England's year five line "describe the changes as humans
+    develop to old age".
+    """
+  level easy {
+    grown-ups "At this level a worked example finds the placenta, the parts to find are the cord and the water, the egg is read for the hatching day and the days after the heartbeat, the young ones fed are the medaka, the baby and the chick, the heights give growth over the first year, the story counts on to a hatching date, the reason is why the baby needs no yolk, and the pregnancy is forty weeks."
+  }
+  level hard {
+    grown-ups "At this level the parts to find are the placenta and the womb's wall, the egg is read for whole days of wriggling and the hours to the first heartbeat, the young ones fed are the chick and the kitten, the heights give growth per year and compare two rates, the story crosses from June into July, the reason is why the baby does not drown, and the pregnancy is forty-two weeks."
+  }
+}

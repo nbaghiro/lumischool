@@ -1,0 +1,31 @@
+# The three-star: the fewest snacks from the mill's stall that give at least an amount of energy and
+# protein together. The snack figures are made up; the child tries combinations and proves none with
+# one fewer will do.
+item nature.snack-plan v=1 stars=3 skills=[nature.diet, reasoning.fewest] {
+  title "The fewest snacks"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let need={pick(k, "at least 1500 kJ and at least 15 g of protein", "at least 2500 kJ and at least 25 g of protein", "at least 2500 kJ and at least 30 g of protein, with no more than one cheese roll")}
+  let right={pick(k, 2, 3, 4)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x23 {
+    table snacks cols=3 head=["Snack", "Energy", "Protein"] cells=["flapjack", "950 kJ", "3 g", "cheese roll", "1100 kJ", "14 g", "apple", "200 kJ", "0 g", "egg", "320 kJ", "7 g"] at=canvas(1, 1)
+    text ask "Ben wants snacks for the climb that give {need}. He can take more than one of a snack. What is the fewest snacks he can take?" narrate width=32 below=snacks gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == right - 1) point=snacks {
+      say "Try every way with that many snacks. Does any give enough energy and enough protein both?"
+    }
+  }
+  hint "Which snack gives the most energy and protein together? Start with that."
+  hint "Add one snack at a time until both totals are big enough, then check whether fewer could work."
+}

@@ -1,0 +1,73 @@
+lesson nature-new-plants-without-seeds v=1 format=teach grade=5 unit=3 subject=nature levels=[easy, medium, hard] {
+  title "New plants without seeds"
+  goal "Tell a plant grown from a part of one plant from one grown from seed, and say why the first is a copy and the second may differ."
+
+  look {
+    scene 36x12 {
+      row all at=canvas(1, 1) space=2 align=end {
+        parts st of=runner
+        narrowboat nb windows=3 pots=4
+      }
+    }
+    say """
+      On the narrowboat's roof Ada's best strawberry plant sends out runners: long stems with a small
+      new plant at the end, which roots in the soil and can be cut free. A daffodil bulb splits into
+      new bulbs, a willow stick pushed into the canal bank grows roots, and a sprouting potato grows a
+      new plant. Each is a part of one plant, so the new plant is a copy of it. A seed comes from a
+      flower, often with pollen from another plant, so a plant from seed may differ.
+      """
+  }
+  do {
+    level easy {
+      worked nature.runner-part k=2 level=medium
+    }
+    show nature.runner-part k=0 hard-k=2
+    show nature.seed-or-part k=0 hard-k=3
+    show nature.copy-or-vary k=0 hard-k=2
+    show nature.seed-or-part k=4 easy-k=1 hard-k=5
+    show nature.runner-part k=3 easy-k=1
+    show nature.copy-or-vary k=1 hard-k=3
+    level easy medium {
+      show nature.seed-or-part k=3 easy-k=2
+    }
+    level hard {
+      show nature.copies-disease k=0
+      show nature.which-method k=0 level=medium
+    }
+  }
+  story {
+    show nature.runner-count k=1 p=2 easy-k=0 easy-p=3 hard-k=2 hard-p=3
+  }
+  try stars=2 {
+    show nature.which-method k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.fewest-runners k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A plant grown from a part of one plant is a copy of it; a plant grown from seed may be different."
+  }
+
+  grown-ups """
+    Plants make new plants in two ways. From seed, after pollination, which mixes two parents; and
+    from a part of one plant, which makes a copy. The RHS ("How plants reproduce") lists "sending
+    out runners – tiny new plants on long stems – as with strawberries", "bulbs dividing to form new
+    small bulbs, called offsets", and cuttings, and says "new plants produced by cloning are
+    identical to the parent plant", while "plants grown from seed may not be 'true to type'". That a
+    potato grows from its tuber and a willow stick roots in wet ground is recalled; the runner counts
+    in the story are a model, not one real bed. The step up from pollination and the seed test
+    earlier this year is the second route and why it gives copies. The wrong idea to watch for is
+    that every new plant starts as a seed, or that seeds from one plant are copies of it. In the
+    child's working, look for "one plant or two" asked of each new plant. If the child is stuck,
+    sort the six cases into two piles first, then stay here another day before the fewest runners.
+    Off the page, root a cutting of mint or a spider plant's baby in a jar of water and watch for
+    roots in a week or two. This meets England's year five programme of study: "describe the life
+    process of reproduction in some plants and animals".
+    """
+  level easy {
+    grown-ups "At this level a worked example finds the runner, the parts to find are the parent and the new plant, the new plants come from a runner, a packet of cress and a daffodil bulb, the copies are Ada's runner and Ben's seeds, the story runs one summer, the reason is to keep the sweet strawberries, and the fewest runners make twenty plants."
+  }
+  level hard {
+    grown-ups "At this level the parts to find are the runner and the new plant's roots, the new plants come from a willow stick, a potato and the towpath's sunflowers, the copies are the rose's cutting and its seeds, the core adds a bed of copies hit by a disease, the story finds the summer the plants pass a hundred, the reason is to find a new kind, and the fewest runners make sixty plants."
+  }
+}

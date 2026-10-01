@@ -1,0 +1,41 @@
+# Weather in the middle latitudes moves with the westerly winds, from west to east (Japan
+# Meteorological Agency, kids' FAQ on 偏西風). Today's weather in four towns, west to east, and where the
+# rain will be tomorrow if it moves one town east a day.
+item nature.rain-moves-east v=1 skills=[nature.weather, reasoning.predict] {
+  title "Where will the rain be tomorrow?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let s1={pick(k, "rain", "cloud", "sun", "rain")}
+  let s2={pick(k, "sun", "rain", "cloud", "rain")}
+  let s3={pick(k, "sun", "sun", "rain", "sun")}
+  let s4={pick(k, "sun", "sun", "sun", "sun")}
+  let asks={pick(k, "Which town will most likely have rain tomorrow?", "Which town will most likely have rain tomorrow?", "Which town will most likely have rain tomorrow?", "In which town is it most likely to be dry tomorrow?")}
+  let right={pick(k, "Brook", "Mill", "Cliffs", "Cliffs")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x24 {
+    weatherweek ww days=["Ash", "Brook", "Mill", "Cliffs"] skies=[s1, s2, s3, s4] temps=["west", "", "", "east"] at=canvas(1, 1)
+    text ask "The forecast map shows today's weather in four towns, from Ash in the west to the observatory at Cliffs in the east. Here the weather moves from west to east, about one town a day. {asks}" narrate width=32 below=ww gap=1
+    choice pick options=["Ash", "Brook", "Mill", "Cliffs"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "Ash" and k <= 2 and right != "Ash") point=ww {
+      say "The weather is moving east. Will the rain stay in Ash, or move on?"
+    }
+    when (k == 3 and pick != right) point=ww {
+      say "Tomorrow the rain moves on to Brook and Mill. Where does the dry weather over Mill go?"
+    }
+    when (k <= 2 and pick != right and pick != "Ash") point=ww {
+      say "Find where it rains today, then move it one town to the east."
+    }
+  }
+  hint "Find the rain today. Which way is the weather moving?"
+  hint "Move each town's weather one town to the east."
+}

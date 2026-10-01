@@ -1,0 +1,34 @@
+# The three-star: two teams sample the same cliff with different plans, and the child works out which
+# estimate is closer to the true count found later, from the numbers alone. The true count and the
+# samples are made up; the point is that a random sample of more squares lands nearer.
+item nature.closer-estimate v=1 stars=3 skills=[nature.populations, reasoning.compare] {
+  title "Whose estimate was closer?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let told={pick(k, "The cliff has 24 squares. Team A counts 2 squares near the path: 30 burrows. Team B counts 6 squares picked from a hat: 54 burrows. Later every burrow is counted: 230. By how many burrows was the closer estimate wrong?", "The cliff has 30 squares. Team A counts 3 squares by the path: 45 burrows. Team B counts 5 squares from a hat: 40 burrows. Later every burrow is counted: 250. By how many burrows was the closer estimate wrong?", "The cliff has 40 squares. Team A counts 4 squares at the top: 28 burrows. Team B counts 8 squares from a hat: 72 burrows. Later every burrow is counted: 350. By how many burrows was the closer estimate wrong?")}
+  let right={pick(k, 14, 10, 10)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x20 {
+    row all at=canvas(1, 1) space=2 align=end {
+      array cliff rows=pick(k, 4, 5, 5) cols=pick(k, 6, 6, 8) color=sky
+      puffins pf count=2 facing=-1
+    }
+    text ask "{told}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (k == 0 and answer == 130) point=cliff {
+      say "That is Team A's error. Work out Team B's estimate too, and take the closer one."
+    }
+  }
+  hint "Find each team's mean per square, then multiply by the squares on the whole cliff."
+  hint "How far is each estimate from the true count? Which is smaller?"
+}

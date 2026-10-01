@@ -1,0 +1,33 @@
+# Which food is richest in a nutrient, from a table of four foods per 100 g. The figures are rounded
+# from usual food tables and recalled: white bread, cheddar cheese, an apple and butter.
+item nature.which-food v=1 skills=[nature.diet, data.tables] {
+  title "Which food gives most?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "Which food gives the most protein for building muscle?", "Which food gives the most carbohydrate, the body's main fuel?", "Which food would a walker eat to get the most carbohydrate with the least fat?", "Which food gives some carbohydrate but no protein or fat at all?")}
+  let right={pick(k, "cheese", "bread", "bread", "apple")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x22 {
+    table foods cols=4 head=["g in 100 g", "carbohydrate", "protein", "fat"] cells=["bread", "46", "9", "2", "cheese", "0", "25", "34", "apple", "12", "0", "0", "butter", "1", "1", "82"] at=canvas(1, 1)
+    text ask "Ben reads the food table in the mill's kitchen. {asks}" narrate width=34 below=foods gap=1
+    choice pick options=["bread", "cheese", "apple", "butter"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick == "apple") point=foods {
+      say "The apple has no fat, but compare its carbohydrate with the bread's."
+    }
+    when (pick != right and k != 2) point=foods {
+      say "Find the column the question names, and read it down every food."
+    }
+  }
+  hint "Which column does the question ask about?"
+  hint "Read that column down all four foods and compare."
+}

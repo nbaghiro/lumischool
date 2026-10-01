@@ -1,0 +1,36 @@
+# After birth: one person's height at six ages, rounded to typical values (recalled from growth
+# charts, not one real child). Growth is fastest in the first year and slows to nothing in the
+# twenties; the harder versions ask for a rate per year, which is the idea the table hides.
+item nature.life-heights v=1 skills=[nature.life-cycles, data.tables] {
+  title "Growing up, year by year"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "How many centimetres did Ben's grandfather grow in his first year?", "How many centimetres did he grow from age 10 to age 15?", "From age 5 to age 10, how many centimetres did he grow each year, on average?", "How many times as many centimetres did he grow in his first year as in an average year from age 10 to 15?")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x29 {
+    row all at=canvas(1, 1) space=2 align=centre {
+      table heights cols=2 head=["Age in years", "Height in cm"] cells=["at birth", "50", "1", "75", "5", "110", "10", "140", "15", "165", "20", "175"]
+      person gp pose=stand age=older
+    }
+    text ask "Ben's grandfather, who lives in the old city, finds the heights his mother wrote on the kitchen door frame as he grew up. {asks}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 25, 25, 6, 5)
+  feedback {
+    when (k == 2 and answer == 30) point=heights {
+      say "30 cm is the growth over all five years. How much is that each year?"
+    }
+    when (k == 3 and answer == 1) point=heights {
+      say "Both are 25 cm, but one took one year and the other took five. Find the growth in one year of each."
+    }
+  }
+  hint "Find the two ages in the table and take one height from the other."
+  hint "If the question asks for each year, share the growth by the number of years."
+}

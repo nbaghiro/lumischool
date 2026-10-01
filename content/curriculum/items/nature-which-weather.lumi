@@ -1,0 +1,42 @@
+# The three-star: three days' readings at 6, 10 and 14 o'clock with their weather lost, and which day
+# was cloudy in the morning and sunny after. The child reads each day's shape: one climbs all day,
+# one barely moves, one is flat then climbs.
+item nature.which-weather v=1 stars=3 skills=[nature.weather, reasoning.deduction] {
+  title "Which day was it?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let a6={pick(k, 5, 8, 6, 9)}
+  let a10={pick(k, 6, 12, 7, 10)}
+  let a14={pick(k, 13, 16, 15, 10)}
+  let b6={pick(k, 6, 9, 5, 7)}
+  let b10={pick(k, 12, 10, 6, 13)}
+  let b14={pick(k, 16, 10, 7, 17)}
+  let c6={pick(k, 8, 7, 7, 6)}
+  let c10={pick(k, 9, 8, 12, 7)}
+  let c14={pick(k, 9, 15, 16, 14)}
+  let asks={pick(k, "cloudy in the morning and sunny after", "cloudy in the morning and sunny after", "cloudy all day", "cloudy in the morning and sunny after")}
+  let right={pick(k, "day A", "day C", "day B", "day C")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x24 {
+    row all at=canvas(1, 1) space=2 align=centre {
+      table days cols=4 head=["Day", "6 o'clock", "10 o'clock", "14 o'clock"] cells=["A", "{a6}", "{a10}", "{a14}", "B", "{b6}", "{b10}", "{b14}", "C", "{c6}", "{c10}", "{c14}"]
+    }
+    text ask "Ben wrote the temperatures for three days but lost his notes on the weather. One day was sunny all day, one was cloudy all day, and one was cloudy in the morning and sunny after. Which day was {asks}?" narrate width=32 below=all gap=1
+    choice pick options=["day A", "day B", "day C"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=days {
+      say "Look at how each day changes from 6 to 10 o'clock and from 10 to 14 o'clock. A sunny morning climbs; a cloudy one hardly moves."
+    }
+  }
+  hint "For each day, work out the change in the morning and the change after 10 o'clock."
+  hint "Which day hardly moved in the morning but climbed after? Which hardly moved at all?"
+}

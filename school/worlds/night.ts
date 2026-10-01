@@ -78,6 +78,11 @@ export const night: World = {
             says: "Engines push the rocket up: a force.",
         },
         { art: "pond", when: ["skill:chemistry"], says: "Scoop pond water and filter it clean." },
+        {
+            art: "pond",
+            when: ["skill:nature.insects"],
+            says: "Moths and beetles fly over the pond at night.",
+        },
         { art: "owl", when: ["skill:music"], says: "Hoot low, hoot high, like notes." },
         { art: "owl", when: ["skill:reading"], says: "The owl listens as you read." },
         { art: "fox", when: ["skill:writing"], says: "The fox runs quickly. Which word says how?" },

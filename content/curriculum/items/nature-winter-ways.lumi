@@ -1,0 +1,42 @@
+# Three ways through the cold months: sleep through them, fly to a warmer country, or stay awake and
+# find what food there is. The swallow and the hedgehog are the plain ones; the frog sleeps too, and
+# the robin is the one that stays.
+item nature.winter-ways v=1 skills=[nature.seasons] {
+  title "How does it get through the winter?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let who={pick(k, "the swallows that nest in the barn", "the hedgehog under the hedge", "the frogs in the farm pond", "the robin on the gate post")}
+  let right={pick(k, "flies to a warmer country", "sleeps through the cold months", "sleeps through the cold months", "stays awake and finds what food it can")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x27 {
+    row all at=canvas(1, 1) space=2 align=end {
+      swallows sw count=3
+      art hh asset="hedgehog"
+      frog fr pose=sit facing=-1
+      robin rb post=1 facing=-1
+    }
+    text ask "In November the farm is cold and there are few insects about. How does {who} get through the winter?" narrate width=34 below=all gap=1
+    choice pick options=["flies to a warmer country", "sleeps through the cold months", "stays awake and finds what food it can"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick != right) point=sw {
+      say "Swallows catch flying insects in the air. Are there any in November? Where could they find some?"
+    }
+    when ((k == 1 or k == 2) and pick != right) point=all {
+      say "It cannot fly far, and its food is gone in the cold. What can it do to need no food for months?"
+    }
+    when (k == 3 and pick != right) point=rb {
+      say "The robin is seen on the gate post all winter, eating berries and seeds and whatever the farmer digs up."
+    }
+  }
+  hint "What does this animal eat, and is that food about in winter?"
+  hint "Can it fly far? If its food is gone and it cannot leave, what is left?"
+}

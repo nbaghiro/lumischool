@@ -1,0 +1,34 @@
+# The seasons tree read against the farm's temperatures: which tree belongs to a month. Blossom in a
+# warming spring and leaves falling in a cooling autumn are told apart by which way the temperature
+# is going, not by how warm it is.
+item nature.tree-month v=1 skills=[nature.seasons, data.line-graphs] {
+  title "Which tree goes with the month?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let when={pick(k, "July, the warmest month", "January, when it is about 3 degrees", "April, when it is 8 degrees and getting warmer each week", "October, when it is 10 degrees and getting colder each week")}
+  let right={pick(k, "second", "fourth", "third", "first")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x25 {
+    seasontrees t seasons=["autumn", "summer", "spring", "winter"] names=0 at=canvas(1, 1)
+    text ask "Ada draws the apple tree by the farmhouse four times in the year. Which drawing shows the tree in {when}?" narrate width=34 below=t gap=1
+    choice pick options=["first", "second", "third", "fourth"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick == "first") point=t {
+      say "April and October can feel alike, but in April the tree is waking up. Which drawing has new blossom?"
+    }
+    when (k == 3 and pick == "third") point=t {
+      say "In October it is getting colder and the tree is getting ready for winter. Which drawing has leaves falling?"
+    }
+  }
+  hint "What does the apple tree look like when it is warming up, when it is warmest, when it is cooling, and when it is coldest?"
+  hint "Find the drawing with blossom, the one in full leaf, the one with falling leaves and the bare one."
+}

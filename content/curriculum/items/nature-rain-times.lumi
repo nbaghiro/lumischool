@@ -1,0 +1,38 @@
+# The story: rain gauges set out for a year in three zones, with the atlas's rounded totals. The
+# unknown moves from a difference, to how many times as much, to a bar too tall to draw.
+item nature.rain-times v=1 skills=[nature.zones, multiplication.tables] {
+  title "A year of rain"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2
+  let asks={pick(k, "How many more millimetres fell in the fir forest than in the desert?", "How many times as much rain fell in the fir forest as in the desert?", "How many times as much rain fell in the rainforest as in the desert?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x38 {
+    row all at=canvas(1, 1) space=2 align=end {
+      bargraph bars labels=["desert", "fir forest", "rainforest"] values=[1, 5, 20] max=20 color=sky
+      raingauge rg
+    }
+    text ask "Rain gauges were read for a year in three zones. Each square of the graph is 100 mm, and the rainforest bar runs off the top of the graph: it had 2500 mm. {asks}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 400, 5, 25)
+  feedback {
+    when (k == 0 and answer == 4) point=bars {
+      say "Four squares more, but each square is 100 mm."
+    }
+    when (k == 2 and answer == 20) point=bars {
+      say "The bar stops at the top of the graph, but the rainforest had 2500 mm. How many 100s is that?"
+    }
+    when (k == 1 and answer == 400) point=bars {
+      say "That is how many more. How many desert bars would make one fir forest bar?"
+    }
+  }
+  hint "How much is one square of the graph worth?"
+  hint "Read each bar in millimetres before you compare."
+}

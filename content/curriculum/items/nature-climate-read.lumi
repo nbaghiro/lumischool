@@ -1,0 +1,39 @@
+# The way in: the tundra behind the research hut as a climate graph, a reading every second month: a
+# line for the mean temperature and bars for the rain and snow. The values are rounded and typical of
+# the Arctic coast, recalled, not one station's record.
+item nature.climate-read v=1 skills=[nature.biomes, data.line-graphs] {
+  title "The tundra's year"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "What is the mean temperature in July?", "How many millimetres of rain and snow fall in July?", "How many degrees warmer is July than January?", "In how many of the six readings is the mean temperature above freezing?")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x37 {
+    column both at=canvas(1, 1) space=1 align=start {
+      linegraph temp labels=["Jan", "Mar", "May", "Jul", "Sep", "Nov"] values=[-26, -24, -6, 4, 0, -18] max=10 min=-30 per=5 color=tang
+      bargraph rain labels=["Jan", "Mar", "May", "Jul", "Sep", "Nov"] values=[1, 1, 1, 5, 4, 2] max=6 color=sky
+    }
+    text ask "The scientists at the research hut on the ice shelf keep a climate graph of the tundra behind it: the line is the mean temperature in degrees, and each bar square is 5 mm of rain and snow in that month. {asks}" narrate width=34 below=both gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 4, 25, 30, 1)
+  feedback {
+    when (k == 1 and answer == 5) point=rain {
+      say "The bar is 5 squares tall, and each square is 5 mm."
+    }
+    when (k == 2 and answer == 22) point=temp {
+      say "January is below zero. From -26 up to 0 is 26 degrees, then on up to July."
+    }
+    when (k == 3 and answer == 2) point=temp {
+      say "September's mean is 0 degrees: freezing itself, not above it."
+    }
+  }
+  hint "Find the month along the bottom, then read the line against the temperature scale or the bar against its squares."
+  hint "Below zero counts down from 0; count up through 0 to compare."
+}

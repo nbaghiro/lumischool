@@ -1,0 +1,39 @@
+# The two-star reason: a tray whose two sides differ in two things at once, so the result cannot say
+# which one the snails chose. The plain tests ask about damp, the harder ones about dark or warm.
+item nature.fair-tray v=1 stars=2 skills=[nature.habitats, reasoning.fair-test] {
+  title "Can Ben be sure?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let sides={pick(k, "One side has damp paper under a cover, so it is damp and dark. The other side is dry and open to the light.", "One side is dark under a cover, with damp paper in it. The other side is light and dry.", "One side sits in the sun, warm and dry. The other side is in the shade, cool and damp.")}
+  let claim={pick(k, "the snails like damp places", "the snails like the dark", "the snails like the cool")}
+  let right={pick(k, "The damp side was dark too, so it may be the dark", "The dark side was damp too, so it may be the damp", "The cool side was damp too, so it may be the damp")}
+  let o1={pick(k, "Ten snails are too many for one tray", "Snails cannot see the dark", "Snails do not feel warmth")}
+  let o2={pick(k, "He should have used woodlice instead", "The tray should be round", "He should wait until night")}
+  let x1={pick(k, o1, right, o2)}
+  let x2={pick(k, right, o2, o1)}
+  let x3={pick(k, o2, o1, right)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x30 {
+    row all at=canvas(1, 1) space=2 align=end {
+      table tray cols=2 head=["side", "snails after an hour"] cells=["one side", "9", "other side", "1"]
+      minibeasts sn kinds=["snail"] legs=false
+    }
+    text ask "Ben makes his own tray. {sides} Nine of his ten snails go to the first side, and he says {claim}. Ada says he cannot be sure. Why not?" narrate width=34 below=all gap=1
+    choice pick options=[x1, x2, x3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=tray {
+      say "Look at how the two sides differ. Is it one thing, or two?"
+    }
+  }
+  hint "List everything that is different about the two sides."
+  hint "If two things change at once, can you tell which one the snails went for?"
+}

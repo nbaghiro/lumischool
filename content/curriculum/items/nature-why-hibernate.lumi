@@ -1,0 +1,39 @@
+# The two-star reason: why an animal sleeps through the winter or flies away, given as the link from
+# the cold to its food. The other answers are true-sounding but do not explain the choice.
+item nature.why-hibernate v=1 stars=2 skills=[nature.seasons, reasoning.explain] {
+  title "Why does it do that?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let told={pick(k, "The hedgehog eats beetles, worms and slugs. Why does it sleep from November to March?", "The swallows catch flies in the air. Why do they leave the barn in September?", "The robin eats worms, insects, berries and seeds. Why can it stay all winter when the swallows cannot?")}
+  let right={pick(k, "Its food is hard to find in the cold, so it sleeps", "Flies grow scarce, so they go where there are more", "Berries and seeds last all winter, so it finds food")}
+  let o1={pick(k, "It is too tired after the summer", "They do not like the rain", "Robins sleep through the coldest weeks")}
+  let o2={pick(k, "Hedgehogs cannot walk on frost", "The barn is too small in winter", "Robins are not able to fly far")}
+  let x1={pick(k, o1, right, o2)}
+  let x2={pick(k, right, o2, o1)}
+  let x3={pick(k, o2, o1, right)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x27 {
+    row all at=canvas(1, 1) space=2 align=end {
+      art hh asset="hedgehog"
+      swallows sw count=3
+      robin rb post=1 facing=-1
+    }
+    text ask "{told}" narrate width=34 below=all gap=1
+    choice pick options=[x1, x2, x3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=all {
+      say "Follow the food. What happens to this animal's food in the cold months?"
+    }
+  }
+  hint "What does the animal eat? Is that food about in winter?"
+  hint "Which answer joins the cold, the food and what the animal does?"
+}

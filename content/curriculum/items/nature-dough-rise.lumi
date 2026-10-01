@@ -1,0 +1,35 @@
+# The story: the baker's dough rising as its yeast makes gas, read from a line graph of its volume.
+# The readings are made up and steady so a rate can be read; the unknown moves from a reading, to a
+# rate, to the time the dough reaches a size.
+item nature.dough-rise v=1 skills=[nature.microorganisms, data.line-graphs] {
+  title "Watching the dough rise"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2
+  let asks={pick(k, "How many millilitres did the dough fill after 40 minutes?", "By how many millilitres did the dough grow every 10 minutes?", "If it keeps rising at the same rate, after how many minutes will it fill 1000 ml?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x30 {
+    row all at=canvas(1, 1) space=2 align=end {
+      linegraph g labels=["0", "10", "20", "30", "40", "50"] values=[500, 550, 600, 650, 700, 750] max=1000 min=400 per=50 color=tang
+    }
+    text ask "In the warm kitchen of the mill the baker puts her dough in a measuring jug and reads how much of the jug it fills every 10 minutes, in millilitres. {asks}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 700, 50, 100)
+  feedback {
+    when (k == 1 and answer == 250) point=g {
+      say "That is the rise over all 50 minutes. How much in each 10 minutes?"
+    }
+    when (k == 2 and answer == 50) point=g {
+      say "That is how long it has risen so far. How many more steps of 50 ml are needed to reach 1000?"
+    }
+  }
+  hint "Read the points along the bottom in minutes and up the side in millilitres."
+  hint "How much does it grow in each step of 10 minutes?"
+}

@@ -1,0 +1,37 @@
+# Was the new plant grown from a seed, or from a part of one plant? Runners, bulbs, cuttings and
+# tubers are parts (RHS, "How plants reproduce"; the potato tuber is recalled); a packet of seeds and
+# a sunflower's seeds came from flowers.
+item nature.seed-or-part v=1 skills=[nature.reproduction, nature.plants] {
+  title "Seed, or part of a plant?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let told={pick(k, "Ben plants a strawberry runner's small plant in its own pot.", "Ada sows cress from a packet on wet paper.", "A daffodil bulb in the lock-keeper's garden splits into three smaller bulbs.", "Ben pushes a cut willow stick into the mud of the canal bank, and it grows roots and leaves.", "A potato left in the dark at the market grows shoots, and Ada plants it.", "Sunflowers grow up by the towpath from the heads that dropped there last autumn.")}
+  let right={pick(k, "a part of one plant", "a seed", "a part of one plant", "a part of one plant", "a part of one plant", "a seed")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x21 {
+    row all at=canvas(1, 1) space=2 align=end {
+      parts st of=runner
+      narrowboat nb windows=3 pots=4
+    }
+    text ask "{told} What did the new plant grow from?" narrate width=34 below=all gap=1
+    choice pick options=["a seed", "a part of one plant"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right and right == "a seed") point=all {
+      say "A seed is made in a flower. Did this one come from a flower?"
+    }
+    when (pick != right and right != "a seed") point=all {
+      say "Nothing here came out of a flower. Which part of the old plant grew into the new one?"
+    }
+  }
+  hint "Did the new plant start inside a flower, or is it a piece of an old plant?"
+  hint "A runner, a bulb, a stick or a potato is a piece of a plant."
+}

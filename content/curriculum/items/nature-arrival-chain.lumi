@@ -1,0 +1,36 @@
+# The three-star: a chain of clues about when life arrived on Surtsey, from Wikipedia's dates, and one
+# year to find. No method is on the page; the child walks the chain from the year that is given.
+item nature.arrival-chain v=1 stars=3 skills=[nature.habitats, reasoning.deduction] {
+  title "Follow the clues"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let clues={pick(k, "The first plant grew in 1965. Birds first nested 5 years later. Seals first bred 13 years after that. In which year did seals first breed?", "The first plant grew in 1965. Birds first nested 5 years later, seals bred 13 years after the birds, and the gulls settled 1 year after the seals. In which year did the gulls settle?", "The gulls settled in 1984, 1 year after the seals first bred. The seals bred 13 years after birds first nested, and the first plant grew 5 years before that. In which year did the first plant grow?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x22 {
+    row all at=canvas(1, 1) space=2 align=end {
+      seal s rock=1 facing=1
+      gull g flying=0
+      volcano v smoke=0 island=1
+    }
+    text ask "Ben copied Surtsey's dates as clues. {clues}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 1983, 1984, 1965)
+  feedback {
+    when (k == 1 and answer == 1983) point=s {
+      say "That is the seals. The gulls came 1 year after them."
+    }
+    when (k == 2 and answer == 2003) point=v {
+      say "The clues go back in time from 1984. Take the years away instead of adding them."
+    }
+  }
+  hint "Start from the year you are given and take one clue at a time."
+  hint "Does each clue go forward in time or back?"
+}

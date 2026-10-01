@@ -574,7 +574,7 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         on: "science",
         also: [],
         shows: ["science", "reading"],
-        words: "plant fish island river source mouth meander flower pollen stamen stigma skeleton bones skull ribs arm muscles biceps triceps joint digestion stomach intestine gut label",
+        words: "plant fish island river source mouth meander flower pollen stamen stigma skeleton bones skull ribs arm muscles biceps triceps joint digestion stomach intestine gut label insect head thorax abdomen strawberry runner womb placenta cord brain nerves spinal",
     },
     passage: { on: "stories", also: [], shows: ["reading"], words: "" },
     picsteps: {

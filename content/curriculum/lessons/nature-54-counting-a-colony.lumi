@@ -1,0 +1,76 @@
+lesson nature-counting-a-colony v=1 format=teach grade=6 unit=3 subject=nature levels=[easy, medium, hard] {
+  title "Counting a colony from a sample"
+  goal "Estimate how many animals live in a place from fair sample squares, or by marking some and catching again."
+
+  look {
+    scene 36x10 {
+      row all at=canvas(1, 1) space=2 align=end {
+        array cliff rows=4 cols=6 color=sky
+        puffins pf count=3 facing=-1
+        hut ht
+      }
+    }
+    say """
+      Puffins nest in burrows all over the cliff by the research hut, far too many to count one by
+      one. So the scientists divide the cliff on their map into equal squares, count the burrows in
+      a few squares picked at random, and scale the mean up to every square. Lemmings run about and
+      cannot be counted in squares, so the scientists mark some, let them go, and see what share of
+      a second catch is marked.
+      """
+  }
+  do {
+    level easy {
+      worked nature.sample-mean k=2 level=medium
+    }
+    show nature.sample-mean k=0 hard-k=2
+    show nature.sample-scale k=1 m=12 r=4 c=6 easy-k=0 easy-m=15 hard-k=2 hard-m=15 hard-r=5 hard-c=8
+    show nature.fair-sample k=0 hard-k=2
+    show nature.sample-mean k=2 easy-k=1 hard-k=3
+    show nature.sample-scale k=0 m=15 r=5 c=8 easy-m=12 easy-r=4 easy-c=6 hard-k=2 hard-m=12 hard-r=4 hard-c=6
+    show nature.fair-sample k=2 easy-k=1 hard-k=3
+    level medium {
+      show nature.fair-sample k=3
+    }
+    level easy {
+      show nature.sample-scale k=1 m=12 r=4 c=6 level=medium
+    }
+    level hard {
+      show nature.biased-count k=0 level=medium
+      show nature.closer-estimate k=1 level=medium
+    }
+  }
+  story {
+    show nature.mark-recapture k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.biased-count k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.closer-estimate k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "To count a crowd you cannot count, count a fair sample and scale it up: the sample must be like the whole."
+  }
+
+  grown-ups """
+    Ecologists count most populations by sampling. For animals that stay put, such as nesting puffins
+    in their burrows, they count equal squares chosen at random and scale the mean up to the whole
+    area; for animals that move, they mark some, release them, catch again, and take the marked
+    share of the second catch as the marked share of all of them (the Lincoln index). Both methods
+    and the puffins' burrow nesting are recalled; every count here is made up. The step up from the
+    lemming graph of unit three is how such a count is made, and how it can go wrong. The wrong idea
+    to watch for is that any squares will do, or that adding two catches counts the population. In
+    the child's working, look for the mean found before scaling, and for the question "is the
+    sample like the whole?" If the child is stuck, use a tray of mixed dried beans: count a few
+    spoonfuls, scale up, then count them all. Off the page, do the same with daisies on a lawn using
+    a hoop thrown at random. This meets Russia's grade five biology, 「Методы изучения живой природы ...
+    наблюдение, эксперимент, описание, измерение」, the methods of studying living nature, and looks
+    ahead to its grade eight 「Популяции животных, их характеристики」.
+    """
+  level easy {
+    grown-ups "At this level a worked example finds a missing square from the mean, the means are found directly, the cliff estimates scale a mean up, the sampling plans are the busiest squares, a draw from a hat and a straight line, the story estimates the lemmings from twenty marked, the reason is why the squares by the path give too much, and the closer estimate is found on a cliff of 24 squares."
+  }
+  level hard {
+    grown-ups "At this level the missing square is worked back from the mean, the estimates start from several squares counted together, the plans include bare rock and a straight line, two more reasoning questions come in the core, the story works out how many marked lemmings to expect, the reason is lemmings that learn to hide, and the closer estimate is found on a cliff of 40 squares."
+  }
+}

@@ -1,0 +1,24 @@
+# Four animals matched to the zone each lives in, the zones shuffled four ways so one answer does not
+# give the rest.
+item nature.zone-match v=1 skills=[nature.zones, nature.habitats] {
+  title "Who lives where?"
+  let k=0..3
+  let z1={pick(k, "fir forest", "rainforest", "tundra", "fir forest")}
+  let z2={pick(k, "desert", "desert", "fir forest", "rainforest")}
+  let z3={pick(k, "tundra", "fir forest", "desert", "tundra")}
+  let z4={pick(k, "rainforest", "tundra", "rainforest", "desert")}
+
+  scene 36x28 {
+    row all at=canvas(1, 1) space=2 align=end {
+      camel cm
+      parrot pr
+      firs fr count=2 snow=1
+    }
+    text ask "Write the number of its zone next to each animal." narrate width=34 below=all gap=1
+    match m left=["camel", "reindeer", "parrot", "brown bear"] right=["{z1}", "{z2}", "{z3}", "{z4}"] blanks=[a, b, c, d] below=ask gap=1
+  }
+
+  answer a=pick(k, 2, 2, 3, 4) b=pick(k, 3, 4, 1, 3) c=pick(k, 4, 1, 4, 2) d=pick(k, 1, 3, 2, 1)
+  hint "Start with the animal you are surest of. Where does a camel live?"
+  hint "Which animal needs tall trees all year, which grazes moss in the cold, and which lives among fir trees?"
+}

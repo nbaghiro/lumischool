@@ -1,0 +1,39 @@
+# The two-star reason: cold and boiling both cut the gas, but in different ways. Cold slows living
+# yeast, which wakes again when warmed; boiling kills it for good. Grade five showed that boiled yeast
+# makes no gas; this asks what the cold tube says that the boiled one cannot.
+item nature.yeast-alive v=1 stars=2 skills=[nature.microorganisms, reasoning.evidence] {
+  title "Slowed, or killed?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..1
+  let told={pick(k, "Tube C, in cold water, made a little gas, and tube D, in boiled water, made none. The baker warms both tubes up. What will most likely happen?", "The baker keeps her yeast in the cold larder, not by the hot oven. Why is the larder the better place to keep it?")}
+  let right={pick(k, "C starts making gas again; D still makes none", "Cold only slows the yeast; heat could kill it")}
+  let o1={pick(k, "Both start making gas again", "Cold makes yeast grow faster in the jar")}
+  let o2={pick(k, "Neither makes gas, as both were spoilt", "Yeast does not mind where it is kept")}
+  let x1={pick(k, o1, right)}
+  let x2={pick(k, right, o2)}
+  let x3={pick(k, o2, o1)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x38 {
+    column top at=canvas(1, 1) space=1 align=start {
+      table t cols=4 head=["A", "B", "C", "D"] cells=["warm", "warm", "cold", "boiled", "sugar", "no sugar", "sugar", "sugar"]
+      testtubes tubes fills=[0.5, 0.5, 0.5, 0.5] paints=["tang", "tang", "tang", "tang"] fizz=[12, 0, 4, 0] letters=1
+    }
+    text ask "{told}" narrate width=34 below=top gap=1
+    choice pick options=[x1, x2, x3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=t {
+      say "The cold yeast still made some gas, so it was alive but slow. Could the boiled yeast come back?"
+    }
+  }
+  hint "Which tube still made some gas, even in the cold?"
+  hint "Is the yeast in that tube alive? Is the yeast in the boiled one?"
+}

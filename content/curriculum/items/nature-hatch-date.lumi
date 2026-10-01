@@ -1,0 +1,38 @@
+# The story: medaka eggs at about 25 degrees hatch on the eleventh day, ten days after the day they
+# were laid. The unknown moves from the hatching date, to the laying date, to a date across the end
+# of June, which has 30 days.
+item nature.hatch-date v=1 skills=[nature.life-cycles, time.calendar] {
+  title "When will they hatch?"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2 d={3, 5, 8}
+  let p1={pick(k, "Ada's medaka lay eggs on", "Ben's eggs hatch on", "Ada's second batch of eggs is laid on")}
+  let n1={pick(k, d, d + 10, d + 20)}
+  let p2={pick(k, "June. They hatch on day 11, counting the day they were laid as day 1. On what date in June do they hatch?", "June, on day 11, counting the day they were laid as day 1. On what date in June were they laid?", "June. Counting that day as day 1, they hatch on day 11. On what date in July do they hatch?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x25 {
+    row all at=canvas(1, 1) space=2 align=end {
+      calendar cal month=June days=30 first=0
+      fish fs size=2 tone=glow facing=-1
+    }
+    text ask "{p1} {n1} {p2}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, d + 10, d, d)
+  feedback {
+    when (k == 0 and answer == d + 11) point=cal {
+      say "Day 1 is the day they were laid, so day 11 is 10 days later."
+    }
+    when (k == 2 and answer == d + 31 - 30) point=cal {
+      say "Day 1 is the day they were laid, so day 11 is 10 days later. June has 30 days."
+    }
+  }
+  hint "If day 1 is the laying day, how many days later is day 11?"
+  hint "Count on, or back, that many days on the calendar. June has 30 days."
+}

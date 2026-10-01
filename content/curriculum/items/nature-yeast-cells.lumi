@@ -1,0 +1,19 @@
+# Yeast seen under the microscope at the mill's school: the microscope view is drawn from its own
+# field width and cell size, and the checker reads it, so the key is what the picture shows. How many
+# whole cells fit end to end in one millimetre: the child counts the cells across the field, works
+# out one cell's length, and divides.
+item nature.yeast-cells v=1 skills=[nature.microorganisms, nature.cells] {
+  title "How small is a yeast cell?"
+  let kind={3} mag={1000}
+
+  scene 34x32 {
+    microview m kind=kind mag=mag scale=0 field=1 at=canvas(1, 1)
+    testtubes tubes fills=[0.5, 0.5, 0.5, 0.5] paints=["tang", "tang", "tang", "tang"] fizz=[12, 0, 4, 0] letters=1 right-of=m gap=2
+    text ask "A drop from tube A goes under the microscope. The view says how wide the round field is. How many whole yeast cells would fit end to end in one millimetre, which is 1000 micrometres?" narrate width=32 below=m gap=1
+    number-input answer below=ask gap=1
+  }
+
+  check nature.cells of=m answer="fit(1000)"
+  hint "How many cells lie end to end across the field, and how wide is the field?"
+  hint "That gives one cell's length. How many of those go into 1000?"
+}

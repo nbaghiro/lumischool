@@ -1,0 +1,39 @@
+# Reading a food label given per 100 g, and working out what a smaller portion holds. The flapjack's
+# label is made up but in the usual form; the unknown moves from a value read, to a portion, to the
+# portion that holds a given amount.
+item nature.label-read v=1 skills=[nature.diet, percentages.of-amounts] {
+  title "Reading the label"
+  difficulty (if k == 0 then 0 else if k <= 2 then 1 else 2)
+  let k=0..3
+  let asks={pick(k, "How many grams of sugar are in 100 g of flapjack?", "Ben eats a 50 g flapjack. How many grams of sugar is that?", "Ada eats a 40 g flapjack. How many kilojoules of energy is that?", "How many grams of flapjack hold 12 g of fat?")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x25 {
+    row all at=canvas(1, 1) space=2 align=centre {
+      table label cols=2 head=["In 100 g", "Amount"] cells=["energy", "1900 kJ", "fat", "20 g", "sugar", "30 g", "protein", "6 g", "fibre", "4 g"]
+      ropebridge rb planks=8 gaps=0
+    }
+    text ask "The miller sells flapjacks for the walk over the gorge. The label gives what is in every 100 g. {asks}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 30, 15, 760, 60)
+  feedback {
+    when (k == 1 and answer == 30) point=label {
+      say "30 g is in 100 g of flapjack. Ben's is half as much."
+    }
+    when (k == 2 and answer == 1900) point=label {
+      say "That is for 100 g. How many tenths of 100 g is 40 g?"
+    }
+    when (k == 3 and answer == 12) point=label {
+      say "12 g is the fat, not the flapjack. 100 g of flapjack has 20 g of fat."
+    }
+  }
+  hint "The label is for 100 g. What fraction of 100 g is the portion?"
+  hint "Scale the label's number by the same fraction, or work back from it."
+}

@@ -1,0 +1,36 @@
+# The story: strawberry plants that each root the same number of runners every summer, so the number
+# of plants multiplies. The numbers are a model, not one real bed; the unknown moves from one summer,
+# to two, to how many summers it takes.
+item nature.runner-count v=1 skills=[nature.reproduction, multiplication.long] {
+  title "Strawberries for the market stall"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2 p={2, 3} r={4}
+  let asks={pick(k, "How many plants will she have at the end of the first summer?", "How many plants will she have at the end of the second summer?", "At the end of which summer will she first have 100 plants or more?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x22 {
+    row all at=canvas(1, 1) space=2 align=end {
+      parts st of=runner
+      flowers fl count=1 petals=5
+    }
+    text ask "Ada starts with {p} strawberry plants for the market stall. Every summer each plant, old or new, roots {r} runners into new plants, and none die. {asks}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, p * (r + 1), p * (r + 1) * (r + 1), 3)
+  feedback {
+    when (k == 0 and answer == p * r) point=st {
+      say "Those are the new plants. Do not forget the {p} she started with."
+    }
+    when (k == 1 and answer == p * (r + 1) + p * r) point=st {
+      say "In the second summer the new plants make runners too, not only the first {p}."
+    }
+  }
+  hint "Each plant ends the summer as itself and {r} new plants. How many is that for one plant?"
+  hint "Multiply the plants at the start of a summer by that number."
+}

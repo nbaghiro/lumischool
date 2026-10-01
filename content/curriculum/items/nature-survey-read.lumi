@@ -1,0 +1,35 @@
+# The way in: Ada and Ben's count of small creatures in three places beside the playing field,
+# drawn as a bar graph. The question moves from the biggest bar to a difference and a total.
+item nature.survey-read v=1 skills=[nature.habitats, data.bar-graphs] {
+  title "Where did they find the most?"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2 g={2, 3} l={9, 11, 12} f={6, 7}
+  let asks={pick(k, "How many creatures did they find under the log?", "How many more did they find under the log than on the open grass?", "How many did they find in all three places?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x28 {
+    row all at=canvas(1, 1) space=2 align=end {
+      bargraph bars labels=["open grass", "under log", "dead leaves"] values=[g, l, f] max=12 color=mint
+      log lg rings=5 toadstools=2
+    }
+    text ask "Beside the playing field Ada and Ben count the small creatures in three places for ten minutes each. {asks}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, l, l - g, g + l + f)
+  feedback {
+    when (k == 1 and answer == l) point=bars {
+      say "That is the log's bar. How much taller is it than the open grass bar?"
+    }
+    when (k == 2 and answer == l + f) point=bars {
+      say "Count the open grass bar as well."
+    }
+  }
+  hint "Find the bar for each place and read across to the number."
+  hint "Do you need one bar, the gap between two, or all three added?"
+}

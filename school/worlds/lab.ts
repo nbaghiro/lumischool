@@ -45,6 +45,11 @@ export const lab: World = {
             says: "The mouse knows every square of the lab.",
         },
         {
+            art: "mouse",
+            when: ["skill:nature.skeletons"],
+            says: "The mouse has bones inside, a beetle a hard case.",
+        },
+        {
             art: "thermometer",
             when: ["skill:number.negatives", "art:thermometer"],
             says: "Read the thermometer at eye level.",

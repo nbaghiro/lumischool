@@ -1,0 +1,34 @@
+# The three-star: a rule from the farm's graph moved up the mountain, where every month is colder.
+# Suppose swallows stay only in months with a mean of 8 degrees or more; how many months could they
+# stay at the hut, where each month is 4 degrees colder than at the farm? The child shifts the line,
+# not the months.
+item nature.hut-swallows v=1 stars=3 skills=[nature.seasons, reasoning.systematic] {
+  title "Swallows up at the hut"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let cold={pick(k, 2, 4, 6)}
+  let right={pick(k, 6, 5, 3)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x29 {
+    row all at=canvas(1, 1) space=2 align=end {
+      linegraph g labels=["3", "4", "5", "6", "7", "8", "9", "10"] values=[6, 8, 12, 14, 16, 16, 13, 10] max=18 per=2 color=tang
+    }
+    text ask "This is the farm's graph again. Suppose swallows only stay in months with a mean of 8 degrees or more. The hut high up the mountain is {cold} degrees colder than the farm in every month, and the months not on the graph are colder still. In how many months could swallows stay at the hut?" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 7) point=g {
+      say "That is the farm. At the hut every month is {cold} degrees colder, so a month needs more at the farm to reach 8 at the hut."
+    }
+  }
+  hint "How warm must a month be at the farm for the hut to reach 8 degrees?"
+  hint "Count the farm's months that are at least that warm."
+}

@@ -1,0 +1,75 @@
+lesson nature-temperature-through-a-day v=1 format=teach grade=4 unit=3 subject=nature levels=[easy, medium, hard] {
+  title "Temperature through a day"
+  goal "Read a day's temperatures as a line graph and say how a sunny day and a cloudy day differ, and why."
+
+  look {
+    scene 36x16 {
+      row all at=canvas(1, 1) space=2 align=end {
+        linegraph g labels=["6", "8", "10", "12", "14", "16", "18"] values=[4, 7, 11, 15, 17, 15, 11] max=18 per=2 color=tang
+        cloud cl puffs=3 rain=0
+      }
+    }
+    say """
+      At the mountain hut Ada reads the thermometer in the white box every two hours. On a sunny
+      day it is coldest at dawn, climbs all morning as the sun warms the ground and the ground warms
+      the air, and is warmest in the middle of the afternoon, after the sun is highest. On a cloudy
+      day the cloud keeps the sunshine off, and the line stays nearly flat.
+      """
+  }
+  do {
+    level easy {
+      worked nature.day-read k=2 level=medium
+    }
+    show nature.day-read k=0 hard-k=2
+    show nature.which-day k=0 hard-k=2
+    show nature.where-thermometer k=0 easy-k=1 hard-k=2
+    show nature.day-read k=1 hard-k=3
+    show nature.which-day k=1 hard-k=3
+    show nature.where-thermometer k=3 easy-k=0
+    level easy {
+      show nature.day-ranges k=0 s=5 h=19
+    }
+    level medium {
+      show nature.day-read k=2
+    }
+    level hard {
+      show nature.cloud-flat k=0 level=medium
+      show nature.which-weather k=3
+    }
+  }
+  story {
+    show nature.day-ranges k=1 s=4 h=18 easy-k=0 easy-s=3 easy-h=16 hard-k=2 hard-h=19
+  }
+  try stars=2 {
+    show nature.cloud-flat k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.which-weather k=0 easy-k=1 hard-k=2
+  }
+  remember {
+    say "On a sunny day it is coldest at dawn and warmest in the afternoon; on a cloudy day the temperature hardly changes."
+  }
+
+  grown-ups """
+    Sunshine warms the ground and the ground warms the air, so on a clear day the air warms all
+    morning and keeps warming after noon: as the US National Weather Service puts it, "the warmest
+    part of the day usually occurs several hours following noon, when the sun is highest in the
+    sky". Under cloud the sunshine never reaches the ground and the line stays nearly flat. The
+    readings in the questions are made up to that usual shape, and that a thermometer is read in
+    the shade in open air above the ground is recalled from school practice. The wrong idea to
+    watch for is that the warmest time is noon, when the sun is highest, or that a thermometer in
+    the sun measures the air. In the child's working, look for the change between readings, not
+    only the readings. If the child is stuck, put a finger on the graph and walk it through the day
+    saying "warmer" or "cooler" at each point, then stay here another day before the three days of
+    lost notes. Off the page, read an outdoor thermometer in the shade at breakfast, lunch, after
+    school and at bedtime on a sunny day and a cloudy one. This meets Japan's grade four science,
+    B(4)(ア), 「天気によって１日の気温の変化の仕方に違いがあること」: how the temperature changes through a day
+    differs with the weather.
+    """
+  level easy {
+    grown-ups "At this level a worked example finds how much the sunny day warmed, the graph is read at one hour and at the warmest hour, the sunny graph is picked out of two, the thermometer questions ask where to put it, the story finds one day's rise, the cloudy day is the shape to explain, and the lost notes are a clear case."
+  }
+  level hard {
+    grown-ups "At this level the graph asks for a rise and for readings cooler than noon, the rainy graph is picked out, the thermometer is laid on a rock or read in two places, a second question asks why the sunny day's line is the shape it is, the story works back to a lowest reading, the reason to give is why the warmest time comes after noon, and the lost notes ask which day was cloudy all day."
+  }
+}

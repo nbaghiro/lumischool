@@ -1,0 +1,37 @@
+# The three-star: the ruler test taken to the moon, where things fall with about a sixth of the
+# Earth's pull (NASA's figure for the moon's gravity, recalled). In the same reaction time the ruler
+# falls about a sixth as far, so the Earth's table cannot be read straight off. Easy and medium find
+# the fall on the moon; hard turns a moon fall back into an Earth fall and reads the time.
+item nature.moon-ruler v=1 stars=3 skills=[nature.nerves, reasoning.model] {
+  title "The ruler test on the moon"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..2
+  let told={pick(k, "On Earth Ada's ruler falls 18 cm before she catches it. On the moon, in the same time, a ruler falls about a sixth as far. How many centimetres would it fall there?", "On Earth Ben's ruler falls 24 cm before he catches it. On the moon, in the same time, a ruler falls about a sixth as far. How many centimetres would it fall there?", "On the moon Ben's ruler falls 5 cm before he catches it. On Earth, in the same time, it would fall about six times as far. Use the Earth's table: what is his reaction time, in hundredths of a second?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x27 {
+    row all at=canvas(1, 1) space=2 align=end {
+      lander ld
+      table times cols=2 head=["Fall in cm", "Time in s"] cells=["5", "0.10", "10", "0.14", "15", "0.17", "20", "0.20", "25", "0.23", "30", "0.25"]
+    }
+    text ask "{told}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 3, 4, 25)
+  feedback {
+    when (k <= 1 and answer == pick(k, 108, 144, 0)) point=ld {
+      say "On the moon things fall more slowly, so the ruler falls less far, not further."
+    }
+    when (k == 2 and answer == 10) point=times {
+      say "That reads 5 cm as if it were the Earth. Find how far it would fall on Earth in the same time first."
+    }
+  }
+  hint "Does the ruler fall faster or more slowly on the moon?"
+  hint "So in the same time, does it fall further or less far, and what would the Earth's table make of that?"
+}

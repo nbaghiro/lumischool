@@ -1,0 +1,24 @@
+# A reasoning question for the hard core: a disease that kills one plant of a bed of copies can kill
+# them all, since every copy is the same; a bed grown from seed varies, so some plants may resist it.
+item nature.copies-disease v=1 skills=[nature.reproduction, reasoning.explain] {
+  title "Which bed is safer?"
+  let k=0..0
+
+  scene 36x33 {
+    row all at=canvas(1, 1) space=2 align=end {
+      crops cr stage=2 rows=2 plants=6
+      parts st of=runner
+    }
+    text ask "A new plant disease reaches the canal town. One bed of strawberries was grown from the runners of a single plant. The other was grown from seeds. A few plants in each bed catch the disease. Which bed is more likely to have some plants that resist it, and why?" narrate width=34 below=all gap=1
+    choice pick options=["The runner bed: its plants are all strong copies", "The seed bed: its plants differ from each other", "Neither: a disease kills every plant it reaches"] stack=column below=ask gap=1
+  }
+
+  answer pick="The seed bed: its plants differ from each other"
+  feedback {
+    when (pick == "The runner bed: its plants are all strong copies") point=cr {
+      say "If the copies are all the same, a disease that harms one can harm every one of them."
+    }
+  }
+  hint "In which bed are all the plants the same, and in which do they differ?"
+  hint "If plants differ, could some of them be able to fight the disease?"
+}

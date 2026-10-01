@@ -37,6 +37,11 @@ export const volcanoIsland: World = {
             says: "How far to the temple? Read the signpost.",
         },
         {
+            art: "volcano",
+            when: ["skill:nature.habitats", "skill:nature.zones"],
+            says: "New land from the volcano, and life finds its way to it.",
+        },
+        {
             art: "chest",
             when: ["skill:position.coordinates", "skill:geography.grid-references"],
             says: "X marks the spot. Read the grid.",

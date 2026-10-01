@@ -1,0 +1,39 @@
+# A fair test from the four tubes: which pair differs in one thing only, so it tests that thing. A and
+# B test sugar, A and C test warmth, A and D test boiling; B and C differ in two things.
+item nature.yeast-pair v=1 skills=[nature.microorganisms, reasoning.fair-test] {
+  title "Which pair tests it?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let what={pick(k, "whether yeast needs sugar", "whether yeast works faster when it is warm", "whether boiling water kills yeast", "whether yeast needs sugar, using any pair except A and B")}
+  let right={pick(k, "A and B", "A and C", "A and D", "none of them")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x48 {
+    column top at=canvas(1, 1) space=1 align=start {
+      table t cols=4 head=["A", "B", "C", "D"] cells=["warm", "warm", "cold", "boiled", "sugar", "no sugar", "sugar", "sugar"]
+      testtubes tubes fills=[0.5, 0.5, 0.5, 0.5] paints=["tang", "tang", "tang", "tang"] fizz=[12, 0, 4, 0] letters=1
+    }
+    text ask "The baker wants a pair of her four tubes that tests {what}. Which pair differs in that one thing only?" narrate width=34 below=top gap=1
+    choice pick options=["A and B", "A and C", "A and D", "B and C", "none of them"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "B and C") point=t {
+      say "B and C differ in the warmth and in the sugar. With two things changed, which one made the difference?"
+    }
+    when (k == 3 and pick != right) point=t {
+      say "Only A and B differ in the sugar alone. Every other pair changes something else as well."
+    }
+    when (k <= 2 and pick != right and pick != "B and C") point=t {
+      say "Read the two columns of that pair. What is different between them?"
+    }
+  }
+  hint "For each pair, read both columns. In how many rows do they differ?"
+  hint "The pair that tests a thing differs in that thing and nothing else."
+}

@@ -1,0 +1,76 @@
+lesson nature-plant-eaters-and-meat-eaters v=1 format=teach grade=3 unit=4 subject=nature levels=[easy, medium, hard] {
+  title "Plant eaters, meat eaters and eaters of both"
+  goal "Sort animals into plant eaters, meat eaters and eaters of both from everything they are seen eating."
+
+  look {
+    scene 36x10 {
+      row all at=canvas(1, 1) space=1 align=end {
+        birdhide hide
+        rabbits rb count=1 facing=1
+        fox fx facing=-1
+        heron hn facing=-1 reeds=3
+      }
+    }
+    say """
+      The warden at the bird hide keeps a list of what each animal is seen eating. The rabbit
+      nibbles grass and clover: it is a plant eater. The heron catches fish and frogs: it is a
+      meat eater. The fox catches mice and rabbits, but it eats beetles and blackberries too, so it
+      eats both plants and animals. To sort an animal, read its whole list, not one meal.
+      """
+  }
+  do {
+    level easy {
+      worked nature.eats-what k=1 level=medium
+    }
+    show nature.eats-what k=0 easy-k=2 hard-k=3
+    show nature.eater-venn k=0 easy-k=1 hard-k=2
+    show nature.diet-table k=1 easy-k=0 hard-k=2
+    show nature.whose-food k=1 easy-k=0 hard-k=2
+    show nature.eats-what k=4 easy-k=0
+    show nature.eater-venn k=2 easy-k=0 hard-k=3
+    level medium hard {
+      show nature.diet-table k=3
+    }
+    level easy {
+      show nature.diet-table k=1
+    }
+    level hard {
+      show nature.eater-mistake k=1
+    }
+  }
+  story {
+    show nature.dusk-tally k=1 r=9 s=3 easy-k=0 easy-r=7 hard-k=2 hard-r=11 hard-s=4
+  }
+  try stars=2 {
+    show nature.eater-mistake k=0 hard-k=2
+  }
+  try stars=3 {
+    show nature.venn-both k=1 easy-k=0 hard-k=3
+  }
+  remember {
+    say "A plant eater eats only plants, a meat eater eats only animals, and an eater of both eats some of each."
+  }
+
+  grown-ups """
+    Animals cannot make their own food, so each one eats plants, other animals or both, and this
+    lesson sorts them by the whole list. The Wildlife Trusts say of the red fox that it will "munch
+    on small mammals, birds, frogs, worms as well as berries and fruit", and of the badger that it
+    feeds "on small mammals, birds' eggs, worms, fruit and plants"; that rabbits, sheep, goats and
+    cows eat grass and leaves, that herons eat fish and frogs, that a duck eats pondweed and water
+    snails and that owls hunt mice is recalled.
+    The wrong idea to watch for is sorting by one meal, or by how fierce an animal looks: the fox
+    is the usual one called a meat eater. In the child's working, look for each food on a list
+    named as plant or animal before the group is chosen. If the child is stuck, take one list and
+    sort its foods into two piles first, then stay here another day before the Venn questions. Off
+    the page, read the label on a tin of pet food together and sort what is in it. This lesson
+    comes just before food chains, which starts from what eats what. It meets Russia's grade three
+    programme, Окружающий мир, 「Особенности питания животных. Цепи питания.」: how animals feed, and
+    food chains.
+    """
+  level easy {
+    grown-ups "At this level a worked example sorts the heron, the lists to read are the sheep's and the rabbit's, the animals to place are the heron and the goat, the table asks for the plant eaters, the story counts the plant eaters, the fox is the one to settle, and the Venn's middle is found from seven animals."
+  }
+  level hard {
+    grown-ups "At this level the lists to read are the fox's and the badger's, the animals to place are the duck and the frog, the table asks for eaters of both and for every animal eater, the story counts every animal that eats animals, the badger and the heron are the ones to settle, and the Venn's middle is found from twelve animals."
+  }
+}

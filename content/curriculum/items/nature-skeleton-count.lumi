@@ -1,0 +1,43 @@
+# Count one kind of body in a row of creatures drawn together: the fish, the crab, the octopus, the
+# frog, the ladybird and the spider. The ladybird and the spider join the crab in the hard case.
+item nature.skeleton-count v=1 skills=[nature.skeletons, nature.sorting] {
+  title "How many of each kind?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let kind={pick(k, "bones inside", "no hard skeleton", "a hard case outside")}
+  let right={pick(k, 2, 1, 3)}
+  level easy {
+    let k={0, 2}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x26 {
+    column all at=canvas(1, 1) space=1 align=start {
+      row top space=2 align=end {
+        fish fs size=3 tone=glow facing=1
+        crabs cr count=1
+        octopus oc spots=4
+      }
+      row low space=2 align=end {
+        frog fr pose=sit facing=1
+        minibeasts mb kinds=["ladybird", "spider"] legs=false
+      }
+    }
+    text ask "Ben lays six pictures on the lab bench. How many of these creatures have {kind}?" narrate width=34 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (k == 2 and answer == 1) point=mb {
+      say "The crab has a hard case, and so do the ladybird and the spider: tap a beetle and it is hard all over."
+    }
+    when (k == 0 and answer == 3) point=oc {
+      say "The octopus has no bones at all. Which creatures have bones inside?"
+    }
+  }
+  hint "Go along the creatures one at a time and say which kind each one is."
+  hint "Count only the ones of the kind the question asks for."
+}

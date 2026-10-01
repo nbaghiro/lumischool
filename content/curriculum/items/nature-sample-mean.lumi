@@ -1,0 +1,39 @@
+# The way in: puffin burrows counted in four sample squares of the cliff, and the mean per square.
+# The counts are made up; the unknown moves from the mean to a missing count from a given mean.
+item nature.sample-mean v=1 skills=[nature.populations, data.mean] {
+  title "Burrows in each square"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let a={pick(k, 12, 11, 14, 15)}
+  let b={pick(k, 9, 8, 10, 9)}
+  let c={pick(k, 15, 17, 18, "?")}
+  let d={pick(k, 16, 12, "?", 13)}
+  let asks={pick(k, "What is the mean number of burrows in a square?", "What is the mean number of burrows in a square?", "The mean of the four squares is 13. How many burrows are in square D?", "The mean of the four squares is 12. How many burrows are in square C?")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x23 {
+    row all at=canvas(1, 1) space=2 align=end {
+      table counts cols=2 head=["Square", "Burrows"] cells=["A", "{a}", "B", "{b}", "C", "{c}", "D", "{d}"]
+      puffins pf count=3 facing=-1
+    }
+    text ask "The scientists from the research hut cannot count every puffin burrow on the cliff, so they count four sample squares, each the same size. {asks}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 13, 12, 10, 11)
+  feedback {
+    when (k <= 1 and answer == pick(k, 52, 48, 0, 0)) point=counts {
+      say "That is all four squares together. The mean shares the total equally between the four."
+    }
+    when (k >= 2 and answer == pick(k, 0, 0, 13, 12)) point=counts {
+      say "That is the mean, not the missing square. Four squares with that mean hold four times as many burrows in all."
+    }
+  }
+  hint "The mean is the total shared equally between the squares."
+  hint "If you know the mean, how many burrows must all four squares hold?"
+}

@@ -1,0 +1,30 @@
+# The zones met going south from the North Pole across the middle of Russia and Asia: ice, tundra,
+# fir forest, grassland, desert. Five muddled cards to number, none already in order.
+item nature.zone-order v=1 skills=[nature.zones, reasoning.order] {
+  title "From the pole going south"
+  let p=0..3
+  let a={pick(p, 2, 4, 1, 3)}
+  let b={pick(p, 4, 0, 3, 1)}
+  let c={pick(p, 0, 3, 4, 2)}
+  let d={pick(p, 3, 1, 0, 4)}
+  let e={pick(p, 1, 2, 2, 0)}
+  let wa={pick(a, "ice", "tundra", "fir forest", "grassland", "desert")}
+  let wb={pick(b, "ice", "tundra", "fir forest", "grassland", "desert")}
+  let wc={pick(c, "ice", "tundra", "fir forest", "grassland", "desert")}
+  let wd={pick(d, "ice", "tundra", "fir forest", "grassland", "desert")}
+  let we={pick(e, "ice", "tundra", "fir forest", "grassland", "desert")}
+
+  scene 34x37 {
+    row all at=canvas(1, 1) space=2 align=end {
+      iceberg ib under=0
+      firs fr count=1 snow=0
+      camel cm
+    }
+    text ask "Ben travels south from the North Pole across Russia towards the deserts of the middle of Asia. Getting warmer, and in the end drier, he crosses five zones. Number the cards 1 to 5 in the order he meets them." narrate width=32 below=all gap=1
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}", "{we}"] blanks=[q, r, t, u, v] below=ask gap=1
+  }
+
+  answer q=(a + 1) r=(b + 1) t=(c + 1) u=(d + 1) v=(e + 1)
+  hint "Which zone is coldest, with nothing growing? Which is warmest and driest?"
+  hint "Between them, where does the ground stay frozen under moss, where do trees grow, and where is it too dry for trees?"
+}

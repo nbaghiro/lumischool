@@ -1,0 +1,35 @@
+# The growing season read from a climate graph: the months warm enough for plants to grow, taken
+# here as a mean above 5 degrees (the threshold the Met Office's growing season uses is recalled).
+# Each reading stands for two months.
+item nature.growing-season v=1 skills=[nature.biomes, data.line-graphs] {
+  title "How long can plants grow?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let place={pick(k, "the leafy forest in England", "the fir forest in Alaska", "the tundra further south, near where the trees begin", "the fir forest in Alaska")}
+  let asks={pick(k, "In how many of the six readings is it warmer than 5 degrees?", "In how many of the six readings is it warmer than 5 degrees?", "If each reading stands for two months, about how many months long is the growing season?", "If each reading stands for two months, about how many months long is the growing season?")}
+  let right={pick(k, 5, 3, 2, 6)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x28 {
+    linegraph temp labels=["Jan", "Mar", "May", "Jul", "Sep", "Nov"] values=[pick(k, 5, -22, -24, -22), pick(k, 8, -10, -20, -10), pick(k, 14, 9, -2, 9), pick(k, 19, 17, 10, 17), pick(k, 15, 7, 3, 7), pick(k, 8, -15, -15, -15)] max=20 min=-30 per=5 color=tang at=canvas(1, 1)
+    text ask "Plants grow well only in months with a mean above 5 degrees. This is the graph for {place}. {asks}" narrate width=34 below=temp gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (k == 0 and answer == 4) point=temp {
+      say "Check January again, then November: is 8 warmer than 5?"
+    }
+    when (k == 2 and answer == 1 or k == 3 and answer == 3) point=temp {
+      say "That is the number of readings. Each one stands for two months."
+    }
+  }
+  hint "Lay a ruler across the graph at the temperature the question names."
+  hint "Count the points above it, and then think how many months they stand for."
+}

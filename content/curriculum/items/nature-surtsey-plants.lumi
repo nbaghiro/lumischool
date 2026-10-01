@@ -1,0 +1,36 @@
+# The story: by 2008, 69 kinds of plant had been found on Surtsey and about 30 had taken hold
+# (Wikipedia, "Surtsey"). The unknown moves from those that did not take hold, to the years since the
+# first plant, to how far 30 falls short of half of 69, which is 35 kinds.
+item nature.surtsey-plants v=1 skills=[nature.habitats, subtraction.columns] {
+  title "Plants that took hold"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2
+  let asks={pick(k, "How many kinds were found but did not take hold?", "The first plant was found in 1965. How many years was that before 2008?", "Fewer than half of the 69 kinds took hold. How many more kinds would have had to take hold to make it at least half?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x30 {
+    row all at=canvas(1, 1) space=2 align=end {
+      volcano v smoke=0 island=1
+      dandelion d seeds=12 blown=1 flower=0
+    }
+    text ask "By 2008 scientists had found 69 kinds of plant on Surtsey. About 30 of them had taken hold and kept growing there; the rest were found but did not last. {asks}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 39, 43, 5)
+  feedback {
+    when (k == 0 and answer == 99) point=v {
+      say "The 30 that took hold are some of the 69. Take them away."
+    }
+    when (k == 2 and answer == 4) point=v {
+      say "Half of 69 is 34 and a half, so 34 kinds would still be less than half. How many make at least half?"
+    }
+  }
+  hint "Which two numbers does the question need: kinds, or years?"
+  hint "Take the smaller from the larger, or find half first if the question asks about half."
+}

@@ -1,0 +1,33 @@
+# Will the new plant be exactly like its parent? A plant grown from a part is a copy, "true to type,
+# with no variations"; a plant from seed "may not be 'true to type'" (RHS, "How plants reproduce").
+item nature.copy-or-vary v=1 skills=[nature.reproduction, nature.inheritance] {
+  title "A copy, or maybe different?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let told={pick(k, "Ada's plant gives the sweetest strawberries on the boat. She roots one of its runners.", "Ben sows seeds from the same sweet strawberries, whose flowers the bees visited from other plants.", "The lock-keeper's red rose has a cutting taken from it, which grows roots in a jar.", "Seeds from the red rose's hips, after bees visited many roses, are sown in a tray.")}
+  let right={pick(k, "exactly like its parent", "maybe different from its parent", "exactly like its parent", "maybe different from its parent")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x27 {
+    row all at=canvas(1, 1) space=2 align=end {
+      parts st of=runner
+      flowers fl count=2 petals=5
+    }
+    text ask "{told} Will each new plant grow up exactly like the plant it came from, or maybe different?" narrate width=34 below=all gap=1
+    choice pick options=["exactly like its parent", "maybe different from its parent"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=all {
+      say "A piece of one plant has only that plant in it. A seed comes from a flower that may have had pollen from another plant."
+    }
+  }
+  hint "Did the new plant come from one plant alone, or from a flower and its pollen?"
+  hint "Pollen from another plant brings that plant's features too."
+}

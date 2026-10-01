@@ -1,0 +1,32 @@
+# The cloud over the observatory read every hour of an evening, in tenths of the sky, as a line
+# graph. The readings are made up to show cloud thickening as a band comes in from the west.
+item nature.cloud-hours v=1 skills=[nature.weather, data.line-graphs] {
+  title "An evening of cloud"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "How many tenths of the sky were cloud at 19 o'clock?", "At what o'clock did the sky first count as cloudy, nine tenths or more?", "For how many of the readings was the sky fair, from two to eight tenths?", "Between which two hours did the cloud grow most? Write the first hour.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x26 {
+    linegraph g labels=["16", "17", "18", "19", "20", "21", "22"] values=[1, 1, 3, 4, 8, 10, 10] max=10 color=sky at=canvas(1, 1)
+    text ask "Ada writes how many tenths of the sky are cloud every hour from 16 o'clock. {asks}" narrate width=32 below=g gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 4, 21, 3, 19)
+  feedback {
+    when (k == 1 and answer == 20) point=g {
+      say "At 20 o'clock it was 8 tenths, which is still fair. When did it first reach 9 or more?"
+    }
+    when (k == 2 and answer == 4) point=g {
+      say "Two tenths is the lowest that counts as fair, so 1 tenth is clear. Check 16 and 17 o'clock."
+    }
+  }
+  hint "Find the hour along the bottom and read up to its point."
+  hint "Which readings fall in each band: 0 or 1 clear, 2 to 8 fair, 9 or 10 cloudy?"
+}

@@ -1,0 +1,33 @@
+# Name the biome from its climate graph alone. The four graphs are rounded typical values, recalled,
+# for a rainforest on the Amazon, a desert by the Nile, a fir forest in Alaska's interior and a leafy
+# forest in southern England; the child reads warmth and wetness, not a caption.
+item nature.biome-graph v=1 skills=[nature.biomes, data.line-graphs] {
+  title "Which biome is it?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let right={pick(k, "rainforest", "desert", "fir forest", "leafy forest")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x46 {
+    column both at=canvas(1, 1) space=1 align=start {
+      linegraph temp labels=["Jan", "Mar", "May", "Jul", "Sep", "Nov"] values=[pick(k, 26, 14, -22, 5), pick(k, 26, 18, -10, 8), pick(k, 27, 25, 9, 14), pick(k, 27, 28, 17, 19), pick(k, 28, 26, 7, 15), pick(k, 27, 18, -15, 8)] max=30 min=-30 per=10 color=tang
+      bargraph rain labels=["Jan", "Mar", "May", "Jul", "Sep", "Nov"] values=[pick(k, 5, 0, 0, 1), pick(k, 6, 0, 0, 1), pick(k, 5, 0, 0, 1), pick(k, 1, 0, 1, 1), pick(k, 2, 0, 1, 1), pick(k, 4, 0, 0, 1)] max=6 color=sky
+    }
+    text ask "Ada's atlas shows a climate graph with its name torn off: the line is the mean temperature and each bar square is 50 mm of rain in that month. Which biome is it?" narrate width=34 below=both gap=1
+    choice pick options=["rainforest", "desert", "fir forest", "leafy forest"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=both {
+      say "Read the line first: hot all year, warm and cold in turn, or freezing for half the year? Then read the bars: wet, dry, or in between?"
+    }
+  }
+  hint "Is it warm all year, or cold for part of it? How cold?"
+  hint "How much rain falls: a lot, almost none, or a little every month?"
+}

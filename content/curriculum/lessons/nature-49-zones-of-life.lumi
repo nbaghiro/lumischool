@@ -1,0 +1,73 @@
+lesson nature-zones-of-life v=1 format=teach grade=4 unit=8 subject=nature levels=[easy, medium, hard] {
+  title "Zones of life from the pole to the equator"
+  goal "Name the zone a place belongs to from its warmth and rain, and say why its plants and animals live there."
+
+  look {
+    scene 36x14 {
+      row all at=canvas(1, 1) space=2 align=end {
+        iceberg ib under=0
+        firs fr count=1 snow=1
+        camel cm
+        parrot pr
+      }
+    }
+    say """
+      Going south from the North Pole, the land changes in wide belts called zones. First comes ice,
+      then the cold tundra where only moss and small bushes grow, then forests of fir trees, then
+      grassland too dry for many trees, and desert drier still. Near the equator, where it is hot
+      and wet all year, the rainforest grows. Warmth and rain decide the plants, and the plants
+      decide the animals.
+      """
+  }
+  do {
+    level easy {
+      worked nature.zone-name k=3 level=medium
+    }
+    show nature.zone-name k=0 hard-k=3
+    show nature.zone-table k=0 hard-k=2
+    show nature.zone-match k=0 easy-k=1 hard-k=2
+    show nature.zone-name k=4 easy-k=1 hard-k=5
+    show nature.zone-table k=2 easy-k=1 hard-k=3
+    show nature.zone-order p=1 easy-p=0 hard-p=2
+    level easy medium {
+      show nature.zone-name k=5 easy-k=2
+    }
+    level hard {
+      show nature.few-trees k=2
+      show nature.zone-claim k=2
+    }
+  }
+  story {
+    show nature.rain-times k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.few-trees k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.zone-claim k=0 hard-k=1
+  }
+  remember {
+    say "Warmth and rain make the zones: ice, tundra, fir forest, grassland, desert and rainforest, each with the plants and animals that suit it."
+  }
+
+  grown-ups """
+    The Earth's land falls into zones by warmth and rain, and the zones' plants decide which animals
+    can live there. Going south from the Arctic across Russia and Asia the zones run ice, tundra,
+    fir forest (the taiga), grassland (the steppe) and desert; the rainforest lies near the equator.
+    The zone facts here are recalled, and the table's warmth and rain are rounded typical values,
+    not one place's record. The wrong idea to watch for is that a zone is hot or cold and nothing
+    more: the grassland and the desert are both warm, and rain is what parts them. In the child's
+    working, look for warmth and rain both named before a zone is chosen. If the child is stuck,
+    cover the rain column and sort by warmth first, then add the rain, and stay here another day
+    before the rules to break. Off the page, find the zones on a globe or in an atlas and follow a
+    line from the North Pole to the equator. This meets Russia's grade four programme, Окружающий
+    мир, 「Природные зоны России: общее представление, основные природные зоны (климат, растительный и животный мир…)」:
+    the natural zones, with their climate, plants and animals.
+    """
+  level easy {
+    grown-ups "At this level a worked example names the fir forest, the places to name give their animal, the table is read one cell at a time and for a difference, the matching and the order are as written, the story finds a difference in rain, the reason is why the tundra has no trees, and the rule to break is about warmth and plants."
+  }
+  level hard {
+    grown-ups "At this level the places to name, the fir forest and the ice, give only warmth, rain and plants, the table asks for zones that meet two conditions, two reasons and two rules to break come in the core, the story finds how many times as much rain the rainforest has, the reason is why the grassland has few trees, and the rule to break is about warmth and rain."
+  }
+}

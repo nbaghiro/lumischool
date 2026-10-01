@@ -1,0 +1,38 @@
+# The two-star reason: what is wrong with a sampling plan, given as the reason the estimate is off.
+# A count from the busiest corner, or of marked animals that stay hidden, both lean one way.
+item nature.biased-count v=1 stars=2 skills=[nature.populations, reasoning.explain] {
+  title "What is wrong with the count?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..1
+  let told={pick(k, "Ben counts the 3 squares right beside the path, where the grass is thickest and the puffins crowd, and multiplies up to the whole cliff. Ada says his estimate is too high. Why?", "The marked lemmings learn to hide from the traps, so few of them are caught a second time. Will the estimate of all the lemmings come out too high or too low, and why?")}
+  let right={pick(k, "His squares are busier than most of the cliff", "Too high: few marked are caught again")}
+  let o1={pick(k, "Three squares are too many to count", "Too low: hiding makes the lemmings fewer")}
+  let o2={pick(k, "Puffins move between squares", "It makes no difference to the estimate")}
+  let x1={pick(k, o1, right)}
+  let x2={pick(k, right, o2)}
+  let x3={pick(k, o2, o1)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x26 {
+    row all at=canvas(1, 1) space=2 align=end {
+      array cliff rows=4 cols=6 color=sky
+      puffins pf count=3 facing=1
+    }
+    text ask "{told}" narrate width=34 below=all gap=1
+    choice pick options=[x1, x2, x3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=cliff {
+      say "A sample has to be like the whole. In what way is this sample not like the whole?"
+    }
+  }
+  hint "Is the sample like the whole population, or does it lean one way?"
+  hint "If it leans, which way does that push the estimate?"
+}

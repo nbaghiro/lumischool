@@ -1,0 +1,39 @@
+# Find the mistake: Ada's notebook page about an insect, with one line wrong. A count is the plain
+# slip; the part that the legs or the feelers grow from is the one that needs the body plan.
+item nature.insect-notebook v=1 skills=[nature.insects, reasoning.find-the-mistake] {
+  title "One line is wrong"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let parts={pick(k, "2", "3", "3", "3")}
+  let legs={pick(k, "6", "8", "6", "6")}
+  let legsat={pick(k, "the thorax", "the thorax", "the abdomen", "the thorax")}
+  let feelat={pick(k, "the head", "the head", "the head", "the abdomen")}
+  let right={pick(k, "body parts", "legs", "legs grow from", "feelers grow from")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 37x34 {
+    row all at=canvas(1, 1) space=2 align=centre {
+      parts bug of=insect
+      table notes cols=2 head=["Insects", "Ada wrote"] cells=["body parts", "{parts}", "legs", "{legs}", "legs grow from", "{legsat}", "feelers grow from", "{feelat}"]
+    }
+    text ask "Ada writes what every insect has in her notebook. One line of her table is wrong. Which line?" narrate width=32 below=all gap=1
+    choice pick options=["body parts", "legs", "legs grow from", "feelers grow from"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right and k >= 2) point=bug {
+      say "Count again in the drawing, and then look at where each thing joins the body. Which line says the wrong part?"
+    }
+    when (pick != right and k <= 1) point=bug {
+      say "That line is right for every insect. Count the parts and the legs in the drawing again."
+    }
+  }
+  hint "Check each line against the insect drawing, one line at a time."
+  hint "Count in the drawing first, then follow each limb and each feeler to the part it joins."
+}

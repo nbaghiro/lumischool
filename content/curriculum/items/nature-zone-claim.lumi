@@ -1,0 +1,34 @@
+# The three-star: a rule about the zones that sounds right, and the zone in the table that breaks it.
+# Warmth alone does not make plants grow, and warmth does not bring rain: the desert breaks both, and
+# the tundra breaks the hard rule that a drier zone is a warmer one.
+item nature.zone-claim v=1 stars=3 skills=[nature.zones, reasoning.counterexample] {
+  title "Which zone breaks the rule?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let claim={pick(k, "The warmer a zone is in July, the more plants grow there.", "Every zone warmer than 20 degrees in July gets more than 200 mm of rain a year.", "A zone with less rain than the fir forest is always warmer than the fir forest in July.")}
+  let right={pick(k, "desert", "desert", "tundra")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x36 {
+    table zones cols=3 head=["Zone, pole first", "July °C", "Rain mm a year"] cells=["tundra", "10", "300", "fir forest", "17", "500", "grassland", "22", "350", "desert", "32", "100"] at=canvas(1, 1)
+    text ask "Ben says: {claim} Which zone in the table shows he is wrong?" narrate width=32 below=zones gap=1
+    choice pick options=["tundra", "fir forest", "grassland", "desert"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick != right) point=zones {
+      say "Find the warmest zone in the table. Do the most plants grow there?"
+    }
+    when (k == 1 and pick != right) point=zones {
+      say "Find each zone warmer than 20 degrees in July. How much rain does each one get?"
+    }
+  }
+  hint "Test Ben's rule on each zone, one after another."
+  hint "Look for the zone where the rule should hold but does not."
+}

@@ -1,0 +1,37 @@
+# The ruler-drop test: a partner lets a ruler fall and the catcher grabs it; the further it falls, the
+# slower the reaction. The table's times are worked from the fall of a ruler on Earth, t = √(2d ÷ 9.81),
+# rounded to hundredths of a second. The unknown moves from a reading, to a comparison, to between
+# two rows.
+item nature.ruler-time v=1 skills=[nature.nerves, data.tables] {
+  title "How quick was the catch?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "Ben's ruler fell 15 cm before he caught it. What was his reaction time, in hundredths of a second?", "Ada caught hers after 10 cm. What was her reaction time, in hundredths of a second?", "Ada's first catch was at 25 cm and her last at 10 cm. By how many hundredths of a second did she get quicker?", "Ben's reaction time was 20 hundredths of a second. How many centimetres did the ruler fall?")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x29 {
+    row all at=canvas(1, 1) space=2 align=centre {
+      table times cols=2 head=["Fall in cm", "Time in s"] cells=["5", "0.10", "10", "0.14", "15", "0.17", "20", "0.20", "25", "0.23", "30", "0.25"]
+      person ad pose=point age=child
+    }
+    text ask "At the training centre on Earth, before the flight to the moon, Ada and Ben test their reactions by catching a falling ruler. {asks}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 17, 14, 9, 20)
+  feedback {
+    when (k == 2 and answer == 15) point=times {
+      say "15 is the centimetres. Change both falls to times first, then compare the times."
+    }
+    when (k == 0 and answer == 15) point=times {
+      say "15 is how far it fell. Read across to the time."
+    }
+  }
+  hint "Find the row for the fall, and read across to the time."
+  hint "A time of 0.30 seconds would be 30 hundredths of a second."
+}

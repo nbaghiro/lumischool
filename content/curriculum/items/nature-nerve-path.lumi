@@ -1,0 +1,26 @@
+# The way a message goes when Ada catches a ball: sense organ, nerve in, brain, spinal cord and nerve
+# out, muscle. Five muddled cards to number, none already in order.
+item nature.nerve-path v=1 skills=[nature.nerves, reasoning.order] {
+  title "From the eye to the hand"
+  let p=0..3
+  let a={pick(p, 2, 4, 1, 3)}
+  let b={pick(p, 4, 0, 3, 1)}
+  let c={pick(p, 0, 3, 4, 2)}
+  let d={pick(p, 3, 1, 0, 4)}
+  let e={pick(p, 1, 2, 2, 0)}
+  let wa={pick(a, "the eye sees the ball", "a nerve carries a message to the brain", "the brain decides to catch", "the spinal cord and a nerve carry a message to the arm", "the arm's muscles pull")}
+  let wb={pick(b, "the eye sees the ball", "a nerve carries a message to the brain", "the brain decides to catch", "the spinal cord and a nerve carry a message to the arm", "the arm's muscles pull")}
+  let wc={pick(c, "the eye sees the ball", "a nerve carries a message to the brain", "the brain decides to catch", "the spinal cord and a nerve carry a message to the arm", "the arm's muscles pull")}
+  let wd={pick(d, "the eye sees the ball", "a nerve carries a message to the brain", "the brain decides to catch", "the spinal cord and a nerve carry a message to the arm", "the arm's muscles pull")}
+  let we={pick(e, "the eye sees the ball", "a nerve carries a message to the brain", "the brain decides to catch", "the spinal cord and a nerve carry a message to the arm", "the arm's muscles pull")}
+
+  scene 36x33 {
+    parts nv of=nerves at=canvas(1, 1)
+    text ask "In the low gravity of the moon base Ben throws Ada a ball. Number the cards 1 to 5 in the order things happen as she catches it." narrate width=20 right-of=nv gap=2
+    sequence s items=["{wa}", "{wb}", "{wc}", "{wd}", "{we}"] blanks=[q, r, t, u, v] below=nv gap=1
+  }
+
+  answer q=(a + 1) r=(b + 1) t=(c + 1) u=(d + 1) v=(e + 1)
+  hint "What has to happen before the brain knows the ball is coming?"
+  hint "The message goes in to the brain, then back out to the muscles."
+}

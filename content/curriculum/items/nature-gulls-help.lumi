@@ -1,0 +1,41 @@
+# The two-star reason: after a gull colony settled on Surtsey in 1984, plants spread much faster
+# (Wikipedia, "Surtsey": the colony "has been particularly important in developing the plant life").
+# The reason is the bare lava: it holds almost no food for plants until the birds' droppings and the
+# seeds they bring arrive.
+item nature.gulls-help v=1 stars=2 skills=[nature.habitats, reasoning.explain] {
+  title "Why did the gulls help?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..1
+  let told={pick(k, "After gulls began to nest on Surtsey, far more plants grew round their nests than anywhere else on the bare lava. Why?", "On the part of the island with no gulls, the lava stayed nearly bare for years. Why did so little grow there?")}
+  let right={pick(k, "Droppings feed the ground, and gulls bring seeds", "Bare lava has almost no food in it for plants")}
+  let o1={pick(k, "The gulls kept the plants warm", "Plants do not like to be seen")}
+  let o2={pick(k, "The gulls watered the plants", "The lava was too cold for seeds")}
+  let x1={pick(k, o1, right)}
+  let x2={pick(k, right, o2)}
+  let x3={pick(k, o2, o1)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x27 {
+    row all at=canvas(1, 1) space=2 align=end {
+      volcano v smoke=0 island=1
+      gull g flying=0
+      gull g2 flying=1
+    }
+    text ask "{told}" narrate width=34 below=all gap=1
+    choice pick options=[x1, x2, x3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=v {
+      say "A plant needs light, water and food from the ground. On new bare lava, which of these is missing?"
+    }
+  }
+  hint "What does new bare lava lack that soil has?"
+  hint "What do birds leave behind them, and what do they carry?"
+}

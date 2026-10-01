@@ -1,0 +1,24 @@
+# Four animals matched to the food the warden found each one eating, the foods shuffled four ways
+# so one answer does not give the rest.
+item nature.whose-food v=1 skills=[nature.feeding] {
+  title "Whose dinner is it?"
+  let k=0..3
+  let f1={pick(k, "fish from the pond", "worms and fallen fruit", "mice in the long grass", "grass and clover")}
+  let f2={pick(k, "grass and clover", "fish from the pond", "worms and fallen fruit", "mice in the long grass")}
+  let f3={pick(k, "mice in the long grass", "grass and clover", "fish from the pond", "worms and fallen fruit")}
+  let f4={pick(k, "worms and fallen fruit", "mice in the long grass", "grass and clover", "fish from the pond")}
+
+  scene 36x28 {
+    row all at=canvas(1, 1) space=2 align=end {
+      rabbits rb count=1 facing=1
+      heron hn facing=-1 reeds=2
+      badger bd facing=1 count=1
+    }
+    text ask "Write the number of its food next to each animal. The owl hunts at night, so it is not in the picture." narrate width=34 below=all gap=1
+    match m left=["rabbit", "heron", "owl", "badger"] right=["{f1}", "{f2}", "{f3}", "{f4}"] blanks=[a, b, c, d] below=ask gap=1
+  }
+
+  answer a=pick(k, 2, 3, 4, 1) b=pick(k, 1, 2, 3, 4) c=pick(k, 3, 4, 1, 2) d=pick(k, 4, 1, 2, 3)
+  hint "Start with the one you are surest of. What does a rabbit nibble?"
+  hint "The heron stands in the water, the owl hunts small animals, and the badger eats some of everything."
+}

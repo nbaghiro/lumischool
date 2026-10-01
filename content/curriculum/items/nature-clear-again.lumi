@@ -1,0 +1,37 @@
+# The three-star: a band of cloud of a known width moving east, clear sky behind it, and the hour the
+# sky over the observatory is clear again. The child has to see that the back edge, not the front,
+# decides it: the distance to travel is the gap plus the band's width.
+item nature.clear-again v=1 stars=3 skills=[nature.weather, reasoning.model] {
+  title "When will it clear?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let gap={pick(k, 60, 90, 150)}
+  let wide={pick(k, 60, 60, 50)}
+  let speed={pick(k, 30, 30, 40)}
+  let right={pick(k, 22, 23, 23)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x23 {
+    row all at=canvas(1, 1) space=2 align=end {
+      cloud cl puffs=5 rain=0
+      observatory ob open=0
+      telescope tl tilt=50
+    }
+    text ask "At 18 o'clock the front edge of a band of cloud is {gap} km west of the observatory. The band is {wide} km wide, with clear sky behind it, and it moves east at {speed} km an hour. At what o'clock will the sky over the observatory be clear again?" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == 18 + gap / speed) point=cl {
+      say "That is when the cloud arrives. The sky clears when the back edge of the band has passed."
+    }
+  }
+  hint "Which edge of the band has to pass before the sky is clear?"
+  hint "How far is that edge from the observatory at 18 o'clock?"
+}

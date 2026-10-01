@@ -1,0 +1,38 @@
+# The story: the same survey on a dry day and on the morning after rain, in a table. The unknown
+# moves from a total, to a difference, to a missing count from the two days' total.
+item nature.survey-days v=1 skills=[nature.habitats, data.tables] {
+  title "A dry day and a wet morning"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2 p={2, 3} q={8, 9} r={7, 9} s={6, 8}
+  let cq={pick(k, q, q, "?")}
+  let lead={pick(k, "How many creatures did they find on the open grass on the two days?", "How many more did they find on the open grass after rain than on the dry day?", "On the two days they found")}
+  let num={pick(k, "", "", q + s)}
+  let tail={pick(k, "", "", "creatures under the log in all. How many did they find there on the dry day?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x19 {
+    row all at=canvas(1, 1) space=2 align=end {
+      table days cols=3 head=["Day", "open grass", "under log"] cells=["dry day", "{p}", "{cq}", "after rain", "{r}", "{s}"]
+      minibeasts sn kinds=["snail"] legs=false
+    }
+    text ask "Ada and Ben count again on the morning after rain, when snails are out all over the open grass. {lead} {num} {tail}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, p + r, r - p, q)
+  feedback {
+    when (k == 1 and answer == r) point=days {
+      say "That is the count after rain. How many more is it than the dry day's count?"
+    }
+    when (k == 2 and answer == q + s) point=days {
+      say "That is the two days together. Take away the morning after rain."
+    }
+  }
+  hint "Find the row and the column the question is about."
+  hint "Do you add the two days, or find the difference?"
+}

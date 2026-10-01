@@ -1,0 +1,37 @@
+# The three-star: comparing a human pregnancy with a medaka egg's time. The NHS says pregnancy
+# normally lasts 37 to 42 weeks from the first day of the last period; the questions take 40 weeks,
+# 280 days. A medaka hatches 10 days after it is laid at 25 degrees. How many whole hatchings fit.
+item nature.egg-times v=1 stars=3 skills=[nature.life-cycles, reasoning.model] {
+  title "How many hatchings in a pregnancy?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let weeks={pick(k, 40, 38, 42)}
+  let right={pick(k, 28, 26, 29)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x26 {
+    row all at=canvas(1, 1) space=2 align=end {
+      parts wb of=womb
+      fish fs size=1 tone=glow facing=1
+    }
+    text ask "A medaka egg hatches 10 days after it is laid. A baby is born {weeks} weeks after its mother's pregnancy is counted from. If one medaka egg after another were laid and hatched in that time, how many whole hatchings would fit?" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == weeks / 10) point=wb {
+      say "That counts weeks, not days. How many days are in {weeks} weeks?"
+    }
+    when (answer == right + 1) point=wb {
+      say "The last one would not have finished. Count only the whole hatchings."
+    }
+  }
+  hint "How many days is {weeks} weeks?"
+  hint "How many whole tens of days fit into that?"
+}

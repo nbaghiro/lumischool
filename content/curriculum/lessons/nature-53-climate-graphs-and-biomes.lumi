@@ -1,0 +1,79 @@
+lesson nature-climate-graphs-and-biomes v=1 format=teach grade=6 unit=2 subject=nature levels=[easy, medium, hard] {
+  title "Climate graphs and the world's biomes"
+  goal "Read a climate graph's temperature line and rain bars to name its biome and say how long its plants can grow."
+
+  look {
+    scene 36x26 {
+      row all at=canvas(1, 1) space=2 align=end {
+        column both space=1 align=start {
+          linegraph temp labels=["Jan", "Mar", "May", "Jul", "Sep", "Nov"] values=[-26, -24, -6, 4, 0, -18] max=10 min=-30 per=5 color=tang
+          bargraph rain labels=["Jan", "Mar", "May", "Jul", "Sep", "Nov"] values=[1, 1, 1, 5, 4, 2] max=6 color=sky
+        }
+        hut ht
+      }
+    }
+    say """
+      Behind the research hut the tundra lies under snow for most of the year. Its climate graph
+      shows why: the line of mean temperature is below freezing for all but a few weeks of summer,
+      and the bars of rain and snow are short, so it is nearly as dry as a desert. Every biome has a
+      graph of its own shape, and the shape tells which plants can grow and for how long.
+      """
+  }
+  do {
+    level easy {
+      worked nature.climate-read k=2 level=medium
+    }
+    show nature.climate-read k=0 hard-k=2
+    show nature.biome-graph k=0 hard-k=2
+    show nature.growing-season k=0 hard-k=2
+    show nature.climate-read k=3 easy-k=1
+    show nature.biome-graph k=2 easy-k=1 hard-k=3
+    show nature.growing-season k=3 easy-k=1
+    level medium {
+      show nature.biome-graph k=3
+    }
+    level easy {
+      show nature.biome-graph k=2 level=medium
+    }
+    level hard {
+      show nature.sun-all-night k=0 level=medium
+      show nature.where-grow k=1 level=medium
+    }
+  }
+  story {
+    show nature.rain-year k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.sun-all-night k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.where-grow k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "A climate graph's line shows how warm each month is and its bars how wet; together they show the biome and how long its plants can grow."
+  }
+
+  grown-ups """
+    A climate graph puts a year's mean temperature, as a line, over its rain and snow, as bars, and
+    the two together decide the biome: how many months are warm enough for plants, and how much
+    water they get. Here a reading every second month stands in for the twelve, since the line and
+    the bars hold six points. The temperatures and rainfall are rounded typical values for the kind
+    of place named, recalled, not one station's record; the threshold of 5 degrees for growth, and
+    the 250 mm a year that marks a desert, are recalled as the usual school rules. The step up from
+    the zones of grade four is the method: a biome is read from numbers rather than named from a
+    description. The wrong idea to watch for is that the tundra is wet because it is snowy, or that
+    the midnight sun lets plants grow tall: light is not what runs short there, warmth is. In the
+    child's working, look for the line read against its own scale and the bars against theirs. If
+    the child is stuck, cover the bars and read the line alone, then the other way, and stay here
+    another day before the seed packet. Off the page, find a climate graph for your own town in an
+    atlas or online and count its months above 5 degrees. This meets England's key stage two
+    geography, which names "climate zones, biomes and vegetation belts", and Russia's grade five
+    biology, 「Природные зоны Земли」.
+    """
+  level easy {
+    grown-ups "At this level a worked example finds how much warmer July is than January, the graph is read at one month, the biomes to name are the rainforest and the desert, the growing season is counted in readings, the story adds up the six bars, the reason is why the midnight sun does not make the tundra tall, and the seed packet asks for warmth and plenty of rain."
+  }
+  level hard {
+    grown-ups "At this level the graph is read across zero and for the readings above freezing, the biomes to name are the fir forest and the leafy forest, the growing season is turned into months, two more reasoning questions come in the core, the story asks how far the tundra is below a desert's rain, the reason compares a year's light, and the seed packet sets a band of rain."
+  }
+}

@@ -1,0 +1,34 @@
+# Which sample gives a fair estimate: squares picked at random across the whole cliff, not the ones
+# nearest the path, the busiest, or the easiest to reach. Each version names a plan; the child says
+# whether its estimate will be too high, too low, or fair.
+item nature.fair-sample v=1 skills=[nature.populations, reasoning.fair-test] {
+  title "Too high, too low, or fair?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let plan={pick(k, "Ben counts only the squares where he can see the most puffins.", "Ada numbers every square and draws the numbers out of a hat.", "Ben counts only the squares on the bare rock at the foot of the cliff, where there is no soil to dig burrows in.", "Ada counts the squares in one straight line from the top of the cliff to the bottom, through the grass and the rock alike.")}
+  let right={pick(k, "too high", "fair", "too low", "fair")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x20 {
+    row all at=canvas(1, 1) space=2 align=end {
+      array cliff rows=4 cols=6 color=sky
+      puffins pf count=3 facing=-1
+    }
+    text ask "Each scientist chooses which squares of the cliff to count. {plan} Will the estimate for the whole cliff most likely be too high, too low, or fair?" narrate width=32 below=all gap=1
+    choice pick options=["too high", "fair", "too low"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=cliff {
+      say "Are the squares chosen like the cliff as a whole, or are they the busiest or the emptiest part of it?"
+    }
+  }
+  hint "Puffins dig burrows in soil and grass, not in bare rock. Which squares does this plan choose?"
+  hint "If the chosen squares are busier than most, which way does that push the estimate?"
+}

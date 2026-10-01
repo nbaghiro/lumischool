@@ -1,0 +1,72 @@
+lesson nature-food-as-fuel v=1 format=teach grade=6 unit=5 subject=nature levels=[easy, medium, hard] {
+  title "Food as fuel and building blocks"
+  goal "Say what each part of a diet does, read a food label, and balance the energy eaten against the energy used."
+
+  look {
+    scene 36x10 {
+      row all at=canvas(1, 1) space=2 align=end {
+        ropebridge rb planks=8 gaps=0
+        person pw pose=walk age=child
+        plate pl item=circle count=6 label="lunch"
+      }
+    }
+    say """
+      Before crossing the rope bridge over the gorge, Ada and Ben eat lunch at the mill. Food does
+      two jobs. It is fuel: carbohydrate and fat give the energy the muscles burn, measured on a
+      label in kilojoules. And it is building material: protein builds and repairs muscle, while
+      fibre, vitamins, minerals and water keep the body working. A long walk burns more fuel than
+      a day sitting, so the body needs more food for it.
+      """
+  }
+  do {
+    level easy {
+      worked nature.nutrient-job k=2 level=medium
+    }
+    show nature.nutrient-job k=0 hard-k=2
+    show nature.label-read k=0 hard-k=2
+    show nature.which-food k=0 hard-k=2
+    show nature.nutrient-job k=3 easy-k=1
+    show nature.label-read k=1 hard-k=3
+    show nature.which-food k=1 hard-k=3
+    show nature.habit-effect k=0 hard-k=2
+    level hard {
+      show nature.habit-effect k=3
+    }
+  }
+  story {
+    show nature.energy-day k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.why-more-food k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.snack-plan k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Food is fuel and building material: carbohydrate and fat give energy, protein builds the body, and a busy day burns more."
+  }
+
+  grown-ups """
+    A diet gives the body energy and the stuff to build it. England's key stage three lists "the
+    content of a healthy human diet: carbohydrates, lipids (fats and oils), proteins, vitamins,
+    minerals, dietary fibre and water, and why each is needed", and this lesson takes the first
+    step. The jobs of each nutrient, the figures in the food table and the effects of exercise,
+    sugar, smoking and sleep are recalled from usual school and NHS advice; the flapjack's label,
+    the snacks and the kilojoules used an hour are made up to be in proportion. The step up from
+    grade five's digestion, which follows food through the gut, is what the food is for and how
+    much. The wrong idea to watch for is that fat or sugar is simply bad, or that a label's numbers
+    are for the whole packet: they are for 100 g. In the child's working, look for the portion
+    turned into a fraction of 100 g before anything is scaled. If the child is stuck, take one row
+    of the label and halve it for a 50 g portion, then stay here another day before the fewest
+    snacks. Off the page, read the labels on three packets in the kitchen and find which has the
+    most sugar in 100 g. This meets England's year six programme of study: "recognise the impact of
+    diet, exercise, drugs and lifestyle on the way their bodies function", and China's grades five
+    and six science, 7.3②, 「列举睡眠、饮食、运动等影响健康的因素，养成良好的生活习惯」: sleep, diet and exercise affect health.
+    """
+  level easy {
+    grown-ups "At this level a worked example names fibre, the jobs are fuel and building, the label is read and halved, the foods are richest in protein or carbohydrate, the habits are exercise and sugary drinks, the story finds the energy used in a walk, the reason is why a walking day needs more food, and the fewest snacks meet a smaller target."
+  }
+  level hard {
+    grown-ups "At this level the jobs are fibre and the energy store, the label is scaled to 40 g and worked back from the fat, the foods balance carbohydrate against fat and pick out fibre, the habits are smoking and too little sleep, the story finds how long a lunch lasts on a climb, the reason is why a growing child needs protein, and the fewest snacks have a limit on cheese rolls."
+  }
+}

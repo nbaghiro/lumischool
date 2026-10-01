@@ -756,6 +756,63 @@ The facts in these four lessons, and where they come from:
 - A day on the moon, from one sunrise to the next, lasts about 29.5 of our days, about half of it in
   sunlight (NASA, "Moon: facts"); the lesson rounds it to 30 days, 15 of light and 15 of dark.
 
+Sixteen lessons were added on 1 October 2026 to bring grades three and four to ten nature lessons
+each and grades five and six to twelve (`.scratchpad/grades56/GROW.md`, batch C; the plan with the
+gap each fills is `.scratchpad/grades56/grow-c/PLAN.md`):
+
+| # | Grade | Unit | Lesson | Format | The art it leans on |
+|---|---|---|---|---|---|
+| 42 | 3 | 1 | An insect's body in three parts | teach | the insect diagram, minibeasts, bee, dragonfly, ants, tent |
+| 43 | 3 | 4 | Plant eaters, meat eaters and eaters of both | teach | rabbit, fox, badger, heron, venn, tally table |
+| 44 | 3 | 6 | Where small creatures choose to live | teach | log, nettle, minibeasts, bar graph, tables |
+| 45 | 3 | 8 | Skeletons inside, outside, or none | teach | fish, crab, octopus, frog, sea turtle, minibeasts |
+| 46 | 4 | 1 | Living things through the year | teach | line graph, swallows, hedgehog, robin, seasons tree |
+| 47 | 4 | 3 | Temperature through a day | teach | line graphs, cloud, thermometer, weather station |
+| 48 | 4 | 7 | New land, new life | teach | volcano island, gull, seal, timeline, dandelion |
+| 49 | 4 | 8 | Zones of life from the pole to the equator | teach | iceberg, firs, camel, parrot, tables, rain gauge |
+| 50 | 5 | 3 | New plants without seeds | teach | the strawberry runner diagram, narrowboat, flowers |
+| 51 | 5 | 5 | Clouds and the weather to come | teach | sky, weather forecast row, line graph, observatory |
+| 52 | 5 | 9 | How a baby grows, in an egg and in the womb | teach | the womb diagram, fish, hen, calendar, tables |
+| 53 | 6 | 2 | Climate graphs and the world's biomes | teach | line and bar graphs, midnight sun, hut |
+| 54 | 6 | 3 | Counting a colony from a sample | teach | puffins, array, hut, ice cliff, tables |
+| 55 | 6 | 4 | Yeast at the mill: a living thing too small to see | teach | water wheel, test tubes, microscope view, flasks |
+| 56 | 6 | 5 | Food as fuel and building blocks | teach | rope bridge, plate, tables, chest diagram, runners |
+| 57 | 6 | 7 | Nerves, the brain and a quick catch | teach | the nerves diagram, lander, tables |
+
+Four lettered diagrams joined the `parts` drawing for them: an insect from above (head, thorax,
+abdomen, feeler), a strawberry plant with a runner, a baby in the womb (placenta, cord, the water,
+the womb's wall) and a body with its brain, spinal cord and nerves. The app had drawn `parts` through
+a case of its own that let only the fish and the island through, so a skeleton or a gut showed as the
+plant; that case is gone and the shelf's own declaration draws every diagram.
+
+The facts in these lessons, and where they come from:
+
+- An insect's body is in three parts, with the legs and any wings on the thorax (Wikipedia, "Insect
+  morphology"); a spider has two parts and eight legs (Encyclopaedia Britannica, "Spider").
+- The fox "will happily munch on small mammals, birds, frogs, worms as well as berries and fruit" and
+  the badger feeds "on small mammals, birds' eggs, worms, fruit and plants" (The Wildlife Trusts).
+- A turtle's shell is "constructed of modified bony elements such as the ribs" (Wikipedia, "Turtle
+  shell").
+- The warmest part of the day "usually occurs several hours following noon" (US National Weather
+  Service, Cleveland office, "The seasons").
+- Surtsey's dates, its first plant in 1965, birds nesting three years after the eruptions ended,
+  seals from 1983, gulls from 1984, and 69 plant species found by 2008, about 30 established
+  (Wikipedia, "Surtsey").
+- Runners, offsets and cuttings make copies "identical to the parent plant", while plants from seed
+  "may not be 'true to type'" (RHS, "How plants reproduce").
+- The Japan Meteorological Agency's cloud bands, a tenth or less clear, two to eight tenths fair, nine
+  tenths or more cloudy, and its description of the westerlies.
+- The medaka's heart beats at about fifty hours, its organs are ready by the seventh or eighth day
+  and it hatches on the eleventh at about 25 °C (Encyclopaedia Britannica's film "Embryonic
+  development of medaka fish"); pregnancy "normally lasts from 37 weeks to 42 weeks from the first
+  day of your last period" (NHS).
+- Yeast "feeds on sugar and produces carbon dioxide (CO2) plus ethanol" (Science World,
+  "Yeast-inflated balloons").
+- The ruler times are worked from a falling ruler on Earth, t = √(2d ÷ 9.81).
+- Survey counts, climate values, zone temperatures and rainfall, food-table figures, snack and label
+  figures, catches and sample counts are rounded typical values or invented to show a pattern, and
+  each grown-ups note says which.
+
 ## Reading: the fifteen
 
 Units: 1 Sounds and letters, 2 Whole words, 3 Sentences, 4 What the passage says, 5 Reading

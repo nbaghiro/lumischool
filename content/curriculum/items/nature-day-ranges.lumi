@@ -1,0 +1,36 @@
+# The story: the lowest and highest readings of three days at the hut, and how far each day's
+# temperature moved. The unknown moves from one day's rise to a comparison and back to a lowest.
+item nature.day-ranges v=1 skills=[nature.weather, data.tables] {
+  title "How far did it move?"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2 s={3, 4, 5} h={16, 18, 19}
+  let lo={pick(k, s, s, "?")}
+  let lead={pick(k, "How many degrees did it warm up on the sunny day?", "How many more degrees did it warm up on the sunny day than on the cloudy day?", "On the sunny day it warmed up 14 degrees. What was its lowest reading?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x21 {
+    row all at=canvas(1, 1) space=2 align=centre {
+      table days cols=3 head=["Day", "lowest", "highest"] cells=["sunny", "{lo}", "{h}", "cloudy", "8", "11", "rainy", "7", "9"]
+      cloud cl puffs=4 rain=1
+    }
+    text ask "Ben writes the lowest and highest temperatures at the hut on three days, in degrees Celsius. {lead}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, h - s, h - s - 3, h - 14)
+  feedback {
+    when (k == 1 and answer == h - s) point=days {
+      say "That is the sunny day alone. The cloudy day warmed up too: by how much?"
+    }
+    when (k == 2 and answer == h + 14) point=days {
+      say "The lowest comes before the warming. Go down 14 degrees from the highest."
+    }
+  }
+  hint "How far is it from the lowest reading to the highest on a day?"
+  hint "Work out each day you need, then compare or work back."
+}

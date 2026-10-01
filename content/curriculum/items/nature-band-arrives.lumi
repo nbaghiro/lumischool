@@ -1,0 +1,37 @@
+# The story: a band of rain cloud moving east towards the observatory at a steady speed. The numbers
+# are a model, not one storm; the unknown moves from the time it takes, to the hour it arrives, to
+# how far away it was.
+item nature.band-arrives v=1 skills=[nature.weather, physics.rate] {
+  title "When will the cloud arrive?"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2 s={30, 40} h={3, 4}
+  let p1={pick(k, "A band of rain cloud is", "At 17 o'clock a band of rain cloud is", "A band of rain cloud reaches the observatory at 22 o'clock. Ada first saw it")}
+  let n1={pick(k, s * h, s * h, h)}
+  let p2={pick(k, "km west of the observatory, moving east at", "km west of the observatory, moving east at", "hours earlier, moving east at")}
+  let p3={pick(k, "km an hour. How many hours until it arrives?", "km an hour. At what o'clock will it arrive?", "km an hour. How far away was it when she first saw it, in kilometres?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x21 {
+    row all at=canvas(1, 1) space=2 align=end {
+      cloud cl puffs=5 rain=1
+      compass cp needle=90
+      observatory ob open=1
+    }
+    text ask "{p1} {n1} {p2} {s} {p3}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, h, 17 + h, s * h)
+  feedback {
+    when (k == 1 and answer == h) point=cl {
+      say "That is how many hours it takes. It started at 17 o'clock."
+    }
+  }
+  hint "How far does the cloud move in one hour?"
+  hint "How many of those hours make the whole distance?"
+}

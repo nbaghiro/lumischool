@@ -1,0 +1,38 @@
+# The two-star reason: choosing runners or seeds for a purpose. Copies keep a plant's best features
+# exactly; seeds may differ, which is what a grower wants when looking for something new.
+item nature.which-method v=1 stars=2 skills=[nature.reproduction, reasoning.explain] {
+  title "Runners or seeds?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..1
+  let told={pick(k, "Ada wants every plant for the stall to give the same sweet strawberries as her best plant. Should she grow them from its runners or from its seeds, and why?", "A grower wants a new kind of strawberry, unlike any she has. Should she grow plants from runners or from seeds, and why?")}
+  let right={pick(k, "Runners: their plants are copies of the best one", "Seeds: their plants may differ from the parents")}
+  let o1={pick(k, "Seeds: they grow faster than runners", "Runners: they make more plants")}
+  let o2={pick(k, "Seeds: all seeds from one plant are copies", "Runners: their plants are always different")}
+  let x1={pick(k, o1, right)}
+  let x2={pick(k, right, o2)}
+  let x3={pick(k, o2, o1)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x31 {
+    row all at=canvas(1, 1) space=2 align=end {
+      parts st of=runner
+      flowers fl count=1 petals=5
+    }
+    text ask "{told}" narrate width=34 below=all gap=1
+    choice pick options=[x1, x2, x3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=st {
+      say "Which way makes a plant that is a copy of one parent, and which way can mix two plants' features?"
+    }
+  }
+  hint "Does she want plants exactly like one parent, or plants that may be new?"
+  hint "Which way of growing gives copies, and which gives variety?"
+}

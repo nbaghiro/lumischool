@@ -1,0 +1,33 @@
+# The way in: the body with its brain, spinal cord and nerves, four parts lettered, and the letter of
+# the one named.
+item nature.nerves-part v=1 skills=[nature.nerves, nature.body] {
+  title "Which letter is it?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let part={pick(k, "the brain", "an eye, a sense organ that sends messages in", "the spinal cord, the thick bundle of nerves down the back", "a nerve that carries messages out to the muscles of the arm")}
+  let right={pick(k, "A", "D", "B", "C")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x17 {
+    parts nv of=nerves at=canvas(1, 1)
+    text ask "In the lander's training room on the moon Ada studies a chart of the body's messengers. Which letter points at {part}?" narrate width=20 right-of=nv gap=2
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick == "C") point=nv {
+      say "C is a nerve out in the arm. The spinal cord runs down the middle of the back from the brain."
+    }
+    when (k == 3 and pick == "B") point=nv {
+      say "B is the spinal cord. Which line runs out along the arm?"
+    }
+  }
+  hint "Start at the head. What is inside it, and what runs down from it?"
+  hint "Thin lines run out from the middle to the arms and legs."
+}

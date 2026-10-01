@@ -1,0 +1,37 @@
+# The way in: the strawberry plant with a runner, its four parts lettered, and the letter of the one
+# named. The parent and the new plant are plain; the runner and the new plant's roots are the new
+# ideas.
+item nature.runner-part v=1 skills=[nature.reproduction, nature.plants] {
+  title "Which letter is it?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let part={pick(k, "the parent plant", "the new young plant", "the runner, the long stem the new plant grows on", "the new plant's own roots, which let it live alone once the runner is cut")}
+  let right={pick(k, "A", "C", "B", "D")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x16 {
+    parts st of=runner at=canvas(1, 1)
+    text ask "In a pot on the narrowboat's roof Ada's strawberry plant has sent out a long stem with a small plant on the end. Which letter points at {part}?" narrate width=18 right-of=st gap=1
+    choice pick options=["A", "B", "C", "D"] below=st gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick == "C") point=st {
+      say "C is the new plant itself. The runner is the stem that joins it to the parent."
+    }
+    when (k == 3 and pick == "C") point=st {
+      say "C points at the new plant's leaves. Its roots go down into the soil."
+    }
+    when (k <= 1 and pick != right) point=st {
+      say "Which plant is the big one the runner comes from, and which is the small one at the end?"
+    }
+  }
+  hint "Follow the long stem from the big plant to the small one."
+  hint "Leaves are above the soil and roots below it."
+}

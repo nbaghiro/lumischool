@@ -1,0 +1,37 @@
+# Where a growing young one's food comes from before it is born or hatched: the yolk in an egg, or
+# the mother's blood through the placenta and the cord for a mammal in the womb.
+item nature.what-feeds v=1 skills=[nature.reproduction, nature.life-cycles] {
+  title "What feeds it before it is born?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let who={pick(k, "a medaka growing inside its egg", "a baby growing in its mother's womb", "a chick growing inside its egg under the hen", "a kitten growing inside its mother")}
+  let right={pick(k, "the yolk stored in its egg", "its mother's blood, through the cord", "the yolk stored in its egg", "its mother's blood, through the cord")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x31 {
+    row all at=canvas(1, 1) space=2 align=end {
+      parts wb of=womb
+      fish fs size=1 tone=glow facing=1
+      art hn asset="hen"
+    }
+    text ask "Before it is born or hatched, where does {who} get its food from?" narrate width=34 below=all gap=1
+    choice pick options=["the yolk stored in its egg", "its mother's blood, through the cord", "the water around it"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick == "the water around it") point=all {
+      say "The water keeps it safe and wet. It does not feed it."
+    }
+    when (pick != right and pick != "the water around it") point=all {
+      say "Does it grow inside an egg outside its mother, or inside its mother's body?"
+    }
+  }
+  hint "Is it growing in an egg, or inside its mother?"
+  hint "An egg has to carry all the food the young one needs. What does a mother's body give instead?"
+}

@@ -96,6 +96,11 @@ export const midnightSun: World = {
             when: ["skill:nature.adaptation", "art:seal"],
             says: "A thick layer of fat keeps seals warm.",
         },
+        {
+            art: "puffins",
+            when: ["skill:nature.populations", "skill:nature.biomes"],
+            says: "Too many puffins to count one by one.",
+        },
     ],
     offers: {
         landmarks: [

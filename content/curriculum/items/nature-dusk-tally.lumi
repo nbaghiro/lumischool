@@ -1,0 +1,40 @@
+# The story: Ada's tally of the animals at the field's edge at dusk, and a count by what they eat.
+# The fox eats plants and animals, so it counts as an animal eater in the hard version.
+item nature.dusk-tally v=1 skills=[nature.feeding, data.tally] {
+  title "Ada's tally at dusk"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2 r={7, 9, 11} s={3, 4}
+  let f={2}
+  let o={1}
+  let asks={pick(k, "How many plant eaters did she count?", "How many more plant eaters than eaters of both did she count?", "How many of the animals she counted eat other animals, alone or with plants?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x27 {
+    row all at=canvas(1, 1) space=2 align=end {
+      tallytable t labels=["rabbits", "sheep", "foxes", "owls"] counts=[r, s, f, o] numbers=true heading=Animal
+      rabbits rb count=1 facing=-1
+    }
+    text ask "At dusk Ada sits by the gate of the field next to the marsh and tallies every animal she sees. Rabbits and sheep eat plants, foxes eat plants and animals, and owls eat animals. {asks}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, r + s, r + s - f, f + o)
+  feedback {
+    when (k == 0 and answer == r) point=t {
+      say "Those are the rabbits. The sheep eat plants too."
+    }
+    when (k == 1 and answer == r + s) point=t {
+      say "That is all the plant eaters. How many more is that than the foxes?"
+    }
+    when (k == 2 and answer == o) point=t {
+      say "The owls eat animals, and so do the foxes, even though they eat plants as well."
+    }
+  }
+  hint "Find each animal's row in the tally. Which rows does the question ask about?"
+  hint "Add the rows that fit, or find the difference if the question asks how many more."
+}

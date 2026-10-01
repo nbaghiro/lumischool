@@ -1,0 +1,33 @@
+# Which sense organ first picks up the message: the eye, the ear, the skin or the nose. The moon
+# base's sounds and sights make the setting.
+item nature.which-sense v=1 skills=[nature.nerves, nature.senses] {
+  title "Where does the message start?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let event={pick(k, "the countdown buzzer sounds in the rocket", "a red light flashes on the lander's panel", "Ben touches a pipe that is too hot and pulls his hand away", "a smell of burning comes from the heater in the base")}
+  let right={pick(k, "the ears", "the eyes", "the skin", "the nose")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x26 {
+    row all at=canvas(1, 1) space=2 align=end {
+      parts nv of=nerves
+      lander ld
+    }
+    text ask "When {event}, which sense organ picks up the message first and sends it along a nerve?" narrate width=32 below=all gap=1
+    choice pick options=["the eyes", "the ears", "the skin", "the nose"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=nv {
+      say "Is it a sight, a sound, a touch or a smell?"
+    }
+  }
+  hint "What reaches the body first: light, sound, heat or a smell?"
+  hint "Which part of the body is made to pick that up?"
+}

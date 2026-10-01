@@ -1,0 +1,36 @@
+# Read the warden's table of what each animal eats, with a yes or no for plants and for animals, and
+# count one kind of eater. The eaters of both are the row a child reads past.
+item nature.diet-table v=1 skills=[nature.feeding, data.tables] {
+  title "Read the warden's table"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let kind={pick(k, "only plants", "only animals", "plants and animals", "animals at all, alone or with plants")}
+  let right={pick(k, 2, 1, 2, 3)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x23 {
+    table diet cols=3 head=["Animal", "Eats plants", "Eats animals"] cells=["rabbit", "yes", "no", "fox", "yes", "yes", "heron", "no", "yes", "goat", "yes", "no", "badger", "yes", "yes"] at=canvas(1, 1)
+    text ask "The warden's table says what five animals of the marsh eat. How many of them eat {kind}?" narrate width=32 below=diet gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (k == 0 and answer == 4) point=diet {
+      say "Four say yes for plants, but two of them say yes for animals too. Which say yes for plants and no for animals?"
+    }
+    when (k == 1 and answer == 3) point=diet {
+      say "Three say yes for animals, but two of those eat plants as well. Which one eats animals and nothing else?"
+    }
+    when (k == 3 and answer == 1) point=diet {
+      say "The heron eats only animals, but the question counts every animal that eats animals, with plants or without."
+    }
+  }
+  hint "Put a finger on each row. What do its two columns say?"
+  hint "Which pair of answers, yes or no, fits the question? Count the rows with that pair."
+}

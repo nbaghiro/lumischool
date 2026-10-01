@@ -1,0 +1,39 @@
+# The two-star reason: why a fish egg needs a big yolk and a human egg does not, and why a baby in the
+# womb does not need to breathe. Both answers are the placenta and the cord, which bring food and
+# oxygen from the mother's blood.
+item nature.why-yolk v=1 stars=2 skills=[nature.reproduction, reasoning.explain] {
+  title "Why is it so?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..1
+  let told={pick(k, "A medaka's egg is mostly yolk, but the egg a human baby grows from is tiny and has almost none. Why can the human baby do without a big yolk?", "A baby in the womb is surrounded by water, yet it does not drown. Why does it not need to breathe air until it is born?")}
+  let right={pick(k, "Its mother's blood feeds it through the cord", "Its mother's blood brings it oxygen through the cord")}
+  let o1={pick(k, "It grows much more slowly than a fish", "It holds its breath for the whole time")}
+  let o2={pick(k, "It eats the water around it", "It has gills until it is born")}
+  let x1={pick(k, o1, right)}
+  let x2={pick(k, right, o2)}
+  let x3={pick(k, o2, o1)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x31 {
+    row all at=canvas(1, 1) space=2 align=end {
+      parts wb of=womb
+      fish fs size=1 tone=glow facing=-1
+    }
+    text ask "{told}" narrate width=34 below=all gap=1
+    choice pick options=[x1, x2, x3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=wb {
+      say "Follow the cord from the baby to the placenta. What reaches the baby that way?"
+    }
+  }
+  hint "What does the cord join the baby to?"
+  hint "What does the mother's blood carry that the baby needs?"
+}

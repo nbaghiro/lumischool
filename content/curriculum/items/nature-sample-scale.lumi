@@ -1,0 +1,38 @@
+# From the sample to the whole cliff: the cliff map is divided into equal squares, drawn as an array
+# with a dot for each square, and the mean of the sample squares is scaled up. The unknown moves from
+# the estimate, to the mean behind an estimate, to a sample of several squares counted together.
+item nature.sample-scale v=1 skills=[nature.populations, ratio.scaling] {
+  title "From a few squares to the whole cliff"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2 r={4, 5} c={6, 8} m={12, 15}
+  let p1={pick(k, "The sample squares have a mean of", "The scientists estimate", "In 4 of the squares together they count")}
+  let n1={pick(k, m, m * r * c, 4 * m)}
+  let p2={pick(k, "burrows. About how many burrows are on the whole cliff?", "burrows on the whole cliff. What was the mean of their sample squares?", "burrows. About how many burrows are on the whole cliff?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x18 {
+    row all at=canvas(1, 1) space=2 align=end {
+      array cliff rows=r cols=c color=sky
+      puffins pf count=2 facing=1
+    }
+    text ask "The map of the puffin cliff is divided into equal squares, a dot for each. {p1} {n1} {p2}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, m * r * c, m, m * r * c)
+  feedback {
+    when (k == 0 and answer == m * r) point=cliff {
+      say "That is one row of squares. Count every square on the map."
+    }
+    when (k == 2 and answer == 4 * m * r * c) point=cliff {
+      say "That count is for 4 squares together. Find one square's share first."
+    }
+  }
+  hint "How many squares are on the map?"
+  hint "Find the burrows in one square, then scale up to every square, or back down."
+}

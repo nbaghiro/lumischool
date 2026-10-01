@@ -1,0 +1,38 @@
+# The way in: four tubes at the mill, each with yeast in water, and the table of what each has. Yeast "feeds on sugar and produces carbon dioxide" (Science World, "Yeast-
+# inflated balloons"), more when warm; boiling water kills it (recalled). The bubbles are drawn to
+# that rule.
+item nature.yeast-flasks v=1 skills=[nature.microorganisms, reasoning.fair-test] {
+  title "Which tube made most gas?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "Which tube made the most gas?", "Which tube made no gas at all, even though it had sugar?", "Which tube made some gas, but less than A?", "Two tubes made no gas. Which of them had no sugar?")}
+  let right={pick(k, "A", "D", "C", "B")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x35 {
+    row all at=canvas(1, 1) space=1 align=end {
+      testtubes tubes fills=[0.5, 0.5, 0.5, 0.5] paints=["tang", "tang", "tang", "tang"] fizz=[12, 0, 4, 0] letters=1
+      waterwheel ww paddles=8 lit=0
+    }
+    table t cols=4 head=["A", "B", "C", "D"] cells=["warm", "warm", "cold", "boiled", "sugar", "no sugar", "sugar", "sugar"] below=all gap=1
+    text ask "At the mill in the gorge the baker tests her yeast. Each tube holds yeast and water at the temperature shown, with sugar or none, and bubbles of gas rise from the yeast that is working. {asks}" narrate width=34 below=t gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 1 and pick == "B") point=t {
+      say "B made no gas, but it had no sugar. Which tube had sugar and still made nothing?"
+    }
+    when (k == 3 and pick == "D") point=t {
+      say "D had sugar. Its yeast made no gas for another reason: the boiling water."
+    }
+  }
+  hint "Count the bubbles in each tube, then read its column in the table."
+  hint "Many bubbles means a lot of gas; no bubbles, none."
+}

@@ -1,0 +1,36 @@
+# The way in: the insect diagram with four lettered parts, and the letter of the one named. The head
+# and the feelers are the plain ones; the thorax and the abdomen are the new words.
+item nature.insect-part v=1 skills=[nature.insects] {
+  title "Which letter is it?"
+  difficulty (if k == 0 or k == 3 then 0 else 1)
+  let k=0..3
+  let part={pick(k, "the head, with the eyes on it", "the thorax, the middle part", "the abdomen, the long back part", "a feeler")}
+  let right={pick(k, "A", "B", "C", "D")}
+  level easy {
+    let k={0, 3}
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 34x14 {
+    parts bug of=insect at=canvas(1, 1)
+    text ask "Ada catches a beetle-like insect by the tent and draws it from above for her notebook. Which letter points at {part}?" narrate width=20 right-of=bug gap=2
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 1 and pick == "A") point=bug {
+      say "A is the head. The thorax comes next, between the head and the long back part."
+    }
+    when (k == 2 and pick == "B") point=bug {
+      say "B is the middle part. The abdomen is the biggest part, at the back."
+    }
+    when (k == 0 and pick == "B") point=bug {
+      say "The head is the part with the eyes and the feelers on it. Which part is at the very front?"
+    }
+  }
+  hint "An insect's body has three parts in a line. Start at the front, where the feelers are."
+  hint "Which part comes first, which is in the middle, and which is at the back? Match the words to that order."
+}

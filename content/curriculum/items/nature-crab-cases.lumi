@@ -1,0 +1,38 @@
+# The story: the empty cases a shore crab leaves as it grows, measured across in millimetres. The
+# sizes are made up and evenly spaced so a pattern can be read; the unknown moves from the next case
+# to a case further on and back to the first.
+item nature.crab-cases v=1 skills=[nature.skeletons, measure.metric] {
+  title "Cases on the shelf"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2 a={12, 15, 20} d={3, 4, 5}
+  let c1={pick(k, a, a, "?")}
+  let c4={pick(k, "?", a + 3 * d, a + 3 * d)}
+  let asks={pick(k, "How wide will the fourth case be?", "If it keeps growing the same amount each time, how wide will the sixth case be?", "How wide was the first case?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x25 {
+    row all at=canvas(1, 1) space=2 align=centre {
+      table cases cols=2 head=["Case", "Width in mm"] cells=["first", "{c1}", "second", "{a + d}", "third", "{a + 2 * d}", "fourth", "{c4}"]
+      crabs cr count=1
+    }
+    text ask "The lab keeps the empty cases of a shore crab it raised in a tank. Each time the crab climbs out of its case it grows by the same amount. {asks}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, a + 3 * d, a + 5 * d, a)
+  feedback {
+    when (k == 1 and answer == a + 4 * d) point=cases {
+      say "That is the fifth case. One more step to the sixth."
+    }
+    when (k == 2 and answer == a + 2 * d) point=cases {
+      say "That is the third case. Go back one step at a time from the second."
+    }
+  }
+  hint "How much wider is each case than the one before?"
+  hint "Count the steps from a case you know to the one you want."
+}

@@ -1,0 +1,40 @@
+# When the land changes again: a new lava flow or a storm on the island, and which living thing is in
+# danger. Things that can move away, by swimming or flying, can escape; plants, mosses and eggs
+# cannot.
+item nature.lava-danger v=1 skills=[nature.habitats, reasoning.explain] {
+  title "Who is in danger?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let told={pick(k, "A new crack opens and lava runs slowly across the north of the island, towards moss on the rocks and a seal resting on the beach.", "A lava flow creeps towards the beach, where a seal is resting and a sea rocket plant grows.", "In early summer a storm throws waves over the low shore, where gulls have eggs in their nests and seals are swimming nearby.", "Ash falls thickly over the island for a week, onto the plants and onto the gulls flying over.")}
+  let right={pick(k, "the moss", "the sea rocket plant", "the gulls' eggs", "the plants")}
+  let o1={pick(k, "the seal", "the seal", "the seals", "the gulls")}
+  let o2={pick(k, "the beach", "the sea", "the waves", "the sea")}
+  let x1={pick(k, o1, right, o2, right)}
+  let x2={pick(k, right, o1, right, o2)}
+  let x3={pick(k, o2, o2, o1, o1)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x32 {
+    row all at=canvas(1, 1) space=2 align=end {
+      volcano v smoke=1 island=0
+      seal s rock=1 facing=-1
+      gull g flying=0
+    }
+    text ask "{told} Which is most in danger?" narrate width=34 below=all gap=1
+    choice pick options=[x1, x2, x3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=all {
+      say "Which living thing here can move out of the way, and which has to stay where it is?"
+    }
+  }
+  hint "Can it swim, walk or fly away?"
+  hint "Something that cannot move away is the one most in danger."
+}

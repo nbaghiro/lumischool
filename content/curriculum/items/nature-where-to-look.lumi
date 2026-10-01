@@ -1,0 +1,41 @@
+# Where to look for a creature on a dry, sunny afternoon, from what the survey and the tray showed:
+# snails and woodlice keep to damp, dark places, bees are where the open flowers are, and a ladybird
+# hunts greenfly on the leaves of plants.
+item nature.where-to-look v=1 skills=[nature.habitats, reasoning.explain] {
+  title "Where should she look?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let who={pick(k, "a snail", "a bee", "a woodlouse", "a ladybird")}
+  let right={pick(k, "under the log", "on the clover flowers", "under the log", "on the nettle leaves")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x28 {
+    row all at=canvas(1, 1) space=2 align=end {
+      log lg rings=5 toadstools=1
+      nettle nt stems=2
+      meadow grass across=10 deep=4 daisies=1
+    }
+    text ask "It is a dry, sunny afternoon on the edge of the playing field. Ada wants to find {who}. Where is the best place to look?" narrate width=34 below=all gap=1
+    choice pick options=["under the log", "on the nettle leaves", "on the clover flowers", "on the bare path"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when ((k == 0 or k == 2) and pick != right) point=lg {
+      say "On a dry day this creature would dry out in the open. Where is it damp and dark?"
+    }
+    when (k == 1 and pick != right) point=grass {
+      say "A bee is out looking for food. What does a bee feed on?"
+    }
+    when (k == 3 and pick != right) point=nt {
+      say "A ladybird hunts greenfly, and greenfly live on the leaves of plants."
+    }
+  }
+  hint "What does this creature need most: to stay damp, or to find its food?"
+  hint "Which place gives it that on a dry, sunny day?"
+}

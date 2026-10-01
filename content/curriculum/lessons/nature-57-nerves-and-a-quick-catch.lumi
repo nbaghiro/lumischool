@@ -1,0 +1,71 @@
+lesson nature-nerves-and-a-quick-catch v=1 format=teach grade=6 unit=7 subject=nature levels=[easy, medium, hard] {
+  title "Nerves, the brain and a quick catch"
+  goal "Follow a message from a sense organ through the nerves and brain to a muscle, and measure how long it takes."
+
+  look {
+    scene 26x16 {
+      row all at=canvas(1, 1) space=2 align=end {
+        parts nv of=nerves
+        lander ld
+      }
+    }
+    say """
+      Before a flight to the moon, Ada and Ben train their reactions. When a ball flies at Ada, her
+      eyes pick it up and a nerve carries the message to her brain. The brain decides, and a message
+      runs down the spinal cord and out along a nerve to the muscles of her arm, which pull. All of
+      it takes a fraction of a second, and a falling ruler measures how long: the further it falls
+      before she catches it, the slower she was.
+      """
+  }
+  do {
+    level easy {
+      worked nature.ruler-time k=2 level=medium
+    }
+    show nature.nerves-part k=0 hard-k=2
+    show nature.which-sense k=0 hard-k=2
+    show nature.nerve-path p=1 easy-p=0 hard-p=2
+    show nature.nerves-part k=1 hard-k=3
+    show nature.ruler-time k=0 hard-k=2
+    show nature.which-sense k=3 easy-k=1
+    show nature.ruler-time k=1 hard-k=3
+    level hard {
+      show nature.reflex-faster k=0 level=medium
+    }
+  }
+  story {
+    show nature.ruler-mean k=1 easy-k=0 hard-k=2
+  }
+  try stars=2 {
+    show nature.reflex-faster k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.moon-ruler k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Sense organs send messages along nerves to the brain, and the brain sends messages back through the spinal cord and nerves to the muscles."
+  }
+
+  grown-ups """
+    The nervous system carries messages: from a sense organ along a nerve to the brain, and from the
+    brain down the spinal cord and out along nerves to the muscles. A reflex, such as pulling a hand
+    off something hot, takes a shorter way through the spinal cord without waiting for the brain to
+    decide; that and the moon's pull of about a sixth of the Earth's are recalled. The ruler times
+    are worked from a falling ruler on Earth, t = √(2d ÷ 9.81), rounded to hundredths of a second, and
+    the catches are made up. The step up from the heart and lungs at the start of the year, where a
+    pulse was counted, is a system with no pump to see, measured by what it does. The wrong idea to
+    watch for is that the eye moves the hand directly, or that one catch is a fair measure. In the
+    child's working, look for the brain named in the middle of every path but the reflex. If the
+    child is stuck, trace the path on the chart with a finger, saying in, decide, out, then stay
+    here another day before the moon question. Off the page, do the ruler test: a grown-up holds a
+    30 cm ruler, the child's finger and thumb open at its zero, and the grown-up lets go without
+    warning; read the fall and use the table, five times. This meets China's grades five and six
+    science, 5.5④, 「说出脑是认知、情感、意志和行为的生物学基础，举例说出保护脑健康的主要措施」: the brain as the basis of thinking and behaviour, and
+    6.3④, how the body responds to what it senses.
+    """
+  level easy {
+    grown-ups "At this level a worked example compares two catches, the parts to find are the brain and an eye, the senses are the buzzer and the light, the ruler is read at 15 cm and 10 cm, the story finds the mean fall, the reason is why a hand comes off a hot pipe so fast, and the moon question finds how far a ruler falls there."
+  }
+  level hard {
+    grown-ups "At this level the parts to find are the spinal cord and a nerve in the arm, the senses are the hot pipe and the smell of burning, the ruler is read for an improvement and backwards from a time, a second reasoning question comes in the core, the story finds a missing catch from the mean, the reason is a blink, and the moon question turns a moon fall into an Earth time."
+  }
+}

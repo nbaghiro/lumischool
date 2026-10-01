@@ -1,0 +1,34 @@
+# The three-star: Ada's Venn with only the counts told, and how many animals sit in the middle. The
+# two rings together count the middle twice, which is the whole puzzle.
+item nature.venn-both v=1 stars=3 skills=[nature.feeding, reasoning.all-ways] {
+  title "How many in the middle?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let p={pick(k, 5, 6, 7, 8)}
+  let a={pick(k, 5, 5, 5, 7)}
+  let n={pick(k, 7, 9, 9, 12)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x27 {
+    venn rings labels=["Eats plants", "Eats animals"] left=[] both=[] right=[] outside=[] at=canvas(1, 1)
+    text ask "Ben sorts {n} marsh animals into the rings. Every one eats plants or animals or both. He puts {p} inside the Eats plants ring and {a} inside the Eats animals ring, counting the middle in both. How many are in the middle?" narrate width=32 below=rings gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (p + a - n)
+  feedback {
+    when (answer == p + a) point=rings {
+      say "That counts the animals in the middle twice. There are only {n} animals."
+    }
+    when (answer == n - p or answer == n - a) point=rings {
+      say "That is how many are in one ring only. Which animals are counted in both rings?"
+    }
+  }
+  hint "Add the two rings. Is that more than the {n} animals there are?"
+  hint "The extra ones were counted twice. Where are they?"
+}

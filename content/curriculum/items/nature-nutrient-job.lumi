@@ -1,0 +1,38 @@
+# The way in: what each part of a healthy diet is for. England's key stage three names "carbohydrates,
+# lipids (fats and oils), proteins, vitamins, minerals, dietary fibre and water, and why each is
+# needed"; the jobs here are the usual school statements, recalled.
+item nature.nutrient-job v=1 skills=[nature.diet] {
+  title "What is it for?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let job={pick(k, "the main fuel the body burns for energy, in bread, rice and potatoes", "building and repairing the body, such as muscles after a long walk, in eggs, fish and beans", "keeping food moving through the gut, in the skins of fruit and in brown bread", "a store of energy that also keeps the body warm, in butter and oil")}
+  let right={pick(k, "carbohydrate", "protein", "fibre", "fat")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x34 {
+    row all at=canvas(1, 1) space=2 align=end {
+      plate pl item=circle count=6 label="lunch"
+      fruitbowl fb fruit=5
+      ropebridge rb planks=8 gaps=0
+    }
+    text ask "Before crossing the rope bridge over the gorge, Ada and Ben eat lunch by the mill. Which part of their food is {job}?" narrate width=32 below=all gap=1
+    choice pick options=["carbohydrate", "protein", "fat", "fibre"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick == "fat") point=pl {
+      say "Fat holds a lot of energy, but it is a store. Which part do bread, rice and potatoes give most of?"
+    }
+    when (k == 3 and pick == "carbohydrate") point=pl {
+      say "Carbohydrate is the everyday fuel. Which part is in butter and oil, and is stored under the skin?"
+    }
+  }
+  hint "Look at the foods named. What do they have most of?"
+  hint "Fuel, building, a store, or keeping the gut moving: which job is it?"
+}

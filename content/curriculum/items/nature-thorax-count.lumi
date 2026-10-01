@@ -1,0 +1,43 @@
+# Everything an insect moves with joins the thorax: its six legs and any wings it has. Ada draws one
+# part at a time, and the count of what goes on the thorax changes with the insect: the worker ant
+# has no wings, a fly two, a bee and a dragonfly four.
+item nature.thorax-count v=1 skills=[nature.insects, multiplication.tables] {
+  title "What goes on the middle part?"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..3
+  let who={pick(k, "an ant from the nest by the path, which has no wings", "a house fly, which has two wings", "the bee, which has four wings", "two dragonflies, which have four wings each")}
+  let wings={pick(k, 0, 2, 4, 4)}
+  let many={pick(k, 1, 1, 1, 2)}
+  let what={pick(k, "it", "it", "it", "each one")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x20 {
+    row all at=canvas(1, 1) space=2 align=end {
+      bumblebee bee facing=1
+      dragonfly fly facing=1 rings=8
+      ants ant count=2 carry=0
+    }
+    text ask "Ada is drawing {who}. She has drawn the head and the abdomen of {what}, and now she draws each thorax with everything that grows from it. How many legs and wings does she draw in all?" narrate width=34 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (many * (6 + wings))
+  feedback {
+    when (answer == many * 6 and wings > 0) point=all {
+      say "The legs are right. The wings grow from the thorax too, so they go on the same part."
+    }
+    when (answer == 6 + wings and many == 2) point=fly {
+      say "That is one dragonfly. She is drawing two."
+    }
+    when (answer == many * (8 + wings)) point=all {
+      say "Eight legs is a spider. Count the legs on any of the insects again."
+    }
+  }
+  hint "Which part do the legs grow from? Do the wings grow from the same part?"
+  hint "Add the legs and the wings for one insect first."
+}

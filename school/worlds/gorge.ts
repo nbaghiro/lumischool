@@ -79,6 +79,11 @@ export const waterfallGorge: World = {
             says: "The kingfisher dives for a fish.",
         },
         {
+            art: "mill",
+            when: ["skill:nature.microorganisms", "skill:nature.diet"],
+            says: "Yeast makes the mill's bread rise.",
+        },
+        {
             art: "signpost",
             when: ["skill:reading", "skill:writing"],
             says: "Read the signpost: which way to the mill?",

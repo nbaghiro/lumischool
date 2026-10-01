@@ -1,0 +1,33 @@
+# The way in: Surtsey's first years of life on a timeline (Wikipedia, "Surtsey"): the island reached
+# the surface in 1963, the first flowering plant grew in 1965, birds first nested in 1970, seals bred
+# in 1983 and gulls settled in 1984. The question is how long one arrival waited after another.
+item nature.surtsey-years v=1 skills=[nature.habitats, time.elapsed] {
+  title "How long did life take?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "How many years after the island appeared did the first plant grow?", "How many years after the first plant did birds first nest?", "How many years after the birds first nested did seals breed there?", "How many years after the island appeared did gulls settle there?")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x23 {
+    timeline t from=1960 to=1990 step=5 years=[1963, 1965, 1970, 1983, 1984] labels=["new island", "first plant", "birds nest", "seals breed", "gulls settle"] at=canvas(1, 1)
+    text ask "In 1963 a volcano under the sea near Iceland built a new island of bare lava, called Surtsey. Scientists have written down when each kind of life arrived. {asks}" narrate width=34 below=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 2, 5, 13, 21)
+  feedback {
+    when (k == 2 and answer == 14) point=t {
+      say "Count on from 1970: to 1980 is 10 years, then on to 1983."
+    }
+    when (k == 3 and answer == 1) point=t {
+      say "That is the gap between the seals and the gulls. Start from the new island in 1963."
+    }
+  }
+  hint "Find the two years on the timeline. Which comes first?"
+  hint "Count on from the earlier year to the later one."
+}

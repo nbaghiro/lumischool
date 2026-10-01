@@ -1,0 +1,34 @@
+# Microbes that help and microbes that harm: yeast raises bread, bacteria turn milk to yoghurt, and
+# germs in a dirty cut or the viruses of a cold make people ill (China's grades five and six science, 5.2①, names yeast,
+# moulds and viruses, and colds as caused by microbes).
+item nature.microbe-work v=1 skills=[nature.microorganisms] {
+  title "Help or harm?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let told={pick(k, "the miller's bread dough doubles in size in a warm room", "dirt gets into a cut on the miller's hand and it turns red and sore", "the miller catches a cold from a visitor who sneezed", "a spoon of yoghurt stirred into warm milk turns the whole jar to yoghurt by morning")}
+  let right={pick(k, "helps people", "harms people", "harms people", "helps people")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x25 {
+    row all at=canvas(1, 1) space=2 align=end {
+      waterwheel ww paddles=8 lit=0
+      bakingtray bt rows=2 cols=3 iced=0
+    }
+    text ask "Living things too small to see are at work in the mill. When {told}, does the work of the microbes help people or harm them?" narrate width=32 below=all gap=1
+    choice pick options=["helps people", "harms people"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=all {
+      say "Do people want this to happen, or does it spoil something or make someone ill?"
+    }
+  }
+  hint "Which microbe is at work here: yeast, a mould, a germ, or another?"
+  hint "Is the result something people make on purpose?"
+}

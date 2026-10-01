@@ -1,0 +1,39 @@
+# The story: clumps of frogspawn counted in the farm pond week by week in spring, beside the week's
+# mean temperature. The counts are made up to show the pattern; the unknown moves from a total to a
+# difference and a missing week.
+item nature.spawn-weeks v=1 skills=[nature.seasons, data.tables] {
+  title "Frogspawn as it warms up"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2 a={2, 3} b={7, 9} c={12, 15}
+  let cb={pick(k, b, b, "?")}
+  let lead={pick(k, "How many clumps did he count in the three weeks?", "How many more clumps were there in the warmest week than in the coldest?", "In the three weeks he counted")}
+  let num={pick(k, "", "", a + b + c)}
+  let tail={pick(k, "", "", "clumps. How many were there in the second week?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x21 {
+    row all at=canvas(1, 1) space=2 align=centre {
+      table weeks cols=3 head=["Week", "Mean in °C", "New clumps"] cells=["first", "5", "{a}", "second", "7", "{cb}", "third", "9", "{c}"]
+      frog fr pose=sit facing=-1
+    }
+    text ask "In March Ben counts the new clumps of frogspawn in the farm pond each week. {lead} {num} {tail}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, a + b + c, c - a, b)
+  feedback {
+    when (k == 1 and answer == c) point=weeks {
+      say "That is the warmest week. How many more is it than the coldest week?"
+    }
+    when (k == 2 and answer == a + b + c - a) point=weeks {
+      say "Take away the third week as well as the first."
+    }
+  }
+  hint "Find the column of clumps. Which weeks does the question want?"
+  hint "Add them, find the difference, or take the known weeks from the total."
+}

@@ -1,0 +1,38 @@
+# A medaka egg kept at about 25 degrees, day by day, from the Britannica film "Embryonic development
+# of medaka fish": the heart beats at about two days, blood flows soon after, the organs are ready by
+# the seventh or eighth day, and the fish hatches on the eleventh. Rounded to whole days.
+item nature.egg-days v=1 skills=[nature.life-cycles, data.tables] {
+  title "Inside the egg, day by day"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let asks={pick(k, "On which day does the young fish hatch?", "How many days after the heart starts beating does the fish hatch?", "For how many whole days does the young fish wriggle in the egg with all its parts ready, before it hatches?", "The heart starts to beat about 50 hours after the egg is laid. How many whole days is that?")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x25 {
+    row all at=canvas(1, 1) space=2 align=centre {
+      table days cols=2 head=["Day", "What Ada sees"] cells=["1", "a clear egg, a yolk", "3", "a heart beats", "8", "eyes, fins, all parts", "11", "it hatches"]
+    }
+    text ask "Ada keeps medaka eggs in water at about 25 degrees on the windowsill of the old city's school, and looks at one through a lens each day. {asks}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 11, 8, 3, 2)
+  feedback {
+    when (k == 1 and answer == 11) point=days {
+      say "That is the day it hatches. Count from day 3, when the heart is beating."
+    }
+    when (k == 3 and answer == 3) point=days {
+      say "It is during day 3, but how many whole days of 24 hours have gone by?"
+    }
+    when (k == 2 and answer == 4) point=days {
+      say "From day 8 to day 11 is 3 days: it hatches on day 11 itself."
+    }
+  }
+  hint "Find the rows the question is about in the table."
+  hint "Count on from one day to the other."
+}

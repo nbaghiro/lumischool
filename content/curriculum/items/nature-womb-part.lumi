@@ -1,0 +1,34 @@
+# The way in: the baby in the womb with four lettered parts, and the letter of the one named. The
+# cord and the placenta are the words Japan's grade five lesson uses (へその緒, 胎盤); the water round
+# the baby (羊水) and the womb's wall complete the four.
+item nature.womb-part v=1 skills=[nature.reproduction, nature.body] {
+  title "Which letter is it?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let part={pick(k, "the cord, which joins the baby to the placenta", "the water the baby floats in", "the placenta, where the mother's blood passes food and oxygen across", "the strong wall of the womb, which stretches as the baby grows")}
+  let right={pick(k, "B", "C", "A", "D")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x16 {
+    parts wb of=womb at=canvas(1, 1)
+    text ask "In the old city's library Ada finds a diagram of a baby growing inside its mother. Which letter points at {part}?" narrate width=19 right-of=wb gap=1
+    choice pick options=["A", "B", "C", "D"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick == "B") point=wb {
+      say "B is the cord. The placenta is the pad on the womb's wall that the cord leads to."
+    }
+    when (k == 0 and pick == "A") point=wb {
+      say "A is the placenta. The cord is the long tube from the baby's middle to it."
+    }
+  }
+  hint "Start at the baby and follow the tube from its middle. Where does it go?"
+  hint "What is all round the baby, and what is the outside layer of the womb?"
+}

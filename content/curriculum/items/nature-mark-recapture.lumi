@@ -1,0 +1,40 @@
+# The story: marking and catching again, for animals that move about. The scientists catch and mark
+# some lemmings, let them go, and later catch another group: the share of marked ones in the second
+# catch is taken to be the share of marked ones in the whole population (the Lincoln index,
+# recalled). The unknown moves from the population to the marked in the catch.
+item nature.mark-recapture v=1 skills=[nature.populations, ratio.scaling] {
+  title "Marked and caught again"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2
+  let told={pick(k, "They catch 20 lemmings, mark each with a dab of paint and let them go. A week later they catch 30, and 3 of those are marked. About how many lemmings live on the tundra by the hut?", "They catch 25 lemmings, mark them and let them go. A week later they catch 40, and 5 of those are marked. About how many lemmings live on the tundra by the hut?", "They think about 300 lemmings live on the tundra by the hut. They catch 30, mark them and let them go, then a week later catch 50. About how many of the 50 should be marked?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x22 {
+    row all at=canvas(1, 1) space=2 align=end {
+      hut ht
+      icecliff ic height=1 floes=1
+    }
+    text ask "Lemmings run about, so the scientists cannot count them in squares. {told}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 200, 200, 5)
+  feedback {
+    when (k == 0 and answer == 50) point=ht {
+      say "Adding the two catches counts some lemmings twice. What share of the second catch was marked?"
+    }
+    when (k == 1 and answer == 65) point=ht {
+      say "Adding the two catches counts some lemmings twice. What share of the second catch was marked?"
+    }
+    when (k == 2 and answer == 30) point=ht {
+      say "Not every marked lemming is caught again. What share of all the lemmings is marked?"
+    }
+  }
+  hint "What share of the second catch is marked: one in how many?"
+  hint "The marked lemmings should be that same share of all the lemmings on the tundra."
+}

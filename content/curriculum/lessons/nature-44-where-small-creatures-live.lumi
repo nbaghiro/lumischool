@@ -1,0 +1,72 @@
+lesson nature-where-small-creatures-live v=1 format=teach grade=3 unit=6 subject=nature levels=[easy, medium, hard] {
+  title "Where small creatures choose to live"
+  goal "Use counts from a survey and a choice tray to say which places small creatures choose, and why."
+
+  look {
+    scene 36x10 {
+      row all at=canvas(1, 1) space=2 align=end {
+        log lg rings=5 toadstools=2
+        minibeasts sn kinds=["snail", "spider", "ant"] legs=false
+        nettle nt stems=2
+      }
+    }
+    say """
+      At the edge of the playing field Ada and Ben roll over a log. Under it the ground is dark and
+      damp, and snails, spiders and ants are hiding there. Out on the open grass in the sun they
+      find hardly any. Small creatures are not spread out evenly: each one is where it can stay
+      damp, keep safe or find its food. Counting in each place, and testing with a tray, shows
+      which place they choose.
+      """
+  }
+  do {
+    level easy {
+      worked nature.survey-read k=1 l=11 g=2 f=6 level=medium
+    }
+    show nature.survey-read k=0 l=9 g=3 f=7 hard-k=2 hard-l=12 hard-g=3 hard-f=6
+    show nature.choice-tray k=0 hard-k=2
+    show nature.where-to-look k=0 easy-k=1 hard-k=2
+    show nature.choice-tray k=1 hard-k=3
+    show nature.survey-read k=1 l=12 g=2 f=7 easy-k=0 easy-l=11 easy-g=3 easy-f=6 hard-k=2 hard-l=11 hard-g=2 hard-f=7
+    show nature.where-to-look k=2 easy-k=0 hard-k=3
+    level easy medium {
+      show nature.survey-days k=0 p=3 q=8 r=9 s=6
+    }
+    level hard {
+      show nature.fair-tray k=2
+      show nature.snails-twice k=3
+    }
+  }
+  story {
+    show nature.survey-days k=1 p=2 q=8 r=9 s=6 easy-k=0 easy-p=3 easy-q=9 easy-r=7 easy-s=8 hard-k=2 hard-p=3 hard-q=9 hard-r=9 hard-s=8
+  }
+  try stars=2 {
+    show nature.fair-tray k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.snails-twice k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Small creatures live where they can stay damp, keep safe and find food, and counting shows where that is."
+  }
+
+  grown-ups """
+    A survey counts the same way in each place, for the same time, and a choice tray asks the
+    creatures themselves: put them in the middle and see where they go. Snails and woodlice keep to
+    damp, dark places because their bodies dry out in the open, which is why they come out after
+    rain; that and the ladybird's diet of greenfly are recalled, and the counts in the questions
+    are made up to show the pattern, not a real survey. The wrong idea to watch for is reading one
+    big corner of the tray as the answer, or trusting a tray whose two sides differ in two things at
+    once. In the child's working, look for two corners added before a side is chosen. If the child
+    is stuck, cover all but one row of the table, then stay here another day before the tray
+    questions. Off the page, lift a stone or a flowerpot in the garden, count what is under it, put
+    it back gently, and count again on a dry day and after rain. This meets Japan's grade three
+    science, B(1)(ア)(ア), 「生物は，色，形，大きさなど，姿に違いがあること。また，周辺の環境と関わって生きていること。」:
+    living things differ in colour, shape and size, and live connected to their surroundings.
+    """
+  level easy {
+    grown-ups "At this level a worked example reads how many more lived under the log, the bars are read one at a time, the tray asks damp or dry and dark or light with no trap corner, the creatures to find are the bee and the snail, the story adds two days, the tray to judge mixes damp with dark, and the snails split twelve, twice as many on one side."
+  }
+  level hard {
+    grown-ups "At this level the graph asks for differences and a total, the trays have one big corner on the losing side, three times, the creatures to find are the woodlouse and the ladybird, the story works back from a two-day total, the tray to judge mixes dark with damp, and the snails split sixteen, three times as many on one side."
+  }
+}

@@ -1,0 +1,35 @@
+# The way in: the temperature at the mountain hut every two hours on a sunny day, as a line graph. The
+# readings are made up to the usual shape: lowest at dawn, warmest in the middle of the afternoon.
+item nature.day-read v=1 skills=[nature.weather, data.line-graphs] {
+  title "A sunny day at the hut"
+  difficulty (if k == 0 then 0 else if k <= 2 then 1 else 2)
+  let k=0..3
+  let asks={pick(k, "What was the temperature at 10 o'clock?", "At what o'clock was it warmest? Write the hour.", "How many degrees did it warm up from 6 o'clock to the warmest reading?", "For how many of the readings after the warmest one was it cooler than at 12 o'clock?")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x27 {
+    linegraph g labels=["6", "8", "10", "12", "14", "16", "18"] values=[4, 7, 11, 15, 17, 15, 11] max=18 per=2 color=tang at=canvas(1, 1)
+    text ask "Ada reads the thermometer outside the mountain hut every two hours on a sunny day, from 6 o'clock in the morning to 6 o'clock in the evening (18 o'clock). {asks}" narrate width=32 below=g gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 11, 14, 13, 1)
+  feedback {
+    when (k == 1 and answer == 12) point=g {
+      say "12 o'clock is when the sun is highest, but look at the graph: the point after it is higher still."
+    }
+    when (k == 2 and answer == 17) point=g {
+      say "17 degrees is the warmest reading. How far up is it from the reading at 6 o'clock?"
+    }
+    when (k == 3 and answer == 2) point=g {
+      say "At 16 o'clock it was 15 degrees, the same as at 12 o'clock, not cooler."
+    }
+  }
+  hint "Find the hour along the bottom, go up to the point, and read across. One square is 2 degrees."
+  hint "Read each point the question needs before you work anything out."
+}

@@ -1,0 +1,42 @@
+# The story: a ground beetle measured part by part under the magnifier, in millimetres, with the
+# lengths in a table. The unknown moves from the whole length, to the abdomen, to the thorax when
+# the abdomen is twice as long as it.
+item nature.beetle-lengths v=1 skills=[nature.insects, measure.metric] {
+  title "A beetle measured part by part"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2 h={3, 4} t={5, 6} a={10, 12}
+  let all={h + t + a}
+  let ct={pick(k, t, t, "?")}
+  let ca={pick(k, a, "?", "twice the thorax")}
+  let cw={pick(k, "?", all, h + 3 * t)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 36x21 {
+    row all at=canvas(1, 1) space=2 align=centre {
+      parts bug of=insect
+      table lengths cols=2 head=["Part", "Length in mm"] cells=["head", "{h}", "thorax", "{ct}", "abdomen", "{ca}", "whole beetle", "{cw}"]
+    }
+    text ask "A ground beetle walks into the tent, and Ada measures it part by part under the magnifier. What number goes where the question mark is?" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, all, a, t)
+  feedback {
+    when (k == 1 and answer == all + h + t) point=lengths {
+      say "The whole beetle is already all three parts. Take the head and the thorax away from it."
+    }
+    when (k == 2 and answer == 2 * t) point=lengths {
+      say "That is the abdomen. The thorax is half as long."
+    }
+    when (k == 2 and answer * 2 == 3 * t) point=lengths {
+      say "The abdomen is two thoraxes long, so the length without the head is three thoraxes, not two."
+    }
+  }
+  hint "The beetle's length is its head, its thorax and its abdomen, end to end."
+  hint "Which length is missing? What do the others in the table add to?"
+}

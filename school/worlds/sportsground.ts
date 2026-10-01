@@ -69,6 +69,11 @@ export const sportsGround: World = {
             says: "The birds are after worms in the grass.",
         },
         {
+            art: "birds",
+            when: ["skill:nature.feeding"],
+            says: "Some birds eat seeds, and some eat worms.",
+        },
+        {
             art: "medals",
             when: ["skill:physics.motion", "skill:physics.circuits"],
             says: "The medal swings on its ribbon.",

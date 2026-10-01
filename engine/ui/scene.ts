@@ -50,7 +50,6 @@ import { balance } from "../parts/puzzles/balance";
 import { matchsticks } from "../parts/puzzles/matchsticks";
 import { patternStrip } from "../parts/puzzles/pattern";
 import { fulcrum } from "../parts/science/fulcrum";
-import { partsDiagram, type PartsOf } from "../parts/science/parts";
 import { seesawPlank } from "../parts/science/seesawplank";
 import { seesawProps } from "../parts/science/seesawprops";
 import { angleFig } from "../parts/shapes/angle";
@@ -147,7 +146,6 @@ const markerOf = (v: CValue | undefined, fallback: Marker): Marker =>
     MARKERS.find((m) => m === v) ?? fallback;
 const word = (v: CValue | undefined, fallback: string): string =>
     typeof v === "string" ? v : fallback;
-const partsOf = (v: CValue | undefined): PartsOf => (v === "fish" || v === "island" ? v : "plant");
 const thingOf = (v: CValue | undefined): MapThing =>
     v === "tree" || v === "boat" || v === "bridge" ? v : "hut";
 
@@ -734,9 +732,6 @@ export function renderLaidOut(host: Element, scene: Scene, o: SceneOptions): SVG
                     vopts,
                 );
                 break;
-            case "parts":
-                r = render(partsDiagram, { of: partsOf(v.of) }, vopts);
-                break;
             case "staff":
                 r = render(rhythmBar, { notes: nums(v.notes), beats: Number(v.beats ?? 0) }, vopts);
                 break;
@@ -1159,7 +1154,6 @@ const DRAWN = new Set([
     "word-input",
     "sequence",
     "match",
-    "parts",
     "staff",
     "handwriting",
     "gridmap",

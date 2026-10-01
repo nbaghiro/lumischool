@@ -1,0 +1,41 @@
+# How life crossed the sea to the new island: seeds and driftwood on the currents, tiny spores and
+# insects on the wind, seeds carried by birds (Wikipedia, "Surtsey"). Each version names a living
+# thing and what is known about it, and the child picks its way across.
+item nature.how-arrived v=1 skills=[nature.habitats, nature.seeds] {
+  title "How did it get there?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let told={pick(k, "The first plant on Surtsey grew on the beach, from a seed that can float for weeks in salt water.", "Moss grows from spores as fine as dust, which the wind carries high and far.", "Some plants first grew right beside the gulls' nests, from seeds the gulls had eaten on the mainland.", "Small flies were found on the bare island, too weak to fly that far over the sea on their own.")}
+  let right={pick(k, "on the sea", "on the wind", "with birds", "on the wind")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x27 {
+    row all at=canvas(1, 1) space=2 align=end {
+      volcano v smoke=0 island=1
+      gull g flying=1
+      dandelion d seeds=12 blown=1 flower=0
+    }
+    text ask "{told} How did it most likely reach the new island?" narrate width=34 below=all gap=1
+    choice pick options=["on the sea", "on the wind", "with birds"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 0 and pick != right) point=v {
+      say "It grew on the beach, and its seed can float. What carried it to the beach?"
+    }
+    when ((k == 1 or k == 3) and pick != right) point=d {
+      say "Something tiny or light can be carried a long way through the air, like a dandelion's seeds."
+    }
+    when (k == 2 and pick != right) point=g {
+      say "The seeds were eaten on the mainland and the plants grew by the nests. Who carried them?"
+    }
+  }
+  hint "Where on the island did it first appear, and how big or light is it?"
+  hint "Could it float, could it drift through the air, or did an animal carry it?"
+}

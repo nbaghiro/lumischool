@@ -1,0 +1,36 @@
+# The story: energy taken in and used on the walk over the gorge, in kilojoules. The rates of use are
+# made up but in proportion: a slow walk uses more than sitting, and a climb more than a walk. The
+# unknown moves from energy used, to what is left, to how long the energy lasts.
+item nature.energy-day v=1 skills=[nature.diet, multiplication.long] {
+  title "Fuel for the walk"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2
+  let asks={pick(k, "Ben walks for 3 hours. How many kilojoules does he use?", "Ben eats a lunch of 3600 kJ, then walks for 2 hours and climbs for 1 hour. How many kilojoules of the lunch are left over?", "Ada's lunch gives 2400 kJ. If she only climbs, for how many minutes does the lunch last?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x23 {
+    row all at=canvas(1, 1) space=2 align=centre {
+      table use cols=2 head=["Doing", "kJ an hour"] cells=["sitting", "300", "walking", "800", "climbing", "1600"]
+      person pw pose=walk age=child
+    }
+    text ask "On the path through the gorge, a table on the noticeboard says roughly how much energy a child uses. {asks}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 2400, 400, 90)
+  feedback {
+    when (k == 1 and answer == 1200) point=use {
+      say "The climb uses 1600 kJ in its hour, not 800. Add the walk and the climb."
+    }
+    when (k == 2 and answer == 1.5) point=use {
+      say "That is the time in hours. How many minutes is it?"
+    }
+  }
+  hint "Find the row for what is being done, and multiply by the time."
+  hint "Add up what is used, then compare it with what was eaten."
+}

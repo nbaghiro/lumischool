@@ -1,0 +1,42 @@
+# Which of the three parts a thing grows from, asked of the bee, the dragonfly and the ant drawn
+# beside the insect diagram. Legs and wings always grow from the thorax, feelers and eyes from the
+# head; the bee's sting, at the tip of its abdomen, is the one that is not at the front.
+item nature.insect-grows-on v=1 skills=[nature.insects] {
+  title "Where does it grow from?"
+  difficulty (if k == 0 or k == 4 then 0 else if k <= 2 then 1 else 2)
+  let k=0..4
+  let thing={pick(k, "the ant's two feelers", "the bee's four wings", "the dragonfly's six legs", "the bee's sting", "the dragonfly's big eyes")}
+  let right={pick(k, "the head", "the thorax", "the thorax", "the abdomen", "the head")}
+  level easy {
+    let k={0, 4}
+  }
+  level hard {
+    let k=1..3
+  }
+
+  scene 36x24 {
+    row all at=canvas(1, 1) space=2 align=end {
+      parts bug of=insect
+      bumblebee bee facing=1
+      dragonfly fly facing=-1 rings=8
+      ants ant count=1 carry=0
+    }
+    text ask "In the morning Ben finds a bee, a dragonfly and an ant by the pond. Each body has the same three parts as the insect in Ada's drawing. Which part do {thing} grow from?" narrate width=34 below=all gap=1
+    choice pick options=["the head", "the thorax", "the abdomen"] below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when ((k == 1 or k == 2) and pick == "the abdomen") point=bug {
+      say "The abdomen is the long back part. Look at where the legs meet the body in the drawing: they all join the middle part."
+    }
+    when ((k == 0 or k == 4) and pick != right) point=bug {
+      say "Feelers and eyes are for finding the way and seeing what is ahead. Which part is at the front?"
+    }
+    when (k == 3 and pick == "the thorax") point=bee {
+      say "The thorax carries the legs and wings. The sting is right at the back end of the bee."
+    }
+  }
+  hint "Look at the insect drawing first. Which part do the legs join?"
+  hint "Is the thing at the front of the body, in the middle, or at the very back?"
+}

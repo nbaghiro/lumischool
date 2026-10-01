@@ -1,0 +1,70 @@
+lesson nature-an-insects-body v=1 format=teach grade=3 unit=1 subject=nature levels=[easy, medium, hard] {
+  title "An insect's body in three parts"
+  goal "Name the three parts of an insect's body and say which part its legs, wings and feelers grow from."
+
+  look {
+    scene 36x14 {
+      row all at=canvas(1, 1) space=2 align=end {
+        tent camp lit=1
+        parts bug of=insect
+        minibeasts two kinds=["ant", "spider"] legs=true
+      }
+    }
+    say """
+      Ada and Ben camp by the pond under the stars, and in the morning they look at the small
+      creatures round the tent. Every insect has a body in three parts. The head at the front has
+      the eyes and two feelers. The thorax in the middle has all six legs, and the wings too, if
+      the insect has any. The abdomen at the back is the biggest part. A spider is not an insect:
+      its body is in two parts, with all eight legs on the front one.
+      """
+  }
+  do {
+    level easy {
+      worked nature.insect-part k=1 level=medium
+    }
+    show nature.insect-part k=0 hard-k=1
+    show nature.insect-grows-on k=1 easy-k=0 hard-k=2
+    show nature.insect-part k=2 easy-k=3 hard-k=2
+    show nature.thorax-count k=1 easy-k=0 hard-k=2
+    show nature.insect-notebook k=1 easy-k=0 hard-k=2
+    show nature.insect-grows-on k=3 easy-k=4
+    show nature.thorax-count k=2 easy-k=1 hard-k=3
+    level hard {
+      show nature.insect-notebook k=3
+    }
+  }
+  story {
+    show nature.beetle-lengths k=1 h=3 t=5 a=10 easy-k=0 easy-h=4 easy-t=6 easy-a=12 hard-k=2 hard-h=4 hard-t=6 hard-a=12
+  }
+  try stars=2 {
+    show nature.ant-wings k=1 easy-k=0 hard-k=3
+  }
+  try stars=3 {
+    show nature.log-legs k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "An insect's body has three parts: the head with its feelers, the thorax with six legs and any wings, and the abdomen."
+  }
+
+  grown-ups """
+    An insect's body is in three parts, the head, the thorax and the abdomen, and everything it
+    moves with, the six legs and the wings when it has them, grows from the thorax; the feelers
+    and eyes are on the head. A spider has two body parts and eight legs, all on the front part
+    (Wikipedia, "Insect morphology"; Encyclopaedia Britannica, "Spider"). That a bee's sting is at
+    the tip of its abdomen and that a fly has two wings is recalled. The wrong idea to watch for
+    is that legs grow from the long back part, because it is the biggest, or that wings decide what
+    an insect is: the worker ant has none and is still an insect. In the child's working, look for
+    a finger run from each leg to where it meets the body. If the child is stuck, go back to the
+    diagram and name the parts front to back together, then stay here another day before the
+    log question. Off the page, look at an ant or a beetle with a magnifying glass and count its
+    parts and legs. This meets Japan's grade three science, B(1)(イ), 「成虫の体は頭，胸及び腹からできていること」:
+    an adult insect's body is made of a head, a thorax and an abdomen, and China's grades three and
+    four science, 5.2③, which asks for the shared features of a group such as insects.
+    """
+  level easy {
+    grown-ups "At this level a worked example names the thorax first, the parts to find are the head and the feelers, the things to place are the ant's feelers and the dragonfly's eyes, the thorax to draw is an ant's or a fly's, the notebook gets a count wrong, the beetle's whole length is added up, the creature to settle is the ant, and the log hides five creatures."
+  }
+  level hard {
+    grown-ups "At this level the parts to find are the thorax and the abdomen, the things to place include the bee's sting, the thorax to draw is a bee's or two dragonflies', the notebook puts the legs or the feelers on the wrong part, twice, the beetle's thorax is found from the whole when the abdomen is twice as long, the creature to settle is the snail, and the log hides seven."
+  }
+}

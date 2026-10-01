@@ -1,0 +1,37 @@
+# The three-star: the fewest runners each plant must root every summer so that one plant becomes a
+# target number of plants after two summers. One plant with r runners a summer becomes r + 1 plants,
+# then (r + 1) times (r + 1); the child tries values and finds the smallest that is enough.
+item nature.fewest-runners v=1 stars=3 skills=[nature.reproduction, reasoning.fewest] {
+  title "The fewest runners"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let want={pick(k, 20, 40, 60)}
+  let right={pick(k, 4, 6, 7)}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x24 {
+    row all at=canvas(1, 1) space=2 align=end {
+      parts st of=runner
+      narrowboat nb windows=3 pots=4
+    }
+    text ask "Ben has one strawberry plant. Every summer each plant roots the same number of runners into new plants, and none die. He wants at least {want} plants after two summers. What is the fewest runners each plant must root every summer?" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == right - 1) point=st {
+      say "Check it: with that many runners, how many plants are there after one summer, and after two? Is it enough?"
+    }
+    when (answer * 2 >= want and answer > right) point=st {
+      say "The plants made in the first summer make runners in the second summer too. Try a smaller number."
+    }
+  }
+  hint "Try a number. With that many runners, how many plants is one plant after a summer?"
+  hint "Each of those plants does the same in the second summer. Is that at least {want}?"
+}

@@ -1,0 +1,36 @@
+# Ada's Venn of the marsh animals by what they eat, with one more to place. The middle is the place
+# for an eater of both, which is the part a child leaves empty.
+item nature.eater-venn v=1 skills=[nature.feeding, data.venn] {
+  title "Where does it go?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..4
+  let who={pick(k, "goat, which eats grass and leaves", "heron, which eats fish and frogs", "duck, which eats pondweed and water snails", "frog, which eats flies and slugs", "cow, which eats grass and hay")}
+  let right={pick(k, "in Eats plants only", "in Eats animals only", "in the middle", "in Eats animals only", "in Eats plants only")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 34x32 {
+    venn rings labels=["Eats plants", "Eats animals"] left=["rabbit", "sheep"] both=["fox"] right=["owl"] outside=[] at=canvas(1, 1)
+    text ask "Ada sorts the marsh animals by what they eat. Where does the {who} go?" narrate width=32 below=rings gap=1
+    choice pick options=["in Eats plants only", "in the middle", "in Eats animals only"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k == 2 and pick != right) point=rings {
+      say "The duck eats some of each. Which part of the picture is inside both rings at once?"
+    }
+    when (k != 2 and pick == "in the middle") point=rings {
+      say "The middle is for animals that eat plants and animals. Does this one eat both?"
+    }
+    when (k != 2 and pick != right and pick != "in the middle") point=rings {
+      say "Read what it eats again. Is that plants or animals?"
+    }
+  }
+  hint "Does it eat plants? Does it eat animals?"
+  hint "If the answer is yes to both, it goes where the rings overlap, like the fox."
+}

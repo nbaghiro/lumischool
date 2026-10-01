@@ -37,6 +37,11 @@ export const mountains: World = {
         },
         {
             art: "frost-thermometer",
+            when: ["skill:nature.seasons", "skill:nature.weather"],
+            says: "Read the cold: the day and the year turn with it.",
+        },
+        {
+            art: "frost-thermometer",
             when: ["skill:number.negatives", "skill:chemistry.states"],
             says: "Up here it goes below zero.",
         },

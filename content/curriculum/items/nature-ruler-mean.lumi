@@ -1,0 +1,37 @@
+# The story: five catches of the falling ruler, the mean fall, and the time it gives from the table.
+# The catches are made up; repeating and taking the mean is the method. The unknown moves from the
+# mean, to its time, to a missing catch from a given mean.
+item nature.ruler-mean v=1 skills=[nature.nerves, data.mean] {
+  title "Five catches"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..2
+  let c5={pick(k, 24, 24, "?")}
+  let asks={pick(k, "What is the mean distance the ruler fell, in centimetres?", "Use the mean fall and the table. What is Ben's mean reaction time, in hundredths of a second?", "The mean of his five catches was 20 cm. How far did the ruler fall on his fifth catch?")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={2}
+  }
+
+  scene 34x25 {
+    row all at=canvas(1, 1) space=2 align=start {
+      table catches cols=2 head=["Catch", "Fall in cm"] cells=["1", "18", "2", "22", "3", "20", "4", "16", "5", "{c5}"]
+      table times cols=2 head=["Fall in cm", "Time in s"] cells=["10", "0.14", "15", "0.17", "20", "0.20", "25", "0.23"]
+    }
+    text ask "One catch can be lucky, so Ben catches the ruler five times. {asks}" narrate width=32 below=all gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 20, 20, 24)
+  feedback {
+    when (k == 0 and answer == 100) point=catches {
+      say "That is all five catches together. Share it between the five."
+    }
+    when (k == 2 and answer == 20) point=catches {
+      say "20 is the mean. Five catches with a mean of 20 add up to 100 cm."
+    }
+  }
+  hint "The mean is the total shared equally between the catches."
+  hint "If you know the mean, what must all five catches add up to?"
+}

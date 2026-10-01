@@ -1,0 +1,40 @@
+# The way in: what the warden saw an animal eat by the marsh, and whether that makes it a plant eater,
+# a meat eater or an eater of both. The fox and the badger are the ones a child calls meat eaters
+# and are not: both eat fruit as well (The Wildlife Trusts).
+item nature.eats-what v=1 skills=[nature.feeding] {
+  title "Plants, animals or both?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..4
+  let who={pick(k, "the rabbit", "the heron", "the sheep", "the fox", "the badger")}
+  let food={pick(k, "grass, clover and dandelion leaves", "two fish and a frog", "grass in the field by the gate", "a mouse, some beetles and a handful of blackberries", "earthworms and two fallen apples")}
+  let right={pick(k, "only plants", "only animals", "only plants", "plants and animals", "plants and animals")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..4
+  }
+
+  scene 36x29 {
+    row all at=canvas(1, 1) space=2 align=end {
+      rabbits rb count=1 facing=1
+      heron hn facing=-1 reeds=2
+      fox fx facing=-1
+      badger bd facing=1 count=1
+    }
+    text ask "The warden at the bird hide writes down what each animal is seen eating. In one week {who} was seen eating {food}. What does it eat?" narrate width=34 below=all gap=1
+    choice pick options=["only plants", "only animals", "plants and animals"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (k >= 3 and pick == "only animals") point=all {
+      say "It does eat animals. Read the list again: is everything on it an animal?"
+    }
+    when (k <= 2 and pick != right) point=all {
+      say "Go through the list one thing at a time and say whether it is a plant or an animal."
+    }
+  }
+  hint "Say each food on the list. Is it a plant, or an animal?"
+  hint "If the list has some of each, the animal eats both."
+}

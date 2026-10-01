@@ -1,0 +1,37 @@
+# The three-star: Ben's rule that every animal has exactly one of the three kinds of body, and the
+# animal that breaks it. The sea turtle has a backbone and bones inside, and its shell outside is
+# joined to its ribs and backbone, so it has both. At hard the rule is turned round.
+item nature.turtle-both v=1 stars=3 skills=[nature.skeletons, reasoning.counterexample] {
+  title "Which one breaks the rule?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..1
+  let claim={pick(k, "Every animal has bones inside, or a hard case outside, or nothing hard, and never two of these.", "An animal with a hard shell outside never has bones inside.")}
+  level easy {
+    let k={0}
+  }
+  level hard {
+    let k={1}
+  }
+
+  scene 36x21 {
+    row all at=canvas(1, 1) space=2 align=end {
+      crabs cr count=1
+      seaturtle st facing=-1 plates=5
+      octopus oc spots=4
+    }
+    text ask "Ben says: {claim} Which of the three animals shows that Ben is wrong?" narrate width=34 below=all gap=1
+    choice pick options=["the crab", "the sea turtle", "the octopus"] below=ask gap=1
+  }
+
+  answer pick="the sea turtle"
+  feedback {
+    when (pick == "the crab") point=cr {
+      say "The crab has a hard case and no bones inside, so it fits Ben's rule. Which animal has a hard outside and bones as well?"
+    }
+    when (pick == "the octopus") point=st {
+      say "That one fits the rule. Look for an animal with a hard shell that also has a backbone."
+    }
+  }
+  hint "Check each animal against Ben's rule. Which one has two of the kinds at once?"
+  hint "A turtle can bend its neck and swim with flippers. What is inside them?"
+}

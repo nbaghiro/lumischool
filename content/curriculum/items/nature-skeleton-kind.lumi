@@ -1,0 +1,42 @@
+# The way in: which of the three kinds of body a creature has, bones inside, a hard case outside, or
+# no hard parts at all. The fish and the crab are plain; the octopus and the earthworm, soft all
+# through, are the third kind a child forgets.
+item nature.skeleton-kind v=1 skills=[nature.skeletons] {
+  title "Inside, outside or none?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let who={pick(k, "the fish", "the crab", "the frog", "the octopus", "the ant", "an earthworm from the lab's wormery")}
+  let right={pick(k, "bones inside", "a hard case outside", "bones inside", "no hard skeleton", "a hard case outside", "no hard skeleton")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x31 {
+    row all at=canvas(1, 1) space=2 align=end {
+      fish fs size=3 tone=glow facing=1
+      crabs cr count=1
+      octopus oc spots=4
+      frog fr pose=sit facing=-1
+    }
+    text ask "In the laboratory Ada and Ben feel the creatures' bodies in pictures and models: some are held up by bones inside, some by a hard case outside, and some have no hard skeleton at all. What does {who} have?" narrate width=34 below=all gap=1
+    choice pick options=["bones inside", "a hard case outside", "no hard skeleton"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when ((k == 1 or k == 4) and pick == "bones inside") point=cr {
+      say "Press on it and you press the hard part straight away, with the soft parts inside it. Where is its skeleton?"
+    }
+    when ((k == 3 or k == 5) and pick != right) point=oc {
+      say "Its whole body bends any way and squeezes through small gaps. Is anything hard in it?"
+    }
+    when ((k == 0 or k == 2) and pick != right) point=fs {
+      say "Its outside is soft skin or scales. What holds its shape from the inside?"
+    }
+  }
+  hint "Is the outside of the body hard or soft?"
+  hint "If the outside is soft, is there anything hard inside holding it up?"
+}

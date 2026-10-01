@@ -1,0 +1,78 @@
+lesson nature-living-things-through-the-year v=1 format=teach grade=4 unit=1 subject=nature levels=[easy, medium, hard] {
+  title "Living things through the year"
+  goal "Use a year of temperatures to explain what plants and animals do in the warm months and the cold ones."
+
+  look {
+    scene 36x11 {
+      row all at=canvas(1, 1) space=2 align=end {
+        swallows sw count=3
+        art hh asset="hedgehog"
+        frog fr pose=sit facing=-1
+        robin rb post=1 facing=-1
+      }
+    }
+    say """
+      At the farm in the valley below the mountains, the year turns with the temperature. As it
+      warms in spring the apple tree blossoms, frogs lay their spawn and swallows come back to nest
+      in the barn. As it cools in autumn the leaves fall, the swallows fly south, and the hedgehog
+      finds a dry place to sleep until spring. Every change follows the warmth, and the food that
+      comes with it.
+      """
+  }
+  do {
+    level easy {
+      worked nature.farm-months k=2 level=medium
+    }
+    show nature.farm-months k=0 hard-k=2
+    show nature.winter-ways k=0 hard-k=2
+    show nature.tree-month k=0 easy-k=1 hard-k=2
+    show nature.farm-months k=2 easy-k=1 hard-k=3
+    show nature.winter-ways k=3 easy-k=1
+    show nature.tree-month k=3 easy-k=0
+    level medium {
+      show nature.winter-ways k=2
+    }
+    level easy {
+      show nature.spawn-weeks k=0 a=3 b=9 c=15
+    }
+    level hard {
+      show nature.why-hibernate k=2
+      show nature.hut-swallows k=1 level=medium
+    }
+  }
+  story {
+    show nature.spawn-weeks k=1 a=2 b=7 c=12 easy-k=0 hard-k=2 hard-a=3 hard-b=9 hard-c=15
+  }
+  try stars=2 {
+    show nature.why-hibernate k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.hut-swallows k=1 easy-k=0 hard-k=2
+  }
+  remember {
+    say "Plants and animals follow the warmth: they grow, breed and feed in the warm months, and sleep, rest or leave in the cold."
+  }
+
+  grown-ups """
+    What a plant or an animal does through the year follows the temperature, and through it the
+    food: insects fly when it is warm, so swallows come for them and leave when they go, and a
+    hedgehog sleeps through the months when its beetles and worms are hard to find. That swallows
+    winter in Africa, that hedgehogs and frogs sleep through the cold months, and that robins stay
+    all year are recalled; the farm's temperatures and the frogspawn counts are made up to be
+    typical, and the hut puzzle supposes a simple rule for the swallows rather than stating one. The
+    wrong idea to watch for is that animals sleep or leave because they feel cold, rather than
+    because their food goes, and that a warm April and a cool October are the same season. In the
+    child's working, look for the food named in every reason. If the child is stuck, take one
+    animal and ask what it eats and whether that is about in December, then stay here another day
+    before the hut question. Off the page, keep a list for a month of one tree and one bird you can
+    see, with the day's temperature. This meets Japan's grade four science, B(2)(ア)(イ),
+    「動物の活動は，暖かい季節，寒い季節などによって違いがあること」 and 「植物の成長は，暖かい季節，寒い季節などによって違いがあること」:
+    what animals do and how plants grow differ between warm and cold seasons.
+    """
+  level easy {
+    grown-ups "At this level a worked example counts the months of ten degrees or more, the graph is read one point at a time, the animals are the swallows, the hedgehog and the robin, the trees are summer and winter, the frogspawn is added up, the hedgehog's sleep is the reason to give, and the hut is two degrees colder."
+  }
+  level hard {
+    grown-ups "At this level the graph asks how many months reach ten degrees and where it warmed most, the animals are the frogs and the robin, the trees are April and October, told apart by which way it is going, the frogspawn's missing week is worked back from a total, the swallows and the robin are the reasons to give, and the hut is six degrees colder."
+  }
+}

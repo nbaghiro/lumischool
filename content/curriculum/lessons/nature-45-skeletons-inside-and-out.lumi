@@ -1,0 +1,75 @@
+lesson nature-skeletons-inside-and-out v=1 format=teach grade=3 unit=8 subject=nature levels=[easy, medium, hard] {
+  title "Skeletons inside, outside, or none"
+  goal "Say whether an animal is held up by bones inside, a hard case outside or no hard skeleton, and how a case grows."
+
+  look {
+    scene 36x12 {
+      row all at=canvas(1, 1) space=2 align=end {
+        fish fs size=3 tone=glow facing=1
+        crabs cr count=1
+        octopus oc spots=4
+        minibeasts mb kinds=["ladybird"] legs=false
+      }
+    }
+    say """
+      In the laboratory Ada and Ben compare bodies. A fish, a frog and a person are held up by bones
+      inside, with soft parts round them. A crab and a ladybird are the other way round: a hard case
+      outside, with the soft parts inside it. An octopus and an earthworm have no hard skeleton at
+      all, and an octopus is held up by the water it lives in. A hard case cannot grow, so a crab
+      climbs out of it and grows a new, bigger one.
+      """
+  }
+  do {
+    level easy {
+      worked nature.skeleton-kind k=3 level=medium
+    }
+    show nature.skeleton-kind k=3 easy-k=1
+    show nature.skeleton-count k=0 hard-k=1
+    show nature.why-moult k=0 hard-k=1
+    show nature.skeleton-kind k=4 easy-k=2 hard-k=5
+    show nature.skeleton-count k=2
+    level easy medium {
+      show nature.skeleton-kind k=1 easy-k=0
+    }
+    show nature.why-moult k=2
+    level hard {
+      show nature.skeleton-kind k=4
+      show nature.out-of-water k=2
+    }
+  }
+  story {
+    show nature.crab-cases k=1 a=15 d=4 easy-k=0 easy-a=12 easy-d=3 hard-k=2 hard-a=20 hard-d=5
+  }
+  try stars=2 {
+    show nature.out-of-water k=0 hard-k=1
+  }
+  try stars=3 {
+    show nature.turtle-both k=0 hard-k=1
+  }
+  remember {
+    say "Some animals have bones inside, some a hard case outside that they climb out of to grow, and some no hard skeleton at all."
+  }
+
+  grown-ups """
+    A skeleton holds a body up, keeps soft parts safe and gives muscles something to pull on. Fish,
+    frogs, birds and people have one of bones inside; insects, spiders and crabs have a hard case
+    outside, which cannot stretch, so they climb out of it to grow and leave the empty case behind;
+    octopuses, jellyfish and earthworms have no hard skeleton, and in the sea the water holds them
+    up. These facts are recalled, apart from the turtle: its shell is "constructed of modified bony
+    elements such as the ribs" (Wikipedia, "Turtle shell"), so it has bones inside and a hard shell
+    outside. The case widths in the story are made up. The wrong idea to watch for is that a hard
+    case is a shell the animal could leave like a coat, or that every animal has bones. In the
+    child's working, look for "is the outside hard?" asked first. If the child is stuck, press a
+    finger on your own arm and on a shell or a beetle in a picture, then stay here another day
+    before the moulting questions. Off the page, look for an empty crab case on a beach, or a spider
+    skin in a corner of the house. The bones of the human body come at grade five. This meets
+    England's year three programme of study: "identify that humans and some other animals have
+    skeletons and muscles for support, protection and movement".
+    """
+  level easy {
+    grown-ups "At this level a worked example places the octopus, the creatures to place are the crab, the frog, the fish, the counts are of bones inside and of hard cases, the moult questions are the young crab and the soft crab, the story finds the fourth case, the creature that slumps is the octopus, and Ben's rule is broken by the turtle."
+  }
+  level hard {
+    grown-ups "At this level the creatures to place are the octopus and the earthworm, the counts are of soft bodies and of hard cases, the moult questions are the empty spider and the soft crab, a second reasoning question asks why the crab keeps its shape, the story works back to the first case, the creature that slumps is the jellyfish, and Ben's rule is turned round."
+  }
+}
