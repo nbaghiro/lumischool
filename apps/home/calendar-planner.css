@@ -358,6 +358,23 @@
     min-height: 0;
     max-height: calc(100svh - 24px);
 }
+.cal-find input {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    font: 500 15px / 1.4 var(--f-read);
+    color: var(--ink);
+    background: color-mix(in srgb, var(--grid) 30%, transparent);
+    border: 0;
+    border-radius: 10px;
+}
+.cal-find input:hover {
+    background: color-mix(in srgb, var(--sky) 14%, transparent);
+}
+.cal-find input:focus-visible {
+    outline: 2px dashed var(--pen);
+    outline-offset: 2px;
+}
 .cal-settled {
     margin: 0;
     font: 400 12px / 1.35 var(--f-read);
@@ -378,12 +395,16 @@
    column end where the week does. It holds more than fits, so it scrolls and says so: an overlay
    bar that only shows while it moves left the row it cut at the boundary reading as a row outside
    the card. */
+/* A box that scrolls clips what reaches past it, so the lessons' outlines and the ring of the one in
+   hand get room inside it, which the margin gives back so they still line up with the words above. */
 .cal-shelf-in {
     display: flex;
     flex-direction: column;
     gap: 12px;
     flex: 1;
     min-height: 0;
+    margin-inline: -4px;
+    padding-inline: 4px;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-gutter: stable;
@@ -446,32 +467,66 @@
     padding: 0;
     list-style: none;
 }
-.cal-shelf-group li button {
+/* A lesson on the shelf is a sticker as the week's are: white, a little shadow, and its subject's
+   colour as the tape across its top, so it looks the same picked up from the shelf as placed. */
+.cal-shelf-group li {
+    position: relative;
+    margin-top: 5px;
+}
+.cal-shelf-group .gc-tape {
+    z-index: 1;
+    pointer-events: none;
+}
+.cal-shelf-card {
     display: flex;
     align-items: center;
     gap: 9px;
     width: 100%;
-    min-height: 44px;
-    padding: 7px 9px;
+    min-height: 48px;
+    padding: 8px 52px 7px 9px;
     font: 500 12.5px/1.25 var(--f-read);
     text-align: left;
     color: var(--ink);
     background: var(--card);
-    border: 1.5px solid var(--ink);
-    border-left-width: 5px;
-    border-left-color: var(--m, var(--sky));
-    border-radius: 5px;
+    border: 0;
+    border-radius: 6px;
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent),
+        0 6px 12px -8px color-mix(in srgb, var(--ink) 40%, transparent);
     cursor: grab;
 }
-.cal-shelf-group li button:hover {
-    border-color: var(--pen);
-    border-left-color: var(--m, var(--sky));
+.cal-shelf-card:hover {
+    box-shadow: 0 0 0 1.5px var(--pen);
 }
-.cal-shelf-group li.held button {
+.cal-shelf-group li.held .cal-shelf-card {
     box-shadow: 0 0 0 2px var(--pen);
+}
+.cal-shelf-open {
+    position: absolute;
+    top: 50%;
+    right: 2px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    translate: 0 -50%;
+    color: var(--ink-soft);
+    background: none;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.cal-shelf-open:hover {
+    color: var(--ink);
+    background: color-mix(in srgb, var(--sky) 16%, transparent);
+}
+.cal-shelf-open:focus-visible {
+    outline: 2px dashed var(--pen);
+    outline-offset: -2px;
 }
 .cal-aside {
     margin-left: auto;
+    white-space: nowrap;
     font: 500 10px var(--f-mono);
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -554,19 +609,20 @@
     flex-direction: column;
     gap: 8px;
 }
-/* A row is the lesson: its drawing, its name, and the grip that takes it out of the order. The
-   subject's colour is the stripe the shelf's own rows carry, so a row keeps its subject across. */
+/* A row is the lesson: its drawing, its name, and the grip that takes it out of the order. Its
+   subject's colour is the tape the shelf's lessons and the week's stickers carry. */
 .cal-row {
     position: relative;
     display: flex;
     align-items: center;
     gap: 9px;
-    padding: 8px 48px 8px 8px;
-    border: 1.5px solid var(--ink);
-    border-left-width: 5px;
-    border-left-color: var(--m, var(--sky));
+    margin-top: 5px;
+    padding: 10px 48px 8px 8px;
     border-radius: 6px;
     background: var(--card);
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent),
+        0 6px 12px -8px color-mix(in srgb, var(--ink) 40%, transparent);
 }
 .cal-row[data-state="done"] .cal-rowname,
 .cal-row[data-state="late"] .cal-rowname,
@@ -795,11 +851,6 @@ button.cal-rowname:hover {
     flex-wrap: wrap;
     gap: 10px;
 }
-.cal-fields {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 12px;
-}
 .cal-editor .say {
     margin-bottom: 10px;
 }
@@ -809,21 +860,74 @@ button.cal-rowname:hover {
     border: 0;
 }
 
-/* The plan's own fields in the look's band (lesson-look.css). The note is one line deep here rather
-   than a card's box, so the band stays shallow enough to leave the sheet under it in view. */
-.cal-plan-fields {
+/* The plan's own fields in the look's band (lesson-look.css), one quiet row: the day, the minutes and
+   a note of one line, so the band stays shallow enough to leave the sheet under it in view. */
+.cal-plan-row {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
     margin: 0;
     padding: 0;
     border: 0;
 }
-.cal-plan-fields textarea {
+.cal-plan-row input,
+.cal-plan-row textarea {
+    min-height: 44px;
+    padding: 10px 12px;
+    font: 500 16px / 1.5 var(--f-read);
+    color: var(--ink);
+    background: color-mix(in srgb, var(--grid) 30%, transparent);
+    border: 0;
+    border-radius: 10px;
+}
+.cal-plan-row input:hover,
+.cal-plan-row textarea:hover {
+    background: color-mix(in srgb, var(--sky) 14%, transparent);
+}
+.cal-plan-row input:focus-visible,
+.cal-plan-row textarea:focus-visible {
+    outline: 2px dashed var(--pen);
+    outline-offset: 2px;
+}
+.cal-plan-min {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-soft);
+}
+.cal-plan-min input {
+    width: 4.5em;
+    text-align: right;
+}
+.cal-plan-note {
+    flex: 1 1 220px;
+    display: flex;
+}
+.cal-plan-note textarea {
     width: 100%;
     height: 44px;
+    resize: none;
+    overflow: hidden;
+}
+.cal-plan-out {
     min-height: 44px;
-    resize: vertical;
+    padding: 0 6px;
+    font: 500 15px / 1 var(--f-read);
+    color: var(--ink-soft);
+    background: none;
+    border: 0;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--ink-soft) 40%, transparent);
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+.cal-plan-out:hover {
+    color: var(--ink);
+}
+.cal-plan-out:focus-visible {
+    outline: 2px dashed var(--pen);
+    outline-offset: 2px;
 }
 .look-plan .note {
     margin: 0;

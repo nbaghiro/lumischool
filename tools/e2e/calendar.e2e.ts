@@ -407,8 +407,8 @@ test("a lesson is taken out of the plan from its own look, in the week and in th
         await expect(day.locator(".cal-sticker", { hasText: title })).toHaveCount(1);
         await day.locator(".cal-sticker", { hasText: title }).locator(".gc-sticker-in").click();
     });
-    // the band says the removal is one of the things it is for, and the button reads as the shelf does
-    await expect(look.locator(".look-plan")).toContainText("take it out of the plan");
+    // the band offers the removal beside the day and the minutes, worded as the shelf words it
+    await expect(look.locator(".look-plan .cal-plan-row")).toBeVisible();
     await look.getByRole("button", { name: "Take it out of the plan", exact: true }).click();
     await expect(look).toHaveCount(0);
     await expect(day.locator(".cal-sticker", { hasText: inWeek })).toHaveCount(0);
@@ -778,4 +778,50 @@ test("the week and the shelf end on the same line, at every width", async ({ pag
         expect(top, "the shelf did not follow the week down").toBeLessThanOrEqual(13);
     }
     await page.screenshot({ path: info.outputPath("columns-end.png") });
+});
+
+test("a lesson on the shelf opens its own look, and is picked up from it to be placed", async ({
+    page,
+}) => {
+    await signInAs(page);
+    await page.goto("/calendar");
+    const shelf = page.locator(".cal-shelf");
+    const item = shelf.locator("li").first();
+    await expect(item).toBeVisible({ timeout: 30_000 });
+    const card = item.locator(".cal-shelf-card");
+    const title = (await card.locator(".cal-rowtitle").innerText()).trim();
+    await item.getByRole("button", { name: `Open ${title}` }).click();
+    const look = page.getByRole("dialog");
+    await expect(look.locator(".look-words b")).toHaveText(title);
+    await expect(look.locator(".ls-sheet").first()).toBeVisible({ timeout: 40_000 });
+    // a lesson not placed yet has no day or minutes to change, only the way to place it
+    await expect(look.locator(".cal-plan-row")).toHaveCount(0);
+    expect(await smallTargets(look)).toEqual([]);
+    await look.getByRole("button", { name: "Pick it up to place" }).click();
+    await expect(look).toHaveCount(0);
+    await expect(card).toHaveAttribute("aria-pressed", "true");
+    expect(await smallTargets(shelf)).toEqual([]);
+});
+
+test("the shelf finds any lesson of any grade by its words, and one found is placed like any other", async ({
+    page,
+}) => {
+    await signInAs(page);
+    await page.goto("/calendar");
+    const shelf = page.locator(".cal-shelf");
+    await expect(shelf.locator("li").first()).toBeVisible({ timeout: 30_000 });
+    await shelf.getByLabel("Find any lesson").fill("million");
+    const card = shelf.locator(".cal-shelf-card", { hasText: "Numbers to a million" }).first();
+    await expect(card).toBeVisible();
+    // a lesson of another grade than the child's says which grade it is
+    await expect(card.locator(".cal-aside")).toContainText("Grade");
+    await expect(shelf.locator(".cal-shelf-title")).toContainText("found");
+    const title = (await card.locator(".cal-rowtitle").innerText()).trim();
+    await card.click();
+    const day = page.locator(".cal-day").last();
+    await day.getByRole("button", { name: "Put it here" }).first().click();
+    await expect(day.locator(".cal-sticker", { hasText: title })).toHaveCount(1);
+    await shelf.getByLabel("Find any lesson").fill("no lesson has these words zz");
+    await expect(shelf).toContainText("No lesson matches");
+    expect(await smallTargets(shelf)).toEqual([]);
 });

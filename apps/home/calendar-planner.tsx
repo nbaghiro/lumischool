@@ -58,6 +58,9 @@ import {
 } from "./cards";
 import { dayLong, dayMark, plural } from "./grown";
 import { readFamilyLog, type Loaded } from "./log";
+import { Icon } from "../../engine/ui/icon";
+import { gradeName } from "../../engine/grade";
+import { found } from "../../school/catalogue";
 import { draft, editable, label, marker, minutes, slots, type Slot } from "./plan-ops";
 
 // The look carries the lesson sheet and the reader that builds it, which the four views never need,
@@ -133,6 +136,11 @@ export function Calendar(): JSX.Element {
     const [card, setCard] = createSignal<JSX.Element>();
     /** The lesson whose look is open, which is the one place the plan's own fields are shown. */
     const [looking, setLooking] = createSignal<Slot | null>(null);
+    /** Words searched for on the shelf, which then holds any lesson they find, of any grade. */
+    const [words, setWords] = createSignal("");
+    const searching = (): boolean => words().trim().length > 0;
+    /** A lesson on the shelf whose look is open, which has no place in the plan yet. */
+    const [peeking, setPeeking] = createSignal<{ item: Shelved; kid: Kid } | null>(null);
     const [busy, setBusy] = createSignal(false),
         [error, setError] = createSignal("");
     const [carried, setCarried] = createSignal<Carried | null>(null);
@@ -189,6 +197,7 @@ export function Calendar(): JSX.Element {
         if (!busy()) {
             setCard(undefined);
             setLooking(null);
+            setPeeking(null);
             setError("");
         }
     };
@@ -394,20 +403,33 @@ export function Calendar(): JSX.Element {
         const finished = new Set(
             l.sittings.filter((s) => s.child === who.id && s.finished).map((s) => s.lesson),
         );
+        // searched, the shelf holds every lesson the words find, of any grade and finished or not,
+        // since a grown-up looking for one wants it to do again as much as to do first
+        const matching = searching()
+            ? found(shownTo(l, who.id), {
+                  grade: null,
+                  subject: null,
+                  variant: null,
+                  words: words(),
+              })
+            : null;
         const tracks = [...new Set(l.pack.index.lessons.map((x) => x.subject))].sort(
             (a, b) => trackRank(a) - trackRank(b),
         );
         return tracks
             .map((track) => {
-                const lane = laneOf(shownTo(l, who.id), track, who.grade);
+                const lane = matching
+                    ? matching.filter((x) => x.subject === track).map((x) => x.id)
+                    : laneOf(shownTo(l, who.id), track, who.grade);
                 const aside = set
                     .filter((s) => s.track === track)
+                    .filter((s) => !matching || matching.some((x) => x.id === s.lesson))
                     .map((op): Shelved => ({ lesson: op.lesson, track, op }));
                 const free = lane
                     .filter(
                         (id) =>
                             !planned.has(id) &&
-                            !finished.has(id) &&
+                            (!!matching || !finished.has(id)) &&
                             !aside.some((a) => a.lesson === id),
                     )
                     .map((id): Shelved => ({ lesson: id, track }));
@@ -608,8 +630,21 @@ export function Calendar(): JSX.Element {
             <aside class="cal-shelf" aria-labelledby="cal-shelf-title">
                 <h2 id="cal-shelf-title" class="cal-shelf-title">
                     {kid()?.name ?? "Everyone"}
-                    <span>{plural(total(), "lesson")} to place</span>
+                    <span>
+                        {searching()
+                            ? `${plural(total(), "lesson")} found`
+                            : `${plural(total(), "lesson")} to place`}
+                    </span>
                 </h2>
+                <label class="cal-find">
+                    <span class="sr">Find any lesson</span>
+                    <input
+                        type="search"
+                        placeholder="Find any lesson"
+                        value={words()}
+                        onInput={(e) => setWords(e.currentTarget.value)}
+                    />
+                </label>
                 <Show when={carrying()}>
                     <button
                         type="button"
@@ -642,6 +677,7 @@ export function Calendar(): JSX.Element {
 
     /** One child's part of the shelf: what is not placed, and the control that starts them again. */
     function ShelfFor(props: { who: Kid }): JSX.Element {
+        const gradeOf = (lesson: string): number | undefined => factsOf(now(), lesson)?.grade;
         const groups = (): { track: string; items: Shelved[] }[] => shelfOf(props.who);
         /** The subjects the shelf holds, and each subject's rows, so placing one leaves the rest. */
         const tracks = (): string[] => groups().map((g) => g.track);
@@ -672,7 +708,10 @@ export function Calendar(): JSX.Element {
                         </span>
                     </h3>
                 </Show>
-                <Show when={settled().length}>
+                <Show when={searching() && !groups().length}>
+                    <p class="cal-settled">No lesson matches “{words().trim()}”.</p>
+                </Show>
+                <Show when={!searching() && settled().length}>
                     <p class="cal-settled">
                         Nothing left to place in{" "}
                         {new Intl.ListFormat("en-GB", { type: "conjunction" }).format(settled())}.
@@ -695,8 +734,10 @@ export function Calendar(): JSX.Element {
                                         };
                                         return (
                                             <li classList={{ held: held(), aside: !!item.op }}>
+                                                <span class="gc-tape" aria-hidden="true" />
                                                 <button
                                                     type="button"
+                                                    class="cal-shelf-card"
                                                     data-lesson={item.lesson}
                                                     data-track={item.track}
                                                     draggable={parent()}
@@ -741,6 +782,28 @@ export function Calendar(): JSX.Element {
                                                     <Show when={item.op}>
                                                         <span class="cal-aside">set aside</span>
                                                     </Show>
+                                                    <Show
+                                                        when={
+                                                            !item.op &&
+                                                            gradeOf(item.lesson) !== props.who.grade
+                                                        }
+                                                    >
+                                                        <span class="cal-aside">
+                                                            {gradeName(gradeOf(item.lesson) ?? 0)}
+                                                        </span>
+                                                    </Show>
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    class="cal-shelf-open"
+                                                    aria-label={`Open ${titleOf(now(), item.lesson)}`}
+                                                    title="Open the lesson"
+                                                    onClick={() => {
+                                                        setError("");
+                                                        setPeeking({ item, kid: props.who });
+                                                    }}
+                                                >
+                                                    <Icon name="journal" />
                                                 </button>
                                             </li>
                                         );
@@ -839,6 +902,7 @@ export function Calendar(): JSX.Element {
                         below: props2.at === list().length - 1 && line(list().length),
                     }}
                 >
+                    <span class="gc-tape" aria-hidden="true" />
                     <Near
                         class="gc-pic cal-rowpic on-paper"
                         draw={(host) => drawFirst(now(), factsOf(now(), s().op.lesson), host)}
@@ -1184,59 +1248,63 @@ export function Calendar(): JSX.Element {
                 `Updated ${titleOf(now(), s.op.lesson)}.`,
             );
         };
+        const first = date();
+        // what a parent changed, which "Keep this" is offered for only once there is something to keep
+        const changed = (): boolean =>
+            date() !== first || duration() !== s.op.minutes || note() !== s.op.note;
         return (
             <>
-                <p class="note">
-                    {editable(s.cell)
-                        ? "Move it to another day, change how long it is planned for, or take it out of the plan."
-                        : "Work already begun stays in the record."}
-                </p>
+                <Show when={!editable(s.cell)}>
+                    <p class="note">Work already begun stays in the record.</p>
+                </Show>
                 <Show when={error()}>
                     <Say text={error()} />
                 </Show>
                 <Show when={parent() && editable(s.cell)}>
-                    <fieldset class="cal-plan-fields" disabled={busy()}>
-                        <div class="cal-fields">
-                            <label class="field">
-                                <span>Day</span>
-                                <input
-                                    type="date"
-                                    value={date()}
-                                    min={now().cal.today}
-                                    onInput={(e) => setDate(e.currentTarget.value)}
-                                />
-                            </label>
-                            <label class="field">
-                                <span>Minutes planned</span>
-                                <input
-                                    type="number"
-                                    value={duration()}
-                                    min="5"
-                                    max="240"
-                                    onInput={(e) => setDuration(e.currentTarget.valueAsNumber)}
-                                />
-                            </label>
-                        </div>
-                        <label class="field">
-                            <span>A note for yourself</span>
+                    <fieldset class="cal-plan-row" disabled={busy()}>
+                        <legend class="sr">This lesson in the plan</legend>
+                        <label class="cal-plan-day">
+                            <span class="sr">Day</span>
+                            <input
+                                type="date"
+                                value={date()}
+                                min={now().cal.today}
+                                onInput={(e) => setDate(e.currentTarget.value)}
+                            />
+                        </label>
+                        <label class="cal-plan-min">
+                            <span class="sr">Minutes planned</span>
+                            <input
+                                type="number"
+                                value={duration()}
+                                min="5"
+                                max="240"
+                                onInput={(e) => setDuration(e.currentTarget.valueAsNumber)}
+                            />
+                            <span aria-hidden="true">min</span>
+                        </label>
+                        <label class="cal-plan-note">
+                            <span class="sr">A note for yourself</span>
                             <textarea
+                                rows="1"
                                 value={note()}
                                 maxlength="2000"
+                                placeholder="A note for yourself"
                                 onInput={(e) => setNote(e.currentTarget.value)}
                             />
                         </label>
-                        <div class="acts">
+                        <Show when={changed()}>
                             <Button busy={busy()} onClick={() => void submit()}>
                                 Keep this
                             </Button>
-                            <Button
-                                second
-                                disabled={busy()}
-                                onClick={() => void place({ kind: "slot", slot: s }, null)}
-                            >
-                                Take it out of the plan
-                            </Button>
-                        </div>
+                        </Show>
+                        <button
+                            type="button"
+                            class="cal-plan-out"
+                            onClick={() => void place({ kind: "slot", slot: s }, null)}
+                        >
+                            Take it out of the plan
+                        </button>
                     </fieldset>
                 </Show>
             </>
@@ -1519,6 +1587,39 @@ export function Calendar(): JSX.Element {
                                         <fieldset disabled={busy()}>{c()}</fieldset>
                                     </div>
                                 </Dialog>
+                            )}
+                        </Show>
+                        <Show when={peeking()} keyed>
+                            {(p) => (
+                                <LessonLook
+                                    title={titleOf(now(), p.item.lesson)}
+                                    kicker={`${p.kid.name} · ${label(p.item.track)}`}
+                                    facts={factsOf(now(), p.item.lesson) ?? null}
+                                    pack={l().pack.pack}
+                                    lessons={l().pack.index.lessons}
+                                    level="medium"
+                                    {...(parent()
+                                        ? {
+                                              plan: (
+                                                  <div class="acts">
+                                                      <Button
+                                                          onClick={() => {
+                                                              close();
+                                                              pickUp({
+                                                                  kind: "shelf",
+                                                                  item: p.item,
+                                                                  kid: p.kid,
+                                                              });
+                                                          }}
+                                                      >
+                                                          Pick it up to place
+                                                      </Button>
+                                                  </div>
+                                              ),
+                                          }
+                                        : {})}
+                                    onClose={close}
+                                />
                             )}
                         </Show>
                         <Show when={looking()} keyed>
