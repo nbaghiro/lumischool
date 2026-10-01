@@ -562,13 +562,6 @@
         box-shadow: none;
         border-radius: 0;
     }
-    /* a turn game's board stays a sheet on the table */
-    .game-field.scene {
-        border-radius: 4px;
-        box-shadow:
-            0 1px 0 #0000001a,
-            0 10px 24px -16px #00000052;
-    }
     .hands {
         margin: 0;
         flex-direction: row;

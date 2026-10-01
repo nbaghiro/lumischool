@@ -1,7 +1,7 @@
-// Other machines for each level of the number machine: the same track and the same numbers to feed,
+// Other machines for each level of the number machine: the same tray and the same numbers to drop,
 // with a different rule of the same kind, so the orders change and have to be worked out again.
 import { configurationKey } from "../../engine/motion/configuration";
-import { FEED, MACHINE_LEVELS, predict, through, type MachineLevel, type Rule } from "./rule";
+import { MACHINE_LEVELS, inTray, through, type MachineLevel, type Rule } from "./rule";
 
 /** The first machine's rule for each layout, per level; the first is the authored one. */
 const RULES: readonly Rule[][] = [
@@ -71,37 +71,25 @@ export function machineChallenge(seed: number, phase: number): MachineConfigurat
         machines,
         numbers: [...base.numbers],
         orders: [],
-        ...(base.stones ? { stones: [...base.stones] } : {}),
-        ...(base.humps ? { humps: [...base.humps] } : {}),
+        ...(base.missing ? { missing: [...base.missing] } : {}),
     };
     level.orders = (INPUTS[phase] ?? []).map((x) => through(level, x));
     return { phase, variant, level };
 }
 
 /**
- * The strength to roll at for each order, or null when an order cannot be made: every order has
- * exactly one number on an open pocket that makes it, and some pull drops a ball into that pocket.
+ * The tray place to drop for each order, or null when an order cannot be made: every order has
+ * exactly one ball in the tray that makes it, so the answer is a number to find, not a guess.
  */
 export function machineSolve(level: MachineLevel): number[] | null {
-    const powers: number[] = [];
+    const places: number[] = [];
     for (const want of level.orders) {
-        const makes = level.numbers.filter((n) => through(level, n) === want);
-        const n = makes[0];
-        if (makes.length !== 1 || n === undefined || level.stones?.includes(n)) return null;
-        const power = powerFor(level, n);
-        if (power === null) return null;
-        powers.push(power);
+        const makes = level.numbers.flatMap((n, j) => (through(level, n) === want ? [j] : []));
+        const j = makes[0];
+        if (makes.length !== 1 || j === undefined || !inTray(level, j)) return null;
+        places.push(j);
     }
-    return powers;
-}
-
-/** The middle of the band of pulls that drop a ball into pocket `n`, to a hundredth. */
-export function powerFor(level: MachineLevel, n: number): number | null {
-    const hits: number[] = [];
-    for (let p = FEED.min; p <= FEED.max + 1e-9; p += 0.01)
-        if (predict(level, p).pocket === n) hits.push(p);
-    if (!hits.length) return null;
-    return Math.round(((hits[0] ?? 0) + (hits[hits.length - 1] ?? 0)) * 50) / 100;
+    return places;
 }
 
 export function isMachineConfiguration(

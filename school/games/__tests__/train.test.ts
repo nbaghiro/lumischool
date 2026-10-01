@@ -81,6 +81,17 @@ test("a gentle push couples, a hard one knocks and rolls back, and a short one w
     assert.ok(clank.some((h) => "cue" in h && h.cue === "place"));
 });
 
+test("coupling is forgiving: a wide band of pushes couples, and one that stops just short on the level creeps on", () => {
+    const coupling = [6.5, 7.5, 8.5, 9.25].filter((power) => {
+        const s = startTrain(0);
+        pick(s, "b");
+        push(s, power);
+        for (let i = 0; i < 60 * 10; i++) stepTrain(s, pad());
+        return coupled(s).length === 1;
+    });
+    assert.deepEqual(coupling, [6.5, 7.5, 8.5, 9.25]);
+});
+
 test("a weak push does not get over the hump, and rolls back to where it can be pushed again", () => {
     const s = startTrain(1);
     pick(s, "s");

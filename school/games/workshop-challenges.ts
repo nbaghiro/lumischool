@@ -75,3 +75,32 @@ export function openWorkshopConfiguration(configuration: WorkshopConfiguration):
     if (!isWorkshopConfiguration(configuration)) throw new Error("Unverified workshop arrangement");
     return startWorkshopLevel(configuration.phase, configuration.level);
 }
+
+/** The barge's middle, where the mast stands, and how far either way a crate can stand on its deck. */
+const MAST = 30,
+    REACH = 7.2;
+
+/**
+ * Where to set each crate down on the barge, in the level's piece order, so the load balances: the
+ * crates stand a little apart, the heaviest nearest the middle, and the whole row is slid along until
+ * the weights times their distances from the mast cancel.
+ */
+export function cargoPlan(level: WorkshopLevel): number[] {
+    const n = level.pieces.length,
+        masses = level.pieces.map((_, i) => level.masses?.[i] ?? 1),
+        gap = Math.min(2.6, (REACH * 2) / Math.max(1, n - 1)),
+        slots = Array.from({ length: n }, (_, k) => (k - (n - 1) / 2) * gap);
+    // the heaviest crates take the slots nearest the mast
+    const byWeight = masses.map((m, i) => ({ m, i })).sort((a, b) => b.m - a.m || a.i - b.i),
+        bySlot = slots
+            .map((o, k) => ({ o, k }))
+            .sort((a, b) => Math.abs(a.o) - Math.abs(b.o) || a.o - b.o),
+        offsets: number[] = Array.from({ length: n }, () => 0);
+    byWeight.forEach(({ i }, k) => {
+        offsets[i] = bySlot[k]?.o ?? 0;
+    });
+    const total = masses.reduce((a, m) => a + m, 0),
+        moment = offsets.reduce((a, o, i) => a + o * (masses[i] ?? 1), 0),
+        shift = -moment / total;
+    return offsets.map((o) => MAST + Math.max(-REACH, Math.min(REACH, o + shift)));
+}

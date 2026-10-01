@@ -1,10 +1,11 @@
-// Firefly trail: every level and layout is flown to the end by a finger and by the keys, seeds join
-// only in the order of the count, a knock drops beads that are picked up again, the backwards count
-// shortens the trail, random flying almost never finishes, and a replay is the same flight.
+// Firefly trail: every level and layout is played to the end by taps and by the keys, seeds join only
+// in the order of the count, a knock drops beads the firefly goes back for, the backwards count
+// shortens the trail, random tapping almost never finishes, the way goes round the hedges, and a
+// replay is the same flight.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { SHELF_IDS } from "./shelf";
-import { aimOf, pilot } from "./firefly-pilot";
+import { pilot } from "./firefly-pilot";
 import {
     FIREFLY,
     FIREFLY_LEVELS,
@@ -28,7 +29,7 @@ function fly(s: FireflyState, pad: Pad, n: number): void {
     }
 }
 
-test("every level, in every layout, is flown to the end by a held finger and by the keys", () => {
+test("every level, in every layout, is played to the end by taps and by the keys", () => {
     FIREFLY_LEVELS.forEach((L, level) => {
         for (const seed of [1, 2, 4])
             for (const input of ["pointer", "keys"] as const) {
@@ -53,7 +54,11 @@ test("a seed joins only when it is next in the count, and the trail grows by the
     assert.equal(s.next, 0);
     assert.equal(s.beads, 0);
     assert.ok(Math.hypot(wrong.v.x, wrong.v.y) > 1, "a wrong seed is nudged away");
-    assert.match(s.said, new RegExp(`That is ${wrong.n}\\. The next is 5\\.`));
+    let nopes = 0;
+    for (let i = 0; i < 120; i++)
+        nopes += step(s, emptyPad()).filter((h) => "cue" in h && h.cue === "nope").length;
+    assert.equal(nopes, 0, "it says not yet once, not again while the firefly stays by it");
+    assert.match(s.said, new RegExp(`Not yet\\. That is ${wrong.n}\\. The next is 5\\.`));
     const want = wantedSeed(s);
     assert.ok(want);
     s.at = seedAt(s, want);
@@ -64,7 +69,7 @@ test("a seed joins only when it is next in the count, and the trail grows by the
     assert.equal(beadsAt(s).length, 5);
 });
 
-test("a nettle knocks the last beads off, and flying through them picks them up again", () => {
+test("a nettle knocks the last beads off, and the firefly goes back for them on its own", () => {
     const s = start(1);
     for (let k = 0; k < 2; k++) {
         const want = wantedSeed(s);
@@ -80,12 +85,7 @@ test("a nettle knocks the last beads off, and flying through them picks them up 
     assert.equal(s.beads, 5);
     assert.equal(s.loose.length, 5);
     assert.match(s.said, /nettles/);
-    fly(s, emptyPad(), 120);
-    for (let t = 0; t < 60 * 30 && s.loose.length; t++) {
-        const pad = emptyPad();
-        pad.touch = aimOf(s);
-        step(s, pad);
-    }
+    for (let t = 0; t < 60 * 30 && s.loose.length; t++) step(s, emptyPad());
     assert.equal(s.loose.length, 0);
     assert.equal(s.beads, 10);
 });
@@ -101,18 +101,23 @@ test("counting back starts with a long trail and each seed takes its step off", 
     assert.equal(s.beads, 36);
 });
 
-test("random flying for a minute finishes a level at most one time in five", () => {
+test("tapping seeds at random, with the taps a child who knows the count needs and two more, finishes a level at most one time in five", () => {
     FIREFLY_LEVELS.forEach((L, level) => {
         const rnd = seeded(51 + level);
         let won = 0;
-        const trials = 10;
+        const trials = 20;
         for (let t = 0; t < trials; t++) {
-            const s = start(level, 1 + t),
-                pad = emptyPad();
-            for (let k = 0; k < 60 * 60 && !s.won; k++) {
-                if (k % 30 === 0) pad.touch = { x: rnd() * L.across, y: 2 + rnd() * 24 };
+            const s = start(level, 1 + (t % 3));
+            let taps = L.seeds + 2;
+            for (let k = 0; k < 60 * 120 && !s.won && (taps > 0 || s.goal || s.loose.length); k++) {
+                const pad = emptyPad();
+                if (!s.goal && !s.loose.length && taps > 0 && k % 20 === 0) {
+                    const left = s.seeds.filter((x) => !x.got),
+                        pick = left[Math.floor(rnd() * left.length)];
+                    pad.lifted = pick ? seedAt(s, pick) : null;
+                    taps--;
+                }
                 step(s, pad);
-                spent(pad);
             }
             if (s.won) won++;
         }
@@ -120,20 +125,63 @@ test("random flying for a minute finishes a level at most one time in five", () 
     });
 });
 
-test("the same hands give the same flight, and under reduced motion a press is its own steps", () => {
-    const run = () => {
-        const s = start(3, 2);
-        pilot(s, "pointer", 60 * 20);
-        return JSON.stringify(s);
-    };
-    assert.equal(run(), run());
-    const normal = start(0),
-        reduced = start(0),
-        pad = emptyPad();
-    pad.holding = ["right"];
-    fly(normal, pad, snakeGame.still.press(normal) * 3);
-    for (let p = 0; p < 3; p++) fly(reduced, pad, snakeGame.still.press(reduced));
-    assert.deepEqual(reduced, normal);
+test("the same pads give the same flight, and under reduced motion one press is a whole flight", () => {
+    const pads: Pad[] = [],
+        played = start(3, 2);
+    pilot(played, "pointer", 60 * 20, pads);
+    const again = start(3, 2);
+    for (const pad of pads) step(again, { ...pad, pressed: [...pad.pressed] });
+    assert.equal(JSON.stringify(again), JSON.stringify(played));
+    const s = start(0),
+        want = wantedSeed(s);
+    assert.ok(want);
+    const pad = emptyPad();
+    pad.lifted = seedAt(s, want);
+    fly(s, pad, snakeGame.still.press(s));
+    for (let i = 0; i < 60 * 20 && snakeGame.still.settling?.(s); i++) step(s, emptyPad());
+    assert.equal(snakeGame.still.settling?.(s), false);
+    assert.equal(s.next, 1);
+});
+
+test("a tap behind a hedge flies round it, and a held finger is followed closely", () => {
+    const level = FIREFLY_LEVELS.findIndex((L) => L.hedges.length);
+    const s = start(level),
+        hedge = s.L.hedges[0];
+    assert.ok(hedge);
+    s.at = { x: hedge.x - 3, y: hedge.y + hedge.h / 2 };
+    const pad = emptyPad();
+    pad.lifted = { x: hedge.x + hedge.w + 3, y: hedge.y + hedge.h / 2 };
+    let bumped = false;
+    for (let i = 0; i < 60 * 20 && s.goal; i++)
+        if (step(s, i ? emptyPad() : pad).some((h) => "cue" in h && h.cue === "bump"))
+            bumped = true;
+    assert.equal(s.goal, null);
+    assert.ok(!bumped, "it went round the hedge, not into it");
+    const held = start(0),
+        finger = { x: held.at.x + 8, y: held.at.y + 4 };
+    for (let i = 0; i < 90; i++) step(held, { ...emptyPad(), touch: finger });
+    assert.ok(Math.hypot(held.at.x - finger.x, held.at.y - finger.y) < 0.5);
+    for (let i = 0; i < 60; i++) step(held, emptyPad());
+    assert.ok(Math.hypot(held.v.x, held.v.y) < 0.1, "let go, it hovers where it is");
+});
+
+test("the keys fly it as before: left and right turn it, holding the big button hurries it, and a tap takes over", () => {
+    const s = start(0),
+        from = { ...s.at };
+    for (let i = 0; i < 60; i++) step(s, { ...emptyPad(), brake: i === 0 });
+    assert.ok(s.keyed, "a key takes it off the hover");
+    assert.ok(s.at.x > from.x + 1, "flying by the keys, it keeps flying along its heading");
+    const heading = s.heading;
+    for (let i = 0; i < 30; i++) step(s, { ...emptyPad(), holding: ["left"] });
+    assert.ok(s.heading < heading - 1, "a held left arrow turns it");
+    const cruising = Math.hypot(s.v.x, s.v.y);
+    for (let i = 0; i < 40; i++) step(s, { ...emptyPad(), go: true });
+    assert.ok(Math.hypot(s.v.x, s.v.y) > cruising * 1.3, "holding the big button hurries it");
+    const want = wantedSeed(s);
+    assert.ok(want);
+    step(s, { ...emptyPad(), lifted: seedAt(s, want) });
+    assert.equal(s.keyed, false, "a tap on a seed takes over from the keys");
+    assert.deepEqual(s.goal, { seed: want.spot });
 });
 
 test("every drawing it names is on the shelf, and its tuning is sound", () => {

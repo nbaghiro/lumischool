@@ -50,16 +50,14 @@ test("penny shove accepts a forward flick and offers keyboard angle controls", a
     );
 });
 
-test("fishing exposes compact cast and ease controls and safely cancels a held cast", async ({
+test("fishing labels its cast and ease buttons in words and safely cancels a held cast", async ({
     page,
 }) => {
     await page.goto("/games?g=fish");
-    await expect(
-        page.getByRole("button", { name: "Cast / reel", exact: true }).locator("svg"),
-    ).toBeVisible();
-    await expect(
-        page.getByRole("button", { name: "Ease the line", exact: true }).locator("svg"),
-    ).toBeVisible();
+    await expect(page.getByRole("button", { name: "Cast", exact: true })).toHaveText("Cast");
+    await expect(page.getByRole("button", { name: "Ease off", exact: true })).toHaveText(
+        "Ease off",
+    );
     const float = page.locator('[data-key="float"]');
     await expect(float).toBeVisible();
     const box = await float.boundingBox();
@@ -70,7 +68,7 @@ test("fishing exposes compact cast and ease controls and safely cancels a held c
     await page.keyboard.press("Escape");
     await page.mouse.up();
     await page.keyboard.press("Escape");
-    await page.getByRole("button", { name: "Cast / reel", exact: true }).click();
+    await page.getByRole("button", { name: "Cast", exact: true }).click();
     await expect.poll(async () => (await float.boundingBox())?.x ?? 0).toBeGreaterThan(box.x + 10);
 });
 
@@ -155,6 +153,44 @@ test("shut the box: a die flicked across the felt throws both dice, which tumble
     await page.waitForTimeout(500);
     expect(await die.boundingBox()).toEqual(rest);
     await page.screenshot({ path: `/tmp/shut-throw-${info.project.name}-rest.png` });
+});
+
+test("shut the box: the paper fills the room, and a pointer at a die's very edge still finds the die", async ({
+    page,
+}, info) => {
+    test.skip(info.project.name.startsWith("phone"), "hover is a mouse's");
+    await page.goto("/games?g=shut&probe=1");
+    await expect(page.locator(".game-player")).toHaveAttribute("data-game-ready", "true");
+    const field = await page.locator(".game-field").boundingBox();
+    const board = await page.locator('[data-game="board"]').boundingBox();
+    if (!field || !board) throw new Error("Missing the board");
+    expect(Math.abs(field.width - board.width)).toBeLessThan(2);
+    expect(Math.abs(field.height - board.height)).toBeLessThan(2);
+    const die = page.locator('[data-key="die:1"]');
+    let at = await die.boundingBox();
+    for (let i = 0; i < 20; i++) {
+        await page.waitForTimeout(150);
+        const now = await die.boundingBox();
+        if (now && at && now.x === at.x && now.y === at.y) break;
+        at = now;
+    }
+    if (!at) throw new Error("Missing the die");
+    const cursor = () =>
+        page
+            .locator(".game-field")
+            .evaluate((el) => (el instanceof HTMLElement ? el.style.cursor : ""));
+    // just inside each side of the die, and just outside its left side, on bare felt, since the other die stands to its right
+    for (const [x, y] of [
+        [at.x + 2, at.y + at.height / 2],
+        [at.x + at.width - 2, at.y + at.height / 2],
+        [at.x + at.width / 2, at.y + 2],
+        [at.x + at.width / 2, at.y + at.height - 2],
+    ] as const) {
+        await page.mouse.move(x, y);
+        await expect.poll(cursor).toBe("grab");
+    }
+    await page.mouse.move(at.x - 6, at.y + at.height / 2);
+    await expect.poll(cursor).not.toBe("grab");
 });
 
 test("the firefly flies towards a held finger", async ({ page }) => {

@@ -174,7 +174,7 @@ const rally = family({
 
 const clear = family({
     variation: {
-        method: "stride-search-and-physics-replay",
+        method: "steady-tap-physics-ride",
         generate: clearChallenge,
         read: typed(isClearConfiguration),
     },
@@ -248,7 +248,7 @@ const sling = family({
 
 const rule = family({
     variation: {
-        method: "order-search-and-roll-replay",
+        method: "order-search-and-tap-replay",
         generate: machineChallenge,
         read: typed(isMachineConfiguration),
         solve: (v) => machineSolve(v.level),

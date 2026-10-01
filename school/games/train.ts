@@ -185,13 +185,16 @@ const SHED_Y = 9.5;
 const PER = 1.5;
 const MOST = 12;
 const LEAST = 0.5;
+/** Squares short of the train a wagon may stop on the level and still creep on to couple. */
+const CREEP = 3.5;
 /** A carriage's middle sits this far above the rail at the size it is drawn. */
 const ABOVE = 1.44;
 
 const rulesOf = (s: TrainState): Rules => ({
     ends: [s.won ? -80 : 1, 47],
     gaps: [],
-    couple: 3.5,
+    // generous, so a push that looks gentle couples; only a clearly hard push knocks
+    couple: 6.5,
     give: 0.45,
     rebound: 0.35,
     banks: s.banks,
@@ -400,6 +403,12 @@ export function stepTrain(s: TrainState, pad: Pad): Happening[] {
         } else s.note = `Coupled. The train says ${train.join(" - ")}. Which sound comes next?`;
     } else if (wagon && was > 0 && !moving(s) && loose(s)) {
         const gap = (loose(s)?.x ?? 0) - LEN / 2 - (ENGINE_X + LEN / 2 + train.length * LEN);
+        // a wagon that stops just short on the level creeps the last of the way and couples by itself
+        const level = Math.abs(heightAt(s.banks, wagon.x) - heightAt(s.banks, hookAt(s).x)) < 0.05;
+        if (gap < CREEP && level) {
+            wagon.v = -1.2;
+            return out;
+        }
         s.note =
             gap < 2
                 ? "So close. A tiny nudge will couple it."

@@ -15,7 +15,7 @@ async function still(page: Page): Promise<void> {
     }
 }
 
-test("shunting yard: the keys set the points and the push, and every siding is made up", async ({
+test("shunting yard: the keys move the lever and set the push, and every siding is made up", async ({
     page,
 }, info) => {
     const errors: string[] = [];
@@ -49,7 +49,7 @@ test("shunting yard: the keys set the points and the push, and every siding is m
     expect(errors).toEqual([]);
 });
 
-test("shunting yard: a tap on a board sets the points and a drag from the front wagon pushes it", async ({
+test("shunting yard: a tap on the lever sets the points and a drag from the front wagon pushes it", async ({
     page,
 }) => {
     const errors: string[] = [];
@@ -58,9 +58,14 @@ test("shunting yard: a tap on a board sets the points and a drag from the front 
     await expect(page.locator(".game-player")).toHaveAttribute("data-game-ready", "true");
     const reads = page.locator('[data-game="reads"]');
     await expect(reads).toContainText("The points are set for A");
-    const board = await page.locator('[data-key="board1"]').first().boundingBox();
-    if (!board) throw new Error("Missing board B");
-    await page.mouse.click(board.x + board.width / 2, board.y + board.height / 3);
+    await expect(page.getByRole("button", { name: "Push", exact: true })).toBeVisible();
+    // the buttons under the yard do what the keys do, for a switch or a player who prefers them
+    for (const name of ["Push softer", "Push harder", "Send back"])
+        await expect(page.getByRole("button", { name, exact: true })).toBeVisible();
+    const lever = await page.locator('[data-key="lever"]').first().boundingBox();
+    if (!lever) throw new Error("Missing the lever");
+    // the handle is at the top of the lever's box
+    await page.mouse.click(lever.x + lever.width / 2, lever.y + lever.height * 0.3);
     await expect(reads).toContainText("The points are set for B");
     const wagon = await page.locator('[data-key="w0:2"]').first().boundingBox();
     const canvas = await page.locator(".board > .field-gl canvas").first().boundingBox();

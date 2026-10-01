@@ -182,7 +182,8 @@ export const COURSE = {
     head: 2.8,
     poleX: 1.9,
     hoop: 1.7,
-    reach: 0.95,
+    // just inside a hoop's drawn rim, which stands 1.5 squares from its middle, so a plane seen going through the ring counts
+    reach: 1.4,
 } as const;
 const zero = COURSE.ground - 0.4,
     span = COURSE.pole - COURSE.head - COURSE.foot;
@@ -320,7 +321,10 @@ export function step(s: PlaneState, pad: Pad): Happening[] {
     for (const [k, gate] of L.gates.entries()) {
         const hx = poleAt(k) + COURSE.hoop;
         if (!(was.x < hx && p.x >= hx) || s.loop) continue;
-        const hoop = gate.hoops.find((t) => Math.abs(p.y - heightOf(L, t)) < COURSE.reach);
+        // the nearest hoop, since hoops one mark apart are closer than two reaches
+        const hoop = gate.hoops
+            .filter((t) => Math.abs(p.y - heightOf(L, t)) < COURSE.reach)
+            .sort((a, b) => Math.abs(p.y - heightOf(L, a)) - Math.abs(p.y - heightOf(L, b)))[0];
         if (s.done[k]) continue;
         if (hoop === gate.target) {
             s.done[k] = true;

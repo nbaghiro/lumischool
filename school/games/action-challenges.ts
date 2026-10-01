@@ -1,4 +1,4 @@
-import { ROAD_LEVELS, startRoadLevel, type RoadLevel } from "./road";
+import { goalWords, ROAD_LEVELS, startRoadLevel, type RoadLevel } from "./road";
 import { RIVER_LEVELS, startRiver, type RiverLevel } from "./row";
 import { PLANE_LEVELS, startPlaneLevel, type PlaneLevel } from "./plane";
 
@@ -8,7 +8,7 @@ export type ActionConfiguration =
     | { kind: "row"; phase: number; level: RiverLevel }
     | { kind: "plane"; phase: number; level: Omit<PlaneLevel, "words"> };
 export const ACTION_CHALLENGE_COUNT = 3;
-const PHASES = { road: 2, row: RIVER_LEVELS.length, plane: 4 };
+const PHASES = { road: ROAD_LEVELS.length, row: RIVER_LEVELS.length, plane: 4 };
 
 /** A finite, replay-tested catalogue; selection never runs a physics search in the app. */
 export function actionChallenge(
@@ -19,20 +19,20 @@ export function actionChallenge(
     const index = (seed >>> 0) % ACTION_CHALLENGE_COUNT;
     const safePhase = Number.isInteger(phase) && phase >= 0 && phase < PHASES[kind] ? phase : 0;
     if (kind === "road") {
+        // another round of the same level: stops written in words keep their words and come in
+        // another order, and plain numbers move along the line by a tick
         const base = ROAD_LEVELS[safePhase] ?? ROAD_LEVELS[0];
-        const target = base.target + (index - 1) * (safePhase === 0 ? 4 : 10);
-        return {
-            kind,
-            phase: safePhase,
-            level: {
-                ...base,
-                grades: [...base.grades],
-                boxes: base.boxes.map((b) => ({ ...b })),
-                target,
-                title: `Stop on ${target}`,
-                goal: `Brake so the front of the car stops on ${target}.`,
-            },
+        const worded = base.stops.some((st) => st.words !== undefined);
+        const stops = worded
+            ? [...base.stops.slice(index), ...base.stops.slice(0, index)].map((st) => ({ ...st }))
+            : base.stops.map((st) => ({ ...st, at: st.at + (index - 1) * base.tick }));
+        const level: RoadLevel = {
+            ...base,
+            grades: [...base.grades],
+            boxes: base.boxes.map((b) => ({ ...b })),
+            stops,
         };
+        return { kind, phase: safePhase, level: { ...level, goal: goalWords(level) } };
     }
     if (kind === "row") {
         // another stretch of the same river: the gates' sides mirrored or turned about, the bends shifted, the rocks moved across

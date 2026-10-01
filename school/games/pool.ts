@@ -26,12 +26,15 @@ import { knob } from "../../engine/motion/tune";
 import { panOf, type Hum, type Kit } from "../../engine/sound/kit";
 import { RAIL, tableOutline, tablePockets } from "../../engine/parts/sport/pooltable";
 import { POOLCUE } from "../../engine/parts/sport/poolcue";
-import { BEYOND } from "./scenery";
 
 const RATE = 60;
 
-/** The room: the table sits in the middle of it with a band above for the target and the tally. */
-const WORLD = { w: 30, h: 25 };
+/**
+ * The room is the table with a margin: room above for the pocket signs, and a band below for the balls
+ * kept, the sum so far and the target, so the table takes as much of the field as it can.
+ */
+const roomOf = (L: PoolLevel) => ({ w: L.w + 6, h: L.h + 8 });
+const TABLE_AT = { x: 3, y: 3.6 };
 
 export type Ask =
     | { kind: "sum"; total: number; shots?: number; count?: number; even?: true }
@@ -50,7 +53,6 @@ export interface PoolLevel extends ActionLevel {
     w: number;
     h: number;
     cloth: "mint" | "sky" | "berry";
-    floor: "boards" | "tiles";
     cue: Pt;
     balls: Spot[];
     /** Round things on the cloth a ball bounces off: a rubber bumper, or the kitchen's fruit bowl. */
@@ -126,7 +128,6 @@ export const POOL_LEVELS: Levels<PoolLevel> = [
         w: 24,
         h: 12,
         cloth: "mint",
-        floor: "boards",
         cue: { x: 6, y: 6 },
         balls: [
             { n: 3, x: 15, y: 3.5 },
@@ -146,7 +147,6 @@ export const POOL_LEVELS: Levels<PoolLevel> = [
         w: 24,
         h: 12,
         cloth: "sky",
-        floor: "boards",
         cue: { x: 5, y: 6 },
         balls: [
             { n: 2, x: 12, y: 3 },
@@ -167,7 +167,6 @@ export const POOL_LEVELS: Levels<PoolLevel> = [
         w: 24,
         h: 14,
         cloth: "sky",
-        floor: "boards",
         cue: { x: 5, y: 10 },
         balls: [
             { n: 5, x: 9, y: 4 },
@@ -188,7 +187,6 @@ export const POOL_LEVELS: Levels<PoolLevel> = [
         w: 24,
         h: 12,
         cloth: "mint",
-        floor: "boards",
         cue: { x: 4, y: 6 },
         balls: [
             { n: 4, x: 18, y: 3 },
@@ -215,7 +213,6 @@ export const POOL_LEVELS: Levels<PoolLevel> = [
         w: 24,
         h: 12,
         cloth: "berry",
-        floor: "boards",
         cue: { x: 5, y: 6 },
         balls: [
             { n: 6, x: 12, y: 3 },
@@ -238,7 +235,6 @@ export const POOL_LEVELS: Levels<PoolLevel> = [
         w: 24,
         h: 12,
         cloth: "mint",
-        floor: "boards",
         cue: { x: 4, y: 6 },
         balls: [
             { n: 3, x: 11, y: 3 },
@@ -266,7 +262,6 @@ export const POOL_LEVELS: Levels<PoolLevel> = [
         w: 24,
         h: 12,
         cloth: "sky",
-        floor: "boards",
         cue: { x: 4, y: 6 },
         balls: [
             { n: 3, x: 20, y: 3 },
@@ -290,7 +285,6 @@ export const POOL_LEVELS: Levels<PoolLevel> = [
         w: 24,
         h: 12,
         cloth: "berry",
-        floor: "tiles",
         cue: { x: 4, y: 6 },
         balls: [
             { n: 6, x: 18, y: 3 },
@@ -379,10 +373,7 @@ function firstAim(balls: readonly Ball[]): Aim {
 }
 
 export function startPool(L: PoolLevel, phase = 0): PoolState {
-    const at = {
-        x: (WORLD.w - L.w) / 2,
-        y: (WORLD.h - L.h) / 2 + 1,
-    };
+    const at = { ...TABLE_AT };
     const balls = rack(L, at);
     return {
         phase,
@@ -532,7 +523,8 @@ function judge(s: PoolState, out: Happening[]): void {
 }
 
 function sounds(s: PoolState, ks: readonly Knock[], out: Happening[]): void {
-    const pan = (x: number) => panOf(x, WORLD.w / 2, WORLD.w);
+    const room = roomOf(s.L),
+        pan = (x: number) => panOf(x, room.w / 2, room.w);
     for (const k of ks) {
         if (k.kind === "clack")
             out.push({
@@ -677,19 +669,9 @@ const drawBack = (a: Aim) => 0.35 + (a.power / SHOT.max) * 2.6;
 
 export function poolFrame(s: PoolState, rest = false): Frame {
     const L = s.L,
+        room = roomOf(L),
         sprites: Sprite[] = [],
         marks: Mark[] = [];
-    for (let x = -BEYOND; x < WORLD.w + BEYOND; x += 20)
-        for (let y = -BEYOND; y < WORLD.h + BEYOND; y += 20)
-            sprites.push({
-                key: `floor:${x}:${y}`,
-                art: "floorboards",
-                params: { kind: L.floor, width: 20, height: 20 },
-                x: x + 10,
-                y: y + 10,
-                z: 0,
-                still: true,
-            });
     sprites.push({
         key: "table",
         art: "pooltable",
@@ -811,24 +793,51 @@ export function poolFrame(s: PoolState, rest = false): Frame {
             }
         }
     }
+    // under the table: the kept balls and the sum they make on the left, the target on the right
+    const under = s.at.y + L.h + RAIL + 1.6,
+        widthOf = (text: string, size: number) => text.length * size * 0.5,
+        tally = tallyWords(s),
+        ask = askWords(L.ask),
+        // a sign under a middle pocket stands in the band, so the target keeps to the right of it
+        signBelow = s.table.pockets.some((p) => p.only && p.y >= s.at.y + L.h / 2),
+        askSize = signBelow ? Math.min(0.85, (L.w / 2 - 3) / (ask.length * 0.5)) : 0.85;
     marks.push(
-        { kind: "word", x: WORLD.w / 2, y: s.at.y - RAIL - 4.3, text: askWords(L.ask), size: 0.85 },
-        { kind: "word", x: WORLD.w / 2, y: s.at.y - RAIL - 2.9, text: tallyWords(s), size: 0.6 },
+        {
+            kind: "word",
+            x:
+                s.at.x +
+                1 +
+                s.potted.length * 1.8 +
+                widthOf(tally, 0.6) / 2 -
+                (s.potted.length ? 0.4 : 1),
+            y: under,
+            text: tally,
+            size: 0.6,
+        },
+        {
+            kind: "word",
+            x: s.at.x + L.w - widthOf(ask, askSize) / 2,
+            y: under,
+            text: ask,
+            size: askSize,
+        },
     );
-    if (ready && L.ask.kind === "sum" && L.ask.shots)
+    if (ready && L.ask.kind === "sum" && L.ask.shots) {
+        const shot = `Shot ${s.shots + 1} of ${L.ask.shots}`;
         marks.push({
             kind: "word",
-            x: WORLD.w / 2,
-            y: s.at.y + L.h + RAIL + 1.8,
-            text: `Shot ${s.shots + 1} of ${L.ask.shots}`,
+            x: s.at.x + L.w - widthOf(shot, 0.55) / 2,
+            y: under + 1.2,
+            text: shot,
             size: 0.55,
         });
+    }
     return {
         sprites,
         marks,
-        camera: { x: WORLD.w / 2, y: WORLD.h / 2 },
-        view: { ...WORLD },
-        world: { ...WORLD },
+        camera: { x: room.w / 2, y: room.h / 2 },
+        view: room,
+        world: { ...room },
         time: rest ? 0 : t,
     };
 }

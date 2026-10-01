@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
     amplitudeOf,
+    apexEase,
     catchRope,
     energyOf,
     handsOf,
@@ -69,4 +70,18 @@ test("a rope is caught only within reach, where the hands meet it, keeping the s
     assert.ok(got.omega > 1);
     const back = handsOf(got);
     assert.ok(Math.abs(back.x - 10.3) < 1e-9 && Math.abs(back.y - 8) < 1e-9);
+});
+
+test("the ease slows a swing only near the top of it, and a slowed swing still reaches the same height", () => {
+    const top: Swing = { ax: 0, ay: 0, r: 9, theta: -0.8, omega: 0 };
+    const bottom: Swing = { ax: 0, ay: 0, r: 9, theta: 0, omega: 1.5 };
+    assert.ok(Math.abs(apexEase(top, 0.3) - 0.7) < 1e-9);
+    assert.ok(apexEase(bottom, 0.3) > 0.99);
+    const s: Swing = { ax: 0, ay: 0, r: 9, theta: -0.6, omega: 0 };
+    let most = -Infinity;
+    for (let i = 0; i < 300; i++) {
+        stepSwing(s, G, DT * apexEase(s, 0.3), PUSH, false);
+        most = Math.max(most, s.theta);
+    }
+    assert.ok(Math.abs(most - 0.6) < 0.03, `reached ${most}`);
 });

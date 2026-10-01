@@ -60,12 +60,21 @@ export class StillView implements FieldView {
         return this.sq;
     }
 
-    fit(view: { w: number; h: number }, _world: unknown, room: { w: number; h: number }): void {
-        this.sq = Math.max(6, Math.floor(Math.min(room.w / view.w, room.h / view.h)));
-        this.view = { ...view };
-        this.el.style.width = `${view.w * this.sq}px`;
-        this.el.style.height = `${view.h * this.sq}px`;
-        this.el.style.setProperty("--sq", `${this.sq}px`);
+    fit(
+        view: { w: number; h: number },
+        _world: unknown,
+        room: { w: number; h: number },
+        _seen?: "side" | "above",
+        square?: number,
+    ): void {
+        const sq = square ?? Math.max(6, Math.floor(Math.min(room.w / view.w, room.h / view.h)));
+        // the paper fills the room, as the GPU's view does; less than a pixel to spare is no room
+        const grown = (r: number, v: number): number => (r - v * sq < 1 ? v : r / sq);
+        this.sq = sq;
+        this.view = { w: grown(room.w, view.w), h: grown(room.h, view.h) };
+        this.el.style.width = `${this.view.w * sq}px`;
+        this.el.style.height = `${this.view.h * sq}px`;
+        this.el.style.setProperty("--sq", `${sq}px`);
     }
 
     clear(): void {

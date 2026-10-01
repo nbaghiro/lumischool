@@ -77,7 +77,7 @@ export interface StandLevel extends ActionLevel {
     /** The wind's push on a sliding cup or coin at the height of a gust, in squares a second each second. */
     wind: number;
     /** The dashed line on the cup at the next order, and where a push will stop: drawn, a spot only, or not at all. */
-    guide: { fill: boolean; slide: "path" | "spot" | "none" };
+    guide: { fill: boolean; slide: "path" | "spot" };
     /** The shares of a cup the level's orders come in, for its variations. */
     amounts: number[];
 }
@@ -100,8 +100,8 @@ const PK = 0.8,
 const TRAY = { x: 3.6, w: 5 };
 /** A customer's dish for their change, and how much of it catches a coin. */
 const DISH = { w: 5, inner: 2.05 };
-/** How near a customer a cup has to stop for them to reach it, in squares. */
-const ZONE = 1.7;
+/** How near a customer a cup has to stop for them to reach it, in squares: wide, since customers stand at least 8 apart. */
+const ZONE = 3;
 /** The most a jug tips, in radians. */
 const MOST_TILT = 1.25;
 /** How many cups a full jug holds. */
@@ -347,7 +347,7 @@ export const STAND_LEVELS: Levels<StandLevel> = [
             guest(8, 0.8, ["quarter", "quarter", "quarter", "quarter"]),
         ],
         wind: 0.8,
-        guide: { fill: false, slide: "none" },
+        guide: { fill: false, slide: "spot" },
         amounts: [0.2, 0.4, 0.6, 0.8, 1],
     },
 ];
@@ -1714,7 +1714,7 @@ export function standFrame(s: StandState, rest = false): Frame {
         : cup.mode === "home" || cup.mode === "resting"
           ? cup.x
           : null;
-    if (from !== null && L.guide.slide !== "none" && !s.won) {
+    if (from !== null && !s.won) {
         const to = Math.min(L.counter + 2, from + previewPower(s)),
             y = COUNTER_TOP - 0.4;
         if (L.guide.slide === "path") {
@@ -1722,7 +1722,11 @@ export function standFrame(s: StandState, rest = false): Frame {
             for (let x = from + 1; x < to; x += 1.2) pts.push({ x, y });
             if (pts.length) marks.push({ kind: "dots", pts, faint: true });
         }
-        marks.push({ kind: "ring", x: to, y, r: 0.9, on: s.pull !== null });
+        // the customer the push will reach is ringed, so a child aims at a person, not a place on the counter
+        const target = waiting(s).find((w) => Math.abs(to - slotX(s, w)) <= ZONE);
+        if (target)
+            marks.push({ kind: "ring", x: slotX(s, target), y, r: 1.6, on: true, solid: true });
+        marks.push({ kind: "ring", x: to, y, r: 0.9, on: target !== undefined });
     }
     if (s.pull !== null && from !== null)
         marks.push({

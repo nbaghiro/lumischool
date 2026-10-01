@@ -179,9 +179,8 @@ export class SceneView implements Board {
 
     /** A client point in sheet squares, the same units every part's place is in. */
     toSquares(clientX: number, clientY: number): Pt {
-        const r = this.view.el.getBoundingClientRect(),
-            sq = this.sq;
-        return { x: (clientX - r.left) / sq - 1, y: (clientY - r.top) / sq - 1 };
+        // the view's camera stands on the sheet's middle, so its world is the sheet's squares wherever the sheet sits in the room
+        return this.view.toWorld(clientX, clientY);
     }
 
     show(scene: Scene, o: ShowOptions = {}): void {
@@ -394,15 +393,30 @@ export class SceneView implements Board {
         this.fit();
     }
 
-    /** Sizes the view to the sheet at the page's square, at once, so the page measures the board it will see. */
+    /**
+     * Sizes the view to the room the board has, at the page's square, with the sheet in its middle: the
+     * paper fills the room as it does under an action game, and the page still measures the board it will see.
+     */
     private fit(): void {
         const sq = this.sq,
             view = { w: this.size.w + 2, h: this.size.h + 2 };
-        const fit = `${sq} ${view.w} ${view.h}`;
+        const room = {
+            w: Math.max(view.w * sq, this.o.host.clientWidth),
+            h: Math.max(view.h * sq, this.o.host.clientHeight),
+        };
+        const fit = `${sq} ${view.w} ${view.h} ${room.w} ${room.h}`;
         if (fit === this.fitted) return;
         this.fitted = fit;
-        // half a pixel over, so the view's own rounding lands on this square size
-        this.view.fit(view, view, { w: view.w * sq + 0.5, h: view.h * sq + 0.5 }, "above");
+        this.view.fit(view, view, room, "above", sq);
+    }
+
+    /** Pixels from the view's top left to the sheet's, the margin the room leaves round the sheet. */
+    private sheetOffset(sq: number): Pt {
+        const el = this.view.el;
+        return {
+            x: (el.offsetWidth - (this.size.w + 2) * sq) / 2,
+            y: (el.offsetHeight - (this.size.h + 2) * sq) / 2,
+        };
     }
 
     private moveTo(h: Held, x: number, y: number): void {
@@ -837,6 +851,7 @@ export class SceneView implements Board {
 
     /** Each labelled part's caption under it, in the page, where a reader finds it. */
     private caption(sq: number): void {
+        const o = this.sheetOffset(sq);
         for (const h of this.held.values()) {
             let c = this.captions.get(h.key);
             if (!h.label) {
@@ -852,7 +867,7 @@ export class SceneView implements Board {
             }
             if (c.textContent !== h.label) c.textContent = h.label;
             c.style.width = `${(h.box.w * sq).toFixed(1)}px`;
-            c.style.transform = `translate(${((h.x + 1) * sq).toFixed(1)}px, ${((h.y + 1 + h.box.h) * sq).toFixed(1)}px)`;
+            c.style.transform = `translate(${((h.x + 1) * sq + o.x).toFixed(1)}px, ${((h.y + 1 + h.box.h) * sq + o.y).toFixed(1)}px)`;
         }
     }
 

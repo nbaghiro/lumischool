@@ -1,17 +1,17 @@
-// The number machine: every level and every layout is played through by pulling and by the keys,
-// the dotted path says where the ball will drop, a wrong ball costs nothing but is written in the
-// table, a stone and a hump do what they look like, and a recorded set of pulls still lands where it
-// did.
+// The number machine: every level and every layout is filled by tapping and by the keys, a turn is
+// quick, a wrong ball costs nothing but is written in the table, a lost ball is not in the tray,
+// random tapping rarely fills a level quickly, and a recorded set of taps lands where it did.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { SHELF_IDS } from "./shelf";
 import {
-    FEED,
     MACHINE_LEVELS,
+    MACHINE_TUNING,
+    inTray,
     label,
-    predict,
     ruleGame,
     run,
+    slotAt,
     startMachine,
     through,
     type MachineLevel,
@@ -22,7 +22,6 @@ import {
     machineChallenge,
     machineLayouts,
     machineSolve,
-    powerFor,
 } from "../rule-challenges";
 import { challengeFor, openChallenge } from "../challenges";
 import { emptyPad, spent, type Pad } from "../../../engine/motion/pad";
@@ -37,20 +36,35 @@ function tick(s: MachineState, pad: Pad, n = 1): void {
 }
 
 /** Steps until the ball has gone through and the machine waits for the next one. */
-function settle(s: MachineState): void {
+function settle(s: MachineState): number {
     const pad = emptyPad();
-    for (let i = 0; i < LIMIT && ruleGame.still.settling?.(s); i++) tick(s, pad);
+    let n = 0;
+    for (; n < LIMIT && ruleGame.still.settling?.(s); n++) tick(s, pad);
     assert.ok(!ruleGame.still.settling?.(s), "the ball came to rest");
+    return n;
 }
 
-/** Pulls the ball back by as much as `power` needs and lets go, as a finger does. */
-function pull(s: MachineState, power: number): void {
-    const pad = emptyPad(),
-        back = { x: -power / FEED.per, y: 0 };
-    pad.pull = back;
+/** Taps the ball at tray place `j`, as a finger does: down on it and up again. */
+function tap(s: MachineState, j: number): void {
+    const at = slotAt(j),
+        pad = emptyPad();
+    pad.touch = at;
     tick(s, pad);
-    pad.pull = null;
-    pad.released = back;
+    pad.touch = null;
+    pad.lifted = at;
+    tick(s, pad);
+    settle(s);
+}
+
+/** Chooses tray place `j` with left and right, and drops it with space. */
+function key(s: MachineState, j: number): void {
+    const pad = emptyPad();
+    for (let i = 0; i < 20 && s.pick !== j; i++) {
+        pad.pressed = [j > s.pick ? "right" : "left"];
+        tick(s, pad);
+    }
+    assert.equal(s.pick, j);
+    pad.tapped = true;
     tick(s, pad);
     settle(s);
 }
@@ -76,8 +90,7 @@ test("a rule reads and runs the way it is written", () => {
     assert.equal(label({ op: "add", a: -2 }), "- 2");
     assert.equal(run({ op: "muladd", a: 3, b: -1 }, 4), 11);
     assert.equal(run({ op: "mul", a: 10 }, 3), 30);
-    const two = at(4);
-    assert.equal(through(two, 4), 10, "two machines, one after the other");
+    assert.equal(through(at(4), 4), 10, "two machines, one after the other");
 });
 
 test("the first layout of every level is the authored level", () => {
@@ -86,12 +99,12 @@ test("the first layout of every level is the authored level", () => {
     );
 });
 
-test("every level and layout is filled order by order with the pull its answer needs", () => {
+test("every level and layout is filled order by order by tapping the ball its answer needs", () => {
     for (const { title, level, phase } of every()) {
-        const powers = machineSolve(level);
-        assert.ok(powers, `${title}: an order no open pocket makes`);
+        const places = machineSolve(level);
+        assert.ok(places, `${title}: an order no ball in the tray makes`);
         const s = startMachine(level, phase);
-        for (const p of powers) pull(s, p);
+        for (const j of places) tap(s, j);
         assert.ok(ruleGame.won(s), `${title}: ${ruleGame.say(s)}`);
         assert.equal(s.rejects, 0, title);
         assert.deepEqual(ruleGame.objectives?.(s), { completed: 3, total: 3 });
@@ -102,71 +115,99 @@ test("every level and layout is filled order by order with the pull its answer n
     }
 });
 
-test("every level is filled with the keys alone", () => {
+test("every level is filled with the keys alone, and the keys skip a lost ball", () => {
     MACHINE_LEVELS.forEach((L, level) => {
         const s = ruleGame.start(level),
-            pad = emptyPad();
-        for (const want of L.orders) {
-            const n = L.numbers.find((x) => through(L, x) === want);
-            assert.ok(n !== undefined);
-            const target = powerFor(L, n);
-            assert.ok(target !== null, `${L.title}: no pull drops into ${n}`);
-            const dir = target > s.aim.power ? "right" : "left";
-            pad.holding = [dir];
-            for (let i = 0; i < 60 * 10 && Math.abs(s.aim.power - target) > 0.05; i++) tick(s, pad);
-            pad.holding = [];
-            pad.tapped = true;
-            tick(s, pad);
-            settle(s);
-        }
+            places = machineSolve(L);
+        assert.ok(places);
+        for (const j of places) key(s, j);
         assert.ok(ruleGame.won(s), `${L.title}: ${ruleGame.say(s)}`);
     });
+    const lost = at(3),
+        s = ruleGame.start(3);
+    assert.ok(!inTray(lost, 0), "the 1 is lost");
+    assert.equal(lost.numbers[s.pick], 2, "the choice starts on the first ball there is");
+    tick(s, { ...emptyPad(), pressed: ["left"] });
+    assert.equal(lost.numbers[s.pick], 2, "and left does not reach the lost one");
 });
 
-test("the dotted path says where the ball will drop, for every pull", () => {
-    for (const L of MACHINE_LEVELS) {
-        for (let p = FEED.min; p <= FEED.max; p += 0.37) {
-            const s = startMachine(L, 0),
-                said = predict(L, p).pocket;
-            pull(s, p);
-            if (said === null) assert.equal(s.seen.length, 0, `${L.title} at ${p}`);
-            else assert.equal(s.seen.at(-1)?.[0], said, `${L.title} at ${p}`);
-        }
-    }
+test("a turn is quick: a ball dropped is judged in under three seconds", () => {
+    const s = startMachine(at(0), 0);
+    const pad = emptyPad();
+    pad.touch = slotAt(3);
+    tick(s, pad);
+    pad.touch = null;
+    pad.lifted = slotAt(3);
+    tick(s, pad);
+    const steps = settle(s);
+    assert.ok(steps < 60 * 3, `a turn took ${steps} steps`);
+    assert.ok(MACHINE_TUNING.hop + MACHINE_TUNING.work < 1.2);
 });
 
-test("a wrong ball is written in the table and bounces back, and the order waits", () => {
-    const L = at(0);
-    const power = powerFor(L, 1);
-    assert.ok(power !== null);
-    const s = startMachine(L, 0);
-    pull(s, power);
+test("a ball dragged away from the tray drops in from where it was let go", () => {
+    const s = startMachine(at(0), 0),
+        pad = emptyPad();
+    pad.touch = slotAt(2);
+    tick(s, pad);
+    pad.touch = { x: 12, y: 6 };
+    tick(s, pad);
+    assert.ok(
+        ruleGame.frame(s).sprites.some((sp) => sp.key === "tray:2" && Math.abs(sp.x - 12) < 1e-9),
+        "the ball follows the finger",
+    );
+    pad.touch = null;
+    pad.lifted = { x: 12, y: 6 };
+    tick(s, pad);
+    assert.deepEqual(s.from, { x: 12, y: 6 });
+    settle(s);
+    assert.deepEqual(s.seen, [[3, 6]]);
+});
+
+test("a wrong ball is written in the table and bounces off, and the next ball is ready at once", () => {
+    const s = startMachine(at(0), 0);
+    tap(s, 0);
     assert.deepEqual(s.seen, [[1, 4]]);
     assert.equal(s.done, 0);
     assert.equal(s.rejects, 1);
-    assert.equal(s.phase, "aim", "and the next ball is ready at once");
+    assert.equal(s.phase, "pick");
     assert.match(ruleGame.say(s), /1 made 4/);
 });
 
-test("a stone keeps a ball out of its pocket, and a slow ball rolls back off a hump", () => {
-    const stoned = at(3);
-    for (let p = FEED.min; p < 4; p += 0.05)
-        assert.notEqual(predict(stoned, p).pocket, 1, `nothing drops into the 1 at ${p}`);
-    const humped = at(2);
-    const four = powerFor(humped, 4),
-        five = powerFor(humped, 5);
-    assert.ok(
-        four !== null && five !== null && five > four + 1,
-        "the pocket past the hump needs a harder roll",
-    );
-    // a pull just short of cresting rolls back into the pocket before the hump
-    assert.equal(predict(humped, five - 0.8).pocket, 4);
+test("a tap away from every ball drops nothing", () => {
+    const s = startMachine(at(0), 0),
+        pad = emptyPad();
+    pad.touch = { x: 30, y: 20 };
+    tick(s, pad);
+    pad.touch = null;
+    pad.lifted = { x: 30, y: 20 };
+    tick(s, pad);
+    assert.equal(s.phase, "pick");
+    assert.equal(s.drops, 0);
 });
 
-test("a recorded set of pulls lands where it did", () => {
-    const L = at(1);
-    const s = startMachine(L, 1);
-    for (const p of [3.1, 6.36, 9.4, 8.29, 5.57]) pull(s, p);
+test("tapping at random rarely fills a level in six drops", () => {
+    let rng = 12345;
+    const random = () => {
+        rng = (rng * 1103515245 + 12345) % 2147483648;
+        return rng / 2147483648;
+    };
+    for (const [phase, L] of MACHINE_LEVELS.entries()) {
+        let wins = 0;
+        for (let trial = 0; trial < 40; trial++) {
+            const s = startMachine(L, phase),
+                open = L.numbers.flatMap((_, j) => (inTray(L, j) ? [j] : []));
+            for (let d = 0; d < 6 && !ruleGame.won(s); d++)
+                tap(s, open[Math.floor(random() * open.length)] ?? 0);
+            if (ruleGame.won(s)) wins++;
+        }
+        // at most one time in five, the bar the other games are held to
+        assert.ok(wins <= 8, `${L.title}: random taps won ${wins} of 40`);
+    }
+});
+
+test("a recorded set of taps lands where it did", () => {
+    const s = startMachine(at(1), 1);
+    for (const j of [0, 3, 7, 6, 2]) tap(s, j);
     assert.deepEqual(s.seen, [
         [1, 2],
         [4, 8],
@@ -179,16 +220,19 @@ test("a recorded set of pulls lands where it did", () => {
 });
 
 test("under reduced motion a press and its settling end where the steps would", () => {
-    const L = at(0);
-    const a = startMachine(L, 0),
-        b = startMachine(L, 0);
-    pull(a, 6.36);
-    const pad = emptyPad();
-    pad.released = { x: -6.36 / FEED.per, y: 0 };
-    tick(b, pad, ruleGame.still.press(b));
-    for (let i = 0; i < LIMIT && ruleGame.still.settling?.(b); i++) tick(b, emptyPad());
+    const a = startMachine(at(0), 0),
+        b = startMachine(at(0), 0);
+    key(a, 3);
+    key(b, 3);
     assert.deepEqual(b.seen, a.seen);
-    assert.equal(b.done, a.done);
+    const pad = emptyPad();
+    pad.pressed = ["right"];
+    tick(b, pad, ruleGame.still.press(b));
+    pad.tapped = true;
+    tick(b, pad, ruleGame.still.press(b));
+    assert.ok(ruleGame.still.settling?.(b), "the drop keeps the machine stepping");
+    for (let i = 0; i < LIMIT && ruleGame.still.settling?.(b); i++) tick(b, emptyPad());
+    assert.equal(b.seen.length, 2);
 });
 
 test("a stored layout opens as it was made, and an edited one does not", () => {
@@ -207,10 +251,16 @@ test("a stored layout opens as it was made, and an edited one does not", () => {
     assert.ok(JSON.stringify(challengeFor(ruleGame, 0, 1).configuration).length > 0);
 });
 
-test("every drawing it names is on the shelf, and its words are plain", () => {
+test("the state is plain data, every drawing it names is on the shelf, and its words are plain", () => {
     for (const [level, L] of MACHINE_LEVELS.entries()) {
         const s = ruleGame.start(level);
+        assert.deepEqual(JSON.parse(JSON.stringify(s)), s);
         for (const sp of ruleGame.frame(s).sprites) assert.ok(SHELF_IDS.has(sp.art), sp.art);
+        for (const j of L.missing ?? [])
+            assert.ok(
+                !ruleGame.frame(s).sprites.some((sp) => sp.key === `tray:${L.numbers.indexOf(j)}`),
+                `${L.title}: the lost ${j} is not drawn`,
+            );
         assert.ok(!/[—!]/.test(`${L.goal} ${L.title} ${ruleGame.hint} ${ruleGame.say(s)}`));
     }
 });

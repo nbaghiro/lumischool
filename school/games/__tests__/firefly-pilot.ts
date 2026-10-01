@@ -1,6 +1,7 @@
-// A child's flying, for the tests: to the next seed, or first to any fallen bead, round the hedges,
-// the nettles, the webs and where the frogs sit, by a finger held ahead or by the arrow keys.
-import { emptyPad, spent } from "../../../engine/motion/pad";
+// A child's play, for the tests: tap the seed the count wants next and wait while the firefly flies
+// there, or fly it by the keys, turning with left and right, to a fallen bead first and then the
+// seed the count wants, round the hedges, the nettles, the webs and where the frogs sit.
+import { emptyPad, spent, type Pad } from "../../../engine/motion/pad";
 import type { Pt } from "../../../engine/motion/geometry";
 import { FIREFLY, seedAt, step, wantedSeed, type FireflyState } from "../snake";
 
@@ -84,23 +85,33 @@ export function aimOf(s: FireflyState): Pt | null {
     return want ? seedAt(s, want) : null;
 }
 
-/** Flies until the level is won or `most` steps have gone. */
-export function pilot(s: FireflyState, input: "pointer" | "keys", most = 60 * 300): void {
-    const pad = emptyPad();
+/** Plays until the level is won or `most` steps have gone, as a hand would, with a Pad and nothing else. */
+export function pilot(
+    s: FireflyState,
+    input: "pointer" | "keys",
+    most = 60 * 300,
+    pads: Pad[] = [],
+): void {
     let way: Pt | null = null;
     for (let t = 0; t < most && !s.won; t++) {
-        const aim = aimOf(s);
-        if (t % 10 === 0 || !way) way = aim ? waypoint(s, aim) : null;
-        const to = way ?? s.at;
-        if (input === "pointer") pad.touch = to;
-        else {
+        const pad = emptyPad();
+        if (input === "pointer") {
+            const want = wantedSeed(s);
+            // a new tap only once the firefly has nowhere to go and nothing fallen to fetch
+            if (want && !s.goal && !s.loose.length && t % 20 === 0) pad.lifted = seedAt(s, want);
+        } else {
+            const aim = aimOf(s);
+            if (t % 10 === 0 || !way) way = aim ? waypoint(s, aim) : null;
+            const to = way ?? s.at;
             const want = Math.atan2(to.y - s.at.y, to.x - s.at.x);
             let d = want - s.heading;
             d = Math.atan2(Math.sin(d), Math.cos(d));
             pad.holding = Math.abs(d) < 0.08 ? [] : [d < 0 ? "left" : "right"];
             pad.go = Math.abs(d) < 0.4 && Math.hypot(to.x - s.at.x, to.y - s.at.y) > 4;
-            pad.brake = Math.abs(d) > 1.6 && FIREFLY.cruise.value > 0;
+            // the first press takes it off the hover and into flying by the keys
+            pad.brake = !s.keyed || (Math.abs(d) > 1.6 && FIREFLY.cruise.value > 0);
         }
+        pads.push({ ...pad, pressed: [...pad.pressed], holding: [...pad.holding] });
         step(s, pad);
         spent(pad);
     }

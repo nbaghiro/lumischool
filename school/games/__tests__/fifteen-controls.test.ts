@@ -37,14 +37,15 @@ test("a downward knife gesture cuts once and a cancelled gesture never cuts", ()
     assert.equal(cancelled.cuts.length, 0);
 });
 
-test("a held finger turns the firefly towards it as a curve, and it keeps flying when let go", () => {
+test("a tap on a seed sends the firefly to it, and without one it hovers where it is", () => {
     const s = snake(0),
-        from = { ...s.at };
-    for (let i = 0; i < 20; i++) steer(s, { ...emptyPad(), touch: { x: from.x, y: from.y + 10 } });
-    assert.ok(s.v.y > 1, "it has turned down towards the finger");
-    assert.ok(s.v.x > 0, "and not in one jump: it is still moving along");
-    const heading = s.heading;
-    for (let i = 0; i < 20; i++) steer(s, emptyPad());
-    assert.ok(Math.hypot(s.v.x, s.v.y) > 1, "let go, it glides on");
-    assert.ok(Math.abs(s.heading - heading) < 0.2);
+        want = s.seeds.find((x) => x.n === 2);
+    assert.ok(want);
+    const home = s.L.spots[want.spot];
+    assert.ok(home);
+    steer(s, { ...emptyPad(), lifted: { ...home } });
+    for (let i = 0; i < 60 * 10 && s.next === 0; i++) steer(s, emptyPad());
+    assert.equal(s.next, 1, "it flew there and caught it");
+    for (let i = 0; i < 60; i++) steer(s, emptyPad());
+    assert.ok(Math.hypot(s.v.x, s.v.y) < 0.1, "with nowhere to go it hovers");
 });

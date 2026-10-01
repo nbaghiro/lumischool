@@ -13,7 +13,7 @@ async function open(page: Page, level: number, errors: string[]): Promise<void> 
     await expect(page.locator('.field-probe [data-key="pony"]')).toBeAttached();
 }
 
-test("clear round: Jump held gathers the pony, and let go it leaps off the grass", async ({
+test("clear round: space held gathers the pony, and let go it leaps off the grass", async ({
     page,
 }, info) => {
     const errors: string[] = [];
@@ -27,20 +27,35 @@ test("clear round: Jump held gathers the pony, and let go it leaps off the grass
     expect(errors).toEqual([]);
 });
 
-test("clear round: a finger held on the field gathers, and lifted it leaps", async ({
+test("clear round: one tap on the field a fence rides the first course clean", async ({
     page,
 }, info) => {
-    test.skip(info.project.name.includes("phone"), "the mouse stands for a finger on the desk");
+    test.setTimeout(90_000);
+    const touch = info.project.name.startsWith("phone");
     const errors: string[] = [];
     await open(page, 0, errors);
-    const rest = await ponyTop(page);
     const box = await page.locator(".field-gl").first().boundingBox();
     if (!box) throw new Error("Missing the field");
-    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 3);
-    await page.mouse.down();
-    await page.waitForTimeout(450);
-    await page.mouse.up();
-    await expect.poll(() => ponyTop(page), { timeout: 4000 }).toBeLessThan(rest - 20);
+    const x = box.x + box.width / 2,
+        y = box.y + box.height / 3;
+    const note = page.locator(".game-feedback-live");
+    const another = page.getByRole("button", { name: "Play another", exact: true });
+    const due = async () => /Tap now/.test((await note.textContent()) ?? "");
+    const tap = () => (touch ? page.touchscreen.tap(x, y) : page.mouse.click(x, y));
+    // the first tap starts the round and asks for nothing
+    await tap();
+    for (let fence = 0; fence < 6 && !(await another.isVisible()); fence++) {
+        await expect
+            .poll(async () => (await another.isVisible()) || (await due()), {
+                timeout: 20_000,
+                intervals: [40],
+            })
+            .toBe(true);
+        if (await another.isVisible()) break;
+        await tap();
+        await expect.poll(due, { timeout: 5_000 }).toBe(false);
+    }
+    await expect(another).toBeVisible({ timeout: 20_000 });
     expect(errors).toEqual([]);
 });
 

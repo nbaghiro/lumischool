@@ -1,13 +1,13 @@
 // A layout is only shipped once a crossing of it has been found through the game itself.
 //
-// A crossing is a list of holds: nothing pressed for so many steps, then held for so many. From a
-// stone a hold swings Charlie and lets her go; in the air a hold catches the rope she reaches first
-// and then pumps it. `crossing` searches those holds, stepping copies of the game, for each thing the
-// level asks for in turn, so what it finds is what a child's hand could do, and the tests play it
-// back through a fresh game.
+// A crossing is a list of moves, each some steps with nothing pressed and then one key: the left arrow
+// pulls Charlie back a step, and Go starts the swing, lets her go, or reaches for a rope in the air.
+// `crossing` searches those moves, stepping copies of the game, for each thing the level asks for in
+// turn, so what it finds is what a child's hand could do, and the tests play it back through a fresh
+// game.
 import { configurationKey } from "../../engine/motion/configuration";
 import { progress } from "../../engine/motion/goals";
-import { emptyPad } from "../../engine/motion/pad";
+import { emptyPad, type Pad } from "../../engine/motion/pad";
 import {
     SWINGS_LEVELS,
     goalText,
@@ -20,29 +20,51 @@ import {
     type Want,
 } from "./swings";
 
-/** One hold of a crossing: steps with nothing pressed, then steps held. */
-export interface Hold {
+/** One move of a crossing: steps with nothing pressed, then the left arrow or Go, pressed and let up. */
+export interface Move {
     idle: number;
-    hold: number;
+    key: "left" | "go";
 }
 
-/** The holds a search tries on a rope: under a second to five seconds, a twelfth of a second apart. */
-const HOLDS: readonly number[] = Array.from({ length: 60 }, (_, i) => 22 + i * 5);
+/** The most pulls a search tries from standing: each is a tenth of a radian further back. */
+const PULLS = 10;
 /** Steps a search waits for a flight to come down before giving it up. */
 const SETTLE = 360;
+/** Steps of a swing a search watches for a moment to let go: a full swing and a little more. */
+const WATCH = 200;
 /** Copies of the game a search may step before it gives up on a layout. */
-const BUDGET = 6_000;
+const BUDGET = 40_000;
 
 type Seen = { kind: string; value?: number | string };
 
-function run(s: SwingsState, idle: number, hold: number, seen: Seen[]): void {
+const keyPad = (key: Move["key"]): Pad => {
     const pad = emptyPad();
-    for (let i = 0; i < idle + hold; i++) {
-        pad.go = i >= idle;
-        for (const h of stepSwings(s, pad)) if ("event" in h) seen.push(h.event);
+    if (key === "left") pad.pressed = ["left"];
+    else {
+        pad.go = true;
+        pad.tapped = true;
     }
-    pad.go = false;
+    return pad;
+};
+
+function step(s: SwingsState, pad: Pad, seen: Seen[]): void {
     for (const h of stepSwings(s, pad)) if ("event" in h) seen.push(h.event);
+}
+
+/** A move played into a game: its idle steps, the key pressed for a step, and let up for one. */
+function apply(s: SwingsState, m: Move, seen: Seen[] = []): void {
+    for (let i = 0; i < m.idle; i++) step(s, emptyPad(), seen);
+    step(s, keyPad(m.key), seen);
+    step(s, emptyPad(), seen);
+}
+
+/** The pads a crossing's moves are, one a step, as a hand gives them. */
+export function* padsOf(moves: readonly Move[]): Generator<Pad> {
+    for (const m of moves) {
+        for (let i = 0; i < m.idle; i++) yield emptyPad();
+        yield keyPad(m.key);
+        yield emptyPad();
+    }
 }
 
 /** Steps with nothing pressed until she stands, is home or falls in, and says how many it took. */
@@ -61,39 +83,92 @@ function settle(s: SwingsState): number {
 const along = (s: SwingsState): number =>
     progress(s.goal).completed * 100 + (s.L.jumps ? (s.landings[s.landings.length - 1] ?? 0) : 0);
 
-/** The mode a copy is in now, read afresh after it has been stepped. */
-const modeOf = (s: SwingsState): string => s.mode;
+const forward = (s: SwingsState): boolean => (s.ropes[s.held]?.omega ?? 0) > 0;
 
 /**
- * A crossing for a level, or null when none is found. From standing, each hold is tried until one
- * lets her go into a flight that comes down somewhere steady further on, or that catches a rope the
+ * A crossing for a level, or null when none is found. From standing, each pull is tried and the swing
+ * watched for a moment to let go that brings her down somewhere steady further on, or into a rope the
  * level wants; the search goes back a step when a later part cannot be done from where an earlier one
  * left her.
  */
-export function crossing(L: SwingsLevel): Hold[] | null {
+export function crossing(L: SwingsLevel): Move[] | null {
     const known = configurationKey(L);
     if (!PLANS.has(known)) PLANS.set(known, search(L));
     return PLANS.get(known) ?? null;
 }
 
-const PLANS = new Map<string, Hold[] | null>();
+const PLANS = new Map<string, Move[] | null>();
 
-function search(L: SwingsLevel): Hold[] | null {
+function search(L: SwingsLevel): Move[] | null {
     let spent = 0;
-    const standing = (s: SwingsState, depth: number): Hold[] | null => {
+    const ropeWants = L.wants.some((w) => "rope" in w);
+    const standing = (s: SwingsState, depth: number): Move[] | null => {
         if (s.won) return [];
-        if (s.mode !== "ready" || depth > 8) return null;
-        for (const hold of HOLDS) {
+        const r = s.ropes[s.held];
+        if (s.mode !== "ready" || depth > 8 || !r) return null;
+        // on a level of so many jumps, a try that has used them all up on stones can no longer win
+        if (L.jumps && s.landings.length - 1 >= L.jumps) return null;
+        const before = along(s);
+        if (r.sway) {
+            // reach for the swaying rope at each moment in turn, and swing on from where it is taken
+            const probe = structuredClone(s);
+            for (let c = 0; c < 240; c++) {
+                if (c % 8 === 0) {
+                    if (++spent > BUDGET) return null;
+                    const next = structuredClone(probe);
+                    apply(next, { idle: 0, key: "go" });
+                    let n = 0;
+                    while (next.mode === "ready" && next.reachFor > 0 && n < 40) {
+                        stepSwings(next, emptyPad());
+                        n++;
+                    }
+                    if (next.mode === "swing") {
+                        const rest = letGos(next, before, depth, n);
+                        if (rest) return [{ idle: c, key: "go" }, ...rest];
+                    }
+                }
+                stepSwings(probe, emptyPad());
+            }
+            return null;
+        }
+        for (let k = 0; k <= PULLS; k++) {
             if (++spent > BUDGET) return null;
-            const next = structuredClone(s);
-            run(next, 0, hold, []);
-            const rest = flying(next, along(s), depth);
-            if (rest) return [{ idle: 0, hold }, ...rest];
+            const next = structuredClone(s),
+                moves: Move[] = [];
+            for (let i = 0; i < k; i++) moves.push({ idle: 0, key: "left" });
+            moves.push({ idle: 0, key: "go" });
+            for (const m of moves) apply(next, m);
+            if (next.mode !== "swing") continue;
+            const rest = letGos(next, before, depth, 0);
+            if (rest) return [...moves, ...rest];
         }
         return null;
     };
-    // just let go: come down somewhere steady further on, or catch a rope the level wants
-    const flying = (s: SwingsState, before: number, depth: number): Hold[] | null => {
+    // watch the swing, and at each moment she goes forward try letting her go
+    const letGos = (
+        s: SwingsState,
+        before: number,
+        depth: number,
+        offset: number,
+    ): Move[] | null => {
+        const probe = structuredClone(s);
+        for (let w = 0; w < WATCH; w++) {
+            if (w % 3 === 0 && forward(probe)) {
+                if (++spent > BUDGET) return null;
+                const next = structuredClone(probe);
+                apply(next, { idle: 0, key: "go" });
+                if (next.mode === "fly" || next.won) {
+                    const rest = flying(next, before, depth);
+                    if (rest) return [{ idle: offset + w, key: "go" }, ...rest];
+                }
+            }
+            stepSwings(probe, emptyPad());
+            if (probe.mode !== "swing") return null;
+        }
+        return null;
+    };
+    // just let go: come down somewhere steady further on, or reach for a rope the level wants
+    const flying = (s: SwingsState, before: number, depth: number): Move[] | null => {
         if (s.won) return [];
         if (s.mode !== "fly") return null;
         const down = structuredClone(s),
@@ -103,53 +178,38 @@ function search(L: SwingsLevel): Hold[] | null {
             const rest = standing(down, depth + 1);
             if (rest) {
                 const [first, ...more] = rest;
-                return first ? [{ idle: first.idle + n, hold: first.hold }, ...more] : [];
+                return first ? [{ idle: first.idle + n, key: first.key }, ...more] : [];
             }
         }
-        for (const c of catches(s)) {
-            if (++spent > BUDGET) return null;
-            const rest = flying(c.state, along(s), depth + 1);
-            if (rest) return [c.hold, ...rest];
+        if (!ropeWants) return null;
+        const probe = structuredClone(s);
+        for (let c = 0; c < 60; c++) {
+            if (c % 2 === 0) {
+                if (++spent > BUDGET) return null;
+                const next = structuredClone(probe),
+                    seen: Seen[] = [];
+                apply(next, { idle: 0, key: "go" }, seen);
+                let n = 0;
+                while (next.mode === "fly" && n < 40) {
+                    step(next, emptyPad(), seen);
+                    n++;
+                }
+                if (next.mode === "swing" && seen.some((e) => e.kind === "catch")) {
+                    const rest = letGos(next, along(s), depth + 1, n);
+                    if (rest) return [{ idle: c, key: "go" }, ...rest];
+                }
+            }
+            stepSwings(probe, emptyPad());
+            if (probe.mode !== "fly") break;
         }
         return null;
     };
     return standing(startSwings(L), 0);
 }
 
-/**
- * From a flight just let go, each way of catching a rope the level wants and pumping it: the press
- * starts as early as it still catches that rope, and each length of pump is let go in turn.
- */
-function catches(s: SwingsState): { hold: Hold; state: SwingsState }[] {
-    for (let idle = 0; idle < 50; idle += 2) {
-        const probe = structuredClone(s),
-            seen: Seen[] = [],
-            pad = emptyPad();
-        for (let i = 0; i < idle; i++) stepSwings(probe, pad);
-        if (probe.mode !== "fly") return [];
-        pad.go = true;
-        let steps = 0;
-        while (probe.mode === "fly" && steps < 90) {
-            for (const h of stepSwings(probe, pad)) if ("event" in h) seen.push(h.event);
-            steps++;
-        }
-        if (modeOf(probe) !== "swing") continue;
-        if (!seen.some((e) => e.kind === "catch")) continue;
-        const out: { hold: Hold; state: SwingsState }[] = [];
-        for (const more of HOLDS) {
-            const after = structuredClone(probe);
-            run(after, 0, more, []);
-            if (after.mode === "fly" || after.won)
-                out.push({ hold: { idle, hold: steps + more }, state: after });
-        }
-        return out;
-    }
-    return [];
-}
-
-/** Plays holds into a game, as a child's hand would, and lets the last flight come down. */
-export function play(s: SwingsState, holds: readonly Hold[]): SwingsState {
-    for (const h of holds) run(s, h.idle, h.hold, []);
+/** Plays moves into a game, as a child's hand would, and lets the last flight come down. */
+export function play(s: SwingsState, moves: readonly Move[]): SwingsState {
+    for (const m of moves) apply(s, m);
     settle(s);
     return s;
 }
@@ -161,14 +221,14 @@ const LAYOUTS: ((L: SwingsLevel) => Partial<SwingsLevel>)[][] = [
         () => ({}),
         () => ({
             title: "Land on 5",
-            prompt: "Only the stone at 5 is steady. Hold, then let go.",
+            prompt: "Only the stone at 5 is steady. Watch the dots, then tap.",
             stones: [3, 5, 6],
             wants: [{ stone: 5 }],
             ropes: [r(1.5), r(6.4)],
         }),
         () => ({
             title: "Land on 3",
-            prompt: "Only the stone at 3 is steady. Hold, then let go.",
+            prompt: "Only the stone at 3 is steady. Watch the dots, then tap.",
             stones: [2, 3, 5],
             wants: [{ stone: 3 }],
             ropes: [r(1.5), r(4.4)],

@@ -70,6 +70,38 @@ export function canoeStep(c: Canoe, current: Pt, hull: Hull, dt: number, backing
     c.y += c.vy * dt;
 }
 
+/** How a steering hand paddles: its cruising speed through the water, how fast it may turn, and how near the bow slows to rest. */
+export interface Helm {
+    cruise: number;
+    turn: number;
+    arrive: number;
+}
+
+/**
+ * One step of a steering hand paddling the canoe's bow towards `to`, for a finger held on the water:
+ * it turns the bow towards the point no faster than `helm.turn`, paddles on only while it faces
+ * roughly that way, and eases to rest as the bow comes within `helm.arrive`, so it never spins or
+ * overshoots. Returns how hard it paddled, from nought to one, for the paddle and its splashes.
+ */
+export function steer(c: Canoe, bow: Pt, to: Pt, current: Pt, helm: Helm, dt: number): number {
+    const dx = to.x - bow.x,
+        dy = to.y - bow.y,
+        dist = Math.hypot(dx, dy);
+    const e = Math.atan2(
+        Math.sin(Math.atan2(dy, dx) - c.angle),
+        Math.cos(Math.atan2(dy, dx) - c.angle),
+    );
+    const turning = dist < helm.arrive * 0.5 ? 0 : Math.max(-helm.turn, Math.min(helm.turn, e * 3));
+    c.spin += (turning - c.spin) * Math.min(1, 8 * dt);
+    const a = along(c),
+        fwd = (c.vx - current.x) * a.x + (c.vy - current.y) * a.y;
+    const want = helm.cruise * Math.min(1, dist / helm.arrive) * Math.max(0, Math.cos(e)) ** 2;
+    const change = (want - fwd) * Math.min(1, 3 * dt);
+    c.vx += a.x * change;
+    c.vy += a.y * change;
+    return Math.max(0, Math.min(1, want / helm.cruise));
+}
+
 /**
  * The canoe meets something along `n`, the unit direction from it back towards the canoe, having gone
  * `depth` squares into it: it is put back outside and bounces off by `restitution`, turning a little

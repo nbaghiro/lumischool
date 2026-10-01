@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { bounce, canoeStep, rhythm, stroke, type Canoe, type Hull } from "../canoe";
+import { along, bounce, canoeStep, rhythm, steer, stroke, type Canoe, type Hull } from "../canoe";
 
 const HULL: Hull = { glide: 0.4, grip: 4, spinDrag: 2.5, push: 2, turn: 1.2, back: 2, beat: 0.6 };
 const still = (): Canoe => ({ x: 0, y: 0, angle: 0, vx: 0, vy: 0, spin: 0 });
@@ -59,4 +59,24 @@ test("a canoe meeting a rock is put outside it and bounces off", () => {
     assert.equal(c.vx, -1.5);
     assert.ok(Math.abs(c.x + 0.2) < 1e-9);
     assert.equal(bounce(c, { x: -1, y: 0 }, 0, 0.5), 0, "moving away is no hit");
+});
+
+test("a steering hand turns the bow towards a point without spinning, paddles there and eases to rest", () => {
+    const c = still(),
+        helm = { cruise: 2.4, turn: 1.6, arrive: 2 },
+        to = { x: 0, y: 12 };
+    let most = 0;
+    for (let i = 0; i < 60 * 20; i++) {
+        const a = along(c);
+        steer(c, { x: c.x + a.x * 1.8, y: c.y + a.y * 1.8 }, to, { x: 0, y: 0 }, helm, 1 / 60);
+        canoeStep(c, { x: 0, y: 0 }, HULL, 1 / 60);
+        most = Math.max(most, Math.abs(c.spin));
+    }
+    const a = along(c);
+    assert.ok(most <= helm.turn + 1e-9, `it never turns faster than the helm allows: ${most}`);
+    assert.ok(
+        Math.hypot(c.x + a.x * 1.8 - to.x, c.y + a.y * 1.8 - to.y) < 0.8,
+        "the bow is at the point",
+    );
+    assert.ok(Math.hypot(c.vx, c.vy) < 0.1, "and it has come to rest");
 });

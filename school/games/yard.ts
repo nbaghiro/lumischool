@@ -1,5 +1,5 @@
 // Shunting yard: a hump yard. The wagons wait in a line behind the engine at the top of the hump.
-// The child sets the points to a siding, pulls the front wagon back and lets go, and it rolls down
+// The child throws the points lever to a siding, pulls the front wagon back and lets go, and it rolls down
 // the hump and through the points into that siding. Gently enough and it couples to what is there;
 // too hard and it knocks and rolls back; too soft and it stops short and waits for a nudge. Each
 // siding's board says what it wants: wagons adding up to its number, or the wagons in order, with a
@@ -13,6 +13,7 @@ import type { Pad } from "../../engine/motion/pad";
 import type { GameEvent } from "../../engine/motion/goals";
 import type { Frame, Happening, Mark, Sprite } from "../../engine/motion/scene";
 import {
+    bankHeight,
     emptyLine,
     gradeAt,
     groupsOf,
@@ -69,9 +70,14 @@ export interface YardState {
     power: number;
     /** A finger pulling the wagon back, in squares, while it pulls. */
     pull: number | null;
+    /** When the keys last changed the push, in seconds, so the ghost shows while they aim. */
+    aimed: number;
+    /** Wagons that have just coupled or knocked, and when, for the bounce and the wobble they are drawn with. */
+    jolts: { id: string; at: number; hard: boolean }[];
     hand:
         | { on: "wagon" }
         | { on: "board"; k: number }
+        | { on: "lever" }
         | { on: "last"; k: number }
         | { on: "none" }
         | null;
@@ -92,7 +98,7 @@ const DT = 1 / 60;
 /** A wagon from buffer to buffer, in squares. */
 const LEN = 4;
 /** The yard as it is laid out and framed, in squares; the world round it is ground and sky to fill a wider room. */
-const VIEW = { w: 60, h: 23 };
+const VIEW = { w: 60, h: 26 };
 /** Where the laid-out yard's top left sits in the world. */
 export const ORIGIN = { x: 30, y: 14 };
 /** The whole world, in squares. The browser tests place a finger on the field by it. */
@@ -114,13 +120,15 @@ export const LEAST = 0.5;
 export const MOST = 7;
 /** One press of left or right changes the push by this much. */
 export const STEP = 0.25;
+/** Where the points lever stands: on the grass in front of the lead, just before the points, and how tall it is. */
+const LEVER = { x: POINTS - 1.5, foot: LEAD_Y + 6.4, reach: 3 };
 /** A carriage's middle sits this far above the rail at the size it is drawn. */
 const ABOVE = 1.44;
 
 /** What the camera frames: from over the top siding's board down to the lead's grass. */
 const frameOf = (s: YardState) => {
     const top = rowY(s.sidings.length - 1) - 7,
-        bottom = LEAD_Y + 3.5;
+        bottom = LEVER.foot + 0.6;
     return { top, middle: (top + bottom) / 2 };
 };
 
@@ -150,18 +158,22 @@ function railAt(s: YardState, k: number, x: number): { y: number; slope: number 
     const lift = heightAt(banksOf(s, k), x),
         grade = gradeAt(banksOf(s, k), x);
     if (x >= POINTS || k === 0) return { y: LEAD_Y - lift, slope: -grade };
-    const t = Math.max(0, (x - FAN_START) / FAN),
-        across = (LEAD_Y - rowY(k)) / FAN;
+    // the lead bends down from the siding in the S the railcurve drawing is drawn with
+    const rise = LEAD_Y - rowY(k),
+        t = Math.max(0, (x - FAN_START) / FAN),
+        up = bankHeight("ramp", rise, t),
+        dx = 0.01;
     return {
-        y: rowY(k) + (LEAD_Y - rowY(k)) * t - lift,
-        slope: (x > FAN_START ? across : 0) - grade,
+        y: LEAD_Y - up - lift,
+        slope: (x > FAN_START ? (up - bankHeight("ramp", rise, t + dx / FAN)) / dx : 0) - grade,
     };
 }
 
 /** Where a wagon on siding `k` with its middle at `x` is drawn, and how far it leans. */
 function standing(s: YardState, k: number, x: number) {
     const { y, slope } = railAt(s, k, x),
-        a = Math.atan(slope);
+        // a wagon on a steep lead leans no further than this, so it reads as a wagon and not a ramp
+        a = Math.max(-0.45, Math.min(0.45, Math.atan(slope)));
     return { x: x + Math.sin(a) * ABOVE, y: y - Math.cos(a) * ABOVE, angle: a };
 }
 
@@ -301,9 +313,11 @@ export function startYard(phase: number, queue?: readonly string[]): YardState {
         points: 0,
         power: 2,
         pull: null,
+        aimed: -9,
+        jolts: [],
         hand: null,
         pushes: 0,
-        note: "Choose a siding, then pull the front wagon back and let go.",
+        note: "Tap the lever to choose a siding, then pull the front wagon back and let go.",
         won: false,
         met: L.sidings.map(() => false),
         time: 0,
@@ -418,6 +432,22 @@ function lastAt(s: YardState, k: number): { x: number; y: number } | null {
     return v && n > 0 ? standing(s, k, v.x) : null;
 }
 
+/** Where the points lever's handle is, which a finger takes hold of. */
+export function leverAt(s: YardState): { x: number; y: number } {
+    // the yardlever drawing's arm swings 0.3 radians either side of upright from a pivot 0.9 above its foot
+    const lean = s.sidings.length > 1 ? s.points / (s.sidings.length - 1) : 0,
+        a = -0.3 + lean * 0.6;
+    return {
+        x: LEVER.x + Math.sin(a) * LEVER.reach,
+        y: LEVER.foot - 0.9 - Math.cos(a) * LEVER.reach,
+    };
+}
+
+/** The lever pulled over once: the points go to the next siding up, and from the last back to the first. */
+function throwLever(s: YardState, out: Happening[]): void {
+    setPoints(s, (s.points + 1) % s.sidings.length, out);
+}
+
 function hands(s: YardState, pad: Pad, out: Happening[]): void {
     const w = pushableAt(s);
     if (pad.touch && !s.hand) {
@@ -428,6 +458,7 @@ function hands(s: YardState, pad: Pad, out: Happening[]): void {
                 return at !== null && near(t, at, 2.2);
             });
         if (w && near(t, w, 2.6)) s.hand = { on: "wagon" };
+        else if (near(t, leverAt(s), 2.6)) s.hand = { on: "lever" };
         else if (board >= 0) s.hand = { on: "board", k: board };
         else if (last >= 0) s.hand = { on: "last", k: last };
         else s.hand = { on: "none" };
@@ -445,11 +476,12 @@ function hands(s: YardState, pad: Pad, out: Happening[]): void {
         if (hand.on === "wagon") {
             if (s.pull !== null && s.pull * PER >= LEAST) push(s, s.pull * PER, out);
             else if (looseOf(s)) sendBack(s, s.points, out);
-        } else if (hand.on === "board" && near(at, boardAt(s, hand.k), 3))
-            setPoints(s, hand.k, out);
+        } else if (hand.on === "lever") throwLever(s, out);
+        else if (hand.on === "board" && near(at, boardAt(s, hand.k), 3)) setPoints(s, hand.k, out);
         else if (hand.on === "last") {
+            // a tap on the wagon, or a drag of it back towards the hump, sends it back
             const to = lastAt(s, hand.k);
-            if (to && near(at, to, 2.4)) sendBack(s, hand.k, out);
+            if (to && (near(at, to, 2.4) || at.x > to.x + 2)) sendBack(s, hand.k, out);
         }
         s.hand = null;
         s.pull = null;
@@ -461,8 +493,13 @@ function hands(s: YardState, pad: Pad, out: Happening[]): void {
     for (const d of pad.pressed) {
         if (d === "up") setPoints(s, s.points + 1, out);
         else if (d === "down") setPoints(s, s.points - 1, out);
-        else if (d === "right") s.power = Math.min(MOST, s.power + STEP);
-        else if (d === "left") s.power = Math.max(LEAST, s.power - STEP);
+        else if (d === "right") {
+            s.power = Math.min(MOST, s.power + STEP);
+            s.aimed = s.time;
+        } else if (d === "left") {
+            s.power = Math.max(LEAST, s.power - STEP);
+            s.aimed = s.time;
+        }
     }
     if (pad.tapped) push(s, s.power, out);
     if (pad.brake && !s.braked) sendBack(s, s.points, out);
@@ -492,6 +529,11 @@ function roll(s: YardState, out: Happening[]): void {
         for (const e of railStep(line, DT, rulesOf(s, k), stopId(k))) {
             const at = line.vehicles.find((v) => v.id === (e.kind === "stop" ? e.id : e.right));
             const pan = panOf(at?.x ?? CREST, VIEW.w / 2, VIEW.w);
+            if (e.kind === "knock" || e.kind === "couple")
+                s.jolts = [
+                    ...s.jolts.filter((j) => s.time - j.at < 1),
+                    { id: e.right, at: s.time, hard: e.kind === "knock" },
+                ].slice(-6);
             if (e.kind === "knock") {
                 out.push({ cue: "bump", strength: Math.min(1, e.speed / 8), pan });
                 out.push({ shake: Math.min(0.4, e.speed / 20) });
@@ -624,21 +666,17 @@ function trackSprites(s: YardState): Sprite[] {
         const set = k === s.points;
         if (k === 0) out.push(rail(`fan0`, FAN_START, POINTS, LEAD_Y, !set));
         else {
-            const dy = LEAD_Y - rowY(k),
-                len = Math.hypot(FAN, dy),
-                a = Math.atan2(dy, FAN),
-                mx = (FAN_START + POINTS) / 2,
-                my = (rowY(k) + LEAD_Y) / 2;
+            const rise = LEAD_Y - rowY(k),
+                h = Math.ceil(rise + 2.2);
             out.push({
                 key: `fan${k}`,
-                art: "railway",
-                params: { length: Math.round(len), gap: 0, at: 0, bank: 0 },
-                x: mx - Math.sin(a) * 1.5,
-                y: my + Math.cos(a) * 1.5,
-                angle: a,
-                size: Math.round(len),
+                art: "railcurve",
+                params: { run: FAN, rise },
+                x: (FAN_START + POINTS) / 2,
+                y: rowY(k) - 0.5 + h / 2,
+                size: FAN,
                 faint: !set,
-                z: 0.9,
+                z: set ? 1.1 : 0.9,
             });
         }
     });
@@ -721,18 +759,47 @@ export function yardFrame(s: YardState, rest = false): Frame {
             },
         );
     });
+    sprites.push({
+        key: "lever",
+        art: "yardlever",
+        params: {
+            pulled: s.sidings.length > 1 ? s.points / (s.sidings.length - 1) : 0,
+            reach: LEVER.reach,
+        },
+        x: LEVER.x,
+        y: LEVER.foot,
+        stand: true,
+        live: true,
+        z: 4,
+    });
+    // how far the hand has pulled the wagon back, drawn as the wagon and the line behind it easing up the hump
+    const aim = s.pull !== null ? s.pull * PER : null,
+        back = rest || aim === null ? 0 : Math.min(2.4, (aim / MOST) * 2.4);
+    const loose = looseOf(s);
+    const jolt = (id: string): { squash: number; tilt: number } => {
+        const j = rest ? undefined : s.jolts.find((x) => x.id === id);
+        const t = j ? s.time - j.at : 1;
+        if (!j || t >= 0.8) return { squash: 0, tilt: 0 };
+        const fade = Math.exp(-t * 6);
+        return j.hard
+            ? { squash: 0, tilt: 0.1 * Math.sin(t * 28) * fade }
+            : { squash: 0.12 * Math.sin(t * 22) * fade, tilt: 0 };
+    };
     // the made-up wagons and the loose one
     s.lines.forEach((line, k) => {
         line.vehicles.forEach((v, i) => {
             if (i === 0) return;
-            const at = standing(s, k, v.x);
+            const shifted = loose && loose.v.id === v.id && !moving(s) ? back : 0,
+                at = standing(s, k, v.x + shifted),
+                j = jolt(v.id);
             sprites.push({
                 key: v.id,
                 art: "carriage",
                 params: { label: labelOf(v.id), windows: 2 },
                 x: at.x,
                 y: at.y,
-                angle: at.angle,
+                angle: at.angle + j.tilt,
+                squash: j.squash,
                 size: LEN,
                 z: 3,
             });
@@ -744,7 +811,7 @@ export function yardFrame(s: YardState, rest = false): Frame {
         });
     });
     // the waiting line and the engine behind it, closing up after a wagon goes
-    const shift = rest ? 0 : s.shuffle;
+    const shift = (rest ? 0 : s.shuffle) + (loose ? 0 : back);
     const leaving = s.won ? Math.min(40, s.away * s.away * 3) : 0;
     s.queue.forEach((w, i) => {
         const x = CREST + i * LEN + shift + leaving;
@@ -785,37 +852,48 @@ export function yardFrame(s: YardState, rest = false): Frame {
             size: 0.6,
         },
     ];
-    if (!s.won) {
-        // which way the points are set: an arrow from the lead along the route
-        const to = { x: FAN_START + 1.5, y: rowY(s.points) - 0.9 };
-        marks.push({
-            kind: "line",
-            a: { x: POINTS + 1, y: LEAD_Y - 0.9 },
-            b: to,
-            style: "aim",
-            head: true,
-        });
-        const at = pushableAt(s);
-        if (at) {
-            const power = s.pull !== null ? s.pull * PER : s.power;
-            marks.push({ kind: "ring", x: at.x, y: at.y, r: 2.4, on: s.hand?.on === "wagon" });
-            marks.push({
-                kind: "line",
-                a: { x: at.x - LEN / 2, y: at.y },
-                b: { x: at.x - LEN / 2 - 0.6 - power * 0.5, y: at.y },
-                style: "aim",
-                head: true,
-            });
-            if (s.preview > 0 && !rest) {
-                const path = pathOf(s, power),
-                    shown = path.slice(0, Math.max(2, Math.ceil(path.length * s.preview)));
-                marks.push({
-                    kind: "dots",
-                    pts: shown.map((p) => ({ x: p.x, y: p.y + 1.1 })),
-                    faint: s.preview < 1,
-                });
-            }
+    const lever = leverAt(s);
+    marks.push({
+        kind: "word",
+        x: lever.x,
+        y: lever.y - 1.5,
+        text: NAMES[s.points] ?? "",
+        size: 0.8,
+    });
+    // a faint wagon where the push being aimed would leave it, fainter as the levels go on
+    const aiming = aim ?? (s.time - s.aimed < 1.5 ? s.power : null);
+    if (!s.won && !rest && !moving(s)) {
+        // the gauge over the front wagon: how strong the push is, so the keys and buttons set it by degrees
+        const from = pushableAt(s),
+            strength = aim ?? s.power;
+        if (from) {
+            const w = 4,
+                left = from.x - w / 2,
+                y = from.y - 2.6;
+            marks.push(
+                { kind: "box", x: left, y: y - 0.3, w, h: 0.6 },
+                {
+                    kind: "line",
+                    a: { x: left + 0.1, y },
+                    b: { x: left + 0.1 + (w - 0.2) * Math.min(1, strength / MOST), y },
+                    style: "rod",
+                },
+            );
         }
+    }
+    if (!s.won && !rest && s.preview > 0 && aiming !== null && pushable(s) && !moving(s)) {
+        const end = pathOf(s, aiming).at(-1);
+        if (end)
+            sprites.push({
+                key: "ghost",
+                art: "carriage",
+                params: { label: "", windows: 2 },
+                x: end.x,
+                y: end.y,
+                size: LEN,
+                alpha: 0.15 + 0.3 * s.preview,
+                z: 2.5,
+            });
     }
     return inWorld(s, sprites, marks, rest);
 }
@@ -927,7 +1005,8 @@ export const yardGame: ActionGame<YardState> = {
     touch: true,
     plays: { activity: "shunt.into-order", levels: [2, 3, 4] },
     cover: { art: "carriage", params: { label: "3", windows: 2 } },
-    hint: "Tap a siding's board to set the points, then pull the front wagon back and let go. Up and down set the points, left and right set the push, space pushes, and Backspace sends a wagon back.",
+    hint: "Tap the lever to set the points, then pull the front wagon back and let go. Tap a wagon in a siding to send it back. Up and down set the points, left and right set the push on the gauge, space pushes, and Backspace sends a wagon back.",
+    // two ways to play: by hand in the yard, or by the keys and these buttons, which set the push by degrees
     controls: {
         arrows: {
             up: "Points to the siding behind",
@@ -989,5 +1068,8 @@ export const yardGame: ActionGame<YardState> = {
         };
     },
     frame: yardFrame,
-    still: { press: () => 1, settling: (s) => moving(s) || (s.won && s.away < 2) },
+    still: {
+        press: () => 1,
+        settling: (s) => moving(s) || (s.won && s.away < 2),
+    },
 };

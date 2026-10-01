@@ -7,12 +7,13 @@ import {
     type ActionKind,
 } from "../action-challenges";
 import { emptyPad, spent } from "../../../engine/motion/pad";
+import { driveRound } from "./road-driver";
 import * as road from "../road";
 import * as row from "../row";
 import * as plane from "../plane";
 
 const families: [ActionKind, number][] = [
-    ["road", 2],
+    ["road", road.ROAD_LEVELS.length],
     ["row", 6],
     ["plane", 4],
 ];
@@ -42,26 +43,14 @@ test("every action phase has three exact serializable, allowlisted configuration
         }
 });
 
-test("all six road targets can be reached by acceleration, braking and lane controls", () => {
-    for (let phase = 0; phase < 2; phase++)
+test("every road round can be delivered by driving, braking, reversing and changing lane", () => {
+    for (let phase = 0; phase < road.ROAD_LEVELS.length; phase++)
         for (let seed = 0; seed < 3; seed++) {
             const config = actionChallenge(seed, "road", phase);
-            assert.equal(config.kind, "road");
-            if (config.kind !== "road") continue;
-            const s = road.startRoadLevel(config.level, phase),
-                pad = emptyPad();
-            const goal = road.placeOf(s.L, s.L.target);
-            for (let n = 0; n < 60 * 60 && !s.won; n++) {
-                pad.go = s.x + 0.85 + (s.v * s.v) / 32 < goal - 0.1;
-                pad.brake = !pad.go;
-                const ahead = s.boxes.find(
-                    (b) => !b.hit && b.x > s.x && b.x - s.x < 7 && Math.abs(b.y - s.y) < 1,
-                );
-                if (ahead) pad.pressed.push(s.lane === 2 ? "up" : "down");
-                road.step(s, pad);
-                spent(pad);
-            }
-            assert.ok(s.won, `${phase}/${seed}: ${s.x}`);
+            if (config.kind !== "road") throw new Error("Not a road round");
+            const s = road.startRoadLevel(config.level, phase);
+            driveRound(s);
+            assert.ok(s.won, `${phase}/${seed}: ${s.said}`);
         }
 });
 

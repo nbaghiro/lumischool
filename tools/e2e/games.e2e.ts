@@ -21,7 +21,6 @@ for (const game of ["straight", "jump", "pour"]) {
         );
         await page.getByRole("button", { name: "Pause & help" }).click();
         await expect(menu).toBeVisible();
-        await menu.getByText("Choose a challenge", { exact: true }).click();
         await menu.locator('[data-game-phase="1"]').click();
         await expect(menu).not.toBeVisible();
         await page.keyboard.press("Escape");
@@ -87,9 +86,7 @@ test("road controls expose each action once and keep navigation compact", async 
         page.locator('[data-game="pad"]').getByRole("button", { name: "Go", exact: true }),
     ).toHaveCount(1);
     await expect(
-        page
-            .locator('[data-game="pad"]')
-            .getByRole("button", { name: "Brake / reverse", exact: true }),
+        page.locator('[data-game="pad"]').getByRole("button", { name: "Brake", exact: true }),
     ).toHaveCount(1);
     await expect(page.locator('[data-game="pad"] button')).toHaveCount(4);
     await expect(
@@ -169,12 +166,13 @@ test("clicking the pause backdrop resumes, while clicking inside keeps it open",
     await expect(page.getByRole("button", { name: "All games", exact: true })).toBeVisible();
 });
 
-test("cargo exposes its delivery bell without duplicating the hook control", async ({ page }) => {
+test("cargo keeps the crane's arrows and one big button, with no bell", async ({ page }) => {
     await page.goto("/games?g=cargo-workshop");
-    await expect(page.getByRole("button", { name: "Ring the bell", exact: true })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Pick up / release", exact: true })).toHaveCount(
+    await expect(page.getByRole("button", { name: "Pick up / let go", exact: true })).toHaveCount(
         1,
     );
+    await expect(page.getByRole("button", { name: "Ring the bell" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Up", exact: true })).toHaveCount(1);
 });
 
 test("keyboard activation of a focused rotation control keeps its normal button behaviour", async ({
@@ -237,21 +235,20 @@ test("phase cards remember each game's selection and explicit links override it"
     await page.goto("/games?g=road&v=0");
     const menu = page.locator(".game-menu");
     await page.getByRole("button", { name: "Pause & help" }).click();
-    await menu.getByText("Choose a challenge", { exact: true }).click();
     await expect(menu.locator('[data-game-phase="0"]')).toHaveAttribute("aria-pressed", "true");
     await menu.locator('[data-game-phase="1"]').click();
     await expect(menu).not.toBeVisible();
-    await expect(page.locator(".game-toolbar")).toContainText("Stop on 70");
+    await expect(page.locator(".game-toolbar")).toContainText("Three doors");
     await page.getByRole("button", { name: "All games", exact: true }).click();
     await page.locator('[data-game-id="plane"]').click();
     await expect(page.locator(".game-toolbar")).toContainText("Up to ten");
     await page.getByRole("button", { name: "All games", exact: true }).click();
     await page.locator('[data-game-id="road"]').click();
-    await expect(page.locator(".game-toolbar")).toContainText("Stop on 70");
+    await expect(page.locator(".game-toolbar")).toContainText("Three doors");
     await page.reload();
-    await expect(page.locator(".game-toolbar")).toContainText("Stop on 70");
+    await expect(page.locator(".game-toolbar")).toContainText("Three doors");
     await page.goto("/games?g=road&v=0");
-    await expect(page.locator(".game-toolbar")).toContainText("Stop on 20");
+    await expect(page.locator(".game-toolbar")).toContainText("Two doors");
     await expect(menu).not.toBeVisible();
 });
 
@@ -265,7 +262,10 @@ test("opening a game with Enter is not its first gameplay input", async ({ page 
     const initial = await car.getAttribute("style");
     await page.waitForTimeout(500);
     expect(await car.getAttribute("style")).toBe(initial);
-    await page.keyboard.press("ArrowRight");
+    // the car drives only while go is held
+    await page.keyboard.down("ArrowRight");
+    await page.waitForTimeout(400);
+    await page.keyboard.up("ArrowRight");
     await expect(player).toHaveAttribute("data-game-ready", "false");
     await expect(car).not.toHaveAttribute("style", initial ?? "");
     await page.getByRole("button", { name: "Pause & help" }).click();

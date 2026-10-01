@@ -16,6 +16,7 @@ import type { Frame, Happening } from "../../engine/motion/scene";
 import type { Timeline } from "../../engine/motion/timeline";
 import type { Tuning } from "../../engine/motion/tune";
 import { bind, type Activity, type Mechanic, type Position, type Round } from "./games";
+import type { IconName } from "../../engine/parts/apps/icon";
 
 export type Group = "hands" | "action";
 
@@ -97,7 +98,8 @@ export interface ActionGame<S> extends Base {
     levels: ActionLevel[];
     /** Steps per second; the page's fixed loop runs at this rate. */
     rate: number;
-    commands?: readonly { id: string; label: string; key?: string }[];
+    /** Extra buttons under the field; one with an `icon` is drawn as that icon alone, its label kept as its name. */
+    commands?: readonly { id: string; label: string; key?: string; icon?: IconName }[];
     command?(s: S, id: string): void;
     /**
      * A design to keep, and putting one back: what a build game saves between tries. Returning to a
@@ -107,7 +109,15 @@ export interface ActionGame<S> extends Base {
     checkpoint?(s: S): unknown;
     restore?(s: S, value: unknown): boolean;
     /** The buttons under the field: what each arrow it uses is called here, and the big buttons. Every one has a key. */
-    controls: { arrows?: Partial<Record<Dir, string>>; go?: string; brake?: string };
+    controls: {
+        arrows?: Partial<Record<Dir, string>>;
+        go?: string;
+        brake?: string;
+        /** Icons for the big buttons, drawn alone in place of their words, which stay as their names. */
+        icons?: { go?: IconName; brake?: IconName };
+    };
+    /** The big button's word now, where one button does different things as the game goes on. */
+    goLabel?(s: S): string;
     start(level: number, seed?: number): S;
     step(s: S, pad: Pad): Happening[];
     /** The position in words, for the text form and a screen reader. */

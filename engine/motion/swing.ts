@@ -66,6 +66,16 @@ export function stepSwing(s: Swing, g: number, dt: number, push: Push, pumping: 
     s.theta += s.omega * dt;
 }
 
+/**
+ * The share of a step's time a swing moves by, so it lingers a little at each end: nought would stop
+ * it, one is real time. At the top it keeps `1 - slow` of the step; at `fast` squares a second or more
+ * along the arc it keeps all of it. A swing slowed this way still reaches the same height each side.
+ */
+export function apexEase(s: Swing, slow: number, fast = 2.5): number {
+    const v = Math.abs(s.omega) * s.r;
+    return 1 - slow * Math.exp(-((v / fast) ** 2));
+}
+
 /** The flight from letting go of a swing now. */
 export const letGo = (s: Swing): Flight => {
     const h = handsOf(s),

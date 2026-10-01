@@ -127,7 +127,7 @@ export function replay(s: YardState, pads: readonly Pad[]): boolean {
     return s.won;
 }
 
-/** How a way pushes: a finger pulled back from the wagon, or the keys stepping the push and space. */
+/** How a way pushes: a finger pulled back from the wagon, or the keys stepping the push and a tap of space. */
 export type By = "touch" | "keys";
 
 function pointsPads(s: YardState, k: number): Pad[] {
@@ -143,7 +143,8 @@ function pushPads(s: YardState, power: number, by: By): Pad[] {
             key = n > 0 ? ("right" as const) : ("left" as const);
         return [
             ...Array.from({ length: Math.abs(n) }, () => ({ ...idle(), pressed: [key] })),
-            { ...idle(), tapped: true },
+            { ...idle(), go: true, tapped: true },
+            idle(),
         ];
     }
     const w = pushableAt(s);

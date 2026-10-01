@@ -1,15 +1,16 @@
 // Firefly trail: a firefly flies a night garden and strings the seeds it collects into a glowing
 // trail, in the order a count goes.
 //
-// The firefly always flies. A finger held on the field is where it flies towards, turning no faster
-// than a firefly can, and the arrow keys turn it and the big button speeds it up. Numbered seeds glow
+// A tap on a seed sends the firefly to it on a curve round the hedges, nettles and webs, and a finger
+// held on the field is followed closely; left alone it hovers. The keys fly it as they always have:
+// it keeps flying, left and right turn it, and holding space hurries it. Numbered seeds glow
 // in the garden, some drifting; only the next number in the count joins the trail, and when it does
 // the trail grows by the count's step, one bead for each one counted and a colour for each step, so
 // the trail is always as long as the count so far. A seed that is not next is nudged away and floats
 // back. Nettles, frogs that snap at a passing trail and, on the last level, flying through the trail
-// itself knock the last beads off, and they scatter where they fell to be flown through and picked
-// up again, so a knock costs a little flying and nothing else. Spiders' webs slow the firefly, wind
-// pushes it, and hedges turn it back. On the windy hill the count goes backwards: the trail starts
+// itself knock the last beads off, and they scatter where they fell; a hovering firefly goes back for
+// them on its own, so a knock costs a little flying and nothing else. Spiders' webs slow the firefly,
+// wind pushes it, and hedges turn it back. On the windy hill the count goes backwards: the trail starts
 // long and each seed takes its step off it. There is no clock and nothing to lose. See .docs/games.md.
 import { follow, keepInside, lead, type Cam } from "../../engine/motion/camera";
 import type { Pt } from "../../engine/motion/geometry";
@@ -64,7 +65,7 @@ export const FIREFLY_LEVELS: Levels<FireflyLevel> = [
         title: "Count in twos",
         grades: [1, 1],
         goal: "Fly to the seeds in twos, 2, 4, 6, up to 20.",
-        prompt: "Hold a finger where the firefly should fly. The glowing seed is next.",
+        prompt: "Tap the glowing seed, and the firefly flies to it.",
         across: 64,
         from: 0,
         by: 2,
@@ -96,7 +97,7 @@ export const FIREFLY_LEVELS: Levels<FireflyLevel> = [
         title: "Fives by the nettles",
         grades: [1, 2],
         goal: "Fly to the seeds in fives, up to 40. Keep away from the nettles.",
-        prompt: "Nettles knock beads off. Fly back through them to pick them up.",
+        prompt: "Nettles knock beads off. The firefly flies back for them.",
         across: 72,
         from: 0,
         by: 5,
@@ -132,7 +133,7 @@ export const FIREFLY_LEVELS: Levels<FireflyLevel> = [
         title: "Tens over the pond",
         grades: [2, 2],
         goal: "Fly to the seeds in tens, up to 60. The frogs snap at a trail that flies low.",
-        prompt: "Frogs snap at a low trail. Fly high over the pond.",
+        prompt: "Frogs snap at a low trail. Wait for a frog to hop away, then tap.",
         across: 76,
         from: 0,
         by: 10,
@@ -164,7 +165,7 @@ export const FIREFLY_LEVELS: Levels<FireflyLevel> = [
         title: "Threes in the hedge maze",
         grades: [2, 3],
         goal: "Fly to the seeds in threes, up to 30, round the hedges.",
-        prompt: "Hedges turn the firefly back, and spiders' webs slow it down.",
+        prompt: "The firefly flies round the hedges and webs on its own.",
         across: 80,
         from: 0,
         by: 3,
@@ -295,12 +296,20 @@ const VIEW = { w: 40, h: 24 } as const;
 
 export const FIREFLY = {
     cruise: knob(
+        7,
+        4,
+        11,
+        0.1,
+        "squares a second",
+        "a tap sends it across the view in a few seconds, quick enough not to wait and slow enough to follow",
+    ),
+    keys: knob(
         3.6,
         2,
         6,
         0.1,
         "squares a second",
-        "a firefly drifts along fast enough to feel alive and slow enough to aim",
+        "flying by the keys, it drifts along fast enough to feel alive and slow enough to aim",
     ),
     boost: knob(
         6.5,
@@ -308,7 +317,7 @@ export const FIREFLY = {
         10,
         0.1,
         "squares a second",
-        "held, the big button or a far finger sends it quickly across the garden",
+        "held, the big button or the up arrow sends it quickly across the garden",
     ),
     turn: knob(
         3,
@@ -319,12 +328,12 @@ export const FIREFLY = {
         "a held arrow turns it round in about two seconds, a curve a child can steer",
     ),
     grip: knob(
-        9,
-        4,
-        20,
+        14,
+        6,
+        30,
         0.5,
         "squares a second, each second",
-        "how quickly it changes direction, so a finger's path is followed as a curve and not a jump",
+        "how quickly it changes direction, so its way round a hedge is a curve and a finger is followed closely",
     ),
     gap: knob(
         0.42,
@@ -342,7 +351,18 @@ export const FIREFLY = {
         "squares",
         "a seed is caught when the firefly comes this near, generous for a small hand",
     ),
+    aim: knob(
+        2.2,
+        1.2,
+        3.5,
+        0.1,
+        "squares",
+        "a tap this near a seed is a tap on it, a seed being smaller than a fingertip",
+    ),
 };
+
+/** Where the firefly is going: to a seed at its spot, to a place tapped, or back for fallen beads. */
+type Goal = { seed: number } | { at: Pt } | { beads: true };
 
 interface Seed {
     n: number;
@@ -368,7 +388,17 @@ export interface FireflyState {
     seeds: Seed[];
     at: Pt;
     v: Pt;
+    goal: Goal | null;
+    /** The next place on its way round what is in the way, and the step it was worked out on. */
+    way: Pt | null;
+    wayAt: number;
+    /** Flying by the keys: it keeps flying along `heading`, radians from the right, until a tap or a finger takes over. */
+    keyed: boolean;
     heading: number;
+    /** Steps it has hovered with nowhere to go. */
+    idle: number;
+    /** The wrong seed that last shied away, by spot, which shies again only once the firefly has left it. */
+    shy: number;
     /** Where the firefly has flown, newest first, a sample every short way, which the beads are strung along. */
     path: Pt[];
     /** Beads on the string now. */
@@ -432,8 +462,14 @@ export function startFirefly(L: FireflyLevel, level: number, layout: number[]): 
             got: false,
         })),
         at,
-        v: { x: 1, y: 0 },
+        v: { x: 0, y: 0 },
+        goal: null,
+        way: null,
+        wayAt: 0,
+        keyed: false,
         heading: 0,
+        idle: 0,
+        shy: -1,
         path: [{ ...at }],
         beads: L.back ? L.from : 0,
         loose: [],
@@ -569,25 +605,157 @@ export function frogAt(s: FireflyState, i: number): { at: Pt; facing: 1 | -1 } {
     return { at: m.at, facing: m.v.x < 0 ? -1 : 1 };
 }
 
+/** Whether a square of the garden is somewhere the firefly's way goes round: a hedge, a nettle bed or a web. */
+function blocked(s: FireflyState, x: number, y: number): boolean {
+    const L = s.L;
+    if (x < 1 || x > L.across - 1 || y < 1.5 || y > G - 1) return true;
+    for (const h of L.hedges)
+        if (x > h.x - 1.2 && x < h.x + h.w + 1.2 && y > h.y - 1.2 && y < h.y + h.h + 1.2)
+            return true;
+    for (const n of L.nettles) {
+        const half = (Math.ceil(n.stems * 1.4 + 1.4) * 0.9) / 2;
+        if (Math.abs(x - n.x) < half + 1.2 && y > G - 4.6) return true;
+    }
+    for (const w of L.webs) if (Math.hypot(x - w.x, y - w.y) < w.r + 1) return true;
+    return false;
+}
+
+/**
+ * The next place on a short way to `to` round whatever is in the way, found square by square: a few
+ * squares along it, so the firefly flies a curve rather than a staircase. Straight there when nothing is.
+ */
+function wayTo(s: FireflyState, to: Pt): Pt {
+    const W = Math.ceil(s.L.across) + 1,
+        key = (x: number, y: number) => y * W + x;
+    const from = { x: Math.round(s.at.x), y: Math.round(s.at.y) },
+        goal = { x: Math.round(to.x), y: Math.round(to.y) },
+        back = new Map<number, number>([[key(from.x, from.y), -1]]),
+        q: Pt[] = [from];
+    for (let k = 0; k < q.length; k++) {
+        const c = q[k] ?? from;
+        if (Math.abs(c.x - goal.x) <= 1 && Math.abs(c.y - goal.y) <= 1) {
+            const trail: number[] = [];
+            for (let at = key(c.x, c.y); at !== -1; at = back.get(at) ?? -1) trail.push(at);
+            if (trail.length <= 4) return to;
+            const ahead = trail[trail.length - 4] ?? key(goal.x, goal.y);
+            return { x: ahead % W, y: Math.floor(ahead / W) };
+        }
+        for (const [dx, dy] of NEIGHBOURS) {
+            const nx = c.x + dx,
+                ny = c.y + dy,
+                nk = key(nx, ny);
+            if (back.has(nk)) continue;
+            const near = Math.abs(nx - goal.x) <= 1 && Math.abs(ny - goal.y) <= 1;
+            if (!near && blocked(s, nx, ny)) continue;
+            back.set(nk, key(c.x, c.y));
+            q.push({ x: nx, y: ny });
+        }
+    }
+    return to;
+}
+
+const NEIGHBOURS = [
+    [1, 0],
+    [-1, 0],
+    [0, 1],
+    [0, -1],
+    [1, 1],
+    [1, -1],
+    [-1, 1],
+    [-1, -1],
+] as const;
+
+/** The nearest fallen bead, or null when none has fallen. */
+function nearestLoose(s: FireflyState): Pt | null {
+    let best: Pt | null = null;
+    for (const b of s.loose)
+        if (
+            !best ||
+            Math.hypot(b.x - s.at.x, b.y - s.at.y) < Math.hypot(best.x - s.at.x, best.y - s.at.y)
+        )
+            best = { x: b.x, y: b.y };
+    return best;
+}
+
+/** Where the goal is now, or null once it is reached or gone. */
+function goalAt(s: FireflyState): Pt | null {
+    const g = s.goal;
+    if (!g) return null;
+    if ("seed" in g) {
+        const seed = s.seeds.find((x) => x.spot === g.seed);
+        return seed && !seed.got ? seedAt(s, seed) : null;
+    }
+    if ("beads" in g) return nearestLoose(s);
+    return g.at;
+}
+
+/** The seed a tap lands on, if one is near enough to count as tapped. */
+function tappedSeed(s: FireflyState, p: Pt): number {
+    let best = -1,
+        far = FIREFLY.aim.value;
+    for (const seed of s.seeds) {
+        if (seed.got) continue;
+        const at = seedAt(s, seed),
+            d = Math.hypot(at.x - p.x, at.y - p.y);
+        if (d < far) {
+            far = d;
+            best = seed.spot;
+        }
+    }
+    return best;
+}
+
 function steer(s: FireflyState, pad: Pad): void {
-    const t = pad.touch,
-        keys = new Set([...pad.holding, ...pad.pressed]);
-    let speed = FIREFLY.cruise.value;
-    if (pad.go || keys.has("up")) speed = FIREFLY.boost.value;
-    if (pad.brake || keys.has("down")) speed = FIREFLY.cruise.value * 0.45;
-    let want: Pt;
-    if (t) {
+    const keys = new Set([...pad.holding, ...pad.pressed]);
+    // any key flies it by the keys: left and right turn it, up or the big button hurry it, down slows it
+    if (keys.size || pad.go || pad.brake) {
+        if (!s.keyed) s.heading = Math.hypot(s.v.x, s.v.y) > 0.3 ? Math.atan2(s.v.y, s.v.x) : 0;
+        s.keyed = true;
         s.touched = true;
-        const far = Math.hypot(t.x - s.at.x, t.y - s.at.y);
-        want = arrive(s.at, t, far > 7 ? FIREFLY.boost.value : speed, 1.5);
-    } else {
+        s.goal = null;
+        s.way = null;
+    }
+    if (pad.lifted || pad.touch) s.keyed = false;
+    if (s.keyed) {
+        let speed = FIREFLY.keys.value;
+        if (pad.go || keys.has("up")) speed = FIREFLY.boost.value;
+        if (pad.brake || keys.has("down")) speed = FIREFLY.keys.value * 0.45;
         if (keys.has("left")) s.heading -= FIREFLY.turn.value * DT;
         if (keys.has("right")) s.heading += FIREFLY.turn.value * DT;
-        for (const d of pad.pressed) if (d === "left" || d === "right") s.touched = true;
-        want = { x: Math.cos(s.heading) * speed, y: Math.sin(s.heading) * speed };
+        s.idle = 0;
+        const want = { x: Math.cos(s.heading) * speed, y: Math.sin(s.heading) * speed };
+        s.v = towards(s.v, want, FIREFLY.grip.value * DT);
+        return;
     }
+    if (pad.lifted) {
+        const spot = tappedSeed(s, pad.lifted);
+        s.goal = spot >= 0 ? { seed: spot } : { at: { ...pad.lifted } };
+        s.touched = true;
+    }
+    const t = pad.touch;
+    let to: Pt | null;
+    if (t) {
+        // a held finger is followed straight, closely: the child is choosing the way
+        s.touched = true;
+        s.goal = null;
+        to = t;
+    } else {
+        if (!s.goal && s.loose.length && s.idle > RATE * 0.8) s.goal = { beads: true };
+        to = goalAt(s);
+        if (!to) s.goal = null;
+        else if (!("seed" in (s.goal ?? {})) && Math.hypot(to.x - s.at.x, to.y - s.at.y) < 0.35)
+            s.goal = null;
+    }
+    if (to && !t) {
+        if (!s.way || s.steps - s.wayAt >= 8) {
+            s.way = wayTo(s, to);
+            s.wayAt = s.steps;
+        }
+    } else s.way = null;
+    const aim = t ? t : s.goal ? (s.way ?? to) : null;
+    const want = aim ? arrive(s.at, aim, FIREFLY.cruise.value, t ? 1 : 2.2) : { x: 0, y: 0 };
+    s.idle = aim ? 0 : s.idle + 1;
     s.v = towards(s.v, want, FIREFLY.grip.value * DT);
-    if (Math.hypot(s.v.x, s.v.y) > 0.3 && t) s.heading = Math.atan2(s.v.y, s.v.x);
 }
 
 function fly(s: FireflyState, out: Happening[]): void {
@@ -604,13 +772,14 @@ function fly(s: FireflyState, out: Happening[]): void {
     if (s.at.x < lo.x || s.at.x > hi.x) {
         s.at.x = Math.max(lo.x, Math.min(hi.x, s.at.x));
         s.v.x = -s.v.x * 0.5;
-        s.heading = Math.atan2(s.v.y, s.v.x);
     }
     if (s.at.y < lo.y || s.at.y > hi.y) {
         s.at.y = Math.max(lo.y, Math.min(hi.y, s.at.y));
         s.v.y = -s.v.y * 0.5;
-        s.heading = Math.atan2(s.v.y, s.v.x);
     }
+    // flying by the keys, a bounce off an edge turns its heading as well, so it flies away from the edge
+    if (s.keyed && (s.at.x <= lo.x || s.at.x >= hi.x || s.at.y <= lo.y || s.at.y >= hi.y))
+        s.heading = Math.atan2(s.v.y, s.v.x);
     for (const h of L.hedges) {
         if (!inside(s.at, h, 0.5)) continue;
         const left = s.at.x - (h.x - 0.5),
@@ -624,7 +793,7 @@ function fly(s: FireflyState, out: Happening[]): void {
         else s.at.y = h.y + h.h + 0.5;
         if (least === left || least === right) s.v.x = -s.v.x * 0.5;
         else s.v.y = -s.v.y * 0.5;
-        s.heading = Math.atan2(s.v.y, s.v.x);
+        if (s.keyed) s.heading = Math.atan2(s.v.y, s.v.x);
         if (s.steps % 12 === 0) out.push({ cue: "bump" });
     }
     const last = s.path[0];
@@ -641,7 +810,6 @@ function hazards(s: FireflyState, out: Happening[]): void {
         const half = (Math.ceil(n.stems * 1.4 + 1.4) * 0.9) / 2;
         if (Math.abs(s.at.x - n.x) < half && s.at.y > G - 3.4) {
             s.v = { x: s.v.x * 0.4, y: -4 };
-            s.heading = Math.atan2(s.v.y, s.v.x);
             if (s.hurt === 0) {
                 out.push({ burst: { kind: "dust", x: s.at.x, y: s.at.y, n: 4 } });
                 if (L.back) {
@@ -682,11 +850,17 @@ function collect(s: FireflyState, out: Happening[]): void {
     const L = s.L,
         reach = FIREFLY.reach.value,
         want = wantedSeed(s);
+    const shy = s.seeds.find((x) => x.spot === s.shy);
+    if (shy) {
+        const at = seedAt(s, shy);
+        if (Math.hypot(at.x - s.at.x, at.y - s.at.y) > reach * 2) s.shy = -1;
+    }
     for (const seed of s.seeds) {
         if (seed.got) continue;
         const at = seedAt(s, seed),
             d = Math.hypot(at.x - s.at.x, at.y - s.at.y);
         if (d >= reach) continue;
+        if (s.goal && "seed" in s.goal && s.goal.seed === seed.spot) s.goal = null;
         if (seed === want) {
             seed.got = true;
             s.next++;
@@ -702,11 +876,15 @@ function collect(s: FireflyState, out: Happening[]): void {
             continue;
         }
         // a seed that is not next is nudged away, and floats back
-        if (Math.hypot(seed.off.x, seed.off.y) < 0.6) {
-            const k = 7 / Math.max(d, 0.1);
-            seed.v = { x: (at.x - s.at.x) * k, y: (at.y - s.at.y) * k };
+        if (seed.spot !== s.shy && Math.hypot(seed.off.x, seed.off.y) < 0.6) {
+            s.shy = seed.spot;
+            // it shies away from the firefly, or upwards when the firefly is right on it
+            seed.v =
+                d > 0.05
+                    ? { x: ((at.x - s.at.x) / d) * 7, y: ((at.y - s.at.y) / d) * 7 }
+                    : { x: 0, y: -7 };
             out.push({ cue: "nope" });
-            tell(s, `That is ${seed.n}.${want ? ` The next is ${want.n}.` : ""}`);
+            tell(s, `Not yet. That is ${seed.n}.${want ? ` The next is ${want.n}.` : ""}`);
         }
     }
     s.loose = s.loose.filter((b) => {
@@ -984,13 +1162,15 @@ export function frame(s: FireflyState, rest = false): Frame {
             alpha: 0.85,
         }),
     );
+    // hovering, it bobs, so a firefly with nowhere to go still looks alive
+    const bob = rest ? 0 : Math.sin(s.steps * DT * 3) * 0.18 * Math.min(1, s.idle / (RATE * 0.4));
     sprites.push({
         key: "head",
         art: "guide.firefly",
         params: { pose: s.won ? "cheer" : "idle" },
         size: 2.2,
         x: s.at.x,
-        y: s.at.y,
+        y: s.at.y + bob,
         flip: s.v.x < -0.05,
         z: 8,
     });
@@ -1101,9 +1281,14 @@ export const snakeGame: ActionGame<FireflyState> = {
     levels: FIREFLY_LEVELS,
     rate: RATE,
     touch: true,
-    hint: "Hold a finger where the firefly should fly, or turn it with the left and right arrows and hold space to go faster. Catch the seeds in the order of the count.",
+    hint: "Tap the seed that comes next in the count, and the firefly flies to it, or hold a finger where it should fly. With the keys, the left and right arrows turn it and holding space sends it faster.",
     cover: { art: "guide.firefly", params: { pose: "cheer" } },
-    controls: { arrows: { left: "Turn left", right: "Turn right" }, go: "Faster" },
+    // two ways to play: tap a seed and it flies there, or fly it by the keys and these buttons
+    controls: {
+        arrows: { left: "Turn left", right: "Turn right" },
+        go: "Faster",
+        icons: { go: "faster" },
+    },
     start: (level, seed) => start(level, seed ?? 1),
     step,
     frame,
@@ -1113,5 +1298,5 @@ export const snakeGame: ActionGame<FireflyState> = {
     won: (s) => s.won,
     objectives: (s) => ({ completed: s.next, total: s.L.seeds }),
     tuning: FIREFLY,
-    still: { press: () => Math.round(RATE * 0.3) },
+    still: { press: () => Math.round(RATE * 0.3), settling: (s) => s.goal !== null },
 };

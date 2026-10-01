@@ -3,9 +3,10 @@
 //
 // The river winds between its banks and runs faster where it narrows, over the rapids and between the
 // rocks, and slack behind each rock. The canoe glides after every stroke and is carried by the water it
-// sits in. A stroke on one side pushes it on and turns its bow away from that side, harder the longer
-// the drag or the key is held, and a stroke made too soon after the last catches moving water and
-// pushes less, so paddling well has a rhythm. Rocks and drifting logs knock the canoe about and never
+// sits in. With the keys a stroke on one side pushes it on and turns its bow away from that side,
+// harder the longer the key is held, and a stroke made too soon after the last catches moving water and
+// pushes less, so paddling well has a rhythm. A finger held on the water is steered for instead: the
+// canoe turns towards it at an easy rate and paddles there, and lifting the finger lets it glide. Rocks and drifting logs knock the canoe about and never
 // end the run. Across the river stand pairs of gates with numbers on them, and the canoe has to pass
 // through the one that comes next in a count: ones, twos, fives, tens, threes, tenths. A gate out of
 // the count is not wrong for long: the river carries the canoe back above it to try again. The count
@@ -20,8 +21,10 @@ import {
     canoeStep,
     rhythm,
     starboard,
+    steer,
     stroke,
     type Canoe,
+    type Helm,
     type Hull,
 } from "../../engine/motion/canoe";
 import type { Pt } from "../../engine/motion/geometry";
@@ -72,7 +75,7 @@ export const RIVER_LEVELS: Levels<RiverLevel> = [
         title: "Count to five",
         grades: [1, 1],
         goal: "Paddle through the gates in order, 1, 2, 3, 4, then stop with the front of the canoe beside 5.",
-        prompt: "Drag back beside the canoe to paddle. Go through gate 1 first.",
+        prompt: "Hold a finger on the water where the canoe should go. Go through gate 1 first.",
         done: "The canoe is resting beside 5.",
         length: 90,
         half: 5.5,
@@ -245,7 +248,7 @@ const POOL = 34;
 const POOL_HALF = 8;
 const VIEW = { w: 36, h: 22 } as const;
 /** The canoe as it is drawn here: its length in squares, and the points along it that meet things, with their size. */
-const HULL = { length: 3.6, reach: 1.25, r: 0.48 } as const;
+export const HULL = { length: 3.6, reach: 1.25, r: 0.48 } as const;
 /** How near the bank the canoe's middle has to be to count as pulled in beside it: about a paddle's reach. */
 const ALONGSIDE = HULL.r + 1.7;
 /** The squares from the pool's start to its first post. */
@@ -284,14 +287,7 @@ export const ROW = {
         "seconds",
         "strokes a little over half a second apart have all their push, which gives paddling a rhythm",
     ),
-    charge: knob(
-        0.45,
-        0.2,
-        1,
-        0.05,
-        "seconds",
-        "a key held this long, or a drag four squares long, makes a full stroke",
-    ),
+    charge: knob(0.45, 0.2, 1, 0.05, "seconds", "a key held this long makes a full stroke"),
     back: knob(
         2.2,
         1,
@@ -300,7 +296,27 @@ export const ROW = {
         "each second",
         "holding the paddle back stops the canoe within about a length",
     ),
+    cruise: knob(
+        2.4,
+        1,
+        4,
+        0.1,
+        "squares a second",
+        "a finger held on the water paddles the canoe there at a brisk walk, a little faster than the river",
+    ),
+    helm: knob(
+        1.6,
+        0.6,
+        3,
+        0.1,
+        "radians a second",
+        "turning towards the finger no faster than this keeps the canoe from spinning",
+    ),
 };
+
+/** How near the finger the bow starts to ease up, in squares, so it comes to rest there rather than past it. */
+const ARRIVE = 1.6;
+const helm = (): Helm => ({ cruise: ROW.cruise.value, turn: ROW.helm.value, arrive: ARRIVE });
 
 const hull = (): Hull => ({
     glide: ROW.glide.value,
@@ -329,8 +345,8 @@ export interface RiverState {
     /** A key or the big button held to wind up a stroke, and for how long. */
     charge: { key: "up" | "left" | "right" | "go"; t: number } | null;
     goWas: boolean;
-    /** A finger down in the water: where it went down, where it is now, and for how long. */
-    drag: { from: Pt; to: Pt; t: number } | null;
+    /** Where a finger is held on the water, which the canoe paddles its bow towards. */
+    helm: Pt | null;
     backing: boolean;
     /** After a gate out of the count: seconds until the river has carried the canoe back above it. */
     carried: number;
@@ -462,7 +478,7 @@ export function startRiver(L: RiverLevel, level: number): RiverState {
         side: 1,
         charge: null,
         goWas: false,
-        drag: null,
+        helm: null,
         backing: false,
         carried: 0,
         calm: 0,
@@ -489,10 +505,15 @@ const wanted = (s: RiverState): Cam => {
     return { x: ahead.x + 4, y: ahead.y, zoom: 1 };
 };
 
-/** Makes a stroke of `power` on a side, as a drag or a key did, and says nothing: the splash is the answer. */
+/** Makes a stroke of `power` on a side, as a key did, and says nothing: the splash is the answer. */
 function paddle(s: RiverState, side: 1 | -1, power: number, back: boolean, out: Happening[]): void {
     const p = Math.max(0.15, Math.min(1, power)) * rhythm(s.t - s.lastStroke, ROW.beat.value);
     stroke(s.boat, side, p, hull(), back);
+    splash(s, side, p, out);
+}
+
+/** The paddle going in on a side: its sweep, its sound and the ring it leaves on the water. */
+function splash(s: RiverState, side: 1 | -1, p: number, out: Happening[]): void {
     s.lastStroke = s.t;
     s.side = side;
     s.strokes++;
@@ -509,50 +530,26 @@ function paddle(s: RiverState, side: 1 | -1, power: number, back: boolean, out: 
     s.rings.push({ ...blade, t: 0, size: p });
 }
 
-/** The stroke a drag in the water stands for: drawn back past the canoe it paddles on, drawn forward it backs water. */
-export function strokeOfDrag(
-    s: RiverState,
-    from: Pt,
-    to: Pt,
-): { side: 1 | -1; power: number; back: boolean } {
-    const a = along(s.boat),
-        r = starboard(s.boat);
-    const across = (from.x - s.boat.x) * r.x + (from.y - s.boat.y) * r.y;
-    const side: 1 | -1 = across >= 0 ? 1 : -1;
-    const pull = (to.x - from.x) * a.x + (to.y - from.y) * a.y;
-    const full = 4;
-    if (pull < -0.35) return { side, power: -pull / full, back: false };
-    if (pull > 0.35) return { side, power: pull / full, back: true };
-    return { side, power: 0.35, back: false };
-}
-
-function hands(s: RiverState, pad: Pad, out: Happening[]): void {
+/** A finger held on the water is where the canoe paddles to, kept inside the river so the bow can reach it. */
+function hands(s: RiverState, pad: Pad): void {
     const t = pad.touch;
-    if (t) {
-        if (!s.drag) s.drag = { from: { ...t }, to: { ...t }, t: 0 };
-        else {
-            s.drag.to = { ...t };
-            s.drag.t += DT;
-        }
-        // a finger held still in the water holds the paddle back against it
-        const d = s.drag;
-        s.backing = d.t > 0.35 && Math.hypot(d.to.x - d.from.x, d.to.y - d.from.y) < 0.4;
+    if (!t) {
+        s.helm = null;
+        return;
     }
-    if (pad.lifted && s.drag) {
-        const d = s.drag;
-        s.drag = null;
-        const held =
-            d.t > 0.35 && Math.hypot(pad.lifted.x - d.from.x, pad.lifted.y - d.from.y) < 0.4;
-        s.backing = false;
-        if (!held) {
-            const k = strokeOfDrag(s, d.from, pad.lifted);
-            paddle(s, k.side, k.power, k.back, out);
-        }
-    }
+    const L = s.L,
+        m = middle(L, t.x),
+        h = halfAt(L, t.x) - HULL.r - 0.4;
+    s.helm = { x: t.x, y: Math.max(m - h, Math.min(m + h, t.y)) };
+    s.touched = true;
+    s.toldRest = false;
 }
 
 function keys(s: RiverState, pad: Pad, out: Happening[]): void {
-    if (pad.touch || s.drag) return;
+    if (pad.touch) {
+        s.backing = false;
+        return;
+    }
     const down = (k: "up" | "left" | "right" | "go") =>
         k === "go" ? pad.go : pad.holding.includes(k);
     const began = (k: "up" | "left" | "right" | "go") =>
@@ -682,7 +679,9 @@ function dock(s: RiverState, out: Happening[]): void {
         s.calm = 0;
         return;
     }
-    const alongside = c.y - bankAt(L, c.x) < ALONGSIDE;
+    // the bow counts as well as the middle, so a canoe brought in bow first to the bank is beside it
+    const bow = bowOf(s),
+        alongside = Math.min(c.y, bow.y) - bankAt(L, c.x) < ALONGSIDE;
     const speed = Math.hypot(c.vx, c.vy);
     if (!alongside || speed > 0.45) {
         s.calm = 0;
@@ -691,8 +690,7 @@ function dock(s: RiverState, out: Happening[]): void {
     }
     s.calm += DT;
     if (s.calm < 0.6 || s.toldRest) return;
-    const bow = bowOf(s),
-        target = lineX(L, L.dock),
+    const target = lineX(L, L.dock),
         off = bow.x - target;
     if (Math.abs(off) <= dockTolerance(L)) {
         emit(s, out, { kind: "dock", value: L.dock });
@@ -735,9 +733,15 @@ export function step(s: RiverState, pad: Pad): Happening[] {
         }
         return out;
     }
-    hands(s, pad, out);
+    hands(s, pad);
     keys(s, pad, out);
     const before = s.boat.x;
+    if (s.helm) {
+        const p = steer(s.boat, bowOf(s), s.helm, currentAt(L, s.boat), helm(), DT);
+        // the paddle goes in on alternate sides at the paddling's own beat while the helm is pulling
+        if (p > 0.15 && s.t - s.lastStroke >= ROW.beat.value)
+            splash(s, s.side === 1 ? -1 : 1, p, out);
+    }
     // held back against a canoe that has all but stopped, the paddle backs it slowly the other way
     if (s.backing) {
         const a = along(s.boat),
@@ -972,17 +976,10 @@ export function frame(s: RiverState, rest = false): Frame {
             marks.push({ kind: "ring", x: r.x, y: r.y, r: 0.25 + (r.t / RING) * (0.6 + r.size) });
     }
     if (!s.won) marks.push({ kind: "dots", pts: drift(s), opacity: 0.35 });
-    // a drag in the water shows the stroke it will make
-    if (s.drag) {
-        const k = strokeOfDrag(s, s.drag.from, s.drag.to);
-        marks.push({ kind: "line", a: s.drag.from, b: s.drag.to, style: "aim", head: true });
-        marks.push({
-            kind: "ring",
-            x: s.drag.from.x,
-            y: s.drag.from.y,
-            r: 0.5 + 0.5 * Math.min(1, k.power),
-            on: true,
-        });
+    // a finger on the water shows where the bow is headed
+    if (s.helm) {
+        marks.push({ kind: "line", a: bowOf(s), b: s.helm, style: "aim" });
+        marks.push({ kind: "ring", x: s.helm.x, y: s.helm.y, r: 0.6, on: true });
     }
     const c = s.boat,
         since = s.t - s.lastStroke,
@@ -1052,7 +1049,7 @@ export const rowGame: ActionGame<RiverState> = {
     touch: true,
     plays: { activity: "race.stop-on-the-line", levels: [0, 1] },
     cover: { art: "canoe", params: { stroke: 0.6, top: "berry" } },
-    hint: "Drag back through the water beside the canoe to paddle on that side, harder for a longer drag; drag forward or hold a finger still to back water. With the keys: hold and let go of up to paddle, left and right to turn, down to back water",
+    hint: "Hold a finger on the water where the canoe should go, and it paddles there; lift it to glide. With the keys: hold and let go of up to paddle, left and right to turn, down to back water",
     controls: {
         arrows: { left: "Turn left", right: "Turn right", up: "Paddle", down: "Back water" },
         go: "Paddle",
@@ -1073,7 +1070,7 @@ export const rowGame: ActionGame<RiverState> = {
     won: (s) => s.won,
     objectives: (s) => progress(s.goal),
     cancelInput: (s) => {
-        s.drag = null;
+        s.helm = null;
         s.charge = null;
         s.backing = false;
     },

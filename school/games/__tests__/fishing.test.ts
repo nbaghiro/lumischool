@@ -454,3 +454,144 @@ test("a shoal swims together and scatters together, and a cast rings the water t
     const float = f.sprites.find((x) => x.key === "float");
     assert.ok(float && Math.abs(float.y - F.SEA.surface) < 0.5, "the float rides the surface");
 });
+
+/** A press and a lift at one place, as a tap on the glass. */
+function tap(s: F.FishState, at: { x: number; y: number }): void {
+    const pad = emptyPad();
+    pad.touch = { ...at };
+    F.step(s, pad);
+    spent(pad);
+    pad.lifted = { ...at };
+    pad.touch = null;
+    F.step(s, pad);
+    spent(pad);
+}
+
+const inWater = (f: F.Fish | undefined): f is F.Fish =>
+    f !== undefined && f.mood !== "pan" && f.mood !== "air" && f.mood !== "hooked";
+
+/**
+ * Fishes a round on the glass the easy way: tap a fish the weight still needs, press anywhere on the
+ * bite and keep the finger down to reel it in, and throw one back when the pan cannot make the weight.
+ */
+function fishByTaps(s: F.FishState, limit = 60 * 300): void {
+    const pad = emptyPad();
+    for (let n = 0; n < limit && !s.won; n++) {
+        const need = F.needed(s);
+        if (!need && s.pan.length && s.phase === "ready" && !s.flights.length) {
+            F.back(s);
+            continue;
+        }
+        if (s.phase === "ready" && need && need.length) {
+            const f = need.map((i) => s.fish[i]).find(inWater);
+            if (f) tap(s, { x: f.x, y: f.y });
+            else F.step(s, pad);
+            continue;
+        }
+        const on = s.phase === "fight" || s.fish.some((f) => f.mood === "bite");
+        if (on) pad.touch = { x: 10, y: 10 };
+        else if (pad.touch) {
+            pad.lifted = pad.touch;
+            pad.touch = null;
+        }
+        F.step(s, pad);
+        spent(pad);
+    }
+}
+
+test("on the glass, every level and every other day is fished by tapping fish and holding to reel", () => {
+    for (const { title, start } of days()) {
+        const s = start();
+        fishByTaps(s);
+        assert.ok(s.won, `${title}: ${F.say(s)}`);
+        assert.equal(s.snaps, 0, `${title}: a line reeled by a finger snapped`);
+    }
+});
+
+test("a tap on a fish brings that fish alone, and its bite is plain to see and hooked by any press", () => {
+    const s = F.fishingGame.start(0, 1);
+    const first = s.fish[0];
+    assert.ok(first);
+    tap(s, { x: first.x, y: first.y });
+    assert.equal(s.target, 0);
+    for (let n = 0; n < 60 * 20 && first.mood !== "bite"; n++) {
+        F.step(s, emptyPad());
+        const at = s.fish.filter(
+            (f) => f.mood === "come" || f.mood === "nibble" || f.mood === "bite",
+        );
+        assert.ok(
+            at.every((f) => f === first),
+            "only the tapped fish comes to the bait",
+        );
+    }
+    assert.equal(first.mood, "bite");
+    assert.ok(F.frame(s).marks.some((m) => m.kind === "word" && m.text === "!"));
+    assert.equal(F.fishingGame.goLabel?.(s), "Hook!");
+    const pad = emptyPad();
+    pad.touch = { x: 3, y: 26 };
+    F.step(s, pad);
+    assert.equal(s.phase, "fight", "a press anywhere hooks it");
+    assert.equal(F.fishingGame.goLabel?.(s), "Reel");
+});
+
+test("a press before the bite costs nothing, and a tapped fish that is missed nibbles again twice", () => {
+    const s = F.fishingGame.start(0, 1);
+    const first = s.fish[0];
+    assert.ok(first);
+    tap(s, { x: first.x, y: first.y });
+    const mood = (): string => first.mood;
+    for (let n = 0; n < 60 * 20 && mood() !== "nibble"; n++) F.step(s, emptyPad());
+    F.step(s, { ...emptyPad(), tapped: true });
+    assert.equal(mood(), "nibble", "an early strike does not scare it off");
+    let bites = 0,
+        was = false;
+    for (let n = 0; n < 60 * 30 && s.phase === "wait" && mood() !== "flee"; n++) {
+        F.step(s, emptyPad());
+        if (mood() === "bite" && !was) bites++;
+        was = mood() === "bite";
+    }
+    assert.equal(bites, 3, "it bites three times before it swims off");
+});
+
+test("the big button says what a press does, and easing off is a word", () => {
+    const s = F.fishingGame.start(0, 1);
+    assert.equal(F.fishingGame.goLabel?.(s), "Cast");
+    assert.equal(F.fishingGame.controls.brake, "Ease off");
+    assert.ok(
+        F.frame(s).marks.some((m) => m.kind === "word" && /Tap a fish/.test(m.text)),
+        "the first level says what to do",
+    );
+});
+
+test("fish tapped at random make the weight at most one time in five", () => {
+    let wins = 0,
+        trials = 0;
+    F.FISH_LEVELS.forEach((L, phase) => {
+        const rnd = seeded(401 + phase);
+        let won = 0;
+        const tries = 40;
+        for (let t = 0; t < tries; t++) {
+            const s = F.fishingGame.start(phase, 1 + t);
+            const pad = emptyPad();
+            // a child who taps fish at random, hooks and reels every one, and never throws one back
+            for (let n = 0; n < 60 * 120 && !s.won && s.pan.length < L.holds; n++) {
+                if (s.phase === "ready" && !s.flights.length) {
+                    const pool = s.fish.filter(inWater);
+                    const f = pool[Math.floor(rnd() * pool.length)];
+                    if (f) tap(s, { x: f.x, y: f.y });
+                    continue;
+                }
+                const on = s.phase === "fight" || s.fish.some((f) => f.mood === "bite");
+                pad.touch = on ? { x: 10, y: 10 } : null;
+                F.step(s, pad);
+                spent(pad);
+            }
+            for (let n = 0; n < 240 && s.flights.length; n++) F.step(s, emptyPad());
+            if (s.won) won++;
+        }
+        assert.ok(won / tries <= 1 / 3, `${L.title}: ${won} of ${tries}`);
+        wins += won;
+        trials += tries;
+    });
+    assert.ok(wins / trials <= 0.2, `${wins} of ${trials}`);
+});

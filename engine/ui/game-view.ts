@@ -101,11 +101,13 @@ export interface FieldView {
         pages: number;
         bytes: number;
     };
+    /** `square`, when given, is the pixels to a square the page has already chosen, kept whatever the room. */
     fit(
         view: { w: number; h: number },
         world: { w: number; h: number },
         room: { w: number; h: number },
         seen: "side" | "above",
+        square?: number,
     ): void;
     clear(): void;
     draw(f: Frame, dt: number): void;
@@ -273,9 +275,10 @@ export class GameView implements FieldView {
         world: { w: number; h: number },
         room: { w: number; h: number },
         seen: "side" | "above",
+        square?: number,
     ): void {
         // the square is the largest that shows the whole authored view, and the field then fills the room
-        const sq = Math.max(6, Math.floor(Math.min(room.w / view.w, room.h / view.h)));
+        const sq = square ?? Math.max(6, Math.floor(Math.min(room.w / view.w, room.h / view.h)));
         // less than a pixel of room to spare is no room: a caller may pass the view's own size and a little over
         const grown = (r: number, v: number): number => (r - v * sq < 1 ? v : r / sq);
         const shown = { w: grown(room.w, view.w), h: grown(room.h, view.h) };

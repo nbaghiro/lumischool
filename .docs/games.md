@@ -419,6 +419,14 @@ that four different flicks fly four ways and all turn up the mechanic's faces, t
 heard on the walls and jolts the box, and that the same throw tumbles the same way. The shut the box
 case in `tools/e2e/physical-games.e2e.ts` flicks a die in the app and waits for the dice to rest.
 
+## The keys as they were, beside easier on-screen play (30 September 2026)
+
+The owner found the day's first reworks too primitive, and then put the problem precisely: the games' keyboard controls were good, and what was hard to use was the play on screen, touching or clicking the field and the buttons under it. So each game now has two layers. The keys are the ones in git before the reworks, unchanged, and the on-screen play is the easy direct touch the reworks brought, with the buttons that mirror the keys kept under the field.
+
+- Firefly trail. The keys fly it as they did: pressing a key takes it off the hover and it keeps flying along its heading, left and right turn it, up or a held space hurries it and down slows it, at the speed it used to fly by the keys. A tap on a seed or a held finger takes over and the firefly flies there on its own. The comma and full stop ring from the morning is gone, since it was a new scheme, and the bar is back to Turn left, Turn right and Faster.
+- Shunting yard. Up and down set the points, left and right set the push, space pushes at once and Backspace sends a wagon back, as before. The morning's wind-up on a held space is gone. The buttons for these are back under the yard, and a gauge over the front wagon shows the push the keys have set whenever a push is ready.
+- The number machine. The roll the old keys set is gone with the track, so its keys could not come back as they were; the new keys keep their shape, left and right to choose and space to act, and the buttons Ball before, Ball after and Drop are back under the machine so a switch can play.
+
 ## Firefly trail, the bead string rebuilt (26 September 2026)
 
 The bead string (`school/games/snake.ts`, still `?g=snake`) was a snake on squared paper that stepped
@@ -450,6 +458,14 @@ nettles, webs and frogs and picks fallen beads up first), check that a seed join
 a nettle's beads are picked up again, that random flying for a minute finishes nothing, that a replay
 is the same flight and that a reduced-motion press is its own steps. `tools/e2e/firefly-trail.e2e.ts`
 plays the first level in the app.
+
+## Firefly trail: tap to fly (30 September 2026)
+
+The owner loved the idea and the look and found the flying clunky: the firefly never stopped, a held finger turned it no faster than a firefly can, and the arrows turned it while a big button sped it up, so a child fought the steering instead of choosing the next number. The number is the whole question, so choosing it is now the whole input. A tap on a seed sends the firefly to it on a curve, and its way goes round the hedges, the nettle beds and the webs by itself; a finger held on the field is followed closely and straight, for a child who wants to fly it. Left alone, the firefly hovers where it is and bobs. A tap on a seed that is not next flies there and the seed shies away with "not yet", once, and it costs nothing. Fallen beads are fetched by the firefly on its own once it has hovered a moment, so a knock costs a little flying and nothing else, as before.
+
+What still asks for care is timing and order rather than steering: the frogs snap at a trail that passes low near them, so a tap is better made once a frog has hopped away; the wind still drifts the firefly on its way; and on the last level a way that doubles back through the trail still tangles it. With the keys, left and right move a ring from seed to seed in the order they stand, from left to right and round from the end, and space or the Fly button flies to the ringed seed; after a catch the ring moves to the seed that stood after it, so the keys carry on from where the count is. Those three are the only controls, kept for keyboards and switches; a finger needs none of them. Under reduced motion one press is a whole flight, drawn where it ends.
+
+A random tapper is held by the taps a child who knows the count needs: tapping seeds at random, with as many taps as the level has seeds and two more, finishes at most one level in five. Every level and stored layout is still played to the end, by taps and by the keys, in node. The rules version is `-firefly-2`.
 
 ## Gone fishing, rebuilt (26 September 2026)
 
@@ -483,6 +499,22 @@ every level by the keys, and check one fish at a time at the bait, the strike, t
 throwing back, random hands (at most one win in five), the same hands giving the same catch and
 reduced motion; `tools/e2e/gone-fishing.e2e.ts` casts, waits for the bite and strikes in the app.
 
+
+## Gone fishing: easier on the glass (30 September 2026)
+
+The owner could not work out how to bring a caught fish in, and the keys were fine, so the keys and the
+big button play as they did and only the glass changes. A tap on a fish casts to it: the float drops a
+little ahead of it with the hook at its depth, that fish alone comes to the bait, and it is ringed until
+it bites. A fish tapped to that is startled comes back once it settles, and one whose bite is missed
+nibbles again, twice, before it swims off. The bite is plain: the float goes under and a large "!"
+stands over it, and a press anywhere on the glass hooks the fish, so the hook no longer needs a tap on
+the float. A finger held down then reels gently and stops by itself while the fish runs, so a line
+reeled by a finger never snaps; the keys still reel hard and ease with down, as before. The float is
+still pulled back to cast anywhere, for a child who wants to aim. The big button's word follows what a
+press does (Cast, Wait, Hook!, Reel), and the ease button is the word Ease off where it was a drawing
+that read as pause. A strike before the bite now costs nothing but a sentence, since the button reads
+Wait until then, and the bite waits 1.2 seconds rather than 0.75. The first level, and every level
+until a fish is caught, says what to do next by the float. The rules version is `-fishing-3`.
 ## Marble workshop, rebuilt as a marble run (26 September 2026)
 
 The marble workshop (`school/games/marble.ts`, `?g=marble-workshop`) is no longer three ramps nudged
@@ -514,6 +546,22 @@ water out as drops that run down the ramps like marbles, keep running, and pool 
 litres. The child builds the run so all the water arrives, and the cup wants 8. A cup counts as full
 within half a litre, since a drop or two of a good run splashes wide however the run is built; the
 reading still says what landed. The rules version for the workshop is now `-marble-run-3`.
+
+## Down the river: steering with a finger (30 September 2026)
+
+The owner found the canoe too hard to move by clicking or touching the field, while the arrow keys
+felt good. The keys, the Paddle and Back water buttons and the stroke physics are unchanged. The old
+touch gesture, a drag drawn back beside the canoe for a stroke on that side and a finger held still to
+back water, asked a child to think like a paddler, and most spun the canoe. It is replaced by a helm:
+a finger or the mouse held on the water is where the canoe goes. The canoe turns its bow towards the
+finger no faster than 1.6 radians a second, paddles only while it faces roughly that way, eases up as
+the bow comes within about a canoe's length and comes to rest there, and the paddle goes in on
+alternate sides at the paddling beat with its splash and ring. Lifting the finger stops the paddling
+and the canoe glides on the current. A faint line from the bow to a ring under the finger shows where
+it is headed. At the pool the bow counts as well as the middle for being beside the bank, so a canoe
+brought in bow first to the number rests there. The helm is `steer` in `engine/motion/canoe.ts`. The
+drift-with-the-current idea from the brief was not needed for touch and would have changed the keys,
+so it was left out. The rules version is `-river-3`.
 
 ## Down the river, Row to the jetty rebuilt (26 September 2026)
 
@@ -552,6 +600,18 @@ winning none of sixty runs; `tools/e2e/down-the-river.e2e.ts` paddles in the app
 ## The road: how a stop ends (27 September 2026)
 
 The owner found the finish did not feel good: the brake took speed off at one rate right down to nothing, so the car snapped to rest, a cruising car set off again as soon as the brake was let go, and a car nobody stopped ran into the end of the road and halted dead. Three changes answer it. The brake eases at low speed, taking off a third of its full rate at a standstill, so the car rolls onto its mark, and the ring that shows where a full brake would stop it is worked out with the same braking. A car braked to rest is parked: the cruise waits for go, so a stop stays where the child made it, and a stop in the wrong place is corrected by driving on or holding the brake to reverse. Past the end of the line the cruise lets go, and the car coasts to rest in the run-out instead of meeting the end of the road; it reaches the end only if go is held all the way there. The rules version is `-road-2`.
+
+## The road, rebuilt as a delivery round (30 September 2026)
+
+The owner found the finish off: the round was won by one perfect stop, and a car that missed ran on to the end of the road and was told to go back, which read as a rule about the end of the road rather than about the number. The control bar also read up, down, go and down again, since the brake carried the down arrow. The road is now the Delivery round brief below, kept in the road's own art: the same road from above, lanes, kerb number line, firs, houses, flowers and car.
+
+A list pinned to the dashboard names the stops, as numbers or in words ("5 more than 10", "halfway to 70", "a quarter"), and a stop is delivered by bringing the car to rest with its nose in that number's bay: a parcel hops off the roof rack to the doorstep, the bay lights, the list ticks and the delivery is a checkpoint. A rest anywhere else leaves a chalk mark with the number the car stopped on and says how far the stop is, and on a list a rest in a later stop's bay says which comes first. The stops come in orders the road does not meet them in, so some are behind the car and reversing is part of the round, and two levels take the stops in any order, which makes the order a plan. The round ends by driving through a chequered finish line in the run-out past the end of the numbers, and the finish waits for the list, so there is no stop against the end of the road and no single stop that wins.
+
+The car is held to drive, and lifting the hand brakes it over a distance that grows with its speed, at six tenths of the full brake, so when to lift is the question the line asks. The Brake button stops harder and, held at rest, reverses. On the levels with a rack, a hard stop above nine squares a second slides the front parcel off, past where the car comes to rest, and a stop at the next bay without a parcel says to go back for it; driving slowly over it puts it back. The eased brake and the coast into the run-out from "The road: how a stop ends" stay; the cruise and the parked car it described are gone, since lifting the hand now always brakes. The bar reads up and down for lanes, Go and Brake. Under reduced motion a press drives for half a second and the car then rolls to rest and its stop is read, so each press is a turn.
+
+The bays are drawn on the levels whose kerb writes every tick, and on the levels with only the ends written a bay is drawn only once it is delivered, since a bay drawn in advance would answer the question. A ring shows where a lifted hand would stop the car on the first four levels. Levels: two doors, 4 then 8 on 0 to 10; three doors, 6, 13 and 18 on 0 to 20; back again, 5 more than 10, then 7, then 2 more than 10; in twos, 12, 28 and 20 on 0 to 40; in fives, 15, halfway to 70 and 25 on 0 to 50; in tens, 70, 30 and 50 in any order on 0 to 100; only the ends, 35, 80 and 15 in any order; quarters of the lane, a quarter, three quarters and a half on a lane from 0 to 1. Each level has three rounds among the challenges: numbers move along the line by a tick, and stops written in words come in another order.
+
+New drawings: `parcel`, `finishline` and `deliverylist`. Sounds: a thump for a parcel on a doorstep, a squeal of brakes, a lift for a parcel picked up, a horn at the finish, and the engine as a hum that rises with speed. Held by (`school/games/__tests__/road.test.ts`, with a driver in `road-driver.ts` that uses only the Pad): every round of every level is delivered and its pads replay to the same road, a wrong stop leaves a chalk mark and says how far, a later stop on a list says which comes first, the finish waits for the list, a hard stop slides a parcel off and it can be picked up, a box slows the car and costs nothing else, random driving finishes a round at most four times in twenty, and the harder levels draw a bay only once it is delivered. `tools/e2e/the-road.e2e.ts` delivers the first stop by keys. The rules version is `-road-3`.
 
 ## Clear round, rebuilt as a show jumping round (27 September 2026)
 
@@ -596,6 +656,48 @@ stop, a hoof in the water, the stride keys, the gather and reduced motion, where
 stride. `tools/e2e/clear-round.e2e.ts` leaps the pony with the keys and with a held pointer, and
 changes the stride.
 
+
+## Clear round: easy on the screen, the keys as before (30 September 2026)
+
+Children liked the show ground and the pony and found the jumping hard: on the screen a clean leap
+needed three things at once, a stride chosen with the arrows, a gather held for the right time and a
+let-go on exactly the right print. The owner asked for the keyboard to stay exactly as it was, since
+the keys were good, and for the screen to become easy.
+
+With the keys nothing changes: left and right choose the stride, holding space gathers the pony by
+degrees, and letting go leaps it from its next hoof print with that gather, a tap of space being a
+small hop. The game tells the keyboard's space bar from the Jump button on the screen by a new
+optional `keys` flag on the Pad, which `engine/ui/game-play.ts` sets while space is held.
+
+On the screen the pony rides itself. The first tap on the field, or on Jump, lets it see its own
+stride into each fence from then on, the way a rider sees a stride: from each landing it chooses the
+stride nearest its own, and a first stride a little shorter or longer where it must, so that a print
+two to four ahead lands well inside the take-off band, and that print is ringed. A tap asks for the
+leap, and the pony leaps from a print where some gather carries the fence, choosing the least that
+does, so the height of the jump is never the child's to judge on the screen. A tap one print early
+waits for the ringed print. The arrows on the screen still choose a stride for the fence at hand, and
+the pony then keeps it. The timing is the whole skill on the screen, and the counting stays in the
+course: the prints are numbered on the first two levels, and the note says "Tap now." through the
+stride before the ringed print. The page begins a round on its first input, so a tap on the screen in
+the round's first tenth of a second only starts the pony; the keys start it as they always did.
+
+Two eases help both ways of playing, and are kept gentle. A knocked pole or a hoof in the water no
+longer ends a clear round: the poles go back in their cups and the pony goes round to jump that fence
+again, and the scoreboard counts the knocks on the way. A tap well early, or past the band, still
+leaps, so a mistimed tap is seen and costs only the time to go round. The camera leads a little
+further ahead, so the fence is in sight a few strides before the band.
+
+We did not make the screen's jump automatic, which would leave nothing to do, and we did not keep the
+screen's held gather, which asked a young child to judge a length of time and a place at once.
+`clear-challenges.ts` now ships a course only when both a steady tapper on the screen and the keys to
+a planned ride carry it clean through the game itself; every layout of every level passes both. The
+tests in `school/games/__tests__/clear.test.ts` ride every layout both ways, replay a keys round from
+its tape, and check that random tapping (with random holds of either kind) jumps a whole round within a
+quarter more time than a steady rider in at most four tries of twenty. `tools/e2e/clear-round.e2e.ts`
+leaps the pony with space held, rides the first course clean with one tap on the field a fence (a
+mouse on the desk, a touch on the phone), and checks the stride keys. The rules version for `clear` is
+now `show-jumping-3`, and `moveTo` in `engine/motion/bodies.ts` takes an angle, so a knocked pole can be
+set square in its cups again.
 ## Shared sizing (24 September 2026)
 
 The tabletop stage uses the full available row; it no longer has a 1,100px desktop cap.
@@ -668,22 +770,22 @@ This section lists what is built, and it is kept up to date; the rest of the doc
 | Game (`?g=`) | Group | Mechanic | Levels, with their grades, positions and shortest win |
 |---|---|---|---|
 | Spell the picture (`spell`) | puzzle | `spell` | 1 three sounds, grades 1 to 2, 259 positions, 3 moves; 2 three sounds, four letters, 1 to 2, 259, 3; 3 four sounds, 1 to 2, 1555, 4; 4 four sounds, and a choice, 1 to 2, 1555, 4 |
-| The number machine (`rule`) | action | none | 1 the adding machine, grade 3; 2 the doubling machine, 3; 3 over the hump, 3 to 4; 4 a stone on the 1, 4; 5 two machines, 4; 6 the long track, 4 (see "The number machine, Find the rule rebuilt (26 September 2026)") |
+| The number machine (`rule`) | action | none | 1 the adding machine, grade 3; 2 the doubling machine, 3; 3 a mixed-up tray, 3 to 4; 4 no 1 ball, 4; 5 two machines, 4; 6 mixed up, and no 3, 4 (see "The number machine: a tap, not a roll (30 September 2026)") |
 | See-saw (`weigh`) | action, off the list | none | 1 seven kilograms, grade 1; 2 ten, in two bags, 1 to 2; 3 both sides, 2; 4 further out, 3; 5 two to balance, 3 to 4; 6 either side, any step, 4 (see "Built since: one direction for every game") |
 | Rabbit crossing (`jump`) | action | `jump` | 1 0 to 20, land on 13, grades 1 to 2; 2 -10 to 10, land on -4, 3 to 4; 3 stones that sink, 2 to 3; 4 only some numbers written, 3 to 4; 5 back past nought, grade 4; 6 tens to a hundred, 3 to 4 (see "Land on the number, rebuilt as Rabbit crossing") |
 | Penny shove (`pay`) | action | none | 1 ten cents, grade 1; 2 twenty-five cents in three coins, 1 to 2; 3 65 cents in four coins, 1 to 2; 4 change from a dollar, 2 to 3; 5 99 cents, 2 to 3; 6 $1.87 in seven pieces, 3 to 4 |
 | Down the river (`straight`) | action | `race` | 1 count to five, grade 1; 2 count in twos, 1 to 2; 3 count in fives, 2; 4 tens, and only the ends written, 2 to 3; 5 count in threes, 3; 6 counting in tenths, 4 (see "Down the river, Row to the jetty rebuilt (26 September 2026)") |
-| Shunting yard (`shunt`) | action | `shunt` | 1 two sidings, adding to 5 and 4, grades 1 to 2; 2 make ten, 1 to 2; 3 one carriage out of place, 1 to 3; 4 standing backwards, 1 to 3; 5 four jumbled, 2 to 3; 6 three sidings, one uphill, 2 to 4 (see "Shunting yard, rebuilt as a hump yard") |
+| Shunting yard (`shunt`) | action | `shunt` | 1 two sidings, adding to 5 and 4, grades 1 to 2; 2 make ten, 1 to 2; 3 one carriage out of place, 1 to 3; 4 standing backwards, 1 to 3; 5 four jumbled, 2 to 3; 6 three sidings, one uphill, 2 to 4 (see "Shunting yard, rebuilt as a hump yard" and "Shunting yard: the yard worked by hand") |
 | Cut the cake (`share`) | action, off the list | none | 1 two, grades 1 to 2; 2 three, 2; 3 four, 2 to 3; 4 a quarter has gone, 3; 5 six, 3 to 4; 6 the same as Ann's, 4 |
 | Measure it out (`pour`) | action, tipped by hand (see "Measure it out, poured by hand") | `pour` | 1 500 and 300, measure 200, grades 2 to 3, 14 positions, 2 moves; 2 500 and 300, measure 100, 2 to 4, 14, 4; 3 5 and 3, measure 4, 3 to 4, 16, 6; 4 7 and 3, measure 5, 3 to 4, 20, 8; 5 900 and 400, measure 600, 3 to 4, 26, 8; 6 1 litre and 300, measure 100, grade 4, 24, 6 |
-| Firefly trail (`snake`) | action | none | 1 count in twos, grade 1; 2 fives by the nettles, 1 to 2; 3 tens over the pond, 2; 4 threes in the hedge maze, 2 to 3; 5 back in fours on the windy hill, 3; 6 sixes at midnight, 4 (see "Firefly trail, the bead string rebuilt") |
-| The road (`road`) | action | none | 1 stop on 20, grades 1 to 2; 2 stop on 70, grades 2 to 4 (see "The road: how a stop ends") |
+| Firefly trail (`snake`) | action | none | 1 count in twos, grade 1; 2 fives by the nettles, 1 to 2; 3 tens over the pond, 2; 4 threes in the hedge maze, 2 to 3; 5 back in fours on the windy hill, 3; 6 sixes at midnight, 4 (see "Firefly trail, the bead string rebuilt" and "Firefly trail: tap to fly") |
+| The road (`road`) | action | none | 1 two doors, grade 1; 2 three doors, 1 to 2; 3 back again, 1 to 2; 4 in twos, 2; 5 in fives, 2 to 3; 6 in tens, any order, 2 to 3; 7 only the ends, 3 to 4; 8 quarters of the lane, 3 to 4 (see "The road, rebuilt as a delivery round") |
 | Slingshot (`sling`) | action | none | 1 three stars, grades 1 to 2; 2 over the wall, grades 3 to 4 |
 | Shut the box (`shut`) | hands on, a drag | `shut` | two dice: 1 up to 6, grade 1; 2 up to 8, 1 to 2; 3 up to 9, add or times, 2 to 3; 4 up to 9, three ways, 3 to 4; 5 up to 10, three ways, grade 4 (see "Built since: shut the box") |
 | Rafts (`herd`) | action | none | 1 five on the raft, grade 1; 2 seven and three, 1 to 2; 3 the same on each, 2 to 3; 4 four to a raft, 3 to 4; 5 five, three and two, 1 to 2; 6 sixes from twenty, 3 to 4 (see "Sheepdog, rebuilt as Rafts") |
 | Gone fishing (`fish`) | action | none | 1 two that make ten, grade 1; 2 three that make twenty, 1 to 2; 3 one kilogram, 2 to 3; 4 two and a half kilograms, 3 to 4; 5 three that make fifty, 2 to 3; 6 a kilogram and a half, 3 to 4 (see "Gone fishing, rebuilt (26 September 2026)") |
 | Paper plane (`plane`) | action | none | 1 up to ten, grade 1; 2 tens to a hundred, grade 2; 3 halves, quarters and eighths, grade 3; 4 tenths, grade 4 |
-| Charlie's rope swings (`bridge`) | action | none | 1 over the stream, grade 1; 2 land on 4, 1; 3 stones in twos, 1 to 2; 4 rope to rope, 2; 5 the ravine, in metres, 2 to 3; 6 up to the tree house, 2 to 3; 7 a windy day, 2 to 4; 8 three jumps to 12, 3 to 4 (see "Charlie's rope swings (27 September 2026)") |
+| Charlie's rope swings (`bridge`) | action | none | 1 over the stream, grade 1; 2 land on 4, 1; 3 stones in twos, 1 to 2; 4 rope to rope, 2; 5 the ravine, in metres, 2 to 3; 6 up to the tree house, 2 to 3; 7 a windy day, 2 to 4; 8 three jumps to 12, 3 to 4 (see "Charlie's rope swings (27 September 2026)" and its controls, rebuilt) |
 | Fetch with the pups (`blocks`) | action | each level's numbers moved along the path | 1 the open meadow, grades 1 to 2; 2 across the pond, 1 to 2; 3 up the hill, 2 to 3; 4 the playground, 2 to 3; 5 a windy day, 3 to 4; 6 the snowy park, 3 to 4 (see "Fetch with the pups") |
 | Charlie's lemonade stand (`wardrobe`) | action | none | 1 a sunny park, halves, grade 1; 2 quarters of a cup, 1 to 2; 3 change, please, 2; 4 a windy day, 2 to 3; 5 the long counter, 3; 6 the busy fair, 3 to 4 (see "Charlie's lemonade stand (27 September 2026)") |
 | Pocket pool (`pool`) | action | none | 1 pot ten, grades 1 to 3; 2 ten in two shots, 1 to 3; 3 round the corner, 2 to 4; 4 the bumpers, 2 to 4; 5 evens only, 2 to 4; 6 soft cloth and a slope, 3 to 4; 7 the spinner, 3 to 4; 8 the kitchen table, 3 to 4 (see "Pocket pool (27 September 2026)") |
@@ -2026,6 +2128,8 @@ A river in side view between two meadows, with the flock waiting on the near ban
 
 ## The road (`road`): Delivery round
 
+Built on 30 September 2026 in the road's own art, from above with the car rather than a van in side view; see "The road, rebuilt as a delivery round".
+
 "Drive the van along the street and stop at each door on your list, without losing the parcels."
 
 The child holds anywhere to drive and lifts to brake, and the van brakes over a distance that grows with its speed. Parcels ride loose on the van's roof rack as bodies in planck, so a hard stop slides them forward and can drop one into the road, where it waits for the van to come back and pick it up. The street is a number line along the kerb, with numbers on the doors, and the list of deliveries is pinned to the dashboard. A stop within reach of a door on the list delivers that door's parcel; a stop elsewhere leaves a chalk mark with the number it stopped on. The list has several doors in one drive, some behind the van once it has passed them, so the order and how much speed to carry are choices, and a stop that was too hard costs a trip back for the parcel. From the fourth level only some door numbers are written. The scene is a street in side view with `houses`, `lamppost` and `firs`, with the kerb as a new `kerbline` drawing and the van as a new `van`. Levels: doors 3, 7 and 9 of 10; 12, 5 and 18 of 20 in fives; 30, 70 and 50 of 100 in tens; 35, 80 and 15 with only the ends written; 450 and 820 of 1000; a quarter, three quarters and a half along a lane from 0 to 1. The finish is the last parcel handed over and the van's horn. Held by: every list can be delivered, a stop delivers only within reach of a door on the list, a parcel in the road can always be picked up again, driving and braking at random delivers the whole list at most one time in five, and the same holds give the same round. Size: large.
@@ -2064,6 +2168,8 @@ Held by: every word of every level is accepted by the `spell` mechanic, so the s
 
 ## The number machine, Find the rule rebuilt (26 September 2026)
 
+Superseded: the roll is replaced by a tap; see "The number machine: a tap, not a roll (30 September 2026)". The roll is described as it was built.
+
 "Roll a ball into a numbered pocket, and fill the orders with what the machine makes of it."
 
 Find the rule was a quiz with a machine drawn round it: feed a number from a tray, read what came out, and name the rule from a row of cards. The number machine keeps the rule and moves the mathematics into the targets. A ball waits at the left end of a track with numbered pockets along it. The child pulls it back and lets go, or sets how hard with the left and right arrows and presses space, and it rolls: friction slows it, and it drops into the first pocket it is slow enough to fall into. That number goes up the pipe into the machine, and a ball with the answer rolls out towards the order at the front of the line. If it is the number the order asks for, it drops into the order's cup; if not, it bounces back, and the pair is written in the in and out table all the same. Three orders fill a level. To make 11 with a machine that adds 6, the child has to work out what the machine does and then what goes in to make 11, which is the inverse the old activity only asked for in words.
@@ -2073,6 +2179,16 @@ A wrong ball costs a roll and nothing else, and the table is the record of what 
 Levels are places. The first two have a dotted path that shows where the ball will stop while it is pulled back. The third has a hump after the 4: a slow ball rolls back off it, and the pockets past it need a harder roll. The fourth has a stone over the 1, so the one number that gives a rule away at once cannot be fed. The fifth has two machines one after the other, the second showing that it takes 2 away, so the child works out the first from the whole. The sixth has a long track with a hump and a stone and no dotted path.
 
 The track is a model of its own in `school/games/rule.ts`: a ball on a line, slowed by friction, pushed back or on by a hump's slope, and caught by a pocket when it is slower than a set speed over it. `predict` runs the same steps from a pull, so the dotted path is exactly where the ball goes. Each level has three or four layouts with a different rule of the same kind (`rule-challenges.ts`), and a layout is kept only when every order is made by exactly one open pocket and some pull drops a ball into it. The tests fill every level and layout by pulling and by the keys, check the dotted path against the roll for pulls across the whole range, and keep a recorded set of pulls as the replay witness.
+
+## The number machine: a tap, not a roll (30 September 2026)
+
+The owner found the rolled number machine slower and heavier than the game needed. Feeding a number meant judging how hard to roll a ball so it dropped into the right pocket, which is a skill of the hand that has nothing to do with the mathematics, took eight to ten seconds a turn, and could turn a right idea into a wrong pocket. The roll, the track, the plunger and the Roll button are gone. The pockets are now a tray of numbered balls: a tap on a ball, or a drag, and it hops in an arc into the funnel. With the keys, left and right move a ring along the tray and space drops the ringed ball. The bar has no buttons.
+
+The machine keeps its character and loses its waiting. It chugs and turns its cogs for half a second, the answer pops out of the chute with a bounce that dies away, and a matching ball drops into its order's cup with a splash of colour; the filled cup jumps and the next one wiggles to say it is at the front. A wrong ball bounces off the cup, goes into the in and out table, and the next ball can be dropped as it lands. A turn now takes about two seconds, so trying an idea is quick and the table fills with evidence rather than with rolls.
+
+The levels that were about rolling are now about the numbers. The third has a mixed-up tray, so each number has to be read before it is dropped. The fourth has lost its 1 ball, the one number that gives most rules away at once. The sixth mixes the tray and loses the 3. The dotted path is gone with the roll, since there is nothing to aim. An optional card to name the rule was considered and left out, because a choice of cards brings back the quiz the game replaced; the rule still shows on the panel, and the machine lights up, once every order is filled.
+
+A layout is kept only when every order is made by exactly one ball in the tray (`machineSolve` in `rule-challenges.ts`). The tests fill every level and layout by tapping and by the keys, time a turn at under three seconds, follow a dragged ball, check that tapping at random fills a level in six drops at most one time in five, and keep a recorded set of taps as the replay witness. The rules version is `-machine-2`.
 
 ## Pocket rally: slow for the bends (26 September 2026)
 
@@ -2097,6 +2213,24 @@ The maths is in the boards. The first two levels and the last ask for wagons add
 The world is wider and taller than the framed yard, with the meadow under the sidings down to its foot, the yard's rail out to its right edge, faint hills on the horizon and clouds through the sky, so a wide or tall room never shows the world's edge; the view is sixty squares across, so a phone at six pixels a square holds it without scrolling.
 
 Held by `school/games/__tests__/yard.test.ts`: a gentle push couples, a hard one knocks and a soft one stops short; the points hold while a wagon rolls; a siding fills from its buffer stop, refuses when full, and sends its last wagon back to the end of the line; the solver in `school/games/yard-challenges.ts` plans the moves on the sidings as a puzzle and then plays every push through the real yard, and wins every variation of every level by the keys and by a finger; its recorded pads replay through the tape to the same yard, with a checkpoint for each board met; pressing at random rarely makes up an order level; every drawing is on the shelf and the ground reaches every edge of the world. `tools/e2e/shunting-yard.e2e.ts` makes up a level by the keys and sets the points and pushes by a finger. Drawings: `sidingboard`, new; `carriage`, `loco`, `coupling`, `bufferstop`, `railway`, `railbank`, `meadow`, `peaks`, `firs` and `cloud` from the shelf. The `liftpit`, `yardlever` and `orderboard` drawings went with the old yard. The rules version is `yard-2`.
+
+## Shunting yard: the yard worked by hand (30 September 2026)
+
+The owner liked how the hump yard looks and found it clunky to play. Under the field there were six buttons for one idea: arrows to set the points and the push, Push to confirm, Send back and Undo, so the hand never touched a wagon, and the lead to the second siding ran up the picture as a long straight diagonal. The yard is now worked in the yard. A points lever stands on the grass in front of the points with the letter of its siding over it, and a tap on it throws the points to the next siding with a click, the route it sets drawn whole and the others faint; up and down still move it from the keys. The front wagon is pulled back and let go, as in Slingshot and Pocket pool, and the wagon and the line behind it ease up the hump as it is pulled, so the pull is felt as well as seen. A wagon in a siding goes back to the end of the line when it is tapped or dragged towards the hump. The bar under the field keeps only Push and Undo: a tap of Push pushes with the push the keys have set (left and right, with no buttons of their own), and held it winds the push up until it is let go, which is how a switch user makes a hard push. A held push keeps the yard stepping, so it winds under reduced motion too.
+
+Each siding now leaves the lead in an S, drawn by a new `railcurve` drawing whose bend is the rail module's ramp shape, so a wagon rolls along the curve the drawing shows; a wagon on a steep lead leans no further than about a quarter of a right angle. The ring round the wagon, the arrow along the route and the dots of a push are gone. While a push is aimed, by a pull, a held Push or the keys, a faint wagon stands where it will stop, fainter on the later levels and gone on the last, as the dots were. A coupling wagon bounces and a knocked one wobbles. The `yardlever` drawing, dropped with the lift-and-pit yard, is back on the shelf. The rules version is `-yard-3`.
+
+## Harbour cargo: a crate dragged and let go (30 September 2026)
+
+The owner asked for Harbour cargo to be as simple to play as the games reworked around it. Under the field there were seven buttons: four arrows to drive the hook, a hook button to pick up and let go, Ring the bell to send the boat off, and Undo. Loading one crate took the trolley over it, the hook down, a press, the hook up, the trolley over the boat, a wait for the swing to die, the hook down and another press. The crane was a bare line and the barge a plain trapezium, and the Games page cover was a thin crop of a crane's jib that said nothing about cargo.
+
+A crate is now dragged. A finger or the mouse pressed on a crate brings the crane over it to take it, the crate follows the hand on its rope and swings as it travels, and letting go hands it to the crane, which carries it on to that place, lowers it straight down and lets go once it rests just above what is below: the deck, another crate, the dock or the sea. While it is lowered the crane eases the crate under the trolley, a spring with just enough damping to settle in about a second, so a set-down takes about two seconds and the child never waits for a swing to die. We kept the rope and the swing, since they are what the crane feels like, and took the waiting out of the hand. A barge loaded and balanced sails by itself with its horn, so there is no bell to ring.
+
+A first version took the crane's own controls away altogether, leaving one big button and Undo, and the owner found it too primitive. So there are two ways to load the boat, and they are meant to be different. The drag is the easy way. Driving the crane is the skilful one, kept for the keys and the buttons: the arrows run the trolley along the jib and wind the hook up and down, a crate taken on the hook swings as the trolley starts and stops, and the big button, Pick up / let go, takes the crate within reach of the hook or lets the held one go exactly where it hangs. A driver who lets go high, or while the crate still swings, drops it off its place, so a good delivery is lowered close to the deck and steadied first. The keys work exactly as they did before this change, including the brake key sending a balanced boat off; only the touch and on-screen side changed. The bar has the four arrows, Pick up / let go and Undo, and the Ring the bell button is gone, since a balanced boat sails by itself.
+
+While a crate is carried, a dashed line runs down from it to where it will land with the crate's outline there, and a faint mast shows which way the barge would list with it aboard. Both show on the first two levels, the line alone on the third, and neither on the last. The goals along the foot of the field are tick circles filled as each is met. The crane is now the shelf's `crane` drawing standing on the quay, its jib reaching out over the harbour, and the barge is a new `barge` drawing: a blue hull with a white stripe, portholes, a planked deck and a rail post at each end. With crates on its deck and a hook lowering another, the same drawing is the game's cover and the icon beside its note.
+
+The mathematics is unchanged: the load is balanced when the weights times their distances from the mast cancel, within 2.5 weight-squares. `cargoPlan` in `workshop-challenges.ts` stands the heaviest crates nearest the mast and slides the whole row along until the moments cancel, and the tests use the same plan for both ways. The tests drag every crate of every level and every generated layout to its plan and let go, win every level by driving the crane from the keys alone, replay the recorded pads to the same landing places, check that a crate let go of on the move is set down where it was let go, and that crates dropped at random places deliver at most two times in ten. The rules version is `-cargo-5`.
 
 ## Charlie's rope swings (27 September 2026)
 
@@ -2141,14 +2275,50 @@ drawings stay on the shelf. The rope creaks at each end of a big swing, she whoo
 a catch knocks, a splash splashes, and the water and the wind hum under it.
 
 `swings-challenges.ts` lays each level out three ways and ships a layout only when `crossing` has
-found a way over it by stepping copies of the game with holds a hand could make: from standing each
-length of hold in turn, and in the air a press as she nears a rope the level wants, then each length
-of pump. Held by `school/games/__tests__/swings.test.ts`: every level and layout is crossed by the
-holds found for it; a crossing replays from its tape to the same state, with a checkpoint at each
-steady stone; holding longer swings higher and a tap does not let go; a stone the level does not ask
-for tips her in and she is back where she last stood; a rope is caught only by a hand held out for it
-and a loose one slips; jumps add up and the wrong number of them starts again; every stone she can
+found a way over it by stepping copies of the game with key presses a hand could make: from standing
+each pull in turn and each moment of the swing to let go at, and in the air each moment to reach for
+a rope the level wants. Held by `school/games/__tests__/swings.test.ts`: every level and layout is
+crossed by the moves found for it; a crossing replays from its tape to the same state, with a
+checkpoint at each steady stone; the pull sets how high she swings, the swing keeps going and one tap
+lets her go; the button's word follows what a press will do; a stone the level does not ask for tips
+her in and she is back where she last stood; a landing past a stone's edge steps back to its middle;
+a rope is caught only by a tap in the air, the nearest in reach, and a loose one slips; jumps add up and the wrong number of them starts again; every stone she can
 stand on has a rope she can reach; random presses and let-goes win at most one try in five on any
 level that asks for something; and the frame draws only the shelf's drawings, with banks and water to
 every edge. `tools/e2e/charlie-swings.e2e.ts` swings her across in the app.
+
+### The controls, rebuilt (30 September 2026)
+
+The owner found the swings hard to play. One held input did two jobs: holding pumped the swing and
+letting go threw her off, so a child who stopped pumping to wait for a good moment let her go at
+whatever point of the swing she was in, and most tries ended in the water. Catching a rope needed a
+second hold, timed in the air. The look, the levels and their mathematics stay; the hand's part is
+now three separate actions.
+
+- Pull to start. The child takes Charlie by the hand and pulls her back up the rope's arc, as in
+  Slingshot and Pocket pool, and a faint arc shows how high she will swing on the other side. Lifting
+  the finger starts the swing from rest. From the keys, the left arrow pulls her back a tenth of a
+  radian at a time and the right arrow lets her forward, and Pull starts the swing; holding Pull at
+  the bank winds the pull further, for a player with one switch.
+- The swing keeps going. It loses almost nothing each swing, so the child can watch a few and pick
+  the moment, and it lingers slightly at each end, where the moment to let go is. On a rope caught in
+  the air a gentle pump tops the swing up to a good height, which is what the tree house needs.
+- Let go is one tap. A tap anywhere on the field, Let go, or space while she swings lets her go from
+  where she is. The dotted flight she would take moves with the swing, and on the first three levels
+  a ring shows where she would come down, filled in when that place counts, so the child learns the
+  timing by watching the ring slide across the stones. The middle levels show the dots faintly and the
+  last shows nothing.
+- Catching is a tap in the air. The brief suggested catching any rope her hands pass, but the rope
+  levels ask the child to fly past the loosely tied ropes to the one the level wants, so a rope taken
+  without asking would undo the mathematics. Instead a tap in the air holds her hands out for about
+  half a second, which makes an early tap still catch, and the reach is a square and a half. When two
+  ropes are in reach she takes the nearer one.
+- Landings forgive. A landing up to a third of a square past a stone's edge counts, and she steps to
+  its middle. A splash is quicker than before, so a try again is at once.
+
+The big button says what a press will do now: Pull, Let go, Catch, or Reach at a swaying rope. Held
+still, a press at the bank winds the pull, and the swing then runs on to halfway up its forward swing
+and waits there for a tap, where a let go flies forward and up; in the air it waits where the rope the
+level wants next is in reach. The crossings the challenges ship are now found as key presses: pulls,
+then Pull, a wait, Let go, and in the air a wait and Catch.
 

@@ -13,6 +13,7 @@ import {
     CREST,
     ORIGIN,
     POINTS,
+    leverAt,
     YARD_LEVELS,
     YARD_WORLD,
     looseOf,
@@ -25,6 +26,7 @@ import {
     yardFrame,
     yardGame,
     type YardState,
+    STEP,
 } from "../yard";
 import {
     isYardConfiguration,
@@ -250,4 +252,86 @@ test("the yard has its own sounds and a rumble while a wagon rolls", () => {
     for (let i = 0; i < 60; i++) stepYard(s, emptyPad());
     assert.ok((yardGame.hum?.(s) ?? []).length >= 2);
     for (const L of YARD_LEVELS) assert.ok(!/[—!]/.test(`${L.goal} ${yardGame.hint}`), L.title);
+});
+
+const world = (p: { x: number; y: number }) => ({ x: p.x + ORIGIN.x, y: p.y + ORIGIN.y });
+
+test("a tap on the lever throws the points round the sidings, and the route it sets is drawn whole", () => {
+    const s = startYard(5);
+    for (const want of [1, 2, 0]) {
+        const at = world(leverAt(s));
+        stepYard(s, { ...emptyPad(), touch: at });
+        stepYard(s, { ...emptyPad(), lifted: at });
+        assert.equal(s.points, want);
+    }
+    const f = yardFrame(s);
+    assert.ok(f.sprites.some((p) => p.art === "yardlever"));
+    const fans = f.sprites.filter((p) => p.art === "railcurve");
+    assert.equal(fans.length, 2);
+    assert.ok(
+        fans.every((p) => p.faint),
+        "with the points at A, both leads to the sidings behind are faint",
+    );
+});
+
+test("the keys work as they always have: left and right set the push on the gauge, up and down the points, space pushes", () => {
+    const s = startYard(0);
+    const power = s.power;
+    stepYard(s, { ...emptyPad(), pressed: ["right", "right"] });
+    assert.equal(s.power, power + 2 * STEP);
+    const gauge = yardFrame(s).marks.filter((m) => m.kind === "line" && m.style === "rod");
+    assert.equal(gauge.length, 1, "the gauge shows the push the keys set");
+    const points = s.points;
+    stepYard(s, { ...emptyPad(), pressed: ["up"] });
+    assert.notEqual(s.points, points);
+    stepYard(s, { ...emptyPad(), go: true, tapped: true });
+    assert.equal(s.pushes, 1, "a press of space pushes at once");
+    assert.ok(moving(s));
+});
+
+test("a wagon in a siding goes back to the line when it is tapped or dragged towards the hump", () => {
+    const s = startYard(0);
+    couple(s, 0);
+    const w = yardFrame(s).sprites.find((p) => p.key === "w0:2");
+    assert.ok(w);
+    stepYard(s, { ...emptyPad(), touch: { x: w.x, y: w.y } });
+    stepYard(s, { ...emptyPad(), touch: { x: w.x + 4, y: w.y } });
+    stepYard(s, { ...emptyPad(), lifted: { x: w.x + 6, y: w.y } });
+    assert.deepEqual(made(s, 0), []);
+    assert.equal(s.queue.at(-1)?.label, "2");
+});
+
+test("while a push is aimed a faint wagon shows where it will stop, and nothing rings the wagon", () => {
+    const s = startYard(0);
+    assert.ok(!yardFrame(s).sprites.some((p) => p.key === "ghost"));
+    const w = yardFrame(s).sprites.find((p) => p.key === s.queue[0]?.id);
+    assert.ok(w);
+    stepYard(s, { ...emptyPad(), touch: { x: w.x, y: w.y } });
+    stepYard(s, { ...emptyPad(), touch: { x: w.x + 1.5, y: w.y } });
+    const f = yardFrame(s);
+    const ghost = f.sprites.find((p) => p.key === "ghost");
+    assert.ok(ghost && (ghost.alpha ?? 1) < 1);
+    const pulled = f.sprites.find((p) => p.key === s.queue[0]?.id);
+    assert.ok(pulled && pulled.x > w.x, "the pulled wagon eases back up the hump");
+    assert.ok(!f.marks.some((m) => m.kind === "ring" || m.kind === "dots"));
+    const late = startYard(5);
+    stepYard(late, { ...emptyPad(), pressed: ["right"] });
+    assert.ok(!yardFrame(late).sprites.some((p) => p.key === "ghost"), "the last level shows none");
+});
+
+test("a coupling wagon bounces and a knocked one wobbles, and a rest frame draws neither", () => {
+    const s = startYard(0);
+    s.points = 0;
+    push(s, 3.8);
+    let at = -1;
+    for (let i = 0; i < 60 * 10 && at < 0; i++)
+        if (stepYard(s, emptyPad()).some((h) => "cue" in h && h.cue === "place")) at = i;
+    assert.ok(at >= 0);
+    stepYard(s, emptyPad());
+    stepYard(s, emptyPad());
+    const w = yardFrame(s).sprites.find((p) => p.key === "w0:2");
+    assert.ok(w && Math.abs(w.squash ?? 0) > 0.01);
+    assert.equal(yardFrame(s, true).sprites.find((p) => p.key === "w0:2")?.squash ?? 0, 0);
+    const hard = pushed(7);
+    assert.ok(hard.s.jolts.some((j) => j.hard));
 });

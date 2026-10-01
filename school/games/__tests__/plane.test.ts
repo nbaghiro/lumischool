@@ -118,3 +118,22 @@ test("the same presses fly the same path, and under reduced motion a press is ha
     }
     assert.ok(s.plane.y < y - 1, "it climbed");
 });
+
+test("a plane through the edge of the right ring counts, and between two hoops one mark apart the nearer one is judged", () => {
+    const edge = startPlane(0),
+        L = PLANE_LEVELS[0],
+        gate = L.gates[0];
+    if (!gate) throw new Error("A level without gates");
+    flyThrough(edge, 0, heightOf(L, gate.target) - 1.2);
+    assert.ok(edge.done[0], "a pass through the upper rim counts");
+    const close = PLANE_LEVELS.flatMap((level, i) =>
+        level.gates.flatMap((g, k) => (g.hoops.includes(g.target - 1) ? [{ i, k, level, g }] : [])),
+    )[0];
+    if (!close) throw new Error("No gate with a hoop one mark below its target");
+    const s = startPlane(close.i),
+        below = heightOf(close.level, close.g.target - 1),
+        target = heightOf(close.level, close.g.target);
+    // a fifth of the way to the hoop below: inside both hoops' reach, and the glide sinks it a little further
+    flyThrough(s, close.k, target + (below - target) * 0.2);
+    assert.ok(s.done[close.k], "nearer the target than the hoop below, the target counts");
+});

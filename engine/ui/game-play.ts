@@ -229,6 +229,8 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
         }
     }
 
+    /** The big go button, whose word a game may change as it goes on. */
+    let goButton: HTMLButtonElement | null = null;
     let lastHud = 0,
         lastSaid = "",
         lastRead = 0;
@@ -257,6 +259,12 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
             shell.guide(won ? "cheer" : "idle");
         }
         $("another").hidden = !won;
+        const label = game.goLabel?.(s);
+        if (label && goButton && goButton.title !== label) {
+            goButton.textContent = label;
+            goButton.setAttribute("aria-label", label);
+            goButton.title = label;
+        }
         $("watch").hidden = !won || shell.still() || watching !== null || tape.steps === 0;
         $("checkpoint").hidden = mark === 0 || won || watching !== null;
         panels();
@@ -353,7 +361,10 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
         const d = keyDir(e.key);
         if (e.type === "keyup") {
             if (d) lift(d);
-            if (e.key === " ") pad.go = false;
+            if (e.key === " ") {
+                pad.go = false;
+                pad.keys = false;
+            }
             return;
         }
         if (d && e.key.startsWith("Arrow")) {
@@ -367,7 +378,10 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
         if (e.key === " " || e.key === "Enter") {
             if (document.activeElement instanceof HTMLButtonElement) return;
             e.preventDefault();
-            if (e.key === " ") pad.go = true;
+            if (e.key === " ") {
+                pad.go = true;
+                pad.keys = true;
+            }
             if (!e.repeat) {
                 input("keyboard");
                 pad.tapped = true;
@@ -431,7 +445,7 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
             }
             host.appendChild(cross);
         }
-        const big = (text: string, on: () => void, off: () => void) => {
+        const big = (text: string, on: () => void, off: () => void, drawn?: IconName) => {
             const b = document.createElement("button");
             b.type = "button";
             b.className = "key big";
@@ -450,7 +464,7 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
                 "Test / build": "play",
                 "Pick up / release": "grab",
             };
-            const name = icons[text];
+            const name = drawn ?? icons[text];
             if (name) b.appendChild(iconElement(name));
             else b.textContent = text;
             b.setAttribute("aria-label", text);
@@ -477,9 +491,10 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
                 }
             });
             host.appendChild(b);
+            return b;
         };
         if (c.go)
-            big(
+            goButton = big(
                 c.go,
                 () => {
                     pad.go = true;
@@ -489,6 +504,7 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
                 () => {
                     pad.go = false;
                 },
+                c.icons?.go,
             );
         if (c.brake)
             big(
@@ -500,6 +516,7 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
                 () => {
                     pad.brake = false;
                 },
+                c.icons?.brake,
             );
         for (const command of game.commands ?? []) {
             if (command.label === c.go || command.label === c.brake) continue;
@@ -516,7 +533,7 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
                 "Undo delivery": "undo",
                 Redo: "undo",
             };
-            const name = icons[command.label];
+            const name = command.icon ?? icons[command.label];
             if (name) {
                 const drawing = iconElement(name);
                 if (command.label === "Turn right" || command.label === "Redo")

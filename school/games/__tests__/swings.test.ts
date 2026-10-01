@@ -21,11 +21,12 @@ import {
 import {
     crossing,
     isSwingsConfiguration,
+    padsOf,
     play,
     swingsChallenge,
     swingsLayouts,
     swingsLevel,
-    type Hold,
+    type Move,
 } from "../swings-challenges";
 import { SHELF_IDS } from "./shelf";
 
@@ -43,13 +44,15 @@ function level(phase: number): SwingsLevel {
     return L;
 }
 
-function planFor(L: SwingsLevel): Hold[] {
+function planFor(L: SwingsLevel): Move[] {
     const plan = crossing(L);
     assert.ok(plan, `${L.title} has a crossing`);
     return plan;
 }
 
 const held = (): Pad => ({ ...emptyPad(), go: true });
+const tap = (): Pad => ({ ...emptyPad(), go: true, tapped: true });
+const left = (): Pad => ({ ...emptyPad(), pressed: ["left"] });
 
 function steps(s: SwingsState, n: number, pad: () => Pad = emptyPad): string[] {
     const seen: string[] = [];
@@ -58,16 +61,20 @@ function steps(s: SwingsState, n: number, pad: () => Pad = emptyPad): string[] {
     return seen;
 }
 
-/** The pads a crossing's holds are, one a step, as a hand gives them. */
-function* padsOf(holds: readonly Hold[]): Generator<Pad> {
-    for (const h of holds) {
-        for (let i = 0; i < h.idle; i++) yield emptyPad();
-        for (let i = 0; i < h.hold; i++) yield held();
-        yield emptyPad();
-    }
+/** Pulled back `k` presses of the left arrow, and Go pressed and let up to start the swing. */
+function pullAndSwing(s: SwingsState, k: number): void {
+    for (let i = 0; i < k; i++) steps(s, 1, left);
+    steps(s, 1, tap);
+    steps(s, 1);
 }
 
-test("every level's goal says what it asks for, and every layout is crossed by the holds found for it", () => {
+const reachOf = (s: SwingsState): number => {
+    const r = s.ropes[s.held];
+    assert.ok(r);
+    return amplitudeOf(r, SWINGS.gravity.value);
+};
+
+test("every level's goal says what it asks for, and every layout is crossed by the moves found for it", () => {
     for (const L of SWINGS_LEVELS) assert.equal(L.goal, goalText(L));
     for (const { phase, L } of LAYOUTS) {
         assert.equal(L.goal, goalText(L));
@@ -103,60 +110,110 @@ test("a crossing replays from its tape, with a checkpoint for each steady stone"
     assert.equal(seen.filter((e) => e === "checkpoint").length, 4);
 });
 
-test("holding pumps the swing higher by degrees, and a quick tap starts it without letting go", () => {
-    const reach = (n: number) => {
+test("the pull sets how high she swings, the swing keeps going, and one tap lets her go", () => {
+    const pulled = (k: number) => {
         const s = startSwings(level(0), 0);
-        steps(s, n, held);
-        const r = s.ropes[s.held];
-        assert.ok(r && s.mode === "swing");
-        return amplitudeOf(r, SWINGS.gravity.value);
+        pullAndSwing(s, k);
+        assert.equal(s.mode, "swing");
+        return reachOf(s);
     };
-    assert.ok(reach(60) > reach(20));
-    assert.ok(reach(120) > reach(60));
-    const s = startSwings(level(0), 0);
-    steps(s, 5, held);
-    steps(s, 30);
-    assert.equal(s.mode, "swing", "a tap swings her off and she keeps hold");
-    steps(s, 20, held);
+    assert.ok(pulled(6) > pulled(2) + 0.2);
+    assert.ok(pulled(2) > pulled(0));
+    // a finger pulls her to where it is held, round the rope's branch, no higher than the highest swing
+    const s = startSwings(level(0), 0),
+        r = s.ropes[s.held];
+    assert.ok(r);
+    const at = (angle: number) => ({
+        x: r.ax - 5 * Math.sin(angle),
+        y: r.ay + 5 * Math.cos(angle),
+    });
+    steps(s, 1, () => ({ ...emptyPad(), touch: at(0.9) }));
+    assert.equal(s.mode, "pull");
+    assert.ok(Math.abs(s.pulled - 0.9) < 1e-9);
+    steps(s, 1, () => ({ ...emptyPad(), touch: at(2) }));
+    assert.equal(s.pulled, SWINGS.most.value);
     steps(s, 1);
-    assert.equal(s.mode, "fly", "letting go after a hold lets go");
+    assert.equal(s.mode, "swing", "lifting the finger starts the swing");
+    const start = reachOf(s);
+    steps(s, RATE * 6);
+    assert.equal(s.mode, "swing", "left alone she swings on");
+    assert.ok(reachOf(s) > start * 0.9, "and hardly loses height");
+    steps(s, 1, tap);
+    assert.equal(s.mode, "fly", "a tap lets her go");
+    // holding Go at the bank winds the pull further the longer it is held
+    const wound = (n: number) => {
+        const w = startSwings(level(0), 0);
+        steps(w, n, held);
+        assert.equal(w.mode, "pull");
+        return w.pulled;
+    };
+    assert.ok(wound(40) > wound(10));
+});
+
+test("the button's word follows what a press will do", () => {
+    const s = startSwings(level(0), 0),
+        word = () => swingsGame.goLabel?.(s);
+    assert.equal(word(), "Pull");
+    pullAndSwing(s, 3);
+    assert.equal(word(), "Let go");
+    steps(s, 30);
+    steps(s, 1, tap);
+    assert.equal(word(), "Catch");
+    const sway = startSwings(level(7), 7);
+    assert.equal(swingsGame.goLabel?.(sway), "Reach");
 });
 
 test("a stone the level does not ask for wobbles and tips her in, and she is back where she last stood", () => {
     const L = level(1);
-    // the first hold that comes down on the stone at 2 rather than 4
-    for (let hold = 22; hold < 320; hold += 5) {
-        const s = startSwings(L, 1);
-        steps(s, hold, held);
-        steps(s, 1);
-        const seen = steps(s, RATE * 2);
-        if (!s.said.startsWith("That stone is 2")) continue;
-        assert.deepEqual(seen, []);
-        steps(s, RATE * 2);
-        assert.equal(s.mode, "ready");
-        assert.equal(s.on, 0, "back on the near bank");
-        assert.equal(progress(s.goal).completed, 0);
-        return;
-    }
-    assert.fail("no hold lands on the stone at 2");
+    for (let k = 0; k <= 10; k++)
+        for (let wait = 0; wait < 200; wait += 3) {
+            const s = startSwings(L, 1);
+            pullAndSwing(s, k);
+            steps(s, wait);
+            if ((s.ropes[s.held]?.omega ?? 0) <= 0) continue;
+            steps(s, 1, tap);
+            const seen = steps(s, RATE);
+            if (!s.said.startsWith("That stone is 2")) continue;
+            assert.deepEqual(seen, []);
+            steps(s, RATE * 2);
+            assert.equal(s.mode, "ready");
+            assert.equal(s.on, 0, "back on the near bank");
+            assert.equal(progress(s.goal).completed, 0);
+            return;
+        }
+    assert.fail("no let go lands on the stone at 2");
 });
 
-test("a rope is caught only by a hand held out for it, and a rope the level does not ask for slips", () => {
+test("a landing past a stone's edge still counts, and she steps back to its middle", () => {
+    const L = level(1),
+        s = startSwings(L, 1);
+    const stone = s.footings.find((f) => f.kind === "stone" && f.n === 4);
+    assert.ok(stone);
+    s.mode = "fly";
+    s.held = -1;
+    s.lean = 0;
+    s.flight = { x: stone.x1 + 0.25, y: stone.top - 2.38 - 0.05, vx: 0, vy: 4 };
+    steps(s, 3);
+    assert.equal(s.mode, "land");
+    steps(s, Math.round(RATE * 0.3));
+    assert.ok(Math.abs(s.x - (stone.x0 + stone.x1) / 2) < 0.1, `she stands at ${s.x}`);
+});
+
+test("a rope is caught only by a tap in the air, the nearest in reach, and a rope the level does not ask for slips", () => {
     const L = level(3);
     const plan = planFor(L);
-    const first = plan[0];
-    assert.ok(first);
-    // let go as the crossing does, but keep the hand off: she flies past the rope and falls in
-    const s = startSwings(L, 3);
-    steps(s, first.hold, held);
-    steps(s, RATE * 2);
+    // the moves up to and including the let go, and the reach that follows it
+    const letGo = plan.findIndex((m, i) => m.key === "go" && i > 0 && plan[i - 1]?.key === "go");
+    const upTo = plan.slice(0, letGo + 1),
+        reach = plan[letGo + 1];
+    assert.ok(reach && reach.key === "go");
+    // let go as the crossing does, but never tap in the air: she flies on and falls in
+    const s = play(startSwings(L, 3), upTo);
     assert.equal(progress(s.goal).completed, 0);
-    // a rope at 7, loosely tied, slips out of her hands
-    const loose = startSwings({ ...L, wants: [{ rope: 10 }] }, 3);
-    steps(loose, first.hold, held);
-    steps(loose, 1);
-    for (let i = 0; i < 90 && loose.mode === "fly"; i++) steps(loose, 1, held);
-    assert.equal(loose.mode, "wobble");
+    assert.notEqual(s.mode, "swing");
+    // with the level asking for the rope at 10, the rope at 5 is loosely tied and slips out of her hands
+    const loose = play(startSwings({ ...L, wants: [{ rope: 10 }] }, 3), [...upTo, reach]);
+    assert.ok(loose.mode === "wobble" || loose.mode === "splash" || loose.mode === "ready");
     assert.match(loose.said, /That rope hangs at 5/);
 });
 
@@ -251,11 +308,37 @@ test("a stored layout opens as it was made, and an edited one does not", () => {
     assert.throws(() => swingsChallenge(0, 99));
 });
 
-test("under reduced motion a press is worth a swing, and a flight settles before it is drawn", () => {
+test("pulled back she shows how high she will swing, and swinging she shows where she would land", () => {
+    const s = startSwings(level(1), 1);
+    steps(s, 1, left);
+    steps(s, 1, left);
+    const pulled = swingsFrame(s);
+    assert.ok(pulled.marks.some((m) => m.kind === "dots" && m.faint));
+    steps(s, 1, tap);
+    steps(s, 20);
+    const swinging = swingsFrame(s);
+    assert.ok(swinging.marks.some((m) => m.kind === "dots" && !m.faint));
+    assert.ok(swinging.marks.some((m) => m.kind === "ring" && m.r === 0.6));
+    const late = startSwings(level(7), 7);
+    assert.ok(!swingsFrame(late).marks.some((m) => m.kind === "dots"));
+});
+
+test("under reduced motion a press winds the pull at the bank, and the swing waits halfway up going forward for a tap", () => {
     const s = startSwings(level(0), 0);
     assert.ok(swingsGame.still.press(s) >= RATE / 2);
-    steps(s, 60, held);
+    steps(s, 30, held);
     steps(s, 1);
+    assert.equal(s.mode, "swing");
+    assert.equal(swingsGame.still.press(s), 1);
+    let n = 0;
+    while (swingsGame.still.settling?.(s) && n < RATE * 10) {
+        steps(s, 1);
+        n++;
+    }
+    assert.equal(s.mode, "swing");
+    assert.ok(s.rising, "it waits halfway up the swing going forward");
+    steps(s, 1, tap);
+    assert.equal(s.mode, "fly");
     assert.equal(swingsGame.still.settling?.(s), true);
     assert.equal(swingsGame.id, "bridge");
 });

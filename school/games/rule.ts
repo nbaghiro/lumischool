@@ -1,15 +1,13 @@
-// The number machine: roll a ball into a numbered pocket, and the machine turns its number into
-// another by a rule nobody has told you.
+// The number machine: drop a numbered ball into the machine, and it turns the number into another by a
+// rule nobody has told you.
 //
-// A ball waits at the end of a track with numbered pockets along it. The child pulls it back and
-// lets go, and it rolls: friction slows it, a hump sends a slow ball back, a stone covers a pocket,
-// and it drops into the first pocket it is slow enough to fall into. That number goes up the pipe and
-// into the machine, and a ball with the answer rolls out towards the order at the front of the line.
-// If it is the number the order asks for, it drops in; if not, it bounces back, and what it showed is
-// written in the table all the same. The mathematics is in the orders: to make 11 with a machine you
-// have to work out what it does, and then what goes in to make 11. A wrong ball costs nothing but the
-// roll. See .docs/games.md.
-import { aimAt, stepAim, type Aim, type AimSpec } from "../../engine/motion/aim";
+// Numbered balls wait in a tray. The child taps one, or drags it, and it hops into the machine's
+// funnel; the machine chugs, and a ball with the answer pops out of the chute and rolls to the order at
+// the front of the line. If it is the number the order asks for, it drops in; if not, it bounces off,
+// and what it showed is written in the table all the same. The mathematics is in the orders: to make
+// 11 with a machine you have to work out what it does, and then what goes in to make 11. Nothing is in
+// the hand but the choice of ball, so a wrong ball is always a wrong idea and costs nothing. See
+// .docs/games.md.
 import type { Pt } from "../../engine/motion/geometry";
 import type { Pad } from "../../engine/motion/pad";
 import type { Frame, Happening, Mark, Sprite } from "../../engine/motion/scene";
@@ -35,27 +33,22 @@ export const run = (r: Rule, n: number): number =>
 export interface MachineLevel extends ActionLevel {
     /** The machines in the order a ball goes through them, and whether each one's rule is shown. */
     machines: { rule: Rule; shown?: boolean }[];
-    /** The numbers on the pockets, left to right. */
+    /** The numbers on the balls in the tray, left to right. */
     numbers: number[];
     /** What the orders ask for, front of the line first. */
     orders: number[];
-    /** Pockets a stone lies over, by number, so no ball falls into them. */
-    stones?: number[];
-    /** A hump in the track after each of these pockets, by number. */
-    humps?: number[];
-    /** How much of the ball's path is dotted in while it is pulled back. */
-    preview: "full" | "short" | "none";
+    /** Balls that are lost from the tray, by number, so the easy guess is not there to try. */
+    missing?: number[];
 }
 
 export const MACHINE_LEVELS: Levels<MachineLevel> = [
     {
         title: "The adding machine",
         grades: [3, 3],
-        goal: "Roll balls into the machine and fill every order.",
+        goal: "Drop balls into the machine and fill every order.",
         machines: [{ rule: { op: "add", a: 3 } }],
         numbers: [1, 2, 3, 4, 5, 6, 7, 8],
         orders: [7, 5, 10],
-        preview: "full",
     },
     {
         title: "The doubling machine",
@@ -64,27 +57,23 @@ export const MACHINE_LEVELS: Levels<MachineLevel> = [
         machines: [{ rule: { op: "mul", a: 2 } }],
         numbers: [1, 2, 3, 4, 5, 6, 7, 8],
         orders: [8, 14, 6],
-        preview: "full",
     },
     {
-        title: "Over the hump",
+        title: "A mixed-up tray",
         grades: [3, 4],
-        goal: "Roll hard enough to get over the hump when you need a bigger number.",
+        goal: "The balls are mixed up. Read each number before you drop it in.",
         machines: [{ rule: { op: "add", a: 6 } }],
-        numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        numbers: [6, 2, 9, 4, 1, 7, 3, 8, 5],
         orders: [11, 8, 15],
-        humps: [4],
-        preview: "short",
     },
     {
-        title: "A stone on the 1",
+        title: "No 1 ball",
         grades: [4, 4],
-        goal: "A stone covers the 1. Find the rule from the other numbers.",
+        goal: "The 1 ball is lost. Find the rule from the other numbers.",
         machines: [{ rule: { op: "muladd", a: 2, b: 1 } }],
         numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9],
         orders: [7, 15, 11],
-        stones: [1],
-        preview: "short",
+        missing: [1],
     },
     {
         title: "Two machines",
@@ -93,18 +82,15 @@ export const MACHINE_LEVELS: Levels<MachineLevel> = [
         machines: [{ rule: { op: "mul", a: 3 } }, { rule: { op: "add", a: -2 }, shown: true }],
         numbers: [1, 2, 3, 4, 5, 6, 7, 8],
         orders: [10, 19, 4],
-        preview: "short",
     },
     {
-        title: "The long track",
+        title: "Mixed up, and no 3",
         grades: [4, 4],
-        goal: "No dotted path this time. Find the rule and fill every order.",
+        goal: "The balls are mixed up and the 3 is lost. Find the rule and fill every order.",
         machines: [{ rule: { op: "muladd", a: 3, b: -1 } }],
-        numbers: [2, 3, 4, 5, 6, 7, 8, 9, 10],
+        numbers: [9, 4, 7, 2, 10, 6, 3, 8, 5],
         orders: [14, 26, 20],
-        stones: [3],
-        humps: [5],
-        preview: "none",
+        missing: [3],
     },
 ];
 
@@ -112,17 +98,13 @@ const RATE = 60,
     DT = 1 / RATE;
 const H = 28,
     FLOOR = 26;
-/** The top of the track the ball rolls along, and the ball's radius, in squares. */
-const TRACK = 9,
-    R = 0.65;
-/** Where the ball waits to be pulled, the first pocket, and the squares from one pocket to the next. */
-const START = 4.4,
-    FIRST = 6.6,
-    GAP = 1.8,
-    /** A pocket catches a ball within this of its middle. */
-    CATCH_WIDTH = 0.85,
-    /** Squares a hump takes up, how high it rises, and the flat after it where a ball off it slows. */
-    HUMP = { w: 2.6, h: 0.55, runout: 3 };
+/** The top of the tray the balls sit on, a ball's radius, and how big a ball in the tray is drawn, in squares. */
+const TRAY = 9,
+    R = 0.65,
+    BALL = 2;
+/** Where the first ball sits in the tray, and the squares from one ball to the next. */
+const FIRST = 2.4,
+    GAP = 2.3;
 /** The machine drawing's own size, how big it is drawn here, and its anchors in its own squares. */
 const MACHINE = {
     w: 17,
@@ -133,35 +115,22 @@ const MACHINE = {
     foot: 14.6,
 };
 const K = MACHINE.drawn / MACHINE.w;
-/** How far apart the machines and the order cups stand, and how long the machine works. */
+/** How far apart the machines and the order cups stand. */
 const MACHINE_STEP = 14,
-    CUP_STEP = 4.6,
-    WORK = 1.2;
+    CUP_STEP = 4.6;
 
+/**
+ * The pace of a turn, in seconds, and the speed a ball rolls out at, in squares a second: a ball
+ * dropped, worked and judged takes about two seconds, so trying an idea is quick.
+ */
 export const MACHINE_TUNING = {
-    /** Squares a second, each second, that the track's friction takes off a rolling ball. */
-    friction: 2.6,
-    /** A ball slower than this, in squares a second, drops into a pocket it is over. */
-    catch: 1.1,
-    /** Squares a second, each second, that a hump's slope gives or takes. */
-    slope: 16,
-    /** Squares a second the ball travels along the pipes and the rail. */
-    carry: 12,
+    hop: 0.55,
+    work: 0.5,
+    carry: 20,
+    judge: 0.3,
 };
 
-export const FEED: AimSpec = {
-    min: 2,
-    max: 11,
-    per: 2.6,
-    dead: 0.35,
-    lo: 0,
-    hi: 0,
-    turn: 0,
-    ramp: 3.5,
-    turns: "up",
-};
-
-type Phase = "aim" | "roll" | "lift" | "work" | "out" | "judge" | "won";
+type Phase = "pick" | "hop" | "work" | "out" | "judge" | "won";
 
 export interface MachineState {
     level: number;
@@ -169,45 +138,40 @@ export interface MachineState {
     phase: Phase;
     /** Seconds in this phase. */
     t: number;
-    aim: Aim;
-    /** The ball on the track while it rolls, or null. */
-    ball: { x: number; v: number } | null;
-    /** The pocket the last ball fell into, by number. */
+    /** The ball the keys have chosen, by its place in the tray. */
+    pick: number;
+    /** Whether the keys have been used, so the choice is ringed. */
+    keyed: boolean;
+    /** A ball held by a finger, by its place in the tray, and where the finger is. */
+    grab: { slot: number; at: Pt } | null;
+    /** Where the ball in play left from, on its hop to the funnel. */
+    from: Pt;
+    /** The number dropped in last. */
     fed: number | null;
     /** The machine working on the ball now, and the number the ball carries. */
     stage: number;
     value: number;
-    /** Every number fed and what came out of the last machine. */
+    /** Every number dropped in and what came out of the last machine. */
     seen: [number, number][];
     done: number;
+    /** The step the last order was filled on, for its cup's little jump. */
+    filledAt: number;
     /** Whether the last ball out was what its order wanted. */
     hit: boolean;
     rejects: number;
-    rolls: number;
+    drops: number;
     said: string;
     touched: boolean;
     steps: number;
 }
 
-/** Where each pocket is along the track, in squares, and where each hump starts. */
-export function trackOf(L: MachineLevel): { pockets: number[]; humps: number[]; wall: number } {
-    const pockets: number[] = [],
-        humps: number[] = [];
-    let x = FIRST;
-    for (const n of L.numbers) {
-        pockets.push(x);
-        x += GAP;
-        if (L.humps?.includes(n)) {
-            humps.push(x - GAP / 2 + 0.1);
-            x += HUMP.w + HUMP.runout;
-        }
-    }
-    return { pockets, humps, wall: x - GAP + 1.4 };
-}
+/** Where ball `j` sits in the tray, and where the tray ends. */
+export const slotAt = (j: number): Pt => ({ x: FIRST + j * GAP, y: TRAY - BALL / 2 });
+const trayEnd = (L: MachineLevel) => FIRST + (L.numbers.length - 1) * GAP + 1.4;
 
-/** Machine `i`'s top left: past the end of the track, then one after another. */
+/** Machine `i`'s top left: past the end of the tray, then one after another. */
 const machineAt = (L: MachineLevel, i: number): Pt => ({
-    x: Math.max(22, Math.ceil(trackOf(L).wall + 4)) + i * MACHINE_STEP,
+    x: Math.max(22, Math.ceil(trayEnd(L) + 4)) + i * MACHINE_STEP,
     y: FLOOR - MACHINE.foot * K,
 });
 const on = (m: Pt, p: Pt): Pt => ({ x: m.x + p.x * K, y: m.y + p.y * K });
@@ -225,100 +189,36 @@ const cupAt = (L: MachineLevel, k: number): Pt => ({
 export const through = (L: MachineLevel, n: number): number =>
     L.machines.reduce((v, m) => run(m.rule, v), n);
 
-/** The slope under the ball at `x`, as the push it gives: back towards the start going up a hump, and on going down. */
-function slopeAt(humps: number[], x: number): number {
-    for (const a of humps) {
-        if (x < a || x > a + HUMP.w) continue;
-        const up = x < a + HUMP.w / 2;
-        return (up ? -1 : 1) * MACHINE_TUNING.slope * ((2 * HUMP.h) / HUMP.w);
-    }
-    return 0;
-}
-
-/** How high the track is at `x`: level, or up over a hump. */
-function heightAt(humps: number[], x: number): number {
-    for (const a of humps) {
-        if (x < a || x > a + HUMP.w) continue;
-        return HUMP.h * Math.sin(((x - a) / HUMP.w) * Math.PI);
-    }
-    return 0;
-}
-
-type Rolled = "rolling" | "bump" | "stopped" | "home" | { pocket: number };
-
-/** One step of a ball on the track. */
-export function rollStep(
-    L: MachineLevel,
-    track: ReturnType<typeof trackOf>,
-    b: { x: number; v: number },
-): Rolled {
-    const f = MACHINE_TUNING.friction * DT;
-    b.v = Math.abs(b.v) <= f ? 0 : b.v - Math.sign(b.v) * f;
-    b.v += slopeAt(track.humps, b.x) * DT;
-    b.x += b.v * DT;
-    if (b.x > track.wall - R) {
-        b.x = track.wall - R;
-        b.v = -0.45 * Math.abs(b.v);
-        return "bump";
-    }
-    if (Math.abs(b.v) <= MACHINE_TUNING.catch && slopeAt(track.humps, b.x) === 0) {
-        const j = track.pockets.findIndex((p) => Math.abs(b.x - p) <= CATCH_WIDTH);
-        const n = L.numbers[j];
-        if (n !== undefined && !L.stones?.includes(n)) return { pocket: n };
-        if (b.v === 0) return "stopped";
-    }
-    if (b.x < START - 0.8 && b.v < 0) return "home";
-    return "rolling";
-}
-
-/** Where a ball let go at `power` ends up, and the dots of its way there, as the preview draws them. */
-export function predict(L: MachineLevel, power: number): { pocket: number | null; dots: Pt[] } {
-    const track = trackOf(L),
-        b = { x: START, v: power },
-        dots: Pt[] = [];
-    for (let i = 0; i < RATE * 20; i++) {
-        const r = rollStep(L, track, b);
-        if (i % 6 === 0) dots.push({ x: b.x, y: TRACK - R - heightAt(track.humps, b.x) });
-        if (typeof r === "object") return { pocket: r.pocket, dots };
-        if (r === "stopped" || r === "home") return { pocket: null, dots };
-    }
-    return { pocket: null, dots };
-}
+/** Whether ball `j` is in the tray: there is a ball at that place and it is not lost. */
+export const inTray = (L: MachineLevel, j: number): boolean => {
+    const n = L.numbers[j];
+    return n !== undefined && !L.missing?.includes(n);
+};
 
 export function startMachine(L: MachineLevel, level: number): MachineState {
+    const first = L.numbers.findIndex((_, j) => inTray(L, j));
     return {
         level,
         L,
-        phase: "aim",
+        phase: "pick",
         t: 0,
-        aim: aimAt(0, 4),
-        ball: null,
+        pick: Math.max(0, first),
+        keyed: false,
+        grab: null,
+        from: slotAt(0),
         fed: null,
         stage: 0,
         value: 0,
         seen: [],
         done: 0,
+        filledAt: -1000,
         hit: false,
         rejects: 0,
-        rolls: 0,
-        said: "Pull the ball back and let go. It drops into the first pocket it is slow enough for.",
+        drops: 0,
+        said: "Tap a ball to drop it into the machine, and watch what comes out.",
         touched: false,
         steps: 0,
     };
-}
-
-/** The way a ball travels from the pocket it fell into up to the first machine's hopper. */
-function liftPath(s: MachineState): Pt[] {
-    const track = trackOf(s.L),
-        j = s.L.numbers.indexOf(s.fed ?? -1),
-        x = track.pockets[j] ?? FIRST,
-        hop = on(machineAt(s.L, 0), MACHINE.hopper);
-    return [
-        { x, y: TRACK + 0.2 },
-        { x, y: 5 },
-        { x: hop.x, y: 5 },
-        { x: hop.x, y: hop.y + 0.4 },
-    ];
 }
 
 /** The way a ball travels out of machine `i`: into the next one's hopper, or down to the order at the front. */
@@ -378,6 +278,16 @@ function along(p: Pt[], d: number): Pt {
     return p[p.length - 1] ?? { x: 0, y: 0 };
 }
 
+/** Where a ball on its hop from `from` to the funnel is, `u` of the way there: an arc that clears the funnel's rim. */
+function hopAt(s: MachineState, u: number): Pt {
+    const to = on(machineAt(s.L, 0), MACHINE.hopper);
+    // a straight line between the ends, lifted by a parabola that is 3.5 squares high halfway
+    return {
+        x: s.from.x + (to.x - s.from.x) * u,
+        y: s.from.y + (to.y - s.from.y) * u - 14 * u * (1 - u),
+    };
+}
+
 function tell(s: MachineState, text: string): void {
     s.said = text;
 }
@@ -387,42 +297,70 @@ function enter(s: MachineState, phase: Phase): void {
     s.t = 0;
 }
 
-function stepAiming(s: MachineState, pad: Pad, out: Happening[]): void {
-    if (pad.pull || pad.pressed.length || pad.holding.length) s.touched = true;
-    const v = stepAim(s.aim, pad, FEED, DT);
-    if (!v) return;
-    s.touched = true;
-    s.ball = { x: START, v: v.x };
-    s.rolls++;
-    enter(s, "roll");
-    out.push({ cue: "lift" });
+const ready = (s: MachineState): boolean => s.phase === "pick" || s.phase === "judge";
+
+/** The next ball in the tray from `j` in direction `d`, skipping lost ones, or `j` when there is none. */
+function nextBall(L: MachineLevel, j: number, d: 1 | -1): number {
+    for (let k = j + d; k >= 0 && k < L.numbers.length; k += d) if (inTray(L, k)) return k;
+    return j;
 }
 
-function stepRolling(s: MachineState, out: Happening[]): void {
-    const b = s.ball;
-    if (!b) return enter(s, "aim");
-    const r = rollStep(s.L, trackOf(s.L), b);
-    if (r === "bump") out.push({ cue: "bump" });
-    if (r === "stopped" || r === "home") {
-        s.ball = null;
-        enter(s, "aim");
-        out.push({ cue: "back" });
-        tell(
-            s,
-            r === "home"
-                ? "The ball rolled back to you. Pull harder to get it over."
-                : "The ball stopped on the stone. Pull again.",
-        );
-        return;
+/** The tray place under `p`, within a ball and a half, or null. */
+function ballUnder(L: MachineLevel, p: Pt): number | null {
+    let best: number | null = null,
+        near = GAP / 2 + 0.2;
+    L.numbers.forEach((_, j) => {
+        if (!inTray(L, j)) return;
+        const at = slotAt(j),
+            d = Math.hypot(p.x - at.x, p.y - at.y);
+        if (d < near) {
+            near = d;
+            best = j;
+        }
+    });
+    return best;
+}
+
+/** Drops the ball at tray place `j` into the machine, from `from`. */
+function drop(s: MachineState, j: number, from: Pt, out: Happening[]): void {
+    const n = s.L.numbers[j];
+    if (n === undefined || !inTray(s.L, j) || !ready(s)) return;
+    s.touched = true;
+    s.fed = n;
+    s.value = n;
+    s.stage = 0;
+    s.from = from;
+    s.drops++;
+    s.pick = j;
+    enter(s, "hop");
+    out.push({ cue: "lift" });
+    tell(s, `In goes ${n}.`);
+}
+
+function hands(s: MachineState, pad: Pad, out: Happening[]): void {
+    for (const d of pad.pressed) {
+        if (d === "left" || d === "right") {
+            s.keyed = true;
+            s.touched = true;
+            s.pick = nextBall(s.L, s.pick, d === "left" ? -1 : 1);
+        }
     }
-    if (typeof r === "object") {
-        s.fed = r.pocket;
-        s.value = r.pocket;
-        s.stage = 0;
-        s.ball = null;
-        enter(s, "lift");
-        out.push({ cue: "place" });
-        tell(s, `In goes ${r.pocket}.`);
+    if (pad.tapped && ready(s)) {
+        s.keyed = true;
+        drop(s, s.pick, slotAt(s.pick), out);
+    }
+    if (pad.touch) {
+        if (!s.grab && ready(s)) {
+            const j = ballUnder(s.L, pad.touch);
+            if (j !== null) s.grab = { slot: j, at: { ...pad.touch } };
+        } else if (s.grab) s.grab.at = { ...pad.touch };
+    }
+    if (pad.lifted && s.grab) {
+        const g = s.grab;
+        s.grab = null;
+        // a tap drops from the tray; a drag drops from wherever the finger let go
+        const moved = Math.hypot(pad.lifted.x - slotAt(g.slot).x, pad.lifted.y - slotAt(g.slot).y);
+        drop(s, g.slot, moved > 1 ? { ...pad.lifted } : slotAt(g.slot), out);
     }
 }
 
@@ -430,30 +368,33 @@ function step(s: MachineState, pad: Pad): Happening[] {
     const out: Happening[] = [];
     s.steps++;
     s.t += DT;
-    const carry = MACHINE_TUNING.carry;
+    const T = MACHINE_TUNING;
+    hands(s, pad, out);
     switch (s.phase) {
-        case "aim":
-            stepAiming(s, pad, out);
+        case "pick":
             break;
-        case "roll":
-            stepRolling(s, out);
-            break;
-        case "lift":
-            if (s.t * carry >= lengthOfPath(liftPath(s))) {
-                enter(s, "work");
-                out.push({ cue: "ring" });
+        case "hop":
+            if (s.t < T.hop) break;
+            enter(s, "work");
+            {
+                const hop = on(machineAt(s.L, 0), MACHINE.hopper);
+                out.push({ cue: "ring" }, { puff: { x: hop.x, y: hop.y, n: 5 } });
             }
             break;
         case "work": {
-            if (s.t < WORK) break;
+            if (s.t < T.work) break;
             const m = s.L.machines[s.stage];
             if (m) s.value = run(m.rule, s.value);
             enter(s, "out");
-            out.push({ cue: "level" });
+            const spout = on(machineAt(s.L, s.stage), MACHINE.spout);
+            out.push(
+                { cue: "level" },
+                { burst: { kind: "sparkle", x: spout.x, y: spout.y, n: 6, dir: 0 } },
+            );
             break;
         }
         case "out":
-            if (s.t * carry < lengthOfPath(outPath(s, s.stage))) break;
+            if (s.t * T.carry < lengthOfPath(outPath(s, s.stage))) break;
             if (s.stage + 1 < s.L.machines.length) {
                 s.stage++;
                 enter(s, "work");
@@ -463,9 +404,9 @@ function step(s: MachineState, pad: Pad): Happening[] {
             judge(s, out);
             break;
         case "judge":
-            if (s.t < 0.5) break;
+            if (s.t < T.judge) break;
             if (s.done < s.L.orders.length) {
-                enter(s, "aim");
+                enter(s, "pick");
                 break;
             }
             enter(s, "won");
@@ -498,7 +439,12 @@ function judge(s: MachineState, out: Happening[]): void {
     if (s.hit) {
         const cup = cupAt(s.L, s.done);
         s.done++;
-        out.push({ cue: "place" }, { burst: { kind: "sparkle", x: cup.x, y: cup.y - 1, n: 8 } });
+        s.filledAt = s.steps;
+        out.push(
+            { cue: "place" },
+            { burst: { kind: "sparkle", x: cup.x, y: cup.y - 1, n: 12 } },
+            { burst: { kind: "splash", x: cup.x, y: cup.y - 1, n: 6 } },
+        );
         const next = s.L.orders[s.done];
         tell(
             s,
@@ -514,114 +460,89 @@ function judge(s: MachineState, out: Happening[]): void {
 }
 
 /** Whether a ball is on its way, so reduced motion keeps stepping until it has landed. */
-const moving = (s: MachineState): boolean => s.phase !== "aim" && s.phase !== "won";
+const moving = (s: MachineState): boolean => s.phase !== "pick" && s.phase !== "won";
 
-/** Where the ball in play is drawn, if one is. */
+/** Where the ball in play is drawn, if one is, and how far it has bounced up off the rail. */
 function ballAt(s: MachineState): Pt | null {
-    const carry = MACHINE_TUNING.carry;
-    const track = trackOf(s.L);
+    const T = MACHINE_TUNING;
     switch (s.phase) {
-        case "aim":
-            return { x: START, y: TRACK - R };
-        case "roll":
-            return s.ball ? { x: s.ball.x, y: TRACK - R - heightAt(track.humps, s.ball.x) } : null;
-        case "lift":
-            return along(liftPath(s), s.t * carry);
+        case "pick":
         case "work":
+        case "won":
             return null;
-        case "out":
-            return along(outPath(s, s.stage), s.t * carry);
+        case "hop":
+            return hopAt(s, Math.min(1, s.t / T.hop));
+        case "out": {
+            const p = along(outPath(s, s.stage), s.t * T.carry);
+            // it pops out of the chute with a little bounce that dies away
+            const last = s.stage === s.L.machines.length - 1;
+            const bounce = last ? Math.abs(Math.sin(s.t * 14)) * 0.7 * Math.exp(-s.t * 5) : 0;
+            return { x: p.x, y: p.y - bounce };
+        }
         case "judge": {
             const p = outPath(s, s.stage);
             return s.hit ? null : along(p, lengthOfPath(p));
         }
-        case "won":
-            return null;
     }
 }
 
-function frame(s: MachineState): Frame {
+function frame(s: MachineState, rest = false): Frame {
     const L = s.L,
         W = worldOf(L),
-        track = trackOf(L),
         sprites: Sprite[] = [],
         marks: Mark[] = [];
     sprites.push(...ground("floor", -BEYOND, W.w + BEYOND, FLOOR, 0, 3));
-    // the track: a board under the pockets, the humps drawn over it, and a stop at its end
+    // the tray: a board the balls sit on, with a lip at its end
+    const end = trayEnd(L);
     sprites.push({
         key: "track",
         art: "marblerun",
-        params: { part: "ramp", w: Math.round(track.wall - 1.6), h: 1, label: "", colour: "sky" },
-        size: track.wall - 1.6,
-        x: (track.wall + 1.6) / 2,
-        y: TRACK + 0.5,
+        params: { part: "ramp", w: Math.round(end - 1.6), h: 1, label: "", colour: "sky" },
+        size: end - 1.6,
+        x: (end + 1.6) / 2,
+        y: TRAY + 0.5,
         z: 1,
         still: true,
     });
-    sprites.push({
-        key: "stop",
-        art: "marblerun",
-        params: { part: "wall", w: 1, h: 2, label: "", colour: "sky" },
-        size: 0.8,
-        x: track.wall + 0.3,
-        y: TRACK - 0.6,
-        z: 2,
-        still: true,
-    });
-    for (const a of track.humps)
-        marks.push({
-            kind: "line",
-            a: { x: a, y: TRACK },
-            b: { x: a + HUMP.w, y: TRACK },
-            bend: HUMP.h,
-            style: "ink",
-        });
+    const inPlay = s.phase === "hop" ? s.pick : null;
     L.numbers.forEach((n, j) => {
-        const x = track.pockets[j] ?? 0;
+        if (!inTray(L, j) || j === inPlay) return;
+        const held = s.grab?.slot === j ? s.grab.at : null,
+            at = held ?? slotAt(j);
         sprites.push({
-            key: `pocket:${n}`,
-            art: "marblerun",
-            params: { part: "cup", w: 2, h: 3, label: String(n), colour: "tang" },
-            size: 1.6,
-            x,
-            y: TRACK + 1.9,
-            z: 2,
-            still: true,
+            key: `tray:${j}`,
+            art: "numberball",
+            params: { n: String(n), tone: "sky" },
+            size: BALL,
+            x: at.x,
+            y: at.y,
+            z: held ? 7 : 3,
+            scale: held ? 1.15 : 1,
         });
-        if (L.stones?.includes(n))
-            sprites.push({
-                key: `stone:${n}`,
-                art: "slingweight",
-                size: 1.5,
-                seed: 7 + n,
-                x,
-                y: TRACK - 0.55,
-                z: 3,
-                still: true,
-            });
     });
-    // the pipe from the track up and over to the first machine's hopper
-    const hop = on(machineAt(L, 0), MACHINE.hopper);
-    marks.push(
-        { kind: "line", a: { x: FIRST - 1, y: 5 }, b: { x: hop.x, y: 5 }, style: "rod" },
-        { kind: "line", a: { x: hop.x, y: 5 }, b: { x: hop.x, y: hop.y - 0.2 }, style: "rod" },
-    );
+    if (s.keyed && ready(s) && !rest) {
+        const at = slotAt(s.pick);
+        marks.push({ kind: "ring", x: at.x, y: at.y, r: BALL / 2 + 0.35, on: true });
+    }
     L.machines.forEach((m, i) => {
         const at = machineAt(L, i),
-            working = s.stage === i && s.phase === "work";
+            working = s.stage === i && s.phase === "work" && !rest,
+            // the machine gives a little chug while it works
+            chug = working ? Math.sin(s.t * 40) * 0.08 : 0;
         sprites.push({
             key: `machine:${i}`,
             art: "rulemachine",
             params: {
                 rule: m.shown || s.phase === "won" ? label(m.rule) : "",
-                pull: working && s.t < WORK / 2 ? 1 : 0,
-                turn: working ? Math.min(1, s.t / WORK) : 0,
+                pull: working && s.t < MACHINE_TUNING.work / 2 ? 1 : 0,
+                turn: working ? Math.min(1, s.t / MACHINE_TUNING.work) : 0,
                 lit: s.phase === "won",
             },
             size: MACHINE.drawn,
             x: at.x + MACHINE.drawn / 2,
             y: at.y + (15 * K) / 2,
             z: 4,
+            squash: chug,
             live: true,
         });
         const next = L.machines[i + 1] ? on(machineAt(L, i + 1), MACHINE.hopper) : null;
@@ -638,8 +559,16 @@ function frame(s: MachineState): Frame {
             );
         }
     });
+    const since = (s.steps - s.filledAt) * DT;
     L.orders.forEach((n, k) => {
-        const c = cupAt(L, k);
+        const c = cupAt(L, k),
+            // a cup just filled jumps, and the one now at the front gives a little wiggle
+            jump =
+                !rest && k === s.done - 1 && since < 0.45 ? Math.sin((since / 0.45) * Math.PI) : 0,
+            wiggle =
+                !rest && k === s.done && s.done > 0 && since < 0.6
+                    ? Math.sin(since * 30) * 0.12 * (1 - since / 0.6)
+                    : 0;
         sprites.push({
             key: `order:${k}`,
             art: "marblerun",
@@ -652,9 +581,10 @@ function frame(s: MachineState): Frame {
             },
             size: 3,
             x: c.x,
-            y: FLOOR - 1.5,
+            y: FLOOR - 1.5 - jump * 0.8,
+            angle: wiggle,
+            scale: 1 + jump * 0.12,
             z: 3,
-            still: true,
         });
         if (k < s.done)
             sprites.push({
@@ -663,7 +593,7 @@ function frame(s: MachineState): Frame {
                 params: { n: String(n), tone: "mint" },
                 size: 1.3,
                 x: c.x,
-                y: c.y - 0.2,
+                y: c.y - 0.2 - jump * 0.8,
                 z: 5,
             });
     });
@@ -671,21 +601,14 @@ function frame(s: MachineState): Frame {
         const c = cupAt(L, s.done);
         marks.push({ kind: "ring", x: c.x, y: FLOOR - 1.6, r: 2.1, on: true });
     }
-    const b = ballAt(s);
-    if (b) {
-        const shows =
-            s.phase === "lift" || s.phase === "roll" || s.phase === "aim"
-                ? s.phase === "lift"
-                    ? String(s.fed ?? "")
-                    : ""
-                : String(s.value);
+    const b = rest ? null : ballAt(s);
+    if (b)
         sprites.push({
             key: "ball",
             art: "numberball",
             params: {
-                n: shows,
-                tone:
-                    s.phase === "lift" || s.phase === "roll" || s.phase === "aim" ? "sky" : "glow",
+                n: s.phase === "hop" ? String(s.fed ?? "") : String(s.value),
+                tone: s.phase === "hop" ? "sky" : "glow",
             },
             size: 1.3,
             x: b.x,
@@ -693,25 +616,6 @@ function frame(s: MachineState): Frame {
             z: 6,
             live: true,
         });
-    }
-    if (s.phase === "aim") {
-        const back = (s.aim.power - FEED.min) / FEED.per;
-        marks.push({
-            kind: "line",
-            a: { x: START - R - back * 0.6, y: TRACK - R },
-            b: { x: START - R, y: TRACK - R },
-            style: "rod",
-        });
-        if (L.preview !== "none") {
-            const p = predict(L, s.aim.power);
-            const dots = L.preview === "full" ? p.dots : p.dots.filter((d) => d.x < START + 3.5);
-            marks.push({ kind: "dots", pts: dots, faint: true });
-            if (L.preview === "full" && p.pocket !== null) {
-                const j = L.numbers.indexOf(p.pocket);
-                marks.push({ kind: "ring", x: track.pockets[j] ?? 0, y: TRACK + 1.4, r: 1.1 });
-            }
-        }
-    }
     // the table of what has gone in and what came out, the latest five
     const rows = s.seen.slice(-5);
     sprites.push({
@@ -743,8 +647,9 @@ function frame(s: MachineState): Frame {
 function say(s: MachineState): string {
     const L = s.L,
         parts: string[] = [];
+    const lost = L.missing?.length ? ` The ${L.missing.join(" and ")} ball is lost.` : "";
     parts.push(
-        `The pockets are numbered ${L.numbers.join(", ")}.${L.stones?.length ? ` A stone covers ${L.stones.join(" and ")}.` : ""}${L.humps?.length ? ` The track has a hump after ${L.humps.join(" and ")}.` : ""}`,
+        `The tray holds balls numbered ${L.numbers.filter((_, j) => inTray(L, j)).join(", ")}.${lost}`,
     );
     const shown = L.machines.flatMap((m, i) =>
         m.shown ? [`machine ${i + 1} does ${label(m.rule)}`] : [],
@@ -761,8 +666,7 @@ function say(s: MachineState): string {
             ? "Every order is filled."
             : `${s.done} of ${L.orders.length} orders filled. The next order wants ${want}.`,
     );
-    if (s.phase === "aim")
-        parts.push(`Pull strength ${Math.round(s.aim.power * 10) / 10} of ${FEED.max}.`);
+    if (ready(s) && want !== undefined) parts.push(`Ball ${L.numbers[s.pick] ?? ""} is chosen.`);
     return parts.join(" ");
 }
 
@@ -773,8 +677,10 @@ export const ruleGame: ActionGame<MachineState> = {
     levels: MACHINE_LEVELS,
     rate: RATE,
     cover: { art: "rulemachine", params: { rule: "", pull: 0, turn: 0, lit: false } },
-    hint: "Pull the ball back and let go, or use left and right to set how hard and press space. The number it drops on goes into the machine.",
-    controls: { arrows: { left: "Softer", right: "Harder" }, go: "Roll" },
+    hint: "Tap a ball, or drag it, to drop it into the machine. With the keys, left and right choose a ball and space drops it in.",
+    // the buttons under the machine do what the keys do, for a switch or a player who prefers them
+    controls: { arrows: { left: "Ball before", right: "Ball after" }, go: "Drop" },
+    touch: true,
     start: (level) => startMachine(MACHINE_LEVELS[level] ?? MACHINE_LEVELS[0], level),
     step,
     frame,
@@ -782,9 +688,8 @@ export const ruleGame: ActionGame<MachineState> = {
     note: (s) => s.said,
     won: (s) => s.phase === "won",
     objectives: (s) => ({ completed: s.done, total: s.L.orders.length }),
-    pullFrom: (s) => (s.phase === "aim" ? { x: START, y: TRACK - R } : null),
     cancelInput: (s) => {
-        s.aim.pulling = false;
+        s.grab = null;
     },
     still: { press: () => 1, settling: moving },
 };

@@ -33,6 +33,8 @@ export interface Pad {
     pressed: Dir[];
     /** The big button, held. */
     go: boolean;
+    /** Set while the big button is held by the keyboard's space bar rather than a button on the screen, for a game that plays the keys differently. */
+    keys?: boolean;
     /** The other big button, held. */
     brake: boolean;
     /** A pull in squares from the thing being pulled, or null when nothing is pulled. */

@@ -1,10 +1,11 @@
-// Down the river: every level and layout is paddled to a win with the keys and with drags, a stroke is
-// stronger the longer it is drawn and weaker when rushed, a gate out of the count only carries the
-// canoe back, rocks bump and never end a run, and random paddling almost never wins.
+// Down the river: every level and layout is paddled to a win with the keys and with a finger held on
+// the water, a key stroke is stronger the longer it is held and weaker when rushed, a finger steers the
+// canoe there without spinning, a gate out of the count only carries the canoe back, rocks bump and
+// never end a run, and random paddling almost never wins.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { SHELF_IDS } from "./shelf";
-import { backWater, paddle, pilot, recordInto } from "./river-pilot";
+import { backWater, hold, paddle, pilot, recordInto } from "./river-pilot";
 import { eventsOf, progress } from "../../../engine/motion/goals";
 import { cut, player, replay, tape } from "../../../engine/motion/tape";
 import {
@@ -18,7 +19,6 @@ import {
     start,
     startRiver,
     step,
-    strokeOfDrag,
     type RiverState,
 } from "../row";
 import { actionChallenge } from "../action-challenges";
@@ -46,7 +46,7 @@ const layouts = (): { title: string; start: () => RiverState }[] =>
         })),
     );
 
-test("every level and layout is paddled to a win with the keys alone and with drags alone", () => {
+test("every level and layout is paddled to a win with the keys alone and with a finger alone", () => {
     for (const { title, start: open } of layouts())
         for (const input of ["keys", "pointer"] as const) {
             const s = open();
@@ -57,51 +57,56 @@ test("every level and layout is paddled to a win with the keys alone and with dr
         }
 });
 
-test("a stroke turns the bow away from its side, and a longer drag or a longer hold pushes harder", () => {
+test("a stroke turns the bow away from its side, and a key held longer pushes harder", () => {
     const right = start(0);
-    paddle(right, "pointer", 1, 1);
+    paddle(right, 1, 1);
     assert.ok(right.boat.spin < 0, "a stroke on the right turns the bow left");
     const left = start(0);
-    paddle(left, "keys", -1, 1);
+    paddle(left, -1, 1);
     assert.ok(
         left.boat.spin > 0,
         "the right arrow is a stroke on the left, which turns the bow right",
     );
     const speed = (s: RiverState) => Math.hypot(s.boat.vx, s.boat.vy);
-    const soft = start(0),
-        hard = start(0);
-    paddle(soft, "pointer", 1, 0.3);
-    paddle(hard, "pointer", 1, 1);
-    assert.ok(speed(hard) > speed(soft) + 0.5);
     const tap = start(0),
         held = start(0);
-    paddle(tap, "keys", 1, 0.35, true);
-    paddle(held, "keys", 1, 1, true);
+    paddle(tap, 1, 0.35, true);
+    paddle(held, 1, 1, true);
     assert.ok(speed(held) > speed(tap) + 0.5, "a key held longer is a stronger stroke");
 });
 
 test("a stroke made straight after the last pushes less than one made in rhythm", () => {
+    const tap = (s: RiverState) => run(s, 1, { ...emptyPad(), tapped: true });
     const rushed = start(0),
         steady = start(0);
-    paddle(rushed, "pointer", 1, 1);
-    paddle(steady, "pointer", 1, 1);
+    tap(rushed);
+    tap(steady);
     const before = Math.hypot(rushed.boat.vx, rushed.boat.vy);
-    paddle(rushed, "pointer", -1, 1);
+    tap(rushed);
     run(steady, Math.round(ROW.beat.value * 60));
     const was = Math.hypot(steady.boat.vx, steady.boat.vy);
-    paddle(steady, "pointer", -1, 1);
+    tap(steady);
     const gainRushed = Math.hypot(rushed.boat.vx, rushed.boat.vy) - before;
     const gainSteady = Math.hypot(steady.boat.vx, steady.boat.vy) - was;
     assert.ok(gainSteady > gainRushed * 1.8, `${gainSteady} against ${gainRushed}`);
 });
 
-test("a drag drawn back beside the canoe paddles on that side, and one drawn forward backs water", () => {
+test("a finger held on the water steers the canoe there without spinning, and lifting it lets it glide", () => {
     const s = start(0),
-        c = s.boat;
-    const k = strokeOfDrag(s, { x: c.x, y: c.y + 1.4 }, { x: c.x - 2, y: c.y + 1.4 });
-    assert.deepEqual(k, { side: 1, power: 0.5, back: false });
-    const b = strokeOfDrag(s, { x: c.x, y: c.y - 1.4 }, { x: c.x + 4, y: c.y - 1.4 });
-    assert.deepEqual(b, { side: -1, power: 1, back: true });
+        L = s.L,
+        at = { x: 22, y: middle(L, 22) + 3 };
+    let most = 0;
+    for (let i = 0; i < 60 * 6; i++) {
+        hold(s, at, 1);
+        most = Math.max(most, Math.abs(s.boat.spin));
+    }
+    assert.ok(most <= ROW.helm.value + 1e-9, `it turns no faster than the helm: ${most}`);
+    assert.ok(Math.hypot(bowOf(s).x - at.x, bowOf(s).y - at.y) < 1.2, "the bow reached the finger");
+    assert.ok(s.strokes > 2, "and it paddled there, with its splashes");
+    const strokes = s.strokes;
+    run(s, 60 * 2);
+    assert.equal(s.strokes, strokes, "a lifted finger paddles no more");
+    assert.equal(s.helm, null);
 });
 
 test("a gate out of the count only carries the canoe back above it to try again", () => {
@@ -127,7 +132,7 @@ test("rocks and banks bump the canoe about and never end the run", () => {
     assert.ok(rock);
     s.boat.x = rock.at - 3;
     s.boat.y = middle(s.L, rock.at) + rock.off * 5.5;
-    for (let i = 0; i < 4; i++) paddle(s, "pointer", i % 2 ? 1 : -1, 1);
+    for (let i = 0; i < 4; i++) paddle(s, i % 2 ? 1 : -1, 1);
     run(s, 120);
     assert.ok(s.bumps > 0, "it hit the rock");
     run(s, 60 * 20);
@@ -144,7 +149,7 @@ test("resting beside the wrong number says how near, and it counts only once the
     run(s, 60);
     assert.ok(!s.won);
     assert.match(s.said, /beside about 7\. 5 is a little back/);
-    backWater(s, "keys", 60 * 3);
+    backWater(s, 60 * 3);
     run(s, 60 * 6);
     assert.ok(!s.won || Math.abs(bowOf(s).x - lineX(L, L.dock)) <= 1);
 });
@@ -158,15 +163,12 @@ test("random paddling finds the count and the number at most one time in five", 
             const s = start(level);
             for (let n = 0; n < 150 && !s.won; n++) {
                 const r = rnd();
-                if (r < 0.15) backWater(s, rnd() < 0.5 ? "keys" : "pointer", 20);
-                else
-                    paddle(
-                        s,
-                        rnd() < 0.5 ? "keys" : "pointer",
-                        rnd() < 0.5 ? 1 : -1,
-                        rnd(),
-                        rnd() < 0.3,
-                    );
+                if (r < 0.15) backWater(s, 20);
+                else if (r < 0.55) {
+                    // a finger held somewhere on the river ahead or about, as a child might poke at it
+                    const x = s.boat.x + (rnd() - 0.3) * 20;
+                    hold(s, { x, y: middle(s.L, x) + (rnd() - 0.5) * 12 }, Math.round(rnd() * 60));
+                } else paddle(s, rnd() < 0.5 ? 1 : -1, rnd(), rnd() < 0.3);
                 run(s, Math.round(rnd() * 40));
             }
             if (s.won) wins++;
@@ -245,7 +247,7 @@ test("every drawing it names is on the shelf, its tuning is sound, and a link to
     RIVER_LEVELS.forEach((_, level) => {
         const s = start(level);
         for (const sp of rowGame.frame(s).sprites) seen.add(sp.art);
-        paddle(s, "pointer", 1, 1);
+        paddle(s, 1, 1);
         for (const sp of rowGame.frame(s, true).sprites) seen.add(sp.art);
     });
     for (const art of seen) assert.ok(SHELF_IDS.has(art), `${art} is not on the shelf`);
@@ -278,7 +280,7 @@ test("the current shows in streaks that run longer through the rapids, and a str
         );
     };
     assert.ok(longest(narrow.at) > longest(4) + 0.1, "the rapids run faster");
-    paddle(s, "keys", 1, 1, true);
+    paddle(s, 1, 1, true);
     assert.ok(
         rowGame.frame(s).marks.some((m) => m.kind === "ring"),
         "the paddle's splash rings the water",

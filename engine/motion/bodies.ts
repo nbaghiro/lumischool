@@ -262,8 +262,8 @@ export interface Bodies {
     survey(): Survey;
     /** Sets a body moving at `v` squares a second, turning at `spin` radians a second. */
     launch(b: Body, v: Pt, spin?: number): void;
-    /** Puts a body at a place, still, as a level laid out by hand or a test's own arrangement does. */
-    moveTo(b: Body, at: Pt): void;
+    /** Puts a body at a place, still, as a level laid out by hand or a test's own arrangement does; `angle` sets it square again. */
+    moveTo(b: Body, at: Pt, angle?: number): void;
     /** Pushes a body through its centre for the next step, in mass times squares a second, each second. */
     push(b: Body, force: Pt): void;
     /** Pushes a body at a point in the world for the next step, so it turns as well as moves: a raft pressed down at one end. */
@@ -845,9 +845,10 @@ export function bodies(o: { gravity: Pt }): Bodies {
             p.setLinearVelocity(new Vec2(v.x, v.y));
             p.setAngularVelocity(spin);
         },
-        moveTo(b, at) {
+        moveTo(b, at, angle) {
             const p = get(b);
-            p.setPosition(new Vec2(at.x, at.y));
+            if (angle === undefined) p.setPosition(new Vec2(at.x, at.y));
+            else p.setTransform(new Vec2(at.x, at.y), angle);
             p.setLinearVelocity(new Vec2(0, 0));
             p.setAngularVelocity(0);
             p.setAwake(true);

@@ -323,3 +323,20 @@ test("each customer served says so as an event, with a checkpoint, and the goal 
     assert.ok(events.includes("sold-out"));
     settle(t);
 });
+
+test("while aiming, the customer the push will reach is ringed, on every level", () => {
+    for (const [phase, L] of STAND_LEVELS.entries()) {
+        const s = startStand(phase),
+            slot = L.slots[0] ?? 24;
+        s.power = slot - HOME;
+        const at = lemonadeGame
+            .frame(s)
+            .marks.filter((m) => m.kind === "ring" && m.solid && Math.abs(m.x - slot) < 1e-9);
+        assert.equal(at.length, 1, `${L.title}: the first customer is not ringed`);
+        s.power = (slot + (L.slots[1] ?? slot + 20)) / 2 - HOME;
+        assert.ok(
+            !lemonadeGame.frame(s).marks.some((m) => m.kind === "ring" && m.solid),
+            `${L.title}: a push between customers rings someone`,
+        );
+    }
+});

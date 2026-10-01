@@ -6,7 +6,6 @@ test("challenge cards choose a challenge from the pause dialog", async ({ page }
     const menu = page.locator(".game-menu");
     await page.getByRole("button", { name: "Pause & help" }).click();
     await expect(menu).toBeVisible();
-    await menu.getByText("Choose a challenge", { exact: true }).click();
     const cards = menu.getByRole("group", { name: "Choose a challenge" });
     await expect(cards.getByRole("button", { name: "Up to ten", exact: true })).toHaveAttribute(
         "aria-pressed",
@@ -25,7 +24,6 @@ test("challenge cards take a keyboard choice", async ({ page }) => {
     await page.goto("/games?g=plane");
     const menu = page.locator(".game-menu");
     await page.getByRole("button", { name: "Pause & help" }).click();
-    await menu.getByText("Choose a challenge", { exact: true }).click();
     await menu
         .getByRole("group", { name: "Choose a challenge" })
         .getByRole("button", { name: "Tenths", exact: true })

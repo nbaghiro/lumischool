@@ -196,29 +196,29 @@ main gate, and add a performance fixture that fails when main-thread time a fram
 |---|---|---|
 | Slingshot | P1 | Towers that break into pieces with dust (P4) |
 | Penny shove | P1 | Coin trails and sparks |
-| The road | P1 | Longer roads with scenery that is culled |
+| The road | P1 | Longer roads with scenery that is culled; rebuilt as a delivery round: stops on a dashboard list delivered by resting in their bays, stops behind the car or in any order, parcels that slide off a hard stop, and a finish line that waits for the list (30 September 2026, see games.md) |
 | Pocket rally | P1 | A camera that follows on bigger tracks; a new level on choosing a speed before a corner, taken from Take the corner (P5) |
 | Paper plane | P1 | Clouds to fly through, gusts |
 | Garden mini-golf | P1 | Ponds as hazards and moving obstacles |
 | Pocket pool | new | A new game in the shape of mini-golf: numbered balls banked and knocked into pockets to make a sum, with an L table, bumpers, an even-only pocket, soft cloth, a slope, a spinner and a fruit bowl (27 September 2026, see games.md) |
 | Rescue pups | new | The Pup family as an original rescue team: a hose of particle water onto fires, a helicopter lowering a swinging rope, a digger loading exact tonnes into a truck and a life ring thrown from a boat, each set by degrees and decided by physics (28 September 2026, see games.md) |
-| Charlie's bridge, now Charlie's rope swings | P1 | Ropes and pulleys, planks that bend under Charlie (P4); then replaced under the same id by rope swings: a pendulum pumped by holding, a flight let go and a rope caught in the air (27 September 2026, see games.md) |
+| Charlie's bridge, now Charlie's rope swings | P1 | Ropes and pulleys, planks that bend under Charlie (P4); then replaced under the same id by rope swings (27 September 2026); its controls rebuilt as a pull to start, a swing that keeps going, a tap to let go and a tap to catch, with a live landing preview (30 September 2026, see games.md) |
 | A home for the pups, now Fetch with the pups | P1 | Zoomed in on the build; roofs, arches and doors; the family walks in (P4); rebuilt around a swinging crane and the wolf's huff; then replaced under the same id by Fetch with the pups: a thrown ball, frisbee or stick, planck deciding where it goes, and each pup reaching what only it can (see games.md) |
 | Marble workshop | P1 | Hundreds of marbles, a splitter and a bucket gate (P4); water runs later (P6) |
-| Harbour cargo | P1 | A crane on a real rope and a boat that lists with its load (P4) |
+| Harbour cargo | P1 | A crane on a real rope and a boat that lists with its load (P4); its controls rebuilt as a drag of the crate itself, set down by the crane below where it is let go, beside crane driving from the keys and arrow buttons for skill, with a landing preview, a boat that sails by itself once balanced, and a new barge cover (30 September 2026, see games.md) |
 | Rafts | P1 | Real floating and flocking sheep (P4) |
 | Gone fishing | P1 | Ripples at the bite, shoals that scatter (P4) |
 | Down the river | P1 | Rapids whose speed shows in the water (P4) |
-| Firefly trail | P1 | Lights and glow, and a pond (P4) |
+| Firefly trail | P1 | Lights and glow, and a pond (P4); tap a seed to fly there, with a way round what is in the way |
 | Rabbit crossing | P1 | Water and splashes; chained hops with a jump buffer (P5) |
 | Clear round | P1 | Rebuilt as a show jumping round: a gather held by degrees, a thrown leap over poles that fall, a canter from the runner and the actor, and a new pony on the shelf (27 September 2026, see games.md) |
-| Shunting yard | P1 | Rebuilt as a hump yard: points, pushes by degree and sidings with boards (27 September 2026, see games.md) |
+| Shunting yard | P1 | Rebuilt as a hump yard: points, pushes by degree and sidings with boards (27 September 2026), then worked by hand: a points lever, a pull on the wagon, a tap to send one back, curved leads and a ghost of where a push stops (30 September 2026, see games.md) |
 | See-saw, Cut the cake | P1 | Parity only; they stay off the list |
 | Measure it out | P1 | Real liquid in the jugs (P6) |
 | Market stall | P1 | Rebuilt as Charlie's lemonade stand: a jug tipped by degrees pouring real liquid, cups and coins slid along the counter, change into a dish and gusts of wind (27 September 2026, see games.md) |
 | Shut the box | P2 | A throw with the keys by aim |
 | Spell the picture | P2 | Rebuilt as a sound train in P5 |
-| Find the rule | P2 | Rebuilt as a physical number machine in P5 |
+| Find the rule | P2 | Rebuilt as a number machine in P5; fed by a tap on a numbered ball since 30 September |
 | Take the corner | P2 | Retired in P5, its idea moved into Pocket rally |
 
 ## Phases
@@ -585,6 +585,40 @@ At the end of P6 the owner plays every game on the Mac, an iPad and an iPhone. F
 provide a short checklist in this document: how to win each level by hand and by the keys, what a
 miss looks like, what reduced motion should show, and the frame readout to note from `?perf=1`. We
 record what the pass finds here and fix it before calling the plan done.
+
+### Tracking
+
+A game is marked done when the owner has played it and signed it off. "In rework" means a change the
+owner asked for is being built, and the game goes back to "to check" when it lands.
+
+| Game | Id | Status | Notes |
+|---|---|---|---|
+| Harbour cargo | `cargo-workshop` | to check | drag a crate for touch, crane driving by the keys |
+| Marble workshop | `marble-workshop` | to check | |
+| Sound train | `spell` | done, 30 September 2026 | coupling loosened the same day |
+| The number machine | `rule` | to check | buttons for the keys back under the machine |
+| Rabbit crossing | `jump` | to check | |
+| Down the river | `straight` | to check | a held finger steers the canoe there; the arrow keys and buttons stay as they are |
+| Shunting yard | `shunt` | to check | the keys as they were, their buttons back, and a push gauge |
+| Measure it out | `pour` | to check | |
+| Shut the box | `shut` | to check | |
+| Slingshot | `sling` | to check | |
+| See-saw | `weigh` | to check | off the list |
+| Penny shove | `pay` | to check | |
+| Cut the cake | `share` | to check | off the list |
+| Firefly trail | `snake` | to check | the keys fly it as they did before, beside tap to fly; the bar is icons |
+| The road | `road` | to check | rebuilt as a delivery round |
+| Rafts | `herd` | to check | |
+| Gone fishing | `fish` | to check | the keys play as before; on the glass, tap a fish, press on the bite, hold to reel |
+| Paper plane | `plane` | to check | hoop check loosened, scenery thinned |
+| Garden mini-golf | `golf` | to check | |
+| Pocket pool | `pool` | to check | table enlarged, plain squared paper |
+| Pocket rally | `rally` | to check | |
+| Charlie's rope swings | `bridge` | to check | pull to start, tap to let go |
+| Fetch with the pups | `blocks` | to check | |
+| Rescue pups | `rescue` | to check | frame rate with water and rope not yet measured |
+| Charlie's lemonade stand | `wardrobe` | to check | landing ring on the customer |
+| Clear round | `clear` | to check | the keys as before; a tap on the field lets the pony see its stride and choose its leap |
 
 ## Risks
 

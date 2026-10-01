@@ -1,6 +1,7 @@
-// Clear round: a pony canters a show jumping course, the child chooses its stride and holds a gather
-// for each fence, and letting go leaps it from its next hoof print. The poles are bodies in their cups
-// and fall when a hoof goes through them. See .docs/games.md.
+// Clear round: a pony canters a show jumping course. With the keys the child chooses its stride and
+// holds space for a gather, and letting go leaps it from its next hoof print. On the screen the pony
+// sees its own stride and chooses its own leap, so a tap on the field as it comes in is all it needs.
+// The poles are bodies in their cups and fall when a hoof goes through them. See .docs/games.md.
 import {
     actor,
     actorSprites,
@@ -32,10 +33,14 @@ const DT = 1 / RATE;
 export const BEAT = 0.5;
 /** Squares a second, each second, that a leap falls back by. */
 export const G = 24;
-/** Seconds of holding that gather the pony fully. */
+/** Seconds of holding space that gather the pony fully. */
 export const GATHER = 0.9;
-/** The least a let-go asks for, so a tap is a small hop rather than nothing. */
+/** The least a let-go of space asks for, so a tap of it is a small hop rather than nothing. */
 export const LEAST = 0.25;
+/** The gathers the pony chooses between for a leap, from a small hop to all it has, smallest first. */
+const POWERS = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1];
+/** Squares of room the pony leaves over every pole and past the water, so a leap never hangs on a hair. */
+const SPARE = 0.05;
 /**
  * How high a leap rises for a gather, from nought to one, in squares, at a stride: a fast pony jumps
  * flatter and a slow one rounder, so a long stride buys length with height.
@@ -53,6 +58,8 @@ export const POLE = { half: 0.55, thick: 0.24 };
 const HOOF = 0.1;
 /** A pole is down once it has dropped this far out of its cups, or turned this far over. */
 const FALLEN = { drop: 0.4, angle: 0.4 };
+/** Steps at the start of a round in which a press only starts the pony, since the page begins a round on its first input. */
+const START = 6;
 /** Seconds after a fence is passed before it is judged, so a rattled pole can settle back or fall. */
 const JUDGE = 0.6;
 
@@ -81,17 +88,27 @@ export interface ClearCourse {
     /** Past this the round is over. */
     finish: number;
     fences: Fence[];
-    /** The strides the child may choose, shortest first. */
+    /** The strides the pony may lengthen and shorten between, shortest first; it sees its own stride. */
     strides: number[];
-    /** The stride it starts at. */
+    /** The stride it canters at when nothing is ahead. */
     stride: number;
+}
+
+/** How the pony will meet the next fence: its first stride, the stride after, and the print it takes off from. */
+export interface Approach {
+    first: number;
+    stride: number;
+    /** The take-off print, and its count from the last hoof fall. */
+    at: number;
+    n: number;
 }
 
 /** What each level draws to help: numbers on the prints, the take-off band, and the leap's arc. */
 export interface Helps {
     numbers: boolean;
     band: boolean;
-    arc: "always" | "holding" | "never";
+    /** The leap's arc: always, only while Jump is held or asked, or never. */
+    arc: "always" | "asked" | "never";
     /** Prints drawn ahead of the pony; the rest are left to count. */
     ahead: number;
     /** The squares from each fence to the next, written on the grass. */
@@ -138,24 +155,31 @@ export interface ClearState {
     rails: Rail[];
     pony: Runner;
     act: Actor<Act>;
-    /** The stride in use, and the one chosen, which starts at the next hoof fall. */
+    /** The stride in use, and the one it takes at the next hoof fall. */
     stride: number;
     want: number;
     /** Where the last hoof fell, and how many have. */
     fall: number;
     falls: number;
-    /** How gathered the pony is, and whether the hand is still on it. */
+    /** The gather built while space is held, whether a hand was down last step, and whether it was the keys'. */
     power: number;
-    holding: boolean;
-    /** The gather let go of, waiting for the next hoof fall to leap from. */
-    asked: number | null;
-    /** The last gather asked for, which the arc shows until the hand is on again. */
-    lastPower: number;
+    hand: boolean;
+    keys: boolean;
+    /** A tap on the screen that came down as the round began: it starts the pony and asks for nothing. */
+    starting: boolean;
+    /** A leap asked for and waiting for a hoof fall: the keys' gather, or the pony's own choice. */
+    asked: { keys: true; power: number } | { keys: false } | null;
+    /** A tap on the screen has been seen this round, so the pony sees its own stride into the fences. */
+    screen: boolean;
+    /** The stride was chosen by the arrows for this fence, so the pony keeps it rather than seeing its own. */
+    own: boolean;
+    approach: Approach | null;
     flight: (Leap & { k: number; fence: number }) | null;
     /** The fence ridden to next. */
     fence: number;
     /** A fence passed and waiting to be judged, and the step it is judged on. */
-    judging: { fence: number; at: number; splash: boolean } | null;
+    judging: { fence: number; at: number; splash: boolean }[];
+    /** Poles knocked down and hooves in the water on the way round; each fence is jumped again, so none stops the round. */
     faults: number;
     stops: number;
     /** A stop: sliding to a halt, cantering back, then turning to come again. */
@@ -178,36 +202,72 @@ export const CLEAR_LEVELS: ClearLevel[] = [
     {
         title: "Little fences",
         grades: [1, 1],
-        goal: "Hold Jump as the pony comes in, and let go on the print before the band. Three little fences.",
-        helps: { numbers: true, band: true, arc: "always", ahead: 8, distances: false },
+        goal: "Tap the field as the pony comes to the band, and it leaps from the ringed print. Three little fences.",
+        helps: {
+            numbers: true,
+            band: true,
+            arc: "always",
+            ahead: 8,
+            distances: false,
+        },
     },
     {
         title: "Count the strides",
         grades: [1, 2],
-        goal: "Choose the stride so a hoof print lands on the band, then count the prints to it.",
-        helps: { numbers: true, band: true, arc: "always", ahead: 8, distances: false },
+        goal: "Count the prints to the ringed one, and tap on the print before it.",
+        helps: {
+            numbers: true,
+            band: true,
+            arc: "always",
+            ahead: 8,
+            distances: false,
+        },
     },
     {
         title: "Spreads and a double",
         grades: [2, 3],
-        goal: "A spread needs a longer leap, and a double leaves one stride between. Gather early for the spread.",
-        helps: { numbers: false, band: true, arc: "holding", ahead: 8, distances: false },
+        goal: "A spread and a double with one stride between. With the keys, gather longer for the spread.",
+        helps: {
+            numbers: false,
+            band: true,
+            arc: "asked",
+            ahead: 8,
+            distances: false,
+        },
     },
     {
         title: "The water jump",
         grades: [2, 4],
-        goal: "Water is five squares across. A long stride and a big gather carry the pony over it.",
-        helps: { numbers: false, band: true, arc: "holding", ahead: 8, distances: true },
+        goal: "Water is five squares across. It takes a long stride and a big leap.",
+        helps: {
+            numbers: false,
+            band: true,
+            arc: "asked",
+            ahead: 8,
+            distances: true,
+        },
     },
     {
         title: "The big round",
         grades: [3, 4],
-        goal: "Read the squares between the fences and choose each stride before you get there.",
-        helps: { numbers: false, band: false, arc: "never", ahead: 2, distances: true },
+        goal: "No band now. Read the squares between the fences, and meet each one on a good stride.",
+        helps: {
+            numbers: false,
+            band: false,
+            arc: "never",
+            ahead: 8,
+            distances: true,
+        },
     },
 ];
 
-const FIRST: Helps = { numbers: true, band: true, arc: "always", ahead: 8, distances: false };
+const FIRST: Helps = {
+    numbers: true,
+    band: true,
+    arc: "always",
+    ahead: 8,
+    distances: false,
+};
 
 /**
  * The courses the levels ride, with the variant moving a fence or two a square, so a stride that
@@ -311,21 +371,70 @@ export function printsFrom(fall: number, stride: number, want: number, most: num
     return out;
 }
 
-/** The places a leap from would carry the fence clean, at this stride and gather, as one band or null. */
-export function bandOf(
-    f: Fence,
-    stride: number,
-    power: number,
-): { from: number; to: number } | null {
-    let from: number | null = null,
-        to: number | null = null;
-    const limit = refusalAt(f) - REACH;
-    for (let x = f.at - 9; x <= limit; x += 0.1) {
-        if (!carries(f, leapOf(x, stride, power))) continue;
-        from ??= x;
-        to = x;
+/** The least gather that carries the fence clean from `from` at this stride, or null when none does. */
+export function gatherFor(f: Fence, from: number, stride: number): number | null {
+    if (from + REACH >= refusalAt(f)) return null;
+    for (const p of POWERS) if (carries(f, leapOf(from, stride, p), SPARE)) return p;
+    return null;
+}
+
+/** Take-off bands already worked out, by the fence's shape and the stride, as offsets from the fence. */
+const BANDS = new Map<string, { from: number; to: number } | null>();
+
+/** Where some gather carries the fence clean at this stride, as one band, or null. */
+export function takeoffBand(f: Fence, stride: number): { from: number; to: number } | null {
+    const key = `${f.kind}:${f.height}:${f.spread}:${stride.toFixed(2)}`;
+    if (!BANDS.has(key)) {
+        const at = { ...f, at: 0 };
+        let from: number | null = null,
+            to: number | null = null;
+        for (let x = -12; x <= refusalAt(at) - REACH; x += 0.1) {
+            if (gatherFor(at, x, stride) === null) continue;
+            from ??= x;
+            to = x;
+        }
+        BANDS.set(key, from === null || to === null ? null : { from, to });
     }
-    return from === null || to === null ? null : { from, to };
+    const band = BANDS.get(key);
+    return band ? { from: f.at + band.from, to: f.at + band.to } : null;
+}
+
+/** The strides the pony may take on a course, a tenth of a square apart, from half a square either side of the course's own. */
+function stridesOf(course: ClearCourse): number[] {
+    const lo = Math.max(1.8, Math.min(...course.strides) - 0.5),
+        hi = Math.max(...course.strides) + 0.5,
+        out: number[] = [];
+    for (let x = lo; x <= hi + 1e-9; x += 0.1) out.push(Math.round(x * 10) / 10);
+    return out;
+}
+
+/**
+ * How the pony meets fence `f` from a hoof fall at `fall`: the stride nearest its own and a count of
+ * prints, two to four where it can, that puts a print well inside the take-off band; its first stride
+ * may be shorter or longer before it settles, as a rider's is. Null when nothing fits, and the pony
+ * then stops at the fence and comes again.
+ */
+export function approachTo(course: ClearCourse, f: Fence, fall: number): Approach | null {
+    const strides = stridesOf(course);
+    const fits = (at: number, stride: number) =>
+        gatherFor(f, at, stride) !== null &&
+        gatherFor(f, at - 0.2, stride) !== null &&
+        gatherFor(f, at + 0.2, stride) !== null;
+    let best: (Approach & { score: number }) | null = null;
+    for (const first of strides)
+        for (let n = 1; n <= 10; n++)
+            for (const stride of strides) {
+                if (n === 1 && stride !== first) continue;
+                const at = fall + first + (n - 1) * stride;
+                if (!fits(at, stride)) continue;
+                const score =
+                    Math.abs(stride - course.stride) +
+                    Math.abs(first - stride) +
+                    (n < 2 ? 1 : 0) +
+                    (n > 4 ? 0.3 * (n - 4) : 0);
+                if (!best || score < best.score) best = { first, stride, at, n, score };
+            }
+    return best ? { first: best.first, stride: best.stride, at: best.at, n: best.n } : null;
 }
 
 function build(course: ClearCourse): { world: Bodies; rails: Rail[] } {
@@ -365,7 +474,7 @@ export function startClear(course: ClearCourse, phase = 0): ClearState {
     const pony = runner(course.start, GROUND, 1);
     pony.vx = course.stride / BEAT;
     pony.state = "run";
-    return {
+    const s: ClearState = {
         phase,
         course: structuredClone(course),
         helps,
@@ -378,23 +487,83 @@ export function startClear(course: ClearCourse, phase = 0): ClearState {
         fall: course.start,
         falls: 0,
         power: 0,
-        holding: false,
+        hand: false,
+        keys: false,
+        starting: false,
         asked: null,
-        lastPower: 0.75,
+        screen: false,
+        own: false,
+        approach: null,
         flight: null,
         fence: 0,
-        judging: null,
+        judging: [],
         faults: 0,
         stops: 0,
         turn: null,
         goal: track({ inOrder: course.fences.map((_, i) => ({ on: "clear", value: i })) }),
         done: false,
-        said: "Hold Jump as the pony comes in, and let go on the print before the band.",
+        said: "Tap the field as the pony comes to the band, and it leaps from the ringed print.",
         steps: 0,
         since: 99,
         cam: { x: course.start + 7, y: WORLD_H - VIEW.h / 2, zoom: 1 },
         ripples: [],
     };
+    plan(s);
+    return s;
+}
+
+/** The pony keeps the stride it has: until a tap on the screen, and wherever the arrows chose it. */
+const keeps = (s: ClearState): boolean => !s.screen || s.own;
+
+/**
+ * From the last hoof fall: the pony sees its own stride into the next fence and takes it at once, or
+ * where it keeps its stride, the take-off print is the first one the band holds at it.
+ */
+function plan(s: ClearState): void {
+    const f = s.course.fences[s.fence];
+    if (keeps(s)) {
+        s.approach = approachAt(s);
+        return;
+    }
+    s.approach = f ? approachTo(s.course, f, s.fall) : null;
+    s.stride = s.approach?.first ?? s.course.stride;
+    s.want = s.approach?.stride ?? s.course.stride;
+}
+
+/** The first print ahead at the stride chosen that some gather carries the fence from, as an approach. */
+function approachAt(s: ClearState): Approach | null {
+    const f = s.course.fences[s.fence];
+    if (!f) return null;
+    const prints = printsFrom(s.fall, s.stride, s.want, 12);
+    const i = prints.findIndex(
+        (x) => gatherFor(f, x, x === prints[0] ? s.stride : s.want) !== null,
+    );
+    const at = prints[i];
+    return at === undefined ? null : { first: s.stride, stride: s.want, at, n: i + 1 };
+}
+
+/**
+ * A tap on the screen asks the pony to leap and choose its own gather. The first in a round lets it see
+ * its own stride from then on, at once if its stride has no print on the band.
+ */
+function tapped(s: ClearState): void {
+    s.asked = { keys: false };
+    if (s.screen) return;
+    s.screen = true;
+    if (!s.approach) plan(s);
+}
+
+/** The keys choose the next stride from the course's own, which starts at the next hoof fall. */
+function choose(s: ClearState, d: "left" | "right"): void {
+    const strides = s.course.strides;
+    let i = 0;
+    for (const [k, x] of strides.entries())
+        if (Math.abs(x - s.want) < Math.abs((strides[i] ?? x) - s.want)) i = k;
+    const next = strides[d === "left" ? Math.max(0, i - 1) : Math.min(strides.length - 1, i + 1)];
+    if (next === undefined) return;
+    s.want = next;
+    s.own = true;
+    if (!s.flight) s.approach = approachAt(s);
 }
 
 const flat: Course = {
@@ -446,15 +615,53 @@ function takeOff(s: ClearState, out: Happening[], power: number): void {
 }
 
 function refuse(s: ClearState, out: Happening[], f: Fence): void {
-    s.turn = { stage: "stop", to: refusalAt(f) - REACH - 3 * s.want - 4 };
+    s.turn = { stage: "stop", to: comeAgainFrom(s, f) };
     s.asked = null;
     s.power = 0;
-    s.holding = false;
+    s.own = false;
     s.stops++;
-    s.said =
-        "The pony stopped at the fence. Let go of Jump one print before the band, and it will leap.";
+    s.said = "The pony stopped at the fence. Tap Jump as it comes to the band, and it will leap.";
     cue(s, out, "nope", 0.6);
     out.push({ puff: { x: s.pony.x + REACH, y: GROUND, n: 5 } });
+}
+
+/** Where a pony turned back from fence `f` canters to before it comes again: room for a few strides. */
+const comeAgainFrom = (s: ClearState, f: Fence): number =>
+    refusalAt(f) - REACH - 3 * s.course.stride - 4;
+
+/**
+ * A leap asked for, at a hoof fall. The keys' gather leaps from the next print whatever it carries, as
+ * a rider's does. A tap on the screen lets the pony choose: from a print some gather carries the fence
+ * from it leaps with the least that does, and one print early it waits for the next; any earlier, or
+ * past the band, it leaps all the same, and the fence is jumped again if a pole comes down. Says
+ * whether it leapt.
+ */
+function answer(s: ClearState, out: Happening[]): boolean {
+    const f = nextFence(s),
+        asked = s.asked;
+    if (!f || !asked) {
+        s.asked = null;
+        return false;
+    }
+    if (asked.keys) {
+        takeOff(s, out, asked.power);
+        return true;
+    }
+    const power = gatherFor(f, s.fall, s.stride);
+    if (power !== null) {
+        takeOff(s, out, power);
+        return true;
+    }
+    const next = s.fall + s.want;
+    if (gatherFor(f, next, s.want) !== null) return false;
+    if (s.fall + REACH >= refusalAt(f)) {
+        s.asked = null;
+        return false;
+    }
+    const a = s.approach;
+    s.said = a && s.fall < a.at ? "Too soon. The pony took off early." : "A little late.";
+    takeOff(s, out, 1);
+    return true;
 }
 
 /**
@@ -486,40 +693,64 @@ function landed(s: ClearState, out: Happening[], speed: number): void {
         cue(s, out, "splash", 0.8);
         out.push({ burst: { kind: "splash", x: s.pony.x - TUCKED, y: GROUND, n: 10 } });
         s.faults++;
-        s.said =
-            "A hoof in the water. That is a fault. A longer stride and a bigger gather carry further.";
+        s.said = "A hoof in the water. The pony goes round to jump it again.";
         pass(s, flight.fence, true);
         return;
     }
     out.push({ puff: { x: s.pony.x, y: GROUND, n: 4 } });
     if (f && s.pony.x > f.at + f.spread) pass(s, flight.fence, false);
+    else plan(s);
 }
 
 /** A fence is behind the pony: it is judged once its poles have had a moment to fall or settle. */
 function pass(s: ClearState, fence: number, splash: boolean): void {
     if (s.fence !== fence) return;
     s.fence = fence + 1;
-    s.judging = { fence, at: s.steps + Math.round(JUDGE * RATE), splash };
+    s.judging.push({ fence, at: s.steps + Math.round(JUDGE * RATE), splash });
+    s.own = false;
+    plan(s);
 }
 
 function judge(s: ClearState, out: Happening[]): void {
-    const j = s.judging;
-    if (!j || s.steps < j.at) return;
-    s.judging = null;
-    const down = s.rails.filter((r) => r.fence === j.fence && r.down).length;
-    if (down || j.splash) {
-        if (down)
-            s.said = `A pole is down at fence ${j.fence + 1}. Back to the checkpoint to jump it again, or ride on.`;
-        return;
+    for (let j = s.judging[0]; j && s.steps >= j.at; j = s.judging[0]) {
+        const down = s.rails.filter((r) => r.fence === j.fence && r.down);
+        if (down.length || j.splash) {
+            // the pony goes round with its hooves on the grass, so a knock waits for a leap in the air to land
+            if (s.flight) return;
+            s.judging = [];
+            again(s, j.fence);
+            if (down.length)
+                s.said = `A pole came down at fence ${j.fence + 1}. Round again to jump it.`;
+            return;
+        }
+        s.judging.shift();
+        emit(s, out, { kind: "clear", value: j.fence });
+        emit(s, out, { kind: "checkpoint" });
+        cue(s, out, "ring", 0.5, 1 + j.fence * 0.06);
+        const left = s.course.fences.length - j.fence - 1;
+        s.said = left
+            ? `Clear over fence ${j.fence + 1}. ${left} ${left === 1 ? "fence" : "fences"} to go.`
+            : "Clear over the last fence. Canter on through the finish.";
+        out.push({ burst: { kind: "sparkle", x: s.pony.x, y: GROUND - 3, n: 4 } });
     }
-    emit(s, out, { kind: "clear", value: j.fence });
-    emit(s, out, { kind: "checkpoint" });
-    cue(s, out, "ring", 0.5, 1 + j.fence * 0.06);
-    const left = s.course.fences.length - j.fence - 1;
-    s.said = left
-        ? `Clear over fence ${j.fence + 1}. ${left} ${left === 1 ? "fence" : "fences"} to go.`
-        : "Clear over the last fence. Canter on through the finish.";
-    out.push({ burst: { kind: "sparkle", x: s.pony.x, y: GROUND - 3, n: 4 } });
+}
+
+/** A fence knocked or splashed: its poles go back in their cups and the pony goes round to jump it again. */
+function again(s: ClearState, fence: number): void {
+    const f = s.course.fences[fence];
+    if (!f) return;
+    for (const r of s.rails)
+        if (r.fence === fence) {
+            s.world.moveTo(r.body, r.rest, 0);
+            r.down = false;
+            r.hit = false;
+        }
+    s.fence = fence;
+    s.asked = null;
+    s.power = 0;
+    s.own = false;
+    s.approach = null;
+    s.turn = { stage: "stop", to: comeAgainFrom(s, f) };
 }
 
 /** The canter's three beats in a stride, as far through it as each falls. */
@@ -548,11 +779,11 @@ function run(s: ClearState, out: Happening[]): void {
         s.falls++;
         s.stride = s.want;
         cue(s, out, "place", 0.55, 0.8);
-        if (s.asked !== null) {
-            takeOff(s, out, s.asked);
-            return;
-        }
+        if (keeps(s)) s.approach = approachAt(s);
+        if (s.asked && answer(s, out)) return;
     }
+    // the note says when: in the stride before the ringed print, a tap now is on time
+    if (!s.asked && !s.hand && countTo(s) === 1) s.said = "Tap now.";
     const f = nextFence(s);
     if (!f) return;
     const stop = refusalAt(f),
@@ -567,8 +798,7 @@ function run(s: ClearState, out: Happening[]): void {
         cue(s, out, "splash", 0.8);
         out.push({ burst: { kind: "splash", x: s.pony.x + REACH, y: GROUND, n: 10 } });
         s.faults++;
-        s.said =
-            "A hoof in the water. That is a fault. A longer stride and a bigger gather carry further.";
+        s.said = "A hoof in the water. The pony goes round to jump it again.";
         pass(s, s.fence, true);
         return;
     }
@@ -627,8 +857,8 @@ function turning(s: ClearState, out: Happening[]): void {
     s.pony.facing = 1;
     s.pony.vx = 0;
     s.fall = s.pony.x;
-    s.stride = s.want;
-    s.said = "Coming round again. Count the prints to the band.";
+    plan(s);
+    s.said = "Coming round again. Tap Jump as it comes to the band.";
     cue(s, out, "place", 0.4, 0.7);
 }
 
@@ -641,7 +871,7 @@ function actOf(s: ClearState): Act {
     if (s.done && s.pony.vx === 0) return "stand";
     if (s.since < 7) return "land";
     const through = (s.pony.x - s.fall) / s.stride;
-    if (s.asked !== null && through > 0.45) return "gather";
+    if ((s.asked || s.hand) && through > 0.45) return "gather";
     return "canter";
 }
 
@@ -649,29 +879,25 @@ export function stepClear(s: ClearState, pad: Pad): Happening[] {
     const out: Happening[] = [];
     s.steps++;
     s.since++;
-    if (!s.done) {
-        const strides = s.course.strides;
-        for (const d of pad.pressed) {
-            const i = strides.indexOf(s.want);
-            if (d === "left" && i > 0) s.want = strides[i - 1] ?? s.want;
-            if (d === "right" && i >= 0 && i < strides.length - 1)
-                s.want = strides[i + 1] ?? s.want;
-        }
-        // a gather builds only with hooves on the grass; a hand let go in the air lets it go unasked
-        const hand = !s.turn && (pad.go || pad.touch !== null),
-            grounded = !s.flight && !s.turn;
-        if (hand) {
-            if (grounded) s.power = Math.min(1, s.power + DT / GATHER);
-            s.holding = true;
-        } else if (s.holding) {
-            if (grounded) {
-                s.asked = Math.max(LEAST, s.power);
-                s.lastPower = s.asked;
-            }
+    for (const d of pad.pressed) if (!s.done && (d === "left" || d === "right")) choose(s, d);
+    // space held on the grass gathers and let go asks for a leap of that gather; Jump or a finger on the
+    // field asks the pony to choose its own; a hand let go in the air asks nothing
+    const hand = pad.go || pad.tapped || pad.touch !== null,
+        grounded = !s.flight && !s.turn && !s.done;
+    if (hand) {
+        if (!s.hand) {
             s.power = 0;
-            s.holding = false;
+            s.keys = pad.keys === true;
+            s.starting = s.steps <= START && !s.keys;
         }
-    }
+        if (grounded) s.power = Math.min(1, s.power + DT / GATHER);
+    } else if (s.hand) {
+        if (s.starting) s.starting = false;
+        else if (grounded && s.keys) s.asked = { keys: true, power: Math.max(LEAST, s.power) };
+        else if (grounded) tapped(s);
+        s.power = 0;
+    } else if (pad.lifted && grounded && s.steps > START) tapped(s);
+    s.hand = hand;
     if (s.turn) turning(s, out);
     else if (s.flight) fly(s, out);
     else run(s, out);
@@ -692,18 +918,16 @@ export function stepClear(s: ClearState, pad: Pad): Happening[] {
     if (
         !s.done &&
         !s.flight &&
-        !s.judging &&
+        !s.judging.length &&
         s.fence >= s.course.fences.length &&
         s.pony.x >= s.course.finish
     ) {
         s.done = true;
         s.said = s.faults
-            ? `Round finished with ${s.faults} ${s.faults === 1 ? "fault" : "faults"}. Back to the checkpoint to try again.`
+            ? `Every fence jumped, with ${s.faults} ${s.faults === 1 ? "knock" : "knocks"} on the way.`
             : "A clear round!";
-        if (s.faults === 0) {
-            cue(s, out, "win", 0.9);
-            out.push({ burst: { kind: "sparkle", x: s.pony.x, y: GROUND - 4, n: 14 } });
-        } else cue(s, out, "level", 0.5);
+        cue(s, out, "win", 0.9);
+        out.push({ burst: { kind: "sparkle", x: s.pony.x, y: GROUND - 4, n: 14 } });
     }
     stepActor(
         s.act,
@@ -715,7 +939,8 @@ export function stepClear(s: ClearState, pad: Pad): Happening[] {
     );
     s.cam = follow(
         s.cam,
-        { x: s.pony.x + (s.turn ? 0 : 5), y: WORLD_H - VIEW.h / 2, zoom: 1 },
+        // the camera leads well ahead, so the fence is in sight a few strides before the band
+        { x: s.pony.x + (s.turn ? 0 : 7), y: WORLD_H - VIEW.h / 2, zoom: 1 },
         { rate: 3, dt: DT, view: VIEW, world: worldOf(s) },
     );
     return out;
@@ -751,18 +976,42 @@ function numbersOf(course: ClearCourse): string[] {
     return out;
 }
 
-/** The band and prints for the next fence at the stride chosen, and the gather the arc is drawn for. */
+/** The prints to the next fence at the pony's stride, the band, the take-off print and the gather it will leap with. */
 export function helpOf(s: ClearState): {
     prints: number[];
     band: { from: number; to: number } | null;
-    power: number;
+    takeoff: number | null;
+    power: number | null;
 } {
     const f = nextFence(s),
-        power = s.holding ? Math.max(LEAST, s.power) : s.lastPower;
+        a = s.approach;
     const prints = printsFrom(s.fall, s.stride, s.want, 12).filter(
         (x) => !f || x + REACH < refusalAt(f) + 0.01,
     );
-    return { prints, band: f ? bandOf(f, s.want, power) : null, power };
+    const keys = s.hand ? s.keys : s.asked?.keys === true;
+    const power = !f
+        ? null
+        : keys
+          ? s.hand
+              ? Math.max(LEAST, s.power)
+              : s.asked?.keys
+                ? s.asked.power
+                : null
+          : a && gatherFor(f, a.at, a.stride);
+    return {
+        prints,
+        band: f ? takeoffBand(f, s.want) : null,
+        takeoff: a ? a.at : null,
+        power: power ?? null,
+    };
+}
+
+/** How many prints ahead the take-off print is, counting the next as one, or null. */
+function countTo(s: ClearState): number | null {
+    const a = s.approach;
+    if (!a) return null;
+    const i = printsFrom(s.fall, s.stride, s.want, 12).findIndex((x) => Math.abs(x - a.at) < 1e-6);
+    return i < 0 ? null : i + 1;
 }
 
 export function clearFrame(s: ClearState, rest = false): Frame {
@@ -971,9 +1220,13 @@ export function clearFrame(s: ClearState, rest = false): Frame {
         art: "scoreboard",
         params: {
             home: "Fences",
-            away: "Faults",
+            away: "Knocks",
             scores: [Math.min(s.fence, s.course.fences.length), s.faults],
-            note: `Stride ${s.want}`,
+            note: !keeps(s)
+                ? countTo(s) === null
+                    ? ""
+                    : `Take off on ${countTo(s)}`
+                : `Stride ${s.want}`,
         },
         x: 2.5,
         y: 2,
@@ -996,7 +1249,7 @@ export function clearFrame(s: ClearState, rest = false): Frame {
 function help(s: ClearState, marks: Mark[]): void {
     const h = s.helps,
         f = nextFence(s),
-        { prints, band, power } = helpOf(s);
+        { prints, band, takeoff, power } = helpOf(s);
     if (h.band && band)
         marks.push(
             {
@@ -1017,24 +1270,22 @@ function help(s: ClearState, marks: Mark[]): void {
         );
     const shown = prints.slice(0, h.ahead);
     for (const [i, x] of shown.entries()) {
-        const on = band !== null && x >= band.from - 0.05 && x <= band.to + 0.05;
-        marks.push({ kind: "ring", x, y: GROUND - 0.12, r: 0.26, on, solid: on });
+        const on = takeoff !== null && Math.abs(x - takeoff) < 1e-6;
+        marks.push({ kind: "ring", x, y: GROUND - 0.12, r: on ? 0.4 : 0.26, on, solid: on });
         if (h.numbers)
             marks.push({ kind: "word", x, y: GROUND - 0.9, text: String(i + 1), size: 0.5 });
     }
-    const show = h.arc === "always" || (h.arc === "holding" && s.holding);
-    if (!show || !f) return;
-    // the arc from the print the pony would leap from if the hand let go now
-    const from = prints[0];
-    if (from === undefined) return;
-    const l = leapOf(from, s.want, power),
+    const asking = s.hand || s.asked !== null;
+    const show = h.arc === "always" || (h.arc === "asked" && asking);
+    if (!show || !f || takeoff === null || power === null) return;
+    const l = leapOf(takeoff, s.want, power),
         { k } = landingOf(l),
         pts = [];
     for (let i = 0; i <= k; i += 3) {
         const at = flightAt(l, i);
         pts.push({ x: at.x, y: at.y - 1.4 });
     }
-    marks.push({ kind: "dots", pts, faint: !s.holding });
+    marks.push({ kind: "dots", pts, faint: !asking });
 }
 
 /** The pony's own sounds: hooves on grass, a leap, a thud down, a pole clattering, a snort and a cheer. */
@@ -1080,7 +1331,7 @@ export const clearGame: ActionGame<ClearState> = {
     group: "action",
     levels: CLEAR_LEVELS,
     rate: RATE,
-    hint: "Hold Jump or a finger on the field to gather the pony, and let go on the print before the band; it leaps from its next print. Left and right choose the stride.",
+    hint: "Tap the field or Jump as the pony comes to the band, and it leaps from the ringed print; a tap one print early waits for it. With the keys, left and right choose the stride, and holding space gathers the pony: let go on the print before the band.",
     cover: { art: "pony", params: { pose: "air", facing: 1, coat: "chestnut", horn: false } },
     controls: { arrows: { left: "Shorter stride", right: "Longer stride" }, go: "Jump" },
     touch: true,
@@ -1089,7 +1340,7 @@ export const clearGame: ActionGame<ClearState> = {
     start: (phase, seed) => startClear(clearCourse(phase, ((seed ?? 0) >>> 0) % 3), phase),
     step: stepClear,
     cancelInput: (s) => {
-        s.holding = false;
+        s.hand = false;
         s.power = 0;
     },
     hum: (s) => [
@@ -1097,20 +1348,25 @@ export const clearGame: ActionGame<ClearState> = {
     ],
     say(s) {
         if (s.done)
-            return s.faults ? `The round is over with ${s.faults} faults.` : "A clear round.";
-        if (s.flight) return "In the air over the fence.";
-        if (s.turn) return "The pony stopped and is coming round again.";
-        const f = nextFence(s);
-        if (!f) return `Stride ${s.want}. Cantering on to the finish.`;
-        const { prints, band } = helpOf(s);
-        const n = band ? prints.findIndex((x) => x >= band.from - 0.05 && x <= band.to + 0.05) : -1;
-        const to = `Fence ${s.fence + 1} is ${Math.round(f.at - s.pony.x)} squares ahead.`;
-        return n >= 0
-            ? `Stride ${s.want}. ${to} Print ${n + 1} is on the take-off band, so let go on print ${n}.`
-            : `Stride ${s.want}. ${to} No print lands on the take-off band at this stride.`;
+            return s.faults
+                ? `A round finished, with ${s.faults} ${s.faults === 1 ? "knock" : "knocks"} on the way.`
+                : "A clear round.";
+        const ride = keeps(s) ? `Stride ${s.want}. ` : "";
+        if (s.flight) return `${ride}In the air over the fence.`;
+        if (s.turn) return `${ride}The pony is going round to come again.`;
+        const f = nextFence(s),
+            n = countTo(s);
+        if (!f) return `${ride}Cantering on to the finish.`;
+        const to = `${ride}Fence ${s.fence + 1} is ${Math.round(f.at - s.pony.x)} squares ahead.`;
+        if (n === null)
+            return `${to} No print lands on the band; the pony will stop and come again.`;
+        if (s.asked) return `${to} Jump is asked for.`;
+        return n === 1
+            ? `${to} Tap now: the next print is the one to take off from.`
+            : `${to} The pony takes off from print ${n}.`;
     },
     note: (s) => s.said,
-    won: (s) => s.done && s.faults === 0,
+    won: (s) => s.done,
     objectives: (s) => {
         const p = progress(s.goal);
         return { completed: p.completed, total: p.total };
@@ -1118,6 +1374,6 @@ export const clearGame: ActionGame<ClearState> = {
     frame: clearFrame,
     still: {
         press: () => Math.round(BEAT * RATE),
-        settling: (s) => s.flight !== null || s.turn !== null || s.judging !== null,
+        settling: (s) => s.flight !== null || s.turn !== null || s.judging.length > 0,
     },
 };

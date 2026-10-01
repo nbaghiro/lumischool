@@ -7,14 +7,9 @@ import {
     workshopChallengeCount,
     openWorkshopConfiguration,
     isWorkshopConfiguration,
+    cargoPlan,
 } from "../workshop-challenges";
 
-const CARGO_ROUTES = [
-    [28, 32],
-    [26, 29, 32],
-    [24, 27, 30, 33],
-    [22.5, 24.8, 27.3, 30.5, 33.2],
-];
 const wait = (s: WorkshopState, ticks: number) => {
     for (let tick = 0; tick < ticks; tick++) stepWorkshop(s, emptyPad());
 };
@@ -38,29 +33,26 @@ test("workshop catalogue is deterministic, distinct within a phase and rejects u
     assert.equal(isWorkshopConfiguration({ kind: "marble", phase: 0 }), false);
 });
 
-test("every generated cargo arrangement can be dragged, balanced and delivered with the common primary action", () => {
-    for (const [phase, targets] of CARGO_ROUTES.entries())
+test("every generated cargo arrangement is delivered by dragging its crates to the plan and letting go", () => {
+    for (let phase = 0; phase < 4; phase++)
         for (let seed = 0; seed < workshopChallengeCount(phase); seed++) {
-            const s = openWorkshopConfiguration(workshopChallenge(seed, phase));
-            wait(s, 120);
+            const s = openWorkshopConfiguration(workshopChallenge(seed, phase)),
+                plan = cargoPlan(s.definition);
+            wait(s, 60);
             for (const [i, p] of s.definition.pieces.entries()) {
                 const body = s.objects.get(p.id);
                 assert.ok(body);
-                const x = targets[(i + (phase === 0 ? 0 : seed)) % targets.length];
-                assert.notEqual(x, undefined);
-                if (x === undefined) throw new Error("Missing cargo witness");
-                const at = s.world.where(body);
+                const at = s.world.where(body),
+                    x = plan[i] ?? 30;
                 stepWorkshop(s, { ...emptyPad(), touch: { x: at.x, y: at.y } });
                 assert.equal(s.held, p.id);
-                stepWorkshop(s, { ...emptyPad(), touch: { x: at.x, y: 8 } });
-                stepWorkshop(s, { ...emptyPad(), touch: { x, y: 8 } });
-                for (let n = 0; n < 360; n++)
-                    stepWorkshop(s, { ...emptyPad(), touch: { x, y: 20 } });
-                stepWorkshop(s, { ...emptyPad(), lifted: { x, y: 20 } });
-                wait(s, 180);
+                for (let n = 0; n < 90; n++)
+                    stepWorkshop(s, { ...emptyPad(), touch: { x, y: 10 } });
+                stepWorkshop(s, { ...emptyPad(), lifted: { x, y: 10 } });
+                for (let n = 0; n < 900 && (s.held || s.placing); n++) wait(s, 1);
+                wait(s, 30);
             }
-            wait(s, 180);
-            stepWorkshop(s, { ...emptyPad(), tapped: true });
+            for (let n = 0; n < 600 && s.phase !== "won"; n++) wait(s, 1);
             assert.equal(s.phase, "won", `cargo phase ${phase}, seed ${seed}`);
             assert.ok(s.goals.done.includes("balanced"));
             assert.ok(s.goals.done.includes("delivered"));

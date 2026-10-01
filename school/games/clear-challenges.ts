@@ -1,19 +1,23 @@
-// A course is only shipped once a ride through it has been found.
+// A course is only shipped once it has been ridden clean through the game itself, both ways it is played.
 //
-// The hoof falls are whole squares apart and a leap is the arc the game steps, sampled the same way,
-// so the search for a clear round is arithmetic over hoof falls: at each fall the pony canters on at a
-// stride the child may choose, or leaps with a gather the child had time to hold. `ridePlan` finds a
-// way, fence by fence, and the tests ride that plan through the game itself, so the arithmetic and
-// the bodies have to agree.
+// On the screen the pony sees its own stride and chooses its own leap, so the question is whether one
+// tap a fence at the right moment carries every fence: `steady` is that rider. With the keys the child
+// chooses the stride and holds space for the gather, so `ridePlan` searches the hoof falls for a way (a
+// stride at each fall, or a leap with a hold the child had the grass to make), and `skilful` rides it.
 import { configurationKey } from "../../engine/motion/configuration";
+import { emptyPad, type Pad } from "../../engine/motion/pad";
 import {
     BEAT,
+    canter,
     carries,
     clearCourse,
+    clearGame,
     CLEAR_LEVELS,
     GATHER,
+    LEAST,
     landingOf,
     leapOf,
+    nextFence,
     RATE,
     REACH,
     refusalAt,
@@ -22,17 +26,33 @@ import {
     type ClearState,
 } from "./clear";
 
-/** The gathers a plan holds for, in steps of holding: a third, a half, two thirds, five sixths and all. */
+/** How far through the stride before the take-off print a steady rider taps, from nought to one. */
+const TAP_AT = 0.4;
+
+/**
+ * The pad a steady rider presses this step: Jump down for one step, a little way into the stride
+ * before each ringed print, and up otherwise, so each fence gets exactly one tap.
+ */
+export function steady(s: ClearState): Pad {
+    const pad = emptyPad();
+    const a = s.approach;
+    if (s.hand || s.asked || s.flight || s.turn || s.done || !a || !nextFence(s)) return pad;
+    const through = (s.pony.x - s.fall) / Math.max(1e-6, s.stride);
+    pad.go = s.fall + s.want >= a.at - 1e-6 && through >= TAP_AT;
+    return pad;
+}
+
+/** The holds a skilful rider makes, in steps of space held: a third, a half, two thirds, five sixths and all. */
 export const HOLDS = [18, 27, 36, 45, 54] as const;
 /** Squares of room a plan leaves over every pole and past the water, so it never hangs on a hair. */
 const SPARE = 0.05;
 /** Steps of holding that gather the pony fully. */
 const FULL = GATHER * RATE;
+const gatherOf = (hold: number): number => Math.max(LEAST, hold / FULL);
 
 /**
  * One hoof fall of a ride: where it falls and the stride to choose before the next. A fall the pony
- * leaps from has the steps the gather was held for, and the stride to choose in the air for the
- * landing.
+ * leaps from has the steps Jump was held for, and the stride to choose in the air for the landing.
  */
 export interface Fall {
     at: number;
@@ -45,24 +65,24 @@ interface Node {
     fence: number;
     at: number;
     stride: number;
-    /** Strides on the grass since the last landing, which is how long a gather may have been held. */
+    /** Strides on the grass since the last landing, which is how long Jump may have been held. */
     grass: number;
 }
 
+/** Rides already found, by course, since a course is asked about again for every seed that lays it out. */
+const PLANS = new Map<string, readonly Fall[] | null>();
+
 /**
  * A ride through the course, fall by fall, or null when there is none. From each fall the pony either
- * leaps with a gather it had the grass to hold, carrying the fence clean and coming down short of the
- * next, or canters on at any stride, so long as the next fall is short of where it would stop. The
- * search is breadth first, so the ride found is one with the fewest hoof falls.
+ * leaps with a hold it had the grass to make, carrying the fence clean and coming down short of the
+ * next, or canters on at any of the course's strides, so long as the next fall is short of where it
+ * would stop. The search is breadth first, so the ride found has the fewest hoof falls.
  */
 export function ridePlan(course: ClearCourse): readonly Fall[] | null {
     const known = configurationKey(course);
     if (!PLANS.has(known)) PLANS.set(known, search(course));
     return PLANS.get(known) ?? null;
 }
-
-/** Rides already found, by course, since a course is asked about again for every seed that lays it out. */
-const PLANS = new Map<string, readonly Fall[] | null>();
 
 function search(course: ClearCourse): Fall[] | null {
     const key = (n: Node) =>
@@ -99,7 +119,7 @@ function search(course: ClearCourse): Fall[] | null {
             for (const hold of HOLDS) {
                 // the hold ends in the stride before the leap, so it had the strides on the grass to build in
                 if (hold / RATE > here.grass * BEAT - 0.08) continue;
-                const leap = leapOf(here.at, here.stride, hold / FULL);
+                const leap = leapOf(here.at, here.stride, gatherOf(hold));
                 if (!carries(f, leap, SPARE)) continue;
                 const down = landingOf(leap).x;
                 if (after && down + REACH >= refusalAt(after)) continue;
@@ -132,8 +152,71 @@ function search(course: ClearCourse): Fall[] | null {
     return falls;
 }
 
-/** Whether a course can be ridden clean at all, which every shipped course must be. */
-export const rideable = (course: ClearCourse): boolean => ridePlan(course) !== null;
+const near = (a: number, b: number) => Math.abs(a - b) < 1e-6;
+
+/**
+ * The pad a skilful rider presses this step to ride `plan` with the keys: left or right before each
+ * fall to choose its stride, and space held for each leap's steps so it comes up in the stride before.
+ */
+export function skilful(s: ClearState, plan: readonly Fall[]): Pad {
+    const pad = emptyPad();
+    const leapt = s.flight
+        ? plan.find((f) => f.hold !== undefined && near(f.at, s.flight?.from ?? NaN))
+        : undefined;
+    const here = s.flight ? undefined : plan.find((f) => near(f.at, s.fall));
+    const want = leapt ? leapt.after : here?.hold === undefined ? here?.want : undefined;
+    if (want !== undefined && want !== s.want) pad.pressed.push(want < s.want ? "left" : "right");
+    if (s.flight || s.turn) return pad;
+    const leap = plan.find((f) => f.hold !== undefined && f.at > s.fall + 1e-6);
+    if (leap?.hold === undefined) return pad;
+    if (s.hand) {
+        pad.go = pad.keys = s.power < leap.hold / FULL - 1e-9;
+        return pad;
+    }
+    if (s.asked) return pad;
+    pad.go = pad.keys = stepsTo(s, plan, leap.at) <= leap.hold + 2;
+    return pad;
+}
+
+/** Steps until the pony's hooves fall at `at`, cantering on as the plan chooses its strides. */
+function stepsTo(s: ClearState, plan: readonly Fall[], at: number): number {
+    const pony = { ...s.pony };
+    let fall = s.fall,
+        stride = s.stride,
+        want = s.want;
+    for (let n = 1; n < 60 * 20; n++) {
+        canter(pony, stride);
+        while (pony.x >= fall + stride - 1e-9) {
+            if (near(fall + stride, at)) return n;
+            fall += stride;
+            stride = want;
+            want = plan.find((f) => near(f.at, fall))?.want ?? want;
+        }
+    }
+    return Infinity;
+}
+
+/** Rounds already ridden, by course. */
+const RIDDEN = new Map<string, boolean>();
+
+/** Whether a rider rides the course clean, with no knock and no stop. */
+function clean(course: ClearCourse, rider: (s: ClearState) => Pad): boolean {
+    const s = startClear(course);
+    for (let i = 0; i < 60 * 120 && !s.done; i++) clearGame.step(s, rider(s));
+    return s.done && s.faults === 0 && s.stops === 0;
+}
+
+/** Whether both riders ride the course clean, a steady tapper and the keys to a plan, which every shipped course must be. */
+export function rideable(course: ClearCourse): boolean {
+    const known = configurationKey(course);
+    let ok = RIDDEN.get(known);
+    if (ok === undefined) {
+        const plan = ridePlan(course);
+        ok = clean(course, steady) && plan !== null && clean(course, (s) => skilful(s, plan));
+        RIDDEN.set(known, ok);
+    }
+    return ok;
+}
 
 export interface ClearConfiguration {
     phase: number;

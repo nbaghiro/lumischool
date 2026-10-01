@@ -1,7 +1,7 @@
 // Pocket pool: every variation of every level is won by strikes the solver found through the keys,
 // and those pads replay to the same table; a shot that breaks the target is taken back for free;
-// the dotted line shows less as the levels go on; random shots rarely win; and the room's floor runs
-// past every side of the view.
+// the dotted line shows less as the levels go on; random shots rarely win; and the table stands on
+// the page's own squared paper.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { SHELF_IDS } from "./shelf";
@@ -166,14 +166,10 @@ test("random shots rarely win a level", () => {
     }
 });
 
-test("the floor runs past every side of the room, and the rest frame shows no aim line", () => {
+test("the table stands on the page's squared paper, and the rest frame shows no aim line", () => {
     const s = startPool(level(7));
     const f = poolGame.frame(s, true);
-    const floor = f.sprites.filter((p) => p.art === "floorboards");
-    const xs = floor.map((p) => p.x),
-        ys = floor.map((p) => p.y);
-    assert.ok(Math.min(...xs) - 10 < -20 && Math.max(...xs) + 10 > f.world.w + 20);
-    assert.ok(Math.min(...ys) - 10 < -20 && Math.max(...ys) + 10 > f.world.h + 20);
+    assert.ok(!f.sprites.some((p) => p.art === "floorboards"));
     assert.ok(!f.marks.some((m) => m.kind === "dots"));
 });
 

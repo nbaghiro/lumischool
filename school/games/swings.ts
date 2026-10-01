@@ -1,7 +1,7 @@
 // Charlie's rope swings: Charlie crosses a stream, a ravine or a garden pond on ropes hung from the
-// branches overhead. Holding pumps her swing higher and letting go flies her from it, so how long the
-// child holds sets how high she swings and when the child lets go sets where she flies. Holding again
-// in the air reaches for the next rope. She lands on a numbered stepping stone, the far bank or the
+// branches overhead. The child pulls her back up the rope's arc and lets go to start the swing, so the
+// pull sets how high she swings; the swing then keeps going, and a tap lets her go, so when the child
+// taps sets where she flies. A tap in the air reaches for the next rope. She lands on a numbered stepping stone, the far bank or the
 // tree house; a stone the level does not ask for wobbles and tips her in, and a splash costs nothing,
 // since she climbs back out where she last stood. The mathematics is in where she lands: a stone on
 // the number line, the stones that count in twos, a rope that hangs at so many metres, and jumps
@@ -28,6 +28,7 @@ import type { Pad } from "../../engine/motion/pad";
 import type { Frame, Happening, Mark, Sprite } from "../../engine/motion/scene";
 import {
     amplitudeOf,
+    apexEase,
     catchRope,
     handsOf,
     letGo,
@@ -61,7 +62,31 @@ export const SWINGS = {
         20,
         0.5,
         "squares a second, each second",
-        "two seconds of holding take her from a little swing to the highest one",
+        "on a rope she has caught, a swing below its keep height is topped up within a couple of swings",
+    ),
+    keep: knob(
+        1.25,
+        0.5,
+        1.2,
+        0.05,
+        "radians",
+        "a caught rope swings at least this far either way, so a rope reached low still carries her on",
+    ),
+    wind: knob(
+        0.8,
+        0.3,
+        2,
+        0.05,
+        "radians a second",
+        "holding Go pulls her back from standing to the highest pull in about a second",
+    ),
+    slow: knob(
+        0.3,
+        0,
+        0.6,
+        0.05,
+        "a share of the time",
+        "she lingers a little at each end of the swing, so the moment to let go can be seen",
     ),
     most: knob(
         1.3,
@@ -72,31 +97,33 @@ export const SWINGS = {
         "the highest swing stops short of level with the branch",
     ),
     damping: knob(
-        0.04,
+        0.01,
         0,
         0.3,
         0.01,
         "a share each second",
-        "a swing nobody pumps dies away slowly, so waiting costs a little height",
+        "a swing keeps going for many swings, so a child can watch a few before letting go",
     ),
     reach: knob(
-        0.9,
+        1.4,
         0.5,
-        1.6,
+        2,
         0.05,
         "squares",
-        "hands that pass within a square of a rope take it, so a catch is aimed but not fiddly",
+        "hands reaching out take a rope that passes within a square and a half, so a catch is forgiving",
     ),
 };
 
-/** Seconds on a rope before letting go counts, so a tap that starts a swing does not end it. */
-const HOLD_LEAST = 0.35;
-/** Seconds after letting go of a rope before it can be caught again. */
-const REGRAB = 0.3;
-/** Seconds a landing, a wobble, a splash and a walk back take. */
+/** Seconds her hands stay reaching after a tap in the air, so a tap a little early still catches. */
+const REACH = 0.6;
+/** Radians one press of the left or right arrow pulls her back or lets her forward, from the keys. */
+const KEY_PULL = 0.1;
+/** Seconds a landing, a wobble, a splash and a walk back take: short, so a try again is quick. */
 const LANDING = 0.35;
-const WOBBLE = 0.7;
-const SPLASH = 1.1;
+const WOBBLE = 0.5;
+const SPLASH = 0.7;
+/** Squares past a stone's edge that still count as landing on it: she steps back to its middle. */
+const EDGE = 0.35;
 
 const VIEW = { w: 32, h: 20 };
 /** The view's middle up and down: the branches in sight at the top, the stream's bed below the foot. */
@@ -167,8 +194,8 @@ export interface SwingsLevel extends ActionLevel {
     wind?: { strength: number; period: number };
     /** The far side is a tree house high in a tree rather than a bank. */
     treehouse?: boolean;
-    /** When the dots of the flight she would take are drawn: always, while holding, or never. */
-    arc: "always" | "holding" | "never";
+    /** How the flight she would take if let go now is drawn: with where she would land, faintly, or not at all. */
+    arc: "always" | "faint" | "never";
     outfit: Record<string, string>;
     prompt: string;
 }
@@ -217,7 +244,7 @@ export const SWINGS_LEVELS: Levels<SwingsLevel> = [
         title: "Over the stream",
         grades: [1, 1],
         goal: "Swing Charlie over the stream to the picnic on the far bank.",
-        prompt: "Hold to swing higher. Let go to fly.",
+        prompt: "Pull Charlie back and let go to swing. Tap to fly.",
         place: "stream",
         per: 1.5,
         unit: "",
@@ -236,7 +263,7 @@ export const SWINGS_LEVELS: Levels<SwingsLevel> = [
         title: "Land on 4",
         grades: [1, 1],
         goal: "Land on the stone at 4, then swing on to the far bank.",
-        prompt: "Only the stone at 4 is steady. Hold, then let go.",
+        prompt: "Only the stone at 4 is steady. Watch the dots, then tap.",
         place: "stream",
         per: 1.6,
         unit: "",
@@ -281,7 +308,7 @@ export const SWINGS_LEVELS: Levels<SwingsLevel> = [
         title: "Rope to rope",
         grades: [2, 2],
         goal: "Catch the rope at 5, then the rope at 10, then fly to the far bank.",
-        prompt: "Hold again in the air to catch a rope.",
+        prompt: "Tap again in the air to catch a rope.",
         place: "stream",
         per: 1.2,
         unit: "",
@@ -293,7 +320,7 @@ export const SWINGS_LEVELS: Levels<SwingsLevel> = [
         ropes: [rope(1.5), rope(5), rope(7), rope(10), rope(12)],
         tags: true,
         wants: [{ rope: 5 }, { rope: 10 }],
-        arc: "holding",
+        arc: "faint",
         outfit: {
             hair: "bunches",
             top: "glow",
@@ -320,7 +347,7 @@ export const SWINGS_LEVELS: Levels<SwingsLevel> = [
         ropes: [rope(0.8), rope(3), rope(4), rope(6), rope(7)],
         tags: false,
         wants: [{ rope: 4 }, { rope: 6 }],
-        arc: "holding",
+        arc: "faint",
         outfit: {
             hair: "braids",
             top: "tang",
@@ -348,7 +375,7 @@ export const SWINGS_LEVELS: Levels<SwingsLevel> = [
         tags: true,
         wants: [{ rope: 3 }, { rope: 6 }, { rope: 9 }],
         treehouse: true,
-        arc: "holding",
+        arc: "faint",
         outfit: {
             hair: "bun",
             top: "white",
@@ -377,7 +404,7 @@ export const SWINGS_LEVELS: Levels<SwingsLevel> = [
         tags: false,
         wants: [{ stone: 5 }, { stone: 10 }, { stone: 15 }],
         wind: { strength: 9, period: 5 },
-        arc: "holding",
+        arc: "faint",
         outfit: {
             hair: "fringe",
             top: "mint",
@@ -440,7 +467,7 @@ interface RopeState extends Swing {
     sway: number;
 }
 
-type Mode = "ready" | "swing" | "fly" | "land" | "wobble" | "splash" | "back" | "home";
+type Mode = "ready" | "pull" | "swing" | "fly" | "land" | "wobble" | "splash" | "back" | "home";
 
 type Act = "ready" | "swing" | "fly" | "land" | "wobble" | "splash" | "cheer";
 
@@ -479,8 +506,17 @@ export interface SwingsState {
     /** The way her body hangs from her hands, from straight down, as a rope's angle is. */
     lean: number;
     holding: boolean;
-    /** Her hands are up for a swaying rope, to take it as it comes by. */
-    reaching: boolean;
+    /** Steps left of her hands reaching for a rope, after a tap in the air or at a swaying rope. */
+    reachFor: number;
+    /** How far back she is pulled, from straight down, in radians, while the child pulls her, and where she stood. */
+    pulled: number;
+    stand: number;
+    /** The pull was set by the arrow keys, so Go starts the swing rather than winding it further. */
+    keyed: boolean;
+    /** On a rope caught in the air, which a gentle pump keeps swinging at least its keep height. */
+    assist: boolean;
+    /** She has just come halfway up the swing going forward, where a still view waits for a tap. */
+    rising: boolean;
     /** Steps on the rope, in the air, and in the mode she is in. */
     onFor: number;
     since: number;
@@ -573,7 +609,12 @@ export function startSwings(L: SwingsLevel, phase = 0): SwingsState {
         flight: { x: 0, y: 0, vx: 0, vy: 0 },
         lean: 0,
         holding: false,
-        reaching: false,
+        reachFor: 0,
+        pulled: 0,
+        stand: 0,
+        keyed: false,
+        assist: false,
+        rising: false,
         onFor: 0,
         since: 0,
         left: -1,
@@ -610,7 +651,10 @@ function ropeAhead(s: SwingsState): number {
 /** She stands ready with the rope ahead pulled back to her hands, or reaching for it while it sways. */
 function ready(s: SwingsState): void {
     s.mode = "ready";
-    s.reaching = false;
+    s.reachFor = 0;
+    s.pulled = 0;
+    s.keyed = false;
+    s.assist = false;
     s.held = ropeAhead(s);
     const r = s.ropes[s.held];
     if (!r || r.sway) return;
@@ -651,21 +695,51 @@ export function windAt(L: SwingsLevel, steps: number): number {
     return L.wind.strength * (0.55 + 0.45 * Math.sin((2 * Math.PI * t) / L.wind.period));
 }
 
-const push = () => ({
-    pump: SWINGS.pump.value,
-    most: SWINGS.most.value,
-    damping: SWINGS.damping.value,
-});
-
 function takeRope(s: SwingsState, out: Happening[]): void {
     const r = s.ropes[s.held];
     if (!r) return;
     s.mode = "swing";
     s.on = -1;
     s.onFor = 0;
+    s.rising = false;
     s.lean = r.theta;
     cue(s, out, "lift", 0.3);
 }
+
+/** She takes the rope ahead in both hands and leans back on it, from where she stands. */
+function startPull(s: SwingsState, r: RopeState): void {
+    s.stand = Math.abs(r.theta);
+    s.pulled = s.stand;
+    s.keyed = false;
+}
+
+/** Pulls her back up the rope's arc to `angle` from straight down, no nearer than she stood nor higher than the highest swing. */
+function setPull(s: SwingsState, r: RopeState, angle: number): void {
+    s.pulled = Math.max(s.stand, Math.min(Math.max(s.stand, SWINGS.most.value), angle));
+    r.theta = -s.pulled;
+    r.omega = 0;
+    const h = handsOf(r);
+    s.x = h.x;
+    s.y = h.y;
+    s.lean = r.theta;
+    s.mode = "pull";
+}
+
+/** Let go of from where she is pulled back to, she swings from rest. */
+function swingOff(s: SwingsState, out: Happening[]): void {
+    const r = s.ropes[s.held];
+    if (!r) return;
+    r.omega = 0;
+    s.assist = false;
+    takeRope(s, out);
+}
+
+/** Where a finger held on the field pulls her to: its angle from the rope's branch, back from straight down. */
+const fingerAngle = (r: RopeState, t: Pt): number => -Math.atan2(t.x - r.ax, t.y - r.ay);
+
+/** The arrow keys pull her back, left, or let her forward, right, a step for each press. */
+const keyPull = (pad: Pad): number =>
+    pad.pressed.reduce((n, d) => n + (d === "left" ? 1 : d === "right" ? -1 : 0), 0);
 
 function fly(s: SwingsState, out: Happening[]): void {
     const r = s.ropes[s.held];
@@ -675,6 +749,7 @@ function fly(s: SwingsState, out: Happening[]): void {
     s.held = -1;
     s.mode = "fly";
     s.since = 0;
+    s.reachFor = 0;
     // the rope swings on from where it was let go, at its own length
     r.omega = (r.omega * r.r) / r.long;
     r.r = r.long;
@@ -689,6 +764,9 @@ function catchIt(s: SwingsState, out: Happening[], i: number, got: Swing): void 
     s.held = i;
     s.mode = "swing";
     s.onFor = 0;
+    s.rising = false;
+    s.reachFor = 0;
+    s.assist = true;
     s.lean = got.theta;
     cue(s, out, "place", 0.6, 1.2);
     const at = s.L.ropes[i]?.at ?? 0;
@@ -839,9 +917,10 @@ function splash(s: SwingsState, out: Happening[], x: number): void {
 
 /** The footing whose top her feet came down through in this step, or -1. */
 function footingUnder(s: SwingsState, x: number, before: number, after: number): number {
-    return s.footings.findIndex(
-        (f) => x >= f.x0 && x <= f.x1 && before <= f.top + 0.05 && after >= f.top,
-    );
+    return s.footings.findIndex((f) => {
+        const edge = f.kind === "stone" ? EDGE : 0;
+        return x >= f.x0 - edge && x <= f.x1 + edge && before <= f.top + 0.05 && after >= f.top;
+    });
 }
 
 const feetOf = (hands: Pt, lean: number): Pt => ({
@@ -863,39 +942,82 @@ export function stepSwings(s: SwingsState, pad: Pad): Happening[] {
     s.steps++;
     s.since++;
     const hand = pad.go || pad.touch !== null;
-    const pressed = hand && !s.holding,
+    // a press is a new hold, or a tap of the button that came and went between two steps
+    const pressed = !s.holding && (hand || pad.tapped),
         released = !hand && s.holding;
     s.holding = hand;
     if (pressed) s.touched = true;
     const g = SWINGS.gravity.value,
         p = place(s.L);
     stepRopes(s);
+    if (s.reachFor > 0) s.reachFor--;
     switch (s.mode) {
         case "ready": {
             const r = s.ropes[s.held];
             if (!r) break;
-            if (!r.sway) {
-                if (pressed) takeRope(s, out);
+            if (r.sway) {
+                // a swaying rope is taken when it comes within reach of the hands held up for it
+                if (pressed) s.reachFor = Math.round(REACH * RATE);
+                const got =
+                    s.reachFor > 0
+                        ? catchRope(
+                              standingHands(s),
+                              { x: 0, y: 0 },
+                              r,
+                              SWINGS.reach.value * 1.6,
+                              1.5,
+                          )
+                        : null;
+                if (got) {
+                    r.r = got.r;
+                    r.theta = got.theta;
+                    s.reachFor = 0;
+                    s.assist = true;
+                    takeRope(s, out);
+                }
                 break;
             }
-            // a swaying rope is taken when it comes within reach of the hands held up for it
-            if (pressed) s.reaching = true;
-            if (!hand) s.reaching = false;
-            const got = s.reaching
-                ? catchRope(standingHands(s), { x: 0, y: 0 }, r, SWINGS.reach.value * 1.6, 1.5)
-                : null;
-            if (got) {
-                r.r = got.r;
-                r.theta = got.theta;
-                takeRope(s, out);
+            const keys = keyPull(pad);
+            if (keys !== 0) {
+                startPull(s, r);
+                setPull(s, r, s.pulled + keys * KEY_PULL);
+                s.keyed = true;
+            } else if (pressed) {
+                startPull(s, r);
+                setPull(s, r, pad.touch ? fingerAngle(r, pad.touch) : s.stand);
+                // a click that came and went starts a small swing at once
+                if (!hand) swingOff(s, out);
             }
+            break;
+        }
+        case "pull": {
+            const r = s.ropes[s.held];
+            if (!r) break;
+            const keys = keyPull(pad);
+            if (keys !== 0) {
+                setPull(s, r, s.pulled + keys * KEY_PULL);
+                s.keyed = true;
+            } else if (pad.touch) {
+                setPull(s, r, fingerAngle(r, pad.touch));
+                s.keyed = false;
+            } else if (hand && !s.keyed) setPull(s, r, s.pulled + SWINGS.wind.value * DT);
+            if (released || (pressed && s.keyed && !pad.touch)) swingOff(s, out);
             break;
         }
         case "swing": {
             const r = s.ropes[s.held];
             if (!r) break;
             s.onFor++;
-            stepSwing(r, g, DT, push(), hand);
+            const before = r.theta,
+                half = amplitudeOf(r, g) / 2;
+            stepSwing(
+                r,
+                g,
+                DT * apexEase(r, SWINGS.slow.value),
+                { pump: SWINGS.pump.value, most: SWINGS.keep.value, damping: SWINGS.damping.value },
+                s.assist,
+            );
+            s.rising = before < half && r.theta >= half && r.omega > 0;
             s.lean = r.theta;
             const way = Math.sign(r.omega);
             if (way !== 0 && way !== s.turning) {
@@ -911,7 +1033,7 @@ export function stepSwings(s: SwingsState, pad: Pad): Happening[] {
             const feet = feetOf(h, s.lean);
             if (feet.y > p.surface - 0.1 && s.steps % 6 === 0)
                 s.ripples.push({ x: feet.x, age: 0, size: 0.4 });
-            if (released && s.onFor * DT >= HOLD_LEAST) fly(s, out);
+            if (pressed && s.onFor > 2) fly(s, out);
             break;
         }
         case "fly": {
@@ -922,9 +1044,13 @@ export function stepSwings(s: SwingsState, pad: Pad): Happening[] {
             s.x = f.x;
             s.y = f.y;
             const feet = feetOf({ x: f.x, y: f.y }, s.lean);
-            if (hand && s.since * DT > 0.08) {
+            if (pressed) s.reachFor = Math.round(REACH * RATE);
+            if (s.reachFor > 0) {
+                // the nearest rope in reach, since two ropes can hang closer than her reach; the rope
+                // just let go of swings back behind her and is not taken again in this flight
+                let best: { i: number; got: Swing; d: number } | null = null;
                 for (const [i, r] of s.ropes.entries()) {
-                    if (i === s.left && s.since * DT < REGRAB) continue;
+                    if (i === s.left) continue;
                     const got = catchRope(
                         { x: f.x, y: f.y },
                         { x: f.vx, y: f.vy },
@@ -932,12 +1058,13 @@ export function stepSwings(s: SwingsState, pad: Pad): Happening[] {
                         SWINGS.reach.value,
                         1.5,
                     );
-                    if (got) {
-                        catchIt(s, out, i, got);
-                        break;
-                    }
+                    const d = Math.abs(f.x - handsOf(r).x);
+                    if (got && (!best || d < best.d)) best = { i, got, d };
                 }
-                if (s.mode !== "fly") break;
+                if (best) {
+                    catchIt(s, out, best.i, best.got);
+                    break;
+                }
             }
             const under = footingUnder(s, feet.x, before, feet.y);
             if (under >= 0) {
@@ -959,9 +1086,13 @@ export function stepSwings(s: SwingsState, pad: Pad): Happening[] {
             } else if (feet.y > p.surface || feet.y > H) splash(s, out, feet.x);
             break;
         }
-        case "land":
+        case "land": {
+            // a landing near a stone's edge steps back to its middle
+            const f = s.footings[s.on];
+            if (f?.kind === "stone") s.x += ((f.x0 + f.x1) / 2 - s.x) * Math.min(1, 8 * DT);
             if (s.since * DT >= LANDING && !s.won) ready(s);
             break;
+        }
         case "wobble":
             if (s.since * DT >= WOBBLE) {
                 const r = s.ropes[s.held];
@@ -982,12 +1113,38 @@ export function stepSwings(s: SwingsState, pad: Pad): Happening[] {
     for (const w of s.ripples) w.age += DT;
     s.ripples = s.ripples.filter((w) => w.age < 2.5);
     stepActor(s.act, actOf(s), ACTS, DT, 0, 1);
-    s.cam = follow(s.cam, wantedCam(s), { rate: 2.6, dt: DT, view: VIEW, world: worldOf(s.L) });
+    s.cam = follow(s.cam, wantedCam(s), { rate: 3.2, dt: DT, view: VIEW, world: worldOf(s.L) });
     return out;
 }
 
+/** A rope the level asks for next is in reach of her hands in the air: where a still view stops for a tap. */
+export function catchable(s: SwingsState): boolean {
+    if (s.mode !== "fly" || s.reachFor > 0) return false;
+    const want = nextWant(s);
+    if (!want || !("rope" in want)) return false;
+    const i = s.L.ropes.findIndex((r) => r.at === want.rope),
+        r = s.ropes[i];
+    return (
+        !!r &&
+        i !== s.left &&
+        catchRope(
+            { x: s.flight.x, y: s.flight.y },
+            { x: s.flight.vx, y: s.flight.vy },
+            r,
+            SWINGS.reach.value,
+            1.5,
+        ) !== null
+    );
+}
+
 function wantedCam(s: SwingsState): Cam {
-    const lead = s.mode === "fly" ? s.flight.vx * 0.35 : s.mode === "swing" ? 3 : 5;
+    const r = s.ropes[s.held];
+    const lead =
+        s.mode === "fly"
+            ? s.flight.vx * 0.4
+            : s.mode === "swing" && r
+              ? 3 + velocityOf(r).x * 0.25
+              : 5;
     return { x: s.x + lead, y: CAM_Y, zoom: 1 };
 }
 
@@ -997,14 +1154,14 @@ function actOf(s: SwingsState): Act {
     if (s.mode === "wobble") return s.on >= 0 ? "wobble" : "swing";
     if (s.mode === "splash" || s.mode === "back") return "splash";
     if (s.mode === "fly") return "fly";
-    if (s.mode === "swing") return "swing";
+    if (s.mode === "swing" || s.mode === "pull") return "swing";
     return "ready";
 }
 
-/** The dots of the flight she would take if the hand let go now, until she lands or meets the water. */
-export function arcOf(s: SwingsState): Pt[] {
+/** The flight she would take if let go now: dots along it, and the footing she would come down on, or -1 for the water. */
+export function arcOf(s: SwingsState): { pts: Pt[]; at: Pt | null; footing: number } {
     const r = s.ropes[s.held];
-    if (s.mode !== "swing" || !r) return [];
+    if (s.mode !== "swing" || !r) return { pts: [], at: null, footing: -1 };
     const f = letGo(r),
         g = SWINGS.gravity.value,
         wind = windAt(s.L, s.steps),
@@ -1017,7 +1174,31 @@ export function arcOf(s: SwingsState): Pt[] {
         lean += (0 - lean) * Math.min(1, 5 * DT);
         const feet = feetOf({ x: f.x, y: f.y }, lean);
         if (i % 3 === 2) pts.push({ x: feet.x, y: feet.y - 0.2 });
-        if (footingUnder(s, feet.x, before, feet.y) >= 0 || feet.y > surface) break;
+        const under = footingUnder(s, feet.x, before, feet.y);
+        if (under >= 0)
+            return { pts, at: { x: feet.x, y: s.footings[under]?.top ?? feet.y }, footing: under };
+        if (feet.y > surface) return { pts, at: { x: feet.x, y: surface }, footing: -1 };
+    }
+    return { pts, at: null, footing: -1 };
+}
+
+/** Whether coming down on footing `i` now would count: a steady stone, or the far side once nothing else is asked for. */
+function goodLanding(s: SwingsState, i: number): boolean {
+    const f = s.footings[i];
+    if (!f) return false;
+    if (f.kind === "stone")
+        return s.L.jumps !== undefined || wanted(s, (w) => "stone" in w && w.stone === f.n);
+    return f.kind === "far" && wantsDone(s);
+}
+
+/** The swing's reach while she is pulled back: dots round the rope's arc from where she is to as high on the other side. */
+function reachOf(s: SwingsState): Pt[] {
+    const r = s.ropes[s.held];
+    if (s.mode !== "pull" || !r) return [];
+    const pts: Pt[] = [];
+    for (let k = 0; k <= 16; k++) {
+        const theta = -s.pulled + (2 * s.pulled * k) / 16;
+        pts.push(handsOf({ ...r, theta }));
     }
     return pts;
 }
@@ -1044,7 +1225,7 @@ function charlieSprites(s: SwingsState, rest: boolean): Sprite[] {
             size: wide * K,
             z,
         };
-        if (pose === "hang" && (s.mode === "swing" || s.mode === "fly")) {
+        if (pose === "hang" && (s.mode === "swing" || s.mode === "pull" || s.mode === "fly")) {
             const h = { x: s.x, y: s.y };
             return {
                 ...base,
@@ -1066,7 +1247,10 @@ function ropeSprites(s: SwingsState): Sprite[] {
         // a rope in her hands is drawn to its knot, which she holds, rather than past her into the ground
         const inHand =
             i === s.held &&
-            (s.mode === "swing" || s.mode === "wobble" || (s.mode === "ready" && !r.sway));
+            (s.mode === "swing" ||
+                s.mode === "pull" ||
+                s.mode === "wobble" ||
+                (s.mode === "ready" && !r.sway));
         const long = inHand ? Math.max(3, Math.round(r.r + SWINGROPE_KNOT)) : r.long;
         return {
             key: `rope:${i}`,
@@ -1332,12 +1516,31 @@ export function swingsFrame(s: SwingsState, rest = false): Frame {
     }
     if (L.jumps && s.landings.length > 1)
         marks.push({ kind: "word", x: s.cam.x, y: 2.2, text: sumLine(s), size: 0.8 });
-    const show = L.arc === "always" || (L.arc === "holding" && s.holding);
-    if (show && !rest && s.mode === "swing")
-        marks.push({ kind: "dots", pts: arcOf(s), faint: !s.holding });
+    if (L.arc !== "never" && !rest) {
+        if (s.mode === "pull") marks.push({ kind: "dots", pts: reachOf(s), faint: true });
+        if (s.mode === "swing") {
+            const arc = arcOf(s);
+            marks.push({ kind: "dots", pts: arc.pts, faint: L.arc === "faint" });
+            if (L.arc === "always" && arc.at)
+                marks.push({
+                    kind: "ring",
+                    x: arc.at.x,
+                    y: arc.at.y,
+                    r: 0.6,
+                    on: goodLanding(s, arc.footing),
+                });
+        }
+    }
     if (s.mode === "ready" && !s.touched && !rest) {
         const h = standingHands(s);
-        marks.push({ kind: "word", x: h.x + 0.5, y: h.y - 1.4, text: "hold", size: 0.5 });
+        const sway = s.ropes[s.held]?.sway;
+        marks.push({
+            kind: "word",
+            x: h.x - (sway ? -0.5 : 1.2),
+            y: h.y - 1.4,
+            text: sway ? "tap to reach" : "pull back",
+            size: 0.5,
+        });
     }
     return {
         sprites,
@@ -1370,6 +1573,10 @@ function say(s: SwingsState): string {
     if (s.mode === "swing" && r)
         parts.push(
             `Charlie is swinging on the rope at ${written(L, L.ropes[s.held]?.at ?? 0)}, reaching ${Math.round((amplitudeOf(r, SWINGS.gravity.value) * 180) / Math.PI)} degrees.`,
+        );
+    else if (s.mode === "pull")
+        parts.push(
+            `Charlie is pulled back ${Math.round((s.pulled * 180) / Math.PI)} degrees on the rope, ready to swing.`,
         );
     else if (s.mode === "fly") parts.push(`Charlie is flying, over ${written(L, u(s.x))}.`);
     else if (s.mode === "splash") parts.push("Charlie fell in and is climbing back out.");
@@ -1443,8 +1650,16 @@ export const swingsGame: ActionGame<SwingsState> = {
     touch: true,
     sounds: SOUNDS,
     cover: { art: "charlie", params: { pose: "hang", mood: "excited", hair: "ponytail" } },
-    hint: "Hold Swing, or a finger on the field, to swing higher, and let go to fly. Hold again in the air to catch the next rope.",
-    controls: { go: "Swing" },
+    hint: "Pull Charlie back and let go to start her swinging, or set the pull with left and right and press Pull. Tap, or press Let go, to fly, and tap again in the air to catch the next rope.",
+    controls: { go: "Pull" },
+    goLabel: (s) =>
+        s.mode === "swing"
+            ? "Let go"
+            : s.mode === "fly"
+              ? "Catch"
+              : s.mode === "ready" && s.ropes[s.held]?.sway
+                ? "Reach"
+                : "Pull",
     start: (phase) => startSwings(SWINGS_LEVELS[phase] ?? SWINGS_LEVELS[0], phase),
     step: stepSwings,
     frame: swingsFrame,
@@ -1457,6 +1672,7 @@ export const swingsGame: ActionGame<SwingsState> = {
     },
     cancelInput: (s) => {
         s.holding = false;
+        if (s.mode === "pull") ready(s);
     },
     hum: (s) => {
         const v =
@@ -1474,10 +1690,14 @@ export const swingsGame: ActionGame<SwingsState> = {
         ];
     },
     tuning: SWINGS,
+    // held still, a press winds the pull for a moment; from the swing or the air it is one tap, and
+    // the view then runs on to halfway up the swing going forward, or to a wanted rope in reach
     still: {
-        press: () => Math.round(RATE * 0.6),
+        press: (s) => (s.mode === "ready" && !s.ropes[s.held]?.sway ? Math.round(RATE * 0.6) : 1),
         settling: (s) =>
-            s.mode === "fly" ||
+            (s.mode === "fly" && !catchable(s)) ||
+            (s.mode === "ready" && s.reachFor > 0) ||
+            (s.mode === "swing" && !s.rising) ||
             s.mode === "land" ||
             s.mode === "wobble" ||
             s.mode === "splash" ||
