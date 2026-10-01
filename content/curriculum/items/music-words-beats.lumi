@@ -1,0 +1,30 @@
+# Syllables sung as quavers, two to a beat, with the last held for two beats: the line lasts half
+# the other syllables plus two.
+item music.words-beats v=1 skills=[music.words, fractions.halves] {
+  title "How long is the line?"
+  difficulty (q + n / 10)
+  let n=6..11 q=0..1
+  let right={if q == 0 then n / 2 else (n - 1) / 2 + 2}
+  where (q == 0 and n % 2 == 0 or q == 1 and n % 2 == 1)
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..1
+  }
+
+  scene 36x17 {
+    staff eg notes=[0.5, 0.5, 0.5, 0.5, 2] beats=4 at=canvas(1, 1)
+    text ask "Ana sings a line of {n} syllables. Each syllable is a quaver, half a beat{if q == 1 then \", except the last, which is held for two beats like the bar shown\" else \"\"}. How many beats does the line last?" narrate width=34 below=eg gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == n) point=eg {
+      say "Each quaver is only half a beat, so two syllables share one beat."
+    }
+  }
+  hint "How many quavers make one beat?"
+  hint "Pair the syllables up, two to a beat{if q == 1 then \", and add the held note\" else \"\"}."
+}

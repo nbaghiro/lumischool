@@ -1,0 +1,26 @@
+# Turning the theme's first two lines into C minor: the notes of C minor that differ from C major
+# among them are E (to E flat) and A (to A flat); G, F, D and C stay. B does not appear.
+item music.var-minor v=1 skills=[music.major-minor, music.scales] {
+  title "Into C minor"
+  let q=0..1
+  let ask={pick(q, "This is the first line of the theme. Which note must change to put it in C minor?", "This is the second line of the theme. Which note must change to put it in C minor?")}
+  let right={pick(q, "A becomes A flat", "E becomes E flat")}
+  let o2={pick(q, "G becomes G flat", "D becomes D flat")}
+  let o3={pick(q, "C becomes C sharp", "F becomes F sharp")}
+  let n1={pick(q, "C4", "F4")} n3={pick(q, "G4", "E4")} n5={pick(q, "A4", "D4")} n7={pick(q, "G4", "C4")}
+
+  scene 36x32 {
+    notes bars clef=treble notes=[n1, n1, n3, n3, n5, n5, n7] values=[1, 1, 1, 1, 1, 1, 2] meter=4 letters=true at=canvas(1, 1)
+    text ask "C minor differs from C major in three notes: E, A and B are each a semitone lower, E flat, A flat and B flat. {ask}" narrate width=34 below=bars gap=1
+    choice pick options=[o3, right, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=bars {
+      say "Only E, A and B change in C minor. Which of those three is in this line?"
+    }
+  }
+  hint "Read the letters of the line."
+  hint "Which of them is E, A or B?"
+}

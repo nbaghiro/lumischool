@@ -1,0 +1,21 @@
+# The two-star reason: two woodwinds can play the same note and still be told apart, because each
+# has its own tone colour, its timbre. The wrong reasons confuse timbre with loudness or speed.
+item music.peter-timbre v=1 stars=2 skills=[music.timbre, reasoning.explain] {
+  title "The duck or the cat?"
+  let r=0..1
+
+  scene 36x28 {
+    orchestra band show=["oboe", "clarinet"] sizes=1 labels=1 families=0 ring=-1 at=canvas(1, 1)
+    text ask "Suppose the oboe and the clarinet each play the same note, just as loud and just as long. Ben says a listener could still tell the duck from the cat. How?" narrate width=34 below=band gap=1
+    choice pick options=[pick(r, "Each instrument has its own sound, its timbre", "One of them must be a little louder"), "The cat's note is always shorter", pick(r, "One of them must be a little louder", "Each instrument has its own sound, its timbre")] stack=column below=ask gap=1
+  }
+
+  answer pick="Each instrument has its own sound, its timbre"
+  feedback {
+    when (pick != "Each instrument has its own sound, its timbre") point=band {
+      say "The question says the notes are just as loud and just as long. What is left that could be different?"
+    }
+  }
+  hint "What does the question say is the same about the two notes?"
+  hint "Think of two friends saying the same word. How do you know who spoke?"
+}

@@ -1,0 +1,23 @@
+# The three-star, written and clapped: two bars of the child's own with dotted rhythms that add up,
+# clapped to a grown-up, who looks with the notice list.
+item music.dot-write v=1 stars=3 skills=[music.rhythm, music.composing, music.notation] {
+  title "Two bars with dots"
+  difficulty v
+  let v=0..2
+  let what={pick(v, "two bars of four beats, each with one dotted crotchet and quaver", "two bars of four beats using a dotted crotchet, a dotted minim and quavers", "two bars of three beats using a dotted crotchet and a dotted minim, with a rest")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x20 {
+    notes eg clef=treble notes=[G4, A4, B4, C5] values=[1.5, 0.5, 1, 1] meter=4 letters=false at=canvas(1, 1)
+    text ask "Write {what}, on a staff or as note shapes on a line. Check each bar adds up, then clap it to a grown-up while tapping the beat with your foot." narrate width=34 below=eg gap=1
+  }
+
+  check writing.by-eye look-for="Two bars written with note shapes, each adding up to the beats asked, using the dotted notes asked with a dot after the note head, then clapped with each dotted note held longer than the note after it and the foot keeping a steady beat underneath." notice=["Each bar adds up", "The dots are written after the note", "The long notes are held their full length", "A steady beat underneath"] ask="How did you check that each bar added up?"
+  hint "Write the beats under each note as you go."
+  hint "If a bar is a half beat short, a quaver fills it."
+}

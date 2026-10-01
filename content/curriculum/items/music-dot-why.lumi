@@ -1,0 +1,21 @@
+# The two-star reason: a dotted crotchet lasts one and a half beats, so a half beat is left before
+# the next beat, which is why a quaver so often follows it.
+item music.dot-why v=1 stars=2 skills=[music.rhythm, reasoning.explain] {
+  title "Why a quaver after the dot?"
+  let r=0..1
+
+  scene 36x30 {
+    notes bar clef=treble notes=[G4, A4, B4, C5] values=[1.5, 0.5, 1, 1] meter=4 letters=false at=canvas(1, 1)
+    text ask "Ana notices that a dotted crotchet is nearly always followed by a quaver. Why?" narrate width=34 below=bar gap=1
+    choice pick options=[pick(r, "It lasts 1.5 beats, leaving half a beat", "A dot makes the next note quick"), "Quavers are easier to sing after a dot", pick(r, "A dot makes the next note quick", "It lasts 1.5 beats, leaving half a beat")] stack=column below=ask gap=1
+  }
+
+  answer pick="It lasts 1.5 beats, leaving half a beat"
+  feedback {
+    when (pick != "It lasts 1.5 beats, leaving half a beat") point=bar {
+      say "Count the beats along the bar. Where does the dotted crotchet end, and where is the next beat?"
+    }
+  }
+  hint "How long is a dotted crotchet?"
+  hint "How far is that from the next whole beat?"
+}

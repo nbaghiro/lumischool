@@ -1,0 +1,29 @@
+# A variation that fills every beat with four semiquavers: the line's beats times four. The first
+# line of the theme is eight beats (six crotchets and a minim).
+item music.var-semis v=1 skills=[music.rhythm, multiplication.groups] {
+  title "Every beat in four"
+  difficulty (b / 8)
+  let b={8, 16, 32}
+  let what={pick(b / 8 - (if b == 32 then 2 else 1), "the first line of the theme, 8 beats", "the first two lines, 16 beats", "the whole theme, 32 beats")}
+  level easy {
+    let b={8, 16}
+  }
+  level hard {
+    let b={16, 32}
+  }
+
+  scene 36x23 {
+    notes theme clef=treble notes=[C4, C4, G4, G4, A4, A4, G4] values=[1, 1, 1, 1, 1, 1, 2] meter=4 letters=true at=canvas(1, 1)
+    text ask "In one variation the right hand plays four semiquavers on every beat, all the way through {what}. How many semiquavers is that?" narrate width=34 below=theme gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (b * 4)
+  feedback {
+    when (answer == b * 2) point=theme {
+      say "That would be quavers, two to a beat. Semiquavers come four to a beat."
+    }
+  }
+  hint "How many beats are there?"
+  hint "How many semiquavers fill each beat?"
+}

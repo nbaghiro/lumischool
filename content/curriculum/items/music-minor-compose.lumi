@@ -1,0 +1,23 @@
+# The three-star, written and played: a short tune in E minor using its raised 7th, D sharp, ending
+# on E, marked by a grown-up against what the page asks.
+item music.minor-compose v=1 stars=3 skills=[music.major-minor, music.composing] {
+  title "A tune in a minor key"
+  difficulty v
+  let v=0..2
+  let what={pick(v, "four bars in A minor that end on A", "four bars in E minor that end on E, with a D sharp just before the end", "eight bars in E minor: four that end away from E and four that come home, with D sharp leading to E")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x22 {
+    notes scale clef=treble notes=[E4, Fs4, G4, A4, B4, C5, Ds5, E5] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=0 letters=true at=canvas(1, 1)
+    text ask "The scale is E harmonic minor. Write {what}, in letters with note lengths, four beats in a bar. Then play it to a grown-up on a keyboard." narrate width=34 below=scale gap=1
+  }
+
+  check writing.by-eye look-for="A tune written in letters with note lengths, each bar four beats, using the notes of the minor key asked, ending on its home note with a long note; at medium and hard the raised 7th placed just before the last note so it leads home; at hard a first half that ends away from home; played at a steady speed." notice=["Uses the minor key's notes", "Each bar adds up to four", "Ends on the home note", "The raised 7th leads home"] ask="Where did you put the raised 7th, and how did it change the ending?"
+  hint "Write the ending first: the raised 7th, then the home note, long."
+  hint "Check every bar adds up to four beats."
+}

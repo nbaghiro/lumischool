@@ -1,0 +1,14 @@
+# The call tapped: a bar of five notes, crotchet, two quavers, two crotchets, onsets 0, 1, 1.5, 2,
+# 3.
+item music.call-tap v=1 skills=[music.rhythm] {
+  title "Tap the call"
+
+  scene 30x12 {
+    staff bar notes=[1, 0.5, 0.5, 1, 1] beats=4 at=canvas(1, 1)
+    text ask "This is Ana's call, the bar the leader taps first. Tap it, keeping the beat steady." narrate width=28 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 1, 1.5, 2, 3] grade=3
+  hint "Say ta, ti-ti, ta, ta as you tap."
+  hint "The two quavers share one beat between them."
+}

@@ -1,0 +1,15 @@
+# Pachelbel's ground bass, as the roots Wikipedia gives for it (D, A, B, F sharp, G, D, G, A),
+# played an octave up on the piano from its letters.
+item music.ost-ground v=1 skills=[music.ostinato, music.pitch] {
+  title "Pachelbel's eight notes"
+
+  scene 36x28 {
+    notes bass clef=treble notes=[D4, A3, B3, Fs3, G3, D3, G3, A3] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=4 letters=true at=canvas(1, 1)
+    text ask "These are the eight notes the bass plays again and again in Pachelbel's Canon, raised so they fit the keyboard. Play them in order. F sharp is the black key just above F." narrate width=34 below=bass gap=1
+    piano keys from=C3 whites=15 wide=2 labels=letters below=ask gap=1
+  }
+
+  check music.plays notes=[D4, A3, B3, Fs3, G3, D3, G3, A3]
+  hint "Find D first, the white key between the two black keys."
+  hint "After D the line jumps down to A, then steps up to B."
+}

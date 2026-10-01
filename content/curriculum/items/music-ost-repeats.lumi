@@ -1,0 +1,29 @@
+# How many times a pattern sounds when it is played under a whole song: bars times plays per bar,
+# with the pattern two beats long, so twice in a bar of four.
+item music.ost-repeats v=1 skills=[music.ostinato, multiplication.groups] {
+  title "How many times round?"
+  difficulty (b / 4 + p - 1)
+  let b={4, 8, 12} p=1..2
+  let what={pick(p - 1, "one whole bar long", "two beats long, half a bar")}
+  level easy {
+    let b={4, 8} p=1..1
+  }
+  level hard {
+    let b={8, 12} p=2..2
+  }
+
+  scene 36x19 {
+    countrow row beats=8 meter=4 now=-1 at=canvas(1, 1)
+    text ask "Ana's song is {b} bars long, with four beats in every bar. Ben's ostinato is {what}, and he plays it from the first beat to the last. How many times does he play the pattern?" narrate width=34 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (b * p)
+  feedback {
+    when (p == 2 and answer == b) point=row {
+      say "That is once a bar. A pattern half a bar long fits twice into every bar."
+    }
+  }
+  hint "How many times does the pattern fit into one bar?"
+  hint "Multiply the times in one bar by the number of bars."
+}

@@ -1,0 +1,30 @@
+# The way in: a dot adds half the note's own value. A dotted minim is 3 beats, a dotted crotchet
+# 1.5, a dotted quaver 0.75 and a dotted semibreve 6.
+item music.dot-value v=1 skills=[music.rhythm, music.notation] {
+  title "What a dot adds"
+  difficulty (if k == 0 then 0 else if k == 1 then 1 else 2)
+  let k=0..3
+  let note={pick(k, "minim, worth 2 beats", "crotchet, worth 1 beat", "semibreve, worth 4 beats", "quaver, worth half a beat")}
+  let right={pick(k, 3, 1.5, 6, 0.75)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x21 {
+    notes eg clef=treble notes=[C5, C5, C5] values=[3, 1.5, 0.5] meter=0 letters=false at=canvas(1, 1)
+    text ask "A dot after a note adds half of that note's value again. How many beats does a dotted {note}, last?" narrate width=34 below=eg gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == right * 2) point=eg {
+      say "That doubles the note. The dot adds only half of the note again."
+    }
+  }
+  hint "What is half of the note's value?"
+  hint "Add that half to the note's own value."
+}

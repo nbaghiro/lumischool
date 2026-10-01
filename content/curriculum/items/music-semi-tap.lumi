@@ -1,0 +1,13 @@
+# Four semiquavers and three crotchets tapped: onsets 0, 0.25, 0.5, 0.75, 1, 2, 3.
+item music.semi-tap v=1 skills=[music.rhythm] {
+  title "Tap the paddles"
+
+  scene 30x18 {
+    notes bar clef=treble notes=[G4, G4, G4, G4, C5, C5, C5] values=[0.25, 0.25, 0.25, 0.25, 1, 1, 1] meter=4 letters=false at=canvas(1, 1)
+    text ask "Tap the paddles: four quick taps in the first beat, then three steady beats." narrate width=28 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 0.25, 0.5, 0.75, 1, 2, 3] grade=5
+  hint "Say ti-ka-ti-ka, ta, ta, ta as you tap."
+  hint "The four quick taps all fit inside one beat."
+}

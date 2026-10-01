@@ -1,0 +1,23 @@
+# The three-star, written and clapped: four bars of the child's own alternating five and six beats,
+# marked by a grown-up against what the page asks.
+item music.metre-write v=1 stars=3 skills=[music.metre, music.composing, music.rhythm] {
+  title "A walk that limps"
+  difficulty v
+  let v=0..2
+  let what={pick(v, "four bars, five beats then six, in crotchets and minims", "four bars, five beats then six, with quavers in at least two bars", "four bars, five beats then six, with quavers and one dotted note, and a different rhythm in every bar")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x18 {
+    countrow row beats=11 meter=0 now=-1 at=canvas(1, 1)
+    text ask "Walk across the rope bridge over the gorge in an uneven step. Write a rhythm for it: {what}. Write the time signature at the start of every bar, then clap it to a grown-up." narrate width=34 below=row gap=1
+  }
+
+  check writing.by-eye look-for="Four bars written with note shapes, each with its time signature, alternating 5/4 and 6/4, each bar adding up to its beats, clapped with the first beat of every bar a little stronger so the change can be heard; at medium quavers in two bars; at hard a dotted note and four different rhythms." notice=["Each bar has its time signature", "Each bar adds up", "Five and six alternate", "The first beat of each bar is stronger"] ask="Did the bar of six feel longer when you clapped it? How did you keep count?"
+  hint "Write the time signatures first, then fill each bar."
+  hint "Write the beats under each note to check the total."
+}

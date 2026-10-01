@@ -1,0 +1,32 @@
+# The way in: the instrument with the tune in four movements, from Wikipedia's list of the scoring
+# of The Carnival of the Animals: The Swan the cello, The Elephant the double bass, Fossils the
+# xylophone, Aviary the flute.
+item music.carn-who v=1 skills=[music.instruments, music.listening] {
+  title "Who plays the swan?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let animal={pick(k, "The Swan", "Aviary, the birds", "The Elephant", "Fossils, the old bones")}
+  let right={pick(k, "cello", "flute", "double bass", "xylophone")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 37x40 {
+    orchestra band show=["flute", "cello", "double bass", "xylophone"] sizes=0 labels=1 families=0 ring=-1 at=canvas(1, 1)
+    table guide cols=2 head=["Movement", "What you hear"] cells=["The Swan", "a low string instrument", "Aviary", "a high woodwind", "The Elephant", "the lowest string instrument", "Fossils", "wooden bars, struck"] below=band gap=1
+    text ask "Which instrument plays the tune in {animal}?" narrate width=34 below=guide gap=1
+    choice pick options=["flute", "cello", "double bass", "xylophone"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=guide {
+      say "Read the guide's line for {animal}, then find the instrument in the drawing that matches it."
+    }
+  }
+  hint "Read what the guide says about {animal}."
+  hint "Of the two string instruments, which is the lower and bigger?"
+}

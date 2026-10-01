@@ -1,0 +1,30 @@
+# The family of each character's instrument: the wolf's three horns are brass, Peter's string
+# quartet strings, the hunters' kettle drums percussion and the bird's flute woodwind.
+item music.peter-family v=1 skills=[music.instruments, music.families] {
+  title "Which family?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let who={pick(k, "The bird is played by a flute.", "Peter is played by the strings: two violins, a viola and a cello.", "The wolf is played by three horns.", "The hunters' shots are played on the timpani, the kettle drums.")}
+  let right={pick(k, "woodwind", "strings", "brass", "percussion")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x30 {
+    orchestra band show=["violin", "flute", "horn", "timpani"] sizes=0 labels=1 families=0 ring=-1 at=canvas(1, 1)
+    text ask "{who} Which family of the orchestra is that?" narrate width=34 below=band gap=1
+    choice pick options=["strings", "woodwind", "brass", "percussion"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=band {
+      say "Ask how the instrument makes its sound: a bow or a finger on strings, breath across or through wood, lips buzzing into metal, or a hit."
+    }
+  }
+  hint "How is that instrument played: bowed, blown, buzzed or hit?"
+  hint "Is it bowed, blown through a tube, buzzed with the lips into a cup, or hit? Match that to a family."
+}

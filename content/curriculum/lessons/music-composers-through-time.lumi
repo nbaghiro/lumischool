@@ -1,0 +1,81 @@
+# Composers through time: seven composers in order of birth, the Baroque, Classical and Romantic
+# periods, lives that overlapped, the textures of two periods, works placed by date, and a listening
+# note.
+lesson music-composers-through-time v=1 format=teach grade=6 unit=9 subject=music levels=[easy, medium, hard] {
+  title "Composers through time"
+  goal "Place composers and their works in the Baroque, Classical and Romantic periods by their dates and their sound."
+
+  look {
+    scene 36x10 {
+      timeline line from=1650 to=1950 step=50 years=[1678, 1685, 1756, 1770, 1810, 1840, 1862] labels=["Vivaldi", "Bach", "Mozart", "Beethoven", "Chopin", "Tchaikovsky", "Debussy"] at=canvas(1, 1)
+    }
+    say """
+      On the moon base, the crew's playlist runs through three hundred years of music. Historians
+      divide it into periods. The Baroque, from about 1600 to 1750, is the time of Vivaldi and Bach,
+      when several tunes were often woven together. The Classical period, from about 1750 to 1820,
+      is the time of Haydn and Mozart, with one clear tune over chords. The Romantic period, from
+      about 1800 to 1910, is the time of Chopin and Tchaikovsky. Beethoven stands across the change.
+      """
+  }
+  do {
+    show music.comp-order k=1 easy-k=0 hard-k=1
+    show music.comp-period k=2 easy-k=0 hard-k=2
+    level easy {
+      worked music.comp-overlap k=0 level=medium
+    }
+    show music.comp-overlap k=1
+    show music.comp-texture q=0 hard-q=1
+    show music.comp-work k=1 easy-k=0 hard-k=1
+    show music.comp-period k=1 easy-k=1 hard-k=3
+    level medium hard {
+      show music.comp-order k=2
+      show music.comp-overlap k=2
+    }
+    level easy {
+      show music.comp-order k=1
+      show music.comp-work k=1
+    }
+    level hard {
+      show music.comp-work k=2
+    }
+  }
+  try stars=2 {
+    show music.comp-why r=0 easy-r=1
+  }
+  try stars=3 {
+    show music.comp-note v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "Baroque about 1600 to 1750, Classical about 1750 to 1820, Romantic about 1800 to 1910: a composer belongs where his working years fall."
+  }
+
+  grown-ups """
+    The idea is that the history of music is divided into periods with their own sound, Baroque,
+    Classical and Romantic, and that composers and works are placed in them by their dates and by
+    what they sound like. The step up from grade 5's Water Music, Beethoven's Fifth and The
+    Nutcracker, each one work, is the line through all of them, and the texture of a period. The
+    wrong ideas to watch for are placing a composer by his birth year alone, and expecting periods
+    to have sharp edges when they overlap. In the working, look for the child writing years beside
+    names before ordering. The core orders composers, places them in periods, counts how long two
+    lives overlapped, names each period's texture and places named works; the two-star asks why
+    Beethoven belongs to two periods, and the three-star is a listening note, which you read with
+    the notice list.
+
+    The dates are from Wikipedia: Vivaldi 1678 to 1741 and his Four Seasons published 1725; Bach
+    1685 to 1750; Mozart 1756 to 1791 and Beethoven 1770 to 1827 (list of Classical-era composers);
+    Chopin 1810 to 1849 (list of Romantic-era composers); Tchaikovsky 1840 to 1893; Debussy 1862 to
+    1918 and Clair de lune, written 1890. The periods and textures are from "Classical period
+    (music)": Baroque about 1600 to 1750 with its dense polyphony, Classical about 1750 to 1820 with
+    a clear melody over chords, Romantic about 1800 to 1910. If the overlaps are stuck, draw both
+    lives as bars on the timeline. Off the page, play Spring from The Four Seasons and the Dance of
+    the Sugar Plum Fairy and say which is older. This lesson meets England's key stage 2 aim to
+    "develop an understanding of the history of music", and Russia's programmes, which study
+    composers by period from grade 5 (recalled).
+    """
+  level easy {
+    grown-ups "At this level the composers to order are given in a gentler mix, the periods are of Vivaldi and Tchaikovsky, the overlap of Mozart's and Beethoven's lives is worked once in the teacher's pen before Chopin's and Tchaikovsky's, the texture asked is the Classical one, the works asked are the Baroque one and the one 83 years later, the two-star is as written with its answers in another order, and the note is three sentences."
+  }
+  level hard {
+    grown-ups "At this level the composers to order are more mixed, the periods are of Mozart and Bach, the overlaps are of Chopin and Tchaikovsky and of Vivaldi and Bach, the texture asked is the Baroque one, the works asked include the two written within five years, and the note compares two works from different periods."
+  }
+}

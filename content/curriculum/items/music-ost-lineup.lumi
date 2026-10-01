@@ -1,0 +1,29 @@
+# A pattern that does not fit the bar: three beats long in bars of four, it starts on a bar's first
+# beat again only after twelve beats, three bars. A two-beat pattern does so every bar.
+item music.ost-lineup v=1 skills=[music.ostinato, reasoning.pattern] {
+  title "Back on beat one"
+  difficulty (if p == 2 then 0 else 1)
+  let p={2, 3}
+  let right={if p == 2 then 4 else 12}
+  level easy {
+    let p={2}
+  }
+  level hard {
+    let p={3}
+  }
+
+  scene 36x19 {
+    countrow row beats=12 meter=4 now=-1 at=canvas(1, 1)
+    text ask "Ben's pattern is {p} beats long, and Ana's song has four beats in a bar. Both start together on beat one. After how many beats does Ben's pattern next start on the first beat of a bar?" narrate width=34 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == p) point=row {
+      say "After {p} beats the pattern starts again, but is that the first beat of a bar? Count on along the row."
+    }
+  }
+  hint "Mark where the pattern starts: beat 1, then every {p} beats after."
+  hint "The bars start on beats 1, 5, 9 and so on. Which start is on both lists?"
+}

@@ -1,0 +1,31 @@
+# What Saint-Saens changed in a borrowed tune (Wikipedia): Tortoises is the fast Galop infernal
+# played slowly, so the tempo changed; The Elephant plays a light Mendelssohn tune much lower on the
+# double bass, so the pitch changed.
+item music.carn-changed v=1 skills=[music.elements, music.listening, reasoning.compare] {
+  title "What did he change?"
+  difficulty k
+  let k=0..1
+  let said={pick(k, "For Tortoises, Saint-Saens took a famous fast dance, the Galop from Offenbach's opera, and had it played very slowly.", "For The Elephant, Saint-Saens took a light tune by Mendelssohn, written for fairies, and gave it to the double bass, much lower than it was written.")}
+  let right={pick(k, "tempo", "pitch")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x24 {
+    orchestra band show=["violin", "double bass"] sizes=1 labels=1 families=0 ring=-1 at=canvas(1, 1)
+    text ask "{said} Which element did he change most to turn it into the animal?" narrate width=34 below=band gap=1
+    choice pick options=["pitch", "tempo", "dynamics"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=band {
+      say "Read again what he did to the tune: did he make it slower, lower, or softer?"
+    }
+  }
+  hint "What was the tune like before, and what was it like after?"
+  hint "{pick(k, \"Fast before, slow after: which element is speed?\", \"High and light before, low after: which element is high and low?\")}"
+}

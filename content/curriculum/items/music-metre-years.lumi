@@ -1,0 +1,30 @@
+# Dates from Wikipedia: Hartmann died in 1873; Mussorgsky wrote the suite for piano in June 1874
+# after the memorial exhibition; Ravel's orchestra version came in 1922.
+item music.metre-years v=1 skills=[music.history, time.years] {
+  title "From piano to orchestra"
+  difficulty q
+  let q=0..1
+  let ask={pick(q, "How many years after the piano suite did Ravel write his version for orchestra?", "How many years after Hartmann's death was Ravel's orchestra version made?")}
+  let right={pick(q, 48, 49)}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..1
+  }
+
+  scene 36x23 {
+    timeline line from=1870 to=1930 step=10 years=[1873, 1874, 1922] labels=["Hartmann dies", "piano suite", "Ravel's orchestra"] at=canvas(1, 1)
+    text ask "After his friend the artist Viktor Hartmann died, Modest Mussorgsky visited an exhibition of Hartmann's pictures and wrote a suite for piano, Pictures at an Exhibition, walking between them in the Promenade. {ask}" narrate width=34 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer != right) point=line {
+      say "Find the two years on the timeline and take the earlier from the later."
+    }
+  }
+  hint "Which two years does the question use?"
+  hint "Subtract the earlier from the later."
+}

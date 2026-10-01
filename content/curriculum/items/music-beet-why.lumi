@@ -1,0 +1,21 @@
+# The two-star reason: the motif's rhythm recurs in later movements (Wikipedia), so it can be heard
+# even when its notes change. The wrong reasons put the recognising in loudness or in the notes.
+item music.beet-why v=1 stars=2 skills=[music.motif, music.listening, reasoning.explain] {
+  title "Heard again, changed"
+  let r=0..1
+
+  scene 36x30 {
+    notes motif clef=treble notes=[G4, G4, G4, Ef4, F4, F4, F4, D4] values=[0.5, 0.5, 0.5, 2, 0.5, 0.5, 0.5, 2] meter=0 letters=false at=canvas(1, 1)
+    text ask "The motif comes back in later movements of the symphony, often on different notes. How can a listener still tell it is the same motif?" narrate width=34 below=motif gap=1
+    choice pick options=[pick(r, "Its rhythm, short-short-short-long, stays the same", "It is always the loudest part"), "It is always played on the same notes", pick(r, "It is always the loudest part", "Its rhythm, short-short-short-long, stays the same")] stack=column below=ask gap=1
+  }
+
+  answer pick="Its rhythm, short-short-short-long, stays the same"
+  feedback {
+    when (pick != "Its rhythm, short-short-short-long, stays the same") point=motif {
+      say "The question says the notes change. What else in the motif could stay the same?"
+    }
+  }
+  hint "If the notes change, what is left?"
+  hint "Clap the motif without singing it. Can you still tell what it is?"
+}

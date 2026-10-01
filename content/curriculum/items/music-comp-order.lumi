@@ -1,0 +1,32 @@
+# Composers in order of birth, with their dates from Wikipedia's lists and pages: Vivaldi 1678, Bach
+# 1685, Mozart 1756, Beethoven 1770, Chopin 1810, Tchaikovsky 1840, Debussy 1862.
+item music.comp-order v=1 skills=[music.history, reasoning.order] {
+  title "Oldest first"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let s1={pick(k, "Mozart", "Debussy", "Chopin")}
+  let s2={pick(k, "Vivaldi", "Bach", "Tchaikovsky")}
+  let s3={pick(k, "Tchaikovsky", "Beethoven", "Mozart")}
+  let s4={pick(k, "Beethoven", "Chopin", "Bach")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x37 {
+    table who cols=2 head=["Composer", "Lived"] cells=["Antonio Vivaldi", "1678 to 1741", "Johann Sebastian Bach", "1685 to 1750", "Wolfgang Amadeus Mozart", "1756 to 1791", "Ludwig van Beethoven", "1770 to 1827", "Frederic Chopin", "1810 to 1849", "Pyotr Tchaikovsky", "1840 to 1893", "Claude Debussy", "1862 to 1918"] at=canvas(1, 1)
+    text ask "On the moon base, the crew make a playlist that runs through history. Number these four composers from 1, born first, to 4, born last." narrate width=34 below=who gap=1
+    sequence s items=[s1, s2, s3, s4] blanks=[a, b, c, d] below=ask gap=1
+  }
+
+  answer a=pick(k, 2, 4, 3) b=pick(k, 1, 1, 4) c=pick(k, 4, 2, 2) d=pick(k, 3, 3, 1)
+  feedback {
+    when (a != pick(k, 2, 4, 3)) point=who {
+      say "Read each composer's first year, the year of birth, and order those."
+    }
+  }
+  hint "Write the birth year beside each name."
+  hint "The smallest year is number 1."
+}

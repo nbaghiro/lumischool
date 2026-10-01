@@ -1,0 +1,15 @@
+# The theme played: the French tune of 1761 that Mozart varied, the tune of Twinkle, Twinkle, Little
+# Star; its first line C C G G A A G. Repeats are heard as one, so the check lists C G A G.
+item music.var-play v=1 skills=[music.pitch, music.form] {
+  title "Play the theme"
+
+  scene 36x29 {
+    notes theme clef=treble notes=[C4, C4, G4, G4, A4, A4, G4] values=[1, 1, 1, 1, 1, 1, 2] meter=4 letters=true at=canvas(1, 1)
+    text ask "This is the first line of the theme Mozart wrote twelve variations on. Play it." narrate width=34 below=theme gap=1
+    piano keys from=C4 whites=8 wide=3 labels=letters below=ask gap=1
+  }
+
+  check music.plays notes=[C4, G4, A4, G4]
+  hint "Start on C, then jump up to G."
+  hint "Each note is played twice except the last, which is held."
+}

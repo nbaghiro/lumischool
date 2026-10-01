@@ -1,0 +1,21 @@
+# The two-star reason: Beethoven (1770 to 1827) worked across the end of the Classical period (to
+# about 1820) and the start of the Romantic (from about 1800), so he is placed in both.
+item music.comp-why v=1 stars=2 skills=[music.history, music.periods, reasoning.explain] {
+  title "In two periods"
+  let r=0..1
+
+  scene 36x28 {
+    table eras cols=2 head=["Period", "About"] cells=["Baroque", "1600 to 1750", "Classical", "1750 to 1820", "Romantic", "1800 to 1910"] at=canvas(1, 1)
+    text ask "Books often place Beethoven, who lived from 1770 to 1827, in both the Classical and the Romantic periods. Why?" narrate width=34 below=eras gap=1
+    choice pick options=[pick(r, "His working life spans both periods' years", "He wrote in two countries"), "He changed his name", pick(r, "He wrote in two countries", "His working life spans both periods' years")] stack=column below=ask gap=1
+  }
+
+  answer pick="His working life spans both periods' years"
+  feedback {
+    when (pick != "His working life spans both periods' years") point=eras {
+      say "Put his years beside the table. Which periods do they touch?"
+    }
+  }
+  hint "Which years did Beethoven live?"
+  hint "Do the Classical and Romantic periods share any years?"
+}

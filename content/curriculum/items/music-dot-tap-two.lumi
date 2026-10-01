@@ -1,0 +1,14 @@
+# Two dotted pairs in one bar: dotted crotchet, quaver, dotted crotchet, quaver; onsets 0, 1.5, 2,
+# 3.5.
+item music.dot-tap-two v=1 skills=[music.rhythm] {
+  title "Two long-shorts"
+
+  scene 30x18 {
+    notes bar clef=treble notes=[E4, G4, E4, G4] values=[1.5, 0.5, 1.5, 0.5] meter=4 letters=false at=canvas(1, 1)
+    text ask "Tap this bar with two long-short pairs. Each short note leads into the next long one." narrate width=28 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 1.5, 2, 3.5] grade=4
+  hint "Count 1 2 and, 3 4 and: tap on 1, the and after 2, on 3 and the and after 4."
+  hint "The long notes start on beats 1 and 3."
+}

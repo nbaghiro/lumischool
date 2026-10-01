@@ -1,0 +1,30 @@
+# A dotted note in smaller notes: a dotted crotchet lasts as long as three quavers, a dotted minim
+# six, and a dotted quaver three semiquavers.
+item music.dot-quavers v=1 skills=[music.rhythm, fractions.equivalent] {
+  title "In quavers"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let ask={pick(k, "How many quavers last as long as one dotted crotchet?", "How many quavers last as long as one dotted minim?", "How many semiquavers, each a quarter of a beat, last as long as one dotted quaver?")}
+  let right={pick(k, 3, 6, 3)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x17 {
+    countrow row beats=4 meter=4 now=-1 at=canvas(1, 1)
+    text ask "A quaver lasts half a beat. {ask}" narrate width=34 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (k == 0 and answer == 2) point=row {
+      say "Two quavers make one crotchet. The dot adds half a crotchet more: one more quaver."
+    }
+  }
+  hint "How many beats does the dotted note last?"
+  hint "How many of the small notes fit into that many beats?"
+}

@@ -1,0 +1,29 @@
+# Beats in a written bar with semiquavers, read from the drawn values and added.
+item music.semi-count v=1 skills=[music.rhythm, decimals.add] {
+  title "Add up the bar"
+  difficulty v
+  let v=0..2
+  let y1={pick(v, 0.25, 0.5, 0.25)} y2={pick(v, 0.25, 0.25, 0.25)} y3={pick(v, 0.25, 0.25, 0.5)} y4={pick(v, 0.25, 1, 0.75)} y5={pick(v, 1, 0.5, 0.25)} y6={pick(v, 2, 1, 2)}
+  let right={y1 + y2 + y3 + y4 + y5 + y6}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=1..2
+  }
+
+  scene 36x21 {
+    notes bar clef=treble notes=[E5, D5, C5, D5, E5, C5] values=[y1, y2, y3, y4, y5, y6] meter=0 letters=false at=canvas(1, 1)
+    text ask "How many beats do these six notes last together? A semiquaver is a quarter of a beat." narrate width=34 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer != right) point=bar {
+      say "Write each note's beats under it first: a semiquaver a quarter, a quaver a half, a crotchet one."
+    }
+  }
+  hint "Group the short notes into whole beats first."
+  hint "Then add the longer notes."
+}

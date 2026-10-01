@@ -1,0 +1,31 @@
+# Minor key signatures from their relative majors: A minor none, E minor one sharp (as G major), B
+# minor two (as D major), F sharp minor three (as A major).
+item music.minor-sig v=1 skills=[music.key-signatures, music.major-minor] {
+  title "Sharps in a minor key"
+  difficulty k
+  let k=0..3
+  let key={pick(k, "A minor", "E minor", "B minor", "F sharp minor")}
+  let maj={pick(k, "C major", "G major", "D major", "A major")}
+  let right={k}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x23 {
+    table keys cols=2 head=["Major key", "Sharps"] cells=["C major", "0", "G major", "1", "D major", "2", "A major", "3"] at=canvas(1, 1)
+    text ask "A minor key has the same key signature as its relative major, the major key three semitones above it. {key} is the relative minor of {maj}. How many sharps are in its key signature?" narrate width=34 below=keys gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == right + 1) point=keys {
+      say "The raised 7th of the harmonic minor is written in the music as it comes, not in the key signature."
+    }
+  }
+  hint "Find the relative major in the table."
+  hint "The minor key has the same key signature as that major key."
+}

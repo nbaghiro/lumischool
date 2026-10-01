@@ -1,0 +1,22 @@
+# The two-star reason: raising the 7th puts it a semitone below the home note, a leading note that
+# pulls to it; the natural minor has a whole tone there (Wikipedia, "Minor scale": the natural minor
+# lacks a leading tone).
+item music.minor-why v=1 stars=2 skills=[music.scales, music.major-minor, reasoning.explain] {
+  title "Why raise it?"
+  let r=0..1
+
+  scene 36x30 {
+    notes ends clef=treble notes=[G4, A4, Gs4, A4] values=[1, 2, 1, 2] meter=0 letters=true at=canvas(1, 1)
+    text ask "Ben plays G then A, and then G sharp then A. The second ending sounds much more finished. Why do minor keys often raise the 7th note?" narrate width=34 below=ends gap=1
+    choice pick options=[pick(r, "So it is one semitone below home and pulls to it", "So the scale has more black keys"), "So the tune sounds happier, like a major key", pick(r, "So the scale has more black keys", "So it is one semitone below home and pulls to it")] stack=column below=ask gap=1
+  }
+
+  answer pick="So it is one semitone below home and pulls to it"
+  feedback {
+    when (pick != "So it is one semitone below home and pulls to it") point=ends {
+      say "Count the semitones from G up to A, and from G sharp up to A. Which step is smaller?"
+    }
+  }
+  hint "How far is G from A, and G sharp from A?"
+  hint "A note a semitone below home leans towards it. Which ending has one?"
+}

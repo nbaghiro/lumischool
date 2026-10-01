@@ -1,0 +1,34 @@
+# Texture by period, from Wikipedia, "Classical period (music)": Baroque music often has several
+# tunes woven together (polyphony); Classical music prefers one clear tune over chords. Grade 6's
+# dynamics and texture lesson named them.
+item music.comp-texture v=1 skills=[music.history, music.texture] {
+  title "One tune, or several?"
+  difficulty q
+  let q=0..1
+  let ask={pick(q, "Which texture is typical of the Classical period of Haydn and Mozart?", "Which texture is typical of the Baroque period of Bach and Vivaldi?")}
+  let right={pick(q, "one clear tune with chords under it", "several tunes woven together")}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..1
+  }
+
+  scene 36x40 {
+    column staves space=1 align=start at=canvas(1, 1) {
+      notes top clef=treble notes=[E5, D5, C5, D5, E5, E5, E5] values=[1, 1, 1, 1, 1, 1, 2] meter=4 letters=false
+      notes under clef=treble notes=[C4, E4, G4, C4, E4, G4, C4] values=[1, 1, 1, 1, 1, 1, 2] meter=4 letters=false
+    }
+    text ask "{ask}" narrate width=34 below=staves gap=1
+    choice pick options=["one clear tune with chords under it", "several tunes woven together", "one tune, alone"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=staves {
+      say "The Classical style moved away from the dense weaving of the Baroque to something lighter. Which is which?"
+    }
+  }
+  hint "Which period came first, and which was lighter?"
+  hint "Polyphony means many tunes at once."
+}

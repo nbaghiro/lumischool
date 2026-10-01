@@ -1,0 +1,30 @@
+# Months and years between: the suite in March 1892 and the ballet in December 1892 are nine months
+# apart; Hoffmann's story of 1816 came 76 years before the ballet.
+item music.nut-months v=1 skills=[music.history, time.years] {
+  title "How long between?"
+  difficulty q
+  let q=0..2
+  let ask={pick(q, "How many months after the suite was first played, in March 1892, was the ballet first danced, in December 1892?", "How many years after Hoffmann's story of 1816 was the ballet first danced, in 1892?", "How many years after Dumas's version of 1844 was the ballet first danced, in 1892?")}
+  let right={pick(q, 9, 76, 48)}
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x19 {
+    timeline line from=1810 to=1900 step=15 years=[1816, 1844, 1892] labels=["Hoffmann", "Dumas", "suite, ballet"] at=canvas(1, 1)
+    text ask "{ask}" narrate width=34 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (q == 0 and answer == 10) point=line {
+      say "Count on from March: April is one month later. Count to December."
+    }
+  }
+  hint "Find the two dates in the question."
+  hint "{pick(q, \"Count the months on from March to December.\", \"Take the earlier year from the later.\", \"Take the earlier year from the later.\")}"
+}

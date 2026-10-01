@@ -1,0 +1,76 @@
+# Words set to a rhythm: one note a syllable, the stressed syllable on the strong beat, a rhythm
+# matched to a word, a line tapped as spoken, its length in beats, and a line of the child's own
+# sung.
+lesson music-words-to-rhythm v=1 format=teach grade=4 unit=1 subject=music levels=[easy, medium, hard] {
+  title "Words set to a rhythm"
+  goal "Set words to music with one note a syllable and the strong syllables on the strong beats."
+
+  look {
+    scene 24x10 {
+      staff bar notes=[0.5, 0.5, 1, 0.5, 0.5, 1] beats=4 at=canvas(1, 1)
+    }
+    say """
+      When words are sung, each syllable gets its own note. Spoken words have a rhythm already: in
+      butterfly, the first syllable is strong and long, and the next two are quick. A good setting
+      keeps that rhythm and puts the strongest syllables on the strong beats, beat 1 and beat 3 in a
+      bar of four, so the words sound as they do when we say them. The bar here is butterfly,
+      butterfly: two quick notes and a longer one, twice.
+      """
+  }
+  do {
+    show music.words-syllables k=0 easy-k=0 hard-k=2
+    show music.words-stress k=1 easy-k=0 hard-k=4
+    level easy {
+      worked music.words-beats n=6 q=0 level=medium
+    }
+    show music.words-fit k=0 hard-k=1
+    show music.words-tap
+    show music.words-beats n=8 q=0 hard-n=9 hard-q=1
+    show music.words-syllables k=2 easy-k=1 hard-k=3
+    show music.words-stress k=3 easy-k=1 hard-k=5
+    level medium hard {
+      show music.words-fit k=2
+    }
+    level medium hard {
+      show music.words-beats n=11 q=1
+    }
+    level easy {
+      show music.words-beats n=10 q=0
+    }
+  }
+  try stars=2 {
+    show music.words-why r=0 easy-r=1
+  }
+  try stars=3 {
+    show music.words-sing v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "One note for every syllable, and the strongest syllables on the strong beats."
+  }
+
+  grown-ups """
+    The idea is that words have a rhythm of their own, and that setting them to music means one note
+    for each syllable with the stressed syllables on the strong beats, so they still sound as they
+    are spoken. The wrong ideas to watch for are counting words instead of syllables, and putting a
+    weak syllable on beat 1, which makes ba-NA-na sound like BA-na-na. In the working, look for the
+    child saying the word aloud and clapping it before choosing. The core counts syllables, finds
+    the stressed one, matches a rhythm to a word, taps a line as spoken and works out how many beats
+    a line lasts; the two-star asks why a misplaced stress sounds wrong, and the three-star is a
+    line of the child's own, sung, which you listen to and tick rather than mark.
+
+    The stresses are as English dictionaries give them (recalled for these common words: AP-ple,
+    gui-TAR, po-TA-to, BUT-ter-fly, um-BREL-la, kan-ga-ROO, EL-e-phant, HOL-i-day, to-MA-to,
+    ba-NA-na). If the stress is stuck, say the word with each syllable loud in turn and listen for
+    the one that sounds right. Off the page, take a nursery rhyme and clap it while saying it, then
+    tap the beat: the claps on the taps are the strong syllables. This lesson meets Japan's 2017
+    course of study for music, grades 3 and 4, A表現(1)イ: 「曲想と音楽の構造や歌詞の内容との関わりについて気付くこと」 (notice how
+    the feel of a song goes with its structure and its words), and England's key stage 2 aim to
+    "improvise and compose music for a range of purposes".
+    """
+  level easy {
+    grown-ups "At this level the lines are short, the stresses are in two-syllable words, how long a line lasts is worked once in the teacher's pen before lines of all quavers, the rhythm to match is for elephant, the two-star is as written with its answers in another order, and the line sung is one line."
+  }
+  level hard {
+    grown-ups "At this level the lines are long, the stresses are in umbrella and kangaroo, the rhythms are for holiday and tomato, the lines end on a held note, and the two lines sung end on a long note."
+  }
+}

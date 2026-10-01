@@ -1,0 +1,14 @@
+# A line tapped as it is spoken: but-ter-fly, but-ter-fly, quaver quaver crotchet twice; onsets 0,
+# 0.5, 1, 2, 2.5, 3.
+item music.words-tap v=1 skills=[music.words, music.rhythm] {
+  title "Tap the words"
+
+  scene 30x12 {
+    staff bar notes=[0.5, 0.5, 1, 0.5, 0.5, 1] beats=4 at=canvas(1, 1)
+    text ask "Say but-ter-fly, but-ter-fly, and tap the rhythm written here as you say it." narrate width=28 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 0.5, 1, 2, 2.5, 3] grade=4
+  hint "But and ter are quick, half a beat each; fly is a whole beat."
+  hint "Tap the beat on your knee first, then say the words over it."
+}

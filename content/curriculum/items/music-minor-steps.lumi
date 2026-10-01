@@ -1,0 +1,31 @@
+# Semitones measured in A minor: 7th to home note is 2 in the natural minor (G to A) and 1 in the
+# harmonic (G sharp to A); the harmonic minor's 6th to 7th, F to G sharp, is 3, the awkward step
+# Wikipedia notes.
+item music.minor-steps v=1 skills=[music.scales, music.intervals] {
+  title "Steps in A minor"
+  difficulty q
+  let q=0..2
+  let ask={pick(q, "In A natural minor, how many semitones from the 7th note, G, up to the home note, A?", "In A harmonic minor, how many semitones from the 7th note, G sharp, up to A?", "In A harmonic minor, how many semitones from the 6th note, F, up to the 7th, G sharp?")}
+  let right={pick(q, 2, 1, 3)}
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x23 {
+    notes scale clef=treble notes=[A4, B4, C5, D5, E5, F5, Gs5, A5] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=0 letters=true at=canvas(1, 1)
+    text ask "This is A harmonic minor. A semitone is the step from one key of a keyboard to the very next. {ask}" narrate width=34 below=scale gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (q == 2 and answer == 2) point=scale {
+      say "From F, count every key: F sharp, G, then G sharp."
+    }
+  }
+  hint "Picture a keyboard and step from the first note to the second, one key at a time."
+  hint "Count the black keys as steps too."
+}

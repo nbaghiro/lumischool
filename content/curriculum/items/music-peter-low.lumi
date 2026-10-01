@@ -1,0 +1,33 @@
+# Size and pitch: in a family, the bigger instrument plays lower. The child reads it from the
+# drawing, where the instruments stand in proportion.
+item music.peter-low v=1 skills=[music.instruments, music.pitch] {
+  title "Highest and lowest"
+  difficulty q
+  let q=0..1 f=0..1
+  let ask={pick(q, "highest", "lowest")}
+  let i1={pick(f, "violin", "flute")}
+  let i2={pick(f, "cello", "clarinet")}
+  let i3={pick(f, "double bass", "bassoon")}
+  let right={if q == 0 then i1 else i3}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..1
+  }
+
+  scene 36x22 {
+    orchestra band show=[i1, i2, i3] sizes=1 labels=1 families=0 ring=-1 at=canvas(1, 1)
+    text ask "These three are from one family of the orchestra, drawn to their real sizes against each other. Which plays the {ask} notes?" narrate width=34 below=band gap=1
+    choice pick options=[i1, i2, i3] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=band {
+      say "In one family, a bigger instrument has longer strings or a longer tube, and plays lower. Which is {if q == 0 then \"smallest\" else \"biggest\"}?"
+    }
+  }
+  hint "Compare their sizes in the drawing."
+  hint "Think of chime bars: the longer bar sounds lower."
+}

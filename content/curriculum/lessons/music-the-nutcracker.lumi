@@ -1,0 +1,82 @@
+# The Nutcracker: ballet, opera, symphony and suite told apart, the national dances of the Land of
+# Sweets, the celesta and Petipa's fountains, the story's dates in order, and a dance of the child's
+# own.
+lesson music-the-nutcracker v=1 format=teach grade=5 unit=9 subject=music levels=[easy, medium, hard] {
+  title "The Nutcracker: a ballet's music"
+  goal "Tell a ballet from an opera, a symphony and a suite, and hear how Tchaikovsky's music tells a story without words."
+
+  look {
+    scene 36x10 {
+      orchestra band show=["violin", "flute", "celesta", "trumpet", "timpani"] sizes=0 labels=1 families=0 ring=2 at=canvas(1, 1)
+    }
+    say """
+      In the old city's theatre, the winter show is The Nutcracker, a ballet by Pyotr Ilyich
+      Tchaikovsky, first danced in Saint Petersburg on 18 December 1892. A ballet tells a story with
+      no words: dancers move to the orchestra's music. In the second act, in the Land of Sweets,
+      dances from far away stand for chocolate, coffee, tea and other sweets. For the Sugar Plum
+      Fairy, Tchaikovsky used a new instrument, the celesta, whose keys strike metal plates, because
+      the ballet master wanted music like drops of water from a fountain.
+      """
+  }
+  do {
+    show music.nut-genre k=0 easy-k=0 hard-k=2
+    show music.nut-dances k=0 easy-k=0 hard-k=2
+    level easy {
+      worked music.nut-months q=0 level=medium
+    }
+    show music.nut-celesta q=0 hard-q=1
+    show music.nut-order k=0 easy-k=1 hard-k=2
+    show music.nut-genre k=3 easy-k=1 hard-k=3
+    show music.nut-dances k=3 easy-k=1 hard-k=4
+    level medium hard {
+      show music.nut-months q=1 hard-q=2
+      show music.nut-celesta q=2
+    }
+    level easy {
+      show music.nut-dances k=2
+      show music.nut-months q=1
+    }
+    level hard {
+      show music.nut-dances k=3
+    }
+  }
+  try stars=2 {
+    show music.nut-why r=0 easy-r=1
+  }
+  try stars=3 {
+    show music.nut-sing v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A ballet tells a story with dancers and an orchestra and no words; a suite is a set of its pieces played in a concert."
+  }
+
+  grown-ups """
+    The idea is that large works come in kinds, ballet, opera, symphony and suite, told apart by
+    whether there is a story and who is on the stage, and that in a ballet the music and the dancers
+    carry the story without words. The step up from grade 4's Carnival of the Animals, where each
+    piece drew one animal, is a whole stage work and the suite taken from it, and a new instrument
+    chosen for a sound the choreographer asked for. The wrong ideas to watch for are thinking a
+    story needs words, and calling the celesta a string instrument because it has a keyboard. In the
+    working, look for the child reading across the tables rather than guessing. The core sorts the
+    kinds of work, matches the dances to their sweets, explains the celesta and orders and measures
+    the dates; the two-star asks how a ballet tells a story, and the three-star is a dance tune of
+    the child's own, which you listen to and tick rather than mark.
+
+    The facts are from Wikipedia: "The Nutcracker" (first danced on 18 December 1892 at the
+    Mariinsky Theatre, Saint Petersburg; from E. T. A. Hoffmann's story of 1816 as retold by
+    Alexandre Dumas in 1844; the suite of eight pieces first played on 19 March 1892; the dances of
+    Act II); "Celesta" (hammers striking metal plates over wooden resonators, invented by Auguste
+    Mustel in Paris in 1886, used for the Sugar Plum Fairy at Petipa's wish for music like drops of
+    water from fountains). Tchaikovsky's dates, 1840 to 1893, are from his Wikipedia entry. Listen
+    to the Dance of the Sugar Plum Fairy and the Russian dance one after the other and compare them.
+    This lesson meets Japan's 2017 course of study for music, grades 5 and 6, B鑑賞 (listening to
+    works of many kinds and finding what is good in them; recalled by section), and England's key
+    stage 2 aim to appreciate music "from great composers and musicians".
+    """
+  level easy {
+    grown-ups "At this level the kinds of work to name are ballet and opera, the dances matched are chocolate, coffee and tea, the months between the suite and the ballet are worked once in the teacher's pen before the years from Hoffmann, the celesta is asked about how it is played, the dates are ordered in a gentler mix, the two-star is as written with its answers in another order, and the dance tune needs only a speed."
+  }
+  level hard {
+    grown-ups "At this level the kinds of work to name are symphony and suite, the dances matched are tea, candy canes and marzipan, the celesta is asked about how its sound is made and which family it is most like, the years are counted from Hoffmann and from Dumas, and the dance tune has two different parts."
+  }
+}

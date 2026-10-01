@@ -1,0 +1,13 @@
+# The ostinato tapped twice through: ta, ti-ti, ta, ti-ti; onsets 0, 1, 1.5, 2, 3, 3.5.
+item music.ost-tap v=1 skills=[music.ostinato, music.rhythm] {
+  title "Tap the ostinato"
+
+  scene 30x12 {
+    staff bar notes=[1, 0.5, 0.5, 1, 0.5, 0.5] beats=4 at=canvas(1, 1)
+    text ask "Tap Ben's ostinato: the same two-beat pattern twice in the bar." narrate width=28 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 1, 1.5, 2, 3, 3.5] grade=3
+  hint "Say ta, ti-ti, ta, ti-ti as you tap."
+  hint "Each pair of quavers fits into one beat."
+}

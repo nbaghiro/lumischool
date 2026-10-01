@@ -1,0 +1,29 @@
+# The beat a bar starts on, counted from the start: after alternating bars of five and six, bar 3
+# starts on beat 12, bar 4 on beat 17, bar 5 on beat 23.
+item music.metre-start v=1 skills=[music.metre, reasoning.two-steps] {
+  title "Where does the bar start?"
+  difficulty (b / 2)
+  let b={2, 3, 4, 5}
+  let before={floor(b / 2) * 5 + floor((b - 1) / 2) * 6}
+  level easy {
+    let b={2, 3}
+  }
+  level hard {
+    let b={4, 5}
+  }
+
+  scene 36x17 {
+    countrow row beats=11 meter=0 now=-1 at=canvas(1, 1)
+    text ask "Counting every beat from the start of the Promenade, five in the first bar, six in the second, and so on, on which beat does bar {b} begin?" narrate width=34 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (before + 1)
+  feedback {
+    when (answer == before) point=row {
+      say "That is the last beat of the bar before. The new bar starts on the next beat."
+    }
+  }
+  hint "How many beats are in all the bars before bar {b}?"
+  hint "The new bar starts one beat after those."
+}

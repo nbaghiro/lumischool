@@ -1,0 +1,78 @@
+# The Carnival of the Animals: the instrument with each animal's tune, the elements a description is
+# about, what Saint-Saens changed in borrowed tunes, the scoring counted, the work's dates, and a
+# tune turned into an animal.
+lesson music-carnival-of-the-animals v=1 format=teach grade=4 unit=7 subject=music levels=[easy, medium, hard] {
+  title "The Carnival of the Animals"
+  goal "Describe how music draws an animal by its pitch, tempo, dynamics and timbre."
+
+  look {
+    scene 26x12 {
+      orchestra band show=["flute", "clarinet", "cello", "double bass", "xylophone"] sizes=0 labels=1 families=0 ring=-1 at=canvas(1, 1)
+    }
+    say """
+      In February 1886 the French composer Camille Saint-Saens wrote The Carnival of the Animals,
+      fourteen short movements for a small band with two pianos. Each draws an animal with sound. A
+      composer has four things to work with: pitch, how high or low; tempo, how fast or slow;
+      dynamics, how loud or soft; and timbre, the kind of sound an instrument has. For the tortoises
+      he took a famous fast dance and played it slowly; for the elephant he gave a light tune to the
+      double bass, far lower than it was written.
+      """
+  }
+  do {
+    show music.carn-who k=0 easy-k=0 hard-k=2
+    show music.carn-element k=0 easy-k=0 hard-k=2
+    level easy {
+      worked music.carn-years q=0 level=medium
+    }
+    show music.carn-changed k=0 hard-k=1
+    show music.carn-count k=0 easy-k=0 hard-k=2
+    show music.carn-who k=1 easy-k=1 hard-k=3
+    show music.carn-element k=3 easy-k=1 hard-k=5
+    show music.carn-count k=2 easy-k=1 hard-k=3
+    level medium hard {
+      show music.carn-years q=0 hard-q=1
+      show music.carn-element k=4 hard-k=3
+    }
+    level easy {
+      show music.carn-years q=1
+    }
+  }
+  try stars=2 {
+    show music.carn-why r=0 easy-r=1
+  }
+  try stars=3 {
+    show music.carn-sing v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "Music draws an animal with pitch, tempo, dynamics and timbre: high or low, fast or slow, loud or soft, and the kind of sound."
+  }
+
+  grown-ups """
+    The idea is that a composer paints a character with four things, pitch, tempo, dynamics and
+    timbre, and that changing one of them can turn a tune into something new: a fast dance played
+    slowly becomes tortoises. The wrong ideas to watch for are mixing up pitch with dynamics ("low"
+    meaning soft) and tempo with dynamics. In the working, look for the child finding the one word
+    in a description that names the element. The core finds the instrument for each animal, names
+    the element a description is about, says what Saint-Saens changed in a borrowed tune, counts the
+    instruments in the scoring and works with the work's dates; the two-star asks why the elephant
+    got the double bass, and the three-star is a tune of the child's own turned into an animal,
+    which you listen to and tick rather than mark.
+
+    The facts are from Wikipedia, "The Carnival of the Animals": written in February 1886, fourteen
+    movements, published in April 1922 after Saint-Saens's death in December 1921; the scoring of
+    each movement; Tortoises as a slow version of the Galop infernal from Offenbach's operetta, and
+    The Elephant using themes of Mendelssohn and Berlioz in a much lower register. That he kept it
+    from publication as a joke for friends is recalled. His dates, 1835 to 1921, are from
+    Wikipedia's list of Romantic-era composers. Listen to The Swan and Fossils together and say
+    which element you notice first. This lesson meets Japan's 2017 course of study for music, 第3
+    2(8)ア, the elements to teach: 「音色，リズム，速度，旋律，強弱，音の重なり，和音の響き，音階，調，拍，フレーズなど」 (timbre, rhythm,
+    tempo, melody, dynamics and more), and England's key stage 2 aim to appreciate music "from great
+    composers and musicians".
+    """
+  level easy {
+    grown-ups "At this level the animals asked are the swan and the birds, the elements are named from slow and high, the dates are worked once in the teacher's pen, the tortoises' change is asked, the instruments counted are the pianos and the flute, the years from his birth are counted, the two-star is as written with its answers in another order, and one element of a tune is changed."
+  }
+  level hard {
+    grown-ups "At this level the animals asked are the elephant and the fossils, the elements are named from timbre and dynamics, the change asked is the elephant's pitch, the instruments counted are the clarinet and the cello with the pianos, the years from his birth are counted, and two animals are sung from one tune."
+  }
+}

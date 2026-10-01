@@ -1,0 +1,79 @@
+# Peter and the Wolf: Prokofiev's tale with a character for each instrument, the four families of
+# the orchestra, size and pitch within a family, and timbre, with a character of the child's own.
+lesson music-peter-and-the-wolf v=1 format=teach grade=3 unit=4 subject=music levels=[easy, medium, hard] {
+  title "Peter and the Wolf: a character for every instrument"
+  goal "Name the instrument and the family for each character, and tell high from low by an instrument's size."
+
+  look {
+    scene 26x12 {
+      orchestra band show=["violin", "flute", "oboe", "clarinet", "bassoon", "horn"] sizes=0 labels=1 families=0 ring=-1 at=canvas(1, 1)
+    }
+    say """
+      Sergei Prokofiev wrote Peter and the Wolf for a children's concert in Moscow in 1936. A
+      storyteller tells the tale, and every character has its own instrument and tune: Peter the
+      strings, the bird a flute, the duck an oboe, the cat a clarinet, the grandfather a bassoon,
+      the wolf three horns, and the hunters' shots the timpani. The orchestra's instruments come in
+      four families: strings are bowed or plucked, woodwind are blown, brass are buzzed with the
+      lips, and percussion are hit. Within a family, the bigger the instrument, the lower its notes.
+      """
+  }
+  do {
+    show music.peter-who k=0 easy-k=0 hard-k=2
+    show music.peter-family k=1 easy-k=0 hard-k=2
+    level easy {
+      worked music.peter-low q=0 f=0 level=medium
+    }
+    show music.peter-low q=0 f=1 hard-q=1 hard-f=0
+    show music.peter-count q=0 hard-q=1
+    show music.peter-order k=0 hard-k=1
+    show music.peter-who k=1 easy-k=1 hard-k=3
+    show music.peter-family k=2 easy-k=1 hard-k=3
+    level medium hard {
+      show music.peter-low q=1 f=0 hard-f=1
+    }
+    level easy {
+      show music.peter-count q=1
+    }
+    level medium hard {
+      show music.peter-count q=2 hard-q=2
+    }
+  }
+  try stars=2 {
+    show music.peter-timbre r=0 easy-r=1
+  }
+  try stars=3 {
+    show music.peter-sing v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "The orchestra has four families, strings, woodwind, brass and percussion, and in each family the biggest instrument plays lowest."
+  }
+
+  grown-ups """
+    The idea is that the orchestra's instruments come in four families, sorted by how they make
+    their sound, that a bigger instrument in a family plays lower, and that each instrument has its
+    own tone colour, its timbre, so two can play the same note and still be told apart. The wrong
+    ideas to watch for are sorting by size rather than by how an instrument is played (the harp is a
+    big string instrument; the flute is metal but woodwind), and thinking a sound is told apart only
+    by how loud it is. In the working, look for the child asking "bowed, blown, buzzed or hit?" The
+    core matches characters to instruments, names families, finds the highest and lowest in a
+    family, counts the families in the tale and orders three woodwinds; the two-star asks how two
+    instruments are told apart, and the three-star is a tune of the child's own for a new character,
+    which you listen to and tick rather than mark.
+
+    The facts are from Wikipedia, "Peter and the Wolf": first played at a children's concert in the
+    Moscow Conservatory on 2 May 1936, with each character's instrument as Prokofiev's directions
+    give them. The lesson plays no recording; listen to a full performance together, which many
+    orchestras put online, and raise a hand each time a character's tune comes in. If the families
+    are stuck, make the four sounds with what is at home: pluck a rubber band, blow across a bottle,
+    buzz the lips, and tap a pan. This lesson meets Japan's 2017 course of study for music, grades 3
+    and 4, A表現(2)イ(イ): 「楽器の音色や響きと演奏の仕方との関わり」 (how an instrument's tone and sound go with how it is
+    played), with music for a play among the works to hear (内容の取扱い(3)ア 「劇の音楽」), and England's key
+    stage 2 aim to appreciate music "from great composers and musicians".
+    """
+  level easy {
+    grown-ups "At this level the characters asked are the bird and the duck, the families are woodwind and strings, the highest of the strings is found once in the teacher's pen before the highest woodwind, the count is of woodwind characters, the order is given in a gentle mix, the two-star is as written with its answers in another order, and the new character needs one tune."
+  }
+  level hard {
+    grown-ups "At this level the characters asked are the cat and the grandfather, the families are brass and percussion, the lowest of a family is found, the families in the tale are counted, the blown instruments are counted, the order is more mixed, and the new character comes with a second in another family."
+  }
+}

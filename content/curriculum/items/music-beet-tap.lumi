@@ -1,0 +1,17 @@
+# The motif's rhythm tapped twice, its pauses left out: rest, three quavers, a minim, in 2/4; onsets
+# of the taps 0, 0.5, 1, 1.5, then 4, 4.5, 5, 5.5.
+item music.beet-tap v=1 skills=[music.rhythm, music.motif] {
+  title "Short, short, short, long"
+
+  scene 36x30 {
+    column motif space=1 align=start at=canvas(1, 1) {
+      notes one clef=treble notes=[rest, G4, G4, G4, Ef4] values=[0.5, 0.5, 0.5, 0.5, 2] meter=2 letters=false
+      notes two clef=treble notes=[rest, F4, F4, F4, D4] values=[0.5, 0.5, 0.5, 0.5, 2] meter=2 letters=false
+    }
+    text ask "Tap the opening of Beethoven's Fifth Symphony, written here without its pauses: after a quaver rest, three quick notes and a long one, twice." narrate width=34 below=motif gap=1
+  }
+
+  check music.rhythm beats=[0, 0.5, 1, 1.5, 4, 4.5, 5, 5.5] grade=5
+  hint "Each bar has two beats. The quick notes come after a half-beat silence."
+  hint "Hold each long note for two whole beats before the next rest."
+}

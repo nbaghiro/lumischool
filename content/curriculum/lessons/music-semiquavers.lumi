@@ -1,0 +1,76 @@
+# Four to a beat: semiquavers counted in longer notes, a written bar added, a bar filled, two bars
+# tapped, what the second beam means, and two bars of the child's own for the canal town's mill
+# wheel.
+lesson music-semiquavers v=1 format=teach grade=5 unit=3 subject=music levels=[easy, medium, hard] {
+  title "Four to a beat: semiquavers"
+  goal "Count, write and tap semiquavers, four to a beat, beside quavers and crotchets."
+
+  look {
+    scene 36x12 {
+      notes eg clef=treble notes=[G4, G4, G4, G4, G4, G4, C5, C5] values=[0.25, 0.25, 0.25, 0.25, 0.5, 0.5, 1, 1] meter=4 letters=false at=canvas(1, 1)
+    }
+    say """
+      The mill by the canal turns its wheel fast, and the miller's tune runs to keep up. A crotchet
+      is one beat; a quaver, with one beam, is half a beat; a semiquaver, with two beams, is a
+      quarter of a beat, so four semiquavers fill one beat. Count them ti-ka-ti-ka, or 1 e and a.
+      The bar here has a beat of four semiquavers, a beat of two quavers and two crotchets. Each
+      beam added halves the note again.
+      """
+  }
+  do {
+    show music.semi-many k=0 easy-k=0 hard-k=2
+    show music.semi-count v=1 easy-v=0 hard-v=1
+    level easy {
+      worked music.semi-fill v=0 level=medium
+    }
+    show music.semi-tap
+    show music.semi-fill v=1 hard-v=2
+    show music.semi-many k=1 easy-k=1 hard-k=3
+    show music.semi-tap-mix
+    level medium hard {
+      show music.semi-count v=2
+      show music.semi-fill v=3 hard-v=3
+    }
+    level easy {
+      show music.semi-count v=1
+      show music.semi-many k=2
+    }
+    level hard {
+      show music.semi-many k=1 level=medium
+    }
+  }
+  try stars=2 {
+    show music.semi-why r=0 easy-r=1
+  }
+  try stars=3 {
+    show music.semi-write v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A semiquaver has two beams and lasts a quarter of a beat: four fill one beat."
+  }
+
+  grown-ups """
+    The idea is that each beam halves a note, so a semiquaver is a quarter of a beat and four fill
+    one beat, and that a beat can be filled many ways: four semiquavers, two quavers, a quaver and
+    two semiquavers. The step up from grade 2's quavers and grade 5's syncopation is a note half as
+    long again, counted inside the beat. The wrong ideas to watch for are counting semiquavers as
+    quavers, which halves every answer, and rushing the quick notes so they spill over the beat. In
+    the working, look for the child grouping short notes into whole beats before adding. The core
+    counts semiquavers in longer notes, adds a bar, fills a bar and taps two bars, checked against
+    the beat; the two-star asks what the second beam means, and the three-star is two bars of the
+    child's own, written and tapped, which you look at and listen to with the notice list.
+
+    If the quarters are stuck, say "straw-ber-ry-jam" for four semiquavers and "ap-ple" for two
+    quavers while tapping a beat. Off the page, tap four quick taps on every beat of a song you
+    know, then two, then one. This lesson meets Russia's federal work programme in music for primary
+    school, which lists semiquavers among the rhythms to learn, 「Шестнадцатые」 (as quoted in the
+    audit of grades 5 and 6), and Japan's 2017 course of study for music, 第3 2(9), the notes and
+    rests to understand and use as they work in music.
+    """
+  level easy {
+    grown-ups "At this level the semiquavers are counted in a crotchet, a minim and a dotted crotchet, the bars to add have semiquavers beside quavers and crotchets, filling a bar is worked once in the teacher's pen, the bars to fill leave whole beats, the two-star is as written with its answers in another order, and the two bars each have one beat of semiquavers."
+  }
+  level hard {
+    grown-ups "At this level the semiquavers are counted in a dotted crotchet and a bar of three-four, the bars to add mix semiquavers with dotted notes, the bars to fill leave quarters of a beat, and the two bars use a dotted quaver and semiquaver and a rest."
+  }
+}

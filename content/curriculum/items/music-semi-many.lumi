@@ -1,0 +1,33 @@
+# The way in: a semiquaver is a quarter of a beat, so four fill a crotchet, eight a minim, six a
+# dotted crotchet and twelve a bar of three crotchets.
+item music.semi-many v=1 skills=[music.rhythm, fractions.quarters] {
+  title "How many semiquavers?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let what={pick(k, "one crotchet", "one minim", "one dotted crotchet", "a whole bar of three-four time")}
+  let right={pick(k, 4, 8, 6, 12)}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x25 {
+    notes eg clef=treble notes=[G4, G4, G4, G4, C5] values=[0.25, 0.25, 0.25, 0.25, 1] meter=0 letters=false at=canvas(1, 1)
+    text ask "At the canal mill the wheel's paddles slap the water so fast that the miller's tune needs semiquavers: four of them, each with two beams, fill one beat. How many semiquavers last as long as {what}?" narrate width=34 below=eg gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (k == 2 and answer == 4) point=eg {
+      say "The dot adds half a crotchet more, and half a beat is two more semiquavers."
+    }
+    when (answer == right / 2) point=eg {
+      say "That counts quavers. A semiquaver is half of a quaver, so there are twice as many."
+    }
+  }
+  hint "How many beats does it last?"
+  hint "Four semiquavers fit in every beat."
+}

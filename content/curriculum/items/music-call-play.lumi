@@ -1,0 +1,15 @@
+# The answer played: G F E D C, stepping down to the home note, on the glockenspiel from its
+# letters.
+item music.call-play v=1 skills=[music.pitch, music.form] {
+  title "Play the answer home"
+
+  scene 34x31 {
+    notes resp clef=treble notes=[G4, F4, E4, D4, C4] values=[1, 1, 1, 1, 4] meter=4 letters=true at=canvas(1, 1)
+    text ask "This answer steps down from G all the way home to C. Play it on the glockenspiel, in order." narrate width=32 below=resp gap=1
+    glockenspiel glock from=C4 bars=8 wide=3 below=ask gap=1
+  }
+
+  check music.plays notes=[G4, F4, E4, D4, C4]
+  hint "Start on the bar that says G, and move one bar towards the long end each time."
+  hint "The last note is C, the longest bar."
+}

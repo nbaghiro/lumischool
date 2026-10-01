@@ -1,0 +1,30 @@
+# Beats in a written bar with dotted notes, read from the drawn values: the bar's total, so a wrong
+# time signature can be spotted.
+item music.dot-count v=1 skills=[music.rhythm, decimals.add] {
+  title "How many beats?"
+  difficulty v
+  let v=0..2
+  let y1={pick(v, 1.5, 3, 1.5)} y2={pick(v, 0.5, 1.5, 1.5)} y3={pick(v, 1, 0.5, 1.5)} y4={pick(v, 1, 1, 0.5)}
+  let right={y1 + y2 + y3 + y4}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=1..2
+  }
+
+  scene 36x21 {
+    notes bar clef=treble notes=[C5, B4, A4, G4] values=[y1, y2, y3, y4] meter=0 letters=false at=canvas(1, 1)
+    text ask "How many beats do these four notes last together? A crotchet is 1 beat, and a dot adds half again." narrate width=34 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer != right) point=bar {
+      say "Write the beats under each note first: a dotted minim 3, a dotted crotchet one and a half, a quaver a half."
+    }
+  }
+  hint "Which notes have dots? Count each of those as one and a half times its value."
+  hint "Add the four values."
+}

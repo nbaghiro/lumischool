@@ -1,0 +1,30 @@
+# The beats a bar holds, from its notes' values added: five or six crotchet beats, so its time
+# signature is 5/4 or 6/4. The bar is drawn without a time signature.
+item music.metre-which v=1 skills=[music.metre, music.rhythm] {
+  title "Which time signature?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let w1={pick(k, 2, 1, 1, 1.5)} w2={pick(k, 1, 1, 0.5, 0.5)} w3={pick(k, 1, 2, 0.5, 3)} w4={pick(k, 1, 2, 3, 1)}
+  let total={w1 + w2 + w3 + w4}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x21 {
+    notes bar clef=treble notes=[Bf4, C5, D5, Bf4] values=[w1, w2, w3, w4] meter=0 letters=false at=canvas(1, 1)
+    text ask "This bar of the Promenade has lost its time signature. Counting a crotchet as one beat, how many beats does it hold?" narrate width=34 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer total
+  feedback {
+    when (answer != total) point=bar {
+      say "Write each note's beats under it: a minim 2, a dotted minim 3, a crotchet 1, a quaver a half. Then add."
+    }
+  }
+  hint "Which notes have dots? A dot adds half the note again."
+  hint "Add the four values."
+}

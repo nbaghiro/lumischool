@@ -1,0 +1,24 @@
+# The Nutcracker's story and music in order of date (Wikipedia): Hoffmann's story 1816, Dumas's
+# version 1844, the suite first played 19 March 1892, the ballet first danced 18 December 1892.
+item music.nut-order v=1 skills=[music.history, time.timeline, reasoning.order] {
+  title "What came first?"
+  let k=0..2
+  let s1={pick(k, "the ballet first danced, 1892", "Dumas retells the story, 1844", "the suite first played, March 1892")}
+  let s2={pick(k, "Hoffmann writes the story, 1816", "the suite first played, March 1892", "the ballet first danced, 1892")}
+  let s3={pick(k, "the suite first played, March 1892", "the ballet first danced, 1892", "Hoffmann writes the story, 1816")}
+  let s4={pick(k, "Dumas retells the story, 1844", "Hoffmann writes the story, 1816", "Dumas retells the story, 1844")}
+
+  scene 36x19 {
+    text ask "Number these from 1, the earliest, to 4. The ballet was first danced in December." narrate width=34 at=canvas(1, 1)
+    sequence s items=[s1, s2, s3, s4] blanks=[a, b, c, d] below=ask gap=1
+  }
+
+  answer a=pick(k, 4, 2, 3) b=pick(k, 1, 3, 4) c=pick(k, 3, 4, 1) d=pick(k, 2, 1, 2)
+  feedback {
+    when (a != pick(k, 4, 2, 3)) point=s {
+      say "Compare the years first. Two happened in 1892: which month was each?"
+    }
+  }
+  hint "Put the years in order first."
+  hint "In 1892, March comes before December."
+}

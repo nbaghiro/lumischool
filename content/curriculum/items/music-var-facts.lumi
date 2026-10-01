@@ -1,0 +1,34 @@
+# From Wikipedia, "Twelve Variations on Ah vous dirai-je, Maman": twelve variations in 2/4 except
+# the last, in 3/4; variation 8 in C minor; tempo marks only on the last two, Adagio and Allegro.
+item music.var-facts v=1 skills=[music.form, data.read] {
+  title "Twelve variations"
+  difficulty q
+  let q=0..3
+  let ask={pick(q, "Which variation is in a minor key?", "Which variation is marked Adagio, slowly?", "How many of the twelve variations are in 2/4?", "How many variations come after the one in the minor key?")}
+  let right={pick(q, 8, 11, 11, 4)}
+  let h2={pick(q, "Look for minor.", "Look for Adagio.", "Find the one that is not in two-four, and take it away.", "List the numbers after the minor one.")}
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=2..3
+  }
+
+  scene 36x23 {
+    table facts cols=2 head=["Variation", "What is special"] cells=["1 to 7", "C major, 2/4", "8", "C minor, 2/4", "9 and 10", "C major, 2/4", "11", "C major, 2/4, Adagio", "12", "C major, 3/4, Allegro"] at=canvas(1, 1)
+    text ask "Mozart's twelve variations on the theme, written around 1781 or 1782 for piano. {ask}" narrate width=34 below=facts gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (q == 3 and answer == 5) point=facts {
+      say "Count the variations after 8: 9, 10, 11 and 12."
+    }
+    when (q == 2 and answer == 12) point=facts {
+      say "Read the last row: one of them is in 3/4."
+    }
+  }
+  hint "Read the right-hand column for what the question asks about."
+  hint "{h2}"
+}

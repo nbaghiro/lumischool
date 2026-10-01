@@ -1,0 +1,30 @@
+# The way in: how many notes long the repeating pattern is, read along a line where it comes round
+# again and again. Patterns of two, three and four notes.
+item music.ost-length v=1 skills=[music.ostinato, reasoning.pattern] {
+  title "How long is the pattern?"
+  difficulty (k - 2)
+  let k=2..4
+  let n1={pick(k - 2, "C4", "C4", "C4")} n2={pick(k - 2, "G4", "E4", "E4")} n3={pick(k - 2, "C4", "G4", "G4")} n4={pick(k - 2, "G4", "C4", "E4")}
+  let n5={pick(k - 2, "C4", "E4", "C4")} n6={pick(k - 2, "G4", "G4", "E4")} n7={pick(k - 2, "C4", "C4", "G4")} n8={pick(k - 2, "G4", "E4", "E4")}
+  level easy {
+    let k=2..3
+  }
+  level hard {
+    let k=3..4
+  }
+
+  scene 36x23 {
+    notes line clef=treble notes=[n1, n2, n3, n4, n5, n6, n7, n8] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=4 letters=true at=canvas(1, 1)
+    text ask "Ben plays this line under Ana's song. It is an ostinato: a short pattern played again and again. How many notes long is the pattern before it starts again?" narrate width=34 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer k
+  feedback {
+    when (answer != k) point=line {
+      say "Read the letters from the start. Where does the first letter come back, with the same letters after it?"
+    }
+  }
+  hint "Say the letters aloud from the start."
+  hint "Stop when you hear the beginning again. How many letters did you say before it?"
+}

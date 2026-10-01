@@ -1,0 +1,30 @@
+# Dates from Wikipedia: written 1804 to 1808, first played on 22 December 1808 at the Theater an der
+# Wien in Vienna; Beethoven lived from 1770 to 1827.
+item music.beet-years v=1 skills=[music.history, time.years] {
+  title "A winter night in 1808"
+  difficulty q
+  let q=0..2
+  let ask={pick(q, "For how many years did Beethoven work on it, from 1804 to 1808?", "How many years after 1770, when Beethoven was born, was it first played?", "How many years before Beethoven died, in 1827, was it first played?")}
+  let right={pick(q, 4, 38, 19)}
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x21 {
+    timeline line from=1770 to=1830 step=10 years=[1770, 1804, 1808, 1827] labels=["born", "begun", "first played", "dies"] at=canvas(1, 1)
+    text ask "Ludwig van Beethoven's Fifth Symphony was first played in Vienna on a cold December night in 1808. {ask}" narrate width=34 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer != right) point=line {
+      say "Find the two years on the timeline, and take the earlier from the later."
+    }
+  }
+  hint "Which two years does the question need?"
+  hint "Subtract the earlier year from the later one."
+}

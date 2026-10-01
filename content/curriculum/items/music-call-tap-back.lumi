@@ -1,0 +1,13 @@
+# The response tapped: quavers first, then a minim to finish; onsets 0, 0.5, 1, 2.
+item music.call-tap-back v=1 skills=[music.rhythm, music.form] {
+  title "Tap the response"
+
+  scene 30x12 {
+    staff bar notes=[0.5, 0.5, 1, 2] beats=4 at=canvas(1, 1)
+    text ask "Now be the group. Tap the response, and hold the last note for its two beats." narrate width=28 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 0.5, 1, 2] grade=3
+  hint "Say ti-ti, ta, ta-a as you tap."
+  hint "The minim at the end takes two beats, so wait before the next call."
+}

@@ -388,6 +388,12 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         words: "listening map listen piece sections form ternary rondo binary a b a returns instrument family strings woodwind brass percussion handel water music hornpipe",
     },
     notes: { on: "music", also: [], shows: ["music"], words: "staff treble" },
+    orchestra: {
+        on: "music",
+        also: [],
+        shows: ["music"],
+        words: "orchestra instruments strings woodwind brass percussion violin cello flute oboe clarinet bassoon trumpet horn trombone tuba timpani harp celesta",
+    },
     piano: { on: "music", also: [], shows: ["music"], words: "" },
     strumtrack: {
         on: "music",

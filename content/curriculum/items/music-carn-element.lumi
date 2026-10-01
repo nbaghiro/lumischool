@@ -1,0 +1,31 @@
+# Naming the element a description is about: high or low is pitch, fast or slow is tempo, loud or
+# soft is dynamics, and which instrument's sound is timbre, as Japan's list of music's elements
+# names them.
+item music.carn-element v=1 skills=[music.elements, music.listening] {
+  title "What is it about?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..5
+  let said={pick(k, "the tortoises' tune is very slow", "the birds' tune is very high", "the elephant's tune is played on a deep, buzzy double bass", "the lion's march gets louder and louder", "the swan's tune glides softly", "the fossils' bones rattle on a hard, dry xylophone")}
+  let right={pick(k, "tempo", "pitch", "timbre", "dynamics", "dynamics", "timbre")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..5
+  }
+
+  scene 36x22 {
+    table words cols=2 head=["Element", "It is about"] cells=["pitch", "high or low", "tempo", "fast or slow", "dynamics", "loud or soft", "timbre", "which sound it has"] at=canvas(1, 1)
+    text ask "Ana says: {said}. Which element of the music is she talking about?" narrate width=34 below=words gap=1
+    choice pick options=["pitch", "tempo", "dynamics", "timbre"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=words {
+      say "Find the word in what Ana says that tells you: high or low, fast or slow, loud or soft, or the kind of sound."
+    }
+  }
+  hint "Which word in what Ana said is the important one?"
+  hint "Match that word to the right-hand column."
+}

@@ -1,0 +1,23 @@
+# The three-star, sung: a dance for a sweet of the child's own, planned by its tempo, dynamics and
+# instrument, and hummed, listened to with the notice list.
+item music.nut-sing v=1 stars=3 skills=[music.genre, music.elements, music.composing] {
+  title "A dance for a sweet of your own"
+  difficulty v
+  let v=0..2
+  let extra={pick(v, "Say how fast it goes.", "Say how fast and how loud it goes, and which instrument plays it.", "Say how fast and how loud it goes and which instrument plays it, and give it two parts, A and B, that sound different.")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x18 {
+    orchestra band show=["celesta", "flute", "clarinet", "trumpet"] sizes=0 labels=1 families=0 ring=-1 at=canvas(1, 1)
+    text ask "Choose a sweet of your own for the Land of Sweets, such as honey or lemonade. Make up a short dance tune for it and hum it to a grown-up. {extra}" narrate width=34 below=band gap=1
+  }
+
+  check music.sung look-for="A short tune hummed or sung at a steady speed, whose speed, loudness and chosen instrument suit the sweet as the child describes it; at medium the speed, the loudness and the instrument named; at hard two parts that sound clearly different, and the tune comes back to the first." notice=["A steady dance beat", "The speed suits the sweet", "An instrument chosen and named", "Two parts that sound different"] ask="Why does your sweet's dance go at that speed?"
+  hint "Think of how your sweet would move: sticky and slow, or fizzy and quick?"
+  hint "Hum the tune, then try it faster and slower, and choose."
+}

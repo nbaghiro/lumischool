@@ -504,6 +504,51 @@ and where each comes from:
   pentatonic scale on F sharp, and the major pentatonic is the major scale's 1st, 2nd, 3rd, 5th and
   6th notes (Wikipedia, "Pentatonic scale").
 
+## Grades three to six: the thirteen lessons of 1 October 2026
+
+Thirteen music lessons were added on 1 October 2026 to bring grades three and four to nine music
+lessons each and grades five and six to eleven, for the gaps the audit of grades five and six found
+(named works and composers, instruments and timbre, minor keys, dotted rhythms and semiquavers,
+changing metres) and for the workings of music Japan's course of study lists for grades three and
+four: `music-call-and-response` (grade 3, unit 1), `music-peter-and-the-wolf` (3, 4),
+`music-ostinato` (3, 7), `music-words-to-rhythm` (4, 1), `music-dotted-rhythms` (4, 4),
+`music-carnival-of-the-animals` (4, 7), `music-semiquavers` (5, 3), `music-beethovens-fifth` (5, 6),
+`music-the-nutcracker` (5, 9), `music-minor-keys` (6, 3), `music-theme-and-variations` (6, 4),
+`music-changing-metre` (6, 6) and `music-composers-through-time` (6, 9). They keep the accessibility
+rule: no recording is played, a named work's notes are played from the staff on the drawn keyboard,
+rhythms are tapped and judged by `music.rhythm`, and singing is marked by a grown-up with
+`music.sung`. A new drawing, `orchestra`, draws the instruments of the orchestra in proportion, so
+that size and pitch can be read from it. The facts they use, and where each comes from:
+
+- Call and response, its leader-and-chorus and question-and-answer kinds, and "Shave and a haircut,
+  two bits" (Wikipedia, "Call and response (music)"); the notes drawn for it are recalled.
+- Peter and the Wolf, first played at a children's concert in the Moscow Conservatory on 2 May 1936,
+  with each character's instrument as Prokofiev's directions give them (Wikipedia).
+- Pachelbel's Canon, for three violins and basso continuo, in D major, between about 1680 and 1706,
+  with 28 statements of the ground bass, whose chord roots are D, A, B, F sharp, G, D, G, A
+  (Wikipedia, "Pachelbel's Canon"); Pachelbel 1653 to 1706 (Wikipedia, "List of Baroque composers").
+- The Carnival of the Animals, February 1886, fourteen movements, published April 1922, the scoring of
+  each movement, Tortoises as a slow Galop infernal and The Elephant in a much lower register
+  (Wikipedia); Saint-Saëns 1835 to 1921 (Wikipedia, "List of Romantic-era composers").
+- Beethoven's Fifth, 1804 to 1808, first played on 22 December 1808 at the Theater an der Wien, in C
+  minor, opening G, G, G, E flat, F, F, F, D, its motif recurring in later movements (Wikipedia).
+- The Nutcracker, first danced on 18 December 1892 at the Mariinsky Theatre, from Hoffmann's story of
+  1816 as retold by Dumas in 1844, its suite first played on 19 March 1892, and the dances of Act II
+  (Wikipedia); the celesta, hammers striking metal plates, invented by Mustel in Paris in 1886, used
+  for the Sugar Plum Fairy at Petipa's wish for music like drops of water from fountains (Wikipedia,
+  "Celesta").
+- Minor scales, the relative minor and the harmonic minor's raised 7th (Wikipedia, "Minor scale").
+- Mozart's Twelve Variations on Ah vous dirai-je, Maman, K. 265, about 1781 to 1782, in C major but
+  variation 8 in C minor, in 2/4 but the last in 3/4, Adagio and Allegro on the last two, the tune
+  first appearing in 1761 (Wikipedia). The variation bars in the lesson are written for it.
+- Pictures at an Exhibition, June 1874, after a memorial exhibition of Viktor Hartmann, who died in
+  1873; the Promenade alternating 5/4 and 6/4; Ravel's orchestra version of 1922 (Wikipedia).
+- The Baroque, Classical and Romantic periods and their textures (Wikipedia, "Classical period
+  (music)"); composers' dates from Wikipedia's lists of Classical-era and Romantic-era composers and
+  the composers' own entries (Vivaldi, Bach, Tchaikovsky, Debussy); The Four Seasons published 1725
+  (Wikipedia, "Antonio Vivaldi"); Clair de lune written 1890 (Wikipedia, "Claude Debussy").
+- Word stress in the words set to rhythm is recalled from ordinary dictionaries.
+
 ## Open questions
 
 - Whether the tempo a lesson plays at is a lesson setting or a child's control. We have it as the child's, on the grounds that a metronome nobody can slow down is a machine to fail against, but a grade four phrase written at a tempo has a reason to be played at it.

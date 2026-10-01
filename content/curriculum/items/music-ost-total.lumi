@@ -1,0 +1,29 @@
+# Notes counted over a whole piece: an eight-note ground bass played through so many times.
+# Wikipedia gives 28 statements of the ground bass in Pachelbel's Canon, which the hardest version
+# asks about.
+item music.ost-total v=1 skills=[music.ostinato, multiplication.groups] {
+  title "All the bass notes"
+  difficulty (t / 10)
+  let t={3, 4, 5, 10, 28}
+  level easy {
+    let t={3, 4}
+  }
+  level hard {
+    let t={10, 28}
+  }
+
+  scene 36x21 {
+    notes bass clef=treble notes=[D4, A3, B3, Fs3, G3, D3, G3, A3] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=4 letters=true at=canvas(1, 1)
+    text ask "The bass plays these eight notes {t} times through without a break. How many notes does it play in all?" narrate width=34 below=bass gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer (8 * t)
+  feedback {
+    when (answer == 8 + t) point=bass {
+      say "That adds. The bass plays all eight notes each time through, {t} times."
+    }
+  }
+  hint "How many notes are in one time through?"
+  hint "That many, {t} times."
+}

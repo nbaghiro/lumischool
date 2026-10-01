@@ -1,0 +1,37 @@
+# What a variation changes, shown on the theme's first line: decorated in quick notes (the rhythm),
+# moved into C minor with A flat (the key), or put in three-time (the metre). The bars are written
+# for the lesson, not copied from Mozart's.
+item music.var-changed v=1 skills=[music.form, music.listening, reasoning.compare] {
+  title "What did the variation change?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let right={pick(k, "the rhythm", "the key", "the beats in a bar")}
+  let m={pick(k, 4, 4, 3)}
+  let v1={pick(k, "C4", "C4", "C4")} v2={pick(k, "E4", "C4", "C4")} v3={pick(k, "G4", "G4", "G4")} v4={pick(k, "E4", "G4", "G4")}
+  let v5={pick(k, "A4", "Af4", "A4")} v6={pick(k, "C5", "Af4", "A4")} v7={pick(k, "G4", "G4", "G4")}
+  let x1={pick(k, 0.5, 1, 2)} x2={pick(k, 0.5, 1, 1)} x7={pick(k, 2, 2, 3)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x42 {
+    column bars space=1 align=start at=canvas(1, 1) {
+      notes theme clef=treble notes=[C4, C4, G4, G4, A4, A4, G4] values=[1, 1, 1, 1, 1, 1, 2] meter=4 letters=true
+      notes vary clef=treble notes=[v1, v2, v3, v4, v5, v6, v7] values=[x1, x2, x1, x2, 1, 1, x7] meter=m letters=true
+    }
+    text ask "The top line is the theme. The line below is a variation of it. What did the variation change most?" narrate width=34 below=bars gap=1
+    choice pick options=["the rhythm", "the key", "the beats in a bar"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=bars {
+      say "Compare three things: the numbers at the start, the note lengths, and the letters. Which one changed?"
+    }
+  }
+  hint "Look at the numbers at the start of each line first."
+  hint "Then compare the lengths, and then the letters: is any note now flat?"
+}

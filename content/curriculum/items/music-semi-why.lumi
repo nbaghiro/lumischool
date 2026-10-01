@@ -1,0 +1,22 @@
+# The two-star reason: each extra beam (or flag) halves a note, so a quaver's one beam is half a
+# beat and a semiquaver's two are a quarter. The wrong reasons read the beams as loudness or as two
+# notes.
+item music.semi-why v=1 stars=2 skills=[music.notation, music.rhythm, reasoning.explain] {
+  title "Two beams"
+  let r=0..1
+
+  scene 36x30 {
+    notes eg clef=treble notes=[G4, G4, G4, G4, G4, G4] values=[0.5, 0.5, 0.25, 0.25, 0.25, 0.25] meter=0 letters=false at=canvas(1, 1)
+    text ask "Ben notices that quavers are joined by one beam and semiquavers by two. What does the second beam tell a player?" narrate width=34 below=eg gap=1
+    choice pick options=[pick(r, "Each beam halves the note: two make a quarter beat", "Play the notes twice as loudly"), "Play each note twice", pick(r, "Play the notes twice as loudly", "Each beam halves the note: two make a quarter beat")] stack=column below=ask gap=1
+  }
+
+  answer pick="Each beam halves the note: two make a quarter beat"
+  feedback {
+    when (pick != "Each beam halves the note: two make a quarter beat") point=eg {
+      say "Compare a crotchet, a quaver and a semiquaver. What happens to the length each time a beam is added?"
+    }
+  }
+  hint "A crotchet has no beam and is one beat. What does one beam do to it?"
+  hint "What would a second beam then do?"
+}

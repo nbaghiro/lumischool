@@ -1,0 +1,23 @@
+# The three-star, sung: a character of the child's own, an instrument chosen for it, and its tune
+# hummed or sung, listened to by a grown-up with the notice list.
+item music.peter-sing v=1 stars=3 skills=[music.instruments, music.composing, music.singing] {
+  title "A character of your own"
+  difficulty v
+  let v=0..2
+  let extra={pick(v, "", " Say which family the instrument is in.", " Say which family it is in, and make a second tune for a different character in a different family.")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x19 {
+    orchestra band show=["violin", "flute", "trumpet", "tuba", "timpani"] sizes=0 labels=1 families=1 ring=-1 at=canvas(1, 1)
+    text ask "Choose a new animal for the story, such as a mouse, a bear or a snake. Choose an instrument for it, and hum or sing its tune: high or low, quick or slow, smooth or jumpy, to match the animal.{extra}" narrate width=34 below=band gap=1
+  }
+
+  check music.sung look-for="A short tune hummed or sung for an animal, whose height, speed and shape match it (a mouse high and quick, a bear low and slow), with an instrument chosen whose size and sound suit it; at medium the instrument's family named; at hard a second tune for a second character that is clearly different." notice=["The tune is high or low to suit the animal", "Quick or slow to suit how it moves", "An instrument that suits it", "The child can say why"] ask="Why did you choose that instrument for your animal?"
+  hint "Think about how your animal moves before you choose a speed."
+  hint "Big animals often get big, low instruments. Is yours big or small?"
+}

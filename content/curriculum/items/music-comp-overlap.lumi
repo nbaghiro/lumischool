@@ -1,0 +1,31 @@
+# Lives that overlap: Mozart (1756 to 1791) and Beethoven (1770 to 1827) were both alive from 1770
+# to 1791, 21 years; Bach and Vivaldi from 1685 to 1741, 56; Chopin and Tchaikovsky from 1840 to
+# 1849, 9.
+item music.comp-overlap v=1 skills=[music.history, time.years, reasoning.two-steps] {
+  title "Alive at the same time"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let pair={pick(k, "Mozart and Beethoven", "Chopin and Tchaikovsky", "Vivaldi and Bach")}
+  let right={pick(k, 21, 9, 56)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x21 {
+    timeline line from=1650 to=1950 step=50 years=[1678, 1685, 1756, 1770, 1810, 1840, 1862] labels=["Vivaldi", "Bach", "Mozart", "Beethoven", "Chopin", "Tchaikovsky", "Debussy"] at=canvas(1, 1)
+    text ask "The timeline shows the years they were born. Vivaldi died in 1741, Bach in 1750, Mozart in 1791, Beethoven in 1827, Chopin in 1849 and Tchaikovsky in 1893. For how many years were {pair} both alive?" narrate width=34 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer != right) point=line {
+      say "The overlap starts when the younger one was born and ends when the first of the two died."
+    }
+  }
+  hint "When was the younger one born?"
+  hint "When did the first of the two die? Subtract."
+}

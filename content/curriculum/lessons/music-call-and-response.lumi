@@ -1,0 +1,73 @@
+# Call and response: a leader's call and a group's response, an echo told from an answer, a response
+# that keeps the beat, leader and group lines counted over a song, and an answer that comes home.
+lesson music-call-and-response v=1 format=teach grade=3 unit=1 subject=music levels=[easy, medium, hard] {
+  title "Call and response"
+  goal "Answer a musical call with a response of the same length, and tell an echo from an answer."
+
+  look {
+    scene 24x26 {
+      column all space=1 align=start at=canvas(1, 1) {
+        notes call clef=treble notes=[C4, G4, G4, A4, G4] values=[1, 0.5, 0.5, 1, 1] meter=4
+        notes resp clef=treble notes=[rest, B4, C5, rest] values=[1, 1, 1, 1] meter=4
+      }
+    }
+    say """
+      Music can be a conversation. One singer or player gives a call, and others give a response. In
+      many songs a leader sings a line and the whole group sings back, as people did together at
+      work and still do in songs from all over the world. A response can be an echo, which copies
+      the call exactly, or an answer, which says something new. Here a call of five notes gets an
+      answer of two. Because the beat keeps going, the call and the response fit into it together.
+      """
+  }
+  do {
+    show music.call-echo v=0 easy-v=0 hard-v=2
+    show music.call-fit v=0 hard-v=1
+    level easy {
+      worked music.call-lines g=1 n=8 level=medium
+    }
+    show music.call-tap
+    show music.call-lines g=1 n=12 hard-g=2 hard-n=12
+    show music.call-home v=0 easy-v=1 hard-v=2
+    show music.call-tap-back
+    show music.call-echo v=1 easy-v=1 hard-v=3
+    show music.call-play
+    show music.call-home v=2 easy-v=0 hard-v=3
+  }
+  try stars=2 {
+    show music.call-why r=0 easy-r=1
+  }
+  try stars=3 {
+    show music.call-sing v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A call is answered by a response of the same length, so the beat carries on; an echo copies, an answer says something new."
+  }
+
+  grown-ups """
+    The idea is that music can be a conversation between a leader and a group, that a response lasts
+    as long as the call so the beat never stops, and that an echo copies the call while an answer is
+    new. The wrong idea to watch for is a response that is too short or too long, which the two-star
+    question asks about. In the working, look for the child tapping the beat while they think. The
+    core tells an echo from an answer, chooses a response of the right length, taps a call and a
+    response (checked against the beat), counts the group's lines in a song, finds the answer that
+    ends at home and plays it; the three-star is four answers of the child's own, sung back to your
+    call, which you listen to and tick rather than mark.
+
+    Call and response, and its leader-and-chorus and question-and-answer kinds, are from Wikipedia,
+    "Call and response (music)", which traces it to the music of sub-Saharan Africa and gives "Shave
+    and a haircut, two bits" as its example; the notes drawn in the look are that call and response
+    as it is commonly played (recalled). If the lengths are stuck, clap the call while counting
+    aloud to four, then clap the response while counting again. Off the page, take turns as the
+    leader at a meal: one of you claps a call, everyone claps an answer. This lesson meets Japan's
+    2017 course of study for music, 第3 2(8)イ, the workings of music to teach:
+    「反復，呼びかけとこたえ，変化，音楽の縦と横との関係など」 (repetition, call and response, change, and how parts fit
+    together), and England's key stage 2 aim to "improvise and compose music for a range of
+    purposes".
+    """
+  level easy {
+    grown-ups "At this level the echo is easy to spot, the response to fit is the first bar, counting the group's lines is worked once in the teacher's pen for a song of eight lines, the home answer is easier to find, the two-star is as written with its answers in another order, and the four answers need not come home."
+  }
+  level hard {
+    grown-ups "At this level the answers differ from the call by a single note, the responses to fit are the second and third bars, the group sings two lines for every one of the leader's, the home answer is hidden among answers ending a step away, one more response is fitted, and one of the four answers is an echo on purpose."
+  }
+}

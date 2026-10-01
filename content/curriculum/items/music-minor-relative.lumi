@@ -1,0 +1,35 @@
+# The relative minor starts on the 6th note of the major scale and shares its key signature
+# (Wikipedia, "Minor scale": the relative major sits a third above). C major to A minor, G to E, D
+# to B, A to F sharp.
+item music.minor-relative v=1 skills=[music.major-minor, music.key-signatures] {
+  title "The minor key next door"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let maj={pick(k, "C", "G", "D", "A")}
+  let n1={pick(k, "C4", "G4", "D4", "A4")} n2={pick(k, "D4", "A4", "E4", "B4")} n3={pick(k, "E4", "B4", "Fs4", "Cs5")} n4={pick(k, "F4", "C5", "G4", "D5")}
+  let n5={pick(k, "G4", "D5", "A4", "E5")} n6={pick(k, "A4", "E5", "B4", "Fs5")} n7={pick(k, "B4", "Fs5", "Cs5", "Gs5")} n8={pick(k, "C5", "G5", "D5", "A5")}
+  let right={pick(k, "A minor", "E minor", "B minor", "F sharp minor")}
+  let o2={pick(k, "E minor", "B minor", "F sharp minor", "C sharp minor")}
+  let o3={pick(k, "F minor", "C minor", "G minor", "D minor")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x32 {
+    notes scale clef=treble notes=[n1, n2, n3, n4, n5, n6, n7, n8] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=0 letters=true at=canvas(1, 1)
+    text ask "In the research hut under the midnight sun, Ben plays the scale of {maj} major on his fiddle. Its relative minor uses the same notes, starting on the 6th note. Which minor key is that?" narrate width=34 below=scale gap=1
+    choice pick options=[pick(k % 3, right, o2, o3), pick(k % 3, o2, o3, right), pick(k % 3, o3, right, o2)] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=scale {
+      say "Count along the scale from its first note: 1, 2, 3, 4, 5, 6. Which letter is the 6th?"
+    }
+  }
+  hint "Number the notes of the scale from 1."
+  hint "The minor key is named after the 6th note, sharp and all."
+}

@@ -628,6 +628,7 @@ export const CATALOG = {
         lane: () => import("./music/lane").then((m) => m.noteLane),
         listenmap: () => import("./music/listenmap").then((m) => m.listenMap),
         notes: () => import("./music/notes").then((m) => m.staffNotes),
+        orchestra: () => import("./music/orchestra").then((m) => m.orchestra),
         piano: () => import("./music/piano").then((m) => m.pianoKeys),
         strumtrack: () => import("./music/strumtrack").then((m) => m.strumTrack),
         tab: () => import("./music/tab").then((m) => m.tabLines),

@@ -1,0 +1,34 @@
+# The harmonic minor raises the 7th note by a semitone, so it leads to the home note (Wikipedia,
+# "Minor scale"). A minor: G to G sharp; E minor: D to D sharp; B minor: A to A sharp; D minor: C to
+# C sharp.
+item music.minor-seventh v=1 skills=[music.major-minor, music.scales] {
+  title "Raise the seventh"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let key={pick(k, "A minor", "E minor", "B minor", "D minor")}
+  let seventh={pick(k, "G", "D", "A", "C")}
+  let right={pick(k, "G sharp", "D sharp", "A sharp", "C sharp")}
+  let o2={pick(k, "G", "D", "A", "C")}
+  let o3={pick(k, "F sharp", "C sharp", "G sharp", "B")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x20 {
+    countrow row beats=8 meter=4 now=6 at=canvas(1, 1)
+    text ask "In {key}, the 7th note of the natural minor scale is {seventh}. The harmonic minor raises the 7th note by one semitone. What is the 7th note of {key} harmonic minor?" narrate width=34 below=row gap=1
+    choice pick options=[pick(k % 3, right, o2, o3), pick(k % 3, o2, o3, right), pick(k % 3, o3, right, o2)] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=row {
+      say "Raising a note by a semitone makes it sharp: one key higher, black or white."
+    }
+  }
+  hint "What does raising a note by a semitone do to its name?"
+  hint "Start from {seventh} and go one key up."
+}

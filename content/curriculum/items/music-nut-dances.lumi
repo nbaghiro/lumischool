@@ -1,0 +1,32 @@
+# The national dances of Act II, each a sweet or a drink (Wikipedia, "The Nutcracker"): Spanish
+# chocolate, Arabian coffee, Chinese tea, Russian candy canes, and the marzipan reed flutes.
+item music.nut-dances v=1 skills=[music.genre, music.world] {
+  title "A dance for every sweet"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..4
+  let what={pick(k, "chocolate", "coffee", "tea", "candy canes", "marzipan")}
+  let right={pick(k, "Spanish", "Arabian", "Chinese", "Russian", "reed flutes")}
+  let o2={pick(k, "Arabian", "Chinese", "Russian", "Spanish", "Arabian")}
+  let o3={pick(k, "Russian", "Spanish", "reed flutes", "Chinese", "Russian")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=2..4
+  }
+
+  scene 36x26 {
+    table act cols=2 head=["Dance in Act II", "Stands for"] cells=["Spanish", "chocolate", "Arabian", "coffee", "Chinese", "tea", "Russian", "candy canes", "reed flutes", "marzipan"] at=canvas(1, 1)
+    text ask "In the second act of The Nutcracker, the Land of Sweets welcomes Clara with dances from far away, each standing for a sweet or a drink. Which dance stands for {what}?" narrate width=34 below=act gap=1
+    choice pick options=[pick(k % 3, right, o2, o3), pick(k % 3, o2, o3, right), pick(k % 3, o3, right, o2)] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=act {
+      say "Find {what} in the right-hand column and read across to the dance."
+    }
+  }
+  hint "Look in the column that says what each dance stands for."
+  hint "Read across from {what} to the left."
+}

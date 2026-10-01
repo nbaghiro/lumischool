@@ -1,0 +1,31 @@
+# Four kinds of large work told apart by what they are: a ballet is a story danced to an orchestra
+# with no words; an opera is a story sung; a symphony is for orchestra alone in several movements; a
+# suite is a set of pieces, such as those Tchaikovsky took from his ballet for concerts.
+item music.nut-genre v=1 skills=[music.genre, music.listening] {
+  title "Ballet, opera, symphony or suite?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let what={pick(k, "a story told by dancers on a stage, with an orchestra and no words", "a story sung by singers in costume, with an orchestra", "a work for orchestra alone in several movements, with no story or stage, such as Beethoven's Fifth", "a set of pieces taken from a longer work to be played in a concert, such as the eight Tchaikovsky took from The Nutcracker")}
+  let right={pick(k, "ballet", "opera", "symphony", "suite")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x24 {
+    table kinds cols=3 head=["Kind", "Story?", "On stage"] cells=["ballet", "yes", "dancers", "opera", "yes", "singers", "symphony", "no", "nobody", "suite", "maybe", "nobody"] at=canvas(1, 1)
+    text ask "Which kind of work is {what}?" narrate width=34 below=kinds gap=1
+    choice pick options=["ballet", "opera", "symphony", "suite"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=kinds {
+      say "Is there a story? Who, if anyone, is on the stage? Read across the table."
+    }
+  }
+  hint "Who is on the stage: dancers, singers, or nobody?"
+  hint "If nobody, is it a work of its own, or pieces taken from a longer one?"
+}

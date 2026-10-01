@@ -1,0 +1,33 @@
+# The response keeps the beat going: it lasts as long as the call, four beats. Each version puts the
+# bar of four in another place; the others hold three and five.
+item music.call-fit v=1 skills=[music.rhythm, music.form] {
+  title "A response that fits"
+  difficulty (if v == 0 then 0 else 1)
+  let v=0..2
+  let right={pick(v, "A", "B", "C")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=1..2
+  }
+
+  scene 36x30 {
+    column bars space=1 align=start at=canvas(1, 1) {
+      staff a notes=[pick(v, 1, 1, 2), pick(v, 1, 1, 2), pick(v, 2, 1, 1)] beats=0
+      staff b notes=[pick(v, 1, 2, 1), pick(v, 1, 1, 1), pick(v, 1, 1, 1)] beats=0
+      staff c notes=[pick(v, 2, 2, 1), pick(v, 2, 2, 2), pick(v, 1, 1, 1)] beats=0
+    }
+    text ask "Ana's call lasts four beats, and the response must last four beats too, so the next call comes in on time. The three bars are A, B and C from the top. Which bar fits?" narrate width=34 below=bars gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=bars {
+      say "Add up that bar: a crotchet is one beat, a quaver half a beat and a minim two. Does it come to four?"
+    }
+  }
+  hint "Count the beats in the top bar first, note by note."
+  hint "One crotchet is 1 beat and one minim is 2 beats."
+}

@@ -1,0 +1,33 @@
+# A named work matched to its period by its date (Wikipedia): Vivaldi's Four Seasons published 1725;
+# Beethoven's Fifth first played 1808; Tchaikovsky's Nutcracker 1892; Debussy's Clair de lune
+# written 1890.
+item music.comp-work v=1 skills=[music.history, music.periods] {
+  title "A work for each period"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..2
+  let ask={pick(k, "Which work comes from the Baroque period?", "Which work was written 83 years after The Four Seasons?", "Which two works were written within five years of each other?")}
+  let right={pick(k, "The Four Seasons", "the Fifth Symphony", "The Nutcracker and Clair de lune")}
+  let o2={pick(k, "The Nutcracker", "The Nutcracker", "The Four Seasons and the Fifth Symphony")}
+  let o3={pick(k, "the Fifth Symphony", "The Four Seasons", "the Fifth Symphony and The Nutcracker")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x28 {
+    table works cols=3 head=["Work", "By", "Year"] cells=["The Four Seasons", "Vivaldi", "1725", "the Fifth Symphony", "Beethoven", "1808", "Clair de lune", "Debussy", "1890", "The Nutcracker", "Tchaikovsky", "1892"] at=canvas(1, 1)
+    text ask "{ask}" narrate width=34 below=works gap=1
+    choice pick options=[o2, right, o3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=works {
+      say "Read the years in the table and compare them with the periods: Baroque to about 1750, Classical about 1750 to 1820, Romantic about 1800 to 1910."
+    }
+  }
+  hint "Find each work's year."
+  hint "Which period's years hold that year?"
+}

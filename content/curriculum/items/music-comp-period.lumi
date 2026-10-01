@@ -1,0 +1,30 @@
+# Periods from Wikipedia, "Classical period (music)": Baroque about 1600 to 1750, Classical about
+# 1750 to 1820, Romantic about 1800 to 1910. Composers whose whole working lives fall in one period.
+item music.comp-period v=1 skills=[music.history, music.periods] {
+  title "Which period?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let who={pick(k, "Antonio Vivaldi, 1678 to 1741", "Pyotr Tchaikovsky, 1840 to 1893", "Wolfgang Amadeus Mozart, 1756 to 1791", "Johann Sebastian Bach, 1685 to 1750")}
+  let right={pick(k, "Baroque", "Romantic", "Classical", "Baroque")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x20 {
+    table eras cols=2 head=["Period", "About"] cells=["Baroque", "1600 to 1750", "Classical", "1750 to 1820", "Romantic", "1800 to 1910"] at=canvas(1, 1)
+    text ask "In which period did {who}, write his music?" narrate width=34 below=eras gap=1
+    choice pick options=["Baroque", "Classical", "Romantic"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=eras {
+      say "A composer writes music as a grown-up. Which period do most of his working years fall in?"
+    }
+  }
+  hint "Which years was he alive and working?"
+  hint "Find the period whose years hold most of them."
+}

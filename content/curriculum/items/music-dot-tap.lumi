@@ -1,0 +1,14 @@
+# The dotted rhythm tapped: a dotted crotchet and a quaver, then two crotchets; onsets 0, 1.5, 2, 3.
+# The quaver comes in just before beat 2.
+item music.dot-tap v=1 skills=[music.rhythm] {
+  title "Tap long, short"
+
+  scene 30x18 {
+    notes bar clef=treble notes=[G4, A4, B4, C5] values=[1.5, 0.5, 1, 1] meter=4 letters=false at=canvas(1, 1)
+    text ask "Tap this bar: the long dotted note, the short quaver just before beat 3, then two steady beats." narrate width=28 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 1.5, 2, 3] grade=4
+  hint "Count 1 and 2 and 3 4: the quaver is on the and after 2."
+  hint "Tap the beat with your foot first, then add the notes."
+}

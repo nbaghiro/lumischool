@@ -1,0 +1,32 @@
+# The way in: Prokofiev's own directions (Wikipedia, "Peter and the Wolf"): the bird a flute, the
+# duck an oboe, the cat a clarinet low and short, the grandfather a bassoon. Read from the listening
+# guide.
+item music.peter-who v=1 skills=[music.instruments, music.listening] {
+  title "Who plays the bird?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let who={pick(k, "the bird", "the duck", "the cat", "the grandfather")}
+  let right={pick(k, "flute", "oboe", "clarinet", "bassoon")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x33 {
+    orchestra band show=["flute", "oboe", "clarinet", "bassoon"] sizes=1 labels=1 families=0 ring=-1 at=canvas(1, 1)
+    table guide cols=2 head=["Character", "What you hear"] cells=["bird", "high and fluttering", "duck", "reedy and waddling", "cat", "low, short, creeping", "grandfather", "lowest, grumbling"] below=band gap=1
+    text ask "In Peter and the Wolf each animal has its own woodwind instrument. Which instrument plays {who}?" narrate width=34 below=guide gap=1
+    choice pick options=["flute", "oboe", "clarinet", "bassoon"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=guide {
+      say "Read how {who} sounds in the guide, then look at the sizes in the drawing: the bigger the woodwind, the lower it plays."
+    }
+  }
+  hint "Read the guide's line for {who}. High, or low?"
+  hint "In the drawing, the biggest woodwind plays lowest and the smallest plays highest."
+}

@@ -1,0 +1,29 @@
+# Semiquavers needed to finish a bar of four: what is left, in quarters of a beat.
+item music.semi-fill v=1 skills=[music.rhythm, fractions.quarters] {
+  title "Fill it with semiquavers"
+  difficulty (if v <= 1 then 0 else 1)
+  let v=0..3
+  let z1={pick(v, 1, 2, 1.5, 1)} z2={pick(v, 1, 1, 1, 1.5)} z3={pick(v, 1, 0.5, 0.75, 0.25)}
+  let right={(4 - z1 - z2 - z3) * 4}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 36x21 {
+    notes bar clef=treble notes=[G4, A4, B4] values=[z1, z2, z3] meter=4 letters=false at=canvas(1, 1)
+    text ask "The miller's bar has four beats, but it is not finished. How many semiquavers would fill the rest of it?" narrate width=34 below=bar gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == right / 4) point=bar {
+      say "That is how many beats are left. Each beat holds four semiquavers."
+    }
+  }
+  hint "How many beats are already in the bar?"
+  hint "How many beats are left, and how many semiquavers is each beat?"
+}

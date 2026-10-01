@@ -1,0 +1,21 @@
+# The two-star reason: a word set with its weak syllable on the strong beat sounds wrong because
+# beat 1 makes whatever lands on it sound stressed. The wrong reasons are about speed and pitch.
+item music.words-why v=1 stars=2 skills=[music.words, music.beat, reasoning.explain] {
+  title "BA-na-na"
+  let r=0..1
+
+  scene 36x26 {
+    countrow row beats=4 meter=4 now=0 at=canvas(1, 1)
+    text ask "Ben sings banana with ba on beat 1, so it sounds like BA-na-na. Ana says it sounds wrong. Why?" narrate width=34 below=row gap=1
+    choice pick options=[pick(r, "Beat 1 makes ba sound strong, but we say ba-NA-na", "Ben sang it too fast"), "A word cannot start on beat 1", pick(r, "Ben sang it too fast", "Beat 1 makes ba sound strong, but we say ba-NA-na")] stack=column below=ask gap=1
+  }
+
+  answer pick="Beat 1 makes ba sound strong, but we say ba-NA-na"
+  feedback {
+    when (pick != "Beat 1 makes ba sound strong, but we say ba-NA-na") point=row {
+      say "Say banana aloud. Which syllable is strongest? Which syllable did Ben put on the strong beat?"
+    }
+  }
+  hint "Which beat of the bar sounds strongest?"
+  hint "Which syllable of banana do we say strongest?"
+}

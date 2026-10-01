@@ -1,0 +1,31 @@
+# Dates from Wikipedia: composed February 1886, published April 1922, after Saint-Saens's death in
+# December 1921. Years between, and the composer's age, from his dates on Wikipedia's list (1835 to
+# 1921).
+item music.carn-years v=1 skills=[music.history, time.years] {
+  title "Kept in a drawer"
+  difficulty q
+  let q=0..2
+  let ask={pick(q, "How many years after he wrote it was it published?", "How many years were there from 1835, when he was born, to the year he wrote it?", "How many years did he live after writing it, to the year he died?")}
+  let right={pick(q, 36, 51, 35)}
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x23 {
+    timeline line from=1830 to=1930 step=20 years=[1835, 1886, 1921, 1922] labels=["born", "written", "dies", "published"] at=canvas(1, 1)
+    text ask "Camille Saint-Saens wrote The Carnival of the Animals in 1886, as a joke for friends, and would not let it be published while he lived. It was published in 1922. {ask}" narrate width=34 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer != right) point=line {
+      say "Find the two years on the timeline, and take the earlier from the later."
+    }
+  }
+  hint "Which two years does the question need?"
+  hint "Take the earlier year from the later one."
+}

@@ -1,0 +1,22 @@
+# The three-star, written after listening: a short note on one work by a composer from the table,
+# its period and what was heard, marked by a grown-up against what the page asks.
+item music.comp-note v=1 stars=3 skills=[music.history, music.listening, writing.report] {
+  title "A listening note"
+  difficulty v
+  let v=0..2
+  let what={pick(v, "three sentences: the composer and work, its period, and one thing you heard", "four sentences: the composer and work, its period, its texture, and one instrument you heard", "a paragraph comparing two works from different periods: their textures, their instruments and how each made you feel")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x10 {
+    text ask "With a grown-up, listen to one of the works in the table, such as Spring from The Four Seasons or the first minutes of Beethoven's Fifth. Then write {what}." narrate width=34 at=canvas(1, 1)
+  }
+
+  check writing.by-eye look-for="A short note written after listening, naming the composer, the work and its period correctly, and describing what was heard in music's own words (texture, instruments, tempo or dynamics) rather than only saying it was good; at hard two works from different periods compared point by point." notice=["Composer, work and period right", "Something heard, described in music's words", "Full sentences", "A comparison across periods"] ask="What did you hear that told you which period it came from?"
+  hint "Listen once just to enjoy it, then again with a pencil."
+  hint "Is it one tune with chords, or several tunes at once? Which instruments can you pick out?"
+}

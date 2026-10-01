@@ -1,0 +1,30 @@
+# Leader and group by line: in a song where the leader sings one line and the group answers with one
+# or with two, which lines are the group's, counted over the whole song.
+item music.call-lines v=1 skills=[music.form, reasoning.pattern] {
+  title "Whose line is it?"
+  difficulty (g + n / 12)
+  let g=1..2 n={8, 12}
+  let right={if g == 1 then n / 2 else n * 2 / 3}
+  where (n % (g + 1) == 0)
+  level easy {
+    let g=1..1
+  }
+  level hard {
+    let g=2..2
+  }
+
+  scene 36x21 {
+    table plan cols=2 head=["Line", "Who sings"] cells=["1", "leader", "2", "group", "3", "{if g == 1 then \"leader\" else \"group\"}", "4", "{if g == 1 then \"group\" else \"leader\"}"] at=canvas(1, 1)
+    text ask "The table shows how the song begins, and the same pattern goes on to the end. The song has {n} lines. How many lines does the group sing?" narrate width=34 below=plan gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (g == 2 and answer == n / 2) point=plan {
+      say "Here the group sings two lines for each one of the leader's. Read the table again."
+    }
+  }
+  hint "How long is the pattern before it starts again?"
+  hint "How many times does the pattern fit into {n} lines, and how many group lines are in each?"
+}

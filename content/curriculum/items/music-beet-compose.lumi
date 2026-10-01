@@ -1,0 +1,23 @@
+# The three-star, written and played: a four-note motif of the child's own, used three times and
+# moved, marked by a grown-up against what the page asks.
+item music.beet-compose v=1 stars=3 skills=[music.motif, music.composing] {
+  title "A motif of your own"
+  difficulty v
+  let v=0..2
+  let what={pick(v, "use it twice, the second time starting one note lower", "use it three times, each time starting one note lower", "use it three times, moving it down, then once more upside down, so it rises where it fell")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x22 {
+    notes motif clef=treble notes=[G4, G4, G4, Ef4] values=[0.5, 0.5, 0.5, 2] meter=0 letters=false at=canvas(1, 1)
+    text ask "Make up a motif of four notes with a rhythm people will remember. Write it in letters and note lengths, then {what}. Play it to a grown-up on a keyboard or sing it." narrate width=34 below=motif gap=1
+  }
+
+  check writing.by-eye look-for="A motif of four notes written with its rhythm, then used again as asked with the same rhythm each time and every note moved by the same step, so a listener can hear it is the same motif; at hard a last statement turned upside down, rising where the motif fell; played or sung at a steady speed." notice=["A motif of four notes with a clear rhythm", "The rhythm kept each time", "Every note moved by the same step", "Played or sung steadily"] ask="What makes your motif easy to remember?"
+  hint "Choose the rhythm first, then the notes."
+  hint "To move it down, start one note lower and keep every step the same."
+}

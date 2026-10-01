@@ -1,0 +1,30 @@
+# Counting the families in the tale: four characters are woodwind (bird, duck, cat, grandfather),
+# one brass (wolf), one strings (Peter) and the hunters' shots percussion.
+item music.peter-count v=1 skills=[music.families, data.count] {
+  title "Counting by family"
+  difficulty (if q == 0 then 0 else 1)
+  let q=0..2
+  let ask={pick(q, "How many of the characters are played by woodwind instruments?", "How many different families of the orchestra does the table use?", "How many characters are played by an instrument that is blown, either woodwind or brass?")}
+  let right={pick(q, 4, 4, 5)}
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x27 {
+    table guide cols=2 head=["Character", "Played by"] cells=["Peter", "strings", "bird", "flute", "duck", "oboe", "cat", "clarinet", "grandfather", "bassoon", "wolf", "three horns", "hunters' shots", "timpani"] at=canvas(1, 1)
+    text ask "{ask}" narrate width=34 below=guide gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer != right) point=guide {
+      say "Write the family beside each row first: strings, woodwind, brass or percussion. Then count."
+    }
+  }
+  hint "Which family is each instrument in?"
+  hint "Flute, oboe, clarinet and bassoon are woodwind; horns are brass; timpani are percussion."
+}

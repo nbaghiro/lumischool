@@ -1,0 +1,33 @@
+# The celesta: a keyboard whose hammers strike metal plates over wooden resonators (Wikipedia,
+# "Celesta"), invented by Auguste Mustel in Paris in 1886; Tchaikovsky gave it the Sugar Plum
+# Fairy's dance because Petipa asked for music like drops of water from fountains.
+item music.nut-celesta v=1 skills=[music.instruments, music.timbre] {
+  title "Drops from a fountain"
+  difficulty q
+  let q=0..2
+  let ask={pick(q, "How is a celesta played?", "How does a celesta make its sound?", "Which family of the orchestra is the celesta most like, by how its sound is made?")}
+  let right={pick(q, "with a keyboard, like a piano", "hammers strike metal plates", "percussion, because something is struck")}
+  let o2={pick(q, "with a bow, like a cello", "air is blown through a tube", "strings, because it has a keyboard")}
+  let o3={pick(q, "by blowing, like a flute", "strings are plucked", "brass, because the plates are metal")}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x30 {
+    orchestra band show=["celesta", "xylophone", "flute"] sizes=0 labels=1 families=0 ring=0 at=canvas(1, 1)
+    text ask "By the fountain in the old city a music box plays the Dance of the Sugar Plum Fairy. In the ballet its tune is on the celesta: its keys work hammers that strike metal plates over wooden boxes. {ask}" narrate width=34 below=band gap=1
+    choice pick options=[o3, right, o2] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=band {
+      say "Read again what the keys of the celesta do. What touches the metal?"
+    }
+  }
+  hint "What does a player press, and what does that move?"
+  hint "Is the sound made by blowing, bowing, plucking or striking?"
+}

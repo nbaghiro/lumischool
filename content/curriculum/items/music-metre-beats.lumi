@@ -1,0 +1,29 @@
+# Bars of five and six beats in turn, as the Promenade's 5/4 and 6/4 alternate (Wikipedia, "Pictures
+# at an Exhibition"): beats in so many bars, the first bar of five.
+item music.metre-beats v=1 skills=[music.metre, reasoning.pattern] {
+  title "Five, six, five, six"
+  difficulty (n / 4)
+  let n={2, 3, 4, 6, 7}
+  let right={floor((n + 1) / 2) * 5 + floor(n / 2) * 6}
+  level easy {
+    let n={2, 3, 4}
+  }
+  level hard {
+    let n={6, 7}
+  }
+
+  scene 36x19 {
+    countrow row beats=11 meter=0 now=-1 at=canvas(1, 1)
+    text ask "Mussorgsky's Promenade changes its time signature every bar: a bar of five beats, then a bar of six, then five again, and so on. How many beats are in the first {n} bars?" narrate width=34 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer == n * 5 or answer == n * 6) point=row {
+      say "The bars are not all the same. Count how many bars of five and how many of six there are."
+    }
+  }
+  hint "How many of the bars are fives, and how many sixes?"
+  hint "The first bar is a five, so with an odd number of bars there is one more five."
+}

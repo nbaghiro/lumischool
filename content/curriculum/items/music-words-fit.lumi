@@ -1,0 +1,35 @@
+# Matching a rhythm to a word: elephant, EL-e-phant, is a long syllable then two short, ta ti-ti,
+# and holiday the same; tomato, to-MA-to, is short, long, short. The wrong bars put the long note
+# elsewhere.
+item music.words-fit v=1 skills=[music.words, music.rhythm] {
+  title "Which rhythm fits the word?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let word={pick(k, "elephant", "holiday", "tomato")}
+  let right={pick(k, "A", "C", "B")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x30 {
+    column bars space=1 align=start at=canvas(1, 1) {
+      staff a notes=[pick(k, 1, 0.5, 1), pick(k, 0.5, 0.5, 0.5), pick(k, 0.5, 1, 0.5)] beats=0
+      staff b notes=[pick(k, 0.5, 0.5, 0.5), pick(k, 0.5, 1, 1), pick(k, 1, 0.5, 0.5)] beats=0
+      staff c notes=[pick(k, 0.5, 1, 0.5), pick(k, 1, 0.5, 0.5), pick(k, 0.5, 0.5, 1)] beats=0
+    }
+    text ask "Ben wants the word {word} to sound the way it is spoken, its strong syllable on the long note. Which rhythm fits it best: A at the top, B in the middle or C at the bottom?" narrate width=34 below=bars gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=bars {
+      say "Say {word} and clap it. Which syllable is long and strong? Find the bar whose long note is in the same place."
+    }
+  }
+  hint "How many syllables does the word have? Each bar must have that many notes."
+  hint "Which syllable is strong: the first, the middle or the last? The long note goes there."
+}

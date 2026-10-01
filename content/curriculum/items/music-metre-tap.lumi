@@ -1,0 +1,13 @@
+# A bar of five tapped: crotchet, two quavers, then three crotchets; onsets 0, 1, 1.5, 2, 3, 4.
+item music.metre-tap v=1 skills=[music.metre, music.rhythm] {
+  title "Tap a bar of five"
+
+  scene 34x16 {
+    notes bar clef=treble notes=[G4, F4, Bf4, C5, D5, Bf4] values=[1, 0.5, 0.5, 1, 1, 1] meter=5 letters=false at=canvas(1, 1)
+    text ask "Tap this bar of five beats, counting 1 2 3 4 5 under your breath." narrate width=32 below=bar gap=1
+  }
+
+  check music.rhythm beats=[0, 1, 1.5, 2, 3, 4] grade=5
+  hint "Count 1, 2 and, 3, 4, 5."
+  hint "Do not stop after four: the bar has five beats."
+}

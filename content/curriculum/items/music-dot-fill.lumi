@@ -1,0 +1,30 @@
+# The note that finishes a bar of four after a dotted crotchet: the dotted crotchet leaves half a
+# beat to the next beat, which a quaver fills. The other bars leave a crotchet or a dotted crotchet.
+item music.dot-fill v=1 skills=[music.rhythm, music.notation] {
+  title "Finish the bar"
+  difficulty (if v == 0 then 0 else 1)
+  let v=0..2
+  let x1={pick(v, 1.5, 1.5, 1)} x2={pick(v, 1, 1, 0.5)} x3={pick(v, 1, 0.5, 1)}
+  let right={pick(v, "a quaver", "a crotchet", "a dotted crotchet")}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=1..2
+  }
+
+  scene 36x34 {
+    notes bar clef=treble notes=[G4, A4, B4] values=[x1, x2, x3] meter=4 letters=false at=canvas(1, 1)
+    text ask "This bar has four beats, but one note is missing from the end. Which note finishes it?" narrate width=34 below=bar gap=1
+    choice pick options=["a quaver", "a crotchet", "a dotted crotchet", "a minim"] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=bar {
+      say "Add the beats you can see, counting a dotted crotchet as one and a half. How many of the four are left?"
+    }
+  }
+  hint "Write each note's beats under it."
+  hint "Take the total from 4. Which note is worth what is left?"
+}

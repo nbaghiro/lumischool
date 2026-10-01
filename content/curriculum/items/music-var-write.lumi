@@ -1,0 +1,24 @@
+# The three-star, written and played: a variation of the child's own on the theme's first line,
+# changing one or more things while the theme stays recognisable, marked by a grown-up against what
+# the page asks.
+item music.var-write v=1 stars=3 skills=[music.form, music.composing] {
+  title "A variation of your own"
+  difficulty v
+  let v=0..2
+  let what={pick(v, "change its rhythm, for example by playing each note as two quavers", "change its rhythm and put it in C minor", "write two variations: one in C minor, and one in three-time with a different rhythm")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x20 {
+    notes theme clef=treble notes=[C4, C4, G4, G4, A4, A4, G4] values=[1, 1, 1, 1, 1, 1, 2] meter=4 letters=true at=canvas(1, 1)
+    text ask "Write a variation on this first line: {what}. Write it in letters with note lengths, and play it to a grown-up straight after the theme." narrate width=34 below=theme gap=1
+  }
+
+  check writing.by-eye look-for="A variation written in letters with note lengths, changing what was asked (the rhythm, the key with A flat in C minor, or the time signature), with each bar adding up, played after the theme so a listener can still hear the theme in it." notice=["The change asked is made", "Each bar adds up", "The theme can still be heard", "Played steadily after the theme"] ask="What did you change, and what did you keep so the theme can still be heard?"
+  hint "Keep the main notes in their places and change only what is asked."
+  hint "In C minor, A becomes A flat; check whether your line has an A."
+}

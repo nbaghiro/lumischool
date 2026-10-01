@@ -1,0 +1,21 @@
+# The two-star reason: a bar of five and a bar of six together make a repeating unit of eleven
+# beats, so the pattern comes round every 11 beats, not every 5 or 22.
+item music.metre-pattern v=1 stars=2 skills=[music.metre, reasoning.pattern, reasoning.explain] {
+  title "How often does it come round?"
+  let r=0..1
+
+  scene 36x26 {
+    countrow row beats=11 meter=0 now=-1 at=canvas(1, 1)
+    text ask "Ana says the five-and-six pattern comes round every 22 beats. Ben says every 11. Who is right, and why?" narrate width=34 below=row gap=1
+    choice pick options=[pick(r, "Ben: a five and a six make it, 11 beats", "Ana: it takes four bars to repeat"), "Neither: it changes every 5 beats", pick(r, "Ana: it takes four bars to repeat", "Ben: a five and a six make it, 11 beats")] stack=column below=ask gap=1
+  }
+
+  answer pick="Ben: a five and a six make it, 11 beats"
+  feedback {
+    when (pick != "Ben: a five and a six make it, 11 beats") point=row {
+      say "After a bar of five and a bar of six, what comes next? Is that where the pattern started?"
+    }
+  }
+  hint "Which bars make one whole pattern before it starts again?"
+  hint "Add their beats."
+}

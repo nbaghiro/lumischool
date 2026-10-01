@@ -1,0 +1,21 @@
+# The two-star reason: every variation keeps the theme recognisable (Wikipedia: "the theme remains
+# recognisable throughout"), which is what makes it a variation and not a new piece.
+item music.var-why v=1 stars=2 skills=[music.form, music.listening, reasoning.explain] {
+  title "Still the same tune?"
+  let r=0..1
+
+  scene 36x32 {
+    notes theme clef=treble notes=[C4, C4, G4, G4, A4, A4, G4] values=[1, 1, 1, 1, 1, 1, 2] meter=4 letters=true at=canvas(1, 1)
+    text ask "One variation is quick, one is in a minor key, one is slow and one is in three-time. Ana says they are all still the same piece. What makes a variation a variation, and not a new tune?" narrate width=34 below=theme gap=1
+    choice pick options=[pick(r, "The theme can still be heard in it", "It is always in the same key"), "It is always the same length", pick(r, "It is always in the same key", "The theme can still be heard in it")] stack=column below=ask gap=1
+  }
+
+  answer pick="The theme can still be heard in it"
+  feedback {
+    when (pick != "The theme can still be heard in it") point=theme {
+      say "The question says one variation is in a minor key. What stays the same in all of them?"
+    }
+  }
+  hint "What is different in each variation? What is left?"
+  hint "Could you hum along with each one?"
+}

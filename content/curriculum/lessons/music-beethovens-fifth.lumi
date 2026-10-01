@@ -1,0 +1,77 @@
+# A motif that builds a symphony: Beethoven's Fifth, its short-short-short-long tapped and played,
+# its two falls measured, the motif found by its rhythm, the work's dates, and a motif of the
+# child's own.
+lesson music-beethovens-fifth v=1 format=teach grade=5 unit=6 subject=music levels=[easy, medium, hard] {
+  title "A motif that builds a symphony: Beethoven's Fifth"
+  goal "Recognise a motif by its rhythm, and follow how a composer moves it and brings it back."
+
+  look {
+    scene 36x12 {
+      notes motif clef=treble notes=[G4, G4, G4, Ef4, F4, F4, F4, D4] values=[0.5, 0.5, 0.5, 2, 0.5, 0.5, 0.5, 2] meter=0 letters=true at=canvas(1, 1)
+    }
+    say """
+      At night the observatory is quiet enough to hear the stars, the astronomer says, and she hums
+      the most famous opening in music. Ludwig van Beethoven's Fifth Symphony, in C minor, begins
+      with four notes: three quick ones and a long one, short-short-short-long, G G G E flat, then
+      the same shape a step lower, F F F D. A short idea like this is called a motif. Beethoven
+      builds whole movements from it, and its rhythm comes back in later movements too.
+      """
+  }
+  do {
+    show music.beet-moved q=0 hard-q=1
+    show music.beet-tap
+    level easy {
+      worked music.beet-years q=0 level=medium
+    }
+    show music.beet-play
+    show music.beet-semitones q=0 hard-q=1
+    show music.beet-count n=2 hard-n=3
+    show music.beet-years q=1 hard-q=2
+    show music.beet-semitones q=2 easy-q=1 hard-q=2
+    show music.beet-count n=4 easy-n=3 hard-n=4
+    level medium {
+      show music.beet-moved q=1
+    }
+    level hard {
+      show music.beet-semitones q=0 level=medium
+    }
+  }
+  try stars=2 {
+    show music.beet-why r=0 easy-r=1
+  }
+  try stars=3 {
+    show music.beet-compose v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A motif is a short idea known by its rhythm; a composer moves it, changes it and brings it back."
+  }
+
+  grown-ups """
+    The idea is that a whole symphony can grow from a motif of four notes, which a listener knows by
+    its rhythm even when its notes move, and that moving a motif by the same step every note is a
+    sequence. The step up from grade 5's composing lesson, where the child moved a chime, is finding
+    the same process in a named work and measuring it: the two falls are both 3rds, but the first is
+    four semitones and the second three. The wrong ideas to watch for are recognising the motif by
+    its notes rather than its rhythm, and missing the black key when counting semitones. In the
+    working, look for the child clapping the rhythm before reading the letters. The core says what
+    changed between the two statements, taps and plays the opening, counts its falls in semitones,
+    finds the motif in a line and works with the dates; the two-star asks how a changed motif is
+    still recognised, and the three-star is a motif of the child's own, which you look at and listen
+    to rather than mark.
+
+    The facts are from Wikipedia, "Symphony No. 5 (Beethoven)": written 1804 to 1808, first played
+    on 22 December 1808 at the Theater an der Wien in Vienna, in C minor, opening G, G, G, E flat,
+    then F, F, F, D, with the short-short-short-long motif recurring in later movements; the first
+    movement is in 2/4, drawn here without its pauses. Beethoven's dates, 1770 to 1827, are from
+    Wikipedia's list of Classical-era composers. Listen to the first minute together and raise a
+    hand each time the rhythm comes. Russia's music programme for grade 5 includes Beethoven's
+    symphonies (recalled); this lesson meets England's key stage 2 aim to appreciate music "from
+    great composers and musicians" and to "develop an understanding of the history of music".
+    """
+  level easy {
+    grown-ups "At this level the change asked is that every note moved lower, the years worked on it are counted once in the teacher's pen, the semitones counted are the two falls, the motif is found in two lines, one with a near miss, the years since Beethoven was born are counted, the two-star is as written with its answers in another order, and the motif of the child's own is used twice."
+  }
+  level hard {
+    grown-ups "At this level the question asks what stayed the same, the semitones are counted for the second fall and the difference, the motif is found three times in longer lines, the years are counted to Beethoven's death, and the motif is used three times and once upside down."
+  }
+}

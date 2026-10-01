@@ -1,0 +1,15 @@
+# The motif's notes played: G G G E flat, F F F D (Wikipedia). Repeated notes are heard as one by
+# music.plays, so the check lists the four changes of note.
+item music.beet-play v=1 skills=[music.pitch, music.motif] {
+  title "Play the opening"
+
+  scene 36x29 {
+    notes motif clef=treble notes=[G4, G4, G4, Ef4, F4, F4, F4, D4] values=[0.5, 0.5, 0.5, 2, 0.5, 0.5, 0.5, 2] meter=0 letters=true at=canvas(1, 1)
+    text ask "Play the opening notes on the keyboard: three Gs and an E flat, then three Fs and a D. E flat is the black key just below E." narrate width=34 below=motif gap=1
+    piano keys from=C4 whites=8 wide=3 labels=letters below=ask gap=1
+  }
+
+  check music.plays notes=[G4, Ef4, F4, D4]
+  hint "Find G first, then move down to the black key between D and E."
+  hint "The second group starts one key lower than the first, on F."
+}

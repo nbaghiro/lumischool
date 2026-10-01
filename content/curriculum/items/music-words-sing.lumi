@@ -1,0 +1,23 @@
+# The three-star, sung: a line of the child's own set to a rhythm with its stresses on strong beats,
+# sung to a grown-up, who ticks the notice list.
+item music.words-sing v=1 stars=3 skills=[music.words, music.singing, music.composing] {
+  title "Your own line, sung"
+  difficulty v
+  let v=0..2
+  let what={pick(v, "a line of four to six syllables about your favourite food", "two lines about a place you know, each one bar of four beats", "two lines about a place you know, each one bar of four beats, the second ending on a long note")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x16 {
+    countrow row beats=8 meter=4 now=-1 at=canvas(1, 1)
+    text ask "Write {what}. Clap it, move it until every strong syllable lands on beat 1 or beat 3, then sing it on a few notes to a grown-up." narrate width=34 below=row gap=1
+  }
+
+  check music.sung look-for="A line of the child's own words sung with one note a syllable, to a steady beat, with the strongest syllables on the strong beats so the words sound as they are spoken; at medium two lines each filling one bar; at hard the second line ending on a held note." notice=["One note for every syllable", "Strong syllables on strong beats", "A steady beat throughout", "The words are clear when sung"] ask="Which word did you have to move to make it fit, and why?"
+  hint "Say your line like a chant first, tapping the beat."
+  hint "If a word sounds odd, move it so its loud syllable lands on a tap."
+}

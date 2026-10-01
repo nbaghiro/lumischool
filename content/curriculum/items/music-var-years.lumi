@@ -1,0 +1,30 @@
+# The tune first appeared in 1761 (Wikipedia); Mozart wrote the variations about 1781 to 1782, when
+# he was about 25; he lived from 1756 to 1791.
+item music.var-years v=1 skills=[music.history, time.years] {
+  title "An old tune made new"
+  difficulty q
+  let q=0..1
+  let ask={pick(q, "About how many years after the tune first appeared in 1761 did Mozart write his variations in 1781?", "Mozart was born in 1756. About how old was he in 1781?")}
+  let right={pick(q, 20, 25)}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..1
+  }
+
+  scene 36x19 {
+    timeline line from=1750 to=1800 step=10 years=[1756, 1761, 1781, 1791] labels=["Mozart born", "tune printed", "variations", "Mozart dies"] at=canvas(1, 1)
+    text ask "{ask}" narrate width=34 below=line gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer != right) point=line {
+      say "Find both years on the timeline and take the earlier from the later."
+    }
+  }
+  hint "Which two years does the question use?"
+  hint "Subtract the earlier from the later."
+}

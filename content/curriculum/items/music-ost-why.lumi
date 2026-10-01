@@ -1,0 +1,21 @@
+# The two-star reason: an ostinato holds the music together while the tune above it changes. The
+# wrong reasons mix it up with loudness and with the words.
+item music.ost-why v=1 stars=2 skills=[music.ostinato, reasoning.explain] {
+  title "Why play the same thing?"
+  let r=0..1
+
+  scene 36x32 {
+    notes bass clef=treble notes=[D4, A3, B3, Fs3, G3, D3, G3, A3] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=4 letters=true at=canvas(1, 1)
+    text ask "In Pachelbel's Canon the bass plays these eight notes 28 times while the violins above it keep changing. Ben says that is boring for the bass. Why do composers use an ostinato?" narrate width=34 below=bass gap=1
+    choice pick options=[pick(r, "It holds the music together under the changes", "It makes the tune above it louder"), "It tells the players the words", pick(r, "It makes the tune above it louder", "It holds the music together under the changes")] stack=column below=ask gap=1
+  }
+
+  answer pick="It holds the music together under the changes"
+  feedback {
+    when (pick != "It holds the music together under the changes") point=bass {
+      say "The violins keep changing above it. What does the bass give them, by staying the same?"
+    }
+  }
+  hint "What stays the same in the piece, and what changes?"
+  hint "Think of a floor the dancers move on. Does the floor move?"
+}

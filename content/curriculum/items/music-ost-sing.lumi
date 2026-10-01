@@ -1,0 +1,23 @@
+# The three-star, sung: an ostinato of the child's own clapped or sung under a song a grown-up
+# sings, kept going to the end, listened to with the notice list.
+item music.ost-sing v=1 stars=3 skills=[music.ostinato, music.singing, music.composing] {
+  title "An ostinato under a song"
+  difficulty v
+  let v=0..2
+  let what={pick(v, "clap a pattern one bar long", "sing a pattern of two or three notes, one bar long", "sing a pattern two bars long that uses three notes")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x16 {
+    countrow row beats=8 meter=4 now=-1 at=canvas(1, 1)
+    text ask "A grown-up sings Frere Jacques. Underneath, {what}, and keep it going, the same every time, to the end of the song." narrate width=34 below=row gap=1
+  }
+
+  check music.sung look-for="An ostinato of the child's own, the length asked, repeated without changing from the first beat of the song to the last while the grown-up sings, keeping the same beat as the song and not being pulled into the tune; at medium and hard it is sung on two or three notes that sit well under the song." notice=["The pattern stays the same each time", "It keeps the song's beat", "It goes on to the end", "It is not pulled into the tune"] ask="What did you do to stop yourself joining in with the tune?"
+  hint "Practise the pattern on its own four times before the song starts."
+  hint "Tap the beat with your foot while you sing your pattern."
+}

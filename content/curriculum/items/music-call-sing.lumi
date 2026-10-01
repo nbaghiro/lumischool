@@ -1,0 +1,23 @@
+# The three-star, sung: a grown-up leads with the same call, and the child answers four times with a
+# new four-beat answer each time, the last coming home.
+item music.call-sing v=1 stars=3 skills=[music.singing, music.form, music.composing] {
+  title "Four answers of your own"
+  difficulty v
+  let v=0..2
+  let extra={pick(v, "", " Make the last answer end on the home note, low and long.", " Make the last answer end on the home note, and make one answer an echo on purpose, so the listener can tell the difference.")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x20 {
+    countrow row beats=8 meter=4 now=-1 at=canvas(1, 1)
+    text ask "A grown-up sings or claps the same four-beat call four times, with a steady beat. Each time, sing back an answer of your own, four beats long and different each time.{extra}" narrate width=34 below=row gap=1
+  }
+
+  check music.sung look-for="Four answers sung straight after the call with no gap and no overlap, each four beats long, each different from the call and from the others, the beat steady throughout; at medium the last answer ends on the home note; at hard one answer is a deliberate echo and the child can say which." notice=["Comes in on time after each call", "Each answer lasts four beats", "Four different answers", "The last answer comes home"] ask="Which of your answers did you like best, and why?"
+  hint "Tap the beat on your knee the whole time, even while you think."
+  hint "Start an answer with the call's last note, then go somewhere new."
+}

@@ -1,0 +1,14 @@
+# A harmonic minor played up one octave, its raised 7th a black key: A B C D E F G sharp A.
+item music.minor-play v=1 skills=[music.scales, music.major-minor] {
+  title "Play A harmonic minor"
+
+  scene 36x27 {
+    notes scale clef=treble notes=[A4, B4, C5, D5, E5, F5, Gs5, A5] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=0 letters=true at=canvas(1, 1)
+    text ask "Play A harmonic minor going up. All the notes are white keys except one." narrate width=34 below=scale gap=1
+    piano keys from=A4 whites=8 wide=3 labels=letters below=ask gap=1
+  }
+
+  check music.plays notes=[A4, B4, C5, D5, E5, F5, Gs5, A5]
+  hint "Start on the A at the left and go up one white key at a time."
+  hint "The 7th note is the black key just above G."
+}

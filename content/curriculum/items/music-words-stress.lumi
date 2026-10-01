@@ -1,0 +1,33 @@
+# Stress: the syllable we say strongest goes on the strong beat, beat 1. Six words with their stress
+# as a dictionary gives it: AP-ple, gui-TAR, po-TA-to, BUT-ter-fly, um-BREL-la, kan-ga-ROO.
+item music.words-stress v=1 skills=[music.words, music.beat] {
+  title "The strong syllable"
+  difficulty (if k <= 1 then 0 else if k <= 3 then 1 else 2)
+  let k=0..5
+  let word={pick(k, "apple", "guitar", "potato", "butterfly", "umbrella", "kangaroo")}
+  let o1={pick(k, "ap", "gui", "po", "but", "um", "kan")}
+  let o2={pick(k, "ple", "tar", "ta", "ter", "brel", "ga")}
+  let o3={pick(k, "both the same", "both the same", "to", "fly", "la", "roo")}
+  let right={pick(k, "ap", "tar", "ta", "but", "brel", "roo")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=4..5
+  }
+
+  scene 36x28 {
+    countrow row beats=4 meter=4 now=0 at=canvas(1, 1)
+    text ask "When a word is sung, the syllable we say strongest should land on beat 1, the strong beat. Say the word {word} aloud. Which syllable goes on beat 1?" narrate width=34 below=row gap=1
+    choice pick options=[o1, o2, o3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=row {
+      say "Say {word} with that syllable loud. Does it sound like the word you know?"
+    }
+  }
+  hint "Say the word slowly, and listen for the syllable that is loudest."
+  hint "Try each syllable loud in turn. Only one sounds right."
+}

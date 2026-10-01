@@ -1,0 +1,23 @@
+# The three-star, sung: a tune the child knows changed in one element to become an animal, sung to a
+# grown-up, who ticks the notice list.
+item music.carn-sing v=1 stars=3 skills=[music.elements, music.singing, music.composing] {
+  title "A tune turned into an animal"
+  difficulty v
+  let v=0..2
+  let what={pick(v, "change one thing about it: make it slow, or low, or very soft", "change one thing about it and say which element you changed", "make two animals from it, changing a different element for each, and say which")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x18 {
+    orchestra band show=["flute", "double bass", "xylophone"] sizes=0 labels=1 families=0 ring=-1 at=canvas(1, 1)
+    text ask "Take a tune you know well, such as Twinkle, Twinkle, Little Star. As Saint-Saens did, {what}, so it sounds like an animal. Sing it to a grown-up." narrate width=34 below=band gap=1
+  }
+
+  check music.sung look-for="A tune the listener can still recognise, sung with one element clearly changed (slower, lower, softer, or a different kind of voice) so it suits an animal the child names; at medium the element named correctly; at hard two versions for two animals, each changing a different element." notice=["The tune can still be recognised", "One element is clearly changed", "It suits the animal named", "The child names the element"] ask="Which animal is it, and what did you change to make it sound like that?"
+  hint "Sing the tune normally first, then change only one thing."
+  hint "A slow, low tune can be big and heavy; a high, quick one small and light."
+}

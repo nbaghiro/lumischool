@@ -1,0 +1,75 @@
+# The dotted crotchet and its quaver: a dot adds half, the note that finishes a bar, a dotted note
+# in quavers, a written bar's beats, long-short tapped, and two bars of the child's own.
+lesson music-dotted-rhythms v=1 format=teach grade=4 unit=4 subject=music levels=[easy, medium, hard] {
+  title "The dotted crotchet and its quaver"
+  goal "Read, count and tap dotted rhythms, where a dot adds half a note's value again."
+
+  look {
+    scene 21x14 {
+      notes bar clef=treble notes=[G4, A4, B4, C5] values=[1.5, 0.5, 1, 1] meter=4 letters=false at=canvas(1, 1)
+    }
+    say """
+      A dot after a note makes it longer by half of itself. A minim is 2 beats, so a dotted minim is
+      3. A crotchet is 1 beat, so a dotted crotchet is one and a half. That leaves half a beat
+      before the next beat, so a dotted crotchet is often followed by a quaver: long, short. Count
+      it as 1, 2 and, 3, 4: the quaver comes on the and just before beat 3. Dotted rhythms give a
+      tune a skip, like a horse cantering.
+      """
+  }
+  do {
+    show music.dot-value k=0 easy-k=0 hard-k=2
+    show music.dot-fill v=1 easy-v=0 hard-v=1
+    level easy {
+      worked music.dot-count v=0 level=medium
+    }
+    show music.dot-tap
+    show music.dot-quavers k=1 easy-k=0 hard-k=1
+    show music.dot-value k=1 easy-k=1 hard-k=3
+    show music.dot-tap-two
+    level medium hard {
+      show music.dot-count v=1 hard-v=2
+      show music.dot-fill v=2
+    }
+    level easy {
+      show music.dot-quavers k=1
+      show music.dot-fill v=1
+    }
+    level hard {
+      show music.dot-quavers k=2
+    }
+  }
+  try stars=2 {
+    show music.dot-why r=0 easy-r=1
+  }
+  try stars=3 {
+    show music.dot-write v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A dot adds half the note again: a dotted crotchet is one and a half beats, and its quaver fills the half beat after it."
+  }
+
+  grown-ups """
+    The idea is that a dot adds half of a note's own value, so a dotted crotchet lasts one and a
+    half beats and leaves half a beat for the quaver that usually follows it, giving the long-short
+    rhythm. The wrong ideas to watch for are doubling a note for its dot, and tapping the quaver on
+    the beat instead of just before the next one. In the working, look for the child writing each
+    note's beats under it, and counting "1, 2 and, 3, 4" while tapping. The core works out what a
+    dot adds, finishes a bar, turns a dotted note into quavers, adds a bar of dotted notes and taps
+    two dotted bars, checked against the beat; the two-star asks why a quaver follows the dot, and
+    the three-star is two bars written and clapped, which you look at and listen to with the notice
+    list.
+
+    If the dot is stuck, draw a crotchet as a strip of two squares (two quavers) and the dot as one
+    more square. Off the page, say "hump-ty dump-ty" and notice the long-short in each word. This
+    lesson meets Russia's federal work programme in music for primary school, which names the dotted
+    note and the dotted rhythm, 「Нота с точкой… Пунктирный ритм」 (as quoted in the audit of grades 5
+    and 6), and Japan's 2017 course of study for music, 第3 2(9), the notes and rests to understand
+    and use as they work in music.
+    """
+  level easy {
+    grown-ups "At this level the dots are on a minim and a crotchet, the bars to finish need a quaver and a crotchet, counting a bar's beats is worked once in the teacher's pen, the dotted notes turned into quavers are a crotchet and a minim, the two-star is as written with its answers in another order, and the two bars each have one dotted pair."
+  }
+  level hard {
+    grown-ups "At this level the dots are on a semibreve and a quaver, the bars to finish need a crotchet and a dotted crotchet, the dotted notes turned into quavers and semiquavers are a minim and a quaver, the bar's beats include a dotted minim, and the two bars are in three-time with a rest."
+  }
+}

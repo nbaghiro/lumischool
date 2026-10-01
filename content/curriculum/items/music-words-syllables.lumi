@@ -1,0 +1,30 @@
+# The way in: one note for each syllable, so a line of words needs as many notes as it has
+# syllables.
+item music.words-syllables v=1 skills=[music.words, music.rhythm] {
+  title "One note a syllable"
+  difficulty (n / 4)
+  let k=0..3
+  let line={pick(k, "Ben's boat is red", "Ana sails the canal", "Seven ducks swim by the water mill", "The butterfly is resting on the hollyhock")}
+  let n={pick(k, 4, 6, 9, 13)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x17 {
+    countrow row beats=8 meter=4 now=-1 at=canvas(1, 1)
+    text ask "Ana sets words to music with one note for every syllable. How many notes does she need for this line: {line}?" narrate width=34 below=row gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer != n) point=row {
+      say "Clap once for each beat of the words as you say them slowly, then count the claps."
+    }
+  }
+  hint "Say the line slowly and clap on each syllable."
+  hint "Long words have more than one: but-ter-fly is three."
+}

@@ -1,0 +1,76 @@
+# Bars that change: Mussorgsky's Promenade from Pictures at an Exhibition, bars of five and six in
+# turn, a bar's time signature found, beats counted across changing bars, a bar of five tapped, and
+# a limping walk of the child's own.
+lesson music-changing-metre v=1 format=teach grade=6 unit=6 subject=music levels=[easy, medium, hard] {
+  title "Bars that change: Mussorgsky's Promenade"
+  goal "Count, read and tap music whose bars change length, five beats then six."
+
+  look {
+    scene 25x10 {
+      countrow row beats=11 meter=0 now=-1 at=canvas(1, 1)
+    }
+    say """
+      Crossing the rope bridge over the gorge, nobody walks in an even step. In 1874 the Russian
+      composer Modest Mussorgsky wrote a piano suite, Pictures at an Exhibition, after visiting an
+      exhibition of his late friend Viktor Hartmann's pictures. Between the pieces, a Promenade
+      walks from picture to picture, and its bars change length: a bar of five beats, then a bar of
+      six, again and again. The change of time signature gives the walk its uneven step.
+      """
+  }
+  do {
+    show music.metre-which k=1 easy-k=0 hard-k=2
+    show music.metre-beats n=3 easy-n=2 hard-n=6
+    level easy {
+      worked music.metre-start b=2 level=medium
+    }
+    show music.metre-start b=3 hard-b=4
+    show music.metre-tap
+    show music.metre-which k=2 easy-k=1 hard-k=3
+    show music.metre-beats n=4 easy-n=4 hard-n=7
+    show music.metre-years q=0 hard-q=1
+    level medium hard {
+      show music.metre-start b=4 hard-b=5
+    }
+    level easy {
+      show music.metre-beats n=3
+    }
+    level hard {
+      show music.metre-start b=3 level=medium
+    }
+  }
+  try stars=2 {
+    show music.metre-pattern r=0 easy-r=1
+  }
+  try stars=3 {
+    show music.metre-write v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A time signature can change from bar to bar; count each bar by its own number of beats."
+  }
+
+  grown-ups """
+    The idea is that a piece need not keep one time signature: the Promenade alternates bars of five
+    and six beats, which gives it an uneven walking step, and counting through it means counting
+    each bar by its own number. The step up from grade 6's six-eight, which taught one new metre, is
+    metres that change from bar to bar. The wrong ideas to watch for are multiplying every bar by
+    the same number, and counting the last beat of a bar as the first of the next. In the working,
+    look for the child writing 5, 6, 5, 6 above the bars before adding. The core finds a bar's
+    beats, counts beats across changing bars, finds where a bar begins, taps a bar of five and works
+    with the dates; the two-star asks how often the pattern comes round, and the three-star is a
+    limping walk of the child's own, written and clapped.
+
+    The facts are from Wikipedia, "Pictures at an Exhibition": written for piano in June 1874 after
+    a memorial exhibition of over 400 works by Viktor Hartmann, an architect and painter who died in
+    1873; ten movements and a recurring Promenade, whose bars alternate 5/4 and 6/4, in B flat
+    major; Maurice Ravel's orchestra version of 1922. The bars in the lesson are written to count
+    and are not Mussorgsky's. Listen to the opening Promenade and conduct it, five then six. This
+    lesson meets China's 2022 arts standard for grade 6, 「对常见节拍以及变化拍子能做出相应的反应」 (respond to common
+    metres and to changing metres), as quoted in the audit of grades 5 and 6.
+    """
+  level easy {
+    grown-ups "At this level the bars' beats are found from simple notes, the beats are counted over two and four bars, where a bar begins is worked once in the teacher's pen for bar 2 before bar 3, the dates are of the piano suite and Ravel's version, the two-star is as written with its answers in another order, and the rhythm uses crotchets and minims."
+  }
+  level hard {
+    grown-ups "At this level the bars' beats include dotted notes and quavers, the beats are counted over six and seven bars, bars 4 and 5 are found, the dates run from Hartmann's death, and the rhythm has a dotted note and four different bars."
+  }
+}

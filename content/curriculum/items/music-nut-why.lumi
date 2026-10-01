@@ -1,0 +1,21 @@
+# The two-star reason: a ballet has no words; its dancers tell the story by moving to the
+# orchestra's music.
+item music.nut-why v=1 stars=2 skills=[music.genre, reasoning.explain] {
+  title "A story with no words"
+  let r=0..1
+
+  scene 36x26 {
+    orchestra band show=["violin", "flute", "celesta", "timpani"] sizes=0 labels=1 families=0 ring=-1 at=canvas(1, 1)
+    text ask "Ben says The Nutcracker cannot tell a story, because nobody in a ballet says or sings a word. Is he right?" narrate width=34 below=band gap=1
+    choice pick options=[pick(r, "No: the dancers tell it by moving to the music", "Yes: a story needs words"), "No: the orchestra sings the words", pick(r, "Yes: a story needs words", "No: the dancers tell it by moving to the music")] stack=column below=ask gap=1
+  }
+
+  answer pick="No: the dancers tell it by moving to the music"
+  feedback {
+    when (pick != "No: the dancers tell it by moving to the music") point=band {
+      say "Think of a film with the sound off. Can you still follow what happens?"
+    }
+  }
+  hint "How can a person show they are happy, or frightened, without a word?"
+  hint "What do the dancers do while the orchestra plays?"
+}

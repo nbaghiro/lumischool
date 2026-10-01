@@ -1,0 +1,23 @@
+# The three-star, written and played: two bars of the child's own using semiquavers, that add up,
+# tapped to a grown-up, who looks with the notice list.
+item music.semi-write v=1 stars=3 skills=[music.rhythm, music.composing, music.notation] {
+  title "A mill-wheel rhythm"
+  difficulty v
+  let v=0..2
+  let what={pick(v, "two bars of four beats, with one beat of four semiquavers in each", "two bars of four beats using semiquavers, quavers and crotchets, no two beats the same", "two bars of four beats using semiquavers, a dotted quaver with its semiquaver, and a rest")}
+  level easy {
+    let v=0..0
+  }
+  level hard {
+    let v=2..2
+  }
+
+  scene 36x22 {
+    notes eg clef=treble notes=[G4, G4, G4, G4, C5, C5, C5] values=[0.25, 0.25, 0.25, 0.25, 1, 1, 1] meter=4 letters=false at=canvas(1, 1)
+    text ask "Write {what}, as the rhythm of the mill wheel turning. Check each bar adds to four, then tap it to a grown-up with the beat in your foot." narrate width=34 below=eg gap=1
+  }
+
+  check writing.by-eye look-for="Two bars written with note shapes, each adding to four beats, the semiquavers beamed in fours or with a quaver so each beat is complete, then tapped with the quick notes even and inside their beat and a steady beat underneath; at hard a dotted quaver and semiquaver and a rest in the right place." notice=["Each bar adds to four beats", "Semiquavers written with two beams", "Quick notes tapped evenly", "A steady beat underneath"] ask="Which beat was hardest to tap, and why?"
+  hint "Plan each beat on its own: one beat can be four semiquavers, two quavers or one crotchet."
+  hint "Write the beats under your notes to check each bar."
+}

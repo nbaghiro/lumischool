@@ -1,0 +1,34 @@
+# The two falls of the motif measured in semitones on the keyboard: G down to E flat is 4 (a major
+# 3rd), F down to D is 3 (a minor 3rd), so the second statement is the first moved down, but not
+# exactly.
+item music.beet-semitones v=1 skills=[music.intervals, music.motif] {
+  title "Two falls, not the same"
+  difficulty q
+  let q=0..2
+  let ask={pick(q, "How many semitones does the first group fall, from G down to E flat?", "How many semitones does the second group fall, from F down to D?", "How many more semitones is the first fall than the second?")}
+  let right={pick(q, 4, 3, 1)}
+  level easy {
+    let q=0..1
+  }
+  level hard {
+    let q=1..2
+  }
+
+  scene 36x23 {
+    notes falls clef=treble notes=[G4, Ef4, F4, D4] values=[1, 1, 1, 1] meter=0 letters=true at=canvas(1, 1)
+    text ask "These are the two falls of the motif. A semitone is the step from one key of a keyboard to the very next key, black or white. {ask}" narrate width=34 below=falls gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (q == 0 and answer == 3) point=falls {
+      say "Count every key you pass, black and white, from G down to the black key below E."
+    }
+    when (q == 1 and answer == 2) point=falls {
+      say "Count the black key between D and E as one step too."
+    }
+  }
+  hint "On a keyboard, put a finger on the top note and step down one key at a time."
+  hint "Count the steps, not the keys you start on."
+}

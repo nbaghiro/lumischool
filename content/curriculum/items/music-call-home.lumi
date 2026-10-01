@@ -1,0 +1,38 @@
+# An answer that sounds finished comes home: of three responses, written with their letters, the one
+# that ends on C, the home note of a tune in C.
+item music.call-home v=1 skills=[music.form, music.pitch] {
+  title "The answer that comes home"
+  difficulty (if v <= 1 then 0 else 1)
+  let v=0..3
+  let right={pick(v, "A", "B", "C", "B")}
+  let a1={pick(v, "E4", "G4", "E4", "F4")} a2={pick(v, "D4", "A4", "F4", "A4")} a3={pick(v, "C4", "G4", "G4", "B4")}
+  let b1={pick(v, "E4", "E4", "A4", "E4")} b2={pick(v, "F4", "D4", "B4", "D4")} b3={pick(v, "G4", "C4", "D5", "C5")}
+  let c1={pick(v, "G4", "A4", "D4", "G4")} c2={pick(v, "A4", "B4", "D4", "F4")} c3={pick(v, "D4", "D5", "C4", "D4")}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 36x36 {
+    column bars space=1 align=start at=canvas(1, 1) {
+      row top space=1 align=end {
+        notes a clef=treble notes=[a1, a2, a3] values=[1, 1, 2] meter=4 letters=true
+        notes b clef=treble notes=[b1, b2, b3] values=[1, 1, 2] meter=4 letters=true
+      }
+      notes c clef=treble notes=[c1, c2, c3] values=[1, 1, 2] meter=4 letters=true
+    }
+    text ask "The song is in C, so C is its home note. Ana sings a call that ends on G and sounds like a question. Which response, A and B in the top row or C below, ends at home and sounds finished?" narrate width=34 below=bars gap=1
+    choice pick options=["A", "B", "C"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=bars {
+      say "Look only at the last note of each bar. Which one is a C?"
+    }
+  }
+  hint "Which note of a bar decides whether it sounds finished?"
+  hint "Read the letter under the last note of each bar, in turn."
+}

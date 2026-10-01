@@ -1,0 +1,80 @@
+# Theme and variations: Mozart's twelve variations on the tune of Twinkle, Twinkle, the theme
+# played, what a variation changes, the work's facts, the theme put in minor and filled with
+# semiquavers, and a variation of the child's own.
+lesson music-theme-and-variations v=1 format=teach grade=6 unit=4 subject=music levels=[easy, medium, hard] {
+  title "Theme and variations: Mozart's Twinkle"
+  goal "Hear and say what a variation changes in its theme, and write one of your own."
+
+  look {
+    scene 36x12 {
+      notes theme clef=treble notes=[C4, C4, G4, G4, A4, A4, G4] values=[1, 1, 1, 1, 1, 1, 2] meter=4 letters=true at=canvas(1, 1)
+    }
+    say """
+      By the waterfall the water is always the same river and never the same twice, like a theme and
+      its variations. Around 1781, Wolfgang Amadeus Mozart wrote twelve variations for piano on a
+      French tune first printed in 1761, the tune of Twinkle, Twinkle, Little Star. Each variation
+      changes something, the rhythm, the key, the speed or the time signature, but the theme can
+      still be heard in every one. Variation 8 is in C minor, and the last is in three-time.
+      """
+  }
+  do {
+    show music.var-play
+    show music.var-changed k=0 hard-k=1
+    level easy {
+      worked music.var-years q=0 level=medium
+    }
+    show music.var-facts q=1 easy-q=0 hard-q=2
+    show music.var-minor q=0 hard-q=1
+    show music.var-semis b=16 easy-b=8 hard-b=16
+    show music.var-facts q=2 easy-q=1 hard-q=3
+    level medium hard {
+      show music.var-changed k=2
+      show music.var-years q=1
+    }
+    level easy {
+      show music.var-semis b=16
+      show music.var-minor q=1
+    }
+    level hard {
+      show music.var-semis b=32
+    }
+  }
+  try stars=2 {
+    show music.var-why r=0 easy-r=1
+  }
+  try stars=3 {
+    show music.var-write v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A variation changes its theme, in rhythm, key, speed or metre, and keeps it recognisable."
+  }
+
+  grown-ups """
+    The idea is that a theme and variations is one tune heard again and again, each time changed in
+    one or more ways, rhythm, key, speed or metre, and always still recognisable. The step up from
+    grade 5's motif in Beethoven's Fifth, which moved four notes, is a whole theme transformed, and
+    from grade 6's minor keys, putting a major tune into minor by changing its notes. The wrong
+    ideas to watch for are thinking a variation must keep the key, and changing a note that C minor
+    does not change. In the working, look for the child comparing the time signature, the lengths
+    and the letters in turn. The core plays the theme, says what a variation changed, reads the
+    work's facts, puts lines into C minor, fills a variation with semiquavers and works with the
+    dates; the two-star asks what makes a variation a variation, and the three-star is one of the
+    child's own.
+
+    The facts are from Wikipedia, "Twelve Variations on Ah vous dirai-je, Maman" (K. 265/300e, for
+    piano, about 1781 to 1782; in C major except variation 8, in C minor; in 2/4 except the last, in
+    3/4; tempo marks only on the last two, Adagio and Allegro; the tune first appeared in 1761 and
+    is the tune of Twinkle, Twinkle, Little Star). Mozart's dates are from Wikipedia's list of
+    Classical-era composers. The variation bars in the lesson are written to show each kind of
+    change and are not Mozart's own. Listen to the theme and variations 1 and 8 together. This
+    lesson meets Japan's 2017 course of study for music, 第3 2(8)イ, the workings of music to teach,
+    「反復，呼びかけとこたえ，変化」 (repetition, call and response, and change), and England's key stage 2 aim to
+    "develop an understanding of the history of music".
+    """
+  level easy {
+    grown-ups "At this level the change to spot is the rhythm, the years since the tune appeared are worked once in the teacher's pen, the facts read are which variation is in minor and which is slow, the notes to change for C minor are in both lines, the semiquavers fill one line and then two, the two-star is as written with its answers in another order, and the variation changes the rhythm."
+  }
+  level hard {
+    grown-ups "At this level the changes to spot are major to minor and the time signature, the facts are counted from the table, the notes to change for C minor are in the second line, the semiquavers fill two lines, Mozart's age is worked out, and two variations are written."
+  }
+}

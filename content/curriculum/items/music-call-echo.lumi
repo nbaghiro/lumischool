@@ -1,0 +1,35 @@
+# Echo or answer: the response is the call again note for note, or something new of the same length.
+# Told apart by looking along the two bars, before the staff's letters are taught.
+item music.call-echo v=1 skills=[music.form, music.listening] {
+  title "Echo or answer?"
+  difficulty (if v <= 1 then 0 else 1)
+  let v=0..3
+  let r1={pick(v, "E4", "G4", "E4", "E4")}
+  let r2={pick(v, "D4", "E4", "E4", "D4")}
+  let r3={pick(v, "C4", "D4", "C4", "E4")}
+  let right={pick(v, "an echo", "an answer", "an answer", "an answer")}
+  level easy {
+    let v=0..1
+  }
+  level hard {
+    let v=2..3
+  }
+
+  scene 36x24 {
+    row bars space=2 align=end at=canvas(1, 1) {
+      notes call clef=treble notes=[E4, D4, C4] values=[1, 1, 2] meter=4
+      notes resp clef=treble notes=[r1, r2, r3] values=[1, 1, 2] meter=4
+    }
+    text ask "Ana sings the call in the top bar, and Ben sings the response in the bottom bar. An echo copies the call exactly; an answer is new. Is Ben's response an echo or an answer?" narrate width=34 below=bars gap=1
+    choice pick options=["an echo", "an answer"] stack=row below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=bars {
+      say "Put a finger on the first note of each bar and move along together. Is every note on the same line or space?"
+    }
+  }
+  hint "Compare the notes one at a time, top bar against bottom bar."
+  hint "If even one note sits higher or lower, it is not a copy."
+}

@@ -1,0 +1,75 @@
+# Minor keys and the raised seventh: the relative minor found on a major scale's 6th note, the
+# harmonic minor's raised 7th, the semitones it changes, minor key signatures, a tune's key, and one
+# of the child's own, by a fiddle in the research hut.
+lesson music-minor-keys v=1 format=teach grade=6 unit=3 subject=music levels=[easy, medium, hard] {
+  title "Minor keys and the raised seventh"
+  goal "Find a major key's relative minor and build the harmonic minor with its raised 7th."
+
+  look {
+    scene 36x14 {
+      notes scale clef=treble notes=[A4, B4, C5, D5, E5, F5, Gs5, A5] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=0 letters=true at=canvas(1, 1)
+    }
+    say """
+      In the research hut, in the long Arctic summer, Ben plays fiddle tunes in minor keys. Every
+      major key has a relative minor that uses the same notes and the same key signature, starting
+      on the major scale's 6th note: C major and A minor share their notes. A natural minor scale
+      ends with a whole tone from its 7th note up to home. To make the ending pull home, the
+      harmonic minor raises the 7th by a semitone, so A minor's G becomes G sharp, written in the
+      music as it comes.
+      """
+  }
+  do {
+    show music.minor-relative k=0 easy-k=0 hard-k=2
+    show music.minor-seventh k=0 easy-k=0 hard-k=2
+    level easy {
+      worked music.minor-sig k=0 level=medium
+    }
+    show music.minor-steps q=0 hard-q=1
+    show music.minor-play
+    show music.minor-sig k=1 hard-k=2
+    show music.minor-relative k=1 easy-k=1 hard-k=3
+    show music.minor-which k=0 hard-k=1
+    show music.minor-seventh k=1 easy-k=1 hard-k=3
+    level medium hard {
+      show music.minor-steps q=2
+    }
+  }
+  try stars=2 {
+    show music.minor-why r=0 easy-r=1
+  }
+  try stars=3 {
+    show music.minor-compose v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "A relative minor starts on the major scale's 6th note and shares its key signature; the harmonic minor raises the 7th a semitone to lead home."
+  }
+
+  grown-ups """
+    The idea is that every major key has a relative minor that shares its notes and key signature,
+    starting on the major scale's 6th note, and that the harmonic minor raises its 7th note a
+    semitone so it leads strongly to the home note. The step up from grade 6's key signatures, which
+    were major only with one question on the relative minor, is building the minor scale itself and
+    the raised 7th, and reading minor key signatures through their majors. The wrong ideas to watch
+    for are writing the raised 7th into the key signature, and naming the relative minor without its
+    sharp (F minor for F sharp minor). In the working, look for the child numbering a scale's notes
+    from 1. The core finds relative minors, raises the 7th, counts the semitones it changes, plays A
+    harmonic minor, gives minor key signatures and names a tune's key; the two-star asks why the 7th
+    is raised, and the three-star is a minor tune of the child's own.
+
+    The theory is from Wikipedia, "Minor scale": the natural minor shares its key signature with the
+    relative major a third above; the harmonic minor raises the 7th to give a leading tone, which
+    leaves an awkward augmented second between the 6th and 7th. If the relative minor is stuck, play
+    C major then A minor on the white keys and hear the same notes start from a new home. Off the
+    page, sing a song you know in a minor key and stop on the note before the end. This lesson meets
+    Russia's federal work programme in music for primary school, 「Мажорные и минорные тональности
+    (до 2–3 знаков при ключе)」 (major and minor keys with up to two or three sharps or flats), and
+    Japan's 2017 course of study for music, grades 5 and 6, A(1)ウ(ア), singing from 「ハ長調及びイ短調の楽譜」
+    (scores in C major and A minor), both as quoted in the audit of grades 5 and 6.
+    """
+  level easy {
+    grown-ups "At this level the relative minors are of C and G major, the 7ths raised are in A and E minor, the key signature of A minor is worked once in the teacher's pen, the steps counted are the 7th to home in both minors, the tune's key is A minor, the two-star is as written with its answers in another order, and the tune is four bars in A minor."
+  }
+  level hard {
+    grown-ups "At this level the relative minors are of D and A major, the 7ths raised are in B and D minor, the steps counted include the awkward step from F to G sharp, the key signature is of B minor, the tunes' keys include one in C major to tell apart, and the tune is eight bars in E minor."
+  }
+}

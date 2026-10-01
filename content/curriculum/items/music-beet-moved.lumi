@@ -1,0 +1,32 @@
+# The second statement is the first moved down: every note one letter lower, G to F and E flat to D.
+# Its rhythm is the same. A sequence, as in grade 5's composing lesson, now found in a symphony.
+item music.beet-moved v=1 skills=[music.motif, music.intervals, reasoning.compare] {
+  title "What changed?"
+  difficulty q
+  let q=0..1
+  let ask={pick(q, "Compare the second group with the first. What changed?", "What stayed exactly the same?")}
+  let right={pick(q, "every note moved one letter lower", "the rhythm, short-short-short-long")}
+  let o2={pick(q, "the rhythm got faster", "the notes")}
+  let o3={pick(q, "it moved one letter higher", "the distance of the fall in semitones")}
+  level easy {
+    let q=0..0
+  }
+  level hard {
+    let q=1..1
+  }
+
+  scene 36x28 {
+    notes motif clef=treble notes=[G4, G4, G4, Ef4, F4, F4, F4, D4] values=[0.5, 0.5, 0.5, 2, 0.5, 0.5, 0.5, 2] meter=0 letters=true at=canvas(1, 1)
+    text ask "{ask}" narrate width=34 below=motif gap=1
+    choice pick options=[o2, right, o3] stack=column below=ask gap=1
+  }
+
+  answer pick=right
+  feedback {
+    when (pick != right) point=motif {
+      say "Read the letters of each group, and look at the note lengths. Which changed and which did not?"
+    }
+  }
+  hint "Read the first group's letters, then the second's."
+  hint "Are the note shapes, the lengths, the same in both?"
+}

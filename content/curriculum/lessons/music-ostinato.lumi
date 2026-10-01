@@ -1,0 +1,73 @@
+# Ostinato: a short pattern repeated under a tune, its length found, its repeats counted over a
+# song, tapped, Pachelbel's ground bass played and counted, a pattern that does not fit the bar, and
+# one sung.
+lesson music-ostinato v=1 format=teach grade=3 unit=7 subject=music levels=[easy, medium, hard] {
+  title "A pattern that repeats underneath: ostinato"
+  goal "Find, count and keep a short pattern going underneath a tune, as Pachelbel's bass does."
+
+  look {
+    scene 36x12 {
+      notes bass clef=treble notes=[D4, A3, B3, Fs3, G3, D3, G3, A3] values=[1, 1, 1, 1, 1, 1, 1, 1] meter=4 letters=true at=canvas(1, 1)
+    }
+    say """
+      An ostinato is a short pattern of notes or claps played again and again, under a tune that
+      keeps changing. When it is in the bass, it is called a ground bass. Johann Pachelbel, who
+      lived from 1653 to 1706, wrote a Canon for three violins over a ground bass of just eight
+      notes, drawn here a little higher than he wrote them. The bass plays its eight notes 28 times,
+      while the three violins play the same tune one after another above it.
+      """
+  }
+  do {
+    show music.ost-length k=2 easy-k=2 hard-k=3
+    show music.ost-repeats b=8 p=1 easy-b=4 hard-b=8 hard-p=2
+    level easy {
+      worked music.ost-total t=3 level=medium
+    }
+    show music.ost-tap
+    show music.ost-total t=4 hard-t=10
+    show music.ost-ground
+    show music.ost-length k=3 easy-k=3 hard-k=4
+    show music.ost-lineup p=2 hard-p=3
+    show music.ost-repeats b=12 p=2 easy-b=8 easy-p=1 hard-b=12
+    level medium hard {
+      show music.ost-total t=5 hard-t=28
+    }
+  }
+  try stars=2 {
+    show music.ost-why r=0 easy-r=1
+  }
+  try stars=3 {
+    show music.ost-sing v=1 easy-v=0 hard-v=2
+  }
+  remember {
+    say "An ostinato is a short pattern played again and again under a tune that changes."
+  }
+
+  grown-ups """
+    The idea is that a short pattern repeated underneath a song, an ostinato, holds the music
+    together while the tune above it changes, and that its length decides how it lines up with the
+    bars. The wrong ideas to watch for are counting a pattern's notes past the point where it starts
+    again, counting a half-bar pattern once a bar, and adding when the repeats should be multiplied.
+    In the working, look for the child saying the letters aloud and stopping when the start comes
+    back. The core finds a pattern's length, counts its repeats over a song and its notes over a
+    piece, taps one, plays Pachelbel's ground bass and finds when a pattern lines up with the bar
+    again; the two-star asks why composers use one, and the three-star is an ostinato kept going
+    under your singing, which you listen to and tick rather than mark.
+
+    The facts are from Wikipedia, "Pachelbel's Canon": written for three violins and basso continuo,
+    in D major, at an unknown date between about 1680 and 1706, with 28 statements of the ground
+    bass; the eight notes drawn are the roots of its chords as the article gives them, D, A, B, F
+    sharp, G, D, G, A, an octave above Pachelbel's bass. Pachelbel's dates are from Wikipedia's list
+    of Baroque composers. If the lining up is stuck, clap a three-beat pattern while counting bars
+    of four aloud. Off the page, listen to the Canon and hum the bass line under it. This lesson
+    meets Japan's 2017 course of study for music, grades 3 and 4, A表現(3)イ(イ): 「音やフレーズのつなげ方や重ね方の特徴」
+    (how sounds and phrases are joined and layered), and England's key stage 2 aim to "improvise and
+    compose music for a range of purposes".
+    """
+  level easy {
+    grown-ups "At this level the patterns are two and three notes long, the songs are four and eight bars with a pattern a bar long, the notes over a piece are worked once in the teacher's pen before four times through, the pattern to line up is two beats long, the two-star is as written with its answers in another order, and the ostinato is clapped."
+  }
+  level hard {
+    grown-ups "At this level the patterns are three and four notes long, the pattern is half a bar long, the notes are counted over ten and twenty-eight times through, the pattern to line up is three beats long in bars of four, and the ostinato is two bars long on three notes."
+  }
+}

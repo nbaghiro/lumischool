@@ -1,0 +1,30 @@
+# Counting from the scoring as Wikipedia lists it for six movements: how many use a cello, a flute,
+# the a piano, a clarinet, or a flute with strings.
+item music.carn-count v=1 skills=[music.instruments, data.count] {
+  title "Counting the players"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let what={pick(k, "a piano", "a flute", "a clarinet", "both a flute and strings")}
+  let right={pick(k, 6, 2, 2, 2)}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x23 {
+    table plan cols=5 head=["Movement", "Piano", "Flute", "Clarinet", "Strings"] cells=["Hens", "yes", "no", "yes", "yes", "Elephant", "yes", "no", "no", "yes", "Aquarium", "yes", "yes", "no", "yes", "Aviary", "yes", "yes", "no", "yes", "Fossils", "yes", "no", "yes", "yes", "Swan", "yes", "no", "no", "yes"] at=canvas(1, 1)
+    text ask "In how many of these six movements do you hear {what}?" narrate width=34 below=plan gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer right
+  feedback {
+    when (answer != right) point=plan {
+      say "Go down the table and tick each movement with a yes for {what}."
+    }
+  }
+  hint "Find the column for the instrument the question asks about."
+  hint "Tick as you go, then count the ticks."
+}
