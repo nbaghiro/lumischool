@@ -1,0 +1,21 @@
+# Years from the earliest Maya Long Count date (36 BC) to another dated event, across year one with
+# no year nought where the two fall either side of it.
+item history.maya-between v=1 skills=[history.timeline, history.bc-ad, number.difference] {
+  title "How many years later?"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let e1={pick(k, "Qin unites China", "Earliest Maya Long Count date", "Earliest Maya Long Count date", "Earliest Maya Long Count date")}
+  let y1={pick(k, -221, -36, -36, -36)}
+  let e2={pick(k, "Earliest Maya Long Count date", "Romans conquer Britain", "Diamond Sutra", "Vikings in America")}
+  let y2={pick(k, -36, 43, 868, 1021)}
+
+  scene 33x13 {
+    timeline line from=-300 to=1100 step=200 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(0, 0)
+    text ask "How many years after the first was the second?" narrate width=22 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Count up to year one, then on from it."
+  hint "There was no year nought: 1 BC is followed by AD 1."
+}

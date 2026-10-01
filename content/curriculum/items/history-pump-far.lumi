@@ -1,0 +1,17 @@
+# The three-star question: evidence from outside the street. A woman in Hampstead whose family had the
+# pump's water carried to her (historiamedica.org, reading Snow), and the well dug about 0.9 metres
+# from an old cesspit that leaked (Wikipedia, 1854 Broad Street cholera outbreak).
+item history.pump-far v=1 stars=3 skills=[history.evidence, reasoning.evaluate] {
+  title "Far from the pump"
+  difficulty k
+  let k=0..1
+
+  scene 34x19 {
+    text ask "{if k == 0 then \"A woman who lived far away in Hampstead died of the illness. Her family said they had water from the Broad Street pump carried to her. Why did that help Snow?\" else \"Later it was found that the pump's well had been dug about 0.9 metres from an old cesspit, a pit for toilet waste, that leaked. What does that explain?\"}" narrate width=32 at=canvas(1, 0)
+    choice pick options=[if k == 0 then "She drank the water, far from the street" else "How dirt got into the pump's water", if k == 0 then "Hampstead had bad air" else "Why the brewery's men stayed well", if k == 0 then "She must have walked to Broad Street" else "Why the handle could be taken off"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "She drank the water, far from the street" else "How dirt got into the pump's water")
+  hint "{if k == 0 then \"What did she share with the people of Broad Street, if not the street?\" else \"Where does water in a well come from?\"}"
+  hint "{if k == 0 then \"Read again what her family said.\" else \"What might seep from a leaking pit into the ground nearby?\"}"
+}

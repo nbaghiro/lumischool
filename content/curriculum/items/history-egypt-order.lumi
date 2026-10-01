@@ -1,0 +1,20 @@
+# Egypt's writing in time, numbered from the earliest, from the dated record: the first hieroglyphs
+# about 3400 to 3200 BC, the Great Pyramid about 2560 BC, the Rosetta decree 196 BC, the last carved
+# hieroglyphs AD 394, the stone found 1799 and read 1822.
+item history.egypt-order v=1 skills=[history.order, history.ancient] {
+  title "In order"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let a={pick(k, "Hieroglyphs read", "Rosetta Stone found", "Caesar lands in Britain", "Last hieroglyphs carved")}
+  let b={pick(k, "Great Pyramid", "Last hieroglyphs carved", "Qin unites China", "Caesar lands in Britain")}
+  let c={pick(k, "Rosetta Stone carved", "Egyptian hieroglyphs", "Rosetta Stone carved", "Rosetta Stone carved")}
+
+  scene 34x13 {
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=32 at=canvas(1, 0)
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Which of these were BC, before year one?"
+  hint "A bigger number BC is longer ago."
+}

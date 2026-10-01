@@ -1,0 +1,17 @@
+# The Rosetta Stone against a modern children's book: was the maker there, from the record of
+# sources (a decree of 196 BC issued for Ptolemy V).
+item history.egypt-stone v=1 skills=[history.sources, history.ancient] {
+  title "Made at the time?"
+  difficulty k
+  let k=0..1
+
+  scene 36x17 {
+    sourcecard card title="{if k == 0 then \"The Rosetta Stone\" else \"A book about ancient Egypt\"}" kind=pick(k, 0, 2) who="{if k == 0 then \"Egyptian priests, for King Ptolemy V\" else \"A writer of children's books\"}" when="{if k == 0 then \"196 BC\" else \"2001\"}" where="{if k == 0 then \"Egypt; found at Rosetta in 1799\" else \"not stated\"}" there=pick(k, 1, 0) ask=4 at=canvas(1, 0)
+    text ask "{if k == 0 then \"The priests carved the king's decree on this stone in the year it was made. Is it a first-hand source for that decree?\" else \"This book tells the story of the Rosetta Stone. Is it a first-hand source for the decree?\"}" narrate width=15 right-of=card gap=1
+    choice pick options=["First-hand", "Second-hand"] stack=column below=ask gap=1
+  }
+
+  check history.sources of=card pick=hand
+  hint "Read the who and the when rows."
+  hint "Were the makers there when the decree was made?"
+}

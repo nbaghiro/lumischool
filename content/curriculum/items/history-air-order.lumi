@@ -1,0 +1,19 @@
+# The smog, the law, the ozone hole and the treaty beside other events of the century, numbered from
+# the earliest, from the dated record.
+item history.air-order v=1 skills=[history.order, history.twentieth-century] {
+  title "In order"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let a={pick(k, "Montreal Protocol agreed", "Ozone hole reported", "Montreal Protocol in force", "Sputnik")}
+  let b={pick(k, "Great Smog of London", "United Nations founded", "Ozone hole reported", "Clean Air Act")}
+  let c={pick(k, "Moon landing", "Clean Air Act", "Montreal Protocol agreed", "Great Smog of London")}
+
+  scene 34x13 {
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=32 at=canvas(1, 0)
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "A law against something comes after the trouble it answers."
+  hint "A treaty is agreed first, and comes into force later."
+}

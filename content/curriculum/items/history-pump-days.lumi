@@ -1,0 +1,17 @@
+# The outbreak's first days, from Wikipedia's 1854 Broad Street cholera outbreak: it began on
+# 31 August 1854, 127 died in the first three days, and the handle came off on 8 September.
+item history.pump-days v=1 skills=[history.evidence, time.days, number.divide] {
+  title "The first days"
+  difficulty k
+  let k=0..1
+
+  scene 34x21 {
+    street s windows=[2, 1, 2, 3] doors=[0, 1, 1, 0] chimneys=[1, 1, 1, 1] cats=[0, 0, 0, 0] numbers=["38", "39", "40", "41"] at=canvas(1, 0)
+    text ask "{if k == 0 then \"The illness broke out on 31 August 1854. The pump's handle was taken off on 8 September. How many days later was that?\" else \"In the first three days, 127 people died. To the nearest whole number, about how many is that a day?\"}" narrate width=32 below=s gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 8, 42)
+  hint "{if k == 0 then \"August has 31 days. Count on from the 31st.\" else \"Share 127 between three days.\"}"
+  hint "{if k == 0 then \"The 1st of September is one day later.\" else \"Three times 40 is 120. How many are left over?\"}"
+}

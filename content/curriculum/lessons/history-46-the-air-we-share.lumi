@@ -1,0 +1,70 @@
+# Dates from engine/notation/chronicle.ts: the Great Smog December 1952, the Clean Air Act 1956, the
+# ozone hole reported from Halley Bay 1985, the Montreal Protocol agreed 1987 and in force 1989. The
+# deaths, the causes and the expected recovery are from Wikipedia's Great Smog and Montreal Protocol.
+lesson history-the-air-we-share v=1 format=teach grade=6 unit=6 subject=history levels=[easy, medium, hard] {
+  title "The air we share: the smog and the ozone treaty"
+  goal "Follow how London cleaned its air after 1952 and how the world mended the ozone layer after 1987, and weigh the evidence that they worked."
+
+  look {
+    scene 22x10 {
+      houses h count=4 windows=2 at=canvas(0, 0)
+    }
+    say """
+      In December 1952 a thick smog of coal smoke lay over London for five days, held down by cold,
+      still air, and thousands of people died. In 1956 a law, the Clean Air Act, paid families to
+      change their coal fires for cleaner ones. Years later, in 1985, scientists in Antarctica found
+      that the ozone layer, which shields the Earth from the sun's harshest light, was thinning.
+      In 1987 the countries of the world agreed the Montreal Protocol to stop making the gases that
+      did it, and every country has since joined it.
+      """
+  }
+  do {
+    level easy {
+      worked history.air-cause k=0
+    }
+    show history.air-smog k=0 hard-k=1
+    show history.air-cause k=1 hard-k=2
+    show history.air-order k=1 easy-k=0 hard-k=2
+    show history.air-between k=1 easy-k=0 hard-k=2
+    show history.air-report k=0 hard-k=1
+    show history.air-recovery k=1 easy-k=0 hard-k=2
+    show history.air-smog k=1 easy-k=1 hard-k=0
+    show history.air-between k=2 easy-k=1 hard-k=3
+    level hard {
+      show history.air-order k=3
+    }
+  }
+  try stars=2 {
+    show history.air-why k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.air-evidence k=0 hard-k=1
+  }
+  remember {
+    say "London's smog was answered by a law in 1956, and the thinning ozone layer by a treaty every country joined in 1987."
+  }
+
+  grown-ups """
+    The idea is two answers to air that harmed people: a country's law and the whole world's treaty,
+    and the evidence for whether each worked. The step up from countries working together, earlier
+    this grade, is a treaty that can be checked against measurements, and a question of what counts
+    as evidence that it worked. The way in names the cause of the smog; the core counts its days and
+    its deaths, orders and measures the years from the smog to the treaty, reads when the ozone is
+    expected back, and asks whether the scientists' report is first-hand. The lesson mentions that
+    thousands died in the smog; say more if the child asks. The wrong idea to watch for is taking a
+    law's passing as proof that it worked, which the three-star question turns on. If the child is
+    stuck, read the dates on a timeline drawn across a sheet. Off the page, look at an air quality
+    map for your own town. "Every country has since joined it": the treaty has 198 parties and was
+    the first in the United Nations' history to be ratified by all (Wikipedia, Montreal Protocol).
+    England's key stage 2 history asks for "a study of an aspect or theme in British history that
+    extends pupils' chronological knowledge beyond 1066"; Japan's 社会 for grade five studies how
+    pollution was prevented and living conditions improved through the work of public bodies and
+    local people (recalled).
+    """
+  level easy {
+    grown-ups "At this level a worked example names the smog's cause, the days and the deaths are counted, the law's purpose is asked, the dates are far apart, and the recovery is read against most of the world."
+  }
+  level hard {
+    grown-ups "At this level the treaty's purpose is asked, the dates are close together, the recovery is counted as an age, and the three-star question asks what would show whether the treaty worked over Antarctica."
+  }
+}

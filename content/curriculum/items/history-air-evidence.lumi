@@ -1,0 +1,16 @@
+# The three-star question: which evidence would show a law or a treaty worked, with no method on the
+# page.
+item history.air-evidence v=1 stars=3 skills=[history.evidence, reasoning.evaluate] {
+  title "Did it work?"
+  difficulty k
+  let k=0..1
+
+  scene 34x19 {
+    text ask "{if k == 0 then \"Which would best show that the Clean Air Act of 1956 worked?\" else \"Antarctica's ozone is expected back in 2066, later than most of the world in 2040. Mia says the treaty must have failed over Antarctica. What would you need to know to check?\"}" narrate width=32 at=canvas(1, 0)
+    choice pick options=[if k == 0 then "Fewer smoky days in London in the years after" else "How its ozone has changed each year since 1987", if k == 0 then "A law was passed in 1956" else "Whether people live in Antarctica", if k == 0 then "People liked their new fires" else "How cold Antarctica is in summer"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Fewer smoky days in London in the years after" else "How its ozone has changed each year since 1987")
+  hint "A law existing does not show it worked. What would change if it did?"
+  hint "Look for something you could measure before and after."
+}

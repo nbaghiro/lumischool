@@ -387,6 +387,7 @@ export const CATALOG = {
         undercup: () => import("./counting/undercup").then((m) => m.underCup),
         washingline: () => import("./counting/washingline").then((m) => m.numberLineRope),
         tally: () => import("./counting/tally").then((m) => m.tallyMarks),
+        mayanumber: () => import("./counting/mayanumber").then((m) => m.mayaNumber),
     },
     place: {
         abacus: () => import("./place/abacus").then((m) => m.abacus),

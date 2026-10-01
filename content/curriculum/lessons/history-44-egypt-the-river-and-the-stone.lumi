@@ -1,0 +1,69 @@
+# Dates from engine/notation/chronicle.ts: the Rosetta decree 196 BC, the last carved hieroglyphs AD
+# 394 (Philae), the stone found 1799, Champollion's reading 1822. The calendar is from Wikipedia's
+# Egyptian calendar.
+lesson history-egypt-the-river-and-the-stone v=1 format=teach grade=5 unit=6 subject=history levels=[easy, medium, hard] {
+  title "Egypt: the river's year and the stone in three scripts"
+  goal "Work out the Egyptian year from the Nile's seasons, and see how a stone with one message in three scripts let people read hieroglyphs again."
+
+  look {
+    scene 23x9 {
+      table t cols=3 head=["Season", "Means", "Roughly"] cells=["Akhet", "flood", "Sep to Jan", "Peret", "fields out", "Jan to May", "Shemu", "harvest", "May to Sep"] at=canvas(0, 0)
+    }
+    say """
+      Ancient Egypt lived by the river Nile. Every year the river flooded and left rich mud on the
+      fields, and the Egyptian year followed it in three seasons: Akhet, the flood; Peret, when the
+      fields came out of the water; and Shemu, the harvest. Hieroglyphs were last carved in AD 394,
+      and then nobody could read them. In 1799 a stone was found at Rosetta with one decree on it
+      three times, in hieroglyphs, in Demotic and in Greek. It was made in 196 BC, and in 1822
+      Jean-François Champollion showed how the hieroglyphs worked.
+      """
+  }
+  do {
+    level easy {
+      worked history.egypt-calendar k=0
+    }
+    show history.egypt-calendar k=2 easy-k=1 hard-k=3
+    show history.egypt-season k=1 easy-k=0 hard-k=2
+    show history.egypt-order k=1 easy-k=0 hard-k=2
+    show history.egypt-between k=1 easy-k=0 hard-k=2
+    show history.egypt-stone k=0 hard-k=1
+    show history.egypt-scripts k=0 hard-k=1
+    show history.egypt-season k=2 easy-k=1 hard-k=3
+    show history.egypt-between k=2 easy-k=1 hard-k=3
+    level hard {
+      show history.egypt-order k=3
+    }
+  }
+  try stars=2 {
+    show history.egypt-why k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.egypt-code k=0 hard-k=1
+  }
+  remember {
+    say "The Nile's flood set the Egyptian year, and one decree in three scripts on the Rosetta Stone let hieroglyphs be read again."
+  }
+
+  grown-ups """
+    The idea is ancient Egypt in depth: a year built on a river, and how a forgotten writing was
+    read again. The step up from the first cities of grade three, which met Egypt in passing, is a
+    calendar worked from the seasons and the idea of reading an unknown script from the same words
+    in a known one. The way in is the days in a season; the core adds the year, names the seasons,
+    orders Egypt's dates and counts the years across year one. The two-star question asks why the
+    year began with the flood, or why the Greek helped; the three-star question is a made-up stone
+    to crack in the same way. The wrong idea to watch for is counting across year one as if there
+    were a year nought. If the child is stuck, draw the three seasons as a wheel and write the
+    months round it. Off the page, look up the Rosetta Stone on the British Museum's website, where
+    it has been on show since 1802. England's key stage 2 history asks for "the achievements of the
+    earliest civilizations: an overview of where and when the first civilizations appeared and a
+    depth study of one of the following: Ancient Sumer; The Indus Valley; Ancient Egypt; The Shang
+    Dynasty of Ancient China"; Russia's history for grade five begins with the ancient world,
+    Egypt among it (recalled).
+    """
+  level easy {
+    grown-ups "At this level a worked example finds the days in a season, the seasons are named from what happens in them, the orders are far apart, and the years counted are both AD."
+  }
+  level hard {
+    grown-ups "At this level the calendar's drift is worked out, the season is found from a month, the orders are close together, the years run across year one, and the code has two signs to find."
+  }
+}

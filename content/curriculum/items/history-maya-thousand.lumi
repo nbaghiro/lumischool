@@ -1,0 +1,17 @@
+# The three-star question: a big number written in twenties with no method on the page; the other
+# numerals hold the same marks on the wrong levels (1000 is 2, 10, 0; 365 is 18, 5).
+item history.maya-thousand v=1 stars=3 skills=[history.ancient, number.place-value] {
+  title "A big Maya number"
+  difficulty k
+  let k=0..1
+
+  scene 32x10 {
+    mayanumber m values=[pick(k, 810, 105), pick(k, 1000, 378), pick(k, 450, 365)] places=true letters=true at=canvas(1, 0)
+    text ask "{if k == 0 then \"Which numeral is 1000?\" else \"The Maya year had 365 days. Which numeral is 365?\"}" narrate width=14 right-of=m gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=pick(k, "B", "C")
+  hint "How many four hundreds fit in the number? How many twenties are left?"
+  hint "Check each numeral level by level."
+}

@@ -1,0 +1,17 @@
+# When the ozone layer is expected back at its 1980 level, from the 2022 assessment as Wikipedia's
+# Montreal Protocol reads it: 2040 for most of the world, 2045 the Arctic, 2066 Antarctica.
+item history.air-recovery v=1 skills=[history.twentieth-century, data.tables, number.difference] {
+  title "When it heals"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x18 {
+    table t cols=2 head=["Where", "Expected back"] cells=["Most of the world", "2040", "The Arctic", "2045", "Antarctica", "2066"] at=canvas(1, 0)
+    text ask "{pick(k, \"How many years after most of the world is Antarctica expected back?\", \"The treaty was agreed in 1987. How many years after it is Antarctica expected back?\", \"How old will a child born in 2014 be when the Arctic is expected back?\")}" narrate width=32 below=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 26, 79, 31)
+  hint "Find the year on the table first."
+  hint "Take the earlier year from the later one."
+}

@@ -1,0 +1,67 @@
+# Dates from engine/notation/chronicle.ts: the earliest Long Count date 36 BC (Stela 2, Chiapa de
+# Corzo), the Classic cities about AD 250 to 900, Chichen Itza 830 to 950, the Dresden Codex about
+# 1200 to 1345. The numerals and calendars are from Wikipedia's Maya numerals and Maya calendar.
+lesson history-the-maya v=1 format=teach grade=5 unit=3 subject=history levels=[easy, medium, hard] {
+  title "The Maya: cities, numbers and calendars"
+  goal "Read numbers written the Maya way, in twenties, work with their calendars, and place the Maya in time beside the rest of the world."
+
+  look {
+    scene 16x6 {
+      mayanumber m values=[7, 13, 20] places=true letters=false at=canvas(0, 0)
+    }
+    say """
+      The Maya lived in the forests of what is now southern Mexico, Guatemala and Belize, where
+      more than six million Maya people live today. From about AD 250 to 900 they built stone
+      cities, grew maize and carved dates on stone. They counted in twenties: a dot is one, a bar is
+      five and a shell is nought, and each level up the page is worth twenty times the one below.
+      Here are 7, 13 and 20. They also kept two calendars at once, turning together like wheels.
+      """
+  }
+  do {
+    level easy {
+      worked history.maya-read k=0
+    }
+    show history.maya-read k=3 easy-k=1 hard-k=6
+    show history.maya-which k=1 easy-k=0 hard-k=3
+    show history.maya-calendar k=1 easy-k=0 hard-k=2
+    show history.maya-order k=1 easy-k=0 hard-k=3
+    show history.maya-between k=1 easy-k=0 hard-k=2
+    show history.maya-codex k=0 hard-k=1
+    show history.maya-read k=4 easy-k=2 hard-k=7
+    show history.maya-between k=2 easy-k=1 hard-k=3
+    level hard {
+      show history.maya-order k=2
+    }
+  }
+  try stars=2 {
+    show history.maya-why-shell k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.maya-thousand k=0 hard-k=1
+  }
+  remember {
+    say "The Maya counted in twenties: a dot is one, a bar is five, a shell is nought, and each level up is worth twenty times more."
+  }
+
+  grown-ups """
+    The idea is a people of the Americas around AD 900 met through what they left: numbers, dates
+    and books. The way in reads small numerals; the core reads numbers of two and three levels,
+    works the calendars, and puts Maya dates beside the Qin, Rome, the Diamond Sutra and the Vikings.
+    The two-star question asks why an empty level needs the shell, which is the idea of a zero that
+    holds a place; the step up from Ashoka's digits in grade four is a place-value system in
+    twenties rather than tens, with a zero of its own. The wrong idea to watch for is reading every
+    mark as ones, so 26 comes out as 7. If the child is stuck, build the numerals with buttons and
+    sticks on two sheets of paper, ones below and twenties above. Off the page, find Mexico,
+    Guatemala and Belize on a map. The dates are in the lesson's record with their sources, and
+    the Maya living today are from Wikipedia's Maya civilization page. England's key stage 2 history
+    asks for "a non-European society that provides contrasts with British history: one study chosen
+    from: early Islamic civilization, including a study of Baghdad c. AD 900; Mayan civilization c.
+    AD 900; Benin (West Africa) c. AD 900-1300".
+    """
+  level easy {
+    grown-ups "At this level a worked example reads 7, the numbers are below twenty, the numeral to find is 12, the order and the years are BC, and the calendar is 13 times 20."
+  }
+  level hard {
+    grown-ups "At this level the numbers have three levels with a shell between, the numeral to find is 405, the years run across year one to the Vikings, and the three-star question asks for 365 written in twenties."
+  }
+}

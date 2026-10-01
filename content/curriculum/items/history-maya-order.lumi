@@ -1,0 +1,19 @@
+# Maya dates beside others the child knows, numbered from the earliest, from the dated record: the
+# earliest Long Count date 36 BC, the Classic cities about AD 250 to 900, the Dresden Codex about 1200.
+item history.maya-order v=1 skills=[history.order, history.ancient] {
+  title "In order"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let a={pick(k, "Earliest Maya Long Count date", "Dresden Codex", "Romans conquer Britain", "Vikings in America")}
+  let b={pick(k, "Great Pyramid", "Qin unites China", "Earliest Maya Long Count date", "Dresden Codex")}
+  let c={pick(k, "Vikings in America", "Classic Maya cities", "Diamond Sutra", "Classic Maya cities")}
+
+  scene 34x13 {
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=32 at=canvas(1, 0)
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Which of these happened BC, before year one?"
+  hint "A bigger number BC is longer ago."
+}

@@ -1248,6 +1248,130 @@ export const EVENTS: readonly Entry[] = [
         about: true,
         from: recalled("britannica", "Rice: farmed in the Yangtze valley by about 7000 BC"),
     },
+    // the Maya, ancient Egypt's stone, the Broad Street pump and the air (batch E, 1 October)
+    {
+        names: ["earliest maya long count date", "earliest long count date"],
+        year: -36,
+        from: read(
+            "wikipedia",
+            "Maya numerals: earliest Long Count date, 36 BC, Stela 2 at Chiapa de Corzo",
+        ),
+    },
+    {
+        names: ["classic maya cities", "classic maya period"],
+        year: 250,
+        to: 900,
+        about: true,
+        from: read("wikipedia", "Maya civilization: the Classic period, about AD 250 to 900"),
+    },
+    {
+        names: ["chichen itza at its height"],
+        year: 830,
+        to: 950,
+        about: true,
+        from: read(
+            "wikipedia",
+            "Maya civilization: Chichen Itza in the Terminal Classic, AD 830 to 950",
+        ),
+    },
+    {
+        names: ["dresden codex written", "dresden codex"],
+        year: 1200,
+        to: 1345,
+        about: true,
+        from: read(
+            "wikipedia",
+            "Dresden Codex: about 1200 to 1345, from the region of Chichen Itza",
+        ),
+    },
+    {
+        names: ["rosetta stone carved", "rosetta decree"],
+        year: -196,
+        from: read("wikipedia", "Rosetta Stone: the decree of Ptolemy V, 196 BC"),
+    },
+    {
+        names: ["last hieroglyphs carved", "last hieroglyphic inscription"],
+        year: 394,
+        from: read(
+            "wikipedia",
+            "Egyptian hieroglyphs: the Graffito of Esmet-Akhom at Philae, AD 394",
+        ),
+    },
+    {
+        names: ["rosetta stone found"],
+        year: 1799,
+        from: read(
+            "wikipedia",
+            "Rosetta Stone: found near Rosetta by Pierre-François Bouchard, July 1799",
+        ),
+    },
+    {
+        names: ["hieroglyphs read", "champollion reads the hieroglyphs"],
+        year: 1822,
+        from: read(
+            "wikipedia",
+            "Rosetta Stone: Champollion announced his decipherment in Paris in 1822",
+        ),
+    },
+    {
+        names: ["john snow born"],
+        year: 1813,
+        from: read("wikipedia", "John Snow: born 15 March 1813"),
+    },
+    {
+        names: ["snow's first essay on cholera", "on the mode of communication of cholera"],
+        year: 1849,
+        from: read("wikipedia", "1854 Broad Street cholera outbreak: Snow's essay of 1849"),
+    },
+    {
+        names: ["broad street pump handle removed", "pump handle removed"],
+        year: 1854,
+        from: read(
+            "wikipedia",
+            "1854 Broad Street cholera outbreak: the handle removed on 8 September 1854",
+        ),
+    },
+    {
+        names: ["snow's second edition", "snow's map published"],
+        year: 1855,
+        from: read(
+            "wikipedia",
+            "1854 Broad Street cholera outbreak: the second edition of 1855, with the map",
+        ),
+    },
+    {
+        names: ["john snow died"],
+        year: 1858,
+        from: read("wikipedia", "John Snow: died 16 June 1858"),
+    },
+    {
+        names: ["great smog of london", "great smog"],
+        year: 1952,
+        from: read("wikipedia", "Great Smog of London: 5 to 9 December 1952"),
+    },
+    {
+        names: ["clean air act"],
+        year: 1956,
+        from: read("wikipedia", "Great Smog of London: the Clean Air Act 1956"),
+    },
+    {
+        names: ["ozone hole reported", "hole in the ozone layer found"],
+        year: 1985,
+        from: read(
+            "wikipedia",
+            "Montreal Protocol: Farman, Gardiner and Shanklin's results from Halley Bay, 1985",
+        ),
+    },
+    {
+        names: ["montreal protocol agreed", "montreal protocol"],
+        year: 1987,
+        from: read("wikipedia", "Montreal Protocol: agreed 16 September 1987"),
+    },
+    {
+        names: ["montreal protocol in force"],
+        year: 1989,
+        from: read("wikipedia", "Montreal Protocol: entered into force 1 January 1989"),
+    },
 ];
 
 const plain = (s: string): string =>
@@ -1412,5 +1536,78 @@ export const DOCUMENTS: readonly Document[] = [
         where: "not stated",
         there: 0,
         from: { invented: "a second-hand account written for the lesson on the great fires" },
+    },
+    {
+        title: "The Rosetta Stone",
+        who: "Egyptian priests, for King Ptolemy V",
+        when: "196 BC",
+        where: "Egypt; found at Rosetta in 1799",
+        there: 1,
+        from: read(
+            "wikipedia",
+            "Rosetta Stone: a decree of 196 BC issued at Memphis for Ptolemy V",
+        ),
+    },
+    {
+        title: "A book about ancient Egypt",
+        who: "A writer of children's books",
+        when: "2001",
+        where: "not stated",
+        there: 0,
+        from: { invented: "a second-hand account written for the lesson on Egypt" },
+    },
+    {
+        title: "The Dresden Codex",
+        who: "Eight Maya scribes",
+        when: "about 1200 to 1345",
+        where: "the region of Chichen Itza, Yucatán",
+        there: 1,
+        from: read(
+            "wikipedia",
+            "Dresden Codex: eight scribes, about 1200 to 1345, near Chichen Itza",
+        ),
+    },
+    {
+        title: "An encyclopaedia entry on the Maya",
+        who: "The encyclopaedia's writers",
+        when: "2018",
+        where: "not stated",
+        there: 0,
+        from: { invented: "a second-hand account written for the lesson on the Maya" },
+    },
+    {
+        title: "On the Mode of Communication of Cholera",
+        who: "John Snow, a doctor who lived near Broad Street",
+        when: "1855",
+        where: "London",
+        there: 1,
+        from: read("wikipedia", "1854 Broad Street cholera outbreak: Snow's second edition, 1855"),
+    },
+    {
+        title: "A history of medicine",
+        who: "A historian",
+        when: "1990",
+        where: "not stated",
+        there: 0,
+        from: { invented: "a second-hand account written for the lesson on the Broad Street pump" },
+    },
+    {
+        title: "The ozone report from Halley Bay",
+        who: "Joe Farman, Brian Gardiner and Jon Shanklin",
+        when: "1985",
+        where: "Halley Bay, Antarctica",
+        there: 1,
+        from: read(
+            "wikipedia",
+            "Montreal Protocol: the British Antarctic Survey's results from Halley Bay, 1985",
+        ),
+    },
+    {
+        title: "A school book about the planet",
+        who: "A writer of children's books",
+        when: "2015",
+        where: "not stated",
+        there: 0,
+        from: { invented: "a second-hand account written for the lesson on the air we share" },
     },
 ];

@@ -1,0 +1,18 @@
+# The three seasons of the Egyptian year and roughly when each fell: Akhet the flood (September to
+# January), Peret when the fields came out of the water (January to May), Shemu the harvest (May to
+# September) (Wikipedia, Egyptian calendar).
+item history.egypt-season v=1 skills=[history.ancient, history.farming, time.months] {
+  title "Which season?"
+  difficulty pick(k, 0, 0, 1, 2)
+  let k=0..3
+
+  scene 34x19 {
+    table t cols=3 head=["Season", "Means", "Roughly"] cells=["Akhet", "flood", "Sep to Jan", "Peret", "fields out", "Jan to May", "Shemu", "harvest", "May to Sep"] at=canvas(1, 0)
+    text ask "{pick(k, \"The river has flooded the fields. Which season is it?\", \"The ripe grain is being cut. Which season is it?\", \"The water has gone down and farmers sow seeds in the wet mud. Which season is it?\", \"It is March. Which season of the Egyptian year is that, roughly?\")}" narrate width=32 below=t gap=1
+    choice pick options=["Akhet", "Peret", "Shemu"] below=ask gap=1
+  }
+
+  answer pick=pick(k, "Akhet", "Shemu", "Peret", "Peret")
+  hint "Read what each season's name means."
+  hint "{pick(k, \"Which one means flood?\", \"Cutting ripe grain is a harvest.\", \"The fields have come out of the water.\", \"Find the months that March falls between.\")}"
+}

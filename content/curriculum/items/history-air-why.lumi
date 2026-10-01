@@ -1,0 +1,16 @@
+# The two-star reason: the smog cleared when the weather changed (Wikipedia); and air is shared by the
+# whole planet, so a treaty about it needs every country.
+item history.air-why v=1 stars=2 skills=[history.twentieth-century, history.world, reasoning.why] {
+  title "Why?"
+  difficulty k
+  let k=0..1
+
+  scene 34x19 {
+    text ask "{if k == 0 then \"The smog had lain over London for five days. On 9 December 1952 it cleared quickly. Why?\" else \"The gases that break down the ozone layer drift all round the Earth. Why did the treaty need nearly every country to sign it, not just a few?\"}" narrate width=32 at=canvas(1, 0)
+    choice pick options=[if k == 0 then "The weather changed and the air moved" else "The air is shared by the whole planet", if k == 0 then "Everyone put out their fires that day" else "Only one country made the gases", if k == 0 then "The Clean Air Act was passed that day" else "A treaty needs at least a hundred names"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "The weather changed and the air moved" else "The air is shared by the whole planet")
+  hint "{if k == 0 then \"What held the smog down in the first place?\" else \"Where does a gas go once it is let out?\"}"
+  hint "{if k == 0 then \"The Clean Air Act came in 1956.\" else \"Whose air would one country's gases reach?\"}"
+}

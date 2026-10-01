@@ -1,0 +1,17 @@
+# The Egyptian civil year: three seasons of four months, each month 30 days, and five days more,
+# 365 in all, with no leap year, so it drifted against the sun (Wikipedia, Egyptian calendar).
+item history.egypt-calendar v=1 skills=[history.ancient, time.days, number.multiply] {
+  title "The river's year"
+  difficulty pick(k, 0, 0, 1, 2)
+  let k=0..3
+
+  scene 34x20 {
+    table t cols=3 head=["Season", "Months", "Days in each"] cells=["Akhet", "4", "30", "Peret", "4", "30", "Shemu", "4", "30"] at=canvas(1, 0)
+    text ask "{pick(k, \"How many days were in one season?\", \"How many days were in the twelve months together?\", \"Five more days were added at the end of the year. How many days were in the whole year?\", \"The sun's year is about a quarter of a day longer than 365 days, and this calendar had no leap year. After 4 years, about how many days behind the sun was it?\")}" narrate width=32 below=t gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 120, 360, 365, 1)
+  hint "Read the months and the days off the table."
+  hint "{pick(k, \"Four months of 30 days each.\", \"Three seasons of four months is twelve months.\", \"Start from the twelve months, then add.\", \"A quarter of a day, four times over.\")}"
+}

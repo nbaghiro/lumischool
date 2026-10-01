@@ -1,0 +1,20 @@
+# Years between dates of John Snow's work and others of the century, from the dated record.
+item history.pump-between v=1 skills=[history.timeline, number.difference] {
+  title "How many years?"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let e1={pick(k, "Snow's first essay on cholera", "John Snow born", "First public steam railway", "Pump handle removed")}
+  let y1={pick(k, 1849, 1813, 1825, 1854)}
+  let e2={pick(k, "Pump handle removed", "Pump handle removed", "Snow's second edition", "Penicillin found")}
+  let y2={pick(k, 1854, 1854, 1855, 1928)}
+
+  scene 33x15 {
+    timeline line from=1800 to=1940 step=20 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(0, 0)
+    text ask "{pick(k, \"How many years after his first essay did Snow have the handle taken off?\", \"How old was John Snow in the year the handle came off?\", \"How many years after the first public steam railway did Snow's book come out?\", \"How many years after the pump was penicillin found?\")}" narrate width=22 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Take the earlier year from the later one."
+  hint "Check your answer against the gap between the flags."
+}

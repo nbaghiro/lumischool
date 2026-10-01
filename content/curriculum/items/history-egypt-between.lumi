@@ -1,0 +1,21 @@
+# Years between dates of the Rosetta Stone and of Egyptian writing, across year one with no year
+# nought where they fall either side of it.
+item history.egypt-between v=1 skills=[history.timeline, history.bc-ad, number.difference] {
+  title "How many years?"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let e1={pick(k, "Rosetta Stone found", "Last hieroglyphs carved", "Rosetta Stone carved", "Rosetta Stone carved")}
+  let y1={pick(k, 1799, 394, -196, -196)}
+  let e2={pick(k, "Hieroglyphs read", "Hieroglyphs read", "Last hieroglyphs carved", "Rosetta Stone found")}
+  let y2={pick(k, 1822, 1822, 394, 1799)}
+
+  scene 29x15 {
+    timeline line from=-400 to=2000 step=400 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(0, 0)
+    text ask "{pick(k, \"How many years after the stone was found was it read?\", \"For how many years could nobody read hieroglyphs?\", \"How many years after the first was the second?\", \"For how many years did the stone lie unfound?\")}" narrate width=22 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Count up to year one, then on from it, if the years are either side."
+  hint "There was no year nought: 1 BC is followed by AD 1."
+}

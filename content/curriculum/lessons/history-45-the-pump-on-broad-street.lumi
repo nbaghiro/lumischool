@@ -1,0 +1,66 @@
+# Dates from engine/notation/chronicle.ts: Snow born 1813, his first essay 1849, the handle removed
+# 1854, the second edition with the map 1855, Snow died 1858. The workhouse, brewery and Hampstead
+# evidence are Snow's, as historiamedica.org reads them; the first days are from Wikipedia.
+lesson history-the-pump-on-broad-street v=1 format=teach grade=6 unit=3 subject=history levels=[easy, medium, hard] {
+  title "The pump on Broad Street, 1854"
+  goal "Follow how John Snow used evidence to find what spread an illness in London in 1854, and weigh each piece of it."
+
+  look {
+    scene 26x14 {
+      street s windows=[2, 1, 2, 3] doors=[0, 1, 1, 0] chimneys=[1, 1, 1, 1] cats=[0, 0, 0, 0] numbers=["38", "39", "40", "41"] at=canvas(0, 0)
+    }
+    say """
+      In 1854 most families in Soho, in London, fetched their water from a pump in the street. At
+      the end of August a deadly illness, cholera, broke out around Broad Street. Many people then
+      believed it spread through bad air. A doctor who lived nearby, John Snow, thought it spread
+      through water, so he asked where each family that fell ill got its water, and marked the
+      deaths on a map. On 8 September 1854 the parish took the handle off the Broad Street pump.
+      """
+  }
+  do {
+    level easy {
+      worked history.pump-table k=0
+    }
+    show history.pump-days k=0 hard-k=1
+    show history.pump-table k=1 hard-k=2
+    show history.pump-workhouse k=1 easy-k=0
+    show history.pump-order k=1 easy-k=0 hard-k=2
+    show history.pump-between k=1 easy-k=0 hard-k=2
+    show history.pump-book k=0 hard-k=1
+    show history.pump-days k=1 hard-k=0
+    show history.pump-between k=2 easy-k=1 hard-k=3
+    level hard {
+      show history.pump-order k=3
+    }
+  }
+  try stars=2 {
+    show history.pump-why k=0 hard-k=1
+  }
+  try stars=3 {
+    show history.pump-far k=0 hard-k=1
+  }
+  remember {
+    say "John Snow asked where each family's water came from, and the evidence pointed to one pump."
+  }
+
+  grown-ups """
+    The idea is how evidence changes what people believe: Snow's questions, his counts and his map
+    against the belief in bad air. The step up from a day in 1850 earlier this grade is the city of
+    that time seen through evidence that led a parish to act. The way in reads a table of three
+    places and their water; the core counts the days and the deaths, orders Snow's life beside the
+    railways and medicine, and asks whose account is first-hand. The two-star question asks why the
+    handle, and why the brewery helped; the three-star question weighs evidence from outside the
+    street. The lesson tells of deaths in numbers and leaves out how the illness affected people;
+    say more if the child asks. If the child is stuck, read the table row by row aloud. Off the
+    page, find where your own tap water comes from. England's key stage 2 history asks for "a
+    study of an aspect or theme in British history that extends pupils' chronological knowledge
+    beyond 1066", such as "changes in an aspect of social history"; Japan's 社会 for grade four
+    studies how a town gets clean drinking water (recalled).
+    """
+  level easy {
+    grown-ups "At this level a worked example finds the pump's row in the table, the days are counted across the end of August, the order and the years are far apart, and Snow's own book is the source."
+  }
+  level hard {
+    grown-ups "At this level the deaths are shared by day, the table asks which place rules out living nearby, the dates are close together, and the three-star question is the leaking cesspit."
+  }
+}

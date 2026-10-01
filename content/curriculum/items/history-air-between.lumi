@@ -1,0 +1,20 @@
+# Years between the smog, the law, the ozone hole and the treaty, from the dated record.
+item history.air-between v=1 skills=[history.timeline, number.difference] {
+  title "How many years?"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let e1={pick(k, "Ozone hole reported", "Great Smog of London", "Clean Air Act", "United Nations founded")}
+  let y1={pick(k, 1985, 1952, 1956, 1945)}
+  let e2={pick(k, "Montreal Protocol agreed", "Clean Air Act", "Montreal Protocol agreed", "Montreal Protocol in force")}
+  let y2={pick(k, 1987, 1956, 1987, 1989)}
+
+  scene 29x15 {
+    timeline line from=1940 to=2000 step=10 years=[y1, y2] labels=["{e1}", "{e2}"] at=canvas(0, 0)
+    text ask "{pick(k, \"How many years after the hole was reported was the treaty agreed?\", \"How many years after the smog did the law come?\", \"How many years after the Clean Air Act was the ozone treaty agreed?\", \"How many years after the United Nations began did the treaty come into force?\")}" narrate width=22 below=line gap=1
+    number-input answer right-of=ask gap=1
+  }
+
+  check history.dates of=line answer="between(0 1)"
+  hint "Take the earlier year from the later one."
+  hint "Check your answer against the gap between the flags."
+}

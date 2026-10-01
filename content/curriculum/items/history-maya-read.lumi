@@ -1,0 +1,18 @@
+# A number read from Maya numerals: a dot is one, a bar is five, a shell is nought, and each level up
+# is worth twenty times the one below (Wikipedia, Maya numerals).
+item history.maya-read v=1 skills=[history.ancient, number.place-value] {
+  title "Read a Maya number"
+  difficulty (if k <= 2 then 0 else if k <= 5 then 1 else 2)
+  let k=0..7
+  let v={pick(k, 7, 13, 19, 26, 45, 100, 413, 860)}
+
+  scene 23x8 {
+    mayanumber m values=[v] places=true letters=false at=canvas(1, 0)
+    text ask "What number is this?" narrate width=12 right-of=m gap=2
+    number-input answer below=ask gap=1
+  }
+
+  answer v
+  hint "On each level, a bar is five and a dot is one. What does each level hold?"
+  hint "A level is worth twenty times the one below it. Add the levels up."
+}

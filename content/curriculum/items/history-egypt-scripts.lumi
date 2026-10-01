@@ -1,0 +1,16 @@
+# The Rosetta Stone's scripts and when hieroglyphs were still in use: Greek was the script scholars
+# could read in 1799; the decree is of 196 BC and the last hieroglyphs were carved in AD 394.
+item history.egypt-scripts v=1 skills=[history.writing, history.ancient] {
+  title "Three scripts"
+  difficulty k
+  let k=0..1
+
+  scene 34x19 {
+    text ask "{if k == 0 then \"The Rosetta Stone has the same decree in hieroglyphs, in Demotic and in Greek. Which could scholars in 1799 already read?\" else \"The stone was carved in 196 BC. The last hieroglyphs anyone carved are from AD 394. Were hieroglyphs still being written when the stone was made?\"}" narrate width=32 at=canvas(1, 0)
+    choice pick options=[if k == 0 then "Greek" else "Yes", if k == 0 then "Hieroglyphs" else "No", if k == 0 then "Demotic" else "Nobody knows"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "Greek" else "Yes")
+  hint "{if k == 0 then \"Which of the three is not an Egyptian script?\" else \"Is 196 BC before or after AD 394?\"}"
+  hint "{if k == 0 then \"Hieroglyphs had been forgotten for centuries by 1799.\" else \"Picture both years on a timeline.\"}"
+}

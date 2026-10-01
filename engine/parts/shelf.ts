@@ -1413,6 +1413,12 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
     spinner: { on: "data", also: ["sport"], shows: ["chance"], words: "" },
     table: { on: "data", also: [], shows: ["data"], words: "" },
     tally: { on: "counting", also: ["data"], shows: ["counting", "data"], words: "" },
+    mayanumber: {
+        on: "counting",
+        also: [],
+        shows: ["place", "counting"],
+        words: "history maya numerals twenty twenties dots bars shell nought zero place value",
+    },
     tallytable: { on: "data", also: [], shows: ["data"], words: "" },
     tessellation: { on: "shapes", also: [], shows: ["shape", "patterns"], words: "" },
     venn: { on: "data", also: [], shows: ["chance"], words: "" },

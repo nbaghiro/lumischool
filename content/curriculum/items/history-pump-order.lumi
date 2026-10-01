@@ -1,0 +1,19 @@
+# John Snow's life and the pump beside the railways and medicine of his century, numbered from the
+# earliest, from the dated record.
+item history.pump-order v=1 skills=[history.order, history.lives] {
+  title "In order"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let a={pick(k, "Penicillin found", "Telephone", "John Snow died", "Pump handle removed")}
+  let b={pick(k, "John Snow born", "First public steam railway", "Pump handle removed", "Snow's first essay on cholera")}
+  let c={pick(k, "Pump handle removed", "Snow's first essay on cholera", "Snow's second edition", "First inter-city railway")}
+
+  scene 34x13 {
+    text ask "Number these 1, 2, 3, from the earliest." narrate width=32 at=canvas(1, 0)
+    sequence s items=["{a}", "{b}", "{c}"] blanks=[p, q, r] below=ask gap=1
+  }
+
+  check history.dates of=s p="rank(0)" q="rank(1)" r="rank(2)"
+  hint "Snow wrote about cholera before the pump, and his book after it."
+  hint "Which of these could happen only after someone was born?"
+}

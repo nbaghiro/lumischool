@@ -1,0 +1,16 @@
+# The two-star reason: a text the scholars could read, the Greek, told them what the hieroglyphs
+# beside it said; and the Egyptian year began with the flood because the flood decided the farming.
+item history.egypt-why v=1 stars=2 skills=[history.writing, history.ancient, reasoning.why] {
+  title "Why did it help?"
+  difficulty k
+  let k=0..1
+
+  scene 35x19 {
+    text ask "{if k == 0 then \"The Egyptian year began with Akhet, the flood. Why start the year there?\" else \"The Rosetta Stone carries one decree three times: in hieroglyphs, in Demotic and in Greek. Scholars in 1799 could read Greek. Why did that help them read the hieroglyphs?\"}" narrate width=32 at=canvas(1, 0)
+    choice pick options=[if k == 0 then "The flood decided when the fields could be farmed" else "They knew what the signs said, so could match them", if k == 0 then "The flood came on the king's birthday" else "Greek letters and hieroglyphs are the same", if k == 0 then "Floods were rare, so they were special" else "The Greek was a list of every sign"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "The flood decided when the fields could be farmed" else "They knew what the signs said, so could match them")
+  hint "{if k == 0 then \"What did the flood leave on the fields?\" else \"If you know what a message says, what can you find in its code?\"}"
+  hint "{if k == 0 then \"What did nearly every Egyptian family work at?\" else \"The three texts say the same thing.\"}"
+}

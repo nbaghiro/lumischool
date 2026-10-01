@@ -1,0 +1,18 @@
+# Three places on and by Broad Street and where their water came from, from Snow's own account as
+# the sources read it: the workhouse with its own well, 5 deaths of 535; the brewery's more than 70
+# men on beer, none badly ill; the houses by the pump, many.
+item history.pump-table v=1 skills=[history.evidence, data.tables] {
+  title "Where their water came from"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x29 {
+    table t cols=3 head=["Place", "Its water", "Who died"] cells=["Workhouse, 535", "its own well", "5", "Brewery, 70", "beer", "none", "Houses by pump", "the pump", "many"] at=canvas(1, 0)
+    text ask "{pick(k, \"Which place drank from the Broad Street pump?\", \"Which place lost the fewest people?\", \"The workhouse stood close to the pump, nearly surrounded by houses where people died. Which place shows that living close to the pump was not enough to fall ill?\")}" narrate width=32 below=t gap=1
+    choice pick options=["Houses by pump", "Workhouse, 535", "Brewery, 70"] stack=column below=ask gap=1
+  }
+
+  answer pick=pick(k, "Houses by pump", "Brewery, 70", "Workhouse, 535")
+  hint "Read the column for its water, then the column for who died."
+  hint "{pick(k, \"Find the pump in the middle column.\", \"Which row says none?\", \"Which place was close but had water of its own?\")}"
+}

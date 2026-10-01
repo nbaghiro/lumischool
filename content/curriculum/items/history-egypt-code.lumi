@@ -1,0 +1,16 @@
+# The three-star question: a made-up stone with one message in a known language and in signs, read
+# the way the Rosetta Stone was, by matching what repeats.
+item history.egypt-code v=1 stars=3 skills=[history.writing, reasoning.logic] {
+  title "Crack the code"
+  difficulty k
+  let k=0..1
+
+  scene 34x19 {
+    text ask "{if k == 0 then \"A made-up stone says one thing twice. In Greek: king, Ptolemy, king. In signs: owl, lion, owl. Which sign means king?\" else \"A made-up stone says one thing twice. In Greek: the king gives bread; the king gives beer. In signs: owl reed loaf; owl reed jar. Which signs say the king gives?\"}" narrate width=32 at=canvas(1, 0)
+    choice pick options=[if k == 0 then "owl" else "owl reed", if k == 0 then "lion" else "loaf jar", if k == 0 then "both" else "owl loaf"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "owl" else "owl reed")
+  hint "Which word comes twice in the Greek?"
+  hint "Which sign comes twice, in the same places?"
+}

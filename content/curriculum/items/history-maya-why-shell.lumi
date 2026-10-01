@@ -1,0 +1,17 @@
+# The two-star reason: a level's worth comes from where it is, so an empty level needs a mark of its
+# own, the shell for nought.
+item history.maya-why-shell v=1 stars=2 skills=[history.ancient, number.place-value, reasoning.why] {
+  title "Why the shell?"
+  difficulty k
+  let k=0..1
+
+  scene 35x18 {
+    mayanumber m values=[20] places=true letters=false at=canvas(1, 0)
+    text ask "{if k == 0 then \"This is 20 in Maya numerals: a dot on the twenties level and a shell on the ones. Why is the shell there?\" else \"Why is the dot on the second level worth 20 and not 1?\"}" narrate width=20 right-of=m gap=1
+    choice pick options=[if k == 0 then "The ones are empty, so the dot is a twenty" else "Each level up is worth twenty times the one below", if k == 0 then "It adds five more" else "A dot higher up is drawn bigger", if k == 0 then "It is only there to look pretty" else "The Maya counted in tens"] stack=column below=m gap=1
+  }
+
+  answer pick=(if k == 0 then "The ones are empty, so the dot is a twenty" else "Each level up is worth twenty times the one below")
+  hint "Without the shell, what would the dot alone say?"
+  hint "Compare a dot on the ones level with a dot one level up."
+}

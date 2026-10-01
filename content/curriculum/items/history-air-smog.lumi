@@ -1,0 +1,17 @@
+# The Great Smog of London, from Wikipedia: Friday 5 to Tuesday 9 December 1952; the government's
+# first count about 4,000 deaths, later research 10,000 to 12,000.
+item history.air-smog v=1 skills=[history.twentieth-century, time.days, number.difference] {
+  title "Five days of smog"
+  difficulty k
+  let k=0..1
+
+  scene 34x21 {
+    houses h count=4 windows=2 at=canvas(1, 0)
+    text ask "{if k == 0 then \"A thick smog lay over London from Friday 5 December to Tuesday 9 December 1952. Counting both, on how many days was it there?\" else \"At first the government counted about 4,000 deaths from the smog. Later research says 10,000 or more. How many more is 10,000 than 4,000?\"}" narrate width=32 below=h gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 5, 6000)
+  hint "{if k == 0 then \"Say the days aloud: Friday, Saturday...\" else \"Take the first count from the later one.\"}"
+  hint "{if k == 0 then \"Count the first day and the last.\" else \"10 thousand take away 4 thousand.\"}"
+}

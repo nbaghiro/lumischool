@@ -1,0 +1,17 @@
+# A Maya book against an encyclopaedia written in our time: was the maker there, from the record of
+# sources (the Dresden Codex, about 1200 to 1345, by eight Maya scribes).
+item history.maya-codex v=1 skills=[history.sources, history.ancient] {
+  title "A Maya book"
+  difficulty k
+  let k=0..1
+
+  scene 36x19 {
+    sourcecard card title="{if k == 0 then \"The Dresden Codex\" else \"An encyclopaedia entry on the Maya\"}" kind=pick(k, 0, 2) who="{if k == 0 then \"Eight Maya scribes\" else \"The encyclopaedia's writers\"}" when="{if k == 0 then \"about 1200 to 1345\" else \"2018\"}" where="{if k == 0 then \"the region of Chichen Itza, Yucatán\" else \"not stated\"}" there=pick(k, 1, 0) ask=4 at=canvas(1, 0)
+    text ask "{if k == 0 then \"This folding book of bark paper holds Maya calendars and tables of the planet Venus. Is it a first-hand source for how the Maya kept time?\" else \"This entry tells how the Maya kept time. Is it a first-hand source?\"}" narrate width=15 right-of=card gap=1
+    choice pick options=["First-hand", "Second-hand"] stack=column below=ask gap=1
+  }
+
+  check history.sources of=card pick=hand
+  hint "Read the who and the when rows."
+  hint "Were the makers Maya, keeping time themselves?"
+}

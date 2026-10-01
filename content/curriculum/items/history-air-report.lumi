@@ -1,0 +1,17 @@
+# The British Antarctic Survey's report of 1985 from its measurements at Halley Bay against a school
+# book written later: was the maker there, from the record of sources.
+item history.air-report v=1 skills=[history.sources, history.evidence] {
+  title "Who measured it?"
+  difficulty k
+  let k=0..1
+
+  scene 36x19 {
+    sourcecard card title="{if k == 0 then \"The ozone report from Halley Bay\" else \"A school book about the planet\"}" kind=pick(k, 0, 2) who="{if k == 0 then \"Joe Farman, Brian Gardiner and Jon Shanklin\" else \"A writer of children's books\"}" when="{if k == 0 then \"1985\" else \"2015\"}" where="{if k == 0 then \"Halley Bay, Antarctica\" else \"not stated\"}" there=pick(k, 1, 0) ask=4 at=canvas(1, 0)
+    text ask "{if k == 0 then \"These scientists measured the ozone over Antarctica themselves and reported how low it had fallen. Is their report first-hand?\" else \"This book tells how the ozone hole was found. Is it first-hand?\"}" narrate width=15 right-of=card gap=1
+    choice pick options=["First-hand", "Second-hand"] stack=column below=ask gap=1
+  }
+
+  check history.sources of=card pick=hand
+  hint "Read the who and the where rows."
+  hint "Did the writers take the measurements themselves?"
+}

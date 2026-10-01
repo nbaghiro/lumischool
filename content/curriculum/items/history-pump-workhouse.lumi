@@ -1,0 +1,15 @@
+# The workhouse: 535 people, its own well, 5 deaths (Snow's account, as historiamedica.org reads it).
+item history.pump-workhouse v=1 skills=[history.evidence, number.divide] {
+  title "The workhouse"
+  difficulty k
+  let k=0..1
+
+  scene 34x8 {
+    text ask "{if k == 0 then \"The workhouse on Poland Street had 535 people and its own well. 5 of them died. How many did not?\" else \"In the workhouse, 5 of its 535 people died. That is 1 person in how many?\"}" narrate width=32 at=canvas(1, 0)
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 530, 107)
+  hint "{if k == 0 then \"Take the 5 away from everyone.\" else \"Share the 535 into 5 equal groups.\"}"
+  hint "{if k == 0 then \"535 take away 5.\" else \"How many fives make 535?\"}"
+}

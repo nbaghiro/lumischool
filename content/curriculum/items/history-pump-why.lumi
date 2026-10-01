@@ -1,0 +1,16 @@
+# The two-star reason: Snow believed the pump's water carried the illness, and the brewery's men, who
+# drank beer and not the water, stayed well.
+item history.pump-why v=1 stars=2 skills=[history.evidence, reasoning.why] {
+  title "Why the handle?"
+  difficulty k
+  let k=0..1
+
+  scene 34x19 {
+    text ask "{if k == 0 then \"Snow asked the parish to take the pump's handle off. Why take the handle, rather than clean the houses?\" else \"The brewery stood in Broad Street, near the pump. Its men drank beer, not the pump's water, and none fell badly ill. Why did that help Snow's idea?\"}" narrate width=32 at=canvas(1, 0)
+    choice pick options=[if k == 0 then "He believed the pump's water carried the illness" else "Those who did not drink the water stayed well", if k == 0 then "The handle was broken" else "Beer cures every illness", if k == 0 then "The houses were already clean" else "The brewery was far from the pump"] stack=column below=ask gap=1
+  }
+
+  answer pick=(if k == 0 then "He believed the pump's water carried the illness" else "Those who did not drink the water stayed well")
+  hint "{if k == 0 then \"Without a handle, what can nobody do at a pump?\" else \"Did the brewery's men live and work near the pump?\"}"
+  hint "{if k == 0 then \"What did Snow think the illness travelled in?\" else \"What was the one thing they did differently?\"}"
+}

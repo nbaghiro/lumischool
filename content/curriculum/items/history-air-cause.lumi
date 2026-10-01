@@ -1,0 +1,17 @@
+# What made the smog and what the laws and the treaty did, from Wikipedia: coal smoke held down by
+# cold, windless air; the Clean Air Act 1956 paid households to change their coal fires; the Montreal
+# Protocol phases out the gases, such as CFCs, that break down the ozone layer.
+item history.air-cause v=1 skills=[history.twentieth-century, history.change] {
+  title "Cause and cure"
+  difficulty pick(k, 0, 1, 2)
+  let k=0..2
+
+  scene 34x15 {
+    text ask "{pick(k, \"What made the London smog of December 1952?\", \"What did the Clean Air Act of 1956 pay families to do?\", \"What does the Montreal Protocol of 1987 stop countries making?\")}" narrate width=32 at=canvas(1, 0)
+    choice pick options=[pick(k, "Coal smoke, held down by cold, still air", "Change coal fires for cleaner ones", "Gases that break down the ozone layer"), pick(k, "Sand blown from a desert", "Move out of London", "Coal for fires"), pick(k, "Steam from kettles", "Stop cooking at home", "Cars and buses")] stack=column below=ask gap=1
+  }
+
+  answer pick=pick(k, "Coal smoke, held down by cold, still air", "Change coal fires for cleaner ones", "Gases that break down the ozone layer")
+  hint "{pick(k, \"What did nearly every London home burn to keep warm in 1952?\", \"The law was about smoke. Where did the smoke come from?\", \"The treaty was about a layer high in the sky.\")}"
+  hint "Read the lesson's first page again."
+}

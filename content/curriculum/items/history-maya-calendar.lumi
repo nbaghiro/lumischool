@@ -1,0 +1,18 @@
+# The Maya calendars: the 260-day count is 13 numbers turning with 20 day names, the 365-day year is
+# 18 months of 20 days and 5 more, and the two meet again after 52 years or 18,980 days (Wikipedia,
+# Maya calendar).
+item history.maya-calendar v=1 skills=[history.ancient, number.multiply] {
+  title "Maya calendars"
+  difficulty k
+  let k=0..2
+
+  scene 29x12 {
+    mayanumber m values=[pick(k, 13, 18, 52), pick(k, 20, 20, 365)] places=false letters=false at=canvas(1, 0)
+    text ask "{pick(k, \"One calendar turned 13 numbers with 20 day names, like two wheels. How many days before the same number and name came round together?\", \"The year calendar had 18 months of 20 days, and 5 more days at the end. How many days were in the 18 months?\", \"The two calendars came back to the same pair of days after 52 years of 365 days. How many days is that?\")}" narrate width=18 right-of=m gap=1
+    number-input answer below=ask gap=1
+  }
+
+  answer pick(k, 260, 360, 18980)
+  hint "Each number meets each name once. How many pairs is that?"
+  hint "Multiply the two numbers on the page."
+}

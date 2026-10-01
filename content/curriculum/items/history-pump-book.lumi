@@ -1,0 +1,17 @@
+# Snow's own book of 1855 against a history of medicine written much later: was the maker there,
+# from the record of sources.
+item history.pump-book v=1 skills=[history.sources, history.evidence] {
+  title "Who saw it?"
+  difficulty k
+  let k=0..1
+
+  scene 36x17 {
+    sourcecard card title="{if k == 0 then \"On the Mode of Communication of Cholera\" else \"A history of medicine\"}" kind=pick(k, 0, 2) who="{if k == 0 then \"John Snow, a doctor who lived near Broad Street\" else \"A historian\"}" when="{if k == 0 then \"1855\" else \"1990\"}" where="{if k == 0 then \"London\" else \"not stated\"}" there=pick(k, 1, 0) ask=4 at=canvas(1, 0)
+    text ask "{if k == 0 then \"Snow wrote this book about the deaths he counted himself in 1854. Is it a first-hand source for the outbreak?\" else \"This book tells the story of the Broad Street pump. Is it a first-hand source for the outbreak?\"}" narrate width=15 right-of=card gap=1
+    choice pick options=["First-hand", "Second-hand"] stack=column below=ask gap=1
+  }
+
+  check history.sources of=card pick=hand
+  hint "Read the who and the when rows."
+  hint "Was the writer in Soho in 1854?"
+}

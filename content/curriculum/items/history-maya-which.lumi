@@ -1,0 +1,23 @@
+# One number to find among three Maya numerals; the others are its digits swapped between levels,
+# or a level read as ones (Wikipedia, Maya numerals).
+item history.maya-which v=1 skills=[history.ancient, number.place-value] {
+  title "Which numeral is it?"
+  difficulty pick(k, 0, 1, 1, 2)
+  let k=0..3
+  let t={pick(k, 12, 27, 40, 405)}
+
+  scene 30x10 {
+    mayanumber m values=[pick(k, 7, 27, 22, 405), pick(k, 12, 141, 2, 85), pick(k, 17, 21, 40, 425)] places=true letters=true at=canvas(1, 0)
+    text ask "Which numeral is {t}?" narrate width=12 right-of=m gap=1
+    choice pick options=["A", "B", "C"] below=ask gap=1
+  }
+
+  answer pick=pick(k, "B", "A", "C", "A")
+  feedback {
+    when (pick == pick(k, "C", "B", "A", "C")) point=m {
+      say "{pick(k, \"That is two more bars of five. Count again.\", \"That one has seven on the twenties level. Which level holds the twenty?\", \"That one has no twenties at all. Look for a shell in the ones.\", \"That one has a dot in the twenties too. Look for a shell there.\")}"
+    }
+  }
+  hint "Work out each numeral level by level."
+  hint "Which level holds the twenties, and which the ones?"
+}

@@ -267,6 +267,10 @@ the same whichever country in the set the family chooses.
 | 2 | Continents, countries and capitals on a world map; where our food comes from: farming, fishing and trade, as Japan's grade five teaches it; how a town is run: a council, its rules and its budget |
 | 3 | Ships and the maps they drew, from Zheng He to the first voyage round the world; reading two accounts of one voyage; the national unit |
 
+Added on 1 October: the Maya, their numbers in twenties and their calendars (term one, unit 3), for
+England's key stage 2 study of the Maya around AD 900; and Egypt in depth, the river's year and the
+Rosetta Stone (term two, unit 6), for its depth study of an earliest civilisation.
+
 ### Grade six: machines, the modern world and how a country is governed
 
 | Term | Lessons |
@@ -274,6 +278,10 @@ the same whichever country in the set the family chooses.
 | 1 | Mills, canals and railways: the machines that changed work (the canal town and the waterfall gorge); a day in a family's life in 1850 and in 1950; inventions put in order and what each replaced |
 | 2 | The twentieth century through families: two wars and what they did to homes and children, told from diaries and letters; a world connected by the telephone, the radio and the first computers; the race to space, from 1957 to the moon in 1969 |
 | 3 | How laws are made and what a vote is; countries working together, and the United Nations; the national unit |
+
+Added on 1 October: the pump on Broad Street in 1854, John Snow's evidence about the water (term
+one, unit 3); and the air we share, from London's smog of 1952 to the ozone treaty of 1987 (term two,
+unit 6), both themes beyond 1066 in England's key stage 2 terms.
 
 The grade five and six lessons meet the fifth and sixth year's worlds where the worlds give them a
 place: the old city's walls and library for castles and books, the canal town's lock and mill and the
