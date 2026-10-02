@@ -54,5 +54,15 @@ test("a child's own term world keeps its roll, and another world of their year i
     await expect(first.locator(".ls-sheet, [class*=ls-sheet]").first()).toBeAttached({
         timeout: 60_000,
     });
+    // and it is never held at the height the roll first laid it at, which cut it off half through
+    await expect
+        .poll(() =>
+            roll
+                .locator(".wd-sheets .ls-sheet")
+                .evaluateAll(
+                    (els) => els.filter((el) => el.scrollHeight > el.clientHeight + 1).length,
+                ),
+        )
+        .toBe(0);
     await expect(page.getByRole("group", { name: "Grade" })).toHaveCount(0);
 });

@@ -1359,10 +1359,12 @@ function Sheet(props: {
                     el.style.top = `${props.rect.y}px`;
                     // the height the roll has laid the sheet at, not the one its paper measured: paper
                     // that lands before the roll is laid out round it would cover the sheet after it
-                    // until then; today's grows as the child works it, and the roll with it
+                    // until then. A sheet the child can still work (today's, or a journey's lesson to
+                    // do) grows as they work it, and the roll with it, so only finished paper is held.
+                    const held = !props.today && props.sheet.state === "done";
                     el.style.minHeight = `${props.rect.h}px`;
-                    el.style.maxHeight = props.today ? "" : `${props.rect.h}px`;
-                    el.style.overflow = props.today ? "" : "clip";
+                    el.style.maxHeight = held ? `${props.rect.h}px` : "";
+                    el.style.overflow = held ? "clip" : "";
                     el.classList.toggle("today", props.today);
                 });
                 return el;
