@@ -439,14 +439,47 @@
 .ls-hints:empty {
     display: none;
 }
-/* The companion's way in at the end of a question's row and under a lesson's goal, and the easier
-   thing it draws beside a question. */
+/* The companion's two ways in, round icon buttons that take no row of their own: Explain this lesson
+   in the heading's top right corner, Help with this one at the end of a question's row, or in the
+   question's top right corner on a sheet being looked at. 44 px, the smallest a finger can trust. */
+.ls-head {
+    position: relative;
+}
+.ls-explain,
 .ls-companion {
-    margin-left: auto;
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 2px solid color-mix(in srgb, var(--ink) 30%, #fff);
+    border-radius: 50%;
+    background: #fff;
+    color: var(--ink);
+    cursor: pointer;
+}
+.ls-explain:hover,
+.ls-companion:hover {
+    border-color: var(--pen);
+}
+.ls-explain:focus-visible,
+.ls-companion:focus-visible {
+    outline: 3px dashed var(--pen);
+    outline-offset: 3px;
 }
 .ls-explain {
-    align-self: flex-start;
-    margin-top: 6px;
+    position: absolute;
+    top: 0;
+    right: 40px;
+}
+.ls-row .ls-companion {
+    margin-left: auto;
+}
+.ls-looked-help {
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 .ls-easier {
     margin: 8px 0 0;
@@ -510,6 +543,9 @@
 }
 .ls-sheet.narrow .ls-head h2 {
     font-size: 32px;
+}
+.ls-sheet.narrow .ls-explain {
+    right: 20px;
 }
 .ls-sheet.narrow .ls-q {
     padding-left: 34px;

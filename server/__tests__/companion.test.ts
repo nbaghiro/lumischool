@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import type { PackLesson, PackQuestion } from "../../engine/pack";
-import { contextOf } from "../companion";
+import { contextOf, IN_CALL } from "../companion";
 
 const question = (over: Partial<PackQuestion>): PackQuestion => ({
     n: 1,
@@ -106,5 +106,20 @@ describe("what the companion is told", () => {
         const told = contextOf(read, { ...where, n: null });
         assert.match(told, /no question open/);
         assert.doesNotMatch(told, /9 and 8/);
+    });
+
+    it("carries the earlier talk, and keeps a context sent during a call under the app message limit", () => {
+        const earlier = Array.from({ length: 30 }, (_, i) => ({
+            who: i % 2 ? "child" : "companion",
+            words: `Line ${i} ${"and more words ".repeat(30)}`,
+        }));
+        const whole = contextOf(read, where, earlier);
+        assert.match(whole, /What was said earlier in this sitting/);
+        assert.match(whole, /Line 29/);
+        const sent = contextOf(read, where, earlier, IN_CALL);
+        assert.ok(Buffer.byteLength(sent) <= IN_CALL, `${Buffer.byteLength(sent)} bytes`);
+        // the question and the newest line survive the cut
+        assert.match(sent, /9 and 8 make how many\?/);
+        assert.match(sent, /Line 29/);
     });
 });

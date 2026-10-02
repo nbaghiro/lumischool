@@ -20,7 +20,7 @@ import { voice } from "./voice";
 export interface Reach {
     on(owner: string): Promise<Answer>;
     start(owner: string, body: unknown): Promise<Answer>;
-    context(owner: string, where: Where): Promise<Answer>;
+    context(owner: string, where: Where & { earlier: readonly Line[] }): Promise<Answer>;
     end(owner: string, id: string): Promise<Answer>;
     gone(owner: string, id: string): void;
     record?(owner: string, doings: readonly Doing[]): Promise<unknown>;
@@ -107,7 +107,9 @@ export async function offer(who: string, chosen: Companion | null, by: Reach): P
  * everything outside it untouchable, or null for the page. The call ends when that dialog closes.
  */
 const [host, setHost] = createSignal<Element | null>(null);
-export { host };
+/** The button a call was asked from, which the dock first opens beside. */
+const [anchor, setAnchor] = createSignal<Element | null>(null);
+export { anchor, host };
 
 /** The child left their page: nothing offers the companion until the next child's page does. */
 export function withdraw(): void {
@@ -121,7 +123,12 @@ export function withdraw(): void {
  * but to the next call, so a call that starts again (after a quiet minute, at its time limit, or with
  * another face) carries on from it. It goes when the page or the child changes.
  */
-const said: { who: "companion" | "child"; words: string }[] = [];
+const said: Line[] = [];
+/** One thing said in a call, by whom. */
+export interface Line {
+    who: "companion" | "child";
+    words: string;
+}
 /** How many lines of it the next call is given. */
 const REMEMBERED = 20;
 
@@ -134,6 +141,8 @@ interface Live {
     ready: boolean;
     queued: Record<string, unknown>[];
     first: string;
+    /** What was said before this call, which every new context carries so the call keeps it. */
+    earlier: readonly Line[];
 }
 let live: Live | null = null;
 let topic: Desk | null = null;
@@ -175,7 +184,7 @@ const respond = (text: string): void => send("conversation.respond", { text });
 async function retell(desk: Desk): Promise<void> {
     const kid = owner();
     if (kid === null || !live || !reach) return;
-    const got = await reach.context(kid, desk.where());
+    const got = await reach.context(kid, { ...desk.where(), earlier: live.earlier });
     if (got.ok && obj(got.body) && str(got.body.context))
         send("conversation.overwrite_llm_context", { context: got.body.context });
 }
@@ -191,6 +200,8 @@ export function ask(tap: Tap, desk: Desk, from?: Element): void {
     voice().stop();
     if (live) {
         stir();
+        // a new tap is a new turn: the companion stops what it was saying and answers this one
+        if (speaking()) send("conversation.interrupt");
         void retell(desk).finally(() => respond(FIRST[tap]));
         return;
     }
@@ -210,6 +221,7 @@ let leaveWith: (() => void) | null = null;
 function hostAt(from: Element | undefined): void {
     leaveWith?.();
     leaveWith = null;
+    setAnchor(from ?? null);
     const dialog = from?.closest("dialog[open]") ?? null;
     setHost(dialog);
     if (!dialog) return;
@@ -252,18 +264,18 @@ async function begin(kid: string, chosen: Companion, name: string, tap: Tap, des
     setCaption("");
     const by = reach;
     if (!by) return;
-    const got = await by.start(kid, {
-        face: chosen,
-        where: desk.where(),
-        earlier: said.slice(-REMEMBERED),
-    });
+    const earlier = said.slice(-REMEMBERED);
+    const got = await by.start(kid, { face: chosen, where: desk.where(), earlier });
     if (!got.ok || !obj(got.body) || !str(got.body.url) || !str(got.body.id)) {
-        const many = !got.ok && got.failure.status === 429;
+        const status = got.ok ? 0 : got.failure.status;
         setPhase({
             at: "failed",
-            line: many
-                ? "That is all the talking for today. Your grown-up can help."
-                : `${name} cannot come just now. Try again in a little while.`,
+            line:
+                status === 429
+                    ? "That is all the talking for today. Your grown-up can help."
+                    : status === 402
+                      ? `${name} has no more talking time just now. Your grown-up can add more.`
+                      : `${name} cannot come just now. Try again in a little while.`,
         });
         return;
     }
@@ -273,6 +285,7 @@ async function begin(kid: string, chosen: Companion, name: string, tap: Tap, des
         startAudioOff: true,
         subscribeToTracksAutomatically: true,
     });
+    const token = str(got.body.token) ? got.body.token : undefined;
     const here: Live = {
         call,
         id: got.body.id,
@@ -282,6 +295,7 @@ async function begin(kid: string, chosen: Companion, name: string, tap: Tap, des
         ready: false,
         queued: [],
         first: FIRST[tap],
+        earlier,
     };
     live = here;
     call.on("track-started", (e) => {
@@ -316,7 +330,8 @@ async function begin(kid: string, chosen: Companion, name: string, tap: Tap, des
         if (live === here) drop();
     });
     try {
-        await call.join({ url: got.body.url, userName: "child" });
+        // the room is private: only the token the server was given lets the page in
+        await call.join({ url: got.body.url, userName: "child", ...(token ? { token } : {}) });
         call.setLocalAudio(false);
     } catch {
         if (live === here) void close(`${name} cannot come just now. Try again in a little while.`);
@@ -330,8 +345,11 @@ function heard(data: unknown): void {
     const theirs = p.role === "replica" || p.role === "pal";
     if (data.event_type === "conversation.utterance" && str(p.speech) && p.speech.trim()) {
         if (theirs) setCaption(p.speech);
-        if (theirs || p.role === "user")
-            said.push({ who: theirs ? "companion" : "child", words: p.speech.trim() });
+        const line: Line = { who: theirs ? "companion" : "child", words: p.speech.trim() };
+        const last = said.at(-1);
+        // Tavus sends each of the companion's lines twice, as "pal" and as the older "replica"
+        if ((theirs || p.role === "user") && !(last?.who === line.who && last.words === line.words))
+            said.push(line);
         if (said.length > REMEMBERED * 2) said.splice(0, said.length - REMEMBERED);
     }
     if (data.event_type === "conversation.started_speaking" && theirs) {

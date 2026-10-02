@@ -20,6 +20,7 @@ import { Portal } from "solid-js/web";
 import type { Companion } from "../answer";
 import {
     again,
+    anchor,
     audio,
     caption,
     change,
@@ -56,6 +57,30 @@ const DRAG_FROM = 4;
 
 /** Where the dock was dragged to, in px from the window's top left; null where the stylesheet puts it. */
 const [placed, setPlaced] = createSignal<{ x: number; y: number } | null>(null);
+/** Where the dock opens before anyone drags it: beside the sheet the call was asked from. */
+const [beside, setBeside] = createSignal<{ x: number; y: number } | null>(null);
+/** The room between the sheet's edge and the dock, in px. */
+const GAP = 16;
+
+/**
+ * Beside the lesson, level with the button that asked: right of the sheet where the window has
+ * room, else left of it, else null, where the stylesheet's corner is used.
+ */
+function besideSheet(dock: HTMLElement, from: Element | null): { x: number; y: number } | null {
+    const sheet = from?.closest(".ls-sheet");
+    if (!from || !sheet) return null;
+    const s = sheet.getBoundingClientRect();
+    const y = from.getBoundingClientRect().top - 8;
+    const w = dock.offsetWidth;
+    const x =
+        s.right + GAP + w <= innerWidth
+            ? s.right + GAP
+            : s.left - GAP - w >= 0
+              ? s.left - GAP - w
+              : null;
+    return x === null ? null : inside(dock, x, y);
+}
+
 /** The words said, under the video, which a viewer turns on. */
 const [words, setWords] = createSignal(false);
 
@@ -114,7 +139,13 @@ export function CompanionDock(props: {
     const keep = (): void => {
         const at = placed();
         if (dock && at) setPlaced(inside(dock, at.x, at.y));
+        else if (dock) setBeside(besideSheet(dock, anchor()));
     };
+    // each call opens beside the button that asked for it, until the dock is dragged somewhere
+    createEffect(() => {
+        anchor();
+        if (phase().at !== "off") requestAnimationFrame(keep);
+    });
     addEventListener("resize", keep);
     onCleanup(() => {
         removeEventListener("pagehide", gone);
@@ -126,12 +157,11 @@ export function CompanionDock(props: {
             <Portal mount={host() ?? document.body}>
                 <aside
                     class="cp-dock"
-                    classList={{ placed: placed() !== null }}
-                    style={
-                        placed()
-                            ? { left: `${placed()?.x ?? 0}px`, top: `${placed()?.y ?? 0}px` }
-                            : {}
-                    }
+                    classList={{ placed: (placed() ?? beside()) !== null }}
+                    style={(() => {
+                        const at = placed() ?? beside();
+                        return at ? { left: `${at.x}px`, top: `${at.y}px` } : {};
+                    })()}
                     aria-label="Your companion"
                     ref={(el) => {
                         dock = el;

@@ -70,6 +70,7 @@ import {
 } from "../pack";
 import { valuesOf, type Box, type Scene } from "../scene";
 import * as companion from "./companion";
+import { Icon } from "./icon";
 import { voice } from "./voice";
 
 /** How a question is answered on the sheet: typed or picked into the strip under it, arranged on its drawing, shown worked, written on paper for a grown-up, or in another way this sheet does not have. */
@@ -592,10 +593,12 @@ export function LessonSheet(props: {
                 <Show when={companion.offered() && !(open()?.acts && finished())}>
                     <button
                         type="button"
-                        class="ls-help ls-explain"
+                        class="ls-explain"
+                        aria-label="Explain this lesson"
+                        title="Explain this lesson"
                         onClick={(e) => companion.ask("explain", deskNow(), e.currentTarget)}
                     >
-                        Explain this lesson
+                        <Icon name="words" />
                     </button>
                 </Show>
             </header>
@@ -1008,12 +1011,14 @@ function Question(props: {
         <Show when={desk && (props.look || current()) && !props.closed && companion.offered()}>
             <button
                 type="button"
-                class="ls-help ls-companion"
+                class="ls-companion"
+                aria-label="Help with this one"
+                title="Help with this one"
                 onClick={(e) => {
                     if (desk) companion.ask("help", desk, e.currentTarget);
                 }}
             >
-                Help with this one
+                <Icon name="help" />
             </button>
         </Show>
     );
@@ -1193,12 +1198,10 @@ function Question(props: {
                 )}
             </Show>
             <Show when={props.look && desk && companion.offered()}>
-                <div class="ls-strip ls-looked-help">
-                    <div class="ls-row">{help}</div>
-                    <ol class="ls-hints">
-                        <For each={shown()}>{(h) => <li>{h}</li>}</For>
-                    </ol>
-                </div>
+                <div class="ls-looked-help">{help}</div>
+                <ol class="ls-hints">
+                    <For each={shown()}>{(h) => <li>{h}</li>}</For>
+                </ol>
             </Show>
             <Show when={easier()}>{(e) => <Easier easier={e()} draw={props.draw} />}</Show>
             <Show when={props.way === "other" && props.state}>

@@ -60,7 +60,16 @@ that ends after a quiet minute or at its time limit, or another face), the page 
 said by the companion and the child in memory, and a new call is told up to twenty of them. They are
 never stored: they go when the page closes or another child's page opens.
 
-The child's name and anything else about the child are never sent. No transcript is kept by us.
+The child's name and anything else about the child are never sent. We keep no transcript, but
+Tavus does: after each call it stores the conversation's transcript on its side, readable through
+its API. Turning on Zero Data Retention on the Tavus account stops that; this needs a decision before
+children use it.
+
+Each call is a private room for two (`require_auth`, `max_participants: 2`): the page joins with the
+token the server is given, so the call's link alone lets nobody in. A context sent during a call
+travels as a Daily app message, which Tavus caps at 4 KB and drops silently above that, so the
+server keeps it under 3,400 bytes, cutting the oldest earlier lines first and then what the lesson
+tells.
 
 ## Limits and cost
 

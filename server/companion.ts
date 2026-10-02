@@ -2,14 +2,13 @@
 // (.docs/companion.md). The key stays on this server, and what the companion knows of the question is
 // built here from the pack, never from the client, and never holds an answer.
 
-import { createHash } from "node:crypto";
 import { COMPANIONS, type Companion } from "../engine/answer";
 import type { Level, PackLesson, PackQuestion } from "../engine/pack";
 import { askedIn, easierOf, ringableIn, type Asked } from "../school/lessons";
 import type { LessonReader } from "./adaptive-help";
 import { consented, type Adult, type KidSession } from "./auth";
 import { withFamily } from "./db/client";
-import { reserveCompanion } from "./db/tutoring";
+import { releaseCompanion, reserveCompanion } from "./db/tutoring";
 import { Refused } from "./sync";
 
 const API = "https://tavusapi.com/v2";
@@ -89,7 +88,11 @@ const refuse = (status = 400): never => {
 const obj = (v: unknown): v is Record<string, unknown> =>
     typeof v === "object" && v !== null && !Array.isArray(v);
 
-async function tavus(method: "GET" | "POST", path: string, body?: unknown): Promise<unknown> {
+async function tavus(
+    method: "GET" | "POST" | "PATCH",
+    path: string,
+    body?: unknown,
+): Promise<unknown> {
     const res = await fetch(`${API}${path}`, {
         method,
         headers: {
@@ -100,10 +103,14 @@ async function tavus(method: "GET" | "POST", path: string, body?: unknown): Prom
         signal: AbortSignal.timeout(15_000),
     });
     const text = await res.text();
-    if (!res.ok) {
+    // an update that changes nothing answers 304
+    if (!res.ok && res.status !== 304) {
         process.stderr.write(
             `companion: Tavus ${method} ${path} ${res.status} ${text.slice(0, 300)}\n`,
         );
+        // the account's conversation minutes are spent: a grown-up has to top them up
+        if (res.status === 402)
+            throw new Refused(402, { error: "not-allowed", problem: "out-of-credits" });
         throw new Refused(502, { error: "server", problem: "The companion could not be reached." });
     }
     const parsed: unknown = text ? JSON.parse(text) : null;
@@ -115,7 +122,16 @@ const listed = (v: unknown): Record<string, unknown>[] =>
 const field = (v: unknown, key: string): string | null =>
     obj(v) && typeof v[key] === "string" ? v[key] : null;
 
-/** The tools' ids on the account, made once: a tool's name is the account's, so one made before is found by it. */
+/**
+ * How each tool runs: the page carries it out (app message), the companion says nothing while it
+ * does, and then speaks from what came back, such as the hint's words.
+ */
+const RUNS = { on_call: "silent", on_resolve: "generate_response" } as const;
+
+/**
+ * The tools' ids on the account, made once: a tool's name is the account's, so one made before is
+ * found by it, and brought up to date when its description or how it runs has changed.
+ */
 let tools: Promise<string[]> | null = null;
 function toolIds(): Promise<string[]> {
     tools ??= (async () => {
@@ -123,14 +139,26 @@ function toolIds(): Promise<string[]> {
         const ids: string[] = [];
         for (const t of TOOLS) {
             const found = have.find((x) => x.name === t.name);
+            const known = field(found, "tool_id");
+            if (
+                known &&
+                (found?.description !== t.description ||
+                    JSON.stringify(found.parameters) !== JSON.stringify(t.parameters) ||
+                    found.on_call !== RUNS.on_call ||
+                    found.on_resolve !== RUNS.on_resolve)
+            )
+                await tavus("PATCH", `/tools/${known}`, {
+                    description: t.description,
+                    parameters: t.parameters,
+                    ...RUNS,
+                });
             const id =
-                field(found, "tool_id") ??
+                known ??
                 field(
                     await tavus("POST", "/tools", {
                         ...t,
                         origin: "llm",
-                        on_call: "silent",
-                        on_resolve: "add_to_context",
+                        ...RUNS,
                         delivery: { app_message: true },
                     }),
                     "tool_id",
@@ -146,24 +174,47 @@ function toolIds(): Promise<string[]> {
     return tools;
 }
 
-/** One PAL per face and prompt, found again by the name that carries the prompt's hash after a restart. */
+/**
+ * Tavus keeps a PAL's name without its punctuation ("Dr. Paws," comes back as "Dr Paws"), so names
+ * are compared as their words alone.
+ */
+const words = (name: unknown): string =>
+    typeof name === "string"
+        ? name
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, " ")
+              .trim()
+        : "";
+
+/**
+ * One PAL per face, kept on the account and found again by its face and name after a restart. When
+ * the prompt or the tools change, that PAL is updated in place rather than a new one made.
+ */
 const pals = new Map<Companion, Promise<string>>();
 function palFor(who: Companion): Promise<string> {
     const had = pals.get(who);
     if (had) return had;
     const { face, name } = FACES[who];
     const prompt = promptOf(name);
-    const hash = createHash("sha1")
-        .update(prompt + JSON.stringify(TOOLS))
-        .digest("hex")
-        .slice(0, 10);
-    const palName = `${name}, lumischool companion ${hash}`;
+    const palName = `${name} lumischool companion`;
     const made = (async () => {
-        const found = listed(await tavus("GET", "/pals?limit=100")).find(
-            (p) => p.pal_name === palName,
-        );
+        const tools = await toolIds();
+        const found = listed(await tavus("GET", "/pals?limit=100"))
+            .filter(
+                (p) => p.default_face_id === face && words(p.pal_name).startsWith(words(palName)),
+            )
+            .at(-1);
         const existing = field(found, "pal_id");
-        if (existing) return existing;
+        if (existing) {
+            if (found?.system_prompt !== prompt)
+                await tavus("PATCH", `/pals/${existing}`, [
+                    { op: "replace", path: "/system_prompt", value: prompt },
+                ]);
+            const has = Array.isArray(found?.tool_ids) ? found.tool_ids : [];
+            if (tools.some((t) => !has.includes(t)))
+                await tavus("POST", `/pals/${existing}/tools`, { tool_ids: tools });
+            return existing;
+        }
         const pal = field(
             await tavus("POST", "/pals", {
                 pal_name: palName,
@@ -186,7 +237,7 @@ function palFor(who: Companion): Promise<string> {
             "pal_id",
         );
         if (!pal) return refuse(502);
-        await tavus("POST", `/pals/${pal}/tools`, { tool_ids: await toolIds() });
+        await tavus("POST", `/pals/${pal}/tools`, { tool_ids: tools });
         return pal;
     })().catch((e: unknown) => {
         pals.delete(who);
@@ -291,20 +342,50 @@ function questionWords(lesson: PackLesson, where: Where, a: Asked): string[] {
     ];
 }
 
-/** The companion's context for where the child is: the lesson, what it tells, and the question now, with no answer in it. */
-export function contextOf(read: LessonReader, where: Where): string {
+/**
+ * The most a context sent during a call may weigh, in bytes: it travels as a Daily app message,
+ * which Tavus caps at 4 KB with the envelope around it, and one over that is dropped without a word.
+ */
+export const IN_CALL = 3400;
+
+/**
+ * The companion's context for where the child is: the lesson, what it tells, the question now, with
+ * no answer in it, and what was said earlier in the sitting. Within `room` bytes, the earlier talk
+ * loses its oldest lines first, then what the lesson tells is cut shorter.
+ */
+export function contextOf(
+    read: LessonReader,
+    where: Where,
+    earlier: unknown = null,
+    room = Infinity,
+): string {
     const lesson = read(where.lesson);
     if (!lesson) return refuse(404);
     const a = askedAt(lesson, where);
-    const told = toldIn(lesson, where.level);
-    return [
+    const head = [
         `The lesson is "${plain(lesson.title)}", ${lesson.subject}, grade ${lesson.grade}.`,
         lesson.goal ? `Its goal: ${plain(lesson.goal)}` : "",
-        told ? `What the lesson tells the child: ${told}` : "",
-        ...(a ? questionWords(lesson, where, a) : ["The child has no question open just now."]),
-    ]
-        .filter(Boolean)
-        .join("\n");
+    ];
+    const question = a
+        ? questionWords(lesson, where, a)
+        : ["The child has no question open just now."];
+    const said = linesOf(earlier);
+    let told = toldIn(lesson, where.level);
+    const whole = (): string =>
+        [
+            ...head,
+            told ? `What the lesson tells the child: ${told}` : "",
+            ...question,
+            said.length
+                ? `\nWhat was said earlier in this sitting, before this call:\n${said.join("\n")}`
+                : "",
+        ]
+            .filter(Boolean)
+            .join("\n");
+    while (Buffer.byteLength(whole()) > room && said.length) said.shift();
+    while (Buffer.byteLength(whole()) > room && told.length > 200)
+        told = clip(told, told.length / 2);
+    return whole();
 }
 
 /** The most of an earlier talk a new call is told, in lines and in characters. */
@@ -315,8 +396,8 @@ const EARLIER_CHARS = 4000;
  * What the companion and the child said in this sitting before this call, as the page kept it, so a
  * call that starts again carries on. Each line is clipped, and the newest lines are kept.
  */
-function earlierOf(v: unknown): string {
-    if (!Array.isArray(v)) return "";
+function linesOf(v: unknown): string[] {
+    if (!Array.isArray(v)) return [];
     const lines = v
         .filter(obj)
         .flatMap((l) =>
@@ -326,9 +407,7 @@ function earlierOf(v: unknown): string {
         )
         .slice(-EARLIER_LINES);
     while (lines.join("\n").length > EARLIER_CHARS) lines.shift();
-    return lines.length
-        ? `What was said earlier in this sitting, before this call:\n${lines.join("\n")}`
-        : "";
+    return lines;
 }
 
 /** The calls this server started, by Tavus's id, so a family can end only its own. */
@@ -356,41 +435,50 @@ export async function startCompanion(
     family: string,
     read: LessonReader,
     body: unknown,
-): Promise<{ url: string; id: string; name: string; left: number }> {
+): Promise<{ url: string; id: string; token: string | null; name: string; left: number }> {
     const where = whereOf(obj(body) ? body.where : null);
     const who = COMPANIONS.find((c) => obj(body) && c === body.face) ?? "dr-paws";
     if (!where) return refuse();
-    const context = [contextOf(read, where), earlierOf(obj(body) ? body.earlier : null)]
-        .filter(Boolean)
-        .join("\n\n");
+    const context = contextOf(read, where, obj(body) ? body.earlier : null);
     const left = await withFamily({ family }, (tx) => reserveCompanion(tx, family, PER_DAY));
     if (left === null) throw new Refused(429, { error: "rate-limited", limit: "companion" });
-    const pal = await palFor(who);
-    const call = await tavus("POST", "/conversations", {
-        face_id: FACES[who].face,
-        pal_id: pal,
-        conversational_context: context,
-        properties: {
-            max_call_duration: LONGEST,
-            participant_left_timeout: 0,
-            participant_absent_timeout: 60,
-            languages: ["en"],
-        },
-    });
+    // a call Tavus never starts gives the family's day its count back
+    const call = await palFor(who)
+        .then((pal) =>
+            tavus("POST", "/conversations", {
+                face_id: FACES[who].face,
+                pal_id: pal,
+                conversational_context: context,
+                // a private room for two: the page joins with the token, and nobody else can
+                require_auth: true,
+                max_participants: 2,
+                properties: {
+                    max_call_duration: LONGEST,
+                    participant_left_timeout: 0,
+                    participant_absent_timeout: 60,
+                    languages: ["en"],
+                },
+            }),
+        )
+        .catch(async (e: unknown) => {
+            await withFamily({ family }, (tx) => releaseCompanion(tx, family));
+            throw e;
+        });
     const url = field(call, "conversation_url");
     const id = field(call, "conversation_id");
+    const token = field(call, "meeting_token");
     if (!url || !id) return refuse(502);
     const now = Date.now();
     for (const [k, v] of started) if (now - v.at > LONGEST * 2000) started.delete(k);
     started.set(id, { family, at: now });
-    return { url, id, name: FACES[who].name, left };
+    return { url, id, token, name: FACES[who].name, left };
 }
 
 /** The context again for where the lesson has moved to, which the page hands the call itself. */
 export function companionContext(read: LessonReader, body: unknown): { context: string } {
     const where = whereOf(body);
     if (!where) return refuse();
-    return { context: contextOf(read, where) };
+    return { context: contextOf(read, where, obj(body) ? body.earlier : null, IN_CALL) };
 }
 
 /** Ends a call this family started, so its minutes stop as soon as it is closed. */
