@@ -1,0 +1,21 @@
+item k.see-the-wind v=1 skills=[physics.air] {
+  title "Can you see the wind?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 29x20 {
+    windsock pic wind=0.75 stripes=5 at=canvas(1, 1)
+    text q "{pick(k, \"Can you see the wind itself?\", \"How can you tell the wind is blowing if you cannot see it?\")}" narrate width=26 below=pic gap=1
+    choice pick options=[pick(k, "no", "the leaves and washing move"), pick(k, "yes", "the sky turns green")] stack=column below=q gap=1
+  }
+
+  answer pick=pick(k, "no", "the leaves and washing move")
+  hint "Wind is moving air. Can you see air?"
+  hint "What do you see moving on a windy day?"
+}

@@ -1,0 +1,21 @@
+item k.strings-or-skin v=1 skills=[music.instruments] {
+  title "Which has strings?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x40 {
+    guitar pic labels=false letters=false ring=0 at=canvas(1, 1)
+    text q "{pick(k, \"Which has strings to pluck: a guitar or a drum?\", \"Which do you blow into: a recorder or a triangle?\")}" narrate width=14 right-of=pic gap=2
+    choice pick options=[pick(k, "a guitar", "a recorder"), pick(k, "a drum", "a triangle")] stack=column below=q gap=1
+  }
+
+  answer pick=pick(k, "a guitar", "a recorder")
+  hint "Picture each one being played."
+  hint "Where would your fingers or mouth go?"
+}

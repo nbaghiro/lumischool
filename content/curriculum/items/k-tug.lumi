@@ -18,4 +18,5 @@ item k.tug v=1 stars=2 skills=[physics.forces, reasoning.explain] {
 
   answer pick="the way of the longer arrow"
   hint "Which child pulls harder? Look at the arrows."
+  hint "Which arrow is longer? That child pulls harder."
 }

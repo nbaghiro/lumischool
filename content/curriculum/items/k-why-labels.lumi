@@ -1,0 +1,12 @@
+item k.why-labels v=1 stars=2 skills=[reading.nonfiction, reasoning.explain] {
+  title "Why the labels?"
+
+  scene 36x24 {
+    labelled pic of=cottage labels=["chimney", "roof", "window", "door", "path"] blank=-1 title="A cottage" caption="" at=canvas(1, 1)
+    text q "Why does a fact book about frogs have a picture with labels?" narrate width=28 below=pic gap=1
+    choice pick options=["To show and name the parts.", "To make the book longer."] stack=column below=q gap=1
+  }
+
+  answer pick="To show and name the parts."
+  hint "What does a label tell you that the picture alone does not?"
+}

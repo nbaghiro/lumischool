@@ -114,6 +114,8 @@ export const lampRocks: World = {
                 "k-before-and-after",
                 "k-find-the-mistake",
                 "k-a-repeat",
+                "k-plan-the-path",
+                "k-if-it-rains",
             ],
             label: "coding, first steps",
         },

@@ -1,0 +1,22 @@
+item k.letter-same-sides v=1 skills=[art.symmetry, shapes.symmetry] {
+  title "A letter the same on both sides"
+  difficulty k
+  let k=0..2
+  let same={pick(k, "A", "H", "T")}
+  let other={pick(k, "F", "R", "J")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 26x19 {
+    lettercards cards letters=[other, same] capitals=true at=canvas(1, 1)
+    text q "Letters painted on the garden gate. Which capital is the same on both sides, if you fold it down the middle?" narrate width=24 below=cards gap=1
+    choice pick options=[other, same] stack=row below=q gap=1
+  }
+
+  answer pick=same
+  hint "Imagine a mirror down the middle of each letter. Is the other side the same?"
+}

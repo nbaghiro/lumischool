@@ -21,4 +21,5 @@ item k.two-magnets-clips v=1 stars=3 skills=[physics.magnets, counting.compare] 
 
   answer pick=(if a > b then "A" else "B")
   hint "Count the clips on each magnet."
+  hint "Which chain is longer?"
 }

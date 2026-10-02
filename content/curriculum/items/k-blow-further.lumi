@@ -1,0 +1,21 @@
+item k.blow-further v=1 skills=[physics.air, physics.forces] {
+  title "Which blows further?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 29x22 {
+    windsock pic wind=0.5 stripes=5 at=canvas(1, 1)
+    text q "{pick(k, \"You blow hard on a feather and on a stone. Which moves further?\", \"You blow on a flat sheet of paper and on the same paper screwed into a tight ball. Which slides further along the table?\")}" narrate width=26 below=pic gap=1
+    choice pick options=[pick(k, "the stone", "the flat sheet"), pick(k, "the feather", "the paper ball")] stack=column below=q gap=1
+  }
+
+  answer pick=pick(k, "the feather", "the paper ball")
+  hint "Which is lighter? Which does the air push most easily?"
+  hint "Try it with a straw at the table."
+}

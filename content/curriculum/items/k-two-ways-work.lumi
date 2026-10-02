@@ -1,0 +1,13 @@
+item k.two-ways-work v=1 stars=2 skills=[coding.planning, reasoning.explain] {
+  title "Two plans to the flag"
+
+  scene 30x18 {
+    maze g cols=4 rows=3 col=1 row=1 flag=[3, 2] trail=none at=canvas(1, 1)
+    text q "Ada's plan is right 2, then down 1. Ben's is down 1, then right 2. Do both reach the flag?" narrate width=14 right-of=g gap=1
+    choice pick options=["Yes: both reach it.", "No: only Ada's works."] stack=column below=g gap=1
+  }
+
+  answer pick="Yes: both reach it."
+  hint "Try Ben's plan with a finger."
+  hint "Where does each plan end?"
+}

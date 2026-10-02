@@ -1,0 +1,21 @@
+item k.candle-burnt v=1 skills=[history.lighting, measure.non-standard] {
+  title "How much has it burnt?"
+  difficulty b
+  let b=1..6
+  level easy {
+    let b=1..3
+  }
+  level hard {
+    let b=4..6
+  }
+
+  scene 26x17 {
+    candle c start=10 burnt=b lit=1 jar=0 at=canvas(1, 1)
+    text q "Long ago a candle lit the room by the garden. The dashes show where its top was. How many squares has it burnt down?" narrate width=14 right-of=c gap=2
+    number-input answer below=q gap=1
+  }
+
+  check chem.change of=c answer=burnt
+  hint "Find the dashed line and the top of the candle now."
+  hint "Count the squares between them."
+}

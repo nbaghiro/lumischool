@@ -1,0 +1,12 @@
+item k.ask-about-home v=1 skills=[history.homes, history.sources] {
+  title "Ask about a home long ago"
+
+  scene 29x17 {
+    person pic pose=think age=older hair=bun colour=grey top=mint at=canvas(1, 1)
+    text q "Ask an older person about the home they grew up in: how it was warmed, lit, and where they washed. Tell a grown-up one thing that was different." narrate width=26 below=pic gap=1
+  }
+
+  check reading.recited look-for="The child asks an older person, listens, and tells one way their home was different from homes now." notice=["asks a question", "listens to the answer", "tells one difference"]
+  hint "Ask: how did you keep warm when you were small?"
+  hint "Ask: did you have a bath or a shower?"
+}

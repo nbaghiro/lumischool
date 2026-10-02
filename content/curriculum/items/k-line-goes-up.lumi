@@ -1,0 +1,21 @@
+item k.line-goes-up v=1 skills=[physics.heat, measure.temperature] {
+  title "Up or down the tube?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x16 {
+    thermometer t from=0 to=40 step=10 value=20 unit="°C" at=canvas(1, 1)
+    text q "{pick(k, \"The day gets hotter. Does the line in the thermometer go up or down?\", \"The thermometer goes into the fridge. Does the line go up or down?\")}" narrate width=16 right-of=t gap=2
+    choice pick options=["up", "down"] stack=row below=q gap=1
+  }
+
+  answer pick=(if k == 0 then "up" else "down")
+  hint "A taller line means hotter."
+  hint "Is it getting hotter or colder?"
+}

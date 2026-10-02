@@ -1,0 +1,25 @@
+# Food words heard, not read: the grown-up reads the word in the language, the child picks the
+# food in English.
+item k.lang-food-meaning v=1 skills=[language.food] {
+  title "Which food is it?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..4
+  let word={pick(k, "[[food.apple]]", "[[food.milk]]", "[[food.bread]]", "[[food.water]]", "[[food.banana]]")}
+  let means={pick(k, "apple", "milk", "bread", "water", "banana")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..4
+  }
+
+  scene 36x29 {
+    fruitbowl pic fruit=5 at=canvas(1, 1)
+    text q "A picnic in the garden. Listen: {word}. Which food is it?" narrate width=28 below=pic gap=1
+    choice pick options=["apple", "milk", "bread", "water", "banana"] stack=column below=q gap=1
+  }
+
+  answer pick=means
+  hint "Say the word back. Which food did the lesson give it for?"
+  hint "Is it something to eat or something to drink?"
+}

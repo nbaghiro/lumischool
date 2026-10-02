@@ -1,0 +1,10 @@
+item k.make-a-collage v=1 skills=[art.collage, art.made] {
+  title "A collage of a tree"
+
+  scene 29x19 {
+    collage pic scene=boat at=canvas(1, 1)
+    text q "Make a collage of a tree: something rough for the trunk and something soft for the leaves. Glue the big pieces first." narrate width=26 below=pic gap=1
+  }
+
+  check art.made look-for="A tree made from at least two different papers or materials, rough for the trunk and soft or crinkly for the leaves, big pieces down first and the small ones on top." notice=["two textures used", "big pieces first", "reads as a tree"] ask="Which piece feels the roughest?"
+}

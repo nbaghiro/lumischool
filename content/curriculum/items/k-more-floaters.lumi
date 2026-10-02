@@ -22,4 +22,5 @@ item k.more-floaters v=1 stars=3 skills=[physics.floating, counting.one-more] {
     }
   }
   hint "How many float now? Count on two more."
+  hint "Count the floating things first. Now count on two."
 }

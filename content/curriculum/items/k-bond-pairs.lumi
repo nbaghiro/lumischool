@@ -1,0 +1,23 @@
+item k.bond-pairs v=1 skills=[number.bonds-to-five] {
+  title "Which two make five?"
+  difficulty k
+  let k=0..2
+  let right={pick(k, "2 and 3", "4 and 1", "5 and 0")}
+  let o1={pick(k, "2 and 2", "4 and 2", "3 and 3")}
+  let o2={pick(k, "3 and 3", "3 and 1", "4 and 2")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 27x17 {
+    tenframe pic count=5 color=mint at=canvas(1, 1)
+    text q "Five snails sit on two leaves in the garden. Which pair could it be?" narrate width=24 below=pic gap=1
+    choice pick options=[o1, right, o2] stack=row below=q gap=1
+  }
+
+  answer pick=right
+  hint "Put up fingers for the first number, then for the second. Count them all."
+}

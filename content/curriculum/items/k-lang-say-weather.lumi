@@ -1,0 +1,11 @@
+item k.lang-say-weather v=1 skills=[language.weather, language.speaking] {
+  title "Today's weather"
+
+  scene 29x20 {
+    weatherstation pic cups=3 at=canvas(1, 1)
+    text q "Look out of the window each morning for a week and say the weather in [[language.name]]." narrate width=26 below=pic gap=1
+  }
+
+  check reading.recited look-for="Each morning the weather said in the language with the right phrase for what is outside, sounded as the grown-ups' line gives it." notice=["the right phrase for the weather", "said each morning", "sounded as its line gives it"]
+  hint "Is it sunny, raining, hot or cold?"
+}

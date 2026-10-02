@@ -128,6 +128,7 @@ export const geyserValley: World = {
                 "physics-heat-on-the-move",
                 "k-what-melts",
                 "k-cooking-changes",
+                "k-hot-and-cold",
             ],
             label: "heat, changes and acids",
         },

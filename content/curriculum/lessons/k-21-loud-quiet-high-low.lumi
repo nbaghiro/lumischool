@@ -3,7 +3,7 @@ lesson k-loud-quiet-high-low v=1 format=teach grade=0 unit=5 subject=music level
   goal "Tell a loud sound from a quiet one and a high sound from a low one, and sing a song both loud and quiet."
 
   look {
-    scene 16x9 {
+    scene 17x9 {
       chimebars bars bars=8 letters=0 at=canvas(1, 1)
     }
     say """

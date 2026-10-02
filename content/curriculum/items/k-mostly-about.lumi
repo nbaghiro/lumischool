@@ -1,0 +1,22 @@
+item k.mostly-about v=1 skills=[reading.characters, reading.comprehension] {
+  title "Who is it mostly about?"
+  difficulty k
+  let k=0..1
+  let story={pick(k, "A little duck got lost in the long grass. It quacked and quacked. At last a hen heard it and showed it home.", "A pig wanted to swim like the duck. It tried and tried, and in the end it splashed about happily in the mud.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x22 {
+    picturecards pic who=["duck", "hen", "pig"] where=["by", "by", "by"] thing=["log", "log", "log"] letters=true at=canvas(1, 1)
+    text q "Listen to a story read on the garden bench: {story} Who is the story mostly about?" narrate width=28 below=pic gap=1
+    choice pick options=["A", "B", "C"] stack=row below=q gap=1
+  }
+
+  answer pick=pick(k, "A", "C")
+  hint "Who is in the story from the start to the end?"
+  hint "Two animals may be named. Which one is it all about?"
+}

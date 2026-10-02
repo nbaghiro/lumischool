@@ -1,0 +1,13 @@
+item k.fish-in-tree v=1 stars=2 skills=[nature.habitats, reasoning.explain] {
+  title "Why not in a tree?"
+
+  scene 36x24 {
+    pond pic pads=3 fish=3 frog=false at=canvas(1, 1)
+    text q "Why can a fish not live in a tree?" narrate width=28 below=pic gap=1
+    choice pick options=["It needs water to breathe and swim.", "Trees are too tall."] stack=column below=q gap=1
+  }
+
+  answer pick="It needs water to breathe and swim."
+  hint "What does a fish need around it all the time?"
+  hint "What happens to a fish out of water?"
+}

@@ -1,0 +1,12 @@
+item k.why-no-gaps v=1 stars=2 skills=[measure.non-standard, reasoning.explain] {
+  title "Why no gaps?"
+
+  scene 36x23 {
+    towers pic heights=[4, 3] labels=false level=0 at=canvas(1, 1)
+    text q "Ben leaves gaps between his cubes when he measures the pencil. Will he get the right number?" narrate width=28 below=pic gap=1
+    choice pick options=["No: the gaps are not counted.", "Yes: gaps do not matter."] stack=column below=q gap=1
+  }
+
+  answer pick="No: the gaps are not counted."
+  hint "Does a gap have a cube in it?"
+}

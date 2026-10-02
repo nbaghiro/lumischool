@@ -1,0 +1,24 @@
+# Ben reads one sound wrong: the child finds where in the word his mistake is, which needs the
+# whole word read and not only its first sound.
+item k.which-sound-wrong v=1 stars=2 skills=[reading.decoding, reasoning.find-the-mistake] {
+  title "Where did Ben go wrong?"
+  difficulty k
+  let k=0..2
+  let word={pick(k, "pig", "hen", "cup")}
+  let said={pick(k, "pit", "pen", "cap")}
+  let right={pick(k, "the last sound", "the first sound", "the middle sound")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 28x17 {
+    text q "The word is {word}. Ben read it as {said}. Which sound did he get wrong?" narrate width=26 at=canvas(1, 1)
+    choice pick options=["the first sound", "the middle sound", "the last sound"] stack=column below=q gap=1
+  }
+
+  answer pick=right
+  hint "Say {word} and {said} one sound at a time. Where are they different?"
+}

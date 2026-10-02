@@ -1,0 +1,12 @@
+item k.lights-in-order v=1 stars=3 skills=[history.lighting, history.order] {
+  title "Lights from oldest to newest"
+
+  scene 30x16 {
+    text q "Put these in order from oldest to newest. Write 1, 2 and 3." narrate width=28 at=canvas(1, 1)
+    sequence s items=["an electric light bulb", "a fire of sticks", "a candle"] blanks=[p, q, r] below=q gap=1
+  }
+
+  answer p=3 q=1 r=2
+  hint "Which one did people have first of all, long before candles?"
+  hint "Which one needs electricity, so it came last?"
+}

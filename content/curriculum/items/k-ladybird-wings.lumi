@@ -1,0 +1,25 @@
+item k.ladybird-wings v=1 skills=[art.symmetry, counting.to-ten] {
+  title "The same on both wings"
+  difficulty n
+  let n=1..4
+  level easy {
+    let n=1..2
+  }
+  level hard {
+    let n=3..4
+  }
+
+  scene 26x11 {
+    minibeasts bug kinds=["ladybird"] spots=(2 * n) legs=false at=canvas(1, 1)
+    text q "A ladybird on a garden leaf. Both wings match. How many spots on one wing?" narrate width=16 right-of=bug gap=2
+    number-input answer below=q gap=1
+  }
+
+  answer n
+  feedback {
+    when (answer == 2 * n) point=bug {
+      say "That is both wings. Count one wing only."
+    }
+  }
+  hint "Cover one wing with a finger. Count the spots you can still see."
+}

@@ -3,7 +3,7 @@ lesson k-cooking-changes v=1 format=teach grade=0 unit=8 subject=chemistry level
   goal "Say what heat does to food when it is cooked, tell raw from cooked, and say which changes can go back."
 
   look {
-    scene 17x12 {
+    scene 18x12 {
       beforeafter ch change="toast-bread" show=1 names=1 at=canvas(1, 0)
     }
     say """

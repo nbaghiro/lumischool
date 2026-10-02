@@ -1,0 +1,13 @@
+item k.caption-wrong v=1 stars=2 skills=[writing.captions, reasoning.find-the-mistake] {
+  title "What is wrong with the caption?"
+
+  scene 26x26 {
+    art pic asset="cat" at=canvas(1, 1)
+    caption cap text="A big dog." width=12 below=pic gap=1
+    text q "Ben wrote this caption under his picture. What is wrong?" narrate width=24 below=cap gap=1
+    choice pick options=["The picture is a cat, not a dog.", "It needs more words."] stack=column below=q gap=1
+  }
+
+  answer pick="The picture is a cat, not a dog."
+  hint "Does the caption say what is in the picture?"
+}

@@ -1,0 +1,21 @@
+item k.follow-the-words v=1 stars=3 skills=[space.position, reasoning.clues] {
+  title "Follow the clues"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x18 {
+    picturecards cards who=["pig", "pig", "pig"] where=[pick(k, "under", "in"), pick(k, "on", "under"), pick(k, "next", "on")] thing=[pick(k, "bed", "tub"), pick(k, "table", "bed"), pick(k, "bed", "table")] letters=true at=canvas(1, 1)
+    text q "{pick(k, \"The pig is on something, but not on the bed. Which picture?\", \"The pig is under something, and it is not the table. Which picture?\")}" narrate width=28 below=cards gap=1
+    choice pick options=["A", "B", "C"] stack=row below=q gap=1
+  }
+
+  answer pick=pick(k, "B", "B")
+  hint "Find every picture that fits the first part."
+  hint "Which of those fits the second part too?"
+}

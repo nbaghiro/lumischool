@@ -1,0 +1,12 @@
+item k.make-a-pinwheel v=1 skills=[physics.air, art.made] {
+  title "Make a pinwheel"
+
+  scene 29x22 {
+    turbine pic wind=2 lamps=2 at=canvas(1, 1)
+    text q "With a grown-up, make a paper pinwheel on a stick. Blow on it gently, then hard, then hold it in the wind. When does it spin fastest?" narrate width=26 below=pic gap=1
+  }
+
+  check art.made look-for="A pinwheel that turns when blown on, and the child says it spins faster when the air pushes harder." notice=["the pinwheel turns", "tries gentle and hard", "says harder air spins it faster"] ask="What made it spin fastest?"
+  hint "Blow gently first. Now blow harder. What changed?"
+  hint "Where is the wind strongest: indoors or outside on a windy day?"
+}

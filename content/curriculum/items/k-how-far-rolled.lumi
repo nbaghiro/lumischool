@@ -17,4 +17,5 @@ item k.how-far-rolled v=1 skills=[physics.ramps, counting.to-ten] {
 
   answer r
   hint "Count the squares from the foot of the slope to the ball."
+  hint "Put a finger where the slope meets the floor. How many squares to the ball?"
 }

@@ -1,0 +1,23 @@
+item k.home-object-age v=1 skills=[history.homes, history.then-and-now] {
+  title "Long ago or now?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let thing={pick(k, "a washing machine", "a tin bath in front of the fire", "a fridge", "a bucket at the well", "a vacuum cleaner", "a scrubbing board")}
+  let right={pick(k, "now", "long ago", "now", "long ago", "now", "long ago")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 29x21 {
+    cottage pic windows=2 lit=1 at=canvas(1, 1)
+    text q "Gran tells Ada about the house by the garden long ago. Is {thing} from a home long ago, or now?" narrate width=26 below=pic gap=1
+    choice pick options=["long ago", "now"] stack=row below=q gap=1
+  }
+
+  answer pick=right
+  hint "Does it need electricity to work?"
+  hint "Have you seen one in a home today?"
+}

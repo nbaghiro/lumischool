@@ -1,0 +1,13 @@
+item k.hard-not-metal v=1 stars=3 skills=[chemistry.materials, reasoning.clues] {
+  title "Two clues"
+
+  scene 32x16 {
+    materials row things=["metal-key", "wooden-block", "wool-sock"] letters=1 names=1 at=canvas(1, 0)
+    text q "Which one is hard but is not made of metal?" narrate width=28 below=row gap=1
+    choice pick options=["A", "B", "C"] stack=row below=q gap=1
+  }
+
+  check chem.materials of=row pick="fits(hard not-made-metal)"
+  hint "Which ones are hard?"
+  hint "Of those, which is not metal?"
+}

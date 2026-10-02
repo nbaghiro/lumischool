@@ -1,0 +1,22 @@
+# Organic pieces have curvy, wavy edges like a leaf; the checker counts them off the picture's own
+# list.
+item k.curvy-pieces v=1 skills=[art.shape, art.collage] {
+  title "Curvy pieces"
+  difficulty (if s == "boat" then 0 else 1)
+  let s={"boat", "fish", "house"}
+  level easy {
+    let s={"boat"}
+  }
+  level hard {
+    let s={"fish", "house"}
+  }
+
+  scene 30x14 {
+    collage pic scene=s at=canvas(1, 1)
+    text q "Some pieces have curvy, wavy edges like a leaf or a cloud. How many are like that?" narrate width=12 right-of=pic gap=1
+    number-input answer below=q gap=1
+  }
+
+  check art.shapes of=pic answer=organic
+  hint "Look for edges that are not straight and not a perfect circle."
+}

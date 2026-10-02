@@ -1,0 +1,22 @@
+item k.bond-all-ways v=1 stars=3 skills=[number.bonds-to-five, reasoning.cases] {
+  title "Every way to make five"
+  difficulty k
+  let k=0..1
+  let t={pick(k, 4, 5)}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 29x15 {
+    props pic count=t prop=apple at=canvas(1, 1)
+    text q "Ada picks {t} apples in the garden and has two pockets. How many different ways can she share them, counting 0 in one pocket as a way?" narrate width=26 below=pic gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer (t + 1)
+  hint "Start with all of them in one pocket. Then move one across, then another."
+  hint "Write each way down so you do not count one twice."
+}

@@ -1,0 +1,49 @@
+lesson k-where-animals-live v=1 format=teach grade=0 unit=6 subject=nature levels=[easy, medium, hard] {
+  title "Where animals live"
+  goal "Say where an animal lives and why it lives there."
+
+  look {
+    scene 17x12 {
+      pond p pads=4 fish=3 frog=true at=canvas(1, 1)
+    }
+    say """
+        Every animal lives where it can find food, water and shelter. Frogs and fish live in and by a
+        pond. Robins build nests in trees, rabbits dig burrows under the ground, camels live in hot
+        deserts and seals in the cold sea.
+      """
+  }
+  do {
+    level easy {
+      worked k.animal-home k=0 level=medium
+    }
+    practice k.animal-home count=3 seed=2 easy-count=2 hard-count=2
+    show k.frog-lives
+    practice k.pond-life count=2 seed=3
+    show k.hot-or-cold-home k=0 hard-k=1
+    practice k.where-to-look count=2 seed=4 easy-count=1
+  }
+  try stars=2 {
+    show k.fish-in-tree
+  }
+  try stars=3 {
+    show k.home-clues k=0 hard-k=1
+  }
+  remember {
+    say "An animal lives where it finds food, water and somewhere safe."
+  }
+
+  grown-ups """
+    Read each question aloud. Minibeasts counted legs and wings; this lesson is the step on from it,
+    asking where an animal lives and why. A walk to a pond or a park, looking under a log and up into
+    a hedge, teaches it best. If the child is stuck, ask what the animal needs and where it would
+    find that. Off the page, make a bug hotel from sticks and leaves and see who moves in. England,
+    Reception, ELG The Natural World: "Explore the natural world around them, making observations
+    and drawing pictures of animals and plants".
+    """
+  level easy {
+    grown-ups "At this level the duck's pond is worked in the teacher's pen first, the animals are a duck and a rabbit, and the minibeasts are a snail and a nest."
+  }
+  level hard {
+    grown-ups "At this level the animals are a fox and a hen, the camel's home is dry, and the minibeasts are a worm and a woodlouse."
+  }
+}

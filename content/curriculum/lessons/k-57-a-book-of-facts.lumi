@@ -1,0 +1,50 @@
+lesson k-a-book-of-facts v=1 format=teach grade=0 unit=6 subject=reading levels=[easy, medium, hard] {
+  title "A book of facts"
+  goal "Tell a book of true facts from a made-up story."
+
+  look {
+    scene 26x8 {
+      bumblebee bee facing=1 at=canvas(1, 1)
+      text note "A bee has six legs and four wings." right-of=bee gap=2 width=16
+    }
+    say """
+        Some books tell stories that are made up. Fact books tell us true things about the world, with
+        pictures and labels that name the parts. This fact says a bee has six legs and four wings. You
+        can count them to check.
+      """
+  }
+  do {
+    level easy {
+      worked k.story-or-facts k=0 level=medium
+    }
+    practice k.story-or-facts count=2 seed=2
+    practice k.true-or-not count=3 seed=3 easy-count=2
+    show k.check-the-picture k=0 hard-k=1
+    practice k.label-says count=2 seed=4 easy-count=1
+  }
+  try stars=2 {
+    show k.why-labels
+  }
+  try stars=3 {
+    show k.which-book k=0 hard-k=1
+  }
+  remember {
+    say "A story is made up. A fact book tells true things, and labels name the parts."
+  }
+
+  grown-ups """
+    Read each question aloud. Every reading lesson so far was a story; this is the first about
+    books that tell facts, and the labels in it are the ones the child wrote in the labels lesson.
+    Bring home a fact book about animals from the library and read a page together. If the child is
+    stuck on true or made up, ask whether they have ever seen it happen. England, Reception,
+    Educational Programme for Literacy (recalled, not fetched): "It is important for children to
+    develop a life-long love of reading", and ELG Comprehension: "Demonstrate understanding of what
+    has been read to them by retelling stories and narratives using their own words".
+    """
+  level easy {
+    grown-ups "At this level the bee's honey is worked in the teacher's pen first, the facts are plain, the legs are counted, and the root is found."
+  }
+  level hard {
+    grown-ups "At this level the facts include frogs and spiders, the wings are counted, the shoot and the food store are found, and the three-star chooses a story."
+  }
+}

@@ -1,0 +1,25 @@
+# Five is the top row of the frame, so its two parts are the counters and the gaps.
+item k.bond-five-frame v=1 skills=[number.bonds-to-five] {
+  title "Five in two parts"
+  difficulty (5 - n)
+  let n=1..4
+  level easy {
+    let n=3..4
+  }
+  level hard {
+    let n=1..2
+  }
+
+  scene 24x11 {
+    tenframe f count=n color=berry at=canvas(1, 1)
+    equation eq "{n} and {?more} make 5" below=f gap=1
+  }
+
+  answer more=(5 - n)
+  feedback {
+    when (more == n) point=f {
+      say "That is the counters. How many empty squares are in the top row?"
+    }
+  }
+  hint "Look at the top row. How many squares have no counter?"
+}

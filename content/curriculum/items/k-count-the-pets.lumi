@@ -1,0 +1,21 @@
+item k.count-the-pets v=1 skills=[nature.care, counting.to-ten] {
+  title "Bowls for the rabbits"
+  difficulty n
+  let n=2..6
+  level easy {
+    let n=2..3
+  }
+  level hard {
+    let n=5..6
+  }
+
+  scene 32x16 {
+    rabbits r count=n facing=1 at=canvas(1, 1)
+    text q "The rabbits live in a hutch in the garden. Each needs its own water bowl. How many bowls?" narrate width=28 below=r gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer n
+  hint "One bowl for each rabbit. Count the rabbits."
+  hint "Touch each rabbit once."
+}

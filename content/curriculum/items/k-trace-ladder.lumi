@@ -1,0 +1,13 @@
+# Marked by a grown-up: the ladder letters start at the top with a straight line down, and the
+# grown-up watches the start and the direction.
+item k.trace-ladder v=1 skills=[writing.letter-formation, writing.letter-families] {
+  title "Ladder letters"
+  let x={"l", "i", "t", "u", "j", "y"}
+
+  scene 30x10 {
+    text q "Trace the {x}. Start at the top and go straight down first." narrate width=28 at=canvas(1, 1)
+    handwriting rules show="{x}" rows=1 trace=3 width=26 below=q gap=1
+  }
+
+  check writing.by-eye look-for="Each letter starts at the top and comes straight down first, then adds its flick, dot, cross or tail, sitting on the line or hanging below it for j and y." notice=["starts at the top", "straight down first", "dot, cross or tail added after"] ask="What did you add after the line down?"
+}

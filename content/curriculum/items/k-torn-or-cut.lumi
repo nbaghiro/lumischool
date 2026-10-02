@@ -1,0 +1,20 @@
+item k.torn-or-cut v=1 skills=[art.collage] {
+  title "Torn or cut?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 29x21 {
+    collage pic scene=house at=canvas(1, 1)
+    text q "Torn paper has a soft, fuzzy edge. Cut paper has a sharp, straight one. {pick(k, \"Which suits a fluffy cloud?\", \"Which suits the edge of a house?\")}" narrate width=26 below=pic gap=1
+    choice pick options=["torn", "cut"] stack=row below=q gap=1
+  }
+
+  answer pick=(if k == 0 then "torn" else "cut")
+  hint "Does the thing have soft edges or sharp ones?"
+}

@@ -1,0 +1,20 @@
+item k.tower-cubes v=1 skills=[measure.non-standard] {
+  title "How many cubes tall?"
+  difficulty h
+  let h=2..9
+  level easy {
+    let h=2..4
+  }
+  level hard {
+    let h=7..9
+  }
+
+  scene 20x18 {
+    towers t heights=[h] labels=false at=canvas(1, 1)
+    text q "Ben builds a tower on the garden path. How many cubes tall is it?" narrate width=12 right-of=t gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer h
+  hint "Count the cubes from the bottom up."
+}

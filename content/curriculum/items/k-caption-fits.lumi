@@ -1,0 +1,23 @@
+item k.caption-fits v=1 skills=[writing.captions, reading.comprehension] {
+  title "Which caption fits?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let pic={pick(k, "cat", "boat", "sun", "kite")}
+  let right={pick(k, "A cat sat down.", "A boat on the sea.", "The hot sun.", "A kite in the sky.")}
+  let wrong={pick(k, "A big red bus.", "A cat on a mat.", "A wet dog.", "A boat on the sea.")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x26 {
+    art pic asset="{pic}" at=canvas(1, 1)
+    text q "Ada sticks pictures in her garden scrapbook. The grown-up reads two captions. Which one fits?" narrate width=24 below=pic gap=1
+    choice pick options=[wrong, right] stack=column below=q gap=1
+  }
+
+  answer pick=right
+  hint "What is in the picture? Which caption says that?"
+}

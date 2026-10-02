@@ -1,0 +1,13 @@
+item k.ice-in-hand v=1 stars=2 skills=[physics.heat, reasoning.explain] {
+  title "Why does it melt in your hand?"
+
+  scene 36x24 {
+    icemelt pic every=10 count=3 place=1 blank=-1 words=1 at=canvas(1, 1)
+    text q "An ice cube melts faster in your hand than on a cold plate. Why?" narrate width=28 below=pic gap=1
+    choice pick options=["Your hand is warm.", "Your hand is wet."] stack=column below=q gap=1
+  }
+
+  answer pick="Your hand is warm."
+  hint "What makes ice melt?"
+  hint "Is your hand warmer or colder than a cold plate?"
+}

@@ -3,7 +3,7 @@ lesson k-light-and-shadow v=1 format=teach grade=0 unit=3 subject=physics levels
   goal "Say that a shadow is where something blocks the light, find which side it falls, and tell day from night."
 
   look {
-    scene 19x14 {
+    scene 20x14 {
       shadows stick tall=4 shadow=6 unit=cm lamp=true marks=false at=canvas(1, 1)
     }
     say """

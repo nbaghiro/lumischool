@@ -1,0 +1,23 @@
+item k.stretchy-or-not v=1 skills=[chemistry.materials] {
+  title "Can you stretch it?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let thing={pick(k, "a rubber band", "a wooden spoon", "a balloon", "a glass", "a pair of tights", "a metal key")}
+  let right={pick(k, "yes", "no", "yes", "no", "yes", "no")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 27x19 {
+    squash pic thing="band" action="stretch" after=1 at=canvas(1, 1)
+    text q "Ada finds {thing} in the garden. Can she stretch it by pulling?" narrate width=24 below=pic gap=1
+    choice pick options=["yes", "no"] stack=row below=q gap=1
+  }
+
+  answer pick=right
+  hint "Would it get longer if you pulled, or stay the same?"
+  hint "Is it rubbery or hard?"
+}

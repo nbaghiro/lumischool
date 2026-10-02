@@ -1,0 +1,12 @@
+item k.why-if v=1 stars=2 skills=[coding.selection, reasoning.explain] {
+  title "Why say if?"
+
+  scene 36x22 {
+    umbrellas pic count=1 rain=1 at=canvas(1, 1)
+    text q "Why does the rule say if it is raining, take the umbrella, and not just take the umbrella?" narrate width=28 below=pic gap=1
+    choice pick options=["Because you only need it when it rains.", "Because umbrellas are heavy."] stack=column below=q gap=1
+  }
+
+  answer pick="Because you only need it when it rains."
+  hint "Do you need an umbrella on a sunny day?"
+}

@@ -1,0 +1,11 @@
+item k.make-a-shaker v=1 skills=[music.instruments, art.made] {
+  title "Make a shaker"
+
+  scene 29x16 {
+    handdrum pic wide=8 words=false at=canvas(1, 1)
+    text q "With a grown-up, put a spoon of dry rice in a small bottle and close the lid tight. Shake it to a song: fast, slow, loud and quiet." narrate width=26 below=pic gap=1
+  }
+
+  check art.made look-for="A closed shaker that makes a sound, played in time with a song, fast and slow and loud and quiet when asked." notice=["the shaker is closed tight", "shakes in time", "changes loud and quiet"]
+  hint "What happens if you shake it gently?"
+}

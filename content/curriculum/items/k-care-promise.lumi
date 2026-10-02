@@ -1,0 +1,11 @@
+item k.care-promise v=1 skills=[nature.care] {
+  title "My plant job"
+
+  scene 29x20 {
+    growstages pic stages=2 numbers=false names=0 at=canvas(1, 1)
+    text q "Plant a seed in a pot with a grown-up. Each day for a week, check it and tell the grown-up what it needs and what you did." narrate width=26 below=pic gap=1
+  }
+
+  check reading.recited look-for="Over the week the child checks the pot, says whether the soil is dry, waters it when needed, and says what has changed." notice=["checks every day", "waters when dry", "says what changed"]
+  hint "Touch the soil. Is it dry or damp?"
+}

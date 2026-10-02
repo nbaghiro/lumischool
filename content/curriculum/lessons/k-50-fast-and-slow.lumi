@@ -3,7 +3,7 @@ lesson k-fast-and-slow v=1 format=teach grade=0 unit=6 subject=music levels=[eas
   goal "Hear whether music is fast or slow, move to it, and tell fast and slow from loud and quiet."
 
   look {
-    scene 11x9 {
+    scene 12x9 {
       countrow row beats=4 meter=4 now=0 at=canvas(1, 1)
     }
     say """

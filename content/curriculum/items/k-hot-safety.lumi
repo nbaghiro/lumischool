@@ -1,0 +1,23 @@
+item k.hot-safety v=1 skills=[physics.heat, safety] {
+  title "Safe with hot things"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let q1={pick(k, "Should you touch an oven to see if it is hot?", "Should a grown-up check the bath before you get in?", "Is it safe to play near a fire?", "Should you blow on hot soup before you eat it?")}
+  let right={pick(k, "no", "yes", "no", "yes")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 27x17 {
+    oven pic lit=1 minutes=20 buns=4 at=canvas(1, 1)
+    text q "{q1}" narrate width=24 below=pic gap=1
+    choice pick options=["yes", "no"] stack=row below=q gap=1
+  }
+
+  answer pick=right
+  hint "Could it burn you?"
+  hint "What would keep you safe?"
+}

@@ -1,0 +1,23 @@
+item k.pet-care v=1 skills=[nature.care, nature.animals] {
+  title "Looking after a pet"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let q1={pick(k, "Does a pet need fresh water every day?", "Should you pull a cat's tail?", "Does a dog need a walk?", "Should a rabbit live in a tiny box all day?", "Should you wash your hands after you hold a pet?", "Is chocolate good food for a dog?")}
+  let right={pick(k, "yes", "no", "yes", "no", "yes", "no")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 27x15 {
+    rabbits pic count=1 facing=1 at=canvas(1, 1)
+    text q "{q1}" narrate width=24 below=pic gap=1
+    choice pick options=["yes", "no"] stack=row below=q gap=1
+  }
+
+  answer pick=right
+  hint "Would it keep the animal safe, healthy and happy?"
+  hint "How would you like to be treated?"
+}

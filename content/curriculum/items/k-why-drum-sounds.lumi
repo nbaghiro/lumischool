@@ -1,0 +1,14 @@
+# The drum's skin shakes when it is hit, which the steady-beat lesson's drum only showed being hit.
+item k.why-drum-sounds v=1 stars=2 skills=[music.instruments, physics.sound] {
+  title "Why does a drum sound?"
+
+  scene 36x19 {
+    drum pic lugs=6 at=canvas(1, 1)
+    text q "When you tap a drum, why does it make a sound?" narrate width=28 below=pic gap=1
+    choice pick options=["Its skin shakes very fast.", "It is painted."] stack=column below=q gap=1
+  }
+
+  answer pick="Its skin shakes very fast."
+  hint "Put some rice on a drum and tap it. What does the rice do?"
+  hint "What happens if you hold the skin still with your hand?"
+}

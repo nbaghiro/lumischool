@@ -1,0 +1,12 @@
+item k.clay-snake v=1 skills=[chemistry.materials, art.made] {
+  title "Squash and roll"
+
+  scene 29x17 {
+    squash pic thing="clay" action="squash" after=1 at=canvas(1, 1)
+    text q "Take a ball of play dough. Squash it flat, roll it into a snake, then twist the snake. Does it go back to a ball?" narrate width=26 below=pic gap=1
+  }
+
+  check art.made look-for="The dough squashed, rolled and twisted, and the child says it keeps each new shape instead of springing back." notice=["squashed flat", "rolled and twisted", "says it keeps its new shape"] ask="Which shape was hardest to make?"
+  hint "Squash it, then let go. Does it move back?"
+  hint "Roll it between your hands. What shape does it keep?"
+}

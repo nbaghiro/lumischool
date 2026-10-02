@@ -1,0 +1,21 @@
+item k.lang-what-to-wear v=1 skills=[language.weather] {
+  title "What should you wear?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 29x23 {
+    thermometer pic from=0 to=40 step=10 value=(if k == 0 then 0 else 30) unit="°C" at=canvas(1, 1)
+    text q "The grown-up says {pick(k, \"[[weather.it-is-cold]]\", \"[[weather.it-is-hot]]\")}. What should you wear?" narrate width=26 below=pic gap=1
+    choice pick options=["a warm coat", "a sun hat"] stack=row below=q gap=1
+  }
+
+  answer pick=(if k == 0 then "a warm coat" else "a sun hat")
+  hint "What do the words mean in English?"
+  hint "What do you wear on a day like that?"
+}

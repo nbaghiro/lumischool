@@ -1,0 +1,9 @@
+item k.fold-print v=1 skills=[art.symmetry, art.made] {
+  title "A folded butterfly"
+
+  scene 28x9 {
+    text q "Fold a paper in half and open it. Paint blobs on one half only, fold it again, press, and open. What do you see?" narrate width=26 at=canvas(1, 1)
+  }
+
+  check art.made look-for="A butterfly or pattern made by folding, with the blobs pressed across so both halves match along the fold, and the child says the two sides are the same." notice=["paint on one half first", "folded and pressed", "both halves match"] ask="Where is the line where the two halves meet?"
+}

@@ -1,0 +1,23 @@
+item k.which-card-place v=1 skills=[space.position] {
+  title "Find the picture"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3 p=0..2
+  let wh={pick(k, "in", "on", "under", "next")}
+  let o1={pick(k, "on", "under", "next", "in")}
+  let o2={pick(k, "under", "in", "on", "on")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x18 {
+    picturecards cards who=["dog", "dog", "dog"] where=[if p == 0 then wh else o1, if p == 1 then wh else o2, if p == 2 then wh else if p == 0 then o1 else o2] thing=["box", "box", "box"] letters=true at=canvas(1, 1)
+    text q "The dog hides in the garden. Which picture shows the dog {if wh == \"next\" then \"next to\" else wh} the box?" narrate width=28 below=cards gap=1
+    choice pick options=["A", "B", "C"] stack=row below=q gap=1
+  }
+
+  answer pick=pick(p, "A", "B", "C")
+  hint "Say where the dog is in each picture."
+}

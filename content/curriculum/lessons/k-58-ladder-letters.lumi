@@ -1,0 +1,50 @@
+lesson k-ladder-letters v=1 format=teach grade=0 unit=4 subject=writing levels=[easy, medium, hard] {
+  title "Ladder letters"
+  goal "Write the ladder letters starting at the top with a line down."
+
+  look {
+    scene 30x6 {
+      handwriting rules show="l i t u j y" rows=1 trace=1 width=26 at=canvas(1, 1)
+    }
+    say """
+        These letters all start the same way: at the top, with a straight line down, like the side of
+        a ladder. Then i gets a dot, t a line across, u goes back up, and j and y hang a tail below
+        the line.
+      """
+  }
+  do {
+    show k.trace-ladder x="l"
+    level easy {
+      worked k.down-or-round x="l" level=medium
+    }
+    practice k.down-or-round count=2 seed=6
+    practice k.dot-or-cross count=2 seed=3
+    practice k.tail-ladder count=1 seed=4
+    practice k.ladder-in-word count=2 seed=5 easy-count=1
+    show k.trace-ladder x="j"
+  }
+  try stars=2 {
+    show k.t-or-l
+  }
+  try stars=3 {
+    show k.write-lit
+  }
+  remember {
+    say "Ladder letters start at the top and go straight down."
+  }
+
+  grown-ups """
+    The tracing and the word are for you to look at; the answer sheet says what to watch. First
+    strokes taught the straight line down; this is the step on from it, the family of letters built
+    on that line, and the c-family letters come later in the year. If the pencil starts at the
+    bottom, put a green dot at the top of the line as the start. Off the page, write the ladder
+    letters big in chalk. England, Reception, ELG Writing: "Write recognisable letters, most of which
+    are correctly formed".
+    """
+  level easy {
+    grown-ups "At this level l is sorted in the teacher's pen first, the letters to sort are l, o, t and a, the dot and cross are for i and t, and the word to count is lit or tub."
+  }
+  level hard {
+    grown-ups "At this level the letters to sort are u, d, j and g, the dot and cross are for j and f, and the words to count are jug and yet."
+  }
+}

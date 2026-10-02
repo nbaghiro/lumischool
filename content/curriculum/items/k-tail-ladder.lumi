@@ -1,0 +1,23 @@
+item k.tail-ladder v=1 skills=[writing.letter-height, writing.letter-families] {
+  title "Which has a tail?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let tail={pick(k, "j", "y", "j", "y")}
+  let o1={pick(k, "l", "t", "i", "u")}
+  let o2={pick(k, "t", "l", "u", "i")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 28x15 {
+    handwriting rules show="{o1} {tail} {o2}" rows=1 trace=0 width=16 at=canvas(1, 1)
+    text q "Which ladder letter has a tail that hangs below the line?" narrate width=26 below=rules gap=1
+    choice pick options=[o1, tail, o2] stack=row below=q gap=1
+  }
+
+  answer pick=tail
+  hint "Find the bottom line. Which letter goes under it?"
+}

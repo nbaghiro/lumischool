@@ -1,0 +1,13 @@
+item k.more-straight v=1 stars=3 skills=[art.shape, art.collage] {
+  title "Straight or curvy, how many more?"
+
+  scene 30x14 {
+    collage pic scene=house at=canvas(1, 1)
+    text q "How many more pieces have straight edges than curvy, wavy ones?" narrate width=12 right-of=pic gap=1
+    number-input answer below=q gap=1
+  }
+
+  check art.shapes of=pic answer=geometric-organic
+  hint "Count the straight-edged pieces. Count the curvy ones."
+  hint "Count on from the smaller number to the bigger."
+}

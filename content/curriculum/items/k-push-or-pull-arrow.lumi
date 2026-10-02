@@ -17,4 +17,5 @@ item k.push-or-pull-arrow v=1 skills=[physics.forces] {
 
   answer pick=(if p == 1 then "push" else "pull")
   hint "Is the arrow behind the {thing} or in front of it?"
+  hint "Would a hand be behind the {thing}, or in front of it holding a rope?"
 }

@@ -1,0 +1,23 @@
+item k.where-is-it v=1 skills=[space.position] {
+  title "Where is the animal?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let who={pick(k, "cat", "dog", "fox", "duck", "pig", "rabbit")}
+  let wh={pick(k, "on", "in", "under", "next", "under", "by")}
+  let thing={pick(k, "mat", "box", "table", "tub", "bed", "log")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 34x18 {
+    picturecards card who=[who] where=[wh] thing=[thing] letters=false at=canvas(1, 1)
+    text q "The {who} is playing in the garden. Where is it?" narrate width=20 below=card gap=1
+    choice pick options=["on", "in", "under", "next to"] stack=row below=q gap=1
+  }
+
+  answer pick=(if wh == "next" or wh == "by" then "next to" else wh)
+  hint "Look at the {thing}. Where is the {who}: above it, inside it, below it or beside it?"
+}

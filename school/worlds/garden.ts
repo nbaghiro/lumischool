@@ -67,10 +67,11 @@ export const homeGarden: World = {
         { art: "snail", when: ["skill:writing"], says: "The snail's trail curls round like a c." },
         { art: "garden", when: ["skill:art"], says: "Draw the garden just as you see it." },
         { art: "sandcastle", when: ["skill:shapes"], says: "Find the shapes in the sandpit." },
+        { art: "wheelbarrow", when: ["skill:space"], says: "The spade is in the wheelbarrow." },
         { art: "cat", when: ["skill:reading"], says: "Cat starts with c. c, c, cat." },
         {
             art: "washing",
-            when: ["skill:patterns", "skill:counting"],
+            when: ["skill:patterns", "skill:counting", "skill:number", "skill:measure"],
             says: "Count the pegs on the line.",
         },
     ],

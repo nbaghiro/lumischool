@@ -1,0 +1,21 @@
+item k.how-many-spring v=1 stars=3 skills=[chemistry.materials, counting.to-five] {
+  title "How many spring back?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 29x18 {
+    squash pic thing="spring" action="squash" after=1 at=canvas(1, 1)
+    text q "{pick(k, \"A sponge, a ball of clay, a rubber band and some foil are squashed or stretched. How many spring back?\", \"A spring, a pipe cleaner, a rubber ball and a ball of clay are squashed or bent. How many spring back?\")}" narrate width=26 below=pic gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer 2
+  hint "Take each one in turn. Is it springy or does it stay put?"
+  hint "Count only the springy ones."
+}

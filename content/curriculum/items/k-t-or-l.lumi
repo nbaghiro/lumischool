@@ -1,0 +1,13 @@
+# t starts like l and stops lower: the letter children most often write as tall as l.
+item k.t-or-l v=1 stars=2 skills=[writing.letter-height, reasoning.explain] {
+  title "Is t as tall as l?"
+
+  scene 28x16 {
+    handwriting rules show="l t" rows=1 trace=0 width=12 at=canvas(1, 1)
+    text q "Ben writes t as tall as l. Is he right?" narrate width=26 below=rules gap=1
+    choice pick options=["Yes: they are the same height.", "No: t stops lower than l."] stack=column below=q gap=1
+  }
+
+  answer pick="No: t stops lower than l."
+  hint "Look at the two letters on the lines. Do their tops reach the same line?"
+}

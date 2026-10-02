@@ -1,0 +1,23 @@
+item k.if-raining v=1 skills=[coding.selection] {
+  title "If it is raining"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let weather={pick(k, "It is raining.", "It is sunny.", "It is drizzling.", "The sky is blue and dry.")}
+  let right={pick(k, "take the umbrella", "leave the umbrella at home", "take the umbrella", "leave the umbrella at home")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x22 {
+    umbrellas pic count=2 rain=(if k % 2 == 0 then 1 else 0) at=canvas(1, 1)
+    text q "Ada is going out into the garden. The rule: if it is raining, take the umbrella. {weather} What do you do?" narrate width=28 below=pic gap=1
+    choice pick options=["take the umbrella", "leave the umbrella at home"] stack=column below=q gap=1
+  }
+
+  answer pick=right
+  hint "Is it raining now, or not?"
+  hint "The rule only says to take it when it is raining."
+}

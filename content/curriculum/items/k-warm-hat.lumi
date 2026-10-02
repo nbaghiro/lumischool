@@ -1,0 +1,21 @@
+item k.warm-hat v=1 skills=[physics.heat, chemistry.materials] {
+  title "What keeps you warm?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 29x19 {
+    snowman pic buttons=3 hat=1 at=canvas(1, 1)
+    text q "{pick(k, \"It is snowing. Which keeps your head warm: a wool hat or a straw sun hat?\", \"Which keeps hot soup hot longer: a flask or an open bowl?\")}" narrate width=26 below=pic gap=1
+    choice pick options=[pick(k, "a straw sun hat", "an open bowl"), pick(k, "a wool hat", "a flask")] stack=row below=q gap=1
+  }
+
+  answer pick=pick(k, "a wool hat", "a flask")
+  hint "Which one lets the warmth out, and which keeps it in?"
+  hint "Think of what you wear on a snowy day."
+}

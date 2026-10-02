@@ -1,0 +1,23 @@
+item k.which-paper v=1 skills=[art.texture, art.collage] {
+  title "Which paper would you use?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let what={pick(k, "a rough tree trunk", "a soft, fluffy cloud", "a smooth, shiny pond", "a bumpy, scaly crocodile")}
+  let right={pick(k, "brown sandpaper", "torn white tissue", "shiny blue foil", "green bubble wrap")}
+  let wrong={pick(k, "shiny blue foil", "brown sandpaper", "torn white tissue", "shiny blue foil")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x25 {
+    collage pic scene=fish at=canvas(1, 1)
+    text q "Ada makes a collage of the garden. Which would she use for {what}?" narrate width=28 below=pic gap=1
+    choice pick options=[wrong, right] stack=column below=q gap=1
+  }
+
+  answer pick=right
+  hint "How should it feel and look: rough, soft, shiny or bumpy?"
+}

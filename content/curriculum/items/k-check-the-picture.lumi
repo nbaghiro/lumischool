@@ -1,0 +1,22 @@
+# A fact book's picture can be checked: the bee drawn on the page has six legs and four wings, the
+# numbers the book gives.
+item k.check-the-picture v=1 skills=[reading.nonfiction, counting.to-ten] {
+  title "Count it in the picture"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 24x13 {
+    bumblebee bee facing=1 at=canvas(1, 1)
+    text q "A bee visits the garden flowers, just like this one in a fact book. How many {pick(k, \"legs\", \"wings\")} can you count?" narrate width=14 right-of=bee gap=2
+    number-input answer below=q gap=1
+  }
+
+  answer pick(k, 6, 4)
+  hint "Touch each one as you count, on both sides."
+}

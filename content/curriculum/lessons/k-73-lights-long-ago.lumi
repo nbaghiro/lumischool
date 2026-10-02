@@ -1,0 +1,50 @@
+lesson k-lights-long-ago v=1 format=teach grade=0 unit=8 subject=history levels=[easy, medium, hard] {
+  title "Lights long ago"
+  goal "Put lights in order from the oldest to the newest."
+
+  look {
+    scene 11x17 {
+      candle c start=10 burnt=3 lit=1 jar=0 at=canvas(1, 1)
+    }
+    say """
+        Long, long ago people had fires and then candles and oil lamps for light. A candle burns down
+        as it gives light. Electric light bulbs came much later, about a hundred and fifty years ago,
+        and now we light a room with a switch.
+      """
+  }
+  do {
+    level easy {
+      worked k.older-light k=0 level=medium
+    }
+    practice k.older-light count=2 seed=2
+    practice k.candle-burnt count=2 seed=3
+    show k.light-without-power k=0 hard-k=1
+    show k.switch-on-safely k=0 hard-k=1
+    practice k.home-object-age count=2 seed=11 easy-count=1
+  }
+  try stars=2 {
+    show k.dark-evenings
+  }
+  try stars=3 {
+    show k.lights-in-order
+  }
+  remember {
+    say "Fires, then candles and lamps, then electric lights."
+  }
+
+  grown-ups """
+    Read each question aloud. Travel long ago put vehicles in order; this lesson is the step on from
+    it, putting the lights of a home in order. Light a candle together (a grown-up lights it) in a
+    dark room and see how little it shows. The electric light bulb was made to work by Swan and by
+    Edison in 1879, as the chronicle's source gives; candles are far older (recalled). If the child
+    is stuck, ask what we do when the power goes off. England, Reception, ELG Past and Present
+    (recalled, not fetched): "Know some similarities and differences between things in the past and
+    now, drawing on their experiences and what has been read in class".
+    """
+  level easy {
+    grown-ups "At this level the candle and the bulb are compared in the teacher's pen first, the candle has burnt a little, and the light without power is a candle."
+  }
+  level hard {
+    grown-ups "At this level the lights are an oil lamp and a torch, the candle has burnt far down, and the light without power is an oil lamp."
+  }
+}

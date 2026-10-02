@@ -3,7 +3,7 @@ lesson k-printing-patterns v=1 format=teach grade=0 unit=2 subject=art levels=[e
   goal "Print a shape with a stamp, see that the print faces the other way from the block, and print a pattern that repeats."
 
   look {
-    scene 19x10 {
+    scene 20x10 {
       stamps pic motif=fish show="both" colour=blue flip=false made="print" at=canvas(1, 1)
     }
     say """

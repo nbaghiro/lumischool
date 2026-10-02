@@ -467,49 +467,60 @@ on the map at slot 0.1, on the first year's land, and a child moves up from it t
 any grade. Like every grade it is offered only once it has lessons, so grade 0 appears in the
 add-a-child form, as "Kindergarten", when the kindergarten lessons land.
 
-The year has fifty lessons, `lessons/k-01` to `k-50` with ids `k-<slug>`, a small version of the
-later grades in shape, weighted the way an early-years year is: maths 7, reading 6, writing 5,
-nature 5, music 4, art 4, coding 4, physics 4, chemistry 4, history 4 and a second language 3.
-Every subject but the language is a short strand of four or more, so none is a single taster that
-ends in the first weeks.
+The year has seventy-five lessons, `lessons/k-01` to `k-75` with ids `k-<slug>`, a small version
+of the later grades in shape, weighted the way an early-years year is: maths 11, reading 9, writing
+7, nature 7, music 6, art 6, coding 6, physics 6, chemistry 6, history 6 and a second language 5.
+Every subject is a strand that returns through the year, and each lesson after a strand's first is
+a step on from an earlier one, which its grown-ups note names. The plan and the inventory of what
+the first fifty taught, which the last twenty-five were chosen against, are in the batch's
+`PLAN.md` under `.scratchpad/grades56/kindergarten/`.
 
-- Maths: counting to five, a ten frame, more, fewer and the same, a bead string, shapes and
-  colours, sorting into rings, repeating patterns.
-- Reading: first sounds, a picture story in order, sound buttons, rhymes, beginning, middle and
-  end, and listening for first sounds with more letters.
-- Writing: zigzags and waves, the first strokes on the handwriting lines, writing a list, labels
-  and the first letter of my name, the letters that start with a c.
-- Nature: minibeasts, the weather and the seasons, animals and their babies, growing things, my
-  body and senses.
-- Music: clapping a steady beat, loud and quiet and high and low, fast and slow, clapping names.
-- Art: printing patterns, mixing colours, a picture that tells a feeling, drawing what you see.
-- Coding: before and after, following arrow blocks on a grid, finding the mistake, a repeat.
-- Physics: push and pull with floating and sinking, light and shadow, magnets, rolling down a ramp.
-- Chemistry: wet and dry, dissolving and sieving, what melts, cooking changes things.
-- History: my family (`familytree`), how people travelled long ago, a special day we remember,
-  then and now (`toys`, `thenandnow`).
-- Language, through the phrasebook: hello and four colours, one to five, family and animals.
+- Maths: dots at a glance, counting to five, a ten frame, more, fewer and the same, number bonds to
+  five, a bead string, shapes and colours, in, on, under and next to, sorting into rings,
+  repeating patterns, measuring with cubes and hands.
+- Reading: first sounds, who is in the story, a picture story in order, sound buttons, reading
+  little words, a book of facts, rhymes, beginning, middle and end, listening for first sounds with
+  more letters.
+- Writing: zigzags and waves, the first strokes, ladder letters, writing a list, labels and the
+  first letter of my name, a caption for a picture, the letters that start with a c.
+- Nature: minibeasts, the weather and the seasons, animals and their babies, growing things, where
+  animals live, my body and senses, looking after living things.
+- Music: tap, shake and blow, clapping a steady beat, loud and quiet and high and low, fast and
+  slow, clapping names, echoes.
+- Art: printing patterns, mixing colours, rough and smooth in collage, a picture that tells a
+  feeling, the same on both sides, drawing what you see.
+- Coding: before and after, following arrow blocks, planning the path, finding the mistake, a
+  repeat, if it rains.
+- Physics: push and pull with floating and sinking, hot and cold, light and shadow, magnets, what
+  the wind moves, rolling down a ramp.
+- Chemistry: what it is made of, wet and dry, dissolving and sieving, what melts, squash, bend and
+  stretch, cooking changes things.
+- History: homes then and now, my family (`familytree`), how people travelled long ago, a special
+  day we remember, lights long ago, then and now (`toys`, `thenandnow`).
+- Language, through the phrasebook: hello and four colours, one to five, food words, family and
+  animals, weather words.
 
 A grown-up reads every question aloud, so the child answers by pointing, saying a number, picking a
-picture or a letter, or writing a single letter or a three-letter label. Each lesson has easy,
-medium and hard levels, and its grown-ups note quotes one early-years line: England's early learning
-goals, Japan's 幼稚園教育要領, or China's 3-6岁儿童学习与发展指南, with any line not fetched from its
-source marked as recalled. The lessons sit in units 1 to 9, four to seven a unit, so the one term
-alternates subjects and each strand's lessons come in order through the year: coding in units 2,
-4, 6 and 8, physics in 1, 3, 5 and 7, chemistry in 2, 4, 6 and 8, history in 3, 5, 7 and 9, art in
-2, 4, 7 and 9, and the language in 3, 5 and 8. The maths lessons are in units 1, 2, 3, 4, 5, 7 and
-8, and the others hang off them.
+picture or a letter, or writing a single letter or a three-letter label; the one exception is
+reading little words, where reading the word is the child's job. Each lesson has easy, medium and
+hard levels, and its grown-ups note quotes one early-years line: England's early learning goals,
+Japan's 幼稚園教育要領, or China's 3-6岁儿童学习与发展指南, with any line not fetched from its source
+marked as recalled. The lessons sit in units 1 to 9, seven to nine a unit, so the one term
+alternates subjects and each strand comes back through the year: art in units 2, 4, 5, 7, 8 and 9,
+chemistry in 1, 2, 4, 6, 7 and 8, coding in 2, 4, 5, 6, 8 and 9, history in 2, 3, 5, 7, 8 and 9,
+music in 1, 3, 5, 6, 8 and 9, physics in 1, 2, 3, 5, 6 and 7, and the language in 3, 5, 6, 8 and 9.
+Maths has a lesson in every unit, and the other strands hang off it.
 
 The default week (`DEFAULT_TRACKS[0]` in `school/tracks.ts`) turns every track on at one day a
 week, two subjects a day, and art is not planned, as at every grade. The garden's reaches light a
 landmark for each subject, ordered so each lesson lights its own subject's. The long grass holds
-the counting lessons, minibeasts and growing things; book island the six reading lessons; the
-printing works the five writing lessons and wet and dry; lamp rocks the four coding lessons; the
-cloud islands the weather; the treetops push and pull and the ramp; the windmill island magnets;
-the crystal caves light and shadow; the salt flats dissolving and sieving; the geyser valley what
-melts and cooking. Art, music, history and the language reach the painter's hut, the park, the old
-tower and the ferry town through the subjects those places host, and the other nature lessons
-reach the marsh.
+the counting, number bond and measuring lessons, minibeasts and growing things; book island the
+nine reading lessons; the printing works the seven writing lessons and the three materials lessons;
+lamp rocks the six coding lessons; the cloud islands the weather and the wind; the treetops push
+and pull and the ramp; the windmill island magnets; the crystal caves light and shadow; the salt
+flats dissolving and sieving; the geyser valley hot and cold, what melts and cooking. Art, music,
+history and the language reach the painter's hut, the park, the old tower and the ferry town through
+the subjects those places host, and the other nature lessons reach the marsh.
 
 ### A fifth year, for the canal town, the observatory and the old city
 

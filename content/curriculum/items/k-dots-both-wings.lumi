@@ -1,0 +1,20 @@
+item k.dots-both-wings v=1 stars=3 skills=[art.symmetry, counting.to-ten] {
+  title "Dots on both wings"
+  difficulty n
+  let n=2..5
+  level easy {
+    let n=2..3
+  }
+  level hard {
+    let n=4..5
+  }
+
+  scene 28x11 {
+    text q "Ada paints {n} dots on one wing of her folded butterfly and presses it. How many dots are there on both wings?" narrate width=26 at=canvas(1, 1)
+    number-input answer below=q gap=1
+  }
+
+  answer (2 * n)
+  hint "The press makes the same dots on the other wing."
+  hint "How many is {n} and {n} more?"
+}

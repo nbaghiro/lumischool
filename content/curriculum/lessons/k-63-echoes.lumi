@@ -1,0 +1,47 @@
+lesson k-echoes v=1 format=teach grade=0 unit=9 subject=music levels=[easy, medium, hard] {
+  title "Echoes"
+  goal "Copy a clapped or sung pattern exactly."
+
+  look {
+    scene 17x11 {
+      beattrack b beats=4 target=[0, 1, 2, 3] played=[0, 1, 2, 3] tolerance=0.25 at=canvas(1, 1)
+    }
+    say """
+        An echo copies exactly. The top dots are the claps to copy and the bottom dots are the echo.
+        Every top dot has a partner underneath, so this echo is the same.
+      """
+  }
+  do {
+    level easy {
+      worked k.echo-same m=0 level=medium
+    }
+    practice k.echo-same count=3 seed=2 easy-count=2 hard-count=2
+    practice k.echo-count count=3 seed=3 easy-count=2
+    show k.echo-clap
+    show k.echo-sing
+  }
+  try stars=2 {
+    show k.what-is-echo
+  }
+  try stars=3 {
+    show k.echo-changed k=0 hard-k=1
+  }
+  remember {
+    say "An echo copies exactly: the same claps, the same notes."
+  }
+
+  grown-ups """
+    Clap and sing the patterns yourself; the page cannot make a sound. Clapping names read a rhythm
+    from words; this is the step on from it, hearing a rhythm and copying it with nothing written.
+    The clapped and sung echoes are for you to judge. If the child is stuck, make the pattern shorter
+    and say it aloud as you clap. Off the page, play echo games on a walk with claps and stamps.
+    England, Reception, ELG Being Imaginative and Expressive (recalled, not fetched): "Perform songs,
+    rhymes, poems and stories with others, and (when appropriate) try to move in time with music".
+    """
+  level easy {
+    grown-ups "At this level a matching echo is worked in the teacher's pen first, the echoes to judge have one late clap or none, and the claps to count are few."
+  }
+  level hard {
+    grown-ups "At this level the echoes to judge have a late clap near the end, the claps to count pass five, and the changed beat is the first."
+  }
+}

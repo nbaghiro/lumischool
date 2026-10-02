@@ -1,0 +1,23 @@
+item k.which-word v=1 skills=[reading.decoding] {
+  title "Which word is it?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let pic={pick(k, "cat", "sun", "cup", "hen")}
+  let o1={pick(k, "cot", "set", "cap", "pen")}
+  let o2={pick(k, "hat", "bun", "pup", "den")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 26x19 {
+    art pic asset="{pic}" at=canvas(1, 1)
+    text q "Three labels lie on the garden path. Read them yourself. Which one names the picture?" narrate width=24 below=pic gap=1
+    choice pick options=[o1, pic, o2] stack=row below=q gap=1
+  }
+
+  answer pick=pic
+  hint "Say the picture's name slowly. Which word has those sounds?"
+}

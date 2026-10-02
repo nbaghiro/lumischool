@@ -1,0 +1,12 @@
+item k.read-and-do v=1 skills=[reading.decoding, reading.blending] {
+  title "Read it and do it"
+  let w={"sit", "hop", "run", "nod"}
+
+  scene 26x10 {
+    lettercards word letters=["{if w == \"sit\" then \"s\" else if w == \"hop\" then \"h\" else if w == \"run\" then \"r\" else \"n\"}", "{if w == \"sit\" then \"i\" else if w == \"hop\" then \"o\" else if w == \"run\" then \"u\" else \"o\"}", "{if w == \"sit\" then \"t\" else if w == \"hop\" then \"p\" else if w == \"run\" then \"n\" else \"d\"}"] at=canvas(1, 1)
+    text q "Read the word by yourself, then do it." narrate width=24 below=word gap=1
+  }
+
+  check reading.recited look-for="The word read aloud by blending its three sounds, and then done: sit, hop, run or nod." notice=["sounds each letter", "blends the word", "does the right action"]
+  hint "Say each sound, then push them together."
+}

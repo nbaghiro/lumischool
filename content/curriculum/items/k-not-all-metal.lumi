@@ -14,4 +14,5 @@ item k.not-all-metal v=1 stars=2 skills=[physics.magnets, reasoning.explain] {
 
   answer pick="No: only iron and steel stick."
   hint "Try a magnet on a coin and on a spoon at home."
+  hint "What happens when a magnet is held over a coin?"
 }

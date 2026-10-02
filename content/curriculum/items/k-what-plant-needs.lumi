@@ -1,0 +1,24 @@
+item k.what-plant-needs v=1 skills=[nature.care, nature.plants] {
+  title "Looking after a plant"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let q1={pick(k, "The leaves of your plant are drooping and the soil is dry. What does it need?", "Your plant is in a dark cupboard and turning pale. What does it need?", "Your seedlings are squashed together in one pot. What would help?", "You go away for a week in summer. What does your plant need?")}
+  let right={pick(k, "water", "light", "more room in a bigger pot", "someone to water it")}
+  let wrong={pick(k, "a blanket", "a bath of cold water", "a coat of paint", "to be put in the fridge")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x26 {
+    growstages pic stages=3 numbers=false names=0 at=canvas(1, 1)
+    text q "{q1}" narrate width=28 below=pic gap=1
+    choice pick options=[wrong, right] stack=column below=q gap=1
+  }
+
+  answer pick=right
+  hint "Think of a healthy plant in the garden. What does it get there that this one is not getting?"
+  hint "Which of those is missing here?"
+}

@@ -1,0 +1,21 @@
+item k.springs-back v=1 skills=[chemistry.materials] {
+  title "Does it spring back?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 30x18 {
+    squash s thing=pick(k, "sponge", "clay", "band", "foil") action=pick(k, "squash", "squash", "stretch", "squash") after=0 at=canvas(1, 0)
+    text q "Ada squashes it at the garden table. When she lets go, does it spring back?" narrate width=28 below=s gap=1
+    choice pick options=["yes", "no"] stack=row below=q gap=1
+  }
+
+  check chem.materials of=s pick=back
+  hint "Think of squashing a sponge in the bath, or a ball of clay."
+  hint "Does it remember its old shape?"
+}

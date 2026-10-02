@@ -3,7 +3,7 @@ lesson k-my-body-and-senses v=1 format=teach grade=0 unit=7 subject=nature level
   goal "Name the parts of the body we sense with, say which one is used for each sense, and count parts of the body."
 
   look {
-    scene 6x9 {
+    scene 7x9 {
       person ada pose=wave age=child hair=bunches colour=black top=berry at=canvas(1, 1)
     }
     say """

@@ -18,4 +18,5 @@ item k.magnet-or-not v=1 skills=[physics.magnets] {
 
   answer pick=right
   hint "Is it made of iron or steel?"
+  hint "Think of the things on a fridge door that a magnet holds up. Are they metal like this?"
 }

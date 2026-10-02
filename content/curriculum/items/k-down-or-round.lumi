@@ -1,0 +1,20 @@
+item k.down-or-round v=1 skills=[writing.letter-families] {
+  title "Ladder or c shape?"
+  difficulty (if x == "l" or x == "o" then 0 else 1)
+  let x={"l", "o", "t", "a", "u", "d", "j", "g"}
+  level easy {
+    let x={"l", "o", "t", "a"}
+  }
+  level hard {
+    let x={"u", "d", "j", "g"}
+  }
+
+  scene 26x17 {
+    handwriting rules show="{x}" rows=1 trace=1 width=12 at=canvas(1, 1)
+    text q "Ada chalks {x} on the garden path. Does it start with a straight line down, like a ladder, or with a c shape?" narrate width=24 below=rules gap=1
+    choice pick options=["a line down", "a c shape"] stack=row below=q gap=1
+  }
+
+  answer pick=(if x == "o" or x == "a" or x == "d" or x == "g" then "a c shape" else "a line down")
+  hint "Write it in the air. What does your finger do first?"
+}

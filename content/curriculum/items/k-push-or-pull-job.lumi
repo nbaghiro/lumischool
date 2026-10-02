@@ -18,4 +18,5 @@ item k.push-or-pull-job v=1 skills=[physics.forces] {
 
   answer pick=right
   hint "Do it with your hands. Do they move away from you or towards you?"
+  hint "Does the thing move away from you, or come towards you?"
 }

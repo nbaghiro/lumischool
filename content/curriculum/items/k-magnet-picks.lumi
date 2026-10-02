@@ -20,4 +20,5 @@ item k.magnet-picks v=1 skills=[physics.magnets] {
 
   check physics.things of=t pick="only(magnetic)"
   hint "A magnet pulls things made of iron or steel. Which one is that?"
+  hint "Is one of them a nail or a paper clip?"
 }

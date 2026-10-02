@@ -1,0 +1,12 @@
+item k.why-happy v=1 stars=2 skills=[reading.characters, reasoning.explain] {
+  title "Why is she happy now?"
+
+  scene 35x24 {
+    comic strip who=["girl", "dog", "girl"] says=["Where is my ball?", "Woof, woof.", "You found it."] moods=["worried", "happy", "excited"] with=["", "", "dog"] thinks=[0, 0, 0] holds=["", "", ""] labels=["1", "2", "3"] at=canvas(1, 1)
+    text q "The girl was worried at the start. Why is she happy at the end?" narrate width=32 below=strip gap=1
+    choice pick options=["The dog found her ball.", "It stopped raining."] stack=column below=q gap=1
+  }
+
+  answer pick="The dog found her ball."
+  hint "What was wrong at the start? Is it put right?"
+}

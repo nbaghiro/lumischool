@@ -3,7 +3,7 @@ lesson k-a-ten-frame v=1 format=teach grade=0 unit=2 subject=maths levels=[easy,
   goal "Count up to ten counters on a ten frame by seeing a full row as five, and say how many more make ten."
 
   look {
-    scene 15x11 {
+    scene 16x11 {
       tenframe frame count=7 color=mint at=canvas(1, 1)
       text note "Five and two more: seven." below=frame gap=1
     }

@@ -1,0 +1,24 @@
+item k.animal-home v=1 skills=[nature.habitats] {
+  title "Where does it live?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let who={pick(k, "duck", "rabbit", "fox", "hen")}
+  let right={pick(k, "on a pond", "in a burrow under the ground", "in a den under the ground", "in a henhouse in the garden")}
+  let wrong={pick(k, "in a burrow under the ground", "on a pond", "in the cold sea", "in a hot, dry desert")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x20 {
+    picturecards pic who=[who] where=["by"] thing=["log"] letters=false at=canvas(1, 1)
+    text q "Ada sees this {who} near the garden. Where does it live?" narrate width=28 below=pic gap=1
+    choice pick options=[wrong, right] stack=column below=q gap=1
+  }
+
+  answer pick=right
+  hint "Think of where you have seen one, or of a picture of its home."
+  hint "What does it need there: water, somewhere to dig, or somewhere safe at night?"
+}

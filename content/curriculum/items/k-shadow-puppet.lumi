@@ -8,4 +8,5 @@ item k.shadow-puppet v=1 stars=3 skills=[physics.shadows] {
 
   answer pick="move her hand closer to the torch"
   hint "Try it with a torch. When does the shadow grow?"
+  hint "What happens to a shadow as the hand gets nearer to the light?"
 }

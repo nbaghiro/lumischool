@@ -1,0 +1,50 @@
+lesson k-weather-words v=1 format=teach grade=0 unit=9 subject=language levels=[easy, medium, hard] {
+  title "[[weather.it-is-sunny|cap]]"
+  goal "Say the weather in [[language.name]]."
+
+  look {
+    scene 8x6 {
+      cloud c puffs=4 rain=1 at=canvas(1, 1)
+    }
+    say """
+        Weather in [[language.name]]: it is sunny is [[weather.it-is-sunny]], it is raining is
+        [[weather.it-is-raining]], it is hot is [[weather.it-is-hot]] and it is cold is
+        [[weather.it-is-cold]]. Look outside and say the weather each day.
+      """
+  }
+  do {
+    level easy {
+      worked k.lang-weather-meaning k=0 level=medium
+    }
+    practice k.lang-weather-meaning count=3 seed=2 easy-count=2 hard-count=2
+    show k.lang-weather-picture r=1 hard-r=0
+    show k.lang-what-to-wear k=0 hard-k=1
+    show k.lang-say-weather
+    practice k.lang-food-meaning count=2 seed=9 easy-count=1
+  }
+  try stars=2 {
+    show k.lang-hot-cold
+  }
+  try stars=3 {
+    show k.lang-two-weathers k=0 hard-k=1
+  }
+  remember {
+    say "[[weather.it-is-sunny|cap]], [[weather.it-is-raining]], [[weather.it-is-hot]], [[weather.it-is-cold]]."
+  }
+
+  grown-ups """
+    Read every phrase aloud and let the child say it back; the child picks from what you read. The
+    weather and the seasons named weather in English; this lesson is the step on from the food words,
+    whole phrases of two words that describe the day rather than single words for things. The weather
+    talk is for you to listen to over a week. Off the page, say the weather in the language when you
+    open the curtains each morning. Japan, 幼稚園教育要領 (kindergarten guidelines), 言葉, 内容 (7):
+    "生活の中で言葉の楽しさや美しさに気付く。" (Notice the fun and beauty of words in daily life.) The
+    phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level sunny is worked in the teacher's pen first, the phrases are sunny and raining, and the coat goes with cold."
+  }
+  level hard {
+    grown-ups "At this level the phrases are hot and cold, the sun hat goes with hot, and the three-star is sunny and hot."
+  }
+}

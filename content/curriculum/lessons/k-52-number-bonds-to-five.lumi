@@ -1,0 +1,46 @@
+lesson k-number-bonds-to-five v=1 format=teach grade=0 unit=3 subject=maths levels=[easy, medium, hard] {
+  title "Number bonds to five"
+  goal "Find the missing part when five is split into two parts."
+
+  look {
+    scene 14x7 {
+      tenframe f count=3 color=berry at=canvas(1, 1)
+    }
+    say """
+        Five is the top row of the frame. Three counters and two empty squares: three and two make
+        five. Every way of splitting five into two parts is a number bond to five.
+      """
+  }
+  do {
+    level easy {
+      worked k.bond-five-frame n=4 level=medium
+    }
+    practice k.bond-five-frame count=2 seed=2
+    practice k.bond-under-cup count=2 seed=3
+    practice k.bond-fingers count=2 seed=4 easy-count=1
+    practice k.bond-pairs count=2 seed=5
+  }
+  try stars=2 {
+    show k.bond-swap
+  }
+  try stars=3 {
+    show k.bond-all-ways k=0 hard-k=1
+  }
+  remember {
+    say "Five is two parts: 4 and 1, 3 and 2, and turned round."
+  }
+
+  grown-ups """
+    Read each question aloud. The ten frame lesson read a total; this one is the step on from it,
+    finding a part when the whole is known. Fingers on one hand are the best tool there is. If the
+    child is stuck, put five buttons on the table and hide some under a cup. Off the page, share
+    five grapes between two plates every way you can. England, Reception, ELG Number: "Have a deep
+    understanding of number to 10, including the composition of each number".
+    """
+  level easy {
+    grown-ups "At this level four and one is worked in the teacher's pen first, the missing parts are one or two, and the ways to share four are counted."
+  }
+  level hard {
+    grown-ups "At this level the missing parts are three or four, the pairs include five and zero, and the ways to share five are counted."
+  }
+}

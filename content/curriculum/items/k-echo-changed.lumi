@@ -1,0 +1,20 @@
+item k.echo-changed v=1 stars=3 skills=[music.rhythm, reasoning.find-the-mistake] {
+  title "Where did the echo change?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 28x22 {
+    text q "{pick(k, \"The pattern is ta, ta, ti-ti, ta. Ben claps ta, ta, ta, ta. Which beat did he change?\", \"The pattern is ti-ti, ta, ta, ta. Mia claps ta, ta, ta, ta. Which beat did she change?\")}" narrate width=26 at=canvas(1, 1)
+    choice pick options=["the first", "the second", "the third", "the fourth"] stack=column below=q gap=1
+  }
+
+  answer pick=pick(k, "the third", "the first")
+  hint "Say the two patterns side by side, one beat at a time."
+  hint "Where does ti-ti become ta?"
+}

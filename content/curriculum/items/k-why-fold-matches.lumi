@@ -1,0 +1,11 @@
+item k.why-fold-matches v=1 stars=2 skills=[art.symmetry, reasoning.explain] {
+  title "Why do both halves match?"
+
+  scene 30x13 {
+    text q "Ada painted only one half, folded and pressed. Why is the other half the same?" narrate width=28 at=canvas(1, 1)
+    choice pick options=["The wet paint was pressed onto it.", "She painted both halves."] stack=column below=q gap=1
+  }
+
+  answer pick="The wet paint was pressed onto it."
+  hint "Where did the paint on the second half come from?"
+}

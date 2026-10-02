@@ -1,0 +1,15 @@
+item k.windsock-strong v=1 skills=[physics.air] {
+  title "Strong wind or light wind?"
+  difficulty 0
+  let w=0..1
+
+  scene 24x13 {
+    windsock s wind=(if w == 1 then 1 else 0.25) stripes=5 at=canvas(1, 1)
+    text q "A windsock on the garden fence. Is the wind strong or light?" narrate width=14 right-of=s gap=2
+    choice pick options=["strong", "light"] stack=row below=q gap=1
+  }
+
+  answer pick=(if w == 1 then "strong" else "light")
+  hint "Does the windsock stick straight out or hang down?"
+  hint "The harder the air pushes, the further out it is held."
+}

@@ -1,0 +1,21 @@
+item k.traffic-light v=1 skills=[coding.selection] {
+  title "Red means stop"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let colour={pick(k, "red", "green", "red", "green")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 29x19 {
+    bus pic at=canvas(1, 1)
+    text q "The rule: if the light is red, stop. If it is green, go. The light is {colour}. What does the car do?" narrate width=26 below=pic gap=1
+    choice pick options=["stop", "go"] stack=row below=q gap=1
+  }
+
+  answer pick=(if colour == "red" then "stop" else "go")
+  hint "Which colour is the light? Which part of the rule is about that colour?"
+}

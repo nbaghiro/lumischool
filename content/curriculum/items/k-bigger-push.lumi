@@ -22,4 +22,5 @@ item k.bigger-push v=1 skills=[physics.forces] {
 
   answer pick=(if a > b then "the first box" else "the second box")
   hint "Compare the two arrows. Which is longer?"
+  hint "Put a finger at the start of each arrow and run it to the tip. Which run was longer?"
 }

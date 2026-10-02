@@ -1,0 +1,15 @@
+# Care can be overdone: a pot sitting in water drowns the roots, which is the step past "plants
+# need water".
+item k.too-much-water v=1 stars=2 skills=[nature.care, reasoning.explain] {
+  title "Can you give too much?"
+
+  scene 36x26 {
+    growstages pic stages=4 numbers=false names=0 at=canvas(1, 1)
+    text q "Ben waters his plant three times every day until the pot stands in a puddle. Is that good for it?" narrate width=28 below=pic gap=1
+    choice pick options=["No: the roots need air too, and can rot.", "Yes: more water is always better."] stack=column below=q gap=1
+  }
+
+  answer pick="No: the roots need air too, and can rot."
+  hint "Do plants need air as well as water?"
+  hint "What happens to soil that never dries out?"
+}

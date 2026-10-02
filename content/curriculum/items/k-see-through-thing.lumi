@@ -1,0 +1,21 @@
+item k.see-through-thing v=1 skills=[chemistry.materials] {
+  title "Which can you see through?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 32x16 {
+    materials row things=["{pick(k, \"wooden-block\", \"metal-can\", \"cardboard-box\")}", "{pick(k, \"glass-jar\", \"paper-book\", \"brick\")}", "{pick(k, \"brick\", \"glass-bottle\", \"glass-jar\")}"] letters=1 names=1 at=canvas(1, 0)
+    text q "Ben looks in the garden shed. Which one could you see through, like a window?" narrate width=28 below=row gap=1
+    choice pick options=["A", "B", "C"] stack=row below=q gap=1
+  }
+
+  check chem.materials of=row pick="only(see-through)"
+  hint "Which one is made of glass?"
+  hint "Could you see your hand through it if you held it behind?"
+}

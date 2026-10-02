@@ -3,7 +3,7 @@ lesson k-zigzags-and-waves v=1 format=teach grade=0 unit=1 subject=writing level
   goal "Draw straight, zigzag and wavy lines from left to right, and find those lines inside letters."
 
   look {
-    scene 16x12 {
+    scene 17x12 {
       lines row kinds=["straight", "zigzag", "wavy"] colour=blue at=canvas(1, 1)
     }
     say """

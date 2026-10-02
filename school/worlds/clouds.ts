@@ -107,6 +107,7 @@ export const cloudIslands: World = {
                 "nature-weather-measured",
                 "chemistry-water-in-the-air-dew-and-frost",
                 "k-weather-and-seasons",
+                "k-what-the-wind-moves",
             ],
             label: "weather and the sky",
             needs: "A year of weather on a chart, season by season, which the nature track has not written yet.",

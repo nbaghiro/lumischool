@@ -1,0 +1,22 @@
+item k.story-or-facts v=1 skills=[reading.nonfiction] {
+  title "Story or facts?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let line={pick(k, "Bees make honey in a hive.", "The bee put on a hat and went to tea.", "A frog lays its eggs in a pond.", "The frog sang a song to the moon and the moon sang back.")}
+  let right={pick(k, "a fact book", "a story", "a fact book", "a story")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 29x32 {
+    labelled pic of=lighthouse labels=["lamp", "rail", "tower", "door", "rocks"] blank=-1 title="Lighthouses" caption="" at=canvas(1, 1)
+    text q "Ada reads in the garden. Listen: {line} Is this from a fact book or a story?" narrate width=26 below=pic gap=1
+    choice pick options=["a fact book", "a story"] stack=row below=q gap=1
+  }
+
+  answer pick=right
+  hint "Could this really happen? Is it true about real animals?"
+}

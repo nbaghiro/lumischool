@@ -1,0 +1,13 @@
+item k.why-sponge-back v=1 stars=2 skills=[chemistry.materials, reasoning.explain] {
+  title "Sponge or dough?"
+
+  scene 36x23 {
+    squash pic thing="sponge" action="squash" after=1 at=canvas(1, 1)
+    text q "A sponge goes back to its shape after you squash it, but play dough does not. What is different?" narrate width=28 below=pic gap=1
+    choice pick options=["The sponge is springy.", "The sponge is bigger."] stack=column below=q gap=1
+  }
+
+  answer pick="The sponge is springy."
+  hint "What happens to each one the moment you let go?"
+  hint "Is size what matters, or how it behaves?"
+}

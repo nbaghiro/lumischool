@@ -1,0 +1,21 @@
+item k.echo-count v=1 skills=[music.listening, counting.to-ten] {
+  title "How many claps back?"
+  difficulty n
+  let n=2..7
+  level easy {
+    let n=2..4
+  }
+  level hard {
+    let n=5..7
+  }
+
+  scene 24x11 {
+    tally t count=n at=canvas(1, 1)
+    text q "Echo game in the garden: each mark is one clap. How many claps must the echo have?" narrate width=14 right-of=t gap=2
+    number-input answer below=q gap=1
+  }
+
+  answer n
+  hint "An echo copies exactly. How many claps were there?"
+  hint "Remember that a line across four marks is the fifth."
+}

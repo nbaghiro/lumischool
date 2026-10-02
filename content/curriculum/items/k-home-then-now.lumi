@@ -1,0 +1,24 @@
+item k.home-then-now v=1 skills=[history.homes, history.then-and-now] {
+  title "In a home long ago"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let q1={pick(k, "Long ago, before taps, where did many families get their water?", "Long ago, how did people keep their home warm?", "Long ago, how did people wash their clothes?", "Long ago, how did people light their home at night?")}
+  let right={pick(k, "from a well or a pump outside", "with a fire in the fireplace", "by hand, scrubbing in a tub", "with candles and oil lamps")}
+  let wrong={pick(k, "from a tap in the kitchen", "with heaters on the wall", "in a washing machine", "with electric lights")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x23 {
+    cottage pic windows=2 lit=0 at=canvas(1, 1)
+    text q "{q1}" narrate width=28 below=pic gap=1
+    choice pick options=[wrong, right] stack=column below=q gap=1
+  }
+
+  answer pick=right
+  hint "Which of the two needs electricity or water pipes?"
+  hint "Did homes long ago have those?"
+}

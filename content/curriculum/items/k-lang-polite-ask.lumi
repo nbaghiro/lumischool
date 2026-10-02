@@ -1,0 +1,13 @@
+item k.lang-polite-ask v=1 stars=2 skills=[language.food, language.greetings] {
+  title "Asking politely"
+
+  scene 36x22 {
+    oven pic lit=0 minutes=0 buns=6 at=canvas(1, 1)
+    text q "Ana wants some bread. Which is the polite way to ask?" narrate width=28 below=pic gap=1
+    choice pick options=["[[food.bread]], [[greet.please]]", "[[food.bread]], [[greet.goodbye]]"] stack=column below=q gap=1
+  }
+
+  answer pick="[[food.bread]], [[greet.please]]"
+  hint "What do you say when you ask for something?"
+  hint "Is [[greet.goodbye]] for asking or for leaving?"
+}

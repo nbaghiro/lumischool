@@ -1,0 +1,23 @@
+item k.hot-or-cold v=1 skills=[physics.heat] {
+  title "Hot or cold?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let thing={pick(k, "an ice lolly", "a bowl of soup just made", "snow", "a mug of tea just poured", "the inside of a fridge", "a sunny wall in summer")}
+  let right={pick(k, "cold", "hot", "cold", "hot", "cold", "warm")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 29x25 {
+    thermometer pic from=0 to=40 step=10 value=pick(k, 0, 40, 0, 40, 10, 30) unit="°C" at=canvas(1, 1)
+    text q "Ada has a picnic in the garden. Is {thing} hot, warm or cold?" narrate width=26 below=pic gap=1
+    choice pick options=["hot", "warm", "cold"] stack=row below=q gap=1
+  }
+
+  answer pick=right
+  hint "Would it steam, feel cosy, or make your fingers chilly?"
+  hint "Where does it come from: a pan, the sun, or a freezer?"
+}

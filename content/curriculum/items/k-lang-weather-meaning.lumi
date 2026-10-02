@@ -1,0 +1,23 @@
+item k.lang-weather-meaning v=1 skills=[language.weather] {
+  title "What is the weather?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let phrase={pick(k, "[[weather.it-is-sunny]]", "[[weather.it-is-raining]]", "[[weather.it-is-cold]]", "[[weather.it-is-hot]]")}
+  let means={pick(k, "it is sunny", "it is raining", "it is cold", "it is hot")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x36 {
+    weatherstation pic cups=3 at=canvas(1, 1)
+    text q "Ada looks out at the garden and says {phrase}. What does it mean?" narrate width=28 below=pic gap=1
+    choice pick options=["it is sunny", "it is raining", "it is cold", "it is hot"] stack=column below=q gap=1
+  }
+
+  answer pick=means
+  hint "Say the words back. Which weather did the lesson give them for?"
+  hint "Act it out: shiver, fan yourself, hold an umbrella or squint at the sun."
+}

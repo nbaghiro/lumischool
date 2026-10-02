@@ -1,0 +1,20 @@
+item k.ladder-in-word v=1 skills=[writing.letter-families, counting.to-five] {
+  title "Ladder letters in a word"
+  difficulty (if w == "lit" or w == "tub" then 0 else 1)
+  let w={"lit", "tub", "jug", "yet"}
+  level easy {
+    let w={"lit", "tub"}
+  }
+  level hard {
+    let w={"jug", "yet"}
+  }
+
+  scene 26x15 {
+    handwriting rules show="{w}" rows=1 trace=0 width=14 at=canvas(1, 1)
+    text q "Ada writes {w} on a label for the garden shed. The ladder letters are l, i, t, u, j and y. How many are in {w}?" narrate width=24 below=rules gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer (if w == "lit" then 3 else 2)
+  hint "Check each letter of {w} in turn. Is it one of the six?"
+}

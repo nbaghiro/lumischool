@@ -1,0 +1,12 @@
+item k.why-glass-window v=1 stars=2 skills=[chemistry.materials, reasoning.explain] {
+  title "Why is a window glass?"
+
+  scene 30x13 {
+    text q "Why is a window made of glass and not of wood?" narrate width=28 at=canvas(1, 1)
+    choice pick options=["You can see through glass.", "Glass is softer than wood."] stack=column below=q gap=1
+  }
+
+  answer pick="You can see through glass."
+  hint "What is a window for?"
+  hint "Could you see out of a wooden window?"
+}

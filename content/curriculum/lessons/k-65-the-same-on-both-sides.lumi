@@ -1,0 +1,48 @@
+lesson k-the-same-on-both-sides v=1 format=teach grade=0 unit=8 subject=art levels=[easy, medium, hard] {
+  title "The same on both sides"
+  goal "Say whether two halves match when a picture is folded."
+
+  look {
+    scene 14x8 {
+      minibeasts bug kinds=["ladybird", "butterfly"] spots=6 legs=false at=canvas(1, 1)
+    }
+    say """
+        Fold a picture down the middle. If the two halves match, it is the same on both sides. A
+        ladybird has the same spots on each wing and a butterfly the same pattern. Our faces are
+        nearly the same on both sides too.
+      """
+  }
+  do {
+    level easy {
+      worked k.fold-match s="circle" l="vertical" level=medium
+    }
+    practice k.fold-match count=3 seed=2 easy-count=2
+    practice k.ladybird-wings count=2 seed=3
+    practice k.letter-same-sides count=2 seed=4 easy-count=1
+    show k.fold-print
+  }
+  try stars=2 {
+    show k.why-fold-matches
+  }
+  try stars=3 {
+    show k.dots-both-wings n=3 easy-n=2 hard-n=5
+  }
+  remember {
+    say "If both halves match when you fold it, it is the same on both sides."
+  }
+
+  grown-ups """
+    Read each question aloud. Printing patterns showed that a print comes out flipped; this lesson
+    is the step on from it, two halves that match across a fold. The folded butterfly is for you to
+    look at. If the child is stuck, fold a real paper shape and hold it up to the light. Off the page,
+    look for things that match on both sides: leaves, faces, a window. Japan, 幼稚園教育要領
+    (kindergarten guidelines), 表現, 内容 (1): "生活の中で様々な音，色，形，手触り，動きなどに気付いたり，感じたりするなどして楽しむ。"
+    (Notice and enjoy the sounds, colours, shapes, textures and movements around them.)
+    """
+  level easy {
+    grown-ups "At this level a circle is folded in the teacher's pen first, the shapes are a circle and a square, the ladybirds have one or two spots a wing, and the letter is A."
+  }
+  level hard {
+    grown-ups "At this level the shapes are a rectangle and an L, which does not match, the ladybirds have three or four a wing, and the letters are H and T."
+  }
+}

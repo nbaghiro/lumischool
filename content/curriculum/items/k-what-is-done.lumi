@@ -1,0 +1,22 @@
+item k.what-is-done v=1 skills=[chemistry.materials] {
+  title "Squash, bend, twist or stretch?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let act={pick(k, "squash", "stretch", "bend", "twist")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 32x18 {
+    squash s thing=pick(k, "sponge", "band", "pipecleaner", "pipecleaner") action=act after=1 at=canvas(1, 0)
+    text q "Ben plays with it in the garden. What is being done to it in the middle picture?" narrate width=28 below=s gap=1
+    choice pick options=["squash", "stretch", "bend", "twist"] stack=row below=q gap=1
+  }
+
+  answer pick=act
+  hint "Is it pushed together, pulled longer, curved, or turned round?"
+  hint "Copy it with your hands."
+}

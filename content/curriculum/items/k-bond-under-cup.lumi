@@ -1,0 +1,21 @@
+item k.bond-under-cup v=1 skills=[number.bonds-to-five, reasoning.part-whole] {
+  title "Five counters, some hidden"
+  difficulty h
+  let h=1..4
+  level easy {
+    let h=1..2
+  }
+  level hard {
+    let h=3..4
+  }
+
+  scene 24x18 {
+    undercup cup shown=(5 - h) cups=1 hidden=h total=5 color=glow at=canvas(1, 1)
+    text q "Ada has five counters on the garden table. Some are under the cup. How many are hiding?" narrate width=22 below=cup gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer h
+  hint "Count the counters you can see."
+  hint "Count on from there to five. How many more?"
+}

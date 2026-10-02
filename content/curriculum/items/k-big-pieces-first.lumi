@@ -1,0 +1,12 @@
+item k.big-pieces-first v=1 stars=2 skills=[art.collage, reasoning.explain] {
+  title "Why the big pieces first?"
+
+  scene 36x25 {
+    collage pic scene=house at=canvas(1, 1)
+    text q "Why do we glue the big pieces of a collage down first, and the small pieces last?" narrate width=28 below=pic gap=1
+    choice pick options=["So the small pieces go on top and still show.", "Because big pieces are heavier."] stack=column below=q gap=1
+  }
+
+  answer pick="So the small pieces go on top and still show."
+  hint "What would happen to a small piece if a big one went on top of it?"
+}

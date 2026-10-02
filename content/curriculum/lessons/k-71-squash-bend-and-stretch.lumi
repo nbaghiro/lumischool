@@ -1,0 +1,48 @@
+lesson k-squash-bend-and-stretch v=1 format=teach grade=0 unit=7 subject=chemistry levels=[easy, medium, hard] {
+  title "Squash, bend and stretch"
+  goal "Say whether a thing springs back after it is squashed or stretched."
+
+  look {
+    scene 24x8 {
+      squash s thing="sponge" action="squash" after=1 at=canvas(1, 0)
+    }
+    say """
+        A sponge squashed and let go springs back to its shape. Play dough squashed stays squashed.
+        Some things are springy, like a sponge, a rubber band and a spring; others keep the new shape,
+        like dough, foil and a pipe cleaner.
+      """
+  }
+  do {
+    level easy {
+      worked k.springs-back k=0 level=medium
+    }
+    practice k.springs-back count=2 seed=2
+    practice k.what-is-done count=2 seed=3
+    practice k.stretchy-or-not count=3 seed=4 easy-count=2
+    show k.clay-snake
+  }
+  try stars=2 {
+    show k.why-sponge-back
+  }
+  try stars=3 {
+    show k.how-many-spring k=0 hard-k=1
+  }
+  remember {
+    say "Springy things spring back. Others keep the shape you give them."
+  }
+
+  grown-ups """
+    Read each question aloud. What is it made of named materials; this is the step on from it,
+    testing what a material does when you push or pull it. The dough is for you to watch. If the
+    child is stuck, squash a real sponge and a real ball of dough side by side. Off the page, sort
+    the toy box into springy and not springy. Japan, 幼稚園教育要領 (kindergarten guidelines), 環境,
+    内容 (2): "生活の中で，様々な物に触れ，その性質や仕組みに興味や関心をもつ。" (Touch many things in daily
+    life and take an interest in how they behave and work.)
+    """
+  level easy {
+    grown-ups "At this level the sponge is worked in the teacher's pen first, the things are a sponge and clay, and the actions are squash and stretch."
+  }
+  level hard {
+    grown-ups "At this level the things are a band and foil, the actions are bend and twist, and the three-star has a spring and a rubber ball."
+  }
+}

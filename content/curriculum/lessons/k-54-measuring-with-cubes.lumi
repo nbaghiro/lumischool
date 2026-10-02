@@ -1,0 +1,49 @@
+lesson k-measuring-with-cubes v=1 format=teach grade=0 unit=9 subject=maths levels=[easy, medium, hard] {
+  title "Measuring with cubes and hands"
+  goal "Measure how long or tall something is in cubes or hands."
+
+  look {
+    scene 14x12 {
+      towers t heights=[5, 3] labels=false at=canvas(1, 1)
+    }
+    say """
+        This tower is five cubes tall and that one is three. Cubes in a line with no gaps measure how
+        tall or long something is, and so do hands put one after another. The taller tower is two
+        cubes taller.
+      """
+  }
+  do {
+    level easy {
+      worked k.tower-cubes h=3 level=medium
+    }
+    practice k.tower-cubes count=3 seed=2 easy-count=2
+    practice k.taller-by count=2 seed=3
+    practice k.hands-long count=2 seed=4 easy-count=1
+    show k.measure-a-thing
+  }
+  try stars=2 {
+    show k.why-no-gaps
+  }
+  try stars=3 {
+    show k.equal-towers a=6 b=2 easy-a=5 easy-b=3 hard-a=8 hard-b=4
+  }
+  remember {
+    say "Measure with no gaps, and count the cubes or hands."
+  }
+
+  grown-ups """
+    Read each question aloud. More, fewer and the same compared counts; this lesson is the step on
+    from it, comparing lengths with a unit. Building towers is the lesson: use real bricks. The
+    measuring with hands is for you to watch for gaps. If the child is stuck on bigger hands giving
+    a smaller number, measure the same table with your hand and theirs. Off the page, measure the
+    sofa in footsteps. Japan, 幼稚園教育要領 (kindergarten guidelines), 環境, 内容 (8):
+    "日常生活の中で数量や図形などに関心をもつ。" (In daily life, take an interest in numbers, amounts and
+    shapes.)
+    """
+  level easy {
+    grown-ups "At this level a tower of three is counted in the teacher's pen first, the towers are short and one cube apart, and the towers to even up differ by two."
+  }
+  level hard {
+    grown-ups "At this level the towers are seven to nine cubes, three or four apart, the hands questions turn round, and the towers to even up differ by four."
+  }
+}

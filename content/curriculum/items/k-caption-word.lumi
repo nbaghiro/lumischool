@@ -1,0 +1,23 @@
+# A caption of two words, the first given: the child writes the second from its sounds, which is
+# the step on from a one-word label.
+item k.caption-word v=1 skills=[writing.captions, writing.spelling] {
+  title "Finish the caption"
+  difficulty (if w == "sun" or w == "cat" then 0 else 1)
+  let w={"sun", "cat", "hen", "cup"}
+  level easy {
+    let w={"sun", "cat"}
+  }
+  level hard {
+    let w={"hen", "cup"}
+  }
+
+  scene 26x24 {
+    art pic asset="{w}" at=canvas(1, 1)
+    caption cap text="a big ..." width=12 below=pic gap=1
+    text q "A picture for the garden scrapbook. The caption starts a big. Write the last word, one letter for each sound." narrate width=24 below=cap gap=1
+    word-input word options=[w] letters=3 below=q gap=1
+  }
+
+  answer word=w
+  hint "Say the name of the picture slowly. How many sounds?"
+}

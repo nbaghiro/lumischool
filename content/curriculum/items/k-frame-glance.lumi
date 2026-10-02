@@ -1,0 +1,20 @@
+item k.frame-glance v=1 skills=[counting.subitising] {
+  title "A full row and some more"
+  difficulty (if n <= 5 then 0 else 1)
+  let n=3..8
+  level easy {
+    let n=3..5
+  }
+  level hard {
+    let n=6..8
+  }
+
+  scene 24x12 {
+    tenframe f count=n color=sky at=canvas(1, 1)
+    text q "Counters on the garden table. Look, do not count. How many?" narrate width=10 right-of=f gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer n
+  hint "A full top row is five. How many are in the bottom row?"
+}

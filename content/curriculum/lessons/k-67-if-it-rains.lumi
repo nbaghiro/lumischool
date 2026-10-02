@@ -1,0 +1,48 @@
+lesson k-if-it-rains v=1 format=teach grade=0 unit=9 subject=coding levels=[easy, medium, hard] {
+  title "If it rains"
+  goal "Follow a rule that starts with if."
+
+  look {
+    scene 8x7 {
+      cloud c puffs=4 rain=1 at=canvas(1, 1)
+    }
+    say """
+        A rule with if only works some of the time: if it is raining, take the umbrella. When it rains
+        we take it; when it is dry we do not. Programs use if to decide what to do.
+      """
+  }
+  do {
+    level easy {
+      worked k.if-raining k=0 level=medium
+    }
+    practice k.if-raining count=3 seed=2 easy-count=2 hard-count=2
+    practice k.traffic-light count=2 seed=3
+    practice k.round-in-ring count=2 seed=4 easy-count=1
+    show k.if-sing
+  }
+  try stars=2 {
+    show k.why-if
+  }
+  try stars=3 {
+    show k.two-rules k=0 hard-k=1
+  }
+  remember {
+    say "If it fits the rule, do it. If it does not, do not."
+  }
+
+  grown-ups """
+    Read each rule and question aloud. A repeat did the same thing again and again; this lesson is
+    the step on from it, a program that decides. The clap and stamp game is for you to run. If the
+    child is stuck, act the rule out with a real umbrella and a pretend rain. Off the page, make up
+    if rules for the day: if your plate is empty, you may leave the table. Japan, 幼稚園教育要領
+    (kindergarten guidelines), 環境, 内容 (7):
+    "身近な物や遊具に興味をもってかかわり，考えたり，試したりして工夫して遊ぶ。" (Take an interest in familiar
+    things and toys, and play inventively by thinking and trying things out.)
+    """
+  level easy {
+    grown-ups "At this level rain is worked in the teacher's pen first, the weather is plainly wet or dry, and one or two things are round."
+  }
+  level hard {
+    grown-ups "At this level the weather is drizzle or a blue sky, three or four things are round, and only the second rule fits in the three-star."
+  }
+}

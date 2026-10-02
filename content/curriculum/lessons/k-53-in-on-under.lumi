@@ -1,0 +1,47 @@
+lesson k-in-on-under v=1 format=teach grade=0 unit=6 subject=maths levels=[easy, medium, hard] {
+  title "In, on, under, next to"
+  goal "Say where something is with in, on, under and next to."
+
+  look {
+    scene 29x8 {
+      picturecards cards who=["cat", "cat", "cat"] where=["in", "on", "under"] thing=["box", "box", "box"] letters=true at=canvas(1, 1)
+    }
+    say """
+        The cat is in the box, then on the box, then under the box. These words tell us where things
+        are: in, on, under, next to, above and below.
+      """
+  }
+  do {
+    level easy {
+      worked k.where-is-it k=0 level=medium
+    }
+    practice k.where-is-it count=3 seed=2 easy-count=2
+    practice k.which-card-place count=3 seed=3 easy-count=2
+    show k.above-below k=0 hard-k=1
+    show k.put-it-where
+  }
+  try stars=2 {
+    show k.in-or-on
+  }
+  try stars=3 {
+    show k.follow-the-words k=0 hard-k=1
+  }
+  remember {
+    say "In, on, under, next to: words that say where."
+  }
+
+  grown-ups """
+    Read each question aloud. The shapes lesson named things; this one is the step on from it,
+    saying where they are. The teddy question is for you to watch. If the child mixes in and on,
+    play hide and seek with a toy and describe its hiding place together. Off the page, tidy up with
+    position words: the book goes on the shelf, the ball goes in the box. Japan, 幼稚園教育要領
+    (kindergarten guidelines), 環境, 内容 (8): "日常生活の中で数量や図形などに関心をもつ。" (In daily life,
+    take an interest in numbers, amounts and shapes.)
+    """
+  level easy {
+    grown-ups "At this level on the mat is worked in the teacher's pen first, the places are on, in and under, and the cat is above the table."
+  }
+  level hard {
+    grown-ups "At this level the places include next to and by, the cat is below the table, and the three-star needs two clues together."
+  }
+}

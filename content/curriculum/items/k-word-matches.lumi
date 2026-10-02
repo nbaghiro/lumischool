@@ -1,0 +1,23 @@
+item k.word-matches v=1 skills=[reading.decoding] {
+  title "Does it match?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let pic={pick(k, "cup", "sun", "hen", "cup", "sun", "cat")}
+  let word={pick(k, "cup", "sun", "hen", "cap", "sat", "cot")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 28x18 {
+    art pic asset="{pic}" at=canvas(1, 1)
+    lettercards word letters=["{pick(k, \"c\", \"s\", \"h\", \"c\", \"s\", \"c\")}", "{pick(k, \"u\", \"u\", \"e\", \"a\", \"a\", \"o\")}", "{pick(k, \"p\", \"n\", \"n\", \"p\", \"t\", \"t\")}"] right-of=pic gap=2
+    text q "A label in the garden. Read the word yourself. Does it name the picture?" narrate width=26 below=pic gap=1
+    choice pick options=["yes", "no"] stack=row below=q gap=1
+  }
+
+  answer pick=(if k <= 2 then "yes" else "no")
+  hint "Read each sound, especially the one in the middle."
+}

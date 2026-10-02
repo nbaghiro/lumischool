@@ -23,4 +23,5 @@ item k.how-many-stuck v=1 skills=[physics.magnets, counting.to-five] {
     }
   }
   hint "Touch each thing with an arrow."
+  hint "Things the magnet does not pull have no arrow. How many have one?"
 }

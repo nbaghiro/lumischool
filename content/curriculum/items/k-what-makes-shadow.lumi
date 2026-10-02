@@ -16,4 +16,5 @@ item k.what-makes-shadow v=1 skills=[physics.light, physics.shadows] {
 
   answer pick=pick(k, "my body blocks the sunlight", "on the side away from the torch", "no", "no")
   hint "A shadow is where light cannot reach. What is in the way of the light?"
+  hint "Where is the light coming from? What is in its way?"
 }

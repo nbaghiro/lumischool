@@ -1,0 +1,24 @@
+# Two towers made the same height by moving cubes from the taller to the shorter: one cube moved
+# changes both, which is the step on from comparing.
+item k.equal-towers v=1 stars=3 skills=[measure.non-standard, reasoning.part-whole] {
+  title "Make them the same"
+  difficulty (a - b)
+  let a=4..8 b=2..6
+  where (a > b and (a - b) % 2 == 0)
+  level easy {
+    where (a - b == 2)
+  }
+  level hard {
+    where (a - b == 4)
+  }
+
+  scene 24x16 {
+    towers t heights=[a, b] labels=false at=canvas(1, 1)
+    text q "Move cubes from the tall tower to the short one until they are the same. How many do you move?" narrate width=12 right-of=t gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer ((a - b) / 2)
+  hint "Move one cube. Are they the same now?"
+  hint "Each cube moved makes one tower shorter and the other taller."
+}

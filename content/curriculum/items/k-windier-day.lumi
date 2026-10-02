@@ -1,0 +1,24 @@
+item k.windier-day v=1 stars=3 skills=[physics.air, measure.compare] {
+  title "The windier day"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x15 {
+    row two at=canvas(1, 1) space=3 align=end {
+      windsock mon wind=(if k == 0 then 1 else 0.5) stripes=5
+      windsock tue wind=(if k == 0 then 0.25 else 0.75) stripes=5
+    }
+    text q "The first windsock is Monday's, the second Tuesday's. Which day was windier?" narrate width=28 below=two gap=1
+    choice pick options=["Monday", "Tuesday"] stack=row below=q gap=1
+  }
+
+  answer pick=(if k == 0 then "Monday" else "Tuesday")
+  hint "Which windsock sticks out more?"
+  hint "The more it is held out, the stronger the wind."
+}

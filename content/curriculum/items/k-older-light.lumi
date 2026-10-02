@@ -1,0 +1,23 @@
+item k.older-light v=1 skills=[history.lighting, history.then-and-now] {
+  title "Which light is older?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let old={pick(k, "a candle", "an oil lamp", "a candle")}
+  let new={pick(k, "an electric light bulb", "a torch with a battery", "a street light")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 29x21 {
+    things pic things=["candle", "lamp"] letters=0 at=canvas(1, 1)
+    text q "Lights for the garden at night. Which is older: {old} or {new}?" narrate width=26 below=pic gap=1
+    choice pick options=[new, old] stack=column below=q gap=1
+  }
+
+  answer pick=old
+  hint "Which one needs electricity?"
+  hint "People had flames for light long before electricity."
+}

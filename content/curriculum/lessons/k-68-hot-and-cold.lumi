@@ -1,0 +1,50 @@
+lesson k-hot-and-cold v=1 format=teach grade=0 unit=2 subject=physics levels=[easy, medium, hard] {
+  title "Hot and cold"
+  goal "Say whether something is hot or cold, and read it on a thermometer."
+
+  look {
+    scene 11x16 {
+      thermometer t from=0 to=40 step=10 value=20 unit="°C" at=canvas(1, 1)
+    }
+    say """
+        Some things are hot, like soup, some warm, like a sunny wall, and some cold, like snow. A
+        thermometer shows how hot: the line goes up when it is warmer and down when it is colder. Hot
+        things can burn, so a grown-up handles them.
+      """
+  }
+  do {
+    level easy {
+      worked k.hot-or-cold k=0 level=medium
+    }
+    practice k.hot-or-cold count=2 seed=2
+    show k.line-goes-up k=0 hard-k=1
+    practice k.warmer-thermometer count=2 seed=3
+    show k.warm-hat k=0 hard-k=1
+    practice k.hot-safety count=2 seed=4 easy-count=1
+  }
+  try stars=2 {
+    show k.ice-in-hand
+  }
+  try stars=3 {
+    show k.coldest-of-three k=0 hard-k=1
+  }
+  remember {
+    say "The thermometer line goes up when it is warmer. Let a grown-up handle hot things."
+  }
+
+  grown-ups """
+    Read each question aloud. Push and pull was the first physics lesson; this one is the first
+    about heat, which what melts and cooking build on later. Feel things together: a cold tap, a warm
+    radiator from a safe distance, ice from the freezer. If the child is stuck on the thermometer,
+    put one in a cup of cold water and one in warm. Off the page, read an outdoor thermometer each
+    morning. England, Reception, ELG The Natural World (recalled, not fetched): "Understand some
+    important processes and changes in the natural world around them, including the seasons and
+    changing states of matter".
+    """
+  level easy {
+    grown-ups "At this level an ice lolly is worked in the teacher's pen first, the things are plainly hot or cold, the thermometers are far apart, and the fridge is in the middle."
+  }
+  level hard {
+    grown-ups "At this level a sunny wall is warm, the thermometer goes into the fridge, the thermometers are ten degrees apart, and the fridge is at the end."
+  }
+}

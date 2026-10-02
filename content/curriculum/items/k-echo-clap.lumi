@@ -1,0 +1,12 @@
+item k.echo-clap v=1 skills=[music.rhythm, music.listening] {
+  title "Clap the echo"
+
+  scene 26x13 {
+    countrow row beats=4 meter=4 now=1 at=canvas(1, 1)
+    text q "The grown-up claps on one, three and four, and keeps two quiet. Clap it back the same." narrate width=24 below=row gap=1
+  }
+
+  check music.rhythm beats=[0, 2, 3] grade=1
+  hint "Count one, two, three, four in your head as you clap."
+  hint "Which number is the quiet one?"
+}

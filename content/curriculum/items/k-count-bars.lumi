@@ -1,0 +1,21 @@
+item k.count-bars v=1 skills=[music.instruments, counting.to-ten] {
+  title "How many bars?"
+  difficulty n
+  let n=3..8
+  level easy {
+    let n=3..5
+  }
+  level hard {
+    let n=6..8
+  }
+
+  scene 32x11 {
+    chimebars c bars=n letters=0 at=canvas(1, 1)
+    text q "Chime bars on the garden table. Each bar makes one note. How many notes?" narrate width=16 right-of=c gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer n
+  hint "Touch each bar once as you count."
+  hint "Start at the long bar and go to the short one."
+}

@@ -22,4 +22,5 @@ item k.how-many-float v=1 skills=[physics.floating, counting.to-five] {
     }
   }
   hint "Look along the top of the water. Touch each thing there."
+  hint "Things that float sit at the top. How many are up there?"
 }

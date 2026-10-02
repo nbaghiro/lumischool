@@ -1,0 +1,10 @@
+item k.echo-sing v=1 skills=[music.singing, music.listening] {
+  title "Sing it back"
+
+  scene 28x9 {
+    text q "The grown-up sings a short line, high or low, loud or quiet. Sing it straight back the same." narrate width=26 at=canvas(1, 1)
+  }
+
+  check music.sung look-for="Each line sung straight back with the same words, the same ups and downs, and the same loud or quiet." notice=["same words", "same ups and downs", "same loud or quiet"]
+  hint "Listen to the whole line before you sing."
+}

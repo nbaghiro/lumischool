@@ -1,0 +1,21 @@
+item k.lang-apples v=1 skills=[language.food, language.numbers] {
+  title "How many apples?"
+  difficulty (if n <= 3 then 0 else 1)
+  let n=1..5
+  level easy {
+    let n=1..3
+  }
+  level hard {
+    let n=3..5
+  }
+
+  scene 36x14 {
+    props row count=n prop=apple at=canvas(1, 1)
+    text q "Apples from the garden tree. How many [[food.apple]]? Choose the number the grown-up reads." narrate width=30 below=row gap=1
+    choice pick options=["[[num.one]]", "[[num.two]]", "[[num.three]]", "[[num.four]]", "[[num.five]]"] stack=row below=q gap=1
+  }
+
+  answer pick=pick(n, "none", "[[num.one]]", "[[num.two]]", "[[num.three]]", "[[num.four]]", "[[num.five]]")
+  hint "Count the apples in English first."
+  hint "Now find that number in [[language.name]]."
+}

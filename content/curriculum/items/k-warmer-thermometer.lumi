@@ -1,0 +1,25 @@
+item k.warmer-thermometer v=1 skills=[physics.heat, measure.temperature] {
+  title "Which is warmer?"
+  difficulty (if abs(a - b) >= 20 then 0 else 1)
+  let a={0, 10, 20, 30} b={0, 10, 20, 30} w=0..1
+  where (a != b)
+  level easy {
+    where (abs(a - b) >= 20)
+  }
+  level hard {
+    where (abs(a - b) == 10)
+  }
+
+  scene 24x24 {
+    row both at=canvas(1, 1) space=3 align=end {
+      thermometer one from=0 to=40 step=10 value=a unit="°C"
+      thermometer two from=0 to=40 step=10 value=b unit="°C"
+    }
+    text q "One thermometer hangs in the garden shed and one in the sun. Which shows the {if w == 0 then \"warmer\" else \"colder\"} place?" narrate width=22 below=both gap=1
+    choice pick options=["the first", "the second"] stack=row below=q gap=1
+  }
+
+  answer pick=(if w == 0 and a > b or w == 1 and a < b then "the first" else "the second")
+  hint "Which line goes higher up its tube?"
+  hint "Higher means warmer, lower means colder."
+}

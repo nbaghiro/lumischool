@@ -1,0 +1,49 @@
+lesson k-who-is-in-the-story v=1 format=teach grade=0 unit=2 subject=reading levels=[easy, medium, hard] {
+  title "Who is in the story?"
+  goal "Name who is in a story and say how they feel."
+
+  look {
+    scene 34x13 {
+      comic strip who=["girl", "dog", "girl"] says=["Where is my ball?", "Woof, woof.", "You found it."] moods=["worried", "happy", "excited"] with=["", "", "dog"] thinks=[0, 0, 0] holds=["", "", ""] labels=["1", "2", "3"] at=canvas(1, 1)
+    }
+    say """
+        The people and animals in a story are its characters. In this story they are a girl and her
+        dog. The girl is worried when her ball is lost and happy when the dog finds it. We can tell
+        how a character feels from their face and from what they say.
+      """
+  }
+  do {
+    level easy {
+      worked k.who-is-in-it k=0 level=medium
+    }
+    practice k.who-is-in-it count=2 seed=2 easy-count=1
+    practice k.who-says count=2 seed=3
+    practice k.how-do-they-feel count=2 seed=4 easy-count=1
+    practice k.mostly-about count=2 seed=5 easy-count=1 hard-count=1
+  }
+  try stars=2 {
+    show k.why-happy
+  }
+  try stars=3 {
+    show k.tell-it-as
+  }
+  remember {
+    say "Characters are who the story is about. Their faces and words show how they feel."
+  }
+
+  grown-ups """
+    Read each story aloud with expression. The first sounds lesson heard words; this is the first
+    lesson about whole stories, and the picture story that comes later puts events in order, while
+    this one is about the people in them. The retelling is for you to listen to. If the child is
+    stuck on a feeling, make the face together. Off the page, after a bedtime story ask who was in
+    it and how they felt at the end. England, Reception, ELG Comprehension: "Demonstrate
+    understanding of what has been read to them by retelling stories and narratives using their own
+    words".
+    """
+  level easy {
+    grown-ups "At this level the dog and the cat are found in the teacher's pen first, the feelings asked are the girl's at the start, and the story is the little duck's."
+  }
+  level hard {
+    grown-ups "At this level the stories are the hen and the duck, and the fox and the pig, the dog's and the girl's later feelings are asked, and the story is the pig's."
+  }
+}

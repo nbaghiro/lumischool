@@ -1,0 +1,13 @@
+item k.street-light-new v=1 skills=[history.homes, history.then-and-now] {
+  title "Lights in the old street"
+
+  scene 32x30 {
+    thenandnow street year=1850 sign=0 things=["horse and cart", "electric street light"] at=canvas(1, 0)
+    text q "This street is from long, long ago. One thing could not have been there yet. Which one?" narrate width=30 below=street gap=1
+    choice pick options=["horse and cart", "electric street light"] stack=column below=q gap=1
+  }
+
+  check history.street of=street pick=could-not
+  hint "Which one needs electricity?"
+  hint "Long ago, did streets have electricity?"
+}

@@ -1,0 +1,21 @@
+item k.how-do-they-feel v=1 skills=[reading.characters, reading.inference] {
+  title "How does the girl feel?"
+  difficulty (if p == 0 then 0 else 1)
+  let p=0..2
+  let feel={pick(p, "worried", "happy", "excited")}
+  level easy {
+    let p=0..0
+  }
+  level hard {
+    let p=1..2
+  }
+
+  scene 35x20 {
+    comic strip who=["girl", "dog", "girl"] says=["Where is my ball?", "Woof, woof.", "You found it."] moods=["worried", "happy", "excited"] with=["", "", "dog"] thinks=[0, 0, 0] holds=["", "", ""] labels=["1", "2", "3"] at=canvas(1, 1)
+    text q "How does {if p == 1 then \"the dog\" else \"the girl\"} feel in picture {p + 1}?" narrate width=32 below=strip gap=1
+    choice pick options=["worried", "happy", "excited"] stack=row below=q gap=1
+  }
+
+  answer pick=feel
+  hint "Look at the face and listen to what is said."
+}

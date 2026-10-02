@@ -1,0 +1,13 @@
+item k.lang-hot-cold v=1 stars=2 skills=[language.weather, reasoning.explain] {
+  title "Which goes with snow?"
+
+  scene 36x19 {
+    snowman pic buttons=3 hat=1 at=canvas(1, 1)
+    text q "There is snow on the ground. Which do you say: [[weather.it-is-hot]] or [[weather.it-is-cold]]?" narrate width=28 below=pic gap=1
+    choice pick options=["[[weather.it-is-hot]]", "[[weather.it-is-cold]]"] stack=row below=q gap=1
+  }
+
+  answer pick="[[weather.it-is-cold]]"
+  hint "Is snow hot or cold?"
+  hint "Which phrase means cold?"
+}

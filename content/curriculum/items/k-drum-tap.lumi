@@ -1,0 +1,13 @@
+item k.drum-tap v=1 skills=[music.instruments] {
+  title "Play the drum"
+
+  scene 26x12 {
+    drum d lugs=5 at=canvas(1, 1)
+    text q "How do you make a sound on this drum?" narrate width=16 right-of=d gap=2
+    choice pick options=["tap it", "blow it"] stack=row below=q gap=1
+  }
+
+  answer pick="tap it"
+  hint "What are the two sticks on top for?"
+  hint "Is there anywhere to blow into?"
+}

@@ -1,0 +1,11 @@
+item k.tell-it-as v=1 stars=3 skills=[reading.characters, reading.retelling] {
+  title "Tell it as the dog"
+
+  scene 36x19 {
+    comic pic who=["girl", "dog", "girl"] says=["Where is my ball?", "Woof, woof.", "You found it."] moods=["worried", "happy", "excited"] with=["", "", "dog"] thinks=[0, 0, 0] holds=["", "", ""] labels=["1", "2", "3"] at=canvas(1, 1)
+    text q "Tell the story of the lost ball to a grown-up, but as if you were the dog. What did the dog see and do?" narrate width=26 below=pic gap=1
+  }
+
+  check reading.recited look-for="The story told in order from the dog's side: the girl looking worried, the dog finding the ball, and the girl happy, said as I or we." notice=["told as the dog", "in order", "says how the girl felt"]
+  hint "What did the dog hear the girl say first?"
+}

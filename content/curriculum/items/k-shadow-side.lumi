@@ -17,4 +17,5 @@ item k.shadow-side v=1 skills=[physics.shadows] {
 
   answer pick="on the other side"
   hint "Follow the light from the lamp past the top of the stick. Where does it land?"
+  hint "The stick blocks the light. Where can the light not reach?"
 }

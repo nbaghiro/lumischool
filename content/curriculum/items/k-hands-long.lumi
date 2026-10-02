@@ -1,0 +1,23 @@
+item k.hands-long v=1 skills=[measure.non-standard] {
+  title "Measuring with hands"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let q1={pick(k, "The table is 6 of Ada's hands long and 9 of her little brother's hands long. Whose hands are bigger?", "A book is 2 hands long. A rug is 10 hands long. Which is longer?", "Ada measures the bed with her hands and with Mum's hands. Which will give the bigger number?", "Ben says the door is 7 hands wide, and Gran says it is 5 of her hands wide. Who has the bigger hands?")}
+  let right={pick(k, "Ada's", "the rug", "Ada's hands", "Gran")}
+  let wrong={pick(k, "her brother's", "the book", "Mum's hands", "Ben")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x23 {
+    hand pic side=both numbers=none ring=0 at=canvas(1, 1)
+    text q "{q1}" narrate width=28 below=pic gap=1
+    choice pick options=[wrong, right] stack=row below=q gap=1
+  }
+
+  answer pick=right
+  hint "Bigger hands fit fewer times along the same thing."
+}

@@ -12,4 +12,5 @@ item k.rough-floor v=1 stars=2 skills=[physics.ramps, physics.forces] {
 
   answer pick="The carpet is rough and slows it down."
   hint "Roll a ball on a rug and on a smooth floor. Which feels bumpier?"
+  hint "What is different between the two floors?"
 }

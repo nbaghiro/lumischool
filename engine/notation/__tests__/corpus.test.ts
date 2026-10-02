@@ -156,8 +156,8 @@ test("every format is in use, and every block resolves to questions", () => {
     assert.ok(grades.size >= 4, `maths in ${grades.size} grades`);
     // Grades five and six add the gap lessons of .docs/grades-5-6.md: five and six more. Grades three
     // and four add three more each and grade five two, to even the split of subjects in each grade.
-    // The kindergarten year is lighter, with seven (.docs/tracks.md, "A kindergarten year").
-    const expected: Record<number, number> = { 0: 7, 3: 18, 4: 18, 5: 22, 6: 21 };
+    // The kindergarten year is lighter, with eleven (.docs/tracks.md, "A kindergarten year").
+    const expected: Record<number, number> = { 0: 11, 3: 18, 4: 18, 5: 22, 6: 21 };
     for (const grade of grades)
         assert.equal(
             maths.filter((l) => l.grade === grade).length,

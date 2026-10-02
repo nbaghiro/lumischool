@@ -23,4 +23,5 @@ item k.ramp-further v=1 skills=[physics.forces, physics.ramps] {
 
   answer pick="the top one"
   hint "Find where each ball stopped. Which is further from the slope?"
+  hint "Which slope is higher? Which ball started higher up?"
 }

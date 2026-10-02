@@ -1,0 +1,21 @@
+item k.odd-material v=1 skills=[chemistry.materials, reasoning.odd-one-out] {
+  title "The odd one out"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 32x16 {
+    materials row things=["{pick(k, \"metal-key\", \"wool-sock\", \"paper-bag\")}", "{pick(k, \"metal-can\", \"metal-key\", \"paper-book\")}", "{pick(k, \"wooden-block\", \"wool-hat\", \"plastic-bottle\")}"] letters=1 names=1 at=canvas(1, 0)
+    text q "Two are made of the same material. Which one is made of something different?" narrate width=28 below=row gap=1
+    choice pick options=["A", "B", "C"] stack=row below=q gap=1
+  }
+
+  check chem.materials of=row pick=odd
+  hint "Say what each one is made of."
+  hint "Which two match?"
+}

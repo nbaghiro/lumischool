@@ -16,4 +16,5 @@ item k.steeper-faster v=1 skills=[physics.ramps] {
 
   answer pick=pick(k, "steep", "steep", "gentler", "faster")
   hint "Think of a slide in the park. Where do you go fastest?"
+  hint "Lift one end of a book and roll a pencil down it, a little and then a lot. When does it go quicker?"
 }

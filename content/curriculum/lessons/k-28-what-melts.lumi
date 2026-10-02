@@ -3,7 +3,7 @@ lesson k-what-melts v=1 format=teach grade=0 unit=6 subject=chemistry levels=[ea
   goal "Say what melts when it is warmed and sets when it is cooled, and tell a change that goes back from one that does not."
 
   look {
-    scene 17x12 {
+    scene 18x12 {
       beforeafter ch change="melt-chocolate" show=1 names=1 at=canvas(1, 0)
     }
     say """

@@ -1,0 +1,49 @@
+lesson k-a-caption v=1 format=teach grade=0 unit=7 subject=writing levels=[easy, medium, hard] {
+  title "A caption for a picture"
+  goal "Write a caption of a few words that says what a picture shows."
+
+  look {
+    scene 14x13 {
+      art pic asset="cat" at=canvas(1, 1)
+      caption cap text="A cat sat down." width=12 below=pic gap=1
+    }
+    say """
+        A caption is a few words under a picture that tell you what it shows. It starts with a capital
+        letter and ends with a full stop. A label is one word; a caption can be a few.
+      """
+  }
+  do {
+    level easy {
+      worked k.caption-fits k=0 level=medium
+    }
+    practice k.caption-fits count=2 seed=2
+    practice k.caption-word count=2 seed=3
+    practice k.caption-starts count=2 seed=4 easy-count=1 hard-count=1
+    show k.my-caption
+    practice k.label-word count=1 seed=9 easy-count=0
+  }
+  try stars=2 {
+    show k.caption-wrong
+  }
+  try stars=3 {
+    show k.caption-picture k=0 hard-k=1
+  }
+  remember {
+    say "A caption says what the picture shows. Capital at the start, full stop at the end."
+  }
+
+  grown-ups """
+    Read each question and each caption aloud. Labels and my name wrote one word; this is the step
+    on from it, a few words with a capital and a full stop. The caption of the child's own is for
+    you to look at: count it a success if a reader can sound it out. If the child is stuck, say the
+    caption aloud first and then write it one word at a time. Off the page, write captions for
+    holiday photos. England, Reception, ELG Writing (recalled, not fetched): "Write simple phrases and
+    sentences that can be read by others".
+    """
+  level easy {
+    grown-ups "At this level the cat's caption is chosen in the teacher's pen first, the words to finish are sun and cat, and the hen is in the box."
+  }
+  level hard {
+    grown-ups "At this level the captions are for the sun and a kite, the words to finish are hen and cup, a one-word label is written too, and the dog is under the box."
+  }
+}

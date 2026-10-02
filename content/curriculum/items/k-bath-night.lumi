@@ -1,0 +1,13 @@
+# Three steps of bath night long ago, put in order: water carried, warmed, poured.
+item k.bath-night v=1 stars=3 skills=[history.homes, reasoning.order] {
+  title "Bath night long ago"
+
+  scene 30x16 {
+    text q "Put a bath long ago in order. Write 1, 2 and 3." narrate width=28 at=canvas(1, 1)
+    sequence s items=["pour the hot water into the tin bath", "carry water in from the pump", "heat the water on the fire"] blanks=[p, q, r] below=q gap=1
+  }
+
+  answer p=3 q=1 r=2
+  hint "Where did the water come from first?"
+  hint "Could it go in the bath before it was warmed?"
+}

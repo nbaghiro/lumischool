@@ -1,0 +1,20 @@
+item k.fold-match v=1 skills=[art.symmetry, shapes.symmetry] {
+  title "Do the halves match?"
+  difficulty (if s == "rectangle" and l == "horizontal" then 1 else 0)
+  let s={"circle", "square", "rectangle", "ell"} l={"vertical", "horizontal"}
+  level easy {
+    let s={"circle", "square"}
+  }
+  level hard {
+    let s={"rectangle", "ell"}
+  }
+
+  scene 24x17 {
+    mirror fig shape=s line=l size=6 at=canvas(1, 0)
+    text q "Ada cuts a shape from paper in the garden. Fold along the dashed line. Would the halves match?" narrate width=22 below=fig gap=1
+    choice pick options=["yes", "no"] stack=row below=q gap=1
+  }
+
+  answer pick=(if s == "ell" then "no" else "yes")
+  hint "Imagine folding it. Does anything stick out on one side only?"
+}

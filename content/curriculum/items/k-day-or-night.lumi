@@ -14,4 +14,5 @@ item k.day-or-night v=1 skills=[physics.light, nature.day-and-night] {
 
   answer pick=(if w == 0 then "the bottom one" else "the top one")
   hint "Where can you see the sun? Where are the moon and stars?"
+  hint "Is the sky in each picture light or dark?"
 }

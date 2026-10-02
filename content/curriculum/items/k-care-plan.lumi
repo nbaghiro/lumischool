@@ -1,0 +1,12 @@
+item k.care-plan v=1 stars=3 skills=[nature.care, reasoning.order] {
+  title "A day of pet care"
+
+  scene 30x18 {
+    text q "Put a day of looking after a dog in order. Write 1, 2, 3 and 4." narrate width=28 at=canvas(1, 1)
+    sequence s items=["take it for an evening walk", "give it breakfast and fresh water", "let it sleep in its bed at night", "play with it after lunch"] blanks=[p, q, r, t] below=q gap=1
+  }
+
+  answer p=3 q=1 r=4 t=2
+  hint "What does the dog need first thing in the morning?"
+  hint "What comes last, at night?"
+}

@@ -1,0 +1,47 @@
+lesson k-dots-at-a-glance v=1 format=teach grade=0 unit=1 subject=maths levels=[easy, medium, hard] {
+  title "Dots at a glance"
+  goal "See how many dots there are, up to six, without counting them."
+
+  look {
+    scene 11x6 {
+      dice d faces=[3, 4, 5] at=canvas(1, 1)
+    }
+    say """
+        On a dice the dots make shapes: three is a line, four is a square, and five is a square with
+        one in the middle. Once you know the shape you know the number, without counting.
+      """
+  }
+  do {
+    level easy {
+      worked k.dice-glance n=3 level=medium
+    }
+    practice k.dice-glance count=3 seed=2 easy-count=2
+    practice k.frame-glance count=2 seed=3
+    practice k.two-dice count=2 seed=4 easy-count=1
+    practice k.same-number-dots count=1 seed=5
+  }
+  try stars=2 {
+    show k.quick-or-count
+  }
+  try stars=3 {
+    show k.make-six-dots a=2 t=6 easy-a=4 hard-a=3 hard-t=7
+  }
+  remember {
+    say "The shape of the dots tells you the number."
+  }
+
+  grown-ups """
+    Read each question aloud and show the picture only briefly if you can, so the child reads the
+    shape rather than counting. Counting to five taught touching each thing once; this lesson is the
+    step on from it, knowing small numbers at a glance. If the child counts every dot, play a board
+    game with a dice and say the number together before moving. Off the page, flash fingers and ask
+    how many. England, Reception, ELG Number: "Subitise (recognise quantities without counting) up to
+    5".
+    """
+  level easy {
+    grown-ups "At this level three dots are read in the teacher's pen first, the dice show one to three, and the two dice make five or less."
+  }
+  level hard {
+    grown-ups "At this level the dice show four to six, the two dice make seven or eight, and the three-star total is seven."
+  }
+}

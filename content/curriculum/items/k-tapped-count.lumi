@@ -1,0 +1,21 @@
+item k.tapped-count v=1 stars=3 skills=[music.instruments, sorting.one-rule] {
+  title "Tap or shake?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 29x16 {
+    drum pic lugs=5 at=canvas(1, 1)
+    text q "{pick(k, \"A drum, a shaker, a recorder and a triangle. How many do you tap?\", \"A guitar, a trumpet, a recorder and a drum. How many do you blow?\")}" narrate width=26 below=pic gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer pick(k, 2, 2)
+  hint "Take each one in turn and say how you play it."
+  hint "Count only the ones played that way."
+}

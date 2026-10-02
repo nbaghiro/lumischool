@@ -1,0 +1,21 @@
+item k.switch-on-safely v=1 skills=[history.lighting, safety] {
+  title "Who lights the candle?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 29x28 {
+    candle pic start=10 burnt=2 lit=1 jar=0 at=canvas(1, 1)
+    text q "{pick(k, \"Who should light a candle at home?\", \"A candle is burning. What should you never do?\")}" narrate width=26 below=pic gap=1
+    choice pick options=[pick(k, "a grown-up", "touch the flame"), pick(k, "me, on my own", "watch it from a safe place")] stack=column below=q gap=1
+  }
+
+  answer pick=pick(k, "a grown-up", "touch the flame")
+  hint "Flames can burn. Who should handle them?"
+  hint "What keeps you safe near a flame?"
+}

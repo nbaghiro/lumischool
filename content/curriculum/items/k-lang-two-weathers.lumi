@@ -1,0 +1,21 @@
+item k.lang-two-weathers v=1 stars=3 skills=[language.weather] {
+  title "Two at once"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x24 {
+    umbrellas pic count=2 rain=(1 - k) at=canvas(1, 1)
+    text q "{pick(k, \"It is raining and it is cold. Which two do you say?\", \"The sun is out and it is hot. Which two do you say?\")}" narrate width=28 below=pic gap=1
+    choice pick options=["[[weather.it-is-raining]], [[weather.it-is-cold]]", "[[weather.it-is-sunny]], [[weather.it-is-hot]]", "[[weather.it-is-sunny]], [[weather.it-is-cold]]"] stack=column below=q gap=1
+  }
+
+  answer pick=pick(k, "[[weather.it-is-raining]], [[weather.it-is-cold]]", "[[weather.it-is-sunny]], [[weather.it-is-hot]]")
+  hint "Find the words for the first kind of weather."
+  hint "Which choice also has the second?"
+}

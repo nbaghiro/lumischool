@@ -1,0 +1,22 @@
+item k.lang-food-name v=1 skills=[language.food] {
+  title "Say the food"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let food={pick(k, "an apple", "some bread", "some milk", "a banana")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x28 {
+    fruitbowl pic fruit=5 at=canvas(1, 1)
+    text q "How do you say {food} in [[language.name]]? The grown-up reads the words." narrate width=28 below=pic gap=1
+    choice pick options=["[[food.apple]]", "[[food.bread]]", "[[food.milk]]", "[[food.banana]]"] stack=column below=q gap=1
+  }
+
+  answer pick=pick(k, "[[food.apple]]", "[[food.bread]]", "[[food.milk]]", "[[food.banana]]")
+  hint "Which word did the lesson give for it?"
+  hint "Say each word after the grown-up and listen."
+}

@@ -1,0 +1,10 @@
+item k.write-lit v=1 stars=3 skills=[writing.letter-formation, writing.spelling] {
+  title "A word of ladder letters"
+
+  scene 30x10 {
+    text q "Say lit: l, i, t. Write it on the line, starting each letter at the top with a line down." narrate width=28 at=canvas(1, 1)
+    writinglines line lines=1 width=26 below=q gap=1
+  }
+
+  check writing.by-eye look-for="lit written left to right, each letter started at the top with a line down, the i dotted and the t crossed, with t shorter than l." notice=["each starts at the top", "i dotted, t crossed", "t shorter than l"] ask="Which letter did you finish last?"
+}

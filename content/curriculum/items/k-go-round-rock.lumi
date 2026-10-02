@@ -1,0 +1,22 @@
+# A rock blocks the straight way, so the plan must go down first: the order of the blocks matters.
+item k.go-round-rock v=1 skills=[coding.planning, coding.directions] {
+  title "Round the rock"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x14 {
+    maze g cols=4 rows=2 col=1 row=1 flag=[4, 2] rocks=[if k == 0 then 2 else 3, 1] trail=none at=canvas(1, 1)
+    text q "The robot crosses the garden. A rock is in the way on the top row. Which way should the robot go first?" narrate width=14 right-of=g gap=1
+    choice pick options=["right", "down"] stack=row below=q gap=1
+  }
+
+  answer pick="down"
+  hint "What happens if the robot goes right first?"
+  hint "Is the bottom row clear all the way to the flag?"
+}

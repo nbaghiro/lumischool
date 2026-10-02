@@ -1,0 +1,25 @@
+item k.coldest-of-three v=1 stars=3 skills=[physics.heat, measure.temperature] {
+  title "The coldest place"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 33x25 {
+    row therms at=canvas(1, 1) space=2 align=end {
+      thermometer one from=0 to=40 step=10 value=(if k == 0 then 30 else 20) unit="°C"
+      thermometer two from=0 to=40 step=10 value=(if k == 0 then 0 else 10) unit="°C"
+      thermometer three from=0 to=40 step=10 value=(if k == 0 then 20 else 0) unit="°C"
+    }
+    text q "One thermometer was in the fridge, one in the kitchen and one in the sun. Which was in the fridge?" narrate width=28 below=therms gap=1
+    choice pick options=["the first", "the second", "the third"] stack=row below=q gap=1
+  }
+
+  answer pick=(if k == 0 then "the second" else "the third")
+  hint "The fridge is the coldest place. Which line is lowest?"
+  hint "Compare the tops of all three lines."
+}

@@ -1,0 +1,22 @@
+# The caption has to be read in full to pick the picture: the animal and where it is both count.
+item k.caption-picture v=1 stars=3 skills=[writing.captions, space.position] {
+  title "Which picture has this caption?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 30x18 {
+    picturecards cards who=[pick(k, "hen", "dog"), pick(k, "hen", "cat"), pick(k, "dog", "dog")] where=[pick(k, "on", "under"), pick(k, "in", "under"), pick(k, "in", "on")] thing=["box", "box", "box"] letters=true at=canvas(1, 1)
+    text q "The caption says {pick(k, \"A hen in a box.\", \"A dog under a box.\")} Which picture does it belong to?" narrate width=28 below=cards gap=1
+    choice pick options=["A", "B", "C"] stack=row below=q gap=1
+  }
+
+  answer pick=pick(k, "B", "A")
+  hint "Which pictures show the right animal?"
+  hint "Of those, where is it: in, on or under the box?"
+}

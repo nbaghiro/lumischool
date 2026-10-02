@@ -1,0 +1,21 @@
+item k.same-stuff v=1 skills=[chemistry.materials] {
+  title "Made of the same stuff"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 32x16 {
+    materials row things=["{pick(k, \"wooden-spoon\", \"metal-key\", \"glass-bottle\")}", "{pick(k, \"metal-can\", \"wool-hat\", \"paper-book\")}", "{pick(k, \"wooden-block\", \"metal-spoon\", \"glass-jar\")}"] letters=1 names=1 at=canvas(1, 0)
+    text q "Things from the garden shed. Which is made of the same stuff as A?" narrate width=28 below=row gap=1
+    choice pick options=["B", "C"] stack=row below=q gap=1
+  }
+
+  check chem.materials of=row pick="same(A)"
+  hint "What is A made of? Look for another made of that."
+  hint "Is it wood, metal or glass?"
+}

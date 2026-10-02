@@ -1,0 +1,21 @@
+item k.light-without-power v=1 skills=[history.lighting] {
+  title "Light with no electricity"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 29x21 {
+    things pic things=["candle", "torch", "lamp"] letters=0 at=canvas(1, 1)
+    text q "{pick(k, \"Which gave light long ago without electricity: a candle or a lamp you plug in?\", \"Which gave light long ago without electricity: an oil lamp or a television?\")}" narrate width=26 below=pic gap=1
+    choice pick options=[pick(k, "a lamp you plug in", "a television"), pick(k, "a candle", "an oil lamp")] stack=column below=q gap=1
+  }
+
+  answer pick=pick(k, "a candle", "an oil lamp")
+  hint "Which one has a flame?"
+  hint "Which one needs a plug?"
+}

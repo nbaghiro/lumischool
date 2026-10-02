@@ -1,0 +1,23 @@
+item k.wind-moves v=1 skills=[physics.air, physics.forces] {
+  title "What can the wind move?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let light={pick(k, "a kite", "a leaf", "a paper boat on a pond", "the washing on the line")}
+  let heavy={pick(k, "a house", "a big rock", "a parked car", "a brick wall")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 29x20 {
+    windsock pic wind=1 stripes=5 at=canvas(1, 1)
+    text q "A windy day in the garden. Which can the wind move: {light} or {heavy}?" narrate width=26 below=pic gap=1
+    choice pick options=[heavy, light] stack=column below=q gap=1
+  }
+
+  answer pick=light
+  hint "Which one is light enough to be pushed by moving air?"
+  hint "Have you seen this one move in the wind?"
+}

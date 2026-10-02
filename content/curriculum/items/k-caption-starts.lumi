@@ -1,0 +1,22 @@
+item k.caption-starts v=1 skills=[writing.captions, writing.capitals] {
+  title "Start and end a caption"
+  difficulty k
+  let k=0..1
+  let right={pick(k, "A cat on a mat.", "The hen is wet.")}
+  let wrong={pick(k, "a cat on a mat", "the hen is wet")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 29x25 {
+    art pic asset="{pick(k, \"cat\", \"hen\")}" at=canvas(1, 1)
+    text q "A caption for the garden scrapbook starts with a capital letter and ends with a full stop. Which is written the right way?" narrate width=26 below=pic gap=1
+    choice pick options=[wrong, right] stack=column below=q gap=1
+  }
+
+  answer pick=right
+  hint "Look at the first letter. Look at the very end."
+}

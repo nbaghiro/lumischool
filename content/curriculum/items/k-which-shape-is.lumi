@@ -12,7 +12,7 @@ item k.which-shape-is v=1 skills=[colours.naming, shapes.flat] {
     let t=2..3
   }
 
-  scene 17x9 {
+  scene 18x9 {
     text ask "Which shape is {colour}?" narrate at=canvas(1, 1)
     choice pick options=[squ, hex, tri, circ] below=ask gap=1
   }

@@ -1,0 +1,13 @@
+item k.windy-washing v=1 stars=2 skills=[physics.air, reasoning.explain] {
+  title "Why dry faster in the wind?"
+
+  scene 36x18 {
+    windsock pic wind=1 stripes=5 at=canvas(1, 1)
+    text q "Washing dries faster on a windy day than on a still day. Why?" narrate width=28 below=pic gap=1
+    choice pick options=["The moving air carries the water away.", "The wind makes the clothes smaller."] stack=column below=q gap=1
+  }
+
+  answer pick="The moving air carries the water away."
+  hint "Where does the water in wet washing go?"
+  hint "What does the wind do to the air round the washing?"
+}

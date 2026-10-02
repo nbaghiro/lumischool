@@ -1,0 +1,10 @@
+item k.put-it-where v=1 skills=[space.position] {
+  title "Put the teddy there"
+
+  scene 28x9 {
+    text q "Take a teddy and a box. Put the teddy in the box, then on it, then under it, then next to it. Say where it is each time." narrate width=26 at=canvas(1, 1)
+  }
+
+  check reading.recited look-for="The teddy put in, on, under and next to the box in turn, each place named with the right word." notice=["in and on right", "under right", "next to right"]
+  hint "Listen to each word first: in, on, under, next to."
+}

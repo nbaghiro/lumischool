@@ -1,0 +1,21 @@
+item k.made-of v=1 skills=[chemistry.materials] {
+  title "What is it made of?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3 l={"A", "B"}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 32x15 {
+    materials row things=["{pick(k, \"wooden-block\", \"metal-key\", \"glass-jar\", \"plastic-spoon\")}", "{pick(k, \"metal-can\", \"plastic-bottle\", \"wooden-ruler\", \"glass-bottle\")}"] letters=1 names=1 at=canvas(1, 0)
+    text q "Ada finds these in the garden shed. What is thing {l} made of?" narrate width=28 below=row gap=1
+    choice pick options=["wood", "metal", "plastic", "glass"] stack=row below=q gap=1
+  }
+
+  check chem.materials of=row pick="made({l})"
+  hint "Does it have a grain, a cold shine, or can you see through it?"
+  hint "Think of touching it. Is it soft, hard, cold or bendy?"
+}

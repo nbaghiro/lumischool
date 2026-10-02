@@ -1,0 +1,11 @@
+item k.lang-ask-for-food v=1 skills=[language.food, language.speaking] {
+  title "Ask for it"
+
+  scene 30x12 {
+    fruitbowl pic fruit=4 at=canvas(1, 1)
+    text q "At lunch, ask a grown-up for water or bread in [[language.name]], and say [[greet.please]] and [[greet.thank-you]]." narrate width=26 below=pic gap=1
+  }
+
+  check reading.recited look-for="The food word said in the language with [[greet.please]] when asking and [[greet.thank-you]] when given it." notice=["the right food word", "[[greet.please]] when asking", "[[greet.thank-you]] after"]
+  hint "Which word is water? Which word is please?"
+}

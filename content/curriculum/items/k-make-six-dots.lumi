@@ -1,0 +1,23 @@
+item k.make-six-dots v=1 stars=3 skills=[counting.subitising, reasoning.part-whole] {
+  title "What does the other dice show?"
+  difficulty t
+  let a=1..5 t={6, 7}
+  where (t - a >= 1 and t - a <= 6)
+  level easy {
+    let t={6}
+    where (a >= 3)
+  }
+  level hard {
+    let t={7}
+  }
+
+  scene 26x12 {
+    dice d faces=[a] at=canvas(1, 1)
+    text q "Two dice show {t} dots altogether. One shows this. How many dots on the other?" narrate width=16 right-of=d gap=2
+    number-input answer below=q gap=1
+  }
+
+  answer (t - a)
+  hint "Count on from this dice to {t}."
+  hint "How many numbers did you say?"
+}

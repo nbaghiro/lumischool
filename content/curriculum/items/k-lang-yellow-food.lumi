@@ -1,0 +1,21 @@
+item k.lang-yellow-food v=1 stars=3 skills=[language.food, language.colours] {
+  title "Which is yellow?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x14 {
+    fruitbowl pic fruit=5 at=canvas(1, 1)
+    text q "{pick(k, \"Which is [[colour.yellow]]: [[food.apple]] or [[food.banana]]?\", \"Which is white: [[food.milk]] or [[food.bread]] crust?\")}" narrate width=28 below=pic gap=1
+    choice pick options=[pick(k, "[[food.apple]]", "[[food.milk]]"), pick(k, "[[food.banana]]", "[[food.bread]]")] stack=row below=q gap=1
+  }
+
+  answer pick=pick(k, "[[food.banana]]", "[[food.milk]]")
+  hint "Say each food and its colour in English."
+  hint "Which one matches the colour asked for?"
+}

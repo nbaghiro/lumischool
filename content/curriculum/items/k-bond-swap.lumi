@@ -1,0 +1,14 @@
+# The two-star reason: two and three make five, so three and two do too; swapping the parts keeps
+# the whole.
+item k.bond-swap v=1 stars=2 skills=[number.bonds-to-five, reasoning.explain] {
+  title "Swap the parts"
+
+  scene 36x25 {
+    hand pic side=right numbers=none ring=0 at=canvas(1, 1)
+    text q "Ada knows that 2 and 3 make 5. Does 3 and 2 make 5 too?" narrate width=28 below=pic gap=1
+    choice pick options=["Yes: the same parts make the same whole.", "No: it is a new sum."] stack=column below=q gap=1
+  }
+
+  answer pick="Yes: the same parts make the same whole."
+  hint "Hold up 2 fingers and 3 fingers. Now 3 and 2. Are there the same number up?"
+}

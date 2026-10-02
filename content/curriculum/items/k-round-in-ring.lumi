@@ -1,0 +1,29 @@
+# A rule with if, used to sort: if a shape is round it goes in the ring, otherwise it stays out.
+item k.round-in-ring v=1 skills=[coding.selection] {
+  title "If it is round, it goes in"
+  difficulty n
+  let n=1..4
+  level easy {
+    let n=1..2
+  }
+  level hard {
+    let n=3..4
+  }
+
+  scene 32x12 {
+    row row at=canvas(1, 1) space=1 align=centre {
+      props p1 count=1 prop=circle
+      props p2 count=1 prop=square
+      props p3 count=(if n >= 2 then 1 else 0) prop=ball
+      props p4 count=1 prop=triangle
+      props p5 count=(if n >= 3 then 1 else 0) prop=circle
+      props p6 count=1 prop=cube
+      props p7 count=(if n == 4 then 1 else 0) prop=apple
+    }
+    text q "Ada tidies the garden toys. The rule: if a thing is round, put it in the ring. How many go in?" narrate width=28 below=row gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer n
+  hint "Check each thing: is it round? Yes goes in, no stays out."
+}

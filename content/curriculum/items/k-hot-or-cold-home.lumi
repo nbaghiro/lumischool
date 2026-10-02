@@ -1,0 +1,21 @@
+item k.hot-or-cold-home v=1 skills=[nature.habitats] {
+  title "Hot home or cold home?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 26x14 {
+    camel c count=1 resting=0 facing=1 at=canvas(1, 1)
+    text q "{pick(k, \"Does a camel live somewhere hot or somewhere icy?\", \"A camel can go a long time without water. Does it live somewhere wet or dry?\")}" narrate width=14 right-of=c gap=2
+    choice pick options=[pick(k, "hot", "wet"), pick(k, "icy", "dry")] stack=row below=q gap=1
+  }
+
+  answer pick=pick(k, "hot", "dry")
+  hint "Camels live in deserts. What is a desert like?"
+  hint "Is there much rain in a desert?"
+}

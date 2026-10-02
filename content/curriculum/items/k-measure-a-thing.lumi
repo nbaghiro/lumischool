@@ -1,0 +1,11 @@
+item k.measure-a-thing v=1 skills=[measure.non-standard, counting.to-ten] {
+  title "Measure it"
+
+  scene 29x21 {
+    hand pic side=right numbers=none ring=0 at=canvas(1, 1)
+    text q "Measure a book with your hand: put one hand after another along it, with no gaps. How many hands long is it? Tell a grown-up." narrate width=26 below=pic gap=1
+  }
+
+  check reading.recited look-for="Hands placed end to end with no gaps or overlaps from one edge to the other, and the count said." notice=["starts at the edge", "no gaps or overlaps", "says the count"]
+  hint "Where does your first hand go?"
+}

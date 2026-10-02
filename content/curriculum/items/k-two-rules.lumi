@@ -1,0 +1,21 @@
+item k.two-rules v=1 stars=3 skills=[coding.selection, reasoning.clues] {
+  title "Two rules at once"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x28 {
+    umbrellas pic count=3 rain=1 at=canvas(1, 1)
+    text q "Rule one: if it is cold, wear a coat. Rule two: if it is raining, take an umbrella. {pick(k, \"It is cold and raining.\", \"It is warm and raining.\")} What do you take?" narrate width=28 below=pic gap=1
+    choice pick options=["a coat", "an umbrella", "a coat and an umbrella"] stack=column below=q gap=1
+  }
+
+  answer pick=pick(k, "a coat and an umbrella", "an umbrella")
+  hint "Check rule one. Does it fit today?"
+  hint "Now check rule two."
+}

@@ -1,0 +1,23 @@
+# The beat track shows the pattern above the line and the echo below it, so a late clap in the echo
+# is seen, not heard.
+item k.echo-same v=1 skills=[music.rhythm, music.listening] {
+  title "Was the echo the same?"
+  difficulty (if m == 0 then 0 else 1)
+  let m=0..2
+  level easy {
+    let m=0..1
+  }
+  level hard {
+    let m=1..2
+  }
+
+  scene 24x24 {
+    beattrack b beats=4 target=[0, 1, 2, 3] played=[0, 1, if m == 1 then 2.6 else 2, if m == 2 then 3.6 else 3] tolerance=0.25 at=canvas(1, 1)
+    text q "An echo game on the lawn. The top dots are the claps to copy. The bottom dots are Ada's echo. Did every clap land in time, right under its top dot?" narrate width=22 below=b gap=1
+    choice pick options=["yes", "no"] stack=row below=q gap=1
+  }
+
+  answer pick=(if m == 0 then "yes" else "no")
+  hint "Match each top dot with a dot underneath it."
+  hint "Is any bottom dot outside the shaded band?"
+}

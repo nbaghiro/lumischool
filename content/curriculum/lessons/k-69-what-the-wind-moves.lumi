@@ -1,0 +1,49 @@
+lesson k-what-the-wind-moves v=1 format=teach grade=0 unit=6 subject=physics levels=[easy, medium, hard] {
+  title "What the wind moves"
+  goal "Say what the wind, moving air, can push."
+
+  look {
+    scene 8x9 {
+      windsock s wind=1 stripes=5 at=canvas(1, 1)
+    }
+    say """
+        Wind is air moving. We cannot see air, but we can see what it moves: leaves, kites, washing and
+        this windsock. A strong wind holds the windsock straight out; a light wind lets it droop.
+      """
+  }
+  do {
+    level easy {
+      worked k.wind-moves k=0 level=medium
+    }
+    practice k.wind-moves count=3 seed=2 easy-count=2 hard-count=2
+    show k.windsock-strong w=1 hard-w=0
+    show k.see-the-wind k=1 easy-k=0
+    show k.blow-further k=1 easy-k=0
+    show k.make-a-pinwheel
+    show k.windsock-strong w=0 hard-w=1
+  }
+  try stars=2 {
+    show k.windy-washing
+  }
+  try stars=3 {
+    show k.windier-day k=0 hard-k=1
+  }
+  remember {
+    say "Wind is moving air. We see it by what it moves."
+  }
+
+  grown-ups """
+    Read each question aloud. Push and pull showed a hand moving things; this lesson is the step on
+    from it, air doing the pushing. The pinwheel is for you to watch. If the child is stuck, blow
+    through a straw at a feather together. Off the page, fly a kite or a plastic bag on a string on
+    a windy day. Japan, 幼稚園教育要領 (kindergarten guidelines), 環境, 内容 (4):
+    "自然などの身近な事象に関心をもち，取り入れて遊ぶ。" (Take an interest in familiar things in nature, and
+    bring them into play.)
+    """
+  level easy {
+    grown-ups "At this level a kite is worked in the teacher's pen first, the things are light or very heavy, the questions ask whether wind can be seen and blow a feather, and the windier day is plain."
+  }
+  level hard {
+    grown-ups "At this level the wind moves a paper boat and washing, and the windier day is close."
+  }
+}

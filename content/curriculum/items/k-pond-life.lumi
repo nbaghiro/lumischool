@@ -1,0 +1,21 @@
+item k.pond-life v=1 skills=[nature.habitats, counting.to-five] {
+  title "Who lives in the pond?"
+  difficulty f
+  let f=1..5
+  level easy {
+    let f=1..2
+  }
+  level hard {
+    let f=4..5
+  }
+
+  scene 30x14 {
+    pond p pads=4 fish=f frog=true at=canvas(1, 1)
+    text q "This is the pond at the bottom of the garden. How many fish live in it?" narrate width=12 right-of=p gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer f
+  hint "Look under the water, between the lily pads."
+  hint "Touch each fish once as you count."
+}

@@ -1,0 +1,50 @@
+lesson k-rough-and-smooth v=1 format=teach grade=0 unit=5 subject=art levels=[easy, medium, hard] {
+  title "Rough and smooth: collage"
+  goal "Choose rough or smooth materials to make a collage."
+
+  look {
+    scene 17x12 {
+      collage pic scene=boat at=canvas(1, 1)
+    }
+    say """
+        A collage is a picture made of pieces glued down. Some pieces have straight edges and some
+        have curvy ones, and some feel rough and some smooth. Sandpaper is rough; foil is smooth.
+        Choose the paper that feels like the thing you show.
+      """
+  }
+  do {
+    level easy {
+      worked k.rough-or-smooth k=0 level=medium
+    }
+    practice k.rough-or-smooth count=3 seed=2 easy-count=2
+    practice k.which-paper count=2 seed=3
+    show k.torn-or-cut k=0 hard-k=1
+    practice k.curvy-pieces count=1 seed=4
+    show k.make-a-collage
+  }
+  try stars=2 {
+    show k.big-pieces-first
+  }
+  try stars=3 {
+    show k.more-straight
+  }
+  remember {
+    say "Rough or smooth, torn or cut: choose pieces that feel like the thing."
+  }
+
+  grown-ups """
+    Read each question aloud and let the child touch real things: sandpaper, foil, tissue, a towel.
+    Printing patterns made shapes with a stamp; this is the step on from it, choosing materials by
+    how they feel. The collage is for you to look at. If the child is stuck, rub a finger over the
+    thing and ask whether it slides or catches. Off the page, collect a bag of scraps on a walk and
+    sort them rough and smooth. England, Reception, ELG Creating with Materials (recalled, not
+    fetched): "Safely use and explore a variety of materials, tools and techniques, experimenting
+    with colour, design, texture, form and function".
+    """
+  level easy {
+    grown-ups "At this level sandpaper is felt in the teacher's pen first, the things are sandpaper, glass and bark, the cloud is torn, and the boat's curvy pieces are counted."
+  }
+  level hard {
+    grown-ups "At this level the things include foil and a doormat, the papers are for a pond and a crocodile, a house's edge is cut, and the curvy pieces are the fish's or the house's."
+  }
+}

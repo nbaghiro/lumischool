@@ -1,0 +1,15 @@
+item k.lang-weather-picture v=1 skills=[language.weather] {
+  title "Say the weather"
+  difficulty 0
+  let r=0..1
+
+  scene 30x16 {
+    cloud c puffs=4 rain=r at=canvas(1, 1)
+    text q "{if r == 1 then \"Rain falls from the cloud.\" else \"The cloud has gone and the sun is out.\"} What do you say in [[language.name]]?" narrate width=16 right-of=c gap=2
+    choice pick options=["[[weather.it-is-sunny]]", "[[weather.it-is-raining]]"] stack=column below=q gap=1
+  }
+
+  answer pick=(if r == 1 then "[[weather.it-is-raining]]" else "[[weather.it-is-sunny]]")
+  hint "Is it wet or dry?"
+  hint "Which words did the lesson give for rain?"
+}

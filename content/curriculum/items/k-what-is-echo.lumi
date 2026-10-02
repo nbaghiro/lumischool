@@ -1,0 +1,12 @@
+item k.what-is-echo v=1 stars=2 skills=[music.listening, reasoning.explain] {
+  title "What is an echo?"
+
+  scene 30x13 {
+    text q "You shout hello in a big empty hall and hear hello come back. Why is that called an echo?" narrate width=28 at=canvas(1, 1)
+    choice pick options=["The same sound comes back to you.", "Someone else is shouting."] stack=column below=q gap=1
+  }
+
+  answer pick="The same sound comes back to you."
+  hint "Was it the same word that came back?"
+  hint "Did anybody else speak?"
+}

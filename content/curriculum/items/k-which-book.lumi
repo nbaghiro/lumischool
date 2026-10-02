@@ -1,0 +1,20 @@
+item k.which-book v=1 stars=3 skills=[reading.nonfiction, reasoning.clues] {
+  title "Which book would you read?"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x35 {
+    labelled pic of=ship labels=["mast", "sail", "deck", "hull", "anchor"] blank=-1 title="Ships" caption="" at=canvas(1, 1)
+    text q "{pick(k, \"Ada wants to find out what ants eat. Which book should she read?\", \"Ben wants a bedtime tale about a brave mouse. Which book should he read?\")}" narrate width=28 below=pic gap=1
+    choice pick options=["a fact book about minibeasts", "a story about a dragon", "a story about a mouse"] stack=column below=q gap=1
+  }
+
+  answer pick=pick(k, "a fact book about minibeasts", "a story about a mouse")
+  hint "Does the child want true facts, or a made-up tale?"
+}

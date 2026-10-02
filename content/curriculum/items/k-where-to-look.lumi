@@ -1,0 +1,24 @@
+item k.where-to-look v=1 skills=[nature.habitats, nature.minibeasts] {
+  title "Where would you look?"
+  difficulty (if k <= 1 then 0 else 1)
+  let k=0..3
+  let q1={pick(k, "You want to find a snail. Where would you look?", "You want to find a bird's nest. Where would you look?", "You want to find a worm. Where would you look?", "You want to find a woodlouse. Where would you look?")}
+  let right={pick(k, "under a damp log", "high in a hedge or tree", "in the soil", "under a stone in the shade")}
+  let wrong={pick(k, "on a hot sunny path", "in the pond", "on top of a wall in the sun", "in the middle of the lawn at noon")}
+  level easy {
+    let k=0..1
+  }
+  level hard {
+    let k=2..3
+  }
+
+  scene 36x18 {
+    log pic rings=5 toadstools=2 at=canvas(1, 1)
+    text q "{q1}" narrate width=28 below=pic gap=1
+    choice pick options=[wrong, right] stack=column below=q gap=1
+  }
+
+  answer pick=right
+  hint "Does this animal like it damp and dark, or high and safe?"
+  hint "Where would it hide from the sun and from birds?"
+}

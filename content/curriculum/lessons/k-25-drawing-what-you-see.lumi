@@ -3,7 +3,7 @@ lesson k-drawing-what-you-see v=1 format=teach grade=0 unit=9 subject=art levels
   goal "Look for the big shapes in a thing, draw the big shape first and the small parts after, and count the shapes in a picture."
 
   look {
-    scene 17x12 {
+    scene 18x12 {
       collage pic scene=house at=canvas(1, 1)
     }
     say """

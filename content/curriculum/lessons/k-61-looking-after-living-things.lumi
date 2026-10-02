@@ -1,0 +1,48 @@
+lesson k-looking-after-living-things v=1 format=teach grade=0 unit=9 subject=nature levels=[easy, medium, hard] {
+  title "Looking after living things"
+  goal "Say what a plant or a pet needs from us each day."
+
+  look {
+    scene 14x8 {
+      rabbits r count=2 facing=1 at=canvas(1, 1)
+    }
+    say """
+        Living things need looking after. A plant needs water, light and room to grow. A pet needs food,
+        fresh water, a safe home, exercise and gentle hands. We wash our hands after we hold an animal.
+      """
+  }
+  do {
+    level easy {
+      worked k.what-plant-needs k=0 level=medium
+    }
+    practice k.what-plant-needs count=2 seed=2
+    practice k.pet-care count=3 seed=3 easy-count=2
+    practice k.count-the-pets count=2 seed=4 easy-count=1
+    show k.care-promise
+  }
+  try stars=2 {
+    show k.too-much-water
+  }
+  try stars=3 {
+    show k.care-plan
+  }
+  remember {
+    say "Plants and animals need us to give them what they need, gently, every day."
+  }
+
+  grown-ups """
+    Read each question aloud. Growing things named what a seed needs; this lesson is the step on
+    from it, the child taking care of a living thing day after day. The plant job runs over a week
+    and is for you to watch. If the child is stuck, ask how they would feel without water or food.
+    Never leave a child alone with an animal. Off the page, give the child one small daily job for a
+    plant or a pet. Japan, 幼稚園教育要領 (kindergarten guidelines), 環境, 内容 (5):
+    "身近な動植物に親しみをもって接し，生命の尊さに気付き，いたわったり，大切にしたりする。" (Treat familiar
+    animals and plants with affection, notice that life is precious, and care for it.)
+    """
+  level easy {
+    grown-ups "At this level dry soil is worked in the teacher's pen first, the plant needs water or light, and there are two or three rabbits."
+  }
+  level hard {
+    grown-ups "At this level the plant needs room or a holiday helper, the pet questions include food that harms, and there are five or six rabbits."
+  }
+}

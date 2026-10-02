@@ -1,0 +1,10 @@
+item k.guide-the-teddy v=1 skills=[coding.planning] {
+  title "Guide the teddy"
+
+  scene 28x9 {
+    text q "Put a teddy on the floor and a cup a few steps away. Tell a grown-up the steps to move the teddy to the cup: how many forward, and which way to turn." narrate width=26 at=canvas(1, 1)
+  }
+
+  check reading.recited look-for="A plan said before the teddy moves, with the number of steps and the turns in order, that gets the teddy to the cup, and mended if it misses." notice=["plan said first", "steps and turns in order", "mends it if it misses"]
+  hint "Count the steps with your eyes before you say them."
+}

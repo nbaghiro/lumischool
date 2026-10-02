@@ -1,0 +1,13 @@
+item k.frog-lives v=1 skills=[nature.habitats] {
+  title "The frog's home"
+
+  scene 26x12 {
+    frog f pose=sit facing=1 at=canvas(1, 1)
+    text q "Where would you find this frog?" narrate width=16 right-of=f gap=2
+    choice pick options=["by a pond", "in a desert"] stack=column below=q gap=1
+  }
+
+  answer pick="by a pond"
+  hint "A frog's skin needs to stay wet. Where is there water?"
+  hint "Where did the frog lay its frogspawn?"
+}

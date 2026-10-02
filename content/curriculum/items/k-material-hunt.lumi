@@ -1,0 +1,11 @@
+item k.material-hunt v=1 skills=[chemistry.materials] {
+  title "A material hunt"
+
+  scene 28x9 {
+    text q "Walk round the room with a grown-up. Find one thing made of wood, one of metal, one of plastic and one of glass, and say what each is." narrate width=26 at=canvas(1, 1)
+  }
+
+  check reading.recited look-for="Four things found and named, each with the material it is made of said correctly." notice=["wood and metal right", "plastic and glass right", "says the thing and its material"]
+  hint "Look at the window, a spoon, a chair and a toy."
+  hint "Touch each one. Is it warm like wood, cold like metal, or can you see through it?"
+}

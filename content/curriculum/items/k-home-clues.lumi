@@ -1,0 +1,21 @@
+item k.home-clues v=1 stars=3 skills=[nature.habitats, reasoning.clues] {
+  title "Guess the animal from its home"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 36x18 {
+    picturecards pic who=["rabbit", "duck", "fox"] where=["by", "by", "by"] thing=["log", "log", "log"] letters=true at=canvas(1, 1)
+    text q "{pick(k, \"I live in a burrow under the ground and I have long ears. Who am I?\", \"I live on a pond and I have webbed feet for swimming. Who am I?\")}" narrate width=28 below=pic gap=1
+    choice pick options=["A", "B", "C"] stack=row below=q gap=1
+  }
+
+  answer pick=pick(k, "A", "B")
+  hint "Which animals fit the home?"
+  hint "Of those, which fits the other clue?"
+}

@@ -17,4 +17,5 @@ item k.clips-chain v=1 skills=[physics.magnets, counting.to-ten] {
 
   answer n
   hint "Start at the magnet and count down the chain."
+  hint "Touch each clip once as you count, from the top of the chain down."
 }

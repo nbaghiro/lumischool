@@ -1,0 +1,10 @@
+item k.my-caption v=1 skills=[writing.captions, writing.letters] {
+  title "Draw and write a caption"
+
+  scene 30x12 {
+    text q "Draw something in your garden or street. Under it, write a caption of two or three words that says what it is." narrate width=28 at=canvas(1, 1)
+    writinglines line lines=1 width=26 below=q gap=1
+  }
+
+  check writing.by-eye look-for="A drawing with a caption of two or three words under it that names what is drawn, with each word's sounds written and a gap between the words." notice=["the caption names the picture", "a gap between words", "sounds written for each word"] ask="Can you read your caption to me?"
+}

@@ -1,0 +1,20 @@
+item k.bond-fingers v=1 skills=[number.bonds-to-five] {
+  title "Fingers on one hand"
+  difficulty (if a == 2 or a == 3 then 1 else 0)
+  let a=1..4
+  level easy {
+    let a={1, 4}
+  }
+  level hard {
+    let a={2, 3}
+  }
+
+  scene 26x14 {
+    hand h side=right numbers=none ring=0 at=canvas(1, 1)
+    text q "Hold up one hand. Fold down {a} fingers. How many are still up?" narrate width=12 right-of=h gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer (5 - a)
+  hint "One hand has five fingers and thumbs. How many did you fold?"
+}

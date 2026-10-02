@@ -359,7 +359,7 @@ phrasebook es v=1 lenient=[acute, diaeresis] {
   entry family.the-parents "los padres" gloss="the parents"
   entry family.the-sister "la hermana" gloss="the sister"
   entry food.a-lot "mucho" gloss="a lot"
-  entry food.apple "manzana" gloss="apple"
+  entry food.apple "manzana" say="mahn-THAH-nah, the z like the th in thin" gloss="apple"
   entry food.banana "plátano" gloss="banana"
   entry food.bread "pan" gloss="bread"
   entry food.cheese "queso" gloss="cheese"

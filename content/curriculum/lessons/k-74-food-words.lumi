@@ -1,0 +1,49 @@
+lesson k-food-words v=1 format=teach grade=0 unit=6 subject=language levels=[easy, medium, hard] {
+  title "[[food.apple|cap]], [[food.bread]], [[food.milk]]"
+  goal "Name five foods and drinks in [[language.name]]."
+
+  look {
+    scene 14x5 {
+      props row count=3 prop=apple at=canvas(1, 1)
+    }
+    say """
+        Food in [[language.name]]: an apple is [[food.apple]], bread is [[food.bread]], milk is
+        [[food.milk]], water is [[food.water]] and a banana is [[food.banana]]. To ask for something,
+        add [[greet.please]].
+      """
+  }
+  do {
+    level easy {
+      worked k.lang-food-meaning k=0 level=medium
+    }
+    practice k.lang-food-meaning count=3 seed=2 easy-count=2
+    practice k.lang-food-name count=2 seed=3
+    practice k.lang-apples count=2 seed=4 easy-count=1
+    show k.lang-ask-for-food
+  }
+  try stars=2 {
+    show k.lang-polite-ask
+  }
+  try stars=3 {
+    show k.lang-yellow-food k=0 hard-k=1
+  }
+  remember {
+    say "[[food.apple|cap]], [[food.bread]], [[food.milk]], [[food.water]], [[food.banana]], and [[greet.please]] to ask."
+  }
+
+  grown-ups """
+    Read every word aloud, [[food.apple]] said [[food.apple|say]], and let the child say it back;
+    the child picks from what you read. One to five counted in the language; this lesson is the step
+    on from it, counting apples with the number words and asking for food with [[greet.please]].
+    The asking at lunch is for you to listen to. Off the page, name the food on the table in the
+    language at every meal for a week. Japan, 幼稚園教育要領 (kindergarten guidelines), 言葉, 内容 (7):
+    "生活の中で言葉の楽しさや美しさに気付く。" (Notice the fun and beauty of words in daily life.) The
+    phrases are in [[language.variety]].
+    """
+  level easy {
+    grown-ups "At this level apple is worked in the teacher's pen first, the foods are apple and milk, and the apples to count are one to three."
+  }
+  level hard {
+    grown-ups "At this level the foods include bread, water and banana, the apples to count are three to five, and the three-star is about white milk."
+  }
+}

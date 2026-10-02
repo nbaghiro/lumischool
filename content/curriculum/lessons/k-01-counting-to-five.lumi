@@ -3,7 +3,7 @@ lesson k-counting-to-five v=1 format=teach grade=0 unit=1 subject=maths levels=[
   goal "Count up to five things by touching each one once, and see small numbers without counting."
 
   look {
-    scene 14x12 {
+    scene 15x12 {
       props row count=4 prop=apple at=canvas(1, 1)
       tenframe frame count=4 color=sky below=row gap=1
     }

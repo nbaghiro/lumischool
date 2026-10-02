@@ -1,0 +1,19 @@
+item k.sit-on-it v=1 stars=3 skills=[reading.decoding, reading.comprehension] {
+  title "Read and think"
+  difficulty k
+  let k=0..1
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..1
+  }
+
+  scene 28x11 {
+    text q "{pick(k, \"Read the words yourself. Which one can you sit on?\", \"Read the words yourself. Which one can you eat?\")}" narrate width=26 at=canvas(1, 1)
+    choice pick options=[pick(k, "fog", "jam"), pick(k, "log", "jet"), pick(k, "dig", "jog")] stack=row below=q gap=1
+  }
+
+  answer pick=pick(k, "log", "jam")
+  hint "Read each word aloud. What is each one?"
+}

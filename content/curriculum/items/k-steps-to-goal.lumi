@@ -1,0 +1,20 @@
+item k.steps-to-goal v=1 skills=[coding.planning, counting.to-ten] {
+  title "How many steps in all?"
+  difficulty (a + b)
+  let a=1..3 b=1..2
+  level easy {
+    let a=1..2 b={1}
+  }
+  level hard {
+    let a={2, 3} b={2}
+  }
+
+  scene 30x14 {
+    maze g cols=4 rows=3 col=1 row=1 flag=[1 + a, 1 + b] trail=none at=canvas(1, 1)
+    text q "The robot goes right, then down, across the garden to the flag. How many steps does it take in all?" narrate width=14 right-of=g gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer (a + b)
+  hint "Count the steps right. Then count on the steps down."
+}

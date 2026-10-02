@@ -10,7 +10,7 @@ item k.count-stars v=1 skills=[counting.to-ten] {
     let n=9..10
   }
 
-  scene 23x8 {
+  scene 24x8 {
     props row count=n prop=star at=canvas(1, 1)
     text ask "How many stars?" narrate below=row gap=1
     number-input answer right-of=ask gap=1

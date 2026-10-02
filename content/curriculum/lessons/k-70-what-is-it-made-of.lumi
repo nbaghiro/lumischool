@@ -1,0 +1,48 @@
+lesson k-what-is-it-made-of v=1 format=teach grade=0 unit=1 subject=chemistry levels=[easy, medium, hard] {
+  title "What is it made of?"
+  goal "Name the material a thing is made of."
+
+  look {
+    scene 17x9 {
+      materials row things=["wooden-spoon", "metal-spoon", "plastic-spoon"] letters=1 names=1 at=canvas(1, 0)
+    }
+    say """
+        Three spoons, three materials: wood, metal and plastic. Everything is made of some material.
+        Wood has a grain, metal is cold and shiny, glass is see-through, and wool is soft.
+      """
+  }
+  do {
+    level easy {
+      worked k.made-of k=0 l="A" level=medium
+    }
+    practice k.made-of count=2 seed=2
+    practice k.same-stuff count=2 seed=3 easy-count=1
+    practice k.odd-material count=2 seed=4 easy-count=1
+    practice k.see-through-thing count=2 seed=5 easy-count=1
+    show k.material-hunt
+  }
+  try stars=2 {
+    show k.why-glass-window
+  }
+  try stars=3 {
+    show k.hard-not-metal
+  }
+  remember {
+    say "Everything is made of a material: wood, metal, plastic, glass, wool or paper."
+  }
+
+  grown-ups """
+    Read each question aloud. This is the first chemistry lesson of the year, before wet and dry: the
+    materials the later lessons test. The hunt is for you to listen to. If the child is stuck, touch
+    the real thing: wood is warm with a grain, metal is cold and smooth. Off the page, sort the
+    cutlery drawer by material. England, Reception, ELG Creating with Materials (recalled, not
+    fetched): "Safely use and explore a variety of materials, tools and techniques, experimenting
+    with colour, design, texture, form and function".
+    """
+  level easy {
+    grown-ups "At this level the wooden block is named in the teacher's pen first, the materials are wood and metal, and the see-through thing is a glass jar beside wood."
+  }
+  level hard {
+    grown-ups "At this level the materials include plastic and glass, the odd ones out are harder to spot, and two glass things sit side by side."
+  }
+}

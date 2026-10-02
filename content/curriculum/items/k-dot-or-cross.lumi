@@ -1,0 +1,20 @@
+item k.dot-or-cross v=1 skills=[writing.letter-formation] {
+  title "A dot or a cross?"
+  difficulty (if x == "i" or x == "t" then 0 else 1)
+  let x={"i", "t", "j", "f"}
+  level easy {
+    let x={"i", "t"}
+  }
+  level hard {
+    let x={"j", "f"}
+  }
+
+  scene 26x15 {
+    handwriting rules show="{x}" rows=1 trace=1 width=12 at=canvas(1, 1)
+    text q "Ben writes {x} on the garden fence in chalk. After the line, does it get a dot on top or a line across?" narrate width=24 below=rules gap=1
+    choice pick options=["a dot", "a line across"] stack=row below=q gap=1
+  }
+
+  answer pick=(if x == "i" or x == "j" then "a dot" else "a line across")
+  hint "Look at the letter. What is there apart from the long line?"
+}

@@ -1,0 +1,13 @@
+item k.dark-evenings v=1 stars=2 skills=[history.lighting, reasoning.explain] {
+  title "Early to bed"
+
+  scene 36x30 {
+    candle pic start=10 burnt=6 lit=1 jar=0 at=canvas(1, 1)
+    text q "Long ago, before electric light, many people went to bed soon after dark. Why?" narrate width=28 below=pic gap=1
+    choice pick options=["Candles gave little light and cost money.", "They did not like the night."] stack=column below=q gap=1
+  }
+
+  answer pick="Candles gave little light and cost money."
+  hint "How bright is one candle in a dark room?"
+  hint "What would they have to buy to stay up?"
+}

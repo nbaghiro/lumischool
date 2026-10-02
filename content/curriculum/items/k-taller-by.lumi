@@ -1,0 +1,26 @@
+item k.taller-by v=1 skills=[measure.non-standard, counting.compare] {
+  title "How much taller?"
+  difficulty (a - b)
+  let a=3..8 b=1..6
+  where (a > b and a - b <= 4)
+  level easy {
+    where (a - b == 1)
+  }
+  level hard {
+    where (a - b >= 3)
+  }
+
+  scene 24x16 {
+    towers t heights=[a, b] labels=false at=canvas(1, 1)
+    text q "Two towers on the garden table. How many cubes taller is the first?" narrate width=12 right-of=t gap=1
+    number-input answer below=q gap=1
+  }
+
+  answer (a - b)
+  feedback {
+    when (answer == a) point=t {
+      say "That is how tall the first tower is. How many more cubes than the second?"
+    }
+  }
+  hint "Look across from the top of the short tower. How many cubes stick up above it?"
+}

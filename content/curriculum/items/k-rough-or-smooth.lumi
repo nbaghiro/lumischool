@@ -1,0 +1,22 @@
+item k.rough-or-smooth v=1 skills=[art.texture] {
+  title "Rough or smooth?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let thing={pick(k, "sandpaper", "a glass window", "tree bark", "a shiny balloon", "a doormat", "kitchen foil")}
+  let right={pick(k, "rough", "smooth", "rough", "smooth", "rough", "smooth")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 27x18 {
+    materials pic things=["brick", "glass-jar", "towel"] letters=0 names=1 at=canvas(1, 1)
+    text q "Ada finds {thing} in the garden shed. Feel it in your mind. Is it rough or smooth?" narrate width=24 below=pic gap=1
+    choice pick options=["rough", "smooth"] stack=row below=q gap=1
+  }
+
+  answer pick=right
+  hint "Would your finger slide along it, or bump and catch?"
+}

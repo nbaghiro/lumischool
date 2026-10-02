@@ -1,0 +1,13 @@
+item k.why-fireplace v=1 stars=2 skills=[history.homes, reasoning.explain] {
+  title "Why so many fireplaces?"
+
+  scene 36x21 {
+    cottage pic windows=3 lit=1 at=canvas(1, 1)
+    text q "Old houses often have a fireplace in many rooms. Why?" narrate width=28 below=pic gap=1
+    choice pick options=["A fire was how each room was kept warm.", "People liked to look at fires."] stack=column below=q gap=1
+  }
+
+  answer pick="A fire was how each room was kept warm."
+  hint "How did people keep warm before heaters?"
+  hint "Could one fire warm every room?"
+}

@@ -14,4 +14,5 @@ item k.shadow-in-the-morning v=1 stars=2 skills=[physics.shadows, reasoning.expl
 
   answer pick="the long shadow"
   hint "Hold a torch high over a toy, then low beside it. When is the shadow longer?"
+  hint "Where is the sun in the evening: high in the sky or low near the ground?"
 }

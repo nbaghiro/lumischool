@@ -1,0 +1,13 @@
+# In and on are the pair children mix most: in is inside something, on is on top of it.
+item k.in-or-on v=1 stars=2 skills=[space.position, reasoning.explain] {
+  title "In or on?"
+
+  scene 30x20 {
+    picturecards cards who=["fox", "fox"] where=["in", "on"] thing=["box", "box"] letters=true at=canvas(1, 1)
+    text q "Ben says both foxes are in the box. Is he right?" narrate width=28 below=cards gap=1
+    choice pick options=["Yes: both are in it.", "No: one is in it and one is on it."] stack=column below=q gap=1
+  }
+
+  answer pick="No: one is in it and one is on it."
+  hint "Which fox could you see if the box had a lid?"
+}

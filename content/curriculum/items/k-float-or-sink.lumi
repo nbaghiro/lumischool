@@ -11,4 +11,5 @@ item k.float-or-sink v=1 skills=[physics.floating] {
 
   answer pick=(if k == 1 then "it floats" else "it sinks")
   hint "Is it at the top of the water or on the bottom?"
+  hint "Where is the water line? Is the thing above it or at the bottom of the tank?"
 }

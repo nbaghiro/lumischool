@@ -1,0 +1,14 @@
+# The two-star reason: why the dice shape is quicker than counting, which is what subitising is.
+item k.quick-or-count v=1 stars=2 skills=[counting.subitising, reasoning.explain] {
+  title "Why is a dice quick to read?"
+
+  scene 30x16 {
+    dice d faces=[5, 6] at=canvas(1, 1)
+    text q "Ada knows the dice show five and six without counting. How?" narrate width=28 below=d gap=1
+    choice pick options=["The dots make a shape she knows.", "She guessed."] stack=column below=q gap=1
+  }
+
+  answer pick="The dots make a shape she knows."
+  hint "What shape do five dots make on a dice?"
+  hint "Would she know it again on another dice?"
+}

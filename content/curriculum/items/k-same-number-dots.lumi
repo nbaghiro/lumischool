@@ -1,0 +1,23 @@
+item k.same-number-dots v=1 skills=[counting.subitising, counting.compare] {
+  title "The same number"
+  difficulty (if abs(a - b) >= 2 then 0 else 1)
+  let a=2..6 b=2..6 w=0..1
+  where (a != b)
+  level easy {
+    where (abs(a - b) >= 2)
+  }
+  level hard {
+    where (abs(a - b) == 1)
+  }
+
+  scene 28x18 {
+    dice d faces=[if w == 0 then a else b, if w == 0 then b else a] at=canvas(1, 1)
+    tenframe f count=a color=mint below=d gap=1
+    text q "Which dice has the same number as the frame?" narrate width=26 below=f gap=1
+    choice pick options=["the first", "the second"] stack=row below=q gap=1
+  }
+
+  answer pick=(if w == 0 then "the first" else "the second")
+  hint "How many counters are in the frame? Now look at each dice."
+  hint "Can you see the number on each dice without counting one by one?"
+}

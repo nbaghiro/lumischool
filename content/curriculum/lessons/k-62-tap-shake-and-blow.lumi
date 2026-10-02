@@ -1,0 +1,50 @@
+lesson k-tap-shake-and-blow v=1 format=teach grade=0 unit=1 subject=music levels=[easy, medium, hard] {
+  title "Tap, shake and blow"
+  goal "Say how an instrument is played: tapped, shaken, blown or plucked."
+
+  look {
+    scene 26x8 {
+      drum d lugs=5 at=canvas(1, 1)
+      chimebars c bars=6 letters=0 right-of=d gap=2
+    }
+    say """
+        Instruments make sounds in different ways. You tap a drum and chime bars, shake a shaker, blow
+        a recorder and pluck a guitar's strings. Each way makes its own kind of sound.
+      """
+  }
+  do {
+    level easy {
+      worked k.how-to-play k=0 level=medium
+    }
+    practice k.how-to-play count=3 seed=2 easy-count=2
+    show k.drum-tap
+    practice k.count-bars count=2 seed=3
+    show k.strings-or-skin k=0 hard-k=1
+    show k.make-a-shaker
+  }
+  try stars=2 {
+    show k.why-drum-sounds
+  }
+  try stars=3 {
+    show k.tapped-count k=0 hard-k=1
+  }
+  remember {
+    say "Tap it, shake it, blow it or pluck it: each instrument has its way."
+  }
+
+  grown-ups """
+    Read each question aloud. This is the first music lesson of the year, before the steady beat:
+    the instruments the later lessons play. Pots, a wooden spoon and a bottle of rice are a whole
+    band. The shaker is for you to watch. If the child is stuck, act out playing each instrument.
+    Off the page, listen to a piece of music and guess which instruments you hear. Japan,
+    幼稚園教育要領 (kindergarten guidelines), 表現, 内容 (6):
+    "音楽に親しみ，歌を歌ったり，簡単なリズム楽器を使ったりなどする楽しさを味わう。" (Enjoy music, singing songs
+    and playing simple rhythm instruments.)
+    """
+  level easy {
+    grown-ups "At this level the drum is worked in the teacher's pen first, the instruments are a drum, a shaker and a recorder, and the chime bars are few."
+  }
+  level hard {
+    grown-ups "At this level the instruments are a guitar, a triangle and a trumpet, there are more bars, and the three-star counts what you blow."
+  }
+}

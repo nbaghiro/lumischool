@@ -1,0 +1,11 @@
+item k.if-sing v=1 skills=[coding.selection] {
+  title "If I clap, you jump"
+
+  scene 29x13 {
+    drum pic lugs=5 at=canvas(1, 1)
+    text q "Play a game: if the grown-up claps, jump; if they stamp, sit down. Play ten turns without a mistake." narrate width=26 below=pic gap=1
+  }
+
+  check reading.recited look-for="Each clap answered with a jump and each stamp with sitting down, over ten turns, without doing the action for the other signal." notice=["jumps on a clap", "sits on a stamp", "does nothing wrong for ten turns"]
+  hint "Listen first. Was that a clap or a stamp?"
+}

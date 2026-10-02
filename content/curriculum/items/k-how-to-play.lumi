@@ -1,0 +1,23 @@
+item k.how-to-play v=1 skills=[music.instruments] {
+  title "How do you play it?"
+  difficulty (if k <= 2 then 0 else 1)
+  let k=0..5
+  let thing={pick(k, "a drum", "a shaker", "a recorder", "a guitar", "a triangle", "a trumpet")}
+  let right={pick(k, "tap it", "shake it", "blow it", "pluck it", "tap it", "blow it")}
+  level easy {
+    let k=0..2
+  }
+  level hard {
+    let k=3..5
+  }
+
+  scene 36x16 {
+    orchestra pic show=["trumpet", "triangle", "flute"] sizes=0 labels=1 families=0 ring=-1 at=canvas(1, 1)
+    text q "The garden band needs {thing}. How do you make a sound on it?" narrate width=28 below=pic gap=1
+    choice pick options=["tap it", "shake it", "blow it", "pluck it"] stack=row below=q gap=1
+  }
+
+  answer pick=right
+  hint "Show with your hands how you would play it."
+  hint "Does it have a skin, beads inside, a hole to blow, or strings?"
+}

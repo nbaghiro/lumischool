@@ -1,0 +1,26 @@
+item k.two-dice v=1 skills=[counting.subitising, counting.to-ten] {
+  title "Two dice together"
+  difficulty (a + b)
+  let a=1..5 b=1..5
+  where (a + b <= 8)
+  level easy {
+    where (a + b <= 5)
+  }
+  level hard {
+    where (a + b >= 7)
+  }
+
+  scene 30x10 {
+    dice d faces=[a, b] at=canvas(1, 1)
+    text q "Ben rolls two dice on the lawn. How many dots on both?" narrate width=18 right-of=d gap=2
+    number-input answer below=q gap=1
+  }
+
+  answer (a + b)
+  feedback {
+    when (answer == a or answer == b) point=d {
+      say "That is one dice. Add the dots on the other one too."
+    }
+  }
+  hint "Say how many on the first dice without counting. Count on from there."
+}

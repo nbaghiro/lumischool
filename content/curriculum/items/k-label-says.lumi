@@ -1,0 +1,22 @@
+item k.label-says v=1 skills=[reading.nonfiction] {
+  title "What does the label say?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let q1={pick(k, "This picture from a fact book has labels. Which part grows down into the soil?", "Which part grows up towards the light?", "Which part is food for the baby plant?")}
+  let right={pick(k, "the root", "the shoot", "the food store")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x21 {
+    seedtest bean mode=1 names=1 at=canvas(1, 1)
+    text q "{q1} The grown-up reads the labels." narrate width=28 below=bean gap=1
+    choice pick options=["the root", "the shoot", "the food store"] stack=row below=q gap=1
+  }
+
+  answer pick=right
+  hint "Follow each label's line to the part of the bean."
+}

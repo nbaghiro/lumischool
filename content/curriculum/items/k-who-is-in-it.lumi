@@ -1,0 +1,22 @@
+item k.who-is-in-it v=1 skills=[reading.characters, reading.comprehension] {
+  title "Who is in the story?"
+  difficulty (if k == 0 then 0 else 1)
+  let k=0..2
+  let story={pick(k, "A dog and a cat played in the garden. The dog found a stick.", "A hen and a duck went down to the pond. The duck swam and the hen watched.", "A little fox was hungry. A kind pig gave the fox some bread.")}
+  level easy {
+    let k=0..0
+  }
+  level hard {
+    let k=1..2
+  }
+
+  scene 36x20 {
+    picturecards pic who=[pick(k, "dog", "hen", "cat"), pick(k, "cat", "fox", "fox"), pick(k, "pig", "duck", "pig")] where=["by", "by", "by"] thing=["log", "log", "log"] letters=true at=canvas(1, 1)
+    text q "Listen to a story from the garden book: {story} Which two animals are in it?" narrate width=28 below=pic gap=1
+    choice pick options=["A and B", "A and C", "B and C"] stack=row below=q gap=1
+  }
+
+  answer pick=pick(k, "A and B", "A and C", "B and C")
+  hint "Who did something in the story? Find each one in the pictures."
+  hint "Say the letter under each animal you heard."
+}
