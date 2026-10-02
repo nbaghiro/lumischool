@@ -21,6 +21,7 @@ import {
     startClear,
     stepClear,
     takeoffBand,
+    zoneOf,
     type ClearState,
 } from "../clear";
 import {
@@ -127,35 +128,83 @@ test("after a tap on the screen the pony sees its own stride: a print lands in t
     assert.equal(s.screen, true);
 });
 
-test("a tap one print early waits for the ringed print, and a tap well early leaps short and the fence comes round again", () => {
-    const early = startClear(clearCourse(0, 0), 0),
-        a = early.approach;
-    assert.ok(a);
-    while (early.fall + early.want < a.at - 1e-6) clearGame.step(early, emptyPad());
-    steps(early, 1, screen);
-    for (let i = 0; i < 60 && !early.flight; i++) clearGame.step(early, emptyPad());
-    assert.ok(early.flight);
-    assert.ok(Math.abs(early.flight.from - a.at) < 1e-6, "it waited for the ringed print");
-    const s = startClear(clearCourse(1, 0), 1),
-        b = s.approach;
-    assert.ok(b && b.n >= 3);
-    // a moment in, still before the first print: two prints early
-    steps(s, 10);
-    steps(s, 1, screen);
-    for (let i = 0; i < 60 && !s.flight; i++) clearGame.step(s, emptyPad());
-    assert.ok(s.flight && s.flight.from < b.at - 1, "a tap well early leaps early");
-    let round = false;
-    for (let i = 0; i < 60 * 10 && !round; i++) {
-        clearGame.step(s, emptyPad());
-        round = s.turn !== null;
+/** A tap on the screen: down for a step, then up. */
+const tap = (s: ClearState) => {
+    clearGame.step(s, screen());
+    clearGame.step(s, emptyPad());
+};
+
+test("a tap on the screen is kept from a stride before the zone: the pony leaps from the ringed print", () => {
+    for (const early of [1, 2]) {
+        const s = startClear(clearCourse(1, 0), 1);
+        steps(s, 10);
+        tap(s);
+        const a = s.approach;
+        assert.ok(a && a.n >= 2);
+        while (s.fall + early * s.want < a.at - 1e-6) clearGame.step(s, emptyPad());
+        tap(s);
+        assert.deepEqual(s.asked, { keys: false }, "the tap is kept");
+        for (let i = 0; i < 60 * 5 && !s.flight; i++) clearGame.step(s, emptyPad());
+        assert.ok(s.flight);
+        assert.ok(Math.abs(s.flight.from - a.at) < 1e-6, "it waited for the ringed print");
+        for (let i = 0; i < 60 * 5 && s.fence === 0; i++) clearGame.step(s, emptyPad());
+        assert.equal(s.faults, 0);
     }
-    assert.ok(round, "the pony goes round to come again");
-    assert.equal(s.fence, 0, "the fence is still ahead");
-    for (let i = 0; i < 60 * 10 && s.turn; i++) clearGame.step(s, emptyPad());
-    assert.ok(
-        s.rails.filter((r) => r.fence === 0).every((r) => !r.down),
-        "its poles are up again",
-    );
+});
+
+test("a tap well before the zone asks nothing, the zone lights as the pony comes in, and a kept tap shows a tick", () => {
+    const s = startClear(clearCourse(1, 0), 1);
+    steps(s, 10);
+    tap(s);
+    const z = zoneOf(s),
+        a = s.approach;
+    assert.ok(z && a);
+    s.asked = null;
+    // back at the start of a stride well short of the zone, a tap is not kept
+    if (s.pony.x < z.from - a.stride) {
+        tap(s);
+        assert.equal(s.asked, null);
+    }
+    while (s.pony.x < z.from + 0.1) clearGame.step(s, emptyPad());
+    const lit = clearFrame(s).marks.find((m) => m.kind === "box");
+    assert.ok(lit && lit.kind === "box" && lit.on, "the zone lights up");
+    tap(s);
+    assert.deepEqual(s.asked, { keys: false });
+    const lines = clearFrame(s).marks.filter((m) => m.kind === "line");
+    assert.equal(lines.length, 2, "a tick over the pony");
+});
+
+test("a tap past the ringed print leaps at once: on the first levels it still clears, later it may knock", () => {
+    for (const phase of [0, 1]) {
+        const s = startClear(clearCourse(phase, 0), phase);
+        steps(s, 10);
+        tap(s);
+        assert.equal(s.flight === null, true);
+        const a = s.approach;
+        assert.ok(a);
+        // the first tap hands the pony its stride; ride to just past the ringed print with no tap kept
+        s.asked = null;
+        while (s.fall < a.at - 1e-6) clearGame.step(s, emptyPad());
+        steps(s, 3);
+        tap(s);
+        assert.ok(s.flight, `level ${phase}: it leaps at once`);
+        assert.ok(s.flight.from > a.at, "from where it is, past the ringed print");
+        for (let i = 0; i < 60 * 5 && !s.judging.length && s.fence === 0; i++)
+            clearGame.step(s, emptyPad());
+        steps(s, 60);
+        assert.equal(s.faults, 0, `level ${phase}: a late tap still clears`);
+        assert.equal(s.stops, 0);
+    }
+    const s = startClear(clearCourse(3, 0), 3);
+    steps(s, 10);
+    tap(s);
+    const a = s.approach;
+    assert.ok(a);
+    s.asked = null;
+    while (s.fall < a.at - 1e-6) clearGame.step(s, emptyPad());
+    tap(s);
+    assert.ok(s.flight, "later levels leap too, and a short leap costs a knock");
+    assert.ok(!s.flight.soft);
 });
 
 test("a pony not asked to leap stops at the fence, circles and comes again, at no cost", () => {

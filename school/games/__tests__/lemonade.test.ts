@@ -1,7 +1,7 @@
 // Charlie's lemonade stand: every level and variation is served to the end through a real Pad with the
 // keys, and the keys replay to the same stand; a level is served by hand, tipping the jug and pulling
 // the cup; a push too soft, too hard and to the wrong customer each costs nothing but time; change is
-// rolled into the dish and a coin too many comes back; pressing at random rarely serves anyone; reduced
+// rolled into the dish and a coin too many comes back; a tap on Charlie's coins gives the change; pressing at random rarely serves anyone; reduced
 // motion settles after every press; and the drawing, the words and the tuning are checked.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -20,7 +20,10 @@ import {
     changing,
     cupHold,
     dishSum,
+    WORTH,
     falling,
+    giveCoin,
+    trayAt,
     jugHold,
     lemonadeGame,
     orderWords,
@@ -228,6 +231,72 @@ test("the change is rolled into the dish a coin at a time, a coin too many comes
     roll("nickel");
     for (let i = 0; i < 30 && changing(r); i++) run(r, emptyPad());
     assert.equal(changing(r), null, "the exact change is thanked");
+});
+
+/** Serves the first customer by the solver's keys and stops when they wait for change, or null when they owe nothing. */
+function atChange(phase: number, n: number): StandState | null {
+    const s = openStandConfiguration({ phase, n });
+    const way = standWay(s);
+    assert.ok(way);
+    const r = openStandConfiguration({ phase, n });
+    for (const m of way) {
+        if (changing(r)) return r;
+        if ("pad" in m) stepStand(r, m.pad);
+        else lemonadeGame.command?.(r, m.command);
+    }
+    return null;
+}
+
+/** A finger tapping coin `kind` in Charlie's dish. */
+function tapCoin(s: StandState, kind: Parameters<typeof trayAt>[1]): void {
+    const p = trayAt(s, kind);
+    assert.ok(p);
+    run(s, { ...emptyPad(), touch: p });
+    run(s, { ...emptyPad(), lifted: p });
+    still(s);
+}
+
+test("on every level with change, tapping Charlie's coins gives the change and the customer says thank you", () => {
+    let checked = 0;
+    for (let phase = 0; phase < STAND_LEVELS.length; phase++)
+        for (let n = 0; n < VARIATIONS; n++) {
+            const r = atChange(phase, n);
+            if (!r) continue;
+            const g = changing(r);
+            assert.ok(g);
+            const c = r.L.customers[g.i];
+            assert.ok(c);
+            const owed = owedTo(r.L, c),
+                coins = changeOf(r.L.tray, owed);
+            assert.ok(coins, `${r.L.title}: ${owed} can be made`);
+            assert.match(r.note, /paid .* Tap Charlie's coins/);
+            for (const kind of coins) tapCoin(r, kind);
+            for (let i = 0; i < 60 && changing(r); i++) run(r, emptyPad());
+            assert.equal(changing(r), null, `${r.L.title} variation ${n}: the change is thanked`);
+            checked++;
+        }
+    assert.ok(checked >= 6, "levels with change were checked");
+});
+
+test("a tapped coin too many hops straight back with a kind word, and costs nothing", () => {
+    const r = atChange(2, 0);
+    assert.ok(r);
+    const g = changing(r);
+    assert.ok(g);
+    const c = r.L.customers[g.i];
+    assert.ok(c);
+    const owed = owedTo(r.L, c),
+        sorted = [...r.L.tray].sort((a, b) => WORTH[a] - WORTH[b]),
+        small = sorted[0],
+        big = sorted.at(-1);
+    assert.ok(small && big && WORTH[small] < owed && WORTH[small] + WORTH[big] > owed);
+    tapCoin(r, small);
+    tapCoin(r, big);
+    for (let i = 0; i < 90 && r.coins.some((o) => o.mode !== "dish"); i++) run(r, emptyPad());
+    assert.equal(dishSum(r, g.i), WORTH[small], "only the coin too many came back");
+    assert.match(r.note, /too much/);
+    assert.ok(changing(r), "the customer still waits");
+    assert.ok(giveCoin(r, "nickel"), "a coin can be given straight away");
 });
 
 test("pressing at random rarely serves anyone", () => {

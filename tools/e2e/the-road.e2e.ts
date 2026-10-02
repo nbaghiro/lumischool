@@ -44,5 +44,5 @@ test("the road: the finish waits for the list", async ({ page }) => {
     await page.locator('[data-game="board"]').focus();
     await hold(page, "ArrowRight", 4500);
     await expect(note(page)).toContainText(/still on the list|Stopped past 10/, { timeout: 8000 });
-    await expect(page.getByRole("button", { name: "Play another", exact: true })).toBeHidden();
+    await expect(page.locator(".game-toolbar .game-finished")).toBeHidden();
 });

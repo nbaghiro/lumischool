@@ -27,6 +27,19 @@ are one goal in order, which the progress bar counts. Watch it again, beside Pla
 try from the start with the hands it was played with; it is left out under reduced motion. In Fetch
 with the pups a pinch, the wheel or the plus and minus keys zoom the park in and out.
 
+## Fetch with the pups: a target to throw at (2 October 2026)
+
+The owner found the game simple but confusing: the ask was only in the note, so a child did not know where to throw or why, and once they did there was little to it. We kept the pull-back throw, the keys and the pups, and changed what the field shows and asks.
+
+- The ask is on the field. A number to throw to stands as a new `fetchmark` drawing: a stake with a round number sign and a dog bowl at its foot. An ask worked out from a pup ("5 past Maple", "the number that makes 20 with Dot's") stands by that pup as "+5" or "=20", so the sign does not give the answer away. The note now opens with the ask in short words.
+- A good throw lights its sign and makes it jump while the pups cheer, and asks done with a single throw in a row show "2 in a row!" in the corner.
+- Each level has a fourth ask, and the later ones have a twist: "halfway to the tree" on the playground, and "throw it to the number that makes 20 with Dot's" on the windy day and "15 with Pip's" in the snow. The snowy park keeps its ball that stops dead in snow and slides on ice.
+- The landing band is drawn only while a level still shows the dotted path, so the later levels ask the child to judge it.
+- The view is lower (34 by 16 squares), so the path and its numbers are bigger, and a high throw lifts the camera with it.
+- On screen, Throw is a round launch icon and Swap shows what is in hand (a ball, a frisbee or a stick), through a new optional `brakeIcon` on the game contract.
+
+We did not add moving pups or a second throw that continues from the first: each throw starts from the rug with the pups on their seats, which is what lets the solver prove every ask on its own, and a moving target would have made the keys solver search a far larger space. They are the next step if the owner wants more. The rules version is `-fetch-2`.
+
 ## Fetch with the pups (27 September 2026)
 
 Fetch with the pups (`school/games/fetch.ts`, `?g=blocks`) replaced A home for the pups, the Pup
@@ -256,6 +269,10 @@ tuning table. `tools/e2e/lemonade-stand.e2e.ts` serves the first level from the 
 motion, and pours and slides with the mouse. The drawings added for it are `lemonadestand`, `pitcher`
 and `lemoncup`; the market stall's drawings stay on the shelf. The rules version for `wardrobe` is now
 `-lemonade-1`.
+
+## Charlie's lemonade stand: change by tapping coins (2 October 2026)
+
+The owner found the change step very hard to understand: a coin had to be picked with Next coin and rolled down the counter with a judged push, a coin that stopped short or rolled past came back, and nothing on the screen said how much was owed. The maths is in the change, not in the roll, so on the screen the roll is gone. When a customer pays, their speech bubble says what they paid and what the drink costs ("I paid 50¢. The cup is 35¢. My change, please!"), and the note says the same and tells the child to tap Charlie's coins. A tap on a coin in Charlie's dish hops it in one arc straight into that customer's dish with a clink, however far along the counter they stand, and the bubble's last line becomes the dish's running sum ("10¢ + 5¢ = 15¢"). When the dish holds exactly the change the customer says thank you and goes. A tapped coin that makes too much hops straight back with a kind word, and costs nothing; a tap on the customer's dish still takes the last coin back. On the levels that draw the fill line, the coins that still fit in the change are ringed. Next coin has no button any more, and the coin waiting to be rolled and its push guide are drawn only once the keys have been used. The keys are as they were: C picks the next coin, left and right set the push, space rolls it, and Backspace takes a coin back, and a rolled coin too many still waits to be taken back. Games may now mark a command `keysOnly`, which keeps its key and leaves out its button. The rules version is `-lemonade-3`.
 
 ## Pocket pool (27 September 2026)
 
@@ -516,7 +533,14 @@ that read as pause. A strike before the bite now costs nothing but a sentence, s
 Wait until then, and the bite waits 1.2 seconds rather than 0.75. The first level, and every level
 until a fish is caught, says what to do next by the float. The rules version is `-fishing-3`.
 
+## Gone fishing: the cast's dots (2 October 2026)
+
+The owner found the pulled cast's dots did not work as they do in the slingshot and the golf. They showed only the first third of a second of the throw, from a closed form that did not match the float, which is stepped a frame at a time, so they stopped in the air and never said where the float would land, and a pull too short to cast still drew them. The float's flight and the preview now take the same step (`flyStep`), so `castPath` walks the whole throw to the water and the dots end in a ring exactly where the float comes down. The dots are spaced evenly along the path, fade in its last part, and show only once the pull is past the dead zone; a shorter pull draws nothing and lets go quietly. The rod can now be grabbed at its tip as well as at the float, and it bends a little as the cast is drawn back. The keys and the tap on a fish are unchanged, and no rule changed, so the rules version stays.
+
 ## Gone fishing: one tap a fish (1 October 2026)
+
+Removed on 2 October 2026; see "Gone fishing: cast by pulling, hook by a tap, reel by holding" below.
+The section is kept as a record of what was tried.
 
 The owner still found the glass hard to follow: the bar read Wait and Ease off, words that do not say
 what to press, and a catch was five steps. A fish tapped to is now caught in one gesture. The float goes
@@ -531,6 +555,27 @@ eases. A fish has a wider hit area, and a resting mouse rings the fish it is ove
 point on the Pad that a tape never records. The keys and the pulled cast play exactly as before. The
 rules version is `-fishing-4`.
 
+
+## Gone fishing: cast by pulling, hook by a tap, reel by holding (2 October 2026)
+
+The owner found that tapping a fish to catch it interrupted free play: the game chose the fish, cast
+for the child, and on the first levels hooked and reeled it by itself, so there was little left to do
+and a tap meant for something else could start a cast. Tap-a-fish is removed with everything that
+served it: a tap on a fish does nothing, there is no chosen fish and no ring round it, no fish hooks
+itself, there is no fast reel for a tapped fish, and the Pad's `hover` point, which only rang the fish
+under a resting mouse, is gone from the engine.
+
+On the screen a catch is now the same three moves the keys make, each made directly. A cast is the
+pulled cast with its dots: pull back from the rod's tip or the float, watch the ring land where the
+float will come down, and let go. Any fish near the bait may come to it, so the child chooses a fish by
+where and how deep they cast. When the float goes under, the "!" stands over it and a tap anywhere on
+the water, or the big button, hooks the fish. A missed bite is not lost for any fish now: it nibbles
+again twice before it swims off, so the window is generous without being automatic. Holding a finger
+on the field, or the big button, reels the fish in. A finger reels only while the fish rests, so it
+reels 1.6 times the keys' speed to make a catch by hand take about as long as one by the keys, and a
+line reeled by a finger still never snaps. The keys are unchanged. The first level's hints by the
+float read "Pull back and let go", "Wait for a bite", "Tap now" and "Hold to reel it in". The rules
+version is `-fishing-5`.
 ## Marble workshop, rebuilt as a marble run (26 September 2026)
 
 The marble workshop (`school/games/marble.ts`, `?g=marble-workshop`) is no longer three ramps nudged
@@ -714,6 +759,16 @@ leaps the pony with space held, rides the first course clean with one tap on the
 mouse on the desk, a touch on the phone), and checks the stride keys. The rules version for `clear` is
 now `show-jumping-3`, and `moveTo` in `engine/motion/bodies.ts` takes an angle, so a knocked pole can be
 set square in its cups again.
+## Clear round: a kept tap and a take-off zone (2 October 2026)
+
+The owner still found jumping on the screen clunky. A tap had to land in one stride before the ringed print, a tap well early leapt short and cost a circle, and a tap even a little late meant a refusal, because the take-off print the pony chose was often the last place it could leave from.
+
+On the screen a tap is now kept. From one stride before the take-off zone on, a tap is remembered and the pony leaps from the ringed print by itself, with the least gather that carries the fence; a small tick over the pony shows the tap is kept. The zone is the last three prints before the fence on the first two levels and the last two after, drawn as a strip under the prints that lights up as the pony comes into it, with "take off" written under it. Coming into the zone the note says "Tap!" and the canter's beats ring a little brighter; the take-off says "Up!" and a clean fence "Clear!".
+
+A tap past the take-off print leaps at once from where the pony is. On the first two levels the pony plans its approach so there is half a stride of grass after the ringed print, and a late leap there sails over with no pole knocked, so a mistimed tap never costs a circle. From the third level a late leap is flown as it is, and a pole it brings down means going round again.
+
+The brief asked for taps before the zone to be remembered for the next fence as well. We kept a tap only from a stride before the zone, and a tap in the air asks nothing: with every tap kept, a child tapping at random cleared the first course five times in twenty, and the game must not be won by tapping without looking. The keys are unchanged: left and right choose the stride, holding space gathers, and letting go leaps from the next print, so the band where some gather carries the fence is still drawn for a player using the keys. Enter, which the page already sends as a tap, rides the zone the way a finger does. Reduced motion is unchanged: a press rides a stride, and a leap settles before the next press. The rules version is `show-jumping-4`.
+
 ## Shared sizing (24 September 2026)
 
 The tabletop stage uses the full available row; it no longer has a 1,100px desktop cap.
@@ -2247,6 +2302,16 @@ A first version took the crane's own controls away altogether, leaving one big b
 While a crate is carried, a dashed line runs down from it to where it will land with the crate's outline there, and a faint mast shows which way the barge would list with it aboard. Both show on the first two levels, the line alone on the third, and neither on the last. The goals along the foot of the field are tick circles filled as each is met. The crane is now the shelf's `crane` drawing standing on the quay, its jib reaching out over the harbour, and the barge is a new `barge` drawing: a blue hull with a white stripe, portholes, a planked deck and a rail post at each end. With crates on its deck and a hook lowering another, the same drawing is the game's cover and the icon beside its note.
 
 The mathematics is unchanged: the load is balanced when the weights times their distances from the mast cancel, within 2.5 weight-squares. `cargoPlan` in `workshop-challenges.ts` stands the heaviest crates nearest the mast and slides the whole row along until the moments cancel, and the tests use the same plan for both ways. The tests drag every crate of every level and every generated layout to its plan and let go, win every level by driving the crane from the keys alone, replay the recorded pads to the same landing places, check that a crate let go of on the move is set down where it was let go, and that crates dropped at random places deliver at most two times in ten. The rules version is `-cargo-5`.
+
+## Harbour cargo: put where the finger lets go (2 October 2026)
+
+The owner found the crate drag harder than before. The crate still swung on its rope as it travelled, and the crane would only let it go once it hung still over its place, so a drop meant waiting and often landed off the spot; driven from the keys, the note asked the child to lift the crate clear of the dock, move it over the boat, wait for it to stop swinging and then release, four steps for each crate.
+
+A dragged crate is now placed, not dropped. A finger on a crate lifts it to a riding height above the other crates and it follows the finger across; letting go sets it down below where the finger was, at the nearest of the deck's half-square places and clear of the end rails, in under a second and with no wait for a swing. The trolley moves with it and the crate leans a little as it travels, but the lean is drawn only and never moves where it lands. A crate let go over the water near the boat goes onto the deck; over the quay it goes on the quay, which is how a crate is taken off the boat again; anywhere else it goes back to its place on the quay, and the note says so. A crate already aboard can be dragged to a new place to even the load. A drag cut short, by a pause or a lost pointer, sets its crate down below it.
+
+The keys drive the crane exactly as before: the arrows move the hook, and Space or Enter takes the crate under it. The one change is the letting go, which lowers the crate straight down and steadies it rather than dropping it from where it swings; over open water it still goes in, and the harbour crew bring it back. The arrows, Pick up / let go and Undo are round icon buttons with their words as names. We kept the arrows and the button because the owner found the keys right, and keyboard and switch players use them.
+
+The balance band is wider on the early levels, 4 weight-squares on the first and then 3.5, 3 and 2.5, and `cargoPlan` now puts each crate on a half-square place and nudges the lightest crate until the load comes out even, so every plan balances exactly. The notes are shorter ("Drag the crates onto the boat. Keep it level."). The rules version is `-cargo-6`. The tests win every level and generated layout by dragging and by the keys, replay a drag win from its recorded pads, set a crate down in under two and a half seconds on a half-square place, send a far drop back to the quay without touching the water, and keep random drags to at most two wins in ten.
 
 ## Charlie's rope swings (27 September 2026)
 

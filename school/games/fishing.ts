@@ -23,10 +23,11 @@ import {
     aimOfPull,
     launchOf,
     stepAim,
+    strength,
     type Aim,
     type AimSpec,
 } from "../../engine/motion/aim";
-import { arc, flightAt, lob } from "../../engine/motion/flight";
+import { flightAt, lob } from "../../engine/motion/flight";
 import type { Pt } from "../../engine/motion/geometry";
 import { line, stepLine, type Line } from "../../engine/motion/line";
 import type { Pad } from "../../engine/motion/pad";
@@ -242,10 +243,13 @@ export const FISHING = {
 
 const RATE = 60,
     DT = 1 / RATE;
-/** Levels before this one hook a fish tapped to by themselves; from it on, a press on the bite hooks it. */
-export const SELF_HOOK = 2;
 /** Squares a second each second, for the float's cast and a fish in the air. */
 export const G = 26;
+/**
+ * A finger reels only while the fish rests, so it takes line in this much faster than the keys, which
+ * reel through the runs too; a catch by hand then takes about as long as one by the keys.
+ */
+const FINGER_REEL = 1.6;
 /** In squares: the sea's surface and its bed, and how far across the fish swim. */
 export const SEA = {
     world: { w: 52, h: 32 },
@@ -354,13 +358,9 @@ export interface FishState {
     won: boolean;
     casts: number;
     snaps: number;
-    /** The fish a tap cast to, which alone comes to the bait; -1 when the cast was pulled or aimed. */
-    target: number;
-    /** Bites a tapped-to fish has let go, which it nibbles again after, twice. */
+    /** Bites let go since the cast; a fish that lets go nibbles again, twice, before it swims off. */
     misses: number;
     catches: number;
-    /** The fish under a resting mouse, ringed so a child sees what a click would fish for; -1 when none. */
-    hover: number;
     /** Rings on the water where it was broken, `age` seconds ago. */
     ripples: { x: number; age: number; size: number }[];
 }
@@ -454,10 +454,8 @@ export function startFishing(L: FishLevel, level: number, seed = 1): FishState {
         won: false,
         casts: 0,
         snaps: 0,
-        target: -1,
         misses: 0,
         catches: 0,
-        hover: -1,
         ripples: [],
     };
     L.kinds.forEach((k, kind) => {
@@ -536,6 +534,44 @@ function ripple(s: FishState, x: number, size: number): void {
     s.ripples.push({ x, age: 0, size });
 }
 
+/** One step of a float in the air: the cast and its preview both take it, so the dots land where the float does. */
+function flyStep(p: Pt, v: Pt): { p: Pt; v: Pt } {
+    const nv = { x: v.x, y: v.y + G * DT };
+    return { p: { x: Math.min(SEA.world.w - 1, p.x + nv.x * DT), y: p.y + nv.y * DT }, v: nv };
+}
+
+/** Where a cast thrown at `v` from the rod's tip goes, step by step, and where it comes down on the water. */
+export function castPath(v: Pt): { pts: Pt[]; at: Pt } {
+    let p: Pt = { ...TIP },
+        fv = v;
+    const pts: Pt[] = [{ ...p }];
+    for (let n = 0; n < RATE * 6 && p.y < SEA.surface; n++) {
+        ({ p, v: fv } = flyStep(p, fv));
+        pts.push(p);
+    }
+    return { pts, at: { x: p.x, y: SEA.surface } };
+}
+
+/** Dots along a path at even spacing, in squares of the path's own length, so a fast stretch is not sparse. */
+function evenly(pts: readonly Pt[], every: number): Pt[] {
+    const out: Pt[] = [];
+    let carry = every;
+    for (let k = 1; k < pts.length; k++) {
+        const a = pts[k - 1],
+            b = pts[k];
+        if (!a || !b) continue;
+        const d = Math.hypot(b.x - a.x, b.y - a.y);
+        let along = carry;
+        while (along <= d) {
+            const t = along / d;
+            out.push({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t });
+            along += every;
+        }
+        carry = along - d;
+    }
+    return out;
+}
+
 function cast(s: FishState, v: Pt, out: Happening[]): void {
     s.phase = "fly";
     s.float = { ...TIP };
@@ -545,39 +581,9 @@ function cast(s: FishState, v: Pt, out: Happening[]): void {
     s.touched = true;
     s.grab = null;
     s.pull = null;
-    s.target = -1;
     s.misses = 0;
     s.line = line(TIP, TIP, 1, 12);
     out.push({ cue: "lift" });
-}
-
-const inWater = (f: Fish): boolean => f.mood !== "pan" && f.mood !== "air" && f.mood !== "hooked";
-
-/** The fish under a point, if the point is on one: the nearest whose body it is within. */
-function fishAt(s: FishState, p: Pt): number {
-    let best = -1,
-        near = Infinity;
-    s.fish.forEach((f, i) => {
-        const d = Math.hypot(p.x - f.x, p.y - f.y),
-            reach = Math.max(2, shapeOf(s.L, f.kind).size * 0.8);
-        if (inWater(f) && d < reach && d < near) {
-            best = i;
-            near = d;
-        }
-    });
-    return best;
-}
-
-/** A tap on fish `i` casts to it: the float drops a little ahead of it, with the hook at its depth. */
-function castTo(s: FishState, i: number, out: Happening[]): void {
-    const f = s.fish[i];
-    if (!f) return;
-    reset(s);
-    const x = Math.max(SEA.left + 1, Math.min(SEA.right - 1, f.x + f.dir * 1.5));
-    // a flat lob, so the float is in the water before the child's eye has left the fish
-    cast(s, lob(TIP, { x, y: SEA.surface }, G, 0).v, out);
-    s.target = i;
-    s.depth = Math.max(SEA.surface + 1, Math.min(BED - 0.4, f.lane));
 }
 
 const biting = (s: FishState): boolean =>
@@ -595,7 +601,6 @@ function reset(s: FishState): void {
     s.snagged = false;
     s.ease = 0;
     s.line = line(TIP, HANG, 1.6, 12);
-    s.target = -1;
     s.misses = 0;
     for (const f of s.fish)
         if (f.mood === "come" || f.mood === "nibble" || f.mood === "bite") scare(f, 1);
@@ -651,23 +656,21 @@ export function back(s: FishState): boolean {
 }
 
 function hands(s: FishState, pad: Pad, out: Happening[]): void {
-    s.hover = pad.hover && (s.phase === "ready" || s.phase === "wait") ? fishAt(s, pad.hover) : -1;
     const t = pad.touch;
     if (t) {
         if (!s.pressAt) {
             s.pressAt = { ...t };
-            if (s.phase === "ready" && Math.hypot(t.x - s.float.x, t.y - s.float.y) <= 2.4) {
+            if (
+                s.phase === "ready" &&
+                (Math.hypot(t.x - s.float.x, t.y - s.float.y) <= 2.4 ||
+                    Math.hypot(t.x - TIP.x, t.y - TIP.y) <= 2.4)
+            ) {
                 s.phase = "held";
                 s.grab = { ...t };
                 s.touched = true;
             } else if (biting(s)) {
                 // on the bite, a press anywhere hooks the fish
                 strike(s, out);
-            } else if (s.phase === "ready" || s.phase === "wait") {
-                const i = fishAt(s, t);
-                if (i >= 0 && i !== s.target) {
-                    castTo(s, i, out);
-                }
             }
             // a press on a fish on the pan throws it back
             const slot = s.pan.findIndex((_, k) => {
@@ -683,7 +686,6 @@ function hands(s: FishState, pad: Pad, out: Happening[]): void {
         // a finger held in the water sets how deep the hook goes
         if (
             s.phase === "wait" &&
-            s.target < 0 &&
             t.y > SEA.surface &&
             Math.hypot(t.x - s.pressAt.x, t.y - s.pressAt.y) > 0.6
         )
@@ -719,11 +721,11 @@ function keys(s: FishState, pad: Pad, out: Happening[]): void {
 }
 
 function flyFloat(s: FishState, out: Happening[]): void {
-    s.fv = { x: s.fv.x, y: s.fv.y + G * DT };
-    s.float = { x: s.float.x + s.fv.x * DT, y: s.float.y + s.fv.y * DT };
+    const next = flyStep(s.float, s.fv);
+    s.fv = next.v;
+    s.float = next.p;
     s.hook = { ...s.float };
     s.line.length = Math.max(s.line.length, Math.hypot(s.float.x - TIP.x, s.float.y - TIP.y) + 0.8);
-    if (s.float.x > SEA.world.w - 1) s.float.x = SEA.world.w - 1;
     if (s.float.y < SEA.surface) return;
     s.float = { x: s.float.x, y: SEA.surface };
     if (s.float.x < SEA.left - 0.5) {
@@ -741,18 +743,10 @@ function flyFloat(s: FishState, out: Happening[]): void {
     for (const f of s.fish)
         if (
             f.mood === "swim" &&
-            f !== s.fish[s.target] &&
             s.L.kinds[f.kind]?.nature === "shy" &&
             Math.abs(f.x - s.float.x) < 2.5
         )
             scatter(s, f, 1.5);
-    // a fish tapped to comes straight to the bait
-    const f = s.fish[s.target];
-    if (f && inWater(f)) {
-        f.mood = "come";
-        f.timer = 0;
-        f.cool = 0;
-    }
 }
 
 /** The hook goes towards its depth under the float, and a fish that was at it may be put off by the move. */
@@ -766,7 +760,7 @@ function sinkHook(s: FishState): void {
     if (!moving) return;
     const i = engaged(s),
         f = s.fish[i];
-    if (f && f !== s.fish[s.target] && s.L.kinds[f.kind]?.nature === "shy") scare(f, 1.5);
+    if (f && s.L.kinds[f.kind]?.nature === "shy") scare(f, 1.5);
 }
 
 function swimFish(s: FishState, out: Happening[]): void {
@@ -799,18 +793,11 @@ function swimFish(s: FishState, out: Happening[]): void {
             f.x += f.dir * pace * DT;
             f.y = f.lane + Math.sin((s.steps * DT + f.from) * 1.3) * 0.25;
             // a fish notices a bait near its own depth and not too far across, so the depth chooses the fish
-            // a fish tapped to that was startled comes back to the bait once it has settled
-            if (s.phase === "wait" && f === s.fish[s.target] && f.cool === 0) {
-                f.mood = "come";
-                f.timer = 0;
-                continue;
-            }
             const across = nature === "curious" ? 6 : nature === "quick" ? 4.5 : 3.5;
             // a hook still going down passes a fish by; a shy one waits longer for it to be still
             const quiet = s.still > (nature === "shy" ? 1.2 : 0.3);
             if (
                 s.phase === "wait" &&
-                s.target < 0 &&
                 !busy &&
                 f.cool === 0 &&
                 quiet &&
@@ -826,15 +813,14 @@ function swimFish(s: FishState, out: Happening[]): void {
         }
         // coming, nibbling or biting: the fish faces the hook and keeps its mouth at it
         if (Math.abs(s.hook.x - f.x) > 0.6) f.dir = s.hook.x >= f.x ? 1 : -1;
-        // a fish tapped to swims straight in, so a catch on the glass takes seconds
         const mouth = mouthOf(s, f),
-            v = arrive(mouth, s.hook, pace * (f === s.fish[s.target] ? 3 : 1.2), 0.8);
+            v = arrive(mouth, s.hook, pace * 1.2, 0.8);
         f.x += v.x * DT;
         f.y += v.y * DT;
         if (f.mood === "come") {
             f.timer += DT;
             // one that cannot get to the bait soon gives up, so a bait is never kept from the others
-            if (f.timer > 5 && f !== s.fish[s.target]) {
+            if (f.timer > 5) {
                 scare(f, 1);
                 continue;
             }
@@ -845,10 +831,9 @@ function swimFish(s: FishState, out: Happening[]): void {
         }
         const near = Math.hypot(mouth.x - s.hook.x, mouth.y - s.hook.y) < 0.5;
         if (f.mood === "come" && near) {
-            const tapped = f === s.fish[s.target];
             f.mood = "nibble";
-            f.nibbles = tapped ? 1 : 1 + Math.floor(draw(s) * 3);
-            f.timer = tapped ? 0.2 : 0.5 + draw(s) * 0.5;
+            f.nibbles = 1 + Math.floor(draw(s) * 3);
+            f.timer = 0.5 + draw(s) * 0.5;
             out.push({ cue: "bump" });
             ripple(s, s.float.x, 0.3);
         } else if (f.mood === "nibble") {
@@ -871,23 +856,14 @@ function swimFish(s: FishState, out: Happening[]): void {
             }
         } else if (f.mood === "bite") {
             f.timer -= DT;
-            // on the first levels a fish tapped to hooks itself once the float has been seen to go under
-            if (
-                f === s.fish[s.target] &&
-                s.level < SELF_HOOK &&
-                FISHING.bite.value * (nature === "quick" ? 0.75 : 1) - f.timer >= 0.2
-            ) {
-                strike(s, out);
-                continue;
-            }
             if (f.timer > 0) continue;
-            // a fish tapped to lets go and nibbles again, twice, before it swims off
-            if (f === s.fish[s.target] && s.misses < 2) {
+            // a missed bite is not lost: the fish nibbles again, twice, before it swims off
+            if (s.misses < 2) {
                 s.misses++;
                 f.mood = "nibble";
                 f.nibbles = 2;
                 f.timer = 0.6;
-                tell(s, "It let go, and it is nibbling again. Tap when the float goes under.");
+                tell(s, "It let go, and it is nibbling again. Hook it when the float goes under.");
                 continue;
             }
             scatter(s, f, 2);
@@ -913,14 +889,10 @@ function fight(s: FishState, pad: Pad, out: Happening[]): void {
     // a finger reels gently and stops while the fish runs, so a line reeled by a finger never snaps
     const finger = pad.touch !== null && !pad.go;
     const easing = pad.brake || pad.holding.includes("down");
-    // a fish tapped to is reeled straight in without a fight, so play on the glass is one tap a fish
-    const tapped = f === s.fish[s.target];
-    const reeling =
-        (tapped || pad.go || (finger && !f.runTo)) && !pad.brake && !pad.holding.includes("down");
+    const reeling = (pad.go || (finger && !f.runTo)) && !pad.brake && !pad.holding.includes("down");
     // the fish runs now and then, away from the jetty and down, and rests between
     f.run -= DT;
-    if (tapped) f.runTo = null;
-    else if (f.run <= 0) {
+    if (f.run <= 0) {
         if (f.runTo) {
             f.runTo = null;
             f.run = 0.8 + draw(s) * 1.2;
@@ -944,7 +916,7 @@ function fight(s: FishState, pad: Pad, out: Happening[]): void {
     }
     // reeling takes line in, easing lets it out, and the line holds the fish at its length
     if (reeling && !s.snagged)
-        s.out = Math.max(1, s.out - FISHING.reel.value * (tapped ? 2.5 : 1) * DT);
+        s.out = Math.max(1, s.out - FISHING.reel.value * (finger ? FINGER_REEL : 1) * DT);
     if (easing) s.out += FISHING.reel.value * 0.8 * DT;
     const dx = x - TIP.x,
         dy = y - TIP.y,
@@ -964,13 +936,13 @@ function fight(s: FishState, pad: Pad, out: Happening[]): void {
     const want2 =
         held || s.snagged
             ? (f.runTo ? 0.7 + heavy * 0.3 : 0.25 + heavy * 0.2) +
-              (reeling ? (finger || tapped ? 0.2 : 0.45) : 0) +
+              (reeling ? (finger ? 0.2 : 0.45) : 0) +
               (s.snagged && reeling ? 0.6 : 0) -
               (easing ? 0.6 : 0)
             : 0.1;
     s.tension += (Math.max(0, want2) - s.tension) * Math.min(1, 8 * DT);
     // reeled carelessly through the weed, the hook snags; easing off frees it
-    if (!s.snagged && !tapped && reeling && s.tension > 0.7 && inWeed(s, s.hook)) {
+    if (!s.snagged && reeling && s.tension > 0.7 && inWeed(s, s.hook)) {
         s.snagged = true;
         tell(s, "Snagged in the weed. Ease the line to free it.");
         out.push({ cue: "bump" });
@@ -1011,7 +983,7 @@ function land(s: FishState, i: number, out: Happening[]): void {
     const full = s.pan.length >= s.L.holds;
     f.mood = "air";
     const to = full ? { x: SEA.left + 3, y: SEA.surface + 0.5 } : panSpot(s.pan.length);
-    const g = i === s.target ? G * 2 : G,
+    const g = G,
         l = lob({ x: f.x, y: f.y }, to, g, 3);
     s.flights.push({
         fish: i,
@@ -1026,7 +998,6 @@ function land(s: FishState, i: number, out: Happening[]): void {
     out.push({ cue: "lift" }, { burst: { kind: "splash", x: f.x, y: SEA.surface, n: 12 } });
     s.phase = "landing";
     s.catches++;
-    s.target = -1;
     s.misses = 0;
     s.float = { ...HANG };
     s.hook = { ...HANG };
@@ -1124,9 +1095,23 @@ export function step(s: FishState, pad: Pad): Happening[] {
     return out;
 }
 
-/** How hard the rod bends, from nought to about one, as the line pulls. */
-const bendOf = (s: FishState): number =>
-    s.phase === "fight" ? Math.min(1.2, s.tension) : s.phase === "wait" ? 0.08 : 0;
+/** The aim the dots show: the pull being made, once it is past the dead zone, or the keys' aim. */
+function previewAim(s: FishState): Aim | null {
+    if (s.won) return null;
+    if (s.phase === "held")
+        return s.pull && Math.hypot(s.pull.x, s.pull.y) >= CAST.dead
+            ? aimOfPull(s.pull, CAST)
+            : null;
+    return s.phase === "ready" && s.touched ? s.aim : null;
+}
+
+/** How hard the rod bends, from nought to about one, as the line pulls or as the cast is drawn back. */
+const bendOf = (s: FishState): number => {
+    if (s.phase === "fight") return Math.min(1.2, s.tension);
+    if (s.phase === "wait") return 0.08;
+    const held = s.phase === "held" ? previewAim(s) : null;
+    return held ? 0.45 * strength(held, CAST) : 0;
+};
 
 function fishSprite(s: FishState, f: Fish, rest: boolean): Sprite {
     const sh = shapeOf(s.L, f.kind),
@@ -1353,32 +1338,25 @@ export function frame(s: FishState, rest = false): Frame {
         if (s.phase === "wait" && !rest && Math.abs(s.hook.y - s.depth) > 0.05)
             marks.push({ kind: "ring", x: float.x, y: s.depth, r: 0.5 });
     }
-    // the aim: the first part of the throw in dots, from the rod's tip
-    if (!s.won && (s.phase === "held" || (s.phase === "ready" && s.touched))) {
-        const v = launchOf(s.phase === "held" && s.pull ? aimOfPull(s.pull, CAST) : s.aim);
-        marks.push({ kind: "dots", pts: arc(TIP, v, G, { seconds: 0.35, every: 0.05 }) });
+    // the aim: the whole throw in evenly spaced dots, fading towards its end, and a ring where it lands
+    const aiming = previewAim(s);
+    if (aiming) {
+        const path = castPath(launchOf(aiming)),
+            dots = evenly(path.pts, 0.9),
+            near = Math.ceil(dots.length * 0.6);
+        marks.push({ kind: "dots", pts: dots.slice(0, near) });
+        if (dots.length > near) marks.push({ kind: "dots", pts: dots.slice(near), opacity: 0.55 });
+        if (path.at.x >= SEA.left - 0.5)
+            marks.push({
+                kind: "ring",
+                x: path.at.x,
+                y: path.at.y,
+                r: 0.7,
+                on: s.phase === "held",
+            });
     }
     if (!s.touched && s.phase === "ready")
         marks.push({ kind: "ring", x: HANG.x, y: HANG.y, r: 1.3 });
-    // the fish a tap cast to is ringed until it bites
-    const chosen = s.fish[s.target];
-    if (!s.won && chosen && inWater(chosen) && chosen.mood !== "bite")
-        marks.push({
-            kind: "ring",
-            x: chosen.x,
-            y: chosen.y,
-            r: shapeOf(L, chosen.kind).size * 0.6,
-            on: true,
-        });
-    // the fish under a resting mouse is ringed faintly, so a child sees what a click would fish for
-    const over = s.fish[s.hover];
-    if (!s.won && over && s.hover !== s.target && inWater(over))
-        marks.push({
-            kind: "ring",
-            x: over.x,
-            y: over.y,
-            r: shapeOf(L, over.kind).size * 0.6,
-        });
     // the bite is plain to see: the float goes under and a big mark stands over it
     const bit = biting(s);
     if (bit) marks.push({ kind: "word", x: float.x, y: SEA.surface - 2.4, text: "!", size: 1.6 });
@@ -1386,14 +1364,11 @@ export function frame(s: FishState, rest = false): Frame {
     if (!s.won && (s.level === 0 || s.catches === 0)) {
         const tip =
             s.phase === "ready"
-                ? { text: "Tap a fish", x: (SEA.left + SEA.right) / 2 }
+                ? { text: "Pull back and let go", x: HANG.x + 4 }
                 : s.phase === "fly" || s.phase === "wait"
-                  ? {
-                        text: bit && s.level >= SELF_HOOK ? "Tap now" : "Here it comes",
-                        x: float.x,
-                    }
+                  ? { text: bit ? "Tap now" : "Wait for a bite", x: float.x }
                   : s.phase === "fight"
-                    ? { text: s.target >= 0 ? "Reeling in" : "Hold to reel it in", x: s.hook.x }
+                    ? { text: "Hold to reel it in", x: s.hook.x }
                     : null;
         if (tip)
             marks.push({
@@ -1456,7 +1431,7 @@ export const fishingGame: ActionGame<FishState> = {
     rate: RATE,
     touch: true,
     cover: { art: "fish", params: { size: 4, tone: "sky", tag: "5", gape: false, facing: 1 } },
-    hint: "Tap a fish to catch it: it comes to the bait, bites and is reeled in. On later levels, tap when the float goes under. You can also pull back from the float and let go. Keys: arrows aim, space casts and strikes, hold space to reel, hold down to ease.",
+    hint: "Pull back from the float and let go to cast where you want. When the float goes under, tap to hook the fish, then hold to reel it in. Keys: arrows aim, space casts and strikes, hold space to reel, hold down to ease.",
     // one round button whose drawing says what a press does now; easing off stays on the down key
     controls: { go: "Cast", icons: { go: "launch" } },
     goLabel: (s) => (s.phase === "fight" ? "Reel" : s.phase === "wait" ? "Hook" : "Cast"),

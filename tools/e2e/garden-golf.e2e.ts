@@ -42,11 +42,11 @@ for (const input of ["keyboard", "pointer", "reduced motion"]) {
                 await page.mouse.up();
             }
         } else await page.keyboard.press("Enter");
-        await expect(page.getByRole("button", { name: "Play another", exact: true })).toBeVisible();
+        await expect(page.locator(".game-toolbar .game-finished")).toBeVisible();
         await page.screenshot({
             path: `/tmp/garden-golf-${info.project.name}-${input.replaceAll(" ", "-")}.png`,
         });
-        await page.getByRole("button", { name: "Play another", exact: true }).click();
+        await page.locator('[data-game="shuffle"]').click();
         await expect(page.locator(".game-player")).toHaveAttribute("data-game-ready", "true");
         await expect(page).toHaveURL(/v=0/);
         await expect(page.locator(".field-gl canvas")).toBeVisible();

@@ -885,11 +885,6 @@
         display: block;
         font: 600 18px / 1.2 var(--f-hand);
     }
-    .game-feedback-slot [data-game="another"] {
-        background: var(--pen);
-        color: white;
-        border-color: var(--pen);
-    }
     .game-feedback-live {
         position: absolute;
         width: 1px;

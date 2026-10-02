@@ -140,6 +140,7 @@ export const CATALOG = {
         parkhill: () => import("./outdoors/parkhill").then((m) => m.parkHill),
         parkbench: () => import("./outdoors/parkbench").then((m) => m.parkBench),
         parkbush: () => import("./outdoors/parkbush").then((m) => m.parkBush),
+        fetchmark: () => import("./outdoors/fetchmark").then((m) => m.fetchMark),
         parkslide: () => import("./outdoors/parkslide").then((m) => m.parkSlide),
         parkfence: () => import("./outdoors/parkfence").then((m) => m.parkFence),
         log: () => import("./outdoors/log").then((m) => m.fallenLog),

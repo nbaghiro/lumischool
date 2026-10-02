@@ -42,7 +42,7 @@ test("shunting yard: the keys move the lever and set the push, and every siding 
         }
         if (pad.brake) await page.keyboard.press("Backspace");
     }
-    await expect(page.getByRole("button", { name: "Play another", exact: true })).toBeVisible({
+    await expect(page.locator(".game-toolbar .game-finished")).toBeVisible({
         timeout: 15000,
     });
     await page.screenshot({ path: `/tmp/shunting-yard-${info.project.name}.png` });

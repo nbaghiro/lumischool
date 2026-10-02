@@ -54,7 +54,7 @@ for (const input of ["pointer", "keyboard"]) {
         const end = Date.now() + 35000;
         while (
             Date.now() < end &&
-            !(await page.getByRole("button", { name: "Play another", exact: true }).isVisible())
+            !(await page.locator(".game-toolbar .game-finished").isVisible())
         ) {
             const pos = await car.evaluate((element) => {
                 const rect = element.getBoundingClientRect();
@@ -103,10 +103,10 @@ for (const input of ["pointer", "keyboard"]) {
         else if (input === "pointer") await page.mouse.up();
         if (held) await page.keyboard.up(held);
         if (input === "keyboard") await page.keyboard.up("Space");
-        await expect(page.getByRole("button", { name: "Play another", exact: true })).toBeVisible();
+        await expect(page.locator(".game-toolbar .game-finished")).toBeVisible();
         await expect(page.locator('[data-game="aside"]')).toContainText("all the way round");
         await page.screenshot({ path: `/tmp/pocket-rally-${info.project.name}-${input}.png` });
-        await page.getByRole("button", { name: "Play another", exact: true }).click();
+        await page.locator('[data-game="shuffle"]').click();
         await expect(page.locator(".game-player")).toHaveAttribute("data-game-ready", "true");
     });
 }

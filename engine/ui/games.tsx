@@ -685,30 +685,18 @@ export function Games(props: {
                                         <span data-game="aside">{feedback().text}</span>
                                     </div>
                                 </Show>
-                                <button
-                                    class="game-icon"
-                                    data-game="another"
-                                    hidden
-                                    aria-label={
-                                        supportsVariations(g()) ? "Play another" : "Play again"
-                                    }
-                                    title={supportsVariations(g()) ? "Play another" : "Play again"}
-                                    onClick={another}
-                                >
-                                    <Icon name={supportsVariations(g()) ? "shuffle" : "restart"} />
-                                </button>
-                                <button
-                                    class="game-icon"
-                                    data-game="watch"
-                                    hidden
-                                    aria-label="Watch it again"
-                                    title="Watch it again"
-                                    onClick={() => runtime?.watch?.()}
-                                >
-                                    <Icon name="watch" />
-                                </button>
                             </div>
                             <span class="game-challenge">{activeTitle()}</span>
+                            <button
+                                class="game-icon"
+                                data-game="watch"
+                                hidden
+                                aria-label="Watch it again"
+                                title="Watch it again"
+                                onClick={() => runtime?.watch?.()}
+                            >
+                                <Icon name="watch" />
+                            </button>
                             <Show when={supportsVariations(g())}>
                                 <button
                                     class="game-icon"

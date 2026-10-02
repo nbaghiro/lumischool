@@ -16,7 +16,7 @@ test("a finished putt can be watched again from the tee, and the button comes ba
     await expect(watch).toBeHidden();
     const tee = await middle(page, "ball");
     await page.keyboard.press("Enter");
-    await expect(page.getByRole("button", { name: "Play another", exact: true })).toBeVisible();
+    await expect(page.locator(".game-toolbar .game-finished")).toBeVisible();
     await expect(watch).toBeVisible();
     const holed = await middle(page, "ball");
     await watch.click();

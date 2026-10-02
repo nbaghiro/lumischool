@@ -31,17 +31,12 @@ export interface Deck<S> {
 
 export const tape = (): Tape => ({ entries: [], steps: 0 });
 
-const copyPad = (p: Pad): Pad => {
-    const copy: Pad = {
-        ...p,
-        holding: [...p.holding],
-        pressed: [...p.pressed],
-        ...(p.intents ? { intents: p.intents.map((i) => ({ ...i })) } : {}),
-    };
-    // where a mouse rests only marks the view, so a try replays the same without it
-    delete copy.hover;
-    return copy;
-};
+const copyPad = (p: Pad): Pad => ({
+    ...p,
+    holding: [...p.holding],
+    pressed: [...p.pressed],
+    ...(p.intents ? { intents: p.intents.map((i) => ({ ...i })) } : {}),
+});
 
 const same = (a: Pad, b: Pad): boolean => JSON.stringify(a) === JSON.stringify(b);
 

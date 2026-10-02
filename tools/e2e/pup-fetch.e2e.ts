@@ -30,6 +30,20 @@ test("fetch: a throw from the keys lands, a pup brings it back and the ball is r
     expect(errors).toEqual([]);
 });
 
+test("fetch: the first ask is said and staked out, and a throw from the keys onto it counts", async ({
+    page,
+}) => {
+    const errors: string[] = [];
+    await open(page, 0, errors);
+    await expect(page.locator(".game-feedback")).toContainText("Throw it to the 6.");
+    await expect(page.locator('.field-probe [data-key="target"]')).toBeAttached();
+    const reads = page.locator('[data-game="reads"]');
+    await page.keyboard.press("Space");
+    await expect(reads).toContainText("That is the 6.", { timeout: 6000 });
+    await expect(reads).toContainText("1 of 4 done", { timeout: 15_000 });
+    expect(errors).toEqual([]);
+});
+
 test("fetch: pulled back and let go, the ball flies the other way", async ({ page }, info) => {
     test.skip(info.project.name.includes("phone"), "the mouse stands for a finger on the desk");
     const errors: string[] = [];

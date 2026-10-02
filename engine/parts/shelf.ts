@@ -2092,6 +2092,12 @@ export const GROUPING: Readonly<Record<string, Placement>> = {
         shows: ["nature"],
         words: "bush shrub leaves berries park garden game",
     },
+    fetchmark: {
+        on: "outdoors",
+        also: [],
+        shows: [],
+        words: "target stake sign number bowl fetch throw park game",
+    },
     parkslide: {
         on: "outdoors",
         also: ["places"],

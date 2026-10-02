@@ -27,6 +27,27 @@ test("clear round: space held gathers the pony, and let go it leaps off the gras
     expect(errors).toEqual([]);
 });
 
+/** Rides the first course clean, pressing once a fence when the note says "Tap!". */
+async function rideFirst(page: Page, press: () => Promise<void>): Promise<void> {
+    const note = page.locator(".game-feedback-live");
+    const another = page.locator(".game-toolbar .game-finished");
+    const due = async () => /Tap!/.test((await note.textContent()) ?? "");
+    // the first press starts the round and asks for nothing
+    await press();
+    for (let fence = 0; fence < 6 && !(await another.isVisible()); fence++) {
+        await expect
+            .poll(async () => (await another.isVisible()) || (await due()), {
+                timeout: 20_000,
+                intervals: [40],
+            })
+            .toBe(true);
+        if (await another.isVisible()) break;
+        await press();
+        await expect.poll(due, { timeout: 5_000 }).toBe(false);
+    }
+    await expect(another).toBeVisible({ timeout: 20_000 });
+}
+
 test("clear round: one tap on the field a fence rides the first course clean", async ({
     page,
 }, info) => {
@@ -38,24 +59,18 @@ test("clear round: one tap on the field a fence rides the first course clean", a
     if (!box) throw new Error("Missing the field");
     const x = box.x + box.width / 2,
         y = box.y + box.height / 3;
-    const note = page.locator(".game-feedback-live");
-    const another = page.getByRole("button", { name: "Play another", exact: true });
-    const due = async () => /Tap now/.test((await note.textContent()) ?? "");
-    const tap = () => (touch ? page.touchscreen.tap(x, y) : page.mouse.click(x, y));
-    // the first tap starts the round and asks for nothing
-    await tap();
-    for (let fence = 0; fence < 6 && !(await another.isVisible()); fence++) {
-        await expect
-            .poll(async () => (await another.isVisible()) || (await due()), {
-                timeout: 20_000,
-                intervals: [40],
-            })
-            .toBe(true);
-        if (await another.isVisible()) break;
-        await tap();
-        await expect.poll(due, { timeout: 5_000 }).toBe(false);
-    }
-    await expect(another).toBeVisible({ timeout: 20_000 });
+    await rideFirst(page, () => (touch ? page.touchscreen.tap(x, y) : page.mouse.click(x, y)));
+    expect(errors).toEqual([]);
+});
+
+test("clear round: Enter on the keyboard a fence rides the first course clean", async ({
+    page,
+}, info) => {
+    test.skip(info.project.name.startsWith("phone"), "phones have no keyboard");
+    test.setTimeout(90_000);
+    const errors: string[] = [];
+    await open(page, 0, errors);
+    await rideFirst(page, () => page.keyboard.press("Enter"));
     expect(errors).toEqual([]);
 });
 

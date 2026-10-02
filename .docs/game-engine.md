@@ -205,7 +205,7 @@ main gate, and add a performance fixture that fails when main-thread time a fram
 | Charlie's bridge, now Charlie's rope swings | P1 | Ropes and pulleys, planks that bend under Charlie (P4); then replaced under the same id by rope swings (27 September 2026); its controls rebuilt as a pull to start, a swing that keeps going, a tap to let go and a tap to catch, with a live landing preview (30 September 2026, see games.md) |
 | A home for the pups, now Fetch with the pups | P1 | Zoomed in on the build; roofs, arches and doors; the family walks in (P4); rebuilt around a swinging crane and the wolf's huff; then replaced under the same id by Fetch with the pups: a thrown ball, frisbee or stick, planck deciding where it goes, and each pup reaching what only it can (see games.md) |
 | Marble workshop | P1 | Hundreds of marbles, a splitter and a bucket gate (P4); water runs later (P6) |
-| Harbour cargo | P1 | A crane on a real rope and a boat that lists with its load (P4); its controls rebuilt as a drag of the crate itself, set down by the crane below where it is let go, beside crane driving from the keys and arrow buttons for skill, with a landing preview, a boat that sails by itself once balanced, and a new barge cover (30 September 2026, see games.md) |
+| Harbour cargo | P1 | A crane on a real rope and a boat that lists with its load (P4); its controls rebuilt as a drag of the crate itself, set down by the crane below where it is let go, beside crane driving from the keys and arrow buttons for skill, with a landing preview, a boat that sails by itself once balanced, and a new barge cover (30 September 2026, see games.md); a dragged crate is now placed where the finger lets go, on the deck's half squares, with no wait for a swing, and the keys let a crate straight down (2 October 2026) |
 | Rafts | P1 | Real floating and flocking sheep (P4) |
 | Gone fishing | P1 | Ripples at the bite, shoals that scatter (P4) |
 | Down the river | P1 | Rapids whose speed shows in the water (P4) |
@@ -615,7 +615,7 @@ owner asked for is being built, and the game goes back to "to check" when it lan
 | Pocket pool | `pool` | to check | table enlarged, plain squared paper |
 | Pocket rally | `rally` | to check | |
 | Charlie's rope swings | `bridge` | to check | pull to start, tap to let go |
-| Fetch with the pups | `blocks` | to check | |
+| Fetch with the pups | `blocks` | to check | a staked target for each ask, streaks, and a fourth ask with a twist on each level |
 | Rescue pups | `rescue` | to check | frame rate with water and rope not yet measured |
 | Charlie's lemonade stand | `wardrobe` | to check | landing ring on the customer |
 | Clear round | `clear` | to check | the keys as before; a tap on the field lets the pony see its stride and choose its leap |

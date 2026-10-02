@@ -99,7 +99,7 @@ test("pocket pool: the first level is won from the keys alone, a press at a time
     await expect(page.locator(".field-gl canvas").first()).toBeVisible();
     await reducedMotion(page);
     for (const k of keys ?? []) await page.keyboard.press(KEY[k]);
-    await expect(page.getByRole("button", { name: "Play another", exact: true })).toBeVisible({
+    await expect(page.locator(".game-toolbar .game-finished")).toBeVisible({
         timeout: 20000,
     });
     await page.screenshot({ path: `/tmp/pocket-pool-keys-${info.project.name}.png` });

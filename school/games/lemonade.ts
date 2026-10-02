@@ -416,7 +416,7 @@ interface Cup {
     slosh: { a: number; v: number; vx: number; waves: { x: number; age: number; size: number }[] };
 }
 
-type CoinMode = "rolling" | "dish" | "back" | "falling" | "paid";
+type CoinMode = "rolling" | "giving" | "dish" | "back" | "falling" | "paid";
 
 interface Coin {
     kind: CoinKind;
@@ -430,6 +430,8 @@ interface Coin {
     /** A coin gliding somewhere: from where, and how far along. */
     from: Pt;
     t: number;
+    /** Hopped in by a tap rather than rolled, so a coin too many hops straight back. */
+    given?: true;
 }
 
 type Phase = "coming" | "waiting" | "served" | "paying" | "change" | "thanks" | "going" | "gone";
@@ -489,6 +491,8 @@ export interface StandState {
     steps: number;
     note: string;
     touched: boolean;
+    /** Whether the keys have been used, so the rolling coin and its guide are drawn for them. */
+    keyed: boolean;
     braked: boolean;
     won: boolean;
     /** Seconds since the last customer said thank you, for the stand's cheer. */
@@ -559,6 +563,7 @@ export function startStand(phase: number, given?: StandLevel): StandState {
         next: 0,
         power: Math.round((L.slots[0] ?? 24) - HOME - 6),
         grip: null,
+        keyed: false,
         pull: null,
         charlie: actor<CharlieAct>("wave", "wave"),
         goal: track({ on: "served", times: L.customers.length }),
@@ -775,6 +780,36 @@ export function rollCoin(s: StandState, power: number, out: Happening[] = []): b
     return true;
 }
 
+/** Where the next coin given to customer `g` lands in their dish. */
+const dishSpot = (s: StandState, g: Guest, kind: CoinKind): Pt => {
+    const n = s.coins.filter(
+        (c) => c.owner === g.i && (c.mode === "dish" || c.mode === "giving"),
+    ).length;
+    return { x: slotX(s, g) - 1.2 + (n % 5) * 0.6, y: COUNTER_TOP - 0.75 - RADIUS[kind] };
+};
+
+/** Hops coin `kind` from Charlie's dish straight into the dish of the customer waiting for change. */
+export function giveCoin(s: StandState, kind: CoinKind, out: Happening[] = []): boolean {
+    const g = changing(s),
+        from = trayAt(s, kind);
+    if (s.won || !g || !from) return false;
+    s.coins.push({
+        kind,
+        mode: "giving",
+        x: from.x,
+        y: from.y,
+        v: 0,
+        vy: 0,
+        owner: g.i,
+        from,
+        t: 0,
+        given: true,
+    });
+    stepActor(s.charlie, "slide", CHARLIE_ACTS, 0);
+    out.push({ cue: "lift", strength: 0.3, pitch: 1.6, pan: pan(s, from.x) });
+    return true;
+}
+
 const pan = (s: StandState, x: number): number => panOf(x, s.cam.x, VIEW.w);
 
 /** Slows a sliding thing against its friction, lets the wind push it while it moves, and moves it. */
@@ -936,6 +971,24 @@ function moveCoins(s: StandState, out: Happening[]): void {
                             : "The coin rolled past the dish. It comes back to Charlie.";
                 }
             }
+        } else if (c.mode === "giving") {
+            const owner = s.guests.find((w) => w.i === c.owner);
+            if (!owner) continue;
+            const to = dishSpot(s, owner, c.kind),
+                long = Math.abs(to.x - c.from.x);
+            // a longer hop takes a little longer, so a coin crossing the long counter still reads as one hop
+            c.t = Math.min(1, c.t + DT / (0.45 + long / 80));
+            const e = ease(c.t);
+            c.x = c.from.x + (to.x - c.from.x) * e;
+            c.y = c.from.y + (to.y - c.from.y) * e - Math.sin(Math.PI * c.t) * (2 + long / 12);
+            if (c.t >= 1) {
+                c.mode = "dish";
+                c.x = to.x;
+                c.y = to.y;
+                const n = s.coins.filter((o) => o.mode === "dish" && o.owner === c.owner).length;
+                out.push({ cue: "ring", pitch: semitones(n * 2), pan: pan(s, c.x) });
+                s.note = `${sumWords(s, c.owner)} in the dish.`;
+            }
         } else if (c.mode === "falling") {
             c.x += c.v * DT;
             c.vy += 30 * DT;
@@ -960,6 +1013,16 @@ function moveCoins(s: StandState, out: Happening[]): void {
         keep.push(c);
     }
     s.coins = keep;
+}
+
+/** The coins in customer `i`'s dish as a sum, largest first: "25¢ + 10¢ = 35¢", or one coin's worth alone. */
+function sumWords(s: StandState, i: number): string {
+    const parts = s.coins
+        .filter((c) => c.mode === "dish" && c.owner === i)
+        .map((c) => WORTH[c.kind])
+        .sort((a, b) => b - a);
+    const total = parts.reduce((n, v) => n + v, 0);
+    return parts.length > 1 ? `${parts.map(price).join(" + ")} = ${price(total)}` : price(total);
 }
 
 /** What is resting in customer `i`'s dish, in cents; the coin just landing is not in it yet. */
@@ -1098,14 +1161,22 @@ function moveGuests(s: StandState, out: Happening[]): void {
                 if (owedTo(s.L, c) > 0) {
                     g.phase = "change";
                     s.hand = s.L.tray.at(-1) ?? null;
-                    s.note = "Now roll their change into the dish.";
+                    s.note = `They paid ${price(paid(c))} for ${c.cups === 2 ? "two cups" : "a cup"} at ${price(s.L.price)}. Tap Charlie's coins to give the change.`;
                 } else thank(s, g, out);
             }
         } else if (g.phase === "change") {
             const sum = dishSum(s, g.i),
                 owed = owedTo(s.L, c);
+            const last = s.coins.filter((o) => o.mode === "dish" && o.owner === g.i).at(-1);
             if (!rolling(s) && sum === owed) thank(s, g, out);
-            else if (!rolling(s) && sum > owed && !s.note.startsWith("That is more"))
+            else if (!rolling(s) && sum > owed && last?.given) {
+                // a tapped coin too many hops straight back, with a kind word and no cost
+                last.mode = "back";
+                last.from = { x: last.x, y: last.y };
+                last.t = 0;
+                s.note = `That is too much: the change is less than ${price(sum)}. The ${last.kind} comes back.`;
+                out.push({ cue: "nope", pan: pan(s, last.x) });
+            } else if (!rolling(s) && sum > owed && !s.note.startsWith("That is more"))
                 s.note = "That is more than the change. Take a coin back.";
         } else if (g.phase === "thanks") {
             act = "happy";
@@ -1185,7 +1256,10 @@ function hands(s: StandState, pad: Pad, out: Happening[]): void {
             }
         } else if (grip.on === "tray") {
             const p = trayAt(s, grip.kind);
-            if (p && near(at, p, 1.3)) choose(s, grip.kind, out);
+            if (p && near(at, p, 1.3)) {
+                if (g) giveCoin(s, grip.kind, out);
+                else choose(s, grip.kind, out);
+            }
         } else if (grip.on === "dish") takeBack(s, out);
         s.grip = null;
         s.pull = null;
@@ -1195,6 +1269,7 @@ function hands(s: StandState, pad: Pad, out: Happening[]): void {
         s.pull = null;
     }
     const most = s.L.counter + 8;
+    if (pad.pressed.length || pad.tapped) s.keyed = true;
     for (const d of pad.pressed) {
         if (d === "right") s.power = Math.min(most, s.power + STEP);
         else if (d === "left") s.power = Math.max(LEAST, s.power - STEP);
@@ -1212,7 +1287,9 @@ function hands(s: StandState, pad: Pad, out: Happening[]): void {
 function camAim(s: StandState): number {
     const w = worldOf(s.L).w;
     const cup = s.cup,
-        coin = s.coins.find((c) => c.mode === "rolling" || c.mode === "falling");
+        coin = s.coins.find(
+            (c) => c.mode === "rolling" || c.mode === "giving" || c.mode === "falling",
+        );
     const served = s.guests.find((g) => g.phase === "served");
     const follow =
         cup.mode === "sliding" || cup.mode === "falling"
@@ -1424,7 +1501,16 @@ function bubbleOf(s: StandState, g: Guest): string[] | null {
         return [`${what.charAt(0).toUpperCase()}${what.slice(1)},`, "please!"];
     }
     if (g.phase === "paying") return [`Here is ${price(paid(c))}.`];
-    if (g.phase === "change") return [`I paid ${price(paid(c))}.`, "My change, please!"];
+    if (g.phase === "change") {
+        const inDish = dishSum(s, g.i);
+        return [
+            `I paid ${price(paid(c))}.`,
+            c.cups === 2
+                ? `Two cups are ${price(cost(s.L, c))}.`
+                : `The cup is ${price(s.L.price)}.`,
+            inDish > 0 ? sumWords(s, g.i) : "My change, please!",
+        ];
+    }
     if (g.phase === "thanks") return ["Thank you!"];
     return null;
 }
@@ -1598,7 +1684,11 @@ export function standFrame(s: StandState, rest = false): Frame {
         const p = trayAt(s, k);
         if (!p) continue;
         sprites.push(coinSprite(`tray:${k}`, k, p, 0, 13));
-        if (g && s.hand === k)
+        // on the levels that guide, the coins that still fit in the change are ringed
+        const left = g ? owedTo(L, customerOf(s, g)) - dishSum(s, g.i) : 0;
+        if (g && L.guide.fill && WORTH[k] <= left)
+            marks.push({ kind: "ring", x: p.x, y: p.y, r: RADIUS[k] + 0.35 });
+        if (g && s.keyed && s.hand === k)
             marks.push({
                 kind: "ring",
                 x: p.x,
@@ -1690,7 +1780,7 @@ export function standFrame(s: StandState, rest = false): Frame {
                 17,
             ),
         );
-    if (g && s.hand)
+    if (g && s.keyed && s.hand)
         sprites.push(
             coinSprite("hand", s.hand, { x: COIN_AT, y: COUNTER_TOP - RADIUS[s.hand] }, 0, 17),
         );
@@ -1708,7 +1798,7 @@ export function standFrame(s: StandState, rest = false): Frame {
         });
     }
     const from = g
-        ? s.hand
+        ? s.hand && s.keyed
             ? COIN_AT
             : null
         : cup.mode === "home" || cup.mode === "resting"
@@ -1818,15 +1908,17 @@ export const lemonadeGame: ActionGame<StandState> = {
     rate: RATE,
     touch: true,
     cover: { art: "pitcher", params: { lemon: 1 } },
-    hint: "Drag the jug down to pour, then pull the cup back and let go to slide it to a customer. With the keys: hold down to pour, left and right set the push, space slides, C picks the next coin, and Backspace tips a cup out or takes a coin back",
+    hint: "Drag the jug down to pour, pull the cup back and let go to slide it to a customer, then tap Charlie's coins to give the change. With the keys: hold down to pour, left and right set the push, space slides, C picks the next coin, and Backspace tips a cup out or takes a coin back",
     controls: {
         arrows: { up: "Tip back", down: "Pour", left: "Softer", right: "Harder" },
         go: "Slide",
         brake: "Tip out",
     },
-    commands: [{ id: "coin", label: "Next coin", key: "c" }],
+    // on the screen a coin is given by tapping it in Charlie's dish, so the keys' coin picker has no button
+    commands: [{ id: "coin", label: "Next coin", key: "c", keysOnly: true }],
     command(s, id) {
         if (id !== "coin" || !changing(s) || s.L.tray.length === 0) return;
+        s.keyed = true;
         const at = s.hand ? s.L.tray.indexOf(s.hand) : -1,
             kind = s.L.tray[(at + 1) % s.L.tray.length];
         if (kind) choose(s, kind, []);

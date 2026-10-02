@@ -430,3 +430,7 @@ Phase 2 builds the plan straight into `engine/parts/` once the shelf has moved t
 - Cooperative Children's Book Center, diversity statistics: https://ccbc.education.wisc.edu/literature-resources/ccbc-diversity-statistics/books-by-about-poc-fnn/
 - GOV.UK, inclusive communication, portraying disability: https://www.gov.uk/government/publications/inclusive-communication/portraying-disability
 - Wikipedia, wheelchair, cochlear implant, hair type and hatching (for the heraldic tinctures): https://en.wikipedia.org/wiki/Wheelchair, https://en.wikipedia.org/wiki/Cochlear_implant, https://en.wikipedia.org/wiki/Hair_type, https://en.wikipedia.org/wiki/Hatching
+
+## Fetch target (2 October 2026)
+
+`fetchmark` is a wooden stake pegged into the grass with a round sign carrying a number (or a short word such as "+5" or "half"), and a pink dog bowl at its foot. Fetch with the pups stands one where a throw is meant to land, and lights it yellow (`lit`) when a throw lands there.

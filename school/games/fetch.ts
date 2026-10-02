@@ -49,12 +49,15 @@ import { BEYOND, ground, row } from "./scenery";
 export type Toy = "ball" | "frisbee" | "stick";
 
 /**
- * What a throw is for: to land by a number on the path, to land a number of metres past a pup, to
- * come to rest by a number (the pups wait for it to stop), or for one pup to fetch.
+ * What a throw is for: to land by a number on the path (said as the number, or in `words` such as
+ * "halfway to the tree"), to land a number of metres past a pup, to land on the number that makes
+ * `total` with the one a pup sits on, to come to rest by a number (the pups wait for it to stop), or
+ * for one pup to fetch.
  */
 export type Ask =
-    | { kind: "spot"; at: number }
+    | { kind: "spot"; at: number; words?: string }
     | { kind: "past"; who: Pup; by: number }
+    | { kind: "make"; who: Pup; total: number }
     | { kind: "stop"; at: number }
     | { kind: "pup"; who: Pup };
 
@@ -99,6 +102,7 @@ export const FETCH_LEVELS: Levels<FetchLevel> = [
             { kind: "spot", at: 6 },
             { kind: "spot", at: 10 },
             { kind: "spot", at: 14 },
+            { kind: "spot", at: 4 },
         ],
         within: 1,
         preview: 1.2,
@@ -117,6 +121,7 @@ export const FETCH_LEVELS: Levels<FetchLevel> = [
             { kind: "spot", at: 7 },
             { kind: "pup", who: "rufus" },
             { kind: "spot", at: 19 },
+            { kind: "spot", at: 4 },
         ],
         within: 1,
         preview: 1,
@@ -135,6 +140,7 @@ export const FETCH_LEVELS: Levels<FetchLevel> = [
             { kind: "spot", at: 5 },
             { kind: "stop", at: 11 },
             { kind: "stop", at: 14 },
+            { kind: "spot", at: 3 },
         ],
         within: 1,
         preview: 0.8,
@@ -153,6 +159,7 @@ export const FETCH_LEVELS: Levels<FetchLevel> = [
             { kind: "pup", who: "dot" },
             { kind: "pup", who: "maple" },
             { kind: "spot", at: 14 },
+            { kind: "spot", at: 13, words: "halfway to the tree" },
         ],
         within: 1,
         preview: 0.5,
@@ -171,6 +178,7 @@ export const FETCH_LEVELS: Levels<FetchLevel> = [
         asks: [
             { kind: "past", who: "maple", by: 5 },
             { kind: "past", who: "dot", by: 6 },
+            { kind: "make", who: "dot", total: 20 },
             { kind: "spot", at: 21 },
         ],
         within: 1,
@@ -192,6 +200,7 @@ export const FETCH_LEVELS: Levels<FetchLevel> = [
         asks: [
             { kind: "spot", at: 7.5 },
             { kind: "past", who: "pip", by: 9 },
+            { kind: "make", who: "pip", total: 15 },
             { kind: "pup", who: "dot" },
         ],
         within: 0.5,
@@ -238,7 +247,8 @@ const RATE = 60,
 const ORIGIN = 12,
     GROUND = 22,
     H = GROUND + 2.5;
-const VIEW = { w: 40, h: 22 };
+/** Kept low, so the path and its targets are big and the sky is only as tall as a high throw needs. */
+const VIEW = { w: 34, h: 16 };
 /** A pond's bed below the ground, and its surface. */
 const DEPTH = 1.6,
     SURFACE = GROUND + 0.25;
@@ -378,6 +388,9 @@ export interface FetchState {
     /** Whether the throw that is being carried back did what was asked. */
     good: boolean;
     throws: number;
+    /** Throws at the ask now, and asks done with their first throw in a row. */
+    tries: number;
+    streak: number;
     said: string;
     saidAt: number;
     cheer: number;
@@ -582,6 +595,8 @@ export function startFetch(L: FetchLevel, level = 0): FetchState {
         goal: track({ inOrder: L.asks.map((_, i) => ({ on: "fetched", value: i })) }),
         good: false,
         throws: 0,
+        tries: 0,
+        streak: 0,
         said: "",
         saidAt: -999,
         cheer: 0,
@@ -604,6 +619,7 @@ export const start = (level: number): FetchState =>
 export function targetOf(L: FetchLevel, a: Ask): number | null {
     if (a.kind === "spot" || a.kind === "stop") return a.at;
     if (a.kind === "past") return L.seats[a.who] + a.by;
+    if (a.kind === "make") return a.total - L.seats[a.who];
     return null;
 }
 
@@ -617,7 +633,10 @@ const said = (m: number) =>
 
 /** An ask in words, as a pup would put it. */
 export function askWords(L: FetchLevel, a: Ask): string {
-    if (a.kind === "spot") return `Throw it to the ${said(a.at)}.`;
+    if (a.kind === "spot")
+        return a.words ? `Throw it ${a.words}.` : `Throw it to the ${said(a.at)}.`;
+    if (a.kind === "make")
+        return `${name(a.who)} sits on ${said(L.seats[a.who])}. Throw it to the number that makes ${said(a.total)} with ${said(L.seats[a.who])}.`;
     if (a.kind === "stop")
         return `Make it stop at the ${said(a.at)}. The pups wait until it stops.`;
     if (a.kind === "past")
@@ -711,6 +730,7 @@ function throwIt(s: FetchState, v: Pt, out: Happening[]): void {
     s.decided = false;
     s.good = false;
     s.throws++;
+    s.tries++;
     s.trail = [];
     s.splashed = false;
     s.touched = true;
@@ -762,9 +782,14 @@ function decide(
     if (j.good) {
         emit(s, out, { kind: "fetched", value: s.ask });
         emit(s, out, { kind: "checkpoint" });
+        s.streak = s.tries === 1 ? s.streak + 1 : 1;
+        s.tries = 0;
         s.ask++;
         out.push({ cue: "ring" }, { burst: { kind: "sparkle", x: at.x, y: at.y - 0.5, n: 8 } });
-    } else out.push({ cue: "nope" });
+    } else {
+        s.streak = 0;
+        out.push({ cue: "nope" });
+    }
 }
 
 const asked = (s: FetchState) => s.L.asks[s.ask]?.kind;
@@ -846,7 +871,8 @@ function stepThing(s: FetchState, out: Happening[]): void {
         s.landed = metres(at.x);
         out.push({ puff: { x: at.x, y: at.y + 0.2, n: 4 } });
         const k = asked(s);
-        if (k === "spot" || k === "past") decide(s, measured(s, s.landed, "It landed"), at, out);
+        if (k === "spot" || k === "past" || k === "make")
+            decide(s, measured(s, s.landed, "It landed"), at, out);
     }
     if (wet && !s.splashed) {
         s.splashed = true;
@@ -967,7 +993,7 @@ function stepDog(s: FetchState, k: number, out: Happening[]): void {
 }
 
 /** The camera's aim at the start of a throw: the rug near the left and the path running away to the right. */
-const readyCam = (L: FetchLevel): Pt => ({ x: X(Math.min(L.length / 2, 14)), y: H - VIEW.h / 2 });
+const readyCam = (L: FetchLevel): Pt => ({ x: X(L.length / 2 - 1), y: H - VIEW.h / 2 });
 
 function stepCam(s: FetchState): void {
     const t = s.thing ? s.world.where(s.thing) : null,
@@ -978,9 +1004,12 @@ function stepCam(s: FetchState): void {
             : s.phase === "fetched" && carrier
               ? Math.max(readyCam(s.L).x, carrier.r.x)
               : readyCam(s.L).x;
+    // a high throw lifts the view with it, so the thing never leaves the top
+    const low = H - VIEW.h / 2 / s.look,
+        y = s.phase === "flying" && t ? Math.min(low, t.y - 2 + VIEW.h / 2 / s.look) : low;
     s.cam = follow(
         s.cam,
-        { x, y: H - VIEW.h / 2 / s.look, zoom: s.look },
+        { x, y, zoom: s.look },
         { rate: 2.5, zoomRate: 4, dt: DT, view: VIEW, world: worldOf(s.L) },
     );
 }
@@ -1214,15 +1243,70 @@ function frame(s: FetchState, rest = false): Frame {
             });
     }
     const a = L.asks[s.ask];
-    const want = a ? targetOf(L, a) : null;
-    if (want !== null && !s.won) {
-        const x = X(want),
-            y = landAt(L, x) - 0.1;
-        marks.push(
-            { kind: "line", a: { x: x - L.within, y }, b: { x: x + L.within, y }, style: "aim" },
-            { kind: "word", x, y: y - 1.3, text: said(want), size: 0.9 },
-        );
+    // a good throw makes the sign it was for jump: the ask just done, while the pups cheer
+    const pop =
+        !rest && s.cheer > 0 && s.good ? 1 + 0.3 * Math.sin(Math.min(1, s.cheer) * Math.PI) : 1;
+    const done = s.ask > 0 ? L.asks[s.ask - 1] : undefined;
+    const shown = s.cheer > 0 && s.good && done ? done : a;
+    if (shown && !s.won) {
+        const at = targetOf(L, shown),
+            lit = shown !== a;
+        // a number to throw to stands where it is; an ask worked out from a pup stands by the pup, so
+        // the sign does not give the answer away
+        if (shown.kind === "spot" || shown.kind === "stop") {
+            const x = X(shown.at);
+            sprites.push({
+                key: "target",
+                art: "fetchmark",
+                params: {
+                    n: shown.kind === "spot" && shown.words ? "half" : String(shown.at),
+                    lit: lit ? 1 : 0,
+                },
+                size: 2.4,
+                x,
+                y: landAt(L, x) + 0.15,
+                stand: true,
+                z: 6,
+                scale: lit ? pop : 1,
+            });
+        } else if (shown.kind === "past" || shown.kind === "make") {
+            const x = X(L.seats[shown.who]) + 1.6;
+            sprites.push({
+                key: "target",
+                art: "fetchmark",
+                params: {
+                    n: shown.kind === "past" ? `+${said(shown.by)}` : `=${said(shown.total)}`,
+                    lit: lit ? 1 : 0,
+                },
+                size: 2.4,
+                x,
+                y: landAt(L, x) + 0.15,
+                stand: true,
+                z: 6,
+                scale: lit ? pop : 1,
+            });
+        }
+        // the band a throw has to land in, drawn while the level still helps with a dotted line
+        if (at !== null && L.preview >= 0.5 && !lit) {
+            const x = X(at),
+                y = landAt(L, x) - 0.1;
+            marks.push({
+                kind: "line",
+                a: { x: x - L.within, y },
+                b: { x: x + L.within, y },
+                style: "aim",
+            });
+        }
     }
+    if (s.streak > 1 && !s.won)
+        marks.push({
+            kind: "word",
+            x: 5,
+            y: 2,
+            text: `${s.streak} in a row!`,
+            size: 0.8,
+            fixed: true,
+        });
     if (s.landed !== null && s.phase !== "ready") {
         const x = X(s.landed),
             y = (openWater(L, x) ? SURFACE : landAt(L, x)) - 0.15;
@@ -1396,7 +1480,10 @@ export const fetchGame: ActionGame<FetchState> = {
         arrows: { up: "Aim higher", down: "Aim lower", left: "Softer", right: "Harder" },
         go: "Throw",
         brake: "Swap",
+        icons: { go: "launch", brake: "ball" },
     },
+    // Swap shows what is in hand, so a press is seen to change it
+    brakeIcon: (s) => s.toy,
     // the brake button is Swap on screen and on a gamepad; this gives it the B key as well
     commands: [{ id: "swap", label: "Swap", key: "b" }],
     command: (s, id) => {
@@ -1408,7 +1495,7 @@ export const fetchGame: ActionGame<FetchState> = {
     say: describe,
     note: (s) => {
         const a = s.L.asks[s.ask];
-        if (!s.touched) return s.L.prompt;
+        if (!s.touched) return a ? `${askWords(s.L, a)} ${s.L.prompt}` : s.L.prompt;
         if (s.won || s.steps - s.saidAt < RATE * 5) return s.said;
         return s.phase === "ready" && a ? askWords(s.L, a) : "";
     },

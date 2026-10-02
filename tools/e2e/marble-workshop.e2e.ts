@@ -26,7 +26,7 @@ test("marble workshop: the first run is built and run with the keys alone", asyn
     await keys("ArrowDown", 16);
     await keys("e", 7);
     await keys(" ");
-    await expect(page.getByRole("button", { name: "Play again", exact: true })).toBeVisible({
+    await expect(page.locator(".game-toolbar .game-finished")).toBeVisible({
         timeout: 30_000,
     });
     await expect(page.locator(".game-toolbar .game-finished")).toContainText("Every cup");
@@ -82,7 +82,7 @@ test("marble workshop: the water run is built with the keys and fills the cup", 
     await keys("ArrowLeft", 2);
     await keys("ArrowDown", 1);
     await keys(" ");
-    await expect(page.getByRole("button", { name: "Play again", exact: true })).toBeVisible({
+    await expect(page.locator(".game-toolbar .game-finished")).toBeVisible({
         timeout: 40_000,
     });
     await expect(page.locator(".game-toolbar .game-finished")).toContainText("8 litres");

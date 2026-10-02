@@ -21,12 +21,15 @@ export interface FetchConfiguration {
 /** How far each variation moves a level's numbers along the path, in metres. */
 const SHIFTS = [0, 1, -1, 2] as const;
 
+// a spot said in words ("halfway to the tree") is where the words put it, so it does not move
 const shifted = (a: Ask, by: number): Ask =>
-    a.kind === "pup"
+    a.kind === "pup" || (a.kind === "spot" && a.words)
         ? { ...a }
         : a.kind === "past"
           ? { ...a, by: a.by + by }
-          : { ...a, at: a.at + by };
+          : a.kind === "make"
+            ? { ...a, total: a.total + by }
+            : { ...a, at: a.at + by };
 
 /** A level with its numbers moved for a variation. */
 export function vary(L: FetchLevel, variant: number): FetchLevel {

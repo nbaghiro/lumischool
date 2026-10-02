@@ -99,7 +99,14 @@ export interface ActionGame<S> extends Base {
     /** Steps per second; the page's fixed loop runs at this rate. */
     rate: number;
     /** Extra buttons under the field; one with an `icon` is drawn as that icon alone, its label kept as its name. */
-    commands?: readonly { id: string; label: string; key?: string; icon?: IconName }[];
+    /** Extra actions; one marked `keysOnly` has its key and no button, where the screen does the same job another way. */
+    commands?: readonly {
+        id: string;
+        label: string;
+        key?: string;
+        icon?: IconName;
+        keysOnly?: true;
+    }[];
     command?(s: S, id: string): void;
     /**
      * A design to keep, and putting one back: what a build game saves between tries. Returning to a
@@ -120,6 +127,8 @@ export interface ActionGame<S> extends Base {
     goLabel?(s: S): string;
     /** The big button's drawing now, beside `goLabel`, for a round button whose picture follows the game. */
     goIcon?(s: S): IconName;
+    /** The other big button's drawing now, for a button whose picture follows the game, such as the thing in hand. */
+    brakeIcon?(s: S): IconName;
     start(level: number, seed?: number): S;
     step(s: S, pad: Pad): Happening[];
     /** The position in words, for the text form and a screen reader. */

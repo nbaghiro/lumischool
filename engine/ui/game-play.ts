@@ -231,6 +231,8 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
 
     /** The big go button, whose word a game may change as it goes on. */
     let goButton: HTMLButtonElement | null = null;
+    let brakeButton: HTMLButtonElement | null = null;
+    let brakeDrawn: IconName | null = null;
     let lastHud = 0,
         lastSaid = "",
         lastRead = 0;
@@ -258,7 +260,6 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
             if (won) shell.observe?.("won");
             shell.guide(won ? "cheer" : "idle");
         }
-        $("another").hidden = !won;
         const label = game.goLabel?.(s);
         if (label && goButton && goButton.title !== label) {
             const drawn = game.goIcon?.(s);
@@ -266,6 +267,11 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
             else goButton.textContent = label;
             goButton.setAttribute("aria-label", label);
             goButton.title = label;
+        }
+        const thing = game.brakeIcon?.(s);
+        if (thing && brakeButton && thing !== brakeDrawn) {
+            brakeDrawn = thing;
+            brakeButton.replaceChildren(iconElement(thing));
         }
         $("watch").hidden = !won || shell.still() || watching !== null || tape.steps === 0;
         $("checkpoint").hidden = mark === 0 || won || watching !== null;
@@ -509,7 +515,7 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
                 c.icons?.go,
             );
         if (c.brake)
-            big(
+            brakeButton = big(
                 c.brake,
                 () => {
                     pad.brake = true;
@@ -521,7 +527,7 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
                 c.icons?.brake,
             );
         for (const command of game.commands ?? []) {
-            if (command.label === c.go || command.label === c.brake) continue;
+            if (command.keysOnly || command.label === c.go || command.label === c.brake) continue;
             const button = document.createElement("button");
             button.type = "button";
             button.className = "key";
@@ -603,8 +609,6 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
     const pointerMove = (e: PointerEvent): void => {
         if (game.intents && !shell.paused())
             intend(fingers.move(e.pointerId, e.clientX, e.clientY));
-        if (!drag && e.pointerType === "mouse" && game.touch)
-            pad.hover = field.toWorld(e.clientX, e.clientY);
         if (!drag || drag.id !== e.pointerId || shell.paused() || drag.brake) return;
         const w = field.toWorld(e.clientX, e.clientY);
         pointerTrail.push({ ...w, t: e.timeStamp });
@@ -688,9 +692,6 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
     field.el.addEventListener("pointercancel", pointerCancel);
     field.el.addEventListener("lostpointercapture", pointerCancel);
     field.el.addEventListener("contextmenu", contextMenu);
-    field.el.addEventListener("pointerleave", () => {
-        pad.hover = null;
-    });
     field.el.addEventListener("wheel", wheel, { passive: false });
 
     /** A gamepad: the d-pad or the left stick is a direction, A is the big button, B the brake. */
@@ -1058,7 +1059,6 @@ function turn(
         back.title = state.round.reversible
             ? "Undo last move"
             : "A number you have fed in cannot be unfed.";
-        $("another").hidden = !pos.won;
         shell.keys(
             handy
                 ? `${game.hint}. On the board, arrow keys choose a thing and Enter picks it up and puts it down; in the tray, arrow keys choose a move and Enter plays it. Backspace takes back.`

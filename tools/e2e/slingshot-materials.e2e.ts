@@ -49,7 +49,7 @@ for (const input of ["pointer", "keyboard", "reduced motion"] as const) {
             );
             await page.mouse.up();
         } else await keyboardShot(page);
-        const another = page.getByRole("button", { name: "Play another", exact: true });
+        const another = page.locator(".game-toolbar .game-finished");
         await expect(another).toBeVisible();
         await page.screenshot({
             path: `/tmp/slingshot-materials-${info.project.name}-${input.replaceAll(" ", "-")}-won.png`,
@@ -59,7 +59,7 @@ for (const input of ["pointer", "keyboard", "reduced motion"] as const) {
         await expect(player).toHaveAttribute("data-game-ready", "true");
         await keyboardShot(page);
         await expect(another).toBeVisible();
-        await another.click();
+        await page.locator('[data-game="shuffle"]').click();
         await expect(player).toHaveAttribute("data-game-ready", "true");
         await expect(player).not.toHaveAttribute("data-challenge", challenge ?? "");
         await expect(page).toHaveURL(/v=2/);
@@ -75,7 +75,7 @@ test("stone wall: hard throws with the keys break the wall and knock both stars 
     await expect(page.locator(".game-player")).toHaveAttribute("data-game-ready", "true");
     // the aim starts at 35 degrees and a pull of 3; each arrow turns it 5 degrees or pulls half a square
     let aim = { deg: 35, pull: 3 };
-    const another = page.getByRole("button", { name: "Play another", exact: true });
+    const another = page.locator(".game-toolbar .game-finished");
     // every certified wall falls to one of these pairs of throws (school/games/__tests__/sling-materials.test.ts)
     const throws = [
         [15, 4.5],

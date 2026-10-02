@@ -9,8 +9,7 @@ async function open(page: Page, level: number, errors: string[]): Promise<void> 
     await expect(page.locator('.field-probe [data-key="charlie"]')).toBeAttached();
 }
 
-const played = (page: Page) =>
-    page.getByRole("button", { name: "Play another", exact: true }).isVisible();
+const played = (page: Page) => page.locator(".game-toolbar .game-finished").isVisible();
 
 test("rope swings: from the keys, pulled back with the arrows, Pull starts the swing and Let go flies her across", async ({
     page,
@@ -28,7 +27,7 @@ test("rope swings: from the keys, pulled back with the arrows, Pull starts the s
         await expect(button("Let go")).toBeVisible();
         await page.keyboard.press("Space");
     }
-    await expect(page.getByRole("button", { name: "Play another", exact: true })).toBeVisible();
+    await expect(page.locator(".game-toolbar .game-finished")).toBeVisible();
     await page.screenshot({ path: `/tmp/charlie-swings-${info.project.name}.png` });
     expect(errors).toEqual([]);
 });

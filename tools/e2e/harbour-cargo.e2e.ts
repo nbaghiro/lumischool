@@ -34,7 +34,7 @@ test("harbour cargo: dragging each crate over the boat and letting go loads it, 
         await page.mouse.up();
         await aboard(page, i + 1);
     }
-    await expect(page.getByRole("button", { name: "Play another", exact: true })).toBeVisible({
+    await expect(page.locator(".game-toolbar .game-finished")).toBeVisible({
         timeout: 15000,
     });
     await page.screenshot({ path: `/tmp/harbour-cargo-drag-${info.project.name}.png` });
@@ -84,7 +84,7 @@ test("harbour cargo: driving the crane from the keys loads every crate, steadied
         await page.keyboard.press("Space");
         await aboard(page, i + 1);
     }
-    await expect(page.getByRole("button", { name: "Play another", exact: true })).toBeVisible({
+    await expect(page.locator(".game-toolbar .game-finished")).toBeVisible({
         timeout: 15000,
     });
     await page.screenshot({ path: `/tmp/harbour-cargo-keys-${info.project.name}.png` });

@@ -89,17 +89,13 @@ test("parent games stay unassigned and report-free while recovering already-owne
     const finish = async () => {
         await expect(player).toHaveAttribute("data-game-ready", "true");
         await playTrain(page, 0, "keys");
-        await expect(page.getByRole("button", { name: "Play another", exact: true })).toBeVisible();
+        await expect(page.locator(".game-toolbar .game-finished")).toBeVisible();
         await expect(page.locator(".game-finished")).toContainText("bus");
         await expect(page.locator(".game-finished .game-cover svg")).toBeVisible();
         // a finished round's result and what to do next sit in the middle of the top bar
         await expect(page.locator(".game-toolbar [data-game=aside]")).toHaveCount(1);
         await expect(page.locator(".game-toolbar .game-finished")).toBeVisible();
-        await expect(
-            page
-                .locator(".game-toolbar")
-                .getByRole("button", { name: "Play another", exact: true }),
-        ).toBeVisible();
+        await expect(page.locator(".game-toolbar .game-finished")).toBeVisible();
         await expect(
             page.getByRole("button", { name: "Try the next phase", exact: true }),
         ).toHaveCount(0);
@@ -108,7 +104,7 @@ test("parent games stay unassigned and report-free while recovering already-owne
     await page.getByRole("button", { name: "Start the level again", exact: true }).click();
     await expect(player).toHaveAttribute("data-challenge", first ?? "");
     await finish();
-    await page.getByRole("button", { name: "Play another", exact: true }).click();
+    await page.locator('[data-game="shuffle"]').click();
     await expect(player).not.toHaveAttribute("data-challenge", first ?? "");
     const generated = await player.getAttribute("data-challenge");
     await page.reload();

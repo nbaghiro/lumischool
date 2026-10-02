@@ -38,6 +38,9 @@ export const ICONS = [
     "mic",
     "close",
     "words",
+    "ball",
+    "frisbee",
+    "stick",
 ] as const;
 export type IconName = (typeof ICONS)[number];
 
@@ -73,6 +76,9 @@ export const ICON_LABEL: Record<IconName, string> = {
     mic: "Hold to talk",
     close: "Close",
     words: "Show the words",
+    ball: "Ball",
+    frisbee: "Frisbee",
+    stick: "Stick",
 };
 
 /**
@@ -119,6 +125,23 @@ function arrow<G>(c: Ctx<G>, from: Pt, to: Pt, head = 7.5): void {
 }
 
 const DRAW: Record<IconName, <G>(c: Ctx<G>) => void> = {
+    ball: (c) => {
+        const d = "M32 20A12 12 0 1 1 8 20A12 12 0 1 1 32 20Z";
+        wash(c, d, "glow");
+        c.pen.path(c.g, d, "ruler", null, line(c));
+        c.pen.path(c.g, "M11 13C17 18 17 23 11 28", "ruler", null, line(c));
+        c.pen.path(c.g, "M29 13C23 18 23 23 29 28", "ruler", null, line(c));
+    },
+    frisbee: (c) => {
+        const d = "M5 22C5 15 35 15 35 22C35 27 5 27 5 22Z";
+        wash(c, d, "sky");
+        c.pen.path(c.g, d, "ruler", null, line(c));
+        c.pen.path(c.g, "M12 19C17 17 23 17 28 19", "ruler", null, line(c));
+    },
+    stick: (c) => {
+        c.pen.path(c.g, "M7 31L33 9", "ruler", null, line(c));
+        c.pen.path(c.g, "M20 20L26 23", "ruler", null, line(c));
+    },
     faster: (c) => {
         for (const x of [8, 20])
             c.pen.linear(
@@ -530,7 +553,7 @@ export const icon = defineDrawing<{ name: IconName; on: boolean }>({
     family: "apps",
     title: "Icons for the apps' controls",
     group: "Marks",
-    about: "Home, journal, map, print, settings, back, sign out, add, help, sound, faster, shuffle, watch, hook, reel, a microphone, close and the words said, drawn as one set on a two-square box: one stroke weight, round ends and one marker under the pencil. Every control supplies its name, and `on` lays a disc of highlighter behind it for the page a child or a grown-up is on.",
+    about: "Home, journal, map, print, settings, back, sign out, add, help, sound, faster, shuffle, watch, hook, reel, a microphone, close, the words said, a ball, a frisbee and a stick, drawn as one set on a two-square box: one stroke weight, round ends and one marker under the pencil. Every control supplies its name, and `on` lays a disc of highlighter behind it for the page a child or a grown-up is on.",
     params: { name: "home", on: false },
     settings: { name: { kind: "one of", of: ICONS }, on: { kind: "flag" } },
     takes: [

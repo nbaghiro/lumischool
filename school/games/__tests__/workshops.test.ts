@@ -1,7 +1,8 @@
 // Harbour cargo: every level is won by dragging crates and letting go, and by driving the crane; the
-// recorded pads replay to the same delivery; a crate let go of is set down straight below; the barge
-// lists and a crate in the harbour comes back; the boat sails by itself once balanced; random play
-// rarely wins; and the frame shows only shelf drawings, with its previews fading by level.
+// recorded pads replay to the same delivery; a crate is set down where the finger let go, snapped to
+// the deck, and a drop away from the boat goes back to the quay; the barge lists and a crate in the
+// harbour comes back; the boat sails by itself once balanced; random play rarely wins; and the frame
+// shows only shelf drawings, with its previews fading by level.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { emptyPad, type Pad } from "../../../engine/motion/pad";
@@ -88,6 +89,8 @@ function driveAll(s: WorkshopState): void {
             if (Math.hypot(v.x, v.y) < 0.15 && Math.abs(s.world.where(body).x - x) < 0.2) break;
         }
         go({ tapped: true });
+        // let down straight below, its swing steadied
+        for (let k = 0; k < 300 && s.held; k++) go();
         assert.equal(s.held, null);
         for (let k = 0; k < 90; k++) go();
     }
@@ -121,7 +124,7 @@ test("every level is won by driving the crane from the keys alone", () => {
     }
 });
 
-test("a crate let go of is set down straight below where it was let go, and the boat sails without a press", () => {
+test("a crate is set down where the finger let go, on the deck's half squares, without waiting for a swing", () => {
     const s = startWorkshop(0),
         { go, settle } = driver(s);
     for (let k = 0; k < 60; k++) go();
@@ -131,26 +134,72 @@ test("a crate let go of is set down straight below where it was let go, and the 
     go({ touch: { x: at.x, y: at.y } });
     for (let k = 0; k < 30; k++) go({ touch: { x: 27, y: 10 } });
     // let go while it is still travelling: the crane carries it on and sets it down at 27
-    go({ lifted: { x: 27, y: 10 } });
+    go({ lifted: { x: 27.1, y: 10 } });
     assert.ok(s.placing);
-    settle();
+    let ticks = 0;
+    for (; ticks < 300 && s.held; ticks++) go();
     assert.equal(s.held, null);
+    assert.ok(ticks * (1 / 60) < 2.5, `set down in ${ticks} steps`);
+    for (let k = 0; k < 30; k++) go();
+    const x = s.world.where(body).x - s.world.where(s.barge).x;
+    assert.ok(
+        Math.abs(x * 2 - Math.round(x * 2)) < 0.15,
+        `a half-square place, ${x} from the mast`,
+    );
     assert.ok(Math.abs(s.world.where(body).x - 27) < 0.4, `set down at ${s.world.where(body).x}`);
     assert.ok(!cargoGame.commands?.some((c) => /bell/i.test(c.label)));
+
+    // over the water beside the boat it still goes on the deck; far from it, back to the quay
+    const other = s.objects.get("b");
+    assert.ok(other);
+    const from = s.world.where(other);
+    go({ touch: { x: from.x, y: from.y } });
+    for (let k = 0; k < 60; k++) go({ touch: { x: 40.5, y: 22 } });
+    go({ lifted: { x: 40.5, y: 22 } });
+    settle();
+    assert.ok(Math.abs(s.world.where(other).x - s.world.where(s.barge).x) <= 7.6);
+    assert.ok(s.world.where(other).y < 21, "it stands on the deck");
 });
 
-test("a keyboard or switch drag that is cancelled keeps the crate held, and the big button lets it go", () => {
-    const s = startWorkshop(0);
+test("dropping a crate far from the boat costs nothing: it goes back to its place on the quay", () => {
+    const s = startWorkshop(1),
+        { go, settle } = driver(s);
+    for (let k = 0; k < 60; k++) go();
+    const p = s.definition.pieces[0];
+    const body = s.objects.get("a");
+    assert.ok(p && body);
+    go({ touch: { x: p.x, y: s.world.where(body).y } });
+    for (let k = 0; k < 60; k++) go({ touch: { x: 17.6, y: 22 } });
+    go({ lifted: { x: 17.6, y: 22 } });
+    settle();
+    assert.match(s.text, /quay/);
+    assert.ok(Math.abs(s.world.where(body).x - p.x) < 0.3);
+    assert.equal(s.ripples.length, 0, "it never touched the water");
+});
+
+test("a drag cut short sets its crate down below it, and the keys still pick up and let a crate down", () => {
+    const s = startWorkshop(0),
+        { go, settle } = driver(s);
     const p = s.definition.pieces[0];
     assert.ok(p);
-    stepWorkshop(s, { ...emptyPad(), touch: { x: p.x, y: p.y } });
+    go({ touch: { x: p.x, y: p.y } });
     assert.equal(s.held, p.id);
     cargoGame.cancelInput?.(s);
     assert.equal(s.dragging, null);
     assert.equal(s.touching, false);
+    assert.ok(s.placing, "it is being set down");
+    settle();
+    assert.equal(s.held, null);
+    // from the keys: Space takes the crate under the hook, and Space again lets it straight down
+    s.hook = { x: s.world.where(s.objects.get(p.id) ?? s.barge).x, y: 18.5 };
+    for (let k = 0; k < 120; k++) go();
+    go({ tapped: true });
     assert.equal(s.held, p.id);
-    stepWorkshop(s, { ...emptyPad(), tapped: true });
-    assert.equal(s.held, null, "Space lets the held crate go where it hangs");
+    const x = s.world.where(s.objects.get(p.id) ?? s.barge).x;
+    go({ tapped: true });
+    for (let k = 0; k < 120 && s.held; k++) go();
+    assert.equal(s.held, null, "Space lets the held crate down where it hangs");
+    assert.ok(Math.abs(s.world.where(s.objects.get(p.id) ?? s.barge).x - x) < 0.3);
 });
 
 test("the barge lists towards a heavy crate at one end, and a crate dropped in the harbour splashes and comes back", () => {
@@ -168,12 +217,15 @@ test("the barge lists towards a heavy crate at one end, and a crate dropped in t
     assert.ok(s.world.where(s.barge).angle > 0.02, `lists by ${s.world.where(s.barge).angle}`);
     assert.match(frameWords(s), /More weight on the right/);
 
+    // driven over the open water from the keys and let down there, it goes in
     const light = s.objects.get("a");
     assert.ok(light);
     const from = s.world.where(light);
     go({ touch: { x: from.x, y: from.y } });
-    for (let k = 0; k < 90; k++) go({ touch: { x: 19.5, y: 10 } });
-    go({ lifted: { x: 19.5, y: 10 } });
+    for (let k = 0; k < 90; k++) go({ touch: { x: 19.2, y: 10 } });
+    s.dragging = null;
+    s.aim = null;
+    go({ tapped: true });
     let splashed = false;
     for (let k = 0; k < 900 && !/brought that crate back/.test(s.text); k++) {
         go();

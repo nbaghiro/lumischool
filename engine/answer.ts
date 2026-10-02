@@ -50,17 +50,17 @@ export const gameRulesVersion = (game: string): string =>
                 : game === "straight"
                   ? `${GAME_CHALLENGE_VERSIONS.rules}-river-3`
                   : game === "fish"
-                    ? `${GAME_CHALLENGE_VERSIONS.rules}-fishing-4`
+                    ? `${GAME_CHALLENGE_VERSIONS.rules}-fishing-5`
                     : game === "spell"
                       ? `${GAME_CHALLENGE_VERSIONS.rules}-sound-train-2`
                       : game === "shunt"
                         ? `${GAME_CHALLENGE_VERSIONS.rules}-yard-4`
                         : game === "clear"
-                          ? `${GAME_CHALLENGE_VERSIONS.rules}-show-jumping-3`
+                          ? `${GAME_CHALLENGE_VERSIONS.rules}-show-jumping-4`
                           : game === "snake"
                             ? `${GAME_CHALLENGE_VERSIONS.rules}-firefly-3`
                             : game === "blocks"
-                              ? `${GAME_CHALLENGE_VERSIONS.rules}-fetch-1`
+                              ? `${GAME_CHALLENGE_VERSIONS.rules}-fetch-2`
                               : game === "marble-workshop"
                                 ? `${GAME_CHALLENGE_VERSIONS.rules}-marble-run-3`
                                 : game === "bridge"
@@ -70,13 +70,13 @@ export const gameRulesVersion = (game: string): string =>
                                     : game === "road"
                                       ? `${GAME_CHALLENGE_VERSIONS.rules}-road-3`
                                       : game === "cargo-workshop"
-                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-cargo-5`
+                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-cargo-6`
                                         : game === "herd"
                                           ? `${GAME_CHALLENGE_VERSIONS.rules}-physics-4`
                                           : ["jump", "weigh", "share"].includes(game)
                                             ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-3`
                                             : game === "wardrobe"
-                                              ? `${GAME_CHALLENGE_VERSIONS.rules}-lemonade-2`
+                                              ? `${GAME_CHALLENGE_VERSIONS.rules}-lemonade-3`
                                               : game === "pay"
                                                 ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-2`
                                                 : GAME_CHALLENGE_VERSIONS.rules;

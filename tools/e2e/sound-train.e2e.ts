@@ -11,7 +11,7 @@ test("sound train: the wagons are pushed on in order and the train leaves spelli
     await expect(page.locator(".game-player")).toHaveAttribute("data-game-ready", "true");
     await expect(page.locator(".field-gl canvas").first()).toBeVisible();
     await playTrain(page, 0);
-    await expect(page.getByRole("button", { name: "Play another", exact: true })).toBeVisible();
+    await expect(page.locator(".game-toolbar .game-finished")).toBeVisible();
     await expect(page.locator(".game-finished")).toContainText("bus");
     await page.screenshot({ path: `/tmp/sound-train-${info.project.name}.png` });
     expect(errors).toEqual([]);

@@ -41,7 +41,7 @@ test("Firefly trail: a tap on each seed of the count in turn flies the trail to 
         }
         await expect(seed).toHaveCount(0);
     }
-    await expect(page.getByRole("button", { name: "Play another", exact: true })).toBeVisible({
+    await expect(page.locator(".game-toolbar .game-finished")).toBeVisible({
         timeout: 15_000,
     });
 });
