@@ -1,7 +1,18 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { defineDrawing } from "../parts/drawing";
-import { paramsOf, pyramidRows, sceneProblem, shown, valuesOf, wrap } from "../scene";
+import {
+    narrowed,
+    paramsOf,
+    pyramidRows,
+    sceneProblem,
+    shown,
+    valuesOf,
+    wrap,
+    type Box,
+    type Scene,
+    type SceneNode,
+} from "../scene";
 
 const scene = (over: Record<string, unknown> = {}): Record<string, unknown> => ({
     size: [20, 6],
@@ -84,6 +95,121 @@ test("text wraps to a width in squares by the glyph estimate the layout sizes it
     assert.deepEqual(wrap("one", 1), ["one"]);
     assert.equal(pyramidRows(6), 3);
     assert.equal(pyramidRows(10), 4);
+});
+
+const said = (s: string) => ({ pieces: [], parts: [s], filled: s, blanks: [] });
+const ASK = "Ada rolls a dice on the garden path. Look quickly: how many dots?";
+/** k.dice-glance as the pack lays it out: the dice, the question right of it, and the box below. */
+const dice = (more: { node: SceneNode; box: Box }[] = []): Scene => ({
+    size: [30, 10],
+    nodes: [
+        { type: "dice", id: "d", v: { faces: [3] }, place: { rel: "at", x: 1, y: 1 } },
+        {
+            type: "text",
+            id: "q",
+            v: { text: said(ASK), width: 18 },
+            place: { rel: "right-of", of: "d", gap: 2 },
+        },
+        { type: "number-input", id: "answer", v: {}, place: { rel: "below", of: "q", gap: 1 } },
+        ...more.map((m) => m.node),
+    ],
+    arrows: [],
+    marks: [],
+    boxes: {
+        d: { x: 1, y: 1, w: 3, h: 3 },
+        q: { x: 6, y: 1, w: 18, h: 4 },
+        answer: { x: 6, y: 6, w: 4, h: 2 },
+        ...Object.fromEntries(more.map((m) => [m.node.id, m.box])),
+    },
+});
+
+test("a scene too wide for a phone's column puts the words under the drawing and wraps them there", () => {
+    const narrow = narrowed(dice(), 12);
+    const lines = wrap(ASK, 10).length;
+    // one square of margin round it, as the scene was written with
+    assert.deepEqual(narrow.size, [12, 5 + 2 * lines + 1 + 2 + 1]);
+    assert.deepEqual(narrow.boxes.q, { x: 1, y: 5, w: 10, h: 2 * lines });
+    assert.equal(narrow.nodes.find((n) => n.id === "q")?.v.width, 10);
+    // the box still hangs under the words, wherever they went
+    assert.deepEqual(narrow.boxes.answer, {
+        x: 1,
+        y: 5 + 2 * lines + 1,
+        w: 4,
+        h: 2,
+    });
+    // a column it fits is left as it was
+    const wide = dice();
+    assert.equal(narrowed(wide, 30), wide);
+});
+
+test("a narrow scene stands what was below a part under what moved beneath it, and gives up rather than overlap", () => {
+    const hint: SceneNode = { type: "text", id: "h", v: { text: said("Count.") }, place: null };
+    const withSpare = dice([
+        {
+            node: {
+                type: "number-input",
+                id: "spare",
+                v: {},
+                place: { rel: "below", of: "d", gap: 1 },
+            },
+            box: { x: 1, y: 5, w: 4, h: 2 },
+        },
+    ]);
+    // the box under the dice, and nothing under the words
+    const { answer: _answer, ...boxes } = withSpare.boxes;
+    const below = narrowed(
+        { ...withSpare, nodes: withSpare.nodes.filter((n) => n.id !== "answer"), boxes },
+        12,
+    );
+    const q = below.boxes.q;
+    assert.ok(q);
+    assert.equal(below.boxes.spare?.y, q.y + q.h + 1);
+    const stuck = dice([
+        { node: { ...hint, place: { rel: "at", x: 1, y: 5 } }, box: { x: 1, y: 5, w: 4, h: 2 } },
+    ]);
+    assert.equal(narrowed(stuck, 12), stuck);
+});
+
+test("a narrow scene stacks a row of cards and runs a row of parts on to another line", () => {
+    const cards = ["one", "two", "three"].map((label) => ({
+        kind: "text" as const,
+        label,
+        value: label,
+    }));
+    const scene: Scene = {
+        size: [26, 9],
+        nodes: [
+            {
+                type: "choice",
+                id: "pick",
+                v: { options: cards, stack: "row" },
+                place: { rel: "at", x: 1, y: 1 },
+            },
+            {
+                type: "row",
+                id: "r",
+                v: { space: 1 },
+                place: { rel: "below", of: "pick", gap: 1 },
+                contains: ["a", "b"],
+            },
+            { type: "dice", id: "a", v: {}, place: { rel: "in", of: "r", index: 0 } },
+            { type: "dice", id: "b", v: {}, place: { rel: "in", of: "r", index: 1 } },
+        ],
+        arrows: [],
+        marks: [],
+        boxes: {
+            pick: { x: 1, y: 1, w: 17, h: 3 },
+            r: { x: 1, y: 5, w: 15, h: 3 },
+            a: { x: 1, y: 5, w: 7, h: 3 },
+            b: { x: 9, y: 5, w: 7, h: 3 },
+        },
+    };
+    const narrow = narrowed(scene, 12);
+    assert.equal(narrow.nodes.find((n) => n.id === "pick")?.v.stack, "column");
+    assert.deepEqual(narrow.boxes.pick, { x: 1, y: 1, w: 5, h: 11 });
+    assert.deepEqual(narrow.boxes.a, { x: 1, y: 13, w: 7, h: 3 });
+    assert.deepEqual(narrow.boxes.b, { x: 1, y: 17, w: 7, h: 3 });
+    assert.deepEqual(narrow.boxes.r, { x: 1, y: 13, w: 7, h: 7 });
 });
 
 test("a setting reads back as text: a line as what it filled to, options as their labels", () => {
