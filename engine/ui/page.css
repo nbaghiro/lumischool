@@ -460,3 +460,16 @@ body {
         transition: none;
     }
 }
+
+/* In the mobile app (engine/ui/native.ts) its own chrome stands in for the bar, and the page keeps
+   clear of the notch, the home indicator and the keyboard, which the app reports. */
+:root[data-host-bar="app"] .page {
+    --bar-h: 0px;
+}
+:root[data-host-bar="app"] :is(.page-top, .page-skip, .page-nav) {
+    display: none;
+}
+:root[data-host="native"] .page {
+    padding-top: var(--host-top, 0px);
+    padding-bottom: calc(var(--host-bottom, 0px) + var(--host-keyboard, 0px));
+}

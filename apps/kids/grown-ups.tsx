@@ -8,6 +8,7 @@
 import { createEffect, createSignal, For, Show, type JSX } from "solid-js";
 import { Button, PinInput } from "../../engine/ui/form";
 import { add, leave, type Sending } from "../../engine/ui/kid";
+import { hosted, send } from "../../engine/ui/native";
 import type { Failure } from "../../engine/ui/wire";
 import { Column, Part, useLook } from "../../engine/ui/page";
 import { Postcard } from "../../engine/ui/postcard";
@@ -82,7 +83,8 @@ export function GrownUps(props: {
         setSaid("");
         const left = await leave(pin());
         if (left === true) {
-            location.assign("/");
+            if (hosted()) send("parentMode", {});
+            else location.assign("/");
             return;
         }
         setBusy(null);

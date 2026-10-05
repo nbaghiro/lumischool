@@ -31,5 +31,6 @@
         "boundaries.ts",
         "drizzle.config.ts",
         "vite.config.ts"
-    ]
+    ],
+    "exclude": ["apps/mobile"]
 }

@@ -194,6 +194,16 @@ const codeHash = (config: AuthConfig, code: string): string => keyed(config.pepp
 /** "Safari on an iPad", for the session list. A guess from the user agent, and only a label. */
 export function deviceName(userAgent: string | null): string | null {
     if (!userAgent) return null;
+    if (userAgent.includes("lumischoolApp/")) {
+        const phone = /iPad/.test(userAgent)
+            ? "an iPad"
+            : /iPhone/.test(userAgent)
+              ? "an iPhone"
+              : /Android/.test(userAgent)
+                ? "an Android phone"
+                : null;
+        return phone ? `the lumischool app on ${phone}` : "the lumischool app";
+    }
     const browser = /Edg\//.test(userAgent)
         ? "Edge"
         : /Firefox\//.test(userAgent)
@@ -1059,15 +1069,19 @@ export async function signInKid(
     input: { username: unknown; pin: unknown },
     ip: string | null,
     device: string | null,
+    appDevice: string | null = null,
 ): Promise<{ credential: string } | null> {
     const username = usernameOf(input.username);
     if (!username || typeof input.pin !== "string" || !PIN.test(input.pin)) return null;
     const pin = input.pin;
     const attempt = sha256(newSecret());
+    // The app's device key stands in for the network, whose address a phone carrier shares widely.
     const found = await lookupLogin(
         username,
         keyed(config.pepper, "kid-name", username),
-        networkHash(config, ip) ?? "unknown",
+        appDevice
+            ? keyed(config.pepper, "device", appDevice)
+            : (networkHash(config, ip) ?? "unknown"),
         attempt,
     );
     if (!found) return null;

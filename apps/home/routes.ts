@@ -35,6 +35,42 @@ const PATHS: Readonly<Record<string, Screen>> = {
     "/tutoring": "tutoring",
 };
 
+/** What the mobile app's header calls each screen (engine/ui/native.ts). */
+export const TITLE: Record<Screen, string> = {
+    "open-child": "A child's view",
+    family: "Today",
+    "sign-in": "Sign in",
+    start: "Start",
+    outbox: "Outbox",
+    explore: "Lessons",
+    map: "Map",
+    calendar: "Calendar",
+    print: "Print a day",
+    join: "Join a family",
+    account: "Account",
+    games: "Games",
+    tutoring: "Tutoring",
+    painting: "Painting",
+    missing: "Not found",
+};
+
+/** The screens the app's tabs open at, which have nowhere to go back to. */
+const TABS: ReadonlySet<Screen> = new Set<Screen>(["family", "explore", "map", "calendar"]);
+
+/**
+ * What the app is told of a move: the address, the screen's title, and whether its back button has
+ * somewhere to go, which is anywhere but a tab's own screen once this page has been somewhere before.
+ */
+export function routeOf(
+    path: string,
+    search: string,
+    o: { local: boolean; before: boolean },
+): { path: string; title: string; canGoBack: boolean } {
+    const screen = screenOf(path, o);
+    const root = TABS.has(screen) && lessonIn(path) === null;
+    return { path: `${path}${search}`, title: TITLE[screen], canGoBack: o.before && !root };
+}
+
 /** A lesson in Explore: `/explore/` and the lesson's id. */
 const LESSON = /^\/explore\/([^/]+)\/?$/;
 

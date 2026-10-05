@@ -20,23 +20,23 @@ import {
 } from "solid-js";
 import * as api from "../../engine/ui/api";
 import * as shared from "./shared";
-import { Drawing } from "../../engine/ui/art";
 import { onThisComputer } from "../../engine/ui/device";
 import { Dialog, CloseX } from "../../engine/ui/dialog";
 import { failureText } from "../../engine/ui/failure";
 import { Field, SelectField } from "../../engine/ui/fields";
 import { Check } from "../../engine/ui/form";
 import { Button } from "../../engine/ui/form";
+import { GrownStamp } from "../../engine/ui/grown-stamp";
 import { Portrait } from "../../engine/ui/kids";
 import { SignOut } from "../../engine/ui/page";
-import { Corner, Postcard, Stamp } from "../../engine/ui/postcard";
+import { Corner, Postcard } from "../../engine/ui/postcard";
 import { go, Link, path } from "../../engine/ui/router";
 import { Say } from "../../engine/ui/say";
 import { isParent } from "../../school/family/access";
 import { familyName } from "../../school/family/names";
 import { gradeName } from "../../engine/grade";
 import { KID_FIELDS, NOTICE, NOTICE_VERSION } from "../../school/family/privacy";
-import { GROWNUPS, type GrownupKind } from "../../engine/parts/apps/grownup";
+import { GROWNUPS } from "../../engine/parts/apps/grownup";
 import type { FamilyView, Me } from "../../server/api";
 import { kidHref } from "./routes";
 
@@ -362,47 +362,6 @@ export const pickedPortrait = (me: Pick<Me, "user">): boolean => {
     const kind = typeof s === "object" && s !== null && "picture" in s ? s.picture : null;
     return GROWNUPS.some((k) => k === kind);
 };
-
-/**
- * The portrait on a grown-up's stamp: the one their settings name, when the shelf can draw it, or
- * else one their id gives them, the same for that person every time and spread across people, so
- * every grown-up has a picture from their first sign-in and no row is written for it.
- */
-export const portraitOf = (me: Pick<Me, "user">): GrownupKind => {
-    const s = me.user.settings;
-    const kind = typeof s === "object" && s !== null && "picture" in s ? s.picture : null;
-    const chosen = GROWNUPS.find((k) => k === kind);
-    if (chosen) return chosen;
-    let h = 0;
-    for (const c of me.user.id) h = (h * 31 + c.charCodeAt(0)) % 0x7fffffff;
-    return GROWNUPS[h % GROWNUPS.length] ?? "short";
-};
-
-/**
- * A grown-up as a child is drawn, with a difference: their head and shoulders on a square stamp with
- * a quiet ground, larger than a child's tall one, so the two kinds sit together and read apart.
- */
-export function GrownStamp(props: { me: Pick<Me, "user"> }): JSX.Element {
-    return (
-        <span class="kid-portrait gb-me-stamp" aria-hidden="true">
-            <Stamp
-                class="kid-stamp-paper"
-                picture="none"
-                value=""
-                ground="sky"
-                quiet
-                shape="square"
-                seed={877}
-            />
-            <Drawing
-                class="kid-stamp-pic"
-                id="grownup"
-                params={{ kind: portraitOf(props.me) }}
-                seed={878}
-            />
-        </span>
-    );
-}
 
 /**
  * The grown-up's own stamp at the end of the bar, and the menu under it: who is signed in, their

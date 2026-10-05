@@ -43,7 +43,10 @@ guard in `tools/scripts/check-db.ts` already enforces the database's part of it,
   using it.
 - A module has one phase: it runs in an app, it runs only while authoring, or it is data. `server/`,
   `server/db/` and `school/assistant/` have a fourth, `server`, which no app contains.
-- Only `engine/ui/` touches the page.
+- Only `engine/ui/` touches the page. The mobile app (`apps/mobile`) is the one app that is not
+  SolidJS: it is React Native, it keeps its native code beside its screens because its packages
+  resolve only from its own `node_modules`, and it reaches the pages it hosts through
+  `engine/host.ts` ([mobile.md](mobile.md), decided 2 October 2026).
 - Only `server/` imports `server/db/`, no app contains `server/` or `engine/notation/`, and any module
   may `import type` the row types from `server/db/schema.ts`, since a type import is erased at build.
 - The apps are SolidJS, built by Vite with one entry per app, and the server is Node (13 September
@@ -67,8 +70,10 @@ lumischool/
 │  │                               the tutor's help
 │  ├─ home/                        the grown-ups' app: sign in, Home, Explore, the map, Painting,
 │  │                               Games, the calendar, marking, letters and the account
-│  └─ site/                        the marketing site, prerendered, at / for a visitor signed out and
-│                                  at /home for everyone
+│  ├─ site/                        the marketing site, prerendered, at / for a visitor signed out and
+│  │                               at /home for everyone
+│  └─ mobile/                      the iOS and Android app in React Native and Expo: the native shell,
+│                                  sign-in, the mode switch and the map around the pages above
 ├─ engine/                         the machine, named after what it is
 │  ├─ paper.ts                     the 5 mm square, page sizes, colour tokens as data
 │  ├─ numbers.ts                   exact fractions and decimals
@@ -78,6 +83,8 @@ lumischool/
 │  │                               light screen that names a grade does not carry the pack's reader
 │  ├─ page.ts                      a list read a page at a time: the page, its keyset cursor, and a
 │  │                               page of a sorted list in memory (.docs/pagination.md)
+│  ├─ host.ts                      the messages between the mobile app and a page it hosts, checked
+│  │                               on arrival by both sides (.docs/mobile.md)
 │  ├─ scene.ts                     named parts on the grid, anchors resolved
 │  ├─ pack.ts                      the compiled content format and its reader
 │  ├─ space.ts                     camera and zoom for the map and the journal
@@ -194,6 +201,7 @@ expr                numbers
 answer              nothing
 grade               nothing
 page                nothing
+host                nothing
 scene               paper, expr, parts
 pack                answer, expr, grade, paper, scene
 ink                 paper, parts, scene
@@ -209,7 +217,7 @@ arrange             answer, expr, motion/lever, motion/cuts
 notation            parts, games, expr, numbers, scene, ink, sound, answer, pack, grade, painting,
                     arrange, paper, coding, pigment
 ui                  teaching, games, paper, ink, parts, scene, sound, motion, space, answer, pack,
-                    painting, arrange, coding, pigment, numbers, page
+                    painting, arrange, coding, pigment, numbers, page, host
 space               paper, ink, parts
 lessons             pack, answer, scene, ink, expr, arrange, teaching
 games               parts, scene, answer, motion, numbers
@@ -236,6 +244,7 @@ apps/*              by phase, in the table below
 | `kids` | run time modules and `engine/ui/`; never `engine/notation/`, never `server/` |
 | `home` | the same |
 | `site` | run time modules and `engine/ui/`, prerendered |
+| `mobile` | run time modules, never `engine/ui/` (the web apps name it, which withholds it), never `engine/notation/`, never `server/`; its packages are React Native's and Expo's |
 
 `boundaries.ts` also holds what the two lists above leave implicit, and its check enforces it:
 
@@ -438,7 +447,7 @@ The first apps are in place, and their sign-in screens were built in Solid ahead
 loaded the first time it is opened. The grown-ups' app reaches the API only through `engine/ui/api.ts`,
 which moved out of the scratchpad with its tests, and the children's view only through
 `engine/ui/kid.ts`, both on the request and the row checkers in `engine/ui/wire.ts`;
-`check:kids-build` fails if the children's build carries a grown-ups' route. The rest moved too, as did the palette (`engine/ui/palette.css`) and the fonts.
+`tools/__tests__/first-view.test.ts` fails if the children's build carries a grown-ups' route. The rest moved too, as did the palette (`engine/ui/palette.css`) and the fonts.
 The screens follow sign-in design B ([auth.md](auth.md), "Decided"), and what the two apps share is
 a Solid component in `engine/ui/`: the page with its bar and the map behind it, the postcard, the
 form controls with the family PIN's boxes, and the children's stamps. The tablet's code, its QR and

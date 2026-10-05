@@ -1,0 +1,12 @@
+[
+    {
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "ai.lumischool.app",
+            "sha256_cert_fingerprints": [
+                "96:B3:9E:E0:0A:56:44:25:14:26:7A:F9:BD:86:F0:1C:81:26:46:B7:BA:05:A6:B3:C5:34:40:EB:A0:F2:E0:D2"
+            ]
+        }
+    }
+]

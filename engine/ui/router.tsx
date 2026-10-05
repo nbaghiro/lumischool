@@ -17,6 +17,7 @@ import {
     type JSX,
 } from "solid-js";
 import { Dynamic } from "solid-js/web";
+import { hosted, leaves, send } from "./native";
 
 const [now, setNow] = createSignal(location.pathname);
 // every move notifies, so a link to the address already shown still asks the screen to show it
@@ -61,7 +62,8 @@ export function Link(props: { href: string; class?: string; children: JSX.Elemen
             onClick={(e) => {
                 if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
                 e.preventDefault();
-                go(props.href);
+                if (hosted() && leaves(props.href)) send("open", { path: props.href });
+                else go(props.href);
             }}
         >
             {props.children}

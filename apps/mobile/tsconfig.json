@@ -1,0 +1,18 @@
+{
+    "extends": "expo/tsconfig.base",
+    "compilerOptions": {
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "isolatedModules": true,
+        "verbatimModuleSyntax": true,
+        "erasableSyntaxOnly": true,
+        "allowImportingTsExtensions": false,
+        "allowJs": false
+    },
+    "include": ["**/*.ts", "**/*.tsx"]
+}

@@ -60,6 +60,15 @@ family that issued it, can bind later sessions from other families, and expires 
 Deleting that first family detaches its anonymous browser key under its original namespace,
 preserving other families’ sessions without granting cross-family access.
 
+The mobile app holds the same two keys without cookies ([mobile.md](mobile.md)). A sign-in with
+`device: true` answers the session credential and the browser key's credential in the body, and the
+app sends them as `Authorization: Bearer <session>` and `X-Lumi-Device: <browser>`, or a child's view
+as `X-Kid-Session` and `X-Lumi-Device`. The server reads `X-Lumi-Device` wherever a browser's request
+would have its browser cookie read, so the binding, its revocation and its 90 days are the same. A
+sign-in that sends a live `X-Lumi-Device` binds the new session to that key and answers it again,
+rather than issuing another. `GET /api/native/web` hands both credentials to the app's web view as the
+two cookies, so the web pages run unchanged inside it.
+
 Ordinary parent sign-out ends parent access and preserves child sessions. Ending a child view affects
 only that view. `Sign out everyone on this browser` revokes the browser key and signs out the current
 parent; every session bound to that browser is refused, across families. It does not affect another
@@ -90,7 +99,10 @@ rules. Parents can also end a child’s access in one browser or all child sessi
 
 Public failures use the same response for unknown names, wrong PINs and throttling.
 `kid_login_lookup` atomically reserves attempts before lookup: five per normalized username and twenty
-per network in fifteen minutes. Successful sign-in removes its own reservation in the same transaction
+per network in fifteen minutes. A sign-in from the app that sends a live `X-Lumi-Device` counts its
+twenty against that device key instead of the network, since a phone carrier puts many families
+behind one address; the per-username five are unchanged, and the device's peppered hash goes in the
+column the network's would. Successful sign-in removes its own reservation in the same transaction
 that opens the session. Failures and in-flight requests count; repeated successful sign-ins do not.
 The stored identities are peppered hashes; attempt rows expire after a day. Failed PIN attempts are
 also counted across siblings: five wrong tries impose a fifteen-minute wait. The next guess after that
@@ -460,11 +472,13 @@ Signing out deletes the key and clears the cookie. "Sign out everywhere" deletes
 
 Every request that is not a `GET` or `HEAD` must carry an `Origin` header equal to the app's origin, and a `Sec-Fetch-Site` of `same-origin` or `same-site` when the browser sends that header; a request without an `Origin` is refused, as the Copenhagen Book advises. `same-site` is accepted for a local page that calls the API's own port, which is another origin on the same site, and it opens nothing more in production, where the `Origin` must still be the app's own. Every `POST` must declare `Content-Type: application/json`, one with an empty body included, since a page elsewhere can send a body-less `POST` of another type without asking first; the parser refuses any other type or none, and reads an empty body as `{}`. `SameSite=Lax` is not the defence here: on one origin the cookie goes with every request the page makes, the children's view's included, so what refuses a request from anywhere else is the `Origin` check, and what keeps the two sides apart is the route table, which reads one cookie on each route, and the server's refusal of a session put away for a children's view on every adult route ("Hosts"). Galleo's body parser reads any request body as JSON whatever its declared type (`services/utils/http.ts:35-47`), which is the gap the content type rule closes.
 
+The mobile app's requests are exempt from the `Origin` check, and only they are. A request that carries `Authorization` or `X-Lumi-Device`, or an app sign-in whose JSON body says `device: true` and which carries no `Origin`, is the app's: a browser never adds those headers on its own, and page script that adds them is caught by the next rule. Such a request is refused with `origin` when it also carries a `Cookie` or a `Sec-Fetch-Site` header, both of which every current browser sends with a script's request to this origin, so page script cannot borrow the exemption. It never reads a cookie, and no answer to it sets one, except `GET /api/native/web`, whose purpose is to set them. That route alone accepts `Sec-Fetch-Site: none`, which a browser sends only on a navigation it started itself, such as the web view's first load, and ignores any cookie the web view already holds. The JSON content type and the 1 MB limit apply to the app as to a browser.
+
 ### A children's view's keys
 
 A children's view holds one `kid-session` key for each child it was opened for. Each key's `id` is the stamp on every event it writes, so each child's work in a view is its own stream, numbered by the server. `kid_id` is the child, `user_id` is the parent who opened the view, `name` is the browser and kind of device from the user agent, `hash` is the SHA-256 of the key's secret, `seen_at` is when it was last used, and `detail` holds a view id that all of the view's keys share, so that the family's page can show one view with its children and a parent can end it in one action. Deleting a child deletes their keys through the `(family_id, kid_id)` foreign key.
 
-Each key's credential has the same shape as a session's, `<family>.<id>.<secret>`, and the view's cookie carries them all, joined by `~`. The cookie is `__Host-ls_kids` (`ls_kids` locally): `HttpOnly`, `SameSite=Lax`, `Path=/`, and `Secure` over HTTPS. Script cannot read it, so nothing that runs on the page can copy the keys. Its `Max-Age` runs to the moment the lifetime rule would end the keys, and it is sent again whenever `seen_at` moves. The `/api/kid/` routes read only this cookie, every other route reads only the session cookie, and no route reads an `Authorization` header.
+Each key's credential has the same shape as a session's, `<family>.<id>.<secret>`, and the view's cookie carries them all, joined by `~`. The cookie is `__Host-ls_kids` (`ls_kids` locally): `HttpOnly`, `SameSite=Lax`, `Path=/`, and `Secure` over HTTPS. Script cannot read it, so nothing that runs on the page can copy the keys. Its `Max-Age` runs to the moment the lifetime rule would end the keys, and it is sent again whenever `seen_at` moves. The `/api/kid/` routes read only this cookie, every other route reads only the session cookie, and only the mobile app's requests read an `Authorization` header, in place of the session cookie (the paragraph on the `Origin` check in "An adult's session" says which requests those are).
 
 A browser that holds a view's cookie holds its session's cookie beside it, put away. Opening a view keeps the parent's session key on that browser and marks it in `detail` with the view it was put away for, in the same transaction that makes the view's keys; every adult route refuses a put-away session with `401 put-away` and keeps its cookie, since the family's PIN gives it back (flow 7), and the kid routes never read it. Being put away moves nothing: the key runs out exactly as it would have, thirty days since `seen_at` and ninety since `created_at`, and a refused use does not move `seen_at`. A sign-in on a browser that holds a view's cookie reads that cookie only to end the view, records `kid-session-ended` with the reason `sign-in`, clears it, and replaces the session that was put away, as a sign-in replaces any session the browser held.
 
@@ -474,18 +488,18 @@ The family's PIN is one `pin` key per family, which a partial unique index keeps
 
 ### What each build carries
 
-| | The children's build | The grown-ups' build |
-|---|---|---|
-| Path | `/kids`, and `/` for a browser that holds only a children's view | everything but `/kids` and `/api` |
-| Who it acts as | The children a parent opened the view for: one `kid-session` key per child | A person: a `session` or `shared-session` key, in one family |
-| Credential | `__Host-ls_kids`, HttpOnly, carrying one `<family>.<id>.<secret>` per child | `__Host-ls_session`, HttpOnly, which script cannot read |
-| Lifetime | 30 days idle and 90 absolute, unless a parent, the PIN or a sign-in ends it first | 30 days idle and 90 absolute; 30 minutes and 12 hours on a shared device |
-| Routes it can reach | `/api/kid/*` and nothing else, which `check:kids-build` checks in the built chunks | Everything under `/api/` except `/api/kid/*` |
-| Third-party code | None, enforced by `check:privacy` | `@simplewebauthn/browser`, bundled, MIT, which makes no requests of its own |
-| Network | Its own origin only | Its own origin only |
-| With no network | Keeps unsent answers in a queue in IndexedDB and sends them when it is back | Shows what it has; a change waits until it is back and signed in |
-| AI generation | No route exists | Parents only, charged to the family |
-| Secrets kept on the device | None; the PIN is checked on the server | None |
+| | The children's build | The grown-ups' build | The mobile app |
+|---|---|---|---|
+| Path | `/kids`, and `/` for a browser that holds only a children's view | everything but `/kids` and `/api` | Its own screens, and the web pages in a web view from the production origin ([mobile.md](mobile.md)) |
+| Who it acts as | The children a parent opened the view for: one `kid-session` key per child | A person: a `session` or `shared-session` key, in one family | A person by a `session` key, or a child by the `kid-session` key a username sign-in or a parent opened |
+| Credential | `__Host-ls_kids`, HttpOnly, carrying one `<family>.<id>.<secret>` per child | `__Host-ls_session`, HttpOnly, which script cannot read | `Authorization: Bearer <session>` or `X-Kid-Session`, with `X-Lumi-Device` carrying a `browser` key; its web view gets the cookies from `GET /api/native/web` |
+| Lifetime | 30 days idle and 90 absolute, unless a parent, the PIN or a sign-in ends it first | 30 days idle and 90 absolute; 30 minutes and 12 hours on a shared device | As the keys it holds; the `browser` key 90 days idle |
+| Routes it can reach | `/api/kid/*` and nothing else, which `tools/__tests__/first-view.test.ts` checks in the built chunks | Everything under `/api/` except `/api/kid/*` | As the credential it sends: the adults' routes with a bearer, the kid routes with `X-Kid-Session` |
+| Third-party code | None, enforced by `check:privacy` | `@simplewebauthn/browser`, bundled, MIT, which makes no requests of its own | The app's own native libraries, as [mobile.md](mobile.md) lists them |
+| Network | Its own origin only | Its own origin only | The production origin only |
+| With no network | Keeps unsent answers in a queue in IndexedDB and sends them when it is back | Shows what it has; a change waits until it is back and signed in | As the web pages it shows |
+| AI generation | No route exists | Parents only, charged to the family | As the credential it sends |
+| Secrets kept on the device | None; the PIN is checked on the server | None | The two credentials, in the device's secure store |
 
 ### Hosts
 
@@ -494,17 +508,19 @@ One Render web service serves one domain from one process: the marketing site, t
 | Path | What it serves | Credentials accepted |
 |---|---|---|
 | `/api/kid/*` | The children's view's routes | The children's view cookie only; the session cookie is ignored |
-| every other `/api/*` | The adults' routes | The session cookie only; the children's view cookie is ignored |
+| every other `/api/*` | The adults' routes | The session cookie only, or from the mobile app its bearer with `X-Lumi-Device`; the children's view cookie is ignored |
 | `/kids` and below | The children's view | None of its own; it calls only `/api/kid/*` |
 | `/home` | The site, for everyone, so a parent who is signed in can still open it from the logo | None; it asks `/api/me` once, as flow 13 says |
 | `/` | The children's view for a browser with a children's view cookie, whose session cookie, if it has one, is put away for that view; the grown-ups' app, which shows the family's page, for a browser with a session cookie and no view; and the site otherwise | As the app or the site it serves |
+| `/api/native/web` | The hand-off of the mobile app's session to its web view: `303` to the local path in `?to=`, setting the session and browser cookies, or only the browser cookie for a child's view | Only the app's headers, `Authorization` or `X-Kid-Session` with `X-Lumi-Device`; never a cookie |
+| `/.well-known/apple-app-site-association` and `/.well-known/assetlinks.json` | The files that let iOS and Android open `/join`, `/sign-in`, `/explore/*` and `/map` in the app, as JSON with an hour's cache and no redirect | None |
 | everything else | The grown-ups' app: `/sign-in`, `/start`, `/outbox` and anything else | None of its own; the app calls the adults' routes |
 
 `server/pages.ts` holds this table for page paths, and both the dev server and, in time, the Node server read it. Which app answers `/` turns on whether the children's view cookie, or failing that the session cookie, is there at all, under the one name the API reads for each in that mode (`__Host-ls_session` and `__Host-ls_kids` over HTTPS, so a cookie without the prefix that a subdomain planted does not count, and `ls_session` and `ls_kids` locally), which the router can see without opening the database; whether the session is live is the API's to say. Galleo checks its own cookie at this point, because a signed cookie can be checked with nothing but the key, whereas ours is a token looked up in `keys`, and routing a page is not worth a query. The API makes the cheap check honest: an adult route that refuses a session cookie clears it in the same answer, and a kid route does the same for a children's view's cookie, so a browser whose session has ended (signed out elsewhere, removed, swept, or a local database reset) lands once on the family's page, is told there that it is signed out and sent to `/sign-in`, and finds the site at `/` from then on. No stale cookie can keep a browser away from the site. Signing out goes to `/sign-in` rather than `/`, as galleo's logout goes to `/login`, since `/` is the site for a browser with no cookie.
 
 What separate hosts gave, and what one origin keeps of it:
 
-- A host-only session cookie was never sent with the child's app's requests. On one origin a cookie goes with every request to `/api`, so the separation is the route table's and the server's: the kid routes read only the children's view cookie, the adult routes read only the session cookie, and while a view is open on a browser the session it holds is put away and refused on every adult route. The children's build has no adult route in it, which `check:kids-build` checks.
+- A host-only session cookie was never sent with the child's app's requests. On one origin a cookie goes with every request to `/api`, so the separation is the route table's and the server's: the kid routes read only the children's view cookie, the adult routes read only the session cookie, and while a view is open on a browser the session it holds is put away and refused on every adult route. The children's build has no adult route in it, which the children's build check (`tools/kids-build.ts`) checks.
 - Storage was apart. On one origin both builds share IndexedDB and `localStorage`, where the children's view keeps only its queue of unsent answers and the grown-ups' app a hint that it signed in. Both are our own code with no third-party script, the content security policy allows scripts from our own origin only, and neither credential is in storage, since both cookies are HttpOnly. We accept that, and the privacy check holds the no-third-party rule.
 - The passkey relying party id was `app.lumischool.ai`, so a passkey could only be used on the app host. It is now the one domain.
 - Each path can still carry its own content security policy, since the server answers each route.
@@ -558,7 +574,7 @@ The event log is the one write path for a kid's record, so authorising most acti
 | Event kind | A kid session writes it (the actor is null, the kid is the key's) | A person writes it (the actor is their user) | A kid session reads it back | A tutor reads it |
 |---|---|---|---|---|
 | `sitting-began`, `sitting-ended` | yes, for screen sittings | a parent or tutor, for paper sittings and sittings with a grown-up | yes | yes |
-| `answered`, `hint-opened`, `round-played` | yes | no | yes | yes |
+| `answered`, `hint-opened`, `round-played`, `played` | yes | no | yes | yes |
 | `sheet-printed`, `marked`, `responded` | no | a parent or tutor | yes | yes |
 | `plan-changed` | no | a parent | yes | yes |
 | `world-chosen` | no | a parent | yes | no |
@@ -577,7 +593,7 @@ A tutor sees the family's own `content` only where their kid's plan uses it, whi
 
 Before the store's edge check and `append`, the server checks each event against the caller.
 
-Under a kid session: `family_id` is the view's family; `kid_id` is the child the path names, and the view must hold a key for that child; `actor` is null; `device` is that child's key id; and the kind is one a child may write (screen sittings, `answered`, `hint-opened` and `round-played`). The server stamps `actor`, `device` and `seq` itself whatever the draft says, taking `seq` in that key's stream under the family's lock, so a view sends drafts and never chooses its place in a stream.
+Under a kid session: `family_id` is the view's family; `kid_id` is the child the path names, and the view must hold a key for that child; `actor` is null; `device` is that child's key id; and the kind is one a child may write (screen sittings, `answered`, `hint-opened`, `round-played` and `played`). The server stamps `actor`, `device` and `seq` itself whatever the draft says, taking `seq` in that key's stream under the family's lock, so a view sends drafts and never chooses its place in a stream.
 
 Under a session: `family_id` is the session's family; `actor` is the session's user; `device` is the session key's id; `kid_id`, where there is one, is a kid this member may reach today in the family's time zone; and the kind is one their membership may write.
 
@@ -640,7 +656,7 @@ Afterwards the browser holds the session cookie, and the session carries the fam
 | A passkey whose login has no active families | The page offers to start a family |
 | A passkey's counter goes backwards | SimpleWebAuthn refuses the assertion, and the parent signs in by code and is shown their passkeys. Synced passkeys report a counter of zero, which never goes backwards, so this arises only for a hardware key that may have been copied |
 
-Outside production the code step also accepts a fixed code, `12345678` unless `AUTH_DEV_CODE` names another, beside the one we email, so that a developer, the seeded Harlows' parents and the end-to-end tests can sign in without reading the outbox. It stands in only for proving the address: the browser must still have asked for a code for that address in the last ten minutes, wrong guesses and the rate limits count as for any code, and the choice of family, consent and the `signed-in` event are unchanged. The server adds it to a code's accepted hashes only when it runs locally, and refuses to start anywhere else with `AUTH_DEV_CODE` set, because in production it would sign in anyone who typed it.
+Outside production the code step also accepts a fixed code, `12345678` unless `AUTH_DEV_CODE` names another, beside the one we email, so that a developer and the end-to-end tests can sign in without reading the outbox. It stands in only for proving the address: the browser must still have asked for a code for that address in the last ten minutes, wrong guesses and the rate limits count as for any code, and the choice of family, consent and the `signed-in` event are unchanged. The server adds it to a code's accepted hashes only when it runs locally, and refuses to start anywhere else with `AUTH_DEV_CODE` set, because in production it would sign in anyone who typed it.
 
 ### 3. A second parent or a tutor joins
 
@@ -699,7 +715,7 @@ A browser with no view that opens `/kids` sees a card that asks for a grown-up, 
 
 There is no picture key, so a sibling can tap another child's picture and open their page, which the owner accepted. A picture key on a shared screen keeps out only a child who has not watched it being entered, and it would be one more thing for a five-year-old to remember. What still holds is that each request names one child and goes under that child's key, so a mistake in the page cannot mix two children's records in one request, and the server refuses a request for a child the view holds no key for.
 
-What a child cannot reach is the parent's side. It is not in the children's build: the children's client, `engine/ui/kid.ts`, names only kid routes, `check:kids-build` walks the built chunks for any `/api/` path outside `/api/kid/`, and the kid routes read only the view's cookie. The answers are the one thing the page must hold, because grading screen work happens in the page from the pack; they are never shown, and a child with developer tools could find them, which on a device a parent handed over is a risk we accept.
+What a child cannot reach is the parent's side. It is not in the children's build: the children's client, `engine/ui/kid.ts`, names only kid routes, the children's build check (`tools/kids-build.ts`) walks the built chunks for any `/api/` path outside `/api/kid/`, and the kid routes read only the view's cookie. The answers are the one thing the page must hold, because grading screen work happens in the page from the pack; they are never shown, and a child with developer tools could find them, which on a device a parent handed over is a risk we accept.
 
 What we cannot know is which child was holding the device. Work arrives under the key of the child whose page was open. The parent's side should not claim more than that, which is the same honesty [parents.md](parents.md) asks for about time on task.
 
@@ -786,7 +802,7 @@ The site asks `/api/me` once, in one signal its bar reads, as galleo's marketing
 
 Every generation request is a person's request: a session, an active parent membership, and the capability to author. The family the cost is charged to is the session's family, never a value in the request body, so a parent who belongs to two families spends the budget of the family they are signed in to. The monthly budget per family and the cap a parent can see are [ai.md](ai.md)'s to set; this design gives them their key. Tutors cannot generate. A generation request changes nothing in the session.
 
-A children's view cannot reach generation, and that is a matter of structure rather than of a check. The children's build calls no route outside `/api/kid/`, which `check:kids-build` checks, the kid routes call nothing that calls a model, the children's build's content security policy allows connections only to its own origin, and a test sends a children's view cookie to every route in the table and asserts that only the kid routes accept it. That is [ai.md](ai.md)'s tier one, "No model is reachable from a child's device, online or offline", held by the route table as well as by the build.
+A children's view cannot reach generation, and that is a matter of structure rather than of a check. The children's build calls no route outside `/api/kid/`, which the children's build check (`tools/kids-build.ts`) checks, the kid routes call nothing that calls a model, the children's build's content security policy allows connections only to its own origin, and a test sends a children's view cookie to every route in the table and asserts that only the kid routes accept it. That is [ai.md](ai.md)'s tier one, "No model is reachable from a child's device, online or offline", held by the route table as well as by the build.
 
 ## Magic links
 
@@ -1031,7 +1047,7 @@ The UK code asks for "an obvious sign to the child when they are being monitored
 | Another family | Reading or writing this family's data | Every request's work runs in the family its credential names, set before any query; row-level security under a role that cannot bypass it; `(family_id, kid_id)` foreign keys; a credential that names another family finds no key | A bug in a security-definer function, which is why there are few of them and each returns only what one step needs |
 | A tutor or parent in two families | Carrying one family's data into the other | One browser is in one family at a time; switching replaces the session key; nothing in auth reads a table outside `withFamily` | |
 | A curious sibling | Opening the other child's page | Nothing, in a view opened for both, which the owner accepted; a view opened for one child holds no key for the other | That child's own work, which a sibling beside them could see anyway |
-| A curious sibling | Reaching the parent's side, the answers or the plan | Not in the children's build, which `check:kids-build` checks; a kid session is refused on every adult route; leaving needs the family's PIN, checked and counted on the server | A watched PIN, which gives a shared session that is never fresh, so it cannot set the PIN, invite, export or delete |
+| A curious sibling | Reaching the parent's side, the answers or the plan | Not in the children's build, which the children's build check (`tools/kids-build.ts`) checks; a kid session is refused on every adult route; leaving needs the family's PIN, checked and counted on the server | A watched PIN, which gives a shared session that is never fresh, so it cannot set the PIN, invite, export or delete |
 | A curious sibling | Doing the other child's work | Nothing, in a view opened for both | We cannot tell who held the device, and say so |
 | Whoever finds a lost device | Reading the children's work on it | The device's own lock screen; a parent ends the view from the family's page; the device keeps no copy of the log | What the page showed while the view was still open |
 | Whoever finds a lost device | Sending made-up work | Nothing is accepted under a view's keys once a parent has ended it | Anything sent between the loss and ending the view |
@@ -1240,7 +1256,7 @@ lumischool/
    └─ home/sign-in.ts  ~250 the sign-in, family and account pages, passkeys through @simplewebauthn/browser
 ```
 
-The screens are built, in design B, as Solid components. The grown-ups' flows are in `apps/home`: `sign-in.tsx` for flows 1 and 2, `family.tsx` for flow 4 and the parent's half of flow 5 (opening a view, the family PIN, and the views open now), and `outbox.tsx` for the local outbox, which exists only on a developer's computer. The children's view is in `apps/kids`: `main.tsx` decides what the view shows, `closed.tsx` is the card that asks for a grown-up, `who.tsx` and `child.tsx` are flow 6, and `grown-ups.tsx` is the PIN card of flow 7. What both apps share is in `engine/ui/`: the page with its bar and the map behind it, the postcard, the form controls with the code input and the PIN's boxes, the children's stamps and `pictures.ts`, and the two clients over `wire.ts`, `api.ts` for the grown-ups and `kid.ts` for the children. `page.tsx` does not import `api.ts`, so the children's build carries none of the grown-ups' routes, and `check:kids-build` holds that. Sign-in links, passkeys and withdrawing consent are not built yet.
+The screens are built, in design B, as Solid components. The grown-ups' flows are in `apps/home`: `sign-in.tsx` for flows 1 and 2, `family.tsx` for flow 4 and the parent's half of flow 5 (opening a view, the family PIN, and the views open now), and `outbox.tsx` for the local outbox, which exists only on a developer's computer. The children's view is in `apps/kids`: `main.tsx` decides what the view shows, `closed.tsx` is the card that asks for a grown-up, `who.tsx` and `child.tsx` are flow 6, and `grown-ups.tsx` is the PIN card of flow 7. What both apps share is in `engine/ui/`: the page with its bar and the map behind it, the postcard, the form controls with the code input and the PIN's boxes, the children's stamps and `pictures.ts`, and the two clients over `wire.ts`, `api.ts` for the grown-ups and `kid.ts` for the children. `page.tsx` does not import `api.ts`, so the children's build carries none of the grown-ups' routes, and the children's build check (`tools/kids-build.ts`) holds that. Sign-in links, passkeys and withdrawing consent are not built yet.
 
 The sweeps in `server/jobs.ts` run on a timer inside the one process, and each is safe to run twice, because each acts only on rows whose own columns say they are due under their kind's rule. A restart loses nothing but a delay, which is why none of them meets [db.md](db.md)'s trigger for a jobs table or for Redis. On Render's free plan the service sleeps when idle and a sweep runs when it wakes; before launch the service should be on a paid instance, which galleo's `render.yaml` notes for the same reason.
 
@@ -1252,7 +1268,7 @@ The server's environment adds two variables to the store's: `APP_ORIGIN`, the on
 
 ## Tests and guards
 
-The integration tests follow the store's: `*.itest.ts` against a test database of their own, skipping when there is no database and failing when `LUMISCHOOL_REQUIRE_DB=1`. The HTTP tests call the Hono app in process through `app.request`, with no network, and connect as the application role, so that row-level security is exercised rather than bypassed. Names are written as the store's are, as the sentence the test proves.
+The integration tests follow the store's: `*.itest.ts` against a test database of their own, failing when there is no database. The HTTP tests call the Hono app in process through `app.request`, with no network, and connect as the application role, so that row-level security is exercised rather than bypassed. Names are written as the store's are, as the sentence the test proves.
 
 In `family/access.test.ts`, which needs no database:
 
@@ -1345,9 +1361,9 @@ In `engine/ui/__tests__/pictures.test.ts`:
 
 - is a creature of their own for every family of up to twelve children
 
-End to end, `tools/e2e/family.e2e.ts` drives the seeded Harlows, whose parents sign in with a code read from the local outbox: a parent opens a child's view on this device, and that browser's session is put away, refused on every adult route until the PIN; a grown-up goes round, out with the PIN to the family's page with no code and in again; a grown-up adds the other children from inside the view with the PIN, the children move between their own pages, and a reload opens on the pictures; answers given with no network for a minute arrive once it is back; a grown-up leaves the children's view with the family's PIN; and a parent ends every children's view from another device, and the view closes. Still to write: withdrawing one child's consent while a view is open for two, and a tutor with two families switching between them.
+End to end, `tools/e2e/family/family.e2e.ts` starts a fresh family for each case, whose parent signs in with a code read from the local outbox: a parent opens a child's view on this device, and that browser's session is put away, refused on every adult route until the PIN; a grown-up goes round, out with the PIN to the family's page with no code and in again; a grown-up adds the other children from inside the view with the PIN, the children move between their own pages, and a reload opens on the pictures; answers given with no network for a minute arrive once it is back; a grown-up leaves the children's view with the family's PIN; and a parent ends every children's view from another device, and the view closes. Still to write: withdrawing one child's consent while a view is open for two, and a tutor with two families switching between them.
 
-Four guards change. `check:db` lets `server/` import `server/db/`, adds a rule that no app imports `server/`, and adds a rule that `server/` imports neither the driver nor `drizzle-orm`. The outside-host half of `check:privacy`, which waits for the app split, is what enforces the children's build talking only to its own origin, and the content security policy test above is its run-time twin. And the complete records in `family/access.ts` are a guard in the type checker: a new event kind or a new capability does not compile until someone decides who may use it. And `check:kids-build` builds the apps with Vite, walks the chunks the children's entry loads, and fails on any `/api/` path outside `/api/kid/`; it runs in `npm run check`.
+Four guards change. `check:db` lets `server/` import `server/db/`, adds a rule that no app imports `server/`, and adds a rule that `server/` imports neither the driver nor `drizzle-orm`. The outside-host half of `check:privacy`, which waits for the app split, is what enforces the children's build talking only to its own origin, and the content security policy test above is its run-time twin. And the complete records in `family/access.ts` are a guard in the type checker: a new event kind or a new capability does not compile until someone decides who may use it. And the children's build check (`tools/kids-build.ts`, run by `tools/__tests__/first-view.test.ts`) builds the apps with Vite, walks the chunks the children's entry loads, and fails on any `/api/` path outside `/api/kid/`; it runs in `npm run check`.
 
 ## Order of work
 
@@ -1361,7 +1377,7 @@ Each step is small enough to finish and review on its own, and "done" means `npm
 6. People. Invitations as `invite` keys, accepting, removing with `ended_at`, adding a removed member back, leaving, and the last-parent rule. Done: flow 3's tests pass.
 7. Kids and consent. Adding a kid with `consent-given`, the confirming email, withdrawing by deleting the kid's keys in every children's view. Done: flow 4's tests pass, and a draft of the notice is ready for the lawyer.
 8. Children's views, server side. Opening a view with one `kid-session` key per child, the kid routes with the binding, a child's state, ending a view, the family PIN with its waits, and a sign-in ending the view a browser held. Done: the children's view tests pass, including the PIN's limits and a kid's consent withdrawn while a view is open for two.
-9. Children's views, in the browser. `engine/ui/kid.ts` with its queue, the card that asks for a grown-up, "Who is learning today?", each child's page, and the PIN card, with `check:kids-build` in `npm run check`. Done: the queue tests pass, and a view opened on a real iPad for two children records through a minute offline and leaves with the PIN.
+9. Children's views, in the browser. `engine/ui/kid.ts` with its queue, the card that asks for a grown-up, "Who is learning today?", each child's page, and the PIN card, with the children's build check in `npm run check`. Done: the queue tests pass, and a view opened on a real iPad for two children records through a minute offline and leaves with the PIN.
 10. Fresh sign-in and the dangerous flows. Deleting a kid, closing a family, closing a login, the export download. Done: flow 12's tests pass.
 11. Tutor windows. Tutor invitations with a kid and days, a tutor's reads and writes, changing a window, the end-of-window sweep, and a tutor with two families. Done: flow 9's tests pass, including both edges of the window.
 12. Passkeys. Registering into `users.passkeys` through a `confirm` challenge, signing in with conditional mediation, listing and removing, and a passkey as a fresh sign-in. Done: a passkey created on a phone signs in on a laptop, and on a shared computer by QR.

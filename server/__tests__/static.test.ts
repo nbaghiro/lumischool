@@ -17,6 +17,9 @@ describe("the built apps served from the Node process", () => {
         await writeFile(join(dist, "apps", "kids", "index.html"), "<title>kids</title>");
         await writeFile(join(dist, "assets", "app-abc123.js"), "console.log(1)");
         await writeFile(join(dist, "favicon.svg"), "<svg></svg>");
+        await mkdir(join(dist, ".well-known"), { recursive: true });
+        await writeFile(join(dist, ".well-known", "apple-app-site-association"), "{}");
+        await writeFile(join(dist, ".well-known", "assetlinks.json"), "[]");
     });
 
     after(async () => {
@@ -33,9 +36,9 @@ describe("the built apps served from the Node process", () => {
         assert.equal(res.headers.get("content-type"), "text/html; charset=utf-8");
         assert.equal(
             res.headers.get("content-security-policy"),
-            "default-src 'self'; script-src 'self' https://c.daily.co; style-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://*.daily.co wss://*.daily.co; frame-ancestors 'none'",
+            "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; frame-ancestors 'none'",
         );
-        assert.equal(res.headers.get("permissions-policy"), "camera=(), microphone=(self)");
+        assert.equal(res.headers.get("permissions-policy"), "camera=(), microphone=()");
     });
 
     it("gives an asset a year's immutable cache", async () => {
@@ -52,6 +55,23 @@ describe("the built apps served from the Node process", () => {
         const res = await serve(new Request("http://x/favicon.svg"));
         assert.ok(res);
         assert.equal(res.headers.get("cache-control"), "public, max-age=3600");
+    });
+
+    it("serves the app link files as JSON with a short cache, even to a page request", async () => {
+        const serve = staticFrom(false, dist);
+        for (const [path, body] of [
+            ["/.well-known/apple-app-site-association", "{}"],
+            ["/.well-known/assetlinks.json", "[]"],
+        ] as const) {
+            const res = await serve(
+                new Request(`http://x${path}`, { headers: { accept: "text/html" } }),
+            );
+            assert.ok(res);
+            assert.equal(res.status, 200);
+            assert.equal(await res.text(), body);
+            assert.equal(res.headers.get("content-type"), "application/json");
+            assert.equal(res.headers.get("cache-control"), "public, max-age=3600");
+        }
     });
 
     it("never intercepts a path under /api/, even one no route matches", async () => {

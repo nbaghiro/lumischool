@@ -21,6 +21,8 @@ import { onDemand } from "../../engine/ui/art";
 import { fontsReady } from "../../engine/ui/fonts";
 import * as client from "../../engine/ui/kid";
 import type { Sending } from "../../engine/ui/kid";
+import { boot, hosted, send, start } from "../../engine/ui/native";
+import type { ToPage } from "../../engine/host";
 import { Loading } from "./loading";
 import { Page } from "../../engine/ui/page";
 import { KidBar, type Place } from "./bar";
@@ -60,6 +62,12 @@ async function read(): Promise<Now> {
     return more.length ? { at: "who", view } : { at: "child", view, kid: only };
 }
 
+// In the mobile app once its own map stands in for the web one (`window.lumischoolHost` names a world
+// or a place, or an `enter` arrives): the world it asked for, and each press of its back button.
+const [appMap, setAppMap] = createSignal(false);
+const [entered, setEntered] = createSignal<ToPage["enter"] | null>(null);
+const [backs, setBacks] = createSignal(0);
+
 /** How often a view that could not open asks again, besides when the network comes back. */
 const RETRY = 5_000;
 
@@ -75,6 +83,7 @@ function View(props: { now: Accessor<Now>; setNow: Setter<Now> }): JSX.Element {
     onCleanup(
         client.watch((s) => {
             setSending(s);
+            send("unsent", { count: s.unsent, offline: s.offline });
             // The grown-ups' card says itself that the view was closed while it was open.
             const at = now().at;
             if (s.ended && at !== "closed" && at !== "grown-ups") setNow({ at: "closed" });
@@ -127,7 +136,10 @@ function View(props: { now: Accessor<Now>; setNow: Setter<Now> }): JSX.Element {
                         <Who
                             view={n().view}
                             offline={sending().offline}
-                            onChoose={(kid) => setNow({ at: "child", view: n().view, kid })}
+                            onChoose={(kid) => {
+                                if (hosted()) send("child", { kid: kid.id, name: kid.name });
+                                setNow({ at: "child", view: n().view, kid });
+                            }}
                         />
                     )}
                 </Match>
@@ -136,7 +148,13 @@ function View(props: { now: Accessor<Now>; setNow: Setter<Now> }): JSX.Element {
                         <KidPlace
                             kid={n().kid}
                             place={n().place}
-                            onMap={() => setNow({ at: "child", view: n().view, kid: n().kid })}
+                            onMap={() => {
+                                if (appMap()) {
+                                    setEntered(null);
+                                    send("out", { box: null });
+                                }
+                                setNow({ at: "child", view: n().view, kid: n().kid });
+                            }}
                         />
                     )}
                 </Match>
@@ -147,6 +165,11 @@ function View(props: { now: Accessor<Now>; setNow: Setter<Now> }): JSX.Element {
                             kid={n().kid}
                             offline={sending().offline}
                             onBack={() => setNow({ at: "who", view: n().view })}
+                            app={
+                                appMap()
+                                    ? { enter: entered, backs, left: () => setEntered(null) }
+                                    : undefined
+                            }
                         />
                     )}
                 </Match>
@@ -199,6 +222,7 @@ if (root) {
                             const p = profile();
                             if (p?.view.pin)
                                 setNow({ at: "grown-ups", view: p.view, from: p.kid ?? null });
+                            else if (hosted()) send("open", { path: "/sign-in?shared=1" });
                             else location.assign("/sign-in?shared=1");
                         }}
                     />
@@ -209,7 +233,51 @@ if (root) {
         ),
         root,
     );
-    void Promise.all([read(), fontsReady()])
-        .then(([first]) => setNow(first))
+    boot("kids", {
+        enter: (e) => {
+            setAppMap(true);
+            setEntered(e);
+            const n = now();
+            if (n.at === "child" && n.place) setNow({ ...n, place: undefined });
+        },
+        back: () => {
+            const n = now();
+            if (n.at === "child" && n.place && appMap()) {
+                setEntered(null);
+                send("out", { box: null });
+                setNow({ ...n, place: undefined });
+            } else setBacks((b) => b + 1);
+        },
+    });
+    void Promise.all([read(), fontsReady(), start()])
+        .then(([first, , app]) => {
+            if (!app) {
+                setNow(first);
+                return;
+            }
+            const view = first.at === "child" || first.at === "who" ? first.view : null;
+            // the app's own Who: the page asks who is learning, and tells the app rather than going on
+            if (app.place === "who") {
+                if (first.at !== "child") {
+                    setNow(first);
+                    return;
+                }
+                send("child", { kid: first.kid.id, name: first.kid.name });
+                setNow({ at: "loading" });
+                return;
+            }
+            const kid = view?.kids.find((k) => k.id === app.kid);
+            const base: Now = view && kid ? { at: "child", view, kid } : first;
+            if (app.enter) {
+                setAppMap(true);
+                setEntered(app.enter);
+            }
+            if (app.place === "games" || app.place === "painting") {
+                setAppMap(true);
+                setNow(base.at === "child" ? { ...base, place: app.place } : base);
+                return;
+            }
+            setNow(base);
+        })
         .catch(() => setNow({ at: "not-yet", offline: !navigator.onLine }));
 }

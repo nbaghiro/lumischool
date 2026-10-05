@@ -27,6 +27,7 @@ import { onThisComputer } from "../../engine/ui/device";
 import { failureText } from "../../engine/ui/failure";
 import { Button } from "../../engine/ui/form";
 import { LessonSheet } from "../../engine/ui/lesson";
+import { hosted, printHosted } from "../../engine/ui/native";
 import { useLook } from "../../engine/ui/page";
 import { Waiting } from "../../engine/ui/waiting";
 import { go } from "../../engine/ui/router";
@@ -40,7 +41,7 @@ import { subjectFacts } from "../../school/tracks";
 import type { FamilyView, GrownRecord, Me, PackView } from "../../server/api";
 import type { Kid } from "../../server/db/schema";
 import { familyChanged, knowFamily } from "./bar";
-import { dayLong, paperFor, plannedOn, plural } from "./grown";
+import { appPaper, dayLong, paperFor, plannedOn, plural } from "./grown";
 import { signInFor } from "./routes";
 
 const local = onThisComputer(location.hostname);
@@ -213,6 +214,18 @@ function Day(props: { loaded: Loaded }): JSX.Element {
     const soon = (run: () => void): void => {
         requestAnimationFrame(() => requestAnimationFrame(run));
     };
+    let printed: HTMLDivElement | undefined;
+    /** Prints the sheets once drawn: the browser's print, done when it returns, or the app's, which says whether it printed. */
+    const printOut = (): Promise<boolean> =>
+        new Promise((done) =>
+            soon(() => {
+                if (hosted() && printed) void printHosted(printed, appPaper(zone())).then(done);
+                else {
+                    print();
+                    done(true);
+                }
+            }),
+        );
     const printChild = async (): Promise<void> => {
         if (busy() || !ready().length) return;
         setBusy(true);
@@ -234,23 +247,28 @@ function Day(props: { loaded: Loaded }): JSX.Element {
                 grownUps: false,
             },
         }));
+        setKey(false);
+        // a sheet is recorded as printed only once it has been
+        if (!(await printOut())) {
+            setBusy(false);
+            setSaid("Nothing was printed.");
+            return;
+        }
         const wrote = await api.append(drafts);
         setBusy(false);
         if ("error" in wrote) {
-            setSaid(`Nothing was printed. ${failureText(wrote, local)}`);
+            setSaid(`The sheets printed but were not recorded. ${failureText(wrote, local)}`);
             return;
         }
-        setKey(false);
         setSaid(
             `${plural(drafts.length, "sheet")} for ${names(chosen())}, ${dayLong(on())}. What comes back can be marked from the home.`,
         );
-        soon(() => print());
     };
     const printMine = (): void => {
         if (busy() || !ready().length) return;
         setSaid("");
         setKey(true);
-        soon(() => print());
+        void printOut();
     };
     return (
         <div class="gd">
@@ -315,7 +333,13 @@ function Day(props: { loaded: Loaded }): JSX.Element {
                     <Say tone="info" focus text={said()} />
                 </Show>
             </section>
-            <div class="gd-sheets" data-key={key() ? "yes" : "no"}>
+            <div
+                class="gd-sheets"
+                data-key={key() ? "yes" : "no"}
+                ref={(el) => {
+                    printed = el;
+                }}
+            >
                 <For each={ready()}>
                     {(s) => (
                         <section class="gd-sheet" aria-label={`${s.kid.name}, ${s.facts.title}`}>

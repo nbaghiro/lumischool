@@ -33,7 +33,8 @@ import { familyName } from "../../school/family/names";
 import type { FamilyView, Me } from "../../server/api";
 import { Drawing } from "../../engine/ui/art";
 import { GROWNUP_WORD, GROWNUPS } from "../../engine/parts/apps/grownup";
-import { familyChanged, GrownStamp, knowFamily, pickedPortrait, portraitOf } from "./bar";
+import { GrownStamp, portraitOf } from "../../engine/ui/grown-stamp";
+import { familyChanged, knowFamily, pickedPortrait } from "./bar";
 import { signInFor } from "./routes";
 import * as shared from "./shared";
 

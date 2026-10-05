@@ -1,0 +1,52 @@
+# A grown-up starts a family in the app against `npm run dev`, using the code the local server accepts
+# for any address that just asked for one (.docs/local.md), and lands on Today. It signs out first when
+# a grown-up is still signed in, rather than clearing the app's data, which on Android also forgets the
+# Metro address a development build is pointed at.
+appId: ai.lumischool.app
+---
+- launchApp:
+      stopApp: true
+- extendedWaitUntil:
+      visible: "(Start a family|More(, tab.*)?)"
+      timeout: 60000
+- runFlow:
+      when:
+          notVisible: "Start a family"
+      commands:
+          # the tab, not the More screen's own title: "More" on Android, "More, tab, 5 of 5" on iOS
+          - tapOn:
+                text: "More(, tab.*)?"
+                rightOf: "Calendar(, tab.*)?"
+          - tapOn: "Sign out"
+          - tapOn:
+                text: "(?i)sign out"
+                rightOf: "(?i)stay"
+- extendedWaitUntil:
+      visible: "Start a family"
+      timeout: 20000
+- tapOn: "Start a family"
+- extendedWaitUntil:
+      visible: "Start your family"
+      timeout: 10000
+- tapOn:
+      id: "Your name"
+- inputText: "Sam"
+- pressKey: Enter
+- inputText: "Rivers"
+- pressKey: Enter
+- inputRandomEmail
+- pressKey: Enter
+- extendedWaitUntil:
+      visible: "Type the code"
+      timeout: 20000
+# the code's boxes take the keyboard as the step opens, and the eighth digit sends it
+- inputText: "12345678"
+- runFlow:
+      when:
+          visible: "Start the family"
+      commands:
+          - tapOn: "Start the family"
+- extendedWaitUntil:
+      visible: "Today"
+      timeout: 30000
+- takeScreenshot: today

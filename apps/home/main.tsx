@@ -4,13 +4,14 @@ import { inKidMode, PARENT_CHANGE } from "../../engine/ui/kid-session";
 // the first is loaded with the fonts, so the first paint is the whole screen, styled. The bar is the
 // app's, mounted once above the screens, so a move between them changes only which place is marked.
 
-import { lazy, Show, type Component } from "solid-js";
+import { createEffect, lazy, Show, type Component } from "solid-js";
 import { render } from "solid-js/web";
 import { onThisComputer } from "../../engine/ui/device";
 import { fontsReady } from "../../engine/ui/fonts";
 import { Page } from "../../engine/ui/page";
-import { path, Router } from "../../engine/ui/router";
-import { screenOf, type Screen } from "./routes";
+import { boot, hosted, send } from "../../engine/ui/native";
+import { go, path, Router, search } from "../../engine/ui/router";
+import { routeOf, screenOf, type Screen } from "./routes";
 
 const SignIn = lazy(() => import("./sign-in").then((m) => ({ default: m.SignIn })));
 const Family = lazy(() => import("./family").then((m) => ({ default: m.Family })));
@@ -34,7 +35,7 @@ const Dock = lazy(async () => {
         import("../../engine/ui/companion-dock"),
         import("./companion"),
     ]);
-    return { default: () => <CompanionDock who="" chosen={null} reach={GROWN_UP} /> };
+    return { default: () => <CompanionDock who="" reach={GROWN_UP} /> };
 });
 const OpenChild = lazy(() => import("./open-child").then((m) => ({ default: m.OpenChild })));
 
@@ -107,9 +108,13 @@ const Bar: Component = () => (
     <Show when={CARRIES[screenHere(path())]}>
         <div class="page-nav">
             <GrownBar />
-            <AddKidDialog />
+            <Show when={!hosted()}>
+                <AddKidDialog />
+            </Show>
         </div>
-        <Dock />
+        <Show when={!hosted()}>
+            <Dock />
+        </Show>
     </Show>
 );
 
@@ -124,8 +129,10 @@ if (root && inKidMode() && !["/sign-in", "/start", "/join"].includes(location.pa
         if (inKidMode() || ["/sign-in", "/start", "/join"].includes(location.pathname)) return;
         void import("../../engine/ui/api").then(async (api) => {
             const status = await api.parentStatus();
-            if ("available" in status && (!status.available || status.locked))
-                location.replace("/sign-in");
+            if ("available" in status && (!status.available || status.locked)) {
+                if (hosted()) send("open", { path: "/sign-in" });
+                else location.replace("/sign-in");
+            }
         });
     });
     addEventListener("pageshow", (event) => {
@@ -135,14 +142,26 @@ if (root && inKidMode() && !["/sign-in", "/start", "/join"].includes(location.pa
     const first = screenHere(location.pathname);
     // the bar's code comes with the first screen that carries it, so the first paint has both
     await Promise.all([fontsReady(), LOAD[first](), CARRIES[first] && GrownBar.preload()]);
-    render(
-        () => (
+    boot("home", { go: (to, replace) => go(to, { replace }), back: () => history.back() });
+    render(() => {
+        if (hosted()) {
+            let before = false;
+            createEffect(() => {
+                send("route", routeOf(path(), search(), { local, before }));
+                before = true;
+            });
+        }
+        return (
             <Page ground={() => import("./ground").then((m) => m.ground())} bar={Bar}>
+                {/* in the mobile app the page's header and the bar in it are hidden, so the dialog
+                    stands outside them */}
+                <Show when={hosted()}>
+                    <AddKidDialog />
+                </Show>
                 <Router screens={SCREENS} screenOf={screenHere} load={(s) => LOAD[s]()} />
             </Page>
-        ),
-        root,
-    );
+        );
+    }, root);
     // every other screen's code once the first is up and the page is idle, so no move waits for it
     const rest = (): void => {
         for (const load of Object.values(LOAD)) void load().catch(() => undefined);

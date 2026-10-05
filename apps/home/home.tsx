@@ -33,6 +33,7 @@ import { onThisComputer } from "../../engine/ui/device";
 import { failureText } from "../../engine/ui/failure";
 import { Button } from "../../engine/ui/form";
 import { Portrait } from "../../engine/ui/kids";
+import { hosted, send } from "../../engine/ui/native";
 import { Postcard } from "../../engine/ui/postcard";
 import { go, Link, search, useReady } from "../../engine/ui/router";
 import { Say } from "../../engine/ui/say";
@@ -876,6 +877,14 @@ function OpenView(props: { kid: Kid; kids: readonly Kid[] }): JSX.Element {
         if (busy()) return;
         setBusy(true);
         setSaid("");
+        // in the mobile app the child's view is the app's own, with the credential kept there
+        if (hosted()) {
+            const credential = await api.kidSession([props.kid.id]);
+            setBusy(false);
+            if (typeof credential === "string") send("childMode", { credential });
+            else setSaid(failureText(credential, local));
+            return;
+        }
         const r = await api.openKidSession([props.kid.id]);
         if (r === true) {
             location.assign(KIDS);
@@ -891,14 +900,21 @@ function OpenView(props: { kid: Kid; kids: readonly Kid[] }): JSX.Element {
                 href={`/open-child?child=${encodeURIComponent(props.kid.id)}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={(e) => {
+                    if (!hosted()) return;
+                    e.preventDefault();
+                    void open();
+                }}
             >
                 <Portrait kid={props.kid} kids={props.kids} />
                 <span>{`Open ${props.kid.name}'s view`}</span>
             </a>
-            <p class="gh-small">Opens in a new tab. Your parent pages stay signed in.</p>
-            <button type="button" class="link" disabled={busy()} onClick={() => void open()}>
-                Use this tab instead
-            </button>
+            <Show when={!hosted()}>
+                <p class="gh-small">Opens in a new tab. Your parent pages stay signed in.</p>
+                <button type="button" class="link" disabled={busy()} onClick={() => void open()}>
+                    Use this tab instead
+                </button>
+            </Show>
             <Show when={said()}>
                 <Say text={said()} />
             </Show>
@@ -972,6 +988,14 @@ function Today(props: {
                 grownUps: false,
             },
         };
+        if (hosted()) {
+            shared.printing.hand(draft);
+            setPrinting(null);
+            go(
+                `/explore/${encodeURIComponent(lesson.id)}?print=${encodeURIComponent(props.kid.id)}`,
+            );
+            return;
+        }
         const r = await api.append([draft]);
         setPrinting(null);
         if ("error" in r) {

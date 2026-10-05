@@ -7,7 +7,7 @@ import * as api from "../../engine/ui/api";
 import { grownRecord } from "../../engine/ui/grown";
 import { held, heldBy } from "../../engine/ui/held";
 import { onWrite, unreadable, type Failure } from "../../engine/ui/wire";
-import type { Envelope } from "../../engine/answer";
+import type { Draft, Envelope } from "../../engine/answer";
 
 export const me = held(() => api.me({ ask: true }));
 export const family = held(() => api.familyRows({ ask: true }));
@@ -36,3 +36,19 @@ onWrite(() => {
     record.stale();
     eventsBy.stale();
 });
+
+let toPrint: Draft | null = null;
+/**
+ * A child's sheet a card hands to Explore to print in the mobile app, recorded only once the app says
+ * it printed (explore.tsx); a browser's print records it as the card sends it.
+ */
+export const printing = {
+    hand: (draft: Draft): void => {
+        toPrint = draft;
+    },
+    take: (): Draft | null => {
+        const d = toPrint;
+        toPrint = null;
+        return d;
+    },
+};

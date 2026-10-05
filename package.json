@@ -41,6 +41,7 @@
         "test:apps": "node --import ./tools/scripts/resolve.ts --test 'apps/**/__tests__/*.test.ts'",
         "test:e2e": "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 playwright test --config tools/e2e/playwright.config.ts",
         "brand:export": "node --import ./tools/scripts/resolve.ts tools/brand.ts",
+        "brand:mobile": "node --import ./tools/scripts/resolve.ts tools/brand.ts --mobile",
         "art": "node --import ./tools/scripts/resolve.ts tools/scripts/art.ts",
         "pack": "node --import ./tools/scripts/resolve.ts tools/pack.ts",
         "languages:coverage": "node --import ./tools/scripts/resolve.ts tools/scripts/language-coverage.ts",
@@ -49,7 +50,8 @@
         "perf:games": "node --import ./tools/scripts/resolve.ts tools/scripts/perf-games.ts",
         "map:tiles": "node --import ./tools/scripts/resolve.ts tools/scripts/map-tiles.ts",
         "art:bake": "node --import ./tools/scripts/resolve.ts tools/scripts/art-bake.ts",
-        "site:pictures": "node --import ./tools/scripts/resolve.ts tools/scripts/site-pictures.ts"
+        "site:pictures": "node --import ./tools/scripts/resolve.ts tools/scripts/site-pictures.ts",
+        "mobile:art": "node --import ./tools/scripts/resolve.ts tools/scripts/mobile-art.ts"
     },
     "dependencies": {
         "@daily-co/daily-js": "0.92.2",

@@ -2,6 +2,7 @@
 // folds it for a parent (`GET /api/kids/:kid/record`) and the pack's index: today's lessons, the
 // week, where they are on their map, and the words the cards are written in.
 
+import type { Paper } from "../../engine/host";
 import type { LessonFacts } from "../../engine/pack";
 import type { DayKind } from "../../school/family/family";
 import {
@@ -195,6 +196,10 @@ export function waitingSays(w: { paper: number; pieces: number }): string {
  */
 export const paperFor = (timeZone: string): "A4" | "Letter" =>
     timeZone.startsWith("America/") ? "Letter" : "A4";
+
+/** The paper the mobile app prints on, which `paperFor` names. */
+export const appPaper = (timeZone: string): Paper =>
+    paperFor(timeZone) === "Letter" ? "letter" : "a4";
 
 /** The hello card's line: today's lessons for everyone, and what waits to be marked. */
 export function helloLine(

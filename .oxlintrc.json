@@ -113,6 +113,25 @@
         }
     },
     "overrides": [
+        // Metro loads its config in Node as CommonJS, and the app's React Native program has no
+        // Node types for require, path or __dirname (.docs/mobile.md).
+        {
+            "files": ["apps/mobile/metro.config.js"],
+            "rules": {
+                "typescript/no-unsafe-assignment": "off",
+                "typescript/no-unsafe-call": "off",
+                "typescript/no-unsafe-member-access": "off",
+                "typescript/no-unsafe-argument": "off"
+            }
+        },
+        // Metro bundles a picture or a face only from a static require that names its file in full,
+        // and the made manifest of the sign-in screens' pictures and faces is the one file that does.
+        {
+            "files": ["apps/mobile/art.ts"],
+            "rules": {
+                "import/extensions": "off"
+            }
+        },
         {
             "files": ["engine/ui/search-select.tsx"],
             "rules": {

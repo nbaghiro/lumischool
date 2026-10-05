@@ -194,3 +194,8 @@
         translate: none;
     }
 }
+
+/* A grown-up's head sits lower and smaller in its square stamp than a child's in its tall one. */
+.gb-me-stamp .kid-stamp-pic {
+    inset: 17% 17% 15%;
+}

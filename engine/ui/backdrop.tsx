@@ -71,6 +71,8 @@ export function MapBackdrop(props: {
     keepOff?: () => readonly (Element | DOMRect)[];
     band?: () => Element | DOMRect | null;
     fade?: boolean;
+    /** Show the snapshot and never draw the map live, as in the mobile app, where a live map would be a second GPU context. */
+    stillOnly?: boolean;
     onDrawn?: () => void;
 }): JSX.Element {
     // Read here and in the effect, inside the component: an aim written as an expression is a memo,
@@ -168,7 +170,7 @@ export function MapBackdrop(props: {
                     announce();
                     return;
                 }
-                if (!near) {
+                if (!near || props.stillOnly === true) {
                     announce();
                     frame();
                     setDrawn(false);
@@ -193,7 +195,7 @@ export function MapBackdrop(props: {
                 if (!drawn()) frame();
                 wake();
                 // an aim no snapshot was made for is drawn live
-                if (!picture() && nearNow && !live()) {
+                if (!picture() && nearNow && !live() && props.stillOnly !== true) {
                     const current = ++generation;
                     void onDemand(props.ground)
                         .then(async (ground) => {

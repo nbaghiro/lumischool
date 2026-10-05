@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { lessonIn, mapHref, nextFrom, screenOf, signInFor, whereIn } from "../routes";
+import { lessonIn, mapHref, nextFrom, routeOf, screenOf, signInFor, whereIn } from "../routes";
 
 const here = { local: true };
 const away = { local: false };
@@ -127,4 +127,22 @@ it("journey routes retain grade context without rewriting legacy routes", () => 
     const visit = { world: "observatory", lesson: null, grade: 4, journey: true };
     assert.deepEqual(whereIn(new URL(mapHref(visit), "https://example.test").search), visit);
     assert.equal(mapHref({ world: "mountains" }), "/map?world=mountains");
+});
+
+describe("what the mobile app is told of a move", () => {
+    it("names the screen and keeps the query", () => {
+        assert.deepEqual(routeOf("/calendar", "?view=week", { local: false, before: true }), {
+            path: "/calendar?view=week",
+            title: "Calendar",
+            canGoBack: false,
+        });
+    });
+
+    it("goes back from anywhere but a tab's own screen, once the page has been somewhere", () => {
+        const before = { local: false, before: true };
+        assert.equal(routeOf("/account", "", before).canGoBack, true);
+        assert.equal(routeOf("/explore/k-01", "", before).canGoBack, true);
+        assert.equal(routeOf("/", "", before).canGoBack, false);
+        assert.equal(routeOf("/account", "", { local: false, before: false }).canGoBack, false);
+    });
 });

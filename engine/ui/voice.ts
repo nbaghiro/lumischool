@@ -102,3 +102,9 @@ export function pageVoice(): Voice {
 let shared: Voice | null = null;
 /** The one voice a page reads with, made on first use so nothing runs on load. */
 export const voice = (): Voice => (shared ??= pageVoice());
+
+/** Reads with another voice from now on, such as the mobile app's (engine/ui/native-bridge.ts). */
+export function setVoice(v: Voice): void {
+    shared?.stop();
+    shared = v;
+}

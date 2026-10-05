@@ -15,11 +15,13 @@ import {
     ErrorBoundary,
     lazy,
     Match,
+    on,
     onCleanup,
     onMount,
     Show,
     Suspense,
     Switch,
+    type Accessor,
     type JSX,
 } from "solid-js";
 import { Drawing, onDemand, still } from "../../engine/ui/art";
@@ -30,6 +32,8 @@ import { useLook } from "../../engine/ui/page";
 import { matches } from "../../engine/ui/viewport";
 import { familyName } from "../../school/family/names";
 import type { MapView } from "../../engine/space";
+import type { ToPage } from "../../engine/host";
+import { hosted, send } from "../../engine/ui/native";
 import type { KidView } from "../../server/api";
 import type { Kid } from "../../server/db/schema";
 import type { InsideScreen } from "./inside";
@@ -63,13 +67,10 @@ const Dock = lazy(() =>
 );
 
 /** A child's own companion routes, which the dock is handed (engine/ui/kid.ts holds them). */
-const KID_REACH: Omit<Reach, "daily"> = {
+const KID_REACH: Reach = {
     on: (kid) => client.companionOn(kid),
-    start: (kid, body) => client.companionStart(kid, body),
-    context: (kid, where) => client.companionContext(kid, where),
-    end: (kid, id) => client.companionEnd(kid, id),
-    gone: (kid, id) => client.companionGone(kid, id),
-    record: (kid, doings) => client.record(kid, doings),
+    step: (kid, body) => client.companionStep(kid, body),
+    voice: (kid, key) => client.companionVoice(kid, key),
 };
 
 let insideCode: Promise<typeof import("./inside")> | null = null;
@@ -88,13 +89,20 @@ export const KidPlace = lazy(() =>
 );
 // `box` is where the view being left put the world on the screen, so the one opening picks the
 // movement up there: the dive into a world and the way back out are one movement (engine/ui/world.tsx)
-type Screen = { at: "map"; place: number | null; box?: DOMRect } | InsideScreen;
+// `away` is the mobile app's map standing in for this one, with nothing of the child's on the page
+type Screen = { at: "map"; place: number | null; box?: DOMRect } | { at: "away" } | InsideScreen;
 
 export function ChildMap(props: {
     view: KidView;
     kid: Kid;
     offline: boolean;
     onBack: () => void;
+    /** In the mobile app, whose map stands in for this one: the world it asked to open, its back button, and leaving the world. */
+    app?: {
+        enter: Accessor<ToPage["enter"] | null>;
+        backs: Accessor<number>;
+        left: () => void;
+    };
 }): JSX.Element {
     const look = useLook();
     createEffect(() =>
@@ -140,10 +148,12 @@ export function ChildMap(props: {
             void drawing();
         }
     });
-    const [screen, setScreen] = createSignal<Screen>({ at: "map", place: null });
+    const [screen, setScreen] = createSignal<Screen>(
+        props.app ? { at: "away" } : { at: "map", place: null },
+    );
     const [sheetRun, setSheetRun] = createSignal(0);
     // the map's first frame is all there, which is when today's sheets are drawn out of sight
-    const [mapDrawn, setMapDrawn] = createSignal(false);
+    const [mapDrawn, setMapDrawn] = createSignal(props.app !== undefined);
     let warming = 0;
     onCleanup(() => clearTimeout(warming));
     const narrow = matches("(max-width: 700px)");
@@ -155,7 +165,7 @@ export function ChildMap(props: {
     /** The lesson roll inside the selected world. */
     const inside = (): InsideScreen | false => {
         const s = screen();
-        return s.at !== "map" && s;
+        return s.at === "world" && s;
     };
     // the screen the world's own component is given, which keeps its last value while that component
     // is taken down, since a prop read during a teardown must not be reading a condition that is gone
@@ -178,6 +188,7 @@ export function ChildMap(props: {
         void reloadChild(c)
             .then((next) => {
                 if (next && loaded() === c) mutate(next);
+                send("finished", {});
             })
             .finally(() => {
                 reloading = false;
@@ -197,6 +208,14 @@ export function ChildMap(props: {
         letGo();
         // Disposing the paper makes the resource's previous result unusable, so draw it again on the map.
         setSheetRun((run) => run + 1);
+        if (props.app) {
+            props.app.left();
+            setScreen({ at: "away" });
+            send("out", { box: box && { x: box.x, y: box.y, w: box.width, h: box.height } });
+            // no map here claims the roll held on its way out, and the app's map rises behind it
+            setTimeout(() => release(true, "roll"));
+            return;
+        }
         const from = s ? s.from : null;
         const selected = from === null ? undefined : map()?.places[from];
         setScreen({
@@ -337,6 +356,31 @@ export function ChildMap(props: {
         // is never broken by the line that says the page is opening; a load that fails opens it anyway
         void Promise.all([roll(), whenSheets(trip.signal)]).then(go, go);
     };
+    // the app's map asks for a world, or for the guide's with an empty one, once this page has the map's places
+    let entered: ToPage["enter"] | null = null;
+    createEffect(() => {
+        const e = props.app?.enter();
+        const m = map();
+        if (!e || !m || e === entered) return;
+        entered = e;
+        const place =
+            e.world === "" ? m.here : m.places.findIndex((p) => p.shown?.world === e.world);
+        if (place === null || place < 0) {
+            send("failed", { message: `There is no way into "${e.world}" on this map.` });
+            return;
+        }
+        const b = e.box;
+        goIn(m, place, b && new DOMRect(b.x, b.y, b.w, b.h));
+    });
+    createEffect(
+        on(
+            () => props.app?.backs(),
+            () => {
+                if (inside()) backToMap(null);
+            },
+            { defer: true },
+        ),
+    );
     /** Into the world the guide stands at, which holds today's sheets. */
     const goToday = (): void => {
         const m = map();
@@ -432,20 +476,16 @@ export function ChildMap(props: {
                 </Match>
             </Switch>
             {/* the companion is on a world's lessons, outside the roll so it stays put as the paper moves */}
-            <Show when={inside() && loaded()}>
+            <Show when={inside() && !hosted() && loaded()}>
                 {(c) => (
                     <Suspense>
-                        <Dock
-                            who={c().kid.id}
-                            chosen={c().record.kept.companion}
-                            reach={KID_REACH}
-                        />
+                        <Dock who={c().kid.id} reach={KID_REACH} />
                     </Suspense>
                 )}
             </Show>
             <div class="kid-map-over">
                 <Offline when={props.offline} />
-                {props.view.kids.length > 1 && screen().at === "map" ? (
+                {props.view.kids.length > 1 && screen().at === "map" && !hosted() ? (
                     <Button second onClick={props.onBack}>
                         Back to the pictures
                     </Button>

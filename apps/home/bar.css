@@ -127,9 +127,6 @@ a.gb-kid:hover .kid-portrait {
     rotate: 0deg;
     filter: none;
 }
-.gb-me-stamp .kid-stamp-pic {
-    inset: 17% 17% 15%;
-}
 .gb-me-pop {
     position: absolute;
     top: calc(100% + 6px);

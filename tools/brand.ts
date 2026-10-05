@@ -7,7 +7,18 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { Resvg } from "@resvg/resvg-js";
 import type { Connect, Plugin } from "vite";
-import { BIRD, files, icon, profile, social, svgFile, type Art } from "../engine/parts/brand";
+import {
+    BIRD,
+    files,
+    icon,
+    lockup,
+    markArt,
+    paperGrid,
+    profile,
+    social,
+    svgFile,
+    type Art,
+} from "../engine/parts/brand";
 import { PALETTE } from "../engine/paper";
 import { MAIL_WORLDS, mailCover } from "../server/mail-design";
 
@@ -75,6 +86,18 @@ export function uploads(): Map<string, BrandFile> {
     return out;
 }
 
+/** The mobile app's icon, Android's adaptive foreground and the splash mark, which Expo reads. */
+export function mobile(): Map<string, BrandFile> {
+    return new Map<string, BrandFile>([
+        ["icon.png", png(icon(BIRD), 1024)],
+        ["adaptive-icon.png", png(icon(BIRD, { safe: true }), 1024)],
+        ["splash-icon.png", png(markArt(BIRD), 1024)],
+        ["lockup.png", png(lockup(BIRD, "horizontal"), 1200)],
+        // one square of the squared book, which the app repeats for its ground, at a phone's 3x
+        ["paper.png", png({ w: 20, h: 20, body: paperGrid(20, 20, { step: 10 }) }, 60)],
+    ]);
+}
+
 const serve: Connect.NextHandleFunction = (req, res, next) => {
     const path = (req.url ?? "").split("?")[0] ?? "";
     const file = req.method === "GET" || req.method === "HEAD" ? served().get(path) : undefined;
@@ -105,14 +128,14 @@ export function brand(): Plugin {
 if (import.meta.main) {
     const folder = process.argv[2];
     if (folder === undefined) {
-        process.stderr.write("usage: npm run brand:export -- <folder>\n");
+        process.stderr.write("usage: npm run brand:export -- <folder>, or -- --mobile\n");
         process.exit(1);
     }
-    const out = resolve(folder);
-    const all = [
-        ...[...served()].map(([path, file]) => [path.slice(1), file] as const),
-        ...uploads(),
-    ];
+    const app = folder === "--mobile";
+    const out = app ? resolve(import.meta.dirname, "../apps/mobile/assets") : resolve(folder);
+    const all = app
+        ? [...mobile()]
+        : [...[...served()].map(([path, file]) => [path.slice(1), file] as const), ...uploads()];
     for (const [name, file] of all) {
         const to = join(out, name);
         mkdirSync(dirname(to), { recursive: true });

@@ -30,6 +30,7 @@ import { failureText } from "./failure";
 import { rowsOf } from "./keep-clear";
 import { Waiting } from "./waiting";
 import { Mark } from "./mark";
+import { hosted, send } from "./native";
 import type { Place } from "./postcard";
 import { path, useShown } from "./router";
 import { Announcer, Say } from "./say";
@@ -183,6 +184,8 @@ export function Page(props: {
                 <Show when={!look().stage || look().stageBackdrop}>
                     <MapBackdrop
                         class="page-ground"
+                        // in the app a second GPU context is what gets a phone's page killed
+                        stillOnly={hosted()}
                         aim={
                             look().auth && narrow()
                                 ? { ...aimAt(look().place, true, false), across: 6000 }
@@ -292,7 +295,8 @@ export function SignOut(props: {
         setSaid("");
         const r = await props.run();
         if (r === true) {
-            location.assign("/sign-in");
+            if (hosted()) send("open", { path: "/sign-in" });
+            else location.assign("/sign-in");
             return;
         }
         setBusy(false);

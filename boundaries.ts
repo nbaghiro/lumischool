@@ -64,6 +64,8 @@ export const MODULES: Record<string, Module> = {
     // apart from pack.ts so that a screen naming a grade does not carry the pack's checkers
     grade: { at: "engine/grade", phase: "run", reach: [], packages: [] },
     page: { at: "engine/page", phase: "run", reach: [], packages: [] },
+    // the messages between the mobile app and the pages it hosts, which both sides check on arrival
+    host: { at: "engine/host", phase: "run", reach: [], packages: [] },
     scene: { at: "engine/scene", phase: "run", reach: ["paper", "expr", "parts"], packages: [] },
     pack: {
         at: "engine/pack",
@@ -161,6 +163,7 @@ export const MODULES: Record<string, Module> = {
             "pigment",
             "numbers",
             "page",
+            "host",
         ],
         packages: [
             "solid-js",
@@ -169,8 +172,6 @@ export const MODULES: Record<string, Module> = {
             "@fontsource/andika",
             "@fontsource-variable/shantell-sans",
             "@fontsource-variable/spline-sans-mono",
-            // the companion's call (engine/ui/companion.ts), loaded only when a child starts one
-            "@daily-co/daily-js",
         ],
     },
     space: { at: "engine/space", phase: "run", reach: ["paper", "ink", "parts"], packages: [] },
@@ -259,10 +260,37 @@ export const MODULES: Record<string, Module> = {
     },
 };
 
+// The web apps name `ui` so that it is withheld from the mobile app, which draws with React Native and
+// reaches the pages through `host` (.docs/mobile.md).
 export const APPS: Record<string, App> = {
-    kids: { phases: ["run", "data"], plus: [], packages: ["solid-js"] },
-    home: { phases: ["run", "data"], plus: [], packages: ["solid-js"] },
-    site: { phases: ["run", "data"], plus: [], packages: ["solid-js"] },
+    kids: { phases: ["run", "data"], plus: ["ui"], packages: ["solid-js"] },
+    home: { phases: ["run", "data"], plus: ["ui"], packages: ["solid-js"] },
+    site: { phases: ["run", "data"], plus: ["ui"], packages: ["solid-js"] },
+    mobile: {
+        phases: ["run", "data"],
+        plus: [],
+        packages: [
+            "react",
+            "react-native",
+            "expo",
+            "expo-router",
+            "expo-constants",
+            "expo-linking",
+            "expo-status-bar",
+            "expo-splash-screen",
+            "expo-secure-store",
+            "expo-font",
+            "expo-print",
+            "expo-sharing",
+            "expo-speech",
+            "expo-haptics",
+            "expo-screen-orientation",
+            "expo-file-system",
+            "react-native-webview",
+            "react-native-safe-area-context",
+            "react-native-screens",
+        ],
+    },
 };
 
 /**

@@ -24,6 +24,12 @@ const BRAND_FILES: ReadonlySet<string> = new Set([
     "/social.png",
 ]);
 
+/** The files that tie our links to the app, which Vite copies from public/ into the build. */
+const WELL_KNOWN: ReadonlySet<string> = new Set([
+    "/.well-known/apple-app-site-association",
+    "/.well-known/assetlinks.json",
+]);
+
 const TYPES: Readonly<Record<string, string>> = {
     ".html": "text/html; charset=utf-8",
     ".js": "text/javascript; charset=utf-8",
@@ -57,17 +63,16 @@ const PAGE_CSP =
     "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; frame-ancestors 'none'";
 
 /**
- * The pages that draw lessons for a family, a child's and a grown-up's, also reach the companion's
- * call (server/companion.ts): Daily's call bundle comes from c.daily.co, and the call itself talks to
- * Daily over https and websockets. The site's pages do not.
+ * The pages that draw lessons for a family, a child's and a grown-up's, also play the companion's
+ * voice (server/companion.ts), which is fetched with the page's credential and played from a blob.
+ * The site's pages do not.
  */
-const CALLING = new Set(["kids", "home"]);
-const CALL_CSP =
-    "default-src 'self'; script-src 'self' https://c.daily.co; style-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://*.daily.co wss://*.daily.co; frame-ancestors 'none'";
+const READING = new Set(["kids", "home"]);
+const READ_CSP =
+    "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; frame-ancestors 'none'";
 
-/** Only those pages may ask for the microphone, which the companion hears while Talk is held. */
-const PERMISSIONS = (app: string): string =>
-    `camera=(), microphone=(${CALLING.has(app) ? "self" : ""})`;
+/** No page asks for the camera or the microphone. */
+const PERMISSIONS = "camera=(), microphone=()";
 
 const HEADERS = { "x-content-type-options": "nosniff" };
 
@@ -116,6 +121,21 @@ export function staticFrom(
             });
         }
 
+        // Apple and Android read these to open our links in the app (.docs/mobile.md), and Apple
+        // wants JSON with no extension and no redirect.
+        if (WELL_KNOWN.has(pathname)) {
+            const body = await read(dist, pathname.slice(1));
+            if (!body) return null;
+            return new Response(body, {
+                status: 200,
+                headers: {
+                    ...HEADERS,
+                    "content-type": "application/json",
+                    "cache-control": BRAND_CACHE,
+                },
+            });
+        }
+
         if (BRAND_FILES.has(pathname)) {
             const body = await read(dist, pathname.slice(1));
             if (!body) return null;
@@ -146,8 +166,8 @@ export function staticFrom(
                 ...HEADERS,
                 "content-type": "text/html; charset=utf-8",
                 "cache-control": "no-store",
-                "content-security-policy": CALLING.has(app) ? CALL_CSP : PAGE_CSP,
-                "permissions-policy": PERMISSIONS(app),
+                "content-security-policy": READING.has(app) ? READ_CSP : PAGE_CSP,
+                "permissions-policy": PERMISSIONS,
             },
         });
     };

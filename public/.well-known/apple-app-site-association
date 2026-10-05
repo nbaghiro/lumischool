@@ -1,0 +1,28 @@
+{
+    "applinks": {
+        "details": [
+            {
+                "appIDs": [
+                    "TEAMID.ai.lumischool.app"
+                ],
+                "components": [
+                    {
+                        "/": "/join"
+                    },
+                    {
+                        "/": "/join/*"
+                    },
+                    {
+                        "/": "/sign-in"
+                    },
+                    {
+                        "/": "/explore/*"
+                    },
+                    {
+                        "/": "/map"
+                    }
+                ]
+            }
+        ]
+    }
+}

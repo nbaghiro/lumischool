@@ -1,0 +1,106 @@
+{
+    "expo": {
+        "name": "lumischool",
+        "slug": "lumischool",
+        "scheme": "lumischool",
+        "version": "0.1.0",
+        "orientation": "default",
+        "icon": "./assets/icon.png",
+        "ios": {
+            "bundleIdentifier": "ai.lumischool.app",
+            "supportsTablet": true,
+            "deploymentTarget": "16.4",
+            "associatedDomains": ["applinks:lumischool.ai", "webcredentials:lumischool.ai"],
+            "infoPlist": {
+                "ITSAppUsesNonExemptEncryption": false
+            }
+        },
+        "android": {
+            "package": "ai.lumischool.app",
+            "permissions": [],
+            "blockedPermissions": [
+                "android.permission.RECORD_AUDIO",
+                "android.permission.CAMERA",
+                "android.permission.SYSTEM_ALERT_WINDOW"
+            ],
+            "intentFilters": [
+                {
+                    "action": "VIEW",
+                    "autoVerify": true,
+                    "data": [
+                        {
+                            "scheme": "https",
+                            "host": "lumischool.ai",
+                            "path": "/join"
+                        },
+                        {
+                            "scheme": "https",
+                            "host": "lumischool.ai",
+                            "pathPrefix": "/join/"
+                        },
+                        {
+                            "scheme": "https",
+                            "host": "lumischool.ai",
+                            "path": "/sign-in"
+                        },
+                        {
+                            "scheme": "https",
+                            "host": "lumischool.ai",
+                            "path": "/explore"
+                        },
+                        {
+                            "scheme": "https",
+                            "host": "lumischool.ai",
+                            "pathPrefix": "/explore/"
+                        },
+                        {
+                            "scheme": "https",
+                            "host": "lumischool.ai",
+                            "path": "/map"
+                        }
+                    ],
+                    "category": ["BROWSABLE", "DEFAULT"]
+                }
+            ],
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/adaptive-icon.png",
+                "backgroundColor": "#ffd64a"
+            }
+        },
+        "plugins": [
+            "expo-router",
+            "expo-status-bar",
+            [
+                "expo-splash-screen",
+                {
+                    "image": "./assets/lockup.png",
+                    "imageWidth": 240,
+                    "backgroundColor": "#f4f6f8",
+                    "android": {
+                        "image": "./assets/splash-icon.png",
+                        "imageWidth": 140,
+                        "backgroundColor": "#f4f6f8"
+                    }
+                }
+            ],
+            [
+                "expo-secure-store",
+                {
+                    "faceIDPermission": false
+                }
+            ],
+            [
+                "expo-screen-orientation",
+                {
+                    "initialOrientation": "PORTRAIT_UP"
+                }
+            ],
+            "expo-font",
+            "expo-sharing"
+        ],
+        "extra": {
+            "origin": "https://lumischool.ai",
+            "devOrigin": "http://localhost:8500"
+        }
+    }
+}

@@ -329,14 +329,21 @@ export async function moveKid(kid: string, grade: number): Promise<{ kid: Kid } 
     return moved ? { kid: moved } : unreadable(a.status);
 }
 
+/** A new kid session's credential, which the mobile app keeps for the child's own web view. */
+export async function kidSession(kids: readonly string[]): Promise<string | Failure> {
+    const a = await call("POST", "/api/kid-sessions", { kids, tab: true });
+    if (!a.ok) return refused(a.failure);
+    if (!obj(a.body) || !str(a.body.credential)) return unreadable(a.status);
+    return a.body.credential;
+}
+
 /**
  * Opens a child view in this tab while preserving the shared parent session and sign-in hint.
  */
 export async function openKidSession(kids: readonly string[]): Promise<true | Failure> {
-    const a = await call("POST", "/api/kid-sessions", { kids, tab: true });
-    if (!a.ok) return refused(a.failure);
-    if (!obj(a.body) || !str(a.body.credential)) return unreadable(a.status);
-    if (!keepKidCredential(a.body.credential))
+    const credential = await kidSession(kids);
+    if (typeof credential !== "string") return credential;
+    if (!keepKidCredential(credential))
         return {
             error: "bad-request",
             status: 0,

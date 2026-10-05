@@ -1,6 +1,6 @@
 import { startTutor, loadTutor, materialTutor, turnTutor, audioTutor } from "./tutoring";
 import { helpAvailable, loadHelp, startHelpOn, turnHelp, type LessonReader } from "./adaptive-help";
-import { companionContext, companionFamily, endCompanion, startCompanion } from "./companion";
+import { companionCaller, companionOffers, stepVoice, stepWords } from "./companion";
 import { isIP } from "node:net";
 // The API server (.docs/api.md). The whole app is one function from a web `Request` to a `Response`,
 // which the tests call in process, and `serve` puts it on Node's own http module. Every route is
@@ -119,7 +119,16 @@ export interface Config extends AuthConfig {
     log: (line: string) => void;
     /** The pack the family's lessons are served from, or null when none is built, which the routes that need it say. */
     pack: Pack | null;
+    /** What every answer's `x-lumi-build` says, so the app reloads a web view an older deploy served. */
+    build: string;
 }
+
+/**
+ * Render's commit names the deploy that built both this process and dist/, which a new deploy always
+ * replaces together; elsewhere the start time stands in, since a restart is then the only new build.
+ */
+const buildOf = (env: Record<string, string | undefined>): string =>
+    env.RENDER_GIT_COMMIT?.slice(0, 12) || `start-${Date.now().toString(36)}`;
 
 /**
  * Where the pages are locally (.docs/local.md): the one origin the root's dev server serves every app
@@ -186,6 +195,7 @@ function productionConfig(env: Record<string, string | undefined>): Config | { p
         secure: true,
         log: toStderr,
         pack: null,
+        build: buildOf(env),
     };
 }
 
@@ -229,6 +239,7 @@ export function serviceConfigFrom(
         secure: false,
         log: toStderr,
         pack: null,
+        build: buildOf(env),
     };
 }
 
@@ -256,6 +267,12 @@ interface Ctx {
     ip: string | null;
     cookies: Map<string, string>;
     device: string | null;
+    /** A request from the app (.docs/mobile.md): its credentials come in headers, and it gets no cookie. */
+    native: boolean;
+    /** The session credential: the app's bearer, or the session cookie. */
+    session: string | null;
+    /** The browser key: the app's `X-Lumi-Device`, or the browser cookie. */
+    browser: string | null;
 }
 
 type Route =
@@ -399,6 +416,38 @@ function cookie(config: Config, name: string, value: string, maxAge: number | nu
     return parts.join("; ");
 }
 
+/** The browser key's cookie, which lives as long as the key does when idle (server/db/keys.ts). */
+const browserCookie = (config: Config, browser: string): string =>
+    cookie(config, names(config).browser, browser, 90 * 24 * 60 * 60);
+
+/** The id of a live browser key, or null for a credential that opens none. */
+async function liveBrowser(credential: string): Promise<string | null> {
+    const held = await verify(credential, ["browser"]);
+    return held && held !== "put-away" ? held.id : null;
+}
+
+/** The credential in `Authorization: Bearer <credential>`, or null. */
+function bearerOf(req: Request): string | null {
+    const m = /^Bearer ([^\s]+)$/.exec(req.headers.get("authorization") ?? "");
+    return m?.[1] ?? null;
+}
+
+/**
+ * Where the app's web view goes once it holds the cookies: a path on this origin, as the grown-ups'
+ * app's `nextFrom` reads one, and never another site.
+ */
+function localPath(to: string | null, fallback: string): string {
+    if (!to || !to.startsWith("/") || to.startsWith("//") || to.startsWith("/\\")) return fallback;
+    for (let i = 0; i < to.length; i++) {
+        const code = to.charCodeAt(i);
+        if (code < 32 || code === 127) return fallback;
+    }
+    return to;
+}
+
+/** The route that hands the app's session to its web view, the one native route that sets cookies. */
+const HANDOFF = "/api/native/web";
+
 const MINUTES_15 = 15 * 60;
 
 /** Seconds from now until `ends`, as a cookie's `Max-Age`. */
@@ -497,27 +546,31 @@ async function databaseAnswers(): Promise<boolean> {
 function routes(config: Config): Route[] {
     const n = names(config);
 
+    /** The browser key the new keys are bound to: the one the caller holds while it lives, or a new one. */
+    const browserFor = async (c: Ctx, family: string, ids: string[]): Promise<string> => {
+        const browser =
+            c.browser && (await liveBrowser(c.browser)) !== null
+                ? c.browser
+                : (await withFamily({ family }, (tx) => issue(tx, family, { kind: "browser" })))
+                      .credential;
+        await bindToBrowser(family, ids, browser);
+        return browser;
+    };
     const bind = async (
         c: Ctx,
         res: Response,
         family: string,
         ids: string[],
     ): Promise<Response> => {
-        let browser = c.cookies.get(n.browser) ?? null;
-        const held = browser ? await verify(browser, ["browser"]) : null;
-        if (!held || held === "put-away") {
-            const made = await withFamily({ family }, (tx) =>
-                issue(tx, family, { kind: "browser" }),
-            );
-            browser = made.credential;
-        }
-        if (browser) {
-            await bindToBrowser(family, ids, browser);
-            res.headers.append("set-cookie", cookie(config, n.browser, browser, 90 * 24 * 60 * 60));
-        }
+        const browser = await browserFor(c, family, ids);
+        if (!c.native) res.headers.append("set-cookie", browserCookie(config, browser));
         return res;
     };
     const parentIn = async (c: Ctx, opened: Opened): Promise<Response> => {
+        if (c.native) {
+            const device = await browserFor(c, opened.me.family.id, [opened.me.session.id]);
+            return json(200, { me: opened.me, native: { session: opened.credential, device } });
+        }
         const res = await bind(c, signedIn(config, opened), opened.me.family.id, [
             opened.me.session.id,
         ]);
@@ -578,11 +631,11 @@ function routes(config: Config): Route[] {
                     },
                     c.req.headers.get("x-sign-in-challenge") ?? c.cookies.get(n.pending) ?? null,
                     c.device,
-                    c.cookies.get(n.session) ?? null,
+                    c.session,
                 );
                 if ("error" in out) return declined(out);
                 const response = await parentIn(c, out);
-                return json(200, { me: out.me }, response.headers);
+                return c.native ? response : json(200, { me: out.me }, response.headers);
             },
         },
         {
@@ -590,78 +643,68 @@ function routes(config: Config): Route[] {
             path: "/api/kid/:kid/companion",
             who: "kid",
             run: async (c, kid) => {
-                await companionFamily(kid, c.params.kid);
-                return json(200, { on: true });
+                await companionCaller(kid, c.params.kid);
+                return json(200, companionOffers(process.env));
             },
         },
         {
             method: "POST",
-            path: "/api/kid/:kid/companion/start",
-            who: "kid",
-            run: async (c, kid) =>
-                json(
-                    200,
-                    await startCompanion(
-                        await companionFamily(kid, c.params.kid),
-                        lessonReader(config.pack),
-                        c.body,
-                    ),
-                ),
-        },
-        {
-            method: "POST",
-            path: "/api/kid/:kid/companion/context",
+            path: "/api/kid/:kid/companion/step",
             who: "kid",
             run: async (c, kid) => {
-                await companionFamily(kid, c.params.kid);
-                return json(200, companionContext(lessonReader(config.pack), c.body));
+                await companionCaller(kid, c.params.kid);
+                return json(200, stepWords(lessonReader(config.pack), c.body));
             },
         },
         {
-            method: "POST",
-            path: "/api/kid/:kid/companion/end",
+            method: "GET",
+            path: "/api/kid/:kid/companion/voice/:key",
             who: "kid",
-            run: async (c, kid) =>
-                json(200, await endCompanion(await companionFamily(kid, c.params.kid), c.body)),
+            run: async (c, kid) => {
+                await companionCaller(kid, c.params.kid);
+                const wav = await stepVoice(c.params.key ?? "");
+                return new Response(wav, {
+                    headers: {
+                        "content-type": "audio/wav",
+                        // named by its words, so it never changes
+                        "cache-control": "private, max-age=31536000, immutable",
+                    },
+                });
+            },
         },
         {
             method: "GET",
             path: "/api/companion",
             who: "adult",
             run: async (_c, adult) => {
-                await companionFamily(adult);
-                return json(200, { on: true });
+                await companionCaller(adult);
+                return json(200, companionOffers(process.env));
             },
         },
         {
             method: "POST",
-            path: "/api/companion/start",
-            who: "adult",
-            run: async (c, adult) =>
-                json(
-                    200,
-                    await startCompanion(
-                        await companionFamily(adult),
-                        lessonReader(config.pack),
-                        c.body,
-                    ),
-                ),
-        },
-        {
-            method: "POST",
-            path: "/api/companion/context",
+            path: "/api/companion/step",
             who: "adult",
             run: async (c, adult) => {
-                await companionFamily(adult);
-                return json(200, companionContext(lessonReader(config.pack), c.body));
+                await companionCaller(adult);
+                return json(200, stepWords(lessonReader(config.pack), c.body));
             },
         },
         {
-            method: "POST",
-            path: "/api/companion/end",
+            method: "GET",
+            path: "/api/companion/voice/:key",
             who: "adult",
-            run: async (c, adult) =>
-                json(200, await endCompanion(await companionFamily(adult), c.body)),
+            run: async (c, adult) => {
+                await companionCaller(adult);
+                const wav = await stepVoice(c.params.key ?? "");
+                return new Response(wav, {
+                    headers: {
+                        "content-type": "audio/wav",
+                        // named by its words, so it never changes
+                        "cache-control": "private, max-age=31536000, immutable",
+                    },
+                });
+            },
         },
         {
             method: "POST",
@@ -814,6 +857,48 @@ function routes(config: Config): Route[] {
                     ? json(200, { ok: true })
                     : problem(503, "server", { problem: "the database did not answer" }),
         },
+        {
+            method: "GET",
+            path: HANDOFF,
+            who: "anyone",
+            run: async (c) => {
+                if (!c.native || !c.browser) return problem(401, "signed-out");
+                const to = c.url.searchParams.get("to");
+                const headers = new Headers();
+                const kids = c.req.headers.get("x-kid-session");
+                if (c.session !== null) {
+                    const adult = await adultFrom(c.session);
+                    if (adult === "put-away") return problem(401, "put-away");
+                    if (
+                        !adult ||
+                        !(await browserAllows(adult.family.id, [adult.session.id], c.browser))
+                    )
+                        return problem(401, "signed-out");
+                    headers.append(
+                        "set-cookie",
+                        cookie(config, n.session, c.session, maxAgeOf(adult.session)),
+                    );
+                    // A children's view the web view held before would otherwise take `/` (pages.ts).
+                    headers.append("set-cookie", cookie(config, n.kids, "", 0));
+                    headers.set("location", localPath(to, "/"));
+                } else if (kids !== null) {
+                    const kid = await kidSessionFrom(kids);
+                    if (
+                        !kid ||
+                        !(await browserAllows(
+                            kid.family.id,
+                            kid.keys.map((k) => k.id),
+                            c.browser,
+                        ))
+                    )
+                        return problem(401, "no-kid-session");
+                    headers.set("location", localPath(to, "/kids"));
+                } else return problem(401, "signed-out");
+                headers.append("set-cookie", browserCookie(config, c.browser));
+                for (const [k, v] of Object.entries(BASE_HEADERS)) headers.set(k, v);
+                return new Response(null, { status: 303, headers });
+            },
+        },
 
         {
             method: "POST",
@@ -856,7 +941,7 @@ function routes(config: Config): Route[] {
                     c.req.headers.get("x-sign-in-challenge") ?? c.cookies.get(n.pending) ?? null,
                     textField(c.body, "code"),
                     c.device,
-                    c.cookies.get(n.session) ?? null,
+                    c.session,
                 );
                 if ("error" in out) return declined(out);
                 if ("credential" in out) return parentIn(c, out);
@@ -880,7 +965,7 @@ function routes(config: Config): Route[] {
                     c.req.headers.get("x-sign-in-challenge") ?? c.cookies.get(n.pending) ?? null,
                     choice,
                     c.device,
-                    c.cookies.get(n.session) ?? null,
+                    c.session,
                 );
                 return "error" in out ? declined(out) : parentIn(c, out);
             },
@@ -899,16 +984,9 @@ function routes(config: Config): Route[] {
             path: "/api/auth/status",
             who: "anyone",
             run: async (c) => {
-                const credential = c.cookies.get(n.session) ?? null;
+                const credential = c.session;
                 const parsed = credential ? parseCredential(credential) : null;
-                if (
-                    !parsed ||
-                    !(await browserAllows(
-                        parsed.family,
-                        [parsed.id],
-                        c.cookies.get(n.browser) ?? null,
-                    ))
-                )
+                if (!parsed || !(await browserAllows(parsed.family, [parsed.id], c.browser)))
                     return json(200, { available: false, locked: false });
                 const adult = await adultFrom(credential);
                 return json(200, { available: !!adult, locked: adult === "put-away" });
@@ -919,16 +997,9 @@ function routes(config: Config): Route[] {
             path: "/api/auth/unlock",
             who: "anyone",
             run: async (c) => {
-                const credential = c.cookies.get(n.session) ?? null;
+                const credential = c.session;
                 const parsed = credential ? parseCredential(credential) : null;
-                if (
-                    !parsed ||
-                    !(await browserAllows(
-                        parsed.family,
-                        [parsed.id],
-                        c.cookies.get(n.browser) ?? null,
-                    ))
-                )
+                if (!parsed || !(await browserAllows(parsed.family, [parsed.id], c.browser)))
                     return problem(401, "signed-out");
                 const out = await unlockParent(config, credential, field(c.body, "pin"));
                 return out === true
@@ -1094,10 +1165,15 @@ function routes(config: Config): Route[] {
                     { username: field(c.body, "username"), pin: field(c.body, "pin") },
                     c.ip,
                     c.device,
+                    c.native && c.browser ? await liveBrowser(c.browser) : null,
                 );
                 if (!out) return problem(400, "wrong-pin");
                 const parsed = parseCredential(out.credential);
                 if (!parsed) return problem(500, "server");
+                if (c.native) {
+                    const device = await browserFor(c, parsed.family, [parsed.id]);
+                    return json(200, { credential: out.credential, native: { device } });
+                }
                 return bind(c, json(200, out), parsed.family, [parsed.id]);
             },
         },
@@ -1127,7 +1203,7 @@ function routes(config: Config): Route[] {
             path: "/api/kid-sessions",
             who: "adult",
             run: async (_c, adult) => {
-                const out = await kidSessionsFor(adult, _c.cookies.get(n.browser) ?? null);
+                const out = await kidSessionsFor(adult, _c.browser);
                 return "error" in out ? problem(403, out.error) : json(200, out);
             },
         },
@@ -1136,6 +1212,9 @@ function routes(config: Config): Route[] {
             path: "/api/kid-sessions",
             who: "adult",
             run: async (c, adult) => {
+                // Without `tab` the session is put away behind a cookie, which the app never holds.
+                if (c.native && field(c.body, "tab") !== true)
+                    return problem(400, "bad-request", { problem: "the app sends tab: true" });
                 const out = await openKidView(
                     adult,
                     field(c.body, "kids"),
@@ -1467,7 +1546,7 @@ function routes(config: Config): Route[] {
             who: "kid",
             run: async (c, kid) => {
                 // A tab-opened view can return to the existing parent without rotating that shared session.
-                const credential = c.cookies.get(n.session) ?? null;
+                const credential = c.session;
                 const active = await adultFrom(credential);
                 if (
                     c.req.headers.has("x-kid-session") &&
@@ -1476,13 +1555,7 @@ function routes(config: Config): Route[] {
                     active.parent &&
                     active.family.id === kid.family.id
                 ) {
-                    if (
-                        !(await browserAllows(
-                            active.family.id,
-                            [active.session.id],
-                            c.cookies.get(n.browser) ?? null,
-                        ))
-                    )
+                    if (!(await browserAllows(active.family.id, [active.session.id], c.browser)))
                         return problem(401, "signed-out");
                     const unlocked = await unlockParent(config, credential, field(c.body, "pin"));
                     if (unlocked !== true) return problem(403, unlocked.error);
@@ -1493,7 +1566,7 @@ function routes(config: Config): Route[] {
                     kid,
                     field(c.body, "pin"),
                     c.device,
-                    c.cookies.get(n.session) ?? null,
+                    c.session,
                 );
                 if ("error" in out) {
                     switch (out.error) {
@@ -1591,7 +1664,7 @@ export function app(config: Config): (req: Request, ip?: string | null) => Promi
     const setsCookie = (res: Response, name: string): boolean =>
         res.headers.getSetCookie().some((s) => s.startsWith(`${name}=`));
 
-    return async (req, ip = null) => {
+    const handle = async (req: Request, ip: string | null): Promise<Response> => {
         const url = new URL(req.url);
         const method = req.method.toUpperCase();
         const address = clientIp(req, ip, config);
@@ -1627,7 +1700,7 @@ export function app(config: Config): (req: Request, ip?: string | null) => Promi
             res.headers.set("access-control-allow-methods", "GET, POST");
             res.headers.set(
                 "access-control-allow-headers",
-                "content-type, x-kid-session, x-sign-in-challenge",
+                "content-type, x-kid-session, x-sign-in-challenge, authorization, x-lumi-device",
             );
             return cors(req, res);
         }
@@ -1643,9 +1716,21 @@ export function app(config: Config): (req: Request, ip?: string | null) => Promi
             return cors(req, problem(404, "not-found"));
 
         try {
-            if (method !== "GET" && method !== "HEAD") {
-                const origin = req.headers.get("origin");
-                const site = req.headers.get("sec-fetch-site");
+            const origin = req.headers.get("origin");
+            const site = req.headers.get("sec-fetch-site");
+            const handoff = hit.r.path === HANDOFF;
+            // A browser cannot add the app's headers to a navigation, and page script that adds them
+            // carries a Cookie or a Sec-Fetch-Site; the web view's own first load says "none".
+            const fromBrowser = handoff
+                ? site !== null && site !== "none"
+                : req.headers.has("cookie") || site !== null;
+            const appHeaders = req.headers.has("authorization") || req.headers.has("x-lumi-device");
+            if (appHeaders && fromBrowser) return cors(req, problem(403, "origin"));
+            const originChecked = method !== "GET" && method !== "HEAD";
+            // A request with no Origin and no browser's headers may be the app's first sign-in,
+            // which its body's `device: true` says, so its origin is checked once the body is read.
+            const maybeApp = appHeaders || (!fromBrowser && origin === null);
+            if (originChecked && !maybeApp) {
                 if (
                     !origin ||
                     !config.origins.includes(origin) ||
@@ -1673,47 +1758,58 @@ export function app(config: Config): (req: Request, ip?: string | null) => Promi
                     }
                 }
             }
+            const signingIn = field(body, "device") === true;
+            if (signingIn && fromBrowser) return cors(req, problem(403, "origin"));
+            const native = !fromBrowser && (appHeaders || signingIn);
+            if (originChecked && maybeApp && !native) return cors(req, problem(403, "origin"));
+            const cookies = native
+                ? new Map<string, string>()
+                : cookiesOf(req, [n.session, n.pending, n.kids, n.browser]);
             const c: Ctx = {
                 req,
                 url,
                 params: hit.params,
                 body,
                 ip: address,
-                cookies: cookiesOf(req, [n.session, n.pending, n.kids, n.browser]),
+                cookies,
                 device: deviceName(req.headers.get("user-agent")),
+                native,
+                session: native ? bearerOf(req) : (cookies.get(n.session) ?? null),
+                browser: native
+                    ? req.headers.get("x-lumi-device")
+                    : (cookies.get(n.browser) ?? null),
+            };
+            // The app keeps no cookie jar of ours, so nothing but the hand-off sends it one.
+            const done = (res: Response): Response => {
+                if (native && !handoff) res.headers.delete("set-cookie");
+                return cors(req, res);
             };
             const r = hit.r;
             if (r.who === "adult") {
                 // A child tab never borrows the shared parent cookie, including after expiry.
-                if (req.headers.has("x-kid-session")) return cors(req, problem(403, "not-allowed"));
-                const sent = c.cookies.get(n.session) ?? null;
+                if (req.headers.has("x-kid-session")) return done(problem(403, "not-allowed"));
+                const sent = c.session;
                 const adult = await adultFrom(sent);
                 // A session put away for a children's view is refused and its cookie kept, since the
                 // family's PIN gives it back on that browser (.docs/auth.md, flow 7).
-                if (adult === "put-away") return cors(req, problem(401, "put-away"));
+                if (adult === "put-away") return done(problem(401, "put-away"));
                 if (!adult) {
                     // A cookie that opens nothing is cleared, since the pages route on whether one is
                     // there (server/pages.ts), and the next page it asks for is then the site.
                     const refused = problem(401, "signed-out");
                     if (sent !== null)
                         refused.headers.append("set-cookie", cookie(config, n.session, "", 0));
-                    return cors(req, refused);
+                    return done(refused);
                 }
-                if (
-                    !(await browserAllows(
-                        adult.family.id,
-                        [adult.session.id],
-                        c.cookies.get(n.browser) ?? null,
-                    ))
-                )
-                    return cors(req, problem(401, "signed-out"));
+                if (!(await browserAllows(adult.family.id, [adult.session.id], c.browser)))
+                    return done(problem(401, "signed-out"));
                 const res = await r.run(c, adult);
                 // A use that moved `seen_at` sends the cookie again, so the browser keeps it as long as
                 // the key lives rather than thirty days from sign-in, unless the route set or cleared it.
                 const age = adult.seen ? maxAgeOf(adult.session) : null;
-                if (age !== null && sent !== null && !setsCookie(res, n.session))
+                if (age !== null && sent !== null && !native && !setsCookie(res, n.session))
                     res.headers.append("set-cookie", cookie(config, n.session, sent, age));
-                return cors(req, res);
+                return done(res);
             }
             if (r.who === "kid") {
                 // Kid routes read the children's view's cookie and nothing else; a session is ignored.
@@ -1724,16 +1820,16 @@ export function app(config: Config): (req: Request, ip?: string | null) => Promi
                     const refused = problem(401, "no-kid-session");
                     if (sent !== null && !tab)
                         refused.headers.append("set-cookie", cookie(config, n.kids, "", 0));
-                    return cors(req, refused);
+                    return done(refused);
                 }
                 if (
                     !(await browserAllows(
                         kid.family.id,
                         kid.keys.map((k) => k.id),
-                        c.cookies.get(n.browser) ?? null,
+                        c.browser,
                     ))
                 )
-                    return cors(req, problem(401, "no-kid-session"));
+                    return done(problem(401, "no-kid-session"));
                 const res = await r.run(c, kid);
                 // As a session's: sent again when `seen_at` moved, holding only the keys still alive.
                 if (!tab && sent !== null && kid.seen && !setsCookie(res, n.kids)) {
@@ -1746,9 +1842,9 @@ export function app(config: Config): (req: Request, ip?: string | null) => Promi
                         cookie(config, n.kids, kept.join(KIDS_JOIN), kidsMaxAge(kid.keys)),
                     );
                 }
-                return cors(req, res);
+                return done(res);
             }
-            return cors(req, await r.run(c));
+            return done(await r.run(c));
         } catch (error) {
             if (error instanceof Refused) return cors(req, json(error.status, error.body));
             const request = randomUUID();
@@ -1763,6 +1859,12 @@ export function app(config: Config): (req: Request, ip?: string | null) => Promi
             failed.headers.set("x-request-id", request);
             return cors(req, failed);
         }
+    };
+
+    return async (req, ip = null) => {
+        const res = await handle(req, ip);
+        res.headers.set("x-lumi-build", config.build);
+        return res;
     };
 }
 

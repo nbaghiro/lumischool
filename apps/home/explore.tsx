@@ -29,6 +29,7 @@ import { failureText } from "../../engine/ui/failure";
 import { Button, Check, Search } from "../../engine/ui/form";
 import { Seg } from "../../engine/ui/fields";
 import { LessonSheet } from "../../engine/ui/lesson";
+import { hosted, printHosted } from "../../engine/ui/native";
 import { useLook } from "../../engine/ui/page";
 import { Waiting } from "../../engine/ui/waiting";
 import { Postcard } from "../../engine/ui/postcard";
@@ -63,6 +64,7 @@ import {
 import { LessonLook, sheetWidth, type LessonPaper } from "./lesson-look";
 import { lessonIn, signInFor } from "./routes";
 import * as shared from "./shared";
+import { appPaper } from "./grown";
 
 const local = onThisComputer(location.hostname);
 
@@ -299,7 +301,27 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
             const f = previewed();
             if (f) go(lessonPath(f.id, level()), { replace: true, state: LOOK });
         }
-        requestAnimationFrame(() => requestAnimationFrame(() => print()));
+        requestAnimationFrame(() =>
+            requestAnimationFrame(() => {
+                if (hosted() && printRoot) void printInApp(printRoot);
+                else print();
+            }),
+        );
+    };
+    let printRoot: HTMLDivElement | undefined;
+    /** The app prints on its own, and a card's sheet is recorded once it says it printed. */
+    const printInApp = async (root: HTMLElement): Promise<void> => {
+        const draft = shared.printing.take();
+        const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const paper =
+            draft?.kind === "sheet-printed"
+                ? draft.data.paper === "Letter"
+                    ? "letter"
+                    : "a4"
+                : appPaper(zone);
+        const ok = await printHosted(root, paper);
+        setPrinting(false);
+        if (ok && draft) await api.append([draft]);
     };
     /** Asks for a print: the layer goes up and prints itself, or prints again if it is already up. */
     const printSheet = (): void => {
@@ -532,6 +554,9 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
             <Show when={printing() && paper()}>
                 {(sheet) => (
                     <div
+                        ref={(el) => {
+                            printRoot = el;
+                        }}
                         class="explore-print"
                         classList={{ "ls-squared": squared() }}
                         data-level={level()}
