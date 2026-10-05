@@ -4,8 +4,8 @@ import { teachingForLesson } from "../school/tutoring-materials";
 // written from those lessons, the family's whole and a visitor's through a filter.
 
 import { createHash } from "node:crypto";
-import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { compileLesson, compileVolume, volumeFile } from "../engine/notation/compile";
 import { Workspace } from "../engine/notation/notation";
 import {
@@ -45,6 +45,53 @@ export function curriculum(): Record<string, string> {
         for (const f of readdirSync(join(root, dir)))
             if (f.endsWith(".lumi")) out[`${dir}/${f}`] = readFileSync(join(root, dir, f), "utf8");
     return out;
+}
+
+/** A hash of every file a compiled lesson can depend on: the curriculum, the engine, the school and this file. */
+function sourceHash(): string {
+    const hash = createHash("sha256");
+    const walk = (dir: string): void => {
+        const entries = readdirSync(join(ROOT, dir), { withFileTypes: true }).sort((a, b) =>
+            a.name.localeCompare(b.name),
+        );
+        for (const e of entries) {
+            if (e.name === "__tests__" || e.name === "node_modules") continue;
+            const path = join(dir, e.name);
+            if (e.isDirectory()) walk(path);
+            else hash.update(path).update(readFileSync(join(ROOT, path)));
+        }
+    };
+    for (const dir of ["content/curriculum", "engine", "school"]) walk(dir);
+    return hash.update(readFileSync(join(ROOT, "tools", "pack.ts"))).digest("hex");
+}
+
+const CACHE = join(ROOT, "node_modules", ".cache", "lumischool");
+
+/**
+ * Every lesson of the curriculum, compiled once for all the checks of a run that read them: the
+ * lessons are kept under node_modules/.cache/lumischool/ by a hash of every source they can depend
+ * on, and a kept copy is read back through the pack's checker before it is trusted.
+ */
+export function curriculumLessons(): PackLesson[] {
+    const file = join(CACHE, `lessons-${sourceHash()}.json`);
+    try {
+        const kept: unknown = JSON.parse(readFileSync(file, "utf8"));
+        const read = Array.isArray(kept) ? kept.map((v: unknown) => readLesson(v)) : [];
+        const lessons = read.flatMap((r) => (r.ok ? [r.lesson] : []));
+        if (read.length > 0 && lessons.length === read.length) return lessons;
+    } catch {
+        // nothing kept yet for these sources, or a copy that does not read: compile again
+    }
+    const lessons = compileLessons();
+    mkdirSync(dirname(file), { recursive: true });
+    for (const old of readdirSync(CACHE))
+        if (/^lessons-\w+\.json$/.test(old) && join(CACHE, old) !== file)
+            rmSync(join(CACHE, old), { force: true });
+    // written beside and moved in, so a run reading at the same moment never sees half a file
+    const part = `${file}.${process.pid}`;
+    writeFileSync(part, JSON.stringify(lessons));
+    renameSync(part, file);
+    return lessons;
 }
 
 /**

@@ -101,7 +101,7 @@ curriculum and reads the journeys under every setting a family can choose: each 
 each nation and none. It fails when a world offers a grade whose journey holds fewer than two
 lessons, and when a world has no title and purpose or an entry names a world that does not exist. The unit
 tests are `school/worlds/__tests__/journeys.test.ts` and `journey-reading.test.ts`; the browser
-checks are `tools/e2e/world-journeys.e2e.ts` and `child-journey.e2e.ts`.
+checks are `tools/e2e/map/world-journeys.e2e.ts` and `child-journey.e2e.ts`.
 
 ## Still open
 

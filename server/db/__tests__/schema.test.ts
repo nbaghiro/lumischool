@@ -74,4 +74,34 @@ describe("an envelope is an events row", () => {
         }
         assert.equal(check({ ...row, at: "2026-09-16T10:00:00.000Z" }).ok, true);
     });
+
+    it("holds a game card played in a lesson as a row like any other, naming its child", () => {
+        const row: Event = {
+            id: "00000000-0000-5000-8000-000000000001",
+            family_id: "00000000-0000-5000-8000-000000000002",
+            kid_id: "00000000-0000-5000-8000-000000000004",
+            kind: "played",
+            data: {
+                sitting: "s1",
+                lesson: "maths.hop",
+                lessonHash: "h",
+                section: "try",
+                card: 1,
+                game: "jump",
+                level: 0,
+                rulesVersion: "games-1-physical-3",
+                challenge: null,
+                won: true,
+                tries: 2,
+                seconds: 41,
+                assistance: 0,
+            },
+            actor: null,
+            device: "00000000-0000-5000-8000-000000000003",
+            seq: 0,
+            at: "2026-09-16T10:00:00.000Z",
+        };
+        assert.equal(check(row).ok, true);
+        assert.equal(check({ ...row, kid_id: null }).ok, false);
+    });
 });

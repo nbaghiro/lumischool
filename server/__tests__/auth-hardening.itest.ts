@@ -7,20 +7,19 @@ import { prepare, truncate } from "../db/__tests__/test-db";
 import { app } from "../http";
 import { Browser, local, ORIGIN, startFamily, sessionInto } from "./browser";
 
-const reason = await prepare();
-const owner = reason === null ? open() : null;
+await prepare();
+const owner = open();
 after(async () => {
     await closeApp();
-    await owner?.close();
+    await owner.close();
 });
 
-describe("authentication hardening", { skip: reason ?? false }, () => {
+describe("authentication hardening", () => {
     beforeEach(async () => {
-        if (owner) await truncate(owner);
+        await truncate(owner);
     });
     /** The network each sign-in code was asked from, as stored, oldest first. */
     const networks = async (): Promise<(string | null)[]> => {
-        if (!owner) throw new Error("no database");
         const rows = await owner.raw<
             { ip: string | null }[]
         >`select ip from keys where kind = 'sign-in' order by created_at, id`;
@@ -57,7 +56,6 @@ describe("authentication hardening", { skip: reason ?? false }, () => {
             assert.equal(answer.status, 503);
             assert.deepEqual(answer.body, { error: "delivery-failed" });
         }
-        if (!owner) throw new Error("no database");
         const rows = await owner.raw<
             { detail: { accept: unknown } }[]
         >`select detail from keys where kind = 'sign-in'`;
@@ -132,7 +130,6 @@ describe("authentication hardening", { skip: reason ?? false }, () => {
             name: "Two",
             family: "Two",
         });
-        if (!owner) throw new Error("no database");
         await owner.raw`insert into members (family_id, user_id) values (${two.family}, ${one.user})`;
         await sessionInto(b, two.family, one.user);
         assert.equal((await a.call("POST", "/api/auth/sign-out", { body: {} })).status, 204);
@@ -141,7 +138,6 @@ describe("authentication hardening", { skip: reason ?? false }, () => {
     });
 
     it("new security-definer helpers are not executable by PUBLIC", async () => {
-        if (!owner) throw new Error("no database");
         const rows =
             await owner.raw`select p.proname from pg_proc p, lateral aclexplode(coalesce(p.proacl, acldefault('f', p.proowner))) a where p.proname in ('kid_username_available', 'kid_login_succeeded', 'key_delivery_failed') and a.grantee = 0 and a.privilege_type = 'EXECUTE'`;
         assert.equal(rows.length, 0);

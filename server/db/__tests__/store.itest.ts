@@ -52,12 +52,12 @@ import { apply } from "../migrations/migrate";
 import { content, events, families, keys, kids, members, schema, users } from "../schema";
 import { PG, codeOf, must, prepare, truncate } from "./test-db";
 
-const reason = await prepare();
-const owner: Store | null = reason === null ? open() : null;
+await prepare();
+const owner: Store = open();
 
 after(async () => {
     await closeApp();
-    if (owner) await owner.close();
+    await owner.close();
 });
 
 const u = (n: number) => `00000000-0000-5000-8000-${String(n).padStart(12, "0")}`;
@@ -168,6 +168,21 @@ const SAMPLE: { [K in EventKind]: EventData[K] } = {
         input: "keyboard",
         reducedMotion: false,
         objectives: { completed: 1, total: 1 },
+    },
+    played: {
+        sitting: "s1",
+        lesson: q.lesson,
+        lessonHash: q.lessonHash,
+        section: "try",
+        card: 1,
+        game: "jump",
+        level: 0,
+        rulesVersion: "games-1-physical-3",
+        challenge: null,
+        won: true,
+        tries: 2,
+        seconds: 41,
+        assistance: 0,
     },
     "round-played": {
         round: {
@@ -349,20 +364,18 @@ async function refused(work: Promise<unknown>, code: string, match?: RegExp): Pr
     });
 }
 
-describe("the store", { skip: reason ?? false }, () => {
-    const db = () => must(owner, "the owner connection");
-
+describe("the store", () => {
     beforeEach(async () => {
-        await fixtures(db());
+        await fixtures(owner);
     });
 
     describe("the database it builds", () => {
         it("applies the migrations to a database that already has them without changing anything", async () => {
-            const before = await db()
-                .raw`select count(*)::int as n from drizzle.__drizzle_migrations`;
+            const before =
+                await owner.raw`select count(*)::int as n from drizzle.__drizzle_migrations`;
             await apply();
-            const after_ = await db()
-                .raw`select count(*)::int as n from drizzle.__drizzle_migrations`;
+            const after_ =
+                await owner.raw`select count(*)::int as n from drizzle.__drizzle_migrations`;
             assert.equal(
                 must(after_[0], "the count after").n,
                 must(before[0], "the count before").n,
@@ -375,7 +388,7 @@ describe("the store", { skip: reason ?? false }, () => {
                 const config = getTableConfig(table);
                 declared.set(config.name, config.columns.map((c) => c.name).sort());
             }
-            const rows = await db().raw<{ table_name: string; column_name: string }[]>`
+            const rows = await owner.raw<{ table_name: string; column_name: string }[]>`
                 select table_name, column_name from information_schema.columns where table_schema = 'public' order by 1, 2`;
             const live = new Map<string, string[]>();
             for (const row of rows)
@@ -391,7 +404,7 @@ describe("the store", { skip: reason ?? false }, () => {
         });
 
         it("holds no enum type, no view and no materialised view", async () => {
-            const [row] = await db().raw<{ enums: number; views: number; matviews: number }[]>`
+            const [row] = await owner.raw<{ enums: number; views: number; matviews: number }[]>`
                 select (select count(*)::int from pg_type t join pg_namespace n on n.oid = t.typnamespace where t.typtype = 'e' and n.nspname = 'public') as enums,
                        (select count(*)::int from pg_views where schemaname = 'public') as views,
                        (select count(*)::int from pg_matviews where schemaname = 'public') as matviews`;
@@ -399,7 +412,7 @@ describe("the store", { skip: reason ?? false }, () => {
         });
 
         it("forces row-level security on every table and gives each a policy", async () => {
-            const rows = await db().raw<
+            const rows = await owner.raw<
                 { relname: string; rls: boolean; forced: boolean; policies: number }[]
             >`
                 select c.relname, c.relrowsecurity as rls, c.relforcerowsecurity as forced,
@@ -414,11 +427,11 @@ describe("the store", { skip: reason ?? false }, () => {
         });
 
         it("connects the app as a role that owns nothing and cannot bypass row-level security", async () => {
-            const [role] = await db().raw<
+            const [role] = await owner.raw<
                 { rolsuper: boolean; rolbypassrls: boolean }[]
             >`select rolsuper, rolbypassrls from pg_roles where rolname = 'lumischool_app'`;
             assert.deepEqual(role, { rolsuper: false, rolbypassrls: false });
-            const owners = await db().raw<
+            const owners = await owner.raw<
                 { tableowner: string }[]
             >`select distinct tableowner from pg_tables where schemaname = 'public'`;
             assert.ok(!owners.some((o) => o.tableowner === "lumischool_app"));
@@ -429,7 +442,7 @@ describe("the store", { skip: reason ?? false }, () => {
         });
 
         it("lets the app append to events but never update or delete them, and never update content", async () => {
-            const [p] = await db().raw<Record<string, boolean>[]>`
+            const [p] = await owner.raw<Record<string, boolean>[]>`
                 select has_table_privilege('lumischool_app', 'events', 'UPDATE') as ev_upd, has_table_privilege('lumischool_app', 'events', 'DELETE') as ev_del,
                        has_table_privilege('lumischool_app', 'content', 'UPDATE') as ct_upd, has_table_privilege('lumischool_app', 'events', 'INSERT') as ev_ins`;
             assert.deepEqual(p, { ev_upd: false, ev_del: false, ct_upd: false, ev_ins: true });
@@ -548,7 +561,7 @@ describe("the store", { skip: reason ?? false }, () => {
         });
 
         it("refuses to leave a family with no active parent: by delete, by ending, by making them a tutor, or by deleting their account", async () => {
-            await fixtures(db(), { secondParent: false, tutor: false });
+            await fixtures(owner, { secondParent: false, tutor: false });
             const lastParent = /at least one parent/;
             await refused(
                 withFamily(inF, (tx) => tx.delete(members).where(eq(members.id, M_NAIB))),
@@ -583,10 +596,10 @@ describe("the store", { skip: reason ?? false }, () => {
         });
 
         it("lets a family with one parent be deleted, taking the membership with it", async () => {
-            await fixtures(db(), { secondParent: false, tutor: false });
+            await fixtures(owner, { secondParent: false, tutor: false });
             assert.equal(await withFamily(inF, (tx) => deleteFamily(tx, F)), true);
             assert.equal(
-                (await db().db.select().from(members).where(eq(members.family_id, F))).length,
+                (await owner.db.select().from(members).where(eq(members.family_id, F))).length,
                 0,
             );
         });
@@ -612,8 +625,8 @@ describe("the store", { skip: reason ?? false }, () => {
             release();
             await first;
             assert.equal(await second, PG.check);
-            const parents = await db()
-                .db.select()
+            const parents = await owner.db
+                .select()
                 .from(members)
                 .where(and(eq(members.family_id, F), sql`kid_id is null`));
             assert.deepEqual(
@@ -664,12 +677,12 @@ describe("the store", { skip: reason ?? false }, () => {
     describe("keys", () => {
         it("lets only codes held before a family have none, a children's view key always name its kid and its parent, and a PIN name no kid, one to a family", async () => {
             await refused(
-                db().db.insert(keys).values({ kind: "invite", hash: "x1", email: "a@b.test" }),
+                owner.db.insert(keys).values({ kind: "invite", hash: "x1", email: "a@b.test" }),
                 PG.check,
                 /keys_family_null_only_before_a_family/,
             );
             await refused(
-                db().db.insert(keys).values({ kind: "pin", hash: "x2" }),
+                owner.db.insert(keys).values({ kind: "pin", hash: "x2" }),
                 PG.check,
                 /keys_family_null_only_before_a_family/,
             );
@@ -723,8 +736,8 @@ describe("the store", { skip: reason ?? false }, () => {
                 ok?.keys.map((k) => [k.id, k.kid_id, k.user_id, k.view]),
                 [[id, MAYA, NAIB, VIEW]],
             );
-            const [row] = await db()
-                .db.select({ seen_at: keys.seen_at })
+            const [row] = await owner.db
+                .select({ seen_at: keys.seen_at })
                 .from(keys)
                 .where(eq(keys.id, id));
             assert.ok(row?.seen_at);
@@ -808,8 +821,8 @@ describe("the store", { skip: reason ?? false }, () => {
             const { credential, id } = await withFamily(inF, (tx) =>
                 issue(tx, F, { kind: "shared-session", user_id: NAIB }),
             );
-            await db()
-                .db.update(keys)
+            await owner.db
+                .update(keys)
                 .set({ seen_at: sql`utc_iso(now() - interval '31 minutes')` })
                 .where(eq(keys.id, id));
             assert.equal(await verify(credential, ["shared-session"]), null);
@@ -854,8 +867,8 @@ describe("the store", { skip: reason ?? false }, () => {
                 ["sign-in", "confirm", "sign-in", "sign-in"] as const
             ).entries())
                 await issueCode(kind, code(`h${i}`));
-            const rows = await db()
-                .db.select({ email: keys.email })
+            const rows = await owner.db
+                .select({ email: keys.email })
                 .from(keys)
                 .where(eq(keys.email, "parent@example.test"));
             assert.equal(rows.length, 4, "no limit per address");
@@ -876,8 +889,8 @@ describe("the store", { skip: reason ?? false }, () => {
                     attemptsLeft: 4,
                 });
                 for (let i = 0; i < 3; i++) await prove(kind, pending, "wrong");
-                const [row] = await db()
-                    .db.select({ attempts: keys.attempts })
+                const [row] = await owner.db
+                    .select({ attempts: keys.attempts })
                     .from(keys)
                     .where(eq(keys.hash, pending));
                 assert.equal(row?.attempts, 4, `${kind}: wrong guesses are counted on the key`);
@@ -952,7 +965,10 @@ describe("the store", { skip: reason ?? false }, () => {
                 [sha256("pin-2"), 0],
                 "set again, with no wrong tries",
             );
-            assert.equal((await db().db.select().from(keys).where(eq(keys.kind, "pin"))).length, 1);
+            assert.equal(
+                (await owner.db.select().from(keys).where(eq(keys.kind, "pin"))).length,
+                1,
+            );
             assert.equal(
                 await withFamily({ family: G, user: GUY }, (tx) => pinFor(tx)),
                 null,
@@ -1092,7 +1108,7 @@ describe("the store", { skip: reason ?? false }, () => {
                     .map((f) => readFileSync(new URL(`${dir}/${f}`, root), "utf8")),
             );
             bodies.push(JSON.stringify({ name: "catalogue", vocabulary: 1, revisions: [] }));
-            await saveCatalogue(db().db, bodies);
+            await saveCatalogue(owner.db, bodies);
             await withFamily(inF, (tx) =>
                 saveContent(
                     tx,
@@ -1103,7 +1119,7 @@ describe("the store", { skip: reason ?? false }, () => {
                     ).replace("1..9", "1..19"),
                 ),
             );
-            const rows = await db().db.select().from(content);
+            const rows = await owner.db.select().from(content);
             assert.equal(rows.length, bodies.length + 1);
             for (const r of rows) {
                 assert.equal(
@@ -1149,13 +1165,13 @@ describe("the store", { skip: reason ?? false }, () => {
             const read = await withFamily(inF, (tx) => log(tx, { family: F }));
             assert.deepEqual(new Set(read.map((r) => r.kid_id)), new Set([THEO, null]));
             assert.equal(
-                (await db().db.select().from(members).where(eq(members.user_id, KATE))).length,
+                (await owner.db.select().from(members).where(eq(members.user_id, KATE))).length,
                 0,
             );
             assert.deepEqual(
                 (
-                    await db()
-                        .db.select({ id: keys.id })
+                    await owner.db
+                        .select({ id: keys.id })
                         .from(keys)
                         .where(eq(keys.kind, "kid-session"))
                 ).map((k) => k.id),
@@ -1167,7 +1183,7 @@ describe("the store", { skip: reason ?? false }, () => {
                 "Theo's key in the same view stays",
             );
             assert.equal(
-                (await db().db.select().from(content).where(eq(content.family_id, F))).length,
+                (await owner.db.select().from(content).where(eq(content.family_id, F))).length,
                 1,
             );
         });
@@ -1189,21 +1205,21 @@ describe("the store", { skip: reason ?? false }, () => {
                 ["content", content],
             ] as const) {
                 assert.equal(
-                    (await db().db.select().from(table).where(eq(table.family_id, F))).length,
+                    (await owner.db.select().from(table).where(eq(table.family_id, F))).length,
                     0,
                     `${name} still holds F`,
                 );
             }
             assert.equal(
-                (await db().db.select().from(families).where(eq(families.id, F))).length,
+                (await owner.db.select().from(families).where(eq(families.id, F))).length,
                 0,
             );
             assert.equal(
-                (await db().db.select().from(events).where(eq(events.family_id, G))).length,
+                (await owner.db.select().from(events).where(eq(events.family_id, G))).length,
                 1,
             );
             assert.equal(
-                (await db().db.select().from(users)).length,
+                (await owner.db.select().from(users)).length,
                 4,
                 "logins are not the family's, so they stay",
             );

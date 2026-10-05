@@ -1,5 +1,5 @@
 // Builds a test database from the real migration files and points both roles at it. With no
-// database the suites skip; with LUMISCHOOL_REQUIRE_DB=1 they fail instead, which is what CI sets.
+// database the suites fail, so a check that passed ran every one of them.
 
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -41,21 +41,16 @@ export function must<T>(value: T | null | undefined, what: string): T {
     return value;
 }
 
-/** Prepares the test database, or says why it cannot. Exits the process when a database is required. */
-export async function prepare(): Promise<string | null> {
+/** Prepares the test database, or exits the process saying why it cannot. */
+export async function prepare(): Promise<void> {
     const admin = ownerUrl();
     const appAdmin = process.env.APP_DATABASE_URL || LOCAL_APP_URL;
     const where = admin.replace(/:\/\/[^@]*@/, "://");
 
     const unreachable = await reachable(admin);
     if (unreachable !== null) {
-        const reason = `no database at ${where} (${unreachable}). Run npm run db:up`;
-        if (process.env.LUMISCHOOL_REQUIRE_DB === "1") {
-            process.stderr.write(`LUMISCHOOL_REQUIRE_DB=1 and ${reason}\n`);
-            process.exit(1);
-        }
-        process.stdout.write(`skipping the store tests: ${reason}\n`);
-        return reason;
+        process.stderr.write(`no database at ${where} (${unreachable}). Run npm run db:up\n`);
+        process.exit(1);
     }
 
     // The test database is built from nothing on every run. It is disposable, and a database that
@@ -85,7 +80,6 @@ export async function prepare(): Promise<string | null> {
     await apply(testOwner);
     process.env.DATABASE_URL = testOwner;
     process.env.APP_DATABASE_URL = withDatabase(appAdmin, NAME);
-    return null;
 }
 
 /** Empties every table, as the owner, which bypasses row-level security. */

@@ -734,7 +734,7 @@ lands in one change (the sheet, the lands, the slots, the routes, the far shore'
 new worlds' map spots), before any grade is added to the run, and the change that adds a grade to the
 run rebuilds once more.
 
-The grown-up's map of the whole country counts 38 places today (`tools/e2e/map.e2e.ts:99`); with the
+The grown-up's map of the whole country counts 38 places today (`tools/e2e/map/map.e2e.ts:99`); with the
 sixth year's three worlds it counts 41. The run's test of twelve nodes and eleven roads
 (`worlds.test.ts:158`) becomes fifteen and fourteen with the fifth year and eighteen and seventeen
 with the sixth.
@@ -939,7 +939,7 @@ The tests that hold four grades, and what each becomes:
   once grade five is written; the test keeps a year with no lessons by using a grade nobody offers.
 - `school/games/__tests__/catalogue.test.ts:37`, which holds every game band at four or below, stays
   until a game is written for grade five.
-- `tools/e2e/map.e2e.ts:99`: 41 places.
+- `tools/e2e/map/map.e2e.ts:99`: 41 places.
 
 And new ones:
 

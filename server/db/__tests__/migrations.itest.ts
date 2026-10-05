@@ -8,8 +8,8 @@ import { TABLES } from "../schema";
 import { apply } from "../migrations/migrate";
 import { must, prepare } from "./test-db";
 
-const reason = await prepare();
-const admin = reason === null ? open() : null;
+await prepare();
+const admin = open();
 const name = `lumischool_migration_${process.pid}`;
 const password = "local_migration_test";
 const dir = mkdtempSync(join(tmpdir(), "lumischool-migrations-"));
@@ -69,7 +69,6 @@ function add(tag: string, sql: string): void {
 }
 
 before(async () => {
-    if (!admin) return;
     await admin.raw.unsafe(
         `create role "${name}" login password '${password}' nosuperuser bypassrls createdb createrole`,
     );
@@ -84,18 +83,16 @@ before(async () => {
 
 after(async () => {
     if (owner) await owner.close();
-    if (admin) {
-        try {
-            await admin.raw.unsafe(`drop database if exists "${name}" with (force)`);
-            await admin.raw.unsafe(`drop role if exists "${name}"`);
-        } finally {
-            await admin.close();
-        }
+    try {
+        await admin.raw.unsafe(`drop database if exists "${name}" with (force)`);
+        await admin.raw.unsafe(`drop role if exists "${name}"`);
+    } finally {
+        await admin.close();
     }
     rmSync(dir, { recursive: true, force: true });
 });
 
-describe("forward migrations on an ordinary Postgres owner", { skip: reason ?? false }, () => {
+describe("forward migrations on an ordinary Postgres owner", () => {
     const db = () => must(owner, "migration owner");
 
     it("builds an empty database without superuser privileges", async () => {

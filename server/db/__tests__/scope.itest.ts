@@ -5,21 +5,19 @@ import assert from "node:assert/strict";
 import { after, describe, it } from "node:test";
 import { closeApp, open, type Store } from "../client";
 import { SCOPE, policySql } from "../scope";
-import { must, prepare } from "./test-db";
+import { prepare } from "./test-db";
 
-const reason = await prepare();
-const owner: Store | null = reason === null ? open() : null;
+await prepare();
+const owner: Store = open();
 
 after(async () => {
     await closeApp();
-    if (owner) await owner.close();
+    await owner.close();
 });
 
-describe("the policies in the database", { skip: reason ?? false }, () => {
-    const db = () => must(owner, "the owner connection");
-
+describe("the policies in the database", () => {
     it("has a policy on every declared table that compares its family column with the setting, and no table left out", async () => {
-        const policies = await db().raw<
+        const policies = await owner.raw<
             {
                 tablename: string;
                 policyname: string;
@@ -29,7 +27,7 @@ describe("the policies in the database", { skip: reason ?? false }, () => {
             }[]
         >`
             select tablename, policyname, cmd, qual, with_check from pg_policies where schemaname = 'public'`;
-        const tables = await db().raw<{ relname: string }[]>`
+        const tables = await owner.raw<{ relname: string }[]>`
             select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and c.relkind = 'r'`;
         assert.deepEqual(
             tables.map((t) => t.relname).sort(),
@@ -78,7 +76,7 @@ describe("the policies in the database", { skip: reason ?? false }, () => {
             assert.match(`${p.qual ?? ""} ${p.with_check ?? ""}`, /app_user\(\)/);
     });
     it("matches the current policy definitions after replaying the migration history", async () => {
-        await db().raw.begin(async (tx) => {
+        await owner.raw.begin(async (tx) => {
             const before =
                 await tx`select tablename, policyname, permissive, roles, cmd, qual, with_check
                 from pg_policies where schemaname = 'public' order by tablename, policyname`;

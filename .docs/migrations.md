@@ -10,7 +10,7 @@ the curriculum is supplied by the compiled pack.
 1. Edit `server/db/schema.ts`.
 2. Run `npm run db:generate -- --name=describe_the_change`.
 3. Review the SQL, including preservation of existing rows, constraints, indexes and grants.
-4. Run `npm run db:migrate`, then `LUMISCHOOL_REQUIRE_DB=1 npm run check`.
+4. Run `npm run db:migrate`, then `npm run check`.
 5. Commit the schema, SQL, journal and snapshot together.
 
 For functions, triggers, policies, grants or a data correction, run
@@ -59,7 +59,7 @@ The current baseline was consolidated with permission during pre-launch developm
 child-login schema and security functions. Any database holding an older baseline must be rebuilt
 before it can use this history. Once deployed, follow the immutable forward-only rule above.
 
-`test:db` replays the real files into disposable databases. Migration tests cover an empty database
+`test:integration` replays the real files into disposable databases. Migration tests cover an empty database
 owned by a non-superuser with `BYPASSRLS`, repeated and concurrent runs, upgrades with existing rows,
 a corrective migration, and transactional failure followed by a successful retry. Store, isolation
 and policy tests run against that migrated schema. These local checks do not verify a live Neon project.

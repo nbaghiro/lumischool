@@ -9,11 +9,11 @@ import { prepare } from "../db/__tests__/test-db";
 import { Browser, local, startFamily, addKid, openView } from "./browser";
 import { validPaintingSave } from "../painting";
 
-const reason = await prepare();
-const owner = reason === null ? open() : null;
+await prepare();
+const owner = open();
 after(async () => {
     await closeApp();
-    await owner?.close();
+    await owner.close();
 });
 const input = (): PaintingSave => ({
     scope: { kid_id: null },
@@ -33,7 +33,7 @@ const input = (): PaintingSave => ({
     thumbnail: "data:image/png;base64,iVBORw0KGgo=",
 });
 
-describe("private editable paintings", { skip: reason ?? false }, () => {
+describe("private editable paintings", () => {
     it("saves, replays, preserves concurrent copies, isolates families, exports and deletes", async () => {
         const { config, outbox } = local();
         const a = new Browser(config),

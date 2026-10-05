@@ -2,7 +2,7 @@
 // once and in order, a search paged the same way, and nothing of another family, whatever cursor comes.
 
 import assert from "node:assert/strict";
-import { after, before, describe, it } from "node:test";
+import { after, beforeEach, describe, it } from "node:test";
 import { eq } from "drizzle-orm";
 import { compareKeys, queryHash, readCursor, type Key, type Page } from "../../../engine/page";
 import { closeApp, open, withFamily, type Store } from "../client";
@@ -11,12 +11,12 @@ import { paintingList } from "../paintings";
 import { artworks, kids, users, type ArtworkSummary } from "../schema";
 import { prepare, truncate } from "./test-db";
 
-const reason = await prepare();
-const owner: Store | null = reason === null ? open() : null;
+await prepare();
+const owner: Store = open();
 
 after(async () => {
     await closeApp();
-    if (owner) await owner.close();
+    await owner.close();
 });
 
 const A = "a0000000-0000-5000-8000-00000000000a";
@@ -109,9 +109,8 @@ async function wall(
 const newestFirst = (a: ArtworkSummary, b: ArtworkSummary): number =>
     -compareKeys([a.updated_at, a.id], [b.updated_at, b.id]);
 
-describe("a page of a query", { skip: reason ?? false }, () => {
-    before(async () => {
-        if (!owner) return;
+describe("a page of a query", () => {
+    beforeEach(async () => {
         await truncate(owner);
         await writeFamily(A, UA, KA, 29);
         await writeFamily(B, UB, KB, 11);

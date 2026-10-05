@@ -5,7 +5,7 @@
 
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import { after, before, describe, it } from "node:test";
+import { after, beforeEach, describe, it } from "node:test";
 import { closeApp, open, type Store } from "../db/client";
 import { prepare, truncate } from "../db/__tests__/test-db";
 import {
@@ -22,23 +22,18 @@ import {
     type Answer,
 } from "./browser";
 
-const reason = await prepare();
-const owner: Store | null = reason === null ? open() : null;
+await prepare();
+const owner: Store = open();
 
 after(async () => {
     await closeApp();
-    if (owner) await owner.close();
+    await owner.close();
 });
 
 const EMAIL = "naib@example.test";
 const PIN = "2468";
 const { config, outbox } = local();
 const made = { family: "", user: "", maya: "", theo: "" };
-
-const db = (): Store => {
-    if (!owner) throw new Error("no database");
-    return owner;
-};
 
 /** A browser signed in as the parent, with a session made just now, so it counts as fresh. */
 async function parent(): Promise<Browser> {
@@ -60,7 +55,7 @@ const sessionIdIn = (b: Browser): string => (b.jar.get("ls_session") ?? "").spli
 async function keyRow(
     id: string,
 ): Promise<{ detail: unknown; seen_at: string | null } | undefined> {
-    const [row] = await db().raw<{ detail: unknown; seen_at: string | null }[]>`
+    const [row] = await owner.raw<{ detail: unknown; seen_at: string | null }[]>`
         select detail, seen_at from keys where id = ${id}`;
     return row;
 }
@@ -69,7 +64,7 @@ const leave = (b: Browser, pin: string): Promise<Answer> =>
     b.call("POST", "/api/kid/leave", { body: { pin } });
 
 async function lastEvent(kind: string): Promise<unknown> {
-    const [row] = await db().raw<{ data: unknown; actor: string | null }[]>`
+    const [row] = await owner.raw<{ data: unknown; actor: string | null }[]>`
         select data, actor from events
         where family_id = ${made.family} and kind = ${kind}
         order by at desc, seq desc limit 1`;
@@ -77,22 +72,22 @@ async function lastEvent(kind: string): Promise<unknown> {
 }
 
 async function pinState(): Promise<{ attempts: number } | undefined> {
-    const [row] = await db().raw<{ attempts: number }[]>`
+    const [row] = await owner.raw<{ attempts: number }[]>`
         select attempts from keys where family_id = ${made.family} and kind = 'pin'`;
     return row;
 }
 
 /** Moves the PIN's count and the time of its last wrong try, as if the tries had happened. */
 async function triedBefore(attempts: number, minutesAgo: number): Promise<void> {
-    await db().raw`
+    await owner.raw`
         update keys set attempts = ${attempts},
             seen_at = utc_iso(now() - make_interval(mins => ${minutesAgo}))
         where family_id = ${made.family} and kind = 'pin'`;
 }
 
-describe("a children's view", { skip: reason ?? false }, () => {
-    before(async () => {
-        await truncate(db());
+describe("a children's view", () => {
+    beforeEach(async () => {
+        await truncate(owner);
         const grown = new Browser(config);
         const me = await startFamily(grown, outbox, {
             email: EMAIL,
@@ -314,7 +309,7 @@ describe("a children's view", { skip: reason ?? false }, () => {
         const b = await viewFor([made.maya]);
         const session = sessionIdIn(b);
         // the session runs out while it is put away, exactly as it would have in use
-        await db().raw`
+        await owner.raw`
             update keys set created_at = utc_iso(now() - interval '91 days') where id = ${session}`;
         const left = await leave(b, PIN);
         assert.equal(left.status, 204, JSON.stringify(left.body));
@@ -438,8 +433,8 @@ describe("a children's view", { skip: reason ?? false }, () => {
         const b = await viewFor([made.maya, made.theo]);
         const [maya, theo] = (b.jar.get("ls_kids") ?? "").split("~");
         const theoKey = (theo ?? "").split(".")[1] ?? "";
-        await db().raw`delete from keys where id = ${theoKey}`;
-        await db().raw`
+        await owner.raw`delete from keys where id = ${theoKey}`;
+        await owner.raw`
             update keys set seen_at = utc_iso(now() - interval '2 days')
             where family_id = ${made.family} and kind = 'kid-session'`;
         const view = await b.call("GET", "/api/kid");
@@ -473,7 +468,7 @@ describe("a children's view", { skip: reason ?? false }, () => {
         assert.deepEqual(sent.body, { ids: events.map((e) => e.id) });
         const retried = await b.call("POST", `/api/kid/${made.maya}/events`, { body: { events } });
         assert.deepEqual(retried.body, sent.body);
-        const rows = await db().raw<{ device: string; seq: string; actor: string | null }[]>`
+        const rows = await owner.raw<{ device: string; seq: string; actor: string | null }[]>`
             select device, seq, actor from events where device = ${key} order by seq`;
         assert.deepEqual(
             rows.map((r) => [r.device, Number(r.seq), r.actor]),

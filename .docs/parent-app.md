@@ -429,7 +429,7 @@ the `sheet-printed` a card records are the same as before, and nothing counts si
 It is `apps/home/explore.tsx`, with the filtering and the order in `apps/home/catalogue.ts`, the
 dialog in `engine/ui/dialog.tsx`, the sheet in
 `engine/ui/lesson.tsx` read with `{ sheets: "look", key }`, and the pack read through
-`engine/ui/api.ts` (`pack`, `packLesson` and `packScene`). `tools/e2e/explore.e2e.ts` checks it.
+`engine/ui/api.ts` (`pack`, `packLesson` and `packScene`). `tools/e2e/lessons/explore.e2e.ts` checks it.
 
 ## The calendar and the plan
 
@@ -488,7 +488,7 @@ consume the same fold, including additional subjects and practice.
 
 The fold lives in `school/family/family.ts` and `school/family/calendar.ts`; `engine/answer.ts`
 validates the operations. `school/family/__tests__/sessions.test.ts` covers placements, routines,
-completion protection and child isolation. `tools/e2e/calendar.e2e.ts` checks saved additions,
+completion protection and child isolation. `tools/e2e/calendar/calendar.e2e.ts` checks saved additions,
 removal, routine changes, the legacy route and responsive layouts against the real API.
 
 ## The map, for grown-ups
@@ -516,7 +516,7 @@ It is `apps/home/map.tsx` with `apps/home/school.ts` building the views from the
 (`school/worlds/written.ts` for the school as written, which lays a written year out as done for the
 roll's geometry and takes back what done would mean), `engine/ui/reading.tsx` for a world's roll
 with its sheets drawn as they come near, `engine/ui/overlay.tsx` with `hash.ts` for the look over a
-page, and `engine/ui/paper.ts` for the paper near the camera. `tools/e2e/map.e2e.ts` checks the
+page, and `engine/ui/paper.ts` for the paper near the camera. `tools/e2e/map/map.e2e.ts` checks the
 screen and the site's look. Two things this work changed underneath: a map that is
 a screen, the child's and the grown-up's alike, takes the cover floor and the fence that keep the sea
 at every edge of any window, and a stopped canvas view no longer fires the settle it was waiting on,
@@ -607,7 +607,7 @@ The screens are `apps/home/`: `home.tsx` with the cards and the morning, `settin
 pickers, `mark.tsx` for marking a
 sheet that came back, `journal.tsx` for a child's roll, `explore.tsx` and `calendar-planner.tsx`,
 with `grown.ts` and `where.ts` holding what they work out and `engine/ui/grown.ts` the reads only they
-make. `tools/e2e/grown-ups.e2e.ts` covers them at a laptop's, an iPad's and a phone's size.
+make. `tools/e2e/family/grown-ups.e2e.ts` covers them at a laptop's, an iPad's and a phone's size.
 
 What is designed here and not built: Friday's letters, the week spread, and "what else there is".
 A child's worlds have no screen that changes them, since the one that did went with Change the plan;

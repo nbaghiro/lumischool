@@ -5,11 +5,11 @@ import { closeApp, open } from "../db/client";
 import { Browser, local, startFamily, at, text, codeFor, addKid } from "./browser";
 import type { Email } from "../email";
 
-const reason = await prepare();
-const owner = reason === null ? open() : null;
+await prepare();
+const owner = open();
 after(async () => {
     await closeApp();
-    await owner?.close();
+    await owner.close();
 });
 
 function tokenFor(outbox: Email[], email: string): string {
@@ -22,501 +22,458 @@ async function ask(b: Browser, outbox: Email[], email: string): Promise<string> 
     assert.equal((await b.call("POST", "/api/auth/email/start", { body: { email } })).status, 202);
     return codeFor(outbox, email);
 }
-test(
-    "invited new parents join the existing family, share PINs, and removal preserves child sign-in",
-    { skip: reason ?? false },
-    async () => {
-        const { config, outbox } = local();
-        const first = new Browser(config);
-        const original = await startFamily(first, outbox, {
-            email: "first@members.test",
-            name: "First",
-            family: "Together",
-        });
-        const child = await addKid(first, "Robin", 1);
-        assert.equal(
-            (await first.call("POST", "/api/family/pin", { body: { pin: "1357" } })).status,
-            204,
-        );
-        assert.equal(
-            (await first.call("POST", "/api/kid-logins/pin", { body: { pin: "2468" } })).status,
-            204,
-        );
-        const logins = await first.call("GET", "/api/kid-logins");
-        const username = text(at(logins.body, "kids", 0, "username"));
-        assert.equal(
-            (
-                await first.call("POST", "/api/members/invite", {
-                    body: { email: "second@members.test" },
-                })
-            ).status,
-            200,
-        );
-        const token = tokenFor(outbox, "second@members.test");
-        const second = new Browser(config);
-        assert.equal(
-            (await second.call("POST", "/api/invitations/preview", { body: { token } })).status,
-            200,
-        );
-        const code = await ask(second, outbox, "second@members.test");
-        const beforeJoin = outbox.length;
-        const joined = await second.call("POST", "/api/auth/email/invitation/accept", {
-            body: { token, code, name: "Second" },
-        });
-        assert.equal(joined.status, 200, JSON.stringify(joined.body));
-        assert.deepEqual(
-            outbox.slice(beforeJoin).map((mail) => mail.to),
-            ["first@members.test"],
-            "only existing parents receive the join notification",
-        );
-        assert.equal(at(joined.body, "me", "family", "id"), original.family);
-        const secondId = text(at(joined.body, "me", "user", "id"));
-        assert.equal((await second.call("GET", "/api/family")).status, 200);
-        assert.equal(
-            (
-                await second.call("POST", "/api/auth/email/invitation/accept", {
-                    body: { token, code, name: "Second" },
-                })
-            ).status,
-            400,
-        );
-        assert.equal((await first.call("GET", "/api/members")).status, 200);
-        assert.equal(
-            (await first.call("POST", "/api/members/remove", { body: { user: secondId } })).status,
-            200,
-        );
-        assert.equal((await second.call("GET", "/api/me")).status, 401);
-        // Rejoin under a new invitation, then remove the PIN's original setter.
-        assert.ok(owner);
-        await owner.raw`update keys set created_at = '2020-01-01T00:00:00.000Z' where email = 'second@members.test'`;
-        assert.equal(
-            (
-                await first.call("POST", "/api/members/invite", {
-                    body: { email: "second@members.test" },
-                })
-            ).status,
-            200,
-        );
-        const next = tokenFor(outbox, "second@members.test");
-        const nextCode = await ask(second, outbox, "second@members.test");
-        assert.equal(
-            (
-                await second.call("POST", "/api/auth/email/invitation/accept", {
-                    body: { token: next, code: nextCode, name: "Second" },
-                })
-            ).status,
-            200,
-        );
-        assert.equal(
-            (await second.call("POST", "/api/members/remove", { body: { user: original.user } }))
-                .status,
-            200,
-        );
-        assert.equal((await first.call("GET", "/api/me")).status, 401);
-        const kid = new Browser(config);
-        const kidIn = await kid.call("POST", "/api/kid/sign-in", {
-            body: { username, pin: "2468" },
-        });
-        assert.equal(kidIn.status, 200, JSON.stringify(kidIn.body));
-        assert.ok(child);
-        assert.equal(
-            (await second.call("POST", "/api/members/remove", { body: { user: secondId } })).status,
-            400,
-        );
-        assert.equal(
-            (await second.call("POST", "/api/kid-sessions", { body: { kids: [child] } })).status,
-            204,
-        );
-        assert.equal(
-            (await second.call("POST", "/api/auth/unlock", { body: { pin: "1357" } })).status,
-            204,
-        );
-    },
-);
+test("invited new parents join the existing family, share PINs, and removal preserves child sign-in", async () => {
+    const { config, outbox } = local();
+    const first = new Browser(config);
+    const original = await startFamily(first, outbox, {
+        email: "first@members.test",
+        name: "First",
+        family: "Together",
+    });
+    const child = await addKid(first, "Robin", 1);
+    assert.equal(
+        (await first.call("POST", "/api/family/pin", { body: { pin: "1357" } })).status,
+        204,
+    );
+    assert.equal(
+        (await first.call("POST", "/api/kid-logins/pin", { body: { pin: "2468" } })).status,
+        204,
+    );
+    const logins = await first.call("GET", "/api/kid-logins");
+    const username = text(at(logins.body, "kids", 0, "username"));
+    assert.equal(
+        (
+            await first.call("POST", "/api/members/invite", {
+                body: { email: "second@members.test" },
+            })
+        ).status,
+        200,
+    );
+    const token = tokenFor(outbox, "second@members.test");
+    const second = new Browser(config);
+    assert.equal(
+        (await second.call("POST", "/api/invitations/preview", { body: { token } })).status,
+        200,
+    );
+    const code = await ask(second, outbox, "second@members.test");
+    const beforeJoin = outbox.length;
+    const joined = await second.call("POST", "/api/auth/email/invitation/accept", {
+        body: { token, code, name: "Second" },
+    });
+    assert.equal(joined.status, 200, JSON.stringify(joined.body));
+    assert.deepEqual(
+        outbox.slice(beforeJoin).map((mail) => mail.to),
+        ["first@members.test"],
+        "only existing parents receive the join notification",
+    );
+    assert.equal(at(joined.body, "me", "family", "id"), original.family);
+    const secondId = text(at(joined.body, "me", "user", "id"));
+    assert.equal((await second.call("GET", "/api/family")).status, 200);
+    assert.equal(
+        (
+            await second.call("POST", "/api/auth/email/invitation/accept", {
+                body: { token, code, name: "Second" },
+            })
+        ).status,
+        400,
+    );
+    assert.equal((await first.call("GET", "/api/members")).status, 200);
+    assert.equal(
+        (await first.call("POST", "/api/members/remove", { body: { user: secondId } })).status,
+        200,
+    );
+    assert.equal((await second.call("GET", "/api/me")).status, 401);
+    // Rejoin under a new invitation, then remove the PIN's original setter.
+    assert.ok(owner);
+    await owner.raw`update keys set created_at = '2020-01-01T00:00:00.000Z' where email = 'second@members.test'`;
+    assert.equal(
+        (
+            await first.call("POST", "/api/members/invite", {
+                body: { email: "second@members.test" },
+            })
+        ).status,
+        200,
+    );
+    const next = tokenFor(outbox, "second@members.test");
+    const nextCode = await ask(second, outbox, "second@members.test");
+    assert.equal(
+        (
+            await second.call("POST", "/api/auth/email/invitation/accept", {
+                body: { token: next, code: nextCode, name: "Second" },
+            })
+        ).status,
+        200,
+    );
+    assert.equal(
+        (await second.call("POST", "/api/members/remove", { body: { user: original.user } }))
+            .status,
+        200,
+    );
+    assert.equal((await first.call("GET", "/api/me")).status, 401);
+    const kid = new Browser(config);
+    const kidIn = await kid.call("POST", "/api/kid/sign-in", {
+        body: { username, pin: "2468" },
+    });
+    assert.equal(kidIn.status, 200, JSON.stringify(kidIn.body));
+    assert.ok(child);
+    assert.equal(
+        (await second.call("POST", "/api/members/remove", { body: { user: secondId } })).status,
+        400,
+    );
+    assert.equal(
+        (await second.call("POST", "/api/kid-sessions", { body: { kids: [child] } })).status,
+        204,
+    );
+    assert.equal(
+        (await second.call("POST", "/api/auth/unlock", { body: { pin: "1357" } })).status,
+        204,
+    );
+});
 
-test(
-    "invitations require parent access, recipient proof, live tokens, and bounded sends",
-    { skip: reason ?? false },
-    async () => {
+test("invitations require parent access, recipient proof, live tokens, and bounded sends", async () => {
+    const { config, outbox } = local();
+    const parent = new Browser(config);
+    const who = await startFamily(parent, outbox, {
+        email: "guards@members.test",
+        name: "Parent",
+        family: "Guards",
+    });
+    const guest = new Browser(config);
+    assert.equal((await guest.call("GET", "/api/members")).status, 401);
+    assert.equal(
+        (await parent.call("POST", "/api/members/invite", { body: { email: "bad" } })).status,
+        400,
+    );
+    assert.equal(
+        (
+            await parent.call("POST", "/api/members/invite", {
+                body: { email: "guards@members.test" },
+            })
+        ).status,
+        400,
+    );
+    assert.equal(
+        (
+            await parent.call("POST", "/api/members/invite", {
+                body: { email: "invited@members.test" },
+            })
+        ).status,
+        200,
+    );
+    const token = tokenFor(outbox, "invited@members.test");
+    assert.equal(
+        (
+            await parent.call("POST", "/api/members/invite", {
+                body: { email: "invited@members.test" },
+            })
+        ).status,
+        429,
+    );
+    const wrong = await ask(guest, outbox, "wrong@members.test");
+    assert.equal(
+        (
+            await guest.call("POST", "/api/auth/email/invitation/accept", {
+                body: { token, code: wrong, name: "Wrong" },
+            })
+        ).status,
+        400,
+    );
+    const listing = await parent.call("GET", "/api/members");
+    const id = text(at(listing.body, "invitations", 0, "id"));
+    assert.equal((await parent.call("POST", "/api/members/cancel", { body: { id } })).status, 200);
+    assert.equal(
+        (await guest.call("POST", "/api/invitations/preview", { body: { token } })).status,
+        404,
+    );
+    assert.ok(owner);
+    await owner.raw`update keys set created_at = ${new Date(Date.now() - 11 * 60000).toISOString()} where id = ${who.session}::uuid`;
+    assert.equal(
+        (
+            await parent.call("POST", "/api/members/invite", {
+                body: { email: "fresh@members.test" },
+            })
+        ).status,
+        200,
+    );
+});
+
+test("failed invitation delivery leaves no usable invitation", async () => {
+    const { config, outbox } = local();
+    const parent = new Browser(config);
+    await startFamily(parent, outbox, {
+        email: "failure@members.test",
+        name: "Parent",
+        family: "Failure",
+    });
+    config.send = async () => {
+        throw new Error("transport down");
+    };
+    assert.equal(
+        (
+            await parent.call("POST", "/api/members/invite", {
+                body: { email: "unreached@members.test" },
+            })
+        ).status,
+        503,
+    );
+    const listing = await parent.call("GET", "/api/members");
+    assert.deepEqual(at(listing.body, "invitations"), []);
+});
+
+test("existing accounts keep other families; concurrent removals cannot orphan the family", async () => {
+    const { config, outbox } = local();
+    const a = new Browser(config, "198.51.100.11");
+    const b = new Browser(config, "198.51.100.12");
+    const aWho = await startFamily(a, outbox, {
+        email: "a@concurrent.test",
+        name: "A",
+        family: "Shared",
+    });
+    const bWho = await startFamily(b, outbox, {
+        email: "b@concurrent.test",
+        name: "B",
+        family: "Original",
+    });
+    const oldB = new Browser(config, "198.51.100.12");
+    for (const [k, v] of b.jar) oldB.jar.set(k, v);
+    b.jar.clear();
+    assert.ok(owner);
+    await owner.raw`update keys set created_at = '2020-01-01T00:00:00.000Z' where email = 'b@concurrent.test'`;
+    assert.equal(
+        (await a.call("POST", "/api/members/invite", { body: { email: "b@concurrent.test" } }))
+            .status,
+        200,
+    );
+    const token = tokenFor(outbox, "b@concurrent.test");
+    const code = await ask(b, outbox, "b@concurrent.test");
+    const joined = await b.call("POST", "/api/auth/email/invitation/accept", {
+        body: { token, code, name: "B" },
+    });
+    assert.equal(joined.status, 200);
+    assert.equal(at(joined.body, "me", "user", "id"), bWho.user);
+    assert.equal(at(joined.body, "me", "families") instanceof Array, true);
+    // Invites from another family cannot be cancelled through this family's management endpoint.
+    assert.equal(
+        (await oldB.call("POST", "/api/members/cancel", { body: { id: token.split(".")[1] } }))
+            .status,
+        404,
+    );
+    const results = await Promise.all([
+        a.call("POST", "/api/members/remove", { body: { user: bWho.user } }),
+        b.call("POST", "/api/members/remove", { body: { user: aWho.user } }),
+    ]);
+    assert.equal(results.filter((r) => r.status === 200).length, 1);
+    assert.ok(results.some((r) => r.status === 403 || r.status === 401));
+    assert.equal((await oldB.call("GET", "/api/me")).status, 200);
+});
+
+test("expired invites, CSRF and removed inviters cannot grant access; definer grants are narrow", async () => {
+    const { config, outbox } = local();
+    const parent = new Browser(config, "198.51.100.20");
+    await startFamily(parent, outbox, {
+        email: "expire@members.test",
+        name: "Parent",
+        family: "Expiry",
+    });
+    assert.equal(
+        (
+            await parent.call("POST", "/api/members/invite", {
+                body: { email: "csrf@members.test" },
+                origin: "https://attacker.test",
+            })
+        ).status,
+        403,
+    );
+    assert.equal(
+        (
+            await parent.call("POST", "/api/members/invite", {
+                body: { email: "expired@members.test" },
+            })
+        ).status,
+        200,
+    );
+    const token = tokenFor(outbox, "expired@members.test");
+    const id = token.split(".")[1];
+    assert.ok(id);
+    assert.ok(owner);
+    await owner.raw`update keys set created_at = '2020-01-01T00:00:00.000Z' where id = ${id}::uuid`;
+    const guest = new Browser(config);
+    assert.equal(
+        (await guest.call("POST", "/api/invitations/preview", { body: { token } })).status,
+        404,
+    );
+    assert.ok(owner);
+    const grants =
+        await owner.raw`select p.proname from pg_proc p, lateral aclexplode(coalesce(p.proacl, acldefault('f', p.proowner))) a where p.proname = 'reserve_invitation' and a.grantee = 0 and a.privilege_type = 'EXECUTE'`;
+    assert.equal(grants.length, 0);
+});
+
+test("cancellation and acceptance serialize, including signup already holding a valid code", async () => {
+    for (const order of ["cancel", "accept", "race"] as const) {
         const { config, outbox } = local();
         const parent = new Browser(config);
-        const who = await startFamily(parent, outbox, {
-            email: "guards@members.test",
+        const family = await startFamily(parent, outbox, {
+            email: `parent-${order}@race.test`,
             name: "Parent",
-            family: "Guards",
+            family: "Race",
         });
-        const guest = new Browser(config);
-        assert.equal((await guest.call("GET", "/api/members")).status, 401);
+        const email = `guest-${order}@race.test`;
         assert.equal(
-            (await parent.call("POST", "/api/members/invite", { body: { email: "bad" } })).status,
-            400,
-        );
-        assert.equal(
-            (
-                await parent.call("POST", "/api/members/invite", {
-                    body: { email: "guards@members.test" },
-                })
-            ).status,
-            400,
-        );
-        assert.equal(
-            (
-                await parent.call("POST", "/api/members/invite", {
-                    body: { email: "invited@members.test" },
-                })
-            ).status,
+            (await parent.call("POST", "/api/members/invite", { body: { email } })).status,
             200,
         );
-        const token = tokenFor(outbox, "invited@members.test");
+        const token = tokenFor(outbox, email);
+        const guest = new Browser(config);
         assert.equal(
-            (
-                await parent.call("POST", "/api/members/invite", {
-                    body: { email: "invited@members.test" },
-                })
-            ).status,
-            429,
+            (await guest.call("POST", "/api/invitations/preview", { body: { token } })).status,
+            200,
         );
-        const wrong = await ask(guest, outbox, "wrong@members.test");
-        assert.equal(
-            (
-                await guest.call("POST", "/api/auth/email/invitation/accept", {
-                    body: { token, code: wrong, name: "Wrong" },
-                })
-            ).status,
-            400,
-        );
+        const code = await ask(guest, outbox, email);
         const listing = await parent.call("GET", "/api/members");
         const id = text(at(listing.body, "invitations", 0, "id"));
-        assert.equal(
-            (await parent.call("POST", "/api/members/cancel", { body: { id } })).status,
-            200,
-        );
-        assert.equal(
-            (await guest.call("POST", "/api/invitations/preview", { body: { token } })).status,
-            404,
-        );
-        assert.ok(owner);
-        await owner.raw`update keys set created_at = ${new Date(Date.now() - 11 * 60000).toISOString()} where id = ${who.session}::uuid`;
-        assert.equal(
-            (
-                await parent.call("POST", "/api/members/invite", {
-                    body: { email: "fresh@members.test" },
-                })
-            ).status,
-            200,
-        );
-    },
-);
-
-test(
-    "failed invitation delivery leaves no usable invitation",
-    { skip: reason ?? false },
-    async () => {
-        const { config, outbox } = local();
-        const parent = new Browser(config);
-        await startFamily(parent, outbox, {
-            email: "failure@members.test",
-            name: "Parent",
-            family: "Failure",
-        });
-        config.send = async () => {
-            throw new Error("transport down");
-        };
-        assert.equal(
-            (
-                await parent.call("POST", "/api/members/invite", {
-                    body: { email: "unreached@members.test" },
-                })
-            ).status,
-            503,
-        );
-        const listing = await parent.call("GET", "/api/members");
-        assert.deepEqual(at(listing.body, "invitations"), []);
-    },
-);
-
-test(
-    "existing accounts keep other families; concurrent removals cannot orphan the family",
-    { skip: reason ?? false },
-    async () => {
-        const { config, outbox } = local();
-        const a = new Browser(config, "198.51.100.11");
-        const b = new Browser(config, "198.51.100.12");
-        const aWho = await startFamily(a, outbox, {
-            email: "a@concurrent.test",
-            name: "A",
-            family: "Shared",
-        });
-        const bWho = await startFamily(b, outbox, {
-            email: "b@concurrent.test",
-            name: "B",
-            family: "Original",
-        });
-        const oldB = new Browser(config, "198.51.100.12");
-        for (const [k, v] of b.jar) oldB.jar.set(k, v);
-        b.jar.clear();
-        assert.ok(owner);
-        await owner.raw`update keys set created_at = '2020-01-01T00:00:00.000Z' where email = 'b@concurrent.test'`;
-        assert.equal(
-            (await a.call("POST", "/api/members/invite", { body: { email: "b@concurrent.test" } }))
-                .status,
-            200,
-        );
-        const token = tokenFor(outbox, "b@concurrent.test");
-        const code = await ask(b, outbox, "b@concurrent.test");
-        const joined = await b.call("POST", "/api/auth/email/invitation/accept", {
-            body: { token, code, name: "B" },
-        });
-        assert.equal(joined.status, 200);
-        assert.equal(at(joined.body, "me", "user", "id"), bWho.user);
-        assert.equal(at(joined.body, "me", "families") instanceof Array, true);
-        // Invites from another family cannot be cancelled through this family's management endpoint.
-        assert.equal(
-            (await oldB.call("POST", "/api/members/cancel", { body: { id: token.split(".")[1] } }))
-                .status,
-            404,
-        );
-        const results = await Promise.all([
-            a.call("POST", "/api/members/remove", { body: { user: bWho.user } }),
-            b.call("POST", "/api/members/remove", { body: { user: aWho.user } }),
-        ]);
-        assert.equal(results.filter((r) => r.status === 200).length, 1);
-        assert.ok(results.some((r) => r.status === 403 || r.status === 401));
-        assert.equal((await oldB.call("GET", "/api/me")).status, 200);
-    },
-);
-
-test(
-    "expired invites, CSRF and removed inviters cannot grant access; definer grants are narrow",
-    { skip: reason ?? false },
-    async () => {
-        const { config, outbox } = local();
-        const parent = new Browser(config, "198.51.100.20");
-        await startFamily(parent, outbox, {
-            email: "expire@members.test",
-            name: "Parent",
-            family: "Expiry",
-        });
-        assert.equal(
-            (
-                await parent.call("POST", "/api/members/invite", {
-                    body: { email: "csrf@members.test" },
-                    origin: "https://attacker.test",
-                })
-            ).status,
-            403,
-        );
-        assert.equal(
-            (
-                await parent.call("POST", "/api/members/invite", {
-                    body: { email: "expired@members.test" },
-                })
-            ).status,
-            200,
-        );
-        const token = tokenFor(outbox, "expired@members.test");
-        const id = token.split(".")[1];
-        assert.ok(id);
-        assert.ok(owner);
-        await owner.raw`update keys set created_at = '2020-01-01T00:00:00.000Z' where id = ${id}::uuid`;
-        const guest = new Browser(config);
-        assert.equal(
-            (await guest.call("POST", "/api/invitations/preview", { body: { token } })).status,
-            404,
-        );
-        assert.ok(owner);
-        const grants =
-            await owner.raw`select p.proname from pg_proc p, lateral aclexplode(coalesce(p.proacl, acldefault('f', p.proowner))) a where p.proname = 'reserve_invitation' and a.grantee = 0 and a.privilege_type = 'EXECUTE'`;
-        assert.equal(grants.length, 0);
-    },
-);
-
-test(
-    "cancellation and acceptance serialize, including signup already holding a valid code",
-    { skip: reason ?? false },
-    async () => {
-        for (const order of ["cancel", "accept", "race"] as const) {
-            const { config, outbox } = local();
-            const parent = new Browser(config);
-            const family = await startFamily(parent, outbox, {
-                email: `parent-${order}@race.test`,
-                name: "Parent",
-                family: "Race",
+        const cancel = () => parent.call("POST", "/api/members/cancel", { body: { id } });
+        const accept = () =>
+            guest.call("POST", "/api/auth/email/invitation/accept", {
+                body: { token, code, name: "Guest" },
             });
-            const email = `guest-${order}@race.test`;
-            assert.equal(
-                (await parent.call("POST", "/api/members/invite", { body: { email } })).status,
-                200,
-            );
-            const token = tokenFor(outbox, email);
-            const guest = new Browser(config);
-            assert.equal(
-                (await guest.call("POST", "/api/invitations/preview", { body: { token } })).status,
-                200,
-            );
-            const code = await ask(guest, outbox, email);
-            const listing = await parent.call("GET", "/api/members");
-            const id = text(at(listing.body, "invitations", 0, "id"));
-            const cancel = () => parent.call("POST", "/api/members/cancel", { body: { id } });
-            const accept = () =>
-                guest.call("POST", "/api/auth/email/invitation/accept", {
-                    body: { token, code, name: "Guest" },
-                });
-            const [cancelled, accepted] =
-                order === "cancel"
-                    ? [await cancel(), await accept()]
-                    : order === "accept"
-                      ? await (async () => {
-                            const a = await accept();
-                            return [await cancel(), a];
-                        })()
-                      : await Promise.all([cancel(), accept()]);
-            assert.ok(cancelled && accepted);
-            if (cancelled.status === 200) {
-                assert.equal(accepted.status, 400);
-                assert.equal((await guest.call("GET", "/api/me")).status, 401);
-            } else {
-                assert.equal(cancelled.status, 409);
-                assert.equal(accepted.status, 200);
-                assert.equal(at(accepted.body, "me", "family", "id"), family.family);
-            }
-            const after = await parent.call("GET", "/api/members");
-            assert.deepEqual(at(after.body, "invitations"), []);
-            assert.equal(
-                (await guest.call("POST", "/api/invitations/preview", { body: { token } })).status,
-                404,
-            );
+        const [cancelled, accepted] =
+            order === "cancel"
+                ? [await cancel(), await accept()]
+                : order === "accept"
+                  ? await (async () => {
+                        const a = await accept();
+                        return [await cancel(), a];
+                    })()
+                  : await Promise.all([cancel(), accept()]);
+        assert.ok(cancelled && accepted);
+        if (cancelled.status === 200) {
+            assert.equal(accepted.status, 400);
+            assert.equal((await guest.call("GET", "/api/me")).status, 401);
+        } else {
+            assert.equal(cancelled.status, 409);
+            assert.equal(accepted.status, 200);
+            assert.equal(at(accepted.body, "me", "family", "id"), family.family);
         }
-    },
-);
+        const after = await parent.call("GET", "/api/members");
+        assert.deepEqual(at(after.body, "invitations"), []);
+        assert.equal(
+            (await guest.call("POST", "/api/invitations/preview", { body: { token } })).status,
+            404,
+        );
+    }
+});
 
-test(
-    "a failed resend invalidates old links and a later resend restores signup",
-    { skip: reason ?? false },
-    async () => {
-        assert.ok(owner);
-        const { config, outbox } = local();
-        const parent = new Browser(config);
-        const family = await startFamily(parent, outbox, {
-            email: "resend-parent@test.test",
-            name: "Parent",
-            family: "Resend",
-        });
-        const email = "resend-guest@test.test";
-        const invite = () => parent.call("POST", "/api/members/invite", { body: { email } });
-        assert.equal((await invite()).status, 200);
-        const old = tokenFor(outbox, email);
-        await owner.raw`update keys set created_at = ${new Date(Date.now() - 61_000).toISOString()} where email = ${email} and family_id = ${family.family}::uuid`;
-        const send = config.send;
-        config.send = async () => {
-            throw new Error("delivery failed");
-        };
-        assert.equal((await invite()).status, 503);
+test("a failed resend invalidates old links and a later resend restores signup", async () => {
+    assert.ok(owner);
+    const { config, outbox } = local();
+    const parent = new Browser(config);
+    const family = await startFamily(parent, outbox, {
+        email: "resend-parent@test.test",
+        name: "Parent",
+        family: "Resend",
+    });
+    const email = "resend-guest@test.test";
+    const invite = () => parent.call("POST", "/api/members/invite", { body: { email } });
+    assert.equal((await invite()).status, 200);
+    const old = tokenFor(outbox, email);
+    await owner.raw`update keys set created_at = ${new Date(Date.now() - 61_000).toISOString()} where email = ${email} and family_id = ${family.family}::uuid`;
+    const send = config.send;
+    config.send = async () => {
+        throw new Error("delivery failed");
+    };
+    assert.equal((await invite()).status, 503);
+    config.send = send;
+    assert.deepEqual(at((await parent.call("GET", "/api/members")).body, "invitations"), []);
+    const guest = new Browser(config);
+    assert.equal(
+        (await guest.call("POST", "/api/invitations/preview", { body: { token: old } })).status,
+        404,
+    );
+    await owner.raw`update keys set created_at = ${new Date(Date.now() - 61_000).toISOString()} where email = ${email} and family_id = ${family.family}::uuid`;
+    assert.equal((await invite()).status, 200);
+    const token = tokenFor(outbox, email);
+    const code = await ask(guest, outbox, email);
+    assert.equal(
+        (
+            await guest.call("POST", "/api/auth/email/invitation/accept", {
+                body: { token, code, name: "Guest" },
+            })
+        ).status,
+        200,
+    );
+});
+
+test("slow join notifications do not delay acceptance and a lost response recovers through ordinary sign-in", async () => {
+    const { config, outbox } = local();
+    const parent = new Browser(config);
+    const family = await startFamily(parent, outbox, {
+        email: "slow-parent@test.test",
+        name: "Parent",
+        family: "Slow",
+    });
+    const email = "slow-guest@test.test";
+    await parent.call("POST", "/api/members/invite", { body: { email } });
+    const token = tokenFor(outbox, email);
+    const guest = new Browser(config);
+    const code = await ask(guest, outbox, email);
+    const send = config.send;
+    let release = () => {};
+    const blocked = new Promise<void>((resolve) => {
+        release = resolve;
+    });
+    config.send = async (mail) => {
+        if (mail.to === "slow-parent@test.test") await blocked;
+        else await send(mail);
+    };
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+        const result = await Promise.race([
+            guest.call("POST", "/api/auth/email/invitation/accept", {
+                body: { token, code, name: "Guest" },
+            }),
+            new Promise<never>((_, reject) => {
+                timer = setTimeout(
+                    () => reject(new Error("Acceptance waited for notification")),
+                    2000,
+                );
+            }),
+        ]);
+        assert.equal(result.status, 200);
+    } finally {
+        release();
+        clearTimeout(timer);
         config.send = send;
-        assert.deepEqual(at((await parent.call("GET", "/api/members")).body, "invitations"), []);
-        const guest = new Browser(config);
-        assert.equal(
-            (await guest.call("POST", "/api/invitations/preview", { body: { token: old } })).status,
-            404,
-        );
-        await owner.raw`update keys set created_at = ${new Date(Date.now() - 61_000).toISOString()} where email = ${email} and family_id = ${family.family}::uuid`;
-        assert.equal((await invite()).status, 200);
-        const token = tokenFor(outbox, email);
-        const code = await ask(guest, outbox, email);
-        assert.equal(
-            (
-                await guest.call("POST", "/api/auth/email/invitation/accept", {
-                    body: { token, code, name: "Guest" },
-                })
-            ).status,
-            200,
-        );
-    },
-);
+    }
+    const recovered = new Browser(config);
+    const newCode = await ask(recovered, outbox, email);
+    const signed = await recovered.call("POST", "/api/auth/email/verify", {
+        body: { code: newCode },
+    });
+    assert.equal(signed.status, 200);
+    assert.equal(at(signed.body, "me", "family", "id"), family.family);
+});
 
-test(
-    "slow join notifications do not delay acceptance and a lost response recovers through ordinary sign-in",
-    { skip: reason ?? false },
-    async () => {
-        const { config, outbox } = local();
-        const parent = new Browser(config);
-        const family = await startFamily(parent, outbox, {
-            email: "slow-parent@test.test",
-            name: "Parent",
-            family: "Slow",
-        });
-        const email = "slow-guest@test.test";
-        await parent.call("POST", "/api/members/invite", { body: { email } });
-        const token = tokenFor(outbox, email);
-        const guest = new Browser(config);
-        const code = await ask(guest, outbox, email);
-        const send = config.send;
-        let release = () => {};
-        const blocked = new Promise<void>((resolve) => {
-            release = resolve;
-        });
-        config.send = async (mail) => {
-            if (mail.to === "slow-parent@test.test") await blocked;
-            else await send(mail);
-        };
-        let timer: ReturnType<typeof setTimeout> | undefined;
-        try {
-            const result = await Promise.race([
-                guest.call("POST", "/api/auth/email/invitation/accept", {
-                    body: { token, code, name: "Guest" },
-                }),
-                new Promise<never>((_, reject) => {
-                    timer = setTimeout(
-                        () => reject(new Error("Acceptance waited for notification")),
-                        2000,
-                    );
-                }),
-            ]);
-            assert.equal(result.status, 200);
-        } finally {
-            release();
-            clearTimeout(timer);
-            config.send = send;
-        }
-        const recovered = new Browser(config);
-        const newCode = await ask(recovered, outbox, email);
-        const signed = await recovered.call("POST", "/api/auth/email/verify", {
-            body: { code: newCode },
-        });
-        assert.equal(signed.status, 200);
-        assert.equal(at(signed.body, "me", "family", "id"), family.family);
-    },
-);
-
-test(
-    "a stale Cancel also revokes a replacement invitation",
-    { skip: reason ?? false },
-    async () => {
-        assert.ok(owner);
-        const { config, outbox } = local();
-        const parent = new Browser(config);
-        const family = await startFamily(parent, outbox, {
-            email: "stale-parent@test.test",
-            name: "Parent",
-            family: "Stale",
-        });
-        const email = "stale-guest@test.test";
-        const invite = () => parent.call("POST", "/api/members/invite", { body: { email } });
-        assert.equal((await invite()).status, 200);
-        const first = await parent.call("GET", "/api/members");
-        const id = text(at(first.body, "invitations", 0, "id"));
-        await owner.raw`update keys set created_at = ${new Date(Date.now() - 61_000).toISOString()} where email = ${email} and family_id = ${family.family}::uuid`;
-        assert.equal((await invite()).status, 200);
-        const latest = tokenFor(outbox, email);
-        assert.equal(
-            (await parent.call("POST", "/api/members/cancel", { body: { id } })).status,
-            200,
-        );
-        const guest = new Browser(config);
-        assert.equal(
-            (await guest.call("POST", "/api/invitations/preview", { body: { token: latest } }))
-                .status,
-            404,
-        );
-    },
-);
+test("a stale Cancel also revokes a replacement invitation", async () => {
+    assert.ok(owner);
+    const { config, outbox } = local();
+    const parent = new Browser(config);
+    const family = await startFamily(parent, outbox, {
+        email: "stale-parent@test.test",
+        name: "Parent",
+        family: "Stale",
+    });
+    const email = "stale-guest@test.test";
+    const invite = () => parent.call("POST", "/api/members/invite", { body: { email } });
+    assert.equal((await invite()).status, 200);
+    const first = await parent.call("GET", "/api/members");
+    const id = text(at(first.body, "invitations", 0, "id"));
+    await owner.raw`update keys set created_at = ${new Date(Date.now() - 61_000).toISOString()} where email = ${email} and family_id = ${family.family}::uuid`;
+    assert.equal((await invite()).status, 200);
+    const latest = tokenFor(outbox, email);
+    assert.equal((await parent.call("POST", "/api/members/cancel", { body: { id } })).status, 200);
+    const guest = new Browser(config);
+    assert.equal(
+        (await guest.call("POST", "/api/invitations/preview", { body: { token: latest } })).status,
+        404,
+    );
+});

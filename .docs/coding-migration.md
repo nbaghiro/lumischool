@@ -70,7 +70,7 @@ grades one to four:
   tools change any number on a block within limits read from what the number means.
 - Still to do: grid prediction and stage event buttons (slice 3), drag in the editor (slice 5),
   sound (slice 6), gliding sprites and springs, and retiring the scratchpad's page (slice 7).
-  `tools/e2e/coding-run.e2e.ts` covers a grade one maze, the grade two lamps, a grade five list, a
+  `tools/e2e/lessons/coding-run.e2e.ts` covers a grade one maze, the grade two lamps, a grade five list, a
   grade five die and a grade six drawing in Explore; a build in a child's sheet has no browser test.
 
 ## What exists and what is missing

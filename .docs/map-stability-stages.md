@@ -225,7 +225,7 @@ applicable gates and physical-device acceptance have been satisfied.
 
 ### Final local validation for this pass
 
-`LUMISCHOOL_REQUIRE_DB=1 npm run check` completed with exit 0 on the final shared tree;
+`npm run check` completed with exit 0 on the final shared tree;
 log: `/tmp/lumischool-map-stability-verified-check.log`. This includes typechecking, lint,
 formatting, boundary checks, database/server/engine/school/tool/app tests and both production
 build guards. The final focused flight recheck passed 10/10 desktop/phone-WebKit cases in
@@ -264,7 +264,7 @@ scenery eviction remains enabled. No new full-map bitmap or second scene is reta
 These comparisons support camera-layer compositing as the source of the reproduced
 flash; they do not prove the cause of the physical iPhone crash.
 
-`tools/e2e/map-continuity.e2e.ts` captures presented Chrome frames during steering and
+`tools/e2e/map/map-continuity.e2e.ts` captures presented Chrome frames during steering and
 zoom and detects loss of the land/sea colour wash. It decodes the frames after capture,
 so inspection does not compete with animation. The resource test also checks that the
 camera clip remains viewport-sized through flight zoom and rotation. Compositor layer
@@ -363,6 +363,6 @@ neighbour retry. These run in desktop Chrome and phone-sized WebKit alongside th
 Validation for this stage: all 18 targeted browser cases passed across Chrome and phone-sized
 WebKit, with the position/retry/child cases repeated after final publication changes. The eight
 paper tests pass, including loading-state notification and bounded concurrency. The full
-`LUMISCHOOL_REQUIRE_DB=1 npm run check` passed, including snapshot comparisons and both builds.
+`npm run check` passed, including snapshot comparisons and both builds.
 This supersedes the earlier full-check blockers for the current working tree; it does not
 replace physical iPhone validation.

@@ -67,11 +67,20 @@ describe("the Resend transport", () => {
     });
 
     it("supports text-only emails without adding HTML", async () => {
-        globalThis.fetch = async () => Response.json({ id: "message-id" });
+        let body: unknown;
+        globalThis.fetch = async (_url, init) => {
+            body = JSON.parse(typeof init?.body === "string" ? init.body : "{}");
+            return Response.json({ id: "message-id" });
+        };
         const send = resendTransport("re_test_key", "code@lumischool.example");
         const email: Email = { to: "anna@example.com", subject: "Your code", text: "1234 5678" };
         await send(email);
-        assert.deepEqual(Object.keys(email).sort(), ["subject", "text", "to"]);
+        assert.deepEqual(body, {
+            from: "code@lumischool.example",
+            to: "anna@example.com",
+            subject: "Your code",
+            text: "1234 5678",
+        });
     });
 
     it("preserves HTML, unsubscribe headers, retry identity and the returned provider ID", async () => {

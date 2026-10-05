@@ -4,9 +4,9 @@ import { after, describe, it } from "node:test";
 import { closeApp } from "../db/client";
 import { prepare } from "../db/__tests__/test-db";
 import { Browser, local, startFamily } from "./browser";
-const reason = await prepare();
+await prepare();
 after(closeApp);
-describe("family-owned tutoring sessions", { skip: reason ?? false }, () => {
+describe("family-owned tutoring sessions", () => {
     it("persists, resumes, deduplicates, rejects stale turns and isolates families", async () => {
         const { config, outbox } = local();
         const a = new Browser(config),

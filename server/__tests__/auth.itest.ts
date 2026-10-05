@@ -21,18 +21,13 @@ import {
     text,
 } from "./browser";
 
-const reason = await prepare();
-const owner: Store | null = reason === null ? open() : null;
+await prepare();
+const owner: Store = open();
 
 after(async () => {
     await closeApp();
-    if (owner) await owner.close();
+    await owner.close();
 });
-
-const db = (): Store => {
-    if (!owner) throw new Error("no database");
-    return owner;
-};
 
 /** A `Set-Cookie` line's attributes, after its name and value. */
 const flags = (line: string): Set<string> =>
@@ -43,10 +38,10 @@ const flags = (line: string): Set<string> =>
             .map((s) => s.trim()),
     );
 
-const keyRow = async (id: string) => (await db().db.select().from(keys)).find((k) => k.id === id);
+const keyRow = async (id: string) => (await owner.db.select().from(keys)).find((k) => k.id === id);
 
-describe("signing in", { skip: reason ?? false }, () => {
-    beforeEach(async () => truncate(db()));
+describe("signing in", () => {
+    beforeEach(async () => truncate(owner));
 
     it("refuses malformed emails and blank registration names before sending any code", async () => {
         const { config, outbox } = local();
@@ -233,7 +228,7 @@ describe("signing in", { skip: reason ?? false }, () => {
         const old = new Browser(config);
         old.jar.set("ls_session", first);
         assert.equal((await old.call("GET", "/api/me")).status, 401, "the first session is gone");
-        const [sessions] = await db().raw<
+        const [sessions] = await owner.raw<
             { n: number }[]
         >`select count(*)::int as n from keys where kind = 'session'`;
         assert.equal(sessions?.n, 1);
@@ -335,8 +330,7 @@ describe("signing in", { skip: reason ?? false }, () => {
         const two = new Browser(config, "198.51.100.76");
         await one.call("POST", "/api/auth/email/start", { body: { email, start } });
         const first = codeFor(outbox, email);
-        await db()
-            .raw`update keys set created_at = utc_iso(now() - interval '2 minutes') where email = ${email}`;
+        await owner.raw`update keys set created_at = utc_iso(now() - interval '2 minutes') where email = ${email}`;
         assert.equal(
             (await two.call("POST", "/api/auth/email/start", { body: { email, start } })).status,
             202,
@@ -350,11 +344,11 @@ describe("signing in", { skip: reason ?? false }, () => {
         assert.equal(at(a.body, "me", "user", "id"), at(b.body, "me", "user", "id"));
         assert.notEqual(at(a.body, "me", "family", "id"), at(b.body, "me", "family", "id"));
         assert.equal(
-            (await db().db.select().from(users)).filter((u) => u.email === email).length,
+            (await owner.db.select().from(users)).filter((u) => u.email === email).length,
             1,
         );
         assert.equal(
-            (await db().db.select().from(keys)).filter((k) => k.email === email).length,
+            (await owner.db.select().from(keys)).filter((k) => k.email === email).length,
             0,
         );
     });
@@ -374,20 +368,19 @@ describe("signing in", { skip: reason ?? false }, () => {
         });
         // A rule on this test database alone, so the family's insert fails after the code was used
         // and the login written, in the same transaction.
-        await db()
-            .raw`alter table families add constraint refused_for_the_test check (name <> 'Refused')`;
+        await owner.raw`alter table families add constraint refused_for_the_test check (name <> 'Refused')`;
         try {
             const failed = await b.call("POST", "/api/auth/email/verify", {
                 body: { code: codeFor(outbox, email) },
             });
             assert.equal(failed.status, 500);
         } finally {
-            await db().raw`alter table families drop constraint refused_for_the_test`;
+            await owner.raw`alter table families drop constraint refused_for_the_test`;
         }
         assert.equal(lines.length, 1);
         assert.equal(await loginByAddress(email), null, "no login without its family");
         assert.equal(
-            (await db().db.select().from(keys)).filter((k) => k.email === email).length,
+            (await owner.db.select().from(keys)).filter((k) => k.email === email).length,
             1,
             "the code is still there",
         );
@@ -411,8 +404,7 @@ describe("signing in", { skip: reason ?? false }, () => {
         assert.equal(renewed(next.cookies), undefined, "no second write the same day");
         assert.equal((await keyRow(me.session))?.seen_at, seen);
 
-        await db()
-            .raw`update keys set seen_at = utc_iso(now() - interval '2 days'), created_at = utc_iso(now() - interval '80 days') where id = ${me.session}`;
+        await owner.raw`update keys set seen_at = utc_iso(now() - interval '2 days'), created_at = utc_iso(now() - interval '80 days') where id = ${me.session}`;
         const later = await b.call("GET", "/api/family");
         assert.equal(later.status, 200);
         const age = ageOf(renewed(later.cookies));
@@ -439,8 +431,7 @@ describe("signing in", { skip: reason ?? false }, () => {
         const soon = await shared.call("GET", "/api/me");
         assert.equal((await keyRow(id))?.seen_at, sharedSeen, "not again within the minute");
         assert.deepEqual(soon.cookies, [], "and a shared session's cookie is never sent again");
-        await db()
-            .raw`update keys set seen_at = utc_iso(now() - interval '2 minutes') where id = ${id}`;
+        await owner.raw`update keys set seen_at = utc_iso(now() - interval '2 minutes') where id = ${id}`;
         await shared.call("GET", "/api/me");
         assert.notEqual((await keyRow(id))?.seen_at, sharedSeen);
     });
@@ -567,7 +558,7 @@ describe("signing in", { skip: reason ?? false }, () => {
             name: "Ben",
             family: "Oakley",
         });
-        await db().db.insert(members).values({ user_id: oakley.user, family_id: harlow.family });
+        await owner.db.insert(members).values({ user_id: oakley.user, family_id: harlow.family });
         await ben.call("POST", "/api/auth/email/start", { body: { email: "ben@example.test" } });
         await ben.call("POST", "/api/auth/email/verify", {
             body: { code: codeFor(outbox, "ben@example.test") },
@@ -578,8 +569,7 @@ describe("signing in", { skip: reason ?? false }, () => {
         assert.equal(chosen.status, 200);
         assert.equal((await ben.call("GET", "/api/family")).status, 200);
 
-        await db()
-            .raw`update members set ended_at = utc_iso(now()) where user_id = ${oakley.user} and family_id = ${harlow.family}`;
+        await owner.raw`update members set ended_at = utc_iso(now()) where user_id = ${oakley.user} and family_id = ${harlow.family}`;
         const ended = await ben.call("GET", "/api/family");
         assert.deepEqual([ended.status, ended.body], [401, { error: "signed-out" }]);
         assert.ok(ended.cookies.some((c) => /^ls_session=;.*Max-Age=0/.test(c)));
@@ -727,8 +717,7 @@ describe("signing in", { skip: reason ?? false }, () => {
         const { config, outbox } = local();
         const late = new Browser(config, "198.51.100.50");
         await late.call("POST", "/api/auth/email/start", { body: { email: "late@example.test" } });
-        await db()
-            .raw`update keys set created_at = utc_iso(now() - interval '11 minutes') where email = 'late@example.test'`;
+        await owner.raw`update keys set created_at = utc_iso(now() - interval '11 minutes') where email = 'late@example.test'`;
         const expired = await late.call("POST", "/api/auth/email/verify", {
             body: { code: codeFor(outbox, "late@example.test") },
         });
@@ -781,8 +770,8 @@ describe("signing in", { skip: reason ?? false }, () => {
                 `grade ${grade} is not offered`,
             );
 
-        const [theo] = await db()
-            .db.insert(kids)
+        const [theo] = await owner.db
+            .insert(kids)
             .values({ family_id: me.family, name: "Theo", grade: 2 })
             .returning();
         assert.ok(theo);
@@ -793,8 +782,7 @@ describe("signing in", { skip: reason ?? false }, () => {
             [unconsented.status, unconsented.body],
             [409, { error: "no-consent", kid: theo.id }],
         );
-        await db()
-            .raw`update keys set created_at = utc_iso(now() - interval '11 minutes') where id = ${me.session}`;
+        await owner.raw`update keys set created_at = utc_iso(now() - interval '11 minutes') where id = ${me.session}`;
         const stale = await parent.call("POST", "/api/family/pin", { body: { pin: "2468" } });
         assert.deepEqual([stale.status, stale.body], [403, { error: "fresh-sign-in" }]);
     });

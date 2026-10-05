@@ -1,0 +1,40 @@
+# `npm run check`, as it runs on a laptop (.docs/testing.md). Postgres is published on 8502 with the
+# local container's owner role, so the database tests find it at the defaults server/db/client.ts names
+# and need no environment of their own.
+name: check
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+
+concurrency:
+    group: check-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    check:
+        runs-on: ubuntu-latest
+        timeout-minutes: 60
+        services:
+            postgres:
+                image: postgres:18
+                env:
+                    POSTGRES_USER: lumischool
+                    POSTGRES_PASSWORD: lumischool
+                    POSTGRES_DB: lumischool
+                ports:
+                    - 8502:5432
+                options: >-
+                    --health-cmd "pg_isready -U lumischool -d lumischool"
+                    --health-interval 5s
+                    --health-timeout 5s
+                    --health-retries 10
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version-file: .node-version
+                  cache: npm
+            - run: npm ci
+            - run: npm run check

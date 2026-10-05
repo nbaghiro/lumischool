@@ -4,17 +4,17 @@ import { closeApp, open } from "../db/client";
 import { prepare, truncate } from "../db/__tests__/test-db";
 import { addKid, at, Browser, local, sessionInto, startFamily, text } from "./browser";
 
-const reason = await prepare();
-const owner = reason === null ? open() : null;
+await prepare();
+const owner = open();
 after(async () => {
     await closeApp();
-    await owner?.close();
+    await owner.close();
 });
 
-describe("family deletion", { skip: reason ?? false }, () => {
+describe("family deletion", () => {
     const { config, outbox } = local();
     beforeEach(async () => {
-        if (owner) await truncate(owner);
+        await truncate(owner);
     });
 
     it("requires exact confirmation and deletes only this family, preserving cross-family browser access", async () => {

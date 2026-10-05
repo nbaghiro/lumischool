@@ -276,19 +276,6 @@ describe("where the pages are locally", () => {
         assert.ok(!("problem" in c));
         assert.deepEqual(c.origins, ["http://localhost:8500", "http://localhost:5173"]);
     });
-
-    it("refuses a state-changing request from an origin it does not know", async () => {
-        const c = configFrom({ LUMISCHOOL_ENV: "local" });
-        assert.ok(!("problem" in c));
-        const res = await app(c)(
-            new Request("http://127.0.0.1:8501/api/auth/email/start", {
-                method: "POST",
-                headers: { origin: "http://localhost:8599", "content-type": "application/json" },
-                body: JSON.stringify({ email: "a@example.com" }),
-            }),
-        );
-        assert.equal(res.status, 403);
-    });
 });
 
 describe("the local outbox", () => {

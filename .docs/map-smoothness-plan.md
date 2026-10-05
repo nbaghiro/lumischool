@@ -7,7 +7,7 @@ lands.
 
 The overworld and a world's roll have both been drawn by the GPU since the work in `overworld-gpu.md` and
 `world-gpu.md`. Nothing on the screen goes missing any more as a family moves over them, which
-`tools/e2e/map-smoothness.e2e.ts` holds. What is left is art that is drawn again while it is on the screen:
+`tools/e2e/map/map-smoothness.e2e.ts` holds. What is left is art that is drawn again while it is on the screen:
 the ground of a roll building up in steps as a child comes into a world, the whole roll repainted a moment
 after it arrives, drawings sharpening in a wave after every zoom, a world entered for the second time drawn
 from nothing, and the map drawn from nothing after a lesson is finished. Each of these reads as a flicker,
@@ -435,7 +435,7 @@ Gate: the walk completes, every counter meets the bar, and the numbers are recor
 
 ## Record
 
-Measured with `tools/e2e/map-smoothness.e2e.ts` on desktop Chrome, on a machine other sessions were loading
+Measured with `tools/e2e/map/map-smoothness.e2e.ts` on desktop Chrome, on a machine other sessions were loading
 heavily (a load average of 20 to 50), so the frame times below are rough and the counts are what to go by.
 "Rastered" is drawings drawn by the workers, "kept" those uploaded again from the memory store, and "cached"
 those read back from the device's store.

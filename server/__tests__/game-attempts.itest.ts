@@ -6,13 +6,13 @@ import { deleteFamily } from "../db/events";
 import { prepare } from "../db/__tests__/test-db";
 import type { GameAttempt } from "../../engine/answer";
 import { Browser, local, startFamily, addKid, at } from "./browser";
-const reason = await prepare();
-const owner = reason === null ? open() : null;
+await prepare();
+const owner = open();
 after(async () => {
     await closeApp();
-    await owner?.close();
+    await owner.close();
 });
-describe("parent QA game attempts", { skip: reason ?? false }, () => {
+describe("parent QA game attempts", () => {
     it("requires explicit owned children, binds the family and makes offline resends idempotent", async () => {
         const { config, outbox } = local();
         const a = new Browser(config),

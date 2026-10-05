@@ -526,7 +526,6 @@ test("a fixed-word setting written with a parameter's name is refused, and a dec
     // The solid once took only a fixed word, so `kind=k` drew the word "k" (a cube) while the answer
     // key varied with k. It now lists the words it accepts, and a parameter may pick one of them.
     const solid = new Workspace({
-        ...content(),
         "items/probe-solid.lumi": `item probe.solid v=1 skills=[shapes.solids] {
   title "Probe"
   let k={"cube", "sphere"}
@@ -553,7 +552,6 @@ test("a fixed-word setting written with a parameter's name is refused, and a dec
 
 test("a parameter named like one of a setting's words is refused, since it would read as the word", () => {
     const solid = new Workspace({
-        ...content(),
         "items/probe-clash.lumi": `item probe.clash v=1 skills=[shapes.solids] {
   title "Probe"
   let cube={"cube", "sphere"}

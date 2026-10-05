@@ -8,24 +8,19 @@ import { prepare, truncate } from "../db/__tests__/test-db";
 import type { Config } from "../http";
 import { at, Browser, local, startFamily } from "./browser";
 
-const reason = await prepare();
-const owner: Store | null = reason === null ? open() : null;
+await prepare();
+const owner: Store = open();
 
 after(async () => {
     await closeApp();
-    if (owner) await owner.close();
+    await owner.close();
 });
-
-const db = (): Store => {
-    if (!owner) throw new Error("no database");
-    return owner;
-};
 
 /** Postgres refuses this character in text, so a kid's name ending in it fails its insert. */
 const NUL = String.fromCharCode(0);
 
-describe("the entry point", { skip: reason ?? false }, () => {
-    beforeEach(async () => truncate(db()));
+describe("the entry point", () => {
+    beforeEach(async () => truncate(owner));
 
     it("logs a failure outside local by its route, a request id and its code, and never a parameter of the query", async () => {
         const { config, outbox } = local();

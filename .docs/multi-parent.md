@@ -73,7 +73,7 @@ it returns the normal parent session. Join notifications run independently after
 
 ## Validation
 
-The full required LUMISCHOOL_REQUIRE_DB=1 npm run check passed, including fresh-database migration
+The full npm run check passed, including fresh-database migration
 replay, 129 server tests, and the repository's map/build gates. The final targeted membership/email
 run passed all 10 tests, including the added shared-PIN and personalized-email escaping checks.
 Desktop, phone and phone WebKit passed the complete invite, join, and remove flow. The final app
@@ -89,7 +89,7 @@ Invitation recovery: acceptance and cancellation serialize on the family row. Ca
 
 ### Two-user browser regression suite
 
-`tools/e2e/members.e2e.ts` uses independent inviter and invitee browser contexts,
+`tools/e2e/family/members.e2e.ts` uses independent inviter and invitee browser contexts,
 with each project's full device settings. Invitations and codes come from the real
 local email outbox, and membership changes use the real API and database. Only
 interrupted delivery and the cancellation race inject a network failure or delay;
@@ -101,4 +101,4 @@ foreground refresh, acceptance winning cancellation, full email sign-in recovery
 after a lost response, and resending into the same tab. The resend case waits for
 the real server cooldown and checks that only the replacement link works.
 
-Run with `npm run test:e2e -- tools/e2e/members.e2e.ts --project=desktop --project=phone --project=phone-webkit`.
+Run with `npm run test:e2e -- tools/e2e/family/members.e2e.ts --project=desktop --project=phone --project=phone-webkit`.

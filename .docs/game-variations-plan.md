@@ -232,7 +232,7 @@ content should extend these recipe pools and their witness tests before increasi
 
 ### Verification and QA handoff
 
-- `LUMISCHOOL_REQUIRE_DB=1 npm run check`: exit 0, 1,240 tests passed, no skips; database, server,
+- `npm run check`: exit 0, 1,240 tests passed, no skips; database, server,
   engine, school, tools and app suites, production build and child-route exclusion passed.
 - Follow-up lint and formatting checks passed after late action-adapter integration.
 - Browser checks (24 September): 28 existing Games regressions passed on desktop and phone;

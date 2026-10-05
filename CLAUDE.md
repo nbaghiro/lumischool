@@ -194,9 +194,14 @@ At the root:
   import.
 - `npm run check:voice`: the rules on what the world's guide may say (`school/voice.ts`), over every
   line it can say: the fixed lines, the worlds' lines, and every hint and rule line of the curriculum.
-- `npm run check:db` and `npm run test:db`: the database guard, and the database's tests.
+- `npm run test:unit`: every `*.test.ts`, which needs nothing outside the process.
+- `npm run test:integration`: every `*.itest.ts`, against the Postgres of `npm run db:up`. With no
+  database they fail rather than skip, so `npm run check` needs the container running.
+- `npm run check:db`: the database guard.
 - `npm run test:e2e`: the end-to-end tests in `tools/e2e/`, against `npm run dev` already running, as
-  [.docs/local.md](.docs/local.md) describes. It is not part of `npm run check`.
+  [.docs/local.md](.docs/local.md) describes; `npm run test:e2e -- games` runs one area's folder. It
+  is not part of `npm run check`. [.docs/testing.md](.docs/testing.md) says which tier a test belongs
+  to and which helpers a new end-to-end spec starts from.
 - `npm run db:up`, `db:reset`, `db:psql` and the rest are described in
   [.docs/local.md](.docs/local.md).
 

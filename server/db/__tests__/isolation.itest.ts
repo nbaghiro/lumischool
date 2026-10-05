@@ -3,7 +3,7 @@
 // through `withFamily` with no `family_id` filter, so what passes is the policies, not the query.
 
 import assert from "node:assert/strict";
-import { after, before, describe, it } from "node:test";
+import { after, beforeEach, describe, it } from "node:test";
 import { eq, inArray, isNull, sql } from "drizzle-orm";
 import type { Envelope } from "../../../engine/answer";
 import { closeApp, open, withFamily, type FamilyTx, type Store } from "../client";
@@ -26,12 +26,12 @@ import {
 } from "../schema";
 import { PG, codeOf, must, prepare, truncate } from "./test-db";
 
-const reason = await prepare();
-const owner: Store | null = reason === null ? open() : null;
+await prepare();
+const owner: Store = open();
 
 after(async () => {
     await closeApp();
-    if (owner) await owner.close();
+    await owner.close();
 });
 
 const A = "a0000000-0000-5000-8000-00000000000a";
@@ -165,14 +165,13 @@ let bRows: Record<(typeof TABLES)[number], string[]> = {
 let catalogueRow = "";
 let noFamily: string[] = [];
 
-describe("isolation between families", { skip: reason ?? false }, () => {
-    const db = () => must(owner, "the owner connection");
+describe("isolation between families", () => {
     const madeIn = (family: string) => must(made[family], `the rows made in ${family}`);
 
-    before(async () => {
-        await truncate(db());
-        await saveCatalogue(db().db, ["item bonds.make-ten v=1 {\n}\n"]);
-        const [catalogue] = await db().db.select({ id: content.id }).from(content);
+    beforeEach(async () => {
+        await truncate(owner);
+        await saveCatalogue(owner.db, ["item bonds.make-ten v=1 {\n}\n"]);
+        const [catalogue] = await owner.db.select({ id: content.id }).from(content);
         catalogueRow = must(catalogue, "the catalogue row").id;
 
         await writeFamily(A, UA, KA);
@@ -225,7 +224,7 @@ describe("isolation between families", { skip: reason ?? false }, () => {
             accept: ["z"],
         });
         noFamily = (
-            await db().db.select({ id: keys.id }).from(keys).where(isNull(keys.family_id))
+            await owner.db.select({ id: keys.id }).from(keys).where(isNull(keys.family_id))
         ).map((k) => k.id);
         assert.equal(noFamily.length, 3);
 
@@ -241,19 +240,19 @@ describe("isolation between families", { skip: reason ?? false }, () => {
             families: [B],
             users: [UB],
             members: await ids(
-                db().db.select({ id: members.id }).from(members).where(eq(members.family_id, B)),
+                owner.db.select({ id: members.id }).from(members).where(eq(members.family_id, B)),
             ),
             kids: await ids(
-                db().db.select({ id: kids.id }).from(kids).where(eq(kids.family_id, B)),
+                owner.db.select({ id: kids.id }).from(kids).where(eq(kids.family_id, B)),
             ),
             keys: await ids(
-                db().db.select({ id: keys.id }).from(keys).where(eq(keys.family_id, B)),
+                owner.db.select({ id: keys.id }).from(keys).where(eq(keys.family_id, B)),
             ),
             events: await ids(
-                db().db.select({ id: events.id }).from(events).where(eq(events.family_id, B)),
+                owner.db.select({ id: events.id }).from(events).where(eq(events.family_id, B)),
             ),
             content: await ids(
-                db().db.select({ id: content.id }).from(content).where(eq(content.family_id, B)),
+                owner.db.select({ id: content.id }).from(content).where(eq(content.family_id, B)),
             ),
         };
         assert.equal(bRows.members.length, 2, "B's parent and X's tutor row");
@@ -358,8 +357,8 @@ describe("isolation between families", { skip: reason ?? false }, () => {
                 (e: unknown) => codeOf(e) === PG.denied,
             );
         }
-        const [bName] = await db()
-            .db.select({ name: families.name })
+        const [bName] = await owner.db
+            .select({ name: families.name })
             .from(families)
             .where(eq(families.id, B));
         assert.equal(bName?.name, "Family b");
@@ -404,7 +403,7 @@ describe("isolation between families", { skip: reason ?? false }, () => {
             withFamily(inA, (tx) => tx.delete(events).where(eq(events.family_id, B))),
             (e: unknown) => codeOf(e) === PG.denied,
         );
-        const [row] = await db().raw<{ n: string }[]>`
+        const [row] = await owner.raw<{ n: string }[]>`
             select (select count(*) from families where id = ${B}) + (select count(*) from kids where family_id = ${B})
                  + (select count(*) from members where family_id = ${B}) + (select count(*) from keys where family_id = ${B} or family_id is null)
                  + (select count(*) from events where family_id = ${B}) + (select count(*) from content where family_id = ${B} or family_id is null)

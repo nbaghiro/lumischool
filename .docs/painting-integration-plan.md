@@ -384,6 +384,6 @@ cases covering ownership, idempotency, conflicts, pagination, retained history, 
 and database tenant/policy checks passed. Six browser cases passed, covering desktop and phone
 pointer input, save/reopen, colouring, mixer, download, child collection management, offline refresh
 recovery and simultaneous-tab copies. Desktop/phone canvas and filmstrip screenshots were inspected.
-Final release gate passed: `LUMISCHOOL_REQUIRE_DB=1 npm run check` (55 database, 135 server,
+Final release gate passed: `npm run check` (55 database, 135 server,
 512 engine, 346 school, 29 tools and 32 app tests; both build checks and all guards). A targeted
 390 px offline-recovery browser rerun also verified that save warnings stay visible on phones.

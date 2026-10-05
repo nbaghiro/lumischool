@@ -17,14 +17,14 @@ import {
     text,
 } from "./browser";
 
-const reason = await prepare();
-const owner = reason === null ? open() : null;
+await prepare();
+const owner = open();
 after(async () => {
     await closeApp();
-    await owner?.close();
+    await owner.close();
 });
 
-describe("kids’ username sign-in", { skip: reason ?? false }, () => {
+describe("kids’ username sign-in", () => {
     const { config, outbox } = local();
     let parent: Browser;
     let browser: Browser;
@@ -33,7 +33,6 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
     let maya: string;
     let theo: string;
     beforeEach(async () => {
-        if (!owner) throw new Error("no database");
         await truncate(owner);
         parent = new Browser(config);
         browser = new Browser(config);
@@ -207,7 +206,6 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
     });
 
     it("own PINs work without a shared PIN and returning to shared requires one", async () => {
-        if (!owner) throw new Error("no database");
         await owner.raw`delete from keys where kind = 'kid-pin' and family_id = ${family}`;
         assert.equal((await editPin(maya, "maya-star", "8642")).status, 204);
         assert.equal((await login("maya-star", "8642")).status, 200);
@@ -285,7 +283,6 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
     });
 
     it("recovers a family PIN after cooldown even after a legacy permanent lockout", async () => {
-        if (!owner) throw new Error("no database");
         await owner.raw`update keys set attempts = 15, seen_at = utc_iso(now() - interval '16 minutes') where kind = 'kid-pin' and family_id = ${family}`;
         assert.equal((await login("maya-star")).status, 200);
         for (let n = 0; n < 5; n++) await login("maya-star", "0000");
@@ -316,7 +313,6 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
     });
 
     it("refuses existing child sessions when the opening parent is removed", async () => {
-        if (!owner) throw new Error("no database");
         const one = await token("maya-star");
         const [other] = await owner.raw<
             { id: string }[]
@@ -339,7 +335,6 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
     });
 
     it("allocates popular names after the short friendly sequences are already occupied", async () => {
-        if (!owner) throw new Error("no database");
         const names = Array.from({ length: 141 }, (_, n) => suggestedUsername("Emma", 0, n));
         await owner.db.insert(kids).values(
             names.map((username) => ({
@@ -436,7 +431,6 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
     });
 
     it("accepts a username even when an older row still has kidLogin false", async () => {
-        if (!owner) throw new Error("no database");
         await owner.raw`update kids set settings = settings || '{"kidLogin": false}'::jsonb where id = ${maya}`;
         assert.equal((await token("maya-star")).length > 0, true);
         const listed = await parent.call("GET", "/api/kid-logins");
@@ -493,7 +487,6 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
             ).status,
             404,
         );
-        if (!owner) throw new Error("no database");
         await owner.raw`update keys set created_at = utc_iso(now() - interval '11 minutes') where kind = 'session' and family_id = ${family}`;
         assert.equal(
             (await parent.call("POST", "/api/kid-logins/pin", { body: { pin: "9999" } })).status,
@@ -573,7 +566,6 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
         );
         const heldBrowser = parent.jar.get("ls_browser") ?? "";
         assert.equal((await parent.call("POST", "/api/auth/browser/sign-out")).status, 404);
-        if (!owner) throw new Error("no database");
         const browserId = heldBrowser.split(".")[1];
         assert.ok(browserId);
         await owner.raw`delete from keys where id = ${browserId}::uuid and kind = 'browser'`;
@@ -632,7 +624,6 @@ describe("kids’ username sign-in", { skip: reason ?? false }, () => {
         );
     });
     it("requires a fresh sign-in for old sessions without a browser binding", async () => {
-        if (!owner) throw new Error("no database");
         const session = text(at((await parent.call("GET", "/api/me")).body, "session", "id"));
         await owner.raw`update keys set detail = detail - 'browser' where id = ${session}`;
         assert.equal((await parent.call("GET", "/api/me")).status, 401);

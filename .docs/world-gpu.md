@@ -240,7 +240,7 @@ On 27 September the roll's scenery moved to the scene renderer, and the renderer
 
 Measured in the woods with the CPU slowed four times, on battery (every frame capped at 33 ms): panning over
 ground the roll has drawn uploads nothing and costs 204 to 231 ms of the main thread a second against the DOM
-roll's 200; zooming costs 218 to 254 against 207 to 242. `tools/e2e/map-smoothness.e2e.ts` drives the
+roll's 200; zooming costs 218 to 254 against 207 to 242. `tools/e2e/map/map-smoothness.e2e.ts` drives the
 map and a roll through every world and then one world, panning and zooming, flying, going into a world,
 moving round its roll and coming back, and fails if any drawing on the screen in one frame is missing in the
 next, as the scene counts them under `?mapDebug` (`art-lost`); none is. A drawing redrawn as it was, as a roll's

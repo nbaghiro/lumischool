@@ -2,24 +2,19 @@
 // taken by a parent of the family, and only to the grade next to the child's that is offered.
 
 import assert from "node:assert/strict";
-import { after, before, describe, it } from "node:test";
+import { after, beforeEach, describe, it } from "node:test";
 import { PACK, type LessonFacts } from "../../engine/pack";
 import { closeApp, open, type Store } from "../db/client";
 import { prepare, truncate } from "../db/__tests__/test-db";
 import { addKid, at, Browser, local, sessionInto, startFamily, type Answer } from "./browser";
 
-const reason = await prepare();
-const owner: Store | null = reason === null ? open() : null;
+await prepare();
+const owner: Store = open();
 
 after(async () => {
     await closeApp();
-    if (owner) await owner.close();
+    await owner.close();
 });
-
-const db = (): Store => {
-    if (!owner) throw new Error("no database");
-    return owner;
-};
 
 const { config, outbox } = local();
 // one lesson a grade, so grades one to four are written and five is not
@@ -50,18 +45,18 @@ const move = (b: Browser, kid: string, grade: unknown): Promise<Answer> =>
     b.call("POST", `/api/kids/${kid}/move-up`, { body: { grade } });
 
 async function gradeOf(kid: string): Promise<number | undefined> {
-    const [row] = await db().raw<{ grade: number }[]>`select grade from kids where id = ${kid}`;
+    const [row] = await owner.raw<{ grade: number }[]>`select grade from kids where id = ${kid}`;
     return row?.grade;
 }
 
 async function moves(kid: string): Promise<{ data: unknown; actor: string | null }[]> {
-    return db().raw<{ data: unknown; actor: string | null }[]>`
+    return owner.raw<{ data: unknown; actor: string | null }[]>`
         select data, actor from events where kid_id = ${kid} and kind = 'moved-up' order by seq`;
 }
 
-describe("moving a child up a year", { skip: reason ?? false }, () => {
-    before(async () => {
-        await truncate(db());
+describe("moving a child up a year", () => {
+    beforeEach(async () => {
+        await truncate(owner);
         const me = await startFamily(parent, outbox, {
             email: "move@example.test",
             name: "Naib",
@@ -94,6 +89,7 @@ describe("moving a child up a year", { skip: reason ?? false }, () => {
     });
 
     it("moves back a grade for a move made too early, as the same kind of event", async () => {
+        assert.equal((await move(parent, made.maya, 4)).status, 200);
         const back = await move(parent, made.maya, 3);
         assert.equal(back.status, 200, JSON.stringify(back.body));
         assert.equal(await gradeOf(made.maya), 3);
@@ -113,7 +109,7 @@ describe("moving a child up a year", { skip: reason ?? false }, () => {
         const past = await move(parent, made.maya, 5);
         assert.equal(past.status, 400, "grade five is not offered yet");
         assert.equal(await gradeOf(made.maya), 4);
-        assert.equal((await moves(made.maya)).length, 3);
+        assert.equal((await moves(made.maya)).length, 1);
     });
 
     it("refuses a child of another family, someone signed out, and a grown-up who is not a parent", async () => {
@@ -121,16 +117,16 @@ describe("moving a child up a year", { skip: reason ?? false }, () => {
         assert.equal(await gradeOf(made.other), 3);
         assert.equal((await move(new Browser(config), made.maya, 3)).status, 401);
 
-        const [tutor] = await db().raw<{ id: string }[]>`
+        const [tutor] = await owner.raw<{ id: string }[]>`
             insert into users (name, email) values ('Kate', 'kate@example.test') returning id`;
         if (!tutor) throw new Error("no tutor");
-        await db().raw`
+        await owner.raw`
             insert into members (family_id, user_id, kid_id, from_day, to_day)
             values (${made.family}, ${tutor.id}, ${made.maya}, '2020-01-01', '2099-12-31')`;
         const b = new Browser(config);
         await sessionInto(b, made.family, tutor.id);
-        const r = await move(b, made.maya, 3);
+        const r = await move(b, made.maya, 4);
         assert.equal(r.status, 403, JSON.stringify(r.body));
-        assert.equal(await gradeOf(made.maya), 4);
+        assert.equal(await gradeOf(made.maya), 3);
     });
 });

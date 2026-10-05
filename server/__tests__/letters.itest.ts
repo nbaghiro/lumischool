@@ -15,14 +15,14 @@ import { prepare } from "../db/__tests__/test-db";
 import { Browser, local, startFamily } from "./browser";
 import { unsubscribeRequest, unsubscribeToken } from "../letters";
 
-const reason = await prepare();
-const owner = reason === null ? open() : null;
+await prepare();
+const owner = open();
 after(async () => {
     await closeApp();
-    await owner?.close();
+    await owner.close();
 });
 
-describe("weekly mail through family-scoped storage", { skip: reason ?? false }, () => {
+describe("weekly mail through family-scoped storage", () => {
     it("defaults off, protects the API, isolates rows and cancels queued mail when preferences change", async () => {
         const { config, outbox } = local();
         config.pack = { digest: "test", index: { pack: PACK, lessons: [] }, file: () => null };

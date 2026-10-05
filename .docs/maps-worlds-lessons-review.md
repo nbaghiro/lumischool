@@ -345,4 +345,4 @@ waterfalls and retained memory. Keep first-map paint separate from all-content r
 | Painting and camera | `engine/ui/overworld.tsx`, `map.ts`, `world.tsx`, `place.tsx`, `scenery.ts`, `view.ts` |
 | Paper and scene rendering | `engine/ui/paper.ts`, `lesson.tsx`, `scene.ts` |
 | Checking and queued work | `school/lessons.ts`, `engine/ui/kid.ts` |
-| Build limits and regression checks | `vite.config.ts`, `tools/first-view.ts`, `tools/__tests__/first-view.test.ts`, `tools/e2e/map.e2e.ts` |
+| Build limits and regression checks | `vite.config.ts`, `tools/first-view.ts`, `tools/__tests__/first-view.test.ts`, `tools/e2e/map/map.e2e.ts` |

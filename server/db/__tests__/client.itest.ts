@@ -7,12 +7,12 @@ import { sql } from "drizzle-orm";
 import { closeApp, withFamily } from "../client";
 import { codeOf, prepare } from "./test-db";
 
-const reason = await prepare();
+await prepare();
 process.env.DB_STATEMENT_TIMEOUT = "300";
 
 after(closeApp);
 
-describe("the app role's statement timeout", { skip: reason ?? false }, () => {
+describe("the app role's statement timeout", () => {
     it("ends a statement that runs past it, and holds in every transaction withFamily opens", async () => {
         await assert.rejects(
             withFamily({ family: null }, (tx) => tx.execute(sql`select pg_sleep(2)`)),

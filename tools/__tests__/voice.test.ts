@@ -1,19 +1,18 @@
 // The guide's help over the whole curriculum (.docs/ai.md, "The guide"): every string the card can
 // hand the voice for any question is one of that question's own strings or a fixed line (property
-// 20), Where? rings something wherever a question draws something, and the guard over the guide's voice
-// passes every line as the corpus stands.
+// 20), and Where? rings something wherever a question draws something. The guard over every line the
+// guide can say is `npm run check:voice`.
 
 import assert from "node:assert/strict";
 import { before, test } from "node:test";
 import { LEVELS, type PackLesson, type PackQuestion } from "../../engine/pack";
-import { askedIn, easierOf, LINES, pointOf, voiceable } from "../../school/lessons";
-import { compileLessons } from "../pack";
-import { breachesOf } from "../../school/voice";
-import { everyLine } from "../scripts/check-voice";
+import { pointOf } from "../../engine/pack";
+import { askedIn, easierOf, LINES, voiceable } from "../../school/lessons";
+import { curriculumLessons } from "../pack";
 
 let lessons: PackLesson[] = [];
 before(() => {
-    lessons = compileLessons();
+    lessons = curriculumLessons();
 });
 
 const questionsOf = (l: PackLesson): PackQuestion[] =>
@@ -98,11 +97,4 @@ test("Where? rings something wherever a question draws something, and is not off
         wordsOnly <= WORDS_ONLY,
         `${wordsOnly} questions with a scene have nothing to ring, over ${WORDS_ONLY}`,
     );
-});
-
-test("the guard over the guide's voice passes every line the guide can say as the corpus stands", () => {
-    const bad = everyLine().flatMap((s) =>
-        breachesOf(s.line, { words: s.words }).map((b) => `${s.where}: ${b}: ${s.line}`),
-    );
-    assert.deepEqual(bad, []);
 });

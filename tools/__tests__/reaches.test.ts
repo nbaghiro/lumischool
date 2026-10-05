@@ -15,12 +15,12 @@ import {
     worldById,
 } from "../../school/worlds/worlds";
 import { termsAt, yearOf } from "../../school/year";
-import { compileLessons } from "../pack";
+import { curriculumLessons } from "../pack";
 
 let facts: LessonFacts[] = [];
 
 before(() => {
-    facts = compileLessons().map((l) => factsOf(l, "", null));
+    facts = curriculumLessons().map((l) => factsOf(l, "", null));
 });
 
 test("every world of the run has a reach that a lesson of its own term lights, the term read from the lesson's own unit", () => {

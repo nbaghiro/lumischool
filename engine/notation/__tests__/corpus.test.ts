@@ -10,6 +10,30 @@ import { content } from "./helpers";
 
 const files = content();
 const ws = new Workspace(files);
+const components = Object.fromEntries(
+    Object.entries(files).filter(([p]) => p.startsWith("components/")),
+);
+/** Which file declares each item. */
+const itemFile = new Map(
+    Object.entries(files).flatMap(([path, src]): [string, string][] => {
+        const id = /^item (\S+)/m.exec(src)?.[1];
+        return path.startsWith("items/") && id ? [[id, path]] : [];
+    }),
+);
+/**
+ * A file as edited, with the components and every item it named before the edit: all its issues
+ * depend on, so a probe reads a few files rather than verifying the whole corpus again.
+ */
+const around = (path: string, src: string): Record<string, string> => ({
+    ...components,
+    ...Object.fromEntries(
+        [...(files[path] ?? "").matchAll(/[\w-]+(?:\.[\w-]+)+/g)].flatMap(([id]) => {
+            const file = itemFile.get(id);
+            return file === undefined ? [] : [[file, files[file] ?? ""]];
+        }),
+    ),
+    [path]: src,
+});
 const issuesOf = (w: Workspace, path: string): string[] =>
     (w.files.get(path)?.issues ?? []).map((i) => `${i.level}: ${i.message}`);
 const filled = (v: unknown): string =>
@@ -95,7 +119,7 @@ test("a sampled item says what it actually checked, instead of claiming there ar
 }
 `;
     const of = (where: string): string[] =>
-        issuesOf(new Workspace({ ...files, "items/probe.lumi": probe(where) }), "items/probe.lumi");
+        issuesOf(new Workspace(around("items/probe.lumi", probe(where))), "items/probe.lumi");
     // Nothing in the sample passes: the message may not claim that no variant exists, only that none was drawn.
     assert.deepEqual(of("a + b == 1"), [
         "error: no variant passed the where conditions in 8000 random draws, out of about 90000 the ranges allow;" +
@@ -174,7 +198,7 @@ test("the checker catches what an author gets wrong", () => {
     const edit = (path: string, from: string, to: string): Workspace => {
         const src = files[path] ?? "";
         assert.ok(src.includes(from), from);
-        return new Workspace({ ...files, [path]: src.replace(from, to) });
+        return new Workspace(around(path, src.replace(from, to)));
     };
     assert.deepEqual(
         issuesOf(
@@ -273,9 +297,6 @@ test("every lesson draws the same questions and answers when its items are verif
     }
 });
 
-const components = Object.fromEntries(
-    Object.entries(files).filter(([p]) => p.startsWith("components/")),
-);
 const probe = (src: string): Workspace => new Workspace({ ...components, "items/probe.lumi": src });
 const issues = (w: Workspace): string[] =>
     [...w.files.values()].flatMap((f) => f.issues.map((i) => `${i.level}: ${i.message}`));

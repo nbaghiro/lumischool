@@ -3,14 +3,14 @@ import { TEACHING_MATERIALS } from "../../school/tutoring-materials";
 // guide"): no first person about itself, no name of its own beyond "the firefly", no relational
 // vocabulary, no sending the child to Run or Step, no exclamation mark and no em-dash. The lines are the guide's fixed lines,
 // every world's own lines, and every hint and rule line of the curriculum, which
-// the guide reads aloud; a question's own words are held to the marks only. The rules are
+// the guide reads aloud; a question's own words and a game card's goal are held to the marks only. The rules are
 // school/voice.ts, which the children's app holds its map's tips to in its own test. `--selftest`
 // plants each kind of breach and fails if one goes unreported.
 
 import { LINES } from "../../school/lessons";
 import { breachesOf, type Breach } from "../../school/voice";
 import { WORLDS } from "../../school/worlds/worlds";
-import { compileLessons } from "../pack";
+import { curriculumLessons } from "../pack";
 
 interface Said {
     where: string;
@@ -20,7 +20,7 @@ interface Said {
 }
 
 /** Every line the guide can say, with where it comes from. */
-export function everyLine(): Said[] {
+function everyLine(): Said[] {
     const said: Said[] = [];
     for (const m of TEACHING_MATERIALS)
         for (const f of m.frames)
@@ -32,11 +32,18 @@ export function everyLine(): Said[] {
         for (const r of w.reaches)
             said.push({ where: `${w.id}.reaches.${r.art}`, line: r.says, words: true });
     }
-    const lessons = compileLessons();
+    const lessons = curriculumLessons();
     for (const l of lessons)
         for (const [level, at] of Object.entries(l.levels))
             for (const sec of at.sections)
                 for (const b of sec.blocks) {
+                    // a game card's goal reads over the card as a question's own words do
+                    if (b.k === "game")
+                        said.push({
+                            where: `${l.id}/${level}/game ${b.game}`,
+                            line: b.goal,
+                            words: false,
+                        });
                     if (b.k !== "ask") continue;
                     for (const q of [...b.questions, ...b.again.flat()]) {
                         const where = `${l.id}/${level}/${q.n}`;

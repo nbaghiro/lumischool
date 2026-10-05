@@ -73,7 +73,7 @@ Each item names where the defect is, the input that shows it and what it does, a
 
 18. Index barrels and triple-slash references are unguarded. A planted `engine/ink/index.ts` with `import { unit } from "../ink"` passed `check-boundaries`, `tsc` and Vite, and only Node's resolver refused it, since `tools/scripts/resolve.ts:15-16` rewrites the directory to `./dir.ts`; written as `./dir/index` it passes all three. A `/// <reference path="../../.scratchpad/src/core/pen.ts" />` in a `.d.ts` reached the scratchpad past the seam with no report, because comments are not visited in `importsOf` at `:166-201`. Confirmed by running. Refuse any `index.ts` and any reference directive in the boundary check.
 
-19. The e2e cleanup of today's work uses UTC midnight. `tools/e2e/ready.ts:31` clears work at or after `date_trunc('day', now())` in UTC, while the app decides today with `dayIn` in the family's zone, and the demo family is in Denver. A run at 19:00 Denver is past UTC midnight, leaves the 15:00 run's answers in place, and meets them on the same Denver day, which is the failure the comment at `tools/e2e/family.e2e.ts:46-50` describes. Confirmed by reading. Truncate in the family's zone.
+19. The e2e cleanup of today's work uses UTC midnight. `tools/e2e/ready.ts:31` clears work at or after `date_trunc('day', now())` in UTC, while the app decides today with `dayIn` in the family's zone, and the demo family is in Denver. A run at 19:00 Denver is past UTC midnight, leaves the 15:00 run's answers in place, and meets them on the same Denver day, which is the failure the comment at `tools/e2e/family/family.e2e.ts:46-50` describes. Confirmed by reading. Truncate in the family's zone.
 
 ### The engine
 

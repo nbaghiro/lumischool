@@ -650,7 +650,7 @@ are not this batch's: every render's accessible name went from nothing in the 16
 to the drawing's own description, which is the coding family gaining descriptions when it moved
 onto the contract (the coordinator, 17 September), so a compare against a baseline written before
 that move reports it for every take and it is not a defect; and the root's `check:suppressions` and
-lint are red on other leads' files (`tools/e2e/grown-ups.e2e.ts` and `engine/ui/world.tsx`).
+lint are red on other leads' files (`tools/e2e/family/grown-ups.e2e.ts` and `engine/ui/world.tsx`).
 
 No contact sheet was rendered, since this session does not take screenshots. The owner sees the three
 on the shelf page instead, at `index.html?q=maze`, `?q=turtle` and `?q=pixels`, switching the page

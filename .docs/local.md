@@ -40,14 +40,15 @@ because a server that quietly moves to 5174 is a server that is now answering on
 | 8507 | a separate test Postgres, reserved |
 | 8508 | the scratchpad's Vite dev server |
 | 8509 | the print check's headless Chrome |
-| 8510 to 8529 | free again: the world canvas lead's 8521 and 8522 went with the place's prototype, and a child's view is driven by `tools/e2e/family.e2e.ts` against 8500, since the API accepts state-changing requests from that one origin and the e2e's own steps hold the session |
+| 8510 to 8529 | free again: the world canvas lead's 8521 and 8522 went with the place's prototype, and a child's view is driven by `tools/e2e/family/family.e2e.ts` against 8500, since the API accepts state-changing requests from that one origin and the e2e's own steps hold the session |
 | 8530 to 8560 | free again: the site lead's own dev server has been stopped, and the day section is looked at on 8500 like any other page |
 | 8561 | the art shelf's golden and A/B compares (`.scratchpad/scripts/golden.mjs` and `golden-ab.mjs`), each on a Vite server of its own |
 | 8562 | the scratchpad served for the art shelf's scoped print and signed-out checks, started after the files it checks |
 | 8563 | the social studio's review page for a phone (`.scratchpad/social/phone.mjs`), behind an HTTPS quick tunnel so the phone can save posts to Photos |
 | 8564 | the Tavus tutor demo (`node .scratchpad/tavus/serve.mjs`), a page and the few calls that keep the Tavus key on the server |
 | 8565 | a one-file image server for the Tavus demo, behind a quick tunnel for the minute Tavus takes to fetch a portrait it makes a face from |
-| 8566 to 8599 | free |
+| 8566 | Metro, the mobile app's bundler (`npm start` in `apps/mobile`, [mobile.md](mobile.md)) |
+| 8567 to 8599 | free |
 
 Three rules keep the block honest. A port is a fixed number, set with `strictPort` or its equivalent,
 so a clash fails loudly. Every port can be overridden from the environment, so a second checkout can
@@ -100,14 +101,16 @@ All run at the repo root.
 | `npm run db:psql` | Opens `psql` inside the container, as the owner, which sees every family |
 | `npm run db:down` | Stops the container and keeps the volume |
 | `npm run db:generate`, `db:check` | Drizzle's migration generator and drift check |
-| `npm run check` | Type check, lint, format check, the suppression and database guards, the database, server and client tests, a production build of the three apps into a temporary directory that is removed after (`check:build`), and the check that the children's build names no grown-ups' route (`check:kids-build`) |
+| `npm run check` | Type check, lint, format check, the suppression, boundary, voice, journey and database guards, then `test:unit` and `test:integration` |
+| `npm run test:unit` | Every `*.test.ts`, which needs nothing outside the process. `tools/__tests__/first-view.test.ts` makes the one production build a check makes, into a temporary directory, and checks its budgets and that the children's build names no grown-ups' route (`tools/kids-build.ts`) |
+| `npm run test:integration` | Every `*.itest.ts`, against the container; with no database they fail |
 | `npm run check:print` | Prints lessons in Google Chrome the way a grown-up prints one from the catalogue (`tools/scripts/check-print.ts`), against `npm run dev` on 8500, as a fresh family it removes afterwards. For every level it prints the child's copy and the grown-ups' copy on A4 with Chrome's default margins, counts the child's pages in each sitting of a lesson that prints in more than one (`sittingsOf` in `engine/pack.ts`), and fails a level with a sitting of more than five child pages, a longest sitting more than one child page over medium's longest, a blank page, an answer, hint or note for grown-ups on the child's copy, or an answer missing or cut off the grown-ups' copy. Its table gives each level's pages per sitting, and a line for each grade counts its lessons by the most sittings any of their levels prints in. With no arguments it prints every lesson of grades 5 and 6; `id` or `id:level` names lessons, and `--grades=4`, `--paper=Letter` and `--jobs=3` change the rest. It is not part of `npm run check`, since it needs a browser and the dev server, and it counts as a heavy check for the shared check lock |
 | `npm run lint` | oxlint with type information; any warning fails it |
 | `npm run format` | Prettier over all code and config (`format:check` only reports) |
 
-The first time: `npm install`, `npm run db:up`, `npm run db:reset`. Without a running database the
-tests skip with a printed reason, so a checkout with no Docker still passes `npm run check`; setting
-`LUMISCHOOL_REQUIRE_DB=1` makes them fail instead, which is what CI should do.
+The first time: `npm install`, `npm run db:up`, `npm run db:reset`. The database tests need the
+container running and fail when it is not, here and in CI alike, so a check that passed ran every
+test.
 
 Nothing at the root built without `.scratchpad/` until 22 September 2026, since the apps drew through
 the seam into it ([structure.md](structure.md), "The order from here"). The seam is gone, and
@@ -164,7 +167,7 @@ Only the site, at `/home` and at `/` for a visitor, draws the sample child: its 
 
 The site's data and its visitor pack are compiled from the curriculum on the dev server's first request for them after a change to `content/curriculum/`, about fifteen seconds, and served at `/@site-data.json` and `/@site-pack/`; the build writes the same under `dist/assets/`. Each compile is kept under `node_modules/.cache/site-pack/<hash of the curriculum's text>/`, so a restart and every build of one `npm run check` read it back; `rm -rf node_modules/.cache/site-pack` makes the next one compile again.
 
-A page's background map is a snapshot of the map from `engine/ui/snapshots/` on its squared paper, placed where the map would draw and grown about the place it looks at until it covers the box. While the page's cards arrive and move, the snapshot glides to the framing they leave. Wherever a snapshot was made for the page's framing it is the whole background, on every screen, so no live map is drawn behind the page. Only a framing with no snapshot is drawn live, once the page is idle; if that map's code fails to load, as it does when the dev server has restarted under an open page, the page loads itself again once. When the map's look changes, `npm run map:snapshots` draws the snapshots again in Google Chrome, and `node --import ./tools/scripts/resolve.ts tools/scripts/map-snapshots.ts --compare` builds the apps and measures each snapshot against the live map it stands in for. `npm run test:tools` draws each snapshot again and fails when one no longer matches the map as it draws now; it skips that case on a computer without Google Chrome or without `.scratchpad/`.
+A page's background map is a snapshot of the map from `engine/ui/snapshots/` on its squared paper, placed where the map would draw and grown about the place it looks at until it covers the box. While the page's cards arrive and move, the snapshot glides to the framing they leave. Wherever a snapshot was made for the page's framing it is the whole background, on every screen, so no live map is drawn behind the page. Only a framing with no snapshot is drawn live, once the page is idle; if that map's code fails to load, as it does when the dev server has restarted under an open page, the page loads itself again once. When the map's look changes, `npm run map:snapshots` draws the snapshots again in Google Chrome, and `node --import ./tools/scripts/resolve.ts tools/scripts/map-snapshots.ts --compare` builds the apps and measures each snapshot against the live map it stands in for. `tools/e2e/map/map-snapshots.e2e.ts` draws each snapshot again on the desktop project and fails when one no longer matches the map as it draws now.
 
 The site's own map sections (the journey, the cards and the journal) show pictures of the sample child's map from `apps/site/pictures/` rather than a live map, and cross from one stop's picture to the next with a CSS transition. With `npm run dev` up, `npm run site:pictures` draws them again when the map or the sample child changes: it opens the site with `?livePictures`, where those sections draw the live map, and pictures each at a laptop's size and a phone's.
 
@@ -174,13 +177,13 @@ No email leaves this computer. The console transport prints each email in the AP
 
 Start with an empty database: `npm run db:reset` rebuilds only the local container's schema and adds no application data. Open `http://localhost:8500/start`, create your family, read the code from the local outbox, and add children through the app. Set the family PIN on the account page to try entering and leaving the children's view.
 
-The API's limits apply locally too: a sign-in code once a minute and three in fifteen minutes for one address, and twenty unused codes of any kind from one network. An unused code counts until it is an hour old, so repeated runs on one computer can meet the limits; the browser tests remove the codes and families their own cases create. The family PIN counts its own wrong tries, and after fifteen in a row it stops until a parent signs in and sets it again on the family's page.
+A sign-in or confirm code is sent whenever one is asked for, with no limit per address or network, and a code dies after five wrong guesses ([auth.md](auth.md)); the browser tests remove the codes and families their own cases create. The family PIN counts its own wrong tries, and after fifteen in a row it stops until a parent signs in and sets it again on the family's page.
 
 In production one Render service serves the same paths on one domain, with Neon for Postgres, as [auth.md](auth.md) sets out.
 
 ## The end-to-end tests
 
-`npm run test:e2e` runs `tools/e2e/` against `npm run dev` at `http://localhost:8500`. It uses installed Google Chrome at desktop, iPad and phone sizes, one case at a time. The tests create fresh families through signup and add children through the normal API. Each case deletes only its own test addresses and families from the local container, even when assertions fail. No database seed or shared demo account is required. Remote `E2E_BASE` values are refused because cleanup belongs to the local database.
+`npm run test:e2e` runs `tools/e2e/` against `npm run dev` at `http://localhost:8500`; the specs are grouped in folders by area (`family`, `site`, `map`, `lessons`, `calendar`, `painting`, `games`), and `npm run test:e2e -- map` runs one. It uses installed Google Chrome at desktop, iPad and phone sizes, one case at a time. The tests create fresh families through signup and add children through the normal API. Each case deletes only its own test addresses and families from the local container, even when assertions fail. No database seed or shared demo account is required. Remote `E2E_BASE` values are refused because cleanup belongs to the local database.
 
 A case takes `test` from `steps.ts`; `signInAs` creates a fresh family, `askForCode` and `typeCode` exercise signup, and `atScreen` fails on a screen's error card. `newDevice` creates another browser context. These contexts ignore dev hot updates so edits cannot replace modules underneath a running case. Browser tests run separately from `npm run check`.
 
@@ -203,7 +206,6 @@ None is needed for local work. `.env.example` at the root lists the database mod
 | `DATABASE_URL` | `postgres://lumischool:lumischool@localhost:8502/lumischool` | the database module's owner connection (migrations, the catalogue), for anything that is not the local container |
 | `APP_DATABASE_URL` | `postgres://lumischool_app:lumischool_app@localhost:8502/lumischool` | the app role, which `withFamily` connects as, for anything that is not the local container |
 | `DB_CONNECT_TIMEOUT`, `DB_STATEMENT_TIMEOUT` | `10` seconds, `10000` milliseconds | the app role's pool: how long it waits for a connection, and how long any one statement may run, set per transaction by `withFamily` |
-| `LUMISCHOOL_REQUIRE_DB` | unset | the database tests; set to 1 in CI so they fail rather than skip |
 | `LUMISCHOOL_ENV` | unset | the API server, which starts only when it is `local`, since only the console email transport is built; `dev:api` and `dev` set it |
 | `API_PORT`, `API_HOST` | `8501`, `127.0.0.1` | the API server, to run a second checkout beside the first. Locally the host must be a loopback address, and the server refuses to start otherwise, since the local routes answer only on this computer |
 | `APP_ORIGIN` | `http://localhost:8500` | the one origin: the API server's `Origin` check and its CORS answers; locally it also accepts the scratchpad's `http://localhost:5173` |
@@ -231,8 +233,8 @@ The database is not healthy. `docker ps --filter name=lumischool` shows its stat
 lumischool-pg` shows why. A container that was stopped keeps its data; `npm run db:reset` rebuilds the
 contents without touching the volume. Both a reset and removing the volume erase local application data.
 
-The database tests skip. That is the intended behaviour with no database running; bring the container up
-first.
+The database tests fail with "no database at ...". The container is not running; bring it up with
+`npm run db:up` first.
 
 ## The neighbours
 

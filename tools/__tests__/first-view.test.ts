@@ -1,7 +1,7 @@
-// The first view's byte budget: builds the apps and fails when what the site draws before its script
-// runs, or what the map at its opening downloads, grows past its budget, when the site's page can
-// reach what the map must never carry, or when the site's data and the visitor's pack the build wrote
-// do not agree.
+// The one production build a check makes: builds the apps, so a change that breaks a build fails here,
+// and fails when what the site draws before its script runs, or what the map at its opening downloads,
+// grows past its budget, when the site's page can reach what the map must never carry, when the
+// child's build names an adult route, or when the site's data and the visitor's pack disagree.
 
 import assert from "node:assert/strict";
 import { existsSync, mkdtempSync, readFileSync, rmSync, statSync } from "node:fs";
@@ -16,6 +16,7 @@ import { corpusFrom } from "../../school/worlds/lessons";
 import { readSiteData, SAMPLE_START, sampleChild } from "../../school/worlds/sample";
 import { WORLDS, worldById } from "../../school/worlds/worlds";
 import { FACES, SITE_SNAPSHOTS } from "../first-view";
+import { problemsIn } from "../kids-build";
 
 const ROOT = join(import.meta.dirname, "..", "..");
 const SITE = "apps/site/index.html";
@@ -36,15 +37,20 @@ const BUDGET = {
     data: 34_000,
     mapJs: 1_850_000,
     // the bar's games and painting, and the logo that leads back to the map, took it to 125,200, with
-    // the screens themselves coming through the map's chunk (apps/kids/child.tsx)
-    kidsFirstJs: 126_000,
+    // the screens themselves coming through the map's chunk (apps/kids/child.tsx); the test for the
+    // mobile app and the way to its bridge, which loads only inside it (engine/ui/native.ts), took
+    // it to 127,400
+    kidsFirstJs: 128_000,
     // every world is data the map reads, and the sixth year's three took it to 383,300 with nothing to
     // trim; the map's handoff, its store of drawn pixels and its ranked drawing took it to 392,600
     // (.docs/map-smoothness-plan.md); the kindergarten year's garden, the history and language
     // places, the settings those read and which worlds a child's grade reaches took it to 404,500,
-    // with the journeys' titles and purposes kept out (school/worlds/journey-lessons.ts)
-    kidsMapJs: 410_000,
-    homeFirstJs: 95_000,
+    // with the journeys' titles and purposes kept out (school/worlds/journey-lessons.ts); the curriculum's
+    // growth and the mobile app's way into a world without the web map (.docs/mobile.md) took it to 411,500
+    kidsMapJs: 412_000,
+    // the mobile app's test, the way to its bridge and the screens' titles for its header
+    // (engine/ui/native.ts, apps/home/routes.ts) took it to 96,200
+    homeFirstJs: 97_000,
 };
 const KIDS = "apps/kids/index.html";
 const HOME = "apps/home/index.html";
@@ -253,6 +259,13 @@ test("the child's view stays within its budget: what loads with the page, and wh
             if (KIDS_NEVER.some((re) => re.test(src))) held.push(`${c.file}: ${src}`);
     }
     assert.deepEqual(held, [], "the child's map screen holds modules it must not");
+});
+
+test("the child's build names no adult route", () => {
+    assert.deepEqual(
+        problemsIn(manifest, (file) => readFileSync(join(out, file), "utf8")),
+        [],
+    );
 });
 
 test("the grown-ups' page stays within its budget: the journal and its sheets come when a card is opened, not with the page", () => {

@@ -6,9 +6,9 @@ import { LANGUAGES, NATIONS } from "../../engine/answer";
 import { factsOf } from "../../engine/pack";
 import { journeyProblems } from "../../school/worlds/journeys";
 import { corpusFrom } from "../../school/worlds/lessons";
-import { compileLessons } from "../pack";
+import { curriculumLessons } from "../pack";
 
-const facts = compileLessons().map((l) => factsOf(l, "", null));
+const facts = curriculumLessons().map((l) => factsOf(l, "", null));
 const problems = new Set<string>();
 for (const language of [null, ...LANGUAGES])
     for (const nation of [null, ...NATIONS]) {
