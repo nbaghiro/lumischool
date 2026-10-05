@@ -21,3 +21,6 @@ playwright-report/
 .DS_Store
 .idea/
 .vscode/
+
+# voiced hint steps, made on demand by the server (server/companion.ts)
+.cache/

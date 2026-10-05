@@ -7,8 +7,9 @@ Gemini cannot grade work, award progress, select arbitrary activities or contact
 Child rollout remains disabled by default. The historical exploration below is preserved for context.
 
 From 1 October 2026 a child's lessons have no guide card, no "A hint" button and no Gemini teaching
-entry. The one help on a lesson is the companion, a cartoon face on a live Tavus call, described in
-[companion.md](companion.md). The sections below on the guide's card describe what it replaced.
+entry. The one help on a lesson is the companion, Charlie reading a lesson's explanation and a
+question's help aloud in a cached Gemini voice, described in [companion.md](companion.md). The
+sections below on the guide's card describe what it replaced.
 
 # AI
 
@@ -600,7 +601,7 @@ Added 15 September 2026. The list above has forty-seven entries: twenty-eight fo
 
 Five of the parent's entries (P2, P3, P13, P15 and P22) have a deterministic half and a model's half, and the table counts each by its model's half. The child's column is the point of the table: nineteen entries and no language model in any of them, which is what the decision at the top of this document means in practice.
 
-What exists. The child's four actions, the wrong-answer path, the router with its closed set, the envelope with its allowed and withheld fields, the gate over the real Workspace with its three verdicts, the repair loop with its cap of five, the log, the plan check and the record check with digit-level grounding, all in `.scratchpad/src/ai/` with tests over the whole corpus, and a page that runs them with a scripted writer that says it is scripted. At the root, the wrong-answer path and the hint policy are built into the lesson (`school/lessons.ts`), the pack carries hint ladders, feedback rules and three levels, and `boundaries.ts` declares `school/assistant` with its reach, but the directory does not exist and no model is called anywhere; `.env.example` has no key for one. The guards that exist at the root are `check:kids-build`, which refuses any adult route in the children's chunks, `check:boundaries`, `check:db` and `check:suppressions`. Three guards this document names, `check:prompt`, `check:voice` and the extension of `check:privacy`, do not exist, and neither does `check:copy` at the root.
+What exists. The child's four actions, the wrong-answer path, the router with its closed set, the envelope with its allowed and withheld fields, the gate over the real Workspace with its three verdicts, the repair loop with its cap of five, the log, the plan check and the record check with digit-level grounding, all in `.scratchpad/src/ai/` with tests over the whole corpus, and a page that runs them with a scripted writer that says it is scripted. At the root, the wrong-answer path and the hint policy are built into the lesson (`school/lessons.ts`), the pack carries hint ladders, feedback rules and three levels, and `boundaries.ts` declares `school/assistant` with its reach, but the directory does not exist and no model is called anywhere; `.env.example` has no key for one. The guards that exist at the root are the children's build check (`tools/kids-build.ts`), which refuses any adult route in the children's chunks, `check:boundaries`, `check:db` and `check:suppressions`. Three guards this document names, `check:prompt`, `check:voice` and the extension of `check:privacy`, do not exist, and neither does `check:copy` at the root.
 
 What is decided and unbuilt. Extra practice outside the ranges (P15); the plan from a goal (P1); records drafting (P20); custom lessons (P14); new items from parts and frames (P27); generated games with the child's builder after them (P16, K11); the extra set (K10); the speech conditions (K18); reading aloud (P7, K8); tier two, behind a switch, with evidence first. The surfaces several of these need are also unbuilt at the root: the grown-ups' app today is the family page, sign-in and adding a child with consent, and the week, the journal, marking, the records and the export are named on that page as coming.
 

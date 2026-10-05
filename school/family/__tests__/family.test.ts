@@ -951,7 +951,7 @@ describe("the variants of a lesson a child is shown", () => {
         );
     });
 
-    it("keeps each game's practice level, the easel and the companion's face for the child", () => {
+    it("keeps each game's practice level and the easel for the child", () => {
         const log = [
             setting("2026-08-30T10:00:00.000Z", KID, { key: "practice", of: "jugs", value: 1 }),
             setting("2026-08-30T12:00:00.000Z", KID, { key: "practice", of: "jugs", value: 3 }),
@@ -961,18 +961,12 @@ describe("the variants of a lesson a child is shown", () => {
                 of: null,
                 value: { size: 4 },
             }),
-            setting("2026-08-30T11:00:00.000Z", KID, {
-                key: "companion",
-                of: null,
-                value: "mrs-hart",
-            }),
         ];
         assert.deepEqual(keptIn(log, KID), {
             practice: { jugs: 3, pour: 2 },
             painting: { size: 4 },
-            companion: "mrs-hart",
         });
-        assert.deepEqual(keptIn([], KID), { practice: {}, painting: null, companion: null });
+        assert.deepEqual(keptIn([], KID), { practice: {}, painting: null });
     });
 
     it("plans the kindergarten year's nature and the sixth year's language on their own weekdays", () => {

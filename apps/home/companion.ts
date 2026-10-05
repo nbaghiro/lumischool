@@ -4,17 +4,13 @@
 import type { Reach } from "../../engine/ui/companion";
 import { call } from "../../engine/ui/wire";
 
-export const GROWN_UP: Omit<Reach, "daily"> = {
+export const GROWN_UP: Reach = {
     on: () => call("GET", "/api/companion"),
-    start: (_owner, body) => call("POST", "/api/companion/start", body),
-    context: (_owner, where) => call("POST", "/api/companion/context", where),
-    end: (_owner, id) => call("POST", "/api/companion/end", { id }),
-    gone: (_owner, id) =>
-        void fetch("/api/companion/end", {
-            method: "POST",
-            keepalive: true,
+    step: (_owner, body) => call("POST", "/api/companion/step", body),
+    voice: async (_owner, key) => {
+        const response = await fetch(`/api/companion/voice/${encodeURIComponent(key)}`, {
             credentials: "same-origin",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify({ id }),
-        }).catch(() => undefined),
+        }).catch(() => null);
+        return response?.ok ? response.blob() : null;
+    },
 };

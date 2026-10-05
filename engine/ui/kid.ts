@@ -619,22 +619,13 @@ export async function prepareIdentityChange(): Promise<true | Failure> {
 /** Whether the family's server offers the companion (server/companion.ts). */
 export const companionOn = (kid: string): Promise<Answer> =>
     call("GET", `/api/kid/${kid}/companion`);
-export const companionStart = (kid: string, body: unknown): Promise<Answer> =>
-    call("POST", `/api/kid/${kid}/companion/start`, body);
-export const companionContext = (kid: string, where: unknown): Promise<Answer> =>
-    call("POST", `/api/kid/${kid}/companion/context`, where);
-export const companionEnd = (kid: string, id: string): Promise<Answer> =>
-    call("POST", `/api/kid/${kid}/companion/end`, { id });
-/** The end of a call as the page goes, sent so it outlives the page. */
-export function companionGone(kid: string, id: string): void {
+export const companionStep = (kid: string, body: unknown): Promise<Answer> =>
+    call("POST", `/api/kid/${kid}/companion/step`, body);
+/** A hint step's voice, fetched with the child's credential, which an audio element cannot send. */
+export async function companionVoice(kid: string, key: string): Promise<Blob | null> {
     const credential = kidCredential();
-    void fetch(`/api/kid/${kid}/companion/end`, {
-        method: "POST",
-        keepalive: true,
-        headers: {
-            "content-type": "application/json",
-            ...(credential ? { "x-kid-session": credential } : {}),
-        },
-        body: JSON.stringify({ id }),
-    }).catch(() => undefined);
+    const response = await fetch(`/api/kid/${kid}/companion/voice/${encodeURIComponent(key)}`, {
+        headers: credential ? { "x-kid-session": credential } : {},
+    }).catch(() => null);
+    return response?.ok ? response.blob() : null;
 }

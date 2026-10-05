@@ -1,56 +1,45 @@
-// The companion's dock: the face to pick before a call, then the character's own video in a small
-// tile with a bar of icon buttons under it (talk, say it again, the words, someone else, close). It
-// floats over the page, or inside the dialog the lesson was asked from, and the child or grown-up can
-// drag it anywhere by the video. It never takes focus from the sheet. The app that draws it hands the
-// companion its way to the server (`Reach`), so a child's build names none of a grown-up's routes.
+// The companion's dock: Charlie, small, beside the lesson, with what she says in a bubble and three
+// icon buttons (the next step, say it again, close). Her mouth opens and shuts with the loudness of
+// her voice, a cheap way to have her talk without video, and stays still under reduced motion. The
+// dock floats over the page, or inside the dialog the lesson was asked from, and can be dragged by
+// Charlie. It never takes focus from the sheet. The app that draws it hands the companion its way to
+// the server (`Reach`), so a child's build names none of a grown-up's routes.
 
 import "./companion-dock.css";
-import {
-    createEffect,
-    createSignal,
-    For,
-    Match,
-    onCleanup,
-    onMount,
-    Show,
-    Switch,
-    type JSX,
-} from "solid-js";
+import { createEffect, createSignal, onCleanup, onMount, Show, type JSX } from "solid-js";
 import { Portal } from "solid-js/web";
-import type { Companion } from "../answer";
+import { charlie } from "../parts/people/charlie";
 import {
-    again,
     anchor,
-    audio,
-    caption,
-    change,
-    choose,
     close,
-    face,
-    hold,
     host,
-    leaving,
-    listening,
+    next,
     offer,
     phase,
-    speaking,
-    video,
     withdraw,
     type Reach,
+    type Step,
 } from "./companion";
 import { Icon } from "./icon";
-
-/** Each face's still, a frame of its Tavus video; /assets/ is cached for a year, so a new still gets a new name. */
-const FACES: { id: Companion; name: string; still: string }[] = [
-    { id: "dr-paws", name: "Dr. Paws", still: "/assets/companion/dr-paws.jpg" },
-    { id: "mr-edward", name: "Mr. Edward", still: "/assets/companion/mr-edward.jpg" },
-    { id: "mrs-hart", name: "Mrs. Hart", still: "/assets/companion/mrs-hart.jpg" },
-];
-
-const stillOf = (id: Companion | null): string =>
-    (FACES.find((f) => f.id === id) ?? FACES[0])?.still ?? "";
+import { render } from "./svg";
 
 const still = (): boolean => matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/**
+ * Charlie standing, drawn twice from the shelf, her mouth shut and open, and cut to her head and
+ * shoulders: the top share of her drawing, which is all the dock has room for.
+ */
+const SHOULDERS = 0.42;
+function charlieAt(talking: boolean): SVGSVGElement {
+    const { svg } = render(charlie, { ...charlie.params, pose: "stand", talking }, { seed: 4021 });
+    const [x = 0, y = 0, w = 0, h = 0] = (svg.getAttribute("viewBox") ?? "").split(" ").map(Number);
+    // a square round her head and shoulders, in the middle of her box
+    const side = h * SHOULDERS;
+    svg.setAttribute("viewBox", `${x + (w - side) / 2} ${y} ${side} ${side}`);
+    svg.setAttribute("aria-hidden", "true");
+    svg.classList.add("cp-charlie");
+    return svg;
+}
 
 /** How far a press must move before it is a drag rather than a tap, in px. */
 const DRAG_FROM = 4;
@@ -80,9 +69,6 @@ function besideSheet(dock: HTMLElement, from: Element | null): { x: number; y: n
               : null;
     return x === null ? null : inside(dock, x, y);
 }
-
-/** The words said, under the video, which a viewer turns on. */
-const [words, setWords] = createSignal(false);
 
 /** The dock kept wholly inside the window, which may have shrunk since it was put there. */
 const inside = (dock: HTMLElement, x: number, y: number): { x: number; y: number } => ({
@@ -120,222 +106,168 @@ function draggable(dock: HTMLElement): void {
     });
 }
 
-/**
- * The dock for `who`, a child's id or "" for a grown-up, who chose `chosen` last; the sheets offer
- * the companion while it is up.
- */
-export function CompanionDock(props: {
-    who: string;
-    chosen: Companion | null;
-    reach: Omit<Reach, "daily">;
-}): JSX.Element {
-    const gone = (): void => leaving();
-    onMount(() => {
-        const daily = () => import("@daily-co/daily-js");
-        void offer(props.who, props.chosen, { ...props.reach, daily });
-        addEventListener("pagehide", gone);
-    });
+/** The dock for `who`, a child's id or "" for a grown-up; the sheets offer the companion while it is up. */
+export function CompanionDock(props: { who: string; reach: Reach }): JSX.Element {
+    onMount(() => void offer(props.who, props.reach));
     let dock: HTMLElement | undefined;
     const keep = (): void => {
         const at = placed();
         if (dock && at) setPlaced(inside(dock, at.x, at.y));
         else if (dock) setBeside(besideSheet(dock, anchor()));
     };
-    // each call opens beside the button that asked for it, until the dock is dragged somewhere
+    // each step opens beside the button that asked for it, until the dock is dragged somewhere
     createEffect(() => {
         anchor();
         if (phase().at !== "off") requestAnimationFrame(keep);
     });
     addEventListener("resize", keep);
     onCleanup(() => {
-        removeEventListener("pagehide", gone);
         removeEventListener("resize", keep);
         withdraw();
     });
     return (
-        <Show when={phase().at !== "off"}>
-            <Portal mount={host() ?? document.body}>
-                <aside
-                    class="cp-dock"
-                    classList={{ placed: (placed() ?? beside()) !== null }}
-                    style={(() => {
-                        const at = placed() ?? beside();
-                        return at ? { left: `${at.x}px`, top: `${at.y}px` } : {};
-                    })()}
-                    aria-label="Your companion"
-                    ref={(el) => {
-                        dock = el;
-                        draggable(el);
-                        requestAnimationFrame(keep);
-                    }}
-                >
-                    <Switch fallback={<Call />}>
-                        <Match when={phase().at === "choosing"}>
-                            <section class="cp-pick" aria-label="Who would you like to talk to?">
-                                <For each={FACES}>
-                                    {(f) => (
-                                        <button
-                                            type="button"
-                                            class="cp-face-pick"
-                                            aria-label={f.name}
-                                            title={f.name}
-                                            aria-pressed={f.id === (face() ?? "dr-paws")}
-                                            onClick={() => choose(f.id, f.name)}
-                                        >
-                                            <img src={f.still} alt="" width="56" height="56" />
-                                        </button>
-                                    )}
-                                </For>
-                                <Control
-                                    icon="close"
-                                    label="Not now"
-                                    onClick={() => void close()}
-                                />
-                            </section>
-                        </Match>
-                        <Match when={failedLine()}>
-                            {(line) => (
-                                <section class="cp-note">
-                                    <p>{line()}</p>
-                                    <Control
-                                        icon="close"
-                                        label="Close"
-                                        onClick={() => void close()}
-                                    />
-                                </section>
-                            )}
-                        </Match>
-                    </Switch>
-                </aside>
-            </Portal>
+        <Show when={stepNow()}>
+            {(step) => (
+                <Portal mount={host() ?? document.body}>
+                    <aside
+                        class="cp-dock"
+                        classList={{ placed: (placed() ?? beside()) !== null }}
+                        style={(() => {
+                            const at = placed() ?? beside();
+                            return at ? { left: `${at.x}px`, top: `${at.y}px` } : {};
+                        })()}
+                        aria-label="Charlie"
+                        ref={(el) => {
+                            dock = el;
+                            draggable(el);
+                            requestAnimationFrame(keep);
+                        }}
+                    >
+                        <Stepped step={step()} />
+                    </aside>
+                </Portal>
+            )}
         </Show>
     );
 }
 
 /** One round icon button of the bar, named for a screen reader and on hover. */
 function Control(props: {
-    icon: "mic" | "restart" | "words" | "shuffle" | "close";
+    icon: "restart" | "close" | "right";
     label: string;
-    onClick?: () => void;
+    onClick: () => void;
     disabled?: boolean;
-    pressed?: boolean;
-    class?: string;
-    hands?: JSX.HTMLAttributes<HTMLButtonElement>;
 }): JSX.Element {
     return (
         <button
             type="button"
-            class={`cp-icon ${props.class ?? ""}`}
+            class="cp-icon"
             aria-label={props.label}
             title={props.label}
-            aria-pressed={props.pressed}
             disabled={props.disabled}
-            onClick={() => props.onClick?.()}
-            {...props.hands}
+            onClick={() => props.onClick()}
         >
             <Icon name={props.icon} />
         </button>
     );
 }
 
-function Call(): JSX.Element {
-    const name = (): string => {
-        const now = phase();
-        return now.at === "coming" || now.at === "here" ? now.name : "";
-    };
-    const here = (): boolean => phase().at === "here";
-    // the voice plays from an element off the page; the words said are under the video when asked for
+/** What Next says on a step, by what Help does next; nothing once every rung is climbed. */
+const NEXT_WORDS = {
+    hint: "Next hint",
+    worked: "Show me an example",
+    answer: "Show me how",
+    done: null,
+} as const;
+
+/** How loud the voice must be, as the mean of its waveform's distance from silence, for her mouth to open. */
+const OPEN_AT = 0.035;
+
+/**
+ * A step: Charlie, the step's words in a bubble read aloud in her voice, and Next, Say it again and
+ * close. While the voice plays, her mouth follows its loudness, frame by frame.
+ */
+function Stepped(props: { step: Step }): JSX.Element {
+    const [talking, setTalking] = createSignal(false);
+    const shut = charlieAt(false);
+    const open = charlieAt(true);
     const sound = new Audio();
-    onCleanup(() => {
-        sound.pause();
-        sound.srcObject = null;
-    });
-    let moving: HTMLVideoElement | undefined;
-    createEffect(() => {
-        const a = audio();
-        sound.srcObject = a;
-        if (a) void sound.play().catch(() => undefined);
-    });
-    createEffect(() => {
-        const v = video();
-        if (!moving) return;
-        moving.srcObject = v;
-        if (v) void moving.play().catch(() => undefined);
-    });
-    const press = (on: boolean) => (e: Event) => {
-        e.preventDefault();
-        if (listening() !== on) hold(on);
+    let listen: AnalyserNode | null = null;
+    let frame = 0;
+    const samples = new Uint8Array(256);
+    const watch = (): void => {
+        cancelAnimationFrame(frame);
+        if (sound.paused || still()) {
+            setTalking(false);
+            return;
+        }
+        if (listen) {
+            listen.getByteTimeDomainData(samples);
+            let sum = 0;
+            for (const v of samples) sum += Math.abs(v - 128);
+            setTalking(sum / samples.length / 128 > OPEN_AT);
+        } else setTalking(Math.floor(performance.now() / 160) % 2 === 0);
+        frame = requestAnimationFrame(watch);
     };
+    sound.addEventListener("play", () => {
+        // the voice is heard through an analyser the first time it plays, which needs the page's
+        // first tap; where the browser has no Web Audio, her mouth just opens and shuts in time
+        if (!listen && "AudioContext" in window)
+            try {
+                const ears = new AudioContext();
+                listen = ears.createAnalyser();
+                listen.fftSize = 512;
+                ears.createMediaElementSource(sound).connect(listen);
+                listen.connect(ears.destination);
+            } catch {
+                listen = null;
+            }
+        watch();
+    });
+    sound.addEventListener("pause", watch);
+    sound.addEventListener("ended", watch);
+    onCleanup(() => {
+        cancelAnimationFrame(frame);
+        sound.pause();
+        sound.removeAttribute("src");
+    });
+    createEffect(() => {
+        const src = props.step.voice;
+        if (!src) return;
+        if (sound.src !== src) sound.src = src;
+        sound.currentTime = 0;
+        void sound.play().catch(() => undefined);
+    });
+    const replay = (): void => {
+        if (!props.step.voice) return;
+        sound.currentTime = 0;
+        void sound.play().catch(() => undefined);
+    };
+    const following = (): string | null => NEXT_WORDS[props.step.next];
     return (
-        <section class="cp-call" classList={{ speaking: speaking(), coming: !here() }}>
-            <div class="cp-stage">
-                <img src={stillOf(face())} alt="" />
-                <Show when={!still()}>
-                    <video
-                        ref={(el) => {
-                            moving = el;
-                        }}
-                        classList={{ shown: !!video() }}
-                        muted
-                        autoplay
-                        playsinline
+        <section class="cp-step" classList={{ speaking: talking() }}>
+            <div class="cp-who">{talking() ? open : shut}</div>
+            <div class="cp-said" aria-live="polite">
+                <p>{props.step.words}</p>
+                <Show when={props.step.note}>{(note) => <p class="cp-note-line">{note()}</p>}</Show>
+                <div class="cp-bar">
+                    <Show when={following()}>
+                        {(label) => <Control icon="right" label={label()} onClick={next} />}
+                    </Show>
+                    <Control
+                        icon="restart"
+                        label="Say it again"
+                        disabled={!props.step.voice}
+                        onClick={replay}
                     />
-                </Show>
-                <Show when={!here()}>
-                    <span class="cp-spin" aria-hidden="true" />
-                    <output class="sr">{`${name()} is on the way`}</output>
-                </Show>
-                <span class="cp-name">{name()}</span>
+                    <Control icon="close" label="Close" onClick={close} />
+                </div>
             </div>
-            <div class="cp-bar">
-                <Control
-                    icon="mic"
-                    label={listening() ? "Listening" : "Hold to talk"}
-                    class="cp-talk"
-                    pressed={listening()}
-                    disabled={!here()}
-                    hands={{
-                        onPointerDown: press(true),
-                        onPointerUp: press(false),
-                        onPointerLeave: () => listening() && hold(false),
-                        onPointerCancel: () => listening() && hold(false),
-                        onContextMenu: (e) => e.preventDefault(),
-                        onKeyDown: (e) => {
-                            if ((e.key === " " || e.key === "Enter") && !e.repeat) press(true)(e);
-                        },
-                        onKeyUp: (e) => {
-                            if (e.key === " " || e.key === "Enter") press(false)(e);
-                        },
-                    }}
-                />
-                <Control icon="restart" label="Say it again" disabled={!here()} onClick={again} />
-                <Control
-                    icon="words"
-                    label="Show the words"
-                    pressed={words()}
-                    onClick={() => setWords(!words())}
-                />
-                <Control
-                    icon="shuffle"
-                    label="Talk to someone else"
-                    onClick={() => void change()}
-                />
-                <Control
-                    icon="close"
-                    label={`Say goodbye to ${name()}`}
-                    onClick={() => void close()}
-                />
-            </div>
-            <Show when={words() && here() && caption()}>
-                <p class="cp-said" aria-live="polite">
-                    {caption()}
-                </p>
-            </Show>
         </section>
     );
 }
 
-const failedLine = (): string | false => {
+const stepNow = (): Step | false => {
     const p = phase();
-    return p.at === "failed" && p.line;
+    return p.at === "step" && p.step;
 };

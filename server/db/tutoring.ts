@@ -134,30 +134,6 @@ export async function reserveTutoringUsage(
             .where(eq(tutoringUsage.id, `${family}.${period}`));
     return true;
 }
-/** One companion call counted against the family's day, and how many are left after it; null when none were. */
-export async function reserveCompanion(
-    tx: FamilyTx,
-    family: string,
-    perDay: number,
-): Promise<number | null> {
-    const period = `companion:${new Date().toISOString().slice(0, 10)}`;
-    const id = `${family}.${period}`;
-    await tx.insert(tutoringUsage).values({ id, family_id: family, period }).onConflictDoNothing();
-    const [row] = await tx
-        .update(tutoringUsage)
-        .set({ calls: sql`${tutoringUsage.calls} + 1` })
-        .where(and(eq(tutoringUsage.id, id), lt(tutoringUsage.calls, perDay)))
-        .returning({ calls: tutoringUsage.calls });
-    return row ? perDay - row.calls : null;
-}
-/** A companion call the family's day counted and Tavus never started, given back. */
-export async function releaseCompanion(tx: FamilyTx, family: string): Promise<void> {
-    const id = `${family}.companion:${new Date().toISOString().slice(0, 10)}`;
-    await tx
-        .update(tutoringUsage)
-        .set({ calls: sql`greatest(${tutoringUsage.calls} - 1, 0)` })
-        .where(eq(tutoringUsage.id, id));
-}
 export async function cleanTutoring(tx: FamilyTx): Promise<void> {
     const now = new Date().toISOString();
     await tx.delete(tutoringSessions).where(lt(tutoringSessions.expires_at, now));

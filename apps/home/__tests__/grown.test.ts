@@ -53,6 +53,7 @@ const sheet = (over: Partial<SheetBack>): SheetBack => ({
     sheet: null,
     questions: [],
     pieces: [],
+    played: [],
     ...over,
 });
 
@@ -90,7 +91,7 @@ const record = (over: Partial<GrownRecord> = {}): GrownRecord => ({
     unfinished: [],
     worlds: { terms: {}, tweaks: {}, begun: {}, kept: [] },
     variants: { language: null, nation: null },
-    kept: { practice: {}, painting: null, companion: null },
+    kept: { practice: {}, painting: null },
     from: "2026-09-07",
     back: [
         sheet({}),

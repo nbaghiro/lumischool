@@ -340,7 +340,15 @@ export type Line =
     | "shown-arranged"
     | "shown-program"
     | Handed
-    | Help;
+    | Help
+    | Step;
+
+/**
+ * What the companion says on a hint step (.docs/hint-steps.md) besides the hint itself: when the
+ * grown-up's setting holds hints back until a first try, when the worked example is drawn, before the
+ * walk through to the answer, and when every step has been given.
+ */
+export type Step = "step-first" | "step-worked" | "step-answer" | "step-done";
 
 /**
  * The lines the world's guide says on its card, beside a question's own words (.docs/ai.md, "The
@@ -360,6 +368,10 @@ export const HANDED: Record<Piece, Handed> = {
 };
 
 export const LINES: Record<Line, string> = {
+    "step-first": "Have a go first, then tap help again for a hint.",
+    "step-worked": "Here is one worked out. Follow it, then try yours.",
+    "step-answer": "Here is how it works, step by step.",
+    "step-done": "That is every hint for this one. Have another go, or ask a question.",
     right: "Yes, that is right.",
     "right-in-the-end": "Yes, you got it.",
     "not-yet": "Not yet. Have another look.",
@@ -622,6 +634,32 @@ export function partToRead(lesson: PackLesson, events: readonly Envelope[]): num
     return parts;
 }
 
+/** A round of a game card, by its section, its place among that section's cards and the level it played. */
+export const played = (
+    sitting: string,
+    lesson: PackLesson,
+    level: Level,
+    place: { section: number; card: number; level: number },
+    round: Pick<
+        EventData["played"],
+        "game" | "rulesVersion" | "challenge" | "won" | "tries" | "seconds" | "assistance"
+    >,
+): EventData["played"] => ({
+    sitting,
+    lesson: lesson.id,
+    lessonHash: levelIn(lesson, level).hash,
+    section: String(place.section),
+    card: place.card,
+    game: round.game,
+    level: place.level,
+    rulesVersion: round.rulesVersion,
+    challenge: round.challenge,
+    won: round.won,
+    tries: round.tries,
+    seconds: round.seconds,
+    assistance: round.assistance,
+});
+
 export const answered = (
     sitting: string,
     asked: Asked,
@@ -669,53 +707,6 @@ export const helpAsked = (
     ask: Ask,
     material: string | null,
 ): EventData["help-asked"] => ({ sitting, q: asked.ref, ask, material });
-
-/** Every point a rule or its rules would ring, in the order they are read. */
-function pointsIn(rules: readonly PackRule[]): string[] {
-    return rules.flatMap((r) => [...(r.point ? [r.point] : []), ...pointsIn(r.children)]);
-}
-
-/** Parts that carry the question's own words or take its answer, which Where? never rings. */
-const SAYS: ReadonlySet<string> = new Set([
-    "text",
-    "caption",
-    "choice",
-    "number-input",
-    "word-input",
-]);
-
-/** Parts that only line others up, whose own box says nothing. */
-const LINES_UP: ReadonlySet<string> = new Set(["row", "column"]);
-
-/**
- * Where the question turns, for the card's Where?: the part an authored feedback rule points at,
- * else the part the child arranges, else the first thing the scene draws. Null where the scene is
- * only words and an answer, and then the card does not offer Where? at all.
- */
-export function pointOf(q: PackQuestion): string | null {
-    const scene = q.scene;
-    if (!scene) return null;
-    const ringable = (id: string): boolean => id in scene.boxes;
-    const said = pointsIn(q.feedback).find(ringable);
-    if (said !== undefined) return said;
-    const arranged = q.arranged?.part;
-    if (arranged !== undefined && ringable(arranged)) return arranged;
-    const drawn = scene.nodes.find(
-        (n) => !SAYS.has(n.type) && !LINES_UP.has(n.type) && ringable(n.id),
-    );
-    return drawn?.id ?? null;
-}
-
-/** The parts of a question's picture the companion may ring, by id and kind, the one it turns on first. */
-export function ringableIn(q: PackQuestion): { id: string; type: string }[] {
-    const scene = q.scene;
-    if (!scene) return [];
-    const first = pointOf(q);
-    return scene.nodes
-        .filter((n) => n.id in scene.boxes && !SAYS.has(n.type) && !LINES_UP.has(n.type))
-        .map((n) => ({ id: n.id, type: n.type }))
-        .sort((a, b) => Number(b.id === first) - Number(a.id === first));
-}
 
 /** The easier thing the card can offer on a question: the lesson's worked example of the same item, or the same item asked at the lesson's easy level. */
 export type Easier = { kind: "worked"; question: PackQuestion } | { kind: "easy"; asked: Asked };

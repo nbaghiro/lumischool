@@ -1,13 +1,7 @@
 // The plan a grown-up can change, and a child's record as their view reads it. What a family and its
 // dates are called is names.ts, which the child's app reads without any of this.
 
-import {
-    settingIn,
-    type Companion,
-    type Envelope,
-    type PlanOp,
-    type SessionOp,
-} from "../../engine/answer";
+import { settingIn, type Envelope, type PlanOp, type SessionOp } from "../../engine/answer";
 import {
     addDays,
     dayIn,
@@ -901,8 +895,6 @@ export interface Kept {
     practice: Record<string, number>;
     /** The easel's tools and colours, which `readState` in engine/ui/painting-easel.ts reads; null for none. */
     painting: unknown;
-    /** The companion's face the child last chose; null until they choose one. */
-    companion: Companion | null;
 }
 
 /** A child's kept settings from their log, the latest of each winning. */
@@ -919,11 +911,7 @@ export function keptIn(events: readonly Envelope[], kid: string): Kept {
         const level = settingIn(events, "practice", kid, game);
         if (typeof level === "number") practice[game] = level;
     }
-    return {
-        practice,
-        painting: settingIn(events, "painting", kid) ?? null,
-        companion: settingIn(events, "companion", kid) ?? null,
-    };
+    return { practice, painting: settingIn(events, "painting", kid) ?? null };
 }
 
 /** How far past today the plan is laid out for a child's view. */

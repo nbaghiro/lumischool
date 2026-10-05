@@ -24,13 +24,13 @@ import {
     leftOf,
     mayHint,
     optionsOf,
-    pointOf,
     tried,
     turnsOf,
     voiceable,
     writtenOf,
     type Turn,
 } from "../lessons";
+import { pointOf } from "../../engine/pack";
 
 const e = (s: string): Expr => parseExpr(s);
 const rule = (

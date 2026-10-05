@@ -156,10 +156,22 @@ export async function tutorStep(
         step: step ?? { ...state.step, reason: result.problem ?? "proposal-rejected" },
     };
 }
-export async function tutorAudio(
+export const tutorAudio = (
     config: TutorConfig,
     text: string,
     guide: TeachingPreferences["guide"],
+    fetcher: typeof fetch = fetch,
+): Promise<Uint8Array<ArrayBuffer> | null> =>
+    speech(config, text, guide === "snail" ? "Puck" : "Kore", fetcher);
+
+/**
+ * Words read aloud in one of Gemini's voices, as a WAV file, or null when there is no key or the
+ * model answered with nothing usable. The model answers with raw samples or, in newer models, a WAV.
+ */
+export async function speech(
+    config: TutorConfig,
+    text: string,
+    voiceName: string,
     fetcher: typeof fetch = fetch,
 ): Promise<Uint8Array<ArrayBuffer> | null> {
     if (!config.key || text.length > 700) return null;
@@ -176,9 +188,7 @@ export async function tutorAudio(
                         responseModalities: ["AUDIO"],
                         speechConfig: {
                             voiceConfig: {
-                                prebuiltVoiceConfig: {
-                                    voiceName: guide === "snail" ? "Puck" : "Kore",
-                                },
+                                prebuiltVoiceConfig: { voiceName },
                             },
                         },
                     },
@@ -200,12 +210,14 @@ export async function tutorAudio(
         for (const part of candidate.content.parts as unknown[]) {
             if (!teachingObject(part) || !teachingObject(part.inlineData)) continue;
             const data = part.inlineData;
-            if (
-                typeof data.data !== "string" ||
-                typeof data.mimeType !== "string" ||
-                !data.mimeType.startsWith("audio/L16")
-            )
-                continue;
+            if (typeof data.data !== "string" || typeof data.mimeType !== "string") continue;
+            if (data.mimeType === "audio/wav") {
+                const file = Buffer.from(data.data, "base64");
+                return file.subarray(0, 4).toString() === "RIFF" && file.length < 6_000_000
+                    ? Uint8Array.from(file)
+                    : null;
+            }
+            if (!data.mimeType.startsWith("audio/L16")) continue;
             const rate = Number(/rate=(\d+)/.exec(data.mimeType)?.[1] ?? "24000");
             if (![16000, 22050, 24000, 44100, 48000].includes(rate)) return null;
             const pcm = Buffer.from(data.data, "base64");
