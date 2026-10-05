@@ -40,6 +40,8 @@ export interface CharlieParams {
     pattern: string;
     feet: string;
     holding: string;
+    /** Her mouth open as in speech, which the companion turns on and off as it reads aloud. */
+    talking?: boolean;
 }
 
 /** Charlie as she first came: waving, in a white sleeveless top with a bear on it, a rainbow skirt and bare feet. */
@@ -56,6 +58,7 @@ const AS_SHE_CAME: CharlieParams = {
     pattern: "rainbow",
     feet: "bare",
     holding: "",
+    talking: false,
 };
 
 /** Charlie as the figure kit draws a person: a child with light skin and blonde hair, her legs bare under a skirt. */
@@ -79,6 +82,7 @@ export const asPerson = (p: CharlieParams): PersonParams => ({
     mood: p.mood,
     dir: p.dir,
     holding: p.holding,
+    talking: p.talking === true,
 });
 
 /** The whole-body movement a pose has, as a part the drawing is drawn inside: a hop, a wobble or a step. */
@@ -110,6 +114,7 @@ const POSE_WORDS: Record<Pose, string> = {
     balance: "balancing with her arms out",
     jump: "jumping",
     hang: "hanging by her hands",
+    sweep: "sweeping as she strides",
 };
 const colourWord = (v: string): string =>
     v === "white" || v === "grey" ? v : MARKER_WORD[pick(MARKERS, v, "sky")];
@@ -169,7 +174,7 @@ export function describeCharlie(p: CharlieParams): string {
             : POSE_WORDS[pose];
     const hair = HAIR_WORDS[pick(CHARLIE_HAIRS, p.hair, "fringe")];
     const worn = clothesOf(look);
-    const face = FACE[look.mood] ?? "";
+    const face = look.talking ? "Her mouth is open as she talks." : (FACE[look.mood] ?? "");
     const says = (girl: boolean, feet: boolean, print: boolean): string => {
         const top = print ? worn.top : worn.top.replace(/ with a \w+$/, "");
         const items = [top, worn.bottom, feet ? worn.feet : ""].filter(Boolean);
@@ -208,10 +213,16 @@ export const charlie = defineDrawing<CharlieParams>({
         pattern: { kind: "one of", of: PATTERNS },
         feet: { kind: "one of", of: FEET },
         holding: { kind: "text", most: 12 },
+        // set by the page that animates a character reading aloud, never written in a lesson
+        talking: { kind: "fixed" },
     },
     takes: [
         { label: "As she came, waving", params: AS_SHE_CAME },
         { label: "Balancing on a plank", params: { ...AS_SHE_CAME, pose: "balance" } },
+        {
+            label: "Reading a hint aloud",
+            params: { ...AS_SHE_CAME, pose: "stand", talking: true },
+        },
         {
             label: "Hanging from a rope swing",
             params: { ...AS_SHE_CAME, pose: "hang", mood: "excited", hair: "ponytail" },

@@ -13,6 +13,11 @@ export interface RollingWorld {
     walls: Rect[];
     /** Overlapping zones use the strongest friction, including the base surface. */
     surfaces: { area: Rect; deceleration: number }[];
+    /**
+     * Tilted ground: a pull in squares a second squared on a moving ball inside the area. Kept below
+     * the friction, a ball rolls to rest on a slope and stays there until it is putted again.
+     */
+    slopes?: { area: Rect; ax: number; ay: number }[];
     deceleration: number;
     restitution: number;
     restSpeed: number;
@@ -141,9 +146,16 @@ export function stepRolling(ball: RollingBall, world: RollingWorld, dt: number):
         bounds = world.bounds;
     let remaining = dt;
     while (remaining > 1e-12 && !ball.sunk) {
-        const speed = Math.hypot(ball.vx, ball.vy);
-        const h = Math.min(remaining, 1 / 240, speed ? ball.r / (4 * speed) : remaining);
+        const before = Math.hypot(ball.vx, ball.vy);
+        const h = Math.min(remaining, 1 / 240, before ? ball.r / (4 * before) : remaining);
         remaining -= h;
+        if (before > 0)
+            for (const slope of world.slopes ?? [])
+                if (inside(slope.area, ball)) {
+                    ball.vx += slope.ax * h;
+                    ball.vy += slope.ay * h;
+                }
+        const speed = Math.hypot(ball.vx, ball.vy);
         let friction = world.deceleration;
         for (const surface of world.surfaces)
             if (inside(surface.area, ball)) friction = Math.max(friction, surface.deceleration);

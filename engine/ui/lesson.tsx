@@ -29,10 +29,12 @@ import {
     createMemo,
     createSignal,
     For,
+    lazy,
     Match,
     on,
     onCleanup,
     Show,
+    Suspense,
     Switch,
     type JSX,
 } from "solid-js";
@@ -52,6 +54,7 @@ import {
     paragraphs,
     partsOf,
     pieceOf,
+    pointOf,
     sectionLabel,
     sittingsOf,
     laidOut,
@@ -68,10 +71,14 @@ import {
     type PackQuestion,
     type Piece,
 } from "../pack";
-import { valuesOf, type Box, type Scene } from "../scene";
+import { narrowed, valuesOf, type Box, type Scene } from "../scene";
+import { U } from "../paper";
+import { matches } from "./viewport";
 import * as companion from "./companion";
 import { Icon } from "./icon";
+import { send } from "./native";
 import { voice } from "./voice";
+import type { CardResult } from "./game-card-rules";
 
 /** How a question is answered on the sheet: typed or picked into the strip under it, arranged on its drawing, shown worked, written on paper for a grown-up, or in another way this sheet does not have. */
 export type SheetWay = "typed" | "arranged" | "program" | "worked" | "grown-up" | "other";
@@ -138,10 +145,12 @@ export interface SheetActs {
     /** The next hint, opened and recorded. */
     hint(n: number): string | null;
     /** Help beyond a hint, recorded with what it gave: the part ringed, the easier thing's kind, or the companion's face. */
-    asked(n: number, ask: "where" | "easier" | "talk", material: string | null): void;
+    asked(n: number, ask: "where" | "easier" | "answer", material: string | null): void;
     /** The line read when a box is empty. */
     empty: string;
     finished(): void;
+    /** A round of a game card played, by its section, its place among that section's cards from 1 and its level. */
+    played(place: { section: number; card: number; level: number }, result: CardResult): void;
 }
 
 /**
@@ -422,6 +431,7 @@ export function LessonSheet(props: {
     const finish = (): void => {
         setFinished(true);
         open()?.acts?.finished();
+        send("told", { feel: "done" });
     };
     const at = (): PackLesson["levels"]["medium"] =>
         props.lesson.levels[props.level] ?? props.lesson.levels.medium;
@@ -470,6 +480,16 @@ export function LessonSheet(props: {
                   ],
         ).filter((l) => l.on !== "screen" || shown().includes(l.section)),
     );
+    // a game card is named by its section and its place among that section's cards, counted over the
+    // whole section so a sitting that cuts the section does not renumber it
+    const cards = createMemo(() => {
+        const out = new Map<PackBlock, { section: number; card: number }>();
+        at().sections.forEach((s, section) => {
+            let card = 0;
+            for (const b of s.blocks) if (b.k === "game") out.set(b, { section, card: ++card });
+        });
+        return out;
+    });
     const slice = (l: Laid): PackBlock[] => {
         const s = at().sections[l.section];
         return s ? blocksOf(s, l.from, l.to) : [];
@@ -507,14 +527,18 @@ export function LessonSheet(props: {
             tries: 0,
             said: null,
             worked: false,
+            told: false,
         }),
         hint: () => null,
+        hints: () => 0,
+        hasWorked: () => false,
+        point: () => null,
         ring: () => false,
         worked: () => null,
-        talked: () => undefined,
+        told: () => undefined,
     };
     const deskNow = (): companion.Desk => desks.get(current() ?? 0) ?? whole;
-    // a companion talking about this lesson follows the child on to the next question
+    // a companion left on this lesson follows the child on to the next question
     createEffect(on(current, () => companion.follow(deskNow()), { defer: true }));
     const flow: Flow = {
         desks,
@@ -642,7 +666,12 @@ export function LessonSheet(props: {
                             </Show>
                             <For each={slice(at)}>
                                 {(block) => (
-                                    <Block block={block} reading={reading()} draw={props.draw} />
+                                    <Block
+                                        block={block}
+                                        reading={reading()}
+                                        draw={props.draw}
+                                        card={cards().get(block) ?? null}
+                                    />
                                 )}
                             </For>
                         </section>
@@ -692,7 +721,16 @@ function Paragraph(props: { runs: ReturnType<typeof paragraphs>[number] }): JSX.
     );
 }
 
-function Block(props: { block: PackBlock; reading: Reading; draw: SceneDrawer }): JSX.Element {
+// the game engine loads with the first lesson that holds a card, and not before
+const GameCard = lazy(() => import("./game-card"));
+
+function Block(props: {
+    block: PackBlock;
+    reading: Reading;
+    draw: SceneDrawer;
+    /** A game block's section and its place among that section's cards. */
+    card: { section: number; card: number } | null;
+}): JSX.Element {
     const b = props.block;
     const state = (): SheetState | null => ("state" in props.reading ? props.reading.state : null);
     const acts = (): SheetActs | null => ("acts" in props.reading ? props.reading.acts : null);
@@ -727,6 +765,24 @@ function Block(props: { block: PackBlock; reading: Reading; draw: SceneDrawer })
                     reveal
                     draw={props.draw}
                 />
+            );
+        case "game":
+            return (
+                <figure class="ls-game">
+                    <Suspense fallback={<div class="ls-game-wait" aria-hidden="true" />}>
+                        <GameCard
+                            game={b.game}
+                            level={b.level}
+                            asks={b.asks}
+                            goal={b.goal}
+                            onResult={(result) => {
+                                const place = props.card;
+                                if (place) acts()?.played({ ...place, level: b.level }, result);
+                            }}
+                        />
+                    </Suspense>
+                    <figcaption class="ls-game-print">Play this on screen</figcaption>
+                </figure>
             );
         case "ask":
             return (
@@ -804,6 +860,8 @@ function Question(props: {
     const [easier, setEasier] = createSignal<Help["easier"]>(null);
     const hints = props.state ? hintsOn(props.q, props.state, props.acts) : null;
     const [tries, setTries] = createSignal(0);
+    // whether the companion has walked this question through to its answer
+    const [toldIt, setToldIt] = createSignal(false);
     // the hints the companion opened on a sheet being looked at
     const [shown, setShown] = createSignal<string[]>([]);
     let active = 0;
@@ -932,6 +990,7 @@ function Question(props: {
                 tries: tries(),
                 said: told()?.say || arrangedTold()?.say || builtTold()?.say || null,
                 worked: easier() !== null,
+                told: toldIt(),
             }),
             hint: () => {
                 const had = hints.hints().length;
@@ -955,7 +1014,14 @@ function Question(props: {
                     ? `A worked example is showing beside the question. It asks "${e.question.ask}", and its answer is ${answerText(e.question)}.`
                     : `An easier one like it is showing beside the question. It asks "${e.question.ask}".`;
             },
-            talked: (face) => acts.asked(props.q.n, "talk", face),
+            hints: () => props.q.hints.length,
+            hasWorked: () => !!props.state?.help(props.q.n)?.easier,
+            point: () => pointOf(props.q),
+            told: () => {
+                if (toldIt()) return;
+                setToldIt(true);
+                acts.asked(props.q.n, "answer", null);
+            },
         };
         flow.desks.set(props.q.n, d);
         onCleanup(() => {
@@ -975,6 +1041,7 @@ function Question(props: {
                 tries: 0,
                 said: null,
                 worked: easier() !== null,
+                told: toldIt(),
             }),
             hint: () => {
                 const next = props.q.hints[shown().length];
@@ -995,12 +1062,16 @@ function Question(props: {
                 setEasier({ kind: "worked", question: q });
                 return `A worked example is showing beside the question. It asks "${q.ask}", and its answer is ${answerText(q)}.`;
             },
-            talked: () => undefined,
+            hints: () => props.q.hints.length,
+            hasWorked: () => look.worked(props.item) !== null,
+            point: () => pointOf(props.q),
+            told: () => setToldIt(true),
         };
     }
     /** A try told, which the companion hears about if it is talking about this question. */
     const after = (state: string, say: string): void => {
         setTries((n) => n + 1);
+        if (state === "right" || state === "again") send("told", { feel: state });
         if (desk) companion.checked(desk, state === "right", say);
     };
     const onTyped = (t: Told): void => {
@@ -1211,6 +1282,9 @@ function Question(props: {
     );
 }
 
+/** The least share of its own size a scene is drawn at on screen: its 17 px words at 15 px. */
+const READABLE = 15 / 17;
+
 /**
  * A pack's scene on the paper, drawn again whenever the part to ring or the answers to write change,
  * with a pencil mark round each part named in `here`, where the answer to the question now goes.
@@ -1220,8 +1294,8 @@ function SceneTile(props: {
     point: string | null;
     key: Record<string, string> | null;
     here: string[];
-    /** What a child writes in, laid over the exact box the scene drew for it. */
-    slots?: readonly { box: Box; child: JSX.Element }[];
+    /** What a child writes in, laid over the exact box the scene, as it is drawn, gave it. */
+    slots?: (scene: Scene) => readonly { box: Box; child: JSX.Element }[];
     /** A program or a toy the scene holds, played under it; a build is drawn elsewhere. */
     coding?: CodingTarget | null;
     /** The question asks what the program does and is not answered yet, so it is not played. */
@@ -1235,9 +1309,19 @@ function SceneTile(props: {
     let tile: HTMLDivElement | undefined;
     let drawn: SVGSVGElement | undefined;
     const [times, setTimes] = createSignal(0);
+    const [room, setRoom] = createSignal(0);
+    const printing = matches("print");
+    // A scene too wide for its column is laid out again to fit rather than drawn smaller, while
+    // drawn whole it would bring its 17 px words under 15 px. Paper keeps the scene as written.
+    const scene = createMemo((): Scene => {
+        const w = room();
+        return w > 0 && !printing() && props.scene.size[0] * U * READABLE > w
+            ? narrowed(props.scene, Math.floor(w / U))
+            : props.scene;
+    });
     createEffect(
         on(
-            () => [props.scene, props.point, props.key] as const,
+            () => [scene(), props.point, props.key] as const,
             ([scene, point, key]) => {
                 if (!tile) return;
                 const svg = props.draw(tile, scene, {
@@ -1255,8 +1339,8 @@ function SceneTile(props: {
     const over = (
         id: string,
     ): { left: string; top: string; width: string; height: string } | null => {
-        const [w, h] = props.scene.size;
-        const b = props.scene.boxes[id];
+        const [w, h] = scene().size;
+        const b = scene().boxes[id];
         return b && w && h
             ? {
                   left: `${(b.x / w) * 100}%`,
@@ -1275,8 +1359,8 @@ function SceneTile(props: {
         at: { left: string; top: string; width: string; height: string };
         child: JSX.Element;
     }[] => {
-        const [w, h] = props.scene.size;
-        return (props.slots ?? []).map((s) => ({
+        const [w, h] = scene().size;
+        return (props.slots?.(scene()) ?? []).map((s) => ({
             at: {
                 left: `${(s.box.x / w) * 100}%`,
                 top: `${(s.box.y / h) * 100}%`,
@@ -1293,7 +1377,14 @@ function SceneTile(props: {
     const playable = (): CodingTarget | null => (props.held ? null : played());
     return (
         <>
-            <div class="scene-tile on-paper">
+            <div
+                ref={(el) => {
+                    const seen = new ResizeObserver(([e]) => setRoom(e?.contentRect.width ?? 0));
+                    seen.observe(el);
+                    onCleanup(() => seen.disconnect());
+                }}
+                class="scene-tile on-paper"
+            >
                 <div
                     ref={(el) => {
                         tile = el;
@@ -1320,7 +1411,7 @@ function SceneTile(props: {
             <Show when={playable()}>
                 {(c) => (
                     <CodingControls
-                        scene={props.scene}
+                        scene={scene()}
                         target={c()}
                         tile={() => tile}
                         drawn={times}
@@ -1572,12 +1663,12 @@ function Strip(props: {
     // the dashed mark on the picture is for an answer written under it; a box written in is its own mark
     const here = (): string[] => (props.current && !done() ? keys.filter((k) => !onScene(k)) : []);
     /** Answers written on the picture, while there is still one to write: once done, the drawing carries it in the teacher's pen. */
-    const slots = (): { box: Box; child: JSX.Element }[] =>
+    const slots = (drawn: Scene): { box: Box; child: JSX.Element }[] =>
         done()
             ? []
             : keys.flatMap((k) => {
                   if (choiceOnScene(k))
-                      return (choices()[k] ?? []).map((choice) => {
+                      return (choiceBoxes(drawn)[k] ?? []).map((choice) => {
                           const option = props.state
                               .options(props.q.n, k)
                               .find((candidate) => candidate.value === choice.value);
@@ -1594,7 +1685,7 @@ function Strip(props: {
                               ),
                           };
                       });
-                  const box = sceneBox(k);
+                  const box = sceneBox(k) && inputBoxes(drawn)[k];
                   return box
                       ? [
                             {
@@ -1631,7 +1722,7 @@ function Strip(props: {
                         point={props.point}
                         key={props.sceneKey}
                         here={here()}
-                        slots={slots()}
+                        slots={slots}
                         coding={props.coding}
                         held={props.asks && !done()}
                         answered={() =>

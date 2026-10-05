@@ -993,6 +993,8 @@ export const shoveGame: ActionGame<ShoveState> = {
     id: "pay",
     title: "Penny shove",
     group: "action",
+    // too wide to crop into a card and keep its play in view: it waits for the turned or overview view, see .docs/game-cards.md
+    card: null,
     seen: "above",
     quiet: true,
     levels: SHOVE_LEVELS,

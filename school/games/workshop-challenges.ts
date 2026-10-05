@@ -78,12 +78,12 @@ export function openWorkshopConfiguration(configuration: WorkshopConfiguration):
 
 /** The barge's middle, where the mast stands, and how far either way a crate can stand on its deck. */
 const MAST = 30,
-    REACH = 7.5;
+    REACH = 7.2;
 
 /**
  * Where to set each crate down on the barge, in the level's piece order, so the load balances: the
  * crates stand a little apart, the heaviest nearest the middle, and the whole row is slid along until
- * the weights times their distances from the mast come out about even, on the deck's half-square places.
+ * the weights times their distances from the mast cancel.
  */
 export function cargoPlan(level: WorkshopLevel): number[] {
     const n = level.pieces.length,
@@ -100,22 +100,7 @@ export function cargoPlan(level: WorkshopLevel): number[] {
         offsets[i] = bySlot[k]?.o ?? 0;
     });
     const total = masses.reduce((a, m) => a + m, 0),
-        momentOf = (os: number[]) => os.reduce((a, o, i) => a + o * (masses[i] ?? 1), 0),
-        shift = -momentOf(offsets) / total;
-    // the crane sets crates on the deck's half-square places, so the row is rounded to them and the
-    // lightest crate nudged half a square at a time while that brings the load nearer even
-    const placed = offsets.map((o) =>
-        Math.max(-REACH, Math.min(REACH, Math.round((o + shift) * 2) / 2)),
-    );
-    const lightest = masses.indexOf(Math.min(...masses));
-    for (let k = 0; k < 20; k++) {
-        const now = momentOf(placed),
-            o = placed[lightest] ?? 0,
-            step = now > 0 ? -0.5 : 0.5,
-            next = Math.max(-REACH, Math.min(REACH, o + step)),
-            clear = placed.every((p, i) => i === lightest || Math.abs(p - next) >= 2);
-        if (!clear || Math.abs(now + (next - o) * (masses[lightest] ?? 1)) >= Math.abs(now)) break;
-        placed[lightest] = next;
-    }
-    return placed.map((o) => MAST + o);
+        moment = offsets.reduce((a, o, i) => a + o * (masses[i] ?? 1), 0),
+        shift = -moment / total;
+    return offsets.map((o) => MAST + Math.max(-REACH, Math.min(REACH, o + shift)));
 }

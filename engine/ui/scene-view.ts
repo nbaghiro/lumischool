@@ -3,7 +3,7 @@
 // in the page over the canvas. It is the surface the hands controller works, so every binding plays on
 // it unchanged. See .docs/game-engine.md, "Turn games".
 import type { Anchors } from "../ink/surface";
-import { atRest, poseAt, type Beat } from "../motion/beat";
+import { atRest, poseAt, type Beat, type Voicing } from "../motion/beat";
 import type { Cue } from "../motion/cues";
 import type { Pt, Rect } from "../motion/geometry";
 import { Recogniser, type Sample } from "../motion/gesture";
@@ -129,7 +129,7 @@ export class SceneView implements Board {
         scene: Scene;
         t0: number;
         done: number;
-        hear: (c: Cue) => void;
+        hear: (c: Cue, how?: Voicing) => void;
         marked: string;
         /** The parts whose settings the beat moves, drawn from the stepped looks while it plays. */
         moving: Set<string>;
@@ -535,11 +535,11 @@ export class SceneView implements Board {
         return this.playing !== null;
     }
 
-    play(beat: Beat, scene: Scene, hear: (c: Cue) => void): void {
+    play(beat: Beat, scene: Scene, hear: (c: Cue, how?: Voicing) => void): void {
         this.settle();
         const b = this.o.still() ? atRest(beat) : beat;
         if (b.length <= 0) {
-            for (const c of b.cues) hear(c.cue);
+            for (const c of b.cues) hear(c.cue, c.how);
             this.show(scene);
             return;
         }
@@ -616,7 +616,7 @@ export class SceneView implements Board {
         }
         for (const b of p.beat.bursts)
             if (b.at > p.done && b.at <= u) this.burst(b.kind, b.x, b.y, b.n, b.dir);
-        for (const c of p.beat.cues) if (c.at > p.done && c.at <= u) p.hear(c.cue);
+        for (const c of p.beat.cues) if (c.at > p.done && c.at <= u) p.hear(c.cue, c.how);
         p.done = u;
         const on = p.beat.marks
             .filter((m) => u >= m.at && u < m.at + m.dur)

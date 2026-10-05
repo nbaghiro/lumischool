@@ -918,6 +918,7 @@ export const poolGame: ActionGame<PoolState> = {
     id: "pool",
     title: "Pocket pool",
     group: "action",
+    card: { round: { level: 0 }, keep: 28, minutes: 3 },
     seen: "above",
     quiet: true,
     levels: POOL_LEVELS,

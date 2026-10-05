@@ -1435,6 +1435,7 @@ export const clearGame: ActionGame<ClearState> = {
     id: "clear",
     title: "Clear round",
     group: "action",
+    card: { round: { level: 0 }, keep: 18, minutes: 2 },
     levels: CLEAR_LEVELS,
     rate: RATE,
     hint: "Tap the field or Jump before each fence, and the pony keeps the tap and jumps from the ringed print by itself. With the keys, left and right choose the stride, and holding space gathers the pony: let go on the print before the band.",

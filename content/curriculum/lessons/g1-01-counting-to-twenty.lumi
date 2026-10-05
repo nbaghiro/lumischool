@@ -30,6 +30,7 @@ lesson g1-counting-to-twenty v=1 format=teach grade=1 unit=1 subject=maths level
   }
   try stars=2 {
     show count.rekenrek-to-make t=8 k=6 easy-t=5 easy-k=3 hard-t=9 hard-k=8
+    game jump.land-on version=1 goal="Hop the rabbit along the line and land on 13."
   }
   try stars=3 {
     show count.rekenrek-ways n=6 easy-n=4 hard-n=9

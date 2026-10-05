@@ -47,14 +47,28 @@ export interface Pad {
     touch: { x: number; y: number } | null;
     /** Set for one step when a held touch lifts, with where it lifted. */
     lifted: { x: number; y: number } | null;
+    /**
+     * Where a mouse rests on the field with no button down, in squares, for a game that carries a thing
+     * picked up by a click; null once it leaves the field. A finger has none, and the tape keeps it.
+     */
+    hover?: { x: number; y: number } | null;
+    /**
+     * Where the pointer last was in the view's own squares, the frame fixed sprites are placed in, so a
+     * game with controls drawn there can tell which one a finger is on whatever its camera does.
+     */
+    view?: { x: number; y: number } | null;
     /** Pointer release velocity in world squares/second, consumed once; absent for keyboard input. */
     flick?: { x: number; y: number } | null;
     /** What two fingers meant since the game last read them, oldest first, for a game that reads them. */
     intents?: Intent[];
 }
 
-/** A meaning read from the hands rather than a device's state: two fingers pinching, by the factor the view should grow by. */
-export type Intent = { kind: "zoom"; by: number };
+/**
+ * A meaning read from the hands rather than a device's state: two fingers pinching, by the factor the
+ * view should grow by; or two fingers or the wheel moving the view, by shares of the field's width and
+ * height, for a game that pans.
+ */
+export type Intent = { kind: "zoom"; by: number } | { kind: "pan"; x: number; y: number };
 
 export const emptyPad = (): Pad => ({
     held: null,

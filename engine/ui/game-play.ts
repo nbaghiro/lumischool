@@ -30,7 +30,7 @@ import {
 import { twoFingers } from "../motion/touches";
 import type { Frame, Happening, Scene } from "../motion/scene";
 import type { FieldView } from "./game-view";
-import type { ActionGame, TurnGame } from "../../school/games/game";
+import { endOf, type ActionGame, type TurnGame } from "../../school/games/game";
 import type { Board, Probe, Runtime, Shell } from "./game-host";
 import type { GameEvent } from "../motion/goals";
 import { CUES, type Cue } from "../motion/cues";
@@ -233,6 +233,8 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
     let goButton: HTMLButtonElement | null = null;
     let brakeButton: HTMLButtonElement | null = null;
     let brakeDrawn: IconName | null = null;
+    /** The command buttons by id, for a game that shows some only when they apply. */
+    const shown = new Map<string, HTMLButtonElement>();
     let lastHud = 0,
         lastSaid = "",
         lastRead = 0;
@@ -260,6 +262,11 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
             if (won) shell.observe?.("won");
             shell.guide(won ? "cheer" : "idle");
         }
+        // a try being watched again is not a round ending
+        shell.ended?.(
+            watching ? null : endOf(game, s),
+            !shell.still() && watching === null && tape.steps > 0,
+        );
         const label = game.goLabel?.(s);
         if (label && goButton && goButton.title !== label) {
             const drawn = game.goIcon?.(s);
@@ -273,7 +280,7 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
             brakeDrawn = thing;
             brakeButton.replaceChildren(iconElement(thing));
         }
-        $("watch").hidden = !won || shell.still() || watching !== null || tape.steps === 0;
+        if (game.shows) for (const [id, b] of shown) b.hidden = !game.shows(s, id);
         $("checkpoint").hidden = mark === 0 || won || watching !== null;
         panels();
     }
@@ -375,7 +382,7 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
             }
             return;
         }
-        if (d && e.key.startsWith("Arrow")) {
+        if (d && (e.key.startsWith("Arrow") || game.wasd)) {
             e.preventDefault();
             if (!e.repeat) {
                 input("keyboard");
@@ -529,6 +536,7 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
         for (const command of game.commands ?? []) {
             if (command.keysOnly || command.label === c.go || command.label === c.brake) continue;
             const button = document.createElement("button");
+            shown.set(command.id, button);
             button.type = "button";
             button.className = "key";
             button.setAttribute("aria-label", command.label);
@@ -597,8 +605,10 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
         drag = { id: e.pointerId, x: w.x, y: w.y, pulling, brake };
         field.el.setPointerCapture(e.pointerId);
         if (brake) pad.brake = true;
-        else if (game.touch) pad.touch = w;
-        else if (from && pulling) pad.pull = { x: w.x - from.x, y: w.y - from.y };
+        else if (game.touch) {
+            pad.touch = w;
+            pad.view = field.toFixed?.(e.clientX, e.clientY) ?? null;
+        } else if (from && pulling) pad.pull = { x: w.x - from.x, y: w.y - from.y };
         else if (!game.pullFrom && game.controls.go) {
             pad.go = true;
             pad.tapped = true;
@@ -609,12 +619,15 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
     const pointerMove = (e: PointerEvent): void => {
         if (game.intents && !shell.paused())
             intend(fingers.move(e.pointerId, e.clientX, e.clientY));
+        if (!drag && game.touch && e.pointerType === "mouse" && !shell.paused())
+            pad.hover = field.toWorld(e.clientX, e.clientY);
         if (!drag || drag.id !== e.pointerId || shell.paused() || drag.brake) return;
         const w = field.toWorld(e.clientX, e.clientY);
         pointerTrail.push({ ...w, t: e.timeStamp });
         if (pointerTrail.length > 64) pointerTrail.shift();
         if (game.touch) {
             pad.touch = w;
+            pad.view = field.toFixed?.(e.clientX, e.clientY) ?? null;
             pressStill();
             return;
         }
@@ -648,6 +661,7 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
         if (!drag.brake) {
             if (game.touch) {
                 pad.lifted = w;
+                pad.view = field.toFixed?.(e.clientX, e.clientY) ?? null;
                 pointerTrail.push({ ...w, t: e.timeStamp });
                 const v = velocity(pointerTrail, 100);
                 pad.flick = { x: v.vx, y: v.vy };
@@ -670,24 +684,35 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
         recordOther(tape, { cancel: true });
         game.cancelInput(s);
     };
-    const fingers = twoFingers();
+    const fingers = twoFingers({ pans: game.pans === true });
+    /** A pan in the field's pixels as shares of its width and height, which the game turns into its own squares. */
+    const shares = (i: Intent): Intent => {
+        if (i.kind !== "pan") return i;
+        const r = field.el.getBoundingClientRect();
+        return { kind: "pan", x: r.width ? i.x / r.width : 0, y: r.height ? i.y / r.height : 0 };
+    };
     function intend(intents: Intent[]): void {
         if (!intents.length) return;
-        (pad.intents ??= []).push(...intents);
+        (pad.intents ??= []).push(...intents.map(shares));
         pressStill();
     }
     const wheel = (e: WheelEvent): void => {
         if (!game.intents || shell.paused() || watching) return;
         e.preventDefault();
         input("pointer");
-        // a trackpad's pinch arrives as a wheel with ctrl held, in much smaller steps
-        intend([{ kind: "zoom", by: Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002)) }]);
+        // a trackpad's pinch arrives as a wheel with ctrl held, in much smaller steps; a game that pans scrolls with the rest
+        if (game.pans && !e.ctrlKey) intend([{ kind: "pan", x: e.deltaX, y: e.deltaY }]);
+        else intend([{ kind: "zoom", by: Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002)) }]);
+    };
+    const pointerLeave = (e: PointerEvent): void => {
+        if (e.pointerType === "mouse") pad.hover = null;
     };
     const contextMenu = (e: Event): void => {
         if (game.controls.brake) e.preventDefault();
     };
     field.el.addEventListener("pointerdown", pointerDown);
     field.el.addEventListener("pointermove", pointerMove);
+    field.el.addEventListener("pointerleave", pointerLeave);
     field.el.addEventListener("pointerup", pointerEnd);
     field.el.addEventListener("pointercancel", pointerCancel);
     field.el.addEventListener("lostpointercapture", pointerCancel);
@@ -778,7 +803,8 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
             shell.room(),
             game.seen ?? "side",
             undefined,
-            game.portrait?.keep,
+            shell.card?.keep ?? game.portrait?.keep,
+            shell.card !== undefined,
         );
         draw(sess.frame(shell.still()), 0);
     }
@@ -915,6 +941,7 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
             clock.dispose();
             field.el.removeEventListener("pointerdown", pointerDown);
             field.el.removeEventListener("pointermove", pointerMove);
+            field.el.removeEventListener("pointerleave", pointerLeave);
             field.el.removeEventListener("pointerup", pointerEnd);
             field.el.removeEventListener("pointercancel", pointerCancel);
             field.el.removeEventListener("lostpointercapture", pointerCancel);
@@ -1040,6 +1067,14 @@ function turn(
         s.after?.(pos);
         const hint = state.nudges > 1 && !pos.won ? nudge(state.ex, pos) : null;
         $("goal").textContent = pos.won ? game.ends.won : state.round.goal;
+        shell.ended?.(
+            pos.won
+                ? { won: true, words: game.ends.won }
+                : outOfMoves()
+                  ? { won: false, words: game.ends.stuck }
+                  : null,
+            false,
+        );
         shell.feedback(
             pos.won
                 ? game.ends.won
@@ -1176,11 +1211,34 @@ function turn(
             state.attempt.outcome = "out of moves";
         state.focus = 0;
         draw(now);
+        if (move && move.length >= HOLD_TRAY && !shell.still()) holdTray(move.length);
+    }
+
+    /**
+     * Keeps the tray's choices back until a beat has shown what they are about, such as the dice coming
+     * to rest. Only a long beat does: a piece settling is quicker than a hand reaching for the tray.
+     */
+    const HOLD_TRAY = 0.6;
+    let trayHeld = 0;
+    function holdTray(seconds: number): void {
+        const tray = $("tray");
+        clearTimeout(trayHeld);
+        tray.classList.remove("shown");
+        tray.classList.add("waiting");
+        trayHeld = window.setTimeout(() => {
+            tray.classList.remove("waiting");
+            tray.classList.add("shown");
+        }, seconds * 1000);
+    }
+    function showTray(): void {
+        clearTimeout(trayHeld);
+        $("tray").classList.remove("waiting");
     }
 
     function undo(): void {
         if (state.history.length < 2 || !state.round.reversible) return;
         stage.settle();
+        showTray();
         const from = state.history.pop();
         const to = here();
         state.attempt = record(state.attempt, {
@@ -1751,6 +1809,7 @@ function turn(
         stop() {
             stopped = true;
             clearTimeout(timer);
+            showTray();
             unbind();
             stage.sheet.removeEventListener("focus", onBoardFocus);
             stage.sheet.removeEventListener("blur", onBoardBlur);

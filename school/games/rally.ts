@@ -358,6 +358,8 @@ export const rallyGame: ActionGame<RallyState> = {
     id: "rally",
     title: "Pocket rally",
     group: "action",
+    // too wide to crop into a card and keep its play in view: it waits for the turned or overview view, see .docs/game-cards.md
+    card: null,
     seen: "above",
     levels: RALLY_LEVELS,
     rate: 60,

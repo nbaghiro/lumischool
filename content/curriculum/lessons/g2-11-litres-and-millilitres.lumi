@@ -23,6 +23,7 @@ lesson g2-litres-and-millilitres v=1 format=teach grade=2 unit=7 subject=maths l
   }
   try stars=2 {
     show measure.holds-more L=2 d=-500 easy-d=500 hard-L=3 hard-d=-100
+    game rescue level=1 goal="Spray the fires with the litres each one needs."
   }
   try stars=3 {
     show measure.fewest-pours t=800 easy-t=600 hard-t=900

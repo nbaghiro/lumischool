@@ -20,48 +20,19 @@ import {
     openChallenge,
     supportsVariations,
 } from "../../school/games/challenges";
-import type { Game } from "../../school/games/game";
-import type { Drawing } from "../parts/drawing";
+import type { Game, RoundEnd } from "../../school/games/game";
 import type { Cue } from "../motion/cues";
 import type { Hum } from "../sound/kit";
 import { gameSound } from "./game-sound";
 import { loadDrawings } from "./drawings";
 import { render } from "./svg";
 import { play } from "./game-play";
-import { GameView } from "./game-view";
-import { INK, SceneView } from "./scene-view";
-import { StillView } from "./still-view";
-import type { Board, Runtime, Shell } from "./game-host";
+import { send } from "./native";
+import { boardFor, gpuView, ShelfArt } from "./game-surface";
+import type { Runtime, Shell } from "./game-host";
+import { RoundEndCard } from "./round-end";
+import { actionsOf, END_DELAY_MS, type EndAction } from "./round-end-rules";
 import "./games.css";
-
-interface ViewOptions {
-    host: HTMLElement;
-    art: Map<string, Drawing<unknown>>;
-    still: () => boolean;
-}
-
-/**
- * The GPU's view, or null where the browser has no WebGL2. The hidden copy of every sprite's box is
- * kept with `probe=1`, and always for a browser driven by tests.
- */
-function gpuView(o: ViewOptions & { inkAt?: number }): GameView | null {
-    try {
-        return new GameView({
-            ...o,
-            probe: new URLSearchParams(location.search).get("probe") === "1" || navigator.webdriver,
-        });
-    } catch {
-        return null;
-    }
-}
-
-/** A turn game's board: the scene drawn by the GPU, or a still picture of it without WebGL2. */
-function boardFor(o: ViewOptions & { onFrame: (t: number) => void }): Board & { stop?(): void } {
-    const view = gpuView({ ...o, inkAt: INK });
-    return view
-        ? new SceneView({ ...o, view })
-        : new SceneView({ ...o, still: () => true, view: new StillView(o) });
-}
 
 /** Which of the two the library says a game is, under its name. */
 const kindOf = (g: Game): "move" | "think" => (g.group === "action" ? "move" : "think");
@@ -179,6 +150,10 @@ export function Games(props: {
         initial ? remembered(initial, level()) : undefined,
     );
     const [feedback, setFeedback] = createSignal({ text: "", won: false });
+    // how the round ended, and whether its card is up; closed, a chip in the top bar brings it back
+    const [ending, setEnding] = createSignal<{ end: RoundEnd; watch: boolean } | null>(null);
+    const [endOpen, setEndOpen] = createSignal(false);
+    let endTimer = 0;
     const [activeTitle, setActiveTitle] = createSignal("");
     const recent: string[] = [];
     let retries = 0;
@@ -197,6 +172,14 @@ export function Games(props: {
     };
     const [paused, pause] = createSignal(false);
     const [begun, begin] = createSignal(false);
+    // the mobile app holds the phone as a game on screen asks; a game on a lesson's sheet never does
+    createEffect(() => {
+        const g = chosen();
+        if (!g) return;
+        const p = g.group === "action" ? g.portrait : undefined;
+        send("playing", { portrait: p?.keep !== undefined ? "keep" : p?.hint ? "hint" : "either" });
+        onCleanup(() => send("playing", { portrait: null }));
+    });
     const [drawn, setDrawn] = createSignal(true);
     let menu: HTMLDialogElement | undefined;
     const [sound, setSound] = createSignal(false);
@@ -272,6 +255,24 @@ export function Games(props: {
     };
     const resume = (): void => {
         pause(false);
+        focusArena();
+    };
+    /** What a round's end card does: the same arrangement again, a new one, the next level, or the try watched. */
+    const act = (a: EndAction): void => {
+        const g = chosen();
+        if (!g) return;
+        if (a === "again") {
+            retries++;
+            setRun(run() + 1);
+        } else if (a === "another") another();
+        else if (a === "next") select(g, level() + 1);
+        else {
+            setEndOpen(false);
+            runtime?.watch?.();
+        }
+    };
+    const closeEnd = (): void => {
+        setEndOpen(false);
         focusArena();
     };
     onCleanup(() => {
@@ -374,6 +375,9 @@ export function Games(props: {
             let ended = false;
             begin(false);
             setFeedback({ text: "", won: false });
+            clearTimeout(endTimer);
+            setEnding(null);
+            setEndOpen(false);
             const opened = openChallenge(game, selectedChallenge);
             setActiveTitle(opened.levels[version]?.title ?? "");
             const attempt: GameAttempt = {
@@ -424,34 +428,14 @@ export function Games(props: {
                 if (!element) throw new Error(`Missing game control: ${id}`);
                 return element;
             };
-            class Art extends Map<string, Drawing<unknown>> {
-                pending = new Set<string>();
-                /** The loads not yet waited on, so the player can say it is ready only once its drawings are in. */
-                loads: Promise<unknown>[] = [];
-                override get(ref: string): Drawing<unknown> | undefined {
-                    const found = super.get(ref);
-                    if (!found && !this.pending.has(ref)) {
-                        this.pending.add(ref);
-                        const load = loadDrawings([ref])
-                            .then((shelf) => {
-                                if (ended) return;
-                                const drawing = shelf.drawing(ref);
-                                if (drawing) {
-                                    this.set(ref, drawing);
-                                    tabletop?.loaded(ref);
-                                    runtime?.redraw();
-                                }
-                            })
-                            .catch(() => {
-                                if (!ended)
-                                    fail("A drawing could not load. Please try Start again.");
-                            });
-                        this.loads.push(load);
-                    }
-                    return found;
-                }
-            }
-            const art = new Art();
+            const art = new ShelfArt({
+                ended: () => ended,
+                loaded: (ref) => {
+                    tabletop?.loaded(ref);
+                    runtime?.redraw();
+                },
+                failed: () => fail("A drawing could not load. Please try Start again."),
+            });
             const board = $("board");
             board.replaceChildren();
             const field =
@@ -479,6 +463,27 @@ export function Games(props: {
                 },
                 progress: (completed, total) => {
                     if (!emitted) attempt.objectives = { completed, total };
+                },
+                ended: (end, watch) => {
+                    const was = ending();
+                    if (!end) {
+                        if (was) {
+                            clearTimeout(endTimer);
+                            setEnding(null);
+                            setEndOpen(false);
+                        }
+                        return;
+                    }
+                    if (was && was.end.won === end.won && was.end.words === end.words) {
+                        if (was.watch !== watch) setEnding({ end, watch });
+                        return;
+                    }
+                    setEnding({ end, watch });
+                    clearTimeout(endTimer);
+                    endTimer = window.setTimeout(
+                        () => setEndOpen(true),
+                        quiet() ? 0 : END_DELAY_MS,
+                    );
                 },
                 observe: (kind, input) => {
                     if (emitted) return;
@@ -512,14 +517,38 @@ export function Games(props: {
                     side: false,
                 }),
             };
+            // a build game's design is kept in the browser and put back when its level opens again
+            let design: string | null = null;
             try {
                 const v = Math.min(version, game.levels.length - 1);
                 if (opened.group === "action") {
                     if (field) runtime = play(shell, { game: opened, field }, v);
+                    if (opened.saves?.level === v) design = `${storage()}.${game.id}.design`;
                 } else if (tabletop) runtime = play(shell, { game: opened, board: tabletop }, v);
             } catch (error) {
                 fail(error instanceof Error ? error.message : "The game could not open.");
             }
+            const keep = (): void => {
+                if (!design || !runtime?.checkpoint) return;
+                try {
+                    localStorage.setItem(design, JSON.stringify(runtime.checkpoint()));
+                } catch {
+                    // private browsing or a full store: the house is only kept for this visit
+                }
+            };
+            if (design)
+                try {
+                    const kept = localStorage.getItem(design);
+                    if (kept) {
+                        const value: unknown = JSON.parse(kept);
+                        runtime?.restore?.(value);
+                    }
+                } catch {
+                    // a design that no longer reads is left behind and the plot starts empty
+                }
+            const keeping = design ? setInterval(keep, 3000) : undefined;
+            // a reload or a closed tab never runs the cleanup below, so the design is kept as the page goes
+            if (design) window.addEventListener("pagehide", keep);
             // the player is ready once the level's drawings have loaded and the GPU's view has them in
             // its pages, so the first thing a child sees is the whole scene; a slow network waits no
             // more than a few seconds
@@ -541,6 +570,8 @@ export function Games(props: {
                 if (!ended && !paused()) focusArena();
             });
             const keys = (e: KeyboardEvent) => {
+                // the end card has the keys while it is up: Enter takes its first action, Escape closes it
+                if (endOpen()) return;
                 if (e.key === "Escape" && e.type === "keydown" && !paused()) {
                     e.preventDefault();
                     pause(true);
@@ -580,6 +611,9 @@ export function Games(props: {
             resize.observe(board);
             onCleanup(() => {
                 ended = true;
+                keep();
+                clearInterval(keeping);
+                window.removeEventListener("pagehide", keep);
                 runtime?.stop();
                 runtime = undefined;
                 if (tabletop?.stop) tabletop.stop();
@@ -687,16 +721,15 @@ export function Games(props: {
                                 </Show>
                             </div>
                             <span class="game-challenge">{activeTitle()}</span>
-                            <button
-                                class="game-icon"
-                                data-game="watch"
-                                hidden
-                                aria-label="Watch it again"
-                                title="Watch it again"
-                                onClick={() => runtime?.watch?.()}
-                            >
-                                <Icon name="watch" />
-                            </button>
+                            <Show when={ending() && !endOpen()}>
+                                <button
+                                    class="game-end-chip"
+                                    data-game="end-chip"
+                                    onClick={() => setEndOpen(true)}
+                                >
+                                    {ending()?.end.won ? "Well played" : "Round over"}
+                                </button>
+                            </Show>
                             <Show when={supportsVariations(g())}>
                                 <button
                                     class="game-icon"
@@ -739,8 +772,8 @@ export function Games(props: {
                                 <button onClick={() => hideTurnHint(g().id)}>OK</button>
                             </p>
                         </Show>
-                        <div class="game-stage-wrap">
-                            <div class="arena" inert={paused()}>
+                        <div class="game-stage-wrap" classList={{ "game-ended": endOpen() }}>
+                            <div class="arena" inert={paused() || endOpen()}>
                                 <div
                                     data-game="board"
                                     class="board"
@@ -749,8 +782,25 @@ export function Games(props: {
                                     aria-label={`${g().title} play area`}
                                 />
                             </div>
+                            <Show when={endOpen() ? ending() : null}>
+                                {(e) => (
+                                    <RoundEndCard
+                                        won={e().end.won}
+                                        words={e().end.words}
+                                        art={<Cover game={g()} />}
+                                        actions={actionsOf({
+                                            won: e().end.won,
+                                            variations: supportsVariations(g()),
+                                            next: level() + 1 < g().levels.length,
+                                            watch: e().watch,
+                                        })}
+                                        onAct={act}
+                                        onClose={closeEnd}
+                                    />
+                                )}
+                            </Show>
                         </div>
-                        <div class="hands" inert={paused()}>
+                        <div class="hands" inert={paused() || endOpen()}>
                             <div data-game="tray" class="tray" />
                             <div data-game="pad" class="pad" />
                             <div class="game-actions">

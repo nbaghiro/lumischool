@@ -9,6 +9,7 @@ import {
     portrait,
     seen,
     uprightSquare,
+    cardSquare,
 } from "../camera";
 
 const view = { w: 20, h: 10 };
@@ -86,4 +87,12 @@ test("held upright, the square shows `keep` squares across, never more than the 
     assert.equal(uprightSquare(view, { w: 422, h: 300 }, 20, 10), 11);
     // a keep wider than the room's own fit leaves the whole view's square
     assert.equal(uprightSquare(view, { w: 422, h: 660 }, 60, 10), 10);
+});
+
+test("a card shows `keep` squares across, cropping height as well, and never less than the whole view's square", () => {
+    const card = { w: 360, h: 240 };
+    // Harbour cargo in a card: 8 pixels shows all 42 by 27, 12 shows 30 by 20 round the focus
+    assert.equal(cardSquare({ w: 42, h: 27 }, card, 30), 12);
+    // a view smaller than keep is shown whole
+    assert.equal(cardSquare({ w: 24, h: 13 }, card, 30), 15);
 });

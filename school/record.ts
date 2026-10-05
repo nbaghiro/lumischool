@@ -149,8 +149,26 @@ export interface Piece {
     q: QuestionRef;
 }
 
+/** One round of a game played as a card in a lesson (.docs/game-cards.md), the last of its card in a sitting. */
+export interface Played {
+    child: string;
+    lesson: string;
+    section: string;
+    /** Its place among the section's cards, from 1. */
+    card: number;
+    game: string;
+    level: number;
+    won: boolean;
+    tries: number;
+    seconds: number;
+    assistance: number;
+    on: string;
+}
+
 export interface Folded {
     attempts: Attempt[];
+    /** Game cards played in lessons, which count as evidence for their lesson beside its questions. */
+    played: Played[];
     sittings: Sitting[];
     printed: Printed[];
     added: AddedDay[];
@@ -324,13 +342,37 @@ export function fold(
         });
     }
 
+    // a card played again in the same sitting is one round, as the last answer to a question is
+    const rounds = new Map<string, Of<"played">>();
+    for (const e of ordered.filter(is("played")))
+        rounds.set(`${e.kid_id}|${e.data.sitting}|${e.data.section}|${e.data.card}`, e);
+    const played: Played[] = [...rounds.values()].flatMap((e) =>
+        e.kid_id
+            ? [
+                  {
+                      child: e.kid_id,
+                      lesson: e.data.lesson,
+                      section: e.data.section,
+                      card: e.data.card,
+                      game: e.data.game,
+                      level: e.data.level,
+                      won: e.data.won,
+                      tries: e.data.tries,
+                      seconds: e.data.seconds,
+                      assistance: e.data.assistance,
+                      on: dayIn(e.at, timeZone),
+                  },
+              ]
+            : [],
+    );
+
     const added: AddedDay[] = ordered.filter(is("day-added")).map((e) => ({
         on: e.data.onDay,
         subject: e.data.subject,
         minutes: e.data.minutes,
         note: e.data.note,
     }));
-    return { attempts, sittings: began.map((b) => b.sitting), printed, added, pieces };
+    return { attempts, played, sittings: began.map((b) => b.sitting), printed, added, pieces };
 }
 
 /** The printed sheet a paper sitting was worked from: the latest of its lesson printed on or before that day. */
@@ -417,3 +459,25 @@ export function progressOf(
         unlocked: [],
     };
 }
+
+const ORDINALS = ["first", "second", "third", "fourth", "fifth"] as const;
+
+/**
+ * A played round in a grown-up's words, for the week view and the journal: "Played Rabbit crossing,
+ * won on the second try". `title` is the game's own, which the record does not know.
+ */
+export function playedWords(
+    p: Pick<Played, "won" | "tries" | "assistance">,
+    title: string,
+): string {
+    const help = p.assistance > 0 ? ", with help" : "";
+    if (!p.won) return `Played ${title}, not won yet${help}`;
+    const nth = ORDINALS[Math.max(1, p.tries) - 1];
+    return nth
+        ? `Played ${title}, won on the ${nth} try${help}`
+        : `Played ${title}, won after ${p.tries} tries${help}`;
+}
+
+/** The cards a child played in a lesson, each the last round of its card, in the order they were played. */
+export const playedIn = (folded: Pick<Folded, "played">, child: string, lesson: string): Played[] =>
+    folded.played.filter((p) => p.child === child && p.lesson === lesson);

@@ -21,6 +21,19 @@ export const GROWNUPS = [
 ] as const;
 export type GrownupKind = (typeof GROWNUPS)[number];
 
+/**
+ * The portrait on a grown-up's stamp: the one they picked, when the shelf can draw it, or else one their
+ * id gives them, the same for that person every time and spread across people, so every grown-up has
+ * a picture from their first sign-in and no row is written for it.
+ */
+export function portraitFor(id: string, picked: unknown): GrownupKind {
+    const chosen = GROWNUPS.find((k) => k === picked);
+    if (chosen) return chosen;
+    let h = 0;
+    for (const c of id) h = (h * 31 + c.charCodeAt(0)) % 0x7fffffff;
+    return GROWNUPS[h % GROWNUPS.length] ?? "short";
+}
+
 /** The word a picker shows under each, which says what is drawn and nothing about who. */
 export const GROWNUP_WORD: Record<GrownupKind, string> = {
     short: "Short hair",

@@ -2,6 +2,18 @@
 
 The first physical-handling refinement is documented in [physical-games-refinement.md](physical-games-refinement.md).
 
+## One card at the end of every round (4 October 2026)
+
+Every round now ends on the same card over the lower middle of the field, described in
+[engine.md](engine.md): a won round with the game's sentence and the way on, and a round that stopped
+without a win with an encouraging heading and another go. Most games cannot stop without a win, since
+a miss is set right for free, and they need nothing new. Two could, and both now hold the end rather
+than starting again unannounced: pinball, when the balls of a level with a sum run out, and curling,
+when the stones are gone and the ask is not met, or blue wins the bonspiel. Pool still sets its balls
+out again after a level's shots, since play goes on from there. A turn game that runs out of moves
+shows its sentence for that on the same card, as an end that is not won. In a lesson, the card is a smaller one with Again and
+New one, in place of the "Well played!" label.
+
 ## The first physics wave (26 September 2026)
 
 The games below took up the physics of P4 in [game-engine.md](game-engine.md). A home for the pups
@@ -82,7 +94,7 @@ from the start, which is the game's replay witness. `school/games/__tests__/fetc
 variation of every level by the keys, and shows a number judged where the throw lands and a stop only
 once it has stopped, a ball rolling off the hill where a stick stays, only Rufus swimming for a thing
 in the pond, Dot and Maple reaching where only they can, a frisbee gliding further than a ball and
-further still in the wind, and random throws finishing a level rarely. `tools/e2e/pup-fetch.e2e.ts`
+further still in the wind, and random throws finishing a level rarely. `tools/e2e/games/pup-fetch.e2e.ts`
 throws by the keys and by pulling, and swaps the ball for the stick. The sounds are a whoosh for a
 throw, a bounce, each pup's bark at its own pitch, the pond's splash, and the pups panting while they
 run, a new `pant` hum.
@@ -265,7 +277,7 @@ replay to the same stand, which is the game's replay witness, and every variatio
 `school/games/__tests__/lemonade.test.ts` serves every level and variation this way, serves a customer
 by hand, checks the short, long and wrong pushes, the change with a coin too many, that random pressing
 serves at most one customer in five, that reduced motion settles, and the frame, the words and the
-tuning table. `tools/e2e/lemonade-stand.e2e.ts` serves the first level from the keys under reduced
+tuning table. `tools/e2e/games/lemonade-stand.e2e.ts` serves the first level from the keys under reduced
 motion, and pours and slides with the mouse. The drawings added for it are `lemonadestand`, `pitcher`
 and `lemoncup`; the market stall's drawings stay on the shelf. The rules version for `wardrobe` is now
 `-lemonade-1`.
@@ -326,6 +338,399 @@ event and a checkpoint, and the win a `won` event.
 
 No activity in `school/games/activities.ts` asks for addition or number bonds yet, so Pocket pool does
 not declare `plays`; when one is written, its versions can open these levels.
+
+## Curling on the pond (4 October 2026)
+
+Curling on the pond (`school/games/curling.ts`, `?g=curling`) is a new game on the shape that golf and
+Pocket pool proved: the hand sets a throw by degrees, physics decides what happens after it is let
+go, and a try costs nothing. A frozen pond is seen from above, with the house (four rings round the
+button) at the far end, a hog line before it, and a winter park round the ice: snowy banks, firs,
+a snowman, a bench, and the pups and a few people watching. Charlie stands at the hack with a stone.
+
+The child pulls back from the stone and lets go, as in golf, and the length of the pull is the
+weight. Up and down turn the line, left and right set the weight, and space throws, through the same
+aim as every launch game (`engine/motion/aim.ts`). Which way the stone is turned is chosen with the second big
+button, Change the curl (or B on the keys), or a tap on the stone, and the arrow drawn ahead of the stone bends the way
+it will curl. While the stone glides, the child sweeps by holding a finger on the ice and scrubbing
+it, holding space, or holding the Sweep button; sweeping by degrees makes the stone glide further and
+bend less, which is what sweeping does in real curling. Brooms are drawn scrubbing ahead of the
+stone and a faint trail is left where the ice was swept.
+
+The ice is `engine/motion/ice.ts`, a small stepper of its own in fixed sub-steps: friction that slows
+a stone (less when swept, more on a rough patch), a bend across the stone's path that grows as it
+slows, a wind along the pond on one level, knocks between stones of equal weight that keep their
+momentum, and lines past which a stone goes out. It is deterministic, so the same pads always leave
+the stones in the same places.
+
+The real rules are kept and made gentle. A stone that stops short of the hog line is taken off, and
+the note says so. The rings score 4 at the button, then 3, 2 and 1, so a level can ask for a sum. A
+full end is scored as curling scores it: only the side with the stone nearest the button scores, one
+for each of its stones nearer than the other side's nearest. The blue team is a computer opponent
+that throws first: it knocks out the child's stone when that stone is shot, and otherwise draws to
+the house with a small error worked out from a seed, so its throws are the same for a seed. A throw
+that misses the ask costs nothing; when the stones are gone and the ask is not met, the end is held
+where it stopped with a sentence that says what happened, and the round's end card offers another
+go.
+
+The ten levels:
+
+1. Slide to the house: stop a stone anywhere in the rings, with the whole path shown.
+2. Hit the button: stop one in the middle ring.
+3. Make exactly 6: three stones whose rings add up to 6.
+4. Round the guard: a blue stone in front of the house, curled round.
+5. Takeout: knock a blue stone out of the house.
+6. Closer than: finish nearer the button than a blue stone, with the measure.
+7. A windy afternoon: exactly 5, with a wind along the pond and no dotted line.
+8. A full end: three stones each against blue, and score the end.
+9. Exactly 10 on bumpy ice: a rough patch slows the stone on the way.
+10. The village bonspiel: two ends of two stones each, and win the match.
+
+The dotted line shows the whole slide to where the stone stops on the first three levels, only the
+first part on levels four to six, and nothing from level seven, where the bent arrow alone shows the
+aim. When a level measures, a tape runs from the button to each resting stone near it with its
+distance in squares written beside it, in halves, so "closer" is a comparison of two numbers.
+Near a ring edge the last moment of a slide plays a little slower, so the child sees which ring it
+settles in.
+
+The principles are met this way. The pull, the line, the weight and the sweep all act by degrees,
+and a finger alone, the keys alone or the on-screen pad alone plays every level. The maths is in the
+target (a ring sum, a distance, an end's score) rather than in a question. Every level has three
+variations (`school/games/curling-challenges.ts`): as written, mirrored across the pond with the
+wind turned round, and with the stones nudged and the total changed. A solver plays each through the
+real pond, blue's replies included, by the keys and by a finger pulling back and letting go, backing
+up a throw when a later one finds nothing, and every variation is won both ways in the tests; the
+same pads replay to the same stones. Presses made at random win at most two levels in ten tries
+each in the tests (none did when measured). The state is plain data, and under reduced motion a throw
+jumps to where the stones stop and the snow does not fall. On a phone held upright the camera keeps
+the stone and the house in view (`portrait.keep`), and while the child aims the whole pond fills the
+room. The card plays the first level for two minutes.
+
+The sounds are the kit's own: a thud as the stone is let go, a knock pitched by how hard two stones
+met, a soft thud for a stone off the pond, a bell pitched by the ring a stone rests in, a cheer, and a
+`sweep` hum of brushed noise while the child sweeps, beside the `roll` hum while a stone glides.
+
+Some things were left out. The curl is set with B or a tap, not with left and right, since the arrows
+already turn the line and set the weight. Blue throws without curl. The crowd has no hats, and the
+breath puffs in the cold were not drawn.
+
+### Curling: the polish pass (5 October 2026)
+
+The pond was a plain blue box with small stones and empty paper round it, so this pass changed only how it looks and moves; the ice, the rules, the levels and the keys are as they were. The sheet is now painted on a frozen pond (`frozenpond`) with a soft shore, drifted snow, reeds and pebbles, and the sheet itself is brighter ice with a fine pebble, crisp rings under a glaze and soft painted sides rather than a box. Firs stand on the far bank, the pups and people watch from a snowy rise above the house, and a snowman, a bench, a sledge and three lanterns stand on the near bank, the lanterns laying a faint warm light on the snow. The camera is close on the hack and the first part of the sheet while a throw is lined up, rides the stone with a lead, comes in close on the house for the last stretch so the stones and rings are large when it settles, and then shows the house with the crowd above it. The stones are drawn true to their size with a band of their team's colour, and the polished track behind a moving stone fades the further back it lies. Charlie and a friend run either side of the stone in a new `sweep` pose from the figure kit, their brooms brushing just ahead of it, with frost kicked up and a puff of breath now and then. The aim arrow is longer and bends more with the curl, a stone that stays in the house makes the button pulse while the crowd cheers, the measure is a ticked tape, and the ask and the running total stay fixed at the top of the view. Snow falls as flakes in two depths (`snowflake`). Under reduced motion the camera cuts, and there is no snow, no light and no puff. On phone WebKit a glide on the full end runs at a median of 17 ms a frame.
+
+## Charlie's garden (4 October 2026)
+
+Charlie's garden (`school/games/garden.ts`, `?g=garden`) is a new game in the line of Stardew Valley
+and Animal Crossing, where a plot is sown, watered and picked over a few days. A garden beside the
+cottage is seen from above on a lawn on squared paper: seed packets on a potting bench down the
+left, raised wooden beds with a label for each job in the middle, a hedge along the top with flowers
+at the door, a sundial and a basket on the right, and the watering can by a water butt at the head of
+a gravel path, with a compost bin at its far end that fills as the days go by. A robin sits on a
+post, and butterflies and a bee drift over the lawn. Charlie stands in the garden, and the "Who
+gardens here" button swaps her for Pip or a friend.
+
+Charlie walks freely at any time. The arrows or W, A, S and D walk her eight ways, speeding up and
+slowing down, facing the way she walks with a walk cycle (`engine/motion/actor.ts`); a tap or a click
+on the lawn sends her there on a route round the bench, the butt, the sundial and the crates, and
+round the beds where that is not much further; a finger held on the field is followed. She walks over
+the beds' soil when that is where she is sent. The walking is `engine/motion/roam.ts`. On a phone held
+upright the field follows her gently; on a wider screen the whole plot is in view.
+
+She carries one thing at a time: a seed packet, the can, the basket, or nothing, drawn in her hand
+and bobbing as she walks. One Action does what the thing she faces asks, and its button's icon and
+label follow it: "Pick up can", "Plant", "Sow", "Water", "Pick", "Share", "Pull weed", "Shoo snail",
+"Next day" or "Put down". A soft ring sits under the thing it would act on. Action at another thing
+puts what she holds back where it lives and takes the new one, and on bare grass it puts it down in
+front of her. Nothing ever leaves her hands by itself, which was the owner's complaint about the
+earlier version, where a click on the can and its release put it down again at once. Action with
+nothing to act on does nothing but a soft "nope" and a small shake, which reduced motion leaves out.
+A tap on a thing walks her to it and does what Action would there: takes a packet, the can or the
+basket, ends the day at the sundial, pulls a weed, shoos a snail, picks a ripe plant or shares into
+a crate. A tap on Charlie with something in hand puts it down.
+
+Planting is a rectangle she walks out. With seeds at a bed, Action starts the rows at the cell
+nearest her, and as she walks the rectangle stretches to the cell nearest her, counted in plants:
+rows of plants and plants in each row, snapped to the bed and, for a pumpkin that spreads over four
+cells, to its own grid. Ghost seedlings and dots show the holes, a box goes round them, and the words
+over the bed say "3 rows of 4 = 12". Action again sows. With a finger, a drag on a bed while she
+holds seeds stretches the rectangle directly from where it went down, and lifting sows it.
+
+Watering is held. With the can at a bed, holding Space or the Action button tips the can by degrees
+and pours until it is let go; Enter, which has no hold, pours for a short while at each press. The
+water comes out of the rose as real drops from the particle liquid (`engine/motion/liquid.ts`),
+falls, and adds litres to the bed it lands in, which is the soil in front of her. The soil darkens as
+it takes water, and too much stands as a puddle. With a finger, holding it on a bed while she has
+the can walks her beside the spot and pours there until the finger lifts. A night spends the water:
+each growing plant drinks a quarter of a litre, a bed with enough grows every plant on by a day, a
+dry bed droops, and a bed standing in water grows nothing until it drains.
+
+Picking and sharing take the basket. With the basket at a ripe plant Action picks it, and holding
+Action while she walks along a row picks each ripe plant she passes, which flies into the basket;
+with a finger, a tap or a drag over ripe plants picks them. Where a level shares the harvest, Action
+at a crate puts one in and holding it goes on one at a time, as does a finger held on the crate.
+The sundial, or the N key, ends the day.
+
+The rules of the garden are `engine/motion/garden.ts`, free of any one game: beds of cells, sowing
+rectangles, water by the litre with runoff from a slope into the bed below it, nights that grow, dry
+out, drown, and the weeds and snails that cost a plant its night. The weeds and snails come from a
+seed and the day, so the same garden grows the same way. A weed is pulled and a snail is shooed by
+Action beside it, or by a tap on it, with nothing needed in her hands.
+
+The nine levels:
+
+1. A bed by the cottage: a row of 5 carrots, grade 1.
+2. Rows of lettuces: 2 rows of 3, grades 1 to 2.
+3. The vegetable patch: 3 rows of 4 carrots in the long bed, beside a bed that is not the job, grade 2.
+4. A rainy spring: fill a bed 5 holes across and 3 down with sunflowers; it rains on some nights, so
+   the child waters only on the dry ones, grade 2.
+5. The greenhouse: 2 rows of 3 strawberries in each of two beds, and exactly 2 litres a day for each,
+   with the litres poured written under the bed, grades 2 to 3.
+6. A hilly garden: 4 rows of 5 strawberries under a slope, where water poured on the hill runs down
+   into the bed below, grade 3.
+7. Snail summer: grow 24 strawberries in an array the child chooses, pull the weeds and shoo the
+   snails, and share the harvest equally between 4 baskets, grade 3.
+8. The harvest fair: 3 customers want 5 carrots each, so the child works out 15, sows them, and fills
+   each customer's crate, grades 3 to 4.
+9. Your own garden: two beds and every crop, with no ask; the garden is kept in the browser and comes
+   back when the level opens again (`saves: { level }`).
+
+The previews fade by level. On the first three levels the words over the bed give the whole
+multiplication and the board under each bed says how many nights its water will last. From the
+fourth level the words give only the count, and from the seventh nothing is shown but the ghost
+seedlings and the soil's colour, so the child counts the array and judges the water from the droop
+and the puddle.
+
+The principles are met this way. The hand sets amounts by degrees: the size of the array is
+stretched out cell by cell, the can tips further the longer it is held, and a share is moved one at
+a time for as long as the basket is held over a crate. The water is drops, and where they land after
+the can lets go decides which bed gets them, including the runoff down the hill. A try costs nothing:
+undo takes back a sowing, a day, a pick, a share, a pulled weed or a shooed snail, a dry or soggy night only holds a plant back a day, and
+nothing dies. The levels are places (a cottage bed, a long patch, a greenhouse, a hillside, a fair)
+with obstacles of their own (rain, an exact amount, runoff, weeds and snails, customers). The maths
+sits in the targets: arrays as rows times columns, area as the holes in a bed, litres, equal sharing
+as division, and the fair's multiplication before sowing. Every level has three variations
+(`school/games/garden-challenges.ts`) that change the array, the litres, the total and the number of
+baskets, or the customers and how many each wants. A solver plays every variation through the real
+game by the keys, walking Charlie with held arrows and pressing Action, and by a finger, tapping
+things to send her to them, dragging the rows and holding still to pour and share; the tests replay
+its acts to the same garden. Walks, presses, drags and taps made at random win at most one level in
+six tries each in the tests. The state is plain data.
+
+The keys play everything: the arrows or W, A, S and D walk (a quick tap of an arrow only turns her),
+Space or Enter is Action (Space held pours, picks along a row or shares on), Escape puts down what
+she holds or drops a rectangle not yet sown, N is the next day, C changes the gardener and Backspace
+takes back. The on-screen pad has only the arrows, the one Action button, Who gardens here and Undo,
+each a round icon button of at least 44 pixels with its label as its name and tooltip; the Action
+button's picture is a hand, a sprout, a can, a basket or the sun after what it would do. There is no
+card (`card: null`), since the game is played by walking between the packets, the beds, the can and
+the basket across a wide plot, which a small card would crop.
+
+The sounds are the kit's own: a thud as the stone is let go, a knock pitched by how hard two stones
+met, a soft thud for a stone off the pond, a bell pitched by the ring a stone rests in, a cheer, and a
+`sweep` hum of brushed noise while the child sweeps, beside the `roll` hum while a stone glides.
+
+Some things were left out. The curl is set with B or a tap, not with left and right, since the arrows
+already turn the line and set the weight. Blue throws without curl. The crowd has no hats, and the
+breath puffs in the cold were not drawn.
+
+### Curling: the polish pass (5 October 2026)
+
+The pond was a plain blue box with small stones and empty paper round it, so this pass changed only how it looks and moves; the ice, the rules, the levels and the keys are as they were. The sheet is now painted on a frozen pond (`frozenpond`) with a soft shore, drifted snow, reeds and pebbles, and the sheet itself is brighter ice with a fine pebble, crisp rings under a glaze and soft painted sides rather than a box. Firs stand on the far bank, the pups and people watch from a snowy rise above the house, and a snowman, a bench, a sledge and three lanterns stand on the near bank, the lanterns laying a faint warm light on the snow. The camera is close on the hack and the first part of the sheet while a throw is lined up, rides the stone with a lead, comes in close on the house for the last stretch so the stones and rings are large when it settles, and then shows the house with the crowd above it. The stones are drawn true to their size with a band of their team's colour, and the polished track behind a moving stone fades the further back it lies. Charlie and a friend run either side of the stone in a new `sweep` pose from the figure kit, their brooms brushing just ahead of it, with frost kicked up and a puff of breath now and then. The aim arrow is longer and bends more with the curl, a stone that stays in the house makes the button pulse while the crowd cheers, the measure is a ticked tape, and the ask and the running total stay fixed at the top of the view. Snow falls as flakes in two depths (`snowflake`). Under reduced motion the camera cuts, and there is no snow, no light and no puff. On phone WebKit a glide on the full end runs at a median of 17 ms a frame.
+
+## Charlie's garden (4 October 2026)
+
+Charlie's garden (`school/games/garden.ts`, `?g=garden`) is a new game in the line of Stardew Valley
+and Animal Crossing, where a plot is sown, watered and picked over a few days. A garden beside the
+cottage is seen from above on a lawn on squared paper: seed packets on a potting bench down the
+left, raised wooden beds with a label for each job in the middle, a hedge along the top with flowers
+at the door, a sundial and a basket on the right, and the watering can by a water butt at the head of
+a gravel path, with a compost bin at its far end that fills as the days go by. A robin sits on a
+post, and butterflies and a bee drift over the lawn. Charlie stands in the garden, and the "Who
+gardens here" button swaps her for Pip or a friend.
+
+Charlie walks freely at any time. The arrows or W, A, S and D walk her eight ways, speeding up and
+slowing down, facing the way she walks with a walk cycle (`engine/motion/actor.ts`); a tap or a click
+on the lawn sends her there on a route round the bench, the butt, the sundial and the crates, and
+round the beds where that is not much further; a finger held on the field is followed. She walks over
+the beds' soil when that is where she is sent. The walking is `engine/motion/roam.ts`. On a phone held
+upright the field follows her gently; on a wider screen the whole plot is in view.
+
+She carries one thing at a time: a seed packet, the can, the basket, or nothing, drawn in her hand
+and bobbing as she walks. One Action does what the thing she faces asks, and its button's icon and
+label follow it: "Pick up can", "Plant", "Sow", "Water", "Pick", "Share", "Pull weed", "Shoo snail",
+"Next day" or "Put down". A soft ring sits under the thing it would act on. Action at another thing
+puts what she holds back where it lives and takes the new one, and on bare grass it puts it down in
+front of her. Nothing ever leaves her hands by itself, which was the owner's complaint about the
+earlier version, where a click on the can and its release put it down again at once. Action with
+nothing to act on does nothing but a soft "nope" and a small shake, which reduced motion leaves out.
+A tap on a thing walks her to it and does what Action would there: takes a packet, the can or the
+basket, ends the day at the sundial, pulls a weed, shoos a snail, picks a ripe plant or shares into
+a crate. A tap on Charlie with something in hand puts it down.
+
+Planting is a rectangle she walks out. With seeds at a bed, Action starts the rows at the cell
+nearest her, and as she walks the rectangle stretches to the cell nearest her, counted in plants:
+rows of plants and plants in each row, snapped to the bed and, for a pumpkin that spreads over four
+cells, to its own grid. Ghost seedlings and dots show the holes, a box goes round them, and the words
+over the bed say "3 rows of 4 = 12". Action again sows. With a finger, a drag on a bed while she
+holds seeds stretches the rectangle directly from where it went down, and lifting sows it.
+
+Watering is held. With the can at a bed, holding Space or the Action button tips the can by degrees
+and pours until it is let go; Enter, which has no hold, pours for a short while at each press. The
+water comes out of the rose as real drops from the particle liquid (`engine/motion/liquid.ts`),
+falls, and adds litres to the bed it lands in, which is the soil in front of her. The soil darkens as
+it takes water, and too much stands as a puddle. With a finger, holding it on a bed while she has
+the can walks her beside the spot and pours there until the finger lifts. A night spends the water:
+each growing plant drinks a quarter of a litre, a bed with enough grows every plant on by a day, a
+dry bed droops, and a bed standing in water grows nothing until it drains.
+
+Picking and sharing take the basket. With the basket at a ripe plant Action picks it, and holding
+Action while she walks along a row picks each ripe plant she passes, which flies into the basket;
+with a finger, a tap or a drag over ripe plants picks them. Where a level shares the harvest, Action
+at a crate puts one in and holding it goes on one at a time, as does a finger held on the crate.
+The sundial, or the N key, ends the day.
+
+The rules of the garden are `engine/motion/garden.ts`, free of any one game: beds of cells, sowing
+rectangles, water by the litre with runoff from a slope into the bed below it, nights that grow, dry
+out, drown, and the weeds and snails that cost a plant its night. The weeds and snails come from a
+seed and the day, so the same garden grows the same way. A weed is pulled and a snail is shooed by
+Action beside it, or by a tap on it, with nothing needed in her hands.
+
+The nine levels:
+
+1. A bed by the cottage: a row of 5 carrots, grade 1.
+2. Rows of lettuces: 2 rows of 3, grades 1 to 2.
+3. The vegetable patch: 3 rows of 4 carrots in the long bed, beside a bed that is not the job, grade 2.
+4. A rainy spring: fill a bed 5 holes across and 3 down with sunflowers; it rains on some nights, so
+   the child waters only on the dry ones, grade 2.
+5. The greenhouse: 2 rows of 3 strawberries in each of two beds, and exactly 2 litres a day for each,
+   with the litres poured written under the bed, grades 2 to 3.
+6. A hilly garden: 4 rows of 5 strawberries under a slope, where water poured on the hill runs down
+   into the bed below, grade 3.
+7. Snail summer: grow 24 strawberries in an array the child chooses, pull the weeds and shoo the
+   snails, and share the harvest equally between 4 baskets, grade 3.
+8. The harvest fair: 3 customers want 5 carrots each, so the child works out 15, sows them, and fills
+   each customer's crate, grades 3 to 4.
+9. Your own garden: two beds and every crop, with no ask; the garden is kept in the browser and comes
+   back when the level opens again (`saves: { level }`).
+
+The previews fade by level. On the first three levels the words over the bed give the whole
+multiplication and the board under each bed says how many nights its water will last. From the
+fourth level the words give only the count, and from the seventh nothing is shown but the ghost
+seedlings and the soil's colour, so the child counts the array and judges the water from the droop
+and the puddle.
+
+The principles are met this way. The hand sets amounts by degrees: the size of the array is
+stretched out cell by cell, the can tips further the longer it is held, and a share is moved one at
+a time for as long as the basket is held over a crate. The water is drops, and where they land after
+the can lets go decides which bed gets them, including the runoff down the hill. A try costs nothing:
+undo takes back a sowing, a day, a pick, a share, a pulled weed or a shooed snail, a dry or soggy night only holds a plant back a day, and
+nothing dies. The levels are places (a cottage bed, a long patch, a greenhouse, a hillside, a fair)
+with obstacles of their own (rain, an exact amount, runoff, weeds and snails, customers). The maths
+sits in the targets: arrays as rows times columns, area as the holes in a bed, litres, equal sharing
+as division, and the fair's multiplication before sowing. Every level has three variations
+(`school/games/garden-challenges.ts`) that change the array, the litres, the total and the number of
+baskets, or the customers and how many each wants. A solver plays every variation through the real
+game by the keys, walking Charlie with held arrows and pressing Action, and by a finger, tapping
+things to send her to them, dragging the rows and holding still to pour and share; the tests replay
+its acts to the same garden. Walks, presses, drags and taps made at random win at most one level in
+six tries each in the tests. The state is plain data.
+
+The keys play everything. The arrows move a cursor a cell at a time across the whole plot, Enter
+takes what is under it and puts it down, Enter on a bed fixes the first corner of a sowing and a
+second Enter the far one, Enter held with the can or the basket pours or shares, Escape puts things
+down, N is the next day and C changes the gardener. The on-screen pad has the arrows, Take or put
+down, Put down, Next day and Who gardens here, each a round icon button with its label. On a phone
+held upright the field follows the hand across 30 of the plot's 44 squares (`portrait.keep`). There
+is no card (`card: null`), since the game is played by carrying between the packets, the beds, the
+can and the basket across a wide plot, which a small card would crop.
+
+The sounds are the kit's own: seeds pattering into their holes, a rustle as a packet or the can is
+lifted, a pop as a plant is picked, a soft thump into a basket, and a rising pair of notes for the
+sprouts in the morning, with a quiet `birds` hum under the whole garden and the `water` hum while
+the can pours. A thing taken pops as it comes into her hand, with a puff where it was. Under reduced
+motion a press of an arrow walks her about a cell and a tap walks her all the way, each drawn once at
+rest; the water lands at once, the produce does not fly, and nothing bobs or shakes.
+
+Some things were left out. A
+hose was considered for the hilly level and not drawn; the can does the same job. Planting by
+holding the packet and dropping seeds one at a time was set aside for the stretch, which keeps the
+array the thing the child makes.
+
+## Pinball garden (4 October 2026)
+
+Pinball garden (`school/games/pinball.ts`, `?g=pinball`) is a pinball table seen from above whose
+playfield is a garden, chosen by the owner from the list of new ideas. It is built on the same six
+ingredients as Garden mini-golf and Pocket pool. The hand sets amounts by degrees: the plunger is
+pulled back as far as the child likes, and a flipper is up for as long as it is held. Once the ball is
+away, physics decides. A drained ball comes back to the plunger in under a second, and no level ends in
+a game over. Each level is a garden place, the dotted help fades as the levels go on, and the maths is
+in what the ball has to hit.
+
+The table is drawn by `engine/parts/sport/pinballtable.ts`, which also exports its measures, walls and
+flippers, so the drawing and the physics cannot disagree. The physics is a small kit of its own,
+`engine/motion/pinball.ts`: a ball on a tilted table, stepped 240 times a second with the speed capped
+so the ball moves less than its own radius in a step, and so cannot pass through a wall, a post or a
+flipper. Walls can kick (the slingshots), posts can kick and slide (the flower bumpers and the snail),
+the flippers carry the speed of their own swing into the ball, the ladybirds drop when hit, lanes count
+once on the way in, the sunflower spins as the ball crosses it, the beehive holds the ball and throws it
+back out, and the watering can carries the ball along its spout. The kit keeps its state as plain data
+and gives the same table for the same keys every time.
+
+With the keys, down pulls the plunger and letting go launches, left and right swing the flippers, and
+space nudges the table, three times a ball. With a finger, the plunger is drawn down in its lane and let
+go, and holding the lower left or lower right of the table swings that flipper. Both reach the same
+pull, since a pull is rounded to ninety-sixths either way, so a try found by the keys is the same try by
+a finger. The icon buttons below the field are the keys' round 44 px buttons. A flip pressed while the
+ball is still dropping onto that flipper waits up to a fifth of a second for the ball to arrive, and a
+tap shorter than eight steps is held up that long, so a child a moment early or quick still bats the
+ball. A ball that sits still for two and a half seconds is nudged free by the table itself.
+
+The maths is in the targets. The flowers are bumpers with numbers on them, and on most levels the child
+has to make an exact total. A hit that would go past the total does not count: the flower wilts, the
+total stays, and the line under the goal says so. The third hit past the total in a try starts it again
+from 0. We chose this over the stricter rule, where any overshoot ends the try, because a child of five
+cannot aim a pinball at one flower, and losing a total of 8 to a stray 5 felt like a punishment for the
+table rather than for the sum. Keeping the total still makes the child look for the flower that fits,
+and the limit of three stops random play from winning by luck alone.
+
+The nine levels:
+
+1. The flowerbed: hit three flowers (1, 2 and 3), counting only.
+2. Make ten: the flowers are 1, 5 and 2, and the total has to be exactly 10.
+3. The pond lane: five flowers round a pond; light every odd flower, and an even one closes them again.
+4. Ladybirds in order: four ladybird drop targets numbered 2, 4, 6 and 8, hit in counting order; one out of turn bounces the ball away.
+5. Exactly twenty: flowers of 1, 10, 2, 5 and 2 and a snail worth 5 that slides across the orchard.
+6. The beehive and the double lane: make 30 from flowers of 3, 5 and 2, the hive's 4, and a lane marked ×2 that doubles the next flower.
+7. Three balls to fifty: at least 50 in three balls, with the watering can worth 10 and the sunflower spinning.
+8. The evening garden: exactly 100 from flowers of 10 and 1 and the watering can, at dusk with lights on the bumpers.
+9. Free play: every part on the table, a score, and the best score kept in the browser.
+
+The launch is shown as a dotted path while the plunger is pulled, and the way a flip would send the ball
+is shown while it comes down, on the first three levels. Levels four to six keep only the launch path,
+and the last two show nothing. Levels with a sum give a try three balls (five in the evening garden), and a
+try that runs out of balls stops with the total it reached, and the round's end card offers another go.
+
+The art is twelve new drawings in `engine/parts/sport/`, all on the shelf: the table in five places, the
+flower bumper (plain, lit, wilted and blooming), the leaf flipper, the plunger, the ladybird, the snail
+target, the watering can ramp, the sunflower spinner, the beehive, the rollover lane, the marble and the
+backbox. Charlie stands beside the table, pointing while the child plays and cheering a win, with
+hedges, trees, flowers and a garden gate round it. The board above the table reads the target and the
+total as a sum. A hit flower blooms and glows, the ball leaves a short trail, and under reduced motion
+the trail is not drawn and the ball is settled before the frame is drawn.
+
+The sounds come from the game's kit: a click for a flipper, a pop for a flower pitched by its number, a
+rising twang for the launch, a splash for the watering can, a thump as the hive catches the ball, a tick
+for the sunflower, a soft double note for a hit that would go too far, a falling note for a drain, a
+chime for a lit lane or a ladybird, a rising arpeggio for the win, and the `roll` hum while the ball
+moves. A win emits a `won` event.
+
+There is no game card: the whole table has to be in view to play it, and a 240 px card would show it at
+under 12 px a square. Each target level has three variations (`school/games/pinball-challenges.ts`): the
+flowers' numbers turned round their places, and on the ladybird level the ladybirds counting in fives or
+threes. The challenges family `pinball` gives them out without a solver at generation time, as pool
+does, since a search takes about a second. Instead the tests play every variation to its win from the
+keys with a beam search over the pulls and the flips, replay the same keys to the same table, play the
+same win by a finger, and check that a single ball of random flipping hits the target at most four times
+in twenty. The rules version is `pinball-1` in `engine/answer.ts`.
 
 ## Rescue pups (28 September 2026)
 
@@ -410,6 +815,12 @@ each throw. The dish is carried by the game (a carried body in `bodies.ts`, foll
 dish rather than against the counter. The tests throw where the dish will be when the coin lands,
 as a child learns to lead it. The stall's rules version moved on, since its state changed shape.
 
+## Shut the box: a smoother throw (3 October 2026)
+
+The owner liked the game and found the throw rough. Three things made it so. The die's turn on the table was a setting of its drawing, so every degree of spin was a new look the atlas had to draw while the dice moved, and a look still being drawn shows the nearest one it has, which reads as a stutter. The roll over its edges ran continuously, which asked for a new look every frame as well. And the tray of choices was drawn as soon as the move was made, so the faces could be read off the buttons before the dice had landed.
+
+Now the turn is the sprite's own angle, turned by the GPU, and the drawing keeps one turn through the throw. The roll steps in twelfths of a quarter turn, so a throw passes through a few dozen looks the stage draws ahead of it. A die grows as it leaves the felt and shrinks as it lands, over three bounces each lower and shorter than the last, with a squash and a clack on each landing that is louder and lower the higher it fell, and a small give as it comes to rest. A throw tumbles for at most a second and a half. The player keeps the tray back while a beat that long plays and then brings the choices in, by opacity so a keyboard player keeps their place; a beat sounds its cues with a strength and pitch now, which any game can use. The rules, the seeded faces and the keys are unchanged.
+
 ## Shut the box, thrown by hand (26 September 2026)
 
 The throw in Shut the box is now physical. A die flicked across the felt sends both dice the way and
@@ -434,7 +845,7 @@ Shut the box is unchanged and its generated arrangements still open.
 every beat starts on the board before its move (or in the hand) and ends exactly on the board after,
 that four different flicks fly four ways and all turn up the mechanic's faces, that a hard flick is
 heard on the walls and jolts the box, and that the same throw tumbles the same way. The shut the box
-case in `tools/e2e/physical-games.e2e.ts` flicks a die in the app and waits for the dice to rest.
+case in `tools/e2e/games/physical-games.e2e.ts` flicks a die in the app and waits for the dice to rest.
 
 ## The keys as they were, beside easier on-screen play (30 September 2026)
 
@@ -473,7 +884,7 @@ The tests in `school/games/__tests__/snake.test.ts` fly every level in three lay
 held finger and by the keys (a route-finding pilot in `firefly-pilot.ts` that goes round the hedges,
 nettles, webs and frogs and picks fallen beads up first), check that a seed joins only in order, that
 a nettle's beads are picked up again, that random flying for a minute finishes nothing, that a replay
-is the same flight and that a reduced-motion press is its own steps. `tools/e2e/firefly-trail.e2e.ts`
+is the same flight and that a reduced-motion press is its own steps. `tools/e2e/games/firefly-trail.e2e.ts`
 plays the first level in the app.
 
 ## Firefly trail: tap to fly (30 September 2026)
@@ -514,7 +925,7 @@ line. `engine/motion/reel.ts`, which only the old game used, was removed. The te
 `school/games/__tests__/fishing.test.ts` fish every level and every day to its weight by hand and
 every level by the keys, and check one fish at a time at the bait, the strike, the snap, the snag,
 throwing back, random hands (at most one win in five), the same hands giving the same catch and
-reduced motion; `tools/e2e/gone-fishing.e2e.ts` casts, waits for the bite and strikes in the app.
+reduced motion; `tools/e2e/games/gone-fishing.e2e.ts` casts, waits for the bite and strikes in the app.
 
 
 ## Gone fishing: easier on the glass (30 September 2026)
@@ -599,7 +1010,7 @@ moved a tray the new levels do not have. The rules version is `games-1-marble-ru
 `school/games/__tests__/marble.test.ts` build a winning machine on every level through the child's
 own controls, by hand and by the keys, check that random machines make the numbers at most one time in
 five and an empty bench never, that a run repeats itself exactly, and that reduced motion judges a
-run as the steps do; `tools/e2e/marble-workshop.e2e.ts` builds the first level with the keys and
+run as the steps do; `tools/e2e/games/marble-workshop.e2e.ts` builds the first level with the keys and
 drags and turns a part in the app. The parts are one shelf drawing, `marblerun`.
 
 The tenth level, "A water run", has tanks in place of hoppers: they hold 5 and 3 litres and let the
@@ -656,7 +1067,7 @@ across), and the rules version for `straight` is now `river-1`. The tests in
 `school/games/__tests__/row.test.ts` paddle every level and layout to a win with the keys alone and
 with drags alone through a paddler in `river-pilot.ts` that uses only the Pad, check the strokes, the
 rhythm, the gates' carry back, the rocks, the docking and reduced motion, and show random paddling
-winning none of sixty runs; `tools/e2e/down-the-river.e2e.ts` paddles in the app.
+winning none of sixty runs; `tools/e2e/games/down-the-river.e2e.ts` paddles in the app.
 
 ## The road: how a stop ends (27 September 2026)
 
@@ -672,7 +1083,7 @@ The car is held to drive, and lifting the hand brakes it over a distance that gr
 
 The bays are drawn on the levels whose kerb writes every tick, and on the levels with only the ends written a bay is drawn only once it is delivered, since a bay drawn in advance would answer the question. A ring shows where a lifted hand would stop the car on the first four levels. Levels: two doors, 4 then 8 on 0 to 10; three doors, 6, 13 and 18 on 0 to 20; back again, 5 more than 10, then 7, then 2 more than 10; in twos, 12, 28 and 20 on 0 to 40; in fives, 15, halfway to 70 and 25 on 0 to 50; in tens, 70, 30 and 50 in any order on 0 to 100; only the ends, 35, 80 and 15 in any order; quarters of the lane, a quarter, three quarters and a half on a lane from 0 to 1. Each level has three rounds among the challenges: numbers move along the line by a tick, and stops written in words come in another order.
 
-New drawings: `parcel`, `finishline` and `deliverylist`. Sounds: a thump for a parcel on a doorstep, a squeal of brakes, a lift for a parcel picked up, a horn at the finish, and the engine as a hum that rises with speed. Held by (`school/games/__tests__/road.test.ts`, with a driver in `road-driver.ts` that uses only the Pad): every round of every level is delivered and its pads replay to the same road, a wrong stop leaves a chalk mark and says how far, a later stop on a list says which comes first, the finish waits for the list, a hard stop slides a parcel off and it can be picked up, a box slows the car and costs nothing else, random driving finishes a round at most four times in twenty, and the harder levels draw a bay only once it is delivered. `tools/e2e/the-road.e2e.ts` delivers the first stop by keys. The rules version is `-road-3`.
+New drawings: `parcel`, `finishline` and `deliverylist`. Sounds: a thump for a parcel on a doorstep, a squeal of brakes, a lift for a parcel picked up, a horn at the finish, and the engine as a hum that rises with speed. Held by (`school/games/__tests__/road.test.ts`, with a driver in `road-driver.ts` that uses only the Pad): every round of every level is delivered and its pads replay to the same road, a wrong stop leaves a chalk mark and says how far, a later stop on a list says which comes first, the finish waits for the list, a hard stop slides a parcel off and it can be picked up, a box slows the car and costs nothing else, random driving finishes a round at most four times in twenty, and the harder levels draw a bay only once it is delivered. `tools/e2e/games/the-road.e2e.ts` delivers the first stop by keys. The rules version is `-road-3`.
 
 ## Clear round, rebuilt as a show jumping round (27 September 2026)
 
@@ -714,7 +1125,7 @@ has three layouts, with a fence or two moved a square. The rules version for `cl
 the game itself with a rider in `clear-rider.ts` that uses only the Pad, replay a round from its tape,
 check that past the first level some layout cannot be ridden at one stride, and cover a knocked pole, a
 stop, a hoof in the water, the stride keys, the gather and reduced motion, where each press rides one
-stride. `tools/e2e/clear-round.e2e.ts` leaps the pony with the keys and with a held pointer, and
+stride. `tools/e2e/games/clear-round.e2e.ts` leaps the pony with the keys and with a held pointer, and
 changes the stride.
 
 
@@ -754,7 +1165,7 @@ screen's held gather, which asked a young child to judge a length of time and a 
 a planned ride carry it clean through the game itself; every layout of every level passes both. The
 tests in `school/games/__tests__/clear.test.ts` ride every layout both ways, replay a keys round from
 its tape, and check that random tapping (with random holds of either kind) jumps a whole round within a
-quarter more time than a steady rider in at most four tries of twenty. `tools/e2e/clear-round.e2e.ts`
+quarter more time than a steady rider in at most four tries of twenty. `tools/e2e/games/clear-round.e2e.ts`
 leaps the pony with space held, rides the first course clean with one tap on the field a fence (a
 mouse on the desk, a touch on the phone), and checks the stride keys. The rules version for `clear` is
 now `show-jumping-3`, and `moveTo` in `engine/motion/bodies.ts` takes an angle, so a knocked pole can be
@@ -860,6 +1271,8 @@ This section lists what is built, and it is kept up to date; the rest of the doc
 | Fetch with the pups (`blocks`) | action | each level's numbers moved along the path | 1 the open meadow, grades 1 to 2; 2 across the pond, 1 to 2; 3 up the hill, 2 to 3; 4 the playground, 2 to 3; 5 a windy day, 3 to 4; 6 the snowy park, 3 to 4 (see "Fetch with the pups") |
 | Charlie's lemonade stand (`wardrobe`) | action | none | 1 a sunny park, halves, grade 1; 2 quarters of a cup, 1 to 2; 3 change, please, 2; 4 a windy day, 2 to 3; 5 the long counter, 3; 6 the busy fair, 3 to 4 (see "Charlie's lemonade stand (27 September 2026)") |
 | Pocket pool (`pool`) | action | none | 1 pot ten, grades 1 to 3; 2 ten in two shots, 1 to 3; 3 round the corner, 2 to 4; 4 the bumpers, 2 to 4; 5 evens only, 2 to 4; 6 soft cloth and a slope, 3 to 4; 7 the spinner, 3 to 4; 8 the kitchen table, 3 to 4 (see "Pocket pool (27 September 2026)") |
+| Curling on the pond (`curling`) | action | none | 1 slide to the house, grades 1 to 2; 2 hit the button, 1 to 2; 3 make exactly 6, 1 to 3; 4 round the guard, 2 to 3; 5 takeout, 2 to 3; 6 closer than, 2 to 4; 7 a windy afternoon, 3 to 4; 8 a full end, 3 to 4; 9 exactly 10 on bumpy ice, 3 to 4; 10 the village bonspiel, 3 to 4 (see "Curling on the pond (4 October 2026)") |
+| Charlie's garden (`garden`) | action | the array, the litres, the total and baskets, or the customers | 1 a bed by the cottage, grade 1; 2 rows of lettuces, 1 to 2; 3 the vegetable patch, 2; 4 a rainy spring, 2; 5 the greenhouse, 2 to 3; 6 a hilly garden, 3; 7 snail summer, 3; 8 the harvest fair, 3 to 4; 9 your own garden, 1 to 4 (see "Charlie's garden (4 October 2026)") |
 | Rescue pups (`rescue`) | action | none | 1 fire at the cottage, grades 1 to 2; 2 the lamb on the cliff, 1 to 2; 3 rocks on the road, 1 to 3; 4 swimmer in the river, 1 to 3; 5 the barn and the wind, 2 to 4; 6 two on the cliff, 2 to 4; 7 clear the road, then the fire, 2 to 4; 8 rescue at the river, 3 to 4 (see "Rescue pups (28 September 2026)") |
 
 The race activity that is left, Stop on the line, is played by Down the river. Take the corner was retired in September 2026, and its idea, choosing a speed before a corner, became Pocket rally's fourth level; an old `?g=race` address opens Pocket rally. Find the rule's activity was retired with its turn game, since the number machine carries the same idea as an action game. The yard adds two levels of its own in the same way. A test checks that every version of every activity is a level of some game, so none was dropped when the tabs became one.
@@ -2283,7 +2696,7 @@ The maths is in the boards. The first two levels and the last ask for wagons add
 
 The world is wider and taller than the framed yard, with the meadow under the sidings down to its foot, the yard's rail out to its right edge, faint hills on the horizon and clouds through the sky, so a wide or tall room never shows the world's edge; the view is sixty squares across, so a phone at six pixels a square holds it without scrolling.
 
-Held by `school/games/__tests__/yard.test.ts`: a gentle push couples, a hard one knocks and a soft one stops short; the points hold while a wagon rolls; a siding fills from its buffer stop, refuses when full, and sends its last wagon back to the end of the line; the solver in `school/games/yard-challenges.ts` plans the moves on the sidings as a puzzle and then plays every push through the real yard, and wins every variation of every level by the keys and by a finger; its recorded pads replay through the tape to the same yard, with a checkpoint for each board met; pressing at random rarely makes up an order level; every drawing is on the shelf and the ground reaches every edge of the world. `tools/e2e/shunting-yard.e2e.ts` makes up a level by the keys and sets the points and pushes by a finger. Drawings: `sidingboard`, new; `carriage`, `loco`, `coupling`, `bufferstop`, `railway`, `railbank`, `meadow`, `peaks`, `firs` and `cloud` from the shelf. The `liftpit`, `yardlever` and `orderboard` drawings went with the old yard. The rules version is `yard-2`.
+Held by `school/games/__tests__/yard.test.ts`: a gentle push couples, a hard one knocks and a soft one stops short; the points hold while a wagon rolls; a siding fills from its buffer stop, refuses when full, and sends its last wagon back to the end of the line; the solver in `school/games/yard-challenges.ts` plans the moves on the sidings as a puzzle and then plays every push through the real yard, and wins every variation of every level by the keys and by a finger; its recorded pads replay through the tape to the same yard, with a checkpoint for each board met; pressing at random rarely makes up an order level; every drawing is on the shelf and the ground reaches every edge of the world. `tools/e2e/games/shunting-yard.e2e.ts` makes up a level by the keys and sets the points and pushes by a finger. Drawings: `sidingboard`, new; `carriage`, `loco`, `coupling`, `bufferstop`, `railway`, `railbank`, `meadow`, `peaks`, `firs` and `cloud` from the shelf. The `liftpit`, `yardlever` and `orderboard` drawings went with the old yard. The rules version is `yard-2`.
 
 ## Shunting yard: the yard worked by hand (30 September 2026)
 
@@ -2305,6 +2718,8 @@ The mathematics is unchanged: the load is balanced when the weights times their 
 
 ## Harbour cargo: put where the finger lets go (2 October 2026)
 
+Replaced on 3 October 2026; see "Harbour cargo: freeform again" below. The account as built follows.
+
 The owner found the crate drag harder than before. The crate still swung on its rope as it travelled, and the crane would only let it go once it hung still over its place, so a drop meant waiting and often landed off the spot; driven from the keys, the note asked the child to lift the crate clear of the dock, move it over the boat, wait for it to stop swinging and then release, four steps for each crate.
 
 A dragged crate is now placed, not dropped. A finger on a crate lifts it to a riding height above the other crates and it follows the finger across; letting go sets it down below where the finger was, at the nearest of the deck's half-square places and clear of the end rails, in under a second and with no wait for a swing. The trolley moves with it and the crate leans a little as it travels, but the lean is drawn only and never moves where it lands. A crate let go over the water near the boat goes onto the deck; over the quay it goes on the quay, which is how a crate is taken off the boat again; anywhere else it goes back to its place on the quay, and the note says so. A crate already aboard can be dragged to a new place to even the load. A drag cut short, by a pause or a lost pointer, sets its crate down below it.
@@ -2312,6 +2727,14 @@ A dragged crate is now placed, not dropped. A finger on a crate lifts it to a ri
 The keys drive the crane exactly as before: the arrows move the hook, and Space or Enter takes the crate under it. The one change is the letting go, which lowers the crate straight down and steadies it rather than dropping it from where it swings; over open water it still goes in, and the harbour crew bring it back. The arrows, Pick up / let go and Undo are round icon buttons with their words as names. We kept the arrows and the button because the owner found the keys right, and keyboard and switch players use them.
 
 The balance band is wider on the early levels, 4 weight-squares on the first and then 3.5, 3 and 2.5, and `cargoPlan` now puts each crate on a half-square place and nudges the lightest crate until the load comes out even, so every plan balances exactly. The notes are shorter ("Drag the crates onto the boat. Keep it level."). The rules version is `-cargo-6`. The tests win every level and generated layout by dragging and by the keys, replay a drag win from its recorded pads, set a crate down in under two and a half seconds on a half-square place, send a far drop back to the quay without touching the water, and keep random drags to at most two wins in ten.
+
+## Harbour cargo: freeform again (3 October 2026)
+
+The owner preferred the freer drag of 30 September to the placing of 2 October, and found the extra guides and shortcuts off. The snapping to the deck's half-square places is gone, and so are the crane setting a crate down below the finger in under a second with its swing only drawn, the return to the quay for a drop away from the boat, the dashed ring round the crate under the hook, the dashed line and outline showing where a carried crate would land, and the faint mast showing how the barge would list.
+
+A dragged crate is again taken on the hook and carried on its rope, so it lags behind the trolley and swings as it travels. Letting go hands it to the crane, which lowers it straight down from where it was let go and eases it under the trolley, and physics decides where it ends: on the deck, on the quay, on another crate, or in the harbour, where it splashes and the crew bring it back. A crate already aboard can be dragged again to even the load.
+
+What stays: the barge's dashed centre line, the words over it, the goal ticks along the foot, the boat listing as weight lands, the wider balance band on the early levels (4, 3.5, 3 and 2.5 weight-squares), the shorter notes, and the round icon buttons. The keys drive the crane as before. The one key behaviour kept from 2 October is the letting go: Space lowers the held crate straight down and steadies it rather than dropping it mid-swing, now through the same lowering as a drag, with no snapping. `cargoPlan` is back to its continuous form, with no rounding to half squares. The rules version is `-cargo-7`.
 
 ## Charlie's rope swings (27 September 2026)
 
@@ -2366,7 +2789,7 @@ her in and she is back where she last stood; a landing past a stone's edge steps
 a rope is caught only by a tap in the air, the nearest in reach, and a loose one slips; jumps add up and the wrong number of them starts again; every stone she can
 stand on has a rope she can reach; random presses and let-goes win at most one try in five on any
 level that asks for something; and the frame draws only the shelf's drawings, with banks and water to
-every edge. `tools/e2e/charlie-swings.e2e.ts` swings her across in the app.
+every edge. `tools/e2e/games/charlie-swings.e2e.ts` swings her across in the app.
 
 ### The controls, rebuilt (30 September 2026)
 
@@ -2403,3 +2826,121 @@ and waits there for a tap, where a let go flies forward and up; in the air it wa
 level wants next is in reach. The crossings the challenges ship are now found as key presses: pulls,
 then Pull, a wait, Let go, and in the air a wait and Catch.
 
+
+## Games as cards in lessons (2 October 2026)
+
+Every game now says how it plays as a card, a single round inside a lesson ([game-cards.md](game-cards.md)): the level a lesson plays when it names no other, how many of its asks a round holds where a level has several, how many squares across the card shows round the frame's focus, and the most minutes a round should take. A game that cannot meet the card standard says `card: null` with its reason. The standard is a test, `school/games/__tests__/card.test.ts`: a square of at least 12 px in a 360 by 240 card, and one round won by the field alone, with no button under it, within its minutes.
+
+Eleven games pass: Harbour cargo, Rabbit crossing, Down the river, Firefly trail, The road, Paper plane, Pocket pool, Charlie's rope swings, Fetch with the pups, Rescue pups and Clear round. The road, Fetch with the pups and Rescue pups play a card's round on their first ask only, through `round(level, asks)`; their levels are unchanged. Twelve listed games do not, because their play spans a field too wide to crop into 30 squares and keep in view: Marble workshop, the Sound train, The number machine, the Shunting yard, Measure it out, Slingshot, Penny shove, Rafts, Gone fishing, Garden mini-golf, Pocket rally and Charlie's lemonade stand. They wait for the turned view or the close-up with an overview from the portrait plan, and Gone fishing and the lemonade stand would also need a one-ask round then. Shut the box is not a card either: its box is about 35 squares wide on a turn board that is never cropped.
+
+## Garden mini-golf: seven more holes (3 October 2026)
+
+The owner loves Garden mini-golf and asked for more to it. The first three holes are unchanged; seven follow them, each a place with a mechanic of its own, and each with a par shown at the top of the board beside the putts. A ball sunk within par is told so and gets the bigger cheer, and one over par is told to have another go; nothing fails and a hole can always be started again. The older holes keep no par and their boards are as they were.
+
+| Hole | Par | What it adds |
+|---|---|---|
+| 4. Off the boards | 2 | a rail hides the cup, so the way in is a bank off the top boards; the board reads the aim as a clock hour |
+| 5. The windmill | 2 | a rail across the doorway in a wall comes and goes with the windmill's turning sails, so the putt is timed |
+| 6. Down the hill | 3 | the middle of the lawn slopes, so a putt curves downhill and is aimed above the cup; the board reads the squares to the cup |
+| 7. The ponds | 3 | two ponds with a strip of lawn between; a ball that rolls into water comes back to where it was putted from, and the putt still counts |
+| 8. Through the pipe | 2 | a wall with no gap, and a pipe under it: a ball that rolls into the way in comes out the way out going the same way |
+| 9. The gnome | 2 | a garden gnome walks up and down the one gap, so the putt waits for the way to clear |
+| 10. Mud and a hill | 3 | a strip of mud slows a ball far more than sand, then the far lawn tips |
+
+The slopes on holes 6 and 10 are drawn with `golfslope` as a hill in the lawn, shaded darker towards the low side with faint contour lines and tufts leaning downhill, in place of the arrowed `poolpatch`. Only the drawing changed: the ball rolls as before, and the solver and the rules version are unchanged.
+
+The physics behind them: slopes are a new optional part of `engine/motion/rolling.ts`, a pull on a moving ball inside an area, kept weaker than the friction so a ball comes to rest on a slope and stays there; a world without slopes rolls exactly as before. Mud is a surface with a stronger friction than sand. The windmill's rail and the gnome are rails that come and go or slide with the hole's own clock, `t`, counted in steps, so a hole replays the same for the same putts. Water and pipes are checked after each step in `golf.ts`.
+
+Each hole has three arrangements: the windmill's door and timing, the slope's direction, the cup's place. `golfPlan` in `golf-challenges.ts` proves each one: it judges a fan of aims and strengths by how near they leave the ball to the cup the long way round (a walking distance through the gaps and the pipe), with the windmill and the gnome taken away, then times the best few. Every arrangement is sunk within par through the Pad, and random putting sank none of 280 tries. The rules version is `-golf-holes-1`. Golf is still not a card: its board is too wide to crop, so it waits for the turned view.
+
+## Charlie's dollhouse (4 October 2026)
+
+The owner asked for a dollhouse game built around our own Charlie. It is id `dollhouse`, in `school/games/dollhouse.ts`, with its jobs proved in `dollhouse-challenges.ts`. The games we looked at were Roblox's Bloxburg and Adopt Me for building a house room by room on a budget, The Sims for the cut-away view and people who walk about the rooms they are given, Animal Crossing for furniture that is placed, turned and kept, and Toca Boca for a house a young child can play with no goal at all. What we took is the cut-away view seen from the side, rooms as blocks that snap together, furniture that settles on a floor or a wall, and a free build that no job ever stops.
+
+The house is seen cut open from the front on a plot of 20 squares across and three storeys of three squares each. Every level opens with the house's shell standing on a stone plinth in the middle of the field: dashed slots where its first rooms go, each with a faint roof and the words "drop a room here", and the slot a job's room belongs in outlined. The camera frames the house and its open slots large in the middle, and eases to a new frame as the house grows. Rooms snap to any place where they stand on the ground or wholly on rooms below, and once a room is built the house offers further slots beside it and over it. A room is drawn as a box looked into: a slightly darker back wall, a thick outer wall, a doorway through a wall it shares with the room beside it, a heavy floor, and a sign with its name, its squares and how many things are in it.
+
+The game has two modes, switched by a two-way switch at the top of the field. Building shows a slim drawer along the bottom with the seven rooms (a bedroom, a kitchen, a bathroom, a living room, a shed, an attic and stairs), and a room dragged up from it glows green over every slot it fits, with a faint ghost and its area where it will land. A built room can be dragged somewhere else, stretched by the handle on its right wall from 2 to 8 squares wide, or dragged back to the drawer to take it away, which only a room with nothing on top of it allows. Decorating fades the lawn and the sky, swaps the drawer for the furniture's, and a tap on a room eases the view into it until it fills the field, with the drawer opened on the tab that suits the room (Sleep, Sit, Kitchen, Bath, Walls and Plants, the Walls tab holding pictures, shelves and the four wallpapers). Each piece sits on a round chip with its price. A piece dragged from a chip glows green along the floors or walls it fits, rooms it cannot go in fade, a ghost shows where it will land, and it drops with a small squash and settle. A round back button eases out to the whole house, where pieces can still be dragged between rooms. A tap turns a sofa or a bed round or switches a lamp, a bath, a television or a cooker on. Every room costs a coin a square and every piece its price, against the level's coins, so the mathematics is area and budget. The coin readout at the top left shows the coins left, or for the jobs that count coins the coins spent against the target ("32 / 40 coins"), turning green on the target, and a card under it lists the job's parts with a tick for each one done.
+
+Whoever lives in the house waits on the grass by its door and walks in with the actor the other games use, moving into each room once it is finished. Four households can be chosen with the "Who lives here" button: Charlie alone, Charlie with a friend and a grown-up, the Pup family, and another family of people. A tap on someone and then on a room sends them there along the floors, through shared walls and up the stairs, and they cheer when a room is finished. Someone can also be dragged into a room.
+
+| Job | Ask |
+|---|---|
+| 1. Free build | 2000 coins and no goal |
+| 2. A home for Charlie | a bedroom with a bed and a picture, for 40 coins |
+| 3. Fifteen squares | a bedroom of exactly 15 squares |
+| 4. Upstairs | a bedroom upstairs with stairs up to it, over a living room already built |
+| 5. A kitchen for 20 coins | furnish the kitchen already built with given pieces, within 20 coins |
+| 6. A bed for everyone | three beds, one for each of the household |
+| 7. Twice as big | a living room twice the area of the bathroom |
+| 8. Exactly 40 coins | a living room and its furniture costing exactly 40 coins |
+| 9. A house of 36 squares | rooms that make 36 squares in all |
+
+Each job has three or four variations (the area, the room upstairs, the pieces to furnish, the number of beds, the pair of rooms, the total and the whole area), and the free build varies by household. The keys play everything: the arrows move a highlight across the drawer's rooms, or its tabs and chips, the rooms, the pieces and the people, with up and down jumping between those rows; Enter takes and puts down, picks a tab, and while decorating looks into the highlighted room; the arrows step a held thing to the next place it fits; Delete takes it away, R turns it, = and - widen and narrow a room, B builds, D decorates, Z looks into a room and out again, C changes who lives here, N starts a new house, F shows the whole house, and [ and ] look left and right. Escape stays the pause menu's, which is why looking out of a room is Z. Wider, narrower, turn, remove, build, decorate and look inside are commands with keys only, and the round buttons are the arrows, the big button, remove, "Show the whole house", "Who lives here" and "New house". Undo takes back the last change.
+
+The free build is saved in the browser. A game may now set `saves: { level }`, and the Games page keeps that level's checkpoint under the game's id every three seconds, when the page is hidden and when the game closes, and restores it when the level opens. "New house" goes back to the empty shell. A kept house is read through a checker that ignores fields it does not know, so houses kept before the shell still load. Only the free build saves, so a job always opens as authored.
+
+The dollhouse is not a card (`card: null`): the house, the switch and the drawer fill a field about 48 squares wide and play by dragging between them, which a card's crop of the focus would cut off. The switch, the drawer and the back button are fixed sprites, and the pad now carries where the pointer is in the view's own squares (`view`), so a game can tell which fixed control a finger is on whatever its camera does. Every variation of every job is built to its win through the pad by a finger and by the keys, through the modes and the zoom as a child would, and the same hands replay to the same house; random hands finished at most 2 of 10 tries on any job. The rules version is `-dollhouse-3`.
+
+A house grows as far as a child wants to build it. The owner reported a long house that could not be built further to the right, so the plot is now open: the jobs keep the 20 columns and three storeys of their brief, and the free build may run 224 columns to the left of the shell, 206 to the right and 29 storeys up, inside a world of 528 by 143 squares whose ground and trees run its whole width. A house holds at most 60 rooms, so a very big house still steps and draws within a frame, and the free build's coins were raised to 2000 so that only that cap stops it. The camera frames the whole house while it fits at 0.6 of the field's own scale; past that it stays at 0.6 and follows the last room put down, or the keys' highlight, and never shows less than the ground. A drag on the sky or the grass, two fingers or the scroll wheel pans the view, a pinch or ctrl with the wheel zooms it, a room carried near the left, right or top edge drifts the view that way, and "Show the whole house" frames every room however far out that takes. A view moved by hand keeps its middle over the house, so a pan never loses it. Rooms keep their columns in the saved house, so a house kept before the plot opened loads as it was.
+
+The switch is a segmented control of two equal halves: a single pill outline, and a yellow knob inset evenly inside it that slides between the halves over about a fifth of a second, cut under reduced motion. It is drawn 2 squares tall and answers a tap over 3, which is 52 px drawn on a desktop and a 44 px target wherever a square is at least 15 px; on a phone held upright the whole field is drawn at about 7 px a square, so the switch, like the drawer, is smaller than 44 px there, and that needs a phone layout for the game. The unselected label stays in ink rather than ink-soft, since words drawn by the field take no colour of their own; that needs a change to how the field draws text.
+
+The rework followed the owner's report that the interior was hard to see, the walls unclear and the way to put furniture in not obvious: the first version opened on an empty plot with the catalogue's room-like cards filling the right half, the room tray below the ground and the household under a tree. We considered keeping one mode with both drawers on screen and rejected it, since the two drawers competed for the same space and the furniture cards still read as rooms.
+
+## Domino machine (4 October 2026)
+
+The owner asked for a domino machine as an extension of the physics engine. It is id `machine`, in `school/games/machine.ts`, with its variations proved in `machine-challenges.ts` and its physics in `engine/motion/contraption.ts`. The games we looked at were The Incredible Machine, where a puzzle gives a few parts and a goal and the player places them and presses start, and the Rube Goldberg toys and domino sets where a row is stood up by hand and one push sets off the chain. What we took is the fixed scene with a goal at the far end, a short drawer of parts for each level, building and running as two separate phases, and a run that can be watched, reset and tried again at no cost.
+
+The field is a toy room 48 squares wide: a floor of boards with a skirting board, a rug, a window with curtains, pictures, a shelf of books at the height of a grown-up's shoulder, a toy chest, blocks, a teddy, a lamp and a plant, and a bell on a wooden post. Each furnishing has a few places it may go and takes the first that is clear of the machine, so nothing in the room sits behind a part the child has to see. Wall shelves are drawn as wooden ledges, a shelf standing on the floor as a low wooden step, the pond as water with the engine's water surface, and the bucket as a tin pail hung from pulley wheels under a beam on the wall. The camera is framed to the machine on every level rather than the whole room, from a little before the first part to a little past the bell, and free play shows the whole room. The level's parts wait in a toy tray under the floor, one chip for each part, with a count on a row's chip; a chip whose part is out on the bench fades. A part dragged up from it shows as a green ghost where it would land, or a red one with "No room here" where it would not; standing parts settle onto the floor or the shelf under them, a row let go near the end of another row joins it two squares on, and a part lands with a small bounce. A row has a grip over its last domino that is dragged along to change how many dominoes it has, and a ramp has a grip at its end that tips it, with the slope drawn gently to the nearest 15 degrees within 3. A part dragged back into the drawer goes back. Go runs the machine: Charlie points at the first domino or ball, gives it the push and watches, and the camera follows whatever moved last. A run that misses says what happened and returns to the build after a moment with every part where it was, and a run that rings the bell makes Charlie cheer.
+
+| Level | Ask | What varies |
+|---|---|---|
+| 1. Down the slide | Charlie pushes a ball off a shelf and down a slide; stand a row where it lands so the last domino rings a bell on a step | 4, 3 or 5 dominoes, each starting in another place |
+| 2. Fill the gap | dominoes stand 2 apart; how many fill 14 squares | 12, 14 or 16 squares |
+| 3. Down the ramp | put a ramp where the ball falls so it rolls into the row | where the row stands |
+| 4. The see-saw | a weight lands on one end and the other swings up to the bell | where the shelf is |
+| 5. Fill the bucket | let enough marbles into a bucket to lift a weight as heavy as 6 | 4, 6 or 8 marbles |
+| 6. The fan | stand the fan within its reach of 8 squares behind a boat | where the boat floats |
+| 7. On a budget | ring the bell for 12 coins with dominoes at 1, a short ramp at 5 and a long one at 8 | the gap the row fills |
+| 8. Off the shelf | a row on a shelf reaches a ball that rolls down to the floor | how far along the shelf |
+| 9. The grand machine | two rows to fill with a ramp between them | how the two rows share the floor |
+| 10. Free play | every part and any machine that rings the bell | how far along the bell hangs |
+
+The mathematics is in the targets: counting a row, the gap divided by the spacing (level 2), a length against the plank or the fan's reach (levels 4 and 6), one more than a weight (level 5), and a total of prices against a budget (level 7). A ruler under the gap or the plank gives the length, and a word over each row says how many it holds.
+
+How the six ingredients are met. The hand sets amounts by degrees: a row's count and a ramp's slope are drags, not taps. Physics after release: nothing moves while the child builds, and once Go is pressed the bodies are left to planck. Retries cost nothing: a run never changes the layout, and the build is back as it was after a miss. Places with obstacles: shelves, the pond, the bell, the bucket and its weight all take room, and a part cannot be put through them. Fading previews: the first levels draw the plan's parts as faint hints (strong on level 1, lighter on levels 2 and 4, none from the bucket on). Maths in the targets: each level's answer is a number the child works out, as above.
+
+The controls are a drag from the drawer, the grips, and round icon buttons for Go, reset and undo, with "Fewer" drawn as a new `less` icon beside `add`. The arrows, Go, the next part and undo always show; turning, more and fewer, and putting back show only while a part on the bench is chosen that they apply to, through the game's `shows`, and their keys work either way. The keys play everything: N chooses the next part in the drawer, the first arrow stands it in the middle of the floor and further arrows move it half a square, hopping past anything in the way, up and down step a standing part to the shelf above or the floor below, Q and R tip a ramp by 5 degrees, = and - change a row's count, X puts a part back, Backspace undoes and Space is Go. Every button is the 44 pixel floor.
+
+Each domino that falls plays the place sound a semitone higher than the one before, so the chain is heard as a rising cascade; a hard knock plays a bump whose strength is how fast it was, a spring plays a lift, a running fan hums, and the bell rings before the win. Under `prefers-reduced-motion` the game declares `still`: Go plays the run out while it is settling and the page draws only its end, with the bell at rest. Fallen dominoes and those the wave has not reached sleep in planck, so a row of forty runs in under a second of computation in node. A run is deterministic: the same layout falls the same way step for step.
+
+The machine is not a card (`card: null`): the bench, the bell and the drawer under the floor fill a wide field and play by dragging between them, which a card's crop would cut off. Free play saves its layout with `saves: { level }`, read back through `readDesign`, which refuses anything that is not a part from the level's drawer and drops parts that no longer have room. Every variation of every level is built through the pad by a finger and by the keys and rings the bell, a recorded build replays to the same machine and the same win, and random layouts rang the bell in at most a quarter of 16 tries on any level. The rules version is `-machine-3`.
+
+The first level was at first a row after Charlie's own domino, which the owner found too easy and too empty. It now starts with a ball Charlie pushes down a slide, so the child sees one part set off another before building anything, and the bell stands on a step one square high: the ball rolls up against the step and stops, so only the last domino of the right row falls far enough to reach the bell, and a row one short misses it. The row comes from the tray at two dominoes and is grown to the count by its grip or by more and fewer, so counting is the choice the child makes.
+
+## Charlie's climb (4 October 2026)
+
+The owner asked for a gentle platformer in the manner of Super Mario and Alto, with Charlie running and jumping across rooftops and treetops, picking up coins and opening number doors. It is id `climb`, in `school/games/climb.ts`, with its routes proved in `climb-challenges.ts` and its places in `engine/motion/platforms.ts`. The games we looked at were Super Mario Bros. for a held jump that sets its height, coins that are counted as they are taken, and a level read from left to right; Alto's Adventure for a calm look with depth behind the player and no punishment beyond starting a little way back; and Celeste for the forgiving input it is known for, a jump that still works just after running off an edge and a press just before landing that is kept. What we took is the held jump, the counting, checkpoints that cost nothing, and the forgiving timing. What we left is lives, enemies, a timer and a score.
+
+Charlie runs on the runner in `engine/motion/walker.ts`. Holding a jump longer jumps higher, up to the climber's full height, and letting go early cuts the rise; once she leaves the ground the runner decides the arc. A jump pressed up to a seventh of a second before landing is kept, a jump pressed up to an eighth of a second after running off an edge still works, and the tuning (gravity, the cut, the grace, the buffer and the wind) is a set of knobs. Ledges may be one-way, which she jumps up through and drops through on asking, may move along a sine, or may be a mushroom that throws her up higher than any jump. A fall into the water puts her back at once at the last flag she touched, with every coin she had, and the flags use the engine's checkpoint events and tape. Three climbers can be chosen with the "Who climbs" button or C: Charlie, Pip the pup who jumps higher, and Charlie's mum who runs faster. Changing who climbs keeps the climb where it is.
+
+Coins carry their value on their face (1, 2, 3, 5 or 10), and the readout at the top left is fixed to the view and shows the total. A door is a block until its rule is met, and touching a shut one says how far off the count is, such as "This door wants exactly 12 coins. You have 14: 2 too many. A coin box takes coins back." A coin box stands by the path with a button in front of it, and every landing on the button gives one coin back, so a count that is too large can be made right. Where two doors stand one above the other, the way on depends on the count: one opens for an odd number and the other for an even one, or one for more than 20 and the other for 20 or fewer. A star waits off the plain route on every level for a child who wants more.
+
+| Level | Place | Ask | What varies |
+|---|---|---|---|
+| 1. The garden wall | a garden with a gap and a low wall | a door that opens for 10 coins or more | 10, 8 or 9 |
+| 2. The rooftops | roofs over a row of houses, coins worth 2 | a door for exactly 12 | 12, 10 or 8 |
+| 3. The treetops | branches over a wood, with a mushroom spring | a door for exactly 20 in fives | 20 or 15 |
+| 4. The clock tower | a moving plank, a ladder and a balcony | an odd door and an even door | which coins are worth 10 or 20 |
+| 5. The windy hill | wind that carries her in the air, a coin box | a door for exactly 12 | the coins' values and 12 or 9 |
+| 6. The castle | ramparts over a moat | more than 20, or 20 or fewer | the coins' values |
+| 7. The night market | stalls and crates with two coin boxes | two doors, exactly 25 then 20 | 25 and 20, 21 and 18, 22 and 19 |
+| 8. The cloud climb | a stack of clouds | doors that show a sum, 7 + 5 and 9 + 6 | the sums |
+
+How the six ingredients are met. The hand sets amounts by degrees: how long a jump is held sets its height, and a finger held further above her keeps the jump going as she rises towards it. Physics after release: once she is in the air the runner carries her, and the only steering is the run left or right. Retries cost nothing: a fall puts her back at the flag at once with her coins, and there are no lives. Places, not screens: each level is somewhere a family would recognise, drawn with the shelf's trees, houses, clock tower, windmill, city walls, lamp posts and clouds behind it in rows of depth. Fading previews: the faint dotted arc of a full jump is shown on the first three levels, only while a jump is held on the next two, and not at all from the castle on. Maths in the targets: the door's number is the target, and the child counts by ones, twos, threes, fives and tens towards it, decides odd or even or more than, gives coins back to land on an exact number, and adds the two numbers on a cloud door.
+
+The controls are left and right to run, Space or up to jump (held for higher), down to drop through a one-way ledge, and up or down on a ladder to climb. On the field, a finger or the mouse held ahead of her runs her that way, raising it well above her jumps and keeps the jump held, holding it below her drops, and a quick tap hops. The round buttons are the arrows, a big Jump button with the launch icon and "Who climbs", each at least 44 pixels, and a gamepad plays through the pad. The keys are never taken away.
+
+The camera leads the way she runs and keeps still while she hops, moving up or down only when she leaves a band in the middle of the view. She squashes on landing in proportion to how hard she came down and springs back through the actor's squash, a little dust goes up at a jump and a landing, and coins taken in a quick run ring a semitone higher each. The sound kit gives a jump its lift, a coin its ring, a door its level chord, a splash its own sound and a coin given back its back. Under `prefers-reduced-motion` the game declares `still`: a press plays a third of a second, and a jump plays out while it is settling, so the page draws only where she lands. On a phone held upright `portrait.keep` keeps 22 squares across, and the game is a card (`card: { round: { level: 0 }, keep: 24, minutes: 2 }`) played by touch.
+
+Every variation of every level is climbed home by a pilot through the pad, once by the keys and once by a finger on the field, along a route of runs, hops, waits for the moving plank, ladder climbs and coin boxes, and the recorded pads replay to the same climb. Random hands got home at most 2 times in 10 on any level. The rules version is `-climb-1`. A phone layout that puts the run buttons under the left thumb and Jump under the right is not done, since the controls' stylesheet is shared with every other game.

@@ -26,6 +26,7 @@ lesson g1-counting-in-steps v=1 format=teach grade=1 unit=3 subject=maths levels
   }
   try stars=2 {
     show count.ears-back n=7 easy-n=4 hard-n=9
+    game snake level=1 goal="Fly the firefly to the seeds in twos."
   }
   try stars=3 {
     show count.legs-and-animals h=4 s=1 easy-h=3 hard-h=5 hard-s=3

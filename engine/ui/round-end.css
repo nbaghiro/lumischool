@@ -1,0 +1,155 @@
+/* low in the middle of the field, so the board the round ended on stays in sight above it */
+.round-end {
+    position: absolute;
+    left: 50%;
+    bottom: 16px;
+    z-index: 150;
+    transform: translateX(-50%);
+    width: min(520px, calc(100% - 24px));
+    padding: 16px 18px 14px;
+    border: 2px solid var(--ink);
+    border-radius: 14px;
+    background: var(--card);
+    box-shadow: 0 6px 0 rgb(var(--ink-rgb) / 12%);
+    color: var(--ink);
+    animation: round-end-rise 0.32s ease-out both;
+}
+.round-end.won {
+    background: color-mix(in srgb, var(--glow) 14%, var(--card));
+}
+@keyframes round-end-rise {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 18px);
+    }
+}
+.round-end-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.round-end-head > div:not(.round-end-art) {
+    flex: 1;
+    min-width: 0;
+}
+.round-end-art {
+    flex: 0 0 56px;
+    width: 56px;
+    height: 56px;
+}
+.round-end .round-end-art .game-cover {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+}
+.round-end .round-end-art svg {
+    width: 100%;
+    height: 100%;
+    max-height: 56px;
+}
+.round-end h2 {
+    margin: 0 0 2px;
+    font: 700 22px / 1.2 var(--f-hand);
+}
+.round-end p {
+    margin: 0;
+    font: 500 15px / 1.35 var(--f-read);
+    color: var(--ink-soft);
+}
+.round-end-close {
+    align-self: flex-start;
+}
+.round-end-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 14px;
+    margin-top: 14px;
+}
+.round-end-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 72px;
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: 600 14px / 1.2 var(--f-read);
+    color: var(--ink);
+    cursor: pointer;
+}
+.round-end-icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    background: var(--card);
+}
+.round-end-action.primary .round-end-icon {
+    border-color: var(--pen);
+    background: var(--pen);
+    color: var(--card);
+}
+.round-end-action:focus-visible .round-end-icon {
+    outline: 3px dashed var(--pen);
+    outline-offset: 3px;
+}
+/* a few paper scraps falling behind the heading on a win */
+.round-end-confetti {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    border-radius: inherit;
+}
+.round-end-confetti i {
+    position: absolute;
+    top: -8px;
+    left: calc(8% + var(--i) * 12%);
+    width: 7px;
+    height: 10px;
+    border-radius: 2px;
+    background: var(--berry);
+    animation: round-end-fall 1.6s ease-in calc(var(--i) * 0.09s) both;
+}
+.round-end-confetti i:nth-child(3n) {
+    background: var(--sky);
+}
+.round-end-confetti i:nth-child(3n + 1) {
+    background: var(--glow);
+}
+@keyframes round-end-fall {
+    to {
+        transform: translateY(150px) rotate(220deg);
+        opacity: 0;
+    }
+}
+.round-end.compact {
+    bottom: 8px;
+    padding: 10px 12px;
+}
+.round-end.compact h2 {
+    font-size: 17px;
+}
+.round-end.compact p {
+    font-size: 13px;
+}
+.round-end.compact .round-end-actions {
+    margin-top: 8px;
+}
+.round-end.compact .round-end-icon {
+    width: 44px;
+    height: 44px;
+}
+@media (prefers-reduced-motion: reduce) {
+    .round-end {
+        animation: none;
+    }
+    .round-end-confetti {
+        display: none;
+    }
+}

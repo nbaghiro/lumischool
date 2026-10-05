@@ -647,6 +647,8 @@ export const trainGame: ActionGame<TrainState> = {
     id: "spell",
     title: "Sound train",
     group: "action",
+    // too wide to crop into a card and keep its play in view: it waits for the turned or overview view, see .docs/game-cards.md
+    card: null,
     levels: TRAIN_LEVELS,
     rate: 60,
     hint: "Pick the wagon with the next sound, then pull it back and let go. Left and right pick a wagon, up and down set the push, space pushes, and Backspace uncouples the last wagon.",

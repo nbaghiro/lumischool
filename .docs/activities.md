@@ -230,6 +230,8 @@ One consequence to accept: an activity cannot be the only place a skill is taugh
 
 ## Where an activity lives
 
+How a game reaches a lesson page, the `game` block, the card and the `played` event, is in [game-cards.md](game-cards.md).
+
 Inside a lesson, and beside it on the map, and nowhere else at first.
 
 Inside a lesson, an activity is one block in the `try` section of a teach lesson or in the `puzzle` section of a puzzle sheet. That is the natural place: the child has met the idea in `look`, worked it in `do`, and `try` is where the lesson already puts the question that is harder than it needs to be. A lesson names at most one activity, because two would make the lesson long and would blur which skill the activity is evidence about.

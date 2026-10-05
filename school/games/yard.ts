@@ -1000,6 +1000,8 @@ export const yardGame: ActionGame<YardState> = {
     id: "shunt",
     title: "Shunting yard",
     group: "action",
+    // too wide to crop into a card and keep its play in view: it waits for the turned or overview view, see .docs/game-cards.md
+    card: null,
     quiet: true,
     levels: YARD_LEVELS,
     rate: 60,

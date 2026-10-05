@@ -1646,6 +1646,7 @@ export const swingsGame: ActionGame<SwingsState> = {
     id: "bridge",
     title: "Charlie's rope swings",
     group: "action",
+    card: { round: { level: 0 }, keep: 22, minutes: 3 },
     quiet: true,
     levels: SWINGS_LEVELS,
     rate: RATE,

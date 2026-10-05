@@ -74,6 +74,8 @@ export const person = defineDrawing<PersonParams>({
         mood: { kind: "one of", of: MOODS },
         dir: { kind: "whole", min: -1, max: 1 },
         holding: { kind: "text", most: 12 },
+        // set by the page that animates a character reading aloud, never written in a lesson
+        talking: { kind: "fixed" },
     },
     takes: [
         {
@@ -232,6 +234,7 @@ const POSE_WORD: Record<Pose, string> = {
     balance: "balancing with both arms out",
     jump: "jumping with both arms up",
     hang: "hanging by both hands from above",
+    sweep: "sweeping, striding with both hands held low in front",
 };
 /** The face as a sighted reader sees it, by its brows and mouth and never by the feeling's name. */
 const FACE_WORD: Record<Mood, string> = {

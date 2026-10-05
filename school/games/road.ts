@@ -885,6 +885,7 @@ export const roadGame: ActionGame<RoadState> = {
     portrait: { keep: 22 },
     title: "The road",
     group: "action",
+    card: { round: { level: 0, asks: 1 }, keep: 22, minutes: 2 },
     seen: "above",
     levels: ROAD_LEVELS,
     rate: RATE,
@@ -898,6 +899,10 @@ export const roadGame: ActionGame<RoadState> = {
     sounds: SOUNDS,
     hum,
     start,
+    round: (level, asks) => {
+        const L = ROAD_LEVELS[level] ?? ROAD_LEVELS[0];
+        return startRoadLevel({ ...L, stops: L.stops.slice(0, Math.max(1, asks)) }, level);
+    },
     step,
     frame,
     say,

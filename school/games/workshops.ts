@@ -1,8 +1,8 @@
 // Harbour cargo: a crane lifts crates from the dock onto a barge, and the barge floats. The child drags
-// a crate to its place on the boat and lets go, and the crane sets it down there; driven from the keys,
-// the crane carries a crate on its rope and lowers it straight down when it is let go. The barge lists
-// towards the heavier side, the load is balanced when the weights times their distances from the mast
-// come out even, and a balanced barge sails by itself. See .docs/games.md.
+// a crate and lets go; the crane carries it on its rope, so it swings as it travels, and lowers it
+// straight down from where it was let go onto whatever is below. The barge lists towards the heavier
+// side, the load is balanced when the weights times their distances from the mast come out even, and a
+// balanced barge sails by itself. See .docs/games.md.
 import { bodies, type Bodies, type Body, type Joint } from "../../engine/motion/bodies";
 import {
     workshop,
@@ -47,16 +47,14 @@ const TRAVEL = 8;
 const CARRY = JIB + TRAVEL,
     FROM = 2,
     TO = 38;
-/** A held crate's middle is this far below the hook. */
-const UNDER = 1.2;
-/** Seconds a set-down may take before the crate is put straight onto its place. */
-const PLACING = 3;
-/** Where a dragged crate rides, its middle in squares down: above the highest stack it could pass over. */
-const RIDE = 11;
-/** How far either way of the mast a crate's middle can stand on the deck, clear of the end rails. */
-const DECK = 7.5;
-/** How fast a crate's swing on the rope dies, per second. */
-const SWAY = 3;
+/** A held crate's middle is this far below the hook, and its bottom this far. */
+const UNDER = 1.2,
+    BOTTOM = 2.1;
+/** Seconds a set-down may take before the crane lets go wherever the crate is. */
+const PLACING = 6;
+/** How fast a held crate's swing dies, per second, and how quickly one being set down is eased under the trolley. */
+const SWAY = 3,
+    STEADY = 5;
 const HARBOUR: Water = { x: 17.5, w: 24.5, level: SEA, bottom: 27, waves: 0.03, hue: "sky" };
 const clamp = (n: number, a: number, b: number): number => Math.max(a, Math.min(b, n));
 const sprite = (
@@ -167,16 +165,9 @@ export interface WorkshopState {
     /** Where the hook is wanted: the trolley goes over `x` and lets the rope out to reach `y`. */
     hook: { x: number; y: number };
     held: string | null;
-    /**
-     * A crate being set down: across where it goes, whether it goes back to its place on the quay, and
-     * the tick the set-down began; null while none is.
-     */
-    placing: { x: number; home: boolean; at: number } | null;
+    /** Where a crate let go of is being set down, across, and the tick the set-down began; null while none is. */
+    placing: { x: number; at: number } | null;
     dragging: string | null;
-    /** Where the finger holding a dragged crate is. */
-    aim: { x: number; y: number } | null;
-    /** How far a carried crate leans as it swings, in radians: drawn only, it never moves where it lands. */
-    sway: number;
     touching: boolean;
     text: string;
     ticks: number;
@@ -316,8 +307,6 @@ export function startWorkshopLevel(level: number, definition: WorkshopLevel): Wo
         held: null,
         placing: null,
         dragging: null,
-        aim: null,
-        sway: 0,
         touching: false,
         text: definition.goal,
         ticks: 0,
@@ -384,119 +373,46 @@ function pick(s: WorkshopState, id: string): void {
     s.text = "Move it over the boat and press again to let it down.";
 }
 
-/** A finger takes a crate: the crane comes over it, and the crate follows the finger until it is let go. */
-function take(s: WorkshopState, id: string): void {
-    const body = s.objects.get(id);
-    if (!body) return;
-    syncCrates(s);
-    s.construction.past.push(checkpoint(s.construction));
-    s.construction.future = [];
-    if (s.construction.past.length > 100) s.construction.past.shift();
-    s.held = id;
-    s.selected = id;
-    s.dragging = id;
-    s.aim = { ...s.world.where(body) };
-    s.sway = 0;
-    setRope(s, 30);
-    s.text = "Drag it over the boat and let go.";
+/** The crane lets go of the crate it holds. */
+function release(s: WorkshopState): void {
+    s.held = null;
+    s.placing = null;
+    setRope(s, s.crane.length);
+    s.text = "Set down. Load every crate onto the boat.";
 }
 
-/**
- * Where a crate let go of above `x` comes to rest across. Over the deck, or near enough the boat when
- * `near` (a finger's drop), it snaps to the deck's half-square places and stays clear of the end rails;
- * over the quay it goes on the quay; a finger's drop anywhere else goes back to its place on the quay,
- * and a crate let down from the keys goes straight down, into the harbour if that is what is below.
- */
-function landing(s: WorkshopState, x: number, near: boolean): { x: number; home: boolean } {
-    const b = s.world.where(s.barge).x;
-    if (Math.abs(x - b) < HALF + (near ? 3 : 0))
-        return { x: b + clamp(Math.round((x - b) * 2) / 2, -DECK, DECK), home: false };
-    if (x < HARBOUR.x - 0.9) return { x: clamp(Math.round(x * 2) / 2, 1.2, 16), home: false };
-    return { x: clamp(x, FROM, TO), home: near };
-}
-
-/** Lets go of the held crate above `x`: the crane sets it down where it lands. */
-function setDown(s: WorkshopState, x: number, near: boolean): void {
-    if (!s.held) return;
-    const spot = landing(s, x, near);
-    s.placing = { ...spot, at: s.ticks };
+/** Let go of a carried crate: the crane takes it over `x` and lowers it onto whatever is below. */
+function drop(s: WorkshopState, x: number): void {
+    s.placing = { x: clamp(x, FROM, TO), at: s.ticks };
+    s.hook = { x: s.placing.x, y: CARRY };
     s.dragging = null;
-    s.aim = null;
-    setRope(s, 30);
-    s.text = spot.home ? "Not there: back to the quay." : "Setting it down.";
+    s.text = "Setting it down.";
 }
 
-/**
- * The top of whatever is below a crate standing at `x`, from `from` down: a crate, the deck, the dock,
- * or the sea. Probed from the crate's own middle, which a probe starting inside it does not see.
- */
-function surfaceUnder(s: WorkshopState, x: number, from: number): number {
-    return Math.min(
-        ...[x - 0.75, x, x + 0.75].map((px) => s.world.rayDown(px, from, SIZE.h)?.y ?? SEA),
-    );
+/** The top of whatever is straight below `x`, from under the held crate down: a crate, the deck, the dock, or the sea. */
+function surfaceBelow(s: WorkshopState, x: number): number {
+    const crate = s.held ? s.objects.get(s.held) : undefined,
+        from = crate ? s.world.where(crate).y + BOTTOM - UNDER + 0.05 : JIB + 1;
+    return s.world.rayDown(x, from, SIZE.h)?.y ?? SEA;
 }
 
-/**
- * Moves a crate towards `to` a step at a time, as the crane does: up to its riding height first, then
- * across, then down. Says whether it has arrived.
- */
-function glide(s: WorkshopState, crate: Body, to: { x: number; y: number }): boolean {
-    const at = s.world.where(crate),
-        k = 1 - Math.exp(-12 * DT),
-        dx = to.x - at.x;
-    let x = at.x,
-        y = at.y;
-    const toward = (from: number, want: number) => {
-        const d = (want - from) * k;
-        return Math.abs(want - from) < 0.12
-            ? want
-            : from + Math.sign(d) * Math.max(Math.abs(d), 0.12);
-    };
-    if (Math.abs(dx) > 0.05) {
-        if (at.y > RIDE + 0.5) y = toward(at.y, RIDE);
-        else x = toward(at.x, to.x);
-    } else {
-        x = to.x;
-        y = toward(at.y, to.y);
-    }
-    const vx = (x - at.x) / DT;
-    s.sway = clamp(s.sway * 0.85 - vx * 0.004, -0.12, 0.12);
-    s.world.moveTo(crate, { x, y }, s.sway);
-    s.world.moveTo(s.crane.trolley, { x, y: JIB });
-    return Math.abs(to.x - x) < 0.01 && Math.abs(to.y - y) < 0.01;
-}
-
-/** A dragged crate follows the finger across, riding high enough to pass over the others. */
-function carry(s: WorkshopState): void {
-    const crate = s.held ? s.objects.get(s.held) : undefined;
-    if (!crate || !s.aim) return;
-    glide(s, crate, { x: clamp(s.aim.x, FROM, TO), y: RIDE });
-}
-
-/** Lowers a crate being set down onto its place, and lets go of it there. */
-function place(s: WorkshopState): void {
-    const p = s.placing,
+/** Lowers a crate being set down until it rests just above what is below, then lets go once it hangs still. */
+function lower(s: WorkshopState): void {
+    const place = s.placing,
         crate = s.held ? s.objects.get(s.held) : undefined;
-    if (!p || !crate) {
+    if (!place || !crate) {
         s.placing = null;
         return;
     }
-    const at = s.world.where(crate),
-        home = s.definition.pieces.find((piece) => piece.id === s.held),
-        to =
-            p.home && home
-                ? { x: home.x, y: home.y }
-                : { x: p.x, y: surfaceUnder(s, p.x, at.y) - 0.92 };
-    const arrived = glide(s, crate, to);
-    if (!arrived && (s.ticks - p.at) * DT < PLACING) return;
-    s.world.moveTo(crate, to, 0);
-    s.held = null;
-    s.placing = null;
-    s.sway = 0;
-    const t = s.world.where(s.crane.trolley);
-    s.hook = { x: t.x, y: to.y - UNDER };
-    setRope(s, to.y - UNDER - JIB);
-    s.text = p.home ? "Back on the quay." : "Set down.";
+    const surface = surfaceBelow(s, place.x),
+        at = s.world.where(crate),
+        v = s.world.velocity(crate),
+        t = s.world.where(s.crane.trolley);
+    s.hook = { x: place.x, y: surface - BOTTOM - 0.15 };
+    const over = Math.abs(t.x - place.x) < 0.15 && Math.abs(at.x - place.x) < 0.25,
+        down = at.y + BOTTOM - UNDER > surface - 0.45,
+        still = Math.hypot(v.x, v.y) < 0.4;
+    if ((over && down && still) || (s.ticks - place.at) * DT > PLACING) release(s);
 }
 
 /** The crate just under the hook, within reach of it, if any: the one the big button takes. */
@@ -522,7 +438,7 @@ function hook(s: WorkshopState): void {
     if (s.held) {
         // let down straight below where it hangs, its swing steadied, rather than dropped
         const crate = s.objects.get(s.held);
-        setDown(s, crate ? s.world.where(crate).x : s.hook.x, false);
+        drop(s, crate ? s.world.where(crate).x : s.hook.x);
         return;
     }
     const id = underHook(s),
@@ -557,10 +473,9 @@ function deliver(s: WorkshopState, out: Happening[]): void {
  * trolley is now: to the hook itself, or to the top of the crate it holds, just under the hook.
  */
 function setRope(s: WorkshopState, length: number): void {
-    // a crate the crane moves by hand, dragged or being set down, hangs from the hook rather than the rope
     const c = s.crane,
         t = s.world.where(c.trolley),
-        crate = s.held && !s.dragging && !s.placing ? s.objects.get(s.held) : undefined,
+        crate = s.held ? s.objects.get(s.held) : undefined,
         load = crate ?? c.hook,
         at = s.world.where(load);
     s.world.unjoin(c.rope);
@@ -574,14 +489,14 @@ function setRope(s: WorkshopState, length: number): void {
 
 /** Runs the trolley towards the wanted hook and winds the rope towards it, no faster than a crane can. */
 function stepCrane(s: WorkshopState): void {
-    moor(s);
-    // a crate moved by hand moves the trolley itself
-    if (s.dragging || s.placing) return;
     const c = s.crane,
         t = s.world.where(c.trolley),
         h = s.world.where(c.hook);
-    // a crate travels high, clear of the others: it is lifted before the trolley moves
-    const over = Math.abs(s.hook.x - t.x) < 0.15 && Math.abs(h.x - t.x) < 0.15,
+    // a crate travels high, clear of the others: it is lifted before the trolley moves, and lowered
+    // once it hangs still over its place
+    // setting a crate down starts once it hangs roughly under the trolley; lowering it steadies it the rest of the way
+    const near = s.placing ? 0.5 : 0.15,
+        over = Math.abs(s.hook.x - t.x) < 0.15 && Math.abs(h.x - t.x) < near,
         lifting = s.held !== null && !over && c.length > TRAVEL + 0.1;
     s.world.launch(c.trolley, {
         x: lifting ? 0 : clamp((s.hook.x - t.x) * 6, -14, 14),
@@ -598,12 +513,18 @@ function stepCrane(s: WorkshopState): void {
         const v = s.world.velocity(crate),
             vt = s.world.velocity(c.trolley),
             mass = (s.definition.masses?.[i] ?? 1) * HEAVY * 1.8 * 1.8;
-        s.world.push(crate, { x: -SWAY * mass * (v.x - vt.x), y: 0 });
+        // a crate being set down is eased under the trolley, as a driver steadies a load onto its place:
+        // a spring towards the trolley with just enough damping that it settles in about a second
+        const at = s.world.where(crate),
+            tx = s.world.where(c.trolley).x;
+        s.world.push(crate, {
+            x: s.placing
+                ? mass * (STEADY * STEADY * (tx - at.x) - 2 * STEADY * (v.x - vt.x))
+                : -SWAY * mass * (v.x - vt.x),
+            y: 0,
+        });
     }
-}
-
-/** The barge's mooring lines hold it where it is moored, and let it rise, fall and list. */
-function moor(s: WorkshopState): void {
+    // the barge's mooring lines hold it where it is moored, and let it rise, fall and list
     const b = s.world.where(s.barge),
         v = s.world.velocity(s.barge);
     s.world.push(s.barge, { x: -600 * (b.x - MOOR) - 300 * v.x, y: 0 });
@@ -615,8 +536,6 @@ export function workshopCommand(s: WorkshopState, id: string): void {
             s.held = null;
             s.placing = null;
             s.dragging = null;
-            s.aim = null;
-            s.sway = 0;
             s.phase = "build";
             s.goals = goalsFor();
             rebuild(s);
@@ -647,13 +566,21 @@ export function stepWorkshop(s: WorkshopState, pad: Pad): Happening[] {
         s.sailed = Math.min(8, s.sailed + DT * 1.5);
         return out;
     }
-    // a finger on a crate takes it and carries it; lifting the finger lets it down where the finger was
+    // a finger on a crate takes it on the hook and carries it on its rope; lifting the finger lets it go
+    // to be lowered straight down from there
     if (!s.placing && pad.touch && !s.touching && !s.held) {
         const id = crateAt(s, pad.touch);
-        if (id) take(s, id);
+        if (id) {
+            pick(s, id);
+            s.dragging = id;
+            s.text = "Drag it over the boat and let go.";
+        }
     }
-    if (s.dragging && pad.touch) s.aim = { ...pad.touch };
-    if (s.dragging && pad.lifted) setDown(s, pad.lifted.x, true);
+    if (s.dragging && s.held && pad.touch) s.hook = { x: clamp(pad.touch.x, FROM, TO), y: CARRY };
+    if (s.dragging && pad.lifted) {
+        if (s.held) drop(s, pad.lifted.x);
+        s.dragging = null;
+    }
     // the keys and the arrow buttons drive the crane as they always have: the hook follows the arrow
     // held, and the big button takes the crate under the hook or lets the held one go where it hangs
     if (!s.placing && !s.dragging) {
@@ -674,8 +601,7 @@ export function stepWorkshop(s: WorkshopState, pad: Pad): Happening[] {
         if (pad.brake) workshopCommand(s, "test");
     }
     s.touching = !!pad.touch;
-    if (s.dragging) carry(s);
-    if (s.placing) place(s);
+    if (s.placing) lower(s);
     stepCrane(s);
     s.world.step(DT);
     const held = s.held ? s.objects.get(s.held) : undefined;
@@ -739,12 +665,6 @@ export function stepWorkshop(s: WorkshopState, pad: Pad): Happening[] {
     return out;
 }
 
-/** How much the landing is shown: the drop line and the barge's list, the drop line only, or nothing. */
-const previewOf = (level: number): 0 | 1 | 2 => (level <= 1 ? 2 : level === 2 ? 1 : 0);
-
-/** How far the barge would list for a load's moment, in radians, as the ghost mast leans: a guide, not the physics. */
-const listFor = (moment: number): number => clamp(moment * 0.012, -0.18, 0.18);
-
 export function workshopFrame(s: WorkshopState): Frame {
     const sprites: Sprite[] = [],
         marks: Mark[] = [];
@@ -792,40 +712,8 @@ export function workshopFrame(s: WorkshopState): Frame {
         marks.push(words(at.x + sailed, at.y + 0.2, String(s.definition.masses?.[i] ?? 1)));
         if (s.held === p.id)
             marks.push({ kind: "line", a: hookAt, b: { x: at.x, y: at.y - 0.9 }, style: "thin" });
-        else if (!s.held && s.phase !== "won" && underHook(s) === p.id)
-            marks.push({ kind: "ring", x: at.x, y: at.y, r: 1.4 });
     }
-    const balance = cargoBalance(s),
-        preview = previewOf(s.level);
-    // where the carried crate will land: a line down to what is below and its outline there, and how the barge would list
-    const heldIndex = s.construction.design.pieces.findIndex((p) => p.id === s.held),
-        heldBody = s.held ? s.objects.get(s.held) : undefined;
-    let moment = balance.moment;
-    const at = heldBody ? s.world.where(heldBody) : null,
-        spot = s.placing
-            ? s.placing
-            : at
-              ? landing(s, s.dragging && s.aim ? s.aim.x : at.x, s.dragging !== null)
-              : null;
-    if (at && spot && !spot.home && preview > 0) {
-        const x = spot.x,
-            surface = surfaceUnder(s, x, at.y);
-        marks.push(
-            { kind: "line", a: { x, y: at.y + 0.9 }, b: { x, y: surface }, style: "aim" },
-            { kind: "box", x: x - 0.9, y: surface - 1.8, w: 1.8, h: 1.8 },
-        );
-    }
-    if (spot && !spot.home && Math.abs(spot.x - barge.x) < HALF)
-        moment += (spot.x - barge.x) * (s.definition.masses?.[heldIndex] ?? 1);
-    if (heldBody && preview === 2) {
-        const lean = listFor(moment),
-            dir = { x: Math.sin(lean), y: -Math.cos(lean) };
-        marks.push({
-            kind: "dots",
-            pts: [2, 4, 6, 8, 10].map((k) => ({ x: bx + dir.x * k, y: barge.y + dir.y * k })),
-            faint: true,
-        });
-    }
+    const balance = cargoBalance(s);
     // the mast stands up from the barge's middle and leans as the barge lists
     marks.push(
         words(MOOR, 6, `${balance.loaded}/${s.objects.size} aboard`),
@@ -895,10 +783,11 @@ export const cargoGame: ActionGame<WorkshopState> = {
     id: "cargo-workshop",
     title: "Harbour cargo",
     group: "action",
+    card: { round: { level: 0 }, keep: 30, minutes: 3 },
     rate: 60,
     touch: true,
     cover: { art: "barge", params: { w: 12, h: 3, rails: 1, load: [3, 5, 2], hook: 1 } },
-    hint: "Drag a crate to its place on the boat and let go, and the crane sets it down there. Or drive the crane: the arrow keys move the hook, and Space or Enter picks up the crate under it or lets the one it holds down. Keep the boat level and it sails.",
+    hint: "Drag a crate over the boat and let go, and the crane lowers it straight down from there. Or drive the crane: the arrow keys move the hook, and Space or Enter picks up the crate under it or lets the one it holds down. Keep the boat level and it sails.",
     levels: CARGO_LEVELS,
     controls: {
         arrows: { left: "Left", right: "Right", up: "Up", down: "Down" },
@@ -918,11 +807,10 @@ export const cargoGame: ActionGame<WorkshopState> = {
     }),
     command: workshopCommand,
     cancelInput: (s) => {
-        // a drag cut short sets its crate down below where it is
+        // a drag cut short lets its crate down straight below where it hangs
         const crate = s.dragging && s.held ? s.objects.get(s.held) : undefined;
-        if (crate) setDown(s, s.world.where(crate).x, true);
+        if (crate) drop(s, s.world.where(crate).x);
         s.dragging = null;
-        s.aim = null;
         s.touching = false;
     },
     checkpoint: (s) => {
@@ -945,8 +833,6 @@ export const cargoGame: ActionGame<WorkshopState> = {
         s.held = null;
         s.placing = null;
         s.dragging = null;
-        s.aim = null;
-        s.sway = 0;
         s.sailed = 0;
         s.goals = goalsFor();
         rebuild(s);
@@ -955,8 +841,10 @@ export const cargoGame: ActionGame<WorkshopState> = {
     },
     still: {
         press: () => 12,
+        // once the boat sails the harbour is no longer stepped, so nothing is left to settle
         settling: (s) =>
-            s.placing !== null ||
-            ([...s.objects.values()].some((b) => s.world.moving(b)) && !s.held),
+            s.phase !== "won" &&
+            (s.placing !== null ||
+                ([...s.objects.values()].some((b) => s.world.moving(b)) && !s.held)),
     },
 };

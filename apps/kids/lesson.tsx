@@ -9,6 +9,7 @@ import { createSignal } from "solid-js";
 // could not read stays a card on the roll.
 
 import type { SceneDrawer } from "../../engine/ui/scene";
+import type { CardResult } from "../../engine/ui/game-card-rules";
 import { render } from "solid-js/web";
 import type { Envelope, Timing } from "../../engine/answer";
 import * as client from "../../engine/ui/kid";
@@ -25,6 +26,7 @@ import {
 import { partsOf, type Left, type Level, type PackBook, type PackLesson } from "../../engine/pack";
 import {
     answered,
+    played,
     askedIn,
     began,
     checkArranged,
@@ -174,6 +176,14 @@ class Sitting {
     hinted(asked: Asked, turn: Turn): void {
         void this.record([{ kind: "hint-opened", data: hintOpened(this.id, asked, turn) }]);
     }
+    played(place: { section: number; card: number; level: number }, round: CardResult): void {
+        void this.record([
+            {
+                kind: "played",
+                data: played(this.id, this.lesson, this.level, place, round),
+            },
+        ]);
+    }
     asked(asked: Asked, ask: Ask, material: string | null): void {
         void this.record([{ kind: "help-asked", data: helpAsked(this.id, asked, ask, material) }]);
     }
@@ -290,6 +300,7 @@ function sheetFor(
             if (a) sitting.asked(a, ask, material);
         },
         empty: LINES.empty,
+        played: (place, round) => sitting.played(place, round),
         finished: () => {
             void sitting.finished().then((ended) => {
                 if (ended) onFinished(lesson.id);

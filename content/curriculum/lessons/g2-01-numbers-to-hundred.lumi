@@ -26,6 +26,7 @@ lesson g2-numbers-to-one-hundred v=1 format=teach grade=2 unit=1 subject=maths l
   }
   try stars=2 {
     show place.same-cubes t=5 o=4 d=1 easy-t=4 easy-o=2 hard-t=7 hard-o=9 hard-d=2
+    game plane level=2 goal="Fly through the hoop at the height on each flag."
   }
   try stars=3 {
     show place.all-the-numbers k=3 easy-k=6 hard-k=2

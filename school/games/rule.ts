@@ -675,6 +675,8 @@ export const ruleGame: ActionGame<MachineState> = {
     id: "rule",
     title: "The number machine",
     group: "action",
+    // too wide to crop into a card and keep its play in view: it waits for the turned or overview view, see .docs/game-cards.md
+    card: null,
     levels: MACHINE_LEVELS,
     rate: RATE,
     cover: { art: "rulemachine", params: { rule: "", pull: 0, turn: 0, lit: false } },

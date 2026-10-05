@@ -25,6 +25,7 @@ lesson g1-bonds-to-ten v=1 format=teach grade=1 unit=1 subject=maths levels=[eas
   try stars=2 {
     show bonds.three-parts p=3 q=2 easy-p=4 easy-q=3 hard-p=1 hard-q=2
     show bonds.level-the-plank n=10 a=3 easy-n=7 hard-a=4
+    game pool level=1 goal="Pot balls that make ten."
   }
   try stars=3 {
     show bonds.two-cups d=4 easy-d=2 hard-d=8

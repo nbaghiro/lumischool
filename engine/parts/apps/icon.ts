@@ -1,7 +1,7 @@
 // The apps' own controls, as one set: each icon is drawn on the same 2-square box with one stroke
 // weight, round ends and a single marker under the pencil, so a row of them reads as one hand. Each control
 // supplies a visible label or an accessible name and tooltip for compact controls. See .docs/shelf.md.
-import { group, plain, type Ctx } from "../../ink/surface";
+import { clip, group, plain, type Ctx } from "../../ink/surface";
 import type { Marker } from "../../paper";
 import { defineDrawing } from "../drawing";
 
@@ -12,6 +12,11 @@ export const ICONS = [
     "journal",
     "pictures",
     "map",
+    "lessons",
+    "calendar",
+    "more",
+    "games",
+    "paint",
     "print",
     "settings",
     "back",
@@ -41,6 +46,14 @@ export const ICONS = [
     "ball",
     "frisbee",
     "stick",
+    "who",
+    "broom",
+    "curl",
+    "less",
+    "seed",
+    "water",
+    "basket",
+    "sun",
 ] as const;
 export type IconName = (typeof ICONS)[number];
 
@@ -50,11 +63,17 @@ export const ICON_LABEL: Record<IconName, string> = {
     journal: "Journal",
     pictures: "Your pictures",
     map: "Map",
+    lessons: "Lessons",
+    calendar: "Calendar",
+    more: "More",
+    games: "Games",
+    paint: "Painting",
     print: "Print",
     settings: "Settings",
     back: "Back",
     signout: "Sign out",
     add: "Add",
+    less: "Fewer",
     help: "Help",
     sound: "Sound",
     undo: "Undo",
@@ -79,6 +98,13 @@ export const ICON_LABEL: Record<IconName, string> = {
     ball: "Ball",
     frisbee: "Frisbee",
     stick: "Stick",
+    who: "Who lives here",
+    broom: "Sweep",
+    curl: "Change the curl",
+    seed: "Plant",
+    water: "Water",
+    basket: "Pick",
+    sun: "Next day",
 };
 
 /**
@@ -124,7 +150,126 @@ function arrow<G>(c: Ctx<G>, from: Pt, to: Pt, head = 7.5): void {
     }
 }
 
+/**
+ * The places' icons are things folded and cut from the squared book, drawn as the paper plane is:
+ * a finer line than the controls', the page's grid showing through the paper, the side turned away
+ * hatched, and one small colour. FINE is that line in the 40-unit box.
+ */
+const FINE = 1.25;
+
+/** A piece of the squared book: white card, its grid clipped to the shape, and the line over both. */
+function sheet<G>(c: Ctx<G>, d: string): void {
+    plain(c, { kind: "path", d, fill: c.t.card, stroke: "none" });
+    if (!c.paper) {
+        const grid = clip(c, { kind: "path", d });
+        for (let v = 2; v < 40; v += 4.5) {
+            for (const g of [`M${v} 0V40`, `M0 ${v}H40`])
+                plain(grid, { kind: "path", d: g, stroke: c.t.grid, width: 0.6, fill: "none" });
+        }
+    }
+    c.pen.path(c.g, d, "ruler", null, line(c, FINE));
+}
+
+/** The side of a fold that is turned away, hatched in the soft ink as the plane's underside is. */
+const shade = <G>(c: Ctx<G>, d: string): void =>
+    c.pen.path(
+        c.g,
+        d,
+        "ruler",
+        c.pen.fill("ink-soft", "hachure", { hachureGap: 3.2, strokeWidth: 0.8 }),
+        line(c, 0.7),
+    );
+
+/** A patch of one colour on the paper, with its own fine line. */
+const dab = <G>(c: Ctx<G>, d: string, m: Marker): void =>
+    c.pen.path(c.g, d, "ruler", c.pen.fill(m), line(c, 0.9));
+
 const DRAW: Record<IconName, <G>(c: Ctx<G>) => void> = {
+    seed: (c) => {
+        // a sprout with two leaves coming up out of a mound of soil
+        const mound = "M6 34C9 27 31 27 34 34Z";
+        wash(c, mound, "tang");
+        c.pen.path(c.g, mound, "ruler", null, line(c));
+        c.pen.path(c.g, "M20 29V15", "ruler", null, line(c));
+        const left = "M20 19C15 19 10 16 9 10C15 10 19 13 20 19Z",
+            right = "M20 15C21 9 26 6 32 6C31 12 26 15 20 15Z";
+        wash(c, left, "mint");
+        wash(c, right, "mint");
+        c.pen.path(c.g, left, "ruler", null, line(c));
+        c.pen.path(c.g, right, "ruler", null, line(c));
+    },
+    water: (c) => {
+        // a watering can tipped, and three drops falling from its rose
+        const body = "M15 14H31V30H15Z";
+        wash(c, body, "sky");
+        c.pen.path(c.g, body, "ruler", null, line(c));
+        c.pen.path(c.g, "M15 20L6 13", "ruler", null, line(c));
+        c.pen.path(c.g, "M31 17C37 17 37 27 31 27", "ruler", null, line(c));
+        for (const [x, y] of [
+            [5, 21],
+            [9, 27],
+            [3, 31],
+        ] as const)
+            c.pen.path(c.g, `M${x} ${y}V${y + 3}`, "ruler", null, line(c));
+    },
+    basket: (c) => {
+        // a basket with a handle over it, the way picked things are carried
+        const d = "M6 18H34L30 34H10Z";
+        wash(c, d, "glow");
+        c.pen.path(c.g, d, "ruler", null, line(c));
+        c.pen.path(c.g, "M11 18C11 6 29 6 29 18", "ruler", null, line(c));
+        c.pen.path(c.g, "M8 25H32", "ruler", null, line(c, W * 0.8));
+    },
+    sun: (c) => {
+        // the sun, for a night passing and the next day coming
+        const d = circle(20, 20, 7);
+        wash(c, d, "glow");
+        c.pen.path(c.g, d, "ruler", null, line(c));
+        for (let k = 0; k < 8; k++) {
+            const a = (k * Math.PI) / 4;
+            c.pen.line(
+                c.g,
+                20 + Math.cos(a) * 11,
+                20 + Math.sin(a) * 11,
+                20 + Math.cos(a) * 15,
+                20 + Math.sin(a) * 15,
+                "ruler",
+                line(c),
+            );
+        }
+    },
+    who: (c) => {
+        // a head and shoulders, for choosing who a game is played as
+        const head = "M26 14A6 6 0 1 1 14 14A6 6 0 1 1 26 14Z";
+        wash(c, head, "berry");
+        c.pen.path(c.g, head, "ruler", null, line(c));
+        c.pen.path(c.g, "M8 34C8 26 13 22 20 22C27 22 32 26 32 34", "ruler", null, line(c));
+    },
+    broom: (c) => {
+        // a curling broom: a long handle and its pad on the ice
+        c.pen.path(c.g, "M31 5L18 25", "ruler", null, line(c));
+        const pad = rounded(6, 25, 22, 8, 3);
+        wash(c, pad, "tang");
+        c.pen.path(c.g, pad, "ruler", null, line(c));
+        c.pen.path(c.g, "M11 33V36M17 33V36M23 33V36", "ruler", null, line(c, W * 0.8));
+    },
+    curl: (c) => {
+        // a stone and the curve it bends along, for which way it curls
+        const stone = circle(10, 30, 5);
+        wash(c, stone, "sky");
+        c.pen.path(c.g, stone, "ruler", null, line(c));
+        c.pen.path(c.g, "M15 27C19 15 25 11 32 11", "ruler", null, line(c));
+        c.pen.linear(
+            c.g,
+            [
+                [27, 6],
+                [32, 11],
+                [27, 16],
+            ],
+            "ruler",
+            line(c),
+        );
+    },
     ball: (c) => {
         const d = "M32 20A12 12 0 1 1 8 20A12 12 0 1 1 32 20Z";
         wash(c, d, "glow");
@@ -311,56 +456,12 @@ const DRAW: Record<IconName, <G>(c: Ctx<G>) => void> = {
         c.pen.path(c.g, rounded(7, 27, 12, 9, 1), "ruler", null, line(c));
     },
     home: (c) => {
-        wash(
-            c,
-            poly([
-                [10, 17.5],
-                [20, 8.5],
-                [30, 17.5],
-                [30, 34.5],
-                [10, 34.5],
-            ]),
-            "glow",
-        );
-        c.pen.linear(
-            c.g,
-            [
-                [5.5, 19.5],
-                [20, 6.5],
-                [34.5, 19.5],
-            ],
-            "ruler",
-            line(c),
-        );
-        c.pen.linear(
-            c.g,
-            [
-                [9.5, 16.5],
-                [9.5, 34.5],
-                [30.5, 34.5],
-                [30.5, 16.5],
-            ],
-            "ruler",
-            line(c),
-        );
-        c.pen.path(
-            c.g,
-            `M16.5 34.5V26.5Q16.5 23 20 23Q23.5 23 23.5 26.5V34.5`,
-            "ruler",
-            null,
-            line(c),
-        );
-        c.pen.linear(
-            c.g,
-            [
-                [26, 11],
-                [26, 7.5],
-                [29.5, 7.5],
-                [29.5, 14],
-            ],
-            "ruler",
-            line(c, W * 0.85),
-        );
+        // a house folded from the squared page, its roof's far side in shade and a lit window
+        sheet(c, "M8 19L20 9L32 19V33H8Z");
+        shade(c, "M20 9L32 19H25Z");
+        c.pen.path(c.g, "M5.5 20.5L20 8L34.5 20.5", "ruler", null, line(c, FINE));
+        dab(c, "M17 33V25.5H23V33", "glow");
+        dab(c, "M11.5 22H15.5V26H11.5Z", "sky");
     },
     pictures: (c) => {
         wash(c, rounded(8, 9, 27, 24, 2), "sky");
@@ -370,50 +471,37 @@ const DRAW: Record<IconName, <G>(c: Ctx<G>) => void> = {
         c.pen.path(c.g, circle(26, 16, 2), "ruler", null, line(c));
     },
     journal: (c) => {
-        wash(c, rounded(9.5, 5.5, 22, 29.5, 3), "sky");
-        c.pen.path(c.g, rounded(9, 5, 22.5, 30, 3), "ruler", null, line(c));
-        c.pen.line(c.g, 13.5, 5.5, 13.5, 34.5, "ruler", line(c, W * 0.8));
-        const label = { fill: c.t.card, fillStyle: "solid" };
-        c.pen.path(c.g, rounded(17, 11, 10.5, 7, 1.8), "ruler", label, line(c, W * 0.8));
+        // today's page of the squared book, set down askew, a line written on it and the pencil
+        sheet(c, "M6.5 10.5L27 6.5L31.5 30.5L11 34.5Z");
+        c.pen.path(c.g, "M11.5 16.5C14 14.5 15.5 18 18 15.5S22.5 15.5 24.5 13.5", "ruler", null, {
+            ...line(c, 1.3),
+            stroke: c.t.pen,
+        });
+        c.pen.path(c.g, "M12.5 22.5L23.5 20.4", "ruler", null, {
+            ...line(c, 1.3),
+            stroke: c.t.pen,
+        });
+        // the pencil across the page's corner: its yellow body, the pink end, the sharpened point
+        dab(c, "M17 30.5L32.5 15L36 18.5L20.5 34Z", "glow");
+        dab(c, "M32.5 15L34.5 13C35.5 12 37 12 38 13S39 15.5 38 16.5L36 18.5Z", "berry");
+        c.pen.path(c.g, "M17 30.5L13.5 37.5L20.5 34Z", "ruler", c.pen.fill("card"), line(c, 0.9));
+        plain(c, {
+            kind: "path",
+            d: "M14.6 35.2L13.5 37.5L15.8 36.4Z",
+            fill: c.t.ink,
+            stroke: "none",
+        });
     },
     map: (c) => {
-        wash(
-            c,
-            poly([
-                [15, 10],
-                [25, 13.5],
-                [25, 31],
-                [15, 27.5],
-            ]),
-            "mint",
-        );
-        const edge: Pt[] = [
-            [5.5, 13.5],
-            [15, 9.5],
-            [25, 13],
-            [34.5, 9.5],
-            [34.5, 27],
-            [25, 30.5],
-            [15, 27],
-            [5.5, 30.5],
-            [5.5, 13.5],
-        ];
-        c.pen.linear(c.g, edge, "ruler", line(c));
-        c.pen.line(c.g, 15, 10, 15, 26.5, "ruler", line(c, W * 0.7));
-        c.pen.line(c.g, 25, 13.5, 25, 30, "ruler", line(c, W * 0.7));
-        const route = { ...line(c, W * 0.7), strokeLineDash: [2.4, 2.6] };
-        c.pen.path(c.g, "M9 25Q14 19 19 21T30 16", "ruler", null, route);
-        for (const s of [-1, 1]) {
-            c.pen.line(
-                c.g,
-                30 - 2.4,
-                16 + s * 2.4,
-                30 + 2.4,
-                16 - s * 2.4,
-                "ruler",
-                line(c, W * 0.8),
-            );
-        }
+        // a pin of the squared page standing where you are, its shadow hatched and the way that led there
+        c.pen.path(c.g, "M3.5 33.5C7 28.5 10 32.5 14 30", "ruler", null, {
+            ...line(c, 1.4),
+            stroke: c.t.pen,
+            strokeLineDash: [2.4, 2.2],
+        });
+        shade(c, "M15 34.5C15 33 19 32 23 32S31 33 31 34.5S27 37 23 37S15 36 15 34.5Z");
+        sheet(c, "M23 34C23 34 13 23.5 13 15.5A10 10 0 1 1 33 15.5C33 23.5 23 34 23 34Z");
+        dab(c, circle(23, 15.5, 4), "berry");
     },
     print: (c) => {
         wash(c, rounded(7, 15.5, 26, 12.5, 3), "sky");
@@ -447,6 +535,64 @@ const DRAW: Record<IconName, <G>(c: Ctx<G>) => void> = {
             { fill: c.t.ink, fillStyle: "solid" },
             line(c, 0.6),
         );
+    },
+    lessons: (c) => {
+        // a book open on its squared pages, a ribbon keeping the place
+        sheet(c, "M20 11C15 8 9 8 5.5 9.5V31C9 29.5 15 29.5 20 32Z");
+        sheet(c, "M20 11C25 8 31 8 34.5 9.5V31C31 29.5 25 29.5 20 32Z");
+        shade(c, "M20 11C18.5 10 17 9.4 15.5 9.1V30.2C17 30.6 18.5 31.2 20 32Z");
+        dab(c, "M27 8.6L27 18L29 16.2L31 18V8.9", "berry");
+        c.pen.line(c.g, 20, 11, 20, 32, "ruler", line(c, FINE));
+    },
+    calendar: (c) => {
+        // a month's page of the squared book on two rings, today ringed in the pen
+        sheet(c, "M7 11H33V34H7Z");
+        dab(c, "M7 11H33V16.5H7Z", "berry");
+        for (const x of [14, 26]) {
+            c.pen.path(c.g, `M${x} 14.5V7.5`, "ruler", null, line(c, FINE));
+            c.pen.circle(c.g, x, 14.5, 2.2, "ruler", c.pen.fill("card"), line(c, 1.1));
+        }
+        c.pen.circle(c.g, 25.5, 26.5, 7, "ruler", null, { ...line(c, 1.5), stroke: c.t.pen });
+    },
+    more: (c) => {
+        // three dots, the sign for the rest
+        for (const x of [9, 20, 31]) {
+            wash(c, circle(x, 20, 3.2), "glow");
+            c.pen.circle(c.g, x, 20, 5, "ruler", { fill: c.t.ink, fillStyle: "solid" }, line(c));
+        }
+    },
+    games: (c) => {
+        // a die folded from the squared page: its top and front in the light, its side in shade
+        sheet(c, "M8 15L22 15L22 33L8 33Z");
+        sheet(c, "M8 15L14 9L28 9L22 15Z");
+        sheet(c, "M22 15L28 9L28 27L22 33Z");
+        shade(c, "M22 15L28 9L28 27L22 33Z");
+        const pip = { fill: c.t.ink, stroke: "none" } as const;
+        for (const [x, y] of [
+            [11.5, 19],
+            [15, 24],
+            [18.5, 29],
+        ] as const)
+            plain(c, { kind: "path", d: circle(x, y, 1.6), ...pip });
+        plain(c, { kind: "path", d: circle(18, 12, 1.5), ...pip });
+        for (const [x, y] of [
+            [24.5, 17.5],
+            [25.8, 25],
+        ] as const)
+            plain(c, { kind: "path", d: circle(x, y, 1.3), fill: c.t.card, stroke: "none" });
+    },
+    paint: (c) => {
+        // a palette cut from the squared page, three paints on it and a brush across it
+        sheet(
+            c,
+            "M8 28C3 21 7 10 18 8C29 6 36 13 34 20C33 24 28 23 26 26C24 30 27 34 21 34C15 34 11 32 8 28Z",
+        );
+        c.pen.circle(c.g, 25.5, 28.5, 3.4, "ruler", c.pen.fill("paper"), line(c, 1.1));
+        dab(c, circle(13, 15, 3), "berry");
+        dab(c, circle(21, 12.5, 3), "glow");
+        dab(c, circle(12.5, 23.5, 3), "sky");
+        dab(c, "M19.5 27.5L34.5 12.5L36 14L21 29Z", "glow");
+        dab(c, "M16 32.5C14.5 30.5 16.5 27.5 19.5 27.5L21 29C21 32 18.5 34 16 32.5Z", "mint");
     },
     settings: (c) => {
         const teeth = 8;
@@ -506,6 +652,11 @@ const DRAW: Record<IconName, <G>(c: Ctx<G>) => void> = {
         c.pen.line(c.g, 20, 12.5, 20, 27.5, "ruler", line(c));
         c.pen.line(c.g, 12.5, 20, 27.5, 20, "ruler", line(c));
     },
+    less: (c) => {
+        wash(c, circle(20, 20, 14), "berry");
+        c.pen.circle(c.g, 20, 20, 29, "ruler", null, line(c));
+        c.pen.line(c.g, 12.5, 20, 27.5, 20, "ruler", line(c));
+    },
     help: (c) => {
         wash(c, circle(20, 20, 14), "glow");
         c.pen.circle(c.g, 20, 20, 29, "ruler", null, line(c));
@@ -553,7 +704,7 @@ export const icon = defineDrawing<{ name: IconName; on: boolean }>({
     family: "apps",
     title: "Icons for the apps' controls",
     group: "Marks",
-    about: "Home, journal, map, print, settings, back, sign out, add, help, sound, faster, shuffle, watch, hook, reel, a microphone, close, the words said, a ball, a frisbee and a stick, drawn as one set on a two-square box: one stroke weight, round ends and one marker under the pencil. Every control supplies its name, and `on` lays a disc of highlighter behind it for the page a child or a grown-up is on.",
+    about: "Home, journal, map, print, settings, back, sign out, add, help, sound, faster, shuffle, watch, hook, reel, a microphone, close, the words said, a ball, a frisbee, a stick, a head and shoulders for who plays, a curling broom, a stone's curve, a minus for fewer, a sprout for planting, a watering can, a basket and the sun for the next day, drawn as one set on a two-square box: one stroke weight, round ends and one marker under the pencil. Every control supplies its name, and `on` lays a disc of highlighter behind it for the page a child or a grown-up is on.",
     params: { name: "home", on: false },
     settings: { name: { kind: "one of", of: ICONS }, on: { kind: "flag" } },
     takes: [

@@ -176,6 +176,12 @@ function levelOf(ws: Workspace, lesson: Lesson, level: Level, hashOf: HashOf): P
                 },
             ];
         }
+        if (b.type === "game") {
+            const read = ws.round(b);
+            if ("problem" in read) return [];
+            const { game, level, asks, goal } = read.round;
+            return [{ k: "game", game: game.id, level, asks, goal }];
+        }
         const list = asked.get(b);
         const item = list?.[0]?.item;
         if (!list || !item || (b.type !== "practice" && b.type !== "show" && b.type !== "worked"))

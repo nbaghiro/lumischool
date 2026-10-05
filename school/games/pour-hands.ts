@@ -992,6 +992,8 @@ export const pourGame: ActionGame<PourState> = {
     id: "pour",
     title: "Measure it out",
     group: "action",
+    // too wide to crop into a card and keep its play in view: it waits for the turned or overview view, see .docs/game-cards.md
+    card: null,
     levels: POUR_LEVELS,
     rate: RATE,
     touch: true,

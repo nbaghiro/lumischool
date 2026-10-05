@@ -991,6 +991,7 @@ export const rabbitGame: ActionGame<HopState> = {
     portrait: { keep: 22 },
     title: "Rabbit crossing",
     group: "action",
+    card: { round: { level: 0 }, keep: 22, minutes: 2 },
     quiet: true,
     levels: HOP_LEVELS,
     rate: RATE,

@@ -16,6 +16,7 @@ import {
     createMemo,
     createResource,
     createSignal,
+    For,
     getOwner,
     onCleanup,
     runWithOwner,
@@ -35,6 +36,7 @@ import { Near } from "../../engine/ui/viewport";
 import { World } from "../../engine/ui/world";
 import { cameBackRight, sheetSays, waits, type SheetBack } from "../../school/family/sheets";
 import { leftIn } from "../../school/lessons";
+import { playedWords } from "../../school/record";
 import { subjectFacts } from "../../school/tracks";
 import type { GrownRecord, PackView } from "../../server/api";
 import type { Kid } from "../../server/db/schema";
@@ -70,6 +72,16 @@ export function Journal(props: {
         () => ({ kid: props.kid, record: props.record }),
         ({ kid, record }) =>
             rollFor({ kid, record, lessons: props.pack.index.lessons, still: still() }),
+    );
+    // a game's name for the line under a sheet, loaded with the first sheet that played one
+    const [titles] = createResource(
+        () => props.record.back.some((b) => b.played.length) || null,
+        () =>
+            import("../../school/games/catalogue").then(
+                (m) =>
+                    (id: string): string =>
+                        m.gameById(id)?.title ?? id,
+            ),
     );
     const read = new Map<string, { lesson: PackLesson; events: readonly Envelope[] }>();
     const paper = new Map<string, Paper>();
@@ -210,7 +222,7 @@ export function Journal(props: {
                 ? props.record.back.find((b) => b.lesson === s.lesson && b.on === s.on)
                 : undefined;
         const sheet = paper.get(s.lesson);
-        const key = `${s.state}|${s.on ?? ""}|${back ? `${back.marked}${back.asked}${back.pieces.length}` : ""}`;
+        const key = `${s.state}|${s.on ?? ""}|${back ? `${back.marked}${back.asked}${back.pieces.length}${back.played.length}` : ""}`;
         const had = made.get(s.lesson);
         if (had?.key === key) return had.el;
         const lesson = props.facts(s.lesson);
@@ -256,6 +268,11 @@ export function Journal(props: {
                                     </span>
                                 </Show>
                             </p>
+                            <For each={b().played}>
+                                {(p) => (
+                                    <p class="gj-line">{`${playedWords(p, titles()?.(p.game) ?? "a game")}.`}</p>
+                                )}
+                            </For>
                             <Show when={repeated}>
                                 {(m) => (
                                     <p class="gj-line">{`“${m().rule}” came up ${m().times} times.`}</p>

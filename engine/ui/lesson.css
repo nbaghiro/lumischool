@@ -55,6 +55,25 @@
 .ls-sheet.big .ls-say p {
     font-size: 21px;
 }
+/* A game card in a lesson (.docs/game-cards.md): as wide as the column, its field at 16 to 10 and
+   never taller than most of a phone's screen, so the lesson stays in view around it. */
+.ls-game {
+    margin: 0;
+    max-width: 720px;
+}
+.ls-game .gc-stage {
+    aspect-ratio: 16 / 10;
+    max-height: 62vh;
+}
+.ls-game-wait {
+    aspect-ratio: 16 / 10;
+    max-height: 62vh;
+    border-radius: 12px;
+    background: var(--paper);
+}
+.ls-game-print {
+    display: none;
+}
 .ls-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -453,18 +472,27 @@
     width: 44px;
     height: 44px;
     padding: 0;
-    border: 2px solid color-mix(in srgb, var(--ink) 30%, #fff);
+    border: 0;
     border-radius: 50%;
-    background: #fff;
-    color: var(--ink);
+    background: none;
+    color: var(--ink-soft);
+    opacity: 0.7;
     cursor: pointer;
+}
+/* the icons' highlighter wash is the one shape drawn shifted off its outline: on a sheet it is too
+   loud beside the lesson's own colour, so these two show the line alone */
+.ls-explain svg path[stroke="none"][transform],
+.ls-companion svg path[stroke="none"][transform] {
+    display: none;
 }
 .ls-explain:hover,
 .ls-companion:hover {
-    border-color: var(--pen);
+    opacity: 1;
+    background: color-mix(in srgb, var(--grid) 55%, #fff);
 }
 .ls-explain:focus-visible,
 .ls-companion:focus-visible {
+    opacity: 1;
     outline: 3px dashed var(--pen);
     outline-offset: 3px;
 }
@@ -641,6 +669,35 @@
     }
     .ls-sheet .ls-say p + p {
         margin-top: var(--sq);
+    }
+    /* a game card prints as GAME_PRINT_ROWS rows (engine/pack.ts): its still picture in eleven and
+       "Play this on screen" in the twelfth, with none of its buttons */
+    .ls-sheet .ls-game {
+        max-width: none;
+        break-inside: avoid;
+    }
+    .ls-sheet .ls-game .game-room.gc {
+        padding: 0;
+        border: 0;
+        gap: 0;
+    }
+    .ls-sheet .ls-game .gc-top,
+    .ls-sheet .ls-game .gc-hands,
+    .ls-sheet .ls-game .gc-play,
+    .ls-sheet .ls-game .round-end {
+        display: none;
+    }
+    .ls-sheet .ls-game .gc-stage {
+        aspect-ratio: auto;
+        height: calc(11 * var(--sq));
+        min-height: 0;
+        max-height: none;
+    }
+    .ls-sheet .ls-game-print {
+        display: block;
+        height: var(--sq);
+        font: 600 3.9mm / 5mm var(--f-read);
+        color: var(--ink-soft);
     }
     /* questions narrow enough to stand side by side share a row, and the rest take a row each */
     .ls-sheet .ls-grid {

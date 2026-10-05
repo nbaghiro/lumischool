@@ -25,6 +25,7 @@ lesson g1-equal-groups v=1 format=teach grade=1 unit=4 subject=maths levels=[eas
   }
   try stars=2 {
     show groups.how-many-towers k=3 n=4 easy-k=2 easy-n=3 hard-k=4 hard-n=5
+    game bridge level=3 goal="Swing Charlie across on the stones in twos."
   }
   try stars=3 {
     show groups.level-towers x=2 y=7 z=3 easy-x=1 easy-y=4 easy-z=1 hard-x=3 hard-y=8 hard-z=7

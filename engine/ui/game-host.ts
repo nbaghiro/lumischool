@@ -1,5 +1,5 @@
 import type { Drawing } from "../parts/drawing";
-import type { Beat } from "../motion/beat";
+import type { Beat, Voicing } from "../motion/beat";
 import type { Cue } from "../motion/cues";
 import type { Hum } from "../sound/kit";
 import type { Pt } from "../motion/geometry";
@@ -8,6 +8,7 @@ import type { Frame, Scene } from "../motion/scene";
 import type { Tape } from "../motion/tape";
 import type { GameEvent } from "../motion/goals";
 import type { Surface } from "../../school/games/hands";
+import type { RoundEnd } from "../../school/games/game";
 import type { Tuning } from "../motion/tune";
 import type { GuidePose } from "../parts/guide/design";
 
@@ -22,6 +23,8 @@ export interface Shell {
     guide(this: void, pose: GuidePose): void;
     keys(text: string): void;
     feedback(text: string, won?: boolean): void;
+    /** The round's end as it stands, null while play goes on; the page shows its end card from this. */
+    ended?(this: void, end: RoundEnd | null, watch: boolean): void;
     rows(
         n: 1 | 2 | 3 | 4,
         title: string,
@@ -31,6 +34,8 @@ export interface Shell {
     ): void;
     tuning(t: Tuning | null, note: string): void;
     room(): { w: number; h: number; side: boolean };
+    /** Set where the game is a card in a lesson: the field shows `keep` squares across, round the frame's focus. */
+    card?: { keep: number };
     progress?(completed: number, total: number): void;
     observe?(kind: "move" | "assist" | "won", input?: "keyboard" | "pointer"): void;
 }
@@ -106,7 +111,7 @@ export interface Board extends Surface {
     readonly bounds: { w: number; h: number };
     readonly busy: boolean;
     readonly stats: { renders: number; ms: number };
-    play(beat: Beat, scene: Scene, hear: (c: Cue) => void): void;
+    play(beat: Beat, scene: Scene, hear: (c: Cue, how?: Voicing) => void): void;
     settle(): void;
     sticker(at: Pt, scale: number): void;
     wake(): void;

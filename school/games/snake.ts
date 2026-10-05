@@ -1280,6 +1280,7 @@ export const snakeGame: ActionGame<FireflyState> = {
     portrait: { keep: 24 },
     title: "Firefly trail",
     group: "action",
+    card: { round: { level: 0 }, keep: 24, minutes: 3 },
     quiet: true,
     levels: FIREFLY_LEVELS,
     rate: RATE,

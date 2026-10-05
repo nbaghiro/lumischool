@@ -23,6 +23,7 @@ lesson g2-metres-and-centimetres v=1 format=teach grade=2 unit=6 subject=maths l
   }
   try stars=2 {
     show measure.compare-mixed m=1 c=5 t=1 easy-c=20 easy-t=0 hard-m=2 hard-c=8
+    game blocks level=1 goal="Throw the ball so it lands on the number of metres."
   }
   try stars=3 {
     show measure.sticks-ways L=120 easy-L=60 hard-L=150

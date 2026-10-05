@@ -22,6 +22,7 @@ import {
     type Attempt,
     type Mode,
     type Piece,
+    type Played,
     type Printed,
     type Sitting,
 } from "../record";
@@ -56,6 +57,8 @@ export interface SheetBack {
     questions: QuestionRef[];
     /** Pieces of this sitting handed in on screen that wait for a grown-up's response. */
     pieces: Pick<Piece, "answer" | "q">[];
+    /** The game cards played in this lesson that day, each its card's last round. */
+    played: Pick<Played, "game" | "won" | "tries" | "assistance">[];
 }
 
 /**
@@ -70,6 +73,7 @@ export function sheetsBack(
     to?: string,
     printed: readonly Printed[] = [],
     pieces: readonly Piece[] = [],
+    played: readonly Played[] = [],
 ): SheetBack[] {
     const inside = (on: string): boolean =>
         (!from || dayOf(on) >= dayOf(from)) && (!to || dayOf(on) <= dayOf(to));
@@ -110,6 +114,14 @@ export function sheetsBack(
                               )
                               .map((p) => ({ answer: p.answer, q: p.q }))
                         : [],
+                played: played
+                    .filter((p) => p.child === child && p.lesson === s.lesson && p.on === s.on)
+                    .map((p) => ({
+                        game: p.game,
+                        won: p.won,
+                        tries: p.tries,
+                        assistance: p.assistance,
+                    })),
             };
         });
 }
@@ -260,7 +272,16 @@ export function childWeek(
     const subjectOf = new Map(lessons.map((l) => [l.id, l.subject]));
     const f = fold(events, timeZone, (id) => subjectOf.get(id) ?? "maths");
     const from = weekShift(today, -1);
-    const all = sheetsBack(kid, f.sittings, f.attempts, undefined, today, f.printed, f.pieces);
+    const all = sheetsBack(
+        kid,
+        f.sittings,
+        f.attempts,
+        undefined,
+        today,
+        f.printed,
+        f.pieces,
+        f.played,
+    );
     return {
         from,
         back: all.filter((s) => dayOf(s.on) >= dayOf(from) || waits(s)),

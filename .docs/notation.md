@@ -83,7 +83,7 @@ The prototype registers these types:
 - Files: `item`, `lesson`, `define`, and `volume`, a whole public-domain book (see "Books, pieces a grown-up looks at, and dictation" below).
 - Inside an item: `title`, `difficulty`, `let`, `where`, `roles`, `scene`, `answer`, `check`, `feedback`, `when`, `say`, `hint`, and `level`.
 - Scene nodes: `balance`, `tenframe`, `numberline`, `numberbond`, `barmodel`, `fraction`, `clock`, `matchsticks`, `props`, `text`, `equation`, `number-input`, `columns`, `guide`, `arrow`, `use`.
-- Inside a lesson: `goal`, `grown-ups`, the sections `look`, `do`, `story`, `try`, `remember`, `example`, `exercises`, `puzzle` and `warm-up`, the blocks `say`, `scene`, `practice`, `show` and `worked`, and `level`.
+- Inside a lesson: `goal`, `grown-ups`, the sections `look`, `do`, `story`, `try`, `remember`, `example`, `exercises`, `puzzle` and `warm-up`, the blocks `say`, `scene`, `practice`, `show`, `worked` and `game`, and `level`. A `game` block is one round of a game played as a card on the page ([game-cards.md](game-cards.md)): `game jump level=2` names a game and a level from 1, `game jump.land-on version=2` an activity and a version from 1, and `asks=` and `goal=` are optional.
 
 Answers that an expression cannot state are checked by TypeScript functions registered by name, for example `check matchsticks.one-move from="6+4=4"`. Every code checker can also list its solutions, so the verifier can prove a puzzle is solvable before it ships.
 
@@ -212,6 +212,8 @@ A lesson declares one of five formats, and the format decides which sections it 
 | book | sitting | a whole book read over several days, one sitting a day |
 
 Each lesson renders in two outputs from the same file. On screen, sections are pages the child steps through, and an answer key can be switched on for grown-ups. In print, the lesson is laid out on 5 mm squared paper, one digit per square, question numbers in the margin, and paginated so a section heading never ends a page on its own. The goal, the notes for grown-ups, the answers, the hints and the solutions to code-checked puzzles go on a separate grown-ups sheet and never appear on the child's pages.
+
+A scene is written and compiled at one size, which the page prints at life size. On a screen whose column is too narrow to draw the scene with its words at 15 px or more (its 17 px text drawn at less than fifteen seventeenths of its size), the sheet lays the scene out again for the column's width in squares rather than shrinking it (`narrowed` in `engine/scene.ts`, called from `SceneTile` in `engine/ui/lesson.tsx`). A part placed `right-of` another that would run past the column goes under it instead, and what stood below that part goes below the moved one; text wraps at the column's edge; a row of choice cards becomes a column; and a row of parts runs on to more lines. Every other part keeps its size and its place against what it was placed by, and a scene that this would make overlap is drawn as written. A part that is wide in itself (a table, a timeline, a ruled line, a long choice card) still sets the scene's width, and such a scene is scaled to the column as before; on a 393 px phone that is about four scenes in five of the pack, though the median scene is now drawn at about two thirds of its size rather than about two fifths. Paper is never laid out again.
 
 ### Subjects and variants
 
@@ -419,6 +421,7 @@ The verifier runs over every file on every change, and the build refuses content
 - A feedback rule that is also true for the correct answer is reported, since it cannot tell that mistake apart from a right answer.
 - A code checker must list at least one solution.
 - A lesson's `show` and `worked` settings must name a variant the item actually allows.
+- A lesson's `game` block must name a game or activity that exists, a level or version in its range, and a game that declares how it plays as a card (`card` in school/games/game.ts), which is the card standard [game-cards.md](game-cards.md) holds it to.
 - Every level of a file is verified as a plain document, and the order of the levels is held as the Levels section says.
 
 In the prototype this caught mistakes in our own examples. A scene was 30 squares wide when its two balances needed 31. Several questions were too long for their scenes, which is what led to the `width` setting for wrapped text. It also reports the variant where 2 + 2 equals 2 × 2, which is why the balance chain has its `where` line, and the variant `n = 5` in "make ten", where counting what is in the frame gives the right answer by accident.

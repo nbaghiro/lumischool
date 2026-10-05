@@ -1044,6 +1044,7 @@ export const rowGame: ActionGame<RiverState> = {
     portrait: { keep: 22 },
     title: "Down the river",
     group: "action",
+    card: { round: { level: 0 }, keep: 22, minutes: 3 },
     seen: "above",
     quiet: true,
     levels: RIVER_LEVELS,

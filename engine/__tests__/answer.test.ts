@@ -358,3 +358,51 @@ test("the latest value of a setting wins, per kid, per family and per thing it i
     assert.equal(settingIn(events, "practice", KID, "pour"), 1);
     assert.equal(settingIn(events, "practice", KID, "sling"), undefined);
 });
+
+const played = (
+    over: Record<string, unknown> = {},
+    kid: string | null = ID,
+): Record<string, unknown> =>
+    envelope({
+        kind: "played",
+        kid_id: kid,
+        data: {
+            sitting: "s",
+            lesson: "l",
+            lessonHash: "h",
+            section: "try",
+            card: 1,
+            game: "jump",
+            level: 0,
+            rulesVersion: "games-1-physical-3",
+            challenge: null,
+            won: true,
+            tries: 2,
+            seconds: 41.5,
+            assistance: 0,
+            ...over,
+        },
+    });
+
+test("a played round in a lesson names its child, its card from 1, its game and how it went", () => {
+    assert.equal(check(played()).ok, true);
+    assert.equal(check(played({ challenge: "jump-0-7" })).ok, true);
+    const refused = (v: Record<string, unknown>): string => {
+        const c = check(v);
+        assert.equal(c.ok, false);
+        return c.ok ? "" : c.problem;
+    };
+    assert.match(refused(played({}, null)), /names the child who played it/);
+    for (const bad of [
+        { card: 0 },
+        { level: -1 },
+        { level: 1.5 },
+        { game: "" },
+        { won: "yes" },
+        { seconds: -1 },
+        { tries: 1.5 },
+        { challenge: 3 },
+        { rulesVersion: undefined },
+    ])
+        assert.match(refused(played(bad)), /^played needs/, JSON.stringify(bad));
+});

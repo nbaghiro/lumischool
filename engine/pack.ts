@@ -72,7 +72,12 @@ export type PackBlock =
           questions: PackQuestion[];
           /** More draws of a practice block for another day, each as many questions as the block. */
           again: PackQuestion[][];
-      };
+      }
+    /**
+     * One round of a game played as a card (.docs/game-cards.md): the game by its id, its level from 0,
+     * how many of the level's asks the round plays, and the line shown over the card.
+     */
+    | { k: "game"; game: string; level: number; asks: number; goal: string };
 
 export interface PackSection {
     type: string;
@@ -124,6 +129,53 @@ export const linesHolding = (paragraphs: readonly (readonly string[])[], words: 
     linesOf(paragraphs).flatMap((line, i) =>
         spaced(words) && spaced(line).includes(spaced(words)) ? [i + 1] : [],
     );
+
+/** Every point a rule or its rules would ring, in the order they are read. */
+function pointsIn(rules: readonly PackRule[]): string[] {
+    return rules.flatMap((r) => [...(r.point ? [r.point] : []), ...pointsIn(r.children)]);
+}
+
+/** Parts that carry the question's own words or take its answer, which are never ringed. */
+const SAYS: ReadonlySet<string> = new Set([
+    "text",
+    "caption",
+    "choice",
+    "number-input",
+    "word-input",
+]);
+
+/** Parts that only line others up, whose own box says nothing. */
+const LINES_UP: ReadonlySet<string> = new Set(["row", "column"]);
+
+/**
+ * Where the question turns, which a hint step and the companion ring: the part an authored feedback
+ * rule points at, else the part the child arranges, else the first thing the scene draws. Null where
+ * the scene is only words and an answer.
+ */
+export function pointOf(q: PackQuestion): string | null {
+    const scene = q.scene;
+    if (!scene) return null;
+    const ringable = (id: string): boolean => id in scene.boxes;
+    const said = pointsIn(q.feedback).find(ringable);
+    if (said !== undefined) return said;
+    const arranged = q.arranged?.part;
+    if (arranged !== undefined && ringable(arranged)) return arranged;
+    const drawn = scene.nodes.find(
+        (n) => !SAYS.has(n.type) && !LINES_UP.has(n.type) && ringable(n.id),
+    );
+    return drawn?.id ?? null;
+}
+
+/** The parts of a question's picture the companion may ring, by id and kind, the one it turns on first. */
+export function ringableIn(q: PackQuestion): { id: string; type: string }[] {
+    const scene = q.scene;
+    if (!scene) return [];
+    const first = pointOf(q);
+    return scene.nodes
+        .filter((n) => n.id in scene.boxes && !SAYS.has(n.type) && !LINES_UP.has(n.type))
+        .map((n) => ({ id: n.id, type: n.type }))
+        .sort((a, b) => Number(b.id === first) - Number(a.id === first));
+}
 
 /** One page of a book as a sitting shows it: a run of one chapter's lines, each with its number. */
 interface BookPage {
@@ -517,6 +569,12 @@ function textRows(text: string, big: boolean): number {
     return lines.reduce((a, b) => a + b, 0) * (big ? 2 : 1) + Math.max(0, lines.length - 1);
 }
 
+/**
+ * The rows a game card takes on paper: its still picture and the line "Play this on screen" under it,
+ * in step with the print rule for a card in engine/ui/lesson.css.
+ */
+export const GAME_PRINT_ROWS = 12;
+
 /** A drawing's printed size in squares: at its own size, narrowed to the page, its height held to TALLEST while its tile keeps the width, as Chrome lays a capped drawing out. */
 function drawn(scene: Scene, across: number): { cols: number; rows: number } {
     const [w, h] = scene.size;
@@ -575,6 +633,7 @@ function printedPieces(
             const gap = i === 0 ? 0 : 1;
             if (block.k === "say") out.push(piece(textRows(block.text, big), gap, big ? 2 : 1));
             else if (block.k === "scene") out.push(piece(drawn(block.scene, PAGE_COLS).rows, gap));
+            else if (block.k === "game") out.push(piece(GAME_PRINT_ROWS, gap));
             else if (block.k === "ask") {
                 const rows: { cols: number; rows: number }[] = [];
                 for (const q of block.questions) {
@@ -1004,6 +1063,15 @@ const BLOCK: Record<PackBlock["k"], (v: Fields) => string | null> = {
     say: (v) => (isText(v.text) ? null : "a say block holds its text"),
     "grown-ups": (v) => (isText(v.text) ? null : "a grown-ups block holds its text"),
     scene: (v) => within("scene", sceneProblem(v.scene)),
+    game: (v) =>
+        isText(v.game) &&
+        isWhole(v.level) &&
+        v.level >= 0 &&
+        isWhole(v.asks) &&
+        v.asks >= 1 &&
+        isText(v.goal)
+            ? null
+            : "a game block holds its game, a level from 0, asks from 1 and its goal",
     ask: (v) => {
         if (!(v.how === "practice" || v.how === "show" || v.how === "worked"))
             return `"${String(v.how)}" is not a way of asking`;

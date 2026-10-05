@@ -24,6 +24,7 @@ lesson g1-adding-to-twenty v=1 format=teach grade=1 unit=2 subject=maths levels=
   try stars=2 {
     show add.bus-at-first first=5 more=4 easy-first=3 easy-more=2 hard-first=8
     show add.triangle-corner x=6 y=4 z=7 easy-x=3 easy-y=2 easy-z=5 hard-x=8 hard-y=6 hard-z=9
+    game road level=3 goal="Drive to each door on the list and stop in its bay."
   }
   try stars=3 {
     show add.triangle-all x=4 y=2 z=5 easy-x=2 easy-y=1 easy-z=3 hard-x=6 hard-y=3 hard-z=5

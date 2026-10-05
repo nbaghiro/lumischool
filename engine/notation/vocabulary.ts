@@ -331,6 +331,7 @@ const BLOCKS = [
     "grown-ups",
     "level",
     "language",
+    "game",
 ] as const;
 /** A block may use its item at another level than the lesson's, as a worked example tied to its own numbers does. */
 const AT_LEVEL: Record<string, Setting> = { level: { kind: "word", values: LEVELS } };
@@ -570,6 +571,16 @@ export const REGISTRY: Record<string, NodeSpec> = {
             { name: "title", kind: "text" },
             { name: "text", kind: "text" },
         ],
+    },
+    game: {
+        doc: "One round of a game played as a card on the page (.docs/game-cards.md), named by its activity (`game jump.land-on`, with `version=` from 1) or by the game (`game fish level=2`, with `level=` from 1). `asks` is how many of a level's asks the round plays, and `goal` the line over the card, which is the level's own goal when left out.",
+        args: [{ name: "of", kind: "ref" }],
+        props: {
+            level: { kind: "num" },
+            version: { kind: "num" },
+            asks: { kind: "num" },
+            goal: { kind: "text" },
+        },
     },
     practice: {
         doc: "Several variants of an item, picked by seed.",

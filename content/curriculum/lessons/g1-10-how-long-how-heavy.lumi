@@ -29,6 +29,7 @@ lesson g1-how-long-how-heavy v=1 format=teach grade=1 unit=6 subject=maths level
   try stars=2 {
     show measure.which-longest x="stick" y="ribbon" z="pencil" q="shortest" easy-q="longest"
     show measure.dial v=600 easy-v=400 hard-v=700
+    game clear level=2 goal="Count the strides to each fence and jump it clear."
   }
   try stars=3 {
     show measure.ribbon-cut len=10 d=4 easy-len=8 easy-d=4 hard-len=12 hard-d=6

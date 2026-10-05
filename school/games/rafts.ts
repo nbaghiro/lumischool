@@ -1290,6 +1290,8 @@ export const raftsGame: ActionGame<RaftsState> = {
     id: "herd",
     title: "Rafts",
     group: "action",
+    // too wide to crop into a card and keep its play in view: it waits for the turned or overview view, see .docs/game-cards.md
+    card: null,
     quiet: true,
     levels: RAFT_LEVELS,
     rate: RATE,

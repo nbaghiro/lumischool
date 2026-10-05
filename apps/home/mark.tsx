@@ -37,6 +37,7 @@ import {
     type SheetBack,
 } from "../../school/family/sheets";
 import { askedIn, levelIn } from "../../school/lessons";
+import { playedWords } from "../../school/record";
 import { subjectFacts } from "../../school/tracks";
 import type { PackView } from "../../server/api";
 import type { Kid } from "../../server/db/schema";
@@ -467,6 +468,22 @@ function Column(props: {
     );
 }
 
+/** The lesson's game cards as a grown-up reads them, with each game's name loaded when one was played. */
+function GamesPlayed(props: { played: SheetBack["played"] }): JSX.Element {
+    const [title] = createResource(() =>
+        import("../../school/games/catalogue").then(
+            (m) =>
+                (id: string): string =>
+                    m.gameById(id)?.title ?? id,
+        ),
+    );
+    return (
+        <For each={props.played}>
+            {(p) => <p class="note">{`${playedWords(p, title()?.(p.game) ?? "a game")}.`}</p>}
+        </For>
+    );
+}
+
 /** The grown-up's card for a sheet that came back: how it went, the author's lines, and the lesson's note. */
 function HowItWent(props: { walk: ToWalk; lesson: PackLesson }): JSX.Element {
     const s = props.walk.sheet;
@@ -491,6 +508,9 @@ function HowItWent(props: { walk: ToWalk; lesson: PackLesson }): JSX.Element {
             <p class="note">
                 {`${s.mode === "paper" ? "Worked on paper" : "Worked on the screen"}${s.minutes ? `, about ${plural(s.minutes, "minute")}` : ""}.`}
             </p>
+            <Show when={s.played.length}>
+                <GamesPlayed played={s.played} />
+            </Show>
             <For each={s.mistakes.slice(0, 3)}>
                 {(m) => (
                     <p class="gm-said">

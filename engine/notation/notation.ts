@@ -43,6 +43,7 @@ import {
     type Variant,
 } from "./verify";
 import { FORMATS, REGISTRY, ROOTS, type Kind, type NodeSpec } from "./vocabulary";
+import { CARD_GAMES, roundOf, type CardGame, type CardRound, type GameBlock } from "./games";
 
 export interface Span {
     line: number;
@@ -1474,8 +1475,27 @@ class ReportsWhenRead extends Map<string, ItemReport> {
     }
 }
 
+/** A `game` block as written, read into the fields the games are checked by. */
+export function gameBlockOf(t: TNode): GameBlock {
+    const n = (name: string): number | undefined =>
+        t.props[name]?.k === "num" ? t.props[name].v : undefined;
+    const goal = t.props.goal?.k === "text" ? t.props.goal.v : undefined;
+    const level = n("level");
+    const version = n("version");
+    const asks = n("asks");
+    return {
+        of: t.args.of?.k === "ref" ? t.args.of.v : "",
+        ...(level === undefined ? {} : { level }),
+        ...(version === undefined ? {} : { version }),
+        ...(asks === undefined ? {} : { asks }),
+        ...(goal === undefined ? {} : { goal }),
+    };
+}
+
 export class Workspace {
     readonly files = new Map<string, FileInfo>();
+    /** The games a lesson's `game` blocks are read against; the catalogue's unless a test gives its own. */
+    readonly games: readonly CardGame[];
     readonly items = new Map<string, Item>();
     readonly lessons = new Map<string, Lesson>();
     readonly defines = new Map<string, Define>();
@@ -1500,7 +1520,11 @@ export class Workspace {
      * items, so `errors` and each file's issues are the parser's and the checker's alone. Verifying the
      * whole corpus takes seconds, and it stays the default for everything that checks.
      */
-    constructor(sources: Record<string, string>, o: { verify?: "all" | "when read" } = {}) {
+    constructor(
+        sources: Record<string, string>,
+        o: { verify?: "all" | "when read"; games?: readonly CardGame[] } = {},
+    ) {
+        this.games = o.games ?? CARD_GAMES;
         this.reports =
             o.verify === "when read"
                 ? new ReportsWhenRead(this.items, this.defines, this.volumes)
@@ -1938,6 +1962,9 @@ export class Workspace {
                                 : `a value is outside the range ${item.id} allows${levelNote}`,
                         );
                     }
+                } else if (b.type === "game") {
+                    const read = this.round(b);
+                    if ("problem" in read) add("error", b, read.problem);
                 } else if (b.type === "scene" && b.args.size?.k === "size") {
                     try {
                         const inst = instantiate(
@@ -1954,6 +1981,11 @@ export class Workspace {
             }
         }
         return issues;
+    }
+
+    /** The round a `game` block plays, or what is wrong with it. */
+    round(t: TNode): { round: CardRound } | { problem: string } {
+        return roundOf(gameBlockOf(t), this.games, near);
     }
 
     private near(ref: string): string {

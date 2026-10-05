@@ -24,6 +24,7 @@ lesson k-a-bead-string v=1 format=teach grade=0 unit=4 subject=maths levels=[eas
   }
   try stars=2 {
     show k.number-between a=5 easy-a=2 hard-a=7
+    game straight level=1 goal="Paddle through the gates in order, one, two, three, four, five."
   }
   try stars=3 {
     show k.next-tower a=4 easy-a=2 hard-a=6

@@ -57,6 +57,19 @@ function readSheet(v: unknown): Sheet | null {
         const q = ref(p.q);
         return q ? { answer: p.answer, q } : null;
     });
+    // a record from before game cards has none
+    const played =
+        v.played === undefined
+            ? []
+            : list(v.played, (p) =>
+                  obj(p) &&
+                  str(p.game) &&
+                  typeof p.won === "boolean" &&
+                  num(p.tries) &&
+                  num(p.assistance)
+                      ? { game: p.game, won: p.won, tries: p.tries, assistance: p.assistance }
+                      : null,
+              );
     return str(v.child) &&
         str(v.lesson) &&
         str(v.subject) &&
@@ -71,7 +84,8 @@ function readSheet(v: unknown): Sheet | null {
         strOrNull(v.sheet) &&
         mistakes &&
         questions &&
-        pieces
+        pieces &&
+        played
         ? {
               child: v.child,
               lesson: v.lesson,
@@ -88,6 +102,7 @@ function readSheet(v: unknown): Sheet | null {
               sheet: v.sheet,
               questions,
               pieces,
+              played,
           }
         : null;
 }

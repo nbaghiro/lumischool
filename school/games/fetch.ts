@@ -272,7 +272,11 @@ const AIM: AimSpec = {
     ramp: 10,
     turns: "up",
 };
-const spec = (): AimSpec => ({ ...AIM, max: FETCH.power.value, per: FETCH.power.value / PULL });
+export const aimSpec = (): AimSpec => ({
+    ...AIM,
+    max: FETCH.power.value,
+    per: FETCH.power.value / PULL,
+});
 /** The aim each level starts with, in radians and squares a second. */
 export const FIRST_AIM = { angle: -0.7, power: 12 };
 
@@ -1030,11 +1034,12 @@ export function step(s: FetchState, pad: Pad): Happening[] {
     const out: Happening[] = [];
     s.steps++;
     s.cheer = Math.max(0, s.cheer - DT);
-    for (const i of pad.intents ?? []) s.look = Math.max(0.6, Math.min(1.8, s.look * i.by));
+    for (const i of pad.intents ?? [])
+        if (i.kind === "zoom") s.look = Math.max(0.6, Math.min(1.8, s.look * i.by));
     if (pad.pressed.length || pad.pull || pad.released || pad.tapped || pad.brake) s.touched = true;
     if (s.phase === "ready" && !s.won) {
         if (pad.brake && !s.braked && swap(s)) out.push({ cue: "lift", strength: 0.2, pitch: 1.5 });
-        const v = stepAim(s.aim, pad, spec(), DT);
+        const v = stepAim(s.aim, pad, aimSpec(), DT);
         if (v) throwIt(s, v, out);
     }
     s.braked = pad.brake;
@@ -1370,8 +1375,8 @@ function frame(s: FetchState, rest = false): Frame {
     if (s.phase === "ready" && !s.won && !rest) {
         if (s.aim.pulling || s.touched) {
             const pull = {
-                x: (-Math.cos(s.aim.angle) * s.aim.power) / spec().per,
-                y: (-Math.sin(s.aim.angle) * s.aim.power) / spec().per,
+                x: (-Math.cos(s.aim.angle) * s.aim.power) / aimSpec().per,
+                y: (-Math.sin(s.aim.angle) * s.aim.power) / aimSpec().per,
             };
             marks.push({
                 kind: "line",
@@ -1468,6 +1473,7 @@ export const fetchGame: ActionGame<FetchState> = {
     id: "blocks",
     title: "Fetch with the pups",
     group: "action",
+    card: { round: { level: 0, asks: 1 }, keep: 26, minutes: 2 },
     quiet: true,
     levels: FETCH_LEVELS,
     rate: RATE,
@@ -1490,6 +1496,10 @@ export const fetchGame: ActionGame<FetchState> = {
         if (id === "swap") swap(s);
     },
     start,
+    round: (level, asks) => {
+        const L = FETCH_LEVELS[level] ?? FETCH_LEVELS[0];
+        return startFetch({ ...L, asks: L.asks.slice(0, Math.max(1, asks)) }, level);
+    },
     step,
     frame,
     say: describe,

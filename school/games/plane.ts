@@ -746,6 +746,7 @@ export const planeGame: ActionGame<PlaneState> = {
     id: "plane",
     title: "Paper plane",
     group: "action",
+    card: { round: { level: 0 }, keep: 22, minutes: 3 },
     levels: PLANE_LEVELS,
     rate: RATE,
     cover: { art: "paperplane", params: { bank: 0.3 } },

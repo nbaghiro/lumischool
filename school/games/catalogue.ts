@@ -1,11 +1,17 @@
 import { rallyGame } from "./rally";
 import { golfGame } from "./golf";
 import { poolGame } from "./pool";
+import { pinballGame } from "./pinball";
+import { curlingGame } from "./curling";
 import { clearGame } from "./clear";
 import { swingsGame } from "./swings";
 import { fetchGame } from "./fetch";
 import { rescueGame } from "./rescue";
 import { lemonadeGame } from "./lemonade";
+import { dollhouseGame } from "./dollhouse";
+import { gardenGame } from "./garden";
+import { climbGame } from "./climb";
+import { machineGame } from "./machine";
 // Every game, in the order the Games tab shows them, grouped by how each one plays. The hands-on
 // games are played by moving things on a board, with a tray that is the keyboard path and the one a
 // screen reader reads, and every level of them is gated by the prover; the action games are played
@@ -56,11 +62,17 @@ export const GAMES: Game[] = [
     planeGame,
     golfGame,
     poolGame,
+    pinballGame,
+    curlingGame,
     rallyGame,
     swingsGame,
     fetchGame,
     rescueGame,
     lemonadeGame,
+    dollhouseGame,
+    gardenGame,
+    climbGame,
+    machineGame,
     clearGame,
 ];
 

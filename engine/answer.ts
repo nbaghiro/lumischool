@@ -37,49 +37,63 @@ export const GAME_CHALLENGE_VERSIONS = {
 
 /** Mechanics revisions invalidate saved arrangements only for the affected games. */
 export const gameRulesVersion = (game: string): string =>
-    game === "rescue"
-        ? `${GAME_CHALLENGE_VERSIONS.rules}-rescue-1`
-        : game === "pool"
-          ? `${GAME_CHALLENGE_VERSIONS.rules}-pool-1`
-          : game === "pour"
-            ? `${GAME_CHALLENGE_VERSIONS.rules}-liquid-1`
-            : game === "sling"
-              ? `${GAME_CHALLENGE_VERSIONS.rules}-wall-1`
-              : game === "rule"
-                ? `${GAME_CHALLENGE_VERSIONS.rules}-machine-2`
-                : game === "straight"
-                  ? `${GAME_CHALLENGE_VERSIONS.rules}-river-3`
-                  : game === "fish"
-                    ? `${GAME_CHALLENGE_VERSIONS.rules}-fishing-5`
-                    : game === "spell"
-                      ? `${GAME_CHALLENGE_VERSIONS.rules}-sound-train-2`
-                      : game === "shunt"
-                        ? `${GAME_CHALLENGE_VERSIONS.rules}-yard-4`
-                        : game === "clear"
-                          ? `${GAME_CHALLENGE_VERSIONS.rules}-show-jumping-4`
-                          : game === "snake"
-                            ? `${GAME_CHALLENGE_VERSIONS.rules}-firefly-3`
-                            : game === "blocks"
-                              ? `${GAME_CHALLENGE_VERSIONS.rules}-fetch-2`
-                              : game === "marble-workshop"
-                                ? `${GAME_CHALLENGE_VERSIONS.rules}-marble-run-3`
-                                : game === "bridge"
-                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-rope-swings-2`
-                                  : game === "plane"
-                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-plane-2`
-                                    : game === "road"
-                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-road-3`
-                                      : game === "cargo-workshop"
-                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-cargo-6`
-                                        : game === "herd"
-                                          ? `${GAME_CHALLENGE_VERSIONS.rules}-physics-4`
-                                          : ["jump", "weigh", "share"].includes(game)
-                                            ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-3`
-                                            : game === "wardrobe"
-                                              ? `${GAME_CHALLENGE_VERSIONS.rules}-lemonade-3`
-                                              : game === "pay"
-                                                ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-2`
-                                                : GAME_CHALLENGE_VERSIONS.rules;
+    game === "machine"
+        ? `${GAME_CHALLENGE_VERSIONS.rules}-machine-3`
+        : game === "garden"
+          ? `${GAME_CHALLENGE_VERSIONS.rules}-garden-3`
+          : game === "pinball"
+            ? `${GAME_CHALLENGE_VERSIONS.rules}-pinball-2`
+            : game === "climb"
+              ? `${GAME_CHALLENGE_VERSIONS.rules}-climb-1`
+              : game === "curling"
+                ? `${GAME_CHALLENGE_VERSIONS.rules}-curling-1`
+                : game === "dollhouse"
+                  ? `${GAME_CHALLENGE_VERSIONS.rules}-dollhouse-3`
+                  : game === "golf"
+                    ? `${GAME_CHALLENGE_VERSIONS.rules}-golf-holes-1`
+                    : game === "rescue"
+                      ? `${GAME_CHALLENGE_VERSIONS.rules}-rescue-1`
+                      : game === "pool"
+                        ? `${GAME_CHALLENGE_VERSIONS.rules}-pool-1`
+                        : game === "pour"
+                          ? `${GAME_CHALLENGE_VERSIONS.rules}-liquid-1`
+                          : game === "sling"
+                            ? `${GAME_CHALLENGE_VERSIONS.rules}-wall-1`
+                            : game === "rule"
+                              ? `${GAME_CHALLENGE_VERSIONS.rules}-machine-2`
+                              : game === "straight"
+                                ? `${GAME_CHALLENGE_VERSIONS.rules}-river-3`
+                                : game === "fish"
+                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-fishing-5`
+                                  : game === "spell"
+                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-sound-train-2`
+                                    : game === "shunt"
+                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-yard-4`
+                                      : game === "clear"
+                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-show-jumping-4`
+                                        : game === "snake"
+                                          ? `${GAME_CHALLENGE_VERSIONS.rules}-firefly-3`
+                                          : game === "blocks"
+                                            ? `${GAME_CHALLENGE_VERSIONS.rules}-fetch-2`
+                                            : game === "marble-workshop"
+                                              ? `${GAME_CHALLENGE_VERSIONS.rules}-marble-run-3`
+                                              : game === "bridge"
+                                                ? `${GAME_CHALLENGE_VERSIONS.rules}-rope-swings-2`
+                                                : game === "plane"
+                                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-plane-2`
+                                                  : game === "road"
+                                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-road-3`
+                                                    : game === "cargo-workshop"
+                                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-cargo-7`
+                                                      : game === "herd"
+                                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-physics-4`
+                                                        : ["jump", "weigh", "share"].includes(game)
+                                                          ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-3`
+                                                          : game === "wardrobe"
+                                                            ? `${GAME_CHALLENGE_VERSIONS.rules}-lemonade-3`
+                                                            : game === "pay"
+                                                              ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-2`
+                                                              : GAME_CHALLENGE_VERSIONS.rules;
 
 export type GameValue =
     null | boolean | number | string | GameValue[] | { [key: string]: GameValue };
@@ -303,7 +317,10 @@ export type Language = (typeof LANGUAGES)[number];
 export const NATIONS = ["britain", "usa", "japan", "russia", "china"] as const;
 export type Nation = (typeof NATIONS)[number];
 
-/** The faces a child may choose for the companion who talks a lesson through with them (server/companion.ts). */
+/**
+ * The faces the live companion once offered. The companion is now Charlie, drawn by us
+ * (server/companion.ts), and these stay so a family's log that chose one still reads back.
+ */
 export const COMPANIONS = ["dr-paws", "mr-edward", "mrs-hart"] as const;
 export type Companion = (typeof COMPANIONS)[number];
 
@@ -319,7 +336,7 @@ export interface SettingValues {
     practice: number | null;
     /** The easel's tools and colours, read back by `readState` in engine/ui/painting-easel.ts. */
     painting: unknown;
-    /** The companion's face a child last chose in a lesson; null is Dr. Paws. */
+    /** The live companion's face a child once chose; nothing reads it now. */
     companion: Companion | null;
 }
 
@@ -359,15 +376,15 @@ export interface EventData {
     };
     "hint-opened": { sitting: string; q: QuestionRef; rung: number };
     /**
-     * Help on a question beyond its hints: the part it turns on ringed, the easier step opened, or a
-     * talk with the companion begun on it (`talk`, whose material is the face), so an answer given
-     * after it is not counted as the child's alone. `read` and `grown-up` were the old guide card's,
-     * kept so the log reads back. Opening a hint is `hint-opened`.
+     * Help on a question beyond its hints: the part it turns on ringed, the easier step opened, or
+     * the companion's walk through to the answer (`answer`), so an answer given after it is not
+     * counted as the child's alone. `read` and `grown-up` were the old guide card's and `talk` the
+     * live companion's, kept so the log reads back. Opening a hint is `hint-opened`.
      */
     "help-asked": {
         sitting: string;
         q: QuestionRef;
-        ask: "read" | "where" | "easier" | "grown-up" | "talk";
+        ask: "read" | "where" | "easier" | "grown-up" | "talk" | "answer";
         material: string | null;
     };
     "sheet-printed": {
@@ -395,6 +412,28 @@ export interface EventData {
     };
     "round-played": { round: RoundRef; moves: LoggedMove[]; outcome: Outcome; capped: boolean };
     "game-attempted": GameAttempt;
+    /**
+     * One round of a game played as a card in a lesson (.docs/game-cards.md): the sitting it was played
+     * in, the card it was by its section and its place among that section's cards from 1, and how it went.
+     */
+    played: {
+        sitting: string;
+        lesson: string;
+        lessonHash: string;
+        section: string;
+        card: number;
+        game: string;
+        /** From 0, as the game counts its levels. */
+        level: number;
+        rulesVersion: string;
+        /** The challenge the round was played on, or null for the level as written. */
+        challenge: string | null;
+        won: boolean;
+        tries: number;
+        seconds: number;
+        /** How many times the game helped: a hint shown, an easier way offered. */
+        assistance: number;
+    };
     "plan-changed": { op: PlanOp };
     /**
      * A parent's choice of a child's worlds, whole each time and trimmed to what differs from each
@@ -939,7 +978,7 @@ const EVENT: Record<EventKind, Check> = {
     "help-asked": (e) =>
         ref(e.q) ??
         (str(e.sitting) &&
-        one(e.ask, ["read", "where", "easier", "grown-up", "talk"] as const) &&
+        one(e.ask, ["read", "where", "easier", "grown-up", "talk", "answer"] as const) &&
         nullableStr(e.material)
             ? null
             : "help-asked needs a sitting, an ask and a material that may be null"),
@@ -995,6 +1034,24 @@ const EVENT: Record<EventKind, Check> = {
                 : "round-played needs an outcome and capped")
         );
     },
+    played: (e) =>
+        str(e.sitting) &&
+        str(e.lesson) &&
+        str(e.lessonHash) &&
+        str(e.section) &&
+        int(e.card) &&
+        e.card >= 1 &&
+        gameText(e.game) &&
+        gameCount(e.level) &&
+        gameText(e.rulesVersion) &&
+        (e.challenge === null || gameText(e.challenge)) &&
+        bool(e.won) &&
+        gameCount(e.tries) &&
+        num(e.seconds) &&
+        e.seconds >= 0 &&
+        gameCount(e.assistance)
+            ? null
+            : "played needs a sitting, the lesson with its hash, the section and card from 1, the game and its level, the rules version, a challenge or null, won, tries, seconds and assistance",
     "game-attempted": (e) =>
         isGameAttempt(e) ? null : "game-attempted needs a bounded challenge and terminal attempt",
     "plan-changed": (e) => op(e.op),
@@ -1174,6 +1231,8 @@ function problemOf(v: unknown): string | null {
     if (kind === "game-attempted" && (v.kid_id === null || v.id !== v.data.id))
         return "game attempts name a child and use the attempt id as event id";
     if (kind === "moved-up" && v.kid_id === null) return "a move names the child who moved";
+    if (kind === "played" && v.kid_id === null)
+        return "a played round names the child who played it";
     if (kind === "setting-changed" && keyOf(SETTINGS, v.data.key)) {
         const scope = SETTINGS[v.data.key].scope;
         if (scope !== "either" && (scope === "kid") !== (v.kid_id !== null))

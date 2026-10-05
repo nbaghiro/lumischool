@@ -52,8 +52,15 @@ export interface Beat {
     extra: Part[];
     marks: { at: number; dur: number; marks: Mark[] }[];
     bursts: { at: number; kind: BurstKind; x: number; y: number; n: number; dir?: number }[];
-    cues: { at: number; cue: Cue }[];
+    /** A cue may say how hard it was struck and how high it rings, for a clack that follows the knock. */
+    cues: { at: number; cue: Cue; how?: Voicing }[];
     length: number;
+}
+
+/** How a cue is sounded: as loud as `strength`, from nought to one, and `pitch` semitones up or down. */
+export interface Voicing {
+    strength?: number;
+    pitch?: number;
 }
 
 /** A part as a beat draws it at a moment. */
@@ -179,7 +186,7 @@ export interface Score {
     z(key: string, at: number, z: number): void;
     mark(at: number, dur: number, marks: Mark[]): void;
     burst(at: number, kind: BurstKind, x: number, y: number, n: number, dir?: number): void;
-    cue(at: number, cue: Cue): void;
+    cue(at: number, cue: Cue, how?: Voicing): void;
     extra(part: Part): void;
     beat(): Beat;
 }
@@ -240,8 +247,8 @@ export function score(): Score {
             b.bursts.push(dir === undefined ? { at, kind, x, y, n } : { at, kind, x, y, n, dir });
             end(at);
         },
-        cue(at, cue) {
-            b.cues.push({ at, cue });
+        cue(at, cue, how) {
+            b.cues.push(how ? { at, cue, how } : { at, cue });
             end(at);
         },
         extra(part) {

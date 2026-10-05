@@ -63,8 +63,7 @@ test("a paddle key held longer makes a stronger stroke, and letting go of it is 
     assert.ok(speed(held) > speed(tap) * 1.8);
 });
 
-test("only the three refined games receive a new mechanics revision", () => {
-    assert.equal(gameRulesVersion("golf"), gameRulesVersion("rally"));
-    for (const id of ["pay", "fish", "straight"])
-        assert.notEqual(gameRulesVersion(id), gameRulesVersion("golf"));
+test("the refined games carry their own mechanics revision, and an unchanged game keeps the shared one", () => {
+    for (const id of ["pay", "fish", "straight", "golf"])
+        assert.notEqual(gameRulesVersion(id), gameRulesVersion("rally"));
 });

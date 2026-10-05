@@ -236,6 +236,19 @@
         gap: 10px 22px;
         align-items: start;
     }
+    /* the choices wait while the dice roll, then come in, so the faces are read first; hidden by opacity so a keyboard player keeps their place */
+    .tray.waiting {
+        opacity: 0;
+        pointer-events: none;
+    }
+    .tray.shown .chip {
+        animation: tray-in 220ms ease-out both;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .tray.shown .chip {
+            animation: none;
+        }
+    }
     .tray .group {
         display: flex;
         flex-direction: column;
@@ -1016,56 +1029,101 @@
     }
 }
 
-/* A phone held sideways has height to spare least, so while a game plays the site's bar steps aside
-   and the controls stand in a column beside the field rather than under it. */
+/* A phone held sideways has height to spare least of all: the field takes it, and the controls lie in
+   one slim row under the field drawn as the toolbar over it is, bare icons and a word, each keeping
+   its 44 pixel target, rather than a panel or a column beside the field. */
 @media (orientation: landscape) and (max-height: 500px) {
     .page:has(.game-room.playing) .page-top {
         display: none;
     }
     .game-room.playing {
         .game-player {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) auto;
-            grid-template-rows: auto minmax(0, 1fr);
+            display: flex;
+            flex-direction: column;
             min-height: 0;
-            gap: 4px 8px;
-        }
-        .game-player > * {
-            grid-column: 1 / -1;
+            gap: 0;
         }
         .game-player > .game-stage-wrap {
-            grid-column: 1;
-            grid-row: 2;
+            flex: 1 1 auto;
             min-height: 0;
         }
         .game-player > .hands {
-            grid-column: 2;
-            grid-row: 2;
-            flex-direction: column;
+            flex: none;
+            flex-direction: row;
             flex-wrap: nowrap;
             justify-content: center;
-            gap: 6px;
-            overflow-y: auto;
+            align-items: center;
+            gap: 4px;
+            margin: 0;
+            overflow-x: auto;
         }
         .pad {
-            flex-direction: column;
+            flex-direction: row;
             flex-wrap: nowrap;
             align-items: center;
-            gap: 6px;
+            gap: 2px;
+            padding: 0;
+            border-radius: 0;
+            background: transparent;
         }
-        .cross {
-            display: grid;
-            grid-template-columns: repeat(3, 44px);
-            grid-template-rows: repeat(2, 44px);
-            gap: 4px;
-        }
+        .cross,
         .cross.flat {
+            grid-template-columns: none;
             grid-template-rows: 44px;
+            grid-auto-flow: column;
+            grid-auto-columns: 44px;
+            gap: 2px;
         }
-        .key {
+        .cross [data-dir] {
+            grid-row: 1;
+            grid-column: auto;
+        }
+        .key,
+        .key.big {
             min-width: 44px;
             min-height: 44px;
-            padding: 4px 10px;
+            padding: 0 10px;
+            border-color: transparent;
+            border-radius: 10px;
+            background: transparent;
+            font-size: 20px;
         }
+        .key.big {
+            font: 700 17px var(--f-read);
+            color: var(--pen);
+        }
+        .key.on {
+            border-color: transparent;
+            background: var(--glow);
+        }
+    }
+}
+
+@keyframes tray-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+}
+
+/* the field the round ended on stays in sight under its end card, a little quieter */
+.game-room .game-ended .arena {
+    opacity: 0.72;
+    transition: opacity 0.3s;
+}
+.game-room .game-end-chip {
+    min-height: 44px;
+    padding: 0 14px;
+    border: 2px solid var(--pen);
+    border-radius: 999px;
+    background: var(--card);
+    color: var(--pen);
+    font: 600 14px / 1 var(--f-read);
+    white-space: nowrap;
+    cursor: pointer;
+}
+@media (prefers-reduced-motion: reduce) {
+    .game-room .game-ended .arena {
+        transition: none;
     }
 }

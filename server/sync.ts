@@ -289,6 +289,7 @@ function ofLesson(events: readonly Envelope[], lesson: string): Envelope[] {
             case "help-asked":
                 return e.data.q.lesson === lesson;
             case "sheet-printed":
+            case "played":
                 return e.data.lesson === lesson;
             case "marked":
             case "responded":

@@ -50,6 +50,7 @@ export const POSES = [
     "balance",
     "jump",
     "hang",
+    "sweep",
 ] as const;
 export type Pose = (typeof POSES)[number];
 export const AGES = ["child", "grownup", "older"] as const;
@@ -172,6 +173,8 @@ export interface PersonParams {
     /** Which way a pointing arm, a wave or a wheelchair faces: 1 to the right, -1 to the left. */
     dir: number;
     holding: string;
+    /** The mouth open as in speech, over the mood's own mouth, for a character who reads aloud. */
+    talking?: boolean;
 }
 
 /** The clothes a person wears when a setting says nothing else: what every person wore before clothes were settings. */
@@ -217,6 +220,7 @@ export interface Look {
     aid: Aid;
     mood: Mood;
     dir: 1 | -1;
+    talking: boolean;
 }
 
 export function lookOf(p: PersonParams): Look {
@@ -243,6 +247,7 @@ export function lookOf(p: PersonParams): Look {
         aid: pick(AIDS, p.aid, "none"),
         mood: pick(MOODS, p.mood, "happy"),
         dir: p.dir < 0 ? -1 : 1,
+        talking: p.talking === true,
     };
 }
 
@@ -851,7 +856,13 @@ function head<G>(c: Ctx<G>, x: number, cy: number, r: number, look: Look, drape:
     const my = cy + r * 0.64;
     const mouth = (d: string, fill: Fill = null) =>
         pen.path(g, d, "ruler", fill, { strokeWidth: w, ...FIRM });
-    if (m === "happy")
+    // a mouth open as in speech, a small rounded shape with the tongue showing, whatever the mood
+    if (look.talking)
+        mouth(
+            `M${x - r * 0.2} ${my - r * 0.04}Q${x} ${my - r * 0.1} ${x + r * 0.2} ${my - r * 0.04}Q${x + r * 0.18} ${my + r * 0.24} ${x} ${my + r * 0.26}Q${x - r * 0.18} ${my + r * 0.24} ${x - r * 0.2} ${my - r * 0.04}Z`,
+            c.pen.fill("berry"),
+        );
+    else if (m === "happy")
         mouth(
             `M${x - r * 0.26} ${my - r * 0.05}Q${x} ${my + r * 0.2} ${x + r * 0.26} ${my - r * 0.05}`,
         );
@@ -1577,7 +1588,7 @@ export function figure<G>(
     const jumping = pose === "jump" && !seated && look.aid === "none";
     // a jump lifts the whole figure off the floor it stands on; the feet anchor stays on the floor
     const base = jumping ? floor - b.hip * 0.3 : floor;
-    const striding = !seated && (pose === "walk" || pose === "run");
+    const striding = !seated && (pose === "walk" || pose === "run" || pose === "sweep");
     const a: RawAnchors = {};
     const hipH = racing
         ? 26 * (look.age === "child" ? 1 : 1.3)
@@ -1610,7 +1621,8 @@ export function figure<G>(
     if (pose === "wave") arms[near] = "wave";
     if (pose === "point") arms[near] = "point";
     if (pose === "think") arms[near] = "chin";
-    if (pose === "hold") {
+    // sweeping holds a broom down in front with both hands while the legs stride
+    if (pose === "hold" || pose === "sweep") {
         arms[near] = "hold";
         arms[far] = "hold";
     }
@@ -1768,7 +1780,7 @@ export function figure<G>(
         racer.front();
     }
     for (const s of racer ? [near] : [far, near]) arm(s);
-    if (pose === "hold") {
+    if (pose === "hold" || pose === "sweep") {
         const hy = hipY - b.ua * 0.42;
         if (holding) drawProp(c, holding, bx, hy - b.hand * 0.6, r * 1.2);
         a.hands = [bx, hy - r * 0.8, "up"];

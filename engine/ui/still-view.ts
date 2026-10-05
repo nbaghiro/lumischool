@@ -1,5 +1,6 @@
 // A turn game's board for a browser without WebGL2: each frame the scene view gives, drawn as the
 // shelf's SVG with no motes and no motion, so the game stays playable. See .docs/game-engine.md, P3.
+import { cardSquare, keepInside } from "../motion/camera";
 import type { Pt } from "../motion/geometry";
 import type { Frame, Mark, Pool, Sprite, Water } from "../motion/scene";
 import { surfaceAt } from "../motion/surface";
@@ -37,6 +38,8 @@ export class StillView implements FieldView {
     private readonly shown = new Map<string, Shown>();
     private view = { w: 1, h: 1 };
     private camera = { x: 0.5, y: 0.5 };
+    /** Whether a card's picture is cropped round the frame's focus rather than showing the whole view. */
+    private cropped = false;
 
     constructor(o: { host: HTMLElement; art: Map<string, Drawing<unknown>> }) {
         this.art = o.art;
@@ -66,12 +69,22 @@ export class StillView implements FieldView {
         room: { w: number; h: number },
         _seen?: "side" | "above",
         square?: number,
+        keep?: number,
+        card = false,
     ): void {
-        const sq = square ?? Math.max(6, Math.floor(Math.min(room.w / view.w, room.h / view.h)));
+        const whole = square ?? Math.max(6, Math.floor(Math.min(room.w / view.w, room.h / view.h)));
+        // a card's picture is cropped as its live field is, so playing it does not jump
+        const sq =
+            card && square === undefined && keep !== undefined
+                ? Math.max(6, cardSquare(view, room, keep))
+                : whole;
+        this.cropped = sq > whole;
         // the paper fills the room, as the GPU's view does; less than a pixel to spare is no room
         const grown = (r: number, v: number): number => (r - v * sq < 1 ? v : r / sq);
         this.sq = sq;
-        this.view = { w: grown(room.w, view.w), h: grown(room.h, view.h) };
+        this.view = this.cropped
+            ? { w: room.w / sq, h: room.h / sq }
+            : { w: grown(room.w, view.w), h: grown(room.h, view.h) };
         this.el.style.width = `${this.view.w * sq}px`;
         this.el.style.height = `${this.view.h * sq}px`;
         this.el.style.setProperty("--sq", `${sq}px`);
@@ -87,7 +100,9 @@ export class StillView implements FieldView {
 
     draw(f: Frame): void {
         const t0 = performance.now();
-        this.camera = { x: f.camera.x, y: f.camera.y };
+        this.camera = this.cropped
+            ? keepInside(f.focus ?? f.camera, this.view, f.world, 1, true)
+            : { x: f.camera.x, y: f.camera.y };
         const left = f.camera.x - this.view.w / 2,
             top = f.camera.y - this.view.h / 2,
             sq = this.sq;

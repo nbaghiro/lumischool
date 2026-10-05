@@ -8,6 +8,8 @@ import {
     isSchoolDay,
     mastery,
     mondayOf,
+    playedIn,
+    playedWords,
     progressOf,
     sheetFor,
     weekdayOf,
@@ -256,4 +258,61 @@ test("a paper mark belongs to the day the sheet was worked, and marking again co
     assert.deepEqual(f.added, [
         { on: "2026-09-11", subject: "science", minutes: 90, note: "Museum" },
     ]);
+});
+
+const round = (sitting: string, card: number, won: boolean, tries: number) => ({
+    sitting,
+    lesson: "m1",
+    lessonHash: "h",
+    section: "try",
+    card,
+    game: "jump",
+    level: 0,
+    rulesVersion: "games-1-physical-3",
+    challenge: null,
+    won,
+    tries,
+    seconds: 40,
+    assistance: 0,
+});
+
+test("a game card played in a lesson is evidence for it, the last round of a card in a sitting counting once", () => {
+    const folded = fold(
+        [
+            ev("sitting-began", "2026-09-14", {
+                sitting: "s1",
+                lesson: "m1",
+                lessonHash: "h",
+                pack: "p",
+                mode: "screen",
+            }),
+            ev("played", "2026-09-14", round("s1", 1, false, 1)),
+            ev("played", "2026-09-14", round("s1", 1, true, 2)),
+            ev("played", "2026-09-14", round("s1", 2, true, 1)),
+            ev("played", "2026-09-15", round("s2", 1, true, 1)),
+        ],
+        TZ,
+        subjectOf,
+    );
+    const mine = playedIn(folded, KID, "m1");
+    assert.deepEqual(
+        mine.map((p) => [p.on, p.card, p.won, p.tries]),
+        [
+            ["2026-09-14", 1, true, 2],
+            ["2026-09-14", 2, true, 1],
+            ["2026-09-15", 1, true, 1],
+        ],
+    );
+    assert.deepEqual(playedIn(folded, KID, "m2"), []);
+});
+
+test("a played round reads in a grown-up's words", () => {
+    const at = (won: boolean, tries: number, assistance = 0) =>
+        playedWords({ won, tries, assistance }, "Rabbit crossing");
+    assert.equal(at(true, 1), "Played Rabbit crossing, won on the first try");
+    assert.equal(at(true, 2), "Played Rabbit crossing, won on the second try");
+    assert.equal(at(true, 7), "Played Rabbit crossing, won after 7 tries");
+    assert.equal(at(true, 0), "Played Rabbit crossing, won on the first try");
+    assert.equal(at(false, 3), "Played Rabbit crossing, not won yet");
+    assert.equal(at(true, 3, 1), "Played Rabbit crossing, won on the third try, with help");
 });

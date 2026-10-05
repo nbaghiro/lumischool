@@ -1426,6 +1426,8 @@ export const fishingGame: ActionGame<FishState> = {
     id: "fish",
     title: "Gone fishing",
     group: "action",
+    // too wide to crop into a card and keep its play in view: it waits for the turned or overview view, see .docs/game-cards.md
+    card: null,
     quiet: true,
     levels: FISH_LEVELS,
     rate: RATE,

@@ -66,6 +66,28 @@ export interface Cover {
     crop?: { x: number; y: number; w: number; h: number };
 }
 
+/** How a game plays as one round inside a lesson: see .docs/game-cards.md. */
+export interface Card {
+    /** The level a lesson plays when it names no other, and how many of its asks a round holds when fewer than all. */
+    round: { level: number; asks?: number };
+    /** Squares across a card shows, following the frame's focus: 30 or fewer keeps a square 12 px in a 360 px card. */
+    keep: number;
+    /** The most a round should take, in minutes. */
+    minutes: number;
+}
+
+/** A round that has ended: won, or stopped without a win, with the game's own sentence for it. */
+export interface RoundEnd {
+    won: boolean;
+    words: string;
+}
+
+/** How an action game's round has ended: its own `ended`, or a win when it has none. */
+export function endOf<S>(game: ActionGame<S>, s: S): RoundEnd | null {
+    if (game.ended) return game.ended(s);
+    return game.won(s) ? { won: true, words: game.note(s) } : null;
+}
+
 interface Base {
     /** What `?g=` names in the address. */
     id: string;
@@ -80,6 +102,8 @@ interface Base {
     listed?: false;
     /** The game's own sounds for the cues it wants different from everyone's. */
     sounds?: Kit;
+    /** How it plays as a card in a lesson, or null for a game that cannot meet the card standard. */
+    card: Card | null;
 }
 
 /** A puzzle or a hands-on game: a mechanic, a view of its board, and the tray of its moves. */
@@ -108,6 +132,8 @@ export interface ActionGame<S> extends Base {
         keysOnly?: true;
     }[];
     command?(s: S, id: string): void;
+    /** Whether a command's button shows now; left out, every button always shows. Its key works either way. */
+    shows?(s: S, id: string): boolean;
     /**
      * A design to keep, and putting one back: what a build game saves between tries. Returning to a
      * checkpoint in play needs neither, since the player replays the try up to the step that emitted
@@ -115,6 +141,8 @@ export interface ActionGame<S> extends Base {
      */
     checkpoint?(s: S): unknown;
     restore?(s: S, value: unknown): boolean;
+    /** The level whose design the page keeps in the browser between visits, through `checkpoint` and `restore`: a house built is there to come back to. */
+    saves?: { level: number };
     /** The buttons under the field: what each arrow it uses is called here, and the big buttons. Every one has a key. */
     controls: {
         arrows?: Partial<Record<Dir, string>>;
@@ -130,12 +158,19 @@ export interface ActionGame<S> extends Base {
     /** The other big button's drawing now, for a button whose picture follows the game, such as the thing in hand. */
     brakeIcon?(s: S): IconName;
     start(level: number, seed?: number): S;
+    /** A card's round: the level with only its first `asks` asks, for a game whose levels hold several. */
+    round?(level: number, asks: number): S;
     step(s: S, pad: Pad): Happening[];
     /** The position in words, for the text form and a screen reader. */
     say(s: S): string;
     /** What just happened, in a sentence or two, for the line under the goal; empty when nothing has. */
     note(s: S): string;
     won(s: S): boolean;
+    /**
+     * How a round has ended, or null while it goes on. Left out, a win is the only end; a game that
+     * can stop without a win (balls run out, an end lost) says so here, so the page always shows it.
+     */
+    ended?(s: S): RoundEnd | null;
     objectives?(s: S): { completed: number; total: number };
     frame(s: S, rest?: boolean): Frame;
     /** Where a pull starts, in squares, when there is something to pull: the ball in the sling. */
@@ -150,6 +185,10 @@ export interface ActionGame<S> extends Base {
      * first, and the wheel or a trackpad's pinch as a zoom.
      */
     intents?: true;
+    /** Set when the game reads pans as well: the wheel and two fingers moving together move its view, and only a held ctrl or a pinch zooms. */
+    pans?: true;
+    /** Set when W, A, S and D move as the arrows do, for a game with no command on those letters. */
+    wasd?: true;
     /** Abandon a held gesture on pause or pointer cancellation, without launching it. */
     cancelInput?(s: S): void;
     /** The numbers that make it feel the way it does, which the review drawer can turn while it runs. */

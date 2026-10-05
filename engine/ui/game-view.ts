@@ -3,7 +3,7 @@
 // `probe=1` in the address a hidden copy of every sprite's box stays in the page for the tests that
 // find sprites by key. See .docs/game-engine.md.
 import { ageOf, burst, bursts, stepBursts, type Bursts, type Style } from "../motion/burst";
-import { keepInside, portrait, uprightSquare } from "../motion/camera";
+import { cardSquare, keepInside, portrait, uprightSquare } from "../motion/camera";
 import { HALO, lightsOf } from "../motion/lights";
 import type { BurstKind, Frame, Mark, Pool, Sprite, Water } from "../motion/scene";
 import { ripplesOf, WAVES } from "../motion/surface";
@@ -103,7 +103,8 @@ export interface FieldView {
     };
     /**
      * `square`, when given, is the pixels to a square the page has already chosen, kept whatever the
-     * room; `keep` is the squares of width a room held upright shows, following the frame's focus.
+     * room; `keep` is the squares of width a room held upright shows, following the frame's focus, and
+     * with `card` the squares across a lesson's card shows, cropping its height round the focus too.
      */
     fit(
         view: { w: number; h: number },
@@ -112,6 +113,7 @@ export interface FieldView {
         seen: "side" | "above",
         square?: number,
         keep?: number,
+        card?: boolean,
     ): void;
     clear(): void;
     draw(f: Frame, dt: number): void;
@@ -119,6 +121,8 @@ export interface FieldView {
     burst(kind: BurstKind, x: number, y: number, n: number, dir?: number): void;
     shake(amount: number): void;
     toWorld(clientX: number, clientY: number): { x: number; y: number };
+    /** A point on the page in the view's own squares, where fixed sprites are placed, for a view that draws them. */
+    toFixed?(clientX: number, clientY: number): { x: number; y: number };
     readonly px: number;
     /** True while the view cannot draw, as after the GPU lost its context; the game waits. */
     readonly halted?: boolean;
@@ -291,21 +295,31 @@ export class GameView implements FieldView {
         seen: "side" | "above",
         square?: number,
         keep?: number,
+        card = false,
     ): void {
         // the square is the largest that shows the whole authored view, and the field then fills the room
         const whole = square ?? Math.max(6, Math.floor(Math.min(room.w / view.w, room.h / view.h)));
+        const cropped = card && square === undefined && keep !== undefined;
         const upright =
-            square === undefined && portrait(room) && keep !== undefined && keep < view.w;
-        const sq = upright ? uprightSquare(view, room, keep, whole) : whole;
-        this.upright = upright && sq > whole;
-        this.phone = square === undefined && portrait(room);
+            !cropped &&
+            square === undefined &&
+            portrait(room) &&
+            keep !== undefined &&
+            keep < view.w;
+        const sq = cropped
+            ? Math.max(6, cardSquare(view, room, keep))
+            : upright
+              ? uprightSquare(view, room, keep, whole)
+              : whole;
+        this.upright = (upright || cropped) && sq > whole;
+        this.phone = (square === undefined && portrait(room)) || cropped;
         this.follow = null;
         // less than a pixel of room to spare is no room: a caller may pass the view's own size and a little over
         const grown = (r: number, v: number): number => (r - v * sq < 1 ? v : r / sq);
         // held upright, the field is the room's width and shows part of the view, following the focus
         const shown = {
             w: this.upright ? room.w / sq : grown(room.w, view.w),
-            h: grown(room.h, view.h),
+            h: cropped && this.upright ? room.h / sq : grown(room.h, view.h),
         };
         this.view = { ...shown };
         this.authored = { ...view };
@@ -959,10 +973,12 @@ export class GameView implements FieldView {
                 y = m.fixed
                     ? m.y * (this.view.h / this.authored.h) * this.sq
                     : ch + (m.y - camera.y) * z;
-            // 14 pixels is the least a word is read at on a phone; the stroke keeps to the squares
-            const size = Math.max(this.phone ? 14 : 0, (m.size ?? 0.8) * z);
+            // 14 pixels is the least a word is read at on a phone; the stroke keeps to the squares, and a
+            // fixed word keeps the view's square as a fixed sprite does, whatever the camera's zoom
+            const zw = m.fixed ? this.sq : z;
+            const size = Math.max(this.phone ? 14 : 0, (m.size ?? 0.8) * zw);
             span.style.fontSize = `${size.toFixed(1)}px`;
-            span.style.setProperty("-webkit-text-stroke-width", `${(0.12 * z).toFixed(1)}px`);
+            span.style.setProperty("-webkit-text-stroke-width", `${(0.12 * zw).toFixed(1)}px`);
             span.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -80%)`;
             span.hidden = false;
             i++;
@@ -991,8 +1007,15 @@ export class GameView implements FieldView {
             const w = placed.w * grow * c.z,
                 h = placed.h * grow * c.z;
             const a = s.angle ?? 0;
-            const x = cw + (s.x - c.x) * c.z,
-                y = ch + (s.y - (s.stand ? placed.h / 2 : 0) - c.y) * c.z;
+            // a fixed sprite keeps its place as a share of the authored view, as `place` draws it
+            const at = s.fixed
+                ? {
+                      x: s.x * (this.view.w / this.authored.w),
+                      y: s.y * (this.view.h / this.authored.h),
+                  }
+                : s;
+            const x = cw + (at.x - c.x) * c.z,
+                y = ch + (at.y - (s.stand ? placed.h / 2 : 0) - c.y) * c.z;
             let d = this.mirrored.get(s.key);
             if (!d) {
                 d = document.createElement("div");
@@ -1039,6 +1062,14 @@ export class GameView implements FieldView {
         return {
             x: this.cam.x + (clientX - r.left - (this.view.w * this.sq) / 2) / k,
             y: this.cam.y + (clientY - r.top - (this.view.h * this.sq) / 2) / k,
+        };
+    }
+
+    toFixed(clientX: number, clientY: number): { x: number; y: number } {
+        const r = this.el.getBoundingClientRect();
+        return {
+            x: ((clientX - r.left) / this.sq) * (this.authored.w / this.view.w),
+            y: ((clientY - r.top) / this.sq) * (this.authored.h / this.view.h),
         };
     }
 

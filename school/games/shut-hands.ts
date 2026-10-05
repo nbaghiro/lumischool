@@ -198,6 +198,14 @@ function settleBeat(was: Scene, now: Scene, hand: Release | null): Beat {
 
 /** How long a die takes to come from where it lay to where the throw starts it on the felt. */
 const LIFT = 0.08;
+/** The longest a throw tumbles, in seconds: long enough to read as a throw, short enough not to wait for. */
+const TUMBLE_MOST = 1.5;
+/** A sixtieth of a second, the step the roll is read at. */
+const STEP = 1 / 60;
+/** Looks a die's roll steps through for each quarter turn over an edge. */
+const ROLL_STEPS = 12;
+/** How much bigger a die is drawn at the top of its first bounce, as a share of its size. */
+const HOP = 0.22;
 
 /**
  * A throw: both dice fly the way the hand sent them, knock off the walls and each other, and tumble
@@ -232,78 +240,102 @@ function throwBeat(
         tray,
         seed,
     );
+    const spins = keys.map((_, i) => 2 * Math.PI * (i ? -1 : 1));
     const { frames, hits } = tumble({
         tray,
         from: start,
         to: end,
         // one whole turn more than they need, so each is seen to spin
-        turnTo: turnNow.map(
-            (d, i) => ((d - (turnWas[i] ?? 0)) * Math.PI) / 180 + 2 * Math.PI * (i ? -1 : 1),
-        ),
+        turnTo: turnNow.map((d, i) => ((d - (turnWas[i] ?? 0)) * Math.PI) / 180 + (spins[i] ?? 0)),
         v,
         seed,
         size: DIE.half * 2 * 0.9,
+        most: TUMBLE_MOST,
     });
     const first = frames[0],
-        last = frames[frames.length - 1];
+        last = frames[frames.length - 1],
+        span = Math.max(1 / 60, last?.t ?? 0);
+    const speed = Math.hypot(v.x, v.y);
     keys.forEach((key, i) => {
         const a = start[i] ?? { x: 0, y: 0 },
-            f0 = first?.at[i] ?? a;
-        // from where it lay onto the felt, then along the tumble two steps at a time
+            f0 = first?.at[i] ?? a,
+            was0 = turnWas[i] ?? 0,
+            now0 = turnNow[i] ?? 0;
+        // The turn on the table is the sprite's own angle while it tumbles, drawn by the GPU, and the
+        // drawing keeps one turn, so a tumble asks for a few looks rather than one a frame.
+        const angleAt = (r: number) => ((was0 - now0) * Math.PI) / 180 + r - (spins[i] ?? 0);
+        sc.set(key, 0, { face: partOf(was, key)?.params.face ?? 1, turn: was0, roll: 0 });
         sc.track(key, "x", 0, a.x - DIE.half, f0.x - DIE.half, { ease: "out" }, LIFT);
         sc.track(key, "y", 0, a.y - DIE.half, f0.y - DIE.half, { ease: "out" }, LIFT);
-        if (hand?.key === key && Math.abs(hand.angle) > 1e-6)
-            sc.track(key, "angle", 0, hand.angle, 0, { ease: "out" }, LIFT);
-        for (let k = 0; k + 2 < frames.length; k += 2) {
+        sc.track(key, "angle", 0, hand?.key === key ? hand.angle : 0, 0, { ease: "out" }, LIFT);
+        sc.set(key, LIFT / 2, { roll: 0.25 });
+        for (let k = 0; k + 1 < frames.length; k += 2) {
             const p = frames[k],
                 q = frames[Math.min(k + 2, frames.length - 1)];
-            if (!p || !q) continue;
+            if (!p || !q || q.t <= p.t) continue;
             const at = LIFT + p.t,
                 dur = q.t - p.t;
             const pa = p.at[i] ?? a,
                 qa = q.at[i] ?? a;
             sc.track(key, "x", at, pa.x - DIE.half, qa.x - DIE.half, { ease: "linear" }, dur);
             sc.track(key, "y", at, pa.y - DIE.half, qa.y - DIE.half, { ease: "linear" }, dur);
-            const deg = (r: number) => (turnWas[i] ?? 0) + (r * 180) / Math.PI;
             sc.track(
                 key,
-                "param:turn",
+                "angle",
                 at,
-                deg(p.angle[i] ?? 0),
-                deg(q.angle[i] ?? 0),
+                angleAt(p.angle[i] ?? 0),
+                angleAt(q.angle[i] ?? 0),
                 { ease: "linear" },
                 dur,
             );
         }
-        // the last stretch lands exactly on the scene after, whatever the two-step sampling left over
-        const lastAt = LIFT + (frames[Math.max(0, frames.length - 3)]?.t ?? 0),
-            before = frames[Math.max(0, frames.length - 3)];
-        const pa = before?.at[i] ?? a,
-            b = end[i] ?? a;
-        const span = Math.max(1 / 60, LIFT + (last?.t ?? 0) - lastAt);
-        sc.track(key, "x", lastAt, pa.x - DIE.half, b.x - DIE.half, { ease: "linear" }, span);
-        sc.track(key, "y", lastAt, pa.y - DIE.half, b.y - DIE.half, { ease: "linear" }, span);
-        sc.track(
-            key,
-            "param:turn",
-            lastAt,
-            (turnWas[i] ?? 0) + ((before?.angle[i] ?? 0) * 180) / Math.PI,
-            turnNow[i] ?? 0,
-            { ease: "linear" },
-            span,
-        );
-        // it rocks over an edge as it leaves, shows the new face mid-roll, and rolls to rest on it
+        // it rolls over its edges through faces beside each other and comes to rest on the thrown face,
+        // stepping in twelfths of a quarter turn so every look it passes through is drawn ahead
         const rolls = 6 + i * 2 + (seed % 3);
-        sc.set(key, 0, { face: partOf(was, key)?.params.face ?? 1 });
-        sc.track(key, "param:roll", 0, 0, 0.4, { ease: "linear" }, LIFT);
-        sc.set(key, LIFT, { face: partOf(now, key)?.params.face ?? 1 });
-        sc.track(key, "param:roll", LIFT, -rolls, 0, { ease: "out" }, LIFT + (last?.t ?? 0) - LIFT);
+        sc.set(key, LIFT, { face: partOf(now, key)?.params.face ?? 1, turn: now0, roll: -rolls });
+        let shown = -rolls;
+        for (let k = 1; k * STEP < span; k++) {
+            const u = (k * STEP) / span,
+                r = Math.round(-rolls * (1 - u) ** 3 * ROLL_STEPS) / ROLL_STEPS;
+            if (r !== shown) sc.set(key, LIFT + k * STEP, { roll: r });
+            shown = r;
+        }
+        sc.set(key, LIFT + span, { roll: num(partOf(now, key)?.params.roll) });
+        // off the felt it is nearer the eye, so it grows: a few bounces, each lower and shorter than the last
+        const rnd = seeded(seed * 31 + i * 7 + 1);
+        const h0 = Math.min(1.1, 0.5 + (speed / THROW.max) * 0.6) * (0.9 + rnd() * 0.2);
+        const heights = [h0, h0 * 0.38, h0 * 0.14],
+            times = heights.map((h) => 0.34 * Math.sqrt(h) * (1 + 0.08 * i));
+        const fit = Math.min(1, (0.7 * span) / times.reduce((x, y) => x + y, 0));
+        let t0 = LIFT;
+        heights.forEach((h, b) => {
+            const d = (times[b] ?? 0) * fit;
+            const lift = (tau: number) => 1 + HOP * 4 * h * tau * (1 - tau);
+            for (let j = 0; j < 6; j++)
+                sc.track(
+                    key,
+                    "scale",
+                    t0 + (d * j) / 6,
+                    lift(j / 6),
+                    lift((j + 1) / 6),
+                    { ease: "linear" },
+                    d / 6,
+                );
+            t0 += d;
+            sc.squash(key, t0, 0.14 * h);
+            sc.cue(t0, "bump", {
+                strength: Math.min(1, 0.25 + h * 0.7),
+                pitch: Math.round((1 - h) * 5),
+            });
+        });
+        // and settles with a small give as it comes to rest
+        sc.squash(key, LIFT + span, 0.05);
     });
     let heard = -1;
     for (const h of hits) {
         if (h.t - heard < 0.07) continue;
         heard = h.t;
-        sc.cue(LIFT + h.t, "bump");
+        sc.cue(LIFT + h.t, "bump", { strength: Math.min(1, h.speed / 14), pitch: 3 });
         if (h.speed > 6) sc.burst(LIFT + h.t, "dust", h.at.x, h.at.y, 2);
     }
     // a hard throw jolts the box
@@ -342,6 +374,8 @@ export const shutGame: TurnGame = {
     id: "shut",
     title: "Shut the box",
     group: "hands",
+    // the box is about 35 squares wide and a turn board is never cropped, so a card would draw it at 9 px a square
+    card: null,
     cover: {
         art: "shutbox",
         params: { count: 9, shut: [2, 5, 7, 9], dice: [3, 6], on: [0, 0], thrown: 4, bare: false },

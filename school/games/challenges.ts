@@ -66,7 +66,14 @@ import {
 } from "./lemonade-challenges";
 import { STAND_LEVELS } from "./lemonade";
 import { isPoolConfiguration, openPoolConfiguration, poolChallenge } from "./pool-challenges";
+import {
+    curlChallenge,
+    curlLevelOf,
+    isCurlConfiguration,
+    openCurlConfiguration,
+} from "./curling-challenges";
 import { POOL_LEVELS } from "./pool";
+import { isPinConfiguration, openPinConfiguration, pinChallenge } from "./pinball-challenges";
 import {
     isRescueConfiguration,
     openRescueConfiguration,
@@ -74,6 +81,35 @@ import {
     vary as varyRescue,
 } from "./rescue-challenges";
 import { RESCUE_LEVELS } from "./rescue";
+import {
+    dollCertified,
+    dollChallenge,
+    isDollConfiguration,
+    openDollConfiguration,
+    vary as varyDoll,
+} from "./dollhouse-challenges";
+import { DOLL_LEVELS } from "./dollhouse";
+import {
+    gardenCertified,
+    gardenChallenge,
+    isGardenConfiguration,
+    levelFor as gardenLevelFor,
+    openGardenConfiguration,
+} from "./garden-challenges";
+import {
+    climbCertified,
+    climbChallenge,
+    isClimbConfiguration,
+    openClimbConfiguration,
+} from "./climb-challenges";
+import { CLIMB_LEVELS, variantOf as climbVariant } from "./climb";
+import {
+    dominoCertified,
+    dominoChallenge,
+    isDominoConfiguration,
+    levelOf as dominoLevel,
+    openDominoConfiguration,
+} from "./machine-challenges";
 
 function identity(game: string, phase: number, value: unknown): string {
     const text = configurationKey(value);
@@ -449,6 +485,37 @@ const pool = family({
     open: (game, c, phase) => started(game, () => openPoolConfiguration(c), phase),
 });
 
+const curling = family({
+    variation: {
+        method: "throw-search-and-ice-replay",
+        generate: curlChallenge,
+        read: typed(isCurlConfiguration),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({
+        reasoning: phase < 3 ? 1 : phase < 7 ? 2 : 3,
+        motor: phase < 3 ? 1 : 2,
+    }),
+    open: (game, c, phase) => {
+        const L = curlLevelOf(c);
+        return started(game, () => openCurlConfiguration(c), phase, {
+            title: L.title,
+            goal: L.goal,
+        });
+    },
+});
+
+const pinball = family({
+    variation: {
+        method: "flip-search-and-physics-replay",
+        generate: pinChallenge,
+        read: typed(isPinConfiguration),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({ reasoning: phase < 3 ? 1 : phase < 6 ? 2 : 3, motor: 2 }),
+    open: (game, c, phase) => started(game, () => openPinConfiguration(c), phase),
+});
+
 const rescue = family({
     variation: {
         method: "mission-driver-and-physics-replay",
@@ -471,10 +538,92 @@ const rescue = family({
     },
 });
 
+const dollhouse = family({
+    variation: {
+        method: "plan-and-hands-replay",
+        generate: dollChallenge,
+        read: typed(isDollConfiguration),
+        solve: (c) => dollCertified(c),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({ reasoning: phase < 3 ? 1 : phase < 6 ? 2 : 3, motor: 1 }),
+    open: (game, c, phase) => {
+        const L = DOLL_LEVELS[phase];
+        return L
+            ? started(game, () => openDollConfiguration(c), phase, {
+                  title: L.title,
+                  goal: varyDoll(L, c.variant).goal,
+              })
+            : null;
+    },
+});
+
+const climb = family({
+    variation: {
+        method: "route-pilot-keys-and-touch-replay",
+        generate: climbChallenge,
+        read: typed(isClimbConfiguration),
+        solve: (c) => climbCertified(c),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({
+        reasoning: phase < 3 ? 1 : phase < 6 ? 2 : 3,
+        motor: phase < 3 ? 2 : 3,
+    }),
+    open: (game, c, phase) => {
+        const L = CLIMB_LEVELS[phase];
+        return L && climbVariant(L, c.variant)
+            ? started(game, () => openClimbConfiguration(c), phase)
+            : null;
+    },
+});
+
+const garden = family({
+    variation: {
+        method: "plan-and-hands-replay",
+        generate: gardenChallenge,
+        read: typed(isGardenConfiguration),
+        solve: (c) => gardenCertified(c),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({ reasoning: phase < 3 ? 1 : phase < 6 ? 2 : 3, motor: 1 }),
+    open: (game, c, phase) => {
+        const L = gardenLevelFor(c);
+        return started(game, () => openGardenConfiguration(c), phase, {
+            title: L.title,
+            goal: L.goal,
+        });
+    },
+});
+
+const machine = family({
+    variation: {
+        method: "plan-and-hands-physics-replay",
+        generate: dominoChallenge,
+        read: (value, phase) => (isDominoConfiguration(value, phase) ? value : null),
+        solve: (c) => dominoCertified(c),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({ reasoning: phase < 2 ? 1 : phase < 6 ? 2 : 3, motor: 2 }),
+    open: (game, c, phase) => {
+        const L = dominoLevel(c);
+        return started(game, () => openDominoConfiguration(c), phase, {
+            title: L.title,
+            goal: L.goal,
+        });
+    },
+});
+
 /** Every game whose levels have variations, by the game's id. */
 const VARIATIONS: Partial<Record<string, Variations>> = {
+    machine,
+    garden,
+    climb,
+    dollhouse,
     rally,
+    pinball,
     pool,
+    curling,
     rescue,
     blocks,
     wardrobe,

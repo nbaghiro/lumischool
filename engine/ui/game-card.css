@@ -1,0 +1,92 @@
+/* A game card takes the field and control styles of the Games page (games.css, under .game-room) and
+   none of its page layout: it is as wide as the lesson's column and no wider. */
+.game-room.gc {
+    width: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+    border: 1px solid var(--grid);
+    border-radius: 12px;
+    background: var(--card);
+}
+.game-room.gc:focus-visible {
+    outline: 3px solid var(--pen);
+    outline-offset: 3px;
+}
+.gc-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+}
+.gc-goal {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font: 600 15px / 1.3 var(--f-read);
+    color: var(--ink);
+}
+/* three to two keeps a wide scene readable in a column; the field fills the box whatever its shape */
+.gc-stage {
+    position: relative;
+    aspect-ratio: 3 / 2;
+    min-height: 200px;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--paper);
+}
+.gc-board {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.game-room.gc button.gc-play {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 72px;
+    height: 72px;
+    padding: 0;
+    border-radius: 50%;
+    border: 2px solid var(--pen);
+    background: var(--card);
+    box-shadow: 0 6px 18px -8px #00000059;
+}
+.gc-play .control-icon {
+    width: 34px;
+    height: 34px;
+}
+.gc-hands {
+    display: none;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+.gc-buttons .gc-hands {
+    display: flex;
+}
+/* a card's buttons are its game's own, kept at the 44 px floor so the row stays slim */
+.game-room.gc .cross {
+    grid-template-columns: repeat(3, 44px);
+    grid-template-rows: repeat(2, 44px);
+}
+.game-room.gc .cross.flat {
+    grid-template-rows: 44px;
+}
+.game-room.gc .key {
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 18px;
+}
+.game-room.gc .key.big {
+    min-width: 44px;
+}
+.gc-missing {
+    margin: 0;
+    color: var(--ink-soft);
+}

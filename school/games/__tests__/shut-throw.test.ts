@@ -184,3 +184,51 @@ test("the throw's drawings are on the shelf, and the flick's range is sound", ()
     assert.ok(THROW.min > 0 && THROW.min < THROW.max && THROW.dead < THROW.min);
     assert.ok(!/[—!]/.test(shutGame.hint));
 });
+
+test("a throw lands on the thrown faces, bounces lower each time, steps through few looks, and never leaves the dice overlapping", () => {
+    let throws = 0;
+    for (const level of shutGame.levels) {
+        const r = level.round(),
+            session = shutGame.open(r, board);
+        for (const from of sampled(r, 60).filter((p) => !readBox(p).live && !p.won)) {
+            const [move] = from.moves;
+            const to = move?.next();
+            if (!to) continue;
+            for (const v of flicks)
+                for (const seed of [1, 2, 3]) {
+                    const { beat, now } = beatOf(session, from, to, v, seed);
+                    const where = `${level.title} from ${from.key}`;
+                    assert.ok(beat.length >= 0.8 && beat.length <= 2.2, `${where}: ${beat.length}`);
+                    // the turn on the table is the sprite's angle, so the drawing never animates it
+                    assert.ok(!beat.tracks.some((t) => t.ch === "param:turn"), where);
+                    const dice = now.parts.filter((p) => p.key?.startsWith("die:"));
+                    for (const die of dice) {
+                        const key = die.key ?? "";
+                        const rolls = beat.sets
+                            .filter((x) => x.key === key && typeof x.params?.roll === "number")
+                            .map((x) => Number(x.params?.roll));
+                        for (const roll of rolls)
+                            assert.ok(Math.abs(roll * 12 - Math.round(roll * 12)) < 1e-9, where);
+                        const looks = new Set(rolls);
+                        assert.ok(looks.size <= 120, `${where}: ${looks.size} looks`);
+                        const end = poseAt(beat, now, beat.length).get(key);
+                        assert.equal(end?.params.face, die.params.face, where);
+                        const peaks: number[] = [];
+                        for (const t of beat.tracks.filter(
+                            (x) => x.key === key && x.ch === "scale",
+                        ))
+                            peaks.push(Math.max(t.from, t.to));
+                        assert.ok(peaks.length > 0 && Math.max(...peaks) > 1.05, where);
+                    }
+                    const [a, b] = dice;
+                    if (a?.at && b?.at)
+                        assert.ok(
+                            Math.hypot(a.at.x - b.at.x, a.at.y - b.at.y) >= 2,
+                            `${where}: the dice overlap at rest`,
+                        );
+                    throws++;
+                }
+        }
+    }
+    assert.ok(throws > 50, `only ${throws}`);
+});

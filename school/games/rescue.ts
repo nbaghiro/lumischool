@@ -2004,6 +2004,7 @@ export const rescueGame: ActionGame<RescueState> = {
     id: "rescue",
     title: "Rescue pups",
     group: "action",
+    card: { round: { level: 0, asks: 1 }, keep: 26, minutes: 3 },
     touch: true,
     quiet: true,
     levels: RESCUE_LEVELS,
@@ -2019,6 +2020,11 @@ export const rescueGame: ActionGame<RescueState> = {
     },
     sounds: SOUNDS,
     start: (phase) => startLevel(RESCUE_LEVELS[phase] ?? RESCUE_LEVELS[0], phase),
+    round: (phase, asks) => {
+        const L = RESCUE_LEVELS[phase] ?? RESCUE_LEVELS[0],
+            [first, ...rest] = L.stages;
+        return startLevel({ ...L, stages: [first, ...rest.slice(0, asks - 1)] }, phase);
+    },
     step: stepRescue,
     say,
     note: (s) => (!s.touched && !s.won ? s.L.prompt : s.note),

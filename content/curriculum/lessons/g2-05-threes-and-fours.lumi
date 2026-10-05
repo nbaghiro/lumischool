@@ -24,6 +24,7 @@ lesson g2-threes-and-fours v=1 format=teach grade=2 unit=4 subject=maths levels=
   }
   try stars=2 {
     show groups.same-or-not a=3 b=5 s=1 easy-a=2 easy-b=4 easy-s=0 hard-a=4 hard-b=6
+    game snake level=4 goal="Fly the firefly to the seeds in threes."
   }
   try stars=3 {
     show groups.ways-to-arrange n=18 easy-n=16 hard-n=24

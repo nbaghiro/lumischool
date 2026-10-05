@@ -94,3 +94,12 @@ export const portrait = (room: Size): boolean => room.h > room.w && room.w < 700
 export function uprightSquare(view: Size, room: Size, keep: number, whole: number): number {
     return Math.max(whole, Math.min(Math.floor(room.w / keep), Math.floor(room.h / view.h)));
 }
+
+/**
+ * The square a card shows a view at: `keep` squares across, cropping the view's height as well as its
+ * width round the frame's focus, and never smaller than the square that shows the whole view.
+ */
+export function cardSquare(view: Size, room: Size, keep: number): number {
+    const whole = Math.floor(Math.min(room.w / view.w, room.h / view.h));
+    return Math.max(whole, Math.floor(room.w / keep));
+}

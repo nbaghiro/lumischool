@@ -477,6 +477,7 @@ type Event =
   | { t: "hint-opened"; sitting: string; q: QuestionRef; rung: number; at: string }
   | { t: "sheet-printed"; sheet: string; child: string; lesson: string; paper: PaperSize; questions: QuestionRef[]; at: string }
   | { t: "round-played"; round: RoundRef; moves: LoggedMove[]; outcome: Outcome; capped: boolean; at: string }
+  | { t: "played"; sitting: string; lesson: string; lessonHash: string; section: string; card: number; game: string; level: number; rulesVersion: string; challenge: string | null; won: boolean; tries: number; seconds: number; assistance: number; at: string }
   | { t: "plan-changed"; child: string; op: PlanOp; at: string }
   | { t: "content-authored"; id: string; text: string; hash: string; by: string; at: string }
   | { t: "day-added"; child: string; onDay: string; subject: string; minutes: number; note: string; at: string };

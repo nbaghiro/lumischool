@@ -27,6 +27,7 @@ lesson g3-equivalent-fractions v=1 format=teach grade=3 unit=5 subject=maths lev
   }
   try stars=2 {
     show fractions.who-ate-more b=3 a=1 m=2 e=0 easy-b=2 hard-b=4 hard-a=3 hard-m=3 hard-e=-1
+    game plane level=3 goal="Fly through the fraction on each flag."
   }
   try stars=3 {
     show fractions.between-count p=1 d=12 easy-p=0 hard-p=2 hard-d=24

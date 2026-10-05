@@ -252,12 +252,12 @@ The gates, measured on 26 September 2026 on an M4 Pro in Chrome:
 - `npm run perf:games` draws 600 moving, turning sprites from five drawings at a median of 0.40 ms
   of main-thread work a frame, 0.50 ms at the 95th percentile and 0.60 ms at worst, against the
   budget of 4 ms. The time is the view's alone; the game's own step is not in it.
-- `tools/e2e/garden-golf.e2e.ts` passes on the Field and with `?view=gl&probe=1` on all four
+- `tools/e2e/games/garden-golf.e2e.ts` passes on the Field and with `?view=gl&probe=1` on all four
   projects, WebKit on the phone included.
-- `tools/e2e/game-gl.e2e.ts` loses and restores the context twenty times: the ball's mirrored box
+- `tools/e2e/games/game-gl.e2e.ts` loses and restores the context twenty times: the ball's mirrored box
   and the page's words are unchanged afterwards, and the frame drawn again matches the golden frame.
 - The same file compares golf's first level at rest, under reduced motion, with
-  `tools/e2e/game-gl.e2e.ts-snapshots/golf-0-gl-desktop-darwin.png` at a tolerance of 1 per cent of
+  `tools/e2e/games/game-gl.e2e.ts-snapshots/golf-0-gl-desktop-darwin.png` at a tolerance of 1 per cent of
   pixels. After a change meant to move what the view draws, refresh it with
   `npm run test:e2e -- game-gl --project desktop --update-snapshots` and look at the new picture.
   The golden frame is the GPU view's own, taken after checking it by eye against the Field's; the
@@ -298,7 +298,7 @@ The renderer's part of P1 is done:
   drawn at 0.3 whatever its opacity, as the stylesheet overrides the attribute.
 - The test mirror carries each sprite's angle and depth, turned as the Field turns it, and the
   view reports what it drew and where its camera and grid are, for the tests that read them.
-- `tools/e2e/game-gl-frames.e2e.ts` holds a golden frame of every action game's first level at
+- `tools/e2e/games/game-gl-frames.e2e.ts` holds a golden frame of every action game's first level at
   rest, on the desktop's Chrome.
 - `npm run perf:games` also plays the heaviest six for five seconds each when `npm run dev` is
   serving. On an M4 Pro at 120 Hz, the main thread's busy time a frame was 0.9 to 1.8 ms at full
@@ -338,8 +338,8 @@ and the Field until P3 removes them. A browser without WebGL2 falls back to the 
   needs and nothing else, so a turn game no longer makes a hidden Field.
 - `engine/ui/__tests__/scene-view.test.ts` covers the placement of turned, grown, lifted and ghosted
   parts, glides and morphs ending exactly at rest, beats with their cues, marks and preloads, reduced
-  motion, and the win's star. `tools/e2e/physical-games.e2e.ts` adds the board's keyboard path, a
-  card picked up and put down with Enter, and `tools/e2e/game-gl-frames.e2e.ts` holds golden frames
+  motion, and the win's star. `tools/e2e/games/physical-games.e2e.ts` adds the board's keyboard path, a
+  card picked up and put down with Enter, and `tools/e2e/games/game-gl-frames.e2e.ts` holds golden frames
   for the four turn games beside the action games'.
 
 ### P3. Removing the old renderers
@@ -361,7 +361,7 @@ one.
   with the pen's marks over them, no motes and no motion. The game stays playable from the tray, the
   keyboard and the pointer. An action game shows "This game needs a newer browser, one that can draw
   with WebGL2." where the page puts its problems, and draws nothing.
-  `tools/e2e/game-fallback.e2e.ts` covers both by refusing the `webgl2` context.
+  `tools/e2e/games/game-fallback.e2e.ts` covers both by refusing the `webgl2` context.
 - The Games chunk went from 706.3 kB (224.1 kB gzipped) to 690.6 kB (219.6 kB), and its stylesheet
   from 19.4 kB (4.4 kB) to 18.0 kB (4.0 kB). Another change to `games.tsx` in the same days added a
   little to the after figure.
@@ -394,7 +394,7 @@ The renderer's part of P4 is done: water, glow and lights.
 - Without WebGL2 the still view draws water as a resting surface in its hue, and no lights.
 - Firefly trail is the witness: the firefly carries a flickering light, the seeds and beads glow,
   and the pond is water that a frog's gliding pad and its snap ripple.
-- `tools/e2e/game-gl-frames.e2e.ts` holds a golden frame of the water, the lights and the glow, each
+- `tools/e2e/games/game-gl-frames.e2e.ts` holds a golden frame of the water, the lights and the glow, each
   drawn by the game view from a frame with no drawings in it, beside Firefly trail's own.
 - `npm run perf:games` now also plays the pond level. On an M4 Pro the main thread is busy 1.8 ms a
   frame on the last level and 1.7 ms at the pond, and 6.0 and 6.9 ms with the CPU slowed four times, in
@@ -572,7 +572,7 @@ Done for the last capabilities: water as drops, and walls that break.
   good run splashes wide however it is built; the reading still says what landed.
 - The slingshot's fourth level is a stone wall of ten blocks guarding two stars. It stands on its
   own, a soft throw knocks a join or two, and a hard straight one breaks it apart.
-- `tools/e2e/game-gl-frames.e2e.ts` holds golden frames of the liquid and of a pour in progress. The
+- `tools/e2e/games/game-gl-frames.e2e.ts` holds golden frames of the liquid and of a pour in progress. The
   pour with the tap running and the water run both hold 8.3 ms a frame on the Mac's 120 Hz display,
   also with the CPU slowed four times, and the pour holds 17 ms (60 frames a second) in WebKit at a
   phone's size.
