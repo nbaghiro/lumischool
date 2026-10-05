@@ -36,5 +36,10 @@ jobs:
               with:
                   node-version-file: .node-version
                   cache: npm
+                  cache-dependency-path: |
+                      package-lock.json
+                      apps/mobile/package-lock.json
             - run: npm ci
+            # the lint reads the app's own tsconfig, which extends Expo's
+            - run: npm ci --prefix apps/mobile
             - run: npm run check
