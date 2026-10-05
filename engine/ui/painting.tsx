@@ -2,6 +2,7 @@ import { For, onMount, onCleanup, Show, type JSX } from "solid-js";
 import type { Picture } from "../painting";
 import type { ArtworkSummary } from "../../server/api";
 import type { PaintingRepository } from "./painting-save";
+import { Icon } from "./icon";
 import { mountPainting } from "./painting-workspace";
 import "./painting.css";
 import "./postcard.css";
@@ -49,11 +50,11 @@ export function PaintingWorkspace(props: {
                         value="My painting"
                     />
                     <output id="save-state" hidden />
-                    <button id="clear" aria-label="Clear the sheet">
-                        Clear<span class="wide-only"> the sheet</span>
+                    <button id="clear" aria-label="Clear the sheet" title="Clear the sheet">
+                        <Icon name="restart" />
                     </button>
-                    <button id="fresh" aria-label="New painting">
-                        New<span class="wide-only"> painting</span>
+                    <button id="fresh" aria-label="New painting" title="New painting">
+                        <Icon name="add" />
                     </button>
                     <button class="done" id="done">
                         Save

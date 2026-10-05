@@ -7,6 +7,7 @@ import type { Mirror, PaintPart } from "../answer";
 import { glyph, mountEasel, readState, type EaselState, type Tool } from "./painting-easel";
 import { materialsUnderHand } from "./painting-hand";
 import type { PaintingLayout } from "./painting";
+import { hosted, send } from "./native";
 
 /** The five a child reaches for first stand on the page at full size; the five that act on paint
  *  already there sit on the tray beside them, one press away and visibly a different kind of thing. */
@@ -187,8 +188,9 @@ export function mountPainting(
             () => {
                 strokeMode = "free";
                 easel.select(tool);
-                if (tool !== "stamp" && tool !== "stencil") panel.close();
-                else showMaterials();
+                panel.close();
+                if (tool === "stamp" || tool === "stencil") showPrints(b, tool);
+                else closePrints();
             },
             host,
         );
@@ -360,21 +362,60 @@ export function mountPainting(
         p.textContent = text;
         host.append(p);
     }
+    /**
+     * Stamp and stencil keep their choices in a small pop-up over their own button rather than the
+     * materials panel, so what opens is plainly that tool's: its prints or shapes and how to use
+     * them. It stays while the child picks and flips, and goes on a tap anywhere else or Escape.
+     */
+    let prints: HTMLElement | null = null;
+    function closePrints(): void {
+        if (!prints) return;
+        prints.querySelectorAll(".ez-stamps").forEach((row) => $("tools").append(row));
+        prints.remove();
+        prints = null;
+        document.removeEventListener("pointerdown", awayFromPrints, true);
+        document.removeEventListener("keydown", escapePrints);
+    }
+    function awayFromPrints(e: PointerEvent): void {
+        const at = e.target instanceof Element ? e.target : null;
+        if (
+            prints &&
+            at &&
+            !prints.contains(at) &&
+            !at.closest('[data-choice="stamp"], [data-choice="stencil"]')
+        )
+            closePrints();
+    }
+    function escapePrints(e: KeyboardEvent): void {
+        if (e.key === "Escape") closePrints();
+    }
+    function showPrints(from: HTMLElement, tool: "stamp" | "stencil"): void {
+        closePrints();
+        const pop = document.createElement("div");
+        pop.className = "tool-pop";
+        pop.setAttribute("role", "group");
+        pop.setAttribute("aria-label", tool === "stamp" ? "Prints" : "Stencils");
+        for (const row of root.querySelectorAll<HTMLElement>(".ez-stamps"))
+            if (!row.hidden) pop.append(row);
+        note(
+            pop,
+            tool === "stamp"
+                ? "Choose a print, then tap the paper. Tap it again to flip it."
+                : "Choose a shape, then tap the paper. Paint over it and lift the stencil.",
+        );
+        root.append(pop);
+        prints = pop;
+        // above the button, kept inside the window
+        const at = from.getBoundingClientRect();
+        const left = at.left + at.width / 2 - pop.offsetWidth / 2;
+        pop.style.left = `${Math.max(8, Math.min(left, innerWidth - pop.offsetWidth - 8))}px`;
+        pop.style.top = `${Math.max(8, at.top - pop.offsetHeight - 10)}px`;
+        document.addEventListener("pointerdown", awayFromPrints, true);
+        document.addEventListener("keydown", escapePrints);
+    }
     function showMaterials() {
+        closePrints();
         const host = show("Your materials");
-        // Stamp and stencil are chosen on the page, so the panel they open is the print itself and
-        // it comes before the rest of the table.
-        if (state?.tool === "stamp" || state?.tool === "stencil") {
-            for (const row of root.querySelectorAll<HTMLElement>(".ez-stamps"))
-                if (!row.hidden) host.append(row);
-            note(
-                host,
-                state.tool === "stamp"
-                    ? "Choose a print, then tap the paper. Tap the selected print again to flip it."
-                    : "Choose a shape, then tap the paper. Paint over it and lift the stencil to see your picture.",
-            );
-            button("Use this material", () => panel.close(), host).className = "primary";
-        }
         button("Paper & download", showPaper, host).className = "library-back";
         const extras = document.createElement("div");
         extras.className = "library-extras";
@@ -825,6 +866,11 @@ export function mountPainting(
         output.height = marks.height;
         try {
             await compositePicture(snapshot, output, marks);
+            // the app has no downloads, so the picture goes to its share sheet
+            if (hosted()) {
+                send("share", { name: snapshot.title, png: output.toDataURL("image/png") });
+                return;
+            }
             const a = document.createElement("a");
             a.href = output.toDataURL("image/png");
             a.download = `${snapshot.title}.png`;
@@ -1089,6 +1135,7 @@ export function mountPainting(
         void autosave?.leave();
         observer.disconnect();
         easel.dispose();
+        closePrints();
         panel.close();
     };
 }

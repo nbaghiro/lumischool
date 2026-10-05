@@ -716,12 +716,6 @@
     #title:focus {
         border-color: var(--grid);
     }
-    /* the sheet's own width holds the header, so the second word goes when the room is narrow */
-    @media (max-width: 700px) {
-        .painting-header .wide-only {
-            display: none;
-        }
-    }
     .paper-area {
         position: relative;
         min-height: 0;
@@ -2044,4 +2038,29 @@
         padding: 4px 6px 6px;
         rotate: none;
     }
+}
+
+/* Stamp's and stencil's own choices, in a small pop-up above the tool (painting-workspace.ts). */
+.tool-pop {
+    position: fixed;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: min(420px, calc(100vw - 16px));
+    padding: 12px;
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 16px;
+    box-shadow: 0 6px 0 var(--shade);
+}
+.tool-pop .ez-stamps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.tool-pop .panel-note {
+    margin: 0;
+    font: 400 14px / 1.4 var(--f-read);
+    color: var(--ink-soft);
 }
