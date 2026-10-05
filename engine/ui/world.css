@@ -354,7 +354,7 @@
 .j-date.today {
     box-shadow:
         0 0 0 3px var(--ink),
-        0 0 0 12px color-mix(in srgb, var(--accent) 55%, transparent),
+        0 0 0 12px rgb(var(--accent-rgb) / 55%),
         0 16px 26px -16px rgba(27, 37, 64, 0.5);
 }
 .j-date.today .d {
@@ -485,14 +485,14 @@
 /* A landmark beside a finished day is lit; the world's moment is pencil until the term is finished;
    a secret's line shows when it is found, and always to a grown-up, who also sees where it is. */
 .j-art.reach.lit > svg {
-    filter: drop-shadow(0 0 10px color-mix(in srgb, var(--glow) 85%, transparent));
+    filter: drop-shadow(0 0 10px rgb(var(--glow-rgb) / 85%));
 }
 .j-art.moment.sketch {
     opacity: 0.42;
     filter: grayscale(1);
 }
 .j-art.moment.inked > svg {
-    filter: drop-shadow(0 0 12px color-mix(in srgb, var(--glow) 90%, transparent));
+    filter: drop-shadow(0 0 12px rgb(var(--glow-rgb) / 90%));
 }
 .j-note {
     width: max-content;
@@ -657,11 +657,7 @@
     width: 460px;
     height: 120px;
     transform-origin: 0 50%;
-    background: linear-gradient(
-        90deg,
-        color-mix(in srgb, var(--glow) 85%, transparent),
-        transparent
-    );
+    background: linear-gradient(90deg, rgb(var(--glow-rgb) / 85%), transparent);
     clip-path: polygon(0 42%, 100% 0, 100% 100%, 0 58%);
 }
 .mo-flash > .r {

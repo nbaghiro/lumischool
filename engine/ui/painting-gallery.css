@@ -118,7 +118,7 @@
     cursor: pointer;
     list-style: none;
     color: var(--ink);
-    background: color-mix(in srgb, var(--card) 86%, transparent);
+    background: rgb(var(--card-rgb) / 86%);
     border-radius: 10px;
 }
 .painting-picture-menu summary::-webkit-details-marker {
@@ -134,7 +134,7 @@
     background: var(--card);
     border: 1.5px solid var(--rule-firm);
     border-radius: 10px;
-    box-shadow: 0 5px 18px color-mix(in srgb, var(--ink) 22%, transparent);
+    box-shadow: 0 5px 18px rgb(var(--ink-rgb) / 22%);
 }
 .painting-picture-menu button {
     display: block;
@@ -150,7 +150,7 @@
     cursor: pointer;
 }
 .painting-picture-menu button:hover {
-    background: color-mix(in srgb, var(--sky) 20%, transparent);
+    background: rgb(var(--sky-rgb) / 20%);
 }
 
 /* The drafts this device still holds, and the pictures it saved before there was a gallery: kept
@@ -188,7 +188,7 @@
     width: 100%;
     max-height: 50vh;
     object-fit: contain;
-    background: color-mix(in srgb, var(--grid) 26%, transparent);
+    background: rgb(var(--grid-rgb) / 26%);
     border-radius: 4px;
 }
 

@@ -6899,6 +6899,7 @@ export function sceneryPieces(
                     note.style.left = `${s.side > 0 ? s.at.x : s.at.x + sz.w * k - REACH_NOTE}px`;
                     note.style.top = `${s.at.y + sz.h * k + 18}px`;
                     note.style.setProperty("--accent", `var(--${world.light.accent})`);
+                    note.style.setProperty("--accent-rgb", `var(--${world.light.accent}-rgb)`);
                     els.push(note);
                 } else if ((s.kind === "moment" || s.kind === "secret") && (says || st.note)) {
                     // the moment's line under it once it has happened; a secret's line, said when it is found
@@ -6917,6 +6918,7 @@ export function sceneryPieces(
                     note.style.left = `${right ? s.at.x + sz.w * k - 320 : s.at.x}px`;
                     note.style.top = `${s.at.y + sz.h * k + 12}px`;
                     note.style.setProperty("--accent", `var(--${world.light.accent})`);
+                    note.style.setProperty("--accent-rgb", `var(--${world.light.accent}-rgb)`);
                     if (right) note.classList.add("to-left");
                     els.push(note);
                 }
@@ -7133,6 +7135,7 @@ export function paintWorldView(o: {
             c.style.width = `${r.w}px`;
             c.style.minHeight = `${r.h}px`;
             c.style.setProperty("--accent", `var(--${w.light.accent})`);
+            c.style.setProperty("--accent-rgb", `var(--${w.light.accent}-rgb)`);
             const said = view.stretches[i]?.card ?? {
                 label: "Still to come",
                 says: "The lessons here are still being written.",
@@ -7148,6 +7151,7 @@ export function paintWorldView(o: {
         band.style.width = `${s.horizon.w}px`;
         band.style.height = `${s.ground.y + s.ground.h - s.horizon.y}px`;
         band.style.setProperty("--accent", `var(--${w.light.accent})`);
+        band.style.setProperty("--accent-rgb", `var(--${w.light.accent}-rgb)`);
         L.ground.append(band);
     });
     l.stretches.forEach((s, i) => {
@@ -7220,6 +7224,7 @@ export function paintWorldView(o: {
                 f.style.left = `${row.flag.x}px`;
                 f.style.top = `${row.flag.y}px`;
                 f.style.setProperty("--accent", `var(--${w.light.accent})`);
+                f.style.setProperty("--accent-rgb", `var(--${w.light.accent}-rgb)`);
                 f.append(
                     span(
                         "d hand",

@@ -17,8 +17,8 @@
     background: var(--card);
     border-radius: 5px;
     box-shadow:
-        0 1px 2px color-mix(in srgb, var(--ink) 14%, transparent),
-        0 16px 30px -24px color-mix(in srgb, var(--ink) 40%, transparent);
+        0 1px 2px rgb(var(--ink-rgb) / 14%),
+        0 16px 30px -24px rgb(var(--ink-rgb) / 40%);
 }
 .cal-plain {
     display: flex;
@@ -57,7 +57,7 @@
 }
 .cal-whochip[aria-pressed="true"] {
     border-color: var(--ink);
-    background: color-mix(in srgb, var(--sky) 22%, transparent);
+    background: rgb(var(--sky-rgb) / 22%);
 }
 /* The stamp keeps its own room: 28 inside a 44 chip leaves its perforation clear of the border. */
 .cal-whochip .kid-portrait {
@@ -145,8 +145,8 @@
     background: var(--card);
     border-radius: 5px;
     box-shadow:
-        0 1px 2px color-mix(in srgb, var(--ink) 14%, transparent),
-        0 16px 30px -24px color-mix(in srgb, var(--ink) 40%, transparent);
+        0 1px 2px rgb(var(--ink-rgb) / 14%),
+        0 16px 30px -24px rgb(var(--ink-rgb) / 40%);
 }
 /* The shelf grows with the window, since a lesson's name and its drawing sit on one row. */
 .cal-body.withshelf {
@@ -173,14 +173,14 @@
     padding: 8px 8px 10px;
     border: 1.5px solid var(--grid);
     border-radius: 8px;
-    background: color-mix(in srgb, var(--card) 70%, transparent);
+    background: rgb(var(--card-rgb) / 70%);
 }
 .cal-day.past {
-    background: color-mix(in srgb, var(--ink) 3%, transparent);
+    background: rgb(var(--ink-rgb) / 3%);
 }
 .cal-day.today {
     border-color: var(--pen);
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--pen) 30%, transparent);
+    box-shadow: inset 0 0 0 1px rgb(var(--pen-rgb) / 30%);
 }
 .cal-dayhead {
     display: flex;
@@ -216,14 +216,14 @@
     border-radius: 6px;
 }
 .cal-cell.taking {
-    background: color-mix(in srgb, var(--pen) 10%, transparent);
+    background: rgb(var(--pen-rgb) / 10%);
     outline: 2px dashed var(--pen);
     outline-offset: -2px;
 }
 .cal-cell.off {
     background: repeating-linear-gradient(
         -45deg,
-        color-mix(in srgb, var(--ink) 5%, transparent) 0 6px,
+        rgb(var(--ink-rgb) / 5%) 0 6px,
         transparent 6px 12px
     );
 }
@@ -364,12 +364,12 @@
     padding: 10px 12px;
     font: 500 15px / 1.4 var(--f-read);
     color: var(--ink);
-    background: color-mix(in srgb, var(--grid) 30%, transparent);
+    background: rgb(var(--grid-rgb) / 30%);
     border: 0;
     border-radius: 10px;
 }
 .cal-find input:hover {
-    background: color-mix(in srgb, var(--sky) 14%, transparent);
+    background: rgb(var(--sky-rgb) / 14%);
 }
 .cal-find input:focus-visible {
     outline: 2px dashed var(--pen);
@@ -491,8 +491,8 @@
     border: 0;
     border-radius: 6px;
     box-shadow:
-        0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent),
-        0 6px 12px -8px color-mix(in srgb, var(--ink) 40%, transparent);
+        0 0 0 1px rgb(var(--ink-rgb) / 10%),
+        0 6px 12px -8px rgb(var(--ink-rgb) / 40%);
     cursor: grab;
 }
 .cal-shelf-card:hover {
@@ -518,7 +518,7 @@
 }
 .cal-shelf-open:hover {
     color: var(--ink);
-    background: color-mix(in srgb, var(--sky) 16%, transparent);
+    background: rgb(var(--sky-rgb) / 16%);
 }
 .cal-shelf-open:focus-visible {
     outline: 2px dashed var(--pen);
@@ -566,17 +566,17 @@
     padding: 10px 12px 12px;
     border: 1.5px solid var(--grid);
     border-radius: 8px;
-    background: color-mix(in srgb, var(--card) 70%, transparent);
+    background: rgb(var(--card-rgb) / 70%);
 }
 .cal-lane.taking {
-    background: color-mix(in srgb, var(--pen) 8%, transparent);
+    background: rgb(var(--pen-rgb) / 8%);
     outline: 2px dashed var(--pen);
     outline-offset: -2px;
 }
 .cal-lane.off {
     background: repeating-linear-gradient(
         -45deg,
-        color-mix(in srgb, var(--ink) 5%, transparent) 0 6px,
+        rgb(var(--ink-rgb) / 5%) 0 6px,
         transparent 6px 12px
     );
 }
@@ -621,8 +621,8 @@
     border-radius: 6px;
     background: var(--card);
     box-shadow:
-        0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent),
-        0 6px 12px -8px color-mix(in srgb, var(--ink) 40%, transparent);
+        0 0 0 1px rgb(var(--ink-rgb) / 10%),
+        0 6px 12px -8px rgb(var(--ink-rgb) / 40%);
 }
 .cal-row[data-state="done"] .cal-rowname,
 .cal-row[data-state="late"] .cal-rowname,
@@ -726,7 +726,7 @@ button.cal-rowname:hover {
 .cal-month-day.off {
     background: repeating-linear-gradient(
         -45deg,
-        color-mix(in srgb, var(--ink) 5%, transparent) 0 6px,
+        rgb(var(--ink-rgb) / 5%) 0 6px,
         transparent 6px 12px
     );
 }
@@ -877,13 +877,13 @@ button.cal-rowname:hover {
     padding: 10px 12px;
     font: 500 16px / 1.5 var(--f-read);
     color: var(--ink);
-    background: color-mix(in srgb, var(--grid) 30%, transparent);
+    background: rgb(var(--grid-rgb) / 30%);
     border: 0;
     border-radius: 10px;
 }
 .cal-plan-row input:hover,
 .cal-plan-row textarea:hover {
-    background: color-mix(in srgb, var(--sky) 14%, transparent);
+    background: rgb(var(--sky-rgb) / 14%);
 }
 .cal-plan-row input:focus-visible,
 .cal-plan-row textarea:focus-visible {
@@ -918,7 +918,7 @@ button.cal-rowname:hover {
     background: none;
     border: 0;
     text-decoration: underline;
-    text-decoration-color: color-mix(in srgb, var(--ink-soft) 40%, transparent);
+    text-decoration-color: rgb(var(--ink-soft-rgb) / 40%);
     text-underline-offset: 3px;
     cursor: pointer;
 }

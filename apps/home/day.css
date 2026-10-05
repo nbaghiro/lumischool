@@ -21,8 +21,8 @@
     align-self: center;
     width: min(100%, 900px);
     padding: 12px;
-    background: color-mix(in srgb, var(--paper) 94%, transparent);
-    box-shadow: 0 1px 3px color-mix(in srgb, var(--ink) 18%, transparent);
+    background: rgb(var(--paper-rgb) / 94%);
+    box-shadow: 0 1px 3px rgb(var(--ink-rgb) / 18%);
 }
 .gd-part {
     margin: 0;

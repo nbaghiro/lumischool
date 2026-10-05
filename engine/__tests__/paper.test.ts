@@ -33,10 +33,24 @@ function customProperties(css: string): Map<string, Record<string, string>> {
     return rules;
 }
 
+/**
+ * A set's colours with each one's red, green and blue beside it, as palette.css writes them for a
+ * see-through colour (rgb(var(--ink-rgb) / 40%)), since an early color-mix() drops a shadow's alpha.
+ */
+function withTriplets(set: Readonly<Record<string, string>>): Record<string, string> {
+    const out: Record<string, string> = { ...set };
+    for (const [name, value] of Object.entries(set)) {
+        const hex = /^#([0-9a-f]{6})$/i.exec(value)?.[1];
+        if (hex === undefined) continue;
+        out[`${name}-rgb`] = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(" ");
+    }
+    return out;
+}
+
 test("the palette is palette.css token for token, and its square is the square", () => {
     const css = readFileSync(new URL("../ui/palette.css", import.meta.url), "utf8");
     const desk = {
-        ...PALETTE.desk,
+        ...withTriplets(PALETTE.desk),
         sq: `${U}px`,
         "print-grid": PRINT.grid.toLowerCase(),
         "f-hand": FONTS.hand,
@@ -47,7 +61,7 @@ test("the palette is palette.css token for token, and its square is the square",
         customProperties(css),
         new Map([
             [":root", desk],
-            [".squared, .paper, .paper-light, .on-paper", PALETTE.paper],
+            [".squared, .paper, .paper-light, .on-paper", withTriplets(PALETTE.paper)],
         ]),
     );
 });

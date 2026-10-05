@@ -40,17 +40,17 @@
 .gc-cell.off {
     background-image: repeating-linear-gradient(
         45deg,
-        color-mix(in srgb, var(--ink) 6%, transparent) 0 6px,
+        rgb(var(--ink-rgb) / 6%) 0 6px,
         transparent 6px 12px
     );
 }
 .gc-cell.rest {
     border-style: none;
-    background: color-mix(in srgb, var(--ink) 3%, transparent);
+    background: rgb(var(--ink-rgb) / 3%);
 }
 .gc-cell.over {
     border-color: var(--pen);
-    background: color-mix(in srgb, var(--sky) 18%, transparent);
+    background: rgb(var(--sky-rgb) / 18%);
 }
 .gc-sticker {
     position: relative;
@@ -70,8 +70,8 @@
     border-radius: 6px;
     cursor: pointer;
     box-shadow:
-        0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent),
-        0 6px 12px -8px color-mix(in srgb, var(--ink) 40%, transparent);
+        0 0 0 1px rgb(var(--ink-rgb) / 10%),
+        0 6px 12px -8px rgb(var(--ink-rgb) / 40%);
 }
 .gc-sticker-in:hover {
     box-shadow: 0 0 0 1.5px var(--pen);
@@ -103,7 +103,7 @@
 }
 .gc-sticker.missed .gc-sticker-in {
     background: transparent;
-    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--ink) 18%, transparent);
+    box-shadow: inset 0 0 0 1.5px rgb(var(--ink-rgb) / 18%);
 }
 .gc-sticker.missed .gc-pic {
     opacity: 0.45;
@@ -111,8 +111,8 @@
 .gc-sticker.done .gc-sticker-in,
 .gc-sticker.late .gc-sticker-in {
     box-shadow:
-        0 0 0 1px color-mix(in srgb, var(--ok) 40%, transparent),
-        0 6px 12px -8px color-mix(in srgb, var(--ink) 40%, transparent);
+        0 0 0 1px rgb(var(--ok-rgb) / 40%),
+        0 6px 12px -8px rgb(var(--ink-rgb) / 40%);
 }
 
 @media (max-width: 900px) {

@@ -121,7 +121,7 @@
     height: 14px;
     border-radius: 50%;
     background: var(--glow);
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--glow) 40%, transparent);
+    box-shadow: 0 0 0 4px rgb(var(--glow-rgb) / 40%);
 }
 
 /* The card for a world in pencil: its name, and that its way opens as the child learns. */
@@ -230,10 +230,10 @@
     opacity: 0.5;
 }
 .ow .ow-inked > svg {
-    filter: drop-shadow(0 0 26px color-mix(in srgb, var(--glow) 90%, transparent));
+    filter: drop-shadow(0 0 26px rgb(var(--glow-rgb) / 90%));
 }
 .ow .ow-lit > svg {
-    filter: drop-shadow(0 0 16px color-mix(in srgb, var(--glow) 80%, transparent));
+    filter: drop-shadow(0 0 16px rgb(var(--glow-rgb) / 80%));
 }
 .ow .m-road.pencil {
     opacity: 0.7;
@@ -247,7 +247,7 @@
     height: 960px;
     margin: -480px 0 0 -480px;
     border-radius: 50%;
-    background: radial-gradient(color-mix(in srgb, var(--glow) 80%, transparent), transparent 66%);
+    background: radial-gradient(rgb(var(--glow-rgb) / 80%), transparent 66%);
     pointer-events: none;
 }
 
@@ -304,7 +304,7 @@
 .ow .ow-shade {
     position: absolute;
     border-radius: 50%;
-    background: radial-gradient(color-mix(in srgb, var(--ink) 12%, transparent), transparent 70%);
+    background: radial-gradient(rgb(var(--ink-rgb) / 12%), transparent 70%);
 }
 @keyframes ow-turn {
     to {
@@ -430,7 +430,7 @@
     height: 600px;
     border-radius: 50%;
     pointer-events: none;
-    background: radial-gradient(color-mix(in srgb, var(--glow) 70%, transparent), transparent 68%);
+    background: radial-gradient(rgb(var(--glow-rgb) / 70%), transparent 68%);
     transform: scale(clamp(1, calc(var(--mgrow, 1) * 0.8), 2.6));
     transform-origin: 50% 63%;
 }

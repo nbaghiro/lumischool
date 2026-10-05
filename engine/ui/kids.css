@@ -38,7 +38,7 @@
     display: block;
     width: clamp(150px, 14vw, 200px);
     aspect-ratio: 4 / 5;
-    filter: drop-shadow(0 10px 12px color-mix(in srgb, var(--ink) 22%, transparent));
+    filter: drop-shadow(0 10px 12px rgb(var(--ink-rgb) / 22%));
 }
 .kid-portrait {
     width: 104px;
@@ -62,7 +62,7 @@
     font-variation-settings:
         "INFM" 100,
         "BNCE" 30;
-    background: color-mix(in srgb, var(--card) 92%, transparent);
+    background: rgb(var(--card-rgb) / 92%);
     border-radius: 10px;
 }
 
@@ -73,8 +73,8 @@
     background: var(--card);
     rotate: -1deg;
     box-shadow:
-        0 1px 2px color-mix(in srgb, var(--ink) 16%, transparent),
-        0 12px 26px -18px color-mix(in srgb, var(--ink) 40%, transparent);
+        0 1px 2px rgb(var(--ink-rgb) / 16%),
+        0 12px 26px -18px rgb(var(--ink-rgb) / 40%);
 }
 .page .strip h1 {
     font: 700 clamp(34px, 4vw, 54px) / 1.05 var(--f-hand);

@@ -28,6 +28,22 @@
     --f-read: "Andika", "Atkinson Hyperlegible", Verdana, sans-serif;
     --f-mono: "Spline Sans Mono Variable", ui-monospace, Menlo, monospace;
     color-scheme: light;
+    /* the same colours as red, green and blue, for a see-through colour written
+       rgb(var(--x-rgb) / 40%): an early color-mix() in a shadow drops the alpha (Android WebView 113) */
+    --paper-rgb: 244 246 248;
+    --grid-rgb: 220 227 234;
+    --margin-rgb: 232 161 168;
+    --ink-rgb: 34 38 46;
+    --ink-soft-rgb: 91 98 112;
+    --pen-rgb: 42 75 191;
+    --glow-rgb: 255 214 74;
+    --glow-ink-rgb: 90 67 0;
+    --sky-rgb: 140 199 239;
+    --mint-rgb: 147 213 179;
+    --berry-rgb: 243 156 191;
+    --tang-rgb: 247 170 87;
+    --ok-rgb: 35 132 90;
+    --card-rgb: 255 255 255;
 }
 
 .squared,
@@ -50,6 +66,22 @@
     --card: #ffffff;
     color-scheme: light;
     color: var(--ink);
+    /* the same colours as red, green and blue, for a see-through colour written
+       rgb(var(--x-rgb) / 40%): an early color-mix() in a shadow drops the alpha (Android WebView 113) */
+    --paper-rgb: 255 255 255;
+    --grid-rgb: 201 217 232;
+    --margin-rgb: 229 154 163;
+    --ink-rgb: 43 47 55;
+    --ink-soft-rgb: 91 98 112;
+    --pen-rgb: 42 75 191;
+    --glow-rgb: 255 214 74;
+    --glow-ink-rgb: 90 67 0;
+    --sky-rgb: 140 199 239;
+    --mint-rgb: 147 213 179;
+    --berry-rgb: 243 156 191;
+    --tang-rgb: 247 170 87;
+    --ok-rgb: 35 132 90;
+    --card-rgb: 255 255 255;
 }
 
 /* A drawing is drawn into a box of its own (svg.ts), and a nested SVG viewport hides what reaches

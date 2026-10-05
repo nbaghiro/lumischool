@@ -637,31 +637,39 @@
         background: var(--card);
         border: 1.5px solid var(--ink);
         border-radius: 10px;
-        box-shadow: 0 1px 2px color-mix(in srgb, var(--ink) 18%, transparent);
+        box-shadow: 0 1px 2px rgb(var(--ink-rgb) / 18%);
         cursor: pointer;
     }
     .painting-header button:hover {
         color: var(--pen);
         border-color: var(--pen);
     }
-    .painting-header .wide-only {
-        white-space: pre;
-    }
     /* what the sheet is saved and left by stands out; what empties or replaces it waits quietly, as
-       words on a little white with no frame, white enough to read over the grid */
+       a small round icon on a little white, its name on hover and to a screen reader. The circle
+       drawn is 32 px; the button round it stays 44 px, the smallest target a finger can trust. */
     .painting-header #clear,
     .painting-header #fresh {
-        font-weight: 600;
-        color: var(--ink-soft);
-        background: color-mix(in srgb, var(--card) 72%, transparent);
+        width: 44px;
+        padding: 0;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgb(var(--card-rgb) / 80%) 0 16px, transparent 16.5px);
         border-color: transparent;
         box-shadow: none;
     }
     .painting-header #clear:hover,
     .painting-header #fresh:hover {
-        color: var(--ink);
-        background: var(--card);
+        background: radial-gradient(
+            circle,
+            var(--card) 0 15px,
+            var(--ink-soft) 15.5px 16.5px,
+            transparent 17px
+        );
         border-color: transparent;
+    }
+    .painting-header #clear .control-icon,
+    .painting-header #fresh .control-icon {
+        width: 20px;
+        height: 20px;
     }
     .painting-header .done {
         color: var(--card);

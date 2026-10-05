@@ -34,14 +34,14 @@
 }
 .ar-piece[aria-pressed="true"] {
     box-shadow: 0 0 0 3px var(--pen);
-    background: color-mix(in srgb, var(--glow) 25%, transparent);
+    background: rgb(var(--glow-rgb) / 25%);
 }
 .ar-place {
     z-index: 1;
     cursor: pointer;
 }
 .ar-place.over {
-    background: color-mix(in srgb, var(--glow) 35%, transparent);
+    background: rgb(var(--glow-rgb) / 35%);
 }
 .ar-hands button:disabled {
     cursor: default;

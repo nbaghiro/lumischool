@@ -26,7 +26,7 @@
     animation: ov-in 220ms ease-out;
 }
 .ov::backdrop {
-    background: color-mix(in srgb, var(--ink) 40%, transparent);
+    background: rgb(var(--ink-rgb) / 40%);
 }
 @keyframes ov-in {
     from {
@@ -101,7 +101,7 @@ body:has(.ov[open]) {
         height: calc(100vh - 24px);
         height: calc(100dvh - 24px);
         border-radius: 14px;
-        box-shadow: 0 30px 60px -30px color-mix(in srgb, var(--ink) 60%, transparent);
+        box-shadow: 0 30px 60px -30px rgb(var(--ink-rgb) / 60%);
     }
 }
 @media (prefers-reduced-motion: reduce) {

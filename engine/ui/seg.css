@@ -67,5 +67,5 @@
 .seg.compact .seg-option input:checked + span {
     background: var(--card);
     color: var(--pen);
-    box-shadow: 0 1px 3px color-mix(in srgb, var(--ink) 18%, transparent);
+    box-shadow: 0 1px 3px rgb(var(--ink-rgb) / 18%);
 }

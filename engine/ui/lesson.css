@@ -155,7 +155,7 @@
 }
 .ls-strip.ready .ls-in:not(:disabled) {
     border: 2.5px solid var(--pen);
-    box-shadow: 0 0 0 5px color-mix(in srgb, var(--pen) 14%, transparent);
+    box-shadow: 0 0 0 5px rgb(var(--pen-rgb) / 14%);
 }
 .ls-strip.ready .ls-in::placeholder {
     color: color-mix(in srgb, var(--pen) 55%, #fff);
@@ -305,7 +305,7 @@
 .ls-inbox-in.ready {
     box-shadow:
         0 0 0 2.5px var(--pen),
-        0 0 0 7px color-mix(in srgb, var(--pen) 14%, transparent);
+        0 0 0 7px rgb(var(--pen-rgb) / 14%);
 }
 .ls-inbox-in.ready .ls-in::placeholder {
     color: color-mix(in srgb, var(--pen) 55%, #fff);

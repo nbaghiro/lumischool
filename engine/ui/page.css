@@ -134,7 +134,7 @@ body {
     right: 0;
     width: min(340px, calc(100vw - 24px));
     border-radius: 10px;
-    box-shadow: 0 18px 36px -22px color-mix(in srgb, var(--ink) 55%, transparent);
+    box-shadow: 0 18px 36px -22px rgb(var(--ink-rgb) / 55%);
 }
 .page-end button {
     display: inline-flex;
@@ -157,7 +157,7 @@ body {
    reading as another word beside the places; a real family looked for it and did not find it. */
 .page-end button.out {
     border: 1.5px solid var(--rule-firm);
-    background: color-mix(in srgb, var(--card) 88%, transparent);
+    background: rgb(var(--card-rgb) / 88%);
     color: var(--ink);
 }
 .page-end button.out:hover {
@@ -170,7 +170,7 @@ body {
     padding: 0 14px;
     font-size: 13px;
     letter-spacing: 0.02em;
-    background: color-mix(in srgb, var(--card) 88%, transparent);
+    background: rgb(var(--card-rgb) / 88%);
     border: 1.5px dashed color-mix(in srgb, var(--ink) 30%, var(--card));
     -webkit-touch-callout: none;
     user-select: none;
@@ -180,7 +180,7 @@ body {
     content: "";
     position: absolute;
     inset: 0;
-    background: color-mix(in srgb, var(--glow) 60%, transparent);
+    background: rgb(var(--glow-rgb) / 60%);
     transform: scaleX(0);
     transform-origin: left;
 }
@@ -375,7 +375,7 @@ body {
     outline-offset: 5px;
     box-shadow:
         0 1px 0 var(--rule),
-        0 20px 40px -30px color-mix(in srgb, var(--ink) 45%, transparent);
+        0 20px 40px -30px rgb(var(--ink-rgb) / 45%);
 }
 .card h2 {
     font-size: 21px;

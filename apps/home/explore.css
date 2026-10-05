@@ -109,8 +109,8 @@
     background: var(--card);
     border-radius: 5px;
     box-shadow:
-        0 1px 2px color-mix(in srgb, var(--ink) 14%, transparent),
-        0 16px 30px -24px color-mix(in srgb, var(--ink) 40%, transparent);
+        0 1px 2px rgb(var(--ink-rgb) / 14%),
+        0 16px 30px -24px rgb(var(--ink-rgb) / 40%);
 }
 .explore-grade-head {
     margin: 0;
@@ -233,15 +233,15 @@
     background: #fff;
     border-radius: 4px;
     box-shadow:
-        0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent),
-        0 8px 14px -10px color-mix(in srgb, var(--ink) 40%, transparent);
+        0 0 0 1px rgb(var(--ink-rgb) / 10%),
+        0 8px 14px -10px rgb(var(--ink-rgb) / 40%);
     transition: translate 0.18s ease;
 }
 .explore-tile:hover .explore-pic {
     translate: 0 -3px;
     box-shadow:
         0 0 0 1.5px var(--pen),
-        0 10px 16px -10px color-mix(in srgb, var(--ink) 40%, transparent);
+        0 10px 16px -10px rgb(var(--ink-rgb) / 40%);
 }
 .explore-tile:focus-visible {
     outline: 2px dashed var(--pen);
@@ -277,7 +277,7 @@
 .look-tools .seg-option input:checked + span {
     background: var(--card);
     color: var(--pen);
-    box-shadow: 0 1px 3px color-mix(in srgb, var(--ink) 18%, transparent);
+    box-shadow: 0 1px 3px rgb(var(--ink-rgb) / 18%);
 }
 .explore-print-menu {
     position: relative;
@@ -315,7 +315,7 @@
     background: var(--card);
     border: 1px solid var(--rule);
     border-radius: 12px;
-    box-shadow: 0 18px 40px -18px color-mix(in srgb, var(--ink) 45%, transparent);
+    box-shadow: 0 18px 40px -18px rgb(var(--ink-rgb) / 45%);
 }
 .explore-print-menu-of .note {
     margin: 0;
