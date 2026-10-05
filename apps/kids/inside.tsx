@@ -188,7 +188,13 @@ export function Inside(props: {
             term: v.arrival?.term,
         });
         const live = new Set(todayOf(props.c)?.lessons ?? []);
-        return (row?.day.lessons ?? []).filter((id) => !live.has(id));
+        // the row before the landing one too: its paper sits just above where the roll lands, and
+        // one drawn after the roll opens is laid out again round its height in sight of the child
+        const rows = v.layout.rows;
+        const at = row ? rows.indexOf(row) : -1;
+        return [rows[at - 1], row]
+            .flatMap((r) => r?.day.lessons ?? [])
+            .filter((id) => !live.has(id));
     });
     // a journey's lessons still to do are drawn on the page's own sheets, as today's are, so an
     // answer is recorded against the same lesson wherever it is done
