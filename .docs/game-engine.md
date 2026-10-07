@@ -659,6 +659,11 @@ a floating body's velocity toward that current. Rock and bank contact redirects 
 boat race uses the same functions for its live boats, current arrows and preview; numbered gates,
 race outcomes and completed reaches remain in the game.
 
+`engine/motion/skittles.ts` steps weighted circular bodies with friction, normal collision impulses,
+spin and a lane's curve, bumper and gutter rules. It substeps at 240 Hz and reports impacts for sound.
+Pin bowling owns the numbered rack, the target sum and the two-bowl retry rule; the motion module
+owns movement and toppling. Its preview steps the same ball model before pin contact.
+
 ### Responsive game composition
 
 `ActionGame.frame(state, rest, room)` receives the available field size in pixels, cached at resize.

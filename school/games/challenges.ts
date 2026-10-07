@@ -4,6 +4,11 @@ import {
     isPaperBoatConfiguration,
     openPaperBoatConfiguration,
 } from "./paperboat-challenges";
+import {
+    bowlingChallenge,
+    isBowlingConfiguration,
+    openBowlingConfiguration,
+} from "./bowling-challenges";
 import { rallyChallenge, isRallyConfiguration, openRallyConfiguration } from "./rally-challenges";
 import { golfChallenge, isGolfConfiguration, openGolfConfiguration } from "./golf-challenges";
 import { fishChallenge, isFishConfiguration, openFishConfiguration } from "./fish-challenges";
@@ -830,6 +835,17 @@ const paperboat = family({
     open: (game, c, phase) => started(game, () => openPaperBoatConfiguration(c), phase),
 });
 
+const bowling = family({
+    variation: {
+        method: "pilot-keys-and-touch-replay",
+        generate: bowlingChallenge,
+        read: typed(isBowlingConfiguration),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({ reasoning: phase < 2 ? 1 : 2, motor: 2 }),
+    open: (game, c, phase) => started(game, () => openBowlingConfiguration(c), phase),
+});
+
 const boltfly = family({
     variation: {
         method: "pilot-keys-and-touch-replay",
@@ -902,6 +918,7 @@ const chipmunk = family({
 /** Every game whose levels have variations, by the game's id. */
 const VARIATIONS: Partial<Record<string, Variations>> = {
     paperboat,
+    bowling,
     santa,
     chipmunk,
     bolt,

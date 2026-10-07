@@ -37,97 +37,95 @@ export const GAME_CHALLENGE_VERSIONS = {
 
 /** Mechanics revisions invalidate saved arrangements only for the affected games. */
 export const gameRulesVersion = (game: string): string =>
-    game === "bridgebuild"
-        ? `${GAME_CHALLENGE_VERSIONS.rules}-bridgebuild-1`
-        : game === "feedpup"
-          ? `${GAME_CHALLENGE_VERSIONS.rules}-feedpup-2`
-          : game === "hoops"
-            ? `${GAME_CHALLENGE_VERSIONS.rules}-hoops-3`
-            : game === "pegs"
-              ? `${GAME_CHALLENGE_VERSIONS.rules}-pegs-1`
-              : game === "knock"
-                ? `${GAME_CHALLENGE_VERSIONS.rules}-knock-1`
-                : game === "kite"
-                  ? `${GAME_CHALLENGE_VERSIONS.rules}-kite-1`
-                  : game === "treasure"
-                    ? `${GAME_CHALLENGE_VERSIONS.rules}-treasure-1`
-                    : game === "aquarium"
-                      ? `${GAME_CHALLENGE_VERSIONS.rules}-aquarium-1`
-                      : game === "bolt"
-                        ? `${GAME_CHALLENGE_VERSIONS.rules}-bolt-1`
-                        : game === "boltfly"
-                          ? `${GAME_CHALLENGE_VERSIONS.rules}-boltfly-1`
-                          : game === "chipmunk"
-                            ? `${GAME_CHALLENGE_VERSIONS.rules}-chipmunk-3`
-                            : game === "santa"
-                              ? `${GAME_CHALLENGE_VERSIONS.rules}-santa-1`
-                              : game === "paperboat"
-                                ? `${GAME_CHALLENGE_VERSIONS.rules}-paperboat-2`
-                                : game === "machine"
-                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-machine-3`
-                                  : game === "garden"
-                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-garden-3`
-                                    : game === "pinball"
-                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-pinball-2`
-                                      : game === "climb"
-                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-climb-1`
-                                        : game === "curling"
-                                          ? `${GAME_CHALLENGE_VERSIONS.rules}-curling-1`
-                                          : game === "dollhouse"
-                                            ? `${GAME_CHALLENGE_VERSIONS.rules}-dollhouse-3`
-                                            : game === "golf"
-                                              ? `${GAME_CHALLENGE_VERSIONS.rules}-golf-holes-1`
-                                              : game === "rescue"
-                                                ? `${GAME_CHALLENGE_VERSIONS.rules}-rescue-1`
-                                                : game === "pool"
-                                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-pool-1`
-                                                  : game === "pour"
-                                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-liquid-1`
-                                                    : game === "sling"
-                                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-wall-1`
-                                                      : game === "rule"
-                                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-machine-2`
-                                                        : game === "straight"
-                                                          ? `${GAME_CHALLENGE_VERSIONS.rules}-river-3`
-                                                          : game === "fish"
-                                                            ? `${GAME_CHALLENGE_VERSIONS.rules}-fishing-5`
-                                                            : game === "spell"
-                                                              ? `${GAME_CHALLENGE_VERSIONS.rules}-sound-train-2`
-                                                              : game === "shunt"
-                                                                ? `${GAME_CHALLENGE_VERSIONS.rules}-yard-4`
-                                                                : game === "clear"
-                                                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-show-jumping-4`
-                                                                  : game === "snake"
-                                                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-firefly-3`
-                                                                    : game === "blocks"
-                                                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-fetch-2`
-                                                                      : game === "marble-workshop"
-                                                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-marble-run-3`
-                                                                        : game === "bridge"
-                                                                          ? `${GAME_CHALLENGE_VERSIONS.rules}-rope-swings-2`
-                                                                          : game === "plane"
-                                                                            ? `${GAME_CHALLENGE_VERSIONS.rules}-plane-2`
-                                                                            : game === "road"
-                                                                              ? `${GAME_CHALLENGE_VERSIONS.rules}-road-3`
-                                                                              : game ===
-                                                                                  "cargo-workshop"
-                                                                                ? `${GAME_CHALLENGE_VERSIONS.rules}-cargo-7`
-                                                                                : game === "herd"
-                                                                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-physics-4`
-                                                                                  : [
-                                                                                          "jump",
-                                                                                          "weigh",
-                                                                                          "share",
-                                                                                      ].includes(
-                                                                                          game,
-                                                                                      )
-                                                                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-3`
+    game === "santa"
+        ? `${GAME_CHALLENGE_VERSIONS.rules}-santa-1`
+        : game === "machine"
+          ? `${GAME_CHALLENGE_VERSIONS.rules}-machine-3`
+          : game === "garden"
+            ? `${GAME_CHALLENGE_VERSIONS.rules}-garden-3`
+            : game === "kite"
+              ? `${GAME_CHALLENGE_VERSIONS.rules}-kite-1`
+              : game === "pinball"
+                ? `${GAME_CHALLENGE_VERSIONS.rules}-pinball-2`
+                : game === "climb"
+                  ? `${GAME_CHALLENGE_VERSIONS.rules}-climb-1`
+                  : game === "curling"
+                    ? `${GAME_CHALLENGE_VERSIONS.rules}-curling-1`
+                    : game === "dollhouse"
+                      ? `${GAME_CHALLENGE_VERSIONS.rules}-dollhouse-3`
+                      : game === "golf"
+                        ? `${GAME_CHALLENGE_VERSIONS.rules}-golf-holes-1`
+                        : game === "rescue"
+                          ? `${GAME_CHALLENGE_VERSIONS.rules}-rescue-1`
+                          : game === "pool"
+                            ? `${GAME_CHALLENGE_VERSIONS.rules}-pool-1`
+                            : game === "pour"
+                              ? `${GAME_CHALLENGE_VERSIONS.rules}-liquid-1`
+                              : game === "sling"
+                                ? `${GAME_CHALLENGE_VERSIONS.rules}-wall-1`
+                                : game === "rule"
+                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-machine-2`
+                                  : game === "straight"
+                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-river-3`
+                                    : game === "fish"
+                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-fishing-5`
+                                      : game === "spell"
+                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-sound-train-2`
+                                        : game === "shunt"
+                                          ? `${GAME_CHALLENGE_VERSIONS.rules}-yard-4`
+                                          : game === "clear"
+                                            ? `${GAME_CHALLENGE_VERSIONS.rules}-show-jumping-4`
+                                            : game === "snake"
+                                              ? `${GAME_CHALLENGE_VERSIONS.rules}-firefly-3`
+                                              : game === "blocks"
+                                                ? `${GAME_CHALLENGE_VERSIONS.rules}-fetch-2`
+                                                : game === "marble-workshop"
+                                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-marble-run-3`
+                                                  : game === "bridge"
+                                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-rope-swings-2`
+                                                    : game === "plane"
+                                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-plane-2`
+                                                      : game === "road"
+                                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-road-3`
+                                                        : game === "cargo-workshop"
+                                                          ? `${GAME_CHALLENGE_VERSIONS.rules}-cargo-7`
+                                                          : game === "herd"
+                                                            ? `${GAME_CHALLENGE_VERSIONS.rules}-physics-4`
+                                                            : ["jump", "weigh", "share"].includes(
+                                                                    game,
+                                                                )
+                                                              ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-3`
+                                                              : game === "wardrobe"
+                                                                ? `${GAME_CHALLENGE_VERSIONS.rules}-lemonade-3`
+                                                                : game === "pay"
+                                                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-2`
+                                                                  : game === "bridgebuild"
+                                                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-bridgebuild-1`
+                                                                    : game === "feedpup"
+                                                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-feedpup-2`
+                                                                      : game === "hoops"
+                                                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-hoops-3`
+                                                                        : game === "pegs"
+                                                                          ? `${GAME_CHALLENGE_VERSIONS.rules}-pegs-1`
+                                                                          : game === "knock"
+                                                                            ? `${GAME_CHALLENGE_VERSIONS.rules}-knock-1`
+                                                                            : game === "treasure"
+                                                                              ? `${GAME_CHALLENGE_VERSIONS.rules}-treasure-1`
+                                                                              : game === "aquarium"
+                                                                                ? `${GAME_CHALLENGE_VERSIONS.rules}-aquarium-2`
+                                                                                : game === "bolt"
+                                                                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-bolt-1`
+                                                                                  : game ===
+                                                                                      "boltfly"
+                                                                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-boltfly-1`
                                                                                     : game ===
-                                                                                        "wardrobe"
-                                                                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-lemonade-3`
+                                                                                        "chipmunk"
+                                                                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-chipmunk-3`
                                                                                       : game ===
-                                                                                          "pay"
-                                                                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-2`
+                                                                                              "paperboat" ||
+                                                                                          game ===
+                                                                                              "bowling"
+                                                                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-${game}-${game === "paperboat" ? 2 : 1}`
                                                                                         : GAME_CHALLENGE_VERSIONS.rules;
 
 export type GameValue =

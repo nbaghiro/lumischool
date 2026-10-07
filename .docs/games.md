@@ -1,6 +1,7 @@
 # Games
 
 The first physical-handling refinement is documented in [physical-games-refinement.md](physical-games-refinement.md).
+
 ## Treasure island (5 October 2026)
 
 Treasure island (`school/games/treasure.ts`, `?g=treasure`) is a treasure hunt in the line of the
@@ -757,6 +758,7 @@ Some things were left out. A
 hose was considered for the hilly level and not drawn; the can does the same job. Planting by
 holding the packet and dropping seeds one at a time was set aside for the stretch, which keeps the
 array the thing the child makes.
+
 ### Charlie's garden: the guide (5 October 2026)
 
 The owner could not tell how to play the garden as an adult: a screenshot showed Day 25 with nothing
@@ -3156,6 +3158,7 @@ The controls are left and right to run, Space or up to jump (held for higher), d
 The camera leads the way she runs and keeps still while she hops, moving up or down only when she leaves a band in the middle of the view. She squashes on landing in proportion to how hard she came down and springs back through the actor's squash, a little dust goes up at a jump and a landing, and coins taken in a quick run ring a semitone higher each. The sound kit gives a jump its lift, a coin its ring, a door its level chord, a splash its own sound and a coin given back its back. Under `prefers-reduced-motion` the game declares `still`: a press plays a third of a second, and a jump plays out while it is settling, so the page draws only where she lands. On a phone held upright `portrait.keep` keeps 22 squares across, and the game is a card (`card: { round: { level: 0 }, keep: 24, minutes: 2 }`) played by touch.
 
 Every variation of every level is climbed home by a pilot through the pad, once by the keys and once by a finger on the field, along a route of runs, hops, waits for the moving plank, ladder climbs and coin boxes, and the recorded pads replay to the same climb. Random hands got home at most 2 times in 10 on any level. The rules version is `-climb-1`. A phone layout that puts the run buttons under the left thumb and Jump under the right is not done, since the controls' stylesheet is shared with every other game.
+
 ## Bridge builder (5 October 2026)
 
 The owner chose Bridge builder from the list of ideas. It is id `bridgebuild`, in `school/games/bridgebuild.ts`, with its variations proved in `bridgebuild-challenges.ts` and its physics in `engine/motion/truss.ts`. The game we looked at was Poly Bridge, where a bridge is drawn from beams between fixed anchors on a budget and a vehicle then drives over it, and the bridge bends, shows its strain in colour and breaks where it is weakest. What we took is the drawing of beams from joint to joint, the materials with their own lengths and strengths, the budget, the colours of strain and the run that can be reset to the bridge as built. What we left is the scoring, hydraulics, springs, several vehicles and a timer.
@@ -3567,6 +3570,25 @@ shows launch power, the race lead and remaining wind. Reduced motion advances a 
 per input and then waits, keeping steering available; cancellation never launches. The river and reeds reuse shelf art.
 The rules revision is `-paperboat-2`.
 
+`bowling` is a vertical timber lane with a ball that carries momentum into numbered pins. Pull back
+from the ball to set aim and power, then release; a sideways flick adds curve. The arrows or WASD
+aim and set power, Space bowls, and B cycles straight, left and right curve. Two bowls share the
+same rack: the second starts with the standing pins where the first bowl left them. The score is
+the sum on fallen pins, not a separate answer choice. An overshoot or two unsuccessful bowls brings
+back the rack after a short pause. R or Fresh rack retries immediately.
+
+The six bowling levels start with two separate groups, then a ten-pin rack, followed by exact totals
+of 6, 10, 20 and 15. Three variations mirror or move each arrangement. Early bumpers rebound the
+ball; later gutters end its roll. The ball is five times a pin's mass, impacts can knock one pin
+into another, and friction and curve continue after the hand lets go. Its preview uses the same
+ball stepping and fades from two seconds to none. Reduced motion settles a full bowl, and cancelling
+a pull never releases it. The rules revision is `-bowling-1`.
+
+Both games use serializable phase/variant configurations, the shared end card and keyboard and
+pointer replay checks. Neither is offered as a lesson card: the river course and the full bowling
+lane need room for physical aiming. Browser checks cover Chrome layouts; they do not measure a
+physical phone's WebKit performance.
+
 The paper boat course uses the shelf's winding `riverreach` with grassy banks, `parkhill`, trees,
 race bunting, reeds and flowers. Pairs of `mooringbuoy` floats mark the finishing gates. Charlie
 sits beside a spare boat on a picnic rug, waves during a race and cheers at the finish; ducks,
@@ -3575,6 +3597,13 @@ bank tree for the shelf's waterwheel. Current arrows are sparse and thin, and th
 leaves a faint wake. The scenery stays outside the playable channel and number readouts.
 New games are appended to the Games catalogue so familiar games keep their positions; Santa,
 Paper boat race and Pin bowling follow the previous games.
+
+The new games also adapt their composition to the available field. Paper boat expands the river
+across wide screens with tiled shelf scenery and proportional boats. Bowling turns its lane
+horizontal on landscape screens, keeping pins and labels upright; portrait retains the vertical
+lane. Santa already reveals more town on wider screens and centres the town when it all fits.
+The shared player maps pointer input back to simulation coordinates, so layouts do not change
+physics or replay. A resize cancels a held gesture before applying the new layout.
 
 Nutmeg also accepts a single tap on the tree or Shake for a complete short shake. Acorns scatter
 less on release, the first two levels pick them up from a slightly wider reach, and the doorway
