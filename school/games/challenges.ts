@@ -117,6 +117,13 @@ import {
     levelOf as bridgeLevel,
     openBridgeConfiguration,
 } from "./bridgebuild-challenges";
+import {
+    feedChallenge,
+    isFeedConfiguration,
+    openFeedConfiguration,
+    vary as varyFeed,
+} from "./feedpup-challenges";
+import { FEED_LEVELS } from "./feedpup";
 
 function identity(game: string, phase: number, value: unknown): string {
     const text = configurationKey(value);
@@ -639,10 +646,30 @@ const bridgebuild = family({
     },
 });
 
+const feedpup = family({
+    variation: {
+        method: "cut-search-and-physics-replay",
+        generate: feedChallenge,
+        read: typed(isFeedConfiguration),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({ reasoning: phase < 2 ? 1 : phase < 5 ? 2 : 3, motor: 2 }),
+    open: (game, c, phase) => {
+        const L = FEED_LEVELS[phase];
+        return started(
+            game,
+            () => openFeedConfiguration(c),
+            phase,
+            L ? { goal: varyFeed(L, c.variant).goal } : undefined,
+        );
+    },
+});
+
 /** Every game whose levels have variations, by the game's id. */
 const VARIATIONS: Partial<Record<string, Variations>> = {
     machine,
     bridgebuild,
+    feedpup,
     garden,
     climb,
     dollhouse,

@@ -19,6 +19,8 @@ import { poolGame, SHOT, type PoolState } from "../pool";
 import { poolWay } from "../pool-challenges";
 import { curlingGame } from "../curling";
 import { curlWay } from "../curling-challenges";
+import { feedGame } from "../feedpup";
+import { feedWay } from "../feedpup-challenges";
 import * as rabbit from "../rabbit";
 import { FIRE_AIM, NOZZLE, rescueGame, type RescueState } from "../rescue";
 import { driver } from "../rescue-challenges";
@@ -349,4 +351,5 @@ export const FIELD_ROUNDS: Record<string, () => Verdict> = {
     rescue: () => judge(rescueGame, rescue),
     clear: () => judge(clearGame, clear),
     climb: () => judge(climbGame, climb),
+    feedpup: () => judge(feedGame, () => feedWay({ phase: 0, variant: 0 }, "touch") ?? []),
 };
