@@ -20,6 +20,7 @@ import { aquariumGame } from "./aquarium";
 import { pegsGame } from "./pegs";
 import { knockGame } from "./knock";
 import { treasureGame } from "./treasure";
+import { chipmunkGame } from "./chipmunk";
 import { boltGame } from "./bolt";
 import { boltflyGame } from "./boltfly";
 // Every game, in the order the Games tab shows them, grouped by how each one plays. The hands-on
@@ -93,6 +94,7 @@ export const GAMES: Game[] = [
     treasureGame,
     boltGame,
     boltflyGame,
+    chipmunkGame,
     clearGame,
 ];
 

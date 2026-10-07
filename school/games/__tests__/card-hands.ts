@@ -31,6 +31,8 @@ import { feedGame } from "../feedpup";
 import { feedWay } from "../feedpup-challenges";
 import { aquariumGame } from "../aquarium";
 import { aquaWay } from "../aquarium-challenges";
+import { chipmunkGame } from "../chipmunk";
+import { chipWay } from "../chipmunk-challenges";
 import * as rabbit from "../rabbit";
 import { FIRE_AIM, NOZZLE, rescueGame, type RescueState } from "../rescue";
 import { driver } from "../rescue-challenges";
@@ -373,6 +375,12 @@ export const FIELD_ROUNDS: Record<string, () => Verdict> = {
     kite: () => judge(kiteGame, () => kiteWay({ phase: 0, variant: 0 }, "touch") ?? []),
     feedpup: () => judge(feedGame, () => feedWay({ phase: 0, variant: 0 }, "touch") ?? []),
     aquarium: () => judge(aquariumGame, () => aquaWay({ phase: 0, variant: 0 }, "touch") ?? []),
+    chipmunk: () =>
+        judge(chipmunkGame, () =>
+            (chipWay({ phase: 0, variant: 0 }, "touch") ?? []).flatMap((a) =>
+                "pad" in a ? [a.pad] : [],
+            ),
+        ),
     bolt: () => judge(boltGame, boltRound),
     boltfly: () => judge(boltflyGame, () => flyWay({ phase: 0, variant: 0 }, "touch") ?? []),
 };

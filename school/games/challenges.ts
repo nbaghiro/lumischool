@@ -169,6 +169,12 @@ import {
     isAquaConfiguration,
     openAquaConfiguration,
 } from "./aquarium-challenges";
+import {
+    chipCertified,
+    chipChallenge,
+    isChipConfiguration,
+    openChipConfiguration,
+} from "./chipmunk-challenges";
 
 function identity(game: string, phase: number, value: unknown): string {
     const text = configurationKey(value);
@@ -850,8 +856,24 @@ const aquarium = family({
         started(game, () => openAquaConfiguration(c), phase, { goal: aquaLevel(c).goal }),
 });
 
+const chipmunk = family({
+    variation: {
+        method: "pilot-and-hands-replay",
+        generate: chipChallenge,
+        read: typed(isChipConfiguration),
+        solve: (c) => chipCertified(c),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({
+        reasoning: phase < 2 ? 1 : phase < 5 ? 2 : 3,
+        motor: phase < 2 ? 2 : 3,
+    }),
+    open: (game, c) => started(game, () => openChipConfiguration(c)),
+});
+
 /** Every game whose levels have variations, by the game's id. */
 const VARIATIONS: Partial<Record<string, Variations>> = {
+    chipmunk,
     bolt,
     boltfly,
     aquarium,
