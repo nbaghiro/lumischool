@@ -737,6 +737,14 @@ export async function deleteFamily(family: string, name: string): Promise<true |
     return true;
 }
 
+export async function deleteAccount(email: string): Promise<true | Failure> {
+    const answer = await call("POST", "/api/me/delete", { email });
+    if (!answer.ok) return refused(answer.failure);
+    forget();
+    parentChanged();
+    return true;
+}
+
 export async function saveAccountField(
     family: string,
     field: "name" | "family" | "time_zone",

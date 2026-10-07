@@ -18,6 +18,7 @@ import {
 } from "solid-js";
 import * as api from "../../engine/ui/api";
 import { onThisComputer } from "../../engine/ui/device";
+import { hosted, send } from "../../engine/ui/native";
 import { failureText } from "../../engine/ui/failure";
 import { Choice, Field } from "../../engine/ui/fields";
 import { Button, PinInput } from "../../engine/ui/form";
@@ -145,6 +146,7 @@ export function Account(): JSX.Element {
                                 </Postcard>
                                 <DeleteFamily me={s().me} kids={s().view.kids} />
                             </Show>
+                            <DeleteAccount me={s().me} />
                         </div>
                     )}
                 </Match>
@@ -577,6 +579,98 @@ function DeleteFamily(props: { me: Me; kids: FamilyView["kids"] }): JSX.Element 
                             onClick={() => {
                                 setConfirming(false);
                                 setName("");
+                                setSaid("");
+                                setFreshRequired(false);
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                    </div>
+                </form>
+            </Show>
+            <Show when={said()}>
+                <Say text={said()} />
+            </Show>
+            <Show when={freshRequired()}>
+                <a href="/sign-in?again=1&next=%2Faccount">Sign in again to continue</a>
+            </Show>
+        </Postcard>
+    );
+}
+
+function DeleteAccount(props: { me: Me }): JSX.Element {
+    const [confirming, setConfirming] = createSignal(false);
+    const [email, setEmail] = createSignal("");
+    const [busy, setBusy] = createSignal(false);
+    const [said, setSaid] = createSignal("");
+    const [freshRequired, setFreshRequired] = createSignal(false);
+    const matches = (): boolean =>
+        email().trim().toLowerCase() === props.me.user.email.toLowerCase();
+    const families = (): string[] => [...new Set(props.me.families.map((f) => f.name))];
+    const remove = async (): Promise<void> => {
+        if (busy() || !matches()) return;
+        setBusy(true);
+        const result = await api.deleteAccount(email().trim());
+        if (result === true) {
+            if (hosted()) send("open", { path: "/sign-in?deleted=1" });
+            else location.replace("/sign-in?deleted=1");
+            return;
+        }
+        setBusy(false);
+        setFreshRequired(result.error === "fresh-sign-in");
+        setSaid(failureText(result, local));
+    };
+    return (
+        <Postcard focus={false} kicker="Your account" title="Delete my account">
+            <p>
+                Permanently delete your login and your email address, {props.me.user.email}. You
+                will no longer be able to sign in with it.
+            </p>
+            <p>
+                A family where you are the only parent is closed, with every child’s lessons,
+                progress, artwork and plans. In a family with another parent, you leave and the
+                family stays with them.
+            </p>
+            <Show when={families().length}>
+                <p class="note">Your families: {families().join(", ")}.</p>
+            </Show>
+            <Show
+                when={confirming()}
+                fallback={
+                    <button type="button" class="btn ga-danger" onClick={() => setConfirming(true)}>
+                        Delete my account
+                    </button>
+                }
+            >
+                <form
+                    onSubmit={(event) => {
+                        event.preventDefault();
+                        void remove();
+                    }}
+                >
+                    <p>
+                        This cannot be undone. Type <strong>{props.me.user.email}</strong> to
+                        confirm.
+                    </p>
+                    <Field
+                        name="delete-account-email"
+                        label="Your email address"
+                        type="email"
+                        autocomplete="off"
+                        autocapitalize="off"
+                        value={email()}
+                        onInput={setEmail}
+                    />
+                    <div class="acts">
+                        <button type="submit" class="btn ga-danger" disabled={busy() || !matches()}>
+                            {busy() ? "Deleting…" : "Permanently delete my account"}
+                        </button>
+                        <Button
+                            second
+                            disabled={busy()}
+                            onClick={() => {
+                                setConfirming(false);
+                                setEmail("");
                                 setSaid("");
                                 setFreshRequired(false);
                             }}

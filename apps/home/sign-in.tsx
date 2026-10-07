@@ -100,11 +100,13 @@ export function SignIn(props: { start: boolean }): JSX.Element {
                 setStep({
                     at: "ask",
                     email: "",
-                    said: query.has("left")
-                        ? query.get("mail") === "failed"
-                            ? "You left the family. Some notification emails could not be sent; let the other parents know."
-                            : "You left the family. You can still sign in to your other families."
-                        : "",
+                    said: query.has("deleted")
+                        ? "Your account was deleted. This email address can start a new family at any time."
+                        : query.has("left")
+                          ? query.get("mail") === "failed"
+                              ? "You left the family. Some notification emails could not be sent; let the other parents know."
+                              : "You left the family. You can still sign in to your other families."
+                          : "",
                 });
         })();
     });

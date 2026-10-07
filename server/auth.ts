@@ -49,6 +49,7 @@ import {
     createFamily,
     familyRow,
     deleteFamily,
+    deleteLogin,
     kidsOf,
     log,
     person,
@@ -1640,6 +1641,25 @@ export async function acceptParentInvitation(
     return joined.opened;
 }
 
+async function leaveIn(
+    tx: FamilyTx,
+    family: string,
+    user: string,
+    actor: string,
+    successor: string,
+): Promise<void> {
+    await lockKidLogins(tx, family);
+    await removeParent(tx, family, user, successor);
+    await record(tx, family, [
+        {
+            kid_id: null,
+            actor,
+            kind: "member-removed",
+            data: { user, kid: null, left: user === actor },
+        },
+    ]);
+}
+
 export async function endParentMembership(
     config: AuthConfig,
     adult: Adult,
@@ -1659,16 +1679,7 @@ export async function endParentMembership(
                     problem:
                         "Invite another parent before leaving. Your family needs at least one parent.",
                 });
-            await lockKidLogins(tx, adult.family.id);
-            await removeParent(tx, adult.family.id, user, successor.id);
-            await record(tx, adult.family.id, [
-                {
-                    kid_id: null,
-                    actor: adult.user,
-                    kind: "member-removed",
-                    data: { user, kid: null, left: user === adult.user },
-                },
-            ]);
+            await leaveIn(tx, adult.family.id, user, adult.user, successor.id);
             return { parents, target };
         },
     );
@@ -1698,10 +1709,63 @@ export async function closeFamily(
         const row = await familyRow(tx, adult.family.id);
         if (!row) return { error: "not-found" };
         if (name.trim() !== row.name) return { error: "bad-request" };
-        await preserveBrowserBindings(tx, row.id);
-        if (!(await deleteFamily(tx, row.id))) return { error: "not-found" };
+        if (!(await closeIn(tx, row.id))) return { error: "not-found" };
         return { ok: true };
     });
+}
+
+async function closeIn(tx: FamilyTx, family: string): Promise<boolean> {
+    await preserveBrowserBindings(tx, family);
+    return deleteFamily(tx, family);
+}
+
+/**
+ * Flow 12: a person deletes their own login. In one transaction, each family where they are the only
+ * parent is closed as Delete family closes it, they leave each family that has another parent as
+ * leaving does, and their `users` row goes, taking every key, membership and mail row that names it.
+ */
+export async function deleteAccount(
+    config: AuthConfig,
+    adult: Adult,
+    email: unknown,
+): Promise<{ ok: true } | { error: "fresh-sign-in" | "bad-request" }> {
+    if (!fresh(adult)) return { error: "fresh-sign-in" };
+    const typed = emailOf(email);
+    if (!typed) return { error: "bad-request" };
+    const done = await withFamily({ family: adult.family.id, user: adult.user }, async (tx) => {
+        const self = await person(tx, adult.user);
+        if (!self || emailOf(self.email) !== typed) return null;
+        const families = [...new Set((await familiesIn(tx)).map((f) => f.family_id))].sort();
+        const left: { family: Family; parents: { email: string }[] }[] = [];
+        for (const family of families) {
+            await setScope(tx, { family, user: adult.user });
+            await lockMembers(tx, family);
+            const parents = await parentsOf(tx, family);
+            // a tutor's rows go with the login
+            if (!parents.some((p) => p.id === adult.user)) continue;
+            const others = parents.filter((p) => p.id !== adult.user);
+            const successor = others[0];
+            if (!successor) {
+                await closeIn(tx, family);
+                continue;
+            }
+            await leaveIn(tx, family, adult.user, adult.user, successor.id);
+            const row = await familyRow(tx, family);
+            if (row) left.push({ family: row, parents: others });
+        }
+        await setScope(tx, { family: null, user: adult.user });
+        if (!(await deleteLogin(tx, adult.user))) throw new Error("deleteAccount: no login");
+        return { name: self.name ?? self.email, left };
+    });
+    if (!done) return { error: "bad-request" };
+    // The other parents are told as leaving tells them, best effort, once the login is gone.
+    for (const { family, parents } of done.left)
+        void notifyMembership(config, family, parents, done.name, false)
+            .then((failed) => {
+                if (failed) process.stderr.write("Account deletion notification delivery failed\n");
+            })
+            .catch(() => process.stderr.write("Account deletion notification delivery failed\n"));
+    return { ok: true };
 }
 
 export async function updateAccountField(

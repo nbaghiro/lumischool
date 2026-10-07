@@ -33,6 +33,7 @@ import {
     endKidViews,
     endMySession,
     closeFamily,
+    deleteAccount,
     kidSessionFrom,
     kidSessionsFor,
     kidLoginsFor,
@@ -1345,6 +1346,18 @@ function routes(config: Config): Route[] {
                     field(c.body, "family"),
                     field(c.body, "name"),
                 );
+                if ("error" in out) return problem(REFUSED[out.error], out.error);
+                const headers = new Headers();
+                headers.append("set-cookie", cookie(config, n.session, "", 0));
+                return json(204, null, headers);
+            },
+        },
+        {
+            method: "POST",
+            path: "/api/me/delete",
+            who: "adult",
+            run: async (c, adult) => {
+                const out = await deleteAccount(config, adult, field(c.body, "email"));
                 if ("error" in out) return problem(REFUSED[out.error], out.error);
                 const headers = new Headers();
                 headers.append("set-cookie", cookie(config, n.session, "", 0));

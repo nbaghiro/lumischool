@@ -335,9 +335,8 @@ export const artworks = pgTable(
         revision: integer("revision").notNull(),
         created_at: text("created_at").notNull(),
         updated_at: text("updated_at").notNull(),
-        updated_by: uuid("updated_by")
-            .notNull()
-            .references(() => users.id),
+        // No foreign key, as with `events.actor`: a picture outlives the account of a grown-up who edited it.
+        updated_by: uuid("updated_by").notNull(),
         deleted_at: text("deleted_at"),
     },
     (t) => [
@@ -371,9 +370,8 @@ export const paintingSaves = pgTable(
         revision: integer("revision").notNull(),
         conflict: integer("conflict").notNull(),
         saved_at: text("saved_at").notNull(),
-        user_id: uuid("user_id")
-            .notNull()
-            .references(() => users.id),
+        // No foreign key, so a receipt never blocks deleting the account that saved it.
+        user_id: uuid("user_id").notNull(),
     },
     (t) => [
         foreignKey({

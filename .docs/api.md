@@ -344,6 +344,16 @@ confirmation. Parents only, with recent email authentication. Returns 204 and cl
 session cookie. A mismatched ID/name returns bad-request; old or PIN-authenticated sessions return
 fresh-sign-in. Other families, user accounts and their browser bindings are preserved.
 
+`POST /api/me/delete {email}` permanently deletes the signed-in person's own login, with recent
+email authentication and their own address typed back (compared without case or surrounding
+spaces). Any adult may call it. In one transaction, each family where they are the only active
+parent is closed as `POST /api/family/delete` closes it, they leave each family that has another
+parent as `POST /api/members/remove` does for oneself, and their `users` row is deleted with every
+key, membership and mail row that names it. Returns 204 and clears the parent session cookie; a
+bearer request from the app gets 204 with no cookie, and its next call is `401 signed-out`. A
+missing or mismatched address returns bad-request; old or PIN-authenticated sessions return
+fresh-sign-in. The remaining parents of a family left this way receive the usual membership email.
+
 
 Current account policy: invitations, invitation cancellation, parent membership management, and
 kids’ PIN/username changes require active parent access but no recent email sign-in. Parent sessions

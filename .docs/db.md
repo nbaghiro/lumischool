@@ -237,7 +237,9 @@ The store has its own dependencies (`drizzle-orm`, `postgres`, and `drizzle-kit`
 
 `0006_solid_the_liberteens.sql` adds `artworks` and `painting_saves`, both with forced family RLS.
 An artwork belongs either to one child or one parent. Composite family/child foreign keys cascade
-child deletion; family deletion cascades both tables. Family exports include live editable documents and the retained save snapshots with their authors.
+child deletion; family deletion cascades both tables. `0012_account_deletion.sql` drops the foreign
+keys from `artworks.updated_by` and `painting_saves.user_id` to `users`, as `events.actor` has none,
+so a grown-up deleting their own login is not blocked by a picture they edited in a family they left. Family exports include live editable documents and the retained save snapshots with their authors.
 Each save compares its expected revision under the family lock. A stale save creates a separate copy
 instead of replacing another device's work. Operation IDs replay the original response for the latest
 20 saved revisions per artwork. Older retries preserve work as a separate conflict copy.

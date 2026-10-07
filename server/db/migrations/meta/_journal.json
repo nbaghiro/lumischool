@@ -85,6 +85,13 @@
       "when": 1790881460521,
       "tag": "0011_no_code_limits",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1791249715304,
+      "tag": "0012_account_deletion",
+      "breakpoints": true
     }
   ]
 }

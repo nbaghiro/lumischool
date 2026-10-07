@@ -503,6 +503,12 @@ export async function deleteFamily(tx: FamilyTx, id: string): Promise<boolean> {
     return gone.length === 1;
 }
 
+/** Deletes the login `app.user` names, which the users policy allows only for oneself; its keys, memberships and mail rows go by cascade. */
+export async function deleteLogin(tx: FamilyTx, user: string): Promise<boolean> {
+    const gone = await tx.delete(users).where(eq(users.id, user)).returning({ id: users.id });
+    return gone.length === 1;
+}
+
 export async function saveAccountField(
     tx: FamilyTx,
     user: string,
