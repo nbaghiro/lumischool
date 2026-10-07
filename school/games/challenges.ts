@@ -110,6 +110,13 @@ import {
     levelOf as dominoLevel,
     openDominoConfiguration,
 } from "./machine-challenges";
+import {
+    bridgeCertified,
+    bridgeChallenge,
+    isBridgeConfiguration,
+    levelOf as bridgeLevel,
+    openBridgeConfiguration,
+} from "./bridgebuild-challenges";
 
 function identity(game: string, phase: number, value: unknown): string {
     const text = configurationKey(value);
@@ -614,9 +621,28 @@ const machine = family({
     },
 });
 
+const bridgebuild = family({
+    variation: {
+        method: "plan-and-hands-truss-replay",
+        generate: bridgeChallenge,
+        read: (value, phase) => (isBridgeConfiguration(value, phase) ? value : null),
+        solve: (c) => bridgeCertified(c),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({ reasoning: phase < 2 ? 1 : phase < 6 ? 2 : 3, motor: 2 }),
+    open: (game, c, phase) => {
+        const L = bridgeLevel(c);
+        return started(game, () => openBridgeConfiguration(c), phase, {
+            title: L.title,
+            goal: L.goal,
+        });
+    },
+});
+
 /** Every game whose levels have variations, by the game's id. */
 const VARIATIONS: Partial<Record<string, Variations>> = {
     machine,
+    bridgebuild,
     garden,
     climb,
     dollhouse,
