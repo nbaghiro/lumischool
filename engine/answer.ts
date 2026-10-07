@@ -35,98 +35,60 @@ export const GAME_CHALLENGE_VERSIONS = {
     difficulty: "initial-1",
 } as const;
 
+const GAME_RULE_REVISIONS = new Map<string, string>([
+    ["santa", "santa-1"],
+    ["machine", "machine-3"],
+    ["garden", "garden-3"],
+    ["kite", "kite-1"],
+    ["pinball", "pinball-2"],
+    ["climb", "climb-1"],
+    ["curling", "curling-1"],
+    ["dollhouse", "dollhouse-3"],
+    ["golf", "golf-holes-1"],
+    ["rescue", "rescue-1"],
+    ["pool", "pool-1"],
+    ["pour", "liquid-1"],
+    ["sling", "wall-1"],
+    ["rule", "machine-2"],
+    ["straight", "river-3"],
+    ["fish", "fishing-5"],
+    ["spell", "sound-train-2"],
+    ["shunt", "yard-4"],
+    ["clear", "show-jumping-4"],
+    ["snake", "firefly-3"],
+    ["blocks", "fetch-2"],
+    ["marble-workshop", "marble-run-3"],
+    ["bridge", "rope-swings-2"],
+    ["plane", "plane-2"],
+    ["road", "road-3"],
+    ["cargo-workshop", "cargo-7"],
+    ["herd", "physics-4"],
+    ["wardrobe", "lemonade-3"],
+    ["pay", "physical-2"],
+    ["bridgebuild", "bridgebuild-1"],
+    ["feedpup", "feedpup-2"],
+    ["hoops", "hoops-3"],
+    ["pegs", "pegs-1"],
+    ["knock", "knock-1"],
+    ["treasure", "treasure-1"],
+    ["aquarium", "aquarium-2"],
+    ["bolt", "bolt-1"],
+    ["boltfly", "boltfly-1"],
+    ["chipmunk", "chipmunk-3"],
+    ["jump", "physical-3"],
+    ["weigh", "physical-3"],
+    ["share", "physical-3"],
+    ["paperboat", "paperboat-2"],
+    ["bowling", "bowling-1"],
+]);
+
 /** Mechanics revisions invalidate saved arrangements only for the affected games. */
-export const gameRulesVersion = (game: string): string =>
-    game === "santa"
-        ? `${GAME_CHALLENGE_VERSIONS.rules}-santa-1`
-        : game === "machine"
-          ? `${GAME_CHALLENGE_VERSIONS.rules}-machine-3`
-          : game === "garden"
-            ? `${GAME_CHALLENGE_VERSIONS.rules}-garden-3`
-            : game === "kite"
-              ? `${GAME_CHALLENGE_VERSIONS.rules}-kite-1`
-              : game === "pinball"
-                ? `${GAME_CHALLENGE_VERSIONS.rules}-pinball-2`
-                : game === "climb"
-                  ? `${GAME_CHALLENGE_VERSIONS.rules}-climb-1`
-                  : game === "curling"
-                    ? `${GAME_CHALLENGE_VERSIONS.rules}-curling-1`
-                    : game === "dollhouse"
-                      ? `${GAME_CHALLENGE_VERSIONS.rules}-dollhouse-3`
-                      : game === "golf"
-                        ? `${GAME_CHALLENGE_VERSIONS.rules}-golf-holes-1`
-                        : game === "rescue"
-                          ? `${GAME_CHALLENGE_VERSIONS.rules}-rescue-1`
-                          : game === "pool"
-                            ? `${GAME_CHALLENGE_VERSIONS.rules}-pool-1`
-                            : game === "pour"
-                              ? `${GAME_CHALLENGE_VERSIONS.rules}-liquid-1`
-                              : game === "sling"
-                                ? `${GAME_CHALLENGE_VERSIONS.rules}-wall-1`
-                                : game === "rule"
-                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-machine-2`
-                                  : game === "straight"
-                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-river-3`
-                                    : game === "fish"
-                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-fishing-5`
-                                      : game === "spell"
-                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-sound-train-2`
-                                        : game === "shunt"
-                                          ? `${GAME_CHALLENGE_VERSIONS.rules}-yard-4`
-                                          : game === "clear"
-                                            ? `${GAME_CHALLENGE_VERSIONS.rules}-show-jumping-4`
-                                            : game === "snake"
-                                              ? `${GAME_CHALLENGE_VERSIONS.rules}-firefly-3`
-                                              : game === "blocks"
-                                                ? `${GAME_CHALLENGE_VERSIONS.rules}-fetch-2`
-                                                : game === "marble-workshop"
-                                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-marble-run-3`
-                                                  : game === "bridge"
-                                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-rope-swings-2`
-                                                    : game === "plane"
-                                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-plane-2`
-                                                      : game === "road"
-                                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-road-3`
-                                                        : game === "cargo-workshop"
-                                                          ? `${GAME_CHALLENGE_VERSIONS.rules}-cargo-7`
-                                                          : game === "herd"
-                                                            ? `${GAME_CHALLENGE_VERSIONS.rules}-physics-4`
-                                                            : ["jump", "weigh", "share"].includes(
-                                                                    game,
-                                                                )
-                                                              ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-3`
-                                                              : game === "wardrobe"
-                                                                ? `${GAME_CHALLENGE_VERSIONS.rules}-lemonade-3`
-                                                                : game === "pay"
-                                                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-physical-2`
-                                                                  : game === "bridgebuild"
-                                                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-bridgebuild-1`
-                                                                    : game === "feedpup"
-                                                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-feedpup-2`
-                                                                      : game === "hoops"
-                                                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-hoops-3`
-                                                                        : game === "pegs"
-                                                                          ? `${GAME_CHALLENGE_VERSIONS.rules}-pegs-1`
-                                                                          : game === "knock"
-                                                                            ? `${GAME_CHALLENGE_VERSIONS.rules}-knock-1`
-                                                                            : game === "treasure"
-                                                                              ? `${GAME_CHALLENGE_VERSIONS.rules}-treasure-1`
-                                                                              : game === "aquarium"
-                                                                                ? `${GAME_CHALLENGE_VERSIONS.rules}-aquarium-2`
-                                                                                : game === "bolt"
-                                                                                  ? `${GAME_CHALLENGE_VERSIONS.rules}-bolt-1`
-                                                                                  : game ===
-                                                                                      "boltfly"
-                                                                                    ? `${GAME_CHALLENGE_VERSIONS.rules}-boltfly-1`
-                                                                                    : game ===
-                                                                                        "chipmunk"
-                                                                                      ? `${GAME_CHALLENGE_VERSIONS.rules}-chipmunk-3`
-                                                                                      : game ===
-                                                                                              "paperboat" ||
-                                                                                          game ===
-                                                                                              "bowling"
-                                                                                        ? `${GAME_CHALLENGE_VERSIONS.rules}-${game}-${game === "paperboat" ? 2 : 1}`
-                                                                                        : GAME_CHALLENGE_VERSIONS.rules;
+export const gameRulesVersion = (game: string): string => {
+    const revision = GAME_RULE_REVISIONS.get(game);
+    return revision
+        ? `${GAME_CHALLENGE_VERSIONS.rules}-${revision}`
+        : GAME_CHALLENGE_VERSIONS.rules;
+};
 
 export type GameValue =
     null | boolean | number | string | GameValue[] | { [key: string]: GameValue };

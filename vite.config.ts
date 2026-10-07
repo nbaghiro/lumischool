@@ -72,6 +72,10 @@ export default defineConfig({
                     groups: [
                         { name: "guides", test: /\/engine\/parts\/guide\// },
                         { name: "ticker", test: /\/engine\/motion\/(?:loop|timeline)\.ts$/ },
+                        {
+                            name: "game-layouts",
+                            test: /\/engine\/parts\/[^/]+\/(?:pooltable|poolcue|leafflipper|pinballtable|backboard|yardstep|streambank|bridgetray|trussbeam|pupcar|aquarium|tankfish|marbleboard|pegbucket|knockframe|islandground)\.ts$/,
+                        },
                     ],
                 },
             },

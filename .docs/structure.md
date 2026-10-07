@@ -484,6 +484,10 @@ never list is reachable from the site's page at all, static or dynamic. Small mo
 chunks share (the guides' designs and kit, the ticker and the timeline) are one chunk each by
 `build.rollupOptions.output.codeSplitting` in `vite.config.ts`, since every chunk that imports
 another dynamically carries the list of chunks to preload in its own bytes.
+The game drawings whose geometry the games import together also share `game-layouts`;
+their preload names must not grow every page's opening script as games join the catalogue.
+Game mechanics revisions use one lookup in `engine/answer.ts`, keeping their shared prefix out
+of each branch while preserving saved challenge versions.
 
 The site came forward from step 7 (13 September 2026), so that a visitor can open it from the
 sign-in pages and a parent who is signed in can reach it from the logo, as galleo's marketing build
