@@ -694,6 +694,82 @@ and the night's own sentence says why nothing grew. The logic is `engine/motion/
 a list of steps and a game's state and says which step is current, where the arrow points and how it
 bobs, so another game can use it.
 
+## Kite flying (5 October 2026)
+
+Kite flying (`school/games/kite.ts`, `?g=kite`) is a kite on a real line in a gusty sky, chosen by the
+owner from the list of new ideas with the brief that it be smooth to play, and neither too hard nor too
+simple. Charlie stands at the left of a field with the reel, the wind blows from the left, and the kite
+flies on its line downwind of her. The numbers are on balloons in the sky, and the kite pops one by
+flying through it.
+
+The physics is `engine/motion/kite.ts`, stepped 240 times a second. The kite flies along its nose at an
+airspeed the wind gives it, drifts downwind with the air, and sinks once it flies slower than it
+stalls. The line is a length the kite may not go past, so a taut line holds it on a circle round
+Charlie's hands and it slides along that circle the way its nose and the wind send it. The wind's push
+is strongest low and downwind and wanes towards the top of the sky, and it is weaker near the ground,
+so a kite left alone rests at about 59 degrees, high downwind of her, and comes upright on its own.
+Steering turns the nose, so a held turn swings the kite across the sky and loops it; a nose turned down
+dives and gains speed, and a dive near the grass is a crash. Pulling the line in takes up slack and adds
+airspeed, which is how a real flyer keeps a kite up when the wind drops, and letting it out lets the kite
+climb away on the wind. Gusts and lulls come from a seeded day of changes (`changesOf`), each sweeping
+across from the left at fourteen squares a second, so a variation's wind is the same on every try. A gust
+lifts the kite and is drawn as streaks carried across with it, which a child sees before it arrives; a
+lull is felt as the kite slowing and sinking, and the wind sock upwind of everything hangs limp in it
+and streams out in a gust. The tail is a chain of six bows that streams behind wherever the kite goes,
+and the line sags by its weight, more when it is slack or the wind is light.
+
+The hand sets amounts by degrees: a finger held in the sky is where the kite should go, so the nose turns
+towards it at the rate the kite can turn and the line goes out or comes in at the reel's rate to reach
+it, which keeps the kite a kite rather than a cursor. With the keys, left and right steer (held, a loop),
+up lets the line out, down pulls it in, and space gives a quick tug that throws the kite forward. W, A,
+S and D do the same. The two round buttons under the field are Pull, held to reel in, and Let out. Once
+the hands let go, the wind and the line decide.
+
+A crash is a moment on the grass before Charlie sends the kite up again, and on most levels it costs
+nothing. Two levels count flights, where the last crash ends the round on the not-won card, and the
+festival is timed. A tree brushed makes the kite tumble, the tree that eats kites holds it for a moment
+until Charlie tugs it free, a power line knocks it away with a line about keeping real kites far from
+power lines, and another flyer's kite bumps it. On the first level the kite is gentler: it rights itself
+quicker, stalls later, and a held steer only leans it, so it cannot be turned over and dived into the
+ground.
+
+The dotted way ahead is the next stretch of flight with the hands as they are, worked out by the same
+step the kite flies by, so the dots and the flight agree to the last digit (a test holds them to it). It
+is 1.2 seconds long on the first two levels, shorter later, and absent from the last three.
+
+The maths is in the targets. The board over the sky says what is asked and keeps the sum as a sum
+("2 + 6 = 8"). A balloon that would take an exact total past its target bounces away whole, and the line
+under the goal says why ("9 + 4 would be 13, past 10"); a balloon out of order bounces too. An odd
+balloon on the even level pops but does not count, and an even number counts once. A popped balloon
+comes back after five seconds, so no try is ever stuck short of its target. The ten levels:
+
+1. The meadow: pop four balloons, in a steady wind.
+2. Make ten at the beach: balloons 1 to 6, exactly 10, first gusts.
+3. Even numbers on the hill: four different even numbers among 2 to 9, first lulls.
+4. Count by threes in the park: 3, 6, 9 and 12 in order, with trees and the tree that eats kites.
+5. Up over the town: keep the kite higher than 35 metres on the pole for three seconds, over roofs and a power line. The line reaches only 36 squares, so letting it all out is not enough: the kite has to be leaned upwind and held there, since the sky's push wanes overhead. The board does not give the height; the pole is read in tens, and a dotted guide runs from the kite to it.
+6. Twenty-five in the autumn wind: exactly 25 in two flights, with strong gusts and lulls.
+7. Doubles on the windy hill: the board asks for double 7, then double 6, then double 9, and birds carry numbers across.
+8. Fifty at the festival: exactly 50 with fives and tens before the clock runs out, dodging two other flyers' kites.
+9. Sixes on the gusty beach: 6, 12, 18 and 24 in order, in three flights, under a power line.
+10. Free sky: fly as high as you like, pop what you like; the best height is kept in the browser.
+
+Each target level has three variations (`school/games/kite-challenges.ts`): the numbers moved round the
+balloons, another day's wind, and on the doubles level other doubles. A pilot flies each one to its win
+through the game, as a child would: it picks the balloon the ask wants next, lets the line out or pulls
+it in to that balloon's distance, steers the nose at it, and pulls in when the kite flies slower than it
+stalls; on the height level it lets all the line out and holds a lean of half a radian upwind. It does
+this with the keys and, separately, with a finger in the sky and the Pull button in a lull, and the
+challenges family certifies a variation only when both win. The tests play the recorded pads back to
+the same win. Random hands for ninety seconds win the meadow 2 times in 20, make ten 3 times, the
+festival 3 times, the autumn field once, and the other levels never. The card in a lesson plays the
+meadow by a finger alone and wins in about four seconds of the pilot's play; the first level keeps a
+square at 12 pixels in a 360 by 240 card.
+
+The art is twelve new drawings, listed in [shelf.md](shelf.md). The sounds are the game's own: a tug's
+whip, a balloon's pop pitched by its number, a crash on the grass, a soft double note for a balloon that
+does not count, a creak for the tree that eats kites, a rising arpeggio for a win, and the wind hum,
+louder in a gust and as the kite moves faster. The rules version is `kite-1` in `engine/answer.ts`.
 
 ## Pinball garden (4 October 2026)
 

@@ -110,6 +110,14 @@ import {
 } from "./climb-challenges";
 import { CLIMB_LEVELS, variantOf as climbVariant } from "./climb";
 import {
+    isKiteConfiguration,
+    kiteCertified,
+    kiteChallenge,
+    openKiteConfiguration,
+    vary as varyKite,
+} from "./kite-challenges";
+import { KITE_LEVELS } from "./kite";
+import {
     dominoCertified,
     dominoChallenge,
     isDominoConfiguration,
@@ -620,6 +628,29 @@ const climb = family({
     },
 });
 
+const kite = family({
+    variation: {
+        method: "pilot-keys-and-touch-replay",
+        generate: kiteChallenge,
+        read: typed(isKiteConfiguration),
+        solve: (c) => kiteCertified(c),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({
+        reasoning: phase < 3 ? 1 : phase < 6 ? 2 : 3,
+        motor: phase < 2 ? 1 : phase < 6 ? 2 : 3,
+    }),
+    open: (game, c, phase) => {
+        const L = KITE_LEVELS[phase];
+        return L
+            ? started(game, () => openKiteConfiguration(c), phase, {
+                  title: L.title,
+                  goal: varyKite(L, c.variant).goal,
+              })
+            : null;
+    },
+});
+
 const garden = family({
     variation: {
         method: "plan-and-hands-replay",
@@ -724,6 +755,7 @@ const VARIATIONS: Partial<Record<string, Variations>> = {
     feedpup,
     garden,
     climb,
+    kite,
     dollhouse,
     rally,
     pinball,

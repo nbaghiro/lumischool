@@ -3,6 +3,8 @@
 // the field can give and that the round is won in time. See .docs/game-cards.md.
 import { climbGame } from "../climb";
 import { climbThrough } from "../climb-challenges";
+import { kiteGame } from "../kite";
+import { kiteWay } from "../kite-challenges";
 import { emptyPad, spent, type Pad } from "../../../engine/motion/pad";
 import { player, tape } from "../../../engine/motion/tape";
 import { endOf, type ActionGame, type RoundEnd } from "../game";
@@ -354,5 +356,6 @@ export const FIELD_ROUNDS: Record<string, () => Verdict> = {
     rescue: () => judge(rescueGame, rescue),
     clear: () => judge(clearGame, clear),
     climb: () => judge(climbGame, climb),
+    kite: () => judge(kiteGame, () => kiteWay({ phase: 0, variant: 0 }, "touch") ?? []),
     feedpup: () => judge(feedGame, () => feedWay({ phase: 0, variant: 0 }, "touch") ?? []),
 };
