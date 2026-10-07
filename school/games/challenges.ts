@@ -147,6 +147,13 @@ import {
     treasureCertified,
     treasureChallenge,
 } from "./treasure-challenges";
+import {
+    aquaChallenge,
+    aquaLevel,
+    aquaWay,
+    isAquaConfiguration,
+    openAquaConfiguration,
+} from "./aquarium-challenges";
 
 function identity(game: string, phase: number, value: unknown): string {
     const text = configurationKey(value);
@@ -771,8 +778,22 @@ const treasure = family({
     },
 });
 
+const aquarium = family({
+    variation: {
+        method: "pilot-and-hands-replay",
+        generate: aquaChallenge,
+        read: typed(isAquaConfiguration),
+        solve: (c) => aquaWay(c, "touch"),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({ reasoning: phase < 2 ? 1 : phase < 6 ? 2 : 3, motor: 2 }),
+    open: (game, c, phase) =>
+        started(game, () => openAquaConfiguration(c), phase, { goal: aquaLevel(c).goal }),
+});
+
 /** Every game whose levels have variations, by the game's id. */
 const VARIATIONS: Partial<Record<string, Variations>> = {
+    aquarium,
     treasure,
     pegs,
     knock,

@@ -16,6 +16,7 @@ import { kiteGame } from "./kite";
 import { machineGame } from "./machine";
 import { bridgeGame } from "./bridgebuild";
 import { feedGame } from "./feedpup";
+import { aquariumGame } from "./aquarium";
 import { pegsGame } from "./pegs";
 import { knockGame } from "./knock";
 import { treasureGame } from "./treasure";
@@ -84,6 +85,7 @@ export const GAMES: Game[] = [
     machineGame,
     bridgeGame,
     feedGame,
+    aquariumGame,
     pegsGame,
     knockGame,
     treasureGame,

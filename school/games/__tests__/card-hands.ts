@@ -25,6 +25,8 @@ import { hoopsGame } from "../hoops";
 import { hoopWay } from "../hoops-challenges";
 import { feedGame } from "../feedpup";
 import { feedWay } from "../feedpup-challenges";
+import { aquariumGame } from "../aquarium";
+import { aquaWay } from "../aquarium-challenges";
 import * as rabbit from "../rabbit";
 import { FIRE_AIM, NOZZLE, rescueGame, type RescueState } from "../rescue";
 import { driver } from "../rescue-challenges";
@@ -358,4 +360,5 @@ export const FIELD_ROUNDS: Record<string, () => Verdict> = {
     climb: () => judge(climbGame, climb),
     kite: () => judge(kiteGame, () => kiteWay({ phase: 0, variant: 0 }, "touch") ?? []),
     feedpup: () => judge(feedGame, () => feedWay({ phase: 0, variant: 0 }, "touch") ?? []),
+    aquarium: () => judge(aquariumGame, () => aquaWay({ phase: 0, variant: 0 }, "touch") ?? []),
 };
