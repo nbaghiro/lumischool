@@ -54,6 +54,12 @@ export const ICONS = [
     "water",
     "basket",
     "sun",
+    "cut",
+    "dig",
+    "bag",
+    "spin",
+    "magnet",
+    "shake",
 ] as const;
 export type IconName = (typeof ICONS)[number];
 
@@ -105,6 +111,12 @@ export const ICON_LABEL: Record<IconName, string> = {
     water: "Water",
     basket: "Pick",
     sun: "Next day",
+    cut: "Cut",
+    dig: "Dig",
+    bag: "Swap tool",
+    spin: "Spin",
+    magnet: "Magnet",
+    shake: "Shake",
 };
 
 /**
@@ -325,6 +337,81 @@ const DRAW: Record<IconName, <G>(c: Ctx<G>) => void> = {
             null,
             line(c),
         );
+    },
+    cut: (c) => {
+        // a pair of scissors open across a rope, for cutting it
+        for (const [x, y] of [
+            [11, 29],
+            [23, 31],
+        ] as const) {
+            const ring = circle(x, y, 4.5);
+            wash(c, ring, "berry");
+            c.pen.path(c.g, ring, "ruler", null, line(c));
+        }
+        c.pen.line(c.g, 14, 26, 31, 7, "ruler", line(c));
+        c.pen.line(c.g, 21, 27, 26, 7, "ruler", line(c));
+        c.pen.line(c.g, 4, 16, 36, 16, "ruler", line(c, W * 0.7));
+    },
+    dig: (c) => {
+        // a spade pushed into a heap of sand, for digging
+        const heap = "M5 35Q20 24 35 35Z";
+        wash(c, heap, "glow");
+        c.pen.path(c.g, heap, "ruler", null, line(c));
+        c.pen.line(c.g, 26, 5, 20, 22, "ruler", line(c));
+        c.pen.line(c.g, 22, 6, 30, 4, "ruler", line(c));
+        const blade = "M15 20L25 23L22 31Q16 33 14 28Z";
+        wash(c, blade, "sky");
+        c.pen.path(c.g, blade, "ruler", null, line(c));
+    },
+    spin: (c) => {
+        // a curled arrow going round a small robot's body, for a spin
+        c.pen.path(c.g, "M20 6A14 14 0 1 1 7 25", "ruler", null, line(c));
+        c.pen.linear(
+            c.g,
+            [
+                [3, 19],
+                [7, 25],
+                [13, 21],
+            ],
+            "ruler",
+            line(c),
+        );
+        const body = rounded(15, 13, 10, 14, 4);
+        wash(c, body, "sky");
+        c.pen.path(c.g, body, "ruler", null, line(c));
+    },
+    magnet: (c) => {
+        // a horseshoe magnet with its two tips, pulling
+        const shoe = "M10 6V22A10 10 0 0 0 30 22V6H24V22A4 4 0 0 1 16 22V6Z";
+        wash(c, shoe, "berry");
+        c.pen.path(c.g, shoe, "ruler", null, line(c));
+        c.pen.line(c.g, 10, 11, 16, 11, "ruler", line(c));
+        c.pen.line(c.g, 24, 11, 30, 11, "ruler", line(c));
+    },
+    shake: (c) => {
+        // a branch with an acorn hanging under it, and the lines of a shake either side
+        c.pen.path(c.g, "M5 12Q20 8 35 12", "ruler", null, line(c));
+        const nut = "M15 19Q15 28 20 30Q25 28 25 19Z";
+        wash(c, nut, "glow");
+        c.pen.path(c.g, nut, "ruler", null, line(c));
+        c.pen.path(c.g, "M13 20Q20 14 27 20", "ruler", null, line(c));
+        for (const x of [7, 33])
+            c.pen.path(
+                c.g,
+                `M${x} 20Q${x < 20 ? x - 3 : x + 3} 25 ${x} 30`,
+                "ruler",
+                null,
+                line(c),
+            );
+    },
+    bag: (c) => {
+        // a satchel with its flap and strap, for what is carried in it
+        const body = "M8 16H32V33Q32 35 30 35H10Q8 35 8 33Z";
+        wash(c, body, "tang");
+        c.pen.path(c.g, body, "ruler", null, line(c));
+        c.pen.path(c.g, "M8 16Q20 26 32 16", "ruler", null, line(c));
+        c.pen.path(c.g, "M12 16Q12 5 20 5Q28 5 28 16", "ruler", null, line(c));
+        c.pen.line(c.g, 20, 21, 20, 25, "ruler", line(c));
     },
     hook: (c) => {
         // a fish hook with its barb, hanging from the eye
@@ -704,7 +791,7 @@ export const icon = defineDrawing<{ name: IconName; on: boolean }>({
     family: "apps",
     title: "Icons for the apps' controls",
     group: "Marks",
-    about: "Home, journal, map, print, settings, back, sign out, add, help, sound, faster, shuffle, watch, hook, reel, a microphone, close, the words said, a ball, a frisbee, a stick, a head and shoulders for who plays, a curling broom, a stone's curve, a minus for fewer, a sprout for planting, a watering can, a basket and the sun for the next day, drawn as one set on a two-square box: one stroke weight, round ends and one marker under the pencil. Every control supplies its name, and `on` lays a disc of highlighter behind it for the page a child or a grown-up is on.",
+    about: "Home, journal, map, print, settings, back, sign out, add, help, sound, faster, shuffle, watch, hook, reel, a microphone, close, the words said, a ball, a frisbee, a stick, a head and shoulders for who plays, a curling broom, a stone's curve, a minus for fewer, a sprout for planting, a watering can, a basket, the sun for the next day, scissors for a cut, a spade in a heap for digging and a satchel for the tools carried, drawn as one set on a two-square box: one stroke weight, round ends and one marker under the pencil. Every control supplies its name, and `on` lays a disc of highlighter behind it for the page a child or a grown-up is on.",
     params: { name: "home", on: false },
     settings: { name: { kind: "one of", of: ICONS }, on: { kind: "flag" } },
     takes: [

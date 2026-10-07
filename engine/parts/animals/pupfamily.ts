@@ -2,7 +2,7 @@
 // Rufus the dad is a tan dog with long floppy ears, Maple the mum a curly yellow one, Pip the older pup
 // a white terrier with a patch over one eye, and Dot the youngest a white pup with black spots. Each
 // pose that is a movement has a part of its own: a hop for a cheer or a jump, a step for a walk, a
-// shiver for a shake. A run, a leap, a swim and a carry face the way `dir` says.
+// shiver for a shake, a munch for a chomp. A catch opens the mouth wide for food coming down. A run, a leap, a swim and a carry face the way `dir` says.
 import { part, plain, type Ctx, type RawAnchors } from "../../ink/surface";
 import { U } from "../../paper";
 import { defineDrawing } from "../drawing";
@@ -30,6 +30,8 @@ export const PUP_POSES = [
     "swim",
     "carry",
     "shake",
+    "catch",
+    "chomp",
 ] as const;
 type PupPose = (typeof PUP_POSES)[number];
 const MOODS = ["happy", "excited", "surprised", "worried", "sad"] as const;
@@ -124,7 +126,7 @@ export const pupFamily = defineDrawing<PupParams>({
     family: "animals",
     title: "The Pup family",
     group: "Characters",
-    about: "A family of four dogs who stand on their hind legs: Rufus the dad, a tan dog with long floppy ears; Maple the mum, curly and yellow; Pip, a white terrier pup with a patch over one eye; and Dot, the youngest, white with black spots. Each member stands, waves, sits, walks, jumps, cheers, runs, leaps, swims, carries a thing or shakes off water, and their tails wag. For a rescue each can wear a fire helmet, a flying cap, a hard hat or a life vest.",
+    about: "A family of four dogs who stand on their hind legs: Rufus the dad, a tan dog with long floppy ears; Maple the mum, curly and yellow; Pip, a white terrier pup with a patch over one eye; and Dot, the youngest, white with black spots. Each member stands, waves, sits, walks, jumps, cheers, runs, leaps, swims, carries a thing, shakes off water, catches food in a wide open mouth or chomps it, and their tails wag. For a rescue each can wear a fire helmet, a flying cap, a hard hat or a life vest.",
     params: { member: "rufus", pose: "wave", mood: "happy", dir: 1, gear: "none" },
     settings: {
         member: { kind: "one of", of: PUPS },
@@ -191,6 +193,14 @@ export const pupFamily = defineDrawing<PupParams>({
             params: { member: "dot", pose: "cheer", mood: "excited", dir: 1, gear: "vest" },
         },
         {
+            label: "Pip catching",
+            params: { member: "pip", pose: "catch", mood: "excited", dir: 1, gear: "none" },
+        },
+        {
+            label: "Pip chomping",
+            params: { member: "pip", pose: "chomp", mood: "happy", dir: -1, gear: "none" },
+        },
+        {
             label: "Rufus shaking",
             params: { member: "rufus", pose: "shake", mood: "surprised", dir: 1, gear: "none" },
         },
@@ -210,11 +220,13 @@ export const pupFamily = defineDrawing<PupParams>({
         const whole =
             pose === "jump" || pose === "cheer"
                 ? part(c, "hop", [cx, floor])
-                : pose === "walk"
-                  ? part(c, "step", [cx, floor])
-                  : pose === "shake"
-                    ? part(c, "shiver", [cx, floor])
-                    : c;
+                : pose === "chomp"
+                  ? part(c, "munch", [cx, floor])
+                  : pose === "walk"
+                    ? part(c, "step", [cx, floor])
+                    : pose === "shake"
+                      ? part(c, "shiver", [cx, floor])
+                      : c;
         const { pen, g } = whole;
         const lift = pose === "jump" || pose === "leap" ? 16 : 0,
             sit = pose === "sit" ? 12 : 0;
@@ -388,6 +400,16 @@ export const pupFamily = defineDrawing<PupParams>({
         const eyes = part(whole, "eyes", H(0, -6));
         for (const d of [-1, 1]) {
             const [ex, ey] = H(d * 8, -6);
+            if (pose === "chomp") {
+                eyes.pen.path(
+                    eyes.g,
+                    `M${ex - 3.5 * k} ${ey}Q${ex} ${ey - 3 * k} ${ex + 3.5 * k} ${ey}`,
+                    "ruler",
+                    null,
+                    { strokeWidth: 1.3, ...FIRM },
+                );
+                continue;
+            }
             eyes.pen.circle(eyes.g, ex, ey, 5.4 * k, "ruler", ink, { strokeWidth: 0.5, ...FIRM });
             plain(eyes, {
                 kind: "circle",
@@ -399,7 +421,34 @@ export const pupFamily = defineDrawing<PupParams>({
         }
         const [mx, my] = H(0, 13);
         const w = 1.2;
-        if (mood === "happy")
+        // a catch and a chomp draw their own mouth whatever the mood, since the mouth is the pose
+        if (pose === "catch") {
+            pen.path(
+                g,
+                `M${mx - 7 * k} ${my - 2}H${mx + 7 * k}Q${mx + 7 * k} ${my + 10 * k} ${mx} ${my + 10 * k}Q${mx - 7 * k} ${my + 10 * k} ${mx - 7 * k} ${my - 2}Z`,
+                "ruler",
+                pen.fill("berry"),
+                { strokeWidth: w, ...FIRM },
+            );
+            pen.ellipse(g, mx, my + 7 * k, 7 * k, 4 * k, "ruler", pen.fill("card"), {
+                strokeWidth: 0.8,
+                ...FIRM,
+            });
+        } else if (pose === "chomp") {
+            pen.circle(
+                g,
+                mx + s * 4 * k,
+                my + 3 * k,
+                13 * k,
+                "pencil",
+                pen.fill("tang"),
+                calm(c, 1.2),
+            );
+            pen.line(g, mx - 6 * k, my + 1, mx + 6 * k, my + 1, "ruler", {
+                strokeWidth: w,
+                ...FIRM,
+            });
+        } else if (mood === "happy")
             pen.path(
                 g,
                 `M${mx - 5 * k} ${my - 1}Q${mx} ${my + 4 * k} ${mx + 5 * k} ${my - 1}`,
@@ -506,7 +555,7 @@ export const pupFamily = defineDrawing<PupParams>({
         for (const d of [-1, 1])
             arm(
                 d,
-                pose === "cheer" || pose === "jump"
+                pose === "cheer" || pose === "jump" || pose === "catch"
                     ? "up"
                     : pose === "wave" && d === s
                       ? "wave"
@@ -518,7 +567,7 @@ export const pupFamily = defineDrawing<PupParams>({
                               : "back"
                           : pose === "leap"
                             ? "reach"
-                            : pose === "carry"
+                            : pose === "carry" || pose === "chomp"
                               ? "hold"
                               : pose === "swim"
                                 ? "paddle"
@@ -569,6 +618,8 @@ export const pupFamily = defineDrawing<PupParams>({
             swim: "paddling along",
             carry: "carrying something home",
             shake: "shaking off water",
+            catch: "catching with its mouth wide open",
+            chomp: "munching a biscuit, eyes shut",
         };
         const face: Record<PupMood, string> = {
             happy: "",
@@ -585,7 +636,8 @@ export const pupFamily = defineDrawing<PupParams>({
             vest: " in an orange life vest",
         };
         // gear takes the place of the mouth's words, so a description stays within thirty
-        return `${f.name} ${f.role}, ${f.words}, ${doing[pose]}${wears[gear]}.${gear === "none" ? face[mood] : ""}`;
+        const mouth = gear === "none" && pose !== "catch" && pose !== "chomp" ? face[mood] : "";
+        return `${f.name} ${f.role}, ${f.words}, ${doing[pose]}${wears[gear]}.${mouth}`;
     },
     motion: {
         body: { is: "idle" },
@@ -596,6 +648,7 @@ export const pupFamily = defineDrawing<PupParams>({
             hop: { is: "hop", lift: 7, squash: 0.08, period: 2.6 },
             step: { is: "bob", lift: 2.2, arc: 0, deg: 0, period: 1.4 },
             shiver: { is: "wiggle", deg: 6, period: 1.2, cycles: 6 },
+            munch: { is: "bob", lift: 1.6, arc: 0, deg: 0, period: 0.5 },
         },
     },
 });

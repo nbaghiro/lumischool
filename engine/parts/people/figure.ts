@@ -51,6 +51,8 @@ export const POSES = [
     "jump",
     "hang",
     "sweep",
+    "shoot",
+    "release",
 ] as const;
 export type Pose = (typeof POSES)[number];
 export const AGES = ["child", "grownup", "older"] as const;
@@ -1033,7 +1035,9 @@ type ArmKey =
     | "drive"
     | "raise"
     | "race"
-    | "out";
+    | "out"
+    | "set"
+    | "flick";
 
 /** Where an arm on side s bends and ends, from the shoulder, for each thing an arm can do. */
 function armPoints(
@@ -1097,6 +1101,15 @@ function armPoints(
         case "out": {
             const E: Pt = [S[0] + s * ua * 0.95, S[1] + 2];
             return [E, [E[0] + s * fa * 0.95, E[1] - fa * 0.2]];
+        }
+        case "set": {
+            // both hands up over the forehead, holding a ball ready to shoot
+            const E: Pt = [S[0] + s * ua * 0.62, S[1] - ua * 0.32];
+            return [E, [x + s * b.r * 0.55, o.headY - b.r * 1.55]];
+        }
+        case "flick": {
+            const E: Pt = [S[0] + s * ua * 0.6, S[1] - ua * 0.72];
+            return [E, [E[0] + s * fa * 0.62, E[1] - fa * 0.72]];
         }
         case "race": {
             const H: Pt = o.wheel ?? [S[0], S[1] + ua + fa],
@@ -1634,6 +1647,15 @@ export function figure<G>(
         arms[near] = "out";
         arms[far] = "out";
     }
+    if (pose === "shoot") {
+        arms[near] = "set";
+        arms[far] = "set";
+    }
+    // the follow-through: the shooting arm reaches after the ball and the other comes up beside it
+    if (pose === "release") {
+        arms[near] = "flick";
+        arms[far] = "up";
+    }
     if (striding && pose === "run") {
         arms[near] = "pump";
         arms[far] = "drive";
@@ -1699,7 +1721,11 @@ export function figure<G>(
         const shape: HandShape =
             key === "point"
                 ? "point"
-                : key === "wave" || key === "up" || key === "out"
+                : key === "wave" ||
+                    key === "up" ||
+                    key === "out" ||
+                    key === "set" ||
+                    key === "flick"
                   ? "open"
                   : "fist";
         const end = hand(moving, E, H, b.hand, look.tone, shape);
@@ -1709,6 +1735,7 @@ export function figure<G>(
             a.hand = [end[0], end[1], "up"];
         if (key === "wheel" || (key === "race" && s === near)) a.hand = [H[0], H[1], "up"];
         if (key === "raise") a.hand = [H[0], H[1] - b.hand, "up"];
+        if (key === "set" && s === near) a.hand = [x, H[1] - b.hand, "up"];
     };
 
     if (racer) arm(far);

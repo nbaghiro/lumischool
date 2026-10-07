@@ -115,6 +115,8 @@ const POSE_WORDS: Record<Pose, string> = {
     jump: "jumping",
     hang: "hanging by her hands",
     sweep: "sweeping as she strides",
+    shoot: "holding a ball overhead to shoot",
+    release: "reaching up after shooting a ball",
 };
 const colourWord = (v: string): string =>
     v === "white" || v === "grey" ? v : MARKER_WORD[pick(MARKERS, v, "sky")];
@@ -321,6 +323,14 @@ export const charlie = defineDrawing<CharlieParams>({
         {
             label: "Pointing",
             params: { ...AS_SHE_CAME, pose: "point", mood: "surprised" },
+        },
+        {
+            label: "Lining up a shot",
+            params: { ...AS_SHE_CAME, pose: "shoot", hair: "ponytail" },
+        },
+        {
+            label: "Following through",
+            params: { ...AS_SHE_CAME, pose: "release", hair: "ponytail", mood: "excited" },
         },
     ],
     box: (p) => personBox(asPerson(p)),
