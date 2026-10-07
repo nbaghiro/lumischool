@@ -148,6 +148,14 @@ import {
 } from "./bolt-challenges";
 import { levelOf as boltLevel } from "./bolt";
 import {
+    flyCertified,
+    flyChallenge,
+    isFlyConfiguration,
+    openFlyConfiguration,
+    vary as varyFly,
+} from "./boltfly-challenges";
+import { FLY_LEVELS } from "./boltfly";
+import {
     isTreasureConfiguration,
     levelFor as treasureLevelFor,
     openTreasureConfiguration,
@@ -788,6 +796,29 @@ const bolt = family({
     },
 });
 
+const boltfly = family({
+    variation: {
+        method: "pilot-keys-and-touch-replay",
+        generate: flyChallenge,
+        read: typed(isFlyConfiguration),
+        solve: (c) => flyCertified(c),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({
+        reasoning: phase < 3 ? 1 : phase < 6 ? 2 : 3,
+        motor: phase < 2 ? 1 : phase < 6 ? 2 : 3,
+    }),
+    open: (game, c, phase) => {
+        const L = FLY_LEVELS[phase];
+        return L
+            ? started(game, () => openFlyConfiguration(c), phase, {
+                  title: L.title,
+                  goal: varyFly(L, c.variant).goal,
+              })
+            : null;
+    },
+});
+
 const treasure = family({
     variation: {
         method: "plan-and-hands-replay",
@@ -822,6 +853,7 @@ const aquarium = family({
 /** Every game whose levels have variations, by the game's id. */
 const VARIATIONS: Partial<Record<string, Variations>> = {
     bolt,
+    boltfly,
     aquarium,
     treasure,
     pegs,

@@ -6,6 +6,8 @@ import { climbThrough } from "../climb-challenges";
 import { kiteGame } from "../kite";
 import { boltGame } from "../bolt";
 import { rescueThrough } from "../bolt-challenges";
+import { boltflyGame } from "../boltfly";
+import { flyWay } from "../boltfly-challenges";
 import { kiteWay } from "../kite-challenges";
 import { emptyPad, spent, type Pad } from "../../../engine/motion/pad";
 import { player, tape } from "../../../engine/motion/tape";
@@ -372,4 +374,5 @@ export const FIELD_ROUNDS: Record<string, () => Verdict> = {
     feedpup: () => judge(feedGame, () => feedWay({ phase: 0, variant: 0 }, "touch") ?? []),
     aquarium: () => judge(aquariumGame, () => aquaWay({ phase: 0, variant: 0 }, "touch") ?? []),
     bolt: () => judge(boltGame, boltRound),
+    boltfly: () => judge(boltflyGame, () => flyWay({ phase: 0, variant: 0 }, "touch") ?? []),
 };

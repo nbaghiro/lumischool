@@ -623,6 +623,7 @@ owner asked for is being built, and the game goes back to "to check" when it lan
 | Knock it down | `knock` | to check | new; frame rate on a phone's WebKit not yet measured |
 | Treasure island | `treasure` | to check | new; frame rate on a phone's WebKit not yet measured |
 | Bolt's rescue | `bolt` | to check | new; frame rate on a phone's WebKit not yet measured |
+| Bolt's sky flight | `boltfly` | to check | new; frame rate on a phone's WebKit not yet measured |
 
 ## Risks
 
