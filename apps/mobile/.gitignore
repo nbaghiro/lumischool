@@ -5,3 +5,6 @@ ios/
 android/
 expo-env.d.ts
 *.tsbuildinfo
+
+# the Play Console service account EAS Submit uploads with; a secret, never committed
+google-service-account.json

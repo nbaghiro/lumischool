@@ -259,6 +259,31 @@ keyboard's height. The app restates three types from `server/api.ts`, because a 
 there reaches `server/db/keys.ts` and Node's types; once `server/api.ts` imports nothing that needs
 Node, the app should import them instead.
 
+## Store submission
+
+Started on 5 October 2026, in the order of the submission checklist.
+
+The site serves `/privacy`, `/terms`, `/support` and `/delete-account` (`apps/site/legal.tsx`),
+which `server/pages.ts` routes to it for everyone and the site's foot links to. The app's avatar menu
+opens Help and support and Privacy in the phone's browser. The pages describe what the code does
+today: what is kept for grown-ups and children, the processors (Render, Neon, Cloudflare, Resend, and
+Gemini for the grown-ups' teaching features, with no name or account identifier), no analytics,
+advertising or tracking, and deletion. Export, withdrawing consent and deleting one child's record
+have no screen yet, so the pages say to write to support@lumischool.ai for them. Three things need
+the owner before submission: the operating company's legal name and address (`OPERATOR` in
+`legal.tsx`), a lawyer's review of the privacy and terms text, and a retention period, which the
+consent notice in `school/family/privacy.ts` still calls a draft.
+
+The app is at version 1.0.0. `apps/mobile/eas.json` has development, preview and production build
+profiles, with the build number kept by EAS (`appVersionSource: remote`) and raised on every
+production build, and a production submit profile for Play's internal track as a draft, reading the
+service account from `google-service-account.json`, which git ignores. `app.json` carries the iOS
+privacy manifest (the UserDefaults, file timestamp and boot time reasons React Native and Expo need,
+the data types the privacy page lists, all linked to the user for the app's function, and no
+tracking), and Android's blocked permissions include external storage. `eas init` needs the owner's
+Expo account, which writes the project id into `app.json`; App Store Connect's app id goes into the
+iOS submit profile once the app record exists.
+
 ## Risks and what we have not measured
 
 - No phone has measured the games, the map or a lesson sheet. Phase 1's builds are the first chance.

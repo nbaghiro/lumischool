@@ -4,13 +4,14 @@ import type {
     BottomTabHeaderProps,
 } from "expo-router/build/react-navigation/bottom-tabs";
 import { useEffect, useState, type ReactNode } from "react";
-import { Alert, Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, Linking, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { portraitFor, type GrownupKind } from "../../engine/parts/apps/grownup";
 import { me, type Me } from "./api";
 import { DRAWINGS } from "./art";
 import { usePlaying } from "./chrome";
 import { signOut } from "./mode";
+import { ORIGIN } from "./origin";
 import { Bar } from "./postcard";
 import { COLOR, FONT, TOUCH } from "./ui";
 
@@ -202,6 +203,9 @@ function Person(): ReactNode {
             ? [{ label: "Switch family", act: () => router.push("/switch-family") }]
             : []),
         { label: "Open a child's view", act: () => router.push("/open-child") },
+        // the site's pages, which the stores ask an app to link, open in the phone's browser
+        { label: "Help and support", act: () => void Linking.openURL(`${ORIGIN}/support`) },
+        { label: "Privacy", act: () => void Linking.openURL(`${ORIGIN}/privacy`) },
         { label: "Sign out", act: leave },
     ];
     return (
