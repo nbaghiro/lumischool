@@ -1,3 +1,4 @@
+import { santaChallenge, isSantaConfiguration, openSantaConfiguration } from "./santa-challenges";
 import { rallyChallenge, isRallyConfiguration, openRallyConfiguration } from "./rally-challenges";
 import { golfChallenge, isGolfConfiguration, openGolfConfiguration } from "./golf-challenges";
 import { fishChallenge, isFishConfiguration, openFishConfiguration } from "./fish-challenges";
@@ -802,6 +803,17 @@ const bolt = family({
     },
 });
 
+const santa = family({
+    variation: {
+        method: "pilot-keys-and-touch-replay",
+        generate: santaChallenge,
+        read: typed(isSantaConfiguration),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({ reasoning: phase < 3 ? 1 : 2, motor: 2 }),
+    open: (game, c, phase) => started(game, () => openSantaConfiguration(c), phase),
+});
+
 const boltfly = family({
     variation: {
         method: "pilot-keys-and-touch-replay",
@@ -873,6 +885,7 @@ const chipmunk = family({
 
 /** Every game whose levels have variations, by the game's id. */
 const VARIATIONS: Partial<Record<string, Variations>> = {
+    santa,
     chipmunk,
     bolt,
     boltfly,

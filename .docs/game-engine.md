@@ -644,6 +644,14 @@ the shelf in `engine/parts/`. No new top-level folder is needed; if a module nee
 we record it in [structure.md](structure.md) and `boundaries.ts` in the same change.
 
 
+## Wind-carried deliveries
+
+`engine/motion/airdrop.ts` advances a parcel under gravity and horizontal wind, with exact
+constant-acceleration positions over a substep. Its swept descending crossing returns the horizontal
+position at a landing height, so a parcel cannot skip a narrow opening. Santa's sleigh run uses the
+same stepping for live deliveries and preview dots, including future gust times. Roof response and
+which house needs a delivery remain game rules in `school/games/santa.ts`.
+
 ### Responsive game composition
 
 `ActionGame.frame(state, rest, room)` receives the available field size in pixels, cached at resize.

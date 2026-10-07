@@ -1,3 +1,4 @@
+import { santaGame } from "./santa";
 import { rallyGame } from "./rally";
 import { golfGame } from "./golf";
 import { poolGame } from "./pool";
@@ -96,6 +97,7 @@ export const GAMES: Game[] = [
     boltflyGame,
     chipmunkGame,
     clearGame,
+    santaGame,
 ];
 
 /** Retired games, by id, and the game an old address that names one opens instead. */

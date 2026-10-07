@@ -3514,6 +3514,42 @@ The view is 40 by 24 squares, the world's whole width, and follows Bolt up with 
 How the six ingredients are met. The hand sets amounts by degrees: how long the jets are held sets the thrust and the heat, and a finger's distance sets how fast Bolt climbs or sinks. Physics after the action: let go, Bolt carries on and falls by its own speed, the air and a moon's pull. Retries cost nothing: a fall comes back to the last ledge at once, and a bump costs half a second. Places, not screens: one tall climb through the garden, the clouds and space to the moon, with clouds, currents, satellites, comets and moons in the way. Fading previews: the dotted way, long and then gone. Maths in the targets: exact sums, fives, counting by tens and twenty-fives, rescuing a count, and a height read off a pole in fifties.
 
 
+## Santa's sleigh run (7 October 2026)
+
+`santa` is a side-view delivery game inspired by the timed chimney drops in
+[Google's Santa Tracker](https://github.com/google/santa-tracker-web). Santa flies a red sleigh over
+snowy houses, with a reindeer, a sack and wrapped gifts drawn on the shared shelf. The scene keeps
+the light palette and squared paper. The child sets the height and the moment of release; a present
+keeps the sleigh's horizontal speed and part of its climb or descent. Gravity and changing wind
+carry it into an open chimney or onto the roof. A miss bounces off the roof, falls into the snow and
+flies back to the sack. Deliveries already made stay made. There is no clock or lost life.
+
+Drag in the sky to set the flying height and release to drop one present. A separate Drop present
+button works without a drag. The arrows or WASD climb, descend and turn; Space drops once per press.
+The sleigh cruises and turns at the edge of town so every missed house comes around again. Turning
+eases through zero speed instead of instantly reversing a present's momentum. Cancellation and
+pause never count as a release. A short cooldown prevents a rapid accidental double drop.
+
+The first route asks for one present at each of three houses. The next asks for three at each,
+then two at each in stronger gusts, two at even-numbered doors only, a rising count over tall roofs,
+two more at each next door, and twenty shared equally among five houses. Each route has three
+layouts that vary spacing or roof heights. Chimneys show the delivered count and target, or Pass
+for a house outside the route. A house that has enough returns any extra gift rather than silently
+changing an exact target. Lit windows and a delivery chime mark a completed house. The shared end
+card celebrates when every house has exactly its delivery.
+
+`engine/motion/airdrop.ts` owns constant-acceleration parcel stepping and swept descending crossings.
+The live game steps at 240 Hz inside a 60 Hz loop. Its preview steps the same wind at the same future
+times and stops at a chimney or roof; it becomes shorter over the first five routes and is absent
+on the last two. `santa-challenges.ts` supplies serializable configurations and a pilot that wins
+every route and variation through normal keyboard or pointer pads. The tests replay both paths,
+compare the predicted and actual delivery, and check cancellation, misses and one-drop presses.
+
+The scene follows the sleigh and keeps 26 squares across on an upright phone. Readouts use the
+shared layout and compact phone tally. Reduced motion advances a quarter second per press and
+settles any released gift. This game is not offered inside a lesson card: a moving sleigh and its
+landing target need more room than a small embedded card. The rules revision is `-santa-1`.
+
 Nutmeg also accepts a single tap on the tree or Shake for a complete short shake. Acorns scatter
 less on release, the first two levels pick them up from a slightly wider reach, and the doorway
 and automatic unloading are more forgiving. Carrying and the later counting puzzles retain their
