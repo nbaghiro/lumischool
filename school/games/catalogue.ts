@@ -16,6 +16,7 @@ import { machineGame } from "./machine";
 import { bridgeGame } from "./bridgebuild";
 import { feedGame } from "./feedpup";
 import { pegsGame } from "./pegs";
+import { knockGame } from "./knock";
 // Every game, in the order the Games tab shows them, grouped by how each one plays. The hands-on
 // games are played by moving things on a board, with a tray that is the keyboard path and the one a
 // screen reader reads, and every level of them is gated by the prover; the action games are played
@@ -81,6 +82,7 @@ export const GAMES: Game[] = [
     bridgeGame,
     feedGame,
     pegsGame,
+    knockGame,
     clearGame,
 ];
 

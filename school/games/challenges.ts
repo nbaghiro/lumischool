@@ -131,6 +131,7 @@ import {
 } from "./feedpup-challenges";
 import { FEED_LEVELS } from "./feedpup";
 import { isPegConfiguration, openPegConfiguration, pegChallenge } from "./pegs-challenges";
+import { isKnockConfiguration, knockChallenge, openKnockConfiguration } from "./knock-challenges";
 
 function identity(game: string, phase: number, value: unknown): string {
     const text = configurationKey(value);
@@ -703,9 +704,21 @@ const pegs = family({
     open: (game, c, phase) => started(game, () => openPegConfiguration(c), phase),
 });
 
+const knock = family({
+    variation: {
+        method: "pilot-and-hands-physics-replay",
+        generate: knockChallenge,
+        read: typed(isKnockConfiguration),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({ reasoning: phase < 2 ? 1 : phase < 6 ? 2 : 3, motor: 2 }),
+    open: (game, c, phase) => started(game, () => openKnockConfiguration(c), phase),
+});
+
 /** Every game whose levels have variations, by the game's id. */
 const VARIATIONS: Partial<Record<string, Variations>> = {
     pegs,
+    knock,
     machine,
     bridgebuild,
     feedpup,
