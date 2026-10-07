@@ -1,6 +1,102 @@
 # Games
 
 The first physical-handling refinement is documented in [physical-games-refinement.md](physical-games-refinement.md).
+## Treasure island (5 October 2026)
+
+Treasure island (`school/games/treasure.ts`, `?g=treasure`) is a treasure hunt in the line of the
+top-down adventures where a map and a spade are the whole kit: Charlie lands at the dock of an island
+seen from above, the island squared like the map she carries, and digs where the map's clue says.
+The island is bigger than the view, and the view follows her. Round the sandy beach are the dock and
+its rowing boat with a friend in it, map posts lettered A to L along the top of the grid and numbered
+1 to 9 down its side, the shipwreck, and inside it the palm tree, the cave in its rocks, the pond,
+the big rock, the parrot's tree, the jungle and the lighthouse. Crabs scuttle sideways out of her
+way, gulls wheel over, the surf runs up the beach, and Pip trots after her and sits when she stops.
+
+She walks freely at any time, as in the garden (`engine/motion/roam.ts`): the arrows or W, A, S and
+D walk her eight ways, speeding up and slowing down; a tap on the island sends her there round the
+pond, the rocks and the landmarks; a finger held on the field is followed. The coast is the edge of
+the ground, so she walks the dock to its end and never into the sea. Her shoe prints are left in the
+sand and fade. The arrow buttons are named North, South, West and East.
+
+The map is a parchment card in the top corner, and the clue's few words sit under it; the M key, the
+Map button or a tap on the card holds it up big with the clue written out, and a tap or the arrows
+put it away. One Action does what is in front of her, its icon and label following it: "Pick up
+spade", "Dig", "Open chest", "Read bottle", "Tie rope to palm tree", "Untie rope", "Take out spade",
+"Ask the parrot". A tap on Charlie does the Action too, and a tap on a chest, a bottle or the spade
+walks her to it and uses it. She carries one tool, the spade or the knotted rope, and the T key or
+the Swap tool button changes it. Dig opens the square she stands in, which is dashed round while she
+holds the spade: she steps beside the square's middle, three strokes throw up sand, and what was
+buried comes up: a chest, a bottle with the next clue, or on the free island a shell. A hole with
+nothing in it says how far off it is, kindly and in the clue's own terms ("Nothing here. This is 2
+north and 3 east from the palm tree. The map says 3 squares north, then 4 squares east."), and a
+square already dug is not dug again. Undo puts her back where the clue starts, for another count.
+
+The ten levels:
+
+1. Three north, four east: fetch the spade from the beach, start at the palm tree, walk 3 north and
+   4 east, and dig, grade 1.
+2. Round the pond: from the cave, 4 west and 3 north, with the pond in the way, so the count goes on
+   while she walks round it, grades 1 to 2.
+3. Dig at G7: a square named by its letter along the top and its number down the side, grade 2.
+4. A message in a bottle: dig at C8, and the bottle says "From where you dug this up, walk 3 north
+   and 5 east", grade 2.
+5. Follow the compass: from the lighthouse, 4 squares south-west, with a compass rose at her feet,
+   grades 2 to 3.
+6. Measure with the rope: tie the rope at the palm tree and walk it to the big rock, counting a knot
+   at every square, and dig that far north of the parrot's tree, on a map torn at the corner, grade 3.
+7. Three bottles: a square, then a walk from where the bottle came up, then a compass bearing from a
+   landmark, grade 3.
+8. The shortest way: 2 south and 5 east of the cave, where the star is for walking there straight
+   from the dock rather than by way of the cave, grades 3 to 4.
+9. Three treasures: three squares, in any order, grades 3 to 4.
+10. Treasure island: the free island, where the map shows three squares at a time and a new map
+    comes when they are found, shells are buried all over, and the coins, gems and shells found are
+    kept in the browser (`saves: { level }`).
+
+The previews fade by level. On the first two levels the map draws the way and the X, a dotted way is
+drawn on the island once she stands at the start, each square along the leg she is walking is
+counted out loud as a number rising beside her with a tick rising in pitch, and the count from the
+start ("3 north and 2 east") stands over her head. From the third level the count, or the square's
+name on the levels that name squares, still stands over her, and the map has no X. From the seventh
+nothing is shown but the map's words and the posts, and a wrong hole says only to count again.
+
+The principles are met this way. The hand sets amounts by degrees: she walks the squares herself,
+and the rope stretches knot by knot. A try costs nothing: a wrong hole is a hint, there is no limit
+on digging, and Undo starts the count again, so the game has no `ended`. The levels are places with
+obstacles of their own (the pond in the way, the rock on the diagonal, the jungle walked slowly, a
+torn map, a chain of bottles). The maths sits in the targets: counting squares, the compass's four
+and then eight points, grid squares named by letter and number, a distance measured and walked again
+elsewhere, paths of several legs, and the shortest way. The guide is the garden's
+(`engine/motion/guide.ts`): a step strip ("Get the spade", "Go to palm tree", "Walk 3 north", "Walk 4
+east", "Dig", "Open the chest"), each step ticked from the island as it stands; an arrow over the
+next thing, at once on the first level and after 8 quiet seconds on the others, which points at the
+next square along the leg rather than at the treasure, and on a named square at the post for its
+letter and then for its number; and Charlie's bubble, beside her when there is no room over her head.
+A landmark she walks behind is drawn faint so she is never lost behind the palm or the lighthouse.
+
+The squares, compass points and walks are `engine/motion/compass.ts`. Every level has three
+variations (`school/games/treasure-challenges.ts`) that change the landmark, the counts, the squares
+and the bearings, each leading to a square that can be stood by and dug. A hunter plays every
+variation through the real game by the keys, walking with held arrows and pressing the Action, and by
+a finger, tapping where to go, tapping Charlie to dig and tapping the chest, swapping to the rope and
+tying it where a level measures; the tests replay its acts to the same island. Walks, presses, drags
+and taps made at random won none of twelve tries on any level. A player who walks to a square chosen
+at random and digs it, again and again for a minute, digs about twelve holes and wins about one try
+in six on a level with one chest and none on the chained and three-chest levels, since one square in
+about ninety holds it; the hints after each hole make that the slow way.
+
+There is no card (`card: null`): the clue, the map and the walk from a landmark to the spot span most
+of the island, which a 360 by 240 card crops to a few squares. On a phone held upright the field
+follows her across 20 of the view's 30 squares (`portrait.keep`), and the map card sits far enough in
+from the corner to stay in the field. Under reduced motion a press walks her about a square and a tap
+walks her all the way, each drawn once at rest, and nothing bobs, swells or scuttles. The sounds are
+the game's own: a soft tick for each square counted, the spade biting sand, a knock on a lid, coins
+tumbling out of a chest and a cork out of a bottle, over the sea and the wind.
+
+Left out: a dig budget, which would make a wrong hole cost something; a "you are here" dot on the
+map, which would let a child find a square by watching the dot instead of reading the grid; and
+holding a finger to dig, since a tap on Charlie is one gesture and the hole is quick.
+
 ## Readouts never overlap (5 October 2026)
 
 The owner found the Bridge builder's measure of the gorge, "12 squares" over a dashed arrow, written over the picker of materials, and asked that no game show its readouts on top of each other. The words a game writes and the readouts it keeps in sight (the boards and sum signs, the pickers, the step strips, the counters, the measures, the map card) never overlap each other and never run off the field. `school/games/__tests__/field-layout.test.ts` guards it: it lays out every action game's frame as the GPU view does, at the start of every level and through six seconds of seeded play, on a desktop, a wide screen and a phone held upright (and a game that asks to be turned, with `portrait.hint`, on a phone held sideways as well, since a child may not turn it), and fails on two readouts that overlap or a fixed one off the field. A word written on its own board or a chip inside its strip is one readout, and a word in the world may pass under a readout as the view moves but not sit under one at a level's start. Pairs that overlap on purpose are listed in the test with the reason; there are none yet.

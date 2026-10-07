@@ -98,3 +98,30 @@ test("walking straight into the corner of something eases round it instead of st
     assert.ok(r.x > 12, `it stopped at ${r.x}`);
     assert.ok(!blockedAt(place, r, GAIT.radius));
 });
+
+test("on an island it never walks into the water, and a route keeps to the land round a bay", () => {
+    // a C of land round a bay that opens to the right
+    const land = [
+        { x: 1, y: 1 },
+        { x: 19, y: 1 },
+        { x: 19, y: 4 },
+        { x: 6, y: 4 },
+        { x: 6, y: 8 },
+        { x: 19, y: 8 },
+        { x: 19, y: 11 },
+        { x: 1, y: 11 },
+    ];
+    const place: Place = { w: 20, h: 12, blocked: [], land };
+    assert.ok(blockedAt(place, { x: 12, y: 6 }, GAIT.radius), "the bay is water");
+    assert.ok(!blockedAt(place, { x: 12, y: 2.5 }, GAIT.radius));
+    const r = roamer(15, 2.5);
+    for (let i = 0; i < 120; i++) stepRoam(r, { x: 0, y: 1 }, place, GAIT, DT);
+    assert.ok(r.y < 4 - GAIT.radius + 0.01, `it walked into the bay at ${r.y}`);
+    const way = route(place, r, { x: 15, y: 9.5 }, GAIT.radius);
+    assert.ok(way);
+    for (const p of way) assert.ok(!blockedAt(place, p, GAIT.radius), `${p.x}, ${p.y} is wet`);
+    assert.ok(walkTo(r, place, { x: 15, y: 9.5 }, GAIT));
+    let end = "";
+    for (let i = 0; i < 60 * 10 && end !== "arrived"; i++) end = stepRoam(r, null, place, GAIT, DT);
+    assert.ok(Math.hypot(r.x - 15, r.y - 9.5) < 0.1, `it ended at ${r.x}, ${r.y}`);
+});

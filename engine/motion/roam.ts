@@ -20,6 +20,8 @@ export interface Place {
     blocked: readonly Box[];
     /** What can be walked over, but a route goes round where it can. */
     soft?: readonly Box[];
+    /** The edge of the ground, round its outline in order, for a place such as an island with water all round. */
+    land?: readonly Pt[];
 }
 
 export interface Roamer {
@@ -85,10 +87,32 @@ function snap(v: Pt): Pt {
 const within = (b: Box, p: Pt, r: number): boolean =>
     p.x > b.x - r && p.x < b.x + b.w + r && p.y > b.y - r && p.y < b.y + b.h + r;
 
+/** Whether a point is inside an outline, and at least `margin` squares in from its edge. */
+export function onLand(land: readonly Pt[], p: Pt, margin = 0): boolean {
+    let inside = false;
+    let near = Infinity;
+    for (let i = 0, j = land.length - 1; i < land.length; j = i++) {
+        const a = land[i],
+            b = land[j];
+        if (!a || !b) continue;
+        if (a.y > p.y !== b.y > p.y && p.x < ((b.x - a.x) * (p.y - a.y)) / (b.y - a.y) + a.x)
+            inside = !inside;
+        const dx = b.x - a.x,
+            dy = b.y - a.y,
+            t = Math.max(
+                0,
+                Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / (dx * dx + dy * dy || 1)),
+            );
+        near = Math.min(near, Math.hypot(p.x - a.x - t * dx, p.y - a.y - t * dy));
+    }
+    return inside && near >= margin;
+}
+
 /** Whether feet at `p` would stand in something, or off the place. */
 export function blockedAt(place: Place, p: Pt, radius: number): boolean {
     if (p.x < radius || p.y < radius || p.x > place.w - radius || p.y > place.h - radius)
         return true;
+    if (place.land && !onLand(place.land, p, radius)) return true;
     return place.blocked.some((b) => within(b, p, radius));
 }
 
@@ -247,6 +271,29 @@ function heap() {
     };
 }
 
+/** The grid a route is found on, kept for a place that is the same object from one route to the next. */
+const grids = new WeakMap<Place, { radius: number; free: boolean[]; cost: number[] }>();
+
+function gridOf(
+    place: Place,
+    radius: number,
+    cols: number,
+    rows: number,
+    mid: (k: number) => Pt,
+): { free: boolean[]; cost: number[] } {
+    const kept = grids.get(place);
+    if (kept && kept.radius === radius) return kept;
+    const free: boolean[] = [];
+    const cost: number[] = [];
+    for (let k = 0; k < cols * rows; k++) {
+        const p = mid(k);
+        free.push(!blockedAt(place, p, radius));
+        cost.push(softAt(place, p) ? SOFT : 1);
+    }
+    grids.set(place, { radius, free, cost });
+    return { free, cost };
+}
+
 /**
  * The way from `from` to `to` as points to walk through, round what is in the way and round soft
  * ground where that is not much further. A `to` inside something ends at the nearest free point to it.
@@ -259,13 +306,7 @@ export function route(place: Place, from: Pt, to: Pt, radius: number): Pt[] | nu
         x: ((k % cols) + 0.5) * CELL,
         y: (Math.floor(k / cols) + 0.5) * CELL,
     });
-    const free: boolean[] = [];
-    const cost: number[] = [];
-    for (let k = 0; k < cols * rows; k++) {
-        const p = mid(k);
-        free.push(!blockedAt(place, p, radius));
-        cost.push(softAt(place, p) ? SOFT : 1);
-    }
+    const { free, cost } = gridOf(place, radius, cols, rows, mid);
     const cellOf = (p: Pt) =>
         Math.min(rows - 1, Math.max(0, Math.floor(p.y / CELL))) * cols +
         Math.min(cols - 1, Math.max(0, Math.floor(p.x / CELL)));

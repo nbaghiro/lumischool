@@ -140,6 +140,13 @@ import {
 import { FEED_LEVELS } from "./feedpup";
 import { isPegConfiguration, openPegConfiguration, pegChallenge } from "./pegs-challenges";
 import { isKnockConfiguration, knockChallenge, openKnockConfiguration } from "./knock-challenges";
+import {
+    isTreasureConfiguration,
+    levelFor as treasureLevelFor,
+    openTreasureConfiguration,
+    treasureCertified,
+    treasureChallenge,
+} from "./treasure-challenges";
 
 function identity(game: string, phase: number, value: unknown): string {
     const text = configurationKey(value);
@@ -746,8 +753,27 @@ const knock = family({
     open: (game, c, phase) => started(game, () => openKnockConfiguration(c), phase),
 });
 
+const treasure = family({
+    variation: {
+        method: "plan-and-hands-replay",
+        generate: treasureChallenge,
+        read: typed(isTreasureConfiguration),
+        solve: (c) => treasureCertified(c),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({ reasoning: phase < 2 ? 1 : phase < 6 ? 2 : 3, motor: 1 }),
+    open: (game, c, phase) => {
+        const L = treasureLevelFor(c);
+        return started(game, () => openTreasureConfiguration(c), phase, {
+            title: L.title,
+            goal: L.goal,
+        });
+    },
+});
+
 /** Every game whose levels have variations, by the game's id. */
 const VARIATIONS: Partial<Record<string, Variations>> = {
+    treasure,
     pegs,
     knock,
     machine,
