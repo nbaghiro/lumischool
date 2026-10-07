@@ -915,3 +915,15 @@ figure.site-fig figcaption {
         animation: none;
     }
 }
+
+.site-foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 20px;
+    margin-top: 12px;
+}
+/* a line of 44 px makes each link a full touch target */
+.site-foot-links a {
+    line-height: 44px;
+    color: var(--ink-soft);
+}

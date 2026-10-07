@@ -511,6 +511,7 @@ One Render web service serves one domain from one process: the marketing site, t
 | every other `/api/*` | The adults' routes | The session cookie only, or from the mobile app its bearer with `X-Lumi-Device`; the children's view cookie is ignored |
 | `/kids` and below | The children's view | None of its own; it calls only `/api/kid/*` |
 | `/home` | The site, for everyone, so a parent who is signed in can still open it from the logo | None; it asks `/api/me` once, as flow 13 says |
+| `/privacy`, `/terms`, `/support` and `/delete-account` | The site's written pages, for everyone, which the app stores link to by address (mobile.md, "Store submission") | None |
 | `/` | The children's view for a browser with a children's view cookie, whose session cookie, if it has one, is put away for that view; the grown-ups' app, which shows the family's page, for a browser with a session cookie and no view; and the site otherwise | As the app or the site it serves |
 | `/api/native/web` | The hand-off of the mobile app's session to its web view: `303` to the local path in `?to=`, setting the session and browser cookies, or only the browser cookie for a child's view | Only the app's headers, `Authorization` or `X-Kid-Session` with `X-Lumi-Device`; never a cookie |
 | `/.well-known/apple-app-site-association` and `/.well-known/assetlinks.json` | The files that let iOS and Android open `/join`, `/sign-in`, `/explore/*` and `/map` in the app, as JSON with an hour's cache and no redirect | None |

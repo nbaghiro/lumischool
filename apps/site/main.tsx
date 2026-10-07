@@ -9,4 +9,9 @@ import { render } from "solid-js/web";
 import { Page } from "./page";
 
 await fontsReady();
-render(() => <Page />, document.body);
+// the written pages come as their own chunk, so the site's first view carries none of their words
+const path = location.pathname;
+if (path === "/privacy" || path === "/terms" || path === "/support" || path === "/delete-account") {
+    const { Legal } = await import("./legal");
+    render(() => <Legal path={path} />, document.body);
+} else render(() => <Page />, document.body);

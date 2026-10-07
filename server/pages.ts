@@ -45,9 +45,12 @@ export function hasKidSession(cookie: string, secure: boolean): boolean {
     return carries(cookie, (secure ? COOKIES.secure : COOKIES.plain).kids);
 }
 
+/** The site's written pages, which the app stores ask for by address; `LEGAL` in apps/site/legal.tsx and apps/site/main.tsx hold the same paths. */
+const SITE_PAGES = new Set(["/privacy", "/terms", "/support", "/delete-account"]);
+
 /**
  * The app a page path belongs to (.docs/auth.md, "Hosts"): the children's view under `/kids`, the site
- * at `/home` for everyone, and the grown-ups' app everywhere else. `/` is the children's view for a
+ * at `/home` and at its written pages for everyone, and the grown-ups' app everywhere else. `/` is the children's view for a
  * browser that holds one, whose session, if it holds one too, is put away for that view; the
  * grown-ups' app for a browser with a session and no view; and the site for anyone else. Both are
  * only whether a cookie is there, so the API clears a cookie it refuses, and the next page a stale
@@ -55,7 +58,7 @@ export function hasKidSession(cookie: string, secure: boolean): boolean {
  */
 export function pageFor(path: string, held: { session: boolean; kids: boolean }): App {
     if (path === "/kids" || path.startsWith("/kids/")) return "kids";
-    if (path === "/home" || path === "/home/") return "site";
+    if (path === "/home" || path === "/home/" || SITE_PAGES.has(path)) return "site";
     if (path === "/") return held.kids ? "kids" : held.session ? "home" : "site";
     return "home";
 }

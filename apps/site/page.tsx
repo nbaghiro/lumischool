@@ -908,10 +908,7 @@ export function Page(): JSX.Element {
                 <Subjects sample={words()} />
                 <Start sample={words()} />
             </main>
-            <footer class="site-wrap site-foot">
-                <Mark href="/home" />
-                <p class="note">lumischool.ai · lessons for families teaching at home.</p>
-            </footer>
+            <Footer />
             <Show when={looking() !== null}>
                 <Overlay
                     at={looking()}
@@ -921,5 +918,21 @@ export function Page(): JSX.Element {
                 />
             </Show>
         </>
+    );
+}
+
+/** The site's foot, on the site's page and on each written one. */
+export function Footer(): JSX.Element {
+    return (
+        <footer class="site-wrap site-foot">
+            <Mark href="/home" />
+            <p class="note">lumischool.ai · lessons for families teaching at home.</p>
+            <nav class="site-foot-links" aria-label="About lumischool">
+                <a href="/privacy">Privacy</a>
+                <a href="/terms">Terms</a>
+                <a href="/support">Help and support</a>
+                <a href="/delete-account">Delete your account</a>
+            </nav>
+        </footer>
     );
 }

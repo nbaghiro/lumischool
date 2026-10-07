@@ -22,6 +22,13 @@ describe("the pages on the one origin", () => {
         assert.equal(pageFor("/homework", none), "home", "a path that only starts with /home");
     });
 
+    it("serves the privacy, terms, support and account deletion pages from the site to everyone", () => {
+        for (const path of ["/privacy", "/terms", "/support", "/delete-account"])
+            for (const held of [none, signedIn, kids])
+                assert.equal(pageFor(path, held), "site", path);
+        assert.equal(pageFor("/privacy/x", none), "home", "only the page itself");
+    });
+
     it("serves / as the site to a visitor, the family's page to a session, and the children's view to a browser that holds one", () => {
         assert.equal(pageFor("/", none), "site");
         assert.equal(pageFor("/", signedIn), "home");

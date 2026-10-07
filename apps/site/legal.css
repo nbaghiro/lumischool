@@ -1,0 +1,17 @@
+/* One column at a reading measure, loaded with the written pages rather than with the site. */
+.site-legal {
+    max-width: 760px;
+    padding-block: clamp(28px, 4vw, 56px) 24px;
+}
+.site-legal h2 {
+    font-size: var(--t-h3);
+    margin-top: 32px;
+}
+.site-legal p,
+.site-legal ul {
+    margin: 10px 0 0;
+}
+.site-legal-lead {
+    margin-top: 14px;
+    font-size: var(--t-lead);
+}
