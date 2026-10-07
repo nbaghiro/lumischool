@@ -652,6 +652,13 @@ position at a landing height, so a parcel cannot skip a narrow opening. Santa's 
 same stepping for live deliveries and preview dots, including future gust times. Roof response and
 which house needs a delivery remain game rules in `school/games/santa.ts`.
 
+## Stream drift and skittle collisions
+
+`engine/motion/current.ts` samples a stream's cross-channel speed, bends and rock wakes, then eases
+a floating body's velocity toward that current. Rock and bank contact redirects the body. Paper
+boat race uses the same functions for its live boats, current arrows and preview; numbered gates,
+race outcomes and completed reaches remain in the game.
+
 ### Responsive game composition
 
 `ActionGame.frame(state, rest, room)` receives the available field size in pixels, cached at resize.

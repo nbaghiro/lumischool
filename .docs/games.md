@@ -3550,6 +3550,32 @@ shared layout and compact phone tally. Reduced motion advances a quarter second 
 settles any released gift. This game is not offered inside a lesson card: a moving sleigh and its
 landing target need more room than a small embedded card. The rules revision is `-santa-1`.
 
+## Paper boat race and Pin bowling (7 October 2026)
+
+`paperboat` is a race across a stream against a plain paper boat. Choose a release point on the
+left bank, drag right for a stronger push and lift to launch. A diagonal drag adds a sideways
+push. Up/down choose the release point, left/right set the push, and Space launches. After release,
+up/down or a drag on the water steers the boat. Holding Space or Blow spends 1.5 seconds of wind
+per reach for a speed boost. Both boats use the same current; the rival starts in the faster middle
+and steers towards the target gate. Rocks and bank collisions cost speed. Back to bank
+retries the current reach without losing earlier successes. Each level has three reaches and three
+variations; the six levels count through gates in ones, twos, fives, tens, halves and threes.
+The target is a numbered finishing gate, reached before the rival. Arrows show the local current,
+a bank ruler measures the ten-metre course, and a failed attempt leaves a faint trail for comparison.
+The short preview shows the initial unsteered drift and is absent on the last level. The readout
+shows launch power, the race lead and remaining wind. Reduced motion advances a fifth of a second
+per input and then waits, keeping steering available; cancellation never launches. The river and reeds reuse shelf art.
+The rules revision is `-paperboat-2`.
+
+The paper boat course uses the shelf's winding `riverreach` with grassy banks, `parkhill`, trees,
+race bunting, reeds and flowers. Pairs of `mooringbuoy` floats mark the finishing gates. Charlie
+sits beside a spare boat on a picnic rug, waves during a race and cheers at the finish; ducks,
+a kingfisher and a gently moving dragonfly bring life to the banks. The mill level swaps its far
+bank tree for the shelf's waterwheel. Current arrows are sparse and thin, and the running boat
+leaves a faint wake. The scenery stays outside the playable channel and number readouts.
+New games are appended to the Games catalogue so familiar games keep their positions; Santa,
+Paper boat race and Pin bowling follow the previous games.
+
 Nutmeg also accepts a single tap on the tree or Shake for a complete short shake. Acorns scatter
 less on release, the first two levels pick them up from a slightly wider reach, and the doorway
 and automatic unloading are more forgiving. Carrying and the later counting puzzles retain their
