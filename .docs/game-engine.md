@@ -619,6 +619,7 @@ owner asked for is being built, and the game goes back to "to check" when it lan
 | Rescue pups | `rescue` | to check | frame rate with water and rope not yet measured |
 | Charlie's lemonade stand | `wardrobe` | to check | landing ring on the customer |
 | Clear round | `clear` | to check | the keys as before; a tap on the field lets the pony see its stride and choose its leap |
+| Marble pegs | `pegs` | to check | new; frame rate on a phone's WebKit not yet measured |
 
 ## Risks
 

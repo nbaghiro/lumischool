@@ -130,6 +130,7 @@ import {
     vary as varyFeed,
 } from "./feedpup-challenges";
 import { FEED_LEVELS } from "./feedpup";
+import { isPegConfiguration, openPegConfiguration, pegChallenge } from "./pegs-challenges";
 
 function identity(game: string, phase: number, value: unknown): string {
     const text = configurationKey(value);
@@ -691,8 +692,20 @@ const feedpup = family({
     },
 });
 
+const pegs = family({
+    variation: {
+        method: "aim-search-and-physics-replay",
+        generate: pegChallenge,
+        read: typed(isPegConfiguration),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({ reasoning: phase < 2 ? 1 : phase < 5 ? 2 : 3, motor: 2 }),
+    open: (game, c, phase) => started(game, () => openPegConfiguration(c), phase),
+});
+
 /** Every game whose levels have variations, by the game's id. */
 const VARIATIONS: Partial<Record<string, Variations>> = {
+    pegs,
     machine,
     bridgebuild,
     feedpup,
