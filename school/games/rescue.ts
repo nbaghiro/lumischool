@@ -1479,6 +1479,7 @@ function fireSprites(
         y: truckTop - 1.4,
         text: `Tank ${Math.floor(f.tank)} of ${L.tank} L`,
         size: 0.7,
+        phone: `Tank ${Math.floor(f.tank)}/${L.tank} L`,
     });
 }
 
@@ -1768,10 +1769,12 @@ function seaSprites(
             size: 1.8,
             z: 2,
         });
+        // swimmers a metre or two apart have their distances on two lines, so the figures do not run together
+        const near = sea.swimmers.some((o, j) => j !== i && Math.abs(o.x - sw.x) < 2.5);
         marks.push({
             kind: "word",
             x: sw.x,
-            y: SURFACE - 3.4,
+            y: SURFACE - 3.4 - (near && i % 2 === 1 ? 1.2 : 0),
             text: `${Math.round(sw.x - THROW.x)} m`,
             size: 0.6,
         });
@@ -2000,7 +2003,8 @@ function settling(s: RescueState): boolean {
 }
 
 export const rescueGame: ActionGame<RescueState> = {
-    portrait: { keep: 26 },
+    // the truck, the boat or the helicopter at the left and its label stay in sight with what it is sent to
+    portrait: { keep: 34 },
     id: "rescue",
     title: "Rescue pups",
     group: "action",

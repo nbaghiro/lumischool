@@ -534,6 +534,45 @@ export const MODE_AT: Record<Mode, Pt> = {
 export const BACK_AT: Pt = { x: 45.6, y: 1.9 };
 const BACK_R = 1.05;
 
+/**
+ * On a phone held upright the readouts are laid out in a view as narrow as `portrait.keep`: the
+ * switch at the top right with the way out under it, and the drawer's rooms, tabs and chips in rows,
+ * since one row of them runs past a phone's width at a size its names can be read at.
+ */
+const UP = { w: 26, h: H };
+const UP_DRAWER = { x: UP.w / 2, top: 14.7, w: 25, h: 12 };
+/** A room's card and a furniture chip are drawn this much bigger upright, so a price written at a phone's least size stays inside its card. */
+const UP_K = 4 / 3;
+const UP_SWITCH = { x: UP.w - 6.1, y: 1.9, w: 11 };
+const UP_BACK: Pt = { x: UP.w - 1.6, y: 4.6 };
+const UP_PITCH = 5.6;
+/** How far above the field's middle what is in play sits upright, in the view's squares: half the drawer, less the readouts' row at the top. */
+const UP_LIFT = 3.5;
+const UP_MODE_AT: Record<Mode, Pt> = {
+    build: { x: UP_SWITCH.x - (UP_SWITCH.w / 2 - SWITCH_INSET) / 2, y: UP_SWITCH.y },
+    decorate: { x: UP_SWITCH.x + (UP_SWITCH.w / 2 - SWITCH_INSET) / 2, y: UP_SWITCH.y },
+};
+/** The `i`th of `n` in rows of `per`, each row centred: its column from the middle and its row. */
+const inRows = (i: number, n: number, per: number): { col: number; row: number } => {
+    const row = Math.floor(i / per),
+        across = Math.min(per, n - row * per);
+    return { col: (i % per) - (across - 1) / 2, row };
+};
+const upTrayAt = (i: number): Pt => {
+    const { col, row } = inRows(i, ROOM_KINDS.length, 4);
+    return { x: UP_DRAWER.x + col * UP_PITCH, y: UP_DRAWER.top + 2.6 + row * 5.6 };
+};
+const upTabAt = (i: number): Pt => {
+    const { col, row } = inRows(i, TABS.length, 3);
+    return { x: UP_DRAWER.x + col * UP_PITCH, y: UP_DRAWER.top + 1.4 + row * 2.6 };
+};
+const upChipAt = (j: number, n: number): Pt => ({
+    x: UP_DRAWER.x + (j - (n - 1) / 2) * (CHIP * UP_K + CHIP_GAP),
+    y: UP_DRAWER.top + 7.8,
+});
+/** A room's name under its card on a phone held upright, where the drawer's rows are narrower. */
+const UP_NAME: Partial<Record<RoomKind, string>> = { living: "Living" };
+
 export type Mode = "build" | "decorate";
 
 export const TABS = ["sleep", "sit", "kitchen", "bath", "walls", "plants"] as const;
@@ -2293,7 +2332,9 @@ function houseSprites(
                 need.floor === slot.floor &&
                 need.w === slot.w;
             marks.push({ kind: "box", x: b.x, y: b.y, w: b.w, h: b.h, on: isNeed });
-            if (!h)
+            // one slot says what the dashed boxes are for, the job's own or the first, so the words of
+            // slots side by side never run into each other on a phone, where words keep a least size
+            if (!h && (isNeed || (need === undefined && i === 0)))
                 marks.push({
                     kind: "word",
                     x: b.x + b.w / 2,
@@ -2535,10 +2576,28 @@ function handSprites(s: DollState, sprites: Sprite[], marks: Mark[]): void {
         }
 }
 
+/** Where a fixed control sits on a phone held upright, from where it sits in the view, `at`. */
+function upOf(s: DollState, t: Target, at: Pt): Pt {
+    if (t.k === "tray") return upTrayAt(TRAY_KINDS.indexOf(t.kind));
+    if (t.k === "tab") return upTabAt(TABS.indexOf(t.tab));
+    if (t.k === "chip") {
+        const items = TAB_ITEMS[s.tab];
+        return upChipAt(Math.max(0, items.indexOf(t.item)), items.length);
+    }
+    if (t.k === "mode") return UP_MODE_AT[t.mode];
+    if (t.k === "back") return UP_BACK;
+    return at;
+}
+
 /** The fixed controls: the coins, the job's list, the switch, the button out of a room and the drawer. */
 function fixedSprites(s: DollState, rest: boolean, sprites: Sprite[], marks: Mark[]): void {
     const fixed = (sp: Sprite): Sprite => ({ ...sp, fixed: true, still: sp.still ?? false });
-    const word = (x: number, y: number, text: string, size: number): Mark => ({
+    const word = (
+        x: number,
+        y: number,
+        text: string,
+        size: number,
+    ): Extract<Mark, { kind: "word" }> => ({
         kind: "word",
         x,
         y,
@@ -2557,6 +2616,13 @@ function fixedSprites(s: DollState, rest: boolean, sprites: Sprite[], marks: Mar
             y: 1.9,
             size: 8,
             z: 40,
+            // upright the coins are written bigger, so the pill is longer and the coin further out
+            upright: {
+                x: 5.4,
+                y: 1.9,
+                size: 10,
+                params: { kind: "pill", tone: t?.on ? "mint" : "glow", on: false, w: 10, h: 2 },
+            },
         }),
         fixed({
             key: "coin",
@@ -2566,6 +2632,7 @@ function fixedSprites(s: DollState, rest: boolean, sprites: Sprite[], marks: Mar
             y: 1.9,
             size: 1.2,
             z: 41,
+            upright: { x: 1.25, y: 1.9 },
         }),
     );
     marks.push(word(6.1, 2.05, t ? `${t.spent} / ${t.of} coins` : `${left(s)} coins`, 0.6));
@@ -2582,9 +2649,16 @@ function fixedSprites(s: DollState, rest: boolean, sprites: Sprite[], marks: Mar
                 y: 3.4 + Math.ceil(ch) / 2,
                 size: 14,
                 z: 40,
+                // upright its lines are written bigger, so the card is wider
+                upright: {
+                    x: 9.5,
+                    y: 3.4 + Math.ceil(ch) / 2,
+                    size: 17,
+                    params: { kind: "card", tone: "sky", on: false, w: 17, h: Math.ceil(ch) },
+                },
             }),
         );
-        marks.push(word(8, 4.2, askWords(s.L.ask), 0.48));
+        marks.push({ ...word(8, 4.2, askWords(s.L.ask), 0.48), upright: { x: 9.5, y: 4.2 } });
         for (const [i, l] of ls.entries()) {
             const y = 5.3 + i * 1.15;
             sprites.push(
@@ -2596,9 +2670,13 @@ function fixedSprites(s: DollState, rest: boolean, sprites: Sprite[], marks: Mar
                     y,
                     size: 0.85,
                     z: 41,
+                    upright: { x: 2, y },
                 }),
             );
-            marks.push(word(8.6, y + 0.15, l.words, 0.45));
+            marks.push({
+                ...word(8.6, y + 0.15, l.words, 0.45),
+                upright: { x: 10.4, y: y + 0.15 },
+            });
         }
     }
     // the switch between building and decorating
@@ -2619,12 +2697,17 @@ function fixedSprites(s: DollState, rest: boolean, sprites: Sprite[], marks: Mar
             size: SWITCH.w,
             z: 40,
             live: s.knob > 0 && s.knob < 1,
+            upright: { x: UP_SWITCH.x, y: UP_SWITCH.y, size: UP_SWITCH.w },
         }),
     );
-    marks.push(
-        word(MODE_AT.build.x, MODE_AT.build.y + 0.2, "Build", 0.55),
-        word(MODE_AT.decorate.x, MODE_AT.decorate.y + 0.2, "Decorate", 0.55),
-    );
+    for (const [mode, text] of [
+        ["build", "Build"],
+        ["decorate", "Decorate"],
+    ] as const)
+        marks.push({
+            ...word(MODE_AT[mode].x, MODE_AT[mode].y + 0.2, text, 0.55),
+            upright: { x: UP_MODE_AT[mode].x, y: UP_MODE_AT[mode].y + 0.2 },
+        });
     // the way back out of a room
     if (s.zoom !== null)
         sprites.push(
@@ -2636,6 +2719,7 @@ function fixedSprites(s: DollState, rest: boolean, sprites: Sprite[], marks: Mar
                 y: BACK_AT.y,
                 size: BACK_R * 2,
                 z: 40,
+                upright: UP_BACK,
             }),
             fixed({
                 key: "backicon",
@@ -2645,10 +2729,13 @@ function fixedSprites(s: DollState, rest: boolean, sprites: Sprite[], marks: Mar
                 y: BACK_AT.y,
                 size: 1.2,
                 z: 41,
+                upright: UP_BACK,
             }),
         );
     // the drawer, sliding up after a change of mode or room
-    const dy = (rest ? 0 : 1 - s.slide) * (DRAWER.h + 0.5);
+    const away = rest ? 0 : 1 - s.slide;
+    const dy = away * (DRAWER.h + 0.5),
+        uy = away * (UP_DRAWER.h + 0.5);
     sprites.push(
         fixed({
             key: "drawer",
@@ -2658,12 +2745,28 @@ function fixedSprites(s: DollState, rest: boolean, sprites: Sprite[], marks: Mar
             y: DRAWER.top + DRAWER.h / 2 + dy,
             size: DRAWER.w,
             z: 38,
+            upright: {
+                x: UP_DRAWER.x,
+                y: UP_DRAWER.top + UP_DRAWER.h / 2 + uy,
+                size: UP_DRAWER.w,
+                params: {
+                    kind: "drawer",
+                    tone: "sky",
+                    on: false,
+                    w: UP_DRAWER.w,
+                    h: Math.round(UP_DRAWER.h),
+                },
+            },
         }),
     );
     if (s.mode === "build") {
         for (const [i, kind] of TRAY_KINDS.entries()) {
             const c = trayAt(i),
-                look = lookOf(kind);
+                u = upTrayAt(i),
+                look = lookOf(kind),
+                pw = Math.min(look.w, 4);
+            // the picture keeps to the card above its name and left of its price coin, a tall shed as well as a wide room
+            const across = Math.min(2.1, (1.8 * pw) / ROOM_H);
             sprites.push(
                 fixed({
                     key: `tray:${kind}`,
@@ -2673,31 +2776,49 @@ function fixedSprites(s: DollState, rest: boolean, sprites: Sprite[], marks: Mar
                     y: c.y + dy,
                     size: CARD,
                     z: 40,
+                    upright: { x: u.x, y: u.y + uy, size: CARD * UP_K },
                 }),
-                fixed(
-                    roomSprite(
-                        `traypic:${kind}`,
-                        { kind, w: Math.min(look.w, 4), paper: look.paper, tone: look.tone },
-                        c.x - 0.15,
-                        c.y + 0.05 + dy,
-                        2.3,
-                        41,
+                {
+                    ...fixed(
+                        roomSprite(
+                            `traypic:${kind}`,
+                            { kind, w: pw, paper: look.paper, tone: look.tone },
+                            c.x - 0.25,
+                            c.y + 0.05 + dy,
+                            across,
+                            41,
+                        ),
                     ),
-                ),
+                    upright: { x: u.x - 0.55, y: u.y - 0.25 + uy, size: across * UP_K },
+                },
             );
             marks.push(
-                word(c.x, c.y + CARD / 2 + 0.55 + dy, look.name, 0.45),
-                word(
-                    c.x + CARD / 2 - 0.5,
-                    c.y + CARD / 2 - 0.42 + dy,
-                    String(roomPrice(look.w)),
-                    0.42,
-                ),
+                {
+                    ...word(c.x, c.y + CARD / 2 + 0.55 + dy, look.name, 0.45),
+                    upright: {
+                        x: u.x,
+                        y: u.y + (CARD * UP_K) / 2 + 1.15 + uy,
+                        ...(UP_NAME[kind] ? { text: UP_NAME[kind] } : {}),
+                    },
+                },
+                {
+                    ...word(
+                        c.x + CARD / 2 - 0.5,
+                        c.y + CARD / 2 - 0.42 + dy,
+                        String(roomPrice(look.w)),
+                        0.42,
+                    ),
+                    upright: {
+                        x: u.x + (CARD * UP_K) / 2 - 0.55,
+                        y: u.y + (CARD * UP_K) / 2 - 0.45 + uy,
+                    },
+                },
             );
         }
     } else {
         for (const [i, tab] of TABS.entries()) {
-            const c = tabAt(i);
+            const c = tabAt(i),
+                u = upTabAt(i);
             sprites.push(
                 fixed({
                     key: `tab:${tab}`,
@@ -2707,15 +2828,29 @@ function fixedSprites(s: DollState, rest: boolean, sprites: Sprite[], marks: Mar
                     y: c.y + dy,
                     size: TAB.w,
                     z: 40,
+                    upright: { x: u.x, y: u.y + uy },
                 }),
             );
-            marks.push(word(c.x, c.y + 0.22 + dy, TAB_NAME[tab], 0.5));
+            marks.push({
+                ...word(c.x, c.y + 0.22 + dy, TAB_NAME[tab], 0.5),
+                upright: { x: u.x, y: u.y + 0.22 + uy },
+            });
         }
         const items = TAB_ITEMS[s.tab];
         for (const [j, index] of items.entries()) {
             const item = SHOP_ITEMS[index];
             if (!item) continue;
-            const c = chipAt(j, items.length);
+            const c = chipAt(j, items.length),
+                u = upChipAt(j, items.length);
+            // the chip's picture and price move with it, by the chip's own step
+            const up = (sp: Sprite): Sprite => ({
+                ...sp,
+                upright: {
+                    x: u.x + (sp.x - c.x) * UP_K,
+                    y: u.y + uy + (sp.y - c.y - dy) * UP_K,
+                    ...(sp.size === undefined ? {} : { size: sp.size * UP_K }),
+                },
+            });
             sprites.push(
                 fixed({
                     key: `chip:${index}`,
@@ -2725,69 +2860,95 @@ function fixedSprites(s: DollState, rest: boolean, sprites: Sprite[], marks: Mar
                     y: c.y + dy,
                     size: CHIP,
                     z: 40,
+                    upright: { x: u.x, y: u.y + uy, size: CHIP * UP_K },
                 }),
             );
             if (item.what === "thing") {
                 const z = sizeOf(item.kind),
                     k = Math.min(1.7 / z.w, 1.5 / z.h);
                 sprites.push(
-                    fixed(
-                        thingSprite(
-                            `chippic:${index}`,
-                            item.kind,
-                            item.kind === "bed" ? "berry" : item.kind === "sofa" ? "mint" : "sky",
-                            false,
-                            false,
-                            c.x,
-                            c.y - 0.05 + dy,
-                            z.w * k,
-                            41,
+                    up(
+                        fixed(
+                            thingSprite(
+                                `chippic:${index}`,
+                                item.kind,
+                                item.kind === "bed"
+                                    ? "berry"
+                                    : item.kind === "sofa"
+                                      ? "mint"
+                                      : "sky",
+                                false,
+                                false,
+                                c.x,
+                                c.y - 0.05 + dy,
+                                z.w * k,
+                                41,
+                            ),
                         ),
                     ),
                 );
             } else
                 sprites.push(
-                    fixed(
-                        roomSprite(
-                            `chippic:${index}`,
-                            {
-                                kind: "bedroom",
-                                w: 2,
-                                paper: item.paper,
-                                tone: SWATCH_TONE[item.paper],
-                                window: false,
-                            },
-                            c.x,
-                            c.y + dy,
-                            1.4,
-                            41,
+                    up(
+                        fixed(
+                            roomSprite(
+                                `chippic:${index}`,
+                                {
+                                    kind: "bedroom",
+                                    w: 2,
+                                    paper: item.paper,
+                                    tone: SWATCH_TONE[item.paper],
+                                    window: false,
+                                },
+                                c.x,
+                                c.y + dy,
+                                1.4,
+                                41,
+                            ),
                         ),
                     ),
                 );
-            marks.push(
-                word(
+            marks.push({
+                ...word(
                     c.x + CHIP / 2 - 0.35,
                     c.y + CHIP / 2 - 0.25 + dy,
                     String(item.what === "thing" ? PRICE[item.kind] : PAPER_PRICE),
                     0.42,
                 ),
-            );
+                upright: {
+                    x: u.x + (CHIP * UP_K) / 2 - 0.6,
+                    y: u.y + (CHIP * UP_K) / 2 - 0.45 + uy,
+                },
+            });
         }
     }
     // the keys' highlight on a fixed control
     const sel = targets(s)[s.sel];
     if (s.keyed && sel && isFixed(sel) && !s.hand) {
-        const at = viewOf(s, keyPoint(s, sel));
-        const size = sel.k === "tray" ? CARD + 0.7 : sel.k === "tab" ? TAB.w + 0.4 : CHIP + 0.6;
+        const at = viewOf(s, keyPoint(s, sel)),
+            u = upOf(s, sel, at);
+        const size = sel.k === "tray" ? CARD + 0.5 : sel.k === "tab" ? TAB.w + 0.4 : CHIP + 0.6;
+        // round a card the ring sits a little high, so it clears the card's name written under it
+        const lift = sel.k === "tray" ? 0.15 : 0;
         sprites.push(
             fixed({
                 key: "keyring",
                 art: "dollchip",
                 params: { kind: "ring", tone: "sky", on: false, w: 2, h: 2 },
                 x: at.x,
-                y: at.y + dy,
+                y: at.y + dy - lift,
                 size,
                 z: 42,
+                upright: {
+                    x: u.x,
+                    y: u.y + uy,
+                    size:
+                        sel.k === "tray"
+                            ? CARD * UP_K + 0.5
+                            : sel.k === "chip"
+                              ? CHIP * UP_K + 0.6
+                              : size,
+                },
             }),
         );
     }
@@ -2871,12 +3032,16 @@ function frame(s: DollState, rest = false): Frame {
         marks,
         camera: { x: lens.x, y: lens.y, zoom: lens.k },
         view: { w: W, h: H },
+        upright: UP,
         world: { ...WORLD },
-        focus: s.hand
-            ? { x: s.hand.at.x, y: s.hand.at.y }
-            : zb
-              ? { x: zb.x + zb.w / 2, y: zb.y + zb.h / 2 }
-              : { x: PLOT.x0 + PLOT.cols / 2, y: PLOT.ground - 4 },
+        // held upright the drawer takes the field's foot, so what is in play sits that much higher
+        focus: (({ x, y }: Pt) => ({ x, y: y + UP_LIFT / s.lens.k }))(
+            s.hand
+                ? s.hand.at
+                : zb
+                  ? { x: zb.x + zb.w / 2, y: zb.y + zb.h / 2 }
+                  : { x: PLOT.x0 + PLOT.cols / 2, y: PLOT.ground - 4 },
+        ),
         lights,
         time: rest ? 0 : s.steps * DT,
     };
@@ -3050,7 +3215,7 @@ export const dollhouseGame: ActionGame<DollState> = {
     group: "action",
     // the house, the switch and the drawer fill a wide field and play by dragging between them, which a small card crops
     card: null,
-    portrait: { hint: true },
+    portrait: { keep: UP.w, hint: true },
     quiet: true,
     touch: true,
     intents: true,

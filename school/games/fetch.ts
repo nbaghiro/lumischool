@@ -1238,7 +1238,8 @@ function frame(s: FetchState, rest = false): Frame {
             b: { x, y: y + (m % 5 === 0 ? 0.3 : 0.1) },
             style: "thin",
         });
-        if (m % (L.length > 20 && m % 5 !== 0 ? 2 : 1) === 0)
+        // past 9 only the fives are written, since two figures a metre apart run together on a phone's squares
+        if (m % 5 === 0 || (m < 10 && (L.length <= 20 || m % 2 === 0)))
             marks.push({
                 kind: "word",
                 x,

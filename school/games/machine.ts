@@ -1619,20 +1619,26 @@ function frame(s: MachineState): Frame {
                 size: (sp.size ?? 1) * (t.kind === "ramp" || t.kind === "long" ? 0.6 : 0.75),
                 z: 8,
             });
-        const words = [
-            t.kind === "row" ? `${base.n} dominoes` : "",
-            s.L.budget !== undefined
-                ? `${t.kind === "row" ? "1 coin each" : `${PRICE[t.kind]} coins`}`
-                : "",
-        ].filter(Boolean);
-        if (words.length)
+        // the count and the price on lines of their own; a phone, where words keep a least size, has
+        // room under a slot only for the numbers, on one line
+        const lines: { text: string; phone: string }[] = [];
+        if (t.kind === "row") lines.push({ text: `${base.n} dominoes`, phone: String(base.n) });
+        if (s.L.budget !== undefined)
+            lines.push(
+                t.kind === "row"
+                    ? { text: "1 coin each", phone: `${base.n}, 1 each` }
+                    : { text: `${PRICE[t.kind]} coins`, phone: String(PRICE[t.kind]) },
+            );
+        lines.forEach((l, k) =>
             marks.push({
                 kind: "word",
                 x: slot.x,
-                y: DRAWER.y1 - 0.5,
-                text: words.join(", "),
+                y: DRAWER.y1 - 0.2 - (lines.length - 1 - k) * 1.3,
+                text: l.text,
                 size: 0.5,
-            });
+                phone: lines.length > 1 && k === 0 ? "" : l.phone,
+            }),
+        );
         if (s.keys && t.id === s.selected && s.phase === "build")
             marks.push({
                 kind: "box",

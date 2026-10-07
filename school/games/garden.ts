@@ -2064,7 +2064,7 @@ export function frame(s: GardenState, rest = false): Frame {
                 kind: "word",
                 x: b.x + (b.cols * b.cell) / 2,
                 y: b.y + b.rows * b.cell + 0.8,
-                text: `${b.today.toFixed(1)} of ${L.ask.litres} litres today`,
+                text: `${b.today.toFixed(1)} of ${L.ask.litres} L today`,
                 size: 0.7,
             });
         else if (L.preview >= 1) {
@@ -2294,61 +2294,65 @@ const STRIP_LETTER = 0.21;
 function guide(s: GardenState, rest: boolean, sprites: Sprite[], marks: Mark[]): void {
     const steps = stepsOf(s);
     const now = currentOf(steps);
-    // the strip of steps between the hedges and the beds, fixed to the view, the step to do lit
-    const items = steps.map((st, i) => {
-        const text = `${i + 1} ${st.label}`;
-        return { st, text, w: 1.1 + text.length * STRIP_LETTER + 0.9 };
-    });
-    const across = items.reduce((a, it) => a + it.w, 0) + 1;
+    // the strip of steps across the top of the view, above the hedges, so it never stands over
+    // Charlie at a bed: a ticked circle per step and only the step to do written out, so it fits a
+    // phone held upright as well as a desk, where five written steps ran into each other
+    const doing = steps[now];
+    const label = s.won || !doing ? "All done!" : `${now + 1} ${doing.label}`;
+    // the step to do is written under the circles, not beside them: on a phone its words are held
+    // at a size the strip's squares do not grow with, so beside them it ran over the circles
+    const dot = 1.2,
+        dots = steps.length * dot,
+        words = label.length * STRIP_LETTER,
+        across = Math.max(dots, words) + 1.5;
     // the card draws inside its box, so it is a little wider than what it holds
     const cardW = Math.min(36, Math.ceil(across + 2));
     const fx = WORLD.w / 2,
-        fy = 7.2;
+        fy = 1.2;
     sprites.push({
         key: "steps",
         art: "dollchip",
-        params: { kind: "card", tone: "sky", on: false, w: cardW, h: 2 },
+        params: { kind: "card", tone: "sky", on: false, w: cardW, h: 4 },
         x: fx,
-        y: fy,
+        y: fy + 0.8,
         size: cardW,
         fixed: true,
         z: 70,
     });
-    let x = fx - across / 2 + 0.5;
-    for (const [i, it] of items.entries()) {
-        if (i === now && !s.won) {
-            const pillW = Math.max(2, Math.ceil((it.w - 0.4) / 0.75));
+    let x = fx - dots / 2;
+    for (const [i, st] of steps.entries()) {
+        if (i === now && !s.won)
             sprites.push({
                 key: "steps:now",
                 art: "dollchip",
-                params: { kind: "pill", tone: "glow", on: false, w: pillW, h: 2 },
-                x: x + (it.w - 0.4) / 2,
+                params: { kind: "ring", tone: "glow", on: true, w: 2, h: 2 },
+                x: x + dot / 2,
                 y: fy,
-                size: pillW * 0.75,
+                size: 1.1,
                 fixed: true,
                 z: 71,
             });
-        }
         sprites.push({
             key: `steps:tick:${i}`,
             art: "dollchip",
-            params: { kind: "tick", tone: "mint", on: it.st.done, w: 2, h: 2 },
-            x: x + 0.55,
+            params: { kind: "tick", tone: "mint", on: st.done, w: 2, h: 2 },
+            x: x + dot / 2,
             y: fy,
             size: 0.8,
             fixed: true,
             z: 72,
         });
-        marks.push({
-            kind: "word",
-            x: x + 1.1 + (it.text.length * STRIP_LETTER) / 2,
-            y: fy + 0.15,
-            text: it.text,
-            size: 0.45,
-            fixed: true,
-        });
-        x += it.w;
+        x += dot;
     }
+    // low enough in the card that a phone's least size for a word keeps it under the circles
+    marks.push({
+        kind: "word",
+        x: fx,
+        y: fy + 1.6,
+        text: label,
+        size: 0.45,
+        fixed: true,
+    });
     if (s.won) return;
     // the arrow over what the step to do needs, at once on the first level and after a wait on later ones
     const idle = s.steps - s.guideAt;
@@ -2381,12 +2385,21 @@ function guide(s: GardenState, rest: boolean, sprites: Sprite[], marks: Mark[]):
     const w = width * k,
         h = (lines.length * 2 + 2) * k;
     const me = s.me;
+    // over her head when there is room under the step strip, otherwise beside her at head height
+    const above = me.y - 4.2 - h / 2 >= h / 2 + 2.6;
+    const right = me.x + 1.2 + w <= WORLD.w - 0.3;
+    const at = above
+        ? { x: Math.max(w / 2 + 0.3, Math.min(WORLD.w - w / 2 - 0.3, me.x)), y: me.y - 4.2 - h / 2 }
+        : {
+              x: right ? me.x + 1.2 + w / 2 : me.x - 1.2 - w / 2,
+              y: Math.max(h / 2 + 2.6, me.y - 2.6),
+          };
     sprites.push({
         key: "say",
         art: "bubble",
         params: { lines, width, tail: null },
-        x: Math.max(w / 2 + 0.3, Math.min(WORLD.w - w / 2 - 0.3, me.x)),
-        y: Math.max(h / 2 + 0.3, me.y - 3.6 - h / 2),
+        x: at.x,
+        y: at.y,
         size: w,
         live: true,
         z: 75,

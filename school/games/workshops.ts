@@ -66,13 +66,21 @@ const sprite = (
     h: number,
     angle = 0,
 ): Sprite => ({ key, art: "workshop-piece", params: { kind, w, h }, x, y, size: w, angle });
-const words = (x: number, y: number, text: string): Mark => ({
+const words = (x: number, y: number, text: string, phone?: string): Mark => ({
     kind: "word",
     x,
     y,
     text,
     size: 0.7,
+    ...(phone === undefined ? {} : { phone }),
 });
+
+/** The cargo goals said shorter on a phone, where their words keep a least size and the full ones run into each other. */
+const GOAL_PHONE: Record<string, string> = {
+    loaded: "All aboard",
+    balanced: "Balanced",
+    delivered: "Delivered",
+};
 
 export interface WorkshopLevel extends ActionLevel {
     pieces: Piece[];
@@ -717,17 +725,16 @@ export function workshopFrame(s: WorkshopState): Frame {
     // the mast stands up from the barge's middle and leans as the barge lists
     marks.push(
         words(MOOR, 6, `${balance.loaded}/${s.objects.size} aboard`),
-        words(
-            MOOR,
-            8,
+        // a phone keeps words at a least size, and the long ones are said shorter so they stay on the field
+        ...[
             balance.loaded === 0
-                ? "Load the boat"
+                ? ["Load the boat", "Load the boat"]
                 : Math.abs(balance.moment) < balancedWithin(s)
-                  ? "Weight balanced"
+                  ? ["Weight balanced", "Balanced"]
                   : balance.moment < 0
-                    ? "More weight on the left"
-                    : "More weight on the right",
-        ),
+                    ? ["More weight on the left", "Left is heavy"]
+                    : ["More weight on the right", "Right is heavy"],
+        ].map(([text = "", phone]) => words(MOOR, 8, text, phone)),
         {
             kind: "line",
             a: { x: bx - up.x * 2, y: barge.y - up.y * 2 },
@@ -737,19 +744,30 @@ export function workshopFrame(s: WorkshopState): Frame {
     );
     // the three goals along the foot, each ticked as it is met
     for (const [k, g] of s.goals.definitions.entries()) {
-        const x = 9 + k * 12,
+        const x = 8 + k * 11.5,
             done = s.goals.done.includes(g.id);
         marks.push(
-            // just before the words, which are about three tenths of a square a letter at this size
+            // just before the words, which are about three tenths of a square a letter at this size, and
+            // about seven tenths of one in the shorter words a phone writes at its least size
             {
                 kind: "ring",
-                x: x - g.label.length * 0.16 - 0.9,
+                x:
+                    x -
+                    Math.max(g.label.length * 0.16, (GOAL_PHONE[g.id] ?? g.label).length * 0.36) -
+                    0.9,
                 y: 25.8,
                 r: 0.45,
                 on: done,
                 solid: true,
             },
-            { kind: "word", x, y: 26, text: `${done ? "✓ " : ""}${g.label}`, size: 0.6 },
+            {
+                kind: "word",
+                x,
+                y: 26,
+                text: `${done ? "✓ " : ""}${g.label}`,
+                size: 0.6,
+                phone: `${done ? "✓ " : ""}${GOAL_PHONE[g.id] ?? g.label}`,
+            },
         );
     }
     return {
@@ -779,7 +797,8 @@ function cargoFocus(s: WorkshopState): number {
 }
 
 export const cargoGame: ActionGame<WorkshopState> = {
-    portrait: { keep: 30, hint: true },
+    // the quay's crates and the moored boat both in sight, at squares a crate can still be held by
+    portrait: { keep: 34, hint: true },
     id: "cargo-workshop",
     title: "Harbour cargo",
     group: "action",

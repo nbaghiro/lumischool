@@ -798,9 +798,10 @@ export function poolFrame(s: PoolState, rest = false): Frame {
         widthOf = (text: string, size: number) => text.length * size * 0.5,
         tally = tallyWords(s),
         ask = askWords(L.ask),
-        // a sign under a middle pocket stands in the band, so the target keeps to the right of it
+        // a sign under a middle pocket stands in the band, so the target goes on a line of its own under
+        // it, where a phone's least size for a word cannot run it into the sign
         signBelow = s.table.pockets.some((p) => p.only && p.y >= s.at.y + L.h / 2),
-        askSize = signBelow ? Math.min(0.85, (L.w / 2 - 3) / (ask.length * 0.5)) : 0.85;
+        askY = signBelow ? under + 1.9 : under;
     marks.push(
         {
             kind: "word",
@@ -816,10 +817,10 @@ export function poolFrame(s: PoolState, rest = false): Frame {
         },
         {
             kind: "word",
-            x: s.at.x + L.w - widthOf(ask, askSize) / 2,
-            y: under,
+            x: s.at.x + L.w - widthOf(ask, 0.85) / 2,
+            y: askY,
             text: ask,
-            size: askSize,
+            size: 0.85,
         },
     );
     if (ready && L.ask.kind === "sum" && L.ask.shots) {
@@ -827,7 +828,7 @@ export function poolFrame(s: PoolState, rest = false): Frame {
         marks.push({
             kind: "word",
             x: s.at.x + L.w - widthOf(shot, 0.55) / 2,
-            y: under + 1.2,
+            y: askY + 1.2,
             text: shot,
             size: 0.55,
         });

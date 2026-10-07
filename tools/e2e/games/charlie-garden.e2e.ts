@@ -181,3 +181,26 @@ test("charlie's garden by taps: a tap sends her to a thing, a drag plants the ro
     await expect(page.locator(".game-toolbar .game-finished")).toBeVisible({ timeout: 15000 });
     expect(errors).toEqual([]);
 });
+
+test("charlie's garden opens on its first step with the arrow on the seeds, and the sundial waits for something planted", async ({
+    page,
+}, info) => {
+    test.skip(info.project.name !== "desktop", "one check of the guide, on the desktop");
+    const errors: string[] = [];
+    const { toScreen } = await open(page, errors);
+    await expect(reads(page)).toContainText("Day 1.");
+    await expect(reads(page)).toContainText("Step 1 of 5: Get carrot seeds.");
+    await expect(reads(page)).toContainText("The arrow points at the carrot seeds.");
+    await expect(page.locator('.field-probe [data-key="steps:now"]')).toBeAttached();
+
+    // a tap on the sundial with nothing planted says so, and no day passes
+    const dial = toScreen(DIAL.x, DIAL.y);
+    await page.mouse.click(dial.x, dial.y);
+    await expect(page.locator(".game-feedback-live")).toContainText("Plant something first", {
+        timeout: 8000,
+    });
+    await page.waitForTimeout(400);
+    await expect(reads(page)).toContainText("Day 1.");
+    await expect(reads(page)).not.toContainText("Day 2.");
+    expect(errors).toEqual([]);
+});

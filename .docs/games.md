@@ -661,6 +661,39 @@ Some things were left out. A
 hose was considered for the hilly level and not drawn; the can does the same job. Planting by
 holding the packet and dropping seeds one at a time was set aside for the stretch, which keeps the
 array the thing the child makes.
+### Charlie's garden: the guide (5 October 2026)
+
+The owner could not tell how to play the garden as an adult: a screenshot showed Day 25 with nothing
+planted, because nothing on the board said what to do first. Four things now say it.
+
+A step strip runs across the top of the view, above the hedges: "1 Get carrot seeds", "2 Plant 5 in a
+row", "3 Water", "4 Grow", "5 Pick", and "Share" on the levels that share. The step to do sits in a
+yellow pill and a step done gets a tick. Each tick is read from the garden as it stands rather than
+kept as a script, so the water step lights up again when a bed dries overnight. The strip sat between
+the hedges and the beds at first; it moved to the top because there it stood over Charlie whenever she
+worked the near side of a bed.
+
+An arrow bobs over what the step to do needs next: the seed packet, the bed, the can, the sundial, the
+basket, a ripe plant or a crate, and a weed or a snail before any of them. It is always on in the first
+level and comes after 8 seconds with no progress on the others, and under reduced motion it stands
+still. The description for a screen reader carries the same: "Step 1 of 5: Get carrot seeds." and "The
+arrow points at the carrot seeds."
+
+Charlie says things in a bubble. On the first visit she explains the controls once ("Walk with the
+arrows or tap where to go. Press Space or the big button to use what is in front of you."), and the
+bubble goes at the first action. After 8 quiet seconds, or when the Action has nothing to use, she
+says the next step in a short sentence, and the note in the top bar always says it too. The bubble
+stands over her head where there is room under the strip, and beside her at head height where there
+is not, so it never covers her.
+
+The sundial refuses a day when nothing is planted: "Plant something first: nothing will grow yet."
+Letting the day pass would only repeat the confusion in the screenshot, an empty bed and a counting
+calendar, so the kinder answer is to say what to do and stay on the same day. On the first three
+levels a dry bed gets a warning first, and a second tap waits anyway; on later levels the day passes
+and the night's own sentence says why nothing grew. The logic is `engine/motion/guide.ts`, which reads
+a list of steps and a game's state and says which step is current, where the arrow points and how it
+bobs, so another game can use it.
+
 
 ## Pinball garden (4 October 2026)
 
