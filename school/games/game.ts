@@ -143,6 +143,8 @@ export interface ActionGame<S> extends Base {
     restore?(s: S, value: unknown): boolean;
     /** The level whose design the page keeps in the browser between visits, through `checkpoint` and `restore`: a house built is there to come back to. */
     saves?: { level: number };
+    /** Again on a round's card starts the next try from the design as it stood, through `checkpoint` and `restore`, rather than from the level's opening. */
+    againKeeps?: true;
     /** The buttons under the field: what each arrow it uses is called here, and the big buttons. Every one has a key. */
     controls: {
         arrows?: Partial<Record<Dir, string>>;
@@ -172,7 +174,8 @@ export interface ActionGame<S> extends Base {
      */
     ended?(s: S): RoundEnd | null;
     objectives?(s: S): { completed: number; total: number };
-    frame(s: S, rest?: boolean): Frame;
+    /** Available room is in pixels; a responsive frame may project logical coordinates for display. */
+    frame(s: S, rest?: boolean, room?: { w: number; h: number }): Frame;
     /** Where a pull starts, in squares, when there is something to pull: the ball in the sling. */
     pullFrom?(s: S): Pt | null;
     /**

@@ -250,7 +250,7 @@ export class StillView implements FieldView {
                     cx: p.x,
                     cy: p.y,
                     r: 0.13,
-                    style: "fill: var(--pen)",
+                    style: `fill: var(--${m.tone ?? "pen"})`,
                     opacity: m.faint ? 0.3 : (m.opacity ?? 1),
                 }),
             );
@@ -286,10 +286,18 @@ export class StillView implements FieldView {
             return out;
         }
         if (m.kind === "ring" || m.kind === "box") {
-            const name = m.on ? "on" : m.kind === "ring" && m.solid ? "solid" : "ring";
-            const shape = m.on
-                ? stroke(name, { "fill-opacity": 0.28 }, "var(--glow)")
-                : stroke(name);
+            const tone = m.tone;
+            const card = m.kind === "box" && m.card;
+            const name =
+                tone ??
+                (card ? "rod" : m.on ? "on" : m.kind === "ring" && m.solid ? "solid" : "ring");
+            const shape = tone
+                ? stroke(name, { "fill-opacity": m.kind === "box" ? 0.6 : 0.22 }, `var(--${tone})`)
+                : card
+                  ? stroke(name, {}, "var(--card)")
+                  : m.on
+                    ? stroke(name, { "fill-opacity": 0.28 }, "var(--glow)")
+                    : stroke(name);
             if (m.kind === "ring") return [el("circle", { cx: m.x, cy: m.y, r: m.r, ...shape })];
             const r = Math.min(0.3, m.w / 2, m.h / 2);
             return [el("rect", { x: m.x, y: m.y, width: m.w, height: m.h, rx: r, ...shape })];

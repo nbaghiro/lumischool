@@ -7,6 +7,7 @@ import {
     keepInside,
     lead,
     portrait,
+    readoutLayout,
     seen,
     uprightSquare,
     cardSquare,
@@ -95,4 +96,57 @@ test("a card shows `keep` squares across, cropping height as well, and never les
     assert.equal(cardSquare({ w: 42, h: 27 }, card, 30), 12);
     // a view smaller than keep is shown whole
     assert.equal(cardSquare({ w: 24, h: 13 }, card, 30), 15);
+});
+
+test("a row of readouts keeps its spacing on a narrow field, each third to its own edge, and a finger finds it again", () => {
+    const authored = { w: 36, h: 20 },
+        shown = { w: 20, h: 30 };
+    const seats = [0, 1, 2, 3].map((i) => ({ key: `seat:${i}`, x: 2 + i, y: 3, w: 0.9, h: 0.9 }));
+    const layout = readoutLayout(
+        [...seats, { key: "battery", x: 34, y: 2, w: 2, h: 1 }],
+        authored,
+        shown,
+    );
+    const xs = seats.map((s) => layout.at(s).x);
+    assert.deepEqual(xs, [2, 3, 4, 5]);
+    assert.equal(layout.at({ key: "battery", x: 34, y: 2 }).x, 18);
+    assert.deepEqual(layout.from({ x: 18, y: layout.at({ key: "battery", x: 34, y: 2 }).y }), {
+        x: 34,
+        y: 2,
+    });
+});
+
+test("on a wide field a group keeps its share of it as a whole, and a word written in it goes with it", () => {
+    const layout = readoutLayout(
+        [
+            { key: "counter", x: 4, y: 1, w: 6, h: 2 },
+            { key: "coin", x: 1, y: 1, w: 1, h: 1 },
+            { x: 4, y: 1.2, size: 0.6, text: "20 coins" },
+        ],
+        { w: 36, h: 20 },
+        { w: 54, h: 20 },
+    );
+    const counter = layout.at({ key: "counter", x: 4, y: 1 }),
+        coin = layout.at({ key: "coin", x: 1, y: 1 }),
+        words = layout.at({ x: 4, y: 1.2 });
+    assert.equal(counter.x - coin.x, 3);
+    assert.equal(words.x, counter.x);
+});
+
+test("a board whose words a phone holds at a larger size grows to hold them, and a group it lands on is stacked under", () => {
+    const layout = readoutLayout(
+        [
+            { key: "strip", x: 12, y: 1.5, w: 6, h: 3 },
+            { x: 12, y: 2, size: 0.4, text: "1 Tie the rope at the palm tree" },
+            { key: "map", x: 19, y: 2.5, w: 5, h: 4 },
+        ],
+        { w: 24, h: 20 },
+        { w: 20, h: 34 },
+        1,
+    );
+    const strip = layout.at({ key: "strip", x: 12, y: 1.5 }),
+        map = layout.at({ key: "map", x: 19, y: 2.5 });
+    assert.ok(strip.k > 2, `the strip grows ${strip.k} times`);
+    assert.equal(map.k, 1);
+    assert.ok(strip.y - 1.5 * strip.k >= map.y + 2, "the strip goes under the map");
 });

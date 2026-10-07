@@ -3,11 +3,27 @@
 // `probe=1` in the address a hidden copy of every sprite's box stays in the page for the tests that
 // find sprites by key. See .docs/game-engine.md.
 import { ageOf, burst, bursts, stepBursts, type Bursts, type Style } from "../motion/burst";
-import { cardSquare, keepInside, portrait, uprightSquare } from "../motion/camera";
+import {
+    cardSquare,
+    keepInside,
+    LETTER,
+    portrait,
+    readoutLayout,
+    uprightSquare,
+} from "../motion/camera";
 import { HALO, lightsOf } from "../motion/lights";
-import type { BurstKind, Frame, Mark, Pool, Sprite, Water } from "../motion/scene";
+import {
+    heldUpright,
+    type BurstKind,
+    type Frame,
+    type Mark,
+    type Pool,
+    type Sprite,
+    type Water,
+} from "../motion/scene";
 import { ripplesOf, WAVES } from "../motion/surface";
 import type { Pt } from "../motion/geometry";
+import { unprojectPoint } from "../motion/presentation";
 import type { TokenName, Tokens } from "../paper";
 import type { Drawing } from "../parts/drawing";
 import { GameAtlas, type LookSpec, type Placed } from "./game-atlas";
@@ -147,6 +163,7 @@ export const STROKES: Record<string, Ink> = {
     ring: { colour: "pen", width: 0.125, dash: [0.45, 0.35], alpha: 0.6, round: false },
     solid: { colour: "pen", width: 0.125, dash: [], alpha: 0.5, round: false },
     on: { colour: "pen", width: 0.175, dash: [], alpha: 1, round: false },
+    ok: { colour: "ok", width: 0.175, dash: [], alpha: 1, round: false },
     puff: { colour: "ink-soft", width: 0.075, dash: [], alpha: 1, round: false },
 };
 
@@ -205,6 +222,12 @@ export class GameView implements FieldView {
     private view = { w: 36, h: 20 };
     /** The view the game drew for, which the field shows whole inside `view`. */
     private authored = { w: 36, h: 20 };
+    /** Where the last frame's readouts sit on the field, and the way back for a finger on one. */
+    private readouts = readoutLayout([], this.authored, this.authored);
+    /** Back from a fixed place in the frame's `upright` view to the view the game reads a finger in, for a frame laid out upright. */
+    private unturn: (p: Pt) => Pt = (p) => p;
+    /** The boxes the frame's readouts cover, in the field's squares, which a word in the world goes under. */
+    private covers: { x0: number; x1: number; y0: number; y1: number }[] = [];
     private seen: "side" | "above" = "side";
     /** Narrower than the view, as on a phone held upright: the camera follows the focus, eased from `follow`. */
     private upright = false;
@@ -423,8 +446,10 @@ export class GameView implements FieldView {
         return found ?? (s.key ? (this.last.get(s.key) ?? null) : null);
     }
 
-    draw(f: Frame, dt: number): void {
+    draw(given: Frame, dt: number): void {
         const t0 = performance.now();
+        // held upright, a frame that offers an upright layout for its readouts is drawn with it
+        const f = this.upright && given.upright ? heldUpright(given) : given;
         this.frames++;
         this.atRest = dt === 0;
         this.atlas.tick();
@@ -433,6 +458,37 @@ export class GameView implements FieldView {
         const tokens = this.tokens;
         const still = this.o.still();
         const zoom = f.camera.zoom ?? 1;
+        this.covers = [];
+        this.readouts = readoutLayout(
+            [
+                ...f.sprites.flatMap((s) => {
+                    if (!s.fixed) return [];
+                    const had = this.look(s, this.sq * this.density, false),
+                        grow = s.scale ?? 1;
+                    const w = (had?.w ?? s.size ?? 1) * grow,
+                        h = (had?.h ?? s.size ?? 1) * grow;
+                    return [{ key: s.key, x: s.x, y: s.y, w, h, stand: s.stand }];
+                }),
+                ...f.marks.flatMap((m) =>
+                    m.kind === "word" && m.fixed
+                        ? [
+                              {
+                                  x: m.x,
+                                  y: m.y,
+                                  size: m.size,
+                                  text: this.phone && m.phone !== undefined ? m.phone : m.text,
+                              },
+                          ]
+                        : [],
+                ),
+            ],
+            f === given ? this.authored : (given.upright ?? this.authored),
+            this.view,
+            // the least a word is read at on a phone, so a board grows to hold its words at that size
+            this.phone ? 14 / this.sq : 0,
+        );
+        this.unturn = f === given ? (p) => p : this.unturning(given);
+
         let aim: { x: number; y: number } = f.camera;
         if (this.upright) {
             // a field narrower than the view eases after the thing in play, and jumps to it at rest
@@ -440,13 +496,15 @@ export class GameView implements FieldView {
                 from = this.follow,
                 k = 1 - Math.exp(-dt * 5);
             this.follow =
-                from && this.touching
+                from && this.touching && !f.chase
                     ? from
                     : from && dt > 0
                       ? { x: from.x + (to.x - from.x) * k, y: from.y + (to.y - from.y) * k }
                       : { x: to.x, y: to.y };
             aim = this.follow;
         }
+        // a world may grow as a round goes on, as Feed the pup's does to lift its field over the end card
+        if (f.world.w !== this.size.w || f.world.h !== this.size.h) this.size = { ...f.world };
         // the camera stays inside the world; across a world smaller than the field the game's own framing
         // holds, and down one a side-on scene stands on the field's foot
         const kept = keepInside(aim, this.view, this.size, zoom, this.seen === "side");
@@ -598,28 +656,29 @@ export class GameView implements FieldView {
             }
         };
         const place = (s: Sprite, layer: Layer): void => {
-            const px = (s.fixed ? this.sq : z) * this.density;
+            const at = s.fixed ? this.readouts.at(s) : { x: s.x, y: s.y, k: 1 };
+            const px = (s.fixed ? this.sq * at.k : z) * this.density;
             const placed = this.look(s, px, resting);
             if (!placed) return;
             const w = placed.w,
                 h = placed.h;
             const q = still ? 0 : (s.squash ?? 0);
-            const grow = s.scale !== undefined ? Math.max(0, s.scale) : 1;
+            const grow = (s.scale !== undefined ? Math.max(0, s.scale) : 1) * at.k;
             const a = s.angle ?? 0;
             // a squash keeps the base where it was, in the drawing's own turned frame
             const drop = (h * q * grow) / 2;
-            // a fixed readout keeps its place as a share of the authored view, so one in a corner stays in the field's corner
-            const at = s.fixed
-                ? {
-                      x: s.x * (this.view.w / this.authored.w),
-                      y: s.y * (this.view.h / this.authored.h),
-                  }
-                : s;
             const c = {
                 x: at.x - Math.sin(a) * drop,
-                y: at.y - (s.stand ? h / 2 : 0) + Math.cos(a) * drop,
+                y: at.y - (s.stand ? (h * at.k) / 2 : 0) + Math.cos(a) * drop,
             };
             const alpha = Math.max(0, Math.min(1, s.alpha ?? 1)) * (s.faint ? 0.35 : 1);
+            if (s.fixed && alpha > 0.05)
+                this.covers.push({
+                    x0: c.x - (w / 2) * grow,
+                    x1: c.x + (w / 2) * grow,
+                    y0: c.y - (h / 2) * grow,
+                    y1: c.y + (h / 2) * grow,
+                });
             put(
                 placed,
                 layer,
@@ -670,7 +729,7 @@ export class GameView implements FieldView {
             },
         );
         this.lettering(f.marks, world, z);
-        this.shown = f;
+        this.shown = given;
         // a frame drawn while looks were still on their way is drawn again when they land, which a
         // game at rest under reduced motion would not otherwise do
         clearTimeout(this.later);
@@ -849,7 +908,7 @@ export class GameView implements FieldView {
         for (const m of marks) {
             if (m.kind === "dots") {
                 for (const p of m.pts)
-                    disc(p.x, p.y, 0.13, colour("pen"), m.faint ? 0.3 : (m.opacity ?? 1));
+                    disc(p.x, p.y, 0.13, colour(m.tone ?? "pen"), m.faint ? 0.3 : (m.opacity ?? 1));
             } else if (m.kind === "line" && m.style === "stream") {
                 const w = 0.14 + 0.32 * Math.max(0, Math.min(1, m.weight ?? 1));
                 const pts = curve(m.a, m.b, m.bend);
@@ -883,11 +942,20 @@ export class GameView implements FieldView {
                     path([wing(-1), m.b, wing(1)], `${name}:head`, { ...ink, dash: [] });
                 }
             } else if (m.kind === "ring" || m.kind === "box") {
-                const name = m.on ? "on" : m.kind === "ring" && m.solid ? "solid" : "ring";
+                const name = m.tone
+                    ? m.tone
+                    : m.kind === "box" && m.card
+                      ? "rod"
+                      : m.on
+                        ? "on"
+                        : m.kind === "ring" && m.solid
+                          ? "solid"
+                          : "ring";
                 const ink = STROKES[name];
                 if (!ink) continue;
                 if (m.kind === "ring") {
-                    if (m.on) disc(m.x, m.y, m.r, colour("glow"), 0.28);
+                    if (m.tone) disc(m.x, m.y, m.r, colour(m.tone), 0.22);
+                    else if (m.on) disc(m.x, m.y, m.r, colour("glow"), 0.28);
                     path(circle(m.x, m.y, m.r), name, ink);
                 } else {
                     const r = Math.min(0.3, m.w / 2, m.h / 2);
@@ -903,14 +971,15 @@ export class GameView implements FieldView {
                     corner(m.x + m.w - r, m.y + m.h - r, 0);
                     corner(m.x + r, m.y + m.h - r, Math.PI / 2);
                     corner(m.x + r, m.y + r, Math.PI);
-                    if (m.on) {
+                    if (m.on || m.tone || m.card) {
                         // the wash is a capsule as wide as the box is tall, which its rounded corners hide
-                        const hh = Math.min(m.w, m.h) / 2;
-                        const wash = run(`wash:${hh}`, {
-                            colour: "glow",
+                        const hh = Math.min(m.w, m.h) / 2,
+                            fill: TokenName = m.card ? "card" : (m.tone ?? "glow");
+                        const wash = run(`wash:${fill}:${hh}`, {
+                            colour: fill,
                             width: hh * 2,
                             dash: [],
-                            alpha: 0.28,
+                            alpha: m.card ? 1 : m.tone ? 0.6 : 0.28,
                             round: true,
                         });
                         const wide = m.w >= m.h;
@@ -966,21 +1035,29 @@ export class GameView implements FieldView {
                 this.words.appendChild(span);
                 this.spans[i] = span;
             }
-            if (span.textContent !== m.text) span.textContent = m.text;
-            const x = m.fixed
-                    ? m.x * (this.view.w / this.authored.w) * this.sq
-                    : cw + (m.x - camera.x) * z,
-                y = m.fixed
-                    ? m.y * (this.view.h / this.authored.h) * this.sq
-                    : ch + (m.y - camera.y) * z;
+            const text = this.phone && m.phone !== undefined ? m.phone : m.text;
+            if (span.textContent !== text) span.textContent = text;
+            const fixed = m.fixed ? this.readouts.at(m) : null;
+            const x = fixed ? fixed.x * this.sq : cw + (m.x - camera.x) * z,
+                y = fixed ? fixed.y * this.sq : ch + (m.y - camera.y) * z;
             // 14 pixels is the least a word is read at on a phone; the stroke keeps to the squares, and a
             // fixed word keeps the view's square as a fixed sprite does, whatever the camera's zoom
             const zw = m.fixed ? this.sq : z;
-            const size = Math.max(this.phone ? 14 : 0, (m.size ?? 0.8) * zw);
+            const size = Math.max(this.phone ? 14 : 0, (m.size ?? 0.8) * zw * (fixed?.k ?? 1));
             span.style.fontSize = `${size.toFixed(1)}px`;
             span.style.setProperty("-webkit-text-stroke-width", `${(0.12 * zw).toFixed(1)}px`);
             span.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -80%)`;
-            span.hidden = false;
+            // the words are in the page over the canvas, so a word in the world under a readout is hidden, as its drawing would be
+            const half = (text.length * LETTER * size) / 2 / this.sq;
+            span.hidden =
+                !fixed &&
+                this.covers.some(
+                    (c) =>
+                        x / this.sq + half > c.x0 &&
+                        x / this.sq - half < c.x1 &&
+                        (y + 0.2 * size) / this.sq > c.y0 &&
+                        (y - 0.8 * size) / this.sq < c.y1,
+                );
             i++;
         }
         for (let k = i; k < this.spans.length; k++) {
@@ -998,24 +1075,29 @@ export class GameView implements FieldView {
             ch = (this.view.h * this.sq) / 2;
         // the world's camera, so a test can turn a place in squares into a point on the field
         mirror.dataset.camera = `${this.cam.x} ${this.cam.y} ${this.sq * this.cam.zoom}`;
+        const projection = this.shown?.projection;
+        mirror.dataset.projection = projection
+            ? [
+                  projection.a,
+                  projection.b,
+                  projection.c,
+                  projection.d,
+                  projection.e,
+                  projection.f,
+              ].join(" ")
+            : "";
         for (const { s, layer } of ordered) {
             const placed = this.last.get(s.key);
             if (!placed) continue;
             seen.add(s.key);
             const c = layer.camera;
-            const grow = s.scale ?? 1;
+            const at = s.fixed ? this.readouts.at(s) : { x: s.x, y: s.y, k: 1 };
+            const grow = (s.scale ?? 1) * at.k;
             const w = placed.w * grow * c.z,
                 h = placed.h * grow * c.z;
             const a = s.angle ?? 0;
-            // a fixed sprite keeps its place as a share of the authored view, as `place` draws it
-            const at = s.fixed
-                ? {
-                      x: s.x * (this.view.w / this.authored.w),
-                      y: s.y * (this.view.h / this.authored.h),
-                  }
-                : s;
             const x = cw + (at.x - c.x) * c.z,
-                y = ch + (at.y - (s.stand ? placed.h / 2 : 0) - c.y) * c.z;
+                y = ch + (at.y - (s.stand ? (placed.h * at.k) / 2 : 0) - c.y) * c.z;
             let d = this.mirrored.get(s.key);
             if (!d) {
                 d = document.createElement("div");
@@ -1059,17 +1141,62 @@ export class GameView implements FieldView {
     toWorld(clientX: number, clientY: number): { x: number; y: number } {
         const r = this.el.getBoundingClientRect();
         const k = this.sq * this.cam.zoom;
-        return {
+        const at = {
             x: this.cam.x + (clientX - r.left - (this.view.w * this.sq) / 2) / k,
             y: this.cam.y + (clientY - r.top - (this.view.h * this.sq) / 2) / k,
         };
+        return this.shown?.projection ? unprojectPoint(at, this.shown.projection) : at;
     }
 
     toFixed(clientX: number, clientY: number): { x: number; y: number } {
         const r = this.el.getBoundingClientRect();
-        return {
-            x: ((clientX - r.left) / this.sq) * (this.authored.w / this.view.w),
-            y: ((clientY - r.top) / this.sq) * (this.authored.h / this.view.h),
+        return this.unturn(
+            this.readouts.from({
+                x: (clientX - r.left) / this.sq,
+                y: (clientY - r.top) / this.sq,
+            }),
+        );
+    }
+
+    /**
+     * A point on a readout laid out upright, back to the same point on it where the game drew it, so
+     * a finger on a card stacked into a second row is on that card; the smallest readout holding it wins.
+     */
+    private unturning(f: Frame): (p: Pt) => Pt {
+        const up = f.upright ?? f.view;
+        const moved = f.sprites.flatMap((s) => {
+            if (!s.fixed || !s.upright) return [];
+            const there = {
+                ...s,
+                size: s.upright.size ?? s.size,
+                params: s.upright.params ?? s.params,
+            };
+            const had = this.look(there, this.sq * this.density, false);
+            const w = (had?.w ?? there.size ?? 1) * (s.scale ?? 1),
+                h = (had?.h ?? there.size ?? 1) * (s.scale ?? 1);
+            const k = s.size !== undefined && there.size !== undefined ? there.size / s.size : 1;
+            const lift = s.stand ? h / 2 : 0;
+            return [
+                {
+                    from: { x: s.upright.x, y: s.upright.y - lift },
+                    to: { x: s.x, y: s.y - lift / k },
+                    w,
+                    h,
+                    k,
+                },
+            ];
+        });
+        return (p) => {
+            let best: (typeof moved)[number] | undefined;
+            for (const m of moved)
+                if (Math.abs(p.x - m.from.x) <= m.w / 2 && Math.abs(p.y - m.from.y) <= m.h / 2)
+                    if (!best || m.w * m.h < best.w * best.h) best = m;
+            return best
+                ? {
+                      x: best.to.x + (p.x - best.from.x) / best.k,
+                      y: best.to.y + (p.y - best.from.y) / best.k,
+                  }
+                : { x: (p.x * f.view.w) / up.w, y: (p.y * f.view.h) / up.h };
         };
     }
 

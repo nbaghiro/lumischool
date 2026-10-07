@@ -103,6 +103,7 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
     const { $ } = shell;
     const pad = emptyPad();
     let s = game.start(level);
+    let frameRoom = shell.room();
     const deck: Deck<unknown> = {
         start: () => game.start(level),
         step: (at, p) => game.step(at, p),
@@ -132,7 +133,8 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
             spent(pad);
             return h;
         },
-        frame: (rest) => game.frame(viewing ? viewing.s : watching ? watching.s : s, rest),
+        frame: (rest) =>
+            game.frame(viewing ? viewing.s : watching ? watching.s : s, rest, frameRoom),
         say: () => game.say(s),
         note: () => game.note(s),
         won: () => game.won(s),
@@ -592,6 +594,13 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
         }
         if (drag || !e.isPrimary) return;
         const brake = e.button === 2 && !!game.controls.brake;
+        if (e.button === 2 && game.touch && !brake) {
+            input("pointer");
+            e.preventDefault();
+            pad.aside = field.toWorld(e.clientX, e.clientY);
+            pointerStep();
+            return;
+        }
         if (e.button !== 0 && !brake) return;
         input("pointer");
         e.preventDefault();
@@ -708,7 +717,7 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
         if (e.pointerType === "mouse") pad.hover = null;
     };
     const contextMenu = (e: Event): void => {
-        if (game.controls.brake) e.preventDefault();
+        if (game.controls.brake || game.touch) e.preventDefault();
     };
     field.el.addEventListener("pointerdown", pointerDown);
     field.el.addEventListener("pointermove", pointerMove);
@@ -796,11 +805,19 @@ function action(shell: Shell, field: FieldView, game: ActionGame<unknown>, level
     }
 
     function fit(): void {
+        const room = shell.room();
+        if (drag && (room.w !== frameRoom.w || room.h !== frameRoom.h)) {
+            clearPointer();
+            fingers.clear();
+            Object.assign(pad, emptyPad());
+            cancel();
+        }
+        frameRoom = room;
         const f = sess.frame(true);
         field.fit(
             f.view,
             f.world,
-            shell.room(),
+            frameRoom,
             game.seen ?? "side",
             undefined,
             shell.card?.keep ?? game.portrait?.keep,

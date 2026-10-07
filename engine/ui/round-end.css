@@ -94,6 +94,10 @@
     background: var(--pen);
     color: var(--card);
 }
+/* the icons are drawn in ink, so the filled button turns its icon white the way .game-primary does */
+.round-end-action.primary .control-icon {
+    filter: brightness(0) invert(1);
+}
 .round-end-action:focus-visible .round-end-icon {
     outline: 3px dashed var(--pen);
     outline-offset: 3px;

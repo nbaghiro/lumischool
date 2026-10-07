@@ -9,6 +9,7 @@
 import type { Cue } from "./cues";
 import type { GameEvent } from "./goals";
 import type { Pt } from "./geometry";
+import type { Projection } from "./presentation";
 import type { Spring } from "./spring";
 
 /**
@@ -100,6 +101,8 @@ export interface Sprite {
     depth?: number;
     /** Placed in the view's own squares from its top left, not the world's, and never moved by the camera: the readouts a game keeps in sight. */
     fixed?: boolean;
+    /** Where a fixed sprite sits instead on a phone held upright, in the frame's `upright` view, drawn at `size` and with `params` there when given. */
+    upright?: { x: number; y: number; size?: number; params?: Record<string, unknown> };
     /** Drawn this much bigger or smaller about its centre, for a thing that pops in or out. */
     scale?: number;
     /** How much of it shows, from nought to one. */
@@ -167,6 +170,8 @@ export interface Light {
 
 /** An action game's world at one step of its loop, as the field draws it. */
 export interface Frame {
+    /** Maps simulation coordinates to the displayed layout; pointer input uses its inverse. */
+    projection?: Projection;
     sprites: Sprite[];
     marks: Mark[];
     /** The centre of the view, in squares, and how much of the view a square takes (1 is the page's square). */
@@ -176,6 +181,10 @@ export interface Frame {
     world: { w: number; h: number };
     /** What a phone held upright keeps in the middle of a field narrower than the view: the thing in play. The camera, left out. */
     focus?: { x: number; y: number };
+    /** The view a phone held upright lays the readouts out in, for a frame whose fixed sprites and words carry an `upright` place: controls in a row too wide for a phone stacked into rows. */
+    upright?: { w: number; h: number };
+    /** The camera goes on following the focus while a finger is down, for a game whose finger steers something across the world rather than holding it still. */
+    chase?: true;
     /**
      * The game's clock in seconds, which waves and flickers are drawn at, so what a game floats on
      * the water and the water agree. Left out, the view keeps a clock of its own.
@@ -209,7 +218,8 @@ export type Happening =
  * pen's colour and dashed rather than coloured where they are a hint, so no hint is colour alone.
  */
 export type Mark =
-    | { kind: "dots"; pts: Pt[]; faint?: boolean; opacity?: number }
+    /** `tone` "ok" draws it in the green of a thing that will work, such as a fall that lands where it should. */
+    | { kind: "dots"; pts: Pt[]; faint?: boolean; opacity?: number; tone?: "ok" }
     /**
      * A straight line, or an arc when `bend` lifts its middle by that many squares (a sag when it is
      * less than nought), with a head at `b` when it is an arrow. A rod is drawn heavy and a thin line
@@ -234,8 +244,62 @@ export type Mark =
           on?: boolean;
           /** Drawn whole rather than dashed, for a ring too small for a dash to read, such as a count of pieces. */
           solid?: boolean;
+          tone?: "ok";
       }
-    | { kind: "box"; x: number; y: number; w: number; h: number; on?: boolean }
+    /**
+     * `tone` "ok" draws it solid in green with a green wash, for a range that will work; `card` fills
+     * it with the paper's card and draws it in heavy ink, for a gauge that must read over a busy scene.
+     */
+    | {
+          kind: "box";
+          x: number;
+          y: number;
+          w: number;
+          h: number;
+          on?: boolean;
+          tone?: "ok";
+          card?: true;
+      }
     /** `fixed` places it in the view's own squares from its top left, as a fixed sprite is, for a readout. */
-    | { kind: "word"; x: number; y: number; text: string; size?: number; fixed?: true }
+    | {
+          kind: "word";
+          x: number;
+          y: number;
+          text: string;
+          size?: number;
+          fixed?: true;
+          /** Where a fixed word goes instead on a phone held upright, as a fixed sprite's `upright`, with shorter words where they are given. */
+          upright?: { x: number; y: number; size?: number; text?: string };
+          /** Written this shorter way on a phone, where words keep a least size and a long one runs into its neighbours. */
+          phone?: string;
+      }
     | { kind: "puff"; x: number; y: number; r: number };
+
+/** A frame with its fixed sprites and words moved to their `upright` places, for a phone held upright. */
+export function heldUpright(f: Frame): Frame {
+    return {
+        ...f,
+        sprites: f.sprites.map((s) =>
+            s.fixed && s.upright
+                ? {
+                      ...s,
+                      x: s.upright.x,
+                      y: s.upright.y,
+                      size: s.upright.size ?? s.size,
+                      params: s.upright.params ?? s.params,
+                  }
+                : s,
+        ),
+        marks: f.marks.map((m) =>
+            m.kind === "word" && m.fixed && m.upright
+                ? {
+                      ...m,
+                      x: m.upright.x,
+                      y: m.upright.y,
+                      size: m.upright.size ?? m.size,
+                      text: m.upright.text ?? m.text,
+                  }
+                : m,
+        ),
+    };
+}

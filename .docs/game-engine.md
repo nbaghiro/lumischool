@@ -636,3 +636,13 @@ that touches the page. Physics and every movement or simulation piece are in `en
 planck confined to `bodies.ts`. Rules, levels and variations stay in `school/games/`, and drawings on
 the shelf in `engine/parts/`. No new top-level folder is needed; if a module needs its own directory
 we record it in [structure.md](structure.md) and `boundaries.ts` in the same change.
+
+
+### Responsive game composition
+
+`ActionGame.frame(state, rest, room)` receives the available field size in pixels, cached at resize.
+Games can return display-space sprites and marks plus a `Frame.projection` from logical simulation
+coordinates to that layout. `motion/presentation.ts` maps points and axis-aligned/quarter-turn marks;
+artwork size remains proportional. The field inverses the projection for pointer input, including
+flick samples, and exposes it in the browser probe. Physics, keyboard input and replay stay in
+logical coordinates. Resizing cancels an active gesture before changing the mapping.

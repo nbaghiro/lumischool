@@ -57,6 +57,8 @@ export interface Pad {
      * game with controls drawn there can tell which one a finger is on whatever its camera does.
      */
     view?: { x: number; y: number } | null;
+    /** Set for one step by a right click on the field, with where it was, for a game that takes a thing away with it. */
+    aside?: { x: number; y: number } | null;
     /** Pointer release velocity in world squares/second, consumed once; absent for keyboard input. */
     flick?: { x: number; y: number } | null;
     /** What two fingers meant since the game last read them, oldest first, for a game that reads them. */
@@ -103,6 +105,7 @@ export function spent(p: Pad): void {
     p.tapped = false;
     p.lifted = null;
     p.flick = null;
+    if (p.aside) p.aside = null;
     if (p.intents) p.intents = [];
 }
 

@@ -157,6 +157,8 @@ export function Games(props: {
     const [activeTitle, setActiveTitle] = createSignal("");
     const recent: string[] = [];
     let retries = 0;
+    // a design carried into the next try by Again, for a game that keeps it
+    let carried: unknown = undefined;
     const [run, setRun] = createSignal(0);
     const another = (): void => {
         const game = chosen();
@@ -262,6 +264,7 @@ export function Games(props: {
         const g = chosen();
         if (!g) return;
         if (a === "again") {
+            if (g.group === "action" && g.againKeeps) carried = runtime?.checkpoint?.();
             retries++;
             setRun(run() + 1);
         } else if (a === "another") another();
@@ -546,6 +549,10 @@ export function Games(props: {
                 } catch {
                     // a design that no longer reads is left behind and the plot starts empty
                 }
+            if (carried !== undefined) {
+                runtime?.restore?.(carried);
+                carried = undefined;
+            }
             const keeping = design ? setInterval(keep, 3000) : undefined;
             // a reload or a closed tab never runs the cleanup below, so the design is kept as the page goes
             if (design) window.addEventListener("pagehide", keep);
