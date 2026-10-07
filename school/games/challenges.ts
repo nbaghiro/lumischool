@@ -141,6 +141,13 @@ import { FEED_LEVELS } from "./feedpup";
 import { isPegConfiguration, openPegConfiguration, pegChallenge } from "./pegs-challenges";
 import { isKnockConfiguration, knockChallenge, openKnockConfiguration } from "./knock-challenges";
 import {
+    boltCertified,
+    boltChallenge,
+    isBoltConfiguration,
+    openBoltConfiguration,
+} from "./bolt-challenges";
+import { levelOf as boltLevel } from "./bolt";
+import {
     isTreasureConfiguration,
     levelFor as treasureLevelFor,
     openTreasureConfiguration,
@@ -760,6 +767,27 @@ const knock = family({
     open: (game, c, phase) => started(game, () => openKnockConfiguration(c), phase),
 });
 
+const bolt = family({
+    variation: {
+        method: "route-and-hands-replay",
+        generate: boltChallenge,
+        read: typed(isBoltConfiguration),
+        solve: (c) => boltCertified(c),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({
+        reasoning: phase < 2 ? 1 : phase < 5 ? 2 : 3,
+        motor: phase < 3 ? 1 : 2,
+    }),
+    open: (game, c, phase) => {
+        const L = boltLevel(c.phase);
+        return started(game, () => openBoltConfiguration(c), phase, {
+            title: L.title,
+            goal: L.goal,
+        });
+    },
+});
+
 const treasure = family({
     variation: {
         method: "plan-and-hands-replay",
@@ -793,6 +821,7 @@ const aquarium = family({
 
 /** Every game whose levels have variations, by the game's id. */
 const VARIATIONS: Partial<Record<string, Variations>> = {
+    bolt,
     aquarium,
     treasure,
     pegs,

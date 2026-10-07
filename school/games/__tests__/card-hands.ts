@@ -4,6 +4,8 @@
 import { climbGame } from "../climb";
 import { climbThrough } from "../climb-challenges";
 import { kiteGame } from "../kite";
+import { boltGame } from "../bolt";
+import { rescueThrough } from "../bolt-challenges";
 import { kiteWay } from "../kite-challenges";
 import { emptyPad, spent, type Pad } from "../../../engine/motion/pad";
 import { player, tape } from "../../../engine/motion/tape";
@@ -343,6 +345,14 @@ function judge<S>(game: ActionGame<S>, play: (s: S, fresh: () => S) => Pad[]): V
 /** A climb by a finger on the field: the route's pilot with its hand on the glass. */
 const climb = (): Pad[] => climbThrough(0, 0, "touch") ?? [];
 
+/** Bolt's first planet by a finger on the field: the route's pilot, which needs no button there. */
+const boltRound = (): Pad[] => {
+    const inputs = rescueThrough(0, 0, "touch") ?? [];
+    return inputs.every((i) => typeof i !== "string")
+        ? inputs.filter((i) => typeof i !== "string")
+        : [];
+};
+
 export const FIELD_ROUNDS: Record<string, () => Verdict> = {
     "cargo-workshop": () => judge(cargoGame, cargo),
     jump: () => judge(rabbit.rabbitGame, hop),
@@ -361,4 +371,5 @@ export const FIELD_ROUNDS: Record<string, () => Verdict> = {
     kite: () => judge(kiteGame, () => kiteWay({ phase: 0, variant: 0 }, "touch") ?? []),
     feedpup: () => judge(feedGame, () => feedWay({ phase: 0, variant: 0 }, "touch") ?? []),
     aquarium: () => judge(aquariumGame, () => aquaWay({ phase: 0, variant: 0 }, "touch") ?? []),
+    bolt: () => judge(boltGame, boltRound),
 };
