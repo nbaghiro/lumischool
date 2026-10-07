@@ -3,6 +3,7 @@ import { golfGame } from "./golf";
 import { poolGame } from "./pool";
 import { pinballGame } from "./pinball";
 import { curlingGame } from "./curling";
+import { hoopsGame } from "./hoops";
 import { clearGame } from "./clear";
 import { swingsGame } from "./swings";
 import { fetchGame } from "./fetch";
@@ -66,6 +67,7 @@ export const GAMES: Game[] = [
     poolGame,
     pinballGame,
     curlingGame,
+    hoopsGame,
     rallyGame,
     swingsGame,
     fetchGame,

@@ -72,6 +72,12 @@ import {
     isCurlConfiguration,
     openCurlConfiguration,
 } from "./curling-challenges";
+import {
+    hoopChallenge,
+    hoopLevelOf,
+    isHoopConfiguration,
+    openHoopConfiguration,
+} from "./hoops-challenges";
 import { POOL_LEVELS } from "./pool";
 import { isPinConfiguration, openPinConfiguration, pinChallenge } from "./pinball-challenges";
 import {
@@ -519,6 +525,26 @@ const curling = family({
     },
 });
 
+const hoops = family({
+    variation: {
+        method: "throw-search-and-flight-replay",
+        generate: hoopChallenge,
+        read: typed(isHoopConfiguration),
+    },
+    store: (c) => ({ phase: c.phase, variant: c.variant }),
+    rating: (_c, phase) => ({
+        reasoning: phase < 2 ? 1 : phase < 5 ? 2 : 3,
+        motor: phase < 2 ? 1 : 2,
+    }),
+    open: (game, c, phase) => {
+        const L = hoopLevelOf(c);
+        return started(game, () => openHoopConfiguration(c), phase, {
+            title: L.title,
+            goal: L.goal,
+        });
+    },
+});
+
 const pinball = family({
     variation: {
         method: "flip-search-and-physics-replay",
@@ -677,6 +703,7 @@ const VARIATIONS: Partial<Record<string, Variations>> = {
     pinball,
     pool,
     curling,
+    hoops,
     rescue,
     blocks,
     wardrobe,

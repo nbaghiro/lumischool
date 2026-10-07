@@ -19,6 +19,8 @@ import { poolGame, SHOT, type PoolState } from "../pool";
 import { poolWay } from "../pool-challenges";
 import { curlingGame } from "../curling";
 import { curlWay } from "../curling-challenges";
+import { hoopsGame } from "../hoops";
+import { hoopWay } from "../hoops-challenges";
 import { feedGame } from "../feedpup";
 import { feedWay } from "../feedpup-challenges";
 import * as rabbit from "../rabbit";
@@ -346,6 +348,7 @@ export const FIELD_ROUNDS: Record<string, () => Verdict> = {
     plane: () => judge(planeGame, plane),
     pool: () => judge(poolGame, pool),
     curling: () => judge(curlingGame, () => curlWay({ phase: 0, variant: 0 }, "touch") ?? []),
+    hoops: () => judge(hoopsGame, () => hoopWay({ phase: 0, variant: 0 }, "touch") ?? []),
     bridge: () => judge(swingsGame, swings),
     blocks: () => judge(fetchGame, fetch),
     rescue: () => judge(rescueGame, rescue),
