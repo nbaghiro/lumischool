@@ -1,4 +1,4 @@
-// One lesson as a child meets it: its sheet alone on squared paper, lifted into a dialog over the
+// One lesson with answers and parent notes, lifted into a dialog over the
 // still picture of the world the lesson is met in. Explore opens it over the catalogue with the
 // level and the print beside Close; the calendar opens it over a day with that lesson's place in
 // the plan under the row. It lives here rather than in `engine/ui/` because it reads the world a
@@ -146,7 +146,7 @@ export function LessonLook(props: {
                                     }}
                                     width={sheetWidth(narrow())}
                                     narrow={narrow()}
-                                    limits={{ sheets: "look", key: false }}
+                                    limits={{ sheets: "look", key: true }}
                                     draw={sheet().draw}
                                 />
                             )}

@@ -379,7 +379,7 @@ nothing to press, and a shelf far down the page reads nothing until it comes nea
 looks at every lesson, the counts say how many match, and a lesson's own address opens its preview
 whether or not its shelf has read that far ([pagination.md](pagination.md)). A lesson opens at
 `/explore/<lesson>` as a preview over the catalogue rather than a page of its own: a dialog holding
-that lesson's sheet alone, on squared paper, as a child has it with nothing filled in. It does not
+that lesson's sheet alone, with answers, hints and notes for grown-ups shown for review. It does not
 open the lesson's world or the map, since a grown-up looking at one lesson has no use for the lessons
 before and after it or for a way out to the worlds. The address is a path, so it is shared, bookmarked and opened in
 a tab of its own as before, and the back button closes the preview and leaves the reader on the
@@ -447,7 +447,7 @@ or taken out. On phones the week's days and the day's lanes both stack, with the
 them. The month also selects days for editing.
 
 A lesson's name, on a week's sticker or a day's row, opens the same look Explore opens
-(`apps/home/lesson-look.tsx`), the sheet as a child meets it over the still picture of the world it
+(`apps/home/lesson-look.tsx`), with answers and parent notes over the still picture of the world it
 belongs to. Opened from the calendar the look also carries that lesson's place in the plan, its day,
 its planned minutes and its note, and the way to take it out, which is where the separate editing
 card used to live. Work already begun shows no fields, since it stays in the record. The calendar

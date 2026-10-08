@@ -431,7 +431,7 @@ test("a lesson is taken out of the plan from its own look, in the week and in th
 
 /**
  * A lesson's name opens the look Explore opens, over the calendar rather than over the catalogue:
- * the sheet as a child meets it, with nothing to answer on it, and the plan's own fields in the band
+ * the sheet with its answers and parent notes, and the plan's own fields in the band
  * over it, so the sheet and the day it falls on are one card rather than two.
  */
 test("a lesson's name opens the lesson view, in the week and in the day, and the plan is changed in it", async ({
@@ -458,10 +458,8 @@ test("a lesson's name opens the lesson view, in the week and in the day, and the
     await expect(sheet).toBeVisible({ timeout: 40_000 });
     await expect(look.locator(".ls-sheet")).toHaveCount(1);
     await expect(look.locator(".wd, .ow-host, canvas")).toHaveCount(0);
-    // it is the child's own sheet: nothing filled in and nothing to press but a program's Run
-    // controls, which a coding lesson plays and never records (engine/ui/code-controls.tsx)
-    await expect(sheet.locator(".ls-answer")).toHaveCount(0);
-    await expect(sheet.locator("button:not(.cr button), [role=button]")).toHaveCount(0);
+    // The parent sees the answer key without needing to open the Lessons tab.
+    await expect(sheet.locator(".ls-answer").first()).toBeAttached();
     // and behind it, the still picture of the world the lesson is met in
     await expect(look.locator(".look-world .wd-picture > svg")).toBeAttached({ timeout: 20_000 });
     expect(await smallTargets(look)).toEqual([]);

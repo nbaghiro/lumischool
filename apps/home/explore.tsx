@@ -539,7 +539,7 @@ function Catalogue(props: { pack: PackView }): JSX.Element {
                 {(f) => (
                     <LessonLook
                         title={f.title}
-                        kicker="As a child sees it"
+                        kicker="Lesson preview"
                         facts={f}
                         pack={props.pack.pack}
                         lessons={props.pack.index.lessons}

@@ -1,6 +1,6 @@
 // Explore, the grown-ups' catalogue: a lesson found by grade, subject and the words of its title,
 // opened as a preview over the catalogue rather than on a page of its own, as that lesson's sheet
-// alone with no map or world to wander into, read as a child meets it with nothing filled in, at each of its levels, printed as the sheet alone with the answers and the
+// alone with no map or world to wander into, read with answers and parent notes, at each of its levels, printed as the sheet alone with the answers and the
 // notes when they are asked for, and nothing recorded.
 
 import { expect, type Locator, type Page } from "@playwright/test";
@@ -53,7 +53,7 @@ const printsAsked = (page: Page): Promise<number> =>
         return w.__printed ?? -1;
     });
 
-test("a grown-up finds a lesson in Explore, reads it as a child meets it, prints it as the sheet alone, and nothing is recorded", async ({
+test("a grown-up finds a lesson in Explore, reads it with answers, prints it as the sheet alone, and nothing is recorded", async ({
     page,
 }) => {
     await holdPrint(page);
@@ -96,7 +96,7 @@ test("a grown-up finds a lesson in Explore, reads it as a child meets it, prints
     await expect(page.getByRole("heading", { name: "Every lesson", level: 1 })).toBeAttached();
     // the words over the sheet name the lesson, and the sheet is the one lesson alone: no map, no
     // world's roll, and no other lesson to go to
-    await expect(preview.getByRole("region", { name: "As a child sees it" })).toBeVisible();
+    await expect(preview.getByRole("region", { name: "Lesson preview" })).toBeVisible();
     await expect(preview.locator(".look-words b")).toHaveText(TITLE);
     const sheet = preview.locator(".ls-sheet").first();
     await expect(sheet).toBeVisible({ timeout: 40_000 });
@@ -109,10 +109,8 @@ test("a grown-up finds a lesson in Explore, reads it as a child meets it, prints
     await expect(preview.getByRole("button", { name: /world|map/i })).toHaveCount(0);
     expect(await smallTargets(preview.locator(".look-top"))).toEqual([]);
 
-    // it is the child's own sheet: nothing filled in, nothing to press, and no help for a reader
-    await expect(sheet.locator(".ls-answer")).toHaveCount(0);
-    await expect(sheet.getByText("Look for")).toHaveCount(0);
-    await expect(sheet.getByRole("button")).toHaveCount(0);
+    // Parents can assess the lesson with its answer key already shown.
+    await expect(sheet.locator(".ls-answer").first()).toBeAttached();
 
     // each level, said in the tools and in the address, and never on the sheet
     for (const [word, level] of [
