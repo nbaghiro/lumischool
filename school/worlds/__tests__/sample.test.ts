@@ -157,3 +157,14 @@ test("the views the site's pictures share: a map at each stop, the roll of yeste
     assert.equal(visit.grade, 1);
     assert.ok(Object.keys(visit.progress.done).length > 0, "the visit carries the sample's record");
 });
+
+test("the parent cards retain three distinct worlds when Kindergarten has only one", () => {
+    const corpus = corpusFrom([...lessonsOf(0), ...lessonsOf(1), ...lessonsOf(2)], STARTED);
+    const child = sampleChild(corpus, worldOf);
+    assert.equal(child.first.grade, 0);
+    assert.equal(child.cards.length, 3);
+    const places = child.cards.map((card) => child.now.places[card.place]);
+    assert.equal(new Set(places.map((place) => place?.world)).size, 3);
+    assert.equal(places[0]?.grade, 0);
+    assert.ok(places.slice(1).every((place) => place?.state === "ahead"));
+});

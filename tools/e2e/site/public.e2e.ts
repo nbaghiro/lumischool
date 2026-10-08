@@ -38,6 +38,7 @@ test.describe("public learning pages without JavaScript", () => {
             "href",
             "https://lumischool.ai/",
         );
+        await expect(page.locator("#you .site-card")).toHaveCount(3);
         await expect(page.locator(".site-samples > a")).toHaveCount(3);
         await page.locator(".site-samples > a").first().click();
         await expect(page.getByRole("heading", { level: 1 })).toHaveText("Counting to five");

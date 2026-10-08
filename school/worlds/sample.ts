@@ -424,8 +424,10 @@ export function sampleChild(corpus: Corpus, worldOf: (id: string) => Applied): S
         return out;
     };
 
+    const cardWorlds = new Set<string>();
     const cards: Card[] = now.places.flatMap((p, i) => {
-        if (p.grade !== first.grade) return [];
+        if (cardWorlds.size === 3 || cardWorlds.has(p.world)) return [];
+        cardWorlds.add(p.world);
         const w = worldOf(p.world);
         return [
             {

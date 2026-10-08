@@ -4,7 +4,6 @@
 export const PICTURES: {
     journey: { wide: readonly string[]; narrow: readonly string[] };
     cards: { wide: readonly string[]; narrow: readonly string[] };
-    journal: { wide: readonly string[]; narrow: readonly string[] };
 } = {
     journey: {
         wide: [
@@ -17,11 +16,15 @@ export const PICTURES: {
         ],
     },
     cards: {
-        wide: [new URL("./pictures/cards-wide-0.webp", import.meta.url).href],
-        narrow: [new URL("./pictures/cards-narrow-0.webp", import.meta.url).href],
-    },
-    journal: {
-        wide: [new URL("./pictures/journal-wide-0.webp", import.meta.url).href],
-        narrow: [new URL("./pictures/journal-narrow-0.webp", import.meta.url).href],
+        wide: [
+            new URL("./pictures/cards-wide-0.webp", import.meta.url).href,
+            new URL("./pictures/cards-wide-1.webp", import.meta.url).href,
+            new URL("./pictures/cards-wide-2.webp", import.meta.url).href,
+        ],
+        narrow: [
+            new URL("./pictures/cards-narrow-0.webp", import.meta.url).href,
+            new URL("./pictures/cards-narrow-1.webp", import.meta.url).href,
+            new URL("./pictures/cards-narrow-2.webp", import.meta.url).href,
+        ],
     },
 };

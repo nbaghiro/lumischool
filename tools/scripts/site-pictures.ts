@@ -1,14 +1,14 @@
 // `npm run site:pictures`: the site's pictures of the sample child's map (apps/site/page.tsx), which its
-// map sections show in place of a live map: the journey at each stop, each card's place and the
-// journal's. It opens the site with `?livePictures`, where those sections draw the live map, pictures
+// map sections show in place of a live map: the journey at each stop and each parent card's place. It opens the site with `?livePictures`, where those sections draw the live map, pictures
 // each at a wide screen's size and a phone's, and writes the WebP files to apps/site/pictures/ and
 // their list to apps/site/pictures.ts. Run it with `npm run dev` up when the map or the sample changes.
 
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { chromium, type Locator, type Page } from "@playwright/test";
 import { format, resolveConfig } from "prettier";
 
+const cardsOnly = process.argv.includes("--cards");
 const BASE = process.env.PICTURES_BASE ?? "http://localhost:8500";
 const ROOT = join(import.meta.dirname, "..", "..");
 const OUT = join(ROOT, "apps/site/pictures");
@@ -75,17 +75,24 @@ async function picture(page: Page, box: Locator): Promise<Buffer> {
     return Buffer.from(encoded, "base64");
 }
 
+const existingJourney = (size: keyof typeof SIZES): string[] =>
+    readdirSync(OUT)
+        .filter((file) => file.startsWith(`journey-${size}-`) && file.endsWith(".webp"))
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
 async function main(): Promise<void> {
     const browser = await chromium.launch({
         channel: "chrome",
         args: ["--disable-component-update"],
     });
-    rmSync(OUT, { recursive: true, force: true });
+    if (!cardsOnly) rmSync(OUT, { recursive: true, force: true });
     mkdirSync(OUT, { recursive: true });
-    const made: Record<"journey" | "cards" | "journal", Record<keyof typeof SIZES, string[]>> = {
-        journey: { wide: [], narrow: [] },
+    const made: Record<"journey" | "cards", Record<keyof typeof SIZES, string[]>> = {
+        journey: {
+            wide: cardsOnly ? existingJourney("wide") : [],
+            narrow: cardsOnly ? existingJourney("narrow") : [],
+        },
         cards: { wide: [], narrow: [] },
-        journal: { wide: [], narrow: [] },
     };
     const keep = (
         kind: keyof typeof made,
@@ -107,25 +114,30 @@ async function main(): Promise<void> {
                 reducedMotion: "reduce",
             });
             const page = await context.newPage();
-            await page.goto(`${BASE}/home?livePictures&mapDebug`);
+            await page.goto(`${BASE}/home?livePictures&mapDebug`, { timeout: 180_000 });
+            await page
+                .locator(".site-bar div.bar-mark-bird")
+                .waitFor({ state: "attached", timeout: 120_000 });
             // the pictures are of the map alone: the site's bar, which stays at the window's top, and
             // the boxes' own edges, which the page draws round each picture, are left out
             await page.addStyleTag({
                 content:
                     ".site-bar,header{visibility:hidden!important}.site-window,.site-pic{border:0!important;border-radius:0!important}",
             });
-            const journey = page.locator(".site-journey-map .site-window");
-            await journey.scrollIntoViewIfNeeded();
-            await settled(page, journey);
-            const stops = await page.locator(".site-step").count();
-            for (let i = 0; i < stops; i++) {
-                await page.evaluate((at) => {
-                    const go: unknown = Reflect.get(window, "siteStop");
-                    if (typeof go === "function") Reflect.apply(go, window, [at]);
-                }, i);
+            if (!cardsOnly) {
+                const journey = page.locator(".site-journey-map .site-window");
                 await journey.scrollIntoViewIfNeeded();
                 await settled(page, journey);
-                keep("journey", size, i, await picture(page, journey));
+                const stops = await page.locator(".site-step").count();
+                for (let i = 0; i < stops; i++) {
+                    await page.evaluate((at) => {
+                        const go: unknown = Reflect.get(window, "siteStop");
+                        if (typeof go === "function") Reflect.apply(go, window, [at]);
+                    }, i);
+                    await journey.scrollIntoViewIfNeeded();
+                    await settled(page, journey);
+                    keep("journey", size, i, await picture(page, journey));
+                }
             }
             const cards = page.locator(".site-card .site-pic");
             for (let i = 0; i < (await cards.count()); i++) {
@@ -134,10 +146,6 @@ async function main(): Promise<void> {
                 await settled(page, card);
                 keep("cards", size, i, await picture(page, card));
             }
-            const journal = page.locator(".site-lesson .site-pic").first();
-            await journal.scrollIntoViewIfNeeded();
-            await settled(page, journal);
-            keep("journal", size, 0, await picture(page, journal));
             await context.close();
         }
     } finally {
@@ -154,11 +162,9 @@ async function main(): Promise<void> {
 export const PICTURES: {
     journey: { wide: readonly string[]; narrow: readonly string[] };
     cards: { wide: readonly string[]; narrow: readonly string[] };
-    journal: { wide: readonly string[]; narrow: readonly string[] };
 } = {
     journey: ${kind("journey")},
     cards: ${kind("cards")},
-    journal: ${kind("journal")},
 };
 `;
     writeFileSync(
