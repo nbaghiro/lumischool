@@ -253,6 +253,7 @@ test("See the map on the site opens the sample child's map over the page, a worl
     page,
 }) => {
     await page.goto("/home");
+    await expect(page.locator(".site-bar div.bar-mark-bird")).toBeAttached();
     const mapLink = page
         .getByRole("navigation", { name: "Sections of this page" })
         .getByRole("link", { name: "The map", exact: true });
@@ -283,16 +284,14 @@ test("See the map on the site opens the sample child's map over the page, a worl
     await page.keyboard.press("Escape");
     await expect(look).toBeVisible();
     await expect(look.locator(".ow-host[data-fly]")).toHaveCount(0);
-    // a world the sample child has not reached is landed on, and the map's note says why it stays shut
+    // Visitors can enter an upcoming world while lesson sheets remain previews.
     const harbour = look.locator('.ow-node[aria-label*="harbour" i]').first();
     await goInto(page, harbour);
-    await expect(look.locator(".ow-card")).toContainText(
-        "This sample opens only the worlds its child has reached.",
-    );
-    await expect(look.locator(".wd")).toHaveCount(0);
-    await expect(page).toHaveURL(/#\/map$/);
-    await look.locator(".ow-card").getByRole("button", { name: "Back to the map" }).click();
-    await expect(look.locator(".ow-card")).toHaveCount(0);
+    await expect(look.locator(".wd")).toHaveClass(/ready/, { timeout: 60_000 });
+    await expect(look.locator(".rd-sheet.rd-read").first()).toBeVisible({ timeout: 60_000 });
+    const backToMap = look.getByRole("button", { name: "Back to the map", exact: true });
+    await backToMap.focus();
+    await backToMap.click();
     // and the one it has, drawn lit, is gone into
     const garden = look.locator('.ow-node[aria-label*="garden" i]').first();
     await goInto(page, garden);
@@ -313,7 +312,7 @@ test("See the map on the site opens the sample child's map over the page, a worl
     await expect(again).toBeHidden();
     await expect(page).toHaveURL(/\/home$/);
     await expect(
-        page.getByRole("heading", { name: "School at home, one world at a time" }),
+        page.getByRole("heading", { name: "Homeschool lessons to use online or print." }),
     ).toBeVisible();
 });
 
