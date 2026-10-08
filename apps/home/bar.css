@@ -202,6 +202,23 @@ a.gb-kid:hover .kid-portrait {
 }
 
 @media (max-width: 1100px) {
+    .gb-places {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .gb-places a {
+        flex: none;
+    }
+    .gb-family {
+        max-width: 130px;
+        min-width: 0;
+    }
+    .gb-family b {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
     .gb-kids {
         display: none;
     }

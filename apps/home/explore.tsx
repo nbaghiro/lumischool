@@ -7,7 +7,8 @@
 // read at, said over the stage and never on the sheet, and the print, which is the grown-up's sheet
 // with the answers and the notes when they ask for them. Nothing here records anything.
 
-import "./explore.css";
+import "../../engine/ui/lesson-catalogue.css";
+import { LessonCard } from "../../engine/ui/lesson-card";
 import type { SceneDrawer } from "../../engine/ui/scene";
 import {
     createEffect,
@@ -682,9 +683,11 @@ function Tile(props: {
         host.replaceChildren(svg);
     };
     return (
-        <a
+        <LessonCard
             href={lessonPath(l.id)}
-            class="explore-tile"
+            title={l.title}
+            subtitle={sub}
+            preview={<Near class="explore-pic on-paper" draw={draw} />}
             onPointerEnter={() => props.warm()}
             onFocus={() => props.warm()}
             onClick={(e) => {
@@ -692,10 +695,6 @@ function Tile(props: {
                 e.preventDefault();
                 props.open();
             }}
-        >
-            <Near class="explore-pic on-paper" draw={draw} />
-            <span class="explore-tile-title">{l.title}</span>
-            <span class="explore-tile-sub">{sub}</span>
-        </a>
+        />
     );
 }

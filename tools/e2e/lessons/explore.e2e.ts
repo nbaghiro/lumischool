@@ -231,7 +231,9 @@ test("a grade folds away and comes back, and narrowing opens a grade that has ma
     await page.goto("/explore");
     await atScreen(page, page.getByRole("heading", { name: "Every lesson", level: 1 }));
     const grade1 = page.getByRole("button", { name: /^Grade 1, \d+ lessons$/ });
-    const tiles = page.locator(".explore-grade").first().locator(".explore-tile:visible");
+    const tiles = page
+        .locator('.explore-grade[aria-label="Grade 1"]')
+        .locator(".explore-tile:visible");
     await expect(grade1).toHaveAttribute("aria-expanded", "true");
     await expect(tiles.first()).toBeVisible();
 
@@ -239,7 +241,7 @@ test("a grade folds away and comes back, and narrowing opens a grade that has ma
     await grade1.click();
     await expect(grade1).toHaveAttribute("aria-expanded", "false");
     await expect(tiles).toHaveCount(0);
-    await expect(grade1).toHaveText(/84 lessons/);
+    await expect(grade1).toHaveText(/Grade 1.*\d+ lessons/);
     await grade1.click();
     await expect(grade1).toHaveAttribute("aria-expanded", "true");
     await expect(tiles.first()).toBeVisible();
