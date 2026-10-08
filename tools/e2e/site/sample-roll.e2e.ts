@@ -25,8 +25,10 @@ test("the sample lesson settles before appearing and keeps one world through fit
         });
     });
     await page.goto("/home");
+    await expect(page.locator(".site-bar div.bar-mark-bird")).toBeAttached();
     const frame = page.locator(".site-roll");
-    await frame.scrollIntoViewIfNeeded();
+    // The readable server page is replaced when the interactive map is ready to mount.
+    await expect(async () => frame.scrollIntoViewIfNeeded()).toPass();
     await expect(frame).toHaveClass(/is-ready/, { timeout: 90_000 });
     await expect(frame).toHaveAttribute("data-mounts", "1");
     const sheet = frame.locator(".wd-sheets .ls-sheet").first();

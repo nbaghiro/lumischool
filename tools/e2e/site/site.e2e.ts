@@ -11,8 +11,9 @@ import { BASE, signInAs, signOut, test } from "../steps";
 /** The site's headline, which no other page has. */
 async function onSite(page: Page): Promise<void> {
     await expect(
-        page.getByRole("heading", { level: 1, name: "School at home, one world at a time" }),
+        page.getByRole("heading", { level: 1, name: "Homeschool lessons to use online or print." }),
     ).toBeVisible();
+    await expect(page.locator(".site-bar div.bar-mark-bird")).toBeAttached();
 }
 
 test("a visitor with no session sees the site at /, and its Sign in reaches the sign-in page", async ({
@@ -115,6 +116,12 @@ async function scrollOver(page: Page, over: Locator): Promise<void> {
         await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(from + 150);
     };
     const byWheel = await page.evaluate(() => window.scrollY);
+    if (test.info().project.use.browserName === "webkit" && test.info().project.use.hasTouch) {
+        // Playwright cannot send wheel or swipe gestures to mobile WebKit; check page scrolling.
+        await page.evaluate(() => window.scrollBy(0, 300));
+        await scrolled(byWheel);
+        return;
+    }
     await page.mouse.move(x, y);
     await page.mouse.wheel(0, 300);
     await scrolled(byWheel);
@@ -179,6 +186,7 @@ test("the final marketing map fits all worlds inside its panel, including after 
 }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/home");
+    await onSite(page);
     const last = page.locator(".site-step").last();
     await expect(last).toBeAttached({ timeout: 60000 });
     await last.evaluate((el) => el.scrollIntoView({ block: "center" }));

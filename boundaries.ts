@@ -202,6 +202,7 @@ export const MODULES: Record<string, Module> = {
     tracks: { at: "school/tracks", phase: "run", reach: ["year"], packages: [] },
     voice: { at: "school/voice", phase: "run", reach: [], packages: [] },
     record: { at: "school/record", phase: "run", reach: ["answer", "numbers"], packages: [] },
+    public: { at: "school/public", phase: "run", reach: [], packages: [] },
     catalogue: { at: "school/catalogue", phase: "run", reach: ["pack", "page"], packages: [] },
     family: {
         at: "school/family",
@@ -246,6 +247,7 @@ export const MODULES: Record<string, Module> = {
             "adaptive",
             "lessons",
             "worlds/worlds",
+            "public",
             "page",
         ],
         packages: [

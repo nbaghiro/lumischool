@@ -148,7 +148,9 @@ export function MapBackdrop(props: {
         changedAt = performance.now();
         if (!following && !disposed) following = requestAnimationFrame(follow);
     };
-    onCleanup(() => cancelAnimationFrame(following));
+    onCleanup(() => {
+        if (following) cancelAnimationFrame(following);
+    });
     onMount(() => {
         frame();
         wake();

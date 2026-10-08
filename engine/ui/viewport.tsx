@@ -2,6 +2,7 @@
 // first screen costs nothing until the reader scrolls toward it, and whether the page has left the top.
 
 import { createSignal, onCleanup, onMount, type Accessor, type JSX } from "solid-js";
+import { isServer } from "solid-js/web";
 import { smallDevice } from "./device";
 
 /** Runs `then` once, the first time `el` comes within `margin` of the window, one window's height by default; what it returns gives up waiting. */
@@ -121,6 +122,7 @@ export function Near(props: {
 
 /** Whether a media query matches, kept up to date as the window changes. */
 export function matches(query: string): Accessor<boolean> {
+    if (isServer) return () => false;
     const list = matchMedia(query);
     const [on, setOn] = createSignal(list.matches);
     const change = (): void => {
@@ -133,6 +135,7 @@ export function matches(query: string): Accessor<boolean> {
 
 /** Whether the page has scrolled more than `px` from its top. */
 export function scrolledPast(px: number): Accessor<boolean> {
+    if (isServer) return () => false;
     const [past, setPast] = createSignal(window.scrollY > px);
     const read = (): void => {
         setPast(window.scrollY > px);

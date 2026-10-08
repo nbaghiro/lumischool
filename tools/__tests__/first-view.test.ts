@@ -353,3 +353,67 @@ test("the site's data and the visitor's pack the build wrote agree: the journey 
         assert.ok(scene.ok, scene.ok ? "" : scene.problem);
     }
 });
+
+test("public pages contain readable content, unique metadata and a crawlable link graph before JavaScript", () => {
+    const sitemap = readFileSync(join(out, "sitemap.xml"), "utf8");
+    const urls = [...sitemap.matchAll(/<loc>https:\/\/lumischool\.ai([^<]*)<\/loc>/g)].map(
+        (m) => m[1] ?? "/",
+    );
+    assert.equal(urls.length, 10);
+    const titles = new Set<string>();
+    const descriptions = new Set<string>();
+    for (const path of urls) {
+        const html = readFileSync(
+            join(out, path === "/" ? SITE : `site${path}/index.html`),
+            "utf8",
+        );
+        assert.equal([...html.matchAll(/<h1\b/g)].length, 1, path);
+        assert.ok(html.includes(`rel="canonical" href="https://lumischool.ai${path}"`), path);
+        const title = /<title>([^<]+)<\/title>/.exec(html)?.[1];
+        const description = /<meta name="description" content="([^"]+)"/.exec(html)?.[1];
+        assert.ok(title && !titles.has(title), `unique title at ${path}`);
+        assert.ok(description && !descriptions.has(description), `unique description at ${path}`);
+        titles.add(title);
+        descriptions.add(description);
+        assert.match(html, /application\/ld\+json/);
+        assert.match(html, /name="twitter:title"/);
+        assert.match(html, /name="twitter:description"/);
+        if (path === "/") {
+            assert.match(html, /id="subjects"/);
+            assert.match(html, /href="#\/map"/);
+        }
+        assert.doesNotMatch(
+            html,
+            /file:\/\/|<!--public-page-->|<meta name="robots" content="noindex/,
+        );
+        assert.match(html, /href="\/home#subjects"/);
+        if (["/privacy", "/terms", "/support", "/delete-account"].includes(path))
+            assert.doesNotMatch(html, /<script[^>]*type="module"/);
+        if (path.startsWith("/learn/")) {
+            assert.match(html, /Look together/);
+            const file = /data-lesson-url="([^"]+)"/.exec(html)?.[1];
+            assert.ok(file);
+            assert.ok(file.startsWith("/assets/public-lesson-"));
+            const lesson = readLesson(JSON.parse(readFileSync(join(out, file), "utf8")));
+            assert.ok(lesson.ok);
+            assert.ok(
+                lesson.lesson.levels.easy && lesson.lesson.levels.hard,
+                "samples keep their actual declared levels",
+            );
+            assert.match(html, /For grown-ups/);
+        }
+        for (const match of html.matchAll(/href="(\/[^"#?]*)[^" ]*"/g)) {
+            const target = match[1];
+            if (target?.startsWith("/learn/") || target?.startsWith("/curriculum"))
+                assert.ok(urls.includes(target), `${path} links to missing ${target}`);
+        }
+    }
+    assert.doesNotMatch(
+        sitemap,
+        /\/home<|\/sign-in|\/kids|onrender|\/games|\/curriculum|\/homeschool-math/,
+    );
+    assert.match(
+        readFileSync(join(out, "robots.txt"), "utf8"),
+        /Sitemap: https:\/\/lumischool.ai\/sitemap.xml/,
+    );
+});

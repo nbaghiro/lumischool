@@ -1,6 +1,7 @@
 // The logo in a bar: the guide who is a paper bird, idling, beside the word.
 
 import "./mark.css";
+import { isServer } from "solid-js/web";
 import { Show, type JSX } from "solid-js";
 import { drawBird } from "./art";
 import { Logo } from "./logo";
@@ -16,7 +17,11 @@ import { Near } from "./viewport";
 export function Mark(props: { href?: string; label?: string; go?: () => void }): JSX.Element {
     const inner = (): JSX.Element => (
         <>
-            <Near class="bar-mark-bird" draw={drawBird} />
+            {isServer ? (
+                <img class="bar-mark-bird" src="/favicon.svg" alt="" />
+            ) : (
+                <Near class="bar-mark-bird" draw={drawBird} />
+            )}
             <Logo kind="word" />
         </>
     );

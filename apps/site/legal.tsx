@@ -3,6 +3,7 @@
 // (.docs/mobile.md, "Store submission").
 
 import "./legal.css";
+import { isServer } from "solid-js/web";
 import { For, type JSX } from "solid-js";
 import { Mark } from "../../engine/ui/mark";
 import { Footer } from "./page";
@@ -210,7 +211,7 @@ const LEGAL: Record<string, Written> = {
 export function Legal(props: { path: string }): JSX.Element {
     const page = LEGAL[props.path];
     if (page === undefined) return null;
-    document.title = `${page.title} · lumischool`;
+    if (!isServer) document.title = `${page.title} · lumischool`;
     return (
         <>
             <header class="site-bar">

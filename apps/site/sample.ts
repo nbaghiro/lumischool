@@ -238,21 +238,17 @@ export async function journeyView(): Promise<MapView | undefined> {
 
 /**
  * The still maps the small pictures are drawn from: a grown-up's map for the cards, so a world the
- * child has not reached is still drawn, the child's own for the journal, and the world each frames.
+ * child has not reached is still drawn, and the world each card frames.
  */
 export async function pictures(): Promise<{
     grown: MapView;
-    own: MapView;
     cards: string[];
-    journal: string;
 }> {
     const s = await schoolOf();
     const o = { worldOf: s.stillOf, still: true, size: s.size, declared: s.declared };
     return {
         grown: viewOfTrip(s.child.now, { ...o, grown: true }),
-        own: viewOfTrip(s.child.now, { ...o, grown: false }),
         cards: s.child.cards.map((c) => s.child.now.places[c.place]?.world ?? ""),
-        journal: s.child.here?.world ?? "",
     };
 }
 

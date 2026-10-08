@@ -16,6 +16,7 @@ import {
     Show,
     type JSX,
 } from "solid-js";
+import { isServer } from "solid-js/web";
 import type { Size } from "../../engine/space";
 import { idle, onDemand } from "../../engine/ui/art";
 import { MapBackdrop, OPENING, type Ground } from "../../engine/ui/backdrop";
@@ -26,6 +27,7 @@ import { PICTURES } from "./pictures";
 import { Mark } from "../../engine/ui/mark";
 import { matches, Near, scrolledPast, whileNear } from "../../engine/ui/viewport";
 import type { Sample } from "../../school/worlds/sample";
+import { PUBLIC_PAGES, PUBLIC_LESSONS } from "../../school/public";
 import type { Roll, SamplePicture } from "./sample";
 
 /** The sample child's map at the opening, worked out from the site's data once the map's box is near and the page idle, drawn by the same component as the map section below (ground.ts). */
@@ -66,8 +68,8 @@ const warmMap = (): void => {
  * shared link work: `#/map` the sample child's map, `#/map/<world>` a world of it. The page has no
  * router, so it reads the address itself, on every move of the history.
  */
-const [hash, setHash] = createSignal(location.hash);
-addEventListener("popstate", () => setHash(location.hash));
+const [hash, setHash] = createSignal(isServer ? "" : location.hash);
+if (!isServer) addEventListener("popstate", () => setHash(location.hash));
 // The page's #map section is distinct from the explicit #/map overlay route.
 const looking = (): OverlayAt | null => (hash() === "#map" ? null : atFrom(hash()));
 /** The entry the look pushed, so closing it goes back to the page's own rather than past it. */
@@ -98,26 +100,27 @@ const picture =
  * the browser keeps answers when the client loads, and the API is asked only when there is a hint.
  */
 const [inside, setInside] = createSignal(false);
-void import("../../engine/ui/api").then(async ({ me, signedIn }) => {
-    setInside(signedIn() !== null);
-    setInside((await me()) !== null);
-});
+if (!isServer)
+    void import("../../engine/ui/api").then(async ({ me, signedIn }) => {
+        setInside(signedIn() !== null);
+        setInside((await me()) !== null);
+    });
 
 /**
  * The bar: the mark, the sections of the page, and the way in, which is signing in or starting a
  * family for a visitor and the family's own page for a parent who is signed in.
  */
-function Bar(): JSX.Element {
+export function Bar(props: { written?: boolean } = {}): JSX.Element {
     const moved = scrolledPast(4);
     return (
         <header class="site-bar" classList={{ moved: moved() }}>
             <div class="site-wrap site-bar-in">
                 <Mark href="/home" />
                 <nav class="site-secnav" aria-label="Sections of this page">
-                    <a href="#day">A lesson</a>
-                    <a href="#map">The map</a>
-                    <a href="#you">For parents</a>
-                    <a href="#subjects">Subjects</a>
+                    <a href={props.written ? "/home#day" : "#day"}>A lesson</a>
+                    <a href={props.written ? "/home#map" : "#map"}>The map</a>
+                    <a href={props.written ? "/home#you" : "#you"}>For parents</a>
+                    <a href={props.written ? "/home#subjects" : "#subjects"}>Subjects</a>
                 </nav>
                 <div class="site-ways">
                     <Show
@@ -156,28 +159,38 @@ function Opening(props: { sample: Sample | undefined }): JSX.Element {
     const narrow = matches("(max-width: 700px)");
     return (
         <section class="site-opening" id="top">
-            <MapBackdrop
-                sample
-                class="site-map"
-                aim={narrow() ? PHONE_OPENING : OPENING.wide}
-                ground={opening}
-                stills={narrow() ? phoneStills : SITE}
-                keepOff={() => {
-                    const over = sheet();
-                    return over ? [over] : [];
-                }}
-                fade
-                onDrawn={() => void siteData().then((d) => d.openingDrawn())}
-            />
+            <Show when={isServer}>
+                <div class="site-map backdrop fade">
+                    <picture>
+                        <source media="(max-width: 700px)" srcset={SITE[1]?.src} />
+                        <img class="site-still on" src={SITE[0]?.src} alt="" fetchpriority="high" />
+                    </picture>
+                </div>
+            </Show>
+            <Show when={!isServer}>
+                <MapBackdrop
+                    sample
+                    class="site-map"
+                    aim={narrow() ? PHONE_OPENING : OPENING.wide}
+                    ground={opening}
+                    stills={narrow() ? phoneStills : SITE}
+                    keepOff={() => {
+                        const over = sheet();
+                        return over ? [over] : [];
+                    }}
+                    fade
+                    onDrawn={() => void siteData().then((d) => d.openingDrawn())}
+                />
+            </Show>
             <div class="site-wrap site-over">
                 <div class="site-sheet" ref={setSheet}>
                     <span class="site-tape" aria-hidden="true" />
                     <span class="site-tape r" aria-hidden="true" />
                     <p class="kicker">{props.sample?.eyebrow ?? "Ages 5 to 12"}</p>
-                    <h1>School at home, one world at a time</h1>
+                    <h1>Homeschool lessons to use online or print.</h1>
                     <p class="lead">
-                        Each term your child moves on to a new world. Every question is checked
-                        before they see it.
+                        School at home, one world at a time. Each term brings a new world. Every
+                        question is checked before they see it.
                     </p>
                     <p class="acts">
                         <a class="btn" href="#start">
@@ -278,7 +291,7 @@ function Day(props: { sample: Sample | undefined }): JSX.Element {
 /** The stops of the first year and the whole run, beside the map that walks to whichever is in the middle. */
 /** The map's and the roll's components, loaded with their own code when their section comes near. */
 /** Whether the page draws its map pictures live, as tools/scripts/site-pictures.ts pictures them. */
-const LIVE = new URLSearchParams(location.search).has("livePictures");
+const LIVE = !isServer && new URLSearchParams(location.search).has("livePictures");
 const Overworld = lazy(() =>
     import("../../engine/ui/overworld").then((m) => ({ default: m.Overworld })),
 );
@@ -685,21 +698,21 @@ function Journey(props: { sample: Sample | undefined }): JSX.Element {
 /**
  * One place of the sample child's map alone, still, framed on its picture with room above it for
  * the stamp that overlaps its corner (sample.ts `pictureCamera`): a card's world on a grown-up's map,
- * so a world the child has not reached is still drawn, or the journal's on the child's own. Drawn
+ * so a world the child has not reached is still drawn. Drawn
  * once its box comes near; the card's heading names the world, so the map's names are not drawn
  * (site.css).
  */
 function MapPicture(props: {
     class: string;
-    of: { is: "card"; at: number } | { is: "journal" };
+    of: { is: "card"; at: number };
     title: string;
 }): JSX.Element {
     if (LIVE) return <LiveMapPicture {...props} />;
     const narrow = matches("(max-width: 1080px)");
     const src = (): string | undefined => {
-        const kind = props.of.is === "card" ? PICTURES.cards : PICTURES.journal;
+        const kind = PICTURES.cards;
         const shots = narrow() ? kind.narrow : kind.wide;
-        return shots[props.of.is === "card" ? props.of.at : 0];
+        return shots[props.of.at];
     };
     return (
         <div class={`${props.class} paper`} aria-hidden="true">
@@ -715,7 +728,7 @@ function MapPicture(props: {
 /** A place of the sample child's map drawn live, for the tool that pictures it (`?livePictures`). */
 function LiveMapPicture(props: {
     class: string;
-    of: { is: "card"; at: number } | { is: "journal" };
+    of: { is: "card"; at: number };
     title: string;
 }): JSX.Element {
     const [host, setHost] = createSignal<HTMLDivElement>();
@@ -724,10 +737,8 @@ function LiveMapPicture(props: {
         if (!on) return undefined;
         const m = await pictures();
         const p = await m.pictures();
-        const world = props.of.is === "card" ? p.cards[props.of.at] : p.journal;
-        return world === undefined
-            ? undefined
-            : { view: props.of.is === "card" ? p.grown : p.own, world, camera: m.pictureCamera };
+        const world = p.cards[props.of.at];
+        return world === undefined ? undefined : { view: p.grown, world, camera: m.pictureCamera };
     });
     onMount(() => {
         const el = host();
@@ -814,14 +825,30 @@ function Subjects(props: { sample: Sample | undefined }): JSX.Element {
                 <div class="site-subjects">
                     <For each={subjects()?.tiles ?? []}>
                         {(tile, i) => (
-                            <article class="site-subject">
+                            <a
+                                class="site-subject"
+                                href="#/map"
+                                onClick={(e) => {
+                                    if (
+                                        e.button !== 0 ||
+                                        e.metaKey ||
+                                        e.ctrlKey ||
+                                        e.shiftKey ||
+                                        e.altKey
+                                    )
+                                        return;
+                                    e.preventDefault();
+                                    look({ world: null, lesson: null });
+                                }}
+                            >
                                 <Near class="art" draw={picture({ is: "subject", at: i() })} />
                                 <div class="row">
                                     <h3>{tile.name}</h3>
                                     <span class="count">{tile.count}</span>
                                 </div>
                                 <p class="note">{tile.note}</p>
-                            </article>
+                                <span class="site-card-link">Explore the sample map →</span>
+                            </a>
                         )}
                     </For>
                 </div>
@@ -830,53 +857,50 @@ function Subjects(props: { sample: Sample | undefined }): JSX.Element {
                 </Show>
                 <p class="note site-rest">
                     lumischool teaches maths, reading and writing, science, coding, art and music.
-                    We are writing history and social studies next. We do not teach physical
-                    education, a foreign language or moral education, so a family will need to cover
-                    those elsewhere.
+                    History and language lessons are also available. Coverage varies by subject and
+                    grade. Explore the sample map to see how lessons fit into each world.
                 </p>
             </div>
         </section>
     );
 }
 
-function Start(props: { sample: Sample | undefined }): JSX.Element {
+function Start(): JSX.Element {
     return (
         <section class="site-sec" id="start">
             <div class="site-wrap">
-                <Head num="05" kicker="Start" title="Read a lesson" />
-                <Show when={props.sample}>
-                    {(s) => (
-                        <div class="site-lessons">
-                            <For each={s().lessons}>
-                                {(lesson, i) => (
-                                    <article class="site-lesson">
-                                        <Near
-                                            class="site-mount paper"
-                                            draw={picture({ is: "lesson", at: i() })}
-                                        />
-                                        <p class="kicker">{lesson.tag}</p>
-                                        <h3>{lesson.title}</h3>
-                                    </article>
-                                )}
-                            </For>
-                            <article class="site-lesson">
-                                <MapPicture
-                                    class="site-pic"
-                                    of={{ is: "journal" }}
-                                    title="The sample child's journal"
-                                />
-                                <p class="kicker">The journal</p>
-                                <h3>{s().journal}</h3>
-                            </article>
-                        </div>
-                    )}
-                </Show>
+                <Head
+                    num="05"
+                    kicker="Start"
+                    title="Read a lesson"
+                    lead="Try a lesson together, no account needed. Choose a level, see the parent notes, or print it for the kitchen table."
+                />
+                <div class="site-lessons site-samples">
+                    <For each={PUBLIC_PAGES.filter((page) => PUBLIC_LESSONS[page.path])}>
+                        {(page) => (
+                            <a class="site-lesson site-sample" href={page.path}>
+                                <p class="kicker">A lesson to try together</p>
+                                <h3>{page.title.split(":")[0]}</h3>
+                                <p>{page.description}</p>
+                                <span class="site-card-link">Read the lesson →</span>
+                            </a>
+                        )}
+                    </For>
+                </div>
+                <div class="acts">
+                    <a class="btn" href="/start">
+                        Start a family
+                    </a>
+                    <a class="btn second" href="#subjects">
+                        Explore the subjects
+                    </a>
+                </div>
             </div>
         </section>
     );
 }
 
-export function Page(): JSX.Element {
+export function Page(props: { initial?: Sample } = {}): JSX.Element {
     onMount(() => {
         let closed = false;
         onCleanup(() => {
@@ -891,8 +915,12 @@ export function Page(): JSX.Element {
             })
             .catch(() => undefined);
     });
-    const [sample] = createResource(async () => (await (await siteData()).siteData()).words);
-    const words = (): Sample | undefined => (sample.state === "ready" ? sample() : undefined);
+    const [sample] = createResource(
+        () => !isServer && !props.initial,
+        async () => (await (await siteData()).siteData()).words,
+    );
+    const words = (): Sample | undefined =>
+        props.initial ?? (sample.state === "ready" ? sample() : undefined);
     return (
         <>
             <a class="site-skip" href="#main">
@@ -906,7 +934,7 @@ export function Page(): JSX.Element {
                 <Journey sample={words()} />
                 <Parents sample={words()} />
                 <Subjects sample={words()} />
-                <Start sample={words()} />
+                <Start />
             </main>
             <Footer />
             <Show when={looking() !== null}>
@@ -928,6 +956,10 @@ export function Footer(): JSX.Element {
             <Mark href="/home" />
             <p class="note">lumischool.ai · lessons for families teaching at home.</p>
             <nav class="site-foot-links" aria-label="About lumischool">
+                <a href="/home#subjects">Subjects</a>
+                <a href="/home#/map">Explore the map</a>
+                <a href="/how-it-works">How it works</a>
+                <a href="/about">About</a>
                 <a href="/privacy">Privacy</a>
                 <a href="/terms">Terms</a>
                 <a href="/support">Help and support</a>

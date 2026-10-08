@@ -120,7 +120,6 @@ test("the words read off the child, and the site's data reads back through its c
     const words = wordsOf(c, {
         questions: 40,
         versions: { total: 3, sampled: false, drawn: 3 },
-        tagOf: (id) => `Tag ${id}`,
     });
     assert.equal(
         words.facts[0]?.n,
@@ -132,10 +131,6 @@ test("the words read off the child, and the site's data reads back through its c
     assert.match(words.day.versionsCaption, /One question, 3 ways/);
     assert.equal(words.steps.length, c.stops.length);
     assert.equal(words.cards.length, c.cards.length);
-    assert.deepEqual(
-        words.lessons.map((l) => l.tag),
-        c.chosen.map((id) => `Tag ${id}`),
-    );
     const data = { journey: c.now, words, versions: [], pack: "/assets/site-pack-0" };
     const read = readSiteData(JSON.parse(JSON.stringify(data)));
     assert.ok(read.ok);

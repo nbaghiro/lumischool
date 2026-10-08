@@ -1,3 +1,5 @@
+import { publicPage } from "../school/public";
+
 // Which app answers a page on the one origin (.docs/local.md, "The apps"). The dev server's middleware
 // reads it now and the Node server will once it serves the builds, so the two cannot disagree.
 
@@ -21,8 +23,8 @@ export const COOKIES = {
 /** A request answered with an app's page, rather than by the API or with a file. */
 export function isPage(req: { method: string; accept: string; path: string }): boolean {
     return (
-        req.method === "GET" &&
-        req.accept.includes("text/html") &&
+        (req.method === "GET" || req.method === "HEAD") &&
+        (req.accept.includes("text/html") || publicPage(normalPagePath(req.path)) !== undefined) &&
         !req.path.startsWith("/api/") &&
         !/\.\w+$/.test(req.path)
     );
@@ -45,8 +47,34 @@ export function hasKidSession(cookie: string, secure: boolean): boolean {
     return carries(cookie, (secure ? COOKIES.secure : COOKIES.plain).kids);
 }
 
-/** The site's written pages, which the app stores ask for by address; `LEGAL` in apps/site/legal.tsx and apps/site/main.tsx hold the same paths. */
-const SITE_PAGES = new Set(["/privacy", "/terms", "/support", "/delete-account"]);
+/** The spelling used by public canonical URLs and by the family screen table. */
+export const normalPagePath = (path: string): string =>
+    path === "/" ? path : path.replace(/\/+$/, "");
+
+/** Routes that really exist in the family apps. A missing page keeps the app's friendly 404 UI. */
+export function knownPage(path: string): boolean {
+    const p = normalPagePath(path);
+    return (
+        publicPage(p) !== undefined ||
+        [
+            "/kids",
+            "/kids/sign-in",
+            "/open-child",
+            "/sign-in",
+            "/start",
+            "/explore",
+            "/map",
+            "/calendar",
+            "/print",
+            "/join",
+            "/account",
+            "/games",
+            "/painting",
+            "/tutoring",
+        ].includes(p) ||
+        /^\/explore\/[^/]+$/.test(p)
+    );
+}
 
 /**
  * The app a page path belongs to (.docs/auth.md, "Hosts"): the children's view under `/kids`, the site
@@ -58,7 +86,12 @@ const SITE_PAGES = new Set(["/privacy", "/terms", "/support", "/delete-account"]
  */
 export function pageFor(path: string, held: { session: boolean; kids: boolean }): App {
     if (path === "/kids" || path.startsWith("/kids/")) return "kids";
-    if (path === "/home" || path === "/home/" || SITE_PAGES.has(path)) return "site";
+    if (
+        path === "/home" ||
+        path === "/home/" ||
+        (publicPage(normalPagePath(path)) !== undefined && normalPagePath(path) !== "/")
+    )
+        return "site";
     if (path === "/") return held.kids ? "kids" : held.session ? "home" : "site";
     return "home";
 }

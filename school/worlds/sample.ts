@@ -396,7 +396,7 @@ export function sampleChild(corpus: Corpus, worldOf: (id: string) => Applied): S
                 kicker: `Years ${first.grade} to ${last.grade}`,
                 title: `${capital(spell(run.length))} worlds in all`,
                 lines: [
-                    `${capital(spell(worlds.length))} a year, from ${lower((run[0] ?? hereWorld).name)} to ${lower((run[run.length - 1] ?? hereWorld).name)}.`,
+                    `From ${lower((run[0] ?? hereWorld).name)} to ${lower((run[run.length - 1] ?? hereWorld).name)}, with a world for each term.`,
                 ],
                 note: "A grown-up's map, with every world on it.",
             },
@@ -551,9 +551,6 @@ export interface Sample {
         tiles: { name: string; count: string; note: string }[];
         rest: string;
     };
-    /** The lessons a visitor reads first, and the journal of the same child. */
-    lessons: { tag: string; title: string }[];
-    journal: string;
 }
 
 /** What only the notation knows about the sample child's lessons, which the build reads off the workspace. */
@@ -562,8 +559,6 @@ export interface FromNotation {
     questions: number;
     /** The question the day's versions draw: how many ways it can be drawn, whether the verifier sampled them, and how many are drawn. */
     versions: { total: number; sampled: boolean; drawn: number } | null;
-    /** The strip above a lesson's title, as the notation writes it. */
-    tagOf(id: string): string;
 }
 
 /** The site's words about the sample child. */
@@ -607,8 +602,6 @@ export function wordsOf(c: SampleChild, from: FromNotation): Sample {
             tiles: c.tiles.tiles.map(({ name, count, note }) => ({ name, count, note })),
             rest: c.tiles.few.length ? `A few lessons so far in ${listNames(c.tiles.few)}.` : "",
         },
-        lessons: c.chosen.map((id) => ({ tag: from.tagOf(id), title: c.titleOf(id) })),
-        journal: `A sample child ${inWorld(hereWorld)}`,
     };
 }
 
@@ -709,8 +702,8 @@ const tileProblem = (v: unknown): string | null =>
 
 function wordsProblem(v: unknown): string | null {
     if (!isPlain(v)) return "the words must be an object";
-    if (!(isText(v.eyebrow) && isText(v.caption) && isText(v.journal)))
-        return "the words hold the eyebrow, the caption and the journal's line";
+    if (!(isText(v.eyebrow) && isText(v.caption)))
+        return "the words hold the eyebrow and the caption";
     const day = v.day;
     if (!(
         isPlain(day) &&
@@ -734,12 +727,7 @@ function wordsProblem(v: unknown): string | null {
         ) ??
         eachProblem(v.steps, "steps", stepProblem) ??
         eachProblem(v.cards, "cards", cardProblem) ??
-        eachProblem(subjects.tiles, "subjects.tiles", tileProblem) ??
-        eachProblem(v.lessons, "lessons", (l) =>
-            isPlain(l) && isText(l.tag) && isText(l.title)
-                ? null
-                : "a lesson holds its tag and title",
-        )
+        eachProblem(subjects.tiles, "subjects.tiles", tileProblem)
     );
 }
 

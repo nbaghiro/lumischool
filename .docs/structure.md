@@ -489,6 +489,28 @@ their preload names must not grow every page's opening script as games join the 
 Game mechanics revisions use one lookup in `engine/answer.ts`, keeping their shared prefix out
 of each branch while preserving saved challenge versions.
 
+The public marketing routes are declared in `school/public.ts` (a run module with no dependencies).
+`tools/public-pages.ts` uses a separate Solid SSR module loader at build time to render the actual
+site components with the public sample already available. It writes the homepage, selected sample
+lesson pages, informational and legal pages, robots.txt and sitemap.xml. Written pages keep crawlable text without JavaScript, then enhance their shared marketing bar.
+The three public lesson routes map to existing curriculum ids in `school/public.ts`; the build
+compiles only those lessons with their declared levels, and their island uses `LessonSheet`, the
+same level labels as Explore, answer notes and print. Legal pages keep no client script. The homepage keeps its static content
+until fonts and public sample data are ready, then mounts the interactive page. No family records enter
+these files. The renderer is build tooling, never part of the production server. The build test checks
+initial HTML, unique metadata, the public link graph and the existing asset budgets.
+The homepage Subjects navigation points to its own subjects section, whose cards open the existing
+sample-map overlay. Visitors may enter every world while retaining the limited lesson previews from
+the visitor pack. The family catalogue remains inside the app. Retired `/curriculum` routes and
+`/homeschool-math` redirect to `/home#subjects` and are absent from the sitemap. Three selected
+public sample lessons remain available with their shared lesson sheets.
+The For parents section shows the first three distinct worlds in the sample journey, including
+worlds ahead when Kindergarten provides only one. `npm run site:pictures -- --cards` refreshes
+those card images without regenerating the other marketing illustrations.
+Page titles and descriptions also supply social previews and WebPage structured data. Search Console
+verification, sitemap submission and indexing checks happen against the released production domain;
+they are not completed by a local build.
+
 The site came forward from step 7 (13 September 2026), so that a visitor can open it from the
 sign-in pages and a parent who is signed in can reach it from the logo, as galleo's marketing build
 and app hand over to each other. `apps/site` is Site M as a Solid app on the one origin: `server/pages.ts`

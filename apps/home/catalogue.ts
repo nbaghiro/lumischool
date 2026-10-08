@@ -67,11 +67,7 @@ export function searchedLine(f: Filters): string {
 }
 
 /** What a grown-up reads a level as. A child's sheet never says which level it is. */
-export const LEVEL_WORDS: Record<Level, string> = {
-    easy: "Easier",
-    medium: "As written",
-    hard: "Harder",
-};
+export { LEVEL_WORDS } from "../../school/public";
 
 /** The level an address asks for, or as written when it names none or one the lesson does not declare. */
 export function levelFrom(search: string, declared: readonly Level[]): Level {

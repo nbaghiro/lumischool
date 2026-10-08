@@ -683,6 +683,16 @@ figure.site-fig figcaption {
     background: var(--card);
     border: 1.5px solid var(--rule-firm);
     border-radius: 12px;
+    color: var(--ink);
+    text-decoration: none;
+}
+.site-card-link {
+    margin-top: auto;
+    color: var(--pen);
+    font-weight: 700;
+}
+.site-sample h3 {
+    font: 700 27px / 1.25 var(--f-hand);
 }
 .site-subject .art {
     position: relative;
@@ -716,32 +726,20 @@ figure.site-fig figcaption {
 
 .site-lessons {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--gap);
+    margin-bottom: 20px;
 }
 .site-lesson {
     display: flex;
     flex-direction: column;
     gap: 10px;
     padding: clamp(12px, 1.2vw, 18px);
-    background: var(--paper);
+    background: var(--card);
     border: 1.5px solid var(--rule-firm);
-    border-radius: 14px;
+    color: var(--ink);
+    text-decoration: none;
 }
-.site-lesson .site-pic,
-.site-mount {
-    height: 170px;
-    border-radius: 10px;
-}
-.site-mount {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    overflow: hidden;
-    border: 1.5px solid var(--rule);
-}
-
 .site-foot {
     padding-block: clamp(34px, 3.6vw, 60px) 72px;
 }

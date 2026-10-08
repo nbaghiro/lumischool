@@ -4,9 +4,11 @@
 // reads its file from disk again rather than keeping one in memory: dist/ never changes while this
 // process runs, since a new deploy is a new process, so there is nothing to invalidate.
 
+import { createHash } from "node:crypto";
+import { publicFile, publicPage, publicRedirect, SITE_ORIGIN } from "../school/public";
 import { readFile } from "node:fs/promises";
 import { join, sep } from "node:path";
-import { hasKidSession, hasSession, isPage, pageFor } from "./pages";
+import { hasKidSession, hasSession, isPage, pageFor, knownPage, normalPagePath } from "./pages";
 import { MAIL_WORLDS, mailCover } from "./mail-design";
 
 const DIST = join(import.meta.dirname, "..", "dist");
@@ -31,6 +33,9 @@ const WELL_KNOWN: ReadonlySet<string> = new Set([
 ]);
 
 const TYPES: Readonly<Record<string, string>> = {
+    ".txt": "text/plain; charset=utf-8",
+    ".xml": "application/xml; charset=utf-8",
+    ".webp": "image/webp",
     ".html": "text/html; charset=utf-8",
     ".js": "text/javascript; charset=utf-8",
     ".mjs": "text/javascript; charset=utf-8",
@@ -105,13 +110,14 @@ export function staticFrom(
     dist: string = DIST,
 ): (req: Request) => Promise<Response | null> {
     return async (req) => {
-        if (req.method !== "GET") return null;
-        const { pathname } = new URL(req.url);
+        if (req.method !== "GET" && req.method !== "HEAD") return null;
+        const url = new URL(req.url);
+        const { pathname } = url;
 
         if (pathname.startsWith("/assets/")) {
             const body = await read(dist, pathname.slice(1));
             if (!body) return null;
-            return new Response(body, {
+            return new Response(req.method === "HEAD" ? null : body, {
                 status: 200,
                 headers: {
                     ...HEADERS,
@@ -126,7 +132,7 @@ export function staticFrom(
         if (WELL_KNOWN.has(pathname)) {
             const body = await read(dist, pathname.slice(1));
             if (!body) return null;
-            return new Response(body, {
+            return new Response(req.method === "HEAD" ? null : body, {
                 status: 200,
                 headers: {
                     ...HEADERS,
@@ -136,10 +142,14 @@ export function staticFrom(
             });
         }
 
-        if (BRAND_FILES.has(pathname)) {
+        if (
+            BRAND_FILES.has(pathname) ||
+            pathname === "/robots.txt" ||
+            pathname === "/sitemap.xml"
+        ) {
             const body = await read(dist, pathname.slice(1));
             if (!body) return null;
-            return new Response(body, {
+            return new Response(req.method === "HEAD" ? null : body, {
                 status: 200,
                 headers: {
                     ...HEADERS,
@@ -149,24 +159,73 @@ export function staticFrom(
             });
         }
 
+        const retired = publicRedirect(normalPagePath(pathname));
+        if (retired)
+            return new Response(null, {
+                status: 308,
+                headers: { location: retired, "cache-control": "no-store" },
+            });
         if (
             !isPage({ method: req.method, accept: req.headers.get("accept") ?? "", path: pathname })
         )
             return null;
+        const path = normalPagePath(pathname);
+        if (publicPage(path) && path !== pathname)
+            return new Response(null, {
+                status: 308,
+                headers: { location: `${path}${url.search}`, "cache-control": "no-store" },
+            });
         const cookie = req.headers.get("cookie") ?? "";
-        const app = pageFor(pathname, {
+        const app = pageFor(path, {
             session: hasSession(cookie, secure),
             kids: hasKidSession(cookie, secure),
         });
-        const body = await read(dist, `apps/${app}/index.html`);
+        const page = app === "site" ? publicPage(path) : undefined;
+        if (page && url.hostname === "lumischool.onrender.com")
+            return new Response(null, {
+                status: 308,
+                headers: {
+                    location: `${SITE_ORIGIN}${path}${url.search}`,
+                    "cache-control": "no-store",
+                },
+            });
+        const body = await read(dist, page ? publicFile(page) : `apps/${app}/index.html`);
         if (!body) return null;
-        return new Response(body, {
-            status: 200,
+        const hashes = [
+            ...new TextDecoder()
+                .decode(body)
+                .matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g),
+        ].map(
+            (match) =>
+                `'sha256-${createHash("sha256")
+                    .update(match[1] ?? "")
+                    .digest("base64")}'`,
+        );
+        // Solid's prerendered styles are fixed values from the public sample. Allow only those
+        // exact attributes, not arbitrary inline styles or scripts.
+        const styles = [...new TextDecoder().decode(body).matchAll(/\sstyle="([^"]*)"/g)].map(
+            (match) =>
+                `'sha256-${createHash("sha256")
+                    .update(match[1] ?? "")
+                    .digest("base64")}'`,
+        );
+        const csp =
+            (READING.has(app) ? READ_CSP : PAGE_CSP).replace(
+                "script-src 'self'",
+                `script-src 'self'${hashes.length ? ` ${hashes.join(" ")}` : ""}`,
+            ) +
+            (styles.length
+                ? `; style-src-attr 'unsafe-hashes' ${[...new Set(styles)].join(" ")}`
+                : "");
+        return new Response(req.method === "HEAD" ? null : body, {
+            status: knownPage(path) ? 200 : 404,
             headers: {
                 ...HEADERS,
+                ...(page ? {} : { "x-robots-tag": "noindex, nofollow" }),
+                vary: "Cookie",
                 "content-type": "text/html; charset=utf-8",
                 "cache-control": "no-store",
-                "content-security-policy": READING.has(app) ? READ_CSP : PAGE_CSP,
+                "content-security-policy": csp,
                 "permissions-policy": PERMISSIONS,
             },
         });

@@ -9,9 +9,24 @@ import { render } from "solid-js/web";
 import { Page } from "./page";
 
 await fontsReady();
-// the written pages come as their own chunk, so the site's first view carries none of their words
-const path = location.pathname;
-if (path === "/privacy" || path === "/terms" || path === "/support" || path === "/delete-account") {
-    const { Legal } = await import("./legal");
-    render(() => <Legal path={path} />, document.body);
-} else render(() => <Page />, document.body);
+if (location.pathname === "/" || location.pathname === "/home") {
+    const { siteData } = await import("./data");
+    const data = await siteData();
+    const host = document.getElementById("site-root");
+    if (host) {
+        await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+        const position = { left: scrollX, top: scrollY };
+        const step = host.querySelector(".site-steps")?.scrollLeft ?? 0;
+        // Keep document height while replacing the server page, so Safari never clamps its scroll.
+        host.style.minHeight = `${host.getBoundingClientRect().height}px`;
+        host.replaceChildren();
+        render(() => <Page initial={data.words} />, host);
+        host.style.minHeight = "";
+        // Keep both the page and the phone's horizontal map stops where the reader left them.
+        host.querySelector(".site-steps")?.scrollTo({ left: step });
+        scrollTo(position);
+    }
+} else {
+    const { enhance } = await import("./public-main");
+    enhance();
+}

@@ -519,6 +519,17 @@ One Render web service serves one domain from one process: the marketing site, t
 
 `server/pages.ts` holds this table for page paths, and both the dev server and, in time, the Node server read it. Which app answers `/` turns on whether the children's view cookie, or failing that the session cookie, is there at all, under the one name the API reads for each in that mode (`__Host-ls_session` and `__Host-ls_kids` over HTTPS, so a cookie without the prefix that a subdomain planted does not count, and `ls_session` and `ls_kids` locally), which the router can see without opening the database; whether the session is live is the API's to say. Galleo checks its own cookie at this point, because a signed cookie can be checked with nothing but the key, whereas ours is a token looked up in `keys`, and routing a page is not worth a query. The API makes the cheap check honest: an adult route that refuses a session cookie clears it in the same answer, and a kid route does the same for a children's view's cookie, so a browser whose session has ended (signed out elsewhere, removed, swept, or a local database reset) lands once on the family's page, is told there that it is signed out and sent to `/sign-in`, and finds the site at `/` from then on. No stale cookie can keep a browser away from the site. Signing out goes to `/sign-in` rather than `/`, as galleo's logout goes to `/login`, since `/` is the site for a browser with no cookie.
 
+Public page serving now uses the explicit catalogue in `school/public.ts`. Public GET and HEAD
+requests do not require an HTML Accept header. Trailing slashes redirect to the declared path.
+`/home` stays public for signed-in visitors and declares `/` as its canonical URL; it never redirects
+a family back to its dashboard. The Render hostname redirects public HTML to lumischool.ai, leaving
+API and asset routes alone. All HTML remains `no-store` and varies on Cookie. Family screens and
+missing pages carry `X-Robots-Tag: noindex, nofollow`; missing screens return HTTP 404. This is an
+indexing policy, not an access-control mechanism. The API still authenticates every private request.
+Robots and sitemap files have explicit public handlers. Structured-data scripts are allowed through
+CSP by their exact content hash, without allowing arbitrary inline scripts. The fixed style attributes
+Solid renders from the public sample likewise have exact hashes under `style-src-attr`.
+
 What separate hosts gave, and what one origin keeps of it:
 
 - A host-only session cookie was never sent with the child's app's requests. On one origin a cookie goes with every request to `/api`, so the separation is the route table's and the server's: the kid routes read only the children's view cookie, the adult routes read only the session cookie, and while a view is open on a browser the session it holds is put away and refused on every adult route. The children's build has no adult route in it, which the children's build check (`tools/kids-build.ts`) checks.

@@ -7,7 +7,7 @@
 
 import { sceneOf } from "../engine/notation/compile";
 import { instantiate } from "../engine/notation/instantiate";
-import { questions, tagOf } from "../engine/notation/lessons";
+import { questions } from "../engine/notation/lessons";
 import type { Workspace } from "../engine/notation/notation";
 import { PACK, type PackScene } from "../engine/pack";
 import { apply } from "../school/worlds/choice";
@@ -52,10 +52,6 @@ export function siteData(ws: Workspace, pack: BuiltPack, packAt: string): SiteDa
         versions: report
             ? { total: report.variants.length, sampled: report.sampled, drawn: versions.length }
             : null,
-        tagOf: (id) => {
-            const l = ws.lessons.get(id);
-            return l ? tagOf(l) : id;
-        },
     });
     return { journey: child.now, words, versions, pack: packAt };
 }

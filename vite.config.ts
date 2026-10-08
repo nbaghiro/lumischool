@@ -7,17 +7,33 @@ import { resolve } from "node:path";
 import type { Connect } from "vite";
 import { defineConfig } from "vite";
 import solid from "vite-plugin-solid";
-import { hasKidSession, hasSession, isPage, pageFor } from "./server/pages";
+import {
+    hasKidSession,
+    hasSession,
+    isPage,
+    pageFor,
+    normalPagePath,
+    knownPage,
+} from "./server/pages";
 import { brand } from "./tools/brand";
+import { publicPages } from "./tools/public-pages";
 import { firstView } from "./tools/first-view";
 
 const API = "http://127.0.0.1:8501";
 
-const route: Connect.NextHandleFunction = (req, _res, next) => {
+const route: Connect.NextHandleFunction = (req, res, next) => {
     const url = req.url ?? "/";
     const at = url.indexOf("?");
-    const path = at < 0 ? url : url.slice(0, at);
+    const pathname = at < 0 ? url : url.slice(0, at);
+    const path = normalPagePath(pathname);
     if (isPage({ method: req.method ?? "GET", accept: req.headers.accept ?? "", path })) {
+        if (path !== pathname) {
+            res.statusCode = 308;
+            res.setHeader("Location", `${path}${at < 0 ? "" : url.slice(at)}`);
+            res.end();
+            return;
+        }
+        if (!knownPage(path) && path !== "/outbox") res.statusCode = 404;
         const cookie = req.headers.cookie ?? "";
         const app = pageFor(path, {
             session: hasSession(cookie, false),
@@ -34,6 +50,7 @@ export default defineConfig({
         solid(),
         brand(),
         firstView(),
+        publicPages(),
         {
             name: "lumischool-pages",
             configureServer(server) {
