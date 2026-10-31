@@ -20,7 +20,7 @@ export function overlap(a: Rect, b: Rect): Rect | null {
     return right > x && bottom > y ? { x, y, w: right - x, h: bottom - y } : null;
 }
 
-function subtract(a: Rect, b: Rect): Rect[] {
+export function subtract(a: Rect, b: Rect): Rect[] {
     return [
         { x: a.x, y: a.y, w: a.w, h: b.y - a.y },
         { x: a.x, y: b.y + b.h, w: a.w, h: a.y + a.h - b.y - b.h },

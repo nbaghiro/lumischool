@@ -64,9 +64,8 @@ import { animate, type Group, type Playing } from "./animate";
 import { motionOf as playsOf } from "../parts/drawing";
 import { drawingOf } from "./drawings";
 import { bloom, motionOf, play } from "./player";
-import { mapScene, type Scene } from "./map-scene";
-import { glDensity } from "./gl";
-import { landscapeZoom } from "./map-tiles";
+import { mapScene, type Scene, type SceneReady } from "./map-scene";
+import { TERRAIN_BLEED, type TerrainSource } from "./terrain-coverage";
 import { readTokens } from "./read-tokens";
 import { artSize, guideOf, placeArt, releaseScenery, type Piece } from "./scenery";
 import { el, render, SvgPen as Pen } from "./svg";
@@ -124,9 +123,9 @@ export interface TerrainOptions {
 
 export interface TerrainPainted {
     /** The detail painted as the camera comes near, each with the zoom below which it waits. */
-    pieces: (Piece & { minZ: number })[];
+    pieces: (Piece & { minZ: number; terrain?: TerrainSource })[];
     /** The landscape's marks and waves a tile at a time, which the tile export bakes into the terrain. */
-    landscape: Piece[];
+    landscape: (Piece & { terrain: TerrainSource })[];
     /** Redraw how far the child has come, for the colour washing over newly reached land. */
     setReach(r: MapReach): void;
     release(elements: readonly Element[]): void;
@@ -878,7 +877,7 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
         q.x >= r.x && q.x < r.x + r.w && q.y >= r.y && q.y < r.y + r.h;
     const clear = (q: Pt, by = 110) => !keepOut.some((b) => within(b, q)) && !nearRoad(q, by);
     const TILE = 2600;
-    const landscape: Piece[] = [];
+    const landscape: TerrainPainted["landscape"] = [];
     for (let ty = B.y; ty < B.y + B.h; ty += TILE)
         for (let tx = B.x; tx < B.x + B.w; tx += TILE) {
             const rect = {
@@ -887,7 +886,25 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
                 w: Math.min(TILE, B.x + B.w - tx),
                 h: Math.min(TILE, B.y + B.h - ty),
             };
-            landscape.push({ rect, paint: () => tile(rect) });
+            const terrain: TerrainSource = {
+                rect,
+                bounds: {
+                    x: rect.x - TERRAIN_BLEED,
+                    y: rect.y - TERRAIN_BLEED,
+                    w: rect.w + 2 * TERRAIN_BLEED,
+                    h: rect.h + 2 * TERRAIN_BLEED,
+                },
+                elements: null,
+            };
+            landscape.push({
+                rect,
+                terrain,
+                paint: () => {
+                    const elements = tile(rect, terrain);
+                    terrain.elements = elements;
+                    return elements;
+                },
+            });
         }
     // a range's marks are worked out once and shared by every tile they fall in
     const rangeSeen = new Map<(typeof land.peaks)[number], PeakMarks>();
@@ -899,11 +916,12 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
         return made;
     };
 
-    function tile(r: Rect): Element[] {
+    function tile(r: Rect, source?: TerrainSource): Element[] {
         const seed = hash(`${r.x},${r.y}`),
             ink = pad(r, seed, t, "ow-marks"),
             grey = pad(r, seed + 1, t, "ow-marks ow-pencil"),
             sea = pad(r, seed + 2, t, "ow-marks ow-waves");
+        if (source) source.waves = sea.svg;
         const colourInk = new Ink(ink.pen),
             pencilInk = new Ink(grey.pen);
         const rnd = rand(seed);
@@ -1173,7 +1191,7 @@ export function paintTerrain(o: TerrainOptions): TerrainPainted {
     return {
         // on the page the tiles hold the landscape until the camera is closer than they can draw it
         pieces: o.drawnElsewhere
-            ? [...pieces, ...landscape.map((p) => ({ ...p, minZ: landscapeZoom(glDensity()) }))]
+            ? [...pieces, ...landscape.map((p) => ({ ...p, minZ: 0 }))]
             : pieces,
         landscape,
         setReach,
@@ -3170,6 +3188,7 @@ export interface MapPiece {
     rect: Rect;
     priority?: number;
     minZ?: number;
+    terrain?: TerrainSource;
     paint(): (() => void) | void;
 }
 
@@ -3190,7 +3209,7 @@ export interface MapPainted {
     /** The first frame is all there: the day's doings play 450 ms on, when the map was painted with a day. */
     shown(): void;
     /** Once the GPU has drawn everything the camera sees, at the sharpness it wants. */
-    settled(): Promise<void>;
+    settled(): Promise<SceneReady>;
     /** Start the drawings that travel the country for the camera the page holds, with `rebuild` for after the camera has moved on its own; nothing rides a map painted without `riders`. */
     life(cam: () => Camera): { rebuild(): void };
     /** The camera has settled at a new zoom: what moves is sized for it again. */
@@ -3199,7 +3218,7 @@ export interface MapPainted {
      * Draws what is in view of `camera` from this map's source, with the scene the map it replaces
      * handed over, without showing it; `take` then shows it (.docs/map-smoothness-plan.md, phase 2).
      */
-    prepare(camera: Camera): Promise<void>;
+    prepare(camera: Camera): Promise<SceneReady>;
     /** Takes over the scene handed to this map, drawing from its source from the next frame. */
     take(): void;
     /** The scene this map draws with, for the map painted to replace it. */
@@ -3294,6 +3313,10 @@ export async function paintMapView(o: {
         idle,
         drawnElsewhere: true,
     });
+    scene.landscape(
+        world,
+        land.landscape.map((p) => p.terrain),
+    );
     await o.pause?.();
     const painted = paintMap({ layers: L, host: world, t, view, still, play: o.play, idle });
     let washing = 0,
@@ -3306,12 +3329,15 @@ export async function paintMapView(o: {
         token: painted.token,
         pieces: [
             ...land.pieces.map((p) => ({
-                rect: p.rect,
+                rect: p.terrain?.bounds ?? p.rect,
                 minZ: p.minZ,
+                terrain: p.terrain,
                 paint: () => {
                     const elements = p.paint();
-                    if (elements.length) return () => land.release(elements);
-                    return undefined;
+                    return () => {
+                        if (p.terrain) p.terrain.elements = null;
+                        land.release(elements);
+                    };
                 },
             })),
             ...painted.pieces.map((p) => ({

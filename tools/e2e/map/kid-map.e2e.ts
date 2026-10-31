@@ -83,8 +83,6 @@ test("a child's subject place opens its own lessons, returns to its map location
 test("a child who leaves the map as a world opens is not left under the map", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await signInAs(page);
-    // today's sheets never come, so the page waits for them after the dive, with the way back open
-    await page.route("**/api/pack/*/lessons/**", () => undefined);
     await openChildrensView(page, ["Rosie", "Leo"]);
     await page.getByRole("button", { name: "Rosie", exact: true }).click();
     const map = childsMap(page, "Rosie");
@@ -94,9 +92,8 @@ test("a child who leaves the map as a world opens is not left under the map", as
     await meadow.evaluateAll((els) =>
         els[0]?.dispatchEvent(new MouseEvent("click", { bubbles: true })),
     );
-    // past the dive, inside the wait for the sheets
-    await page.waitForTimeout(1000);
-    await page.getByRole("button", { name: "Back to the pictures" }).click();
+    // Leave during the dive, before the destination replaces the map and removes this button.
+    await page.getByRole("button", { name: "Back to the pictures" }).dispatchEvent("click");
     await expect(page.getByRole("heading", { name: "Who is learning today?" })).toBeVisible();
     await expect(page.locator(".handoff"), "nothing of the map is held over the page").toHaveCount(
         0,

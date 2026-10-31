@@ -179,12 +179,14 @@ export type GlDraw =
           at: Affine;
           /** The part of the texture drawn, in its own unit square; the whole of it when left out. */
           source?: Rect;
+          previous?: { texture: GlTexture; rect: Rect; source?: Rect; mix: number };
           alpha: number;
           tone?: Tone;
           mask?: MaskChannel;
           /** The texture's shape in `from`, turning to `to` where the colour has reached. */
           tint?: { from: string; to: string };
       }
+    | { kind: "region"; rect: Rect; from: readonly GlInk[]; to: readonly GlInk[]; mix: number }
     | { kind: "fill"; shape: GlShape; colour: string; alpha: number; mask?: MaskChannel }
     | {
           /** Runs drawn opaque together and laid down at `alpha`, as SVG composites a group. */
@@ -216,6 +218,9 @@ export interface GlMask {
     reached: readonly MaskShape[];
 }
 
+export type GlImage = Extract<GlDraw, { kind: "image" }>;
+export type GlInk = Extract<GlDraw, { kind: "image" | "strokes" }>;
+
 export interface GlFrame {
     /** The paper's squares, each with its spacing in world units and how strongly it shows. */
     grid?: { colour: string; layers: readonly { step: number; alpha: number }[] };
@@ -241,9 +246,10 @@ const MASKED = `
 uniform sampler2D mask;
 uniform int channel;
 uniform vec2 screen;
+uniform vec2 maskOrigin;
 float masked() {
     if (channel == 0) return 1.0;
-    vec4 m = texture(mask, gl_FragCoord.xy / screen);
+    vec4 m = texture(mask, (gl_FragCoord.xy + maskOrigin) / screen);
     return channel == 1 ? m.r : channel == 2 ? m.g : channel == 3 ? m.b : m.r * (1.0 - m.b);
 }
 `;
@@ -254,7 +260,9 @@ uniform mat3 place;
 uniform vec4 source;
 uniform vec4 view;
 out vec2 uv;
+out vec2 local;
 void main() {
+    local = corner;
     vec3 w = place * vec3(corner, 1.0);
     uv = source.xy + corner * source.zw;
     gl_Position = vec4(w.xy * view.xy + view.zw, 0.0, 1.0);
@@ -262,16 +270,27 @@ void main() {
 
 const IMAGE_FRAGMENT = `${HEADER}${MASKED}
 uniform sampler2D image;
+uniform sampler2D previous;
+uniform vec4 previousRect;
+uniform vec4 previousSource;
+uniform float refinement;
 uniform float alpha;
 uniform vec4 tone;
 uniform int tinted;
 uniform vec3 tint_from;
 uniform vec3 tint_to;
 in vec2 uv;
+in vec2 local;
 out vec4 colour;
 void main() {
     vec4 c = texture(image, uv);
-    if (tinted == 1) c.rgb = mix(tint_from, tint_to, texture(mask, gl_FragCoord.xy / screen).b) * c.a;
+    if (refinement < 1.0) {
+        vec2 q = previousRect.xy + local * previousRect.zw;
+        vec4 old = texture(previous, previousSource.xy + q * previousSource.zw);
+        if (any(lessThan(q, vec2(0.0))) || any(greaterThan(q, vec2(1.0)))) old = vec4(0.0);
+        c = mix(old, c, refinement);
+    }
+    if (tinted == 1) c.rgb = mix(tint_from, tint_to, texture(mask, (gl_FragCoord.xy + maskOrigin) / screen).b) * c.a;
     if (c.a > 0.0 && tone != vec4(0.0, 1.0, 1.0, 1.0)) {
         vec3 rgb = c.rgb / c.a;
         float l = dot(rgb, vec3(0.2126, 0.7152, 0.0722));
@@ -429,7 +448,7 @@ uniform sampler2D image;
 uniform float alpha;
 out vec4 colour;
 void main() {
-    colour = texture(image, gl_FragCoord.xy / screen) * (alpha * masked());
+    colour = texture(image, (gl_FragCoord.xy + maskOrigin) / screen) * (alpha * masked());
 }`;
 
 // the paper's lines are whole device pixels, placed where the page's paper placed them
@@ -662,6 +681,22 @@ const PROGRAMS = {
     sprite: [SPRITE_VERTEX, SPRITE_FRAGMENT],
     dots: [DOTS_VERTEX, DOTS_FRAGMENT],
     image: [IMAGE_VERTEX, IMAGE_FRAGMENT],
+    transition: [
+        `${HEADER}
+layout(location = 0) in vec2 corner;
+out vec2 uv;
+void main() { uv = corner; gl_Position = vec4(corner * 2.0 - 1.0, 0.0, 1.0); }`,
+        `${HEADER}
+uniform sampler2D oldImage;
+uniform sampler2D newImage;
+uniform float amount;
+uniform vec2 portion;
+in vec2 uv;
+out vec4 colour;
+void main() {
+    colour = mix(texture(oldImage, uv * portion), texture(newImage, uv * portion), amount);
+}`,
+    ],
     fill: [FILL_VERTEX, FILL_FRAGMENT],
     stroke: [STROKE_VERTEX, STROKE_FRAGMENT],
     segment: [SEGMENT_VERTEX, SEGMENT_FRAGMENT],
@@ -696,6 +731,7 @@ export function premultiplied(css: string, alpha: number): Quad {
 
 interface Held {
     generation: number;
+    reservation?: () => void;
     texture?: WebGLTexture;
     buffer?: WebGLBuffer;
     vao?: WebGLVertexArrayObject;
@@ -721,7 +757,11 @@ interface Target {
  * One canvas's renderer. A lost context drops every resource; `restored` is told once a new context is
  * ready, and whoever holds resources makes them again, since `live` answers false for the old ones.
  */
-export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
+export function canvasGl(
+    canvas: HTMLCanvasElement,
+    restored: () => void,
+    memory?: { reserve(bytes: number): (() => void) | null },
+) {
     const gl = canvas.getContext("webgl2", {
         alpha: true,
         premultipliedAlpha: true,
@@ -747,6 +787,7 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
         maskTarget: Target | null = null,
         /** A target for each group of strokes a frame draws. */
         groupTargets: Target[] = [],
+        transitionTargets: Target[] = [],
         lightTarget: Target | null = null,
         fieldTarget: Target | null = null,
         blank: WebGLTexture | null = null;
@@ -840,6 +881,7 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
         );
         maskTarget = lightTarget = fieldTarget = null;
         groupTargets = [];
+        transitionTargets = [];
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
         generation++;
     };
@@ -848,6 +890,7 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
     const onLost = (e: Event): void => {
         e.preventDefault();
         lost = true;
+        for (const resource of resources.values()) resource.reservation?.();
         resources.clear();
     };
     const onRestored = (): void => {
@@ -894,6 +937,24 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
             );
         }
         return { framebuffer, texture, stencil: marks, w, h };
+    };
+
+    const releaseTargets = (): void => {
+        for (const t of [
+            maskTarget,
+            lightTarget,
+            fieldTarget,
+            ...groupTargets,
+            ...transitionTargets,
+        ])
+            if (t) {
+                gl.deleteFramebuffer(t.framebuffer);
+                gl.deleteTexture(t.texture);
+                if (t.stencil) gl.deleteRenderbuffer(t.stencil);
+            }
+        maskTarget = lightTarget = fieldTarget = null;
+        groupTargets = [];
+        transitionTargets = [];
     };
 
     const use = (name: ProgramName): ((uniform: string) => WebGLUniformLocation | null) => {
@@ -992,6 +1053,32 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
     const ALL: Writes = [true, true, true, true];
 
     return {
+        storage(): { cached: number; presentation: number } {
+            const targets = [
+                maskTarget,
+                lightTarget,
+                fieldTarget,
+                ...groupTargets,
+                ...transitionTargets,
+            ];
+            return {
+                cached: [...resources.keys()].reduce(
+                    (sum, r) => sum + (r.kind === "texture" ? r.bytes : 0),
+                    0,
+                ),
+                presentation: lost
+                    ? 0
+                    : canvas.width * canvas.height * 5 +
+                      targets.reduce(
+                          (sum, t) => sum + (t ? t.w * t.h * (t.stencil ? 5 : 4) : 0),
+                          0,
+                      ) +
+                      [...resources.keys()].reduce(
+                          (sum, r) => sum + (r.kind !== "texture" ? r.bytes : 0),
+                          0,
+                      ),
+            };
+        },
         /** Backing pixels per CSS pixel, which the canvas is sized to the view at. */
         setDensity(d: number): void {
             density = d;
@@ -999,12 +1086,25 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
         /** An image as a texture, with mipmaps unless it is only ever drawn at the size it was made. */
         upload(source: TexImageSource, w: number, h: number, mipmaps = true): GlTexture | null {
             if (lost || w < 1 || h < 1) return null;
+            const weight = Math.round(w * h * 4 * (mipmaps ? 4 / 3 : 1));
+            const reservation = memory?.reserve(weight);
+            if (memory && !reservation) return null;
             const texture = gl.createTexture();
+            if (!texture) {
+                reservation?.();
+                return null;
+            }
             gl.bindTexture(gl.TEXTURE_2D, texture);
             try {
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
             } catch {
                 gl.deleteTexture(texture);
+                reservation?.();
+                return null;
+            }
+            if (gl.getError() !== gl.NO_ERROR) {
+                gl.deleteTexture(texture);
+                reservation?.();
                 return null;
             }
             const mip = mipmaps && w > 1 && h > 1;
@@ -1023,7 +1123,7 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
                 h,
                 bytes: Math.round(w * h * 4 * (mip ? 4 / 3 : 1)),
             };
-            resources.set(t, { generation, texture });
+            resources.set(t, { generation, texture, reservation: reservation ?? undefined });
             return t;
         },
         /**
@@ -1033,9 +1133,27 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
          */
         page(w: number, h: number, mipmaps = false): GlTexture | null {
             if (lost || w < 1 || h < 1) return null;
+            const weight = Math.round(w * h * 4 * (mipmaps ? 4 / 3 : 1));
+            const reservation = memory?.reserve(weight);
+            if (memory && !reservation) return null;
             const texture = gl.createTexture();
+            if (!texture) {
+                reservation?.();
+                return null;
+            }
             gl.bindTexture(gl.TEXTURE_2D, texture);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            try {
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            } catch {
+                gl.deleteTexture(texture);
+                reservation?.();
+                return null;
+            }
+            if (gl.getError() !== gl.NO_ERROR) {
+                gl.deleteTexture(texture);
+                reservation?.();
+                return null;
+            }
             if (mipmaps) {
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAX_LEVEL, 2);
                 gl.generateMipmap(gl.TEXTURE_2D);
@@ -1054,7 +1172,7 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
                 h,
                 bytes: Math.round(w * h * 4 * (mipmaps ? 21 / 16 : 1)),
             };
-            resources.set(t, { generation, texture });
+            resources.set(t, { generation, texture, reservation: reservation ?? undefined });
             return t;
         },
         /** Makes a page's mipmaps again after writes into it. */
@@ -1071,6 +1189,7 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
             gl.bindTexture(gl.TEXTURE_2D, h.texture);
             try {
                 gl.texSubImage2D(gl.TEXTURE_2D, 0, x, y, gl.RGBA, gl.UNSIGNED_BYTE, source);
+                if (gl.getError() !== gl.NO_ERROR) return false;
             } catch {
                 return false;
             }
@@ -1140,6 +1259,7 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
         release(r: GlResource): void {
             const h = held(r);
             resources.delete(r);
+            h?.reservation?.();
             if (!h || lost) return;
             if (h.texture) gl.deleteTexture(h.texture);
             if (h.buffer) gl.deleteBuffer(h.buffer);
@@ -1149,8 +1269,8 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
 
         draw(camera: Camera, size: Size, frame: GlFrame): void {
             if (lost) return;
-            const w = Math.max(1, Math.round(size.w * density)),
-                h = Math.max(1, Math.round(size.h * density));
+            const w = Math.max(1, Math.floor(size.w * density)),
+                h = Math.max(1, Math.floor(size.h * density));
             if (canvas.width !== w) canvas.width = w;
             if (canvas.height !== h) canvas.height = h;
             const screen = { w, h };
@@ -1167,7 +1287,7 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
             if (mask) {
                 maskTarget = target(maskTarget, w, h, true);
                 // no texture a pass draws into may be bound for reading, or WebGL refuses the draw
-                for (const unit of [gl.TEXTURE0, gl.TEXTURE1]) {
+                for (const unit of [gl.TEXTURE0, gl.TEXTURE1, gl.TEXTURE2]) {
                     gl.activeTexture(unit);
                     gl.bindTexture(gl.TEXTURE_2D, blank);
                 }
@@ -1225,8 +1345,12 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
             gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
             gl.clearColor(0, 0, 0, 0);
             let groups = 0;
-            for (const d of frame.draws) {
-                if (d.kind !== "strokes") continue;
+            const inkTargets = new Map<GlInk, Target>();
+            const inks = frame.draws.flatMap((d) =>
+                d.kind === "region" ? [...d.from, ...d.to] : d.kind === "strokes" ? [d] : [],
+            );
+            for (const d of inks) {
+                if (d.kind !== "strokes" || inkTargets.has(d)) continue;
                 const t = (groupTargets[groups] = target(
                     groupTargets[groups] ?? null,
                     w,
@@ -1234,17 +1358,22 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
                     false,
                 ));
                 groups++;
+                inkTargets.set(d, t);
                 gl.bindTexture(gl.TEXTURE_2D, blank);
                 gl.bindFramebuffer(gl.FRAMEBUFFER, t.framebuffer);
                 gl.clear(gl.COLOR_BUFFER_BIT);
                 for (const run of d.runs) strokeRun(run, view, pixel, d.fade ?? null);
             }
 
+            for (const unused of groupTargets.splice(groups)) {
+                gl.deleteFramebuffer(unused.framebuffer);
+                gl.deleteTexture(unused.texture);
+                if (unused.stencil) gl.deleteRenderbuffer(unused.stencil);
+            }
             gl.bindFramebuffer(gl.FRAMEBUFFER, null);
             gl.clearColor(0, 0, 0, 0);
             gl.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
             gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-            let group = 0;
             gl.activeTexture(gl.TEXTURE1);
             gl.bindTexture(gl.TEXTURE_2D, mask && maskTarget ? maskTarget.texture : blank);
             gl.activeTexture(gl.TEXTURE0);
@@ -1286,8 +1415,163 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
                           pixel: 1 / (c.z * density),
                       }
                     : { view, pixel };
+            const picture = (
+                d: GlImage,
+                imageView: Quad,
+                origin: readonly [number, number],
+            ): void => {
+                const image = held(d.texture);
+                if (!image?.texture) return;
+                const at = use("image");
+                const m = d.at,
+                    r = d.rect;
+                // the unit square to the rect, then the rect by the transform
+                gl.uniformMatrix3fv(at("place"), false, [
+                    m[0] * r.w,
+                    m[1] * r.w,
+                    0,
+                    m[2] * r.h,
+                    m[3] * r.h,
+                    0,
+                    m[0] * r.x + m[2] * r.y + m[4],
+                    m[1] * r.x + m[3] * r.y + m[5],
+                    1,
+                ]);
+                const s = d.source ?? { x: 0, y: 0, w: 1, h: 1 };
+                gl.uniform4f(at("source"), s.x, s.y, s.w, s.h);
+                gl.uniform4f(at("view"), ...imageView);
+                gl.uniform1f(at("alpha"), d.alpha);
+                const tone = d.tone ?? PLAIN;
+                gl.uniform4f(at("tone"), tone.gray, tone.saturate, tone.contrast, tone.brightness);
+                gl.uniform1i(at("image"), 0);
+                masking(at, channel(d.mask), w, h);
+                gl.uniform2f(at("maskOrigin"), origin[0], origin[1]);
+                const previous = d.previous;
+                const old = previous && held(previous.texture);
+                gl.uniform1i(at("previous"), 2);
+                gl.uniform1f(at("refinement"), old?.texture ? (previous?.mix ?? 1) : 1);
+                if (previous && old?.texture) {
+                    const p = previous.rect;
+                    const ps = previous.source ?? { x: 0, y: 0, w: 1, h: 1 };
+                    gl.uniform4f(
+                        at("previousRect"),
+                        (r.x - p.x) / p.w,
+                        (r.y - p.y) / p.h,
+                        r.w / p.w,
+                        r.h / p.h,
+                    );
+                    gl.uniform4f(at("previousSource"), ps.x, ps.y, ps.w, ps.h);
+                }
+                gl.activeTexture(gl.TEXTURE2);
+                gl.bindTexture(gl.TEXTURE_2D, old?.texture ?? blank);
+                gl.activeTexture(gl.TEXTURE0);
+                gl.uniform1i(at("tinted"), d.tint ? 1 : 0);
+                if (d.tint) {
+                    const [fr, fg, fb] = premultiplied(d.tint.from, 1),
+                        [tr, tg, tb] = premultiplied(d.tint.to, 1);
+                    gl.uniform3f(at("tint_from"), fr, fg, fb);
+                    gl.uniform3f(at("tint_to"), tr, tg, tb);
+                }
+                gl.bindTexture(gl.TEXTURE_2D, image.texture);
+                gl.bindVertexArray(quadVao);
+                gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            };
+            const ink = (d: GlInk, through: Quad, origin: readonly [number, number]): void => {
+                if (d.kind === "image") {
+                    picture(d, through, origin);
+                    return;
+                }
+                const drawn = inkTargets.get(d);
+                if (!drawn) return;
+                const at = use("composite");
+                masking(at, channel(d.mask), w, h);
+                gl.uniform2f(at("maskOrigin"), ...origin);
+                gl.uniform1i(at("image"), 0);
+                gl.uniform1f(at("alpha"), d.alpha);
+                gl.bindTexture(gl.TEXTURE_2D, drawn.texture);
+                gl.bindVertexArray(quadVao);
+                gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            };
+            const region = (d: Extract<GlDraw, { kind: "region" }>): void => {
+                const r = d.rect;
+                const left = Math.max(
+                    0,
+                    Math.round(((r.x - camera.x) * camera.z * w) / size.w + w / 2),
+                );
+                const right = Math.min(
+                    w,
+                    Math.round(((r.x + r.w - camera.x) * camera.z * w) / size.w + w / 2),
+                );
+                const bottom = Math.max(
+                    0,
+                    Math.round(h / 2 - ((r.y + r.h - camera.y) * camera.z * h) / size.h),
+                );
+                const top = Math.min(
+                    h,
+                    Math.round(h / 2 - ((r.y - camera.y) * camera.z * h) / size.h),
+                );
+                if (right <= left || top <= bottom) return;
+                if (d.mix === 0 || d.mix === 1) {
+                    gl.enable(gl.SCISSOR_TEST);
+                    gl.scissor(left, bottom, right - left, top - bottom);
+                    for (const image of d.mix === 1 ? d.to : d.from) ink(image, view, [0, 0]);
+                    gl.disable(gl.SCISSOR_TEST);
+                    return;
+                }
+                // Two reusable 512-square targets bound transition memory independently of viewport size.
+                for (let y = bottom; y < top; y += 512)
+                    for (let x = left; x < right; x += 512) {
+                        const tw = Math.min(512, right - x),
+                            th = Math.min(512, top - y);
+                        const local: Quad = [
+                            (view[0] * w) / tw,
+                            (view[1] * h) / th,
+                            (view[2] * w + w - 2 * x) / tw - 1,
+                            (view[3] * h + h - 2 * y) / th - 1,
+                        ];
+                        for (const [i, images] of [d.from, d.to].entries()) {
+                            gl.activeTexture(gl.TEXTURE2);
+                            gl.bindTexture(gl.TEXTURE_2D, blank);
+                            gl.activeTexture(gl.TEXTURE0);
+                            gl.bindTexture(gl.TEXTURE_2D, blank);
+                            const t = (transitionTargets[i] = target(
+                                transitionTargets[i] ?? null,
+                                512,
+                                512,
+                                false,
+                            ));
+                            gl.bindFramebuffer(gl.FRAMEBUFFER, t.framebuffer);
+                            gl.viewport(0, 0, tw, th);
+                            gl.clearColor(0, 0, 0, 0);
+                            gl.clear(gl.COLOR_BUFFER_BIT);
+                            for (const image of images) ink(image, local, [x, y]);
+                        }
+                        const old = transitionTargets[0],
+                            next = transitionTargets[1];
+                        if (!old || !next) continue;
+                        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+                        gl.viewport(x, y, tw, th);
+                        const at = use("transition");
+                        gl.uniform1i(at("oldImage"), 0);
+                        gl.uniform1i(at("newImage"), 2);
+                        gl.uniform1f(at("amount"), d.mix);
+                        gl.uniform2f(at("portion"), tw / 512, th / 512);
+                        gl.activeTexture(gl.TEXTURE2);
+                        gl.bindTexture(gl.TEXTURE_2D, next.texture);
+                        gl.activeTexture(gl.TEXTURE0);
+                        gl.bindTexture(gl.TEXTURE_2D, old.texture);
+                        gl.bindVertexArray(quadVao);
+                        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+                    }
+                gl.viewport(0, 0, w, h);
+                gl.activeTexture(gl.TEXTURE2);
+                gl.bindTexture(gl.TEXTURE_2D, blank);
+                gl.activeTexture(gl.TEXTURE0);
+            };
             for (const d of frame.draws) {
-                if (d.kind === "sprites") {
+                if (d.kind === "region") {
+                    region(d);
+                } else if (d.kind === "sprites") {
                     const page = held(d.texture);
                     if (!page?.texture || !batches || d.count < 1) continue;
                     const at = use("sprite");
@@ -1430,47 +1714,7 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
                     gl.bindVertexArray(quadVao);
                     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
                 } else if (d.kind === "image") {
-                    const image = held(d.texture);
-                    if (!image?.texture) continue;
-                    const at = use("image");
-                    const m = d.at,
-                        r = d.rect;
-                    // the unit square to the rect, then the rect by the transform
-                    gl.uniformMatrix3fv(at("place"), false, [
-                        m[0] * r.w,
-                        m[1] * r.w,
-                        0,
-                        m[2] * r.h,
-                        m[3] * r.h,
-                        0,
-                        m[0] * r.x + m[2] * r.y + m[4],
-                        m[1] * r.x + m[3] * r.y + m[5],
-                        1,
-                    ]);
-                    const s = d.source ?? { x: 0, y: 0, w: 1, h: 1 };
-                    gl.uniform4f(at("source"), s.x, s.y, s.w, s.h);
-                    gl.uniform4f(at("view"), ...view);
-                    gl.uniform1f(at("alpha"), d.alpha);
-                    const tone = d.tone ?? PLAIN;
-                    gl.uniform4f(
-                        at("tone"),
-                        tone.gray,
-                        tone.saturate,
-                        tone.contrast,
-                        tone.brightness,
-                    );
-                    gl.uniform1i(at("image"), 0);
-                    masking(at, channel(d.mask), w, h);
-                    gl.uniform1i(at("tinted"), d.tint ? 1 : 0);
-                    if (d.tint) {
-                        const [fr, fg, fb] = premultiplied(d.tint.from, 1),
-                            [tr, tg, tb] = premultiplied(d.tint.to, 1);
-                        gl.uniform3f(at("tint_from"), fr, fg, fb);
-                        gl.uniform3f(at("tint_to"), tr, tg, tb);
-                    }
-                    gl.bindTexture(gl.TEXTURE_2D, image.texture);
-                    gl.bindVertexArray(quadVao);
-                    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+                    picture(d, view, [0, 0]);
                 } else if (d.kind === "fill")
                     fill(
                         d.shape,
@@ -1480,25 +1724,20 @@ export function canvasGl(canvas: HTMLCanvasElement, restored: () => void) {
                         screen,
                         ALL,
                     );
-                else {
-                    // the group's strokes, drawn before the screen was bound, at the group's alpha
-                    const drawn = groupTargets[group++];
-                    if (!drawn) continue;
-                    const at = use("composite");
-                    masking(at, channel(d.mask), w, h);
-                    gl.uniform1i(at("image"), 0);
-                    gl.uniform1f(at("alpha"), d.alpha);
-                    gl.bindTexture(gl.TEXTURE_2D, drawn.texture);
-                    gl.bindVertexArray(quadVao);
-                    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-                }
+                else ink(d, view, [0, 0]);
             }
             gl.bindVertexArray(null);
         },
+        park(): void {
+            releaseTargets();
+            canvas.width = canvas.height = 1;
+        },
         stop(): void {
+            releaseTargets();
             canvas.removeEventListener("webglcontextlost", onLost);
             canvas.removeEventListener("webglcontextrestored", onRestored);
             if (!lost) gl.getExtension("WEBGL_lose_context")?.loseContext();
+            for (const resource of resources.values()) resource.reservation?.();
             resources.clear();
             canvas.width = canvas.height = 0;
         },

@@ -22,7 +22,6 @@ import {
     type MapAim,
     type Snapshot,
 } from "./snapshot";
-import { whileNear } from "./viewport";
 
 export type { MapAim };
 export { OPENING };
@@ -163,31 +162,37 @@ export function MapBackdrop(props: {
         // the page's cards arriving or growing change the page's height before they move the framing
         watch.observe(document.body);
         onCleanup(() => watch.disconnect());
-        onCleanup(
-            whileNear(box, (near) => {
-                const current = ++generation;
-                nearNow = near;
-                // a snapshot of the aim is the map, and is shown as the map
-                if (picture()) {
-                    announce();
-                    return;
-                }
-                if (!near || props.stillOnly === true) {
-                    announce();
-                    frame();
-                    setDrawn(false);
-                    setLive(null);
-                    wake();
-                    return;
-                }
-                void onDemand(props.ground)
-                    .then(async (ground) => {
-                        await idle();
-                        if (!disposed && generation === current) setLive(ground);
-                    })
-                    .catch(() => announce());
-            }),
-        );
+        const element = box;
+        let unwatch: (() => void) | undefined;
+        onCleanup(() => unwatch?.());
+        void import("./scene-lifetime")
+            .then(({ whileNear }) => {
+                if (disposed) return;
+                unwatch = whileNear(element, (near) => {
+                    const current = ++generation;
+                    nearNow = near;
+                    // a snapshot of the aim is the map, and is shown as the map
+                    if (picture()) {
+                        announce();
+                        return;
+                    }
+                    if (!near || props.stillOnly === true) {
+                        announce();
+                        frame();
+                        setDrawn(false);
+                        setLive(null);
+                        wake();
+                        return;
+                    }
+                    void onDemand(props.ground)
+                        .then(async (ground) => {
+                            await idle();
+                            if (!disposed && generation === current) setLive(ground);
+                        })
+                        .catch(() => announce());
+                });
+            })
+            .catch(() => announce());
     });
     createEffect(
         on(

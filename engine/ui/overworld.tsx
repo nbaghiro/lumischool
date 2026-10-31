@@ -223,7 +223,7 @@ export function Overworld(props: {
     /** The place this map dived into and where its camera stood before, for the map it parks as. */
     let left: { place: number; cam: Camera } | null = null;
     // a roll held over the page as it goes waits for this map to draw (handoff.ts)
-    claim();
+    const handoff = props.onGoIn ? claim() : null;
     let drawn = false;
     let settling = false;
     /** The pull-back out of a world runs once, on the first map this page draws, and never on a redraw. */
@@ -370,18 +370,19 @@ export function Overworld(props: {
             const there = to
                 ? visibleRect(to, { w: view.vp.w + margin * 2, h: view.vp.h + margin * 2 })
                 : null;
+            const minZ = (p: Pending): number =>
+                p.piece.terrain
+                    ? (painted?.scene.landscapeZoom() ?? Infinity)
+                    : (p.piece.minZ ?? 0);
             const ahead = (p: Pending): boolean =>
-                !!there &&
-                !!to &&
-                (!p.piece.minZ || to.z >= p.piece.minZ) &&
-                intersects(p.piece.rect, there);
+                !!there && !!to && to.z >= minZ(p) && intersects(p.piece.rect, there);
             for (const p of pending) {
                 if (
                     p.release &&
                     !p.warming &&
                     !to &&
                     !flying &&
-                    (!intersects(p.piece.rect, keep) || z < (p.piece.minZ ?? 0) * 0.85)
+                    (!intersects(p.piece.rect, keep) || z < minZ(p) * 0.85)
                 ) {
                     p.release();
                     p.release = undefined;
@@ -389,10 +390,7 @@ export function Overworld(props: {
                 }
             }
             const todo = pending.filter(
-                (p) =>
-                    !p.done &&
-                    (((!p.piece.minZ || z >= p.piece.minZ) && intersects(p.piece.rect, seen)) ||
-                        ahead(p)),
+                (p) => !p.done && ((z >= minZ(p) && intersects(p.piece.rect, seen)) || ahead(p)),
             );
             const distance = (rect: Rect): number =>
                 Math.hypot(
@@ -415,9 +413,11 @@ export function Overworld(props: {
                 // the snapshot under the map stays until the canvas holds everything it stands in for
                 const p = painted;
                 settling = true;
-                void p.settled().then(() => {
+                void p.settled().then((result) => {
                     settling = false;
-                    if (painted === p && !drawn) firstFrame(p);
+                    if (painted !== p || drawn) return;
+                    if (result === "ready") firstFrame(p);
+                    else if (result === "failed" || result === "timeout") setFailed(true);
                 });
             }
         };
@@ -1098,11 +1098,13 @@ export function Overworld(props: {
                 done: false,
             }));
             await paintIn(v, prepared);
-            await p.prepare(v.cam);
-            if (gone() || painted !== handing) {
+            const preparedResult = await p.prepare(v.cam);
+            if (gone() || painted !== handing || preparedResult !== "ready") {
                 for (const q of prepared) q.release?.();
                 p.stop();
                 replacement.remove();
+                if (preparedResult === "timeout" || preparedResult === "failed")
+                    throw new Error("Map replacement could not be prepared");
                 return false;
             }
             handing.handOver();
@@ -1223,11 +1225,11 @@ export function Overworld(props: {
             // only a map that has gone gives up the way back; a newer view come in meanwhile is
             // painted under this one as the map rises, as any view given again is
             if (disposed || v !== view) {
-                release(false, "roll");
+                handoff?.release(false, "roll");
                 return false;
             }
         }
-        if (!replacing) release(true);
+        if (!replacing) handoff?.release(true);
         if (host) host.style.opacity = back && !ready ? "0" : "1";
         if (back) rise(v, back, rest, !ready);
         // a backdrop shows the map as it stands; the colour washes out only as a child's own map opens
@@ -1279,6 +1281,15 @@ export function Overworld(props: {
         if (props.wheel === false || !hud()) v.takesWheel = false;
         draw(v);
         // the suite paints the same view again, as a record read again after a lesson paints it
+        mapHook("mapZoom", (z) => {
+            v.set({ ...v.cam, z });
+        });
+        mapHook("mapPan", (x, y) => {
+            v.set({ ...v.cam, x, y });
+        });
+        mapHook("mapRefine", (factor) => {
+            painted?.scene.hold(factor > 0 ? v.cam.z * factor : null);
+        });
         mapHook("mapRedraw", () => {
             if (view !== v || disposed) return;
             model = "";
@@ -1365,8 +1376,15 @@ export function Overworld(props: {
                 o = overlay,
                 v = view;
             // the view holds the words over the canvas, so a map held over the page keeps it until it goes
-            const park = (): void => {
-                p.park();
+            const park = (claimed = false): void => {
+                if (claimed) p.park();
+                else {
+                    if (parked?.painted === p) {
+                        clearTimeout(parked.expiry);
+                        parked = null;
+                    }
+                    p.stop();
+                }
                 s.remove();
                 o.remove();
                 v?.dispose();
@@ -1408,14 +1426,17 @@ export function Overworld(props: {
         >
             <Show when={failed() && hud()}>
                 <output class="hud ow-card">
-                    <p>The map could not finish loading.</p>
+                    <p>The map did not load.</p>
                     <button
                         type="button"
                         class="ow-btn"
                         onClick={() => {
                             setFailed(false);
-                            if (view) draw(view);
-                            else void mount().catch(() => setFailed(true));
+                            if (view) {
+                                painted?.scene.retry();
+                                paintNear();
+                                draw(view);
+                            } else void mount().catch(() => setFailed(true));
                         }}
                     >
                         Try again

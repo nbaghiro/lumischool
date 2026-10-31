@@ -17,6 +17,7 @@ export function tileCache<T>(o: {
         bytes: number;
         refs: number;
         priority: number;
+        priorities: Map<symbol, number>;
         /** When it was last wanted, so of tiles alike the one wanted latest loads first. */
         wanted: number;
         state: "queued" | "loading" | "ready";
@@ -109,6 +110,7 @@ export function tileCache<T>(o: {
                     bytes: weight,
                     refs: 1,
                     priority,
+                    priorities: new Map(),
                     wanted: ++wants,
                     state: "queued",
                     controller: new AbortController(),
@@ -123,18 +125,27 @@ export function tileCache<T>(o: {
                 pump();
             }
             const held = e;
+            const lease = Symbol();
+            held.priorities.set(lease, priority);
+            const prioritize = () => {
+                held.priority = Math.max(0, ...held.priorities.values());
+            };
+            prioritize();
             let released = false;
             return {
                 ready: e.promise,
                 release() {
                     if (released) return;
                     released = true;
+                    held.priorities.delete(lease);
+                    prioritize();
                     if (!--held.refs) drop(held);
                     pump();
                 },
                 want(p) {
                     if (released || held.state !== "queued") return;
-                    held.priority = Math.max(held.priority, p);
+                    held.priorities.set(lease, p);
+                    prioritize();
                     held.wanted = ++wants;
                 },
             };
@@ -191,7 +202,7 @@ function untilAborted<T>(
 
 export function tileImageLoader<T>(io: {
     fetch(url: string, options: RequestInit): Promise<Response>;
-    decode(blob: Blob): Promise<T>;
+    decode(blob: Blob, signal: AbortSignal): Promise<T>;
     discard(value: T): void;
 }) {
     return async (url: string, signal: AbortSignal, budget: number): Promise<T> => {
@@ -219,7 +230,9 @@ export function tileImageLoader<T>(io: {
                 header.getUint32(16) * header.getUint32(20) * 4 > budget
             )
                 throw new Error("Map image exceeds its declared allocation");
-            return await untilAborted(io.decode(blob), controller.signal, (v) => io.discard(v));
+            return await untilAborted(io.decode(blob, controller.signal), controller.signal, (v) =>
+                io.discard(v),
+            );
         } finally {
             clearTimeout(timeout);
             signal.removeEventListener("abort", abort);
@@ -231,44 +244,131 @@ const release = (pixels: TilePixels): void => {
     if (pixels instanceof ImageBitmap) pixels.close();
 };
 
-type Asked = Map<number, { resolve(p: TilePixels): void; reject(e: unknown): void }>;
-/** The worker the tiles are decoded in, started with the first tile. */
-let decoder: { worker: Worker; waiting: Asked } | null = null;
+interface DecodeJob {
+    id: number;
+    blob: Blob;
+    resolve(p: TilePixels): void;
+    reject(e: unknown): void;
+    aborted: boolean;
+    active: boolean;
+    clean(): void;
+    timer?: ReturnType<typeof setTimeout>;
+}
+let decoder: { worker: Worker; fail: () => void } | null = null;
+const decoding = new Map<number, DecodeJob>();
+const decodeQueue: DecodeJob[] = [];
 let serial = 0;
-/** Decodes a picture off the page's thread, as the GPU takes it quickest (a map tile, a baked drawing). */
-export function decode(blob: Blob): Promise<TilePixels> {
+
+function pumpDecodes(): void {
+    if (!decodeQueue.length) return;
     if (!decoder) {
-        const worker = new Worker(new URL("./tiles.worker.ts", import.meta.url), {
-            type: "module",
-        });
-        const waiting: Asked = new Map();
-        worker.onmessage = (e: MessageEvent<unknown>) => {
-            const data = e.data;
+        let worker: Worker;
+        try {
+            worker = new Worker(new URL("./tiles.worker.ts", import.meta.url), { type: "module" });
+        } catch (error) {
+            for (const job of decodeQueue.splice(0)) {
+                job.clean();
+                job.reject(error);
+            }
+            return;
+        }
+        const failed = () => {
+            if (decoder?.worker !== worker) return;
+            decoder = null;
+            worker.terminate();
+            for (const job of decoding.values()) {
+                clearTimeout(job.timer);
+                job.clean();
+                job.reject(new Error("Map image decoder stopped"));
+            }
+            decoding.clear();
+            pumpDecodes();
+        };
+        decoder = { worker, fail: failed };
+        worker.onerror = failed;
+        worker.onmessageerror = failed;
+        worker.onmessage = (event: MessageEvent<unknown>) => {
+            const data = event.data;
             if (typeof data !== "object" || data === null || !("id" in data)) return;
             const id = typeof data.id === "number" ? data.id : -1;
-            const asked = waiting.get(id);
-            if (!asked) return;
-            waiting.delete(id);
-            const w = "w" in data ? data.w : null,
-                h = "h" in data ? data.h : null,
-                bitmap = "bitmap" in data ? data.bitmap : null,
-                pixels = "pixels" in data ? data.pixels : null;
-            if (bitmap instanceof ImageBitmap) asked.resolve(bitmap);
-            else if (
-                pixels instanceof ArrayBuffer &&
-                typeof w === "number" &&
-                typeof h === "number"
-            )
-                asked.resolve(new ImageData(new Uint8ClampedArray(pixels), w, h));
-            else asked.reject(new Error("Map tile could not be decoded"));
+            const job = decoding.get(id);
+            const bitmap = "bitmap" in data ? data.bitmap : null;
+            if (!job) {
+                if (bitmap instanceof ImageBitmap) bitmap.close();
+                return;
+            }
+            decoding.delete(id);
+            clearTimeout(job.timer);
+            job.clean();
+            if (job.aborted) {
+                if (bitmap instanceof ImageBitmap) bitmap.close();
+            } else {
+                const pixels = "pixels" in data ? data.pixels : null;
+                const w = "w" in data ? data.w : null,
+                    h = "h" in data ? data.h : null;
+                if (bitmap instanceof ImageBitmap) job.resolve(bitmap);
+                else if (
+                    pixels instanceof ArrayBuffer &&
+                    typeof w === "number" &&
+                    typeof h === "number" &&
+                    Number.isInteger(w) &&
+                    Number.isInteger(h) &&
+                    w > 0 &&
+                    h > 0 &&
+                    pixels.byteLength === w * h * 4
+                )
+                    job.resolve(new ImageData(new Uint8ClampedArray(pixels), w, h));
+                else job.reject(new Error("Map image could not be decoded"));
+            }
+            pumpDecodes();
         };
-        decoder = { worker, waiting };
+        worker.addEventListener("error", (event) => event.preventDefault());
     }
-    const id = ++serial;
-    const { worker, waiting } = decoder;
+    const active = decoder;
+    if (!active) return;
+    while (decoding.size < 4 && decodeQueue.length) {
+        const job = decodeQueue.shift();
+        if (!job || job.aborted) continue;
+        job.active = true;
+        decoding.set(job.id, job);
+        job.timer = setTimeout(active.fail, 20_000);
+        try {
+            active.worker.postMessage({ id: job.id, blob: job.blob });
+        } catch {
+            active.fail();
+            return;
+        }
+    }
+}
+
+export function decode(blob: Blob, signal?: AbortSignal): Promise<TilePixels> {
     return new Promise((resolve, reject) => {
-        waiting.set(id, { resolve, reject });
-        worker.postMessage({ id, blob });
+        const job: DecodeJob = {
+            id: ++serial,
+            blob,
+            resolve,
+            reject,
+            aborted: false,
+            active: false,
+            clean: () => signal?.removeEventListener("abort", abort),
+        };
+        const abort = () => {
+            job.aborted = true;
+            job.clean();
+            reject(signal?.reason ?? new DOMException("Image released", "AbortError"));
+            if (!job.active) {
+                const at = decodeQueue.indexOf(job);
+                if (at >= 0) decodeQueue.splice(at, 1);
+            }
+            // Active decodes retain their slot until reply/deadline, bounding actual worker work.
+        };
+        signal?.addEventListener("abort", abort, { once: true });
+        if (signal?.aborted) {
+            abort();
+            return;
+        }
+        decodeQueue.push(job);
+        pumpDecodes();
     });
 }
 

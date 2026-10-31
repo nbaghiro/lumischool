@@ -209,8 +209,8 @@ test("a grown-up goes into a world of another year from the map, reads a lesson 
     await goInto(page, mountains);
     const roll = await rollReady(page);
     await expect(page).toHaveURL(/\/map\?world=mountains&journey=1$/);
-    // Journey lessons are numbered rather than dated; parent notes remain available.
-    await expect(roll.locator(".j-date .d").first()).toHaveText("Lesson 1");
+    // Date flags are virtualized around the camera; whichever is mounted uses lesson numbering.
+    await expect(roll.locator(".j-date .d").first()).toHaveText(/^Lesson \d+$/);
     const first = roll.locator(".rd-sheet.rd-read").first();
     await expect(first).toBeVisible({ timeout: 30_000 });
     // a section drawn for paper only comes first in the sheet and is not on the screen

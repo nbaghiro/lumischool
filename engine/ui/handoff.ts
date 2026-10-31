@@ -22,14 +22,17 @@ type Held = "map" | "roll";
 let held: {
     curtain: HTMLElement;
     what: Held;
-    done: () => void;
+    done: (claimed: boolean) => void;
     timer: ReturnType<typeof setTimeout>;
     claimed: boolean;
 } | null = null;
 
 /** Says a map or a world is here to take over from what is held, which then waits for it to draw. */
-export function claim(): void {
-    if (held) held.claimed = true;
+export function claim(): { release(fade?: boolean, what?: Held): boolean } | null {
+    const owner = held;
+    if (!owner) return null;
+    owner.claimed = true;
+    return { release: (fade = true, what) => held === owner && release(fade, what) };
 }
 
 /**
@@ -39,13 +42,13 @@ export function claim(): void {
 export function hold(
     el: HTMLElement,
     what: Held,
-    done: () => void,
+    done: (claimed: boolean) => void,
     o: { claimed?: boolean } = {},
 ): void {
     release(false);
     const r = el.getBoundingClientRect();
     if (!r.width || !r.height) {
-        done();
+        done(false);
         return;
     }
     const curtain = document.createElement("div");
@@ -76,7 +79,9 @@ export function hold(
         curtain,
         what,
         done,
-        timer: setTimeout(() => release(true), LONGEST),
+        timer: setTimeout(() => {
+            if (held === h) release(true);
+        }, LONGEST),
         claimed: o.claimed === true,
     };
     held = h;
@@ -94,9 +99,12 @@ export function release(fade = true, what?: Held): boolean {
     if (!h || (what && h.what !== what)) return false;
     held = null;
     clearTimeout(h.timer);
+    let finished = false;
     const gone = (): void => {
+        if (finished) return;
+        finished = true;
         h.curtain.remove();
-        h.done();
+        h.done(h.claimed);
     };
     if (!fade || still()) {
         gone();

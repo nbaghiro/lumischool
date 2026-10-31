@@ -46,7 +46,7 @@ import {
 } from "../space";
 import { still } from "./art";
 import { announce } from "./say";
-import { claim, hold, release } from "./handoff";
+import { claim, hold } from "./handoff";
 import type { WorldPainted } from "./scenery";
 import { CanvasView } from "./view";
 import { worldPainter } from "./painters";
@@ -269,7 +269,7 @@ export function World(props: {
     /** Whether the child is on the way back to the map, so the roll is held over it as it goes. */
     let leaving = false;
     // a map or a roll held over the page as it goes waits for this roll to draw (handoff.ts)
-    claim();
+    const handoff = claim();
     let root: HTMLElement | undefined;
     const quiet = still() || !!props.preview;
     const [ready, setReady] = createSignal(false);
@@ -623,7 +623,7 @@ export function World(props: {
         zoomRead(cam, true);
         if (waiting && view) {
             waiting = false;
-            retryDraw(view);
+            requestDraw(view);
         }
         paintNear();
         // what idles is sized for the zoom the camera has come to rest at
@@ -677,6 +677,18 @@ export function World(props: {
     const played = new Set<string>();
     /** A roll to be drawn again once the camera stops. */
     let waiting = false;
+    let redrawTimer = 0;
+    function requestDraw(v: CanvasView): void {
+        clearTimeout(redrawTimer);
+        if (v !== view) return;
+        if (v.flying || v.movedAgo() < STILL_FOR) {
+            waiting = true;
+            redrawTimer = window.setTimeout(() => requestDraw(v), STILL_FOR);
+            return;
+        }
+        waiting = false;
+        retryDraw(v);
+    }
     /** The layout the roll was last drawn with, so one drawn again keeps the day under the camera. */
     let before: WorldView["layout"] | null = null;
     /** The camera that keeps the same day at the same place on the screen after the roll lays out again. */
@@ -808,7 +820,7 @@ export function World(props: {
                         return;
                     }
                     if (!first && (v.flying || v.movedAgo() < STILL_FOR)) {
-                        waiting = true;
+                        requestDraw(v);
                         cancel();
                         return;
                     }
@@ -854,24 +866,37 @@ export function World(props: {
                 host.append(staged);
                 // a scene that has not been framed yet has no window to draw the staged source for
                 if (!drawn) scene.frame(v.cam, v.vp);
-                const readied = (async (): Promise<void> => {
-                    await scene?.prepare(staged, first ?? anchored(v, was, next.layout) ?? v.cam);
+                const preparingScene = scene;
+                const readied = (async () => {
+                    const result = await preparingScene.prepare(
+                        staged,
+                        first ?? anchored(v, was, next.layout) ?? v.cam,
+                    );
+                    if (result !== "ready") return result;
                     // then where it grows from, which what is drawn sharp already is not drawn again for
                     if (growFrom && view === v && n === drawing)
-                        await scene?.prepare(staged, growFrom);
+                        return preparingScene.prepare(staged, growFrom);
+                    return result;
                 })();
                 // arriving, the roll grows after a moment whatever it has, and what is not drawn yet
                 // fades in as it grows, rather than the map holding the page still; drawn again in
                 // place, it is shown only once it is all there
-                await (first
-                    ? Promise.race([readied, new Promise((done) => setTimeout(done, GROW_WAITS))])
+                const result = await (first
+                    ? Promise.race([
+                          readied,
+                          new Promise<"arrival">((done) =>
+                              setTimeout(() => done("arrival"), GROW_WAITS),
+                          ),
+                      ])
                     : readied);
                 if (
+                    (result !== "ready" && result !== "arrival") ||
                     view !== v ||
                     n !== drawing ||
                     (!first && !(props.view === next || keyOf(props.view, props.play) === key))
                 ) {
                     firstDrawing = false;
+                    if (result === "failed" || result === "timeout") setFailed(true);
                     if (preparing === key) preparing = "";
                     staged.remove();
                     for (const p of prepared) p.release?.();
@@ -930,7 +955,7 @@ export function World(props: {
             return;
         }
         // the map the child came from was held over the page until now, and fades out over the roll
-        const handed = release(true);
+        const handed = handoff?.release(true) ?? false;
         if (host) host.style.opacity = "1";
         const at0 = landing(props.view.arrival?.term);
         // the place hands the roll a day and the box its paper ended in: the roll opens there and
@@ -1091,6 +1116,11 @@ export function World(props: {
         retryDraw(v);
         // the bake (tools/scripts/art-bake.ts) paints the whole roll and has its scene draw all of it
         // at `t` pixels to a unit
+        mapHook("rollRedraw", () => {
+            if (view !== v) return;
+            model = "";
+            requestDraw(v);
+        });
         mapHook("rollBake", async (t = 1) => {
             if (view !== v || !scene) return;
             for (const p of pending)
@@ -1120,17 +1150,17 @@ export function World(props: {
                 }
                 if (key === preparing) return;
                 // nothing is swapped under a camera that is moving: the roll is drawn again once it stops
-                if (v.flying || v.movedAgo() < STILL_FOR) waiting = true;
-                else retryDraw(v);
+                requestDraw(v);
             },
             { defer: true },
         ),
     );
     onCleanup(() => {
-        release(false, "map");
+        handoff?.release(false, "map");
         cancelPreparation?.();
         sceneWork.cancel(brush);
         clearTimeout(arriving);
+        clearTimeout(redrawTimer);
         clearTimeout(asking);
         clearTimeout(resting);
         sheets?.removeEventListener(REVEAL, follow);
@@ -1142,11 +1172,14 @@ export function World(props: {
         pending = [];
         scene = null;
         view = undefined;
-        const gone = (): void => {
+        const gone = (claimed = false): void => {
             for (const p of held) p.release?.();
             was?.stop();
             // the next roll opened takes up this one's scene, and with it what it drew
-            if (s) keepSpare(s, quiet);
+            if (s) {
+                if (claimed) keepSpare(s, quiet);
+                else s.stop();
+            }
             v?.dispose();
         };
         // a roll left for the map stays on the screen until the map has drawn where it opens

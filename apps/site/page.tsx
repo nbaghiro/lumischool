@@ -25,7 +25,8 @@ import { PHONE_OPENING } from "../../engine/ui/snapshot";
 import { SITE } from "../../engine/ui/snapshots/site";
 import { PICTURES } from "./pictures";
 import { Mark } from "../../engine/ui/mark";
-import { matches, Near, scrolledPast, whileNear } from "../../engine/ui/viewport";
+import { whileNear } from "../../engine/ui/scene-lifetime";
+import { matches, Near, scrolledPast } from "../../engine/ui/viewport";
 import type { Sample } from "../../school/worlds/sample";
 import { PUBLIC_PAGES, PUBLIC_LESSONS } from "../../school/public";
 import type { Roll, SamplePicture } from "./sample";
@@ -630,7 +631,7 @@ function Journey(props: { sample: Sample | undefined }): JSX.Element {
                     if (best >= 0) setAt(best);
                 },
                 wide()
-                    ? { rootMargin: "-46% 0px -46% 0px" }
+                    ? { rootMargin: `${-Math.floor(innerHeight * 0.46)}px 0px` }
                     : { root: row ?? null, rootMargin: "0px -45% 0px -45%" },
             );
             for (const stop of stops) watching.observe(stop);
@@ -642,9 +643,20 @@ function Journey(props: { sample: Sample | undefined }): JSX.Element {
         });
         const list = matchMedia("(min-width: 1081px)");
         list.addEventListener("change", watch);
+        let resizing = 0;
+        const resize = (): void => {
+            if (!resizing)
+                resizing = requestAnimationFrame(() => {
+                    resizing = 0;
+                    watch();
+                });
+        };
+        window.addEventListener("resize", resize);
         onCleanup(() => {
             watching?.disconnect();
             list.removeEventListener("change", watch);
+            window.removeEventListener("resize", resize);
+            cancelAnimationFrame(resizing);
         });
     });
     return (

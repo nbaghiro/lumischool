@@ -228,3 +228,40 @@ test("of tiles waiting alike, the one wanted latest loads first", async () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
     assert.deepEqual(order, ["busy", "now"]);
 });
+
+test("queued priorities follow current leases, including demotion and release", async () => {
+    const order: string[] = [];
+    const finishers: (() => void)[] = [];
+    const cache = tileCache({
+        budget: 100,
+        concurrency: 1,
+        load: (url) => {
+            order.push(url);
+            return new Promise<string>((resolve) => finishers.push(() => resolve(url)));
+        },
+        dispose() {},
+    });
+    const busy = cache.acquire("busy", 1);
+    const abandoned = cache.acquire("abandoned", 1, 100);
+    const retained = cache.acquire("abandoned", 1, 1);
+    const demoted = cache.acquire("demoted", 1, 90);
+    const visible = cache.acquire("visible", 1, 10);
+    assert.ok(busy && abandoned && retained && demoted && visible);
+    abandoned.release();
+    demoted.want(0);
+    finishers.shift()?.();
+    await busy.ready;
+    await new Promise((done) => setImmediate(done));
+    assert.deepEqual(order, ["busy", "visible"]);
+    finishers.shift()?.();
+    await visible.ready;
+    await new Promise((done) => setImmediate(done));
+    assert.deepEqual(order, ["busy", "visible", "abandoned"]);
+    finishers.shift()?.();
+    await retained.ready;
+    await new Promise((done) => setImmediate(done));
+    finishers.shift()?.();
+    await demoted.ready;
+    for (const lease of [busy, retained, demoted, visible]) lease.release();
+    assert.equal(cache.stats().bytes, 0);
+});

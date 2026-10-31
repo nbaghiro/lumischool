@@ -27,10 +27,17 @@ import {
     translation,
     type Affine,
     type GlDraw,
+    type GlImage,
     type GlTexture,
     type Tone,
 } from "./gl";
-import { terrain, type Terrain } from "./map-tiles";
+import { terrain, landscapeZoom, driftAt, type Terrain } from "./map-tiles";
+import {
+    renderDensity,
+    terrainCoverage,
+    TERRAIN_BLEED,
+    type TerrainSource,
+} from "./terrain-coverage";
 import { atlas, CELL, PAD, type Slot } from "./atlas";
 import {
     movingPartsOf,
@@ -42,8 +49,10 @@ import {
     WORKERS,
     type Sketch,
 } from "./sprites";
-import { mapCount, mapNote } from "./map-diagnostics";
+import { mapCount, mapNote, mapHook } from "./map-diagnostics";
 import { smallDevice } from "./device";
+import { sceneWork } from "./scene-work";
+import { mapMemory } from "./render-memory";
 import { bakedArt } from "./baked";
 import { ART_BAKE } from "./art-manifest";
 
@@ -93,12 +102,8 @@ const AHEAD_DECODING = Math.max(1, WORKERS - 1);
 const DECODING_PIXELS = 6 * 1024 * 1024;
 /** How many baked drawings are fetched at once; they are files, and take no worker. */
 const FETCHING = 16;
-/** The most backing pixels the map's canvas has, whatever the window. */
-const PIXELS = 4_000_000;
 /** What a label holds when it holds only words, so it can move over the canvas whole. */
 const INLINE = new Set(["SPAN", "B", "I", "EM", "STRONG", "BR", "SMALL"]);
-/** Milliseconds of a frame given to uploading drawings, since the browser draws an svg as it uploads it. */
-const UPLOADING = 6;
 /** How many times a drawing the workers could not draw is asked for before it is given up on. */
 const RETRIES = 4;
 /** How long a drawing the workers could not draw is left before it is asked for again, in ms. */
@@ -175,6 +180,7 @@ interface Leaf {
     failed: number;
     drawn: number;
     pending: boolean;
+    request?: number;
     /** For one tile of a drawing too large for one texture, its place in the tiles' grid (`tileKey`). */
     tile?: string;
     /** Drawn and found to hold nothing, as most tiles of a long road do, so it keeps no pixels. */
@@ -562,6 +568,8 @@ const keptPixels = (key: string): { pixels: ImageBitmap | ImageData | null } | u
     return had;
 };
 
+export type SceneReady = "ready" | "timeout" | "cancelled" | "failed";
+
 export interface Scene {
     /** The canvas it draws on, which a page that scrolls under it keeps in the window (world.tsx). */
     readonly canvas: HTMLCanvasElement;
@@ -571,19 +579,22 @@ export interface Scene {
      */
     frame(camera: Camera, size: Size, ahead?: Camera | null): void;
     /** Once a frame has drawn everything the camera sees, at the sharpness it wants. */
-    settled(): Promise<void>;
+    settled(): Promise<SceneReady>;
+    retry(): void;
     /**
      * Draws what is in view under `root`, a source to come that the page has not shown yet, as `camera`
      * will show it, without showing it, and settles once it all has pixels or after a second, so the page
      * can swap it in for the source it replaces and nothing is seen being drawn (a roll drawn again).
      */
-    prepare(root: Element, camera?: Camera): Promise<void>;
+    prepare(root: Element, camera?: Camera): Promise<SceneReady>;
     /**
      * Draws every drawing of the source at `toScreen` pixels to a unit, as if all of it were on the
      * screen, for the bake (tools/scripts/art-bake.ts) to keep; settles once all of it is kept.
      */
     bake(toScreen: number): Promise<void>;
     setReach(reach: MapView["reach"]): void;
+    landscapeZoom(): number;
+    landscape(root: Element, sources: readonly TerrainSource[]): void;
     /**
      * Draws from `hidden` from now on, lifting into `overlay` and telling the idles through `see`: what
      * the old source held is taken off the scene with its pixels kept, so a source painted again as it
@@ -640,6 +651,10 @@ export function mapScene(o: {
     let src = o.hidden,
         over = o.overlay,
         see = o.see;
+    const landscapes = new WeakMap<
+        Element,
+        { sources: readonly TerrainSource[]; coverage: ReturnType<typeof terrainCoverage> }
+    >();
     const infos = new Map<Element, Info>();
     const clocks = new WeakMap<Element, Motion>();
     /** By the svg, or by a moving part drawn on its own. */
@@ -743,6 +758,8 @@ export function mapScene(o: {
     const spare: Float32Array[] = [];
     const decoded: {
         leaf: Leaf;
+        id: number;
+        generation: number;
         pixels: ImageData | ImageBitmap;
         /** Whether the memory store holds these pixels, which it lets go of itself. */
         kept: boolean;
@@ -755,13 +772,13 @@ export function mapScene(o: {
         version: number;
         split: boolean;
     }[] = [];
-    const waiters: (() => void)[] = [];
+    const waiters: ((result: SceneReady) => void)[] = [];
     /** Lets whatever waits on a prepare or for the scene to settle go on, as the scene parks or stops. */
-    const settleAll = (): void => {
+    const settleAll = (result: SceneReady = "cancelled"): void => {
         const p = preparing;
         preparing = null;
-        p?.done();
-        for (const done of waiters.splice(0)) done();
+        p?.done(result);
+        for (const done of waiters.splice(0)) done(result);
     };
     let drifting: ReturnType<typeof setTimeout> | 0 = 0;
     let wasBusy = false;
@@ -773,7 +790,7 @@ export function mapScene(o: {
     let preparing: {
         root: Element;
         camera: Camera | null;
-        done: () => void;
+        done: (result: SceneReady) => void;
         until: number;
         /** A bake (tools/scripts/art-bake.ts): every drawing of the source, at this many pixels to a unit. */
         bake?: number;
@@ -789,7 +806,12 @@ export function mapScene(o: {
         drawingPixels = 0,
         stopped = false,
         ground: Terrain | null = null;
+    let rasterWork = new AbortController();
+    let generation = 0,
+        requestSerial = 0;
     interface Job {
+        id: number;
+        generation: number;
         leaf: Leaf;
         scale: number;
         rect: Rect;
@@ -809,17 +831,19 @@ export function mapScene(o: {
     /** The job waiting for each leaf, which each frame that still wants it brings up to date. */
     const queued = new Map<Leaf, Job>();
     /** Puts a job in the queue, or brings the one waiting for its leaf up to date. */
-    const request = (job: Job): void => {
+    const request = (asked: Omit<Job, "id" | "generation">): void => {
+        const job: Job = { ...asked, id: ++requestSerial, generation };
         if (job.leaf.retryAt !== undefined && job.wanted < job.leaf.retryAt) return;
         // what a bake asks for waits however long it takes, since the bake does not ask every frame
         if (bakeHolds) job.wanted = Infinity;
         const had = queued.get(job.leaf);
         if (had) {
-            Object.assign(had, job);
+            Object.assign(had, asked);
             return;
         }
         if (job.leaf.pending) return;
         job.leaf.pending = true;
+        job.leaf.request = job.id;
         queued.set(job.leaf, job);
         queue.push(job);
     };
@@ -834,12 +858,16 @@ export function mapScene(o: {
             });
     };
     const forget = (): void => {
+        generation++;
+        rasterWork.abort();
+        rasterWork = new AbortController();
         // a lost context took every texture, so every leaf holding pixels, on the scene or taken off
         // it, is asked for them again, and what was shared or recorded as drawn is forgotten
         for (const leaf of kept()) {
             leaf.texture = null;
             leaf.slot = null;
             leaf.pending = false;
+            leaf.request = undefined;
         }
         retired.clear();
         sharing.clear();
@@ -847,10 +875,24 @@ export function mapScene(o: {
         queue.length = 0;
         queued.clear();
         pages.reset();
+        landscapes.get(src)?.coverage.reset();
         bytes = 0;
         wake();
     };
-    const gl = canvasGl(canvas, forget);
+    mapHook("mapMemory", () => mapMemory.stats());
+    const memory = mapMemory.owner(() => {
+        trim(0, camera !== null);
+        ground?.trim();
+    });
+    const gl = (() => {
+        try {
+            return canvasGl(canvas, forget, memory);
+        } catch (error) {
+            memory.stop();
+            canvas.remove();
+            throw error;
+        }
+    })();
     // the colours drawings take from the page are part of what they look like, so pixels kept on the
     // device are kept apart for each palette
     const palette = ((): string => {
@@ -971,23 +1013,34 @@ export function mapScene(o: {
     let density = glDensity();
     gl.setDensity(density);
     const starting = new AbortController();
-    if (o.view)
-        void terrain({
-            gl,
-            view: o.view,
-            tokens: o.tokens,
-            wake,
-            still: o.still,
-            signal: starting.signal,
-        })
-            .then((t) => {
-                if (stopped) t.stop();
+    let groundRetry: ReturnType<typeof setTimeout> | undefined;
+    let groundAttempts = 0;
+    let groundFailed = false;
+    const startGround = (): void => {
+        const view = o.view;
+        if (!view || stopped || starting.signal.aborted) return;
+        groundAttempts++;
+        void terrain({ gl, view, tokens: o.tokens, wake, still: o.still, signal: starting.signal })
+            .then((made) => {
+                if (stopped) made.stop();
                 else {
-                    ground = t;
+                    ground = made;
+                    groundFailed = false;
                     wake();
                 }
             })
-            .catch(() => undefined);
+            .catch(() => {
+                if (stopped || starting.signal.aborted) return;
+                if (groundAttempts < 3)
+                    groundRetry = setTimeout(startGround, 400 * 2 ** groundAttempts);
+                else {
+                    groundFailed = true;
+                    settleAll("failed");
+                    wake();
+                }
+            });
+    };
+    startGround();
 
     const shade = (() => {
         let texture: GlTexture | null = null;
@@ -1321,6 +1374,16 @@ export function mapScene(o: {
     watching.observe(src, { childList: true, subtree: true, attributes: true });
     lift(src);
 
+    const current = (job: Pick<Job, "leaf" | "id" | "generation" | "version">): boolean =>
+        !stopped &&
+        job.generation === generation &&
+        job.leaf.request === job.id &&
+        job.version === job.leaf.version &&
+        isLive(job.leaf);
+    const finish = (job: Pick<Job, "leaf" | "id">): void => {
+        if (job.leaf.request === job.id) job.leaf.pending = false;
+    };
+
     /** Rasterizes the next drawings the camera wants, two at a time, nearest the middle first. */
     const pump = (): void => {
         const now = performance.now();
@@ -1343,8 +1406,8 @@ export function mapScene(o: {
             if (!job) break;
             const leaf = job.leaf;
             queued.delete(leaf);
-            if (!isLive(leaf)) {
-                leaf.pending = false;
+            if (!current(job)) {
+                finish(job);
                 continue;
             }
             // a drawing off the page has no computed colours, and would be drawn black
@@ -1374,7 +1437,8 @@ export function mapScene(o: {
             const r = job.rect;
             const key = `${contentOf(svg)}|${only ?? (withoutParts ? "base" : "whole")}|${job.scale}|${[r.x, r.y, r.w, r.h].map((n) => Math.round(n * 100) / 100).join(",")}|${pad}`;
             const landed = (pixels: ImageBitmap | ImageData | null, kept: boolean): void => {
-                if (stopped) {
+                if (!current(job)) {
+                    finish(job);
                     if (pixels instanceof ImageBitmap && !kept) pixels.close();
                     return;
                 }
@@ -1434,7 +1498,7 @@ export function mapScene(o: {
                             if (got instanceof ImageBitmap) got.close();
                             // a baked file that will not do is drawn by the workers
                             bake.forget(key);
-                            leaf.pending = false;
+                            finish(job);
                             return;
                         }
                         mapCount("art-baked", 1);
@@ -1471,6 +1535,7 @@ export function mapScene(o: {
                     ...(keptStore ? { keep: { store: `${keptStore}~${palette}`, key } } : {}),
                 },
                 job.tier <= 2,
+                rasterWork.signal,
             )
                 .then((drawn) => {
                     if (!drawn) throw new Error("The drawing could not be rasterised");
@@ -1481,11 +1546,15 @@ export function mapScene(o: {
                         drawn.pixels,
                         drawn.pixels ? drawn.w * drawn.h * 4 : 64,
                     );
-                    leaf.failures = 0;
+                    if (current(job)) leaf.failures = 0;
                     landed(drawn.pixels, kept);
                 })
                 .catch(() => {
-                    leaf.pending = false;
+                    if (!current(job)) {
+                        finish(job);
+                        return;
+                    }
+                    finish(job);
                     // a worker short of canvas memory, or a kept copy that would not read, is often
                     // gone a moment later, so a drawing is asked for again before it is given up on
                     leaf.failures = (leaf.failures ?? 0) + 1;
@@ -1513,19 +1582,22 @@ export function mapScene(o: {
     };
 
     /** Uploads what has decoded, nearest first, for as long as the frame allows. */
-    const upload = (started: number): void => {
+    let uploadWork = 0;
+    const upload = (deadline: number): void => {
+        let progressed = false;
         while (decoded.length) {
-            if (performance.now() - started > UPLOADING) {
+            if (progressed && performance.now() >= deadline) {
                 wake();
-                return;
+                break;
             }
             const d = decoded.shift();
             if (!d) break;
+            progressed = true;
             const { leaf } = d;
-            leaf.pending = false;
+            finish(d);
             // a bitmap the memory store let go of while it waited is asked for again
             if (d.pixels instanceof ImageBitmap && !d.pixels.width) continue;
-            if (stopped || !isLive(leaf)) {
+            if (!current(d)) {
                 if (d.pixels instanceof ImageBitmap && !d.kept) d.pixels.close();
                 continue;
             }
@@ -1554,6 +1626,19 @@ export function mapScene(o: {
                 leaf.own !== undefined &&
                 leaf.own >= frames - 1 &&
                 d.scale > leaf.scale * 1.01;
+            let slot = d.padded ? cell(d.w, d.h) : null;
+            let texture: GlTexture | null = null;
+            if (!slot || !pages.write(slot, d.pixels)) {
+                if (slot) pages.free(slot);
+                slot = null;
+                texture = gl.upload(d.pixels, d.w, d.h);
+            }
+            if (d.pixels instanceof ImageBitmap && !d.kept) d.pixels.close();
+            if (!slot && !texture) {
+                leaf.retryAt = performance.now() + 250;
+                setTimeout(wake, 260);
+                continue;
+            }
             if (sharper) {
                 if (leaf.softer) letGo(leaf.softer);
                 leaf.softer = {
@@ -1566,20 +1651,9 @@ export function mapScene(o: {
                 leaf.slot = null;
             } else letGo(leaf);
             leaf.empty = false;
-            const slot = d.padded ? cell(d.w, d.h) : null;
-            let texture: GlTexture | null = null;
-            if (slot && pages.write(slot, d.pixels)) leaf.slot = slot;
-            else {
-                if (slot) pages.free(slot);
-                texture = gl.upload(d.pixels, d.w, d.h);
-            }
-            // a bitmap the memory store does not hold is let go as soon as the GPU has its pixels
-            if (d.pixels instanceof ImageBitmap && !d.kept) d.pixels.close();
-            if (!leaf.slot) {
-                if (!texture) continue;
-                leaf.texture = texture;
-                bytes += texture.bytes;
-            }
+            leaf.slot = slot;
+            leaf.texture = texture;
+            if (texture) bytes += texture.bytes;
             leaf.scale = d.scale;
             leaf.rect = d.rect;
             leaf.rastered = d.version;
@@ -1659,7 +1733,13 @@ export function mapScene(o: {
             pageHides = hides;
             infos.clear();
         }
-        upload(now);
+        if (decoded.length && !uploadWork)
+            uploadWork = sceneWork.schedule((deadline) => {
+                uploadWork = 0;
+                if (stopped || !camera) return;
+                upload(deadline);
+                wake();
+            });
         // while the camera moves a drawing keeps the texture it has unless it would look twice as soft,
         // and is drawn exactly as sharp as it is seen once the camera rests
         const still = now - moved > SETTLE;
@@ -1694,7 +1774,19 @@ export function mapScene(o: {
             if (list) list.push(a);
             else script.set(target, [a]);
         }
-        const draws: GlDraw[] = [];
+        let draws: GlDraw[] = [];
+        const landscape = landscapes.get(src);
+        const terrainElements = new Map<Element, TerrainSource>();
+        const terrainImages: GlDraw[] = [];
+        const missingTerrain: Rect[] = [];
+        for (const source of landscape?.sources ?? []) {
+            if (source.elements === null) {
+                if (intersects(source.bounds, reach)) missingTerrain.push(source.bounds);
+            } else for (const element of source.elements) terrainElements.set(element, source);
+        }
+        for (const source of landscapes.get(preparing?.root ?? src)?.sources ?? [])
+            for (const element of source.elements ?? []) terrainElements.set(element, source);
+        let terrainDrawing = false;
         // drawings in one page one after another are one instanced batch
         let batches = 0;
         /** One drawing from its cell, or with `from`, the part of its cell that holds `rect`. */
@@ -1707,6 +1799,24 @@ export function mapScene(o: {
             from?: Rect,
         ): void => {
             const [u, v, uw, vh] = slot.uv;
+            if (terrainDrawing) {
+                const sample = from ?? rect;
+                draws.push({
+                    kind: "image",
+                    texture: slot.page,
+                    rect,
+                    at,
+                    alpha,
+                    tone,
+                    source: {
+                        x: u + ((rect.x - sample.x) / sample.w) * uw,
+                        y: v + ((rect.y - sample.y) / sample.h) * vh,
+                        w: (rect.w / sample.w) * uw,
+                        h: (rect.h / sample.h) * vh,
+                    },
+                });
+                return;
+            }
             const last = draws.at(-1);
             let batch = last?.kind === "sprites" && last.texture === slot.page ? last : null;
             if (!batch) {
@@ -1754,6 +1864,7 @@ export function mapScene(o: {
         let wanting = 0;
         /** Of those, the ones on the screen, which a source being prepared waits for; the rest are ahead. */
         let inSight = 0;
+        let uncovered = 0;
         // what the page's diagnostics count (?mapDebug): a drawing on the screen last frame with nothing
         // this frame is a flash, and one in view that has never had pixels is late
         let lost = 0,
@@ -1764,8 +1875,10 @@ export function mapScene(o: {
         let staging = false;
         /** Whether the walk is a bake's, which asks for each drawing at exactly its scale. */
         let baking = false;
-        const reckon = (l: Leaf, drew: boolean): void => {
+        const reckon = (l: Leaf, drew: boolean, at: Affine, rect = l.rect): void => {
+            if (onScreen && !drew && !terrainDrawing) uncovered++;
             if (staging) return;
+            if (terrainDrawing && !drew) missingTerrain.push(bounds(at, rect));
             if (drew) l.shown = frames;
             else if (!onScreen) return;
             else if (l.shown === frames - 1) lost++;
@@ -1779,7 +1892,9 @@ export function mapScene(o: {
             if (info.hidden || info.kind === "skip") return;
             let local = info.at,
                 a = alpha * info.opacity;
-            const m = info.motion;
+            const terrainSource = terrainElements.get(el);
+            const wave = terrainSource?.waves === el;
+            const m = wave ? null : info.motion;
             if (m) {
                 if (now - m.checked > 500) {
                     m.checked = now;
@@ -1796,13 +1911,14 @@ export function mapScene(o: {
                 if (at.opacity !== null) a = alpha * at.opacity;
                 if (!paused) moving = true;
             }
-            const played = scriptOf(script.get(el) ?? []);
+            const played = wave ? null : scriptOf(script.get(el) ?? []);
             if (played) {
                 if (played.m) local = played.m;
                 if (played.opacity !== null) a = alpha * played.opacity;
                 if (played.running) moving = true;
             }
             if (a <= 0) return;
+            if (wave) local = translation(!o.still && cam.z * 22 >= 1 ? driftAt(now) : 0, 0);
             const [ox, oy] = info.origin;
             const placed = multiply(
                 multiply(translation(info.offset[0] + ox, info.offset[1] + oy), local),
@@ -1823,7 +1939,12 @@ export function mapScene(o: {
                 return;
             }
             if (info.kind === "svg" && el instanceof SVGSVGElement) {
+                const main = draws;
+                terrainDrawing = !!terrainSource;
+                if (terrainSource && !staging) draws = terrainImages;
                 drawing(el, info, at, a, t);
+                terrainDrawing = false;
+                draws = main;
                 return;
             }
             for (const child of el.children) visit(child, at, a, t);
@@ -1939,34 +2060,49 @@ export function mapScene(o: {
             }
             // a drawing that came to the screen with nothing standing in for it fades in
             const fading =
-                l.born !== undefined && !o.still ? Math.min(1, (now - l.born) / ARRIVES) : 1;
+                l.born !== undefined && !o.still && !terrainDrawing
+                    ? Math.min(1, (now - l.born) / ARRIVES)
+                    : 1;
             if (fading < 1) moving = true;
             else l.born = undefined;
-            let shown = alpha * fading;
+            const shown = alpha * fading;
             const softer = l.softer;
+            let previous: GlImage["previous"];
             if (softer) {
-                const t = (now - softer.since) / SHARPENS;
+                const t = Math.min(1, (now - softer.since) / SHARPENS);
                 if (t >= 1 || !hasPixels(l)) {
                     l.softer = undefined;
                     letGo(softer);
                 } else {
-                    moving = true;
-                    if (softer.slot && pages.live(softer.slot))
-                        sprite(softer.slot, softer.rect, at, shown, tone);
-                    else if (softer.texture)
-                        draws.push({
-                            kind: "image",
-                            texture: softer.texture,
+                    const old =
+                        softer.slot && pages.live(softer.slot) ? softer.slot.page : softer.texture;
+                    if (old && gl.live(old)) {
+                        const uv = softer.slot?.uv;
+                        previous = {
+                            texture: old,
                             rect: softer.rect,
-                            at,
-                            alpha: shown,
-                            tone,
-                        });
-                    shown *= t;
+                            mix: t,
+                            source: uv ? { x: uv[0], y: uv[1], w: uv[2], h: uv[3] } : undefined,
+                        };
+                        moving = true;
+                    }
                 }
             }
-            if (l.slot && pages.live(l.slot)) sprite(l.slot, l.rect, at, shown, tone);
-            else if (l.texture)
+            if (l.slot && pages.live(l.slot)) {
+                if (previous) {
+                    const [x, y, w, h] = l.slot.uv;
+                    draws.push({
+                        kind: "image",
+                        texture: l.slot.page,
+                        rect: l.rect,
+                        at,
+                        alpha: shown,
+                        tone,
+                        source: { x, y, w, h },
+                        previous,
+                    });
+                } else sprite(l.slot, l.rect, at, shown, tone);
+            } else if (l.texture)
                 draws.push({
                     kind: "image",
                     texture: l.texture,
@@ -1974,9 +2110,15 @@ export function mapScene(o: {
                     at,
                     alpha: shown,
                     tone,
+                    previous,
                 });
             if (hasPixels(l) && !staging) l.own = frames;
-            reckon(l, !!(l.texture || (l.slot && pages.live(l.slot)) || l.empty));
+            reckon(
+                l,
+                (hasPixels(l) || !!l.empty) && (!terrainDrawing || contains(l.rect, wanted)),
+                at,
+                wanted,
+            );
         };
         /**
          * A drawing too large on screen for one texture, drawn as the tiles of a grid at a scale that
@@ -1994,7 +2136,8 @@ export function mapScene(o: {
         ): boolean => {
             const unit = Math.sqrt(Math.abs(at[0] * at[3] - at[1] * at[2])) || 1;
             const wanted = 2 ** Math.ceil(Math.log2(Math.max(unit * toScreen, 1 / 1024)));
-            if (Math.max(whole.w, whole.h) * wanted <= TILED) return false;
+            if (Math.max(whole.w, whole.h) * wanted <= TILED && !tileScales.has(idOf(svg)))
+                return false;
             // a drawing keeps the scale it is shown at while the camera is within twice of it either
             // way, and its tiles at that scale are drawn ahead of the camera; past that, the tiles at
             // the scale it wants are drawn behind the ones on the screen, and it changes to them in
@@ -2012,7 +2155,9 @@ export function mapScene(o: {
                     ? wanted
                     : null;
             const inverse = invert(at);
-            const shown = inverse ? clip(bounds(inverse, margin), whole) : null;
+            const shown = inverse
+                ? clip(bounds(inverse, terrainDrawing ? grownBy(seen, 256 / cam.z) : margin), whole)
+                : null;
             if (!shown) return true;
             const side = TILE / scale;
             const x0 = Math.floor(shown.x / side),
@@ -2025,7 +2170,7 @@ export function mapScene(o: {
                 !!l && !!l.slot && pages.live(l.slot) && l.rastered >= 0;
             /** A tile with something to show: pixels, in a cell or its own texture, or found empty. */
             const holds = (l: Leaf | undefined): boolean =>
-                !!l && l.rastered >= 0 && (inCell(l) || !!l.texture || !!l.empty);
+                !!l && l.rastered >= 0 && (hasPixels(l) || !!l.empty);
             /**
              * A tile drawn at its version. A drawing the painters keep adding to, as a roll's ground is
              * while the pieces near the camera are painted into it, has its tiles behind by a version or
@@ -2097,7 +2242,7 @@ export function mapScene(o: {
                     onScreen = intersects(c, seen);
                     if (ready(l)) {
                         put(l, l.rect);
-                        reckon(l, true);
+                        reckon(l, true, at);
                         continue;
                     }
                     ask(l, near);
@@ -2108,7 +2253,7 @@ export function mapScene(o: {
                     // its own pixels from before the drawing changed are the closest there is
                     if (holds(l)) {
                         put(l, l.rect);
-                        reckon(l, true);
+                        reckon(l, true, at);
                         continue;
                     }
                     // or the same tile of the drawing as it was before it changed
@@ -2119,16 +2264,60 @@ export function mapScene(o: {
                     if (was && holds(was)) {
                         was.drawn = frames;
                         put(was, was.rect);
-                        reckon(l, true);
+                        reckon(l, true, at);
                         continue;
                     }
                     // then the nearest coarser tile that has pixels, its share of it cropped; one three
                     // scales down is asked for first, since it costs one tile and covers sixty-four
                     let covered = false;
+                    const wholeLeaf = leaves.get(svg);
+                    if (
+                        wholeLeaf &&
+                        wholeLeaf.rastered >= 0 &&
+                        wholeLeaf.split === split &&
+                        contains(wholeLeaf.rect, l.rect) &&
+                        (hasPixels(wholeLeaf) || wholeLeaf.empty)
+                    ) {
+                        wholeLeaf.drawn = frames;
+                        if (wholeLeaf.slot && pages.live(wholeLeaf.slot))
+                            sprite(wholeLeaf.slot, l.rect, at, alpha, tone, wholeLeaf.rect);
+                        else if (wholeLeaf.texture)
+                            draws.push({
+                                kind: "image",
+                                texture: wholeLeaf.texture,
+                                rect: l.rect,
+                                at,
+                                alpha,
+                                tone,
+                                source: {
+                                    x: (l.rect.x - wholeLeaf.rect.x) / wholeLeaf.rect.w,
+                                    y: (l.rect.y - wholeLeaf.rect.y) / wholeLeaf.rect.h,
+                                    w: l.rect.w / wholeLeaf.rect.w,
+                                    h: l.rect.h / wholeLeaf.rect.h,
+                                },
+                            });
+                        covered = true;
+                    }
                     for (let k = 1; k <= 4 && !covered; k++) {
                         const up = tileAt(scale / 2 ** k, cx, cy);
-                        if (up && inCell(up)) {
-                            sprite(up.slot, l.rect, at, alpha, tone, up.rect);
+                        if (up && holds(up)) {
+                            if (inCell(up)) sprite(up.slot, l.rect, at, alpha, tone, up.rect);
+                            else if (up.texture && gl.live(up.texture))
+                                draws.push({
+                                    kind: "image",
+                                    texture: up.texture,
+                                    rect: l.rect,
+                                    at,
+                                    alpha,
+                                    tone,
+                                    source: {
+                                        x: (l.rect.x - up.rect.x) / up.rect.w,
+                                        y: (l.rect.y - up.rect.y) / up.rect.h,
+                                        w: l.rect.w / up.rect.w,
+                                        h: l.rect.h / up.rect.h,
+                                    },
+                                });
+                            // A successfully empty parent is complete coverage too.
                             covered = true;
                         } else if (up && k === 3) ask(up, near, 0);
                     }
@@ -2136,8 +2325,17 @@ export function mapScene(o: {
                     for (const k of covered ? [] : [1, 2]) {
                         const n = 2 ** k;
                         const finer: Leaf[] = [];
+                        let expected = 0;
                         for (let dy = 0; dy < n; dy++)
                             for (let dx = 0; dx < n; dx++) {
+                                const fineRect = {
+                                    x: ((tx * n + dx) * side) / n,
+                                    y: ((ty * n + dy) * side) / n,
+                                    w: side / n,
+                                    h: side / n,
+                                };
+                                if (!clip(fineRect, whole)) continue;
+                                expected++;
                                 const f = tiles.get(
                                     tileKey(id, scale * n, tx * n + dx, ty * n + dy),
                                 );
@@ -2146,13 +2344,13 @@ export function mapScene(o: {
                                     finer.push(f);
                                 }
                             }
-                        if (finer.length) {
+                        if (finer.length && finer.length === expected) {
                             for (const f of finer) put(f, f.rect);
                             covered = true;
                             break;
                         }
                     }
-                    reckon(l, covered);
+                    reckon(l, covered, at);
                 }
             if (next !== null) {
                 const side_ = TILE / next;
@@ -2202,12 +2400,9 @@ export function mapScene(o: {
         ): void => {
             const { w, h } = info.size;
             if (w <= 0 || h <= 0) return;
-            const whole = {
-                x: -w * OVERFLOW,
-                y: -h * OVERFLOW,
-                w: w * (1 + 2 * OVERFLOW),
-                h: h * (1 + 2 * OVERFLOW),
-            };
+            const bleedX = terrainDrawing ? TERRAIN_BLEED : w * OVERFLOW;
+            const bleedY = terrainDrawing ? TERRAIN_BLEED : h * OVERFLOW;
+            const whole = { x: -bleedX, y: -bleedY, w: w + 2 * bleedX, h: h + 2 * bleedY };
             const onWorld = bounds(at, whole);
             if (!intersects(onWorld, reach)) return;
             const near = intersects(onWorld, margin);
@@ -2274,9 +2469,11 @@ export function mapScene(o: {
                 last = draws.at(-1),
                 keptCount = last?.kind === "sprites" ? last.count : 0,
                 wanted = wanting,
-                sighted = inSight;
+                sighted = inSight,
+                gaps = uncovered;
             wanting = 0;
             inSight = 0;
+            uncovered = 0;
             staging = true;
             // the source to come is walked with the camera it will be shown under
             const now = { cam, seen, margin, close, reach, toScreen };
@@ -2308,7 +2505,7 @@ export function mapScene(o: {
             // and a bake once every drawing is drawn and kept
             const ready =
                 bake === undefined
-                    ? !inSight
+                    ? !uncovered
                     : walks &&
                       !wanting &&
                       !queue.length &&
@@ -2317,25 +2514,49 @@ export function mapScene(o: {
                       !decoded.length;
             wanting = wanted;
             inSight = sighted;
+            uncovered = gaps;
             draws.length = kept;
             batches = keptBatches;
             if (last?.kind === "sprites") last.count = keptCount;
             if (ready || performance.now() > preparing.until) {
                 const { done } = preparing;
                 preparing = null;
-                done();
+                done(ready ? "ready" : "timeout");
             }
         }
         // the terrain goes under everything, and is told whether what is over it is drawn yet this
         // frame, for its marks to stay until it is
-        const under = ground?.draws(
-            cam,
-            size,
-            density,
-            ahead,
-            wanting > 0 || queue.length > 0 || decoding > 0 || fetching > 0,
-        );
-        if (under) draws.unshift(...under.draws);
+        const under = ground?.draws(cam, size, density, ahead);
+        if (under) {
+            const fine = terrainImages.filter((d): d is GlImage => d.kind === "image");
+            const imagesIn = (images: readonly GlImage[], rect: Rect): GlImage[] =>
+                images.filter((d) => intersects(bounds(d.at, d.rect), rect));
+            const regions = landscape?.coverage.frame(
+                seen,
+                missingTerrain,
+                cam.z / landscapeZoom(density),
+                now,
+                o.still,
+            );
+            const marks: GlDraw[] =
+                regions && regions.some((r) => r.mix > 0)
+                    ? regions.map((r) => ({
+                          kind: "region",
+                          rect: r.rect,
+                          from: r.mix < 1 ? imagesIn(under.marks, r.rect) : [],
+                          to: r.mix > 0 ? imagesIn(fine, r.rect) : [],
+                          mix: r.mix,
+                      }))
+                    : under.marks;
+            if (regions?.some((r) => r.moving)) moving = true;
+            mapCount("terrain-lost", regions?.filter((r) => r.lost).length ?? 0);
+            mapNote("terrain-regions", regions?.length ?? 0);
+            mapNote("terrain-live", regions?.filter((r) => r.mix === 1).length ?? 0);
+            mapNote("terrain-fallback", regions?.filter((r) => r.mix === 0).length ?? 0);
+            mapNote("terrain-missing", missingTerrain.length);
+            mapNote("render-density", density);
+            draws.unshift(...under.draws, ...marks);
+        }
         mapCount("art-lost", lost);
         mapCount("art-late", late);
         const busy =
@@ -2350,6 +2571,11 @@ export function mapScene(o: {
         mapNote("scene-leaves", leaves.size);
         mapNote("scene-tiles", tiles.size);
         mapNote("scene-retired", retired.size);
+        memory.measure(gl.storage().presentation);
+        mapNote("document-map-presentation-mb", mapMemory.stats().presentation / MB);
+        mapNote("document-map-cache-mb", mapMemory.stats().bytes / MB);
+        mapNote("document-map-cache-limit-mb", mapMemory.stats().limit / MB);
+        mapNote("document-map-scenes", mapMemory.stats().owners);
         mapNote("scene-gpu-mb", Math.round((bytes + pages.bytes()) / MB));
         mapNote("kept-mb", Math.round(drawnBytes / MB));
         mapNote("art-queued", queue.length);
@@ -2380,6 +2606,7 @@ export function mapScene(o: {
         if (
             waiters.length &&
             still &&
+            !uncovered &&
             !wanting &&
             !queue.length &&
             !decoding &&
@@ -2387,7 +2614,7 @@ export function mapScene(o: {
             !decoded.length &&
             (o.view ? ground?.complete() : true)
         )
-            for (const done of waiters.splice(0)) done();
+            for (const done of waiters.splice(0)) done("ready");
         if (moving || preparing) wake();
         else if (under?.again != null && !drifting)
             drifting = setTimeout(() => {
@@ -2416,9 +2643,9 @@ export function mapScene(o: {
             }
             size = vp;
             // every pass the GPU makes costs by the pixel, so a large window draws a little under twice
-            const fits = Math.min(glDensity(), Math.sqrt(PIXELS / Math.max(1, vp.w * vp.h)));
+            const fits = renderDensity(vp, glDensity());
             if (fits !== density) {
-                density = Math.max(1, fits);
+                density = fits;
                 gl.setDensity(density);
             }
             // drawn now rather than on the next frame, so the canvas moves in the same frame as the
@@ -2430,23 +2657,61 @@ export function mapScene(o: {
         setReach(reach) {
             ground?.setReach(reach);
         },
+        landscapeZoom: () => landscapeZoom(density),
+        landscape(root, sources) {
+            landscapes.set(root, {
+                sources,
+                coverage: terrainCoverage(sources.map((s) => s.rect)),
+            });
+        },
         settled() {
+            if (stopped) return Promise.resolve<SceneReady>("cancelled");
+            if (groundFailed) return Promise.resolve<SceneReady>("failed");
             wake();
-            return new Promise((done) => waiters.push(done));
+            return new Promise((resolve) => {
+                const done = (result: SceneReady): void => {
+                    clearTimeout(timer);
+                    resolve(result);
+                };
+                const timer = setTimeout(() => {
+                    const at = waiters.indexOf(done);
+                    if (at >= 0) waiters.splice(at, 1);
+                    done("timeout");
+                }, 30_000);
+                waiters.push(done);
+            });
+        },
+        retry() {
+            if (stopped) return;
+            if (groundFailed) {
+                groundFailed = false;
+                groundAttempts = 0;
+                startGround();
+            }
+            for (const leaf of every()) {
+                leaf.failed = -1;
+                leaf.failures = 0;
+                leaf.retryAt = undefined;
+            }
+            wake();
         },
         bake(t) {
             const had = preparing;
             preparing = null;
-            had?.done();
-            return new Promise((done) => {
+            had?.done("cancelled");
+            return new Promise<void>((resolve, reject) => {
+                const done = (result: SceneReady) =>
+                    result === "ready" ? resolve() : reject(new Error(`Art bake ${result}`));
                 preparing = { root: src, camera, done, until: Infinity, bake: t };
                 wake();
             });
         },
         prepare(root, at) {
+            if (stopped) return Promise.resolve<SceneReady>("cancelled");
+            if (groundFailed) return Promise.resolve<SceneReady>("failed");
             const had = preparing;
             preparing = null;
-            had?.done();
+            had?.done("cancelled");
             // drawings a prepare before this one walked that are in neither the source nor this root
             // were abandoned with it, and go off the scene with their pixels kept by their markup
             for (const svg of keysOf.keys())
@@ -2482,7 +2747,21 @@ export function mapScene(o: {
             wake();
         },
         park() {
+            sceneWork.cancel(uploadWork);
+            uploadWork = 0;
             settleAll();
+            generation++;
+            rasterWork.abort();
+            rasterWork = new AbortController();
+            for (const leaf of every()) {
+                leaf.pending = false;
+                leaf.request = undefined;
+            }
+            for (const d of decoded) {
+                finish(d);
+                if (d.pixels instanceof ImageBitmap && !d.kept) d.pixels.close();
+            }
+            decoded.length = 0;
             cancelAnimationFrame(scheduled);
             scheduled = 0;
             clearTimeout(settling);
@@ -2493,13 +2772,15 @@ export function mapScene(o: {
             }
             queue.length = 0;
             queued.clear();
-            // what waits to be shown again keeps what it drew up to half its pages, the most recently seen
-            // first, so coming back to it draws nothing; a phone has room on its GPU for one screen, and
-            // takes what this one drew from the pixels kept in memory when it comes back
-            trim(smallDevice ? 0 : (o.tiles ? PAGES : BUDGET) / 2, !smallDevice);
+            // Parked scenes have no visible incumbents: enforce the spare budget even for recently drawn pages.
+            trim(smallDevice ? 0 : (o.tiles ? PAGES : BUDGET) / 2, false);
             ground?.park(smallDevice);
+            gl.park();
+            memory.park(true);
+            memory.measure(gl.storage().presentation);
         },
         unpark(host, under) {
+            memory.park(false);
             host.insertBefore(canvas, under);
         },
         hold(z) {
@@ -2508,9 +2789,13 @@ export function mapScene(o: {
         },
         stop() {
             if (stopped) return;
+            sceneWork.cancel(uploadWork);
+            uploadWork = 0;
             settleAll();
             stopped = true;
+            rasterWork.abort();
             starting.abort();
+            clearTimeout(groundRetry);
             cancelAnimationFrame(scheduled);
             clearTimeout(settling);
             clearTimeout(drifting);
@@ -2522,6 +2807,7 @@ export function mapScene(o: {
             twins.clear();
             ground?.stop();
             gl.stop();
+            memory.stop();
             canvas.remove();
             leaves.clear();
             keysOf.clear();

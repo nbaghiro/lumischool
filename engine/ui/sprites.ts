@@ -529,6 +529,8 @@ export const WORKERS = Math.max(1, Math.min(4, (navigator.hardwareConcurrency ||
 interface Slot {
     worker: Worker;
     busy: Pending | null;
+    timer?: ReturnType<typeof setTimeout>;
+    fail: () => void;
     /** The sketches this worker keeps, least recently used first. */
     keeps: Map<number, true>;
 }
@@ -570,62 +572,95 @@ const next = (): void => {
         }
         for (const gone of forget) slot.keeps.delete(gone);
         const message: RasterMessage = { id, job, sketchId, forget, ...(known ? {} : { sketch }) };
-        slot.worker.postMessage(message);
+        slot.timer = setTimeout(slot.fail, 20_000);
+        try {
+            slot.worker.postMessage(message);
+        } catch {
+            slot.fail();
+        }
     }
 };
 
-const start = (): NonNullable<typeof pool> => {
-    if (pool) return pool;
-    const made = Array.from({ length: WORKERS }, () => {
-        const worker = new Worker(new URL("./sprites.worker.ts", import.meta.url), {
-            type: "module",
-        });
-        const slot: Slot = { worker, busy: null, keeps: new Map() };
-        worker.onmessage = (e: MessageEvent<unknown>) => {
-            const data = e.data;
-            if (typeof data !== "object" || data === null || !("id" in data)) return;
-            const id = typeof data.id === "number" ? data.id : -1;
-            const flight = inFlight.get(id);
-            if (!flight) return;
-            inFlight.delete(id);
-            flight.slot.busy = null;
-            const pixels = "pixels" in data ? data.pixels : null,
-                bitmap = "bitmap" in data ? data.bitmap : null,
-                w = "w" in data ? data.w : null,
-                h = "h" in data ? data.h : null;
-            const empty = "empty" in data && data.empty === true;
-            const cached = "cached" in data && data.cached === true;
-            flight.pending.done(
-                typeof w === "number" && typeof h === "number"
-                    ? bitmap instanceof ImageBitmap
-                        ? { w, h, pixels: bitmap, cached }
-                        : pixels instanceof ArrayBuffer
-                          ? {
-                                w,
-                                h,
-                                pixels: new ImageData(new Uint8ClampedArray(pixels), w, h),
-                                cached,
-                            }
-                          : empty
-                            ? { w, h, pixels: null, cached }
-                            : null
-                    : null,
-            );
-            next();
-        };
-        worker.onerror = () => {
+const makeSlot = (): Slot => {
+    const worker = new Worker(new URL("./sprites.worker.ts", import.meta.url), { type: "module" });
+    const slot: Slot = {
+        worker,
+        busy: null,
+        keeps: new Map(),
+        fail: () => {
+            clearTimeout(slot.timer);
+            worker.terminate();
             for (const [id, flight] of inFlight)
                 if (flight.slot === slot) {
                     inFlight.delete(id);
-                    flight.slot.busy = null;
                     flight.pending.done(null);
                 }
-            next();
-        };
-        return slot;
-    });
-    pool = made;
-    return made;
+            slot.busy = null;
+            const index = pool?.indexOf(slot) ?? -1;
+            if (index >= 0) pool?.splice(index, 1);
+            // A failed worker's sketch IDs are unusable in its replacement.
+            try {
+                start();
+                next();
+            } catch {
+                for (const pending of waiting.splice(0)) pending.done(null);
+            }
+        },
+    };
+    worker.onmessage = (e: MessageEvent<unknown>) => {
+        const data = e.data;
+        if (typeof data !== "object" || data === null || !("id" in data)) return;
+        const id = typeof data.id === "number" ? data.id : -1;
+        const flight = inFlight.get(id);
+        const bitmap = "bitmap" in data ? data.bitmap : null;
+        if (!flight || flight.slot !== slot) {
+            if (bitmap instanceof ImageBitmap) bitmap.close();
+            return;
+        }
+        clearTimeout(slot.timer);
+        inFlight.delete(id);
+        slot.busy = null;
+        const pixels = "pixels" in data ? data.pixels : null,
+            w = "w" in data ? data.w : null,
+            h = "h" in data ? data.h : null;
+        const empty = "empty" in data && data.empty === true;
+        const cached = "cached" in data && data.cached === true;
+        const valid =
+            typeof w === "number" &&
+            typeof h === "number" &&
+            Number.isInteger(w) &&
+            Number.isInteger(h) &&
+            w > 0 &&
+            h > 0;
+        let result: Rastered | null = null;
+        if (valid) {
+            if (bitmap instanceof ImageBitmap && bitmap.width === w && bitmap.height === h)
+                result = { w, h, pixels: bitmap, cached };
+            else if (pixels instanceof ArrayBuffer && pixels.byteLength === w * h * 4)
+                result = {
+                    w,
+                    h,
+                    pixels: new ImageData(new Uint8ClampedArray(pixels), w, h),
+                    cached,
+                };
+            else if (empty) result = { w, h, pixels: null, cached };
+        }
+        if (bitmap instanceof ImageBitmap && result?.pixels !== bitmap) bitmap.close();
+        flight.pending.done(result);
+        next();
+    };
+    worker.onerror = (event) => {
+        event.preventDefault();
+        slot.fail();
+    };
+    worker.onmessageerror = slot.fail;
+    return slot;
+};
+
+const start = (): Slot[] => {
+    pool ??= [];
+    while (pool.length < WORKERS) pool.push(makeSlot());
+    return pool;
 };
 
 /** Starts the workers, so a scene made now has them ready by the time its first drawings are asked for. */
@@ -634,10 +669,38 @@ export function warmRasterizers(): void {
 }
 
 /** Draws a sketch off the page's thread; null when the worker could not. `urgent` jobs go first. */
-export function rasterize(job: RasterJob, urgent = false): Promise<Rastered | null> {
-    start();
+export function rasterize(
+    job: RasterJob,
+    urgent = false,
+    signal?: AbortSignal,
+): Promise<Rastered | null> {
+    if (signal?.aborted) return Promise.resolve(null);
+    try {
+        start();
+    } catch {
+        return Promise.resolve(null);
+    }
     return new Promise((done) => {
-        waiting.push({ job, urgent, done });
+        let cancelled = false;
+        const pending: Pending = {
+            job,
+            urgent,
+            done: (result) => {
+                signal?.removeEventListener("abort", abort);
+                if (cancelled) {
+                    if (result?.pixels instanceof ImageBitmap) result.pixels.close();
+                } else done(result);
+            },
+        };
+        const abort = (): void => {
+            cancelled = true;
+            const index = waiting.indexOf(pending);
+            if (index >= 0) waiting.splice(index, 1);
+            signal?.removeEventListener("abort", abort);
+            done(null);
+        };
+        signal?.addEventListener("abort", abort, { once: true });
+        waiting.push(pending);
         next();
     });
 }

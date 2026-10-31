@@ -121,7 +121,6 @@ for (const marks of ["colour", "pencil"]) {
  layer.remove();
 }
 window.exported = { bounds:view.country.bounds, inner:view.layout.bounds, layers, bare, strokes, pieces };
-land.stop();
 `,
     );
     const dist = join(dir, "dist");

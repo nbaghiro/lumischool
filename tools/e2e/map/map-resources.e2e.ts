@@ -8,6 +8,7 @@ declare global {
             detachedObservers(): number;
             detachedPixels(): number;
         };
+        rollRedraw(): void;
         mapTilesProbe: { el: Element; key: string; drawing: string }[];
     }
 }
@@ -167,6 +168,7 @@ test("a map under the overlay lets its canvas go, and every canvas stays bounded
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/home");
+    await expect(page.locator(".site-bar div.bar-mark-bird")).toBeAttached();
     await page.locator("#you").scrollIntoViewIfNeeded();
     const canvases = page.locator(".ow-host > canvas");
     // the page's own map sections are pictures (page.tsx), so the dialog's map is the only one drawn
@@ -253,12 +255,18 @@ test("the site's map sections are pictures, the journey's changing with its stop
 }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/home");
+    await expect(page.locator(".site-bar div.bar-mark-bird")).toBeAttached();
     await page.locator("#map").scrollIntoViewIfNeeded();
     const journey = page.locator(".site-journey-map .site-still.on");
     await expect(journey).toHaveCount(1);
     await expect
         .poll(() => journey.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0))
         .toBe(true);
+    await page
+        .locator(".site-step")
+        .first()
+        .evaluate((el) => el.scrollIntoView({ block: "center" }));
+    await expect(page.locator(".site-step").first()).toHaveClass(/on/);
     const first = await journey.getAttribute("src");
     // another stop brought to the middle of the window takes the map there, as a picture
     await page
@@ -266,10 +274,12 @@ test("the site's map sections are pictures, the journey's changing with its stop
         .last()
         .evaluate((el) => el.scrollIntoView({ block: "center" }));
     await expect.poll(() => journey.getAttribute("src")).not.toBe(first);
-    for (const section of ["#you", "#start"]) {
+    for (const section of ["#you"]) {
         await page.locator(section).scrollIntoViewIfNeeded();
         await expect(page.locator(`${section} .site-still`).first()).toBeVisible();
     }
+    await page.locator("#start").scrollIntoViewIfNeeded();
+    await expect(page.locator("#start .site-sample").first()).toBeVisible();
     await page.locator("footer").last().scrollIntoViewIfNeeded();
     expect(await page.locator("canvas.map-gl").count()).toBe(0);
 });
@@ -325,12 +335,12 @@ test("equivalent models and pending progress updates preserve a flight's scene",
     await expect(map).toHaveCount(0);
 });
 
-test("lesson entry keeps populated scenery through background lesson preparation", async ({
+test("lesson entry keeps populated scenery through in-place scenery preparation", async ({
     page,
 }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await signInAs(page);
-    await page.goto("/map");
+    await page.goto("/map?mapDebug");
     const map = page.locator(".ow-host.ready");
     await map.waitFor();
     const probe = await page.evaluateHandle(() => {
@@ -401,7 +411,10 @@ test("lesson entry keeps populated scenery through background lesson preparation
             .toBe(true);
         await place.dispatchEvent("click");
         await expect(page.locator(".wd.ready")).toBeVisible({ timeout: 60000 });
-        await expect.poll(() => probe.evaluate((p) => p.changes.length)).toBeGreaterThan(0);
+        await expect.poll(() => probe.evaluate((p) => p.anchor())).not.toBeNull();
+        const before = await probe.evaluate((p) => p.changes.length);
+        await page.evaluate(() => window.rollRedraw());
+        await expect.poll(() => probe.evaluate((p) => p.changes.length)).toBeGreaterThan(before);
         let previous = 0;
         let same = 0;
         await expect
