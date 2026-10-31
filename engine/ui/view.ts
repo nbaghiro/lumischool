@@ -159,6 +159,7 @@ export class CanvasView {
     private disposed = false;
     private readonly events = new AbortController();
     private readonly resizing: ResizeObserver;
+    private resizeFrame = 0;
     private pointers = new Map<number, Pt>();
     private drag: {
         id: number;
@@ -193,7 +194,13 @@ export class CanvasView {
         if (hooks.paper === false) host.prepend(this.frame);
         else host.prepend(this.paper, this.frame);
         this.colors();
-        this.resizing = new ResizeObserver(() => this.measure());
+        this.resizing = new ResizeObserver(() => {
+            if (!this.resizeFrame)
+                this.resizeFrame = requestAnimationFrame(() => {
+                    this.resizeFrame = 0;
+                    this.measure();
+                });
+        });
         this.resizing.observe(host);
         if (hooks.paper !== false) CanvasView.surfaces.add(this);
         this.measure();
@@ -271,6 +278,8 @@ export class CanvasView {
         cancelAnimationFrame(this.raf);
         this.raf = 0;
         this.resizing.disconnect();
+        cancelAnimationFrame(this.resizeFrame);
+        this.resizeFrame = 0;
         this.events.abort();
         for (const id of this.pointers.keys()) {
             if (this.host.hasPointerCapture(id)) this.host.releasePointerCapture(id);

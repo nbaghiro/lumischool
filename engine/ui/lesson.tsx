@@ -1379,9 +1379,21 @@ function SceneTile(props: {
         <>
             <div
                 ref={(el) => {
-                    const seen = new ResizeObserver(([e]) => setRoom(e?.contentRect.width ?? 0));
+                    let frame = 0;
+                    let width = 0;
+                    const seen = new ResizeObserver(([e]) => {
+                        width = e?.contentRect.width ?? 0;
+                        if (!frame)
+                            frame = requestAnimationFrame(() => {
+                                frame = 0;
+                                setRoom(width);
+                            });
+                    });
                     seen.observe(el);
-                    onCleanup(() => seen.disconnect());
+                    onCleanup(() => {
+                        seen.disconnect();
+                        cancelAnimationFrame(frame);
+                    });
                 }}
                 class="scene-tile on-paper"
             >
