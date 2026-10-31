@@ -1,9 +1,9 @@
 item bonds.make-ten v=1 skills=[bonds-to-10] {
   title "Make ten"
   difficulty (10 - n)
-  let n=1..9
+  let n={1, 2, 3, 4, 6, 7, 8, 9}  # never n = 5, where counting the counters is also right
   level easy {
-    let n=6..9  # one to four empty squares, and never n = 5, where counting the counters is also right
+    let n=6..9  # one to four empty squares
   }
 
   scene 26x7 {

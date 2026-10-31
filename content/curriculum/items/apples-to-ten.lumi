@@ -1,6 +1,6 @@
 item story.apples-to-ten v=1 skills=[bonds-to-10] {
   title "Apples"
-  let n=3..8
+  let n={3, 4, 6, 7, 8}  # never n = 5, where the apples she has is also the answer
   roles fruit=apple
 
   scene 24x9 {

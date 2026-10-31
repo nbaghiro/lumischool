@@ -39,18 +39,11 @@ const issuesOf = (w: Workspace, path: string): string[] =>
 const filled = (v: unknown): string =>
     typeof v === "object" && v !== null && "filled" in v ? String(v.filled) : "";
 
-test("all content checks: no errors, and only the two warnings we expect", () => {
+test("all content checks: no errors and no warnings", () => {
     const all = [...ws.files.values()].flatMap((f) =>
         f.issues.map((i) => `${f.path} ${i.level}: ${i.message}`),
     );
-    assert.deepEqual(
-        all.filter((i) => i.includes(" error: ")),
-        [],
-    );
-    assert.deepEqual(all, [
-        "items/apples-to-ten.lumi warning: this rule is also true for the correct answer, so it cannot tell the mistake apart (n = 5)",
-        "items/make-ten.lumi warning: this rule is also true for the correct answer, so it cannot tell the mistake apart (n = 5)",
-    ]);
+    assert.deepEqual(all, []);
 });
 
 test("every scene node type the vocabulary names by hand is used by the content", () => {
